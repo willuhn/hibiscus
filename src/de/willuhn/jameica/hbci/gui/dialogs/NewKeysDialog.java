@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/NewKeysDialog.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/03/09 01:07:02 $
+ * $Revision: 1.7 $
+ * $Date: 2005/03/21 23:31:54 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -77,7 +77,6 @@ public class NewKeysDialog extends AbstractDialog
 
 		this.passport = p;
 		iniletter = new INILetter(passport,INILetter.TYPE_USER);
-
   }
 
   /**
@@ -125,17 +124,8 @@ public class NewKeysDialog extends AbstractDialog
 
 			DocPrintJob pj = service.createPrintJob();
 
-			StringBuffer text = new StringBuffer();
-			text.append(i18n.tr("INI-Brief") + "\n");
-			text.append("---------------------------------------------------------------------------\n");
-			text.append(i18n.tr("Schlüssel-Hashwert: ") + HBCIUtils.data2hex(iniletter.getKeyHash()) + "\n");
-			text.append(i18n.tr("Schlüsselnummer   : ") + passport.getMyPublicSigKey().num + "\n");
-			text.append(i18n.tr("Schlüsselversion  : ") + passport.getMyPublicSigKey().version + "\n");
-			text.append("---------------------------------------------------------------------------\n");
-			text.append(i18n.tr("Bankleitzahl      : ") + passport.getBLZ() + "\n");
-			text.append(i18n.tr("Benutzerkennung   : ") + passport.getUserId() + "\n");
-
-			Doc doc = new SimpleDoc(text.toString(),DOCFLAVOR,null);
+			// BUGZILLA 24 http://www.willuhn.de/bugzilla/show_bug.cgi?id=24
+			Doc doc = new SimpleDoc(iniletter.toString(),DOCFLAVOR,null);
 			pj.print(doc,PRINTPROPS);
 		}
 		catch (Exception e)
@@ -240,6 +230,9 @@ public class NewKeysDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: NewKeysDialog.java,v $
+ * Revision 1.7  2005/03/21 23:31:54  web0
+ * @B bug 24
+ *
  * Revision 1.6  2005/03/09 01:07:02  web0
  * @D javadoc fixes
  *
