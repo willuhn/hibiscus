@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/TurnusAuswahlDialog.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/11/13 17:02:04 $
+ * $Revision: 1.4 $
+ * $Date: 2004/11/15 00:38:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,17 +12,25 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.dialogs;
 
+import java.rmi.RemoteException;
+
 import org.eclipse.swt.widgets.Composite;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.controller.TurnusControl;
 import de.willuhn.jameica.hbci.gui.menus.TurnusList;
+import de.willuhn.jameica.hbci.gui.views.TurnusNew;
 import de.willuhn.jameica.hbci.rmi.Turnus;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -53,6 +61,7 @@ public class TurnusAuswahlDialog extends AbstractDialog
   {
 		DBIterator list = Settings.getDBService().createList(Turnus.class);
 
+		LabelGroup group = new LabelGroup(parent,i18n.tr("Vorhandene Einträge"));
 		TablePart table = new TablePart(list,new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -65,7 +74,42 @@ public class TurnusAuswahlDialog extends AbstractDialog
 		table.addColumn(i18n.tr("Bezeichnung"),"bezeichnung");
 		table.disableSummary();
 		table.setContextMenu(new TurnusList());
-		table.paint(parent);
+		// table.paint(parent);
+		group.addPart(table);
+
+
+
+		LabelGroup group2 = new LabelGroup(parent,i18n.tr("Neuer Eintrag/Eintrag ändern"));
+		final TurnusControl control = new TurnusControl(new TurnusNew());
+
+		try {
+			group2.addLabelPair(i18n.tr("Zeiteinheit"),control.getZeiteinheit());
+			group2.addLabelPair(i18n.tr("Zahlung aller"),control.getIntervall());
+			group2.addLabelPair(i18n.tr("Zahlung am"), control.getTagWoechentlich());
+			group2.addLabelPair("", control.getTagMonatlich());
+			
+			group2.addSeparator();
+			group2.addLabelPair("", control.getComment());
+			
+		}
+		catch (RemoteException e)
+		{
+			Logger.error("error while reading turnus",e);
+			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Lesen des Zahlungsturnus."));
+		}
+
+		// und noch die Abschicken-Knoepfe
+		if (!control.getTurnus().isInitial())
+		{
+			ButtonArea buttonArea = new ButtonArea(parent,1);
+			buttonArea.addButton(i18n.tr("Speichern"), new Action()
+			{
+				public void handleAction(Object context) throws ApplicationException
+				{
+					control.handleStore();
+				}
+			},null,true);
+		}
   }
 
   /**
@@ -81,6 +125,9 @@ public class TurnusAuswahlDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: TurnusAuswahlDialog.java,v $
+ * Revision 1.4  2004/11/15 00:38:30  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2004/11/13 17:02:04  willuhn
  * @N Bearbeiten des Zahlungsturnus
  *

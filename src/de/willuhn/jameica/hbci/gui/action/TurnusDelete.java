@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/Attic/TurnusDelete.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/11/13 17:12:15 $
+ * $Revision: 1.3 $
+ * $Date: 2004/11/15 00:38:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ import java.rmi.RemoteException;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.dialogs.SimpleDialog;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Turnus;
@@ -49,7 +50,17 @@ public class TurnusDelete implements Action
 
 			if (t.isInitial())
 			{
-				GUI.getStatusBar().setErrorText(i18n.tr("Turnus kann nicht gelöscht werden, da er Bestandteil der Initialdaten ist"));
+				SimpleDialog d = new SimpleDialog(SimpleDialog.POSITION_MOUSE);
+				d.setTitle(i18n.tr("Nicht löschbar"));
+				d.setText(i18n.tr("Dieser Zahlungsturnus kann nicht gelöscht werden, da er Bestandteil der Initialdaten von Hibiscus ist."));
+				try
+				{
+					d.open();
+				}
+				catch (Exception e)
+				{
+					GUI.getStatusBar().setErrorText(i18n.tr("Dieser Zahlungsturnus kann nicht gelöscht werden, da er Bestandteil der Initialdaten von Hibiscus ist."));
+				}
 				return;
 			}
 
@@ -84,6 +95,9 @@ public class TurnusDelete implements Action
 
 /**********************************************************************
  * $Log: TurnusDelete.java,v $
+ * Revision 1.3  2004/11/15 00:38:30  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2004/11/13 17:12:15  willuhn
  * *** empty log message ***
  *
