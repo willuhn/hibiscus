@@ -79,9 +79,11 @@
       <classpath refid="compilepath" />
     </rmic>
 
+<!--
     <copy todir="${class.dir}/lang">
       <fileset dir="${lang.dir}" />
     </copy>
+//-->
     <copy todir="${class.dir}/help">
       <fileset dir="${help.dir}" />
     </copy>
@@ -89,9 +91,7 @@
       <fileset dir="${icon.dir}" />
     </copy>
 
-    <copy file="${src.dir}/navigation.xml"   tofile="${class.dir}/navigation.xml" />
-    <copy file="${src.dir}/menu.xml"         tofile="${class.dir}/menu.xml" />
-    <copy file="${src.dir}/info.xml"   		 tofile="${class.dir}/info.xml" />
+    <copy file="${src.dir}/plugin.xml"   tofile="${class.dir}/plugin.xml" />
 
   </target>
 
