@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO8859-1"?> 
 <navigation>
   <item name="HBCI" icon-close="folder.gif" icon-open="folderopen.gif" action="de.willuhn.jameica.hbci.gui.views.Welcome">
-	  <item name="Konten" icon-close="folder.gif" icon-open="folderopen.gif" action="de.willuhn.jameica.hbci.gui.views.KontoListe" />
+	  <item name="Konten" icon-close="page.gif" icon-open="page.gif" action="de.willuhn.jameica.hbci.gui.views.KontoListe" />
   </item>
 </navigation>
