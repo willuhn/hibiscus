@@ -180,6 +180,9 @@
 		<mkdir dir="${project.release}"/>
 		<zip casesensitive="true" zipfile="${project.release}/${define.srcfilename}">
 			<fileset dir="." >
+				<include name=".project"/>
+				<include name=".classpath"/>
+		        <include name="${lib.dir}/**"/>
 				<include name="${src.dir}/**"/>
 				<include name="${build.dir}/**"/>
 				<exclude name="${build.dir}/BUILD"/>

@@ -115,12 +115,14 @@ der verschiedenen Sicherheitsmedien (=Zugangswege zu Bank, z.Bsp.
 Chipkarte oder PIN/TAN) sind in separate Plugins ausgegliedert und
 koennen somit ohne Aenderung dieser Software nachgeruestet werden.
 
-Derzeit unterstuetzt Hibiscus lediglich folgende Geschaeftsvorfaelle:
+Derzeit unterstuetzt Hibiscus folgende Geschaeftsvorfaelle:
 
  - Lesen der ueber das Sicherheitsmedium verfuegbaren Konten
  - Saldenabfrage
  - Umsaetze abrufen (Kontoauszug)
  - Ueberweisung
+ - Einzellastschrift
+ - Dauerauftraege
 
 #                                                                         #
 ###########################################################################
