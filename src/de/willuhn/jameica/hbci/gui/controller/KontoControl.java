@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/02/20 01:25:25 $
+ * $Revision: 1.7 $
+ * $Date: 2004/02/20 01:36:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -358,18 +358,30 @@ public class KontoControl extends AbstractControl {
 				GUI.setActionText(I18N.tr("Bitte geben Sie mindestens die Kontonummer ein"));
 				return;
 			}
-			GUI.setActionText(I18N.tr("Chipkarte wird ausgelesen..."));
-			getKonto().readFromPassport();
-			getKundennummer().setValue(getKonto().getKundennummer());
-			getName().setValue(getKonto().getName());
-			getWaehrung().setValue(getKonto().getWaehrung());
-			GUI.setActionText(I18N.tr("Daten erfolgreich gelesen"));
 		}
 		catch (RemoteException e)
 		{
-			Application.getLog().error("error while reading data from passport",e);
-			GUI.setActionText(I18N.tr("Fehler beim Lesen der Konto-Daten"));
+			Application.getLog().error("error while reading kontonummer",e);
+			GUI.setActionText(I18N.tr("Fehler beim Lesen der Kontonummer"));
 		}
+		GUI.setActionText(I18N.tr("Chipkarte wird ausgelesen..."));
+
+		GUI.startJob(new Runnable() {
+      public void run() {
+				try {
+					getKonto().readFromPassport();
+					getKundennummer().setValue(getKonto().getKundennummer());
+					getName().setValue(getKonto().getName());
+					getWaehrung().setValue(getKonto().getWaehrung());
+					GUI.setActionText(I18N.tr("Daten erfolgreich gelesen"));
+				}
+				catch (RemoteException e)
+				{
+					Application.getLog().error("error while reading data from passport",e);
+					GUI.setActionText(I18N.tr("Fehler beim Lesen der Konto-Daten"));
+				}
+      }
+    });
 	}
 
 	/**
@@ -390,7 +402,7 @@ public class KontoControl extends AbstractControl {
 			GUI.setActionText(I18N.tr("Fehler beim Lesen der Kontonummer"));
 		}
 
-		GUI.getDisplay().asyncExec(new Runnable() {
+		GUI.startJob(new Runnable() {
       public void run() {
       	try {
       		GUI.setActionText(I18N.tr("Saldo des Kontos wird ermittelt..."));
@@ -439,6 +451,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.7  2004/02/20 01:36:56  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.6  2004/02/20 01:25:25  willuhn
  * *** empty log message ***
  *

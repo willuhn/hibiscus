@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/PassportControlDDV.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/02/13 00:41:56 $
+ * $Revision: 1.4 $
+ * $Date: 2004/02/20 01:36:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -253,13 +253,15 @@ public class PassportControlDDV extends AbstractControl {
    */
   public void handleTest()
 	{
-		handleStore();
-		if (!stored)
-			return;
 
 		GUI.setActionText(I18N.tr("Teste Chipkartenleser..."));
-		GUI.getDisplay().asyncExec(new Runnable() {
+
+		GUI.startJob(new Runnable() {
       public void run() {
+				handleStore();
+				if (!stored)
+					return;
+
 				try {
 					getPassport().open();
 					getPassport().close();
@@ -278,6 +280,9 @@ public class PassportControlDDV extends AbstractControl {
 
 /**********************************************************************
  * $Log: PassportControlDDV.java,v $
+ * Revision 1.4  2004/02/20 01:36:56  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2004/02/13 00:41:56  willuhn
  * *** empty log message ***
  *
