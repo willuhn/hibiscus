@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/JobFactory.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/03/11 08:55:42 $
+ * $Revision: 1.9 $
+ * $Date: 2004/04/04 18:30:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -48,16 +48,6 @@ public class JobFactory {
 	 * HBCI4Java-interner Name fuer &quot;Saldo abrufen&quot.
 	 */
 	public final static String JOB_KONTO_SALDO 					= "SaldoReq";
-	
-	/**
-	 * HBCI4Java-interner Name fuer &quot;Alle Umsaetze abrufen&quot.
-	 */
-	public final static String JOB_UMSATZ_ALL  					= "KUmsAll";
-
-	/**
-	 * HBCI4Java-interner Name fuer &quot;Neue Umsaetze abrufen&quot.
-	 */
-	public final static String JOB_UMSATZ_NEW  					= "KUmsNew";
 	
 	/**
 	 * HBCI4Java-interner Name fuer &quot;Ueberweisung ausfuehren&quot.
@@ -229,52 +219,18 @@ public class JobFactory {
 //		}
 	}
 
-	/**
+  /**
 	 * Holt <b>alle verfuegbaren</b> Umsaetze vom uebergebenen Konto ab und liefert sie als
 	 * Array von Objekten des Typs <code>Umsatz</code> zurueck.
 	 * <br>
 	 * Eine zusaetzliche zeitliche Einschraenkung ist vorerst nicht geplant.
-   * @param konto das Konto, fuer welches die Umsaetze abgeholt werden.
-   * @return die Umsaetze.
-   * @throws ApplicationException
-   * @throws RemoteException
-   */
-  public synchronized Umsatz[] getAlleUmsaetze(Konto konto) throws ApplicationException, RemoteException
-	{
-		return getUmsaetze(konto, JOB_UMSATZ_ALL);
-	}
-
-	/**
-	 * Holt <b>nur die neuen</b> Umsaetze vom uebergebenen Konto ab und liefert sie als
-	 * Array von Objekten des Typs <code>Umsatz</code> zurueck.
-	 * <br>
-	 * Das sind nur genau die Umsaetze, welche <b>noch nicht</b> abgerufen wurden.<br>
-	 * Eine zusaetzliche zeitliche Einschraenkung ist vorerst nicht geplant.
 	 * @param konto das Konto, fuer welches die Umsaetze abgeholt werden.
 	 * @return die Umsaetze.
 	 * @throws ApplicationException
 	 * @throws RemoteException
 	 */
-	public synchronized Umsatz[] getNeueUmsaetze(Konto konto) throws ApplicationException, RemoteException
+	public synchronized Umsatz[] getUmsaetze(Konto konto) throws ApplicationException, RemoteException
 	{
-		return getUmsaetze(konto, JOB_UMSATZ_NEW);
-	}
-
-  /**
-	 * Holt die Umsaetze vom uebergebenen Konto ab und liefert sie als
-	 * Array von Objekten des Typs <code>Umsatz</code> zurueck.
-	 * <br>
-	 * @param konto das Konto, fuer welches die Umsaetze abgeholt werden.
-   * @param type <code>JOB_UMSATZ_ALL</code> oder <code>JOB_UMSATZ_NEW</code>.
-	 * @return die Umsaetze.
-	 * @throws ApplicationException
-	 * @throws RemoteException
-	 */
-	private synchronized Umsatz[] getUmsaetze(Konto konto, String type) throws ApplicationException, RemoteException
-	{
-		if (type == null ||  !(type.equals(JOB_UMSATZ_ALL) || type.equals(JOB_UMSATZ_NEW)) )
-			throw new RemoteException("invalid job type");
-
 		if (konto == null)
 			throw new ApplicationException(i18n.tr("Bitte geben Sie ein Konto an, für welches Sie die Umsätze ermitteln wollen"));
 
@@ -289,8 +245,8 @@ public class JobFactory {
 			passport = konto.getPassport();
 			HBCIHandler handler = passport.open();
 
-			Application.getLog().info("creating new job " + type);
-			HBCIJob job = handler.newJob(type);
+			Application.getLog().info("creating new job KUmsAll");
+			HBCIJob job = handler.newJob("KUmsAll"); // KUmsNew wird von meiner SPK nicht unterstuetzt.
 			job.setParam("my",Converter.convert(konto));
 
 			Application.getLog().info("adding job to queue");
@@ -376,6 +332,9 @@ public class JobFactory {
 
 /**********************************************************************
  * $Log: JobFactory.java,v $
+ * Revision 1.9  2004/04/04 18:30:23  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.8  2004/03/11 08:55:42  willuhn
  * @N UmsatzDetails
  *

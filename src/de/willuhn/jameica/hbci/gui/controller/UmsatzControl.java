@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzControl.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/03/30 22:07:49 $
+ * $Revision: 1.6 $
+ * $Date: 2004/04/04 18:30:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.controller.AbstractControl;
+import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.parts.CurrencyFormatter;
 import de.willuhn.jameica.gui.parts.DateFormatter;
 import de.willuhn.jameica.gui.parts.Table;
@@ -150,11 +151,61 @@ public class UmsatzControl extends AbstractControl {
 
 		GUI.getStatusBar().stopProgress();
 	}
+
+	/**
+   * Loescht alle Umsaetze aus der Liste.
+   */
+  public void handleDeleteUmsaetze()
+	{
+
+		YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
+		d.setTitle(i18n.tr("Sicher?"));
+		d.setText(i18n.tr("Sind Sie sicher, daß Sie alle Umsätze des Kontos löschen möchten?"));
+
+		try {
+			if (!((Boolean)d.open()).booleanValue())
+				return;
+		}
+		catch (Exception e)
+		{
+			Application.getLog().error("error while deleting umsaetze",e);
+			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Löschen der Umsätze"));
+			return;
+		}
+
+
+		GUI.getStatusBar().startProgress();
+
+		GUI.startSync(new Runnable() {
+			public void run() {
+				try {
+					getKonto().deleteUmsaetze();
+					GUI.getStatusBar().setSuccessText(i18n.tr("Umsätze gelöscht."));
+					// View reloaden
+					GUI.startView(UmsatzListe.class.getName(),getKonto());
+				}
+				catch (ApplicationException e2)
+				{
+					GUI.getView().setErrorText(i18n.tr(e2.getMessage()));
+				}
+				catch (Exception e)
+				{
+					Application.getLog().error("error while deleting umsaetze",e);
+					GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Löschen der Umsätze."));
+				}
+			}
+		});
+
+		GUI.getStatusBar().stopProgress();
+	}
 }
 
 
 /**********************************************************************
  * $Log: UmsatzControl.java,v $
+ * Revision 1.6  2004/04/04 18:30:23  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2004/03/30 22:07:49  willuhn
  * *** empty log message ***
  *

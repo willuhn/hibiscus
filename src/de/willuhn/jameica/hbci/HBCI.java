@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.11 $
- * $Date: 2004/04/01 22:06:59 $
+ * $Revision: 1.12 $
+ * $Date: 2004/04/04 18:30:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci;
 
 import java.io.File;
 import java.io.IOException;
+import java.rmi.RemoteException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -25,6 +26,7 @@ import org.kapott.hbci.manager.HBCIUtils;
 import de.willuhn.datasource.db.EmbeddedDatabase;
 import de.willuhn.jameica.AbstractPlugin;
 import de.willuhn.jameica.Application;
+import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.util.Logger;
 
 /**
@@ -80,6 +82,20 @@ public class HBCI extends AbstractPlugin
    */
   public boolean init()
   {
+		// Wir oeffnen mal die Datenbank.
+		// Grund: Beim ersten DB-Connect kommt es immer zu etwas Verzoegerung,
+		// weil McKOI gestartet werden muss. Wir machen das waehrend des Splash-Screens
+		// damit es sybjektiv nicht so lange dauert
+		try {
+			getResources().getDatabase().getDBService().createObject(Konto.class,null);
+		}
+		catch (RemoteException e)
+		{
+			// Uuuh? Wenn das fehlschlaegt, ist etwas mit unserer DB faul und
+			// wir verweigern lieber die Initialisierung
+			Application.getLog().error("error while initializing HBCI plugin",e);
+		}
+
     HBCIUtils.init(null,null,new HBCICallbackSWT());
     int logLevel = logMapping[Application.getLog().getLevelByName(Application.getConfig().getLogLevel())][1];
     HBCIUtils.setParam("log.loglevel.default",""+logLevel);
@@ -144,6 +160,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.12  2004/04/04 18:30:23  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.11  2004/04/01 22:06:59  willuhn
  * *** empty log message ***
  *
