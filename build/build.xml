@@ -59,7 +59,7 @@
 	      <pathelement location="../jameica/bin/"/>
 	      <pathelement location="../util/bin/"/>
 	      <pathelement location="../datasource/bin/"/>
-	      <pathelement location="${lib.dir}/hbci4java-2.4.7pre-20040525.jar"/>
+	      <pathelement location="${lib.dir}/hbci4java-2.5.0pre-20040810.jar"/>
 	    </path>
 
   </target>

@@ -6,3 +6,6 @@
   - BUG: Wurde beim Erstellen einer Ueberweisung gleichzeitig
          ein neuer Empfaenger im Adressbuch angelegt, so
          konnte dieser nicht gespeichert werden.
+  - BUG: Pruefung der Maximal-Laenge von einigen Texteingaben
+  - BUG: Beruecksichtigung der Spracheinstellungen bei Dezimal-Eingaben
+         (Komma versus Punkt als Dezimaltrennzeichen)
