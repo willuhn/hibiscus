@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/02/11 00:11:20 $
+ * $Revision: 1.4 $
+ * $Date: 2004/02/12 00:38:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,11 +22,11 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 
 import org.kapott.hbci.manager.HBCIUtils;
-import org.kapott.hbci.passport.HBCIPassport;
 
 import de.willuhn.datasource.db.EmbeddedDatabase;
 import de.willuhn.jameica.AbstractPlugin;
 import de.willuhn.jameica.Application;
+import de.willuhn.util.Logger;
 
 /**
  * 
@@ -38,20 +38,19 @@ public class HBCI extends AbstractPlugin
 	public static DateFormat FASTDATEFORMAT   = new SimpleDateFormat("ddMMyyyy");
 	public static DecimalFormat DECIMALFORMAT = (DecimalFormat) NumberFormat.getNumberInstance(Application.getConfig().getLocale());
   
-	private static HBCIPassport passport = null;
+	// Mapper von HBCI4Java nach jameica Loglevels
+	private static int[][] logMapping = new int[][]
+	{
+		{Logger.LEVEL_DEBUG, 5},
+		{Logger.LEVEL_ERROR, 1},
+		{Logger.LEVEL_WARN,  2},
+		{Logger.LEVEL_INFO,  3}
+	};
 
 	static {
 		HBCIUtils.init(null,null,new HBCICallbackSWT());
-		HBCIUtils.setParam("log.loglevel.default","5");
-		HBCIUtils.setParam("client.passport.default","DDV");
-		HBCIUtils.setParam("client.passport.DDV.path","/work/willuhn/eclipse/hbci/passports");
-		HBCIUtils.setParam("client.passport.DDV.libname.ddv","/work/willuhn/eclipse/hbci/lib/libhbci4java-card-linux.so");
-		HBCIUtils.setParam("client.passport.DDV.libname.ctapi","/work/willuhn/eclipse/hbci/lib/libtowitoko-2.0.7.so");
-		HBCIUtils.setParam("client.passport.DDV.port","0");
-		HBCIUtils.setParam("client.passport.DDV.ctnumber","0");
-		HBCIUtils.setParam("client.passport.DDV.usebio","0");
-		HBCIUtils.setParam("client.passport.DDV.softpin","1");
-		HBCIUtils.setParam("client.passport.DDV.entryidx","1");
+		int logLevel = logMapping[Application.getLog().getLevelByName(Application.getConfig().getLogLevel())][1];
+		HBCIUtils.setParam("log.loglevel.default",""+logLevel);
 
 		DECIMALFORMAT.applyPattern("#0.00");
 	}
@@ -73,16 +72,13 @@ public class HBCI extends AbstractPlugin
   {
 		try {
 			Settings.setDatabase(getDatabase().getDBService());
+			Settings.setPath(getPath());
 		}
 		catch (RemoteException e)
 		{
 			Application.getLog().error("unable to open database",e);
 			return false;
 		}
-
-//		passport=AbstractHBCIPassport.getInstance();
-//		HBCIHandler handler=new HBCIHandler("210",passport);
-
 		return true;
   }
 
@@ -120,7 +116,6 @@ public class HBCI extends AbstractPlugin
 				Application.getLog().error("unable to insert init data",e);
 				return false;
 			}
-      
 		}
 		freshInstall = true;
 		return true;
@@ -147,7 +142,6 @@ public class HBCI extends AbstractPlugin
    */
   public void shutDown()
   {
-//  	passport.close();
   }
 
   /**
@@ -171,6 +165,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.4  2004/02/12 00:38:40  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2004/02/11 00:11:20  willuhn
  * *** empty log message ***
  *

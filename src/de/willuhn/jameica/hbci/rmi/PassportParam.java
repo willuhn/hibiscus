@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Attic/PassportParam.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/02/11 00:11:20 $
+ * $Revision: 1.2 $
+ * $Date: 2004/02/12 00:38:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,22 +25,6 @@ import de.willuhn.datasource.rmi.DBObject;
  */
 public interface PassportParam extends DBObject {
 
-	// Parameter fuer den Port (meist 0)
-	public final static String DDV_PORT 		= "ddv.port";
-	public final static String[] DDV_PORTS = new String[] {"COM1","COM2","COM3","COM4","USB"};
-
-
-	// Parameter fuer den Index (normalerweise 0)
-	public final static String DDV_CTNUMBER = "ddv.ctnumber";
-
-	// Parameter ober Biometrie verwendet wird (meist 0)
-	public final static String DDV_USEBIO	  = "ddv.usebio";
-
-	// Parameter ob die Tastatur zur Pin-Eingabe verwendet werden soll
-	public final static String DDV_SOFTPIN  = "ddv.softpin";
-
-	// Parameter fuer den Index des HBCI-Zugangs (meist 1)
-	public final static String DDV_ENTRYIDX = "ddv.entryidx";
 	
 	/**
 	 * Liefert den Namen des Parameters.
@@ -88,6 +72,9 @@ public interface PassportParam extends DBObject {
 
 /**********************************************************************
  * $Log: PassportParam.java,v $
+ * Revision 1.2  2004/02/12 00:38:40  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/02/11 00:11:20  willuhn
  * *** empty log message ***
  *

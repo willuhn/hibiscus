@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/02/11 15:40:42 $
+ * $Revision: 1.4 $
+ * $Date: 2004/02/12 00:38:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,12 +15,9 @@ package de.willuhn.jameica.hbci.server;
 import java.rmi.RemoteException;
 
 import de.willuhn.datasource.db.AbstractDBObject;
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.Application;
-import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Passport;
-import de.willuhn.jameica.hbci.rmi.PassportParam;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -89,8 +86,8 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
    */
   protected Class getForeignObject(String field) throws RemoteException {
-    if ("passport_id".equals(field))
-    	return Passport.class;
+  	if ("passport_id".equals(field))
+  		return Passport.class;
     return null;
   }
 
@@ -119,7 +116,10 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    * @see de.willuhn.jameica.hbci.rmi.Konto#getPassport()
    */
   public Passport getPassport() throws RemoteException {
-		return (Passport) getField("passport_id");
+		if (isNewObject())
+			return (Passport) getField("passport_id");
+
+		return PassportFactory.create(this);
   }
 
   /**
@@ -153,15 +153,6 @@ public class KontoImpl extends AbstractDBObject implements Konto {
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getPassportParams()
-   */
-  public DBIterator getPassportParams() throws RemoteException {
-  	DBIterator list = Settings.getDatabase().createList(PassportParam.class);
-  	list.addFilter("konto_id = " + this.getID());
-  	return list;
-  }
-
-  /**
    * @see de.willuhn.datasource.rmi.DBObject#delete()
    */
   public void delete() throws RemoteException, ApplicationException
@@ -169,14 +160,8 @@ public class KontoImpl extends AbstractDBObject implements Konto {
     // Wir muessen die PassportParameter mit loeschen
     try {
       transactionBegin();
+      getPassport().delete();
       super.delete();
-      DBIterator list = getPassportParams();
-      PassportParam p = null;
-      while (list.hasNext())
-      {
-        p = (PassportParam) list.next();
-        p.delete();
-      }
       transactionCommit();
     }
     catch (RemoteException e)
@@ -207,11 +192,21 @@ public class KontoImpl extends AbstractDBObject implements Konto {
     setField("waehrung",waehrung);
   }
 
+  /**
+   * @see de.willuhn.datasource.rmi.DBObject#store()
+   */
+  public void store() throws RemoteException, ApplicationException {
+    super.store();
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.4  2004/02/12 00:38:41  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2004/02/11 15:40:42  willuhn
  * *** empty log message ***
  *
