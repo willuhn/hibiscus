@@ -52,6 +52,31 @@
 ###########################################################################
 
 ###########################################################################
+# 2.1 INSTALLATION ZUSAETZLICHER SICHERHEITSMEDIEN (z.Bsp. Chipkarte)     #
+###########################################################################
+
+Dieser Version von Hibiscus enthaelt bereits die Unterstuetzung fuer
+das Sicherheitsmedium DDV (Chipkarte mit synchronen Schluesseln). Die
+Installation weiterer Sicherheitsmedien (insofern diese als Plugin fuer
+die Anwendung existieren) beschraenkt sich i.d.R. auf das Kopieren der
+Dateien in das Verzeichnis "lib".
+   z.Bsp.:
+   Windows:  "C:\Progamme\jameica\plugins\hbci\lib"
+   Linux:    "/opt/jameica/plugins/hbci/lib"
+
+Beim erneuten Start von Jameica werden diese automatisch erkannt und
+auf dem Dialog "Einstellungen" aufgelistet. Sollte das installierte
+Medium dort nicht erscheinen, pruefen Sie die Log-Ausgaben von Jameica
+(entweder durch Oeffnen der Log-Datei im Work-Verzeichnis oder durch
+Klick auf den linken Bereich der Statusleiste von Jameica). Senden
+Sie diese bitte an den Autor.
+Weitere Hinweise zur Installation entnehmen Sie bitte der Dokumentation
+des Sicherheitsmediums.
+
+#                                                                         #
+###########################################################################
+
+###########################################################################
 # 3. SICHERHEITSHINWEISE                                                  #
 ###########################################################################
 
