@@ -67,7 +67,7 @@
 
   <target depends="init" name="cvs" description="performs cvs update">
     <exec executable="cvs" failonerror="true" dir="${basedir}">
-      <arg line="update -d"/>
+      <arg line="update -dP"/>
     </exec>
   </target>
 
