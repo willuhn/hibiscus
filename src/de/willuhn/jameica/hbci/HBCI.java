@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.25 $
- * $Date: 2004/07/23 15:51:44 $
+ * $Revision: 1.26 $
+ * $Date: 2004/08/18 23:13:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -124,7 +124,7 @@ public class HBCI extends AbstractPlugin
 	}
 
   /**
-   * @see de.willuhn.jameica.AbstractPlugin#init()
+   * @see de.willuhn.jameica.plugin.AbstractPlugin#init()
    */
   public void init() throws ApplicationException
   {
@@ -153,7 +153,7 @@ public class HBCI extends AbstractPlugin
   }
 
   /**
-   * @see de.willuhn.jameica.AbstractPlugin#install()
+   * @see de.willuhn.jameica.plugin.AbstractPlugin#install()
    */
   public void install() throws ApplicationException
   {
@@ -170,7 +170,7 @@ public class HBCI extends AbstractPlugin
   }
 
   /**
-   * @see de.willuhn.jameica.AbstractPlugin#update(double)
+   * @see de.willuhn.jameica.plugin.AbstractPlugin#update(double)
    */
   public void update(double oldVersion) throws ApplicationException
   {
@@ -190,7 +190,7 @@ public class HBCI extends AbstractPlugin
   }
 
   /**
-   * @see de.willuhn.jameica.AbstractPlugin#shutDown()
+   * @see de.willuhn.jameica.plugin.AbstractPlugin#shutDown()
    */
   public void shutDown()
   {
@@ -220,6 +220,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.26  2004/08/18 23:13:51  willuhn
+ * @D Javadoc
+ *
  * Revision 1.25  2004/07/23 15:51:44  willuhn
  * @C Rest des Refactorings
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/ProtokollImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/07/25 17:15:06 $
+ * $Revision: 1.7 $
+ * $Date: 2004/08/18 23:13:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -47,7 +47,7 @@ public class ProtokollImpl extends AbstractDBObject implements Protokoll {
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.DBObject#getPrimaryField()
+   * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
    */
   public String getPrimaryAttribute() throws RemoteException {
     return "kommentar";
@@ -164,6 +164,9 @@ public class ProtokollImpl extends AbstractDBObject implements Protokoll {
 
 /**********************************************************************
  * $Log: ProtokollImpl.java,v $
+ * Revision 1.7  2004/08/18 23:13:51  willuhn
+ * @D Javadoc
+ *
  * Revision 1.6  2004/07/25 17:15:06  willuhn
  * @C PluginLoader is no longer static
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DauerauftragImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/07/25 17:15:06 $
+ * $Revision: 1.6 $
+ * $Date: 2004/08/18 23:13:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -50,7 +50,7 @@ public class DauerauftragImpl extends AbstractTransferImpl implements Dauerauftr
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.GenericObject#getPrimaryAttribute()
+   * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
    */
   public String getPrimaryAttribute() throws RemoteException
   {
@@ -180,6 +180,9 @@ public class DauerauftragImpl extends AbstractTransferImpl implements Dauerauftr
 
 /**********************************************************************
  * $Log: DauerauftragImpl.java,v $
+ * Revision 1.6  2004/08/18 23:13:51  willuhn
+ * @D Javadoc
+ *
  * Revision 1.5  2004/07/25 17:15:06  willuhn
  * @C PluginLoader is no longer static
  *

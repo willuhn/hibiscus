@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/KontoList.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/07/25 17:15:06 $
+ * $Revision: 1.4 $
+ * $Date: 2004/08/18 23:13:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -34,6 +34,9 @@ public class KontoList extends ContextMenu
 
 	private I18N i18n;
 
+	/**
+	 * Erzeugt ein Kontext-Menu fuer eine Liste von Konten.
+	 */
 	public KontoList()
 	{
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
@@ -72,6 +75,9 @@ public class KontoList extends ContextMenu
 
 /**********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.4  2004/08/18 23:13:51  willuhn
+ * @D Javadoc
+ *
  * Revision 1.3  2004/07/25 17:15:06  willuhn
  * @C PluginLoader is no longer static
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UeberweisungImpl.java,v $
- * $Revision: 1.20 $
- * $Date: 2004/07/25 17:15:06 $
+ * $Revision: 1.21 $
+ * $Date: 2004/08/18 23:13:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -52,7 +52,7 @@ public class UeberweisungImpl extends AbstractTransferImpl implements Ueberweisu
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.GenericObject#getPrimaryAttribute()
+   * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
    */
   public String getPrimaryAttribute() throws RemoteException {
     return "zweck";
@@ -219,6 +219,9 @@ public class UeberweisungImpl extends AbstractTransferImpl implements Ueberweisu
 
 /**********************************************************************
  * $Log: UeberweisungImpl.java,v $
+ * Revision 1.21  2004/08/18 23:13:51  willuhn
+ * @D Javadoc
+ *
  * Revision 1.20  2004/07/25 17:15:06  willuhn
  * @C PluginLoader is no longer static
  *

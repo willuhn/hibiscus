@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/PassportObject.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/07/23 15:51:44 $
+ * $Revision: 1.3 $
+ * $Date: 2004/08/18 23:13:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,7 +49,7 @@ public class PassportObject implements GenericObject
 	 * Liefert das genannte Attribut.
 	 * Ist Attribut="name", wird der sprechende Name geliefert, sonst
 	 * der Passport selbst.
-	 * @see de.willuhn.datasource.rmi.GenericObject#getAttribute(java.lang.String)
+   * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
 	 */
 	public Object getAttribute(String name) throws RemoteException
 	{
@@ -59,7 +59,7 @@ public class PassportObject implements GenericObject
 	}
 
 	/**
-	 * @see de.willuhn.datasource.rmi.GenericObject#getID()
+	 * @see de.willuhn.datasource.GenericObject#getID()
 	 */
 	public String getID() throws RemoteException
 	{
@@ -67,7 +67,7 @@ public class PassportObject implements GenericObject
 	}
 
 	/**
-	 * @see de.willuhn.datasource.rmi.GenericObject#getPrimaryAttribute()
+	 * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
 	 */
 	public String getPrimaryAttribute() throws RemoteException
 	{
@@ -75,7 +75,7 @@ public class PassportObject implements GenericObject
 	}
 
 	/**
-	 * @see de.willuhn.datasource.rmi.GenericObject#equals(de.willuhn.datasource.rmi.GenericObject)
+	 * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
 	 */
 	public boolean equals(GenericObject other) throws RemoteException
 	{
@@ -89,6 +89,9 @@ public class PassportObject implements GenericObject
 
 /**********************************************************************
  * $Log: PassportObject.java,v $
+ * Revision 1.3  2004/08/18 23:13:51  willuhn
+ * @D Javadoc
+ *
  * Revision 1.2  2004/07/23 15:51:44  willuhn
  * @C Rest des Refactorings
  *

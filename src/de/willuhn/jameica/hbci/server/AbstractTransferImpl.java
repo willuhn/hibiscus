@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AbstractTransferImpl.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/07/25 17:15:06 $
+ * $Revision: 1.8 $
+ * $Date: 2004/08/18 23:13:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -104,14 +104,14 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#getKonto()
+   * @see de.willuhn.jameica.hbci.rmi.Transfer#getKonto()
    */
   public Konto getKonto() throws RemoteException {
     return (Konto) getAttribute("konto_id");
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#getBetrag()
+   * @see de.willuhn.jameica.hbci.rmi.Transfer#getBetrag()
    */
   public double getBetrag() throws RemoteException {
 		Double d = (Double) getAttribute("betrag");
@@ -121,49 +121,49 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#getZweck()
+   * @see de.willuhn.jameica.hbci.rmi.Transfer#getZweck()
    */
   public String getZweck() throws RemoteException {
     return (String) getAttribute("zweck");
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#getZweck2()
+   * @see de.willuhn.jameica.hbci.rmi.Transfer#getZweck2()
    */
   public String getZweck2() throws RemoteException {
 		return (String) getAttribute("zweck2");
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#setKonto(de.willuhn.jameica.hbci.rmi.Konto)
+   * @see de.willuhn.jameica.hbci.rmi.Transfer#setKonto(de.willuhn.jameica.hbci.rmi.Konto)
    */
   public void setKonto(Konto konto) throws RemoteException {
 		setAttribute("konto_id",konto);
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#setBetrag(double)
+   * @see de.willuhn.jameica.hbci.rmi.Transfer#setBetrag(double)
    */
   public void setBetrag(double betrag) throws RemoteException {
 		setAttribute("betrag", new Double(betrag));
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#setZweck(java.lang.String)
+   * @see de.willuhn.jameica.hbci.rmi.Transfer#setZweck(java.lang.String)
    */
   public void setZweck(String zweck) throws RemoteException {
 		setAttribute("zweck",zweck);
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#setZweck2(java.lang.String)
+   * @see de.willuhn.jameica.hbci.rmi.Transfer#setZweck2(java.lang.String)
    */
   public void setZweck2(String zweck2) throws RemoteException {
 		setAttribute("zweck2",zweck2);
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#getEmpfaengerKonto()
+   * @see de.willuhn.jameica.hbci.rmi.Transfer#getEmpfaengerKonto()
    */
   public String getEmpfaengerKonto() throws RemoteException {
     return (String) getAttribute("empfaenger_konto");
@@ -177,14 +177,14 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#getEmpfaengerName()
+   * @see de.willuhn.jameica.hbci.rmi.Transfer#getEmpfaengerName()
    */
   public String getEmpfaengerName() throws RemoteException {
 		return (String) getAttribute("empfaenger_name");
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#setEmpfaengerKonto(java.lang.String)
+   * @see de.willuhn.jameica.hbci.rmi.Transfer#setEmpfaengerKonto(java.lang.String)
    */
   public void setEmpfaengerKonto(String konto) throws RemoteException {
 		setAttribute("empfaenger_konto",konto);
@@ -198,7 +198,7 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#setEmpfaengerName(java.lang.String)
+   * @see de.willuhn.jameica.hbci.rmi.Transfer#setEmpfaengerName(java.lang.String)
    */
   public void setEmpfaengerName(String name) throws RemoteException {
 		setAttribute("empfaenger_name",name);
@@ -234,6 +234,9 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
 
 /**********************************************************************
  * $Log: AbstractTransferImpl.java,v $
+ * Revision 1.8  2004/08/18 23:13:51  willuhn
+ * @D Javadoc
+ *
  * Revision 1.7  2004/07/25 17:15:06  willuhn
  * @C PluginLoader is no longer static
  *

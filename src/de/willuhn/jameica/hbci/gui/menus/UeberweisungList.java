@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UeberweisungList.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/07/25 17:15:06 $
+ * $Revision: 1.5 $
+ * $Date: 2004/08/18 23:13:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -36,6 +36,10 @@ import de.willuhn.util.Logger;
 public class UeberweisungList extends ContextMenu
 {
 	private I18N i18n	= null;
+
+  /**
+	 * Erzeugt ein Kontext-Menu fuer eine Liste von Ueberweisungen.
+	 */
 	public UeberweisungList()
 	{
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
@@ -61,11 +65,19 @@ public class UeberweisungList extends ContextMenu
   private class DuplicateMenuItem extends ContextMenuItem
 	{
 		
+    /**
+     * ct.
+     */
     public DuplicateMenuItem()
     {
       super();
     }
 
+    /**
+     * ct.
+     * @param text anzuzeigender Text.
+     * @param l auszufuehrender Listener.
+     */
     public DuplicateMenuItem(String text, Listener l)
     {
       super(text, l);
@@ -96,6 +108,9 @@ public class UeberweisungList extends ContextMenu
 
 /**********************************************************************
  * $Log: UeberweisungList.java,v $
+ * Revision 1.5  2004/08/18 23:13:51  willuhn
+ * @D Javadoc
+ *
  * Revision 1.4  2004/07/25 17:15:06  willuhn
  * @C PluginLoader is no longer static
  *

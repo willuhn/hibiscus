@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.13 $
- * $Date: 2004/07/25 17:15:06 $
+ * $Revision: 1.14 $
+ * $Date: 2004/08/18 23:13:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -50,7 +50,7 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz {
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.GenericObject#getPrimaryAttribute()
+   * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
    */
   public String getPrimaryAttribute() throws RemoteException {
     return "zweck";
@@ -248,7 +248,7 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz {
    * nicht in der Datenbank existieren.
    * Da ein Umsatz von der Bank scheinbar keinen Identifier mitbringt,
    * muessen wir selbst einen fachlichen Vergleich durchfuehren.
-   * @see de.willuhn.datasource.rmi.GenericObject#equals(de.willuhn.datasource.rmi.GenericObject)
+   * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
    */
   public boolean equals(GenericObject o) throws RemoteException {
 		if (o == null)
@@ -362,6 +362,9 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz {
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.14  2004/08/18 23:13:51  willuhn
+ * @D Javadoc
+ *
  * Revision 1.13  2004/07/25 17:15:06  willuhn
  * @C PluginLoader is no longer static
  *

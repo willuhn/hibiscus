@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/EmpfaengerList.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/07/25 17:15:06 $
+ * $Revision: 1.5 $
+ * $Date: 2004/08/18 23:13:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -34,6 +34,9 @@ public class EmpfaengerList extends ContextMenu
 
 	private I18N i18n;
 
+	/**
+	 * Erzeugt das Kontext-Menu fuer eine Liste von Empfaengern.
+	 */
 	public EmpfaengerList()
 	{
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
@@ -63,6 +66,9 @@ public class EmpfaengerList extends ContextMenu
 
 /**********************************************************************
  * $Log: EmpfaengerList.java,v $
+ * Revision 1.5  2004/08/18 23:13:51  willuhn
+ * @D Javadoc
+ *
  * Revision 1.4  2004/07/25 17:15:06  willuhn
  * @C PluginLoader is no longer static
  *

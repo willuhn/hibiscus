@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/EmpfaengerImpl.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/07/23 15:51:44 $
+ * $Revision: 1.8 $
+ * $Date: 2004/08/18 23:13:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,7 +43,7 @@ public class EmpfaengerImpl extends AbstractDBObject implements Empfaenger {
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.GenericObject#getPrimaryAttribute()
+   * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
    */
   public String getPrimaryAttribute() throws RemoteException {
     return "name";
@@ -152,6 +152,9 @@ public class EmpfaengerImpl extends AbstractDBObject implements Empfaenger {
 
 /**********************************************************************
  * $Log: EmpfaengerImpl.java,v $
+ * Revision 1.8  2004/08/18 23:13:51  willuhn
+ * @D Javadoc
+ *
  * Revision 1.7  2004/07/23 15:51:44  willuhn
  * @C Rest des Refactorings
  *
