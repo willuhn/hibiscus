@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/PassportTest.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/11/12 18:25:07 $
- * $Author: willuhn $
+ * $Revision: 1.3 $
+ * $Date: 2005/04/05 21:51:54 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -58,8 +58,12 @@ public class PassportTest implements Action
 					}
 					catch (RemoteException e)
 					{
-						GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Testen des Sicherheits-Mediums."));
-						Logger.debug("error while testing passport: " + e.getMessage());
+            String msg = e.getMessage();
+            if (msg != null && msg.length() > 0)
+  						GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Testen des Sicherheits-Mediums: {0}",msg));
+            else
+              GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Testen des Sicherheits-Mediums."));
+						Logger.warn("error while testing passport: " + e.getMessage());
 					}
 				}
 			});
@@ -75,6 +79,9 @@ public class PassportTest implements Action
 
 /**********************************************************************
  * $Log: PassportTest.java,v $
+ * Revision 1.3  2005/04/05 21:51:54  web0
+ * @B Begrenzung aller BLZ-Eingaben auf 8 Zeichen
+ *
  * Revision 1.2  2004/11/12 18:25:07  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SammelLastBuchungControl.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/03/09 01:07:02 $
+ * $Revision: 1.4 $
+ * $Date: 2005/04/05 21:51:54 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -113,7 +113,7 @@ public class SammelLastBuchungControl extends AbstractControl
 	{
 		if (gkBLZ != null)
 			return gkBLZ;
-		gkBLZ = new TextInput(getBuchung().getGegenkontoBLZ());
+		gkBLZ = new TextInput(getBuchung().getGegenkontoBLZ(),HBCIProperties.HBCI_BLZ_LENGTH);
 
 		gkBLZ.setComment("");
 		gkBLZ.addListener(new BLZListener());
@@ -335,6 +335,9 @@ public class SammelLastBuchungControl extends AbstractControl
 
 /*****************************************************************************
  * $Log: SammelLastBuchungControl.java,v $
+ * Revision 1.4  2005/04/05 21:51:54  web0
+ * @B Begrenzung aller BLZ-Eingaben auf 8 Zeichen
+ *
  * Revision 1.3  2005/03/09 01:07:02  web0
  * @D javadoc fixes
  *

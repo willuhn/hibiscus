@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.52 $
- * $Date: 2005/03/30 23:26:28 $
+ * $Revision: 1.53 $
+ * $Date: 2005/04/05 21:51:54 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -35,6 +35,7 @@ import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.PassportRegistry;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.KontoFetchFromPassport;
@@ -167,7 +168,7 @@ public class KontoControl extends AbstractControl {
 	{
 		if (blz != null)
 			return blz;
-		blz = new TextInput(getKonto().getBLZ());
+		blz = new TextInput(getKonto().getBLZ(),HBCIProperties.HBCI_BLZ_LENGTH);
 		blz.setComment("");
 		blz.addListener(new BLZListener());
 		return blz;
@@ -457,6 +458,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.53  2005/04/05 21:51:54  web0
+ * @B Begrenzung aller BLZ-Eingaben auf 8 Zeichen
+ *
  * Revision 1.52  2005/03/30 23:26:28  web0
  * @B bug 29
  * @B bug 30

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/AccountContainerDialog.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/03/23 00:05:46 $
+ * $Revision: 1.5 $
+ * $Date: 2005/04/05 21:51:54 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -28,6 +28,7 @@ import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.AccountContainer;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.util.ApplicationException;
@@ -113,7 +114,7 @@ public class AccountContainerDialog extends AbstractDialog
 	private Input getBLZ()
 	{
 		if (blz == null)
-			blz = new TextInput(passport.getBLZ(),8);
+			blz = new TextInput(passport.getBLZ(),HBCIProperties.HBCI_BLZ_LENGTH);
 			blz.setComment("");
 			blz.addListener(new Listener()
       {
@@ -179,6 +180,9 @@ public class AccountContainerDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: AccountContainerDialog.java,v $
+ * Revision 1.5  2005/04/05 21:51:54  web0
+ * @B Begrenzung aller BLZ-Eingaben auf 8 Zeichen
+ *
  * Revision 1.4  2005/03/23 00:05:46  web0
  * @C RDH fixes
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.25 $
- * $Date: 2005/03/05 19:11:25 $
+ * $Revision: 1.26 $
+ * $Date: 2005/04/05 21:51:54 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -151,7 +151,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 	{
 		if (empfblz != null)
 			return empfblz;
-		empfblz = new TextInput(getTransfer().getGegenkontoBLZ());
+		empfblz = new TextInput(getTransfer().getGegenkontoBLZ(),HBCIProperties.HBCI_BLZ_LENGTH);
 
 		empfblz.setComment("");
 		empfblz.addListener(new BLZListener());
@@ -396,6 +396,9 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
+ * Revision 1.26  2005/04/05 21:51:54  web0
+ * @B Begrenzung aller BLZ-Eingaben auf 8 Zeichen
+ *
  * Revision 1.25  2005/03/05 19:11:25  web0
  * @N SammelLastschrift-Code complete
  *
