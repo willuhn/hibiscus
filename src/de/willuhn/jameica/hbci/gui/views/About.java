@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/About.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/10/08 13:37:48 $
+ * $Revision: 1.7 $
+ * $Date: 2004/10/11 22:41:25 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -53,8 +53,8 @@ public class About extends AbstractView {
 
     LabelGroup group = new LabelGroup(getParent(),i18n.tr("Hibiscus"));
 
-     AbstractPlugin plugin = Application.getPluginLoader().getPlugin(HBCI.class);
-    group.addLabelPair(i18n.tr("Version"),           new LabelInput(""+ plugin.getVersion() + "-" + plugin.getBuildnumber()));
+    AbstractPlugin plugin = Application.getPluginLoader().getPlugin(HBCI.class);
+    group.addLabelPair(i18n.tr("Version"), new LabelInput(""+ plugin.getManifest().getVersion()));
 
   }
 
@@ -69,6 +69,9 @@ public class About extends AbstractView {
 
 /**********************************************************************
  * $Log: About.java,v $
+ * Revision 1.7  2004/10/11 22:41:25  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.6  2004/10/08 13:37:48  willuhn
  * *** empty log message ***
  *

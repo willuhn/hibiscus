@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/LicenseControl.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/10/08 13:37:47 $
+ * $Revision: 1.9 $
+ * $Date: 2004/10/11 22:41:25 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,6 +26,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.plugin.Manifest;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.util.InfoReader;
 import de.willuhn.util.I18N;
 import de.willuhn.util.Logger;
 
@@ -89,7 +90,7 @@ public class LicenseControl extends AbstractControl {
     for (int i=0;i<infos.length;++i)
     {
       try {
-        ir = new InfoReader(new FileInputStream(infos[i]));
+        InfoReader ir = new InfoReader(new FileInputStream(infos[i]));
         if (ir == null)
         {
           Logger.warn("inforeader is null, skipping lib");
@@ -150,6 +151,9 @@ public class LicenseControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: LicenseControl.java,v $
+ * Revision 1.9  2004/10/11 22:41:25  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.8  2004/10/08 13:37:47  willuhn
  * *** empty log message ***
  *

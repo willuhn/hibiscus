@@ -8,13 +8,13 @@
 	<license>GPL - http://www.gnu.org/copyleft/gpl.html</license>
 
 	<menu>
-		<cascade name="Hibiscus">
+		<item name="Hibiscus">
 			<item name="Einstellungen"     							action="de.willuhn.jameica.hbci.gui.action.Settings" />
 			<item name="Neue Überweisung"  		shortcut="CTRL+U" 	action="de.willuhn.jameica.hbci.gui.action.UeberweisungNeu" />
 			<item name="-" />
 			<item name="About"    									action="de.willuhn.jameica.hbci.gui.action.About" />
 			<item name="Lizenzinformationen"    					action="de.willuhn.jameica.hbci.gui.action.License" />
-		</cascade>
+		</item>
 	</menu>
 
 	<navigation>
