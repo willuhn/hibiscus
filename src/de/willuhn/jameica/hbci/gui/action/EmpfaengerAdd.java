@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/EmpfaengerAdd.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/11/12 18:25:07 $
- * $Author: willuhn $
+ * $Revision: 1.3 $
+ * $Date: 2005/02/27 17:11:49 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -18,7 +18,7 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.rmi.Empfaenger;
+import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.hbci.rmi.Transfer;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.system.Application;
@@ -71,7 +71,7 @@ public class EmpfaengerAdd implements Action
 			}
 
 			// wir checken erstmal, ob wir den schon haben.
-			DBIterator list = Settings.getDBService().createList(Empfaenger.class);
+			DBIterator list = Settings.getDBService().createList(Adresse.class);
 			list.addFilter("kontonummer = '" + konto + "'");
 			list.addFilter("blz = '" + blz + "'");
 			if (list.hasNext())
@@ -82,7 +82,7 @@ public class EmpfaengerAdd implements Action
 						"Möchten Sie den Empfänger dennoch zum Adressbuch hinzufügen?"));
 				if (!((Boolean) d.open()).booleanValue()) return;
 			}
-			Empfaenger e = (Empfaenger) Settings.getDBService().createObject(Empfaenger.class,null);
+			Adresse e = (Adresse) Settings.getDBService().createObject(Adresse.class,null);
 			e.setBLZ(blz);
 			e.setKontonummer(konto);
 			e.setName(name);
@@ -105,6 +105,10 @@ public class EmpfaengerAdd implements Action
 
 /**********************************************************************
  * $Log: EmpfaengerAdd.java,v $
+ * Revision 1.3  2005/02/27 17:11:49  web0
+ * @N first code for "Sammellastschrift"
+ * @C "Empfaenger" renamed into "Adresse"
+ *
  * Revision 1.2  2004/11/12 18:25:07  willuhn
  * *** empty log message ***
  *

@@ -121,12 +121,36 @@ CREATE TABLE lastschrift (
   PRIMARY KEY (id)
 );
 
+CREATE TABLE slastschrift (
+  id NUMERIC default UNIQUEKEY('slastschrift'),
+  konto_id int(4) NOT NULL,
+  termin date NOT NULL,
+  ausgefuehrt int(1) NOT NULL,
+  UNIQUE (id),
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE slastbuchung (
+  id NUMERIC default UNIQUEKEY('slastbuchung'),
+  slastschrift_id int(4) NOT NULL,
+  gegenkonto_nr varchar(15) NOT NULL,
+  gegenkonto_blz varchar(15) NOT NULL,
+  gegenkonto_name varchar(255),
+  betrag double NOT NULL,
+  zweck varchar(27) NOT NULL,
+  zweck2 varchar(27),
+  UNIQUE (id),
+  PRIMARY KEY (id)
+);
+
 ALTER TABLE ueberweisung ADD CONSTRAINT fk_konto FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE umsatz ADD CONSTRAINT fk_konto2 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE protokoll ADD CONSTRAINT fk_konto3 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE umsatz ADD CONSTRAINT fk_umsatztyp FOREIGN KEY (umsatztyp_id) REFERENCES umsatztyp (id) DEFERRABLE;
 ALTER TABLE dauerauftrag ADD CONSTRAINT fk_konto4 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE lastschrift ADD CONSTRAINT fk_konto5 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
+ALTER TABLE slastschrift ADD CONSTRAINT fk_konto6 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
+ALTER TABLE slastbuchung ADD CONSTRAINT fk_slastschrift1 FOREIGN KEY (slastschrift_id) REFERENCES slastschrift (id) DEFERRABLE;
 
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (2,1,1,1);

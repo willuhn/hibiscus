@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/EmpfaengerList.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/11/13 17:12:15 $
- * $Author: willuhn $
+ * $Revision: 1.2 $
+ * $Date: 2005/02/27 17:11:49 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -35,7 +35,7 @@ public class EmpfaengerList extends AbstractView {
 
 		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-		GUI.getView().setTitle(i18n.tr("Vorhandene Empfängeradressen"));
+		GUI.getView().setTitle(i18n.tr("Vorhandene Adressen"));
 		
 		EmpfaengerControl control = new EmpfaengerControl(this);
 		
@@ -44,13 +44,13 @@ public class EmpfaengerList extends AbstractView {
 			control.getEmpfaengerListe().paint(getParent());
 
 			ButtonArea buttons = new ButtonArea(getParent(),1);
-			buttons.addButton(i18n.tr("neuer Empfänger"),new EmpfaengerNew(),null,true);
+			buttons.addButton(i18n.tr("neuer Adressbuch-Eintrag"),new EmpfaengerNew(),null,true);
 
 		}
 		catch (Exception e)
 		{
-			Logger.error("error while loading empfaenger list",e);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Lesen der Empfänger."));
+			Logger.error("error while loading address list",e);
+			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Lesen der Adressen."));
 		}
   }
 
@@ -65,6 +65,10 @@ public class EmpfaengerList extends AbstractView {
 
 /**********************************************************************
  * $Log: EmpfaengerList.java,v $
+ * Revision 1.2  2005/02/27 17:11:49  web0
+ * @N first code for "Sammellastschrift"
+ * @C "Empfaenger" renamed into "Adresse"
+ *
  * Revision 1.1  2004/11/13 17:12:15  willuhn
  * *** empty log message ***
  *

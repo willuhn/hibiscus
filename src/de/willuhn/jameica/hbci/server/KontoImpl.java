@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.44 $
- * $Date: 2005/02/20 19:04:44 $
+ * $Revision: 1.45 $
+ * $Date: 2005/02/27 17:11:49 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -29,6 +29,7 @@ import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
+import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.system.Application;
@@ -220,6 +221,15 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 				ls.delete();
 			}
 
+			// und die Sammel-Lastschriften
+			list = getSammelLastschriften();
+			SammelLastschrift sls = null;
+			while (list.hasNext())
+			{
+				sls = (SammelLastschrift) list.next();
+				sls.delete();
+			}
+
 			// und jetzt die Ueberweisungen
 			list = getUeberweisungen();
 			Ueberweisung u = null;
@@ -340,6 +350,16 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 		return list;
 	}
 
+	/**
+	 * @see de.willuhn.jameica.hbci.rmi.Konto#getSammelLastschriften()
+	 */
+	public DBIterator getSammelLastschriften() throws RemoteException
+	{
+		DBIterator list = Settings.getDBService().createList(SammelLastschrift.class);
+		list.addFilter("konto_id = " + getID());
+		return list;
+	}
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.Konto#deleteUmsaetze()
    */
@@ -454,6 +474,10 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.45  2005/02/27 17:11:49  web0
+ * @N first code for "Sammellastschrift"
+ * @C "Empfaenger" renamed into "Adresse"
+ *
  * Revision 1.44  2005/02/20 19:04:44  web0
  * @B Bug 7
  *

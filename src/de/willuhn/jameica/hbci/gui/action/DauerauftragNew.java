@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/DauerauftragNew.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/01/19 00:16:04 $
- * $Author: willuhn $
+ * $Revision: 1.4 $
+ * $Date: 2005/02/27 17:11:49 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -19,7 +19,7 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
-import de.willuhn.jameica.hbci.rmi.Empfaenger;
+import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -60,10 +60,10 @@ public class DauerauftragNew implements Action
 				// Dann halt nicht
 			}
 		}
-		else if (context instanceof Empfaenger)
+		else if (context instanceof Adresse)
 		{
 			try {
-				Empfaenger e = (Empfaenger) context;
+				Adresse e = (Adresse) context;
 				d = (Dauerauftrag) Settings.getDBService().createObject(Dauerauftrag.class,null);
 				d.setEmpfaenger(e);
 			}
@@ -81,6 +81,10 @@ public class DauerauftragNew implements Action
 
 /**********************************************************************
  * $Log: DauerauftragNew.java,v $
+ * Revision 1.4  2005/02/27 17:11:49  web0
+ * @N first code for "Sammellastschrift"
+ * @C "Empfaenger" renamed into "Adresse"
+ *
  * Revision 1.3  2005/01/19 00:16:04  willuhn
  * @N Lastschriften
  *

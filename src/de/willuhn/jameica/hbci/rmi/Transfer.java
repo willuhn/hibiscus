@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Transfer.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/02/19 16:49:32 $
- * $Author: willuhn $
+ * $Revision: 1.7 $
+ * $Date: 2005/02/27 17:11:49 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -104,7 +104,7 @@ public interface Transfer extends DBObject
    * @param e
    * @throws RemoteException
    */
-  public void setEmpfaenger(Empfaenger e) throws RemoteException;
+  public void setEmpfaenger(Adresse e) throws RemoteException;
 
 	/**
 	 * Speichert den zu ueberweisenden Betrag.
@@ -138,6 +138,10 @@ public interface Transfer extends DBObject
 
 /**********************************************************************
  * $Log: Transfer.java,v $
+ * Revision 1.7  2005/02/27 17:11:49  web0
+ * @N first code for "Sammellastschrift"
+ * @C "Empfaenger" renamed into "Adresse"
+ *
  * Revision 1.6  2005/02/19 16:49:32  willuhn
  * @B bugs 3,8,10
  *

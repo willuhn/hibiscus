@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AbstractTransferImpl.java,v $
- * $Revision: 1.16 $
- * $Date: 2005/01/19 00:33:32 $
- * $Author: willuhn $
+ * $Revision: 1.17 $
+ * $Date: 2005/02/27 17:11:49 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -20,7 +20,7 @@ import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.rmi.Empfaenger;
+import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.Transfer;
@@ -262,7 +262,7 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
   /**
    * @see de.willuhn.jameica.hbci.rmi.Transfer#setEmpfaenger(de.willuhn.jameica.hbci.rmi.Empfaenger)
    */
-  public void setEmpfaenger(Empfaenger e) throws RemoteException
+  public void setEmpfaenger(Adresse e) throws RemoteException
   {
   	if (e == null)
   		return;
@@ -282,6 +282,10 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
 
 /**********************************************************************
  * $Log: AbstractTransferImpl.java,v $
+ * Revision 1.17  2005/02/27 17:11:49  web0
+ * @N first code for "Sammellastschrift"
+ * @C "Empfaenger" renamed into "Adresse"
+ *
  * Revision 1.16  2005/01/19 00:33:32  willuhn
  * *** empty log message ***
  *

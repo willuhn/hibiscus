@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.42 $
- * $Date: 2005/02/19 16:49:32 $
- * $Author: willuhn $
+ * $Revision: 1.43 $
+ * $Date: 2005/02/27 17:11:49 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -125,6 +125,9 @@ public class HBCI extends AbstractPlugin
 		if (checkSum.equals("NhTl6Nt8RmaRNz49M/SGiA==")) // 1.2
 			return;
 
+		if (checkSum.equals("noHpahYlu32rDrJ3FquJdw==")) // 1.3
+			return;
+
 		throw new Exception("database checksum does not match any known version: " + checkSum);
 	}
 
@@ -133,6 +136,8 @@ public class HBCI extends AbstractPlugin
    */
   public void init() throws ApplicationException
   {
+		Logger.info("starting init process for hibiscus");
+
 		try {
 			Application.getCallback().getStartupMonitor().setStatusText("hibiscus: checking database integrity");
 			checkConsistency();
@@ -184,6 +189,7 @@ public class HBCI extends AbstractPlugin
     if (Application.inClientMode())
       return; // als Client muessen wir die DB nicht installieren
 
+		Logger.info("starting install process for hibiscus");
     try {
 			getDatabase().executeSQLScript(new File(getResources().getPath() + "/sql/create.sql"));
     }
@@ -201,30 +207,37 @@ public class HBCI extends AbstractPlugin
     if (Application.inClientMode())
       return; // Kein Update im Client-Mode noetig.
 
-  	if (oldVersion == 1.0)
-  	{
-			try {
-				getDatabase().executeSQLScript(new File(getResources().getPath() + "/sql/update_1.0-1.1.sql"));
-				// Update erfolgreich. Versionsnummer erhoehen.
-				oldVersion = 1.1;
-			}
-			catch (Exception e)
-			{
-				throw new ApplicationException(getResources().getI18N().tr("Fehler beim Update der Datenbank"),e);
-			}
-  	}
+		Logger.info("starting update process for hibiscus");
 
-		if (oldVersion == 1.1)
+		DecimalFormat df = (DecimalFormat) DecimalFormat.getInstance(Locale.ENGLISH);
+		df.setMaximumFractionDigits(1);
+		df.setMinimumFractionDigits(1);
+		df.setGroupingUsed(false);
+
+		double newVersion = oldVersion + 0.1d;
+
+		File f = new File(getResources().getPath() + "/sql/update_" + 
+											df.format(oldVersion) + "-" + 
+											df.format(newVersion) + ".sql");
+
+		try
 		{
-			try {
-				getDatabase().executeSQLScript(new File(getResources().getPath() + "/sql/update_1.1-1.2.sql"));
-			}
-			catch (Exception e)
+			Logger.info("checking sql file " + f.getAbsolutePath());
+			while (f.exists())
 			{
-				throw new ApplicationException(getResources().getI18N().tr("Fehler beim Update der Datenbank"),e);
+				Logger.info("  file exists, executing");
+				getDatabase().executeSQLScript(f);
+				oldVersion = newVersion;
+				newVersion = oldVersion + 0.1d;
+				f = new File(getResources().getPath() + "/sql/update_" + 
+									   df.format(oldVersion) + "-" + 
+									   df.format(newVersion) + ".sql");
 			}
 		}
-
+		catch (Exception e)
+		{
+			throw new ApplicationException(getResources().getI18N().tr("Fehler beim Update der Datenbank"),e);
+		}
   }
 
   /**
@@ -238,6 +251,10 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.43  2005/02/27 17:11:49  web0
+ * @N first code for "Sammellastschrift"
+ * @C "Empfaenger" renamed into "Adresse"
+ *
  * Revision 1.42  2005/02/19 16:49:32  willuhn
  * @B bugs 3,8,10
  *

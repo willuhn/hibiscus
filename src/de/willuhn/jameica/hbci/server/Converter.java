@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.17 $
- * $Date: 2004/10/24 17:19:02 $
- * $Author: willuhn $
+ * $Revision: 1.18 $
+ * $Date: 2005/02/27 17:11:49 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -21,7 +21,7 @@ import org.kapott.hbci.structures.Konto;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
-import de.willuhn.jameica.hbci.rmi.Empfaenger;
+import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.util.ApplicationException;
 
@@ -110,7 +110,7 @@ public class Converter {
 		// und jetzt noch der Empfaenger (wenn er existiert)
 		if (u.other != null) 
 		{
-		  umsatz.setEmpfaenger(HBCIKonto2HibiscusEmpfaenger(u.other));
+		  umsatz.setEmpfaenger(HBCIKonto2HibiscusAdresse(u.other));
 		}
 		return umsatz;
 	}
@@ -133,7 +133,7 @@ public class Converter {
 		auftrag.setOrderID(d.orderid);
 
 		// Jetzt noch der Empfaenger
-		auftrag.setEmpfaenger(HBCIKonto2HibiscusEmpfaenger(d.other));
+		auftrag.setEmpfaenger(HBCIKonto2HibiscusAdresse(d.other));
 
 		// Verwendungszweck
 		if (d.usage.length == 0)
@@ -201,37 +201,37 @@ public class Converter {
 	}
 
 	/**
-	 * Konvertiert einen Hibiscus-Empfaenger in ein HBCI4Java Konto.
-	 * @param empfaenger unser Empfaenger
+	 * Konvertiert einen Hibiscus-Adresse in ein HBCI4Java Konto.
+	 * @param empfaenger unsere Adresse
 	 * @return das HBCI4Java Konto.
 	 * @throws RemoteException
 	 */
-	public static Konto HibiscusEmpfaenger2HBCIKonto(Empfaenger empfaenger) throws RemoteException
+	public static Konto HibiscusAdresse2HBCIKonto(Adresse adresse) throws RemoteException
 	{
 		return new org.kapott.hbci.structures.Konto(
 			"DE",
-			empfaenger.getBLZ(),
-			empfaenger.getKontonummer()
+			adresse.getBLZ(),
+			adresse.getKontonummer()
 		);
 	}
 
 	/**
-	 * Konvertiert ein HBCI4Java Konto in einen Hibiscus-Empfaenger.
-	 * Existiert ein Empfaenger mit dieser Kontonummer und BLZ bereits in Hibiscus,
+	 * Konvertiert ein HBCI4Java Konto in eine Hibiscus-Adresse.
+	 * Existiert eine Adresse mit dieser Kontonummer und BLZ bereits in Hibiscus,
 	 * wird dieser stattdessen zurueckgeliefert.
 	 * @param konto das HBCI-Konto.
-	 * @return unser Empfaenger.
+	 * @return unsere Adresse.
 	 * @throws RemoteException
 	 */
-	public static Empfaenger HBCIKonto2HibiscusEmpfaenger(Konto konto) throws RemoteException
+	public static Adresse HBCIKonto2HibiscusAdresse(Konto konto) throws RemoteException
 	{
-		DBIterator list = Settings.getDBService().createList(Empfaenger.class);
+		DBIterator list = Settings.getDBService().createList(Adresse.class);
 		list.addFilter("kontonummer = '" + konto.number + "'");
 		list.addFilter("blz = '" + konto.blz + "'");
 		if (list.hasNext())
-			return (Empfaenger) list.next(); // Empfaenger gibts schon
+			return (Adresse) list.next(); // Empfaenger gibts schon
 
-		Empfaenger e = (Empfaenger) Settings.getDBService().createObject(Empfaenger.class,null);
+		Adresse e = (Adresse) Settings.getDBService().createObject(Adresse.class,null);
 		e.setBLZ(konto.blz);
 		e.setKontonummer(konto.number);
 		String name = konto.name;
@@ -246,6 +246,10 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.18  2005/02/27 17:11:49  web0
+ * @N first code for "Sammellastschrift"
+ * @C "Empfaenger" renamed into "Adresse"
+ *
  * Revision 1.17  2004/10/24 17:19:02  willuhn
  * *** empty log message ***
  *

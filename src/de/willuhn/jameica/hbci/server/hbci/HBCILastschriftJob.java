@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCILastschriftJob.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/02/19 16:49:32 $
- * $Author: willuhn $
+ * $Revision: 1.4 $
+ * $Date: 2005/02/27 17:11:49 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -16,7 +16,7 @@ import java.rmi.RemoteException;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.rmi.Empfaenger;
+import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
@@ -65,12 +65,12 @@ public class HBCILastschriftJob extends AbstractHBCIJob
 			if (lastschrift.getTyp() != null)
 				setJobParam("type",lastschrift.getTyp());
 
-			Empfaenger empfaenger = (Empfaenger) Settings.getDBService().createObject(Empfaenger.class,null);
+			Adresse empfaenger = (Adresse) Settings.getDBService().createObject(Adresse.class,null);
 			empfaenger.setBLZ(lastschrift.getEmpfaengerBLZ());
 			empfaenger.setKontonummer(lastschrift.getEmpfaengerKonto());
 			empfaenger.setName(lastschrift.getEmpfaengerName());
 
-			setJobParam("other",Converter.HibiscusEmpfaenger2HBCIKonto(empfaenger));
+			setJobParam("other",Converter.HibiscusAdresse2HBCIKonto(empfaenger));
 			setJobParam("name",empfaenger.getName());
 
 			setJobParam("usage",lastschrift.getZweck());
@@ -136,6 +136,10 @@ public class HBCILastschriftJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCILastschriftJob.java,v $
+ * Revision 1.4  2005/02/27 17:11:49  web0
+ * @N first code for "Sammellastschrift"
+ * @C "Empfaenger" renamed into "Adresse"
+ *
  * Revision 1.3  2005/02/19 16:49:32  willuhn
  * @B bugs 3,8,10
  *

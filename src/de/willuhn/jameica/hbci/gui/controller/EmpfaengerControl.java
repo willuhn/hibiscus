@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EmpfaengerControl.java,v $
- * $Revision: 1.25 $
- * $Date: 2004/11/13 17:02:04 $
- * $Author: willuhn $
+ * $Revision: 1.26 $
+ * $Date: 2005/02/27 17:11:49 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -30,7 +30,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.menus.EmpfaengerList;
-import de.willuhn.jameica.hbci.rmi.Empfaenger;
+import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -42,7 +42,7 @@ import de.willuhn.util.I18N;
 public class EmpfaengerControl extends AbstractControl {
 
 	// Fach-Objekte
-	private Empfaenger empfaenger = null;
+	private Adresse empfaenger = null;
 	// Eingabe-Felder
 	private Input kontonummer = null;
 	private Input blz					= null;
@@ -62,16 +62,16 @@ public class EmpfaengerControl extends AbstractControl {
    * @return der Empfaenger.
    * @throws RemoteException
    */
-  public Empfaenger getEmpfaenger() throws RemoteException
+  public Adresse getEmpfaenger() throws RemoteException
 	{
 		if (empfaenger != null)
 			return empfaenger;
 		
-		empfaenger = (Empfaenger) getCurrentObject();
+		empfaenger = (Adresse) getCurrentObject();
 		if (empfaenger != null)
 			return empfaenger;
 
-		empfaenger = (Empfaenger) Settings.getDBService().createObject(Empfaenger.class,null);
+		empfaenger = (Adresse) Settings.getDBService().createObject(Adresse.class,null);
 		return empfaenger;
 	}
 
@@ -82,7 +82,7 @@ public class EmpfaengerControl extends AbstractControl {
    */
   public Part getEmpfaengerListe() throws RemoteException
 	{
-		DBIterator list = Settings.getDBService().createList(Empfaenger.class);
+		DBIterator list = Settings.getDBService().createList(Adresse.class);
 
 		TablePart table = new TablePart(list,new de.willuhn.jameica.hbci.gui.action.EmpfaengerNew());
 		table.addColumn(i18n.tr("Kontonummer"),"kontonummer");
@@ -150,11 +150,11 @@ public class EmpfaengerControl extends AbstractControl {
   		getEmpfaenger().setBLZ((String)getBlz().getValue());
   		getEmpfaenger().setName((String)getName().getValue());
   		getEmpfaenger().store();
-  		GUI.getStatusBar().setSuccessText(i18n.tr("Empfängeradresse gespeichert"));
+  		GUI.getStatusBar().setSuccessText(i18n.tr("Adresse gespeichert"));
   	}
   	catch (RemoteException e)
   	{
-  		Logger.error("error while storing empfaenger",e);
+  		Logger.error("error while storing address",e);
   		GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern der Adresse"));
   	}
   	catch (ApplicationException e2)
@@ -191,6 +191,10 @@ public class EmpfaengerControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: EmpfaengerControl.java,v $
+ * Revision 1.26  2005/02/27 17:11:49  web0
+ * @N first code for "Sammellastschrift"
+ * @C "Empfaenger" renamed into "Adresse"
+ *
  * Revision 1.25  2004/11/13 17:02:04  willuhn
  * @N Bearbeiten des Zahlungsturnus
  *

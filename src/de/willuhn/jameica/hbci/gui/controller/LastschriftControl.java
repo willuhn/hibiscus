@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/LastschriftControl.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/02/19 17:22:05 $
- * $Author: willuhn $
+ * $Revision: 1.6 $
+ * $Date: 2005/02/27 17:11:49 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -201,7 +201,7 @@ public class LastschriftControl extends AbstractBaseUeberweisungControl
     public Object getAttribute(String arg0) throws RemoteException
     {
     	if ("04".equals(id))
-    		return i18n.tr("[04] Lastschrift");
+    		return i18n.tr("[04] Abbuchungsverfahren");
 			if ("05".equals(id))
 				return i18n.tr("[05] Einzugsermächtigung");
 			return null;
@@ -246,6 +246,10 @@ public class LastschriftControl extends AbstractBaseUeberweisungControl
 
 /**********************************************************************
  * $Log: LastschriftControl.java,v $
+ * Revision 1.6  2005/02/27 17:11:49  web0
+ * @N first code for "Sammellastschrift"
+ * @C "Empfaenger" renamed into "Adresse"
+ *
  * Revision 1.5  2005/02/19 17:22:05  willuhn
  * @B Bug 8
  *

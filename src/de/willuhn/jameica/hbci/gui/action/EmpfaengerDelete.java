@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/Attic/EmpfaengerDelete.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/11/12 18:25:07 $
- * $Author: willuhn $
+ * $Revision: 1.4 $
+ * $Date: 2005/02/27 17:11:49 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -18,7 +18,7 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.rmi.Empfaenger;
+import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -38,12 +38,12 @@ public class EmpfaengerDelete implements Action
   {
   	I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-		if (context == null || !(context instanceof Empfaenger))
+		if (context == null || !(context instanceof Adresse))
 			throw new ApplicationException(i18n.tr("Keine Empfängeradresse ausgewählt"));
 
 		try {
 
-			Empfaenger empf = (Empfaenger) context;
+			Adresse empf = (Adresse) context;
 			if (empf.isNewObject())
 				return;
 
@@ -78,6 +78,10 @@ public class EmpfaengerDelete implements Action
 
 /**********************************************************************
  * $Log: EmpfaengerDelete.java,v $
+ * Revision 1.4  2005/02/27 17:11:49  web0
+ * @N first code for "Sammellastschrift"
+ * @C "Empfaenger" renamed into "Adresse"
+ *
  * Revision 1.3  2004/11/12 18:25:07  willuhn
  * *** empty log message ***
  *

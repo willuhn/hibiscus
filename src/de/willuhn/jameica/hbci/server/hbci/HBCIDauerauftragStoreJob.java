@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragStoreJob.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/11/13 17:02:04 $
- * $Author: willuhn $
+ * $Revision: 1.8 $
+ * $Date: 2005/02/27 17:11:49 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -23,7 +23,7 @@ import org.kapott.hbci.GV_Result.GVRDauerNew;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
-import de.willuhn.jameica.hbci.rmi.Empfaenger;
+import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.Turnus;
@@ -77,11 +77,11 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob {
 
 			setJobParam("btg",dauerauftrag.getBetrag(),konto.getWaehrung() == null ? "EUR" : konto.getWaehrung());
 
-			Empfaenger empfaenger = (Empfaenger) Settings.getDBService().createObject(Empfaenger.class,null);
+			Adresse empfaenger = (Adresse) Settings.getDBService().createObject(Adresse.class,null);
 			empfaenger.setBLZ(dauerauftrag.getEmpfaengerBLZ());
 			empfaenger.setKontonummer(dauerauftrag.getEmpfaengerKonto());
 			empfaenger.setName(dauerauftrag.getEmpfaengerName());
-			setJobParam("dst",Converter.HibiscusEmpfaenger2HBCIKonto(empfaenger));
+			setJobParam("dst",Converter.HibiscusAdresse2HBCIKonto(empfaenger));
 
 			setJobParam("name",empfaenger.getName());
 
@@ -192,6 +192,10 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIDauerauftragStoreJob.java,v $
+ * Revision 1.8  2005/02/27 17:11:49  web0
+ * @N first code for "Sammellastschrift"
+ * @C "Empfaenger" renamed into "Adresse"
+ *
  * Revision 1.7  2004/11/13 17:02:04  willuhn
  * @N Bearbeiten des Zahlungsturnus
  *

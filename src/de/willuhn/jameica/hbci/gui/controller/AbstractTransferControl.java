@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.20 $
- * $Date: 2005/02/19 16:49:32 $
- * $Author: willuhn $
+ * $Revision: 1.21 $
+ * $Date: 2005/02/27 17:11:49 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -32,7 +32,7 @@ import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.rmi.Empfaenger;
+import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Transfer;
 import de.willuhn.jameica.system.Application;
@@ -47,7 +47,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 {
 
 	// Fach-Objekte
-	private Empfaenger empfaenger 				= null;
+	private Adresse empfaenger 				= null;
 	private Konto konto										= null;
 	
 	// Eingabe-Felder
@@ -130,7 +130,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 		if (empfkto != null)
 			return empfkto;
 
-		ListDialog d = new ListDialog(Settings.getDBService().createList(Empfaenger.class),ListDialog.POSITION_MOUSE);
+		ListDialog d = new ListDialog(Settings.getDBService().createList(Adresse.class),ListDialog.POSITION_MOUSE);
 		d.addColumn(i18n.tr("Name"),"name");
 		d.addColumn(i18n.tr("Kontonummer"),"kontonummer");
 		d.addColumn(i18n.tr("BLZ"),"blz");
@@ -267,7 +267,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 			{
 
 				// wir checken erstmal, ob wir den schon haben.
-				DBIterator list = Settings.getDBService().createList(Empfaenger.class);
+				DBIterator list = Settings.getDBService().createList(Adresse.class);
 				list.addFilter("kontonummer = '" + kto + "'");
 				list.addFilter("blz = '" + blz + "'");
 				if (list.hasNext())
@@ -278,7 +278,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 							"Möchten Sie den Empfänger dennoch zum Adressbuch hinzufügen?"));
 					if (!((Boolean) d.open()).booleanValue()) return false;
 				}
-				Empfaenger e = (Empfaenger) Settings.getDBService().createObject(Empfaenger.class,null);
+				Adresse e = (Adresse) Settings.getDBService().createObject(Adresse.class,null);
 				e.setBLZ(blz);
 				e.setKontonummer(kto);
 				e.setName(name);
@@ -372,7 +372,7 @@ public abstract class AbstractTransferControl extends AbstractControl
     public void handleEvent(Event event) {
     	if (event == null)
     		return;
-			empfaenger = (Empfaenger) event.data;
+			empfaenger = (Adresse) event.data;
 			if (empfaenger == null)
 				return;
 			try {
@@ -397,6 +397,10 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
+ * Revision 1.21  2005/02/27 17:11:49  web0
+ * @N first code for "Sammellastschrift"
+ * @C "Empfaenger" renamed into "Adresse"
+ *
  * Revision 1.20  2005/02/19 16:49:32  willuhn
  * @B bugs 3,8,10
  *
