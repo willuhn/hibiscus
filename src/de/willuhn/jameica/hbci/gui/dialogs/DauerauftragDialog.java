@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/DauerauftragDialog.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/10/25 23:12:02 $
- * $Author: willuhn $
+ * $Revision: 1.3 $
+ * $Date: 2005/03/01 00:38:27 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -92,7 +92,11 @@ public class DauerauftragDialog extends AbstractDialog {
 
 		group.addSeparator();
 
-		Input zweck = new LabelInput(auftrag.getZweck() + "/" + auftrag.getZweck2());
+		String s = auftrag.getZweck();
+		String s2 = auftrag.getZweck2();
+		if (s2 != null && s2.length() > 0)
+			s += " / " + s2;
+		Input zweck = new LabelInput(s);
 		group.addLabelPair(i18n.tr("Verwendungszweck"),zweck);
 
 		Input betrag = new LabelInput(HBCI.DECIMALFORMAT.format(auftrag.getBetrag()) + " " + auftrag.getKonto().getWaehrung());
@@ -140,6 +144,9 @@ public class DauerauftragDialog extends AbstractDialog {
 
 /**********************************************************************
  * $Log: DauerauftragDialog.java,v $
+ * Revision 1.3  2005/03/01 00:38:27  web0
+ * *** empty log message ***
+ *
  * Revision 1.2  2004/10/25 23:12:02  willuhn
  * *** empty log message ***
  *

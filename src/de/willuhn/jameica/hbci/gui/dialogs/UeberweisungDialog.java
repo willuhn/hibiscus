@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/UeberweisungDialog.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/10/25 23:12:02 $
- * $Author: willuhn $
+ * $Revision: 1.10 $
+ * $Date: 2005/03/01 00:38:27 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -85,7 +85,11 @@ public class UeberweisungDialog extends AbstractDialog {
 
 		group.addSeparator();
 
-		Input zweck = new LabelInput(ueb.getZweck() + "/" + ueb.getZweck2());
+		String s = ueb.getZweck();
+		String s2 = ueb.getZweck2();
+		if (s2 != null && s2.length() > 0)
+			s += " / " + s2;
+		Input zweck = new LabelInput(s);
 		group.addLabelPair(i18n.tr("Verwendungszweck"),zweck);
 
 		Input betrag = new LabelInput(HBCI.DECIMALFORMAT.format(ueb.getBetrag()) + " " + ueb.getKonto().getWaehrung());
@@ -115,6 +119,9 @@ public class UeberweisungDialog extends AbstractDialog {
 
 /**********************************************************************
  * $Log: UeberweisungDialog.java,v $
+ * Revision 1.10  2005/03/01 00:38:27  web0
+ * *** empty log message ***
+ *
  * Revision 1.9  2004/10/25 23:12:02  willuhn
  * *** empty log message ***
  *
