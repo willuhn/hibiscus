@@ -35,7 +35,7 @@
         <property name="class.dir" 			 value="${project.tmp}/bin"/>
 
 		<path id="compilepath">
-			<pathelement location="../jameica/lib/linux/swt.jar"/>
+			<pathelement location="../jameica/lib/swt/linux/swt.jar"/>
 			<pathelement location="../jameica/bin/"/>
 			<pathelement location="../util/bin/"/>
 			<pathelement location="../datasource/bin/"/>
