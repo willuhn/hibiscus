@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/About.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/05/18 22:40:59 $
+ * $Revision: 1.2 $
+ * $Date: 2004/05/18 22:45:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -44,7 +44,7 @@ public class About extends AbstractView {
 
 		FormTextPart text = new FormTextPart();
 		text.setText("<form>" +
-			"<p><b>Hibiscus - HBCI-Onlinebanking fuer Jameica</b></p>" +			"<br/>Licence: GPL (http://www.gnu.org/copyleft/gpl.html)" +
+			"<p><b>Hibiscus - HBCI-Onlinebanking für Jameica</b></p>" +			"<br/>Licence: GPL (http://www.gnu.org/copyleft/gpl.html)" +
 			"<br/><p>Copyright by Olaf Willuhn [hbci@willuhn.de]</p>" +			"<p>http://www.willuhn.de/projects/hibiscus/</p>" +			"</form>");
 
 		text.paint(getParent());
@@ -67,6 +67,9 @@ public class About extends AbstractView {
 
 /**********************************************************************
  * $Log: About.java,v $
+ * Revision 1.2  2004/05/18 22:45:24  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/05/18 22:40:59  willuhn
  * @N added about screen
  *

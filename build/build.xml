@@ -64,6 +64,9 @@
     <copy todir="${class.dir}/help">
       <fileset dir="${help.dir}" />
     </copy>
+    <copy todir="${class.dir}/img">
+      <fileset dir="${icon.dir}" />
+    </copy>
 
     <copy file="${src.dir}/navigation.xml"   tofile="${class.dir}/navigation.xml" />
     <copy file="${src.dir}/menu.xml"         tofile="${class.dir}/menu.xml" />
