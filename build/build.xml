@@ -39,6 +39,7 @@
 			<pathelement location="../jameica/bin/"/>
 			<pathelement location="../util/bin/"/>
 			<pathelement location="../datasource/bin/"/>
+			<pathelement location="lib/hbci4java-2.4.7pre-20040204.jar"/>
 		</path>
 
     </target>
@@ -82,7 +83,7 @@
 		    	<attribute name="Implementation-Title" value="${define.pluginname}"/>
 		    	<attribute name="Implementation-Version" value="${version}"/>
 		    	<attribute name="Implementation-Buildnumber" value="${build.number}"/>
-		    	<attribute name="Class-Path" value=""/>
+		    	<attribute name="Class-Path" value="lib/hbci4java-2.4.7pre-20040204.jar"/>
 		    </manifest>
 		    <fileset dir="${class.dir}"/>
 		</jar>

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/02/12 23:46:46 $
+ * $Revision: 1.5 $
+ * $Date: 2004/02/13 00:41:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -87,17 +87,22 @@ public class HBCICallbackSWT extends AbstractHBCICallback
             
 			switch (reason) {
 				case NEED_PASSPHRASE_LOAD:
+					String p = DialogFactory.openPassword("Passwort","Bitte geben Sie das Passwort Ihrer Schlüsseldatei ein.");
+					retData.replace(0,retData.length(),p);
+					break;
+
 				case NEED_PASSPHRASE_SAVE:
-						System.out.print(msg+": ");
+					Application.getLog().info("not implemented");
+					break;
 	
 				case NEED_CHIPCARD:
-						GUI.getDisplay().asyncExec(new Runnable() {
-              public void run() {
-								DialogFactory.openSimple("Chipkarte","Bitte legen Sie Ihre HBCI-Chipkarte in das Lesegerät.");
-              }
-            });
-						//GUI.setActionText("Bitte legen Sie Ihre HBCI-Chipkarte in das Lesegerät.");
-						break;
+					GUI.getDisplay().asyncExec(new Runnable() {
+            public void run() {
+							DialogFactory.openSimple("Chipkarte","Bitte legen Sie Ihre HBCI-Chipkarte in das Lesegerät.");
+            }
+          });
+					//GUI.setActionText("Bitte legen Sie Ihre HBCI-Chipkarte in das Lesegerät.");
+					break;
 
 				case HAVE_CHIPCARD:
 					GUI.getDisplay().asyncExec(new Runnable() {
@@ -109,18 +114,19 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 					break;
 	
 				case NEED_HARDPIN:
-						System.out.println(msg);
-						break;
+					Application.getLog().info("not implemented");
+					break;
 
 				case NEED_SOFTPIN:
+					p = DialogFactory.openPassword("PIN-Eingabe","Bitte geben Sie Ihre PIN ein.");
+					retData.replace(0,retData.length(),p);
+					break;
 				case NEED_PT_PIN:
 				case NEED_PT_TAN:
 						System.out.print(msg+": ");
 						break;
 
 				case HAVE_HARDPIN:
-						HBCIUtils.log(HBCIUtils.getLocMsg("DBG_CLB_ENDHARDPIN"),HBCIUtils.LOG_DEBUG);
-						break;
 
 
 				case NEED_COUNTRY:
@@ -221,11 +227,11 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 						break;
 
 				case NEED_CONNECTION:
+					DialogFactory.openSimple("Internet-Verbindung","Bitte stellen Sie sicher, dass eine Internetverbindung verfügbar ist.");
+					break;
 				case CLOSE_CONNECTION:
-						System.out.println(msg);
-						System.out.println(HBCIUtils.getLocMsg("CONTINUE"));
-						new BufferedReader(new InputStreamReader(System.in)).readLine();
-						break;
+					DialogFactory.openSimple("Internet-Verbindung","Sie können die Internetverbindung nun wieder trennen.");
+					break;
 
 				default:
 						throw new HBCI_Exception(HBCIUtils.getLocMsg("EXCMSG_CALLB_UNKNOWN",Integer.toString(reason)));
@@ -374,6 +380,9 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.5  2004/02/13 00:41:56  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2004/02/12 23:46:46  willuhn
  * *** empty log message ***
  *
