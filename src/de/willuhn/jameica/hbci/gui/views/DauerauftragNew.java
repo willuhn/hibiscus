@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/DauerauftragNew.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/11/13 17:12:15 $
- * $Author: willuhn $
+ * $Revision: 1.2 $
+ * $Date: 2005/03/04 00:52:03 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -41,7 +41,7 @@ public class DauerauftragNew extends AbstractView
 
 		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-		GUI.getView().setTitle(i18n.tr("Überweisung bearbeiten"));
+		GUI.getView().setTitle(i18n.tr("Dauerauftrag bearbeiten"));
 		
 		LabelGroup konten = new LabelGroup(getParent(),i18n.tr("Konten"));
 		
@@ -101,6 +101,9 @@ public class DauerauftragNew extends AbstractView
 
 /**********************************************************************
  * $Log: DauerauftragNew.java,v $
+ * Revision 1.2  2005/03/04 00:52:03  web0
+ * @B typo
+ *
  * Revision 1.1  2004/11/13 17:12:15  willuhn
  * *** empty log message ***
  *
