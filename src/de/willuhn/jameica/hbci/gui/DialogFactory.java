@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/DialogFactory.java,v $
- * $Revision: 1.12 $
- * $Date: 2004/05/04 23:07:24 $
+ * $Revision: 1.13 $
+ * $Date: 2004/05/04 23:58:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,17 +13,10 @@
 package de.willuhn.jameica.hbci.gui;
 
 import de.willuhn.jameica.Application;
-import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.dialogs.SimpleDialog;
-import de.willuhn.jameica.gui.dialogs.YesNoDialog;
-import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.controller.SettingsControl;
 import de.willuhn.jameica.hbci.gui.dialogs.PINDialog;
-import de.willuhn.jameica.hbci.gui.views.Welcome;
-import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.util.I18N;
 
 /**
  * Hilfsklasse zur Erzeugung von Hilfs-Dialogen bei der HBCI-Kommunikation.
@@ -113,50 +106,15 @@ public class DialogFactory {
 			dialog = null;
 		}
 	}
-
-  /**
-   * Die Funktion ueberprueft, ob fuer das Konto schon ein Passport eingerichtet ist.
-   * Ist dies nicht der Fall, wird ein Dialog zur Erstellung eines
-   * neuen erzeugt. Diese Funktion sollte ueberall dort aufgerufen
-   * werden, wo vorm Aufbau des Dialogs feststehen muss, ob ein Passport
-   * schon existiert.
-   * @return true, wenn ein Passport existiert.
-   */
-  public static synchronized boolean checkPassport(Konto k)
-	{
-		I18N i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
-
-		try {
-			if (k.getPassport() != null)
-				return true;
-
-			YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
-			d.setTitle(i18n.tr("Kein Sicherheitsmedium"));
-			d.setText(i18n.tr("Es ist noch kein Sicherheitsmedium eingerichtet. " +
-				"Möchten Sie dies jetzt einrichten?"));
-			Boolean choice = (Boolean) d.open();
-			if (choice.booleanValue())
-			{
-				SettingsControl settings = new SettingsControl(null);
-				settings.handleCreate();
-			}
-			else {
-				GUI.startView(Welcome.class.getName(),null);
-			}
-		}
-		catch (Exception e)
-		{
-			Application.getLog().error("unable to check/create passport",e);
-			GUI.getStatusBar().setErrorText("Fehler beim Prüfen des Sicherheitsmediums");
-		}
-		return false;
-	}
-
+	
 }
 
 
 /**********************************************************************
  * $Log: DialogFactory.java,v $
+ * Revision 1.13  2004/05/04 23:58:20  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.12  2004/05/04 23:07:24  willuhn
  * @C refactored Passport stuff
  *
