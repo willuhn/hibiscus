@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/LastschriftControl.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/02/04 18:27:54 $
+ * $Revision: 1.5 $
+ * $Date: 2005/02/19 17:22:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,20 +17,27 @@ import java.util.Date;
 
 import org.eclipse.swt.widgets.TableItem;
 
+import de.willuhn.datasource.GenericObject;
+import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractView;
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
+import de.willuhn.jameica.gui.input.Input;
+import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.LastschriftNew;
 import de.willuhn.jameica.hbci.gui.menus.LastschriftList;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
+import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.jameica.hbci.rmi.Transfer;
+import de.willuhn.logging.Logger;
 
 /**
  * Ueberschreiben wir von UeberweisungControl, weil es fast das
@@ -41,6 +48,7 @@ public class LastschriftControl extends AbstractBaseUeberweisungControl
 
 	private TablePart table = null;
   private Lastschrift transfer = null;
+  private SelectInput type = null;
 	
   /**
    * ct.
@@ -68,6 +76,28 @@ public class LastschriftControl extends AbstractBaseUeberweisungControl
     return transfer;
   }
 
+	/**
+	 * Liefert eine Select-Box, ueber die der Typ der Lastschrift ausgewaehlt werden kann.
+   * @return Typ der Lastschrift.
+   * @throws RemoteException
+   */
+  public Input getTyp() throws RemoteException
+	{
+		// BUGZILLA #8 http://www.willuhn.de/bugzilla/show_bug.cgi?id=8
+		if (type != null)
+			return type;
+
+		GenericObject[] types = new GenericObject[]
+		{
+			new TypeObject("05"),
+			new TypeObject("04")
+		};
+		type = new SelectInput(PseudoIterator.fromArray(types),new TypeObject(((Lastschrift)getTransfer()).getTyp()));
+		if (((Terminable)getTransfer()).ausgefuehrt())
+			type.disable();
+		return type;
+	}
+	
   /**
    * Liefert eine Liste existierender Lastschriften.
    * @return Liste der Lastschriften.
@@ -118,11 +148,107 @@ public class LastschriftControl extends AbstractBaseUeberweisungControl
   }
 
 
+	/**
+   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#handleStore()
+   */
+  public synchronized boolean handleStore()
+	{
+		try
+		{
+			Lastschrift l = (Lastschrift) getTransfer();
+			
+			if (l.ausgefuehrt())
+			{
+				GUI.getStatusBar().setErrorText(i18n.tr("Der Auftrag wurde bereits ausgeführt und kann daher nicht geändert werden"));
+				return false;
+			}
+
+			TypeObject to = (TypeObject) getTyp().getValue();
+			l.setTyp(to == null ? null : to.getID());
+			return super.handleStore();
+		}
+		catch (RemoteException re)
+		{
+			Logger.error("rollback failed",re);
+			Logger.error("error while storing lastschrift",re);
+			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern des Auftrags"));
+		}
+		return false;
+	}
+
+
+	/**
+	 * Hilfsobjekt fuer die Lastschrift-Typen.
+   */
+  private class TypeObject implements GenericObject
+	{
+
+		private String id;
+
+		/**
+		 * ct.
+     * @param id
+     * @param name
+     */
+    private TypeObject(String id)
+		{
+			this.id = id;
+		}
+
+    /**
+     * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
+     */
+    public Object getAttribute(String arg0) throws RemoteException
+    {
+    	if ("04".equals(id))
+    		return i18n.tr("[04] Lastschrift");
+			if ("05".equals(id))
+				return i18n.tr("[05] Einzugsermächtigung");
+			return null;
+    }
+
+    /**
+     * @see de.willuhn.datasource.GenericObject#getAttributeNames()
+     */
+    public String[] getAttributeNames() throws RemoteException
+    {
+      return new String[]{"name"};
+    }
+
+    /**
+     * @see de.willuhn.datasource.GenericObject#getID()
+     */
+    public String getID() throws RemoteException
+    {
+      return id;
+    }
+
+    /**
+     * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
+     */
+    public String getPrimaryAttribute() throws RemoteException
+    {
+      return "name";
+    }
+
+    /**
+     * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
+     */
+    public boolean equals(GenericObject arg0) throws RemoteException
+    {
+    	if (arg0 == null)
+	      return false;
+	    return getID().equals(arg0.getID());
+    }
+	}
 }
 
 
 /**********************************************************************
  * $Log: LastschriftControl.java,v $
+ * Revision 1.5  2005/02/19 17:22:05  willuhn
+ * @B Bug 8
+ *
  * Revision 1.4  2005/02/04 18:27:54  willuhn
  * @C Refactoring zwischen Lastschrift und Ueberweisung
  *

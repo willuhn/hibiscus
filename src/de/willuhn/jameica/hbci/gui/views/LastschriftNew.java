@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/LastschriftNew.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/02/03 18:57:42 $
+ * $Revision: 1.3 $
+ * $Date: 2005/02/19 17:22:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -58,6 +58,7 @@ public class LastschriftNew extends AbstractView {
 		details.addLabelPair(i18n.tr("weiterer Verwendungszweck"),control.getZweck2());
 		details.addLabelPair(i18n.tr("Betrag"),										control.getBetrag());
 		details.addLabelPair(i18n.tr("Termin"),										control.getTermin());
+		details.addLabelPair(i18n.tr("Typ"),											control.getTyp());
 
 		details.addSeparator();
 
@@ -95,6 +96,9 @@ public class LastschriftNew extends AbstractView {
 
 /**********************************************************************
  * $Log: LastschriftNew.java,v $
+ * Revision 1.3  2005/02/19 17:22:05  willuhn
+ * @B Bug 8
+ *
  * Revision 1.2  2005/02/03 18:57:42  willuhn
  * *** empty log message ***
  *
