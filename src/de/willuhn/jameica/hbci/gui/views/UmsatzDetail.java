@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzDetail.java,v $
- * $Revision: 1.12 $
- * $Date: 2004/11/12 18:25:07 $
+ * $Revision: 1.13 $
+ * $Date: 2005/02/06 17:46:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -66,6 +66,7 @@ public class UmsatzDetail extends AbstractView {
 		umsatz.addLabelPair(i18n.tr("Neuer Saldo"),							control.getSaldo());
 
     ButtonArea buttons = new ButtonArea(getParent(),2);
+		buttons.addButton(i18n.tr("Zurück"),new Back(),null,true);
     buttons.addButton(i18n.tr("Empfänger in Adressbuch übernehmen"),new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -81,7 +82,6 @@ public class UmsatzDetail extends AbstractView {
       	}
       }
     });
-    buttons.addButton(i18n.tr("Zurück"),new Back());
   }
   /**
    * @see de.willuhn.jameica.gui.views.AbstractView#unbind()
@@ -93,6 +93,9 @@ public class UmsatzDetail extends AbstractView {
 
 /**********************************************************************
  * $Log: UmsatzDetail.java,v $
+ * Revision 1.13  2005/02/06 17:46:17  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.12  2004/11/12 18:25:07  willuhn
  * *** empty log message ***
  *

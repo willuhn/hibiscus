@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzList.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/11/13 17:12:15 $
+ * $Revision: 1.2 $
+ * $Date: 2005/02/06 17:46:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,9 +49,9 @@ public class UmsatzList extends AbstractView {
 			list.paint(getParent());
 			
 			ButtonArea buttons = new ButtonArea(getParent(),3);
+			buttons.addButton(i18n.tr("Zurück"),new Back(),null,true);
 			buttons.addButton(i18n.tr("Umsätze abrufen"), new KontoFetchUmsaetze(),control.getKonto());
 			buttons.addButton(i18n.tr("alle Umsätze löschen"), new KontoDeleteUmsaetze(), control.getKonto());
-			buttons.addButton(i18n.tr("Zurück"),new Back());
 		}
 		catch (RemoteException e)
 		{
@@ -72,6 +72,9 @@ public class UmsatzList extends AbstractView {
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.2  2005/02/06 17:46:17  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/11/13 17:12:15  willuhn
  * *** empty log message ***
  *
