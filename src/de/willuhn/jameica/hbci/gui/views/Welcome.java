@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/Welcome.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/04/12 19:15:31 $
+ * $Revision: 1.8 $
+ * $Date: 2004/05/23 15:33:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -42,7 +42,7 @@ public class Welcome extends AbstractView
 		group.addTable(control.getOffeneUeberweisungen());
 
 		control.getWelcomeText().paint(getParent());
-
+	
   }
 
   /**
@@ -57,6 +57,9 @@ public class Welcome extends AbstractView
 
 /**********************************************************************
  * $Log: Welcome.java,v $
+ * Revision 1.8  2004/05/23 15:33:10  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2004/04/12 19:15:31  willuhn
  * @C refactoring
  *

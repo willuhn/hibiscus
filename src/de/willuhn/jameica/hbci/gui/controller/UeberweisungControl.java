@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.15 $
- * $Date: 2004/05/04 23:07:23 $
+ * $Revision: 1.16 $
+ * $Date: 2004/05/23 15:33:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import java.util.Date;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TableItem;
+import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.Application;
@@ -287,6 +288,8 @@ public class UeberweisungControl extends AbstractControl {
 			return empfblz;
 		empfblz = new TextInput(getUeberweisung().getEmpfaengerBlz());
 
+		empfblz.setComment("");
+		empfblz.addListener(new BLZListener());
 		if (getUeberweisung().ausgefuehrt())
 			empfblz.disable();
 		return empfblz;
@@ -456,6 +459,29 @@ public class UeberweisungControl extends AbstractControl {
 		GUI.startPreviousView();
   }
 
+	/**
+   * Deaktiviert alle Eingabe-Felder.
+   */
+  private void disableAll()
+	{
+		try {
+			if (!getUeberweisung().ausgefuehrt())
+				return;
+			getBetrag().disable();
+			getEmpfaengerBlz().disable();
+			getEmpfaengerKonto().disable();
+			getEmpfaengerName().disable();
+			getKontoAuswahl().disable();
+			getTermin().disable();
+			getZweck().disable();
+			getZweck2().disable();
+		}
+		catch (RemoteException e)
+		{
+			Application.getLog().error("error while disabling fields",e);
+		}
+	}
+
   /**
    * @see de.willuhn.jameica.gui.controller.AbstractControl#handleStore()
    */
@@ -574,6 +600,7 @@ public class UeberweisungControl extends AbstractControl {
 				try {
 					getUeberweisung().execute();
 					GUI.getStatusBar().setSuccessText(i18n.tr("...Überweisung erfolgreich ausgeführt."));
+					disableAll();
 				}
 				catch (ApplicationException e)
 				{
@@ -634,6 +661,20 @@ public class UeberweisungControl extends AbstractControl {
 	}
 
 	/**
+	 * Listener, der den Namen des Geldinstitutes bei BLZ-Auswahl dranschreibt.
+   */
+  private class BLZListener implements Listener
+	{
+		/**
+     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+     */
+    public void handleEvent(Event event) {
+			String name = HBCIUtils.getNameForBLZ((String)empfblz.getValue());
+			empfblz.setComment(name);
+		}
+	}
+
+	/**
 	 * Listener, der bei Auswahl des Empfaengers die restlichen Daten vervollstaendigt.
    */
   private class EmpfaengerListener implements Listener
@@ -654,6 +695,9 @@ public class UeberweisungControl extends AbstractControl {
 				getEmpfaengerName().setValue(empfaenger.getName());
 				// Wenn der Empfaenger aus dem Adressbuch kommt, deaktivieren wir die Checkbox
 				getStoreEmpfaenger().setValue(Boolean.FALSE);
+				
+				// und jetzt noch das Geld-Institut dranpappen
+				new BLZListener().handleEvent(null);
 			}
 			catch (RemoteException er)
 			{
@@ -667,6 +711,9 @@ public class UeberweisungControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
+ * Revision 1.16  2004/05/23 15:33:10  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.15  2004/05/04 23:07:23  willuhn
  * @C refactored Passport stuff
  *

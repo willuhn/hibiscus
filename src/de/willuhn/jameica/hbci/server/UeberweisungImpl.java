@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UeberweisungImpl.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/04/24 19:04:51 $
+ * $Revision: 1.10 $
+ * $Date: 2004/05/23 15:33:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -101,11 +101,11 @@ public class UeberweisungImpl
 			if (getZweck() == null || "".equals(getZweck()))
 				throw new ApplicationException("Bitte geben Sie einen Verwendungszweck ein");
 
-			if (getZweck().length() > 35)
-				throw new ApplicationException("Bitten geben Sie als Verwendungszweck maximal 35 Zeichen an");
+			if (getZweck().length() > 27)
+				throw new ApplicationException("Bitten geben Sie als Verwendungszweck maximal 27 Zeichen an");
 				
-			if (getZweck2() != null && getZweck2().length() > 35)
-				throw new ApplicationException("Bitten geben Sie als weiteren Verwendungszweck maximal 35 Zeichen an");
+			if (getZweck2() != null && getZweck2().length() > 27)
+				throw new ApplicationException("Bitten geben Sie als weiteren Verwendungszweck maximal 27 Zeichen an");
 
 			if (getTermin() == null)
 				setTermin(new Date());
@@ -361,6 +361,9 @@ public class UeberweisungImpl
 
 /**********************************************************************
  * $Log: UeberweisungImpl.java,v $
+ * Revision 1.10  2004/05/23 15:33:10  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.9  2004/04/24 19:04:51  willuhn
  * @N Ueberweisung.execute works!! ;)
  *
