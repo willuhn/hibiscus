@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/LoginHelper.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/11/15 18:09:18 $
+ * $Revision: 1.2 $
+ * $Date: 2004/11/17 19:02:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,6 +22,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Login;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
 import sun.misc.BASE64Encoder;
@@ -76,7 +77,8 @@ public class LoginHelper
     }
     catch (Throwable t)
     {
-      throw new RemoteException(i18n.tr("Fehler beim Login. Bitte prüfen Sie das Systemprotokoll"),t);
+    	Logger.error("error while checking login",t);
+      throw new RemoteException(i18n.tr("Fehler beim Login. Bitte prüfen Sie das Systemprotokoll"));
     }
     if (l == null || l.isNewObject())
       throw new RemoteException(i18n.tr("Login fehlgeschlagen. Benutzername oder Passwort falsch"));
@@ -87,6 +89,9 @@ public class LoginHelper
 
 /*********************************************************************
  * $Log: LoginHelper.java,v $
+ * Revision 1.2  2004/11/17 19:02:28  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/11/15 18:09:18  willuhn
  * @N Login fuer die gesamte Anwendung
  *

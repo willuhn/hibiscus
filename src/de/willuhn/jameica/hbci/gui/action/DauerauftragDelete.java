@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/DauerauftragDelete.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/11/14 19:21:37 $
+ * $Revision: 1.8 $
+ * $Date: 2004/11/17 19:02:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -74,7 +74,8 @@ public class DauerauftragDelete implements Action
 
 				CalendarDialog d2 = new CalendarDialog(CalendarDialog.POSITION_MOUSE);
 				d2.setTitle(i18n.tr("Zieldatum"));
-				d2.setText(i18n.tr("Bitte wählen Sie das Datum aus, zu dem der Dauerauftrag gelöscht werden soll."));
+				d2.setText(i18n.tr(
+					"Bitte wählen Sie das Datum aus, zu dem der Dauerauftrag gelöscht\n" +					"werden soll oder schliessen Sie das Fenster einfach, wenn Sie die\n" +					"Löschung zum nächstmöglichen Termin durchführen wollen."));
 				Date fd = null;
 				try
 				{
@@ -142,6 +143,9 @@ public class DauerauftragDelete implements Action
 
 /**********************************************************************
  * $Log: DauerauftragDelete.java,v $
+ * Revision 1.8  2004/11/17 19:02:28  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2004/11/14 19:21:37  willuhn
  * *** empty log message ***
  *

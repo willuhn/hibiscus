@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragDeleteJob.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/11/14 19:21:37 $
+ * $Revision: 1.7 $
+ * $Date: 2004/11/17 19:02:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -40,7 +40,8 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
   /**
 	 * ct.
    * @param auftrag Dauerauftrag, der geloescht werden soll
-   * @param date Datum, zu dem der Auftrag geloescht werden soll.
+   * @param date Datum, zu dem der Auftrag geloescht werden soll oder <code>null</code>
+   * wenn zum naechstmoeglichen Zeitpunkt geloescht werden soll.
    * @throws RemoteException
    * @throws ApplicationException
    */
@@ -64,12 +65,6 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
 
 			setJobParam("orderid",auftrag.getOrderID());
 
-			if (date != null)
-			{
-				Logger.info("target date for DauerDel: " + date.toString());
-				setJobParam("date",date);
-			}
-
 			// Jetzt noch die Tests fuer die Job-Restriktionen
 			Properties p = HBCIFactory.getInstance().getJobRestrictions(this,this.konto.getPassport().getHandle());
 			Enumeration keys = p.keys();
@@ -78,8 +73,16 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
 				String s = (String) keys.nextElement();
 				Logger.debug("[hbci job restriction] name: " + s + ", value: " + p.getProperty(s));
 			}
-			new CanTermDelRestriction(p).test();
 
+			if (date != null)
+			{
+				Logger.info("target date for DauerDel: " + date.toString());
+				new CanTermDelRestriction(p).test(); // Test nur, wenn Datum angegeben
+				setJobParam("date",date);
+			}
+
+			// Den brauchen wir, damit das Loeschen funktioniert.
+			HBCIFactory.getInstance().addJob(new HBCIDauerauftragListJob(this.konto));
 		}
 		catch (RemoteException e)
 		{
@@ -141,6 +144,9 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIDauerauftragDeleteJob.java,v $
+ * Revision 1.7  2004/11/17 19:02:28  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.6  2004/11/14 19:21:37  willuhn
  * *** empty log message ***
  *

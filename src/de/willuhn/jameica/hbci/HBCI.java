@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.33 $
- * $Date: 2004/11/15 18:09:18 $
+ * $Revision: 1.34 $
+ * $Date: 2004/11/17 19:02:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,6 @@
 package de.willuhn.jameica.hbci;
 
 import java.io.File;
-import java.rmi.RemoteException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -23,8 +22,6 @@ import java.util.Locale;
 import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.db.EmbeddedDatabase;
-import de.willuhn.jameica.hbci.gui.dialogs.LoginDialog;
-import de.willuhn.jameica.hbci.rmi.Login;
 import de.willuhn.jameica.hbci.server.HBCIDBServiceImpl;
 import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.system.Application;
@@ -37,9 +34,6 @@ import de.willuhn.util.ApplicationException;
  */
 public class HBCI extends AbstractPlugin
 {
-
-  private Login currentLogin = null;
-
   /**
    * Datums-Format dd.MM.yyyy HH:mm.
    */
@@ -76,7 +70,7 @@ public class HBCI extends AbstractPlugin
   }
 
   private EmbeddedDatabase db = null;
-
+  
   /**
    * ct.
    * @param file
@@ -85,16 +79,6 @@ public class HBCI extends AbstractPlugin
   {
     super(file);
     Locale l = Application.getConfig().getLocale();
-  }
-
-  /**
-   * Liefert den gerade eingeloggten Benutzer.
-   * @return Benutzer.
-   * @throws RemoteException
-   */
-  public Login getCurrentLogin() throws RemoteException
-  {
-    return currentLogin;
   }
 
   /**
@@ -157,22 +141,6 @@ public class HBCI extends AbstractPlugin
 				getResources().getI18N().tr("Fehler beim Prüfung der Datenbank-Integrität, " +					"Plugin wird aus Sicherheitsgründen deaktiviert"),e);
 		}
 
-    if (!Application.inServerMode())
-    {
-      Application.getStartupMonitor().setStatusText("hibiscus: starting login");
-      try
-      {
-        LoginDialog login = new LoginDialog(LoginDialog.POSITION_CENTER);
-        this.currentLogin = (Login) login.open();
-      }
-      catch (Exception e)
-      {
-        Logger.error("error while performing login, hibiscus will be disabled",e);
-        throw new ApplicationException("login failed, disable hibiscus");
-      }
-      
-    }
-
     Application.getStartupMonitor().setStatusText("hibiscus: init passport registry");
 		PassportRegistry.init();
 
@@ -188,7 +156,6 @@ public class HBCI extends AbstractPlugin
 				// Am wahrscheinlichsten ArrayIndexOutOfBoundsException
 				// Dann eben nicht ;)
 			}
-
 			HBCIUtils.setParam("log.loglevel.default",""+logLevel);
 		}
 		catch (Exception e)
@@ -256,8 +223,9 @@ public class HBCI extends AbstractPlugin
   public Class getService(String serviceName)
   {
     if ("database".equals(serviceName))
-      return HBCIDBServiceImpl.class;
-
+    {
+			return HBCIDBServiceImpl.class;
+    }
     return null;
   }
 }
@@ -265,6 +233,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.34  2004/11/17 19:02:28  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.33  2004/11/15 18:09:18  willuhn
  * @N Login fuer die gesamte Anwendung
  *

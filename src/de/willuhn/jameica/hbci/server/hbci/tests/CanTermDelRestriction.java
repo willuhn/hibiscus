@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/tests/CanTermDelRestriction.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/11/14 19:21:37 $
+ * $Revision: 1.2 $
+ * $Date: 2004/11/17 19:02:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,7 +21,8 @@ import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Testet, ob eine Termin-Ueberweisung bei der Bank gelöscht werden kann.
+ * Testet, ob terminierte Loeschung eines Auftrages, also zu einem angegebenen
+ * Zeitpunkt bei der Bank erlaubt ist.
  */
 public class CanTermDelRestriction implements Restriction
 {
@@ -46,15 +47,18 @@ public class CanTermDelRestriction implements Restriction
   public void test() throws ApplicationException
   {
 		String s = p.getProperty("cantermdel");
-		Logger.debug("test if transfer deletable: restriction \"cantermdel\": " + s);
+		Logger.debug("test if transfer deletable at defined date: restriction \"cantermdel\": " + s);
 		if ("N".equalsIgnoreCase(s))
-			throw new ApplicationException(i18n.tr("Der Auftrag kann bei Ihrer Bank nicht via HBCI gelöscht werden. Bitte verwenden Sie stattdessen das Web-Frontend Ihrer Bank."));
+			throw new ApplicationException(i18n.tr("Der Auftrag kann bei Ihrer Bank nicht zu einem definierten Zeitpunkt gelöscht werden."));
   }
 }
 
 
 /**********************************************************************
  * $Log: CanTermDelRestriction.java,v $
+ * Revision 1.2  2004/11/17 19:02:28  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/11/14 19:21:37  willuhn
  * *** empty log message ***
  *
