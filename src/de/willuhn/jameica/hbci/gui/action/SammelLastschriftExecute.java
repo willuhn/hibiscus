@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/SammelLastschriftExecute.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/03/30 23:26:28 $
+ * $Revision: 1.5 $
+ * $Date: 2005/03/30 23:28:13 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -83,7 +83,7 @@ public class SammelLastschriftExecute implements Action
 						factory.addJob(new HBCISammelLastschriftJob(u));
 						factory.executeJobs(u.getKonto().getPassport().getHandle()); 
 						GUI.getStatusBar().setSuccessText(i18n.tr("Sammel-Lastschrift erfolgreich ausgeführt"));
-            // BUGZILLA 30 http://www.willuhn.de/bugzilla/show_bug.cgi?id=30
+            // BUGZILLA 31 http://www.willuhn.de/bugzilla/show_bug.cgi?id=31
             GUI.startView(SammelLastschriftNew.class,u);
         	}
 					catch (OperationCanceledException oce)
@@ -120,6 +120,9 @@ public class SammelLastschriftExecute implements Action
 
 /**********************************************************************
  * $Log: SammelLastschriftExecute.java,v $
+ * Revision 1.5  2005/03/30 23:28:13  web0
+ * @B bug 31
+ *
  * Revision 1.4  2005/03/30 23:26:28  web0
  * @B bug 29
  * @B bug 30
