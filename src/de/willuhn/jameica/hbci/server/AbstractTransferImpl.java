@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AbstractTransferImpl.java,v $
- * $Revision: 1.17 $
- * $Date: 2005/02/27 17:11:49 $
+ * $Revision: 1.18 $
+ * $Date: 2005/02/28 16:28:24 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -87,8 +87,8 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
 			if (getZweck2() != null && getZweck2().length() > HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH)
 				throw new ApplicationException(i18n.tr("Bitten geben Sie als weiteren Verwendungszweck maximal {0} Zeichen an",""+HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH));
 
-			checkChars(getZweck());
-			checkChars(getZweck2());
+			HBCIProperties.checkChars(getZweck());
+      HBCIProperties.checkChars(getZweck2());
   	}
   	catch (RemoteException e)
   	{
@@ -96,23 +96,6 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
   		throw new ApplicationException(i18n.tr("Fehler beim Prüfen der Überweisung."));
   	}
   }
-
-	/**
-	 * Prueft die uebergebenen Strings auf Vorhandensein nicht erlaubter Zeichen.
-   * @param chars zu testende Zeichen.
-   * @throws ApplicationException
-   */
-  private void checkChars(String chars) throws ApplicationException
-	{
-		if (chars == null || chars.length() == 0)
-			return;
-		char[] c = chars.toCharArray();
-		for (int i=0;i<c.length;++i)
-		{
-			if (HBCIProperties.HBCI_DTAUS_VALIDCHARS.indexOf(c[i]) == -1)
-				throw new ApplicationException(i18n.tr("Das Zeichen \"{0}\" darf nicht verwendet werden",""+c[i])); 
-		}
-	}
 
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
@@ -240,10 +223,15 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
 		super.delete();
 		if (k == null)
 			return;
-    k.addToProtokoll(i18n.tr("Auftrag [Gegenkonto: " + getEmpfaengerName() +
-														 ", Kto. " + getEmpfaengerKonto() + ", BLZ " +
-														 getEmpfaengerBLZ() + "] " + k.getWaehrung() + " " +
-														 HBCI.DECIMALFORMAT.format(getBetrag()) + " gelöscht"),Protokoll.TYP_SUCCESS);
+    String[] params = new String[]
+    {
+      getEmpfaengerName(),
+      getEmpfaengerKonto(),
+      getEmpfaengerBLZ(),
+      k.getWaehrung(),
+      HBCI.DECIMALFORMAT.format(getBetrag())
+    };
+    k.addToProtokoll(i18n.tr("Auftrag [Gegenkonto: {0}, Kto. {1}, BLZ {2}] {3} {4} gelöscht",params),Protokoll.TYP_SUCCESS);
   }
 
 	/**
@@ -253,9 +241,15 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
 	{
 		super.store();
 		Konto k = this.getKonto();
-		k.addToProtokoll(i18n.tr("Auftrag [Gegenkonto: " + getEmpfaengerName() +
-														 ", Kto. " + getEmpfaengerKonto() + ", BLZ " +
-														 getEmpfaengerBLZ() + "] " + k.getWaehrung() + " " +														 HBCI.DECIMALFORMAT.format(getBetrag()) + " gespeichert"),Protokoll.TYP_SUCCESS);
+    String[] params = new String[]
+    {
+      getEmpfaengerName(),
+      getEmpfaengerKonto(),
+      getEmpfaengerBLZ(),
+      k.getWaehrung(),
+      HBCI.DECIMALFORMAT.format(getBetrag())
+    };
+    k.addToProtokoll(i18n.tr("Auftrag [Gegenkonto: {0}, Kto. {1}, BLZ {2}] {3} {4} gespeichert",params),Protokoll.TYP_SUCCESS);
 	}
 
 
@@ -282,6 +276,9 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
 
 /**********************************************************************
  * $Log: AbstractTransferImpl.java,v $
+ * Revision 1.18  2005/02/28 16:28:24  web0
+ * @N first code for "Sammellastschrift"
+ *
  * Revision 1.17  2005/02/27 17:11:49  web0
  * @N first code for "Sammellastschrift"
  * @C "Empfaenger" renamed into "Adresse"

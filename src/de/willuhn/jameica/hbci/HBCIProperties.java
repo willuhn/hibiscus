@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCIProperties.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/11/02 18:48:32 $
- * $Author: willuhn $
+ * $Revision: 1.3 $
+ * $Date: 2005/02/28 16:28:24 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -12,7 +12,10 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci;
 
+import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.Settings;
+import de.willuhn.util.ApplicationException;
+import de.willuhn.util.I18N;
 
 
 /**
@@ -22,6 +25,12 @@ public class HBCIProperties
 {
 
 	private static Settings settings = new Settings(HBCIProperties.class);
+  private static I18N i18n = null;
+  
+  static
+  {
+    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  }
 
 	/**
 	 * Liste der erlaubten Zeichen (z.Bsp. fuer den Verwendungszweck.).
@@ -37,6 +46,24 @@ public class HBCIProperties
   public final static int HBCI_TRANSFER_USAGE_MAXLENGTH =
     settings.getInt("hbci.transfer.usage.maxlength",27);
 
+  /**
+   * Prueft die uebergebenen Strings auf Vorhandensein nicht erlaubter Zeichen.
+   * @param chars zu testende Zeichen.
+   * @throws ApplicationException
+   */
+  public final static void checkChars(String chars) throws ApplicationException
+  {
+    if (chars == null || chars.length() == 0)
+      return;
+    char[] c = chars.toCharArray();
+    for (int i=0;i<c.length;++i)
+    {
+      if (HBCIProperties.HBCI_DTAUS_VALIDCHARS.indexOf(c[i]) == -1)
+        throw new ApplicationException(i18n.tr("Das Zeichen \"{0}\" darf nicht verwendet werden",""+c[i])); 
+    }
+  }
+
+
 	// disabled
 	private HBCIProperties()
 	{
@@ -47,6 +74,9 @@ public class HBCIProperties
 
 /**********************************************************************
  * $Log: HBCIProperties.java,v $
+ * Revision 1.3  2005/02/28 16:28:24  web0
+ * @N first code for "Sammellastschrift"
+ *
  * Revision 1.2  2004/11/02 18:48:32  willuhn
  * *** empty log message ***
  *

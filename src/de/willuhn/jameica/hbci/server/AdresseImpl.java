@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AdresseImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/02/27 17:11:49 $
+ * $Revision: 1.2 $
+ * $Date: 2005/02/28 16:28:24 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -20,7 +20,6 @@ import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
-import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.system.Application;
@@ -150,7 +149,7 @@ public class AdresseImpl extends AbstractDBObject implements Adresse {
    * @see de.willuhn.jameica.hbci.rmi.Empfaenger#getUeberweisungen()
    */
   public DBIterator getUeberweisungen() throws RemoteException {
-		DBIterator list = Settings.getDBService().createList(Ueberweisung.class);
+		DBIterator list = getService().createList(Ueberweisung.class);
 		list.addFilter("empfaenger_blz = " + this.getBLZ());
 		list.addFilter("empfaenger_konto = " + this.getKontonummer());
 		return list;
@@ -161,6 +160,9 @@ public class AdresseImpl extends AbstractDBObject implements Adresse {
 
 /**********************************************************************
  * $Log: AdresseImpl.java,v $
+ * Revision 1.2  2005/02/28 16:28:24  web0
+ * @N first code for "Sammellastschrift"
+ *
  * Revision 1.1  2005/02/27 17:11:49  web0
  * @N first code for "Sammellastschrift"
  * @C "Empfaenger" renamed into "Adresse"

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.44 $
- * $Date: 2005/02/28 15:30:47 $
+ * $Revision: 1.45 $
+ * $Date: 2005/02/28 16:28:24 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -124,7 +124,7 @@ public class HBCI extends AbstractPlugin
 		if (checkSum.equals("NhTl6Nt8RmaRNz49M/SGiA==")) // 1.2
 			return;
 
-		if (checkSum.equals("noHpahYlu32rDrJ3FquJdw==")) // 1.3
+		if (checkSum.equals("kwi5vy1fvgOOVtoTYJYjuA==")) // 1.3
 			return;
 
 		throw new Exception("database checksum does not match any known version: " + checkSum);
@@ -250,6 +250,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.45  2005/02/28 16:28:24  web0
+ * @N first code for "Sammellastschrift"
+ *
  * Revision 1.44  2005/02/28 15:30:47  web0
  * @B Bugzilla #15
  *

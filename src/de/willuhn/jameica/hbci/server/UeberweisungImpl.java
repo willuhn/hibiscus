@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UeberweisungImpl.java,v $
- * $Revision: 1.32 $
- * $Date: 2005/02/04 18:27:54 $
- * $Author: willuhn $
+ * $Revision: 1.33 $
+ * $Date: 2005/02/28 16:28:24 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -14,7 +14,6 @@ package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
 
-import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Transfer;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 
@@ -42,7 +41,7 @@ public class UeberweisungImpl extends AbstractBaseUeberweisungImpl implements Ue
    * @see de.willuhn.jameica.hbci.rmi.Transfer#duplicate()
    */
   public Transfer duplicate() throws RemoteException {
-    Ueberweisung u = (Ueberweisung) Settings.getDBService().createObject(Ueberweisung.class,null);
+    Ueberweisung u = (Ueberweisung) getService().createObject(Ueberweisung.class,null);
     u.setBetrag(getBetrag());
     u.setEmpfaengerBLZ(getEmpfaengerBLZ());
     u.setEmpfaengerKonto(getEmpfaengerKonto());
@@ -60,6 +59,9 @@ public class UeberweisungImpl extends AbstractBaseUeberweisungImpl implements Ue
 
 /**********************************************************************
  * $Log: UeberweisungImpl.java,v $
+ * Revision 1.33  2005/02/28 16:28:24  web0
+ * @N first code for "Sammellastschrift"
+ *
  * Revision 1.32  2005/02/04 18:27:54  willuhn
  * @C Refactoring zwischen Lastschrift und Ueberweisung
  *

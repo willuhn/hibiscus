@@ -124,6 +124,7 @@ CREATE TABLE lastschrift (
 CREATE TABLE slastschrift (
   id NUMERIC default UNIQUEKEY('slastschrift'),
   konto_id int(4) NOT NULL,
+  bezeichnung varchar(255) NOT NULL,
   termin date NOT NULL,
   ausgefuehrt int(1) NOT NULL,
   UNIQUE (id),

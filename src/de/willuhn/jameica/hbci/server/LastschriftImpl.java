@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/LastschriftImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/02/19 16:49:32 $
- * $Author: willuhn $
+ * $Revision: 1.4 $
+ * $Date: 2005/02/28 16:28:24 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -14,7 +14,6 @@ package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
 
-import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
 import de.willuhn.jameica.hbci.rmi.Transfer;
 
@@ -47,7 +46,7 @@ public class LastschriftImpl extends AbstractBaseUeberweisungImpl implements Las
 	 * @see de.willuhn.jameica.hbci.rmi.Transfer#duplicate()
 	 */
 	public Transfer duplicate() throws RemoteException {
-		Lastschrift u = (Lastschrift) Settings.getDBService().createObject(Lastschrift.class,null);
+		Lastschrift u = (Lastschrift) getService().createObject(Lastschrift.class,null);
 		u.setBetrag(getBetrag());
 		u.setEmpfaengerBLZ(getEmpfaengerBLZ());
 		u.setEmpfaengerKonto(getEmpfaengerKonto());
@@ -88,6 +87,9 @@ public class LastschriftImpl extends AbstractBaseUeberweisungImpl implements Las
 
 /**********************************************************************
  * $Log: LastschriftImpl.java,v $
+ * Revision 1.4  2005/02/28 16:28:24  web0
+ * @N first code for "Sammellastschrift"
+ *
  * Revision 1.3  2005/02/19 16:49:32  willuhn
  * @B bugs 3,8,10
  *

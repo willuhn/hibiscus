@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.45 $
- * $Date: 2005/02/27 17:11:49 $
+ * $Revision: 1.46 $
+ * $Date: 2005/02/28 16:28:24 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -23,7 +23,6 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.PassportRegistry;
-import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -315,7 +314,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    * @see de.willuhn.jameica.hbci.rmi.Konto#getUmsaetze()
    */
   public DBIterator getUmsaetze() throws RemoteException {
-		DBIterator list = Settings.getDBService().createList(Umsatz.class);
+		DBIterator list = getService().createList(Umsatz.class);
 		list.addFilter("konto_id = " + getID() + " ORDER BY TONUMBER(datum) DESC");
 		return list;
   }
@@ -325,7 +324,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    * @see de.willuhn.jameica.hbci.rmi.Konto#getUeberweisungen()
    */
   public DBIterator getUeberweisungen() throws RemoteException {
-		DBIterator list = Settings.getDBService().createList(Ueberweisung.class);
+		DBIterator list = getService().createList(Ueberweisung.class);
 		list.addFilter("konto_id = " + getID() + " ORDER BY TONUMBER(termin) DESC");
 		return list;
 	}
@@ -335,7 +334,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 	 */
 	public DBIterator getDauerauftraege() throws RemoteException
 	{
-		DBIterator list = Settings.getDBService().createList(Dauerauftrag.class);
+		DBIterator list = getService().createList(Dauerauftrag.class);
 		list.addFilter("konto_id = " + getID());
 		return list;
 	}
@@ -345,7 +344,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 	 */
 	public DBIterator getLastschriften() throws RemoteException
 	{
-		DBIterator list = Settings.getDBService().createList(Lastschrift.class);
+		DBIterator list = getService().createList(Lastschrift.class);
 		list.addFilter("konto_id = " + getID());
 		return list;
 	}
@@ -355,7 +354,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 	 */
 	public DBIterator getSammelLastschriften() throws RemoteException
 	{
-		DBIterator list = Settings.getDBService().createList(SammelLastschrift.class);
+		DBIterator list = getService().createList(SammelLastschrift.class);
 		list.addFilter("konto_id = " + getID());
 		return list;
 	}
@@ -364,7 +363,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    * @see de.willuhn.jameica.hbci.rmi.Konto#deleteUmsaetze()
    */
   public void deleteUmsaetze() throws ApplicationException, RemoteException {
-		DBIterator list = Settings.getDBService().createList(Umsatz.class);
+		DBIterator list = getService().createList(Umsatz.class);
 		list.addFilter("konto_id = " + getID());
 		if (!list.hasNext())
 			return;
@@ -393,7 +392,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    * @see de.willuhn.jameica.hbci.rmi.Konto#getProtokolle()
    */
   public DBIterator getProtokolle() throws RemoteException {
-		DBIterator list = Settings.getDBService().createList(Protokoll.class);
+		DBIterator list = getService().createList(Protokoll.class);
 		list.addFilter("konto_id = " + getID() + " ORDER BY TONUMBER(datum) DESC");
 		return list;
   }
@@ -422,7 +421,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 			return;
 
 		try {
-			Protokoll entry = (Protokoll) Settings.getDBService().createObject(Protokoll.class,null);
+			Protokoll entry = (Protokoll) getService().createObject(Protokoll.class,null);
 			entry.setKonto(this);
 			entry.setKommentar(kommentar);
 			entry.setTyp(protokollTyp);
@@ -474,6 +473,9 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.46  2005/02/28 16:28:24  web0
+ * @N first code for "Sammellastschrift"
+ *
  * Revision 1.45  2005/02/27 17:11:49  web0
  * @N first code for "Sammellastschrift"
  * @C "Empfaenger" renamed into "Adresse"

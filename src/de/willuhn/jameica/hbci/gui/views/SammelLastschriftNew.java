@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/LastschriftList.java,v $
- * $Revision: 1.2 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/SammelLastschriftNew.java,v $
+ * $Revision: 1.1 $
  * $Date: 2005/02/28 16:28:24 $
  * $Author: web0 $
  * $Locker:  $
@@ -14,44 +14,34 @@ package de.willuhn.jameica.hbci.gui.views;
 
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.LastschriftNew;
-import de.willuhn.jameica.hbci.gui.controller.LastschriftControl;
+import de.willuhn.jameica.hbci.gui.controller.SammelLastschriftControl;
+import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Zeigt eine Liste mit den vorhandenen Lastschrift an.
+ * Bearbeitung der Sammel-Lastschriften.
  */
-public class LastschriftList extends AbstractView {
+public class SammelLastschriftNew extends AbstractView {
 
   /**
    * @see de.willuhn.jameica.gui.views.AbstractView#bind()
    */
   public void bind() throws Exception {
 
+		final SammelLastschriftControl control = new SammelLastschriftControl(this);
+    final SammelLastschrift last = control.getLastschrift();
+
 		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-		GUI.getView().setTitle(i18n.tr("Vorhandene Einzel-Lastschriften"));
+		GUI.getView().setTitle(i18n.tr("Sammel Lastschrift bearbeiten"));
 		
-		LastschriftControl control = new LastschriftControl(this);
+		LabelGroup group = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
 		
-		try {
-
-			control.getLastschriftListe().paint(getParent());
-
-			ButtonArea buttons = new ButtonArea(getParent(),1);
-			buttons.addButton(i18n.tr("neue Lastschrift"),new LastschriftNew());
-
-		}
-		catch (Exception e)
-		{
-			Logger.error("error while loading lastschrift list",e);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Lesen der Lastschriften."));
-		}
+		// group.addLabelPair(i18n.tr("persönliches Konto (Empfänger)"),	control.getKontoAuswahl());
   }
 
   /**
@@ -64,11 +54,8 @@ public class LastschriftList extends AbstractView {
 
 
 /**********************************************************************
- * $Log: LastschriftList.java,v $
- * Revision 1.2  2005/02/28 16:28:24  web0
+ * $Log: SammelLastschriftNew.java,v $
+ * Revision 1.1  2005/02/28 16:28:24  web0
  * @N first code for "Sammellastschrift"
- *
- * Revision 1.1  2005/01/19 00:16:04  willuhn
- * @N Lastschriften
  *
  **********************************************************************/

@@ -23,7 +23,7 @@
       <item name="Adressbuch"         		icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.EmpfaengerList" />
       <item name="Transfer"      			icon-close="folder.gif" icon-open="folderopen.gif">
 	    <item name="Daueraufträge"      	icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.DauerauftragList" />
-	    <item name="Lastschriften"      	icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.LastschriftList" />
+	    <item name="Einzellastschriften"    icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.LastschriftList" />
 	    <item name="Sammellastschriften"    icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.SammelLastschriftList" />
         <item name="Überweisungen"      	icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.UeberweisungList" />
 	  </item>
