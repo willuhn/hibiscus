@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/03/03 22:26:40 $
+ * $Revision: 1.4 $
+ * $Date: 2004/03/04 00:26:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,6 +25,7 @@ import de.willuhn.jameica.gui.controller.AbstractControl;
 import de.willuhn.jameica.gui.dialogs.ListDialog;
 import de.willuhn.jameica.gui.parts.CheckboxInput;
 import de.willuhn.jameica.gui.parts.CurrencyFormatter;
+import de.willuhn.jameica.gui.parts.DecimalInput;
 import de.willuhn.jameica.gui.parts.Input;
 import de.willuhn.jameica.gui.parts.SearchInput;
 import de.willuhn.jameica.gui.parts.SelectInput;
@@ -47,18 +48,19 @@ public class UeberweisungControl extends AbstractControl {
 
 	// Fach-Objekte
 	private Ueberweisung ueberweisung = null;
-	private Empfaenger empfaenger = null;
+	private Empfaenger empfaenger 		= null;
+	private Konto konto								= null;
 	
 	// Eingabe-Felder
-	private Input konto 			= null;
-	private Input betrag			= null;
-	private Input zweck				= null;
-	private Input zweck2			= null;
-	private Input termin			= null;
+	private Input kontoAuswahl				= null;
+	private Input betrag							= null;
+	private Input zweck								= null;
+	private Input zweck2							= null;
+	private Input termin							= null;
 
-	private Input empfName 	= null;
-	private Input empfkto 	= null;
-	private Input empfblz 	= null;
+	private Input empfName 						= null;
+	private Input empfkto 						= null;
+	private Input empfblz 						= null;
 	
 	private CheckboxInput storeEmpfaenger = null;
 
@@ -109,6 +111,24 @@ public class UeberweisungControl extends AbstractControl {
 	}
 
 	/**
+	 * Liefert das Konto der Ueberweisung.
+   * @return das Konto.
+   * @throws RemoteException
+   */
+  private Konto getKonto() throws RemoteException
+	{
+		if (konto != null)
+			return konto;
+
+		konto = getUeberweisung().getKonto();
+		if (konto != null)
+			return konto;
+
+		konto = (Konto) Settings.getDatabase().createObject(Konto.class,null);
+		return konto;
+	}
+
+	/**
 	 * Liefert eine Tabelle mit allen vorhandenen Ueberweisungen.
 	 * @return Tabelle.
 	 * @throws RemoteException
@@ -129,16 +149,14 @@ public class UeberweisungControl extends AbstractControl {
    * @return Auswahl-Feld.
    * @throws RemoteException
    */
-  public Input getKonto() throws RemoteException
+  public Input getKontoAuswahl() throws RemoteException
 	{
-		if (konto != null)
-			return konto;
+		if (kontoAuswahl != null)
+			return kontoAuswahl;
 
-		Konto k = getUeberweisung().getKonto();
-		if (k == null)
-			k = (Konto) Settings.getDatabase().createObject(Konto.class,null);
-		konto = new SelectInput(k);
-		return konto;
+		kontoAuswahl = new SelectInput(getKonto());
+		kontoAuswahl.addListener(new KontoListener());
+		return kontoAuswahl;
 	}
 
 	/**
@@ -188,6 +206,55 @@ public class UeberweisungControl extends AbstractControl {
 		return empfName;
 	}
 
+	/**
+	 * Liefert das Eingabe-Feld fuer den Verwendungszweck.
+	 * @return Eingabe-Feld.
+	 * @throws RemoteException
+	 */
+	public Input getZweck() throws RemoteException
+	{
+		if (zweck != null)
+			return zweck;
+		zweck = new TextInput(getUeberweisung().getZweck());
+		return zweck;
+	}
+
+	/**
+	 * Liefert das Eingabe-Feld fuer den "weiteren" Verwendungszweck.
+	 * @return Eingabe-Feld.
+	 * @throws RemoteException
+	 */
+	public Input getZweck2() throws RemoteException
+	{
+		if (zweck2 != null)
+			return zweck2;
+		zweck2 = new TextInput(getUeberweisung().getZweck2());
+		return zweck2;
+	}
+
+	/**
+	 * Liefert das Eingabe-Feld fuer den Betrag.
+	 * @return Eingabe-Feld.
+	 * @throws RemoteException
+	 */
+	public Input getBetrag() throws RemoteException
+	{
+		if (betrag != null)
+			return betrag;
+		betrag = new DecimalInput(HBCI.DECIMALFORMAT.format(getUeberweisung().getBetrag()));
+		new KontoListener().handleEvent(null);
+		return betrag;
+	}
+
+	public Input getTermin() throws RemoteException
+	{
+		if (termin != null)
+			return termin;
+			// TODO
+//		termin = new DateInput();
+		return termin;
+	}
+
   /**
    * @see de.willuhn.jameica.gui.controller.AbstractControl#handleDelete()
    */
@@ -226,6 +293,28 @@ public class UeberweisungControl extends AbstractControl {
 
 	
 	/**
+	 * Listener, der die Auswahl des Kontos ueberwacht und die Waehrungsbezeichnung
+	 * hinter dem Betrag abhaengig vom ausgewaehlten Konto anpasst.
+   */
+  private class KontoListener implements Listener
+	{
+		/**
+		 * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+		 */
+		public void handleEvent(Event event) {
+			try {
+				Konto k = (Konto) Settings.getDatabase().createObject(Konto.class,getKontoAuswahl().getValue());
+				betrag.setComment(k.getWaehrung());
+			}
+			catch (RemoteException er)
+			{
+				Application.getLog().error("error while updating currency",er);
+				GUI.setActionText(i18n.tr("Fehler bei Ermittlung der Währung"));
+			}
+		}
+	}
+
+	/**
 	 * Listener, der bei Auswahl des Empfaengers die restlichen Daten vervollstaendigt.
    */
   private class EmpfaengerListener implements Listener
@@ -253,6 +342,9 @@ public class UeberweisungControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
+ * Revision 1.4  2004/03/04 00:26:24  willuhn
+ * @N Ueberweisung
+ *
  * Revision 1.3  2004/03/03 22:26:40  willuhn
  * @N help texts
  * @C refactoring

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/UeberweisungNeu.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/03/03 22:26:40 $
+ * $Revision: 1.3 $
+ * $Date: 2004/03/04 00:26:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -39,10 +39,14 @@ public class UeberweisungNeu extends AbstractView {
 		UeberweisungControl control = new UeberweisungControl(this);
 		LabelGroup group = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
 		
-		group.addLabelPair(i18n.tr("Konto"),									control.getKonto());		
-		group.addLabelPair(i18n.tr("Konto des Empfängers"),		control.getEmpfaengerKonto());		
-		group.addLabelPair(i18n.tr("BLZ des Empfängers"),			control.getEmpfaengerBlz());		
-		group.addLabelPair(i18n.tr("Name des Empfängers"),		control.getEmpfaengerName());		
+		group.addLabelPair(i18n.tr("Konto"),										control.getKontoAuswahl());		
+		group.addLabelPair(i18n.tr("Konto des Empfängers"),			control.getEmpfaengerKonto());		
+		group.addLabelPair(i18n.tr("BLZ des Empfängers"),				control.getEmpfaengerBlz());		
+		group.addLabelPair(i18n.tr("Name des Empfängers"),			control.getEmpfaengerName());
+		group.addSeparator();
+		group.addLabelPair(i18n.tr("Verwendungszweck"),					control.getZweck());
+		group.addLabelPair(i18n.tr("weiterer Verwendungszweck"),control.getZweck2());
+		group.addLabelPair(i18n.tr("Betrag"),										control.getBetrag());
 
 		ButtonArea buttonArea = new ButtonArea(getParent(),3);
 		buttonArea.addCancelButton(control);
@@ -63,6 +67,9 @@ public class UeberweisungNeu extends AbstractView {
 
 /**********************************************************************
  * $Log: UeberweisungNeu.java,v $
+ * Revision 1.3  2004/03/04 00:26:24  willuhn
+ * @N Ueberweisung
+ *
  * Revision 1.2  2004/03/03 22:26:40  willuhn
  * @N help texts
  * @C refactoring

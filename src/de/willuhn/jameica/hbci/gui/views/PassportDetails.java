@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/PassportDetails.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/03/03 22:26:40 $
+ * $Revision: 1.7 $
+ * $Date: 2004/03/04 00:26:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -76,13 +76,14 @@ public class PassportDetails extends AbstractView {
 			group.addCheckbox(control.getSoftPin(), i18n.tr("Tastatur des PCs zur PIN-Eingabe verwenden"));
 			
 			// und noch die Abschicken-Knoepfe
-			ButtonArea buttonArea = new ButtonArea(getParent(),3);
+			ButtonArea buttonArea = new ButtonArea(getParent(),4);
 			buttonArea.addCustomButton(i18n.tr("Kartenleser testen"), new MouseAdapter() {
 				public void mouseUp(MouseEvent e) {
 					control.handleTest();
 				}
 			});
 			buttonArea.addCancelButton(control);
+			buttonArea.addDeleteButton(control);
 			buttonArea.addStoreButton(control);
 
   	}
@@ -107,6 +108,9 @@ public class PassportDetails extends AbstractView {
 
 /**********************************************************************
  * $Log: PassportDetails.java,v $
+ * Revision 1.7  2004/03/04 00:26:24  willuhn
+ * @N Ueberweisung
+ *
  * Revision 1.6  2004/03/03 22:26:40  willuhn
  * @N help texts
  * @C refactoring

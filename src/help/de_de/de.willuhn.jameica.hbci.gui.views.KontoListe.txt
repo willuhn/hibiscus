@@ -1,0 +1,8 @@
+Auslesen der Kontodaten:
+
+HBCI-Chipkarten bieten die Möglichkeit, die
+über sie erreichbaren Konten automatisch zu
+ermitteln. Legen Sie also einfach Ihre
+Chipkarte ein und wählen Sie "Daten aus Medium lesen"
+um die Bankverbindungen zu ermitteln. Bereits
+eingerichtete Konten werden hierbei übersprungen.

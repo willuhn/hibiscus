@@ -1,0 +1,4 @@
+Hinweis:
+
+Die Überweisung wird in der Währung des
+ausgewählten Kontos ausgeführt.

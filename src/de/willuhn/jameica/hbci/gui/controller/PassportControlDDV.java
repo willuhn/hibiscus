@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/PassportControlDDV.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/03/03 22:26:40 $
+ * $Revision: 1.9 $
+ * $Date: 2004/03/04 00:26:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.controller.AbstractControl;
+import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.parts.CheckboxInput;
 import de.willuhn.jameica.gui.parts.Input;
 import de.willuhn.jameica.gui.parts.LabelInput;
@@ -185,7 +186,27 @@ public class PassportControlDDV extends AbstractControl {
    * @see de.willuhn.jameica.gui.controller.AbstractControl#handleDelete()
    */
   public void handleDelete() {
+		
+  	try
+  	{
+			YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
+			d.setTitle(i18n.tr("Medium löschen?"));
+			d.setText(i18n.tr("Sind Sie sicher, daß Sie das Sicherheitsmedium löschen möchten?"));
+			Boolean b = (Boolean) d.open();
+			if (!b.booleanValue())
+				return;
 
+  		getPassport().delete();
+			GUI.setActionText(i18n.tr("Medium gelöscht"));
+  	}
+  	catch (ApplicationException e2)
+  	{
+			GUI.setActionText(e2.getLocalizedMessage());
+  	}
+		catch (Exception e)
+		{
+			Application.getLog().error("error while deleting passport",e);
+		}
   }
   
   /**
@@ -290,6 +311,9 @@ public class PassportControlDDV extends AbstractControl {
 
 /**********************************************************************
  * $Log: PassportControlDDV.java,v $
+ * Revision 1.9  2004/03/04 00:26:24  willuhn
+ * @N Ueberweisung
+ *
  * Revision 1.8  2004/03/03 22:26:40  willuhn
  * @N help texts
  * @C refactoring
