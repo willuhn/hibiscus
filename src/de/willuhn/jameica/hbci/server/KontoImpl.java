@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.43 $
- * $Date: 2005/02/03 23:57:05 $
- * $Author: willuhn $
+ * $Revision: 1.44 $
+ * $Date: 2005/02/20 19:04:44 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -148,7 +148,10 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 			return null;
 
 		try {
-			return PassportRegistry.findByClass(className);
+			Passport p = PassportRegistry.findByClass(className);
+			// BUGZILLA #7 http://www.willuhn.de/bugzilla/show_bug.cgi?id=7
+			p.init(this);
+			return p;
 		}
 		catch (Exception e)
 		{
@@ -451,6 +454,9 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.44  2005/02/20 19:04:44  web0
+ * @B Bug 7
+ *
  * Revision 1.43  2005/02/03 23:57:05  willuhn
  * *** empty log message ***
  *

@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passport/Passport.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/02/06 17:46:17 $
- * $Author: willuhn $
+ * $Revision: 1.3 $
+ * $Date: 2005/02/20 19:04:44 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -15,6 +15,8 @@ package de.willuhn.jameica.hbci.passport;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
+import de.willuhn.jameica.hbci.rmi.Konto;
+
 
 /**
  * Basis-Interface aller Passports.
@@ -25,6 +27,22 @@ import java.rmi.RemoteException;
  * <i>de.willuhn.jameica.passports.ddv.server.PassportImpl</i> dienen.
  */
 public interface Passport extends Remote {
+
+
+	/**
+	 * Diese Funktion wird von Hibiscus aufgerufen, wenn der Passport
+	 * initialisiert wird.
+	 * Sie kann vom Passport implementiert werden - muss jedoch nicht.
+	 * Falls der Passport jedoch wissen muss, fuer welches Konto er
+	 * gerade zustaendig ist, kann er es ueber diese Funktion erfahren.
+	 * Die Funktion wird unmittelbar vor der Ausfuehrung eines HBCI-Jobs
+	 * im Konto ausgefuehrt.
+   * @param konto das Konto, fuer welches der Passport gerade verwendet
+   * werden soll.
+   * @throws RemoteException
+   * BUGZILLA #7 http://www.willuhn.de/bugzilla/show_bug.cgi?id=7
+   */
+  public void init(Konto konto) throws RemoteException;
 
 	/**
 	 * Liefert den sprechenden Namen des Passports.
@@ -54,22 +72,14 @@ public interface Passport extends Remote {
    * @throws RemoteException
    */
   public Class getConfigDialog() throws RemoteException;
-
-	/**
-	 * Wird von Hibiscus bei einem Versionswechsel aufgerufen.
-	 * Auf diese Weise werden alle installierten Passports informiert,
-	 * wenn ein Hibiscus-Update durchgefuehrt wird und koennen
-	 * daraufhin selbst ebenfalls Update-Routinen durchfuehren.
-   * @param oldVersion alte Hibiscus-Version.
-   * @param newVersion Neue Hibiscus-Version.
-   * @throws RemoteException
-   */
-  public void update(double oldVersion, double newVersion) throws RemoteException;
 }
 
 
 /**********************************************************************
  * $Log: Passport.java,v $
+ * Revision 1.3  2005/02/20 19:04:44  web0
+ * @B Bug 7
+ *
  * Revision 1.2  2005/02/06 17:46:17  willuhn
  * *** empty log message ***
  *
