@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragListJob.java,v $
- * $Revision: 1.16 $
- * $Date: 2005/03/06 17:10:57 $
+ * $Revision: 1.17 $
+ * $Date: 2005/03/06 17:15:45 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -120,6 +120,19 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
 			try
 			{
 				auftrag = Converter.HBCIDauer2HibiscusDauerauftrag(lines[i]);
+
+				// BUGZILLA 22 http://www.willuhn.de/bugzilla/show_bug.cgi?id=22
+				// BEGIN
+				String name = auftrag.getGegenkontoName();
+				Logger.debug("checking name length: " + name + ", chars: " + name.length());
+				if (name != null && name.length() > HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH)
+				{
+					Logger.warn("name of other account longer than " + HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH +
+						" chars. stripping");
+					auftrag.setGegenkontoName(name.substring(0,HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH));
+				}
+				// END
+
 				boolean found = false;
 				while(existing.hasNext())
 				{
@@ -133,17 +146,6 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
 						found = true;
 						Logger.info("overwriting dauerauftrag order id: " + auftrag.getOrderID());
 						ex.overwrite(auftrag);
-						// BUGZILLA 22 http://www.willuhn.de/bugzilla/show_bug.cgi?id=22
-						// BEGIN
-						String name = ex.getGegenkontoName();
-						Logger.debug("checking name length: " + name + ", chars: " + name.length());
-						if (name != null && name.length() > HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH)
-						{
-							Logger.warn("name of other account longer than " + HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH +
-								" chars. stripping");
-							ex.setGegenkontoName(name.substring(0,HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH));
-						}
-						// END
 						ex.store();
 						break;
 					}
@@ -195,6 +197,9 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIDauerauftragListJob.java,v $
+ * Revision 1.17  2005/03/06 17:15:45  web0
+ * *** empty log message ***
+ *
  * Revision 1.16  2005/03/06 17:10:57  web0
  * *** empty log message ***
  *
