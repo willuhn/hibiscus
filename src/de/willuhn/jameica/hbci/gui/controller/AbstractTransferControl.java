@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.14 $
- * $Date: 2004/11/01 23:10:19 $
+ * $Revision: 1.15 $
+ * $Date: 2004/11/02 18:48:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -182,7 +182,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 	{
 		if (empfName != null)
 			return empfName;
-		empfName = new TextInput(getTransfer().getEmpfaengerName(),27);
+		empfName = new TextInput(getTransfer().getEmpfaengerName(),HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH);
 		return empfName;
 	}
 
@@ -407,6 +407,9 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
+ * Revision 1.15  2004/11/02 18:48:32  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.14  2004/11/01 23:10:19  willuhn
  * @N Pruefung auf gueltige Zeichen in Verwendungszweck
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AbstractTransferImpl.java,v $
- * $Revision: 1.12 $
- * $Date: 2004/11/01 23:10:19 $
+ * $Revision: 1.13 $
+ * $Date: 2004/11/02 18:48:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -52,40 +52,40 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
   protected void insertCheck() throws ApplicationException {
   	try {
 			if (getBetrag() == 0.0)
-				throw new ApplicationException("Bitte geben Sie einen gültigen Betrag ein.");
+				throw new ApplicationException(i18n.tr("Bitte geben Sie einen gültigen Betrag ein."));
 
 			if (getKonto() == null)
-				throw new ApplicationException("Bitte wählen Sie ein Konto aus.");
+				throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus."));
 			if (getKonto().isNewObject())
-				throw new ApplicationException("Bitte speichern Sie zunächst das Konto");
+				throw new ApplicationException(i18n.tr("Bitte speichern Sie zunächst das Konto"));
 
 			if (getBetrag() > Settings.getUeberweisungLimit())
-				throw new ApplicationException("Limit für Überweisungsbetrag überschritten: " + 
-					HBCI.DECIMALFORMAT.format(Settings.getUeberweisungLimit()) + " " + getKonto().getWaehrung());
+				throw new ApplicationException(i18n.tr("Limit für Überweisungsbetrag überschritten: {0} ", 
+					HBCI.DECIMALFORMAT.format(Settings.getUeberweisungLimit()) + " " + getKonto().getWaehrung()));
 
 			if (getEmpfaengerKonto() == null || "".equals(getEmpfaengerKonto()))
-				throw new ApplicationException("Bitte geben Sie die Kontonummer des Empfängers ein");
+				throw new ApplicationException(i18n.tr("Bitte geben Sie die Kontonummer des Empfängers ein"));
 			
 			if (getEmpfaengerBLZ() == null || "".equals(getEmpfaengerBLZ()))
-				throw new ApplicationException("Bitte geben Sie die BLZ des Empfängers ein");
+				throw new ApplicationException(i18n.tr("Bitte geben Sie die BLZ des Empfängers ein"));
 
 			if (getEmpfaengerName() == null || "".equals(getEmpfaengerName()))
-				throw new ApplicationException("Bitte geben Sie den Namen des Empfängers ein");
+				throw new ApplicationException(i18n.tr("Bitte geben Sie den Namen des Empfängers ein"));
 
-			if (getEmpfaengerName().length() > 27)
-				throw new ApplicationException("Bitte geben Sie maximal 27 Zeichen für den Namen des Empfängers ein");
+			if (getEmpfaengerName().length() > HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH)
+				throw new ApplicationException(i18n.tr("Bitte geben Sie maximal {0} Zeichen für den Namen des Empfängers ein",""+HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH));
 
 			if (!HBCIUtils.checkAccountCRC(getEmpfaengerBLZ(),getEmpfaengerKonto()))
-				throw new ApplicationException("Ungültige BLZ/Kontonummer. Bitte prüfen Sie Ihre Eingaben.");
+				throw new ApplicationException(i18n.tr("Ungültige BLZ/Kontonummer. Bitte prüfen Sie Ihre Eingaben."));
 				
 			if (getZweck() == null || "".equals(getZweck()))
-				throw new ApplicationException("Bitte geben Sie einen Verwendungszweck ein");
+				throw new ApplicationException(i18n.tr("Bitte geben Sie einen Verwendungszweck ein"));
 
-			if (getZweck().length() > 27)
-				throw new ApplicationException("Bitten geben Sie als Verwendungszweck maximal 27 Zeichen an");
+			if (getZweck().length() > HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH)
+				throw new ApplicationException(i18n.tr("Bitten geben Sie als Verwendungszweck maximal {0} Zeichen an",""+HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH));
 				
-			if (getZweck2() != null && getZweck2().length() > 27)
-				throw new ApplicationException("Bitten geben Sie als weiteren Verwendungszweck maximal 27 Zeichen an");
+			if (getZweck2() != null && getZweck2().length() > HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH)
+				throw new ApplicationException(i18n.tr("Bitten geben Sie als weiteren Verwendungszweck maximal {0} Zeichen an",""+HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH));
 
 			checkChars(getZweck());
 			checkChars(getZweck2());
@@ -93,7 +93,7 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
   	catch (RemoteException e)
   	{
   		Logger.error("error while checking ueberweisung",e);
-  		throw new ApplicationException("Fehler beim Prüfen der Überweisung.");
+  		throw new ApplicationException(i18n.tr("Fehler beim Prüfen der Überweisung."));
   	}
   }
 
@@ -261,6 +261,9 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
 
 /**********************************************************************
  * $Log: AbstractTransferImpl.java,v $
+ * Revision 1.13  2004/11/02 18:48:32  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.12  2004/11/01 23:10:19  willuhn
  * @N Pruefung auf gueltige Zeichen in Verwendungszweck
  *

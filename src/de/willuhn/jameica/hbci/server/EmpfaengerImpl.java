@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/EmpfaengerImpl.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/10/15 20:09:43 $
+ * $Revision: 1.10 $
+ * $Date: 2004/11/02 18:48:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,21 +18,27 @@ import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Empfaenger;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
+import de.willuhn.util.I18N;
 import de.willuhn.util.Logger;
 
 /**
  */
 public class EmpfaengerImpl extends AbstractDBObject implements Empfaenger {
 
+  private I18N i18n = null;
   /**
    * @throws RemoteException
    */
   public EmpfaengerImpl() throws RemoteException {
     super();
+    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
   /**
@@ -62,25 +68,25 @@ public class EmpfaengerImpl extends AbstractDBObject implements Empfaenger {
 		try {
 
 			if (getName() == null || getName().length() == 0)
-				throw new ApplicationException("Bitte geben Sie einen Namen ein.");
+				throw new ApplicationException(i18n.tr("Bitte geben Sie einen Namen ein."));
 
-			if (getName().length() > 27)
-				throw new ApplicationException("Bitte geben Sie maximal 27 Zeichen für den Namen ein.");
+			if (getName().length() > HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH)
+				throw new ApplicationException(i18n.tr("Bitte geben Sie maximal {0} Zeichen für den Namen ein.",""+HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH));
 
 			if (getBLZ() == null || getBLZ().length() == 0)
-				throw new ApplicationException("Bitte geben Sie eine BLZ ein.");
+				throw new ApplicationException(i18n.tr("Bitte geben Sie eine BLZ ein."));
 
 			if (getKontonummer() == null || getKontonummer().length() == 0)
-				throw new ApplicationException("Bitte geben Sie eine Kontonummer ein.");
+				throw new ApplicationException(i18n.tr("Bitte geben Sie eine Kontonummer ein."));
 
 			if (!HBCIUtils.checkAccountCRC(getBLZ(),getKontonummer()))
-				throw new ApplicationException("Ungültige BLZ/Kontonummer. Bitte prüfen Sie Ihre Eingaben.");
+				throw new ApplicationException(i18n.tr("Ungültige BLZ/Kontonummer. Bitte prüfen Sie Ihre Eingaben."));
 
 		}
 		catch (RemoteException e)
 		{
 			Logger.error("error while checking empfaenger",e);
-			throw new ApplicationException("Fehler bei der Prüfung des Empfängers");
+			throw new ApplicationException(i18n.tr("Fehler bei der Prüfung des Empfängers"));
 		}
   }
 
@@ -155,6 +161,9 @@ public class EmpfaengerImpl extends AbstractDBObject implements Empfaenger {
 
 /**********************************************************************
  * $Log: EmpfaengerImpl.java,v $
+ * Revision 1.10  2004/11/02 18:48:32  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.9  2004/10/15 20:09:43  willuhn
  * @B Laengen-Pruefung bei Empfaengername
  *
