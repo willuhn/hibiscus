@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.19 $
- * $Date: 2004/07/04 17:07:59 $
+ * $Revision: 1.20 $
+ * $Date: 2004/07/11 16:14:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -138,6 +138,17 @@ public class HBCI extends AbstractPlugin
    */
   public void update(double oldVersion) throws ApplicationException
   {
+  	if (oldVersion == 1.0)
+  	{
+			try {
+				EmbeddedDatabase db = getResources().getDatabase();
+				db.executeSQLScript(new File(getResources().getPath() + "/sql/update_1.0-1.1.sql"));
+			}
+			catch (Exception e)
+			{
+				throw new ApplicationException(getResources().getI18N().tr("Fehler beim Update der Datenbank"),e);
+			}
+  	}
   }
 
   /**
@@ -151,6 +162,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.20  2004/07/11 16:14:29  willuhn
+ * @N erster Code fuer Dauerauftraege
+ *
  * Revision 1.19  2004/07/04 17:07:59  willuhn
  * @B Umsaetze wurden teilweise nicht als bereits vorhanden erkannt und wurden somit doppelt angezeigt
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Ueberweisung.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/04/24 19:04:51 $
+ * $Revision: 1.7 $
+ * $Date: 2004/07/11 16:14:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,63 +15,14 @@ package de.willuhn.jameica.hbci.rmi;
 import java.rmi.RemoteException;
 import java.util.Date;
 
-import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.util.ApplicationException;
 
 /**
  * Bildet eine Ueberweisung ab.
  */
-public interface Ueberweisung extends DBObject {
+public interface Ueberweisung extends Transfer
+{
 
-	/**
-	 * Liefert das Konto, ueber das bezahlt wurde.
-   * @return Konto.
-   * @throws RemoteException
-   */
-  public Konto getKonto() throws RemoteException;
-	
-	/**
-	 * Liefert die Kontonummer des Empfaengers.
-   * @return Kontonummer des Empfaengers.
-   * @throws RemoteException
-   */
-  public String getEmpfaengerKonto() throws RemoteException;
-
-	/**
-	 * Liefert die BLZ des Empfaengers.
-	 * @return BLZ des Empfaengers.
-	 * @throws RemoteException
-	 */
-	public String getEmpfaengerBlz() throws RemoteException;
-	
-	/**
-	 * Liefert den Namen des Empfaengers.
-	 * @return Name des Empfaengers.
-	 * @throws RemoteException
-	 */
-	public String getEmpfaengerName() throws RemoteException;
-
-	/**
-	 * Liefert den Betrag.
-   * @return Betrag.
-   * @throws RemoteException
-   */
-  public double getBetrag() throws RemoteException;
-	
-	/**
-	 * Liefert die Zeile 1 des Verwendungszwecks.
-   * @return Zeile 1 des Verwendungszwecks.
-   * @throws RemoteException
-   */
-  public String getZweck() throws RemoteException;
-	
-	/**
-	 * Liefert die Zeile 2 des Verwendungszwecks.
-	 * @return Zeile 2 des Verwendungszwecks.
-	 * @throws RemoteException
-	 */
-	public String getZweck2() throws RemoteException;
-	
 	/**
 	 * Liefert den Termin der Ueberweisung.
    * @return Termin der Ueberweisung.
@@ -86,55 +37,6 @@ public interface Ueberweisung extends DBObject {
    */
   public boolean ausgefuehrt() throws RemoteException;
 	
-	/**
-	 * Speichert das Konto, das zur Bezahlung verwendet werden soll.
-   * @param konto Konto, das verwendet werden soll.
-   * @throws RemoteException
-   */
-  public void setKonto(Konto konto) throws RemoteException;
-	
-	/**
-	 * Speichert die Kontonummer des Empfaengers.
-   * @param konto Kontonummer des Empfaengers.
-   * @throws RemoteException
-   */
-  public void setEmpfaengerKonto(String konto) throws RemoteException;
-	
-	/**
-	 * Speichert die BLZ des Empfaengers.
-	 * @param blz BLZ des Empfaengers.
-	 * @throws RemoteException
-	 */
-	public void setEmpfaengerBlz(String blz) throws RemoteException;
-
-	/**
-	 * Speichert den Namen des Empfaengers.
-	 * @param name Name des Empfaengers.
-	 * @throws RemoteException
-	 */
-	public void setEmpfaengerName(String name) throws RemoteException;
-
-	/**
-	 * Speichert den zu ueberweisenden Betrag.
-   * @param betrag Betrag.
-   * @throws RemoteException
-   */
-  public void setBetrag(double betrag) throws RemoteException;
-	
-	/**
-	 * Speichert den Zweck der Ueberweisung.
-   * @param zweck Zweck der Ueberweisung.
-   * @throws RemoteException
-   */
-  public void setZweck(String zweck) throws RemoteException;
-	
-	/**
-	 * Speichert Zeile 2 des Verwendungszwecks.
-   * @param zweck2 Zeile 2 des Verwendungszwecks.
-   * @throws RemoteException
-   */
-  public void setZweck2(String zweck2) throws RemoteException;
-
 	/**
 	 * Speichert den Termin, an dem die Ueberweisung ausgefuehrt werden soll.
    * @param termin Termin der Ueberweisung.
@@ -169,6 +71,9 @@ public interface Ueberweisung extends DBObject {
 
 /**********************************************************************
  * $Log: Ueberweisung.java,v $
+ * Revision 1.7  2004/07/11 16:14:29  willuhn
+ * @N erster Code fuer Dauerauftraege
+ *
  * Revision 1.6  2004/04/24 19:04:51  willuhn
  * @N Ueberweisung.execute works!! ;)
  *

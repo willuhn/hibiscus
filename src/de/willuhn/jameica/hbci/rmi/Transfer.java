@@ -1,0 +1,130 @@
+/**********************************************************************
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Transfer.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2004/07/11 16:14:29 $
+ * $Author: willuhn $
+ * $Locker:  $
+ * $State: Exp $
+ *
+ * Copyright (c) by willuhn.webdesign
+ * All rights reserved
+ *
+ **********************************************************************/
+package de.willuhn.jameica.hbci.rmi;
+
+import java.rmi.RemoteException;
+
+import de.willuhn.datasource.rmi.DBObject;
+
+/**
+ * Basis-Interface fuer Geld-Transfers zwischen Konten.
+ */
+public interface Transfer extends DBObject {
+
+	/**
+	 * Liefert das Konto, ueber das bezahlt wurde.
+   * @return Konto.
+   * @throws RemoteException
+   */
+  public Konto getKonto() throws RemoteException;
+	
+	/**
+	 * Liefert die Kontonummer des Empfaengers.
+   * @return Kontonummer des Empfaengers.
+   * @throws RemoteException
+   */
+  public String getEmpfaengerKonto() throws RemoteException;
+
+	/**
+	 * Liefert die BLZ des Empfaengers.
+	 * @return BLZ des Empfaengers.
+	 * @throws RemoteException
+	 */
+	public String getEmpfaengerBlz() throws RemoteException;
+	
+	/**
+	 * Liefert den Namen des Empfaengers.
+	 * @return Name des Empfaengers.
+	 * @throws RemoteException
+	 */
+	public String getEmpfaengerName() throws RemoteException;
+
+	/**
+	 * Liefert den Betrag.
+   * @return Betrag.
+   * @throws RemoteException
+   */
+  public double getBetrag() throws RemoteException;
+	
+	/**
+	 * Liefert die Zeile 1 des Verwendungszwecks.
+   * @return Zeile 1 des Verwendungszwecks.
+   * @throws RemoteException
+   */
+  public String getZweck() throws RemoteException;
+	
+	/**
+	 * Liefert die Zeile 2 des Verwendungszwecks.
+	 * @return Zeile 2 des Verwendungszwecks.
+	 * @throws RemoteException
+	 */
+	public String getZweck2() throws RemoteException;
+	
+	/**
+	 * Speichert das Konto, das zur Bezahlung verwendet werden soll.
+   * @param konto Konto, das verwendet werden soll.
+   * @throws RemoteException
+   */
+  public void setKonto(Konto konto) throws RemoteException;
+	
+	/**
+	 * Speichert die Kontonummer des Empfaengers.
+   * @param konto Kontonummer des Empfaengers.
+   * @throws RemoteException
+   */
+  public void setEmpfaengerKonto(String konto) throws RemoteException;
+	
+	/**
+	 * Speichert die BLZ des Empfaengers.
+	 * @param blz BLZ des Empfaengers.
+	 * @throws RemoteException
+	 */
+	public void setEmpfaengerBlz(String blz) throws RemoteException;
+
+	/**
+	 * Speichert den Namen des Empfaengers.
+	 * @param name Name des Empfaengers.
+	 * @throws RemoteException
+	 */
+	public void setEmpfaengerName(String name) throws RemoteException;
+
+	/**
+	 * Speichert den zu ueberweisenden Betrag.
+   * @param betrag Betrag.
+   * @throws RemoteException
+   */
+  public void setBetrag(double betrag) throws RemoteException;
+	
+	/**
+	 * Speichert den Zweck der Ueberweisung.
+   * @param zweck Zweck der Ueberweisung.
+   * @throws RemoteException
+   */
+  public void setZweck(String zweck) throws RemoteException;
+	
+	/**
+	 * Speichert Zeile 2 des Verwendungszwecks.
+   * @param zweck2 Zeile 2 des Verwendungszwecks.
+   * @throws RemoteException
+   */
+  public void setZweck2(String zweck2) throws RemoteException;
+
+}
+
+
+/**********************************************************************
+ * $Log: Transfer.java,v $
+ * Revision 1.1  2004/07/11 16:14:29  willuhn
+ * @N erster Code fuer Dauerauftraege
+ *
+ **********************************************************************/
