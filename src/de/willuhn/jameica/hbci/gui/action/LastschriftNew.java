@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/LastschriftNew.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/02/27 17:11:49 $
+ * $Revision: 1.3 $
+ * $Date: 2005/03/02 17:59:30 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -60,7 +60,7 @@ public class LastschriftNew implements Action
 			try {
 				Adresse e = (Adresse) context;
 				u = (Lastschrift) Settings.getDBService().createObject(Lastschrift.class,null);
-				u.setEmpfaenger(e);
+				u.setGegenkonto(e);
 			}
 			catch (RemoteException e)
 			{
@@ -76,6 +76,9 @@ public class LastschriftNew implements Action
 
 /**********************************************************************
  * $Log: LastschriftNew.java,v $
+ * Revision 1.3  2005/03/02 17:59:30  web0
+ * @N some refactoring
+ *
  * Revision 1.2  2005/02/27 17:11:49  web0
  * @N first code for "Sammellastschrift"
  * @C "Empfaenger" renamed into "Adresse"

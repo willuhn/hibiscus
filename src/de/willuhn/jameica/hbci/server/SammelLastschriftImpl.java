@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/SammelLastschriftImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/03/01 18:51:04 $
+ * $Revision: 1.3 $
+ * $Date: 2005/03/02 17:59:30 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -28,7 +28,8 @@ import de.willuhn.util.I18N;
  * Implementierung des Containers fuer Sammellastschrift-Buchungen.
  * @author willuhn
  */
-public class SammelLastschriftImpl extends AbstractDBObject implements SammelLastschrift
+public class SammelLastschriftImpl extends AbstractDBObject
+  implements SammelLastschrift
 {
 
   private I18N i18n;
@@ -294,6 +295,9 @@ public class SammelLastschriftImpl extends AbstractDBObject implements SammelLas
 
 /*****************************************************************************
  * $Log: SammelLastschriftImpl.java,v $
+ * Revision 1.3  2005/03/02 17:59:30  web0
+ * @N some refactoring
+ *
  * Revision 1.2  2005/03/01 18:51:04  web0
  * @N Dialoge fuer Sammel-Lastschriften
  *

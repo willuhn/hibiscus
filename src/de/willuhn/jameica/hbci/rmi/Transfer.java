@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Transfer.java,v $
- * $Revision: 1.7 $
- * $Date: 2005/02/27 17:11:49 $
+ * $Revision: 1.8 $
+ * $Date: 2005/03/02 17:59:30 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -30,25 +30,25 @@ public interface Transfer extends DBObject
   public Konto getKonto() throws RemoteException;
 	
 	/**
-	 * Liefert die Kontonummer des Empfaengers.
+	 * Liefert die Kontonummer des Gegenkontos.
    * @return Kontonummer des Empfaengers.
    * @throws RemoteException
    */
-  public String getEmpfaengerKonto() throws RemoteException;
+  public String getGegenkontoNummer() throws RemoteException;
 
 	/**
-	 * Liefert die BLZ des Empfaengers.
-	 * @return BLZ des Empfaengers.
+	 * Liefert die BLZ des Gegenkontos.
+	 * @return BLZ des Gegenkontos.
 	 * @throws RemoteException
 	 */
-	public String getEmpfaengerBLZ() throws RemoteException;
+	public String getGegenkontoBLZ() throws RemoteException;
 	
 	/**
-	 * Liefert den Namen des Empfaengers.
-	 * @return Name des Empfaengers.
+	 * Liefert den Namen des Kontoinhabers des Gegenkontos.
+	 * @return Name des Kontoinhabers des Gegenkontos.
 	 * @throws RemoteException
 	 */
-	public String getEmpfaengerName() throws RemoteException;
+	public String getGegenkontoName() throws RemoteException;
 
 	/**
 	 * Liefert den Betrag.
@@ -79,32 +79,32 @@ public interface Transfer extends DBObject
   public void setKonto(Konto konto) throws RemoteException;
 	
 	/**
-	 * Speichert die Kontonummer des Empfaengers.
-   * @param konto Kontonummer des Empfaengers.
+	 * Speichert die Kontonummer des Gegenkontos.
+   * @param konto Kontonummer des Gegenkontos.
    * @throws RemoteException
    */
-  public void setEmpfaengerKonto(String konto) throws RemoteException;
+  public void setGegenkontoNummer(String konto) throws RemoteException;
 	
 	/**
-	 * Speichert die BLZ des Empfaengers.
-	 * @param blz BLZ des Empfaengers.
+	 * Speichert die BLZ des Gegenkontos.
+	 * @param blz BLZ des Gegenkontos.
 	 * @throws RemoteException
 	 */
-	public void setEmpfaengerBLZ(String blz) throws RemoteException;
+	public void setGegenkontoBLZ(String blz) throws RemoteException;
 
 	/**
-	 * Speichert den Namen des Empfaengers.
-	 * @param name Name des Empfaengers.
+	 * Speichert den Namen des Kontoinhabers des Gegenkontos.
+	 * @param name Name des Kontoinhabers des Gegenkontos.
 	 * @throws RemoteException
 	 */
-	public void setEmpfaengerName(String name) throws RemoteException;
+	public void setGegenkontoName(String name) throws RemoteException;
 
 	/**
-	 * Setzt alle drei oben genannten Empfaenger-Eigenschaften auf einmal.
+	 * Setzt alle drei oben genannten Gegenkonto-Eigenschaften auf einmal.
    * @param e
    * @throws RemoteException
    */
-  public void setEmpfaenger(Adresse e) throws RemoteException;
+  public void setGegenkonto(Adresse e) throws RemoteException;
 
 	/**
 	 * Speichert den zu ueberweisenden Betrag.
@@ -126,18 +126,14 @@ public interface Transfer extends DBObject
    * @throws RemoteException
    */
   public void setZweck2(String zweck2) throws RemoteException;
-
-	/**
-	 * Dupliziert den Transfer.
-   * @return neuer Transfer mit den gleichen Eigenschaften.
-   * @throws RemoteException
-   */
-  public Transfer duplicate() throws RemoteException;
 }
 
 
 /**********************************************************************
  * $Log: Transfer.java,v $
+ * Revision 1.8  2005/03/02 17:59:30  web0
+ * @N some refactoring
+ *
  * Revision 1.7  2005/02/27 17:11:49  web0
  * @N first code for "Sammellastschrift"
  * @C "Empfaenger" renamed into "Adresse"

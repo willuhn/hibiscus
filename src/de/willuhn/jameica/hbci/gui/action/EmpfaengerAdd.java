@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/EmpfaengerAdd.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/02/27 17:11:49 $
+ * $Revision: 1.4 $
+ * $Date: 2005/03/02 17:59:30 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -58,9 +58,9 @@ public class EmpfaengerAdd implements Action
 			if (context instanceof Transfer)
 			{
 				Transfer t = (Transfer) context;
-				blz   = t.getEmpfaengerBLZ();
-				konto = t.getEmpfaengerKonto();
-				name  = t.getEmpfaengerName();
+				blz   = t.getGegenkontoBLZ();
+				konto = t.getGegenkontoNummer();
+				name  = t.getGegenkontoName();
 			}
 			else if (context instanceof Umsatz)
 			{
@@ -105,6 +105,9 @@ public class EmpfaengerAdd implements Action
 
 /**********************************************************************
  * $Log: EmpfaengerAdd.java,v $
+ * Revision 1.4  2005/03/02 17:59:30  web0
+ * @N some refactoring
+ *
  * Revision 1.3  2005/02/27 17:11:49  web0
  * @N first code for "Sammellastschrift"
  * @C "Empfaenger" renamed into "Adresse"

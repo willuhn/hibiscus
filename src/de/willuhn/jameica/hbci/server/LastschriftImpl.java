@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/LastschriftImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/02/28 16:28:24 $
+ * $Revision: 1.5 $
+ * $Date: 2005/03/02 17:59:30 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -14,8 +14,8 @@ package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
 
+import de.willuhn.jameica.hbci.rmi.Duplicatable;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
-import de.willuhn.jameica.hbci.rmi.Transfer;
 
 /**
  * Bildet eine Lastschrift ab. Ist fast das gleiche wie eine
@@ -23,7 +23,8 @@ import de.willuhn.jameica.hbci.rmi.Transfer;
  * und der Empfaenger hier nicht das Geld sondern die Forderung
  * erhaelt.
  */
-public class LastschriftImpl extends AbstractBaseUeberweisungImpl implements Lastschrift
+public class LastschriftImpl extends AbstractBaseUeberweisungImpl
+  implements Lastschrift
 {
 
   /**
@@ -43,14 +44,14 @@ public class LastschriftImpl extends AbstractBaseUeberweisungImpl implements Las
   }
 
 	/**
-	 * @see de.willuhn.jameica.hbci.rmi.Transfer#duplicate()
-	 */
-	public Transfer duplicate() throws RemoteException {
+   * @see de.willuhn.jameica.hbci.rmi.Duplicatable#duplicate()
+   */
+	public Duplicatable duplicate() throws RemoteException {
 		Lastschrift u = (Lastschrift) getService().createObject(Lastschrift.class,null);
 		u.setBetrag(getBetrag());
-		u.setEmpfaengerBLZ(getEmpfaengerBLZ());
-		u.setEmpfaengerKonto(getEmpfaengerKonto());
-		u.setEmpfaengerName(getEmpfaengerName());
+		u.setGegenkontoBLZ(getGegenkontoBLZ());
+		u.setGegenkontoNummer(getGegenkontoNummer());
+		u.setGegenkontoName(getGegenkontoName());
 		u.setKonto(getKonto());
 		u.setTermin(getTermin());
 		u.setZweck(getZweck());
@@ -87,6 +88,9 @@ public class LastschriftImpl extends AbstractBaseUeberweisungImpl implements Las
 
 /**********************************************************************
  * $Log: LastschriftImpl.java,v $
+ * Revision 1.5  2005/03/02 17:59:30  web0
+ * @N some refactoring
+ *
  * Revision 1.4  2005/02/28 16:28:24  web0
  * @N first code for "Sammellastschrift"
  *

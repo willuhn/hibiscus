@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/DauerauftragDialog.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/03/01 00:38:27 $
+ * $Revision: 1.4 $
+ * $Date: 2005/03/02 17:59:31 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -83,11 +83,11 @@ public class DauerauftragDialog extends AbstractDialog {
 
 		group.addSeparator();
 
-		Input empfName = new LabelInput(auftrag.getEmpfaengerName());
+		Input empfName = new LabelInput(auftrag.getGegenkontoName());
 		group.addLabelPair(i18n.tr("Name des Empfänger"),empfName);
 
-		Input empfKto = new LabelInput(auftrag.getEmpfaengerKonto());
-		empfKto.setComment(auftrag.getEmpfaengerBLZ() + "/" + HBCIUtils.getNameForBLZ(auftrag.getEmpfaengerBLZ()));
+		Input empfKto = new LabelInput(auftrag.getGegenkontoNummer());
+		empfKto.setComment(auftrag.getGegenkontoBLZ() + "/" + HBCIUtils.getNameForBLZ(auftrag.getGegenkontoBLZ()));
 		group.addLabelPair(i18n.tr("Konto des Empfängers"),empfKto);
 
 		group.addSeparator();
@@ -144,6 +144,9 @@ public class DauerauftragDialog extends AbstractDialog {
 
 /**********************************************************************
  * $Log: DauerauftragDialog.java,v $
+ * Revision 1.4  2005/03/02 17:59:31  web0
+ * @N some refactoring
+ *
  * Revision 1.3  2005/03/01 00:38:27  web0
  * *** empty log message ***
  *

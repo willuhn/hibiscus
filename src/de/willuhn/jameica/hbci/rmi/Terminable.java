@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Terminable.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/02/19 16:49:32 $
- * $Author: willuhn $
+ * $Revision: 1.2 $
+ * $Date: 2005/03/02 17:59:30 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -19,6 +19,7 @@ import de.willuhn.util.ApplicationException;
 
 /**
  * Interface fuer clientseitig terminierte Transfers.
+ * Das sind alle Geld-Transfers, die im Hibiscus-eigenen Terminkalender verwaltet werden.
  */
 public interface Terminable
 {
@@ -30,20 +31,6 @@ public interface Terminable
    */
   public Date getTermin() throws RemoteException;
 	
-	/**
-	 * Prueft, ob die Ueberweisung ausgefuehrt wurde.
-   * @return true, wenn die Ueberweisung bereits ausgefuehrt wurde.
-   * @throws RemoteException
-   */
-  public boolean ausgefuehrt() throws RemoteException;
-	
-	/**
-	 * Markiert die Ueberweisung als ausgefuehrt und speichert die Aenderung
-   * unmittelbar.
-   * @throws RemoteException
-   */
-  public void setAusgefuehrt() throws RemoteException, ApplicationException;
-
 	/**
 	 * Speichert den Termin, an dem die Ueberweisung ausgefuehrt werden soll.
    * @param termin Termin der Ueberweisung.
@@ -58,11 +45,28 @@ public interface Terminable
    */
   public boolean ueberfaellig() throws RemoteException;
 	
+  /**
+   * Prueft, ob das Objekt ausgefuehrt wurde.
+   * @return true, wenn das Objekt bereits ausgefuehrt wurde.
+   * @throws RemoteException
+   */
+  public boolean ausgefuehrt() throws RemoteException;
+  
+  /**
+   * Markiert das Objekt als ausgefuehrt und speichert die Aenderung
+   * unmittelbar.
+   * @throws RemoteException
+   */
+  public void setAusgefuehrt() throws RemoteException, ApplicationException;
+
 }
 
 
 /**********************************************************************
  * $Log: Terminable.java,v $
+ * Revision 1.2  2005/03/02 17:59:30  web0
+ * @N some refactoring
+ *
  * Revision 1.1  2005/02/19 16:49:32  willuhn
  * @B bugs 3,8,10
  *

@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DauerauftragImpl.java,v $
- * $Revision: 1.15 $
- * $Date: 2005/02/19 16:49:32 $
- * $Author: willuhn $
+ * $Revision: 1.16 $
+ * $Date: 2005/03/02 17:59:30 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -29,7 +29,8 @@ import de.willuhn.util.I18N;
 /**
  * Implementierung eines Dauer-Auftrags.
  */
-public class DauerauftragImpl extends AbstractTransferImpl implements Dauerauftrag
+public class DauerauftragImpl extends AbstractTransferImpl
+  implements Dauerauftrag
 {
 
 	private I18N i18n;
@@ -212,9 +213,9 @@ public class DauerauftragImpl extends AbstractTransferImpl implements Dauerauftr
 		String letzteZahlung = getLetzteZahlung() == null ? "" : HBCI.DATEFORMAT.format(getLetzteZahlung());
 		String s = getTurnus().getChecksum() +
 							 getBetrag() +
-							 getEmpfaengerBLZ() +
-							 getEmpfaengerKonto() +
-							 getEmpfaengerName() +
+							 getGegenkontoBLZ() +
+							 getGegenkontoNummer() +
+							 getGegenkontoName() +
 							 getKonto().getChecksum() +
 							 getZweck() +
 							 getZweck2() +
@@ -275,6 +276,9 @@ public class DauerauftragImpl extends AbstractTransferImpl implements Dauerauftr
 
 /**********************************************************************
  * $Log: DauerauftragImpl.java,v $
+ * Revision 1.16  2005/03/02 17:59:30  web0
+ * @N some refactoring
+ *
  * Revision 1.15  2005/02/19 16:49:32  willuhn
  * @B bugs 3,8,10
  *

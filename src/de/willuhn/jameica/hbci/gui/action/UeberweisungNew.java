@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/UeberweisungNew.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/02/27 17:11:49 $
+ * $Revision: 1.5 $
+ * $Date: 2005/03/02 17:59:30 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -60,7 +60,7 @@ public class UeberweisungNew implements Action
 			try {
 				Adresse e = (Adresse) context;
 				u = (Ueberweisung) Settings.getDBService().createObject(Ueberweisung.class,null);
-				u.setEmpfaenger(e);
+				u.setGegenkonto(e);
 			}
 			catch (RemoteException e)
 			{
@@ -76,6 +76,9 @@ public class UeberweisungNew implements Action
 
 /**********************************************************************
  * $Log: UeberweisungNew.java,v $
+ * Revision 1.5  2005/03/02 17:59:30  web0
+ * @N some refactoring
+ *
  * Revision 1.4  2005/02/27 17:11:49  web0
  * @N first code for "Sammellastschrift"
  * @C "Empfaenger" renamed into "Adresse"

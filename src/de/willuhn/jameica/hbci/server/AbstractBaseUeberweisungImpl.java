@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractBaseUeberweisungImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/02/19 16:49:32 $
- * $Author: willuhn $
+ * $Revision: 1.3 $
+ * $Date: 2005/03/02 17:59:30 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -14,10 +14,8 @@ package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
 import java.util.Date;
-import java.util.zip.CRC32;
 
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.rmi.Checksum;
 import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -27,7 +25,8 @@ import de.willuhn.util.I18N;
 /**
  * Abstrakte Basis-Klasse fuer Ueberweisungen und Lastschriften.
  */
-public abstract class AbstractBaseUeberweisungImpl extends AbstractTransferImpl implements Checksum, Terminable
+public abstract class AbstractBaseUeberweisungImpl extends AbstractTransferImpl
+  implements Terminable
 {
 
 	private I18N i18n;
@@ -82,6 +81,9 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractTransferImpl 
     super.insert();
   }
 
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Terminable#getTermin()
+   */
   public Date getTermin() throws RemoteException {
     return (Date) getAttribute("termin");
   }
@@ -115,24 +117,6 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractTransferImpl 
     return (termin.before(new Date()));
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Checksum#getChecksum()
-   */
-  public long getChecksum() throws RemoteException
-  {
-		String s = getBetrag() +
-							 getEmpfaengerBLZ() +
-							 getEmpfaengerKonto() +
-							 getEmpfaengerName() +
-							 getKonto().getChecksum() +
-							 getZweck() +
-							 getZweck2() +
-							 HBCI.DATEFORMAT.format(getTermin());
-		CRC32 crc = new CRC32();
-		crc.update(s.getBytes());
-		return crc.getValue();
-  }
-
   // Kleines Hilfsboolean damit uns der Status-Wechsel
   // beim Speichern nicht um die Ohren fliegt.
   private boolean whileStore = false;
@@ -159,6 +143,9 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractTransferImpl 
 
 /**********************************************************************
  * $Log: AbstractBaseUeberweisungImpl.java,v $
+ * Revision 1.3  2005/03/02 17:59:30  web0
+ * @N some refactoring
+ *
  * Revision 1.2  2005/02/19 16:49:32  willuhn
  * @B bugs 3,8,10
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.23 $
- * $Date: 2005/03/02 00:22:05 $
+ * $Revision: 1.24 $
+ * $Date: 2005/03/02 17:59:31 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -137,7 +137,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 		d.setTitle(i18n.tr("Auswahl des Gegenkontos"));
 		d.addCloseListener(new EmpfaengerListener());
 
-		empfkto = new DialogInput(getTransfer().getEmpfaengerKonto(),d);
+		empfkto = new DialogInput(getTransfer().getGegenkontoNummer(),d);
 
 		return empfkto;
 	}
@@ -151,7 +151,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 	{
 		if (empfblz != null)
 			return empfblz;
-		empfblz = new TextInput(getTransfer().getEmpfaengerBLZ());
+		empfblz = new TextInput(getTransfer().getGegenkontoBLZ());
 
 		empfblz.setComment("");
 		empfblz.addListener(new BLZListener());
@@ -167,7 +167,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 	{
 		if (empfName != null)
 			return empfName;
-		empfName = new TextInput(getTransfer().getEmpfaengerName(),HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH);
+		empfName = new TextInput(getTransfer().getGegenkontoName(),HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH);
 		return empfName;
 	}
 
@@ -257,9 +257,9 @@ public abstract class AbstractTransferControl extends AbstractControl
 			String blz  = (String)getEmpfaengerBlz().getValue();
 			String name = (String)getEmpfaengerName().getValue();
 
-			getTransfer().setEmpfaengerKonto(kto);
-			getTransfer().setEmpfaengerBLZ(blz);
-			getTransfer().setEmpfaengerName(name);
+			getTransfer().setGegenkontoNummer(kto);
+			getTransfer().setGegenkontoBLZ(blz);
+			getTransfer().setGegenkontoName(name);
 			getTransfer().store();
 
 			Boolean store = (Boolean) getStoreEmpfaenger().getValue();
@@ -396,6 +396,9 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
+ * Revision 1.24  2005/03/02 17:59:31  web0
+ * @N some refactoring
+ *
  * Revision 1.23  2005/03/02 00:22:05  web0
  * @N first code for "Sammellastschrift"
  *

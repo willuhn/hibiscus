@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragStoreJob.java,v $
- * $Revision: 1.9 $
- * $Date: 2005/02/28 23:59:57 $
+ * $Revision: 1.10 $
+ * $Date: 2005/03/02 17:59:30 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -78,9 +78,9 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob {
 			setJobParam("btg",dauerauftrag.getBetrag(),konto.getWaehrung() == null ? "EUR" : konto.getWaehrung());
 
 			Adresse empfaenger = (Adresse) Settings.getDBService().createObject(Adresse.class,null);
-			empfaenger.setBLZ(dauerauftrag.getEmpfaengerBLZ());
-			empfaenger.setKontonummer(dauerauftrag.getEmpfaengerKonto());
-			empfaenger.setName(dauerauftrag.getEmpfaengerName());
+			empfaenger.setBLZ(dauerauftrag.getGegenkontoBLZ());
+			empfaenger.setKontonummer(dauerauftrag.getGegenkontoNummer());
+			empfaenger.setName(dauerauftrag.getGegenkontoName());
 			setJobParam("dst",Converter.HibiscusAdresse2HBCIKonto(empfaenger));
 
 			setJobParam("name",empfaenger.getName());
@@ -148,7 +148,7 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob {
 	{
 		String statusText = getStatusText();
 
-		String empfName = i18n.tr("an") + " " + dauerauftrag.getEmpfaengerName();
+		String empfName = i18n.tr("an") + " " + dauerauftrag.getGegenkontoName();
 
 		if (!getJobResult().isOK())
 		{
@@ -193,6 +193,9 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIDauerauftragStoreJob.java,v $
+ * Revision 1.10  2005/03/02 17:59:30  web0
+ * @N some refactoring
+ *
  * Revision 1.9  2005/02/28 23:59:57  web0
  * @B http://www.willuhn.de/bugzilla/show_bug.cgi?id=15
  *

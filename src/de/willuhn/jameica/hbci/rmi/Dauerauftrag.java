@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Dauerauftrag.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/10/25 23:12:02 $
- * $Author: willuhn $
+ * $Revision: 1.9 $
+ * $Date: 2005/03/02 17:59:30 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -20,7 +20,7 @@ import de.willuhn.util.ApplicationException;
 /**
  * Bildet einen Dauerauftrag in Hibiscus ab.
  */
-public interface Dauerauftrag extends Transfer
+public interface Dauerauftrag extends Transfer, Checksum
 {
 
 	/**
@@ -103,6 +103,9 @@ public interface Dauerauftrag extends Transfer
 
 /**********************************************************************
  * $Log: Dauerauftrag.java,v $
+ * Revision 1.9  2005/03/02 17:59:30  web0
+ * @N some refactoring
+ *
  * Revision 1.8  2004/10/25 23:12:02  willuhn
  * *** empty log message ***
  *

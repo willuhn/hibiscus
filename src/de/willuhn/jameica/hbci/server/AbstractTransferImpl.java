@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AbstractTransferImpl.java,v $
- * $Revision: 1.18 $
- * $Date: 2005/02/28 16:28:24 $
+ * $Revision: 1.19 $
+ * $Date: 2005/03/02 17:59:30 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -63,19 +63,19 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
 				throw new ApplicationException(i18n.tr("Auftragslimit überschritten: {0} ", 
 					HBCI.DECIMALFORMAT.format(Settings.getUeberweisungLimit()) + " " + getKonto().getWaehrung()));
 
-			if (getEmpfaengerKonto() == null || "".equals(getEmpfaengerKonto()))
-				throw new ApplicationException(i18n.tr("Bitte geben Sie die Kontonummer des Empfängers ein"));
+			if (getGegenkontoNummer() == null || getGegenkontoNummer().length() == 0)
+				throw new ApplicationException(i18n.tr("Bitte geben Sie die Kontonummer des Gegenkontos ein"));
 			
-			if (getEmpfaengerBLZ() == null || "".equals(getEmpfaengerBLZ()))
-				throw new ApplicationException(i18n.tr("Bitte geben Sie die BLZ des Empfängers ein"));
+			if (getGegenkontoBLZ() == null || getGegenkontoBLZ().length() == 0)
+				throw new ApplicationException(i18n.tr("Bitte geben Sie die BLZ des Gegenkontos ein"));
 
-			if (getEmpfaengerName() == null || "".equals(getEmpfaengerName()))
-				throw new ApplicationException(i18n.tr("Bitte geben Sie den Namen des Empfängers ein"));
+			if (getGegenkontoName() == null || getGegenkontoName().length() == 0)
+				throw new ApplicationException(i18n.tr("Bitte geben Sie den Namen des Kontoinhabers des Gegenkontos ein"));
 
-			if (getEmpfaengerName().length() > HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH)
-				throw new ApplicationException(i18n.tr("Bitte geben Sie maximal {0} Zeichen für den Namen des Empfängers ein",""+HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH));
+			if (getGegenkontoName().length() > HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH)
+				throw new ApplicationException(i18n.tr("Bitte geben Sie maximal {0} Zeichen für den Namen des Kontoinhabers ein",""+HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH));
 
-			if (!HBCIUtils.checkAccountCRC(getEmpfaengerBLZ(),getEmpfaengerKonto()))
+			if (!HBCIUtils.checkAccountCRC(getGegenkontoBLZ(),getGegenkontoNummer()))
 				throw new ApplicationException(i18n.tr("Ungültige BLZ/Kontonummer. Bitte prüfen Sie Ihre Eingaben."));
 				
 			if (getZweck() == null || "".equals(getZweck()))
@@ -173,44 +173,44 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#getEmpfaengerKonto()
+   * @see de.willuhn.jameica.hbci.rmi.Transfer#getGegenkontoNummer()
    */
-  public String getEmpfaengerKonto() throws RemoteException {
+  public String getGegenkontoNummer() throws RemoteException {
     return (String) getAttribute("empfaenger_konto");
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#getEmpfaengerBLZ()
+   * @see de.willuhn.jameica.hbci.rmi.Transfer#getGegenkontoBLZ()
    */
-  public String getEmpfaengerBLZ() throws RemoteException {
+  public String getGegenkontoBLZ() throws RemoteException {
 		return (String) getAttribute("empfaenger_blz");
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#getEmpfaengerName()
+   * @see de.willuhn.jameica.hbci.rmi.Transfer#getGegenkontoName()
    */
-  public String getEmpfaengerName() throws RemoteException {
+  public String getGegenkontoName() throws RemoteException {
 		return (String) getAttribute("empfaenger_name");
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#setEmpfaengerKonto(java.lang.String)
+   * @see de.willuhn.jameica.hbci.rmi.Transfer#setGegenkontoNummer(java.lang.String)
    */
-  public void setEmpfaengerKonto(String konto) throws RemoteException {
+  public void setGegenkontoNummer(String konto) throws RemoteException {
 		setAttribute("empfaenger_konto",konto);
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#setEmpfaengerBLZ(java.lang.String)
+   * @see de.willuhn.jameica.hbci.rmi.Transfer#setGegenkontoBLZ(java.lang.String)
    */
-  public void setEmpfaengerBLZ(String blz) throws RemoteException {
+  public void setGegenkontoBLZ(String blz) throws RemoteException {
 		setAttribute("empfaenger_blz",blz);
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#setEmpfaengerName(java.lang.String)
+   * @see de.willuhn.jameica.hbci.rmi.Transfer#setGegenkontoName(java.lang.String)
    */
-  public void setEmpfaengerName(String name) throws RemoteException {
+  public void setGegenkontoName(String name) throws RemoteException {
 		setAttribute("empfaenger_name",name);
   }
 
@@ -225,9 +225,9 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
 			return;
     String[] params = new String[]
     {
-      getEmpfaengerName(),
-      getEmpfaengerKonto(),
-      getEmpfaengerBLZ(),
+      getGegenkontoName(),
+      getGegenkontoNummer(),
+      getGegenkontoBLZ(),
       k.getWaehrung(),
       HBCI.DECIMALFORMAT.format(getBetrag())
     };
@@ -243,9 +243,9 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
 		Konto k = this.getKonto();
     String[] params = new String[]
     {
-      getEmpfaengerName(),
-      getEmpfaengerKonto(),
-      getEmpfaengerBLZ(),
+      getGegenkontoName(),
+      getGegenkontoNummer(),
+      getGegenkontoBLZ(),
       k.getWaehrung(),
       HBCI.DECIMALFORMAT.format(getBetrag())
     };
@@ -254,28 +254,24 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
 
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#setEmpfaenger(de.willuhn.jameica.hbci.rmi.Empfaenger)
+   * @see de.willuhn.jameica.hbci.rmi.Transfer#setGegenkonto(de.willuhn.jameica.hbci.rmi.Adresse)
    */
-  public void setEmpfaenger(Adresse e) throws RemoteException
+  public void setGegenkonto(Adresse e) throws RemoteException
   {
   	if (e == null)
   		return;
-  	setEmpfaengerBLZ(e.getBLZ());
-  	setEmpfaengerKonto(e.getKontonummer());
-  	setEmpfaengerName(e.getName());
+    setGegenkontoBLZ(e.getBLZ());
+  	setGegenkontoNummer(e.getKontonummer());
+  	setGegenkontoName(e.getName());
   }
-
-	/**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#duplicate()
-   */
-	public Transfer duplicate() throws RemoteException {
-		throw new UnsupportedOperationException("not implemented");
-	}
 }
 
 
 /**********************************************************************
  * $Log: AbstractTransferImpl.java,v $
+ * Revision 1.19  2005/03/02 17:59:30  web0
+ * @N some refactoring
+ *
  * Revision 1.18  2005/02/28 16:28:24  web0
  * @N first code for "Sammellastschrift"
  *

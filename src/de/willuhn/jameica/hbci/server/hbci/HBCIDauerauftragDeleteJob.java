@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragDeleteJob.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/11/18 23:46:21 $
- * $Author: willuhn $
+ * $Revision: 1.9 $
+ * $Date: 2005/03/02 17:59:30 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -116,7 +116,7 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
 	{
 		String statusText = getStatusText();
 
-		String empfName = i18n.tr("an") + " " + dauerauftrag.getEmpfaengerName();
+		String empfName = i18n.tr("an") + " " + dauerauftrag.getGegenkontoName();
 
 		if (!getJobResult().isOK())
 		{
@@ -144,6 +144,9 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIDauerauftragDeleteJob.java,v $
+ * Revision 1.9  2005/03/02 17:59:30  web0
+ * @N some refactoring
+ *
  * Revision 1.8  2004/11/18 23:46:21  willuhn
  * *** empty log message ***
  *

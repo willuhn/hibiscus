@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/LastschriftDialog.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/03/01 00:38:27 $
+ * $Revision: 1.3 $
+ * $Date: 2005/03/02 17:59:31 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -76,11 +76,11 @@ public class LastschriftDialog extends AbstractDialog {
 
 		group.addSeparator();
 
-		Input empfName = new LabelInput(ueb.getEmpfaengerName());
+		Input empfName = new LabelInput(ueb.getGegenkontoName());
 		group.addLabelPair(i18n.tr("Names des Zahlungspflichtigen"),empfName);
 
-		Input empfKto = new LabelInput(ueb.getEmpfaengerKonto());
-		empfKto.setComment(ueb.getEmpfaengerBLZ() + "/" + HBCIUtils.getNameForBLZ(ueb.getEmpfaengerBLZ()));
+		Input empfKto = new LabelInput(ueb.getGegenkontoNummer());
+		empfKto.setComment(ueb.getGegenkontoBLZ() + "/" + HBCIUtils.getNameForBLZ(ueb.getGegenkontoBLZ()));
 		group.addLabelPair(i18n.tr("Zu belastendes Konto"),empfKto);
 
 		group.addSeparator();
@@ -119,6 +119,9 @@ public class LastschriftDialog extends AbstractDialog {
 
 /**********************************************************************
  * $Log: LastschriftDialog.java,v $
+ * Revision 1.3  2005/03/02 17:59:31  web0
+ * @N some refactoring
+ *
  * Revision 1.2  2005/03/01 00:38:27  web0
  * *** empty log message ***
  *

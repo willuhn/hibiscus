@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Ueberweisung.java,v $
- * $Revision: 1.13 $
- * $Date: 2005/02/19 16:49:32 $
- * $Author: willuhn $
+ * $Revision: 1.14 $
+ * $Date: 2005/03/02 17:59:30 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -16,13 +16,16 @@ package de.willuhn.jameica.hbci.rmi;
 /**
  * Bildet eine Ueberweisung ab.
  */
-public interface Ueberweisung extends Transfer, Terminable, Checksum
+public interface Ueberweisung extends Transfer, Terminable, Duplicatable
 {
 }
 
 
 /**********************************************************************
  * $Log: Ueberweisung.java,v $
+ * Revision 1.14  2005/03/02 17:59:30  web0
+ * @N some refactoring
+ *
  * Revision 1.13  2005/02/19 16:49:32  willuhn
  * @B bugs 3,8,10
  *

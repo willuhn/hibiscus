@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCILastschriftJob.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/02/27 17:11:49 $
+ * $Revision: 1.5 $
+ * $Date: 2005/03/02 17:59:30 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -66,9 +66,9 @@ public class HBCILastschriftJob extends AbstractHBCIJob
 				setJobParam("type",lastschrift.getTyp());
 
 			Adresse empfaenger = (Adresse) Settings.getDBService().createObject(Adresse.class,null);
-			empfaenger.setBLZ(lastschrift.getEmpfaengerBLZ());
-			empfaenger.setKontonummer(lastschrift.getEmpfaengerKonto());
-			empfaenger.setName(lastschrift.getEmpfaengerName());
+			empfaenger.setBLZ(lastschrift.getGegenkontoBLZ());
+			empfaenger.setKontonummer(lastschrift.getGegenkontoNummer());
+			empfaenger.setName(lastschrift.getGegenkontoName());
 
 			setJobParam("other",Converter.HibiscusAdresse2HBCIKonto(empfaenger));
 			setJobParam("name",empfaenger.getName());
@@ -109,7 +109,7 @@ public class HBCILastschriftJob extends AbstractHBCIJob
   {
 		String statusText = getStatusText();
 
-		String empfName = i18n.tr("von") + " " + lastschrift.getEmpfaengerName();
+		String empfName = i18n.tr("von") + " " + lastschrift.getGegenkontoName();
 
 		if (!getJobResult().isOK())
 		{
@@ -136,6 +136,9 @@ public class HBCILastschriftJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCILastschriftJob.java,v $
+ * Revision 1.5  2005/03/02 17:59:30  web0
+ * @N some refactoring
+ *
  * Revision 1.4  2005/02/27 17:11:49  web0
  * @N first code for "Sammellastschrift"
  * @C "Empfaenger" renamed into "Adresse"
