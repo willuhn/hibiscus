@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passport/PassportHandle.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/05/05 22:14:47 $
+ * $Revision: 1.2 $
+ * $Date: 2004/10/19 23:40:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -33,19 +33,19 @@ public interface PassportHandle extends Remote {
    * ohne weitere Parameter zu setzen.
    * @return Handler, der diese Verbindung repraesentiert.
    * @throws RemoteException muss geworfen werden, wenn die Initialisierung fehlschlaegt.
-   * Die Exeption sollte einen sinnvollen Fehlertext enthalten. 
+   * Die Exeption sollte einen sinnvollen Fehlertext enthalten.
    */
   public HBCIHandler open() throws RemoteException;
 
-	/**
-	 * Schliesst den Passport.
-	 * Die Funktion wird von der HBCIFactory nach Durchfuehrung
-	 * der HBCI-Jobs ausgefuehrt. In dieser Funktion sollte der
-	 * HBCIHandler geschlossen werden.
+  /**
+   * Schliesst den Passport.
+   * Die Funktion wird von der HBCIFactory nach Durchfuehrung
+   * der HBCI-Jobs ausgefuehrt. In dieser Funktion sollte der
+   * HBCIHandler geschlossen werden.
    * @throws RemoteException
    */
   public void close() throws RemoteException;
-  
+
   /**
    * Prueft, ob der Passport offen ist.
    * @return true, wenn er offen ist.
@@ -53,26 +53,29 @@ public interface PassportHandle extends Remote {
    */
   public boolean isOpen() throws RemoteException;
 
-	/**
-	 * Liefert ein Array mit Konto-Objekten, die aus dem Medium gelesen wurden.
-	 * Es wird niemals <code>null</code> zurueckgeliefert sondern hoechstens ein leeres Array.<br>
-	 * Hinweis: Die Konten-Objekte duerfen nicht in der Datenbank gespeichert
-	 * werden. Diese Entscheidung bleibt dem Anwender ueberlassen.
-	 * Da der HBCIHandler von HBCI4Java ja Konto-Objekte vom Typ
-	 * <i>org.kapott.hbci.structures.Konto</i> liefert, koennen diese
-	 * via <i>de.willuhn.jameica.hbci.server.Converter.HBCIKonto2JameicaKonto(Konto)</i>
-	 * in Fachobjekte des HBCI-Plugins konvertiert werden. 
+  /**
+   * Liefert ein Array mit Konto-Objekten, die aus dem Medium gelesen wurden.
+   * Es wird niemals <code>null</code> zurueckgeliefert sondern hoechstens ein leeres Array.<br>
+   * Hinweis: Die Konten-Objekte duerfen nicht in der Datenbank gespeichert
+   * werden. Diese Entscheidung bleibt dem Anwender ueberlassen.
+   * Da der HBCIHandler von HBCI4Java ja Konto-Objekte vom Typ
+   * <i>org.kapott.hbci.structures.Konto</i> liefert, koennen diese
+   * via <i>de.willuhn.jameica.hbci.server.util.Converter.HBCIKonto2JameicaKonto(Konto)</i>
+   * in Fachobjekte des HBCI-Plugins konvertiert werden.
    * @return Array mit Konten, die dieser Passport anbietet.
    * @throws RemoteException
    */
   public Konto[] getKonten() throws RemoteException;
-  
-	
+
+
 }
 
 
 /**********************************************************************
  * $Log: PassportHandle.java,v $
+ * Revision 1.2  2004/10/19 23:40:14  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/05/05 22:14:47  willuhn
  * *** empty log message ***
  *
