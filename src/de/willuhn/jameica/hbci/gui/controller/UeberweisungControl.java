@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/03/04 00:26:24 $
+ * $Revision: 1.5 $
+ * $Date: 2004/03/04 00:35:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -246,13 +246,34 @@ public class UeberweisungControl extends AbstractControl {
 		return betrag;
 	}
 
-	public Input getTermin() throws RemoteException
+	/**
+	 * Liefert das Eingabe-Feld fuer den Termin.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getTermin() throws RemoteException
 	{
 		if (termin != null)
 			return termin;
 			// TODO
 //		termin = new DateInput();
 		return termin;
+	}
+
+	/**
+	 * Liefert eine CheckBox ueber die ausgewaehlt werden kann,
+	 * ob der Empfaenger mitgespeichert werden soll.
+   * @return CheckBox.
+   * @throws RemoteException
+   */
+  public CheckboxInput getStoreEmpfaenger() throws RemoteException
+	{
+		if (storeEmpfaenger != null)
+			return storeEmpfaenger;
+
+		// Nur bei neuen Ueberweisungen aktivieren
+		storeEmpfaenger = new CheckboxInput(getUeberweisung().isNewObject());
+		return storeEmpfaenger;
 	}
 
   /**
@@ -329,6 +350,8 @@ public class UeberweisungControl extends AbstractControl {
 				empfkto.setValue(empfaenger.getKontonummer());
 				empfblz.setValue(empfaenger.getBLZ());
 				empfName.setValue(empfaenger.getName());
+				// Wenn der Empfaenger aus dem Adressbuch kommt, deaktivieren wir die Checkbox
+				storeEmpfaenger.setValue(CheckboxInput.DISABLED);
 			}
 			catch (RemoteException er)
 			{
@@ -342,6 +365,9 @@ public class UeberweisungControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
+ * Revision 1.5  2004/03/04 00:35:19  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2004/03/04 00:26:24  willuhn
  * @N Ueberweisung
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/UeberweisungNeu.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/03/04 00:26:24 $
+ * $Revision: 1.4 $
+ * $Date: 2004/03/04 00:35:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,10 +43,14 @@ public class UeberweisungNeu extends AbstractView {
 		group.addLabelPair(i18n.tr("Konto des Empfängers"),			control.getEmpfaengerKonto());		
 		group.addLabelPair(i18n.tr("BLZ des Empfängers"),				control.getEmpfaengerBlz());		
 		group.addLabelPair(i18n.tr("Name des Empfängers"),			control.getEmpfaengerName());
+		group.addCheckbox(control.getStoreEmpfaenger(),i18n.tr("Empfängerdaten im Adressbuch speichern"));
+
 		group.addSeparator();
+
 		group.addLabelPair(i18n.tr("Verwendungszweck"),					control.getZweck());
 		group.addLabelPair(i18n.tr("weiterer Verwendungszweck"),control.getZweck2());
 		group.addLabelPair(i18n.tr("Betrag"),										control.getBetrag());
+
 
 		ButtonArea buttonArea = new ButtonArea(getParent(),3);
 		buttonArea.addCancelButton(control);
@@ -67,6 +71,9 @@ public class UeberweisungNeu extends AbstractView {
 
 /**********************************************************************
  * $Log: UeberweisungNeu.java,v $
+ * Revision 1.4  2004/03/04 00:35:19  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2004/03/04 00:26:24  willuhn
  * @N Ueberweisung
  *
