@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUeberweisungJob.java,v $
- * $Revision: 1.17 $
- * $Date: 2004/11/13 17:02:04 $
+ * $Revision: 1.18 $
+ * $Date: 2005/02/02 18:19:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -125,7 +125,7 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
 
 		// Wir markieren die Ueberweisung als "ausgefuehrt"
 		ueberweisung.setAusgefuehrt();
-		ueberweisung.store();
+		ueberweisung.store(); //TODO Erzeugt Fehler
 		Logger.info("ueberweisung submitted successfully");
   }
 }
@@ -133,6 +133,9 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIUeberweisungJob.java,v $
+ * Revision 1.18  2005/02/02 18:19:46  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.17  2004/11/13 17:02:04  willuhn
  * @N Bearbeiten des Zahlungsturnus
  *
