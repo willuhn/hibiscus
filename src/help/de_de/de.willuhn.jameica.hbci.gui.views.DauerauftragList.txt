@@ -9,4 +9,9 @@
 		abgleichen, indem Sie <b>Existierende Daueraufträge abrufen</b>
 		wählen.
 	</p>
+	
+	<p>
+		Abgelaufene Daueraufträge (Datum der letzten Zahlung überschritten)
+		werden eingegraut dargestellt.
+	</p>
 </form>

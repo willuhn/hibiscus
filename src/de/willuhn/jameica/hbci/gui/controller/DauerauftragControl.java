@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/DauerauftragControl.java,v $
- * $Revision: 1.19 $
- * $Date: 2005/02/04 18:27:54 $
- * $Author: willuhn $
+ * $Revision: 1.20 $
+ * $Date: 2005/03/04 00:50:16 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -17,6 +17,7 @@ import java.util.Date;
 
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.TableItem;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractView;
@@ -25,10 +26,12 @@ import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.dialogs.CalendarDialog;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
+import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.DauerauftragNew;
@@ -87,6 +90,25 @@ public class DauerauftragControl extends AbstractTransferControl {
 
 		TablePart table = new TablePart(list,new DauerauftragNew());
 
+		table.setFormatter(new TableFormatter()
+    {
+      public void format(TableItem item)
+      {
+      	try
+      	{
+      		if (item == null || item.getData() == null)
+      			return;
+      		Dauerauftrag d = (Dauerauftrag) item.getData();
+      		if (d.getLetzteZahlung() != null && new Date().after(d.getLetzteZahlung()))
+      			item.setForeground(Color.COMMENT.getSWTColor());
+      	}
+      	catch (Exception e)
+      	{
+      		Logger.error("error while checking finish date",e);
+      		GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Prüfen des Ablaufdatums eines Dauerauftrages"));
+      	}
+      }
+    });
 		table.addColumn(i18n.tr("Konto"),"konto_id");
 		table.addColumn(i18n.tr("Empfängername"),"empfaenger_name");
 		table.addColumn(i18n.tr("Empfängerkonto"),"empfaenger_konto");
@@ -265,6 +287,11 @@ public class DauerauftragControl extends AbstractTransferControl {
 
 /**********************************************************************
  * $Log: DauerauftragControl.java,v $
+ * Revision 1.20  2005/03/04 00:50:16  web0
+ * @N Eingrauen abgelaufener Dauerauftraege
+ * @N automatisches Loeschen von Dauerauftraegen, die lokal zwar
+ * noch als aktiv markiert sind, bei der Bank jedoch nicht mehr existieren
+ *
  * Revision 1.19  2005/02/04 18:27:54  willuhn
  * @C Refactoring zwischen Lastschrift und Ueberweisung
  *

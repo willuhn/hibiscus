@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Dauerauftrag.java,v $
- * $Revision: 1.9 $
- * $Date: 2005/03/02 17:59:30 $
+ * $Revision: 1.10 $
+ * $Date: 2005/03/04 00:50:16 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -84,7 +84,7 @@ public interface Dauerauftrag extends Transfer, Checksum
 	 * Liefert <code>true</code> wenn der Dauerauftrag bei der Bank aktiv ist.
 	 * Ob dieser nun von der Bank abgerufen oder lokal erstellt und dann
 	 * eingereicht wurde, spielt keine Rolle. Entscheidend ist lediglich, dass
-	 * er bei der Bank vorliegt.
+	 * er bei der Bank vorliegt und aktiv ist. 
 	 * @return true, wenn der Dauerauftrag bei der Bank aktiv ist.
 	 * @throws RemoteException
 	 */
@@ -103,6 +103,11 @@ public interface Dauerauftrag extends Transfer, Checksum
 
 /**********************************************************************
  * $Log: Dauerauftrag.java,v $
+ * Revision 1.10  2005/03/04 00:50:16  web0
+ * @N Eingrauen abgelaufener Dauerauftraege
+ * @N automatisches Loeschen von Dauerauftraegen, die lokal zwar
+ * noch als aktiv markiert sind, bei der Bank jedoch nicht mehr existieren
+ *
  * Revision 1.9  2005/03/02 17:59:30  web0
  * @N some refactoring
  *
