@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoFetchSaldo.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/10/25 22:39:14 $
+ * $Revision: 1.5 $
+ * $Date: 2004/10/29 16:16:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -74,7 +74,7 @@ public class KontoFetchSaldo implements Action
 					catch (RemoteException e)
 					{
 						Logger.error("error while reading saldo",e);
-						GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Abrufen des Saldos."));
+						GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Abrufen des Saldos.") + " [" + e.getMessage() + "]");
 					}
 					finally
 					{
@@ -97,6 +97,9 @@ public class KontoFetchSaldo implements Action
 
 /**********************************************************************
  * $Log: KontoFetchSaldo.java,v $
+ * Revision 1.5  2004/10/29 16:16:13  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2004/10/25 22:39:14  willuhn
  * *** empty log message ***
  *

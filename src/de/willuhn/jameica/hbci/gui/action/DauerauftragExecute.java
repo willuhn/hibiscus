@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/DauerauftragExecute.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/10/29 00:32:32 $
+ * $Revision: 1.5 $
+ * $Date: 2004/10/29 16:16:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -97,7 +97,7 @@ public class DauerauftragExecute implements Action
 					catch (RemoteException e)
 					{
 						Logger.error("error while executing ueberweisung",e);
-						GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Ausführen der Überweisung"));
+						GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Ausführen der Überweisung") + " [" + e.getMessage() + "]");
 					}
 					finally
 					{
@@ -119,6 +119,9 @@ public class DauerauftragExecute implements Action
 
 /**********************************************************************
  * $Log: DauerauftragExecute.java,v $
+ * Revision 1.5  2004/10/29 16:16:13  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2004/10/29 00:32:32  willuhn
  * @N HBCI job restrictions
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoFetchDauerauftraege.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/10/25 23:12:02 $
+ * $Revision: 1.6 $
+ * $Date: 2004/10/29 16:16:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -90,7 +90,7 @@ public class KontoFetchDauerauftraege implements Action
 				catch (RemoteException e)
 				{
 					Logger.error("error while reading dauerauftraege",e);
-					GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Abrufen der Daueraufträge."));
+					GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Abrufen der Daueraufträge.") + " [" + e.getMessage() + "]");
 				}
 				finally
 				{
@@ -106,6 +106,9 @@ public class KontoFetchDauerauftraege implements Action
 
 /**********************************************************************
  * $Log: KontoFetchDauerauftraege.java,v $
+ * Revision 1.6  2004/10/29 16:16:13  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2004/10/25 23:12:02  willuhn
  * *** empty log message ***
  *

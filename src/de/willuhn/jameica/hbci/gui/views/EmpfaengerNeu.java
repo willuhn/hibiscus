@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/EmpfaengerNeu.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/10/20 12:34:02 $
+ * $Revision: 1.11 $
+ * $Date: 2004/10/29 16:16:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -68,8 +68,7 @@ public class EmpfaengerNeu extends AbstractView {
       {
       	control.handleStore();
       }
-    });
-
+    },null,true);
 
   }
 
@@ -84,6 +83,9 @@ public class EmpfaengerNeu extends AbstractView {
 
 /**********************************************************************
  * $Log: EmpfaengerNeu.java,v $
+ * Revision 1.11  2004/10/29 16:16:12  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.10  2004/10/20 12:34:02  willuhn
  * *** empty log message ***
  *

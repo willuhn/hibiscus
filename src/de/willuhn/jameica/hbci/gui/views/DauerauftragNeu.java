@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/DauerauftragNeu.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/10/25 17:58:56 $
+ * $Revision: 1.6 $
+ * $Date: 2004/10/29 16:16:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -79,7 +79,7 @@ public class DauerauftragNeu extends AbstractView
 			{
 				control.handleStore();
 			}
-		});
+    },null,true);
   }
 
   /**
@@ -94,6 +94,9 @@ public class DauerauftragNeu extends AbstractView
 
 /**********************************************************************
  * $Log: DauerauftragNeu.java,v $
+ * Revision 1.6  2004/10/29 16:16:13  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2004/10/25 17:58:56  willuhn
  * @N Haufen Dauerauftrags-Code
  *

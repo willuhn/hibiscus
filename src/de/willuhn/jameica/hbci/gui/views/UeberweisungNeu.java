@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/UeberweisungNeu.java,v $
- * $Revision: 1.20 $
- * $Date: 2004/10/25 17:58:56 $
+ * $Revision: 1.21 $
+ * $Date: 2004/10/29 16:16:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -71,7 +71,7 @@ public class UeberweisungNeu extends AbstractView {
       {
       	control.handleStore();
       }
-    });
+    },null,true);
   }
 
   /**
@@ -85,6 +85,9 @@ public class UeberweisungNeu extends AbstractView {
 
 /**********************************************************************
  * $Log: UeberweisungNeu.java,v $
+ * Revision 1.21  2004/10/29 16:16:12  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.20  2004/10/25 17:58:56  willuhn
  * @N Haufen Dauerauftrags-Code
  *

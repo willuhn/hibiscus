@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/KontoNeu.java,v $
- * $Revision: 1.22 $
- * $Date: 2004/10/29 00:32:32 $
+ * $Revision: 1.23 $
+ * $Date: 2004/10/29 16:16:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -69,7 +69,7 @@ public class KontoNeu extends AbstractView {
         {
         	control.handleStore();
         }
-      });
+      },null,true);
 
 
 			LabelGroup saldo = new LabelGroup(getParent(),i18n.tr("Finanzstatus"));
@@ -106,6 +106,9 @@ public class KontoNeu extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoNeu.java,v $
+ * Revision 1.23  2004/10/29 16:16:13  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.22  2004/10/29 00:32:32  willuhn
  * @N HBCI job restrictions
  *

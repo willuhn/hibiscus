@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoFetchFromPassport.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/10/25 22:39:14 $
+ * $Revision: 1.5 $
+ * $Date: 2004/10/29 16:16:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -100,7 +100,7 @@ public class KontoFetchFromPassport implements Action
 				catch (Throwable t)
 				{
 					Logger.error("error while reading data from passport",t);
-					GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Lesen der Konto-Daten. Bitte prüfen Sie die Einstellungen des Mediums."));
+					GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Lesen der Konto-Daten. Bitte prüfen Sie die Einstellungen des Sicherheits-Mediums."));
 				}
 				finally
 				{
@@ -115,6 +115,9 @@ public class KontoFetchFromPassport implements Action
 
 /**********************************************************************
  * $Log: KontoFetchFromPassport.java,v $
+ * Revision 1.5  2004/10/29 16:16:13  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2004/10/25 22:39:14  willuhn
  * *** empty log message ***
  *

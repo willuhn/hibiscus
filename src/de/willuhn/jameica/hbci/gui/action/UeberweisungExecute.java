@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/UeberweisungExecute.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/10/25 22:39:14 $
+ * $Revision: 1.6 $
+ * $Date: 2004/10/29 16:16:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -92,7 +92,7 @@ public class UeberweisungExecute implements Action
 					catch (RemoteException e)
 					{
 						Logger.error("error while executing ueberweisung",e);
-						GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Ausführen der Überweisung"));
+						GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Ausführen der Überweisung") + " [" + e.getMessage() + "]");
 					}
 					finally
 					{
@@ -115,6 +115,9 @@ public class UeberweisungExecute implements Action
 
 /**********************************************************************
  * $Log: UeberweisungExecute.java,v $
+ * Revision 1.6  2004/10/29 16:16:13  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2004/10/25 22:39:14  willuhn
  * *** empty log message ***
  *

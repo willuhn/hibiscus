@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoFetchUmsaetze.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/10/25 22:39:14 $
+ * $Revision: 1.4 $
+ * $Date: 2004/10/29 16:16:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -73,7 +73,7 @@ public class KontoFetchUmsaetze implements Action
 					catch (RemoteException e)
 					{
 						Logger.error("error while reading umsaetze",e);
-						GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Abrufen des Umsätze."));
+						GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Abrufen des Umsätze.") + " [" + e.getMessage() + "]");
 					}
 					finally
 					{
@@ -95,6 +95,9 @@ public class KontoFetchUmsaetze implements Action
 
 /**********************************************************************
  * $Log: KontoFetchUmsaetze.java,v $
+ * Revision 1.4  2004/10/29 16:16:13  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2004/10/25 22:39:14  willuhn
  * *** empty log message ***
  *
