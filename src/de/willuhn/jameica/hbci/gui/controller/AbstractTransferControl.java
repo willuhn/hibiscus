@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/07/13 23:08:37 $
+ * $Revision: 1.2 $
+ * $Date: 2004/07/14 23:48:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -165,7 +165,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 	{
 		if (empfblz != null)
 			return empfblz;
-		empfblz = new TextInput(getTransfer().getEmpfaengerBlz());
+		empfblz = new TextInput(getTransfer().getEmpfaengerBLZ());
 
 		empfblz.setComment("");
 		empfblz.addListener(new BLZListener());
@@ -302,7 +302,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 			String name = (String)getEmpfaengerName().getValue();
 
 			getTransfer().setEmpfaengerKonto(kto);
-			getTransfer().setEmpfaengerBlz(blz);
+			getTransfer().setEmpfaengerBLZ(blz);
 			getTransfer().setEmpfaengerName(name);
 			getTransfer().store();
 
@@ -440,6 +440,9 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
+ * Revision 1.2  2004/07/14 23:48:31  willuhn
+ * @N mehr Code fuer Dauerauftraege
+ *
  * Revision 1.1  2004/07/13 23:08:37  willuhn
  * @N Views fuer Dauerauftrag
  *

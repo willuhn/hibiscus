@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.21 $
- * $Date: 2004/07/13 23:26:14 $
+ * $Revision: 1.22 $
+ * $Date: 2004/07/14 23:48:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -100,7 +100,7 @@ public class HBCI extends AbstractPlugin
   public void init() throws ApplicationException
   {
 		try {
-			Application.splash("checking database integrity");
+			Application.splash("hibiscus: checking database integrity");
 			getDBVersion();
 		}
 		catch (Exception e)
@@ -109,7 +109,7 @@ public class HBCI extends AbstractPlugin
 				getResources().getI18N().tr("Fehler beim Prüfung der Datenbank-Integrität, " +					"Plugin wird aus Sicherheitsgründen deaktiviert"),e);
 		}
 
-		Application.splash("init passport registry");
+		Application.splash("hibiscus: init passport registry");
 		PassportRegistry.init();
 
 		try {
@@ -167,6 +167,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.22  2004/07/14 23:48:31  willuhn
+ * @N mehr Code fuer Dauerauftraege
+ *
  * Revision 1.21  2004/07/13 23:26:14  willuhn
  * @N Views fuer Dauerauftrag
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/UeberweisungDialog.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/07/09 00:04:40 $
+ * $Revision: 1.3 $
+ * $Date: 2004/07/14 23:48:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -80,7 +80,7 @@ public class UeberweisungDialog extends AbstractDialog {
 		group.addLabelPair(i18n.tr("Name des Empfänger"),empfName);
 
 		Input empfKto = new LabelInput(ueb.getEmpfaengerKonto());
-		empfKto.setComment(ueb.getEmpfaengerBlz() + "/" + HBCIUtils.getNameForBLZ(ueb.getEmpfaengerBlz()));
+		empfKto.setComment(ueb.getEmpfaengerBLZ() + "/" + HBCIUtils.getNameForBLZ(ueb.getEmpfaengerBLZ()));
 		group.addLabelPair(i18n.tr("Konto des Empfängers"),empfKto);
 
 		group.addSeparator();
@@ -112,6 +112,9 @@ public class UeberweisungDialog extends AbstractDialog {
 
 /**********************************************************************
  * $Log: UeberweisungDialog.java,v $
+ * Revision 1.3  2004/07/14 23:48:31  willuhn
+ * @N mehr Code fuer Dauerauftraege
+ *
  * Revision 1.2  2004/07/09 00:04:40  willuhn
  * @C Redesign
  *

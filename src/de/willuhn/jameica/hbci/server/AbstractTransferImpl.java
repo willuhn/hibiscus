@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AbstractTransferImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/07/13 22:20:37 $
+ * $Revision: 1.3 $
+ * $Date: 2004/07/14 23:48:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -64,10 +64,10 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
 			if (getEmpfaengerKonto() == null || "".equals(getEmpfaengerKonto()))
 				throw new ApplicationException("Bitte geben Sie die Kontonummer des Empfängers ein");
 			
-			if (getEmpfaengerBlz() == null || "".equals(getEmpfaengerBlz()))
+			if (getEmpfaengerBLZ() == null || "".equals(getEmpfaengerBLZ()))
 				throw new ApplicationException("Bitte geben Sie die BLZ des Empfängers ein");
 
-			if (!HBCIUtils.checkAccountCRC(getEmpfaengerBlz(),getEmpfaengerKonto()))
+			if (!HBCIUtils.checkAccountCRC(getEmpfaengerBLZ(),getEmpfaengerKonto()))
 				throw new ApplicationException("Ungültige BLZ/Kontonummer. Bitte prüfen Sie Ihre Eingaben.");
 				
 			if (getZweck() == null || "".equals(getZweck()))
@@ -169,9 +169,9 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#getEmpfaengerBlz()
+   * @see de.willuhn.jameica.hbci.rmi.Transfer#getEmpfaengerBLZ()
    */
-  public String getEmpfaengerBlz() throws RemoteException {
+  public String getEmpfaengerBLZ() throws RemoteException {
 		return (String) getAttribute("empfaenger_blz");
   }
 
@@ -190,9 +190,9 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#setEmpfaengerBlz(java.lang.String)
+   * @see de.willuhn.jameica.hbci.rmi.Transfer#setEmpfaengerBLZ(java.lang.String)
    */
-  public void setEmpfaengerBlz(String blz) throws RemoteException {
+  public void setEmpfaengerBLZ(String blz) throws RemoteException {
 		setAttribute("empfaenger_blz",blz);
   }
 
@@ -220,6 +220,9 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
 
 /**********************************************************************
  * $Log: AbstractTransferImpl.java,v $
+ * Revision 1.3  2004/07/14 23:48:31  willuhn
+ * @N mehr Code fuer Dauerauftraege
+ *
  * Revision 1.2  2004/07/13 22:20:37  willuhn
  * @N Code fuer DauerAuftraege
  * @C paar Funktionsnamen umbenannt

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/07/04 17:07:58 $
+ * $Revision: 1.11 $
+ * $Date: 2004/07/14 23:48:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,12 +14,15 @@ package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
 
+import org.kapott.hbci.GV_Result.GVRDauerList;
 import org.kapott.hbci.GV_Result.GVRKUms;
 import org.kapott.hbci.structures.Konto;
 
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Empfaenger;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.util.ApplicationException;
 
 /**
  * Hilfeklasse, welche Objekte aus HBCI4Java in unsere Datenstrukturen konvertiert
@@ -29,7 +32,7 @@ public class Converter {
 
 
 	/**
-	 * Konvertiert einen einzelnen Umsatz von HBCI4Java nach Jameica.
+	 * Konvertiert einen einzelnen Umsatz von HBCI4Java nach Hibiscus.
 	 * <br>
 	 * <b>WICHTIG:</b><br>
 	 * <ul>
@@ -56,7 +59,7 @@ public class Converter {
    * @return das neu erzeugte Umsatz-Objekt.
 	 * @throws RemoteException
    */
-  public static Umsatz convert(GVRKUms.UmsLine u) throws RemoteException
+  public static Umsatz HBCIUmsatz2HibiscusUmsatz(GVRKUms.UmsLine u) throws RemoteException
 	{
 		Umsatz umsatz = (Umsatz) Settings.getDatabase().createObject(Umsatz.class,null);
 
@@ -108,7 +111,7 @@ public class Converter {
 		// und jetzt noch der Empfaenger (wenn er existiert)
 		if (u.other != null) 
 		{
-		  Empfaenger e = HBCIKonto2JameicaEmpfaenger(u.other);
+		  Empfaenger e = HBCIKonto2HibiscusEmpfaenger(u.other);
 		  umsatz.setEmpfaengerBLZ(e.getBLZ());
 		  umsatz.setEmpfaengerKonto(e.getKontonummer());
 		  umsatz.setEmpfaengerName(e.getName());
@@ -116,13 +119,59 @@ public class Converter {
 		return umsatz;
 	}
 
+  /**
+	 * Konvertiert eine Zeile aus der Liste der abgerufenen Dauerumsaetze.
+   * @param d der Dauerauftrag aus HBCI4Java.
+   * @return Unser Dauerauftrag.
+   * @throws RemoteException
+   * @throws ApplicationException
+   */
+  public static Dauerauftrag HBCIDauer2HibiscusDauerauftrag(GVRDauerList.Dauer d)
+  	throws RemoteException, ApplicationException
+	{
+		Dauerauftrag auftrag = (Dauerauftrag) Settings.getDatabase().createObject(Dauerauftrag.class,null);
+		auftrag.setErsteZahlung(d.firstdate);
+		auftrag.setLetzteZahlung(d.lastdate);
+		auftrag.setKonto(HBCIKonto2HibiscusKonto(d.my));
+		auftrag.setBetrag(d.value.value);
+
+		// Jetzt noch der Empfaenger
+		Empfaenger e = HBCIKonto2HibiscusEmpfaenger(d.other);
+		auftrag.setEmpfaengerBLZ(e.getBLZ());
+		auftrag.setEmpfaengerKonto(e.getKontonummer());
+		auftrag.setEmpfaengerName(e.getName());
+
+		// Verwendungszweck
+		if (d.usage.length == 0)
+		{
+			auftrag.setZweck("-");
+		}
+		else {
+			auftrag.setZweck(d.usage[0]);
+		}
+		// Wenn wir noch mehr Zeilen haben, dann schreiben wir alle restlichen
+		// in zweck2
+		if (d.usage.length > 1)
+		{
+			String merged = "";
+			for (int i=1;i<d.usage.length;++i)
+			{
+				merged += (d.usage[i] + " - ");
+			}
+			auftrag.setZweck2(merged);
+		}
+
+		auftrag.setTurnus(TurnusHelper.createByDauerAuftrag(d));
+		return auftrag;
+	}
+
 	/**
-	 * Konvertiert ein Jameica-Konto in ein HBCI4Java Konto.
+	 * Konvertiert ein Hibiscus-Konto in ein HBCI4Java Konto.
    * @param konto unser Konto.
    * @return das HBCI4Java Konto.
    * @throws RemoteException
    */
-  public static Konto JameicaKonto2HBCIKonto(de.willuhn.jameica.hbci.rmi.Konto konto) throws RemoteException
+  public static Konto HibiscusKonto2HBCIKonto(de.willuhn.jameica.hbci.rmi.Konto konto) throws RemoteException
 	{
 		org.kapott.hbci.structures.Konto k =
 			new org.kapott.hbci.structures.Konto(konto.getBLZ(),konto.getKontonummer());
@@ -134,12 +183,12 @@ public class Converter {
 	}
 
 	/**
-	 * Konvertiert ein HBCI4Java-Konto in ein Jameica Konto.
+	 * Konvertiert ein HBCI4Java-Konto in ein Hibiscus Konto.
 	 * @param konto das HBCI4Java Konto.
 	 * @return unser Konto.
 	 * @throws RemoteException
 	 */
-	public static de.willuhn.jameica.hbci.rmi.Konto HBCIKonto2JameicaKonto(Konto konto) throws RemoteException
+	public static de.willuhn.jameica.hbci.rmi.Konto HBCIKonto2HibiscusKonto(Konto konto) throws RemoteException
 	{
 		de.willuhn.jameica.hbci.rmi.Konto k =
 			(de.willuhn.jameica.hbci.rmi.Konto) Settings.getDatabase().createObject(de.willuhn.jameica.hbci.rmi.Konto.class,null);
@@ -153,12 +202,12 @@ public class Converter {
 	}
 
 	/**
-	 * Konvertiert einen Jameica-Empfaenger in ein HBCI4Java Konto.
+	 * Konvertiert einen Hibiscus-Empfaenger in ein HBCI4Java Konto.
 	 * @param empfaenger unser Empfaenger
 	 * @return das HBCI4Java Konto.
 	 * @throws RemoteException
 	 */
-	public static Konto JameicaEmpfaenger2HBCIKonto(Empfaenger empfaenger) throws RemoteException
+	public static Konto HibiscusEmpfaenger2HBCIKonto(Empfaenger empfaenger) throws RemoteException
 	{
 		return new org.kapott.hbci.structures.Konto(
 			"DE",
@@ -168,12 +217,12 @@ public class Converter {
 	}
 
 	/**
-	 * Konvertiert ein HBCI4Java Konto in einen Jameica-Empfaenger.
+	 * Konvertiert ein HBCI4Java Konto in einen Hibiscus-Empfaenger.
 	 * @param konto das HBCI-Konto.
 	 * @return unser Empfaenger.
 	 * @throws RemoteException
 	 */
-	public static Empfaenger HBCIKonto2JameicaEmpfaenger(Konto konto) throws RemoteException
+	public static Empfaenger HBCIKonto2HibiscusEmpfaenger(Konto konto) throws RemoteException
 	{
 		Empfaenger e = (Empfaenger) Settings.getDatabase().createObject(Empfaenger.class,null);
 		e.setBLZ(konto.blz);
@@ -190,6 +239,9 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.11  2004/07/14 23:48:31  willuhn
+ * @N mehr Code fuer Dauerauftraege
+ *
  * Revision 1.10  2004/07/04 17:07:58  willuhn
  * @B Umsaetze wurden teilweise nicht als bereits vorhanden erkannt und wurden somit doppelt angezeigt
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Transfer.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/07/11 16:14:29 $
+ * $Revision: 1.2 $
+ * $Date: 2004/07/14 23:48:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -40,7 +40,7 @@ public interface Transfer extends DBObject {
 	 * @return BLZ des Empfaengers.
 	 * @throws RemoteException
 	 */
-	public String getEmpfaengerBlz() throws RemoteException;
+	public String getEmpfaengerBLZ() throws RemoteException;
 	
 	/**
 	 * Liefert den Namen des Empfaengers.
@@ -89,7 +89,7 @@ public interface Transfer extends DBObject {
 	 * @param blz BLZ des Empfaengers.
 	 * @throws RemoteException
 	 */
-	public void setEmpfaengerBlz(String blz) throws RemoteException;
+	public void setEmpfaengerBLZ(String blz) throws RemoteException;
 
 	/**
 	 * Speichert den Namen des Empfaengers.
@@ -124,6 +124,9 @@ public interface Transfer extends DBObject {
 
 /**********************************************************************
  * $Log: Transfer.java,v $
+ * Revision 1.2  2004/07/14 23:48:31  willuhn
+ * @N mehr Code fuer Dauerauftraege
+ *
  * Revision 1.1  2004/07/11 16:14:29  willuhn
  * @N erster Code fuer Dauerauftraege
  *

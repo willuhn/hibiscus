@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.22 $
- * $Date: 2004/07/09 00:12:29 $
+ * $Revision: 1.23 $
+ * $Date: 2004/07/14 23:48:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -254,7 +254,7 @@ public class UeberweisungControl extends AbstractControl {
 	{
 		if (empfblz != null)
 			return empfblz;
-		empfblz = new TextInput(getUeberweisung().getEmpfaengerBlz());
+		empfblz = new TextInput(getUeberweisung().getEmpfaengerBLZ());
 
 		empfblz.setComment("");
 		empfblz.addListener(new BLZListener());
@@ -478,7 +478,7 @@ public class UeberweisungControl extends AbstractControl {
 			String name = (String)getEmpfaengerName().getValue();
 
 			getUeberweisung().setEmpfaengerKonto(kto);
-			getUeberweisung().setEmpfaengerBlz(blz);
+			getUeberweisung().setEmpfaengerBLZ(blz);
 			getUeberweisung().setEmpfaengerName(name);
 			getUeberweisung().store();
 
@@ -695,6 +695,9 @@ public class UeberweisungControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
+ * Revision 1.23  2004/07/14 23:48:31  willuhn
+ * @N mehr Code fuer Dauerauftraege
+ *
  * Revision 1.22  2004/07/09 00:12:29  willuhn
  * @B minor bugs
  *

@@ -94,6 +94,9 @@ CREATE TABLE dauerauftrag (
 
 CREATE TABLE turnus (
   id NUMERIC default UNIQUEKEY('turnus'),
+  zeiteinheit int(1) NOT NULL,
+  intervall int(2) NOT NULL,
+  tag int(2) NOT NULL,
   bezeichnung varchar(255) NOT NULL,
   UNIQUE (id),
   PRIMARY KEY (id)

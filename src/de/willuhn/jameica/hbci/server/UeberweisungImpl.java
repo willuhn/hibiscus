@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UeberweisungImpl.java,v $
- * $Revision: 1.16 $
- * $Date: 2004/07/13 22:20:37 $
+ * $Revision: 1.17 $
+ * $Date: 2004/07/14 23:48:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -142,7 +142,7 @@ public class UeberweisungImpl extends AbstractTransferImpl implements Ueberweisu
 			HBCIUeberweisungJob job = new HBCIUeberweisungJob(getKonto());
 
 			Empfaenger empfaenger = (Empfaenger) Settings.getDatabase().createObject(Empfaenger.class,null);
-			empfaenger.setBLZ(getEmpfaengerBlz());
+			empfaenger.setBLZ(getEmpfaengerBLZ());
 			empfaenger.setKontonummer(getEmpfaengerKonto());
 			empfaenger.setName(getEmpfaengerName());
 			
@@ -193,7 +193,7 @@ public class UeberweisungImpl extends AbstractTransferImpl implements Ueberweisu
   public Ueberweisung duplicate() throws RemoteException {
     Ueberweisung u = (Ueberweisung) Settings.getDatabase().createObject(Ueberweisung.class,null);
     u.setBetrag(getBetrag());
-    u.setEmpfaengerBlz(getEmpfaengerBlz());
+    u.setEmpfaengerBLZ(getEmpfaengerBLZ());
     u.setEmpfaengerKonto(getEmpfaengerKonto());
     u.setEmpfaengerName(getEmpfaengerName());
     u.setKonto(getKonto());
@@ -219,6 +219,9 @@ public class UeberweisungImpl extends AbstractTransferImpl implements Ueberweisu
 
 /**********************************************************************
  * $Log: UeberweisungImpl.java,v $
+ * Revision 1.17  2004/07/14 23:48:31  willuhn
+ * @N mehr Code fuer Dauerauftraege
+ *
  * Revision 1.16  2004/07/13 22:20:37  willuhn
  * @N Code fuer DauerAuftraege
  * @C paar Funktionsnamen umbenannt

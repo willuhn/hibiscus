@@ -16,10 +16,14 @@ ALTER CREATE TABLE dauerauftrag (
 
 ALTER CREATE TABLE turnus (
   id NUMERIC default UNIQUEKEY('turnus'),
+  zeiteinheit int(1) NOT NULL,
+  intervall int(2) NOT NULL,
+  tag int(2) NOT NULL,
   bezeichnung varchar(255) NOT NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );
+
 
 ALTER TABLE dauerauftrag ADD CONSTRAINT fk_konto4 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE dauerauftrag ADD CONSTRAINT fk_turnus FOREIGN KEY (turnus_id) REFERENCES turnus (id) DEFERRABLE;

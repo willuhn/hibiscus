@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUeberweisungJob.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/07/09 00:04:40 $
+ * $Revision: 1.8 $
+ * $Date: 2004/07/14 23:48:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -41,7 +41,7 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob {
 		super(konto);
 
 		try {
-			setJobParam("src",Converter.JameicaKonto2HBCIKonto(konto));
+			setJobParam("src",Converter.HibiscusKonto2HBCIKonto(konto));
 			setJobParam("btg.curr",konto.getWaehrung() == null ? "EUR" : konto.getWaehrung());
 
 		}
@@ -61,7 +61,7 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob {
 	{
 		try {
 			this.empfaenger = empfaenger;
-			setJobParam("dst",Converter.JameicaEmpfaenger2HBCIKonto(empfaenger));
+			setJobParam("dst",Converter.HibiscusEmpfaenger2HBCIKonto(empfaenger));
 			setJobParam("name",empfaenger.getName());
 		}
 		catch (RemoteException e)
@@ -158,6 +158,9 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIUeberweisungJob.java,v $
+ * Revision 1.8  2004/07/14 23:48:31  willuhn
+ * @N mehr Code fuer Dauerauftraege
+ *
  * Revision 1.7  2004/07/09 00:04:40  willuhn
  * @C Redesign
  *
