@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/04/22 23:46:50 $
+ * $Revision: 1.3 $
+ * $Date: 2004/04/24 19:04:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,7 +26,6 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Passport;
 import de.willuhn.jameica.hbci.rmi.PassportType;
 import de.willuhn.jameica.hbci.rmi.hbci.PassportHandle;
-import de.willuhn.jameica.hbci.server.Converter;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -152,7 +151,6 @@ public class HBCIFactory {
 
 					Application.getLog().info("adding job " + job.getIdentifier() + " to queue");
 					HBCIJob j = handler.newJob(job.getIdentifier());
-					j.setParam("my",Converter.JameicaKonto2HBCIKonto(konto));
 					job.setJob(j);
 					handler.addJob(j);
 				}
@@ -209,6 +207,9 @@ public class HBCIFactory {
 
 /**********************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.3  2004/04/24 19:04:51  willuhn
+ * @N Ueberweisung.execute works!! ;)
+ *
  * Revision 1.2  2004/04/22 23:46:50  willuhn
  * @N UeberweisungJob
  *

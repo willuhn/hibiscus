@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCISaldoJob.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/04/19 22:05:51 $
+ * $Revision: 1.2 $
+ * $Date: 2004/04/24 19:04:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,12 +12,15 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.server.hbci;
 
+import java.rmi.RemoteException;
+
 import org.kapott.hbci.GV_Result.GVRSaldoReq;
 
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.server.Converter;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -31,7 +34,17 @@ public class HBCISaldoJob extends AbstractHBCIJob {
 	public HBCISaldoJob(Konto konto)
 	{
 		super(konto);
+
+		try {
+			setJobParam("my",Converter.JameicaKonto2HBCIKonto(konto));
+		}
+		catch (RemoteException e)
+		{
+			throw new RuntimeException("Fehler beim Setzen des Kontos");
+		}
+
 		i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
+
 	}
 
   /**
@@ -65,6 +78,9 @@ public class HBCISaldoJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCISaldoJob.java,v $
+ * Revision 1.2  2004/04/24 19:04:51  willuhn
+ * @N Ueberweisung.execute works!! ;)
+ *
  * Revision 1.1  2004/04/19 22:05:51  willuhn
  * @C HBCIJobs refactored
  *

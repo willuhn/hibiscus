@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/UeberweisungNeu.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/04/21 22:28:42 $
+ * $Revision: 1.9 $
+ * $Date: 2004/04/24 19:04:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -55,9 +55,12 @@ public class UeberweisungNeu extends AbstractView {
 		group.addLabelPair(i18n.tr("Betrag"),										control.getBetrag());
 		group.addLabelPair(i18n.tr("Termin"),										control.getTermin());
 
+		group.addSeparator();
+
+		group.addLabelPair(i18n.tr("Bemerkung"),								control.getComment());
 
 		ButtonArea buttonArea = new ButtonArea(getParent(),4);
-		buttonArea.addCustomButton(i18n.tr("sofort ausführen"), new MouseAdapter() {
+		buttonArea.addCustomButton(i18n.tr("jetzt ausführen"), new MouseAdapter() {
       public void mouseUp(MouseEvent e) {
       	control.handleExecute();
       }
@@ -78,6 +81,9 @@ public class UeberweisungNeu extends AbstractView {
 
 /**********************************************************************
  * $Log: UeberweisungNeu.java,v $
+ * Revision 1.9  2004/04/24 19:04:51  willuhn
+ * @N Ueberweisung.execute works!! ;)
+ *
  * Revision 1.8  2004/04/21 22:28:42  willuhn
  * *** empty log message ***
  *

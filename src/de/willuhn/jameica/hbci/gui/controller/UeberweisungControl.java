@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.13 $
- * $Date: 2004/04/21 22:28:42 $
+ * $Revision: 1.14 $
+ * $Date: 2004/04/24 19:04:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -35,7 +35,7 @@ import de.willuhn.jameica.gui.input.AbstractInput;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.DialogInput;
-import de.willuhn.jameica.gui.input.SelectInput;
+import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.views.AbstractView;
@@ -68,8 +68,9 @@ public class UeberweisungControl extends AbstractControl {
 	private AbstractInput empfName 						= null;
 	private AbstractInput empfkto 						= null;
 	private AbstractInput empfblz 						= null;
-	
-	private CheckboxInput storeEmpfaenger = null;
+	private AbstractInput comment							= null;
+
+	private CheckboxInput storeEmpfaenger 		= null;
 
 	private I18N i18n;
 
@@ -113,10 +114,6 @@ public class UeberweisungControl extends AbstractControl {
 			return konto;
 
 		konto = getUeberweisung().getKonto();
-		if (konto != null)
-			return konto;
-
-		konto = (Konto) Settings.getDatabase().createObject(Konto.class,null);
 		return konto;
 	}
 
@@ -137,8 +134,7 @@ public class UeberweisungControl extends AbstractControl {
       		return;
 
 				try {
-					Date current = new Date();
-					if (u.getTermin().before(current))
+					if (u.getTermin().before(new Date()) && !u.ausgefuehrt())
 					{
 						item.setBackground(Settings.getUeberfaelligBackground());
 						item.setForeground(Settings.getUeberfaelligForeground());
@@ -151,6 +147,13 @@ public class UeberweisungControl extends AbstractControl {
       public void handleEvent(Event event) {
 				try {
 					Ueberweisung u = (Ueberweisung) event.data;
+					if (u == null)
+						return;
+					if (u.ausgefuehrt())
+					{
+						GUI.getView().setErrorText(i18n.tr("Die Überweisung wurde bereits ausgeführt."));
+						return;
+					}
 					u.execute();
 				}
 				catch (ApplicationException e)
@@ -159,8 +162,24 @@ public class UeberweisungControl extends AbstractControl {
 				}
 				catch (RemoteException e2)
 				{
+					Application.getLog().error("error while executing ueberweisung",e2);
 					GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Ausführen der Überweisung"));
 				}
+      }
+    });
+		table.addMenu(i18n.tr("Duplizieren"), new Listener() {
+      public void handleEvent(Event event) {
+      	Ueberweisung u = (Ueberweisung) event.data;
+      	if (u == null)
+      		return;
+      	try {
+					GUI.startView(UeberweisungNeu.class.getName(),u.duplicate());
+      	}
+      	catch (RemoteException e)
+      	{
+					Application.getLog().error("error while duplicating ueberweisung",e);
+					GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Duplizieren der Überweisung"));
+      	}
       }
     });
 		table.addColumn(i18n.tr("Konto"),"konto_id");
@@ -183,6 +202,28 @@ public class UeberweisungControl extends AbstractControl {
 	}
 
 	/**
+	 * Liefert ein Kommentar-Feld zu dieser Ueberweisung.
+   * @return Kommentarfeld.
+   * @throws RemoteException
+   */
+  public AbstractInput getComment() throws RemoteException
+	{
+		if (comment != null)
+			return comment;
+		comment = new LabelInput("");
+		Ueberweisung u = getUeberweisung();
+		if (u.ausgefuehrt())
+		{
+			comment.setValue(i18n.tr("Die Überweisung wurde bereits ausgeführt"));
+		}
+		else if (u.ueberfaellig())
+		{
+			comment.setValue(i18n.tr("Die Überweisung ist überfällig"));
+		}
+		return comment;
+	}
+
+	/**
 	 * Liefert ein Auswahlfeld fuer das Konto.
    * @return Auswahl-Feld.
    * @throws RemoteException
@@ -192,10 +233,22 @@ public class UeberweisungControl extends AbstractControl {
 		if (kontoAuswahl != null)
 			return kontoAuswahl;
 
-		kontoAuswahl = new SelectInput(getKonto());
-		kontoAuswahl.addListener(new KontoListener());
-		String b = getKonto().getBezeichnung();
-		kontoAuswahl.setComment(b == null ? "" : b);
+		ListDialog d = new ListDialog(Settings.getDatabase().createList(Konto.class),ListDialog.POSITION_MOUSE);
+		d.addColumn(i18n.tr("Bezeichnung"),"bezeichnung");
+		d.addColumn(i18n.tr("Kontonummer"),"kontonummer");
+		d.addColumn(i18n.tr("BLZ"),"blz");
+		d.setTitle(i18n.tr("Auswahl des Kontos"));
+		d.addCloseListener(new KontoListener());
+
+		Konto k = getKonto();
+		kontoAuswahl = new DialogInput(k == null ? "" : k.getKontonummer(),d);
+		kontoAuswahl.setComment(k == null ? "" : k.getBezeichnung());
+
+		if (getUeberweisung().ausgefuehrt())
+		{
+			kontoAuswahl.disable();
+			GUI.getView().setSuccessText(i18n.tr("Die Überweisung wurde bereits ausgeführt und kann daher nicht mehr geändert werden."));
+		}
 		return kontoAuswahl;
 	}
 
@@ -217,6 +270,9 @@ public class UeberweisungControl extends AbstractControl {
 		d.addCloseListener(new EmpfaengerListener());
 
 		empfkto = new DialogInput(getUeberweisung().getEmpfaengerKonto(),d);
+
+		if (getUeberweisung().ausgefuehrt())
+			empfkto.disable();
 		return empfkto;
 	}
 
@@ -230,6 +286,9 @@ public class UeberweisungControl extends AbstractControl {
 		if (empfblz != null)
 			return empfblz;
 		empfblz = new TextInput(getUeberweisung().getEmpfaengerBlz());
+
+		if (getUeberweisung().ausgefuehrt())
+			empfblz.disable();
 		return empfblz;
 	}
 
@@ -243,6 +302,10 @@ public class UeberweisungControl extends AbstractControl {
 		if (empfName != null)
 			return empfName;
 		empfName = new TextInput(getUeberweisung().getEmpfaengerName());
+
+		if (getUeberweisung().ausgefuehrt())
+			empfName.disable();
+
 		return empfName;
 	}
 
@@ -256,6 +319,10 @@ public class UeberweisungControl extends AbstractControl {
 		if (zweck != null)
 			return zweck;
 		zweck = new TextInput(getUeberweisung().getZweck());
+
+		if (getUeberweisung().ausgefuehrt())
+			zweck.disable();
+
 		return zweck;
 	}
 
@@ -269,6 +336,10 @@ public class UeberweisungControl extends AbstractControl {
 		if (zweck2 != null)
 			return zweck2;
 		zweck2 = new TextInput(getUeberweisung().getZweck2());
+
+		if (getUeberweisung().ausgefuehrt())
+			zweck2.disable();
+
 		return zweck2;
 	}
 
@@ -283,7 +354,15 @@ public class UeberweisungControl extends AbstractControl {
 		if (betrag != null)
 			return betrag;
 		betrag = new DecimalInput(getUeberweisung().getBetrag(),HBCI.DECIMALFORMAT);
+
+		// wir loesen den KontoListener aus, um die Waehrung sofort anzuzeigen
+		
+		betrag.setComment(getKonto() == null ? "" : getKonto().getWaehrung());
 		new KontoListener().handleEvent(null);
+
+		if (getUeberweisung().ausgefuehrt())
+			betrag.disable();
+
 		return betrag;
 	}
 
@@ -304,6 +383,16 @@ public class UeberweisungControl extends AbstractControl {
 					return;
 				Date choosen = (Date) event.data;
 				termin.setValue(HBCI.DATEFORMAT.format(choosen));
+
+				try {
+					// Wenn das neue Datum spaeter als das aktuelle ist,
+					// nehmen wir den Kommentar weg
+					if (getUeberweisung().ueberfaellig() && choosen.after(new Date()));
+						getComment().setValue("");
+					if (choosen.before(new Date()))
+						getComment().setValue(i18n.tr("Die Überweisung ist überfällig."));
+				}
+				catch (RemoteException e) {/*ignore*/}
 			}
 		});
 
@@ -312,6 +401,10 @@ public class UeberweisungControl extends AbstractControl {
 			d = new Date();
 		cd.setDate(d);
 		termin = new DialogInput(HBCI.DATEFORMAT.format(d),cd);
+
+		if (getUeberweisung().ausgefuehrt())
+			termin.disable();
+
 		return termin;
 	}
 
@@ -328,6 +421,10 @@ public class UeberweisungControl extends AbstractControl {
 
 		// Nur bei neuen Ueberweisungen aktivieren
 		storeEmpfaenger = new CheckboxInput(getUeberweisung().isNewObject());
+
+		if (getUeberweisung().ausgefuehrt())
+			storeEmpfaenger.disable();
+
 		return storeEmpfaenger;
 	}
 
@@ -443,6 +540,27 @@ public class UeberweisungControl extends AbstractControl {
    */
   public void handleExecute()
 	{
+
+		try {
+			if (getUeberweisung().ausgefuehrt())
+			{
+				GUI.getView().setErrorText(i18n.tr("Die Überweisung wurde bereits ausgeführt."));
+				return;
+			}
+
+			YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
+			d.setTitle(i18n.tr("Sicher?"));
+			d.setText(i18n.tr("Sind Sie sicher, daß Sie die Überweisung jetzt ausführen wollen?"));
+			if (!((Boolean)d.open()).booleanValue())
+				return;
+
+		}
+		catch (Exception e)
+		{
+			Application.getLog().error("error while checking ueberweisung",e);
+			GUI.getView().setErrorText(i18n.tr("Fehler beim Prüfen der Überweisung"));
+		}
+
 		handleStore();
 
 		if (!stored)
@@ -461,9 +579,9 @@ public class UeberweisungControl extends AbstractControl {
 				{
 					GUI.getView().setErrorText(i18n.tr(e.getMessage()));
 				}
-				catch (RemoteException e)
+				catch (Throwable t)
 				{
-					Application.getLog().error("error while executing ueberweisung",e);
+					Application.getLog().error("error while executing ueberweisung",t);
 					GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Ausführen der Überweisung."));
 				}
 			}
@@ -496,11 +614,16 @@ public class UeberweisungControl extends AbstractControl {
 		 * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
 		 */
 		public void handleEvent(Event event) {
+			if (event == null)
+				return;
+			konto = (Konto) event.data;
+			if (konto == null)
+				return;
 			try {
-				konto = (Konto) getKontoAuswahl().getValue();
-				String b = getKonto().getBezeichnung();
-				kontoAuswahl.setComment(b == null ? "" : b);
-				betrag.setComment(getKonto().getWaehrung());
+				String b = konto.getBezeichnung();
+				getKontoAuswahl().setValue(konto.getKontonummer());
+				getKontoAuswahl().setComment(b == null ? "" : b);
+				getBetrag().setComment(konto.getWaehrung());
 			}
 			catch (RemoteException er)
 			{
@@ -520,13 +643,17 @@ public class UeberweisungControl extends AbstractControl {
      * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
      */
     public void handleEvent(Event event) {
+    	if (event == null)
+    		return;
 			empfaenger = (Empfaenger) event.data;
+			if (empfaenger == null)
+				return;
 			try {
-				empfkto.setValue(empfaenger.getKontonummer());
-				empfblz.setValue(empfaenger.getBLZ());
-				empfName.setValue(empfaenger.getName());
+				getEmpfaengerKonto().setValue(empfaenger.getKontonummer());
+				getEmpfaengerBlz().setValue(empfaenger.getBLZ());
+				getEmpfaengerName().setValue(empfaenger.getName());
 				// Wenn der Empfaenger aus dem Adressbuch kommt, deaktivieren wir die Checkbox
-				storeEmpfaenger.setValue(Boolean.FALSE);
+				getStoreEmpfaenger().setValue(Boolean.FALSE);
 			}
 			catch (RemoteException er)
 			{
@@ -540,6 +667,9 @@ public class UeberweisungControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
+ * Revision 1.14  2004/04/24 19:04:51  willuhn
+ * @N Ueberweisung.execute works!! ;)
+ *
  * Revision 1.13  2004/04/21 22:28:42  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Ueberweisung.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/04/05 23:28:45 $
+ * $Revision: 1.6 $
+ * $Date: 2004/04/24 19:04:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -149,12 +149,29 @@ public interface Ueberweisung extends DBObject {
    * @throws ApplicationException
    */
   public void execute() throws RemoteException, ApplicationException;
+  
+  /**
+   * Dupliziert die Ueberweisung.
+   * @return eine neue Ueberweisung mit den Eigenschaften dieser.
+   * @throws RemoteException
+   */
+  public Ueberweisung duplicate() throws RemoteException;
+  
+  /**
+   * Prueft, ob die Ueberweisung ueberfaellig ist.
+   * @return true, wenn sie ueberfaellig ist.
+   * @throws RemoteException
+   */
+  public boolean ueberfaellig() throws RemoteException;
 	
 }
 
 
 /**********************************************************************
  * $Log: Ueberweisung.java,v $
+ * Revision 1.6  2004/04/24 19:04:51  willuhn
+ * @N Ueberweisung.execute works!! ;)
+ *
  * Revision 1.5  2004/04/05 23:28:45  willuhn
  * *** empty log message ***
  *
