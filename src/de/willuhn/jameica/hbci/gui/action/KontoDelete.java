@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/Attic/UmsatzListe.java,v $
- * $Revision: 1.2 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoDelete.java,v $
+ * $Revision: 1.1 $
  * $Date: 2004/10/20 12:08:18 $
  * $Author: willuhn $
  * $Locker:  $
@@ -16,6 +16,7 @@ import java.rmi.RemoteException;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
@@ -24,9 +25,9 @@ import de.willuhn.util.I18N;
 import de.willuhn.util.Logger;
 
 /**
- * Action fuer die Anzeige der Umsaetze eines Kontos.
+ * Action fuer Loeschen eines Kontos.
  */
-public class UmsatzListe implements Action
+public class KontoDelete implements Action
 {
 
   /**
@@ -36,37 +37,49 @@ public class UmsatzListe implements Action
   public void handleAction(Object context) throws ApplicationException
   {
   	I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  	if (context == null || !(context instanceof Konto))
-  		throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus."));
 
-		Konto k = (Konto) context;
-		
-		try
-		{
+		if (context == null || !(context instanceof Konto))
+			throw new ApplicationException(i18n.tr("Kein Konto ausgewählt"));
+
+		try {
+
+			Konto k = (Konto) context;
 			if (k.isNewObject())
-				throw new ApplicationException(i18n.tr("Bitte speichern Sie zunächst das Konto"));
+				return;
+
+			YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
+			d.setTitle(i18n.tr("Bankverbindung löschen"));
+			d.setText(i18n.tr("Wollen Sie diese Bankverbindung wirklich löschen?"));
+
+			try {
+				Boolean choice = (Boolean) d.open();
+				if (!choice.booleanValue())
+					return;
+			}
+			catch (Exception e)
+			{
+				Logger.error("error while deleting konto",e);
+				return;
+			}
+
+			// ok, wir loeschen das Objekt
+			k.delete();
+			GUI.getStatusBar().setSuccessText(i18n.tr("Bankverbindung gelöscht."));
+			GUI.startPreviousView();
 		}
 		catch (RemoteException e)
 		{
-			Logger.error("error while loading umsaetze",e);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Laden der Umsätze"));
+			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Löschen der Bankverbindung."));
+			Logger.error("unable to delete konto",e);
 		}
-		GUI.startView(de.willuhn.jameica.hbci.gui.views.UmsatzListe.class.getName(),k);
   }
 
 }
 
 
 /**********************************************************************
- * $Log: UmsatzListe.java,v $
- * Revision 1.2  2004/10/20 12:08:18  willuhn
+ * $Log: KontoDelete.java,v $
+ * Revision 1.1  2004/10/20 12:08:18  willuhn
  * @C MVC-Refactoring (new Controllers)
- *
- * Revision 1.1  2004/10/18 23:38:17  willuhn
- * @C Refactoring
- * @C Aufloesung der Listener und Ersatz gegen Actions
- *
- * Revision 1.1  2004/10/12 23:48:39  willuhn
- * @N Actions
  *
  **********************************************************************/

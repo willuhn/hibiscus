@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.30 $
- * $Date: 2004/10/19 23:33:31 $
+ * $Revision: 1.31 $
+ * $Date: 2004/10/20 12:08:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,7 +24,6 @@ import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.dialogs.CalendarDialog;
-import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
@@ -38,7 +37,6 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungExecute;
 import de.willuhn.jameica.hbci.gui.menus.UeberweisungList;
-import de.willuhn.jameica.hbci.gui.views.UeberweisungNeu;
 import de.willuhn.jameica.hbci.rmi.Transfer;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.util.ApplicationException;
@@ -190,41 +188,6 @@ public class UeberweisungControl extends AbstractTransferControl
 		return termin;
 	}
 
-  /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleDelete()
-   */
-  public synchronized void handleDelete() {
-
-		try {
-
-			Ueberweisung u = (Ueberweisung) getTransfer();
-
-			if (u == null || u.isNewObject())
-				return;
-
-			YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
-			d.setTitle(i18n.tr("Sicher?"));
-			d.setText(i18n.tr("Wollen Sie die Überweisung wirklich löschen?"));
-			if (!((Boolean) d.open()).booleanValue())
-				return;
-			u.delete();
-			GUI.getStatusBar().setSuccessText(i18n.tr("Überweisung gelöscht."));
-		}
-		catch (Exception e)
-		{
-			Logger.error("error while deleting ueberweisung",e);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Löschen der Überweisung."));
-		}
-  }
-
-  /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleCancel()
-   */
-  public void handleCancel() {
-		// GUI.startView(UeberweisungListe.class.getName(),null);
-		GUI.startPreviousView();
-  }
-
 	/**
    * Deaktiviert alle Eingabe-Felder.
    */
@@ -251,7 +214,7 @@ public class UeberweisungControl extends AbstractTransferControl
 	}
 
   /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleStore()
+   * Speichert die Ueberweisung.
    */
   public synchronized void handleStore()
   {
@@ -316,20 +279,6 @@ public class UeberweisungControl extends AbstractTransferControl
 			GUI.getStatusBar().setErrorText(e.getMessage());
     }
 	}
-
-  /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleCreate()
-   */
-  public void handleCreate() {
-		GUI.startView(UeberweisungNeu.class.getName(),null);
-  }
-
-  /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleOpen(java.lang.Object)
-   */
-  public void handleOpen(Object o) {
-		GUI.startView(UeberweisungNeu.class.getName(),o);
-  }
 
   /**
    * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getBetrag()
@@ -432,6 +381,9 @@ public class UeberweisungControl extends AbstractTransferControl
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
+ * Revision 1.31  2004/10/20 12:08:18  willuhn
+ * @C MVC-Refactoring (new Controllers)
+ *
  * Revision 1.30  2004/10/19 23:33:31  willuhn
  * *** empty log message ***
  *

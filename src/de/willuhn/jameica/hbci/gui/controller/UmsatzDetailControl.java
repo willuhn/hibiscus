@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailControl.java,v $
- * $Revision: 1.14 $
- * $Date: 2004/10/08 13:37:47 $
+ * $Revision: 1.15 $
+ * $Date: 2004/10/20 12:08:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,23 +17,15 @@ import java.rmi.RemoteException;
 
 import org.kapott.hbci.manager.HBCIUtils;
 
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
-import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.views.UmsatzListe;
-import de.willuhn.jameica.hbci.rmi.Empfaenger;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
-import de.willuhn.util.Logger;
 
 /**
  * Controller fuer die Detailansicht eines Umsatzes.
@@ -242,85 +234,14 @@ public class UmsatzDetailControl extends AbstractControl {
 		customerRef = new LabelInput(getUmsatz().getCustomerRef());
 		return customerRef;
 	}
-
-  /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleDelete()
-   */
-  public void handleDelete() {
-  }
-
-  /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleCancel()
-   */
-  public void handleCancel() {
-    try {
-      GUI.startView(UmsatzListe.class.getName(),getUmsatz().getKonto());
-    }
-    catch(RemoteException e)
-    {
-      Logger.error("error while opening umsatz list",e);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Laden der Umsätze"));
-    }
-  }
-  
-  /**
-   * Speichert den Empfaenger des aktuellen Umsatzes in der Adressliste.
-   */
-  public synchronized void handleAddEmpfaenger()
-  {
-    try {
-      // wir checken erstmal, ob wir den schon haben.
-      DBIterator list = Settings.getDBService().createList(Empfaenger.class);
-      list.addFilter("kontonummer = '" + getUmsatz().getEmpfaengerKonto() + "'");
-      list.addFilter("blz = '" + getUmsatz().getEmpfaengerBLZ() + "'");
-      if (list.hasNext())
-      {
-        YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
-        d.setTitle(i18n.tr("Empfänger existiert"));
-        d.setText(i18n.tr("Ein Empfänger mit dieser Kontonummer und BLZ existiert bereits. " +
-        		"Möchten Sie den Empfänger dennoch zum Adressbuch hinzufügen?"));
-        if (!((Boolean) d.open()).booleanValue()) return;
-      }
-      Empfaenger e = (Empfaenger) Settings.getDBService().createObject(Empfaenger.class,null);
-      e.setBLZ(getUmsatz().getEmpfaengerBLZ());
-      e.setKontonummer(getUmsatz().getEmpfaengerKonto());
-      e.setName(getUmsatz().getEmpfaengerName());
-      e.store();
-			GUI.getStatusBar().setSuccessText(i18n.tr("Adresse gespeichert"));
-    }
-    catch (ApplicationException ae)
-    {
-			GUI.getView().setErrorText(i18n.tr(ae.getMessage()));
-    }
-    catch (Exception re)
-    {
-      Logger.error("error while storing empfaenger",re);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern des Empfängers"));
-    }
-  }
-
-  /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleStore()
-   */
-  public void handleStore() {
-  }
-  
-  /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleCreate()
-   */
-  public void handleCreate() {
-  }
-  
-  /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleOpen(java.lang.Object)
-   */
-  public void handleOpen(Object o) {
-  }
 }
 
 
 /**********************************************************************
  * $Log: UmsatzDetailControl.java,v $
+ * Revision 1.15  2004/10/20 12:08:18  willuhn
+ * @C MVC-Refactoring (new Controllers)
+ *
  * Revision 1.14  2004/10/08 13:37:47  willuhn
  * *** empty log message ***
  *

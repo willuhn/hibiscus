@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzControl.java,v $
- * $Revision: 1.20 $
- * $Date: 2004/10/17 16:28:46 $
+ * $Revision: 1.21 $
+ * $Date: 2004/10/20 12:08:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,9 +18,7 @@ import org.eclipse.swt.widgets.TableItem;
 
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
-import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
@@ -28,15 +26,10 @@ import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.menus.UmsatzList;
-import de.willuhn.jameica.hbci.gui.views.KontoNeu;
-import de.willuhn.jameica.hbci.gui.views.UmsatzDetail;
-import de.willuhn.jameica.hbci.gui.views.UmsatzListe;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
-import de.willuhn.util.Logger;
 
 /**
  * Controller, der fuer die Umsatz-Liste eines Kontos zustaendig ist.
@@ -79,7 +72,7 @@ public class UmsatzControl extends AbstractControl {
    */
   public Part getUmsatzListe() throws RemoteException
 	{
-		TablePart table = new TablePart(getKonto().getUmsaetze(),this);
+		TablePart table = new TablePart(getKonto().getUmsaetze(),new de.willuhn.jameica.hbci.gui.action.UmsatzDetail());
 		table.setFormatter(new TableFormatter() {
       public void format(TableItem item) {
       	Umsatz u = (Umsatz) item.getData();
@@ -110,128 +103,14 @@ public class UmsatzControl extends AbstractControl {
 		return table;
 	}
 
-  /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleDelete()
-   */
-  public void handleDelete() {
-  }
-
-  /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleCancel()
-   */
-  public void handleCancel() {
-  	try {
-			GUI.startView(KontoNeu.class.getName(),getKonto());
-  	}
-  	catch (RemoteException e)
-  	{
-  		Logger.error("error while loading konto view",e);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Laden des Kontos"));
-  	}
-
-  }
-
-  /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleStore()
-   */
-  public void handleStore() {
-  }
-
-  /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleCreate()
-   */
-  public void handleCreate() {
-  }
-
-  /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleOpen(java.lang.Object)
-   */
-  public void handleOpen(Object o) {
-    GUI.startView(UmsatzDetail.class.getName(),o);
-  }
-
-	/**
-   * Holt die Umsaetze vom HBCI-Server und zeigt sie an. 
-   */
-  public synchronized void handleFetchUmsaetze()
-	{
-		GUI.getStatusBar().startProgress();
-
-		GUI.startSync(new Runnable() {
-			public void run() {
-				try {
-					GUI.getStatusBar().setSuccessText(i18n.tr("Umsätze werden abgerufen..."));
-					getKonto().refreshUmsaetze();
-					// Jetzt aktualisieren wir die GUI, indem wir uns selbst neu laden ;)
-					GUI.startView(UmsatzListe.class.getName(),getKonto());
-					GUI.getStatusBar().setSuccessText(i18n.tr("...Umsätze erfolgreich übertragen"));
-				}
-				catch (ApplicationException e2)
-				{
-					GUI.getView().setErrorText(i18n.tr(e2.getMessage()));
-				}
-				catch (Throwable t)
-				{
-					Logger.error("error while reading saldo",t);
-					GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Abrufen der Umsätze."));
-				}
-			}
-		});
-
-		GUI.getStatusBar().stopProgress();
-	}
-
-	/**
-   * Loescht alle Umsaetze aus der Liste.
-   */
-  public void handleDeleteUmsaetze()
-	{
-
-		YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
-		d.setTitle(i18n.tr("Sicher?"));
-		d.setText(i18n.tr("Sind Sie sicher, daß Sie alle Umsätze des Kontos löschen möchten?"));
-
-		try {
-			if (!((Boolean)d.open()).booleanValue())
-				return;
-		}
-		catch (Exception e)
-		{
-			Logger.error("error while deleting umsaetze",e);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Löschen der Umsätze"));
-			return;
-		}
-
-
-		GUI.getStatusBar().startProgress();
-
-		GUI.startSync(new Runnable() {
-			public void run() {
-				try {
-					getKonto().deleteUmsaetze();
-					GUI.getStatusBar().setSuccessText(i18n.tr("Umsätze gelöscht."));
-					// View reloaden
-					GUI.startView(UmsatzListe.class.getName(),getKonto());
-				}
-				catch (ApplicationException e2)
-				{
-					GUI.getView().setErrorText(i18n.tr(e2.getMessage()));
-				}
-				catch (Exception e)
-				{
-					Logger.error("error while deleting umsaetze",e);
-					GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Löschen der Umsätze."));
-				}
-			}
-		});
-
-		GUI.getStatusBar().stopProgress();
-	}
 }
 
 
 /**********************************************************************
  * $Log: UmsatzControl.java,v $
+ * Revision 1.21  2004/10/20 12:08:18  willuhn
+ * @C MVC-Refactoring (new Controllers)
+ *
  * Revision 1.20  2004/10/17 16:28:46  willuhn
  * @N Die ersten Dauerauftraege abgerufen ;)
  *

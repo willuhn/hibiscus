@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EmpfaengerControl.java,v $
- * $Revision: 1.21 $
- * $Date: 2004/10/19 23:33:31 $
+ * $Revision: 1.22 $
+ * $Date: 2004/10/20 12:08:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,14 +23,12 @@ import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
-import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.menus.EmpfaengerList;
-import de.willuhn.jameica.hbci.gui.views.EmpfaengerNeu;
 import de.willuhn.jameica.hbci.rmi.Empfaenger;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -143,48 +141,7 @@ public class EmpfaengerControl extends AbstractControl {
 	}
 
   /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleDelete()
-   */
-  public synchronized void handleDelete() {
-		try {
-
-			if (getEmpfaenger() == null || getEmpfaenger().isNewObject())
-				return;
-
-			YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
-			d.setTitle(i18n.tr("Empfängeradresse löschen"));
-			d.setText(i18n.tr("Wollen Sie diese Empfängeradresse wirklich löschen?"));
-
-			try {
-				Boolean choice = (Boolean) d.open();
-				if (!choice.booleanValue())
-					return;
-			}
-			catch (Exception e)
-			{
-				Logger.error(e.getLocalizedMessage(),e);
-				return;
-			}
-
-			// ok, wir loeschen das Objekt
-			getEmpfaenger().delete();
-			GUI.getStatusBar().setSuccessText(i18n.tr("Empfängeradresse gelöscht."));
-			GUI.startPreviousView();
-		}
-		catch (RemoteException e)
-		{
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Löschen der Empfängeradresse."));
-			Logger.error("unable to delete empfaenger");
-		}
-		catch (ApplicationException ae)
-		{
-			GUI.getView().setErrorText(ae.getLocalizedMessage());
-		}
-
-  }
-
-  /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleStore()
+   * Speichert den Empfaenger.
    */
   public synchronized void handleStore() {
   	try {
@@ -203,20 +160,6 @@ public class EmpfaengerControl extends AbstractControl {
   	{
   		GUI.getView().setErrorText(e2.getLocalizedMessage());
   	}
-  }
-
-  /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleCreate()
-   */
-  public void handleCreate() {
-		GUI.startView(EmpfaengerNeu.class.getName(),null);
-  }
-
-  /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleOpen(java.lang.Object)
-   */
-  public void handleOpen(Object o) {
-		GUI.startView(EmpfaengerNeu.class.getName(),o);
   }
 
 	/**
@@ -247,6 +190,9 @@ public class EmpfaengerControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: EmpfaengerControl.java,v $
+ * Revision 1.22  2004/10/20 12:08:18  willuhn
+ * @C MVC-Refactoring (new Controllers)
+ *
  * Revision 1.21  2004/10/19 23:33:31  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/10/15 20:09:43 $
+ * $Revision: 1.10 $
+ * $Date: 2004/10/20 12:08:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -281,8 +281,8 @@ public abstract class AbstractTransferControl extends AbstractControl
   }
 
 	/**
-	 * @see de.willuhn.jameica.gui.controller.AbstractControl#handleStore()
-	 */
+   * Speichert den Geld-Transfer.
+   */
 	public synchronized void handleStore()
 	{
 		stored = false;
@@ -438,6 +438,9 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
+ * Revision 1.10  2004/10/20 12:08:18  willuhn
+ * @C MVC-Refactoring (new Controllers)
+ *
  * Revision 1.9  2004/10/15 20:09:43  willuhn
  * @B Laengen-Pruefung bei Empfaengername
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/KontoList.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/10/18 23:38:17 $
+ * $Revision: 1.6 $
+ * $Date: 2004/10/20 12:08:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,7 @@ import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.KontoNeu;
-import de.willuhn.jameica.hbci.gui.action.KontoRefreshSaldo;
+import de.willuhn.jameica.hbci.gui.action.KontoFetchSaldo;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungNeu;
 import de.willuhn.jameica.hbci.gui.action.UmsatzListe;
 import de.willuhn.jameica.system.Application;
@@ -41,7 +41,7 @@ public class KontoList extends ContextMenu
 
 		addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"),new KontoNeu()));
 		addItem(new CheckedContextMenuItem(i18n.tr("Kontoauszüge anzeigen..."), new UmsatzListe()));
-		addItem(new CheckedContextMenuItem(i18n.tr("Saldo aktualisieren..."), new KontoRefreshSaldo()));
+		addItem(new CheckedContextMenuItem(i18n.tr("Saldo aktualisieren..."), new KontoFetchSaldo()));
 
 		addItem(ContextMenuItem.SEPARATOR);
 
@@ -69,6 +69,9 @@ public class KontoList extends ContextMenu
 
 /**********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.6  2004/10/20 12:08:18  willuhn
+ * @C MVC-Refactoring (new Controllers)
+ *
  * Revision 1.5  2004/10/18 23:38:17  willuhn
  * @C Refactoring
  * @C Aufloesung der Listener und Ersatz gegen Actions

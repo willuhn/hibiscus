@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.44 $
- * $Date: 2004/10/08 13:37:47 $
+ * $Revision: 1.45 $
+ * $Date: 2004/10/20 12:08:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,7 +27,6 @@ import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
-import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.input.Input;
@@ -39,9 +38,9 @@ import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.PassportRegistry;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.action.KontoFetchFromPassport;
+import de.willuhn.jameica.hbci.gui.action.PassportDetail;
 import de.willuhn.jameica.hbci.gui.menus.KontoList;
-import de.willuhn.jameica.hbci.gui.views.KontoNeu;
-import de.willuhn.jameica.hbci.gui.views.UmsatzListe;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
@@ -292,7 +291,7 @@ public class KontoControl extends AbstractControl {
 
 		DBIterator list = Settings.getDBService().createList(Konto.class);
 
-		kontoList = new TablePart(list,this);
+		kontoList = new TablePart(list,new de.willuhn.jameica.hbci.gui.action.KontoNeu());
 		kontoList.addColumn(i18n.tr("Kontonummer"),"kontonummer");
 		kontoList.addColumn(i18n.tr("Bankleitzahl"),"blz");
 		kontoList.addColumn(i18n.tr("Bezeichnung"),"bezeichnung");
@@ -326,57 +325,7 @@ public class KontoControl extends AbstractControl {
 	}
 
   /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleDelete()
-   */
-  public void handleDelete() {
-
-		try {
-
-			if (getKonto() == null || getKonto().isNewObject())
-				return;
-
-			YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
-			d.setTitle(i18n.tr("Bankverbindung löschen"));
-			d.setText(i18n.tr("Wollen Sie diese Bankverbindung wirklich löschen?"));
-
-			try {
-				Boolean choice = (Boolean) d.open();
-				if (!choice.booleanValue())
-					return;
-			}
-			catch (Exception e)
-			{
-				Logger.error(e.getLocalizedMessage(),e);
-				return;
-			}
-
-			// ok, wir loeschen das Objekt
-			getKonto().delete();
-			GUI.getStatusBar().setSuccessText(i18n.tr("Bankverbindung gelöscht."));
-			GUI.startPreviousView();
-		}
-		catch (RemoteException e)
-		{
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Löschen der Bankverbindung."));
-			Logger.error("unable to delete konto",e);
-		}
-		catch (ApplicationException ae)
-		{
-			GUI.getView().setErrorText(i18n.tr(ae.getMessage()));
-		}
-  }
-
-  /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleCancel()
-   */
-  public void handleCancel() {
-		// GUI.startView(KontoListe.class.getName(),null);
-		GUI.startPreviousView();
-
-  }
-
-  /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleStore()
+   * Speichert das Konto.
    */
   public synchronized void handleStore() {
 		try {
@@ -414,34 +363,25 @@ public class KontoControl extends AbstractControl {
 
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleCreate()
-   */
-  public void handleCreate() {
-		GUI.startView(KontoNeu.class.getName(),null);
-  }
-
-  /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleOpen(java.lang.Object)
-   */
-  public void handleOpen(Object o) {
-		GUI.startView(KontoNeu.class.getName(),o);
-  }
-
 	/**
    * Oeffnet den Einstellungs-Dialog des gerade ausgewaehlten Passports.
    */
   public synchronized void handleConfigurePassport()
 	{
-		try {
-			Object o = getPassportAuswahl().getValue();
-			if (o == null)
+		try 
+		{
+			if (getPassportAuswahl().getValue() == null)
 			{
 				GUI.getStatusBar().setErrorText(i18n.tr("Kein Sicherheitsmedium verfügbar"));
 				return;
 			}
-			SettingsControl c = new SettingsControl(null);
-			c.handleOpen(o);
+
+			Passport p = ((PassportObject) getPassportAuswahl().getValue()).getPassport();
+			new PassportDetail().handleAction(p);
+		}
+		catch (ApplicationException ae)
+		{
+			GUI.getStatusBar().setErrorText(ae.getMessage());
 		}
 		catch (RemoteException e)
 		{
@@ -465,6 +405,13 @@ public class KontoControl extends AbstractControl {
 				GUI.getStatusBar().setErrorText(i18n.tr("Kein Sicherheitsmedium verfügbar"));
 				return;
 			}
+
+			Passport p = ((PassportObject) getPassportAuswahl().getValue()).getPassport();
+			new KontoFetchFromPassport().handleAction(p);
+		}
+		catch (ApplicationException ae)
+		{
+			GUI.getStatusBar().setErrorText(ae.getMessage());
 		}
 		catch (RemoteException e)
 		{
@@ -473,135 +420,6 @@ public class KontoControl extends AbstractControl {
 			return;
 		}
 
-		GUI.getStatusBar().startProgress();
-
-		GUI.getStatusBar().setSuccessText(i18n.tr("Medium wird ausgelesen..."));
-
-		GUI.startSync(new Runnable() {
-			public void run() {
-				try {
-
-					PassportObject po = (PassportObject) getPassportAuswahl().getValue();
-					Passport p = po.getPassport();
-
-					DBIterator existing = Settings.getDBService().createList(Konto.class);
-					Konto check = null;
-					Konto[] konten = p.getHandle().getKonten();
-
-					for (int i=0;i<konten.length;++i)
-					{
-						Logger.info("found konto " + konten[i].getKontonummer());
-						// Wir checken, ob's das Konto schon gibt
-						boolean found = false;
-						Logger.info("  checking if allready exists");
-						while (existing.hasNext())
-						{
-							check = (Konto) existing.next();
-							if (check.getBLZ().equals(konten[i].getBLZ()) &&
-								check.getKontonummer().equals(konten[i].getKontonummer()))
-							{
-								found = true;
-								Logger.info("  konto exists, skipping");
-								break;
-							}
-						
-						}
-						existing.begin();
-						if (!found)
-						{
-							// Konto neu anlegen
-							Logger.info("saving new konto");
-							try {
-								konten[i].setPassport(p); // wir speichern den ausgewaehlten Passport.
-								konten[i].store();
-								Logger.info("konto saved successfully");
-							}
-							catch (Exception e)
-							{
-								// Wenn ein Konto fehlschlaegt, soll nicht gleich der ganze Vorgang abbrechen
-								Logger.error("error while storing konto",e);
-								GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Anlegen des Kontos") + " " + konten[i].getKontonummer());
-							}
-						}
-					
-					}
-					GUI.startView(GUI.getCurrentView().getClass().getName(),getCurrentObject());
-					GUI.getStatusBar().setSuccessText(i18n.tr("Konten erfolgreich ausgelesen"));
-				}
-				catch (Throwable t)
-				{
-					Logger.error("error while reading data from passport",t);
-					GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Lesen der Konto-Daten. Bitte prüfen Sie die Einstellungen des Mediums."));
-				}
-			}
-		});
-		GUI.getStatusBar().stopProgress();
-	}
-
-	/**
-   * Aktualisiert den angezeigten Saldo.
-   */
-  public synchronized void handleRefreshSaldo()
-	{
-
-		try {
-			if (getKonto() == null || getKonto().isNewObject())
-			{
-				GUI.getView().setErrorText(i18n.tr("Bitte speichern Sie zuerst das Konto."));
-				return;
-			}
-		}
-		catch (RemoteException e)
-		{
-			Logger.error("error while checking konto",e);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Prüfen des Kontos"));
-		}
-
-		GUI.getStatusBar().startProgress();
-
-		GUI.startSync(new Runnable() {
-      public void run() {
-      	try {
-					GUI.getStatusBar().setSuccessText(i18n.tr("Saldo des Kontos wird ermittelt..."));
-					getKonto().refreshSaldo();
-					getSaldo().setValue(HBCI.DECIMALFORMAT.format(getKonto().getSaldo()) + " " + getKonto().getWaehrung());
-					getSaldoDatum().setValue(HBCI.LONGDATEFORMAT.format(getKonto().getSaldoDatum()));
-					GUI.getStatusBar().setSuccessText(i18n.tr("...Saldo des Kontos erfolgreich übertragen"));
-      	}
-      	catch (ApplicationException e2)
-      	{
-      		GUI.getView().setErrorText(i18n.tr(e2.getMessage()));
-      	}
-				catch (Throwable t)
-				{
-					Logger.error("error while reading saldo",t);
-					GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Abrufen des Saldos."));
-				}
-      }
-    });
-		GUI.getStatusBar().stopProgress();
-
-	}
-
-	/**
-   * Laedt die Seite mit den Umsaetzen dieses Kontos.
-   */
-  public synchronized void handleShowUmsaetze()
-	{
-		try {
-			Konto konto = getKonto();
-			if (konto == null || konto.isNewObject())
-			{
-				GUI.getView().setErrorText(i18n.tr("Bitte speichern Sie zuerst das Konto."));
-				return;
-			}
-			GUI.startView(UmsatzListe.class.getName(),getKonto());
-		}
-		catch (RemoteException e)
-		{
-			Logger.error("error while starting umsatz list",e);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Laden der Kontoauszüge"));
-		}
 	}
 
 	/**
@@ -631,6 +449,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.45  2004/10/20 12:08:18  willuhn
+ * @C MVC-Refactoring (new Controllers)
+ *
  * Revision 1.44  2004/10/08 13:37:47  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.32 $
- * $Date: 2004/10/08 13:37:47 $
+ * $Revision: 1.33 $
+ * $Date: 2004/10/20 12:08:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -35,6 +35,7 @@ import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.PassportRegistry;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.action.PassportDetail;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
@@ -84,7 +85,7 @@ public class SettingsControl extends AbstractControl {
 		{
 			p[i] = new PassportObject(passports[i]);
 		}
-		passportList = new TablePart(PseudoIterator.fromArray(p),this);
+		passportList = new TablePart(PseudoIterator.fromArray(p),new PassportDetail());
 		passportList.addColumn(i18n.tr("Bezeichnung"),"name");
 		return passportList;
 	}
@@ -170,22 +171,7 @@ public class SettingsControl extends AbstractControl {
 	}
 
   /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleDelete()
-   */
-  public void handleDelete() {
-  }
-
-  /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleCancel()
-   */
-  public void handleCancel() {
-//  	GUI.startView(Welcome.class.getName(),null);
-		GUI.startPreviousView();
-
-  }
-
-  /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleStore()
+   * Speichert die Einstellungen.
    */
   public void handleStore() {
 		try {
@@ -236,28 +222,6 @@ public class SettingsControl extends AbstractControl {
 		GUI.getStatusBar().setSuccessText(i18n.tr("Checksumme gelöscht."));
 	}
 
-  /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleCreate()
-   */
-  public void handleCreate() {
-  }
-
-	/**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleOpen(java.lang.Object)
-   */
-  public void handleOpen(Object o)
-	{
-		try {
-			PassportObject p = (PassportObject) o;
-			GUI.startView(p.getPassport().getConfigDialog().getName(),p.getPassport());
-		}
-		catch (Exception e)
-		{
-			Logger.error("error while opening passport",e);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Laden des Sicherheitsmediums"));
-		}
-	}
-
 	/**
 	 * Listener, der prueft, ob die Hash-Algorithmen zur Checksummen-Bildung
 	 * verfuegbar sind.
@@ -290,6 +254,9 @@ public class SettingsControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.33  2004/10/20 12:08:18  willuhn
+ * @C MVC-Refactoring (new Controllers)
+ *
  * Revision 1.32  2004/10/08 13:37:47  willuhn
  * *** empty log message ***
  *

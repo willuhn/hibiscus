@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/WelcomeControl.java,v $
- * $Revision: 1.11 $
- * $Date: 2004/10/08 13:37:47 $
+ * $Revision: 1.12 $
+ * $Date: 2004/10/20 12:08:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -73,7 +73,7 @@ public class WelcomeControl extends AbstractControl {
 		DBIterator list = Settings.getDBService().createList(Ueberweisung.class);
 		list.addFilter("ausgefuehrt = 0");
 
-		offeneUeberweisungen = new TablePart(list,this);
+		offeneUeberweisungen = new TablePart(list,new de.willuhn.jameica.hbci.gui.action.UeberweisungNeu());
 		offeneUeberweisungen.setFormatter(new TableFormatter() {
       public void format(TableItem item) {
 				try {
@@ -136,7 +136,7 @@ public class WelcomeControl extends AbstractControl {
 
 		DBIterator list = Settings.getDBService().createList(Konto.class);
 
-		kontoStats = new TablePart(list,new KontoControl(null));
+		kontoStats = new TablePart(list,new de.willuhn.jameica.hbci.gui.action.KontoNeu());
 		kontoStats.addColumn(i18n.tr("Kontonummer"),"kontonummer");
 		kontoStats.addColumn(i18n.tr("Bezeichnung"),"bezeichnung");
 		kontoStats.addColumn(i18n.tr("Saldo"),"saldo");
@@ -158,43 +158,14 @@ public class WelcomeControl extends AbstractControl {
 		kontoStats.setContextMenu(new KontoList());
 		return kontoStats;
 	}
-
-  /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleDelete()
-   */
-  public void handleDelete() {
-  }
-
-  /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleCancel()
-   */
-  public void handleCancel() {
-  }
-
-  /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleStore()
-   */
-  public void handleStore() {
-  }
-
-  /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleCreate()
-   */
-  public void handleCreate() {
-  }
-
-  /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleOpen(java.lang.Object)
-   */
-  public void handleOpen(Object o) {
-		GUI.startView(UeberweisungNeu.class.getName(),o);
-  }
-
 }
 
 
 /**********************************************************************
  * $Log: WelcomeControl.java,v $
+ * Revision 1.12  2004/10/20 12:08:18  willuhn
+ * @C MVC-Refactoring (new Controllers)
+ *
  * Revision 1.11  2004/10/08 13:37:47  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzDetail.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/10/18 23:38:17 $
+ * $Revision: 1.11 $
+ * $Date: 2004/10/20 12:08:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,18 +13,21 @@
 
 package de.willuhn.jameica.hbci.gui.views;
 
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
+import java.rmi.RemoteException;
 
 import de.willuhn.jameica.gui.AbstractView;
+import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.action.Back;
+import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
 import de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
+import de.willuhn.util.Logger;
 
 /**
  * Bildet die Detailansicht einer Buchung ab.
@@ -37,7 +40,7 @@ public class UmsatzDetail extends AbstractView {
   public void bind() throws Exception {
 
     final UmsatzDetailControl control = new UmsatzDetailControl(this);
-    I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+    final I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     GUI.getView().setTitle(i18n.tr("Buchungsdetails"));
 
     LabelGroup konten = new LabelGroup(getParent(),i18n.tr("Konten"));
@@ -63,14 +66,22 @@ public class UmsatzDetail extends AbstractView {
 		umsatz.addLabelPair(i18n.tr("Neuer Saldo"),							control.getSaldo());
 
     ButtonArea buttons = new ButtonArea(getParent(),2);
-    buttons.addCustomButton(i18n.tr("Empfänger in Adressbuch übernehmen"),new Listener()
+    buttons.addButton(i18n.tr("Empfänger in Adressbuch übernehmen"),new Action()
     {
-      public void handleEvent(Event event)
+      public void handleAction(Object context) throws ApplicationException
       {
-				control.handleAddEmpfaenger();
+      	try
+      	{
+					new EmpfaengerAdd().handleAction(control.getUmsatz());
+      	}
+      	catch (RemoteException e)
+      	{
+      		Logger.error("error while adding empfaenger",e);
+      		GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Hinzufügen zum Adressbuch"));
+      	}
       }
     });
-    buttons.addCancelButton(control);
+    buttons.addButton(i18n.tr("Zurück"),new Back());
   }
   /**
    * @see de.willuhn.jameica.gui.views.AbstractView#unbind()
@@ -82,6 +93,9 @@ public class UmsatzDetail extends AbstractView {
 
 /**********************************************************************
  * $Log: UmsatzDetail.java,v $
+ * Revision 1.11  2004/10/20 12:08:18  willuhn
+ * @C MVC-Refactoring (new Controllers)
+ *
  * Revision 1.10  2004/10/18 23:38:17  willuhn
  * @C Refactoring
  * @C Aufloesung der Listener und Ersatz gegen Actions

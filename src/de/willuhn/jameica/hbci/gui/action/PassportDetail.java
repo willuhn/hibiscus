@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/Attic/UmsatzListe.java,v $
- * $Revision: 1.2 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/PassportDetail.java,v $
+ * $Revision: 1.1 $
  * $Date: 2004/10/20 12:08:18 $
  * $Author: willuhn $
  * $Locker:  $
@@ -17,56 +17,47 @@ import java.rmi.RemoteException;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 import de.willuhn.util.Logger;
 
 /**
- * Action fuer die Anzeige der Umsaetze eines Kontos.
+ * Action, ueber die ein Passport konfiguriert werden kann.
  */
-public class UmsatzListe implements Action
+public class PassportDetail implements Action
 {
 
   /**
-   * Erwartet ein Objekt vom Typ <code>Konto</code> im Context.
+   * Erwartet ein Objekt vom Typ <code>de.willuhn.jameica.hbci.passport.Passport</code>.
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
   public void handleAction(Object context) throws ApplicationException
   {
   	I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  	if (context == null || !(context instanceof Konto))
-  		throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus."));
 
-		Konto k = (Konto) context;
-		
-		try
-		{
-			if (k.isNewObject())
-				throw new ApplicationException(i18n.tr("Bitte speichern Sie zunächst das Konto"));
+  	if (context == null || !(context instanceof Passport))
+  		throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Sicherheits-Medium aus"));
+
+		try {
+			Passport p = (Passport) context;
+			GUI.startView(p.getConfigDialog().getName(),p);
 		}
 		catch (RemoteException e)
 		{
-			Logger.error("error while loading umsaetze",e);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Laden der Umsätze"));
+			Logger.error("error while opening passport",e);
+			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Laden des Sicherheitsmediums"));
 		}
-		GUI.startView(de.willuhn.jameica.hbci.gui.views.UmsatzListe.class.getName(),k);
+
   }
 
 }
 
 
 /**********************************************************************
- * $Log: UmsatzListe.java,v $
- * Revision 1.2  2004/10/20 12:08:18  willuhn
+ * $Log: PassportDetail.java,v $
+ * Revision 1.1  2004/10/20 12:08:18  willuhn
  * @C MVC-Refactoring (new Controllers)
- *
- * Revision 1.1  2004/10/18 23:38:17  willuhn
- * @C Refactoring
- * @C Aufloesung der Listener und Ersatz gegen Actions
- *
- * Revision 1.1  2004/10/12 23:48:39  willuhn
- * @N Actions
  *
  **********************************************************************/
