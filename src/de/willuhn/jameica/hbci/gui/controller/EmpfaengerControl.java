@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EmpfaengerControl.java,v $
- * $Revision: 1.19 $
- * $Date: 2004/10/08 13:37:47 $
+ * $Revision: 1.20 $
+ * $Date: 2004/10/15 20:09:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -130,7 +130,7 @@ public class EmpfaengerControl extends AbstractControl {
 	{
 		if (name != null)
 			return name;
-		name = new TextInput(getEmpfaenger().getName());
+		name = new TextInput(getEmpfaenger().getName(),27);
 		return name;
 	}
 
@@ -255,6 +255,9 @@ public class EmpfaengerControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: EmpfaengerControl.java,v $
+ * Revision 1.20  2004/10/15 20:09:43  willuhn
+ * @B Laengen-Pruefung bei Empfaengername
+ *
  * Revision 1.19  2004/10/08 13:37:47  willuhn
  * *** empty log message ***
  *

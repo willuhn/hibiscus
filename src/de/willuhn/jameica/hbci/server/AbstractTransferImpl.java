@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AbstractTransferImpl.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/08/18 23:13:51 $
+ * $Revision: 1.9 $
+ * $Date: 2004/10/15 20:09:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -67,6 +67,12 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
 			
 			if (getEmpfaengerBLZ() == null || "".equals(getEmpfaengerBLZ()))
 				throw new ApplicationException("Bitte geben Sie die BLZ des Empfängers ein");
+
+			if (getEmpfaengerName() == null || "".equals(getEmpfaengerName()))
+				throw new ApplicationException("Bitte geben Sie den Namen des Empfängers ein");
+
+			if (getEmpfaengerName().length() > 27)
+				throw new ApplicationException("Bitte geben Sie maximal 27 Zeichen für den Namen des Empfängers ein");
 
 			if (!HBCIUtils.checkAccountCRC(getEmpfaengerBLZ(),getEmpfaengerKonto()))
 				throw new ApplicationException("Ungültige BLZ/Kontonummer. Bitte prüfen Sie Ihre Eingaben.");
@@ -234,6 +240,9 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
 
 /**********************************************************************
  * $Log: AbstractTransferImpl.java,v $
+ * Revision 1.9  2004/10/15 20:09:43  willuhn
+ * @B Laengen-Pruefung bei Empfaengername
+ *
  * Revision 1.8  2004/08/18 23:13:51  willuhn
  * @D Javadoc
  *

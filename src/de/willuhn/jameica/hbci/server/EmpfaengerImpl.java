@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/EmpfaengerImpl.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/08/18 23:13:51 $
+ * $Revision: 1.9 $
+ * $Date: 2004/10/15 20:09:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -63,6 +63,9 @@ public class EmpfaengerImpl extends AbstractDBObject implements Empfaenger {
 
 			if (getName() == null || getName().length() == 0)
 				throw new ApplicationException("Bitte geben Sie einen Namen ein.");
+
+			if (getName().length() > 27)
+				throw new ApplicationException("Bitte geben Sie maximal 27 Zeichen für den Namen ein.");
 
 			if (getBLZ() == null || getBLZ().length() == 0)
 				throw new ApplicationException("Bitte geben Sie eine BLZ ein.");
@@ -152,6 +155,9 @@ public class EmpfaengerImpl extends AbstractDBObject implements Empfaenger {
 
 /**********************************************************************
  * $Log: EmpfaengerImpl.java,v $
+ * Revision 1.9  2004/10/15 20:09:43  willuhn
+ * @B Laengen-Pruefung bei Empfaengername
+ *
  * Revision 1.8  2004/08/18 23:13:51  willuhn
  * @D Javadoc
  *

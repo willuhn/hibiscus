@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/10/08 13:37:47 $
+ * $Revision: 1.9 $
+ * $Date: 2004/10/15 20:09:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -183,7 +183,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 	{
 		if (empfName != null)
 			return empfName;
-		empfName = new TextInput(getTransfer().getEmpfaengerName());
+		empfName = new TextInput(getTransfer().getEmpfaengerName(),27);
 		return empfName;
 	}
 
@@ -438,6 +438,9 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
+ * Revision 1.9  2004/10/15 20:09:43  willuhn
+ * @B Laengen-Pruefung bei Empfaengername
+ *
  * Revision 1.8  2004/10/08 13:37:47  willuhn
  * *** empty log message ***
  *
