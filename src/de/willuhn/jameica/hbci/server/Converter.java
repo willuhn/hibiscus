@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/06/10 20:56:33 $
+ * $Revision: 1.10 $
+ * $Date: 2004/07/04 17:07:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -142,7 +142,7 @@ public class Converter {
 	public static de.willuhn.jameica.hbci.rmi.Konto HBCIKonto2JameicaKonto(Konto konto) throws RemoteException
 	{
 		de.willuhn.jameica.hbci.rmi.Konto k =
-			(de.willuhn.jameica.hbci.rmi.Konto) Settings.getDatabase().createObject(Konto.class,null);
+			(de.willuhn.jameica.hbci.rmi.Konto) Settings.getDatabase().createObject(de.willuhn.jameica.hbci.rmi.Konto.class,null);
 		k.setBLZ(konto.blz);
 		k.setKontonummer(konto.number);
 		k.setKundennummer(konto.customerid);
@@ -190,6 +190,9 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.10  2004/07/04 17:07:58  willuhn
+ * @B Umsaetze wurden teilweise nicht als bereits vorhanden erkannt und wurden somit doppelt angezeigt
+ *
  * Revision 1.9  2004/06/10 20:56:33  willuhn
  * @D javadoc comments fixed
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.37 $
- * $Date: 2004/06/30 20:58:28 $
+ * $Revision: 1.38 $
+ * $Date: 2004/07/04 17:07:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -489,7 +489,7 @@ public class KontoControl extends AbstractControl {
 								newKonto.setKundennummer(konten[i].getKundennummer());
 								newKonto.setName(konten[i].getName());
 								newKonto.setWaehrung(konten[i].getWaehrung());
-								newKonto.setPassport(getKonto().getPassport()); // wir speichern den ausgewaehlten Passport.
+								newKonto.setPassport(p); // wir speichern den ausgewaehlten Passport.
 								newKonto.store();
 							}
 							catch (Exception e)
@@ -607,6 +607,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.38  2004/07/04 17:07:59  willuhn
+ * @B Umsaetze wurden teilweise nicht als bereits vorhanden erkannt und wurden somit doppelt angezeigt
+ *
  * Revision 1.37  2004/06/30 20:58:28  willuhn
  * *** empty log message ***
  *

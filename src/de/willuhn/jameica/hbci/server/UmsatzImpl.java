@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/06/30 20:58:29 $
+ * $Revision: 1.9 $
+ * $Date: 2004/07/04 17:07:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,7 @@ import java.util.Date;
 import java.util.zip.CRC32;
 
 import de.willuhn.datasource.db.AbstractDBObject;
-import de.willuhn.datasource.rmi.DBObject;
+import de.willuhn.datasource.rmi.GenericObject;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -250,16 +250,16 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz {
    * nicht in der Datenbank existieren.
    * Da ein Umsatz von der Bank scheinbar keinen Identifier mitbringt,
    * muessen wir selbst einen fachlichen Vergleich durchfuehren.
-   * @see de.willuhn.datasource.rmi.DBObject#equals(de.willuhn.datasource.rmi.DBObject)
+   * @see de.willuhn.datasource.rmi.GenericObject#equals(de.willuhn.datasource.rmi.GenericObject)
    */
-  public boolean equals(DBObject o) throws RemoteException {
+  public boolean equals(GenericObject o) throws RemoteException {
 		if (o == null)
 			return false;
 		try {
 			Umsatz other = (Umsatz) o;
 			return other.getCRC32() == getCRC32();
 		}
-		catch (Exception e)
+		catch (ClassCastException e)
 		{
 			return false;
 		}
@@ -367,6 +367,9 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz {
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.9  2004/07/04 17:07:59  willuhn
+ * @B Umsaetze wurden teilweise nicht als bereits vorhanden erkannt und wurden somit doppelt angezeigt
+ *
  * Revision 1.8  2004/06/30 20:58:29  willuhn
  * *** empty log message ***
  *

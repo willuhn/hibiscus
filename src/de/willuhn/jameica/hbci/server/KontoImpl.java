@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.25 $
- * $Date: 2004/06/30 20:58:28 $
+ * $Revision: 1.26 $
+ * $Date: 2004/07/04 17:07:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -77,26 +77,29 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    */
   protected void insertCheck() throws ApplicationException {
 		try {
-			if (getName() == null || "".equals(getName()))
-				throw new ApplicationException("Bitten geben Sie den Namen des Kontoinhabers ein.");
+			if (getName() == null || getName().length() == 0)
+				throw new ApplicationException(i18n.tr("Bitten geben Sie den Namen des Kontoinhabers ein."));
 
-			if (getKontonummer() == null || "".equals(getKontonummer()))
-				throw new ApplicationException("Bitte geben Sie eine Kontonummer ein.");
+			if (getKontonummer() == null || getKontonummer().length() == 0)
+				throw new ApplicationException(i18n.tr("Bitte geben Sie eine Kontonummer ein."));
 
-			if (getBLZ() == null || "".equals(getBLZ()))
-				throw new ApplicationException("Bitte geben Sie eine Bankleitzahl ein.");
+			if (getBLZ() == null || getBLZ().length() == 0)
+				throw new ApplicationException(i18n.tr("Bitte geben Sie eine Bankleitzahl ein."));
+
+			if (getKundennummer() == null || getKundennummer().length() == 0)
+				throw new ApplicationException(i18n.tr("Bitte geben Sie Ihre Kundennummer ein."));
 
 			if (getPassport() == null)
-				throw new ApplicationException("Bitte wählen Sie ein Sicherheitsmedium aus.");
+				throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Sicherheitsmedium aus."));
 
 			if (!HBCIUtils.checkAccountCRC(getBLZ(),getKontonummer()))
-				throw new ApplicationException("Ungültige BLZ/Kontonummer. Bitte prüfen Sie Ihre Eingaben.");
+				throw new ApplicationException(i18n.tr("Ungültige BLZ/Kontonummer. Bitte prüfen Sie Ihre Eingaben."));
 			
 		}
 		catch (RemoteException e)
 		{
 			Logger.error("error while insertcheck",e);
-			throw new ApplicationException("Fehler bei der Prüfung der Daten");
+			throw new ApplicationException(i18n.tr("Fehler bei der Prüfung der Daten"));
 		}
   }
 
@@ -458,6 +461,9 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.26  2004/07/04 17:07:59  willuhn
+ * @B Umsaetze wurden teilweise nicht als bereits vorhanden erkannt und wurden somit doppelt angezeigt
+ *
  * Revision 1.25  2004/06/30 20:58:28  willuhn
  * *** empty log message ***
  *
