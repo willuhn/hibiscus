@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.23 $
- * $Date: 2004/06/10 20:56:33 $
+ * $Revision: 1.24 $
+ * $Date: 2004/06/17 22:06:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,12 +15,13 @@ package de.willuhn.jameica.hbci.gui.controller;
 import java.rmi.RemoteException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Hashtable;
 
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import de.willuhn.datasource.pseudo.PseudoIterator;
+import de.willuhn.datasource.rmi.GenericObject;
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
@@ -80,13 +81,14 @@ public class SettingsControl extends AbstractControl {
       	return passportList;
 
 		Passport[] passports = PassportRegistry.getPassports();
-		Hashtable h = new Hashtable();
+
+		GenericObject[] p = new GenericObject[passports.length];
 		for (int i=0;i<passports.length;++i)
 		{
-			h.put(passports[i].getName(),passports[i]);
+			p[i] = new PassportObject(passports[i]);
 		}
-		passportList = new TablePart(h,this);
-		passportList.addColumn(i18n.tr("Bezeichnung"),null);
+		passportList = new TablePart(PseudoIterator.fromArray(p),this);
+		passportList.addColumn(i18n.tr("Bezeichnung"),"name");
 		return passportList;
 	}
 
@@ -295,8 +297,8 @@ public class SettingsControl extends AbstractControl {
   public void handleOpen(Object o)
 	{
 		try {
-			Passport p = (Passport) o;
-			GUI.startView(p.getConfigDialog().getName(),p);
+			PassportObject p = (PassportObject) o;
+			GUI.startView(p.passport.getConfigDialog().getName(),p.passport);
 		}
 		catch (Exception e)
 		{
@@ -331,11 +333,64 @@ public class SettingsControl extends AbstractControl {
 			}
     }
 	}
+
+	private class PassportObject implements GenericObject
+	{
+
+		private Passport passport;
+
+		/**
+		 * ct.
+     * @param p
+     */
+    private PassportObject(Passport p)
+		{
+			this.passport = p;
+		}
+
+    /**
+     * @see de.willuhn.datasource.rmi.GenericObject#getAttribute(java.lang.String)
+     */
+    public Object getAttribute(String name) throws RemoteException
+    {
+    	if ("name".equalsIgnoreCase(name))
+    		return passport.getName();
+    	return passport;
+    }
+
+    /**
+     * @see de.willuhn.datasource.rmi.GenericObject#getID()
+     */
+    public String getID() throws RemoteException
+    {
+			return passport.getClass().getName();
+    }
+
+    /**
+     * @see de.willuhn.datasource.rmi.GenericObject#getPrimaryAttribute()
+     */
+    public String getPrimaryAttribute() throws RemoteException
+    {
+      return "name";
+    }
+
+    /**
+     * @see de.willuhn.datasource.rmi.GenericObject#equals(de.willuhn.datasource.rmi.GenericObject)
+     */
+    public boolean equals(GenericObject other) throws RemoteException
+    {
+      return false;
+    }
+	}
+
 }
 
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.24  2004/06/17 22:06:55  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.23  2004/06/10 20:56:33  willuhn
  * @D javadoc comments fixed
  *
