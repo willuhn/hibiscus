@@ -61,8 +61,8 @@ Installation weiterer Sicherheitsmedien (insofern diese als Plugin fuer
 die Anwendung existieren) beschraenkt sich i.d.R. auf das Kopieren der
 Dateien in das Verzeichnis "lib".
    z.Bsp.:
-   Windows:  "C:\Progamme\jameica\plugins\hbci\lib"
-   Linux:    "/opt/jameica/plugins/hbci/lib"
+   Windows:  "C:\Progamme\jameica\plugins\hibiscus\lib"
+   Linux:    "/opt/jameica/plugins/hibiscus/lib"
 
 Beim erneuten Start von Jameica werden diese automatisch erkannt und
 auf dem Dialog "Einstellungen" aufgelistet. Sollte das installierte
@@ -84,8 +84,8 @@ Hibiscus verwendet eine integrierte SQL-Datenbank (McKoi) zur Speicherung
 der Konten, Bankverbindungen, Salden und Ueberweisungen. Die Daten werden
 im "Work"-Verzeichnis von Jameica abgelegt. Das ist i.d.R.
 
-  Windows: "C:\Dokumente und Einstellungen\<benutzername>\.jameica\hbci\db"
-  Linux:   "/home/<benutzername>/.jameica/hbci/db"
+  Windows: "C:\Dokumente und Einstellungen\<benutzername>\.jameica\hibiscus\db"
+  Linux:   "/home/<benutzername>/.jameica/hibiscus/db"
 
 Diese Informationen werden UNVERSCHLUESSELT in der Datenbank abgelegt.
 Passen Sie also ggf. die Dateiberechtigungen so an, dass Sie nur von

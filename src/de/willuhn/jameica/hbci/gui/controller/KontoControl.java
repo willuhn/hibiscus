@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.29 $
- * $Date: 2004/05/26 23:23:10 $
+ * $Revision: 1.30 $
+ * $Date: 2004/06/03 00:23:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -302,7 +302,11 @@ public class KontoControl extends AbstractControl {
    * @see de.willuhn.jameica.gui.controller.AbstractControl#handleDelete()
    */
   public void handleDelete() {
+
 		try {
+
+			if (getKonto() == null || getKonto().isNewObject())
+				return;
 
 			YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
 			d.setTitle(i18n.tr("Bankverbindung löschen"));
@@ -393,15 +397,53 @@ public class KontoControl extends AbstractControl {
   }
 
 	/**
+   * Oeffnet den Einstellungs-Dialog des gerade ausgewaehlten Passports.
+   */
+  public void handleConfigurePassport()
+	{
+		try {
+			Passport p = (Passport) getPassportAuswahl().getValue();
+			if (p == null)
+			{
+				GUI.getStatusBar().setErrorText(i18n.tr("Kein Sicherheitsmedium verfügbar"));
+				return;
+			}
+			SettingsControl c = new SettingsControl(null);
+			c.handleOpen(p);
+		}
+		catch (RemoteException e)
+		{
+			Application.getLog().error("error while reading passport from select box",e);
+			GUI.getStatusBar().setErrorText(i18n.tr("Fehler bei der Ermittlung des Sicherheitsmediums"));
+			return;
+		}
+	}
+
+	/**
    * Liest alle ueber das Sicherheitsmedium verfuegbaren Konten
    * aus und speichert sie (insofern Konten mit identischer kto-Nummer/BLZ nicht schon existieren).
    */
   public void handleReadFromPassport()
 	{
 
+		try 
+		{
+			if (getPassportAuswahl().getValue() == null)
+			{
+				GUI.getStatusBar().setErrorText(i18n.tr("Kein Sicherheitsmedium verfügbar"));
+				return;
+			}
+		}
+		catch (RemoteException e)
+		{
+			Application.getLog().error("error while reading passport from select box",e);
+			GUI.getStatusBar().setErrorText(i18n.tr("Fehler bei der Ermittlung des Sicherheitsmediums"));
+			return;
+		}
+
 		GUI.getStatusBar().startProgress();
 
-		GUI.getStatusBar().setSuccessText(i18n.tr("Chipkarte wird ausgelesen..."));
+		GUI.getStatusBar().setSuccessText(i18n.tr("Medium wird ausgelesen..."));
 
 		GUI.startSync(new Runnable() {
 			public void run() {
@@ -458,7 +500,7 @@ public class KontoControl extends AbstractControl {
 				catch (Throwable t)
 				{
 					Application.getLog().error("error while reading data from passport",t);
-					GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Lesen der Konto-Daten"));
+					GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Lesen der Konto-Daten. Bitte prüfen Sie die Einstellungen des Mediums."));
 				}
 			}
 		});
@@ -470,6 +512,19 @@ public class KontoControl extends AbstractControl {
    */
   public void handleRefreshSaldo()
 	{
+
+		try {
+			if (getKonto() == null || getKonto().isNewObject())
+			{
+				GUI.getView().setErrorText(i18n.tr("Bitte speichern Sie zuerst das Konto."));
+				return;
+			}
+		}
+		catch (RemoteException e)
+		{
+			Application.getLog().error("error while checking konto",e);
+			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Prüfen des Kontos"));
+		}
 
 		GUI.getStatusBar().startProgress();
 
@@ -545,6 +600,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.30  2004/06/03 00:23:42  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.29  2004/05/26 23:23:10  willuhn
  * @N neue Sicherheitsabfrage vor Ueberweisung
  * @C Check des Ueberweisungslimit

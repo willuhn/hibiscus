@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EmpfaengerControl.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/05/26 23:23:10 $
+ * $Revision: 1.11 $
+ * $Date: 2004/06/03 00:23:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -145,6 +145,9 @@ public class EmpfaengerControl extends AbstractControl {
   public void handleDelete() {
 		try {
 
+			if (getEmpfaenger() == null || getEmpfaenger().isNewObject())
+				return;
+
 			YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
 			d.setTitle(i18n.tr("Empfängeradresse löschen"));
 			d.setText(i18n.tr("Wollen Sie diese Empfängeradresse wirklich löschen?"));
@@ -249,6 +252,9 @@ public class EmpfaengerControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: EmpfaengerControl.java,v $
+ * Revision 1.11  2004/06/03 00:23:42  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.10  2004/05/26 23:23:10  willuhn
  * @N neue Sicherheitsabfrage vor Ueberweisung
  * @C Check des Ueberweisungslimit

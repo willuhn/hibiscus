@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.21 $
- * $Date: 2004/05/25 23:23:17 $
+ * $Revision: 1.22 $
+ * $Date: 2004/06/03 00:23:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -436,11 +436,32 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 
   }
 
+  /**
+   * @see de.willuhn.datasource.rmi.DBObject#store()
+   */
+  public void store() throws RemoteException, ApplicationException {
+    super.store();
+		try {
+			Protokoll entry = (Protokoll) Settings.getDatabase().createObject(Protokoll.class,null);
+			entry.setKonto(this);
+			entry.setKommentar(i18n.tr("Konto aktualisiert"));
+			entry.setTyp(Protokoll.TYP_SUCCESS);
+			entry.store();
+		}
+		catch (Exception e)
+		{
+			Application.getLog().error("error while writing protocol",e);
+		}
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.22  2004/06/03 00:23:43  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.21  2004/05/25 23:23:17  willuhn
  * @N UeberweisungTyp
  * @N Protokoll

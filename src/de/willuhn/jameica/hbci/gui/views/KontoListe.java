@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/KontoListe.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/05/04 23:07:23 $
+ * $Revision: 1.11 $
+ * $Date: 2004/06/03 00:23:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -52,7 +52,12 @@ public class KontoListe extends AbstractView {
 			LabelGroup group = new LabelGroup(getParent(),i18n.tr("Konten aus Medium lesen"));
 			group.addLabelPair(i18n.tr("Sicherheitsmedium"),control.getPassportAuswahl());
 
-			ButtonArea c = group.createButtonArea(1);
+			ButtonArea c = group.createButtonArea(2);
+			c.addCustomButton(i18n.tr("Medium konfigurieren"), new MouseAdapter() {
+				public void mouseUp(MouseEvent e) {
+					control.handleConfigurePassport();
+				}
+			});
 			c.addCustomButton(i18n.tr("Daten aus Medium lesen"), new MouseAdapter() {
 				public void mouseUp(MouseEvent e) {
 					control.handleReadFromPassport();
@@ -78,6 +83,9 @@ public class KontoListe extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoListe.java,v $
+ * Revision 1.11  2004/06/03 00:23:43  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.10  2004/05/04 23:07:23  willuhn
  * @C refactored Passport stuff
  *

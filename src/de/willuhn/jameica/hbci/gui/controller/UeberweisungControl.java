@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.17 $
- * $Date: 2004/05/26 23:23:10 $
+ * $Revision: 1.18 $
+ * $Date: 2004/06/03 00:23:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -437,6 +437,9 @@ public class UeberweisungControl extends AbstractControl {
    */
   public void handleDelete() {
 		try {
+			if (getUeberweisung() == null || getUeberweisung().isNewObject())
+				return;
+
 			YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
 			d.setTitle(i18n.tr("Sicher?"));
 			d.setText(i18n.tr("Wollen Sie die Überweisung wirklich löschen?"));
@@ -579,6 +582,11 @@ public class UeberweisungControl extends AbstractControl {
 				return;
 			}
 
+			handleStore();
+
+			if (!stored)
+				return;
+
 			UeberweisungDialog d = new UeberweisungDialog(getUeberweisung(),UeberweisungDialog.POSITION_CENTER);
 			if (!((Boolean)d.open()).booleanValue())
 				return;
@@ -590,10 +598,6 @@ public class UeberweisungControl extends AbstractControl {
 			GUI.getView().setErrorText(i18n.tr("Fehler beim Prüfen der Überweisung"));
 		}
 
-		handleStore();
-
-		if (!stored)
-			return;
 
 		GUI.getStatusBar().startProgress();
 		GUI.getStatusBar().setSuccessText(i18n.tr("Führe Überweisung aus..."));
@@ -724,6 +728,9 @@ public class UeberweisungControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
+ * Revision 1.18  2004/06/03 00:23:42  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.17  2004/05/26 23:23:10  willuhn
  * @N neue Sicherheitsabfrage vor Ueberweisung
  * @C Check des Ueberweisungslimit

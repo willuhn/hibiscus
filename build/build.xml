@@ -33,7 +33,7 @@
     	<echo message="CVS-Tag: ${tag}"/>
 	    <echo message="BUILD  : ${build.number}"/>
 
-	    <property name="define.pluginname"    value="hbci"/>
+	    <property name="define.pluginname"    value="hibiscus"/>
 	    <property name="define.jarfilename"   value="hibiscus.jar"/>
     	<property name="define.srcfilename"   value="hibiscus.src.zip"/>
 	    <property name="define.package"       value="de.willuhn.jameica"/>
@@ -91,6 +91,7 @@
 
     <copy file="${src.dir}/navigation.xml"   tofile="${class.dir}/navigation.xml" />
     <copy file="${src.dir}/menu.xml"         tofile="${class.dir}/menu.xml" />
+    <copy file="${src.dir}/info.xml"   		 tofile="${class.dir}/info.xml" />
 
   </target>
 

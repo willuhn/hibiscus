@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.21 $
- * $Date: 2004/05/25 23:23:17 $
+ * $Revision: 1.22 $
+ * $Date: 2004/06/03 00:23:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,6 +25,7 @@ import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.controller.AbstractControl;
+import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.input.AbstractInput;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.ColorInput;
@@ -266,7 +267,22 @@ public class SettingsControl extends AbstractControl {
    */
   public void handleDeleteCheckSum()
 	{
+		if (Settings.getCheckSum() == null)
+			return; // noch keine definiert
+		YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
+		d.setTitle(i18n.tr("Sicher?"));
+		d.setText(i18n.tr("Möchten Sie die gespeicherte Checksumme wirklich löschen?"));
+		try {
+			if (!((Boolean)d.open()).booleanValue())
+				return;
+		}
+		catch (Exception e)
+		{
+			Application.getLog().error("error while getting data from yes/no dialog",e);
+			return;
+		}
 		Settings.setCheckSum(null);
+		GUI.getStatusBar().setSuccessText(i18n.tr("Checksumme gelöscht."));
 	}
 
   /**
@@ -322,6 +338,9 @@ public class SettingsControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.22  2004/06/03 00:23:42  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.21  2004/05/25 23:23:17  willuhn
  * @N UeberweisungTyp
  * @N Protokoll
