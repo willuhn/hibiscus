@@ -77,7 +77,7 @@
 
 		<mkdir dir="${class.dir}" />
 
-		<javac fork="true" debug="true" deprecation="true" destdir="${class.dir}" srcdir="${src.dir}">
+		<javac debug="true" debuglevel="lines,vars,source" deprecation="true" destdir="${class.dir}" srcdir="${src.dir}">
 			<classpath refid="compilepath" />
 		</javac>
 
