@@ -80,7 +80,6 @@ CREATE TABLE umsatztyp (
 CREATE TABLE dauerauftrag (
   id NUMERIC default UNIQUEKEY('dauerauftrag'),
   konto_id int(4) NOT NULL,
-  turnus_id int(4) NOT NULL,
   empfaenger_konto varchar(15) NOT NULL,
   empfaenger_blz varchar(15) NOT NULL,
   empfaenger_name varchar(255),
@@ -90,6 +89,9 @@ CREATE TABLE dauerauftrag (
   erste_zahlung date NOT NULL,
   letzte_zahlung date,
   orderid varchar(20),
+  zeiteinheit int(1) NOT NULL,
+  intervall int(2) NOT NULL,
+  tag int(2) NOT NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );
@@ -117,7 +119,6 @@ ALTER TABLE umsatz ADD CONSTRAINT fk_konto2 FOREIGN KEY (konto_id) REFERENCES ko
 ALTER TABLE protokoll ADD CONSTRAINT fk_konto3 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE umsatz ADD CONSTRAINT fk_umsatztyp FOREIGN KEY (umsatztyp_id) REFERENCES umsatztyp (id) DEFERRABLE;
 ALTER TABLE dauerauftrag ADD CONSTRAINT fk_konto4 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
-ALTER TABLE dauerauftrag ADD CONSTRAINT fk_turnus FOREIGN KEY (turnus_id) REFERENCES turnus (id) DEFERRABLE;
 ALTER TABLE konto ADD CONSTRAINT fk_login FOREIGN KEY (login_id) REFERENCES login (id) DEFERRABLE;
 
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)

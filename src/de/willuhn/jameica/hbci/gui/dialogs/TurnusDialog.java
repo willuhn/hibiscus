@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/TurnusDialog.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/11/26 00:04:08 $
+ * $Revision: 1.2 $
+ * $Date: 2004/11/26 01:23:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,6 +23,7 @@ import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.controller.TurnusControl;
+import de.willuhn.jameica.hbci.rmi.Turnus;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -53,7 +54,7 @@ public class TurnusDialog extends AbstractDialog {
 
 		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-		GUI.getView().setTitle(i18n.tr("Zahlungsturnus bearbeiten"));
+		GUI.getView().setTitle(i18n.tr("Zahlungsturnus auswählen/bearbeiten"));
 		
 		LabelGroup group = new LabelGroup(parent,i18n.tr("Vorhandene Einträge"));
 		group.addPart(control.getTurnusList());
@@ -81,6 +82,13 @@ public class TurnusDialog extends AbstractDialog {
 		if (!control.getTurnus().isInitial())
 		{
 			ButtonArea buttonArea = new ButtonArea(parent,3);
+			buttonArea.addButton(i18n.tr("Neu"), new Action()
+			{
+				public void handleAction(Object context) throws ApplicationException
+				{
+					control.handleCreate();
+				}
+			},null,true);
 			buttonArea.addButton(i18n.tr("Übernehmen"), new Action()
 			{
 				public void handleAction(Object context) throws ApplicationException
@@ -89,13 +97,6 @@ public class TurnusDialog extends AbstractDialog {
 					close();
 				}
 			},null,true);
-			buttonArea.addButton(i18n.tr("Speichern"), new Action()
-			{
-				public void handleAction(Object context) throws ApplicationException
-				{
-					control.handleStore();
-				}
-			});
 			buttonArea.addButton(i18n.tr("Abbrechen"), new Action()
 			{
 				public void handleAction(Object context) throws ApplicationException
@@ -113,7 +114,8 @@ public class TurnusDialog extends AbstractDialog {
    */
   protected Object getData() throws Exception
   {
-    return control.getTurnus();
+  	Turnus t = control.getTurnus();
+  	return (t == null || t.isNewObject()) ? null : t;
   }
 
 }
@@ -121,6 +123,9 @@ public class TurnusDialog extends AbstractDialog {
 
 /**********************************************************************
  * $Log: TurnusDialog.java,v $
+ * Revision 1.2  2004/11/26 01:23:13  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/11/26 00:04:08  willuhn
  * @N TurnusDetail
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/TurnusImpl.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/11/12 18:25:07 $
+ * $Revision: 1.8 $
+ * $Date: 2004/11/26 01:23:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,7 +18,6 @@ import java.util.zip.CRC32;
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Turnus;
 import de.willuhn.jameica.system.Application;
@@ -69,7 +68,7 @@ public class TurnusImpl extends AbstractDBObject implements Turnus
 			if (isInitial())
 				throw new ApplicationException(i18n.tr("Turnus ist Bestandteil der System-Daten und kann nicht gelöscht werden."));
 				
-			DBIterator list = Settings.getDBService().createList(Dauerauftrag.class);
+			DBIterator list = getService().createList(Dauerauftrag.class);
 			list.addFilter("turnus_id = " + this.getID());
 			if (list.hasNext())
 				throw new ApplicationException(i18n.tr("Turnus kann nicht gelöscht werden, da er einem Dauerauftrag zugewiesen ist."));
@@ -220,11 +219,34 @@ public class TurnusImpl extends AbstractDBObject implements Turnus
     return super.getAttribute(arg0);
   }
 
+  /**
+   * Ueberschrieben, um zu pruefen, ob ein Turnus mit diesen Eigenschaften
+   * vielleicht schon existiert. Ist dies der Fall, ignoriert die Funktion
+   * das Speichern und kehrt fehlerfrei zurueck.
+   * @see de.willuhn.datasource.db.AbstractDBObject#insert()
+   */
+  public void insert() throws RemoteException, ApplicationException
+  {
+		DBIterator existing = getService().createList(Turnus.class);
+		existing.addFilter("zeiteinheit = " + this.getZeiteinheit());
+		existing.addFilter("intervall = " + this.getIntervall());
+		existing.addFilter("tag = " + this.getTag());
+		if (existing.hasNext())
+		{
+			Logger.info("turnus \"" + TurnusHelper.createBezeichnung(this) + "\" allready exists, skipping insert");
+			return;
+		}
+    super.insert();
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: TurnusImpl.java,v $
+ * Revision 1.8  2004/11/26 01:23:13  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2004/11/12 18:25:07  willuhn
  * *** empty log message ***
  *

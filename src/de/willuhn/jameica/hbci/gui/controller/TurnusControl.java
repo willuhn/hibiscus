@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/TurnusControl.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/11/26 00:04:08 $
+ * $Revision: 1.6 $
+ * $Date: 2004/11/26 01:23:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -48,11 +48,13 @@ public class TurnusControl
 	private SelectInput zeiteinheit			= null;
 	private SelectInput tagMonatlich		= null;
 	private SelectInput tagWoechentlich	= null;
-	private Input comment					= null;
+	private Input comment				      	= null;
 
-	private TablePart turnusList	= null;
+	private TablePart turnusList	      = null;
 
 	private I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+
+	private String pleaseChoose         = i18n.tr("Bitte wählen...");
 
 	/**
 	 * Liefert eine Liste mit existierenden Zahlungsturnus(sen?).
@@ -76,25 +78,30 @@ public class TurnusControl
 						return;
 					turnus = (Turnus) context;
 			
-					getIntervall().setPreselected("" + turnus.getIntervall());
 					int zh = turnus.getZeiteinheit();
+					getZeiteinheit().setPreselected(new Zeiteinheit(zh));
+					getIntervall().setPreselected("" + turnus.getIntervall());
 					if (zh == Turnus.ZEITEINHEIT_MONATLICH)
 					{
 						getTagMonatlich().setPreselected("" + turnus.getTag());
-						getTagMonatlich().enable();
-						getTagWoechentlich().disable();
 					}
 					else
 					{
-						getZeiteinheit().setPreselected(new Zeiteinheit(Turnus.ZEITEINHEIT_WOECHENTLICH));
 						getTagWoechentlich().setPreselected(new Tag(turnus.getTag()));
-						getTagWoechentlich().enable();
-						getTagMonatlich().disable();
 					}
+					new TagListener().handleEvent(null);
 				}
 				catch (Exception e)
 				{
 					Logger.error("error while updating combo boxes",e);
+					try
+					{
+						getComment().setValue(i18n.tr("Fehler beim Laden des Turnus"));
+					}
+					catch (RemoteException e2)
+					{
+						// useless
+					}
 				}
 			}
 		});
@@ -110,14 +117,17 @@ public class TurnusControl
    */
   public Turnus getTurnus() throws RemoteException
 	{
-		if (turnus != null)
-			return turnus;
-		
-		turnus = (Turnus) Settings.getDBService().createObject(Turnus.class,null);
+		if (turnus == null)
+			turnus = (Turnus) Settings.getDBService().createObject(Turnus.class,null);
 		return turnus;
 	}
 
-	public Input getComment() throws RemoteException
+	/**
+	 * Liefert ein Kommentar-Feld.
+   * @return Kommentar-Feld.
+   * @throws RemoteException
+   */
+  public Input getComment() throws RemoteException
 	{
 		if (comment != null)
 			return comment;
@@ -135,29 +145,13 @@ public class TurnusControl
 		if (intervall != null)
 			return intervall;
 
-		intervall = new SelectInput(new String[]{"1","2","3","4","5","6"},""+getTurnus().getIntervall());
+		intervall = new SelectInput(new String[]{this.pleaseChoose,"1","2","3","4","5","6"},""+getTurnus().getIntervall());
 
 		if (getTurnus().getZeiteinheit() == Turnus.ZEITEINHEIT_MONATLICH)
 			intervall.setComment(i18n.tr("Monate"));
 		else
 			intervall.setComment(i18n.tr("Wochen"));
 
-		intervall.addListener(new Listener()
-		{
-			public void handleEvent(Event event)
-			{
-				try
-				{
-					Zeiteinheit ze = (Zeiteinheit) getZeiteinheit().getValue();
-					if (ze.id == Turnus.ZEITEINHEIT_MONATLICH)
-						intervall.setComment(i18n.tr("Monate"));
-						intervall.setComment(i18n.tr("Wochen"));
-				}
-				catch (Exception e)
-				{
-				}
-			}
-		});
 		return intervall;
 	}
 
@@ -193,10 +187,11 @@ public class TurnusControl
 		if (tagMonatlich != null)
 			return tagMonatlich;
 
-		String[] values = new String[30];
-		for (int i=0;i<30;++i)
+		String[] values = new String[31];
+		values[0] = this.pleaseChoose;
+		for (int i=1;i<31;++i)
 		{
-			values[i] = ""+(i+1);
+			values[i] = ""+i;
 		}
 		tagMonatlich = new SelectInput(values,""+getTurnus().getTag());
 		return tagMonatlich;
@@ -212,14 +207,44 @@ public class TurnusControl
 		if (tagWoechentlich != null)
 			return tagWoechentlich;
 
-		GenericObject[] values = new GenericObject[7];
-		for (int i=0;i<7;++i)
+		GenericObject[] values = new GenericObject[8];
+		values[0] = new Tag(-1);
+		for (int i=1;i<8;++i)
 		{
-			values[i] = new Tag(i+1);
+			values[i] = new Tag(i);
 		}
 		tagWoechentlich = new SelectInput(PseudoIterator.fromArray(values),new Tag(getTurnus().getTag()));
-		new TagListener().handleEvent(null); // TODO an passender Stelle ausloesen
+		new TagListener().handleEvent(null); // einmal ausloesen, um die readOnly-Flags zu setzen
 		return tagWoechentlich;
+	}
+	
+	/**
+   * Setzt die Eingabe-Felder zur Eingabe eines neuen Turnus zurueck.
+   */
+  public void handleCreate()
+	{
+		try
+		{
+			this.turnus = null;
+			this.getZeiteinheit().setPreselected(new Zeiteinheit(Turnus.ZEITEINHEIT_MONATLICH));
+			this.getIntervall().setPreselected(this.pleaseChoose);
+			this.getTagMonatlich().enable();
+			this.getTagWoechentlich().disable();
+			this.getTagMonatlich().setPreselected(this.pleaseChoose);
+			this.getTagWoechentlich().setPreselected(new Tag(-1));
+		}
+		catch (Exception e)
+		{
+			Logger.error("error while handling create",e);
+			try
+			{
+				this.getComment().setValue(i18n.tr("Fehler beim Anlegen des Zahlungsturnus"));
+			}
+			catch (RemoteException e2)
+			{
+				// useless
+			}
+		}
 	}
 
 	/**
@@ -288,11 +313,15 @@ public class TurnusControl
     		{
     			getTagMonatlich().enable();
     			getTagWoechentlich().disable();
+    			getTagWoechentlich().setPreselected(new Tag(-1));
+					getIntervall().setComment(i18n.tr("Monate"));
     		}
     		else
     		{
 					getTagMonatlich().disable();
+					getTagMonatlich().setPreselected(pleaseChoose);
 					getTagWoechentlich().enable();
+					getIntervall().setComment(i18n.tr("Wochen"));
     		}
     	}
     	catch (Exception e)
@@ -309,14 +338,14 @@ public class TurnusControl
 	{
 
 		private int id = -1;
-		private String name = "unbekannt";
+		private String name = pleaseChoose;
 
 		private Zeiteinheit(int id)
 		{
 			this.id = id;
 			if (this.id == Turnus.ZEITEINHEIT_MONATLICH)
 				this.name = i18n.tr("monatlich");
-			else
+			else if (this.id == Turnus.ZEITEINHEIT_WOECHENTLICH)
 				this.name = i18n.tr("wöchentlich");
 		}
 
@@ -359,12 +388,13 @@ public class TurnusControl
 	{
 
 		private int id = -1;
-		private String name = "unbekannt";
+		private String name = pleaseChoose;
 
 		private Tag(int id) throws RemoteException
 		{
 			this.id = id;
-			this.name = TurnusHelper.getWochentag(id);
+			if (this.id > 0)
+				this.name = TurnusHelper.getWochentag(id);
 		}
 
     /**
@@ -406,6 +436,9 @@ public class TurnusControl
 
 /**********************************************************************
  * $Log: TurnusControl.java,v $
+ * Revision 1.6  2004/11/26 01:23:13  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2004/11/26 00:04:08  willuhn
  * @N TurnusDetail
  *

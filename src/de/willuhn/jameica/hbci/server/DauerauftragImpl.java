@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DauerauftragImpl.java,v $
- * $Revision: 1.13 $
- * $Date: 2004/11/12 18:25:07 $
+ * $Revision: 1.14 $
+ * $Date: 2004/11/26 01:23:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -89,7 +89,26 @@ public class DauerauftragImpl extends AbstractTransferImpl implements Dauerauftr
    */
   public Turnus getTurnus() throws RemoteException
   {
-    return (Turnus) getAttribute("turnus_id");
+		// Zwischen Dauerauftrag und Turnus existiert kein Constraint.
+		// Folglich kann auch kein Turnus via Fremd-Schluessel geladen
+		// werden. Hintergrund: Wuerde o.g. der Fall sein, dann wuerde
+		// die Aenderung eines Zahlungsturnus bei einem Dauerauftrag
+		// gleichzeitig die Aenderung bei einem anderen bedeuten, der
+		// auf den gleichen Fremdschluessel verweist.
+		// Daher existiert die Turnus-Tabelle eher als Sammlung von
+		// Templates. Dennoch wollen wir das Turnus-Objekt des
+		// Komforts halber benutzen und erstellen daher einfach diese
+		// synthetischen Turnus-Objekte.
+		Integer ze        = (Integer)getAttribute("zeiteinheit");
+		Integer intervall = (Integer)getAttribute("intervall");
+		Integer tag				= (Integer)getAttribute("tag");
+		if (ze == null || intervall == null || tag == null)
+			return null;
+  	Turnus t = (Turnus) getService().createObject(Turnus.class,null);
+  	t.setIntervall(ze.intValue());
+		t.setZeiteinheit(intervall.intValue());
+		t.setTag(tag.intValue());
+		return t;
   }
 
 	/**
@@ -121,7 +140,12 @@ public class DauerauftragImpl extends AbstractTransferImpl implements Dauerauftr
    */
   public void setTurnus(Turnus turnus) throws RemoteException
   {
-  	setAttribute("turnus_id",turnus);
+  	if (turnus == null)
+  		return;
+  	
+		setAttribute("zeiteinheit",	new Integer(turnus.getZeiteinheit()));
+		setAttribute("intervall",		new Integer(turnus.getIntervall()));
+		setAttribute("tag",					new Integer(turnus.getTag()));
   }
 
   /**
@@ -129,8 +153,6 @@ public class DauerauftragImpl extends AbstractTransferImpl implements Dauerauftr
    */
   protected Class getForeignObject(String field) throws RemoteException
   {
-  	if ("turnus_id".equals(field))
-  		return Turnus.class;
     return super.getForeignObject(field);
   }
 
@@ -140,7 +162,7 @@ public class DauerauftragImpl extends AbstractTransferImpl implements Dauerauftr
   protected void insertCheck() throws ApplicationException
   {
 		try {
-			if (getTurnus() == null || getTurnus().getID() == null)
+			if (getTurnus() == null)
 				throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Zahlungsturnus aus"));
 
 			if (getErsteZahlung() == null)
@@ -234,11 +256,27 @@ public class DauerauftragImpl extends AbstractTransferImpl implements Dauerauftr
   {
   	setAttribute("orderid",id);
   }
+
+  /**
+   * Ueberschreiben wir, um beim synthetischen Attribut "turnus_id" ein
+   * Turnus-Objekt liefern zu koennen.
+   * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
+   */
+  public Object getAttribute(String arg0) throws RemoteException
+  {
+  	if ("turnus_id".equals(arg0))
+  		return getTurnus();
+    return super.getAttribute(arg0);
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: DauerauftragImpl.java,v $
+ * Revision 1.14  2004/11/26 01:23:13  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.13  2004/11/12 18:25:07  willuhn
  * *** empty log message ***
  *
