@@ -4,45 +4,62 @@
 
   <target name="init" description="inits the build">
 
-    <property environment="env"/>
+	    <property environment="env"/>
 
-    <property name="define.pluginname"   value="hbci"/>
-    <property name="define.jarfilename"  value="${define.pluginname}.jar"/>
-    <property name="define.package"      value="de.willuhn.jameica"/>
+    	<property name="build.dir" value="build"/>
 
-    <property name="build.dir"        value="build"/>
-    <buildnumber file="${build.dir}/BUILD"/>
-      <loadfile property="version" srcFile="${build.dir}/RELEASE">
-        <filterchain>
-          <striplinebreaks/>
-        </filterchain>
-      </loadfile>
+		<!-- read build number -->
+	    <buildnumber file="${build.dir}/BUILD"/>
 
-    <echo message="VERSION: ${version}"/>
-    <echo message="BUILD  : ${build.number}"/>
+		<!-- read version number -->
+	    <loadfile property="version" srcFile="${build.dir}/RELEASE">
+			<filterchain>
+				<striplinebreaks/>
+			</filterchain>
+		</loadfile>
 
-    <property name="project.release"      value="releases/${version}-${build.number}/${define.pluginname}"/>
-    <property name="project.src"          value="${project.release}/src/classes"/>
-    <property name="project.tmp"          value="${project.release}/tmp"/>
-    <property name="project.javadoc"      value="${project.release}/javadoc"/>
-    <property name="src.dir"              value="src"/>
-    <property name="icon.dir"             value="${src.dir}/img"/>
-    <property name="lang.dir"             value="${src.dir}/lang"/>
-    <property name="help.dir"             value="${src.dir}/help"/>
-    <property name="lib.dir"              value="lib"/>
-    <property name="sql.dir"              value="sql"/>
-    <property name="cfg.dir"              value="cfg"/>
-    <property name="class.dir"            value="${project.tmp}/bin"/>
+		<!-- prepare cvs tag -->
+		<copy file="${build.dir}/RELEASE" tofile="${build.dir}/TAG" />
+		<replaceregexp flags="g" file="${build.dir}/TAG" match="\." replace="_"/>
+		<loadfile property="mytag" srcFile="${build.dir}/TAG">
+			<filterchain>
+				<striplinebreaks/>
+			</filterchain>
+		</loadfile>
+	    <delete file="${build.dir}/TAG" />
+	    <property name="tag" value="V_${mytag}_BUILD_${build.number}"/>
 
-    <path id="compilepath">
-      <pathelement location="../jameica/lib/swt/linux/swt.jar"/>
-      <pathelement location="../jameica/bin/"/>
-      <pathelement location="../util/bin/"/>
-      <pathelement location="../datasource/bin/"/>
-      <pathelement location="${lib.dir}/hbci4java-2.4.7pre-20040204.jar"/>
-    </path>
+	    <echo message="VERSION: ${version}"/>
+    	<echo message="CVS-Tag: ${tag}"/>
+	    <echo message="BUILD  : ${build.number}"/>
+
+	    <property name="define.pluginname"    value="hbci"/>
+	    <property name="define.jarfilename"   value="hibiscus.jar"/>
+    	<property name="define.srcfilename"   value="hibiscus.src.zip"/>
+	    <property name="define.package"       value="de.willuhn.jameica"/>
+
+    	<property name="project.release"      value="releases/${version}-${build.number}/${define.pluginname}"/>
+    	<property name="project.src"          value="${project.release}/src/classes"/>
+	    <property name="project.tmp"          value="${project.release}/tmp"/>
+	    <property name="project.javadoc"      value="${project.release}/javadoc"/>
+	    <property name="src.dir"              value="src"/>
+	    <property name="icon.dir"             value="${src.dir}/img"/>
+	    <property name="lang.dir"             value="${src.dir}/lang"/>
+	    <property name="help.dir"             value="${src.dir}/help"/>
+	    <property name="lib.dir"              value="lib"/>
+	    <property name="sql.dir"              value="sql"/>
+	    <property name="class.dir"            value="${project.tmp}/bin"/>
+
+	    <path id="compilepath">
+	      <pathelement location="../jameica/lib/swt/linux/swt.jar"/>
+	      <pathelement location="../jameica/bin/"/>
+	      <pathelement location="../util/bin/"/>
+	      <pathelement location="../datasource/bin/"/>
+	      <pathelement location="${lib.dir}/hbci4java-2.4.7pre-20040204.jar"/>
+	    </path>
 
   </target>
+
 
 
   <target depends="init" name="compile" description="compiles everything">
@@ -74,10 +91,11 @@
   </target>
 
 
+
   <target depends="compile" name="cvstag" description="tags the source in the CVS">
 
     <exec executable="cvs" failonerror="true" dir="${basedir}">
-      <arg line="tag ${version}_BUILD_${build.number}"/>
+      <arg line="tag ${tag}"/>
     </exec>
 
   </target>
@@ -112,7 +130,16 @@
     <copy file="${build.dir}/COPYING"           tofile="${project.release}/COPYING" />
     <copy file="${build.dir}/INSTALL"           tofile="${project.release}/INSTALL" />
 
+  	<checksum file="${project.release}/${define.jarfilename}" />
+  	<echo message="Creating PGP signature" />
+  	<exec executable="kgpg" failonerror="true" timeout="60000">
+		<arg line="-S ${project.release}/${define.jarfilename}"/>
+  	</exec>
+  	<echo message="done" />
+
   </target>
+
+
 
   <target depends="jar" name="javadoc" description="creates the api doc">
 
@@ -127,13 +154,38 @@
 
   </target>
 
+
+
+	<target depends="init" name="src" description="build source package, depends compile target to make sure, the code has no errors">
+		<mkdir dir="${project.release}"/>
+		<zip casesensitive="true" zipfile="${project.release}/${define.srcfilename}">
+			<fileset dir="." >
+				<include name="${src.dir}/**"/>
+				<include name="${build.dir}/**"/>
+				<exclude name="${build.dir}/BUILD"/>
+			</fileset>
+		</zip>
+		<checksum file="${project.release}/${define.srcfilename}" />
+		<echo message="Creating PGP signature" />
+		<exec executable="kgpg" failonerror="true" timeout="60000">
+			<arg line="-S ${project.release}/${define.srcfilename}"/>
+		</exec>
+		<echo message="done" />
+	</target>
+
+
+
   <target name="clean" description="cleanup">
     <delete dir="${project.tmp}"/>
   </target>
 
 
-  <target depends="init,compile,cvstag,jar,javadoc,clean" description="build an official release" name="all" />
 
-  <target depends="init,compile,jar,clean" description="build inofficial release" name="fast" />
+  <target depends="init,compile,cvstag,jar,javadoc,src,clean" description="build an official release" name="all" />
+
+
+
+  <target depends="init,compile,jar,src,clean" description="build inofficial release" name="fast" />
+
 
 </project>
