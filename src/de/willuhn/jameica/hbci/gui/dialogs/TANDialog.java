@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/TANDialog.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/07/25 17:15:06 $
+ * $Revision: 1.4 $
+ * $Date: 2005/02/02 16:15:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,12 +27,9 @@ public class TANDialog extends PasswordDialog {
 	private I18N i18n;
   /**
    * ct.
-   * @param position Position des Dialogs.
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#POSITION_CENTER
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#POSITION_MOUSE
    */
-  public TANDialog(int position) {
-    super(position);
+  public TANDialog() {
+    super(TANDialog.POSITION_CENTER);
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
     setTitle(i18n.tr("TAN-Eingabe"));
@@ -68,6 +65,9 @@ public class TANDialog extends PasswordDialog {
 
 /**********************************************************************
  * $Log: TANDialog.java,v $
+ * Revision 1.4  2005/02/02 16:15:52  willuhn
+ * @N Neue Dialoge fuer RDH
+ *
  * Revision 1.3  2004/07/25 17:15:06  willuhn
  * @C PluginLoader is no longer static
  *

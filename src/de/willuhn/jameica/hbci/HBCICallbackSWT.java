@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.21 $
- * $Date: 2005/02/01 17:15:37 $
+ * $Revision: 1.22 $
+ * $Date: 2005/02/02 16:15:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,11 +15,13 @@ package de.willuhn.jameica.hbci;
 
 import java.security.SecureRandom;
 import java.util.Date;
+import java.util.Hashtable;
 
 import org.eclipse.swt.SWTException;
 import org.kapott.hbci.GV.HBCIJob;
 import org.kapott.hbci.callback.AbstractHBCICallback;
 import org.kapott.hbci.exceptions.HBCI_Exception;
+import org.kapott.hbci.exceptions.NeedKeyAckException;
 import org.kapott.hbci.manager.HBCIUtils;
 import org.kapott.hbci.manager.HBCIUtilsInternal;
 import org.kapott.hbci.passport.HBCIPassport;
@@ -43,6 +45,7 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 {
 
 	private I18N i18n;
+	private Hashtable accountCache = new Hashtable();
 
   /**
    * ct.
@@ -90,6 +93,8 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 		try {
 				INILetter iniletter;
 				Date      date;
+
+			AccountContainer container = (AccountContainer) accountCache.get(passport);
             
 			switch (reason) {
 				case NEED_PASSPHRASE_LOAD:
@@ -101,18 +106,20 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 					// in einem Jameica-Wallet.
 					Wallet w = Settings.getWallet();
 					// Wir haben ein Passwort pro Passport
-					String pw = (String) w.get("hbci.passport.password." + passport.getCustomerId());
+
+					String s = passport.getClass().getName();
+					String pw = (String) w.get("hbci.passport.password." + s);
 					if (pw == null)
 					{
 						// noch kein Passwort definiert. Dann erzeugen wir
 						// ein zufaelliges.
-						byte[] pass = new byte[20];
+						byte[] pass = new byte[8];
 						SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
 						random.nextBytes(pass);
 						pw = Base64.encode(pass);
 
 						// Und speichern es im Wallet.
-						w.set("hbci.passport.password." + passport.getCustomerId(),pw);
+						w.set("hbci.passport.password." + s,pw);
 					}
 					retData.replace(0,retData.length(),pw);
 					break;
@@ -157,15 +164,59 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 					break;
 
 				case NEED_COUNTRY:
+					if (container == null) container = DialogFactory.getAccountData(passport);
+					accountCache.put(passport,container);
+					retData.replace(0,retData.length(),container.country);
+					break;
+
 				case NEED_BLZ:
+					if (container == null) container = DialogFactory.getAccountData(passport);
+					accountCache.put(passport,container);
+					retData.replace(0,retData.length(),container.blz);
+					break;
+
 				case NEED_HOST:
+					if (container == null) container = DialogFactory.getAccountData(passport);
+					accountCache.put(passport,container);
+					retData.replace(0,retData.length(),container.host);
+					break;
+
 				case NEED_PORT:
+					if (container == null) container = DialogFactory.getAccountData(passport);
+					accountCache.put(passport,container);
+					retData.replace(0,retData.length(),container.port+"");
+					break;
+
 				case NEED_FILTER:
+					if (container == null) container = DialogFactory.getAccountData(passport);
+					accountCache.put(passport,container);
+					retData.replace(0,retData.length(),container.filter);
+					break;
+
 				case NEED_USERID:
+					if (container == null) container = DialogFactory.getAccountData(passport);
+					accountCache.put(passport,container);
+					retData.replace(0,retData.length(),container.userid);
+					break;
+
 				case NEED_CUSTOMERID:
+					if (container == null) container = DialogFactory.getAccountData(passport);
+					accountCache.put(passport,container);
+					retData.replace(0,retData.length(),container.customerid);
+					break;
+
 				case NEED_NEW_INST_KEYS_ACK:
+					retData.replace(0,retData.length(),DialogFactory.getNewInstKeys(passport));
+					break;
+
 				case HAVE_NEW_MY_KEYS:
+					DialogFactory.newKeys(passport);
+					break;
+
 				case HAVE_INST_MSG:
+					DialogFactory.openSimple(i18n.tr("Instituts-Nachricht"),msg);
+					break;
+
 				case HAVE_CRC_ERROR:
 				case HAVE_ERROR:
 				case NEED_SIZENTRY_SELECT:
@@ -177,6 +228,12 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 	
 			}
 
+		}
+		catch (NeedKeyAckException e)
+		{
+			// Die wird bei HAVE_NEW_MY_KEYS geworfen.
+			// Wir brechen ohne Anzeigen eines Fehlers ab.
+			HBCIFactory.getInstance().markCancelled();
 		}
 		catch (OperationCanceledException oce)
 		{
@@ -367,6 +424,9 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.22  2005/02/02 16:15:52  willuhn
+ * @N Neue Dialoge fuer RDH
+ *
  * Revision 1.21  2005/02/01 17:15:37  willuhn
  * *** empty log message ***
  *

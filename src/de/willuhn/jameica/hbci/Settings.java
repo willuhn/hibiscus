@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.28 $
- * $Date: 2005/02/01 17:15:37 $
+ * $Revision: 1.29 $
+ * $Date: 2005/02/02 16:15:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -41,6 +41,8 @@ public class Settings
 	private static Color ueberfaelligForeground = null;
 	
 	private static ProgressBar hbciProgress = null;
+
+	private static AccountContainer accountContainer = null;
 
   /**
    * Liefert den Datenbank-Service.
@@ -233,6 +235,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.29  2005/02/02 16:15:52  willuhn
+ * @N Neue Dialoge fuer RDH
+ *
  * Revision 1.28  2005/02/01 17:15:37  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/DialogFactory.java,v $
- * $Revision: 1.19 $
- * $Date: 2005/02/01 17:15:37 $
+ * $Revision: 1.20 $
+ * $Date: 2005/02/02 16:15:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,10 @@ import org.kapott.hbci.passport.HBCIPassport;
 
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.dialogs.SimpleDialog;
+import de.willuhn.jameica.hbci.AccountContainer;
+import de.willuhn.jameica.hbci.gui.dialogs.AccountContainerDialog;
+import de.willuhn.jameica.hbci.gui.dialogs.NewInstKeysDialog;
+import de.willuhn.jameica.hbci.gui.dialogs.NewKeysDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.PINDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.PassportLoadDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.TANDialog;
@@ -106,9 +110,73 @@ public class DialogFactory {
 	public static synchronized String getTAN() throws Exception
 	{
 		check();
-		dialog = new TANDialog(AbstractDialog.POSITION_CENTER);
+		dialog = new TANDialog();
 		try {
 			return (String) dialog.open();
+		}
+		finally
+		{
+			close();
+		}
+	}
+
+	/**
+	 * Erzeugt einen Dialog zur Eingabe von Account-Daten.
+	 * Hinweis: Wirft eine RuntimeException, wenn der Dialog abgebrochen wurde.
+	 * Hintergrund: Der Dialog wurde aus dem HBCICallBack heraus aufgerufen und soll im
+	 * Fehlerfall den HBCI-Vorgang abbrechen.
+	 * @param p der Passport.
+   * @return ein Container mit den eingegebenen Daten.
+   * @throws Exception
+   */
+  public static synchronized AccountContainer getAccountData(HBCIPassport p) throws Exception
+	{
+		check();
+		dialog = new AccountContainerDialog(p);
+		try {
+			return (AccountContainer) dialog.open();
+		}
+		finally
+		{
+			close();
+		}
+	}
+
+	/**
+	 * Erzeugt einen Dialog Verifizierung der uebertragenen Instituts-Schluessel.
+	 * Hinweis: Wirft eine RuntimeException, wenn der Dialog abgebrochen wurde.
+	 * Hintergrund: Der Dialog wurde aus dem HBCICallBack heraus aufgerufen und soll im
+	 * Fehlerfall den HBCI-Vorgang abbrechen.
+	 * @param p der Passport.
+	 * @return Entscheidung, ob die Bank-Schluessel ok sind.
+	 * @throws Exception
+	 */
+	public static synchronized String getNewInstKeys(HBCIPassport p) throws Exception
+	{
+		check();
+		dialog = new NewInstKeysDialog(p);
+		try {
+			Boolean b = (Boolean) dialog.open();
+			return b.booleanValue() ? "" : "ERROR";
+		}
+		finally
+		{
+			close();
+		}
+	}
+
+  /**
+	 * Erzeugt einen Dialog, der den neu erzeugten Schluessel anzeigt und den Benutzer
+	 * auffordert, den Ini-Brief an seine Bank zu senden.
+   * @param p Passport, fuer den neue Schluessel erzeugt wurden.
+	 * @throws Exception
+	 */
+	public static synchronized void newKeys(HBCIPassport p) throws Exception
+	{
+		check();
+		dialog = new NewKeysDialog(p);
+		try {
+			dialog.open();
 		}
 		finally
 		{
@@ -149,6 +217,9 @@ public class DialogFactory {
 
 /**********************************************************************
  * $Log: DialogFactory.java,v $
+ * Revision 1.20  2005/02/02 16:15:52  willuhn
+ * @N Neue Dialoge fuer RDH
+ *
  * Revision 1.19  2005/02/01 17:15:37  willuhn
  * *** empty log message ***
  *
