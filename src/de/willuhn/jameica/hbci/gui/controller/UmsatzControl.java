@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzControl.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/04/05 23:28:46 $
+ * $Revision: 1.8 $
+ * $Date: 2004/04/12 19:15:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,10 +21,10 @@ import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.controller.AbstractControl;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
-import de.willuhn.jameica.gui.parts.CurrencyFormatter;
-import de.willuhn.jameica.gui.parts.DateFormatter;
-import de.willuhn.jameica.gui.parts.Table;
-import de.willuhn.jameica.gui.parts.TableFormatter;
+import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
+import de.willuhn.jameica.gui.formatter.DateFormatter;
+import de.willuhn.jameica.gui.formatter.TableFormatter;
+import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
@@ -75,9 +75,9 @@ public class UmsatzControl extends AbstractControl {
    * @return Tabelle.
    * @throws RemoteException
    */
-  public Table getUmsatzListe() throws RemoteException
+  public TablePart getUmsatzListe() throws RemoteException
 	{
-		Table table = new Table(getKonto().getUmsaetze(),this,new TableFormatter() {
+		TablePart table = new TablePart(getKonto().getUmsaetze(),this,new TableFormatter() {
       public void format(TableItem item) {
       	Umsatz u = (Umsatz) item.getData();
       	if (u == null) return;
@@ -228,6 +228,9 @@ public class UmsatzControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzControl.java,v $
+ * Revision 1.8  2004/04/12 19:15:31  willuhn
+ * @C refactoring
+ *
  * Revision 1.7  2004/04/05 23:28:46  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/04/05 23:28:46 $
+ * $Revision: 1.10 $
+ * $Date: 2004/04/12 19:15:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,20 +24,19 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.controller.AbstractControl;
 import de.willuhn.jameica.gui.dialogs.ListDialog;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
-import de.willuhn.jameica.gui.parts.AbstractInput;
-import de.willuhn.jameica.gui.parts.CheckboxInput;
-import de.willuhn.jameica.gui.parts.CurrencyFormatter;
-import de.willuhn.jameica.gui.parts.DateFormatter;
-import de.willuhn.jameica.gui.parts.DecimalInput;
-import de.willuhn.jameica.gui.parts.Formatter;
-import de.willuhn.jameica.gui.parts.SearchInput;
-import de.willuhn.jameica.gui.parts.SelectInput;
-import de.willuhn.jameica.gui.parts.Table;
-import de.willuhn.jameica.gui.parts.TextInput;
+import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
+import de.willuhn.jameica.gui.formatter.DateFormatter;
+import de.willuhn.jameica.gui.formatter.Formatter;
+import de.willuhn.jameica.gui.input.AbstractInput;
+import de.willuhn.jameica.gui.input.CheckboxInput;
+import de.willuhn.jameica.gui.input.DecimalInput;
+import de.willuhn.jameica.gui.input.SearchInput;
+import de.willuhn.jameica.gui.input.SelectInput;
+import de.willuhn.jameica.gui.input.TextInput;
+import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.views.UeberweisungListe;
 import de.willuhn.jameica.hbci.gui.views.UeberweisungNeu;
 import de.willuhn.jameica.hbci.rmi.Empfaenger;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -122,17 +121,17 @@ public class UeberweisungControl extends AbstractControl {
 	 * @return Tabelle.
 	 * @throws RemoteException
 	 */
-	public Table getUeberweisungListe() throws RemoteException
+	public TablePart getUeberweisungListe() throws RemoteException
 	{
 		DBIterator list = Settings.getDatabase().createList(Ueberweisung.class);
 
-		Table table = new Table(list,this);
+		TablePart table = new TablePart(list,this);
 		table.addColumn(i18n.tr("Konto"),"konto_id");
 		table.addColumn(i18n.tr("Kto. des Empfängers"),"empfaenger_konto");
 		table.addColumn(i18n.tr("BLZ des Empfängers"),"empfaenger_blz");
 		table.addColumn(i18n.tr("Name des Empfängers"),"empfaenger_name");
 		table.addColumn(i18n.tr("Betrag"),"betrag", new CurrencyFormatter("",HBCI.DECIMALFORMAT));
-		table.addColumn(i18n.tr("Termin"),"termin", new DateFormatter(HBCI.DATEFORMAT));
+		table.addColumn(i18n.tr("Termin"),"termin", new DateFormatter(HBCI.LONGDATEFORMAT));
 		table.addColumn(i18n.tr("ausgeführt"),"ausgefuehrt",new Formatter() {
       public String format(Object o) {
 				try {
@@ -304,7 +303,8 @@ public class UeberweisungControl extends AbstractControl {
    * @see de.willuhn.jameica.gui.controller.AbstractControl#handleCancel()
    */
   public void handleCancel() {
-		GUI.startView(UeberweisungListe.class.getName(),null);
+		// GUI.startView(UeberweisungListe.class.getName(),null);
+		GUI.startPreviousView();
   }
 
   /**
@@ -487,6 +487,9 @@ public class UeberweisungControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
+ * Revision 1.10  2004/04/12 19:15:31  willuhn
+ * @C refactoring
+ *
  * Revision 1.9  2004/04/05 23:28:46  willuhn
  * *** empty log message ***
  *

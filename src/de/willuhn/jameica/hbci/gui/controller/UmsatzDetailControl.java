@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailControl.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/03/30 22:07:50 $
+ * $Revision: 1.3 $
+ * $Date: 2004/04/12 19:15:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,8 +23,8 @@ import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.controller.AbstractControl;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
-import de.willuhn.jameica.gui.parts.AbstractInput;
-import de.willuhn.jameica.gui.parts.LabelInput;
+import de.willuhn.jameica.gui.input.AbstractInput;
+import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
@@ -263,6 +263,9 @@ public class UmsatzDetailControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzDetailControl.java,v $
+ * Revision 1.3  2004/04/12 19:15:31  willuhn
+ * @C refactoring
+ *
  * Revision 1.2  2004/03/30 22:07:50  willuhn
  * *** empty log message ***
  *

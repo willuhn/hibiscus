@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/EmpfaengerListe.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/03/30 22:07:49 $
+ * $Revision: 1.4 $
+ * $Date: 2004/04/12 19:15:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,7 +15,7 @@ package de.willuhn.jameica.hbci.gui.views;
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.parts.ButtonArea;
+import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.controller.EmpfaengerControl;
@@ -64,6 +64,9 @@ public class EmpfaengerListe extends AbstractView {
 
 /**********************************************************************
  * $Log: EmpfaengerListe.java,v $
+ * Revision 1.4  2004/04/12 19:15:31  willuhn
+ * @C refactoring
+ *
  * Revision 1.3  2004/03/30 22:07:49  willuhn
  * *** empty log message ***
  *

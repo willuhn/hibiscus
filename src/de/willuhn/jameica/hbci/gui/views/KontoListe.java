@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/KontoListe.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/03/30 22:07:49 $
+ * $Revision: 1.8 $
+ * $Date: 2004/04/12 19:15:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,9 +20,9 @@ import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
-import de.willuhn.jameica.gui.parts.ButtonArea;
-import de.willuhn.jameica.gui.parts.LabelGroup;
-import de.willuhn.jameica.gui.parts.LabelInput;
+import de.willuhn.jameica.gui.input.LabelInput;
+import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
@@ -113,6 +113,9 @@ public class KontoListe extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoListe.java,v $
+ * Revision 1.8  2004/04/12 19:15:31  willuhn
+ * @C refactoring
+ *
  * Revision 1.7  2004/03/30 22:07:49  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/Welcome.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/04/05 23:28:46 $
+ * $Revision: 1.7 $
+ * $Date: 2004/04/12 19:15:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,7 +15,7 @@ package de.willuhn.jameica.hbci.gui.views;
 
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.parts.LabelGroup;
+import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.controller.WelcomeControl;
@@ -36,11 +36,13 @@ public class Welcome extends AbstractView
 		I18N i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
 		WelcomeControl control = new WelcomeControl(this);
 
-		GUI.getView().setTitle(i18n.tr("HBCI"));
+		GUI.getView().setTitle(i18n.tr("Hibiscus - HBCI-Onlinebanking"));
 
 		LabelGroup group = new LabelGroup(getParent(),i18n.tr("Offene Überweisungen"));
 		group.addTable(control.getOffeneUeberweisungen());
-  	
+
+		control.getWelcomeText().paint(getParent());
+
   }
 
   /**
@@ -55,6 +57,9 @@ public class Welcome extends AbstractView
 
 /**********************************************************************
  * $Log: Welcome.java,v $
+ * Revision 1.7  2004/04/12 19:15:31  willuhn
+ * @C refactoring
+ *
  * Revision 1.6  2004/04/05 23:28:46  willuhn
  * *** empty log message ***
  *

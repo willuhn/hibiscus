@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/04/05 23:28:46 $
+ * $Revision: 1.8 $
+ * $Date: 2004/04/12 19:15:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -64,7 +64,7 @@ public class Settings
 		if (buchungSollForeground != null)
 			return buchungSollForeground;
 
-		buchungSollForeground = new Color(GUI.getDisplay(),readColors("buchung.soll.fg",0));
+		buchungSollForeground = new Color(GUI.getDisplay(),settings.getRGB("buchung.soll.fg",new RGB(0,0,0)));
 		return buchungSollForeground;
 	}
 
@@ -77,7 +77,7 @@ public class Settings
 		if (buchungSollBackground != null)
 			return buchungSollBackground;
 
-		buchungSollBackground = new Color(GUI.getDisplay(),readColors("buchung.soll.bg",245));
+		buchungSollBackground = new Color(GUI.getDisplay(),settings.getRGB("buchung.soll.bg",new RGB(245,245,245)));
 		return buchungSollBackground;
 	}
 
@@ -90,7 +90,7 @@ public class Settings
 		if (buchungHabenForeground != null)
 			return buchungHabenForeground;
 
-		buchungHabenForeground = new Color(GUI.getDisplay(),readColors("buchung.haben.fg",0));
+		buchungHabenForeground = new Color(GUI.getDisplay(),settings.getRGB("buchung.haben.fg",new RGB(0,0,0)));
 		return buchungHabenForeground;
 	}
 
@@ -103,7 +103,7 @@ public class Settings
 		if (buchungHabenBackground != null)
 			return buchungHabenBackground;
 
-		buchungHabenBackground = new Color(GUI.getDisplay(),readColors("buchung.haben.bg",255));
+		buchungHabenBackground = new Color(GUI.getDisplay(),settings.getRGB("buchung.haben.bg",new RGB(255,255,255)));
 		return buchungHabenBackground;
 	}
 
@@ -113,7 +113,7 @@ public class Settings
    */
   public static void setBuchungSollForeground(RGB rgb)
 	{
-		storeColors("buchung.soll.fg",rgb);
+		settings.setAttribute("buchung.soll.fg",rgb);
 		buchungSollForeground = null;
 	}
 
@@ -123,7 +123,7 @@ public class Settings
 	 */
 	public static void setBuchungSollBackground(RGB rgb)
 	{
-		storeColors("buchung.soll.bg",rgb);
+		settings.setAttribute("buchung.soll.bg",rgb);
 		buchungSollBackground = null;
 	}
 
@@ -133,7 +133,7 @@ public class Settings
 	 */
 	public static void setBuchungHabenForeground(RGB rgb)
 	{
-		storeColors("buchung.haben.fg",rgb);
+		settings.setAttribute("buchung.haben.fg",rgb);
 		buchungHabenForeground = null;
 	}
 
@@ -143,35 +143,8 @@ public class Settings
 	 */
 	public static void setBuchungHabenBackground(RGB rgb)
 	{
-		storeColors("buchung.haben.bg",rgb);
+		settings.setAttribute("buchung.haben.bg",rgb);
 		buchungHabenBackground = null;
-	}
-
-	/**
-	 * Liefert die Farbwerte fuer den genannten Prefix.
-   * @param prefix Name des Prefix.
-   * @param default Default-Wert fuer R, G und B.
-   * @return
-   */
-  private static RGB readColors(String prefix, int defaultValue)
-	{
-		return new RGB(
-			settings.getInt(prefix + ".r",defaultValue),
-			settings.getInt(prefix + ".g",defaultValue),
-			settings.getInt(prefix + ".b",defaultValue)
-		);
-	}
-
-	/**
-	 * Speichert die Farbwerte unter dem genannten Prefix.
-   * @param prefix Name des Prefix.
-   * @param rgb Farbe.
-   */
-  private static void storeColors(String prefix, RGB rgb)
-	{
-		settings.setAttribute(prefix + ".r",rgb.red);
-		settings.setAttribute(prefix + ".g",rgb.green);
-		settings.setAttribute(prefix + ".b",rgb.blue);
 	}
 
   /**
@@ -283,6 +256,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.8  2004/04/12 19:15:31  willuhn
+ * @C refactoring
+ *
  * Revision 1.7  2004/04/05 23:28:46  willuhn
  * *** empty log message ***
  *

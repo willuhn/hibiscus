@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.11 $
- * $Date: 2004/04/05 23:28:46 $
+ * $Revision: 1.12 $
+ * $Date: 2004/04/12 19:15:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,10 +25,10 @@ import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.controller.AbstractControl;
-import de.willuhn.jameica.gui.parts.AbstractInput;
-import de.willuhn.jameica.gui.parts.CheckboxInput;
-import de.willuhn.jameica.gui.parts.ColorInput;
-import de.willuhn.jameica.gui.parts.Table;
+import de.willuhn.jameica.gui.input.AbstractInput;
+import de.willuhn.jameica.gui.input.CheckboxInput;
+import de.willuhn.jameica.gui.input.ColorInput;
+import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
@@ -51,7 +51,7 @@ public class SettingsControl extends AbstractControl {
 	private AbstractInput buchungHabenFg    = null;
 	private AbstractInput buchungHabenBg    = null;
 
-	private Table passportList 							= null;
+	private TablePart passportList 							= null;
 	
 	private I18N i18n;
 
@@ -68,14 +68,14 @@ public class SettingsControl extends AbstractControl {
    * @return Tabelle mit den Passports.
    * @throws RemoteException
    */
-  public Table getPassportListe() throws RemoteException
+  public TablePart getPassportListe() throws RemoteException
 	{
     if (passportList != null)
       	return passportList;
 
     DBIterator list = Settings.getDatabase().createList(Passport.class);
 
-		passportList = new Table(list,this);
+		passportList = new TablePart(list,this);
 		passportList.addColumn(i18n.tr("Bezeichnung"),"name");
 		passportList.addColumn(i18n.tr("Typ"),"passport_type_id");
 		return passportList;
@@ -255,6 +255,9 @@ public class SettingsControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.12  2004/04/12 19:15:31  willuhn
+ * @C refactoring
+ *
  * Revision 1.11  2004/04/05 23:28:46  willuhn
  * *** empty log message ***
  *

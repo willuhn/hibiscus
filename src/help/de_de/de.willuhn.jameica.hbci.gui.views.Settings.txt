@@ -1,8 +1,18 @@
-Wenn Sie über eine dauerhafte Internetverbindung verfügen,
-können Sie die Option "keine Nachfrage vor Verbindungsaufbau" aktivieren.
+<form>
+	<p>
+		<span color="header" font="header">Einstellungen</span>
+	</p>
 
-Bei aktivierter PIN-Prüfung wird aus der von Ihnen eingegebene PIN
-eine Check-Summe gebildet und diese mit der Check-Summe Ihrer ersten PIN-Eingabe
-verglichen. Hierbei wird nicht die PIN selbst gespeichert sondern lediglich die
-Prüfsumme mit der ermittelt werden kann, ob Ihre aktuelle
-Eingabe mit der Erst-Eingabe übereinstimmt.
+	<li>
+		Wenn Sie über eine dauerhafte Internetverbindung verfügen,
+		können Sie die Option <b>keine Nachfrage vor Verbindungsaufbau</b> aktivieren.
+	</li>
+	
+	<li>
+		Bei aktivierter PIN-Prüfung wird aus der von Ihnen eingegebene PIN
+		eine Check-Summe gebildet und diese mit der Check-Summe Ihrer ersten PIN-Eingabe
+		verglichen. Hierbei wird nicht die PIN selbst gespeichert sondern lediglich die
+		Prüfsumme mit der ermittelt werden kann, ob Ihre aktuelle Eingabe mit der Erst-Eingabe
+		übereinstimmt.
+	</li>
+</form>
