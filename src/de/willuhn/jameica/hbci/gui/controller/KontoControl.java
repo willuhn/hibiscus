@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.49 $
- * $Date: 2004/11/13 17:02:04 $
+ * $Revision: 1.50 $
+ * $Date: 2005/02/01 18:27:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,7 +20,6 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TableItem;
 import org.kapott.hbci.manager.HBCIUtils;
 
-import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
@@ -238,12 +237,15 @@ public class KontoControl extends AbstractControl {
 
 		Passport[] passports = PassportRegistry.getPassports();
 
-		GenericObject[] p = new GenericObject[passports.length];
+		PassportObject[] p = new PassportObject[passports.length];
 		for (int i=0;i<passports.length;++i)
 		{
 			p[i] = new PassportObject(passports[i]);
 		}
-		passportAuswahl = new SelectInput(PseudoIterator.fromArray(p),null);
+		PassportObject current = null;
+		if (getKonto() != null && getKonto().getPassport() != null)
+			current = new PassportObject(getKonto().getPassport());
+		passportAuswahl = new SelectInput(PseudoIterator.fromArray(p),current);
 		return passportAuswahl;
 	}
 
@@ -450,6 +452,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.50  2005/02/01 18:27:14  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.49  2004/11/13 17:02:04  willuhn
  * @N Bearbeiten des Zahlungsturnus
  *

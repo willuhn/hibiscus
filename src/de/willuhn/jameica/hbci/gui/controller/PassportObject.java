@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/PassportObject.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/01/05 15:17:50 $
+ * $Revision: 1.5 $
+ * $Date: 2005/02/01 18:27:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -81,7 +81,7 @@ public class PassportObject implements GenericObject
 	{
 		if (other == null)
 			return false;
-		return other.getID().equals(other.getID());
+		return getID().equals(other.getID());
 	}
 
   /**
@@ -97,6 +97,9 @@ public class PassportObject implements GenericObject
 
 /**********************************************************************
  * $Log: PassportObject.java,v $
+ * Revision 1.5  2005/02/01 18:27:14  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2005/01/05 15:17:50  willuhn
  * @N Neues Service-System in Jameica
  *
