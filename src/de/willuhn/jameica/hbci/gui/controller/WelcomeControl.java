@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/WelcomeControl.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/07/20 21:48:00 $
+ * $Revision: 1.7 $
+ * $Date: 2004/07/20 23:31:49 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -32,18 +32,25 @@ import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.menus.KontoList;
 import de.willuhn.jameica.hbci.gui.menus.UeberweisungList;
+import de.willuhn.jameica.hbci.gui.views.EmpfaengerNeu;
+import de.willuhn.jameica.hbci.gui.views.KontoNeu;
 import de.willuhn.jameica.hbci.gui.views.UeberweisungNeu;
+import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.util.I18N;
+import de.willuhn.util.Logger;
 
 /**
  * Controller fuer die Startseite.
  */
 public class WelcomeControl extends AbstractControl {
 
-	private I18N i18n = null;
-	private FormTextPart welcomeText = null;
+	private I18N i18n 											= null;
+	private TablePart offeneUeberweisungen	= null;
+	private FormTextPart quickLinks					= null;
+	private TablePart kontoStats 						= null;
 	 
   /**
    * @param view
@@ -60,11 +67,14 @@ public class WelcomeControl extends AbstractControl {
 	 */
 	public Part getOffeneUeberweisungen() throws RemoteException
 	{
+		if (offeneUeberweisungen != null)
+			return offeneUeberweisungen;
+
 		DBIterator list = Settings.getDatabase().createList(Ueberweisung.class);
 		list.addFilter("ausgefuehrt = 0");
 
-		TablePart table = new TablePart(list,this);
-		table.setFormatter(new TableFormatter() {
+		offeneUeberweisungen = new TablePart(list,this);
+		offeneUeberweisungen.setFormatter(new TableFormatter() {
       public void format(TableItem item) {
 				try {
 					Date current = new Date();
@@ -77,16 +87,14 @@ public class WelcomeControl extends AbstractControl {
 				catch (RemoteException e) { /*ignore */}
       }
     });
-		table.addColumn(i18n.tr("Konto"),"konto_id");
-		table.addColumn(i18n.tr("Kto. des Empfängers"),"empfaenger_konto");
-		table.addColumn(i18n.tr("BLZ des Empfängers"),"empfaenger_blz");
-		table.addColumn(i18n.tr("Name des Empfängers"),"empfaenger_name");
-		table.addColumn(i18n.tr("Betrag"),"betrag", new CurrencyFormatter("",HBCI.DECIMALFORMAT));
-		table.addColumn(i18n.tr("Termin"),"termin", new DateFormatter(HBCI.LONGDATEFORMAT));
+		offeneUeberweisungen.addColumn(i18n.tr("Konto"),"konto_id");
+		offeneUeberweisungen.addColumn(i18n.tr("Empfängers"),"empfaenger_name");
+		offeneUeberweisungen.addColumn(i18n.tr("Betrag"),"betrag", new CurrencyFormatter("",HBCI.DECIMALFORMAT));
+		offeneUeberweisungen.addColumn(i18n.tr("Termin"),"termin", new DateFormatter(HBCI.LONGDATEFORMAT));
 
-		table.setContextMenu(new UeberweisungList());
+		offeneUeberweisungen.setContextMenu(new UeberweisungList());
 
-		return table;
+		return offeneUeberweisungen;
 	}
 
 	/**
@@ -94,24 +102,61 @@ public class WelcomeControl extends AbstractControl {
    * @return Welcome-Text.
    * @throws RemoteException
    */
-  public Part getWelcomeText() throws RemoteException
+  public Part getQuickLinks() throws RemoteException
 	{
-		if (welcomeText != null)
-			return welcomeText;
+		if (quickLinks != null)
+			return quickLinks;
 
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("<form>");
+		buffer.append("<form><p/>");
 		buffer.append("<p><span color=\"header\" font=\"header\">" + i18n.tr("Quicklinks") + "</span></p>");
 		buffer.append("<li><a href=\"" + UeberweisungNeu.class.getName() + "\">" + i18n.tr("Neue Überweisung") + "</a></li>");
+		buffer.append("<li><a href=\"" + EmpfaengerNeu.class.getName() + "\">" + i18n.tr("Neue Adresse") + "</a></li>");
+		buffer.append("<li><a href=\"" + KontoNeu.class.getName() + "\">" + i18n.tr("Neues Konto") + "</a></li>");
 		buffer.append("</form>");
 
-		welcomeText = new FormTextPart(buffer.toString());
-		welcomeText.addHyperlinkListener(new Listener() {
+		quickLinks= new FormTextPart(buffer.toString());
+		quickLinks.addHyperlinkListener(new Listener() {
       public void handleEvent(Event event) {
       	GUI.startView(event.data.toString(),null);
       }
     });
-		return welcomeText;
+		return quickLinks;
+	}
+
+	/**
+	 * Liefert eine Kurzzusammenfassung der Konten.
+   * @return Zusammenfassung der Konten.
+   * @throws RemoteException
+   */
+  public Part getKontoStats() throws RemoteException
+	{
+		if (kontoStats != null)
+			return kontoStats;
+
+		DBIterator list = Settings.getDatabase().createList(Konto.class);
+
+		kontoStats = new TablePart(list,new KontoControl(null));
+		kontoStats.addColumn(i18n.tr("Kontonummer"),"kontonummer");
+		kontoStats.addColumn(i18n.tr("Bezeichnung"),"bezeichnung");
+		kontoStats.addColumn(i18n.tr("Saldo"),"saldo");
+		kontoStats.setFormatter(new TableFormatter()
+		{
+			public void format(TableItem item)
+			{
+				Konto k = (Konto) item.getData();
+				try {
+					item.setText(2,HBCI.DECIMALFORMAT.format(k.getSaldo()) + " " + k.getWaehrung());
+				}
+				catch (RemoteException e)
+				{
+					Logger.error("error while formatting saldo",e);
+				}
+			}
+		});
+    
+		kontoStats.setContextMenu(new KontoList());
+		return kontoStats;
 	}
 
   /**
@@ -150,6 +195,9 @@ public class WelcomeControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: WelcomeControl.java,v $
+ * Revision 1.7  2004/07/20 23:31:49  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.6  2004/07/20 21:48:00  willuhn
  * @N ContextMenus
  *

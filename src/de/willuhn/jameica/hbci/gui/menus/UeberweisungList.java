@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UeberweisungList.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/07/20 21:48:00 $
+ * $Revision: 1.2 $
+ * $Date: 2004/07/20 23:31:49 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,9 +12,11 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.menus;
 
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.jameica.PluginLoader;
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
@@ -22,6 +24,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.listener.UeberweisungCreate;
 import de.willuhn.jameica.hbci.gui.listener.UeberweisungDuplicate;
 import de.willuhn.jameica.hbci.gui.listener.UeberweisungExecute;
+import de.willuhn.jameica.hbci.gui.views.UeberweisungNeu;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.util.I18N;
 import de.willuhn.util.Logger;
@@ -37,6 +40,13 @@ public class UeberweisungList extends ContextMenu
 	{
 		i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
 
+		addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"), new Listener()
+    {
+      public void handleEvent(Event event)
+      {
+      	GUI.startView(UeberweisungNeu.class.getName(),event.data);
+      }
+    }));
 		addItem(new DuplicateMenuItem(i18n.tr("Jetzt ausführen..."), new UeberweisungExecute()));
 		addItem(new CheckedContextMenuItem(i18n.tr("Duplizieren"), new UeberweisungDuplicate()));
 		addItem(ContextMenuItem.SEPARATOR);
@@ -86,6 +96,9 @@ public class UeberweisungList extends ContextMenu
 
 /**********************************************************************
  * $Log: UeberweisungList.java,v $
+ * Revision 1.2  2004/07/20 23:31:49  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/07/20 21:48:00  willuhn
  * @N ContextMenus
  *
