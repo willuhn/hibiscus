@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Settings.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/02/27 01:10:18 $
+ * $Revision: 1.6 $
+ * $Date: 2004/02/27 01:11:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -37,6 +37,7 @@ public class Settings extends AbstractView {
    */
   public void bind() throws Exception {
 
+		GUI.setTitleText(I18N.tr("Einstellungen"));
 		final SettingsControl control = new SettingsControl(this);
 		
 		LabelGroup settings = new LabelGroup(getParent(),I18N.tr("Einstellungen"));
@@ -113,6 +114,9 @@ public class Settings extends AbstractView {
 
 /**********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.6  2004/02/27 01:11:53  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2004/02/27 01:10:18  willuhn
  * @N passport config refactored
  *
