@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/TurnusAuswahlDialog.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/10/25 23:12:02 $
+ * $Revision: 1.3 $
+ * $Date: 2004/11/13 17:02:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.menus.TurnusList;
 import de.willuhn.jameica.hbci.rmi.Turnus;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -63,9 +64,8 @@ public class TurnusAuswahlDialog extends AbstractDialog
 
 		table.addColumn(i18n.tr("Bezeichnung"),"bezeichnung");
 		table.disableSummary();
+		table.setContextMenu(new TurnusList());
 		table.paint(parent);
-		
-		// TODO Frei konfigurierbaren Turnus hinzufuegen
   }
 
   /**
@@ -81,6 +81,9 @@ public class TurnusAuswahlDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: TurnusAuswahlDialog.java,v $
+ * Revision 1.3  2004/11/13 17:02:04  willuhn
+ * @N Bearbeiten des Zahlungsturnus
+ *
  * Revision 1.2  2004/10/25 23:12:02  willuhn
  * *** empty log message ***
  *

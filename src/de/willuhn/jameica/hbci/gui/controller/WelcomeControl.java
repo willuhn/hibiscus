@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/WelcomeControl.java,v $
- * $Revision: 1.13 $
- * $Date: 2004/11/12 18:25:07 $
+ * $Revision: 1.14 $
+ * $Date: 2004/11/13 17:02:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -73,7 +73,7 @@ public class WelcomeControl extends AbstractControl {
 		DBIterator list = Settings.getDBService().createList(Ueberweisung.class);
 		list.addFilter("ausgefuehrt = 0");
 
-		offeneUeberweisungen = new TablePart(list,new de.willuhn.jameica.hbci.gui.action.UeberweisungNeu());
+		offeneUeberweisungen = new TablePart(list,new de.willuhn.jameica.hbci.gui.action.UeberweisungNew());
 		offeneUeberweisungen.setFormatter(new TableFormatter() {
       public void format(TableItem item) {
 				try {
@@ -136,7 +136,7 @@ public class WelcomeControl extends AbstractControl {
 
 		DBIterator list = Settings.getDBService().createList(Konto.class);
 
-		kontoStats = new TablePart(list,new de.willuhn.jameica.hbci.gui.action.KontoNeu());
+		kontoStats = new TablePart(list,new de.willuhn.jameica.hbci.gui.action.KontoNew());
 		kontoStats.addColumn(i18n.tr("Kontonummer"),"kontonummer");
 		kontoStats.addColumn(i18n.tr("Bezeichnung"),"bezeichnung");
 		kontoStats.addColumn(i18n.tr("Saldo"),"saldo");
@@ -163,6 +163,9 @@ public class WelcomeControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: WelcomeControl.java,v $
+ * Revision 1.14  2004/11/13 17:02:04  willuhn
+ * @N Bearbeiten des Zahlungsturnus
+ *
  * Revision 1.13  2004/11/12 18:25:07  willuhn
  * *** empty log message ***
  *

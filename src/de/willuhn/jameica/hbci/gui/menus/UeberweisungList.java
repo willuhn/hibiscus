@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UeberweisungList.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/11/12 18:25:08 $
+ * $Revision: 1.9 $
+ * $Date: 2004/11/13 17:02:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,7 +20,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungDelete;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungDuplicate;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungExecute;
-import de.willuhn.jameica.hbci.gui.action.UeberweisungNeu;
+import de.willuhn.jameica.hbci.gui.action.UeberweisungNew;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -42,7 +42,7 @@ public class UeberweisungList extends ContextMenu
 	{
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-		addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"), new UeberweisungNeu()));
+		addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"), new UeberweisungNew()));
 		addItem(new NotActiveMenuItem(i18n.tr("Jetzt ausführen..."), new UeberweisungExecute()));
 		addItem(new CheckedContextMenuItem(i18n.tr("Duplizieren"), new UeberweisungDuplicate()));
 		addItem(ContextMenuItem.SEPARATOR);
@@ -56,7 +56,7 @@ public class UeberweisungList extends ContextMenu
 	 * Ueberschreiben wir, um <b>grundsaetzlich</b> eine neue Ueberweisung
 	 * anzulegen - auch wenn der Focus auf einer existierenden liegt.
    */
-  private class UNeu extends UeberweisungNeu
+  private class UNeu extends UeberweisungNew
 	{
     /**
      * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
@@ -108,6 +108,9 @@ public class UeberweisungList extends ContextMenu
 
 /**********************************************************************
  * $Log: UeberweisungList.java,v $
+ * Revision 1.9  2004/11/13 17:02:04  willuhn
+ * @N Bearbeiten des Zahlungsturnus
+ *
  * Revision 1.8  2004/11/12 18:25:08  willuhn
  * *** empty log message ***
  *

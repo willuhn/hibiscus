@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoFetchDauerauftraege.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/11/12 18:25:07 $
+ * $Revision: 1.8 $
+ * $Date: 2004/11/13 17:02:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -77,7 +77,7 @@ public class KontoFetchDauerauftraege implements Action
 					factory.executeJobs(k.getPassport().getHandle());
 					GUI.getStatusBar().setSuccessText(i18n.tr("...Daueraufträge erfolgreich übertragen"));
 
-					new DauerauftragListe().handleAction(k);
+					new DauerauftragList().handleAction(k);
 				}
 				catch (OperationCanceledException oce)
 				{
@@ -106,6 +106,9 @@ public class KontoFetchDauerauftraege implements Action
 
 /**********************************************************************
  * $Log: KontoFetchDauerauftraege.java,v $
+ * Revision 1.8  2004/11/13 17:02:04  willuhn
+ * @N Bearbeiten des Zahlungsturnus
+ *
  * Revision 1.7  2004/11/12 18:25:07  willuhn
  * *** empty log message ***
  *

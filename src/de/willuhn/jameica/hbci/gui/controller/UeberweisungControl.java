@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.33 $
- * $Date: 2004/11/12 18:25:07 $
+ * $Revision: 1.34 $
+ * $Date: 2004/11/13 17:02:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -86,7 +86,7 @@ public class UeberweisungControl extends AbstractTransferControl
 
 		DBIterator list = Settings.getDBService().createList(Ueberweisung.class);
 
-		table = new TablePart(list,new de.willuhn.jameica.hbci.gui.action.UeberweisungNeu());
+		table = new TablePart(list,new de.willuhn.jameica.hbci.gui.action.UeberweisungNew());
 		table.setFormatter(new TableFormatter() {
       public void format(TableItem item) {
       	Ueberweisung u = (Ueberweisung) item.getData();
@@ -217,9 +217,9 @@ public class UeberweisungControl extends AbstractTransferControl
 	}
 
   /**
-   * Speichert die Ueberweisung.
+   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#handleStore()
    */
-  public synchronized void handleStore()
+  public synchronized boolean handleStore()
   {
 		try
 		{
@@ -228,7 +228,7 @@ public class UeberweisungControl extends AbstractTransferControl
 			if (u.ausgefuehrt())
 			{
 				GUI.getStatusBar().setErrorText(i18n.tr("Die Überweisung wurde bereits ausgeführt und kann daher nicht geändert werden"));
-				return;
+				return false;
 			}
 
 			Date termin = (Date) getTermin().getValue();
@@ -241,19 +241,19 @@ public class UeberweisungControl extends AbstractTransferControl
 				catch (Exception e)
 				{
 					GUI.getView().setErrorText("Bitte geben Sie einen Termin ein.");
-					return;
+					return false;
 				}
 			}
 			u.setTermin(termin);
+			return super.handleStore();
 		}
 		catch (RemoteException re)
 		{
 			Logger.error("rollback failed",re);
 			Logger.error("error while storing ueberweisung",re);
 			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern der Überweisung"));
-			return;
   	}
-		super.handleStore();
+		return false;
   }
 
   /**
@@ -357,6 +357,9 @@ public class UeberweisungControl extends AbstractTransferControl
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
+ * Revision 1.34  2004/11/13 17:02:04  willuhn
+ * @N Bearbeiten des Zahlungsturnus
+ *
  * Revision 1.33  2004/11/12 18:25:07  willuhn
  * *** empty log message ***
  *

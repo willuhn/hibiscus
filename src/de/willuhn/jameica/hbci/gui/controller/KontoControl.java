@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.48 $
- * $Date: 2004/11/12 18:25:07 $
+ * $Revision: 1.49 $
+ * $Date: 2004/11/13 17:02:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -292,7 +292,7 @@ public class KontoControl extends AbstractControl {
 
 		DBIterator list = Settings.getDBService().createList(Konto.class);
 
-		kontoList = new TablePart(list,new de.willuhn.jameica.hbci.gui.action.KontoNeu());
+		kontoList = new TablePart(list,new de.willuhn.jameica.hbci.gui.action.KontoNew());
 		kontoList.addColumn(i18n.tr("Kontonummer"),"kontonummer");
 		kontoList.addColumn(i18n.tr("Bankleitzahl"),"blz");
 		kontoList.addColumn(i18n.tr("Bezeichnung"),"bezeichnung");
@@ -450,6 +450,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.49  2004/11/13 17:02:04  willuhn
+ * @N Bearbeiten des Zahlungsturnus
+ *
  * Revision 1.48  2004/11/12 18:25:07  willuhn
  * *** empty log message ***
  *

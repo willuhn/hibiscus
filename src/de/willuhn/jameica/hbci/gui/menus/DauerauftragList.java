@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/DauerauftragList.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/10/25 17:58:56 $
+ * $Revision: 1.2 $
+ * $Date: 2004/11/13 17:02:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,7 @@ import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.DauerauftragDelete;
-import de.willuhn.jameica.hbci.gui.action.DauerauftragNeu;
+import de.willuhn.jameica.hbci.gui.action.DauerauftragNew;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -37,7 +37,7 @@ public class DauerauftragList extends ContextMenu
 	{
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-		addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"), new DauerauftragNeu()));
+		addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"), new DauerauftragNew()));
 		addItem(ContextMenuItem.SEPARATOR);
 		addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DauerauftragDelete()));
 		addItem(ContextMenuItem.SEPARATOR);
@@ -49,7 +49,7 @@ public class DauerauftragList extends ContextMenu
 	 * Ueberschreiben wir, um <b>grundsaetzlich</b> einen neuen Dauerauftrag
 	 * anzulegen - auch wenn der Focus auf einer existierenden liegt.
    */
-  private class DNeu extends DauerauftragNeu
+  private class DNeu extends DauerauftragNew
 	{
     /**
      * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
@@ -64,6 +64,9 @@ public class DauerauftragList extends ContextMenu
 
 /**********************************************************************
  * $Log: DauerauftragList.java,v $
+ * Revision 1.2  2004/11/13 17:02:04  willuhn
+ * @N Bearbeiten des Zahlungsturnus
+ *
  * Revision 1.1  2004/10/25 17:58:56  willuhn
  * @N Haufen Dauerauftrags-Code
  *

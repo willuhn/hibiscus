@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragStoreJob.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/11/12 18:25:07 $
+ * $Revision: 1.7 $
+ * $Date: 2004/11/13 17:02:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,11 @@ package de.willuhn.jameica.hbci.server.hbci;
 
 import java.rmi.RemoteException;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Properties;
+
+import org.kapott.hbci.GV_Result.GVRDauerEdit;
+import org.kapott.hbci.GV_Result.GVRDauerNew;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
@@ -52,56 +56,77 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob {
    */
   public HBCIDauerauftragStoreJob(Dauerauftrag auftrag) throws ApplicationException, RemoteException
 	{
-		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+		try
+		{
+			i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-		if (auftrag == null)
-			throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Dauerauftrag aus"));
+			if (auftrag == null)
+				throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Dauerauftrag aus"));
 
-		if (auftrag.isNewObject())
-			auftrag.store();
+			if (auftrag.isNewObject())
+				auftrag.store();
 
-		this.dauerauftrag = auftrag;
-		this.konto        = auftrag.getKonto();
-		this.active				= auftrag.isActive();
+			this.dauerauftrag = auftrag;
+			this.konto        = auftrag.getKonto();
+			this.active				= auftrag.isActive();
 
-		if (active)
-			setJobParam("orderid",auftrag.getOrderID());
+			if (active)
+				setJobParam("orderid",auftrag.getOrderID());
 
-		setJobParam("src",Converter.HibiscusKonto2HBCIKonto(konto));
+			setJobParam("src",Converter.HibiscusKonto2HBCIKonto(konto));
 
-		setJobParam("btg",dauerauftrag.getBetrag(),konto.getWaehrung() == null ? "EUR" : konto.getWaehrung());
+			setJobParam("btg",dauerauftrag.getBetrag(),konto.getWaehrung() == null ? "EUR" : konto.getWaehrung());
 
-		Empfaenger empfaenger = (Empfaenger) Settings.getDBService().createObject(Empfaenger.class,null);
-		empfaenger.setBLZ(dauerauftrag.getEmpfaengerBLZ());
-		empfaenger.setKontonummer(dauerauftrag.getEmpfaengerKonto());
-		empfaenger.setName(dauerauftrag.getEmpfaengerName());
-		setJobParam("dst",Converter.HibiscusEmpfaenger2HBCIKonto(empfaenger));
+			Empfaenger empfaenger = (Empfaenger) Settings.getDBService().createObject(Empfaenger.class,null);
+			empfaenger.setBLZ(dauerauftrag.getEmpfaengerBLZ());
+			empfaenger.setKontonummer(dauerauftrag.getEmpfaengerKonto());
+			empfaenger.setName(dauerauftrag.getEmpfaengerName());
+			setJobParam("dst",Converter.HibiscusEmpfaenger2HBCIKonto(empfaenger));
 
-		setJobParam("name",empfaenger.getName());
+			setJobParam("name",empfaenger.getName());
 
-		setJobParam("usage",dauerauftrag.getZweck());
+			setJobParam("usage",dauerauftrag.getZweck());
 
-		String zweck2 = dauerauftrag.getZweck2();
-		if (zweck2 != null && zweck2.length() > 0)
-			setJobParam("usage_2",zweck2);
+			String zweck2 = dauerauftrag.getZweck2();
+			if (zweck2 != null && zweck2.length() > 0)
+				setJobParam("usage_2",zweck2);
 
-		setJobParam("firstdate",dauerauftrag.getErsteZahlung());
+			setJobParam("firstdate",dauerauftrag.getErsteZahlung());
 
-		Date letzteZahlung = dauerauftrag.getLetzteZahlung();
-		if (letzteZahlung != null)
-			setJobParam("lastdate",letzteZahlung);
+			Date letzteZahlung = dauerauftrag.getLetzteZahlung();
+			if (letzteZahlung != null)
+				setJobParam("lastdate",letzteZahlung);
 
-		Turnus turnus = dauerauftrag.getTurnus();
-		setJobParam("timeunit",turnus.getZeiteinheit() == Turnus.ZEITEINHEIT_MONATLICH ? "M" : "W");
-		setJobParam("turnus",turnus.getIntervall());
-		setJobParam("execday",turnus.getTag());
+			Turnus turnus = dauerauftrag.getTurnus();
+			setJobParam("timeunit",turnus.getZeiteinheit() == Turnus.ZEITEINHEIT_MONATLICH ? "M" : "W");
+			setJobParam("turnus",turnus.getIntervall());
+			setJobParam("execday",turnus.getTag());
 
 
-		// Jetzt noch die Tests fuer die Job-Restriktionen
-		Properties p = HBCIFactory.getInstance().getJobRestrictions(this,this.konto.getPassport().getHandle());
-		new TurnusRestriction(turnus,p).test();
-		new PreTimeRestriction(dauerauftrag.getErsteZahlung(),p).test();
-
+			// Jetzt noch die Tests fuer die Job-Restriktionen
+			Properties p = HBCIFactory.getInstance().getJobRestrictions(this,this.konto.getPassport().getHandle());
+			Enumeration keys = p.keys();
+			while (keys.hasMoreElements())
+			{
+				String s = (String) keys.nextElement();
+				Logger.debug("[hbci job restriction] name: " + s + ", value: " + p.getProperty(s));
+			}
+			new TurnusRestriction(turnus,p).test();
+			new PreTimeRestriction(dauerauftrag.getErsteZahlung(),p).test();
+		}
+		catch (RemoteException e)
+		{
+			throw e;
+		}
+		catch (ApplicationException e2)
+		{
+			throw e2;
+		}
+		catch (Throwable t)
+		{
+			Logger.error("error while executing job " + getIdentifier(),t);
+			throw new ApplicationException(i18n.tr("Fehler beim Erstellen des Auftrags. Fehlermeldung: {0}",t.getMessage()),t);
+		}
 	}
 
   /**
@@ -144,12 +169,20 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob {
 			konto.addToProtokoll(i18n.tr("Dauerauftrag ausgeführt") + " " + empfName,Protokoll.TYP_SUCCESS);
 
 		// jetzt muessen wir noch die Order-ID speichern, wenn er neu eingereicht wurde
+		String orderID = null;
 		if (!active)
 		{
-			// Der Auftrag war neu, dann muessen wir noch die Order-ID speichern
-			dauerauftrag.setOrderID(null); // TODO ORDER ID!!!
-			dauerauftrag.store();
+			GVRDauerNew result = (GVRDauerNew) this.getJobResult();
+			orderID = result.getOrderId();
 		}
+		else
+		{
+			GVRDauerEdit result = (GVRDauerEdit) this.getJobResult();
+			orderID = result.getOrderId();
+		}
+		// Der Auftrag war neu, dann muessen wir noch die Order-ID speichern
+		dauerauftrag.setOrderID(orderID);
+		dauerauftrag.store();
 
 		Logger.info("dauerauftrag submitted successfully");
 	}
@@ -159,6 +192,9 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIDauerauftragStoreJob.java,v $
+ * Revision 1.7  2004/11/13 17:02:04  willuhn
+ * @N Bearbeiten des Zahlungsturnus
+ *
  * Revision 1.6  2004/11/12 18:25:07  willuhn
  * *** empty log message ***
  *

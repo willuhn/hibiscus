@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragDeleteJob.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/11/12 18:25:08 $
+ * $Revision: 1.5 $
+ * $Date: 2004/11/13 17:02:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -41,22 +41,39 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
    */
   public HBCIDauerauftragDeleteJob(Dauerauftrag auftrag) throws RemoteException, ApplicationException
 	{
-		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+		try
+		{
+			i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-		if (auftrag == null)
-			throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Dauerauftrag aus"));
+			if (auftrag == null)
+				throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Dauerauftrag aus"));
 
-		if (!auftrag.isActive())
-			throw new ApplicationException(i18n.tr("Dauerauftrag liegt nicht bei Bank vor und muss daher nicht online gelöscht werden"));
+			if (!auftrag.isActive())
+				throw new ApplicationException(i18n.tr("Dauerauftrag liegt nicht bei Bank vor und muss daher nicht online gelöscht werden"));
 
-		if (auftrag.isNewObject())
-			auftrag.store();
+			if (auftrag.isNewObject())
+				auftrag.store();
 
-		this.dauerauftrag = auftrag;
-		this.konto        = auftrag.getKonto();
+			this.dauerauftrag = auftrag;
+			this.konto        = auftrag.getKonto();
 
-		setJobParam("orderid",auftrag.getOrderID());
-		// TODO: Beim Loeschen eines Dauerauftrags das Zieldatum konfigurierbar machen
+			setJobParam("orderid",auftrag.getOrderID());
+			// TODO: Beim Loeschen eines Dauerauftrags das Zieldatum konfigurierbar machen
+			// setJobParam("date",null);
+		}
+		catch (RemoteException e)
+		{
+			throw e;
+		}
+		catch (ApplicationException e2)
+		{
+			throw e2;
+		}
+		catch (Throwable t)
+		{
+			Logger.error("error while executing job " + getIdentifier(),t);
+			throw new ApplicationException(i18n.tr("Fehler beim Erstellen des Auftrags. Fehlermeldung: {0}",t.getMessage()),t);
+		}
 	}
 
   /**
@@ -104,6 +121,9 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIDauerauftragDeleteJob.java,v $
+ * Revision 1.5  2004/11/13 17:02:04  willuhn
+ * @N Bearbeiten des Zahlungsturnus
+ *
  * Revision 1.4  2004/11/12 18:25:08  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCIJob.java,v $
- * $Revision: 1.12 $
- * $Date: 2004/11/12 18:25:08 $
+ * $Revision: 1.13 $
+ * $Date: 2004/11/13 17:02:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -110,7 +110,7 @@ public abstract class AbstractHBCIJob
 	{
 		try
 		{
-			// TODO: Das ist sicher nicht alles, was wir von der Bank erfahren. Was waehre besser?
+			// TODO: Das ist sicher nicht alles, was wir von der Bank erfahren. Was waere besser?
 			return getJobResult().getJobStatus().getRetVals()[0].text;
 		}
 		catch (ArrayIndexOutOfBoundsException aio)
@@ -214,6 +214,9 @@ public abstract class AbstractHBCIJob
 
 /**********************************************************************
  * $Log: AbstractHBCIJob.java,v $
+ * Revision 1.13  2004/11/13 17:02:04  willuhn
+ * @N Bearbeiten des Zahlungsturnus
+ *
  * Revision 1.12  2004/11/12 18:25:08  willuhn
  * *** empty log message ***
  *

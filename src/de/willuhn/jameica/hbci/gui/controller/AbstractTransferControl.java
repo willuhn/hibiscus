@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.16 $
- * $Date: 2004/11/12 18:25:07 $
+ * $Revision: 1.17 $
+ * $Date: 2004/11/13 17:02:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -251,10 +251,11 @@ public abstract class AbstractTransferControl extends AbstractControl
 		return storeEmpfaenger;
 	}
 
-	/**
+  /**
    * Speichert den Geld-Transfer.
+   * @return true, wenn das Speichern erfolgreich war.
    */
-	public synchronized void handleStore()
+	public synchronized boolean handleStore()
 	{
 		try {
   		
@@ -288,7 +289,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 					d.setTitle(i18n.tr("Empfänger existiert"));
 					d.setText(i18n.tr("Ein Empfänger mit dieser Kontonummer und BLZ existiert bereits. " +
 							"Möchten Sie den Empfänger dennoch zum Adressbuch hinzufügen?"));
-					if (!((Boolean) d.open()).booleanValue()) return;
+					if (!((Boolean) d.open()).booleanValue()) return false;
 				}
 				Empfaenger e = (Empfaenger) Settings.getDBService().createObject(Empfaenger.class,null);
 				e.setBLZ(blz);
@@ -301,6 +302,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 				GUI.getStatusBar().setSuccessText(i18n.tr("Auftrag gespeichert"));
 			}
 			getTransfer().transactionCommit();
+			return true;
 		}
 		catch (ApplicationException e)
 		{
@@ -325,6 +327,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 			Logger.error("error while storing transfer",e2);
 			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern des Auftrags"));
 		}
+		return false;
 	}
 
 	/**
@@ -407,6 +410,9 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
+ * Revision 1.17  2004/11/13 17:02:04  willuhn
+ * @N Bearbeiten des Zahlungsturnus
+ *
  * Revision 1.16  2004/11/12 18:25:07  willuhn
  * *** empty log message ***
  *

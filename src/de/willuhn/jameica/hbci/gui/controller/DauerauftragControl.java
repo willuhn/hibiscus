@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/DauerauftragControl.java,v $
- * $Revision: 1.15 $
- * $Date: 2004/11/12 18:25:07 $
+ * $Revision: 1.16 $
+ * $Date: 2004/11/13 17:02:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,7 +31,7 @@ import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.action.DauerauftragNeu;
+import de.willuhn.jameica.hbci.gui.action.DauerauftragNew;
 import de.willuhn.jameica.hbci.gui.dialogs.TurnusAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.menus.DauerauftragList;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
@@ -79,7 +79,7 @@ public class DauerauftragControl extends AbstractTransferControl {
 	{
 		DBIterator list = Settings.getDBService().createList(Dauerauftrag.class);
 
-		TablePart table = new TablePart(list,new DauerauftragNeu());
+		TablePart table = new TablePart(list,new DauerauftragNew());
 
 		table.addColumn(i18n.tr("Konto"),"konto_id");
 		table.addColumn(i18n.tr("Empfängername"),"empfaenger_name");
@@ -223,7 +223,7 @@ public class DauerauftragControl extends AbstractTransferControl {
   /**
    * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#handleStore()
    */
-  public synchronized void handleStore()
+  public synchronized boolean handleStore()
   {
   	try
   	{
@@ -231,13 +231,14 @@ public class DauerauftragControl extends AbstractTransferControl {
 			d.setErsteZahlung((Date)getErsteZahlung().getValue());
 			d.setLetzteZahlung((Date)getLetzteZahlung().getValue());
 			d.setTurnus((Turnus)getTurnus().getValue());
+			return super.handleStore();
   	}
   	catch (RemoteException e)
   	{
   		Logger.error("error while saving dauerauftrag",e);
   		GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern des Dauerauftrages"));
   	}
-		super.handleStore();
+  	return false;
   }
 
   /**
@@ -258,6 +259,9 @@ public class DauerauftragControl extends AbstractTransferControl {
 
 /**********************************************************************
  * $Log: DauerauftragControl.java,v $
+ * Revision 1.16  2004/11/13 17:02:04  willuhn
+ * @N Bearbeiten des Zahlungsturnus
+ *
  * Revision 1.15  2004/11/12 18:25:07  willuhn
  * *** empty log message ***
  *

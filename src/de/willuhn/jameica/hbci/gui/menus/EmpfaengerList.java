@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/EmpfaengerList.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/10/25 17:58:56 $
+ * $Revision: 1.8 $
+ * $Date: 2004/11/13 17:02:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,8 +17,8 @@ import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerDelete;
-import de.willuhn.jameica.hbci.gui.action.EmpfaengerNeu;
-import de.willuhn.jameica.hbci.gui.action.UeberweisungNeu;
+import de.willuhn.jameica.hbci.gui.action.EmpfaengerNew;
+import de.willuhn.jameica.hbci.gui.action.UeberweisungNew;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 
@@ -38,13 +38,13 @@ public class EmpfaengerList extends ContextMenu
 	{
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-		addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"),new EmpfaengerNeu()));
-		addItem(new CheckedContextMenuItem(i18n.tr("Neue Überweisung mit diesem Empfänger..."), new UeberweisungNeu()));
+		addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"),new EmpfaengerNew()));
+		addItem(new CheckedContextMenuItem(i18n.tr("Neue Überweisung mit diesem Empfänger..."), new UeberweisungNew()));
 		addItem(ContextMenuItem.SEPARATOR);
 		addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new EmpfaengerDelete()));
 		addItem(ContextMenuItem.SEPARATOR);
 
-		addItem(new ContextMenuItem(i18n.tr("Neue Adresse..."), new EmpfaengerNeu()));
+		addItem(new ContextMenuItem(i18n.tr("Neue Adresse..."), new EmpfaengerNew()));
 	}
 
 }
@@ -52,6 +52,9 @@ public class EmpfaengerList extends ContextMenu
 
 /**********************************************************************
  * $Log: EmpfaengerList.java,v $
+ * Revision 1.8  2004/11/13 17:02:04  willuhn
+ * @N Bearbeiten des Zahlungsturnus
+ *
  * Revision 1.7  2004/10/25 17:58:56  willuhn
  * @N Haufen Dauerauftrags-Code
  *

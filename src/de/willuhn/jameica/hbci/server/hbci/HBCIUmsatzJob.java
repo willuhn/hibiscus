@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUmsatzJob.java,v $
- * $Revision: 1.14 $
- * $Date: 2004/11/12 18:25:08 $
+ * $Revision: 1.15 $
+ * $Date: 2004/11/13 17:02:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,18 +43,33 @@ public class HBCIUmsatzJob extends AbstractHBCIJob {
    */
   public HBCIUmsatzJob(Konto konto) throws ApplicationException, RemoteException
 	{
+		try
+		{
+			i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+			if (konto == null)
+				throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus")); 
 
-		if (konto == null)
-			throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus")); 
+			if (konto.isNewObject())
+				konto.store();
 
-		if (konto.isNewObject())
-			konto.store();
+			this.konto = konto;
 
-		this.konto = konto;
-
-		setJobParam("my",Converter.HibiscusKonto2HBCIKonto(konto));
+			setJobParam("my",Converter.HibiscusKonto2HBCIKonto(konto));
+		}
+		catch (RemoteException e)
+		{
+			throw e;
+		}
+		catch (ApplicationException e2)
+		{
+			throw e2;
+		}
+		catch (Throwable t)
+		{
+			Logger.error("error while executing job " + getIdentifier(),t);
+			throw new ApplicationException(i18n.tr("Fehler beim Erstellen des Auftrags. Fehlermeldung: {0}",t.getMessage()),t);
+		}
 	}
 
   /**
@@ -120,6 +135,9 @@ public class HBCIUmsatzJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIUmsatzJob.java,v $
+ * Revision 1.15  2004/11/13 17:02:04  willuhn
+ * @N Bearbeiten des Zahlungsturnus
+ *
  * Revision 1.14  2004/11/12 18:25:08  willuhn
  * *** empty log message ***
  *
