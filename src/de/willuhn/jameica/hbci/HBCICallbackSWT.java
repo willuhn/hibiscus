@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/02/11 00:11:20 $
+ * $Revision: 1.3 $
+ * $Date: 2004/02/12 00:47:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,8 @@ import java.io.InputStreamReader;
 import java.util.Date;
 import java.util.StringTokenizer;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
 import org.kapott.hbci.GV.HBCIJob;
 import org.kapott.hbci.callback.AbstractHBCICallback;
 import org.kapott.hbci.exceptions.HBCI_Exception;
@@ -27,6 +29,8 @@ import org.kapott.hbci.passport.INILetter;
 import org.kapott.hbci.status.HBCIMsgStatus;
 
 import de.willuhn.jameica.Application;
+import de.willuhn.jameica.gui.GUI;
+import de.willuhn.util.I18N;
 
 /**
  * Dieser HBCICallbackSWT implementiert den HBCICallbackSWT des HBCI-Systems und
@@ -89,7 +93,10 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 							System.out.print(msg+": ");
 	
 					case NEED_CHIPCARD:
-							System.out.println(msg);
+							MessageBox box = new MessageBox(GUI.getShell(),SWT.ICON_INFORMATION | SWT.OK);
+							box.setText(I18N.tr("Chipkarte einlegen"));
+							box.setMessage(I18N.tr("Bitte legen Sie Ihre HBCI-Chipkarte in das Lesegerät."));
+							box.open();
 							break;
 	
 					case NEED_HARDPIN:
@@ -332,6 +339,9 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.3  2004/02/12 00:47:21  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2004/02/11 00:11:20  willuhn
  * *** empty log message ***
  *
