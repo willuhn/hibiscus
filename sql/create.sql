@@ -40,7 +40,7 @@ CREATE TABLE umsatz (
   empfaenger_id int(4) NOT NULL,
   betrag double NOT NULL,
   zweck varchar(35) NOT NULL,
-  zweck2 varchar(35) NOT NULL,
+  zweck2 varchar(35),
   datum date NOT NULL,
   valuta date NOT NULL,
   UNIQUE (id),
