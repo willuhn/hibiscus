@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="ISO8859-1"?> 
+
+<menu>
+
+  <cascade name="&amp;HBCI">
+    <item name="&amp;Einstellungen"       class="de.willuhn.jameica.hbci.gui.views.Settings" />
+  </cascade>
+
+</menu>
