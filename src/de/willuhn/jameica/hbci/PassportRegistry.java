@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/PassportRegistry.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/05/04 23:07:23 $
+ * $Revision: 1.2 $
+ * $Date: 2004/05/04 23:30:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -73,7 +73,7 @@ public class PassportRegistry {
 
 	/**
 	 * Liefert eine Instanz des angegebenen Passports.
-	 * @param className Java-Klasse des Passports.
+	 * @param classname Java-Klasse des Passports.
 	 * @return Instanz des Passports.
 	 * @throws Exception
 	 */
@@ -105,6 +105,9 @@ public class PassportRegistry {
 
 /**********************************************************************
  * $Log: PassportRegistry.java,v $
+ * Revision 1.2  2004/05/04 23:30:53  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/05/04 23:07:23  willuhn
  * @C refactored Passport stuff
  *
