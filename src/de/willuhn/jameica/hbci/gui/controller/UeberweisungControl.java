@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.21 $
- * $Date: 2004/07/09 00:04:40 $
+ * $Revision: 1.22 $
+ * $Date: 2004/07/09 00:12:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,7 +43,6 @@ import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.dialogs.UeberweisungDialog;
-import de.willuhn.jameica.hbci.gui.listener.UeberweisungCreate;
 import de.willuhn.jameica.hbci.gui.listener.UeberweisungDuplicate;
 import de.willuhn.jameica.hbci.gui.listener.UeberweisungExecute;
 import de.willuhn.jameica.hbci.gui.views.UeberweisungNeu;
@@ -149,7 +148,6 @@ public class UeberweisungControl extends AbstractControl {
 				catch (RemoteException e) { /*ignore */}
       }
     });
-		table.addMenu(i18n.tr("Neue Überweisung"), new UeberweisungCreate());
     table.addMenu(i18n.tr("Jetzt ausführen"), new UeberweisungExecute());
 		table.addMenu(i18n.tr("Duplizieren"), new UeberweisungDuplicate());
 
@@ -697,6 +695,9 @@ public class UeberweisungControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
+ * Revision 1.22  2004/07/09 00:12:29  willuhn
+ * @B minor bugs
+ *
  * Revision 1.21  2004/07/09 00:04:40  willuhn
  * @C Redesign
  *
