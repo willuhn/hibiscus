@@ -13,8 +13,8 @@ ALTER CREATE TABLE konto (
   PRIMARY KEY (id)
 );
 
+DROP TABLE passport_param;
 DROP TABLE passport;
 DROP TABLE passport_type;
-DROP TABLE passport_param;
 ALTER TABLE passport_param DROP CONSTRAINT fk_passport_param;
 ALTER TABLE passport DROP CONSTRAINT fk_passport_type;
