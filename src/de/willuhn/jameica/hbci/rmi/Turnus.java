@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Turnus.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/07/15 23:39:22 $
+ * $Revision: 1.4 $
+ * $Date: 2004/10/17 16:28:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,7 @@ import de.willuhn.datasource.rmi.DBObject;
 /**
  * Bildet einen Turnus bei wiederkehrenden Zahlungen ab.
  */
-public interface Turnus extends DBObject
+public interface Turnus extends DBObject, Checksum
 {
 
 	/**
@@ -117,6 +117,9 @@ public interface Turnus extends DBObject
 
 /**********************************************************************
  * $Log: Turnus.java,v $
+ * Revision 1.4  2004/10/17 16:28:46  willuhn
+ * @N Die ersten Dauerauftraege abgerufen ;)
+ *
  * Revision 1.3  2004/07/15 23:39:22  willuhn
  * @N TurnusImpl
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.14 $
- * $Date: 2004/08/18 23:13:51 $
+ * $Revision: 1.15 $
+ * $Date: 2004/10/17 16:28:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,7 +30,8 @@ import de.willuhn.util.Logger;
 /**
  * Repraesentiert eine Zeile in den Umsaetzen.
  */
-public class UmsatzImpl extends AbstractDBObject implements Umsatz {
+public class UmsatzImpl extends AbstractDBObject implements Umsatz
+{
 
 	I18N i18n;
 
@@ -255,7 +256,7 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz {
 			return false;
 		try {
 			Umsatz other = (Umsatz) o;
-			return other.getCRC32() == getCRC32();
+			return other.getChecksum() == getChecksum();
 		}
 		catch (ClassCastException e)
 		{
@@ -323,11 +324,12 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz {
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getCRC32()
+   * @see de.willuhn.jameica.hbci.rmi.Checksum#getChecksum()
    */
-  public long getCRC32() throws RemoteException {
+  public long getChecksum() throws RemoteException {
 		String s = getArt() +
 		           getBetrag() +
+		           getKonto().getChecksum() +
 		           getCustomerRef() +
 		           getEmpfaengerBLZ() +
 		           getEmpfaengerKonto() +
@@ -362,6 +364,9 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz {
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.15  2004/10/17 16:28:46  willuhn
+ * @N Die ersten Dauerauftraege abgerufen ;)
+ *
  * Revision 1.14  2004/08/18 23:13:51  willuhn
  * @D Javadoc
  *

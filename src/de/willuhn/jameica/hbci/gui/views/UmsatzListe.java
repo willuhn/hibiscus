@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/UmsatzListe.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/10/08 13:37:48 $
+ * $Revision: 1.11 $
+ * $Date: 2004/10/17 16:28:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -53,7 +53,7 @@ public class UmsatzListe extends AbstractView {
       {
         public void handleEvent(Event event)
         {
-					control.handleGetUmsaetze();
+					control.handleFetchUmsaetze();
         }
       });
 			buttons.addCustomButton(i18n.tr("alle Umsätze löschen"), new Listener()
@@ -84,6 +84,9 @@ public class UmsatzListe extends AbstractView {
 
 /**********************************************************************
  * $Log: UmsatzListe.java,v $
+ * Revision 1.11  2004/10/17 16:28:46  willuhn
+ * @N Die ersten Dauerauftraege abgerufen ;)
+ *
  * Revision 1.10  2004/10/08 13:37:48  willuhn
  * *** empty log message ***
  *

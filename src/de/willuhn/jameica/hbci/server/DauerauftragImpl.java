@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DauerauftragImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/08/18 23:13:51 $
+ * $Revision: 1.7 $
+ * $Date: 2004/10/17 16:28:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,9 @@ package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
 import java.util.Date;
+import java.util.zip.CRC32;
 
+import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Turnus;
@@ -91,9 +93,9 @@ public class DauerauftragImpl extends AbstractTransferImpl implements Dauerauftr
   }
 
 	/**
-	 * @see de.willuhn.jameica.hbci.rmi.Dauerauftrag#isAktiv()
-	 */
-	public boolean isAktiv() throws RemoteException
+   * @see de.willuhn.jameica.hbci.rmi.Dauerauftrag#isActive()
+   */
+	public boolean isActive() throws RemoteException
 	{
 		Integer i = (Integer) getAttribute("aktiv");
 		if (i == null)
@@ -150,9 +152,10 @@ public class DauerauftragImpl extends AbstractTransferImpl implements Dauerauftr
 			// befindet. Hierzu koennen wir aber nicht das aktuelle Datum als Vergleich nehmen
 			// da das bereits einige Sekunden _nach_ dem Datum der ersten Zahlung liegt.
 			// Daher lassen wir 1 Tag Toleranz zu.
-			Date today = new Date(System.currentTimeMillis() - (1000l * 60 * 60 * 24));
-			if (getErsteZahlung().before(today))
-				throw new ApplicationException(i18n.tr("Bitte wählen Sie für die erste Zahlung ein Datum in der Zukunft"));
+// TODO Macht Probleme beim Abrufen
+//			Date today = new Date(System.currentTimeMillis() - (1000l * 60 * 60 * 24));
+//			if (getErsteZahlung().before(today))
+//				throw new ApplicationException(i18n.tr("Bitte wählen Sie für die erste Zahlung ein Datum in der Zukunft"));
 		
 			// Und jetzt noch checken, dass sich das Datum der letzten Zahlung
 			// hinter der ersten Zahlung befindet
@@ -175,11 +178,62 @@ public class DauerauftragImpl extends AbstractTransferImpl implements Dauerauftr
     super.updateCheck();
   }
 
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Checksum#getChecksum()
+   */
+  public long getChecksum() throws RemoteException
+  {
+		String ersteZahlung  = getErsteZahlung() == null ? "" : HBCI.DATEFORMAT.format(getErsteZahlung());
+		String letzteZahlung = getLetzteZahlung() == null ? "" : HBCI.DATEFORMAT.format(getLetzteZahlung());
+		String s = getTurnus().getChecksum() +
+							 getBetrag() +
+							 getEmpfaengerBLZ() +
+							 getEmpfaengerKonto() +
+							 getEmpfaengerName() +
+							 getKonto().getChecksum() +
+							 getZweck() +
+							 getZweck2() +
+							 ersteZahlung +
+							 letzteZahlung;
+		CRC32 crc = new CRC32();
+		crc.update(s.getBytes());
+		return crc.getValue();
+  }
+
+  /**
+   * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
+   */
+  public boolean equals(GenericObject o) throws RemoteException
+  {
+		if (o == null)
+			return false;
+		try {
+			Dauerauftrag other = (Dauerauftrag) o;
+			return other.getChecksum() == getChecksum();
+		}
+		catch (ClassCastException e)
+		{
+			return false;
+		}
+  }
+  
+  /**
+   * Markiert den Dauerauftrag als "aktiv".
+   */
+  protected void activate() throws RemoteException
+  {
+  	// TODO Das gefaellt mir noch nicht.
+  	setAttribute("aktiv",new Integer(1));
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: DauerauftragImpl.java,v $
+ * Revision 1.7  2004/10/17 16:28:46  willuhn
+ * @N Die ersten Dauerauftraege abgerufen ;)
+ *
  * Revision 1.6  2004/08/18 23:13:51  willuhn
  * @D Javadoc
  *

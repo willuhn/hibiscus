@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Transfer.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/07/20 21:48:00 $
+ * $Revision: 1.4 $
+ * $Date: 2004/10/17 16:28:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,8 @@ import de.willuhn.datasource.rmi.DBObject;
 /**
  * Basis-Interface fuer Geld-Transfers zwischen Konten.
  */
-public interface Transfer extends DBObject {
+public interface Transfer extends DBObject, Checksum
+{
 
 	/**
 	 * Liefert das Konto, ueber das bezahlt wurde.
@@ -131,6 +132,9 @@ public interface Transfer extends DBObject {
 
 /**********************************************************************
  * $Log: Transfer.java,v $
+ * Revision 1.4  2004/10/17 16:28:46  willuhn
+ * @N Die ersten Dauerauftraege abgerufen ;)
+ *
  * Revision 1.3  2004/07/20 21:48:00  willuhn
  * @N ContextMenus
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.32 $
- * $Date: 2004/08/18 23:13:51 $
+ * $Revision: 1.33 $
+ * $Date: 2004/10/17 16:28:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@ package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
 import java.util.Date;
+import java.util.zip.CRC32;
 
 import org.kapott.hbci.manager.HBCIUtils;
 
@@ -24,10 +25,12 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.PassportRegistry;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.passport.Passport;
+import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.jameica.hbci.server.hbci.HBCIDauerauftragListJob;
 import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.hbci.server.hbci.HBCISaldoJob;
 import de.willuhn.jameica.hbci.server.hbci.HBCIUmsatzJob;
@@ -350,6 +353,50 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 		}
 	}
 
+	/**
+	 * @see de.willuhn.jameica.hbci.rmi.Konto#refreshDauerauftraege()
+	 */
+	public void refreshDauerauftraege() throws ApplicationException, RemoteException
+	{
+		insertCheck();
+		if (isNewObject())
+			throw new ApplicationException("Bitte speichern Sie zunächst das Konto.");
+
+		// Bei der Gelegenheit koennen wir auch gleich noch den Saldo
+		// aktualisieren
+		HBCIFactory factory = HBCIFactory.getInstance();
+		HBCIDauerauftragListJob job = new HBCIDauerauftragListJob(this);
+
+		factory.addJob(job);
+
+		factory.executeJobs(getPassport().getHandle());
+
+		Dauerauftrag[] auftraege = job.getDauerauftraege();
+
+		// Wir vergleichen noch mit den Dauerauftraegen, die wir schon haben und
+		// speichern nur die neuen.
+		DBIterator existing = getDauerauftraege();
+
+		// Jetzt syncen wir beide Listen
+		try {
+			for (int i=0;i<auftraege.length;++i)
+			{
+				if (existing.contains(auftraege[i]) == null)
+				{
+					auftraege[i].store(); // Der ist neu -> speichern
+				}
+			}
+		}
+		catch (ApplicationException e)
+		{
+			// Die fangen wir, weil z.Bsp. beim Speichern der Empfaenger ein
+			// Fehler auftreten koennte und dann nur z.Bsp. "Zwecke fehlt" in
+			// der Fehlermeldung stehen wuerde.
+			throw new ApplicationException(i18n.tr("Fehler beim Aktualisieren der Umsätze.") + 
+				" (" + e.getMessage() + ")");
+		}
+	}
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.Konto#getSaldoDatum()
    */
@@ -373,6 +420,27 @@ public class KontoImpl extends AbstractDBObject implements Konto {
   public DBIterator getUeberweisungen() throws RemoteException {
 		DBIterator list = Settings.getDBService().createList(Ueberweisung.class);
 		list.addFilter("konto_id = " + getID() + " ORDER BY TONUMBER(termin) DESC");
+		return list;
+	}
+
+	/**
+	 * @see de.willuhn.jameica.hbci.rmi.Konto#getDauerauftraege()
+	 */
+	public DBIterator getDauerauftraege() throws RemoteException
+	{
+		DBIterator list = Settings.getDBService().createList(Dauerauftrag.class);
+		list.addFilter("konto_id = " + getID());
+		return list;
+	}
+
+	/**
+	 * @see de.willuhn.jameica.hbci.rmi.Konto#getAktiveDauerauftraege()
+	 */
+	public DBIterator getAktiveDauerauftraege() throws RemoteException
+	{
+		DBIterator list = Settings.getDBService().createList(Dauerauftrag.class);
+		list.addFilter("konto_id = " + getID());
+		list.addFilter("aktiv = 1");
 		return list;
 	}
 
@@ -450,11 +518,40 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 		}
   }
 
+  /**
+   * Die Funktion ueberschreiben wir um ein zusaetzliches virtuelles
+   * Attribut "longname" einzufuehren. Bei Abfrage dieses Attributs
+   * wird "[Kontonummer] Bezeichnung" zurueckgeliefert.
+   * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
+   */
+  public Object getAttribute(String arg0) throws RemoteException
+  {
+  	if ("longname".equals(arg0))
+  		return "[" + getKontonummer() + "] " + getBezeichnung();
+
+    return super.getAttribute(arg0);
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Checksum#getChecksum()
+   */
+  public long getChecksum() throws RemoteException
+  {
+		String s = getBLZ() +
+							 getKontonummer() +
+							 getKundennummer();
+		CRC32 crc = new CRC32();
+		crc.update(s.getBytes());
+		return crc.getValue();
+  }
 }
 
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.33  2004/10/17 16:28:46  willuhn
+ * @N Die ersten Dauerauftraege abgerufen ;)
+ *
  * Revision 1.32  2004/08/18 23:13:51  willuhn
  * @D Javadoc
  *

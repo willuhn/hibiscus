@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/DauerauftragListe.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/10/08 13:37:48 $
+ * $Revision: 1.7 $
+ * $Date: 2004/10/17 16:28:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -39,7 +39,7 @@ public class DauerauftragListe extends AbstractView {
 
 		GUI.getView().setTitle(i18n.tr("Vorhandene Daueraufträge"));
 		
-		DauerauftragControl control = new DauerauftragControl(this);
+		final DauerauftragControl control = new DauerauftragControl(this);
 		
 		try {
 
@@ -50,8 +50,7 @@ public class DauerauftragListe extends AbstractView {
       {
         public void handleEvent(Event event)
         {
-          // TODO Auto-generated method stub
-
+        	control.handleFetchDauerauftraege();
         }
       });
 			buttons.addCreateButton(i18n.tr("neuer Dauerauftrag"),control);
@@ -75,6 +74,9 @@ public class DauerauftragListe extends AbstractView {
 
 /**********************************************************************
  * $Log: DauerauftragListe.java,v $
+ * Revision 1.7  2004/10/17 16:28:46  willuhn
+ * @N Die ersten Dauerauftraege abgerufen ;)
+ *
  * Revision 1.6  2004/10/08 13:37:48  willuhn
  * *** empty log message ***
  *

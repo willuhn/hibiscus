@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Umsatz.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/05/25 23:23:17 $
+ * $Revision: 1.6 $
+ * $Date: 2004/10/17 16:28:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,7 +25,8 @@ import de.willuhn.datasource.rmi.DBObject;
  * ueber HBCI-Geschaeftsvorfaelle von der Bank geliefert und nur von
  * dort geschrieben.
  */
-public interface Umsatz extends DBObject {
+public interface Umsatz extends DBObject, Checksum
+{
 
 	/**
 	 * Liefert das Konto, auf welches sich diese Umsaetze beziehen.
@@ -226,22 +227,14 @@ public interface Umsatz extends DBObject {
    * @throws RemoteException
    */
   public void setUmsatzTyp(UmsatzTyp typ) throws RemoteException;
-
-	/**
-	 * Liefert eine CRC32-Checksumme dieser Buchung.
-	 * Diese wird verwendet, um die lokal gespeicherten
-	 * eindeutig zu identifizieren, damit beim Holen neuer
-	 * Buchungen vom HBCI-Server keine Buchungen doppelt gespeichert werden.
-   * @return CRC32-Checksumme.
-   * @throws RemoteException
-   */
-  public long getCRC32() throws RemoteException;
-
 }
 
 
 /**********************************************************************
  * $Log: Umsatz.java,v $
+ * Revision 1.6  2004/10/17 16:28:46  willuhn
+ * @N Die ersten Dauerauftraege abgerufen ;)
+ *
  * Revision 1.5  2004/05/25 23:23:17  willuhn
  * @N UeberweisungTyp
  * @N Protokoll

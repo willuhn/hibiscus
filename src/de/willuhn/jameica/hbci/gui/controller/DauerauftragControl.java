@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/DauerauftragControl.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/10/08 13:37:47 $
+ * $Revision: 1.6 $
+ * $Date: 2004/10/17 16:28:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,8 +23,12 @@ import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
+import de.willuhn.jameica.hbci.gui.views.DauerauftragListe;
 import de.willuhn.jameica.hbci.gui.views.DauerauftragNeu;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
+import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.Logger;
 
 /**
@@ -92,6 +96,58 @@ public class DauerauftragControl extends AbstractTransferControl {
 		return table;
 	}
 
+	/**
+	 * Holt die Dauerauftraege vom HBCI-Server und zeigt sie an. 
+	 */
+	public synchronized void handleFetchDauerauftraege()
+	{
+		GUI.getStatusBar().startProgress();
+
+		try
+		{
+			// 1) Wir zeigen einen Dialog an, in dem der User das Konto auswaehlt
+			KontoAuswahlDialog d = new KontoAuswahlDialog(KontoAuswahlDialog.POSITION_CENTER);
+			final Konto konto;
+			try
+			{
+				konto = (Konto) d.open();
+			}
+			catch (Exception e)
+			{
+				Logger.error("error while choosing konto",e);
+				GUI.getStatusBar().setErrorText(i18n.tr("Fehler bei der Auswahl des Kontos"));
+				return;
+			}
+			if (konto == null)
+				return; // nichts ausgewaehlt.
+
+			GUI.startSync(new Runnable() {
+				public void run() {
+					try {
+						GUI.getStatusBar().setSuccessText(i18n.tr("Daueraufträge werden abgerufen..."));
+						konto.refreshDauerauftraege();
+						// Jetzt aktualisieren wir die GUI, indem wir uns selbst neu laden ;)
+						GUI.startView(DauerauftragListe.class.getName(),null);
+						GUI.getStatusBar().setSuccessText(i18n.tr("...Umsätze erfolgreich übertragen"));
+					}
+					catch (ApplicationException e2)
+					{
+						GUI.getView().setErrorText(i18n.tr(e2.getMessage()));
+					}
+					catch (Throwable t)
+					{
+						Logger.error("error while reading dauerauftraege",t);
+						GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Abrufen der Daueraufträge."));
+					}
+				}
+			});
+		}
+		finally
+		{
+			GUI.getStatusBar().stopProgress();
+		}
+	}
+
   /**
    * @see de.willuhn.jameica.gui.controller.AbstractControl#handleStore()
    */
@@ -119,6 +175,9 @@ public class DauerauftragControl extends AbstractTransferControl {
 
 /**********************************************************************
  * $Log: DauerauftragControl.java,v $
+ * Revision 1.6  2004/10/17 16:28:46  willuhn
+ * @N Die ersten Dauerauftraege abgerufen ;)
+ *
  * Revision 1.5  2004/10/08 13:37:47  willuhn
  * *** empty log message ***
  *
