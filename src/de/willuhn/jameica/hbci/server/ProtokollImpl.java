@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/ProtokollImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/06/30 20:58:29 $
+ * $Revision: 1.4 $
+ * $Date: 2004/07/13 22:20:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -64,7 +64,8 @@ public class ProtokollImpl extends AbstractDBObject implements Protokoll {
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
    */
-  protected void insertCheck() throws ApplicationException {
+  protected void insertCheck() throws ApplicationException
+  {
 		try {
 			if (getKonto() == null)
 				throw new ApplicationException(i18n.tr("Konto fehlt."));
@@ -75,15 +76,16 @@ public class ProtokollImpl extends AbstractDBObject implements Protokoll {
 			// Damit setzen wir den Typ auf TYP_UNKNOWN, wenn er noch nicht gesetzt war ;)
 			setTyp(getTyp());
 
+			// beim Insert fuegen wir das Datum ein. Somit muss
+			// es nicht von aussen gesetzt werden.
+			setAttribute("datum", new Date());
+
 		}
 		catch (RemoteException e)
 		{
 			Logger.error("error while insert check",e);
 			throw new ApplicationException(i18n.tr("Fehler beim Speichern des Umsatz-Typs."));
 		}
-		// beim Insert fuegen wir das Datum ein. Somit muss
-		// es nicht von aussen gesetzt werden.
-		setField("datum", new Date());
   }
 
   /**
@@ -137,9 +139,7 @@ public class ProtokollImpl extends AbstractDBObject implements Protokoll {
    * @see de.willuhn.jameica.hbci.rmi.Protokoll#setKonto(de.willuhn.jameica.hbci.rmi.Konto)
    */
   public void setKonto(Konto konto) throws RemoteException {
-    if (konto == null)
-    	return;
-    setField("konto_id",new Integer(konto.getID()));
+    setAttribute("konto_id",konto);
 
   }
 
@@ -147,7 +147,7 @@ public class ProtokollImpl extends AbstractDBObject implements Protokoll {
    * @see de.willuhn.jameica.hbci.rmi.Protokoll#setKommentar(java.lang.String)
    */
   public void setKommentar(String kommentar) throws RemoteException {
-  	setField("kommentar",kommentar);
+  	setAttribute("kommentar",kommentar);
   }
 
   /**
@@ -156,7 +156,7 @@ public class ProtokollImpl extends AbstractDBObject implements Protokoll {
   public void setTyp(int typ) throws RemoteException {
 		if (typ != TYP_ERROR && typ != TYP_SUCCESS)
 			typ = TYP_UNKNOWN;
-		setField("typ",new Integer(typ));
+		setAttribute("typ",new Integer(typ));
   }
 
 }
@@ -164,6 +164,10 @@ public class ProtokollImpl extends AbstractDBObject implements Protokoll {
 
 /**********************************************************************
  * $Log: ProtokollImpl.java,v $
+ * Revision 1.4  2004/07/13 22:20:37  willuhn
+ * @N Code fuer DauerAuftraege
+ * @C paar Funktionsnamen umbenannt
+ *
  * Revision 1.3  2004/06/30 20:58:29  willuhn
  * *** empty log message ***
  *

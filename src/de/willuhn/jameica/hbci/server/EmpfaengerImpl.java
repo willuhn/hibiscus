@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/EmpfaengerImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/06/30 20:58:29 $
+ * $Revision: 1.6 $
+ * $Date: 2004/07/13 22:20:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -120,21 +120,21 @@ public class EmpfaengerImpl extends AbstractDBObject implements Empfaenger {
    * @see de.willuhn.jameica.hbci.rmi.Empfaenger#setKontonummer(java.lang.String)
    */
   public void setKontonummer(String kontonummer) throws RemoteException {
-  	setField("kontonummer",kontonummer);
+  	setAttribute("kontonummer",kontonummer);
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Empfaenger#setBLZ(java.lang.String)
    */
   public void setBLZ(String blz) throws RemoteException {
-  	setField("blz",blz);
+  	setAttribute("blz",blz);
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Empfaenger#setName(java.lang.String)
    */
   public void setName(String name) throws RemoteException {
-  	setField("name",name);
+  	setAttribute("name",name);
   }
 
   /**
@@ -152,6 +152,10 @@ public class EmpfaengerImpl extends AbstractDBObject implements Empfaenger {
 
 /**********************************************************************
  * $Log: EmpfaengerImpl.java,v $
+ * Revision 1.6  2004/07/13 22:20:37  willuhn
+ * @N Code fuer DauerAuftraege
+ * @C paar Funktionsnamen umbenannt
+ *
  * Revision 1.5  2004/06/30 20:58:29  willuhn
  * *** empty log message ***
  *

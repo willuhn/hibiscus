@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.27 $
- * $Date: 2004/07/09 00:04:40 $
+ * $Revision: 1.28 $
+ * $Date: 2004/07/13 22:20:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -160,21 +160,21 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    * @see de.willuhn.jameica.hbci.rmi.Konto#setKontonummer(java.lang.String)
    */
   public void setKontonummer(String kontonummer) throws RemoteException {
-		setField("kontonummer",kontonummer);
+		setAttribute("kontonummer",kontonummer);
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Konto#setBLZ(java.lang.String)
    */
   public void setBLZ(String blz) throws RemoteException {
-  	setField("blz",blz);
+  	setAttribute("blz",blz);
   }
 
 	/**
 	 * @see de.willuhn.jameica.hbci.rmi.Konto#setName(java.lang.String)
 	 */
 	public void setName(String name) throws RemoteException {
-		setField("name",name);
+		setAttribute("name",name);
 	}
 
   /**
@@ -183,7 +183,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
   public void setPassport(Passport passport) throws RemoteException {
 		if (passport == null)
 			return;
-  	setField("passport_class",passport.getClass().getName());
+  	setAttribute("passport_class",passport.getClass().getName());
   }
 
   /**
@@ -246,7 +246,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    */
   public void setWaehrung(String waehrung) throws RemoteException
   {
-    setField("waehrung",waehrung);
+    setAttribute("waehrung",waehrung);
   }
 
   /**
@@ -260,7 +260,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    * @see de.willuhn.jameica.hbci.rmi.Konto#setKundennummer(java.lang.String)
    */
   public void setKundennummer(String kundennummer) throws RemoteException {
-		setField("kundennummer",kundennummer);
+		setAttribute("kundennummer",kundennummer);
   }
 
   /**
@@ -294,8 +294,8 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 		factory.executeJobs(getPassport().getHandle());
 
 		// Wenn wir fertig sind, muessen wir noch den Saldo und das Datum speichern
-		setField("saldo",new Double(job.getSaldo()));
-		setField("saldo_datum",new Date());
+		setAttribute("saldo",new Double(job.getSaldo()));
+		setAttribute("saldo_datum",new Date());
 
 		// und wir speichern uns
 		store();
@@ -322,8 +322,8 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 		factory.executeJobs(getPassport().getHandle());
 
 		// Speichern des Saldo
-		setField("saldo",new Double(job1.getSaldo()));
-		setField("saldo_datum",new Date());
+		setAttribute("saldo",new Double(job1.getSaldo()));
+		setAttribute("saldo_datum",new Date());
 		store();
 
 		Umsatz[] umsaetze = job2.getUmsaetze();
@@ -402,7 +402,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    * @see de.willuhn.jameica.hbci.rmi.Konto#setBezeichnung(java.lang.String)
    */
   public void setBezeichnung(String bezeichnung) throws RemoteException {
-		setField("bezeichnung",bezeichnung);
+		setAttribute("bezeichnung",bezeichnung);
   }
 
   /**
@@ -455,6 +455,10 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.28  2004/07/13 22:20:37  willuhn
+ * @N Code fuer DauerAuftraege
+ * @C paar Funktionsnamen umbenannt
+ *
  * Revision 1.27  2004/07/09 00:04:40  willuhn
  * @C Redesign
  *

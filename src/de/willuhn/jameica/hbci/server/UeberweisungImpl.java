@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UeberweisungImpl.java,v $
- * $Revision: 1.15 $
- * $Date: 2004/07/11 16:14:29 $
+ * $Revision: 1.16 $
+ * $Date: 2004/07/13 22:20:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -125,7 +125,7 @@ public class UeberweisungImpl extends AbstractTransferImpl implements Ueberweisu
    * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#setTermin(java.util.Date)
    */
   public void setTermin(Date termin) throws RemoteException {
-		setField("termin",termin);
+		setAttribute("termin",termin);
   }
 
   /**
@@ -162,7 +162,7 @@ public class UeberweisungImpl extends AbstractTransferImpl implements Ueberweisu
 			// wenn alles erfolgreich verlief, koennen wir die Ueberweisung auf
 			// Status "ausgefuehrt" setzen.
 			inExecute = true; // ist noetig, weil uns sonst das updateCheck() um die Ohren fliegt
-			setField("ausgefuehrt",new Integer(1));
+			setAttribute("ausgefuehrt",new Integer(1));
 			store();
 		}
 		catch (RemoteException e)
@@ -182,7 +182,7 @@ public class UeberweisungImpl extends AbstractTransferImpl implements Ueberweisu
 		if (isNewObject())
 		{
 			if (getTermin() == null) setTermin(new Date());
-			setField("ausgefuehrt",new Integer(0));
+			setAttribute("ausgefuehrt",new Integer(0));
 		}
     super.store();
   }
@@ -219,6 +219,10 @@ public class UeberweisungImpl extends AbstractTransferImpl implements Ueberweisu
 
 /**********************************************************************
  * $Log: UeberweisungImpl.java,v $
+ * Revision 1.16  2004/07/13 22:20:37  willuhn
+ * @N Code fuer DauerAuftraege
+ * @C paar Funktionsnamen umbenannt
+ *
  * Revision 1.15  2004/07/11 16:14:29  willuhn
  * @N erster Code fuer Dauerauftraege
  *

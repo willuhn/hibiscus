@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/06/30 20:58:29 $
+ * $Revision: 1.4 $
+ * $Date: 2004/07/13 22:20:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -125,21 +125,21 @@ public class UmsatzTypImpl extends AbstractDBObject implements UmsatzTyp {
    * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#setName(java.lang.String)
    */
   public void setName(String name) throws RemoteException {
-		setField("name",name);
+		setAttribute("name",name);
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#setField(java.lang.String)
    */
   public void setField(String field) throws RemoteException {
-		setField("field",field);
+		setAttribute("field",field);
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#setPattern(java.lang.String)
    */
   public void setPattern(String pattern) throws RemoteException {
-		setField("pattern",pattern);
+		setAttribute("pattern",pattern);
   }
 
   /**
@@ -190,6 +190,10 @@ public class UmsatzTypImpl extends AbstractDBObject implements UmsatzTyp {
 
 /**********************************************************************
  * $Log: UmsatzTypImpl.java,v $
+ * Revision 1.4  2004/07/13 22:20:37  willuhn
+ * @N Code fuer DauerAuftraege
+ * @C paar Funktionsnamen umbenannt
+ *
  * Revision 1.3  2004/06/30 20:58:29  willuhn
  * *** empty log message ***
  *

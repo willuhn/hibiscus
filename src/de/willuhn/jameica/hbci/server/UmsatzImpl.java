@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/07/04 17:07:59 $
+ * $Revision: 1.10 $
+ * $Date: 2004/07/13 22:20:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -184,64 +184,62 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz {
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#setEmpfaengerName(java.lang.String)
    */
   public void setEmpfaengerName(String name) throws RemoteException {
-		setField("empfaenger_name",name);
+		setAttribute("empfaenger_name",name);
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#setEmpfaengerKonto(java.lang.String)
    */
   public void setEmpfaengerKonto(String konto) throws RemoteException {
-    setField("empfaenger_konto",konto);
+    setAttribute("empfaenger_konto",konto);
   }
   
   /**
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#setEmpfaengerBLZ(java.lang.String)
    */
   public void setEmpfaengerBLZ(String blz) throws RemoteException {
-    setField("empfaenger_blz",blz);
+    setAttribute("empfaenger_blz",blz);
   }
   /**
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#setBetrag(double)
    */
   public void setBetrag(double d) throws RemoteException {
-		setField("betrag",new Double(d));
+		setAttribute("betrag",new Double(d));
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#setZweck(java.lang.String)
    */
   public void setZweck(String zweck) throws RemoteException {
-		setField("zweck",zweck);
+		setAttribute("zweck",zweck);
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#setZweck2(java.lang.String)
    */
   public void setZweck2(String zweck2) throws RemoteException {
-		setField("zweck2",zweck2);
+		setAttribute("zweck2",zweck2);
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#setDatum(java.util.Date)
    */
   public void setDatum(Date d) throws RemoteException {
-		setField("datum",d);
+		setAttribute("datum",d);
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#setValuta(java.util.Date)
    */
   public void setValuta(Date d) throws RemoteException {
-		setField("valuta",d);
+		setAttribute("valuta",d);
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#setKonto(de.willuhn.jameica.hbci.rmi.Konto)
    */
   public void setKonto(Konto k) throws RemoteException {
-		if (k == null)
-			return;
-		setField("konto_id",new Integer(k.getID()));
+		setAttribute("konto_id",k);
   }
 
   /**
@@ -300,28 +298,28 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz {
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#setSaldo(double)
    */
   public void setSaldo(double s) throws RemoteException {
-		setField("saldo",new Double(s));
+		setAttribute("saldo",new Double(s));
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#setPrimanota(java.lang.String)
    */
   public void setPrimanota(String primanota) throws RemoteException {
-		setField("primanota",primanota);
+		setAttribute("primanota",primanota);
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#setArt(java.lang.String)
    */
   public void setArt(String art) throws RemoteException {
-		setField("art",art);
+		setAttribute("art",art);
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#setCustomerRef(java.lang.String)
    */
   public void setCustomerRef(String ref) throws RemoteException {
-		setField("customerref",ref);
+		setAttribute("customerref",ref);
   }
 
   /**
@@ -356,10 +354,7 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz {
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#setUmsatzTyp(de.willuhn.jameica.hbci.rmi.UmsatzTyp)
    */
   public void setUmsatzTyp(UmsatzTyp typ) throws RemoteException {
-		if (typ == null)
-			setField("umsatz_id",null);
-		else
-			setField("umsatztyp_id",new Integer(typ.getID()));
+		setAttribute("umsatztyp_id",typ);
   }
 
 }
@@ -367,6 +362,10 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz {
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.10  2004/07/13 22:20:37  willuhn
+ * @N Code fuer DauerAuftraege
+ * @C paar Funktionsnamen umbenannt
+ *
  * Revision 1.9  2004/07/04 17:07:59  willuhn
  * @B Umsaetze wurden teilweise nicht als bereits vorhanden erkannt und wurden somit doppelt angezeigt
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AbstractTransferImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/07/11 16:14:29 $
+ * $Revision: 1.2 $
+ * $Date: 2004/07/13 22:20:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -137,29 +137,28 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
    * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#setKonto(de.willuhn.jameica.hbci.rmi.Konto)
    */
   public void setKonto(Konto konto) throws RemoteException {
-		if (konto == null) return;
-		setField("konto_id",new Integer(konto.getID()));
+		setAttribute("konto_id",konto);
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#setBetrag(double)
    */
   public void setBetrag(double betrag) throws RemoteException {
-		setField("betrag", new Double(betrag));
+		setAttribute("betrag", new Double(betrag));
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#setZweck(java.lang.String)
    */
   public void setZweck(String zweck) throws RemoteException {
-		setField("zweck",zweck);
+		setAttribute("zweck",zweck);
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#setZweck2(java.lang.String)
    */
   public void setZweck2(String zweck2) throws RemoteException {
-		setField("zweck2",zweck2);
+		setAttribute("zweck2",zweck2);
   }
 
   /**
@@ -187,21 +186,21 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
    * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#setEmpfaengerKonto(java.lang.String)
    */
   public void setEmpfaengerKonto(String konto) throws RemoteException {
-		setField("empfaenger_konto",konto);
+		setAttribute("empfaenger_konto",konto);
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#setEmpfaengerBlz(java.lang.String)
    */
   public void setEmpfaengerBlz(String blz) throws RemoteException {
-		setField("empfaenger_blz",blz);
+		setAttribute("empfaenger_blz",blz);
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#setEmpfaengerName(java.lang.String)
    */
   public void setEmpfaengerName(String name) throws RemoteException {
-		setField("empfaenger_name",name);
+		setAttribute("empfaenger_name",name);
   }
 
   /**
@@ -221,6 +220,10 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
 
 /**********************************************************************
  * $Log: AbstractTransferImpl.java,v $
+ * Revision 1.2  2004/07/13 22:20:37  willuhn
+ * @N Code fuer DauerAuftraege
+ * @C paar Funktionsnamen umbenannt
+ *
  * Revision 1.1  2004/07/11 16:14:29  willuhn
  * @N erster Code fuer Dauerauftraege
  *
