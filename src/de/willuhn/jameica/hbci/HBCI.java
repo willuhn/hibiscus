@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.40 $
- * $Date: 2005/02/03 18:57:42 $
+ * $Revision: 1.41 $
+ * $Date: 2005/02/08 22:28:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -137,7 +137,7 @@ public class HBCI extends AbstractPlugin
 		catch (Exception e)
 		{
 			throw new ApplicationException(
-				getResources().getI18N().tr("Fehler beim Prï¿½fung der Datenbank-Integritï¿½t, " +					"Plugin wird aus Sicherheitsgrï¿½nden deaktiviert"),e);
+				getResources().getI18N().tr("Fehler beim Prüfung der Datenbank-Integrität, " +					"Plugin wird aus Sicherheitsgründen deaktiviert"),e);
 		}
 
     Application.getCallback().getStartupMonitor().setStatusText("hibiscus: checking passport directory");
@@ -221,6 +221,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.41  2005/02/08 22:28:00  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.40  2005/02/03 18:57:42  willuhn
  * *** empty log message ***
  *

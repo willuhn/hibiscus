@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.29 $
- * $Date: 2005/02/02 16:15:52 $
+ * $Revision: 1.30 $
+ * $Date: 2005/02/08 22:28:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -195,7 +195,7 @@ public class Settings
    */
   public static boolean getOnlineMode()
   {
-    return settings.getBoolean("online",false);
+    return settings.getBoolean("online",true);
   }
 
 	/**
@@ -235,6 +235,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.30  2005/02/08 22:28:00  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.29  2005/02/02 16:15:52  willuhn
  * @N Neue Dialoge fuer RDH
  *
