@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/PassportRegistry.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/07/21 23:54:30 $
+ * $Revision: 1.7 $
+ * $Date: 2004/10/19 23:33:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -40,12 +40,12 @@ public class PassportRegistry {
 			Class[] found = finder.findImplementors(Passport.class);
 			for (int i=0;i<found.length;++i)
 			{
-				Logger.info("found passport type " + found[i].getName() + ", try to instanciate");
+				Logger.info("found passport type " + found[i].getName() + ", try to instantiate");
 				try {
 					Passport p = (Passport) found[i].newInstance();
 					passportsByName.put(p.getName(),p);
 					passportsByClass.put(found[i].getName(),p);
-					Logger.info("[" + p.getName() + "] instanciated successfully");
+					Logger.info("[" + p.getName() + "] instantiated successfully");
 				}
 				catch (Exception e)
 				{
@@ -110,6 +110,9 @@ public class PassportRegistry {
 
 /**********************************************************************
  * $Log: PassportRegistry.java,v $
+ * Revision 1.7  2004/10/19 23:33:31  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.6  2004/07/21 23:54:30  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/EmpfaengerListe.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/10/08 13:37:48 $
+ * $Revision: 1.9 $
+ * $Date: 2004/10/19 23:33:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.action.EmpfaengerNeu;
 import de.willuhn.jameica.hbci.gui.controller.EmpfaengerControl;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -43,7 +44,7 @@ public class EmpfaengerListe extends AbstractView {
 			control.getEmpfaengerListe().paint(getParent());
 
 			ButtonArea buttons = new ButtonArea(getParent(),1);
-			buttons.addCreateButton(i18n.tr("neuer Empfänger"),control);
+			buttons.addButton(i18n.tr("neuer Empfänger"),new EmpfaengerNeu());
 
 		}
 		catch (Exception e)
@@ -64,6 +65,9 @@ public class EmpfaengerListe extends AbstractView {
 
 /**********************************************************************
  * $Log: EmpfaengerListe.java,v $
+ * Revision 1.9  2004/10/19 23:33:31  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.8  2004/10/08 13:37:48  willuhn
  * *** empty log message ***
  *

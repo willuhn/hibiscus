@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/UeberweisungDialog.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/07/25 17:15:06 $
+ * $Revision: 1.7 $
+ * $Date: 2004/10/19 23:33:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,10 +13,9 @@
 package de.willuhn.jameica.hbci.gui.dialogs;
 
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.manager.HBCIUtils;
 
+import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
@@ -25,6 +24,7 @@ import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -92,17 +92,17 @@ public class UeberweisungDialog extends AbstractDialog {
 		group.addLabelPair(i18n.tr("Betrag"),betrag);
 
 		ButtonArea b = group.createButtonArea(2);
-		b.addCustomButton(i18n.tr("OK"), new Listener()
+		b.addButton(i18n.tr("OK"), new Action()
     {
-      public void handleEvent(Event event)
+      public void handleAction(Object context) throws ApplicationException
       {
 				choosen = Boolean.TRUE;
 				close();
       }
     });
-		b.addCustomButton(i18n.tr("Abbrechen"), new Listener()
+		b.addButton(i18n.tr("Abbrechen"), new Action()
     {
-      public void handleEvent(Event event)
+      public void handleAction(Object context) throws ApplicationException
       {
 				choosen = Boolean.FALSE;
 				close();
@@ -115,6 +115,9 @@ public class UeberweisungDialog extends AbstractDialog {
 
 /**********************************************************************
  * $Log: UeberweisungDialog.java,v $
+ * Revision 1.7  2004/10/19 23:33:31  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.6  2004/07/25 17:15:06  willuhn
  * @C PluginLoader is no longer static
  *

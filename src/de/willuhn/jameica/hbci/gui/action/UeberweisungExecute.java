@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/UeberweisungExecute.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/10/18 23:38:17 $
+ * $Revision: 1.2 $
+ * $Date: 2004/10/19 23:33:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,8 +17,10 @@ import java.rmi.RemoteException;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.dialogs.UeberweisungDialog;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 import de.willuhn.util.Logger;
@@ -56,12 +58,41 @@ public class UeberweisungExecute implements Action
 			
 			if (u.ausgefuehrt())
 				throw new ApplicationException(i18n.tr("Überweisung wurde bereits ausgeführt"));
+
+			if (u.isNewObject())
+				throw new ApplicationException(i18n.tr("Bitte speichern Sie zunächst die Überweisung"));
+
+			UeberweisungDialog d = new UeberweisungDialog(u,UeberweisungDialog.POSITION_CENTER);
+			try
+			{
+				if (!((Boolean)d.open()).booleanValue())
+					return;
+			}
+			catch (Exception e)
+			{
+				Logger.error("error while showing confirm dialog",e);
+				GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Ausführen der Überweisung"));
+				return;
+			}
+
+			GUI.getStatusBar().startProgress();
+			GUI.getStatusBar().setSuccessText(i18n.tr("Führe Überweisung aus..."));
 			u.execute();
+			GUI.getStatusBar().setSuccessText(i18n.tr("Überweisung erfolgreich ausgeführt"));
+
+		}
+		catch (OperationCanceledException oce)
+		{
+			GUI.getStatusBar().setErrorText(i18n.tr("Ausführung der Überweisung abgebrochen"));
 		}
 		catch (RemoteException e)
 		{
 			Logger.error("error while executing ueberweisung",e);
 			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Ausführen der Überweisung"));
+		}
+		finally
+		{
+			GUI.getStatusBar().stopProgress();
 		}
   }
 
@@ -70,6 +101,9 @@ public class UeberweisungExecute implements Action
 
 /**********************************************************************
  * $Log: UeberweisungExecute.java,v $
+ * Revision 1.2  2004/10/19 23:33:31  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/10/18 23:38:17  willuhn
  * @C Refactoring
  * @C Aufloesung der Listener und Ersatz gegen Actions

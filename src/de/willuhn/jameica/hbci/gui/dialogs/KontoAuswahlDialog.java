@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/KontoAuswahlDialog.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/10/17 16:28:46 $
+ * $Revision: 1.2 $
+ * $Date: 2004/10/19 23:33:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,9 +13,8 @@
 package de.willuhn.jameica.hbci.gui.dialogs;
 
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 
+import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.util.ButtonArea;
@@ -24,6 +23,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -61,21 +61,21 @@ public class KontoAuswahlDialog extends AbstractDialog
 		group.addLabelPair(i18n.tr("Konto"),kto);
 
 		ButtonArea b = group.createButtonArea(2);
-		b.addCustomButton(i18n.tr("OK"), new Listener()
-		{
-			public void handleEvent(Event event)
-			{
+		b.addButton(i18n.tr("OK"), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
 				choosen = (Konto) kto.getValue();
 				close();
-			}
-		});
-		b.addCustomButton(i18n.tr("Abbrechen"), new Listener()
-		{
-			public void handleEvent(Event event)
-			{
+      }
+    });
+		b.addButton(i18n.tr("Abbrechen"), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
 				close();
-			}
-		});
+      }
+    });
   }
 
   /**
@@ -93,6 +93,9 @@ public class KontoAuswahlDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: KontoAuswahlDialog.java,v $
+ * Revision 1.2  2004/10/19 23:33:31  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/10/17 16:28:46  willuhn
  * @N Die ersten Dauerauftraege abgerufen ;)
  *

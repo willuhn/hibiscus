@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.15 $
- * $Date: 2004/10/14 23:14:20 $
+ * $Revision: 1.16 $
+ * $Date: 2004/10/19 23:33:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,7 +26,9 @@ import org.kapott.hbci.status.HBCIMsgStatus;
 
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.gui.DialogFactory;
+import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.util.I18N;
 import de.willuhn.util.Logger;
 
@@ -153,8 +155,33 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 			}
 
 		}
+		catch (OperationCanceledException oce)
+		{
+			// Die wird geworfen, wenn der User selbst abgebrochen hat.
+			// Wuerde ich die jetzt weiterwerfen, muesste ich mir bei
+			// der anschliessenden Abfrage nach der Fehlerquelle in
+			// meinem HBCI-Job durch einen Stapel von ineinander
+			// verpackte HBCI_Exceptions wuehlen, um diese hier
+			// wiederzufinden. Das ist mir zu aufwaendig. Deswegen
+			// teile ich der Factory gleich selbst mit, dass der
+			// User die Aktion selbst abgebrochen hat.
+			HBCIFactory.getInstance().markCancelled();
+			throw oce;
+		}
+		catch (RuntimeException re)
+		{
+			throw re;
+		}
 		catch (Exception e)
 		{
+			// Siehe oben. Wir wollen sichergehen, dass die OperationCanceledException
+			// nicht nochmal verpackt ist.
+			Throwable t = e.getCause();
+			if (t != null && t instanceof OperationCanceledException)
+			{
+				HBCIFactory.getInstance().markCancelled();
+			}
+			// muessen wir vorher eine RuntimeException draus machen.
 			throw new HBCI_Exception(e);
 		}
   }
@@ -293,6 +320,9 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.16  2004/10/19 23:33:31  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.15  2004/10/14 23:14:20  willuhn
  * @N new hbci4java (2.5pre)
  * @B fixed locales

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.29 $
- * $Date: 2004/10/08 13:37:47 $
+ * $Revision: 1.30 $
+ * $Date: 2004/10/19 23:33:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -36,7 +36,7 @@ import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.dialogs.UeberweisungDialog;
+import de.willuhn.jameica.hbci.gui.action.UeberweisungExecute;
 import de.willuhn.jameica.hbci.gui.menus.UeberweisungList;
 import de.willuhn.jameica.hbci.gui.views.UeberweisungNeu;
 import de.willuhn.jameica.hbci.rmi.Transfer;
@@ -85,7 +85,7 @@ public class UeberweisungControl extends AbstractTransferControl
 	{
 		DBIterator list = Settings.getDBService().createList(Ueberweisung.class);
 
-		TablePart table = new TablePart(list,this);
+		TablePart table = new TablePart(list,new de.willuhn.jameica.hbci.gui.action.UeberweisungNeu());
 		table.setFormatter(new TableFormatter() {
       public void format(TableItem item) {
       	Ueberweisung u = (Ueberweisung) item.getData();
@@ -258,6 +258,13 @@ public class UeberweisungControl extends AbstractTransferControl
 		try
 		{
 			Ueberweisung u = (Ueberweisung) getTransfer();
+			
+			if (u.ausgefuehrt())
+			{
+				GUI.getStatusBar().setErrorText(i18n.tr("Die Überweisung wurde bereits ausgeführt und kann daher nicht geändert werden"));
+				return;
+			}
+
 			Date termin = (Date) getTermin().getValue();
 			if (termin == null)
 			{
@@ -289,62 +296,25 @@ public class UeberweisungControl extends AbstractTransferControl
   public synchronized void handleExecute()
 	{
 
-		try {
-			if (((Ueberweisung)getTransfer()).ausgefuehrt())
-			{
-				GUI.getView().setErrorText(i18n.tr("Die Überweisung wurde bereits ausgeführt."));
-				return;
-			}
+		handleStore();
 
-			handleStore();
+		if (!stored)
+			return;
 
-			if (!stored)
-				return;
-
-			UeberweisungDialog d = new UeberweisungDialog(((Ueberweisung)getTransfer()),UeberweisungDialog.POSITION_CENTER);
-			if (!((Boolean)d.open()).booleanValue())
-				return;
-
-		}
-		catch (Exception e)
+		try
 		{
-			Logger.error("error while checking ueberweisung",e);
-			GUI.getView().setErrorText(i18n.tr("Fehler beim Prüfen der Überweisung"));
-		}
-
-
-		GUI.getStatusBar().startProgress();
-		GUI.getStatusBar().setSuccessText(i18n.tr("Führe Überweisung aus..."));
-
-		final StringBuffer errorText = new StringBuffer();
-    try {
-      GUI.startSync(new Runnable() {
-      	public void run() {
-      		try {
-						((Ueberweisung)getTransfer()).execute();
-						GUI.getStatusBar().setSuccessText(i18n.tr("...Überweisung erfolgreich ausgeführt."));
-      			disableAll();
-      		}
-      		catch (ApplicationException e)
-      		{
-      			errorText.append(e.getMessage());
-      			throw new RuntimeException(); // wir wollen nicht warten, bis sich die GUI ausgekaest hat, raus hier!
-      		}
-      		catch (Throwable t)
-      		{
-      			Logger.error("error while executing ueberweisung",t);
-      			errorText.append("Fehler beim Ausführen der Überweisung.");
-      			throw new RuntimeException(); // wir wollen nicht warten, bis sich die GUI ausgekaest hat, raus hier!
-      		}
-      	}
-      });
+			UeberweisungExecute action = new UeberweisungExecute();
+			action.handleAction(getTransfer());
     }
-    catch (Throwable t)
+    catch (RemoteException re)
     {
-			GUI.getStatusBar().setErrorText(i18n.tr(errorText.toString()));
+    	Logger.error("error while executing transaction",re);
+			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Ausführen der Überweisung"));
     }
-
-		GUI.getStatusBar().stopProgress();
+    catch (ApplicationException e)
+    {
+			GUI.getStatusBar().setErrorText(e.getMessage());
+    }
 	}
 
   /**
@@ -462,6 +432,9 @@ public class UeberweisungControl extends AbstractTransferControl
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
+ * Revision 1.30  2004/10/19 23:33:31  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.29  2004/10/08 13:37:47  willuhn
  * *** empty log message ***
  *

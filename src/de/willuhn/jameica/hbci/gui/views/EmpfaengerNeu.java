@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/EmpfaengerNeu.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/10/08 13:37:48 $
+ * $Revision: 1.9 $
+ * $Date: 2004/10/19 23:33:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.controller.EmpfaengerControl;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -57,7 +58,7 @@ public class EmpfaengerNeu extends AbstractView {
 
 		// und noch die Abschicken-Knoepfe
 		ButtonArea buttonArea = new ButtonArea(getParent(),3);
-		buttonArea.addCancelButton(control);
+		buttonArea.addButton(i18n.tr("Zurück"),new Back());
 		buttonArea.addDeleteButton(control);
 		buttonArea.addStoreButton(control);
 
@@ -75,6 +76,9 @@ public class EmpfaengerNeu extends AbstractView {
 
 /**********************************************************************
  * $Log: EmpfaengerNeu.java,v $
+ * Revision 1.9  2004/10/19 23:33:31  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.8  2004/10/08 13:37:48  willuhn
  * *** empty log message ***
  *

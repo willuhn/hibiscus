@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.11 $
- * $Date: 2004/10/18 23:38:17 $
+ * $Revision: 1.12 $
+ * $Date: 2004/10/19 23:33:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,6 +22,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 import de.willuhn.util.Logger;
@@ -36,6 +37,7 @@ public class HBCIFactory {
 
 
 	private static boolean inProgress = false;
+	private static boolean cancelled  = false;
 
 	private static I18N i18n;
 	private static HBCIFactory factory;
@@ -78,13 +80,17 @@ public class HBCIFactory {
 		}
 	}
 
-	/**
+  /**
 	 * Fuehrt alle Jobs aus, die bis dato geadded wurden.
 	 * @param handle der Passport, ueber den die Jobs ausgefuehrt werden sollen.
-	 * @throws ApplicationException
-	 * @throws RemoteException
+	 * @throws ApplicationException Bei Benutzer-Fehlern (zB kein HBCI-Medium konfiguriert).
+	 * @throws RemoteException Fehler beim Zugriff auf Fachobjekte.
+   * @throws OperationCanceledException Wenn der User den Vorgang abbricht.
 	 */
-	public synchronized void executeJobs(PassportHandle handle) throws ApplicationException, RemoteException
+	public synchronized void executeJobs(PassportHandle handle) throws
+		ApplicationException,
+		RemoteException,
+		OperationCanceledException
 	{
 
 		if (handle == null)
@@ -125,20 +131,15 @@ public class HBCIFactory {
 
 				Logger.info("executing jobs");
 				handler.execute();
+				if (cancelled)
+				{
+					cancelled = false;
+					throw new OperationCanceledException();
+				}
 			}
 			catch (RemoteException e)
 			{
 				throw e;
-			}
-//			catch (OperationCancelledException e2) TODO
-//			{
-//				Das muss dann auch noch den Jobs mitgeteilt werden, damit sie in getStatusText was liefern koennen
-//			}
-			catch (Throwable t)
-			{
-				// Wir muessen z.Bsp. RuntimeExceptions fangen, weil die sonst womoeglich
-				// bis ganz hoch fliegen
-				throw new ApplicationException(t);
 			}
 			finally
 			{
@@ -180,11 +181,25 @@ public class HBCIFactory {
 
 		inProgress = true;
 	}
+	
+	/**
+   * Teilt der HBCIFactory mit, dass die gerade laufende Aktion vom Benutzer
+   * abgebrochen wurde. Wird aus dem HBCICallBack heraus aufgerufen.
+   */
+  public synchronized void markCancelled()
+	{
+		if (!inProgress)
+			return; // hier gibts gar nichts abzubrechen ;)
+		cancelled = true;
+	}
 }
 
 
 /**********************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.12  2004/10/19 23:33:31  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.11  2004/10/18 23:38:17  willuhn
  * @C Refactoring
  * @C Aufloesung der Listener und Ersatz gegen Actions

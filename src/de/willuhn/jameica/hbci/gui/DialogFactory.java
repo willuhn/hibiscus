@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/DialogFactory.java,v $
- * $Revision: 1.15 $
- * $Date: 2004/06/30 20:58:29 $
+ * $Revision: 1.16 $
+ * $Date: 2004/10/19 23:33:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,7 +12,6 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui;
 
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.dialogs.SimpleDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.PINDialog;
@@ -30,22 +29,18 @@ public class DialogFactory {
 	 * Erzeugt einen simplen Dialog mit einem OK-Button.
    * @param headline Ueberschrift des Dialogs.
    * @param text Text des Dialogs.
+   * @throws Exception
    */
-  public static synchronized void openSimple(final String headline, final String text)
+  public static synchronized void openSimple(final String headline, final String text) throws Exception
 	{
 		check();
 		SimpleDialog d = new SimpleDialog(AbstractDialog.POSITION_CENTER);
 		d.setTitle(headline);
 		d.setText(text);
 		dialog = d;
-		try {
-			d.open();
-		}
-		catch (Exception e)
+		try
 		{
-			Logger.error(e.getLocalizedMessage(),e);
-			GUI.getStatusBar().setErrorText(e.getLocalizedMessage());
-			throw new RuntimeException(e);
+			d.open();
 		}
 		finally
 		{
@@ -53,26 +48,21 @@ public class DialogFactory {
 		}
 	}
 
-	/**
+  /**
 	 * Erzeugt den PIN-Dialog.
 	 * Hinweis: Wirft eine RuntimeException, wenn der PIN-Dialog abgebrochen
 	 * oder die PIN drei mal falsch eingegeben wurde (bei aktivierter Checksummen-Pruefung).
 	 * Hintergrund: Der Dialog wurde aus dem HBCICallBack heraus aufgerufen und soll im
 	 * Fehlerfall den HBCI-Vorgang abbrechen.
 	 * @return die eingegebene PIN.
+   * @throws Exception
 	 */
-	public static synchronized String getPIN()
+	public static synchronized String getPIN() throws Exception
 	{
 		check();
 		dialog = new PINDialog(AbstractDialog.POSITION_CENTER);
 		try {
 			return (String) dialog.open();
-		}
-		catch (Exception e)
-		{
-			Logger.error(e.getLocalizedMessage(),e);
-			GUI.getStatusBar().setErrorText(e.getLocalizedMessage());
-			throw new RuntimeException(e);
 		}
 		finally
 		{
@@ -80,25 +70,20 @@ public class DialogFactory {
 		}
 	}
 
-	/**
+  /**
 	 * Erzeugt einen TAN-Dialog.
 	 * Hinweis: Wirft eine RuntimeException, wenn der TAN-Dialog abgebrochen wurde.
 	 * Hintergrund: Der Dialog wurde aus dem HBCICallBack heraus aufgerufen und soll im
 	 * Fehlerfall den HBCI-Vorgang abbrechen.
 	 * @return die eingegebene TAN.
+   * @throws Exception
 	 */
-	public static synchronized String getTAN()
+	public static synchronized String getTAN() throws Exception
 	{
 		check();
 		dialog = new TANDialog(AbstractDialog.POSITION_CENTER);
 		try {
 			return (String) dialog.open();
-		}
-		catch (Exception e)
-		{
-			Logger.error(e.getLocalizedMessage(),e);
-			GUI.getStatusBar().setErrorText(e.getLocalizedMessage());
-			throw new RuntimeException(e);
 		}
 		finally
 		{
@@ -139,6 +124,9 @@ public class DialogFactory {
 
 /**********************************************************************
  * $Log: DialogFactory.java,v $
+ * Revision 1.16  2004/10/19 23:33:31  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.15  2004/06/30 20:58:29  willuhn
  * *** empty log message ***
  *

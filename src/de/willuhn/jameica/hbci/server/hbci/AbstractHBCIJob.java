@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCIJob.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/10/18 23:38:17 $
+ * $Revision: 1.8 $
+ * $Date: 2004/10/19 23:33:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -101,9 +101,9 @@ public abstract class AbstractHBCIJob implements HBCIJob {
 		{
 			return getJobResult().getJobStatus().getRetVals()[0].text;
 		}
-		catch (Exception e)
+		catch (Exception e2)
 		{
-			Logger.error("error while reading status text",e);
+			Logger.error("error while reading status text",e2);
 			return null;
 		}
 	}
@@ -144,6 +144,9 @@ public abstract class AbstractHBCIJob implements HBCIJob {
 
 /**********************************************************************
  * $Log: AbstractHBCIJob.java,v $
+ * Revision 1.8  2004/10/19 23:33:31  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2004/10/18 23:38:17  willuhn
  * @C Refactoring
  * @C Aufloesung der Listener und Ersatz gegen Actions
