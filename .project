@@ -3,9 +3,7 @@
 	<name>hbci</name>
 	<comment></comment>
 	<projects>
-		<project>datasource</project>
 		<project>jameica</project>
-		<project>util</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
