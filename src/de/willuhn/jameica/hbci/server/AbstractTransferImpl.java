@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AbstractTransferImpl.java,v $
- * $Revision: 1.15 $
- * $Date: 2005/01/19 00:16:05 $
+ * $Revision: 1.16 $
+ * $Date: 2005/01/19 00:33:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -236,12 +236,27 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
    */
   public void delete() throws RemoteException, ApplicationException
   {
-  	Konto k = this.getKonto();
-    super.delete();
-    if (k == null)
-    	return;
-    k.addToProtokoll(i18n.tr("Auftrag an " + getEmpfaengerName() + " gelöscht"),Protokoll.TYP_SUCCESS);
+		Konto k = this.getKonto();
+		super.delete();
+		if (k == null)
+			return;
+    k.addToProtokoll(i18n.tr("Auftrag [Gegenkonto: " + getEmpfaengerName() +
+														 ", Kto. " + getEmpfaengerKonto() + ", BLZ " +
+														 getEmpfaengerBLZ() + "] " + k.getWaehrung() + " " +
+														 HBCI.DECIMALFORMAT.format(getBetrag()) + " gelöscht"),Protokoll.TYP_SUCCESS);
   }
+
+	/**
+	 * @see de.willuhn.datasource.rmi.Changeable#store()
+	 */
+	public void store() throws RemoteException, ApplicationException
+	{
+		super.store();
+		Konto k = this.getKonto();
+		k.addToProtokoll(i18n.tr("Auftrag [Gegenkonto: " + getEmpfaengerName() +
+														 ", Kto. " + getEmpfaengerKonto() + ", BLZ " +
+														 getEmpfaengerBLZ() + "] " + k.getWaehrung() + " " +														 HBCI.DECIMALFORMAT.format(getBetrag()) + " gespeichert"),Protokoll.TYP_SUCCESS);
+	}
 
 
   /**
@@ -262,12 +277,14 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
 	public Transfer duplicate() throws RemoteException {
 		throw new UnsupportedOperationException("not implemented");
 	}
-
 }
 
 
 /**********************************************************************
  * $Log: AbstractTransferImpl.java,v $
+ * Revision 1.16  2005/01/19 00:33:32  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.15  2005/01/19 00:16:05  willuhn
  * @N Lastschriften
  *

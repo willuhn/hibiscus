@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/LastschriftControl.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/01/19 00:16:05 $
+ * $Revision: 1.2 $
+ * $Date: 2005/01/19 00:33:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -98,12 +98,14 @@ public class LastschriftControl extends UeberweisungControl
 		table.setContextMenu(new LastschriftList());
 		return table;
   }
-
 }
 
 
 /**********************************************************************
  * $Log: LastschriftControl.java,v $
+ * Revision 1.2  2005/01/19 00:33:32  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2005/01/19 00:16:05  willuhn
  * @N Lastschriften
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/LastschriftList.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/01/19 00:16:04 $
+ * $Revision: 1.2 $
+ * $Date: 2005/01/19 00:33:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,11 +17,10 @@ import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.action.LastschriftDelete;
+import de.willuhn.jameica.hbci.gui.action.LastschriftDuplicate;
+import de.willuhn.jameica.hbci.gui.action.LastschriftExecute;
 import de.willuhn.jameica.hbci.gui.action.LastschriftNew;
-import de.willuhn.jameica.hbci.gui.action.UeberweisungDelete;
-import de.willuhn.jameica.hbci.gui.action.UeberweisungDuplicate;
-import de.willuhn.jameica.hbci.gui.action.UeberweisungExecute;
-import de.willuhn.jameica.hbci.gui.action.UeberweisungNew;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -43,11 +42,11 @@ public class LastschriftList extends ContextMenu
 	{
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-		addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"), new UeberweisungNew()));
-		addItem(new NotActiveMenuItem(i18n.tr("Jetzt ausführen..."), new UeberweisungExecute()));
-		addItem(new CheckedContextMenuItem(i18n.tr("Duplizieren"), new UeberweisungDuplicate()));
+		addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"), new LastschriftNew()));
+		addItem(new NotActiveMenuItem(i18n.tr("Jetzt ausführen..."), new LastschriftExecute()));
+		addItem(new CheckedContextMenuItem(i18n.tr("Duplizieren"), new LastschriftDuplicate()));
 		addItem(ContextMenuItem.SEPARATOR);
-		addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new UeberweisungDelete()));
+		addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new LastschriftDelete()));
 		addItem(ContextMenuItem.SEPARATOR);
 		addItem(new ContextMenuItem(i18n.tr("Neue Lastschrift..."), new UNeu()));
 		
@@ -109,6 +108,9 @@ public class LastschriftList extends ContextMenu
 
 /**********************************************************************
  * $Log: LastschriftList.java,v $
+ * Revision 1.2  2005/01/19 00:33:32  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2005/01/19 00:16:04  willuhn
  * @N Lastschriften
  *

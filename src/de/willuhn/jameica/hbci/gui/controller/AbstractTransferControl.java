@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.17 $
- * $Date: 2004/11/13 17:02:04 $
+ * $Revision: 1.18 $
+ * $Date: 2005/01/19 00:33:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -149,7 +149,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 		d.addColumn(i18n.tr("Name"),"name");
 		d.addColumn(i18n.tr("Kontonummer"),"kontonummer");
 		d.addColumn(i18n.tr("BLZ"),"blz");
-		d.setTitle(i18n.tr("Auswahl des Empfängers"));
+		d.setTitle(i18n.tr("Auswahl des Gegenkontos"));
 		d.addCloseListener(new EmpfaengerListener());
 
 		empfkto = new DialogInput(getTransfer().getEmpfaengerKonto(),d);
@@ -410,6 +410,9 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
+ * Revision 1.18  2005/01/19 00:33:32  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.17  2004/11/13 17:02:04  willuhn
  * @N Bearbeiten des Zahlungsturnus
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.36 $
- * $Date: 2005/01/05 15:17:50 $
+ * $Revision: 1.37 $
+ * $Date: 2005/01/19 00:33:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -119,7 +119,7 @@ public class HBCI extends AbstractPlugin
 		if (checkSum.equals("KvynDJyxe6D1XUvSCkNAFA==")) // 1.0
 			return;
 
-		if (checkSum.equals("BSefTB6JQx7l7wrqbNP68g==")) // 1.1
+		if (checkSum.equals("z9T4ahYgJTVSLnUChnQJsg==")) // 1.1
 			return;
 
 		throw new Exception("database checksum does not match any known version: " + checkSum);
@@ -211,6 +211,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.37  2005/01/19 00:33:32  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.36  2005/01/05 15:17:50  willuhn
  * @N Neues Service-System in Jameica
  *
