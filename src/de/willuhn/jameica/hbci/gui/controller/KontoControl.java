@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.24 $
- * $Date: 2004/04/19 22:05:52 $
+ * $Revision: 1.25 $
+ * $Date: 2004/05/02 17:04:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -380,7 +380,7 @@ public class KontoControl extends AbstractControl {
 		GUI.getStatusBar().setSuccessText(i18n.tr("Chipkarte wird ausgelesen..."));
 
 		GUI.startSync(new Runnable() {
-      public void run() {
+			public void run() {
 				try {
 					DBIterator existing = Settings.getDatabase().createList(Konto.class);
 					Konto check = null;
@@ -400,7 +400,7 @@ public class KontoControl extends AbstractControl {
 								found = true;
 								break;
 							}
-							
+						
 						}
 						existing.begin();
 						if (!found)
@@ -423,18 +423,18 @@ public class KontoControl extends AbstractControl {
 								GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Anlegen des Kontos") + " " + konten[i].getKontonummer());
 							}
 						}
-						
+					
 					}
 					GUI.startView(KontoListe.class.getName(),null); // Page reload
 					GUI.getStatusBar().setSuccessText(i18n.tr("Konten erfolgreich ausgelesen"));
 				}
-				catch (RemoteException e)
+				catch (Throwable t)
 				{
-					Application.getLog().error("error while reading data from passport",e);
+					Application.getLog().error("error while reading data from passport",t);
 					GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Lesen der Konto-Daten"));
 				}
-      }
-    });
+			}
+		});
 		GUI.getStatusBar().stopProgress();
 	}
 
@@ -518,6 +518,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.25  2004/05/02 17:04:38  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.24  2004/04/19 22:05:52  willuhn
  * @C HBCIJobs refactored
  *
