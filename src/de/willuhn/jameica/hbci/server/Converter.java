@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.21 $
- * $Date: 2005/03/06 14:04:26 $
+ * $Revision: 1.22 $
+ * $Date: 2005/03/06 18:04:17 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -220,20 +220,12 @@ public class Converter {
 
 	/**
 	 * Konvertiert ein HBCI4Java Konto in eine Hibiscus-Adresse.
-	 * Existiert eine Adresse mit dieser Kontonummer und BLZ bereits in Hibiscus,
-	 * wird dieser stattdessen zurueckgeliefert.
 	 * @param konto das HBCI-Konto.
 	 * @return unsere Adresse.
 	 * @throws RemoteException
 	 */
 	public static Adresse HBCIKonto2HibiscusAdresse(Konto konto) throws RemoteException
 	{
-		DBIterator list = Settings.getDBService().createList(Adresse.class);
-		list.addFilter("kontonummer = '" + konto.number + "'");
-		list.addFilter("blz = '" + konto.blz + "'");
-		if (list.hasNext())
-			return (Adresse) list.next(); // Empfaenger gibts schon
-
 		Adresse e = (Adresse) Settings.getDBService().createObject(Adresse.class,null);
 		e.setBLZ(konto.blz);
 		e.setKontonummer(konto.number);
@@ -274,6 +266,9 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.22  2005/03/06 18:04:17  web0
+ * @B Converter hat beim Konvertieren eines HBCI4Java-Kontos in eine Adresse ggf. eine lokal vorhandene geliefert
+ *
  * Revision 1.21  2005/03/06 14:04:26  web0
  * @N SammelLastschrift seems to work now
  *
