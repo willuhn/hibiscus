@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/LicenseControl.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/04/26 22:57:32 $
+ * $Revision: 1.2 $
+ * $Date: 2004/06/08 22:28:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -33,8 +33,8 @@ import de.willuhn.util.I18N;
  */
 public class LicenseControl extends AbstractControl {
 
-	private FormTextPart libList = null;
-	private I18N i18n = null;
+  private FormTextPart libList = null;
+  private I18N i18n = null;
 
   /**
    * ct.
@@ -45,73 +45,73 @@ public class LicenseControl extends AbstractControl {
     i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
   }
 
-	/**
-	 * Liefert eine Liste mit allen direkt von Hibiscus verwendeten Komponenten.
+  /**
+   * Liefert eine Liste mit allen direkt von Hibiscus verwendeten Komponenten.
    * @return Liste der verwendeten Komponenten
    * @throws RemoteException
    */
   public FormTextPart getLibList() throws RemoteException
-	{
-		if (libList != null)
-			return libList;
-					
-		AbstractPlugin plugin = PluginLoader.getPlugin(HBCI.class);
+  {
+    if (libList != null)
+      return libList;
 
-		StringBuffer buffer = new StringBuffer();
-		buffer.append("<form>");
+    AbstractPlugin plugin = PluginLoader.getPlugin(HBCI.class);
 
-		InfoReader ir = null;
-		try {
-			ir = PluginLoader.getPluginContainer(HBCI.class).getInfo();
-		}
-		catch (Exception e)
-		{
-			Application.getLog().error("unable to read info.xml from plugin hibiscus",e);
-		}
-		buffer.append("<p><span color=\"header\" font=\"header\">" + i18n.tr("Hibiscus") + "</span></p>");
-		if (ir != null)
-		{
-			buffer.append("<p>");
-			buffer.append("<br/>" + i18n.tr("Version") + ": " + plugin.getVersion() + "-" + plugin.getBuildnumber());
-			buffer.append("<br/>" + i18n.tr("Beschreibung") + ": " + ir.getDescription());
-			buffer.append("<br/>" + i18n.tr("URL") + ": " + ir.getUrl());
-			buffer.append("<br/>" + i18n.tr("Lizenz") + ": " + ir.getLicense());
-			buffer.append("</p>");
-		}
+    StringBuffer buffer = new StringBuffer();
+    buffer.append("<form>");
+
+    InfoReader ir = null;
+    try {
+      ir = PluginLoader.getPluginContainer(HBCI.class).getInfo();
+    }
+    catch (Exception e)
+    {
+      Application.getLog().error("unable to read info.xml from plugin hibiscus",e);
+    }
+    buffer.append("<p><span color=\"header\" font=\"header\">" + i18n.tr("Hibiscus") + "</span></p>");
+    if (ir != null)
+    {
+      buffer.append("<p>");
+      buffer.append("<br/>" + i18n.tr("Version") + ": " + plugin.getVersion() + "-" + plugin.getBuildnumber());
+      buffer.append("<br/>" + i18n.tr("Beschreibung") + ": " + ir.getDescription());
+      buffer.append("<br/>" + i18n.tr("URL") + ": " + ir.getUrl());
+      buffer.append("<br/>" + i18n.tr("Lizenz") + ": " + ir.getLicense());
+      buffer.append("</p>");
+    }
 
 
-		String path = plugin.getResources().getPath();
-		
-		FileFinder finder = new FileFinder(new File(path + "/lib"));
-		finder.contains("info\\.xml");
-		File[] infos = finder.findRecursive();
-		for (int i=0;i<infos.length;++i)
-		{
-			try {
-				ir = new InfoReader(new FileInputStream(infos[i]));
-				if (ir == null)
-				{
-					Application.getLog().warn("inforeader is null, skipping lib");
-					continue;
-				}
-				buffer.append("<p>");
-				buffer.append("<b>" + ir.getName() + "</b>");
-				buffer.append("<br/>" + i18n.tr("Beschreibung") + ": " + ir.getDescription());
-				buffer.append("<br/>" + i18n.tr("Verzeichnis") + ": " + infos[i].getParentFile().getAbsolutePath());
-				buffer.append("<br/>" + i18n.tr("URL") + ": " + ir.getUrl());
-				buffer.append("<br/>" + i18n.tr("Lizenz") + ": " + ir.getLicense());
-				buffer.append("</p>");
-			}
-			catch (Exception e)
-			{
-				Application.getLog().error("unable to parse " + infos[0],e);
-			}
-		}
-		buffer.append("</form>");
+    String path = plugin.getResources().getPath();
 
-		libList = new FormTextPart(buffer.toString());
-		return libList;
-	}
+    FileFinder finder = new FileFinder(new File(path + "/lib"));
+    finder.matches(".*?info\\.xml$");
+    File[] infos = finder.findRecursive();
+    for (int i=0;i<infos.length;++i)
+    {
+      try {
+        ir = new InfoReader(new FileInputStream(infos[i]));
+        if (ir == null)
+        {
+          Application.getLog().warn("inforeader is null, skipping lib");
+          continue;
+        }
+        buffer.append("<p>");
+        buffer.append("<b>" + ir.getName() + "</b>");
+        buffer.append("<br/>" + i18n.tr("Beschreibung") + ": " + ir.getDescription());
+        buffer.append("<br/>" + i18n.tr("Verzeichnis") + ": " + infos[i].getParentFile().getAbsolutePath());
+        buffer.append("<br/>" + i18n.tr("URL") + ": " + ir.getUrl());
+        buffer.append("<br/>" + i18n.tr("Lizenz") + ": " + ir.getLicense());
+        buffer.append("</p>");
+      }
+      catch (Exception e)
+      {
+        Application.getLog().error("unable to parse " + infos[0],e);
+      }
+    }
+    buffer.append("</form>");
+
+    libList = new FormTextPart(buffer.toString());
+    return libList;
+  }
 
   /**
    * @see de.willuhn.jameica.gui.controller.AbstractControl#handleDelete()
@@ -123,7 +123,7 @@ public class LicenseControl extends AbstractControl {
    * @see de.willuhn.jameica.gui.controller.AbstractControl#handleCancel()
    */
   public void handleCancel() {
-  	GUI.startPreviousView();
+    GUI.startPreviousView();
   }
 
   /**
@@ -149,6 +149,9 @@ public class LicenseControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: LicenseControl.java,v $
+ * Revision 1.2  2004/06/08 22:28:58  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/04/26 22:57:32  willuhn
  * @N License informations
  *

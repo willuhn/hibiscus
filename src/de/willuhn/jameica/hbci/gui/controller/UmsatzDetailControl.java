@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailControl.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/04/27 22:23:56 $
+ * $Revision: 1.8 $
+ * $Date: 2004/06/08 22:28:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -266,7 +266,7 @@ public class UmsatzDetailControl extends AbstractControl {
   /**
    * Speichert den Empfaenger des aktuellen Umsatzes in der Adressliste.
    */
-  public void handleAddEmpfaenger()
+  public synchronized void handleAddEmpfaenger()
   {
     try {
       // wir checken erstmal, ob wir den schon haben.
@@ -321,6 +321,9 @@ public class UmsatzDetailControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzDetailControl.java,v $
+ * Revision 1.8  2004/06/08 22:28:58  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2004/04/27 22:23:56  willuhn
  * @N configurierbarer CTAPI-Treiber
  * @C konkrete Passport-Klassen (DDV) nach de.willuhn.jameica.passports verschoben

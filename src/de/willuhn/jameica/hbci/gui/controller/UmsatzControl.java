@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzControl.java,v $
- * $Revision: 1.12 $
- * $Date: 2004/05/02 17:04:38 $
+ * $Revision: 1.13 $
+ * $Date: 2004/06/08 22:28:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -151,7 +151,7 @@ public class UmsatzControl extends AbstractControl {
 	/**
    * Holt die Umsaetze vom HBCI-Server und zeigt sie an. 
    */
-  public void handleGetUmsaetze()
+  public synchronized void handleGetUmsaetze()
 	{
 		GUI.getStatusBar().startProgress();
 
@@ -230,6 +230,9 @@ public class UmsatzControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzControl.java,v $
+ * Revision 1.13  2004/06/08 22:28:58  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.12  2004/05/02 17:04:38  willuhn
  * *** empty log message ***
  *

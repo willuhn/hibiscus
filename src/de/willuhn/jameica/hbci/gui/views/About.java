@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/About.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/05/18 22:45:24 $
+ * $Revision: 1.3 $
+ * $Date: 2004/06/08 22:28:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -37,22 +37,25 @@ public class About extends AbstractView {
    * @see de.willuhn.jameica.gui.views.AbstractView#bind()
    */
   public void bind() throws Exception {
-  	I18N i18n = Application.getI18n();
+    I18N i18n = Application.getI18n();
 
-		Label l = new Label(getParent(),SWT.BORDER);
-		l.setImage(new Image(GUI.getDisplay(),getClass().getClassLoader().getResourceAsStream("img/hibiscus.jpg")));
+    Label l = new Label(getParent(),SWT.BORDER);
+    l.setImage(new Image(GUI.getDisplay(),getClass().getClassLoader().getResourceAsStream("img/hibiscus.jpg")));
 
-		FormTextPart text = new FormTextPart();
-		text.setText("<form>" +
-			"<p><b>Hibiscus - HBCI-Onlinebanking für Jameica</b></p>" +			"<br/>Licence: GPL (http://www.gnu.org/copyleft/gpl.html)" +
-			"<br/><p>Copyright by Olaf Willuhn [hbci@willuhn.de]</p>" +			"<p>http://www.willuhn.de/projects/hibiscus/</p>" +			"</form>");
+    FormTextPart text = new FormTextPart();
+    text.setText("<form>" +
+      "<p><b>Hibiscus - HBCI-Onlinebanking für Jameica</b></p>" +
+      "<br/>Licence: GPL (http://www.gnu.org/copyleft/gpl.html)" +
+      "<br/><p>Copyright by Olaf Willuhn [hibiscus@willuhn.de]</p>" +
+      "<p>http://www.willuhn.de/projects/hibiscus/</p>" +
+      "</form>");
 
-		text.paint(getParent());
+    text.paint(getParent());
 
-  	LabelGroup group = new LabelGroup(getParent(),i18n.tr("Hibiscus"));
- 	
- 		AbstractPlugin plugin = PluginLoader.getPlugin(HBCI.class);
-  	group.addLabelPair(i18n.tr("Version"), 					new LabelInput(""+ plugin.getVersion() + "-" + plugin.getBuildnumber()));
+    LabelGroup group = new LabelGroup(getParent(),i18n.tr("Hibiscus"));
+
+     AbstractPlugin plugin = PluginLoader.getPlugin(HBCI.class);
+    group.addLabelPair(i18n.tr("Version"),           new LabelInput(""+ plugin.getVersion() + "-" + plugin.getBuildnumber()));
 
   }
 
@@ -67,6 +70,9 @@ public class About extends AbstractView {
 
 /**********************************************************************
  * $Log: About.java,v $
+ * Revision 1.3  2004/06/08 22:28:58  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2004/05/18 22:45:24  willuhn
  * *** empty log message ***
  *

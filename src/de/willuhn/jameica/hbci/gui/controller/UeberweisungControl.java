@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.18 $
- * $Date: 2004/06/03 00:23:42 $
+ * $Revision: 1.19 $
+ * $Date: 2004/06/08 22:28:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -435,7 +435,7 @@ public class UeberweisungControl extends AbstractControl {
   /**
    * @see de.willuhn.jameica.gui.controller.AbstractControl#handleDelete()
    */
-  public void handleDelete() {
+  public synchronized void handleDelete() {
 		try {
 			if (getUeberweisung() == null || getUeberweisung().isNewObject())
 				return;
@@ -572,7 +572,7 @@ public class UeberweisungControl extends AbstractControl {
 	/**
    * Speichert die Ueberweisung und fuehrt sie sofort aus.
    */
-  public synchronized void handleExecute() // TODO Das synchronized muesste eigentlich in alle Controller
+  public synchronized void handleExecute()
 	{
 
 		try {
@@ -728,6 +728,9 @@ public class UeberweisungControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
+ * Revision 1.19  2004/06/08 22:28:58  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.18  2004/06/03 00:23:42  willuhn
  * *** empty log message ***
  *

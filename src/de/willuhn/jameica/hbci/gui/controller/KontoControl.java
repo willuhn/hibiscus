@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.32 $
- * $Date: 2004/06/07 22:22:33 $
+ * $Revision: 1.33 $
+ * $Date: 2004/06/08 22:28:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -358,7 +358,7 @@ public class KontoControl extends AbstractControl {
   /**
    * @see de.willuhn.jameica.gui.controller.AbstractControl#handleStore()
    */
-  public void handleStore() {
+  public synchronized void handleStore() {
 		try {
 			// Erstmal oben und unten die Statusleisten leer machen
 			GUI.getStatusBar().setSuccessText("");
@@ -406,7 +406,7 @@ public class KontoControl extends AbstractControl {
 	/**
    * Oeffnet den Einstellungs-Dialog des gerade ausgewaehlten Passports.
    */
-  public void handleConfigurePassport()
+  public synchronized void handleConfigurePassport()
 	{
 		try {
 			Passport p = (Passport) getPassportAuswahl().getValue();
@@ -430,7 +430,7 @@ public class KontoControl extends AbstractControl {
    * Liest alle ueber das Sicherheitsmedium verfuegbaren Konten
    * aus und speichert sie (insofern Konten mit identischer kto-Nummer/BLZ nicht schon existieren).
    */
-  public void handleReadFromPassport()
+  public synchronized void handleReadFromPassport()
 	{
 
 		try 
@@ -517,7 +517,7 @@ public class KontoControl extends AbstractControl {
 	/**
    * Aktualisiert den angezeigten Saldo.
    */
-  public void handleRefreshSaldo()
+  public synchronized void handleRefreshSaldo()
 	{
 
 		try {
@@ -562,7 +562,7 @@ public class KontoControl extends AbstractControl {
 	/**
    * Laedt die Seite mit den Umsaetzen dieses Kontos.
    */
-  public void handleShowUmsaetze()
+  public synchronized void handleShowUmsaetze()
 	{
 		try {
 			Konto konto = getKonto();
@@ -607,6 +607,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.33  2004/06/08 22:28:58  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.32  2004/06/07 22:22:33  willuhn
  * @B Spalte "Passport" in KontoListe entfernt - nicht mehr noetig
  *
