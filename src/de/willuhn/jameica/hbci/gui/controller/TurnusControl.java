@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/TurnusControl.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/11/26 01:23:13 $
+ * $Revision: 1.7 $
+ * $Date: 2005/01/05 15:17:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -382,6 +382,14 @@ public class TurnusControl
     		return false;
     	return this.getID().equals(arg0.getID());
     }
+
+    /**
+     * @see de.willuhn.datasource.GenericObject#getAttributeNames()
+     */
+    public String[] getAttributeNames() throws RemoteException
+    {
+      return new String[] {"foo"};
+    }
 	}
 
 	private class Tag implements GenericObject
@@ -430,12 +438,23 @@ public class TurnusControl
 				return false;
 			return this.getID().equals(arg0.getID());
     }
+
+    /**
+     * @see de.willuhn.datasource.GenericObject#getAttributeNames()
+     */
+    public String[] getAttributeNames() throws RemoteException
+    {
+      return new String[] {"foo"};
+    }
 	}
 }
 
 
 /**********************************************************************
  * $Log: TurnusControl.java,v $
+ * Revision 1.7  2005/01/05 15:17:50  willuhn
+ * @N Neues Service-System in Jameica
+ *
  * Revision 1.6  2004/11/26 01:23:13  willuhn
  * *** empty log message ***
  *

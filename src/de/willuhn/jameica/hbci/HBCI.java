@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.35 $
- * $Date: 2004/11/26 01:23:13 $
+ * $Revision: 1.36 $
+ * $Date: 2005/01/05 15:17:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,7 +22,6 @@ import java.util.Locale;
 import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.db.EmbeddedDatabase;
-import de.willuhn.jameica.hbci.server.HBCIDBServiceImpl;
 import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Level;
@@ -207,32 +206,14 @@ public class HBCI extends AbstractPlugin
   public void shutDown()
   {
   }
-
-  /**
-   * @see de.willuhn.jameica.plugin.AbstractPlugin#getServiceNames()
-   */
-  public String[] getServiceNames()
-  {
-    // Wir haben derzeit nur die eine Datenquelle 
-    return new String[] {"database"};
-  }
-
-  /**
-   * @see de.willuhn.jameica.plugin.AbstractPlugin#getService(java.lang.String)
-   */
-  public Class getService(String serviceName)
-  {
-    if ("database".equals(serviceName))
-    {
-			return HBCIDBServiceImpl.class;
-    }
-    return null;
-  }
 }
 
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.36  2005/01/05 15:17:50  willuhn
+ * @N Neues Service-System in Jameica
+ *
  * Revision 1.35  2004/11/26 01:23:13  willuhn
  * *** empty log message ***
  *

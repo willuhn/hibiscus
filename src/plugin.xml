@@ -1,29 +1,35 @@
-<?xml version="1.0" encoding="ISO8859-1"?> 
+<?xml version="1.0" encoding="ISO-8859-1"?>
 
 <plugin name="Hibiscus" version="1.1">
 
-	<description>HBCI-Onlinebanking-Plugin für Jameica</description>
-	<url>http://www.willuhn.de/projects/hibiscus/releases/hibiscus.jam</url>
-	<homepage>http://www.willuhn.de/projects/hibiscus</homepage>
-	<license>GPL - http://www.gnu.org/copyleft/gpl.html</license>
+  <description>HBCI-Onlinebanking-Plugin für Jameica</description>
+  <url>http://www.willuhn.de/projects/hibiscus/releases/hibiscus.jam</url>
+  <homepage>http://www.willuhn.de/projects/hibiscus</homepage>
+  <license>GPL - http://www.gnu.org/copyleft/gpl.html</license>
 
-	<menu>
-		<item name="Hibiscus">
-			<item name="Einstellungen"     							action="de.willuhn.jameica.hbci.gui.action.Settings" />
-			<item name="Neue Überweisung"  		shortcut="CTRL+U" 	action="de.willuhn.jameica.hbci.gui.action.UeberweisungNew" />
-			<item name="-" />
-			<item name="About"    									action="de.willuhn.jameica.hbci.gui.action.About" />
-			<item name="Lizenzinformationen"    					action="de.willuhn.jameica.hbci.gui.action.License" />
-		</item>
-	</menu>
+  <menu>
+    <item name="Hibiscus">
+      <item name="Einstellungen"                            action="de.willuhn.jameica.hbci.gui.action.Settings" />
+      <item name="Neue Überweisung"     shortcut="CTRL+U"   action="de.willuhn.jameica.hbci.gui.action.UeberweisungNew" />
+      <item name="-" />
+      <item name="About"                                    action="de.willuhn.jameica.hbci.gui.action.About" />
+      <item name="Lizenzinformationen"                      action="de.willuhn.jameica.hbci.gui.action.License" />
+    </item>
+  </menu>
 
-	<navigation>
-		<item name="Hibiscus"		 		icon-close="folder.gif" icon-open="folderopen.gif" 	action="de.willuhn.jameica.hbci.gui.action.Welcome">
-			<item name="Konten" 			icon-close="page.gif" 	icon-open="page.gif" 		action="de.willuhn.jameica.hbci.gui.action.KontoList" />
-			<item name="Adressbuch" 		icon-close="page.gif" 	icon-open="page.gif" 		action="de.willuhn.jameica.hbci.gui.action.EmpfaengerList" />
-			<item name="Überweisungen" 		icon-close="page.gif" 	icon-open="page.gif" 		action="de.willuhn.jameica.hbci.gui.action.UeberweisungList" />
-			<item name="Daueraufträge" 		icon-close="page.gif" 	icon-open="page.gif" 		action="de.willuhn.jameica.hbci.gui.action.DauerauftragList" />
-		</item>
-	</navigation>
+  <navigation>
+    <item name="Hibiscus"             icon-close="folder.gif" icon-open="folderopen.gif"  action="de.willuhn.jameica.hbci.gui.action.Welcome">
+      <item name="Konten"             icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.KontoList" />
+      <item name="Adressbuch"         icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.EmpfaengerList" />
+      <item name="Überweisungen"      icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.UeberweisungList" />
+      <item name="Daueraufträge"      icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.DauerauftragList" />
+    </item>
+  </navigation>
+
+  <services>
+    <service name="database" depends="" autostart="true"
+         class="de.willuhn.jameica.hbci.rmi.HBCIDBService" />
+  </services>
+
 </plugin>
 

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/PassportObject.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/08/18 23:13:51 $
+ * $Revision: 1.4 $
+ * $Date: 2005/01/05 15:17:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -84,11 +84,22 @@ public class PassportObject implements GenericObject
 		return other.getID().equals(other.getID());
 	}
 
+  /**
+   * @see de.willuhn.datasource.GenericObject#getAttributeNames()
+   */
+  public String[] getAttributeNames() throws RemoteException
+  {
+    return new String[]{"name"};
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: PassportObject.java,v $
+ * Revision 1.4  2005/01/05 15:17:50  willuhn
+ * @N Neues Service-System in Jameica
+ *
  * Revision 1.3  2004/08/18 23:13:51  willuhn
  * @D Javadoc
  *
