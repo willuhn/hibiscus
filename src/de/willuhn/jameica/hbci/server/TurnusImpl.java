@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/TurnusImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/10/17 16:28:46 $
+ * $Revision: 1.6 $
+ * $Date: 2004/10/25 17:58:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,7 +16,10 @@ import java.rmi.RemoteException;
 import java.util.zip.CRC32;
 
 import de.willuhn.datasource.db.AbstractDBObject;
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Turnus;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -65,6 +68,11 @@ public class TurnusImpl extends AbstractDBObject implements Turnus
 		try {
 			if (isInitial())
 				throw new ApplicationException(i18n.tr("Turnus ist Bestandteil der System-Daten und kann nicht gelöscht werden."));
+				
+			DBIterator list = Settings.getDBService().createList(Dauerauftrag.class);
+			list.addFilter("turnus_id = " + this.getID());
+			if (list.hasNext())
+				throw new ApplicationException(i18n.tr("Turnus kann nicht gelöscht werden, da er einem Dauerauftrag zugewiesen ist."));
 		}
 		catch (RemoteException e)
 		{
@@ -82,9 +90,6 @@ public class TurnusImpl extends AbstractDBObject implements Turnus
 
   		if (getZeiteinheit() != Turnus.ZEITEINHEIT_MONATLICH && getZeiteinheit() != Turnus.ZEITEINHEIT_WOECHENTLICH)
   			throw new ApplicationException(i18n.tr("Bitte wählen Sie eine gültige Zeiteinheit aus"));
-
-			if (getBezeichnung() == null || getBezeichnung().length() == 0)
-				throw new ApplicationException(i18n.tr("Bitte geben Sie eine Bezeichnung ein"));
 
 			if (getIntervall() < 1)
 				throw new ApplicationException(i18n.tr("Bitte geben Sie ein gültiges Intervall ein"));
@@ -123,15 +128,7 @@ public class TurnusImpl extends AbstractDBObject implements Turnus
    */
   public String getBezeichnung() throws RemoteException
   {
-    return (String) getAttribute("bezeichnung");
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Turnus#setBezeichnung(java.lang.String)
-   */
-  public void setBezeichnung(String bezeichnung) throws RemoteException
-  {
-  	setAttribute("bezeichnung",bezeichnung);
+    return TurnusHelper.createBezeichnung(this);
   }
 
   /**
@@ -212,11 +209,25 @@ public class TurnusImpl extends AbstractDBObject implements Turnus
 		return crc.getValue();
   }
 
+  /**
+   * Ueberschrieben, um ein virtuelles Attribut "bezeichnung" zu schaffen.
+   * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
+   */
+  public Object getAttribute(String arg0) throws RemoteException
+  {
+  	if ("bezeichnung".equals(arg0))
+  		return getBezeichnung();
+    return super.getAttribute(arg0);
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: TurnusImpl.java,v $
+ * Revision 1.6  2004/10/25 17:58:56  willuhn
+ * @N Haufen Dauerauftrags-Code
+ *
  * Revision 1.5  2004/10/17 16:28:46  willuhn
  * @N Die ersten Dauerauftraege abgerufen ;)
  *

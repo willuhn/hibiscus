@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UeberweisungList.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/10/18 23:38:17 $
+ * $Revision: 1.7 $
+ * $Date: 2004/10/25 17:58:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.action.UeberweisungDelete;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungDuplicate;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungExecute;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungNeu;
@@ -34,7 +35,7 @@ public class UeberweisungList extends ContextMenu
 {
 	private I18N i18n	= null;
 
-  /**
+	  /**
 	 * Erzeugt ein Kontext-Menu fuer eine Liste von Ueberweisungen.
 	 */
 	public UeberweisungList()
@@ -42,8 +43,10 @@ public class UeberweisungList extends ContextMenu
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 		addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"), new UeberweisungNeu()));
-		addItem(new DuplicateMenuItem(i18n.tr("Jetzt ausführen..."), new UeberweisungExecute()));
+		addItem(new NotActiveMenuItem(i18n.tr("Jetzt ausführen..."), new UeberweisungExecute()));
 		addItem(new CheckedContextMenuItem(i18n.tr("Duplizieren"), new UeberweisungDuplicate()));
+		addItem(ContextMenuItem.SEPARATOR);
+		addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new UeberweisungDelete()));
 		addItem(ContextMenuItem.SEPARATOR);
 		addItem(new ContextMenuItem(i18n.tr("Neue Überweisung..."), new UNeu()));
 		
@@ -68,23 +71,15 @@ public class UeberweisungList extends ContextMenu
 	 * Ueberschreiben wir, damit das Item nur dann aktiv ist, wenn die
 	 * Ueberweisung noch nicht ausgefuehrt wurde.
    */
-  private class DuplicateMenuItem extends ContextMenuItem
+  private class NotActiveMenuItem extends ContextMenuItem
 	{
 		
-    /**
-     * ct.
-     */
-    public DuplicateMenuItem()
-    {
-      super();
-    }
-
     /**
      * ct.
      * @param text anzuzeigender Text.
      * @param a auszufuehrende Action.
      */
-    public DuplicateMenuItem(String text, Action a)
+    public NotActiveMenuItem(String text, Action a)
     {
       super(text, a);
     }
@@ -113,6 +108,9 @@ public class UeberweisungList extends ContextMenu
 
 /**********************************************************************
  * $Log: UeberweisungList.java,v $
+ * Revision 1.7  2004/10/25 17:58:56  willuhn
+ * @N Haufen Dauerauftrags-Code
+ *
  * Revision 1.6  2004/10/18 23:38:17  willuhn
  * @C Refactoring
  * @C Aufloesung der Listener und Ersatz gegen Actions

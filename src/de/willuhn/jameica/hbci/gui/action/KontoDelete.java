@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoDelete.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/10/20 12:08:18 $
+ * $Revision: 1.2 $
+ * $Date: 2004/10/25 17:58:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,7 +49,7 @@ public class KontoDelete implements Action
 
 			YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
 			d.setTitle(i18n.tr("Bankverbindung löschen"));
-			d.setText(i18n.tr("Wollen Sie diese Bankverbindung wirklich löschen?"));
+			d.setText(i18n.tr("Wollen Sie diese Bankverbindung wirklich löschen?\nHierbei werden auch alle Umsätze, Überweisungen und Daueraufträge des Kontos lokal gelöscht."));
 
 			try {
 				Boolean choice = (Boolean) d.open();
@@ -65,7 +65,6 @@ public class KontoDelete implements Action
 			// ok, wir loeschen das Objekt
 			k.delete();
 			GUI.getStatusBar().setSuccessText(i18n.tr("Bankverbindung gelöscht."));
-			GUI.startPreviousView();
 		}
 		catch (RemoteException e)
 		{
@@ -79,6 +78,9 @@ public class KontoDelete implements Action
 
 /**********************************************************************
  * $Log: KontoDelete.java,v $
+ * Revision 1.2  2004/10/25 17:58:56  willuhn
+ * @N Haufen Dauerauftrags-Code
+ *
  * Revision 1.1  2004/10/20 12:08:18  willuhn
  * @C MVC-Refactoring (new Controllers)
  *

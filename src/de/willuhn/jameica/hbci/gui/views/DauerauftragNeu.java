@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/DauerauftragNeu.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/10/24 17:19:02 $
+ * $Revision: 1.5 $
+ * $Date: 2004/10/25 17:58:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,10 +19,10 @@ import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.Back;
-import de.willuhn.jameica.hbci.gui.action.DauerauftragChange;
 import de.willuhn.jameica.hbci.gui.action.DauerauftragDelete;
 import de.willuhn.jameica.hbci.gui.action.DauerauftragExecute;
 import de.willuhn.jameica.hbci.gui.controller.DauerauftragControl;
+import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -43,37 +43,37 @@ public class DauerauftragNeu extends AbstractView
 
 		GUI.getView().setTitle(i18n.tr("Überweisung bearbeiten"));
 		
-		LabelGroup group = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
+		LabelGroup konten = new LabelGroup(getParent(),i18n.tr("Konten"));
 		
-		group.addLabelPair(i18n.tr("Konto"),										control.getKontoAuswahl());		
-		group.addLabelPair(i18n.tr("Konto des Empfängers"),			control.getEmpfaengerKonto());		
-		group.addLabelPair(i18n.tr("BLZ des Empfängers"),				control.getEmpfaengerBlz());		
-		group.addLabelPair(i18n.tr("Name des Empfängers"),			control.getEmpfaengerName());
-		group.addCheckbox(control.getStoreEmpfaenger(),i18n.tr("Empfängerdaten im Adressbuch speichern"));
+		konten.addLabelPair(i18n.tr("persönliches Konto"),				control.getKontoAuswahl());		
+		konten.addLabelPair(i18n.tr("Konto des Empfängers"),			control.getEmpfaengerKonto());		
+		konten.addLabelPair(i18n.tr("BLZ des Empfängers"),				control.getEmpfaengerBlz());		
+		konten.addLabelPair(i18n.tr("Name des Empfängers"),			control.getEmpfaengerName());
+		konten.addCheckbox(control.getStoreEmpfaenger(),i18n.tr("Empfängerdaten im Adressbuch speichern"));
 
-		group.addSeparator();
+		LabelGroup details = new LabelGroup(getParent(),i18n.tr("Details"));
 
-		group.addLabelPair(i18n.tr("Verwendungszweck"),					control.getZweck());
-		group.addLabelPair(i18n.tr("weiterer Verwendungszweck"),control.getZweck2());
-		group.addLabelPair(i18n.tr("Betrag"),										control.getBetrag());
+		details.addLabelPair(i18n.tr("Verwendungszweck"),					control.getZweck());
+		details.addLabelPair(i18n.tr("weiterer Verwendungszweck"),control.getZweck2());
+		details.addLabelPair(i18n.tr("Betrag"),										control.getBetrag());
+		details.addLabelPair(i18n.tr("Zahlungsturnus"),						control.getTurnus());
+		details.addLabelPair(i18n.tr("Erste Zahlung"),						control.getErsteZahlung());
+		details.addLabelPair(i18n.tr("Letzte Zahlung"),						control.getLetzteZahlung());
 
-		group.addSeparator();
+		details.addSeparator();
 
-		group.addLabelPair(i18n.tr("Auftragsnummer"),						control.getOrderID());
+		details.addLabelPair(i18n.tr("Auftragsnummer"),						control.getOrderID());
 
-		boolean active = control.getDauerauftrag().isActive();
+		Dauerauftrag da = (Dauerauftrag) control.getTransfer();
 		ButtonArea buttonArea = new ButtonArea(getParent(),4);
-		if (active)
-		{
-			buttonArea.addButton(i18n.tr("Änderungen zur Bank senden"), new DauerauftragChange(), control.getDauerauftrag());
-		}
-		else
-		{
-			buttonArea.addButton(i18n.tr("Bei Bank einreichen"), new DauerauftragExecute(), control.getDauerauftrag());
-		}
-		buttonArea.addButton(i18n.tr("Zurück"), 				 new Back());
-		buttonArea.addButton(i18n.tr("Löschen"),				 new DauerauftragDelete(), control.getDauerauftrag());
-		buttonArea.addButton(i18n.tr("Speichern"), new Action()
+		String s = i18n.tr("Speichern und ausführen");
+		if (da.isActive())
+			s = "Speichern und aktualisieren";
+
+		buttonArea.addButton(i18n.tr("Zurück"), 	 		 new Back());
+		buttonArea.addButton(i18n.tr("Löschen"),	 		 new DauerauftragDelete(), da);
+		buttonArea.addButton(s,										 		 new DauerauftragExecute(), da);
+		buttonArea.addButton(i18n.tr("Nur Speichern"), new Action()
 		{
 			public void handleAction(Object context) throws ApplicationException
 			{
@@ -94,6 +94,9 @@ public class DauerauftragNeu extends AbstractView
 
 /**********************************************************************
  * $Log: DauerauftragNeu.java,v $
+ * Revision 1.5  2004/10/25 17:58:56  willuhn
+ * @N Haufen Dauerauftrags-Code
+ *
  * Revision 1.4  2004/10/24 17:19:02  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/DauerauftragControl.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/10/24 17:19:02 $
+ * $Revision: 1.10 $
+ * $Date: 2004/10/25 17:58:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,11 +13,16 @@
 package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
+import java.util.Date;
+
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
+import de.willuhn.jameica.gui.dialogs.CalendarDialog;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.input.DialogInput;
@@ -29,8 +34,12 @@ import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.DauerauftragNeu;
 import de.willuhn.jameica.hbci.gui.action.KontoFetchDauerauftraege;
 import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
+import de.willuhn.jameica.hbci.gui.dialogs.TurnusAuswahlDialog;
+import de.willuhn.jameica.hbci.gui.menus.DauerauftragList;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.Transfer;
+import de.willuhn.jameica.hbci.rmi.Turnus;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.Logger;
 
@@ -39,7 +48,10 @@ import de.willuhn.util.Logger;
  */
 public class DauerauftragControl extends AbstractTransferControl {
 
-	private Input orderID		= null;
+	private Input orderID				= null;
+	private DialogInput turnus	= null;
+	private DialogInput ersteZahlung	= null;
+	private DialogInput letzteZahlung	= null;
 
   /**
    * ct.
@@ -50,14 +62,13 @@ public class DauerauftragControl extends AbstractTransferControl {
   }
 
 	/**
-	 * Liefert den Dauerauftrag oder erzeugt bei Bedarf eine neue.
-   * @return der Dauerauftrag.
-   * @throws RemoteException
-   */
-  public Dauerauftrag getDauerauftrag() throws RemoteException
+	 * Ueberschrieben, damit wir bei Bedarf einen neuen Dauerauftrag erzeugen koennen.
+	 * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getTransfer()
+	 */
+	public Transfer getTransfer() throws RemoteException
 	{
-		if (getTransfer() != null)
-			return (Dauerauftrag) getTransfer();
+		if (super.getTransfer() != null)
+			return (Dauerauftrag) super.getTransfer();
 		
 		transfer = (Dauerauftrag) Settings.getDBService().createObject(Dauerauftrag.class,null);
 		return (Dauerauftrag) transfer;
@@ -92,7 +103,23 @@ public class DauerauftragControl extends AbstractTransferControl {
       }
     });
 		table.addColumn(i18n.tr("Turnus"),"turnus_id");
+		table.setContextMenu(new DauerauftragList());
 		return table;
+	}
+
+	/**
+	 * Liefert ein Auswahlfeld fuer den Zahlungsturnus.
+   * @return Auswahlfeld.
+   * @throws RemoteException
+   */
+  public DialogInput getTurnus() throws RemoteException
+	{
+		if (turnus != null)
+			return turnus;
+		Turnus t = ((Dauerauftrag)getTransfer()).getTurnus();
+		turnus = new DialogInput(t == null ? "" : t.getBezeichnung(),new TurnusAuswahlDialog(TurnusAuswahlDialog.POSITION_MOUSE));
+		turnus.disableClientControl();
+		return turnus;
 	}
 
 	/**
@@ -104,8 +131,67 @@ public class DauerauftragControl extends AbstractTransferControl {
 	{
 		 if (orderID != null)
 		 	return orderID;
-		 orderID = new LabelInput(getDauerauftrag().getOrderID());
+		 orderID = new LabelInput(((Dauerauftrag)getTransfer()).getOrderID());
 		 return orderID;
+	}
+
+	/**
+	 * Liefert ein Datums-Feld fuer die erste Zahlung.
+   * @return Datums-Feld.
+   * @throws RemoteException
+   */
+  public Input getErsteZahlung() throws RemoteException
+	{
+		if (ersteZahlung != null)
+			return ersteZahlung;
+		CalendarDialog cd = new CalendarDialog(CalendarDialog.POSITION_MOUSE);
+		cd.setTitle(i18n.tr("Datum der ersten Zahlung"));
+		cd.addCloseListener(new Listener() {
+			public void handleEvent(Event event) {
+				if (event == null || event.data == null)
+					return;
+				Date choosen = (Date) event.data;
+				ersteZahlung.setText(HBCI.DATEFORMAT.format(choosen));
+			}
+		});
+
+		Date d = ((Dauerauftrag)getTransfer()).getErsteZahlung();
+		if (d == null)
+			d = new Date();
+		cd.setDate(d);
+		ersteZahlung = new DialogInput(HBCI.DATEFORMAT.format(d),cd);
+		ersteZahlung.disableClientControl();
+		ersteZahlung.setValue(d);
+		return ersteZahlung;
+	}
+
+	/**
+	 * Liefert ein Datums-Feld fuer die letzte Zahlung.
+	 * @return Datums-Feld.
+	 * @throws RemoteException
+	 */
+	public Input getLetzteZahlung() throws RemoteException
+	{
+		if (letzteZahlung != null)
+			return letzteZahlung;
+		CalendarDialog cd = new CalendarDialog(CalendarDialog.POSITION_MOUSE);
+		cd.setTitle(i18n.tr("Datum der letzten Zahlung"));
+		cd.addCloseListener(new Listener() {
+			public void handleEvent(Event event) {
+				if (event == null || event.data == null)
+					return;
+				Date choosen = (Date) event.data;
+				letzteZahlung.setText(HBCI.DATEFORMAT.format(choosen));
+			}
+		});
+
+		Date d = ((Dauerauftrag)getTransfer()).getLetzteZahlung();
+		if (d != null)
+			cd.setDate(d);
+		letzteZahlung = new DialogInput(d == null ? null : HBCI.DATEFORMAT.format(d),cd);
+		letzteZahlung.disableClientControl();
+		letzteZahlung.setValue(d);
+		return letzteZahlung;
 	}
 
 	/**
@@ -154,7 +240,7 @@ public class DauerauftragControl extends AbstractTransferControl {
   public DialogInput getKontoAuswahl() throws RemoteException
   {
     DialogInput i = super.getKontoAuswahl();
-    if (getDauerauftrag().isActive())
+    if (((Dauerauftrag)getTransfer()).isActive())
     	i.disable();
     return i;
   }
@@ -164,6 +250,9 @@ public class DauerauftragControl extends AbstractTransferControl {
 
 /**********************************************************************
  * $Log: DauerauftragControl.java,v $
+ * Revision 1.10  2004/10/25 17:58:57  willuhn
+ * @N Haufen Dauerauftrags-Code
+ *
  * Revision 1.9  2004/10/24 17:19:02  willuhn
  * *** empty log message ***
  *

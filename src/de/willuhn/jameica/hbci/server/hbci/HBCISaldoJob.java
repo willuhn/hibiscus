@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCISaldoJob.java,v $
- * $Revision: 1.11 $
- * $Date: 2004/10/23 17:34:31 $
+ * $Revision: 1.12 $
+ * $Date: 2004/10/25 17:58:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,32 +30,29 @@ import de.willuhn.util.Logger;
  */
 public class HBCISaldoJob extends AbstractHBCIJob {
 
+	private Konto konto = null;
 	private I18N i18n = null;
 
-	/**
+  /**
 	 * ct.
-   * @param konto
+   * @param konto konto, fuer das der Saldo ermittelt werden soll.
+   * @throws RemoteException
    */
-  public HBCISaldoJob(Konto konto)
+  public HBCISaldoJob(Konto konto) throws RemoteException
 	{
-		super(konto);
+		this.konto = konto;
 
-		try {
-			setJobParam("my",Converter.HibiscusKonto2HBCIKonto(konto));
-		}
-		catch (RemoteException e)
-		{
-			throw new RuntimeException("Fehler beim Setzen des Kontos");
-		}
+		setJobParam("my",Converter.HibiscusKonto2HBCIKonto(konto));
 
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 	}
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.hbci.HBCIJob#getIdentifier()
+   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getIdentifier()
    */
-  public String getIdentifier() {
+  public String getIdentifier()
+  {
     return "SaldoReq";
   }
 
@@ -76,7 +73,7 @@ public class HBCISaldoJob extends AbstractHBCIJob {
 										i18n.tr("Unbekannter Fehler beim Abrufen des Saldos");
 
 			try {
-				getKonto().addToProtokoll(i18n.tr("Fehler beim Abrufen das Saldos") + " ("+ msg +")",Protokoll.TYP_ERROR);
+				konto.addToProtokoll(i18n.tr("Fehler beim Abrufen das Saldos") + " ("+ msg +")",Protokoll.TYP_ERROR);
 			}
 			catch (RemoteException e)
 			{
@@ -86,7 +83,7 @@ public class HBCISaldoJob extends AbstractHBCIJob {
 		}
 		Logger.debug("job result is ok, returning saldo");
 		try {
-			getKonto().addToProtokoll(i18n.tr("Saldo abgerufen"),Protokoll.TYP_SUCCESS);
+			konto.addToProtokoll(i18n.tr("Saldo abgerufen"),Protokoll.TYP_SUCCESS);
 		}
 		catch (RemoteException e)
 		{
@@ -99,6 +96,9 @@ public class HBCISaldoJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCISaldoJob.java,v $
+ * Revision 1.12  2004/10/25 17:58:56  willuhn
+ * @N Haufen Dauerauftrags-Code
+ *
  * Revision 1.11  2004/10/23 17:34:31  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/TurnusHelper.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/10/23 17:34:31 $
+ * $Revision: 1.9 $
+ * $Date: 2004/10/25 17:58:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -82,7 +82,6 @@ public class TurnusHelper
 		turnus.setIntervall(d.turnus);
 		turnus.setTag(d.execday);
 		turnus.setZeiteinheit(ze);
-		turnus.setBezeichnung(createBezeichnung(turnus));
 		turnus.store();
 		return turnus;
 	}
@@ -181,6 +180,9 @@ public class TurnusHelper
 
 /**********************************************************************
  * $Log: TurnusHelper.java,v $
+ * Revision 1.9  2004/10/25 17:58:56  willuhn
+ * @N Haufen Dauerauftrags-Code
+ *
  * Revision 1.8  2004/10/23 17:34:31  willuhn
  * *** empty log message ***
  *

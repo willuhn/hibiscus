@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCIJob.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/10/19 23:33:31 $
+ * $Revision: 1.9 $
+ * $Date: 2004/10/25 17:58:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,13 +13,14 @@
 package de.willuhn.jameica.hbci.server.hbci;
 
 import java.rmi.RemoteException;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
 import org.kapott.hbci.GV_Result.HBCIJobResult;
+import org.kapott.hbci.structures.Konto;
+import org.kapott.hbci.structures.Value;
 
-import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.rmi.hbci.HBCIJob;
 import de.willuhn.util.Logger;
 
 /**
@@ -28,32 +29,27 @@ import de.willuhn.util.Logger;
  * und liefern die Ergebnisse zurueck. Sie aendern niemals Daten im Bestand
  * von Hibiscus. 
  */
-public abstract class AbstractHBCIJob implements HBCIJob {
+public abstract class AbstractHBCIJob
+{
 
 	private org.kapott.hbci.GV.HBCIJob job = null;
-	private Konto konto = null;
 
 	private Hashtable params 			= new Hashtable(); 
-	private Hashtable kontoParams = new Hashtable(); 
 
 	/**
-	 * ct.
-   * @param konto
-   */
-  public AbstractHBCIJob(Konto konto)
-	{
-		super();
-		this.konto = konto;
-	}
-
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.hbci.HBCIJob#getIdentifier()
-   */
+	 * HBCI4Java verwendet intern eindeutige Job-Namen.
+	 * Diese Funktion liefert genau den Namen fuer genau den
+	 * gewuenschten Job.
+	 * @return Job-Identifier.
+	 */
   public abstract String getIdentifier();
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.hbci.HBCIJob#setJob(org.kapott.hbci.GV.HBCIJob)
-   */
+	/**
+	 * Diese Funktion wird von der HBCIFactory intern aufgerufen.
+	 * Sie uebergibt hier den erzeugten HBCI-Job der Abfrage.
+	 * @param job der erzeugte Job.
+	 * @throws RemoteException
+	 */
   public final void setJob(org.kapott.hbci.GV.HBCIJob job) throws RemoteException
   {
   	this.job = job;
@@ -61,26 +57,20 @@ public abstract class AbstractHBCIJob implements HBCIJob {
   	while (e.hasMoreElements())
   	{
   		String name = (String) e.nextElement();
-  		String value = (String) params.get(name);
-  		job.setParam(name,value);
+  		Object value = params.get(name);
+  		if (value instanceof Konto)
+	  		job.setParam(name,(Konto)value);
+			else if (value instanceof Double)
+			{
+				double d = ((Double) value).doubleValue();
+				job.setParam(name,new Value(d));
+			}
+			else if (value instanceof Date)
+				job.setParam(name,(Date)value);
+	  	else
+				job.setParam(name,(String)value);
   	}
-
-		Enumeration e2 = kontoParams.keys();
-		while (e2.hasMoreElements())
-		{
-			String name = (String) e2.nextElement();
-			org.kapott.hbci.structures.Konto konto = (org.kapott.hbci.structures.Konto) kontoParams.get(name);
-			job.setParam(name,konto);
-		}
-
   }
-
-	/**
-	 * @see de.willuhn.jameica.hbci.rmi.hbci.HBCIJob#getKonto()
-	 */
-	public final Konto getKonto() {
-		return konto;
-	}
 
   /**
    * Liefert das Job-Resultat.
@@ -92,7 +82,7 @@ public abstract class AbstractHBCIJob implements HBCIJob {
 	}
 	
 	/**
-	 * Liefert den Status-Text.
+	 * Liefert den Status-Text, der vom HBCI-Kernel nach Ausfuehrung des Jobs zurueckgeliefert wurde.
    * @return
    */
   final String getStatusText()
@@ -109,8 +99,8 @@ public abstract class AbstractHBCIJob implements HBCIJob {
 	}
 
 	/**
-	 * Ueber diese Funktion muessen die konkreten Implementierungen
-	 * alle zusaetzlichen Job-Parameter setzen.
+	 * Ueber diese Funktion koennen die konkreten Implementierungen
+	 * ihre zusaetzlichen Job-Parameter setzen.
    * @param name Name des Parameters.
    * @param value Wert des Parameters.
    */
@@ -118,15 +108,14 @@ public abstract class AbstractHBCIJob implements HBCIJob {
 	{
 		if (name == null || value == null)
 		{
-			Logger.warn("job parameter invalid. name: " + name + ", value: " + value);
+			Logger.warn("[job parameter] no name or value given");
 			return;
 		}
 		params.put(name,value);
 	}
 
 	/**
-	 * Ueber diese Funktion muessen die konkreten Implementierungen
-	 * alle zusaetzlichen Job-Parameter setzen.
+	 * Speichern eines komplexes Objektes 
 	 * @param name Name des Parameters.
 	 * @param konto das Konto.
 	 */
@@ -134,16 +123,55 @@ public abstract class AbstractHBCIJob implements HBCIJob {
 	{
 		if (name == null || konto == null)
 		{
-			Logger.warn("job parameter invalid. name: " + name + ", konto: " + konto);
+			Logger.warn("[job parameter] no name or value given");
 			return;
 		}
-		kontoParams.put(name,konto);
+		params.put(name,konto);
+	}
+
+	/**
+	 * Speichern eines Dezimal-Wertes.
+	 * Bitte diese Funktion verwenden, damit sichergestellt ist, dass
+	 * der Kernel die Werte typsicher erhaelt und Formatierungsfehler
+	 * aufgrund verschiedener Locales fehlschlagen.
+   * @param name Name des Parameters.
+   * @param d Wert.
+   */
+  final void setJobParam(String name, double d)
+	{
+		if (name == null)
+		{
+			Logger.warn("[job parameter] no name given");
+			return;
+		}
+		params.put(name,new Double(d));
+	}
+
+	/**
+	 * Speichern eines Datums.
+	 * Bitte diese Funktion verwenden, damit sichergestellt ist, dass
+	 * der Kernel die Werte typsicher erhaelt und Formatierungsfehler
+	 * aufgrund verschiedener Locales fehlschlagen.
+	 * @param name Name des Parameters.
+	 * @param date Datum.
+	 */
+	final void setJobParam(String name, Date date)
+	{
+		if (name == null || date == null)
+		{
+			Logger.warn("[job parameter] no name given or value given");
+			return;
+		}
+		params.put(name,date);
 	}
 }
 
 
 /**********************************************************************
  * $Log: AbstractHBCIJob.java,v $
+ * Revision 1.9  2004/10/25 17:58:56  willuhn
+ * @N Haufen Dauerauftrags-Code
+ *
  * Revision 1.8  2004/10/19 23:33:31  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.45 $
- * $Date: 2004/10/20 12:08:18 $
+ * $Revision: 1.46 $
+ * $Date: 2004/10/25 17:58:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -141,6 +141,7 @@ public class KontoControl extends AbstractControl {
 		});
 		protokoll.addColumn(i18n.tr("Datum"),"datum",new DateFormatter(HBCI.LONGDATEFORMAT));
 		protokoll.addColumn(i18n.tr("Kommentar"),"kommentar");
+		protokoll.disableSummary();
 		return protokoll;
 
 	}
@@ -449,6 +450,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.46  2004/10/25 17:58:57  willuhn
+ * @N Haufen Dauerauftrags-Code
+ *
  * Revision 1.45  2004/10/20 12:08:18  willuhn
  * @C MVC-Refactoring (new Controllers)
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/Attic/UeberweisungDelete.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/10/24 17:19:02 $
+ * $Revision: 1.4 $
+ * $Date: 2004/10/25 17:58:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -65,7 +65,6 @@ public class UeberweisungDelete implements Action
 			// ok, wir loeschen das Objekt
 			u.delete();
 			GUI.getStatusBar().setSuccessText(i18n.tr("Überweisung gelöscht."));
-			GUI.startPreviousView();
 		}
 		catch (RemoteException e)
 		{
@@ -79,6 +78,9 @@ public class UeberweisungDelete implements Action
 
 /**********************************************************************
  * $Log: UeberweisungDelete.java,v $
+ * Revision 1.4  2004/10/25 17:58:56  willuhn
+ * @N Haufen Dauerauftrags-Code
+ *
  * Revision 1.3  2004/10/24 17:19:02  willuhn
  * *** empty log message ***
  *

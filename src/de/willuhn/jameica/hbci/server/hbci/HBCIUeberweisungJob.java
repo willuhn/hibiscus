@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUeberweisungJob.java,v $
- * $Revision: 1.12 $
- * $Date: 2004/10/23 17:34:31 $
+ * $Revision: 1.13 $
+ * $Date: 2004/10/25 17:58:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,9 +15,11 @@ package de.willuhn.jameica.hbci.server.hbci;
 import java.rmi.RemoteException;
 
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Empfaenger;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
+import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.hbci.server.Converter;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -27,80 +29,48 @@ import de.willuhn.util.Logger;
 /**
  * Job fuer "Ueberweisung".
  */
-public class HBCIUeberweisungJob extends AbstractHBCIJob {
+public class HBCIUeberweisungJob extends AbstractHBCIJob
+{
 
 	private I18N i18n = null;
-	private Empfaenger empfaenger = null;
+	private Ueberweisung ueberweisung = null;
+	private Konto konto = null;
 
 	/**
 	 * ct.
-   * @param konto Konto, welches belastet wird.
+   * @param ueberweisung die auszufuehrende Ueberweisung.
    */
-  public HBCIUeberweisungJob(Konto konto)
+  public HBCIUeberweisungJob(Ueberweisung ueberweisung) throws RemoteException
 	{
-		super(konto);
+		this.ueberweisung = ueberweisung;
+		this.konto        = ueberweisung.getKonto();
 
-		try {
-			setJobParam("src",Converter.HibiscusKonto2HBCIKonto(konto));
-			setJobParam("btg.curr",konto.getWaehrung() == null ? "EUR" : konto.getWaehrung());
+		setJobParam("src",Converter.HibiscusKonto2HBCIKonto(konto));
+		setJobParam("btg.curr",konto.getWaehrung() == null ? "EUR" : konto.getWaehrung());
 
-		}
-		catch (RemoteException e)
-		{
-			throw new RuntimeException("Fehler beim Setzen von Absenderkonto/Währung");
-		}
+		setJobParam("btg.value",ueberweisung.getBetrag());
+
+		Empfaenger empfaenger = (Empfaenger) Settings.getDBService().createObject(Empfaenger.class,null);
+		empfaenger.setBLZ(ueberweisung.getEmpfaengerBLZ());
+		empfaenger.setKontonummer(ueberweisung.getEmpfaengerKonto());
+		empfaenger.setName(ueberweisung.getEmpfaengerName());
+
+		setJobParam("dst",Converter.HibiscusEmpfaenger2HBCIKonto(empfaenger));
+		setJobParam("name",empfaenger.getName());
+
+		setJobParam("usage",ueberweisung.getZweck());
+
+		String zweck2 = ueberweisung.getZweck2();
+		if (zweck2 != null && zweck2.length() > 0)
+			setJobParam("usage_2",zweck2);
+
 
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-	}
 
-	/**
-	 * Speichert den Empfaenger der Ueberweisung.
-   * @param empfaenger der Empfaenger.
-   */
-  public void setEmpfaenger(Empfaenger empfaenger)
-	{
-		try {
-			this.empfaenger = empfaenger;
-			setJobParam("dst",Converter.HibiscusEmpfaenger2HBCIKonto(empfaenger));
-			setJobParam("name",empfaenger.getName());
-		}
-		catch (RemoteException e)
-		{
-			throw new RuntimeException("Fehler beim Setzen des Empfaengers");
-		}
-	}
-
-	/**
-	 * Speichert die Zeile 1 des Ueberweisungszwecks.
-   * @param zweck Ueberweisungszweck
-   */
-  public void setZweck(String zweck)
-	{
-		setJobParam("usage",zweck);
-	}
-
-	/**
-	 * Speichert die Zeile 2 des Ueberweisungszwecks.
-	 * @param zweck2 Ueberweisungszweck
-	 */
-	public void setZweck2(String zweck2)
-	{
-		if (zweck2 == null || zweck2.length() == 0)
-			return;
-		setJobParam("usage_2",zweck2);
-	}
-
-	/**
-	 * Speichert den Betrag der Ueberweisung.
-   * @param betrag Betrag der Ueberweisung.
-   */
-  public void setBetrag(double betrag)
-	{
-		setJobParam("btg.value",""+betrag); // Nein, hier kein Formatter ;)
 	}
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.hbci.HBCIJob#getIdentifier()
+   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getIdentifier()
    */
   public String getIdentifier() {
     return "Ueb";
@@ -118,7 +88,7 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob {
 
 		String empfName = "";
 		try {
-			empfName = i18n.tr("an") + " " + empfaenger.getName();
+			empfName = i18n.tr("an") + " " + ueberweisung.getEmpfaengerName();
 		}
 		catch (RemoteException e)
 		{
@@ -136,7 +106,7 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob {
 										i18n.tr("Unbekannter Fehler beim Ausführen der Überweisung");
 
 			try {
-				getKonto().addToProtokoll(msg + " ("+error+")",Protokoll.TYP_ERROR);
+				konto.addToProtokoll(msg + " ("+error+")",Protokoll.TYP_ERROR);
 			}
 			catch (RemoteException e)
 			{
@@ -145,7 +115,7 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob {
 			throw new ApplicationException(msg + " ("+error+")");
 		}
 		try {
-			getKonto().addToProtokoll(i18n.tr("Überweisung ausgeführt") + " " + empfName,Protokoll.TYP_SUCCESS);
+			konto.addToProtokoll(i18n.tr("Überweisung ausgeführt") + " " + empfName,Protokoll.TYP_SUCCESS);
 		}
 		catch (RemoteException e)
 		{
@@ -158,6 +128,9 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIUeberweisungJob.java,v $
+ * Revision 1.13  2004/10/25 17:58:56  willuhn
+ * @N Haufen Dauerauftrags-Code
+ *
  * Revision 1.12  2004/10/23 17:34:31  willuhn
  * *** empty log message ***
  *

@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/UeberweisungDialog.java,v $
- * $Revision: 1.8 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/DauerauftragDialog.java,v $
+ * $Revision: 1.1 $
  * $Date: 2004/10/25 17:58:56 $
  * $Author: willuhn $
  * $Locker:  $
@@ -12,6 +12,8 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.dialogs;
 
+import java.util.Date;
+
 import org.eclipse.swt.widgets.Composite;
 import org.kapott.hbci.manager.HBCIUtils;
 
@@ -22,35 +24,36 @@ import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.rmi.Ueberweisung;
+import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
+import de.willuhn.jameica.hbci.server.TurnusHelper;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Oeffnet einen Dialog und zeigt die uebergebene Ueberweisung an.
- * Wird verwendet, wenn eine Ueberweisung ausgefuehrt werden
+ * Oeffnet einen Dialog und zeigt den uebergebenen Dauerauftrag an.
+ * Wird verwendet, wenn ein Dauerauftrag ausgefuehrt werden
  * soll - dann wird vorher diese Sicherheitsabfrage eingeblendet, die
- * nochmal die Details der Ueberweisung anzeigt. Erst wenn der User
- * hier OK klickt, wird die Ueberweisung ausgefuehrt.
+ * nochmal die Details des Dauerauftrags anzeigt. Erst wenn der User
+ * hier OK klickt, wird der Daueruftrag ausgefuehrt.
  */
-public class UeberweisungDialog extends AbstractDialog {
+public class DauerauftragDialog extends AbstractDialog {
 
 	private I18N i18n;
-	private Ueberweisung ueb;
+	private Dauerauftrag auftrag;
 	private Boolean choosen = Boolean.FALSE;
 
   /**
    * ct.
-   * @param u Ueberweisung die anzuzeigende Ueberweisung.
+   * @param d anzuzeigender Dauerauftrag.
    * @param position
    */
-  public UeberweisungDialog(Ueberweisung u, int position) {
+  public DauerauftragDialog(Dauerauftrag d, int position) {
     super(position);
 
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-    this.ueb = u;
+    this.auftrag = d;
     this.setTitle(i18n.tr("Sicher?"));
     
   }
@@ -66,30 +69,52 @@ public class UeberweisungDialog extends AbstractDialog {
    * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
    */
   protected void paint(Composite parent) throws Exception {
-		LabelGroup group = new LabelGroup(parent,i18n.tr("Details der Überweisung"));
-			
-		group.addText(i18n.tr("Sind Sie sicher, daß Sie die Überweisung jetzt ausführen wollen?") + "\n",true);
 
-		Input kto = new LabelInput(ueb.getKonto().getKontonummer());
-		kto.setComment(ueb.getKonto().getBezeichnung());
+		LabelGroup group = new LabelGroup(parent,i18n.tr("Details des Dauerauftrages"));
+			
+		if (auftrag.isActive())
+			group.addText(i18n.tr("Sind Sie sicher, daß Sie diese Änderungen jetzt zur Bank senden wollen?") + "\n",true);
+		else
+			group.addText(i18n.tr("Sind Sie sicher, daß Sie diesen Dauerauftrag jetzt ausführen wollen?") + "\n",true);
+		
+		Input kto = new LabelInput(auftrag.getKonto().getKontonummer());
+		kto.setComment(auftrag.getKonto().getBezeichnung());
 		group.addLabelPair(i18n.tr("Eigenes Konto"),kto);
 
 		group.addSeparator();
 
-		Input empfName = new LabelInput(ueb.getEmpfaengerName());
+		Input empfName = new LabelInput(auftrag.getEmpfaengerName());
 		group.addLabelPair(i18n.tr("Name des Empfänger"),empfName);
 
-		Input empfKto = new LabelInput(ueb.getEmpfaengerKonto());
-		empfKto.setComment(ueb.getEmpfaengerBLZ() + "/" + HBCIUtils.getNameForBLZ(ueb.getEmpfaengerBLZ()));
+		Input empfKto = new LabelInput(auftrag.getEmpfaengerKonto());
+		empfKto.setComment(auftrag.getEmpfaengerBLZ() + "/" + HBCIUtils.getNameForBLZ(auftrag.getEmpfaengerBLZ()));
 		group.addLabelPair(i18n.tr("Konto des Empfängers"),empfKto);
 
 		group.addSeparator();
 
-		Input zweck = new LabelInput(ueb.getZweck() + "/" + ueb.getZweck2());
+		Input zweck = new LabelInput(auftrag.getZweck() + "/" + auftrag.getZweck2());
 		group.addLabelPair(i18n.tr("Verwendungszweck"),zweck);
 
-		Input betrag = new LabelInput(HBCI.DECIMALFORMAT.format(ueb.getBetrag()) + " " + ueb.getKonto().getWaehrung());
+		Input betrag = new LabelInput(HBCI.DECIMALFORMAT.format(auftrag.getBetrag()) + " " + auftrag.getKonto().getWaehrung());
 		group.addLabelPair(i18n.tr("Betrag"),betrag);
+
+		group.addSeparator();
+
+		Date e = auftrag.getErsteZahlung();
+		String se = i18n.tr("Zum nächstmöglichen Termin");
+		if (e != null) se = HBCI.DATEFORMAT.format(e);
+		Input ersteZahlung = new LabelInput(se);
+		group.addLabelPair(i18n.tr("Erste Zahlung"),ersteZahlung);
+
+		Date l = auftrag.getLetzteZahlung();
+		String sl = i18n.tr("keine End-Datum vorgegeben");
+		if (l != null) sl = HBCI.DATEFORMAT.format(l);
+		Input letzteZahlung = new LabelInput(sl);
+		group.addLabelPair(i18n.tr("Letzte Zahlung"),letzteZahlung);
+
+		Input turnus = new LabelInput(TurnusHelper.createBezeichnung(auftrag.getTurnus()));
+		group.addLabelPair(i18n.tr("Zahlungsturnus"),turnus);
+		
 
 		ButtonArea b = group.createButtonArea(2);
 		b.addButton(i18n.tr("OK"), new Action()
@@ -114,31 +139,8 @@ public class UeberweisungDialog extends AbstractDialog {
 
 
 /**********************************************************************
- * $Log: UeberweisungDialog.java,v $
- * Revision 1.8  2004/10/25 17:58:56  willuhn
+ * $Log: DauerauftragDialog.java,v $
+ * Revision 1.1  2004/10/25 17:58:56  willuhn
  * @N Haufen Dauerauftrags-Code
- *
- * Revision 1.7  2004/10/19 23:33:31  willuhn
- * *** empty log message ***
- *
- * Revision 1.6  2004/07/25 17:15:06  willuhn
- * @C PluginLoader is no longer static
- *
- * Revision 1.5  2004/07/21 23:54:30  willuhn
- * *** empty log message ***
- *
- * Revision 1.4  2004/07/20 22:53:03  willuhn
- * @C Refactoring
- *
- * Revision 1.3  2004/07/14 23:48:31  willuhn
- * @N mehr Code fuer Dauerauftraege
- *
- * Revision 1.2  2004/07/09 00:04:40  willuhn
- * @C Redesign
- *
- * Revision 1.1  2004/05/26 23:23:10  willuhn
- * @N neue Sicherheitsabfrage vor Ueberweisung
- * @C Check des Ueberweisungslimit
- * @N Timeout fuer Messages in Statusbars
  *
  **********************************************************************/

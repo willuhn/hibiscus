@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/Attic/EmpfaengerDelete.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/10/20 12:08:18 $
+ * $Revision: 1.2 $
+ * $Date: 2004/10/25 17:58:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -65,7 +65,6 @@ public class EmpfaengerDelete implements Action
 			// ok, wir loeschen das Objekt
 			empf.delete();
 			GUI.getStatusBar().setSuccessText(i18n.tr("Empfängeradresse gelöscht."));
-			GUI.startPreviousView();
 		}
 		catch (RemoteException e)
 		{
@@ -79,6 +78,9 @@ public class EmpfaengerDelete implements Action
 
 /**********************************************************************
  * $Log: EmpfaengerDelete.java,v $
+ * Revision 1.2  2004/10/25 17:58:56  willuhn
+ * @N Haufen Dauerauftrags-Code
+ *
  * Revision 1.1  2004/10/20 12:08:18  willuhn
  * @C MVC-Refactoring (new Controllers)
  *

@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/EmpfaengerList.java,v $
- * $Revision: 1.7 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/Attic/TurnusList.java,v $
+ * $Revision: 1.1 $
  * $Date: 2004/10/25 17:58:56 $
  * $Author: willuhn $
  * $Locker:  $
@@ -16,32 +16,29 @@ import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.EmpfaengerDelete;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerNeu;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungNeu;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 
 /**
- * Liefert ein vorgefertigtes Kontext-Menu, welches an Listen von Empfaenger-Adressen
+ * Liefert ein vorgefertigtes Kontext-Menu, welches an Listen von Turnus-Objekten
  * angehaengt werden kann.
  */
-public class EmpfaengerList extends ContextMenu
+public class TurnusList extends ContextMenu
 {
 
 	private I18N i18n;
 
 	/**
-	 * Erzeugt das Kontext-Menu fuer eine Liste von Empfaengern.
+	 * Erzeugt das Kontext-Menu fuer eine Liste von Turnus-Objekten.
 	 */
-	public EmpfaengerList()
+	public TurnusList()
 	{
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 		addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"),new EmpfaengerNeu()));
 		addItem(new CheckedContextMenuItem(i18n.tr("Neue Überweisung mit diesem Empfänger..."), new UeberweisungNeu()));
-		addItem(ContextMenuItem.SEPARATOR);
-		addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new EmpfaengerDelete()));
 		addItem(ContextMenuItem.SEPARATOR);
 
 		addItem(new ContextMenuItem(i18n.tr("Neue Adresse..."), new EmpfaengerNeu()));
@@ -51,8 +48,8 @@ public class EmpfaengerList extends ContextMenu
 
 
 /**********************************************************************
- * $Log: EmpfaengerList.java,v $
- * Revision 1.7  2004/10/25 17:58:56  willuhn
+ * $Log: TurnusList.java,v $
+ * Revision 1.1  2004/10/25 17:58:56  willuhn
  * @N Haufen Dauerauftrags-Code
  *
  * Revision 1.6  2004/10/18 23:38:17  willuhn

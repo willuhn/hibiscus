@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/DauerauftragDelete.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/10/24 17:19:02 $
+ * $Revision: 1.2 $
+ * $Date: 2004/10/25 17:58:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,6 +26,7 @@ import de.willuhn.util.Logger;
 
 /**
  * Action fuer Loeschen eines Dauerauftrages.
+ * Existiert der Auftrag auch bei der Bank, wird er dort ebenfalls geloescht.
  */
 public class DauerauftragDelete implements Action
 {
@@ -49,7 +50,10 @@ public class DauerauftragDelete implements Action
 
 			YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
 			d.setTitle(i18n.tr("Dauerauftrag löschen"));
-			d.setText(i18n.tr("Wollen Sie diesen Dauerauftrag wirklich löschen?\nDer Auftrag wird auch bei der Bank gelöscht."));
+			if (da.isActive())
+				d.setText(i18n.tr("Wollen Sie diesen Dauerauftrag wirklich löschen?\nDer Auftrag wird auch bei der Bank gelöscht."));
+			else
+				d.setText(i18n.tr("Wollen Sie diesen Dauerauftrag wirklich löschen?"));
 
 			try {
 				Boolean choice = (Boolean) d.open();
@@ -63,10 +67,12 @@ public class DauerauftragDelete implements Action
 			}
 
 			// ok, wir loeschen das Objekt
-			// TODO: Hier zuerst bei der Bank loeschen
+			if (da.isActive())
+			{
+				da.deleteOnline();
+			}
 			da.delete();
 			GUI.getStatusBar().setSuccessText(i18n.tr("Dauerauftrag gelöscht."));
-			GUI.startPreviousView();
 		}
 		catch (RemoteException e)
 		{
@@ -80,6 +86,9 @@ public class DauerauftragDelete implements Action
 
 /**********************************************************************
  * $Log: DauerauftragDelete.java,v $
+ * Revision 1.2  2004/10/25 17:58:56  willuhn
+ * @N Haufen Dauerauftrags-Code
+ *
  * Revision 1.1  2004/10/24 17:19:02  willuhn
  * *** empty log message ***
  *

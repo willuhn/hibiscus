@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.34 $
- * $Date: 2004/10/24 17:19:02 $
+ * $Revision: 1.35 $
+ * $Date: 2004/10/25 17:58:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,7 @@
 package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.zip.CRC32;
 
@@ -202,6 +203,9 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 
 			// Erst die Ueberweisungen loeschen
 			deleteUmsaetze();
+			
+			// dann die Dauerauftraege
+			deleteDauerauftraege();
 
 			// und jetzt die Umsaetze
 			DBIterator list = getUeberweisungen();
@@ -280,7 +284,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
   /**
    * @see de.willuhn.jameica.hbci.rmi.Konto#refreshSaldo()
    */
-  public synchronized void refreshSaldo() throws
+  public synchronized double refreshSaldo() throws
   	ApplicationException,
   	RemoteException,
   	OperationCanceledException
@@ -307,12 +311,14 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 
 		// und wir speichern uns
 		store();
+		
+		return getSaldo();
   }
   
 	/**
    * @see de.willuhn.jameica.hbci.rmi.Konto#refreshUmsaetze()
    */
-  public synchronized void refreshUmsaetze() throws
+  public synchronized Umsatz[] refreshUmsaetze() throws
   	ApplicationException,
   	RemoteException,
   	OperationCanceledException
@@ -344,13 +350,18 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 		// speichern nur die neuen.
 		DBIterator existing = getUmsaetze();
 
+		ArrayList newList = new ArrayList();
 		// wir speichern die Umsaetze gleich noch ab
 		try {
 			for (int i=0;i<umsaetze.length;++i)
 			{
 				if (existing.contains(umsaetze[i]) == null)
+				{
 					umsaetze[i].store();
+					newList.add(umsaetze[i]);
+				}
 			}
+			return (Umsatz[]) newList.toArray(new Umsatz[newList.size()]);
 		}
 		catch (ApplicationException e)
 		{
@@ -365,7 +376,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 	/**
 	 * @see de.willuhn.jameica.hbci.rmi.Konto#refreshDauerauftraege()
 	 */
-	public void refreshDauerauftraege() throws
+	public Dauerauftrag[] refreshDauerauftraege() throws
 		ApplicationException,
 		RemoteException,
 		OperationCanceledException
@@ -389,6 +400,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 		// speichern nur die neuen.
 		DBIterator existing = getDauerauftraege();
 
+		ArrayList newList = new ArrayList();
 		// Jetzt syncen wir beide Listen
 		try {
 			for (int i=0;i<auftraege.length;++i)
@@ -396,15 +408,17 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 				if (existing.contains(auftraege[i]) == null)
 				{
 					auftraege[i].store(); // Der ist neu -> speichern
+					newList.add(auftraege[i]);
 				}
 			}
+			return (Dauerauftrag[]) newList.toArray(new Dauerauftrag[newList.size()]);
 		}
 		catch (ApplicationException e)
 		{
 			// Die fangen wir, weil z.Bsp. beim Speichern der Empfaenger ein
 			// Fehler auftreten koennte und dann nur z.Bsp. "Zwecke fehlt" in
 			// der Fehlermeldung stehen wuerde.
-			throw new ApplicationException(i18n.tr("Fehler beim Aktualisieren der Umsätze.") + 
+			throw new ApplicationException(i18n.tr("Fehler beim Aktualisieren der Dauerauftraege.") + 
 				" (" + e.getMessage() + ")");
 		}
 	}
@@ -470,6 +484,21 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 			((DBObject)list.next()).delete();
 		}
   }
+
+	/**
+   * @see de.willuhn.jameica.hbci.rmi.Konto#deleteDauerauftraege()
+   */
+	public void deleteDauerauftraege() throws ApplicationException, RemoteException {
+		DBIterator list = Settings.getDBService().createList(Dauerauftrag.class);
+		list.addFilter("konto_id = " + getID());
+		if (!list.hasNext())
+			return;
+
+		while (list.hasNext())
+		{
+			((DBObject)list.next()).delete();
+		}
+	}
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Konto#getBezeichnung()
@@ -561,6 +590,9 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.35  2004/10/25 17:58:56  willuhn
+ * @N Haufen Dauerauftrags-Code
+ *
  * Revision 1.34  2004/10/24 17:19:02  willuhn
  * *** empty log message ***
  *

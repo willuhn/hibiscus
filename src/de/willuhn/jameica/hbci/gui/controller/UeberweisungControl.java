@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.31 $
- * $Date: 2004/10/20 12:08:18 $
+ * $Revision: 1.32 $
+ * $Date: 2004/10/25 17:58:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -35,11 +35,9 @@ import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.action.UeberweisungExecute;
 import de.willuhn.jameica.hbci.gui.menus.UeberweisungList;
 import de.willuhn.jameica.hbci.rmi.Transfer;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
-import de.willuhn.util.ApplicationException;
 import de.willuhn.util.Logger;
 
 /**
@@ -51,6 +49,8 @@ public class UeberweisungControl extends AbstractTransferControl
 	// Eingabe-Felder
 	private DialogInput termin = null;
 	private Input comment			 = null;
+	
+	private TablePart table		 = null;
 
   /**
    * ct.
@@ -81,9 +81,12 @@ public class UeberweisungControl extends AbstractTransferControl
 	 */
 	public Part getUeberweisungListe() throws RemoteException
 	{
+		if (table != null)
+			return table;
+
 		DBIterator list = Settings.getDBService().createList(Ueberweisung.class);
 
-		TablePart table = new TablePart(list,new de.willuhn.jameica.hbci.gui.action.UeberweisungNeu());
+		table = new TablePart(list,new de.willuhn.jameica.hbci.gui.action.UeberweisungNeu());
 		table.setFormatter(new TableFormatter() {
       public void format(TableItem item) {
       	Ueberweisung u = (Ueberweisung) item.getData();
@@ -100,9 +103,9 @@ public class UeberweisungControl extends AbstractTransferControl
       }
     });
 		table.addColumn(i18n.tr("Konto"),"konto_id");
-		table.addColumn(i18n.tr("Kto. des Empfängers"),"empfaenger_konto");
-		table.addColumn(i18n.tr("BLZ des Empfängers"),"empfaenger_blz");
-		table.addColumn(i18n.tr("Name des Empfängers"),"empfaenger_name");
+		table.addColumn(i18n.tr("Empfängername"),"empfaenger_name");
+		table.addColumn(i18n.tr("Empfängerkonto"),"empfaenger_konto");
+		table.addColumn(i18n.tr("Verwendungszweck"),"zweck");
 		table.addColumn(i18n.tr("Betrag"),"betrag", new CurrencyFormatter("",HBCI.DECIMALFORMAT));
 		table.addColumn(i18n.tr("Termin"),"termin", new DateFormatter(HBCI.LONGDATEFORMAT));
 		table.addColumn(i18n.tr("Status"),"ausgefuehrt",new Formatter() {
@@ -115,7 +118,7 @@ public class UeberweisungControl extends AbstractTransferControl
 				return ""+o;
       }
     });
-
+	
 		table.setContextMenu(new UeberweisungList());
 		return table;
 	}
@@ -253,33 +256,6 @@ public class UeberweisungControl extends AbstractTransferControl
 		super.handleStore();
   }
 
-	/**
-   * Speichert die Ueberweisung und fuehrt sie sofort aus.
-   */
-  public synchronized void handleExecute()
-	{
-
-		handleStore();
-
-		if (!stored)
-			return;
-
-		try
-		{
-			UeberweisungExecute action = new UeberweisungExecute();
-			action.handleAction(getTransfer());
-    }
-    catch (RemoteException re)
-    {
-    	Logger.error("error while executing transaction",re);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Ausführen der Überweisung"));
-    }
-    catch (ApplicationException e)
-    {
-			GUI.getStatusBar().setErrorText(e.getMessage());
-    }
-	}
-
   /**
    * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getBetrag()
    * Ueberschrieben, um das Control zu deaktivieren, wenn die Ueberweisung bereits ausgefuehrt wurde.
@@ -381,6 +357,9 @@ public class UeberweisungControl extends AbstractTransferControl
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
+ * Revision 1.32  2004/10/25 17:58:56  willuhn
+ * @N Haufen Dauerauftrags-Code
+ *
  * Revision 1.31  2004/10/20 12:08:18  willuhn
  * @C MVC-Refactoring (new Controllers)
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/KontoList.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/10/20 12:08:18 $
+ * $Revision: 1.7 $
+ * $Date: 2004/10/25 17:58:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.action.KontoDelete;
 import de.willuhn.jameica.hbci.gui.action.KontoNeu;
 import de.willuhn.jameica.hbci.gui.action.KontoFetchSaldo;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungNeu;
@@ -44,6 +45,8 @@ public class KontoList extends ContextMenu
 		addItem(new CheckedContextMenuItem(i18n.tr("Saldo aktualisieren..."), new KontoFetchSaldo()));
 
 		addItem(ContextMenuItem.SEPARATOR);
+		addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new KontoDelete()));
+		addItem(ContextMenuItem.SEPARATOR);
 
 		addItem(new ContextMenuItem(i18n.tr("Neue Überweisung..."), new UeberweisungNeu()));
 		addItem(new ContextMenuItem(i18n.tr("Neues Konto..."), new KNeu()));
@@ -69,6 +72,9 @@ public class KontoList extends ContextMenu
 
 /**********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.7  2004/10/25 17:58:56  willuhn
+ * @N Haufen Dauerauftrags-Code
+ *
  * Revision 1.6  2004/10/20 12:08:18  willuhn
  * @C MVC-Refactoring (new Controllers)
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Konto.java,v $
- * $Revision: 1.16 $
- * $Date: 2004/10/24 17:19:03 $
+ * $Revision: 1.17 $
+ * $Date: 2004/10/25 17:58:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -143,27 +143,30 @@ public interface Konto extends DBObject,Checksum
 
   /**
 	 * Aktualisiert den Saldo online.
+   * @return der neue Saldo.
    * @throws ApplicationException
    * @throws RemoteException
    * @throws OperationCanceledException
    */
-  public void refreshSaldo() throws ApplicationException, RemoteException, OperationCanceledException;
+  public double refreshSaldo() throws ApplicationException, RemoteException, OperationCanceledException;
 
   /**
 	 * Aktualisiert die Umsaetze des Kontos online.
+   * @return die neu hinzugekommenen Umsaetze.
    * @throws ApplicationException
    * @throws RemoteException
    * @throws OperationCanceledException
    */
-  public void refreshUmsaetze() throws ApplicationException, RemoteException, OperationCanceledException;
+  public Umsatz[] refreshUmsaetze() throws ApplicationException, RemoteException, OperationCanceledException;
 
   /**
-	 * Aktualisiertr die Dauerauftraege des Kontos online.
+	 * Aktualisiert die Dauerauftraege des Kontos online.
+	 * @return die neu hinzugekommenen Dauerauftraege.
    * @throws ApplicationException
    * @throws RemoteException
    * @throws OperationCanceledException
    */
-  public void refreshDauerauftraege() throws ApplicationException, RemoteException, OperationCanceledException;
+  public Dauerauftrag[] refreshDauerauftraege() throws ApplicationException, RemoteException, OperationCanceledException;
 
 	/**
 	 * Liefert eine Liste aller Umsaetze fuer das Konto.
@@ -217,11 +220,22 @@ public interface Konto extends DBObject,Checksum
    * @throws ApplicationException
    */
   public void deleteUmsaetze() throws ApplicationException, RemoteException;
+
+	/**
+	 * Loescht alle Dauerauftraege des Kontos.
+	 * Hinweis: Die Dauerauftraege werden nur lokal geloescht, nicht bei der Bank.
+   * @throws ApplicationException
+   * @throws RemoteException
+   */
+  public void deleteDauerauftraege() throws ApplicationException, RemoteException;
 }
 
 
 /**********************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.17  2004/10/25 17:58:57  willuhn
+ * @N Haufen Dauerauftrags-Code
+ *
  * Revision 1.16  2004/10/24 17:19:03  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.29 $
- * $Date: 2004/10/24 17:19:02 $
+ * $Revision: 1.30 $
+ * $Date: 2004/10/25 17:58:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -120,7 +120,7 @@ public class HBCI extends AbstractPlugin
 		if (checkSum.equals("KvynDJyxe6D1XUvSCkNAFA==")) // 1.0
 			return;
 
-		if (checkSum.equals("GC9v3eRr3vUpYFO2dxwYyg==")) // 1.1
+		if (checkSum.equals("TK7cSwV0T85Hysg5TjUDlQ==")) // 1.1
 			return;
 
 		throw new Exception("database checksum does not match any known version: " + checkSum);
@@ -223,6 +223,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.30  2004/10/25 17:58:57  willuhn
+ * @N Haufen Dauerauftrags-Code
+ *
  * Revision 1.29  2004/10/24 17:19:02  willuhn
  * *** empty log message ***
  *

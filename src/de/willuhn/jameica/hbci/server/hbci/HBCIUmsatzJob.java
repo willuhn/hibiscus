@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUmsatzJob.java,v $
- * $Revision: 1.11 $
- * $Date: 2004/10/23 17:34:31 $
+ * $Revision: 1.12 $
+ * $Date: 2004/10/25 17:58:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,29 +31,25 @@ import de.willuhn.util.Logger;
  */
 public class HBCIUmsatzJob extends AbstractHBCIJob {
 
+	private Konto konto = null;
 	private I18N i18n = null;
 
 	/**
 	 * ct.
-   * @param konto
+   * @param konto Konto, fuer das die Umsaetze abgerufen werden sollen.
+   * @throws RemoteException
    */
-  public HBCIUmsatzJob(Konto konto)
+  public HBCIUmsatzJob(Konto konto) throws RemoteException
 	{
-		super(konto);
+		this.konto = konto;
 
-		try {
-			setJobParam("my",Converter.HibiscusKonto2HBCIKonto(konto));
-		}
-		catch (RemoteException e)
-		{
-			throw new RuntimeException("Fehler beim Setzen des Kontos");
-		}
+		setJobParam("my",Converter.HibiscusKonto2HBCIKonto(konto));
 
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 	}
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.hbci.HBCIJob#getIdentifier()
+   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getIdentifier()
    */
   public String getIdentifier() {
     return "KUmsAll";
@@ -83,7 +79,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob {
 										i18n.tr("Fehler beim Abrufen der Umsätze");
 
 			try {
-				getKonto().addToProtokoll(i18n.tr("Fehler beim Abrufen der Umsätze") + " ("+ msg +")",Protokoll.TYP_ERROR);
+				konto.addToProtokoll(i18n.tr("Fehler beim Abrufen der Umsätze") + " ("+ msg +")",Protokoll.TYP_ERROR);
 			}
 			catch (RemoteException e)
 			{
@@ -100,10 +96,10 @@ public class HBCIUmsatzJob extends AbstractHBCIJob {
 		for (int i=0;i<lines.length;++i)
 		{
 			umsaetze[i] = Converter.HBCIUmsatz2HibiscusUmsatz(lines[i]);
-			umsaetze[i].setKonto(getKonto()); // muessen wir noch machen, weil der Converter das Konto nicht kennt
+			umsaetze[i].setKonto(konto); // muessen wir noch machen, weil der Converter das Konto nicht kennt
 		}
 		try {
-			getKonto().addToProtokoll(i18n.tr("Umsätze abgerufen"),Protokoll.TYP_SUCCESS);
+			konto.addToProtokoll(i18n.tr("Umsätze abgerufen"),Protokoll.TYP_SUCCESS);
 		}
 		catch (RemoteException e)
 		{
@@ -117,6 +113,9 @@ public class HBCIUmsatzJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIUmsatzJob.java,v $
+ * Revision 1.12  2004/10/25 17:58:56  willuhn
+ * @N Haufen Dauerauftrags-Code
+ *
  * Revision 1.11  2004/10/23 17:34:31  willuhn
  * *** empty log message ***
  *

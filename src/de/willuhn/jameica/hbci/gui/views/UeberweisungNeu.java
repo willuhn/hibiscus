@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/UeberweisungNeu.java,v $
- * $Revision: 1.19 $
- * $Date: 2004/10/24 17:19:02 $
+ * $Revision: 1.20 $
+ * $Date: 2004/10/25 17:58:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungDelete;
+import de.willuhn.jameica.hbci.gui.action.UeberweisungExecute;
 import de.willuhn.jameica.hbci.gui.controller.UeberweisungControl;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -41,36 +42,30 @@ public class UeberweisungNeu extends AbstractView {
 
 		GUI.getView().setTitle(i18n.tr("Überweisung bearbeiten"));
 		
-		LabelGroup group = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
+		LabelGroup konten = new LabelGroup(getParent(),i18n.tr("Konten"));
 		
-		group.addLabelPair(i18n.tr("Konto"),										control.getKontoAuswahl());		
-		group.addLabelPair(i18n.tr("Konto des Empfängers"),			control.getEmpfaengerKonto());		
-		group.addLabelPair(i18n.tr("BLZ des Empfängers"),				control.getEmpfaengerBlz());		
-		group.addLabelPair(i18n.tr("Name des Empfängers"),			control.getEmpfaengerName());
-		group.addCheckbox(control.getStoreEmpfaenger(),i18n.tr("Empfängerdaten im Adressbuch speichern"));
+		konten.addLabelPair(i18n.tr("persönliches Konto"),				control.getKontoAuswahl());		
+		konten.addLabelPair(i18n.tr("Konto des Empfängers"),			control.getEmpfaengerKonto());		
+		konten.addLabelPair(i18n.tr("BLZ des Empfängers"),				control.getEmpfaengerBlz());		
+		konten.addLabelPair(i18n.tr("Name des Empfängers"),			control.getEmpfaengerName());
+		konten.addCheckbox(control.getStoreEmpfaenger(),i18n.tr("Empfängerdaten im Adressbuch speichern"));
 
-		group.addSeparator();
+		LabelGroup details = new LabelGroup(getParent(),i18n.tr("Details"));
 
-		group.addLabelPair(i18n.tr("Verwendungszweck"),					control.getZweck());
-		group.addLabelPair(i18n.tr("weiterer Verwendungszweck"),control.getZweck2());
-		group.addLabelPair(i18n.tr("Betrag"),										control.getBetrag());
-		group.addLabelPair(i18n.tr("Termin"),										control.getTermin());
+		details.addLabelPair(i18n.tr("Verwendungszweck"),					control.getZweck());
+		details.addLabelPair(i18n.tr("weiterer Verwendungszweck"),control.getZweck2());
+		details.addLabelPair(i18n.tr("Betrag"),										control.getBetrag());
+		details.addLabelPair(i18n.tr("Termin"),										control.getTermin());
 
-		group.addSeparator();
+		details.addSeparator();
 
-		group.addLabelPair(i18n.tr("Bemerkung"),								control.getComment());
+		details.addLabelPair(i18n.tr("Bemerkung"),								control.getComment());
 
 		ButtonArea buttonArea = new ButtonArea(getParent(),4);
-		buttonArea.addButton(i18n.tr("jetzt ausführen"), new Action()
-    {
-      public void handleAction(Object context) throws ApplicationException
-      {
-      	control.handleExecute();
-      }
-    });
-		buttonArea.addButton(i18n.tr("Zurück"), 				 new Back());
-		buttonArea.addButton(i18n.tr("Löschen"),				 new UeberweisungDelete(), control.getTransfer());
-		buttonArea.addButton(i18n.tr("Speichern"), new Action()
+		buttonArea.addButton(i18n.tr("Zurück"), 				 				 new Back());
+		buttonArea.addButton(i18n.tr("Löschen"),				 				 new UeberweisungDelete(), control.getTransfer());
+		buttonArea.addButton(i18n.tr("Speichern und ausführen"), new UeberweisungExecute(),control.getTransfer());
+		buttonArea.addButton(i18n.tr("Nur Speichern"), 			     new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -90,6 +85,9 @@ public class UeberweisungNeu extends AbstractView {
 
 /**********************************************************************
  * $Log: UeberweisungNeu.java,v $
+ * Revision 1.20  2004/10/25 17:58:56  willuhn
+ * @N Haufen Dauerauftrags-Code
+ *
  * Revision 1.19  2004/10/24 17:19:02  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Turnus.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/10/17 16:28:46 $
+ * $Revision: 1.5 $
+ * $Date: 2004/10/25 17:58:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -34,19 +34,12 @@ public interface Turnus extends DBObject, Checksum
 
 
 	/**
-	 * Liefert die sprechende Bezeichnung des Intervalls.
+	 * Liefert eine sprechende Bezeichnung des Intervalls.
    * @return Bezeichnung des Intervalls.
    * @throws RemoteException
    */
   public String getBezeichnung() throws RemoteException;
 
-  /**
-	 * Speichert die sprechende Bezeichnung des Turnus.
-   * @param bezeichnung sprechende Bezeichnung des Turnus. 
-   * @throws RemoteException
-   */
-  public void setBezeichnung(String bezeichnung) throws RemoteException;
-	
 	/**
 	 * Liefert die Anzahl der Intervalle zwischen den Zahlungen.
 	 * Beispiele:<br>
@@ -117,6 +110,9 @@ public interface Turnus extends DBObject, Checksum
 
 /**********************************************************************
  * $Log: Turnus.java,v $
+ * Revision 1.5  2004/10/25 17:58:57  willuhn
+ * @N Haufen Dauerauftrags-Code
+ *
  * Revision 1.4  2004/10/17 16:28:46  willuhn
  * @N Die ersten Dauerauftraege abgerufen ;)
  *
