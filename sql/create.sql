@@ -3,6 +3,7 @@ CREATE TABLE konto (
   kontonummer varchar(15) NOT NULL,
   blz varchar(15) NOT NULL,
   name varchar(255) NOT NULL,
+  waehrung varchar(6) NOT NULL,
   passport_id int(4) NOT NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
