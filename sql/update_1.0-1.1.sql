@@ -25,20 +25,8 @@ ALTER CREATE TABLE turnus (
   PRIMARY KEY (id)
 );
 
-ALTER CREATE TABLE restriction (
-  id NUMERIC default UNIQUEKEY('restriction'),
-  konto_id int(4) NOT NULL,
-  jobname varchar(1000) NOT NULL,
-  parameter varchar(255) NOT NULL,
-  value varchar(255),
-  UNIQUE (id),
-  PRIMARY KEY (id)
-);
-
-
 ALTER TABLE dauerauftrag ADD CONSTRAINT fk_konto4 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE dauerauftrag ADD CONSTRAINT fk_turnus FOREIGN KEY (turnus_id) REFERENCES turnus (id) DEFERRABLE;
-ALTER TABLE restriction ADD CONSTRAINT fk_konto5 FOREIGN KEY (konto_id) REFERENCES restriction (id) DEFERRABLE;
 
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (2,1,1,1);

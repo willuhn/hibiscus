@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/DauerauftragControl.java,v $
- * $Revision: 1.13 $
- * $Date: 2004/10/26 23:47:08 $
+ * $Revision: 1.14 $
+ * $Date: 2004/10/29 00:32:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -134,6 +134,7 @@ public class DauerauftragControl extends AbstractTransferControl {
 
 		Turnus t = ((Dauerauftrag)getTransfer()).getTurnus();
 		turnus = new DialogInput(t == null ? "" : t.getBezeichnung(),tad);
+		turnus.setValue(t);
 		turnus.disableClientControl();
 		return turnus;
 	}
@@ -257,6 +258,9 @@ public class DauerauftragControl extends AbstractTransferControl {
 
 /**********************************************************************
  * $Log: DauerauftragControl.java,v $
+ * Revision 1.14  2004/10/29 00:32:32  willuhn
+ * @N HBCI job restrictions
+ *
  * Revision 1.13  2004/10/26 23:47:08  willuhn
  * *** empty log message ***
  *

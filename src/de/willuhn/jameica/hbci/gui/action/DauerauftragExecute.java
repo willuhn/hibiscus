@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/DauerauftragExecute.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/10/25 22:39:14 $
+ * $Revision: 1.4 $
+ * $Date: 2004/10/29 00:32:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,6 +49,8 @@ public class DauerauftragExecute implements Action
 		{
 			final Dauerauftrag d = (Dauerauftrag) context;
 			
+			final HBCIDauerauftragStoreJob job = new HBCIDauerauftragStoreJob(d);
+			
 			DauerauftragDialog dd = new DauerauftragDialog(d,DauerauftragDialog.POSITION_CENTER);
 			try
 			{
@@ -78,7 +80,7 @@ public class DauerauftragExecute implements Action
 							GUI.getStatusBar().setStatusText(i18n.tr("Führe Dauerauftrag aus..."));
 						
 						HBCIFactory factory = HBCIFactory.getInstance();
-						factory.addJob(new HBCIDauerauftragStoreJob(d));
+						factory.addJob(job);
 						factory.executeJobs(d.getKonto().getPassport().getHandle()); 
 						GUI.getStatusBar().setSuccessText(i18n.tr("...Dauerauftrag erfolgreich gelöscht"));
 
@@ -117,6 +119,9 @@ public class DauerauftragExecute implements Action
 
 /**********************************************************************
  * $Log: DauerauftragExecute.java,v $
+ * Revision 1.4  2004/10/29 00:32:32  willuhn
+ * @N HBCI job restrictions
+ *
  * Revision 1.3  2004/10/25 22:39:14  willuhn
  * *** empty log message ***
  *

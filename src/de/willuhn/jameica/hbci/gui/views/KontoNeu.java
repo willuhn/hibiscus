@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/KontoNeu.java,v $
- * $Revision: 1.21 $
- * $Date: 2004/10/20 12:34:02 $
+ * $Revision: 1.22 $
+ * $Date: 2004/10/29 00:32:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -85,6 +85,7 @@ public class KontoNeu extends AbstractView {
 			control.getProtokoll().paint(getParent());
 
 			control.init();
+			
 		}
 		catch (RemoteException e)
 		{
@@ -105,6 +106,9 @@ public class KontoNeu extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoNeu.java,v $
+ * Revision 1.22  2004/10/29 00:32:32  willuhn
+ * @N HBCI job restrictions
+ *
  * Revision 1.21  2004/10/20 12:34:02  willuhn
  * *** empty log message ***
  *

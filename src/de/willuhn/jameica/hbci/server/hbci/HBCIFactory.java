@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.16 $
- * $Date: 2004/10/26 23:47:08 $
+ * $Revision: 1.17 $
+ * $Date: 2004/10/29 00:32:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -121,13 +121,13 @@ public class HBCIFactory {
 					Logger.info("adding job " + job.getIdentifier() + " to queue");
 					HBCIJob j = handler.newJob(job.getIdentifier());
 
-					Logger.info("Job restrictions for " + job.getIdentifier());
+					Logger.debug("Job restrictions for " + job.getIdentifier());
 					Properties p = j.getJobRestrictions();
 					Enumeration en = p.keys();
 					while (en.hasMoreElements())
 					{
 						String key = (String) en.nextElement();
-						Logger.info("  " + key + ": " + p.getProperty(key));
+						Logger.debug("  " + key + ": " + p.getProperty(key));
 					}
 
 					job.setJob(j);
@@ -163,38 +163,38 @@ public class HBCIFactory {
 	}
 	
 	/**
-	 * Liefert die Job-Restriktionen fuer den angegebenen Job.
+	 * Liefert eine Liste aller bankspezifischen Restriktionen fuer den angegebenen
+	 * Geschaeftsvorfall auf diesem Passport.
 	 * Sie werden intern weiterverarbeitet, um zum Beispiel die Auswahlmoeglichkeiten
 	 * in der Benutzeroberflaeche auf die tatsaechlichen Moeglichkeiten der Bank zu beschraenken.
    * @param job zu testender Job.
-   * @param handle Passport, ueber den geprueft werden soll.
+	 * @param handle der Passport, ueber den der Job getestet werden soll.
    * @return Liste der Restriktionen.
    * @throws ApplicationException
    * @throws RemoteException
    */
-  public synchronized JobRestrictions getJobRestrictions(AbstractHBCIJob job, PassportHandle handle)
+  public synchronized Properties getJobRestrictions(AbstractHBCIJob job, PassportHandle h)
 		throws ApplicationException, RemoteException
 	{
 		if (job == null)
 			throw new ApplicationException(i18n.tr("Kein Job ausgewählt"));
 
-		if (handle == null)
-			throw new ApplicationException(i18n.tr("Kein HBCI-Medium ausgewählt"));
+		if (h == null)
+			throw new ApplicationException(i18n.tr("Kein Sicherheitsmedium ausgewählt"));
 
 		start();
 
 		try {
-
-			HBCIHandler handler = handle.open();
+		
+			HBCIHandler handler = h.open();
 			HBCIJob j = handler.newJob(job.getIdentifier());
-
-			return new JobRestrictions(job,j.getJobRestrictions());
+			return j.getJobRestrictions();
 		}
 		finally
 		{
 			stop();
 			try {
-				handle.close();
+				h.close();
 			}
 			catch (Throwable t) {/* useless*/}
 		}
@@ -247,6 +247,9 @@ public class HBCIFactory {
 
 /**********************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.17  2004/10/29 00:32:32  willuhn
+ * @N HBCI job restrictions
+ *
  * Revision 1.16  2004/10/26 23:47:08  willuhn
  * *** empty log message ***
  *

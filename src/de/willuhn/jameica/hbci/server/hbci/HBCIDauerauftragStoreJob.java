@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragStoreJob.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/10/26 23:47:08 $
+ * $Revision: 1.4 $
+ * $Date: 2004/10/29 00:32:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@ package de.willuhn.jameica.hbci.server.hbci;
 
 import java.rmi.RemoteException;
 import java.util.Date;
+import java.util.Properties;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
@@ -23,6 +24,8 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.Turnus;
 import de.willuhn.jameica.hbci.server.Converter;
+import de.willuhn.jameica.hbci.server.hbci.tests.PreTimeRestriction;
+import de.willuhn.jameica.hbci.server.hbci.tests.TurnusRestriction;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -92,10 +95,17 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob {
 		if (letzteZahlung != null)
 			setJobParam("lastdate",letzteZahlung);
 
-		Turnus t = dauerauftrag.getTurnus();
-		setJobParam("timeunit",t.getZeiteinheit() == Turnus.ZEITEINHEIT_MONATLICH ? "M" : "W");
-		setJobParam("turnus",t.getIntervall());
-		setJobParam("execday",t.getTag());
+		Turnus turnus = dauerauftrag.getTurnus();
+		setJobParam("timeunit",turnus.getZeiteinheit() == Turnus.ZEITEINHEIT_MONATLICH ? "M" : "W");
+		setJobParam("turnus",turnus.getIntervall());
+		setJobParam("execday",turnus.getTag());
+
+		// Jetzt noch die Tests fuer die Job-Restriktionen
+		Properties p = HBCIFactory.getInstance().getJobRestrictions(this,this.konto.getPassport().getHandle());
+
+		new TurnusRestriction(turnus,p).test();
+		new PreTimeRestriction(dauerauftrag.getErsteZahlung(),p).test();
+
 	}
 
   /**
@@ -153,6 +163,9 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIDauerauftragStoreJob.java,v $
+ * Revision 1.4  2004/10/29 00:32:32  willuhn
+ * @N HBCI job restrictions
+ *
  * Revision 1.3  2004/10/26 23:47:08  willuhn
  * *** empty log message ***
  *
