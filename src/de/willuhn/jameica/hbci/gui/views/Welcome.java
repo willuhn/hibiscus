@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/Welcome.java,v $
- * $Revision: 1.12 $
- * $Date: 2004/07/25 17:15:05 $
+ * $Revision: 1.13 $
+ * $Date: 2004/09/13 20:54:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
@@ -45,6 +46,7 @@ public class Welcome extends AbstractView
 		GUI.getView().setTitle(i18n.tr("Hibiscus - HBCI-Onlinebanking"));
 
 		Composite comp = new Composite(getParent(),SWT.NONE);
+		comp.setBackground(Color.BACKGROUND.getSWTColor());
 		comp.setLayoutData(new GridData(GridData.FILL_BOTH));
 		comp.setLayout(new GridLayout(3,false));
 
@@ -73,6 +75,9 @@ public class Welcome extends AbstractView
 
 /**********************************************************************
  * $Log: Welcome.java,v $
+ * Revision 1.13  2004/09/13 20:54:38  willuhn
+ * @N bg color
+ *
  * Revision 1.12  2004/07/25 17:15:05  willuhn
  * @C PluginLoader is no longer static
  *
