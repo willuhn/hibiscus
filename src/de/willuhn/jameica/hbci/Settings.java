@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/02/12 00:38:40 $
+ * $Revision: 1.4 $
+ * $Date: 2004/02/17 00:53:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,8 +13,13 @@
 package de.willuhn.jameica.hbci;
 
 import java.rmi.RemoteException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+import sun.misc.BASE64Encoder;
 
 import de.willuhn.datasource.rmi.DBService;
+import de.willuhn.jameica.Application;
 
 /**
  * Verwaltet die Einstellungen des Plugins.
@@ -26,6 +31,7 @@ public class Settings
   private static de.willuhn.jameica.Settings settings = new de.willuhn.jameica.Settings(HBCI.class);
   private static DBService db = null;
   private static String path = null;
+  private static String passphrase = null;
 
 	/**
 	 * Liefert den Datenbank-Service.
@@ -63,11 +69,70 @@ public class Settings
 	{
 		return Settings.path;
 	}
-	
+
+	/**
+	 * Speichert, ob wir eine permanente Online-Verbindung haben und daher
+	 * vom HBCI-Kernel nicht dauernd gefragt werden muessen, ob wir eine
+	 * Internetverbindung haben wollen.
+   * @param online true, wenn wir dauernd online sind.
+   */
+  public static void setOnlineMode(boolean online)
+	{
+		settings.setAttribute("online", online ? "true" : "false");
+	}
+
+	/**
+	 * Prueft, ob wir eine permanente Online-Verbindung haben und daher
+	 * vom HBCI-Kernel nicht dauernd gefragt werden muessen, ob wir eine
+	 * Internetverbindung haben wollen.
+   * @return true, wenn wir dauernd online sind.
+   */
+  public static boolean getOnlineMode()
+	{
+		return "true".equals(settings.getAttribute("online","false"));
+	}
+
+	/**
+	 * Liefert das Passwort die lokalen Daten verschluesselt werden.
+   * @return Passphrase.
+   */
+  protected static String getPassphrase()
+	{
+		if (passphrase != null)
+			return passphrase;
+
+		MessageDigest md = null;
+		byte[] hashed = null;
+		try {
+			md = MessageDigest.getInstance("SHA1");
+			hashed = md.digest(getPath().getBytes());
+		}
+		catch (NoSuchAlgorithmException nsae)
+		{
+			Application.getLog().warn("algorithm SHA1 not found, trying MD5");
+			try {
+				md = MessageDigest.getInstance("MD5");
+				hashed = md.digest(getPath().getBytes());
+			}
+			catch (NoSuchAlgorithmException nsae2)
+			{
+				Application.getLog().error("no such algorithm SHA1/MD5",nsae2);
+				hashed = getPath().getBytes();
+			}
+		}
+		BASE64Encoder encoder = new BASE64Encoder();
+		return encoder.encode(hashed);
+	}
+
 }
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.4  2004/02/17 00:53:22  willuhn
+ * @N SaldoAbfrage
+ * @N Ueberweisung
+ * @N Empfaenger
+ *
  * Revision 1.3  2004/02/12 00:38:40  willuhn
  * *** empty log message ***
  *

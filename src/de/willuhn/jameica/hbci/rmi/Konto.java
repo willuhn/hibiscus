@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Konto.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/02/12 23:46:46 $
+ * $Revision: 1.5 $
+ * $Date: 2004/02/17 00:53:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,8 +13,10 @@
 package de.willuhn.jameica.hbci.rmi;
 
 import java.rmi.RemoteException;
+import java.util.Date;
 
 import de.willuhn.datasource.rmi.DBObject;
+import de.willuhn.util.ApplicationException;
 
 /**
  * Bildet eine Bankverbindung in HBCI ab.
@@ -105,11 +107,44 @@ public interface Konto extends DBObject {
    */
   public void setKundennummer(String kundennummer) throws RemoteException;
 
+	/**
+	 * Liest die Einstellungen des Kontos aus dem Passport.
+   * @throws RemoteException.
+   */
+  public void readFromPassport() throws RemoteException;
+
+	/**
+	 * Liefert den Saldo des Kontos oder <code>0.0</code> wenn er noch nie
+	 * abgefragt wurde.
+   * @return Saldo des Kontos.
+   * @throws RemoteException
+   */
+  public double getSaldo() throws RemoteException;
+
+	/**
+	 * Liefert das Datum des aktuellen Saldos oder <code>null</code> wenn er
+	 * noch nie abgefragt wurde.
+   * @return Datum des Saldos.
+   * @throws RemoteException
+   */
+  public Date getSaldoDatum() throws RemoteException;
+
+	/**
+	 * Aktualisiert den Saldo online.
+   * @throws ApplicationException
+   */
+  public void refreshSaldo() throws ApplicationException;
+
 }
 
 
 /**********************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.5  2004/02/17 00:53:22  willuhn
+ * @N SaldoAbfrage
+ * @N Ueberweisung
+ * @N Empfaenger
+ *
  * Revision 1.4  2004/02/12 23:46:46  willuhn
  * *** empty log message ***
  *

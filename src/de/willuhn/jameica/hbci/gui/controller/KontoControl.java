@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/02/12 23:46:46 $
+ * $Revision: 1.4 $
+ * $Date: 2004/02/17 00:53:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,7 @@
 package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
+import java.util.Date;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
@@ -25,10 +26,12 @@ import de.willuhn.jameica.Application;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.controller.AbstractControl;
 import de.willuhn.jameica.gui.parts.Input;
+import de.willuhn.jameica.gui.parts.LabelInput;
 import de.willuhn.jameica.gui.parts.SelectInput;
 import de.willuhn.jameica.gui.parts.Table;
 import de.willuhn.jameica.gui.parts.TextInput;
 import de.willuhn.jameica.gui.views.AbstractView;
+import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.views.KontoListe;
 import de.willuhn.jameica.hbci.gui.views.KontoNeu;
@@ -53,6 +56,9 @@ public class KontoControl extends AbstractControl {
 	private Input passport     = null;
   private Input waehrung     = null;
   private Input kundennummer = null;
+  
+  private Input saldo				 = null;
+  private Input saldoDatum   = null;
 
 	private boolean stored = false;
 
@@ -163,6 +169,39 @@ public class KontoControl extends AbstractControl {
 			p = (Passport) Settings.getDatabase().createObject(Passport.class,null);
 		passport = new SelectInput(p);
 		return passport;
+	}
+
+	/**
+	 * Liefert ein Feld zur Anzeige des Saldos.
+   * @return Anzeige-Feld.
+   * @throws RemoteException
+   */
+  public Input getSaldo() throws RemoteException
+	{
+		if (saldo != null)
+			return saldo;
+			
+		double s = getKonto().getSaldo();
+		saldo = new LabelInput(
+			s == 0.0 && getKonto().getSaldoDatum() == null ?
+				"" :
+				HBCI.DECIMALFORMAT.format(s) + " " + getKonto().getWaehrung());
+		return saldo;
+	}
+
+	/**
+	 * Liefert ein Feld zur Anzeige des Datums des Saldos.
+   * @return Anzeige-Feld.
+   * @throws RemoteException
+   */
+  public Input getSaldoDatum() throws RemoteException
+	{
+		if (saldoDatum != null)
+			return saldoDatum;
+
+		Date d = getKonto().getSaldoDatum();
+		saldoDatum = new LabelInput(d == null ? "" : HBCI.LONGDATEFORMAT.format(d));
+		return saldoDatum;
 	}
 
   /**
@@ -309,6 +348,71 @@ public class KontoControl extends AbstractControl {
 	}
 
 	/**
+   * Aktualisiert die aktuellen Eingaben mit denen des Sicherheitsmediums.
+   */
+  public void handleReadFromPassport()
+	{
+		try {
+			if ("".equals(getKontonummer().getValue()))
+			{
+				GUI.setActionText(I18N.tr("Bitte geben Sie mindestens die Kontonummer ein"));
+				return;
+			}
+			GUI.setActionText(I18N.tr("Chipkarte wird ausgelesen..."));
+			getKonto().readFromPassport();
+			getKundennummer().setValue(getKonto().getKundennummer());
+			getName().setValue(getKonto().getName());
+			getWaehrung().setValue(getKonto().getWaehrung());
+			GUI.setActionText(I18N.tr("Daten erfolgreich gelesen"));
+		}
+		catch (RemoteException e)
+		{
+			Application.getLog().error("error while reading data from passport",e);
+			GUI.setActionText(I18N.tr("Fehler beim Lesen der Konto-Daten"));
+		}
+	}
+
+	/**
+   * Aktualisiert den angezeigten Saldo.
+   */
+  public void handleRefreshSaldo()
+	{
+		try {
+			if ("".equals(getKontonummer().getValue()))
+			{
+				GUI.setActionText(I18N.tr("Bitte geben Sie mindestens die Kontonummer ein"));
+				return;
+			}
+		}
+		catch (Exception e)
+		{
+			Application.getLog().error("error while reading kontonummer",e);
+			GUI.setActionText(I18N.tr("Fehler beim Lesen der Kontonummer"));
+		}
+
+		GUI.getDisplay().asyncExec(new Runnable() {
+      public void run() {
+      	try {
+      		GUI.setActionText(I18N.tr("Saldo des Kontos wird ermittelt..."));
+					getKonto().refreshSaldo();
+					getSaldo().setValue(HBCI.DECIMALFORMAT.format(getKonto().getSaldo()));
+					getSaldoDatum().setValue(HBCI.LONGDATEFORMAT.format(getKonto().getSaldoDatum()));
+					GUI.setActionText(I18N.tr("Saldo des Kontos erfolgreich übertragen..."));
+      	}
+      	catch (RemoteException e)
+      	{
+					Application.getLog().error("error while reading saldo",e);
+					GUI.setActionText(I18N.tr("Fehler beim Lesen des Saldos"));
+      	}
+      	catch (ApplicationException e2)
+      	{
+      		GUI.setActionText(e2.getLocalizedMessage());
+      	}
+      }
+    });
+	}
+
+	/**
 	 * Sucht das Geldinstitut zur eingegebenen BLZ und zeigt es als Kommentar
 	 * hinter dem BLZ-Feld an.
    */
@@ -335,6 +439,11 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.4  2004/02/17 00:53:22  willuhn
+ * @N SaldoAbfrage
+ * @N Ueberweisung
+ * @N Empfaenger
+ *
  * Revision 1.3  2004/02/12 23:46:46  willuhn
  * *** empty log message ***
  *

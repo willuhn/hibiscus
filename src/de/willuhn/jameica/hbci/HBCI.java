@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/02/12 00:38:40 $
+ * $Revision: 1.5 $
+ * $Date: 2004/02/17 00:53:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -34,6 +34,7 @@ import de.willuhn.util.Logger;
 public class HBCI extends AbstractPlugin
 {
 
+	public static DateFormat LONGDATEFORMAT   = new SimpleDateFormat("dd.MM.yyyy HH:mm");
 	public static DateFormat DATEFORMAT       = new SimpleDateFormat("dd.MM.yyyy");
 	public static DateFormat FASTDATEFORMAT   = new SimpleDateFormat("ddMMyyyy");
 	public static DecimalFormat DECIMALFORMAT = (DecimalFormat) NumberFormat.getNumberInstance(Application.getConfig().getLocale());
@@ -165,6 +166,11 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.5  2004/02/17 00:53:22  willuhn
+ * @N SaldoAbfrage
+ * @N Ueberweisung
+ * @N Empfaenger
+ *
  * Revision 1.4  2004/02/12 00:38:40  willuhn
  * *** empty log message ***
  *

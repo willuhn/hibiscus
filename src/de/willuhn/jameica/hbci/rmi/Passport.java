@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Attic/Passport.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/02/12 23:46:46 $
+ * $Revision: 1.4 $
+ * $Date: 2004/02/17 00:53:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,8 @@
 package de.willuhn.jameica.hbci.rmi;
 
 import java.rmi.RemoteException;
+
+import org.kapott.hbci.manager.HBCIHandler;
 
 import de.willuhn.datasource.rmi.DBObject;
 
@@ -46,13 +48,14 @@ public interface Passport extends DBObject {
    * @throws RemoteException
    */
   public void setName(String name) throws RemoteException;
-  
+
   /**
    * Oeffnet den Passport.
+   * @return Handler, der diese Verbindung repraesentiert.
    * @throws RemoteException muss geworfen werden, wenn die Initialisierung fehlschlaegt.
    * Die Exeption sollte einen sinnvollen Fehlertext enthalten. 
    */
-  public void open() throws RemoteException;
+  public HBCIHandler open() throws RemoteException;
 
 	/**
 	 * Schliesst den Passport.
@@ -66,12 +69,25 @@ public interface Passport extends DBObject {
    * @throws RemoteException
    */
   public boolean isOpen() throws RemoteException;
+
+	/**
+	 * Liefert ein Array mit Konto-Objekten, die aus dem Medium gelesen wurden.
+   * @return Array mit Konten, die dieser Passport anbietet.
+   * @throws RemoteException
+   */
+  public Konto[] getKonten() throws RemoteException;
   
+	
 }
 
 
 /**********************************************************************
  * $Log: Passport.java,v $
+ * Revision 1.4  2004/02/17 00:53:22  willuhn
+ * @N SaldoAbfrage
+ * @N Ueberweisung
+ * @N Empfaenger
+ *
  * Revision 1.3  2004/02/12 23:46:46  willuhn
  * *** empty log message ***
  *

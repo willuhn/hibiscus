@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/PassportDDVImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/02/13 00:41:56 $
+ * $Revision: 1.4 $
+ * $Date: 2004/02/17 00:53:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@ package de.willuhn.jameica.hbci.server;
 
 import java.io.File;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 import org.kapott.hbci.manager.HBCIHandler;
 import org.kapott.hbci.manager.HBCIUtils;
@@ -22,6 +23,7 @@ import org.kapott.hbci.passport.HBCIPassport;
 
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.PassportDDV;
 
 /**
@@ -32,7 +34,7 @@ public class PassportDDVImpl
   implements PassportDDV {
 
 	private HBCIPassport hbciPassport = null;
-	private boolean opened = false;
+	private HBCIHandler handler = null;
 
   /**
    * @throws RemoteException
@@ -135,7 +137,10 @@ public class PassportDDVImpl
   /**
    * @see de.willuhn.jameica.hbci.rmi.Passport#open()
    */
-  public void open() throws RemoteException {
+  public HBCIHandler open() throws RemoteException {
+
+		if (isOpen())
+			return handler;
 
 		try {
 			String path = Settings.getPath();
@@ -177,13 +182,13 @@ public class PassportDDVImpl
 			HBCIUtils.setParam("client.passport.DDV.entryidx",""+getEntryIndex());
 	
 			hbciPassport = AbstractHBCIPassport.getInstance();
-			opened = true;					
-			Application.getLog().info("passport successfully opened");
-			HBCIHandler handler=new HBCIHandler("210",hbciPassport);
+			Application.getLog().info("passport opened");
+			handler=new HBCIHandler("210",hbciPassport); // TODO irgendwo auslesen
+			return handler;
 		}
 		catch (Exception e)
 		{
-			opened = false;
+			close();
 			Application.getLog().error("error while opening chipcard",e);
 			throw new RemoteException("error while opening chipcard",e);
 		}
@@ -193,17 +198,59 @@ public class PassportDDVImpl
 	 * @see de.willuhn.jameica.hbci.rmi.Passport#isOpen()
 	 */
 	public boolean isOpen() throws RemoteException {
-		return opened;
+		return handler != null && hbciPassport != null;
 	}
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Passport#close()
    */
   public void close() throws RemoteException {
-		if (hbciPassport == null || !opened)
+		if (hbciPassport == null && handler == null)
 			return;
-		hbciPassport.close();
-		Application.getLog().info("passport successfully closed");
+		try {
+			handler.close();
+		}
+		catch (Exception e) {/*useless*/}
+		hbciPassport = null;
+		handler = null;
+		Application.getLog().info("passport closed");
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Passport#getKonten()
+   */
+  public Konto[] getKonten() throws RemoteException {
+		try {
+			open();
+			org.kapott.hbci.structures.Konto[] konten = hbciPassport.getAccounts();
+			if (konten == null || konten.length == 0)
+				return null;
+
+			ArrayList result = new ArrayList();
+			Konto k = null;
+			for (int i=0;i<konten.length;++i)
+			{
+				k = (Konto) Settings.getDatabase().createObject(Konto.class,null);
+				k.setBLZ(konten[i].blz);
+				k.setKontonummer(konten[i].number);
+				k.setKundennummer(konten[0].customerid);
+				k.setName(konten[i].name);
+				k.setWaehrung(konten[i].curr);
+				result.add(k);
+			}
+			return (Konto[]) result.toArray(new Konto[result.size()]);
+		}
+		catch (RemoteException e)
+		{
+			throw e;
+		}
+		finally
+		{
+			try {
+				close();
+			}
+			catch (RemoteException e2) {/*useless*/}
+		}
   }
 
 }
@@ -211,6 +258,11 @@ public class PassportDDVImpl
 
 /**********************************************************************
  * $Log: PassportDDVImpl.java,v $
+ * Revision 1.4  2004/02/17 00:53:22  willuhn
+ * @N SaldoAbfrage
+ * @N Ueberweisung
+ * @N Empfaenger
+ *
  * Revision 1.3  2004/02/13 00:41:56  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/02/12 23:46:46 $
+ * $Revision: 1.6 $
+ * $Date: 2004/02/17 00:53:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,9 @@
 package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
+import java.util.Date;
+
+import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.jameica.Application;
@@ -67,6 +70,10 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 
 			if (getBLZ() == null || "".equals(getBLZ()))
 				throw new ApplicationException("Bitte geben Sie eine Bankleitzahl ein.");
+
+			if (!HBCIUtils.checkAccountCRC(getBLZ(),getKontonummer()))
+				throw new ApplicationException("Ungültige BLZ/Kontonummer. Bitte prüfen Sie Ihre Eingaben.");
+			
 		}
 		catch (RemoteException e)
 		{
@@ -213,11 +220,108 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 		setField("kundennummer",kundennummer);
   }
 
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Konto#readFromPassport()
+   */
+  public void readFromPassport() throws RemoteException {
+
+		String own = getKontonummer();
+		if (own == null || own.length() == 0)
+			return;
+
+		Passport p = getPassport();
+		
+		Konto[] konten = p.getKonten();
+		if (konten == null || konten.length == 0)
+			return;
+
+		for (int i=0;i<konten.length;++i)
+		{
+			if (own.equals(konten[i].getKontonummer()))
+			{
+				// Konto gefunden. Wir ueberschreiben unsere Einstellungen mit denen des Kontos
+				this.setBLZ(konten[i].getBLZ()); 
+				this.setKundennummer(konten[i].getKundennummer());
+				this.setName(konten[i].getName());
+				this.setWaehrung(konten[i].getWaehrung());
+			}
+		}
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Konto#getSald()
+   */
+  public double getSaldo() throws RemoteException {
+		Double d = (Double) getField("saldo");
+		if (d == null)
+			return 0;
+		return d.doubleValue();
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Konto#refreshSaldo()
+   */
+  public synchronized void refreshSaldo() throws ApplicationException {
+
+
+		try {
+
+			if (isNewObject())
+			{
+				// Das machen wir um sicherzugehen, dass alle benoetigten Infos
+				// des Kontos vorhanden sind.
+				throw new ApplicationException("Bitte speichern Sie zunächst das Konto.");
+			}
+
+			// Bevor wir anfangen, muessen wir erstmal das Konto speichern
+			// Das checkt gleich, dass alles eingegeben wurde.
+			store();
+
+			double saldo = JobFactory.getSaldo(this);
+
+			// Wenn wir fertig sind, muessen wir noch den Saldo und das Datum speichern
+			setField("saldo",new Double(saldo));
+			setField("saldo_datum",new Date());
+			store();
+		}
+		catch (RemoteException e)
+		{
+			throw new ApplicationException(e.getLocalizedMessage(),e);
+		}
+  }
+  
+  /**
+   * Liefert die Konto-Repraesentation des Kontos im HBCI-Kernel.
+   * @return Konto.
+   */
+  protected org.kapott.hbci.structures.Konto getHBCIKonto() throws RemoteException
+  {
+		
+  	org.kapott.hbci.structures.Konto k =
+  		new org.kapott.hbci.structures.Konto(getBLZ(),getKontonummer());
+  	k.country = "DE";
+  	k.curr = getWaehrung();
+  	k.customerid = getKundennummer();
+  	k.name = getName();
+		return k;  	
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Konto#getSaldoDatum()
+   */
+  public Date getSaldoDatum() throws RemoteException {
+    return (Date) getField("saldo_datum");
+  }
 }
 
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.6  2004/02/17 00:53:22  willuhn
+ * @N SaldoAbfrage
+ * @N Ueberweisung
+ * @N Empfaenger
+ *
  * Revision 1.5  2004/02/12 23:46:46  willuhn
  * *** empty log message ***
  *

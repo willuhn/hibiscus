@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/02/13 00:41:56 $
+ * $Revision: 1.6 $
+ * $Date: 2004/02/17 00:53:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -29,6 +29,7 @@ import org.kapott.hbci.status.HBCIMsgStatus;
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.gui.DialogFactory;
+import de.willuhn.util.I18N;
 
 /**
  * Dieser HBCICallbackSWT implementiert den HBCICallbackSWT des HBCI-Systems und
@@ -87,30 +88,16 @@ public class HBCICallbackSWT extends AbstractHBCICallback
             
 			switch (reason) {
 				case NEED_PASSPHRASE_LOAD:
-					String p = DialogFactory.openPassword("Passwort","Bitte geben Sie das Passwort Ihrer Schlüsseldatei ein.");
-					retData.replace(0,retData.length(),p);
-					break;
-
 				case NEED_PASSPHRASE_SAVE:
-					Application.getLog().info("not implemented");
+					retData.replace(0,retData.length(),Settings.getPassphrase());
 					break;
 	
 				case NEED_CHIPCARD:
-					GUI.getDisplay().asyncExec(new Runnable() {
-            public void run() {
-							DialogFactory.openSimple("Chipkarte","Bitte legen Sie Ihre HBCI-Chipkarte in das Lesegerät.");
-            }
-          });
-					//GUI.setActionText("Bitte legen Sie Ihre HBCI-Chipkarte in das Lesegerät.");
+					GUI.setActionText(I18N.tr("Bitte legen Sie Ihre HBCI-Chipkarte in das Lesegerät."));
 					break;
 
 				case HAVE_CHIPCARD:
-					GUI.getDisplay().asyncExec(new Runnable() {
-						public void run() {
-							DialogFactory.close();
-						}
-					});
-						// GUI.setActionText("HBCI-Chipkarte wird ausgelesen.");
+					GUI.setActionText(I18N.tr("HBCI-Chipkarte wird ausgelesen."));
 					break;
 	
 				case NEED_HARDPIN:
@@ -118,7 +105,7 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 					break;
 
 				case NEED_SOFTPIN:
-					p = DialogFactory.openPassword("PIN-Eingabe","Bitte geben Sie Ihre PIN ein.");
+					String p = DialogFactory.openPassword("PIN-Eingabe","Bitte geben Sie Ihre PIN ein.");
 					retData.replace(0,retData.length(),p);
 					break;
 				case NEED_PT_PIN:
@@ -227,10 +214,12 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 						break;
 
 				case NEED_CONNECTION:
-					DialogFactory.openSimple("Internet-Verbindung","Bitte stellen Sie sicher, dass eine Internetverbindung verfügbar ist.");
+					if (!Settings.getOnlineMode())
+						DialogFactory.openSimple("Internet-Verbindung","Bitte stellen Sie sicher, dass eine Internetverbindung verfügbar ist.");
 					break;
 				case CLOSE_CONNECTION:
-					DialogFactory.openSimple("Internet-Verbindung","Sie können die Internetverbindung nun wieder trennen.");
+					if (!Settings.getOnlineMode())
+						DialogFactory.openSimple("Internet-Verbindung","Sie können die Internetverbindung nun wieder trennen.");
 					break;
 
 				default:
@@ -247,8 +236,7 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 	private void status(String text)
 	{
-		GUI.setActionText(text);
-		Application.getLog().info(text);
+		Application.getLog().debug(text);
 	}
 	
   /* (non-Javadoc)
@@ -380,6 +368,11 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.6  2004/02/17 00:53:22  willuhn
+ * @N SaldoAbfrage
+ * @N Ueberweisung
+ * @N Empfaenger
+ *
  * Revision 1.5  2004/02/13 00:41:56  willuhn
  * *** empty log message ***
  *

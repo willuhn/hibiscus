@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/PassportImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/02/12 23:46:46 $
+ * $Revision: 1.4 $
+ * $Date: 2004/02/17 00:53:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,8 @@ package de.willuhn.jameica.hbci.server;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Iterator;
+
+import org.kapott.hbci.manager.HBCIHandler;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
@@ -210,20 +212,29 @@ public class PassportImpl extends AbstractDBObject implements Passport {
   /**
    * @see de.willuhn.jameica.hbci.rmi.Passport#open()
    */
-  public void open() throws RemoteException {
+  public HBCIHandler open() throws RemoteException {
+  	throw new RemoteException("Not implemented");
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Passport#close()
    */
   public void close() throws RemoteException {
+		throw new RemoteException("Not implemented");
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Passport#isOpen()
    */
   public boolean isOpen() throws RemoteException {
-    return false;
+		throw new RemoteException("Not implemented");
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Passport#getKonten()
+   */
+  public Konto[] getKonten() throws RemoteException {
+		throw new RemoteException("Not implemented");
   }
 
 }
@@ -231,6 +242,11 @@ public class PassportImpl extends AbstractDBObject implements Passport {
 
 /**********************************************************************
  * $Log: PassportImpl.java,v $
+ * Revision 1.4  2004/02/17 00:53:22  willuhn
+ * @N SaldoAbfrage
+ * @N Ueberweisung
+ * @N Empfaenger
+ *
  * Revision 1.3  2004/02/12 23:46:46  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/KontoNeu.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/02/12 23:46:46 $
+ * $Revision: 1.4 $
+ * $Date: 2004/02/17 00:53:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -50,6 +50,9 @@ public class KontoNeu extends AbstractView {
 		final KontoControl control = new KontoControl(this);
 		LabelGroup group = new LabelGroup(getParent(),I18N.tr("Eigenschaften"));
 
+		LabelGroup saldo = new LabelGroup(getParent(),I18N.tr("Aktueller Saldo"));
+
+
 		try {
 			group.addLabelPair(I18N.tr("Kontonummer"),			    		control.getKontonummer());
 			group.addLabelPair(I18N.tr("Bankleitzahl"),			    		control.getBlz());
@@ -57,6 +60,9 @@ public class KontoNeu extends AbstractView {
 			group.addLabelPair(I18N.tr("Kundennummer"),							control.getKundennummer());
       group.addLabelPair(I18N.tr("Währungsbezeichnung"),  		control.getWaehrung());
 			group.addLabelPair(I18N.tr("Sicherheitsmedium"),    		control.getPassport());
+
+			saldo.addLabelPair(I18N.tr("Saldo"),										control.getSaldo());
+			saldo.addLabelPair(I18N.tr("letzte Aktualisierung"),		control.getSaldoDatum());
 
 			control.init();
 		}
@@ -67,10 +73,20 @@ public class KontoNeu extends AbstractView {
 		}
 
 		// und noch die Abschicken-Knoepfe
-		ButtonArea buttonArea = new ButtonArea(getParent(),4);
+		ButtonArea buttonArea = new ButtonArea(getParent(),6);
+		buttonArea.addCustomButton(I18N.tr("Saldo aktualisieren"), new MouseAdapter() {
+			public void mouseUp(MouseEvent e) {
+				control.handleRefreshSaldo();
+			}
+		});
 		buttonArea.addCustomButton(I18N.tr("Sicherheitsmedium konfigurieren"), new MouseAdapter() {
 			public void mouseUp(MouseEvent e) {
 				control.handleConfigurePassport();
+			}
+		});
+		buttonArea.addCustomButton(I18N.tr("Sicherheitsmedium auslesen"), new MouseAdapter() {
+			public void mouseUp(MouseEvent e) {
+				control.handleReadFromPassport();
 			}
 		});
 		buttonArea.addCancelButton(control);
@@ -91,6 +107,11 @@ public class KontoNeu extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoNeu.java,v $
+ * Revision 1.4  2004/02/17 00:53:22  willuhn
+ * @N SaldoAbfrage
+ * @N Ueberweisung
+ * @N Empfaenger
+ *
  * Revision 1.3  2004/02/12 23:46:46  willuhn
  * *** empty log message ***
  *
