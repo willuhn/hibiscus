@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/AccountContainerDialog.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/03/09 01:07:02 $
+ * $Revision: 1.3 $
+ * $Date: 2005/03/11 02:44:42 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,9 @@
 package de.willuhn.jameica.hbci.gui.dialogs;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.kapott.hbci.manager.HBCIUtils;
 import org.kapott.hbci.passport.HBCIPassport;
 
 import de.willuhn.jameica.gui.Action;
@@ -71,7 +74,7 @@ public class AccountContainerDialog extends AbstractDialog
 
 		LabelGroup group2 = new LabelGroup(parent,i18n.tr("Verbindungsdaten"));
 		group2.addText(i18n.tr("Geben Sie hier bitte die Verbindungsdaten zu Ihrer Bank ein."),true);
-		group2.addLabelPair(i18n.tr("Hostname des Bankservers"),getHost());
+		group2.addLabelPair(i18n.tr("Hostname/URL des Bankservers"),getHost());
 		group2.addLabelPair(i18n.tr("TCP-Port des Bankservers"),getPort());
 		group2.addLabelPair(i18n.tr("Filter für die Übertragung"),getFilter());
 
@@ -111,6 +114,21 @@ public class AccountContainerDialog extends AbstractDialog
 	{
 		if (blz == null)
 			blz = new TextInput(passport.getBLZ(),8);
+			blz.setComment("");
+			blz.addListener(new Listener()
+      {
+        public void handleEvent(Event arg0)
+        {
+        	try
+        	{
+        		blz.setComment(HBCIUtils.getNameForBLZ((String)blz.getValue()));
+        	}
+        	catch (Exception e)
+        	{
+        		// ignore
+        	}
+        }
+      });
 		return blz;
 	}
 	
@@ -118,6 +136,7 @@ public class AccountContainerDialog extends AbstractDialog
 	{
 		if (host == null)
 			host = new TextInput(passport.getHost());
+		host.setComment(i18n.tr("Bei PIN/TAN bitte ohne \"https://\" eingeben"));
 		return host;
 	}
 	
@@ -125,6 +144,7 @@ public class AccountContainerDialog extends AbstractDialog
 	{
 		if (port == null)
 			port = new IntegerInput(passport.getPort().intValue());
+		port.setComment(i18n.tr("Bei PIN/TAN \"443\", sonst \"3000\""));
 		return port;
 	}
 
@@ -146,6 +166,7 @@ public class AccountContainerDialog extends AbstractDialog
 	{
 		if (filter == null)
 			filter = new SelectInput(new String[] {"None","Base64"},passport.getFilterType());
+		filter.setComment(i18n.tr("Bei PIN/TAN meist \"Base64\", sonst \"None\""));
 		return filter;
 	}
 
@@ -154,6 +175,9 @@ public class AccountContainerDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: AccountContainerDialog.java,v $
+ * Revision 1.3  2005/03/11 02:44:42  web0
+ * @N added pin/tan support
+ *
  * Revision 1.2  2005/03/09 01:07:02  web0
  * @D javadoc fixes
  *
