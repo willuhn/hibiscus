@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/PassportImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/02/27 01:10:18 $
+ * $Revision: 1.6 $
+ * $Date: 2004/04/19 22:05:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,8 +16,6 @@ import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import org.kapott.hbci.manager.HBCIHandler;
-
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.Application;
@@ -26,10 +24,11 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Passport;
 import de.willuhn.jameica.hbci.rmi.PassportParam;
 import de.willuhn.jameica.hbci.rmi.PassportType;
+import de.willuhn.jameica.hbci.rmi.hbci.PassportHandle;
 import de.willuhn.util.ApplicationException;
 
 /**
- * Bildet einen generischen Passport (Sicherheitsmedium) in HBCI ab.
+ * Bildet die Persistenz eines generischen Passport (Sicherheitsmedium) in HBCI ab.
  * Konkrete Passports muessen von dieser Klasse ableiten.
  */
 public class PassportImpl extends AbstractDBObject implements Passport {
@@ -299,39 +298,21 @@ public class PassportImpl extends AbstractDBObject implements Passport {
 		}
 				
   }
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Passport#close()
-   */
-  public void close() throws RemoteException {
-  	throw new UnsupportedOperationException();
-  }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Passport#getKonten()
+   * @see de.willuhn.jameica.hbci.rmi.Passport#getHandle()
    */
-  public Konto[] getKonten() throws RemoteException {
-		throw new UnsupportedOperationException();
+  public PassportHandle getHandle() throws RemoteException {
+    throw new UnsupportedOperationException("you have to overwrite this method in your passport");
   }
-
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Passport#isOpen()
-   */
-  public boolean isOpen() throws RemoteException {
-		throw new UnsupportedOperationException();
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Passport#open()
-   */
-  public HBCIHandler open() throws RemoteException {
-		throw new UnsupportedOperationException();
-  }
-
 }
 
 
 /**********************************************************************
  * $Log: PassportImpl.java,v $
+ * Revision 1.6  2004/04/19 22:05:51  willuhn
+ * @C HBCIJobs refactored
+ *
  * Revision 1.5  2004/02/27 01:10:18  willuhn
  * @N passport config refactored
  *

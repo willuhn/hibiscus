@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/PassportDetails.java,v $
- * $Revision: 1.11 $
- * $Date: 2004/04/14 23:53:46 $
+ * $Revision: 1.12 $
+ * $Date: 2004/04/19 22:05:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,7 +26,7 @@ import de.willuhn.jameica.hbci.gui.controller.PassportControlDDV;
 import de.willuhn.jameica.hbci.rmi.Passport;
 import de.willuhn.jameica.hbci.rmi.PassportDDV;
 import de.willuhn.jameica.hbci.rmi.PassportType;
-import de.willuhn.jameica.hbci.server.HBCIFactory;
+import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -47,12 +47,11 @@ public class PassportDetails extends AbstractView {
 		Passport 		  p = (Passport) getCurrentObject();
 		PassportType pt = p.getPassportType();
 
-		// getCurrentObject ist erstmal nur ein anonymer Passport. Wir muessen noch die
-		// zugehoerige Impl suchen.
 		p = HBCIFactory.getInstance().findImplementor(p);
 
 		if (p.isNewObject())
 			p.setPassportType(pt); // ist ein neuer Passport - der hat keinen Typ nach dem Laden
+
 		setCurrentObject(p);
 
 
@@ -106,6 +105,9 @@ public class PassportDetails extends AbstractView {
 
 /**********************************************************************
  * $Log: PassportDetails.java,v $
+ * Revision 1.12  2004/04/19 22:05:52  willuhn
+ * @C HBCIJobs refactored
+ *
  * Revision 1.11  2004/04/14 23:53:46  willuhn
  * *** empty log message ***
  *

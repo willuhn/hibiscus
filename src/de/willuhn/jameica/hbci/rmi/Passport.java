@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Attic/Passport.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/02/27 01:10:18 $
+ * $Revision: 1.7 $
+ * $Date: 2004/04/19 22:05:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,13 +14,11 @@ package de.willuhn.jameica.hbci.rmi;
 
 import java.rmi.RemoteException;
 
-import org.kapott.hbci.manager.HBCIHandler;
-
 import de.willuhn.datasource.rmi.DBObject;
+import de.willuhn.jameica.hbci.rmi.hbci.PassportHandle;
 
 /**
- * Bildet einen Passport ab.
- * Ein Passport ist ein HBCI-Sicherheitsmedium - z.Bsp. Chipkarte (DDV).
+ * Bildet die Persistenz eines Passport ab.
  */
 public interface Passport extends DBObject {
 
@@ -51,44 +49,22 @@ public interface Passport extends DBObject {
    * @throws RemoteException
    */
   public void setPassportType(PassportType type) throws RemoteException;
-	
-  /**
-   * Oeffnet den Passport.
-   * @return Handler, der diese Verbindung repraesentiert.
-   * @throws RemoteException muss geworfen werden, wenn die Initialisierung fehlschlaegt.
-   * Die Exeption sollte einen sinnvollen Fehlertext enthalten. 
-   */
-  public HBCIHandler open() throws RemoteException;
 
 	/**
-	 * Schliesst den Passport.
+	 * Liefert das Passport-Handle.
+   * @return Handle.
    * @throws RemoteException
    */
-  public void close() throws RemoteException;
-  
-  /**
-   * Prueft, ob der Passport offen ist.
-   * @return true, wenn er offen ist.
-   * @throws RemoteException
-   */
-  public boolean isOpen() throws RemoteException;
+  public PassportHandle getHandle() throws RemoteException;
 
-	/**
-	 * Liefert ein Array mit Konto-Objekten, die aus dem Medium gelesen wurden.
-	 * Es wird niemals <code>null</code> zurueckgeliefert sondern hoechstens ein leeres Array.
-	 * Hinweis: Die Konten-Objekte existieren nicht in der Datenbank.
-	 * Um sie zu speichern muss fuer jedes die Methode <code>store()</code> aufgerufen werden.
-   * @return Array mit Konten, die dieser Passport anbietet.
-   * @throws RemoteException
-   */
-  public Konto[] getKonten() throws RemoteException;
-  
-	
 }
 
 
 /**********************************************************************
  * $Log: Passport.java,v $
+ * Revision 1.7  2004/04/19 22:05:52  willuhn
+ * @C HBCIJobs refactored
+ *
  * Revision 1.6  2004/02/27 01:10:18  willuhn
  * @N passport config refactored
  *

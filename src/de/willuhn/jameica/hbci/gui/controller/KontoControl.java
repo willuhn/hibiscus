@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.23 $
- * $Date: 2004/04/14 23:53:46 $
+ * $Revision: 1.24 $
+ * $Date: 2004/04/19 22:05:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -38,7 +38,7 @@ import de.willuhn.jameica.hbci.gui.views.KontoNeu;
 import de.willuhn.jameica.hbci.gui.views.UmsatzListe;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Passport;
-import de.willuhn.jameica.hbci.server.HBCIFactory;
+import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -108,8 +108,7 @@ public class KontoControl extends AbstractControl {
 		}
 		catch (ClassNotFoundException e)
 		{
-			Application.getLog().error("unable to find implementor for passport",e);
-			throw new RemoteException("unable to find implementor for passport",e);
+			throw new RemoteException("implementor for this passport not found",e);
 		}
   }
 
@@ -386,7 +385,7 @@ public class KontoControl extends AbstractControl {
 					DBIterator existing = Settings.getDatabase().createList(Konto.class);
 					Konto check = null;
 					Konto newKonto = null;
-					Konto[] konten = getPassport().getKonten();
+					Konto[] konten = getPassport().getHandle().getKonten();
 
 					for (int i=0;i<konten.length;++i)
 					{
@@ -519,6 +518,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.24  2004/04/19 22:05:52  willuhn
+ * @C HBCIJobs refactored
+ *
  * Revision 1.23  2004/04/14 23:53:46  willuhn
  * *** empty log message ***
  *

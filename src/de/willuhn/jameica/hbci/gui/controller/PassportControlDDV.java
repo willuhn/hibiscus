@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/PassportControlDDV.java,v $
- * $Revision: 1.14 $
- * $Date: 2004/04/13 23:14:23 $
+ * $Revision: 1.15 $
+ * $Date: 2004/04/19 22:05:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,6 +28,7 @@ import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.views.PassportDetails;
 import de.willuhn.jameica.hbci.rmi.PassportDDV;
+import de.willuhn.jameica.hbci.rmi.hbci.PassportHandle;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -293,8 +294,9 @@ public class PassportControlDDV extends AbstractControl {
 		GUI.startSync(new Runnable() {
       public void run() {
 				try {
-					getPassport().open();
-					getPassport().close(); // nein, nicht im finally, denn wenn das Oeffnen
+					PassportHandle handle = getPassport().getHandle();
+					handle.open();
+					handle.close(); // nein, nicht im finally, denn wenn das Oeffnen
 																 // fehlschlaegt, ist nichts zum Schliessen da ;)
 					GUI.getStatusBar().setSuccessText(i18n.tr("Chipkartenleser erfolgreich getestet."));
 				}
@@ -311,6 +313,9 @@ public class PassportControlDDV extends AbstractControl {
 
 /**********************************************************************
  * $Log: PassportControlDDV.java,v $
+ * Revision 1.15  2004/04/19 22:05:52  willuhn
+ * @C HBCIJobs refactored
+ *
  * Revision 1.14  2004/04/13 23:14:23  willuhn
  * @N datadir
  *

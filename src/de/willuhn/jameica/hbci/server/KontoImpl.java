@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.17 $
- * $Date: 2004/04/14 23:53:46 $
+ * $Revision: 1.18 $
+ * $Date: 2004/04/19 22:05:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,6 +27,9 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Passport;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
+import de.willuhn.jameica.hbci.server.hbci.HBCISaldoJob;
+import de.willuhn.jameica.hbci.server.hbci.HBCIUmsatzJob;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -36,6 +39,8 @@ import de.willuhn.util.I18N;
 public class KontoImpl extends AbstractDBObject implements Konto {
 
 	private I18N i18n;
+	private Passport passport = null;
+
   /**
    * ct.
    * @throws RemoteException
@@ -137,7 +142,19 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    * @see de.willuhn.jameica.hbci.rmi.Konto#getPassport()
    */
   public Passport getPassport() throws RemoteException {
-		return (Passport) getField("passport_id");
+		if (passport != null)
+			return passport;
+
+		// instanziieren ihn und liefern ihn zurueck.
+		try {
+			passport = HBCIFactory.getInstance().findImplementor((Passport) getField("passport_id"));
+			return passport;
+		}
+		catch (ClassNotFoundException e)
+		{
+			throw new RemoteException("implementor for this passport not found",e);
+		}
+
   }
 
   /**?
@@ -266,10 +283,14 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 			throw new ApplicationException("Bitte speichern Sie zunächst das Konto.");
 		}
 
-		double saldo = HBCIFactory.getInstance().getSaldo(this);
+		HBCIFactory factory = HBCIFactory.getInstance();
+		HBCISaldoJob job = new HBCISaldoJob(this);
+		factory.addJob(job);
+
+		factory.executeJobs(getPassport().getHandle());
 
 		// Wenn wir fertig sind, muessen wir noch den Saldo und das Datum speichern
-		setField("saldo",new Double(saldo));
+		setField("saldo",new Double(job.getSaldo()));
 		setField("saldo_datum",new Date());
 
 		// und wir speichern uns
@@ -285,7 +306,23 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 		if (isNewObject())
 			throw new ApplicationException("Bitte speichern Sie zunächst das Konto.");
 
-		Umsatz[] umsaetze = HBCIFactory.getInstance().getUmsaetze(this);
+		// Bei der Gelegenheit koennen wir auch gleich noch den Saldo
+		// aktualisieren
+		HBCIFactory factory = HBCIFactory.getInstance();
+		HBCISaldoJob job1  = new HBCISaldoJob(this);
+		HBCIUmsatzJob job2 = new HBCIUmsatzJob(this);
+
+		factory.addJob(job1);
+		factory.addJob(job2);
+
+		factory.executeJobs(getPassport().getHandle());
+
+		// Speichern des Saldo
+		setField("saldo",new Double(job1.getSaldo()));
+		setField("saldo_datum",new Date());
+		store();
+
+		Umsatz[] umsaetze = job2.getUmsaetze();
 
 		// Wir vergleichen noch mit den Umsaetzen, die wir schon haben und
 		// speichern nur die neuen.
@@ -358,6 +395,9 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.18  2004/04/19 22:05:51  willuhn
+ * @C HBCIJobs refactored
+ *
  * Revision 1.17  2004/04/14 23:53:46  willuhn
  * *** empty log message ***
  *

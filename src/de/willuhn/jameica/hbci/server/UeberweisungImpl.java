@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UeberweisungImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/04/14 23:53:46 $
+ * $Revision: 1.7 $
+ * $Date: 2004/04/19 22:05:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,6 +23,7 @@ import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
+import de.willuhn.jameica.hbci.server.hbci.*;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -234,7 +235,11 @@ public class UeberweisungImpl
 	
 		try {
 
-			HBCIFactory.getInstance().execute(this);
+			HBCIFactory factory = HBCIFactory.getInstance();
+			HBCIUeberweisungJob job = new HBCIUeberweisungJob(getKonto());
+			
+			factory.addJob(job);
+			factory.executeJobs(getKonto().getPassport().getHandle());
 
 			// wenn alles erfolgreich verlief, koennen wir die Ueberweisung auf
 			// Status "ausgefuehrt" setzen.
@@ -311,6 +316,9 @@ public class UeberweisungImpl
 
 /**********************************************************************
  * $Log: UeberweisungImpl.java,v $
+ * Revision 1.7  2004/04/19 22:05:51  willuhn
+ * @C HBCIJobs refactored
+ *
  * Revision 1.6  2004/04/14 23:53:46  willuhn
  * *** empty log message ***
  *
