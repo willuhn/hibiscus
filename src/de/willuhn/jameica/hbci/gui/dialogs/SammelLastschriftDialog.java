@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/SammelLastschriftDialog.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/03/05 19:11:25 $
+ * $Revision: 1.2 $
+ * $Date: 2005/03/05 19:19:48 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -76,13 +76,13 @@ public class SammelLastschriftDialog extends AbstractDialog {
 		kto.setComment(ueb.getKonto().getBezeichnung());
 		group.addLabelPair(i18n.tr("Gutschriftskonto"),kto);
 
-		group.addSeparator();
 
 		group.addText(i18n.tr("Enthaltene Buchungen"),false);
 
 		DBIterator list = ueb.getBuchungen();
 		while (list.hasNext())
 		{
+			group.addSeparator();
 			SammelLastBuchung b = (SammelLastBuchung) list.next();
 			Input empfName = new LabelInput(b.getGegenkontoName());
 			group.addLabelPair(i18n.tr("Names des Zahlungspflichtigen"),empfName);
@@ -90,8 +90,6 @@ public class SammelLastschriftDialog extends AbstractDialog {
 			Input empfKto = new LabelInput(b.getGegenkontoNummer());
 			empfKto.setComment(b.getGegenkontoBLZ() + "/" + HBCIUtils.getNameForBLZ(b.getGegenkontoBLZ()));
 			group.addLabelPair(i18n.tr("Zu belastendes Konto"),empfKto);
-
-			group.addSeparator();
 
 			String s = b.getZweck();
 			String s2 = b.getZweck2();
@@ -102,7 +100,6 @@ public class SammelLastschriftDialog extends AbstractDialog {
 
 			Input betrag = new LabelInput(HBCI.DECIMALFORMAT.format(b.getBetrag()) + " " + ueb.getKonto().getWaehrung());
 			group.addLabelPair(i18n.tr("Betrag"),betrag);
-			group.addSeparator();
 		}
 
 		ButtonArea b = group.createButtonArea(2);
@@ -129,6 +126,9 @@ public class SammelLastschriftDialog extends AbstractDialog {
 
 /**********************************************************************
  * $Log: SammelLastschriftDialog.java,v $
+ * Revision 1.2  2005/03/05 19:19:48  web0
+ * *** empty log message ***
+ *
  * Revision 1.1  2005/03/05 19:11:25  web0
  * @N SammelLastschrift-Code complete
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/SammelLastschriftNew.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/03/02 00:22:05 $
+ * $Revision: 1.4 $
+ * $Date: 2005/03/05 19:19:48 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -22,7 +22,9 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.SammelLastBuchungNew;
 import de.willuhn.jameica.hbci.gui.action.SammelLastschriftDelete;
+import de.willuhn.jameica.hbci.gui.action.SammelLastschriftExecute;
 import de.willuhn.jameica.hbci.gui.controller.SammelLastschriftControl;
+import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -54,11 +56,20 @@ public class SammelLastschriftNew extends AbstractView {
     new Headline(getParent(),i18n.tr("Enthaltene Buchungen"));
     control.getBuchungen().paint(getParent());
 
+		final SammelLastschrift l = control.getLastschrift();
 
-    ButtonArea buttons = new ButtonArea(getParent(),4);
+    ButtonArea buttons = new ButtonArea(getParent(),5);
     buttons.addButton(i18n.tr("Zurück"),new Back());
-    buttons.addButton(i18n.tr("Neue Buchung hinzufügen"), new SammelLastBuchungNew(),control.getLastschrift());
-    buttons.addButton(i18n.tr("Sammel-Lastschrift löschen"),new SammelLastschriftDelete(),control.getLastschrift());
+    buttons.addButton(i18n.tr("Neue Buchung hinzufügen"), new SammelLastBuchungNew(),l);
+    buttons.addButton(i18n.tr("Löschen"),new SammelLastschriftDelete(),control.getLastschrift());
+		buttons.addButton(i18n.tr("Speichern und ausführen"), new Action()
+		{
+			public void handleAction(Object context) throws ApplicationException
+			{
+				control.handleStore();
+				new SammelLastschriftExecute().handleAction(l);
+			}
+		},null,true);
     buttons.addButton(i18n.tr("Speichern"),new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -80,6 +91,9 @@ public class SammelLastschriftNew extends AbstractView {
 
 /**********************************************************************
  * $Log: SammelLastschriftNew.java,v $
+ * Revision 1.4  2005/03/05 19:19:48  web0
+ * *** empty log message ***
+ *
  * Revision 1.3  2005/03/02 00:22:05  web0
  * @N first code for "Sammellastschrift"
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/SammelLastschriftExecute.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/03/05 19:11:25 $
+ * $Revision: 1.3 $
+ * $Date: 2005/03/05 19:19:48 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -18,7 +18,6 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.dialogs.SammelLastschriftDialog;
-import de.willuhn.jameica.hbci.rmi.Lastschrift;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.hbci.server.hbci.HBCISammelLastschriftJob;
@@ -43,7 +42,7 @@ public class SammelLastschriftExecute implements Action
   {
 		final I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-		if (context == null || !(context instanceof Lastschrift))
+		if (context == null || !(context instanceof SammelLastschrift))
 			throw new ApplicationException(i18n.tr("Keine Sammel-Lastschrift angegeben"));
 
 		try
@@ -118,6 +117,9 @@ public class SammelLastschriftExecute implements Action
 
 /**********************************************************************
  * $Log: SammelLastschriftExecute.java,v $
+ * Revision 1.3  2005/03/05 19:19:48  web0
+ * *** empty log message ***
+ *
  * Revision 1.2  2005/03/05 19:11:25  web0
  * @N SammelLastschrift-Code complete
  *
