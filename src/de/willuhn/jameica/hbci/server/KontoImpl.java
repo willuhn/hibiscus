@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/03/05 00:19:23 $
+ * $Revision: 1.11 $
+ * $Date: 2004/03/05 00:30:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,6 +21,7 @@ import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.rmi.Empfaenger;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Passport;
 import de.willuhn.jameica.hbci.rmi.PassportType;
@@ -304,6 +305,10 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 		// wir speichern die Umsaetze gleich noch ab
 		for (int i=0;i<umsaetze.length;++i)
 		{
+			// Die Empfaenger in den Umsaetzen wurden ggf. neu erzeugt. Wir speichern sie mit
+			Empfaenger e = umsaetze[i].getEmpfaenger();
+			if (e != null)
+				e.store(); //TODO: Was machen, wenn der Empfaenger auch bei Soll-Buchungen fehlt?
 			umsaetze[i].store();
 		}
 	}
@@ -328,6 +333,9 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.11  2004/03/05 00:30:41  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.10  2004/03/05 00:19:23  willuhn
  * @D javadoc fixes
  * @C Converter moved into server package
