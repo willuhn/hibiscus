@@ -1,0 +1,10 @@
+<form>
+	<p>
+		<span color="header" font="header">Lizenzinformationen</span>
+	</p>
+	
+	<p>
+		In dieser Liste sehen Sie alle von Hibiscus verwendeten
+		Programm-Bibliotheken und Fremdkomponenten.
+	</p>
+</form>

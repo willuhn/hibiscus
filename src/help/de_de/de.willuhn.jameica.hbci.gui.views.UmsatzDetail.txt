@@ -1,0 +1,13 @@
+<form>
+	<p>
+		<span color="header" font="header">Buchungsdetails</span>
+	</p>
+	
+	<p>
+		Klicken Sie auf <b>Empfänger in Adressbuch übernehmen</b>
+		um das Gegenkonto dieser Buchung in Ihr Adressbuch zu
+		übernehmen. Hierbei wird automatisch geprüft, ob bereits
+		eine Bankverbindung mit dieser Kontonummer- und BLZ-Kombination
+		existiert.
+	</p>
+</form>

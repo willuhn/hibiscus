@@ -1,0 +1,17 @@
+<form>
+	<p>
+		<span color="header" font="header">Umsätze des Kontos</span>
+	</p>
+	
+	<p>
+		Klicken Sie auf <b>Umsätze abrufen</b> um aktuelle Buchungen
+		von Ihrem Konto abzurufen. Hierbei wird gleichzeitig der
+		Saldo dieses Kontos aktualisiert.
+	</p>
+	
+	<p>
+		<b>Tipp:</b> Durch Doppelklick auf eine Buchungen können
+		Sie weitere Details anzeigen und den Empfänger des Umsatzes
+		in Ihr Adressbuch übernehmen.
+	</p>
+</form>
