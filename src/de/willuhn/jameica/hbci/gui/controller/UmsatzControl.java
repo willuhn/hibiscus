@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzControl.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/03/05 00:04:10 $
+ * $Revision: 1.2 $
+ * $Date: 2004/03/05 08:38:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -132,16 +132,16 @@ public class UmsatzControl extends AbstractControl {
 					getKonto().refreshUmsaetze();
 					// Jetzt aktualisieren wir die GUI, indem wir uns selbst neu laden ;)
 					GUI.startView(UmsatzListe.class.getName(),getKonto());
-					GUI.setActionText(i18n.tr("Umsätze erfolgreich übertragen..."));
+					GUI.setActionText(i18n.tr("...Umsätze erfolgreich übertragen"));
 				}
 				catch (ApplicationException e2)
 				{
-					GUI.setActionText(e2.getLocalizedMessage());
+					GUI.setErrorText(e2.getLocalizedMessage());
 				}
 				catch (Exception e)
 				{
 					Application.getLog().error("error while reading saldo",e);
-					GUI.setActionText(e.getLocalizedMessage());
+					GUI.setErrorText(i18n.tr("Fehler beim Abrufen der Umsätze."));
 				}
 			}
 		});
@@ -153,6 +153,9 @@ public class UmsatzControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzControl.java,v $
+ * Revision 1.2  2004/03/05 08:38:47  willuhn
+ * @N umsaetze works now
+ *
  * Revision 1.1  2004/03/05 00:04:10  willuhn
  * @N added code for umsatzlist
  *

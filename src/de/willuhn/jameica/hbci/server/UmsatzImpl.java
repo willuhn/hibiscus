@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/03/05 00:04:10 $
+ * $Revision: 1.2 $
+ * $Date: 2004/03/05 08:38:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,6 +31,7 @@ import de.willuhn.util.I18N;
 public class UmsatzImpl extends AbstractDBObject implements Umsatz {
 
 	I18N i18n;
+	private Empfaenger empfaenger;
 
   /**
    * @throws RemoteException
@@ -70,18 +71,17 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz {
 		// wir nur die speichern, die vollstaendig sind.
 		try {
 
+			// Empfaenger nur speichern, wenn er existiert und nicht neu ist
+			if (empfaenger != null && !empfaenger.isNewObject())
+				setField("empfaenger_id",new Integer(empfaenger.getID()));
+			else
+				setField("empfaenger_id",null);
+
 			if (getBetrag() == 0.0)
 				throw new ApplicationException(i18n.tr("Betrag fehlt."));
 
 			if (getDatum() == null)
 				throw new ApplicationException(i18n.tr("Datum fehlt."));
-
-			if (getBetrag() <= 0.0 && (getEmpfaenger() == null || getEmpfaenger().isNewObject()))
-			{
-				// Bei Haben-Buchungen sind wir selbst der Empfaenger. Daher muss dieser
-				// in dem Fall nicht existieren
-				throw new ApplicationException(i18n.tr("Empfänger existiert nicht."));
-			}
 
 			if (getKonto() == null)
 				throw new ApplicationException(i18n.tr("Umsatz muss einem Konto zugewiesen sein."));
@@ -128,7 +128,12 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz {
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#getEmpfaenger()
    */
   public Empfaenger getEmpfaenger() throws RemoteException {
-    return (Empfaenger) getField("empfaenger_id");
+
+		if (empfaenger != null)
+			return empfaenger;
+
+    empfaenger = (Empfaenger) getField("empfaenger_id");
+		return empfaenger;
   }
 
   /**
@@ -175,7 +180,7 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz {
   public void setEmpfaenger(Empfaenger e) throws RemoteException {
 		if (e == null)
 			return;
-		setField("empfaenger_id",new Integer(e.getID()));
+		empfaenger = e;
   }
 
   /**
@@ -227,6 +232,9 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz {
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.2  2004/03/05 08:38:47  willuhn
+ * @N umsaetze works now
+ *
  * Revision 1.1  2004/03/05 00:04:10  willuhn
  * @N added code for umsatzlist
  *

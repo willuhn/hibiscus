@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.11 $
- * $Date: 2004/03/05 00:30:41 $
+ * $Revision: 1.12 $
+ * $Date: 2004/03/05 08:38:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,8 @@ import org.kapott.hbci.manager.HBCIUtils;
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.Application;
+import de.willuhn.jameica.PluginLoader;
+import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Empfaenger;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -28,6 +30,7 @@ import de.willuhn.jameica.hbci.rmi.PassportType;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.util.ApplicationException;
+import de.willuhn.util.I18N;
 import de.willuhn.util.MultipleClassLoader;
 
 /**
@@ -35,12 +38,14 @@ import de.willuhn.util.MultipleClassLoader;
  */
 public class KontoImpl extends AbstractDBObject implements Konto {
 
+	private I18N i18n;
   /**
    * ct.
    * @throws RemoteException
    */
   public KontoImpl() throws RemoteException {
     super();
+    i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
   }
 
   /**
@@ -303,13 +308,32 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 		Umsatz[] umsaetze = JobFactory.getInstance().getAlleUmsaetze(this);
 
 		// wir speichern die Umsaetze gleich noch ab
-		for (int i=0;i<umsaetze.length;++i)
+		try {
+			for (int i=0;i<umsaetze.length;++i)
+			{
+				// Die Empfaenger in den Umsaetzen wurden ggf. neu erzeugt. Wir speichern sie mit
+				Empfaenger e = umsaetze[i].getEmpfaenger();
+				// TODO Hier noch checken, ob der Empfaenger schon existiert
+				if (e != null)
+					try {
+						e.store();
+					}
+					catch (Exception e2)
+					{
+						// Wir wollen nicht, dass der ganze Vorgang abbricht, weil ein
+						// Empfaenger nicht gespeichert werden konnte
+						Application.getLog().warn("unable to store empfaenger (" + e2.getMessage() + ")");
+					}
+				umsaetze[i].store();
+			}
+		}
+		catch (ApplicationException e)
 		{
-			// Die Empfaenger in den Umsaetzen wurden ggf. neu erzeugt. Wir speichern sie mit
-			Empfaenger e = umsaetze[i].getEmpfaenger();
-			if (e != null)
-				e.store(); //TODO: Was machen, wenn der Empfaenger auch bei Soll-Buchungen fehlt?
-			umsaetze[i].store();
+			// Die fangen wir, weil z.Bsp. beim Speichern der Empfaenger ein
+			// Fehler auftreten koennte und dann nur z.Bsp. "Zwecke fehlt" in
+			// der Fehlermeldung stehen wuerde.
+			throw new ApplicationException(i18n.tr("Fehler beim Aktualisieren der Umsätze.") + 
+				" (" + e.getMessage() + ")");
 		}
 	}
 
@@ -325,7 +349,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    */
   public DBIterator getUmsaetze() throws RemoteException {
 		DBIterator list = Settings.getDatabase().createList(Umsatz.class);
-		list.addFilter("konto_id = '" + getID() + "' " +			"ORDER BY TONUMBER(datum)");
+		list.addFilter("konto_id = " + getID() + "ORDER BY TONUMBER(datum)");
 		return list;
   }
 }
@@ -333,6 +357,9 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.12  2004/03/05 08:38:47  willuhn
+ * @N umsaetze works now
+ *
  * Revision 1.11  2004/03/05 00:30:41  willuhn
  * *** empty log message ***
  *

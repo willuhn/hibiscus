@@ -37,7 +37,7 @@ CREATE TABLE ueberweisung (
 CREATE TABLE umsatz (
   id NUMERIC default UNIQUEKEY('umsatz'),
   konto_id int(4) NOT NULL,
-  empfaenger_id int(4) NOT NULL,
+  empfaenger_id int(4),
   betrag double NOT NULL,
   zweck varchar(35) NOT NULL,
   zweck2 varchar(35),
