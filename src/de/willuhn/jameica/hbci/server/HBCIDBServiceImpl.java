@@ -1,12 +1,12 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/HBCIDBServiceImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/07/25 17:15:06 $
+ * $Revision: 1.4 $
+ * $Date: 2004/08/31 18:13:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
- * Copyright (c) by  bbv AG
+ * Copyright (c) by willuhn.webdesign
  * All rights reserved
  *
  **********************************************************************/
@@ -42,6 +42,9 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements DBService
 
 /*********************************************************************
  * $Log: HBCIDBServiceImpl.java,v $
+ * Revision 1.4  2004/08/31 18:13:51  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2004/07/25 17:15:06  willuhn
  * @C PluginLoader is no longer static
  *
