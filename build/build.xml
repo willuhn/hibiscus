@@ -38,7 +38,7 @@
     	<property name="define.srcfilename"   value="hibiscus.src.zip"/>
 	    <property name="define.package"       value="de.willuhn.jameica"/>
 
-    	<property name="project.release"      value="releases/${version}-${build.number}/${define.pluginname}"/>
+    	<property name="project.release"      value="releases/${version}-${build.number}"/>
     	<property name="project.src"          value="${project.release}/src/classes"/>
 	    <property name="project.tmp"          value="${project.release}/tmp"/>
 	    <property name="project.javadoc"      value="${project.release}/javadoc"/>
@@ -49,6 +49,10 @@
 	    <property name="lib.dir"              value="lib"/>
 	    <property name="sql.dir"              value="sql"/>
 	    <property name="class.dir"            value="${project.tmp}/bin"/>
+
+	    <property name="project.zipdir"        value="${project.release}/${define.pluginname}"/>
+	    <property name="project.zipfilename"   value="${define.pluginname}.zip"/>
+
 
 	    <path id="compilepath">
 	      <pathelement location="../jameica/lib/swt/linux/swt.jar"/>
@@ -104,8 +108,9 @@
   <target depends="compile" name="jar" description="generates the jar file">
 
     <mkdir dir="${project.release}"/>
+    <mkdir dir="${project.zipdir}"/>
 
-    <jar destfile="${project.release}/${define.jarfilename}">
+    <jar destfile="${project.zipdir}/${define.jarfilename}">
       <manifest>
         <attribute name="Built-By" value="${user.name}"/>
         <attribute name="Implementation-Title" value="${define.pluginname}"/>
@@ -116,24 +121,33 @@
       <fileset dir="${class.dir}"/>
     </jar>
 
-    <mkdir dir="${project.release}/sql"/>
-    <copy todir="${project.release}/sql">
+    <mkdir dir="${project.zipdir}/sql"/>
+    <copy todir="${project.zipdir}/sql">
       <fileset dir="${sql.dir}"/>
     </copy>
 
-    <mkdir dir="${project.release}/lib"/>
-    <copy todir="${project.release}/lib">
+    <mkdir dir="${project.zipdir}/lib"/>
+    <copy todir="${project.zipdir}/lib">
       <fileset dir="${lib.dir}"/>
     </copy>
 
-    <copy file="${build.dir}/README"            tofile="${project.release}/README" />
-    <copy file="${build.dir}/COPYING"           tofile="${project.release}/COPYING" />
-    <copy file="${build.dir}/INSTALL"           tofile="${project.release}/INSTALL" />
+    <copy file="${build.dir}/README"            tofile="${project.zipdir}/README" />
+    <copy file="${build.dir}/COPYING"           tofile="${project.zipdir}/COPYING" />
+    <copy file="${build.dir}/INSTALL"           tofile="${project.zipdir}/INSTALL" />
 
-  	<checksum file="${project.release}/${define.jarfilename}" />
+
+	<!-- Jetzt muessen wir noch das ZIP-File erzeugen und signieren -->
+	<zip destfile="${project.release}/${project.zipfilename}">
+	    <fileset dir="${project.release}">
+	    	<include name="${define.pluginname}"/>
+	    	<include name="${define.pluginname}/**"/>
+	    </fileset>
+	</zip>
+
+  	<checksum file="${project.release}/${project.zipfilename}" />
   	<echo message="Creating PGP signature" />
   	<exec executable="kgpg" failonerror="true" timeout="60000">
-		<arg line="-S ${project.release}/${define.jarfilename}"/>
+		<arg line="-S ${project.release}/${project.zipfilename}"/>
   	</exec>
   	<echo message="done" />
 
