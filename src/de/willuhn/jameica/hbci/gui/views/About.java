@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/About.java,v $
- * $Revision: 1.8 $
- * $Date: 2005/03/09 01:07:02 $
+ * $Revision: 1.9 $
+ * $Date: 2005/03/31 23:05:46 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Label;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.LabelInput;
+import de.willuhn.jameica.gui.internal.action.Program;
 import de.willuhn.jameica.gui.parts.FormTextPart;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
@@ -44,9 +45,9 @@ public class About extends AbstractView {
     FormTextPart text = new FormTextPart();
     text.setText("<form>" +
       "<p><b>Hibiscus - HBCI-Onlinebanking für Jameica</b></p>" +
-      "<br/>Licence: GPL (http://www.gnu.org/copyleft/gpl.html)" +
-      "<br/><p>Copyright by Olaf Willuhn [hibiscus@willuhn.de]</p>" +
-      "<p>http://www.willuhn.de/projects/hibiscus/</p>" +
+      "<br/><p>Licence: GPL [<a href=\"" + Program.class.getName() + "\">http://www.gnu.org/copyleft/gpl.html</a>]</p>" +
+      "<br/><p>Copyright by Olaf Willuhn [<a href=\"" + Program.class.getName() + "\">mailto:hibiscus@willuhn.de</a>]</p>" +
+      "<p><a href=\"" + Program.class.getName() + "\">http://www.willuhn.de/projects/hibiscus/</a></p>" +
       "</form>");
 
     text.paint(getParent());
@@ -69,6 +70,10 @@ public class About extends AbstractView {
 
 /**********************************************************************
  * $Log: About.java,v $
+ * Revision 1.9  2005/03/31 23:05:46  web0
+ * @N geaenderte Startseite
+ * @N klickbare Links
+ *
  * Revision 1.8  2005/03/09 01:07:02  web0
  * @D javadoc fixes
  *

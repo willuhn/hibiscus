@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/Welcome.java,v $
- * $Revision: 1.16 $
- * $Date: 2005/03/09 01:07:02 $
+ * $Revision: 1.17 $
+ * $Date: 2005/03/31 23:05:46 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -13,16 +13,9 @@
 
 package de.willuhn.jameica.hbci.gui.views;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
-
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.util.Color;
-import de.willuhn.jameica.gui.util.Headline;
+import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.controller.WelcomeControl;
 import de.willuhn.jameica.system.Application;
@@ -46,22 +39,11 @@ public class Welcome extends AbstractView
 
 		GUI.getView().setTitle(i18n.tr("Hibiscus - HBCI-Onlinebanking"));
 
-		Composite comp = new Composite(getParent(),SWT.NONE);
-		comp.setBackground(Color.BACKGROUND.getSWTColor());
-		comp.setLayoutData(new GridData(GridData.FILL_BOTH));
-		comp.setLayout(new GridLayout(3,false));
+    LabelGroup group = new LabelGroup(getParent(),i18n.tr("Offene Überweisungen"));
+    group.addPart(control.getOffeneUeberweisungen());
 
-		new Headline(comp,i18n.tr("Offene Überweisungen"));
-		Label sep = new Label(comp,SWT.SEPARATOR);
-		GridData gd = new GridData(GridData.FILL_VERTICAL);
-		gd.verticalSpan = 3;
-		sep.setLayoutData(gd);
-		new Headline(comp,i18n.tr("Konten"));
+		control.getQuickLinks().paint(getParent());
 
-		control.getOffeneUeberweisungen().paint(comp);
-		control.getKontoStats().paint(comp);	
-		
-		control.getQuickLinks().paint(comp);
   }
 
   /**
@@ -76,6 +58,10 @@ public class Welcome extends AbstractView
 
 /**********************************************************************
  * $Log: Welcome.java,v $
+ * Revision 1.17  2005/03/31 23:05:46  web0
+ * @N geaenderte Startseite
+ * @N klickbare Links
+ *
  * Revision 1.16  2005/03/09 01:07:02  web0
  * @D javadoc fixes
  *

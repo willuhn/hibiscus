@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/WelcomeControl.java,v $
- * $Revision: 1.16 $
- * $Date: 2005/03/09 01:07:02 $
+ * $Revision: 1.17 $
+ * $Date: 2005/03/31 23:05:46 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -15,14 +15,11 @@ package de.willuhn.jameica.hbci.gui.controller;
 import java.rmi.RemoteException;
 import java.util.Date;
 
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TableItem;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
@@ -31,15 +28,11 @@ import de.willuhn.jameica.gui.parts.FormTextPart;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.menus.KontoList;
+import de.willuhn.jameica.hbci.gui.action.KontoNew;
 import de.willuhn.jameica.hbci.gui.menus.UeberweisungList;
-import de.willuhn.jameica.hbci.gui.views.EmpfaengerNew;
-import de.willuhn.jameica.hbci.gui.views.KontoNew;
-import de.willuhn.jameica.hbci.gui.views.UeberweisungNew;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
 /**
@@ -50,7 +43,6 @@ public class WelcomeControl extends AbstractControl {
 	private I18N i18n 											= null;
 	private TablePart offeneUeberweisungen	= null;
 	private FormTextPart quickLinks					= null;
-	private TablePart kontoStats 						= null;
 	 
   /**
    * @param view
@@ -97,71 +89,47 @@ public class WelcomeControl extends AbstractControl {
 		return offeneUeberweisungen;
 	}
 
-	/**
+  /**
 	 * Liefert einen formatierten Welcome-Text.
    * @return Welcome-Text.
+   * @throws Exception
    */
-  public Part getQuickLinks()
+  public Part getQuickLinks() throws Exception
 	{
 		if (quickLinks != null)
 			return quickLinks;
 
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("<form><p/>");
-		buffer.append("<p><span color=\"header\" font=\"header\">" + i18n.tr("Quicklinks") + "</span></p>");
-		buffer.append("<li><a href=\"" + UeberweisungNew.class.getName() + "\">" + i18n.tr("Neue Überweisung") + "</a></li>");
-		buffer.append("<li><a href=\"" + EmpfaengerNew.class.getName() + "\">" + i18n.tr("Neue Adresse") + "</a></li>");
-		buffer.append("<li><a href=\"" + KontoNew.class.getName() + "\">" + i18n.tr("Neues Konto") + "</a></li>");
+		buffer.append("<p><span color=\"header\" font=\"header\">" + i18n.tr("Ihre Konten im Überblick") + "</span></p>");
+
+    DBIterator i = Settings.getDBService().createList(Konto.class);
+    while (i.hasNext())
+    {
+      Konto k = (Konto) i.next();
+      buffer.append("<li>");
+      buffer.append(k.getBezeichnung());
+      buffer.append(" [" + i18n.tr("Kto-Nr.") + ": <a href=\"" + KontoNew.class.getName() + "\">" + k.getKontonummer() + "</a>] ");
+      buffer.append(i18n.tr("Saldo") + ": " + HBCI.DECIMALFORMAT.format(k.getSaldo()) + k.getWaehrung());
+      if (k.getSaldoDatum() != null)
+        buffer.append(" [" + i18n.tr("aktualisiert am") + ": " + HBCI.DATEFORMAT.format(k.getSaldoDatum()) + "]");
+      buffer.append("</li>");
+      
+    }
 		buffer.append("</form>");
 
 		quickLinks= new FormTextPart(buffer.toString());
-		quickLinks.addHyperlinkListener(new Listener() {
-      public void handleEvent(Event event) {
-      	GUI.startView(event.data.toString(),null);
-      }
-    });
 		return quickLinks;
-	}
-
-	/**
-	 * Liefert eine Kurzzusammenfassung der Konten.
-   * @return Zusammenfassung der Konten.
-   * @throws RemoteException
-   */
-  public Part getKontoStats() throws RemoteException
-	{
-		if (kontoStats != null)
-			return kontoStats;
-
-		DBIterator list = Settings.getDBService().createList(Konto.class);
-
-		kontoStats = new TablePart(list,new de.willuhn.jameica.hbci.gui.action.KontoNew());
-		kontoStats.addColumn(i18n.tr("Kontonummer"),"kontonummer");
-		kontoStats.addColumn(i18n.tr("Bezeichnung"),"bezeichnung");
-		kontoStats.addColumn(i18n.tr("Saldo"),"saldo");
-		kontoStats.setFormatter(new TableFormatter()
-		{
-			public void format(TableItem item)
-			{
-				Konto k = (Konto) item.getData();
-				try {
-					item.setText(2,HBCI.DECIMALFORMAT.format(k.getSaldo()) + " " + k.getWaehrung());
-				}
-				catch (RemoteException e)
-				{
-					Logger.error("error while formatting saldo",e);
-				}
-			}
-		});
-    
-		kontoStats.setContextMenu(new KontoList());
-		return kontoStats;
 	}
 }
 
 
 /**********************************************************************
  * $Log: WelcomeControl.java,v $
+ * Revision 1.17  2005/03/31 23:05:46  web0
+ * @N geaenderte Startseite
+ * @N klickbare Links
+ *
  * Revision 1.16  2005/03/09 01:07:02  web0
  * @D javadoc fixes
  *

@@ -13,6 +13,6 @@
 	  <b>Hinweis:</b> Verwenden Sie als Währungsbezeichnung bitte
 	  einen 3-Buchstaben-Code entsprechend ISO-4217 Norm.
 	  Sie finden eine Liste der möglichen Währungsbezeichnungen
-	  unter http://de.wikipedia.org/wiki/ISO_4217
+	  unter <a href="foo">http://de.wikipedia.org/wiki/ISO_4217</a>
 	</p>
 </form>
