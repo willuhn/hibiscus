@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/03/30 22:07:49 $
+ * $Revision: 1.11 $
+ * $Date: 2004/05/05 21:27:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -100,24 +100,26 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 					break;
 
 				case HAVE_CHIPCARD:
-				GUI.getStatusBar().setSuccessText(i18n.tr("HBCI-Chipkarte wird ausgelesen."));
+					GUI.getStatusBar().setSuccessText(i18n.tr("HBCI-Chipkarte wird ausgelesen."));
 					break;
 	
 				case NEED_HARDPIN:
-					Application.getLog().info("not implemented");
+					GUI.getStatusBar().setSuccessText(i18n.tr("Bitte geben Sie die PIN in Ihren Chipkarten-Leser ein."));
 					break;
 
 				case NEED_SOFTPIN:
-					String p = DialogFactory.getPIN();
-					retData.replace(0,retData.length(),p);
+					retData.replace(0,retData.length(),DialogFactory.getPIN());
 					break;
 				case NEED_PT_PIN:
+					retData.replace(0,retData.length(),DialogFactory.getPIN());
+					break;
 				case NEED_PT_TAN:
-						System.out.print(msg+": ");
-						break;
+					retData.replace(0,retData.length(),DialogFactory.getTAN());
+					break;
 
 				case HAVE_HARDPIN:
-
+					GUI.getStatusBar().setSuccessText(i18n.tr("PIN wurde eingegeben."));
+					break;
 
 				case NEED_COUNTRY:
 				case NEED_BLZ:
@@ -126,8 +128,8 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 				case NEED_FILTER:
 				case NEED_USERID:
 				case NEED_CUSTOMERID:
-						System.out.print(msg+" ["+retData.toString()+"]: ");
-						break;
+					Application.getLog().warn("NOT IMPLEMENTED: " + msg+ " ["+retData.toString()+"]: ");
+					break;
 
 				case NEED_NEW_INST_KEYS_ACK:
 						System.out.println(msg);
@@ -163,8 +165,8 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 						break;
 
 				case NEED_REMOVE_CHIPCARD:
-						System.out.println(msg);
-						break;
+					GUI.getStatusBar().setErrorText(i18n.tr("Bitte entfernen Sie die Chipkarte aus dem Lesegerät."));
+					break;
 
 				case HAVE_CRC_ERROR:
 						System.out.println(msg);
@@ -371,6 +373,9 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.11  2004/05/05 21:27:13  willuhn
+ * @N added TAN-Dialog
+ *
  * Revision 1.10  2004/03/30 22:07:49  willuhn
  * *** empty log message ***
  *

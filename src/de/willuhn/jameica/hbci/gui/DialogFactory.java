@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/DialogFactory.java,v $
- * $Revision: 1.13 $
- * $Date: 2004/05/04 23:58:20 $
+ * $Revision: 1.14 $
+ * $Date: 2004/05/05 21:27:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.dialogs.SimpleDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.PINDialog;
+import de.willuhn.jameica.hbci.gui.dialogs.TANDialog;
 
 /**
  * Hilfsklasse zur Erzeugung von Hilfs-Dialogen bei der HBCI-Kommunikation.
@@ -80,6 +81,32 @@ public class DialogFactory {
 	}
 
 	/**
+	 * Erzeugt einen TAN-Dialog.
+	 * Hinweis: Wirft eine RuntimeException, wenn der TAN-Dialog abgebrochen wurde.
+	 * Hintergrund: Der Dialog wurde aus dem HBCICallBack heraus aufgerufen und soll im
+	 * Fehlerfall den HBCI-Vorgang abbrechen.
+	 * @return die eingegebene TAN.
+	 */
+	public static synchronized String getTAN()
+	{
+		check();
+		dialog = new TANDialog(AbstractDialog.POSITION_CENTER);
+		try {
+			return (String) dialog.open();
+		}
+		catch (Exception e)
+		{
+			Application.getLog().error(e.getLocalizedMessage(),e);
+			GUI.getStatusBar().setErrorText(e.getLocalizedMessage());
+			throw new RuntimeException(e);
+		}
+		finally
+		{
+			close();
+		}
+	}
+
+	/**
    * Prueft, ob der Dialog geoeffnet werden kann.
    */
   private static synchronized void check()
@@ -112,6 +139,9 @@ public class DialogFactory {
 
 /**********************************************************************
  * $Log: DialogFactory.java,v $
+ * Revision 1.14  2004/05/05 21:27:13  willuhn
+ * @N added TAN-Dialog
+ *
  * Revision 1.13  2004/05/04 23:58:20  willuhn
  * *** empty log message ***
  *
