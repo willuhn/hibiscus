@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Transfer.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/07/14 23:48:31 $
+ * $Revision: 1.3 $
+ * $Date: 2004/07/20 21:48:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -99,6 +99,13 @@ public interface Transfer extends DBObject {
 	public void setEmpfaengerName(String name) throws RemoteException;
 
 	/**
+	 * Setzt alle drei oben genannten Empfaenger-Eigenschaften auf einmal.
+   * @param e
+   * @throws RemoteException
+   */
+  public void setEmpfaenger(Empfaenger e) throws RemoteException;
+
+	/**
 	 * Speichert den zu ueberweisenden Betrag.
    * @param betrag Betrag.
    * @throws RemoteException
@@ -124,6 +131,9 @@ public interface Transfer extends DBObject {
 
 /**********************************************************************
  * $Log: Transfer.java,v $
+ * Revision 1.3  2004/07/20 21:48:00  willuhn
+ * @N ContextMenus
+ *
  * Revision 1.2  2004/07/14 23:48:31  willuhn
  * @N mehr Code fuer Dauerauftraege
  *

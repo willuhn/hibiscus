@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.11 $
- * $Date: 2004/07/14 23:48:31 $
+ * $Revision: 1.12 $
+ * $Date: 2004/07/20 21:48:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -136,10 +136,7 @@ public class Converter {
 		auftrag.setBetrag(d.value.value);
 
 		// Jetzt noch der Empfaenger
-		Empfaenger e = HBCIKonto2HibiscusEmpfaenger(d.other);
-		auftrag.setEmpfaengerBLZ(e.getBLZ());
-		auftrag.setEmpfaengerKonto(e.getKontonummer());
-		auftrag.setEmpfaengerName(e.getName());
+		auftrag.setEmpfaenger(HBCIKonto2HibiscusEmpfaenger(d.other));
 
 		// Verwendungszweck
 		if (d.usage.length == 0)
@@ -239,6 +236,9 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.12  2004/07/20 21:48:00  willuhn
+ * @N ContextMenus
+ *
  * Revision 1.11  2004/07/14 23:48:31  willuhn
  * @N mehr Code fuer Dauerauftraege
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.27 $
- * $Date: 2004/07/09 00:04:40 $
+ * $Revision: 1.28 $
+ * $Date: 2004/07/20 21:48:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,17 +49,13 @@ public class SettingsControl extends AbstractControl {
 	private CheckboxInput onlineMode     		= null;
 	private CheckboxInput checkPin     			= null;
 
-	private Input buchungSollFg     = null;
-	private Input buchungSollBg     = null;
-	private Input buchungHabenFg    = null;
-	private Input buchungHabenBg    = null;
-
-	private Input ueberfaelligFg    = null;
-	private Input ueberfaelligBg		= null;
+	private Input buchungSollFg     				= null;
+	private Input buchungHabenFg    				= null;
+	private Input ueberfaelligFg    				= null;
 
 	private TablePart passportList 					= null;
 
-	private Input ueberweisungLimit = null;
+	private Input ueberweisungLimit 				= null;
 
 	private I18N i18n;
 
@@ -148,19 +144,6 @@ public class SettingsControl extends AbstractControl {
 	}
 
 	/**
-	 * Liefert ein Auswahlfeld fuer die Hintergrundfarbe von Soll-Buchungen. 
-	 * @return Auswahlfeld.
-	 * @throws RemoteException
-	 */
-	public Input getBuchungSollBackground() throws RemoteException
-	{
-		if (buchungSollBg != null)
-			return buchungSollBg;
-		buchungSollBg = new ColorInput(Settings.getBuchungSollBackground());
-		return buchungSollBg;
-	}
-
-	/**
 	 * Liefert ein Auswahlfeld fuer die Vordergrundfarbe von Haben-Buchungen. 
 	 * @return Auswahlfeld.
 	 * @throws RemoteException
@@ -171,32 +154,6 @@ public class SettingsControl extends AbstractControl {
 			return buchungHabenFg;
 		buchungHabenFg = new ColorInput(Settings.getBuchungHabenForeground());
 		return buchungHabenFg;
-	}
-
-	/**
-	 * Liefert ein Auswahlfeld fuer die Hintergrundfarbe von Haben-Buchungen. 
-	 * @return Auswahlfeld.
-	 * @throws RemoteException
-	 */
-	public Input getBuchungHabenBackground() throws RemoteException
-	{
-		if (buchungHabenBg != null)
-			return buchungHabenBg;
-		buchungHabenBg = new ColorInput(Settings.getBuchungHabenBackground());
-		return buchungHabenBg;
-	}
-
-	/**
-	 * Liefert ein Auswahlfeld fuer die Hintergrundfarbe von ueberfaelligen Ueberweisungen.
-	 * @return Auswahlfeld.
-	 * @throws RemoteException
-	 */
-	public Input getUeberfaelligBackground() throws RemoteException
-	{
-		if (ueberfaelligBg != null)
-			return ueberfaelligBg;
-		ueberfaelligBg = new ColorInput(Settings.getUeberfaelligBackground());
-		return ueberfaelligBg;
 	}
 
 	/**
@@ -232,19 +189,12 @@ public class SettingsControl extends AbstractControl {
    */
   public void handleStore() {
 		try {
-			Color hb = (Color)getBuchungHabenBackground().getValue();
 			Color hf = (Color)getBuchungHabenForeground().getValue();
-			Color sb = (Color)getBuchungSollBackground().getValue();
 			Color sf = (Color)getBuchungSollForeground().getValue();
-
-			Color ub = (Color)getUeberfaelligBackground().getValue();
 			Color uf = (Color)getUeberfaelligForeground().getValue();
 
-			Settings.setBuchungHabenBackground(hb.getRGB());
 			Settings.setBuchungHabenForeground(hf.getRGB());
-			Settings.setBuchungSollBackground(sb.getRGB());
 			Settings.setBuchungSollForeground(sf.getRGB());
-			Settings.setUeberfaelligBackground(ub.getRGB());
 			Settings.setUeberfaelligForeground(uf.getRGB());
 
 			Settings.setOnlineMode(((Boolean)getOnlineMode().getValue()).booleanValue());
@@ -340,6 +290,9 @@ public class SettingsControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.28  2004/07/20 21:48:00  willuhn
+ * @N ContextMenus
+ *
  * Revision 1.27  2004/07/09 00:04:40  willuhn
  * @C Redesign
  *

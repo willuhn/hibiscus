@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.17 $
- * $Date: 2004/07/20 00:11:07 $
+ * $Revision: 1.18 $
+ * $Date: 2004/07/20 21:48:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -38,11 +38,8 @@ public class Settings
 	private static String libPath = null;
 
 	private static Color buchungSollForeground = null;
-	private static Color buchungSollBackground = null;
 	private static Color buchungHabenForeground = null;
-	private static Color buchungHabenBackground = null;
 	private static Color ueberfaelligForeground = null;
-	private static Color ueberfaelligBackground = null;
 
   /**
    * Liefert den Datenbank-Service.
@@ -77,19 +74,6 @@ public class Settings
 	}
 
 	/**
-	 * Liefert die Hintergrundfarbe fuer Soll-Buchungen in Tabellen.
-	 * @return Farbe.
-	 */
-	public static Color getBuchungSollBackground()
-	{
-		if (buchungSollBackground != null)
-			return buchungSollBackground;
-
-		buchungSollBackground = new Color(GUI.getDisplay(),settings.getRGB("buchung.soll.bg",new RGB(245,245,245)));
-		return buchungSollBackground;
-	}
-
-	/**
 	 * Liefert die Vordergrundfarbe fuer Haben-Buchungen in Tabellen.
 	 * @return Farbe.
 	 */
@@ -100,32 +84,6 @@ public class Settings
 
 		buchungHabenForeground = new Color(GUI.getDisplay(),settings.getRGB("buchung.haben.fg",new RGB(4,13,169)));
 		return buchungHabenForeground;
-	}
-
-	/**
-	 * Liefert die Hintergrundfarbe fuer Haben-Buchungen in Tabellen.
-	 * @return Farbe.
-	 */
-	public static Color getBuchungHabenBackground()
-	{
-		if (buchungHabenBackground != null)
-			return buchungHabenBackground;
-
-		buchungHabenBackground = new Color(GUI.getDisplay(),settings.getRGB("buchung.haben.bg",new RGB(255,255,255)));
-		return buchungHabenBackground;
-	}
-
-	/**
-	 * Liefert die Hintergrundfarbe fuer ueberfaellige Ueberweisungen.
-	 * @return Farbe.
-	 */
-	public static Color getUeberfaelligBackground()
-	{
-		if (ueberfaelligBackground != null)
-			return ueberfaelligBackground;
-
-		ueberfaelligBackground = new Color(GUI.getDisplay(),settings.getRGB("ueberfaellig.bg",new RGB(255,255,255)));
-		return ueberfaelligBackground;
 	}
 
 	/**
@@ -152,16 +110,6 @@ public class Settings
 	}
 
 	/**
-	 * Speichert die Farben fuer den Hintergrund von Soll-Buchungen.
-	 * @param rgb
-	 */
-	public static void setBuchungSollBackground(RGB rgb)
-	{
-		settings.setAttribute("buchung.soll.bg",rgb);
-		buchungSollBackground = null;
-	}
-
-	/**
 	 * Speichert die Farben fuer den Vordergrund von Haben-Buchungen.
 	 * @param rgb
 	 */
@@ -169,26 +117,6 @@ public class Settings
 	{
 		settings.setAttribute("buchung.haben.fg",rgb);
 		buchungHabenForeground = null;
-	}
-
-	/**
-	 * Speichert die Farben fuer den Hintergrund von Haben-Buchungen.
-	 * @param rgb
-	 */
-	public static void setBuchungHabenBackground(RGB rgb)
-	{
-		settings.setAttribute("buchung.haben.bg",rgb);
-		buchungHabenBackground = null;
-	}
-
-	/**
-	 * Speichert die Farben fuer den Hintergrund von ueberfaelligen Ueberweisungen.
-	 * @param rgb
-	 */
-	public static void setUeberfaelligBackground(RGB rgb)
-	{
-		settings.setAttribute("ueberfaellig.bg",rgb);
-		ueberfaelligBackground = null;
 	}
 
 	/**
@@ -341,6 +269,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.18  2004/07/20 21:48:00  willuhn
+ * @N ContextMenus
+ *
  * Revision 1.17  2004/07/20 00:11:07  willuhn
  * @C Code sharing zwischen Ueberweisung und Dauerauftrag
  *

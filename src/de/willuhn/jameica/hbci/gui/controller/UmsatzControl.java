@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzControl.java,v $
- * $Revision: 1.15 $
- * $Date: 2004/07/09 00:04:40 $
+ * $Revision: 1.16 $
+ * $Date: 2004/07/20 21:48:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,6 +28,7 @@ import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.menus.UmsatzList;
 import de.willuhn.jameica.hbci.gui.views.KontoNeu;
 import de.willuhn.jameica.hbci.gui.views.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.views.UmsatzListe;
@@ -86,12 +87,10 @@ public class UmsatzControl extends AbstractControl {
 				try {
 					if (u.getBetrag() < 0.0)
 					{
-						item.setBackground(Settings.getBuchungSollBackground());
 						item.setForeground(Settings.getBuchungSollForeground());
 					}
 					else
 					{
-						item.setBackground(Settings.getBuchungHabenBackground());
 						item.setForeground(Settings.getBuchungHabenForeground());
 					}
 				}
@@ -106,6 +105,8 @@ public class UmsatzControl extends AbstractControl {
 		table.addColumn(i18n.tr("Verwendungszweck"),"zweck");
 		table.addColumn(i18n.tr("Datum"),"datum",new DateFormatter(HBCI.DATEFORMAT));
 		table.addColumn(i18n.tr("Valuta"),"valuta",new DateFormatter(HBCI.DATEFORMAT));
+
+		table.setContextMenu(new UmsatzList());
 		return table;
 	}
 
@@ -231,6 +232,9 @@ public class UmsatzControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzControl.java,v $
+ * Revision 1.16  2004/07/20 21:48:00  willuhn
+ * @N ContextMenus
+ *
  * Revision 1.15  2004/07/09 00:04:40  willuhn
  * @C Redesign
  *

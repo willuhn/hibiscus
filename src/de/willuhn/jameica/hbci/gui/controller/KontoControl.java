@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.39 $
- * $Date: 2004/07/09 00:04:40 $
+ * $Revision: 1.40 $
+ * $Date: 2004/07/20 21:48:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -40,7 +40,7 @@ import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.PassportRegistry;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.listener.KontoRefreshSaldo;
+import de.willuhn.jameica.hbci.gui.menus.KontoList;
 import de.willuhn.jameica.hbci.gui.views.KontoNeu;
 import de.willuhn.jameica.hbci.gui.views.UmsatzListe;
 import de.willuhn.jameica.hbci.passport.Passport;
@@ -312,20 +312,8 @@ public class KontoControl extends AbstractControl {
 				}
       }
     });
-		kontoList.addMenu(i18n.tr("Saldo aktualisieren"), new Listener()
-    {
-      public void handleEvent(Event event)
-      {
-				new KontoRefreshSaldo().handleEvent(event);
-				try {
-					GUI.startView(GUI.getCurrentView().getClass().getName(),getCurrentObject());
-				}
-				catch (RemoteException e)
-				{
-					Logger.error("error while reloading view",e);
-				}
-      }
-    });
+    
+		kontoList.setContextMenu(new KontoList());
 		return kontoList;
 	}
 
@@ -643,6 +631,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.40  2004/07/20 21:48:00  willuhn
+ * @N ContextMenus
+ *
  * Revision 1.39  2004/07/09 00:04:40  willuhn
  * @C Redesign
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.24 $
- * $Date: 2004/07/20 00:11:07 $
+ * $Revision: 1.25 $
+ * $Date: 2004/07/20 21:48:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -36,8 +36,7 @@ import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.dialogs.UeberweisungDialog;
-import de.willuhn.jameica.hbci.gui.listener.UeberweisungDuplicate;
-import de.willuhn.jameica.hbci.gui.listener.UeberweisungExecute;
+import de.willuhn.jameica.hbci.gui.menus.UeberweisungList;
 import de.willuhn.jameica.hbci.gui.views.UeberweisungNeu;
 import de.willuhn.jameica.hbci.rmi.Transfer;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
@@ -96,16 +95,12 @@ public class UeberweisungControl extends AbstractTransferControl
 				try {
 					if (u.getTermin().before(new Date()) && !u.ausgefuehrt())
 					{
-						item.setBackground(Settings.getUeberfaelligBackground());
 						item.setForeground(Settings.getUeberfaelligForeground());
 					}
 				}
 				catch (RemoteException e) { /*ignore */}
       }
     });
-    table.addMenu(i18n.tr("Jetzt ausführen"), new UeberweisungExecute());
-		table.addMenu(i18n.tr("Duplizieren"), new UeberweisungDuplicate());
-
 		table.addColumn(i18n.tr("Konto"),"konto_id");
 		table.addColumn(i18n.tr("Kto. des Empfängers"),"empfaenger_konto");
 		table.addColumn(i18n.tr("BLZ des Empfängers"),"empfaenger_blz");
@@ -122,6 +117,8 @@ public class UeberweisungControl extends AbstractTransferControl
 				return ""+o;
       }
     });
+
+		table.setContextMenu(new UeberweisungList());
 		return table;
 	}
 
@@ -354,6 +351,9 @@ public class UeberweisungControl extends AbstractTransferControl
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
+ * Revision 1.25  2004/07/20 21:48:00  willuhn
+ * @N ContextMenus
+ *
  * Revision 1.24  2004/07/20 00:11:07  willuhn
  * @C Code sharing zwischen Ueberweisung und Dauerauftrag
  *

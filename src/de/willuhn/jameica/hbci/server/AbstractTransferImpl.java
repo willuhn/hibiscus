@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AbstractTransferImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/07/14 23:48:31 $
+ * $Revision: 1.4 $
+ * $Date: 2004/07/20 21:48:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.rmi.Empfaenger;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.Transfer;
@@ -215,11 +216,27 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
     k.addToProtokoll(i18n.tr("Überweisung an " + getEmpfaengerName() + " gelöscht"),Protokoll.TYP_SUCCESS);
   }
 
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Transfer#setEmpfaenger(de.willuhn.jameica.hbci.rmi.Empfaenger)
+   */
+  public void setEmpfaenger(Empfaenger e) throws RemoteException
+  {
+  	if (e == null)
+  		return;
+  	setEmpfaengerBLZ(e.getBLZ());
+  	setEmpfaengerKonto(e.getKontonummer());
+  	setEmpfaengerName(e.getKontonummer());
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: AbstractTransferImpl.java,v $
+ * Revision 1.4  2004/07/20 21:48:00  willuhn
+ * @N ContextMenus
+ *
  * Revision 1.3  2004/07/14 23:48:31  willuhn
  * @N mehr Code fuer Dauerauftraege
  *

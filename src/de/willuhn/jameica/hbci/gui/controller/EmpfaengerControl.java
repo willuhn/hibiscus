@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EmpfaengerControl.java,v $
- * $Revision: 1.14 $
- * $Date: 2004/07/09 00:04:40 $
+ * $Revision: 1.15 $
+ * $Date: 2004/07/20 21:48:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,6 +30,7 @@ import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.menus.EmpfaengerList;
 import de.willuhn.jameica.hbci.gui.views.EmpfaengerNeu;
 import de.willuhn.jameica.hbci.rmi.Empfaenger;
 import de.willuhn.util.ApplicationException;
@@ -88,6 +89,7 @@ public class EmpfaengerControl extends AbstractControl {
 		table.addColumn(i18n.tr("Kontonummer"),"kontonummer");
 		table.addColumn(i18n.tr("Bankleitzahl"),"blz");
 		table.addColumn(i18n.tr("Name"),"name");
+		table.setContextMenu(new EmpfaengerList());
 		return table;
 	}
 
@@ -253,6 +255,9 @@ public class EmpfaengerControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: EmpfaengerControl.java,v $
+ * Revision 1.15  2004/07/20 21:48:00  willuhn
+ * @N ContextMenus
+ *
  * Revision 1.14  2004/07/09 00:04:40  willuhn
  * @C Redesign
  *
