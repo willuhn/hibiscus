@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/Welcome.java,v $
- * $Revision: 1.14 $
- * $Date: 2004/10/08 13:37:48 $
+ * $Revision: 1.15 $
+ * $Date: 2005/01/14 00:48:49 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -40,6 +40,7 @@ public class Welcome extends AbstractView
    */
   public void bind() throws Exception
   {
+
 		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 		WelcomeControl control = new WelcomeControl(this);
 
@@ -75,6 +76,9 @@ public class Welcome extends AbstractView
 
 /**********************************************************************
  * $Log: Welcome.java,v $
+ * Revision 1.15  2005/01/14 00:48:49  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.14  2004/10/08 13:37:48  willuhn
  * *** empty log message ***
  *
