@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/DauerauftragListe.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/07/13 23:08:37 $
+ * $Revision: 1.2 $
+ * $Date: 2004/07/13 23:26:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,18 +12,21 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.views;
 
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.controller.UeberweisungControl;
+import de.willuhn.jameica.hbci.gui.controller.DauerauftragControl;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 import de.willuhn.util.Logger;
 
 /**
- * Zeigt eine Liste mit den vorhandenen Ueberweisungen an.
+ * Zeigt eine Liste mit den vorhandenen Dauerauftraegen an.
  */
 public class DauerauftragListe extends AbstractView {
 
@@ -36,20 +39,27 @@ public class DauerauftragListe extends AbstractView {
 
 		GUI.getView().setTitle(i18n.tr("Vorhandene Daueraufträge"));
 		
-		UeberweisungControl control = new UeberweisungControl(this);
+		DauerauftragControl control = new DauerauftragControl(this);
 		
 		try {
 
-			control.getUeberweisungListe().paint(getParent());
+			control.getDauerauftragListe().paint(getParent());
 
-			ButtonArea buttons = new ButtonArea(getParent(),1);
-			buttons.addCreateButton(i18n.tr("neue Überweisung"),control);
+			ButtonArea buttons = new ButtonArea(getParent(),2);
+			buttons.addCustomButton(i18n.tr("Existierende Daueraufträge abrufen"),new MouseAdapter()
+      {
+        public void mouseUp(MouseEvent e)
+        {
+          // TODO Auto-generated method stub
+        }
+      });
+			buttons.addCreateButton(i18n.tr("neuer Dauerauftrag"),control);
 
 		}
 		catch (Exception e)
 		{
-			Logger.error("error while loading ueberweisung list",e);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Lesen der Überweisungen."));
+			Logger.error("error while loading dauerauftrag list",e);
+			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Lesen der Daueraufträge."));
 		}
   }
 
@@ -64,6 +74,9 @@ public class DauerauftragListe extends AbstractView {
 
 /**********************************************************************
  * $Log: DauerauftragListe.java,v $
+ * Revision 1.2  2004/07/13 23:26:14  willuhn
+ * @N Views fuer Dauerauftrag
+ *
  * Revision 1.1  2004/07/13 23:08:37  willuhn
  * @N Views fuer Dauerauftrag
  *
