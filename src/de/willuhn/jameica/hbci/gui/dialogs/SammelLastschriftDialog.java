@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/SammelLastschriftDialog.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/03/05 19:19:48 $
+ * $Revision: 1.3 $
+ * $Date: 2005/03/06 14:04:26 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -77,7 +77,7 @@ public class SammelLastschriftDialog extends AbstractDialog {
 		group.addLabelPair(i18n.tr("Gutschriftskonto"),kto);
 
 
-		group.addText(i18n.tr("Enthaltene Buchungen"),false);
+		group.addText("\n" + i18n.tr("Enthaltene Buchungen"),false);
 
 		DBIterator list = ueb.getBuchungen();
 		while (list.hasNext())
@@ -126,6 +126,9 @@ public class SammelLastschriftDialog extends AbstractDialog {
 
 /**********************************************************************
  * $Log: SammelLastschriftDialog.java,v $
+ * Revision 1.3  2005/03/06 14:04:26  web0
+ * @N SammelLastschrift seems to work now
+ *
  * Revision 1.2  2005/03/05 19:19:48  web0
  * *** empty log message ***
  *
