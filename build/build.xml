@@ -6,41 +6,41 @@
 
         <property environment="env"/>
 
-		<property name="define.pluginname"   value="hbci"/>
-		<property name="define.jarfilename"  value="${define.pluginname}.jar"/>
-		<property name="define.package"      value="de.willuhn.jameica"/>
+    <property name="define.pluginname"   value="hbci"/>
+    <property name="define.jarfilename"  value="${define.pluginname}.jar"/>
+    <property name="define.package"      value="de.willuhn.jameica"/>
 
-        <property name="build.dir" 			 value="build"/>
-		<buildnumber file="${build.dir}/BUILD"/>
-	    <loadfile property="version" srcFile="${build.dir}/RELEASE">
-	      <filterchain>
-	        <striplinebreaks/>
-	      </filterchain>
-	    </loadfile>
+        <property name="build.dir"        value="build"/>
+    <buildnumber file="${build.dir}/BUILD"/>
+      <loadfile property="version" srcFile="${build.dir}/RELEASE">
+        <filterchain>
+          <striplinebreaks/>
+        </filterchain>
+      </loadfile>
 
-		<echo message="VERSION: ${version}"/>
-		<echo message="BUILD  : ${build.number}"/>
+    <echo message="VERSION: ${version}"/>
+    <echo message="BUILD  : ${build.number}"/>
 
-        <property name="project.release"	 value="releases/${version}-${build.number}/${define.pluginname}"/>
-        <property name="project.src" 		 value="${project.release}/src/classes"/>
-        <property name="project.tmp" 		 value="${project.release}/tmp"/>
-        <property name="project.javadoc" 	 value="${project.release}/javadoc"/>
-        <property name="src.dir" 			 value="src"/>
-        <property name="icon.dir" 			 value="${src.dir}/img"/>
-        <property name="lang.dir" 			 value="${src.dir}/lang"/>
-        <property name="help.dir" 			 value="${src.dir}/help"/>
-        <property name="lib.dir" 			 value="lib"/>
-        <property name="sql.dir" 			 value="sql"/>
-        <property name="cfg.dir" 			 value="cfg"/>
-        <property name="class.dir" 			 value="${project.tmp}/bin"/>
+        <property name="project.release"   value="releases/${version}-${build.number}/${define.pluginname}"/>
+        <property name="project.src"      value="${project.release}/src/classes"/>
+        <property name="project.tmp"      value="${project.release}/tmp"/>
+        <property name="project.javadoc"    value="${project.release}/javadoc"/>
+        <property name="src.dir"        value="src"/>
+        <property name="icon.dir"        value="${src.dir}/img"/>
+        <property name="lang.dir"        value="${src.dir}/lang"/>
+        <property name="help.dir"        value="${src.dir}/help"/>
+        <property name="lib.dir"        value="lib"/>
+        <property name="sql.dir"        value="sql"/>
+        <property name="cfg.dir"        value="cfg"/>
+        <property name="class.dir"        value="${project.tmp}/bin"/>
 
-		<path id="compilepath">
-			<pathelement location="../jameica/lib/swt/linux/swt.jar"/>
-			<pathelement location="../jameica/bin/"/>
-			<pathelement location="../util/bin/"/>
-			<pathelement location="../datasource/bin/"/>
-			<pathelement location="${lib.dir}/hbci4java-2.4.7pre-20040204.jar"/>
-		</path>
+    <path id="compilepath">
+      <pathelement location="../jameica/lib/swt/linux/swt.jar"/>
+      <pathelement location="../jameica/bin/"/>
+      <pathelement location="../util/bin/"/>
+      <pathelement location="../datasource/bin/"/>
+      <pathelement location="${lib.dir}/hbci4java-2.4.7pre-20040204.jar"/>
+    </path>
 
     </target>
 
@@ -49,64 +49,68 @@
 
         <mkdir dir="${class.dir}"/>
 
-		<javac fork="true" debug="true" deprecation="true" destdir="${class.dir}" srcdir="${src.dir}">
-			<classpath refid="compilepath" />
+    <javac fork="true" debug="true" deprecation="true" destdir="${class.dir}" srcdir="${src.dir}">
+      <classpath refid="compilepath" />
         </javac>
 
         <rmic verify="true" base="${class.dir}">
             <include name="**/*.class"/>
-			<classpath refid="compilepath" />
+      <classpath refid="compilepath" />
         </rmic>
 
-		<copy todir="${class.dir}/lang">
-			<fileset dir="${lang.dir}" />
-		</copy>
-		<copy todir="${class.dir}/help">
-			<fileset dir="${help.dir}" />
-		</copy>
+    <copy todir="${class.dir}/lang">
+      <fileset dir="${lang.dir}" />
+    </copy>
+    <copy todir="${class.dir}/help">
+      <fileset dir="${help.dir}" />
+    </copy>
 
-		<copy file="${src.dir}/navigation.xml" tofile="${class.dir}/navigation.xml" />
-		<copy file="${src.dir}/menu.xml" 	   tofile="${class.dir}/menu.xml" />
+    <copy file="${src.dir}/navigation.xml" tofile="${class.dir}/navigation.xml" />
+    <copy file="${src.dir}/menu.xml"      tofile="${class.dir}/menu.xml" />
 
-	</target>
+  </target>
 
 
-	<target depends="compile" name="cvstag" description="tags the source in the CVS">
+  <target depends="compile" name="cvstag" description="tags the source in the CVS">
 
-	    <exec executable="cvs" failonerror="true" dir="${basedir}">
-	      <arg line="tag ${version}_BUILD_${build.number}"/>
-	    </exec>
+      <exec executable="cvs" failonerror="true" dir="${basedir}">
+        <arg line="tag ${version}_BUILD_${build.number}"/>
+      </exec>
 
-	</target>
+  </target>
 
 
     <target depends="compile" name="jar" description="generates the jar file">
 
         <mkdir dir="${project.release}"/>
 
-	    <jar destfile="${project.release}/${define.jarfilename}">
-		    <manifest>
-		    	<attribute name="Built-By" value="${user.name}"/>
-		    	<attribute name="Implementation-Title" value="${define.pluginname}"/>
-		    	<attribute name="Implementation-Version" value="${version}"/>
-		    	<attribute name="Implementation-Buildnumber" value="${build.number}"/>
-		    	<attribute name="Class-Path" value="lang help lib lib/hbci4java-2.4.7pre-20040204.jar"/>
-		    </manifest>
-		    <fileset dir="${class.dir}"/>
-		</jar>
+      <jar destfile="${project.release}/${define.jarfilename}">
+        <manifest>
+          <attribute name="Built-By" value="${user.name}"/>
+          <attribute name="Implementation-Title" value="${define.pluginname}"/>
+          <attribute name="Implementation-Version" value="${version}"/>
+          <attribute name="Implementation-Buildnumber" value="${build.number}"/>
+          <attribute name="Class-Path" value="lang help lib lib/hbci4java-2.4.7pre-20040204.jar"/>
+        </manifest>
+        <fileset dir="${class.dir}"/>
+    </jar>
 
-		<mkdir dir="${project.release}/sql"/>
-		<copy todir="${project.release}/sql">
-			<fileset dir="${sql.dir}"/>
-		</copy>
+    <mkdir dir="${project.release}/sql"/>
+    <copy todir="${project.release}/sql">
+      <fileset dir="${sql.dir}"/>
+    </copy>
 
-		<mkdir dir="${project.release}/lib"/>
-		<copy todir="${project.release}/lib">
-			<fileset dir="${lib.dir}"/>
-		</copy>
+    <mkdir dir="${project.release}/lib"/>
+    <copy todir="${project.release}/lib">
+      <fileset dir="${lib.dir}"/>
+    </copy>
 
-		<mkdir dir="${project.release}/passports"/>
-		
+    <copy file="${build.dir}/README"            tofile="${project.release}/README" />
+    <copy file="${build.dir}/COPYING"           tofile="${project.release}/COPYING" />
+    <copy file="${build.dir}/INSTALL"           tofile="${project.release}/INSTALL" />
+
+    <mkdir dir="${project.release}/passports"/>
+
     </target>
 
     <target depends="jar" name="javadoc" description="creates the api doc">
@@ -114,7 +118,7 @@
         <mkdir dir="${project.javadoc}"/>
 
         <javadoc destdir="${project.javadoc}" packagenames="${define.package}.*">
-			<classpath refid="compilepath" />
+      <classpath refid="compilepath" />
             <sourcepath>
                 <pathelement location="${src.dir}"/>
             </sourcepath>
