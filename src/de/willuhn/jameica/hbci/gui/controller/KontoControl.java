@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/02/17 00:53:22 $
+ * $Revision: 1.5 $
+ * $Date: 2004/02/17 01:07:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -402,7 +402,7 @@ public class KontoControl extends AbstractControl {
       	catch (RemoteException e)
       	{
 					Application.getLog().error("error while reading saldo",e);
-					GUI.setActionText(I18N.tr("Fehler beim Lesen des Saldos"));
+					GUI.setActionText(e.getLocalizedMessage());
       	}
       	catch (ApplicationException e2)
       	{
@@ -439,6 +439,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.5  2004/02/17 01:07:19  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2004/02/17 00:53:22  willuhn
  * @N SaldoAbfrage
  * @N Ueberweisung
