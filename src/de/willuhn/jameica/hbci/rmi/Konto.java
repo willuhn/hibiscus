@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Konto.java,v $
- * $Revision: 1.18 $
- * $Date: 2004/10/25 22:39:14 $
+ * $Revision: 1.19 $
+ * $Date: 2004/10/25 23:12:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -171,13 +171,6 @@ public interface Konto extends DBObject,Checksum
   public DBIterator getDauerauftraege() throws RemoteException;
 
 	/**
-	 * Liefert nur genau die Dauerauftraege, die ebenfalls der Bank bekannt und somit aktiv sind.
-   * @return Liste der aktiven Dauerauftraege.
-   * @throws RemoteException
-   */
-  public DBIterator getAktiveDauerauftraege() throws RemoteException;
-	
-	/**
 	 * Liefert die HBCI-Protokollierung des Kontos in Form einer Liste von Protokoll-Objekten.
    * @return Liste von Protokoll-Objekten.
    * @throws RemoteException
@@ -199,19 +192,14 @@ public interface Konto extends DBObject,Checksum
    * @throws ApplicationException
    */
   public void deleteUmsaetze() throws ApplicationException, RemoteException;
-
-	/**
-	 * Loescht alle Dauerauftraege des Kontos.
-	 * Hinweis: Die Dauerauftraege werden nur lokal geloescht, nicht bei der Bank.
-   * @throws ApplicationException
-   * @throws RemoteException
-   */
-  public void deleteDauerauftraege() throws ApplicationException, RemoteException;
 }
 
 
 /**********************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.19  2004/10/25 23:12:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.18  2004/10/25 22:39:14  willuhn
  * *** empty log message ***
  *

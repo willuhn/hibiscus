@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.46 $
- * $Date: 2004/10/25 17:58:57 $
+ * $Revision: 1.47 $
+ * $Date: 2004/10/25 23:12:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -227,7 +227,7 @@ public class KontoControl extends AbstractControl {
   }
 
 	/**
-	 * Lifert das Auswahl-Feld fuer das Sicherheitsmedium.
+	 * Liefert das Auswahl-Feld fuer das Sicherheitsmedium.
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
@@ -450,6 +450,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.47  2004/10/25 23:12:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.46  2004/10/25 17:58:57  willuhn
  * @N Haufen Dauerauftrags-Code
  *

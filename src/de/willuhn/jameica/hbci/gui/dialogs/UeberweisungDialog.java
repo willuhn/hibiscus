@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/UeberweisungDialog.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/10/25 17:58:56 $
+ * $Revision: 1.9 $
+ * $Date: 2004/10/25 23:12:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -92,7 +92,7 @@ public class UeberweisungDialog extends AbstractDialog {
 		group.addLabelPair(i18n.tr("Betrag"),betrag);
 
 		ButtonArea b = group.createButtonArea(2);
-		b.addButton(i18n.tr("OK"), new Action()
+		b.addButton(i18n.tr("Jetzt ausführen"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -115,6 +115,9 @@ public class UeberweisungDialog extends AbstractDialog {
 
 /**********************************************************************
  * $Log: UeberweisungDialog.java,v $
+ * Revision 1.9  2004/10/25 23:12:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.8  2004/10/25 17:58:56  willuhn
  * @N Haufen Dauerauftrags-Code
  *

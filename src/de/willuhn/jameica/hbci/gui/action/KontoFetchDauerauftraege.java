@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoFetchDauerauftraege.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/10/25 22:39:14 $
+ * $Revision: 1.5 $
+ * $Date: 2004/10/25 23:12:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import java.rmi.RemoteException;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.hbci.HBCIDauerauftragListJob;
 import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
@@ -35,17 +36,37 @@ public class KontoFetchDauerauftraege implements Action
 
   /**
 	 * Erwartet ein Objekt vom Typ <code>Konto</code> als Context.
+	 * Fehlt das Konto, dann wird es in einem Dialog abgefragt.
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
   public void handleAction(Object context) throws ApplicationException
   {
 		final I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
+		if (context == null)
+		{
+			// 1) Wir zeigen einen Dialog an, in dem der User das Konto auswaehlt
+			KontoAuswahlDialog d = new KontoAuswahlDialog(KontoAuswahlDialog.POSITION_CENTER);
+			try
+			{
+				context = d.open();
+			}
+			catch (OperationCanceledException oce)
+			{
+				GUI.getStatusBar().setErrorText(i18n.tr("Vorgang abgebrochen"));
+				return;
+			}
+			catch (Exception e)
+			{
+				Logger.error("error while choosing konto",e);
+				GUI.getStatusBar().setErrorText(i18n.tr("Fehler bei der Auswahl des Kontos."));
+			}
+		}
+
 		if (context == null || !(context instanceof Konto))
-			throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus"));
+			throw new ApplicationException(i18n.tr("Kein Konto ausgewählt"));
 
 		final Konto k = (Konto) context;
-
 		GUI.startSync(new Runnable() {
 			public void run() {
 				try {
@@ -85,6 +106,9 @@ public class KontoFetchDauerauftraege implements Action
 
 /**********************************************************************
  * $Log: KontoFetchDauerauftraege.java,v $
+ * Revision 1.5  2004/10/25 23:12:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2004/10/25 22:39:14  willuhn
  * *** empty log message ***
  *

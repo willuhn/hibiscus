@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/DauerauftragControl.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/10/25 17:58:57 $
+ * $Revision: 1.11 $
+ * $Date: 2004/10/25 23:12:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -32,15 +32,11 @@ import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.DauerauftragNeu;
-import de.willuhn.jameica.hbci.gui.action.KontoFetchDauerauftraege;
-import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.TurnusAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.menus.DauerauftragList;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
-import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Transfer;
 import de.willuhn.jameica.hbci.rmi.Turnus;
-import de.willuhn.util.ApplicationException;
 import de.willuhn.util.Logger;
 
 /**
@@ -116,8 +112,28 @@ public class DauerauftragControl extends AbstractTransferControl {
 	{
 		if (turnus != null)
 			return turnus;
+
+		TurnusAuswahlDialog tad = new TurnusAuswahlDialog(TurnusAuswahlDialog.POSITION_MOUSE);
+		tad.addCloseListener(new Listener() {
+			public void handleEvent(Event event) {
+				if (event == null || event.data == null)
+					return;
+				Turnus choosen = (Turnus) event.data;
+				try
+				{
+					((Dauerauftrag)getTransfer()).setTurnus(choosen);
+					getTurnus().setText(choosen.getBezeichnung());
+				}
+				catch (RemoteException e)
+				{
+					Logger.error("error while choosing turnus",e);
+					GUI.getStatusBar().setErrorText(i18n.tr("Fehler bei der Auswahl des Zahlungsturnus"));
+				}
+			}
+		});
+
 		Turnus t = ((Dauerauftrag)getTransfer()).getTurnus();
-		turnus = new DialogInput(t == null ? "" : t.getBezeichnung(),new TurnusAuswahlDialog(TurnusAuswahlDialog.POSITION_MOUSE));
+		turnus = new DialogInput(t == null ? "" : t.getBezeichnung(),tad);
 		turnus.disableClientControl();
 		return turnus;
 	}
@@ -194,35 +210,6 @@ public class DauerauftragControl extends AbstractTransferControl {
 		return letzteZahlung;
 	}
 
-	/**
-	 * Holt die Dauerauftraege vom HBCI-Server und zeigt sie an. 
-	 */
-	public synchronized void handleFetchDauerauftraege()
-	{
-		// 1) Wir zeigen einen Dialog an, in dem der User das Konto auswaehlt
-		KontoAuswahlDialog d = new KontoAuswahlDialog(KontoAuswahlDialog.POSITION_CENTER);
-		final Konto konto;
-		try
-		{
-			konto = (Konto) d.open();
-		}
-		catch (Exception e)
-		{
-			Logger.error("error while choosing konto",e);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler bei der Auswahl des Kontos"));
-			return;
-		}
-
-		try
-		{
-			new KontoFetchDauerauftraege().handleAction(konto);
-		}
-		catch (ApplicationException e)
-		{
-			GUI.getStatusBar().setErrorText(e.getMessage());
-		}
-	}
-
   /**
    * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#handleStore()
    */
@@ -250,6 +237,9 @@ public class DauerauftragControl extends AbstractTransferControl {
 
 /**********************************************************************
  * $Log: DauerauftragControl.java,v $
+ * Revision 1.11  2004/10/25 23:12:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.10  2004/10/25 17:58:57  willuhn
  * @N Haufen Dauerauftrags-Code
  *

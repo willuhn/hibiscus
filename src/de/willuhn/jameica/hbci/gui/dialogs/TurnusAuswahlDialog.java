@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/TurnusAuswahlDialog.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/10/25 17:58:56 $
+ * $Revision: 1.2 $
+ * $Date: 2004/10/25 23:12:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -57,12 +57,15 @@ public class TurnusAuswahlDialog extends AbstractDialog
       public void handleAction(Object context) throws ApplicationException
       {
       	choosen = (Turnus) context;
+      	close();
       }
     });
 
 		table.addColumn(i18n.tr("Bezeichnung"),"bezeichnung");
 		table.disableSummary();
 		table.paint(parent);
+		
+		// TODO Frei konfigurierbaren Turnus hinzufuegen
   }
 
   /**
@@ -78,6 +81,9 @@ public class TurnusAuswahlDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: TurnusAuswahlDialog.java,v $
+ * Revision 1.2  2004/10/25 23:12:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/10/25 17:58:56  willuhn
  * @N Haufen Dauerauftrags-Code
  *

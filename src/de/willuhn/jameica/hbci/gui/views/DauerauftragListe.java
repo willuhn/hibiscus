@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/DauerauftragListe.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/10/19 23:33:31 $
+ * $Revision: 1.9 $
+ * $Date: 2004/10/25 23:12:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,11 +13,11 @@
 package de.willuhn.jameica.hbci.gui.views;
 
 import de.willuhn.jameica.gui.AbstractView;
-import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.DauerauftragNeu;
+import de.willuhn.jameica.hbci.gui.action.KontoFetchDauerauftraege;
 import de.willuhn.jameica.hbci.gui.controller.DauerauftragControl;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -45,14 +45,8 @@ public class DauerauftragListe extends AbstractView {
 			control.getDauerauftragListe().paint(getParent());
 
 			ButtonArea buttons = new ButtonArea(getParent(),2);
-			buttons.addButton(i18n.tr("Existierende Daueraufträge abrufen"), new Action()
-      {
-        public void handleAction(Object context) throws ApplicationException
-        {
-					control.handleFetchDauerauftraege();
-        }
-      });
-			buttons.addButton(i18n.tr("neuer Dauerauftrag"),new DauerauftragNeu());
+			buttons.addButton(i18n.tr("Existierende Daueraufträge abrufen"), 	new KontoFetchDauerauftraege());
+			buttons.addButton(i18n.tr("neuer Dauerauftrag"),									new DauerauftragNeu());
 
 		}
 		catch (Exception e)
@@ -73,6 +67,9 @@ public class DauerauftragListe extends AbstractView {
 
 /**********************************************************************
  * $Log: DauerauftragListe.java,v $
+ * Revision 1.9  2004/10/25 23:12:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.8  2004/10/19 23:33:31  willuhn
  * *** empty log message ***
  *
