@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/AccountContainerDialog.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/03/11 02:44:42 $
+ * $Revision: 1.4 $
+ * $Date: 2005/03/23 00:05:46 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -158,7 +158,11 @@ public class AccountContainerDialog extends AbstractDialog
 	private Input getCustomerId()
 	{
 		if (customerid == null)
+		{
 			customerid = new TextInput(passport.getCustomerId());
+			customerid.setComment(i18n.tr("Meist identisch mit Benutzerkennung"));
+		}
+			
 		return customerid;
 	}
 
@@ -175,6 +179,9 @@ public class AccountContainerDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: AccountContainerDialog.java,v $
+ * Revision 1.4  2005/03/23 00:05:46  web0
+ * @C RDH fixes
+ *
  * Revision 1.3  2005/03/11 02:44:42  web0
  * @N added pin/tan support
  *
