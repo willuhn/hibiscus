@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.15 $
- * $Date: 2004/04/27 22:23:56 $
+ * $Revision: 1.16 $
+ * $Date: 2004/05/04 23:07:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,12 +15,12 @@ package de.willuhn.jameica.hbci.gui.controller;
 import java.rmi.RemoteException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Hashtable;
 
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
@@ -31,11 +31,10 @@ import de.willuhn.jameica.gui.input.ColorInput;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.PassportRegistry;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.dialogs.NewPassportDialog;
 import de.willuhn.jameica.hbci.rmi.Passport;
-import de.willuhn.jameica.hbci.rmi.PassportType;
-import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.util.I18N;
 
 /**
@@ -77,11 +76,14 @@ public class SettingsControl extends AbstractControl {
     if (passportList != null)
       	return passportList;
 
-    DBIterator list = Settings.getDatabase().createList(Passport.class);
-
-		passportList = new TablePart(list,this);
-		passportList.addColumn(i18n.tr("Bezeichnung"),"name");
-		passportList.addColumn(i18n.tr("Typ"),"passport_type_id");
+		Passport[] passports = PassportRegistry.getPassports();
+		Hashtable h = new Hashtable();
+		for (int i=0;i<passports.length;++i)
+		{
+			h.put(passports[i].getName(),passports[i]);
+		}
+		passportList = new TablePart(h,this);
+		passportList.addColumn(i18n.tr("Bezeichnung"),null);
 		return passportList;
 	}
 
@@ -253,27 +255,18 @@ public class SettingsControl extends AbstractControl {
   public void handleCreate() {
   	// Hier wird ein neuer Passport erstellt.
 		NewPassportDialog d = new NewPassportDialog(NewPassportDialog.POSITION_MOUSE);
-		PassportType pt = null;
+		Passport p = null;
 		try {
-			pt = (PassportType) d.open();
+			p = (Passport) d.open();
 		}
 		catch (Exception e)
 		{
 			// Der User hat "abbrechen" im Dialog gedrueckt
 			return;
 		}
+
 		try {
-			// wir erzeugen einen neuen Passport
-			Passport p = (Passport) de.willuhn.jameica.hbci.Settings.getDatabase().createObject(Passport.class,null);
-			
-			// weisen ihm den korrekten Typ zu
-			p.setPassportType(pt);
-
-			// Lassen ihn anschliessend auf die passende Impl casten
-			p = HBCIFactory.getInstance().findImplementor(p);
-
-			// und oeffnen ihn in dem Dialog, der fuer diesen Typ hinterlegt ist
-			GUI.startView(pt.getAbstractView(),p);
+			GUI.startView(p.getConfigDialog().getName(),p);
 		}
 		catch (Exception e)
 		{
@@ -288,14 +281,9 @@ public class SettingsControl extends AbstractControl {
    */
   public void handleOpen(Object o)
 	{
-		// Hier wird der ausgewaehlte Passport geoeffnet.
 		try {
 			Passport p = (Passport) o;
-			PassportType pt = p.getPassportType();
-			
-			// bevor wir den Passport an die View geben, muessen wir ihn noch
-			// auf die korrekte Impl casten lassen
-			GUI.startView(pt.getAbstractView(),HBCIFactory.getInstance().findImplementor(p));
+			GUI.startView(p.getConfigDialog().getName(),p);
 		}
 		catch (Exception e)
 		{
@@ -335,6 +323,9 @@ public class SettingsControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.16  2004/05/04 23:07:23  willuhn
+ * @C refactored Passport stuff
+ *
  * Revision 1.15  2004/04/27 22:23:56  willuhn
  * @N configurierbarer CTAPI-Treiber
  * @C konkrete Passport-Klassen (DDV) nach de.willuhn.jameica.passports verschoben

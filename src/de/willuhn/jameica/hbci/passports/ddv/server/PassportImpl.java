@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/server/PassportImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/04/27 22:28:54 $
+ * $Revision: 1.3 $
+ * $Date: 2004/05/04 23:07:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,114 +13,102 @@
 package de.willuhn.jameica.hbci.passports.ddv.server;
 
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 
+import de.willuhn.jameica.PluginLoader;
+import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.passports.ddv.View;
 import de.willuhn.jameica.hbci.passports.ddv.rmi.Passport;
-import de.willuhn.jameica.hbci.rmi.hbci.PassportHandle;
+import de.willuhn.jameica.hbci.rmi.PassportHandle;
+import de.willuhn.util.I18N;
 
 /**
  * Implementierung der Persistenz des Passports vom Typ "Chipkarte" (DDV).
  */
-public class PassportImpl
-  extends de.willuhn.jameica.hbci.server.PassportImpl
-  implements Passport {
+public class PassportImpl extends UnicastRemoteObject implements Passport
+{
 
+	private de.willuhn.jameica.Settings settings;
+	private I18N i18n;
+	
   /**
    * @throws RemoteException
    */
   public PassportImpl() throws RemoteException {
     super();
+    settings = new de.willuhn.jameica.Settings(this.getClass());
+    i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
   }
 
   /**
    * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Passport#getPort()
    */
   public int getPort() throws RemoteException {
-		try {
-			return new Integer(getParam(Passport.PORT)).intValue();
-		}
-		catch (NumberFormatException e)
-		{
-			// Scheinbar noch nicht definiert. Wir liefern einen Default-Wert
-			return 0;
-		}
+		return settings.getInt(Passport.PORT,0);
   }
 
   /**
    * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Passport#setPort(int)
    */
   public void setPort(int port) throws RemoteException {
-  	setParam(Passport.PORT,""+port);
+		settings.setAttribute(Passport.PORT,port);
   }
 
   /**
    * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Passport#getCTNumber()
    */
   public int getCTNumber() throws RemoteException {
-		try {
-			return new Integer(getParam(Passport.CTNUMBER)).intValue();
-		}
-		catch (NumberFormatException e)
-		{
-			// Scheinbar noch nicht definiert. Wir liefern einen Default-Wert
-			return 0;
-		}
+		return settings.getInt(Passport.CTNUMBER,0);
   }
 
   /**
    * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Passport#setCTNumber(int)
    */
   public void setCTNumber(int ctNumber) throws RemoteException {
-		setParam(Passport.CTNUMBER,""+ctNumber);
+		settings.setAttribute(Passport.CTNUMBER,ctNumber);
   }
 
   /**
    * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Passport#useBIO()
    */
   public boolean useBIO() throws RemoteException {
-		return "1".equals(getParam(Passport.USEBIO));
+		return settings.getBoolean(Passport.USEBIO,false);
   }
 
   /**
    * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Passport#setBIO(boolean)
    */
   public void setBIO(boolean bio) throws RemoteException {
-		setParam(Passport.USEBIO,bio ? "1" : "0");
+		settings.setAttribute(Passport.USEBIO,bio);
   }
 
   /**
    * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Passport#useSoftPin()
    */
   public boolean useSoftPin() throws RemoteException {
-		return "1".equals(getParam(Passport.SOFTPIN));
+  	return settings.getBoolean(Passport.SOFTPIN,true);
   }
 
   /**
    * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Passport#setSoftPin(boolean)
    */
   public void setSoftPin(boolean softPin) throws RemoteException {
-		setParam(Passport.SOFTPIN,softPin ? "1" : "0");
+		settings.setAttribute(Passport.SOFTPIN,softPin);
   }
 
   /**
    * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Passport#getEntryIndex()
    */
   public int getEntryIndex() throws RemoteException {
-		try {
-			return new Integer(getParam(Passport.ENTRYIDX)).intValue();
-		}
-		catch (NumberFormatException e)
-		{
-			// Scheinbar noch nicht definiert. Wir liefern einen Default-Wert
-			return 1;
-		}
+		return settings.getInt(Passport.ENTRYIDX,1);
   }
 
   /**
    * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Passport#setEntryIndex(int)
    */
   public void setEntryIndex(int index) throws RemoteException {
-		setParam(Passport.ENTRYIDX,""+index);
+		settings.setAttribute(Passport.ENTRYIDX,index);
   }
 
   /**
@@ -134,24 +122,39 @@ public class PassportImpl
    * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Passport#getCTAPIDriver()
    */
   public String getCTAPIDriver() throws RemoteException {
-		String s = getParam(Passport.CTAPI);
-		if (s != null)
-			return s;
-		return Settings.getLibPath() + "/libtowitoko-2.0.7.so";
+		return settings.getString(Passport.CTAPI,Settings.getLibPath() + "/libtowitoko-2.0.7.so");
   }
 
   /**
    * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Passport#setCTAPIDriver(java.lang.String)
    */
   public void setCTAPIDriver(String file) throws RemoteException {
-		setParam(Passport.CTAPI,file);
+		settings.setAttribute(Passport.CTAPI,file);
   }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Passport#getName()
+   */
+  public String getName() throws RemoteException {
+    return i18n.tr("Chipkarte (DDV)");
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Passport#getConfigDialog()
+   */
+  public Class getConfigDialog() throws RemoteException {
+    return View.class;
+  }
+
 
 }
 
 
 /**********************************************************************
  * $Log: PassportImpl.java,v $
+ * Revision 1.3  2004/05/04 23:07:23  willuhn
+ * @C refactored Passport stuff
+ *
  * Revision 1.2  2004/04/27 22:28:54  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/DialogFactory.java,v $
- * $Revision: 1.11 $
- * $Date: 2004/04/27 22:23:56 $
+ * $Revision: 1.12 $
+ * $Date: 2004/05/04 23:07:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,7 +12,6 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui;
 
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
@@ -20,11 +19,10 @@ import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.dialogs.SimpleDialog;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.controller.SettingsControl;
 import de.willuhn.jameica.hbci.gui.dialogs.PINDialog;
 import de.willuhn.jameica.hbci.gui.views.Welcome;
-import de.willuhn.jameica.hbci.rmi.Passport;
+import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.util.I18N;
 
 /**
@@ -117,20 +115,19 @@ public class DialogFactory {
 	}
 
   /**
-   * Die Funktion ueberprueft, ob schon ein Passport eingerichtet ist.
+   * Die Funktion ueberprueft, ob fuer das Konto schon ein Passport eingerichtet ist.
    * Ist dies nicht der Fall, wird ein Dialog zur Erstellung eines
    * neuen erzeugt. Diese Funktion sollte ueberall dort aufgerufen
    * werden, wo vorm Aufbau des Dialogs feststehen muss, ob ein Passport
    * schon existiert.
    * @return true, wenn ein Passport existiert.
    */
-  public static synchronized boolean checkPassport()
+  public static synchronized boolean checkPassport(Konto k)
 	{
 		I18N i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
 
 		try {
-			DBIterator passports = Settings.getDatabase().createList(Passport.class);
-			if (passports.size() > 0)
+			if (k.getPassport() != null)
 				return true;
 
 			YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
@@ -160,6 +157,9 @@ public class DialogFactory {
 
 /**********************************************************************
  * $Log: DialogFactory.java,v $
+ * Revision 1.12  2004/05/04 23:07:24  willuhn
+ * @C refactored Passport stuff
+ *
  * Revision 1.11  2004/04/27 22:23:56  willuhn
  * @N configurierbarer CTAPI-Treiber
  * @C konkrete Passport-Klassen (DDV) nach de.willuhn.jameica.passports verschoben

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.18 $
- * $Date: 2004/04/19 22:05:51 $
+ * $Revision: 1.19 $
+ * $Date: 2004/05/04 23:07:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,6 +22,7 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.PassportRegistry;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Passport;
@@ -39,7 +40,6 @@ import de.willuhn.util.I18N;
 public class KontoImpl extends AbstractDBObject implements Konto {
 
 	private I18N i18n;
-	private Passport passport = null;
 
   /**
    * ct.
@@ -86,9 +86,6 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 
 			if (getPassport() == null)
 				throw new ApplicationException("Bitte wählen Sie ein Sicherheitsmedium aus.");
-
-			if (getPassport().isNewObject())
-				throw new ApplicationException("Bitte speichern Sie zunächst das Sicherheitsmedium.");
 
 			if (!HBCIUtils.checkAccountCRC(getBLZ(),getKontonummer()))
 				throw new ApplicationException("Ungültige BLZ/Kontonummer. Bitte prüfen Sie Ihre Eingaben.");
@@ -142,19 +139,18 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    * @see de.willuhn.jameica.hbci.rmi.Konto#getPassport()
    */
   public Passport getPassport() throws RemoteException {
-		if (passport != null)
-			return passport;
 
-		// instanziieren ihn und liefern ihn zurueck.
+		String className = (String) getField("passport_class");
+		if (className == null)
+			return null;
+
 		try {
-			passport = HBCIFactory.getInstance().findImplementor((Passport) getField("passport_id"));
-			return passport;
+			return PassportRegistry.findByClass(className);
 		}
-		catch (ClassNotFoundException e)
+		catch (Exception e)
 		{
-			throw new RemoteException("implementor for this passport not found",e);
+			throw new RemoteException("unable to load defined passport",e);
 		}
-
   }
 
   /**?
@@ -184,7 +180,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
   public void setPassport(Passport passport) throws RemoteException {
 		if (passport == null)
 			return;
-  	setField("passport_id",new Integer(passport.getID()));
+  	setField("passport_class",passport.getClass().getName());
   }
 
   /**
@@ -395,6 +391,9 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.19  2004/05/04 23:07:24  willuhn
+ * @C refactored Passport stuff
+ *
  * Revision 1.18  2004/04/19 22:05:51  willuhn
  * @C HBCIJobs refactored
  *

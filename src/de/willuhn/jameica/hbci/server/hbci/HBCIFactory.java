@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/04/27 22:23:56 $
+ * $Revision: 1.5 $
+ * $Date: 2004/05/04 23:07:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,11 +21,8 @@ import org.kapott.hbci.manager.HBCIHandler;
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.rmi.Passport;
-import de.willuhn.jameica.hbci.rmi.PassportType;
-import de.willuhn.jameica.hbci.rmi.hbci.PassportHandle;
+import de.willuhn.jameica.hbci.rmi.PassportHandle;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -64,39 +61,6 @@ public class HBCIFactory {
 		factory = new HBCIFactory();
 		return factory;			
 	}
-
-	/**
-	 * Sucht die implementierende Klasse des Passports.
-	 * Hintergrund fuer dieses Verfahren. In der Datenbank befindet sich
-	 * der Name der Java-Klasse, die fuer den Passport genommen werden soll.
-	 * Somit laesst sich die zu verwendende Implementierung aendern.
-	 * Das hat aber zur Konsequenz, dass das Erzeugen einer Instanz etwas
-	 * umstaendlicher ist. Naemlich ueber diese Methode hier.
-   * @param passport das generische Datenbankobjekt (aus <code>konto.getPassport()</code>).
-   * @return die zu verwendende Implementierung des Passports.
-   * @throws RemoteException
-   * @throws ClassNotFoundException
-   */
-  public Passport findImplementor(Passport passport) throws RemoteException, ClassNotFoundException
-	{
-		if (passport == null)
-			throw new RemoteException("passport is null");
-
-		// wir holen den Typ des Passports.
-		PassportType pt = passport.getPassportType();
-
-		if (pt == null || pt.isNewObject())
-			throw new RemoteException("no type defined for this passport");
-
-		// holen uns den Implementor des Passports.
-		String clazz = pt.getImplementor();
-
-		// instanziieren ihn mit passendem Typ
-		passport = (Passport) Settings.getDatabase().createObject(Application.getClassLoader().load(clazz),passport.getID());
-		passport.setPassportType(pt);
-		return passport;
-	}
-
 
 	/**
 	 * Fuegt einen weiteren Job zur Queue hinzu.
@@ -209,6 +173,9 @@ public class HBCIFactory {
 
 /**********************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.5  2004/05/04 23:07:23  willuhn
+ * @C refactored Passport stuff
+ *
  * Revision 1.4  2004/04/27 22:23:56  willuhn
  * @N configurierbarer CTAPI-Treiber
  * @C konkrete Passport-Klassen (DDV) nach de.willuhn.jameica.passports verschoben

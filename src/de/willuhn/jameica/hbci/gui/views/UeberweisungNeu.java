@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/UeberweisungNeu.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/04/27 22:23:56 $
+ * $Revision: 1.11 $
+ * $Date: 2004/05/04 23:07:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -36,15 +36,16 @@ public class UeberweisungNeu extends AbstractView {
    */
   public void bind() throws Exception {
 
+		final UeberweisungControl control = new UeberweisungControl(this);
+
 		// Bevor hier irgendwas angezeigt wird, muss sicher sein, dass
 		// wir einen Passport haben
-		if (!DialogFactory.checkPassport()) return;
+		if (!DialogFactory.checkPassport(control.getKonto())) return;
 
 		I18N i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
 
 		GUI.getView().setTitle(i18n.tr("Überweisung bearbeiten"));
 		
-		final UeberweisungControl control = new UeberweisungControl(this);
 		LabelGroup group = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
 		
 		group.addLabelPair(i18n.tr("Konto"),										control.getKontoAuswahl());		
@@ -86,6 +87,9 @@ public class UeberweisungNeu extends AbstractView {
 
 /**********************************************************************
  * $Log: UeberweisungNeu.java,v $
+ * Revision 1.11  2004/05/04 23:07:24  willuhn
+ * @C refactored Passport stuff
+ *
  * Revision 1.10  2004/04/27 22:23:56  willuhn
  * @N configurierbarer CTAPI-Treiber
  * @C konkrete Passport-Klassen (DDV) nach de.willuhn.jameica.passports verschoben

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/KontoListe.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/04/27 22:23:56 $
+ * $Revision: 1.10 $
+ * $Date: 2004/05/04 23:07:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,7 +22,6 @@ import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.DialogFactory;
 import de.willuhn.jameica.hbci.gui.controller.KontoControl;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -36,11 +35,6 @@ public class KontoListe extends AbstractView {
    * @see de.willuhn.jameica.gui.views.AbstractView#bind()
    */
   public void bind() throws Exception {
-
-		// Bevor hier irgendwas angezeigt wird, muss sicher sein, dass
-		// wir einen Passport haben
-		if (!DialogFactory.checkPassport()) return;
-
 
 		final KontoControl control = new KontoControl(this);
 
@@ -84,6 +78,9 @@ public class KontoListe extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoListe.java,v $
+ * Revision 1.10  2004/05/04 23:07:23  willuhn
+ * @C refactored Passport stuff
+ *
  * Revision 1.9  2004/04/27 22:23:56  willuhn
  * @N configurierbarer CTAPI-Treiber
  * @C konkrete Passport-Klassen (DDV) nach de.willuhn.jameica.passports verschoben

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.13 $
- * $Date: 2004/04/27 22:23:56 $
+ * $Revision: 1.14 $
+ * $Date: 2004/05/04 23:07:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -82,6 +82,7 @@ public class HBCI extends AbstractPlugin
    */
   public boolean init()
   {
+  	PassportRegistry.init();
 		// Wir oeffnen mal die Datenbank.
 		// Grund: Beim ersten DB-Connect kommt es immer zu etwas Verzoegerung,
 		// weil McKOI gestartet werden muss. Wir machen das waehrend des Splash-Screens
@@ -175,6 +176,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.14  2004/05/04 23:07:23  willuhn
+ * @C refactored Passport stuff
+ *
  * Revision 1.13  2004/04/27 22:23:56  willuhn
  * @N configurierbarer CTAPI-Treiber
  * @C konkrete Passport-Klassen (DDV) nach de.willuhn.jameica.passports verschoben

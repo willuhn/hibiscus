@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/NewPassportDialog.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/04/27 22:23:56 $
+ * $Revision: 1.7 $
+ * $Date: 2004/05/04 23:07:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,6 +11,8 @@
  *
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.dialogs;
+
+import java.util.Hashtable;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
@@ -24,14 +26,14 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
-import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.input.AbstractInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.rmi.PassportType;
+import de.willuhn.jameica.hbci.PassportRegistry;
+import de.willuhn.jameica.hbci.rmi.Passport;
 import de.willuhn.util.I18N;
 
 /**
@@ -42,7 +44,7 @@ import de.willuhn.util.I18N;
 public class NewPassportDialog extends AbstractDialog {
 
 	private AbstractInput auswahl;
-	private PassportType choosen;
+	private Passport choosen;
 
 	private I18N i18n;
 
@@ -98,8 +100,14 @@ public class NewPassportDialog extends AbstractDialog {
 		gl.marginHeight = 0;
 		gl.marginWidth = 0;
 		c.setLayout(gl);
-		DBIterator list = Settings.getDatabase().createList(PassportType.class);
-		auswahl = new SelectInput(list,null);
+
+		Passport[] passports = PassportRegistry.getPassports();
+		Hashtable ht = new Hashtable();
+		for (int i=0;i<passports.length;++i)
+		{
+			ht.put(passports[i].getName(),passports[i]);
+		}
+		auswahl = new SelectInput(ht,null);
 		auswahl.paint(c,SWT.DEFAULT);
 
 		// Dummy-Label damit die Buttons buendig unter dem Eingabefeld stehen
@@ -112,7 +120,13 @@ public class NewPassportDialog extends AbstractDialog {
 		button.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		button.addMouseListener(new MouseAdapter() {
 			public void mouseUp(MouseEvent e) {
-				choosen = (PassportType) auswahl.getValue();
+				try {
+					choosen = (Passport) auswahl.getValue();
+				}
+				catch (Exception e2)
+				{
+					Application.getLog().error("error while loading passport",e2);
+				}
 				close();
 			}
 		});
@@ -143,6 +157,9 @@ public class NewPassportDialog extends AbstractDialog {
 
 /**********************************************************************
  * $Log: NewPassportDialog.java,v $
+ * Revision 1.7  2004/05/04 23:07:23  willuhn
+ * @C refactored Passport stuff
+ *
  * Revision 1.6  2004/04/27 22:23:56  willuhn
  * @N configurierbarer CTAPI-Treiber
  * @C konkrete Passport-Klassen (DDV) nach de.willuhn.jameica.passports verschoben

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.25 $
- * $Date: 2004/05/02 17:04:38 $
+ * $Revision: 1.26 $
+ * $Date: 2004/05/04 23:07:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@ package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
 import java.util.Date;
+import java.util.Hashtable;
 
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -32,13 +33,13 @@ import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.PassportRegistry;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.views.KontoListe;
 import de.willuhn.jameica.hbci.gui.views.KontoNeu;
 import de.willuhn.jameica.hbci.gui.views.UmsatzListe;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Passport;
-import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -91,26 +92,6 @@ public class KontoControl extends AbstractControl {
 		konto = (Konto) Settings.getDatabase().createObject(Konto.class,null);
 		return konto;
 	}
-
-	/**
-	 * Liefert den Passport des Kontos.
-   * @return Passport.
-   * @throws RemoteException
-   */
-  public Passport getPassport() throws RemoteException
-	{
-		if (passport != null)
-			return passport;
-
-		try {
-			passport = HBCIFactory.getInstance().findImplementor((Passport) getPassportAuswahl().getValue());
-			return passport;
-		}
-		catch (ClassNotFoundException e)
-		{
-			throw new RemoteException("implementor for this passport not found",e);
-		}
-  }
 
 	/**
 	 * Liefert das Eingabe-Feld fuer die Kontonummer.
@@ -202,7 +183,15 @@ public class KontoControl extends AbstractControl {
 		if (passportAuswahl != null)
 			return passportAuswahl;
 
-		passportAuswahl = new SelectInput(Settings.getDatabase().createList(Passport.class),null);
+		Passport[] passports = PassportRegistry.getPassports();
+		Hashtable ht = new Hashtable();
+		for (int i=0;i<passports.length;++i)
+		{
+			ht.put(passports[i].getName(),passports[i]);
+		}
+
+		Passport p = getKonto().getPassport();
+		passportAuswahl = new SelectInput(ht,p == null ? null : p.getClass().getName());
 		return passportAuswahl;
 	}
 
@@ -317,19 +306,7 @@ public class KontoControl extends AbstractControl {
   public void handleStore() {
 		try {
 
-			//////////////////////////////////////////////////////////////////////////
-			// Passport checken
-      
-			Passport p = (Passport) getPassportAuswahl().getValue();
-
-			if (p.isNewObject())
-			{
-				GUI.getView().setErrorText(i18n.tr("Bitte wählen Sie ein Sicherheitsmedium aus."));
-				return;
-			}
-			getKonto().setPassport(p);
-			//
-			//////////////////////////////////////////////////////////////////////////
+			getKonto().setPassport((Passport) getPassportAuswahl().getValue());
 
 			getKonto().setKontonummer((String)getKontonummer().getValue());
 			getKonto().setBLZ((String)getBlz().getValue());
@@ -382,10 +359,13 @@ public class KontoControl extends AbstractControl {
 		GUI.startSync(new Runnable() {
 			public void run() {
 				try {
+
+					Passport p = (Passport) getPassportAuswahl().getValue();
+
 					DBIterator existing = Settings.getDatabase().createList(Konto.class);
 					Konto check = null;
 					Konto newKonto = null;
-					Konto[] konten = getPassport().getHandle().getKonten();
+					Konto[] konten = p.getHandle().getKonten();
 
 					for (int i=0;i<konten.length;++i)
 					{
@@ -413,7 +393,7 @@ public class KontoControl extends AbstractControl {
 								newKonto.setKundennummer(konten[i].getKundennummer());
 								newKonto.setName(konten[i].getName());
 								newKonto.setWaehrung(konten[i].getWaehrung());
-								newKonto.setPassport(getPassport()); // wir speichern den ausgewaehlten Passport.
+								newKonto.setPassport(getKonto().getPassport()); // wir speichern den ausgewaehlten Passport.
 								newKonto.store();
 							}
 							catch (Exception e)
@@ -518,6 +498,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.26  2004/05/04 23:07:23  willuhn
+ * @C refactored Passport stuff
+ *
  * Revision 1.25  2004/05/02 17:04:38  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/Controller.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/04/27 22:23:56 $
+ * $Revision: 1.2 $
+ * $Date: 2004/05/04 23:07:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,7 +18,6 @@ import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.controller.AbstractControl;
-import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.input.AbstractInput;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.FileInput;
@@ -29,8 +28,7 @@ import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.views.Settings;
 import de.willuhn.jameica.hbci.passports.ddv.rmi.Passport;
-import de.willuhn.jameica.hbci.rmi.hbci.PassportHandle;
-import de.willuhn.util.ApplicationException;
+import de.willuhn.jameica.hbci.rmi.PassportHandle;
 import de.willuhn.util.I18N;
 
 /**
@@ -43,7 +41,6 @@ public class Controller extends AbstractControl {
 
 	// Eingabe-Felder
 	private AbstractInput name 			 = null; 
-	private AbstractInput type			 = null;
 	private AbstractInput ctapi			 = null;
 	private AbstractInput port 			 = null;
 	private AbstractInput ctNumber	 = null;
@@ -133,22 +130,8 @@ public class Controller extends AbstractControl {
 		if (name != null)
 			return name;
 
-		name = new TextInput(getPassport().getName());
+		name = new LabelInput(getPassport().getName());
 		return name;
-	}
-
-	/**
-	 * Liefert das Eingabe-Feld fuer den Typ des Passports.
-	 * @return Eingabe-Feld.
-	 * @throws RemoteException
-	 */
-	public AbstractInput getType() throws RemoteException
-	{
-		if (type != null)
-			return type;
-
-		type = new LabelInput(getPassport().getPassportType().getName());
-		return type;
 	}
 
 	/**
@@ -199,27 +182,6 @@ public class Controller extends AbstractControl {
    * @see de.willuhn.jameica.gui.controller.AbstractControl#handleDelete()
    */
   public void handleDelete() {
-		
-  	try
-  	{
-			YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
-			d.setTitle(i18n.tr("Medium löschen?"));
-			d.setText(i18n.tr("Sind Sie sicher, daß Sie das Sicherheitsmedium löschen möchten?"));
-			Boolean b = (Boolean) d.open();
-			if (!b.booleanValue())
-				return;
-
-  		getPassport().delete();
-			GUI.getStatusBar().setSuccessText(i18n.tr("Medium gelöscht"));
-  	}
-  	catch (ApplicationException e2)
-  	{
-			GUI.getView().setErrorText(i18n.tr(e2.getMessage()));
-  	}
-		catch (Exception e)
-		{
-			Application.getLog().error("error while deleting passport",e);
-		}
   }
   
   /**
@@ -261,15 +223,8 @@ public class Controller extends AbstractControl {
 
 			getPassport().setBIO(((Boolean)getBio().getValue()).booleanValue());
 			getPassport().setSoftPin(((Boolean)getSoftPin().getValue()).booleanValue());
-			getPassport().setName((String)getName().getValue());
 			
-			getPassport().store();
-
 			GUI.getStatusBar().setSuccessText(i18n.tr("Einstellungen gespeichert"));
-  	}
-  	catch (ApplicationException e)
-  	{
-			GUI.getView().setErrorText(i18n.tr(e.getMessage()));
   	}
   	catch (RemoteException e)
   	{
@@ -324,6 +279,9 @@ public class Controller extends AbstractControl {
 
 /**********************************************************************
  * $Log: Controller.java,v $
+ * Revision 1.2  2004/05/04 23:07:23  willuhn
+ * @C refactored Passport stuff
+ *
  * Revision 1.1  2004/04/27 22:23:56  willuhn
  * @N configurierbarer CTAPI-Treiber
  * @C konkrete Passport-Klassen (DDV) nach de.willuhn.jameica.passports verschoben

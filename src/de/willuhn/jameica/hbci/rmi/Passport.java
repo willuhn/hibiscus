@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Attic/Passport.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/05/04 23:08:12 $
+ * $Revision: 1.8 $
+ * $Date: 2004/05/04 23:07:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,7 +21,7 @@ import java.rmi.RemoteException;
 public interface Passport extends Remote {
 
 	/**
-	 * Liefert den sprechenden Namen des Passports.
+	 * Liefert den Namen des Passports.
    * @return Name des Passports.
    * @throws RemoteException
    */
@@ -47,9 +47,6 @@ public interface Passport extends Remote {
 
 /**********************************************************************
  * $Log: Passport.java,v $
- * Revision 1.9  2004/05/04 23:08:12  willuhn
- * *** empty log message ***
- *
  * Revision 1.8  2004/05/04 23:07:23  willuhn
  * @C refactored Passport stuff
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/server/PassportHandleImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/04/27 22:23:56 $
+ * $Revision: 1.2 $
+ * $Date: 2004/05/04 23:07:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,8 +25,8 @@ import org.kapott.hbci.passport.HBCIPassport;
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.passports.ddv.rmi.Passport;
-import de.willuhn.jameica.hbci.passports.ddv.rmi.PassportHandle;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.PassportHandle;
 
 /**
  * Implementierung des Passports vom Typ "Chipkarte" (DDV).
@@ -160,6 +160,9 @@ public class PassportHandleImpl
 
 /**********************************************************************
  * $Log: PassportHandleImpl.java,v $
+ * Revision 1.2  2004/05/04 23:07:23  willuhn
+ * @C refactored Passport stuff
+ *
  * Revision 1.1  2004/04/27 22:23:56  willuhn
  * @N configurierbarer CTAPI-Treiber
  * @C konkrete Passport-Klassen (DDV) nach de.willuhn.jameica.passports verschoben

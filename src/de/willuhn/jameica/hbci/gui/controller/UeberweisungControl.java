@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.14 $
- * $Date: 2004/04/24 19:04:51 $
+ * $Revision: 1.15 $
+ * $Date: 2004/05/04 23:07:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -108,7 +108,7 @@ public class UeberweisungControl extends AbstractControl {
    * @return das Konto.
    * @throws RemoteException
    */
-  private Konto getKonto() throws RemoteException
+  public Konto getKonto() throws RemoteException
 	{
 		if (konto != null)
 			return konto;
@@ -667,6 +667,9 @@ public class UeberweisungControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
+ * Revision 1.15  2004/05/04 23:07:23  willuhn
+ * @C refactored Passport stuff
+ *
  * Revision 1.14  2004/04/24 19:04:51  willuhn
  * @N Ueberweisung.execute works!! ;)
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/View.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/04/27 22:23:56 $
+ * $Revision: 1.2 $
+ * $Date: 2004/05/04 23:07:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -42,7 +42,6 @@ public class View extends AbstractView {
 
 		LabelGroup group = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
 		
-		group.addLabelPair(i18n.tr("Typ"),										control.getType());
 		group.addLabelPair(i18n.tr("Bezeichnung"),						control.getName());
 		group.addLabelPair(i18n.tr("Port des Lesers"),				control.getPort());
 		group.addLabelPair(i18n.tr("CTAPI Treiber-Datei"),		control.getCTAPI());
@@ -75,6 +74,9 @@ public class View extends AbstractView {
 
 /**********************************************************************
  * $Log: View.java,v $
+ * Revision 1.2  2004/05/04 23:07:23  willuhn
+ * @C refactored Passport stuff
+ *
  * Revision 1.1  2004/04/27 22:23:56  willuhn
  * @N configurierbarer CTAPI-Treiber
  * @C konkrete Passport-Klassen (DDV) nach de.willuhn.jameica.passports verschoben
