@@ -5,6 +5,6 @@
 	</p>
 
 	<p>
-		Die Überweisung wird in der Währung des	ausgewählten Kontos ausgeführt.
+		Die Überweisung wird in der Währung des ausgewählten Kontos ausgeführt.
 	</p>
 </form>
