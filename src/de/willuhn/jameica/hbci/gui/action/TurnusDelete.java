@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/Attic/TurnusDelete.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/11/15 00:38:30 $
+ * $Revision: 1.4 $
+ * $Date: 2004/11/18 23:46:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,6 +27,7 @@ import de.willuhn.util.I18N;
 
 /**
  * Action fuer Loeschen eines Empfaengers.
+ * @deprecated kann mit in Controller
  */
 public class TurnusDelete implements Action
 {
@@ -95,6 +96,9 @@ public class TurnusDelete implements Action
 
 /**********************************************************************
  * $Log: TurnusDelete.java,v $
+ * Revision 1.4  2004/11/18 23:46:21  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2004/11/15 00:38:30  willuhn
  * *** empty log message ***
  *

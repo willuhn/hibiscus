@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/TurnusNew.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/11/15 00:38:30 $
+ * $Revision: 1.3 $
+ * $Date: 2004/11/18 23:46:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -41,16 +41,21 @@ public class TurnusNew extends AbstractView {
 		GUI.getView().setTitle(i18n.tr("Zahlungsturnus bearbeiten"));
 		
 		final TurnusControl control = new TurnusControl(this);
-		LabelGroup group = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
+
+		LabelGroup group = new LabelGroup(getParent(),i18n.tr("Vorhandene Einträge"));
+		group.addPart(control.getTurnusList());
+
+
+		LabelGroup group2 = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
 
 		try {
-			group.addLabelPair(i18n.tr("Zeiteinheit"),control.getZeiteinheit());
-			group.addLabelPair(i18n.tr("Zahlung aller"),control.getIntervall());
-			group.addLabelPair(i18n.tr("Zahlung am"), control.getTagWoechentlich());
-			group.addLabelPair("", control.getTagMonatlich());
+			group2.addLabelPair(i18n.tr("Zeiteinheit"),control.getZeiteinheit());
+			group2.addLabelPair(i18n.tr("Zahlung aller"),control.getIntervall());
+			group2.addLabelPair(i18n.tr("Zahlung am"), control.getTagWoechentlich());
+			group2.addLabelPair("", control.getTagMonatlich());
 			
-			group.addSeparator();
-			group.addLabelPair("", control.getComment());
+			group2.addSeparator();
+			group2.addLabelPair("", control.getComment());
 			
 		}
 		catch (RemoteException e)
@@ -86,6 +91,9 @@ public class TurnusNew extends AbstractView {
 
 /**********************************************************************
  * $Log: TurnusNew.java,v $
+ * Revision 1.3  2004/11/18 23:46:21  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2004/11/15 00:38:30  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/DauerauftragControl.java,v $
- * $Revision: 1.16 $
- * $Date: 2004/11/13 17:02:04 $
+ * $Revision: 1.17 $
+ * $Date: 2004/11/18 23:46:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,6 +23,7 @@ import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.dialogs.CalendarDialog;
+import de.willuhn.jameica.gui.dialogs.ViewDialog;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.input.DialogInput;
@@ -32,8 +33,8 @@ import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.DauerauftragNew;
-import de.willuhn.jameica.hbci.gui.dialogs.TurnusAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.menus.DauerauftragList;
+import de.willuhn.jameica.hbci.gui.views.TurnusNew;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Transfer;
 import de.willuhn.jameica.hbci.rmi.Turnus;
@@ -113,8 +114,9 @@ public class DauerauftragControl extends AbstractTransferControl {
 		if (turnus != null)
 			return turnus;
 
-		TurnusAuswahlDialog tad = new TurnusAuswahlDialog(TurnusAuswahlDialog.POSITION_MOUSE);
-		tad.addCloseListener(new Listener() {
+		ViewDialog vd = new ViewDialog(new TurnusNew(),ViewDialog.POSITION_MOUSE);
+		vd.setTitle(i18n.tr("Zahlungsturnus auswählen/bearbeiten"));
+		vd.addCloseListener(new Listener() {
 			public void handleEvent(Event event) {
 				if (event == null || event.data == null)
 					return;
@@ -133,7 +135,7 @@ public class DauerauftragControl extends AbstractTransferControl {
 		});
 
 		Turnus t = ((Dauerauftrag)getTransfer()).getTurnus();
-		turnus = new DialogInput(t == null ? "" : t.getBezeichnung(),tad);
+		turnus = new DialogInput(t == null ? "" : t.getBezeichnung(),vd);
 		turnus.setValue(t);
 		turnus.disableClientControl();
 		return turnus;
@@ -259,6 +261,9 @@ public class DauerauftragControl extends AbstractTransferControl {
 
 /**********************************************************************
  * $Log: DauerauftragControl.java,v $
+ * Revision 1.17  2004/11/18 23:46:21  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.16  2004/11/13 17:02:04  willuhn
  * @N Bearbeiten des Zahlungsturnus
  *
