@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/02/09 22:09:40 $
+ * $Revision: 1.3 $
+ * $Date: 2004/02/11 00:11:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,7 +22,6 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 
 import org.kapott.hbci.manager.HBCIUtils;
-import org.kapott.hbci.passport.AbstractHBCIPassport;
 import org.kapott.hbci.passport.HBCIPassport;
 
 import de.willuhn.datasource.db.EmbeddedDatabase;
@@ -81,7 +80,7 @@ public class HBCI extends AbstractPlugin
 			return false;
 		}
 
-		passport=AbstractHBCIPassport.getInstance();
+//		passport=AbstractHBCIPassport.getInstance();
 //		HBCIHandler handler=new HBCIHandler("210",passport);
 
 		return true;
@@ -148,7 +147,7 @@ public class HBCI extends AbstractPlugin
    */
   public void shutDown()
   {
-  	passport.close();
+//  	passport.close();
   }
 
   /**
@@ -156,7 +155,7 @@ public class HBCI extends AbstractPlugin
    */
   protected String getPassword()
   {
-    return "&%Gds01)8L+";
+    return "Gd._s01)8L+";
   }
 
   /**
@@ -172,6 +171,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.3  2004/02/11 00:11:20  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2004/02/09 22:09:40  willuhn
  * *** empty log message ***
  *

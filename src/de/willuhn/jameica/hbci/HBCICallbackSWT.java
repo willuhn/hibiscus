@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/02/09 22:09:40 $
+ * $Revision: 1.2 $
+ * $Date: 2004/02/11 00:11:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,11 +13,18 @@
 
 package de.willuhn.jameica.hbci;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.Date;
+import java.util.StringTokenizer;
 
-import org.kapott.hbci.callback.HBCICallback;
+import org.kapott.hbci.GV.HBCIJob;
+import org.kapott.hbci.callback.AbstractHBCICallback;
+import org.kapott.hbci.exceptions.HBCI_Exception;
 import org.kapott.hbci.manager.HBCIUtils;
 import org.kapott.hbci.passport.HBCIPassport;
+import org.kapott.hbci.passport.INILetter;
+import org.kapott.hbci.status.HBCIMsgStatus;
 
 import de.willuhn.jameica.Application;
 
@@ -25,7 +32,7 @@ import de.willuhn.jameica.Application;
  * Dieser HBCICallbackSWT implementiert den HBCICallbackSWT des HBCI-Systems und
  * schreibt die Log-Ausgaben in das Jameica-Log.
  */
-public class HBCICallbackSWT implements HBCICallback
+public class HBCICallbackSWT extends AbstractHBCICallback
 {
 
   /**
@@ -70,30 +77,264 @@ public class HBCICallbackSWT implements HBCICallback
    * @see org.kapott.hbci.callback.HBCICallback#callback(org.kapott.hbci.passport.HBCIPassport, int, java.lang.String, int, java.lang.StringBuffer)
    */
   public void callback(HBCIPassport passport, int reason, String msg, int datatype, StringBuffer retData) {
-    // TODO Auto-generated method stub
-    
+
+		try {
+				INILetter iniletter;
+				Date      date;
+				String    st;
+            
+			switch (reason) {
+					case NEED_PASSPHRASE_LOAD:
+					case NEED_PASSPHRASE_SAVE:
+							System.out.print(msg+": ");
+	
+					case NEED_CHIPCARD:
+							System.out.println(msg);
+							break;
+	
+					case NEED_HARDPIN:
+							System.out.println(msg);
+							break;
+	
+					case NEED_SOFTPIN:
+					case NEED_PT_PIN:
+					case NEED_PT_TAN:
+							System.out.print(msg+": ");
+							break;
+	
+					case HAVE_HARDPIN:
+							HBCIUtils.log(HBCIUtils.getLocMsg("DBG_CLB_ENDHARDPIN"),HBCIUtils.LOG_DEBUG);
+							break;
+	
+					case HAVE_CHIPCARD:
+							HBCIUtils.log(HBCIUtils.getLocMsg("DBG_CLB_ENDCHIPCARD"),HBCIUtils.LOG_DEBUG);
+							break;
+	
+					case NEED_COUNTRY:
+					case NEED_BLZ:
+					case NEED_HOST:
+					case NEED_PORT:
+					case NEED_FILTER:
+					case NEED_USERID:
+					case NEED_CUSTOMERID:
+							System.out.print(msg+" ["+retData.toString()+"]: ");
+							break;
+	
+					case NEED_NEW_INST_KEYS_ACK:
+							System.out.println(msg);
+							iniletter=new INILetter(passport,INILetter.TYPE_INST);
+							System.out.println(HBCIUtils.getLocMsg("EXPONENT")+": "+HBCIUtils.data2hex(iniletter.getKeyExponent()));
+							System.out.println(HBCIUtils.getLocMsg("MODULUS")+": "+HBCIUtils.data2hex(iniletter.getKeyModulus()));
+							System.out.println(HBCIUtils.getLocMsg("HASH")+": "+HBCIUtils.data2hex(iniletter.getKeyHash()));
+							System.out.print("<ENTER>=OK, \"ERR\"=ERROR: ");
+							System.out.flush();
+							retData.replace(0,retData.length(),
+															(new BufferedReader(new InputStreamReader(System.in))).readLine());
+							break;
+	
+					case HAVE_NEW_MY_KEYS:
+							iniletter=new INILetter(passport,INILetter.TYPE_USER);
+							date=new Date();
+							System.out.println(HBCIUtils.getLocMsg("DATE")+": "+HBCIUtils.date2String(date));
+							System.out.println(HBCIUtils.getLocMsg("TIME")+": "+HBCIUtils.time2String(date));
+							System.out.println(HBCIUtils.getLocMsg("BLZ")+": "+passport.getBLZ());
+							System.out.println(HBCIUtils.getLocMsg("USERID")+": "+passport.getUserId());
+							System.out.println(HBCIUtils.getLocMsg("KEYNUM")+": "+passport.getMyPublicSigKey().num);
+							System.out.println(HBCIUtils.getLocMsg("KEYVERSION")+": "+passport.getMyPublicSigKey().version);
+							System.out.println(HBCIUtils.getLocMsg("EXPONENT")+": "+HBCIUtils.data2hex(iniletter.getKeyExponent()));
+							System.out.println(HBCIUtils.getLocMsg("MODULUS")+": "+HBCIUtils.data2hex(iniletter.getKeyModulus()));
+							System.out.println(HBCIUtils.getLocMsg("HASH")+": "+HBCIUtils.data2hex(iniletter.getKeyHash()));
+							System.out.println(msg);
+							break;
+	
+					case HAVE_INST_MSG:
+							System.out.println(msg);
+							System.out.println(HBCIUtils.getLocMsg("CONTINUE"));
+							new BufferedReader(new InputStreamReader(System.in)).readLine();
+							break;
+	
+					case NEED_REMOVE_CHIPCARD:
+							System.out.println(msg);
+							break;
+	
+					case HAVE_CRC_ERROR:
+							System.out.println(msg);
+	
+							int idx=retData.indexOf("|");
+							String blz=retData.substring(0,idx);
+							String number=retData.substring(idx+1);
+	
+							System.out.print(HBCIUtils.getLocMsg("BLZ")+" ["+blz+"]: ");
+							System.out.flush();
+							String s=(new BufferedReader(new InputStreamReader(System.in))).readLine();
+							if (s.length()==0)
+									s=blz;
+							blz=s;
+	
+							System.out.print(HBCIUtils.getLocMsg("ACCNUMBER")+" ["+number+"]: ");
+							System.out.flush();
+							s=(new BufferedReader(new InputStreamReader(System.in))).readLine();
+							if (s.length()==0)
+									s=number;
+							number=s;
+	
+							retData.replace(0,retData.length(),blz+"|"+number);
+							break;
+	
+					case HAVE_ERROR:
+							System.out.println(msg);
+							System.out.print("<ENTER>=OK, \"ERR\"=ERROR: ");
+							System.out.flush();
+							retData.replace(0,retData.length(),
+															(new BufferedReader(new InputStreamReader(System.in))).readLine());
+							break;
+	                    
+					case NEED_SIZENTRY_SELECT:
+							StringTokenizer tok=new StringTokenizer(retData.toString(),"|");
+							while (tok.hasMoreTokens()) {
+									String entry=tok.nextToken();
+									StringTokenizer tok2=new StringTokenizer(entry,";");
+	                        
+									String tempblz;
+									System.out.println(tok2.nextToken()+": "+
+																		 HBCIUtils.getLocMsg("BLZ")+"="+(tempblz=tok2.nextToken())+
+																		 " ("+HBCIUtils.getNameForBLZ(tempblz)+") "+
+																		 HBCIUtils.getLocMsg("USERID")+"="+tok2.nextToken());
+							}
+							System.out.print(HBCIUtils.getLocMsg("CALLB_SELECT_ENTRY")+": ");
+							System.out.flush();
+							retData.replace(0,retData.length(),
+															(new BufferedReader(new InputStreamReader(System.in))).readLine());
+							break;
+	
+					case NEED_CONNECTION:
+					case CLOSE_CONNECTION:
+							System.out.println(msg);
+							System.out.println(HBCIUtils.getLocMsg("CONTINUE"));
+							new BufferedReader(new InputStreamReader(System.in)).readLine();
+							break;
+	
+					default:
+							throw new HBCI_Exception(HBCIUtils.getLocMsg("EXCMSG_CALLB_UNKNOWN",Integer.toString(reason)));
+	
+			}
+
+		}
+		catch (Exception e)
+		{
+			throw new HBCI_Exception(HBCIUtils.getLocMsg("EXCMSG_CALLB_ERR"),e);
+		}
   }
 
   /* (non-Javadoc)
    * @see org.kapott.hbci.callback.HBCICallback#status(org.kapott.hbci.passport.HBCIPassport, int, java.lang.Object[])
    */
   public void status(HBCIPassport passport, int statusTag, Object[] o) {
-    // TODO Auto-generated method stub
+		switch (statusTag) {
+				case STATUS_INST_BPD_INIT:
+						System.out.println(HBCIUtils.getLocMsg("STATUS_REC_INST_DATA"));
+						break;
+				case STATUS_INST_BPD_INIT_DONE:
+						System.out.println(HBCIUtils.getLocMsg("STATUS_REC_INST_DATA_DONE",passport.getBPDVersion()));
+						break;
+				case STATUS_INST_GET_KEYS:
+						System.out.println(HBCIUtils.getLocMsg("STATUS_REC_INST_KEYS"));
+						break;
+				case STATUS_INST_GET_KEYS_DONE:
+						System.out.println(HBCIUtils.getLocMsg("STATUS_REC_INST_KEYS_DONE"));
+						break;
+				case STATUS_SEND_KEYS:
+						System.out.println(HBCIUtils.getLocMsg("STATUS_SEND_MY_KEYS"));
+						break;
+				case STATUS_SEND_KEYS_DONE:
+						System.out.println(HBCIUtils.getLocMsg("STATUS_SEND_MY_KEYS_DONE"));
+						System.out.println("status: "+((HBCIMsgStatus)o[0]).toString());
+						break;
+				case STATUS_INIT_SYSID:
+						System.out.println(HBCIUtils.getLocMsg("STATUS_REC_SYSID"));
+						break;
+				case STATUS_INIT_SYSID_DONE:
+						System.out.println(HBCIUtils.getLocMsg("STATUS_REC_SYSID_DONE",o[1].toString()));
+						System.out.println("status: "+((HBCIMsgStatus)o[0]).toString());
+						break;
+				case STATUS_INIT_SIGID:
+						System.out.println(HBCIUtils.getLocMsg("STATUS_REC_SIGID"));
+						break;
+				case STATUS_INIT_SIGID_DONE:
+						System.out.println(HBCIUtils.getLocMsg("STATUS_REC_SIGID_DONE",o[1].toString()));
+						System.out.println("status: "+((HBCIMsgStatus)o[0]).toString());
+						break;
+				case STATUS_INIT_UPD:
+						System.out.println(HBCIUtils.getLocMsg("STATUS_REC_USER_DATA"));
+						break;
+				case STATUS_INIT_UPD_DONE:
+						System.out.println(HBCIUtils.getLocMsg("STATUS_REC_USER_DATA_DONE",passport.getUPDVersion()));
+						break;
+				case STATUS_LOCK_KEYS:
+						System.out.println(HBCIUtils.getLocMsg("STATUS_USR_LOCK"));
+						break;
+				case STATUS_LOCK_KEYS_DONE:
+						System.out.println(HBCIUtils.getLocMsg("STATUS_USR_LOCK_DONE"));
+						System.out.println("status: "+((HBCIMsgStatus)o[0]).toString());
+						break;
+				case STATUS_DIALOG_INIT:
+						System.out.println(HBCIUtils.getLocMsg("STATUS_DIALOG_INIT"));
+						break;
+				case STATUS_DIALOG_INIT_DONE:
+						System.out.println(HBCIUtils.getLocMsg("STATUS_DIALOG_INIT_DONE",o[1]));
+						System.out.println("status: "+((HBCIMsgStatus)o[0]).toString());
+						break;
+				case STATUS_SEND_TASK:
+						System.out.println(HBCIUtils.getLocMsg("STATUS_DIALOG_NEW_JOB",((HBCIJob)o[0]).getName()));
+						break;
+				case STATUS_SEND_TASK_DONE:
+						System.out.println(HBCIUtils.getLocMsg("STATUS_DIALOG_JOB_DONE",((HBCIJob)o[0]).getName()));
+						break;
+				case STATUS_DIALOG_END:
+						System.out.println(HBCIUtils.getLocMsg("STATUS_DIALOG_END"));
+						break;
+				case STATUS_DIALOG_END_DONE:
+						System.out.println(HBCIUtils.getLocMsg("STATUS_DIALOG_END_DONE"));
+						System.out.println("status: "+((HBCIMsgStatus)o[0]).toString());
+						break;
+				case STATUS_MSG_CREATE:
+						System.out.println("  "+HBCIUtils.getLocMsg("STATUS_MSG_CREATE",o[0].toString()));
+						break;
+				case STATUS_MSG_SIGN:
+						System.out.println("  "+HBCIUtils.getLocMsg("STATUS_MSG_SIGN"));
+						break;
+				case STATUS_MSG_CRYPT:
+						System.out.println("  "+HBCIUtils.getLocMsg("STATUS_MSG_CRYPT"));
+						break;
+				case STATUS_MSG_SEND:
+						System.out.println("  "+HBCIUtils.getLocMsg("STATUS_MSG_SEND"));
+						break;
+				case STATUS_MSG_RECV:
+						System.out.println("  "+HBCIUtils.getLocMsg("STATUS_MSG_RECV"));
+						break;
+				case STATUS_MSG_PARSE:
+						System.out.println("  "+HBCIUtils.getLocMsg("STATUS_MSG_PARSE",o[0].toString()+")"));
+						break;
+				case STATUS_MSG_DECRYPT:
+						System.out.println("  "+HBCIUtils.getLocMsg("STATUS_MSG_DECRYPT"));
+						break;
+				case STATUS_MSG_VERIFY:
+						System.out.println("  "+HBCIUtils.getLocMsg("STATUS_MSG_VERIFY"));
+						break;
+				default:
+						throw new HBCI_Exception(HBCIUtils.getLocMsg("STATUS_INVALID",Integer.toString(statusTag)));
+		}
     
   }
 
-  /* (non-Javadoc)
-   * @see org.kapott.hbci.callback.HBCICallback#status(org.kapott.hbci.passport.HBCIPassport, int, java.lang.Object)
-   */
-  public void status(HBCIPassport passport, int statusTag, Object o) {
-    // TODO Auto-generated method stub
-    
-  }
 }
 
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.2  2004/02/11 00:11:20  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/02/09 22:09:40  willuhn
  * *** empty log message ***
  *
