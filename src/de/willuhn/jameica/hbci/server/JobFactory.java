@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/JobFactory.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/02/20 01:25:25 $
+ * $Revision: 1.4 $
+ * $Date: 2004/02/21 19:49:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,11 +25,15 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Passport;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
+import de.willuhn.util.ApplicationException;
 
 /**
  * Diese Klasse ist fuer die Ausfuehrung der HBCI-Jobs zustaendig.
  */
 public class JobFactory {
+
+	private static boolean inProgress = false;
+	private static Passport passport = null;
 
   /**
    * ct.
@@ -41,10 +45,19 @@ public class JobFactory {
 	 * Fuehrt eine Salden-Abfrage fuer das Konto durch.
    * @param konto das Konto.
    * @return der Saldo.
-   * @throws RemoteException
+   * @throws RemoteException wenn ein interner Fehler aufgetreten ist.
+   * @throws ApplicationException wenn ein Benutzerfehler aufgetreten ist.
+   * Der Text dieser Exception muss dem Benutzer angezeigt werden.
    */
-  protected static synchronized double getSaldo(Konto konto) throws RemoteException
+  public static synchronized double getSaldo(Konto konto) throws ApplicationException, RemoteException
 	{
+
+		if (inProgress)
+		{
+			throw new ApplicationException("Es läuft bereits eine andere HBCI-Abfrage.");
+		}
+
+		inProgress = true;
 
 		GUI.startProgress();
 
@@ -53,10 +66,9 @@ public class JobFactory {
 
 		HBCIDialogStatus statusMsg = null;
 		String statusText = null;
-		Passport p = null;
 		try {
-			p = konto.getPassport();
-			HBCIHandler handler = p.open();
+			passport = konto.getPassport();
+			HBCIHandler handler = passport.open();
 
 			Application.getLog().info("creating new job SaldoReq");
 			HBCIJob job = handler.newJob("SaldoReq");
@@ -90,11 +102,7 @@ public class JobFactory {
 		}
 		finally
 		{
-			GUI.stopProgress();
-			try {
-				p.close();
-			}
-			catch (Exception e) {/*useless*/}
+			close();
 		}
 	}
 	
@@ -103,15 +111,33 @@ public class JobFactory {
    * @param u die Ueberweisung.
    * @throws RemoteException
    */
-  protected static synchronized void execute(Ueberweisung u) throws RemoteException
+  public static synchronized void execute(Ueberweisung u) throws RemoteException
 	{
 	}
-	
+
+	/**
+	 * Schliesst den aktuellen Job bzw. bricht ihn ab, falls noch einer laeuft.
+   */
+  public static synchronized void close()
+	{
+		inProgress = false;
+		try {
+			passport.close();
+		}
+		catch (Exception e)
+		{
+			Application.getLog().error("error while closing job",e);
+		}
+		GUI.stopProgress();
+	}
 }
 
 
 /**********************************************************************
  * $Log: JobFactory.java,v $
+ * Revision 1.4  2004/02/21 19:49:04  willuhn
+ * @N PINDialog
+ *
  * Revision 1.3  2004/02/20 01:25:25  willuhn
  * *** empty log message ***
  *

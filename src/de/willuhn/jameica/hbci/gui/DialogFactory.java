@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/DialogFactory.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/02/20 20:45:13 $
+ * $Revision: 1.5 $
+ * $Date: 2004/02/21 19:49:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,8 +13,8 @@
 package de.willuhn.jameica.hbci.gui;
 
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
-import de.willuhn.jameica.gui.dialogs.PasswordDialog;
 import de.willuhn.jameica.gui.dialogs.SimpleDialog;
+import de.willuhn.jameica.hbci.gui.dialogs.PINDialog;
 
 /**
  * Hilfsklasse zur Erzeugung von Hilfs-Dialogen bei der HBCI-Kommunikation.
@@ -38,15 +38,11 @@ public class DialogFactory {
 	}
 
 	/**
-	 * Erzeugt einen Passwort-Dialog.
-	 * @param headline Ueberschrift des Dialogs.
-	 * @param text Text des Dialogs.
+	 * Erzeugt den PIN-Dialog.
 	 */
-	public static String openPassword(final String headline, final String text)
+	public static String getPIN()
 	{
-		PasswordDialog d = new PasswordDialog(AbstractDialog.POSITION_CENTER);
-		d.setTitle(headline);
-		d.setText(text);
+		PINDialog d = new PINDialog(AbstractDialog.POSITION_CENTER);
 		dialog = (AbstractDialog) d;
 		return d.getPassword();
 	}
@@ -67,6 +63,9 @@ public class DialogFactory {
 
 /**********************************************************************
  * $Log: DialogFactory.java,v $
+ * Revision 1.5  2004/02/21 19:49:04  willuhn
+ * @N PINDialog
+ *
  * Revision 1.4  2004/02/20 20:45:13  willuhn
  * *** empty log message ***
  *

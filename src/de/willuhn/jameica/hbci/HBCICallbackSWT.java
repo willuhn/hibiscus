@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/02/17 00:53:22 $
+ * $Revision: 1.7 $
+ * $Date: 2004/02/21 19:49:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -105,7 +105,7 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 					break;
 
 				case NEED_SOFTPIN:
-					String p = DialogFactory.openPassword("PIN-Eingabe","Bitte geben Sie Ihre PIN ein.");
+					String p = DialogFactory.getPIN();
 					retData.replace(0,retData.length(),p);
 					break;
 				case NEED_PT_PIN:
@@ -368,6 +368,9 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.7  2004/02/21 19:49:04  willuhn
+ * @N PINDialog
+ *
  * Revision 1.6  2004/02/17 00:53:22  willuhn
  * @N SaldoAbfrage
  * @N Ueberweisung

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/02/17 00:53:22 $
+ * $Revision: 1.5 $
+ * $Date: 2004/02/21 19:49:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -71,6 +71,45 @@ public class Settings
 	}
 
 	/**
+	 * Legt fest, ob die PIN gehasht gespeichert werden soll, um sie
+	 * bei erneuter Eingabe pruefen zu koennen.
+	 * @param checkPin true, wenn die Pin geprueft werden soll.
+	 */
+	public static void setCheckPin(boolean checkPin)
+	{
+		settings.setAttribute("checkpin", checkPin ? "true" : "false");
+	}
+
+	/**
+	 * Prueft, ob ein Hash der PIN gespeichert werden soll, um sie bei
+	 * erneuter Eingabe auf Richtigkeit pruefen zu koennen.
+   * @return true, wenn die Pin gehasht gespeichert werden soll.
+   */
+  public static boolean getCheckPin()
+	{
+		return "true".equals(settings.getAttribute("checkpin","false"));
+	}
+
+	/**
+	 * Liefert die Check-Summe der PIN oder <code>null</code> wenn sie nie
+	 * gespeichert wurde.
+   * @return Check-Summe der Pin.
+   */
+  public static String getCheckSum()
+	{
+		return settings.getAttribute("checksum",null);
+	}
+
+	/**
+	 * Speichert die Check-Summe der PIN.
+   * @param checksum Check-Summe der Pin.
+   */
+  public static void setCheckSum(String checksum)
+	{
+		settings.setAttribute("checksum",checksum);
+	}
+
+	/**
 	 * Speichert, ob wir eine permanente Online-Verbindung haben und daher
 	 * vom HBCI-Kernel nicht dauernd gefragt werden muessen, ob wir eine
 	 * Internetverbindung haben wollen.
@@ -128,6 +167,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.5  2004/02/21 19:49:04  willuhn
+ * @N PINDialog
+ *
  * Revision 1.4  2004/02/17 00:53:22  willuhn
  * @N SaldoAbfrage
  * @N Ueberweisung
