@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoFetchDauerauftraege.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/10/23 18:13:45 $
+ * $Revision: 1.3 $
+ * $Date: 2004/10/24 17:19:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 import de.willuhn.util.Logger;
@@ -48,6 +49,7 @@ public class KontoFetchDauerauftraege implements Action
 			throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus"));
 
 		GUI.getStatusBar().startProgress();
+		GUI.getStatusBar().setStatusText(i18n.tr("Daueraufträge werden abgerufen..."));
 
 		try
 		{
@@ -56,11 +58,14 @@ public class KontoFetchDauerauftraege implements Action
 			GUI.startSync(new Runnable() {
 				public void run() {
 					try {
-						GUI.getStatusBar().setSuccessText(i18n.tr("Daueraufträge werden abgerufen..."));
 						k.refreshDauerauftraege();
 						GUI.getStatusBar().setSuccessText(i18n.tr("...Umsätze erfolgreich übertragen"));
 
 						new DauerauftragListe().handleAction(k);
+					}
+					catch (OperationCanceledException oce)
+					{
+						GUI.getStatusBar().setErrorText(i18n.tr("Vorgang abgebrochen"));
 					}
 					catch (ApplicationException e2)
 					{
@@ -77,6 +82,7 @@ public class KontoFetchDauerauftraege implements Action
 		finally
 		{
 			GUI.getStatusBar().stopProgress();
+			GUI.getStatusBar().setStatusText("");
 		}
   }
 
@@ -85,6 +91,9 @@ public class KontoFetchDauerauftraege implements Action
 
 /**********************************************************************
  * $Log: KontoFetchDauerauftraege.java,v $
+ * Revision 1.3  2004/10/24 17:19:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2004/10/23 18:13:45  willuhn
  * *** empty log message ***
  *

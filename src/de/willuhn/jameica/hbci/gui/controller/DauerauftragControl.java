@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/DauerauftragControl.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/10/20 12:08:18 $
+ * $Revision: 1.9 $
+ * $Date: 2004/10/24 17:19:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,9 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
+import de.willuhn.jameica.gui.input.DialogInput;
+import de.willuhn.jameica.gui.input.Input;
+import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
@@ -35,6 +38,8 @@ import de.willuhn.util.Logger;
  * Controller fuer Dauer-Auftraege.
  */
 public class DauerauftragControl extends AbstractTransferControl {
+
+	private Input orderID		= null;
 
   /**
    * ct.
@@ -74,25 +79,33 @@ public class DauerauftragControl extends AbstractTransferControl {
 		table.addColumn(i18n.tr("BLZ des Empfängers"),"empfaenger_blz");
 		table.addColumn(i18n.tr("Name des Empfängers"),"empfaenger_name");
 		table.addColumn(i18n.tr("Betrag"),"betrag", new CurrencyFormatter("",HBCI.DECIMALFORMAT));
-		table.addColumn(i18n.tr("aktiv"),"aktiv",new Formatter()
+		table.addColumn(i18n.tr("aktiv?"),"orderid",new Formatter()
     {
       public String format(Object o)
       {
       	if (o == null)
       		return "nein";
-      	try {
-      		int i = ((Integer) o).intValue();
-      		return i == 0 ? i18n.tr("nein") : i18n.tr("ja");
-      	}
-      	catch (Exception e)
-      	{
-      		Logger.error("error while formatting attribute",e);
-      		return "unbekannt";
-      	}
+				String s = o.toString();
+				if (s != null && s.length() > 0)
+					return i18n.tr("ja");
+				return i18n.tr("nein");
       }
     });
 		table.addColumn(i18n.tr("Turnus"),"turnus_id");
 		return table;
+	}
+
+	/**
+	 * Liefert ein Anzeige-Feld fuer die Order-ID des Dauerauftrages.
+   * @return Anzeige-Feld.
+   * @throws RemoteException
+   */
+  public Input getOrderID() throws RemoteException
+	{
+		 if (orderID != null)
+		 	return orderID;
+		 orderID = new LabelInput(getDauerauftrag().getOrderID());
+		 return orderID;
 	}
 
 	/**
@@ -132,11 +145,28 @@ public class DauerauftragControl extends AbstractTransferControl {
 		super.handleStore();
 		// TODO: Turnus
   }
+
+  /**
+   * Ueberschreiben wir, um die Auswahl des Kontos zu verbieten, wenn der Dauerauftrag
+   * schon aktiv ist.
+   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getKontoAuswahl()
+   */
+  public DialogInput getKontoAuswahl() throws RemoteException
+  {
+    DialogInput i = super.getKontoAuswahl();
+    if (getDauerauftrag().isActive())
+    	i.disable();
+    return i;
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: DauerauftragControl.java,v $
+ * Revision 1.9  2004/10/24 17:19:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.8  2004/10/20 12:08:18  willuhn
  * @C MVC-Refactoring (new Controllers)
  *

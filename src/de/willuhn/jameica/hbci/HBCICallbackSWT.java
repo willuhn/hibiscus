@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.16 $
- * $Date: 2004/10/19 23:33:31 $
+ * $Revision: 1.17 $
+ * $Date: 2004/10/24 17:19:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci;
 
 import java.util.Date;
 
+import org.eclipse.swt.SWTException;
 import org.kapott.hbci.GV.HBCIJob;
 import org.kapott.hbci.callback.AbstractHBCICallback;
 import org.kapott.hbci.exceptions.HBCI_Exception;
@@ -22,7 +23,6 @@ import org.kapott.hbci.manager.HBCIUtils;
 import org.kapott.hbci.manager.HBCIUtilsInternal;
 import org.kapott.hbci.passport.HBCIPassport;
 import org.kapott.hbci.passport.INILetter;
-import org.kapott.hbci.status.HBCIMsgStatus;
 
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.gui.DialogFactory;
@@ -31,6 +31,7 @@ import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.util.I18N;
 import de.willuhn.util.Logger;
+import de.willuhn.util.ProgressMonitor;
 
 /**
  * Dieser HBCICallbackSWT implementiert den HBCICallbackSWT des HBCI-Systems und
@@ -40,14 +41,16 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 {
 
 	private I18N i18n;
+	private ProgressMonitor monitor;
 
   /**
    * ct.
    */
-  public HBCICallbackSWT()
+  public HBCICallbackSWT(ProgressMonitor monitor)
   {
-    super();
-    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+		super();
+  	this.monitor = monitor;
+    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
   /**
@@ -95,7 +98,7 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 					break;
 	
 				case NEED_CHIPCARD:
-					GUI.getStatusBar().setErrorText(i18n.tr("Bitte legen Sie Ihre HBCI-Chipkarte in das Lesegerät."));
+					GUI.getStatusBar().setSuccessText(i18n.tr("Bitte legen Sie Ihre HBCI-Chipkarte in das Lesegerät."));
 					break;
 
 				case HAVE_CHIPCARD:
@@ -126,11 +129,11 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 				case NEED_CONNECTION:
 					if (!Settings.getOnlineMode())
-						DialogFactory.openSimple("Internet-Verbindung","Bitte stellen Sie sicher, dass eine Internetverbindung verfügbar ist.");
+						DialogFactory.openSimple(i18n.tr("Internet-Verbindung"),i18n.tr("Bitte stellen Sie sicher, dass eine Internetverbindung verfügbar ist."));
 					break;
 				case CLOSE_CONNECTION:
 					if (!Settings.getOnlineMode())
-						DialogFactory.openSimple("Internet-Verbindung","Sie können die Internetverbindung nun wieder trennen.");
+						DialogFactory.openSimple(i18n.tr("Internet-Verbindung"),i18n.tr("Sie können die Internetverbindung nun wieder trennen."));
 					break;
 
 				case NEED_COUNTRY:
@@ -168,36 +171,54 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 			HBCIFactory.getInstance().markCancelled();
 			throw oce;
 		}
-		catch (RuntimeException re)
-		{
-			throw re;
-		}
-		catch (Exception e)
+		catch (Throwable t)
 		{
 			// Siehe oben. Wir wollen sichergehen, dass die OperationCanceledException
 			// nicht nochmal verpackt ist.
-			Throwable t = e.getCause();
-			if (t != null && t instanceof OperationCanceledException)
+			Throwable th = t.getCause();
+			
+			if (t instanceof SWTException)
+			{
+				th = ((SWTException) t).throwable;
+			}
+			if (th != null && th instanceof OperationCanceledException)
 			{
 				HBCIFactory.getInstance().markCancelled();
+				throw (OperationCanceledException) th;
 			}
-			// muessen wir vorher eine RuntimeException draus machen.
-			throw new HBCI_Exception(e);
+			if (t instanceof RuntimeException)
+				throw (RuntimeException) t;
+			throw new HBCI_Exception(t);
 		}
   }
 
-	private void status(String text)
+	/**
+	 * Protokolliert die Status-Info aus dem HBCI-Kernel mit INFO-Level.
+   * @param text zu loggender Text.
+   */
+  private void status(String text)
+	{
+//		monitor.setStatusText(text);
+//		monitor.log(text + "\n");
+		Logger.info(text);
+	}
+	
+	/**
+	 * Protokolliert die Status-Info aus dem HBCI-Kernel mit DEBUG-Level.
+   * @param text zu loggender Text.
+   */
+  private void debug(String text)
 	{
 		Logger.debug(text);
 	}
-	
+
   /**
    * @see org.kapott.hbci.callback.HBCICallback#status(org.kapott.hbci.passport.HBCIPassport, int, java.lang.Object[])
    */
   public void status(HBCIPassport passport, int statusTag, Object[] o) {
 		switch (statusTag) {
 
-			case STATUS_INST_BPD_INIT: 
+			case STATUS_INST_BPD_INIT:
 				status(HBCIUtilsInternal.getLocMsg("STATUS_REC_INST_DATA"));
 				break;
 
@@ -218,7 +239,8 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 				break;
 
 			case STATUS_SEND_KEYS_DONE:
-				status(HBCIUtilsInternal.getLocMsg("STATUS_SEND_MY_KEYS_DONE") + ", Status: "+((HBCIMsgStatus)o[0]).toString());
+				// status(HBCIUtilsInternal.getLocMsg("STATUS_SEND_MY_KEYS_DONE") + ", Status: "+((HBCIMsgStatus)o[0]).toString());
+				status(HBCIUtilsInternal.getLocMsg("STATUS_SEND_MY_KEYS_DONE"));
 				break;
 
 			case STATUS_INIT_SYSID:
@@ -226,7 +248,8 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 				break;
 
 			case STATUS_INIT_SYSID_DONE:
-				status(HBCIUtilsInternal.getLocMsg("STATUS_REC_SYSID_DONE",o[1].toString()) + ", Status: "+((HBCIMsgStatus)o[0]).toString());
+				// status(HBCIUtilsInternal.getLocMsg("STATUS_REC_SYSID_DONE",o[1].toString()) + ", Status: "+((HBCIMsgStatus)o[0]).toString());
+				status(HBCIUtilsInternal.getLocMsg("STATUS_REC_SYSID_DONE",o[1].toString()));
 				break;
 
 			case STATUS_INIT_SIGID:
@@ -234,7 +257,8 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 				break;
 
 			case STATUS_INIT_SIGID_DONE:
-				status(HBCIUtilsInternal.getLocMsg("STATUS_REC_SIGID_DONE",o[1].toString()) + ", Status: "+((HBCIMsgStatus)o[0]).toString());
+				// status(HBCIUtilsInternal.getLocMsg("STATUS_REC_SIGID_DONE",o[1].toString()) + ", Status: "+((HBCIMsgStatus)o[0]).toString());
+				status(HBCIUtilsInternal.getLocMsg("STATUS_REC_SIGID_DONE",o[1].toString()));
 				break;
 
 			case STATUS_INIT_UPD:
@@ -250,7 +274,8 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 				break;
 
 			case STATUS_LOCK_KEYS_DONE:
-				status(HBCIUtilsInternal.getLocMsg("STATUS_USR_LOCK_DONE") + ", Status: "+((HBCIMsgStatus)o[0]).toString());
+				// status(HBCIUtilsInternal.getLocMsg("STATUS_USR_LOCK_DONE") + ", Status: "+((HBCIMsgStatus)o[0]).toString());
+				status(HBCIUtilsInternal.getLocMsg("STATUS_USR_LOCK_DONE"));
 				break;
 
 			case STATUS_DIALOG_INIT:
@@ -258,7 +283,8 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 				break;
 
 			case STATUS_DIALOG_INIT_DONE:
-				status(HBCIUtilsInternal.getLocMsg("STATUS_DIALOG_INIT_DONE",o[1]) + ", Status: "+((HBCIMsgStatus)o[0]).toString());
+				// status(HBCIUtilsInternal.getLocMsg("STATUS_DIALOG_INIT_DONE",o[1]) + ", Status: "+((HBCIMsgStatus)o[0]).toString());
+				status(HBCIUtilsInternal.getLocMsg("STATUS_DIALOG_INIT_DONE",o[1]));
 				break;
 
 			case STATUS_SEND_TASK:
@@ -274,7 +300,8 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 				break;
 
 			case STATUS_DIALOG_END_DONE:
-				status(HBCIUtilsInternal.getLocMsg("STATUS_DIALOG_END_DONE") + ", Status: "+((HBCIMsgStatus)o[0]).toString());
+				// status(HBCIUtilsInternal.getLocMsg("STATUS_DIALOG_END_DONE") + ", Status: "+((HBCIMsgStatus)o[0]).toString());
+				status(HBCIUtilsInternal.getLocMsg("STATUS_DIALOG_END_DONE"));
 				break;
 
 			case STATUS_MSG_CREATE:
@@ -298,7 +325,7 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 				break;
 
 			case STATUS_MSG_PARSE:
-				status(HBCIUtilsInternal.getLocMsg("STATUS_MSG_PARSE",o[0].toString()+")"));
+				debug(HBCIUtilsInternal.getLocMsg("STATUS_MSG_PARSE",o[0].toString()+")"));
 				break;
 
 			case STATUS_MSG_DECRYPT:
@@ -320,6 +347,9 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.17  2004/10/24 17:19:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.16  2004/10/19 23:33:31  willuhn
  * *** empty log message ***
  *

@@ -10,7 +10,7 @@ ALTER CREATE TABLE dauerauftrag (
   zweck2 varchar(27) NOT NULL,
   erste_zahlung date NOT NULL,
   letzte_zahlung date,
-  aktiv int(1) NOT NULL,
+  orderid varchar(20),
   UNIQUE (id),
   PRIMARY KEY (id)
 );

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoFetchSaldo.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/10/23 18:13:45 $
+ * $Revision: 1.3 $
+ * $Date: 2004/10/24 17:19:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,13 +12,12 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.action;
 
-import java.rmi.RemoteException;
-
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 import de.willuhn.util.Logger;
@@ -59,13 +58,19 @@ public class KontoFetchSaldo implements Action
 				return;
 			}
 
+			GUI.getStatusBar().setStatusText(i18n.tr("Saldo wird abgerufen..."));
 			GUI.getStatusBar().startProgress();
 
 			GUI.startSync(new Runnable() {
 				public void run() {
 					try {
 						k.refreshSaldo();
+						GUI.getStatusBar().setSuccessText(i18n.tr("...Saldo erfolgreich abgerufen"));
 						new de.willuhn.jameica.hbci.gui.action.KontoNeu().handleAction(k);
+					}
+					catch (OperationCanceledException oce)
+					{
+						GUI.getStatusBar().setErrorText(i18n.tr("Vorgang abgebrochen"));
 					}
 					catch (ApplicationException e2)
 					{
@@ -78,14 +83,16 @@ public class KontoFetchSaldo implements Action
 					}
 				}
 			});
+
 		}
-		catch (RemoteException e)
+		catch (Exception e)
 		{
 			Logger.error("error while refreshing saldo",e);
 			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Aktualisieren des Saldos"));
 		}
 		finally
 		{
+			GUI.getStatusBar().setStatusText("");
 			GUI.getStatusBar().stopProgress();
 		}
   }
@@ -95,6 +102,9 @@ public class KontoFetchSaldo implements Action
 
 /**********************************************************************
  * $Log: KontoFetchSaldo.java,v $
+ * Revision 1.3  2004/10/24 17:19:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2004/10/23 18:13:45  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.33 $
- * $Date: 2004/10/17 16:28:46 $
+ * $Revision: 1.34 $
+ * $Date: 2004/10/24 17:19:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -35,6 +35,7 @@ import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.hbci.server.hbci.HBCISaldoJob;
 import de.willuhn.jameica.hbci.server.hbci.HBCIUmsatzJob;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 import de.willuhn.util.Logger;
@@ -279,7 +280,11 @@ public class KontoImpl extends AbstractDBObject implements Konto {
   /**
    * @see de.willuhn.jameica.hbci.rmi.Konto#refreshSaldo()
    */
-  public synchronized void refreshSaldo() throws ApplicationException,RemoteException {
+  public synchronized void refreshSaldo() throws
+  	ApplicationException,
+  	RemoteException,
+  	OperationCanceledException
+ 	{
 
 
 		// Das machen wir um sicherzugehen, dass alle benoetigten Infos
@@ -307,7 +312,11 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 	/**
    * @see de.willuhn.jameica.hbci.rmi.Konto#refreshUmsaetze()
    */
-  public synchronized void refreshUmsaetze() throws ApplicationException,RemoteException {
+  public synchronized void refreshUmsaetze() throws
+  	ApplicationException,
+  	RemoteException,
+  	OperationCanceledException
+ 	{
 
 		insertCheck();
 		if (isNewObject())
@@ -356,7 +365,10 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 	/**
 	 * @see de.willuhn.jameica.hbci.rmi.Konto#refreshDauerauftraege()
 	 */
-	public void refreshDauerauftraege() throws ApplicationException, RemoteException
+	public void refreshDauerauftraege() throws
+		ApplicationException,
+		RemoteException,
+		OperationCanceledException
 	{
 		insertCheck();
 		if (isNewObject())
@@ -549,6 +561,9 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.34  2004/10/24 17:19:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.33  2004/10/17 16:28:46  willuhn
  * @N Die ersten Dauerauftraege abgerufen ;)
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Dauerauftrag.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/10/23 17:34:31 $
+ * $Revision: 1.5 $
+ * $Date: 2004/10/24 17:19:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,6 +43,21 @@ public interface Dauerauftrag extends Transfer
   public Turnus getTurnus() throws RemoteException;
 
 	/**
+	 * Liefert die eindeutige ID von der Bank.
+	 * Damit kann der Dauerauftrag bei Aenderungen wiedererkannt werden.
+   * @return Order-ID.
+   * @throws RemoteException
+   */
+  public String getOrderID() throws RemoteException;
+
+  /**
+	 * Speichert die Order-ID des Dauerauftrages.
+   * @param id die Order-ID.
+   * @throws RemoteException
+   */
+  public void setOrderID(String id) throws RemoteException;
+
+	/**
 	 * Legt das Datum fuer die erste Zahlung fest.
    * @param datum Datum fuer die erste Zahlung.
    * @throws RemoteException
@@ -67,32 +82,19 @@ public interface Dauerauftrag extends Transfer
 	 * Liefert <code>true</code> wenn der Dauerauftrag bei der Bank aktiv ist.
 	 * Ob dieser nun von der Bank abgerufen oder lokal erstellt und dann
 	 * eingereicht wurde, spielt keine Rolle. Entscheidend ist lediglich, dass
-	 * er bei der Bank vorliegt und aktiv ist.
+	 * er bei der Bank vorliegt.
 	 * @return true, wenn der Dauerauftrag bei der Bank aktiv ist.
 	 * @throws RemoteException
 	 */
 	public boolean isActive() throws RemoteException;
-
-	/**
-	 * Markiert einen Dauerauftrag als "liegt bei der Bank vor" und
-	 * ist somit aktiv.
-	 * Diese Funktion wird intern verwendet.
-   * @throws RemoteException
-   */
-  public void activate() throws RemoteException;
-	
-	/**
-	 * Markiert einen Dauerauftrag als "liegt nicht bei der Bank vor" und
-	 * ist somit inaktiv.
-	 * Diese Funktion wird intern verwendet.
-   * @throws RemoteException
-   */
-  public void deactivate() throws RemoteException;
 }
 
 
 /**********************************************************************
  * $Log: Dauerauftrag.java,v $
+ * Revision 1.5  2004/10/24 17:19:03  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2004/10/23 17:34:31  willuhn
  * *** empty log message ***
  *

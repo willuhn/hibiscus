@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.21 $
- * $Date: 2004/07/25 17:15:06 $
+ * $Revision: 1.22 $
+ * $Date: 2004/10/24 17:19:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,6 +22,7 @@ import org.eclipse.swt.graphics.RGB;
 import sun.misc.BASE64Encoder;
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.parts.ProgressBar;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.Logger;
 
@@ -40,6 +41,8 @@ public class Settings
 	private static Color buchungSollForeground = null;
 	private static Color buchungHabenForeground = null;
 	private static Color ueberfaelligForeground = null;
+	
+	private static ProgressBar hbciProgress = null;
 
   /**
    * Liefert den Datenbank-Service.
@@ -265,10 +268,20 @@ public class Settings
     return encoder.encode(hashed);
   }
 
+	public static ProgressBar getHBCIProgressBar()
+	{
+		if (hbciProgress != null)
+			return hbciProgress;
+		hbciProgress = new ProgressBar();
+		return hbciProgress;
+	}
 }
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.22  2004/10/24 17:19:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.21  2004/07/25 17:15:06  willuhn
  * @C PluginLoader is no longer static
  *

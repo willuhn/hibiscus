@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoFetchUmsaetze.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/10/20 12:08:18 $
+ * $Revision: 1.2 $
+ * $Date: 2004/10/24 17:19:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,8 +17,10 @@ import java.rmi.RemoteException;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.views.UmsatzListe;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 import de.willuhn.util.Logger;
@@ -57,15 +59,19 @@ public class KontoFetchUmsaetze implements Action
 				return;
 			}
 
+			GUI.getStatusBar().setStatusText(i18n.tr("Umsätze werden abgerufen..."));
 			GUI.getStatusBar().startProgress();
 
 			GUI.startSync(new Runnable() {
 				public void run() {
 					try {
-						GUI.getStatusBar().setSuccessText(i18n.tr("Umsätze werden abgerufen..."));
-						k.refreshSaldo();
+						k.refreshUmsaetze();
 						GUI.startView(UmsatzListe.class.getName(),k);
 						GUI.getStatusBar().setSuccessText(i18n.tr("...Umsätze erfolgreich übertragen"));
+					}
+					catch (OperationCanceledException oce)
+					{
+						GUI.getStatusBar().setErrorText(i18n.tr("Vorgang abgebrochen"));
 					}
 					catch (ApplicationException e2)
 					{
@@ -87,6 +93,7 @@ public class KontoFetchUmsaetze implements Action
 		finally
 		{
 			GUI.getStatusBar().stopProgress();
+			GUI.getStatusBar().setStatusText("");
 		}
   }
 
@@ -95,6 +102,9 @@ public class KontoFetchUmsaetze implements Action
 
 /**********************************************************************
  * $Log: KontoFetchUmsaetze.java,v $
+ * Revision 1.2  2004/10/24 17:19:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/10/20 12:08:18  willuhn
  * @C MVC-Refactoring (new Controllers)
  *

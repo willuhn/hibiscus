@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DauerauftragImpl.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/10/23 17:34:31 $
+ * $Revision: 1.10 $
+ * $Date: 2004/10/24 17:19:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -97,10 +97,7 @@ public class DauerauftragImpl extends AbstractTransferImpl implements Dauerauftr
    */
 	public boolean isActive() throws RemoteException
 	{
-		Integer i = (Integer) getAttribute("aktiv");
-		if (i == null)
-			return false;
-		return i.intValue() == 1;
+		return getOrderID() != null && getOrderID().length() > 0;
 	}
 
   /**
@@ -220,28 +217,31 @@ public class DauerauftragImpl extends AbstractTransferImpl implements Dauerauftr
 			return false;
 		}
   }
-  
+
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Dauerauftrag#activate()
+   * @see de.willuhn.jameica.hbci.rmi.Dauerauftrag#getOrderID()
    */
-  public void activate() throws RemoteException
+  public String getOrderID() throws RemoteException
   {
-  	setAttribute("aktiv",new Integer(1));
+    return (String) getAttribute("orderid");
   }
 
-	/**
-   * @see de.willuhn.jameica.hbci.rmi.Dauerauftrag#deactivate()
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Dauerauftrag#setOrderID(java.lang.String)
    */
-	public void deactivate() throws RemoteException
-	{
-		setAttribute("aktiv",new Integer(0));
-	}
-
+  public void setOrderID(String id) throws RemoteException
+  {
+  	setAttribute("orderid",id);
+  }
+ 
 }
 
 
 /**********************************************************************
  * $Log: DauerauftragImpl.java,v $
+ * Revision 1.10  2004/10/24 17:19:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.9  2004/10/23 17:34:31  willuhn
  * *** empty log message ***
  *

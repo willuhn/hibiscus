@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.12 $
- * $Date: 2004/10/19 23:33:31 $
+ * $Revision: 1.13 $
+ * $Date: 2004/10/24 17:19:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import org.kapott.hbci.GV.HBCIJob;
 import org.kapott.hbci.manager.HBCIHandler;
 
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
@@ -41,7 +42,7 @@ public class HBCIFactory {
 
 	private static I18N i18n;
 	private static HBCIFactory factory;
-  	private ArrayList jobs = new ArrayList(); 
+  	private ArrayList jobs = new ArrayList();
 
   /**
    * ct.
@@ -180,6 +181,10 @@ public class HBCIFactory {
 			throw new ApplicationException("Es läuft bereits eine andere HBCI-Abfrage.");
 
 		inProgress = true;
+		Settings.getHBCIProgressBar().percentComplete(0);
+		Settings.getHBCIProgressBar().clearLog();
+		Settings.getHBCIProgressBar().setStatusText("");
+		
 	}
 	
 	/**
@@ -192,11 +197,15 @@ public class HBCIFactory {
 			return; // hier gibts gar nichts abzubrechen ;)
 		cancelled = true;
 	}
+
 }
 
 
 /**********************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.13  2004/10/24 17:19:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.12  2004/10/19 23:33:31  willuhn
  * *** empty log message ***
  *

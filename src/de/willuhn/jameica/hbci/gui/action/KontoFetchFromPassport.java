@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoFetchFromPassport.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/10/21 13:59:00 $
+ * $Revision: 1.3 $
+ * $Date: 2004/10/24 17:19:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -48,7 +48,7 @@ public class KontoFetchFromPassport implements Action
 			final Passport p = (Passport) context;
 
 			GUI.getStatusBar().startProgress();
-			GUI.getStatusBar().setSuccessText(i18n.tr("Medium wird ausgelesen..."));
+			GUI.getStatusBar().setStatusText(i18n.tr("Medium wird ausgelesen..."));
 
 			GUI.startSync(new Runnable()
 			{
@@ -110,6 +110,7 @@ public class KontoFetchFromPassport implements Action
 		finally
 		{
 			GUI.getStatusBar().stopProgress();
+			GUI.getStatusBar().setStatusText("");
 		}
   }
 
@@ -118,6 +119,9 @@ public class KontoFetchFromPassport implements Action
 
 /**********************************************************************
  * $Log: KontoFetchFromPassport.java,v $
+ * Revision 1.3  2004/10/24 17:19:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2004/10/21 13:59:00  willuhn
  * *** empty log message ***
  *
