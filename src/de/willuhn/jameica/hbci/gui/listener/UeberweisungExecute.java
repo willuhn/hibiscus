@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/listener/Attic/UeberweisungExecute.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/07/09 00:04:40 $
+ * $Revision: 1.2 $
+ * $Date: 2004/07/21 23:54:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,10 +15,10 @@ package de.willuhn.jameica.hbci.gui.listener;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
-import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
+import de.willuhn.jameica.plugin.PluginLoader;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 import de.willuhn.util.Logger;
@@ -76,6 +76,9 @@ public class UeberweisungExecute implements Listener
 
 /**********************************************************************
  * $Log: UeberweisungExecute.java,v $
+ * Revision 1.2  2004/07/21 23:54:30  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/07/09 00:04:40  willuhn
  * @C Redesign
  *

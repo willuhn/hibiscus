@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Settings.java,v $
- * $Revision: 1.22 $
- * $Date: 2004/07/20 22:53:03 $
+ * $Revision: 1.23 $
+ * $Date: 2004/07/21 23:54:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,13 +15,13 @@ package de.willuhn.jameica.hbci.gui.views;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
-import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.controller.SettingsControl;
+import de.willuhn.jameica.plugin.PluginLoader;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -83,6 +83,9 @@ public class Settings extends AbstractView {
 
 /**********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.23  2004/07/21 23:54:30  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.22  2004/07/20 22:53:03  willuhn
  * @C Refactoring
  *

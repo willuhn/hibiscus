@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/UmsatzListe.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/07/20 22:53:03 $
+ * $Revision: 1.8 $
+ * $Date: 2004/07/21 23:54:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,13 +17,13 @@ import java.rmi.RemoteException;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
-import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.controller.UmsatzControl;
+import de.willuhn.jameica.plugin.PluginLoader;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 import de.willuhn.util.Logger;
@@ -84,6 +84,9 @@ public class UmsatzListe extends AbstractView {
 
 /**********************************************************************
  * $Log: UmsatzListe.java,v $
+ * Revision 1.8  2004/07/21 23:54:30  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2004/07/20 22:53:03  willuhn
  * @C Refactoring
  *

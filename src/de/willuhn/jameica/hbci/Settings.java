@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.18 $
- * $Date: 2004/07/20 21:48:00 $
+ * $Revision: 1.19 $
+ * $Date: 2004/07/21 23:54:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,8 +21,8 @@ import org.eclipse.swt.graphics.RGB;
 
 import sun.misc.BASE64Encoder;
 import de.willuhn.datasource.rmi.DBService;
-import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.plugin.PluginLoader;
 import de.willuhn.util.Logger;
 
 /**
@@ -32,7 +32,7 @@ import de.willuhn.util.Logger;
 public class Settings
 {
 
-  private static de.willuhn.jameica.Settings settings = new de.willuhn.jameica.Settings(HBCI.class);
+  private static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(HBCI.class);
   private static DBService db = null;
 	private static String workPath = null;
 	private static String libPath = null;
@@ -269,6 +269,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.19  2004/07/21 23:54:30  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.18  2004/07/20 21:48:00  willuhn
  * @N ContextMenus
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/UeberweisungDialog.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/07/20 22:53:03 $
+ * $Revision: 1.5 $
+ * $Date: 2004/07/21 23:54:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.manager.HBCIUtils;
 
-import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
@@ -25,6 +24,7 @@ import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
+import de.willuhn.jameica.plugin.PluginLoader;
 import de.willuhn.util.I18N;
 
 /**
@@ -115,6 +115,9 @@ public class UeberweisungDialog extends AbstractDialog {
 
 /**********************************************************************
  * $Log: UeberweisungDialog.java,v $
+ * Revision 1.5  2004/07/21 23:54:30  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2004/07/20 22:53:03  willuhn
  * @C Refactoring
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/Welcome.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/07/20 23:31:49 $
+ * $Revision: 1.11 $
+ * $Date: 2004/07/21 23:54:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,12 +19,12 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
-import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.controller.WelcomeControl;
+import de.willuhn.jameica.plugin.PluginLoader;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -73,6 +73,9 @@ public class Welcome extends AbstractView
 
 /**********************************************************************
  * $Log: Welcome.java,v $
+ * Revision 1.11  2004/07/21 23:54:30  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.10  2004/07/20 23:31:49  willuhn
  * *** empty log message ***
  *

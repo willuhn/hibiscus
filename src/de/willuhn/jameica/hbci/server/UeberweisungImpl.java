@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UeberweisungImpl.java,v $
- * $Revision: 1.17 $
- * $Date: 2004/07/14 23:48:31 $
+ * $Revision: 1.18 $
+ * $Date: 2004/07/21 23:54:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,13 +15,13 @@ package de.willuhn.jameica.hbci.server;
 import java.rmi.RemoteException;
 import java.util.Date;
 
-import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Empfaenger;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.hbci.server.hbci.HBCIUeberweisungJob;
+import de.willuhn.jameica.plugin.PluginLoader;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 import de.willuhn.util.Logger;
@@ -219,6 +219,9 @@ public class UeberweisungImpl extends AbstractTransferImpl implements Ueberweisu
 
 /**********************************************************************
  * $Log: UeberweisungImpl.java,v $
+ * Revision 1.18  2004/07/21 23:54:30  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.17  2004/07/14 23:48:31  willuhn
  * @N mehr Code fuer Dauerauftraege
  *

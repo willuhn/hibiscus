@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/TANDialog.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/05/05 21:27:13 $
+ * $Revision: 1.2 $
+ * $Date: 2004/07/21 23:54:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,9 +12,9 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.dialogs;
 
-import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.dialogs.PasswordDialog;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.plugin.PluginLoader;
 import de.willuhn.util.I18N;
 
 /**
@@ -68,6 +68,9 @@ public class TANDialog extends PasswordDialog {
 
 /**********************************************************************
  * $Log: TANDialog.java,v $
+ * Revision 1.2  2004/07/21 23:54:30  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/05/05 21:27:13  willuhn
  * @N added TAN-Dialog
  *

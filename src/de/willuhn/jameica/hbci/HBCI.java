@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.23 $
- * $Date: 2004/07/15 23:39:22 $
+ * $Revision: 1.24 $
+ * $Date: 2004/07/21 23:54:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,8 +22,8 @@ import java.text.SimpleDateFormat;
 import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.db.EmbeddedDatabase;
-import de.willuhn.jameica.AbstractPlugin;
-import de.willuhn.jameica.Application;
+import de.willuhn.jameica.plugin.AbstractPlugin;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.Logger;
 
@@ -167,6 +167,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.24  2004/07/21 23:54:30  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.23  2004/07/15 23:39:22  willuhn
  * @N TurnusImpl
  *

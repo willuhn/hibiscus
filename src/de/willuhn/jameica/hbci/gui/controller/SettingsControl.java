@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.28 $
- * $Date: 2004/07/20 21:48:00 $
+ * $Revision: 1.29 $
+ * $Date: 2004/07/21 23:54:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,7 +22,6 @@ import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.GenericObject;
-import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.controller.AbstractControl;
@@ -37,6 +36,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.PassportRegistry;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.passport.Passport;
+import de.willuhn.jameica.plugin.PluginLoader;
 import de.willuhn.util.I18N;
 import de.willuhn.util.Logger;
 
@@ -290,6 +290,9 @@ public class SettingsControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.29  2004/07/21 23:54:30  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.28  2004/07/20 21:48:00  willuhn
  * @N ContextMenus
  *
