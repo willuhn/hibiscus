@@ -37,7 +37,9 @@ CREATE TABLE ueberweisung (
 CREATE TABLE umsatz (
   id NUMERIC default UNIQUEKEY('umsatz'),
   konto_id int(4) NOT NULL,
-  empfaenger_id int(4),
+  empfaenger_konto varchar(15),
+  empfaenger_blz varchar(15),
+  empfaenger_name varchar(255),
   betrag double NOT NULL,
   zweck varchar(35) NOT NULL,
   zweck2 varchar(35),
@@ -80,4 +82,3 @@ ALTER TABLE passport_param ADD CONSTRAINT fk_passport_param FOREIGN KEY (passpor
 ALTER TABLE ueberweisung ADD CONSTRAINT fk_konto FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE ueberweisung ADD CONSTRAINT fk_empfaenger FOREIGN KEY (empfaenger_id) REFERENCES empfaenger (id) DEFERRABLE;
 ALTER TABLE umsatz ADD CONSTRAINT fk_konto2 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
-ALTER TABLE umsatz ADD CONSTRAINT fk_empfaenger2 FOREIGN KEY (empfaenger_id) REFERENCES empfaenger (id) DEFERRABLE;

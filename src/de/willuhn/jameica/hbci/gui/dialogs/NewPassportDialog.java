@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/NewPassportDialog.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/03/03 22:26:41 $
+ * $Revision: 1.3 $
+ * $Date: 2004/03/06 18:25:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,7 +43,7 @@ import de.willuhn.util.I18N;
 public class NewPassportDialog extends AbstractDialog {
 
 	private Input auswahl;
-	private String id = null;
+	private PassportType choosen;
 
 	private I18N i18n;
 
@@ -65,14 +65,11 @@ public class NewPassportDialog extends AbstractDialog {
    */
   protected Object getData() throws Exception {
 
-		// wir laden den ausgewaehlten Typ
-		PassportType pt = (PassportType) Settings.getDatabase().createObject(PassportType.class, id);
-
-		// Erzeugen einen neuen Passport
+		// Wir erzeugen einen neuen Passport
 		Passport p = (Passport) Settings.getDatabase().createObject(Passport.class,null);
 
 		// und weisen den Typ zu
-		p.setPassportType(pt);
+		p.setPassportType(choosen);
 
 		return p;
   }
@@ -123,7 +120,7 @@ public class NewPassportDialog extends AbstractDialog {
 		button.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		button.addMouseListener(new MouseAdapter() {
 			public void mouseUp(MouseEvent e) {
-				id = auswahl.getValue();
+				choosen = (PassportType) auswahl.getValue();
 				close();
 			}
 		});
@@ -142,10 +139,10 @@ public class NewPassportDialog extends AbstractDialog {
 			public void shellClosed(ShellEvent e) {
 				throw new RuntimeException("dialog cancelled via close button");
 			}
-			public void shellActivated(ShellEvent e) {};
-			public void shellDeactivated(ShellEvent e) {};
-			public void shellDeiconified(ShellEvent e) {};
-			public void shellIconified(ShellEvent e) {};
+			public void shellActivated(ShellEvent e) {}
+			public void shellDeactivated(ShellEvent e) {}
+			public void shellDeiconified(ShellEvent e) {}
+			public void shellIconified(ShellEvent e) {}
 		});
   }
 
@@ -154,6 +151,10 @@ public class NewPassportDialog extends AbstractDialog {
 
 /**********************************************************************
  * $Log: NewPassportDialog.java,v $
+ * Revision 1.3  2004/03/06 18:25:10  willuhn
+ * @D javadoc
+ * @C removed empfaenger_id from umsatz
+ *
  * Revision 1.2  2004/03/03 22:26:41  willuhn
  * @N help texts
  * @C refactoring

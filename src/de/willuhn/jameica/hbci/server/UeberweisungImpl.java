@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UeberweisungImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/03/05 00:04:10 $
+ * $Revision: 1.4 $
+ * $Date: 2004/03/06 18:25:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -77,11 +77,6 @@ public class UeberweisungImpl
 				throw new ApplicationException("Bitte wählen Sie ein Konto aus.");
 			if (getKonto().isNewObject())
 				throw new ApplicationException("Bitte speichern Sie zunächst das Konto");
-
-			if (getBetrag() > BETRAG_MAX)
-				throw new ApplicationException("Maximaler Überweisungsbetrag von " + 
-					HBCI.DECIMALFORMAT.format(BETRAG_MAX) + " " + getKonto().getWaehrung() +
-					"überschritten.");
 
 			if (getEmpfaenger() == null)
 				throw new ApplicationException("Bitte wählen Sie einen Empfänger aus");
@@ -280,6 +275,10 @@ public class UeberweisungImpl
 
 /**********************************************************************
  * $Log: UeberweisungImpl.java,v $
+ * Revision 1.4  2004/03/06 18:25:10  willuhn
+ * @D javadoc
+ * @C removed empfaenger_id from umsatz
+ *
  * Revision 1.3  2004/03/05 00:04:10  willuhn
  * @N added code for umsatzlist
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/03/03 22:26:40 $
+ * $Revision: 1.9 $
+ * $Date: 2004/03/06 18:25:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -80,7 +80,7 @@ public class HBCICallbackSWT extends AbstractHBCICallback
   	}
   }
 
-  /* (non-Javadoc)
+  /**
    * @see org.kapott.hbci.callback.HBCICallback#callback(org.kapott.hbci.passport.HBCIPassport, int, java.lang.String, int, java.lang.StringBuffer)
    */
   public void callback(HBCIPassport passport, int reason, String msg, int datatype, StringBuffer retData) {
@@ -88,7 +88,6 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 		try {
 				INILetter iniletter;
 				Date      date;
-				String    st;
             
 			switch (reason) {
 				case NEED_PASSPHRASE_LOAD:
@@ -243,7 +242,7 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 		Application.getLog().debug(text);
 	}
 	
-  /* (non-Javadoc)
+  /**
    * @see org.kapott.hbci.callback.HBCICallback#status(org.kapott.hbci.passport.HBCIPassport, int, java.lang.Object[])
    */
   public void status(HBCIPassport passport, int statusTag, Object[] o) {
@@ -372,6 +371,10 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.9  2004/03/06 18:25:10  willuhn
+ * @D javadoc
+ * @C removed empfaenger_id from umsatz
+ *
  * Revision 1.8  2004/03/03 22:26:40  willuhn
  * @N help texts
  * @C refactoring

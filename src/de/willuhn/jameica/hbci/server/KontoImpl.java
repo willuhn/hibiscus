@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.12 $
- * $Date: 2004/03/05 08:38:47 $
+ * $Revision: 1.13 $
+ * $Date: 2004/03/06 18:25:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,7 +23,6 @@ import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.rmi.Empfaenger;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Passport;
 import de.willuhn.jameica.hbci.rmi.PassportType;
@@ -311,19 +310,6 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 		try {
 			for (int i=0;i<umsaetze.length;++i)
 			{
-				// Die Empfaenger in den Umsaetzen wurden ggf. neu erzeugt. Wir speichern sie mit
-				Empfaenger e = umsaetze[i].getEmpfaenger();
-				// TODO Hier noch checken, ob der Empfaenger schon existiert
-				if (e != null)
-					try {
-						e.store();
-					}
-					catch (Exception e2)
-					{
-						// Wir wollen nicht, dass der ganze Vorgang abbricht, weil ein
-						// Empfaenger nicht gespeichert werden konnte
-						Application.getLog().warn("unable to store empfaenger (" + e2.getMessage() + ")");
-					}
 				umsaetze[i].store();
 			}
 		}
@@ -357,6 +343,10 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.13  2004/03/06 18:25:10  willuhn
+ * @D javadoc
+ * @C removed empfaenger_id from umsatz
+ *
  * Revision 1.12  2004/03/05 08:38:47  willuhn
  * @N umsaetze works now
  *

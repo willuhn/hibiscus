@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzControl.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/03/05 08:38:47 $
+ * $Revision: 1.3 $
+ * $Date: 2004/03/06 18:25:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -71,7 +71,7 @@ public class UmsatzControl extends AbstractControl {
   public Table getUmsatzListe() throws RemoteException
 	{
 		Table table = new Table(getKonto().getUmsaetze(),this);
-		table.addColumn(i18n.tr("Empfänger"),"empfaenger_id");
+		table.addColumn(i18n.tr("Empfänger"),"empfaenger_name");
 		table.addColumn(i18n.tr("Betrag"),"betrag",
 			new CurrencyFormatter(getKonto().getWaehrung(),HBCI.DECIMALFORMAT));
 		table.addColumn(i18n.tr("Verwendungszweck"),"zweck");
@@ -153,6 +153,10 @@ public class UmsatzControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzControl.java,v $
+ * Revision 1.3  2004/03/06 18:25:10  willuhn
+ * @D javadoc
+ * @C removed empfaenger_id from umsatz
+ *
  * Revision 1.2  2004/03/05 08:38:47  willuhn
  * @N umsaetze works now
  *

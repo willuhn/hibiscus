@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/JobFactory.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/03/05 00:19:23 $
+ * $Revision: 1.7 $
+ * $Date: 2004/03/06 18:25:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,11 +43,24 @@ import de.willuhn.util.I18N;
 public class JobFactory {
 
 
+	/**
+	 * HBCI4Java-interner Name fuer &quot;Saldo abrufen&quot.
+	 */
 	public final static String JOB_KONTO_SALDO 					= "SaldoReq";
 	
+	/**
+	 * HBCI4Java-interner Name fuer &quot;Alle Umsaetze abrufen&quot.
+	 */
 	public final static String JOB_UMSATZ_ALL  					= "KUmsAll";
+
+	/**
+	 * HBCI4Java-interner Name fuer &quot;Neue Umsaetze abrufen&quot.
+	 */
 	public final static String JOB_UMSATZ_NEW  					= "KUmsNew";
 	
+	/**
+	 * HBCI4Java-interner Name fuer &quot;Ueberweisung ausfuehren&quot.
+	 */
 	public final static String JOB_UEBERWEISUNG_EXECUTE = "TODO";
 
 	private static I18N i18n;
@@ -159,21 +172,21 @@ public class JobFactory {
 		if (u.ausgefuehrt())
 			throw new ApplicationException(i18n.tr("Überweisung wurde bereits ausgeführt."));
 
-		HBCIDialogStatus statusMsg = null;
-		String statusText = null;
-		Passport passport = null;
-
-		start();
-
-		try {
-
-			Konto konto = u.getKonto();
-			
-			passport = konto.getPassport();
-			HBCIHandler handler = passport.open();
-
-			Application.getLog().info("creating new job " + JOB_UEBERWEISUNG_EXECUTE);
-			HBCIJob job = handler.newJob(JOB_UEBERWEISUNG_EXECUTE);
+//		HBCIDialogStatus statusMsg = null;
+//		String statusText = null;
+//		Passport passport = null;
+//
+//		start();
+//
+//		try {
+//
+//			Konto konto = u.getKonto();
+//			
+//			passport = konto.getPassport();
+//			HBCIHandler handler = passport.open();
+//
+//			Application.getLog().info("creating new job " + JOB_UEBERWEISUNG_EXECUTE);
+//			HBCIJob job = handler.newJob(JOB_UEBERWEISUNG_EXECUTE);
 //			job.setParam("my",((KontoImpl)konto).getHBCIKonto());
 //
 //			Application.getLog().info("adding job to queue");
@@ -200,19 +213,19 @@ public class JobFactory {
 //			}
 //			Application.getLog().info("job result is ok, returning saldo");
 //			return result.getEntries()[0].ready.value.value;
-		}
-		catch (RemoteException e)
-		{
-			throw e;
-		}
-		finally
-		{
-			stop();
-			try {
-				passport.close();
-			}
-			catch (Throwable t) {/* useless*/}
-		}
+//		}
+//		catch (RemoteException e)
+//		{
+//			throw e;
+//		}
+//		finally
+//		{
+//			stop();
+//			try {
+//				passport.close();
+//			}
+//			catch (Throwable t) {/* useless*/}
+//		}
 	}
 
 	/**
@@ -362,6 +375,10 @@ public class JobFactory {
 
 /**********************************************************************
  * $Log: JobFactory.java,v $
+ * Revision 1.7  2004/03/06 18:25:10  willuhn
+ * @D javadoc
+ * @C removed empfaenger_id from umsatz
+ *
  * Revision 1.6  2004/03/05 00:19:23  willuhn
  * @D javadoc fixes
  * @C Converter moved into server package

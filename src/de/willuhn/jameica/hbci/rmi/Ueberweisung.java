@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Ueberweisung.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/03/05 00:19:23 $
+ * $Revision: 1.4 $
+ * $Date: 2004/03/06 18:25:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,8 +23,6 @@ import de.willuhn.util.ApplicationException;
  */
 public interface Ueberweisung extends DBObject {
 
-	public final static double BETRAG_MAX = 10000d; 
-	
 	/**
 	 * Liefert das Konto, ueber das bezahlt wurde.
    * @return Konto.
@@ -119,6 +117,7 @@ public interface Ueberweisung extends DBObject {
 	/**
 	 * Fuehrt die Ueberweisung aus zum definierten Termin aus.
 	 * Ist dieser Termin nicht definiert, wird sie sofort ausgefuehrt.
+	 * @throws RemoteException
    * @throws ApplicationException
    */
   public void execute() throws RemoteException, ApplicationException;
@@ -128,6 +127,10 @@ public interface Ueberweisung extends DBObject {
 
 /**********************************************************************
  * $Log: Ueberweisung.java,v $
+ * Revision 1.4  2004/03/06 18:25:10  willuhn
+ * @D javadoc
+ * @C removed empfaenger_id from umsatz
+ *
  * Revision 1.3  2004/03/05 00:19:23  willuhn
  * @D javadoc fixes
  * @C Converter moved into server package

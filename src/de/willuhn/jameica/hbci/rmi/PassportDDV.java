@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Attic/PassportDDV.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/03/05 00:19:23 $
+ * $Revision: 1.3 $
+ * $Date: 2004/03/06 18:25:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,27 +19,41 @@ import java.rmi.RemoteException;
  */
 public interface PassportDDV extends Passport {
 
-	// Parameter fuer den Port (meist 0)
+	/**
+	 * Parameter fuer den Port (meist 0)
+	 */
 	public final static String PORT 		= "client.passport.DDV.port";
+
+	/**
+	 * Moegliche Ports fuer den Leser.
+	 */
 	public final static String[] PORTS = new String[] {"COM1","COM2","COM3","COM4","USB"};
 
-	// Parameter fuer den Index (normalerweise 0)
+	/**
+	 * Parameter fuer den Index (normalerweise 0)
+	 */
 	public final static String CTNUMBER = "client.passport.DDV.ctnumber";
 
-	// Parameter ober Biometrie verwendet wird (meist 0)
+	/**
+	 * Parameter ober Biometrie verwendet wird (meist 0)
+	 */
 	public final static String USEBIO	  = "client.passport.DDV.usebio";
 
-	// Parameter ob die Tastatur zur Pin-Eingabe verwendet werden soll
+	/**
+	 * Parameter ob die Tastatur zur Pin-Eingabe verwendet werden soll.
+	 */
 	public final static String SOFTPIN  = "client.passport.DDV.softpin";
 
-	// Parameter fuer den Index des HBCI-Zugangs (meist 1)
+	/**
+	 * Parameter fuer den Index des HBCI-Zugangs (meist 1).
+	 */
 	public final static String ENTRYIDX = "client.passport.DDV.entryidx";
 
 	/**
 	 * Liefert den Port des Kartenlesers.
 	 * &quot;0&quot; steht hierbei z.Bsp. fuer COM1, &quot;1&quot; fuer COM2 usw.
    * @return Portnummer.
-   * @throws RemoteException.
+   * @throws RemoteException
    */
   public int getPort() throws RemoteException;
 
@@ -47,7 +61,7 @@ public interface PassportDDV extends Passport {
 	 * Speichert den zu verwendenden Port.
 	 * &quot;0&quot; steht hierbei z.Bsp. fuer COM1, &quot;1&quot; fuer COM2 usw.
    * @param port Portnummer.
-   * @throws RemoteException.
+   * @throws RemoteException
    */
   public void setPort(int port) throws RemoteException;
 
@@ -112,6 +126,10 @@ public interface PassportDDV extends Passport {
 
 /**********************************************************************
  * $Log: PassportDDV.java,v $
+ * Revision 1.3  2004/03/06 18:25:10  willuhn
+ * @D javadoc
+ * @C removed empfaenger_id from umsatz
+ *
  * Revision 1.2  2004/03/05 00:19:23  willuhn
  * @D javadoc fixes
  * @C Converter moved into server package

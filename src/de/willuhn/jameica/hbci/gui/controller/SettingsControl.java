@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/03/05 00:19:23 $
+ * $Revision: 1.9 $
+ * $Date: 2004/03/06 18:25:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -62,12 +62,15 @@ public class SettingsControl extends AbstractControl {
    */
   public Table getPassportListe() throws RemoteException
 	{
-		DBIterator list = Settings.getDatabase().createList(Passport.class);
+    if (passportList != null)
+      	return passportList;
 
-		Table table = new Table(list,this);
-		table.addColumn(i18n.tr("Bezeichnung"),"name");
-		table.addColumn(i18n.tr("Typ"),"passport_type_id");
-		return table;
+    DBIterator list = Settings.getDatabase().createList(Passport.class);
+
+		passportList = new Table(list,this);
+		passportList.addColumn(i18n.tr("Bezeichnung"),"name");
+		passportList.addColumn(i18n.tr("Typ"),"passport_type_id");
+		return passportList;
 	}
 
 	/**
@@ -114,8 +117,8 @@ public class SettingsControl extends AbstractControl {
    */
   public void handleStore() {
 		try {
-			Settings.setOnlineMode(CheckboxInput.ENABLED.equals(getOnlineMode().getValue()));
-			Settings.setCheckPin(CheckboxInput.ENABLED.equals(getCheckPin().getValue()));
+			Settings.setOnlineMode(((Boolean)getOnlineMode().getValue()).booleanValue());
+			Settings.setCheckPin(((Boolean)getCheckPin().getValue()).booleanValue());
 
 			// Wir gehen nochmal auf Nummer sicher, dass die Pruefsummen-Algorithmen vorhanden sind
 			new CheckPinListener().handleEvent(null);
@@ -162,8 +165,8 @@ public class SettingsControl extends AbstractControl {
      */
     public void handleEvent(Event event) {
 			try {
-				MessageDigest md = MessageDigest.getInstance("MD5");
-				md = MessageDigest.getInstance("SHA1");
+				MessageDigest.getInstance("MD5");
+				MessageDigest.getInstance("SHA1");
 			}
 			catch (NoSuchAlgorithmException e)
 			{
@@ -181,6 +184,10 @@ public class SettingsControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.9  2004/03/06 18:25:10  willuhn
+ * @D javadoc
+ * @C removed empfaenger_id from umsatz
+ *
  * Revision 1.8  2004/03/05 00:19:23  willuhn
  * @D javadoc fixes
  * @C Converter moved into server package

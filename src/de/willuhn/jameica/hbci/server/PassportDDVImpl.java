@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/PassportDDVImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/02/27 01:10:18 $
+ * $Revision: 1.7 $
+ * $Date: 2004/03/06 18:25:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -89,7 +89,7 @@ public class PassportDDVImpl
    * @see de.willuhn.jameica.hbci.rmi.PassportDDV#useBIO()
    */
   public boolean useBIO() throws RemoteException {
-		return "1".equals((String) getParam(PassportDDV.USEBIO));
+		return "1".equals(getParam(PassportDDV.USEBIO));
   }
 
   /**
@@ -103,7 +103,7 @@ public class PassportDDVImpl
    * @see de.willuhn.jameica.hbci.rmi.PassportDDV#useSoftPin()
    */
   public boolean useSoftPin() throws RemoteException {
-		return "1".equals((String) getParam(PassportDDV.SOFTPIN));
+		return "1".equals(getParam(PassportDDV.SOFTPIN));
   }
 
   /**
@@ -258,6 +258,10 @@ public class PassportDDVImpl
 
 /**********************************************************************
  * $Log: PassportDDVImpl.java,v $
+ * Revision 1.7  2004/03/06 18:25:10  willuhn
+ * @D javadoc
+ * @C removed empfaenger_id from umsatz
+ *
  * Revision 1.6  2004/02/27 01:10:18  willuhn
  * @N passport config refactored
  *

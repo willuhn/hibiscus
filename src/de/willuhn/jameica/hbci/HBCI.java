@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/03/05 00:19:23 $
+ * $Revision: 1.8 $
+ * $Date: 2004/03/06 18:25:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -34,9 +34,24 @@ import de.willuhn.util.Logger;
 public class HBCI extends AbstractPlugin
 {
 
+	/**
+	 * Datums-Format dd.MM.yyyy HH:mm.
+	 */
 	public static DateFormat LONGDATEFORMAT   = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+
+	/**
+	 * Datums-Format dd.MM.yyyy.
+	 */
 	public static DateFormat DATEFORMAT       = new SimpleDateFormat("dd.MM.yyyy");
+	
+	/**
+	 * Datums-Format ddMMyyyy.
+	 */
 	public static DateFormat FASTDATEFORMAT   = new SimpleDateFormat("ddMMyyyy");
+
+	/**
+	 * DecimalFormat.
+	 */
 	public static DecimalFormat DECIMALFORMAT = (DecimalFormat) NumberFormat.getNumberInstance(Application.getConfig().getLocale());
   
 	// Mapper von HBCI4Java nach jameica Loglevels
@@ -51,8 +66,6 @@ public class HBCI extends AbstractPlugin
 	static {
 		DECIMALFORMAT.applyPattern("#0.00");
 	}
-
-	private boolean freshInstall = false;
 
   /**
    * ct.
@@ -119,7 +132,6 @@ public class HBCI extends AbstractPlugin
 				return false;
 			}
 		}
-		freshInstall = true;
 		return true;
   }
 
@@ -142,6 +154,10 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.8  2004/03/06 18:25:10  willuhn
+ * @D javadoc
+ * @C removed empfaenger_id from umsatz
+ *
  * Revision 1.7  2004/03/05 00:19:23  willuhn
  * @D javadoc fixes
  * @C Converter moved into server package

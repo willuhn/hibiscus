@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EmpfaengerControl.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/03/03 22:26:40 $
+ * $Revision: 1.5 $
+ * $Date: 2004/03/06 18:25:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -189,9 +189,9 @@ public class EmpfaengerControl extends AbstractControl {
    */
   public void handleStore() {
   	try {
-  		getEmpfaenger().setKontonummer(getKontonummer().getValue());
-  		getEmpfaenger().setBLZ(getBlz().getValue());
-  		getEmpfaenger().setName(getName().getValue());
+  		getEmpfaenger().setKontonummer((String)getKontonummer().getValue());
+  		getEmpfaenger().setBLZ((String)getBlz().getValue());
+  		getEmpfaenger().setName((String)getName().getValue());
   		getEmpfaenger().store();
   		GUI.setActionText(i18n.tr("Empfängeradresse gespeichert"));
   	}
@@ -233,7 +233,7 @@ public class EmpfaengerControl extends AbstractControl {
 		public void handleEvent(Event event) {
 
 			try {
-				String name = HBCIUtils.getNameForBLZ(getBlz().getValue());
+				String name = HBCIUtils.getNameForBLZ((String)getBlz().getValue());
 				getBlz().setComment(name);
 			}
 			catch (RemoteException e)
@@ -248,6 +248,10 @@ public class EmpfaengerControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: EmpfaengerControl.java,v $
+ * Revision 1.5  2004/03/06 18:25:10  willuhn
+ * @D javadoc
+ * @C removed empfaenger_id from umsatz
+ *
  * Revision 1.4  2004/03/03 22:26:40  willuhn
  * @N help texts
  * @C refactoring

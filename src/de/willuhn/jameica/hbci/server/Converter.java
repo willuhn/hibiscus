@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/03/05 00:19:23 $
+ * $Revision: 1.2 $
+ * $Date: 2004/03/06 18:25:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -57,14 +57,12 @@ public class Converter {
 	{
 		Umsatz umsatz = (Umsatz) Settings.getDatabase().createObject(Umsatz.class,null);
 
-		boolean sollBuchung = false;
 		// C(redit) = HABEN
 		// D(ebit)  = SOLL
 		if (u.cd.endsWith("C"))
 			umsatz.setBetrag(u.value.value); // Haben-Buchung
 		else
 		{
-			sollBuchung = true;
 			umsatz.setBetrag(-u.value.value); // Soll-Buchung
 		}
 
@@ -91,8 +89,14 @@ public class Converter {
 			umsatz.setZweck2(merged);
 		}
 
-		// und jetzt noch der Empfaenger
-		if (u.other != null) umsatz.setEmpfaenger(convert(u.other));
+		// und jetzt noch der Empfaenger (wenn er existiert)
+		if (u.other != null) 
+		{
+		  Empfaenger e = convert(u.other);
+		  umsatz.setEmpfaengerBLZ(e.getBLZ());
+		  umsatz.setEmpfaengerKonto(e.getKontonummer());
+		  umsatz.setEmpfaengerName(e.getName());
+		}
 		return umsatz;
 	}
 
@@ -136,6 +140,10 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.2  2004/03/06 18:25:10  willuhn
+ * @D javadoc
+ * @C removed empfaenger_id from umsatz
+ *
  * Revision 1.1  2004/03/05 00:19:23  willuhn
  * @D javadoc fixes
  * @C Converter moved into server package

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Umsatz.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/03/05 00:04:10 $
+ * $Revision: 1.3 $
+ * $Date: 2004/03/06 18:25:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,15 +30,27 @@ public interface Umsatz extends DBObject {
   public Konto getKonto() throws RemoteException;
 	
 	/**
-	 * Liefert den Empfaenger der Zahlung. Bei Haben-Buchungen
-	 * liefert die Funktion <code>null</code> da sie ja selbst
-	 * der Empfaenger sind ;).
+	 * Liefert den Namen des Empfaengers der Zahlung.
    * @return Empfaenger der Zahlung.
    * @throws RemoteException
    */
-  public Empfaenger getEmpfaenger() throws RemoteException;
+  public String getEmpfaengerName() throws RemoteException;
 	
-	/**
+  /**
+   * Liefert die Kontonummer des Empfaengers der Zahlung.
+   * @return Kontonummer des Empfaengers der Zahlung.
+   * @throws RemoteException
+   */
+  public String getEmpfaengerKonto() throws RemoteException;
+  
+  /**
+   * Liefert die BLZ des Empfaengers der Zahlung.
+   * @return BLZ des Empfaengers der Zahlung.
+   * @throws RemoteException
+   */
+  public String getEmpfaengerBLZ() throws RemoteException;
+  
+  /**
 	 * Betrag der Buchung. Soll-Buchungen werden durch negative
 	 * Werte dargestellt, Haben-Buchungen durch positive Werte.
    * @return Buchungsbetrag.
@@ -87,13 +99,26 @@ public interface Umsatz extends DBObject {
   public void setKonto(Konto k) throws RemoteException;
 
 	/**
-	 * Speichert den Empfaenger des Umsatzes.
-   * @param e Empfaenger.
+	 * Speichert den Namen des Empfaengers.
+   * @param name des Empfaenger.
    * @throws RemoteException
    */
-  public void setEmpfaenger(Empfaenger e) throws RemoteException;
+  public void setEmpfaengerName(String name) throws RemoteException;
 	
-	/**
+  /**
+   * Speichert die Kontonummer des Empfaengers.
+   * @param konto Kontonummer des Empfaenger.
+   * @throws RemoteException
+   */
+  public void setEmpfaengerKonto(String konto) throws RemoteException;
+  /**
+   * Speichert die BLZ des Empfaengers.
+   * @param blz BLZ des Empfaenger.
+   * @throws RemoteException
+   */
+  public void setEmpfaengerBLZ(String blz) throws RemoteException;
+  
+  /**
 	 * Betrag der Buchung. Soll-Buchungen werden durch negative Werte dargestellt.
    * @param d Betrag der Buchung.
    * @throws RemoteException
@@ -135,6 +160,10 @@ public interface Umsatz extends DBObject {
 
 /**********************************************************************
  * $Log: Umsatz.java,v $
+ * Revision 1.3  2004/03/06 18:25:10  willuhn
+ * @D javadoc
+ * @C removed empfaenger_id from umsatz
+ *
  * Revision 1.2  2004/03/05 00:04:10  willuhn
  * @N added code for umsatzlist
  *

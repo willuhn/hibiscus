@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/PassportDialog.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/03/03 22:26:40 $
+ * $Revision: 1.3 $
+ * $Date: 2004/03/06 18:25:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -44,7 +44,7 @@ import de.willuhn.util.MultipleClassLoader;
 public class PassportDialog extends AbstractDialog {
 
 	private Input auswahl;
-	private String id = null;
+	private Passport choosen;
 	
 	private I18N i18n;
 
@@ -65,13 +65,10 @@ public class PassportDialog extends AbstractDialog {
    */
   protected Object getData() throws Exception {
 
-		// wir laden den ausgewaehlten Passport
-		Passport p = (Passport) Settings.getDatabase().createObject(Passport.class, id);
-
-		// TODO Schoener machen
-		PassportType pt = p.getPassportType();
+    // TODO: Schoener machen (ueber Factory).
+    PassportType pt = choosen.getPassportType();
 		String clazz = pt.getImplementor();
-		return (Passport) Settings.getDatabase().createObject(MultipleClassLoader.load(clazz),p.getID());
+		return (Passport) Settings.getDatabase().createObject(MultipleClassLoader.load(clazz),choosen.getID());
   }
 
   /**
@@ -115,7 +112,7 @@ public class PassportDialog extends AbstractDialog {
 		button.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		button.addMouseListener(new MouseAdapter() {
 			public void mouseUp(MouseEvent e) {
-				id = auswahl.getValue();
+				choosen = (Passport) auswahl.getValue();
 				close();
 			}
 		});
@@ -134,10 +131,10 @@ public class PassportDialog extends AbstractDialog {
 			public void shellClosed(ShellEvent e) {
 				throw new RuntimeException("dialog cancelled via close button");
 			}
-			public void shellActivated(ShellEvent e) {};
-			public void shellDeactivated(ShellEvent e) {};
-			public void shellDeiconified(ShellEvent e) {};
-			public void shellIconified(ShellEvent e) {};
+			public void shellActivated(ShellEvent e) {}
+			public void shellDeactivated(ShellEvent e) {}
+			public void shellDeiconified(ShellEvent e) {}
+			public void shellIconified(ShellEvent e) {}
 		});
   }
 
@@ -146,6 +143,10 @@ public class PassportDialog extends AbstractDialog {
 
 /**********************************************************************
  * $Log: PassportDialog.java,v $
+ * Revision 1.3  2004/03/06 18:25:10  willuhn
+ * @D javadoc
+ * @C removed empfaenger_id from umsatz
+ *
  * Revision 1.2  2004/03/03 22:26:40  willuhn
  * @N help texts
  * @C refactoring

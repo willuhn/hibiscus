@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.14 $
- * $Date: 2004/03/05 00:40:29 $
+ * $Revision: 1.15 $
+ * $Date: 2004/03/06 18:25:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -38,9 +38,10 @@ import de.willuhn.jameica.hbci.gui.views.KontoNeu;
 import de.willuhn.jameica.hbci.gui.views.UmsatzListe;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Passport;
-import de.willuhn.jameica.hbci.rmi.PassportDDV;
+import de.willuhn.jameica.hbci.rmi.PassportType;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
+import de.willuhn.util.MultipleClassLoader;
 
 /**
  * Controller der fuer den Dialog "Bankverbindungen" zustaendig ist.
@@ -61,8 +62,6 @@ public class KontoControl extends AbstractControl {
   
   private Input saldo				 		= null;
   private Input saldoDatum   		= null;
-
-	private boolean stored = false;
 
 	private I18N i18n;
   /**
@@ -102,10 +101,22 @@ public class KontoControl extends AbstractControl {
 	{
 		if (passport != null)
 			return passport;
-			
-		// TODO:
-		return (Passport) Settings.getDatabase().createObject(PassportDDV.class,getPassportAuswahl().getValue());
-	}
+
+
+		// TODO: Schoener machen (ueber Factory).
+		Passport tmp = (Passport) getPassportAuswahl().getValue();
+
+		PassportType pt = tmp.getPassportType();
+		String clazz = pt.getImplementor();
+		try {
+		  passport = (Passport) Settings.getDatabase().createObject(MultipleClassLoader.load(clazz),tmp.getID());
+		  return passport;
+		}
+		catch (ClassNotFoundException e)
+		{
+		  throw new RemoteException("unable to find implementor for this passport",e);
+		}
+  }
 
 	/**
 	 * Liefert das Eingabe-Feld fuer die Kontonummer.
@@ -299,8 +310,7 @@ public class KontoControl extends AbstractControl {
 			//////////////////////////////////////////////////////////////////////////
 			// Passport checken
       
-			Passport p = (Passport) Settings.getDatabase().createObject(Passport.class,
-																																  getPassportAuswahl().getValue());
+			Passport p = (Passport) getPassportAuswahl().getValue();
 
 			if (p.isNewObject())
 			{
@@ -311,16 +321,15 @@ public class KontoControl extends AbstractControl {
 			//
 			//////////////////////////////////////////////////////////////////////////
 
-			getKonto().setKontonummer(getKontonummer().getValue());
-			getKonto().setBLZ(getBlz().getValue());
-			getKonto().setName(getName().getValue());
-      getKonto().setWaehrung(getWaehrung().getValue());
-      getKonto().setKundennummer(getKundennummer().getValue());
+			getKonto().setKontonummer((String)getKontonummer().getValue());
+			getKonto().setBLZ((String)getBlz().getValue());
+			getKonto().setName((String)getName().getValue());
+      getKonto().setWaehrung((String)getWaehrung().getValue());
+      getKonto().setKundennummer((String)getKundennummer().getValue());
       
 			// und jetzt speichern wir.
 			getKonto().store();
 			GUI.setActionText(i18n.tr("Bankverbindung gespeichert."));
-			stored = true;
 		}
 		catch (ApplicationException e1)
 		{
@@ -480,7 +489,7 @@ public class KontoControl extends AbstractControl {
     public void handleEvent(Event event) {
 
 			try {
-				String name = HBCIUtils.getNameForBLZ(getBlz().getValue());
+				String name = HBCIUtils.getNameForBLZ((String)getBlz().getValue());
 				getBlz().setComment(name);
 			}
 			catch (RemoteException e)
@@ -494,6 +503,10 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.15  2004/03/06 18:25:10  willuhn
+ * @D javadoc
+ * @C removed empfaenger_id from umsatz
+ *
  * Revision 1.14  2004/03/05 00:40:29  willuhn
  * *** empty log message ***
  *
