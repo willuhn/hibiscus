@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/KontoNeu.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/03/03 22:26:40 $
+ * $Revision: 1.9 $
+ * $Date: 2004/03/05 00:04:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,12 +43,11 @@ public class KontoNeu extends AbstractView {
 		GUI.setTitleText(i18n.tr("Bankverbindung bearbeiten"));
 		
 		final KontoControl control = new KontoControl(this);
-		LabelGroup group = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
-
-		LabelGroup saldo = new LabelGroup(getParent(),i18n.tr("Aktueller Saldo"));
-
 
 		try {
+
+			LabelGroup group = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
+
 			group.addLabelPair(i18n.tr("Kontonummer"),			    		control.getKontonummer());
 			group.addLabelPair(i18n.tr("Bankleitzahl"),			    		control.getBlz());
 			group.addLabelPair(i18n.tr("Kontoinhaber"),			    		control.getName());
@@ -56,8 +55,24 @@ public class KontoNeu extends AbstractView {
       group.addLabelPair(i18n.tr("Währungsbezeichnung"),  		control.getWaehrung());
 			group.addLabelPair(i18n.tr("Sicherheitsmedium"),    		control.getPassportAuswahl());
 
+			LabelGroup saldo = new LabelGroup(getParent(),i18n.tr("Finanzstatus"));
+
 			saldo.addLabelPair(i18n.tr("Saldo"),										control.getSaldo());
 			saldo.addLabelPair(i18n.tr("letzte Aktualisierung"),		control.getSaldoDatum());
+
+			ButtonArea buttons = saldo.createButtonArea(2);
+
+			buttons.addCustomButton(i18n.tr("Saldo aktualisieren"), new MouseAdapter() {
+				public void mouseUp(MouseEvent e) {
+					control.handleRefreshSaldo();
+				}
+			});
+			buttons.addCustomButton(i18n.tr("Kontoauszüge"), new MouseAdapter() {
+        public void mouseUp(MouseEvent e) {
+					control.handleShowUmsaetze();
+        }
+      });
+
 
 			control.init();
 		}
@@ -69,11 +84,6 @@ public class KontoNeu extends AbstractView {
 
 		// und noch die Abschicken-Knoepfe
 		ButtonArea buttonArea = new ButtonArea(getParent(),4);
-		buttonArea.addCustomButton(i18n.tr("Saldo aktualisieren"), new MouseAdapter() {
-			public void mouseUp(MouseEvent e) {
-				control.handleRefreshSaldo();
-			}
-		});
 		buttonArea.addCancelButton(control);
 		buttonArea.addDeleteButton(control);
 		buttonArea.addStoreButton(control);
@@ -92,6 +102,9 @@ public class KontoNeu extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoNeu.java,v $
+ * Revision 1.9  2004/03/05 00:04:10  willuhn
+ * @N added code for umsatzlist
+ *
  * Revision 1.8  2004/03/03 22:26:40  willuhn
  * @N help texts
  * @C refactoring

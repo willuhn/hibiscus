@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/02/27 01:10:18 $
+ * $Revision: 1.9 $
+ * $Date: 2004/03/05 00:04:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,11 +18,14 @@ import java.util.Date;
 import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.db.AbstractDBObject;
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Passport;
 import de.willuhn.jameica.hbci.rmi.PassportType;
+import de.willuhn.jameica.hbci.rmi.Ueberweisung;
+import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.MultipleClassLoader;
 
@@ -191,21 +194,21 @@ public class KontoImpl extends AbstractDBObject implements Konto {
     try {
       this.transactionBegin();
 
-//			DBIterator list = Settings.getDatabase().createList(Ueberweisung.class);
-//			Ueberweisung u = null;
-//			while (list.hasNext())
-//			{
-//				u = (Ueberweisung) list.next();
-//				u.delete();
-//			}
-//
-//			list = Settings.getDatabase().createList(Umsatz.class);
-//			Umsatz ums = null;
-//			while (list.hasNext())
-//			{
-//				ums = (Umsatz) list.next();
-//				ums.delete();
-//			}
+			DBIterator list = Settings.getDatabase().createList(Ueberweisung.class);
+			Ueberweisung u = null;
+			while (list.hasNext())
+			{
+				u = (Ueberweisung) list.next();
+				u.delete();
+			}
+
+			list = Settings.getDatabase().createList(Umsatz.class);
+			Umsatz ums = null;
+			while (list.hasNext())
+			{
+				ums = (Umsatz) list.next();
+				ums.delete();
+			}
 
 			// Jetzt koennen wir uns selbst loeschen
 			super.delete();
@@ -277,7 +280,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 			throw new ApplicationException("Bitte speichern Sie zunächst das Konto.");
 		}
 
-		double saldo = JobFactory.getSaldo(this);
+		double saldo = JobFactory.getInstance().getSaldo(this);
 
 		// Wenn wir fertig sind, muessen wir noch den Saldo und das Datum speichern
 		setField("saldo",new Double(saldo));
@@ -287,21 +290,27 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 		store();
   }
   
-  /**
-   * Liefert die Konto-Repraesentation des Kontos im HBCI-Kernel.
-   * @return Konto.
+	/**
+   * @see de.willuhn.jameica.hbci.rmi.Konto#refreshUmsaetze()
    */
-  protected org.kapott.hbci.structures.Konto getHBCIKonto() throws RemoteException
-  {
-		
-  	org.kapott.hbci.structures.Konto k =
-  		new org.kapott.hbci.structures.Konto(getBLZ(),getKontonummer());
-  	k.country = "DE";
-  	k.curr = getWaehrung();
-  	k.customerid = getKundennummer();
-  	k.name = getName();
-		return k;  	
-  }
+  public synchronized void refreshUmsaetze() throws ApplicationException,RemoteException {
+
+		// Das machen wir um sicherzugehen, dass alle benoetigten Infos
+		// des Kontos vorhanden sind.
+		insertCheck();
+		if (isNewObject())
+		{
+			throw new ApplicationException("Bitte speichern Sie zunächst das Konto.");
+		}
+
+		Umsatz[] umsaetze = JobFactory.getInstance().getAlleUmsaetze(this);
+
+		// wir speichern die Umsaetze gleich noch ab
+		for (int i=0;i<umsaetze.length;++i)
+		{
+			umsaetze[i].store();
+		}
+	}
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Konto#getSaldoDatum()
@@ -309,11 +318,23 @@ public class KontoImpl extends AbstractDBObject implements Konto {
   public Date getSaldoDatum() throws RemoteException {
     return (Date) getField("saldo_datum");
   }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Konto#getUmsaetze()
+   */
+  public DBIterator getUmsaetze() throws RemoteException {
+		DBIterator list = Settings.getDatabase().createList(Umsatz.class);
+		list.addFilter("konto_id = '" + getID() + "' " +			"ORDER BY TONUMBER(datum)");
+		return list;
+  }
 }
 
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.9  2004/03/05 00:04:10  willuhn
+ * @N added code for umsatzlist
+ *
  * Revision 1.8  2004/02/27 01:10:18  willuhn
  * @N passport config refactored
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Umsatz.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/02/27 01:10:18 $
+ * $Revision: 1.2 $
+ * $Date: 2004/03/05 00:04:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,7 +23,7 @@ import de.willuhn.datasource.rmi.DBObject;
 public interface Umsatz extends DBObject {
 
 	/**
-	 * Liefert ihr Konto, auf welches sich diese Umsaetze beziehen.
+	 * Liefert das Konto, auf welches sich diese Umsaetze beziehen.
    * @return Konto.
    * @throws RemoteException
    */
@@ -51,7 +51,7 @@ public interface Umsatz extends DBObject {
    * @return Verwendungszweck.
    * @throws RemoteException
    */
-  public String Zweck() throws RemoteException;
+  public String getZweck() throws RemoteException;
 	
 	/**
 	 * Fortsetzung des Verwendungszwecks.
@@ -78,11 +78,66 @@ public interface Umsatz extends DBObject {
    */
   public Date getValuta() throws RemoteException;
 
+
+	/**
+	 * Speichert das Konto, auf welches sich der Umsatz bezieht.
+   * @param k das Konto.
+   * @throws RemoteException
+   */
+  public void setKonto(Konto k) throws RemoteException;
+
+	/**
+	 * Speichert den Empfaenger des Umsatzes.
+   * @param e Empfaenger.
+   * @throws RemoteException
+   */
+  public void setEmpfaenger(Empfaenger e) throws RemoteException;
+	
+	/**
+	 * Betrag der Buchung. Soll-Buchungen werden durch negative Werte dargestellt.
+   * @param d Betrag der Buchung.
+   * @throws RemoteException
+   */
+  public void setBetrag(double d) throws RemoteException;
+	
+	/**
+	 * Verwendungszweck.
+   * @param zweck
+   * @throws RemoteException
+   */
+  public void setZweck(String zweck) throws RemoteException;
+	
+	/**
+	 * weiterer Verwendungszweck. Darf <code>null</code> sein.
+   * @param zweck2
+   * @throws RemoteException
+   */
+  public void setZweck2(String zweck2) throws RemoteException;
+	
+	/**
+	 * Datum der Buchung.
+   * @param d
+   * @throws RemoteException
+   */
+  public void setDatum(Date d) throws RemoteException;
+	
+  /**
+   * Datum der Wertstellung.
+   * @param d
+   * @throws RemoteException
+   */
+  public void setValuta(Date d) throws RemoteException;
+
+
+
 }
 
 
 /**********************************************************************
  * $Log: Umsatz.java,v $
+ * Revision 1.2  2004/03/05 00:04:10  willuhn
+ * @N added code for umsatzlist
+ *
  * Revision 1.1  2004/02/27 01:10:18  willuhn
  * @N passport config refactored
  *

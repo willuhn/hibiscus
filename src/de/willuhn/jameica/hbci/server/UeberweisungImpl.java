@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UeberweisungImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/02/17 01:01:38 $
+ * $Revision: 1.3 $
+ * $Date: 2004/03/05 00:04:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,11 +17,13 @@ import java.util.Date;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.jameica.Application;
+import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Empfaenger;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.util.ApplicationException;
+import de.willuhn.util.I18N;
 
 /**
  * Eine Ueberweisung.
@@ -31,12 +33,15 @@ public class UeberweisungImpl
   implements Ueberweisung {
 
 	private boolean inExecute = false;
+	
+	private I18N i18n;
 
   /**
    * @throws RemoteException
    */
   public UeberweisungImpl() throws RemoteException {
     super();
+    i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
   }
 
   /**
@@ -240,8 +245,7 @@ public class UeberweisungImpl
 	
 		try {
 
-			// TODO: Hier den restlichen Ueberweisungskram rein.
-			JobFactory.execute(this);
+			JobFactory.getInstance().execute(this);
 
 			// wenn alles erfolgreich verlief, koennen wir die Ueberweisung auf
 			// Status "ausgefuehrt" setzen.
@@ -252,7 +256,7 @@ public class UeberweisungImpl
 		catch (RemoteException e)
 		{
 			Application.getLog().error("error while executing ueberweisung",e);
-			throw new ApplicationException("Fehler beim Ausfuehren der Ueberweisung");
+			throw new ApplicationException(i18n.tr("Fehler beim Ausfuehren der Überweisung"));
 		}
 		finally {
 			inExecute = false;
@@ -276,6 +280,9 @@ public class UeberweisungImpl
 
 /**********************************************************************
  * $Log: UeberweisungImpl.java,v $
+ * Revision 1.3  2004/03/05 00:04:10  willuhn
+ * @N added code for umsatzlist
+ *
  * Revision 1.2  2004/02/17 01:01:38  willuhn
  * *** empty log message ***
  *

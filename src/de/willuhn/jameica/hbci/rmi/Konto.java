@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Konto.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/02/25 23:11:46 $
+ * $Revision: 1.8 $
+ * $Date: 2004/03/05 00:04:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.rmi;
 import java.rmi.RemoteException;
 import java.util.Date;
 
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.util.ApplicationException;
 
@@ -125,15 +126,32 @@ public interface Konto extends DBObject {
 
 	/**
 	 * Aktualisiert den Saldo online.
+   * @throws ApplicationException
    * @throws RemoteException
    */
   public void refreshSaldo() throws ApplicationException,RemoteException;
 
+	/**
+	 * Aktualisiert die Umsaetze des Kontos online.
+   * @throws ApplicationException
+   * @throws RemoteException
+   */
+  public void refreshUmsaetze() throws ApplicationException,RemoteException;
+
+	/**
+	 * Liefert eine Liste aller Umsaetze fuer das Konto.
+   * @return Umsatzliste.
+   * @throws RemoteException
+   */
+  public DBIterator getUmsaetze() throws RemoteException;
 }
 
 
 /**********************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.8  2004/03/05 00:04:10  willuhn
+ * @N added code for umsatzlist
+ *
  * Revision 1.7  2004/02/25 23:11:46  willuhn
  * *** empty log message ***
  *

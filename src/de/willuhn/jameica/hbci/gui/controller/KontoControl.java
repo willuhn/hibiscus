@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.12 $
- * $Date: 2004/03/03 22:26:40 $
+ * $Revision: 1.13 $
+ * $Date: 2004/03/05 00:04:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -35,6 +35,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.views.KontoListe;
 import de.willuhn.jameica.hbci.gui.views.KontoNeu;
+import de.willuhn.jameica.hbci.gui.views.UmsatzListe;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Passport;
 import de.willuhn.jameica.hbci.rmi.PassportDDV;
@@ -419,6 +420,8 @@ public class KontoControl extends AbstractControl {
   public void handleRefreshSaldo()
 	{
 
+		GUI.startProgress();
+
 		GUI.startSync(new Runnable() {
       public void run() {
       	try {
@@ -439,6 +442,29 @@ public class KontoControl extends AbstractControl {
       	}
       }
     });
+
+		GUI.stopProgress();
+	}
+
+	/**
+   * Laedt die Seite mit den Umsaetzen dieses Kontos.
+   */
+  public void handleShowUmsaetze()
+	{
+		try {
+			Konto konto = getKonto();
+			if (konto == null || konto.isNewObject())
+			{
+				GUI.setActionText(i18n.tr("Bitte speichern Sie zuerst das Konto."));
+				return;
+			}
+			GUI.startView(UmsatzListe.class.getName(),getKonto());
+		}
+		catch (RemoteException e)
+		{
+			Application.getLog().error("error while starting umsatz list",e);
+			GUI.setActionText(i18n.tr("Fehler beim Laden der Kontoauszüge"));
+		}
 	}
 
 	/**
@@ -468,6 +494,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.13  2004/03/05 00:04:10  willuhn
+ * @N added code for umsatzlist
+ *
  * Revision 1.12  2004/03/03 22:26:40  willuhn
  * @N help texts
  * @C refactoring
