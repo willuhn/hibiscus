@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/02/21 19:49:04 $
+ * $Revision: 1.6 $
+ * $Date: 2004/03/17 00:06:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import sun.misc.BASE64Encoder;
 
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.Application;
+import de.willuhn.jameica.PluginLoader;
 
 /**
  * Verwaltet die Einstellungen des Plugins.
@@ -33,140 +34,131 @@ public class Settings
   private static String path = null;
   private static String passphrase = null;
 
-	/**
-	 * Liefert den Datenbank-Service.
-	 * @return Datenbank.
-	 * @throws RemoteException
-	 */
-	public static DBService getDatabase() throws RemoteException
-	{
-		return db;
-	}
-
-	/**
-	 * Speichert die zu verwendende Datenbank.
-	 * @param db die Datenbank.
-	 */
-	protected static void setDatabase(DBService db)
-	{
-		Settings.db = db;
-	}
-
-	/**
-	 * Speichert den Verzeichnis-Pfad zu diesem Plugin.
-   * @param path Pfad zu diesem Plugin.
+  /**
+   * Liefert den Datenbank-Service.
+   * @return Datenbank.
+   * @throws RemoteException
    */
-  protected static void setPath(String path)
-	{
-		Settings.path = path;
-	}
+  public static DBService getDatabase() throws RemoteException
+  {
+    if (db != null)
+      return db;
+    db = PluginLoader.getPlugin(HBCI.class).getResources().getDatabase().getDBService();
+    return db;
+  }
 
-	/**
-	 * Liefert den Verzeichnis-Pfad in dem sich das Plugin befindet.
+  /**
+   * Liefert den Verzeichnis-Pfad in dem sich das Plugin befindet.
    * @return Pfad des Plugins.
    */
   public static String getPath()
-	{
-		return Settings.path;
-	}
+  {
+    if (path != null)
+      return path;
+    path = PluginLoader.getPlugin(HBCI.class).getResources().getPath();
+    return path;
+  }
 
-	/**
-	 * Legt fest, ob die PIN gehasht gespeichert werden soll, um sie
-	 * bei erneuter Eingabe pruefen zu koennen.
-	 * @param checkPin true, wenn die Pin geprueft werden soll.
-	 */
-	public static void setCheckPin(boolean checkPin)
-	{
-		settings.setAttribute("checkpin", checkPin ? "true" : "false");
-	}
+  /**
+   * Legt fest, ob die PIN gehasht gespeichert werden soll, um sie
+   * bei erneuter Eingabe pruefen zu koennen.
+   * @param checkPin true, wenn die Pin geprueft werden soll.
+   */
+  public static void setCheckPin(boolean checkPin)
+  {
+    settings.setAttribute("checkpin", checkPin ? "true" : "false");
+  }
 
-	/**
-	 * Prueft, ob ein Hash der PIN gespeichert werden soll, um sie bei
-	 * erneuter Eingabe auf Richtigkeit pruefen zu koennen.
+  /**
+   * Prueft, ob ein Hash der PIN gespeichert werden soll, um sie bei
+   * erneuter Eingabe auf Richtigkeit pruefen zu koennen.
    * @return true, wenn die Pin gehasht gespeichert werden soll.
    */
   public static boolean getCheckPin()
-	{
-		return "true".equals(settings.getAttribute("checkpin","false"));
-	}
+  {
+    return settings.getBoolean("checkpin",false);
+  }
 
-	/**
-	 * Liefert die Check-Summe der PIN oder <code>null</code> wenn sie nie
-	 * gespeichert wurde.
+  /**
+   * Liefert die Check-Summe der PIN oder <code>null</code> wenn sie nie
+   * gespeichert wurde.
    * @return Check-Summe der Pin.
    */
   public static String getCheckSum()
-	{
-		return settings.getAttribute("checksum",null);
-	}
+  {
+    return settings.getString("checksum",null);
+  }
 
-	/**
-	 * Speichert die Check-Summe der PIN.
+  /**
+   * Speichert die Check-Summe der PIN.
    * @param checksum Check-Summe der Pin.
    */
   public static void setCheckSum(String checksum)
-	{
-		settings.setAttribute("checksum",checksum);
-	}
+  {
+    settings.setAttribute("checksum",checksum);
+  }
 
-	/**
-	 * Speichert, ob wir eine permanente Online-Verbindung haben und daher
-	 * vom HBCI-Kernel nicht dauernd gefragt werden muessen, ob wir eine
-	 * Internetverbindung haben wollen.
+  /**
+   * Speichert, ob wir eine permanente Online-Verbindung haben und daher
+   * vom HBCI-Kernel nicht dauernd gefragt werden muessen, ob wir eine
+   * Internetverbindung haben wollen.
    * @param online true, wenn wir dauernd online sind.
    */
   public static void setOnlineMode(boolean online)
-	{
-		settings.setAttribute("online", online ? "true" : "false");
-	}
+  {
+    settings.setAttribute("online", online ? "true" : "false");
+  }
 
-	/**
-	 * Prueft, ob wir eine permanente Online-Verbindung haben und daher
-	 * vom HBCI-Kernel nicht dauernd gefragt werden muessen, ob wir eine
-	 * Internetverbindung haben wollen.
+  /**
+   * Prueft, ob wir eine permanente Online-Verbindung haben und daher
+   * vom HBCI-Kernel nicht dauernd gefragt werden muessen, ob wir eine
+   * Internetverbindung haben wollen.
    * @return true, wenn wir dauernd online sind.
    */
   public static boolean getOnlineMode()
-	{
-		return "true".equals(settings.getAttribute("online","false"));
-	}
+  {
+    return settings.getBoolean("online",false);
+  }
 
-	/**
-	 * Liefert das Passwort die lokalen Daten verschluesselt werden.
+  /**
+   * Liefert das Passwort die lokalen Daten verschluesselt werden.
    * @return Passphrase.
    */
   protected static String getPassphrase()
-	{
-		if (passphrase != null)
-			return passphrase;
+  {
+    if (passphrase != null)
+      return passphrase;
 
-		MessageDigest md = null;
-		byte[] hashed = null;
-		try {
-			md = MessageDigest.getInstance("SHA1");
-			hashed = md.digest(getPath().getBytes());
-		}
-		catch (NoSuchAlgorithmException nsae)
-		{
-			Application.getLog().warn("algorithm SHA1 not found, trying MD5");
-			try {
-				md = MessageDigest.getInstance("MD5");
-				hashed = md.digest(getPath().getBytes());
-			}
-			catch (NoSuchAlgorithmException nsae2)
-			{
-				Application.getLog().error("no such algorithm SHA1/MD5",nsae2);
-				hashed = getPath().getBytes();
-			}
-		}
-		BASE64Encoder encoder = new BASE64Encoder();
-		return encoder.encode(hashed);
-	}
+    MessageDigest md = null;
+    byte[] hashed = null;
+    try {
+      md = MessageDigest.getInstance("SHA1");
+      hashed = md.digest(getPath().getBytes());
+    }
+    catch (NoSuchAlgorithmException nsae)
+    {
+      Application.getLog().warn("algorithm SHA1 not found, trying MD5");
+      try {
+        md = MessageDigest.getInstance("MD5");
+        hashed = md.digest(getPath().getBytes());
+      }
+      catch (NoSuchAlgorithmException nsae2)
+      {
+        Application.getLog().error("no such algorithm SHA1/MD5",nsae2);
+        hashed = getPath().getBytes();
+      }
+    }
+    BASE64Encoder encoder = new BASE64Encoder();
+    return encoder.encode(hashed);
+  }
 
 }
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.6  2004/03/17 00:06:28  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2004/02/21 19:49:04  willuhn
  * @N PINDialog
  *

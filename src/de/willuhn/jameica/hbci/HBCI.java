@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/03/06 18:25:10 $
+ * $Revision: 1.9 $
+ * $Date: 2004/03/17 00:06:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -29,43 +29,43 @@ import de.willuhn.jameica.Application;
 import de.willuhn.util.Logger;
 
 /**
- * 
+ *
  */
 public class HBCI extends AbstractPlugin
 {
 
-	/**
-	 * Datums-Format dd.MM.yyyy HH:mm.
-	 */
-	public static DateFormat LONGDATEFORMAT   = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+  /**
+   * Datums-Format dd.MM.yyyy HH:mm.
+   */
+  public static DateFormat LONGDATEFORMAT   = new SimpleDateFormat("dd.MM.yyyy HH:mm");
 
-	/**
-	 * Datums-Format dd.MM.yyyy.
-	 */
-	public static DateFormat DATEFORMAT       = new SimpleDateFormat("dd.MM.yyyy");
-	
-	/**
-	 * Datums-Format ddMMyyyy.
-	 */
-	public static DateFormat FASTDATEFORMAT   = new SimpleDateFormat("ddMMyyyy");
+  /**
+   * Datums-Format dd.MM.yyyy.
+   */
+  public static DateFormat DATEFORMAT       = new SimpleDateFormat("dd.MM.yyyy");
 
-	/**
-	 * DecimalFormat.
-	 */
-	public static DecimalFormat DECIMALFORMAT = (DecimalFormat) NumberFormat.getNumberInstance(Application.getConfig().getLocale());
-  
-	// Mapper von HBCI4Java nach jameica Loglevels
-	private static int[][] logMapping = new int[][]
-	{
-		{Logger.LEVEL_DEBUG, 5},
-		{Logger.LEVEL_ERROR, 1},
-		{Logger.LEVEL_WARN,  2},
-		{Logger.LEVEL_INFO,  3}
-	};
+  /**
+   * Datums-Format ddMMyyyy.
+   */
+  public static DateFormat FASTDATEFORMAT   = new SimpleDateFormat("ddMMyyyy");
 
-	static {
-		DECIMALFORMAT.applyPattern("#0.00");
-	}
+  /**
+   * DecimalFormat.
+   */
+  public static DecimalFormat DECIMALFORMAT = (DecimalFormat) NumberFormat.getNumberInstance(Application.getConfig().getLocale());
+
+  // Mapper von HBCI4Java nach jameica Loglevels
+  private static int[][] logMapping = new int[][]
+  {
+    {Logger.LEVEL_DEBUG, 5},
+    {Logger.LEVEL_ERROR, 1},
+    {Logger.LEVEL_WARN,  2},
+    {Logger.LEVEL_INFO,  3}
+  };
+
+  static {
+    DECIMALFORMAT.applyPattern("#0.00");
+  }
 
   /**
    * ct.
@@ -81,20 +81,10 @@ public class HBCI extends AbstractPlugin
    */
   public boolean init()
   {
-		HBCIUtils.init(null,null,new HBCICallbackSWT());
-		int logLevel = logMapping[Application.getLog().getLevelByName(Application.getConfig().getLogLevel())][1];
-		HBCIUtils.setParam("log.loglevel.default",""+logLevel);
-
-		try {
-			Settings.setDatabase(getResources().getDatabase().getDBService());
-			Settings.setPath(getResources().getPath());
-		}
-		catch (RemoteException e)
-		{
-			Application.getLog().error("unable to open database",e);
-			return false;
-		}
-		return true;
+    HBCIUtils.init(null,null,new HBCICallbackSWT());
+    int logLevel = logMapping[Application.getLog().getLevelByName(Application.getConfig().getLogLevel())][1];
+    HBCIUtils.setParam("log.loglevel.default",""+logLevel);
+    return true;
   }
 
   /**
@@ -102,37 +92,37 @@ public class HBCI extends AbstractPlugin
    */
   public boolean install()
   {
-		EmbeddedDatabase db = getResources().getDatabase();
-		if (!db.exists())
-		{
-			try {
-				db.create();
-			}
-			catch (IOException e)
-			{
-				Application.getLog().error("unable to create database",e);
-				return false;
-			}
-			try
-			{
-				db.executeSQLScript(new File(getResources().getPath() + "/sql/create.sql"));
-			}
-			catch (Exception e)
-			{
-				Application.getLog().error("unable to create sql tables",e);
-				return false;
-			}
-			try
-			{
-				db.executeSQLScript(new File(getResources().getPath() + "/sql/init.sql"));
-			}
-			catch (Exception e)
-			{
-				Application.getLog().error("unable to insert init data",e);
-				return false;
-			}
-		}
-		return true;
+    EmbeddedDatabase db = getResources().getDatabase();
+    if (!db.exists())
+    {
+      try {
+        db.create();
+      }
+      catch (IOException e)
+      {
+        Application.getLog().error("unable to create database",e);
+        return false;
+      }
+      try
+      {
+        db.executeSQLScript(new File(getResources().getPath() + "/sql/create.sql"));
+      }
+      catch (Exception e)
+      {
+        Application.getLog().error("unable to create sql tables",e);
+        return false;
+      }
+      try
+      {
+        db.executeSQLScript(new File(getResources().getPath() + "/sql/init.sql"));
+      }
+      catch (Exception e)
+      {
+        Application.getLog().error("unable to insert init data",e);
+        return false;
+      }
+    }
+    return true;
   }
 
   /**
@@ -154,6 +144,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.9  2004/03/17 00:06:28  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.8  2004/03/06 18:25:10  willuhn
  * @D javadoc
  * @C removed empfaenger_id from umsatz
