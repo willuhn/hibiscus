@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AbstractTransferImpl.java,v $
- * $Revision: 1.11 $
- * $Date: 2004/10/18 23:38:17 $
+ * $Revision: 1.12 $
+ * $Date: 2004/11/01 23:10:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Empfaenger;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -85,6 +86,9 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
 				
 			if (getZweck2() != null && getZweck2().length() > 27)
 				throw new ApplicationException("Bitten geben Sie als weiteren Verwendungszweck maximal 27 Zeichen an");
+
+			checkChars(getZweck());
+			checkChars(getZweck2());
   	}
   	catch (RemoteException e)
   	{
@@ -92,6 +96,23 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
   		throw new ApplicationException("Fehler beim Prüfen der Überweisung.");
   	}
   }
+
+	/**
+	 * Prueft die uebergebenen Strings auf Vorhandensein nicht erlaubter Zeichen.
+   * @param chars zu testende Zeichen.
+   * @throws ApplicationException
+   */
+  private void checkChars(String chars) throws ApplicationException
+	{
+		if (chars == null || chars.length() == 0)
+			return;
+		char[] c = chars.toCharArray();
+		for (int i=0;i<c.length;++i)
+		{
+			if (HBCIProperties.HBCI_DTAUS_VALIDCHARS.indexOf(c[i]) == -1)
+				throw new ApplicationException(i18n.tr("Das Zeichen \"{0}\" darf nicht verwendet werden",""+c[i])); 
+		}
+	}
 
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
@@ -240,6 +261,9 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
 
 /**********************************************************************
  * $Log: AbstractTransferImpl.java,v $
+ * Revision 1.12  2004/11/01 23:10:19  willuhn
+ * @N Pruefung auf gueltige Zeichen in Verwendungszweck
+ *
  * Revision 1.11  2004/10/18 23:38:17  willuhn
  * @C Refactoring
  * @C Aufloesung der Listener und Ersatz gegen Actions

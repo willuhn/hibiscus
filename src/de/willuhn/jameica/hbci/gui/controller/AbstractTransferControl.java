@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.13 $
- * $Date: 2004/10/25 17:58:57 $
+ * $Revision: 1.14 $
+ * $Date: 2004/11/01 23:10:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,6 +30,7 @@ import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Empfaenger;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -53,8 +54,8 @@ public abstract class AbstractTransferControl extends AbstractControl
 	// Eingabe-Felder
 	private DialogInput kontoAuswahl			= null;
 	private Input betrag									= null;
-	private Input zweck										= null;
-	private Input zweck2									= null;
+	private TextInput zweck								= null;
+	private TextInput zweck2							= null;
 
 	private DialogInput empfkto 					= null;
 	private Input empfName 								= null;
@@ -195,6 +196,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 		if (zweck != null)
 			return zweck;
 		zweck = new TextInput(getTransfer().getZweck());
+		zweck.setValidChars(HBCIProperties.HBCI_DTAUS_VALIDCHARS);
 		return zweck;
 	}
 
@@ -208,6 +210,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 		if (zweck2 != null)
 			return zweck2;
 		zweck2 = new TextInput(getTransfer().getZweck2());
+		zweck2.setValidChars(HBCIProperties.HBCI_DTAUS_VALIDCHARS);
 		return zweck2;
 	}
 
@@ -404,6 +407,9 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
+ * Revision 1.14  2004/11/01 23:10:19  willuhn
+ * @N Pruefung auf gueltige Zeichen in Verwendungszweck
+ *
  * Revision 1.13  2004/10/25 17:58:57  willuhn
  * @N Haufen Dauerauftrags-Code
  *
