@@ -1,0 +1,25 @@
+<form>
+
+	<p>
+		<span color="header" font="header">Hinweis</span>
+	</p>
+
+	<p>
+		Die Lastschrift wird in der Währung des ausgewählten Kontos beauftragt.
+	</p>
+	
+	<p>
+		Bitte wenden Sie sich ggf. an Ihre Bank, wenn Sie sich nicht sicher sind,
+		welche Arten von Lastschriften für Ihrer Konto unterstützt werden.
+		<br/>
+		Sollte Ihre Bank generell keine Einzel-Lastschriften anbieten,
+		können Sie alternativ auch versuchen, eine Sammel-Lastschrift
+		mit lediglich einer enthaltenen Buchung zu erstellen.
+	</p>
+
+	<p>
+		<b>Tipp:</b> Wenn Sie die Option <b>Empfängerdaten in Adressbuch speichern</b>
+		aktivieren, wird das eingegebene Gegenkonto automatisch in Ihrem
+		Adressbuch gespeichert.
+	</p>
+</form>
