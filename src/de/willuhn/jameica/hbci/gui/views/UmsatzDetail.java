@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzDetail.java,v $
- * $Revision: 1.17 $
- * $Date: 2005/04/05 22:13:30 $
+ * $Revision: 1.18 $
+ * $Date: 2005/04/05 22:49:02 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -74,7 +74,7 @@ public class UmsatzDetail extends AbstractView {
     if (z2 != null && z2.length() > 0)
     {
       zweck.addSeparator();
-      zweck.addText(u.getZweck2(),true);
+      zweck.addText(z2,true);
     }
    
 		// add.addLabelPair(i18n.tr("Verwendungszweck"),									control.getZweck());
@@ -113,6 +113,9 @@ public class UmsatzDetail extends AbstractView {
 
 /**********************************************************************
  * $Log: UmsatzDetail.java,v $
+ * Revision 1.18  2005/04/05 22:49:02  web0
+ * @B bug 32
+ *
  * Revision 1.17  2005/04/05 22:13:30  web0
  * @B bug 38
  *

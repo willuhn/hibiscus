@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/DauerauftragDialog.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/03/02 17:59:31 $
+ * $Revision: 1.5 $
+ * $Date: 2005/04/05 22:49:02 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -92,35 +92,38 @@ public class DauerauftragDialog extends AbstractDialog {
 
 		group.addSeparator();
 
-		String s = auftrag.getZweck();
-		String s2 = auftrag.getZweck2();
-		if (s2 != null && s2.length() > 0)
-			s += " / " + s2;
-		Input zweck = new LabelInput(s);
-		group.addLabelPair(i18n.tr("Verwendungszweck"),zweck);
+    Input betrag = new LabelInput(HBCI.DECIMALFORMAT.format(auftrag.getBetrag()) + " " + auftrag.getKonto().getWaehrung());
+    group.addLabelPair(i18n.tr("Betrag"),betrag);
 
-		Input betrag = new LabelInput(HBCI.DECIMALFORMAT.format(auftrag.getBetrag()) + " " + auftrag.getKonto().getWaehrung());
-		group.addLabelPair(i18n.tr("Betrag"),betrag);
+    group.addSeparator();
 
-		group.addSeparator();
+    Date e = auftrag.getErsteZahlung();
+    String se = i18n.tr("Zum nächstmöglichen Termin");
+    if (e != null) se = HBCI.DATEFORMAT.format(e);
+    Input ersteZahlung = new LabelInput(se);
+    group.addLabelPair(i18n.tr("Erste Zahlung"),ersteZahlung);
 
-		Date e = auftrag.getErsteZahlung();
-		String se = i18n.tr("Zum nächstmöglichen Termin");
-		if (e != null) se = HBCI.DATEFORMAT.format(e);
-		Input ersteZahlung = new LabelInput(se);
-		group.addLabelPair(i18n.tr("Erste Zahlung"),ersteZahlung);
+    Date l = auftrag.getLetzteZahlung();
+    String sl = i18n.tr("keine End-Datum vorgegeben");
+    if (l != null) sl = HBCI.DATEFORMAT.format(l);
+    Input letzteZahlung = new LabelInput(sl);
+    group.addLabelPair(i18n.tr("Letzte Zahlung"),letzteZahlung);
 
-		Date l = auftrag.getLetzteZahlung();
-		String sl = i18n.tr("keine End-Datum vorgegeben");
-		if (l != null) sl = HBCI.DATEFORMAT.format(l);
-		Input letzteZahlung = new LabelInput(sl);
-		group.addLabelPair(i18n.tr("Letzte Zahlung"),letzteZahlung);
+    Input turnus = new LabelInput(TurnusHelper.createBezeichnung(auftrag.getTurnus()));
+    group.addLabelPair(i18n.tr("Zahlungsturnus"),turnus);
 
-		Input turnus = new LabelInput(TurnusHelper.createBezeichnung(auftrag.getTurnus()));
-		group.addLabelPair(i18n.tr("Zahlungsturnus"),turnus);
-		
+    // BUGZILLA 32 http://www.willuhn.de/bugzilla/show_bug.cgi?id=32
+    LabelGroup zweck = new LabelGroup(parent,i18n.tr("Verwendungszweck"));
+    zweck.addText(auftrag.getZweck(),true);
+    String z2 = auftrag.getZweck2();
+    if (z2 != null && z2.length() > 0)
+    {
+      zweck.addSeparator();
+      zweck.addText(z2,true);
+    }
 
-		ButtonArea b = group.createButtonArea(2);
+
+    ButtonArea b = new ButtonArea(parent,2);
 		b.addButton(i18n.tr("Jetzt ausführen"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -144,6 +147,9 @@ public class DauerauftragDialog extends AbstractDialog {
 
 /**********************************************************************
  * $Log: DauerauftragDialog.java,v $
+ * Revision 1.5  2005/04/05 22:49:02  web0
+ * @B bug 32
+ *
  * Revision 1.4  2005/03/02 17:59:31  web0
  * @N some refactoring
  *

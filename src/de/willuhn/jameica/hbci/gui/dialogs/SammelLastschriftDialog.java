@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/SammelLastschriftDialog.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/03/06 14:04:26 $
+ * $Revision: 1.4 $
+ * $Date: 2005/04/05 22:49:02 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -91,6 +91,9 @@ public class SammelLastschriftDialog extends AbstractDialog {
 			empfKto.setComment(b.getGegenkontoBLZ() + "/" + HBCIUtils.getNameForBLZ(b.getGegenkontoBLZ()));
 			group.addLabelPair(i18n.tr("Zu belastendes Konto"),empfKto);
 
+      Input betrag = new LabelInput(HBCI.DECIMALFORMAT.format(b.getBetrag()) + " " + ueb.getKonto().getWaehrung());
+      group.addLabelPair(i18n.tr("Betrag"),betrag);
+
 			String s = b.getZweck();
 			String s2 = b.getZweck2();
 			if (s2 != null && s2.length() > 0)
@@ -98,8 +101,13 @@ public class SammelLastschriftDialog extends AbstractDialog {
 			Input zweck = new LabelInput(s);
 			group.addLabelPair(i18n.tr("Verwendungszweck"),zweck);
 
-			Input betrag = new LabelInput(HBCI.DECIMALFORMAT.format(b.getBetrag()) + " " + ueb.getKonto().getWaehrung());
-			group.addLabelPair(i18n.tr("Betrag"),betrag);
+      // BUGZILLA 32 http://www.willuhn.de/bugzilla/show_bug.cgi?id=32
+      group.addText(b.getZweck(),true);
+      String z2 = b.getZweck2();
+      if (z2 != null && z2.length() > 0)
+      {
+        group.addText(z2,true);
+      }
 		}
 
 		ButtonArea b = group.createButtonArea(2);
@@ -126,6 +134,9 @@ public class SammelLastschriftDialog extends AbstractDialog {
 
 /**********************************************************************
  * $Log: SammelLastschriftDialog.java,v $
+ * Revision 1.4  2005/04/05 22:49:02  web0
+ * @B bug 32
+ *
  * Revision 1.3  2005/03/06 14:04:26  web0
  * @N SammelLastschrift seems to work now
  *
