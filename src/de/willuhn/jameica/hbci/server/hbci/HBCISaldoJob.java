@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCISaldoJob.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/05/25 23:23:18 $
+ * $Revision: 1.4 $
+ * $Date: 2004/06/10 20:56:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -62,6 +62,7 @@ public class HBCISaldoJob extends AbstractHBCIJob {
 	/**
 	 * Liefert den Saldo.
    * @return Saldo.
+	 * @throws ApplicationException
    */
   public double getSaldo() throws ApplicationException
 	{
@@ -86,6 +87,9 @@ public class HBCISaldoJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCISaldoJob.java,v $
+ * Revision 1.4  2004/06/10 20:56:33  willuhn
+ * @D javadoc comments fixed
+ *
  * Revision 1.3  2004/05/25 23:23:18  willuhn
  * @N UeberweisungTyp
  * @N Protokoll

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/05/05 22:14:47 $
+ * $Revision: 1.7 $
+ * $Date: 2004/06/10 20:56:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -81,6 +81,8 @@ public class HBCIFactory {
 	/**
 	 * Fuehrt alle Jobs aus, die bis dato geadded wurden.
 	 * @param handle der Passport, ueber den die Jobs ausgefuehrt werden sollen.
+	 * @throws ApplicationException
+	 * @throws RemoteException
 	 */
 	public synchronized void executeJobs(PassportHandle handle) throws ApplicationException, RemoteException
 	{
@@ -173,6 +175,9 @@ public class HBCIFactory {
 
 /**********************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.7  2004/06/10 20:56:33  willuhn
+ * @D javadoc comments fixed
+ *
  * Revision 1.6  2004/05/05 22:14:47  willuhn
  * *** empty log message ***
  *

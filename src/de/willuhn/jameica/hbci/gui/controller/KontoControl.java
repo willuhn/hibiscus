@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.33 $
- * $Date: 2004/06/08 22:28:58 $
+ * $Revision: 1.34 $
+ * $Date: 2004/06/10 20:56:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -55,7 +55,6 @@ public class KontoControl extends AbstractControl {
 
 	// Fachobjekte
 	private Konto konto 			 		= null;
-	private Passport passport  		= null;
 	
 	// Eingabe-Felder
 	private AbstractInput kontonummer  		= null;
@@ -607,6 +606,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.34  2004/06/10 20:56:33  willuhn
+ * @D javadoc comments fixed
+ *
  * Revision 1.33  2004/06/08 22:28:58  willuhn
  * *** empty log message ***
  *

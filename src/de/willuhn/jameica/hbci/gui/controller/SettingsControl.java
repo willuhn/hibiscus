@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.22 $
- * $Date: 2004/06/03 00:23:42 $
+ * $Revision: 1.23 $
+ * $Date: 2004/06/10 20:56:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -56,8 +56,6 @@ public class SettingsControl extends AbstractControl {
 	private AbstractInput ueberfaelligBg		= null;
 
 	private TablePart passportList 					= null;
-
-	private AbstractInput importProgram			= null;	
 
 	private AbstractInput ueberweisungLimit = null;
 
@@ -338,6 +336,9 @@ public class SettingsControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.23  2004/06/10 20:56:33  willuhn
+ * @D javadoc comments fixed
+ *
  * Revision 1.22  2004/06/03 00:23:42  willuhn
  * *** empty log message ***
  *

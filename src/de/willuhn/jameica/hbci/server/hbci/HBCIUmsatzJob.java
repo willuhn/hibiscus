@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUmsatzJob.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/05/25 23:23:18 $
+ * $Revision: 1.4 $
+ * $Date: 2004/06/10 20:56:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -62,6 +62,8 @@ public class HBCIUmsatzJob extends AbstractHBCIJob {
 	/**
 	 * Liefert den Saldo.
    * @return Saldo.
+	 * @throws ApplicationException
+	 * @throws RemoteException
    */
   public Umsatz[] getUmsaetze() throws ApplicationException, RemoteException
 	{
@@ -97,6 +99,9 @@ public class HBCIUmsatzJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIUmsatzJob.java,v $
+ * Revision 1.4  2004/06/10 20:56:33  willuhn
+ * @D javadoc comments fixed
+ *
  * Revision 1.3  2004/05/25 23:23:18  willuhn
  * @N UeberweisungTyp
  * @N Protokoll

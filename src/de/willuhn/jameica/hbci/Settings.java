@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.14 $
- * $Date: 2004/05/25 23:23:18 $
+ * $Revision: 1.15 $
+ * $Date: 2004/06/10 20:56:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -36,7 +36,6 @@ public class Settings
   private static DBService db = null;
 	private static String workPath = null;
 	private static String libPath = null;
-	private static double ueberweisungLimit;
 
 	private static Color buchungSollForeground = null;
 	private static Color buchungSollBackground = null;
@@ -336,6 +335,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.15  2004/06/10 20:56:33  willuhn
+ * @D javadoc comments fixed
+ *
  * Revision 1.14  2004/05/25 23:23:18  willuhn
  * @N UeberweisungTyp
  * @N Protokoll
