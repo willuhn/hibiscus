@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzControl.java,v $
- * $Revision: 1.18 $
- * $Date: 2004/07/25 17:15:05 $
+ * $Revision: 1.19 $
+ * $Date: 2004/10/08 13:37:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,15 +16,15 @@ import java.rmi.RemoteException;
 
 import org.eclipse.swt.widgets.TableItem;
 
+import de.willuhn.jameica.gui.AbstractControl;
+import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
-import de.willuhn.jameica.gui.controller.AbstractControl;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.parts.TablePart;
-import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.menus.UmsatzList;
@@ -232,6 +232,9 @@ public class UmsatzControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzControl.java,v $
+ * Revision 1.19  2004/10/08 13:37:47  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.18  2004/07/25 17:15:05  willuhn
  * @C PluginLoader is no longer static
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.28 $
- * $Date: 2004/10/08 00:19:08 $
+ * $Revision: 1.29 $
+ * $Date: 2004/10/08 13:37:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TableItem;
 
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.dialogs.CalendarDialog;
@@ -33,7 +34,6 @@ import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.parts.TablePart;
-import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.dialogs.UeberweisungDialog;
@@ -462,6 +462,9 @@ public class UeberweisungControl extends AbstractTransferControl
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
+ * Revision 1.29  2004/10/08 13:37:47  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.28  2004/10/08 00:19:08  willuhn
  * *** empty log message ***
  *

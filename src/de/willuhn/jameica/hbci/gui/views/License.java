@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/License.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/07/21 23:54:30 $
+ * $Revision: 1.4 $
+ * $Date: 2004/10/08 13:37:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,10 +12,10 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.views;
 
+import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.util.ButtonArea;
-import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.gui.controller.LicenseControl;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -55,6 +55,9 @@ public class License extends AbstractView {
 
 /**********************************************************************
  * $Log: License.java,v $
+ * Revision 1.4  2004/10/08 13:37:47  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2004/07/21 23:54:30  willuhn
  * *** empty log message ***
  *

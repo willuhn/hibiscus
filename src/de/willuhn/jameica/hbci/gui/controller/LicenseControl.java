@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/LicenseControl.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/10/08 00:19:08 $
+ * $Revision: 1.8 $
+ * $Date: 2004/10/08 13:37:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,11 +17,11 @@ import java.io.FileInputStream;
 import java.rmi.RemoteException;
 
 import de.willuhn.io.FileFinder;
+import de.willuhn.jameica.gui.AbstractControl;
+import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
-import de.willuhn.jameica.gui.controller.AbstractControl;
 import de.willuhn.jameica.gui.parts.FormTextPart;
-import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.plugin.Manifest;
@@ -150,6 +150,9 @@ public class LicenseControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: LicenseControl.java,v $
+ * Revision 1.8  2004/10/08 13:37:47  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2004/10/08 00:19:08  willuhn
  * *** empty log message ***
  *

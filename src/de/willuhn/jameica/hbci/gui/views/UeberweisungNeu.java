@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/UeberweisungNeu.java,v $
- * $Revision: 1.15 $
- * $Date: 2004/07/25 17:15:05 $
+ * $Revision: 1.16 $
+ * $Date: 2004/10/08 13:37:48 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,10 +15,10 @@ package de.willuhn.jameica.hbci.gui.views;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
-import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.controller.UeberweisungControl;
 import de.willuhn.jameica.system.Application;
@@ -84,6 +84,9 @@ public class UeberweisungNeu extends AbstractView {
 
 /**********************************************************************
  * $Log: UeberweisungNeu.java,v $
+ * Revision 1.16  2004/10/08 13:37:48  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.15  2004/07/25 17:15:05  willuhn
  * @C PluginLoader is no longer static
  *

@@ -3,25 +3,26 @@
 <plugin name="Hibiscus" version="1.1">
 
 	<description>HBCI-Onlinebanking-Plugin für Jameica</description>
-	<url>http://www.willuhn.de/projects/hibiscus</url>
+	<url>http://www.willuhn.de/projects/hibiscus/releases/hibiscus.jam</url>
+	<homepage>http://www.willuhn.de/projects/hibiscus</homepage>
 	<license>GPL - http://www.gnu.org/copyleft/gpl.html</license>
 
 	<menu>
 		<cascade name="Hibiscus">
-			<item name="Einstellungen"     		class="de.willuhn.jameica.hbci.gui.views.Settings" />
-			<item name="Neue Überweisung"  		shortcut="CTRL+U" class="de.willuhn.jameica.hbci.gui.views.UeberweisungNeu" />
+			<item name="Einstellungen"     							action="de.willuhn.jameica.hbci.gui.action.Settings" />
+			<item name="Neue Überweisung"  		shortcut="CTRL+U" 	action="de.willuhn.jameica.hbci.gui.action.UeberweisungNeu" />
 			<item name="-" />
-			<item name="About"    				target="dialog" class="de.willuhn.jameica.hbci.gui.views.About" />
-			<item name="Lizenzinformationen"    class="de.willuhn.jameica.hbci.gui.views.License" />
+			<item name="About"    									action="de.willuhn.jameica.hbci.gui.action.About" />
+			<item name="Lizenzinformationen"    					action="de.willuhn.jameica.hbci.gui.action.License" />
 		</cascade>
 	</menu>
 
 	<navigation>
-		<item name="Hibiscus"		 		icon-close="folder.gif" icon-open="folderopen.gif" 	action="de.willuhn.jameica.hbci.gui.views.Welcome">
-			<item name="Konten" 			icon-close="page.gif" 	icon-open="page.gif" 		action="de.willuhn.jameica.hbci.gui.views.KontoListe" />
-			<item name="Adressbuch" 		icon-close="page.gif" 	icon-open="page.gif" 		action="de.willuhn.jameica.hbci.gui.views.EmpfaengerListe" />
-			<item name="Überweisungen" 		icon-close="page.gif" 	icon-open="page.gif" 		action="de.willuhn.jameica.hbci.gui.views.UeberweisungListe" />
-			<item name="Daueraufträge" 		icon-close="page.gif" 	icon-open="page.gif" 		action="de.willuhn.jameica.hbci.gui.views.DauerauftragListe" />
+		<item name="Hibiscus"		 		icon-close="folder.gif" icon-open="folderopen.gif" 	action="de.willuhn.jameica.hbci.gui.action.Welcome">
+			<item name="Konten" 			icon-close="page.gif" 	icon-open="page.gif" 		action="de.willuhn.jameica.hbci.gui.action.KontoListe" />
+			<item name="Adressbuch" 		icon-close="page.gif" 	icon-open="page.gif" 		action="de.willuhn.jameica.hbci.gui.action.EmpfaengerListe" />
+			<item name="Überweisungen" 		icon-close="page.gif" 	icon-open="page.gif" 		action="de.willuhn.jameica.hbci.gui.action.UeberweisungListe" />
+			<item name="Daueraufträge" 		icon-close="page.gif" 	icon-open="page.gif" 		action="de.willuhn.jameica.hbci.gui.action.DauerauftragListe" />
 		</item>
 	</navigation>
 </plugin>
