@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.11 $
- * $Date: 2004/04/13 23:14:22 $
+ * $Revision: 1.12 $
+ * $Date: 2004/04/19 22:53:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -127,7 +127,8 @@ public class UeberweisungControl extends AbstractControl {
 	{
 		DBIterator list = Settings.getDatabase().createList(Ueberweisung.class);
 
-		TablePart table = new TablePart(list,this,new TableFormatter() {
+		TablePart table = new TablePart(list,this);
+		table.setFormatter(new TableFormatter() {
       public void format(TableItem item) {
       	Ueberweisung u = (Ueberweisung) item.getData();
       	if (u == null)
@@ -147,6 +148,22 @@ public class UeberweisungControl extends AbstractControl {
       	{
       		Application.getLog().error("unable to format table item",e);
       	}
+      }
+    });
+    table.addMenu(i18n.tr("Jetzt ausführen"), new Listener() {
+      public void handleEvent(Event event) {
+				try {
+					Ueberweisung u = (Ueberweisung) event.data;
+					u.execute();
+				}
+				catch (ApplicationException e)
+				{
+					GUI.getStatusBar().setErrorText(e.getMessage());
+				}
+				catch (RemoteException e2)
+				{
+					GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Ausführen der Überweisung"));
+				}
       }
     });
 		table.addColumn(i18n.tr("Konto"),"konto_id");
@@ -510,6 +527,9 @@ public class UeberweisungControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
+ * Revision 1.12  2004/04/19 22:53:52  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.11  2004/04/13 23:14:22  willuhn
  * @N datadir
  *
