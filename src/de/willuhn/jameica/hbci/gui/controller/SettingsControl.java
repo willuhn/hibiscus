@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.19 $
- * $Date: 2004/05/11 21:11:32 $
+ * $Revision: 1.20 $
+ * $Date: 2004/05/11 23:31:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -33,7 +33,6 @@ import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.PassportRegistry;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.dialogs.NewPassportDialog;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.util.I18N;
 
@@ -255,27 +254,6 @@ public class SettingsControl extends AbstractControl {
    * @see de.willuhn.jameica.gui.controller.AbstractControl#handleCreate()
    */
   public void handleCreate() {
-  	// Hier wird ein neuer Passport erstellt.
-		NewPassportDialog d = new NewPassportDialog(NewPassportDialog.POSITION_MOUSE);
-		Passport p = null;
-		try {
-			p = (Passport) d.open();
-		}
-		catch (Exception e)
-		{
-			// Der User hat "abbrechen" im Dialog gedrueckt
-			return;
-		}
-
-		try {
-			GUI.startView(p.getConfigDialog().getName(),p);
-		}
-		catch (Exception e)
-		{
-			Application.getLog().error("error while creating new passport",e);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Laden des Sicherheitsmediums"));
-		}
-
   }
 
 	/**
@@ -325,6 +303,9 @@ public class SettingsControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.20  2004/05/11 23:31:40  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.19  2004/05/11 21:11:32  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.12 $
- * $Date: 2004/05/11 21:11:32 $
+ * $Revision: 1.13 $
+ * $Date: 2004/05/11 23:31:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -236,7 +236,7 @@ public class Settings
    */
   public static boolean getCheckPin()
   {
-    return settings.getBoolean("checkpin",false);
+    return settings.getBoolean("checkpin",true);
   }
 
   /**
@@ -313,6 +313,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.13  2004/05/11 23:31:40  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.12  2004/05/11 21:11:32  willuhn
  * *** empty log message ***
  *

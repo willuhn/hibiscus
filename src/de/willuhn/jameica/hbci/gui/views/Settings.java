@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Settings.java,v $
- * $Revision: 1.17 $
- * $Date: 2004/05/11 21:11:32 $
+ * $Revision: 1.18 $
+ * $Date: 2004/05/11 23:31:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -64,15 +64,7 @@ public class Settings extends AbstractView {
 
 		// Passports
 		LabelGroup passports = new LabelGroup(getParent(),i18n.tr("Sicherheitsmedien"));
-
 		passports.addTable(control.getPassportListe());
-		
-		ButtonArea buttons2 = passports.createButtonArea(1);
-		buttons2.addCustomButton(i18n.tr("Neues Sicherheitsmedium anlegen"),new MouseAdapter() {
-      public void mouseUp(MouseEvent e) {
-      	control.handleCreate();
-      }
-    });
 
 		ButtonArea buttons3 = new ButtonArea(getParent(),2);
 		buttons3.addCancelButton(control);
@@ -91,6 +83,9 @@ public class Settings extends AbstractView {
 
 /**********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.18  2004/05/11 23:31:40  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.17  2004/05/11 21:11:32  willuhn
  * *** empty log message ***
  *
