@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.21 $
- * $Date: 2004/04/12 19:15:31 $
+ * $Revision: 1.22 $
+ * $Date: 2004/04/13 23:14:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -312,7 +312,9 @@ public class KontoControl extends AbstractControl {
    * @see de.willuhn.jameica.gui.controller.AbstractControl#handleCancel()
    */
   public void handleCancel() {
-		GUI.startView(KontoListe.class.getName(),null);
+		// GUI.startView(KontoListe.class.getName(),null);
+		GUI.startPreviousView();
+
   }
 
   /**
@@ -522,6 +524,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.22  2004/04/13 23:14:23  willuhn
+ * @N datadir
+ *
  * Revision 1.21  2004/04/12 19:15:31  willuhn
  * @C refactoring
  *

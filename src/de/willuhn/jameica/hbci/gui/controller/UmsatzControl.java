@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzControl.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/04/12 19:15:31 $
+ * $Revision: 1.9 $
+ * $Date: 2004/04/13 23:14:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,7 +28,6 @@ import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.views.KontoNeu;
 import de.willuhn.jameica.hbci.gui.views.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.views.UmsatzListe;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -117,14 +116,16 @@ public class UmsatzControl extends AbstractControl {
    * @see de.willuhn.jameica.gui.controller.AbstractControl#handleCancel()
    */
   public void handleCancel() {
-  	try {
-			GUI.startView(KontoNeu.class.getName(),getKonto());
-  	}
-  	catch (RemoteException e)
-  	{
-  		Application.getLog().error("error while loading konto view",e);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Laden des Kontos"));
-  	}
+//  	try {
+//			GUI.startView(KontoNeu.class.getName(),getKonto());
+//  	}
+//  	catch (RemoteException e)
+//  	{
+//  		Application.getLog().error("error while loading konto view",e);
+//			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Laden des Kontos"));
+//  	}
+		GUI.startPreviousView();
+
   }
 
   /**
@@ -228,6 +229,9 @@ public class UmsatzControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzControl.java,v $
+ * Revision 1.9  2004/04/13 23:14:22  willuhn
+ * @N datadir
+ *
  * Revision 1.8  2004/04/12 19:15:31  willuhn
  * @C refactoring
  *

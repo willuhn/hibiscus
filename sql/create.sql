@@ -83,5 +83,4 @@ ALTER TABLE konto ADD CONSTRAINT fk_passport FOREIGN KEY (passport_id) REFERENCE
 ALTER TABLE passport ADD CONSTRAINT fk_passport_type FOREIGN KEY (passport_type_id) REFERENCES passport_type (id) DEFERRABLE;
 ALTER TABLE passport_param ADD CONSTRAINT fk_passport_param FOREIGN KEY (passport_id) REFERENCES passport (id) DEFERRABLE;
 ALTER TABLE ueberweisung ADD CONSTRAINT fk_konto FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
-ALTER TABLE ueberweisung ADD CONSTRAINT fk_empfaenger FOREIGN KEY (empfaenger_id) REFERENCES empfaenger (id) DEFERRABLE;
 ALTER TABLE umsatz ADD CONSTRAINT fk_konto2 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;

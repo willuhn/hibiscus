@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.12 $
- * $Date: 2004/04/12 19:15:31 $
+ * $Revision: 1.13 $
+ * $Date: 2004/04/13 23:14:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -33,7 +33,6 @@ import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.views.PassportDetails;
-import de.willuhn.jameica.hbci.gui.views.Welcome;
 import de.willuhn.jameica.hbci.rmi.Passport;
 import de.willuhn.util.I18N;
 
@@ -170,7 +169,9 @@ public class SettingsControl extends AbstractControl {
    * @see de.willuhn.jameica.gui.controller.AbstractControl#handleCancel()
    */
   public void handleCancel() {
-  	GUI.startView(Welcome.class.getName(),null);
+//  	GUI.startView(Welcome.class.getName(),null);
+		GUI.startPreviousView();
+
   }
 
   /**
@@ -255,6 +256,9 @@ public class SettingsControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.13  2004/04/13 23:14:22  willuhn
+ * @N datadir
+ *
  * Revision 1.12  2004/04/12 19:15:31  willuhn
  * @C refactoring
  *

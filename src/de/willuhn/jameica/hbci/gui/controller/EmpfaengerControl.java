@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EmpfaengerControl.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/04/12 19:15:31 $
+ * $Revision: 1.9 $
+ * $Date: 2004/04/13 23:14:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,7 +30,6 @@ import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.views.EmpfaengerListe;
 import de.willuhn.jameica.hbci.gui.views.EmpfaengerNeu;
 import de.willuhn.jameica.hbci.rmi.Empfaenger;
 import de.willuhn.util.ApplicationException;
@@ -181,7 +180,8 @@ public class EmpfaengerControl extends AbstractControl {
    * @see de.willuhn.jameica.gui.controller.AbstractControl#handleCancel()
    */
   public void handleCancel() {
-		GUI.startView(EmpfaengerListe.class.getName(),null);
+		// GUI.startView(EmpfaengerListe.class.getName(),null);
+		GUI.startPreviousView();
   }
 
   /**
@@ -248,6 +248,9 @@ public class EmpfaengerControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: EmpfaengerControl.java,v $
+ * Revision 1.9  2004/04/13 23:14:23  willuhn
+ * @N datadir
+ *
  * Revision 1.8  2004/04/12 19:15:31  willuhn
  * @C refactoring
  *

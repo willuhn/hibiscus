@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/PassportDDVImpl.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/04/05 23:28:46 $
+ * $Revision: 1.10 $
+ * $Date: 2004/04/13 23:14:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,7 +12,6 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.server;
 
-import java.io.File;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
@@ -143,12 +142,10 @@ public class PassportDDVImpl
 			return handler;
 
 		try {
-			String path = Settings.getPath();
-			File f = new File(path);
-			String absolutePath = f.getAbsolutePath();
 	
+			Application.getLog().info("using passport path " + Settings.getWorkPath() + "/passports/");
 			HBCIUtils.setParam("client.passport.default","DDV");
-			HBCIUtils.setParam("client.passport.DDV.path",absolutePath + "/passports/");
+			HBCIUtils.setParam("client.passport.DDV.path",Settings.getWorkPath() + "/passports/");
 	
 	
 			String os = System.getProperty("os.name");
@@ -156,24 +153,16 @@ public class PassportDDVImpl
 			if ("win32".equals(os))
 			{
 				HBCIUtils.setParam("client.passport.DDV.libname.ddv",
-					absolutePath + File.separator +
-					"lib" + File.separator +
-					"libhbci4java-card-win32.dll");
+					Settings.getLibPath() + "/libhbci4java-card-win32.dll");
 				HBCIUtils.setParam("client.passport.DDV.libname.ctapi",
-					absolutePath + File.separator +
-					"lib" + File.separator +
-					"libtowitoko-2.0.7.dll");
+					Settings.getLibPath() + "/libtowitoko-2.0.7.dll");
 			}
 			else
 			{
 				HBCIUtils.setParam("client.passport.DDV.libname.ddv",
-					absolutePath + File.separator +
-					"lib" + File.separator +
-					"libhbci4java-card-linux.so");
+					Settings.getLibPath() + "/libhbci4java-card-linux.so");
 				HBCIUtils.setParam("client.passport.DDV.libname.ctapi",
-					absolutePath + File.separator +
-					"lib" + File.separator +
-					"libtowitoko-2.0.7.so");
+					Settings.getLibPath() + "/libtowitoko-2.0.7.so");
 			}
 			HBCIUtils.setParam("client.passport.DDV.port",		""+getPort());
 			HBCIUtils.setParam("client.passport.DDV.ctnumber",""+getCTNumber());
@@ -259,6 +248,9 @@ public class PassportDDVImpl
 
 /**********************************************************************
  * $Log: PassportDDVImpl.java,v $
+ * Revision 1.10  2004/04/13 23:14:22  willuhn
+ * @N datadir
+ *
  * Revision 1.9  2004/04/05 23:28:46  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/04/12 19:15:31 $
+ * $Revision: 1.9 $
+ * $Date: 2004/04/13 23:14:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -34,8 +34,8 @@ public class Settings
 
   private static de.willuhn.jameica.Settings settings = new de.willuhn.jameica.Settings(HBCI.class);
   private static DBService db = null;
-  private static String path = null;
-  private static String passphrase = null;
+	private static String workPath = null;
+	private static String libPath = null;
 
 	private static Color buchungSollForeground = null;
 	private static Color buchungSollBackground = null;
@@ -147,17 +147,29 @@ public class Settings
 		buchungHabenBackground = null;
 	}
 
-  /**
-   * Liefert den Verzeichnis-Pfad in dem sich das Plugin befindet.
-   * @return Pfad des Plugins.
-   */
-  public static String getPath()
-  {
-    if (path != null)
-      return path;
-    path = PluginLoader.getPlugin(HBCI.class).getResources().getPath();
-    return path;
-  }
+	/**
+	 * Liefert den Verzeichnis-Pfad zu den nativen Libs.
+	 * @return Pfad der Libs.
+	 */
+	public static String getLibPath()
+	{
+		if (libPath != null)
+			return libPath;
+		libPath = PluginLoader.getPlugin(HBCI.class).getResources().getPath() + "/lib";
+		return libPath;
+	}
+
+	/**
+	 * Liefert den Pfad zum Work-Verzeichnis.
+	 * @return Pfad des Work-Verzeichnis.
+	 */
+	public static String getWorkPath()
+	{
+		if (workPath != null)
+			return workPath;
+		workPath = PluginLoader.getPlugin(HBCI.class).getResources().getWorkPath();
+		return workPath;
+	}
 
   /**
    * Legt fest, ob die PIN gehasht gespeichert werden soll, um sie
@@ -221,31 +233,28 @@ public class Settings
   }
 
   /**
-   * Liefert das Passwort die lokalen Daten verschluesselt werden.
+   * Liefert das Passwort mit die lokalen Daten verschluesselt werden.
    * @return Passphrase.
    */
   protected static String getPassphrase()
   {
-    if (passphrase != null)
-      return passphrase;
-
     MessageDigest md = null;
     byte[] hashed = null;
     try {
       md = MessageDigest.getInstance("SHA1");
-      hashed = md.digest(getPath().getBytes());
+      hashed = md.digest(getWorkPath().getBytes());
     }
     catch (NoSuchAlgorithmException nsae)
     {
       Application.getLog().warn("algorithm SHA1 not found, trying MD5");
       try {
         md = MessageDigest.getInstance("MD5");
-        hashed = md.digest(getPath().getBytes());
+        hashed = md.digest(getWorkPath().getBytes());
       }
       catch (NoSuchAlgorithmException nsae2)
       {
         Application.getLog().error("no such algorithm SHA1/MD5",nsae2);
-        hashed = getPath().getBytes();
+        hashed = getWorkPath().getBytes();
       }
     }
     BASE64Encoder encoder = new BASE64Encoder();
@@ -256,6 +265,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.9  2004/04/13 23:14:23  willuhn
+ * @N datadir
+ *
  * Revision 1.8  2004/04/12 19:15:31  willuhn
  * @C refactoring
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/PassportControlDDV.java,v $
- * $Revision: 1.13 $
- * $Date: 2004/04/12 19:15:31 $
+ * $Revision: 1.14 $
+ * $Date: 2004/04/13 23:14:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,7 +27,6 @@ import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.views.PassportDetails;
-import de.willuhn.jameica.hbci.gui.views.Settings;
 import de.willuhn.jameica.hbci.rmi.PassportDDV;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -213,7 +212,8 @@ public class PassportControlDDV extends AbstractControl {
    * @see de.willuhn.jameica.gui.controller.AbstractControl#handleCancel()
    */
   public void handleCancel() {
-		GUI.startView(Settings.class.getName(),null);
+		// GUI.startView(Settings.class.getName(),null);
+		GUI.startPreviousView();
   }
 
   /**
@@ -311,6 +311,9 @@ public class PassportControlDDV extends AbstractControl {
 
 /**********************************************************************
  * $Log: PassportControlDDV.java,v $
+ * Revision 1.14  2004/04/13 23:14:23  willuhn
+ * @N datadir
+ *
  * Revision 1.13  2004/04/12 19:15:31  willuhn
  * @C refactoring
  *

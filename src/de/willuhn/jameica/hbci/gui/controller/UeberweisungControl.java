@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/04/12 19:15:31 $
+ * $Revision: 1.11 $
+ * $Date: 2004/04/13 23:14:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ import java.rmi.RemoteException;
 
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.TableItem;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.Application;
@@ -27,6 +28,7 @@ import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
+import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.input.AbstractInput;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DecimalInput;
@@ -125,18 +127,39 @@ public class UeberweisungControl extends AbstractControl {
 	{
 		DBIterator list = Settings.getDatabase().createList(Ueberweisung.class);
 
-		TablePart table = new TablePart(list,this);
+		TablePart table = new TablePart(list,this,new TableFormatter() {
+      public void format(TableItem item) {
+      	Ueberweisung u = (Ueberweisung) item.getData();
+      	if (u == null)
+      		return;
+      	try {
+					if (u.ausgefuehrt())
+					{
+						item.setBackground(Settings.getBuchungHabenBackground());
+						item.setForeground(Settings.getBuchungHabenForeground());
+					}
+					else {
+						item.setBackground(Settings.getBuchungSollBackground());
+						item.setForeground(Settings.getBuchungSollForeground());
+					}
+      	}
+      	catch (RemoteException e)
+      	{
+      		Application.getLog().error("unable to format table item",e);
+      	}
+      }
+    });
 		table.addColumn(i18n.tr("Konto"),"konto_id");
 		table.addColumn(i18n.tr("Kto. des Empfängers"),"empfaenger_konto");
 		table.addColumn(i18n.tr("BLZ des Empfängers"),"empfaenger_blz");
 		table.addColumn(i18n.tr("Name des Empfängers"),"empfaenger_name");
 		table.addColumn(i18n.tr("Betrag"),"betrag", new CurrencyFormatter("",HBCI.DECIMALFORMAT));
 		table.addColumn(i18n.tr("Termin"),"termin", new DateFormatter(HBCI.LONGDATEFORMAT));
-		table.addColumn(i18n.tr("ausgeführt"),"ausgefuehrt",new Formatter() {
+		table.addColumn(i18n.tr("Status"),"ausgefuehrt",new Formatter() {
       public String format(Object o) {
 				try {
 					int i = ((Integer) o).intValue();
-					return i == 1 ? i18n.tr("ja") : i18n.tr("nein");
+					return i == 1 ? i18n.tr("ausgeführt") : i18n.tr("offen");
 				}
 				catch (Exception e) {}
 				return ""+o;
@@ -487,6 +510,9 @@ public class UeberweisungControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
+ * Revision 1.11  2004/04/13 23:14:22  willuhn
+ * @N datadir
+ *
  * Revision 1.10  2004/04/12 19:15:31  willuhn
  * @C refactoring
  *
