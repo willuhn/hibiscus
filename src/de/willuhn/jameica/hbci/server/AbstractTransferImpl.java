@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AbstractTransferImpl.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/10/17 16:28:46 $
+ * $Revision: 1.11 $
+ * $Date: 2004/10/18 23:38:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -80,12 +80,11 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
 			if (getZweck() == null || "".equals(getZweck()))
 				throw new ApplicationException("Bitte geben Sie einen Verwendungszweck ein");
 
-// TODO: Probleme beim Abrufen
-//			if (getZweck().length() > 27)
-//				throw new ApplicationException("Bitten geben Sie als Verwendungszweck maximal 27 Zeichen an");
-//				
-//			if (getZweck2() != null && getZweck2().length() > 27)
-//				throw new ApplicationException("Bitten geben Sie als weiteren Verwendungszweck maximal 27 Zeichen an");
+			if (getZweck().length() > 27)
+				throw new ApplicationException("Bitten geben Sie als Verwendungszweck maximal 27 Zeichen an");
+				
+			if (getZweck2() != null && getZweck2().length() > 27)
+				throw new ApplicationException("Bitten geben Sie als weiteren Verwendungszweck maximal 27 Zeichen an");
   	}
   	catch (RemoteException e)
   	{
@@ -241,6 +240,10 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
 
 /**********************************************************************
  * $Log: AbstractTransferImpl.java,v $
+ * Revision 1.11  2004/10/18 23:38:17  willuhn
+ * @C Refactoring
+ * @C Aufloesung der Listener und Ersatz gegen Actions
+ *
  * Revision 1.10  2004/10/17 16:28:46  willuhn
  * @N Die ersten Dauerauftraege abgerufen ;)
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UmsatzList.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/08/18 23:13:51 $
+ * $Revision: 1.5 $
+ * $Date: 2004/10/18 23:38:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,14 +12,10 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.menus;
 
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.views.UmsatzDetail;
+import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 
@@ -39,14 +35,7 @@ public class UmsatzList extends ContextMenu
 	{
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-		addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"),new Listener()
-		{
-			public void handleEvent(Event event)
-			{
-				GUI.startView(UmsatzDetail.class.getName(),event.data);
-			}
-		}));
-
+		addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"),new UmsatzDetail()));
 	}
 
 }
@@ -54,6 +43,10 @@ public class UmsatzList extends ContextMenu
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.5  2004/10/18 23:38:17  willuhn
+ * @C Refactoring
+ * @C Aufloesung der Listener und Ersatz gegen Actions
+ *
  * Revision 1.4  2004/08/18 23:13:51  willuhn
  * @D Javadoc
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UeberweisungList.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/08/18 23:13:51 $
+ * $Revision: 1.6 $
+ * $Date: 2004/10/18 23:38:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,20 +12,17 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.menus;
 
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-
-import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.listener.UeberweisungCreate;
-import de.willuhn.jameica.hbci.gui.listener.UeberweisungDuplicate;
-import de.willuhn.jameica.hbci.gui.listener.UeberweisungExecute;
-import de.willuhn.jameica.hbci.gui.views.UeberweisungNeu;
+import de.willuhn.jameica.hbci.gui.action.UeberweisungDuplicate;
+import de.willuhn.jameica.hbci.gui.action.UeberweisungExecute;
+import de.willuhn.jameica.hbci.gui.action.UeberweisungNeu;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 import de.willuhn.util.Logger;
 
@@ -44,23 +41,32 @@ public class UeberweisungList extends ContextMenu
 	{
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-		addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"), new Listener()
-    {
-      public void handleEvent(Event event)
-      {
-      	GUI.startView(UeberweisungNeu.class.getName(),event.data);
-      }
-    }));
+		addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"), new UeberweisungNeu()));
 		addItem(new DuplicateMenuItem(i18n.tr("Jetzt ausführen..."), new UeberweisungExecute()));
 		addItem(new CheckedContextMenuItem(i18n.tr("Duplizieren"), new UeberweisungDuplicate()));
 		addItem(ContextMenuItem.SEPARATOR);
-		addItem(new ContextMenuItem(i18n.tr("Neue Überweisung..."), new UeberweisungCreate()));
+		addItem(new ContextMenuItem(i18n.tr("Neue Überweisung..."), new UNeu()));
 		
 	}
 
 	/**
+	 * Ueberschreiben wir, um <b>grundsaetzlich</b> eine neue Ueberweisung
+	 * anzulegen - auch wenn der Focus auf einer existierenden liegt.
+   */
+  private class UNeu extends UeberweisungNeu
+	{
+    /**
+     * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
+     */
+    public void handleAction(Object context) throws ApplicationException
+    {
+    	super.handleAction(null);
+    }
+	} 
+	
+	/**
 	 * Ueberschreiben wir, damit das Item nur dann aktiv ist, wenn die
-	 * Ueberweisung nocht nicht ausgefuehrt wurde.
+	 * Ueberweisung noch nicht ausgefuehrt wurde.
    */
   private class DuplicateMenuItem extends ContextMenuItem
 	{
@@ -76,11 +82,11 @@ public class UeberweisungList extends ContextMenu
     /**
      * ct.
      * @param text anzuzeigender Text.
-     * @param l auszufuehrender Listener.
+     * @param a auszufuehrende Action.
      */
-    public DuplicateMenuItem(String text, Listener l)
+    public DuplicateMenuItem(String text, Action a)
     {
-      super(text, l);
+      super(text, a);
     }
 
 	  /**
@@ -101,13 +107,16 @@ public class UeberweisungList extends ContextMenu
     	}
     	return false;
     }
-
-}
+	}
 }
 
 
 /**********************************************************************
  * $Log: UeberweisungList.java,v $
+ * Revision 1.6  2004/10/18 23:38:17  willuhn
+ * @C Refactoring
+ * @C Aufloesung der Listener und Ersatz gegen Actions
+ *
  * Revision 1.5  2004/08/18 23:13:51  willuhn
  * @D Javadoc
  *

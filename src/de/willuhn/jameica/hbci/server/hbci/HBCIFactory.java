@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/07/25 17:15:06 $
+ * $Revision: 1.11 $
+ * $Date: 2004/10/18 23:38:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -130,6 +130,16 @@ public class HBCIFactory {
 			{
 				throw e;
 			}
+//			catch (OperationCancelledException e2) TODO
+//			{
+//				Das muss dann auch noch den Jobs mitgeteilt werden, damit sie in getStatusText was liefern koennen
+//			}
+			catch (Throwable t)
+			{
+				// Wir muessen z.Bsp. RuntimeExceptions fangen, weil die sonst womoeglich
+				// bis ganz hoch fliegen
+				throw new ApplicationException(t);
+			}
 			finally
 			{
 				stop();
@@ -175,6 +185,10 @@ public class HBCIFactory {
 
 /**********************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.11  2004/10/18 23:38:17  willuhn
+ * @C Refactoring
+ * @C Aufloesung der Listener und Ersatz gegen Actions
+ *
  * Revision 1.10  2004/07/25 17:15:06  willuhn
  * @C PluginLoader is no longer static
  *

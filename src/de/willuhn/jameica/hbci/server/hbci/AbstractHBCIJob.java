@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCIJob.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/07/09 00:04:40 $
+ * $Revision: 1.7 $
+ * $Date: 2004/10/18 23:38:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,6 +24,9 @@ import de.willuhn.util.Logger;
 
 /**
  * Basis-Klasse fuer die HBCI-Jobs.
+ * Diese Jobs fuehren lediglich die jeweiligen Auftraege bei der Bank aus
+ * und liefern die Ergebnisse zurueck. Sie aendern niemals Daten im Bestand
+ * von Hibiscus. 
  */
 public abstract class AbstractHBCIJob implements HBCIJob {
 
@@ -94,7 +97,15 @@ public abstract class AbstractHBCIJob implements HBCIJob {
    */
   final String getStatusText()
 	{
-		return getJobResult().getJobStatus().getRetVals()[0].text;
+		try
+		{
+			return getJobResult().getJobStatus().getRetVals()[0].text;
+		}
+		catch (Exception e)
+		{
+			Logger.error("error while reading status text",e);
+			return null;
+		}
 	}
 
 	/**
@@ -133,6 +144,10 @@ public abstract class AbstractHBCIJob implements HBCIJob {
 
 /**********************************************************************
  * $Log: AbstractHBCIJob.java,v $
+ * Revision 1.7  2004/10/18 23:38:17  willuhn
+ * @C Refactoring
+ * @C Aufloesung der Listener und Ersatz gegen Actions
+ *
  * Revision 1.6  2004/07/09 00:04:40  willuhn
  * @C Redesign
  *

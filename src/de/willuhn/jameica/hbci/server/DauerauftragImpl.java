@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DauerauftragImpl.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/10/17 16:28:46 $
+ * $Revision: 1.8 $
+ * $Date: 2004/10/18 23:38:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -152,7 +152,7 @@ public class DauerauftragImpl extends AbstractTransferImpl implements Dauerauftr
 			// befindet. Hierzu koennen wir aber nicht das aktuelle Datum als Vergleich nehmen
 			// da das bereits einige Sekunden _nach_ dem Datum der ersten Zahlung liegt.
 			// Daher lassen wir 1 Tag Toleranz zu.
-// TODO Macht Probleme beim Abrufen
+// TODO Dauerauftrag Check auf Zeit der ersten Zahlung
 //			Date today = new Date(System.currentTimeMillis() - (1000l * 60 * 60 * 24));
 //			if (getErsteZahlung().before(today))
 //				throw new ApplicationException(i18n.tr("Bitte wählen Sie für die erste Zahlung ein Datum in der Zukunft"));
@@ -231,6 +231,10 @@ public class DauerauftragImpl extends AbstractTransferImpl implements Dauerauftr
 
 /**********************************************************************
  * $Log: DauerauftragImpl.java,v $
+ * Revision 1.8  2004/10/18 23:38:17  willuhn
+ * @C Refactoring
+ * @C Aufloesung der Listener und Ersatz gegen Actions
+ *
  * Revision 1.7  2004/10/17 16:28:46  willuhn
  * @N Die ersten Dauerauftraege abgerufen ;)
  *

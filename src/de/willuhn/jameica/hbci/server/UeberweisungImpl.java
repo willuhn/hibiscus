@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UeberweisungImpl.java,v $
- * $Revision: 1.22 $
- * $Date: 2004/10/17 16:28:46 $
+ * $Revision: 1.23 $
+ * $Date: 2004/10/18 23:38:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -137,6 +137,9 @@ public class UeberweisungImpl extends AbstractTransferImpl implements Ueberweisu
 		if (isNewObject())
 			store();
 	
+		if (ausgefuehrt())
+			throw new ApplicationException("Die Überweisung wurde bereits ausgeführt.");
+
 		try {
 
 			HBCIFactory factory = HBCIFactory.getInstance();
@@ -238,6 +241,10 @@ public class UeberweisungImpl extends AbstractTransferImpl implements Ueberweisu
 
 /**********************************************************************
  * $Log: UeberweisungImpl.java,v $
+ * Revision 1.23  2004/10/18 23:38:17  willuhn
+ * @C Refactoring
+ * @C Aufloesung der Listener und Ersatz gegen Actions
+ *
  * Revision 1.22  2004/10/17 16:28:46  willuhn
  * @N Die ersten Dauerauftraege abgerufen ;)
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUeberweisungJob.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/07/25 17:15:06 $
+ * $Revision: 1.11 $
+ * $Date: 2004/10/18 23:38:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,7 +18,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Empfaenger;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
-import de.willuhn.jameica.hbci.server.Converter;
+import de.willuhn.jameica.hbci.server.util.Converter;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -96,7 +96,7 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob {
    */
   public void setBetrag(double betrag)
 	{
-		setJobParam("btg.value",HBCI.DECIMALFORMAT.format(betrag));
+		setJobParam("btg.value",""+betrag); // Nein, hier kein Formatter ;)
 	}
 
   /**
@@ -158,6 +158,10 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIUeberweisungJob.java,v $
+ * Revision 1.11  2004/10/18 23:38:17  willuhn
+ * @C Refactoring
+ * @C Aufloesung der Listener und Ersatz gegen Actions
+ *
  * Revision 1.10  2004/07/25 17:15:06  willuhn
  * @C PluginLoader is no longer static
  *
