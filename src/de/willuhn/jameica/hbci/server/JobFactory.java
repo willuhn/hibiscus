@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/JobFactory.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/03/05 00:04:10 $
+ * $Revision: 1.6 $
+ * $Date: 2004/03/05 00:19:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,7 +23,6 @@ import org.kapott.hbci.status.HBCIExecStatus;
 
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
-import de.willuhn.jameica.hbci.Converter;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Passport;
@@ -33,7 +32,8 @@ import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Diese Klasse ist fuer die Ausfuehrung der HBCI-Jobs zustaendig.<br>
+ * Diese Klasse ist fuer die Ausfuehrung der HBCI-Jobs zustaendig.
+ * <br>
  * Sie kriegt i.d.R. Fach-Objekte uebergeben und entnimmt von dort
  * die notwendigen Informationen fuer die HBCI-Jobs.<br>
  * <b>Hinweis:</b>: Die Factory speichert grundsaetzlich keine Objekte
@@ -217,7 +217,8 @@ public class JobFactory {
 
 	/**
 	 * Holt <b>alle verfuegbaren</b> Umsaetze vom uebergebenen Konto ab und liefert sie als
-	 * Array von Objekten des Typs <code>Umsatz</code> zurueck.<br>
+	 * Array von Objekten des Typs <code>Umsatz</code> zurueck.
+	 * <br>
 	 * Eine zusaetzliche zeitliche Einschraenkung ist vorerst nicht geplant.
    * @param konto das Konto, fuer welches die Umsaetze abgeholt werden.
    * @return die Umsaetze.
@@ -231,7 +232,8 @@ public class JobFactory {
 
 	/**
 	 * Holt <b>nur die neuen</b> Umsaetze vom uebergebenen Konto ab und liefert sie als
-	 * Array von Objekten des Typs <code>Umsatz</code> zurueck.<br>
+	 * Array von Objekten des Typs <code>Umsatz</code> zurueck.
+	 * <br>
 	 * Das sind nur genau die Umsaetze, welche <b>noch nicht</b> abgerufen wurden.<br>
 	 * Eine zusaetzliche zeitliche Einschraenkung ist vorerst nicht geplant.
 	 * @param konto das Konto, fuer welches die Umsaetze abgeholt werden.
@@ -246,7 +248,8 @@ public class JobFactory {
 
   /**
 	 * Holt die Umsaetze vom uebergebenen Konto ab und liefert sie als
-	 * Array von Objekten des Typs <code>Umsatz</code> zurueck.<br>
+	 * Array von Objekten des Typs <code>Umsatz</code> zurueck.
+	 * <br>
 	 * @param konto das Konto, fuer welches die Umsaetze abgeholt werden.
    * @param type <code>JOB_UMSATZ_ALL</code> oder <code>JOB_UMSATZ_NEW</code>.
 	 * @return die Umsaetze.
@@ -310,6 +313,7 @@ public class JobFactory {
 			for (int i=0;i<lines.length;++i)
 			{
 				umsaetze[i] = Converter.convert(lines[i]);
+				umsaetze[i].setKonto(konto); // muessen wir noch machen, weil der Converter das Konto nicht kennt
 			}
 			return umsaetze;
 		}
@@ -358,6 +362,10 @@ public class JobFactory {
 
 /**********************************************************************
  * $Log: JobFactory.java,v $
+ * Revision 1.6  2004/03/05 00:19:23  willuhn
+ * @D javadoc fixes
+ * @C Converter moved into server package
+ *
  * Revision 1.5  2004/03/05 00:04:10  willuhn
  * @N added code for umsatzlist
  *

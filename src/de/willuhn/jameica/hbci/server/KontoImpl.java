@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/03/05 00:04:10 $
+ * $Revision: 1.10 $
+ * $Date: 2004/03/05 00:19:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -257,7 +257,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getSald()
+   * @see de.willuhn.jameica.hbci.rmi.Konto#getSaldo()
    */
   public double getSaldo() throws RemoteException {
 		Double d = (Double) getField("saldo");
@@ -295,13 +295,9 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    */
   public synchronized void refreshUmsaetze() throws ApplicationException,RemoteException {
 
-		// Das machen wir um sicherzugehen, dass alle benoetigten Infos
-		// des Kontos vorhanden sind.
 		insertCheck();
 		if (isNewObject())
-		{
 			throw new ApplicationException("Bitte speichern Sie zunächst das Konto.");
-		}
 
 		Umsatz[] umsaetze = JobFactory.getInstance().getAlleUmsaetze(this);
 
@@ -332,6 +328,10 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.10  2004/03/05 00:19:23  willuhn
+ * @D javadoc fixes
+ * @C Converter moved into server package
+ *
  * Revision 1.9  2004/03/05 00:04:10  willuhn
  * @N added code for umsatzlist
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/03/03 22:26:40 $
+ * $Revision: 1.7 $
+ * $Date: 2004/03/05 00:19:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -55,6 +55,7 @@ public class HBCI extends AbstractPlugin
 	private boolean freshInstall = false;
 
   /**
+   * ct.
    * @param file
    */
   public HBCI(File file)
@@ -63,7 +64,7 @@ public class HBCI extends AbstractPlugin
   }
 
   /**
-   * @see de.willuhn.jameica.Plugin#init()
+   * @see de.willuhn.jameica.AbstractPlugin#init()
    */
   public boolean init()
   {
@@ -84,7 +85,7 @@ public class HBCI extends AbstractPlugin
   }
 
   /**
-   * @see de.willuhn.jameica.Plugin#install()
+   * @see de.willuhn.jameica.AbstractPlugin#install()
    */
   public boolean install()
   {
@@ -123,7 +124,7 @@ public class HBCI extends AbstractPlugin
   }
 
   /**
-   * @see de.willuhn.jameica.Plugin#update(double)
+   * @see de.willuhn.jameica.AbstractPlugin#update(double)
    */
   public boolean update(double oldVersion)
   {
@@ -131,33 +132,20 @@ public class HBCI extends AbstractPlugin
   }
 
   /**
-   * @see de.willuhn.jameica.Plugin#shutDown()
+   * @see de.willuhn.jameica.AbstractPlugin#shutDown()
    */
   public void shutDown()
   {
   }
-
-  /**
-   * @see de.willuhn.jameica.AbstractPlugin#getPassword()
-   */
-  protected String getPassword()
-  {
-    return "Gd._s01)8L+";
-  }
-
-  /**
-   * @see de.willuhn.jameica.AbstractPlugin#getUsername()
-   */
-  protected String getUsername()
-  {
-    return "hbcijameica";
-  }
-
 }
 
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.7  2004/03/05 00:19:23  willuhn
+ * @D javadoc fixes
+ * @C Converter moved into server package
+ *
  * Revision 1.6  2004/03/03 22:26:40  willuhn
  * @N help texts
  * @C refactoring

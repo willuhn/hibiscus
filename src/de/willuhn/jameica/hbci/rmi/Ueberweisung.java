@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Ueberweisung.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/02/17 01:01:38 $
+ * $Revision: 1.3 $
+ * $Date: 2004/03/05 00:19:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -34,7 +34,7 @@ public interface Ueberweisung extends DBObject {
 	
 	/**
 	 * Liefert den Empfaenger.
-   * @return
+   * @return Empfaenger der Ueberweisung.
    * @throws RemoteException
    */
   public Empfaenger getEmpfaenger() throws RemoteException;
@@ -128,6 +128,10 @@ public interface Ueberweisung extends DBObject {
 
 /**********************************************************************
  * $Log: Ueberweisung.java,v $
+ * Revision 1.3  2004/03/05 00:19:23  willuhn
+ * @D javadoc fixes
+ * @C Converter moved into server package
+ *
  * Revision 1.2  2004/02/17 01:01:38  willuhn
  * *** empty log message ***
  *
