@@ -9,6 +9,12 @@
 	</li>
 	
 	<li>
+		Sie können ein Limit für den Maximalbetrag einer Überweisung
+		definieren um zu verhindern, dass Sie versehentlich einen
+		zu grossen Betrag eingeben.
+	</li>
+	
+	<li>
 		Bei aktivierter PIN-Prüfung wird aus der von Ihnen eingegebene PIN
 		eine Check-Summe gebildet und diese mit der Check-Summe Ihrer ersten PIN-Eingabe
 		verglichen. Hierbei wird nicht die PIN selbst gespeichert sondern lediglich die

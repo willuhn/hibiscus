@@ -29,10 +29,20 @@ CREATE TABLE ueberweisung (
   empfaenger_blz varchar(15) NOT NULL,
   empfaenger_name varchar(255),
   betrag double NOT NULL,
-  zweck varchar(35) NOT NULL,
-  zweck2 varchar(35) NOT NULL,
+  zweck varchar(27) NOT NULL,
+  zweck2 varchar(27) NOT NULL,
   termin date NOT NULL,
   ausgefuehrt int(1) NOT NULL,
+  UNIQUE (id),
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE protokoll (
+  id NUMERIC default UNIQUEKEY('protokoll'),
+  konto_id int(4) NOT NULL,
+  kommentar varchar(1000) NOT NULL,
+  datum date NOT NULL,
+  typ int(1) NOT NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );
@@ -52,9 +62,21 @@ CREATE TABLE umsatz (
   primanota varchar(100),
   art varchar(100),
   customerref varchar(100),
+  umsatztyp_id int(4),
+  UNIQUE (id),
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE umsatztyp (
+  id NUMERIC default UNIQUEKEY('umsatztyp'),
+  name varchar(255) NOT NULL,
+  field varchar(255) NOT NULL,
+  pattern varchar(255) NOT NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );
 
 ALTER TABLE ueberweisung ADD CONSTRAINT fk_konto FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE umsatz ADD CONSTRAINT fk_konto2 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
+ALTER TABLE protokoll ADD CONSTRAINT fk_konto3 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
+ALTER TABLE umsatz ADD CONSTRAINT fk_umsatztyp FOREIGN KEY (umsatztyp_id) REFERENCES umsatztyp (id) DEFERRABLE;

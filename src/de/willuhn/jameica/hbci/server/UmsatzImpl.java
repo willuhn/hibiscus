@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/04/27 22:23:56 $
+ * $Revision: 1.6 $
+ * $Date: 2004/05/25 23:23:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,6 +23,7 @@ import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -106,6 +107,8 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz {
   protected Class getForeignObject(String field) throws RemoteException {
 		if ("konto_id".equals(field))
 			return Konto.class;
+		if ("umsatztyp_id".equals(field))
+			return UmsatzTyp.class;
     return null;
   }
 
@@ -342,11 +345,32 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz {
 		return crc.getValue();
   }
 
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getUmsatzTyp()
+   */
+  public UmsatzTyp getUmsatzTyp() throws RemoteException {
+		return (UmsatzTyp) getField("umsatztyp_id");
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setUmsatzTyp(de.willuhn.jameica.hbci.rmi.UmsatzTyp)
+   */
+  public void setUmsatzTyp(UmsatzTyp typ) throws RemoteException {
+		if (typ == null)
+			setField("umsatz_id",null);
+		else
+			setField("umsatztyp_id",new Integer(typ.getID()));
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.6  2004/05/25 23:23:17  willuhn
+ * @N UeberweisungTyp
+ * @N Protokoll
+ *
  * Revision 1.5  2004/04/27 22:23:56  willuhn
  * @N configurierbarer CTAPI-Treiber
  * @C konkrete Passport-Klassen (DDV) nach de.willuhn.jameica.passports verschoben

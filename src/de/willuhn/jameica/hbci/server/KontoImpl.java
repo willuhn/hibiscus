@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.20 $
- * $Date: 2004/05/05 22:14:47 $
+ * $Revision: 1.21 $
+ * $Date: 2004/05/25 23:23:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,6 +26,7 @@ import de.willuhn.jameica.hbci.PassportRegistry;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
@@ -188,12 +189,16 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    */
   public void delete() throws RemoteException, ApplicationException
   {
-		// Wir muessen auch alle Umsaetze sowie Ueberweisungen mitloeschen
+		// Wir muessen auch alle Umsaetze, Ueberweisungen und Protokolle mitloeschen
 		// da Constraints dorthin existieren.
     try {
       this.transactionBegin();
 
-			DBIterator list = Settings.getDatabase().createList(Ueberweisung.class);
+			// Erst die Ueberweisungen loeschen
+			deleteUmsaetze();
+
+			// und jetzt die Umsaetze
+			DBIterator list = getUeberweisungen();
 			Ueberweisung u = null;
 			while (list.hasNext())
 			{
@@ -201,12 +206,13 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 				u.delete();
 			}
 
-			list = Settings.getDatabase().createList(Umsatz.class);
-			Umsatz ums = null;
+			// und noch die Protokolle
+			list = getProtokolle();
+			Protokoll p = null;
 			while (list.hasNext())
 			{
-				ums = (Umsatz) list.next();
-				ums.delete();
+				p = (Protokoll) list.next();
+				p.delete();
 			}
 
 			// Jetzt koennen wir uns selbst loeschen
@@ -354,9 +360,19 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    */
   public DBIterator getUmsaetze() throws RemoteException {
 		DBIterator list = Settings.getDatabase().createList(Umsatz.class);
-		list.addFilter("konto_id = " + getID() + "ORDER BY TONUMBER(datum)");
+		list.addFilter("konto_id = " + getID() + " ORDER BY TONUMBER(datum) DESC");
 		return list;
   }
+
+
+	/**
+   * @see de.willuhn.jameica.hbci.rmi.Konto#getUeberweisungen()
+   */
+  public DBIterator getUeberweisungen() throws RemoteException {
+		DBIterator list = Settings.getDatabase().createList(Ueberweisung.class);
+		list.addFilter("konto_id = " + getID() + " ORDER BY TONUMBER(termin) DESC");
+		return list;
+	}
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Konto#deleteUmsaetze()
@@ -386,11 +402,49 @@ public class KontoImpl extends AbstractDBObject implements Konto {
   public void setBezeichnung(String bezeichnung) throws RemoteException {
 		setField("bezeichnung",bezeichnung);
   }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Konto#getProtokolle()
+   */
+  public DBIterator getProtokolle() throws RemoteException {
+		DBIterator list = Settings.getDatabase().createList(Protokoll.class);
+		list.addFilter("konto_id = " + getID() + " ORDER BY TONUMBER(datum) DESC");
+		return list;
+  }
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#insert()
+   */
+  public void insert() throws RemoteException, ApplicationException {
+    super.insert();
+    
+    // Wenn das erfolgreich lief, protokollieren wir gleich die Neuanlage
+		try {
+			Protokoll entry = (Protokoll) Settings.getDatabase().createObject(Protokoll.class,null);
+			entry.setKonto(this);
+			entry.setKommentar(i18n.tr("Konto angelegt"));
+			entry.setTyp(Protokoll.TYP_SUCCESS);
+			entry.store();
+		}
+		catch (Exception e)
+		{
+			// Es macht keinen Sinn, hier die Exception nach oben zu reichen.
+			// Was sollte in diesem Fall sinnvolles gemacht werden? Den gesamten
+			// HBCI-Job abbrechen? Nene, dann lieber auf den Log-Eintrag verzichten
+			// und nur ins Application-Log schreiben. ;)
+			Application.getLog().error("error while writing protocol",e);
+		}
+
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.21  2004/05/25 23:23:17  willuhn
+ * @N UeberweisungTyp
+ * @N Protokoll
+ *
  * Revision 1.20  2004/05/05 22:14:47  willuhn
  * *** empty log message ***
  *

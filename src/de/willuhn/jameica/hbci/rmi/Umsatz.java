@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Umsatz.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/04/27 22:23:56 $
+ * $Revision: 1.5 $
+ * $Date: 2004/05/25 23:23:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -124,6 +124,13 @@ public interface Umsatz extends DBObject {
   public String getCustomerRef() throws RemoteException;
 
 	/**
+	 * Liefert den Umsatz-Typ - insofern dieser schon zugewiesen wurde.
+   * @return Umsatz-Typ.
+   * @throws RemoteException
+   */
+  public UmsatzTyp getUmsatzTyp() throws RemoteException;
+
+	/**
 	 * Speichert das Konto, auf welches sich der Umsatz bezieht.
    * @param k das Konto.
    * @throws RemoteException
@@ -214,6 +221,13 @@ public interface Umsatz extends DBObject {
 	public void setCustomerRef(String ref) throws RemoteException;
 
 	/**
+	 * Speichert den Umsatz-Typ dieser Buchung.
+   * @param typ Umsatz-Typ.
+   * @throws RemoteException
+   */
+  public void setUmsatzTyp(UmsatzTyp typ) throws RemoteException;
+
+	/**
 	 * Liefert eine CRC32-Checksumme dieser Buchung.
 	 * Diese wird verwendet, um die lokal gespeicherten
 	 * eindeutig zu identifizieren, damit beim Holen neuer
@@ -228,6 +242,10 @@ public interface Umsatz extends DBObject {
 
 /**********************************************************************
  * $Log: Umsatz.java,v $
+ * Revision 1.5  2004/05/25 23:23:17  willuhn
+ * @N UeberweisungTyp
+ * @N Protokoll
+ *
  * Revision 1.4  2004/04/27 22:23:56  willuhn
  * @N configurierbarer CTAPI-Treiber
  * @C konkrete Passport-Klassen (DDV) nach de.willuhn.jameica.passports verschoben

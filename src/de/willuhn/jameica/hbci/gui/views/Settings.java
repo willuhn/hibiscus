@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Settings.java,v $
- * $Revision: 1.18 $
- * $Date: 2004/05/11 23:31:40 $
+ * $Revision: 1.19 $
+ * $Date: 2004/05/25 23:23:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -46,6 +46,8 @@ public class Settings extends AbstractView {
 		settings.addCheckbox(control.getOnlineMode(),i18n.tr("Keine Nachfrage vor Verbindungsaufbau"));
 		settings.addCheckbox(control.getCheckPin(),i18n.tr("PIN-Eingabe via Check-Summe prüfen"));
 		
+		settings.addLabelPair(i18n.tr("Limit für Überweisungen"), control.getUeberweisungLimit());
+		
 		LabelGroup colors = new LabelGroup(getParent(),i18n.tr("Farben"));
 		colors.addLabelPair(i18n.tr("Vordergrund Sollbuchung"),control.getBuchungSollForeground());
 		colors.addLabelPair(i18n.tr("Hintergrund Sollbuchung"),control.getBuchungSollBackground());
@@ -83,6 +85,10 @@ public class Settings extends AbstractView {
 
 /**********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.19  2004/05/25 23:23:17  willuhn
+ * @N UeberweisungTyp
+ * @N Protokoll
+ *
  * Revision 1.18  2004/05/11 23:31:40  willuhn
  * *** empty log message ***
  *

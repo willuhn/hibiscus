@@ -1,41 +1,41 @@
 <html>
 
-	<head></head>
+  <head></head>
 
-	<body>
-		<p>
-			Die in diesem Package befindlichen Interfaces muessen fuer die Unterstuetzung
-			zusaetzlicher Passports implementiert werden.
-		</p>
-		
-		<p>
-			Das HBCI-Plugin wird bei der Initialisierung den Classpath
-			der Anwendung nach allen Klassen durchsuchen, die
-			<i>de.willuhn.jameica.hbci.passport.Passport</i> implementieren.<br>
-			Da der PluginLoader von Jameica bereits beim Starten rekursiv
-			alle Plugin-Verzeichnisse nach Java-Klassen und Jar-Dateien
-			durchsucht und diese in den Classpath der Anwendung uebernimmt,
-			muessen zusaetzliche Passports lediglich als Jar-Datei im
-			Verzeichnis &quot;passports&quot; des HBCI-Plugins abgelegt werden.
-			(siehe auch der mitgelieferte Passport fuer DDV-Karten
-			in &quot;passports/ddv/&quot;). Sie werden beim Start der Anwendung
-			automatisch gefunden und muessen daher <b>nicht</b> im CLASSPATH des
-			Betriebssystems oder im Class-Path einer MANIFEST.MF Datei
-			vermerkt werden.
-		</p>
-			Hinweis: Das HBCI-Plugin stellt keine SQL-Tabellen oder Java-Klassen
-			fuer die Speicherung von Passport-spezifischen Einstellungen
-			zur Verfuegung. Die Art und Weise der Speicherung ist dem Autor
-			des Passports ueberlassen. Der Einfachheit und Standardisierung
-			halber empfiehlt sich jedoch die Verwendung der Klasse
-			<i>de.willuhn.jameica.Settings</i> welche bereits die typsichere
-			Speicherung von &quot;primitiven Java-Typen&quot; bereithaelt.
-			Dem Konstruktor wird hierbei die Klasse des Passports uebergeben.
-			(Bsp: <i>Settings s = new Settings(MyOwnPassport.class);</i>).
-			Alle nun gespeicherten Werte werden im Daten-Verzeichnis von
-			Jameica (&quot;$HOME/.jameica/cfg&quot) in einer gleichnamigen
-			Properties-Datei abgelegt.
-		<p>
+  <body>
+    <p>
+      Die in diesem Package befindlichen Interfaces muessen fuer die Unterstuetzung
+      zusaetzlicher Passports implementiert werden.
+    </p>
 
-	</body>
+    <p>
+      Das HBCI-Plugin wird bei der Initialisierung den Classpath
+      der Anwendung nach allen Klassen durchsuchen, die
+      <i>de.willuhn.jameica.hbci.passport.Passport</i> implementieren.<br>
+      Da der PluginLoader von Jameica bereits beim Starten rekursiv
+      alle Plugin-Verzeichnisse nach Java-Klassen und Jar-Dateien
+      durchsucht und diese in den Classpath der Anwendung uebernimmt,
+      muessen zusaetzliche Passports lediglich als Jar-Datei im
+      Verzeichnis &quot;lib&quot; des HBCI-Plugins abgelegt werden.
+      (siehe auch der mitgelieferte Passport fuer DDV-Karten.
+      Sie werden beim Start der Anwendung automatisch gefunden und
+      muessen daher <b>nicht</b> im CLASSPATH des
+      Betriebssystems oder im Class-Path einer MANIFEST.MF Datei
+      vermerkt werden.
+    </p>
+      Hinweis: Das HBCI-Plugin stellt keine SQL-Tabellen oder Java-Klassen
+      fuer die Speicherung von Passport-spezifischen Einstellungen
+      zur Verfuegung. Die Art und Weise der Speicherung ist dem Autor
+      des Passports ueberlassen. Der Einfachheit und Standardisierung
+      halber empfiehlt sich jedoch die Verwendung der Klasse
+      <i>de.willuhn.jameica.Settings</i> welche bereits die typsichere
+      Speicherung von &quot;primitiven Java-Typen&quot; bereithaelt.
+      Dem Konstruktor wird hierbei die Klasse des Passports uebergeben.
+      (Bsp: <i>Settings s = new Settings(MyOwnPassport.class);</i>).
+      Alle nun gespeicherten Werte werden im Daten-Verzeichnis von
+      Jameica (&quot;$HOME/.jameica/cfg&quot) in einer gleichnamigen
+      Properties-Datei abgelegt.
+    <p>
+
+  </body>
 </html>

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.20 $
- * $Date: 2004/05/11 23:31:40 $
+ * $Revision: 1.21 $
+ * $Date: 2004/05/25 23:23:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,6 +28,7 @@ import de.willuhn.jameica.gui.controller.AbstractControl;
 import de.willuhn.jameica.gui.input.AbstractInput;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.ColorInput;
+import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
@@ -56,6 +57,8 @@ public class SettingsControl extends AbstractControl {
 	private TablePart passportList 					= null;
 
 	private AbstractInput importProgram			= null;	
+
+	private AbstractInput ueberweisungLimit = null;
 
 	private I18N i18n;
 
@@ -113,6 +116,20 @@ public class SettingsControl extends AbstractControl {
 		checkPin = new CheckboxInput(Settings.getCheckPin());
 		checkPin.addListener(new CheckPinListener());
 		return checkPin;
+	}
+
+	/**
+	 * Eingabe-Feld fuer ein Limit bei Ueberweisungen.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public AbstractInput getUeberweisungLimit() throws RemoteException
+	{
+		if (ueberweisungLimit != null)
+			return ueberweisungLimit;
+		ueberweisungLimit = new DecimalInput(Settings.getUeberweisungLimit(),HBCI.DECIMALFORMAT);
+		ueberweisungLimit.setComment(i18n.tr("in der Währung des jeweiligen Kontos"));
+		return ueberweisungLimit;
 	}
 
 	/**
@@ -230,6 +247,8 @@ public class SettingsControl extends AbstractControl {
 
 			Settings.setOnlineMode(((Boolean)getOnlineMode().getValue()).booleanValue());
 			Settings.setCheckPin(((Boolean)getCheckPin().getValue()).booleanValue());
+			
+			Settings.setUeberweisungLimit(((Double)getUeberweisungLimit().getValue()).doubleValue());
 
 			// Wir gehen nochmal auf Nummer sicher, dass die Pruefsummen-Algorithmen vorhanden sind
 			new CheckPinListener().handleEvent(null);
@@ -303,6 +322,10 @@ public class SettingsControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.21  2004/05/25 23:23:17  willuhn
+ * @N UeberweisungTyp
+ * @N Protokoll
+ *
  * Revision 1.20  2004/05/11 23:31:40  willuhn
  * *** empty log message ***
  *

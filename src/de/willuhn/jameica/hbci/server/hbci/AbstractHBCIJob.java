@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCIJob.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/04/24 19:04:51 $
+ * $Revision: 1.4 $
+ * $Date: 2004/05/25 23:23:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,9 @@ import java.util.Hashtable;
 import org.kapott.hbci.GV_Result.HBCIJobResult;
 
 import de.willuhn.jameica.Application;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.hbci.HBCIJob;
 
 /**
@@ -129,11 +131,42 @@ public abstract class AbstractHBCIJob implements HBCIJob {
 		kontoParams.put(name,konto);
 	}
 
+	/**
+	 * Fuegt zum Konto einen Protokoll-Eintrag mit dem genannten Kommentar hinzu.
+   * @param kommentar zu speichernder Kommentar.
+   * @param protokollTyp Protokoll-Typ (siehe Konstanten in <code>Protokoll</code>).
+   */
+  final void addToProtokoll(String kommentar, int protokollTyp)
+	{
+		if (kommentar == null || kommentar.length() == 0)
+			return;
+
+		try {
+			Protokoll entry = (Protokoll) Settings.getDatabase().createObject(Protokoll.class,null);
+			entry.setKonto(this.getKonto());
+			entry.setKommentar(kommentar);
+			entry.setTyp(protokollTyp);
+			entry.store();
+		}
+		catch (Exception e)
+		{
+			// Es macht keinen Sinn, hier die Exception nach oben zu reichen.
+			// Was sollte in diesem Fall sinnvolles gemacht werden? Den gesamten
+			// HBCI-Job abbrechen? Nene, dann lieber auf den Log-Eintrag verzichten
+			// und nur ins Application-Log schreiben. ;)
+			Application.getLog().error("error while writing protocol",e);
+		}
+		
+	}
 }
 
 
 /**********************************************************************
  * $Log: AbstractHBCIJob.java,v $
+ * Revision 1.4  2004/05/25 23:23:18  willuhn
+ * @N UeberweisungTyp
+ * @N Protokoll
+ *
  * Revision 1.3  2004/04/24 19:04:51  willuhn
  * @N Ueberweisung.execute works!! ;)
  *

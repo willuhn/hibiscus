@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUeberweisungJob.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/04/27 22:30:04 $
+ * $Revision: 1.5 $
+ * $Date: 2004/05/25 23:23:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Empfaenger;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.server.Converter;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -29,6 +30,7 @@ import de.willuhn.util.I18N;
 public class HBCIUeberweisungJob extends AbstractHBCIJob {
 
 	private I18N i18n = null;
+	private Empfaenger empfaenger = null;
 
 	/**
 	 * ct.
@@ -58,6 +60,7 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob {
   public void setEmpfaenger(Empfaenger empfaenger)
 	{
 		try {
+			this.empfaenger = empfaenger;
 			setJobParam("dst",Converter.JameicaEmpfaenger2HBCIKonto(empfaenger));
 			setJobParam("name",empfaenger.getName());
 		}
@@ -112,13 +115,30 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob {
   public void check() throws ApplicationException
   {
 		String statusText = getStatusText();
+
+		String empfName = "";
+		try {
+			empfName = i18n.tr("an") + " " + empfaenger.getName();
+		}
+		catch (RemoteException e)
+		{
+			Application.getLog().error("error while reading empfaenger name",e);
+		}
+
 		if (!getJobResult().isOK())
 		{
-			throw new ApplicationException(
-				statusText != null ?
-					i18n.tr("Fehlermeldung der Bank") + ": " + statusText :
-					i18n.tr("Fehler beim Ausführen der Überweisung"));
+
+			String msg = i18n.tr("Fehler beim Ausführen der Überweisung") + " " + empfName;
+
+
+			String error = (statusText != null) ?
+										i18n.tr("Fehlermeldung der Bank") + ": " + statusText :
+										i18n.tr("Unbekannter Fehler beim Ausführen der Überweisung");
+
+			addToProtokoll(msg + " ("+error+")",Protokoll.TYP_ERROR);
+			throw new ApplicationException(msg + " ("+error+")");
 		}
+		addToProtokoll(i18n.tr("Überweisung ausgeführt") + " " + empfName,Protokoll.TYP_SUCCESS);
 		Application.getLog().debug("ueberweisung sent successfully");
   }
 }
@@ -126,6 +146,10 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIUeberweisungJob.java,v $
+ * Revision 1.5  2004/05/25 23:23:18  willuhn
+ * @N UeberweisungTyp
+ * @N Protokoll
+ *
  * Revision 1.4  2004/04/27 22:30:04  willuhn
  * *** empty log message ***
  *

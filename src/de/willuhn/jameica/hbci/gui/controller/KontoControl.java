@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.27 $
- * $Date: 2004/05/05 22:14:47 $
+ * $Revision: 1.28 $
+ * $Date: 2004/05/25 23:23:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import java.util.Hashtable;
 
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.TableItem;
 import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.rmi.DBIterator;
@@ -26,11 +27,14 @@ import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.controller.AbstractControl;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
+import de.willuhn.jameica.gui.formatter.DateFormatter;
+import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.input.AbstractInput;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.PassportRegistry;
@@ -40,6 +44,7 @@ import de.willuhn.jameica.hbci.gui.views.KontoNeu;
 import de.willuhn.jameica.hbci.gui.views.UmsatzListe;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -63,6 +68,8 @@ public class KontoControl extends AbstractControl {
   
   private AbstractInput saldo				 		= null;
   private AbstractInput saldoDatum   		= null;
+
+	private TablePart protokoll						= null;
 
 	private I18N i18n;
   /**
@@ -91,6 +98,42 @@ public class KontoControl extends AbstractControl {
 		// Kein Konto verfuegbar - wir bauen ein neues.
 		konto = (Konto) Settings.getDatabase().createObject(Konto.class,null);
 		return konto;
+	}
+
+	/**
+	 * Liefert eine Tabelle mit dem Protokoll des Kontos.
+   * @return Tabelle.
+   * @throws RemoteException
+   */
+  public TablePart getProtokoll() throws RemoteException
+	{
+		if (protokoll != null)
+			return protokoll;
+
+		TablePart table = new TablePart(getKonto().getProtokolle(),null);
+		table.setFormatter(new TableFormatter() {
+			public void format(TableItem item) {
+				Protokoll p = (Protokoll) item.getData();
+				if (p == null) return;
+				try {
+					if (p.getTyp() == Protokoll.TYP_ERROR)
+					{
+						item.setForeground(Color.ERROR.getSWTColor());
+					}
+					else if (p.getTyp() == Protokoll.TYP_SUCCESS)
+					{
+						item.setForeground(Color.SUCCESS.getSWTColor());
+					}
+				}
+				catch (RemoteException e)
+				{
+				}
+			}
+		});
+		table.addColumn(i18n.tr("Datum"),"datum",new DateFormatter(HBCI.DATEFORMAT));
+		table.addColumn(i18n.tr("Kommentar"),"kommentar");
+		return table;
+
 	}
 
 	/**
@@ -305,6 +348,9 @@ public class KontoControl extends AbstractControl {
    */
   public void handleStore() {
 		try {
+			// Erstmal oben und unten die Statusleisten leer machen
+			GUI.getStatusBar().setSuccessText("");
+			GUI.getView().setSuccessText("");
 
 			getKonto().setPassport((Passport) getPassportAuswahl().getValue());
 
@@ -498,6 +544,10 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.28  2004/05/25 23:23:17  willuhn
+ * @N UeberweisungTyp
+ * @N Protokoll
+ *
  * Revision 1.27  2004/05/05 22:14:47  willuhn
  * *** empty log message ***
  *
