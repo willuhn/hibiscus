@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/UeberweisungNeu.java,v $
- * $Revision: 1.12 $
- * $Date: 2004/05/04 23:58:20 $
+ * $Revision: 1.13 $
+ * $Date: 2004/07/20 22:53:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,8 +12,8 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.views;
 
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
@@ -61,9 +61,11 @@ public class UeberweisungNeu extends AbstractView {
 		group.addLabelPair(i18n.tr("Bemerkung"),								control.getComment());
 
 		ButtonArea buttonArea = new ButtonArea(getParent(),4);
-		buttonArea.addCustomButton(i18n.tr("jetzt ausführen"), new MouseAdapter() {
-      public void mouseUp(MouseEvent e) {
-      	control.handleExecute();
+		buttonArea.addCustomButton(i18n.tr("jetzt ausführen"), new Listener()
+    {
+      public void handleEvent(Event event)
+      {
+				control.handleExecute();
       }
     });
 		buttonArea.addCancelButton(control);
@@ -82,6 +84,9 @@ public class UeberweisungNeu extends AbstractView {
 
 /**********************************************************************
  * $Log: UeberweisungNeu.java,v $
+ * Revision 1.13  2004/07/20 22:53:03  willuhn
+ * @C Refactoring
+ *
  * Revision 1.12  2004/05/04 23:58:20  willuhn
  * *** empty log message ***
  *

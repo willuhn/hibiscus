@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/UmsatzListe.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/07/09 00:04:40 $
+ * $Revision: 1.7 $
+ * $Date: 2004/07/20 22:53:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,8 +14,8 @@ package de.willuhn.jameica.hbci.gui.views;
 
 import java.rmi.RemoteException;
 
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
@@ -49,16 +49,20 @@ public class UmsatzListe extends AbstractView {
 			list.paint(getParent());
 			
 			ButtonArea buttons = new ButtonArea(getParent(),3);
-			buttons.addCustomButton(i18n.tr("Umsätze abrufen"), new MouseAdapter() {
-        public void mouseUp(MouseEvent e) {
-        	control.handleGetUmsaetze();
+			buttons.addCustomButton(i18n.tr("Umsätze abrufen"), new Listener()
+      {
+        public void handleEvent(Event event)
+        {
+					control.handleGetUmsaetze();
         }
       });
-			buttons.addCustomButton(i18n.tr("alle Umsätze löschen"), new MouseAdapter() {
-				public void mouseUp(MouseEvent e) {
+			buttons.addCustomButton(i18n.tr("alle Umsätze löschen"), new Listener()
+      {
+        public void handleEvent(Event event)
+        {
 					control.handleDeleteUmsaetze();
-				}
-			});
+        }
+      });
 			buttons.addCancelButton(control);
 		}
 		catch (RemoteException e)
@@ -80,6 +84,9 @@ public class UmsatzListe extends AbstractView {
 
 /**********************************************************************
  * $Log: UmsatzListe.java,v $
+ * Revision 1.7  2004/07/20 22:53:03  willuhn
+ * @C Refactoring
+ *
  * Revision 1.6  2004/07/09 00:04:40  willuhn
  * @C Redesign
  *

@@ -73,6 +73,13 @@ Sie diese bitte an den Autor.
 Weitere Hinweise zur Installation entnehmen Sie bitte der Dokumentation
 des Sicherheitsmediums.
 
+Nur Linux:
+  Beachten Sie bitte unbedingt, dass Sie mit Ihrem Benutzer-Account
+  Schreibrechte auf dem seriellen Port (/dev/ttyS0 oder /dev/ttyS1) benoetigen.
+  Aendern Sie diese ggf. zum Beispiel durch folgend Befehl (als Root) ab:
+
+  $ chgrp users /dev/ttyS0 /dev/ttyS1
+
 #                                                                         #
 ###########################################################################
 

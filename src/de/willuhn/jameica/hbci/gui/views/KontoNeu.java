@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/KontoNeu.java,v $
- * $Revision: 1.15 $
- * $Date: 2004/06/30 20:58:28 $
+ * $Revision: 1.16 $
+ * $Date: 2004/07/20 22:53:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,8 +14,8 @@ package de.willuhn.jameica.hbci.gui.views;
 
 import java.rmi.RemoteException;
 
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
@@ -70,16 +70,20 @@ public class KontoNeu extends AbstractView {
 			saldo.addLabelPair(i18n.tr("letzte Aktualisierung"),		control.getSaldoDatum());
 
 			ButtonArea buttons = saldo.createButtonArea(2);
-			buttons.addCustomButton(i18n.tr("Saldo aktualisieren"), new MouseAdapter() {
-				public void mouseUp(MouseEvent e) {
+			buttons.addCustomButton(i18n.tr("Saldo aktualisieren"), new Listener()
+      {
+        public void handleEvent(Event event)
+        {
 					control.handleRefreshSaldo();
-				}
-			});
-			buttons.addCustomButton(i18n.tr("Kontoauszüge"), new MouseAdapter() {
-				public void mouseUp(MouseEvent e) {
+        }
+      });
+			buttons.addCustomButton(i18n.tr("Kontoauszüge"), new Listener()
+      {
+        public void handleEvent(Event event)
+        {
 					control.handleShowUmsaetze();
-				}
-			});
+        }
+      });
 
 			new Headline(getParent(),i18n.tr("Protokoll des Kontos"));
 			control.getProtokoll().paint(getParent());
@@ -105,6 +109,9 @@ public class KontoNeu extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoNeu.java,v $
+ * Revision 1.16  2004/07/20 22:53:03  willuhn
+ * @C Refactoring
+ *
  * Revision 1.15  2004/06/30 20:58:28  willuhn
  * *** empty log message ***
  *

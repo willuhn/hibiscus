@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AbstractTransferImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/07/20 21:48:00 $
+ * $Revision: 1.5 $
+ * $Date: 2004/07/20 22:53:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -226,7 +226,7 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
   		return;
   	setEmpfaengerBLZ(e.getBLZ());
   	setEmpfaengerKonto(e.getKontonummer());
-  	setEmpfaengerName(e.getKontonummer());
+  	setEmpfaengerName(e.getName());
   }
 
 }
@@ -234,6 +234,9 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
 
 /**********************************************************************
  * $Log: AbstractTransferImpl.java,v $
+ * Revision 1.5  2004/07/20 22:53:03  willuhn
+ * @C Refactoring
+ *
  * Revision 1.4  2004/07/20 21:48:00  willuhn
  * @N ContextMenus
  *

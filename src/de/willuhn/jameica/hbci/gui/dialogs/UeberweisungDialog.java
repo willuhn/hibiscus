@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/UeberweisungDialog.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/07/14 23:48:31 $
+ * $Revision: 1.4 $
+ * $Date: 2004/07/20 22:53:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,9 +12,9 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.dialogs;
 
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.jameica.PluginLoader;
@@ -92,19 +92,22 @@ public class UeberweisungDialog extends AbstractDialog {
 		group.addLabelPair(i18n.tr("Betrag"),betrag);
 
 		ButtonArea b = group.createButtonArea(2);
-		b.addCustomButton(i18n.tr("OK"), new MouseAdapter() {
-			public void mouseUp(MouseEvent e) {
+		b.addCustomButton(i18n.tr("OK"), new Listener()
+    {
+      public void handleEvent(Event event)
+      {
 				choosen = Boolean.TRUE;
 				close();
-			}
-		});
-		b.addCustomButton(i18n.tr("Abbrechen"), new MouseAdapter() {
-			public void mouseUp(MouseEvent e) {
+      }
+    });
+		b.addCustomButton(i18n.tr("Abbrechen"), new Listener()
+    {
+      public void handleEvent(Event event)
+      {
 				choosen = Boolean.FALSE;
 				close();
-			}
-		});
-
+      }
+    });
   }
 
 }
@@ -112,6 +115,9 @@ public class UeberweisungDialog extends AbstractDialog {
 
 /**********************************************************************
  * $Log: UeberweisungDialog.java,v $
+ * Revision 1.4  2004/07/20 22:53:03  willuhn
+ * @C Refactoring
+ *
  * Revision 1.3  2004/07/14 23:48:31  willuhn
  * @N mehr Code fuer Dauerauftraege
  *

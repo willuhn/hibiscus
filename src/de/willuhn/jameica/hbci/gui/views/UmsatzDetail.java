@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzDetail.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/05/11 23:31:40 $
+ * $Revision: 1.6 $
+ * $Date: 2004/07/20 22:53:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,8 +13,8 @@
 
 package de.willuhn.jameica.hbci.gui.views;
 
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
@@ -61,9 +61,11 @@ public class UmsatzDetail extends AbstractView {
 		add.addLabelPair(i18n.tr("Primanota-Kennzeichen"),		control.getPrimanota());
 
     ButtonArea buttons = new ButtonArea(getParent(),2);
-    buttons.addCustomButton(i18n.tr("Empfänger in Adressbuch übernehmen"),new MouseAdapter() {
-      public void mouseUp(MouseEvent e) {
-        control.handleAddEmpfaenger();
+    buttons.addCustomButton(i18n.tr("Empfänger in Adressbuch übernehmen"),new Listener()
+    {
+      public void handleEvent(Event event)
+      {
+				control.handleAddEmpfaenger();
       }
     });
     buttons.addCancelButton(control);
@@ -78,6 +80,9 @@ public class UmsatzDetail extends AbstractView {
 
 /**********************************************************************
  * $Log: UmsatzDetail.java,v $
+ * Revision 1.6  2004/07/20 22:53:03  willuhn
+ * @C Refactoring
+ *
  * Revision 1.5  2004/05/11 23:31:40  willuhn
  * *** empty log message ***
  *
