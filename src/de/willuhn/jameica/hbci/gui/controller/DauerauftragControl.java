@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/DauerauftragControl.java,v $
- * $Revision: 1.11 $
- * $Date: 2004/10/25 23:12:02 $
+ * $Revision: 1.12 $
+ * $Date: 2004/10/25 23:22:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -82,10 +82,11 @@ public class DauerauftragControl extends AbstractTransferControl {
 		TablePart table = new TablePart(list,new DauerauftragNeu());
 
 		table.addColumn(i18n.tr("Konto"),"konto_id");
-		table.addColumn(i18n.tr("Kto. des Empfängers"),"empfaenger_konto");
-		table.addColumn(i18n.tr("BLZ des Empfängers"),"empfaenger_blz");
-		table.addColumn(i18n.tr("Name des Empfängers"),"empfaenger_name");
+		table.addColumn(i18n.tr("Empfängername"),"empfaenger_name");
+		table.addColumn(i18n.tr("Empfängerkonto"),"empfaenger_konto");
+		table.addColumn(i18n.tr("Verwendungszweck"),"zweck");
 		table.addColumn(i18n.tr("Betrag"),"betrag", new CurrencyFormatter("",HBCI.DECIMALFORMAT));
+		table.addColumn(i18n.tr("Turnus"),"turnus_id");
 		table.addColumn(i18n.tr("aktiv?"),"orderid",new Formatter()
     {
       public String format(Object o)
@@ -98,7 +99,6 @@ public class DauerauftragControl extends AbstractTransferControl {
 				return i18n.tr("nein");
       }
     });
-		table.addColumn(i18n.tr("Turnus"),"turnus_id");
 		table.setContextMenu(new DauerauftragList());
 		return table;
 	}
@@ -168,6 +168,15 @@ public class DauerauftragControl extends AbstractTransferControl {
 					return;
 				Date choosen = (Date) event.data;
 				ersteZahlung.setText(HBCI.DATEFORMAT.format(choosen));
+				try
+				{
+					((Dauerauftrag)getTransfer()).setErsteZahlung(choosen);
+				}
+				catch (RemoteException e)
+				{
+					Logger.error("error while choosing start date",e);
+					GUI.getStatusBar().setErrorText(i18n.tr("Fehler bei der Auswahl des Datums"));
+				}
 			}
 		});
 
@@ -198,6 +207,15 @@ public class DauerauftragControl extends AbstractTransferControl {
 					return;
 				Date choosen = (Date) event.data;
 				letzteZahlung.setText(HBCI.DATEFORMAT.format(choosen));
+				try
+				{
+					((Dauerauftrag)getTransfer()).setLetzteZahlung(choosen);
+				}
+				catch (RemoteException e)
+				{
+					Logger.error("error while choosing end date",e);
+					GUI.getStatusBar().setErrorText(i18n.tr("Fehler bei der Auswahl des Datums"));
+				}
 			}
 		});
 
@@ -237,6 +255,9 @@ public class DauerauftragControl extends AbstractTransferControl {
 
 /**********************************************************************
  * $Log: DauerauftragControl.java,v $
+ * Revision 1.12  2004/10/25 23:22:39  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.11  2004/10/25 23:12:02  willuhn
  * *** empty log message ***
  *

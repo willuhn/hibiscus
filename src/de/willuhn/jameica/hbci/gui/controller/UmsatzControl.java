@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzControl.java,v $
- * $Revision: 1.21 $
- * $Date: 2004/10/20 12:08:18 $
+ * $Revision: 1.22 $
+ * $Date: 2004/10/25 23:22:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -59,7 +59,11 @@ public class UmsatzControl extends AbstractControl {
 	{
 		if (konto != null)
 			return konto;
-		konto = (Konto) getCurrentObject();
+		Object o = getCurrentObject();
+		if (o instanceof Umsatz)
+			konto = ((Umsatz)o).getKonto();
+		else
+			konto = (Konto)o;
 		if (konto == null || konto.isNewObject())
 			throw new RemoteException("konto cannot be null or new");
 		return konto;
@@ -108,6 +112,9 @@ public class UmsatzControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzControl.java,v $
+ * Revision 1.22  2004/10/25 23:22:39  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.21  2004/10/20 12:08:18  willuhn
  * @C MVC-Refactoring (new Controllers)
  *
