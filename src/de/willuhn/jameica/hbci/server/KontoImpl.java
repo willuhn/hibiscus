@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.22 $
- * $Date: 2004/06/03 00:23:43 $
+ * $Revision: 1.23 $
+ * $Date: 2004/06/07 22:22:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -110,8 +110,6 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
    */
   protected Class getForeignObject(String field) throws RemoteException {
-  	if ("passport_id".equals(field))
-  		return Passport.class;
     return null;
   }
 
@@ -459,6 +457,9 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.23  2004/06/07 22:22:33  willuhn
+ * @B Spalte "Passport" in KontoListe entfernt - nicht mehr noetig
+ *
  * Revision 1.22  2004/06/03 00:23:43  willuhn
  * *** empty log message ***
  *
