@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.13 $
- * $Date: 2004/03/06 18:25:10 $
+ * $Revision: 1.14 $
+ * $Date: 2004/03/19 01:44:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,7 +30,6 @@ import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
-import de.willuhn.util.MultipleClassLoader;
 
 /**
  * Bildet eine Bankverbindung ab.
@@ -149,7 +148,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 		String impl = type.getImplementor();
 		// wir ja gleich die richtige Impl liefern
 		try {
-			Class implementor = MultipleClassLoader.load(impl);
+			Class implementor = Application.getClassLoader().load(impl);
 			return (Passport) Settings.getDatabase().createObject(implementor,p.getID());
 		}
 		catch (ClassNotFoundException e)
@@ -343,6 +342,9 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.14  2004/03/19 01:44:13  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.13  2004/03/06 18:25:10  willuhn
  * @D javadoc
  * @C removed empfaenger_id from umsatz

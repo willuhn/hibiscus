@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/PassportDialog.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/03/11 08:55:42 $
+ * $Revision: 1.5 $
+ * $Date: 2004/03/19 01:44:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.parts.AbstractInput;
@@ -34,7 +35,6 @@ import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Passport;
 import de.willuhn.jameica.hbci.rmi.PassportType;
 import de.willuhn.util.I18N;
-import de.willuhn.util.MultipleClassLoader;
 
 /**
  * Dialog für die Auswahl des Passports.
@@ -68,7 +68,7 @@ public class PassportDialog extends AbstractDialog {
     // TODO: Schoener machen (ueber Factory).
     PassportType pt = choosen.getPassportType();
 		String clazz = pt.getImplementor();
-		return (Passport) Settings.getDatabase().createObject(MultipleClassLoader.load(clazz),choosen.getID());
+		return (Passport) Settings.getDatabase().createObject(Application.getClassLoader().load(clazz),choosen.getID());
   }
 
   /**
@@ -143,6 +143,9 @@ public class PassportDialog extends AbstractDialog {
 
 /**********************************************************************
  * $Log: PassportDialog.java,v $
+ * Revision 1.5  2004/03/19 01:44:13  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2004/03/11 08:55:42  willuhn
  * @N UmsatzDetails
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/03/17 00:06:28 $
+ * $Revision: 1.10 $
+ * $Date: 2004/03/19 01:44:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,7 +15,6 @@ package de.willuhn.jameica.hbci;
 
 import java.io.File;
 import java.io.IOException;
-import java.rmi.RemoteException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -144,6 +143,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.10  2004/03/19 01:44:13  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.9  2004/03/17 00:06:28  willuhn
  * *** empty log message ***
  *

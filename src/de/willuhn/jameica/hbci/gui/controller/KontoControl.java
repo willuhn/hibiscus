@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.16 $
- * $Date: 2004/03/11 08:55:42 $
+ * $Revision: 1.17 $
+ * $Date: 2004/03/19 01:44:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -41,7 +41,6 @@ import de.willuhn.jameica.hbci.rmi.Passport;
 import de.willuhn.jameica.hbci.rmi.PassportType;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
-import de.willuhn.util.MultipleClassLoader;
 
 /**
  * Controller der fuer den Dialog "Bankverbindungen" zustaendig ist.
@@ -109,7 +108,7 @@ public class KontoControl extends AbstractControl {
 		PassportType pt = tmp.getPassportType();
 		String clazz = pt.getImplementor();
 		try {
-		  passport = (Passport) Settings.getDatabase().createObject(MultipleClassLoader.load(clazz),tmp.getID());
+		  passport = (Passport) Settings.getDatabase().createObject(Application.getClassLoader().load(clazz),tmp.getID());
 		  return passport;
 		}
 		catch (ClassNotFoundException e)
@@ -503,6 +502,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.17  2004/03/19 01:44:13  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.16  2004/03/11 08:55:42  willuhn
  * @N UmsatzDetails
  *
