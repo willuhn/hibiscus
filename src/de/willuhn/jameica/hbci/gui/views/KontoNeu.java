@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/KontoNeu.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/02/11 15:40:42 $
+ * $Revision: 1.3 $
+ * $Date: 2004/02/12 23:46:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -51,12 +51,14 @@ public class KontoNeu extends AbstractView {
 		LabelGroup group = new LabelGroup(getParent(),I18N.tr("Eigenschaften"));
 
 		try {
-			group.addLabelPair(I18N.tr("Kontonummer"),			    control.getKontonummer());
-			group.addLabelPair(I18N.tr("Bankleitzahl"),			    control.getBlz());
-			group.addLabelPair(I18N.tr("Kontoinhaber"),			    control.getName());
-      group.addLabelPair(I18N.tr("Währungsbezeichnung"),  control.getWaehrung());
-			group.addLabelPair(I18N.tr("Sicherheitsmedium"),    control.getPassport());
+			group.addLabelPair(I18N.tr("Kontonummer"),			    		control.getKontonummer());
+			group.addLabelPair(I18N.tr("Bankleitzahl"),			    		control.getBlz());
+			group.addLabelPair(I18N.tr("Kontoinhaber"),			    		control.getName());
+			group.addLabelPair(I18N.tr("Kundennummer"),							control.getKundennummer());
+      group.addLabelPair(I18N.tr("Währungsbezeichnung"),  		control.getWaehrung());
+			group.addLabelPair(I18N.tr("Sicherheitsmedium"),    		control.getPassport());
 
+			control.init();
 		}
 		catch (RemoteException e)
 		{
@@ -89,6 +91,9 @@ public class KontoNeu extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoNeu.java,v $
+ * Revision 1.3  2004/02/12 23:46:46  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2004/02/11 15:40:42  willuhn
  * *** empty log message ***
  *

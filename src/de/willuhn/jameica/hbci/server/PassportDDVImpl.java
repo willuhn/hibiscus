@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/PassportDDVImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/02/12 00:38:41 $
+ * $Revision: 1.2 $
+ * $Date: 2004/02/12 23:46:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,8 +19,11 @@ import org.kapott.hbci.manager.HBCIUtils;
 import org.kapott.hbci.passport.AbstractHBCIPassport;
 import org.kapott.hbci.passport.HBCIPassport;
 
+import de.willuhn.jameica.Application;
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.PassportDDV;
+import de.willuhn.util.I18N;
 
 /**
  * Implementierung des Passports vom Typ "Chipkarte" (DDV).
@@ -30,6 +33,7 @@ public class PassportDDVImpl
   implements PassportDDV {
 
 	private HBCIPassport hbciPassport = null;
+	private boolean opened = false;
 
   /**
    * @throws RemoteException
@@ -130,73 +134,97 @@ public class PassportDDVImpl
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Passport#test()
+   * @see de.willuhn.jameica.hbci.rmi.Passport#open()
    */
   public void open() throws RemoteException {
-
-		try {
-			String path = Settings.getPath();
-			File f = new File(path);
-			String absolutePath = f.getAbsolutePath();
-
-			HBCIUtils.setParam("client.passport.default","DDV");
-			HBCIUtils.setParam("client.passport.DDV.path",absolutePath + File.separator + "passports");
-
-
-			String os = System.getProperty("os.name");
-
-			if ("win32".equals(os))
-			{
-				HBCIUtils.setParam("client.passport.DDV.libname.ddv",
-					absolutePath + File.separator +
-					"lib" + File.separator +
-					"libhbci4java-card-win32.dll");
-				HBCIUtils.setParam("client.passport.DDV.libname.ctapi",
-					absolutePath + File.separator +
-					"lib" + File.separator +
-					"libtowitoko-2.0.7.dll");
-			}
-			else
-			{
-				HBCIUtils.setParam("client.passport.DDV.libname.ddv",
-					absolutePath + File.separator +
-					"lib" + File.separator +
-					"libhbci4java-card-linux.so");
-				HBCIUtils.setParam("client.passport.DDV.libname.ctapi",
-					absolutePath + File.separator +
-					"lib" + File.separator +
-					"libtowitoko-2.0.7.so");
-			}
-			HBCIUtils.setParam("client.passport.DDV.port",		""+getPort());
-			HBCIUtils.setParam("client.passport.DDV.ctnumber",""+getCTNumber());
-			HBCIUtils.setParam("client.passport.DDV.usebio",	useBIO() ? "1" : "0");
-			HBCIUtils.setParam("client.passport.DDV.softpin",	useSoftPin() ? "1" : "0");
-			HBCIUtils.setParam("client.passport.DDV.entryidx",""+getEntryIndex());
-
-			hbciPassport = AbstractHBCIPassport.getInstance();
-			close();
-//		HBCIHandler handler=new HBCIHandler("210",passport);
-		}
-		catch (Exception e)
-		{
-			throw new RemoteException("error while open chipcard reader",e);
-		}
+		new Opener().start();
   }
+
+	/**
+	 * @see de.willuhn.jameica.hbci.rmi.Passport#isOpen()
+	 */
+	public boolean isOpen() throws RemoteException {
+		return opened;
+	}
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Passport#close()
    */
   public void close() throws RemoteException {
-		if (hbciPassport == null)
+		if (hbciPassport == null || !opened)
 			return;
 		hbciPassport.close();
+		Application.getLog().info("passport successfully closed");
   }
+
+	private class Opener extends Thread
+	{
+	    /**
+     * @see java.lang.Runnable#run()
+     */
+    public void run() {
+			try {
+				String path = Settings.getPath();
+				File f = new File(path);
+				String absolutePath = f.getAbsolutePath();
+
+				HBCIUtils.setParam("client.passport.default","DDV");
+				HBCIUtils.setParam("client.passport.DDV.path",absolutePath + File.separator + "passports");
+
+
+				String os = System.getProperty("os.name");
+
+				if ("win32".equals(os))
+				{
+					HBCIUtils.setParam("client.passport.DDV.libname.ddv",
+						absolutePath + File.separator +
+						"lib" + File.separator +
+						"libhbci4java-card-win32.dll");
+					HBCIUtils.setParam("client.passport.DDV.libname.ctapi",
+						absolutePath + File.separator +
+						"lib" + File.separator +
+						"libtowitoko-2.0.7.dll");
+				}
+				else
+				{
+					HBCIUtils.setParam("client.passport.DDV.libname.ddv",
+						absolutePath + File.separator +
+						"lib" + File.separator +
+						"libhbci4java-card-linux.so");
+					HBCIUtils.setParam("client.passport.DDV.libname.ctapi",
+						absolutePath + File.separator +
+						"lib" + File.separator +
+						"libtowitoko-2.0.7.so");
+				}
+				HBCIUtils.setParam("client.passport.DDV.port",		""+getPort());
+				HBCIUtils.setParam("client.passport.DDV.ctnumber",""+getCTNumber());
+				HBCIUtils.setParam("client.passport.DDV.usebio",	useBIO() ? "1" : "0");
+				HBCIUtils.setParam("client.passport.DDV.softpin",	useSoftPin() ? "1" : "0");
+				HBCIUtils.setParam("client.passport.DDV.entryidx",""+getEntryIndex());
+
+				hbciPassport = AbstractHBCIPassport.getInstance();
+				opened = true;					
+				GUI.setActionText(I18N.tr("Chipkarte erfolgreich gelesen."));
+				Application.getLog().info("passport successfully opened");
+//			HBCIHandler handler=new HBCIHandler("210",passport);
+	    }
+      catch (Exception e)
+      {
+      	opened = false;
+      	Application.getLog().error("error while opening chipcard",e);
+				GUI.setActionText(I18N.tr("Fehler beim Lesen der Chipkarte."));
+      }
+    }
+	}
 
 }
 
 
 /**********************************************************************
  * $Log: PassportDDVImpl.java,v $
+ * Revision 1.2  2004/02/12 23:46:46  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/02/12 00:38:41  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Attic/Passport.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/02/12 00:38:40 $
+ * $Revision: 1.3 $
+ * $Date: 2004/02/12 23:46:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -59,11 +59,22 @@ public interface Passport extends DBObject {
    * @throws RemoteException
    */
   public void close() throws RemoteException;
+  
+  /**
+   * Prueft, ob der Passport offen ist.
+   * @return true, wenn er offen ist.
+   * @throws RemoteException
+   */
+  public boolean isOpen() throws RemoteException;
+  
 }
 
 
 /**********************************************************************
  * $Log: Passport.java,v $
+ * Revision 1.3  2004/02/12 23:46:46  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2004/02/12 00:38:40  willuhn
  * *** empty log message ***
  *

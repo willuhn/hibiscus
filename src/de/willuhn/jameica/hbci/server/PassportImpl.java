@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/PassportImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/02/12 00:38:41 $
+ * $Revision: 1.3 $
+ * $Date: 2004/02/12 23:46:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -219,11 +219,21 @@ public class PassportImpl extends AbstractDBObject implements Passport {
   public void close() throws RemoteException {
   }
 
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Passport#isOpen()
+   */
+  public boolean isOpen() throws RemoteException {
+    return false;
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: PassportImpl.java,v $
+ * Revision 1.3  2004/02/12 23:46:46  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2004/02/12 00:38:41  willuhn
  * *** empty log message ***
  *

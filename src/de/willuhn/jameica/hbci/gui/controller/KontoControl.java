@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/02/11 15:40:42 $
+ * $Revision: 1.3 $
+ * $Date: 2004/02/12 23:46:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,9 +30,9 @@ import de.willuhn.jameica.gui.parts.Table;
 import de.willuhn.jameica.gui.parts.TextInput;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.views.KontoListe;
 import de.willuhn.jameica.hbci.gui.views.KontoNeu;
 import de.willuhn.jameica.hbci.gui.views.PassportDetails;
-import de.willuhn.jameica.hbci.gui.views.Welcome;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Passport;
 import de.willuhn.util.ApplicationException;
@@ -47,11 +47,12 @@ public class KontoControl extends AbstractControl {
 	private Konto konto = null;
 	
 	// Eingabe-Felder
-	private Input kontonummer = null;
-	private Input blz         = null;
-	private Input name				= null;
-	private Input passport    = null;
-  private Input waehrung    = null;
+	private Input kontonummer  = null;
+	private Input blz          = null;
+	private Input name				 = null;
+	private Input passport     = null;
+  private Input waehrung     = null;
+  private Input kundennummer = null;
 
 	private boolean stored = false;
 
@@ -121,6 +122,19 @@ public class KontoControl extends AbstractControl {
 		return name;
 	}
 
+	/**
+	 * Liefert das Eingabefeld fuer die Kundennummer.
+	 * @return Eingabe-Feld.
+	 * @throws RemoteException
+	 */
+	public Input getKundennummer() throws RemoteException
+	{
+		if (kundennummer != null)
+			return kundennummer;
+		kundennummer = new TextInput(getKonto().getKundennummer());
+		return kundennummer;
+	}
+
   /**
    * Liefert die Waehrungsbezeichnung.
    * @return Waehrungsbezeichnung.
@@ -164,8 +178,17 @@ public class KontoControl extends AbstractControl {
 		table.addColumn(I18N.tr("Kontonummer"),"kontonummer");
 		table.addColumn(I18N.tr("Bankleitzahl"),"blz");
 		table.addColumn(I18N.tr("Kontoinhaber"),"name");
+		table.addColumn(I18N.tr("Kundennummer"),"kundennummer");
 		table.addColumn(I18N.tr("Sicherheitsmedium"),"passport_id");
 		return table;
+	}
+
+	/**
+   * Initialisiert den Dialog und loest die EventHandler aus.
+   */
+  public void init()
+	{
+		new BLZListener().handleEvent(null);
 	}
 
   /**
@@ -199,7 +222,7 @@ public class KontoControl extends AbstractControl {
    * @see de.willuhn.jameica.gui.controller.AbstractControl#handleCancel()
    */
   public void handleCancel() {
-		GUI.startView(Welcome.class.getName(),null);
+		GUI.startView(KontoListe.class.getName(),null);
   }
 
   /**
@@ -226,6 +249,7 @@ public class KontoControl extends AbstractControl {
 			getKonto().setBLZ(getBlz().getValue());
 			getKonto().setName(getName().getValue());
       getKonto().setWaehrung(getWaehrung().getValue());
+      getKonto().setKundennummer(getKundennummer().getValue());
       
 			// und jetzt speichern wir.
 			getKonto().store();
@@ -311,6 +335,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.3  2004/02/12 23:46:46  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2004/02/11 15:40:42  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/PassportControlDDV.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/02/12 00:38:40 $
+ * $Revision: 1.2 $
+ * $Date: 2004/02/12 23:46:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -258,13 +258,15 @@ public class PassportControlDDV extends AbstractControl {
 			return;
 
 		try {
+			GUI.setActionText(I18N.tr("Teste Chipkartenleser..."));
+			getPassport().close();
 			getPassport().open();
-			GUI.setActionText(I18N.tr("Test des Chipkarten-Lesers erfolgreich."));
+			// TODO: Passport threadsicher wieder schliessen
 		}
 		catch (RemoteException e)
 		{
+			GUI.setActionText(I18N.tr("Fehler beim Lesen der Chipkarte."));
 			Application.getLog().debug("error while testing chipcard reader: " + e.getLocalizedMessage());
-			GUI.setActionText(I18N.tr("Test des Chipkarten-Lesers fehlgeschlagen."));
 		}
 	}
 }
@@ -272,6 +274,9 @@ public class PassportControlDDV extends AbstractControl {
 
 /**********************************************************************
  * $Log: PassportControlDDV.java,v $
+ * Revision 1.2  2004/02/12 23:46:46  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/02/12 00:38:40  willuhn
  * *** empty log message ***
  *

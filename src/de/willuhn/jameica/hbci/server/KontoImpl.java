@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/02/12 00:38:41 $
+ * $Revision: 1.5 $
+ * $Date: 2004/02/12 23:46:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -199,11 +199,28 @@ public class KontoImpl extends AbstractDBObject implements Konto {
     super.store();
   }
 
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Konto#getKundennummer()
+   */
+  public String getKundennummer() throws RemoteException {
+    return (String) getField("kundennummer");
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Konto#setKundennummer(java.lang.String)
+   */
+  public void setKundennummer(String kundennummer) throws RemoteException {
+		setField("kundennummer",kundennummer);
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.5  2004/02/12 23:46:46  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2004/02/12 00:38:41  willuhn
  * *** empty log message ***
  *
