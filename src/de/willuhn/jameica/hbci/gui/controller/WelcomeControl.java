@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/WelcomeControl.java,v $
- * $Revision: 1.14 $
- * $Date: 2004/11/13 17:02:04 $
+ * $Revision: 1.15 $
+ * $Date: 2004/11/13 17:12:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -33,9 +33,9 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.menus.KontoList;
 import de.willuhn.jameica.hbci.gui.menus.UeberweisungList;
-import de.willuhn.jameica.hbci.gui.views.EmpfaengerNeu;
-import de.willuhn.jameica.hbci.gui.views.KontoNeu;
-import de.willuhn.jameica.hbci.gui.views.UeberweisungNeu;
+import de.willuhn.jameica.hbci.gui.views.EmpfaengerNew;
+import de.willuhn.jameica.hbci.gui.views.KontoNew;
+import de.willuhn.jameica.hbci.gui.views.UeberweisungNew;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.system.Application;
@@ -110,9 +110,9 @@ public class WelcomeControl extends AbstractControl {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("<form><p/>");
 		buffer.append("<p><span color=\"header\" font=\"header\">" + i18n.tr("Quicklinks") + "</span></p>");
-		buffer.append("<li><a href=\"" + UeberweisungNeu.class.getName() + "\">" + i18n.tr("Neue Überweisung") + "</a></li>");
-		buffer.append("<li><a href=\"" + EmpfaengerNeu.class.getName() + "\">" + i18n.tr("Neue Adresse") + "</a></li>");
-		buffer.append("<li><a href=\"" + KontoNeu.class.getName() + "\">" + i18n.tr("Neues Konto") + "</a></li>");
+		buffer.append("<li><a href=\"" + UeberweisungNew.class.getName() + "\">" + i18n.tr("Neue Überweisung") + "</a></li>");
+		buffer.append("<li><a href=\"" + EmpfaengerNew.class.getName() + "\">" + i18n.tr("Neue Adresse") + "</a></li>");
+		buffer.append("<li><a href=\"" + KontoNew.class.getName() + "\">" + i18n.tr("Neues Konto") + "</a></li>");
 		buffer.append("</form>");
 
 		quickLinks= new FormTextPart(buffer.toString());
@@ -163,6 +163,9 @@ public class WelcomeControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: WelcomeControl.java,v $
+ * Revision 1.15  2004/11/13 17:12:15  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.14  2004/11/13 17:02:04  willuhn
  * @N Bearbeiten des Zahlungsturnus
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/DauerauftragNew.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/11/13 17:02:03 $
+ * $Revision: 1.2 $
+ * $Date: 2004/11/13 17:12:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -73,7 +73,7 @@ public class DauerauftragNew implements Action
 			}
 		}
 
-  	GUI.startView(de.willuhn.jameica.hbci.gui.views.DauerauftragNeu.class.getName(),d);
+  	GUI.startView(de.willuhn.jameica.hbci.gui.views.DauerauftragNew.class.getName(),d);
   }
 
 }
@@ -81,6 +81,9 @@ public class DauerauftragNew implements Action
 
 /**********************************************************************
  * $Log: DauerauftragNew.java,v $
+ * Revision 1.2  2004/11/13 17:12:14  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/11/13 17:02:03  willuhn
  * @N Bearbeiten des Zahlungsturnus
  *

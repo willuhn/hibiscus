@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/DauerauftragList.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/11/13 17:02:03 $
+ * $Revision: 1.2 $
+ * $Date: 2004/11/13 17:12:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,7 +27,7 @@ public class DauerauftragList implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
-		GUI.startView(de.willuhn.jameica.hbci.gui.views.DauerauftragListe.class.getName(),null);
+		GUI.startView(de.willuhn.jameica.hbci.gui.views.DauerauftragList.class.getName(),null);
   }
 
 }
@@ -35,6 +35,9 @@ public class DauerauftragList implements Action
 
 /**********************************************************************
  * $Log: DauerauftragList.java,v $
+ * Revision 1.2  2004/11/13 17:12:14  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/11/13 17:02:03  willuhn
  * @N Bearbeiten des Zahlungsturnus
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/Attic/TurnusList.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/11/13 17:02:04 $
+ * $Revision: 1.4 $
+ * $Date: 2004/11/13 17:12:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -38,6 +38,9 @@ public class TurnusList extends ContextMenu
 
 		addItem(new CheckedContextMenuItem(i18n.tr("Bearbeiten..."),new TurnusNew()));
 		addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."),new TurnusDelete()));
+
+		// TODO: TurnusNew
+		//addItem(new CheckedContextMenuItem(i18n.tr("Neu..."),new TurnusDelete()));
   }
 
 }
@@ -45,6 +48,9 @@ public class TurnusList extends ContextMenu
 
 /**********************************************************************
  * $Log: TurnusList.java,v $
+ * Revision 1.4  2004/11/13 17:12:15  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2004/11/13 17:02:04  willuhn
  * @N Bearbeiten des Zahlungsturnus
  *

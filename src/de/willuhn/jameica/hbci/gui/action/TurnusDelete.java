@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/Attic/TurnusDelete.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/11/13 17:02:04 $
+ * $Revision: 1.2 $
+ * $Date: 2004/11/13 17:12:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -48,7 +48,10 @@ public class TurnusDelete implements Action
 				return;
 
 			if (t.isInitial())
-				throw new ApplicationException(i18n.tr("Turnus kann nicht gelöscht werden, da er Bestandteil der Initialdaten ist"));
+			{
+				GUI.getStatusBar().setErrorText(i18n.tr("Turnus kann nicht gelöscht werden, da er Bestandteil der Initialdaten ist"));
+				return;
+			}
 
 			YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
 			d.setTitle(i18n.tr("Turnus löschen"));
@@ -81,6 +84,9 @@ public class TurnusDelete implements Action
 
 /**********************************************************************
  * $Log: TurnusDelete.java,v $
+ * Revision 1.2  2004/11/13 17:12:15  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/11/13 17:02:04  willuhn
  * @N Bearbeiten des Zahlungsturnus
  *

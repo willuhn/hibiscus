@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/UeberweisungDuplicate.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/11/12 18:25:07 $
+ * $Revision: 1.3 $
+ * $Date: 2004/11/13 17:12:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,7 @@ import java.rmi.RemoteException;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.views.UeberweisungNeu;
+import de.willuhn.jameica.hbci.gui.views.UeberweisungNew;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -54,7 +54,7 @@ public class UeberweisungDuplicate implements Action
 
 		try {
 			Ueberweisung u = (Ueberweisung) context;
-			GUI.startView(UeberweisungNeu.class.getName(),u.duplicate());
+			GUI.startView(UeberweisungNew.class.getName(),u.duplicate());
 		}
 		catch (RemoteException e)
 		{
@@ -68,6 +68,9 @@ public class UeberweisungDuplicate implements Action
 
 /**********************************************************************
  * $Log: UeberweisungDuplicate.java,v $
+ * Revision 1.3  2004/11/13 17:12:15  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2004/11/12 18:25:07  willuhn
  * *** empty log message ***
  *

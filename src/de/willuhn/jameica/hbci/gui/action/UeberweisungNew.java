@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/UeberweisungNew.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/11/13 17:02:03 $
+ * $Revision: 1.2 $
+ * $Date: 2004/11/13 17:12:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -68,7 +68,7 @@ public class UeberweisungNew implements Action
 			}
 		}
 
-  	GUI.startView(de.willuhn.jameica.hbci.gui.views.UeberweisungNeu.class.getName(),u);
+  	GUI.startView(de.willuhn.jameica.hbci.gui.views.UeberweisungNew.class.getName(),u);
   }
 
 }
@@ -76,6 +76,9 @@ public class UeberweisungNew implements Action
 
 /**********************************************************************
  * $Log: UeberweisungNew.java,v $
+ * Revision 1.2  2004/11/13 17:12:14  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/11/13 17:02:03  willuhn
  * @N Bearbeiten des Zahlungsturnus
  *

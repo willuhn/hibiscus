@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/EmpfaengerNew.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/11/13 17:02:04 $
+ * $Revision: 1.2 $
+ * $Date: 2004/11/13 17:12:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,7 +28,7 @@ public class EmpfaengerNew implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
-		GUI.startView(de.willuhn.jameica.hbci.gui.views.EmpfaengerNeu.class.getName(),context);
+		GUI.startView(de.willuhn.jameica.hbci.gui.views.EmpfaengerNew.class.getName(),context);
   }
 
 }
@@ -36,6 +36,9 @@ public class EmpfaengerNew implements Action
 
 /**********************************************************************
  * $Log: EmpfaengerNew.java,v $
+ * Revision 1.2  2004/11/13 17:12:15  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/11/13 17:02:04  willuhn
  * @N Bearbeiten des Zahlungsturnus
  *

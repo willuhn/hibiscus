@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/Attic/TurnusNew.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/11/13 17:02:03 $
+ * $Revision: 1.2 $
+ * $Date: 2004/11/13 17:12:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,11 +15,12 @@ package de.willuhn.jameica.hbci.gui.action;
 import java.rmi.RemoteException;
 
 import de.willuhn.jameica.gui.Action;
-import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.dialogs.ViewDialog;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Turnus;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -54,7 +55,20 @@ public class TurnusNew implements Action
 				throw new ApplicationException(i18n.tr("Fehler beim Anlegen des Zahlungsturnus"));
 			}
 		}
-  	GUI.startView(de.willuhn.jameica.hbci.gui.views.TurnusNeu.class.getName(),t);
+		// Wir starten das Bearbeiten in einem extra Fenster
+		de.willuhn.jameica.hbci.gui.views.TurnusNew tn = new de.willuhn.jameica.hbci.gui.views.TurnusNew();
+		tn.setCurrentObject(t);
+		ViewDialog d = new ViewDialog(tn,ViewDialog.POSITION_MOUSE);
+		d.setTitle(i18n.tr("Zahlungsturnus bearbeiten"));
+		try
+		{
+			d.open();
+		}
+		catch (Throwable t2)
+		{
+			Logger.error("error while opening turnus dialog",t2);
+			throw new ApplicationException(i18n.tr("Fehler beim Öffnen des Zahlungsturnus"),t2);
+		}
   }
 
 }
@@ -62,6 +76,9 @@ public class TurnusNew implements Action
 
 /**********************************************************************
  * $Log: TurnusNew.java,v $
+ * Revision 1.2  2004/11/13 17:12:14  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/11/13 17:02:03  willuhn
  * @N Bearbeiten des Zahlungsturnus
  *
