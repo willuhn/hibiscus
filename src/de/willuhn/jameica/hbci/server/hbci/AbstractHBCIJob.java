@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCIJob.java,v $
- * $Revision: 1.13 $
- * $Date: 2004/11/13 17:02:04 $
+ * $Revision: 1.14 $
+ * $Date: 2004/11/14 19:21:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,7 +43,6 @@ public abstract class AbstractHBCIJob
 	private Hashtable params 			= new Hashtable(); 
 
 	private I18N i18n             = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
 
 	/**
 	 * HBCI4Java verwendet intern eindeutige Job-Namen.
@@ -214,6 +213,9 @@ public abstract class AbstractHBCIJob
 
 /**********************************************************************
  * $Log: AbstractHBCIJob.java,v $
+ * Revision 1.14  2004/11/14 19:21:37  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.13  2004/11/13 17:02:04  willuhn
  * @N Bearbeiten des Zahlungsturnus
  *

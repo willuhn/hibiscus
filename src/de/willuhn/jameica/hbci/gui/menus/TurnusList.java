@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/Attic/TurnusList.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/11/13 17:12:15 $
+ * $Revision: 1.5 $
+ * $Date: 2004/11/14 19:21:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,12 +12,15 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.menus;
 
+import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
+import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.TurnusDelete;
 import de.willuhn.jameica.hbci.gui.action.TurnusNew;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -39,8 +42,15 @@ public class TurnusList extends ContextMenu
 		addItem(new CheckedContextMenuItem(i18n.tr("Bearbeiten..."),new TurnusNew()));
 		addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."),new TurnusDelete()));
 
-		// TODO: TurnusNew
-		//addItem(new CheckedContextMenuItem(i18n.tr("Neu..."),new TurnusDelete()));
+		addItem(ContextMenuItem.SEPARATOR);
+		addItem(new CheckedContextMenuItem(i18n.tr("Neuer Zahlungsturnus..."),new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+      	// Das machen wir, um sicherzustellen, dass TurnusNew immer <null> erhaelt.
+				new TurnusNew().handleAction(null);
+      }
+    }));
   }
 
 }
@@ -48,6 +58,9 @@ public class TurnusList extends ContextMenu
 
 /**********************************************************************
  * $Log: TurnusList.java,v $
+ * Revision 1.5  2004/11/14 19:21:37  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2004/11/13 17:12:15  willuhn
  * *** empty log message ***
  *

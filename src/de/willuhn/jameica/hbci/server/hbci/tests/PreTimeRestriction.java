@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/tests/PreTimeRestriction.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/11/12 18:25:07 $
+ * $Revision: 1.3 $
+ * $Date: 2004/11/14 19:21:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -50,8 +50,6 @@ public class PreTimeRestriction implements Restriction
    */
   public void test() throws ApplicationException
   {
-		String max = p.getProperty("maxpretime");
-
 		testMin();
 		testMax();
   }
@@ -122,6 +120,9 @@ public class PreTimeRestriction implements Restriction
 
 /**********************************************************************
  * $Log: PreTimeRestriction.java,v $
+ * Revision 1.3  2004/11/14 19:21:37  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2004/11/12 18:25:07  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/DauerauftragDelete.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/11/13 17:02:04 $
+ * $Revision: 1.7 $
+ * $Date: 2004/11/14 19:21:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,9 +13,11 @@
 package de.willuhn.jameica.hbci.gui.action;
 
 import java.rmi.RemoteException;
+import java.util.Date;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.dialogs.CalendarDialog;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
@@ -70,6 +72,21 @@ public class DauerauftragDelete implements Action
 			if (da.isActive())
 			{
 
+				CalendarDialog d2 = new CalendarDialog(CalendarDialog.POSITION_MOUSE);
+				d2.setTitle(i18n.tr("Zieldatum"));
+				d2.setText(i18n.tr("Bitte wählen Sie das Datum aus, zu dem der Dauerauftrag gelöscht werden soll."));
+				Date fd = null;
+				try
+				{
+					fd = (Date) d2.open();
+				}
+				catch (Exception e)
+				{
+					// OK, dann halt ohne Datum
+					fd = null;
+				}
+				final Date date = fd;
+
 				// Uh, der wird auch online geloescht
 				GUI.startSync(new Runnable()
 				{
@@ -80,7 +97,7 @@ public class DauerauftragDelete implements Action
 							GUI.getStatusBar().startProgress();
 							GUI.getStatusBar().setStatusText(i18n.tr("Lösche Dauerauftrag bei Bank..."));
 							HBCIFactory factory = HBCIFactory.getInstance();
-							factory.addJob(new HBCIDauerauftragDeleteJob(da));
+							factory.addJob(new HBCIDauerauftragDeleteJob(da,date));
 							factory.executeJobs(da.getKonto().getPassport().getHandle()); 
 							da.delete();
 							GUI.getStatusBar().setSuccessText(i18n.tr("...Dauerauftrag erfolgreich gelöscht"));
@@ -125,6 +142,9 @@ public class DauerauftragDelete implements Action
 
 /**********************************************************************
  * $Log: DauerauftragDelete.java,v $
+ * Revision 1.7  2004/11/14 19:21:37  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.6  2004/11/13 17:02:04  willuhn
  * @N Bearbeiten des Zahlungsturnus
  *
