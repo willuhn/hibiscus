@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCIJob.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/10/25 22:39:14 $
+ * $Revision: 1.11 $
+ * $Date: 2004/10/26 23:47:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,7 +21,10 @@ import org.kapott.hbci.GV_Result.HBCIJobResult;
 import org.kapott.hbci.structures.Konto;
 import org.kapott.hbci.structures.Value;
 
+import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
+import de.willuhn.util.I18N;
 import de.willuhn.util.Logger;
 
 /**
@@ -38,6 +41,9 @@ public abstract class AbstractHBCIJob
 	private org.kapott.hbci.GV.HBCIJob job = null;
 
 	private Hashtable params 			= new Hashtable(); 
+
+	private I18N i18n             = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+
 
 	/**
 	 * HBCI4Java verwendet intern eindeutige Job-Namen.
@@ -72,17 +78,18 @@ public abstract class AbstractHBCIJob
   	{
   		String name = (String) e.nextElement();
   		Object value = params.get(name);
+
   		if (value instanceof Konto)
 	  		job.setParam(name,(Konto)value);
-			else if (value instanceof Double)
-			{
-				double d = ((Double) value).doubleValue();
-				job.setParam(name,new Value(d));
-			}
+
 			else if (value instanceof Date)
 				job.setParam(name,(Date)value);
+
+			else if (value instanceof Value)
+				job.setParam(name,(Value)value);
+
 	  	else
-				job.setParam(name,(String)value);
+				job.setParam(name,value.toString());
   	}
   }
 
@@ -97,19 +104,24 @@ public abstract class AbstractHBCIJob
 	
 	/**
 	 * Liefert den Status-Text, der vom HBCI-Kernel nach Ausfuehrung des Jobs zurueckgeliefert wurde.
-   * @return
+   * @return Status-Text oder <code>null</code> wenn dieser nicht ermittelbar ist.
    */
   final String getStatusText()
 	{
 		try
 		{
+			// TODO: Das ist sicher nicht alles, was wir von der Bank erfahren. Was waehre besser?
 			return getJobResult().getJobStatus().getRetVals()[0].text;
+		}
+		catch (ArrayIndexOutOfBoundsException aio)
+		{
+			// skip
 		}
 		catch (Exception e2)
 		{
 			Logger.error("error while reading status text",e2);
-			return null;
 		}
+		return null;
 	}
 
 	/**
@@ -143,22 +155,41 @@ public abstract class AbstractHBCIJob
 		params.put(name,konto);
 	}
 
-	/**
-	 * Speichern eines Dezimal-Wertes.
+  /**
+	 * Speichern eines Int-Wertes.
 	 * Bitte diese Funktion verwenden, damit sichergestellt ist, dass
 	 * der Kernel die Werte typsicher erhaelt und Formatierungsfehler
 	 * aufgrund verschiedener Locales fehlschlagen.
    * @param name Name des Parameters.
-   * @param d Wert.
+   * @param i Wert.
    */
-  final void setJobParam(String name, double d)
+  final void setJobParam(String name, int i)
 	{
 		if (name == null)
 		{
 			Logger.warn("[job parameter] no name given");
 			return;
 		}
-		params.put(name,new Double(d));
+		params.put(name,new Integer(i));
+	}
+
+  /**
+	 * Speichern eines Geld-Betrages
+	 * Bitte diese Funktion fuer Betraege verwenden, damit sichergestellt ist,
+	 * dass der Kernel die Werte typsicher erhaelt und Formatierungsfehler
+	 * aufgrund verschiedener Locales fehlschlagen.
+	 * @param name Name des Parameters.
+   * @param value Geldbetrag.
+   * @param currency Waehrung.
+	 */
+	final void setJobParam(String name, double value, String currency)
+	{
+		if (name == null)
+		{
+			Logger.warn("[job parameter] no name given");
+			return;
+		}
+		params.put(name,new Value(value,currency));
 	}
 
 	/**
@@ -183,6 +214,9 @@ public abstract class AbstractHBCIJob
 
 /**********************************************************************
  * $Log: AbstractHBCIJob.java,v $
+ * Revision 1.11  2004/10/26 23:47:08  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.10  2004/10/25 22:39:14  willuhn
  * *** empty log message ***
  *

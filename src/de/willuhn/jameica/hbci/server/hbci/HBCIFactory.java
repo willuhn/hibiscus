@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.15 $
- * $Date: 2004/10/25 22:39:14 $
+ * $Revision: 1.16 $
+ * $Date: 2004/10/26 23:47:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -161,6 +161,44 @@ public class HBCIFactory {
 
 		}
 	}
+	
+	/**
+	 * Liefert die Job-Restriktionen fuer den angegebenen Job.
+	 * Sie werden intern weiterverarbeitet, um zum Beispiel die Auswahlmoeglichkeiten
+	 * in der Benutzeroberflaeche auf die tatsaechlichen Moeglichkeiten der Bank zu beschraenken.
+   * @param job zu testender Job.
+   * @param handle Passport, ueber den geprueft werden soll.
+   * @return Liste der Restriktionen.
+   * @throws ApplicationException
+   * @throws RemoteException
+   */
+  public synchronized JobRestrictions getJobRestrictions(AbstractHBCIJob job, PassportHandle handle)
+		throws ApplicationException, RemoteException
+	{
+		if (job == null)
+			throw new ApplicationException(i18n.tr("Kein Job ausgewählt"));
+
+		if (handle == null)
+			throw new ApplicationException(i18n.tr("Kein HBCI-Medium ausgewählt"));
+
+		start();
+
+		try {
+
+			HBCIHandler handler = handle.open();
+			HBCIJob j = handler.newJob(job.getIdentifier());
+
+			return new JobRestrictions(job,j.getJobRestrictions());
+		}
+		finally
+		{
+			stop();
+			try {
+				handle.close();
+			}
+			catch (Throwable t) {/* useless*/}
+		}
+	}
 
 	/**
 	 * Schliesst den aktuellen Job.
@@ -209,6 +247,9 @@ public class HBCIFactory {
 
 /**********************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.16  2004/10/26 23:47:08  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.15  2004/10/25 22:39:14  willuhn
  * *** empty log message ***
  *

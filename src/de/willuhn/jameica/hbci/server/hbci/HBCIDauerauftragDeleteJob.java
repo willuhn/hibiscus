@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragDeleteJob.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/10/25 22:39:14 $
+ * $Revision: 1.3 $
+ * $Date: 2004/10/26 23:47:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -86,7 +86,7 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
 
 			String error = (statusText != null) ?
 										i18n.tr("Fehlermeldung der Bank") + ": " + statusText :
-										i18n.tr("Unbekannter Fehler beim Löschen des Dauerauftrags");
+										i18n.tr("Unbekannter Fehler");
 
 			konto.addToProtokoll(msg + " ("+error+")",Protokoll.TYP_ERROR);
 			throw new ApplicationException(msg + " ("+error+")");
@@ -104,6 +104,9 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIDauerauftragDeleteJob.java,v $
+ * Revision 1.3  2004/10/26 23:47:08  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2004/10/25 22:39:14  willuhn
  * *** empty log message ***
  *

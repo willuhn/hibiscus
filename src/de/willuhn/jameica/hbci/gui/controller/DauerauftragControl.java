@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/DauerauftragControl.java,v $
- * $Revision: 1.12 $
- * $Date: 2004/10/25 23:22:39 $
+ * $Revision: 1.13 $
+ * $Date: 2004/10/26 23:47:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -168,15 +168,6 @@ public class DauerauftragControl extends AbstractTransferControl {
 					return;
 				Date choosen = (Date) event.data;
 				ersteZahlung.setText(HBCI.DATEFORMAT.format(choosen));
-				try
-				{
-					((Dauerauftrag)getTransfer()).setErsteZahlung(choosen);
-				}
-				catch (RemoteException e)
-				{
-					Logger.error("error while choosing start date",e);
-					GUI.getStatusBar().setErrorText(i18n.tr("Fehler bei der Auswahl des Datums"));
-				}
 			}
 		});
 
@@ -233,8 +224,19 @@ public class DauerauftragControl extends AbstractTransferControl {
    */
   public synchronized void handleStore()
   {
+  	try
+  	{
+			Dauerauftrag d = (Dauerauftrag) getTransfer();
+			d.setErsteZahlung((Date)getErsteZahlung().getValue());
+			d.setLetzteZahlung((Date)getLetzteZahlung().getValue());
+			d.setTurnus((Turnus)getTurnus().getValue());
+  	}
+  	catch (RemoteException e)
+  	{
+  		Logger.error("error while saving dauerauftrag",e);
+  		GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern des Dauerauftrages"));
+  	}
 		super.handleStore();
-		// TODO: Turnus
   }
 
   /**
@@ -255,6 +257,9 @@ public class DauerauftragControl extends AbstractTransferControl {
 
 /**********************************************************************
  * $Log: DauerauftragControl.java,v $
+ * Revision 1.13  2004/10/26 23:47:08  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.12  2004/10/25 23:22:39  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragStoreJob.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/10/25 22:39:14 $
+ * $Revision: 1.3 $
+ * $Date: 2004/10/26 23:47:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -66,9 +66,7 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob {
 
 		setJobParam("src",Converter.HibiscusKonto2HBCIKonto(konto));
 
-		setJobParam("btg.curr",konto.getWaehrung() == null ? "EUR" : konto.getWaehrung());
-
-		setJobParam("btg.value",dauerauftrag.getBetrag());
+		setJobParam("btg",dauerauftrag.getBetrag(),konto.getWaehrung() == null ? "EUR" : konto.getWaehrung());
 
 		Empfaenger empfaenger = (Empfaenger) Settings.getDBService().createObject(Empfaenger.class,null);
 		empfaenger.setBLZ(dauerauftrag.getEmpfaengerBLZ());
@@ -128,7 +126,7 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob {
 
 			String error = (statusText != null) ?
 										i18n.tr("Fehlermeldung der Bank") + ": " + statusText :
-										i18n.tr("Unbekannter Fehler beim Ausführen des Dauerauftrags");
+										i18n.tr("Unbekannter Fehler");
 
 			konto.addToProtokoll(msg + " ("+error+")",Protokoll.TYP_ERROR);
 			throw new ApplicationException(msg + " ("+error+")");
@@ -155,6 +153,9 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIDauerauftragStoreJob.java,v $
+ * Revision 1.3  2004/10/26 23:47:08  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2004/10/25 22:39:14  willuhn
  * *** empty log message ***
  *
