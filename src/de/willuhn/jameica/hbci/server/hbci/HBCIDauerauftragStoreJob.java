@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragStoreJob.java,v $
- * $Revision: 1.8 $
- * $Date: 2005/02/27 17:11:49 $
+ * $Revision: 1.9 $
+ * $Date: 2005/02/28 23:59:57 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -112,7 +112,8 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob {
 				Logger.debug("[hbci job restriction] name: " + s + ", value: " + p.getProperty(s));
 			}
 			new TurnusRestriction(turnus,p).test();
-			new PreTimeRestriction(dauerauftrag.getErsteZahlung(),p).test();
+			if (!active) // nur pruefen bei neuen Dauerauftraegen
+				new PreTimeRestriction(dauerauftrag.getErsteZahlung(),p).test();
 		}
 		catch (RemoteException e)
 		{
@@ -192,6 +193,9 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIDauerauftragStoreJob.java,v $
+ * Revision 1.9  2005/02/28 23:59:57  web0
+ * @B http://www.willuhn.de/bugzilla/show_bug.cgi?id=15
+ *
  * Revision 1.8  2005/02/27 17:11:49  web0
  * @N first code for "Sammellastschrift"
  * @C "Empfaenger" renamed into "Adresse"

@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.22 $
- * $Date: 2005/02/01 17:15:37 $
- * $Author: willuhn $
+ * $Revision: 1.23 $
+ * $Date: 2005/02/28 23:59:57 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -40,9 +40,12 @@ public class HBCIFactory {
 	private static boolean inProgress = false;
 	private static boolean cancelled  = false;
 
+	private Object mutex = new Object();
+
 	private static I18N i18n;
 	private static HBCIFactory factory;
   	private ArrayList jobs = new ArrayList();
+		private ArrayList exclusiveJobs = new ArrayList();
 
   /**
    * ct.
@@ -75,9 +78,28 @@ public class HBCIFactory {
 		if (inProgress)
 			throw new ApplicationException(i18n.tr("Es läuft bereits eine andere HBCI-Abfrage."));
 
-		synchronized(jobs)
+		synchronized(mutex)
 		{
 			jobs.add(job);
+		}
+	}
+
+	/**
+	 * Fuegt einen weiteren Job zur Queue hinzu.
+	 * Dieser Job wird jedoch separat ausgefuehrt. Jobs, die ueber <code>addJob</code>
+	 * hinzugefuegt wurden, werden en bloc vom HBCI-System ausgefuehrt. Jobs, die
+	 * ueber diese Methode hier hinzugefuegt werden, werden alle einzeln ausgefuehrt.
+	 * @param job auszufuehrender Job.
+	 * @throws ApplicationException
+	 */
+	public synchronized void addExclusiveJob(AbstractHBCIJob job) throws ApplicationException
+	{
+		if (inProgress)
+			throw new ApplicationException(i18n.tr("Es läuft bereits eine andere HBCI-Abfrage."));
+
+		synchronized(mutex)
+		{
+			exclusiveJobs.add(job);
 		}
 	}
 
@@ -97,10 +119,10 @@ public class HBCIFactory {
 		if (handle == null)
 			throw new ApplicationException(i18n.tr("Kein HBCI-Medium ausgewählt"));
 
-		synchronized(jobs)
+		synchronized(mutex)
 		{
 
-			if (jobs.size() == 0)
+			if (jobs.size() == 0 && exclusiveJobs.size() == 0)
 			{
 				Logger.warn("no jobs defined");
 				return;
@@ -109,26 +131,40 @@ public class HBCIFactory {
 			start();
 
 			try {
+
+
 				HBCIHandler handler = handle.open();
 
-				Logger.info("creating jobs");
+				Logger.info("processing exclusive jobs");
+				for (int i=0;i<exclusiveJobs.size();++i)
+				{
+					final AbstractHBCIJob job = (AbstractHBCIJob) exclusiveJobs.get(i);
+					
+					Logger.info("executing exclusive job " + job.getIdentifier());
+					HBCIJob j = handler.newJob(job.getIdentifier());
+					dumpJob(j);
+					job.setJob(j);
+					handler.addJob(j);
+					handler.execute();
+					if (cancelled)
+					{
+						cancelled = false;
+						throw new OperationCanceledException();
+					}
+					Logger.info("executing check for job " + job.getIdentifier());
+					job.handleResult();
+				}
+
+
+				Logger.info("processing batch jobs");
 
 				for (int i=0;i<jobs.size();++i)
 				{
-					AbstractHBCIJob job = (AbstractHBCIJob) jobs.get(i);
+					final AbstractHBCIJob job = (AbstractHBCIJob) jobs.get(i);
 					
 					Logger.info("adding job " + job.getIdentifier() + " to queue");
 					HBCIJob j = handler.newJob(job.getIdentifier());
-
-					Logger.debug("Job restrictions for " + job.getIdentifier());
-					Properties p = j.getJobRestrictions();
-					Enumeration en = p.keys();
-					while (en.hasMoreElements())
-					{
-						String key = (String) en.nextElement();
-						Logger.debug("  " + key + ": " + p.getProperty(key));
-					}
-
+					dumpJob(j);
 					job.setJob(j);
 					handler.addJob(j);
 				}
@@ -168,13 +204,28 @@ public class HBCIFactory {
 			{
 				stop();
 				jobs = new ArrayList(); // Jobqueue leer machen.
+				exclusiveJobs = new ArrayList(); // Jobqueue leer machen.
 				try {
 					handle.close();
 				}
 				catch (Throwable t) {/* useless*/}
 			}
-
-
+		}
+	}
+	
+	/**
+	 * Gibt Informationen ueber den Job im Log aus.
+   * @param job Job.
+   */
+  private void dumpJob(HBCIJob job)
+	{
+		Logger.debug("Job restrictions for " + job.getName());
+		Properties p = job.getJobRestrictions();
+		Enumeration en = p.keys();
+		while (en.hasMoreElements())
+		{
+			String key = (String) en.nextElement();
+			Logger.debug("  " + key + ": " + p.getProperty(key));
 		}
 	}
 	
@@ -260,6 +311,9 @@ public class HBCIFactory {
 
 /**********************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.23  2005/02/28 23:59:57  web0
+ * @B http://www.willuhn.de/bugzilla/show_bug.cgi?id=15
+ *
  * Revision 1.22  2005/02/01 17:15:37  willuhn
  * *** empty log message ***
  *

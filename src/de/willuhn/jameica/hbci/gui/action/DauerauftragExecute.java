@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/DauerauftragExecute.java,v $
- * $Revision: 1.7 $
- * $Date: 2005/02/28 15:30:47 $
+ * $Revision: 1.8 $
+ * $Date: 2005/02/28 23:59:57 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -82,7 +82,7 @@ public class DauerauftragExecute implements Action
 						
 						HBCIFactory factory = HBCIFactory.getInstance();
             // BUGZILLA #15 http://www.willuhn.de/bugzilla/show_bug.cgi?id=15
-            factory.addJob(new HBCIDauerauftragListJob(d.getKonto()));
+            factory.addExclusiveJob(new HBCIDauerauftragListJob(d.getKonto()));
 						factory.addJob(job);
 						factory.executeJobs(d.getKonto().getPassport().getHandle()); 
 						GUI.getStatusBar().setSuccessText(i18n.tr("...Dauerauftrag erfolgreich gelöscht"));
@@ -122,6 +122,9 @@ public class DauerauftragExecute implements Action
 
 /**********************************************************************
  * $Log: DauerauftragExecute.java,v $
+ * Revision 1.8  2005/02/28 23:59:57  web0
+ * @B http://www.willuhn.de/bugzilla/show_bug.cgi?id=15
+ *
  * Revision 1.7  2005/02/28 15:30:47  web0
  * @B Bugzilla #15
  *
