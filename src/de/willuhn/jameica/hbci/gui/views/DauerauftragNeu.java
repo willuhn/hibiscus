@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/DauerauftragNeu.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/10/08 13:37:48 $
+ * $Revision: 1.3 $
+ * $Date: 2004/10/23 17:34:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,8 +25,6 @@ public class DauerauftragNeu extends AbstractView
    */
   public void bind() throws Exception
   {
-    // TODO Auto-generated method stub
-
   }
 
   /**
@@ -34,8 +32,6 @@ public class DauerauftragNeu extends AbstractView
    */
   public void unbind() throws ApplicationException
   {
-    // TODO Auto-generated method stub
-
   }
 
 }
@@ -43,6 +39,9 @@ public class DauerauftragNeu extends AbstractView
 
 /**********************************************************************
  * $Log: DauerauftragNeu.java,v $
+ * Revision 1.3  2004/10/23 17:34:31  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2004/10/08 13:37:48  willuhn
  * *** empty log message ***
  *

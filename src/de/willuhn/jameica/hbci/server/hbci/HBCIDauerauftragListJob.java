@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragListJob.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/10/18 23:38:17 $
+ * $Revision: 1.6 $
+ * $Date: 2004/10/23 17:34:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,7 +20,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
-import de.willuhn.jameica.hbci.server.util.Converter;
+import de.willuhn.jameica.hbci.server.Converter;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -100,7 +100,7 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
 		for (int i=0;i<lines.length;++i)
 		{
 			auftraege[i] = Converter.HBCIDauer2HibiscusDauerauftrag(lines[i]);
-			auftraege[i].setKonto(getKonto()); // TODO Das muesste auch wieder raus
+			auftraege[i].activate();
 		}
 		try {
 			getKonto().addToProtokoll(i18n.tr("Daueraufträge abgerufen"),Protokoll.TYP_SUCCESS);
@@ -117,6 +117,9 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIDauerauftragListJob.java,v $
+ * Revision 1.6  2004/10/23 17:34:31  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2004/10/18 23:38:17  willuhn
  * @C Refactoring
  * @C Aufloesung der Listener und Ersatz gegen Actions

@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/util/Attic/Converter.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/10/18 23:38:17 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
+ * $Revision: 1.16 $
+ * $Date: 2004/10/23 17:34:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -10,7 +10,7 @@
  * All rights reserved
  *
  **********************************************************************/
-package de.willuhn.jameica.hbci.server.util;
+package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
 
@@ -18,11 +18,11 @@ import org.kapott.hbci.GV_Result.GVRDauerList;
 import org.kapott.hbci.GV_Result.GVRKUms;
 import org.kapott.hbci.structures.Konto;
 
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Empfaenger;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
-import de.willuhn.jameica.hbci.server.DauerauftragImpl;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -110,10 +110,7 @@ public class Converter {
 		// und jetzt noch der Empfaenger (wenn er existiert)
 		if (u.other != null) 
 		{
-		  Empfaenger e = HBCIKonto2HibiscusEmpfaenger(u.other);
-		  umsatz.setEmpfaengerBLZ(e.getBLZ());
-		  umsatz.setEmpfaengerKonto(e.getKontonummer());
-		  umsatz.setEmpfaengerName(e.getName());
+		  umsatz.setEmpfaenger(HBCIKonto2HibiscusEmpfaenger(u.other));
 		}
 		return umsatz;
 	}
@@ -131,9 +128,8 @@ public class Converter {
 		DauerauftragImpl auftrag = (DauerauftragImpl) Settings.getDBService().createObject(Dauerauftrag.class,null);
 		auftrag.setErsteZahlung(d.firstdate);
 		auftrag.setLetzteZahlung(d.lastdate);
-		// auftrag.setKonto(HBCIKonto2HibiscusKonto(d.my)); // TODO Mal einheitlich loesen. Derzeit wird im HBCI-Job das Konto auch gespeichert
+		auftrag.setKonto(HBCIKonto2HibiscusKonto(d.my));
 		auftrag.setBetrag(d.value.value);
-		// auftrag.activate(); // TODO AKTIVIEREN NICHT vergessen
 
 		// Jetzt noch der Empfaenger
 		auftrag.setEmpfaenger(HBCIKonto2HibiscusEmpfaenger(d.other));
@@ -177,12 +173,21 @@ public class Converter {
 
 	/**
 	 * Konvertiert ein HBCI4Java-Konto in ein Hibiscus Konto.
+	 * Existiert ein Konto mit dieser Kontonummer und BLZ bereits in Hibiscus,
+	 * wird jenes stattdessen zurueckgeliefert.
 	 * @param konto das HBCI4Java Konto.
 	 * @return unser Konto.
 	 * @throws RemoteException
 	 */
 	public static de.willuhn.jameica.hbci.rmi.Konto HBCIKonto2HibiscusKonto(Konto konto) throws RemoteException
 	{
+		DBIterator list = Settings.getDBService().createList(de.willuhn.jameica.hbci.rmi.Konto.class);
+		list.addFilter("kontonummer = '" + konto.number + "'");
+		list.addFilter("blz = '" + konto.blz + "'");
+		if (list.hasNext())
+			return (de.willuhn.jameica.hbci.rmi.Konto) list.next(); // Konto gibts schon
+
+		// Ne, wir erstellen ein neues
 		de.willuhn.jameica.hbci.rmi.Konto k =
 			(de.willuhn.jameica.hbci.rmi.Konto) Settings.getDBService().createObject(de.willuhn.jameica.hbci.rmi.Konto.class,null);
 		k.setBLZ(konto.blz);
@@ -211,12 +216,20 @@ public class Converter {
 
 	/**
 	 * Konvertiert ein HBCI4Java Konto in einen Hibiscus-Empfaenger.
+	 * Existiert ein Empfaenger mit dieser Kontonummer und BLZ bereits in Hibiscus,
+	 * wird dieser stattdessen zurueckgeliefert.
 	 * @param konto das HBCI-Konto.
 	 * @return unser Empfaenger.
 	 * @throws RemoteException
 	 */
 	public static Empfaenger HBCIKonto2HibiscusEmpfaenger(Konto konto) throws RemoteException
 	{
+		DBIterator list = Settings.getDBService().createList(Empfaenger.class);
+		list.addFilter("kontonummer = '" + konto.number + "'");
+		list.addFilter("blz = '" + konto.blz + "'");
+		if (list.hasNext())
+			return (Empfaenger) list.next(); // Empfaenger gibts schon
+
 		Empfaenger e = (Empfaenger) Settings.getDBService().createObject(Empfaenger.class,null);
 		e.setBLZ(konto.blz);
 		e.setKontonummer(konto.number);
@@ -232,6 +245,9 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.16  2004/10/23 17:34:31  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/10/18 23:38:17  willuhn
  * @C Refactoring
  * @C Aufloesung der Listener und Ersatz gegen Actions

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Dauerauftrag.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/10/17 16:28:46 $
+ * $Revision: 1.4 $
+ * $Date: 2004/10/23 17:34:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -73,11 +73,29 @@ public interface Dauerauftrag extends Transfer
 	 */
 	public boolean isActive() throws RemoteException;
 
+	/**
+	 * Markiert einen Dauerauftrag als "liegt bei der Bank vor" und
+	 * ist somit aktiv.
+	 * Diese Funktion wird intern verwendet.
+   * @throws RemoteException
+   */
+  public void activate() throws RemoteException;
+	
+	/**
+	 * Markiert einen Dauerauftrag als "liegt nicht bei der Bank vor" und
+	 * ist somit inaktiv.
+	 * Diese Funktion wird intern verwendet.
+   * @throws RemoteException
+   */
+  public void deactivate() throws RemoteException;
 }
 
 
 /**********************************************************************
  * $Log: Dauerauftrag.java,v $
+ * Revision 1.4  2004/10/23 17:34:31  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2004/10/17 16:28:46  willuhn
  * @N Die ersten Dauerauftraege abgerufen ;)
  *

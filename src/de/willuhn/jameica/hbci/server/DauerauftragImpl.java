@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DauerauftragImpl.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/10/18 23:38:17 $
+ * $Revision: 1.9 $
+ * $Date: 2004/10/23 17:34:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -152,11 +152,15 @@ public class DauerauftragImpl extends AbstractTransferImpl implements Dauerauftr
 			// befindet. Hierzu koennen wir aber nicht das aktuelle Datum als Vergleich nehmen
 			// da das bereits einige Sekunden _nach_ dem Datum der ersten Zahlung liegt.
 			// Daher lassen wir 1 Tag Toleranz zu.
-// TODO Dauerauftrag Check auf Zeit der ersten Zahlung
-//			Date today = new Date(System.currentTimeMillis() - (1000l * 60 * 60 * 24));
-//			if (getErsteZahlung().before(today))
-//				throw new ApplicationException(i18n.tr("Bitte wählen Sie für die erste Zahlung ein Datum in der Zukunft"));
-		
+			// Allerdings checken wir das nur bei Dauerauftraegen, die noch nicht aktiv sind.
+			// Aktive kommen von der Bank und werden daher ganz sicher ein Datum in der Vergangenheit haben
+			if (!isActive())
+			{
+				Date today = new Date(System.currentTimeMillis() - (1000l * 60 * 60 * 24));
+				if (getErsteZahlung().before(today))
+					throw new ApplicationException(i18n.tr("Bitte wählen Sie für die erste Zahlung ein Datum in der Zukunft"));
+			}
+
 			// Und jetzt noch checken, dass sich das Datum der letzten Zahlung
 			// hinter der ersten Zahlung befindet
 			if (getLetzteZahlung() != null && !getLetzteZahlung().after(getErsteZahlung()))
@@ -218,19 +222,29 @@ public class DauerauftragImpl extends AbstractTransferImpl implements Dauerauftr
   }
   
   /**
-   * Markiert den Dauerauftrag als "aktiv".
+   * @see de.willuhn.jameica.hbci.rmi.Dauerauftrag#activate()
    */
-  protected void activate() throws RemoteException
+  public void activate() throws RemoteException
   {
-  	// TODO Das gefaellt mir noch nicht.
   	setAttribute("aktiv",new Integer(1));
   }
+
+	/**
+   * @see de.willuhn.jameica.hbci.rmi.Dauerauftrag#deactivate()
+   */
+	public void deactivate() throws RemoteException
+	{
+		setAttribute("aktiv",new Integer(0));
+	}
 
 }
 
 
 /**********************************************************************
  * $Log: DauerauftragImpl.java,v $
+ * Revision 1.9  2004/10/23 17:34:31  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.8  2004/10/18 23:38:17  willuhn
  * @C Refactoring
  * @C Aufloesung der Listener und Ersatz gegen Actions

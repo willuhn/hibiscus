@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.15 $
- * $Date: 2004/10/17 16:28:46 $
+ * $Revision: 1.16 $
+ * $Date: 2004/10/23 17:34:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import java.util.zip.CRC32;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.rmi.Empfaenger;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
@@ -181,6 +182,16 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 		return (String) getAttribute("zweck2");
 	}
 
+	/**
+	 * @see de.willuhn.jameica.hbci.rmi.Umsatz#setEmpfaenger(de.willuhn.jameica.hbci.rmi.Empfaenger)
+	 */
+	public void setEmpfaenger(Empfaenger empf) throws RemoteException
+	{
+		setEmpfaengerBLZ(empf.getBLZ());
+		setEmpfaengerKonto(empf.getKontonummer());
+		setEmpfaengerName(empf.getName());
+	}
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#setEmpfaengerName(java.lang.String)
    */
@@ -191,14 +202,14 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
   /**
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#setEmpfaengerKonto(java.lang.String)
    */
-  public void setEmpfaengerKonto(String konto) throws RemoteException {
+	public void setEmpfaengerKonto(String konto) throws RemoteException {
     setAttribute("empfaenger_konto",konto);
   }
   
   /**
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#setEmpfaengerBLZ(java.lang.String)
    */
-  public void setEmpfaengerBLZ(String blz) throws RemoteException {
+	public void setEmpfaengerBLZ(String blz) throws RemoteException {
     setAttribute("empfaenger_blz",blz);
   }
   /**
@@ -364,6 +375,9 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.16  2004/10/23 17:34:31  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.15  2004/10/17 16:28:46  willuhn
  * @N Die ersten Dauerauftraege abgerufen ;)
  *
