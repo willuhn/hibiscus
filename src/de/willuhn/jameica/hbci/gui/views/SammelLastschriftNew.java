@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/SammelLastschriftNew.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/02/28 16:28:24 $
+ * $Revision: 1.2 $
+ * $Date: 2005/03/01 18:51:04 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -13,11 +13,16 @@
 package de.willuhn.jameica.hbci.gui.views;
 
 import de.willuhn.jameica.gui.AbstractView;
+import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.action.Back;
+import de.willuhn.jameica.hbci.gui.action.SammelLastBuchungNew;
+import de.willuhn.jameica.hbci.gui.action.SammelLastschriftDelete;
 import de.willuhn.jameica.hbci.gui.controller.SammelLastschriftControl;
-import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -33,15 +38,31 @@ public class SammelLastschriftNew extends AbstractView {
   public void bind() throws Exception {
 
 		final SammelLastschriftControl control = new SammelLastschriftControl(this);
-    final SammelLastschrift last = control.getLastschrift();
 
 		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-		GUI.getView().setTitle(i18n.tr("Sammel Lastschrift bearbeiten"));
+		GUI.getView().setTitle(i18n.tr("Sammel-Lastschrift bearbeiten"));
 		
 		LabelGroup group = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
+    group.addLabelPair(i18n.tr("persönliches Konto (Empfänger)"),control.getKontoAuswahl());
+    group.addLabelPair(i18n.tr("Bezeichnung"),control.getComment());
+    group.addLabelPair(i18n.tr("Termin"),control.getTermin());
 		
-		// group.addLabelPair(i18n.tr("persönliches Konto (Empfänger)"),	control.getKontoAuswahl());
+    new Headline(getParent(),i18n.tr("Enthaltene Buchungen"));
+    control.getBuchungen().paint(getParent());
+
+    ButtonArea buttons = new ButtonArea(getParent(),3);
+    buttons.addButton(i18n.tr("Zurück"),new Back());
+    buttons.addButton(i18n.tr("Neue Buchung"), new SammelLastBuchungNew(),control.getLastschrift());
+    buttons.addButton(i18n.tr("Sammel-Lastschrift löschen"),new SammelLastschriftDelete(),control.getLastschrift());
+    buttons.addButton(i18n.tr("Speichern"),new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        control.handleStore();
+      }
+    },null,true);
+
   }
 
   /**
@@ -55,6 +76,9 @@ public class SammelLastschriftNew extends AbstractView {
 
 /**********************************************************************
  * $Log: SammelLastschriftNew.java,v $
+ * Revision 1.2  2005/03/01 18:51:04  web0
+ * @N Dialoge fuer Sammel-Lastschriften
+ *
  * Revision 1.1  2005/02/28 16:28:24  web0
  * @N first code for "Sammellastschrift"
  *

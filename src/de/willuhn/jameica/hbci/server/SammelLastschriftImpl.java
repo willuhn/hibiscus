@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/SammelLastschriftImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/02/28 16:28:24 $
+ * $Revision: 1.2 $
+ * $Date: 2005/03/01 18:51:04 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -235,12 +235,48 @@ public class SammelLastschriftImpl extends AbstractDBObject implements SammelLas
    */
   public void delete() throws RemoteException, ApplicationException
   {
-    Konto k = this.getKonto();
-    super.delete();
-    if (k == null)
-      return;
-    k.addToProtokoll(i18n.tr("Sammellastschrift [Bezeichnung: {0}] gelöscht",getBezeichnung()),
-      Protokoll.TYP_SUCCESS);
+    // Wir muessen auch alle Buchungen mitloeschen
+    // da Constraints dorthin existieren.
+    try {
+      this.transactionBegin();
+
+      int count = 0;
+      // dann die Dauerauftraege
+      DBIterator list = getBuchungen();
+      SammelLastBuchung b = null;
+      while (list.hasNext())
+      {
+        b = (SammelLastBuchung) list.next();
+        b.delete();
+        count++;
+      }
+
+      // Jetzt koennen wir uns selbst loeschen
+      super.delete();
+
+      // und noch in's Protokoll schreiben.
+      Konto k = this.getKonto();
+      if (k == null)
+        return;
+      k.addToProtokoll(i18n.tr(
+        "Sammellastschrift [Bezeichnung: {0}] gelöscht. Enthaltene Buchungen: {1}",
+        new String[] {
+          getBezeichnung(),
+          count+"",
+        }), Protokoll.TYP_SUCCESS);
+
+      this.transactionCommit();
+    }
+    catch (RemoteException e)
+    {
+      this.transactionRollback();
+      throw e;
+    }
+    catch (ApplicationException e2)
+    {
+      this.transactionRollback();
+      throw e2;
+    }
   }
 
   /**
@@ -258,6 +294,9 @@ public class SammelLastschriftImpl extends AbstractDBObject implements SammelLas
 
 /*****************************************************************************
  * $Log: SammelLastschriftImpl.java,v $
+ * Revision 1.2  2005/03/01 18:51:04  web0
+ * @N Dialoge fuer Sammel-Lastschriften
+ *
  * Revision 1.1  2005/02/28 16:28:24  web0
  * @N first code for "Sammellastschrift"
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/SammelLastschriftList.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/02/28 16:28:24 $
+ * $Revision: 1.2 $
+ * $Date: 2005/03/01 18:51:04 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -44,7 +44,7 @@ public class SammelLastschriftList extends AbstractView {
 			control.getListe().paint(getParent());
 
 			ButtonArea buttons = new ButtonArea(getParent(),1);
-			buttons.addButton(i18n.tr("neue Sammel-Lastschrift"),new SammelLastschriftNew(),null,true);
+			buttons.addButton(i18n.tr("Neue Sammel-Lastschrift"),new SammelLastschriftNew(),null,true);
 
 		}
 		catch (Exception e)
@@ -65,6 +65,9 @@ public class SammelLastschriftList extends AbstractView {
 
 /**********************************************************************
  * $Log: SammelLastschriftList.java,v $
+ * Revision 1.2  2005/03/01 18:51:04  web0
+ * @N Dialoge fuer Sammel-Lastschriften
+ *
  * Revision 1.1  2005/02/28 16:28:24  web0
  * @N first code for "Sammellastschrift"
  *

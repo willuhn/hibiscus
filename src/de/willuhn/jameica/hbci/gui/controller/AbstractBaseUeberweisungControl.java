@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractBaseUeberweisungControl.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/02/19 16:49:32 $
- * $Author: willuhn $
+ * $Revision: 1.3 $
+ * $Date: 2005/03/01 18:51:04 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -117,31 +117,6 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
 			termin.disable();
 
 		return termin;
-	}
-
-	/**
-   * Deaktiviert alle Eingabe-Felder.
-   */
-  private void disableAll()
-	{
-		try {
-			Terminable bu = (Terminable) getTransfer();
-
-			if (!bu.ausgefuehrt())
-				return;
-			getBetrag().disable();
-			getEmpfaengerBlz().disable();
-			getEmpfaengerKonto().disable();
-			getEmpfaengerName().disable();
-			getKontoAuswahl().disable();
-			getTermin().disable();
-			getZweck().disable();
-			getZweck2().disable();
-		}
-		catch (RemoteException e)
-		{
-			Logger.error("error while disabling fields",e);
-		}
 	}
 
   /**
@@ -285,6 +260,9 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
 
 /**********************************************************************
  * $Log: AbstractBaseUeberweisungControl.java,v $
+ * Revision 1.3  2005/03/01 18:51:04  web0
+ * @N Dialoge fuer Sammel-Lastschriften
+ *
  * Revision 1.2  2005/02/19 16:49:32  willuhn
  * @B bugs 3,8,10
  *

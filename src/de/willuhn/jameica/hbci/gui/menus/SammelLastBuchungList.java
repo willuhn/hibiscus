@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/SammelLastschriftList.java,v $
- * $Revision: 1.2 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/Attic/SammelLastBuchungList.java,v $
+ * $Revision: 1.1 $
  * $Date: 2005/03/01 18:51:04 $
  * $Author: web0 $
  * $Locker:  $
@@ -17,8 +17,9 @@ import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.LastschriftNew;
+import de.willuhn.jameica.hbci.gui.action.SammelLastBuchungNew;
 import de.willuhn.jameica.hbci.gui.action.SammelLastschriftNew;
+import de.willuhn.jameica.hbci.rmi.SammelLastBuchung;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -26,41 +27,45 @@ import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Kontext-Menu, welches an Listen mit SammelLastschriften gehangen werden kann.
+ * Kontext-Menu, welches an Listen mit Buchungen innerhalb von Sammellastschriften gehangen werden kann.
  * Es ist fix und fertig vorkonfiguriert und mit Elementen gefuellt.
  */
-public class SammelLastschriftList extends ContextMenu
+public class SammelLastBuchungList extends ContextMenu
 {
 	private I18N i18n	= null;
+  private SammelLastschrift lastschrift = null;
 
-	/**
-	 * Erzeugt ein Kontext-Menu fuer eine Liste von Lastschriften.
+  /**
+	 * Erzeugt ein Kontext-Menu fuer eine Liste von Buchungen in einer Sammellastschrift.
+   * @param lastschrift Zugehoerige Sammel-Lastschrift.
+   * Die Sammel-Lastschrift wird fuer den Menu-Eintrag "Neue Buchung..." benoetigt.
+   * Um eine neue Buchung zu erzeugen, muss die zugehoerige Sammellastschrift bekannt sein.
 	 */
-	public SammelLastschriftList()
+	public SammelLastBuchungList(SammelLastschrift lastschrift)
 	{
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+    this.lastschrift = lastschrift;
 
 		addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"), new SammelLastschriftNew()));
-		addItem(new NotActiveMenuItem(i18n.tr("Jetzt ausführen..."), new SammelLastschriftExecute()));
 		addItem(ContextMenuItem.SEPARATOR);
-		addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new SammelLastschriftDelete()));
+		addItem(new NotActiveMenuItem(i18n.tr("Löschen..."), new SammelLastBuchungDelete()));
 		addItem(ContextMenuItem.SEPARATOR);
-		addItem(new ContextMenuItem(i18n.tr("Neue Sammel-Lastschrift..."), new SNeu()));
+		addItem(new NotActiveMenuItem(i18n.tr("Neue Buchung..."), new BNeu()));
 		
 	}
 
 	/**
-	 * Ueberschreiben wir, um <b>grundsaetzlich</b> eine neue Sammel-Lastschrift
+	 * Ueberschreiben wir, um <b>grundsaetzlich</b> eine neue Buchung.
 	 * anzulegen - auch wenn der Focus auf einer existierenden liegt.
    */
-  private class SNeu extends LastschriftNew
+  private class BNeu extends SammelLastBuchungNew
 	{
     /**
      * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
      */
     public void handleAction(Object context) throws ApplicationException
     {
-    	super.handleAction(null);
+    	super.handleAction(lastschrift);
     }
 	} 
 	
@@ -90,8 +95,8 @@ public class SammelLastschriftList extends ContextMenu
     		return false;
     	try
     	{
-				SammelLastschrift u = (SammelLastschrift) o;
-    		return !u.ausgefuehrt();
+				SammelLastBuchung u = (SammelLastBuchung) o;
+    		return !u.getSammelLastschrift().ausgefuehrt();
     	}
     	catch (Exception e)
     	{
@@ -104,11 +109,8 @@ public class SammelLastschriftList extends ContextMenu
 
 
 /**********************************************************************
- * $Log: SammelLastschriftList.java,v $
- * Revision 1.2  2005/03/01 18:51:04  web0
+ * $Log: SammelLastBuchungList.java,v $
+ * Revision 1.1  2005/03/01 18:51:04  web0
  * @N Dialoge fuer Sammel-Lastschriften
- *
- * Revision 1.1  2005/02/28 18:40:49  web0
- * @N first code for "Sammellastschrift"
  *
  **********************************************************************/
