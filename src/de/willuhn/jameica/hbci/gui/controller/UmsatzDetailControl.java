@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailControl.java,v $
- * $Revision: 1.11 $
- * $Date: 2004/07/21 23:54:30 $
+ * $Revision: 1.12 $
+ * $Date: 2004/07/23 15:51:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -270,7 +270,7 @@ public class UmsatzDetailControl extends AbstractControl {
   {
     try {
       // wir checken erstmal, ob wir den schon haben.
-      DBIterator list = Settings.getDatabase().createList(Empfaenger.class);
+      DBIterator list = Settings.getDBService().createList(Empfaenger.class);
       list.addFilter("kontonummer = '" + getUmsatz().getEmpfaengerKonto() + "'");
       list.addFilter("blz = '" + getUmsatz().getEmpfaengerBLZ() + "'");
       if (list.hasNext())
@@ -281,7 +281,7 @@ public class UmsatzDetailControl extends AbstractControl {
         		"Möchten Sie den Empfänger dennoch zum Adressbuch hinzufügen?"));
         if (!((Boolean) d.open()).booleanValue()) return;
       }
-      Empfaenger e = (Empfaenger) Settings.getDatabase().createObject(Empfaenger.class,null);
+      Empfaenger e = (Empfaenger) Settings.getDBService().createObject(Empfaenger.class,null);
       e.setBLZ(getUmsatz().getEmpfaengerBLZ());
       e.setKontonummer(getUmsatz().getEmpfaengerKonto());
       e.setName(getUmsatz().getEmpfaengerName());
@@ -321,6 +321,9 @@ public class UmsatzDetailControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzDetailControl.java,v $
+ * Revision 1.12  2004/07/23 15:51:44  willuhn
+ * @C Rest des Refactorings
+ *
  * Revision 1.11  2004/07/21 23:54:30  willuhn
  * *** empty log message ***
  *

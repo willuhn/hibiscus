@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.41 $
- * $Date: 2004/07/21 23:54:30 $
+ * $Revision: 1.42 $
+ * $Date: 2004/07/23 15:51:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,9 +20,9 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TableItem;
 import org.kapott.hbci.manager.HBCIUtils;
 
+import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.datasource.rmi.GenericObject;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.controller.AbstractControl;
@@ -106,7 +106,7 @@ public class KontoControl extends AbstractControl {
 		}
 		
 		// Kein Konto verfuegbar - wir bauen ein neues.
-		konto = (Konto) Settings.getDatabase().createObject(Konto.class,null);
+		konto = (Konto) Settings.getDBService().createObject(Konto.class,null);
 		return konto;
 	}
 
@@ -290,7 +290,7 @@ public class KontoControl extends AbstractControl {
 		if (kontoList != null)
 			return kontoList;
 
-		DBIterator list = Settings.getDatabase().createList(Konto.class);
+		DBIterator list = Settings.getDBService().createList(Konto.class);
 
 		kontoList = new TablePart(list,this);
 		kontoList.addColumn(i18n.tr("Kontonummer"),"kontonummer");
@@ -484,7 +484,7 @@ public class KontoControl extends AbstractControl {
 					PassportObject po = (PassportObject) getPassportAuswahl().getValue();
 					Passport p = po.getPassport();
 
-					DBIterator existing = Settings.getDatabase().createList(Konto.class);
+					DBIterator existing = Settings.getDBService().createList(Konto.class);
 					Konto check = null;
 					Konto[] konten = p.getHandle().getKonten();
 
@@ -631,6 +631,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.42  2004/07/23 15:51:44  willuhn
+ * @C Rest des Refactorings
+ *
  * Revision 1.41  2004/07/21 23:54:30  willuhn
  * *** empty log message ***
  *

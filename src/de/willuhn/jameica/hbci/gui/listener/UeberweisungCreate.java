@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/listener/Attic/UeberweisungCreate.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/07/20 21:48:00 $
+ * $Revision: 1.3 $
+ * $Date: 2004/07/23 15:51:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -51,7 +51,7 @@ public class UeberweisungCreate implements Listener
   	{
 			try {
 				Konto k = (Konto) event.data;
-				u = (Ueberweisung) Settings.getDatabase().createObject(Ueberweisung.class,null);
+				u = (Ueberweisung) Settings.getDBService().createObject(Ueberweisung.class,null);
 				u.setKonto(k);
 			}
 			catch (Exception e)
@@ -59,7 +59,7 @@ public class UeberweisungCreate implements Listener
 				// Mal mit 'nem Empfaenger versuchen
 				try {
 					Empfaenger empf = (Empfaenger) event.data;
-					u = (Ueberweisung) Settings.getDatabase().createObject(Ueberweisung.class,null);
+					u = (Ueberweisung) Settings.getDBService().createObject(Ueberweisung.class,null);
 					u.setEmpfaenger(empf);
 				}
 				catch (Exception e2)
@@ -76,6 +76,9 @@ public class UeberweisungCreate implements Listener
 
 /**********************************************************************
  * $Log: UeberweisungCreate.java,v $
+ * Revision 1.3  2004/07/23 15:51:44  willuhn
+ * @C Rest des Refactorings
+ *
  * Revision 1.2  2004/07/20 21:48:00  willuhn
  * @N ContextMenus
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.24 $
- * $Date: 2004/07/21 23:54:30 $
+ * $Revision: 1.25 $
+ * $Date: 2004/07/23 15:51:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.db.EmbeddedDatabase;
+import de.willuhn.jameica.hbci.server.HBCIDBServiceImpl;
 import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -66,6 +67,8 @@ public class HBCI extends AbstractPlugin
     DECIMALFORMAT.applyPattern("#0.00");
   }
 
+  private EmbeddedDatabase db = null;
+
   /**
    * ct.
    * @param file
@@ -75,21 +78,47 @@ public class HBCI extends AbstractPlugin
     super(file);
   }
 
-	/**
-	 * Liefert die Programm-Version anhand des DB-Schemas.
-   * @return Programm-Version.
+  /**
+   * Liefert die Datenbank des Plugins.
+   * Lauft die Anwendung im Client-Mode, wird
+   * immer <code>null</code> zurueckgegeben.
+   * @return die Embedded Datenbank.
    * @throws Exception
    */
-  private double getDBVersion() throws Exception
+  private EmbeddedDatabase getDatabase() throws Exception
+  {
+    if (Application.inClientMode())
+      return null;
+    if (db != null)
+      return db;
+    db = new EmbeddedDatabase(getResources().getWorkPath() + "/db","hibiscus","hibiscus");
+    return db;
+  }
+
+  /**
+   * Prueft, ob sich die Datenbank der Anwendung im erwarteten
+   * Zustand befindet (via MD5-Checksum). Entlarvt Manipulationen
+   * des DB-Schemas durch Dritte.
+   * @throws Exception
+   */
+  private void checkConsistency() throws Exception
 	{
-		EmbeddedDatabase db = this.getResources().getDatabase();
+    
+    if (Application.inClientMode())
+    {
+      // Wenn wir als Client laufen, muessen wir uns
+      // nicht um die Datenbank kuemmern. Das macht
+      // der Server schon
+      return;
+    }
 
-		String checkSum = db.getMD5Sum();
-		if (checkSum.equals("KvynDJyxe6D1XUvSCkNAFA=="))
-			return 1.0;
 
-		if (checkSum.equals("Q5xXnFOOrK1kBUqyKM8Hbg=="))
-			return 1.1;
+		String checkSum = getDatabase().getMD5Sum();
+		if (checkSum.equals("KvynDJyxe6D1XUvSCkNAFA==")) // 1.0
+			return;
+
+		if (checkSum.equals("Q5xXnFOOrK1kBUqyKM8Hbg==")) // 1.1
+			return;
 
 		throw new Exception("database checksum does not match any known version: " + checkSum);
 	}
@@ -101,7 +130,7 @@ public class HBCI extends AbstractPlugin
   {
 		try {
 			Application.splash("hibiscus: checking database integrity");
-			getDBVersion();
+			checkConsistency();
 		}
 		catch (Exception e)
 		{
@@ -128,9 +157,11 @@ public class HBCI extends AbstractPlugin
    */
   public void install() throws ApplicationException
   {
+    if (Application.inClientMode())
+      return; // als Client muessen wir die DB nicht installieren
+
     try {
-			EmbeddedDatabase db = getResources().getDatabase();
-			db.executeSQLScript(new File(getResources().getPath() + "/sql/create.sql"));
+			getDatabase().executeSQLScript(new File(getResources().getPath() + "/sql/create.sql"));
     }
     catch (Exception e)
     {
@@ -143,11 +174,13 @@ public class HBCI extends AbstractPlugin
    */
   public void update(double oldVersion) throws ApplicationException
   {
+    if (Application.inClientMode())
+      return; // Kein Update im Client-Mode noetig.
+
   	if (oldVersion == 1.0)
   	{
 			try {
-				EmbeddedDatabase db = getResources().getDatabase();
-				db.executeSQLScript(new File(getResources().getPath() + "/sql/update_1.0-1.1.sql"));
+				getDatabase().executeSQLScript(new File(getResources().getPath() + "/sql/update_1.0-1.1.sql"));
 			}
 			catch (Exception e)
 			{
@@ -162,11 +195,34 @@ public class HBCI extends AbstractPlugin
   public void shutDown()
   {
   }
+
+  /**
+   * @see de.willuhn.jameica.plugin.AbstractPlugin#getServiceNames()
+   */
+  public String[] getServiceNames()
+  {
+    // Wir haben derzeit nur die eine Datenquelle 
+    return new String[] {"database"};
+  }
+
+  /**
+   * @see de.willuhn.jameica.plugin.AbstractPlugin#getService(java.lang.String)
+   */
+  public Class getService(String serviceName)
+  {
+    if ("database".equals(serviceName))
+      return HBCIDBServiceImpl.class;
+
+    return null;
+  }
 }
 
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.25  2004/07/23 15:51:44  willuhn
+ * @C Rest des Refactorings
+ *
  * Revision 1.24  2004/07/21 23:54:30  willuhn
  * *** empty log message ***
  *

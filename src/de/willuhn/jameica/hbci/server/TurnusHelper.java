@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/TurnusHelper.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/07/21 23:54:30 $
+ * $Revision: 1.4 $
+ * $Date: 2004/07/23 15:51:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -45,7 +45,7 @@ public class TurnusHelper
 		int ze = Turnus.ZEITEINHEIT_MONATLICH;
 		if ("W".equalsIgnoreCase(d.timeunit)) ze = Turnus.ZEITEINHEIT_WOECHENTLICH;
 
-		DBIterator list = Settings.getDatabase().createList(Turnus.class);
+		DBIterator list = Settings.getDBService().createList(Turnus.class);
 		list.addFilter("zeiteinheit = " + ze);
 		list.addFilter("intervall = " + d.turnus);
 		list.addFilter("tag = " + d.execday);
@@ -78,7 +78,7 @@ public class TurnusHelper
 		if ("W".equalsIgnoreCase(d.timeunit)) ze = Turnus.ZEITEINHEIT_WOECHENTLICH;
 		
 		// Keiner da, dann erstellen wir ihn.
-		turnus = (Turnus) Settings.getDatabase().createObject(Turnus.class,null);
+		turnus = (Turnus) Settings.getDBService().createObject(Turnus.class,null);
 		turnus.setIntervall(d.turnus);
 		turnus.setTag(d.execday);
 		turnus.setZeiteinheit(ze);
@@ -178,6 +178,9 @@ public class TurnusHelper
 
 /**********************************************************************
  * $Log: TurnusHelper.java,v $
+ * Revision 1.4  2004/07/23 15:51:44  willuhn
+ * @C Rest des Refactorings
+ *
  * Revision 1.3  2004/07/21 23:54:30  willuhn
  * *** empty log message ***
  *

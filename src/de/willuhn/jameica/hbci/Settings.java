@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.19 $
- * $Date: 2004/07/21 23:54:30 $
+ * $Revision: 1.20 $
+ * $Date: 2004/07/23 15:51:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,6 +23,7 @@ import sun.misc.BASE64Encoder;
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.plugin.PluginLoader;
+import de.willuhn.jameica.system.ServiceFactory;
 import de.willuhn.util.Logger;
 
 /**
@@ -46,12 +47,12 @@ public class Settings
    * @return Datenbank.
    * @throws RemoteException
    */
-  public static DBService getDatabase() throws RemoteException
+  public static DBService getDBService() throws RemoteException
   {
     if (db != null)
       return db;
 		try {
-			db = PluginLoader.getPlugin(HBCI.class).getResources().getDatabase().getDBService();
+			db = (DBService) ServiceFactory.lookup(PluginLoader.getPlugin(HBCI.class),"database");
 			return db;
 		}
 		catch (Exception e)
@@ -269,6 +270,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.20  2004/07/23 15:51:44  willuhn
+ * @C Rest des Refactorings
+ *
  * Revision 1.19  2004/07/21 23:54:30  willuhn
  * *** empty log message ***
  *

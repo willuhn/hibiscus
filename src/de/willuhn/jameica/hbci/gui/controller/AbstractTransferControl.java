@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/07/21 23:54:30 $
+ * $Revision: 1.5 $
+ * $Date: 2004/07/23 15:51:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -120,7 +120,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 		if (kontoAuswahl != null)
 			return kontoAuswahl;
 
-		ListDialog d = new ListDialog(Settings.getDatabase().createList(Konto.class),ListDialog.POSITION_MOUSE);
+		ListDialog d = new ListDialog(Settings.getDBService().createList(Konto.class),ListDialog.POSITION_MOUSE);
 		d.addColumn(i18n.tr("Bezeichnung"),"bezeichnung");
 		d.addColumn(i18n.tr("Kontonummer"),"kontonummer");
 		d.addColumn(i18n.tr("BLZ"),"blz");
@@ -144,7 +144,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 		if (empfkto != null)
 			return empfkto;
 
-		ListDialog d = new ListDialog(Settings.getDatabase().createList(Empfaenger.class),ListDialog.POSITION_MOUSE);
+		ListDialog d = new ListDialog(Settings.getDBService().createList(Empfaenger.class),ListDialog.POSITION_MOUSE);
 		d.addColumn(i18n.tr("Name"),"name");
 		d.addColumn(i18n.tr("Kontonummer"),"kontonummer");
 		d.addColumn(i18n.tr("BLZ"),"blz");
@@ -307,7 +307,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 			{
 
 				// wir checken erstmal, ob wir den schon haben.
-				DBIterator list = Settings.getDatabase().createList(Empfaenger.class);
+				DBIterator list = Settings.getDBService().createList(Empfaenger.class);
 				list.addFilter("kontonummer = '" + kto + "'");
 				list.addFilter("blz = '" + blz + "'");
 				if (list.hasNext())
@@ -318,7 +318,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 							"Möchten Sie den Empfänger dennoch zum Adressbuch hinzufügen?"));
 					if (!((Boolean) d.open()).booleanValue()) return;
 				}
-				Empfaenger e = (Empfaenger) Settings.getDatabase().createObject(Empfaenger.class,null);
+				Empfaenger e = (Empfaenger) Settings.getDBService().createObject(Empfaenger.class,null);
 				e.setBLZ(blz);
 				e.setKontonummer(kto);
 				e.setName(name);
@@ -436,6 +436,9 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
+ * Revision 1.5  2004/07/23 15:51:44  willuhn
+ * @C Rest des Refactorings
+ *
  * Revision 1.4  2004/07/21 23:54:30  willuhn
  * *** empty log message ***
  *

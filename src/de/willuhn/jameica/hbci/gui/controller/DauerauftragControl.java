@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/DauerauftragControl.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/07/20 00:11:07 $
+ * $Revision: 1.4 $
+ * $Date: 2004/07/23 15:51:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -50,7 +50,7 @@ public class DauerauftragControl extends AbstractTransferControl {
 		if (getTransfer() != null)
 			return (Dauerauftrag) getTransfer();
 		
-		transfer = (Dauerauftrag) Settings.getDatabase().createObject(Dauerauftrag.class,null);
+		transfer = (Dauerauftrag) Settings.getDBService().createObject(Dauerauftrag.class,null);
 		return (Dauerauftrag) transfer;
 	}
 
@@ -61,7 +61,7 @@ public class DauerauftragControl extends AbstractTransferControl {
 	 */
 	public Part getDauerauftragListe() throws RemoteException
 	{
-		DBIterator list = Settings.getDatabase().createList(Dauerauftrag.class);
+		DBIterator list = Settings.getDBService().createList(Dauerauftrag.class);
 
 		TablePart table = new TablePart(list,this);
 		// table.addMenu(i18n.tr("Duplizieren"), new UeberweisungDuplicate()); TODO
@@ -119,6 +119,9 @@ public class DauerauftragControl extends AbstractTransferControl {
 
 /**********************************************************************
  * $Log: DauerauftragControl.java,v $
+ * Revision 1.4  2004/07/23 15:51:44  willuhn
+ * @C Rest des Refactorings
+ *
  * Revision 1.3  2004/07/20 00:11:07  willuhn
  * @C Code sharing zwischen Ueberweisung und Dauerauftrag
  *

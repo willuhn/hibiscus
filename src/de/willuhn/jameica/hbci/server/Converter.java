@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.12 $
- * $Date: 2004/07/20 21:48:00 $
+ * $Revision: 1.13 $
+ * $Date: 2004/07/23 15:51:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -61,7 +61,7 @@ public class Converter {
    */
   public static Umsatz HBCIUmsatz2HibiscusUmsatz(GVRKUms.UmsLine u) throws RemoteException
 	{
-		Umsatz umsatz = (Umsatz) Settings.getDatabase().createObject(Umsatz.class,null);
+		Umsatz umsatz = (Umsatz) Settings.getDBService().createObject(Umsatz.class,null);
 
 		umsatz.setArt(u.text);
 		umsatz.setCustomerRef(u.customerref);
@@ -129,7 +129,7 @@ public class Converter {
   public static Dauerauftrag HBCIDauer2HibiscusDauerauftrag(GVRDauerList.Dauer d)
   	throws RemoteException, ApplicationException
 	{
-		Dauerauftrag auftrag = (Dauerauftrag) Settings.getDatabase().createObject(Dauerauftrag.class,null);
+		Dauerauftrag auftrag = (Dauerauftrag) Settings.getDBService().createObject(Dauerauftrag.class,null);
 		auftrag.setErsteZahlung(d.firstdate);
 		auftrag.setLetzteZahlung(d.lastdate);
 		auftrag.setKonto(HBCIKonto2HibiscusKonto(d.my));
@@ -188,7 +188,7 @@ public class Converter {
 	public static de.willuhn.jameica.hbci.rmi.Konto HBCIKonto2HibiscusKonto(Konto konto) throws RemoteException
 	{
 		de.willuhn.jameica.hbci.rmi.Konto k =
-			(de.willuhn.jameica.hbci.rmi.Konto) Settings.getDatabase().createObject(de.willuhn.jameica.hbci.rmi.Konto.class,null);
+			(de.willuhn.jameica.hbci.rmi.Konto) Settings.getDBService().createObject(de.willuhn.jameica.hbci.rmi.Konto.class,null);
 		k.setBLZ(konto.blz);
 		k.setKontonummer(konto.number);
 		k.setKundennummer(konto.customerid);
@@ -221,7 +221,7 @@ public class Converter {
 	 */
 	public static Empfaenger HBCIKonto2HibiscusEmpfaenger(Konto konto) throws RemoteException
 	{
-		Empfaenger e = (Empfaenger) Settings.getDatabase().createObject(Empfaenger.class,null);
+		Empfaenger e = (Empfaenger) Settings.getDBService().createObject(Empfaenger.class,null);
 		e.setBLZ(konto.blz);
 		e.setKontonummer(konto.number);
 		String name = konto.name;
@@ -236,6 +236,9 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.13  2004/07/23 15:51:44  willuhn
+ * @C Rest des Refactorings
+ *
  * Revision 1.12  2004/07/20 21:48:00  willuhn
  * @N ContextMenus
  *

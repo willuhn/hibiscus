@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.29 $
- * $Date: 2004/07/21 23:54:30 $
+ * $Revision: 1.30 $
+ * $Date: 2004/07/23 15:51:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -361,7 +361,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    * @see de.willuhn.jameica.hbci.rmi.Konto#getUmsaetze()
    */
   public DBIterator getUmsaetze() throws RemoteException {
-		DBIterator list = Settings.getDatabase().createList(Umsatz.class);
+		DBIterator list = Settings.getDBService().createList(Umsatz.class);
 		list.addFilter("konto_id = " + getID() + " ORDER BY TONUMBER(datum) DESC");
 		return list;
   }
@@ -371,7 +371,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    * @see de.willuhn.jameica.hbci.rmi.Konto#getUeberweisungen()
    */
   public DBIterator getUeberweisungen() throws RemoteException {
-		DBIterator list = Settings.getDatabase().createList(Ueberweisung.class);
+		DBIterator list = Settings.getDBService().createList(Ueberweisung.class);
 		list.addFilter("konto_id = " + getID() + " ORDER BY TONUMBER(termin) DESC");
 		return list;
 	}
@@ -380,7 +380,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    * @see de.willuhn.jameica.hbci.rmi.Konto#deleteUmsaetze()
    */
   public void deleteUmsaetze() throws ApplicationException, RemoteException {
-		DBIterator list = Settings.getDatabase().createList(Umsatz.class);
+		DBIterator list = Settings.getDBService().createList(Umsatz.class);
 		list.addFilter("konto_id = " + getID());
 		if (!list.hasNext())
 			return;
@@ -409,7 +409,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    * @see de.willuhn.jameica.hbci.rmi.Konto#getProtokolle()
    */
   public DBIterator getProtokolle() throws RemoteException {
-		DBIterator list = Settings.getDatabase().createList(Protokoll.class);
+		DBIterator list = Settings.getDBService().createList(Protokoll.class);
 		list.addFilter("konto_id = " + getID() + " ORDER BY TONUMBER(datum) DESC");
 		return list;
   }
@@ -438,7 +438,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 			return;
 
 		try {
-			Protokoll entry = (Protokoll) Settings.getDatabase().createObject(Protokoll.class,null);
+			Protokoll entry = (Protokoll) Settings.getDBService().createObject(Protokoll.class,null);
 			entry.setKonto(this);
 			entry.setKommentar(kommentar);
 			entry.setTyp(protokollTyp);
@@ -455,6 +455,9 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.30  2004/07/23 15:51:44  willuhn
+ * @C Rest des Refactorings
+ *
  * Revision 1.29  2004/07/21 23:54:30  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EmpfaengerControl.java,v $
- * $Revision: 1.16 $
- * $Date: 2004/07/21 23:54:30 $
+ * $Revision: 1.17 $
+ * $Date: 2004/07/23 15:51:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -72,7 +72,7 @@ public class EmpfaengerControl extends AbstractControl {
 		if (empfaenger != null)
 			return empfaenger;
 
-		empfaenger = (Empfaenger) Settings.getDatabase().createObject(Empfaenger.class,null);
+		empfaenger = (Empfaenger) Settings.getDBService().createObject(Empfaenger.class,null);
 		return empfaenger;
 	}
 
@@ -83,7 +83,7 @@ public class EmpfaengerControl extends AbstractControl {
    */
   public Part getEmpfaengerListe() throws RemoteException
 	{
-		DBIterator list = Settings.getDatabase().createList(Empfaenger.class);
+		DBIterator list = Settings.getDBService().createList(Empfaenger.class);
 
 		TablePart table = new TablePart(list,this);
 		table.addColumn(i18n.tr("Kontonummer"),"kontonummer");
@@ -255,6 +255,9 @@ public class EmpfaengerControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: EmpfaengerControl.java,v $
+ * Revision 1.17  2004/07/23 15:51:43  willuhn
+ * @C Rest des Refactorings
+ *
  * Revision 1.16  2004/07/21 23:54:30  willuhn
  * *** empty log message ***
  *

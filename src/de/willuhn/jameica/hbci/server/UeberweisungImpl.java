@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UeberweisungImpl.java,v $
- * $Revision: 1.18 $
- * $Date: 2004/07/21 23:54:30 $
+ * $Revision: 1.19 $
+ * $Date: 2004/07/23 15:51:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -141,7 +141,7 @@ public class UeberweisungImpl extends AbstractTransferImpl implements Ueberweisu
 			HBCIFactory factory = HBCIFactory.getInstance();
 			HBCIUeberweisungJob job = new HBCIUeberweisungJob(getKonto());
 
-			Empfaenger empfaenger = (Empfaenger) Settings.getDatabase().createObject(Empfaenger.class,null);
+			Empfaenger empfaenger = (Empfaenger) Settings.getDBService().createObject(Empfaenger.class,null);
 			empfaenger.setBLZ(getEmpfaengerBLZ());
 			empfaenger.setKontonummer(getEmpfaengerKonto());
 			empfaenger.setName(getEmpfaengerName());
@@ -191,7 +191,7 @@ public class UeberweisungImpl extends AbstractTransferImpl implements Ueberweisu
    * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#duplicate()
    */
   public Ueberweisung duplicate() throws RemoteException {
-    Ueberweisung u = (Ueberweisung) Settings.getDatabase().createObject(Ueberweisung.class,null);
+    Ueberweisung u = (Ueberweisung) Settings.getDBService().createObject(Ueberweisung.class,null);
     u.setBetrag(getBetrag());
     u.setEmpfaengerBLZ(getEmpfaengerBLZ());
     u.setEmpfaengerKonto(getEmpfaengerKonto());
@@ -219,6 +219,9 @@ public class UeberweisungImpl extends AbstractTransferImpl implements Ueberweisu
 
 /**********************************************************************
  * $Log: UeberweisungImpl.java,v $
+ * Revision 1.19  2004/07/23 15:51:44  willuhn
+ * @C Rest des Refactorings
+ *
  * Revision 1.18  2004/07/21 23:54:30  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/07/21 23:54:30 $
+ * $Revision: 1.6 $
+ * $Date: 2004/07/23 15:51:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -180,7 +180,7 @@ public class UmsatzTypImpl extends AbstractDBObject implements UmsatzTyp {
    * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getUmsaetze()
    */
   public DBIterator getUmsaetze() throws RemoteException {
-		DBIterator list = Settings.getDatabase().createList(Umsatz.class);
+		DBIterator list = Settings.getDBService().createList(Umsatz.class);
 		list.addFilter("umsatztyp_id = " + getID() + " ORDER BY TONUMBER(datum)");
 		return list;
   }
@@ -190,6 +190,9 @@ public class UmsatzTypImpl extends AbstractDBObject implements UmsatzTyp {
 
 /**********************************************************************
  * $Log: UmsatzTypImpl.java,v $
+ * Revision 1.6  2004/07/23 15:51:44  willuhn
+ * @C Rest des Refactorings
+ *
  * Revision 1.5  2004/07/21 23:54:30  willuhn
  * *** empty log message ***
  *
