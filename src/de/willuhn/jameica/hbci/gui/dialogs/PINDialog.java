@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/PINDialog.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/11/12 18:25:07 $
+ * $Revision: 1.9 $
+ * $Date: 2005/02/01 17:15:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,16 +12,19 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.dialogs;
 
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import sun.misc.BASE64Encoder;
+import org.kapott.hbci.passport.HBCIPassport;
+
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.PasswordDialog;
+import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.security.Wallet;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
+import de.willuhn.security.Checksum;
 import de.willuhn.util.I18N;
 
 /**
@@ -32,19 +35,26 @@ import de.willuhn.util.I18N;
 public class PINDialog extends PasswordDialog {
 
 	private I18N i18n;
+	private HBCIPassport passport;
+
   /**
    * ct.
-   * @param position Position des Dialogs.
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#POSITION_CENTER
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#POSITION_MOUSE
+   * @param passport Passport, fuer den die PIN-Abfrage gemacht wird. Grund: Der
+   * PIN-Dialog hat eine eingebaute Checksummen-Pruefung um zu checken, ob die
+   * PIN richtig eingegeben wurde. Da diese Checksumme aber pro Passport gespeichert
+   * wird, benoetigt der Dialoig eben jenen.
    */
-  public PINDialog(int position) {
-    super(position);
+  public PINDialog(HBCIPassport passport) {
+
+    super(PINDialog.POSITION_CENTER);
+    this.passport = passport;
+
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
     setTitle(i18n.tr("PIN-Eingabe"));
     setLabelText(i18n.tr("Ihre PIN"));
     setText(i18n.tr("Bitte geben Sie Ihre PIN ein."));
+		setSideImage(SWTUtil.getImage("password.gif"));
   }
 
 	/**
@@ -58,50 +68,63 @@ public class PINDialog extends PasswordDialog {
 			return false;
 		}
 
+		// Checksummen-Pruefung nicht aktiv. Also raus.
 		if (!Settings.getCheckPin())
 			return true;
 
-		// PIN-Ueberpruefung aktiv. Also checken wir die Pruef-Summe
-		String checkSum = Settings.getCheckSum();
-		if (checkSum == null || checkSum.length() == 0)
+		try
 		{
-			// Das ist die erste Eingabe. Dann koennen wir nur
-			// eine neue Check-Summe bilden, sie abspeichern und
-			// hoffen, dass sie richtig eingegeben wurd.
-			try {
-				Settings.setCheckSum(createCheckSum(password));
-			}
-			catch (NoSuchAlgorithmException e)
+			// PIN-Ueberpruefung aktiv. Also checken wir die Pruef-Summe
+			Wallet w = Settings.getWallet();
+			String checkSum = (String) w.get("hbci.passport.pinchecksum." + passport.getCustomerId());
+
+			if (checkSum == null || checkSum.length() == 0)
 			{
-				Logger.error("hash algorithm not found",e);
-				GUI.getStatusBar().setErrorText(i18n.tr("Prüfsumme konnte nicht ermittelt werden. Option wurde deaktiviert."));
-				Settings.setCheckPin(false);
-				Settings.setCheckSum(null);
+				// Das ist die erste Eingabe. Dann koennen wir nur
+				// eine neue Check-Summe bilden, sie abspeichern und
+				// hoffen, dass sie richtig eingegeben wurd.
+				try {
+					w.set("hbci.passport.pinchecksum." + passport.getCustomerId(),Checksum.md5(password.getBytes()));
+				}
+				catch (NoSuchAlgorithmException e)
+				{
+					Logger.error("hash algorithm not found",e);
+					GUI.getStatusBar().setErrorText(i18n.tr("Prüfsumme konnte nicht ermittelt werden. Option wurde deaktiviert."));
+					Settings.setCheckPin(false);
+					w.set("hbci.passport.pinchecksum." + passport.getCustomerId(),null);
+				}
+				return true;
 			}
+			// Check-Summe existiert, dann vergleichen wir die Eingabe
+			else {
+				String n = null;
+				try {
+					n = Checksum.md5(password.getBytes());
+				}
+				catch (NoSuchAlgorithmException e)
+				{
+					Logger.error("hash algorithm not found",e);
+					GUI.getStatusBar().setErrorText(i18n.tr("Prüfsumme konnte nicht verglichen werden. Option wurde deaktiviert."));
+					Settings.setCheckPin(false);
+					w.set("hbci.passport.pinchecksum." + passport.getCustomerId(),null);
+					return true;
+				}
+				if (n != null && checkSum != null && n.length() > 0 && checkSum.length() > 0 && n.equals(checkSum))
+				{
+					// Eingabe korrekt
+					return true;
+				}
+			}
+			setErrorText(i18n.tr("PIN falsch.") + " " + getRetryString());
+			return false;
+		}
+		catch (Exception e)
+		{
+			Logger.error("error while checking pin",e);
+			GUI.getStatusBar().setErrorText(i18n.tr("Prüfsumme konnte nicht verglichen werden. Option wurde deaktiviert."));
+			Settings.setCheckPin(false);
 			return true;
 		}
-		// Check-Summe existiert, dann vergleichen wir die Eingabe
-		else {
-			String n = null;
-			try {
-				n = createCheckSum(password);
-			}
-			catch (NoSuchAlgorithmException e)
-			{
-				Logger.error("hash algorithm not found",e);
-				GUI.getStatusBar().setErrorText(i18n.tr("Prüfsumme konnte nicht verglichen werden. Option wurde deaktiviert."));
-				Settings.setCheckPin(false);
-				Settings.setCheckSum(null);
-				return true;
-			}
-			if (n != null && checkSum != null && n.length() > 0 && checkSum.length() > 0 && n.equals(checkSum))
-			{
-				// Eingabe korrekt
-				return true;
-			}
-    }
-		setErrorText(i18n.tr("PIN falsch.") + " " + getRetryString());
-		return false;
 	}
 
 	/**
@@ -114,37 +137,14 @@ public class PINDialog extends PasswordDialog {
 		String retries = getRemainingRetries() > 1 ? i18n.tr("Versuche") : i18n.tr("Versuch");
 		return (i18n.tr("Noch") + " " + getRemainingRetries() + " " + retries + ".");
 	}
-
-  /**
-	 * Erzeugt eine Check-Summe aus dem uebergebenen String.
-   * @param s der String.
-   * @return erzeugte Check-Summe.
-   * @throws NoSuchAlgorithmException Wenn die benoetigten Hash-Algorithmen nicht zur Verfuegung stehen.
-   */
-  private static String createCheckSum(String s) throws NoSuchAlgorithmException
-	{
-		// Es ist vielleicht etwas uebertrieben - ich weiss, aber ich
-		// will auf Nummer sicher gehen. Deswegen mach ich aus dem String
-		// erst einen MD5-Hash und bilde aus dem dann einen SHA1-Hash.
-		// Hintergrund: Kriegt jemand die Datei mit dem Hash in die
-		// Finger, wird er sich mit einer Woertbuch-Attacke lange versuchen,
-		// da er wahrscheinlich nicht weiss, dass das Passwort doppelt
-		// gehasht ist.
-		MessageDigest md = null;
-		byte[] hashed = null;
-		md = MessageDigest.getInstance("MD5");
-		byte[] b = md.digest(s.getBytes());
-		md = MessageDigest.getInstance("SHA1");
-		hashed = md.digest(b);
-
-		BASE64Encoder encoder = new BASE64Encoder();
-		return encoder.encode(hashed);
-	}
 }
 
 
 /**********************************************************************
  * $Log: PINDialog.java,v $
+ * Revision 1.9  2005/02/01 17:15:37  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.8  2004/11/12 18:25:07  willuhn
  * *** empty log message ***
  *

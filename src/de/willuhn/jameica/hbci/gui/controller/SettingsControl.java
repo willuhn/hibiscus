@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.35 $
- * $Date: 2004/11/12 18:25:07 $
+ * $Revision: 1.36 $
+ * $Date: 2005/02/01 17:15:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,12 +13,8 @@
 package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.pseudo.PseudoIterator;
@@ -127,7 +123,6 @@ public class SettingsControl extends AbstractControl {
 		if (checkPin != null)
 			return checkPin;
 		checkPin = new CheckboxInput(Settings.getCheckPin());
-		checkPin.addListener(new CheckPinListener());
 		return checkPin;
 	}
 
@@ -202,8 +197,6 @@ public class SettingsControl extends AbstractControl {
 			
 			Settings.setUeberweisungLimit(((Double)getUeberweisungLimit().getValue()).doubleValue());
 
-			// Wir gehen nochmal auf Nummer sicher, dass die Pruefsummen-Algorithmen vorhanden sind
-			new CheckPinListener().handleEvent(null);
 			GUI.getStatusBar().setSuccessText(i18n.tr("Einstellungen gespeichert."));
 		}
 		catch (RemoteException e)
@@ -218,11 +211,9 @@ public class SettingsControl extends AbstractControl {
    */
   public void handleDeleteCheckSum()
 	{
-		if (Settings.getCheckSum() == null)
-			return; // noch keine definiert
 		YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
 		d.setTitle(i18n.tr("Sicher?"));
-		d.setText(i18n.tr("Möchten Sie die gespeicherte Checksumme wirklich löschen?"));
+		d.setText(i18n.tr("Möchten Sie die gespeicherten Checksummen wirklich löschen?"));
 		try {
 			if (!((Boolean)d.open()).booleanValue())
 				return;
@@ -232,42 +223,25 @@ public class SettingsControl extends AbstractControl {
 			Logger.error("error while getting data from yes/no dialog",e);
 			return;
 		}
-		Settings.setCheckSum(null);
-		GUI.getStatusBar().setSuccessText(i18n.tr("Checksumme gelöscht."));
+
+		try
+		{
+			Settings.getWallet().delete("hbci.passport.pinchecksum");
+			GUI.getStatusBar().setSuccessText(i18n.tr("Checksummen gelöscht."));
+		}
+		catch (Exception e)
+		{
+			Logger.error("error while deleting checksums",e);
+		}
 	}
-
-	/**
-	 * Listener, der prueft, ob die Hash-Algorithmen zur Checksummen-Bildung
-	 * verfuegbar sind.
-   */
-  private class CheckPinListener implements Listener
-	{
-
-    /**
-     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-     */
-    public void handleEvent(Event event) {
-			try {
-				MessageDigest.getInstance("MD5");
-				MessageDigest.getInstance("SHA1");
-			}
-			catch (NoSuchAlgorithmException e)
-			{
-				Settings.setCheckPin(false);
-				try {
-					getCheckPin().disable();
-				}
-				catch (RemoteException e1) {/*useless*/}
-				GUI.getStatusBar().setErrorText(i18n.tr("Algorithmen zur Prüfsummenbildung auf diesem System nicht vorhanden"));
-			}
-    }
-	}
-
 }
 
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.36  2005/02/01 17:15:37  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.35  2004/11/12 18:25:07  willuhn
  * *** empty log message ***
  *

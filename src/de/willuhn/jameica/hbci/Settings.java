@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.27 $
- * $Date: 2005/01/30 20:45:35 $
+ * $Revision: 1.28 $
+ * $Date: 2005/02/01 17:15:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,7 +13,6 @@
 package de.willuhn.jameica.hbci;
 
 import java.rmi.RemoteException;
-import java.security.SecureRandom;
 
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
@@ -23,7 +22,6 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.parts.ProgressBar;
 import de.willuhn.jameica.security.Wallet;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.logging.Logger;
 
 /**
  * Verwaltet die Einstellungen des Plugins.
@@ -177,25 +175,6 @@ public class Settings
   }
 
   /**
-   * Liefert die Check-Summe der PIN oder <code>null</code> wenn sie nie
-   * gespeichert wurde.
-   * @return Check-Summe der Pin.
-   */
-  public static String getCheckSum()
-  {
-    return settings.getString("checksum",null);
-  }
-
-  /**
-   * Speichert die Check-Summe der PIN.
-   * @param checksum Check-Summe der Pin.
-   */
-  public static void setCheckSum(String checksum)
-  {
-    settings.setAttribute("checksum",checksum);
-  }
-
-  /**
    * Speichert, ob wir eine permanente Online-Verbindung haben und daher
    * vom HBCI-Kernel nicht dauernd gefragt werden muessen, ob wir eine
    * Internetverbindung haben wollen.
@@ -240,55 +219,23 @@ public class Settings
 	}
 	
   /**
-   * Liefert das Passwort mit der lokale Passport verschluesselt wird.
-   * @return Passphrase.
+   * Liefert das von Hibiscus verwendete Wallet.
+   * @return das Wallet.
+   * @throws Exception
    */
-  protected static String getPassphrase()
+  public static Wallet getWallet() throws Exception
   {
-  	try
-  	{
-  		// Eigentlich koennten wir zum Verschluesseln auch das
-  		// Master-Passwort verwenden. Warum wir einen Zufallswert
-  		// verwenden, den wir als Wallet speichern? Keine Ahnung ;)
-
-  		// Wir erzeugen uns ein Wallet
-			if (wallet == null)
-				wallet = Application.getSSLFactory().getWallet(HBCI.class);
-			// und laden das Passwort von dort.
-			String pw = wallet.getString("hbci.passport.password");
-			if (pw != null)
-				return pw;
-
-			// Es existiert noch kein Passwort. Dann erzeugen wir
-			// ein neues basierend auf einem Zufallswert.
-			byte[] pass = new byte[20];
-			SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
-			random.nextBytes(pass);
-			pw = new String(pass);
-
-			// Und speichern es im Wallet.
-			wallet.set("hbci.passport.password",pw);
-			return pw;
-  	}
-  	catch (Exception e)
-  	{
-  		Logger.error("error while reading password from wallet",e);
-  		return "dummypassword";
-  	}
-  		
+		if (wallet == null)
+			wallet = Application.getSSLFactory().getWallet(HBCI.class);
+		return wallet;
   }
-
-	public static ProgressBar getHBCIProgressBar()
-	{
-		if (hbciProgress != null)
-			return hbciProgress;
-		hbciProgress = new ProgressBar();
-		return hbciProgress;
-	}
 }
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.28  2005/02/01 17:15:37  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.27  2005/01/30 20:45:35  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.20 $
- * $Date: 2005/01/15 16:48:17 $
+ * $Revision: 1.21 $
+ * $Date: 2005/02/01 17:15:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,7 @@
 
 package de.willuhn.jameica.hbci;
 
+import java.security.SecureRandom;
 import java.util.Date;
 
 import org.eclipse.swt.SWTException;
@@ -27,11 +28,12 @@ import org.kapott.hbci.passport.INILetter;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.gui.DialogFactory;
 import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
+import de.willuhn.jameica.security.Wallet;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
+import de.willuhn.util.Base64;
 import de.willuhn.util.I18N;
-import de.willuhn.util.ProgressMonitor;
 
 /**
  * Dieser HBCICallbackSWT implementiert den HBCICallbackSWT des HBCI-Systems und
@@ -41,15 +43,13 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 {
 
 	private I18N i18n;
-	private ProgressMonitor monitor;
 
   /**
    * ct.
    */
-  public HBCICallbackSWT(ProgressMonitor monitor)
+  public HBCICallbackSWT()
   {
 		super();
-  	this.monitor = monitor;
     this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
@@ -93,13 +93,28 @@ public class HBCICallbackSWT extends AbstractHBCICallback
             
 			switch (reason) {
 				case NEED_PASSPHRASE_LOAD:
-					// TODO: Passport-Passwort
-//					retData.replace(0,retData.length(),DialogFactory.loadPassport());
-				retData.replace(0,retData.length(),Settings.getPassphrase());
-					break;
 				case NEED_PASSPHRASE_SAVE:
-//					retData.replace(0,retData.length(),DialogFactory.savePassport());
-					retData.replace(0,retData.length(),Settings.getPassphrase());
+					// Das ist das Passwort fuer die Passport-Datei.
+					// Es muss nicht sein, dass wir das auch noch dem
+					// Benutzer zumuten. Stattdessen erzeugen wir bei Bedarf
+					// selbst ein zufaelliges Passwort und speichern es
+					// in einem Jameica-Wallet.
+					Wallet w = Settings.getWallet();
+					// Wir haben ein Passwort pro Passport
+					String pw = (String) w.get("hbci.passport.password." + passport.getCustomerId());
+					if (pw == null)
+					{
+						// noch kein Passwort definiert. Dann erzeugen wir
+						// ein zufaelliges.
+						byte[] pass = new byte[20];
+						SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
+						random.nextBytes(pass);
+						pw = Base64.encode(pass);
+
+						// Und speichern es im Wallet.
+						w.set("hbci.passport.password." + passport.getCustomerId(),pw);
+					}
+					retData.replace(0,retData.length(),pw);
 					break;
 	
 				case NEED_CHIPCARD:
@@ -115,10 +130,10 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 					break;
 
 				case NEED_SOFTPIN:
-					retData.replace(0,retData.length(),DialogFactory.getPIN());
+					retData.replace(0,retData.length(),DialogFactory.getPIN(passport));
 					break;
 				case NEED_PT_PIN:
-					retData.replace(0,retData.length(),DialogFactory.getPIN());
+					retData.replace(0,retData.length(),DialogFactory.getPIN(passport));
 					break;
 				case NEED_PT_TAN:
 					retData.replace(0,retData.length(),DialogFactory.getTAN());
@@ -352,6 +367,9 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.21  2005/02/01 17:15:37  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.20  2005/01/15 16:48:17  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/PassportLoadDialog.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/01/09 23:21:05 $
+ * $Revision: 1.2 $
+ * $Date: 2005/02/01 17:15:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -34,7 +34,7 @@ public class PassportLoadDialog extends PasswordDialog {
     super(position);
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-    setTitle(i18n.tr("Passpwort-Eingabe"));
+    setTitle(i18n.tr("Passwort-Eingabe"));
     setLabelText(i18n.tr("Ihre Passwort"));
     setText(i18n.tr("Bitte geben Sie von Ihnen vergebene Passwort für dieses\nSicherheitsmedium ein."));
   }
@@ -67,6 +67,9 @@ public class PassportLoadDialog extends PasswordDialog {
 
 /**********************************************************************
  * $Log: PassportLoadDialog.java,v $
+ * Revision 1.2  2005/02/01 17:15:37  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2005/01/09 23:21:05  willuhn
  * *** empty log message ***
  *

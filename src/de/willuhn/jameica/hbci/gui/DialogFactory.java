@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/DialogFactory.java,v $
- * $Revision: 1.18 $
- * $Date: 2005/01/09 23:21:05 $
+ * $Revision: 1.19 $
+ * $Date: 2005/02/01 17:15:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,11 +12,12 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui;
 
+import org.kapott.hbci.passport.HBCIPassport;
+
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.dialogs.SimpleDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.PINDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.PassportLoadDialog;
-import de.willuhn.jameica.hbci.gui.dialogs.PassportSaveDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.TANDialog;
 import de.willuhn.logging.Logger;
 
@@ -56,13 +57,17 @@ public class DialogFactory {
 	 * oder die PIN drei mal falsch eingegeben wurde (bei aktivierter Checksummen-Pruefung).
 	 * Hintergrund: Der Dialog wurde aus dem HBCICallBack heraus aufgerufen und soll im
 	 * Fehlerfall den HBCI-Vorgang abbrechen.
+   * @param passport Passport, fuer den die PIN-Abfrage gemacht wird. Grund: Der
+   * PIN-Dialog hat eine eingebaute Checksummen-Pruefung um zu checken, ob die
+   * PIN richtig eingegeben wurde. Da diese Checksumme aber pro Passport gespeichert
+   * wird, benoetigt der Dialoig eben jenen.
 	 * @return die eingegebene PIN.
    * @throws Exception
 	 */
-	public static synchronized String getPIN() throws Exception
+	public static synchronized String getPIN(HBCIPassport passport) throws Exception
 	{
 		check();
-		dialog = new PINDialog(AbstractDialog.POSITION_CENTER);
+		dialog = new PINDialog(passport);
 		try {
 			return (String) dialog.open();
 		}
@@ -73,32 +78,14 @@ public class DialogFactory {
 	}
 
 	/**
-	 * Dialog zur Eingabe des Passworts fuer das Sicherheitsmedium beim Laden.
+	 * Dialog zur Eingabe des Passworts fuer das Sicherheitsmedium beim Laden eines zu importierenden Passports.
    * @return eingegebenes Passwort.
    * @throws Exception
    */
-  public static synchronized String loadPassport() throws Exception
+  public static synchronized String importPassport() throws Exception
 	{
 		check();
 		dialog = new PassportLoadDialog(AbstractDialog.POSITION_CENTER);
-		try {
-			return (String) dialog.open();
-		}
-		finally
-		{
-			close();
-		}
-	}
-
-	/**
-	 * Dialog zur Eingabe des Passworts fuer das Sicherheitsmedium beim Speichern.
-	 * @return eingegebenes Passwort.
-	 * @throws Exception
-	 */
-	public static synchronized String savePassport() throws Exception
-	{
-		check();
-		dialog = new PassportSaveDialog(AbstractDialog.POSITION_CENTER);
 		try {
 			return (String) dialog.open();
 		}
@@ -162,6 +149,9 @@ public class DialogFactory {
 
 /**********************************************************************
  * $Log: DialogFactory.java,v $
+ * Revision 1.19  2005/02/01 17:15:37  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.18  2005/01/09 23:21:05  willuhn
  * *** empty log message ***
  *

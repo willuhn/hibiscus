@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/HBCIDBServiceImpl.java,v $
- * $Revision: 1.9 $
- * $Date: 2005/01/30 20:45:35 $
+ * $Revision: 1.10 $
+ * $Date: 2005/02/01 17:15:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,8 +16,6 @@ package de.willuhn.jameica.hbci.server;
 import java.rmi.RemoteException;
 
 import de.willuhn.datasource.db.EmbeddedDBServiceImpl;
-import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.system.Application;
@@ -45,32 +43,16 @@ public class HBCIDBServiceImpl extends EmbeddedDBServiceImpl implements HBCIDBSe
   public String getName() throws RemoteException
   {
 		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-    return i18n.tr("Datenbank-Service fÃ¼r Hibiscus");
+    return i18n.tr("Datenbank-Service für Hibiscus");
   }
-
-  /**
-   * Ueberschreiben wir, um ein Login vorzuschalten, wenn die Anwendung als Client/Standalone laeuft.
-   * @see de.willuhn.datasource.rmi.DBService#createList(java.lang.Class)
-   */
-  public DBIterator createList(Class arg0) throws RemoteException
-  {
-    return super.createList(arg0);
-  }
-
-  /**
-   * Ueberschreiben wir, um ein Login vorzuschalten, wenn die Anwendung als Client/Standalone laeuft.
-   * @see de.willuhn.datasource.rmi.DBService#createObject(java.lang.Class, java.lang.String)
-   */
-  public DBObject createObject(Class arg0, String arg1) throws RemoteException
-  {
-    return super.createObject(arg0, arg1);
-  }
-
 }
 
 
 /*********************************************************************
  * $Log: HBCIDBServiceImpl.java,v $
+ * Revision 1.10  2005/02/01 17:15:37  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.9  2005/01/30 20:45:35  willuhn
  * *** empty log message ***
  *

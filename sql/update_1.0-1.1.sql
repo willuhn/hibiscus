@@ -1,14 +1,5 @@
-ALTER CREATE TABLE login (
-  id NUMERIC default UNIQUEKEY('login'),
-  username varchar(100) NOT NULL,
-  password varchar(100) NOT NULL,
-  UNIQUE (id),
-  PRIMARY KEY (id)
-);
-
 ALTER CREATE TABLE konto (
   id NUMERIC default UNIQUEKEY('konto'),
-  login_id int(4) NULL,
   kontonummer varchar(15) NOT NULL,
   blz varchar(15) NOT NULL,
   name varchar(255) NOT NULL,
@@ -67,7 +58,6 @@ ALTER CREATE TABLE lastschrift (
 );
 
 ALTER TABLE dauerauftrag ADD CONSTRAINT fk_konto4 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
-ALTER TABLE konto ADD CONSTRAINT fk_login FOREIGN KEY (login_id) REFERENCES login (id) DEFERRABLE;
 ALTER TABLE lastschrift ADD CONSTRAINT fk_konto5 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)

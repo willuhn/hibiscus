@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.21 $
- * $Date: 2004/11/13 17:02:04 $
+ * $Revision: 1.22 $
+ * $Date: 2005/02/01 17:15:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,7 +21,6 @@ import org.kapott.hbci.GV.HBCIJob;
 import org.kapott.hbci.manager.HBCIHandler;
 
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -242,9 +241,6 @@ public class HBCIFactory {
 			throw new ApplicationException(i18n.tr("Es läuft bereits eine andere HBCI-Abfrage."));
 
 		inProgress = true;
-		Settings.getHBCIProgressBar().setPercentComplete(0);
-		Settings.getHBCIProgressBar().clearLog();
-		Settings.getHBCIProgressBar().setStatusText("");
 		
 	}
 	
@@ -264,6 +260,9 @@ public class HBCIFactory {
 
 /**********************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.22  2005/02/01 17:15:37  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.21  2004/11/13 17:02:04  willuhn
  * @N Bearbeiten des Zahlungsturnus
  *
