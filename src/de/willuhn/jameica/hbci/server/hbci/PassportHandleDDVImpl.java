@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/Attic/PassportHandleDDVImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/04/19 22:05:52 $
+ * $Revision: 1.2 $
+ * $Date: 2004/04/25 17:41:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,7 +49,7 @@ public class PassportHandleDDVImpl
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Passport#open()
+   * @see de.willuhn.jameica.hbci.rmi.hbci.PassportHandle#open()
    */
   public HBCIHandler open() throws RemoteException {
 
@@ -103,14 +103,14 @@ public class PassportHandleDDVImpl
   }
 
 	/**
-	 * @see de.willuhn.jameica.hbci.rmi.Passport#isOpen()
-	 */
-	public boolean isOpen() throws RemoteException {
+   * @see de.willuhn.jameica.hbci.rmi.hbci.PassportHandle#isOpen()
+   */
+  public boolean isOpen() throws RemoteException {
 		return handler != null && hbciPassport != null;
 	}
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Passport#close()
+   * @see de.willuhn.jameica.hbci.rmi.hbci.PassportHandle#close()
    */
   public void close() throws RemoteException {
 		if (hbciPassport == null && handler == null)
@@ -125,7 +125,7 @@ public class PassportHandleDDVImpl
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Passport#getKonten()
+   * @see de.willuhn.jameica.hbci.rmi.hbci.PassportHandle#getKonten()
    */
   public Konto[] getKonten() throws RemoteException {
 		try {
@@ -167,6 +167,9 @@ public class PassportHandleDDVImpl
 
 /**********************************************************************
  * $Log: PassportHandleDDVImpl.java,v $
+ * Revision 1.2  2004/04/25 17:41:05  willuhn
+ * @D javadoc
+ *
  * Revision 1.1  2004/04/19 22:05:52  willuhn
  * @C HBCIJobs refactored
  *

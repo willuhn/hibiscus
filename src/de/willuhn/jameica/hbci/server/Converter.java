@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/04/22 23:46:50 $
+ * $Revision: 1.5 $
+ * $Date: 2004/04/25 17:41:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -119,7 +119,7 @@ public class Converter {
 
 	/**
 	 * Konvertiert einen Jameica-Empfaenger in ein HBCI4Java Konto.
-	 * @param Empfaenger unser Empfaenger
+	 * @param empfaenger unser Empfaenger
 	 * @return das HBCI4Java Konto.
 	 * @throws RemoteException
 	 */
@@ -155,6 +155,9 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.5  2004/04/25 17:41:05  willuhn
+ * @D javadoc
+ *
  * Revision 1.4  2004/04/22 23:46:50  willuhn
  * @N UeberweisungJob
  *
