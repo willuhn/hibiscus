@@ -13,8 +13,14 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
+		<buildCommand>
+			<name>il.net.inter.genadyb.rmi.generation.RMIBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
 	</buildSpec>
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
+		<nature>il.net.inter.genadyb.rmi.generation.RMINature</nature>
 	</natures>
 </projectDescription>
