@@ -118,9 +118,11 @@
 		<mkdir dir="${project.release}" />
 		<mkdir dir="${project.zipdir}" />
 
+		<tstamp/>
 		<jar destfile="${project.zipdir}/${define.jarfilename}">
 			<manifest>
 				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Built-Date" value="${DSTAMP}" />
 				<attribute name="Implementation-Title" value="${define.pluginname}" />
 				<attribute name="Implementation-Version" value="${version}" />
 				<attribute name="Implementation-Buildnumber" value="${build.number}" />
