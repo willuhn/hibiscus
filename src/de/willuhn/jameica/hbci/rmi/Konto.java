@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Konto.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/02/17 00:53:22 $
+ * $Revision: 1.6 $
+ * $Date: 2004/02/17 01:01:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -131,15 +131,18 @@ public interface Konto extends DBObject {
 
 	/**
 	 * Aktualisiert den Saldo online.
-   * @throws ApplicationException
+   * @throws RemoteException
    */
-  public void refreshSaldo() throws ApplicationException;
+  public void refreshSaldo() throws ApplicationException,RemoteException;
 
 }
 
 
 /**********************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.6  2004/02/17 01:01:38  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2004/02/17 00:53:22  willuhn
  * @N SaldoAbfrage
  * @N Ueberweisung

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Ueberweisung.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/02/17 00:53:22 $
+ * $Revision: 1.2 $
+ * $Date: 2004/02/17 01:01:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -121,13 +121,16 @@ public interface Ueberweisung extends DBObject {
 	 * Ist dieser Termin nicht definiert, wird sie sofort ausgefuehrt.
    * @throws ApplicationException
    */
-  public void execute() throws ApplicationException;
+  public void execute() throws RemoteException, ApplicationException;
 	
 }
 
 
 /**********************************************************************
  * $Log: Ueberweisung.java,v $
+ * Revision 1.2  2004/02/17 01:01:38  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/02/17 00:53:22  willuhn
  * @N SaldoAbfrage
  * @N Ueberweisung

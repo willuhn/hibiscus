@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/JobFactory.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/02/17 00:53:22 $
+ * $Revision: 1.2 $
+ * $Date: 2004/02/17 01:01:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,6 +23,7 @@ import org.kapott.hbci.status.HBCIExecStatus;
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Passport;
+import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 
 /**
  * Diese Klasse ist fuer die Ausfuehrung der HBCI-Jobs zustaendig.
@@ -41,7 +42,7 @@ public class JobFactory {
    * @return der Saldo.
    * @throws RemoteException
    */
-  protected static double getSaldo(Konto konto) throws RemoteException
+  protected static synchronized double getSaldo(Konto konto) throws RemoteException
 	{
 
 		if (konto == null)
@@ -92,11 +93,24 @@ public class JobFactory {
 			catch (Exception e) {/*useless*/}
 		}
 	}
+	
+	/**
+	 * Fuehrt die angegebene Ueberweisung sofort aus.
+   * @param u die Ueberweisung.
+   * @throws RemoteException
+   */
+  protected static synchronized void execute(Ueberweisung u) throws RemoteException
+	{
+	}
+	
 }
 
 
 /**********************************************************************
  * $Log: JobFactory.java,v $
+ * Revision 1.2  2004/02/17 01:01:38  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/02/17 00:53:22  willuhn
  * @N SaldoAbfrage
  * @N Ueberweisung

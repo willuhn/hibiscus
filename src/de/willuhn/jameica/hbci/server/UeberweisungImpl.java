@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UeberweisungImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/02/17 00:53:22 $
+ * $Revision: 1.2 $
+ * $Date: 2004/02/17 01:01:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,7 +20,6 @@ import de.willuhn.jameica.Application;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Empfaenger;
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.rmi.Passport;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.util.ApplicationException;
 
@@ -234,26 +233,15 @@ public class UeberweisungImpl
   /**
    * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#execute()
    */
-  public synchronized void execute() throws ApplicationException {
+  public synchronized void execute() throws ApplicationException, RemoteException {
 
-		try {
-			if (isNewObject())
-			{
-				store();
-			}
-		}
-		catch (RemoteException e)
-		{
-			throw new ApplicationException("Fehler beim Speichern der Überweisung.");
-		}
-	
-		Passport p = null;
+		if (isNewObject())
+			store();
 	
 		try {
-			p = getKonto().getPassport();
-			p.open();
 
 			// TODO: Hier den restlichen Ueberweisungskram rein.
+			JobFactory.execute(this);
 
 			// wenn alles erfolgreich verlief, koennen wir die Ueberweisung auf
 			// Status "ausgefuehrt" setzen.
@@ -267,10 +255,6 @@ public class UeberweisungImpl
 			throw new ApplicationException("Fehler beim Ausfuehren der Ueberweisung");
 		}
 		finally {
-			try {
-				p.close();
-			}
-			catch (Exception e) {/*useless*/}
 			inExecute = false;
 		}
   }
@@ -292,6 +276,9 @@ public class UeberweisungImpl
 
 /**********************************************************************
  * $Log: UeberweisungImpl.java,v $
+ * Revision 1.2  2004/02/17 01:01:38  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/02/17 00:53:22  willuhn
  * @N SaldoAbfrage
  * @N Ueberweisung

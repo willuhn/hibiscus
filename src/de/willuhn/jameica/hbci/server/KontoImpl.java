@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/02/17 00:53:22 $
+ * $Revision: 1.7 $
+ * $Date: 2004/02/17 01:01:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -200,13 +200,6 @@ public class KontoImpl extends AbstractDBObject implements Konto {
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.DBObject#store()
-   */
-  public void store() throws RemoteException, ApplicationException {
-    super.store();
-  }
-
-  /**
    * @see de.willuhn.jameica.hbci.rmi.Konto#getKundennummer()
    */
   public String getKundennummer() throws RemoteException {
@@ -261,33 +254,26 @@ public class KontoImpl extends AbstractDBObject implements Konto {
   /**
    * @see de.willuhn.jameica.hbci.rmi.Konto#refreshSaldo()
    */
-  public synchronized void refreshSaldo() throws ApplicationException {
+  public synchronized void refreshSaldo() throws ApplicationException,RemoteException {
 
 
-		try {
-
-			if (isNewObject())
-			{
-				// Das machen wir um sicherzugehen, dass alle benoetigten Infos
-				// des Kontos vorhanden sind.
-				throw new ApplicationException("Bitte speichern Sie zunächst das Konto.");
-			}
-
-			// Bevor wir anfangen, muessen wir erstmal das Konto speichern
-			// Das checkt gleich, dass alles eingegeben wurde.
-			store();
-
-			double saldo = JobFactory.getSaldo(this);
-
-			// Wenn wir fertig sind, muessen wir noch den Saldo und das Datum speichern
-			setField("saldo",new Double(saldo));
-			setField("saldo_datum",new Date());
-			store();
-		}
-		catch (RemoteException e)
+		if (isNewObject())
 		{
-			throw new ApplicationException(e.getLocalizedMessage(),e);
+			// Das machen wir um sicherzugehen, dass alle benoetigten Infos
+			// des Kontos vorhanden sind.
+			throw new ApplicationException("Bitte speichern Sie zunächst das Konto.");
 		}
+
+		// Bevor wir anfangen, muessen wir erstmal das Konto speichern
+		// Das checkt gleich, dass alles eingegeben wurde.
+		store();
+
+		double saldo = JobFactory.getSaldo(this);
+
+		// Wenn wir fertig sind, muessen wir noch den Saldo und das Datum speichern
+		setField("saldo",new Double(saldo));
+		setField("saldo_datum",new Date());
+		store();
   }
   
   /**
@@ -317,6 +303,9 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.7  2004/02/17 01:01:38  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.6  2004/02/17 00:53:22  willuhn
  * @N SaldoAbfrage
  * @N Ueberweisung
