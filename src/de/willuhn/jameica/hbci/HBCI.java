@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.14 $
- * $Date: 2004/05/04 23:07:23 $
+ * $Revision: 1.15 $
+ * $Date: 2004/05/05 21:10:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -128,15 +128,6 @@ public class HBCI extends AbstractPlugin
         Application.getLog().error("unable to create sql tables",e);
         return false;
       }
-      try
-      {
-        db.executeSQLScript(new File(getResources().getPath() + "/sql/init.sql"));
-      }
-      catch (Exception e)
-      {
-        Application.getLog().error("unable to insert init data",e);
-        return false;
-      }
     }
     return true;
   }
@@ -146,22 +137,7 @@ public class HBCI extends AbstractPlugin
    */
   public boolean update(double oldVersion)
   {
-		// Mal schauen, ob fuer diesen Versionswechsel ein Update-Script vorliegt.
-		File update = new File(getResources().getPath() + "/sql/update_" + oldVersion + "-" + getVersion() + ".sql");
-		if (!update.exists())
-			return true;
-
-		try
-		{
-			EmbeddedDatabase db = getResources().getDatabase();
-			db.executeSQLScript(update);
-			return true;
-		}
-		catch (Exception e)
-		{
-			Application.getLog().error("unable to execute update sql script " + update.getAbsolutePath(),e);
-			return false;
-		}
+		return true;
   }
 
   /**
@@ -176,6 +152,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.15  2004/05/05 21:10:55  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.14  2004/05/04 23:07:23  willuhn
  * @C refactored Passport stuff
  *
