@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/KontoNeu.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/02/20 20:45:13 $
+ * $Revision: 1.6 $
+ * $Date: 2004/02/22 20:04:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -36,7 +36,7 @@ public class KontoNeu extends AbstractView {
    */
   public void bind() throws Exception {
 		
-		addHeadline("Bankverbindung bearbeiten");
+		GUI.setTitleText(I18N.tr("Bankverbindung bearbeiten"));
 		
 		final KontoControl control = new KontoControl(this);
 		LabelGroup group = new LabelGroup(getParent(),I18N.tr("Eigenschaften"));
@@ -98,6 +98,10 @@ public class KontoNeu extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoNeu.java,v $
+ * Revision 1.6  2004/02/22 20:04:53  willuhn
+ * @N Ueberweisung
+ * @N Empfaenger
+ *
  * Revision 1.5  2004/02/20 20:45:13  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/02/21 19:49:04 $
+ * $Revision: 1.4 $
+ * $Date: 2004/02/22 20:04:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -66,10 +66,6 @@ public class SettingsControl extends AbstractControl {
 	{
 		if (checkPin != null)
 			return checkPin;
-		// TODO HIER
-		// - In den Settings noch speichern
-		// - Dialog nicht vergroesserbar machen
-		// - OK/Uebernehmen Button
 		checkPin = new CheckboxInput(Settings.getCheckPin());
 		checkPin.addComment("",new CheckPinListener());
 		return checkPin;
@@ -157,6 +153,10 @@ public class SettingsControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.4  2004/02/22 20:04:53  willuhn
+ * @N Ueberweisung
+ * @N Empfaenger
+ *
  * Revision 1.3  2004/02/21 19:49:04  willuhn
  * @N PINDialog
  *

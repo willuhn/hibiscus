@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/PINDialog.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/02/21 19:49:04 $
+ * $Revision: 1.2 $
+ * $Date: 2004/02/22 20:04:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,12 +16,10 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import sun.misc.BASE64Encoder;
-
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.PasswordDialog;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.server.JobFactory;
 import de.willuhn.util.I18N;
 
 /**
@@ -40,7 +38,7 @@ public class PINDialog extends PasswordDialog {
   public PINDialog(int position) {
     super(position);
     setTitle(I18N.tr("PIN-Eingabe"));
-    setLabelText(I18N.tr("PIN"));
+    setLabelText(I18N.tr("Ihre PIN"));
     setText(I18N.tr("Bitte geben Sie Ihre PIN ein."));
   }
 
@@ -49,19 +47,12 @@ public class PINDialog extends PasswordDialog {
    */
   protected boolean checkPassword(String password)
 	{
-		if (password == null && password.length() == 0)
+		if (password == null || password.length() != 5)
 		{
-			setErrorText(I18N.tr("Fehler: Bitte geben Sie Ihre PIN ein"));
+			setErrorText(I18N.tr("Fehler: PIN muss fünfstellig sein.") + " " + getRetryString());
 			return false;
 		}
 
-		if (password.length() != 5)
-		{
-			setErrorText(I18N.tr("Fehler: PIN muss fünf-stellig sein"));
-			return false;
-		}
-
-		// TODO: Dialog schliesst sich nicht sofort.
 		if (!Settings.getCheckPin())
 			return true;
 
@@ -104,8 +95,19 @@ public class PINDialog extends PasswordDialog {
 				return true;
 			}
     }
-		setErrorText(I18N.tr("PIN falsch. Noch ") + getRemainingRetries() + " " + I18N.tr("Versuche"));
+		setErrorText(I18N.tr("PIN falsch.") + " " + getRetryString());
 		return false;
+	}
+
+	/**
+	 * Liefert einen locale String mit der Anzahl der Restversuche.
+	 * z.Bsp.: "Noch 2 Versuche.".
+   * @return String mit den Restversuchen.
+   */
+  private String getRetryString()
+	{
+		String retries = getRemainingRetries() > 1 ? I18N.tr("Versuche") : I18N.tr("Versuch");
+		return (I18N.tr("Noch") + " " + getRemainingRetries() + " " + retries + ".");
 	}
 
   /**
@@ -133,18 +135,15 @@ public class PINDialog extends PasswordDialog {
 		BASE64Encoder encoder = new BASE64Encoder();
 		return encoder.encode(hashed);
 	}
-
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.PasswordDialog#cancel()
-   */
-  protected void cancel() {
-		JobFactory.close();
-  }
 }
 
 
 /**********************************************************************
  * $Log: PINDialog.java,v $
+ * Revision 1.2  2004/02/22 20:04:53  willuhn
+ * @N Ueberweisung
+ * @N Empfaenger
+ *
  * Revision 1.1  2004/02/21 19:49:04  willuhn
  * @N PINDialog
  *

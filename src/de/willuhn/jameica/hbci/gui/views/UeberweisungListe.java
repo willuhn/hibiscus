@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/KontoListe.java,v $
- * $Revision: 1.3 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/UeberweisungListe.java,v $
+ * $Revision: 1.1 $
  * $Date: 2004/02/22 20:04:53 $
  * $Author: willuhn $
  * $Locker:  $
@@ -16,36 +16,36 @@ import de.willuhn.jameica.Application;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.views.AbstractView;
-import de.willuhn.jameica.hbci.gui.controller.KontoControl;
+import de.willuhn.jameica.hbci.gui.controller.UeberweisungControl;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Zeigt eine Liste mit den vorhandenen Bankverbindungen an.
+ * Zeigt eine Liste mit den vorhandenen Ueberweisungen an.
  */
-public class KontoListe extends AbstractView {
+public class UeberweisungListe extends AbstractView {
 
   /**
    * @see de.willuhn.jameica.gui.views.AbstractView#bind()
    */
   public void bind() throws Exception {
 
-		GUI.setTitleText(I18N.tr("Vorhandene Bankverbindungen"));
+		GUI.setTitleText(I18N.tr("Vorhandene Überweisungen"));
 		
-		KontoControl control = new KontoControl(this);
+		UeberweisungControl control = new UeberweisungControl(this);
 		
 		try {
 
-			control.getKontoListe().paint(getParent());
+			control.getUeberweisungListe().paint(getParent());
 
 			ButtonArea buttons = new ButtonArea(getParent(),1);
-			buttons.addCreateButton(I18N.tr("Neue Bankverbindung"),control);
+			buttons.addCreateButton(I18N.tr("neue Überweisung"),control);
 
 		}
 		catch (Exception e)
 		{
-			Application.getLog().error("error while loading konto list",e);
-			GUI.setActionText(I18N.tr("Fehler beim Lesen der Bankverbindungen."));
+			Application.getLog().error("error while loading ueberweisung list",e);
+			GUI.setActionText(I18N.tr("Fehler beim Lesen der Überweisungen."));
 		}
   }
 
@@ -59,15 +59,9 @@ public class KontoListe extends AbstractView {
 
 
 /**********************************************************************
- * $Log: KontoListe.java,v $
- * Revision 1.3  2004/02/22 20:04:53  willuhn
+ * $Log: UeberweisungListe.java,v $
+ * Revision 1.1  2004/02/22 20:04:53  willuhn
  * @N Ueberweisung
  * @N Empfaenger
- *
- * Revision 1.2  2004/02/20 20:45:13  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2004/02/11 00:11:20  willuhn
- * *** empty log message ***
  *
  **********************************************************************/

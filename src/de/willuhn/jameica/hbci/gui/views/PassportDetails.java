@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/PassportDetails.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/02/20 20:45:13 $
+ * $Revision: 1.4 $
+ * $Date: 2004/02/22 20:04:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -37,7 +37,7 @@ public class PassportDetails extends AbstractView {
    */
   public void bind() throws Exception {
 
-		addHeadline("Eigenschaften des Sicherheitsmediums");
+		GUI.setTitleText(I18N.tr("Eigenschaften des Sicherheitsmediums"));
 
 		Konto k = (Konto) getCurrentObject();
 		Passport p = k.getPassport();
@@ -89,6 +89,10 @@ public class PassportDetails extends AbstractView {
 
 /**********************************************************************
  * $Log: PassportDetails.java,v $
+ * Revision 1.4  2004/02/22 20:04:53  willuhn
+ * @N Ueberweisung
+ * @N Empfaenger
+ *
  * Revision 1.3  2004/02/20 20:45:13  willuhn
  * *** empty log message ***
  *
