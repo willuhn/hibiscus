@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.35 $
- * $Date: 2004/06/18 19:47:31 $
+ * $Revision: 1.36 $
+ * $Date: 2004/06/18 19:53:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -408,14 +408,14 @@ public class KontoControl extends AbstractControl {
   public synchronized void handleConfigurePassport()
 	{
 		try {
-			PassportObject o = (PassportObject) getPassportAuswahl().getValue();
+			Object o = getPassportAuswahl().getValue();
 			if (o == null)
 			{
 				GUI.getStatusBar().setErrorText(i18n.tr("Kein Sicherheitsmedium verfügbar"));
 				return;
 			}
 			SettingsControl c = new SettingsControl(null);
-			c.handleOpen(o.getPassport());
+			c.handleOpen(o);
 		}
 		catch (RemoteException e)
 		{
@@ -607,6 +607,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.36  2004/06/18 19:53:17  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.35  2004/06/18 19:47:31  willuhn
  * *** empty log message ***
  *
