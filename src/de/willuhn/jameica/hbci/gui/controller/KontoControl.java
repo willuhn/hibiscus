@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.28 $
- * $Date: 2004/05/25 23:23:17 $
+ * $Revision: 1.29 $
+ * $Date: 2004/05/26 23:23:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -130,7 +130,7 @@ public class KontoControl extends AbstractControl {
 				}
 			}
 		});
-		table.addColumn(i18n.tr("Datum"),"datum",new DateFormatter(HBCI.DATEFORMAT));
+		table.addColumn(i18n.tr("Datum"),"datum",new DateFormatter(HBCI.LONGDATEFORMAT));
 		table.addColumn(i18n.tr("Kommentar"),"kommentar");
 		return table;
 
@@ -322,6 +322,7 @@ public class KontoControl extends AbstractControl {
 			// ok, wir loeschen das Objekt
 			getKonto().delete();
 			GUI.getStatusBar().setSuccessText(i18n.tr("Bankverbindung gelöscht."));
+			GUI.startPreviousView();
 		}
 		catch (RemoteException e)
 		{
@@ -544,6 +545,11 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.29  2004/05/26 23:23:10  willuhn
+ * @N neue Sicherheitsabfrage vor Ueberweisung
+ * @C Check des Ueberweisungslimit
+ * @N Timeout fuer Messages in Statusbars
+ *
  * Revision 1.28  2004/05/25 23:23:17  willuhn
  * @N UeberweisungTyp
  * @N Protokoll

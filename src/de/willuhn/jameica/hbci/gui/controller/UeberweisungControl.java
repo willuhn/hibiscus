@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.16 $
- * $Date: 2004/05/23 15:33:10 $
+ * $Revision: 1.17 $
+ * $Date: 2004/05/26 23:23:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -42,6 +42,7 @@ import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.dialogs.UeberweisungDialog;
 import de.willuhn.jameica.hbci.gui.views.UeberweisungNeu;
 import de.willuhn.jameica.hbci.rmi.Empfaenger;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -485,10 +486,14 @@ public class UeberweisungControl extends AbstractControl {
   /**
    * @see de.willuhn.jameica.gui.controller.AbstractControl#handleStore()
    */
-  public void handleStore()
+  public synchronized void handleStore()
   {
 		stored = false;
   	try {
+  		
+  		// erstmal die evtl. Fehler-Zeilen leer machen
+  		GUI.getView().setSuccessText("");
+  		GUI.getStatusBar().setSuccessText("");
 
 			getUeberweisung().transactionBegin();
 
@@ -564,7 +569,7 @@ public class UeberweisungControl extends AbstractControl {
 	/**
    * Speichert die Ueberweisung und fuehrt sie sofort aus.
    */
-  public void handleExecute()
+  public synchronized void handleExecute() // TODO Das synchronized muesste eigentlich in alle Controller
 	{
 
 		try {
@@ -574,9 +579,7 @@ public class UeberweisungControl extends AbstractControl {
 				return;
 			}
 
-			YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
-			d.setTitle(i18n.tr("Sicher?"));
-			d.setText(i18n.tr("Sind Sie sicher, daß Sie die Überweisung jetzt ausführen wollen?"));
+			UeberweisungDialog d = new UeberweisungDialog(getUeberweisung(),UeberweisungDialog.POSITION_CENTER);
 			if (!((Boolean)d.open()).booleanValue())
 				return;
 
@@ -595,24 +598,34 @@ public class UeberweisungControl extends AbstractControl {
 		GUI.getStatusBar().startProgress();
 		GUI.getStatusBar().setSuccessText(i18n.tr("Führe Überweisung aus..."));
 
-		GUI.startSync(new Runnable() {
-			public void run() {
-				try {
-					getUeberweisung().execute();
-					GUI.getStatusBar().setSuccessText(i18n.tr("...Überweisung erfolgreich ausgeführt."));
-					disableAll();
-				}
-				catch (ApplicationException e)
-				{
-					GUI.getView().setErrorText(i18n.tr(e.getMessage()));
-				}
-				catch (Throwable t)
-				{
-					Application.getLog().error("error while executing ueberweisung",t);
-					GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Ausführen der Überweisung."));
-				}
-			}
-		});
+		final StringBuffer errorText = new StringBuffer();
+    try {
+      GUI.startSync(new Runnable() {
+      	public void run() {
+      		try {
+      			getUeberweisung().execute();
+						GUI.getStatusBar().setSuccessText(i18n.tr("...Überweisung erfolgreich ausgeführt."));
+      			disableAll();
+      		}
+      		catch (ApplicationException e)
+      		{
+      			errorText.append(e.getMessage());
+      			throw new RuntimeException(); // wir wollen nicht warten, bis sich die GUI ausgekaest hat, raus hier!
+      		}
+      		catch (Throwable t)
+      		{
+      			Application.getLog().error("error while executing ueberweisung",t);
+      			errorText.append("Fehler beim Ausführen der Überweisung.");
+      			throw new RuntimeException(); // wir wollen nicht warten, bis sich die GUI ausgekaest hat, raus hier!
+      		}
+      	}
+      });
+    }
+    catch (Throwable t)
+    {
+			GUI.getStatusBar().setErrorText(i18n.tr(errorText.toString()));
+    }
+
 		GUI.getStatusBar().stopProgress();
 	}
 
@@ -711,6 +724,11 @@ public class UeberweisungControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
+ * Revision 1.17  2004/05/26 23:23:10  willuhn
+ * @N neue Sicherheitsabfrage vor Ueberweisung
+ * @C Check des Ueberweisungslimit
+ * @N Timeout fuer Messages in Statusbars
+ *
  * Revision 1.16  2004/05/23 15:33:10  willuhn
  * *** empty log message ***
  *

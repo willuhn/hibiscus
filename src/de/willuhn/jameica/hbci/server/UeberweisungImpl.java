@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UeberweisungImpl.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/05/23 15:33:10 $
+ * $Revision: 1.11 $
+ * $Date: 2004/05/26 23:23:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -88,6 +88,10 @@ public class UeberweisungImpl
 				throw new ApplicationException("Bitte wählen Sie ein Konto aus.");
 			if (getKonto().isNewObject())
 				throw new ApplicationException("Bitte speichern Sie zunächst das Konto");
+
+			if (getBetrag() > Settings.getUeberweisungLimit())
+				throw new ApplicationException("Limit für Überweisungsbetrag überschritten: " + 
+					HBCI.DECIMALFORMAT.format(Settings.getUeberweisungLimit()) + " " + getKonto().getWaehrung());
 
 			if (getEmpfaengerKonto() == null || "".equals(getEmpfaengerKonto()))
 				throw new ApplicationException("Bitte geben Sie die Kontonummer des Empfängers ein");
@@ -361,6 +365,11 @@ public class UeberweisungImpl
 
 /**********************************************************************
  * $Log: UeberweisungImpl.java,v $
+ * Revision 1.11  2004/05/26 23:23:10  willuhn
+ * @N neue Sicherheitsabfrage vor Ueberweisung
+ * @C Check des Ueberweisungslimit
+ * @N Timeout fuer Messages in Statusbars
+ *
  * Revision 1.10  2004/05/23 15:33:10  willuhn
  * *** empty log message ***
  *

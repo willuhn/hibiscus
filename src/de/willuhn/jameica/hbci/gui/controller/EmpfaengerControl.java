@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EmpfaengerControl.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/04/13 23:14:23 $
+ * $Revision: 1.10 $
+ * $Date: 2004/05/26 23:23:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -163,6 +163,7 @@ public class EmpfaengerControl extends AbstractControl {
 			// ok, wir loeschen das Objekt
 			getEmpfaenger().delete();
 			GUI.getStatusBar().setSuccessText(i18n.tr("Empfängeradresse gelöscht."));
+			GUI.startPreviousView();
 		}
 		catch (RemoteException e)
 		{
@@ -248,6 +249,11 @@ public class EmpfaengerControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: EmpfaengerControl.java,v $
+ * Revision 1.10  2004/05/26 23:23:10  willuhn
+ * @N neue Sicherheitsabfrage vor Ueberweisung
+ * @C Check des Ueberweisungslimit
+ * @N Timeout fuer Messages in Statusbars
+ *
  * Revision 1.9  2004/04/13 23:14:23  willuhn
  * @N datadir
  *
