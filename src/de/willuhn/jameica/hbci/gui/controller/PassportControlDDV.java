@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/PassportControlDDV.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/02/23 20:30:47 $
+ * $Revision: 1.6 $
+ * $Date: 2004/02/24 22:47:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -105,7 +105,7 @@ public class PassportControlDDV extends AbstractControl {
 			return port;
 
 		port = new SelectInput(PassportDDV.PORTS,""+PassportDDV.PORTS[getPassport().getPort()]);
-		port.addComment(I18N.tr("meist COM1 oder COM2"),null);
+		port.setComment(I18N.tr("meist COM1 oder COM2"));
 		return port;
 	}		
 
@@ -120,7 +120,7 @@ public class PassportControlDDV extends AbstractControl {
 			return ctNumber;
 
 		ctNumber = new TextInput(""+getPassport().getCTNumber());
-		ctNumber.addComment(I18N.tr("meist 0"),null);
+		ctNumber.setComment(I18N.tr("meist 0"));
 		return ctNumber;
 	}
 
@@ -135,7 +135,7 @@ public class PassportControlDDV extends AbstractControl {
 			return entryIndex;
 
 		entryIndex = new TextInput(""+getPassport().getEntryIndex());
-		entryIndex.addComment(I18N.tr("meist 1"),null);
+		entryIndex.setComment(I18N.tr("meist 1"));
 		return entryIndex;
 	}
 
@@ -243,9 +243,9 @@ public class PassportControlDDV extends AbstractControl {
   }
 
   /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleLoad(java.lang.String)
+   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleOpen(java.lang.Object)
    */
-  public void handleLoad(String id) {
+  public void handleOpen(Object o) {
   }
 
 	/**
@@ -280,6 +280,9 @@ public class PassportControlDDV extends AbstractControl {
 
 /**********************************************************************
  * $Log: PassportControlDDV.java,v $
+ * Revision 1.6  2004/02/24 22:47:05  willuhn
+ * @N GUI refactoring
+ *
  * Revision 1.5  2004/02/23 20:30:47  willuhn
  * @C refactoring in AbstractDialog
  *

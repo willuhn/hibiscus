@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/02/22 20:04:53 $
+ * $Revision: 1.5 $
+ * $Date: 2004/02/24 22:47:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -67,7 +67,7 @@ public class SettingsControl extends AbstractControl {
 		if (checkPin != null)
 			return checkPin;
 		checkPin = new CheckboxInput(Settings.getCheckPin());
-		checkPin.addComment("",new CheckPinListener());
+		checkPin.addListener(new CheckPinListener());
 		return checkPin;
 	}
   /**
@@ -116,11 +116,12 @@ public class SettingsControl extends AbstractControl {
   public void handleCreate() {
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleLoad(java.lang.String)
+	/**
+   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleOpen(java.lang.Object)
    */
-  public void handleLoad(String id) {
-  }
+  public void handleOpen(Object o)
+	{
+	}
 
 	/**
 	 * Listener, der prueft, ob die Hash-Algorithmen zur Checksummen-Bildung
@@ -153,6 +154,9 @@ public class SettingsControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.5  2004/02/24 22:47:04  willuhn
+ * @N GUI refactoring
+ *
  * Revision 1.4  2004/02/22 20:04:53  willuhn
  * @N Ueberweisung
  * @N Empfaenger

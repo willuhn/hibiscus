@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/DialogFactory.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/02/22 20:04:54 $
+ * $Revision: 1.7 $
+ * $Date: 2004/02/24 22:47:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,14 +27,12 @@ public class DialogFactory {
 
   /**
 	 * Erzeugt einen simplen Dialog mit einem OK-Button.
-	 * Hinweis: Wirft eine RuntimeException, wenn der Dialog eine
-	 * Exception wirft. Hintergrund: Der Dialog wurde aus dem HBCICallBack
-	 * heraus aufgerufen und soll im Fehlerfall den HBCI-Vorgang abbrechen.
    * @param headline Ueberschrift des Dialogs.
    * @param text Text des Dialogs.
    */
-  public static void openSimple(final String headline, final String text)
+  public static synchronized void openSimple(final String headline, final String text)
 	{
+		check();
 		SimpleDialog d = new SimpleDialog(AbstractDialog.POSITION_CENTER);
 		d.setTitle(headline);
 		d.setText(text);
@@ -52,13 +50,17 @@ public class DialogFactory {
 
 	/**
 	 * Erzeugt den PIN-Dialog.
+	 * Hinweis: Wirft eine RuntimeException, wenn der PIN-Dialog abgebrochen
+	 * oder die PIN drei mal falsch eingegeben wurde (bei aktivierter Checksummen-Pruefung).
+	 * Hintergrund: Der Dialog wurde aus dem HBCICallBack heraus aufgerufen und soll im
+	 * Fehlerfall den HBCI-Vorgang abbrechen.
 	 */
-	public static String getPIN()
+	public static synchronized String getPIN()
 	{
-		PINDialog d = new PINDialog(AbstractDialog.POSITION_CENTER);
-		dialog = (AbstractDialog) d;
+		check();
+		dialog = new PINDialog(AbstractDialog.POSITION_CENTER);
 		try {
-			return d.getPassword();
+			return (String) dialog.open();
 		}
 		catch (Exception e)
 		{
@@ -68,15 +70,32 @@ public class DialogFactory {
 		}
 	}
 
+	/**
+   * Prueft, ob der Dialog geoeffnet werden kann.
+   */
+  private static synchronized void check()
+	{
+		if (dialog == null)
+			return;
+
+		Application.getLog().error("alert: there's another opened dialog");
+		throw new RuntimeException("alert: there's another opened dialog");
+	}
 
 	/**
    * Schliesst den gerade offenen Dialog.
    */
-  public static void close()
+  public static synchronized void close()
 	{
 		if (dialog == null)
 			return;
-		dialog.close();
+		try {
+			dialog.close();
+		}
+		finally
+		{
+			dialog = null;
+		}
 	}
 
 }
@@ -84,6 +103,9 @@ public class DialogFactory {
 
 /**********************************************************************
  * $Log: DialogFactory.java,v $
+ * Revision 1.7  2004/02/24 22:47:05  willuhn
+ * @N GUI refactoring
+ *
  * Revision 1.6  2004/02/22 20:04:54  willuhn
  * @N Ueberweisung
  * @N Empfaenger

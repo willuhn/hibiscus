@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/02/23 20:30:47 $
+ * $Revision: 1.10 $
+ * $Date: 2004/02/24 22:47:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -110,7 +110,8 @@ public class KontoControl extends AbstractControl {
 		if (blz != null)
 			return blz;
 		blz = new TextInput(getKonto().getBLZ());
-		blz.addComment("",new BLZListener());
+		blz.setComment("");
+		blz.addListener(new BLZListener());
 		return blz;
 	}
 
@@ -240,7 +241,8 @@ public class KontoControl extends AbstractControl {
 			d.setText(I18N.tr("Wollen Sie diese Bankverbindung wirklich löschen?"));
 
 			try {
-				if (!d.getChoice())
+				Boolean choice = (Boolean) d.open();
+				if (!choice.booleanValue())
 					return;
 			}
 			catch (Exception e)
@@ -322,18 +324,10 @@ public class KontoControl extends AbstractControl {
   }
 
   /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleLoad(java.lang.String)
+   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleOpen(java.lang.Object)
    */
-  public void handleLoad(String id) {
-		try {
-			Konto k = (Konto) Settings.getDatabase().createObject(Konto.class,id);
-			GUI.startView(KontoNeu.class.getName(),k);
-		}
-		catch (RemoteException e)
-		{
-			Application.getLog().error("unable to load konto with id " + id);
-			GUI.setActionText(I18N.tr("Bankverbindung wurde nicht gefunden."));
-		}
+  public void handleOpen(Object o) {
+		GUI.startView(KontoNeu.class.getName(),o);
   }
 
 	/**
@@ -445,7 +439,7 @@ public class KontoControl extends AbstractControl {
 
 			try {
 				String name = HBCIUtils.getNameForBLZ(getBlz().getValue());
-				getBlz().updateComment(name);
+				getBlz().setComment(name);
 			}
 			catch (RemoteException e)
 			{
@@ -458,6 +452,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.10  2004/02/24 22:47:05  willuhn
+ * @N GUI refactoring
+ *
  * Revision 1.9  2004/02/23 20:30:47  willuhn
  * @C refactoring in AbstractDialog
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/02/22 20:04:53 $
+ * $Revision: 1.2 $
+ * $Date: 2004/02/24 22:47:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,6 +21,7 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.controller.AbstractControl;
+import de.willuhn.jameica.gui.dialogs.ListDialog;
 import de.willuhn.jameica.gui.parts.CheckboxInput;
 import de.willuhn.jameica.gui.parts.CurrencyFormatter;
 import de.willuhn.jameica.gui.parts.Input;
@@ -31,7 +32,6 @@ import de.willuhn.jameica.gui.parts.TextInput;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.dialogs.EmpfaengerSearchDialog;
 import de.willuhn.jameica.hbci.gui.views.UeberweisungListe;
 import de.willuhn.jameica.hbci.gui.views.UeberweisungNeu;
 import de.willuhn.jameica.hbci.rmi.Empfaenger;
@@ -146,9 +146,15 @@ public class UeberweisungControl extends AbstractControl {
 	{
 		if (empfkto != null)
 			return empfkto;
-		empfkto = new SearchInput(getEmpfaenger().getKontonummer(), new EmpfaengerSearchDialog());
-		empfkto.addComment("",new EmpfaengerListener());
-		// TODO: Listener wird nicht rechtzeitig ausgeloest.
+
+		ListDialog d = new ListDialog(Settings.getDatabase().createList(Empfaenger.class),ListDialog.POSITION_MOUSE);
+		d.addColumn(I18N.tr("Name"),"name");
+		d.addColumn(I18N.tr("Kontonummer"),"kontonummer");
+		d.addColumn(I18N.tr("BLZ"),"blz");
+		d.setTitle(I18N.tr("Auswahl des Empfängers"));
+		d.addListener(new EmpfaengerListener());
+
+		empfkto = new SearchInput(getEmpfaenger().getKontonummer(),d);
 		return empfkto;
 	}
 
@@ -208,18 +214,10 @@ public class UeberweisungControl extends AbstractControl {
   }
 
   /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleLoad(java.lang.String)
+   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleOpen(java.lang.Object)
    */
-  public void handleLoad(String id) {
-		try {
-			Ueberweisung u = (Ueberweisung) Settings.getDatabase().createObject(Ueberweisung.class,id);
-			GUI.startView(UeberweisungNeu.class.getName(),u);
-		}
-		catch (RemoteException e)
-		{
-			Application.getLog().error("unable to load ueberweisung with id " + id);
-			GUI.setActionText(I18N.tr("Überweisung wurde nicht gefunden."));
-		}
+  public void handleOpen(Object o) {
+		GUI.startView(UeberweisungNeu.class.getName(),o);
   }
 
 	
@@ -233,24 +231,16 @@ public class UeberweisungControl extends AbstractControl {
      * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
      */
     public void handleEvent(Event event) {
-    	String kto = empfkto.getValue();
-    	if (kto != null && kto.length() > 0)
-    	{
-				try {
-					DBIterator list = Settings.getDatabase().createList(Empfaenger.class);
-					list.addFilter("kontonummer = '" + kto + "'");
-					if (!list.hasNext())
-						return;
-					Empfaenger e = (Empfaenger) list.next();
-					empfblz.setValue(e.getBLZ());
-					empfName.setValue(e.getName());
-				}
-				catch (RemoteException er)
-				{
-					Application.getLog().error("error while choosing empfaenger",er);
-					GUI.setActionText(I18N.tr("Fehler bei der Auswahl des Empfängers"));
-				}
-    		
+			empfaenger = (Empfaenger) event.data;
+			try {
+				empfkto.setValue(empfaenger.getKontonummer());
+				empfblz.setValue(empfaenger.getBLZ());
+				empfName.setValue(empfaenger.getName());
+			}
+			catch (RemoteException er)
+			{
+				Application.getLog().error("error while choosing empfaenger",er);
+				GUI.setActionText(I18N.tr("Fehler bei der Auswahl des Empfängers"));
     	}
     }
 	}
@@ -259,6 +249,9 @@ public class UeberweisungControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
+ * Revision 1.2  2004/02/24 22:47:04  willuhn
+ * @N GUI refactoring
+ *
  * Revision 1.1  2004/02/22 20:04:53  willuhn
  * @N Ueberweisung
  * @N Empfaenger

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EmpfaengerControl.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/02/22 20:04:53 $
+ * $Revision: 1.3 $
+ * $Date: 2004/02/24 22:47:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -111,7 +111,8 @@ public class EmpfaengerControl extends AbstractControl {
 		if (blz != null)
 			return blz;
 		blz = new TextInput(getEmpfaenger().getBLZ());
-		blz.addComment("", new BLZListener());
+		blz.setComment("");
+		blz.addListener(new BLZListener());
 		return blz;
 	}
 
@@ -147,7 +148,8 @@ public class EmpfaengerControl extends AbstractControl {
 			d.setText(I18N.tr("Wollen Sie diese Empfängeradresse wirklich löschen?"));
 
 			try {
-				if (!d.getChoice())
+				Boolean choice = (Boolean) d.open();
+				if (!choice.booleanValue())
 					return;
 			}
 			catch (Exception e)
@@ -209,18 +211,10 @@ public class EmpfaengerControl extends AbstractControl {
   }
 
   /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleLoad(java.lang.String)
+   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleOpen(java.lang.Object)
    */
-  public void handleLoad(String id) {
-		try {
-			Empfaenger e = (Empfaenger) Settings.getDatabase().createObject(Empfaenger.class,id);
-			GUI.startView(EmpfaengerNeu.class.getName(),e);
-		}
-		catch (RemoteException e)
-		{
-			Application.getLog().error("unable to load empfaenger with id " + id);
-			GUI.setActionText(I18N.tr("Empfängeradresse wurde nicht gefunden."));
-		}
+  public void handleOpen(Object o) {
+		GUI.startView(EmpfaengerNeu.class.getName(),o);
   }
 
 	/**
@@ -237,7 +231,7 @@ public class EmpfaengerControl extends AbstractControl {
 
 			try {
 				String name = HBCIUtils.getNameForBLZ(getBlz().getValue());
-				getBlz().updateComment(name);
+				getBlz().setComment(name);
 			}
 			catch (RemoteException e)
 			{
@@ -251,6 +245,9 @@ public class EmpfaengerControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: EmpfaengerControl.java,v $
+ * Revision 1.3  2004/02/24 22:47:04  willuhn
+ * @N GUI refactoring
+ *
  * Revision 1.2  2004/02/22 20:04:53  willuhn
  * @N Ueberweisung
  * @N Empfaenger
