@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzDetail.java,v $
- * $Revision: 1.16 $
- * $Date: 2005/03/30 23:51:16 $
+ * $Revision: 1.17 $
+ * $Date: 2005/04/05 22:13:30 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -22,6 +22,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
 import de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl;
+import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -39,7 +40,24 @@ public class UmsatzDetail extends AbstractView {
 
     final UmsatzDetailControl control = new UmsatzDetailControl(this);
     final I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-    GUI.getView().setTitle(i18n.tr("Buchungsdetails"));
+
+    // BUGZILLA 38 http://www.willuhn.de/bugzilla/show_bug.cgi?id=38
+    Konto k = control.getUmsatz().getKonto();
+
+    String s1 = k.getBezeichnung();
+    if (s1 == null) s1 = "";
+
+    String s2 = k.getKontonummer();
+    
+    double d = k.getSaldo();
+    String s3 = null;
+    if (k.getSaldoDatum() != null)
+      s3 = HBCI.DECIMALFORMAT.format(d) + " " + k.getWaehrung(); // Saldo wurde schonmal abgerufen
+
+    if (s3 == null)
+      GUI.getView().setTitle(i18n.tr("Buchungsdetails. Konto: {0} [Ktr.-Nr.: {1}]",new String[]{s1,s2}));
+    else
+      GUI.getView().setTitle(i18n.tr("Buchungsdetails. Konto: {0} [Ktr.-Nr.: {1}, Saldo: {2}]",new String[]{s1,s2,s3}));
 
     LabelGroup konten = new LabelGroup(getParent(),i18n.tr("Konten"));
 
@@ -50,7 +68,7 @@ public class UmsatzDetail extends AbstractView {
 
     // BUGZILLA 30 http://www.willuhn.de/bugzilla/show_bug.cgi?id=30
     LabelGroup zweck = new LabelGroup(getParent(),i18n.tr("Verwendungszweck"));
-    Umsatz u = (Umsatz) getCurrentObject();
+    Umsatz u = control.getUmsatz();
     zweck.addText(u.getZweck(),true);
     String z2 = u.getZweck2();
     if (z2 != null && z2.length() > 0)
@@ -95,6 +113,9 @@ public class UmsatzDetail extends AbstractView {
 
 /**********************************************************************
  * $Log: UmsatzDetail.java,v $
+ * Revision 1.17  2005/04/05 22:13:30  web0
+ * @B bug 38
+ *
  * Revision 1.16  2005/03/30 23:51:16  web0
  * @B bug 30
  *
