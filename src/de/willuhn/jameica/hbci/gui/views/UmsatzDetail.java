@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzDetail.java,v $
- * $Revision: 1.15 $
- * $Date: 2005/03/21 23:09:34 $
+ * $Revision: 1.16 $
+ * $Date: 2005/03/30 23:51:16 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -22,6 +22,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
 import de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl;
+import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -47,10 +48,20 @@ public class UmsatzDetail extends AbstractView {
     konten.addLabelPair(i18n.tr("Kontoinhaber des Gegenkontos"),	control.getEmpfaengerName());
     konten.addLabelPair(i18n.tr("Kontonummer des Gegenkontos"),		control.getEmpfaengerKonto());
 
-		LabelGroup add = new LabelGroup(getParent(),i18n.tr("Details"));
-    
-		add.addLabelPair(i18n.tr("Verwendungszweck"),									control.getZweck());
-		add.addLabelPair(i18n.tr("weiterer Verwendungszweck"),				control.getZweck2());
+    // BUGZILLA 30 http://www.willuhn.de/bugzilla/show_bug.cgi?id=30
+    LabelGroup zweck = new LabelGroup(getParent(),i18n.tr("Verwendungszweck"));
+    Umsatz u = (Umsatz) getCurrentObject();
+    zweck.addText(u.getZweck(),true);
+    String z2 = u.getZweck2();
+    if (z2 != null && z2.length() > 0)
+    {
+      zweck.addSeparator();
+      zweck.addText(u.getZweck2(),true);
+    }
+   
+		// add.addLabelPair(i18n.tr("Verwendungszweck"),									control.getZweck());
+		// add.addLabelPair(i18n.tr("weiterer Verwendungszweck"),				control.getZweck2());
+    LabelGroup add = new LabelGroup(getParent(),i18n.tr("Details"));
 		add.addLabelPair(i18n.tr("Art der Buchung"),									control.getArt());
 		add.addLabelPair(i18n.tr("Kundenreferenz"),										control.getCustomerRef());
 		add.addLabelPair(i18n.tr("Primanota-Kennzeichen"),						control.getPrimanota());
@@ -84,6 +95,9 @@ public class UmsatzDetail extends AbstractView {
 
 /**********************************************************************
  * $Log: UmsatzDetail.java,v $
+ * Revision 1.16  2005/03/30 23:51:16  web0
+ * @B bug 30
+ *
  * Revision 1.15  2005/03/21 23:09:34  web0
  * @B bug 23
  *
