@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/PassportControlDDV.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/03/06 18:25:10 $
+ * $Revision: 1.11 $
+ * $Date: 2004/03/11 08:55:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,7 +20,7 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.controller.AbstractControl;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.parts.CheckboxInput;
-import de.willuhn.jameica.gui.parts.Input;
+import de.willuhn.jameica.gui.parts.AbstractInput;
 import de.willuhn.jameica.gui.parts.LabelInput;
 import de.willuhn.jameica.gui.parts.SelectInput;
 import de.willuhn.jameica.gui.parts.TextInput;
@@ -41,11 +41,11 @@ public class PassportControlDDV extends AbstractControl {
 	private PassportDDV passport = null;
 
 	// Eingabe-Felder
-	private Input name 			 = null; 
-	private Input type			 = null;
-	private Input port 			 = null;
-	private Input ctNumber	 = null;
-	private Input entryIndex = null;
+	private AbstractInput name 			 = null; 
+	private AbstractInput type			 = null;
+	private AbstractInput port 			 = null;
+	private AbstractInput ctNumber	 = null;
+	private AbstractInput entryIndex = null;
 
 	private CheckboxInput useBio 			= null;
 	private CheckboxInput useSoftPin 	= null; 
@@ -85,7 +85,7 @@ public class PassportControlDDV extends AbstractControl {
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public Input getPort() throws RemoteException
+  public AbstractInput getPort() throws RemoteException
 	{
 		if (port != null)
 			return port;
@@ -100,7 +100,7 @@ public class PassportControlDDV extends AbstractControl {
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public Input getCTNumber() throws RemoteException
+  public AbstractInput getCTNumber() throws RemoteException
 	{
 		if (ctNumber != null)
 			return ctNumber;
@@ -115,7 +115,7 @@ public class PassportControlDDV extends AbstractControl {
 	 * @return Eingabe-Feld.
 	 * @throws RemoteException
 	 */
-	public Input getName() throws RemoteException
+	public AbstractInput getName() throws RemoteException
 	{
 		if (name != null)
 			return name;
@@ -129,7 +129,7 @@ public class PassportControlDDV extends AbstractControl {
 	 * @return Eingabe-Feld.
 	 * @throws RemoteException
 	 */
-	public Input getType() throws RemoteException
+	public AbstractInput getType() throws RemoteException
 	{
 		if (type != null)
 			return type;
@@ -143,7 +143,7 @@ public class PassportControlDDV extends AbstractControl {
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public Input getEntryIndex() throws RemoteException
+  public AbstractInput getEntryIndex() throws RemoteException
 	{
 		if (entryIndex != null)
 			return entryIndex;
@@ -311,6 +311,9 @@ public class PassportControlDDV extends AbstractControl {
 
 /**********************************************************************
  * $Log: PassportControlDDV.java,v $
+ * Revision 1.11  2004/03/11 08:55:42  willuhn
+ * @N UmsatzDetails
+ *
  * Revision 1.10  2004/03/06 18:25:10  willuhn
  * @D javadoc
  * @C removed empfaenger_id from umsatz

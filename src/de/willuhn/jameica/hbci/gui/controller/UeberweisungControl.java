@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/03/06 18:25:10 $
+ * $Revision: 1.7 $
+ * $Date: 2004/03/11 08:55:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,7 +26,7 @@ import de.willuhn.jameica.gui.dialogs.ListDialog;
 import de.willuhn.jameica.gui.parts.CheckboxInput;
 import de.willuhn.jameica.gui.parts.CurrencyFormatter;
 import de.willuhn.jameica.gui.parts.DecimalInput;
-import de.willuhn.jameica.gui.parts.Input;
+import de.willuhn.jameica.gui.parts.AbstractInput;
 import de.willuhn.jameica.gui.parts.SearchInput;
 import de.willuhn.jameica.gui.parts.SelectInput;
 import de.willuhn.jameica.gui.parts.Table;
@@ -52,15 +52,15 @@ public class UeberweisungControl extends AbstractControl {
 	private Konto konto								= null;
 	
 	// Eingabe-Felder
-	private Input kontoAuswahl				= null;
-	private Input betrag							= null;
-	private Input zweck								= null;
-	private Input zweck2							= null;
-	private Input termin							= null;
+	private AbstractInput kontoAuswahl				= null;
+	private AbstractInput betrag							= null;
+	private AbstractInput zweck								= null;
+	private AbstractInput zweck2							= null;
+	private AbstractInput termin							= null;
 
-	private Input empfName 						= null;
-	private Input empfkto 						= null;
-	private Input empfblz 						= null;
+	private AbstractInput empfName 						= null;
+	private AbstractInput empfkto 						= null;
+	private AbstractInput empfblz 						= null;
 	
 	private CheckboxInput storeEmpfaenger = null;
 
@@ -149,7 +149,7 @@ public class UeberweisungControl extends AbstractControl {
    * @return Auswahl-Feld.
    * @throws RemoteException
    */
-  public Input getKontoAuswahl() throws RemoteException
+  public AbstractInput getKontoAuswahl() throws RemoteException
 	{
 		if (kontoAuswahl != null)
 			return kontoAuswahl;
@@ -164,7 +164,7 @@ public class UeberweisungControl extends AbstractControl {
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public Input getEmpfaengerKonto() throws RemoteException
+  public AbstractInput getEmpfaengerKonto() throws RemoteException
 	{
 		if (empfkto != null)
 			return empfkto;
@@ -185,7 +185,7 @@ public class UeberweisungControl extends AbstractControl {
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public Input getEmpfaengerBlz() throws RemoteException
+  public AbstractInput getEmpfaengerBlz() throws RemoteException
 	{
 		if (empfblz != null)
 			return empfblz;
@@ -198,7 +198,7 @@ public class UeberweisungControl extends AbstractControl {
    * @return Eingabe-Feld.
 	 * @throws RemoteException
 	 */
-	public Input getEmpfaengerName() throws RemoteException
+	public AbstractInput getEmpfaengerName() throws RemoteException
 	{
 		if (empfName != null)
 			return empfName;
@@ -211,7 +211,7 @@ public class UeberweisungControl extends AbstractControl {
 	 * @return Eingabe-Feld.
 	 * @throws RemoteException
 	 */
-	public Input getZweck() throws RemoteException
+	public AbstractInput getZweck() throws RemoteException
 	{
 		if (zweck != null)
 			return zweck;
@@ -224,7 +224,7 @@ public class UeberweisungControl extends AbstractControl {
 	 * @return Eingabe-Feld.
 	 * @throws RemoteException
 	 */
-	public Input getZweck2() throws RemoteException
+	public AbstractInput getZweck2() throws RemoteException
 	{
 		if (zweck2 != null)
 			return zweck2;
@@ -237,7 +237,7 @@ public class UeberweisungControl extends AbstractControl {
 	 * @return Eingabe-Feld.
 	 * @throws RemoteException
 	 */
-	public Input getBetrag() throws RemoteException
+	public AbstractInput getBetrag() throws RemoteException
 	{
 		if (betrag != null)
 			return betrag;
@@ -251,7 +251,7 @@ public class UeberweisungControl extends AbstractControl {
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public Input getTermin() throws RemoteException
+  public AbstractInput getTermin() throws RemoteException
 	{
 		if (termin != null)
 			return termin;
@@ -365,6 +365,9 @@ public class UeberweisungControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
+ * Revision 1.7  2004/03/11 08:55:42  willuhn
+ * @N UmsatzDetails
+ *
  * Revision 1.6  2004/03/06 18:25:10  willuhn
  * @D javadoc
  * @C removed empfaenger_id from umsatz

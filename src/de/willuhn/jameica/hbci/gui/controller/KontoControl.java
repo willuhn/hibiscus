@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.15 $
- * $Date: 2004/03/06 18:25:10 $
+ * $Revision: 1.16 $
+ * $Date: 2004/03/11 08:55:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,7 +25,7 @@ import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.controller.AbstractControl;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
-import de.willuhn.jameica.gui.parts.Input;
+import de.willuhn.jameica.gui.parts.AbstractInput;
 import de.willuhn.jameica.gui.parts.LabelInput;
 import de.willuhn.jameica.gui.parts.SelectInput;
 import de.willuhn.jameica.gui.parts.Table;
@@ -53,15 +53,15 @@ public class KontoControl extends AbstractControl {
 	private Passport passport  		= null;
 	
 	// Eingabe-Felder
-	private Input kontonummer  		= null;
-	private Input blz          		= null;
-	private Input name				 		= null;
-	private Input passportAuswahl = null;
-  private Input waehrung     		= null;
-  private Input kundennummer 		= null;
+	private AbstractInput kontonummer  		= null;
+	private AbstractInput blz          		= null;
+	private AbstractInput name				 		= null;
+	private AbstractInput passportAuswahl = null;
+  private AbstractInput waehrung     		= null;
+  private AbstractInput kundennummer 		= null;
   
-  private Input saldo				 		= null;
-  private Input saldoDatum   		= null;
+  private AbstractInput saldo				 		= null;
+  private AbstractInput saldoDatum   		= null;
 
 	private I18N i18n;
   /**
@@ -123,7 +123,7 @@ public class KontoControl extends AbstractControl {
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public Input getKontonummer() throws RemoteException
+  public AbstractInput getKontonummer() throws RemoteException
 	{
 		if (kontonummer != null)
 			return kontonummer;
@@ -136,7 +136,7 @@ public class KontoControl extends AbstractControl {
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public Input getBlz() throws RemoteException
+  public AbstractInput getBlz() throws RemoteException
 	{
 		if (blz != null)
 			return blz;
@@ -151,7 +151,7 @@ public class KontoControl extends AbstractControl {
    * @return Name des Konto-Inhabers.
    * @throws RemoteException
    */
-  public Input getName() throws RemoteException
+  public AbstractInput getName() throws RemoteException
 	{
 		if (name != null)
 			return name;
@@ -164,7 +164,7 @@ public class KontoControl extends AbstractControl {
 	 * @return Eingabe-Feld.
 	 * @throws RemoteException
 	 */
-	public Input getKundennummer() throws RemoteException
+	public AbstractInput getKundennummer() throws RemoteException
 	{
 		if (kundennummer != null)
 			return kundennummer;
@@ -177,7 +177,7 @@ public class KontoControl extends AbstractControl {
    * @return Waehrungsbezeichnung.
    * @throws RemoteException
    */
-  public Input getWaehrung() throws RemoteException
+  public AbstractInput getWaehrung() throws RemoteException
   {
     if (waehrung != null)
       return waehrung;
@@ -190,7 +190,7 @@ public class KontoControl extends AbstractControl {
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public Input getPassportAuswahl() throws RemoteException
+  public AbstractInput getPassportAuswahl() throws RemoteException
 	{
 		if (passportAuswahl != null)
 			return passportAuswahl;
@@ -204,7 +204,7 @@ public class KontoControl extends AbstractControl {
    * @return Anzeige-Feld.
    * @throws RemoteException
    */
-  public Input getSaldo() throws RemoteException
+  public AbstractInput getSaldo() throws RemoteException
 	{
 		if (saldo != null)
 			return saldo;
@@ -222,7 +222,7 @@ public class KontoControl extends AbstractControl {
    * @return Anzeige-Feld.
    * @throws RemoteException
    */
-  public Input getSaldoDatum() throws RemoteException
+  public AbstractInput getSaldoDatum() throws RemoteException
 	{
 		if (saldoDatum != null)
 			return saldoDatum;
@@ -503,6 +503,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.16  2004/03/11 08:55:42  willuhn
+ * @N UmsatzDetails
+ *
  * Revision 1.15  2004/03/06 18:25:10  willuhn
  * @D javadoc
  * @C removed empfaenger_id from umsatz

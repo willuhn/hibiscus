@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzControl.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/03/06 18:25:10 $
+ * $Revision: 1.4 $
+ * $Date: 2004/03/11 08:55:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,13 +24,14 @@ import de.willuhn.jameica.gui.parts.Table;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.views.KontoNeu;
+import de.willuhn.jameica.hbci.gui.views.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.views.UmsatzListe;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Controller, der fuer die Umsaetze eines Kontos zustaendig ist.
+ * Controller, der fuer die Umsatz-Liste eines Kontos zustaendig ist.
  */
 public class UmsatzControl extends AbstractControl {
 
@@ -39,7 +40,7 @@ public class UmsatzControl extends AbstractControl {
 	// Fach-Objekte
 	private Konto konto = null;
 
-  /**
+	/**
    * ct.
    * @param view
    */
@@ -116,6 +117,7 @@ public class UmsatzControl extends AbstractControl {
    * @see de.willuhn.jameica.gui.controller.AbstractControl#handleOpen(java.lang.Object)
    */
   public void handleOpen(Object o) {
+    GUI.startView(UmsatzDetail.class.getName(),o);
   }
 
 	/**
@@ -153,6 +155,9 @@ public class UmsatzControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzControl.java,v $
+ * Revision 1.4  2004/03/11 08:55:42  willuhn
+ * @N UmsatzDetails
+ *
  * Revision 1.3  2004/03/06 18:25:10  willuhn
  * @D javadoc
  * @C removed empfaenger_id from umsatz

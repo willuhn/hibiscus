@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EmpfaengerControl.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/03/06 18:25:10 $
+ * $Revision: 1.6 $
+ * $Date: 2004/03/11 08:55:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,7 +24,7 @@ import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.controller.AbstractControl;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
-import de.willuhn.jameica.gui.parts.Input;
+import de.willuhn.jameica.gui.parts.AbstractInput;
 import de.willuhn.jameica.gui.parts.Table;
 import de.willuhn.jameica.gui.parts.TextInput;
 import de.willuhn.jameica.gui.views.AbstractView;
@@ -44,9 +44,9 @@ public class EmpfaengerControl extends AbstractControl {
 	// Fach-Objekte
 	private Empfaenger empfaenger = null;
 	// Eingabe-Felder
-	private Input kontonummer = null;
-	private Input blz					= null;
-	private Input name				= null;
+	private AbstractInput kontonummer = null;
+	private AbstractInput blz					= null;
+	private AbstractInput name				= null;
 
 	private I18N i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
   /**
@@ -96,7 +96,7 @@ public class EmpfaengerControl extends AbstractControl {
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public Input getKontonummer() throws RemoteException
+  public AbstractInput getKontonummer() throws RemoteException
 	{
 		if (kontonummer != null)
 			return kontonummer;
@@ -109,7 +109,7 @@ public class EmpfaengerControl extends AbstractControl {
 	 * @return Eingabe-Feld.
 	 * @throws RemoteException
 	 */
-	public Input getBlz() throws RemoteException
+	public AbstractInput getBlz() throws RemoteException
 	{
 		if (blz != null)
 			return blz;
@@ -124,7 +124,7 @@ public class EmpfaengerControl extends AbstractControl {
 	 * @return Eingabe-Feld.
 	 * @throws RemoteException
 	 */
-	public Input getName() throws RemoteException
+	public AbstractInput getName() throws RemoteException
 	{
 		if (name != null)
 			return name;
@@ -248,6 +248,9 @@ public class EmpfaengerControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: EmpfaengerControl.java,v $
+ * Revision 1.6  2004/03/11 08:55:42  willuhn
+ * @N UmsatzDetails
+ *
  * Revision 1.5  2004/03/06 18:25:10  willuhn
  * @D javadoc
  * @C removed empfaenger_id from umsatz
