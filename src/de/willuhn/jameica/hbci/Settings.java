@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.11 $
- * $Date: 2004/05/09 17:39:49 $
+ * $Revision: 1.12 $
+ * $Date: 2004/05/11 21:11:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,7 +12,6 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci;
 
-import java.io.File;
 import java.rmi.RemoteException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -281,37 +280,6 @@ public class Settings
     return settings.getBoolean("online",false);
   }
 
-	/**
-	 * Liefert den Namen eines freidefinierbaren Programms welches zum Import von Buchungen ausgefuehrt werden kann.
-   * @return Name des externen Programms.
-   */
-  public static String getImportProgram()
-	{
-		return settings.getString("importprogram",null);
-	}
-	
-	/**
-	 * Definiert den Namen eines externen Programms welches im Import von Buchungen ausgefuehrt werden soll.
-   * @param importProgram Pfad und Dateiname des externen Import-Programms.
-   */
-  public static void setImportProgram(String importProgram)
-	{
-		settings.setAttribute("importprogram",importProgram);
-	}
-
-	/**
-	 * Liefert den Verzeichnisnamen, in dem nach importierbaren Buchungen gesucht wird.
-   * @return Verzeichnis zu Import-Buchungen.
-   */
-  public static String getImportDir()
-	{
-		String path = PluginLoader.getPlugin(HBCI.class).getResources().getWorkPath() + "/import";
-		File f = new File(path);
-		if (!f.exists())
-			f.mkdirs();
-		return path;
-	}
-
   /**
    * Liefert das Passwort mit die lokalen Daten verschluesselt werden.
    * @return Passphrase.
@@ -345,6 +313,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.12  2004/05/11 21:11:32  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.11  2004/05/09 17:39:49  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Settings.java,v $
- * $Revision: 1.16 $
- * $Date: 2004/05/09 17:39:49 $
+ * $Revision: 1.17 $
+ * $Date: 2004/05/11 21:11:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -46,10 +46,6 @@ public class Settings extends AbstractView {
 		settings.addCheckbox(control.getOnlineMode(),i18n.tr("Keine Nachfrage vor Verbindungsaufbau"));
 		settings.addCheckbox(control.getCheckPin(),i18n.tr("PIN-Eingabe via Check-Summe prüfen"));
 		
-		LabelGroup exchange = new LabelGroup(getParent(),i18n.tr("Import/Export"));
-
-		exchange.addLabelPair(i18n.tr("Import-Programm"),control.getImportProgram());
-
 		LabelGroup colors = new LabelGroup(getParent(),i18n.tr("Farben"));
 		colors.addLabelPair(i18n.tr("Vordergrund Sollbuchung"),control.getBuchungSollForeground());
 		colors.addLabelPair(i18n.tr("Hintergrund Sollbuchung"),control.getBuchungSollBackground());
@@ -95,6 +91,9 @@ public class Settings extends AbstractView {
 
 /**********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.17  2004/05/11 21:11:32  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.16  2004/05/09 17:39:49  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/PassportRegistry.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/05/05 22:14:47 $
+ * $Revision: 1.4 $
+ * $Date: 2004/05/11 21:11:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -51,6 +51,10 @@ public class PassportRegistry {
 					Application.getLog().error("failed, skipping passport",e);
 				}
 			}
+		}
+		catch (ClassNotFoundException cn)
+		{
+			Application.getLog().warn("no passports found");
 		}
 		catch (Throwable t)
 		{
@@ -105,6 +109,9 @@ public class PassportRegistry {
 
 /**********************************************************************
  * $Log: PassportRegistry.java,v $
+ * Revision 1.4  2004/05/11 21:11:32  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2004/05/05 22:14:47  willuhn
  * *** empty log message ***
  *
