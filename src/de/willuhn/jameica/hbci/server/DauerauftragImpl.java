@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DauerauftragImpl.java,v $
- * $Revision: 1.14 $
- * $Date: 2004/11/26 01:23:13 $
+ * $Revision: 1.15 $
+ * $Date: 2005/02/19 16:49:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import java.util.zip.CRC32;
 
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.rmi.Checksum;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Turnus;
 import de.willuhn.jameica.system.Application;
@@ -232,7 +233,7 @@ public class DauerauftragImpl extends AbstractTransferImpl implements Dauerauftr
 		if (o == null)
 			return false;
 		try {
-			Dauerauftrag other = (Dauerauftrag) o;
+			Checksum other = (Checksum) o;
 			return other.getChecksum() == getChecksum();
 		}
 		catch (ClassCastException e)
@@ -274,6 +275,9 @@ public class DauerauftragImpl extends AbstractTransferImpl implements Dauerauftr
 
 /**********************************************************************
  * $Log: DauerauftragImpl.java,v $
+ * Revision 1.15  2005/02/19 16:49:32  willuhn
+ * @B bugs 3,8,10
+ *
  * Revision 1.14  2004/11/26 01:23:13  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCILastschriftJob.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/02/03 18:57:42 $
+ * $Revision: 1.3 $
+ * $Date: 2005/02/19 16:49:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -60,6 +60,10 @@ public class HBCILastschriftJob extends AbstractHBCIJob
 			setJobParam("my",Converter.HibiscusKonto2HBCIKonto(konto));
 
 			setJobParam("btg",lastschrift.getBetrag(),konto.getWaehrung() == null ? "EUR" : konto.getWaehrung());
+
+			// BUGZILLA #8 http://www.willuhn.de/bugzilla/show_bug.cgi?id=8
+			if (lastschrift.getTyp() != null)
+				setJobParam("type",lastschrift.getTyp());
 
 			Empfaenger empfaenger = (Empfaenger) Settings.getDBService().createObject(Empfaenger.class,null);
 			empfaenger.setBLZ(lastschrift.getEmpfaengerBLZ());
@@ -132,6 +136,9 @@ public class HBCILastschriftJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCILastschriftJob.java,v $
+ * Revision 1.3  2005/02/19 16:49:32  willuhn
+ * @B bugs 3,8,10
+ *
  * Revision 1.2  2005/02/03 18:57:42  willuhn
  * *** empty log message ***
  *

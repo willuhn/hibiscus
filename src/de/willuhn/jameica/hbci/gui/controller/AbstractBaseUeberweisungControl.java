@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractBaseUeberweisungControl.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/02/04 18:27:54 $
+ * $Revision: 1.2 $
+ * $Date: 2005/02/19 16:49:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,7 +27,7 @@ import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.rmi.BaseUeberweisung;
+import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.logging.Logger;
 
 /**
@@ -61,7 +61,7 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
 		if (comment != null)
 			return comment;
 		comment = new LabelInput("");
-    BaseUeberweisung bu = (BaseUeberweisung) getTransfer();
+		Terminable bu = (Terminable) getTransfer();
 		if (bu.ausgefuehrt())
 		{
 			comment.setValue(i18n.tr("Der Auftrag wurde bereits ausgeführt"));
@@ -80,7 +80,7 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
    */
   public DialogInput getTermin() throws RemoteException
 	{
-		final BaseUeberweisung bu = (BaseUeberweisung) getTransfer();
+		final Terminable bu = (Terminable) getTransfer();
 
 		if (termin != null)
 			return termin;
@@ -125,7 +125,7 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
   private void disableAll()
 	{
 		try {
-      BaseUeberweisung bu = (BaseUeberweisung) getTransfer();
+			Terminable bu = (Terminable) getTransfer();
 
 			if (!bu.ausgefuehrt())
 				return;
@@ -151,7 +151,7 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
   {
 		try
 		{
-      BaseUeberweisung bu = (BaseUeberweisung) getTransfer();
+			Terminable bu = (Terminable) getTransfer();
 			
 			if (bu.ausgefuehrt())
 			{
@@ -191,7 +191,7 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
   public Input getBetrag() throws RemoteException
   {
     Input i = super.getBetrag();
-    if (((BaseUeberweisung)getTransfer()).ausgefuehrt())
+    if (((Terminable)getTransfer()).ausgefuehrt())
     	i.disable();
     return i;
   }
@@ -203,7 +203,7 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
   public Input getEmpfaengerBlz() throws RemoteException
   {
 		Input i = super.getEmpfaengerBlz();
-		if (((BaseUeberweisung)getTransfer()).ausgefuehrt())
+		if (((Terminable)getTransfer()).ausgefuehrt())
 			i.disable();
 		return i;
   }
@@ -215,7 +215,7 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
   public DialogInput getEmpfaengerKonto() throws RemoteException
   {
 		DialogInput i = super.getEmpfaengerKonto();
-		if (((BaseUeberweisung)getTransfer()).ausgefuehrt())
+		if (((Terminable)getTransfer()).ausgefuehrt())
 			i.disable();
 		return i;
   }
@@ -227,7 +227,7 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
   public Input getEmpfaengerName() throws RemoteException
   {
 		Input i = super.getEmpfaengerName();
-		if (((BaseUeberweisung)getTransfer()).ausgefuehrt())
+		if (((Terminable)getTransfer()).ausgefuehrt())
 			i.disable();
 		return i;
   }
@@ -239,7 +239,7 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
   public DialogInput getKontoAuswahl() throws RemoteException
   {
 		DialogInput i = super.getKontoAuswahl();
-		if (((BaseUeberweisung)getTransfer()).ausgefuehrt())
+		if (((Terminable)getTransfer()).ausgefuehrt())
 			i.disable();
 		return i;
   }
@@ -251,7 +251,7 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
   public CheckboxInput getStoreEmpfaenger() throws RemoteException
   {
 		CheckboxInput i = super.getStoreEmpfaenger();
-		if (((BaseUeberweisung)getTransfer()).ausgefuehrt())
+		if (((Terminable)getTransfer()).ausgefuehrt())
 			i.disable();
 		return i;
   }
@@ -263,7 +263,7 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
   public Input getZweck() throws RemoteException
   {
 		Input i = super.getZweck();
-		if (((BaseUeberweisung)getTransfer()).ausgefuehrt())
+		if (((Terminable)getTransfer()).ausgefuehrt())
 			i.disable();
 		return i;
   }
@@ -275,7 +275,7 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
   public Input getZweck2() throws RemoteException
   {
 		Input i = super.getZweck2();
-		if (((BaseUeberweisung)getTransfer()).ausgefuehrt())
+		if (((Terminable)getTransfer()).ausgefuehrt())
 			i.disable();
 		return i;
   }
@@ -285,6 +285,9 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
 
 /**********************************************************************
  * $Log: AbstractBaseUeberweisungControl.java,v $
+ * Revision 1.2  2005/02/19 16:49:32  willuhn
+ * @B bugs 3,8,10
+ *
  * Revision 1.1  2005/02/04 18:27:54  willuhn
  * @C Refactoring zwischen Lastschrift und Ueberweisung
  *

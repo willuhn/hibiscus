@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Transfer.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/01/19 00:16:04 $
+ * $Revision: 1.6 $
+ * $Date: 2005/02/19 16:49:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,7 @@ import de.willuhn.datasource.rmi.DBObject;
 /**
  * Basis-Interface fuer Geld-Transfers zwischen Konten.
  */
-public interface Transfer extends DBObject, Checksum
+public interface Transfer extends DBObject
 {
 
 	/**
@@ -138,6 +138,9 @@ public interface Transfer extends DBObject, Checksum
 
 /**********************************************************************
  * $Log: Transfer.java,v $
+ * Revision 1.6  2005/02/19 16:49:32  willuhn
+ * @B bugs 3,8,10
+ *
  * Revision 1.5  2005/01/19 00:16:04  willuhn
  * @N Lastschriften
  *

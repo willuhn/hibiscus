@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<plugin name="Hibiscus" version="1.1">
+<plugin name="Hibiscus" version="1.2">
 
   <description>HBCI-Onlinebanking-Plugin für Jameica</description>
   <url>http://www.willuhn.de/projects/hibiscus/releases/hibiscus.jam</url>
@@ -18,12 +18,12 @@
   </menu>
 
   <navigation>
-    <item name="Hibiscus"             icon-close="folder.gif" icon-open="folderopen.gif"  action="de.willuhn.jameica.hbci.gui.action.Welcome">
-      <item name="Konten"             icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.KontoList" />
-      <item name="Adressbuch"         icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.EmpfaengerList" />
-      <item name="Überweisungen"      icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.UeberweisungList" />
-      <item name="Lastschriften"      icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.LastschriftList" />
-      <!-- <item name="Daueraufträge"      icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.DauerauftragList" /> //-->
+    <item name="Hibiscus"             	icon-close="folder.gif" icon-open="folderopen.gif"  action="de.willuhn.jameica.hbci.gui.action.Welcome">
+      <item name="Konten"             	icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.KontoList" />
+      <item name="Adressbuch"         	icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.EmpfaengerList" />
+      <item name="Überweisungen"      	icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.UeberweisungList" />
+      <item name="Lastschriften"      	icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.LastschriftList" />
+      <item name="Daueraufträge"      	icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.DauerauftragList" />
     </item>
   </navigation>
 

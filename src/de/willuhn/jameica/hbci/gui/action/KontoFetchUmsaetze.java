@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoFetchUmsaetze.java,v $
- * $Revision: 1.7 $
- * $Date: 2005/01/19 00:16:04 $
+ * $Revision: 1.8 $
+ * $Date: 2005/02/19 16:49:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.views.UmsatzList;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
+import de.willuhn.jameica.hbci.server.hbci.HBCISaldoJob;
 import de.willuhn.jameica.hbci.server.hbci.HBCIUmsatzJob;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -58,6 +59,10 @@ public class KontoFetchUmsaetze implements Action
 						GUI.getStatusBar().startProgress();
 						HBCIFactory factory = HBCIFactory.getInstance();
 						factory.addJob(new HBCIUmsatzJob(k));
+
+						// BUGZILLA #3 http://www.willuhn.de/bugzilla/show_bug.cgi?id=3
+						factory.addJob(new HBCISaldoJob(k));
+
 						factory.executeJobs(k.getPassport().getHandle());
 						GUI.startView(UmsatzList.class,k);
 						GUI.getStatusBar().setSuccessText(i18n.tr("...Umsätze erfolgreich übertragen"));
@@ -95,6 +100,9 @@ public class KontoFetchUmsaetze implements Action
 
 /**********************************************************************
  * $Log: KontoFetchUmsaetze.java,v $
+ * Revision 1.8  2005/02/19 16:49:32  willuhn
+ * @B bugs 3,8,10
+ *
  * Revision 1.7  2005/01/19 00:16:04  willuhn
  * @N Lastschriften
  *

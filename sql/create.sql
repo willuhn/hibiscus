@@ -116,6 +116,7 @@ CREATE TABLE lastschrift (
   zweck2 varchar(27),
   termin date NOT NULL,
   ausgefuehrt int(1) NOT NULL,
+  typ varchar(2) NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );

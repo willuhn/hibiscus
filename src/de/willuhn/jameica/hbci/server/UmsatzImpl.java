@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.17 $
- * $Date: 2004/11/12 18:25:07 $
+ * $Revision: 1.18 $
+ * $Date: 2005/02/19 16:49:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -338,18 +338,18 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
    * @see de.willuhn.jameica.hbci.rmi.Checksum#getChecksum()
    */
   public long getChecksum() throws RemoteException {
-		String s = getArt() +
+		String s = (""+getArt()).toUpperCase() +
 		           getBetrag() +
 		           getKonto().getChecksum() +
 		           getCustomerRef() +
 		           getEmpfaengerBLZ() +
 		           getEmpfaengerKonto() +
-		           getEmpfaengerName() +
+		           (""+getEmpfaengerName()).toUpperCase() +
 		           getPrimanota() +
 		           getSaldo() +
-		           getZweck() +
-		           getZweck2() +
-		           HBCI.DATEFORMAT.format(getDatum()) + // komisch, das Datum wird bei toString() manchmal anders ausgegeben
+		           (""+getZweck()).toUpperCase() +
+		           (""+getZweck2()).toUpperCase() +
+		           HBCI.DATEFORMAT.format(getDatum()) +
 							 HBCI.DATEFORMAT.format(getValuta());
 		CRC32 crc = new CRC32();
 		crc.update(s.getBytes());
@@ -375,6 +375,9 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.18  2005/02/19 16:49:32  willuhn
+ * @B bugs 3,8,10
+ *
  * Revision 1.17  2004/11/12 18:25:07  willuhn
  * *** empty log message ***
  *

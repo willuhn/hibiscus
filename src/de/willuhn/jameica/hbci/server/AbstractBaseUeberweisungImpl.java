@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractBaseUeberweisungImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/02/04 18:27:54 $
+ * $Revision: 1.2 $
+ * $Date: 2005/02/19 16:49:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,8 @@ import java.util.Date;
 import java.util.zip.CRC32;
 
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.rmi.BaseUeberweisung;
+import de.willuhn.jameica.hbci.rmi.Checksum;
+import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -26,7 +27,7 @@ import de.willuhn.util.I18N;
 /**
  * Abstrakte Basis-Klasse fuer Ueberweisungen und Lastschriften.
  */
-public abstract class AbstractBaseUeberweisungImpl extends AbstractTransferImpl implements BaseUeberweisung
+public abstract class AbstractBaseUeberweisungImpl extends AbstractTransferImpl implements Checksum, Terminable
 {
 
 	private I18N i18n;
@@ -81,15 +82,12 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractTransferImpl 
     super.insert();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.BaseUeberweisung#getTermin()
-   */
   public Date getTermin() throws RemoteException {
     return (Date) getAttribute("termin");
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.BaseUeberweisung#ausgefuehrt()
+   * @see de.willuhn.jameica.hbci.rmi.Terminable#ausgefuehrt()
    */
   public boolean ausgefuehrt() throws RemoteException {
 		Integer i = (Integer) getAttribute("ausgefuehrt");
@@ -99,14 +97,14 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractTransferImpl 
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.BaseUeberweisung#setTermin(java.util.Date)
+   * @see de.willuhn.jameica.hbci.rmi.Terminable#setTermin(java.util.Date)
    */
   public void setTermin(Date termin) throws RemoteException {
 		setAttribute("termin",termin);
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.BaseUeberweisung#ueberfaellig()
+   * @see de.willuhn.jameica.hbci.rmi.Terminable#ueberfaellig()
    */
   public boolean ueberfaellig() throws RemoteException {
     if (ausgefuehrt())
@@ -140,7 +138,7 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractTransferImpl 
   private boolean whileStore = false;
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.BaseUeberweisung#setAusgefuehrt()
+   * @see de.willuhn.jameica.hbci.rmi.Terminable#setAusgefuehrt()
    */
   public void setAusgefuehrt() throws RemoteException, ApplicationException
   {
@@ -161,6 +159,9 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractTransferImpl 
 
 /**********************************************************************
  * $Log: AbstractBaseUeberweisungImpl.java,v $
+ * Revision 1.2  2005/02/19 16:49:32  willuhn
+ * @B bugs 3,8,10
+ *
  * Revision 1.1  2005/02/04 18:27:54  willuhn
  * @C Refactoring zwischen Lastschrift und Ueberweisung
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/LastschriftImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/02/04 18:27:54 $
+ * $Revision: 1.3 $
+ * $Date: 2005/02/19 16:49:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -59,11 +59,38 @@ public class LastschriftImpl extends AbstractBaseUeberweisungImpl implements Las
 		return u;
 	}
 
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Lastschrift#getTyp()
+   */
+  public String getTyp() throws RemoteException
+  {
+    return (String) getAttribute("typ");
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Lastschrift#setTyp(java.lang.String)
+   */
+  public void setTyp(String typ) throws RemoteException
+  {
+  	if (typ == null)
+			setAttribute("typ",null);
+		else
+		{
+			if (!typ.equals("04") && !typ.equals("05"))
+				throw new RemoteException("type " + typ + " not allowed");
+
+			setAttribute("typ",typ);
+		}
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: LastschriftImpl.java,v $
+ * Revision 1.3  2005/02/19 16:49:32  willuhn
+ * @B bugs 3,8,10
+ *
  * Revision 1.2  2005/02/04 18:27:54  willuhn
  * @C Refactoring zwischen Lastschrift und Ueberweisung
  *
