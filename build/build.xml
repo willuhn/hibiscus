@@ -2,229 +2,229 @@
 
 <project basedir=".." default="all" name="All">
 
-  <target name="init" description="inits the build">
+	<target name="init" description="inits the build">
 
-	    <property environment="env"/>
+		<property environment="env" />
 
-    	<property name="build.dir" value="build"/>
+		<property name="build.dir" value="build" />
 
 		<!-- read build number -->
-	    <buildnumber file="${build.dir}/BUILD"/>
+		<buildnumber file="${build.dir}/BUILD" />
 
 		<!-- read version number -->
-	    <loadfile property="version" srcFile="${build.dir}/RELEASE">
+		<loadfile property="version" srcFile="${build.dir}/RELEASE">
 			<filterchain>
-				<striplinebreaks/>
+				<striplinebreaks />
 			</filterchain>
 		</loadfile>
 
 		<!-- prepare cvs tag -->
 		<copy file="${build.dir}/RELEASE" tofile="${build.dir}/TAG" />
-		<replaceregexp flags="g" file="${build.dir}/TAG" match="\." replace="_"/>
+		<replaceregexp flags="g" file="${build.dir}/TAG" match="\." replace="_" />
 		<loadfile property="mytag" srcFile="${build.dir}/TAG">
 			<filterchain>
-				<striplinebreaks/>
+				<striplinebreaks />
 			</filterchain>
 		</loadfile>
-	    <delete file="${build.dir}/TAG" />
-	    <property name="tag" value="V_${mytag}_BUILD_${build.number}"/>
+		<delete file="${build.dir}/TAG" />
+		<property name="tag" value="V_${mytag}_BUILD_${build.number}" />
 
-	    <echo message="VERSION: ${version}"/>
-    	<echo message="CVS-Tag: ${tag}"/>
-	    <echo message="BUILD  : ${build.number}"/>
+		<echo message="VERSION: ${version}" />
+		<echo message="CVS-Tag: ${tag}" />
+		<echo message="BUILD  : ${build.number}" />
 
-	    <property name="define.pluginname"    	value="hibiscus"/>
-	    <property name="define.jarfilename"   	value="hibiscus.jar"/>
-    	<property name="define.srcfilename"   	value="hibiscus.src.zip"/>
-    	<property name="define.javadocfilename" value="hibiscus.javadoc.zip"/>
-	    <property name="define.package"       	value="de.willuhn.jameica"/>
+		<property name="define.pluginname" value="hibiscus" />
+		<property name="define.jarfilename" value="hibiscus.jar" />
+		<property name="define.srcfilename" value="hibiscus.src.zip" />
+		<property name="define.javadocfilename" value="hibiscus.javadoc.zip" />
+		<property name="define.package" value="de.willuhn.jameica" />
 
-    	<property name="project.release"      	value="releases/${version}-${build.number}"/>
-    	<property name="project.nightly"      	value="releases/nightly"/>
-    	<property name="project.src"          	value="${project.release}/src/classes"/>
-	    <property name="project.tmp"          	value="${project.release}/tmp"/>
-	    <property name="project.javadoc"      	value="${project.release}/javadoc"/>
-	    <property name="src.dir"              	value="src"/>
-	    <property name="icon.dir"             	value="${src.dir}/img"/>
-	    <property name="lang.dir"             	value="${src.dir}/lang"/>
-	    <property name="help.dir"             	value="${src.dir}/help"/>
-	    <property name="lib.dir"              	value="lib"/>
-	    <property name="sql.dir"              	value="sql"/>
-	    <property name="class.dir"            	value="${project.tmp}/bin"/>
+		<property name="project.release" value="releases/${version}-${build.number}" />
+		<property name="project.nightly" value="releases/nightly" />
+		<property name="project.src" value="${project.release}/src/classes" />
+		<property name="project.tmp" value="${project.release}/tmp" />
+		<property name="project.javadoc" value="${project.release}/javadoc" />
+		<property name="src.dir" value="src" />
+		<property name="icon.dir" value="${src.dir}/img" />
+		<property name="lang.dir" value="${src.dir}/lang" />
+		<property name="help.dir" value="${src.dir}/help" />
+		<property name="lib.dir" value="lib" />
+		<property name="sql.dir" value="sql" />
+		<property name="class.dir" value="${project.tmp}/bin" />
 
-	    <property name="project.zipdir"        value="${project.release}/${define.pluginname}"/>
-	    <property name="project.zipfilename"   value="${define.pluginname}.zip"/>
+		<property name="project.zipdir" value="${project.release}/${define.pluginname}" />
+		<property name="project.zipfilename" value="${define.pluginname}.zip" />
 
 
-	    <path id="compilepath">
-	      <pathelement location="../jameica/lib/swt/linux/swt.jar"/>
-	      <pathelement location="../jameica/bin/"/>
-          <pathelement location="../jameica/releases/jameica-lib.jar"/>
-	      <pathelement location="../jameica/lib/de_willuhn_ds/de_willuhn_ds.jar"/>
-          <pathelement location="../jameica/lib/de_willuhn_util/de_willuhn_util.jar"/>
-	      <pathelement location="${lib.dir}/hbci4java-2.5.0pre-20040810.jar"/>
-	    </path>
+		<path id="compilepath">
+			<pathelement location="../jameica/lib/swt/linux/swt.jar" />
+			<pathelement location="../jameica/bin/" />
+			<pathelement location="../jameica/releases/jameica-lib.jar" />
+			<pathelement location="../jameica/lib/de_willuhn_ds/de_willuhn_ds.jar" />
+			<pathelement location="../jameica/lib/de_willuhn_util/de_willuhn_util.jar" />
+			<pathelement location="${lib.dir}/hbci4java-2.5.0pre-20040810.jar" />
+		</path>
 
-  </target>
+	</target>
 
-  <target depends="init" name="cvs" description="performs cvs update">
-    <exec executable="cvs" failonerror="true" dir="${basedir}">
-      <arg line="update -dP"/>
-    </exec>
-  </target>
+	<target depends="init" name="cvs" description="performs cvs update">
+		<exec executable="cvs" failonerror="true" dir="${basedir}">
+			<arg line="update -dP" />
+		</exec>
+	</target>
 
-  <target depends="init" name="compile" description="compiles everything">
+	<target depends="init" name="compile" description="compiles everything">
 
-    <mkdir dir="${class.dir}"/>
+		<mkdir dir="${class.dir}" />
 
-    <javac fork="true" debug="true" deprecation="true" destdir="${class.dir}" srcdir="${src.dir}">
-      <classpath refid="compilepath" />
-    </javac>
+		<javac fork="true" debug="true" deprecation="true" destdir="${class.dir}" srcdir="${src.dir}">
+			<classpath refid="compilepath" />
+		</javac>
 
-    <rmic verify="true" base="${class.dir}">
-      <include name="**/*.class"/>
-      <classpath refid="compilepath" />
-    </rmic>
+		<rmic verify="true" base="${class.dir}">
+			<include name="**/*.class" />
+			<classpath refid="compilepath" />
+		</rmic>
 
-<!--
+		<!--
     <copy todir="${class.dir}/lang">
       <fileset dir="${lang.dir}" />
     </copy>
 //-->
-    <copy todir="${class.dir}/help">
-      <fileset dir="${help.dir}" />
-    </copy>
-    <copy todir="${class.dir}/img">
-      <fileset dir="${icon.dir}" />
-    </copy>
+		<copy todir="${class.dir}/help">
+			<fileset dir="${help.dir}" />
+		</copy>
+		<copy todir="${class.dir}/img">
+			<fileset dir="${icon.dir}" />
+		</copy>
 
-    <copy file="${src.dir}/plugin.xml"   tofile="${class.dir}/plugin.xml" />
+		<copy file="${src.dir}/plugin.xml" tofile="${class.dir}/plugin.xml" />
 
-  </target>
-
-
-
-  <target depends="compile" name="cvstag" description="tags the source in the CVS">
-
-    <exec executable="cvs" failonerror="true" dir="${basedir}">
-      <arg line="tag ${tag}"/>
-    </exec>
-
-  </target>
-
-
-  <target depends="compile" name="jar" description="generates the jar file">
-
-    <mkdir dir="${project.release}"/>
-    <mkdir dir="${project.zipdir}"/>
-
-    <jar destfile="${project.zipdir}/${define.jarfilename}">
-      <manifest>
-        <attribute name="Built-By" value="${user.name}"/>
-        <attribute name="Implementation-Title" value="${define.pluginname}"/>
-        <attribute name="Implementation-Version" value="${version}"/>
-        <attribute name="Implementation-Buildnumber" value="${build.number}"/>
-        <attribute name="Class-Path" value="lang help lib lib/hbci4java-2.4.7pre-20040525.jar"/>
-      </manifest>
-      <fileset dir="${class.dir}"/>
-    </jar>
-
-    <mkdir dir="${project.zipdir}/sql"/>
-    <copy todir="${project.zipdir}/sql">
-      <fileset dir="${sql.dir}"/>
-    </copy>
-
-    <mkdir dir="${project.zipdir}/lib"/>
-    <copy todir="${project.zipdir}/lib">
-      <fileset dir="${lib.dir}"/>
-    </copy>
-
-    <copy file="${build.dir}/README"            tofile="${project.zipdir}/README" />
-    <copy file="${build.dir}/COPYING"           tofile="${project.zipdir}/COPYING" />
-
-
-	<!-- Jetzt muessen wir noch das ZIP-File erzeugen und signieren -->
-	<zip destfile="${project.release}/${project.zipfilename}">
-	    <fileset dir="${project.release}">
-	    	<include name="${define.pluginname}"/>
-	    	<include name="${define.pluginname}/**"/>
-	    </fileset>
-	</zip>
-
-  </target>
+	</target>
 
 
 
-  <target depends="jar" name="javadoc" description="creates the api doc">
+	<target depends="compile" name="cvstag" description="tags the source in the CVS">
 
-    <mkdir dir="${project.javadoc}"/>
+		<exec executable="cvs" failonerror="true" dir="${basedir}">
+			<arg line="tag ${tag}" />
+		</exec>
 
-    <javadoc destdir="${project.javadoc}" packagenames="${define.package}.*">
-      <classpath refid="compilepath" />
-      <sourcepath>
-        <pathelement location="${src.dir}"/>
-      </sourcepath>
-    </javadoc>
+	</target>
 
-    <zip casesensitive="true" zipfile="${project.release}/${define.javadocfilename}">
-      <fileset dir="${project.javadoc}" >
-		<include name="**"/>
-      </fileset>
-    </zip>
 
-  </target>
+	<target depends="compile" name="jar" description="generates the jar file">
+
+		<mkdir dir="${project.release}" />
+		<mkdir dir="${project.zipdir}" />
+
+		<jar destfile="${project.zipdir}/${define.jarfilename}">
+			<manifest>
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Implementation-Title" value="${define.pluginname}" />
+				<attribute name="Implementation-Version" value="${version}" />
+				<attribute name="Implementation-Buildnumber" value="${build.number}" />
+				<attribute name="Class-Path" value="lang help lib lib/hbci4java-2.4.7pre-20040525.jar" />
+			</manifest>
+			<fileset dir="${class.dir}" />
+		</jar>
+
+		<mkdir dir="${project.zipdir}/sql" />
+		<copy todir="${project.zipdir}/sql">
+			<fileset dir="${sql.dir}" />
+		</copy>
+
+		<mkdir dir="${project.zipdir}/lib" />
+		<copy todir="${project.zipdir}/lib">
+			<fileset dir="${lib.dir}" />
+		</copy>
+
+		<copy file="${build.dir}/README" tofile="${project.zipdir}/README" />
+		<copy file="${build.dir}/COPYING" tofile="${project.zipdir}/COPYING" />
+
+
+		<!-- Jetzt muessen wir noch das ZIP-File erzeugen und signieren -->
+		<zip destfile="${project.release}/${project.zipfilename}">
+			<fileset dir="${project.release}">
+				<include name="${define.pluginname}" />
+				<include name="${define.pluginname}/**" />
+			</fileset>
+		</zip>
+
+	</target>
+
+
+
+	<target depends="jar" name="javadoc" description="creates the api doc">
+
+		<mkdir dir="${project.javadoc}" />
+
+		<javadoc destdir="${project.javadoc}" packagenames="${define.package}.*">
+			<classpath refid="compilepath" />
+			<sourcepath>
+				<pathelement location="${src.dir}" />
+			</sourcepath>
+		</javadoc>
+
+		<zip casesensitive="true" zipfile="${project.release}/${define.javadocfilename}">
+			<fileset dir="${project.javadoc}">
+				<include name="**" />
+			</fileset>
+		</zip>
+
+	</target>
 
 
 
 	<target depends="init" name="src" description="build source package, depends compile target to make sure, the code has no errors">
-		<mkdir dir="${project.release}"/>
+		<mkdir dir="${project.release}" />
 		<zip casesensitive="true" zipfile="${project.release}/${define.srcfilename}">
-			<fileset dir="." >
-				<include name=".project"/>
-				<include name=".classpath"/>
-		        <include name="${lib.dir}/**"/>
-				<include name="${src.dir}/**"/>
-				<include name="${build.dir}/**"/>
-				<exclude name="${build.dir}/BUILD"/>
+			<fileset dir=".">
+				<include name=".project" />
+				<include name=".classpath" />
+				<include name="${lib.dir}/**" />
+				<include name="${src.dir}/**" />
+				<include name="${build.dir}/**" />
+				<exclude name="${build.dir}/BUILD" />
 			</fileset>
 		</zip>
 	</target>
 
 
 
-  <target name="clean" description="cleanup">
-    <delete dir="${project.tmp}"/>
-  </target>
+	<target name="clean" description="cleanup">
+		<delete dir="${project.tmp}" />
+	</target>
 
 
-  <target name="sign" description="signs the jar/zip file">
-    <checksum file="${project.release}/${project.zipfilename}" />
-    <echo message="Creating PGP signature" />
-    <exec executable="kgpg" failonerror="true" timeout="60000">
-      <arg line="-S ${project.release}/${project.zipfilename}"/>
-    </exec>
-  </target>
+	<target name="sign" description="signs the jar/zip file">
+		<checksum file="${project.release}/${project.zipfilename}" />
+		<echo message="Creating PGP signature" />
+		<exec executable="kgpg" failonerror="true" timeout="60000">
+			<arg line="-S ${project.release}/${project.zipfilename}" />
+		</exec>
+	</target>
 
-  <target name="signsrc" description="signs the source zip">
-    <checksum file="${project.release}/${define.srcfilename}" />
-    <echo message="Creating PGP signature" />
-    <exec executable="kgpg" failonerror="true" timeout="60000">
-      <arg line="-S ${project.release}/${define.srcfilename}"/>
-    </exec>
-  </target>
+	<target name="signsrc" description="signs the source zip">
+		<checksum file="${project.release}/${define.srcfilename}" />
+		<echo message="Creating PGP signature" />
+		<exec executable="kgpg" failonerror="true" timeout="60000">
+			<arg line="-S ${project.release}/${define.srcfilename}" />
+		</exec>
+	</target>
 
-  <target depends="init,compile,cvstag,jar,sign,javadoc,src,signsrc,clean" description="build an official release" name="all" />
+	<target depends="init,compile,cvstag,jar,sign,javadoc,src,signsrc,clean" description="build an official release" name="all" />
 
-  <target depends="init,compile,jar,src,clean" description="build inofficial release" name="fast" />
+	<target depends="init,compile,jar,src,clean" description="build inofficial release" name="fast" />
 
-  <target depends="init,cvs,compile,jar,javadoc,src" description="build nightly build" name="nightly">
-    <mkdir dir="${project.nightly}"/>
+	<target depends="init,cvs,compile,jar,javadoc,src" description="build nightly build" name="nightly">
+		<mkdir dir="${project.nightly}" />
 
-    <copy file="${project.release}/${project.zipfilename}" 		tofile="${project.nightly}/${define.pluginname}-${version}-nightly.zip" />
-    <copy file="${project.release}/${define.srcfilename}"  		tofile="${project.nightly}/${define.pluginname}-${version}-nightly.src.zip" />
-    <copy file="${project.release}/${define.javadocfilename}"  	tofile="${project.nightly}/${define.pluginname}-${version}-nightly.javadoc.zip" />
+		<copy file="${project.release}/${project.zipfilename}" tofile="${project.nightly}/${define.pluginname}-${version}-nightly.zip" />
+		<copy file="${project.release}/${define.srcfilename}" tofile="${project.nightly}/${define.pluginname}-${version}-nightly.src.zip" />
+		<copy file="${project.release}/${define.javadocfilename}" tofile="${project.nightly}/${define.pluginname}-${version}-nightly.javadoc.zip" />
 
-    <delete dir="${project.release}"/>
-  </target>
+		<delete dir="${project.release}" />
+	</target>
 
 </project>
