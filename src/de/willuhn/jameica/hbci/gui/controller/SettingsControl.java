@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.33 $
- * $Date: 2004/10/20 12:08:18 $
+ * $Revision: 1.34 $
+ * $Date: 2004/10/21 13:59:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,6 +24,7 @@ import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
+import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
@@ -38,6 +39,7 @@ import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.PassportDetail;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 import de.willuhn.util.Logger;
 
@@ -85,7 +87,19 @@ public class SettingsControl extends AbstractControl {
 		{
 			p[i] = new PassportObject(passports[i]);
 		}
-		passportList = new TablePart(PseudoIterator.fromArray(p),new PassportDetail());
+		passportList = new TablePart(PseudoIterator.fromArray(p),new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+      	// Wir haben hier nicht direkt die Passports sondern noch einen
+      	// GenericObject-Wrapper drum rum (Passport-Objekt). Die Huelle
+      	// entfernen wir vorher noch
+      	PassportObject o = (PassportObject) context;
+      	if (o == null)
+      		return;
+				new PassportDetail().handleAction(o.getPassport());
+      }
+    });
 		passportList.addColumn(i18n.tr("Bezeichnung"),"name");
 		return passportList;
 	}
@@ -254,6 +268,9 @@ public class SettingsControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.34  2004/10/21 13:59:00  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.33  2004/10/20 12:08:18  willuhn
  * @C MVC-Refactoring (new Controllers)
  *

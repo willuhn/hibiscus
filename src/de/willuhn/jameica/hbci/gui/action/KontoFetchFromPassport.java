@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoFetchFromPassport.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/10/20 12:08:18 $
+ * $Revision: 1.2 $
+ * $Date: 2004/10/21 13:59:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,7 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.views.KontoNeu;
+import de.willuhn.jameica.hbci.gui.views.KontoListe;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
@@ -96,7 +96,7 @@ public class KontoFetchFromPassport implements Action
 							}
 					
 						}
-						GUI.startView(KontoNeu.class.getName(),null);
+						GUI.startView(KontoListe.class.getName(),null);
 						GUI.getStatusBar().setSuccessText(i18n.tr("Konten erfolgreich ausgelesen"));
 					}
 					catch (Throwable t)
@@ -118,6 +118,9 @@ public class KontoFetchFromPassport implements Action
 
 /**********************************************************************
  * $Log: KontoFetchFromPassport.java,v $
+ * Revision 1.2  2004/10/21 13:59:00  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/10/20 12:08:18  willuhn
  * @C MVC-Refactoring (new Controllers)
  *
