@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.13 $
- * $Date: 2004/04/13 23:14:22 $
+ * $Revision: 1.14 $
+ * $Date: 2004/04/21 22:28:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,6 +49,9 @@ public class SettingsControl extends AbstractControl {
 	private AbstractInput buchungSollBg     = null;
 	private AbstractInput buchungHabenFg    = null;
 	private AbstractInput buchungHabenBg    = null;
+
+	private AbstractInput ueberfaelligFg    = null;
+	private AbstractInput ueberfaelligBg		= null;
 
 	private TablePart passportList 							= null;
 	
@@ -159,6 +162,32 @@ public class SettingsControl extends AbstractControl {
 		return buchungHabenBg;
 	}
 
+	/**
+	 * Liefert ein Auswahlfeld fuer die Hintergrundfarbe von ueberfaelligen Ueberweisungen.
+	 * @return Auswahlfeld.
+	 * @throws RemoteException
+	 */
+	public AbstractInput getUeberfaelligBackground() throws RemoteException
+	{
+		if (ueberfaelligBg != null)
+			return ueberfaelligBg;
+		ueberfaelligBg = new ColorInput(Settings.getUeberfaelligBackground());
+		return ueberfaelligBg;
+	}
+
+	/**
+	 * Liefert ein Auswahlfeld fuer die Vordergrundfarbe von ueberfaelligen Ueberweisungen.
+	 * @return Auswahlfeld.
+	 * @throws RemoteException
+	 */
+	public AbstractInput getUeberfaelligForeground() throws RemoteException
+	{
+		if (ueberfaelligFg != null)
+			return ueberfaelligFg;
+		ueberfaelligFg = new ColorInput(Settings.getUeberfaelligForeground());
+		return ueberfaelligFg;
+	}
+
   /**
    * @see de.willuhn.jameica.gui.controller.AbstractControl#handleDelete()
    */
@@ -184,10 +213,15 @@ public class SettingsControl extends AbstractControl {
 			Color sb = (Color)getBuchungSollBackground().getValue();
 			Color sf = (Color)getBuchungSollForeground().getValue();
 
+			Color ub = (Color)getUeberfaelligBackground().getValue();
+			Color uf = (Color)getUeberfaelligForeground().getValue();
+
 			Settings.setBuchungHabenBackground(hb.getRGB());
 			Settings.setBuchungHabenForeground(hf.getRGB());
 			Settings.setBuchungSollBackground(sb.getRGB());
 			Settings.setBuchungSollForeground(sf.getRGB());
+			Settings.setUeberfaelligBackground(ub.getRGB());
+			Settings.setUeberfaelligForeground(uf.getRGB());
 
 			Settings.setOnlineMode(((Boolean)getOnlineMode().getValue()).booleanValue());
 			Settings.setCheckPin(((Boolean)getCheckPin().getValue()).booleanValue());
@@ -256,6 +290,9 @@ public class SettingsControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.14  2004/04/21 22:28:42  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.13  2004/04/13 23:14:22  willuhn
  * @N datadir
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/WelcomeControl.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/04/19 22:53:52 $
+ * $Revision: 1.4 $
+ * $Date: 2004/04/21 22:28:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -67,11 +67,13 @@ public class WelcomeControl extends AbstractControl {
 				try {
 					Date current = new Date();
 					Ueberweisung u = (Ueberweisung) item.getData();
-					if (u.getTermin().after(current))
-						item.setBackground(Settings.getBuchungSollBackground());
+					if (u.getTermin().before(current))
+					{
+						item.setBackground(Settings.getUeberfaelligBackground());
+						item.setForeground(Settings.getUeberfaelligForeground());
+					}
 				}
-				catch (RemoteException e)
-				{ /* ignore */}
+				catch (RemoteException e) { /*ignore */}
       }
     });
 		table.addColumn(i18n.tr("Konto"),"konto_id");
@@ -144,6 +146,9 @@ public class WelcomeControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: WelcomeControl.java,v $
+ * Revision 1.4  2004/04/21 22:28:42  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2004/04/19 22:53:52  willuhn
  * *** empty log message ***
  *

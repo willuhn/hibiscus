@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Settings.java,v $
- * $Revision: 1.13 $
- * $Date: 2004/04/14 23:53:46 $
+ * $Revision: 1.14 $
+ * $Date: 2004/04/21 22:28:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -53,6 +53,8 @@ public class Settings extends AbstractView {
 		colors.addLabelPair(i18n.tr("Hintergrund Sollbuchung"),control.getBuchungSollBackground());
 		colors.addLabelPair(i18n.tr("Vordergrund Habenbuchung"),control.getBuchungHabenForeground());
 		colors.addLabelPair(i18n.tr("Hintergrund Habenbuchung"),control.getBuchungHabenBackground());
+		colors.addLabelPair(i18n.tr("Vordergrund überfällige Überweisungen"),control.getUeberfaelligForeground());
+		colors.addLabelPair(i18n.tr("Hintergrund überfällige Überweisungen"),control.getUeberfaelligBackground());
 
 		ButtonArea buttons = settings.createButtonArea(1);
 		buttons.addCustomButton(i18n.tr("gespeicherte Check-Summe löschen"),new MouseAdapter() {
@@ -99,6 +101,9 @@ public class Settings extends AbstractView {
 
 /**********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.14  2004/04/21 22:28:42  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.13  2004/04/14 23:53:46  willuhn
  * *** empty log message ***
  *

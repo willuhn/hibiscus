@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/UeberweisungNeu.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/04/12 19:15:31 $
+ * $Revision: 1.8 $
+ * $Date: 2004/04/21 22:28:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -53,6 +53,7 @@ public class UeberweisungNeu extends AbstractView {
 		group.addLabelPair(i18n.tr("Verwendungszweck"),					control.getZweck());
 		group.addLabelPair(i18n.tr("weiterer Verwendungszweck"),control.getZweck2());
 		group.addLabelPair(i18n.tr("Betrag"),										control.getBetrag());
+		group.addLabelPair(i18n.tr("Termin"),										control.getTermin());
 
 
 		ButtonArea buttonArea = new ButtonArea(getParent(),4);
@@ -77,6 +78,9 @@ public class UeberweisungNeu extends AbstractView {
 
 /**********************************************************************
  * $Log: UeberweisungNeu.java,v $
+ * Revision 1.8  2004/04/21 22:28:42  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2004/04/12 19:15:31  willuhn
  * @C refactoring
  *

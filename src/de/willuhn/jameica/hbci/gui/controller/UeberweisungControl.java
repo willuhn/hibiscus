@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.12 $
- * $Date: 2004/04/19 22:53:52 $
+ * $Revision: 1.13 $
+ * $Date: 2004/04/21 22:28:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,7 @@
 package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
+import java.util.Date;
 
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -23,6 +24,7 @@ import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.controller.AbstractControl;
+import de.willuhn.jameica.gui.dialogs.CalendarDialog;
 import de.willuhn.jameica.gui.dialogs.ListDialog;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
@@ -32,7 +34,7 @@ import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.input.AbstractInput;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DecimalInput;
-import de.willuhn.jameica.gui.input.SearchInput;
+import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.TablePart;
@@ -133,21 +135,16 @@ public class UeberweisungControl extends AbstractControl {
       	Ueberweisung u = (Ueberweisung) item.getData();
       	if (u == null)
       		return;
-      	try {
-					if (u.ausgefuehrt())
+
+				try {
+					Date current = new Date();
+					if (u.getTermin().before(current))
 					{
-						item.setBackground(Settings.getBuchungHabenBackground());
-						item.setForeground(Settings.getBuchungHabenForeground());
+						item.setBackground(Settings.getUeberfaelligBackground());
+						item.setForeground(Settings.getUeberfaelligForeground());
 					}
-					else {
-						item.setBackground(Settings.getBuchungSollBackground());
-						item.setForeground(Settings.getBuchungSollForeground());
-					}
-      	}
-      	catch (RemoteException e)
-      	{
-      		Application.getLog().error("unable to format table item",e);
-      	}
+				}
+				catch (RemoteException e) { /*ignore */}
       }
     });
     table.addMenu(i18n.tr("Jetzt ausführen"), new Listener() {
@@ -217,9 +214,9 @@ public class UeberweisungControl extends AbstractControl {
 		d.addColumn(i18n.tr("Kontonummer"),"kontonummer");
 		d.addColumn(i18n.tr("BLZ"),"blz");
 		d.setTitle(i18n.tr("Auswahl des Empfängers"));
-		d.addListener(new EmpfaengerListener());
+		d.addCloseListener(new EmpfaengerListener());
 
-		empfkto = new SearchInput(getUeberweisung().getEmpfaengerKonto(),d);
+		empfkto = new DialogInput(getUeberweisung().getEmpfaengerKonto(),d);
 		return empfkto;
 	}
 
@@ -275,6 +272,7 @@ public class UeberweisungControl extends AbstractControl {
 		return zweck2;
 	}
 
+
 	/**
 	 * Liefert das Eingabe-Feld fuer den Betrag.
 	 * @return Eingabe-Feld.
@@ -298,8 +296,22 @@ public class UeberweisungControl extends AbstractControl {
 	{
 		if (termin != null)
 			return termin;
-			// TODO
-//		termin = new DateInput();
+		CalendarDialog cd = new CalendarDialog(CalendarDialog.POSITION_MOUSE);
+		cd.setTitle(i18n.tr("Termin"));
+		cd.addCloseListener(new Listener() {
+			public void handleEvent(Event event) {
+				if (event == null || event.data == null)
+					return;
+				Date choosen = (Date) event.data;
+				termin.setValue(HBCI.DATEFORMAT.format(choosen));
+			}
+		});
+
+		Date d = getUeberweisung().getTermin();
+		if (d == null)
+			d = new Date();
+		cd.setDate(d);
+		termin = new DialogInput(HBCI.DATEFORMAT.format(d),cd);
 		return termin;
 	}
 
@@ -361,8 +373,9 @@ public class UeberweisungControl extends AbstractControl {
   		getUeberweisung().setKonto((Konto)getKontoAuswahl().getValue());
   		getUeberweisung().setZweck((String)getZweck().getValue());
 			getUeberweisung().setZweck2((String)getZweck2().getValue());
+			getUeberweisung().setTermin((Date)getTermin().getValue());
 
-			String kto  = ((SearchInput) getEmpfaengerKonto()).getText();
+			String kto  = ((DialogInput) getEmpfaengerKonto()).getText();
 			String blz  = (String)getEmpfaengerBlz().getValue();
 			String name = (String)getEmpfaengerName().getValue();
 
@@ -527,6 +540,9 @@ public class UeberweisungControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
+ * Revision 1.13  2004/04/21 22:28:42  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.12  2004/04/19 22:53:52  willuhn
  * *** empty log message ***
  *
