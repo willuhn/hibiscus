@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/PassportRegistry.java,v $
- * $Revision: 1.9 $
- * $Date: 2005/01/09 18:48:40 $
+ * $Revision: 1.10 $
+ * $Date: 2005/01/30 20:45:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,7 +43,7 @@ public class PassportRegistry {
 				Logger.info("found passport type " + found[i].getName() + ", try to instantiate");
 				try {
 					Passport p = (Passport) found[i].newInstance();
-					Application.getStartupMonitor().setStatusText("init passport " + p.getName());
+					Application.getCallback().getStartupMonitor().setStatusText("init passport " + p.getName());
 					passportsByName.put(p.getName(),p);
 					passportsByClass.put(found[i].getName(),p);
 					Logger.info("[" + p.getName() + "] instantiated successfully");
@@ -111,6 +111,9 @@ public class PassportRegistry {
 
 /**********************************************************************
  * $Log: PassportRegistry.java,v $
+ * Revision 1.10  2005/01/30 20:45:35  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.9  2005/01/09 18:48:40  willuhn
  * @N native lib for sizrdh
  *
