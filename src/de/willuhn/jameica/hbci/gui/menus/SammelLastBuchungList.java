@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/Attic/SammelLastBuchungList.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/03/01 18:51:04 $
+ * $Revision: 1.2 $
+ * $Date: 2005/03/02 00:22:05 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -17,8 +17,8 @@ import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.action.SammelLastBuchungDelete;
 import de.willuhn.jameica.hbci.gui.action.SammelLastBuchungNew;
-import de.willuhn.jameica.hbci.gui.action.SammelLastschriftNew;
 import de.willuhn.jameica.hbci.rmi.SammelLastBuchung;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.system.Application;
@@ -46,7 +46,7 @@ public class SammelLastBuchungList extends ContextMenu
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     this.lastschrift = lastschrift;
 
-		addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"), new SammelLastschriftNew()));
+		addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"), new SammelLastBuchungNew()));
 		addItem(ContextMenuItem.SEPARATOR);
 		addItem(new NotActiveMenuItem(i18n.tr("Löschen..."), new SammelLastBuchungDelete()));
 		addItem(ContextMenuItem.SEPARATOR);
@@ -110,6 +110,9 @@ public class SammelLastBuchungList extends ContextMenu
 
 /**********************************************************************
  * $Log: SammelLastBuchungList.java,v $
+ * Revision 1.2  2005/03/02 00:22:05  web0
+ * @N first code for "Sammellastschrift"
+ *
  * Revision 1.1  2005/03/01 18:51:04  web0
  * @N Dialoge fuer Sammel-Lastschriften
  *

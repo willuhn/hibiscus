@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/SammelLastschriftNew.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/03/01 18:51:04 $
+ * $Revision: 1.3 $
+ * $Date: 2005/03/02 00:22:05 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -45,15 +45,19 @@ public class SammelLastschriftNew extends AbstractView {
 		
 		LabelGroup group = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
     group.addLabelPair(i18n.tr("persönliches Konto (Empfänger)"),control.getKontoAuswahl());
-    group.addLabelPair(i18n.tr("Bezeichnung"),control.getComment());
+    group.addLabelPair(i18n.tr("Bezeichnung"),control.getName());
     group.addLabelPair(i18n.tr("Termin"),control.getTermin());
 		
+		group.addSeparator();
+		group.addLabelPair(i18n.tr("Bemerkung"),control.getComment());
+
     new Headline(getParent(),i18n.tr("Enthaltene Buchungen"));
     control.getBuchungen().paint(getParent());
 
-    ButtonArea buttons = new ButtonArea(getParent(),3);
+
+    ButtonArea buttons = new ButtonArea(getParent(),4);
     buttons.addButton(i18n.tr("Zurück"),new Back());
-    buttons.addButton(i18n.tr("Neue Buchung"), new SammelLastBuchungNew(),control.getLastschrift());
+    buttons.addButton(i18n.tr("Neue Buchung hinzufügen"), new SammelLastBuchungNew(),control.getLastschrift());
     buttons.addButton(i18n.tr("Sammel-Lastschrift löschen"),new SammelLastschriftDelete(),control.getLastschrift());
     buttons.addButton(i18n.tr("Speichern"),new Action()
     {
@@ -76,6 +80,9 @@ public class SammelLastschriftNew extends AbstractView {
 
 /**********************************************************************
  * $Log: SammelLastschriftNew.java,v $
+ * Revision 1.3  2005/03/02 00:22:05  web0
+ * @N first code for "Sammellastschrift"
+ *
  * Revision 1.2  2005/03/01 18:51:04  web0
  * @N Dialoge fuer Sammel-Lastschriften
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.22 $
- * $Date: 2005/03/01 18:51:04 $
+ * $Revision: 1.23 $
+ * $Date: 2005/03/02 00:22:05 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -47,20 +47,20 @@ public abstract class AbstractTransferControl extends AbstractControl
 {
 
 	// Fach-Objekte
-	private Adresse empfaenger 				= null;
-	private Konto konto										= null;
+	private Adresse empfaenger 							= null;
+	private Konto konto											= null;
 	
 	// Eingabe-Felder
 	private DialogInput kontoAuswahl			= null;
-	private Input betrag									= null;
-	private TextInput zweck								= null;
-	private TextInput zweck2							= null;
+	private Input betrag										= null;
+	private TextInput zweck									= null;
+	private TextInput zweck2								= null;
 
-	private DialogInput empfkto 					= null;
-	private Input empfName 								= null;
-	private Input empfblz 								= null;
+	private DialogInput empfkto 						= null;
+	private Input empfName 									= null;
+	private Input empfblz 									= null;
 
-	private CheckboxInput storeEmpfaenger = null;
+	private CheckboxInput storeEmpfaenger 	= null;
 
 	I18N i18n;
 
@@ -396,6 +396,9 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
+ * Revision 1.23  2005/03/02 00:22:05  web0
+ * @N first code for "Sammellastschrift"
+ *
  * Revision 1.22  2005/03/01 18:51:04  web0
  * @N Dialoge fuer Sammel-Lastschriften
  *

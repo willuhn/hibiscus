@@ -10,6 +10,6 @@
 	
 	<p>
 		Erstellen Sie für jeden Zahlungspflichtigen eine Buchung.
-		Klicken Sie hierzu bitte auf <b>Neu Buchung hinzufügen</b>.
+		Klicken Sie hierzu bitte auf <b>Neue Buchung hinzufügen...</b>.
 	</p>
 </form>

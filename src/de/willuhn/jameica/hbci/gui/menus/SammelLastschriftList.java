@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/SammelLastschriftList.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/03/01 18:51:04 $
+ * $Revision: 1.3 $
+ * $Date: 2005/03/02 00:22:05 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,8 @@ import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.LastschriftNew;
+import de.willuhn.jameica.hbci.gui.action.SammelLastschriftDelete;
+import de.willuhn.jameica.hbci.gui.action.SammelLastschriftExecute;
 import de.willuhn.jameica.hbci.gui.action.SammelLastschriftNew;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.system.Application;
@@ -53,7 +54,7 @@ public class SammelLastschriftList extends ContextMenu
 	 * Ueberschreiben wir, um <b>grundsaetzlich</b> eine neue Sammel-Lastschrift
 	 * anzulegen - auch wenn der Focus auf einer existierenden liegt.
    */
-  private class SNeu extends LastschriftNew
+  private class SNeu extends SammelLastschriftNew
 	{
     /**
      * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
@@ -105,6 +106,9 @@ public class SammelLastschriftList extends ContextMenu
 
 /**********************************************************************
  * $Log: SammelLastschriftList.java,v $
+ * Revision 1.3  2005/03/02 00:22:05  web0
+ * @N first code for "Sammellastschrift"
+ *
  * Revision 1.2  2005/03/01 18:51:04  web0
  * @N Dialoge fuer Sammel-Lastschriften
  *
