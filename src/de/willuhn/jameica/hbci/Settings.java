@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.25 $
- * $Date: 2005/01/09 23:21:05 $
+ * $Revision: 1.26 $
+ * $Date: 2005/01/15 16:48:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,14 +13,18 @@
 package de.willuhn.jameica.hbci;
 
 import java.rmi.RemoteException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
+import sun.misc.BASE64Encoder;
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.parts.ProgressBar;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 
 /**
  * Verwaltet die Einstellungen des Plugins.
@@ -239,30 +243,30 @@ public class Settings
    * Liefert das Passwort mit die lokalen Daten verschluesselt werden.
    * @return Passphrase.
    */
-//  protected static String getPassphrase()
-//  {
-//    MessageDigest md = null;
-//    byte[] hashed = null;
-//    try {
-//      md = MessageDigest.getInstance("SHA1");
-//      hashed = md.digest(getWorkPath().getBytes());
-//    }
-//    catch (NoSuchAlgorithmException nsae)
-//    {
-//      Logger.warn("algorithm SHA1 not found, trying MD5");
-//      try {
-//        md = MessageDigest.getInstance("MD5");
-//        hashed = md.digest(getWorkPath().getBytes());
-//      }
-//      catch (NoSuchAlgorithmException nsae2)
-//      {
-//        Logger.error("no such algorithm SHA1/MD5",nsae2);
-//        hashed = getWorkPath().getBytes();
-//      }
-//    }
-//    BASE64Encoder encoder = new BASE64Encoder();
-//    return encoder.encode(hashed);
-//  }
+  protected static String getPassphrase()
+  {
+    MessageDigest md = null;
+    byte[] hashed = null;
+    try {
+      md = MessageDigest.getInstance("SHA1");
+      hashed = md.digest(getWorkPath().getBytes());
+    }
+    catch (NoSuchAlgorithmException nsae)
+    {
+      Logger.warn("algorithm SHA1 not found, trying MD5");
+      try {
+        md = MessageDigest.getInstance("MD5");
+        hashed = md.digest(getWorkPath().getBytes());
+      }
+      catch (NoSuchAlgorithmException nsae2)
+      {
+        Logger.error("no such algorithm SHA1/MD5",nsae2);
+        hashed = getWorkPath().getBytes();
+      }
+    }
+    BASE64Encoder encoder = new BASE64Encoder();
+    return encoder.encode(hashed);
+  }
 
 	public static ProgressBar getHBCIProgressBar()
 	{
@@ -275,6 +279,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.26  2005/01/15 16:48:17  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.25  2005/01/09 23:21:05  willuhn
  * *** empty log message ***
  *
