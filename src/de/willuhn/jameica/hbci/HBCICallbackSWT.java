@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.22 $
- * $Date: 2005/02/02 16:15:52 $
+ * $Revision: 1.23 $
+ * $Date: 2005/02/03 23:57:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -95,7 +95,7 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 				Date      date;
 
 			AccountContainer container = (AccountContainer) accountCache.get(passport);
-            
+
 			switch (reason) {
 				case NEED_PASSPHRASE_LOAD:
 				case NEED_PASSPHRASE_SAVE:
@@ -122,8 +122,9 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 						w.set("hbci.passport.password." + s,pw);
 					}
 					retData.replace(0,retData.length(),pw);
+
 					break;
-	
+
 				case NEED_CHIPCARD:
 					GUI.getStatusBar().setSuccessText(i18n.tr("Bitte legen Sie Ihre HBCI-Chipkarte in das Lesegerät."));
 					break;
@@ -424,6 +425,9 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.23  2005/02/03 23:57:05  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.22  2005/02/02 16:15:52  willuhn
  * @N Neue Dialoge fuer RDH
  *

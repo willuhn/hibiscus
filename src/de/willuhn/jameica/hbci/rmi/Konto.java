@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Konto.java,v $
- * $Revision: 1.19 $
- * $Date: 2004/10/25 23:12:02 $
+ * $Revision: 1.20 $
+ * $Date: 2005/02/03 23:57:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -171,6 +171,13 @@ public interface Konto extends DBObject,Checksum
   public DBIterator getDauerauftraege() throws RemoteException;
 
 	/**
+	 * Liefert alle Lastschriften, die fuer das Konto vorliegen.
+   * @return Liste der Lastschriften.
+   * @throws RemoteException
+   */
+  public DBIterator getLastschriften() throws RemoteException;
+
+	/**
 	 * Liefert die HBCI-Protokollierung des Kontos in Form einer Liste von Protokoll-Objekten.
    * @return Liste von Protokoll-Objekten.
    * @throws RemoteException
@@ -197,6 +204,9 @@ public interface Konto extends DBObject,Checksum
 
 /**********************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.20  2005/02/03 23:57:05  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.19  2004/10/25 23:12:02  willuhn
  * *** empty log message ***
  *
