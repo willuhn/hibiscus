@@ -1,0 +1,18 @@
+<form>
+	<p>
+		<span color="header" font="header">Adressbuch</span>
+	</p>
+	
+	<p>
+	  Klicken Sie auf <b>neuer Adressbuch-Eintrag</b> um eine
+	  Bankverbindung zu Ihrem Adressbuch hinzuzufügen.
+	</p>
+	
+	<p>
+		<b>Tipp:</b> Sie können Bankverbindungen auch aus
+		Ihren Kontoauszügen extrahieren, indem Sie doppelt
+		auf eine Buchung in den Umsatzlisten klicken
+		und dort <b>Empfänger in Adressbuch übernehmen</b>
+		wählen.
+	</p>
+</form>

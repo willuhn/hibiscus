@@ -1,0 +1,11 @@
+<form>
+	<p>
+		<span color="header" font="header">Konto bearbeiten</span>
+	</p>
+	
+	<p>
+	  Entnehmen Sie die Kundennummer bitte Ihren Bank-Unterlagen.
+	  Alternativ können Sie auf der Konto-Liste auch alle verfügbaren
+	  Bankverbindungen aus dem Sicherheitsmedium auslesen.
+	</p>
+</form>
