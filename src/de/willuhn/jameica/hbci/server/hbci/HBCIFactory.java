@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.18 $
- * $Date: 2004/11/02 18:48:32 $
+ * $Revision: 1.19 $
+ * $Date: 2004/11/04 22:30:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -225,7 +225,7 @@ public class HBCIFactory {
 			throw new ApplicationException(i18n.tr("Es läuft bereits eine andere HBCI-Abfrage."));
 
 		inProgress = true;
-		Settings.getHBCIProgressBar().percentComplete(0);
+		Settings.getHBCIProgressBar().setPercentComplete(0);
 		Settings.getHBCIProgressBar().clearLog();
 		Settings.getHBCIProgressBar().setStatusText("");
 		
@@ -247,6 +247,9 @@ public class HBCIFactory {
 
 /**********************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.19  2004/11/04 22:30:33  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.18  2004/11/02 18:48:32  willuhn
  * *** empty log message ***
  *
