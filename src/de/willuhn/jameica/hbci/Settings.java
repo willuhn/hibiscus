@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.23 $
- * $Date: 2004/11/12 18:25:08 $
+ * $Revision: 1.24 $
+ * $Date: 2004/12/06 22:45:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -54,7 +54,7 @@ public class Settings
     if (db != null)
       return db;
 		try {
-			db = (DBService) Application.getServiceFactory().lookup(Application.getPluginLoader().getPlugin(HBCI.class),"database");
+			db = (DBService) Application.getServiceFactory().lookup(HBCI.class,"database");
 			return db;
 		}
 		catch (Exception e)
@@ -279,6 +279,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.24  2004/12/06 22:45:06  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.23  2004/11/12 18:25:08  willuhn
  * *** empty log message ***
  *
