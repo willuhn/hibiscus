@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/NewPassportDialog.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/04/12 19:15:31 $
+ * $Revision: 1.6 $
+ * $Date: 2004/04/27 22:23:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,7 +31,6 @@ import de.willuhn.jameica.gui.input.AbstractInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.rmi.Passport;
 import de.willuhn.jameica.hbci.rmi.PassportType;
 import de.willuhn.util.I18N;
 
@@ -64,14 +63,7 @@ public class NewPassportDialog extends AbstractDialog {
    * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
    */
   protected Object getData() throws Exception {
-
-		// Wir erzeugen einen neuen Passport
-		Passport p = (Passport) Settings.getDatabase().createObject(Passport.class,null);
-
-		// und weisen den Typ zu
-		p.setPassportType(choosen);
-
-		return p;
+		return choosen;
   }
 
   /**
@@ -151,6 +143,13 @@ public class NewPassportDialog extends AbstractDialog {
 
 /**********************************************************************
  * $Log: NewPassportDialog.java,v $
+ * Revision 1.6  2004/04/27 22:23:56  willuhn
+ * @N configurierbarer CTAPI-Treiber
+ * @C konkrete Passport-Klassen (DDV) nach de.willuhn.jameica.passports verschoben
+ * @N verschiedenste Passport-Typen sind jetzt voellig frei erweiterbar (auch die Config-Dialoge)
+ * @N crc32 Checksumme in Umsatz
+ * @N neue Felder im Umsatz
+ *
  * Revision 1.5  2004/04/12 19:15:31  willuhn
  * @C refactoring
  *

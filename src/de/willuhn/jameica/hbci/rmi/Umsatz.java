@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Umsatz.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/03/06 18:25:10 $
+ * $Revision: 1.4 $
+ * $Date: 2004/04/27 22:23:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,11 @@ import de.willuhn.datasource.rmi.DBObject;
 
 /**
  * Bildet eine Zeile in den Kontoauszuegen ab.
+ * Auch wenn das Interface Set-Methoden zum Speichern von
+ * Werten besitzt, so macht es keinen Sinn, manuell derartige Objekte
+ * zu erzeugen und zu speichern oder zu aendern. Umsatz-Objekte werden
+ * ueber HBCI-Geschaeftsvorfaelle von der Bank geliefert und nur von
+ * dort geschrieben.
  */
 public interface Umsatz extends DBObject {
 
@@ -90,6 +95,33 @@ public interface Umsatz extends DBObject {
    */
   public Date getValuta() throws RemoteException;
 
+	/**
+	 * Liefert den Saldo des Kontos nach dieser Buchung.
+   * @return Saldo.
+   * @throws RemoteException
+   */
+  public double getSaldo() throws RemoteException;
+
+	/**
+	 * Liefert das Primanota-Kennzeichen der Buchung.
+   * @return PrimaNota-Kennzeichen.
+   * @throws RemoteException
+   */
+  public String getPrimanota() throws RemoteException;
+	
+	/**
+	 * Liefert einen Text, der die Art der Buchung beschreibt.
+   * @return Art der Buchung.
+   * @throws RemoteException
+   */
+  public String getArt() throws RemoteException;
+	
+	/**
+	 * Liefert die Kundenreferenz.
+   * @return Kundenreferenz.
+   * @throws RemoteException
+   */
+  public String getCustomerRef() throws RemoteException;
 
 	/**
 	 * Speichert das Konto, auf welches sich der Umsatz bezieht.
@@ -153,13 +185,56 @@ public interface Umsatz extends DBObject {
    */
   public void setValuta(Date d) throws RemoteException;
 
+	/**
+	 * Speichert den Saldo des Kontos nach dieser Buchung.
+	 * @param s
+	 * @throws RemoteException
+	 */
+	public void setSaldo(double s) throws RemoteException;
 
+	/**
+	 * Speichert das Primanota-Kennzeichen der Buchung.
+	 * @param primanota
+	 * @throws RemoteException
+	 */
+	public void setPrimanota(String primanota) throws RemoteException;
+	
+	/**
+	 * Speichert einen Text, der die Art der Buchung beschreibt.
+	 * @param art
+	 * @throws RemoteException
+	 */
+	public void setArt(String art) throws RemoteException;
+	
+	/**
+	 * Speichert die Kundenreferenz.
+	 * @param ref
+	 * @throws RemoteException
+	 */
+	public void setCustomerRef(String ref) throws RemoteException;
+
+	/**
+	 * Liefert eine CRC32-Checksumme dieser Buchung.
+	 * Diese wird verwendet, um die lokal gespeicherten
+	 * eindeutig zu identifizieren, damit beim Holen neuer
+	 * Buchungen vom HBCI-Server keine Buchungen doppelt gespeichert werden.
+   * @return CRC32-Checksumme.
+   * @throws RemoteException
+   */
+  public long getCRC32() throws RemoteException;
 
 }
 
 
 /**********************************************************************
  * $Log: Umsatz.java,v $
+ * Revision 1.4  2004/04/27 22:23:56  willuhn
+ * @N configurierbarer CTAPI-Treiber
+ * @C konkrete Passport-Klassen (DDV) nach de.willuhn.jameica.passports verschoben
+ * @N verschiedenste Passport-Typen sind jetzt voellig frei erweiterbar (auch die Config-Dialoge)
+ * @N crc32 Checksumme in Umsatz
+ * @N neue Felder im Umsatz
+ *
  * Revision 1.3  2004/03/06 18:25:10  willuhn
  * @D javadoc
  * @C removed empfaenger_id from umsatz

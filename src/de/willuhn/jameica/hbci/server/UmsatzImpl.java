@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/04/05 23:28:46 $
+ * $Revision: 1.5 $
+ * $Date: 2004/04/27 22:23:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@ package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
 import java.util.Date;
+import java.util.zip.CRC32;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBObject;
@@ -246,50 +247,99 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz {
    * nicht in der Datenbank existieren.
    * Da ein Umsatz von der Bank scheinbar keinen Identifier mitbringt,
    * muessen wir selbst einen fachlichen Vergleich durchfuehren.
-   * TODO: Wenn ein Umsatz versehentlich doppelt gebucht wurde, versagt diese Funktion!
    * @see de.willuhn.datasource.rmi.DBObject#equals(de.willuhn.datasource.rmi.DBObject)
    */
   public boolean equals(DBObject o) throws RemoteException {
+		if (o == null)
+			return false;
 		try {
-			UmsatzImpl u = (UmsatzImpl) o;
-
-			// bevor wir anfangen, checken wir erstmal, ob wir es
-			// mit vollstaendigen Daten zu tun haben
-			u.insertCheck();
-			this.insertCheck();
-
-			boolean eq = u.getBetrag() == this.getBetrag();
-			eq = eq && this.getDatum().compareTo(u.getDatum()) == 0;
-			eq = eq && this.getKonto().equals(u.getKonto());
-			eq = eq && this.getValuta().compareTo(u.getValuta()) == 0;
-			eq = eq && this.getZweck().equals(u.getZweck());
-
-			if (!eq) return false; // ja, eigentlich koennte man das nach jeder Zeile checken
-
-			// Diese folgenden Felder koennen null sein.
-			eq = (this.getEmpfaengerBLZ() == null && u.getEmpfaengerBLZ() == null) ||
-					 (this.getEmpfaengerBLZ().equals(u.getEmpfaengerBLZ()));
-
-			if (!eq) return false;
-
-			eq = (this.getEmpfaengerKonto() == null && u.getEmpfaengerKonto() == null) ||
-					 (this.getEmpfaengerKonto().equals(u.getEmpfaengerKonto()));
-
-			if (!eq) return false;
-
-			eq = (this.getEmpfaengerName() == null && u.getEmpfaengerName() == null) ||
-					 (this.getEmpfaengerName().equals(u.getEmpfaengerName()));
-
-			if (!eq) return false;
-
-			return (this.getZweck2() == null && u.getZweck2() == null) ||
-					 	 (this.getZweck2().equals(u.getZweck2()));
-
+			Umsatz other = (Umsatz) o;
+			return other.getCRC32() == getCRC32();
 		}
 		catch (Exception e)
 		{
+			return false;
 		}
-		return false;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getSaldo()
+   */
+  public double getSaldo() throws RemoteException {
+		Double d = (Double) getField("saldo");
+		if (d == null)
+			return 0;
+		return d.doubleValue();
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getPrimanota()
+   */
+  public String getPrimanota() throws RemoteException {
+		return (String) getField("primanota");
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getArt()
+   */
+  public String getArt() throws RemoteException {
+		return (String) getField("art");
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getCustomerRef()
+   */
+  public String getCustomerRef() throws RemoteException {
+		return (String) getField("customerref");
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setSaldo(double)
+   */
+  public void setSaldo(double s) throws RemoteException {
+		setField("saldo",new Double(s));
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setPrimanota(java.lang.String)
+   */
+  public void setPrimanota(String primanota) throws RemoteException {
+		setField("primanota",primanota);
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setArt(java.lang.String)
+   */
+  public void setArt(String art) throws RemoteException {
+		setField("art",art);
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setCustomerRef(java.lang.String)
+   */
+  public void setCustomerRef(String ref) throws RemoteException {
+		setField("customerref",ref);
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getCRC32()
+   */
+  public long getCRC32() throws RemoteException {
+		String s = getArt() +
+		           getBetrag() +
+		           getCustomerRef() +
+		           getEmpfaengerBLZ() +
+		           getEmpfaengerKonto() +
+		           getEmpfaengerName() +
+		           getPrimanota() +
+		           getSaldo() +
+		           getZweck() +
+		           getZweck2() +
+		           HBCI.DATEFORMAT.format(getDatum()) + // komisch, das Datum wird bei toString() manchmal anders ausgegeben
+							 HBCI.DATEFORMAT.format(getValuta());
+		CRC32 crc = new CRC32();
+		crc.update(s.getBytes());
+		return crc.getValue();
   }
 
 }
@@ -297,6 +347,13 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz {
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.5  2004/04/27 22:23:56  willuhn
+ * @N configurierbarer CTAPI-Treiber
+ * @C konkrete Passport-Klassen (DDV) nach de.willuhn.jameica.passports verschoben
+ * @N verschiedenste Passport-Typen sind jetzt voellig frei erweiterbar (auch die Config-Dialoge)
+ * @N crc32 Checksumme in Umsatz
+ * @N neue Felder im Umsatz
+ *
  * Revision 1.4  2004/04/05 23:28:46  willuhn
  * *** empty log message ***
  *

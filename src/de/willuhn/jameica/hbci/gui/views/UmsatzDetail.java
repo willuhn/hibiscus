@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzDetail.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/04/12 19:15:31 $
+ * $Revision: 1.4 $
+ * $Date: 2004/04/27 22:23:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -51,7 +51,15 @@ public class UmsatzDetail extends AbstractView {
     umsatz.addLabelPair(i18n.tr("Betrag"),								control.getBetrag());
     umsatz.addLabelPair(i18n.tr("Datum der Buchung"),			control.getDatum());
     umsatz.addLabelPair(i18n.tr("Valuta"),								control.getValuta());
+		umsatz.addSeparator();
+		umsatz.addLabelPair(i18n.tr("Neuer Saldo"),						control.getSaldo());
+
+		LabelGroup add = new LabelGroup(getParent(),i18n.tr("Zusätzliche Angaben"));
     
+		add.addLabelPair(i18n.tr("Art der Buchung"),				control.getArt());
+		add.addLabelPair(i18n.tr("Kundenreferenz"),				control.getCustomerRef());
+		add.addLabelPair(i18n.tr("Primanota-Kennzeichen"),	control.getPrimanota());
+
     ButtonArea buttons = new ButtonArea(getParent(),2);
     buttons.addCustomButton(i18n.tr("Empfänger in Adressbuch übernehmen"),new MouseAdapter() {
       public void mouseUp(MouseEvent e) {
@@ -70,6 +78,13 @@ public class UmsatzDetail extends AbstractView {
 
 /**********************************************************************
  * $Log: UmsatzDetail.java,v $
+ * Revision 1.4  2004/04/27 22:23:56  willuhn
+ * @N configurierbarer CTAPI-Treiber
+ * @C konkrete Passport-Klassen (DDV) nach de.willuhn.jameica.passports verschoben
+ * @N verschiedenste Passport-Typen sind jetzt voellig frei erweiterbar (auch die Config-Dialoge)
+ * @N crc32 Checksumme in Umsatz
+ * @N neue Felder im Umsatz
+ *
  * Revision 1.3  2004/04/12 19:15:31  willuhn
  * @C refactoring
  *

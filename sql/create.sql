@@ -48,6 +48,10 @@ CREATE TABLE umsatz (
   zweck2 varchar(35),
   datum date NOT NULL,
   valuta date NOT NULL,
+  saldo double,
+  primanota varchar(100),
+  art varchar(100),
+  customerref varchar(100),
   UNIQUE (id),
   PRIMARY KEY (id)
 );
@@ -65,6 +69,8 @@ CREATE TABLE passport_type (
   id NUMERIC default UNIQUEKEY('passport_type'),
   name varchar(255) NOT NULL,
   implementor varchar(1000) NOT NULL,
+  abstractview varchar(1000) NOT NULL,
+  controller varchar(1000) NOT NULL,
   UNIQUE (name),
   UNIQUE (id),
   PRIMARY KEY (id)

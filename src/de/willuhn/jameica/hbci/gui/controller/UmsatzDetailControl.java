@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailControl.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/04/25 18:17:14 $
+ * $Revision: 1.7 $
+ * $Date: 2004/04/27 22:23:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -54,6 +54,11 @@ public class UmsatzDetailControl extends AbstractControl {
 	private AbstractInput zweck2					= null;
 	private AbstractInput datum						= null;
 	private AbstractInput valuta					= null;
+
+	private AbstractInput saldo						= null;
+	private AbstractInput primanota				= null;
+	private AbstractInput art							= null;
+	private AbstractInput customerRef			= null;
 
   /**
    * ct.
@@ -185,6 +190,59 @@ public class UmsatzDetailControl extends AbstractControl {
     return valuta;
   }
 
+	/**
+	 * Liefert ein Eingabe-Feld mit dem Saldo nach der Buchung.
+	 * @return Eingabe-Feld.
+	 * @throws RemoteException
+	 */
+	public AbstractInput getSaldo() throws RemoteException
+	{
+		if (saldo != null)
+			return saldo;
+		saldo = new LabelInput(HBCI.DECIMALFORMAT.format(getUmsatz().getSaldo()));
+		saldo.setComment(getUmsatz().getKonto().getWaehrung());
+		return saldo;
+	}
+
+	/**
+	 * Liefert ein Eingabe-Feld mit dem Primanota-Kennzeichen.
+	 * @return Eingabe-Feld.
+	 * @throws RemoteException
+	 */
+	public AbstractInput getPrimanota() throws RemoteException
+	{
+		if (primanota != null)
+			return primanota;
+		primanota = new LabelInput(getUmsatz().getPrimanota());
+		return primanota;
+	}
+
+	/**
+	 * Liefert ein Eingabe-Feld mit einem Text der Umsatz-Art.
+	 * @return Eingabe-Feld.
+	 * @throws RemoteException
+	 */
+	public AbstractInput getArt() throws RemoteException
+	{
+		if (art != null)
+			return art;
+		art = new LabelInput(getUmsatz().getArt());
+		return art;
+	}
+
+	/**
+	 * Liefert ein Eingabe-Feld mit der Kundenreferenz.
+	 * @return Eingabe-Feld.
+	 * @throws RemoteException
+	 */
+	public AbstractInput getCustomerRef() throws RemoteException
+	{
+		if (customerRef != null)
+			return customerRef;
+		customerRef = new LabelInput(getUmsatz().getCustomerRef());
+		return customerRef;
+	}
+
   /**
    * @see de.willuhn.jameica.gui.controller.AbstractControl#handleDelete()
    */
@@ -263,6 +321,13 @@ public class UmsatzDetailControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzDetailControl.java,v $
+ * Revision 1.7  2004/04/27 22:23:56  willuhn
+ * @N configurierbarer CTAPI-Treiber
+ * @C konkrete Passport-Klassen (DDV) nach de.willuhn.jameica.passports verschoben
+ * @N verschiedenste Passport-Typen sind jetzt voellig frei erweiterbar (auch die Config-Dialoge)
+ * @N crc32 Checksumme in Umsatz
+ * @N neue Felder im Umsatz
+ *
  * Revision 1.6  2004/04/25 18:17:14  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/04/25 17:41:05 $
+ * $Revision: 1.6 $
+ * $Date: 2004/04/27 22:23:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -56,6 +56,19 @@ public class Converter {
   public static Umsatz convert(GVRKUms.UmsLine u) throws RemoteException
 	{
 		Umsatz umsatz = (Umsatz) Settings.getDatabase().createObject(Umsatz.class,null);
+
+		umsatz.setArt(u.text);
+		umsatz.setCustomerRef(u.customerref);
+		umsatz.setPrimanota(u.primanota);
+
+		try {
+			umsatz.setSaldo(u.saldo.value.value);
+		}
+		catch (NullPointerException e)
+		{
+			// Falls u.saldo null liefert
+			/* ignore */
+		}
 
 		// C(redit) = HABEN
 		// D(ebit)  = SOLL
@@ -155,6 +168,13 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.6  2004/04/27 22:23:56  willuhn
+ * @N configurierbarer CTAPI-Treiber
+ * @C konkrete Passport-Klassen (DDV) nach de.willuhn.jameica.passports verschoben
+ * @N verschiedenste Passport-Typen sind jetzt voellig frei erweiterbar (auch die Config-Dialoge)
+ * @N crc32 Checksumme in Umsatz
+ * @N neue Felder im Umsatz
+ *
  * Revision 1.5  2004/04/25 17:41:05  willuhn
  * @D javadoc
  *

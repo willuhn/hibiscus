@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.14 $
- * $Date: 2004/04/21 22:28:42 $
+ * $Revision: 1.15 $
+ * $Date: 2004/04/27 22:23:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -32,8 +32,10 @@ import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.views.PassportDetails;
+import de.willuhn.jameica.hbci.gui.dialogs.NewPassportDialog;
 import de.willuhn.jameica.hbci.rmi.Passport;
+import de.willuhn.jameica.hbci.rmi.PassportType;
+import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.util.I18N;
 
 /**
@@ -249,6 +251,36 @@ public class SettingsControl extends AbstractControl {
    * @see de.willuhn.jameica.gui.controller.AbstractControl#handleCreate()
    */
   public void handleCreate() {
+  	// Hier wird ein neuer Passport erstellt.
+		NewPassportDialog d = new NewPassportDialog(NewPassportDialog.POSITION_MOUSE);
+		PassportType pt = null;
+		try {
+			pt = (PassportType) d.open();
+		}
+		catch (Exception e)
+		{
+			// Der User hat "abbrechen" im Dialog gedrueckt
+			return;
+		}
+		try {
+			// wir erzeugen einen neuen Passport
+			Passport p = (Passport) de.willuhn.jameica.hbci.Settings.getDatabase().createObject(Passport.class,null);
+			
+			// weisen ihm den korrekten Typ zu
+			p.setPassportType(pt);
+
+			// Lassen ihn anschliessend auf die passende Impl casten
+			p = HBCIFactory.getInstance().findImplementor(p);
+
+			// und oeffnen ihn in dem Dialog, der fuer diesen Typ hinterlegt ist
+			GUI.startView(pt.getAbstractView(),p);
+		}
+		catch (Exception e)
+		{
+			Application.getLog().error("error while creating new passport",e);
+			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Laden des Sicherheitsmediums"));
+		}
+
   }
 
 	/**
@@ -256,7 +288,20 @@ public class SettingsControl extends AbstractControl {
    */
   public void handleOpen(Object o)
 	{
-		GUI.startView(PassportDetails.class.getName(),o);
+		// Hier wird der ausgewaehlte Passport geoeffnet.
+		try {
+			Passport p = (Passport) o;
+			PassportType pt = p.getPassportType();
+			
+			// bevor wir den Passport an die View geben, muessen wir ihn noch
+			// auf die korrekte Impl casten lassen
+			GUI.startView(pt.getAbstractView(),HBCIFactory.getInstance().findImplementor(p));
+		}
+		catch (Exception e)
+		{
+			Application.getLog().error("error while opening passport",e);
+			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Laden des Sicherheitsmediums"));
+		}
 	}
 
 	/**
@@ -290,6 +335,13 @@ public class SettingsControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.15  2004/04/27 22:23:56  willuhn
+ * @N configurierbarer CTAPI-Treiber
+ * @C konkrete Passport-Klassen (DDV) nach de.willuhn.jameica.passports verschoben
+ * @N verschiedenste Passport-Typen sind jetzt voellig frei erweiterbar (auch die Config-Dialoge)
+ * @N crc32 Checksumme in Umsatz
+ * @N neue Felder im Umsatz
+ *
  * Revision 1.14  2004/04/21 22:28:42  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/KontoListe.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/04/12 19:15:31 $
+ * $Revision: 1.9 $
+ * $Date: 2004/04/27 22:23:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,20 +15,15 @@ package de.willuhn.jameica.hbci.gui.views;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.dialogs.YesNoDialog;
-import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.DialogFactory;
 import de.willuhn.jameica.hbci.gui.controller.KontoControl;
-import de.willuhn.jameica.hbci.gui.dialogs.NewPassportDialog;
-import de.willuhn.jameica.hbci.rmi.Passport;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -42,40 +37,16 @@ public class KontoListe extends AbstractView {
    */
   public void bind() throws Exception {
 
+		// Bevor hier irgendwas angezeigt wird, muss sicher sein, dass
+		// wir einen Passport haben
+		if (!DialogFactory.checkPassport()) return;
+
 
 		final KontoControl control = new KontoControl(this);
 
 		I18N i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
 
 		GUI.getView().setTitle(i18n.tr("Vorhandene Bankverbindungen"));
-
-
-		DBIterator passports = Settings.getDatabase().createList(Passport.class);
-		if (passports.size() == 0)
-		{
-			YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
-			d.setTitle(i18n.tr("Kein Sicherheitsmedium"));
-			d.setText(i18n.tr("Es ist noch kein Sicherheitsmedium eingerichtet. " +				"Möchten Sie dies jetzt einrichten?"));
-			Boolean choice = (Boolean) d.open();
-			if (choice.booleanValue())
-			{
-				NewPassportDialog d2 = new NewPassportDialog(NewPassportDialog.POSITION_MOUSE);
-				try {
-					GUI.startView(PassportDetails.class.getName(),d2.open());
-					return;
-				}
-				catch (Exception e2)
-				{
-					// Dialog wurde abgebrochen
-					Application.getLog().info(e2.getMessage());
-				}
-			}
-			else {
-				LabelInput dummy = new LabelInput(i18n.tr("Kein Sicherheitsmedium vorhanden"));
-				dummy.paint(getParent());
-				return;
-			}
-		}
 
 		try {
 
@@ -113,6 +84,13 @@ public class KontoListe extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoListe.java,v $
+ * Revision 1.9  2004/04/27 22:23:56  willuhn
+ * @N configurierbarer CTAPI-Treiber
+ * @C konkrete Passport-Klassen (DDV) nach de.willuhn.jameica.passports verschoben
+ * @N verschiedenste Passport-Typen sind jetzt voellig frei erweiterbar (auch die Config-Dialoge)
+ * @N crc32 Checksumme in Umsatz
+ * @N neue Felder im Umsatz
+ *
  * Revision 1.8  2004/04/12 19:15:31  willuhn
  * @C refactoring
  *

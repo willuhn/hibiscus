@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Settings.java,v $
- * $Revision: 1.14 $
- * $Date: 2004/04/21 22:28:42 $
+ * $Revision: 1.15 $
+ * $Date: 2004/04/27 22:23:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,7 +15,6 @@ package de.willuhn.jameica.hbci.gui.views;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 
-import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.ButtonArea;
@@ -23,7 +22,6 @@ import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.controller.SettingsControl;
-import de.willuhn.jameica.hbci.gui.dialogs.NewPassportDialog;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -72,21 +70,13 @@ public class Settings extends AbstractView {
 		ButtonArea buttons2 = passports.createButtonArea(1);
 		buttons2.addCustomButton(i18n.tr("Neues Sicherheitsmedium anlegen"),new MouseAdapter() {
       public void mouseUp(MouseEvent e) {
-      	NewPassportDialog d = new NewPassportDialog(NewPassportDialog.POSITION_MOUSE);
-				try {
-					GUI.startView(PassportDetails.class.getName(),d.open());
-				}
-				catch (Exception e2)
-				{
-					// Dialog wurde abgebrochen
-					Application.getLog().info(e2.getMessage());
-				}
+      	control.handleCreate();
       }
     });
 
 		ButtonArea buttons3 = new ButtonArea(getParent(),2);
-		buttons3.addStoreButton(control);
 		buttons3.addCancelButton(control);
+		buttons3.addStoreButton(control);
 
   }
 
@@ -101,6 +91,13 @@ public class Settings extends AbstractView {
 
 /**********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.15  2004/04/27 22:23:56  willuhn
+ * @N configurierbarer CTAPI-Treiber
+ * @C konkrete Passport-Klassen (DDV) nach de.willuhn.jameica.passports verschoben
+ * @N verschiedenste Passport-Typen sind jetzt voellig frei erweiterbar (auch die Config-Dialoge)
+ * @N crc32 Checksumme in Umsatz
+ * @N neue Felder im Umsatz
+ *
  * Revision 1.14  2004/04/21 22:28:42  willuhn
  * *** empty log message ***
  *

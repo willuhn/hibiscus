@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/DialogFactory.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/03/30 22:07:50 $
+ * $Revision: 1.11 $
+ * $Date: 2004/04/27 22:23:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,11 +12,20 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui;
 
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.Application;
+import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.dialogs.SimpleDialog;
+import de.willuhn.jameica.gui.dialogs.YesNoDialog;
+import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.controller.SettingsControl;
 import de.willuhn.jameica.hbci.gui.dialogs.PINDialog;
+import de.willuhn.jameica.hbci.gui.views.Welcome;
+import de.willuhn.jameica.hbci.rmi.Passport;
+import de.willuhn.util.I18N;
 
 /**
  * Hilfsklasse zur Erzeugung von Hilfs-Dialogen bei der HBCI-Kommunikation.
@@ -107,11 +116,57 @@ public class DialogFactory {
 		}
 	}
 
+  /**
+   * Die Funktion ueberprueft, ob schon ein Passport eingerichtet ist.
+   * Ist dies nicht der Fall, wird ein Dialog zur Erstellung eines
+   * neuen erzeugt. Diese Funktion sollte ueberall dort aufgerufen
+   * werden, wo vorm Aufbau des Dialogs feststehen muss, ob ein Passport
+   * schon existiert.
+   * @return true, wenn ein Passport existiert.
+   */
+  public static synchronized boolean checkPassport()
+	{
+		I18N i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
+
+		try {
+			DBIterator passports = Settings.getDatabase().createList(Passport.class);
+			if (passports.size() > 0)
+				return true;
+
+			YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
+			d.setTitle(i18n.tr("Kein Sicherheitsmedium"));
+			d.setText(i18n.tr("Es ist noch kein Sicherheitsmedium eingerichtet. " +
+				"Möchten Sie dies jetzt einrichten?"));
+			Boolean choice = (Boolean) d.open();
+			if (choice.booleanValue())
+			{
+				SettingsControl settings = new SettingsControl(null);
+				settings.handleCreate();
+			}
+			else {
+				GUI.startView(Welcome.class.getName(),null);
+			}
+		}
+		catch (Exception e)
+		{
+			Application.getLog().error("unable to check/create passport",e);
+			GUI.getStatusBar().setErrorText("Fehler beim Prüfen des Sicherheitsmediums");
+		}
+		return false;
+	}
+
 }
 
 
 /**********************************************************************
  * $Log: DialogFactory.java,v $
+ * Revision 1.11  2004/04/27 22:23:56  willuhn
+ * @N configurierbarer CTAPI-Treiber
+ * @C konkrete Passport-Klassen (DDV) nach de.willuhn.jameica.passports verschoben
+ * @N verschiedenste Passport-Typen sind jetzt voellig frei erweiterbar (auch die Config-Dialoge)
+ * @N crc32 Checksumme in Umsatz
+ * @N neue Felder im Umsatz
+ *
  * Revision 1.10  2004/03/30 22:07:50  willuhn
  * *** empty log message ***
  *
