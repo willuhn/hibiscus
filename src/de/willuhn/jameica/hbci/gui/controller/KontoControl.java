@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/02/22 20:04:54 $
+ * $Revision: 1.9 $
+ * $Date: 2004/02/23 20:30:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -373,7 +373,7 @@ public class KontoControl extends AbstractControl {
 		}
 		GUI.setActionText(I18N.tr("Chipkarte wird ausgelesen..."));
 
-		GUI.startJob(new Runnable() {
+		GUI.startSync(new Runnable() {
       public void run() {
 				try {
 					getKonto().readFromPassport();
@@ -409,7 +409,7 @@ public class KontoControl extends AbstractControl {
 			GUI.setActionText(I18N.tr("Fehler beim Lesen der Kontonummer"));
 		}
 
-		GUI.startJob(new Runnable() {
+		GUI.startSync(new Runnable() {
       public void run() {
       	try {
       		GUI.setActionText(I18N.tr("Saldo des Kontos wird ermittelt..."));
@@ -458,6 +458,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.9  2004/02/23 20:30:47  willuhn
+ * @C refactoring in AbstractDialog
+ *
  * Revision 1.8  2004/02/22 20:04:54  willuhn
  * @N Ueberweisung
  * @N Empfaenger
