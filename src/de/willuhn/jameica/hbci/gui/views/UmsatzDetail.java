@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzDetail.java,v $
- * $Revision: 1.14 $
- * $Date: 2005/03/09 01:07:02 $
+ * $Revision: 1.15 $
+ * $Date: 2005/03/21 23:09:34 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -42,29 +42,30 @@ public class UmsatzDetail extends AbstractView {
 
     LabelGroup konten = new LabelGroup(getParent(),i18n.tr("Konten"));
 
-    konten.addLabelPair(i18n.tr("persönliches Konto"),			control.getKonto());
-    konten.addLabelPair(i18n.tr("Name des Empfängers"),			control.getEmpfaengerName());
-    konten.addLabelPair(i18n.tr("Konto des Empfängers"),		control.getEmpfaengerKonto());
+		// BUGZILLA 23 http://www.willuhn.de/bugzilla/show_bug.cgi?id=23
+    konten.addLabelPair(i18n.tr("persönliches Konto"),						control.getKonto());
+    konten.addLabelPair(i18n.tr("Kontoinhaber des Gegenkontos"),	control.getEmpfaengerName());
+    konten.addLabelPair(i18n.tr("Kontonummer des Gegenkontos"),		control.getEmpfaengerKonto());
 
 		LabelGroup add = new LabelGroup(getParent(),i18n.tr("Details"));
     
-		add.addLabelPair(i18n.tr("Verwendungszweck"),						control.getZweck());
-		add.addLabelPair(i18n.tr("weiterer Verwendungszweck"),	control.getZweck2());
-		add.addLabelPair(i18n.tr("Art der Buchung"),						control.getArt());
-		add.addLabelPair(i18n.tr("Kundenreferenz"),							control.getCustomerRef());
-		add.addLabelPair(i18n.tr("Primanota-Kennzeichen"),			control.getPrimanota());
+		add.addLabelPair(i18n.tr("Verwendungszweck"),									control.getZweck());
+		add.addLabelPair(i18n.tr("weiterer Verwendungszweck"),				control.getZweck2());
+		add.addLabelPair(i18n.tr("Art der Buchung"),									control.getArt());
+		add.addLabelPair(i18n.tr("Kundenreferenz"),										control.getCustomerRef());
+		add.addLabelPair(i18n.tr("Primanota-Kennzeichen"),						control.getPrimanota());
 
 		LabelGroup umsatz = new LabelGroup(getParent(),i18n.tr("Datum und Beträge"));
     
-		umsatz.addLabelPair(i18n.tr("Betrag"),									control.getBetrag());
-		umsatz.addLabelPair(i18n.tr("Datum der Buchung"),				control.getDatum());
-		umsatz.addLabelPair(i18n.tr("Valuta"),									control.getValuta());
+		umsatz.addLabelPair(i18n.tr("Betrag"),												control.getBetrag());
+		umsatz.addLabelPair(i18n.tr("Datum der Buchung"),							control.getDatum());
+		umsatz.addLabelPair(i18n.tr("Valuta"),												control.getValuta());
 		umsatz.addSeparator();
-		umsatz.addLabelPair(i18n.tr("Neuer Saldo"),							control.getSaldo());
+		umsatz.addLabelPair(i18n.tr("Neuer Saldo"),										control.getSaldo());
 
     ButtonArea buttons = new ButtonArea(getParent(),2);
 		buttons.addButton(i18n.tr("Zurück"),new Back(),null,true);
-    buttons.addButton(i18n.tr("Empfänger in Adressbuch übernehmen"),new Action()
+    buttons.addButton(i18n.tr("Gegenkonto in Adressbuch übernehmen"),new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -83,6 +84,9 @@ public class UmsatzDetail extends AbstractView {
 
 /**********************************************************************
  * $Log: UmsatzDetail.java,v $
+ * Revision 1.15  2005/03/21 23:09:34  web0
+ * @B bug 23
+ *
  * Revision 1.14  2005/03/09 01:07:02  web0
  * @D javadoc fixes
  *

@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzControl.java,v $
- * $Revision: 1.22 $
- * $Date: 2004/10/25 23:22:39 $
- * $Author: willuhn $
+ * $Revision: 1.23 $
+ * $Date: 2005/03/21 23:09:34 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -96,7 +96,8 @@ public class UmsatzControl extends AbstractControl {
 				}
       }
     });
-		table.addColumn(i18n.tr("Empfänger"),"empfaenger_name");
+    // BUGZILLA 23 http://www.willuhn.de/bugzilla/show_bug.cgi?id=23
+		table.addColumn(i18n.tr("Gegenkonto"),"empfaenger_name");
 		table.addColumn(i18n.tr("Betrag"),"betrag",
 			new CurrencyFormatter(getKonto().getWaehrung(),HBCI.DECIMALFORMAT));
 		table.addColumn(i18n.tr("Verwendungszweck"),"zweck");
@@ -112,6 +113,9 @@ public class UmsatzControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzControl.java,v $
+ * Revision 1.23  2005/03/21 23:09:34  web0
+ * @B bug 23
+ *
  * Revision 1.22  2004/10/25 23:22:39  willuhn
  * *** empty log message ***
  *
