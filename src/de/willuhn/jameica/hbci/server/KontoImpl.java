@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.16 $
- * $Date: 2004/04/05 23:28:46 $
+ * $Revision: 1.17 $
+ * $Date: 2004/04/14 23:53:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,7 +25,6 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Passport;
-import de.willuhn.jameica.hbci.rmi.PassportType;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.util.ApplicationException;
@@ -138,24 +137,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    * @see de.willuhn.jameica.hbci.rmi.Konto#getPassport()
    */
   public Passport getPassport() throws RemoteException {
-
-		Passport p = (Passport) getField("passport_id");
-		if (p == null) return null;
-
-		PassportType type = p.getPassportType();
-		if (type == null) return null;
-
-		String impl = type.getImplementor();
-		// wir ja gleich die richtige Impl liefern
-		try {
-			Class implementor = Application.getClassLoader().load(impl);
-			return (Passport) Settings.getDatabase().createObject(implementor,p.getID());
-		}
-		catch (ClassNotFoundException e)
-		{
-			throw new RemoteException("unable to find class " + impl,e);
-		}
-
+		return (Passport) getField("passport_id");
   }
 
   /**?
@@ -284,7 +266,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 			throw new ApplicationException("Bitte speichern Sie zunächst das Konto.");
 		}
 
-		double saldo = JobFactory.getInstance().getSaldo(this);
+		double saldo = HBCIFactory.getInstance().getSaldo(this);
 
 		// Wenn wir fertig sind, muessen wir noch den Saldo und das Datum speichern
 		setField("saldo",new Double(saldo));
@@ -303,7 +285,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 		if (isNewObject())
 			throw new ApplicationException("Bitte speichern Sie zunächst das Konto.");
 
-		Umsatz[] umsaetze = JobFactory.getInstance().getUmsaetze(this);
+		Umsatz[] umsaetze = HBCIFactory.getInstance().getUmsaetze(this);
 
 		// Wir vergleichen noch mit den Umsaetzen, die wir schon haben und
 		// speichern nur die neuen.
@@ -376,6 +358,9 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.17  2004/04/14 23:53:46  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.16  2004/04/05 23:28:46  willuhn
  * *** empty log message ***
  *

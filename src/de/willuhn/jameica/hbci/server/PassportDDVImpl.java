@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/PassportDDVImpl.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/04/13 23:14:22 $
+ * $Revision: 1.11 $
+ * $Date: 2004/04/14 23:53:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -144,6 +144,7 @@ public class PassportDDVImpl
 		try {
 	
 			Application.getLog().info("using passport path " + Settings.getWorkPath() + "/passports/");
+			Application.getLog().info("using library path " + Settings.getLibPath());
 			HBCIUtils.setParam("client.passport.default","DDV");
 			HBCIUtils.setParam("client.passport.DDV.path",Settings.getWorkPath() + "/passports/");
 	
@@ -248,6 +249,9 @@ public class PassportDDVImpl
 
 /**********************************************************************
  * $Log: PassportDDVImpl.java,v $
+ * Revision 1.11  2004/04/14 23:53:46  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.10  2004/04/13 23:14:22  willuhn
  * @N datadir
  *

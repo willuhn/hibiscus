@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Settings.java,v $
- * $Revision: 1.12 $
- * $Date: 2004/04/12 19:15:31 $
+ * $Revision: 1.13 $
+ * $Date: 2004/04/14 23:53:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -92,8 +92,6 @@ public class Settings extends AbstractView {
    * @see de.willuhn.jameica.gui.views.AbstractView#unbind()
    */
   public void unbind() throws ApplicationException {
-    // TODO Auto-generated method stub
-
   }
 
 }
@@ -101,6 +99,9 @@ public class Settings extends AbstractView {
 
 /**********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.13  2004/04/14 23:53:46  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.12  2004/04/12 19:15:31  willuhn
  * @C refactoring
  *

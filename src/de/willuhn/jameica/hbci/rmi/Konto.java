@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Konto.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/04/05 23:28:45 $
+ * $Revision: 1.11 $
+ * $Date: 2004/04/14 23:53:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -60,7 +60,11 @@ public interface Konto extends DBObject {
   public String getKundennummer() throws RemoteException;
 
 	/**
-	 * Liefert den fuer dieses Konto zu verwendende Passport.
+	 * Liefert den Passport.
+	 * Hinweis: Hierbei handelt es sich um ein generisches Datenbank-Objekt.
+	 * Um einen funktionsfaehigen Passport der fuer dieses Konto korrekten
+	 * Implementierung zu erhalten, macht man ein
+	 * <code>HBCIFactory.getInstance().findImplementor(this.getPassport())</code>.
    * @return Passport.
    * @throws RemoteException
    */
@@ -170,6 +174,9 @@ public interface Konto extends DBObject {
 
 /**********************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.11  2004/04/14 23:53:46  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.10  2004/04/05 23:28:45  willuhn
  * *** empty log message ***
  *

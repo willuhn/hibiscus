@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UeberweisungImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/04/05 23:28:46 $
+ * $Revision: 1.6 $
+ * $Date: 2004/04/14 23:53:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -234,7 +234,7 @@ public class UeberweisungImpl
 	
 		try {
 
-			JobFactory.getInstance().execute(this);
+			HBCIFactory.getInstance().execute(this);
 
 			// wenn alles erfolgreich verlief, koennen wir die Ueberweisung auf
 			// Status "ausgefuehrt" setzen.
@@ -311,6 +311,9 @@ public class UeberweisungImpl
 
 /**********************************************************************
  * $Log: UeberweisungImpl.java,v $
+ * Revision 1.6  2004/04/14 23:53:46  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2004/04/05 23:28:46  willuhn
  * *** empty log message ***
  *
