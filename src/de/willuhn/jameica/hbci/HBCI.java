@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.17 $
- * $Date: 2004/06/30 20:58:29 $
+ * $Revision: 1.18 $
+ * $Date: 2004/07/01 19:46:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,7 +24,6 @@ import org.kapott.hbci.manager.HBCIUtils;
 import de.willuhn.datasource.db.EmbeddedDatabase;
 import de.willuhn.jameica.AbstractPlugin;
 import de.willuhn.jameica.Application;
-import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.Logger;
 
@@ -76,22 +75,37 @@ public class HBCI extends AbstractPlugin
     super(file);
   }
 
+	/**
+	 * Liefert die Programm-Version anhand des DB-Schemas.
+   * @return Programm-Version.
+   * @throws Exception
+   */
+  private double getDBVersion() throws Exception
+	{
+		EmbeddedDatabase db = this.getResources().getDatabase();
+
+		String checkSum = db.getMD5Sum();
+		System.out.println(checkSum);
+		if (checkSum.equals("KvynDJyxe6D1XUvSCkNAFA=="))
+			return 1.0;
+		throw new Exception("database checksum does not match any known version.");
+	}
+
   /**
    * @see de.willuhn.jameica.AbstractPlugin#init()
    */
   public void init() throws ApplicationException
   {
+  	Application.splash("init passport registry");
   	PassportRegistry.init();
-		// Wir oeffnen mal die Datenbank.
-		// Grund: Beim ersten DB-Connect kommt es immer zu etwas Verzoegerung,
-		// weil McKOI gestartet werden muss. Wir machen das waehrend des Splash-Screens
-		// damit es sybjektiv nicht so lange dauert
 		try {
-			getResources().getDatabase().getDBService().createObject(Konto.class,null);
+			Application.splash("checking database integrity");
+			getDBVersion();
 		}
 		catch (Exception e)
 		{
-			throw new ApplicationException(getResources().getI18N().tr("Fehler beim Öffnen der Datenbank"),e);
+			throw new ApplicationException(
+				getResources().getI18N().tr("Fehler beim Prüfung der Datenbank-Integrität, " +					"Plugin wird aus Sicherheitsgründen deaktiviert"),e);
 		}
 
 		try {
@@ -138,6 +152,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.18  2004/07/01 19:46:27  willuhn
+ * @N db integrity check
+ *
  * Revision 1.17  2004/06/30 20:58:29  willuhn
  * *** empty log message ***
  *
