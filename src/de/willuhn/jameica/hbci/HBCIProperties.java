@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCIProperties.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/03/25 23:08:44 $
+ * $Revision: 1.7 $
+ * $Date: 2005/03/30 23:26:28 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -30,6 +30,7 @@ public class HBCIProperties
   static
   {
     i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+    settings.setStoreWhenRead(false);
   }
 
 	/**
@@ -52,9 +53,15 @@ public class HBCIProperties
 	public final static int HBCI_TRANSFER_NAME_MAXLENGTH =
 		settings.getInt("hbci.transfer.name.maxlength",27);
 
+  // BUGZILLA 29 http://www.willuhn.de/bugzilla/show_bug.cgi?id=29
+  /**
+   * Default-Waehrungs-Bezeichnung in Deutschland. 
+   */
+  public final static String CURRENCY_DEFAULT_DE = 
+    settings.getString("currency.default.de","EUR");
 
-	// BUGZILLA 28 http://www.willuhn.de/bugzilla/show_bug.cgi?id=28
 	
+  // BUGZILLA 28 http://www.willuhn.de/bugzilla/show_bug.cgi?id=28
 	/**
 	 * Maximale Laenge fuer PINs.
 	 */
@@ -95,6 +102,10 @@ public class HBCIProperties
 
 /**********************************************************************
  * $Log: HBCIProperties.java,v $
+ * Revision 1.7  2005/03/30 23:26:28  web0
+ * @B bug 29
+ * @B bug 30
+ *
  * Revision 1.6  2005/03/25 23:08:44  web0
  * @B bug 28
  *

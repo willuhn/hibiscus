@@ -8,4 +8,11 @@
 	  Alternativ können Sie auf der Konto-Liste auch alle verfügbaren
 	  Bankverbindungen aus dem Sicherheitsmedium auslesen.
 	</p>
+	
+	<p>
+	  <b>Hinweis:</b> Verwenden Sie als Währungsbezeichnung bitte
+	  einen 3-Buchstaben-Code entsprechend ISO-4217 Norm.
+	  Sie finden eine Liste der möglichen Währungsbezeichnungen
+	  unter http://de.wikipedia.org/wiki/ISO_4217
+	</p>
 </form>

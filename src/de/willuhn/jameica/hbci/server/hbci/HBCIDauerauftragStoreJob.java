@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragStoreJob.java,v $
- * $Revision: 1.10 $
- * $Date: 2005/03/02 17:59:30 $
+ * $Revision: 1.11 $
+ * $Date: 2005/03/30 23:26:28 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -21,6 +21,7 @@ import org.kapott.hbci.GV_Result.GVRDauerEdit;
 import org.kapott.hbci.GV_Result.GVRDauerNew;
 
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Adresse;
@@ -75,7 +76,12 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob {
 
 			setJobParam("src",Converter.HibiscusKonto2HBCIKonto(konto));
 
-			setJobParam("btg",dauerauftrag.getBetrag(),konto.getWaehrung() == null ? "EUR" : konto.getWaehrung());
+      // BUGZILLA 29 http://www.willuhn.de/bugzilla/show_bug.cgi?id=29
+      String curr = konto.getWaehrung();
+      if (curr == null || curr.length() == 0)
+        curr = HBCIProperties.CURRENCY_DEFAULT_DE;
+
+			setJobParam("btg",dauerauftrag.getBetrag(),curr);
 
 			Adresse empfaenger = (Adresse) Settings.getDBService().createObject(Adresse.class,null);
 			empfaenger.setBLZ(dauerauftrag.getGegenkontoBLZ());
@@ -193,6 +199,10 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIDauerauftragStoreJob.java,v $
+ * Revision 1.11  2005/03/30 23:26:28  web0
+ * @B bug 29
+ * @B bug 30
+ *
  * Revision 1.10  2005/03/02 17:59:30  web0
  * @N some refactoring
  *

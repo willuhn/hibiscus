@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.51 $
- * $Date: 2005/02/03 18:57:42 $
- * $Author: willuhn $
+ * $Revision: 1.52 $
+ * $Date: 2005/03/30 23:26:28 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -357,6 +357,7 @@ public class KontoControl extends AbstractControl {
 			// und jetzt speichern wir.
 			getKonto().store();
 			GUI.getStatusBar().setSuccessText(i18n.tr("Bankverbindung gespeichert."));
+      GUI.getView().setSuccessText("");
 		}
 		catch (ApplicationException e1)
 		{
@@ -456,6 +457,10 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.52  2005/03/30 23:26:28  web0
+ * @B bug 29
+ * @B bug 30
+ *
  * Revision 1.51  2005/02/03 18:57:42  willuhn
  * *** empty log message ***
  *

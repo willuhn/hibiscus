@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.47 $
- * $Date: 2005/03/09 01:07:02 $
+ * $Revision: 1.48 $
+ * $Date: 2005/03/30 23:26:28 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -91,6 +91,10 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 
 			if (getPassport() == null)
 				throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Sicherheitsmedium aus."));
+
+      // BUGZILLA 29 http://www.willuhn.de/bugzilla/show_bug.cgi?id=29
+      if (getWaehrung() == null || getWaehrung().length() != 3)
+        throw new ApplicationException(i18n.tr("Bitte verwenden Sie einen 3-Buchstaben-Währungscode Z.Bsp. \"EUR\"."));
 
 			if (!HBCIUtils.checkAccountCRC(getBLZ(),getKontonummer()))
 				throw new ApplicationException(i18n.tr("Ungültige BLZ/Kontonummer. Bitte prüfen Sie Ihre Eingaben."));
@@ -473,6 +477,10 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.48  2005/03/30 23:26:28  web0
+ * @B bug 29
+ * @B bug 30
+ *
  * Revision 1.47  2005/03/09 01:07:02  web0
  * @D javadoc fixes
  *

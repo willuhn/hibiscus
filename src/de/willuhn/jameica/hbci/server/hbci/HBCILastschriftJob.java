@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCILastschriftJob.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/03/02 17:59:30 $
+ * $Revision: 1.6 $
+ * $Date: 2005/03/30 23:26:28 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.server.hbci;
 import java.rmi.RemoteException;
 
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -59,7 +60,12 @@ public class HBCILastschriftJob extends AbstractHBCIJob
 
 			setJobParam("my",Converter.HibiscusKonto2HBCIKonto(konto));
 
-			setJobParam("btg",lastschrift.getBetrag(),konto.getWaehrung() == null ? "EUR" : konto.getWaehrung());
+      // BUGZILLA 29 http://www.willuhn.de/bugzilla/show_bug.cgi?id=29
+      String curr = konto.getWaehrung();
+      if (curr == null || curr.length() == 0)
+        curr = HBCIProperties.CURRENCY_DEFAULT_DE;
+
+			setJobParam("btg",lastschrift.getBetrag(),curr);
 
 			// BUGZILLA #8 http://www.willuhn.de/bugzilla/show_bug.cgi?id=8
 			if (lastschrift.getTyp() != null)
@@ -136,6 +142,10 @@ public class HBCILastschriftJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCILastschriftJob.java,v $
+ * Revision 1.6  2005/03/30 23:26:28  web0
+ * @B bug 29
+ * @B bug 30
+ *
  * Revision 1.5  2005/03/02 17:59:30  web0
  * @N some refactoring
  *
