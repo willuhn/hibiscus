@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/04/19 22:05:51 $
+ * $Revision: 1.4 $
+ * $Date: 2004/04/22 23:46:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -92,7 +92,7 @@ public class Converter {
 		// und jetzt noch der Empfaenger (wenn er existiert)
 		if (u.other != null) 
 		{
-		  Empfaenger e = convert(u.other);
+		  Empfaenger e = HBCIKonto2JameicaEmpfaenger(u.other);
 		  umsatz.setEmpfaengerBLZ(e.getBLZ());
 		  umsatz.setEmpfaengerKonto(e.getKontonummer());
 		  umsatz.setEmpfaengerName(e.getName());
@@ -106,7 +106,7 @@ public class Converter {
    * @return das HBCI4Java Konto.
    * @throws RemoteException
    */
-  public static Konto convert(de.willuhn.jameica.hbci.rmi.Konto konto) throws RemoteException
+  public static Konto JameicaKonto2HBCIKonto(de.willuhn.jameica.hbci.rmi.Konto konto) throws RemoteException
 	{
 		org.kapott.hbci.structures.Konto k =
 			new org.kapott.hbci.structures.Konto(konto.getBLZ(),konto.getKontonummer());
@@ -118,12 +118,27 @@ public class Converter {
 	}
 
 	/**
+	 * Konvertiert einen Jameica-Empfaenger in ein HBCI4Java Konto.
+	 * @param Empfaenger unser Empfaenger
+	 * @return das HBCI4Java Konto.
+	 * @throws RemoteException
+	 */
+	public static Konto JameicaEmpfaenger2HBCIKonto(Empfaenger empfaenger) throws RemoteException
+	{
+		return new org.kapott.hbci.structures.Konto(
+			"DE",
+			empfaenger.getBLZ(),
+			empfaenger.getKontonummer()
+		);
+	}
+
+	/**
 	 * Konvertiert ein HBCI4Java Konto in einen Jameica-Empfaenger.
 	 * @param konto das HBCI-Konto.
 	 * @return unser Empfaenger.
 	 * @throws RemoteException
 	 */
-	public static Empfaenger convert(Konto konto) throws RemoteException
+	public static Empfaenger HBCIKonto2JameicaEmpfaenger(Konto konto) throws RemoteException
 	{
 		Empfaenger e = (Empfaenger) Settings.getDatabase().createObject(Empfaenger.class,null);
 		e.setBLZ(konto.blz);
@@ -140,6 +155,9 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.4  2004/04/22 23:46:50  willuhn
+ * @N UeberweisungJob
+ *
  * Revision 1.3  2004/04/19 22:05:51  willuhn
  * @C HBCIJobs refactored
  *

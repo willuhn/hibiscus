@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCIJob.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/04/19 22:05:51 $
+ * $Revision: 1.2 $
+ * $Date: 2004/04/22 23:46:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,8 +12,13 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.server.hbci;
 
+import java.rmi.RemoteException;
+import java.util.Enumeration;
+import java.util.Hashtable;
+
 import org.kapott.hbci.GV_Result.HBCIJobResult;
 
+import de.willuhn.jameica.Application;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.hbci.HBCIJob;
 
@@ -24,6 +29,9 @@ public abstract class AbstractHBCIJob implements HBCIJob {
 
 	private org.kapott.hbci.GV.HBCIJob job = null;
 	private Konto konto = null;
+
+	private Hashtable params 			= new Hashtable(); 
+	private Hashtable kontoParams = new Hashtable(); 
 
 	/**
 	 * ct.
@@ -43,14 +51,31 @@ public abstract class AbstractHBCIJob implements HBCIJob {
   /**
    * @see de.willuhn.jameica.hbci.rmi.hbci.HBCIJob#setJob(org.kapott.hbci.GV.HBCIJob)
    */
-  public void setJob(org.kapott.hbci.GV.HBCIJob job) {
+  public final void setJob(org.kapott.hbci.GV.HBCIJob job) throws RemoteException
+  {
   	this.job = job;
+  	Enumeration e = params.keys();
+  	while (e.hasMoreElements())
+  	{
+  		String name = (String) e.nextElement();
+  		String value = (String) params.get(name);
+  		job.setParam(name,value);
+  	}
+
+		Enumeration e2 = kontoParams.keys();
+		while (e2.hasMoreElements())
+		{
+			String name = (String) e2.nextElement();
+			org.kapott.hbci.structures.Konto konto = (org.kapott.hbci.structures.Konto) params.get(name);
+			job.setParam(name,konto);
+		}
+
   }
 
 	/**
 	 * @see de.willuhn.jameica.hbci.rmi.hbci.HBCIJob#getKonto()
 	 */
-	public Konto getKonto() {
+	public final Konto getKonto() {
 		return konto;
 	}
 
@@ -58,7 +83,7 @@ public abstract class AbstractHBCIJob implements HBCIJob {
    * Liefert das Job-Resultat.
    * @return Job-Resultat.
    */
-  HBCIJobResult getJobResult()
+  final HBCIJobResult getJobResult()
 	{
 		return job.getJobResult();
 	}
@@ -67,9 +92,41 @@ public abstract class AbstractHBCIJob implements HBCIJob {
 	 * Liefert den Status-Text.
    * @return
    */
-  String getStatusText()
+  final String getStatusText()
 	{
 		return getJobResult().getJobStatus().getRetVals()[0].text;
+	}
+
+	/**
+	 * Ueber diese Funktion muessen die konkreten Implementierungen
+	 * alle zusaetzlichen Job-Parameter setzen.
+   * @param name Name des Parameters.
+   * @param value Wert des Parameters.
+   */
+  final void setJobParam(String name, String value)
+	{
+		if (name == null || value == null)
+		{
+			Application.getLog().warn("job parameter invalid. name: " + name + ", value: " + value);
+			return;
+		}
+		params.put(name,value);
+	}
+
+	/**
+	 * Ueber diese Funktion muessen die konkreten Implementierungen
+	 * alle zusaetzlichen Job-Parameter setzen.
+	 * @param name Name des Parameters.
+	 * @param konto das Konto.
+	 */
+	final void setJobParam(String name, org.kapott.hbci.structures.Konto konto)
+	{
+		if (name == null || konto == null)
+		{
+			Application.getLog().warn("job parameter invalid. name: " + name + ", konto: " + konto);
+			return;
+		}
+		kontoParams.put(name,konto);
 	}
 
 }
@@ -77,6 +134,9 @@ public abstract class AbstractHBCIJob implements HBCIJob {
 
 /**********************************************************************
  * $Log: AbstractHBCIJob.java,v $
+ * Revision 1.2  2004/04/22 23:46:50  willuhn
+ * @N UeberweisungJob
+ *
  * Revision 1.1  2004/04/19 22:05:51  willuhn
  * @C HBCIJobs refactored
  *
