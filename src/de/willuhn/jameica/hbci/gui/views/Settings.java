@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Settings.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/02/17 00:53:22 $
+ * $Revision: 1.2 $
+ * $Date: 2004/02/20 20:45:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,8 +13,6 @@
 package de.willuhn.jameica.hbci.gui.views;
 
 import java.rmi.RemoteException;
-
-import org.eclipse.swt.widgets.Composite;
 
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.gui.GUI;
@@ -31,17 +29,10 @@ import de.willuhn.util.I18N;
 public class Settings extends AbstractView {
 
   /**
-   * @param parent
-   */
-  public Settings(Composite parent) {
-    super(parent);
-  }
-
-  /**
    * @see de.willuhn.jameica.gui.views.AbstractView#bind()
    */
   public void bind() throws Exception {
-		addHeadline("Einstellungen");
+
 		SettingsControl control = new SettingsControl(this);
 		
 		LabelGroup settings = new LabelGroup(getParent(),I18N.tr("Einstellungen"));
@@ -76,6 +67,9 @@ public class Settings extends AbstractView {
 
 /**********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.2  2004/02/20 20:45:13  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/02/17 00:53:22  willuhn
  * @N SaldoAbfrage
  * @N Ueberweisung

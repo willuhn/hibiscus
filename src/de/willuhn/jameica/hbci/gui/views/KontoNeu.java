@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/KontoNeu.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/02/17 00:53:22 $
+ * $Revision: 1.5 $
+ * $Date: 2004/02/20 20:45:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,7 +16,6 @@ import java.rmi.RemoteException;
 
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.widgets.Composite;
 
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.gui.GUI;
@@ -31,14 +30,6 @@ import de.willuhn.util.I18N;
  * Bankverbindung bearbeiten.
  */
 public class KontoNeu extends AbstractView {
-
-  /**
-   * ct.
-   * @param parent
-   */
-  public KontoNeu(Composite parent) {
-    super(parent);
-  }
 
   /**
    * @see de.willuhn.jameica.gui.views.AbstractView#bind()
@@ -107,6 +98,9 @@ public class KontoNeu extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoNeu.java,v $
+ * Revision 1.5  2004/02/20 20:45:13  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2004/02/17 00:53:22  willuhn
  * @N SaldoAbfrage
  * @N Ueberweisung

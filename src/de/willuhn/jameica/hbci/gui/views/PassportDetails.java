@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/PassportDetails.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/02/12 00:38:41 $
+ * $Revision: 1.3 $
+ * $Date: 2004/02/20 20:45:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,6 @@ package de.willuhn.jameica.hbci.gui.views;
 
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.widgets.Composite;
 
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.gui.GUI;
@@ -32,13 +31,6 @@ import de.willuhn.util.I18N;
  * Dialog, ueber den die Passports konfiguriert werden koennen.
  */
 public class PassportDetails extends AbstractView {
-
-  /**
-   * @param parent
-   */
-  public PassportDetails(Composite parent) {
-    super(parent);
-  }
 
   /**
    * @see de.willuhn.jameica.gui.views.AbstractView#bind()
@@ -97,6 +89,9 @@ public class PassportDetails extends AbstractView {
 
 /**********************************************************************
  * $Log: PassportDetails.java,v $
+ * Revision 1.3  2004/02/20 20:45:13  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2004/02/12 00:38:41  willuhn
  * *** empty log message ***
  *

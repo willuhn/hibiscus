@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/DialogFactory.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/02/20 01:25:25 $
+ * $Revision: 1.4 $
+ * $Date: 2004/02/20 20:45:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,16 +12,16 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui;
 
-import de.willuhn.jameica.gui.views.Dialog;
-import de.willuhn.jameica.gui.views.PasswordDialog;
-import de.willuhn.jameica.gui.views.SimpleDialog;
+import de.willuhn.jameica.gui.dialogs.AbstractDialog;
+import de.willuhn.jameica.gui.dialogs.PasswordDialog;
+import de.willuhn.jameica.gui.dialogs.SimpleDialog;
 
 /**
  * Hilfsklasse zur Erzeugung von Hilfs-Dialogen bei der HBCI-Kommunikation.
  */
 public class DialogFactory {
 
-	private static Dialog dialog = null;
+	private static AbstractDialog dialog = null;
 
   /**
 	 * Erzeugt einen simplen Dialog mit einem OK-Button.
@@ -30,10 +30,10 @@ public class DialogFactory {
    */
   public static void openSimple(final String headline, final String text)
 	{
-		SimpleDialog d = new SimpleDialog(Dialog.POSITION_CENTER);
+		SimpleDialog d = new SimpleDialog(AbstractDialog.POSITION_CENTER);
 		d.setTitle(headline);
 		d.setText(text);
-		dialog = (Dialog) d;
+		dialog = (AbstractDialog) d;
 		d.open();
 	}
 
@@ -44,10 +44,10 @@ public class DialogFactory {
 	 */
 	public static String openPassword(final String headline, final String text)
 	{
-		PasswordDialog d = new PasswordDialog(Dialog.POSITION_CENTER);
+		PasswordDialog d = new PasswordDialog(AbstractDialog.POSITION_CENTER);
 		d.setTitle(headline);
 		d.setText(text);
-		dialog = (Dialog) d;
+		dialog = (AbstractDialog) d;
 		return d.getPassword();
 	}
 
@@ -67,6 +67,9 @@ public class DialogFactory {
 
 /**********************************************************************
  * $Log: DialogFactory.java,v $
+ * Revision 1.4  2004/02/20 20:45:13  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2004/02/20 01:25:25  willuhn
  * *** empty log message ***
  *
