@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Ueberweisung.java,v $
- * $Revision: 1.10 $
- * $Date: 2005/01/19 00:16:04 $
+ * $Revision: 1.11 $
+ * $Date: 2005/02/03 18:57:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,8 @@ package de.willuhn.jameica.hbci.rmi;
 
 import java.rmi.RemoteException;
 import java.util.Date;
+
+import de.willuhn.util.ApplicationException;
 
 /**
  * Bildet eine Ueberweisung ab.
@@ -36,10 +38,11 @@ public interface Ueberweisung extends Transfer
   public boolean ausgefuehrt() throws RemoteException;
 	
 	/**
-	 * Markiert die Ueberweisung als ausgefuehrt.
+	 * Markiert die Ueberweisung als ausgefuehrt und speichert die Aenderung
+   * unmittelbar.
    * @throws RemoteException
    */
-  public void setAusgefuehrt() throws RemoteException;
+  public void setAusgefuehrt() throws RemoteException, ApplicationException;
 
 	/**
 	 * Speichert den Termin, an dem die Ueberweisung ausgefuehrt werden soll.
@@ -60,6 +63,9 @@ public interface Ueberweisung extends Transfer
 
 /**********************************************************************
  * $Log: Ueberweisung.java,v $
+ * Revision 1.11  2005/02/03 18:57:42  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.10  2005/01/19 00:16:04  willuhn
  * @N Lastschriften
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUeberweisungJob.java,v $
- * $Revision: 1.18 $
- * $Date: 2005/02/02 18:19:46 $
+ * $Revision: 1.19 $
+ * $Date: 2005/02/03 18:57:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -121,11 +121,9 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
 			throw new ApplicationException(msg + " ("+error+")");
 		}
 
-		konto.addToProtokoll(i18n.tr("Überweisung ausgeführt") + " " + empfName,Protokoll.TYP_SUCCESS);
-
 		// Wir markieren die Ueberweisung als "ausgefuehrt"
 		ueberweisung.setAusgefuehrt();
-		ueberweisung.store(); //TODO Erzeugt Fehler
+    konto.addToProtokoll(i18n.tr("Überweisung ausgeführt") + " " + empfName,Protokoll.TYP_SUCCESS);
 		Logger.info("ueberweisung submitted successfully");
   }
 }
@@ -133,6 +131,9 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIUeberweisungJob.java,v $
+ * Revision 1.19  2005/02/03 18:57:42  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.18  2005/02/02 18:19:46  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.50 $
- * $Date: 2005/02/01 18:27:14 $
+ * $Revision: 1.51 $
+ * $Date: 2005/02/03 18:57:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -65,7 +65,7 @@ public class KontoControl extends AbstractControl {
   private Input waehrung     		= null;
   private Input kundennummer 		= null;
   
-  private Input saldo				 		= null;
+  private LabelInput saldo			= null;
   private Input saldoDatum   		= null;
 
 	private TablePart kontoList						= null;
@@ -264,6 +264,10 @@ public class KontoControl extends AbstractControl {
 			s == 0.0 && getKonto().getSaldoDatum() == null ?
 				"" :
 				HBCI.DECIMALFORMAT.format(s) + " " + getKonto().getWaehrung());
+    if (s < 0)
+      saldo.setColor(Color.ERROR);
+    if (s > 0)
+      saldo.setColor(Color.SUCCESS);
 		return saldo;
 	}
 
@@ -452,6 +456,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.51  2005/02/03 18:57:42  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.50  2005/02/01 18:27:14  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/LastschriftNew.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/01/19 00:16:04 $
+ * $Revision: 1.2 $
+ * $Date: 2005/02/03 18:57:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,9 +19,10 @@ import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.Back;
-import de.willuhn.jameica.hbci.gui.action.UeberweisungDelete;
-import de.willuhn.jameica.hbci.gui.action.UeberweisungExecute;
+import de.willuhn.jameica.hbci.gui.action.LastschriftDelete;
+import de.willuhn.jameica.hbci.gui.action.LastschriftExecute;
 import de.willuhn.jameica.hbci.gui.controller.LastschriftControl;
+import de.willuhn.jameica.hbci.rmi.Transfer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -37,6 +38,7 @@ public class LastschriftNew extends AbstractView {
   public void bind() throws Exception {
 
 		final LastschriftControl control = new LastschriftControl(this);
+    final Transfer tranfer = control.getTransfer();
 
 		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
@@ -63,15 +65,23 @@ public class LastschriftNew extends AbstractView {
 
 		ButtonArea buttonArea = new ButtonArea(getParent(),4);
 		buttonArea.addButton(i18n.tr("Zurück"), 				 				 new Back());
-		buttonArea.addButton(i18n.tr("Löschen"),				 				 new UeberweisungDelete(), control.getTransfer());
-		buttonArea.addButton(i18n.tr("Speichern und ausführen"), new UeberweisungExecute(),control.getTransfer());
+		buttonArea.addButton(i18n.tr("Löschen"),				 				 new LastschriftDelete(), tranfer);
+		buttonArea.addButton(i18n.tr("Speichern und ausführen"), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        control.handleStore();
+        new LastschriftExecute().handleAction(tranfer);
+      }
+    },null,true);
+    
 		buttonArea.addButton(i18n.tr("Nur Speichern"), 			     new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
       	control.handleStore();
       }
-    },null,true);
+    });
   }
 
   /**
@@ -85,6 +95,9 @@ public class LastschriftNew extends AbstractView {
 
 /**********************************************************************
  * $Log: LastschriftNew.java,v $
+ * Revision 1.2  2005/02/03 18:57:42  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2005/01/19 00:16:04  willuhn
  * @N Lastschriften
  *

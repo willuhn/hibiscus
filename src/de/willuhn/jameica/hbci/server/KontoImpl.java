@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.41 $
- * $Date: 2005/02/02 18:19:47 $
+ * $Revision: 1.42 $
+ * $Date: 2005/02/03 18:57:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -276,7 +276,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    * @see de.willuhn.jameica.hbci.rmi.Konto#getSaldo()
    */
   public double getSaldo() throws RemoteException {
-		Double d = (Double) getAttribute("saldo"); // TODO Testen ob negativer Saldo korrekt ausgegeben wird
+		Double d = (Double) getAttribute("saldo");
 		if (d == null)
 			return 0;
 		return d.doubleValue();
@@ -432,6 +432,9 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.42  2005/02/03 18:57:42  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.41  2005/02/02 18:19:47  willuhn
  * *** empty log message ***
  *

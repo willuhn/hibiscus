@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/NewInstKeysDialog.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/02/02 18:19:46 $
+ * $Revision: 1.3 $
+ * $Date: 2005/02/03 18:57:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,6 +21,7 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.system.Application;
@@ -56,14 +57,14 @@ public class NewInstKeysDialog extends AbstractDialog
   protected void paint(Composite parent) throws Exception
   {
 		LabelGroup group = new LabelGroup(parent,i18n.tr("Schlüsseldetails"));
-		group.addText(i18n.tr("Bitte vergleichen Sie die von der Bank übermittelten " +			"Schlüsseln mit denen in Ihren Unterlagen. Stimmen diese mit den folgenden " +			"Werten überein, dann bestätigen Sie bitte mit OK. Andernfalls brechen Sie " +			"den Vorgang aus Sicherheitsgründen bitte ab."),true);
+		group.addText(i18n.tr(
+      "Bitte vergleichen Sie die von der Bank übermittelten Schlüsseln mit\n" +      "denen in Ihren Unterlagen. Stimmen diese mit den folgenden Werten überein,\n" +      "dann bestätigen Sie bitte mit OK. Andernfalls brechen Sie den Vorgang aus\n" +      "Sicherheitsgründen bitte ab."),true);
 
 		INILetter iniletter = new INILetter(passport,INILetter.TYPE_INST);
 
-		// TODO: Formatierung
-		group.addLabelPair(i18n.tr("Exponent"),	new LabelInput(HBCIUtils.data2hex(iniletter.getKeyExponent())));
-		group.addLabelPair(i18n.tr("Modulus"),	new LabelInput(HBCIUtils.data2hex(iniletter.getKeyModulus())));
-		group.addLabelPair(i18n.tr("Hash-Wert"),new LabelInput(HBCIUtils.data2hex(iniletter.getKeyHash())));
+    LabelInput hash = new LabelInput(HBCIUtils.data2hex(iniletter.getKeyHash()));
+    hash.setColor(Color.ERROR);
+		group.addLabelPair(i18n.tr("Hash-Wert (Checksumme)") + ":",hash);
 
 		ButtonArea buttons = new ButtonArea(parent,2);
 		buttons.addButton(i18n.tr("OK"),new Action()
@@ -78,7 +79,8 @@ public class NewInstKeysDialog extends AbstractDialog
 		{
 			public void handleAction(Object context) throws ApplicationException
 			{
-				choosen = new Boolean(true);
+				choosen = new Boolean(false);
+        close();
 			}
 		});
   }
@@ -96,6 +98,9 @@ public class NewInstKeysDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: NewInstKeysDialog.java,v $
+ * Revision 1.3  2005/02/03 18:57:42  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2005/02/02 18:19:46  willuhn
  * *** empty log message ***
  *

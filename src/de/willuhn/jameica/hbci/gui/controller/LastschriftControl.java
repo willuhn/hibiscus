@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/LastschriftControl.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/01/19 00:33:32 $
+ * $Revision: 1.3 $
+ * $Date: 2005/02/03 18:57:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,6 +30,7 @@ import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.LastschriftNew;
 import de.willuhn.jameica.hbci.gui.menus.LastschriftList;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
+import de.willuhn.jameica.hbci.rmi.Transfer;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 
 /**
@@ -48,6 +49,23 @@ public class LastschriftControl extends UeberweisungControl
   public LastschriftControl(AbstractView view)
   {
     super(view);
+  }
+
+
+  /**
+   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getTransfer()
+   */
+  public Transfer getTransfer() throws RemoteException
+  {
+    if (transfer != null)
+      return transfer;
+
+    transfer = (Transfer) getCurrentObject();
+    if (transfer != null)
+      return transfer;
+      
+    transfer = (Transfer) Settings.getDBService().createObject(Lastschrift.class,null);
+    return transfer;
   }
 
   /**
@@ -98,11 +116,16 @@ public class LastschriftControl extends UeberweisungControl
 		table.setContextMenu(new LastschriftList());
 		return table;
   }
+
+
 }
 
 
 /**********************************************************************
  * $Log: LastschriftControl.java,v $
+ * Revision 1.3  2005/02/03 18:57:42  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2005/01/19 00:33:32  willuhn
  * *** empty log message ***
  *
