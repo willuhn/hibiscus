@@ -3,7 +3,6 @@
     <classpathentry kind="src" path="src"/>
     <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
     <classpathentry exported="true" kind="src" path="/jameica"/>
-    <classpathentry exported="true" kind="lib"
-        path="lib/hbci4java-2.4.7pre-20040525.jar" sourcepath="/hibiscus/lib.src/hbci4java-2.4.7pre-20040525.src.zip"/>
+    <classpathentry exported="true" kind="lib" path="lib/hbci4java-2.5.0pre-20040810.jar"/>
     <classpathentry kind="output" path="bin"/>
 </classpath>

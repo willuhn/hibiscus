@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.27 $
- * $Date: 2004/10/08 00:19:08 $
+ * $Revision: 1.28 $
+ * $Date: 2004/10/14 23:14:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,8 +16,8 @@ package de.willuhn.jameica.hbci;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import org.kapott.hbci.manager.HBCIUtils;
 
@@ -52,7 +52,7 @@ public class HBCI extends AbstractPlugin
   /**
    * DecimalFormat.
    */
-  public static DecimalFormat DECIMALFORMAT = (DecimalFormat) NumberFormat.getNumberInstance(Application.getConfig().getLocale());
+  public static DecimalFormat DECIMALFORMAT = (DecimalFormat) DecimalFormat.getInstance(Application.getConfig().getLocale());
 
   // Mapper von HBCI4Java nach jameica Loglevels
   private static int[][] logMapping = new int[][]
@@ -64,7 +64,9 @@ public class HBCI extends AbstractPlugin
   };
 
   static {
-    DECIMALFORMAT.applyPattern("#0,00");
+    DECIMALFORMAT.applyPattern("#0.00");
+    DECIMALFORMAT.setGroupingUsed(false);
+    DECIMALFORMAT.setMinimumFractionDigits(2);
   }
 
   private EmbeddedDatabase db = null;
@@ -76,6 +78,7 @@ public class HBCI extends AbstractPlugin
   public HBCI(File file)
   {
     super(file);
+    Locale l = Application.getConfig().getLocale();
   }
 
   /**
@@ -220,6 +223,10 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.28  2004/10/14 23:14:20  willuhn
+ * @N new hbci4java (2.5pre)
+ * @B fixed locales
+ *
  * Revision 1.27  2004/10/08 00:19:08  willuhn
  * *** empty log message ***
  *
