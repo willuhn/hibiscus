@@ -6,6 +6,7 @@
     <item name="Einstellungen"     		class="de.willuhn.jameica.hbci.gui.views.Settings" />
     <item name="Neue Überweisung"  		shortcut="CTRL+U" class="de.willuhn.jameica.hbci.gui.views.UeberweisungNeu" />
     <item name="-" />
+    <item name="About"    				target="dialog" class="de.willuhn.jameica.hbci.gui.views.About" />
     <item name="Lizenzinformationen"    class="de.willuhn.jameica.hbci.gui.views.License" />
   </cascade>
 

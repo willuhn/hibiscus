@@ -9,21 +9,10 @@
 	</li>
 	
 	<li>
-		Im Feld <b>Import-Programm</b> können Sie ein externes Programm definieren,
-		welches zum Importieren von Umsätzen ausgeführt werden soll. Diese müssen
-		im Import-Verzeichnis als XML-Dateien gespeichert werden.
-	</li>
-	
-	<li>
 		Bei aktivierter PIN-Prüfung wird aus der von Ihnen eingegebene PIN
 		eine Check-Summe gebildet und diese mit der Check-Summe Ihrer ersten PIN-Eingabe
 		verglichen. Hierbei wird nicht die PIN selbst gespeichert sondern lediglich die
 		Prüfsumme mit der ermittelt werden kann, ob Ihre aktuelle Eingabe mit der Erst-Eingabe
 		übereinstimmt.
-	</li>
-	
-	<li>
-		Es muss mindestens ein Sicherheitsmedium konfiguriert sein, damit
-		Sie via HBCI auf Ihre Konten zugreifen können.
 	</li>
 </form>
