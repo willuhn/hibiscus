@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Transfer.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/10/17 16:28:46 $
+ * $Revision: 1.5 $
+ * $Date: 2005/01/19 00:16:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -127,11 +127,20 @@ public interface Transfer extends DBObject, Checksum
    */
   public void setZweck2(String zweck2) throws RemoteException;
 
+	/**
+	 * Dupliziert den Transfer.
+   * @return neuer Transfer mit den gleichen Eigenschaften.
+   * @throws RemoteException
+   */
+  public Transfer duplicate() throws RemoteException;
 }
 
 
 /**********************************************************************
  * $Log: Transfer.java,v $
+ * Revision 1.5  2005/01/19 00:16:04  willuhn
+ * @N Lastschriften
+ *
  * Revision 1.4  2004/10/17 16:28:46  willuhn
  * @N Die ersten Dauerauftraege abgerufen ;)
  *

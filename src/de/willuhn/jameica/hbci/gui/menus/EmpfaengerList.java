@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/EmpfaengerList.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/11/13 17:02:04 $
+ * $Revision: 1.9 $
+ * $Date: 2005/01/19 00:16:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerDelete;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerNew;
+import de.willuhn.jameica.hbci.gui.action.LastschriftNew;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungNew;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
@@ -40,6 +41,7 @@ public class EmpfaengerList extends ContextMenu
 
 		addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"),new EmpfaengerNew()));
 		addItem(new CheckedContextMenuItem(i18n.tr("Neue Überweisung mit diesem Empfänger..."), new UeberweisungNew()));
+		addItem(new CheckedContextMenuItem(i18n.tr("Neue Lastschrift von diesem Konto einziehen..."), new LastschriftNew()));
 		addItem(ContextMenuItem.SEPARATOR);
 		addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new EmpfaengerDelete()));
 		addItem(ContextMenuItem.SEPARATOR);
@@ -52,6 +54,9 @@ public class EmpfaengerList extends ContextMenu
 
 /**********************************************************************
  * $Log: EmpfaengerList.java,v $
+ * Revision 1.9  2005/01/19 00:16:04  willuhn
+ * @N Lastschriften
+ *
  * Revision 1.8  2004/11/13 17:02:04  willuhn
  * @N Bearbeiten des Zahlungsturnus
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoFetchUmsaetze.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/11/13 17:12:14 $
+ * $Revision: 1.7 $
+ * $Date: 2005/01/19 00:16:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -59,7 +59,7 @@ public class KontoFetchUmsaetze implements Action
 						HBCIFactory factory = HBCIFactory.getInstance();
 						factory.addJob(new HBCIUmsatzJob(k));
 						factory.executeJobs(k.getPassport().getHandle());
-						GUI.startView(UmsatzList.class.getName(),k);
+						GUI.startView(UmsatzList.class,k);
 						GUI.getStatusBar().setSuccessText(i18n.tr("...Umsätze erfolgreich übertragen"));
 					}
 					catch (OperationCanceledException oce)
@@ -95,6 +95,9 @@ public class KontoFetchUmsaetze implements Action
 
 /**********************************************************************
  * $Log: KontoFetchUmsaetze.java,v $
+ * Revision 1.7  2005/01/19 00:16:04  willuhn
+ * @N Lastschriften
+ *
  * Revision 1.6  2004/11/13 17:12:14  willuhn
  * *** empty log message ***
  *

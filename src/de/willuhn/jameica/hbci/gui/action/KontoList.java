@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoList.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/11/13 17:12:14 $
+ * $Revision: 1.3 $
+ * $Date: 2005/01/19 00:16:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,7 +27,7 @@ public class KontoList implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
-		GUI.startView(de.willuhn.jameica.hbci.gui.views.KontoList.class.getName(),null);
+		GUI.startView(de.willuhn.jameica.hbci.gui.views.KontoList.class,null);
   }
 
 }
@@ -35,6 +35,9 @@ public class KontoList implements Action
 
 /**********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.3  2005/01/19 00:16:04  willuhn
+ * @N Lastschriften
+ *
  * Revision 1.2  2004/11/13 17:12:14  willuhn
  * *** empty log message ***
  *

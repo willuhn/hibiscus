@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/License.java,v $
- * $Revision: 1.2 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/LastschriftList.java,v $
+ * $Revision: 1.1 $
  * $Date: 2005/01/19 00:16:04 $
  * $Author: willuhn $
  * $Locker:  $
@@ -17,9 +17,9 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.util.ApplicationException;
 
 /**
- * Action fuer Lizenz-Dialog.
+ * Action fuer die Liste der LastschriftL.
  */
-public class License implements Action
+public class LastschriftList implements Action
 {
 
   /**
@@ -27,16 +27,22 @@ public class License implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
-  	GUI.startView(de.willuhn.jameica.hbci.gui.views.License.class,null);
+		GUI.startView(de.willuhn.jameica.hbci.gui.views.LastschriftList.class,null);
   }
 
 }
 
 
 /**********************************************************************
- * $Log: License.java,v $
- * Revision 1.2  2005/01/19 00:16:04  willuhn
+ * $Log: LastschriftList.java,v $
+ * Revision 1.1  2005/01/19 00:16:04  willuhn
  * @N Lastschriften
+ *
+ * Revision 1.2  2004/11/13 17:12:14  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.1  2004/11/13 17:02:04  willuhn
+ * @N Bearbeiten des Zahlungsturnus
  *
  * Revision 1.1  2004/10/12 23:48:39  willuhn
  * @N Actions

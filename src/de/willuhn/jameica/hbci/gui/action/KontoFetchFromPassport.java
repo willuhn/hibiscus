@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoFetchFromPassport.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/11/13 17:12:14 $
+ * $Revision: 1.8 $
+ * $Date: 2005/01/19 00:16:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -94,7 +94,7 @@ public class KontoFetchFromPassport implements Action
 						}
 				
 					}
-					GUI.startView(KontoList.class.getName(),null);
+					GUI.startView(KontoList.class,null);
 					GUI.getStatusBar().setSuccessText(i18n.tr("Konten erfolgreich ausgelesen"));
 				}
 				catch (Throwable t)
@@ -115,6 +115,9 @@ public class KontoFetchFromPassport implements Action
 
 /**********************************************************************
  * $Log: KontoFetchFromPassport.java,v $
+ * Revision 1.8  2005/01/19 00:16:04  willuhn
+ * @N Lastschriften
+ *
  * Revision 1.7  2004/11/13 17:12:14  willuhn
  * *** empty log message ***
  *

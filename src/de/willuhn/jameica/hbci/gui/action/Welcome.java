@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/Attic/Welcome.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/10/12 23:48:39 $
+ * $Revision: 1.2 $
+ * $Date: 2005/01/19 00:16:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,7 +27,7 @@ public class Welcome implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
-  	GUI.startView(de.willuhn.jameica.hbci.gui.views.Welcome.class.getName(),null);
+  	GUI.startView(de.willuhn.jameica.hbci.gui.views.Welcome.class,null);
   }
 
 }
@@ -35,6 +35,9 @@ public class Welcome implements Action
 
 /**********************************************************************
  * $Log: Welcome.java,v $
+ * Revision 1.2  2005/01/19 00:16:04  willuhn
+ * @N Lastschriften
+ *
  * Revision 1.1  2004/10/12 23:48:39  willuhn
  * @N Actions
  *

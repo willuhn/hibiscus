@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/UmsatzList.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/11/13 17:12:15 $
+ * $Revision: 1.3 $
+ * $Date: 2005/01/19 00:16:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -51,7 +51,7 @@ public class UmsatzList implements Action
 			Logger.error("error while loading umsaetze",e);
 			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Laden der Umsätze"));
 		}
-		GUI.startView(de.willuhn.jameica.hbci.gui.views.UmsatzList.class.getName(),k);
+		GUI.startView(de.willuhn.jameica.hbci.gui.views.UmsatzList.class,k);
   }
 
 }
@@ -59,6 +59,9 @@ public class UmsatzList implements Action
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.3  2005/01/19 00:16:04  willuhn
+ * @N Lastschriften
+ *
  * Revision 1.2  2004/11/13 17:12:15  willuhn
  * *** empty log message ***
  *

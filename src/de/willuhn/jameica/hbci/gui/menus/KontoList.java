@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/KontoList.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/11/13 17:02:04 $
+ * $Revision: 1.9 $
+ * $Date: 2005/01/19 00:16:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,9 +16,11 @@ import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.action.DauerauftragNew;
 import de.willuhn.jameica.hbci.gui.action.KontoDelete;
 import de.willuhn.jameica.hbci.gui.action.KontoNew;
 import de.willuhn.jameica.hbci.gui.action.KontoFetchSaldo;
+import de.willuhn.jameica.hbci.gui.action.LastschriftNew;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungNew;
 import de.willuhn.jameica.hbci.gui.action.UmsatzList;
 import de.willuhn.jameica.system.Application;
@@ -49,6 +51,8 @@ public class KontoList extends ContextMenu
 		addItem(ContextMenuItem.SEPARATOR);
 
 		addItem(new ContextMenuItem(i18n.tr("Neue Überweisung..."), new UeberweisungNew()));
+		addItem(new ContextMenuItem(i18n.tr("Neuer Dauerauftrag..."), new DauerauftragNew()));
+		addItem(new ContextMenuItem(i18n.tr("Neue Lastschrift..."), new LastschriftNew()));
 		addItem(new ContextMenuItem(i18n.tr("Neues Konto..."), new KNeu()));
 	}
 
@@ -72,6 +76,9 @@ public class KontoList extends ContextMenu
 
 /**********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.9  2005/01/19 00:16:04  willuhn
+ * @N Lastschriften
+ *
  * Revision 1.8  2004/11/13 17:02:04  willuhn
  * @N Bearbeiten des Zahlungsturnus
  *

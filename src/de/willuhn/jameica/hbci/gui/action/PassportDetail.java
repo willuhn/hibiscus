@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/PassportDetail.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/11/12 18:25:07 $
+ * $Revision: 1.3 $
+ * $Date: 2005/01/19 00:16:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -42,7 +42,7 @@ public class PassportDetail implements Action
 
 		try {
 			Passport p = (Passport) context;
-			GUI.startView(p.getConfigDialog().getName(),p);
+			GUI.startView(p.getConfigDialog(),p);
 		}
 		catch (RemoteException e)
 		{
@@ -57,6 +57,9 @@ public class PassportDetail implements Action
 
 /**********************************************************************
  * $Log: PassportDetail.java,v $
+ * Revision 1.3  2005/01/19 00:16:04  willuhn
+ * @N Lastschriften
+ *
  * Revision 1.2  2004/11/12 18:25:07  willuhn
  * *** empty log message ***
  *

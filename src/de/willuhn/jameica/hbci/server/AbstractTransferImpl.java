@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AbstractTransferImpl.java,v $
- * $Revision: 1.14 $
- * $Date: 2004/11/12 18:25:07 $
+ * $Revision: 1.15 $
+ * $Date: 2005/01/19 00:16:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -60,7 +60,7 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
 				throw new ApplicationException(i18n.tr("Bitte speichern Sie zunächst das Konto"));
 
 			if (getBetrag() > Settings.getUeberweisungLimit())
-				throw new ApplicationException(i18n.tr("Limit für Überweisungsbetrag überschritten: {0} ", 
+				throw new ApplicationException(i18n.tr("Auftragslimit überschritten: {0} ", 
 					HBCI.DECIMALFORMAT.format(Settings.getUeberweisungLimit()) + " " + getKonto().getWaehrung()));
 
 			if (getEmpfaengerKonto() == null || "".equals(getEmpfaengerKonto()))
@@ -240,7 +240,7 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
     super.delete();
     if (k == null)
     	return;
-    k.addToProtokoll(i18n.tr("Überweisung an " + getEmpfaengerName() + " gelöscht"),Protokoll.TYP_SUCCESS);
+    k.addToProtokoll(i18n.tr("Auftrag an " + getEmpfaengerName() + " gelöscht"),Protokoll.TYP_SUCCESS);
   }
 
 
@@ -256,11 +256,21 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
   	setEmpfaengerName(e.getName());
   }
 
+	/**
+   * @see de.willuhn.jameica.hbci.rmi.Transfer#duplicate()
+   */
+	public Transfer duplicate() throws RemoteException {
+		throw new UnsupportedOperationException("not implemented");
+	}
+
 }
 
 
 /**********************************************************************
  * $Log: AbstractTransferImpl.java,v $
+ * Revision 1.15  2005/01/19 00:16:05  willuhn
+ * @N Lastschriften
+ *
  * Revision 1.14  2004/11/12 18:25:07  willuhn
  * *** empty log message ***
  *

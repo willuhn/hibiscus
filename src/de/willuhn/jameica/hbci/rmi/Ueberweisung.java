@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Ueberweisung.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/10/25 22:39:14 $
+ * $Revision: 1.10 $
+ * $Date: 2005/01/19 00:16:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,13 +49,6 @@ public interface Ueberweisung extends Transfer
   public void setTermin(Date termin) throws RemoteException;
 
   /**
-   * Dupliziert die Ueberweisung.
-   * @return eine neue Ueberweisung mit den Eigenschaften dieser.
-   * @throws RemoteException
-   */
-  public Ueberweisung duplicate() throws RemoteException;
-  
-  /**
    * Prueft, ob die Ueberweisung ueberfaellig ist.
    * @return true, wenn sie ueberfaellig ist.
    * @throws RemoteException
@@ -67,6 +60,9 @@ public interface Ueberweisung extends Transfer
 
 /**********************************************************************
  * $Log: Ueberweisung.java,v $
+ * Revision 1.10  2005/01/19 00:16:04  willuhn
+ * @N Lastschriften
+ *
  * Revision 1.9  2004/10/25 22:39:14  willuhn
  * *** empty log message ***
  *
