@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.38 $
- * $Date: 2004/07/04 17:07:59 $
+ * $Revision: 1.39 $
+ * $Date: 2004/07/09 00:04:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,11 +25,12 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.GenericObject;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.controller.AbstractControl;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
-import de.willuhn.jameica.gui.input.AbstractInput;
+import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
@@ -39,7 +40,7 @@ import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.PassportRegistry;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.views.KontoListe;
+import de.willuhn.jameica.hbci.gui.listener.KontoRefreshSaldo;
 import de.willuhn.jameica.hbci.gui.views.KontoNeu;
 import de.willuhn.jameica.hbci.gui.views.UmsatzListe;
 import de.willuhn.jameica.hbci.passport.Passport;
@@ -58,17 +59,18 @@ public class KontoControl extends AbstractControl {
 	private Konto konto 			 		= null;
 	
 	// Eingabe-Felder
-	private AbstractInput kontonummer  		= null;
-	private AbstractInput blz          		= null;
-	private AbstractInput name				 		= null;
-	private AbstractInput bezeichnung	 		= null;
-	private AbstractInput passportAuswahl = null;
-  private AbstractInput waehrung     		= null;
-  private AbstractInput kundennummer 		= null;
+	private Input kontonummer  		= null;
+	private Input blz          		= null;
+	private Input name				 		= null;
+	private Input bezeichnung	 		= null;
+	private Input passportAuswahl = null;
+  private Input waehrung     		= null;
+  private Input kundennummer 		= null;
   
-  private AbstractInput saldo				 		= null;
-  private AbstractInput saldoDatum   		= null;
+  private Input saldo				 		= null;
+  private Input saldoDatum   		= null;
 
+	private TablePart kontoList						= null;
 	private TablePart protokoll						= null;
 
 	private I18N i18n;
@@ -113,13 +115,13 @@ public class KontoControl extends AbstractControl {
    * @return Tabelle.
    * @throws RemoteException
    */
-  public TablePart getProtokoll() throws RemoteException
+  public Part getProtokoll() throws RemoteException
 	{
 		if (protokoll != null)
 			return protokoll;
 
-		TablePart table = new TablePart(getKonto().getProtokolle(),null);
-		table.setFormatter(new TableFormatter() {
+		protokoll = new TablePart(getKonto().getProtokolle(),null);
+		protokoll.setFormatter(new TableFormatter() {
 			public void format(TableItem item) {
 				Protokoll p = (Protokoll) item.getData();
 				if (p == null) return;
@@ -138,9 +140,9 @@ public class KontoControl extends AbstractControl {
 				}
 			}
 		});
-		table.addColumn(i18n.tr("Datum"),"datum",new DateFormatter(HBCI.LONGDATEFORMAT));
-		table.addColumn(i18n.tr("Kommentar"),"kommentar");
-		return table;
+		protokoll.addColumn(i18n.tr("Datum"),"datum",new DateFormatter(HBCI.LONGDATEFORMAT));
+		protokoll.addColumn(i18n.tr("Kommentar"),"kommentar");
+		return protokoll;
 
 	}
 
@@ -149,7 +151,7 @@ public class KontoControl extends AbstractControl {
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public AbstractInput getKontonummer() throws RemoteException
+  public Input getKontonummer() throws RemoteException
 	{
 		if (kontonummer != null)
 			return kontonummer;
@@ -162,7 +164,7 @@ public class KontoControl extends AbstractControl {
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public AbstractInput getBlz() throws RemoteException
+  public Input getBlz() throws RemoteException
 	{
 		if (blz != null)
 			return blz;
@@ -177,7 +179,7 @@ public class KontoControl extends AbstractControl {
    * @return Name des Konto-Inhabers.
    * @throws RemoteException
    */
-  public AbstractInput getName() throws RemoteException
+  public Input getName() throws RemoteException
 	{
 		if (name != null)
 			return name;
@@ -190,7 +192,7 @@ public class KontoControl extends AbstractControl {
 	 * @return Bezeichnung des Kontos.
 	 * @throws RemoteException
 	 */
-	public AbstractInput getBezeichnung() throws RemoteException
+	public Input getBezeichnung() throws RemoteException
 	{
 		if (bezeichnung != null)
 			return bezeichnung;
@@ -203,7 +205,7 @@ public class KontoControl extends AbstractControl {
 	 * @return Eingabe-Feld.
 	 * @throws RemoteException
 	 */
-	public AbstractInput getKundennummer() throws RemoteException
+	public Input getKundennummer() throws RemoteException
 	{
 		if (kundennummer != null)
 			return kundennummer;
@@ -216,7 +218,7 @@ public class KontoControl extends AbstractControl {
    * @return Waehrungsbezeichnung.
    * @throws RemoteException
    */
-  public AbstractInput getWaehrung() throws RemoteException
+  public Input getWaehrung() throws RemoteException
   {
     if (waehrung != null)
       return waehrung;
@@ -229,7 +231,7 @@ public class KontoControl extends AbstractControl {
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public AbstractInput getPassportAuswahl() throws RemoteException
+  public Input getPassportAuswahl() throws RemoteException
 	{
 		if (passportAuswahl != null)
 			return passportAuswahl;
@@ -250,7 +252,7 @@ public class KontoControl extends AbstractControl {
    * @return Anzeige-Feld.
    * @throws RemoteException
    */
-  public AbstractInput getSaldo() throws RemoteException
+  public Input getSaldo() throws RemoteException
 	{
 		if (saldo != null)
 			return saldo;
@@ -268,7 +270,7 @@ public class KontoControl extends AbstractControl {
    * @return Anzeige-Feld.
    * @throws RemoteException
    */
-  public AbstractInput getSaldoDatum() throws RemoteException
+  public Input getSaldoDatum() throws RemoteException
 	{
 		if (saldoDatum != null)
 			return saldoDatum;
@@ -283,17 +285,48 @@ public class KontoControl extends AbstractControl {
    * @return Tabelle mit Bankverbindungen.
    * @throws RemoteException
    */
-  public TablePart getKontoListe() throws RemoteException
+  public Part getKontoListe() throws RemoteException
 	{
+		if (kontoList != null)
+			return kontoList;
+
 		DBIterator list = Settings.getDatabase().createList(Konto.class);
 
-		TablePart table = new TablePart(list,this);
-		table.addColumn(i18n.tr("Kontonummer"),"kontonummer");
-		table.addColumn(i18n.tr("Bankleitzahl"),"blz");
-		table.addColumn(i18n.tr("Bezeichnung"),"bezeichnung");
-		table.addColumn(i18n.tr("Kontoinhaber"),"name");
-		table.addColumn(i18n.tr("Kundennummer"),"kundennummer");
-		return table;
+		kontoList = new TablePart(list,this);
+		kontoList.addColumn(i18n.tr("Kontonummer"),"kontonummer");
+		kontoList.addColumn(i18n.tr("Bankleitzahl"),"blz");
+		kontoList.addColumn(i18n.tr("Bezeichnung"),"bezeichnung");
+		kontoList.addColumn(i18n.tr("Kontoinhaber"),"name");
+		kontoList.addColumn(i18n.tr("Saldo"),"saldo");
+		kontoList.setFormatter(new TableFormatter()
+    {
+      public void format(TableItem item)
+      {
+      	Konto k = (Konto) item.getData();
+				try {
+					item.setText(4,HBCI.DECIMALFORMAT.format(k.getSaldo()) + " " + k.getWaehrung());
+				}
+				catch (RemoteException e)
+				{
+					Logger.error("error while formatting saldo",e);
+				}
+      }
+    });
+		kontoList.addMenu(i18n.tr("Saldo aktualisieren"), new Listener()
+    {
+      public void handleEvent(Event event)
+      {
+				new KontoRefreshSaldo().handleEvent(event);
+				try {
+					GUI.startView(GUI.getCurrentView().getClass().getName(),getCurrentObject());
+				}
+				catch (RemoteException e)
+				{
+					Logger.error("error while reloading view",e);
+				}
+      }
+    });
+		return kontoList;
 	}
 
 	/**
@@ -359,11 +392,16 @@ public class KontoControl extends AbstractControl {
    */
   public synchronized void handleStore() {
 		try {
-			// Erstmal oben und unten die Statusleisten leer machen
-			GUI.getStatusBar().setSuccessText("");
-			GUI.getView().setSuccessText("");
 
-			getKonto().setPassport((Passport) getPassportAuswahl().getValue());
+			PassportObject po = (PassportObject) getPassportAuswahl().getValue();
+
+			if (po == null)
+			{
+				GUI.getStatusBar().setErrorText(i18n.tr("Kein Sicherheitsmedium verfügbar."));
+				return;
+			}
+			
+			getKonto().setPassport(po.getPassport());
 
 			getKonto().setKontonummer((String)getKontonummer().getValue());
 			getKonto().setBLZ((String)getBlz().getValue());
@@ -460,13 +498,14 @@ public class KontoControl extends AbstractControl {
 
 					DBIterator existing = Settings.getDatabase().createList(Konto.class);
 					Konto check = null;
-					Konto newKonto = null;
 					Konto[] konten = p.getHandle().getKonten();
 
 					for (int i=0;i<konten.length;++i)
 					{
+						Logger.info("found konto " + konten[i].getKontonummer());
 						// Wir checken, ob's das Konto schon gibt
 						boolean found = false;
+						Logger.info("  checking if allready exists");
 						while (existing.hasNext())
 						{
 							check = (Konto) existing.next();
@@ -474,6 +513,7 @@ public class KontoControl extends AbstractControl {
 								check.getKontonummer().equals(konten[i].getKontonummer()))
 							{
 								found = true;
+								Logger.info("  konto exists, skipping");
 								break;
 							}
 						
@@ -482,15 +522,11 @@ public class KontoControl extends AbstractControl {
 						if (!found)
 						{
 							// Konto neu anlegen
+							Logger.info("saving new konto");
 							try {
-								newKonto = (Konto) Settings.getDatabase().createObject(Konto.class,null);
-								newKonto.setBLZ(konten[i].getBLZ());
-								newKonto.setKontonummer(konten[i].getKontonummer());
-								newKonto.setKundennummer(konten[i].getKundennummer());
-								newKonto.setName(konten[i].getName());
-								newKonto.setWaehrung(konten[i].getWaehrung());
-								newKonto.setPassport(p); // wir speichern den ausgewaehlten Passport.
-								newKonto.store();
+								konten[i].setPassport(p); // wir speichern den ausgewaehlten Passport.
+								konten[i].store();
+								Logger.info("konto saved successfully");
 							}
 							catch (Exception e)
 							{
@@ -501,7 +537,7 @@ public class KontoControl extends AbstractControl {
 						}
 					
 					}
-					GUI.startView(KontoListe.class.getName(),null); // Page reload
+					GUI.startView(GUI.getCurrentView().getClass().getName(),getCurrentObject());
 					GUI.getStatusBar().setSuccessText(i18n.tr("Konten erfolgreich ausgelesen"));
 				}
 				catch (Throwable t)
@@ -607,6 +643,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.39  2004/07/09 00:04:40  willuhn
+ * @C Redesign
+ *
  * Revision 1.38  2004/07/04 17:07:59  willuhn
  * @B Umsaetze wurden teilweise nicht als bereits vorhanden erkannt und wurden somit doppelt angezeigt
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzControl.java,v $
- * $Revision: 1.14 $
- * $Date: 2004/06/30 20:58:28 $
+ * $Revision: 1.15 $
+ * $Date: 2004/07/09 00:04:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.TableItem;
 
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.controller.AbstractControl;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
@@ -75,7 +76,7 @@ public class UmsatzControl extends AbstractControl {
    * @return Tabelle.
    * @throws RemoteException
    */
-  public TablePart getUmsatzListe() throws RemoteException
+  public Part getUmsatzListe() throws RemoteException
 	{
 		TablePart table = new TablePart(getKonto().getUmsaetze(),this);
 		table.setFormatter(new TableFormatter() {
@@ -230,6 +231,9 @@ public class UmsatzControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzControl.java,v $
+ * Revision 1.15  2004/07/09 00:04:40  willuhn
+ * @C Redesign
+ *
  * Revision 1.14  2004/06/30 20:58:28  willuhn
  * *** empty log message ***
  *

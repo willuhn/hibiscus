@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCISaldoJob.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/06/30 20:58:29 $
+ * $Revision: 1.6 $
+ * $Date: 2004/07/09 00:04:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -75,11 +75,23 @@ public class HBCISaldoJob extends AbstractHBCIJob {
 										i18n.tr("Fehlermeldung der Bank") + ": " + statusText :
 										i18n.tr("Unbekannter Fehler beim Abrufen des Saldos");
 
-			addToProtokoll(i18n.tr("Fehler beim Abrufen das Saldos") + " ("+ msg +")",Protokoll.TYP_ERROR);
+			try {
+				getKonto().addToProtokoll(i18n.tr("Fehler beim Abrufen das Saldos") + " ("+ msg +")",Protokoll.TYP_ERROR);
+			}
+			catch (RemoteException e)
+			{
+				Logger.error("error while writing konto protocol",e);
+			}
 			throw new ApplicationException(msg);
 		}
 		Logger.debug("job result is ok, returning saldo");
-		addToProtokoll(i18n.tr("Saldo abgerufen"),Protokoll.TYP_SUCCESS);
+		try {
+			getKonto().addToProtokoll(i18n.tr("Saldo abgerufen"),Protokoll.TYP_SUCCESS);
+		}
+		catch (RemoteException e)
+		{
+			Logger.error("error while writing konto protocol",e);
+		}
 		return result.getEntries()[0].ready.value.value;
 	}
 }
@@ -87,6 +99,9 @@ public class HBCISaldoJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCISaldoJob.java,v $
+ * Revision 1.6  2004/07/09 00:04:40  willuhn
+ * @C Redesign
+ *
  * Revision 1.5  2004/06/30 20:58:29  willuhn
  * *** empty log message ***
  *

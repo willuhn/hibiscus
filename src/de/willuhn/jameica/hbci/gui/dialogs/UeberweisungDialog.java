@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/UeberweisungDialog.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/05/26 23:23:10 $
+ * $Revision: 1.2 $
+ * $Date: 2004/07/09 00:04:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,7 @@ import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
-import de.willuhn.jameica.gui.input.AbstractInput;
+import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
@@ -70,25 +70,25 @@ public class UeberweisungDialog extends AbstractDialog {
 			
 		group.addText(i18n.tr("Sind Sie sicher, daß Sie die Überweisung jetzt ausführen wollen?") + "\n",true);
 
-		AbstractInput kto = new LabelInput(ueb.getKonto().getKontonummer());
+		Input kto = new LabelInput(ueb.getKonto().getKontonummer());
 		kto.setComment(ueb.getKonto().getBezeichnung());
 		group.addLabelPair(i18n.tr("Eigenes Konto"),kto);
 
 		group.addSeparator();
 
-		AbstractInput empfName = new LabelInput(ueb.getEmpfaengerName());
+		Input empfName = new LabelInput(ueb.getEmpfaengerName());
 		group.addLabelPair(i18n.tr("Name des Empfänger"),empfName);
 
-		AbstractInput empfKto = new LabelInput(ueb.getEmpfaengerKonto());
+		Input empfKto = new LabelInput(ueb.getEmpfaengerKonto());
 		empfKto.setComment(ueb.getEmpfaengerBlz() + "/" + HBCIUtils.getNameForBLZ(ueb.getEmpfaengerBlz()));
 		group.addLabelPair(i18n.tr("Konto des Empfängers"),empfKto);
 
 		group.addSeparator();
 
-		AbstractInput zweck = new LabelInput(ueb.getZweck() + "/" + ueb.getZweck2());
+		Input zweck = new LabelInput(ueb.getZweck() + "/" + ueb.getZweck2());
 		group.addLabelPair(i18n.tr("Verwendungszweck"),zweck);
 
-		AbstractInput betrag = new LabelInput(HBCI.DECIMALFORMAT.format(ueb.getBetrag()) + " " + ueb.getKonto().getWaehrung());
+		Input betrag = new LabelInput(HBCI.DECIMALFORMAT.format(ueb.getBetrag()) + " " + ueb.getKonto().getWaehrung());
 		group.addLabelPair(i18n.tr("Betrag"),betrag);
 
 		ButtonArea b = group.createButtonArea(2);
@@ -112,6 +112,9 @@ public class UeberweisungDialog extends AbstractDialog {
 
 /**********************************************************************
  * $Log: UeberweisungDialog.java,v $
+ * Revision 1.2  2004/07/09 00:04:40  willuhn
+ * @C Redesign
+ *
  * Revision 1.1  2004/05/26 23:23:10  willuhn
  * @N neue Sicherheitsabfrage vor Ueberweisung
  * @C Check des Ueberweisungslimit

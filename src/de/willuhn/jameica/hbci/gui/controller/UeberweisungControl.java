@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.20 $
- * $Date: 2004/06/30 20:58:28 $
+ * $Revision: 1.21 $
+ * $Date: 2004/07/09 00:04:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,6 +23,7 @@ import org.kapott.hbci.manager.HBCIUtils;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.controller.AbstractControl;
 import de.willuhn.jameica.gui.dialogs.CalendarDialog;
 import de.willuhn.jameica.gui.dialogs.ListDialog;
@@ -31,10 +32,10 @@ import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
-import de.willuhn.jameica.gui.input.AbstractInput;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.DialogInput;
+import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.TablePart;
@@ -42,6 +43,9 @@ import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.dialogs.UeberweisungDialog;
+import de.willuhn.jameica.hbci.gui.listener.UeberweisungCreate;
+import de.willuhn.jameica.hbci.gui.listener.UeberweisungDuplicate;
+import de.willuhn.jameica.hbci.gui.listener.UeberweisungExecute;
 import de.willuhn.jameica.hbci.gui.views.UeberweisungNeu;
 import de.willuhn.jameica.hbci.rmi.Empfaenger;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -61,16 +65,16 @@ public class UeberweisungControl extends AbstractControl {
 	private Konto konto								= null;
 	
 	// Eingabe-Felder
-	private AbstractInput kontoAuswahl				= null;
-	private AbstractInput betrag							= null;
-	private AbstractInput zweck								= null;
-	private AbstractInput zweck2							= null;
-	private AbstractInput termin							= null;
+	private Input kontoAuswahl				= null;
+	private Input betrag							= null;
+	private Input zweck								= null;
+	private Input zweck2							= null;
+	private Input termin							= null;
 
-	private AbstractInput empfName 						= null;
-	private AbstractInput empfkto 						= null;
-	private AbstractInput empfblz 						= null;
-	private AbstractInput comment							= null;
+	private Input empfName 						= null;
+	private Input empfkto 						= null;
+	private Input empfblz 						= null;
+	private Input comment							= null;
 
 	private CheckboxInput storeEmpfaenger 		= null;
 
@@ -124,7 +128,7 @@ public class UeberweisungControl extends AbstractControl {
 	 * @return Tabelle.
 	 * @throws RemoteException
 	 */
-	public TablePart getUeberweisungListe() throws RemoteException
+	public Part getUeberweisungListe() throws RemoteException
 	{
 		DBIterator list = Settings.getDatabase().createList(Ueberweisung.class);
 
@@ -145,45 +149,10 @@ public class UeberweisungControl extends AbstractControl {
 				catch (RemoteException e) { /*ignore */}
       }
     });
-    table.addMenu(i18n.tr("Jetzt ausführen"), new Listener() {
-      public void handleEvent(Event event) {
-				try {
-					Ueberweisung u = (Ueberweisung) event.data;
-					if (u == null)
-						return;
-					if (u.ausgefuehrt())
-					{
-						GUI.getView().setErrorText(i18n.tr("Die Überweisung wurde bereits ausgeführt."));
-						return;
-					}
-					u.execute();
-				}
-				catch (ApplicationException e)
-				{
-					GUI.getStatusBar().setErrorText(e.getMessage());
-				}
-				catch (RemoteException e2)
-				{
-					Logger.error("error while executing ueberweisung",e2);
-					GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Ausführen der Überweisung"));
-				}
-      }
-    });
-		table.addMenu(i18n.tr("Duplizieren"), new Listener() {
-      public void handleEvent(Event event) {
-      	Ueberweisung u = (Ueberweisung) event.data;
-      	if (u == null)
-      		return;
-      	try {
-					GUI.startView(UeberweisungNeu.class.getName(),u.duplicate());
-      	}
-      	catch (RemoteException e)
-      	{
-					Logger.error("error while duplicating ueberweisung",e);
-					GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Duplizieren der Überweisung"));
-      	}
-      }
-    });
+		table.addMenu(i18n.tr("Neue Überweisung"), new UeberweisungCreate());
+    table.addMenu(i18n.tr("Jetzt ausführen"), new UeberweisungExecute());
+		table.addMenu(i18n.tr("Duplizieren"), new UeberweisungDuplicate());
+
 		table.addColumn(i18n.tr("Konto"),"konto_id");
 		table.addColumn(i18n.tr("Kto. des Empfängers"),"empfaenger_konto");
 		table.addColumn(i18n.tr("BLZ des Empfängers"),"empfaenger_blz");
@@ -208,7 +177,7 @@ public class UeberweisungControl extends AbstractControl {
    * @return Kommentarfeld.
    * @throws RemoteException
    */
-  public AbstractInput getComment() throws RemoteException
+  public Input getComment() throws RemoteException
 	{
 		if (comment != null)
 			return comment;
@@ -230,7 +199,7 @@ public class UeberweisungControl extends AbstractControl {
    * @return Auswahl-Feld.
    * @throws RemoteException
    */
-  public AbstractInput getKontoAuswahl() throws RemoteException
+  public Input getKontoAuswahl() throws RemoteException
 	{
 		if (kontoAuswahl != null)
 			return kontoAuswahl;
@@ -259,7 +228,7 @@ public class UeberweisungControl extends AbstractControl {
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public AbstractInput getEmpfaengerKonto() throws RemoteException
+  public Input getEmpfaengerKonto() throws RemoteException
 	{
 		if (empfkto != null)
 			return empfkto;
@@ -283,7 +252,7 @@ public class UeberweisungControl extends AbstractControl {
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public AbstractInput getEmpfaengerBlz() throws RemoteException
+  public Input getEmpfaengerBlz() throws RemoteException
 	{
 		if (empfblz != null)
 			return empfblz;
@@ -301,7 +270,7 @@ public class UeberweisungControl extends AbstractControl {
    * @return Eingabe-Feld.
 	 * @throws RemoteException
 	 */
-	public AbstractInput getEmpfaengerName() throws RemoteException
+	public Input getEmpfaengerName() throws RemoteException
 	{
 		if (empfName != null)
 			return empfName;
@@ -318,7 +287,7 @@ public class UeberweisungControl extends AbstractControl {
 	 * @return Eingabe-Feld.
 	 * @throws RemoteException
 	 */
-	public AbstractInput getZweck() throws RemoteException
+	public Input getZweck() throws RemoteException
 	{
 		if (zweck != null)
 			return zweck;
@@ -335,7 +304,7 @@ public class UeberweisungControl extends AbstractControl {
 	 * @return Eingabe-Feld.
 	 * @throws RemoteException
 	 */
-	public AbstractInput getZweck2() throws RemoteException
+	public Input getZweck2() throws RemoteException
 	{
 		if (zweck2 != null)
 			return zweck2;
@@ -353,7 +322,7 @@ public class UeberweisungControl extends AbstractControl {
 	 * @return Eingabe-Feld.
 	 * @throws RemoteException
 	 */
-	public AbstractInput getBetrag() throws RemoteException
+	public Input getBetrag() throws RemoteException
 	{
 		if (betrag != null)
 			return betrag;
@@ -375,7 +344,7 @@ public class UeberweisungControl extends AbstractControl {
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public AbstractInput getTermin() throws RemoteException
+  public Input getTermin() throws RemoteException
 	{
 		if (termin != null)
 			return termin;
@@ -728,6 +697,9 @@ public class UeberweisungControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
+ * Revision 1.21  2004/07/09 00:04:40  willuhn
+ * @C Redesign
+ *
  * Revision 1.20  2004/06/30 20:58:28  willuhn
  * *** empty log message ***
  *

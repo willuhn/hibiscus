@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.26 $
- * $Date: 2004/06/30 20:58:28 $
+ * $Revision: 1.27 $
+ * $Date: 2004/07/09 00:04:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,12 +24,13 @@ import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.GenericObject;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.controller.AbstractControl;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
-import de.willuhn.jameica.gui.input.AbstractInput;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.ColorInput;
 import de.willuhn.jameica.gui.input.DecimalInput;
+import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
@@ -48,17 +49,17 @@ public class SettingsControl extends AbstractControl {
 	private CheckboxInput onlineMode     		= null;
 	private CheckboxInput checkPin     			= null;
 
-	private AbstractInput buchungSollFg     = null;
-	private AbstractInput buchungSollBg     = null;
-	private AbstractInput buchungHabenFg    = null;
-	private AbstractInput buchungHabenBg    = null;
+	private Input buchungSollFg     = null;
+	private Input buchungSollBg     = null;
+	private Input buchungHabenFg    = null;
+	private Input buchungHabenBg    = null;
 
-	private AbstractInput ueberfaelligFg    = null;
-	private AbstractInput ueberfaelligBg		= null;
+	private Input ueberfaelligFg    = null;
+	private Input ueberfaelligBg		= null;
 
 	private TablePart passportList 					= null;
 
-	private AbstractInput ueberweisungLimit = null;
+	private Input ueberweisungLimit = null;
 
 	private I18N i18n;
 
@@ -75,7 +76,7 @@ public class SettingsControl extends AbstractControl {
    * @return Tabelle mit den Passports.
    * @throws RemoteException
    */
-  public TablePart getPassportListe() throws RemoteException
+  public Part getPassportListe() throws RemoteException
 	{
     if (passportList != null)
       	return passportList;
@@ -124,7 +125,7 @@ public class SettingsControl extends AbstractControl {
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public AbstractInput getUeberweisungLimit() throws RemoteException
+  public Input getUeberweisungLimit() throws RemoteException
 	{
 		if (ueberweisungLimit != null)
 			return ueberweisungLimit;
@@ -138,7 +139,7 @@ public class SettingsControl extends AbstractControl {
    * @return Auswahlfeld.
    * @throws RemoteException
    */
-  public AbstractInput getBuchungSollForeground() throws RemoteException
+  public Input getBuchungSollForeground() throws RemoteException
 	{
 		if (buchungSollFg != null)
 			return buchungSollFg;
@@ -151,7 +152,7 @@ public class SettingsControl extends AbstractControl {
 	 * @return Auswahlfeld.
 	 * @throws RemoteException
 	 */
-	public AbstractInput getBuchungSollBackground() throws RemoteException
+	public Input getBuchungSollBackground() throws RemoteException
 	{
 		if (buchungSollBg != null)
 			return buchungSollBg;
@@ -164,7 +165,7 @@ public class SettingsControl extends AbstractControl {
 	 * @return Auswahlfeld.
 	 * @throws RemoteException
 	 */
-	public AbstractInput getBuchungHabenForeground() throws RemoteException
+	public Input getBuchungHabenForeground() throws RemoteException
 	{
 		if (buchungHabenFg != null)
 			return buchungHabenFg;
@@ -177,7 +178,7 @@ public class SettingsControl extends AbstractControl {
 	 * @return Auswahlfeld.
 	 * @throws RemoteException
 	 */
-	public AbstractInput getBuchungHabenBackground() throws RemoteException
+	public Input getBuchungHabenBackground() throws RemoteException
 	{
 		if (buchungHabenBg != null)
 			return buchungHabenBg;
@@ -190,7 +191,7 @@ public class SettingsControl extends AbstractControl {
 	 * @return Auswahlfeld.
 	 * @throws RemoteException
 	 */
-	public AbstractInput getUeberfaelligBackground() throws RemoteException
+	public Input getUeberfaelligBackground() throws RemoteException
 	{
 		if (ueberfaelligBg != null)
 			return ueberfaelligBg;
@@ -203,7 +204,7 @@ public class SettingsControl extends AbstractControl {
 	 * @return Auswahlfeld.
 	 * @throws RemoteException
 	 */
-	public AbstractInput getUeberfaelligForeground() throws RemoteException
+	public Input getUeberfaelligForeground() throws RemoteException
 	{
 		if (ueberfaelligFg != null)
 			return ueberfaelligFg;
@@ -339,6 +340,9 @@ public class SettingsControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.27  2004/07/09 00:04:40  willuhn
+ * @C Redesign
+ *
  * Revision 1.26  2004/06/30 20:58:28  willuhn
  * *** empty log message ***
  *

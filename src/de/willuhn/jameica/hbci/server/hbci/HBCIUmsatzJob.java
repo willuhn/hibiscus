@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUmsatzJob.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/06/30 20:58:29 $
+ * $Revision: 1.6 $
+ * $Date: 2004/07/09 00:04:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -76,7 +76,13 @@ public class HBCIUmsatzJob extends AbstractHBCIJob {
 										i18n.tr("Fehlermeldung der Bank") + ": " + statusText :
 										i18n.tr("Fehler beim Abrufen der Umsätze");
 
-			addToProtokoll(i18n.tr("Fehler beim Abrufen der Umsätze") + " ("+ msg +")",Protokoll.TYP_ERROR);
+			try {
+				getKonto().addToProtokoll(i18n.tr("Fehler beim Abrufen der Umsätze") + " ("+ msg +")",Protokoll.TYP_ERROR);
+			}
+			catch (RemoteException e)
+			{
+				Logger.error("error while writing protocol",e);
+			}
 			throw new ApplicationException(msg);
 		}
 		Logger.debug("job result is ok, returning saldo");
@@ -90,7 +96,13 @@ public class HBCIUmsatzJob extends AbstractHBCIJob {
 			umsaetze[i] = Converter.convert(lines[i]);
 			umsaetze[i].setKonto(getKonto()); // muessen wir noch machen, weil der Converter das Konto nicht kennt
 		}
-		addToProtokoll(i18n.tr("Umsätze abgerufen"),Protokoll.TYP_SUCCESS);
+		try {
+			getKonto().addToProtokoll(i18n.tr("Umsätze abgerufen"),Protokoll.TYP_SUCCESS);
+		}
+		catch (RemoteException e)
+		{
+			Logger.error("error while writing protocol",e);
+		}
 		return umsaetze;
 
 	}
@@ -99,6 +111,9 @@ public class HBCIUmsatzJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIUmsatzJob.java,v $
+ * Revision 1.6  2004/07/09 00:04:40  willuhn
+ * @C Redesign
+ *
  * Revision 1.5  2004/06/30 20:58:29  willuhn
  * *** empty log message ***
  *

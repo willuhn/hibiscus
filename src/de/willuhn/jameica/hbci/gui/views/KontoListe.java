@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/KontoListe.java,v $
- * $Revision: 1.12 $
- * $Date: 2004/06/30 20:58:28 $
+ * $Revision: 1.13 $
+ * $Date: 2004/07/09 00:04:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -48,7 +48,6 @@ public class KontoListe extends AbstractView {
 			ButtonArea buttons = new ButtonArea(getParent(),1);
 			buttons.addCreateButton(i18n.tr("Neue Bankverbindung"),control);
 
-
 			LabelGroup group = new LabelGroup(getParent(),i18n.tr("Konten aus Medium lesen"));
 			group.addLabelPair(i18n.tr("Sicherheitsmedium"),control.getPassportAuswahl());
 
@@ -83,6 +82,9 @@ public class KontoListe extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoListe.java,v $
+ * Revision 1.13  2004/07/09 00:04:40  willuhn
+ * @C Redesign
+ *
  * Revision 1.12  2004/06/30 20:58:28  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/LicenseControl.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/06/30 20:58:28 $
+ * $Revision: 1.4 $
+ * $Date: 2004/07/09 00:04:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import de.willuhn.jameica.AbstractPlugin;
 import de.willuhn.jameica.InfoReader;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.controller.AbstractControl;
 import de.willuhn.jameica.gui.parts.FormTextPart;
 import de.willuhn.jameica.gui.views.AbstractView;
@@ -33,7 +34,7 @@ import de.willuhn.util.Logger;
  */
 public class LicenseControl extends AbstractControl {
 
-  private FormTextPart libList = null;
+  private Part libList = null;
   private I18N i18n = null;
 
   /**
@@ -50,7 +51,7 @@ public class LicenseControl extends AbstractControl {
    * @return Liste der verwendeten Komponenten
    * @throws RemoteException
    */
-  public FormTextPart getLibList() throws RemoteException
+  public Part getLibList() throws RemoteException
   {
     if (libList != null)
       return libList;
@@ -149,6 +150,9 @@ public class LicenseControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: LicenseControl.java,v $
+ * Revision 1.4  2004/07/09 00:04:40  willuhn
+ * @C Redesign
+ *
  * Revision 1.3  2004/06/30 20:58:28  willuhn
  * *** empty log message ***
  *

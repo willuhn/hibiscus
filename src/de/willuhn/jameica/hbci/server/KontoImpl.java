@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.26 $
- * $Date: 2004/07/04 17:07:59 $
+ * $Revision: 1.27 $
+ * $Date: 2004/07/09 00:04:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -418,24 +418,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    */
   public void insert() throws RemoteException, ApplicationException {
     super.insert();
-    
-    // Wenn das erfolgreich lief, protokollieren wir gleich die Neuanlage
-		try {
-			Protokoll entry = (Protokoll) Settings.getDatabase().createObject(Protokoll.class,null);
-			entry.setKonto(this);
-			entry.setKommentar(i18n.tr("Konto angelegt"));
-			entry.setTyp(Protokoll.TYP_SUCCESS);
-			entry.store();
-		}
-		catch (Exception e)
-		{
-			// Es macht keinen Sinn, hier die Exception nach oben zu reichen.
-			// Was sollte in diesem Fall sinnvolles gemacht werden? Den gesamten
-			// HBCI-Job abbrechen? Nene, dann lieber auf den Log-Eintrag verzichten
-			// und nur ins Application-Log schreiben. ;)
-			Logger.error("error while writing protocol",e);
-		}
-
+		addToProtokoll(i18n.tr("Konto angelegt"), Protokoll.TYP_SUCCESS);
   }
 
   /**
@@ -443,11 +426,22 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    */
   public void store() throws RemoteException, ApplicationException {
     super.store();
+		addToProtokoll(i18n.tr("Konto aktualisiert"), Protokoll.TYP_SUCCESS);
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Konto#addToProtokoll(java.lang.String, int)
+   */
+  public final void addToProtokoll(String kommentar, int protokollTyp) throws RemoteException
+  {
+		if (kommentar == null || kommentar.length() == 0)
+			return;
+
 		try {
 			Protokoll entry = (Protokoll) Settings.getDatabase().createObject(Protokoll.class,null);
 			entry.setKonto(this);
-			entry.setKommentar(i18n.tr("Konto aktualisiert"));
-			entry.setTyp(Protokoll.TYP_SUCCESS);
+			entry.setKommentar(kommentar);
+			entry.setTyp(protokollTyp);
 			entry.store();
 		}
 		catch (Exception e)
@@ -461,6 +455,9 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.27  2004/07/09 00:04:40  willuhn
+ * @C Redesign
+ *
  * Revision 1.26  2004/07/04 17:07:59  willuhn
  * @B Umsaetze wurden teilweise nicht als bereits vorhanden erkannt und wurden somit doppelt angezeigt
  *

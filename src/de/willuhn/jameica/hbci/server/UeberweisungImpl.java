@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UeberweisungImpl.java,v $
- * $Revision: 1.13 $
- * $Date: 2004/06/30 20:58:29 $
+ * $Revision: 1.14 $
+ * $Date: 2004/07/09 00:04:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,6 +23,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Empfaenger;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.hbci.server.hbci.HBCIUeberweisungJob;
@@ -361,11 +362,26 @@ public class UeberweisungImpl
     return (termin.before(new Date()));
   }
 
+  /**
+   * @see de.willuhn.datasource.rmi.DBObject#delete()
+   */
+  public void delete() throws RemoteException, ApplicationException
+  {
+  	Konto k = this.getKonto();
+    super.delete();
+    if (k == null)
+    	return;
+    k.addToProtokoll(i18n.tr("Überweisung an " + getEmpfaengerName() + " gelöscht"),Protokoll.TYP_SUCCESS);
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: UeberweisungImpl.java,v $
+ * Revision 1.14  2004/07/09 00:04:40  willuhn
+ * @C Redesign
+ *
  * Revision 1.13  2004/06/30 20:58:29  willuhn
  * *** empty log message ***
  *

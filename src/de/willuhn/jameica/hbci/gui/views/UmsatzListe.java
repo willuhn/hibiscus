@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/UmsatzListe.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/06/30 20:58:28 $
+ * $Revision: 1.6 $
+ * $Date: 2004/07/09 00:04:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,7 @@ import org.eclipse.swt.events.MouseEvent;
 
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
@@ -45,7 +45,7 @@ public class UmsatzListe extends AbstractView {
 
 		try {
 			
-			TablePart list = control.getUmsatzListe();
+			Part list = control.getUmsatzListe();
 			list.paint(getParent());
 			
 			ButtonArea buttons = new ButtonArea(getParent(),3);
@@ -80,6 +80,9 @@ public class UmsatzListe extends AbstractView {
 
 /**********************************************************************
  * $Log: UmsatzListe.java,v $
+ * Revision 1.6  2004/07/09 00:04:40  willuhn
+ * @C Redesign
+ *
  * Revision 1.5  2004/06/30 20:58:28  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EmpfaengerControl.java,v $
- * $Revision: 1.13 $
- * $Date: 2004/06/30 20:58:28 $
+ * $Revision: 1.14 $
+ * $Date: 2004/07/09 00:04:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,9 +21,10 @@ import org.kapott.hbci.manager.HBCIUtils;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.controller.AbstractControl;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
-import de.willuhn.jameica.gui.input.AbstractInput;
+import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.views.AbstractView;
@@ -43,9 +44,9 @@ public class EmpfaengerControl extends AbstractControl {
 	// Fach-Objekte
 	private Empfaenger empfaenger = null;
 	// Eingabe-Felder
-	private AbstractInput kontonummer = null;
-	private AbstractInput blz					= null;
-	private AbstractInput name				= null;
+	private Input kontonummer = null;
+	private Input blz					= null;
+	private Input name				= null;
 
 	private I18N i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
   /**
@@ -79,7 +80,7 @@ public class EmpfaengerControl extends AbstractControl {
    * @return Tabelle.
    * @throws RemoteException
    */
-  public TablePart getEmpfaengerListe() throws RemoteException
+  public Part getEmpfaengerListe() throws RemoteException
 	{
 		DBIterator list = Settings.getDatabase().createList(Empfaenger.class);
 
@@ -95,7 +96,7 @@ public class EmpfaengerControl extends AbstractControl {
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public AbstractInput getKontonummer() throws RemoteException
+  public Input getKontonummer() throws RemoteException
 	{
 		if (kontonummer != null)
 			return kontonummer;
@@ -108,7 +109,7 @@ public class EmpfaengerControl extends AbstractControl {
 	 * @return Eingabe-Feld.
 	 * @throws RemoteException
 	 */
-	public AbstractInput getBlz() throws RemoteException
+	public Input getBlz() throws RemoteException
 	{
 		if (blz != null)
 			return blz;
@@ -123,7 +124,7 @@ public class EmpfaengerControl extends AbstractControl {
 	 * @return Eingabe-Feld.
 	 * @throws RemoteException
 	 */
-	public AbstractInput getName() throws RemoteException
+	public Input getName() throws RemoteException
 	{
 		if (name != null)
 			return name;
@@ -252,6 +253,9 @@ public class EmpfaengerControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: EmpfaengerControl.java,v $
+ * Revision 1.14  2004/07/09 00:04:40  willuhn
+ * @C Redesign
+ *
  * Revision 1.13  2004/06/30 20:58:28  willuhn
  * *** empty log message ***
  *

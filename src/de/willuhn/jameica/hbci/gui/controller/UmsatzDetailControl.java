@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailControl.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/06/30 20:58:28 $
+ * $Revision: 1.10 $
+ * $Date: 2004/07/09 00:04:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,7 +22,7 @@ import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.controller.AbstractControl;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
-import de.willuhn.jameica.gui.input.AbstractInput;
+import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
@@ -46,19 +46,19 @@ public class UmsatzDetailControl extends AbstractControl {
   private Umsatz umsatz = null;
 	
 	// Eingabe-Felder
-	private AbstractInput konto				 		= null;
-	private AbstractInput empfaengerName  = null;
-	private AbstractInput empfaengerKonto = null;
-	private AbstractInput betrag					= null;
-	private AbstractInput zweck						= null;
-	private AbstractInput zweck2					= null;
-	private AbstractInput datum						= null;
-	private AbstractInput valuta					= null;
+	private Input konto				 		= null;
+	private Input empfaengerName  = null;
+	private Input empfaengerKonto = null;
+	private Input betrag					= null;
+	private Input zweck						= null;
+	private Input zweck2					= null;
+	private Input datum						= null;
+	private Input valuta					= null;
 
-	private AbstractInput saldo						= null;
-	private AbstractInput primanota				= null;
-	private AbstractInput art							= null;
-	private AbstractInput customerRef			= null;
+	private Input saldo						= null;
+	private Input primanota				= null;
+	private Input art							= null;
+	private Input customerRef			= null;
 
   /**
    * ct.
@@ -87,7 +87,7 @@ public class UmsatzDetailControl extends AbstractControl {
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public AbstractInput getKonto() throws RemoteException
+  public Input getKonto() throws RemoteException
   {
     if (konto != null)
       return konto;
@@ -102,7 +102,7 @@ public class UmsatzDetailControl extends AbstractControl {
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public AbstractInput getEmpfaengerName() throws RemoteException
+  public Input getEmpfaengerName() throws RemoteException
   {
     if (empfaengerName != null)
       return empfaengerName;
@@ -115,7 +115,7 @@ public class UmsatzDetailControl extends AbstractControl {
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public AbstractInput getEmpfaengerKonto() throws RemoteException
+  public Input getEmpfaengerKonto() throws RemoteException
   {
     if (empfaengerKonto != null)
       return empfaengerKonto;
@@ -129,7 +129,7 @@ public class UmsatzDetailControl extends AbstractControl {
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public AbstractInput getBetrag() throws RemoteException
+  public Input getBetrag() throws RemoteException
   {
     if (betrag != null)
       return betrag;
@@ -143,7 +143,7 @@ public class UmsatzDetailControl extends AbstractControl {
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public AbstractInput getZweck() throws RemoteException
+  public Input getZweck() throws RemoteException
   {
     if (zweck != null)
       return zweck;
@@ -156,7 +156,7 @@ public class UmsatzDetailControl extends AbstractControl {
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public AbstractInput getZweck2() throws RemoteException
+  public Input getZweck2() throws RemoteException
   {
     if (zweck2 != null)
       return zweck2;
@@ -169,7 +169,7 @@ public class UmsatzDetailControl extends AbstractControl {
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public AbstractInput getDatum() throws RemoteException
+  public Input getDatum() throws RemoteException
   {
     if (datum != null)
       return datum;
@@ -182,7 +182,7 @@ public class UmsatzDetailControl extends AbstractControl {
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public AbstractInput getValuta() throws RemoteException
+  public Input getValuta() throws RemoteException
   {
     if (valuta != null)
       return valuta;
@@ -195,7 +195,7 @@ public class UmsatzDetailControl extends AbstractControl {
 	 * @return Eingabe-Feld.
 	 * @throws RemoteException
 	 */
-	public AbstractInput getSaldo() throws RemoteException
+	public Input getSaldo() throws RemoteException
 	{
 		if (saldo != null)
 			return saldo;
@@ -209,7 +209,7 @@ public class UmsatzDetailControl extends AbstractControl {
 	 * @return Eingabe-Feld.
 	 * @throws RemoteException
 	 */
-	public AbstractInput getPrimanota() throws RemoteException
+	public Input getPrimanota() throws RemoteException
 	{
 		if (primanota != null)
 			return primanota;
@@ -222,7 +222,7 @@ public class UmsatzDetailControl extends AbstractControl {
 	 * @return Eingabe-Feld.
 	 * @throws RemoteException
 	 */
-	public AbstractInput getArt() throws RemoteException
+	public Input getArt() throws RemoteException
 	{
 		if (art != null)
 			return art;
@@ -235,7 +235,7 @@ public class UmsatzDetailControl extends AbstractControl {
 	 * @return Eingabe-Feld.
 	 * @throws RemoteException
 	 */
-	public AbstractInput getCustomerRef() throws RemoteException
+	public Input getCustomerRef() throws RemoteException
 	{
 		if (customerRef != null)
 			return customerRef;
@@ -321,6 +321,9 @@ public class UmsatzDetailControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzDetailControl.java,v $
+ * Revision 1.10  2004/07/09 00:04:40  willuhn
+ * @C Redesign
+ *
  * Revision 1.9  2004/06/30 20:58:28  willuhn
  * *** empty log message ***
  *

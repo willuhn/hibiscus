@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/License.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/04/26 22:57:32 $
+ * $Revision: 1.2 $
+ * $Date: 2004/07/09 00:04:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,7 @@ package de.willuhn.jameica.hbci.gui.views;
 
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.parts.FormTextPart;
+import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.gui.controller.LicenseControl;
@@ -37,7 +37,7 @@ public class License extends AbstractView {
     
 		LicenseControl control = new LicenseControl(this);
 
-		FormTextPart libs = control.getLibList();
+		Part libs = control.getLibList();
 		libs.paint(getParent());
 
 		ButtonArea buttons = new ButtonArea(getParent(),1);
@@ -55,6 +55,9 @@ public class License extends AbstractView {
 
 /**********************************************************************
  * $Log: License.java,v $
+ * Revision 1.2  2004/07/09 00:04:40  willuhn
+ * @C Redesign
+ *
  * Revision 1.1  2004/04/26 22:57:32  willuhn
  * @N License informations
  *
