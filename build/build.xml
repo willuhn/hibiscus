@@ -104,6 +104,8 @@
 		<copy todir="${project.release}/lib">
 			<fileset dir="${lib.dir}"/>
 		</copy>
+
+		<mkdir dir="${project.release}/passports"/>
 		
     </target>
 
