@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DauerauftragImpl.java,v $
- * $Revision: 1.16 $
- * $Date: 2005/03/02 17:59:30 $
+ * $Revision: 1.17 $
+ * $Date: 2005/03/04 00:16:43 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -107,8 +107,8 @@ public class DauerauftragImpl extends AbstractTransferImpl
 		if (ze == null || intervall == null || tag == null)
 			return null;
   	Turnus t = (Turnus) getService().createObject(Turnus.class,null);
-  	t.setIntervall(ze.intValue());
-		t.setZeiteinheit(intervall.intValue());
+  	t.setIntervall(intervall.intValue());
+		t.setZeiteinheit(ze.intValue());
 		t.setTag(tag.intValue());
 		return t;
   }
@@ -276,6 +276,9 @@ public class DauerauftragImpl extends AbstractTransferImpl
 
 /**********************************************************************
  * $Log: DauerauftragImpl.java,v $
+ * Revision 1.17  2005/03/04 00:16:43  web0
+ * @B Bugzilla http://www.willuhn.de/bugzilla/show_bug.cgi?id=15
+ *
  * Revision 1.16  2005/03/02 17:59:30  web0
  * @N some refactoring
  *
