@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Attic/Passport.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/04/19 22:05:52 $
+ * $Revision: 1.9 $
+ * $Date: 2004/05/04 23:08:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,44 +12,21 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.rmi;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
-
-import de.willuhn.datasource.rmi.DBObject;
-import de.willuhn.jameica.hbci.rmi.hbci.PassportHandle;
 
 /**
  * Bildet die Persistenz eines Passport ab.
  */
-public interface Passport extends DBObject {
+public interface Passport extends Remote {
 
 	/**
-	 * Liefert den Namen des Passports.
+	 * Liefert den sprechenden Namen des Passports.
    * @return Name des Passports.
    * @throws RemoteException
    */
   public String getName() throws RemoteException;
 	
-	/**
-	 * Speichert den Namen des Passports.
-   * @param name Name des Passports.
-   * @throws RemoteException
-   */
-  public void setName(String name) throws RemoteException;
-
-	/**
-	 * Liefert den Typ dieses Passports.
-   * @return Typ des Passports.
-   * @throws RemoteException
-   */
-  public PassportType getPassportType() throws RemoteException;
-	
-	/**
-	 * Speichert den Typ des Passports.
-   * @param type Typ des Passports.
-   * @throws RemoteException
-   */
-  public void setPassportType(PassportType type) throws RemoteException;
-
 	/**
 	 * Liefert das Passport-Handle.
    * @return Handle.
@@ -57,11 +34,25 @@ public interface Passport extends DBObject {
    */
   public PassportHandle getHandle() throws RemoteException;
 
+	/**
+	 * Liefert die Klasse des Konfigurationsdialogs.
+   * @return Die Klasse des Konfig-Dialogs.
+   * Muss von <code>AbstractView</code> abgeleitet sein.
+   * @throws RemoteException
+   */
+  public Class getConfigDialog() throws RemoteException;
+
 }
 
 
 /**********************************************************************
  * $Log: Passport.java,v $
+ * Revision 1.9  2004/05/04 23:08:12  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.8  2004/05/04 23:07:23  willuhn
+ * @C refactored Passport stuff
+ *
  * Revision 1.7  2004/04/19 22:05:52  willuhn
  * @C HBCIJobs refactored
  *
