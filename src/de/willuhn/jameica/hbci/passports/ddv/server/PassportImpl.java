@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/server/PassportImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/04/27 22:23:55 $
+ * $Revision: 1.2 $
+ * $Date: 2004/04/27 22:28:54 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -33,7 +33,7 @@ public class PassportImpl
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.PassportDDV#getPort()
+   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Passport#getPort()
    */
   public int getPort() throws RemoteException {
 		try {
@@ -47,14 +47,14 @@ public class PassportImpl
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.PassportDDV#setPort(int)
+   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Passport#setPort(int)
    */
   public void setPort(int port) throws RemoteException {
   	setParam(Passport.PORT,""+port);
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.PassportDDV#getCTNumber()
+   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Passport#getCTNumber()
    */
   public int getCTNumber() throws RemoteException {
 		try {
@@ -68,42 +68,42 @@ public class PassportImpl
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.PassportDDV#setCTNumber(int)
+   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Passport#setCTNumber(int)
    */
   public void setCTNumber(int ctNumber) throws RemoteException {
 		setParam(Passport.CTNUMBER,""+ctNumber);
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.PassportDDV#useBIO()
+   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Passport#useBIO()
    */
   public boolean useBIO() throws RemoteException {
 		return "1".equals(getParam(Passport.USEBIO));
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.PassportDDV#setBIO(boolean)
+   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Passport#setBIO(boolean)
    */
   public void setBIO(boolean bio) throws RemoteException {
 		setParam(Passport.USEBIO,bio ? "1" : "0");
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.PassportDDV#useSoftPin()
+   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Passport#useSoftPin()
    */
   public boolean useSoftPin() throws RemoteException {
 		return "1".equals(getParam(Passport.SOFTPIN));
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.PassportDDV#setSoftPin(boolean)
+   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Passport#setSoftPin(boolean)
    */
   public void setSoftPin(boolean softPin) throws RemoteException {
 		setParam(Passport.SOFTPIN,softPin ? "1" : "0");
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.PassportDDV#getEntryIndex()
+   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Passport#getEntryIndex()
    */
   public int getEntryIndex() throws RemoteException {
 		try {
@@ -117,7 +117,7 @@ public class PassportImpl
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.PassportDDV#setEntryIndex(int)
+   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Passport#setEntryIndex(int)
    */
   public void setEntryIndex(int index) throws RemoteException {
 		setParam(Passport.ENTRYIDX,""+index);
@@ -131,7 +131,7 @@ public class PassportImpl
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.PassportDDV#getCTAPIDriver()
+   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Passport#getCTAPIDriver()
    */
   public String getCTAPIDriver() throws RemoteException {
 		String s = getParam(Passport.CTAPI);
@@ -141,7 +141,7 @@ public class PassportImpl
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.PassportDDV#setCTAPIDriver(java.lang.String)
+   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Passport#setCTAPIDriver(java.lang.String)
    */
   public void setCTAPIDriver(String file) throws RemoteException {
 		setParam(Passport.CTAPI,file);
@@ -152,6 +152,9 @@ public class PassportImpl
 
 /**********************************************************************
  * $Log: PassportImpl.java,v $
+ * Revision 1.2  2004/04/27 22:28:54  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/04/27 22:23:55  willuhn
  * @N configurierbarer CTAPI-Treiber
  * @C konkrete Passport-Klassen (DDV) nach de.willuhn.jameica.passports verschoben
