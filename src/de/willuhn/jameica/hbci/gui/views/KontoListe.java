@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/KontoListe.java,v $
- * $Revision: 1.15 $
- * $Date: 2004/07/21 23:54:30 $
+ * $Revision: 1.16 $
+ * $Date: 2004/07/25 17:15:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,7 +21,7 @@ import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.controller.KontoControl;
-import de.willuhn.jameica.plugin.PluginLoader;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 import de.willuhn.util.Logger;
@@ -38,7 +38,7 @@ public class KontoListe extends AbstractView {
 
 		final KontoControl control = new KontoControl(this);
 
-		I18N i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
+		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 		GUI.getView().setTitle(i18n.tr("Vorhandene Bankverbindungen"));
 
@@ -86,6 +86,9 @@ public class KontoListe extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoListe.java,v $
+ * Revision 1.16  2004/07/25 17:15:05  willuhn
+ * @C PluginLoader is no longer static
+ *
  * Revision 1.15  2004/07/21 23:54:30  willuhn
  * *** empty log message ***
  *

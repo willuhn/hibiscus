@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUmsatzJob.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/07/21 23:54:31 $
+ * $Revision: 1.9 $
+ * $Date: 2004/07/25 17:15:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,7 +21,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.Converter;
-import de.willuhn.jameica.plugin.PluginLoader;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 import de.willuhn.util.Logger;
@@ -49,7 +49,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob {
 			throw new RuntimeException("Fehler beim Setzen des Kontos");
 		}
 
-		i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
+		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 	}
 
   /**
@@ -117,6 +117,9 @@ public class HBCIUmsatzJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIUmsatzJob.java,v $
+ * Revision 1.9  2004/07/25 17:15:06  willuhn
+ * @C PluginLoader is no longer static
+ *
  * Revision 1.8  2004/07/21 23:54:31  willuhn
  * *** empty log message ***
  *

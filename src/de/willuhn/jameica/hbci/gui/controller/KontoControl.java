@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.42 $
- * $Date: 2004/07/23 15:51:44 $
+ * $Revision: 1.43 $
+ * $Date: 2004/07/25 17:15:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -45,7 +45,7 @@ import de.willuhn.jameica.hbci.gui.views.UmsatzListe;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
-import de.willuhn.jameica.plugin.PluginLoader;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 import de.willuhn.util.Logger;
@@ -80,7 +80,7 @@ public class KontoControl extends AbstractControl {
    */
   public KontoControl(AbstractView view) {
     super(view);
-		i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
+		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
 	/**
@@ -631,6 +631,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.43  2004/07/25 17:15:05  willuhn
+ * @C PluginLoader is no longer static
+ *
  * Revision 1.42  2004/07/23 15:51:44  willuhn
  * @C Rest des Refactorings
  *

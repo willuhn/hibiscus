@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/TurnusHelper.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/07/23 15:51:44 $
+ * $Revision: 1.5 $
+ * $Date: 2004/07/25 17:15:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,7 +20,7 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Turnus;
-import de.willuhn.jameica.plugin.PluginLoader;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -95,7 +95,7 @@ public class TurnusHelper
    */
   public static String createBezeichnung(Turnus turnus) throws RemoteException
 	{
-		I18N i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
+		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 		int iv = turnus.getIntervall();
 		int ze = turnus.getZeiteinheit();
@@ -158,7 +158,7 @@ public class TurnusHelper
 		if (wochentage != null)
 			return wochentage;
 
-		I18N i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
+		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 		wochentage = new String[]
 		{
@@ -178,6 +178,9 @@ public class TurnusHelper
 
 /**********************************************************************
  * $Log: TurnusHelper.java,v $
+ * Revision 1.5  2004/07/25 17:15:06  willuhn
+ * @C PluginLoader is no longer static
+ *
  * Revision 1.4  2004/07/23 15:51:44  willuhn
  * @C Rest des Refactorings
  *

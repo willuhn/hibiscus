@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/LicenseControl.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/07/21 23:54:30 $
+ * $Revision: 1.6 $
+ * $Date: 2004/07/25 17:15:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,7 +23,7 @@ import de.willuhn.jameica.gui.parts.FormTextPart;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.plugin.AbstractPlugin;
-import de.willuhn.jameica.plugin.PluginLoader;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.util.InfoReader;
 import de.willuhn.util.FileFinder;
 import de.willuhn.util.I18N;
@@ -43,7 +43,7 @@ public class LicenseControl extends AbstractControl {
    */
   public LicenseControl(AbstractView view) {
     super(view);
-    i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
+    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
   /**
@@ -56,14 +56,14 @@ public class LicenseControl extends AbstractControl {
     if (libList != null)
       return libList;
 
-    AbstractPlugin plugin = PluginLoader.getPlugin(HBCI.class);
+    AbstractPlugin plugin = Application.getPluginLoader().getPlugin(HBCI.class);
 
     StringBuffer buffer = new StringBuffer();
     buffer.append("<form>");
 
     InfoReader ir = null;
     try {
-      ir = PluginLoader.getPluginContainer(HBCI.class).getInfo();
+      ir = Application.getPluginLoader().getPluginContainer(HBCI.class).getInfo();
     }
     catch (Exception e)
     {
@@ -150,6 +150,9 @@ public class LicenseControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: LicenseControl.java,v $
+ * Revision 1.6  2004/07/25 17:15:05  willuhn
+ * @C PluginLoader is no longer static
+ *
  * Revision 1.5  2004/07/21 23:54:30  willuhn
  * *** empty log message ***
  *

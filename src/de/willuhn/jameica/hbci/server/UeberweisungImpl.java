@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UeberweisungImpl.java,v $
- * $Revision: 1.19 $
- * $Date: 2004/07/23 15:51:44 $
+ * $Revision: 1.20 $
+ * $Date: 2004/07/25 17:15:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,7 +21,7 @@ import de.willuhn.jameica.hbci.rmi.Empfaenger;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.hbci.server.hbci.HBCIUeberweisungJob;
-import de.willuhn.jameica.plugin.PluginLoader;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 import de.willuhn.util.Logger;
@@ -41,7 +41,7 @@ public class UeberweisungImpl extends AbstractTransferImpl implements Ueberweisu
    */
   public UeberweisungImpl() throws RemoteException {
     super();
-    i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
+    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
   /**
@@ -219,6 +219,9 @@ public class UeberweisungImpl extends AbstractTransferImpl implements Ueberweisu
 
 /**********************************************************************
  * $Log: UeberweisungImpl.java,v $
+ * Revision 1.20  2004/07/25 17:15:06  willuhn
+ * @C PluginLoader is no longer static
+ *
  * Revision 1.19  2004/07/23 15:51:44  willuhn
  * @C Rest des Refactorings
  *

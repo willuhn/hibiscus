@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/WelcomeControl.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/07/23 15:51:44 $
+ * $Revision: 1.10 $
+ * $Date: 2004/07/25 17:15:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -38,7 +38,7 @@ import de.willuhn.jameica.hbci.gui.views.KontoNeu;
 import de.willuhn.jameica.hbci.gui.views.UeberweisungNeu;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
-import de.willuhn.jameica.plugin.PluginLoader;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 import de.willuhn.util.Logger;
 
@@ -57,7 +57,7 @@ public class WelcomeControl extends AbstractControl {
    */
   public WelcomeControl(AbstractView view) {
     super(view);
-    i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
+    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
 	/**
@@ -195,6 +195,9 @@ public class WelcomeControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: WelcomeControl.java,v $
+ * Revision 1.10  2004/07/25 17:15:05  willuhn
+ * @C PluginLoader is no longer static
+ *
  * Revision 1.9  2004/07/23 15:51:44  willuhn
  * @C Rest des Refactorings
  *

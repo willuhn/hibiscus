@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/EmpfaengerList.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/07/21 23:54:31 $
+ * $Revision: 1.4 $
+ * $Date: 2004/07/25 17:15:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,7 +22,7 @@ import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.listener.UeberweisungCreate;
 import de.willuhn.jameica.hbci.gui.views.EmpfaengerNeu;
-import de.willuhn.jameica.plugin.PluginLoader;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 
 /**
@@ -36,7 +36,7 @@ public class EmpfaengerList extends ContextMenu
 
 	public EmpfaengerList()
 	{
-		i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
+		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 		addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"),new Listener()
 		{
@@ -63,6 +63,9 @@ public class EmpfaengerList extends ContextMenu
 
 /**********************************************************************
  * $Log: EmpfaengerList.java,v $
+ * Revision 1.4  2004/07/25 17:15:06  willuhn
+ * @C PluginLoader is no longer static
+ *
  * Revision 1.3  2004/07/21 23:54:31  willuhn
  * *** empty log message ***
  *

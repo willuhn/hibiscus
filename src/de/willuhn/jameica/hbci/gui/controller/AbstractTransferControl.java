@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/07/23 15:51:44 $
+ * $Revision: 1.6 $
+ * $Date: 2004/07/25 17:15:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -34,7 +34,7 @@ import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Empfaenger;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Transfer;
-import de.willuhn.jameica.plugin.PluginLoader;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 import de.willuhn.util.Logger;
@@ -72,7 +72,7 @@ public abstract class AbstractTransferControl extends AbstractControl
    */
   public AbstractTransferControl(AbstractView view) {
     super(view);
-		i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
+		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
 	/**
@@ -436,6 +436,9 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
+ * Revision 1.6  2004/07/25 17:15:05  willuhn
+ * @C PluginLoader is no longer static
+ *
  * Revision 1.5  2004/07/23 15:51:44  willuhn
  * @C Rest des Refactorings
  *

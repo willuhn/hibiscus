@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Settings.java,v $
- * $Revision: 1.23 $
- * $Date: 2004/07/21 23:54:30 $
+ * $Revision: 1.24 $
+ * $Date: 2004/07/25 17:15:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,7 +21,7 @@ import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.controller.SettingsControl;
-import de.willuhn.jameica.plugin.PluginLoader;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -35,7 +35,7 @@ public class Settings extends AbstractView {
    */
   public void bind() throws Exception {
 
-		I18N i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
+		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 		GUI.getView().setTitle(i18n.tr("Einstellungen"));
 		final SettingsControl control = new SettingsControl(this);
@@ -83,6 +83,9 @@ public class Settings extends AbstractView {
 
 /**********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.24  2004/07/25 17:15:05  willuhn
+ * @C PluginLoader is no longer static
+ *
  * Revision 1.23  2004/07/21 23:54:30  willuhn
  * *** empty log message ***
  *

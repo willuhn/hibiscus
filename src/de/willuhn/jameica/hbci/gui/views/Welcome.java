@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/Welcome.java,v $
- * $Revision: 1.11 $
- * $Date: 2004/07/21 23:54:30 $
+ * $Revision: 1.12 $
+ * $Date: 2004/07/25 17:15:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,7 +24,7 @@ import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.controller.WelcomeControl;
-import de.willuhn.jameica.plugin.PluginLoader;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -39,7 +39,7 @@ public class Welcome extends AbstractView
    */
   public void bind() throws Exception
   {
-		I18N i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
+		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 		WelcomeControl control = new WelcomeControl(this);
 
 		GUI.getView().setTitle(i18n.tr("Hibiscus - HBCI-Onlinebanking"));
@@ -73,6 +73,9 @@ public class Welcome extends AbstractView
 
 /**********************************************************************
  * $Log: Welcome.java,v $
+ * Revision 1.12  2004/07/25 17:15:05  willuhn
+ * @C PluginLoader is no longer static
+ *
  * Revision 1.11  2004/07/21 23:54:30  willuhn
  * *** empty log message ***
  *

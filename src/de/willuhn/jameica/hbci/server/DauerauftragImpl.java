@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DauerauftragImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/07/21 23:54:30 $
+ * $Revision: 1.5 $
+ * $Date: 2004/07/25 17:15:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,7 +18,7 @@ import java.util.Date;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Turnus;
-import de.willuhn.jameica.plugin.PluginLoader;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 import de.willuhn.util.Logger;
@@ -38,7 +38,7 @@ public class DauerauftragImpl extends AbstractTransferImpl implements Dauerauftr
   public DauerauftragImpl() throws RemoteException
   {
     super();
-    i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
+    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
   /**
@@ -180,6 +180,9 @@ public class DauerauftragImpl extends AbstractTransferImpl implements Dauerauftr
 
 /**********************************************************************
  * $Log: DauerauftragImpl.java,v $
+ * Revision 1.5  2004/07/25 17:15:06  willuhn
+ * @C PluginLoader is no longer static
+ *
  * Revision 1.4  2004/07/21 23:54:30  willuhn
  * *** empty log message ***
  *

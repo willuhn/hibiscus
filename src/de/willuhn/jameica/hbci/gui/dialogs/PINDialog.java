@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/PINDialog.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/07/21 23:54:30 $
+ * $Revision: 1.7 $
+ * $Date: 2004/07/25 17:15:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,7 +20,7 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.PasswordDialog;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.plugin.PluginLoader;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 import de.willuhn.util.Logger;
 
@@ -40,7 +40,7 @@ public class PINDialog extends PasswordDialog {
    */
   public PINDialog(int position) {
     super(position);
-		i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
+		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
     setTitle(i18n.tr("PIN-Eingabe"));
     setLabelText(i18n.tr("Ihre PIN"));
@@ -145,6 +145,9 @@ public class PINDialog extends PasswordDialog {
 
 /**********************************************************************
  * $Log: PINDialog.java,v $
+ * Revision 1.7  2004/07/25 17:15:06  willuhn
+ * @C PluginLoader is no longer static
+ *
  * Revision 1.6  2004/07/21 23:54:30  willuhn
  * *** empty log message ***
  *

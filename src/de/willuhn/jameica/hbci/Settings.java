@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.20 $
- * $Date: 2004/07/23 15:51:44 $
+ * $Revision: 1.21 $
+ * $Date: 2004/07/25 17:15:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,8 +22,7 @@ import org.eclipse.swt.graphics.RGB;
 import sun.misc.BASE64Encoder;
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.plugin.PluginLoader;
-import de.willuhn.jameica.system.ServiceFactory;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.util.Logger;
 
 /**
@@ -52,7 +51,7 @@ public class Settings
     if (db != null)
       return db;
 		try {
-			db = (DBService) ServiceFactory.lookup(PluginLoader.getPlugin(HBCI.class),"database");
+			db = (DBService) Application.getServiceFactory().lookup(Application.getPluginLoader().getPlugin(HBCI.class),"database");
 			return db;
 		}
 		catch (Exception e)
@@ -138,7 +137,7 @@ public class Settings
 	{
 		if (libPath != null)
 			return libPath;
-		libPath = PluginLoader.getPlugin(HBCI.class).getResources().getPath() + "/lib";
+		libPath = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getPath() + "/lib";
 		return libPath;
 	}
 
@@ -150,7 +149,7 @@ public class Settings
 	{
 		if (workPath != null)
 			return workPath;
-		workPath = PluginLoader.getPlugin(HBCI.class).getResources().getWorkPath();
+		workPath = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getWorkPath();
 		return workPath;
 	}
 
@@ -270,6 +269,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.21  2004/07/25 17:15:06  willuhn
+ * @C PluginLoader is no longer static
+ *
  * Revision 1.20  2004/07/23 15:51:44  willuhn
  * @C Rest des Refactorings
  *

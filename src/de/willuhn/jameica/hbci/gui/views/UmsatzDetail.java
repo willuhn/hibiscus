@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzDetail.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/07/21 23:54:30 $
+ * $Revision: 1.8 $
+ * $Date: 2004/07/25 17:15:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,7 +22,7 @@ import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl;
-import de.willuhn.jameica.plugin.PluginLoader;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -37,7 +37,7 @@ public class UmsatzDetail extends AbstractView {
   public void bind() throws Exception {
 
     final UmsatzDetailControl control = new UmsatzDetailControl(this);
-    I18N i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
+    I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     GUI.getView().setTitle(i18n.tr("Buchungsdetails"));
 
     LabelGroup konten = new LabelGroup(getParent(),i18n.tr("Konten"));
@@ -80,6 +80,9 @@ public class UmsatzDetail extends AbstractView {
 
 /**********************************************************************
  * $Log: UmsatzDetail.java,v $
+ * Revision 1.8  2004/07/25 17:15:05  willuhn
+ * @C PluginLoader is no longer static
+ *
  * Revision 1.7  2004/07/21 23:54:30  willuhn
  * *** empty log message ***
  *
