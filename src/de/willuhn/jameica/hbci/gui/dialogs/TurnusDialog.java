@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/TurnusNew.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/11/18 23:46:21 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/TurnusDialog.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2004/11/26 00:04:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -10,13 +10,15 @@
  * All rights reserved
  *
  **********************************************************************/
-package de.willuhn.jameica.hbci.gui.views;
+package de.willuhn.jameica.hbci.gui.dialogs;
 
 import java.rmi.RemoteException;
 
-import de.willuhn.jameica.gui.AbstractView;
+import org.eclipse.swt.widgets.Composite;
+
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
@@ -29,24 +31,35 @@ import de.willuhn.util.I18N;
 /**
  * Turnus bearbeiten.
  */
-public class TurnusNew extends AbstractView {
+public class TurnusDialog extends AbstractDialog {
+
+	private I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+	private TurnusControl control = new TurnusControl();
 
   /**
-   * @see de.willuhn.jameica.gui.views.AbstractView#bind()
+   * @param position
    */
-  public void bind() throws Exception {
+  public TurnusDialog(int position)
+  {
+    super(position);
+		this.setTitle(i18n.tr("Zahlungsturnus auswählen/bearbeiten"));
+  }
+
+	/**
+	 * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
+	 */
+	protected void paint(Composite parent) throws Exception
+	{
 
 		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 		GUI.getView().setTitle(i18n.tr("Zahlungsturnus bearbeiten"));
 		
-		final TurnusControl control = new TurnusControl(this);
-
-		LabelGroup group = new LabelGroup(getParent(),i18n.tr("Vorhandene Einträge"));
+		LabelGroup group = new LabelGroup(parent,i18n.tr("Vorhandene Einträge"));
 		group.addPart(control.getTurnusList());
 
 
-		LabelGroup group2 = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
+		LabelGroup group2 = new LabelGroup(parent,i18n.tr("Eigenschaften"));
 
 		try {
 			group2.addLabelPair(i18n.tr("Zeiteinheit"),control.getZeiteinheit());
@@ -67,30 +80,50 @@ public class TurnusNew extends AbstractView {
 		// und noch die Abschicken-Knoepfe
 		if (!control.getTurnus().isInitial())
 		{
-			ButtonArea buttonArea = new ButtonArea(getParent(),1);
+			ButtonArea buttonArea = new ButtonArea(parent,3);
+			buttonArea.addButton(i18n.tr("Übernehmen"), new Action()
+			{
+				public void handleAction(Object context) throws ApplicationException
+				{
+					control.handleStore();
+					close();
+				}
+			},null,true);
 			buttonArea.addButton(i18n.tr("Speichern"), new Action()
 			{
 				public void handleAction(Object context) throws ApplicationException
 				{
 					control.handleStore();
 				}
-			},null,true);
+			});
+			buttonArea.addButton(i18n.tr("Abbrechen"), new Action()
+			{
+				public void handleAction(Object context) throws ApplicationException
+				{
+					close();
+				}
+			});
 		}
 
 
   }
 
   /**
-   * @see de.willuhn.jameica.gui.views.AbstractView#unbind()
+   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
    */
-  public void unbind() throws ApplicationException {
+  protected Object getData() throws Exception
+  {
+    return control.getTurnus();
   }
 
 }
 
 
 /**********************************************************************
- * $Log: TurnusNew.java,v $
+ * $Log: TurnusDialog.java,v $
+ * Revision 1.1  2004/11/26 00:04:08  willuhn
+ * @N TurnusDetail
+ *
  * Revision 1.3  2004/11/18 23:46:21  willuhn
  * *** empty log message ***
  *
