@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/TurnusDialog.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/11/26 01:23:13 $
- * $Author: willuhn $
+ * $Revision: 1.3 $
+ * $Date: 2005/03/06 16:06:10 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -54,8 +54,6 @@ public class TurnusDialog extends AbstractDialog {
 
 		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-		GUI.getView().setTitle(i18n.tr("Zahlungsturnus auswählen/bearbeiten"));
-		
 		LabelGroup group = new LabelGroup(parent,i18n.tr("Vorhandene Einträge"));
 		group.addPart(control.getTurnusList());
 
@@ -123,6 +121,9 @@ public class TurnusDialog extends AbstractDialog {
 
 /**********************************************************************
  * $Log: TurnusDialog.java,v $
+ * Revision 1.3  2005/03/06 16:06:10  web0
+ * *** empty log message ***
+ *
  * Revision 1.2  2004/11/26 01:23:13  willuhn
  * *** empty log message ***
  *
