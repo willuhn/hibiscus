@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/07/25 17:15:05 $
+ * $Revision: 1.7 $
+ * $Date: 2004/10/08 00:19:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -51,13 +51,13 @@ public abstract class AbstractTransferControl extends AbstractControl
 	private Konto konto										= null;
 	
 	// Eingabe-Felder
-	private Input kontoAuswahl						= null;
+	private DialogInput kontoAuswahl			= null;
 	private Input betrag									= null;
 	private Input zweck										= null;
 	private Input zweck2									= null;
 
+	private DialogInput empfkto 					= null;
 	private Input empfName 								= null;
-	private Input empfkto 								= null;
 	private Input empfblz 								= null;
 
 	private CheckboxInput storeEmpfaenger = null;
@@ -115,7 +115,7 @@ public abstract class AbstractTransferControl extends AbstractControl
    * @return Auswahl-Feld.
    * @throws RemoteException
    */
-  public Input getKontoAuswahl() throws RemoteException
+  public DialogInput getKontoAuswahl() throws RemoteException
 	{
 		if (kontoAuswahl != null)
 			return kontoAuswahl;
@@ -130,6 +130,8 @@ public abstract class AbstractTransferControl extends AbstractControl
 		Konto k = getKonto();
 		kontoAuswahl = new DialogInput(k == null ? "" : k.getKontonummer(),d);
 		kontoAuswahl.setComment(k == null ? "" : k.getBezeichnung());
+		kontoAuswahl.disableClientControl();
+		kontoAuswahl.setValue(k);
 
 		return kontoAuswahl;
 	}
@@ -139,7 +141,7 @@ public abstract class AbstractTransferControl extends AbstractControl
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public Input getEmpfaengerKonto() throws RemoteException
+  public DialogInput getEmpfaengerKonto() throws RemoteException
 	{
 		if (empfkto != null)
 			return empfkto;
@@ -373,7 +375,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 				return;
 			try {
 				String b = konto.getBezeichnung();
-				getKontoAuswahl().setValue(konto.getKontonummer());
+				getKontoAuswahl().setText(konto.getKontonummer());
 				getKontoAuswahl().setComment(b == null ? "" : b);
 				getBetrag().setComment(konto.getWaehrung());
 			}
@@ -415,7 +417,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 			if (empfaenger == null)
 				return;
 			try {
-				getEmpfaengerKonto().setValue(empfaenger.getKontonummer());
+				getEmpfaengerKonto().setText(empfaenger.getKontonummer());
 				getEmpfaengerBlz().setValue(empfaenger.getBLZ());
 				getEmpfaengerName().setValue(empfaenger.getName());
 				// Wenn der Empfaenger aus dem Adressbuch kommt, deaktivieren wir die Checkbox
@@ -436,6 +438,9 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
+ * Revision 1.7  2004/10/08 00:19:08  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.6  2004/07/25 17:15:05  willuhn
  * @C PluginLoader is no longer static
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.27 $
- * $Date: 2004/08/01 13:08:42 $
+ * $Revision: 1.28 $
+ * $Date: 2004/10/08 00:19:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,6 +28,7 @@ import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
+import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
@@ -161,7 +162,7 @@ public class UeberweisungControl extends AbstractTransferControl
 				if (event == null || event.data == null)
 					return;
 				Date choosen = (Date) event.data;
-				termin.setValue(HBCI.DATEFORMAT.format(choosen));
+				termin.setText(HBCI.DATEFORMAT.format(choosen));
 
 				try {
 					// Wenn das neue Datum spaeter als das aktuelle ist,
@@ -181,6 +182,7 @@ public class UeberweisungControl extends AbstractTransferControl
 		cd.setDate(d);
 		termin = new DialogInput(HBCI.DATEFORMAT.format(d),cd);
 		termin.disableClientControl();
+		termin.setValue(d);
 
 		if (u.ausgefuehrt())
 			termin.disable();
@@ -359,11 +361,110 @@ public class UeberweisungControl extends AbstractTransferControl
 		GUI.startView(UeberweisungNeu.class.getName(),o);
   }
 
+  /**
+   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getBetrag()
+   * Ueberschrieben, um das Control zu deaktivieren, wenn die Ueberweisung bereits ausgefuehrt wurde.
+   */
+  public Input getBetrag() throws RemoteException
+  {
+    Input i = super.getBetrag();
+    if (((Ueberweisung)getTransfer()).ausgefuehrt())
+    	i.disable();
+    return i;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getEmpfaengerBlz()
+   * Ueberschrieben, um das Control zu deaktivieren, wenn die Ueberweisung bereits ausgefuehrt wurde.
+   */
+  public Input getEmpfaengerBlz() throws RemoteException
+  {
+		Input i = super.getEmpfaengerBlz();
+		if (((Ueberweisung)getTransfer()).ausgefuehrt())
+			i.disable();
+		return i;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getEmpfaengerKonto()
+   * Ueberschrieben, um das Control zu deaktivieren, wenn die Ueberweisung bereits ausgefuehrt wurde.
+   */
+  public DialogInput getEmpfaengerKonto() throws RemoteException
+  {
+		DialogInput i = super.getEmpfaengerKonto();
+		if (((Ueberweisung)getTransfer()).ausgefuehrt())
+			i.disable();
+		return i;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getEmpfaengerName()
+   * Ueberschrieben, um das Control zu deaktivieren, wenn die Ueberweisung bereits ausgefuehrt wurde.
+   */
+  public Input getEmpfaengerName() throws RemoteException
+  {
+		Input i = super.getEmpfaengerName();
+		if (((Ueberweisung)getTransfer()).ausgefuehrt())
+			i.disable();
+		return i;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getKontoAuswahl()
+   * Ueberschrieben, um das Control zu deaktivieren, wenn die Ueberweisung bereits ausgefuehrt wurde.
+   */
+  public DialogInput getKontoAuswahl() throws RemoteException
+  {
+		DialogInput i = super.getKontoAuswahl();
+		if (((Ueberweisung)getTransfer()).ausgefuehrt())
+			i.disable();
+		return i;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getStoreEmpfaenger()
+   * Ueberschrieben, um das Control zu deaktivieren, wenn die Ueberweisung bereits ausgefuehrt wurde.
+   */
+  public CheckboxInput getStoreEmpfaenger() throws RemoteException
+  {
+		CheckboxInput i = super.getStoreEmpfaenger();
+		if (((Ueberweisung)getTransfer()).ausgefuehrt())
+			i.disable();
+		return i;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getZweck()
+   * Ueberschrieben, um das Control zu deaktivieren, wenn die Ueberweisung bereits ausgefuehrt wurde.
+   */
+  public Input getZweck() throws RemoteException
+  {
+		Input i = super.getZweck();
+		if (((Ueberweisung)getTransfer()).ausgefuehrt())
+			i.disable();
+		return i;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getZweck2()
+   * Ueberschrieben, um das Control zu deaktivieren, wenn die Ueberweisung bereits ausgefuehrt wurde.
+   */
+  public Input getZweck2() throws RemoteException
+  {
+		Input i = super.getZweck2();
+		if (((Ueberweisung)getTransfer()).ausgefuehrt())
+			i.disable();
+		return i;
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
+ * Revision 1.28  2004/10/08 00:19:08  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.27  2004/08/01 13:08:42  willuhn
  * @B Handling von Ueberweisungsterminen
  *

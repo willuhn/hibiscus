@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/LicenseControl.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/07/25 17:15:05 $
+ * $Revision: 1.7 $
+ * $Date: 2004/10/08 00:19:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.rmi.RemoteException;
 
+import de.willuhn.io.FileFinder;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.controller.AbstractControl;
@@ -23,9 +24,8 @@ import de.willuhn.jameica.gui.parts.FormTextPart;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.plugin.AbstractPlugin;
+import de.willuhn.jameica.plugin.Manifest;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.jameica.util.InfoReader;
-import de.willuhn.util.FileFinder;
 import de.willuhn.util.I18N;
 import de.willuhn.util.Logger;
 
@@ -61,22 +61,22 @@ public class LicenseControl extends AbstractControl {
     StringBuffer buffer = new StringBuffer();
     buffer.append("<form>");
 
-    InfoReader ir = null;
+    Manifest manifest = null;
     try {
-      ir = Application.getPluginLoader().getPluginContainer(HBCI.class).getInfo();
+      manifest = Application.getPluginLoader().getPluginContainer(HBCI.class).getManifest();
     }
     catch (Exception e)
     {
       Logger.error("unable to read info.xml from plugin hibiscus",e);
     }
     buffer.append("<p><span color=\"header\" font=\"header\">" + i18n.tr("Hibiscus") + "</span></p>");
-    if (ir != null)
+    if (manifest != null)
     {
       buffer.append("<p>");
-      buffer.append("<br/>" + i18n.tr("Version") + ": " + plugin.getVersion() + "-" + plugin.getBuildnumber());
-      buffer.append("<br/>" + i18n.tr("Beschreibung") + ": " + ir.getDescription());
-      buffer.append("<br/>" + i18n.tr("URL") + ": " + ir.getUrl());
-      buffer.append("<br/>" + i18n.tr("Lizenz") + ": " + ir.getLicense());
+      buffer.append("<br/>" + i18n.tr("Version") + ": " + manifest.getVersion());
+      buffer.append("<br/>" + i18n.tr("Beschreibung") + ": " + manifest.getDescription());
+      buffer.append("<br/>" + i18n.tr("URL") + ": " + manifest.getURL());
+      buffer.append("<br/>" + i18n.tr("Lizenz") + ": " + manifest.getLicense());
       buffer.append("</p>");
     }
 
@@ -150,6 +150,9 @@ public class LicenseControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: LicenseControl.java,v $
+ * Revision 1.7  2004/10/08 00:19:08  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.6  2004/07/25 17:15:05  willuhn
  * @C PluginLoader is no longer static
  *
