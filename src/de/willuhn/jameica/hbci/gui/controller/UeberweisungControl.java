@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.36 $
- * $Date: 2005/02/03 18:57:42 $
+ * $Revision: 1.37 $
+ * $Date: 2005/02/04 00:57:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -88,6 +88,7 @@ public class UeberweisungControl extends AbstractTransferControl
 		if (table != null)
 			return table;
 
+		// TODO: Hier wird ggf. die falsche Impl (naemlich LastschriftIml) geladen
 		DBIterator list = Settings.getDBService().createList(Ueberweisung.class);
 
 		table = new TablePart(list,new de.willuhn.jameica.hbci.gui.action.UeberweisungNew());
@@ -361,6 +362,9 @@ public class UeberweisungControl extends AbstractTransferControl
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
+ * Revision 1.37  2005/02/04 00:57:00  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.36  2005/02/03 18:57:42  willuhn
  * *** empty log message ***
  *
