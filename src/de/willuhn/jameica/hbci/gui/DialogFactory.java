@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/DialogFactory.java,v $
- * $Revision: 1.20 $
- * $Date: 2005/02/02 16:15:52 $
+ * $Revision: 1.21 $
+ * $Date: 2005/02/07 22:06:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,6 +22,7 @@ import de.willuhn.jameica.hbci.gui.dialogs.NewInstKeysDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.NewKeysDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.PINDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.PassportLoadDialog;
+import de.willuhn.jameica.hbci.gui.dialogs.PassportSaveDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.TANDialog;
 import de.willuhn.logging.Logger;
 
@@ -90,6 +91,24 @@ public class DialogFactory {
 	{
 		check();
 		dialog = new PassportLoadDialog(AbstractDialog.POSITION_CENTER);
+		try {
+			return (String) dialog.open();
+		}
+		finally
+		{
+			close();
+		}
+	}
+
+	/**
+	 * Dialog zur Eingabe des Passworts fuer das Sicherheitsmedium beim Speichern eines zu exportierenden Passports.
+	 * @return eingegebenes Passwort.
+	 * @throws Exception
+	 */
+	public static synchronized String exportPassport() throws Exception
+	{
+		check();
+		dialog = new PassportSaveDialog(AbstractDialog.POSITION_CENTER);
 		try {
 			return (String) dialog.open();
 		}
@@ -217,6 +236,9 @@ public class DialogFactory {
 
 /**********************************************************************
  * $Log: DialogFactory.java,v $
+ * Revision 1.21  2005/02/07 22:06:40  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.20  2005/02/02 16:15:52  willuhn
  * @N Neue Dialoge fuer RDH
  *
