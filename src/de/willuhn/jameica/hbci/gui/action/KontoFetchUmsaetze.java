@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoFetchUmsaetze.java,v $
- * $Revision: 1.8 $
- * $Date: 2005/02/19 16:49:32 $
- * $Author: willuhn $
+ * $Revision: 1.9 $
+ * $Date: 2005/03/02 18:48:21 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -61,7 +61,7 @@ public class KontoFetchUmsaetze implements Action
 						factory.addJob(new HBCIUmsatzJob(k));
 
 						// BUGZILLA #3 http://www.willuhn.de/bugzilla/show_bug.cgi?id=3
-						factory.addJob(new HBCISaldoJob(k));
+						factory.addExclusiveJob(new HBCISaldoJob(k));
 
 						factory.executeJobs(k.getPassport().getHandle());
 						GUI.startView(UmsatzList.class,k);
@@ -100,6 +100,9 @@ public class KontoFetchUmsaetze implements Action
 
 /**********************************************************************
  * $Log: KontoFetchUmsaetze.java,v $
+ * Revision 1.9  2005/03/02 18:48:21  web0
+ * @B Bugzilla #3 Saldo wird beim Abrufen der Umsaetze jetzt als exklusiver Job ausgefuehrt
+ *
  * Revision 1.8  2005/02/19 16:49:32  willuhn
  * @B bugs 3,8,10
  *
