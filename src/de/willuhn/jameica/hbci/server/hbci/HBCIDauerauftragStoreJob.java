@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragStoreJob.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/10/25 17:58:56 $
+ * $Revision: 1.2 $
+ * $Date: 2004/10/25 22:39:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -41,12 +41,22 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob {
 
 	private boolean active = false;
 
-	/**
+  /**
 	 * ct.
    * @param auftrag Dauerauftrag, der bei der Bank gespeichert werden soll
+   * @throws ApplicationException
+   * @throws RemoteException
    */
-  public HBCIDauerauftragStoreJob(Dauerauftrag auftrag) throws RemoteException
+  public HBCIDauerauftragStoreJob(Dauerauftrag auftrag) throws ApplicationException, RemoteException
 	{
+		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+
+		if (auftrag == null)
+			throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Dauerauftrag aus"));
+
+		if (auftrag.isNewObject())
+			auftrag.store();
+
 		this.dauerauftrag = auftrag;
 		this.konto        = auftrag.getKonto();
 		this.active				= auftrag.isActive();
@@ -88,48 +98,27 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob {
 		setJobParam("timeunit",t.getZeiteinheit() == Turnus.ZEITEINHEIT_MONATLICH ? "M" : "W");
 		setJobParam("turnus",t.getIntervall());
 		setJobParam("execday",t.getTag());
-
-		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 	}
 
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getIdentifier()
    */
-  public String getIdentifier() {
+  String getIdentifier() {
 		if (active)
 			return "DauerEdit";
   	return "DauerNew";
   }
 
-	/**
-	 * Liefert die neu vergebene oder bereits vorhandene Auftragsnummer.
-	 * Wird der Dauerauftrag neu eingereicht, dann erhalten wir hier eine
-	 * Auftragsnummer zurueck.
-   * @return
-   */
-  public String getOrderID()
-	{
-		return null; // TODO ORDER_ID zurueckliefern
-	}
-
-	/**
-	 * Prueft, ob das Speichern des Dauerauftrags erfolgreich war.
-	 * War es das nicht, wird eine ApplicationException mit der Fehlermeldung
-	 * der Bank geliefert.
-	 * @throws ApplicationException Wenn bei der Ueberweisung ein Fehler auftrat.
+  /**
+	 * Prueft, ob das Senden des Dauerauftrags erfolgreich war und speichert im
+	 * Erfolgsfall die Order-ID.
+   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#handleResult()
 	 */
-	public void check() throws ApplicationException
+	void handleResult() throws ApplicationException, RemoteException
 	{
 		String statusText = getStatusText();
 
-		String empfName = "";
-		try {
-			empfName = i18n.tr("an") + " " + dauerauftrag.getEmpfaengerName();
-		}
-		catch (RemoteException e)
-		{
-			Logger.error("error while reading empfaenger name",e);
-		}
+		String empfName = i18n.tr("an") + " " + dauerauftrag.getEmpfaengerName();
 
 		if (!getJobResult().isOK())
 		{
@@ -141,26 +130,24 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob {
 										i18n.tr("Fehlermeldung der Bank") + ": " + statusText :
 										i18n.tr("Unbekannter Fehler beim Ausführen des Dauerauftrags");
 
-			try {
-				konto.addToProtokoll(msg + " ("+error+")",Protokoll.TYP_ERROR);
-			}
-			catch (RemoteException e)
-			{
-				Logger.error("error while writing protocol",e);
-			}
+			konto.addToProtokoll(msg + " ("+error+")",Protokoll.TYP_ERROR);
 			throw new ApplicationException(msg + " ("+error+")");
 		}
-		try {
-			if (dauerauftrag.isActive())
-				konto.addToProtokoll(i18n.tr("Dauerauftrag aktualisiert") + " " + empfName,Protokoll.TYP_SUCCESS);
-			else
-				konto.addToProtokoll(i18n.tr("Dauerauftrag ausgeführt") + " " + empfName,Protokoll.TYP_SUCCESS);
-		}
-		catch (RemoteException e)
+
+		if (dauerauftrag.isActive())
+			konto.addToProtokoll(i18n.tr("Dauerauftrag aktualisiert") + " " + empfName,Protokoll.TYP_SUCCESS);
+		else
+			konto.addToProtokoll(i18n.tr("Dauerauftrag ausgeführt") + " " + empfName,Protokoll.TYP_SUCCESS);
+
+		// jetzt muessen wir noch die Order-ID speichern, wenn er neu eingereicht wurde
+		if (!active)
 		{
-			Logger.error("error while writing protocol",e);
+			// Der Auftrag war neu, dann muessen wir noch die Order-ID speichern
+			dauerauftrag.setOrderID(null); // TODO ORDER ID!!!
+			dauerauftrag.store();
 		}
-		Logger.debug("dauerauftrag submitted successfully");
+
+		Logger.info("dauerauftrag submitted successfully");
 	}
 
 }
@@ -168,6 +155,9 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIDauerauftragStoreJob.java,v $
+ * Revision 1.2  2004/10/25 22:39:14  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/10/25 17:58:56  willuhn
  * @N Haufen Dauerauftrags-Code
  *

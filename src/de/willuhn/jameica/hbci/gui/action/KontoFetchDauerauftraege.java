@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoFetchDauerauftraege.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/10/24 17:19:02 $
+ * $Revision: 1.4 $
+ * $Date: 2004/10/25 22:39:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,10 +12,14 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.action;
 
+import java.rmi.RemoteException;
+
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.server.hbci.HBCIDauerauftragListJob;
+import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.util.ApplicationException;
@@ -30,14 +34,6 @@ public class KontoFetchDauerauftraege implements Action
 {
 
   /**
-   * ct.
-   */
-  public KontoFetchDauerauftraege()
-  {
-    super();
-  }
-
-  /**
 	 * Erwartet ein Objekt vom Typ <code>Konto</code> als Context.
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
@@ -48,42 +44,40 @@ public class KontoFetchDauerauftraege implements Action
 		if (context == null || !(context instanceof Konto))
 			throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus"));
 
-		GUI.getStatusBar().startProgress();
-		GUI.getStatusBar().setStatusText(i18n.tr("Daueraufträge werden abgerufen..."));
+		final Konto k = (Konto) context;
 
-		try
-		{
-			final Konto k = (Konto) context;
+		GUI.startSync(new Runnable() {
+			public void run() {
+				try {
+					GUI.getStatusBar().setStatusText(i18n.tr("Daueraufträge werden abgerufen..."));
+					GUI.getStatusBar().startProgress();
+					HBCIFactory factory = HBCIFactory.getInstance();
+					factory.addJob(new HBCIDauerauftragListJob(k));
+					factory.executeJobs(k.getPassport().getHandle());
+					GUI.getStatusBar().setSuccessText(i18n.tr("...Daueraufträge erfolgreich übertragen"));
 
-			GUI.startSync(new Runnable() {
-				public void run() {
-					try {
-						k.refreshDauerauftraege();
-						GUI.getStatusBar().setSuccessText(i18n.tr("...Umsätze erfolgreich übertragen"));
-
-						new DauerauftragListe().handleAction(k);
-					}
-					catch (OperationCanceledException oce)
-					{
-						GUI.getStatusBar().setErrorText(i18n.tr("Vorgang abgebrochen"));
-					}
-					catch (ApplicationException e2)
-					{
-						GUI.getView().setErrorText(i18n.tr(e2.getMessage()));
-					}
-					catch (Throwable t)
-					{
-						Logger.error("error while reading dauerauftraege",t);
-						GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Abrufen der Daueraufträge."));
-					}
+					new DauerauftragListe().handleAction(k);
 				}
-			});
-		}
-		finally
-		{
-			GUI.getStatusBar().stopProgress();
-			GUI.getStatusBar().setStatusText("");
-		}
+				catch (OperationCanceledException oce)
+				{
+					GUI.getStatusBar().setErrorText(i18n.tr("Vorgang abgebrochen"));
+				}
+				catch (ApplicationException e2)
+				{
+					GUI.getView().setErrorText(i18n.tr(e2.getMessage()));
+				}
+				catch (RemoteException e)
+				{
+					Logger.error("error while reading dauerauftraege",e);
+					GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Abrufen der Daueraufträge."));
+				}
+				finally
+				{
+					GUI.getStatusBar().stopProgress();
+					GUI.getStatusBar().setStatusText("");
+				}
+			}
+		});
   }
 
 }
@@ -91,6 +85,9 @@ public class KontoFetchDauerauftraege implements Action
 
 /**********************************************************************
  * $Log: KontoFetchDauerauftraege.java,v $
+ * Revision 1.4  2004/10/25 22:39:14  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2004/10/24 17:19:02  willuhn
  * *** empty log message ***
  *

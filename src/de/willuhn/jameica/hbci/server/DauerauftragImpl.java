@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DauerauftragImpl.java,v $
- * $Revision: 1.11 $
- * $Date: 2004/10/25 17:58:56 $
+ * $Revision: 1.12 $
+ * $Date: 2004/10/25 22:39:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,11 +20,7 @@ import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Turnus;
-import de.willuhn.jameica.hbci.server.hbci.HBCIDauerauftragDeleteJob;
-import de.willuhn.jameica.hbci.server.hbci.HBCIDauerauftragStoreJob;
-import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 import de.willuhn.util.Logger;
@@ -238,65 +234,14 @@ public class DauerauftragImpl extends AbstractTransferImpl implements Dauerauftr
   {
   	setAttribute("orderid",id);
   }
-
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Dauerauftrag#deleteOnline()
-   */
-  public void deleteOnline() throws RemoteException, ApplicationException, OperationCanceledException
-  {
-  	if (isNewObject())
-			throw new ApplicationException(i18n.tr("Bitte speichern Sie zunächst den Dauerauftrag"));
-
-  	if (!isActive())
-  		throw new ApplicationException(i18n.tr("Dauerauftrag liegt nicht bei Bank vor und muss daher nicht online gelöscht werden"));
-
-		HBCIFactory factory = HBCIFactory.getInstance();
-		HBCIDauerauftragDeleteJob job = new HBCIDauerauftragDeleteJob(this);
-
-		factory.addJob(job);
-
-		factory.executeJobs(getKonto().getPassport().getHandle());
-
-		// Wenn der Job nicht erfolgreich war, fliegt hier eine ApplikationException
-		// mit der Fehlermeldung der Bank.
-		job.check();
-
-		// OK, jetzt muessen wir die Ueberweisung auf inaktiv setzen
-		setOrderID(null);
-		store();
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Dauerauftrag#execute()
-   */
-  public void execute() throws RemoteException, ApplicationException, OperationCanceledException
-  {
-		if (isNewObject())
-			throw new ApplicationException(i18n.tr("Bitte speichern Sie zunächst den Dauerauftrag"));
-
-		HBCIFactory factory = HBCIFactory.getInstance();
-		HBCIDauerauftragStoreJob job = new HBCIDauerauftragStoreJob(this);
-
-		factory.addJob(job);
-
-		factory.executeJobs(getKonto().getPassport().getHandle());
-
-		// Wenn der Job nicht erfolgreich war, fliegt hier eine ApplikationException
-		// mit der Fehlermeldung der Bank.
-		job.check();
-
-		if (!this.isActive())
-		{
-			// Der Auftrag war neu, dann muessen wir noch die Order-ID speichern
-			setOrderID(job.getOrderID());
-			store();
-		}
-  }
 }
 
 
 /**********************************************************************
  * $Log: DauerauftragImpl.java,v $
+ * Revision 1.12  2004/10/25 22:39:14  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.11  2004/10/25 17:58:56  willuhn
  * @N Haufen Dauerauftrags-Code
  *

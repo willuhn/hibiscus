@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.14 $
- * $Date: 2004/10/25 17:58:56 $
+ * $Revision: 1.15 $
+ * $Date: 2004/10/25 22:39:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -141,10 +141,12 @@ public class HBCIFactory {
 					cancelled = false;
 					throw new OperationCanceledException();
 				}
-			}
-			catch (RemoteException e)
-			{
-				throw e;
+				for (int i=0;i<jobs.size();++i)
+				{
+					AbstractHBCIJob job = (AbstractHBCIJob) jobs.get(i);
+					Logger.info("executing check for job " + job.getIdentifier());
+					job.handleResult();
+				}
 			}
 			finally
 			{
@@ -207,6 +209,9 @@ public class HBCIFactory {
 
 /**********************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.15  2004/10/25 22:39:14  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.14  2004/10/25 17:58:56  willuhn
  * @N Haufen Dauerauftrags-Code
  *

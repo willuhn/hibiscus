@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/DauerauftragDelete.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/10/25 17:58:56 $
+ * $Revision: 1.3 $
+ * $Date: 2004/10/25 22:39:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,10 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
+import de.willuhn.jameica.hbci.server.hbci.HBCIDauerauftragDeleteJob;
+import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 import de.willuhn.util.Logger;
@@ -37,16 +40,14 @@ public class DauerauftragDelete implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
-  	I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  	final I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 		if (context == null || !(context instanceof Dauerauftrag))
 			throw new ApplicationException(i18n.tr("Kein Dauerauftrag ausgewählt"));
 
 		try {
 
-			Dauerauftrag da = (Dauerauftrag) context;
-			if (da.isNewObject())
-				return;
+			final Dauerauftrag da = (Dauerauftrag) context;
 
 			YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
 			d.setTitle(i18n.tr("Dauerauftrag löschen"));
@@ -66,12 +67,49 @@ public class DauerauftragDelete implements Action
 				return;
 			}
 
-			// ok, wir loeschen das Objekt
 			if (da.isActive())
 			{
-				da.deleteOnline();
+
+				// Uh, der wird auch online geloescht
+				GUI.startSync(new Runnable()
+				{
+					public void run()
+					{
+						try
+						{
+							GUI.getStatusBar().startProgress();
+							GUI.getStatusBar().setStatusText(i18n.tr("Lösche Dauerauftrag bei Bank..."));
+							HBCIFactory factory = HBCIFactory.getInstance();
+							factory.addJob(new HBCIDauerauftragDeleteJob(da));
+							factory.executeJobs(da.getKonto().getPassport().getHandle()); 
+							GUI.getStatusBar().setSuccessText(i18n.tr("...Dauerauftrag erfolgreich gelöscht"));
+						}
+						catch (OperationCanceledException oce)
+						{
+							GUI.getStatusBar().setErrorText(i18n.tr("Vorgang abgebrochen"));
+						}
+						catch (ApplicationException ae)
+						{
+							GUI.getStatusBar().setErrorText(ae.getMessage());
+						}
+						catch (RemoteException e)
+						{
+							Logger.error("error while deleting dauerauftrag",e);
+							GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Löschen des Dauerauftrages"));
+						}
+						finally
+						{
+							GUI.getStatusBar().stopProgress();
+							GUI.getStatusBar().setStatusText("");
+						}
+					}
+				});
 			}
-			da.delete();
+			else
+			{
+				// nur lokal loeschen
+				da.delete();
+			}
 			GUI.getStatusBar().setSuccessText(i18n.tr("Dauerauftrag gelöscht."));
 		}
 		catch (RemoteException e)
@@ -86,6 +124,9 @@ public class DauerauftragDelete implements Action
 
 /**********************************************************************
  * $Log: DauerauftragDelete.java,v $
+ * Revision 1.3  2004/10/25 22:39:14  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2004/10/25 17:58:56  willuhn
  * @N Haufen Dauerauftrags-Code
  *

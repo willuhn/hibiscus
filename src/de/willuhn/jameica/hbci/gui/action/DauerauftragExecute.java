@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/DauerauftragExecute.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/10/25 17:58:56 $
+ * $Revision: 1.3 $
+ * $Date: 2004/10/25 22:39:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,8 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.dialogs.DauerauftragDialog;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
+import de.willuhn.jameica.hbci.server.hbci.HBCIDauerauftragStoreJob;
+import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.util.ApplicationException;
@@ -47,9 +49,6 @@ public class DauerauftragExecute implements Action
 		{
 			final Dauerauftrag d = (Dauerauftrag) context;
 			
-			if (d.isNewObject())
-				d.store(); // wir speichern bei Bedarf selbst.
-
 			DauerauftragDialog dd = new DauerauftragDialog(d,DauerauftragDialog.POSITION_CENTER);
 			try
 			{
@@ -63,6 +62,9 @@ public class DauerauftragExecute implements Action
 				return;
 			}
 
+			if (d.isNewObject())
+				d.store(); // wir speichern bei Bedarf selbst.
+
 			GUI.startSync(new Runnable()
 			{
 				public void run()
@@ -75,21 +77,30 @@ public class DauerauftragExecute implements Action
 						else
 							GUI.getStatusBar().setStatusText(i18n.tr("Führe Dauerauftrag aus..."));
 						
-						// d.execute(); // TODO HIER GEHTS WEITER
+						HBCIFactory factory = HBCIFactory.getInstance();
+						factory.addJob(new HBCIDauerauftragStoreJob(d));
+						factory.executeJobs(d.getKonto().getPassport().getHandle()); 
+						GUI.getStatusBar().setSuccessText(i18n.tr("...Dauerauftrag erfolgreich gelöscht"));
+
 						GUI.getStatusBar().setSuccessText(i18n.tr("Dauerauftrag erfolgreich ausgeführt"));
 					}
 					catch (OperationCanceledException oce)
 					{
 						GUI.getStatusBar().setErrorText(i18n.tr("Ausführung des Dauerauftrages abgebrochen"));
 					}
-//					catch (ApplicationException ae)
-//					{
-//						GUI.getStatusBar().setErrorText(ae.getMessage());
-//					}
+					catch (ApplicationException ae)
+					{
+						GUI.getStatusBar().setErrorText(ae.getMessage());
+					}
 					catch (RemoteException e)
 					{
 						Logger.error("error while executing ueberweisung",e);
 						GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Ausführen der Überweisung"));
+					}
+					finally
+					{
+						GUI.getStatusBar().stopProgress();
+						GUI.getStatusBar().setStatusText("");
 					}
 				}
 			});
@@ -100,18 +111,15 @@ public class DauerauftragExecute implements Action
 			Logger.error("error while executing ueberweisung",e);
 			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Ausführen der Überweisung"));
 		}
-		finally
-		{
-			GUI.getStatusBar().stopProgress();
-			GUI.getStatusBar().setStatusText("");
-		}
   }
-
 }
 
 
 /**********************************************************************
  * $Log: DauerauftragExecute.java,v $
+ * Revision 1.3  2004/10/25 22:39:14  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2004/10/25 17:58:56  willuhn
  * @N Haufen Dauerauftrags-Code
  *

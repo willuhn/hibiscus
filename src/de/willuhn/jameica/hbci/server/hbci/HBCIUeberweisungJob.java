@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUeberweisungJob.java,v $
- * $Revision: 1.13 $
- * $Date: 2004/10/25 17:58:56 $
+ * $Revision: 1.14 $
+ * $Date: 2004/10/25 22:39:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -36,14 +36,24 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
 	private Ueberweisung ueberweisung = null;
 	private Konto konto = null;
 
-	/**
+  /**
 	 * ct.
    * @param ueberweisung die auszufuehrende Ueberweisung.
+   * @throws ApplicationException
+   * @throws RemoteException
    */
-  public HBCIUeberweisungJob(Ueberweisung ueberweisung) throws RemoteException
+  public HBCIUeberweisungJob(Ueberweisung ueberweisung) throws ApplicationException, RemoteException
 	{
+		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+
+		if (ueberweisung == null)
+			throw new ApplicationException(i18n.tr("Bitte geben Sie eine Überweisung an"));
+		
+		if (ueberweisung.isNewObject())
+			ueberweisung.store();
+
 		this.ueberweisung = ueberweisung;
-		this.konto        = ueberweisung.getKonto();
+		this.konto = ueberweisung.getKonto();
 
 		setJobParam("src",Converter.HibiscusKonto2HBCIKonto(konto));
 		setJobParam("btg.curr",konto.getWaehrung() == null ? "EUR" : konto.getWaehrung());
@@ -64,36 +74,24 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
 		if (zweck2 != null && zweck2.length() > 0)
 			setJobParam("usage_2",zweck2);
 
-
-		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
 	}
 
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getIdentifier()
    */
-  public String getIdentifier() {
+  String getIdentifier() {
     return "Ueb";
   }
   
   /**
-   * Prueft, ob die Ueberweisung erfolgreich war.
-   * War sie das nicht, wird eine ApplicationException mit der Fehlermeldung
-   * der Bank geliefert.
-   * @throws ApplicationException Wenn bei der Ueberweisung ein Fehler auftrat.
+   * Prueft, ob die Ueberweisung erfolgreich war und markiert diese im Erfolgsfall als "ausgefuehrt".
+   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#handleResult()
    */
-  public void check() throws ApplicationException
+  void handleResult() throws ApplicationException, RemoteException
   {
 		String statusText = getStatusText();
 
-		String empfName = "";
-		try {
-			empfName = i18n.tr("an") + " " + ueberweisung.getEmpfaengerName();
-		}
-		catch (RemoteException e)
-		{
-			Logger.error("error while reading empfaenger name",e);
-		}
+		String empfName = i18n.tr("an") + " " + ueberweisung.getEmpfaengerName();
 
 		if (!getJobResult().isOK())
 		{
@@ -105,29 +103,25 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
 										i18n.tr("Fehlermeldung der Bank") + ": " + statusText :
 										i18n.tr("Unbekannter Fehler beim Ausführen der Überweisung");
 
-			try {
-				konto.addToProtokoll(msg + " ("+error+")",Protokoll.TYP_ERROR);
-			}
-			catch (RemoteException e)
-			{
-				Logger.error("error while writing protocol",e);
-			}
+			konto.addToProtokoll(msg + " ("+error+")",Protokoll.TYP_ERROR);
 			throw new ApplicationException(msg + " ("+error+")");
 		}
-		try {
-			konto.addToProtokoll(i18n.tr("Überweisung ausgeführt") + " " + empfName,Protokoll.TYP_SUCCESS);
-		}
-		catch (RemoteException e)
-		{
-			Logger.error("error while writing protocol",e);
-		}
-		Logger.debug("ueberweisung sent successfully");
+
+		konto.addToProtokoll(i18n.tr("Überweisung ausgeführt") + " " + empfName,Protokoll.TYP_SUCCESS);
+
+		// Wir markieren die Ueberweisung als "ausgefuehrt"
+		ueberweisung.setAusgefuehrt();
+		ueberweisung.store();
+		Logger.info("ueberweisung submitted successfully");
   }
 }
 
 
 /**********************************************************************
  * $Log: HBCIUeberweisungJob.java,v $
+ * Revision 1.14  2004/10/25 22:39:14  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.13  2004/10/25 17:58:56  willuhn
  * @N Haufen Dauerauftrags-Code
  *

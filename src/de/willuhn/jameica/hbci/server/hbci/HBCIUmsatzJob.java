@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUmsatzJob.java,v $
- * $Revision: 1.12 $
- * $Date: 2004/10/25 17:58:56 $
+ * $Revision: 1.13 $
+ * $Date: 2004/10/25 22:39:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ import java.rmi.RemoteException;
 
 import org.kapott.hbci.GV_Result.GVRKUms;
 
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
@@ -34,41 +35,42 @@ public class HBCIUmsatzJob extends AbstractHBCIJob {
 	private Konto konto = null;
 	private I18N i18n = null;
 
-	/**
+  /**
 	 * ct.
    * @param konto Konto, fuer das die Umsaetze abgerufen werden sollen.
+   * @throws ApplicationException
    * @throws RemoteException
    */
-  public HBCIUmsatzJob(Konto konto) throws RemoteException
+  public HBCIUmsatzJob(Konto konto) throws ApplicationException, RemoteException
 	{
+
+		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+
+		if (konto == null)
+			throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus")); 
+
+		if (konto.isNewObject())
+			konto.store();
+
 		this.konto = konto;
 
 		setJobParam("my",Converter.HibiscusKonto2HBCIKonto(konto));
-
-		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 	}
 
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getIdentifier()
    */
-  public String getIdentifier() {
+  String getIdentifier() {
     return "KUmsAll";
   }
 
   /**
-   * Liefert eine Liste der abgerufenen Umsaetze.
-   * Die Objekte sind neu erstellt und <b>nicht</b> in der embedded Datenbank
-   * gespeichert.<br>
-   * Es werden grundsaetzlich alle bei der Bank verfuegbaren
-   * Umsaetze fuer dieses Konto abgeholt. Es ist Sache des Aufrufers,
-   * ueber die Liste der bereits lokal gespeicherten zu iterieren und
-   * nur genau die zu speichern, die lokal noch nicht vorhanden sind. 
-   * @return Liste der aktuell auf dem Konto verfuegbaren Umsaetze.
-   * @throws ApplicationException
-   * @throws RemoteException
+   * Prueft, ob das Abrufen der Umsaetze erfolgreich war und speichert die
+   * neu hinzugekommenen.
+   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#handleResult()
    */
-  public Umsatz[] getUmsaetze() throws ApplicationException, RemoteException
-	{
+  void handleResult() throws RemoteException, ApplicationException
+  {
 		GVRKUms result = (GVRKUms) getJobResult();
 
 		String statusText = getStatusText();
@@ -78,41 +80,49 @@ public class HBCIUmsatzJob extends AbstractHBCIJob {
 										i18n.tr("Fehlermeldung der Bank") + ": " + statusText :
 										i18n.tr("Fehler beim Abrufen der Umsätze");
 
-			try {
-				konto.addToProtokoll(i18n.tr("Fehler beim Abrufen der Umsätze") + " ("+ msg +")",Protokoll.TYP_ERROR);
-			}
-			catch (RemoteException e)
-			{
-				Logger.error("error while writing protocol",e);
-			}
+			konto.addToProtokoll(i18n.tr("Fehler beim Abrufen der Umsätze") + " ("+ msg +")",Protokoll.TYP_ERROR);
 			throw new ApplicationException(msg);
 		}
-		Logger.debug("job result is ok, returning umsatz list");
+
+		konto.addToProtokoll(i18n.tr("Umsätze abgerufen"),Protokoll.TYP_SUCCESS);
 
 		// So, jetzt kopieren wir das ResultSet noch in unsere
-		// eigenen Datenstrukturen. ;)
+		// eigenen Datenstrukturen.
+
+		// Wir vergleichen noch mit den Umsaetzen, die wir schon haben und
+		// speichern nur die neuen.
+		DBIterator existing = konto.getUmsaetze();
+
 		GVRKUms.UmsLine[] lines = result.getFlatData();
-		Umsatz[] umsaetze = new Umsatz[lines.length];
+		Umsatz umsatz;
 		for (int i=0;i<lines.length;++i)
 		{
-			umsaetze[i] = Converter.HBCIUmsatz2HibiscusUmsatz(lines[i]);
-			umsaetze[i].setKonto(konto); // muessen wir noch machen, weil der Converter das Konto nicht kennt
+			umsatz = Converter.HBCIUmsatz2HibiscusUmsatz(lines[i]);
+			umsatz.setKonto(konto); // muessen wir noch machen, weil der Converter das Konto nicht kennt
+			if (existing.contains(umsatz) == null)
+			{
+				try
+				{
+					umsatz.store(); // den Umsatz haben wir noch nicht, speichern!
+				}
+				catch (Exception e)
+				{
+					Logger.error("error while adding umsatz, skipping this one",e);
+				}
+			}
 		}
-		try {
-			konto.addToProtokoll(i18n.tr("Umsätze abgerufen"),Protokoll.TYP_SUCCESS);
-		}
-		catch (RemoteException e)
-		{
-			Logger.error("error while writing protocol",e);
-		}
-		return umsaetze;
 
-	}
+		Logger.info("umsatz list fetched successfully");
+
+  }
 }
 
 
 /**********************************************************************
  * $Log: HBCIUmsatzJob.java,v $
+ * Revision 1.13  2004/10/25 22:39:14  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.12  2004/10/25 17:58:56  willuhn
  * @N Haufen Dauerauftrags-Code
  *

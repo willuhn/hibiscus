@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragListJob.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/10/25 17:58:56 $
+ * $Revision: 1.9 $
+ * $Date: 2004/10/25 22:39:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ import java.rmi.RemoteException;
 
 import org.kapott.hbci.GV_Result.GVRDauerList;
 
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -34,42 +35,41 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
 	private I18N i18n = null;
 	private Konto konto = null;
 
-	/**
+  /**
    * @param konto Konto, ueber welches die existierenden Dauerauftraege abgerufen werden.
+   * @throws ApplicationException
    * @throws RemoteException
    */
-  public HBCIDauerauftragListJob(Konto konto) throws RemoteException
+  public HBCIDauerauftragListJob(Konto konto) throws ApplicationException, RemoteException
 	{
+		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+
+		if (konto == null)
+			throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus"));
+		if (konto.isNewObject())
+			konto.store();
+
 		this.konto = konto;
 
 		setJobParam("my",Converter.HibiscusKonto2HBCIKonto(konto));
-
-		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 	}
 
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getIdentifier()
    */
-  public String getIdentifier() {
+  String getIdentifier()
+  {
     return "DauerList";
   }
   
   /**
-   * Liefert eine Liste der abgerufenen Dauerauftraege.
-   * Die Objekte sind neu erstellt und <b>nicht</b> in der embedded Datenbank
-   * gespeichert.<br>
-   * Es werden grundsaetzlich alle bei der Bank verfuegbaren
-   * Dauerauftraege fuer dieses Konto abgeholt. Es ist Sache des Aufrufers,
-   * ueber die Liste der bereits lokal gespeicherten zu iterieren und
-   * nur genau die zu speichern, die lokal noch nicht vorhanden sind. 
-   * @return Liste der aktuell auf dem Konto verfuegbaren Dauerauftraege.
-   * @throws ApplicationException
-   * @throws RemoteException
+   * Prueft, ob das Abrufen der Dauerauftraege erfolgreich war und aktualisiert
+   * die lokalen Kopien.
+   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#handleResult()
    */
-  public Dauerauftrag[] getDauerauftraege() throws ApplicationException, RemoteException
+  void handleResult() throws ApplicationException, RemoteException
   {
 		GVRDauerList result = (GVRDauerList) getJobResult();
-
 		String statusText = getStatusText();
 		if (!result.isOK())
 		{
@@ -77,40 +77,69 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
 										i18n.tr("Fehlermeldung der Bank") + ": " + statusText :
 										i18n.tr("Fehler beim Abrufen der Umsätze");
 
-			try {
-				konto.addToProtokoll(i18n.tr("Fehler beim Abrufen der Daueraufträge") + " ("+ msg +")",Protokoll.TYP_ERROR);
-			}
-			catch (RemoteException e)
-			{
-				Logger.error("error while writing protocol",e);
-			}
+			konto.addToProtokoll(i18n.tr("Fehler beim Abrufen der Daueraufträge") + " ("+ msg +")",Protokoll.TYP_ERROR);
 			throw new ApplicationException(msg);
 		}
-		Logger.debug("job result is ok, returning ");
+
+		konto.addToProtokoll(i18n.tr("Daueraufträge abgerufen"),Protokoll.TYP_SUCCESS);
 
 		// So, jetzt kopieren wir das ResultSet noch in unsere
-		// eigenen Datenstrukturen. ;)
+		// eigenen Datenstrukturen.
+
+		// Wir vergleichen noch mit den Dauerauftraegen, die wir schon haben und
+		// speichern nur die neuen. Achtung: Es kann sein, dass ein Dauerauftrag
+		// geaendert wurde, ohne dass wir davon erfahren haben (z.Bsp. wenn der
+		// Kunde ihn uebers Webfrontend der Bank geaendert hat. Folglich
+		// ueberschreiben wir Dauerauftraege auch dann schon, wenn die Order-ID
+		// uebereinstimmt.
+		DBIterator existing = konto.getDauerauftraege();
+
 		GVRDauerList.Dauer[] lines = result.getEntries();
-		Dauerauftrag[] auftraege = new Dauerauftrag[lines.length];
+		Dauerauftrag auftrag;
+		Dauerauftrag ex;
 		for (int i=0;i<lines.length;++i)
 		{
-			auftraege[i] = Converter.HBCIDauer2HibiscusDauerauftrag(lines[i]);
-		}
-		try {
-			konto.addToProtokoll(i18n.tr("Daueraufträge abgerufen"),Protokoll.TYP_SUCCESS);
-		}
-		catch (RemoteException e)
-		{
-			Logger.error("error while writing protocol",e);
-		}
-		return auftraege;
+			try
+			{
+				auftrag = Converter.HBCIDauer2HibiscusDauerauftrag(lines[i]);
+				boolean found = false;
+				while(existing.hasNext())
+				{
+					ex = (Dauerauftrag) existing.next();
+					if (auftrag.getOrderID() != null && 
+							auftrag.getOrderID().equals(ex.getOrderID()) &&
+							auftrag.getKonto().equals(ex.getKonto())
+						 )
+					{
+						// Den haben wir schon, ueberschreiben wir
+						found = true;
+						ex.overwrite(auftrag);
+						ex.store();
+						break;
+					}
+				}
+				if (!found)
+					auftrag.store();// den hammer nicht gefunden. Neu anlegen
 
-	}
+				existing.begin();
+			}
+			catch (Exception e)
+			{
+				Logger.error("error while checking dauerauftrag, skipping this one",e);
+			}
+		}
+
+
+		Logger.info("dauerauftrag list fetched successfully");
+  }
 }
 
 
 /**********************************************************************
  * $Log: HBCIDauerauftragListJob.java,v $
+ * Revision 1.9  2004/10/25 22:39:14  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.8  2004/10/25 17:58:56  willuhn
  * @N Haufen Dauerauftrags-Code
  *

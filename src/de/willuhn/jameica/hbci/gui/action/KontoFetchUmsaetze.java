@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoFetchUmsaetze.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/10/24 17:19:02 $
+ * $Revision: 1.3 $
+ * $Date: 2004/10/25 22:39:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,8 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.views.UmsatzListe;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
+import de.willuhn.jameica.hbci.server.hbci.HBCIUmsatzJob;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.util.ApplicationException;
@@ -33,14 +35,6 @@ public class KontoFetchUmsaetze implements Action
 {
 
   /**
-   * ct.
-   */
-  public KontoFetchUmsaetze()
-  {
-    super();
-  }
-
-  /**
 	 * Erwartet ein Objekt vom Typ <code>Konto</code> als Context.
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
@@ -48,24 +42,23 @@ public class KontoFetchUmsaetze implements Action
   {
 		final I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
+		if (context == null || !(context instanceof Konto))
+			throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus"));
+
 		try {
 			final Konto k = (Konto) context;
-			if (k == null)
-				return;
 
 			if (k.isNewObject())
-			{
-				GUI.getView().setErrorText(i18n.tr("Bitte speichern Sie zuerst das Konto."));
-				return;
-			}
-
-			GUI.getStatusBar().setStatusText(i18n.tr("Umsätze werden abgerufen..."));
-			GUI.getStatusBar().startProgress();
+				k.store();
 
 			GUI.startSync(new Runnable() {
 				public void run() {
 					try {
-						k.refreshUmsaetze();
+						GUI.getStatusBar().setStatusText(i18n.tr("Umsätze werden abgerufen..."));
+						GUI.getStatusBar().startProgress();
+						HBCIFactory factory = HBCIFactory.getInstance();
+						factory.addJob(new HBCIUmsatzJob(k));
+						factory.executeJobs(k.getPassport().getHandle());
 						GUI.startView(UmsatzListe.class.getName(),k);
 						GUI.getStatusBar().setSuccessText(i18n.tr("...Umsätze erfolgreich übertragen"));
 					}
@@ -77,10 +70,15 @@ public class KontoFetchUmsaetze implements Action
 					{
 						GUI.getStatusBar().setErrorText(e2.getMessage());
 					}
-					catch (Throwable t)
+					catch (RemoteException e)
 					{
-						Logger.error("error while reading umsaetze",t);
+						Logger.error("error while reading umsaetze",e);
 						GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Abrufen des Umsätze."));
+					}
+					finally
+					{
+						GUI.getStatusBar().stopProgress();
+						GUI.getStatusBar().setStatusText("");
 					}
 				}
 			});
@@ -90,11 +88,6 @@ public class KontoFetchUmsaetze implements Action
 			Logger.error("error while refreshing umsaetze",e);
 			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Abrufen der Umsätze"));
 		}
-		finally
-		{
-			GUI.getStatusBar().stopProgress();
-			GUI.getStatusBar().setStatusText("");
-		}
   }
 
 }
@@ -102,6 +95,9 @@ public class KontoFetchUmsaetze implements Action
 
 /**********************************************************************
  * $Log: KontoFetchUmsaetze.java,v $
+ * Revision 1.3  2004/10/25 22:39:14  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2004/10/24 17:19:02  willuhn
  * *** empty log message ***
  *

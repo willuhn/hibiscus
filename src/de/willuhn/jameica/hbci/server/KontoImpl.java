@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.35 $
- * $Date: 2004/10/25 17:58:56 $
+ * $Revision: 1.36 $
+ * $Date: 2004/10/25 22:39:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,7 +13,6 @@
 package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.zip.CRC32;
 
@@ -31,12 +30,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
-import de.willuhn.jameica.hbci.server.hbci.HBCIDauerauftragListJob;
-import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
-import de.willuhn.jameica.hbci.server.hbci.HBCISaldoJob;
-import de.willuhn.jameica.hbci.server.hbci.HBCIUmsatzJob;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 import de.willuhn.util.Logger;
@@ -282,148 +276,6 @@ public class KontoImpl extends AbstractDBObject implements Konto {
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#refreshSaldo()
-   */
-  public synchronized double refreshSaldo() throws
-  	ApplicationException,
-  	RemoteException,
-  	OperationCanceledException
- 	{
-
-
-		// Das machen wir um sicherzugehen, dass alle benoetigten Infos
-		// des Kontos vorhanden sind.
-		insertCheck();
-		if (isNewObject())
-		{
-			throw new ApplicationException("Bitte speichern Sie zunächst das Konto.");
-		}
-
-		HBCIFactory factory = HBCIFactory.getInstance();
-		HBCISaldoJob job = new HBCISaldoJob(this);
-		factory.addJob(job);
-
-		factory.executeJobs(getPassport().getHandle());
-
-		// Wenn wir fertig sind, muessen wir noch den Saldo und das Datum speichern
-		setAttribute("saldo",new Double(job.getSaldo()));
-		setAttribute("saldo_datum",new Date());
-
-		// und wir speichern uns
-		store();
-		
-		return getSaldo();
-  }
-  
-	/**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#refreshUmsaetze()
-   */
-  public synchronized Umsatz[] refreshUmsaetze() throws
-  	ApplicationException,
-  	RemoteException,
-  	OperationCanceledException
- 	{
-
-		insertCheck();
-		if (isNewObject())
-			throw new ApplicationException("Bitte speichern Sie zunächst das Konto.");
-
-		// Bei der Gelegenheit koennen wir auch gleich noch den Saldo
-		// aktualisieren
-		HBCIFactory factory = HBCIFactory.getInstance();
-		HBCISaldoJob job1  = new HBCISaldoJob(this);
-		HBCIUmsatzJob job2 = new HBCIUmsatzJob(this);
-
-		factory.addJob(job1);
-		factory.addJob(job2);
-
-		factory.executeJobs(getPassport().getHandle());
-
-		// Speichern des Saldo
-		setAttribute("saldo",new Double(job1.getSaldo()));
-		setAttribute("saldo_datum",new Date());
-		store();
-
-		Umsatz[] umsaetze = job2.getUmsaetze();
-
-		// Wir vergleichen noch mit den Umsaetzen, die wir schon haben und
-		// speichern nur die neuen.
-		DBIterator existing = getUmsaetze();
-
-		ArrayList newList = new ArrayList();
-		// wir speichern die Umsaetze gleich noch ab
-		try {
-			for (int i=0;i<umsaetze.length;++i)
-			{
-				if (existing.contains(umsaetze[i]) == null)
-				{
-					umsaetze[i].store();
-					newList.add(umsaetze[i]);
-				}
-			}
-			return (Umsatz[]) newList.toArray(new Umsatz[newList.size()]);
-		}
-		catch (ApplicationException e)
-		{
-			// Die fangen wir, weil z.Bsp. beim Speichern der Empfaenger ein
-			// Fehler auftreten koennte und dann nur z.Bsp. "Zwecke fehlt" in
-			// der Fehlermeldung stehen wuerde.
-			throw new ApplicationException(i18n.tr("Fehler beim Aktualisieren der Umsätze.") + 
-				" (" + e.getMessage() + ")");
-		}
-	}
-
-	/**
-	 * @see de.willuhn.jameica.hbci.rmi.Konto#refreshDauerauftraege()
-	 */
-	public Dauerauftrag[] refreshDauerauftraege() throws
-		ApplicationException,
-		RemoteException,
-		OperationCanceledException
-	{
-		insertCheck();
-		if (isNewObject())
-			throw new ApplicationException("Bitte speichern Sie zunächst das Konto.");
-
-		// Bei der Gelegenheit koennen wir auch gleich noch den Saldo
-		// aktualisieren
-		HBCIFactory factory = HBCIFactory.getInstance();
-		HBCIDauerauftragListJob job = new HBCIDauerauftragListJob(this);
-
-		factory.addJob(job);
-
-		factory.executeJobs(getPassport().getHandle());
-
-		Dauerauftrag[] auftraege = job.getDauerauftraege();
-
-		// Wir vergleichen noch mit den Dauerauftraegen, die wir schon haben und
-		// speichern nur die neuen.
-		DBIterator existing = getDauerauftraege();
-
-		ArrayList newList = new ArrayList();
-		// Jetzt syncen wir beide Listen
-		try {
-			for (int i=0;i<auftraege.length;++i)
-			{
-				if (existing.contains(auftraege[i]) == null)
-				{
-					auftraege[i].store(); // Der ist neu -> speichern
-					newList.add(auftraege[i]);
-				}
-			}
-			return (Dauerauftrag[]) newList.toArray(new Dauerauftrag[newList.size()]);
-		}
-		catch (ApplicationException e)
-		{
-			// Die fangen wir, weil z.Bsp. beim Speichern der Empfaenger ein
-			// Fehler auftreten koennte und dann nur z.Bsp. "Zwecke fehlt" in
-			// der Fehlermeldung stehen wuerde.
-			throw new ApplicationException(i18n.tr("Fehler beim Aktualisieren der Dauerauftraege.") + 
-				" (" + e.getMessage() + ")");
-		}
-	}
-
-  /**
    * @see de.willuhn.jameica.hbci.rmi.Konto#getSaldoDatum()
    */
   public Date getSaldoDatum() throws RemoteException {
@@ -585,11 +437,23 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 		crc.update(s.getBytes());
 		return crc.getValue();
   }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Konto#setSaldo(double, java.util.Date)
+   */
+  public void setSaldo(double saldo) throws RemoteException
+  {
+		setAttribute("saldo",new Double(saldo));
+		setAttribute("saldo_datum",new Date());
+  }
 }
 
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.36  2004/10/25 22:39:14  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.35  2004/10/25 17:58:56  willuhn
  * @N Haufen Dauerauftrags-Code
  *

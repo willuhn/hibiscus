@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoFetchFromPassport.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/10/24 17:19:02 $
+ * $Revision: 1.4 $
+ * $Date: 2004/10/25 22:39:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,82 +43,81 @@ public class KontoFetchFromPassport implements Action
 		if (context == null || !(context instanceof Passport))
 			throw new ApplicationException(i18n.tr("Kein Sicherheitsmedium ausgewählt oder keines verfügbar"));
 
-		try
+		final Passport p = (Passport) context;
+
+		GUI.startSync(new Runnable()
 		{
-			final Passport p = (Passport) context;
+			public void run() {
+				try {
 
-			GUI.getStatusBar().startProgress();
-			GUI.getStatusBar().setStatusText(i18n.tr("Medium wird ausgelesen..."));
+					GUI.getStatusBar().startProgress();
+					GUI.getStatusBar().setStatusText(i18n.tr("Medium wird ausgelesen..."));
 
-			GUI.startSync(new Runnable()
-			{
-				public void run() {
-					try {
+					DBIterator existing = Settings.getDBService().createList(Konto.class);
+					Konto check = null;
+					Konto[] konten = p.getHandle().getKonten();
 
-						DBIterator existing = Settings.getDBService().createList(Konto.class);
-						Konto check = null;
-						Konto[] konten = p.getHandle().getKonten();
-
-						for (int i=0;i<konten.length;++i)
+					for (int i=0;i<konten.length;++i)
+					{
+						Logger.info("found konto " + konten[i].getKontonummer());
+						// Wir checken, ob's das Konto schon gibt
+						boolean found = false;
+						Logger.info("  checking if allready exists");
+						while (existing.hasNext())
 						{
-							Logger.info("found konto " + konten[i].getKontonummer());
-							// Wir checken, ob's das Konto schon gibt
-							boolean found = false;
-							Logger.info("  checking if allready exists");
-							while (existing.hasNext())
+							check = (Konto) existing.next();
+							if (check.getBLZ().equals(konten[i].getBLZ()) &&
+								check.getKontonummer().equals(konten[i].getKontonummer()))
 							{
-								check = (Konto) existing.next();
-								if (check.getBLZ().equals(konten[i].getBLZ()) &&
-									check.getKontonummer().equals(konten[i].getKontonummer()))
-								{
-									found = true;
-									Logger.info("  konto exists, skipping");
-									break;
-								}
-						
-							}
-							existing.begin();
-							if (!found)
-							{
-								// Konto neu anlegen
-								Logger.info("saving new konto");
-								try {
-									konten[i].setPassport(p); // wir speichern den ausgewaehlten Passport.
-									konten[i].store();
-									Logger.info("konto saved successfully");
-								}
-								catch (Exception e)
-								{
-									// Wenn ein Konto fehlschlaegt, soll nicht gleich der ganze Vorgang abbrechen
-									Logger.error("error while storing konto",e);
-									GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Anlegen des Kontos") + " " + konten[i].getKontonummer());
-								}
+								found = true;
+								Logger.info("  konto exists, skipping");
+								break;
 							}
 					
 						}
-						GUI.startView(KontoListe.class.getName(),null);
-						GUI.getStatusBar().setSuccessText(i18n.tr("Konten erfolgreich ausgelesen"));
+						existing.begin();
+						if (!found)
+						{
+							// Konto neu anlegen
+							Logger.info("saving new konto");
+							try {
+								konten[i].setPassport(p); // wir speichern den ausgewaehlten Passport.
+								konten[i].store();
+								Logger.info("konto saved successfully");
+							}
+							catch (Exception e)
+							{
+								// Wenn ein Konto fehlschlaegt, soll nicht gleich der ganze Vorgang abbrechen
+								Logger.error("error while storing konto",e);
+								GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Anlegen des Kontos") + " " + konten[i].getKontonummer());
+							}
+						}
+				
 					}
-					catch (Throwable t)
-					{
-						Logger.error("error while reading data from passport",t);
-						GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Lesen der Konto-Daten. Bitte prüfen Sie die Einstellungen des Mediums."));
-					}
+					GUI.startView(KontoListe.class.getName(),null);
+					GUI.getStatusBar().setSuccessText(i18n.tr("Konten erfolgreich ausgelesen"));
 				}
-			});
-		}
-		finally
-		{
-			GUI.getStatusBar().stopProgress();
-			GUI.getStatusBar().setStatusText("");
-		}
+				catch (Throwable t)
+				{
+					Logger.error("error while reading data from passport",t);
+					GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Lesen der Konto-Daten. Bitte prüfen Sie die Einstellungen des Mediums."));
+				}
+				finally
+				{
+					GUI.getStatusBar().stopProgress();
+					GUI.getStatusBar().setStatusText("");
+				}
+			}
+		});
   }
-
 }
 
 
 /**********************************************************************
  * $Log: KontoFetchFromPassport.java,v $
+ * Revision 1.4  2004/10/25 22:39:14  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2004/10/24 17:19:02  willuhn
  * *** empty log message ***
  *

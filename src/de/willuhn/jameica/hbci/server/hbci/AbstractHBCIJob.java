@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCIJob.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/10/25 17:58:56 $
+ * $Revision: 1.10 $
+ * $Date: 2004/10/25 22:39:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,13 +21,16 @@ import org.kapott.hbci.GV_Result.HBCIJobResult;
 import org.kapott.hbci.structures.Konto;
 import org.kapott.hbci.structures.Value;
 
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.Logger;
 
 /**
  * Basis-Klasse fuer die HBCI-Jobs.
- * Diese Jobs fuehren lediglich die jeweiligen Auftraege bei der Bank aus
- * und liefern die Ergebnisse zurueck. Sie aendern niemals Daten im Bestand
- * von Hibiscus. 
+ * Ein HBCI-Job muss quasi atomar sein. Das heisst, in dessen <code>handleResult</code>
+ * nimmt er auch gleich ggf. notwendige Aenderungen <b>und</b> Speicherungen
+ * an den betroffenen Fachobjekten vor. Grund: Es darf nicht sein, dass zB.
+ * eine Ueberweisung ausgefuehrt wird, ihr Status jedoch in der DB nicht auf
+ * "ausgefuehrt" gesetzt wird.
  */
 public abstract class AbstractHBCIJob
 {
@@ -42,7 +45,18 @@ public abstract class AbstractHBCIJob
 	 * gewuenschten Job.
 	 * @return Job-Identifier.
 	 */
-  public abstract String getIdentifier();
+  abstract String getIdentifier();
+
+  /**
+	 * Diese Funktion wird von der HBCIFactory nach Beendigung der Kommunikation mit der Bank ausgefuehrt.
+	 * Hier kann jeder HBCI-Job (also jede abgeleitete Klasse) pruefen, ob er mit
+	 * dem Ergebnis zufrieden ist. Hierfuer kann sich der Job fuer gewoehnlich mittels
+	 * <code>getJobResult()</code> die Ergebnis-Informationen holen und ggf eine ApplicationException
+	 * werfen, wenn damit etwas nicht in Ordnung ist. 
+   * @throws RemoteException
+   * @throws ApplicationException
+   */
+  abstract void handleResult() throws RemoteException, ApplicationException;
 
 	/**
 	 * Diese Funktion wird von der HBCIFactory intern aufgerufen.
@@ -50,7 +64,7 @@ public abstract class AbstractHBCIJob
 	 * @param job der erzeugte Job.
 	 * @throws RemoteException
 	 */
-  public final void setJob(org.kapott.hbci.GV.HBCIJob job) throws RemoteException
+  final void setJob(org.kapott.hbci.GV.HBCIJob job) throws RemoteException
   {
   	this.job = job;
   	Enumeration e = params.keys();
@@ -169,6 +183,9 @@ public abstract class AbstractHBCIJob
 
 /**********************************************************************
  * $Log: AbstractHBCIJob.java,v $
+ * Revision 1.10  2004/10/25 22:39:14  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.9  2004/10/25 17:58:56  willuhn
  * @N Haufen Dauerauftrags-Code
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCISaldoJob.java,v $
- * $Revision: 1.12 $
- * $Date: 2004/10/25 17:58:56 $
+ * $Revision: 1.13 $
+ * $Date: 2004/10/25 22:39:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -36,33 +36,38 @@ public class HBCISaldoJob extends AbstractHBCIJob {
   /**
 	 * ct.
    * @param konto konto, fuer das der Saldo ermittelt werden soll.
+   * @throws ApplicationException
    * @throws RemoteException
    */
-  public HBCISaldoJob(Konto konto) throws RemoteException
+  public HBCISaldoJob(Konto konto) throws ApplicationException, RemoteException
 	{
+		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+
+		if (konto == null)
+			throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus")); 
+
+		if (konto.isNewObject())
+			konto.store();
+
 		this.konto = konto;
 
 		setJobParam("my",Converter.HibiscusKonto2HBCIKonto(konto));
-
-		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
 	}
 
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getIdentifier()
    */
-  public String getIdentifier()
+  String getIdentifier()
   {
     return "SaldoReq";
   }
 
-	/**
-	 * Liefert den Saldo.
-   * @return Saldo.
-	 * @throws ApplicationException
+  /**
+   * Prueft, ob das Abrufen des Saldo erfolgreich war.
+   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#handleResult()
    */
-  public double getSaldo() throws ApplicationException
-	{
+  void handleResult() throws RemoteException, ApplicationException
+  {
 		GVRSaldoReq result = (GVRSaldoReq) getJobResult();
 
 		String statusText = getStatusText();
@@ -72,30 +77,25 @@ public class HBCISaldoJob extends AbstractHBCIJob {
 										i18n.tr("Fehlermeldung der Bank") + ": " + statusText :
 										i18n.tr("Unbekannter Fehler beim Abrufen des Saldos");
 
-			try {
-				konto.addToProtokoll(i18n.tr("Fehler beim Abrufen das Saldos") + " ("+ msg +")",Protokoll.TYP_ERROR);
-			}
-			catch (RemoteException e)
-			{
-				Logger.error("error while writing konto protocol",e);
-			}
+			konto.addToProtokoll(i18n.tr("Fehler beim Abrufen das Saldos") + " ("+ msg +")",Protokoll.TYP_ERROR);
 			throw new ApplicationException(msg);
 		}
-		Logger.debug("job result is ok, returning saldo");
-		try {
-			konto.addToProtokoll(i18n.tr("Saldo abgerufen"),Protokoll.TYP_SUCCESS);
-		}
-		catch (RemoteException e)
-		{
-			Logger.error("error while writing konto protocol",e);
-		}
-		return result.getEntries()[0].ready.value.value;
-	}
+
+		konto.addToProtokoll(i18n.tr("Saldo abgerufen"),Protokoll.TYP_SUCCESS);
+
+		// Jetzt speichern wir noch den neuen Saldo.
+		konto.setSaldo(result.getEntries()[0].ready.value.value);
+		konto.store();
+		Logger.info("saldo fetched successfully");
+  }
 }
 
 
 /**********************************************************************
  * $Log: HBCISaldoJob.java,v $
+ * Revision 1.13  2004/10/25 22:39:14  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.12  2004/10/25 17:58:56  willuhn
  * @N Haufen Dauerauftrags-Code
  *

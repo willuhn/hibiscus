@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/UeberweisungExecute.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/10/25 17:58:56 $
+ * $Revision: 1.5 $
+ * $Date: 2004/10/25 22:39:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,8 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.dialogs.UeberweisungDialog;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
+import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
+import de.willuhn.jameica.hbci.server.hbci.HBCIUeberweisungJob;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.util.ApplicationException;
@@ -32,24 +34,15 @@ import de.willuhn.util.Logger;
 public class UeberweisungExecute implements Action
 {
 
-	private I18N i18n = null;
-
-  /**
-   * ct.
-   */
-  public UeberweisungExecute()
-  {
-    super();
-    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  }
-
   /**
 	 * Erwartet ein Objekt vom Typ <code>Ueberweisung</code> als Context.
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
   public void handleAction(Object context) throws ApplicationException
   {
-		if (context == null)
+		final I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+
+		if (context == null || !(context instanceof Ueberweisung))
 			throw new ApplicationException(i18n.tr("Keine Überweisung angegeben"));
 
 		try
@@ -83,7 +76,9 @@ public class UeberweisungExecute implements Action
         	{
 						GUI.getStatusBar().startProgress();
 						GUI.getStatusBar().setStatusText(i18n.tr("Führe Überweisung aus..."));
-						u.execute();
+						HBCIFactory factory = HBCIFactory.getInstance();
+						factory.addJob(new HBCIUeberweisungJob(u));
+						factory.executeJobs(u.getKonto().getPassport().getHandle()); 
 						GUI.getStatusBar().setSuccessText(i18n.tr("Überweisung erfolgreich ausgeführt"));
         	}
 					catch (OperationCanceledException oce)
@@ -99,6 +94,11 @@ public class UeberweisungExecute implements Action
 						Logger.error("error while executing ueberweisung",e);
 						GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Ausführen der Überweisung"));
 					}
+					finally
+					{
+						GUI.getStatusBar().stopProgress();
+						GUI.getStatusBar().setStatusText("");
+					}
         }
       });
 
@@ -108,11 +108,6 @@ public class UeberweisungExecute implements Action
 			Logger.error("error while executing ueberweisung",e);
 			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Ausführen der Überweisung"));
 		}
-		finally
-		{
-			GUI.getStatusBar().stopProgress();
-			GUI.getStatusBar().setStatusText("");
-		}
   }
 
 }
@@ -120,6 +115,9 @@ public class UeberweisungExecute implements Action
 
 /**********************************************************************
  * $Log: UeberweisungExecute.java,v $
+ * Revision 1.5  2004/10/25 22:39:14  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2004/10/25 17:58:56  willuhn
  * @N Haufen Dauerauftrags-Code
  *
