@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EmpfaengerControl.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/03/11 08:55:42 $
+ * $Revision: 1.7 $
+ * $Date: 2004/03/30 22:07:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -163,16 +163,16 @@ public class EmpfaengerControl extends AbstractControl {
 
 			// ok, wir loeschen das Objekt
 			getEmpfaenger().delete();
-			GUI.setActionText(i18n.tr("Empfängeradresse gelöscht."));
+			GUI.getStatusBar().setSuccessText(i18n.tr("Empfängeradresse gelöscht."));
 		}
 		catch (RemoteException e)
 		{
-			GUI.setActionText(i18n.tr("Fehler beim Löschen der Empfängeradresse."));
+			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Löschen der Empfängeradresse."));
 			Application.getLog().error("unable to delete empfaenger");
 		}
 		catch (ApplicationException ae)
 		{
-			GUI.setActionText(ae.getLocalizedMessage());
+			GUI.getView().setErrorText(ae.getLocalizedMessage());
 		}
 
   }
@@ -193,16 +193,16 @@ public class EmpfaengerControl extends AbstractControl {
   		getEmpfaenger().setBLZ((String)getBlz().getValue());
   		getEmpfaenger().setName((String)getName().getValue());
   		getEmpfaenger().store();
-  		GUI.setActionText(i18n.tr("Empfängeradresse gespeichert"));
+  		GUI.getStatusBar().setSuccessText(i18n.tr("Empfängeradresse gespeichert"));
   	}
   	catch (RemoteException e)
   	{
   		Application.getLog().error("error while storing empfaenger",e);
-  		GUI.setActionText(i18n.tr("Fehler beim Speichern der Adresse"));
+  		GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern der Adresse"));
   	}
   	catch (ApplicationException e2)
   	{
-  		GUI.setActionText(e2.getLocalizedMessage());
+  		GUI.getView().setErrorText(e2.getLocalizedMessage());
   	}
   }
 
@@ -248,6 +248,9 @@ public class EmpfaengerControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: EmpfaengerControl.java,v $
+ * Revision 1.7  2004/03/30 22:07:50  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.6  2004/03/11 08:55:42  willuhn
  * @N UmsatzDetails
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/KontoNeu.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/03/05 00:04:10 $
+ * $Revision: 1.10 $
+ * $Date: 2004/03/30 22:07:49 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -40,7 +40,7 @@ public class KontoNeu extends AbstractView {
 		
 		I18N i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
 
-		GUI.setTitleText(i18n.tr("Bankverbindung bearbeiten"));
+		GUI.getView().setTitle(i18n.tr("Bankverbindung bearbeiten"));
 		
 		final KontoControl control = new KontoControl(this);
 
@@ -79,7 +79,7 @@ public class KontoNeu extends AbstractView {
 		catch (RemoteException e)
 		{
 			Application.getLog().error("error while reading konto",e);
-			GUI.setActionText(i18n.tr("Fehler beim Lesen der Bankverbindungsdaten."));
+			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Lesen der Bankverbindungsdaten."));
 		}
 
 		// und noch die Abschicken-Knoepfe
@@ -102,6 +102,9 @@ public class KontoNeu extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoNeu.java,v $
+ * Revision 1.10  2004/03/30 22:07:49  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.9  2004/03/05 00:04:10  willuhn
  * @N added code for umsatzlist
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/PassportDDVImpl.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/03/06 18:25:10 $
+ * $Revision: 1.8 $
+ * $Date: 2004/03/30 22:07:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -148,7 +148,7 @@ public class PassportDDVImpl
 			String absolutePath = f.getAbsolutePath();
 	
 			HBCIUtils.setParam("client.passport.default","DDV");
-			HBCIUtils.setParam("client.passport.DDV.path",absolutePath + File.separator + "passports" + File.separator);
+			HBCIUtils.setParam("client.passport.DDV.path",absolutePath + "/passports/");
 	
 	
 			String os = System.getProperty("os.name");
@@ -258,6 +258,9 @@ public class PassportDDVImpl
 
 /**********************************************************************
  * $Log: PassportDDVImpl.java,v $
+ * Revision 1.8  2004/03/30 22:07:50  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2004/03/06 18:25:10  willuhn
  * @D javadoc
  * @C removed empfaenger_id from umsatz

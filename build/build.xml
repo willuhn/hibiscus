@@ -28,8 +28,8 @@
         <property name="src.dir" 			 value="src"/>
         <property name="icon.dir" 			 value="${src.dir}/img"/>
         <property name="lang.dir" 			 value="${src.dir}/lang"/>
+        <property name="help.dir" 			 value="${src.dir}/help"/>
         <property name="lib.dir" 			 value="lib"/>
-        <property name="db.dir" 			 value="db"/>
         <property name="sql.dir" 			 value="sql"/>
         <property name="cfg.dir" 			 value="cfg"/>
         <property name="class.dir" 			 value="${project.tmp}/bin"/>
@@ -39,7 +39,7 @@
 			<pathelement location="../jameica/bin/"/>
 			<pathelement location="../util/bin/"/>
 			<pathelement location="../datasource/bin/"/>
-			<pathelement location="lib/hbci4java-2.4.7pre-20040204.jar"/>
+			<pathelement location="${lib.dir}/hbci4java-2.4.7pre-20040204.jar"/>
 		</path>
 
     </target>
@@ -57,6 +57,13 @@
             <include name="**/*.class"/>
 			<classpath refid="compilepath" />
         </rmic>
+
+		<copy todir="${class.dir}/lang">
+			<fileset dir="${lang.dir}" />
+		</copy>
+		<copy todir="${class.dir}/help">
+			<fileset dir="${help.dir}" />
+		</copy>
 
 		<copy file="${src.dir}/navigation.xml" tofile="${class.dir}/navigation.xml" />
 		<copy file="${src.dir}/menu.xml" 	   tofile="${class.dir}/menu.xml" />
@@ -83,20 +90,19 @@
 		    	<attribute name="Implementation-Title" value="${define.pluginname}"/>
 		    	<attribute name="Implementation-Version" value="${version}"/>
 		    	<attribute name="Implementation-Buildnumber" value="${build.number}"/>
-		    	<attribute name="Class-Path" value="lib/hbci4java-2.4.7pre-20040204.jar"/>
+		    	<attribute name="Class-Path" value="lang help lib lib/hbci4java-2.4.7pre-20040204.jar"/>
 		    </manifest>
 		    <fileset dir="${class.dir}"/>
 		</jar>
 
-		<mkdir dir="${project.release}/db"/>
 		<mkdir dir="${project.release}/sql"/>
-
-		<copy todir="${project.release}/db">
-			<fileset dir="${db.dir}"/>
-		</copy>
-
 		<copy todir="${project.release}/sql">
 			<fileset dir="${sql.dir}"/>
+		</copy>
+
+		<mkdir dir="${project.release}/lib"/>
+		<copy todir="${project.release}/lib">
+			<fileset dir="${lib.dir}"/>
 		</copy>
 		
     </target>

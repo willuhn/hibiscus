@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzDetail.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/03/11 08:55:42 $
+ * $Revision: 1.2 $
+ * $Date: 2004/03/30 22:07:49 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -38,7 +38,7 @@ public class UmsatzDetail extends AbstractView {
 
     final UmsatzDetailControl control = new UmsatzDetailControl(this);
     I18N i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
-    GUI.setTitleText(i18n.tr("Buchungsdetails"));
+    GUI.getView().setTitle(i18n.tr("Buchungsdetails"));
 
     LabelGroup konten = new LabelGroup(getParent(),i18n.tr("Konten"));
 
@@ -70,6 +70,9 @@ public class UmsatzDetail extends AbstractView {
 
 /**********************************************************************
  * $Log: UmsatzDetail.java,v $
+ * Revision 1.2  2004/03/30 22:07:49  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/03/11 08:55:42  willuhn
  * @N UmsatzDetails
  *

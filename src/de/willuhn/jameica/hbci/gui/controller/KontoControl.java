@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.17 $
- * $Date: 2004/03/19 01:44:13 $
+ * $Revision: 1.18 $
+ * $Date: 2004/03/30 22:07:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -280,16 +280,16 @@ public class KontoControl extends AbstractControl {
 
 			// ok, wir loeschen das Objekt
 			getKonto().delete();
-			GUI.setActionText(i18n.tr("Bankverbindung gelöscht."));
+			GUI.getStatusBar().setSuccessText(i18n.tr("Bankverbindung gelöscht."));
 		}
 		catch (RemoteException e)
 		{
-			GUI.setActionText(i18n.tr("Fehler beim Löschen der Bankverbindung."));
+			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Löschen der Bankverbindung."));
 			Application.getLog().error("unable to delete konto",e);
 		}
 		catch (ApplicationException ae)
 		{
-			GUI.setActionText(ae.getLocalizedMessage());
+			GUI.getView().setErrorText(i18n.tr(ae.getMessage()));
 		}
   }
 
@@ -313,7 +313,7 @@ public class KontoControl extends AbstractControl {
 
 			if (p.isNewObject())
 			{
-				GUI.setActionText(i18n.tr("Bitte wählen Sie ein Sicherheitsmedium aus."));
+				GUI.getView().setErrorText(i18n.tr("Bitte wählen Sie ein Sicherheitsmedium aus."));
 				return;
 			}
 			getKonto().setPassport(p);
@@ -328,16 +328,16 @@ public class KontoControl extends AbstractControl {
       
 			// und jetzt speichern wir.
 			getKonto().store();
-			GUI.setActionText(i18n.tr("Bankverbindung gespeichert."));
+			GUI.getStatusBar().setSuccessText(i18n.tr("Bankverbindung gespeichert."));
 		}
 		catch (ApplicationException e1)
 		{
-			GUI.setActionText(e1.getLocalizedMessage());
+			GUI.getView().setErrorText(i18n.tr(e1.getLocalizedMessage()));
 		}
 		catch (RemoteException e)
 		{
 			Application.getLog().error("unable to store konto",e);
-			GUI.setActionText("Fehler beim Speichern der Bankverbindung.");
+			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern der Bankverbindung."));
 		}
 
   }
@@ -362,7 +362,7 @@ public class KontoControl extends AbstractControl {
    */
   public void handleReadFromPassport()
 	{
-		GUI.setActionText(i18n.tr("Chipkarte wird ausgelesen..."));
+		GUI.getStatusBar().setSuccessText(i18n.tr("Chipkarte wird ausgelesen..."));
 
 		GUI.startSync(new Runnable() {
       public void run() {
@@ -405,18 +405,18 @@ public class KontoControl extends AbstractControl {
 							{
 								// Wenn ein Konto fehlschlaegt, soll nicht gleich der ganze Vorgang abbrechen
 								Application.getLog().error("error while storing konto",e);
-								GUI.setActionText(i18n.tr("Fehler beim Anlegen des Kontos") + " " + konten[i].getKontonummer());
+								GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Anlegen des Kontos") + " " + konten[i].getKontonummer());
 							}
 						}
 						
 					}
 					GUI.startView(KontoListe.class.getName(),null); // Page reload
-					GUI.setActionText(i18n.tr("Konten erfolgreich ausgelesen"));
+					GUI.getStatusBar().setSuccessText(i18n.tr("Konten erfolgreich ausgelesen"));
 				}
 				catch (RemoteException e)
 				{
 					Application.getLog().error("error while reading data from passport",e);
-					GUI.setActionText(i18n.tr("Fehler beim Lesen der Konto-Daten"));
+					GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Lesen der Konto-Daten"));
 				}
       }
     });
@@ -428,30 +428,30 @@ public class KontoControl extends AbstractControl {
   public void handleRefreshSaldo()
 	{
 
-		GUI.startProgress();
+		GUI.getStatusBar().startProgress();
 
 		GUI.startSync(new Runnable() {
       public void run() {
       	try {
-      		GUI.setActionText(i18n.tr("Saldo des Kontos wird ermittelt..."));
+					GUI.getStatusBar().setSuccessText(i18n.tr("Saldo des Kontos wird ermittelt..."));
 					getKonto().refreshSaldo();
 					getSaldo().setValue(HBCI.DECIMALFORMAT.format(getKonto().getSaldo()) + " " + getKonto().getWaehrung());
 					getSaldoDatum().setValue(HBCI.LONGDATEFORMAT.format(getKonto().getSaldoDatum()));
-					GUI.setActionText(i18n.tr("...Saldo des Kontos erfolgreich übertragen"));
+					GUI.getStatusBar().setSuccessText(i18n.tr("...Saldo des Kontos erfolgreich übertragen"));
       	}
       	catch (ApplicationException e2)
       	{
-      		GUI.setErrorText(e2.getLocalizedMessage());
+      		GUI.getView().setErrorText(i18n.tr(e2.getMessage()));
       	}
 				catch (Exception e)
 				{
 					Application.getLog().error("error while reading saldo",e);
-					GUI.setActionText(i18n.tr("Fehler beim Abrufen des Saldos."));
+					GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Abrufen des Saldos."));
 				}
       }
     });
 
-		GUI.stopProgress();
+		GUI.getStatusBar().stopProgress();
 	}
 
 	/**
@@ -463,7 +463,7 @@ public class KontoControl extends AbstractControl {
 			Konto konto = getKonto();
 			if (konto == null || konto.isNewObject())
 			{
-				GUI.setActionText(i18n.tr("Bitte speichern Sie zuerst das Konto."));
+				GUI.getView().setErrorText(i18n.tr("Bitte speichern Sie zuerst das Konto."));
 				return;
 			}
 			GUI.startView(UmsatzListe.class.getName(),getKonto());
@@ -471,7 +471,7 @@ public class KontoControl extends AbstractControl {
 		catch (RemoteException e)
 		{
 			Application.getLog().error("error while starting umsatz list",e);
-			GUI.setActionText(i18n.tr("Fehler beim Laden der Kontoauszüge"));
+			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Laden der Kontoauszüge"));
 		}
 	}
 
@@ -502,6 +502,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.18  2004/03/30 22:07:50  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.17  2004/03/19 01:44:13  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/03/06 18:25:10 $
+ * $Revision: 1.10 $
+ * $Date: 2004/03/30 22:07:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -122,12 +122,12 @@ public class SettingsControl extends AbstractControl {
 
 			// Wir gehen nochmal auf Nummer sicher, dass die Pruefsummen-Algorithmen vorhanden sind
 			new CheckPinListener().handleEvent(null);
-			GUI.setActionText(i18n.tr("Einstellungen gespeichert."));
+			GUI.getStatusBar().setSuccessText(i18n.tr("Einstellungen gespeichert."));
 		}
 		catch (RemoteException e)
 		{
 			Application.getLog().error("error while storing settings",e);
-			GUI.setActionText(i18n.tr("Fehler beim Speichern der Einstellungen"));
+			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern der Einstellungen"));
 		}
   }
 
@@ -175,7 +175,7 @@ public class SettingsControl extends AbstractControl {
 					getCheckPin().disable();
 				}
 				catch (RemoteException e1) {/*useless*/}
-				GUI.setActionText(i18n.tr("Algorithmen zur Prüfsummenbildung auf diesem System nicht vorhanden"));
+				GUI.getStatusBar().setErrorText(i18n.tr("Algorithmen zur Prüfsummenbildung auf diesem System nicht vorhanden"));
 			}
     }
 	}
@@ -184,6 +184,9 @@ public class SettingsControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.10  2004/03/30 22:07:50  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.9  2004/03/06 18:25:10  willuhn
  * @D javadoc
  * @C removed empfaenger_id from umsatz

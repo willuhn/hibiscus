@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/EmpfaengerNeu.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/03/03 22:26:40 $
+ * $Revision: 1.3 $
+ * $Date: 2004/03/30 22:07:49 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -37,7 +37,7 @@ public class EmpfaengerNeu extends AbstractView {
 
 		I18N i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
 
-		GUI.setTitleText(i18n.tr("Empfänger bearbeiten"));
+		GUI.getView().setTitle(i18n.tr("Empfänger bearbeiten"));
 		
 		final EmpfaengerControl control = new EmpfaengerControl(this);
 		LabelGroup group = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
@@ -52,7 +52,7 @@ public class EmpfaengerNeu extends AbstractView {
 		catch (RemoteException e)
 		{
 			Application.getLog().error("error while reading konto",e);
-			GUI.setActionText(i18n.tr("Fehler beim Lesen der Empfängerdaten."));
+			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Lesen der Empfängerdaten."));
 		}
 
 		// und noch die Abschicken-Knoepfe
@@ -75,6 +75,9 @@ public class EmpfaengerNeu extends AbstractView {
 
 /**********************************************************************
  * $Log: EmpfaengerNeu.java,v $
+ * Revision 1.3  2004/03/30 22:07:49  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2004/03/03 22:26:40  willuhn
  * @N help texts
  * @C refactoring

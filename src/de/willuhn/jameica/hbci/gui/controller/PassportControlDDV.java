@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/PassportControlDDV.java,v $
- * $Revision: 1.11 $
- * $Date: 2004/03/11 08:55:42 $
+ * $Revision: 1.12 $
+ * $Date: 2004/03/30 22:07:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -74,7 +74,7 @@ public class PassportControlDDV extends AbstractControl {
 
 		if (passport == null)
 		{
-			GUI.setActionText(i18n.tr("Ausgewähltes Sicherheitsmedium wurde nicht gefunden"));
+			GUI.getStatusBar().setErrorText(i18n.tr("Ausgewähltes Sicherheitsmedium wurde nicht gefunden"));
 			throw new RemoteException("passport not found");
 		}
 		return passport;
@@ -197,11 +197,11 @@ public class PassportControlDDV extends AbstractControl {
 				return;
 
   		getPassport().delete();
-			GUI.setActionText(i18n.tr("Medium gelöscht"));
+			GUI.getStatusBar().setSuccessText(i18n.tr("Medium gelöscht"));
   	}
   	catch (ApplicationException e2)
   	{
-			GUI.setActionText(e2.getLocalizedMessage());
+			GUI.getView().setErrorText(i18n.tr(e2.getMessage()));
   	}
 		catch (Exception e)
 		{
@@ -227,7 +227,7 @@ public class PassportControlDDV extends AbstractControl {
 			}
 			catch (NumberFormatException e)
 			{
-				GUI.setActionText(i18n.tr("Bitte geben Sie im Feld \"Nummer des Chipkartenlesers\" eine gültige Zahl ein."));
+				GUI.getView().setErrorText(i18n.tr("Bitte geben Sie im Feld \"Nummer des Chipkartenlesers\" eine gültige Zahl ein."));
 				return;
 			}
 
@@ -236,7 +236,7 @@ public class PassportControlDDV extends AbstractControl {
 			}
 			catch (NumberFormatException e)
 			{
-				GUI.setActionText(i18n.tr("Bitte geben Sie im Feld \"Index des HBCI-Zugangs\" eine gültige Zahl ein."));
+				GUI.getView().setErrorText(i18n.tr("Bitte geben Sie im Feld \"Index des HBCI-Zugangs\" eine gültige Zahl ein."));
 				return;
 			}
 
@@ -252,16 +252,16 @@ public class PassportControlDDV extends AbstractControl {
 			
 			getPassport().store();
 
-			GUI.setActionText(i18n.tr("Einstellungen gespeichert"));
+			GUI.getStatusBar().setSuccessText(i18n.tr("Einstellungen gespeichert"));
   	}
   	catch (ApplicationException e)
   	{
-  		GUI.setActionText(e.getLocalizedMessage());
+			GUI.getView().setErrorText(i18n.tr(e.getMessage()));
   	}
   	catch (RemoteException e)
   	{
   		Application.getLog().error("error while storing params",e);
-  		GUI.setActionText(i18n.tr("Fehler beim Speichern der Einstellungen"));
+			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern der Einstellungen"));
   	}
   }
 
@@ -288,7 +288,7 @@ public class PassportControlDDV extends AbstractControl {
 		// Test haben und die auch gespeichert sind
 		handleStore();
 
-		GUI.setActionText(i18n.tr("Teste Chipkartenleser..."));
+		GUI.getStatusBar().setSuccessText(i18n.tr("Teste Chipkartenleser..."));
 
 		GUI.startSync(new Runnable() {
       public void run() {
@@ -296,11 +296,11 @@ public class PassportControlDDV extends AbstractControl {
 					getPassport().open();
 					getPassport().close(); // nein, nicht im finally, denn wenn das Oeffnen
 																 // fehlschlaegt, ist nichts zum Schliessen da ;)
-					GUI.setActionText(i18n.tr("Chipkartenleser erfolgreich getestet."));
+					GUI.getStatusBar().setSuccessText(i18n.tr("Chipkartenleser erfolgreich getestet."));
 				}
 				catch (RemoteException e)
 				{
-					GUI.setActionText(i18n.tr("Fehler beim Testen des Chipkartenlesers."));
+					GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Testen des Chipkartenlesers."));
 					Application.getLog().debug("error while testing chipcard reader: " + e.getLocalizedMessage());
 				}
       }
@@ -311,6 +311,9 @@ public class PassportControlDDV extends AbstractControl {
 
 /**********************************************************************
  * $Log: PassportControlDDV.java,v $
+ * Revision 1.12  2004/03/30 22:07:50  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.11  2004/03/11 08:55:42  willuhn
  * @N UmsatzDetails
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/Welcome.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/03/03 22:26:40 $
+ * $Revision: 1.5 $
+ * $Date: 2004/03/30 22:07:49 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -34,7 +34,7 @@ public class Welcome extends AbstractView
   {
 		I18N i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
 
-		GUI.setTitleText(i18n.tr("HBCI"));
+		GUI.getView().setTitle(i18n.tr("HBCI"));
   	Text text = new Text(i18n.tr("HBCI-Plugin für Jameica"));
   	text.paint(getParent());
   	
@@ -52,6 +52,9 @@ public class Welcome extends AbstractView
 
 /**********************************************************************
  * $Log: Welcome.java,v $
+ * Revision 1.5  2004/03/30 22:07:49  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2004/03/03 22:26:40  willuhn
  * @N help texts
  * @C refactoring

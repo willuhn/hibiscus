@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/03/11 08:55:42 $
+ * $Revision: 1.8 $
+ * $Date: 2004/03/30 22:07:49 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -330,7 +330,7 @@ public class UeberweisungControl extends AbstractControl {
 			catch (RemoteException er)
 			{
 				Application.getLog().error("error while updating currency",er);
-				GUI.setActionText(i18n.tr("Fehler bei Ermittlung der Währung"));
+				GUI.getStatusBar().setErrorText(i18n.tr("Fehler bei Ermittlung der Währung"));
 			}
 		}
 	}
@@ -356,7 +356,7 @@ public class UeberweisungControl extends AbstractControl {
 			catch (RemoteException er)
 			{
 				Application.getLog().error("error while choosing empfaenger",er);
-				GUI.setActionText(i18n.tr("Fehler bei der Auswahl des Empfängers"));
+				GUI.getStatusBar().setErrorText(i18n.tr("Fehler bei der Auswahl des Empfängers"));
     	}
     }
 	}
@@ -365,6 +365,9 @@ public class UeberweisungControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
+ * Revision 1.8  2004/03/30 22:07:49  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2004/03/11 08:55:42  willuhn
  * @N UmsatzDetails
  *

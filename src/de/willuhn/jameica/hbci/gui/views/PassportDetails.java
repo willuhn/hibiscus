@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/PassportDetails.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/03/19 01:44:13 $
+ * $Revision: 1.9 $
+ * $Date: 2004/03/30 22:07:49 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -42,7 +42,7 @@ public class PassportDetails extends AbstractView {
 
 		I18N i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
 
-		GUI.setTitleText(i18n.tr("Eigenschaften des Sicherheitsmediums"));
+		GUI.getView().setTitle(i18n.tr("Eigenschaften des Sicherheitsmediums"));
 
 		Passport p = (Passport) getCurrentObject();
 		
@@ -90,7 +90,7 @@ public class PassportDetails extends AbstractView {
 		///////////////////////////////////////////////////////////////////////////
   	else {
 			Application.getLog().error("choosen passport not found");
-			GUI.setActionText(i18n.tr("Das ausgewählte Sicherheitsmedium konnte nicht geladen werden."));
+			GUI.getStatusBar().setErrorText(i18n.tr("Das ausgewählte Sicherheitsmedium konnte nicht geladen werden."));
   		
   	}
 
@@ -107,6 +107,9 @@ public class PassportDetails extends AbstractView {
 
 /**********************************************************************
  * $Log: PassportDetails.java,v $
+ * Revision 1.9  2004/03/30 22:07:49  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.8  2004/03/19 01:44:13  willuhn
  * *** empty log message ***
  *
