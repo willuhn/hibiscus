@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Settings.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/02/27 01:11:53 $
+ * $Revision: 1.7 $
+ * $Date: 2004/02/27 01:12:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -40,7 +40,7 @@ public class Settings extends AbstractView {
 		GUI.setTitleText(I18N.tr("Einstellungen"));
 		final SettingsControl control = new SettingsControl(this);
 		
-		LabelGroup settings = new LabelGroup(getParent(),I18N.tr("Einstellungen"));
+		LabelGroup settings = new LabelGroup(getParent(),I18N.tr("Grundeinstellungen"));
 
 		try {
 
@@ -114,6 +114,9 @@ public class Settings extends AbstractView {
 
 /**********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.7  2004/02/27 01:12:22  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.6  2004/02/27 01:11:53  willuhn
  * *** empty log message ***
  *
