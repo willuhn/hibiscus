@@ -57,9 +57,9 @@
 
 	    <path id="compilepath">
 	      <pathelement location="../jameica/lib/swt/linux/swt.jar"/>
-	      <pathelement location="../jameica/bin/"/>
-	      <pathelement location="../util/bin/"/>
-	      <pathelement location="../datasource/bin/"/>
+	      <pathelement location="../jameica/releases/jameica-lib.jar"/>
+	      <pathelement location="../jameica/lib/de_willuhn_ds/de_willuhn_ds.jar"/>
+              <pathelement location="../jameica/lib/de_willuhn_util/de_willuhn_util.jar"/>
 	      <pathelement location="${lib.dir}/hbci4java-2.5.0pre-20040810.jar"/>
 	    </path>
 
