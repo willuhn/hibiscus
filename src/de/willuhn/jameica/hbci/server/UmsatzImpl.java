@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/05/25 23:23:17 $
+ * $Revision: 1.7 $
+ * $Date: 2004/06/17 00:14:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -50,9 +50,9 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz {
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.DBObject#getPrimaryField()
+   * @see de.willuhn.datasource.rmi.GenericObject#getPrimaryAttribute()
    */
-  public String getPrimaryField() throws RemoteException {
+  public String getPrimaryAttribute() throws RemoteException {
     return "zweck";
   }
 
@@ -116,14 +116,14 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz {
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#getKonto()
    */
   public Konto getKonto() throws RemoteException {
-    return (Konto) getField("konto_id");
+    return (Konto) getAttribute("konto_id");
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#getEmpfaengerName()
    */
   public String getEmpfaengerName() throws RemoteException {
-    return (String) getField("empfaenger_name");
+    return (String) getAttribute("empfaenger_name");
   }
 
   /**
@@ -131,7 +131,7 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz {
    */
   public String getEmpfaengerKonto() throws RemoteException
   {
-    return (String) getField("empfaenger_konto");
+    return (String) getAttribute("empfaenger_konto");
   }
 
   /**
@@ -139,14 +139,14 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz {
    */
   public String getEmpfaengerBLZ() throws RemoteException
   {
-    return (String) getField("empfaenger_blz");
+    return (String) getAttribute("empfaenger_blz");
   }
   
   /**
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#getBetrag()
    */
   public double getBetrag() throws RemoteException {
-		Double d = (Double) getField("betrag");
+		Double d = (Double) getAttribute("betrag");
 		if (d == null)
 			return 0;
 		return d.doubleValue();
@@ -156,28 +156,28 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz {
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#getDatum()
    */
   public Date getDatum() throws RemoteException {
-		return (Date) getField("datum");
+		return (Date) getAttribute("datum");
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#getValuta()
    */
   public Date getValuta() throws RemoteException {
-		return (Date) getField("datum");
+		return (Date) getAttribute("valuta");
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#getZweck()
    */
   public String getZweck() throws RemoteException {
-		return (String) getField("zweck");
+		return (String) getAttribute("zweck");
   }
 
 	/**
 	 * @see de.willuhn.jameica.hbci.rmi.Umsatz#getZweck2()
 	 */
 	public String getZweck2() throws RemoteException {
-		return (String) getField("zweck2");
+		return (String) getAttribute("zweck2");
 	}
 
   /**
@@ -269,7 +269,7 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz {
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#getSaldo()
    */
   public double getSaldo() throws RemoteException {
-		Double d = (Double) getField("saldo");
+		Double d = (Double) getAttribute("saldo");
 		if (d == null)
 			return 0;
 		return d.doubleValue();
@@ -279,21 +279,21 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz {
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#getPrimanota()
    */
   public String getPrimanota() throws RemoteException {
-		return (String) getField("primanota");
+		return (String) getAttribute("primanota");
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#getArt()
    */
   public String getArt() throws RemoteException {
-		return (String) getField("art");
+		return (String) getAttribute("art");
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#getCustomerRef()
    */
   public String getCustomerRef() throws RemoteException {
-		return (String) getField("customerref");
+		return (String) getAttribute("customerref");
   }
 
   /**
@@ -349,7 +349,7 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz {
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#getUmsatzTyp()
    */
   public UmsatzTyp getUmsatzTyp() throws RemoteException {
-		return (UmsatzTyp) getField("umsatztyp_id");
+		return (UmsatzTyp) getAttribute("umsatztyp_id");
   }
 
   /**
@@ -367,6 +367,9 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz {
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.7  2004/06/17 00:14:10  willuhn
+ * @N GenericObject, GenericIterator
+ *
  * Revision 1.6  2004/05/25 23:23:17  willuhn
  * @N UeberweisungTyp
  * @N Protokoll

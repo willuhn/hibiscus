@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.15 $
- * $Date: 2004/05/05 21:10:55 $
+ * $Revision: 1.16 $
+ * $Date: 2004/06/17 00:14:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -145,13 +145,15 @@ public class HBCI extends AbstractPlugin
    */
   public void shutDown()
   {
-  	getResources().getI18N().flush();
   }
 }
 
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.16  2004/06/17 00:14:10  willuhn
+ * @N GenericObject, GenericIterator
+ *
  * Revision 1.15  2004/05/05 21:10:55  willuhn
  * *** empty log message ***
  *

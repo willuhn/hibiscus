@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.23 $
- * $Date: 2004/06/07 22:22:33 $
+ * $Revision: 1.24 $
+ * $Date: 2004/06/17 00:14:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.hbci.HBCI;
@@ -59,9 +60,9 @@ public class KontoImpl extends AbstractDBObject implements Konto {
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.DBObject#getPrimaryField()
+   * @see de.willuhn.datasource.rmi.GenericObject#getPrimaryAttribute()
    */
-  public String getPrimaryField() throws RemoteException {
+  public String getPrimaryAttribute() throws RemoteException {
     return "kontonummer";
   }
 
@@ -117,21 +118,21 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    * @see de.willuhn.jameica.hbci.rmi.Konto#getKontonummer()
    */
   public String getKontonummer() throws RemoteException {
-    return (String) getField("kontonummer");
+    return (String) getAttribute("kontonummer");
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Konto#getBLZ()
    */
   public String getBLZ() throws RemoteException {
-		return (String) getField("blz");
+		return (String) getAttribute("blz");
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Konto#getName()
    */
   public String getName() throws RemoteException {
-		return (String) getField("name");
+		return (String) getAttribute("name");
   }
 
   /**
@@ -139,7 +140,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    */
   public Passport getPassport() throws RemoteException {
 
-		String className = (String) getField("passport_class");
+		String className = (String) getAttribute("passport_class");
 		if (className == null)
 			return null;
 
@@ -234,7 +235,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    */
   public String getWaehrung() throws RemoteException
   {
-    return (String) getField("waehrung");
+    return (String) getAttribute("waehrung");
   }
 
   /**
@@ -249,7 +250,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    * @see de.willuhn.jameica.hbci.rmi.Konto#getKundennummer()
    */
   public String getKundennummer() throws RemoteException {
-    return (String) getField("kundennummer");
+    return (String) getAttribute("kundennummer");
   }
 
   /**
@@ -263,7 +264,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    * @see de.willuhn.jameica.hbci.rmi.Konto#getSaldo()
    */
   public double getSaldo() throws RemoteException {
-		Double d = (Double) getField("saldo");
+		Double d = (Double) getAttribute("saldo");
 		if (d == null)
 			return 0;
 		return d.doubleValue();
@@ -350,7 +351,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    * @see de.willuhn.jameica.hbci.rmi.Konto#getSaldoDatum()
    */
   public Date getSaldoDatum() throws RemoteException {
-    return (Date) getField("saldo_datum");
+    return (Date) getAttribute("saldo_datum");
   }
 
   /**
@@ -383,7 +384,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 
 		while (list.hasNext())
 		{
-			list.next().delete();
+			((DBObject)list.next()).delete();
 		}
   }
 
@@ -391,7 +392,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    * @see de.willuhn.jameica.hbci.rmi.Konto#getBezeichnung()
    */
   public String getBezeichnung() throws RemoteException {
-    return (String) getField("bezeichnung");
+    return (String) getAttribute("bezeichnung");
   }
 
   /**
@@ -457,6 +458,9 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.24  2004/06/17 00:14:10  willuhn
+ * @N GenericObject, GenericIterator
+ *
  * Revision 1.23  2004/06/07 22:22:33  willuhn
  * @B Spalte "Passport" in KontoListe entfernt - nicht mehr noetig
  *

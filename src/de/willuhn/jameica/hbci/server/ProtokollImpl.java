@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/ProtokollImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/05/25 23:23:17 $
+ * $Revision: 1.2 $
+ * $Date: 2004/06/17 00:14:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,7 +49,7 @@ public class ProtokollImpl extends AbstractDBObject implements Protokoll {
   /**
    * @see de.willuhn.datasource.rmi.DBObject#getPrimaryField()
    */
-  public String getPrimaryField() throws RemoteException {
+  public String getPrimaryAttribute() throws RemoteException {
     return "kommentar";
   }
 
@@ -106,28 +106,28 @@ public class ProtokollImpl extends AbstractDBObject implements Protokoll {
    * @see de.willuhn.jameica.hbci.rmi.Protokoll#getKonto()
    */
   public Konto getKonto() throws RemoteException {
-  	return (Konto) getField("konto_id");
+  	return (Konto) getAttribute("konto_id");
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Protokoll#getKommentar()
    */
   public String getKommentar() throws RemoteException {
-    return (String) getField("kommentar");
+    return (String) getAttribute("kommentar");
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Protokoll#getDatum()
    */
   public Date getDatum() throws RemoteException {
-    return (Date) getField("datum");
+    return (Date) getAttribute("datum");
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Protokoll#getTyp()
    */
   public int getTyp() throws RemoteException {
-		Integer i = (Integer) getField("typ");
+		Integer i = (Integer) getAttribute("typ");
 		if (i == null)
 			return TYP_UNKNOWN;
 		return i.intValue();
@@ -164,6 +164,9 @@ public class ProtokollImpl extends AbstractDBObject implements Protokoll {
 
 /**********************************************************************
  * $Log: ProtokollImpl.java,v $
+ * Revision 1.2  2004/06/17 00:14:10  willuhn
+ * @N GenericObject, GenericIterator
+ *
  * Revision 1.1  2004/05/25 23:23:17  willuhn
  * @N UeberweisungTyp
  * @N Protokoll

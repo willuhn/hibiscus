@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UeberweisungImpl.java,v $
- * $Revision: 1.11 $
- * $Date: 2004/05/26 23:23:10 $
+ * $Revision: 1.12 $
+ * $Date: 2004/06/17 00:14:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -56,9 +56,9 @@ public class UeberweisungImpl
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.DBObject#getPrimaryField()
+   * @see de.willuhn.datasource.rmi.GenericObject#getPrimaryAttribute()
    */
-  public String getPrimaryField() throws RemoteException {
+  public String getPrimaryAttribute() throws RemoteException {
     return "zweck";
   }
 
@@ -151,14 +151,14 @@ public class UeberweisungImpl
    * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#getKonto()
    */
   public Konto getKonto() throws RemoteException {
-    return (Konto) getField("konto_id");
+    return (Konto) getAttribute("konto_id");
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#getBetrag()
    */
   public double getBetrag() throws RemoteException {
-		Double d = (Double) getField("betrag");
+		Double d = (Double) getAttribute("betrag");
 		if (d == null)
 			return 0;
 		return d.doubleValue();
@@ -168,28 +168,28 @@ public class UeberweisungImpl
    * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#getZweck()
    */
   public String getZweck() throws RemoteException {
-    return (String) getField("zweck");
+    return (String) getAttribute("zweck");
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#getZweck2()
    */
   public String getZweck2() throws RemoteException {
-		return (String) getField("zweck2");
+		return (String) getAttribute("zweck2");
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#getTermin()
    */
   public Date getTermin() throws RemoteException {
-    return (Date) getField("termin");
+    return (Date) getAttribute("termin");
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#ausgefuehrt()
    */
   public boolean ausgefuehrt() throws RemoteException {
-		Integer i = (Integer) getField("ausgefuehrt");
+		Integer i = (Integer) getAttribute("ausgefuehrt");
 		if (i == null)
 			return false;
 		return i.intValue() == 1;
@@ -294,21 +294,21 @@ public class UeberweisungImpl
    * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#getEmpfaengerKonto()
    */
   public String getEmpfaengerKonto() throws RemoteException {
-    return (String) getField("empfaenger_konto");
+    return (String) getAttribute("empfaenger_konto");
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#getEmpfaengerBlz()
    */
   public String getEmpfaengerBlz() throws RemoteException {
-		return (String) getField("empfaenger_blz");
+		return (String) getAttribute("empfaenger_blz");
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#getEmpfaengerName()
    */
   public String getEmpfaengerName() throws RemoteException {
-		return (String) getField("empfaenger_name");
+		return (String) getAttribute("empfaenger_name");
   }
 
   /**
@@ -365,6 +365,9 @@ public class UeberweisungImpl
 
 /**********************************************************************
  * $Log: UeberweisungImpl.java,v $
+ * Revision 1.12  2004/06/17 00:14:10  willuhn
+ * @N GenericObject, GenericIterator
+ *
  * Revision 1.11  2004/05/26 23:23:10  willuhn
  * @N neue Sicherheitsabfrage vor Ueberweisung
  * @C Check des Ueberweisungslimit

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/EmpfaengerImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/04/05 23:28:46 $
+ * $Revision: 1.4 $
+ * $Date: 2004/06/17 00:14:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,9 +43,9 @@ public class EmpfaengerImpl extends AbstractDBObject implements Empfaenger {
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.DBObject#getPrimaryField()
+   * @see de.willuhn.datasource.rmi.GenericObject#getPrimaryAttribute()
    */
-  public String getPrimaryField() throws RemoteException {
+  public String getPrimaryAttribute() throws RemoteException {
     return "name";
   }
 
@@ -99,21 +99,21 @@ public class EmpfaengerImpl extends AbstractDBObject implements Empfaenger {
    * @see de.willuhn.jameica.hbci.rmi.Empfaenger#getKontonummer()
    */
   public String getKontonummer() throws RemoteException {
-    return (String) getField("kontonummer");
+    return (String) getAttribute("kontonummer");
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Empfaenger#getBLZ()
    */
   public String getBLZ() throws RemoteException {
-		return (String) getField("blz");
+		return (String) getAttribute("blz");
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Empfaenger#getName()
    */
   public String getName() throws RemoteException {
-		return (String) getField("name");
+		return (String) getAttribute("name");
   }
 
   /**
@@ -152,6 +152,9 @@ public class EmpfaengerImpl extends AbstractDBObject implements Empfaenger {
 
 /**********************************************************************
  * $Log: EmpfaengerImpl.java,v $
+ * Revision 1.4  2004/06/17 00:14:10  willuhn
+ * @N GenericObject, GenericIterator
+ *
  * Revision 1.3  2004/04/05 23:28:46  willuhn
  * *** empty log message ***
  *
