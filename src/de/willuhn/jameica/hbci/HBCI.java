@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/02/09 13:06:03 $
+ * $Revision: 1.2 $
+ * $Date: 2004/02/09 22:09:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,7 +21,6 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 
-import org.kapott.hbci.manager.HBCIHandler;
 import org.kapott.hbci.manager.HBCIUtils;
 import org.kapott.hbci.passport.AbstractHBCIPassport;
 import org.kapott.hbci.passport.HBCIPassport;
@@ -40,21 +39,20 @@ public class HBCI extends AbstractPlugin
 	public static DateFormat FASTDATEFORMAT   = new SimpleDateFormat("ddMMyyyy");
 	public static DecimalFormat DECIMALFORMAT = (DecimalFormat) NumberFormat.getNumberInstance(Application.getConfig().getLocale());
   
+	private static HBCIPassport passport = null;
+
 	static {
-		HBCIUtils.init(null,null,new Logger());
-		HBCIUtils.setParam("log.loglevel.default","4");
+		HBCIUtils.init(null,null,new HBCICallbackSWT());
+		HBCIUtils.setParam("log.loglevel.default","5");
 		HBCIUtils.setParam("client.passport.default","DDV");
-//		HBCIUtils.setParam("client.passport.DDV.path",Settings.get("ddv_path",".")+File.separator+
-//											 Settings.get("ddv_prefix",""));
-//		HBCIUtils.setParam("client.passport.DDV.libname.ddv",Settings.get("ddv_ddvlib",""));
-//		HBCIUtils.setParam("client.passport.DDV.libname.ctapi",Settings.get("ddv_ctapilib",""));
-//		HBCIUtils.setParam("client.passport.DDV.port",Settings.get("ddv_portnum",""));
-//		HBCIUtils.setParam("client.passport.DDV.ctnumber",Settings.get("ddv_ctnum",""));
-//		HBCIUtils.setParam("client.passport.DDV.usebio",Settings.get("ddv_usebio",""));
-//		HBCIUtils.setParam("client.passport.DDV.softpin",Settings.get("ddv_softpin",""));
-//		HBCIUtils.setParam("client.passport.DDV.entryidx",Settings.get("ddv_entryidx",""));
-		HBCIPassport passport=AbstractHBCIPassport.getInstance();
-		HBCIHandler handler=new HBCIHandler("210",passport);
+		HBCIUtils.setParam("client.passport.DDV.path","/work/willuhn/eclipse/hbci/passports");
+		HBCIUtils.setParam("client.passport.DDV.libname.ddv","/work/willuhn/eclipse/hbci/lib/libhbci4java-card-linux.so");
+		HBCIUtils.setParam("client.passport.DDV.libname.ctapi","/work/willuhn/eclipse/hbci/lib/libtowitoko-2.0.7.so");
+		HBCIUtils.setParam("client.passport.DDV.port","0");
+		HBCIUtils.setParam("client.passport.DDV.ctnumber","0");
+		HBCIUtils.setParam("client.passport.DDV.usebio","0");
+		HBCIUtils.setParam("client.passport.DDV.softpin","1");
+		HBCIUtils.setParam("client.passport.DDV.entryidx","1");
 
 		DECIMALFORMAT.applyPattern("#0.00");
 	}
@@ -82,6 +80,10 @@ public class HBCI extends AbstractPlugin
 			Application.getLog().error("unable to open database",e);
 			return false;
 		}
+
+		passport=AbstractHBCIPassport.getInstance();
+//		HBCIHandler handler=new HBCIHandler("210",passport);
+
 		return true;
   }
 
@@ -146,6 +148,7 @@ public class HBCI extends AbstractPlugin
    */
   public void shutDown()
   {
+  	passport.close();
   }
 
   /**
@@ -169,6 +172,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.2  2004/02/09 22:09:40  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/02/09 13:06:03  willuhn
  * @C misc
  *

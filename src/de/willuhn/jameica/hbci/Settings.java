@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/02/09 13:06:03 $
+ * $Revision: 1.2 $
+ * $Date: 2004/02/09 22:09:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -45,28 +45,13 @@ public class Settings
 		Settings.db = db;
 	}
 
-  /**
-   * Liefert die Bezeichnung der Waehrung.
-   * @return Bezeichnung der Waehrung.
-   */
-  public static String getCurrency()
-  {
-    return settings.getAttribute("currency","EUR");
-  }
-
-  /**
-   * Speichert den Namen der Waehrung.
-   * @param currency Name der Waehrung.
-   */
-  public static void setCurrency(String currency)
-  {
-    settings.setAttribute("currency",currency);
-  }
-
 }
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.2  2004/02/09 22:09:40  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/02/09 13:06:03  willuhn
  * @C misc
  *

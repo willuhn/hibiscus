@@ -5,7 +5,7 @@
     <classpathentry exported="true" kind="src" path="/jameica"/>
     <classpathentry exported="true" kind="src" path="/datasource"/>
     <classpathentry exported="true" kind="src" path="/util"/>
-    <classpathentry kind="lib"
+    <classpathentry exported="true" kind="lib"
         path="lib/hbci4java-2.4.7pre-20040204.jar" sourcepath="/hbci/lib.src/hbci4java-2.4.7pre-20040204.src.zip"/>
     <classpathentry kind="output" path="bin"/>
 </classpath>
