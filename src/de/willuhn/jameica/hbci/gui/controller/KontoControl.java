@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.34 $
- * $Date: 2004/06/10 20:56:33 $
+ * $Revision: 1.35 $
+ * $Date: 2004/06/18 19:47:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,14 +14,15 @@ package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
 import java.util.Date;
-import java.util.Hashtable;
 
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TableItem;
 import org.kapott.hbci.manager.HBCIUtils;
 
+import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.datasource.rmi.GenericObject;
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
@@ -234,14 +235,13 @@ public class KontoControl extends AbstractControl {
 			return passportAuswahl;
 
 		Passport[] passports = PassportRegistry.getPassports();
-		Hashtable ht = new Hashtable();
+
+		GenericObject[] p = new GenericObject[passports.length];
 		for (int i=0;i<passports.length;++i)
 		{
-			ht.put(passports[i].getName(),passports[i]);
+			p[i] = new PassportObject(passports[i]);
 		}
-
-		Passport p = getKonto().getPassport();
-		passportAuswahl = new SelectInput(ht,p == null ? null : p.getClass().getName());
+		passportAuswahl = new SelectInput(PseudoIterator.fromArray(p),null);
 		return passportAuswahl;
 	}
 
@@ -408,14 +408,14 @@ public class KontoControl extends AbstractControl {
   public synchronized void handleConfigurePassport()
 	{
 		try {
-			Passport p = (Passport) getPassportAuswahl().getValue();
-			if (p == null)
+			PassportObject o = (PassportObject) getPassportAuswahl().getValue();
+			if (o == null)
 			{
 				GUI.getStatusBar().setErrorText(i18n.tr("Kein Sicherheitsmedium verfügbar"));
 				return;
 			}
 			SettingsControl c = new SettingsControl(null);
-			c.handleOpen(p);
+			c.handleOpen(o.getPassport());
 		}
 		catch (RemoteException e)
 		{
@@ -455,7 +455,8 @@ public class KontoControl extends AbstractControl {
 			public void run() {
 				try {
 
-					Passport p = (Passport) getPassportAuswahl().getValue();
+					PassportObject po = (PassportObject) getPassportAuswahl().getValue();
+					Passport p = po.getPassport();
 
 					DBIterator existing = Settings.getDatabase().createList(Konto.class);
 					Konto check = null;
@@ -606,6 +607,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.35  2004/06/18 19:47:31  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.34  2004/06/10 20:56:33  willuhn
  * @D javadoc comments fixed
  *

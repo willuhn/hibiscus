@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.24 $
- * $Date: 2004/06/17 22:06:55 $
+ * $Revision: 1.25 $
+ * $Date: 2004/06/18 19:47:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -298,7 +298,7 @@ public class SettingsControl extends AbstractControl {
 	{
 		try {
 			PassportObject p = (PassportObject) o;
-			GUI.startView(p.passport.getConfigDialog().getName(),p.passport);
+			GUI.startView(p.getPassport().getConfigDialog().getName(),p.getPassport());
 		}
 		catch (Exception e)
 		{
@@ -334,60 +334,14 @@ public class SettingsControl extends AbstractControl {
     }
 	}
 
-	private class PassportObject implements GenericObject
-	{
-
-		private Passport passport;
-
-		/**
-		 * ct.
-     * @param p
-     */
-    private PassportObject(Passport p)
-		{
-			this.passport = p;
-		}
-
-    /**
-     * @see de.willuhn.datasource.rmi.GenericObject#getAttribute(java.lang.String)
-     */
-    public Object getAttribute(String name) throws RemoteException
-    {
-    	if ("name".equalsIgnoreCase(name))
-    		return passport.getName();
-    	return passport;
-    }
-
-    /**
-     * @see de.willuhn.datasource.rmi.GenericObject#getID()
-     */
-    public String getID() throws RemoteException
-    {
-			return passport.getClass().getName();
-    }
-
-    /**
-     * @see de.willuhn.datasource.rmi.GenericObject#getPrimaryAttribute()
-     */
-    public String getPrimaryAttribute() throws RemoteException
-    {
-      return "name";
-    }
-
-    /**
-     * @see de.willuhn.datasource.rmi.GenericObject#equals(de.willuhn.datasource.rmi.GenericObject)
-     */
-    public boolean equals(GenericObject other) throws RemoteException
-    {
-      return false;
-    }
-	}
-
 }
 
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.25  2004/06/18 19:47:31  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.24  2004/06/17 22:06:55  willuhn
  * *** empty log message ***
  *
