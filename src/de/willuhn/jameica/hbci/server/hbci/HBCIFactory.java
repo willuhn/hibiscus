@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.24 $
- * $Date: 2005/03/05 19:11:25 $
+ * $Revision: 1.25 $
+ * $Date: 2005/03/06 16:33:57 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -167,16 +167,26 @@ public class HBCIFactory {
 					handler.addJob(j);
 				}
 
+
 				Logger.info("executing jobs");
 				handler.execute();
+
 				if (cancelled)
 				{
 					cancelled = false;
 					throw new OperationCanceledException();
 				}
+
+				for (int i=0;i<exclusiveJobs.size();++i)
+				{
+					final AbstractHBCIJob job = (AbstractHBCIJob) exclusiveJobs.get(i);
+					Logger.info("executing check for exclusive job " + job.getIdentifier());
+					job.handleResult();
+				}
+
 				for (int i=0;i<jobs.size();++i)
 				{
-					AbstractHBCIJob job = (AbstractHBCIJob) jobs.get(i);
+					final AbstractHBCIJob job = (AbstractHBCIJob) jobs.get(i);
 					Logger.info("executing check for job " + job.getIdentifier());
 					job.handleResult();
 				}
@@ -309,6 +319,9 @@ public class HBCIFactory {
 
 /**********************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.25  2005/03/06 16:33:57  web0
+ * @B huu, job results of exclusive jobs were not executed
+ *
  * Revision 1.24  2005/03/05 19:11:25  web0
  * @N SammelLastschrift-Code complete
  *
