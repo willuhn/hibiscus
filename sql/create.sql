@@ -1,5 +1,6 @@
 CREATE TABLE konto (
   id NUMERIC default UNIQUEKEY('konto'),
+  login_id int(4) NOT NULL,
   kontonummer varchar(15) NOT NULL,
   blz varchar(15) NOT NULL,
   name varchar(255) NOT NULL,
@@ -103,12 +104,21 @@ CREATE TABLE turnus (
   PRIMARY KEY (id)
 );
 
+CREATE TABLE login (
+  id NUMERIC default UNIQUEKEY('login'),
+  username varchar(100) NOT NULL,
+  password varchar(100) NOT NULL,
+  UNIQUE (id),
+  PRIMARY KEY (id)
+);
+
 ALTER TABLE ueberweisung ADD CONSTRAINT fk_konto FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE umsatz ADD CONSTRAINT fk_konto2 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE protokoll ADD CONSTRAINT fk_konto3 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE umsatz ADD CONSTRAINT fk_umsatztyp FOREIGN KEY (umsatztyp_id) REFERENCES umsatztyp (id) DEFERRABLE;
 ALTER TABLE dauerauftrag ADD CONSTRAINT fk_konto4 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE dauerauftrag ADD CONSTRAINT fk_turnus FOREIGN KEY (turnus_id) REFERENCES turnus (id) DEFERRABLE;
+ALTER TABLE konto ADD CONSTRAINT fk_login FOREIGN KEY (login_id) REFERENCES login (id) DEFERRABLE;
 
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (2,1,1,1);
