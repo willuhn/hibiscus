@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/PassportParamImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/02/11 00:11:20 $
+ * $Revision: 1.2 $
+ * $Date: 2004/02/27 01:10:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,7 +16,7 @@ import java.rmi.RemoteException;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.jameica.Application;
-import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.Passport;
 import de.willuhn.jameica.hbci.rmi.PassportParam;
 import de.willuhn.util.ApplicationException;
 
@@ -53,6 +53,7 @@ public class PassportParamImpl
    * @see de.willuhn.datasource.db.AbstractDBObject#deleteCheck()
    */
   protected void deleteCheck() throws ApplicationException {
+  	// koennen ohne Probleme geloescht werden.
   }
 
   /**
@@ -63,11 +64,11 @@ public class PassportParamImpl
 			if (getName() == null || "".equals(getName()))
 				throw new ApplicationException("Bitte geben Sie einen Namen für den Parameter ein.");
 
-			if (getKonto() == null)
-				throw new ApplicationException("Bitte wählen Sie ein Konto aus.");
+			if (getPassport() == null)
+				throw new ApplicationException("Bitte wählen Sie einen Passport aus.");
 			
-			if (getKonto().isNewObject())
-				throw new ApplicationException("Bitte speichern Sie zunächst das Konto.");
+			if (getPassport().isNewObject())
+				throw new ApplicationException("Bitte speichern Sie zunächst den Passport.");
 		}
 		catch(RemoteException e)
 		{
@@ -87,8 +88,8 @@ public class PassportParamImpl
    * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
    */
   protected Class getForeignObject(String field) throws RemoteException {
-  	if ("konto_id".equals(field))
-  		return Konto.class;
+  	if ("passport_id".equals(field))
+  		return Passport.class;
     return null;
   }
 
@@ -107,10 +108,10 @@ public class PassportParamImpl
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.PassportParam#getKonto()
+   * @see de.willuhn.jameica.hbci.rmi.PassportParam#getPassport()
    */
-  public Konto getKonto() throws RemoteException {
-    return (Konto) getField("konto_id");
+  public Passport getPassport() throws RemoteException {
+    return (Passport) getField("passport_id");
   }
 
   /**
@@ -128,12 +129,12 @@ public class PassportParamImpl
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.PassportParam#setKonto(de.willuhn.jameica.hbci.rmi.Konto)
+   * @see de.willuhn.jameica.hbci.rmi.PassportParam#setPassport(de.willuhn.jameica.hbci.rmi.Passport)
    */
-  public void setKonto(Konto konto) throws RemoteException {
-		if (konto == null)
+  public void setPassport(Passport passport) throws RemoteException {
+		if (passport == null)
 			return;
-		setField("konto_id",new Integer(konto.getID()));
+		setField("passport_id",new Integer(passport.getID()));
   }
 
 }
@@ -141,6 +142,9 @@ public class PassportParamImpl
 
 /**********************************************************************
  * $Log: PassportParamImpl.java,v $
+ * Revision 1.2  2004/02/27 01:10:18  willuhn
+ * @N passport config refactored
+ *
  * Revision 1.1  2004/02/11 00:11:20  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Settings.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/02/25 23:11:46 $
+ * $Revision: 1.5 $
+ * $Date: 2004/02/27 01:10:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,6 +23,7 @@ import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.LabelGroup;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.gui.controller.SettingsControl;
+import de.willuhn.jameica.hbci.gui.dialogs.NewPassportDialog;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -41,9 +42,43 @@ public class Settings extends AbstractView {
 		LabelGroup settings = new LabelGroup(getParent(),I18N.tr("Einstellungen"));
 
 		try {
+
+			// Einstellungen
 			settings.addCheckbox(control.getOnlineMode(),I18N.tr("Keine Nachfrage vor Verbindungsaufbau"));
 			settings.addCheckbox(control.getCheckPin(),I18N.tr("PIN-Eingabe via Check-Summe prüfen"));
 
+			ButtonArea buttons = settings.createButtonArea(2);
+			buttons.addCustomButton(I18N.tr("gespeicherte Check-Summe löschen"),new MouseAdapter() {
+				public void mouseUp(MouseEvent e) {
+					control.handleDeleteCheckSum();
+				}
+			});
+			buttons.addStoreButton(control);
+
+
+			// Passports
+			LabelGroup passports = new LabelGroup(getParent(),I18N.tr("Sicherheitsmedien"));
+
+			passports.addHeadline(I18N.tr("existierende Medien"));
+			passports.addTable(control.getPassportListe());
+			
+			ButtonArea buttons2 = passports.createButtonArea(1);
+			buttons2.addCustomButton(I18N.tr("Neues Sicherheitsmedium anlegen"),new MouseAdapter() {
+        public void mouseUp(MouseEvent e) {
+        	NewPassportDialog d = new NewPassportDialog(NewPassportDialog.POSITION_MOUSE);
+					try {
+						GUI.startView(PassportDetails.class.getName(),d.open());
+					}
+					catch (Exception e2)
+					{
+						// Dialog wurde abgebrochen
+						Application.getLog().info(e2.getMessage());
+					}
+        }
+      });
+
+
+			// Hinweise
 			LabelGroup comments = new LabelGroup(getParent(),I18N.tr("Hinweise"));
 			comments.addText(
 				I18N.tr("Wenn Sie über eine dauerhafte Internetverbindung verfügen," +					"können Sie die Option \"keine Nachfrage vor Verbindungsaufbau " +					"aktivieren."),
@@ -54,14 +89,9 @@ public class Settings extends AbstractView {
 				true
 			);
 
-			ButtonArea buttons = new ButtonArea(getParent(),3);
-			buttons.addCustomButton(I18N.tr("gespeicherte Check-Summe löschen"),new MouseAdapter() {
-				public void mouseUp(MouseEvent e) {
-					control.handleDeleteCheckSum();
-				}
-			});
-			buttons.addCancelButton(control);
-			buttons.addStoreButton(control);
+			ButtonArea buttons3 = new ButtonArea(getParent(),1);
+			buttons3.addCancelButton(control);
+
 		}
 		catch (RemoteException e)
 		{
@@ -83,6 +113,9 @@ public class Settings extends AbstractView {
 
 /**********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.5  2004/02/27 01:10:18  willuhn
+ * @N passport config refactored
+ *
  * Revision 1.4  2004/02/25 23:11:46  willuhn
  * *** empty log message ***
  *

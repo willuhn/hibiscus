@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/02/24 22:47:05 $
+ * $Revision: 1.11 $
+ * $Date: 2004/02/27 01:10:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -34,9 +34,9 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.views.KontoListe;
 import de.willuhn.jameica.hbci.gui.views.KontoNeu;
-import de.willuhn.jameica.hbci.gui.views.PassportDetails;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Passport;
+import de.willuhn.jameica.hbci.rmi.PassportDDV;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -46,18 +46,19 @@ import de.willuhn.util.I18N;
 public class KontoControl extends AbstractControl {
 
 	// Fachobjekte
-	private Konto konto = null;
+	private Konto konto 			 		= null;
+	private Passport passport  		= null;
 	
 	// Eingabe-Felder
-	private Input kontonummer  = null;
-	private Input blz          = null;
-	private Input name				 = null;
-	private Input passport     = null;
-  private Input waehrung     = null;
-  private Input kundennummer = null;
+	private Input kontonummer  		= null;
+	private Input blz          		= null;
+	private Input name				 		= null;
+	private Input passportAuswahl = null;
+  private Input waehrung     		= null;
+  private Input kundennummer 		= null;
   
-  private Input saldo				 = null;
-  private Input saldoDatum   = null;
+  private Input saldo				 		= null;
+  private Input saldoDatum   		= null;
 
 	private boolean stored = false;
 
@@ -83,8 +84,23 @@ public class KontoControl extends AbstractControl {
 		if (konto != null)
 			return konto;
 		
+		// Kein Konto verfuegbar - wir bauen ein neues.
 		konto = (Konto) Settings.getDatabase().createObject(Konto.class,null);
 		return konto;
+	}
+
+	/**
+	 * Liefert den Passport des Kontos.
+   * @return Passport.
+   * @throws RemoteException
+   */
+  public Passport getPassport() throws RemoteException
+	{
+		if (passport != null)
+			return passport;
+			
+		// TODO:
+		return (Passport) Settings.getDatabase().createObject(PassportDDV.class,getPassportAuswahl().getValue());
 	}
 
 	/**
@@ -159,16 +175,13 @@ public class KontoControl extends AbstractControl {
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public Input getPassport() throws RemoteException
+  public Input getPassportAuswahl() throws RemoteException
 	{
-		if (passport != null)
-			return passport;
-		
-		Passport p = getKonto().getPassport();
-		if (p == null)
-			p = (Passport) Settings.getDatabase().createObject(Passport.class,null);
-		passport = new SelectInput(p);
-		return passport;
+		if (passportAuswahl != null)
+			return passportAuswahl;
+
+		passportAuswahl = new SelectInput(Settings.getDatabase().createList(Passport.class),null);
+		return passportAuswahl;
 	}
 
 	/**
@@ -258,7 +271,7 @@ public class KontoControl extends AbstractControl {
 		catch (RemoteException e)
 		{
 			GUI.setActionText(I18N.tr("Fehler beim Löschen der Bankverbindung."));
-			Application.getLog().error("unable to delete konto");
+			Application.getLog().error("unable to delete konto",e);
 		}
 		catch (ApplicationException ae)
 		{
@@ -283,7 +296,8 @@ public class KontoControl extends AbstractControl {
 			// Passport checken
       
 			Passport p = (Passport) Settings.getDatabase().createObject(Passport.class,
-																																  getPassport().getValue());
+																																  getPassportAuswahl().getValue());
+
 			if (p.isNewObject())
 			{
 				GUI.setActionText(I18N.tr("Bitte wählen Sie ein Sicherheitsmedium aus."));
@@ -331,50 +345,61 @@ public class KontoControl extends AbstractControl {
   }
 
 	/**
-   * Wird aufgerufen, wenn der Passport konfiguriert werden soll.
-   */
-  public void handleConfigurePassport()
-	{
-		try {
-			handleStore();
-			if (stored)
-				GUI.startView(PassportDetails.class.getName(),getKonto());
-
-		}
-		catch (RemoteException e)
-		{
-			Application.getLog().error("error while configuring passport",e);
-			GUI.setActionText(I18N.tr("Fehler beim Öffnen der Konfiguration"));
-		}
-	}
-
-	/**
-   * Aktualisiert die aktuellen Eingaben mit denen des Sicherheitsmediums.
+   * Liest alle ueber das Sicherheitsmedium verfuegbaren Konten
+   * aus und speichert sie (insofern Konten mit identischer kto-Nummer/BLZ nicht schon existieren).
    */
   public void handleReadFromPassport()
 	{
-		try {
-			if ("".equals(getKontonummer().getValue()))
-			{
-				GUI.setActionText(I18N.tr("Bitte geben Sie mindestens die Kontonummer ein"));
-				return;
-			}
-		}
-		catch (RemoteException e)
-		{
-			Application.getLog().error("error while reading kontonummer",e);
-			GUI.setActionText(I18N.tr("Fehler beim Lesen der Kontonummer"));
-		}
 		GUI.setActionText(I18N.tr("Chipkarte wird ausgelesen..."));
 
 		GUI.startSync(new Runnable() {
       public void run() {
 				try {
-					getKonto().readFromPassport();
-					getKundennummer().setValue(getKonto().getKundennummer());
-					getName().setValue(getKonto().getName());
-					getWaehrung().setValue(getKonto().getWaehrung());
-					GUI.setActionText(I18N.tr("Daten erfolgreich gelesen"));
+					DBIterator existing = Settings.getDatabase().createList(Konto.class);
+					Konto check = null;
+					Konto newKonto = null;
+					Konto[] konten = getPassport().getKonten();
+
+					for (int i=0;i<konten.length;++i)
+					{
+						// Wir checken, ob's das Konto schon gibt
+						boolean found = false;
+						while (existing.hasNext())
+						{
+							check = (Konto) existing.next();
+							if (check.getBLZ().equals(konten[i].getBLZ()) &&
+								check.getKontonummer().equals(konten[i].getKontonummer()))
+							{
+								found = true;
+								break;
+							}
+							
+						}
+						existing.begin();
+						if (!found)
+						{
+							// Konto neu anlegen
+							try {
+								newKonto = (Konto) Settings.getDatabase().createObject(Konto.class,null);
+								newKonto.setBLZ(konten[i].getBLZ());
+								newKonto.setKontonummer(konten[i].getKontonummer());
+								newKonto.setKundennummer(konten[i].getKundennummer());
+								newKonto.setName(konten[i].getName());
+								newKonto.setWaehrung(konten[i].getWaehrung());
+								newKonto.setPassport(getPassport()); // wir speichern den ausgewaehlten Passport.
+								newKonto.store();
+							}
+							catch (Exception e)
+							{
+								// Wenn ein Konto fehlschlaegt, soll nicht gleich der ganze Vorgang abbrechen
+								Application.getLog().error("error while storing konto",e);
+								GUI.setActionText(I18N.tr("Fehler beim Anlegen des Kontos") + " " + konten[i].getKontonummer());
+							}
+						}
+						
+					}
+					GUI.startView(KontoListe.class.getName(),null); // Page reload
+					GUI.setActionText(I18N.tr("Konten erfolgreich ausgelesen"));
 				}
 				catch (RemoteException e)
 				{
@@ -390,18 +415,6 @@ public class KontoControl extends AbstractControl {
    */
   public void handleRefreshSaldo()
 	{
-		try {
-			if (getKonto().isNewObject())
-			{
-				GUI.setActionText(I18N.tr("Bitte speichern Sie zunächst die Bankverbindung"));
-				return;
-			}
-		}
-		catch (Exception e)
-		{
-			Application.getLog().error("error while reading kontonummer",e);
-			GUI.setActionText(I18N.tr("Fehler beim Lesen der Kontonummer"));
-		}
 
 		GUI.startSync(new Runnable() {
       public void run() {
@@ -452,6 +465,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.11  2004/02/27 01:10:18  willuhn
+ * @N passport config refactored
+ *
  * Revision 1.10  2004/02/24 22:47:05  willuhn
  * @N GUI refactoring
  *

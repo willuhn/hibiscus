@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/KontoListe.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/02/22 20:04:53 $
+ * $Revision: 1.4 $
+ * $Date: 2004/02/27 01:10:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,6 +11,9 @@
  *
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.views;
+
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.gui.GUI;
@@ -32,13 +35,19 @@ public class KontoListe extends AbstractView {
 
 		GUI.setTitleText(I18N.tr("Vorhandene Bankverbindungen"));
 		
-		KontoControl control = new KontoControl(this);
+		final KontoControl control = new KontoControl(this);
 		
 		try {
 
 			control.getKontoListe().paint(getParent());
 
-			ButtonArea buttons = new ButtonArea(getParent(),1);
+			control.getPassportAuswahl().paint(getParent());
+			ButtonArea buttons = new ButtonArea(getParent(),2);
+			buttons.addCustomButton(I18N.tr("Konten aus Medium lesen"), new MouseAdapter() {
+        public void mouseUp(MouseEvent e) {
+        	control.handleReadFromPassport();
+        }
+      });
 			buttons.addCreateButton(I18N.tr("Neue Bankverbindung"),control);
 
 		}
@@ -60,6 +69,9 @@ public class KontoListe extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoListe.java,v $
+ * Revision 1.4  2004/02/27 01:10:18  willuhn
+ * @N passport config refactored
+ *
  * Revision 1.3  2004/02/22 20:04:53  willuhn
  * @N Ueberweisung
  * @N Empfaenger

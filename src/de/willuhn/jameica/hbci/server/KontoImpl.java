@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/02/17 01:01:38 $
+ * $Revision: 1.8 $
+ * $Date: 2004/02/27 01:10:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,9 +19,12 @@ import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.jameica.Application;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Passport;
+import de.willuhn.jameica.hbci.rmi.PassportType;
 import de.willuhn.util.ApplicationException;
+import de.willuhn.util.MultipleClassLoader;
 
 /**
  * Bildet eine Bankverbindung ab.
@@ -54,7 +57,6 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    * @see de.willuhn.datasource.db.AbstractDBObject#deleteCheck()
    */
   protected void deleteCheck() throws ApplicationException {
-    // TODO Pruefen, ob Buchungen o.ae. vorliegen
   }
 
   /**
@@ -70,6 +72,12 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 
 			if (getBLZ() == null || "".equals(getBLZ()))
 				throw new ApplicationException("Bitte geben Sie eine Bankleitzahl ein.");
+
+			if (getPassport() == null)
+				throw new ApplicationException("Bitte wählen Sie ein Sicherheitsmedium aus.");
+
+			if (getPassport().isNewObject())
+				throw new ApplicationException("Bitte speichern Sie zunächst das Sicherheitsmedium.");
 
 			if (!HBCIUtils.checkAccountCRC(getBLZ(),getKontonummer()))
 				throw new ApplicationException("Ungültige BLZ/Kontonummer. Bitte prüfen Sie Ihre Eingaben.");
@@ -123,13 +131,27 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    * @see de.willuhn.jameica.hbci.rmi.Konto#getPassport()
    */
   public Passport getPassport() throws RemoteException {
-		if (isNewObject())
-			return (Passport) getField("passport_id");
 
-		return PassportFactory.create(this);
+		Passport p = (Passport) getField("passport_id");
+		if (p == null) return null;
+
+		PassportType type = p.getPassportType();
+		if (type == null) return null;
+
+		String impl = type.getImplementor();
+		// wir ja gleich die richtige Impl liefern
+		try {
+			Class implementor = MultipleClassLoader.load(impl);
+			return (Passport) Settings.getDatabase().createObject(implementor,p.getID());
+		}
+		catch (ClassNotFoundException e)
+		{
+			throw new RemoteException("unable to find class " + impl,e);
+		}
+
   }
 
-  /**
+  /**?
    * @see de.willuhn.jameica.hbci.rmi.Konto#setKontonummer(java.lang.String)
    */
   public void setKontonummer(String kontonummer) throws RemoteException {
@@ -164,21 +186,39 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    */
   public void delete() throws RemoteException, ApplicationException
   {
-    // Wir muessen die PassportParameter mit loeschen
+		// Wir muessen auch alle Umsaetze sowie Ueberweisungen mitloeschen
+		// da Constraints dorthin existieren.
     try {
-      transactionBegin();
-      getPassport().delete();
-      super.delete();
-      transactionCommit();
+      this.transactionBegin();
+
+//			DBIterator list = Settings.getDatabase().createList(Ueberweisung.class);
+//			Ueberweisung u = null;
+//			while (list.hasNext())
+//			{
+//				u = (Ueberweisung) list.next();
+//				u.delete();
+//			}
+//
+//			list = Settings.getDatabase().createList(Umsatz.class);
+//			Umsatz ums = null;
+//			while (list.hasNext())
+//			{
+//				ums = (Umsatz) list.next();
+//				ums.delete();
+//			}
+
+			// Jetzt koennen wir uns selbst loeschen
+			super.delete();
+      this.transactionCommit();
     }
     catch (RemoteException e)
     {
-      transactionRollback();
+      this.transactionRollback();
       throw e;
     }
     catch (ApplicationException e2)
     {
-      transactionRollback();
+      this.transactionRollback();
       throw e2;
     }
   }
@@ -214,34 +254,6 @@ public class KontoImpl extends AbstractDBObject implements Konto {
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#readFromPassport()
-   */
-  public void readFromPassport() throws RemoteException {
-
-		String own = getKontonummer();
-		if (own == null || own.length() == 0)
-			return;
-
-		Passport p = getPassport();
-		
-		Konto[] konten = p.getKonten();
-		if (konten == null || konten.length == 0)
-			return;
-
-		for (int i=0;i<konten.length;++i)
-		{
-			if (own.equals(konten[i].getKontonummer()))
-			{
-				// Konto gefunden. Wir ueberschreiben unsere Einstellungen mit denen des Kontos
-				this.setBLZ(konten[i].getBLZ()); 
-				this.setKundennummer(konten[i].getKundennummer());
-				this.setName(konten[i].getName());
-				this.setWaehrung(konten[i].getWaehrung());
-			}
-		}
-  }
-
-  /**
    * @see de.willuhn.jameica.hbci.rmi.Konto#getSald()
    */
   public double getSaldo() throws RemoteException {
@@ -257,22 +269,21 @@ public class KontoImpl extends AbstractDBObject implements Konto {
   public synchronized void refreshSaldo() throws ApplicationException,RemoteException {
 
 
+		// Das machen wir um sicherzugehen, dass alle benoetigten Infos
+		// des Kontos vorhanden sind.
+		insertCheck();
 		if (isNewObject())
 		{
-			// Das machen wir um sicherzugehen, dass alle benoetigten Infos
-			// des Kontos vorhanden sind.
 			throw new ApplicationException("Bitte speichern Sie zunächst das Konto.");
 		}
-
-		// Bevor wir anfangen, muessen wir erstmal das Konto speichern
-		// Das checkt gleich, dass alles eingegeben wurde.
-		store();
 
 		double saldo = JobFactory.getSaldo(this);
 
 		// Wenn wir fertig sind, muessen wir noch den Saldo und das Datum speichern
 		setField("saldo",new Double(saldo));
 		setField("saldo_datum",new Date());
+
+		// und wir speichern uns
 		store();
   }
   
@@ -303,6 +314,9 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.8  2004/02/27 01:10:18  willuhn
+ * @N passport config refactored
+ *
  * Revision 1.7  2004/02/17 01:01:38  willuhn
  * *** empty log message ***
  *

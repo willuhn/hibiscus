@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/PassportImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/02/17 00:53:22 $
+ * $Revision: 1.5 $
+ * $Date: 2004/02/27 01:10:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,18 +20,19 @@ import org.kapott.hbci.manager.HBCIHandler;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.jameica.Application;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Passport;
 import de.willuhn.jameica.hbci.rmi.PassportParam;
+import de.willuhn.jameica.hbci.rmi.PassportType;
 import de.willuhn.util.ApplicationException;
 
 /**
- * Bildet einen Passport (Sicherheitsmedium) in HBCI ab.
+ * Bildet einen generischen Passport (Sicherheitsmedium) in HBCI ab.
+ * Konkrete Passports muessen von dieser Klasse ableiten.
  */
 public class PassportImpl extends AbstractDBObject implements Passport {
-
-	private Konto konto = null;
 
 	private HashMap params = null;
 
@@ -44,51 +45,29 @@ public class PassportImpl extends AbstractDBObject implements Passport {
   }
 
 	/**
-	 * Speichert das Konto, zu dem der Passport gehoert.
-   * @param k das Konto.
-   */
-  protected void setKonto(Konto k) throws RemoteException
-	{
-		this.konto = k;
-		
-		if (k == null)
-			return;
-		
-		// So, das Konto ist bekannt, nun koennen wir die Parameter laden.
-		params = new HashMap();
-		DBIterator list = getParams();
-		PassportParam p = null;
-		while (list.hasNext())
-		{
-			p = (PassportParam) list.next();
-			params.put(p.getName(),p.getValue());
-		}
-	}
-
-	/**
 	 * Liefert den Wert des Parameters mit diesem Namen.
    * @param name Name des Parameters.
    * @return Wert des Parameters.
+   * @throws RemoteException
    */
-  protected String getParam(String name)
+  protected String getParam(String name) throws RemoteException
 	{
-		if (params == null)
-			return null;
+		if (params == null) loadParams();
 		return (String) params.get(name);
 	}
 
-	/**
+  /**
 	 * Speichert den Wert eines Parameters.
    * @param name Name des Parameters.
    * @param value Wert.
+   * @throws RemoteException
    */
-  protected void setParam(String name, String value)
+  protected void setParam(String name, String value) throws RemoteException
 	{
-		if (params == null)
-			params = new HashMap();
-		
+		if (params == null) loadParams();
 		params.put(name,value);
 	}
+
 
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#getTableName()
@@ -108,24 +87,69 @@ public class PassportImpl extends AbstractDBObject implements Passport {
    * @see de.willuhn.datasource.db.AbstractDBObject#deleteCheck()
    */
   protected void deleteCheck() throws ApplicationException {
+
+		try {
+			// Wir checken, ob der Passport einem Konto zugewiesen ist
+			DBIterator list = Settings.getDatabase().createList(Konto.class);
+			list.addFilter("passport_id='" + getID() + "'");
+			if (list.hasNext())
+			{
+				throw new ApplicationException("Das Sicherheitsmedium kann nicht gelöscht werden, da es einem Konto zugewiesen ist.");
+			}
+		}
+		catch (RemoteException e)
+		{
+			Application.getLog().error("error while delete check",e);
+			throw new ApplicationException("Fehler beim Löschen",e);
+		}
   }
 
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
    */
   protected void insertCheck() throws ApplicationException {
+		updateCheck();
+		try {
+			DBIterator list = this.getList();
+			Passport p = null;
+			while (list.hasNext())
+			{
+				p = (Passport) list.next();
+				if (getName().equals(p.getName()))
+					throw new ApplicationException("Ein Sicherheitsmedium mit diesem Namen existiert bereits.");
+			}
+		}
+		catch (RemoteException e)
+		{
+			Application.getLog().error("error while insert check",e);
+			throw new ApplicationException("Fehler beim Speichern",e);
+		}
   }
 
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
    */
   protected void updateCheck() throws ApplicationException {
+		try {
+			if (getName() == null || getName().length() == 0)
+				throw new ApplicationException("Bitte geben Sie einen Namen ein.");
+
+			if (getPassportType() == null)
+			throw new ApplicationException("Bitte wählen Sie ein Sicherheitsmedium aus.");
+		}
+		catch (RemoteException e)
+		{
+			Application.getLog().error("error while insert check",e);
+			throw new ApplicationException("Fehler beim Speichern",e);
+		}
   }
 
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
    */
   protected Class getForeignObject(String field) throws RemoteException {
+    if ("passport_type_id".equals(field))
+    	return PassportType.class;
     return null;
   }
 
@@ -140,30 +164,59 @@ public class PassportImpl extends AbstractDBObject implements Passport {
    * @see de.willuhn.jameica.hbci.rmi.Passport#setName(java.lang.String)
    */
   public void setName(String name) throws RemoteException {
-		throw new RemoteException("Passport darf nicht umbenannt werden.");
+		setField("name",name);
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Passport#getType()
+   * @see de.willuhn.jameica.hbci.rmi.Passport#getPassportType()
    */
-  public int getType() throws RemoteException
+  public PassportType getPassportType() throws RemoteException
 	{
-		return new Integer(getID()).intValue();
+		return (PassportType) getField("passport_type_id");
+	}
+
+	/**
+	 * @see de.willuhn.jameica.hbci.rmi.Passport#setPassportType(de.willuhn.jameica.hbci.rmi.PassportType)
+	 */
+	public void setPassportType(PassportType type) throws RemoteException {
+		if (type == null)
+			return;
+		this.setField("passport_type_id",new Integer(type.getID()));
 	}
 
   /**
    * @see de.willuhn.datasource.rmi.DBObject#delete()
-   * Wir loeschen hier natuerlich nicht den Passport selbst sondern
-   * die Einstellungen, die der Passport fuer dieses Konto hat.
+   * Von DBObject ueberschrieben, damit wir auch gleich die
+   * PassportParams mitloeschen koennen.
    */
   public void delete() throws RemoteException, ApplicationException {
-  	DBIterator list = getParams();
-  	PassportParam p = null;
-  	while (list.hasNext())
-  	{
-  		p = (PassportParam) list.next();
-  		p.delete();
-  	}
+		try {
+			this.transactionBegin();
+
+			// Erst die Parameter loeschen
+			DBIterator list = getParams();
+			PassportParam p = null;
+			while (list.hasNext())
+			{
+				p = (PassportParam) list.next();
+				p.delete();
+			}
+
+			// und jetzt uns selbst
+			super.delete();
+
+			this.transactionCommit();
+		}
+		catch (RemoteException e)
+		{
+			this.transactionRollback();
+			throw e;
+		}
+		catch (ApplicationException e2)
+		{
+			this.transactionRollback();
+			throw e2;
+		}
   }
 
 	/**
@@ -172,14 +225,29 @@ public class PassportImpl extends AbstractDBObject implements Passport {
    * @return dbIterator mit PassportParams.
    * @throws RemoteException
    */
-  protected DBIterator getParams() throws RemoteException
+  private DBIterator getParams() throws RemoteException
 	{
-		if (konto == null)
-			return null;
-
 		DBIterator list = Settings.getDatabase().createList(PassportParam.class);
-		list.addFilter("konto_id = " + konto.getID());
+		list.addFilter("passport_id = " + this.getID());
 		return list;
+	}
+
+	/**
+	 * Laedt die Parameter aus der Datenbank und speichert sie in einer
+	 * lokalen HashMap. Dort werden sie so lange gehalten, bis der
+	 * ganze Passport gespeichert wird.
+   * @throws RemoteException
+   */
+  private void loadParams() throws RemoteException
+	{
+		this.params = new HashMap();
+		PassportParam p = null;
+		DBIterator list = getParams();
+		while (list.hasNext())
+		{
+			p = (PassportParam) list.next();
+			this.params.put(p.getName(),p.getValue());
+		}
 	}
 
   /**
@@ -188,53 +256,75 @@ public class PassportImpl extends AbstractDBObject implements Passport {
    * neu schreiben koennen.
    */
   public void store() throws RemoteException, ApplicationException {
-		// wir loeschen erstmal alle Params
-		delete();
-		
-		// und jetzt schreiben wir sie neu.
-		String name = null;
-		String value = null;
-		PassportParam p = null;
-		Iterator i = params.keySet().iterator();
-		while (i.hasNext())
-		{
-			name = (String) i.next();
-			value = getParam(name);
-			p = (PassportParam) Settings.getDatabase().createObject(PassportParam.class,null);
-			p.setKonto(konto);
-			p.setName(name);
-			p.setValue(value);
-			p.store();
+		try {
+			this.transactionBegin();
+			
+			// wir muessen uns selbst zuerst speichern, damit die ID da ist
+			super.store();
+
+			// wir loeschen nun alle Parameter weg ...
+			DBIterator list = getParams();
+			PassportParam p = null;
+			while (list.hasNext())
+			{
+				p = (PassportParam) list.next();
+				p.delete();
+			}
+
+			// ...und jetzt schreiben wir sie neu.
+			String name = null;
+			String value = null;
+			Iterator i = params.keySet().iterator();
+			while (i.hasNext())
+			{
+				name = (String) i.next();
+				value = getParam(name);
+				p = (PassportParam) Settings.getDatabase().createObject(PassportParam.class,null);
+				p.setPassport(this);
+				p.setName(name);
+				p.setValue(value);
+				p.store();
+			}
+			this.transactionCommit();
 		}
-		
+		catch (RemoteException e)
+		{
+			this.transactionRollback();
+			throw e;
+		}
+		catch (ApplicationException e2)
+		{
+			this.transactionRollback();
+			throw e2;
+		}
+				
   }
-
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Passport#open()
-   */
-  public HBCIHandler open() throws RemoteException {
-  	throw new RemoteException("Not implemented");
-  }
-
   /**
    * @see de.willuhn.jameica.hbci.rmi.Passport#close()
    */
   public void close() throws RemoteException {
-		throw new RemoteException("Not implemented");
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Passport#isOpen()
-   */
-  public boolean isOpen() throws RemoteException {
-		throw new RemoteException("Not implemented");
+  	throw new UnsupportedOperationException();
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Passport#getKonten()
    */
   public Konto[] getKonten() throws RemoteException {
-		throw new RemoteException("Not implemented");
+		throw new UnsupportedOperationException();
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Passport#isOpen()
+   */
+  public boolean isOpen() throws RemoteException {
+		throw new UnsupportedOperationException();
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Passport#open()
+   */
+  public HBCIHandler open() throws RemoteException {
+		throw new UnsupportedOperationException();
   }
 
 }
@@ -242,6 +332,9 @@ public class PassportImpl extends AbstractDBObject implements Passport {
 
 /**********************************************************************
  * $Log: PassportImpl.java,v $
+ * Revision 1.5  2004/02/27 01:10:18  willuhn
+ * @N passport config refactored
+ *
  * Revision 1.4  2004/02/17 00:53:22  willuhn
  * @N SaldoAbfrage
  * @N Ueberweisung

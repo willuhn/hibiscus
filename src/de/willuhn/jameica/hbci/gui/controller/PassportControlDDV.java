@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/PassportControlDDV.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/02/24 22:47:05 $
+ * $Revision: 1.7 $
+ * $Date: 2004/02/27 01:10:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,13 +19,14 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.controller.AbstractControl;
 import de.willuhn.jameica.gui.parts.CheckboxInput;
 import de.willuhn.jameica.gui.parts.Input;
+import de.willuhn.jameica.gui.parts.LabelInput;
 import de.willuhn.jameica.gui.parts.SelectInput;
 import de.willuhn.jameica.gui.parts.TextInput;
 import de.willuhn.jameica.gui.views.AbstractView;
-import de.willuhn.jameica.hbci.gui.views.KontoListe;
-import de.willuhn.jameica.hbci.gui.views.KontoNeu;
-import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.gui.views.PassportDetails;
+import de.willuhn.jameica.hbci.gui.views.Settings;
 import de.willuhn.jameica.hbci.rmi.PassportDDV;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -34,10 +35,11 @@ import de.willuhn.util.I18N;
 public class PassportControlDDV extends AbstractControl {
 
 	// Fachobjekte
-	private Konto konto 				 = null;
 	private PassportDDV passport = null;
 
 	// Eingabe-Felder
+	private Input name 			 = null; 
+	private Input type			 = null;
 	private Input port 			 = null;
 	private Input ctNumber	 = null;
 	private Input entryIndex = null;
@@ -45,8 +47,6 @@ public class PassportControlDDV extends AbstractControl {
 	private CheckboxInput useBio 			= null;
 	private CheckboxInput useSoftPin 	= null; 
 	
-	private boolean stored = false;
-
   /**
    * ct.
    * @param view
@@ -54,25 +54,6 @@ public class PassportControlDDV extends AbstractControl {
   public PassportControlDDV(AbstractView view) {
     super(view);
   }
-
-	/**
-	 * Liefert das Konto.
-   * @return Konto.
-   * @throws RemoteException
-   */
-  public Konto getKonto() throws RemoteException
-	{
-		if (konto != null)
-			return konto;
-
-		konto = (Konto) getCurrentObject();
-		if (konto == null)
-		{
-			GUI.setActionText(I18N.tr("Ausgewähltes Konto wurde nicht gefunden"));
-			throw new RemoteException("konto not found");
-		}
-		return konto;
-	}
 
 	/**
 	 * Liefert den Passport.
@@ -84,7 +65,7 @@ public class PassportControlDDV extends AbstractControl {
 		if (passport != null)
 			return passport;
 		
-		passport = (PassportDDV) getKonto().getPassport();
+		passport = (PassportDDV) getCurrentObject();
 
 		if (passport == null)
 		{
@@ -122,6 +103,34 @@ public class PassportControlDDV extends AbstractControl {
 		ctNumber = new TextInput(""+getPassport().getCTNumber());
 		ctNumber.setComment(I18N.tr("meist 0"));
 		return ctNumber;
+	}
+
+	/**
+	 * Liefert das Eingabe-Feld fuer den Namen des Lesers.
+	 * @return Eingabe-Feld.
+	 * @throws RemoteException
+	 */
+	public Input getName() throws RemoteException
+	{
+		if (name != null)
+			return name;
+
+		name = new TextInput(getPassport().getName());
+		return name;
+	}
+
+	/**
+	 * Liefert das Eingabe-Feld fuer den Typ des Passports.
+	 * @return Eingabe-Feld.
+	 * @throws RemoteException
+	 */
+	public Input getType() throws RemoteException
+	{
+		if (type != null)
+			return type;
+
+		type = new LabelInput(getPassport().getPassportType().getName());
+		return type;
 	}
 
 	/**
@@ -179,14 +188,7 @@ public class PassportControlDDV extends AbstractControl {
    * @see de.willuhn.jameica.gui.controller.AbstractControl#handleCancel()
    */
   public void handleCancel() {
-		try {
-			GUI.startView(KontoNeu.class.getName(),getKonto());
-		}
-		catch (RemoteException e)
-		{
-			Application.getLog().error("error while handleCancel",e);
-			GUI.startView(KontoListe.class.getName(),null);
-		}
+		GUI.startView(Settings.class.getName(),null);
   }
 
   /**
@@ -194,8 +196,6 @@ public class PassportControlDDV extends AbstractControl {
    */
   public void handleStore() {
 
-		stored = false;	
-			
   	try {
 			try {
 				getPassport().setCTNumber(Integer.parseInt(getCTNumber().getValue()));
@@ -223,13 +223,17 @@ public class PassportControlDDV extends AbstractControl {
 
 			getPassport().setBIO(CheckboxInput.ENABLED.equals(getBio().getValue()));
 			getPassport().setSoftPin(CheckboxInput.ENABLED.equals(getSoftPin().getValue()));
+			getPassport().setName(getName().getValue());
 			
 			getPassport().store();
 
 			GUI.setActionText(I18N.tr("Einstellungen gespeichert"));
-			stored = true;
   	}
-  	catch (Exception e)
+  	catch (ApplicationException e)
+  	{
+  		GUI.setActionText(e.getLocalizedMessage());
+  	}
+  	catch (RemoteException e)
   	{
   		Application.getLog().error("error while storing params",e);
   		GUI.setActionText(I18N.tr("Fehler beim Speichern der Einstellungen"));
@@ -246,6 +250,7 @@ public class PassportControlDDV extends AbstractControl {
    * @see de.willuhn.jameica.gui.controller.AbstractControl#handleOpen(java.lang.Object)
    */
   public void handleOpen(Object o) {
+  	GUI.startView(PassportDetails.class.getName(),o);
   }
 
 	/**
@@ -254,17 +259,18 @@ public class PassportControlDDV extends AbstractControl {
   public void handleTest()
 	{
 
+		// Speichern, damit sicher ist, dass wir vernuenftige Daten fuer den
+		// Test haben und die auch gespeichert sind
+		handleStore();
+
 		GUI.setActionText(I18N.tr("Teste Chipkartenleser..."));
 
 		GUI.startSync(new Runnable() {
       public void run() {
-				handleStore();
-				if (!stored)
-					return;
-
 				try {
 					getPassport().open();
-					getPassport().close();
+					getPassport().close(); // nein, nicht im finally, denn wenn das Oeffnen
+																 // fehlschlaegt, ist nichts zum Schliessen da ;)
 					GUI.setActionText(I18N.tr("Chipkartenleser erfolgreich getestet."));
 				}
 				catch (RemoteException e)
@@ -280,6 +286,9 @@ public class PassportControlDDV extends AbstractControl {
 
 /**********************************************************************
  * $Log: PassportControlDDV.java,v $
+ * Revision 1.7  2004/02/27 01:10:18  willuhn
+ * @N passport config refactored
+ *
  * Revision 1.6  2004/02/24 22:47:05  willuhn
  * @N GUI refactoring
  *

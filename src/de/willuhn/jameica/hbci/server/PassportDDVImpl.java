@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/PassportDDVImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/02/24 22:47:04 $
+ * $Revision: 1.6 $
+ * $Date: 2004/02/27 01:10:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -224,7 +224,7 @@ public class PassportDDVImpl
 			open();
 			org.kapott.hbci.structures.Konto[] konten = hbciPassport.getAccounts();
 			if (konten == null || konten.length == 0)
-				return null;
+				return new Konto[]{};
 
 			ArrayList result = new ArrayList();
 			Konto k = null;
@@ -233,7 +233,7 @@ public class PassportDDVImpl
 				k = (Konto) Settings.getDatabase().createObject(Konto.class,null);
 				k.setBLZ(konten[i].blz);
 				k.setKontonummer(konten[i].number);
-				k.setKundennummer(konten[0].customerid);
+				k.setKundennummer(konten[i].customerid);
 				k.setName(konten[i].name);
 				k.setWaehrung(konten[i].curr);
 				result.add(k);
@@ -258,6 +258,9 @@ public class PassportDDVImpl
 
 /**********************************************************************
  * $Log: PassportDDVImpl.java,v $
+ * Revision 1.6  2004/02/27 01:10:18  willuhn
+ * @N passport config refactored
+ *
  * Revision 1.5  2004/02/24 22:47:04  willuhn
  * @N GUI refactoring
  *

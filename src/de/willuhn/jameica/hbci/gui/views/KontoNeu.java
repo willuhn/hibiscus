@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/KontoNeu.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/02/22 20:04:53 $
+ * $Revision: 1.7 $
+ * $Date: 2004/02/27 01:10:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -50,7 +50,7 @@ public class KontoNeu extends AbstractView {
 			group.addLabelPair(I18N.tr("Kontoinhaber"),			    		control.getName());
 			group.addLabelPair(I18N.tr("Kundennummer"),							control.getKundennummer());
       group.addLabelPair(I18N.tr("Währungsbezeichnung"),  		control.getWaehrung());
-			group.addLabelPair(I18N.tr("Sicherheitsmedium"),    		control.getPassport());
+			group.addLabelPair(I18N.tr("Sicherheitsmedium"),    		control.getPassportAuswahl());
 
 			saldo.addLabelPair(I18N.tr("Saldo"),										control.getSaldo());
 			saldo.addLabelPair(I18N.tr("letzte Aktualisierung"),		control.getSaldoDatum());
@@ -64,20 +64,10 @@ public class KontoNeu extends AbstractView {
 		}
 
 		// und noch die Abschicken-Knoepfe
-		ButtonArea buttonArea = new ButtonArea(getParent(),6);
+		ButtonArea buttonArea = new ButtonArea(getParent(),4);
 		buttonArea.addCustomButton(I18N.tr("Saldo aktualisieren"), new MouseAdapter() {
 			public void mouseUp(MouseEvent e) {
 				control.handleRefreshSaldo();
-			}
-		});
-		buttonArea.addCustomButton(I18N.tr("Sicherheitsmedium konfigurieren"), new MouseAdapter() {
-			public void mouseUp(MouseEvent e) {
-				control.handleConfigurePassport();
-			}
-		});
-		buttonArea.addCustomButton(I18N.tr("Sicherheitsmedium auslesen"), new MouseAdapter() {
-			public void mouseUp(MouseEvent e) {
-				control.handleReadFromPassport();
 			}
 		});
 		buttonArea.addCancelButton(control);
@@ -98,6 +88,9 @@ public class KontoNeu extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoNeu.java,v $
+ * Revision 1.7  2004/02/27 01:10:18  willuhn
+ * @N passport config refactored
+ *
  * Revision 1.6  2004/02/22 20:04:53  willuhn
  * @N Ueberweisung
  * @N Empfaenger

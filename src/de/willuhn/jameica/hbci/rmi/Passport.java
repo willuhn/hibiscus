@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Attic/Passport.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/02/25 23:11:46 $
+ * $Revision: 1.6 $
+ * $Date: 2004/02/27 01:10:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,11 +24,6 @@ import de.willuhn.datasource.rmi.DBObject;
  */
 public interface Passport extends DBObject {
 
-	public final static String[] PASSPORTS = 
-	{
-		"Chipkarte (DDV)"
-	};
-
 	/**
 	 * Liefert den Namen des Passports.
    * @return Name des Passports.
@@ -37,21 +32,26 @@ public interface Passport extends DBObject {
   public String getName() throws RemoteException;
 	
 	/**
-	 * Liefert den Typ des Passports.
-	 * Zur Codierung des Int-Wertes existieren in <code>Passport</code>
-	 * Konstanten mit den Namen TYPE_*.
-	 * @return Typ des Passports.
-	 * @throws RemoteException
-	 */
-	public int getType() throws RemoteException;
-	
-	/**
 	 * Speichert den Namen des Passports.
    * @param name Name des Passports.
    * @throws RemoteException
    */
   public void setName(String name) throws RemoteException;
 
+	/**
+	 * Liefert den Typ dieses Passports.
+   * @return Typ des Passports.
+   * @throws RemoteException
+   */
+  public PassportType getPassportType() throws RemoteException;
+	
+	/**
+	 * Speichert den Typ des Passports.
+   * @param type Typ des Passports.
+   * @throws RemoteException
+   */
+  public void setPassportType(PassportType type) throws RemoteException;
+	
   /**
    * Oeffnet den Passport.
    * @return Handler, der diese Verbindung repraesentiert.
@@ -75,6 +75,9 @@ public interface Passport extends DBObject {
 
 	/**
 	 * Liefert ein Array mit Konto-Objekten, die aus dem Medium gelesen wurden.
+	 * Es wird niemals <code>null</code> zurueckgeliefert sondern hoechstens ein leeres Array.
+	 * Hinweis: Die Konten-Objekte existieren nicht in der Datenbank.
+	 * Um sie zu speichern muss fuer jedes die Methode <code>store()</code> aufgerufen werden.
    * @return Array mit Konten, die dieser Passport anbietet.
    * @throws RemoteException
    */
@@ -86,6 +89,9 @@ public interface Passport extends DBObject {
 
 /**********************************************************************
  * $Log: Passport.java,v $
+ * Revision 1.6  2004/02/27 01:10:18  willuhn
+ * @N passport config refactored
+ *
  * Revision 1.5  2004/02/25 23:11:46  willuhn
  * *** empty log message ***
  *

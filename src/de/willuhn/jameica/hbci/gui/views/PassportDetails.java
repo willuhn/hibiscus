@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/PassportDetails.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/02/22 20:04:53 $
+ * $Revision: 1.5 $
+ * $Date: 2004/02/27 01:10:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,12 +20,14 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.LabelGroup;
 import de.willuhn.jameica.gui.views.AbstractView;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.controller.PassportControlDDV;
-import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Passport;
 import de.willuhn.jameica.hbci.rmi.PassportDDV;
+import de.willuhn.jameica.hbci.rmi.PassportType;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
+import de.willuhn.util.MultipleClassLoader;
 
 /**
  * Dialog, ueber den die Passports konfiguriert werden koennen.
@@ -39,8 +41,18 @@ public class PassportDetails extends AbstractView {
 
 		GUI.setTitleText(I18N.tr("Eigenschaften des Sicherheitsmediums"));
 
-		Konto k = (Konto) getCurrentObject();
-		Passport p = k.getPassport();
+		Passport p = (Passport) getCurrentObject();
+		
+		// Das ist erstmal nur ein anonymer Passport. Wir muessen noch die
+		// zugehoerige Impl suchen.
+		// TODO: Das ist noch gar nicht schoen.
+		PassportType pt = p.getPassportType();
+		String clazz = pt.getImplementor();
+		p = (Passport) Settings.getDatabase().createObject(MultipleClassLoader.load(clazz),p.getID());
+		if (p.isNewObject())
+			p.setPassportType(pt); // ist ein neuer Passport - der hat keinen Typ nach dem Laden
+		setCurrentObject(p);
+
 
 		///////////////////////////////////////////////////////////////////////////
 		// DDV
@@ -50,6 +62,8 @@ public class PassportDetails extends AbstractView {
 
 			LabelGroup group = new LabelGroup(getParent(),I18N.tr("Eigenschaften"));
 			
+			group.addLabelPair(I18N.tr("Typ"),										control.getType());
+			group.addLabelPair(I18N.tr("Bezeichnung"),						control.getName());
 			group.addLabelPair(I18N.tr("Port des Lesers"),				control.getPort());
 			group.addLabelPair(I18N.tr("Index des Lesers"),				control.getCTNumber());
 			group.addLabelPair(I18N.tr("Index des HBCI-Zugangs"),	control.getEntryIndex());
@@ -89,6 +103,9 @@ public class PassportDetails extends AbstractView {
 
 /**********************************************************************
  * $Log: PassportDetails.java,v $
+ * Revision 1.5  2004/02/27 01:10:18  willuhn
+ * @N passport config refactored
+ *
  * Revision 1.4  2004/02/22 20:04:53  willuhn
  * @N Ueberweisung
  * @N Empfaenger

@@ -34,8 +34,8 @@ CREATE TABLE ueberweisung (
   PRIMARY KEY (id)
 );
 
-CREATE TABLE umsaetze (
-  id NUMERIC default UNIQUEKEY('umsaetze'),
+CREATE TABLE umsatz (
+  id NUMERIC default UNIQUEKEY('umsatz'),
   konto_id int(4) NOT NULL,
   empfaenger_id int(4) NOT NULL,
   betrag double NOT NULL,
@@ -51,6 +51,7 @@ CREATE TABLE passport (
   id NUMERIC default UNIQUEKEY('passport'),
   name varchar(255) NOT NULL,
   passport_type_id int(4) NOT NULL,
+  UNIQUE (name),
   UNIQUE (id),
   PRIMARY KEY (id)
 );
@@ -58,7 +59,8 @@ CREATE TABLE passport (
 CREATE TABLE passport_type (
   id NUMERIC default UNIQUEKEY('passport_type'),
   name varchar(255) NOT NULL,
-  class varchar(1000) NOT NULL,
+  implementor varchar(1000) NOT NULL,
+  UNIQUE (name),
   UNIQUE (id),
   PRIMARY KEY (id)
 );
@@ -77,5 +79,5 @@ ALTER TABLE passport ADD CONSTRAINT fk_passport_type FOREIGN KEY (passport_type_
 ALTER TABLE passport_param ADD CONSTRAINT fk_passport_param FOREIGN KEY (passport_id) REFERENCES passport (id) DEFERRABLE;
 ALTER TABLE ueberweisung ADD CONSTRAINT fk_konto FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE ueberweisung ADD CONSTRAINT fk_empfaenger FOREIGN KEY (empfaenger_id) REFERENCES empfaenger (id) DEFERRABLE;
-ALTER TABLE umsaetze ADD CONSTRAINT fk_konto2 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
-ALTER TABLE umsaetze ADD CONSTRAINT fk_empfaenger2 FOREIGN KEY (empfaenger_id) REFERENCES empfaenger (id) DEFERRABLE;
+ALTER TABLE umsatz ADD CONSTRAINT fk_konto2 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
+ALTER TABLE umsatz ADD CONSTRAINT fk_empfaenger2 FOREIGN KEY (empfaenger_id) REFERENCES empfaenger (id) DEFERRABLE;

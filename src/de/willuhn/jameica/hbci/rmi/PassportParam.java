@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Attic/PassportParam.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/02/12 00:38:40 $
+ * $Revision: 1.3 $
+ * $Date: 2004/02/27 01:10:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,10 +18,10 @@ import de.willuhn.datasource.rmi.DBObject;
 
 /**
  * Bildet einen Initialisierungsparameter fuer einen Passport ab.
- * Wir wollen ja, dass z,Bsp. eine Chipkarte pro Bankverbindung
- * konfiguriert werden kann. Daher haengen die Passport-Parameter
- * nicht an dem Passport selbst dran sondern am zugehoerigen Konto.
- * Uebder dieses kann dann der ausgewaehlte Passport geladen werden.
+ * Da die verschiedenen bei HBCI moeglichen Passports ja ganz unterschiedliche
+ * Parameter benoetigen, sind diese in einer extra Tabelle aus Name:Wert
+ * Paaren gespeichert. Diese Klasse wird ausschliesslich von den
+ * Passports selbst zum Speichern Ihren Einstellungen verwendet.
  */
 public interface PassportParam extends DBObject {
 
@@ -41,11 +41,11 @@ public interface PassportParam extends DBObject {
   public String getValue() throws RemoteException;
 
 	/**
-	 * Lifert das Konto, zu dem der Parameter gehoert.
-   * @return Konto.
+	 * Liefert den Passport, zu dem der Parameter gehoert.
+   * @return Passport.
    * @throws RemoteException
    */
-  public Konto getKonto() throws RemoteException;
+  public Passport getPassport() throws RemoteException;
 
 	/**
 	 * Speichert den Namen des Parameters.
@@ -62,16 +62,19 @@ public interface PassportParam extends DBObject {
   public void setValue(String value) throws RemoteException;
 
 	/**
-	 * Konto des Parameters.
-   * @param konto Konto.
+	 * Speichert den Passport, zu dem der Parameter gehoert.
+   * @param passport der Passport.
    * @throws RemoteException
    */
-  public void setKonto(Konto konto) throws RemoteException;	
+  public void setPassport(Passport passport) throws RemoteException;	
 }
 
 
 /**********************************************************************
  * $Log: PassportParam.java,v $
+ * Revision 1.3  2004/02/27 01:10:18  willuhn
+ * @N passport config refactored
+ *
  * Revision 1.2  2004/02/12 00:38:40  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/02/24 22:47:04 $
+ * $Revision: 1.6 $
+ * $Date: 2004/02/27 01:10:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,13 +19,17 @@ import java.security.NoSuchAlgorithmException;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.controller.AbstractControl;
 import de.willuhn.jameica.gui.parts.CheckboxInput;
+import de.willuhn.jameica.gui.parts.Table;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.views.PassportDetails;
 import de.willuhn.jameica.hbci.gui.views.Welcome;
+import de.willuhn.jameica.hbci.rmi.Passport;
 import de.willuhn.util.I18N;
 
 /**
@@ -34,8 +38,10 @@ import de.willuhn.util.I18N;
 public class SettingsControl extends AbstractControl {
 
 	// Eingabe-Felder
-	private CheckboxInput onlineMode = null;
-	private CheckboxInput checkPin = null;
+	private CheckboxInput onlineMode     		= null;
+	private CheckboxInput checkPin     			= null;
+
+	private Table passportList 							= null;
 
   /**
    * @param view
@@ -43,6 +49,21 @@ public class SettingsControl extends AbstractControl {
   public SettingsControl(AbstractView view) {
     super(view);
   }
+
+	/**
+	 * Liefert eine Tabelle mit den existierenden Passports.
+   * @return Tabelle mit den Passports.
+   * @throws RemoteException
+   */
+  public Table getPassportListe() throws RemoteException
+	{
+		DBIterator list = Settings.getDatabase().createList(Passport.class);
+
+		Table table = new Table(list,this);
+		table.addColumn(I18N.tr("Bezeichnung"),"name");
+		table.addColumn(I18N.tr("Typ"),"passport_type_id");
+		return table;
+	}
 
 	/**
 	 * Checkbox zur Auswahl des Online-Mode.
@@ -121,6 +142,7 @@ public class SettingsControl extends AbstractControl {
    */
   public void handleOpen(Object o)
 	{
+		GUI.startView(PassportDetails.class.getName(),o);
 	}
 
 	/**
@@ -154,6 +176,9 @@ public class SettingsControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.6  2004/02/27 01:10:18  willuhn
+ * @N passport config refactored
+ *
  * Revision 1.5  2004/02/24 22:47:04  willuhn
  * @N GUI refactoring
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/DialogFactory.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/02/24 22:47:05 $
+ * $Revision: 1.8 $
+ * $Date: 2004/02/27 01:10:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -46,6 +46,10 @@ public class DialogFactory {
 			GUI.setActionText(e.getLocalizedMessage());
 			throw new RuntimeException(e);
 		}
+		finally
+		{
+			close();
+		}
 	}
 
 	/**
@@ -67,6 +71,10 @@ public class DialogFactory {
 			Application.getLog().error(e.getLocalizedMessage(),e);
 			GUI.setActionText(e.getLocalizedMessage());
 			throw new RuntimeException(e);
+		}
+		finally
+		{
+			close();
 		}
 	}
 
@@ -103,6 +111,9 @@ public class DialogFactory {
 
 /**********************************************************************
  * $Log: DialogFactory.java,v $
+ * Revision 1.8  2004/02/27 01:10:18  willuhn
+ * @N passport config refactored
+ *
  * Revision 1.7  2004/02/24 22:47:05  willuhn
  * @N GUI refactoring
  *
