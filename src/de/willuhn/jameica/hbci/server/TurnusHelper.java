@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/TurnusHelper.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/07/14 23:48:31 $
+ * $Revision: 1.2 $
+ * $Date: 2004/07/15 23:39:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,6 +30,8 @@ import de.willuhn.util.I18N;
 public class TurnusHelper
 {
 
+	private static String[] wochentage = null;
+	
 	/**
 	 * Prueft, ob es in der lokalen Datenbank einen Zahlungsturnus gibt,
 	 * der den Eigenschaften des uebergebenen Dauerauftrags aus HBCI4Java
@@ -95,40 +97,90 @@ public class TurnusHelper
 	{
 		I18N i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
 
-		String[] wochentage = new String[]
-		{
-			i18n.tr("Montags"),
-			i18n.tr("Dienstags"),
-			i18n.tr("Mittwochs"),
-			i18n.tr("Donnerstags"),
-			i18n.tr("Freitags"),
-			i18n.tr("Samstags"),
-			i18n.tr("Sonntags")
-		};
+		int iv = turnus.getIntervall();
+		int ze = turnus.getZeiteinheit();
+		int ta = turnus.getTag();
 
-		String s = "";
-		if (turnus.getIntervall() == 1 && turnus.getZeiteinheit() == Turnus.ZEITEINHEIT_MONATLICH)
-			s += i18n.tr("Monatlich");
-		else if (turnus.getIntervall() == 1 && turnus.getZeiteinheit() == Turnus.ZEITEINHEIT_WOECHENTLICH)
-			s += i18n.tr("Wöchentlich");
+		String s = null;
 
-		if (turnus.getIntervall() > 1 && turnus.getZeiteinheit() == Turnus.ZEITEINHEIT_MONATLICH)
-			s += i18n.tr("Aller {0} Monate","" + turnus.getIntervall());
-		else if (turnus.getIntervall() > 1 && turnus.getZeiteinheit() == Turnus.ZEITEINHEIT_WOECHENTLICH)
-			s += i18n.tr("Aller {0} Wochen","" + turnus.getIntervall());
+		// Einfacher Zahlungsplan
+		if (iv == 1 && ze == Turnus.ZEITEINHEIT_MONATLICH)
+			s = i18n.tr("Monatlich");
+		else if (iv == 1 && ze == Turnus.ZEITEINHEIT_WOECHENTLICH)
+			s = i18n.tr("Wöchentlich");
 
-		if (turnus.getZeiteinheit() == Turnus.ZEITEINHEIT_WOECHENTLICH)
-			s+= ", " + wochentage[turnus.getTag()];
-		else if (turnus.getZeiteinheit() == Turnus.ZEITEINHEIT_MONATLICH)
-			s+= ", " + i18n.tr("am {0}. des Monats","" + turnus.getTag());
+		// komplexer Zahlungsplan
+		if (iv > 1 && ze == Turnus.ZEITEINHEIT_MONATLICH)
+			s = i18n.tr("Aller {0} Monate","" + iv);
+		else if (iv > 1 && ze == Turnus.ZEITEINHEIT_WOECHENTLICH)
+			s = i18n.tr("Aller {0} Wochen","" + iv);
+
+		// Standardfaelle
+		if (iv == 3 && ze == Turnus.ZEITEINHEIT_MONATLICH)
+			s = i18n.tr("Vierteljährlich");
+		if (iv == 6 && ze == Turnus.ZEITEINHEIT_MONATLICH)
+			s = i18n.tr("Halbjährlich");
+		if (iv == 12 && ze == Turnus.ZEITEINHEIT_MONATLICH)
+			s = i18n.tr("Jährlich");
+
+
+		// Zahltag anhaengen
+		if (ze == Turnus.ZEITEINHEIT_WOECHENTLICH)
+			s+= ", " + getWochentag(ta);
+		else if (ze == Turnus.ZEITEINHEIT_MONATLICH)
+			s+= ", " + i18n.tr("am {0}. des Monats","" + ta);
 
 		return s;
+	}
+	
+  /**
+	 * Liefert die Bezeichnung des Werktages mit dem genannten Index.
+	 * Den zum Zahltag des Turnus gehoerenden kann man dann wie folgt ermitteln:<br>
+	 * <code>String tag = TurnusHelper.getWochentage(turnus.getTag())</code>.
+   * @param index Index des Wochentages von 1 - 7.
+   * @return Bezeichnung des Wochentages.
+   * @throws RemoteException
+   */
+  public static String getWochentag(int index) throws RemoteException
+	{
+		return getWochentage()[index - 1];
+	}
+
+	/**
+	 * Liefert ein String-Array mit den Bezeichnungen der Wochentage.
+	 * Hinweis: Da es sich um ein Array handelt, zaehlt der Index
+	 * natuerlich nicht von 1-7 sondern von 0-6.
+	 * @return Bezeichnungen der Wochentage.
+	 * @throws RemoteException
+	 */
+  public static String[] getWochentage() throws RemoteException
+	{
+		if (wochentage != null)
+			return wochentage;
+
+		I18N i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
+
+		wochentage = new String[]
+		{
+			i18n.tr("Montag"),
+			i18n.tr("Dienstag"),
+			i18n.tr("Mittwoch"),
+			i18n.tr("Donnerstag"),
+			i18n.tr("Freitag"),
+			i18n.tr("Samstag"),
+			i18n.tr("Sonntag")
+		};
+		
+		return wochentage;
 	}
 }
 
 
 /**********************************************************************
  * $Log: TurnusHelper.java,v $
+ * Revision 1.2  2004/07/15 23:39:22  willuhn
+ * @N TurnusImpl
+ *
  * Revision 1.1  2004/07/14 23:48:31  willuhn
  * @N mehr Code fuer Dauerauftraege
  *

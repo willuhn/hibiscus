@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DauerauftragImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/07/13 22:20:37 $
+ * $Revision: 1.3 $
+ * $Date: 2004/07/15 23:39:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,7 +30,7 @@ public class DauerauftragImpl extends AbstractTransferImpl implements Dauerauftr
 {
 
 	private I18N i18n;
-
+	
   /**
    * ct.
    * @throws RemoteException
@@ -89,6 +89,17 @@ public class DauerauftragImpl extends AbstractTransferImpl implements Dauerauftr
   {
     return (Turnus) getAttribute("turnus_id");
   }
+
+	/**
+	 * @see de.willuhn.jameica.hbci.rmi.Dauerauftrag#isAktiv()
+	 */
+	public boolean isAktiv() throws RemoteException
+	{
+		Integer i = (Integer) getAttribute("aktiv");
+		if (i == null)
+			return false;
+		return i.intValue() == 1;
+	}
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Dauerauftrag#setErsteZahlung(java.util.Date)
@@ -169,6 +180,9 @@ public class DauerauftragImpl extends AbstractTransferImpl implements Dauerauftr
 
 /**********************************************************************
  * $Log: DauerauftragImpl.java,v $
+ * Revision 1.3  2004/07/15 23:39:22  willuhn
+ * @N TurnusImpl
+ *
  * Revision 1.2  2004/07/13 22:20:37  willuhn
  * @N Code fuer DauerAuftraege
  * @C paar Funktionsnamen umbenannt

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Turnus.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/07/14 23:48:31 $
+ * $Revision: 1.3 $
+ * $Date: 2004/07/15 23:39:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -112,12 +112,14 @@ public interface Turnus extends DBObject
    * @throws RemoteException
    */
   public boolean isInitial() throws RemoteException;
-
 }
 
 
 /**********************************************************************
  * $Log: Turnus.java,v $
+ * Revision 1.3  2004/07/15 23:39:22  willuhn
+ * @N TurnusImpl
+ *
  * Revision 1.2  2004/07/14 23:48:31  willuhn
  * @N mehr Code fuer Dauerauftraege
  *
