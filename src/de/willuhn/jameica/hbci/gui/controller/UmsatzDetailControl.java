@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailControl.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/04/19 22:53:52 $
+ * $Revision: 1.6 $
+ * $Date: 2004/04/25 18:17:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -203,8 +203,6 @@ public class UmsatzDetailControl extends AbstractControl {
       Application.getLog().error("error while opening umsatz list",e);
 			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Laden der Umsätze"));
     }
-		GUI.startPreviousView();
-
   }
   
   /**
@@ -265,6 +263,9 @@ public class UmsatzDetailControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzDetailControl.java,v $
+ * Revision 1.6  2004/04/25 18:17:14  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2004/04/19 22:53:52  willuhn
  * *** empty log message ***
  *
