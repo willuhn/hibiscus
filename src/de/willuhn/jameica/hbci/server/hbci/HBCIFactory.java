@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/06/10 20:56:33 $
+ * $Revision: 1.8 $
+ * $Date: 2004/06/30 20:58:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,13 +18,13 @@ import java.util.ArrayList;
 import org.kapott.hbci.GV.HBCIJob;
 import org.kapott.hbci.manager.HBCIHandler;
 
-import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
+import de.willuhn.util.Logger;
 
 /**
  * Diese Klasse ist fuer die Ausfuehrung der HBCI-Jobs zustaendig.
@@ -95,7 +95,7 @@ public class HBCIFactory {
 
 			if (jobs.size() == 0)
 			{
-				Application.getLog().warn("no jobs defined");
+				Logger.warn("no jobs defined");
 				return;
 			}
 
@@ -104,7 +104,7 @@ public class HBCIFactory {
 			try {
 				HBCIHandler handler = handle.open();
 
-				Application.getLog().info("creating jobs");
+				Logger.info("creating jobs");
 
 				for (int i=0;i<jobs.size();++i)
 				{
@@ -113,17 +113,17 @@ public class HBCIFactory {
 					Konto konto = job.getKonto();
 					if (konto == null)
 					{
-						Application.getLog().warn("no konto defined in job " + job.getIdentifier() + ", skipping");
+						Logger.warn("no konto defined in job " + job.getIdentifier() + ", skipping");
 						continue;
 					}
 
-					Application.getLog().info("adding job " + job.getIdentifier() + " to queue");
+					Logger.info("adding job " + job.getIdentifier() + " to queue");
 					HBCIJob j = handler.newJob(job.getIdentifier());
 					job.setJob(j);
 					handler.addJob(j);
 				}
 
-				Application.getLog().info("executing jobs");
+				Logger.info("executing jobs");
 				handler.execute();
 			}
 			catch (RemoteException e)
@@ -175,6 +175,9 @@ public class HBCIFactory {
 
 /**********************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.8  2004/06/30 20:58:29  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2004/06/10 20:56:33  willuhn
  * @D javadoc comments fixed
  *

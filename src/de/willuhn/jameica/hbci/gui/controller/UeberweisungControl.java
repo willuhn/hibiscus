@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.19 $
- * $Date: 2004/06/08 22:28:58 $
+ * $Revision: 1.20 $
+ * $Date: 2004/06/30 20:58:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,7 +21,6 @@ import org.eclipse.swt.widgets.TableItem;
 import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.controller.AbstractControl;
@@ -49,6 +48,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
+import de.willuhn.util.Logger;
 
 /**
  * Controller fuer die Ueberweisungen.
@@ -164,7 +164,7 @@ public class UeberweisungControl extends AbstractControl {
 				}
 				catch (RemoteException e2)
 				{
-					Application.getLog().error("error while executing ueberweisung",e2);
+					Logger.error("error while executing ueberweisung",e2);
 					GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Ausführen der Überweisung"));
 				}
       }
@@ -179,7 +179,7 @@ public class UeberweisungControl extends AbstractControl {
       	}
       	catch (RemoteException e)
       	{
-					Application.getLog().error("error while duplicating ueberweisung",e);
+					Logger.error("error while duplicating ueberweisung",e);
 					GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Duplizieren der Überweisung"));
       	}
       }
@@ -450,7 +450,7 @@ public class UeberweisungControl extends AbstractControl {
 		}
 		catch (Exception e)
 		{
-			Application.getLog().error("error while deleting ueberweisung",e);
+			Logger.error("error while deleting ueberweisung",e);
 			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Löschen der Überweisung."));
 		}
   }
@@ -482,7 +482,7 @@ public class UeberweisungControl extends AbstractControl {
 		}
 		catch (RemoteException e)
 		{
-			Application.getLog().error("error while disabling fields",e);
+			Logger.error("error while disabling fields",e);
 		}
 	}
 
@@ -551,7 +551,7 @@ public class UeberweisungControl extends AbstractControl {
 			}
 			catch (RemoteException re)
 			{
-				Application.getLog().error("rollback failed",re);
+				Logger.error("rollback failed",re);
 			}
   		GUI.getView().setErrorText(i18n.tr(e.getMessage()));
   	}
@@ -562,9 +562,9 @@ public class UeberweisungControl extends AbstractControl {
 			}
 			catch (RemoteException re)
 			{
-				Application.getLog().error("rollback failed",re);
+				Logger.error("rollback failed",re);
 			}
-  		Application.getLog().error("error while storing ueberweisung",e2);
+  		Logger.error("error while storing ueberweisung",e2);
   		GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern der Überweisung"));
   	}
   }
@@ -594,7 +594,7 @@ public class UeberweisungControl extends AbstractControl {
 		}
 		catch (Exception e)
 		{
-			Application.getLog().error("error while checking ueberweisung",e);
+			Logger.error("error while checking ueberweisung",e);
 			GUI.getView().setErrorText(i18n.tr("Fehler beim Prüfen der Überweisung"));
 		}
 
@@ -618,7 +618,7 @@ public class UeberweisungControl extends AbstractControl {
       		}
       		catch (Throwable t)
       		{
-      			Application.getLog().error("error while executing ueberweisung",t);
+      			Logger.error("error while executing ueberweisung",t);
       			errorText.append("Fehler beim Ausführen der Überweisung.");
       			throw new RuntimeException(); // wir wollen nicht warten, bis sich die GUI ausgekaest hat, raus hier!
       		}
@@ -671,7 +671,7 @@ public class UeberweisungControl extends AbstractControl {
 			}
 			catch (RemoteException er)
 			{
-				Application.getLog().error("error while updating currency",er);
+				Logger.error("error while updating currency",er);
 				GUI.getStatusBar().setErrorText(i18n.tr("Fehler bei Ermittlung der Währung"));
 			}
 		}
@@ -718,7 +718,7 @@ public class UeberweisungControl extends AbstractControl {
 			}
 			catch (RemoteException er)
 			{
-				Application.getLog().error("error while choosing empfaenger",er);
+				Logger.error("error while choosing empfaenger",er);
 				GUI.getStatusBar().setErrorText(i18n.tr("Fehler bei der Auswahl des Empfängers"));
     	}
     }
@@ -728,6 +728,9 @@ public class UeberweisungControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
+ * Revision 1.20  2004/06/30 20:58:28  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.19  2004/06/08 22:28:58  willuhn
  * *** empty log message ***
  *

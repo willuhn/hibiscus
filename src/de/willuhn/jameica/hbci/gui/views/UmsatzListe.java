@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/UmsatzListe.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/04/12 19:15:31 $
+ * $Revision: 1.5 $
+ * $Date: 2004/06/30 20:58:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,6 @@ import java.rmi.RemoteException;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 
-import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.parts.TablePart;
@@ -27,6 +26,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.controller.UmsatzControl;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
+import de.willuhn.util.Logger;
 
 /**
  */
@@ -63,7 +63,7 @@ public class UmsatzListe extends AbstractView {
 		}
 		catch (RemoteException e)
 		{
-			Application.getLog().error("error while loading umsatz list",e);
+			Logger.error("error while loading umsatz list",e);
 			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Laden der Umsätze"));
 		}
 
@@ -80,6 +80,9 @@ public class UmsatzListe extends AbstractView {
 
 /**********************************************************************
  * $Log: UmsatzListe.java,v $
+ * Revision 1.5  2004/06/30 20:58:28  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2004/04/12 19:15:31  willuhn
  * @C refactoring
  *

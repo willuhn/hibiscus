@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUmsatzJob.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/06/10 20:56:33 $
+ * $Revision: 1.5 $
+ * $Date: 2004/06/30 20:58:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,7 +16,6 @@ import java.rmi.RemoteException;
 
 import org.kapott.hbci.GV_Result.GVRKUms;
 
-import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -25,6 +24,7 @@ import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.Converter;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
+import de.willuhn.util.Logger;
 
 /**
  * Job fuer "Umsatz-Abfrage".
@@ -79,7 +79,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob {
 			addToProtokoll(i18n.tr("Fehler beim Abrufen der Umsätze") + " ("+ msg +")",Protokoll.TYP_ERROR);
 			throw new ApplicationException(msg);
 		}
-		Application.getLog().debug("job result is ok, returning saldo");
+		Logger.debug("job result is ok, returning saldo");
 
 		// So, jetzt kopieren wir das ResultSet noch in unsere
 		// eigenen Datenstrukturen. ;)
@@ -99,6 +99,9 @@ public class HBCIUmsatzJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIUmsatzJob.java,v $
+ * Revision 1.5  2004/06/30 20:58:29  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2004/06/10 20:56:33  willuhn
  * @D javadoc comments fixed
  *

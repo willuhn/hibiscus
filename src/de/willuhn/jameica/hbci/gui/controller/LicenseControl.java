@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/LicenseControl.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/06/08 22:28:58 $
+ * $Revision: 1.3 $
+ * $Date: 2004/06/30 20:58:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,6 @@ import java.io.FileInputStream;
 import java.rmi.RemoteException;
 
 import de.willuhn.jameica.AbstractPlugin;
-import de.willuhn.jameica.Application;
 import de.willuhn.jameica.InfoReader;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
@@ -27,6 +26,7 @@ import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.util.FileFinder;
 import de.willuhn.util.I18N;
+import de.willuhn.util.Logger;
 
 /**
  * Controller fuer den Dialog Lizenzinformationen.
@@ -66,7 +66,7 @@ public class LicenseControl extends AbstractControl {
     }
     catch (Exception e)
     {
-      Application.getLog().error("unable to read info.xml from plugin hibiscus",e);
+      Logger.error("unable to read info.xml from plugin hibiscus",e);
     }
     buffer.append("<p><span color=\"header\" font=\"header\">" + i18n.tr("Hibiscus") + "</span></p>");
     if (ir != null)
@@ -91,7 +91,7 @@ public class LicenseControl extends AbstractControl {
         ir = new InfoReader(new FileInputStream(infos[i]));
         if (ir == null)
         {
-          Application.getLog().warn("inforeader is null, skipping lib");
+          Logger.warn("inforeader is null, skipping lib");
           continue;
         }
         buffer.append("<p>");
@@ -104,7 +104,7 @@ public class LicenseControl extends AbstractControl {
       }
       catch (Exception e)
       {
-        Application.getLog().error("unable to parse " + infos[0],e);
+        Logger.error("unable to parse " + infos[0],e);
       }
     }
     buffer.append("</form>");
@@ -149,6 +149,9 @@ public class LicenseControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: LicenseControl.java,v $
+ * Revision 1.3  2004/06/30 20:58:28  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2004/06/08 22:28:58  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/KontoNeu.java,v $
- * $Revision: 1.14 $
- * $Date: 2004/05/26 23:23:10 $
+ * $Revision: 1.15 $
+ * $Date: 2004/06/30 20:58:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,6 @@ import java.rmi.RemoteException;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 
-import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.ButtonArea;
@@ -28,6 +27,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.controller.KontoControl;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
+import de.willuhn.util.Logger;
 
 /**
  * Bankverbindung bearbeiten.
@@ -88,7 +88,7 @@ public class KontoNeu extends AbstractView {
 		}
 		catch (RemoteException e)
 		{
-			Application.getLog().error("error while reading konto",e);
+			Logger.error("error while reading konto",e);
 			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Lesen der Bankverbindungsdaten."));
 		}
 
@@ -105,6 +105,9 @@ public class KontoNeu extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoNeu.java,v $
+ * Revision 1.15  2004/06/30 20:58:28  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.14  2004/05/26 23:23:10  willuhn
  * @N neue Sicherheitsabfrage vor Ueberweisung
  * @C Check des Ueberweisungslimit

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/EmpfaengerListe.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/04/12 19:15:31 $
+ * $Revision: 1.5 $
+ * $Date: 2004/06/30 20:58:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,7 +12,6 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.views;
 
-import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.ButtonArea;
@@ -21,6 +20,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.controller.EmpfaengerControl;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
+import de.willuhn.util.Logger;
 
 /**
  * Zeigt eine Liste mit den vorhandenen Empfaenger-Adressen an.
@@ -48,7 +48,7 @@ public class EmpfaengerListe extends AbstractView {
 		}
 		catch (Exception e)
 		{
-			Application.getLog().error("error while loading empfaenger list",e);
+			Logger.error("error while loading empfaenger list",e);
 			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Lesen der Empfänger."));
 		}
   }
@@ -64,6 +64,9 @@ public class EmpfaengerListe extends AbstractView {
 
 /**********************************************************************
  * $Log: EmpfaengerListe.java,v $
+ * Revision 1.5  2004/06/30 20:58:28  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2004/04/12 19:15:31  willuhn
  * @C refactoring
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUeberweisungJob.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/05/25 23:23:18 $
+ * $Revision: 1.6 $
+ * $Date: 2004/06/30 20:58:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,6 @@ package de.willuhn.jameica.hbci.server.hbci;
 
 import java.rmi.RemoteException;
 
-import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Empfaenger;
@@ -23,6 +22,7 @@ import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.server.Converter;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
+import de.willuhn.util.Logger;
 
 /**
  * Job fuer "Ueberweisung".
@@ -122,7 +122,7 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob {
 		}
 		catch (RemoteException e)
 		{
-			Application.getLog().error("error while reading empfaenger name",e);
+			Logger.error("error while reading empfaenger name",e);
 		}
 
 		if (!getJobResult().isOK())
@@ -139,13 +139,16 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob {
 			throw new ApplicationException(msg + " ("+error+")");
 		}
 		addToProtokoll(i18n.tr("Überweisung ausgeführt") + " " + empfName,Protokoll.TYP_SUCCESS);
-		Application.getLog().debug("ueberweisung sent successfully");
+		Logger.debug("ueberweisung sent successfully");
   }
 }
 
 
 /**********************************************************************
  * $Log: HBCIUeberweisungJob.java,v $
+ * Revision 1.6  2004/06/30 20:58:29  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2004/05/25 23:23:18  willuhn
  * @N UeberweisungTyp
  * @N Protokoll

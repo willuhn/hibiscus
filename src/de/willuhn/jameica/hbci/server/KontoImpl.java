@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.24 $
- * $Date: 2004/06/17 00:14:10 $
+ * $Revision: 1.25 $
+ * $Date: 2004/06/30 20:58:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,7 +20,6 @@ import org.kapott.hbci.manager.HBCIUtils;
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
-import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.PassportRegistry;
@@ -35,6 +34,7 @@ import de.willuhn.jameica.hbci.server.hbci.HBCISaldoJob;
 import de.willuhn.jameica.hbci.server.hbci.HBCIUmsatzJob;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
+import de.willuhn.util.Logger;
 
 /**
  * Bildet eine Bankverbindung ab.
@@ -95,7 +95,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 		}
 		catch (RemoteException e)
 		{
-			Application.getLog().error("error while insertcheck",e);
+			Logger.error("error while insertcheck",e);
 			throw new ApplicationException("Fehler bei der Prüfung der Daten");
 		}
   }
@@ -430,7 +430,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 			// Was sollte in diesem Fall sinnvolles gemacht werden? Den gesamten
 			// HBCI-Job abbrechen? Nene, dann lieber auf den Log-Eintrag verzichten
 			// und nur ins Application-Log schreiben. ;)
-			Application.getLog().error("error while writing protocol",e);
+			Logger.error("error while writing protocol",e);
 		}
 
   }
@@ -449,7 +449,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 		}
 		catch (Exception e)
 		{
-			Application.getLog().error("error while writing protocol",e);
+			Logger.error("error while writing protocol",e);
 		}
   }
 
@@ -458,6 +458,9 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.25  2004/06/30 20:58:28  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.24  2004/06/17 00:14:10  willuhn
  * @N GenericObject, GenericIterator
  *

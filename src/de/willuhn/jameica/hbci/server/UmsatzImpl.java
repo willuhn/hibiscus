@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/06/17 00:14:10 $
+ * $Revision: 1.8 $
+ * $Date: 2004/06/30 20:58:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,7 +18,6 @@ import java.util.zip.CRC32;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBObject;
-import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -26,6 +25,7 @@ import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
+import de.willuhn.util.Logger;
 
 /**
  * Repraesentiert eine Zeile in den Umsaetzen.
@@ -89,7 +89,7 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz {
 		}
 		catch (RemoteException e)
 		{
-			Application.getLog().error("error while insertcheck in umsatz",e);
+			Logger.error("error while insertcheck in umsatz",e);
 			throw new ApplicationException(i18n.tr("Fehler beim Speichern des Umsatzes"));
 		}
   }
@@ -367,6 +367,9 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz {
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.8  2004/06/30 20:58:29  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2004/06/17 00:14:10  willuhn
  * @N GenericObject, GenericIterator
  *

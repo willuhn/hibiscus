@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/DialogFactory.java,v $
- * $Revision: 1.14 $
- * $Date: 2004/05/05 21:27:13 $
+ * $Revision: 1.15 $
+ * $Date: 2004/06/30 20:58:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,12 +12,12 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui;
 
-import de.willuhn.jameica.Application;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.dialogs.SimpleDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.PINDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.TANDialog;
+import de.willuhn.util.Logger;
 
 /**
  * Hilfsklasse zur Erzeugung von Hilfs-Dialogen bei der HBCI-Kommunikation.
@@ -43,7 +43,7 @@ public class DialogFactory {
 		}
 		catch (Exception e)
 		{
-			Application.getLog().error(e.getLocalizedMessage(),e);
+			Logger.error(e.getLocalizedMessage(),e);
 			GUI.getStatusBar().setErrorText(e.getLocalizedMessage());
 			throw new RuntimeException(e);
 		}
@@ -70,7 +70,7 @@ public class DialogFactory {
 		}
 		catch (Exception e)
 		{
-			Application.getLog().error(e.getLocalizedMessage(),e);
+			Logger.error(e.getLocalizedMessage(),e);
 			GUI.getStatusBar().setErrorText(e.getLocalizedMessage());
 			throw new RuntimeException(e);
 		}
@@ -96,7 +96,7 @@ public class DialogFactory {
 		}
 		catch (Exception e)
 		{
-			Application.getLog().error(e.getLocalizedMessage(),e);
+			Logger.error(e.getLocalizedMessage(),e);
 			GUI.getStatusBar().setErrorText(e.getLocalizedMessage());
 			throw new RuntimeException(e);
 		}
@@ -114,7 +114,7 @@ public class DialogFactory {
 		if (dialog == null)
 			return;
 
-		Application.getLog().error("alert: there's another opened dialog");
+		Logger.error("alert: there's another opened dialog");
 		throw new RuntimeException("alert: there's another opened dialog");
 	}
 
@@ -139,6 +139,9 @@ public class DialogFactory {
 
 /**********************************************************************
  * $Log: DialogFactory.java,v $
+ * Revision 1.15  2004/06/30 20:58:29  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.14  2004/05/05 21:27:13  willuhn
  * @N added TAN-Dialog
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.36 $
- * $Date: 2004/06/18 19:53:17 $
+ * $Revision: 1.37 $
+ * $Date: 2004/06/30 20:58:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,7 +23,6 @@ import org.kapott.hbci.manager.HBCIUtils;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.GenericObject;
-import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.controller.AbstractControl;
@@ -48,6 +47,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
+import de.willuhn.util.Logger;
 
 /**
  * Controller der fuer den Dialog "Bankverbindungen" zustaendig ist.
@@ -325,7 +325,7 @@ public class KontoControl extends AbstractControl {
 			}
 			catch (Exception e)
 			{
-				Application.getLog().error(e.getLocalizedMessage(),e);
+				Logger.error(e.getLocalizedMessage(),e);
 				return;
 			}
 
@@ -337,7 +337,7 @@ public class KontoControl extends AbstractControl {
 		catch (RemoteException e)
 		{
 			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Löschen der Bankverbindung."));
-			Application.getLog().error("unable to delete konto",e);
+			Logger.error("unable to delete konto",e);
 		}
 		catch (ApplicationException ae)
 		{
@@ -382,7 +382,7 @@ public class KontoControl extends AbstractControl {
 		}
 		catch (RemoteException e)
 		{
-			Application.getLog().error("unable to store konto",e);
+			Logger.error("unable to store konto",e);
 			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern der Bankverbindung."));
 		}
 
@@ -419,7 +419,7 @@ public class KontoControl extends AbstractControl {
 		}
 		catch (RemoteException e)
 		{
-			Application.getLog().error("error while reading passport from select box",e);
+			Logger.error("error while reading passport from select box",e);
 			GUI.getStatusBar().setErrorText(i18n.tr("Fehler bei der Ermittlung des Sicherheitsmediums"));
 			return;
 		}
@@ -442,7 +442,7 @@ public class KontoControl extends AbstractControl {
 		}
 		catch (RemoteException e)
 		{
-			Application.getLog().error("error while reading passport from select box",e);
+			Logger.error("error while reading passport from select box",e);
 			GUI.getStatusBar().setErrorText(i18n.tr("Fehler bei der Ermittlung des Sicherheitsmediums"));
 			return;
 		}
@@ -495,7 +495,7 @@ public class KontoControl extends AbstractControl {
 							catch (Exception e)
 							{
 								// Wenn ein Konto fehlschlaegt, soll nicht gleich der ganze Vorgang abbrechen
-								Application.getLog().error("error while storing konto",e);
+								Logger.error("error while storing konto",e);
 								GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Anlegen des Kontos") + " " + konten[i].getKontonummer());
 							}
 						}
@@ -506,7 +506,7 @@ public class KontoControl extends AbstractControl {
 				}
 				catch (Throwable t)
 				{
-					Application.getLog().error("error while reading data from passport",t);
+					Logger.error("error while reading data from passport",t);
 					GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Lesen der Konto-Daten. Bitte prüfen Sie die Einstellungen des Mediums."));
 				}
 			}
@@ -529,7 +529,7 @@ public class KontoControl extends AbstractControl {
 		}
 		catch (RemoteException e)
 		{
-			Application.getLog().error("error while checking konto",e);
+			Logger.error("error while checking konto",e);
 			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Prüfen des Kontos"));
 		}
 
@@ -550,7 +550,7 @@ public class KontoControl extends AbstractControl {
       	}
 				catch (Throwable t)
 				{
-					Application.getLog().error("error while reading saldo",t);
+					Logger.error("error while reading saldo",t);
 					GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Abrufen des Saldos."));
 				}
       }
@@ -575,7 +575,7 @@ public class KontoControl extends AbstractControl {
 		}
 		catch (RemoteException e)
 		{
-			Application.getLog().error("error while starting umsatz list",e);
+			Logger.error("error while starting umsatz list",e);
 			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Laden der Kontoauszüge"));
 		}
 	}
@@ -598,7 +598,7 @@ public class KontoControl extends AbstractControl {
 			}
 			catch (RemoteException e)
 			{
-				Application.getLog().error("error while updating blz comment",e);
+				Logger.error("error while updating blz comment",e);
 			}
     }
 	}
@@ -607,6 +607,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.37  2004/06/30 20:58:28  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.36  2004/06/18 19:53:17  willuhn
  * *** empty log message ***
  *

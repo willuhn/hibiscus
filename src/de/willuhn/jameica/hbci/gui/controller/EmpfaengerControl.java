@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EmpfaengerControl.java,v $
- * $Revision: 1.12 $
- * $Date: 2004/06/08 22:28:58 $
+ * $Revision: 1.13 $
+ * $Date: 2004/06/30 20:58:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,6 @@ import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.controller.AbstractControl;
@@ -34,6 +33,7 @@ import de.willuhn.jameica.hbci.gui.views.EmpfaengerNeu;
 import de.willuhn.jameica.hbci.rmi.Empfaenger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
+import de.willuhn.util.Logger;
 
 /**
  * Controller fuer die Empfaenger-Adressen.
@@ -159,7 +159,7 @@ public class EmpfaengerControl extends AbstractControl {
 			}
 			catch (Exception e)
 			{
-				Application.getLog().error(e.getLocalizedMessage(),e);
+				Logger.error(e.getLocalizedMessage(),e);
 				return;
 			}
 
@@ -171,7 +171,7 @@ public class EmpfaengerControl extends AbstractControl {
 		catch (RemoteException e)
 		{
 			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Löschen der Empfängeradresse."));
-			Application.getLog().error("unable to delete empfaenger");
+			Logger.error("unable to delete empfaenger");
 		}
 		catch (ApplicationException ae)
 		{
@@ -201,7 +201,7 @@ public class EmpfaengerControl extends AbstractControl {
   	}
   	catch (RemoteException e)
   	{
-  		Application.getLog().error("error while storing empfaenger",e);
+  		Logger.error("error while storing empfaenger",e);
   		GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern der Adresse"));
   	}
   	catch (ApplicationException e2)
@@ -242,7 +242,7 @@ public class EmpfaengerControl extends AbstractControl {
 			}
 			catch (RemoteException e)
 			{
-				Application.getLog().error("error while updating blz comment",e);
+				Logger.error("error while updating blz comment",e);
 			}
 		}
 	}
@@ -252,6 +252,9 @@ public class EmpfaengerControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: EmpfaengerControl.java,v $
+ * Revision 1.13  2004/06/30 20:58:28  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.12  2004/06/08 22:28:58  willuhn
  * *** empty log message ***
  *

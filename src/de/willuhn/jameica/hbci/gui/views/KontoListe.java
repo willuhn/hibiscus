@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/KontoListe.java,v $
- * $Revision: 1.11 $
- * $Date: 2004/06/03 00:23:43 $
+ * $Revision: 1.12 $
+ * $Date: 2004/06/30 20:58:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,7 +15,6 @@ package de.willuhn.jameica.hbci.gui.views;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 
-import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.ButtonArea;
@@ -25,6 +24,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.controller.KontoControl;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
+import de.willuhn.util.Logger;
 
 /**
  * Zeigt eine Liste mit den vorhandenen Bankverbindungen an.
@@ -67,7 +67,7 @@ public class KontoListe extends AbstractView {
 		}
 		catch (Exception e)
 		{
-			Application.getLog().error("error while loading konto list",e);
+			Logger.error("error while loading konto list",e);
 			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Lesen der Bankverbindungen."));
 		}
   }
@@ -83,6 +83,9 @@ public class KontoListe extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoListe.java,v $
+ * Revision 1.12  2004/06/30 20:58:28  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.11  2004/06/03 00:23:43  willuhn
  * *** empty log message ***
  *

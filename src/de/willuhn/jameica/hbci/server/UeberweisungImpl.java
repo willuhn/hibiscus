@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UeberweisungImpl.java,v $
- * $Revision: 1.12 $
- * $Date: 2004/06/17 00:14:10 $
+ * $Revision: 1.13 $
+ * $Date: 2004/06/30 20:58:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,16 +18,17 @@ import java.util.Date;
 import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.db.AbstractDBObject;
-import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Empfaenger;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
-import de.willuhn.jameica.hbci.server.hbci.*;
+import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
+import de.willuhn.jameica.hbci.server.hbci.HBCIUeberweisungJob;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
+import de.willuhn.util.Logger;
 
 /**
  * Eine Ueberweisung.
@@ -116,7 +117,7 @@ public class UeberweisungImpl
   	}
   	catch (RemoteException e)
   	{
-  		Application.getLog().error("error while checking ueberweisung",e);
+  		Logger.error("error while checking ueberweisung",e);
   		throw new ApplicationException("Fehler beim Prüfen der Überweisung.");
   	}
 			
@@ -132,7 +133,7 @@ public class UeberweisungImpl
 		}
 		catch (RemoteException e)
 		{
-			Application.getLog().error("error while checking ueberweisung",e);
+			Logger.error("error while checking ueberweisung",e);
 			throw new ApplicationException("Fehler beim Prüfen der Überweisung.");
 		}
 		insertCheck();
@@ -270,7 +271,7 @@ public class UeberweisungImpl
 		}
 		catch (RemoteException e)
 		{
-			Application.getLog().error("error while executing ueberweisung",e);
+			Logger.error("error while executing ueberweisung",e);
 			throw new ApplicationException(i18n.tr("Fehler beim Ausfuehren der Überweisung"));
 		}
 		finally {
@@ -365,6 +366,9 @@ public class UeberweisungImpl
 
 /**********************************************************************
  * $Log: UeberweisungImpl.java,v $
+ * Revision 1.13  2004/06/30 20:58:29  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.12  2004/06/17 00:14:10  willuhn
  * @N GenericObject, GenericIterator
  *

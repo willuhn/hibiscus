@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCIJob.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/05/25 23:23:18 $
+ * $Revision: 1.5 $
+ * $Date: 2004/06/30 20:58:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,11 +18,11 @@ import java.util.Hashtable;
 
 import org.kapott.hbci.GV_Result.HBCIJobResult;
 
-import de.willuhn.jameica.Application;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.hbci.HBCIJob;
+import de.willuhn.util.Logger;
 
 /**
  * Basis-Klasse fuer die HBCI-Jobs.
@@ -109,7 +109,7 @@ public abstract class AbstractHBCIJob implements HBCIJob {
 	{
 		if (name == null || value == null)
 		{
-			Application.getLog().warn("job parameter invalid. name: " + name + ", value: " + value);
+			Logger.warn("job parameter invalid. name: " + name + ", value: " + value);
 			return;
 		}
 		params.put(name,value);
@@ -125,7 +125,7 @@ public abstract class AbstractHBCIJob implements HBCIJob {
 	{
 		if (name == null || konto == null)
 		{
-			Application.getLog().warn("job parameter invalid. name: " + name + ", konto: " + konto);
+			Logger.warn("job parameter invalid. name: " + name + ", konto: " + konto);
 			return;
 		}
 		kontoParams.put(name,konto);
@@ -154,7 +154,7 @@ public abstract class AbstractHBCIJob implements HBCIJob {
 			// Was sollte in diesem Fall sinnvolles gemacht werden? Den gesamten
 			// HBCI-Job abbrechen? Nene, dann lieber auf den Log-Eintrag verzichten
 			// und nur ins Application-Log schreiben. ;)
-			Application.getLog().error("error while writing protocol",e);
+			Logger.error("error while writing protocol",e);
 		}
 		
 	}
@@ -163,6 +163,9 @@ public abstract class AbstractHBCIJob implements HBCIJob {
 
 /**********************************************************************
  * $Log: AbstractHBCIJob.java,v $
+ * Revision 1.5  2004/06/30 20:58:29  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2004/05/25 23:23:18  willuhn
  * @N UeberweisungTyp
  * @N Protokoll

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCISaldoJob.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/06/10 20:56:33 $
+ * $Revision: 1.5 $
+ * $Date: 2004/06/30 20:58:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,7 +16,6 @@ import java.rmi.RemoteException;
 
 import org.kapott.hbci.GV_Result.GVRSaldoReq;
 
-import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -24,6 +23,7 @@ import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.server.Converter;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
+import de.willuhn.util.Logger;
 
 /**
  * Job fuer "Salden-Abfrage".
@@ -78,7 +78,7 @@ public class HBCISaldoJob extends AbstractHBCIJob {
 			addToProtokoll(i18n.tr("Fehler beim Abrufen das Saldos") + " ("+ msg +")",Protokoll.TYP_ERROR);
 			throw new ApplicationException(msg);
 		}
-		Application.getLog().debug("job result is ok, returning saldo");
+		Logger.debug("job result is ok, returning saldo");
 		addToProtokoll(i18n.tr("Saldo abgerufen"),Protokoll.TYP_SUCCESS);
 		return result.getEntries()[0].ready.value.value;
 	}
@@ -87,6 +87,9 @@ public class HBCISaldoJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCISaldoJob.java,v $
+ * Revision 1.5  2004/06/30 20:58:29  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2004/06/10 20:56:33  willuhn
  * @D javadoc comments fixed
  *

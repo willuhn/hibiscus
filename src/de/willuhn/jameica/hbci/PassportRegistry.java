@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/PassportRegistry.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/05/11 21:11:32 $
+ * $Revision: 1.5 $
+ * $Date: 2004/06/30 20:58:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,8 @@ import java.util.Hashtable;
 
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.hbci.passport.Passport;
-import de.willuhn.util.MultipleClassLoader;
+import de.willuhn.util.ClassFinder;
+import de.willuhn.util.Logger;
 
 /**
  * Sucht alle verfuegbaren Passports und prueft diese auf Verwendbarkeit.
@@ -34,31 +35,31 @@ public class PassportRegistry {
 	{
 
 		try {
-			Application.getLog().info("searching for available passports");
-			MultipleClassLoader.ClassFinder finder = Application.getClassLoader().getClassFinder();
+			Logger.info("searching for available passports");
+			ClassFinder finder = Application.getClassLoader().getClassFinder();
 			Class[] found = finder.findImplementors(Passport.class);
 			for (int i=0;i<found.length;++i)
 			{
-				Application.getLog().info("found passport type " + found[i].getName() + ", try to instanciate");
+				Logger.info("found passport type " + found[i].getName() + ", try to instanciate");
 				try {
 					Passport p = (Passport) found[i].newInstance();
 					passportsByName.put(p.getName(),p);
 					passportsByClass.put(found[i].getName(),p);
-					Application.getLog().info("[" + p.getName() + "] instanciated successfully");
+					Logger.info("[" + p.getName() + "] instanciated successfully");
 				}
 				catch (Exception e)
 				{
-					Application.getLog().error("failed, skipping passport",e);
+					Logger.error("failed, skipping passport",e);
 				}
 			}
 		}
 		catch (ClassNotFoundException cn)
 		{
-			Application.getLog().warn("no passports found");
+			Logger.warn("no passports found");
 		}
 		catch (Throwable t)
 		{
-			Application.getLog().error("error while searching for passports",t);
+			Logger.error("error while searching for passports",t);
 		}
 	}
 	
@@ -109,6 +110,9 @@ public class PassportRegistry {
 
 /**********************************************************************
  * $Log: PassportRegistry.java,v $
+ * Revision 1.5  2004/06/30 20:58:29  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2004/05/11 21:11:32  willuhn
  * *** empty log message ***
  *

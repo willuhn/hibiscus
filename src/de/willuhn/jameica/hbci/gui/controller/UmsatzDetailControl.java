@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailControl.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/06/08 22:28:58 $
+ * $Revision: 1.9 $
+ * $Date: 2004/06/30 20:58:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,7 +18,6 @@ import java.rmi.RemoteException;
 import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.controller.AbstractControl;
@@ -34,6 +33,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
+import de.willuhn.util.Logger;
 
 /**
  * Controller fuer die Detailansicht eines Umsatzes.
@@ -258,7 +258,7 @@ public class UmsatzDetailControl extends AbstractControl {
     }
     catch(RemoteException e)
     {
-      Application.getLog().error("error while opening umsatz list",e);
+      Logger.error("error while opening umsatz list",e);
 			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Laden der Umsätze"));
     }
   }
@@ -294,7 +294,7 @@ public class UmsatzDetailControl extends AbstractControl {
     }
     catch (Exception re)
     {
-      Application.getLog().error("error while storing empfaenger",re);
+      Logger.error("error while storing empfaenger",re);
 			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern des Empfängers"));
     }
   }
@@ -321,6 +321,9 @@ public class UmsatzDetailControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzDetailControl.java,v $
+ * Revision 1.9  2004/06/30 20:58:28  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.8  2004/06/08 22:28:58  willuhn
  * *** empty log message ***
  *

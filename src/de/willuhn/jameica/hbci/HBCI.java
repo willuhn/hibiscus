@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.16 $
- * $Date: 2004/06/17 00:14:10 $
+ * $Revision: 1.17 $
+ * $Date: 2004/06/30 20:58:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,8 +14,6 @@
 package de.willuhn.jameica.hbci;
 
 import java.io.File;
-import java.io.IOException;
-import java.rmi.RemoteException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -27,6 +25,7 @@ import de.willuhn.datasource.db.EmbeddedDatabase;
 import de.willuhn.jameica.AbstractPlugin;
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.Logger;
 
 /**
@@ -80,7 +79,7 @@ public class HBCI extends AbstractPlugin
   /**
    * @see de.willuhn.jameica.AbstractPlugin#init()
    */
-  public boolean init()
+  public void init() throws ApplicationException
   {
   	PassportRegistry.init();
 		// Wir oeffnen mal die Datenbank.
@@ -90,54 +89,42 @@ public class HBCI extends AbstractPlugin
 		try {
 			getResources().getDatabase().getDBService().createObject(Konto.class,null);
 		}
-		catch (RemoteException e)
+		catch (Exception e)
 		{
-			// Uuuh? Wenn das fehlschlaegt, ist etwas mit unserer DB faul und
-			// wir verweigern lieber die Initialisierung
-			Application.getLog().error("error while initializing HBCI plugin",e);
+			throw new ApplicationException(getResources().getI18N().tr("Fehler beim Öffnen der Datenbank"),e);
 		}
 
-    HBCIUtils.init(null,null,new HBCICallbackSWT());
-    int logLevel = logMapping[Application.getLog().getLevelByName(Application.getConfig().getLogLevel())][1];
-    HBCIUtils.setParam("log.loglevel.default",""+logLevel);
-    return true;
+		try {
+			HBCIUtils.init(null,null,new HBCICallbackSWT());
+			int logLevel = logMapping[Logger.getLevelByName(Application.getConfig().getLogLevel())][1];
+			HBCIUtils.setParam("log.loglevel.default",""+logLevel);
+		}
+		catch (Exception e)
+		{
+			throw new ApplicationException(getResources().getI18N().tr("Fehler beim Initialisieren des HBCI-Subsystems"),e);
+		}
   }
 
   /**
    * @see de.willuhn.jameica.AbstractPlugin#install()
    */
-  public boolean install()
+  public void install() throws ApplicationException
   {
-    EmbeddedDatabase db = getResources().getDatabase();
-    if (!db.exists())
-    {
-      try {
-        db.create();
-      }
-      catch (IOException e)
-      {
-        Application.getLog().error("unable to create database",e);
-        return false;
-      }
-      try
-      {
-        db.executeSQLScript(new File(getResources().getPath() + "/sql/create.sql"));
-      }
-      catch (Exception e)
-      {
-        Application.getLog().error("unable to create sql tables",e);
-        return false;
-      }
+    try {
+			EmbeddedDatabase db = getResources().getDatabase();
+			db.executeSQLScript(new File(getResources().getPath() + "/sql/create.sql"));
     }
-    return true;
+    catch (Exception e)
+    {
+			throw new ApplicationException(getResources().getI18N().tr("Fehler beim Erstellen der Datenbank"),e);
+    }
   }
 
   /**
    * @see de.willuhn.jameica.AbstractPlugin#update(double)
    */
-  public boolean update(double oldVersion)
+  public void update(double oldVersion) throws ApplicationException
   {
-		return true;
   }
 
   /**
@@ -151,6 +138,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.17  2004/06/30 20:58:29  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.16  2004/06/17 00:14:10  willuhn
  * @N GenericObject, GenericIterator
  *
