@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/04/27 22:23:56 $
+ * $Revision: 1.7 $
+ * $Date: 2004/04/27 23:50:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -51,6 +51,7 @@ public class Converter {
 	 *    Hinweis: Laut JavaDoc von HBCI4Java ist das Gegenkonto optional. Es
 	 *    kann also auch bei Soll-Buchungen fehlen.
 	 *  </li>
+	 * </ul>
    * @return das neu erzeugte Umsatz-Objekt.
    */
   public static Umsatz convert(GVRKUms.UmsLine u) throws RemoteException
@@ -168,6 +169,9 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.7  2004/04/27 23:50:15  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.6  2004/04/27 22:23:56  willuhn
  * @N configurierbarer CTAPI-Treiber
  * @C konkrete Passport-Klassen (DDV) nach de.willuhn.jameica.passports verschoben
