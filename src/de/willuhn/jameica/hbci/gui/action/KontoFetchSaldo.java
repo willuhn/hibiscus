@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoFetchSaldo.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/10/20 12:08:18 $
+ * $Revision: 1.2 $
+ * $Date: 2004/10/23 18:13:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,6 @@ import java.rmi.RemoteException;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.views.KontoNeu;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -66,7 +65,7 @@ public class KontoFetchSaldo implements Action
 				public void run() {
 					try {
 						k.refreshSaldo();
-						GUI.startView(KontoNeu.class.getName(),k);
+						new de.willuhn.jameica.hbci.gui.action.KontoNeu().handleAction(k);
 					}
 					catch (ApplicationException e2)
 					{
@@ -96,6 +95,9 @@ public class KontoFetchSaldo implements Action
 
 /**********************************************************************
  * $Log: KontoFetchSaldo.java,v $
+ * Revision 1.2  2004/10/23 18:13:45  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/10/20 12:08:18  willuhn
  * @C MVC-Refactoring (new Controllers)
  *

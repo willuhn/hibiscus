@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoFetchDauerauftraege.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/10/20 12:08:18 $
+ * $Revision: 1.2 $
+ * $Date: 2004/10/23 18:13:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -58,9 +58,9 @@ public class KontoFetchDauerauftraege implements Action
 					try {
 						GUI.getStatusBar().setSuccessText(i18n.tr("Daueraufträge werden abgerufen..."));
 						k.refreshDauerauftraege();
-						// Jetzt aktualisieren wir die GUI, indem wir uns selbst neu laden ;)
-						GUI.startView(DauerauftragListe.class.getName(),null);
 						GUI.getStatusBar().setSuccessText(i18n.tr("...Umsätze erfolgreich übertragen"));
+
+						new DauerauftragListe().handleAction(k);
 					}
 					catch (ApplicationException e2)
 					{
@@ -85,6 +85,9 @@ public class KontoFetchDauerauftraege implements Action
 
 /**********************************************************************
  * $Log: KontoFetchDauerauftraege.java,v $
+ * Revision 1.2  2004/10/23 18:13:45  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/10/20 12:08:18  willuhn
  * @C MVC-Refactoring (new Controllers)
  *
