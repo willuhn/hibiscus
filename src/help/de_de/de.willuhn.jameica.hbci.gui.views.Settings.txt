@@ -15,4 +15,9 @@
 		Prüfsumme mit der ermittelt werden kann, ob Ihre aktuelle Eingabe mit der Erst-Eingabe
 		übereinstimmt.
 	</li>
+	
+	<li>
+		Es muss mindestens ein Sicherheitsmedium konfiguriert sein, damit
+		Sie via HBCI auf Ihre Konten zugreifen können.
+	</li>
 </form>
