@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/Welcome.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/02/22 20:04:53 $
+ * $Revision: 1.4 $
+ * $Date: 2004/03/03 22:26:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,9 +13,11 @@
 
 package de.willuhn.jameica.hbci.gui.views;
 
+import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.parts.Text;
 import de.willuhn.jameica.gui.views.AbstractView;
+import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -30,8 +32,10 @@ public class Welcome extends AbstractView
    */
   public void bind() throws Exception
   {
-		GUI.setTitleText(I18N.tr("HBCI"));
-  	Text text = new Text(I18N.tr("HBCI-Plugin für Jameica"));
+		I18N i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
+
+		GUI.setTitleText(i18n.tr("HBCI"));
+  	Text text = new Text(i18n.tr("HBCI-Plugin für Jameica"));
   	text.paint(getParent());
   	
   }
@@ -48,6 +52,10 @@ public class Welcome extends AbstractView
 
 /**********************************************************************
  * $Log: Welcome.java,v $
+ * Revision 1.4  2004/03/03 22:26:40  willuhn
+ * @N help texts
+ * @C refactoring
+ *
  * Revision 1.3  2004/02/22 20:04:53  willuhn
  * @N Ueberweisung
  * @N Empfaenger

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/02/21 19:49:04 $
+ * $Revision: 1.8 $
+ * $Date: 2004/03/03 22:26:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,6 +27,7 @@ import org.kapott.hbci.passport.INILetter;
 import org.kapott.hbci.status.HBCIMsgStatus;
 
 import de.willuhn.jameica.Application;
+import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.gui.DialogFactory;
 import de.willuhn.util.I18N;
@@ -38,12 +39,15 @@ import de.willuhn.util.I18N;
 public class HBCICallbackSWT extends AbstractHBCICallback
 {
 
+	private I18N i18n;
+
   /**
    * ct.
    */
   public HBCICallbackSWT()
   {
     super();
+    i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
   }
 
   /**
@@ -93,11 +97,11 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 					break;
 	
 				case NEED_CHIPCARD:
-					GUI.setActionText(I18N.tr("Bitte legen Sie Ihre HBCI-Chipkarte in das Lesegerät."));
+					GUI.setActionText(i18n.tr("Bitte legen Sie Ihre HBCI-Chipkarte in das Lesegerät."));
 					break;
 
 				case HAVE_CHIPCARD:
-					GUI.setActionText(I18N.tr("HBCI-Chipkarte wird ausgelesen."));
+					GUI.setActionText(i18n.tr("HBCI-Chipkarte wird ausgelesen."));
 					break;
 	
 				case NEED_HARDPIN:
@@ -368,6 +372,10 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.8  2004/03/03 22:26:40  willuhn
+ * @N help texts
+ * @C refactoring
+ *
  * Revision 1.7  2004/02/21 19:49:04  willuhn
  * @N PINDialog
  *

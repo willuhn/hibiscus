@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/02/17 00:53:22 $
+ * $Revision: 1.6 $
+ * $Date: 2004/03/03 22:26:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,10 +49,6 @@ public class HBCI extends AbstractPlugin
 	};
 
 	static {
-		HBCIUtils.init(null,null,new HBCICallbackSWT());
-		int logLevel = logMapping[Application.getLog().getLevelByName(Application.getConfig().getLogLevel())][1];
-		HBCIUtils.setParam("log.loglevel.default",""+logLevel);
-
 		DECIMALFORMAT.applyPattern("#0.00");
 	}
 
@@ -71,9 +67,13 @@ public class HBCI extends AbstractPlugin
    */
   public boolean init()
   {
+		HBCIUtils.init(null,null,new HBCICallbackSWT());
+		int logLevel = logMapping[Application.getLog().getLevelByName(Application.getConfig().getLogLevel())][1];
+		HBCIUtils.setParam("log.loglevel.default",""+logLevel);
+
 		try {
-			Settings.setDatabase(getDatabase().getDBService());
-			Settings.setPath(getPath());
+			Settings.setDatabase(getResources().getDatabase().getDBService());
+			Settings.setPath(getResources().getPath());
 		}
 		catch (RemoteException e)
 		{
@@ -88,7 +88,7 @@ public class HBCI extends AbstractPlugin
    */
   public boolean install()
   {
-		EmbeddedDatabase db = getDatabase();
+		EmbeddedDatabase db = getResources().getDatabase();
 		if (!db.exists())
 		{
 			try {
@@ -101,7 +101,7 @@ public class HBCI extends AbstractPlugin
 			}
 			try
 			{
-				db.executeSQLScript(new File(getPath() + "/sql/create.sql"));
+				db.executeSQLScript(new File(getResources().getPath() + "/sql/create.sql"));
 			}
 			catch (Exception e)
 			{
@@ -110,7 +110,7 @@ public class HBCI extends AbstractPlugin
 			}
 			try
 			{
-				db.executeSQLScript(new File(getPath() + "/sql/init.sql"));
+				db.executeSQLScript(new File(getResources().getPath() + "/sql/init.sql"));
 			}
 			catch (Exception e)
 			{
@@ -128,14 +128,6 @@ public class HBCI extends AbstractPlugin
   public boolean update(double oldVersion)
   {
     return true;
-  }
-
-  /**
-   * @see de.willuhn.jameica.Plugin#getWelcomeText()
-   */
-  public String getWelcomeText()
-  {
-    return "HBCI - Onlinebanking für Jameica " + getVersion();
   }
 
   /**
@@ -166,6 +158,10 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.6  2004/03/03 22:26:40  willuhn
+ * @N help texts
+ * @C refactoring
+ *
  * Revision 1.5  2004/02/17 00:53:22  willuhn
  * @N SaldoAbfrage
  * @N Ueberweisung

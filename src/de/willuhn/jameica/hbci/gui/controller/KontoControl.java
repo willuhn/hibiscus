@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.11 $
- * $Date: 2004/02/27 01:10:18 $
+ * $Revision: 1.12 $
+ * $Date: 2004/03/03 22:26:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,6 +21,7 @@ import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.Application;
+import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.controller.AbstractControl;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
@@ -62,12 +63,14 @@ public class KontoControl extends AbstractControl {
 
 	private boolean stored = false;
 
+	private I18N i18n;
   /**
    * ct.
    * @param view
    */
   public KontoControl(AbstractView view) {
     super(view);
+		i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
   }
 
 	/**
@@ -227,11 +230,11 @@ public class KontoControl extends AbstractControl {
 		DBIterator list = Settings.getDatabase().createList(Konto.class);
 
 		Table table = new Table(list,this);
-		table.addColumn(I18N.tr("Kontonummer"),"kontonummer");
-		table.addColumn(I18N.tr("Bankleitzahl"),"blz");
-		table.addColumn(I18N.tr("Kontoinhaber"),"name");
-		table.addColumn(I18N.tr("Kundennummer"),"kundennummer");
-		table.addColumn(I18N.tr("Sicherheitsmedium"),"passport_id");
+		table.addColumn(i18n.tr("Kontonummer"),"kontonummer");
+		table.addColumn(i18n.tr("Bankleitzahl"),"blz");
+		table.addColumn(i18n.tr("Kontoinhaber"),"name");
+		table.addColumn(i18n.tr("Kundennummer"),"kundennummer");
+		table.addColumn(i18n.tr("Sicherheitsmedium"),"passport_id");
 		return table;
 	}
 
@@ -250,8 +253,8 @@ public class KontoControl extends AbstractControl {
 		try {
 
 			YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
-			d.setTitle(I18N.tr("Bankverbindung löschen"));
-			d.setText(I18N.tr("Wollen Sie diese Bankverbindung wirklich löschen?"));
+			d.setTitle(i18n.tr("Bankverbindung löschen"));
+			d.setText(i18n.tr("Wollen Sie diese Bankverbindung wirklich löschen?"));
 
 			try {
 				Boolean choice = (Boolean) d.open();
@@ -266,11 +269,11 @@ public class KontoControl extends AbstractControl {
 
 			// ok, wir loeschen das Objekt
 			getKonto().delete();
-			GUI.setActionText(I18N.tr("Bankverbindung gelöscht."));
+			GUI.setActionText(i18n.tr("Bankverbindung gelöscht."));
 		}
 		catch (RemoteException e)
 		{
-			GUI.setActionText(I18N.tr("Fehler beim Löschen der Bankverbindung."));
+			GUI.setActionText(i18n.tr("Fehler beim Löschen der Bankverbindung."));
 			Application.getLog().error("unable to delete konto",e);
 		}
 		catch (ApplicationException ae)
@@ -300,7 +303,7 @@ public class KontoControl extends AbstractControl {
 
 			if (p.isNewObject())
 			{
-				GUI.setActionText(I18N.tr("Bitte wählen Sie ein Sicherheitsmedium aus."));
+				GUI.setActionText(i18n.tr("Bitte wählen Sie ein Sicherheitsmedium aus."));
 				return;
 			}
 			getKonto().setPassport(p);
@@ -315,7 +318,7 @@ public class KontoControl extends AbstractControl {
       
 			// und jetzt speichern wir.
 			getKonto().store();
-			GUI.setActionText(I18N.tr("Bankverbindung gespeichert."));
+			GUI.setActionText(i18n.tr("Bankverbindung gespeichert."));
 			stored = true;
 		}
 		catch (ApplicationException e1)
@@ -350,7 +353,7 @@ public class KontoControl extends AbstractControl {
    */
   public void handleReadFromPassport()
 	{
-		GUI.setActionText(I18N.tr("Chipkarte wird ausgelesen..."));
+		GUI.setActionText(i18n.tr("Chipkarte wird ausgelesen..."));
 
 		GUI.startSync(new Runnable() {
       public void run() {
@@ -393,18 +396,18 @@ public class KontoControl extends AbstractControl {
 							{
 								// Wenn ein Konto fehlschlaegt, soll nicht gleich der ganze Vorgang abbrechen
 								Application.getLog().error("error while storing konto",e);
-								GUI.setActionText(I18N.tr("Fehler beim Anlegen des Kontos") + " " + konten[i].getKontonummer());
+								GUI.setActionText(i18n.tr("Fehler beim Anlegen des Kontos") + " " + konten[i].getKontonummer());
 							}
 						}
 						
 					}
 					GUI.startView(KontoListe.class.getName(),null); // Page reload
-					GUI.setActionText(I18N.tr("Konten erfolgreich ausgelesen"));
+					GUI.setActionText(i18n.tr("Konten erfolgreich ausgelesen"));
 				}
 				catch (RemoteException e)
 				{
 					Application.getLog().error("error while reading data from passport",e);
-					GUI.setActionText(I18N.tr("Fehler beim Lesen der Konto-Daten"));
+					GUI.setActionText(i18n.tr("Fehler beim Lesen der Konto-Daten"));
 				}
       }
     });
@@ -419,11 +422,11 @@ public class KontoControl extends AbstractControl {
 		GUI.startSync(new Runnable() {
       public void run() {
       	try {
-      		GUI.setActionText(I18N.tr("Saldo des Kontos wird ermittelt..."));
+      		GUI.setActionText(i18n.tr("Saldo des Kontos wird ermittelt..."));
 					getKonto().refreshSaldo();
 					getSaldo().setValue(HBCI.DECIMALFORMAT.format(getKonto().getSaldo()) + " " + getKonto().getWaehrung());
 					getSaldoDatum().setValue(HBCI.LONGDATEFORMAT.format(getKonto().getSaldoDatum()));
-					GUI.setActionText(I18N.tr("Saldo des Kontos erfolgreich übertragen..."));
+					GUI.setActionText(i18n.tr("Saldo des Kontos erfolgreich übertragen..."));
       	}
       	catch (RemoteException e)
       	{
@@ -465,6 +468,10 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.12  2004/03/03 22:26:40  willuhn
+ * @N help texts
+ * @C refactoring
+ *
  * Revision 1.11  2004/02/27 01:10:18  willuhn
  * @N passport config refactored
  *

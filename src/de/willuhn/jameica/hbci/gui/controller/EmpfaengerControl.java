@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EmpfaengerControl.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/02/24 22:47:04 $
+ * $Revision: 1.4 $
+ * $Date: 2004/03/03 22:26:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.Application;
+import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.controller.AbstractControl;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
@@ -27,6 +28,7 @@ import de.willuhn.jameica.gui.parts.Input;
 import de.willuhn.jameica.gui.parts.Table;
 import de.willuhn.jameica.gui.parts.TextInput;
 import de.willuhn.jameica.gui.views.AbstractView;
+import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.views.EmpfaengerListe;
 import de.willuhn.jameica.hbci.gui.views.EmpfaengerNeu;
@@ -46,6 +48,7 @@ public class EmpfaengerControl extends AbstractControl {
 	private Input blz					= null;
 	private Input name				= null;
 
+	private I18N i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
   /**
    * @param view
    */
@@ -82,9 +85,9 @@ public class EmpfaengerControl extends AbstractControl {
 		DBIterator list = Settings.getDatabase().createList(Empfaenger.class);
 
 		Table table = new Table(list,this);
-		table.addColumn(I18N.tr("Kontonummer"),"kontonummer");
-		table.addColumn(I18N.tr("Bankleitzahl"),"blz");
-		table.addColumn(I18N.tr("Name"),"name");
+		table.addColumn(i18n.tr("Kontonummer"),"kontonummer");
+		table.addColumn(i18n.tr("Bankleitzahl"),"blz");
+		table.addColumn(i18n.tr("Name"),"name");
 		return table;
 	}
 
@@ -144,8 +147,8 @@ public class EmpfaengerControl extends AbstractControl {
 		try {
 
 			YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
-			d.setTitle(I18N.tr("Empfängeradresse löschen"));
-			d.setText(I18N.tr("Wollen Sie diese Empfängeradresse wirklich löschen?"));
+			d.setTitle(i18n.tr("Empfängeradresse löschen"));
+			d.setText(i18n.tr("Wollen Sie diese Empfängeradresse wirklich löschen?"));
 
 			try {
 				Boolean choice = (Boolean) d.open();
@@ -160,11 +163,11 @@ public class EmpfaengerControl extends AbstractControl {
 
 			// ok, wir loeschen das Objekt
 			getEmpfaenger().delete();
-			GUI.setActionText(I18N.tr("Empfängeradresse gelöscht."));
+			GUI.setActionText(i18n.tr("Empfängeradresse gelöscht."));
 		}
 		catch (RemoteException e)
 		{
-			GUI.setActionText(I18N.tr("Fehler beim Löschen der Empfängeradresse."));
+			GUI.setActionText(i18n.tr("Fehler beim Löschen der Empfängeradresse."));
 			Application.getLog().error("unable to delete empfaenger");
 		}
 		catch (ApplicationException ae)
@@ -190,12 +193,12 @@ public class EmpfaengerControl extends AbstractControl {
   		getEmpfaenger().setBLZ(getBlz().getValue());
   		getEmpfaenger().setName(getName().getValue());
   		getEmpfaenger().store();
-  		GUI.setActionText(I18N.tr("Empfängeradresse gespeichert"));
+  		GUI.setActionText(i18n.tr("Empfängeradresse gespeichert"));
   	}
   	catch (RemoteException e)
   	{
   		Application.getLog().error("error while storing empfaenger",e);
-  		GUI.setActionText(I18N.tr("Fehler beim Speichern der Adresse"));
+  		GUI.setActionText(i18n.tr("Fehler beim Speichern der Adresse"));
   	}
   	catch (ApplicationException e2)
   	{
@@ -245,6 +248,10 @@ public class EmpfaengerControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: EmpfaengerControl.java,v $
+ * Revision 1.4  2004/03/03 22:26:40  willuhn
+ * @N help texts
+ * @C refactoring
+ *
  * Revision 1.3  2004/02/24 22:47:04  willuhn
  * @N GUI refactoring
  *

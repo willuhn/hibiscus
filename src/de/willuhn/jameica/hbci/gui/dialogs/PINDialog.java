@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/PINDialog.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/02/22 20:04:53 $
+ * $Revision: 1.3 $
+ * $Date: 2004/03/03 22:26:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,8 +17,10 @@ import java.security.NoSuchAlgorithmException;
 
 import sun.misc.BASE64Encoder;
 import de.willuhn.jameica.Application;
+import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.PasswordDialog;
+import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.util.I18N;
 
@@ -29,6 +31,7 @@ import de.willuhn.util.I18N;
  */
 public class PINDialog extends PasswordDialog {
 
+	private I18N i18n;
   /**
    * ct.
    * @param position Position des Dialogs.
@@ -37,9 +40,11 @@ public class PINDialog extends PasswordDialog {
    */
   public PINDialog(int position) {
     super(position);
-    setTitle(I18N.tr("PIN-Eingabe"));
-    setLabelText(I18N.tr("Ihre PIN"));
-    setText(I18N.tr("Bitte geben Sie Ihre PIN ein."));
+		i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
+
+    setTitle(i18n.tr("PIN-Eingabe"));
+    setLabelText(i18n.tr("Ihre PIN"));
+    setText(i18n.tr("Bitte geben Sie Ihre PIN ein."));
   }
 
 	/**
@@ -49,7 +54,7 @@ public class PINDialog extends PasswordDialog {
 	{
 		if (password == null || password.length() != 5)
 		{
-			setErrorText(I18N.tr("Fehler: PIN muss fünfstellig sein.") + " " + getRetryString());
+			setErrorText(i18n.tr("Fehler: PIN muss fünfstellig sein.") + " " + getRetryString());
 			return false;
 		}
 
@@ -69,7 +74,7 @@ public class PINDialog extends PasswordDialog {
 			catch (NoSuchAlgorithmException e)
 			{
 				Application.getLog().error("hash algorithm not found",e);
-				GUI.setActionText(I18N.tr("Prüfsumme konnte nicht ermittelt werden. Option wurde deaktiviert."));
+				GUI.setActionText(i18n.tr("Prüfsumme konnte nicht ermittelt werden. Option wurde deaktiviert."));
 				Settings.setCheckPin(false);
 				Settings.setCheckSum(null);
 			}
@@ -84,7 +89,7 @@ public class PINDialog extends PasswordDialog {
 			catch (NoSuchAlgorithmException e)
 			{
 				Application.getLog().error("hash algorithm not found",e);
-				GUI.setActionText(I18N.tr("Prüfsumme konnte nicht verglichen werden. Option wurde deaktiviert."));
+				GUI.setActionText(i18n.tr("Prüfsumme konnte nicht verglichen werden. Option wurde deaktiviert."));
 				Settings.setCheckPin(false);
 				Settings.setCheckSum(null);
 				return true;
@@ -95,7 +100,7 @@ public class PINDialog extends PasswordDialog {
 				return true;
 			}
     }
-		setErrorText(I18N.tr("PIN falsch.") + " " + getRetryString());
+		setErrorText(i18n.tr("PIN falsch.") + " " + getRetryString());
 		return false;
 	}
 
@@ -106,8 +111,8 @@ public class PINDialog extends PasswordDialog {
    */
   private String getRetryString()
 	{
-		String retries = getRemainingRetries() > 1 ? I18N.tr("Versuche") : I18N.tr("Versuch");
-		return (I18N.tr("Noch") + " " + getRemainingRetries() + " " + retries + ".");
+		String retries = getRemainingRetries() > 1 ? i18n.tr("Versuche") : i18n.tr("Versuch");
+		return (i18n.tr("Noch") + " " + getRemainingRetries() + " " + retries + ".");
 	}
 
   /**
@@ -140,6 +145,10 @@ public class PINDialog extends PasswordDialog {
 
 /**********************************************************************
  * $Log: PINDialog.java,v $
+ * Revision 1.3  2004/03/03 22:26:41  willuhn
+ * @N help texts
+ * @C refactoring
+ *
  * Revision 1.2  2004/02/22 20:04:53  willuhn
  * @N Ueberweisung
  * @N Empfaenger

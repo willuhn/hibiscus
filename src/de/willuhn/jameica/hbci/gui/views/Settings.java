@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Settings.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/02/27 01:13:09 $
+ * $Revision: 1.9 $
+ * $Date: 2004/03/03 22:26:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,10 +18,12 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 
 import de.willuhn.jameica.Application;
+import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.LabelGroup;
 import de.willuhn.jameica.gui.views.AbstractView;
+import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.controller.SettingsControl;
 import de.willuhn.jameica.hbci.gui.dialogs.NewPassportDialog;
 import de.willuhn.util.ApplicationException;
@@ -37,19 +39,21 @@ public class Settings extends AbstractView {
    */
   public void bind() throws Exception {
 
-		GUI.setTitleText(I18N.tr("Einstellungen"));
+		I18N i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
+
+		GUI.setTitleText(i18n.tr("Einstellungen"));
 		final SettingsControl control = new SettingsControl(this);
 		
-		LabelGroup settings = new LabelGroup(getParent(),I18N.tr("Grundeinstellungen"));
+		LabelGroup settings = new LabelGroup(getParent(),i18n.tr("Grundeinstellungen"));
 
 		try {
 
 			// Einstellungen
-			settings.addCheckbox(control.getOnlineMode(),I18N.tr("Keine Nachfrage vor Verbindungsaufbau"));
-			settings.addCheckbox(control.getCheckPin(),I18N.tr("PIN-Eingabe via Check-Summe prüfen"));
+			settings.addCheckbox(control.getOnlineMode(),i18n.tr("Keine Nachfrage vor Verbindungsaufbau"));
+			settings.addCheckbox(control.getCheckPin(),i18n.tr("PIN-Eingabe via Check-Summe prüfen"));
 
 			ButtonArea buttons = settings.createButtonArea(2);
-			buttons.addCustomButton(I18N.tr("gespeicherte Check-Summe löschen"),new MouseAdapter() {
+			buttons.addCustomButton(i18n.tr("gespeicherte Check-Summe löschen"),new MouseAdapter() {
 				public void mouseUp(MouseEvent e) {
 					control.handleDeleteCheckSum();
 				}
@@ -58,12 +62,12 @@ public class Settings extends AbstractView {
 
 
 			// Passports
-			LabelGroup passports = new LabelGroup(getParent(),I18N.tr("Sicherheitsmedien"));
+			LabelGroup passports = new LabelGroup(getParent(),i18n.tr("Sicherheitsmedien"));
 
 			passports.addTable(control.getPassportListe());
 			
 			ButtonArea buttons2 = passports.createButtonArea(1);
-			buttons2.addCustomButton(I18N.tr("Neues Sicherheitsmedium anlegen"),new MouseAdapter() {
+			buttons2.addCustomButton(i18n.tr("Neues Sicherheitsmedium anlegen"),new MouseAdapter() {
         public void mouseUp(MouseEvent e) {
         	NewPassportDialog d = new NewPassportDialog(NewPassportDialog.POSITION_MOUSE);
 					try {
@@ -77,18 +81,6 @@ public class Settings extends AbstractView {
         }
       });
 
-
-			// Hinweise
-			LabelGroup comments = new LabelGroup(getParent(),I18N.tr("Hinweise"));
-			comments.addText(
-				I18N.tr("Wenn Sie über eine dauerhafte Internetverbindung verfügen," +					"können Sie die Option \"keine Nachfrage vor Verbindungsaufbau " +					"aktivieren."),
-				true
-			);
-			comments.addText(
-				I18N.tr("Bei aktivierter PIN-Prüfung wird aus der von Ihnen eingegebene PIN " +					"eine Check-Summe gebildet und diese mit der Check-Summe Ihrer ersten PIN-Eingabe " +					"verglichen. Hierbei wird nicht die PIN selbst gespeichert sondern lediglich die " +					"Prüfsumme mit der ermittelt werden kann, ob Ihre aktuelle " +					"Eingabe mit der Erst-Eingabe übereinstimmt."),
-				true
-			);
-
 			ButtonArea buttons3 = new ButtonArea(getParent(),1);
 			buttons3.addCancelButton(control);
 
@@ -96,7 +88,7 @@ public class Settings extends AbstractView {
 		catch (RemoteException e)
 		{
 			Application.getLog().error("error while showing settings",e);
-			GUI.setActionText(I18N.tr("Fehler beim Laden der Einstellungen"));
+			GUI.setActionText(i18n.tr("Fehler beim Laden der Einstellungen"));
 		}
   }
 
@@ -113,6 +105,10 @@ public class Settings extends AbstractView {
 
 /**********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.9  2004/03/03 22:26:40  willuhn
+ * @N help texts
+ * @C refactoring
+ *
  * Revision 1.8  2004/02/27 01:13:09  willuhn
  * *** empty log message ***
  *

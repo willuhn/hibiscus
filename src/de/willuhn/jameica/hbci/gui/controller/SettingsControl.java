@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/02/27 01:10:18 $
+ * $Revision: 1.7 $
+ * $Date: 2004/03/03 22:26:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,11 +21,13 @@ import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.Application;
+import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.controller.AbstractControl;
 import de.willuhn.jameica.gui.parts.CheckboxInput;
 import de.willuhn.jameica.gui.parts.Table;
 import de.willuhn.jameica.gui.views.AbstractView;
+import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.views.PassportDetails;
 import de.willuhn.jameica.hbci.gui.views.Welcome;
@@ -42,12 +44,15 @@ public class SettingsControl extends AbstractControl {
 	private CheckboxInput checkPin     			= null;
 
 	private Table passportList 							= null;
+	
+	private I18N i18n;
 
   /**
    * @param view
    */
   public SettingsControl(AbstractView view) {
     super(view);
+		i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
   }
 
 	/**
@@ -60,8 +65,8 @@ public class SettingsControl extends AbstractControl {
 		DBIterator list = Settings.getDatabase().createList(Passport.class);
 
 		Table table = new Table(list,this);
-		table.addColumn(I18N.tr("Bezeichnung"),"name");
-		table.addColumn(I18N.tr("Typ"),"passport_type_id");
+		table.addColumn(i18n.tr("Bezeichnung"),"name");
+		table.addColumn(i18n.tr("Typ"),"passport_type_id");
 		return table;
 	}
 
@@ -114,12 +119,12 @@ public class SettingsControl extends AbstractControl {
 
 			// Wir gehen nochmal auf Nummer sicher, dass die Pruefsummen-Algorithmen vorhanden sind
 			new CheckPinListener().handleEvent(null);
-			GUI.setActionText(I18N.tr("Einstellungen gespeichert."));
+			GUI.setActionText(i18n.tr("Einstellungen gespeichert."));
 		}
 		catch (RemoteException e)
 		{
 			Application.getLog().error("error while storing settings",e);
-			GUI.setActionText(I18N.tr("Fehler beim Speichern der Einstellungen"));
+			GUI.setActionText(i18n.tr("Fehler beim Speichern der Einstellungen"));
 		}
   }
 
@@ -167,7 +172,7 @@ public class SettingsControl extends AbstractControl {
 					getCheckPin().disable();
 				}
 				catch (RemoteException e1) {/*useless*/}
-				GUI.setActionText(I18N.tr("Algorithmen zur Prüfsummenbildung auf diesem System nicht vorhanden"));
+				GUI.setActionText(i18n.tr("Algorithmen zur Prüfsummenbildung auf diesem System nicht vorhanden"));
 			}
     }
 	}
@@ -176,6 +181,10 @@ public class SettingsControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.7  2004/03/03 22:26:40  willuhn
+ * @N help texts
+ * @C refactoring
+ *
  * Revision 1.6  2004/02/27 01:10:18  willuhn
  * @N passport config refactored
  *

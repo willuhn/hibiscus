@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/KontoNeu.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/02/27 01:10:18 $
+ * $Revision: 1.8 $
+ * $Date: 2004/03/03 22:26:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,10 +18,12 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 
 import de.willuhn.jameica.Application;
+import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.LabelGroup;
 import de.willuhn.jameica.gui.views.AbstractView;
+import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.controller.KontoControl;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -36,36 +38,38 @@ public class KontoNeu extends AbstractView {
    */
   public void bind() throws Exception {
 		
-		GUI.setTitleText(I18N.tr("Bankverbindung bearbeiten"));
+		I18N i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
+
+		GUI.setTitleText(i18n.tr("Bankverbindung bearbeiten"));
 		
 		final KontoControl control = new KontoControl(this);
-		LabelGroup group = new LabelGroup(getParent(),I18N.tr("Eigenschaften"));
+		LabelGroup group = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
 
-		LabelGroup saldo = new LabelGroup(getParent(),I18N.tr("Aktueller Saldo"));
+		LabelGroup saldo = new LabelGroup(getParent(),i18n.tr("Aktueller Saldo"));
 
 
 		try {
-			group.addLabelPair(I18N.tr("Kontonummer"),			    		control.getKontonummer());
-			group.addLabelPair(I18N.tr("Bankleitzahl"),			    		control.getBlz());
-			group.addLabelPair(I18N.tr("Kontoinhaber"),			    		control.getName());
-			group.addLabelPair(I18N.tr("Kundennummer"),							control.getKundennummer());
-      group.addLabelPair(I18N.tr("Währungsbezeichnung"),  		control.getWaehrung());
-			group.addLabelPair(I18N.tr("Sicherheitsmedium"),    		control.getPassportAuswahl());
+			group.addLabelPair(i18n.tr("Kontonummer"),			    		control.getKontonummer());
+			group.addLabelPair(i18n.tr("Bankleitzahl"),			    		control.getBlz());
+			group.addLabelPair(i18n.tr("Kontoinhaber"),			    		control.getName());
+			group.addLabelPair(i18n.tr("Kundennummer"),							control.getKundennummer());
+      group.addLabelPair(i18n.tr("Währungsbezeichnung"),  		control.getWaehrung());
+			group.addLabelPair(i18n.tr("Sicherheitsmedium"),    		control.getPassportAuswahl());
 
-			saldo.addLabelPair(I18N.tr("Saldo"),										control.getSaldo());
-			saldo.addLabelPair(I18N.tr("letzte Aktualisierung"),		control.getSaldoDatum());
+			saldo.addLabelPair(i18n.tr("Saldo"),										control.getSaldo());
+			saldo.addLabelPair(i18n.tr("letzte Aktualisierung"),		control.getSaldoDatum());
 
 			control.init();
 		}
 		catch (RemoteException e)
 		{
 			Application.getLog().error("error while reading konto",e);
-			GUI.setActionText(I18N.tr("Fehler beim Lesen der Bankverbindungsdaten."));
+			GUI.setActionText(i18n.tr("Fehler beim Lesen der Bankverbindungsdaten."));
 		}
 
 		// und noch die Abschicken-Knoepfe
 		ButtonArea buttonArea = new ButtonArea(getParent(),4);
-		buttonArea.addCustomButton(I18N.tr("Saldo aktualisieren"), new MouseAdapter() {
+		buttonArea.addCustomButton(i18n.tr("Saldo aktualisieren"), new MouseAdapter() {
 			public void mouseUp(MouseEvent e) {
 				control.handleRefreshSaldo();
 			}
@@ -88,6 +92,10 @@ public class KontoNeu extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoNeu.java,v $
+ * Revision 1.8  2004/03/03 22:26:40  willuhn
+ * @N help texts
+ * @C refactoring
+ *
  * Revision 1.7  2004/02/27 01:10:18  willuhn
  * @N passport config refactored
  *

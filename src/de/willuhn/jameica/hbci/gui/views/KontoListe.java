@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/KontoListe.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/02/27 01:10:18 $
+ * $Revision: 1.5 $
+ * $Date: 2004/03/03 22:26:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,9 +16,11 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 
 import de.willuhn.jameica.Application;
+import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.views.AbstractView;
+import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.controller.KontoControl;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -33,7 +35,9 @@ public class KontoListe extends AbstractView {
    */
   public void bind() throws Exception {
 
-		GUI.setTitleText(I18N.tr("Vorhandene Bankverbindungen"));
+		I18N i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
+
+		GUI.setTitleText(i18n.tr("Vorhandene Bankverbindungen"));
 		
 		final KontoControl control = new KontoControl(this);
 		
@@ -43,18 +47,18 @@ public class KontoListe extends AbstractView {
 
 			control.getPassportAuswahl().paint(getParent());
 			ButtonArea buttons = new ButtonArea(getParent(),2);
-			buttons.addCustomButton(I18N.tr("Konten aus Medium lesen"), new MouseAdapter() {
+			buttons.addCustomButton(i18n.tr("Konten aus Medium lesen"), new MouseAdapter() {
         public void mouseUp(MouseEvent e) {
         	control.handleReadFromPassport();
         }
       });
-			buttons.addCreateButton(I18N.tr("Neue Bankverbindung"),control);
+			buttons.addCreateButton(i18n.tr("Neue Bankverbindung"),control);
 
 		}
 		catch (Exception e)
 		{
 			Application.getLog().error("error while loading konto list",e);
-			GUI.setActionText(I18N.tr("Fehler beim Lesen der Bankverbindungen."));
+			GUI.setActionText(i18n.tr("Fehler beim Lesen der Bankverbindungen."));
 		}
   }
 
@@ -69,6 +73,10 @@ public class KontoListe extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoListe.java,v $
+ * Revision 1.5  2004/03/03 22:26:40  willuhn
+ * @N help texts
+ * @C refactoring
+ *
  * Revision 1.4  2004/02/27 01:10:18  willuhn
  * @N passport config refactored
  *

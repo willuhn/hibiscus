@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/EmpfaengerNeu.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/02/22 20:04:53 $
+ * $Revision: 1.2 $
+ * $Date: 2004/03/03 22:26:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,10 +15,12 @@ package de.willuhn.jameica.hbci.gui.views;
 import java.rmi.RemoteException;
 
 import de.willuhn.jameica.Application;
+import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.LabelGroup;
 import de.willuhn.jameica.gui.views.AbstractView;
+import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.controller.EmpfaengerControl;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -32,23 +34,25 @@ public class EmpfaengerNeu extends AbstractView {
    * @see de.willuhn.jameica.gui.views.AbstractView#bind()
    */
   public void bind() throws Exception {
-		
-		GUI.setTitleText(I18N.tr("Empfänger bearbeiten"));
+
+		I18N i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
+
+		GUI.setTitleText(i18n.tr("Empfänger bearbeiten"));
 		
 		final EmpfaengerControl control = new EmpfaengerControl(this);
-		LabelGroup group = new LabelGroup(getParent(),I18N.tr("Eigenschaften"));
+		LabelGroup group = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
 
 		try {
-			group.addLabelPair(I18N.tr("Kontonummer"),			    		control.getKontonummer());
-			group.addLabelPair(I18N.tr("Bankleitzahl"),			    		control.getBlz());
-			group.addLabelPair(I18N.tr("Name"),			    						control.getName());
+			group.addLabelPair(i18n.tr("Kontonummer"),			    		control.getKontonummer());
+			group.addLabelPair(i18n.tr("Bankleitzahl"),			    		control.getBlz());
+			group.addLabelPair(i18n.tr("Name"),			    						control.getName());
 
 			control.init();
 		}
 		catch (RemoteException e)
 		{
 			Application.getLog().error("error while reading konto",e);
-			GUI.setActionText(I18N.tr("Fehler beim Lesen der Empfängerdaten."));
+			GUI.setActionText(i18n.tr("Fehler beim Lesen der Empfängerdaten."));
 		}
 
 		// und noch die Abschicken-Knoepfe
@@ -71,6 +75,10 @@ public class EmpfaengerNeu extends AbstractView {
 
 /**********************************************************************
  * $Log: EmpfaengerNeu.java,v $
+ * Revision 1.2  2004/03/03 22:26:40  willuhn
+ * @N help texts
+ * @C refactoring
+ *
  * Revision 1.1  2004/02/22 20:04:53  willuhn
  * @N Ueberweisung
  * @N Empfaenger

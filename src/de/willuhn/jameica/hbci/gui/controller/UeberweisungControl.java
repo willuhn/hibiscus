@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/02/24 22:47:04 $
+ * $Revision: 1.3 $
+ * $Date: 2004/03/03 22:26:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.Application;
+import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.controller.AbstractControl;
 import de.willuhn.jameica.gui.dialogs.ListDialog;
@@ -61,12 +62,15 @@ public class UeberweisungControl extends AbstractControl {
 	
 	private CheckboxInput storeEmpfaenger = null;
 
+	private I18N i18n;
+
   /**
    * ct.
    * @param view
    */
   public UeberweisungControl(AbstractView view) {
     super(view);
+		i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
   }
 
 	/**
@@ -114,9 +118,9 @@ public class UeberweisungControl extends AbstractControl {
 		DBIterator list = Settings.getDatabase().createList(Ueberweisung.class);
 
 		Table table = new Table(list,this);
-		table.addColumn(I18N.tr("Konto"),"konto_id");
-		table.addColumn(I18N.tr("Empfänger"),"empfaenger_id");
-		table.addColumn(I18N.tr("Betrag"),"betrag", new CurrencyFormatter("",HBCI.DECIMALFORMAT));
+		table.addColumn(i18n.tr("Konto"),"konto_id");
+		table.addColumn(i18n.tr("Empfänger"),"empfaenger_id");
+		table.addColumn(i18n.tr("Betrag"),"betrag", new CurrencyFormatter("",HBCI.DECIMALFORMAT));
 		return table;
 	}
 
@@ -148,10 +152,10 @@ public class UeberweisungControl extends AbstractControl {
 			return empfkto;
 
 		ListDialog d = new ListDialog(Settings.getDatabase().createList(Empfaenger.class),ListDialog.POSITION_MOUSE);
-		d.addColumn(I18N.tr("Name"),"name");
-		d.addColumn(I18N.tr("Kontonummer"),"kontonummer");
-		d.addColumn(I18N.tr("BLZ"),"blz");
-		d.setTitle(I18N.tr("Auswahl des Empfängers"));
+		d.addColumn(i18n.tr("Name"),"name");
+		d.addColumn(i18n.tr("Kontonummer"),"kontonummer");
+		d.addColumn(i18n.tr("BLZ"),"blz");
+		d.setTitle(i18n.tr("Auswahl des Empfängers"));
 		d.addListener(new EmpfaengerListener());
 
 		empfkto = new SearchInput(getEmpfaenger().getKontonummer(),d);
@@ -240,7 +244,7 @@ public class UeberweisungControl extends AbstractControl {
 			catch (RemoteException er)
 			{
 				Application.getLog().error("error while choosing empfaenger",er);
-				GUI.setActionText(I18N.tr("Fehler bei der Auswahl des Empfängers"));
+				GUI.setActionText(i18n.tr("Fehler bei der Auswahl des Empfängers"));
     	}
     }
 	}
@@ -249,6 +253,10 @@ public class UeberweisungControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
+ * Revision 1.3  2004/03/03 22:26:40  willuhn
+ * @N help texts
+ * @C refactoring
+ *
  * Revision 1.2  2004/02/24 22:47:04  willuhn
  * @N GUI refactoring
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/PassportControlDDV.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/02/27 01:10:18 $
+ * $Revision: 1.8 $
+ * $Date: 2004/03/03 22:26:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.gui.controller;
 import java.rmi.RemoteException;
 
 import de.willuhn.jameica.Application;
+import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.controller.AbstractControl;
 import de.willuhn.jameica.gui.parts.CheckboxInput;
@@ -23,6 +24,7 @@ import de.willuhn.jameica.gui.parts.LabelInput;
 import de.willuhn.jameica.gui.parts.SelectInput;
 import de.willuhn.jameica.gui.parts.TextInput;
 import de.willuhn.jameica.gui.views.AbstractView;
+import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.views.PassportDetails;
 import de.willuhn.jameica.hbci.gui.views.Settings;
 import de.willuhn.jameica.hbci.rmi.PassportDDV;
@@ -47,12 +49,14 @@ public class PassportControlDDV extends AbstractControl {
 	private CheckboxInput useBio 			= null;
 	private CheckboxInput useSoftPin 	= null; 
 	
+	private I18N i18n;
   /**
    * ct.
    * @param view
    */
   public PassportControlDDV(AbstractView view) {
     super(view);
+		i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
   }
 
 	/**
@@ -69,7 +73,7 @@ public class PassportControlDDV extends AbstractControl {
 
 		if (passport == null)
 		{
-			GUI.setActionText(I18N.tr("Ausgewähltes Sicherheitsmedium wurde nicht gefunden"));
+			GUI.setActionText(i18n.tr("Ausgewähltes Sicherheitsmedium wurde nicht gefunden"));
 			throw new RemoteException("passport not found");
 		}
 		return passport;
@@ -86,7 +90,7 @@ public class PassportControlDDV extends AbstractControl {
 			return port;
 
 		port = new SelectInput(PassportDDV.PORTS,""+PassportDDV.PORTS[getPassport().getPort()]);
-		port.setComment(I18N.tr("meist COM1 oder COM2"));
+		port.setComment(i18n.tr("meist COM1 oder COM2"));
 		return port;
 	}		
 
@@ -101,7 +105,7 @@ public class PassportControlDDV extends AbstractControl {
 			return ctNumber;
 
 		ctNumber = new TextInput(""+getPassport().getCTNumber());
-		ctNumber.setComment(I18N.tr("meist 0"));
+		ctNumber.setComment(i18n.tr("meist 0"));
 		return ctNumber;
 	}
 
@@ -144,7 +148,7 @@ public class PassportControlDDV extends AbstractControl {
 			return entryIndex;
 
 		entryIndex = new TextInput(""+getPassport().getEntryIndex());
-		entryIndex.setComment(I18N.tr("meist 1"));
+		entryIndex.setComment(i18n.tr("meist 1"));
 		return entryIndex;
 	}
 
@@ -202,7 +206,7 @@ public class PassportControlDDV extends AbstractControl {
 			}
 			catch (NumberFormatException e)
 			{
-				GUI.setActionText(I18N.tr("Bitte geben Sie im Feld \"Nummer des Chipkartenlesers\" eine gültige Zahl ein."));
+				GUI.setActionText(i18n.tr("Bitte geben Sie im Feld \"Nummer des Chipkartenlesers\" eine gültige Zahl ein."));
 				return;
 			}
 
@@ -211,7 +215,7 @@ public class PassportControlDDV extends AbstractControl {
 			}
 			catch (NumberFormatException e)
 			{
-				GUI.setActionText(I18N.tr("Bitte geben Sie im Feld \"Index des HBCI-Zugangs\" eine gültige Zahl ein."));
+				GUI.setActionText(i18n.tr("Bitte geben Sie im Feld \"Index des HBCI-Zugangs\" eine gültige Zahl ein."));
 				return;
 			}
 
@@ -227,7 +231,7 @@ public class PassportControlDDV extends AbstractControl {
 			
 			getPassport().store();
 
-			GUI.setActionText(I18N.tr("Einstellungen gespeichert"));
+			GUI.setActionText(i18n.tr("Einstellungen gespeichert"));
   	}
   	catch (ApplicationException e)
   	{
@@ -236,7 +240,7 @@ public class PassportControlDDV extends AbstractControl {
   	catch (RemoteException e)
   	{
   		Application.getLog().error("error while storing params",e);
-  		GUI.setActionText(I18N.tr("Fehler beim Speichern der Einstellungen"));
+  		GUI.setActionText(i18n.tr("Fehler beim Speichern der Einstellungen"));
   	}
   }
 
@@ -263,7 +267,7 @@ public class PassportControlDDV extends AbstractControl {
 		// Test haben und die auch gespeichert sind
 		handleStore();
 
-		GUI.setActionText(I18N.tr("Teste Chipkartenleser..."));
+		GUI.setActionText(i18n.tr("Teste Chipkartenleser..."));
 
 		GUI.startSync(new Runnable() {
       public void run() {
@@ -271,11 +275,11 @@ public class PassportControlDDV extends AbstractControl {
 					getPassport().open();
 					getPassport().close(); // nein, nicht im finally, denn wenn das Oeffnen
 																 // fehlschlaegt, ist nichts zum Schliessen da ;)
-					GUI.setActionText(I18N.tr("Chipkartenleser erfolgreich getestet."));
+					GUI.setActionText(i18n.tr("Chipkartenleser erfolgreich getestet."));
 				}
 				catch (RemoteException e)
 				{
-					GUI.setActionText(I18N.tr("Fehler beim Testen des Chipkartenlesers."));
+					GUI.setActionText(i18n.tr("Fehler beim Testen des Chipkartenlesers."));
 					Application.getLog().debug("error while testing chipcard reader: " + e.getLocalizedMessage());
 				}
       }
@@ -286,6 +290,10 @@ public class PassportControlDDV extends AbstractControl {
 
 /**********************************************************************
  * $Log: PassportControlDDV.java,v $
+ * Revision 1.8  2004/03/03 22:26:40  willuhn
+ * @N help texts
+ * @C refactoring
+ *
  * Revision 1.7  2004/02/27 01:10:18  willuhn
  * @N passport config refactored
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/PassportDetails.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/02/27 01:10:18 $
+ * $Revision: 1.6 $
+ * $Date: 2004/03/03 22:26:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,10 +16,12 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 
 import de.willuhn.jameica.Application;
+import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.LabelGroup;
 import de.willuhn.jameica.gui.views.AbstractView;
+import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.controller.PassportControlDDV;
 import de.willuhn.jameica.hbci.rmi.Passport;
@@ -39,7 +41,9 @@ public class PassportDetails extends AbstractView {
    */
   public void bind() throws Exception {
 
-		GUI.setTitleText(I18N.tr("Eigenschaften des Sicherheitsmediums"));
+		I18N i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
+
+		GUI.setTitleText(i18n.tr("Eigenschaften des Sicherheitsmediums"));
 
 		Passport p = (Passport) getCurrentObject();
 		
@@ -60,20 +64,20 @@ public class PassportDetails extends AbstractView {
   	{
 			final PassportControlDDV control = new PassportControlDDV(this);
 
-			LabelGroup group = new LabelGroup(getParent(),I18N.tr("Eigenschaften"));
+			LabelGroup group = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
 			
-			group.addLabelPair(I18N.tr("Typ"),										control.getType());
-			group.addLabelPair(I18N.tr("Bezeichnung"),						control.getName());
-			group.addLabelPair(I18N.tr("Port des Lesers"),				control.getPort());
-			group.addLabelPair(I18N.tr("Index des Lesers"),				control.getCTNumber());
-			group.addLabelPair(I18N.tr("Index des HBCI-Zugangs"),	control.getEntryIndex());
+			group.addLabelPair(i18n.tr("Typ"),										control.getType());
+			group.addLabelPair(i18n.tr("Bezeichnung"),						control.getName());
+			group.addLabelPair(i18n.tr("Port des Lesers"),				control.getPort());
+			group.addLabelPair(i18n.tr("Index des Lesers"),				control.getCTNumber());
+			group.addLabelPair(i18n.tr("Index des HBCI-Zugangs"),	control.getEntryIndex());
 
-			group.addCheckbox(control.getBio(), 		I18N.tr("Biometrische Verfahren verwenden"));
-			group.addCheckbox(control.getSoftPin(), I18N.tr("Tastatur des PCs zur PIN-Eingabe verwenden"));
+			group.addCheckbox(control.getBio(), 		i18n.tr("Biometrische Verfahren verwenden"));
+			group.addCheckbox(control.getSoftPin(), i18n.tr("Tastatur des PCs zur PIN-Eingabe verwenden"));
 			
 			// und noch die Abschicken-Knoepfe
 			ButtonArea buttonArea = new ButtonArea(getParent(),3);
-			buttonArea.addCustomButton(I18N.tr("Kartenleser testen"), new MouseAdapter() {
+			buttonArea.addCustomButton(i18n.tr("Kartenleser testen"), new MouseAdapter() {
 				public void mouseUp(MouseEvent e) {
 					control.handleTest();
 				}
@@ -86,7 +90,7 @@ public class PassportDetails extends AbstractView {
 		///////////////////////////////////////////////////////////////////////////
   	else {
 			Application.getLog().error("choosen passport not found");
-			GUI.setActionText(I18N.tr("Das ausgewählte Sicherheitsmedium konnte nicht geladen werden."));
+			GUI.setActionText(i18n.tr("Das ausgewählte Sicherheitsmedium konnte nicht geladen werden."));
   		
   	}
 
@@ -103,6 +107,10 @@ public class PassportDetails extends AbstractView {
 
 /**********************************************************************
  * $Log: PassportDetails.java,v $
+ * Revision 1.6  2004/03/03 22:26:40  willuhn
+ * @N help texts
+ * @C refactoring
+ *
  * Revision 1.5  2004/02/27 01:10:18  willuhn
  * @N passport config refactored
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/PassportDialog.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/02/27 01:10:18 $
+ * $Revision: 1.2 $
+ * $Date: 2004/03/03 22:26:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,9 +25,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.parts.Input;
 import de.willuhn.jameica.gui.parts.SelectInput;
+import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Passport;
 import de.willuhn.jameica.hbci.rmi.PassportType;
@@ -42,7 +44,9 @@ import de.willuhn.util.MultipleClassLoader;
 public class PassportDialog extends AbstractDialog {
 
 	private Input auswahl;
-	String id = null;
+	private String id = null;
+	
+	private I18N i18n;
 
   /**
    * ct.
@@ -52,7 +56,8 @@ public class PassportDialog extends AbstractDialog {
    */
   public PassportDialog(int position) {
     super(position);
-    setTitle(I18N.tr("Auswahl des Mediums"));
+		i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
+    setTitle(i18n.tr("Auswahl des Mediums"));
   }
 
   /**
@@ -80,14 +85,14 @@ public class PassportDialog extends AbstractDialog {
 		
 		// Text
 		CLabel label = new CLabel(comp,SWT.WRAP);
-		label.setText(I18N.tr("Bitte wählen Sie ein Sicherheitsmedium aus."));
+		label.setText(i18n.tr("Bitte wählen Sie ein Sicherheitsmedium aus."));
 		GridData grid = new GridData(GridData.FILL_HORIZONTAL);
 		grid.horizontalSpan = 3;
 		label.setLayoutData(grid);
 		
 		// Label vor Eingabefeld
 		CLabel pLabel = new CLabel(comp,SWT.NONE);
-		pLabel.setText(I18N.tr("verfügbare Medien"));
+		pLabel.setText(i18n.tr("verfügbare Medien"));
 		pLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
 
 		// Liste der Passport-Typen holen
@@ -106,7 +111,7 @@ public class PassportDialog extends AbstractDialog {
 
 		// OK-Button
 		Button button = new Button(comp, SWT.FLAT);
-		button.setText(I18N.tr("OK"));
+		button.setText(i18n.tr("OK"));
 		button.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		button.addMouseListener(new MouseAdapter() {
 			public void mouseUp(MouseEvent e) {
@@ -117,7 +122,7 @@ public class PassportDialog extends AbstractDialog {
 
 		// Abbrechen-Button
 		Button cancel = new Button(comp,SWT.FLAT);
-		cancel.setText(I18N.tr("Abbrechen"));
+		cancel.setText(i18n.tr("Abbrechen"));
 		cancel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		cancel.addMouseListener(new MouseAdapter() {
 			public void mouseUp(MouseEvent e) {
@@ -141,6 +146,10 @@ public class PassportDialog extends AbstractDialog {
 
 /**********************************************************************
  * $Log: PassportDialog.java,v $
+ * Revision 1.2  2004/03/03 22:26:40  willuhn
+ * @N help texts
+ * @C refactoring
+ *
  * Revision 1.1  2004/02/27 01:10:18  willuhn
  * @N passport config refactored
  *
