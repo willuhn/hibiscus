@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/NewKeysDialog.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/03/05 19:11:25 $
+ * $Revision: 1.6 $
+ * $Date: 2005/03/09 01:07:02 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -66,6 +66,7 @@ public class NewKeysDialog extends AbstractDialog
 	}
 
   /**
+   * @param p
    */
   public NewKeysDialog(HBCIPassport p)
   {
@@ -146,6 +147,7 @@ public class NewKeysDialog extends AbstractDialog
 	/**
 	 * Liefert eine Liste der verfuegbaren Drucker.
    * @return Liste der Drucker.
+	 * @throws Exception
    */
   private Input getPrinterList() throws Exception
 	{
@@ -238,6 +240,9 @@ public class NewKeysDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: NewKeysDialog.java,v $
+ * Revision 1.6  2005/03/09 01:07:02  web0
+ * @D javadoc fixes
+ *
  * Revision 1.5  2005/03/05 19:11:25  web0
  * @N SammelLastschrift-Code complete
  *

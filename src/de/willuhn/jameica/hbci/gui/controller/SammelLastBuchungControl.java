@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SammelLastBuchungControl.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/03/05 19:11:25 $
+ * $Revision: 1.3 $
+ * $Date: 2005/03/09 01:07:02 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -73,9 +73,8 @@ public class SammelLastBuchungControl extends AbstractControl
 	/**
 	 * Liefert die aktuelle Buchung.
    * @return die Buchung.
-   * @throws RemoteException
    */
-  public SammelLastBuchung getBuchung() throws RemoteException
+  public SammelLastBuchung getBuchung()
 	{
 		if (this.buchung != null)
 			return this.buchung;
@@ -336,6 +335,9 @@ public class SammelLastBuchungControl extends AbstractControl
 
 /*****************************************************************************
  * $Log: SammelLastBuchungControl.java,v $
+ * Revision 1.3  2005/03/09 01:07:02  web0
+ * @D javadoc fixes
+ *
  * Revision 1.2  2005/03/05 19:11:25  web0
  * @N SammelLastschrift-Code complete
  *

@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Settings.java,v $
- * $Revision: 1.29 $
- * $Date: 2005/02/02 16:15:52 $
- * $Author: willuhn $
+ * $Revision: 1.30 $
+ * $Date: 2005/03/09 01:07:02 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -30,7 +30,7 @@ import de.willuhn.util.I18N;
 public class Settings extends AbstractView {
 
   /**
-   * @see de.willuhn.jameica.gui.views.AbstractView#bind()
+   * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
   public void bind() throws Exception {
 
@@ -78,7 +78,7 @@ public class Settings extends AbstractView {
   }
 
   /**
-   * @see de.willuhn.jameica.gui.views.AbstractView#unbind()
+   * @see de.willuhn.jameica.gui.AbstractView#unbind()
    */
   public void unbind() throws ApplicationException {
   }
@@ -88,6 +88,9 @@ public class Settings extends AbstractView {
 
 /**********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.30  2005/03/09 01:07:02  web0
+ * @D javadoc fixes
+ *
  * Revision 1.29  2005/02/02 16:15:52  willuhn
  * @N Neue Dialoge fuer RDH
  *

@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/LastschriftNew.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/02/19 17:22:05 $
- * $Author: willuhn $
+ * $Revision: 1.4 $
+ * $Date: 2005/03/09 01:07:02 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -33,7 +33,7 @@ import de.willuhn.util.I18N;
 public class LastschriftNew extends AbstractView {
 
   /**
-   * @see de.willuhn.jameica.gui.views.AbstractView#bind()
+   * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
   public void bind() throws Exception {
 
@@ -86,7 +86,7 @@ public class LastschriftNew extends AbstractView {
   }
 
   /**
-   * @see de.willuhn.jameica.gui.views.AbstractView#unbind()
+   * @see de.willuhn.jameica.gui.AbstractView#unbind()
    */
   public void unbind() throws ApplicationException {
   }
@@ -96,6 +96,9 @@ public class LastschriftNew extends AbstractView {
 
 /**********************************************************************
  * $Log: LastschriftNew.java,v $
+ * Revision 1.4  2005/03/09 01:07:02  web0
+ * @D javadoc fixes
+ *
  * Revision 1.3  2005/02/19 17:22:05  willuhn
  * @B Bug 8
  *

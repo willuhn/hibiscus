@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/AccountContainerDialog.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/02/02 16:15:52 $
- * $Author: willuhn $
+ * $Revision: 1.2 $
+ * $Date: 2005/03/09 01:07:02 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -48,6 +48,7 @@ public class AccountContainerDialog extends AbstractDialog
 
   /**
    * ct.
+   * @param passport
    */
   public AccountContainerDialog(HBCIPassport passport)
   {
@@ -153,6 +154,9 @@ public class AccountContainerDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: AccountContainerDialog.java,v $
+ * Revision 1.2  2005/03/09 01:07:02  web0
+ * @D javadoc fixes
+ *
  * Revision 1.1  2005/02/02 16:15:52  willuhn
  * @N Neue Dialoge fuer RDH
  *

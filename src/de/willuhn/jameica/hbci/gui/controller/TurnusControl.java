@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/TurnusControl.java,v $
- * $Revision: 1.7 $
- * $Date: 2005/01/05 15:17:50 $
- * $Author: willuhn $
+ * $Revision: 1.8 $
+ * $Date: 2005/03/09 01:07:02 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -21,7 +21,6 @@ import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
@@ -94,14 +93,7 @@ public class TurnusControl
 				catch (Exception e)
 				{
 					Logger.error("error while updating combo boxes",e);
-					try
-					{
-						getComment().setValue(i18n.tr("Fehler beim Laden des Turnus"));
-					}
-					catch (RemoteException e2)
-					{
-						// useless
-					}
+					getComment().setValue(i18n.tr("Fehler beim Laden des Turnus"));
 				}
 			}
 		});
@@ -114,6 +106,7 @@ public class TurnusControl
 	/**
 	 * Liefert den Turnus.
    * @return Turnus.
+	 * @throws RemoteException
    */
   public Turnus getTurnus() throws RemoteException
 	{
@@ -125,9 +118,8 @@ public class TurnusControl
 	/**
 	 * Liefert ein Kommentar-Feld.
    * @return Kommentar-Feld.
-   * @throws RemoteException
    */
-  public Input getComment() throws RemoteException
+  public Input getComment()
 	{
 		if (comment != null)
 			return comment;
@@ -236,14 +228,7 @@ public class TurnusControl
 		catch (Exception e)
 		{
 			Logger.error("error while handling create",e);
-			try
-			{
-				this.getComment().setValue(i18n.tr("Fehler beim Anlegen des Zahlungsturnus"));
-			}
-			catch (RemoteException e2)
-			{
-				// useless
-			}
+			this.getComment().setValue(i18n.tr("Fehler beim Anlegen des Zahlungsturnus"));
 		}
 	}
 
@@ -273,26 +258,12 @@ public class TurnusControl
 		}
 		catch (ApplicationException e)
 		{
-			try
-			{
-				getComment().setValue(e.getMessage());
-			}
-			catch (RemoteException e2)
-			{
-				GUI.getStatusBar().setErrorText(e.getMessage());
-			}
+			getComment().setValue(e.getMessage());
 		}
 		catch (Exception e2)
 		{
 			Logger.error("error while storing turnus",e2);
-			try
-			{
-				getComment().setValue(i18n.tr("Fehler beim Speichern des Zahlungsturnus"));
-			}
-			catch (RemoteException e)
-			{
-				GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern des Zahlungsturnus"));
-			}
+			getComment().setValue(i18n.tr("Fehler beim Speichern des Zahlungsturnus"));
 		}
 	}
 
@@ -398,7 +369,7 @@ public class TurnusControl
 		private int id = -1;
 		private String name = pleaseChoose;
 
-		private Tag(int id) throws RemoteException
+		private Tag(int id)
 		{
 			this.id = id;
 			if (this.id > 0)
@@ -452,6 +423,9 @@ public class TurnusControl
 
 /**********************************************************************
  * $Log: TurnusControl.java,v $
+ * Revision 1.8  2005/03/09 01:07:02  web0
+ * @D javadoc fixes
+ *
  * Revision 1.7  2005/01/05 15:17:50  willuhn
  * @N Neues Service-System in Jameica
  *

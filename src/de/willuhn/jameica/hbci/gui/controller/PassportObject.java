@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/PassportObject.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/02/01 18:27:14 $
- * $Author: willuhn $
+ * $Revision: 1.6 $
+ * $Date: 2005/03/09 01:07:02 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -38,7 +38,7 @@ public class PassportObject implements GenericObject
 
 	/**
 	 * Liefert den Passport.
-   * @return
+	 * @return Passport.
    */
   public Passport getPassport()
 	{
@@ -97,6 +97,9 @@ public class PassportObject implements GenericObject
 
 /**********************************************************************
  * $Log: PassportObject.java,v $
+ * Revision 1.6  2005/03/09 01:07:02  web0
+ * @D javadoc fixes
+ *
  * Revision 1.5  2005/02/01 18:27:14  willuhn
  * *** empty log message ***
  *

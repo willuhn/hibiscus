@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.22 $
- * $Date: 2005/03/06 18:04:17 $
+ * $Revision: 1.23 $
+ * $Date: 2005/03/09 01:07:02 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -206,7 +206,7 @@ public class Converter {
 
 	/**
 	 * Konvertiert einen Hibiscus-Adresse in ein HBCI4Java Konto.
-	 * @param empfaenger unsere Adresse
+	 * @param adresse unsere Adresse.
 	 * @return das HBCI4Java Konto.
 	 * @throws RemoteException
 	 */
@@ -266,6 +266,9 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.23  2005/03/09 01:07:02  web0
+ * @D javadoc fixes
+ *
  * Revision 1.22  2005/03/06 18:04:17  web0
  * @B Converter hat beim Konvertieren eines HBCI4Java-Kontos in eine Adresse ggf. eine lokal vorhandene geliefert
  *

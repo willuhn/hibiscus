@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.36 $
- * $Date: 2005/02/01 17:15:37 $
- * $Author: willuhn $
+ * $Revision: 1.37 $
+ * $Date: 2005/03/09 01:07:02 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -103,9 +103,8 @@ public class SettingsControl extends AbstractControl {
 	/**
 	 * Checkbox zur Auswahl des Online-Mode.
    * @return Checkbox.
-   * @throws RemoteException
    */
-  public CheckboxInput getOnlineMode() throws RemoteException
+  public CheckboxInput getOnlineMode()
 	{
 		if (onlineMode != null)
 			return onlineMode;
@@ -116,9 +115,8 @@ public class SettingsControl extends AbstractControl {
 	/**
 	 * Liefert eine Checkbox zur Aktivierung oder Deaktivierung der Pin-Pruefung via Checksumme.
    * @return Checkbox.
-   * @throws RemoteException
    */
-  public CheckboxInput getCheckPin() throws RemoteException
+  public CheckboxInput getCheckPin()
 	{
 		if (checkPin != null)
 			return checkPin;
@@ -129,9 +127,8 @@ public class SettingsControl extends AbstractControl {
 	/**
 	 * Eingabe-Feld fuer ein Limit bei Ueberweisungen.
    * @return Eingabe-Feld.
-   * @throws RemoteException
    */
-  public Input getUeberweisungLimit() throws RemoteException
+  public Input getUeberweisungLimit()
 	{
 		if (ueberweisungLimit != null)
 			return ueberweisungLimit;
@@ -143,9 +140,8 @@ public class SettingsControl extends AbstractControl {
 	/**
 	 * Liefert ein Auswahlfeld fuer die Vordergrundfarbe von Soll-Buchungen. 
    * @return Auswahlfeld.
-   * @throws RemoteException
    */
-  public Input getBuchungSollForeground() throws RemoteException
+  public Input getBuchungSollForeground()
 	{
 		if (buchungSollFg != null)
 			return buchungSollFg;
@@ -156,9 +152,8 @@ public class SettingsControl extends AbstractControl {
 	/**
 	 * Liefert ein Auswahlfeld fuer die Vordergrundfarbe von Haben-Buchungen. 
 	 * @return Auswahlfeld.
-	 * @throws RemoteException
 	 */
-	public Input getBuchungHabenForeground() throws RemoteException
+	public Input getBuchungHabenForeground()
 	{
 		if (buchungHabenFg != null)
 			return buchungHabenFg;
@@ -169,9 +164,8 @@ public class SettingsControl extends AbstractControl {
 	/**
 	 * Liefert ein Auswahlfeld fuer die Vordergrundfarbe von ueberfaelligen Ueberweisungen.
 	 * @return Auswahlfeld.
-	 * @throws RemoteException
 	 */
-	public Input getUeberfaelligForeground() throws RemoteException
+	public Input getUeberfaelligForeground()
 	{
 		if (ueberfaelligFg != null)
 			return ueberfaelligFg;
@@ -183,27 +177,20 @@ public class SettingsControl extends AbstractControl {
    * Speichert die Einstellungen.
    */
   public void handleStore() {
-		try {
-			Color hf = (Color)getBuchungHabenForeground().getValue();
-			Color sf = (Color)getBuchungSollForeground().getValue();
-			Color uf = (Color)getUeberfaelligForeground().getValue();
+		Color hf = (Color)getBuchungHabenForeground().getValue();
+		Color sf = (Color)getBuchungSollForeground().getValue();
+		Color uf = (Color)getUeberfaelligForeground().getValue();
 
-			Settings.setBuchungHabenForeground(hf.getRGB());
-			Settings.setBuchungSollForeground(sf.getRGB());
-			Settings.setUeberfaelligForeground(uf.getRGB());
+		Settings.setBuchungHabenForeground(hf.getRGB());
+		Settings.setBuchungSollForeground(sf.getRGB());
+		Settings.setUeberfaelligForeground(uf.getRGB());
 
-			Settings.setOnlineMode(((Boolean)getOnlineMode().getValue()).booleanValue());
-			Settings.setCheckPin(((Boolean)getCheckPin().getValue()).booleanValue());
-			
-			Settings.setUeberweisungLimit(((Double)getUeberweisungLimit().getValue()).doubleValue());
+		Settings.setOnlineMode(((Boolean)getOnlineMode().getValue()).booleanValue());
+		Settings.setCheckPin(((Boolean)getCheckPin().getValue()).booleanValue());
+		
+		Settings.setUeberweisungLimit(((Double)getUeberweisungLimit().getValue()).doubleValue());
 
-			GUI.getStatusBar().setSuccessText(i18n.tr("Einstellungen gespeichert."));
-		}
-		catch (RemoteException e)
-		{
-			Logger.error("error while storing settings",e);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern der Einstellungen"));
-		}
+		GUI.getStatusBar().setSuccessText(i18n.tr("Einstellungen gespeichert."));
   }
 
 	/**
@@ -239,6 +226,9 @@ public class SettingsControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.37  2005/03/09 01:07:02  web0
+ * @D javadoc fixes
+ *
  * Revision 1.36  2005/02/01 17:15:37  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/SammelLastschriftNew.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/03/05 19:19:48 $
+ * $Revision: 1.5 $
+ * $Date: 2005/03/09 01:07:02 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -35,7 +35,7 @@ import de.willuhn.util.I18N;
 public class SammelLastschriftNew extends AbstractView {
 
   /**
-   * @see de.willuhn.jameica.gui.views.AbstractView#bind()
+   * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
   public void bind() throws Exception {
 
@@ -81,7 +81,7 @@ public class SammelLastschriftNew extends AbstractView {
   }
 
   /**
-   * @see de.willuhn.jameica.gui.views.AbstractView#unbind()
+   * @see de.willuhn.jameica.gui.AbstractView#unbind()
    */
   public void unbind() throws ApplicationException {
   }
@@ -91,6 +91,9 @@ public class SammelLastschriftNew extends AbstractView {
 
 /**********************************************************************
  * $Log: SammelLastschriftNew.java,v $
+ * Revision 1.5  2005/03/09 01:07:02  web0
+ * @D javadoc fixes
+ *
  * Revision 1.4  2005/03/05 19:19:48  web0
  * *** empty log message ***
  *

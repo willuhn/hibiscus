@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/PINDialog.java,v $
- * $Revision: 1.9 $
- * $Date: 2005/02/01 17:15:37 $
- * $Author: willuhn $
+ * $Revision: 1.10 $
+ * $Date: 2005/03/09 01:07:02 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -95,29 +95,30 @@ public class PINDialog extends PasswordDialog {
 				}
 				return true;
 			}
-			// Check-Summe existiert, dann vergleichen wir die Eingabe
-			else {
-				String n = null;
-				try {
-					n = Checksum.md5(password.getBytes());
-				}
-				catch (NoSuchAlgorithmException e)
-				{
-					Logger.error("hash algorithm not found",e);
-					GUI.getStatusBar().setErrorText(i18n.tr("Prüfsumme konnte nicht verglichen werden. Option wurde deaktiviert."));
-					Settings.setCheckPin(false);
-					w.set("hbci.passport.pinchecksum." + passport.getCustomerId(),null);
-					return true;
-				}
-				if (n != null && checkSum != null && n.length() > 0 && checkSum.length() > 0 && n.equals(checkSum))
-				{
-					// Eingabe korrekt
-					return true;
-				}
+
+      // Check-Summe existiert, dann vergleichen wir die Eingabe
+			String n = null;
+			try {
+				n = Checksum.md5(password.getBytes());
 			}
-			setErrorText(i18n.tr("PIN falsch.") + " " + getRetryString());
-			return false;
-		}
+			catch (NoSuchAlgorithmException e)
+			{
+				Logger.error("hash algorithm not found",e);
+				GUI.getStatusBar().setErrorText(i18n.tr("Prüfsumme konnte nicht verglichen werden. Option wurde deaktiviert."));
+				Settings.setCheckPin(false);
+				w.set("hbci.passport.pinchecksum." + passport.getCustomerId(),null);
+				return true;
+			}
+			if (n != null && checkSum != null && n.length() > 0 && checkSum.length() > 0 && n.equals(checkSum))
+			{
+				// Eingabe korrekt
+				return true;
+			}
+
+      setErrorText(i18n.tr("PIN falsch.") + " " + getRetryString());
+      return false;
+
+    }
 		catch (Exception e)
 		{
 			Logger.error("error while checking pin",e);
@@ -142,6 +143,9 @@ public class PINDialog extends PasswordDialog {
 
 /**********************************************************************
  * $Log: PINDialog.java,v $
+ * Revision 1.10  2005/03/09 01:07:02  web0
+ * @D javadoc fixes
+ *
  * Revision 1.9  2005/02/01 17:15:37  willuhn
  * *** empty log message ***
  *

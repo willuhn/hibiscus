@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.19 $
- * $Date: 2005/02/27 17:11:49 $
+ * $Revision: 1.20 $
+ * $Date: 2005/03/09 01:07:02 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -183,7 +183,7 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 	}
 
 	/**
-	 * @see de.willuhn.jameica.hbci.rmi.Umsatz#setEmpfaenger(de.willuhn.jameica.hbci.rmi.Empfaenger)
+	 * @see de.willuhn.jameica.hbci.rmi.Umsatz#setEmpfaenger(de.willuhn.jameica.hbci.rmi.Adresse)
 	 */
 	public void setEmpfaenger(Adresse empf) throws RemoteException
 	{
@@ -375,6 +375,9 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.20  2005/03/09 01:07:02  web0
+ * @D javadoc fixes
+ *
  * Revision 1.19  2005/02/27 17:11:49  web0
  * @N first code for "Sammellastschrift"
  * @C "Empfaenger" renamed into "Adresse"

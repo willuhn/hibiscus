@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/LastschriftControl.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/02/27 17:11:49 $
+ * $Revision: 1.7 $
+ * $Date: 2005/03/09 01:07:02 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -188,7 +188,6 @@ public class LastschriftControl extends AbstractBaseUeberweisungControl
 		/**
 		 * ct.
      * @param id
-     * @param name
      */
     private TypeObject(String id)
 		{
@@ -246,6 +245,9 @@ public class LastschriftControl extends AbstractBaseUeberweisungControl
 
 /**********************************************************************
  * $Log: LastschriftControl.java,v $
+ * Revision 1.7  2005/03/09 01:07:02  web0
+ * @D javadoc fixes
+ *
  * Revision 1.6  2005/02/27 17:11:49  web0
  * @N first code for "Sammellastschrift"
  * @C "Empfaenger" renamed into "Adresse"

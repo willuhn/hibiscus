@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCIJob.java,v $
- * $Revision: 1.15 $
- * $Date: 2005/03/05 19:11:25 $
+ * $Revision: 1.16 $
+ * $Date: 2005/03/09 01:07:02 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -62,9 +62,8 @@ public abstract class AbstractHBCIJob
 	 * Diese Funktion wird von der HBCIFactory intern aufgerufen.
 	 * Sie uebergibt hier den erzeugten HBCI-Job der Abfrage.
 	 * @param job der erzeugte Job.
-	 * @throws RemoteException
 	 */
-  final void setJob(org.kapott.hbci.GV.HBCIJob job) throws RemoteException
+  final void setJob(org.kapott.hbci.GV.HBCIJob job)
   {
   	this.job = job;
   	Enumeration e = params.keys();
@@ -208,6 +207,9 @@ public abstract class AbstractHBCIJob
 
 /**********************************************************************
  * $Log: AbstractHBCIJob.java,v $
+ * Revision 1.16  2005/03/09 01:07:02  web0
+ * @D javadoc fixes
+ *
  * Revision 1.15  2005/03/05 19:11:25  web0
  * @N SammelLastschrift-Code complete
  *

@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzList.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/02/06 17:46:17 $
- * $Author: willuhn $
+ * $Revision: 1.3 $
+ * $Date: 2005/03/09 01:07:02 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -33,7 +33,7 @@ import de.willuhn.util.I18N;
 public class UmsatzList extends AbstractView {
 
   /**
-   * @see de.willuhn.jameica.gui.views.AbstractView#bind()
+   * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
   public void bind() throws Exception {
 
@@ -62,7 +62,7 @@ public class UmsatzList extends AbstractView {
   }
 
   /**
-   * @see de.willuhn.jameica.gui.views.AbstractView#unbind()
+   * @see de.willuhn.jameica.gui.AbstractView#unbind()
    */
   public void unbind() throws ApplicationException {
   }
@@ -72,6 +72,9 @@ public class UmsatzList extends AbstractView {
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.3  2005/03/09 01:07:02  web0
+ * @D javadoc fixes
+ *
  * Revision 1.2  2005/02/06 17:46:17  willuhn
  * *** empty log message ***
  *

@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/About.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/10/11 22:41:25 $
- * $Author: willuhn $
+ * $Revision: 1.8 $
+ * $Date: 2005/03/09 01:07:02 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -33,7 +33,7 @@ import de.willuhn.util.I18N;
 public class About extends AbstractView {
 
   /**
-   * @see de.willuhn.jameica.gui.views.AbstractView#bind()
+   * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
   public void bind() throws Exception {
     I18N i18n = Application.getI18n();
@@ -59,7 +59,7 @@ public class About extends AbstractView {
   }
 
   /**
-   * @see de.willuhn.jameica.gui.views.AbstractView#unbind()
+   * @see de.willuhn.jameica.gui.AbstractView#unbind()
    */
   public void unbind() throws ApplicationException {
   }
@@ -69,6 +69,9 @@ public class About extends AbstractView {
 
 /**********************************************************************
  * $Log: About.java,v $
+ * Revision 1.8  2005/03/09 01:07:02  web0
+ * @D javadoc fixes
+ *
  * Revision 1.7  2004/10/11 22:41:25  willuhn
  * *** empty log message ***
  *

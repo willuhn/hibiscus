@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailControl.java,v $
- * $Revision: 1.15 $
- * $Date: 2004/10/20 12:08:18 $
- * $Author: willuhn $
+ * $Revision: 1.16 $
+ * $Date: 2005/03/09 01:07:02 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -64,9 +64,8 @@ public class UmsatzDetailControl extends AbstractControl {
   /**
    * Liefert das Umsatz-Objekt, das auf dem Detail-Dialog angezeigt wird.
    * @return das Umsatz-Objekt.
-   * @throws RemoteException
    */
-  public Umsatz getUmsatz() throws RemoteException
+  public Umsatz getUmsatz()
   {
     if (umsatz != null)
       return umsatz;
@@ -239,6 +238,9 @@ public class UmsatzDetailControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzDetailControl.java,v $
+ * Revision 1.16  2005/03/09 01:07:02  web0
+ * @D javadoc fixes
+ *
  * Revision 1.15  2004/10/20 12:08:18  willuhn
  * @C MVC-Refactoring (new Controllers)
  *

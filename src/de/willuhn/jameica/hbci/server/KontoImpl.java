@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.46 $
- * $Date: 2005/02/28 16:28:24 $
+ * $Revision: 1.47 $
+ * $Date: 2005/03/09 01:07:02 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -461,7 +461,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#setSaldo(double, java.util.Date)
+   * @see de.willuhn.jameica.hbci.rmi.Konto#setSaldo(double)
    */
   public void setSaldo(double saldo) throws RemoteException
   {
@@ -473,6 +473,9 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.47  2005/03/09 01:07:02  web0
+ * @D javadoc fixes
+ *
  * Revision 1.46  2005/02/28 16:28:24  web0
  * @N first code for "Sammellastschrift"
  *

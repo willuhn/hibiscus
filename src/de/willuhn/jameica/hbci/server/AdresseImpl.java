@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AdresseImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/03/05 19:11:25 $
+ * $Revision: 1.4 $
+ * $Date: 2005/03/09 01:07:02 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -104,49 +104,49 @@ public class AdresseImpl extends AbstractDBObject implements Adresse {
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Empfaenger#getKontonummer()
+   * @see de.willuhn.jameica.hbci.rmi.Adresse#getKontonummer()
    */
   public String getKontonummer() throws RemoteException {
     return (String) getAttribute("kontonummer");
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Empfaenger#getBLZ()
+   * @see de.willuhn.jameica.hbci.rmi.Adresse#getBLZ()
    */
   public String getBLZ() throws RemoteException {
 		return (String) getAttribute("blz");
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Empfaenger#getName()
+   * @see de.willuhn.jameica.hbci.rmi.Adresse#getName()
    */
   public String getName() throws RemoteException {
 		return (String) getAttribute("name");
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Empfaenger#setKontonummer(java.lang.String)
+   * @see de.willuhn.jameica.hbci.rmi.Adresse#setKontonummer(java.lang.String)
    */
   public void setKontonummer(String kontonummer) throws RemoteException {
   	setAttribute("kontonummer",kontonummer);
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Empfaenger#setBLZ(java.lang.String)
+   * @see de.willuhn.jameica.hbci.rmi.Adresse#setBLZ(java.lang.String)
    */
   public void setBLZ(String blz) throws RemoteException {
   	setAttribute("blz",blz);
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Empfaenger#setName(java.lang.String)
+   * @see de.willuhn.jameica.hbci.rmi.Adresse#setName(java.lang.String)
    */
   public void setName(String name) throws RemoteException {
   	setAttribute("name",name);
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Empfaenger#getUeberweisungen()
+   * @see de.willuhn.jameica.hbci.rmi.Adresse#getUeberweisungen()
    */
   public DBIterator getUeberweisungen() throws RemoteException {
 		DBIterator list = getService().createList(Ueberweisung.class);
@@ -160,6 +160,9 @@ public class AdresseImpl extends AbstractDBObject implements Adresse {
 
 /**********************************************************************
  * $Log: AdresseImpl.java,v $
+ * Revision 1.4  2005/03/09 01:07:02  web0
+ * @D javadoc fixes
+ *
  * Revision 1.3  2005/03/05 19:11:25  web0
  * @N SammelLastschrift-Code complete
  *

@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/WelcomeControl.java,v $
- * $Revision: 1.15 $
- * $Date: 2004/11/13 17:12:15 $
- * $Author: willuhn $
+ * $Revision: 1.16 $
+ * $Date: 2005/03/09 01:07:02 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -100,9 +100,8 @@ public class WelcomeControl extends AbstractControl {
 	/**
 	 * Liefert einen formatierten Welcome-Text.
    * @return Welcome-Text.
-   * @throws RemoteException
    */
-  public Part getQuickLinks() throws RemoteException
+  public Part getQuickLinks()
 	{
 		if (quickLinks != null)
 			return quickLinks;
@@ -163,6 +162,9 @@ public class WelcomeControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: WelcomeControl.java,v $
+ * Revision 1.16  2005/03/09 01:07:02  web0
+ * @D javadoc fixes
+ *
  * Revision 1.15  2004/11/13 17:12:15  willuhn
  * *** empty log message ***
  *
