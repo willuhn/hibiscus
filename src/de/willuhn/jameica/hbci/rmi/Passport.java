@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Attic/Passport.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/02/17 00:53:22 $
+ * $Revision: 1.5 $
+ * $Date: 2004/02/25 23:11:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,7 +24,10 @@ import de.willuhn.datasource.rmi.DBObject;
  */
 public interface Passport extends DBObject {
 
-	public final static int TYPE_DDV = 1;
+	public final static String[] PASSPORTS = 
+	{
+		"Chipkarte (DDV)"
+	};
 
 	/**
 	 * Liefert den Namen des Passports.
@@ -83,6 +86,9 @@ public interface Passport extends DBObject {
 
 /**********************************************************************
  * $Log: Passport.java,v $
+ * Revision 1.5  2004/02/25 23:11:46  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2004/02/17 00:53:22  willuhn
  * @N SaldoAbfrage
  * @N Ueberweisung

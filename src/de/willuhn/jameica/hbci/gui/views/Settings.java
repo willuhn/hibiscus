@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Settings.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/02/21 19:49:04 $
+ * $Revision: 1.4 $
+ * $Date: 2004/02/25 23:11:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -55,13 +55,13 @@ public class Settings extends AbstractView {
 			);
 
 			ButtonArea buttons = new ButtonArea(getParent(),3);
+			buttons.addCustomButton(I18N.tr("gespeicherte Check-Summe löschen"),new MouseAdapter() {
+				public void mouseUp(MouseEvent e) {
+					control.handleDeleteCheckSum();
+				}
+			});
 			buttons.addCancelButton(control);
 			buttons.addStoreButton(control);
-			buttons.addCustomButton(I18N.tr("gespeicherte Check-Summe löschen"),new MouseAdapter() {
-        public void mouseUp(MouseEvent e) {
-					control.handleDeleteCheckSum();
-        }
-      });
 		}
 		catch (RemoteException e)
 		{
@@ -83,6 +83,9 @@ public class Settings extends AbstractView {
 
 /**********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.4  2004/02/25 23:11:46  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2004/02/21 19:49:04  willuhn
  * @N PINDialog
  *

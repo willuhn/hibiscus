@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Konto.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/02/17 01:01:38 $
+ * $Revision: 1.7 $
+ * $Date: 2004/02/25 23:11:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -108,12 +108,6 @@ public interface Konto extends DBObject {
   public void setKundennummer(String kundennummer) throws RemoteException;
 
 	/**
-	 * Liest die Einstellungen des Kontos aus dem Passport.
-   * @throws RemoteException.
-   */
-  public void readFromPassport() throws RemoteException;
-
-	/**
 	 * Liefert den Saldo des Kontos oder <code>0.0</code> wenn er noch nie
 	 * abgefragt wurde.
    * @return Saldo des Kontos.
@@ -140,6 +134,9 @@ public interface Konto extends DBObject {
 
 /**********************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.7  2004/02/25 23:11:46  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.6  2004/02/17 01:01:38  willuhn
  * *** empty log message ***
  *

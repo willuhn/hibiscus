@@ -2,8 +2,10 @@
 
 <menu>
 
-  <cascade name="&amp;HBCI">
-    <item name="&amp;Einstellungen"  class="de.willuhn.jameica.hbci.gui.views.Settings" />
+  <cascade name="HBCI">
+    <item name="Einstellungen"     class="de.willuhn.jameica.hbci.gui.views.Settings" />
+    <item name="-" />
+    <item name="Neue Überweisung"  class="de.willuhn.jameica.hbci.gui.views.UeberweisungNeu" />
   </cascade>
 
 </menu>
