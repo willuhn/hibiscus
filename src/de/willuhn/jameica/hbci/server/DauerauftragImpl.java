@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DauerauftragImpl.java,v $
- * $Revision: 1.12 $
- * $Date: 2004/10/25 22:39:14 $
+ * $Revision: 1.13 $
+ * $Date: 2004/11/12 18:25:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,9 +21,9 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Turnus;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
-import de.willuhn.util.Logger;
 
 /**
  * Implementierung eines Dauer-Auftrags.
@@ -239,6 +239,9 @@ public class DauerauftragImpl extends AbstractTransferImpl implements Dauerauftr
 
 /**********************************************************************
  * $Log: DauerauftragImpl.java,v $
+ * Revision 1.13  2004/11/12 18:25:07  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.12  2004/10/25 22:39:14  willuhn
  * *** empty log message ***
  *

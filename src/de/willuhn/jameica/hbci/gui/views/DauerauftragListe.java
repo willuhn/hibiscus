@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/DauerauftragListe.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/10/25 23:12:02 $
+ * $Revision: 1.10 $
+ * $Date: 2004/11/12 18:25:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,9 +20,9 @@ import de.willuhn.jameica.hbci.gui.action.DauerauftragNeu;
 import de.willuhn.jameica.hbci.gui.action.KontoFetchDauerauftraege;
 import de.willuhn.jameica.hbci.gui.controller.DauerauftragControl;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
-import de.willuhn.util.Logger;
 
 /**
  * Zeigt eine Liste mit den vorhandenen Dauerauftraegen an.
@@ -67,6 +67,9 @@ public class DauerauftragListe extends AbstractView {
 
 /**********************************************************************
  * $Log: DauerauftragListe.java,v $
+ * Revision 1.10  2004/11/12 18:25:07  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.9  2004/10/25 23:12:02  willuhn
  * *** empty log message ***
  *

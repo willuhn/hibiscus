@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/KontoNeu.java,v $
- * $Revision: 1.23 $
- * $Date: 2004/10/29 16:16:13 $
+ * $Revision: 1.24 $
+ * $Date: 2004/11/12 18:25:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,9 +27,9 @@ import de.willuhn.jameica.hbci.gui.action.KontoFetchSaldo;
 import de.willuhn.jameica.hbci.gui.action.UmsatzListe;
 import de.willuhn.jameica.hbci.gui.controller.KontoControl;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
-import de.willuhn.util.Logger;
 
 /**
  * Bankverbindung bearbeiten.
@@ -106,6 +106,9 @@ public class KontoNeu extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoNeu.java,v $
+ * Revision 1.24  2004/11/12 18:25:07  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.23  2004/10/29 16:16:13  willuhn
  * *** empty log message ***
  *

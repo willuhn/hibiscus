@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/Attic/EmpfaengerDelete.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/10/25 17:58:56 $
+ * $Revision: 1.3 $
+ * $Date: 2004/11/12 18:25:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,9 +20,9 @@ import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Empfaenger;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
-import de.willuhn.util.Logger;
 
 /**
  * Action fuer Loeschen eines Empfaengers.
@@ -78,6 +78,9 @@ public class EmpfaengerDelete implements Action
 
 /**********************************************************************
  * $Log: EmpfaengerDelete.java,v $
+ * Revision 1.3  2004/11/12 18:25:07  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2004/10/25 17:58:56  willuhn
  * @N Haufen Dauerauftrags-Code
  *

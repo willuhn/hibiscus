@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzDetail.java,v $
- * $Revision: 1.11 $
- * $Date: 2004/10/20 12:08:18 $
+ * $Revision: 1.12 $
+ * $Date: 2004/11/12 18:25:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,9 +25,9 @@ import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
 import de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
-import de.willuhn.util.Logger;
 
 /**
  * Bildet die Detailansicht einer Buchung ab.
@@ -93,6 +93,9 @@ public class UmsatzDetail extends AbstractView {
 
 /**********************************************************************
  * $Log: UmsatzDetail.java,v $
+ * Revision 1.12  2004/11/12 18:25:07  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.11  2004/10/20 12:08:18  willuhn
  * @C MVC-Refactoring (new Controllers)
  *

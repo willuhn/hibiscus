@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/EmpfaengerListe.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/10/29 16:16:12 $
+ * $Revision: 1.11 $
+ * $Date: 2004/11/12 18:25:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,9 +19,9 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerNeu;
 import de.willuhn.jameica.hbci.gui.controller.EmpfaengerControl;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
-import de.willuhn.util.Logger;
 
 /**
  * Zeigt eine Liste mit den vorhandenen Empfaenger-Adressen an.
@@ -65,6 +65,9 @@ public class EmpfaengerListe extends AbstractView {
 
 /**********************************************************************
  * $Log: EmpfaengerListe.java,v $
+ * Revision 1.11  2004/11/12 18:25:07  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.10  2004/10/29 16:16:12  willuhn
  * *** empty log message ***
  *

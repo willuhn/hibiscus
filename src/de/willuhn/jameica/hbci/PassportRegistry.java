@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/PassportRegistry.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/10/19 23:33:31 $
+ * $Revision: 1.8 $
+ * $Date: 2004/11/12 18:25:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,8 +17,8 @@ import java.util.Hashtable;
 
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ClassFinder;
-import de.willuhn.util.Logger;
 
 /**
  * Sucht alle verfuegbaren Passports und prueft diese auf Verwendbarkeit.
@@ -110,6 +110,9 @@ public class PassportRegistry {
 
 /**********************************************************************
  * $Log: PassportRegistry.java,v $
+ * Revision 1.8  2004/11/12 18:25:08  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2004/10/19 23:33:31  willuhn
  * *** empty log message ***
  *

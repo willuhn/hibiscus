@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/DauerauftragExecute.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/10/29 16:16:13 $
+ * $Revision: 1.6 $
+ * $Date: 2004/11/12 18:25:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,9 +23,9 @@ import de.willuhn.jameica.hbci.server.hbci.HBCIDauerauftragStoreJob;
 import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
-import de.willuhn.util.Logger;
 
 /**
  * Action zur Ausfuehrung eines neu angelegten Dauerauftrag.
@@ -119,6 +119,9 @@ public class DauerauftragExecute implements Action
 
 /**********************************************************************
  * $Log: DauerauftragExecute.java,v $
+ * Revision 1.6  2004/11/12 18:25:07  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2004/10/29 16:16:13  willuhn
  * *** empty log message ***
  *

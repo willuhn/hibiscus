@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/DauerauftragDelete.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/10/29 16:16:13 $
+ * $Revision: 1.5 $
+ * $Date: 2004/11/12 18:25:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,9 +23,9 @@ import de.willuhn.jameica.hbci.server.hbci.HBCIDauerauftragDeleteJob;
 import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
-import de.willuhn.util.Logger;
 
 /**
  * Action fuer Loeschen eines Dauerauftrages.
@@ -124,6 +124,9 @@ public class DauerauftragDelete implements Action
 
 /**********************************************************************
  * $Log: DauerauftragDelete.java,v $
+ * Revision 1.5  2004/11/12 18:25:07  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2004/10/29 16:16:13  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.22 $
- * $Date: 2004/10/24 17:19:02 $
+ * $Revision: 1.23 $
+ * $Date: 2004/11/12 18:25:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,7 +24,7 @@ import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.parts.ProgressBar;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.util.Logger;
+import de.willuhn.logging.Logger;
 
 /**
  * Verwaltet die Einstellungen des Plugins.
@@ -279,6 +279,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.23  2004/11/12 18:25:08  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.22  2004/10/24 17:19:02  willuhn
  * *** empty log message ***
  *

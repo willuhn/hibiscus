@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/About.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/10/12 23:48:39 $
+ * $Revision: 1.2 $
+ * $Date: 2004/11/12 18:25:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,9 +16,9 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.ViewDialog;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
-import de.willuhn.util.Logger;
 
 /**
  * Action fuer About-Dialog.
@@ -49,6 +49,9 @@ public class About implements Action
 
 /**********************************************************************
  * $Log: About.java,v $
+ * Revision 1.2  2004/11/12 18:25:07  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/10/12 23:48:39  willuhn
  * @N Actions
  *

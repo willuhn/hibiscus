@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/tests/TurnusRestriction.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/10/29 00:32:32 $
+ * $Revision: 1.2 $
+ * $Date: 2004/11/12 18:25:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,9 +18,9 @@ import java.util.Properties;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Turnus;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
-import de.willuhn.util.Logger;
 
 /**
  * Testet, ob der Turnus den HBCI-Restriktionen der Bank entspricht. 
@@ -94,6 +94,9 @@ public class TurnusRestriction implements Restriction
 
 /**********************************************************************
  * $Log: TurnusRestriction.java,v $
+ * Revision 1.2  2004/11/12 18:25:07  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/10/29 00:32:32  willuhn
  * @N HBCI job restrictions
  *

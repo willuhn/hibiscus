@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/DauerauftragControl.java,v $
- * $Revision: 1.14 $
- * $Date: 2004/10/29 00:32:32 $
+ * $Revision: 1.15 $
+ * $Date: 2004/11/12 18:25:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -37,7 +37,7 @@ import de.willuhn.jameica.hbci.gui.menus.DauerauftragList;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Transfer;
 import de.willuhn.jameica.hbci.rmi.Turnus;
-import de.willuhn.util.Logger;
+import de.willuhn.logging.Logger;
 
 /**
  * Controller fuer Dauer-Auftraege.
@@ -258,6 +258,9 @@ public class DauerauftragControl extends AbstractTransferControl {
 
 /**********************************************************************
  * $Log: DauerauftragControl.java,v $
+ * Revision 1.15  2004/11/12 18:25:07  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.14  2004/10/29 00:32:32  willuhn
  * @N HBCI job restrictions
  *

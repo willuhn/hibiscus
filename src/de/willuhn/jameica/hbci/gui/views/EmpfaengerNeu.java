@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/EmpfaengerNeu.java,v $
- * $Revision: 1.11 $
- * $Date: 2004/10/29 16:16:12 $
+ * $Revision: 1.12 $
+ * $Date: 2004/11/12 18:25:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,9 +24,9 @@ import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerDelete;
 import de.willuhn.jameica.hbci.gui.controller.EmpfaengerControl;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
-import de.willuhn.util.Logger;
 
 /**
  * Empfaenger bearbeiten.
@@ -83,6 +83,9 @@ public class EmpfaengerNeu extends AbstractView {
 
 /**********************************************************************
  * $Log: EmpfaengerNeu.java,v $
+ * Revision 1.12  2004/11/12 18:25:07  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.11  2004/10/29 16:16:12  willuhn
  * *** empty log message ***
  *

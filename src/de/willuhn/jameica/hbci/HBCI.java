@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.31 $
- * $Date: 2004/11/04 17:31:21 $
+ * $Revision: 1.32 $
+ * $Date: 2004/11/12 18:25:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,8 +25,9 @@ import de.willuhn.datasource.db.EmbeddedDatabase;
 import de.willuhn.jameica.hbci.server.HBCIDBServiceImpl;
 import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Level;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
-import de.willuhn.util.Logger;
 
 /**
  *
@@ -57,10 +58,10 @@ public class HBCI extends AbstractPlugin
   // Mapper von HBCI4Java nach jameica Loglevels
   private static int[][] logMapping = new int[][]
   {
-    {Logger.LEVEL_DEBUG, 5},
-    {Logger.LEVEL_ERROR, 1},
-    {Logger.LEVEL_WARN,  2},
-    {Logger.LEVEL_INFO,  3}
+    {Level.ERROR.getValue(), 1},
+    {Level.WARN.getValue(),  2},
+    {Level.INFO.getValue(),  3},
+		{Level.DEBUG.getValue(), 5}
   };
 
   static {
@@ -146,7 +147,17 @@ public class HBCI extends AbstractPlugin
 
 		try {
 			HBCIUtils.init(null,null,new HBCICallbackSWT(Settings.getHBCIProgressBar()));
-			int logLevel = logMapping[Logger.getLevelByName(Application.getConfig().getLogLevel())][1];
+			int logLevel = 3;
+			try
+			{
+				logLevel = logMapping[Logger.getLevel().getValue()][1];
+			}
+			catch (Exception e)
+			{
+				// Am wahrscheinlichsten ArrayIndexOutOfBoundsException
+				// Dann eben nicht ;)
+			}
+
 			HBCIUtils.setParam("log.loglevel.default",""+logLevel);
 		}
 		catch (Exception e)
@@ -223,6 +234,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.32  2004/11/12 18:25:08  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.31  2004/11/04 17:31:21  willuhn
  * *** empty log message ***
  *

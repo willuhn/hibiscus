@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.17 $
- * $Date: 2004/10/24 17:19:02 $
+ * $Revision: 1.18 $
+ * $Date: 2004/11/12 18:25:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -29,8 +29,8 @@ import de.willuhn.jameica.hbci.gui.DialogFactory;
 import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
-import de.willuhn.util.Logger;
 import de.willuhn.util.ProgressMonitor;
 
 /**
@@ -347,6 +347,9 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.18  2004/11/12 18:25:08  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.17  2004/10/24 17:19:02  willuhn
  * *** empty log message ***
  *
