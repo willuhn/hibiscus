@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/05/04 23:07:23 $
+ * $Revision: 1.6 $
+ * $Date: 2004/05/05 22:14:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,8 +21,8 @@ import org.kapott.hbci.manager.HBCIHandler;
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.rmi.PassportHandle;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -173,6 +173,9 @@ public class HBCIFactory {
 
 /**********************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.6  2004/05/05 22:14:47  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2004/05/04 23:07:23  willuhn
  * @C refactored Passport stuff
  *

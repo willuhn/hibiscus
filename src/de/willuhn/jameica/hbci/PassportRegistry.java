@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/PassportRegistry.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/05/04 23:30:53 $
+ * $Revision: 1.3 $
+ * $Date: 2004/05/05 22:14:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,7 +16,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 
 import de.willuhn.jameica.Application;
-import de.willuhn.jameica.hbci.rmi.Passport;
+import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.util.MultipleClassLoader;
 
 /**
@@ -105,6 +105,9 @@ public class PassportRegistry {
 
 /**********************************************************************
  * $Log: PassportRegistry.java,v $
+ * Revision 1.3  2004/05/05 22:14:47  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2004/05/04 23:30:53  willuhn
  * *** empty log message ***
  *

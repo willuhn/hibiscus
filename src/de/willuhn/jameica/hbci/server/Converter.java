@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/04/27 23:50:15 $
+ * $Revision: 1.8 $
+ * $Date: 2004/05/05 22:14:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -132,6 +132,25 @@ public class Converter {
 	}
 
 	/**
+	 * Konvertiert ein HBCI4Java-Konto in ein Jameica Konto.
+	 * @param konto das HBCI4Java Konto.
+	 * @return unser Konto.
+	 * @throws RemoteException
+	 */
+	public static de.willuhn.jameica.hbci.rmi.Konto HBCIKonto2JameicaKonto(Konto konto) throws RemoteException
+	{
+		de.willuhn.jameica.hbci.rmi.Konto k =
+			(de.willuhn.jameica.hbci.rmi.Konto) Settings.getDatabase().createObject(Konto.class,null);
+		k.setBLZ(konto.blz);
+		k.setKontonummer(konto.number);
+		k.setKundennummer(konto.customerid);
+		k.setName(konto.name);
+		k.setBezeichnung(konto.type);
+		k.setWaehrung(konto.curr);
+		return k;  	
+	}
+
+	/**
 	 * Konvertiert einen Jameica-Empfaenger in ein HBCI4Java Konto.
 	 * @param empfaenger unser Empfaenger
 	 * @return das HBCI4Java Konto.
@@ -169,6 +188,9 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.8  2004/05/05 22:14:47  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2004/04/27 23:50:15  willuhn
  * *** empty log message ***
  *

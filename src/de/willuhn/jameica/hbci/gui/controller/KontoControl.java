@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.26 $
- * $Date: 2004/05/04 23:07:23 $
+ * $Revision: 1.27 $
+ * $Date: 2004/05/05 22:14:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -38,8 +38,8 @@ import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.views.KontoListe;
 import de.willuhn.jameica.hbci.gui.views.KontoNeu;
 import de.willuhn.jameica.hbci.gui.views.UmsatzListe;
+import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.rmi.Passport;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -498,6 +498,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.27  2004/05/05 22:14:47  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.26  2004/05/04 23:07:23  willuhn
  * @C refactored Passport stuff
  *

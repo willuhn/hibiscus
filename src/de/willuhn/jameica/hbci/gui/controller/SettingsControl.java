@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.16 $
- * $Date: 2004/05/04 23:07:23 $
+ * $Revision: 1.17 $
+ * $Date: 2004/05/05 22:14:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -34,7 +34,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.PassportRegistry;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.dialogs.NewPassportDialog;
-import de.willuhn.jameica.hbci.rmi.Passport;
+import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.util.I18N;
 
 /**
@@ -323,6 +323,9 @@ public class SettingsControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.17  2004/05/05 22:14:47  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.16  2004/05/04 23:07:23  willuhn
  * @C refactored Passport stuff
  *
