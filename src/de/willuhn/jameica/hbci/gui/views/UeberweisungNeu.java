@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/UeberweisungNeu.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/03/30 22:07:49 $
+ * $Revision: 1.6 $
+ * $Date: 2004/04/05 23:28:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,6 +11,9 @@
  *
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.views;
+
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
@@ -36,7 +39,7 @@ public class UeberweisungNeu extends AbstractView {
 
 		GUI.getView().setTitle(i18n.tr("Überweisung bearbeiten"));
 		
-		UeberweisungControl control = new UeberweisungControl(this);
+		final UeberweisungControl control = new UeberweisungControl(this);
 		LabelGroup group = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
 		
 		group.addLabelPair(i18n.tr("Konto"),										control.getKontoAuswahl());		
@@ -52,7 +55,12 @@ public class UeberweisungNeu extends AbstractView {
 		group.addLabelPair(i18n.tr("Betrag"),										control.getBetrag());
 
 
-		ButtonArea buttonArea = new ButtonArea(getParent(),3);
+		ButtonArea buttonArea = new ButtonArea(getParent(),4);
+		buttonArea.addCustomButton(i18n.tr("sofort ausführen"), new MouseAdapter() {
+      public void mouseUp(MouseEvent e) {
+      	control.handleExecute();
+      }
+    });
 		buttonArea.addCancelButton(control);
 		buttonArea.addDeleteButton(control);
 		buttonArea.addStoreButton(control);
@@ -62,8 +70,6 @@ public class UeberweisungNeu extends AbstractView {
    * @see de.willuhn.jameica.gui.views.AbstractView#unbind()
    */
   public void unbind() throws ApplicationException {
-    // TODO Auto-generated method stub
-
   }
 
 }
@@ -71,6 +77,9 @@ public class UeberweisungNeu extends AbstractView {
 
 /**********************************************************************
  * $Log: UeberweisungNeu.java,v $
+ * Revision 1.6  2004/04/05 23:28:46  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2004/03/30 22:07:49  willuhn
  * *** empty log message ***
  *

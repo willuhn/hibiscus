@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Settings.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/03/30 22:07:49 $
+ * $Revision: 1.11 $
+ * $Date: 2004/04/05 23:28:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,8 +11,6 @@
  *
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.views;
-
-import java.rmi.RemoteException;
 
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -46,50 +44,48 @@ public class Settings extends AbstractView {
 		
 		LabelGroup settings = new LabelGroup(getParent(),i18n.tr("Grundeinstellungen"));
 
-		try {
+		// Einstellungen
+		settings.addCheckbox(control.getOnlineMode(),i18n.tr("Keine Nachfrage vor Verbindungsaufbau"));
+		settings.addCheckbox(control.getCheckPin(),i18n.tr("PIN-Eingabe via Check-Summe prüfen"));
 
-			// Einstellungen
-			settings.addCheckbox(control.getOnlineMode(),i18n.tr("Keine Nachfrage vor Verbindungsaufbau"));
-			settings.addCheckbox(control.getCheckPin(),i18n.tr("PIN-Eingabe via Check-Summe prüfen"));
+		LabelGroup colors = new LabelGroup(getParent(),i18n.tr("Farben"));
+		colors.addLabelPair(i18n.tr("Vordergrund Sollbuchung"),control.getBuchungSollForeground());
+		colors.addLabelPair(i18n.tr("Hintergrund Sollbuchung"),control.getBuchungSollBackground());
+		colors.addLabelPair(i18n.tr("Vordergrund Habenbuchung"),control.getBuchungHabenForeground());
+		colors.addLabelPair(i18n.tr("Hintergrund Habenbuchung"),control.getBuchungHabenBackground());
 
-			ButtonArea buttons = settings.createButtonArea(2);
-			buttons.addCustomButton(i18n.tr("gespeicherte Check-Summe löschen"),new MouseAdapter() {
-				public void mouseUp(MouseEvent e) {
-					control.handleDeleteCheckSum();
+		ButtonArea buttons = settings.createButtonArea(1);
+		buttons.addCustomButton(i18n.tr("gespeicherte Check-Summe löschen"),new MouseAdapter() {
+			public void mouseUp(MouseEvent e) {
+				control.handleDeleteCheckSum();
+			}
+		});
+
+
+		// Passports
+		LabelGroup passports = new LabelGroup(getParent(),i18n.tr("Sicherheitsmedien"));
+
+		passports.addTable(control.getPassportListe());
+		
+		ButtonArea buttons2 = passports.createButtonArea(1);
+		buttons2.addCustomButton(i18n.tr("Neues Sicherheitsmedium anlegen"),new MouseAdapter() {
+      public void mouseUp(MouseEvent e) {
+      	NewPassportDialog d = new NewPassportDialog(NewPassportDialog.POSITION_MOUSE);
+				try {
+					GUI.startView(PassportDetails.class.getName(),d.open());
 				}
-			});
-			buttons.addStoreButton(control);
+				catch (Exception e2)
+				{
+					// Dialog wurde abgebrochen
+					Application.getLog().info(e2.getMessage());
+				}
+      }
+    });
 
+		ButtonArea buttons3 = new ButtonArea(getParent(),2);
+		buttons3.addStoreButton(control);
+		buttons3.addCancelButton(control);
 
-			// Passports
-			LabelGroup passports = new LabelGroup(getParent(),i18n.tr("Sicherheitsmedien"));
-
-			passports.addTable(control.getPassportListe());
-			
-			ButtonArea buttons2 = passports.createButtonArea(1);
-			buttons2.addCustomButton(i18n.tr("Neues Sicherheitsmedium anlegen"),new MouseAdapter() {
-        public void mouseUp(MouseEvent e) {
-        	NewPassportDialog d = new NewPassportDialog(NewPassportDialog.POSITION_MOUSE);
-					try {
-						GUI.startView(PassportDetails.class.getName(),d.open());
-					}
-					catch (Exception e2)
-					{
-						// Dialog wurde abgebrochen
-						Application.getLog().info(e2.getMessage());
-					}
-        }
-      });
-
-			ButtonArea buttons3 = new ButtonArea(getParent(),1);
-			buttons3.addCancelButton(control);
-
-		}
-		catch (RemoteException e)
-		{
-			Application.getLog().error("error while showing settings",e);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Laden der Einstellungen"));
-		}
   }
 
   /**
@@ -105,6 +101,9 @@ public class Settings extends AbstractView {
 
 /**********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.11  2004/04/05 23:28:46  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.10  2004/03/30 22:07:49  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/03/17 00:06:28 $
+ * $Revision: 1.7 $
+ * $Date: 2004/04/05 23:28:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,11 +16,14 @@ import java.rmi.RemoteException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import sun.misc.BASE64Encoder;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 
+import sun.misc.BASE64Encoder;
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
+import de.willuhn.jameica.gui.GUI;
 
 /**
  * Verwaltet die Einstellungen des Plugins.
@@ -34,6 +37,11 @@ public class Settings
   private static String path = null;
   private static String passphrase = null;
 
+	private static Color buchungSollForeground = null;
+	private static Color buchungSollBackground = null;
+	private static Color buchungHabenForeground = null;
+	private static Color buchungHabenBackground = null;
+
   /**
    * Liefert den Datenbank-Service.
    * @return Datenbank.
@@ -46,6 +54,125 @@ public class Settings
     db = PluginLoader.getPlugin(HBCI.class).getResources().getDatabase().getDBService();
     return db;
   }
+
+	/**
+	 * Liefert die Vordergrundfarbe fuer Soll-Buchungen in Tabellen.
+   * @return Farbe.
+   */
+  public static Color getBuchungSollForeground()
+	{
+		if (buchungSollForeground != null)
+			return buchungSollForeground;
+
+		buchungSollForeground = new Color(GUI.getDisplay(),readColors("buchung.soll.fg",0));
+		return buchungSollForeground;
+	}
+
+	/**
+	 * Liefert die Hintergrundfarbe fuer Soll-Buchungen in Tabellen.
+	 * @return Farbe.
+	 */
+	public static Color getBuchungSollBackground()
+	{
+		if (buchungSollBackground != null)
+			return buchungSollBackground;
+
+		buchungSollBackground = new Color(GUI.getDisplay(),readColors("buchung.soll.bg",245));
+		return buchungSollBackground;
+	}
+
+	/**
+	 * Liefert die Vordergrundfarbe fuer Haben-Buchungen in Tabellen.
+	 * @return Farbe.
+	 */
+	public static Color getBuchungHabenForeground()
+	{
+		if (buchungHabenForeground != null)
+			return buchungHabenForeground;
+
+		buchungHabenForeground = new Color(GUI.getDisplay(),readColors("buchung.haben.fg",0));
+		return buchungHabenForeground;
+	}
+
+	/**
+	 * Liefert die Hintergrundfarbe fuer Haben-Buchungen in Tabellen.
+	 * @return Farbe.
+	 */
+	public static Color getBuchungHabenBackground()
+	{
+		if (buchungHabenBackground != null)
+			return buchungHabenBackground;
+
+		buchungHabenBackground = new Color(GUI.getDisplay(),readColors("buchung.haben.bg",255));
+		return buchungHabenBackground;
+	}
+
+	/**
+	 * Speichert die Farben fuer den Vordergrund von Soll-Buchungen.
+   * @param rgb
+   */
+  public static void setBuchungSollForeground(RGB rgb)
+	{
+		storeColors("buchung.soll.fg",rgb);
+		buchungSollForeground = null;
+	}
+
+	/**
+	 * Speichert die Farben fuer den Hintergrund von Soll-Buchungen.
+	 * @param rgb
+	 */
+	public static void setBuchungSollBackground(RGB rgb)
+	{
+		storeColors("buchung.soll.bg",rgb);
+		buchungSollBackground = null;
+	}
+
+	/**
+	 * Speichert die Farben fuer den Vordergrund von Haben-Buchungen.
+	 * @param rgb
+	 */
+	public static void setBuchungHabenForeground(RGB rgb)
+	{
+		storeColors("buchung.haben.fg",rgb);
+		buchungHabenForeground = null;
+	}
+
+	/**
+	 * Speichert die Farben fuer den Hintergrund von Haben-Buchungen.
+	 * @param rgb
+	 */
+	public static void setBuchungHabenBackground(RGB rgb)
+	{
+		storeColors("buchung.haben.bg",rgb);
+		buchungHabenBackground = null;
+	}
+
+	/**
+	 * Liefert die Farbwerte fuer den genannten Prefix.
+   * @param prefix Name des Prefix.
+   * @param default Default-Wert fuer R, G und B.
+   * @return
+   */
+  private static RGB readColors(String prefix, int defaultValue)
+	{
+		return new RGB(
+			settings.getInt(prefix + ".r",defaultValue),
+			settings.getInt(prefix + ".g",defaultValue),
+			settings.getInt(prefix + ".b",defaultValue)
+		);
+	}
+
+	/**
+	 * Speichert die Farbwerte unter dem genannten Prefix.
+   * @param prefix Name des Prefix.
+   * @param rgb Farbe.
+   */
+  private static void storeColors(String prefix, RGB rgb)
+	{
+		settings.setAttribute(prefix + ".r",rgb.red);
+		settings.setAttribute(prefix + ".g",rgb.green);
+		settings.setAttribute(prefix + ".b",rgb.blue);
+	}
 
   /**
    * Liefert den Verzeichnis-Pfad in dem sich das Plugin befindet.
@@ -156,6 +283,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.7  2004/04/05 23:28:46  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.6  2004/03/17 00:06:28  willuhn
  * *** empty log message ***
  *

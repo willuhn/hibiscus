@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/KontoNeu.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/03/30 22:07:49 $
+ * $Revision: 1.11 $
+ * $Date: 2004/04/05 23:28:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -50,6 +50,7 @@ public class KontoNeu extends AbstractView {
 
 			group.addLabelPair(i18n.tr("Kontonummer"),			    		control.getKontonummer());
 			group.addLabelPair(i18n.tr("Bankleitzahl"),			    		control.getBlz());
+			group.addLabelPair(i18n.tr("Bezeichnung des Kontos"),		control.getBezeichnung());
 			group.addLabelPair(i18n.tr("Kontoinhaber"),			    		control.getName());
 			group.addLabelPair(i18n.tr("Kundennummer"),							control.getKundennummer());
       group.addLabelPair(i18n.tr("Währungsbezeichnung"),  		control.getWaehrung());
@@ -102,6 +103,9 @@ public class KontoNeu extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoNeu.java,v $
+ * Revision 1.11  2004/04/05 23:28:46  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.10  2004/03/30 22:07:49  willuhn
  * *** empty log message ***
  *

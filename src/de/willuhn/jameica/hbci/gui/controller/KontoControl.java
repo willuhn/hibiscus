@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.19 $
- * $Date: 2004/04/01 22:06:59 $
+ * $Revision: 1.20 $
+ * $Date: 2004/04/05 23:28:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -55,6 +55,7 @@ public class KontoControl extends AbstractControl {
 	private AbstractInput kontonummer  		= null;
 	private AbstractInput blz          		= null;
 	private AbstractInput name				 		= null;
+	private AbstractInput bezeichnung	 		= null;
 	private AbstractInput passportAuswahl = null;
   private AbstractInput waehrung     		= null;
   private AbstractInput kundennummer 		= null;
@@ -159,6 +160,19 @@ public class KontoControl extends AbstractControl {
 	}
 
 	/**
+	 * Liefert die Bezeichnung des Kontos.
+	 * @return Bezeichnung des Kontos.
+	 * @throws RemoteException
+	 */
+	public AbstractInput getBezeichnung() throws RemoteException
+	{
+		if (bezeichnung != null)
+			return bezeichnung;
+		bezeichnung = new TextInput(getKonto().getBezeichnung());
+		return bezeichnung;
+	}
+
+	/**
 	 * Liefert das Eingabefeld fuer die Kundennummer.
 	 * @return Eingabe-Feld.
 	 * @throws RemoteException
@@ -243,6 +257,7 @@ public class KontoControl extends AbstractControl {
 		Table table = new Table(list,this);
 		table.addColumn(i18n.tr("Kontonummer"),"kontonummer");
 		table.addColumn(i18n.tr("Bankleitzahl"),"blz");
+		table.addColumn(i18n.tr("Bezeichnung"),"bezeichnung");
 		table.addColumn(i18n.tr("Kontoinhaber"),"name");
 		table.addColumn(i18n.tr("Kundennummer"),"kundennummer");
 		table.addColumn(i18n.tr("Sicherheitsmedium"),"passport_id");
@@ -323,6 +338,7 @@ public class KontoControl extends AbstractControl {
 			getKonto().setKontonummer((String)getKontonummer().getValue());
 			getKonto().setBLZ((String)getBlz().getValue());
 			getKonto().setName((String)getName().getValue());
+			getKonto().setBezeichnung((String)getBezeichnung().getValue());
       getKonto().setWaehrung((String)getWaehrung().getValue());
       getKonto().setKundennummer((String)getKundennummer().getValue());
       
@@ -362,6 +378,9 @@ public class KontoControl extends AbstractControl {
    */
   public void handleReadFromPassport()
 	{
+
+		GUI.getStatusBar().startProgress();
+
 		GUI.getStatusBar().setSuccessText(i18n.tr("Chipkarte wird ausgelesen..."));
 
 		GUI.startSync(new Runnable() {
@@ -420,6 +439,7 @@ public class KontoControl extends AbstractControl {
 				}
       }
     });
+		GUI.getStatusBar().stopProgress();
 	}
 
 	/**
@@ -502,6 +522,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.20  2004/04/05 23:28:46  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.19  2004/04/01 22:06:59  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Ueberweisung.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/03/06 18:25:10 $
+ * $Revision: 1.5 $
+ * $Date: 2004/04/05 23:28:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,12 +31,26 @@ public interface Ueberweisung extends DBObject {
   public Konto getKonto() throws RemoteException;
 	
 	/**
-	 * Liefert den Empfaenger.
-   * @return Empfaenger der Ueberweisung.
+	 * Liefert die Kontonummer des Empfaengers.
+   * @return Kontonummer des Empfaengers.
    * @throws RemoteException
    */
-  public Empfaenger getEmpfaenger() throws RemoteException;
+  public String getEmpfaengerKonto() throws RemoteException;
+
+	/**
+	 * Liefert die BLZ des Empfaengers.
+	 * @return BLZ des Empfaengers.
+	 * @throws RemoteException
+	 */
+	public String getEmpfaengerBlz() throws RemoteException;
 	
+	/**
+	 * Liefert den Namen des Empfaengers.
+	 * @return Name des Empfaengers.
+	 * @throws RemoteException
+	 */
+	public String getEmpfaengerName() throws RemoteException;
+
 	/**
 	 * Liefert den Betrag.
    * @return Betrag.
@@ -80,12 +94,26 @@ public interface Ueberweisung extends DBObject {
   public void setKonto(Konto konto) throws RemoteException;
 	
 	/**
-	 * Speichert den Empfaenger.
-   * @param empfaenger Empfaenger des Geldes.
+	 * Speichert die Kontonummer des Empfaengers.
+   * @param konto Kontonummer des Empfaengers.
    * @throws RemoteException
    */
-  public void setEmpfaenger(Empfaenger empfaenger) throws RemoteException;
+  public void setEmpfaengerKonto(String konto) throws RemoteException;
 	
+	/**
+	 * Speichert die BLZ des Empfaengers.
+	 * @param blz BLZ des Empfaengers.
+	 * @throws RemoteException
+	 */
+	public void setEmpfaengerBlz(String blz) throws RemoteException;
+
+	/**
+	 * Speichert den Namen des Empfaengers.
+	 * @param name Name des Empfaengers.
+	 * @throws RemoteException
+	 */
+	public void setEmpfaengerName(String name) throws RemoteException;
+
 	/**
 	 * Speichert den zu ueberweisenden Betrag.
    * @param betrag Betrag.
@@ -127,6 +155,9 @@ public interface Ueberweisung extends DBObject {
 
 /**********************************************************************
  * $Log: Ueberweisung.java,v $
+ * Revision 1.5  2004/04/05 23:28:45  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2004/03/06 18:25:10  willuhn
  * @D javadoc
  * @C removed empfaenger_id from umsatz

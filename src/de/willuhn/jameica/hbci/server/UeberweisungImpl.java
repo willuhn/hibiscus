@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UeberweisungImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/03/06 18:25:10 $
+ * $Revision: 1.5 $
+ * $Date: 2004/04/05 23:28:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,11 +15,12 @@ package de.willuhn.jameica.hbci.server;
 import java.rmi.RemoteException;
 import java.util.Date;
 
+import org.kapott.hbci.manager.HBCIUtils;
+
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.rmi.Empfaenger;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.util.ApplicationException;
@@ -62,7 +63,14 @@ public class UeberweisungImpl
    * @see de.willuhn.datasource.db.AbstractDBObject#deleteCheck()
    */
   protected void deleteCheck() throws ApplicationException {
-		throw new ApplicationException("Nicht implementiert");
+		try {
+			if (ausgefuehrt())
+				throw new ApplicationException(i18n.tr("Bereits ausgeführte Überweisungen können nicht gelöscht werden."));
+		}
+		catch (RemoteException e)
+		{
+			throw new ApplicationException(i18n.tr("Fehler beim Löschen der Überweisung."));
+		}
   }
 
   /**
@@ -78,13 +86,16 @@ public class UeberweisungImpl
 			if (getKonto().isNewObject())
 				throw new ApplicationException("Bitte speichern Sie zunächst das Konto");
 
-			if (getEmpfaenger() == null)
-				throw new ApplicationException("Bitte wählen Sie einen Empfänger aus");
+			if (getEmpfaengerKonto() == null || "".equals(getEmpfaengerKonto()))
+				throw new ApplicationException("Bitte geben Sie die Kontonummer des Empfängers ein");
 			
-			if (getEmpfaenger().isNewObject())
-				throw new ApplicationException("Bitte speichern Sie zunächst den Empfänger");
-			
-			if (getZweck() == null)
+			if (getEmpfaengerBlz() == null || "".equals(getEmpfaengerBlz()))
+				throw new ApplicationException("Bitte geben Sie die BLZ des Empfängers ein");
+
+			if (!HBCIUtils.checkAccountCRC(getEmpfaengerBlz(),getEmpfaengerKonto()))
+				throw new ApplicationException("Ungültige BLZ/Kontonummer. Bitte prüfen Sie Ihre Eingaben.");
+				
+			if (getZweck() == null || "".equals(getZweck()))
 				throw new ApplicationException("Bitte geben Sie einen Verwendungszweck ein");
 
 			if (getZweck().length() > 35)
@@ -124,8 +135,6 @@ public class UeberweisungImpl
    * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
    */
   protected Class getForeignObject(String field) throws RemoteException {
-		if ("empfaenger_id".equals(field))
-			return Empfaenger.class;
 		if ("konto_id".equals(field))
 			return Konto.class;
     return null;
@@ -136,13 +145,6 @@ public class UeberweisungImpl
    */
   public Konto getKonto() throws RemoteException {
     return (Konto) getField("konto_id");
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#getEmpfaenger()
-   */
-  public Empfaenger getEmpfaenger() throws RemoteException {
-    return (Empfaenger) getField("empfaenger_id");
   }
 
   /**
@@ -192,14 +194,6 @@ public class UeberweisungImpl
   public void setKonto(Konto konto) throws RemoteException {
 		if (konto == null) return;
 		setField("konto_id",new Integer(konto.getID()));
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#setEmpfaenger(de.willuhn.jameica.hbci.rmi.Empfaenger)
-   */
-  public void setEmpfaenger(Empfaenger empfaenger) throws RemoteException {
-		if (empfaenger == null) return;
-		setField("empgaenger_id",new Integer(empfaenger.getID()));
   }
 
   /**
@@ -270,11 +264,56 @@ public class UeberweisungImpl
     super.store();
   }
 
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#getEmpfaengerKonto()
+   */
+  public String getEmpfaengerKonto() throws RemoteException {
+    return (String) getField("empfaenger_konto");
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#getEmpfaengerBlz()
+   */
+  public String getEmpfaengerBlz() throws RemoteException {
+		return (String) getField("empfaenger_blz");
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#getEmpfaengerName()
+   */
+  public String getEmpfaengerName() throws RemoteException {
+		return (String) getField("empfaenger_name");
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#setEmpfaengerKonto(java.lang.String)
+   */
+  public void setEmpfaengerKonto(String konto) throws RemoteException {
+		setField("empfaenger_konto",konto);
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#setEmpfaengerBlz(java.lang.String)
+   */
+  public void setEmpfaengerBlz(String blz) throws RemoteException {
+		setField("empfaenger_blz",blz);
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#setEmpfaengerName(java.lang.String)
+   */
+  public void setEmpfaengerName(String name) throws RemoteException {
+		setField("empfaenger_name",name);
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: UeberweisungImpl.java,v $
+ * Revision 1.5  2004/04/05 23:28:46  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2004/03/06 18:25:10  willuhn
  * @D javadoc
  * @C removed empfaenger_id from umsatz

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/03/30 22:07:50 $
+ * $Revision: 1.11 $
+ * $Date: 2004/04/05 23:28:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ import java.rmi.RemoteException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
@@ -24,7 +25,9 @@ import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.controller.AbstractControl;
+import de.willuhn.jameica.gui.parts.AbstractInput;
 import de.willuhn.jameica.gui.parts.CheckboxInput;
+import de.willuhn.jameica.gui.parts.ColorInput;
 import de.willuhn.jameica.gui.parts.Table;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
@@ -42,6 +45,11 @@ public class SettingsControl extends AbstractControl {
 	// Eingabe-Felder
 	private CheckboxInput onlineMode     		= null;
 	private CheckboxInput checkPin     			= null;
+
+	private AbstractInput buchungSollFg     = null;
+	private AbstractInput buchungSollBg     = null;
+	private AbstractInput buchungHabenFg    = null;
+	private AbstractInput buchungHabenBg    = null;
 
 	private Table passportList 							= null;
 	
@@ -99,6 +107,59 @@ public class SettingsControl extends AbstractControl {
 		checkPin.addListener(new CheckPinListener());
 		return checkPin;
 	}
+
+	/**
+	 * Liefert ein Auswahlfeld fuer die Vordergrundfarbe von Soll-Buchungen. 
+   * @return Auswahlfeld.
+   * @throws RemoteException
+   */
+  public AbstractInput getBuchungSollForeground() throws RemoteException
+	{
+		if (buchungSollFg != null)
+			return buchungSollFg;
+		buchungSollFg = new ColorInput(Settings.getBuchungSollForeground());
+		return buchungSollFg;
+	}
+
+	/**
+	 * Liefert ein Auswahlfeld fuer die Hintergrundfarbe von Soll-Buchungen. 
+	 * @return Auswahlfeld.
+	 * @throws RemoteException
+	 */
+	public AbstractInput getBuchungSollBackground() throws RemoteException
+	{
+		if (buchungSollBg != null)
+			return buchungSollBg;
+		buchungSollBg = new ColorInput(Settings.getBuchungSollBackground());
+		return buchungSollBg;
+	}
+
+	/**
+	 * Liefert ein Auswahlfeld fuer die Vordergrundfarbe von Haben-Buchungen. 
+	 * @return Auswahlfeld.
+	 * @throws RemoteException
+	 */
+	public AbstractInput getBuchungHabenForeground() throws RemoteException
+	{
+		if (buchungHabenFg != null)
+			return buchungHabenFg;
+		buchungHabenFg = new ColorInput(Settings.getBuchungHabenForeground());
+		return buchungHabenFg;
+	}
+
+	/**
+	 * Liefert ein Auswahlfeld fuer die Hintergrundfarbe von Haben-Buchungen. 
+	 * @return Auswahlfeld.
+	 * @throws RemoteException
+	 */
+	public AbstractInput getBuchungHabenBackground() throws RemoteException
+	{
+		if (buchungHabenBg != null)
+			return buchungHabenBg;
+		buchungHabenBg = new ColorInput(Settings.getBuchungHabenBackground());
+		return buchungHabenBg;
+	}
+
   /**
    * @see de.willuhn.jameica.gui.controller.AbstractControl#handleDelete()
    */
@@ -117,6 +178,16 @@ public class SettingsControl extends AbstractControl {
    */
   public void handleStore() {
 		try {
+			Color hb = (Color)getBuchungHabenBackground().getValue();
+			Color hf = (Color)getBuchungHabenForeground().getValue();
+			Color sb = (Color)getBuchungSollBackground().getValue();
+			Color sf = (Color)getBuchungSollForeground().getValue();
+
+			Settings.setBuchungHabenBackground(hb.getRGB());
+			Settings.setBuchungHabenForeground(hf.getRGB());
+			Settings.setBuchungSollBackground(sb.getRGB());
+			Settings.setBuchungSollForeground(sf.getRGB());
+
 			Settings.setOnlineMode(((Boolean)getOnlineMode().getValue()).booleanValue());
 			Settings.setCheckPin(((Boolean)getCheckPin().getValue()).booleanValue());
 
@@ -184,6 +255,9 @@ public class SettingsControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.11  2004/04/05 23:28:46  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.10  2004/03/30 22:07:50  willuhn
  * *** empty log message ***
  *

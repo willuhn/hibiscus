@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/Welcome.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/03/30 22:07:49 $
+ * $Revision: 1.6 $
+ * $Date: 2004/04/05 23:28:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,9 +15,10 @@ package de.willuhn.jameica.hbci.gui.views;
 
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.parts.Text;
+import de.willuhn.jameica.gui.parts.LabelGroup;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.controller.WelcomeControl;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -33,10 +34,12 @@ public class Welcome extends AbstractView
   public void bind() throws Exception
   {
 		I18N i18n = PluginLoader.getPlugin(HBCI.class).getResources().getI18N();
+		WelcomeControl control = new WelcomeControl(this);
 
 		GUI.getView().setTitle(i18n.tr("HBCI"));
-  	Text text = new Text(i18n.tr("HBCI-Plugin für Jameica"));
-  	text.paint(getParent());
+
+		LabelGroup group = new LabelGroup(getParent(),i18n.tr("Offene Überweisungen"));
+		group.addTable(control.getOffeneUeberweisungen());
   	
   }
 
@@ -52,6 +55,9 @@ public class Welcome extends AbstractView
 
 /**********************************************************************
  * $Log: Welcome.java,v $
+ * Revision 1.6  2004/04/05 23:28:46  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2004/03/30 22:07:49  willuhn
  * *** empty log message ***
  *

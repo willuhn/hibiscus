@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzControl.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/04/04 18:30:23 $
+ * $Revision: 1.7 $
+ * $Date: 2004/04/05 23:28:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,8 @@ package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
 
+import org.eclipse.swt.widgets.TableItem;
+
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
@@ -22,12 +24,15 @@ import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.parts.CurrencyFormatter;
 import de.willuhn.jameica.gui.parts.DateFormatter;
 import de.willuhn.jameica.gui.parts.Table;
+import de.willuhn.jameica.gui.parts.TableFormatter;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.views.KontoNeu;
 import de.willuhn.jameica.hbci.gui.views.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.views.UmsatzListe;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -72,7 +77,27 @@ public class UmsatzControl extends AbstractControl {
    */
   public Table getUmsatzListe() throws RemoteException
 	{
-		Table table = new Table(getKonto().getUmsaetze(),this);
+		Table table = new Table(getKonto().getUmsaetze(),this,new TableFormatter() {
+      public void format(TableItem item) {
+      	Umsatz u = (Umsatz) item.getData();
+      	if (u == null) return;
+				try {
+					if (u.getBetrag() < 0.0)
+					{
+						item.setBackground(Settings.getBuchungSollBackground());
+						item.setForeground(Settings.getBuchungSollForeground());
+					}
+					else
+					{
+						item.setBackground(Settings.getBuchungHabenBackground());
+						item.setForeground(Settings.getBuchungHabenForeground());
+					}
+				}
+				catch (RemoteException e)
+				{
+				}
+      }
+    });
 		table.addColumn(i18n.tr("Empfänger"),"empfaenger_name");
 		table.addColumn(i18n.tr("Betrag"),"betrag",
 			new CurrencyFormatter(getKonto().getWaehrung(),HBCI.DECIMALFORMAT));
@@ -203,6 +228,9 @@ public class UmsatzControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzControl.java,v $
+ * Revision 1.7  2004/04/05 23:28:46  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.6  2004/04/04 18:30:23  willuhn
  * *** empty log message ***
  *

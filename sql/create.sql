@@ -3,6 +3,7 @@ CREATE TABLE konto (
   kontonummer varchar(15) NOT NULL,
   blz varchar(15) NOT NULL,
   name varchar(255) NOT NULL,
+  bezeichnung varchar(255),
   kundennummer varchar(255) NOT NULL,
   waehrung varchar(6) NOT NULL,
   passport_id int(4) NOT NULL,
@@ -24,7 +25,9 @@ CREATE TABLE empfaenger (
 CREATE TABLE ueberweisung (
   id NUMERIC default UNIQUEKEY('ueberweisung'),
   konto_id int(4) NOT NULL,
-  empfaenger_id int(4) NOT NULL,
+  empfaenger_konto varchar(15) NOT NULL,
+  empfaenger_blz varchar(15) NOT NULL,
+  empfaenger_name varchar(255),
   betrag double NOT NULL,
   zweck varchar(35) NOT NULL,
   zweck2 varchar(35) NOT NULL,

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/03/30 22:07:49 $
+ * $Revision: 1.9 $
+ * $Date: 2004/04/05 23:28:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,10 +23,13 @@ import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.controller.AbstractControl;
 import de.willuhn.jameica.gui.dialogs.ListDialog;
+import de.willuhn.jameica.gui.dialogs.YesNoDialog;
+import de.willuhn.jameica.gui.parts.AbstractInput;
 import de.willuhn.jameica.gui.parts.CheckboxInput;
 import de.willuhn.jameica.gui.parts.CurrencyFormatter;
+import de.willuhn.jameica.gui.parts.DateFormatter;
 import de.willuhn.jameica.gui.parts.DecimalInput;
-import de.willuhn.jameica.gui.parts.AbstractInput;
+import de.willuhn.jameica.gui.parts.Formatter;
 import de.willuhn.jameica.gui.parts.SearchInput;
 import de.willuhn.jameica.gui.parts.SelectInput;
 import de.willuhn.jameica.gui.parts.Table;
@@ -39,6 +42,7 @@ import de.willuhn.jameica.hbci.gui.views.UeberweisungNeu;
 import de.willuhn.jameica.hbci.rmi.Empfaenger;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -66,6 +70,8 @@ public class UeberweisungControl extends AbstractControl {
 
 	private I18N i18n;
 
+	private boolean stored								= false;
+
   /**
    * ct.
    * @param view
@@ -91,23 +97,6 @@ public class UeberweisungControl extends AbstractControl {
 		
 		ueberweisung = (Ueberweisung) Settings.getDatabase().createObject(Ueberweisung.class,null);
 		return ueberweisung;
-	}
-
-	/**
-	 * Liefert den Empfaenger der Ueberweisung.
-   * @return Empfaenger der Ueberweisung.
-   * @throws RemoteException
-   */
-  private Empfaenger getEmpfaenger() throws RemoteException
-	{
-		if (empfaenger != null)
-			return empfaenger;
-		empfaenger = getUeberweisung().getEmpfaenger();
-		if (empfaenger != null)
-			return empfaenger;
-		
-		empfaenger = (Empfaenger) Settings.getDatabase().createObject(Empfaenger.class,null);
-		return empfaenger;
 	}
 
 	/**
@@ -139,8 +128,21 @@ public class UeberweisungControl extends AbstractControl {
 
 		Table table = new Table(list,this);
 		table.addColumn(i18n.tr("Konto"),"konto_id");
-		table.addColumn(i18n.tr("Empfänger"),"empfaenger_id");
+		table.addColumn(i18n.tr("Kto. des Empfängers"),"empfaenger_konto");
+		table.addColumn(i18n.tr("BLZ des Empfängers"),"empfaenger_blz");
+		table.addColumn(i18n.tr("Name des Empfängers"),"empfaenger_name");
 		table.addColumn(i18n.tr("Betrag"),"betrag", new CurrencyFormatter("",HBCI.DECIMALFORMAT));
+		table.addColumn(i18n.tr("Termin"),"termin", new DateFormatter(HBCI.DATEFORMAT));
+		table.addColumn(i18n.tr("ausgeführt"),"ausgefuehrt",new Formatter() {
+      public String format(Object o) {
+				try {
+					int i = ((Integer) o).intValue();
+					return i == 1 ? i18n.tr("ja") : i18n.tr("nein");
+				}
+				catch (Exception e) {}
+				return ""+o;
+      }
+    });
 		return table;
 	}
 
@@ -156,6 +158,8 @@ public class UeberweisungControl extends AbstractControl {
 
 		kontoAuswahl = new SelectInput(getKonto());
 		kontoAuswahl.addListener(new KontoListener());
+		String b = getKonto().getBezeichnung();
+		kontoAuswahl.setComment(b == null ? "" : b);
 		return kontoAuswahl;
 	}
 
@@ -176,7 +180,7 @@ public class UeberweisungControl extends AbstractControl {
 		d.setTitle(i18n.tr("Auswahl des Empfängers"));
 		d.addListener(new EmpfaengerListener());
 
-		empfkto = new SearchInput(getEmpfaenger().getKontonummer(),d);
+		empfkto = new SearchInput(getUeberweisung().getEmpfaengerKonto(),d);
 		return empfkto;
 	}
 
@@ -189,7 +193,7 @@ public class UeberweisungControl extends AbstractControl {
 	{
 		if (empfblz != null)
 			return empfblz;
-		empfblz = new TextInput(getEmpfaenger().getBLZ());
+		empfblz = new TextInput(getUeberweisung().getEmpfaengerBlz());
 		return empfblz;
 	}
 
@@ -202,7 +206,7 @@ public class UeberweisungControl extends AbstractControl {
 	{
 		if (empfName != null)
 			return empfName;
-		empfName = new TextInput(getEmpfaenger().getName());
+		empfName = new TextInput(getUeberweisung().getEmpfaengerName());
 		return empfName;
 	}
 
@@ -280,7 +284,20 @@ public class UeberweisungControl extends AbstractControl {
    * @see de.willuhn.jameica.gui.controller.AbstractControl#handleDelete()
    */
   public void handleDelete() {
-    // TODO Auto-generated method stub
+		try {
+			YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
+			d.setTitle(i18n.tr("Sicher?"));
+			d.setText(i18n.tr("Wollen Sie die Überweisung wirklich löschen?"));
+			if (!((Boolean) d.open()).booleanValue())
+				return;
+			getUeberweisung().delete();
+			GUI.getStatusBar().setSuccessText(i18n.tr("Überweisung gelöscht."));
+		}
+		catch (Exception e)
+		{
+			Application.getLog().error("error while deleting ueberweisung",e);
+			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Löschen der Überweisung."));
+		}
   }
 
   /**
@@ -293,10 +310,113 @@ public class UeberweisungControl extends AbstractControl {
   /**
    * @see de.willuhn.jameica.gui.controller.AbstractControl#handleStore()
    */
-  public void handleStore() {
-    // TODO Auto-generated method stub
+  public void handleStore()
+  {
+		stored = false;
+  	try {
 
+			getUeberweisung().transactionBegin();
+
+  		getUeberweisung().setBetrag(((Double)getBetrag().getValue()).doubleValue());
+  		getUeberweisung().setKonto((Konto)getKontoAuswahl().getValue());
+  		getUeberweisung().setZweck((String)getZweck().getValue());
+			getUeberweisung().setZweck2((String)getZweck2().getValue());
+
+			String kto  = ((SearchInput) getEmpfaengerKonto()).getText();
+			String blz  = (String)getEmpfaengerBlz().getValue();
+			String name = (String)getEmpfaengerName().getValue();
+
+			getUeberweisung().setEmpfaengerKonto(kto);
+			getUeberweisung().setEmpfaengerBlz(blz);
+			getUeberweisung().setEmpfaengerName(name);
+			getUeberweisung().store();
+
+			Boolean store = (Boolean) getStoreEmpfaenger().getValue();
+			if (store.booleanValue())
+			{
+
+				// wir checken erstmal, ob wir den schon haben.
+				DBIterator list = Settings.getDatabase().createList(Empfaenger.class);
+				list.addFilter("kontonummer = '" + kto + "'");
+				list.addFilter("blz = '" + blz + "'");
+				if (list.hasNext())
+				{
+					YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
+					d.setTitle(i18n.tr("Empfänger existiert"));
+					d.setText(i18n.tr("Ein Empfänger mit dieser Kontonummer und BLZ existiert bereits. " +
+							"Möchten Sie den Empfänger dennoch zum Adressbuch hinzufügen?"));
+					if (!((Boolean) d.open()).booleanValue()) return;
+				}
+				Empfaenger e = (Empfaenger) Settings.getDatabase().createObject(Empfaenger.class,null);
+				e.setBLZ(blz);
+				e.setKontonummer(kto);
+				e.setName(name);
+				e.store();
+				GUI.getStatusBar().setSuccessText(i18n.tr("Überweisung und Adresse gespeichert"));
+			}
+			else {
+				GUI.getStatusBar().setSuccessText(i18n.tr("Überweisung gespeichert"));
+			}
+			getUeberweisung().transactionCommit();
+			stored = true;
+  	}
+  	catch (ApplicationException e)
+  	{
+			try {
+				getUeberweisung().transactionRollback();
+			}
+			catch (RemoteException re)
+			{
+				Application.getLog().error("rollback failed",re);
+			}
+  		GUI.getView().setErrorText(i18n.tr(e.getMessage()));
+  	}
+  	catch (Exception e2)
+  	{
+			try {
+				getUeberweisung().transactionRollback();
+			}
+			catch (RemoteException re)
+			{
+				Application.getLog().error("rollback failed",re);
+			}
+  		Application.getLog().error("error while storing ueberweisung",e2);
+  		GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern der Überweisung"));
+  	}
   }
+
+	/**
+   * Speichert die Ueberweisung und fuehrt sie sofort aus.
+   */
+  public void handleExecute()
+	{
+		handleStore();
+
+		if (!stored)
+			return;
+
+		GUI.getStatusBar().startProgress();
+		GUI.getStatusBar().setSuccessText(i18n.tr("Führe Überweisung aus..."));
+
+		GUI.startSync(new Runnable() {
+			public void run() {
+				try {
+					getUeberweisung().execute();
+					GUI.getStatusBar().setSuccessText(i18n.tr("...Überweisung erfolgreich ausgeführt."));
+				}
+				catch (ApplicationException e)
+				{
+					GUI.getView().setErrorText(i18n.tr(e.getMessage()));
+				}
+				catch (RemoteException e)
+				{
+					Application.getLog().error("error while executing ueberweisung",e);
+					GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Ausführen der Überweisung."));
+				}
+			}
+		});
+		GUI.getStatusBar().stopProgress();
+	}
 
   /**
    * @see de.willuhn.jameica.gui.controller.AbstractControl#handleCreate()
@@ -324,8 +444,10 @@ public class UeberweisungControl extends AbstractControl {
 		 */
 		public void handleEvent(Event event) {
 			try {
-				Konto k = (Konto) getKontoAuswahl().getValue();
-				betrag.setComment(k.getWaehrung());
+				konto = (Konto) getKontoAuswahl().getValue();
+				String b = getKonto().getBezeichnung();
+				kontoAuswahl.setComment(b == null ? "" : b);
+				betrag.setComment(getKonto().getWaehrung());
 			}
 			catch (RemoteException er)
 			{
@@ -365,6 +487,9 @@ public class UeberweisungControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
+ * Revision 1.9  2004/04/05 23:28:46  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.8  2004/03/30 22:07:49  willuhn
  * *** empty log message ***
  *

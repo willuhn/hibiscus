@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/PassportDDVImpl.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/03/30 22:07:50 $
+ * $Revision: 1.9 $
+ * $Date: 2004/04/05 23:28:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -235,6 +235,7 @@ public class PassportDDVImpl
 				k.setKontonummer(konten[i].number);
 				k.setKundennummer(konten[i].customerid);
 				k.setName(konten[i].name);
+				k.setBezeichnung(konten[i].type);
 				k.setWaehrung(konten[i].curr);
 				result.add(k);
 			}
@@ -258,6 +259,9 @@ public class PassportDDVImpl
 
 /**********************************************************************
  * $Log: PassportDDVImpl.java,v $
+ * Revision 1.9  2004/04/05 23:28:46  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.8  2004/03/30 22:07:50  willuhn
  * *** empty log message ***
  *

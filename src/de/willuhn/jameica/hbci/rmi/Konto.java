@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Konto.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/04/04 18:30:23 $
+ * $Revision: 1.10 $
+ * $Date: 2004/04/05 23:28:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -46,6 +46,13 @@ public interface Konto extends DBObject {
   public String getName() throws RemoteException;
 	
 	/**
+	 * Liefert die Bezeichnung des Kontos.
+   * @return Bezeichnung des Kontos.
+   * @throws RemoteException
+   */
+  public String getBezeichnung() throws RemoteException;
+
+	/**
 	 * Liefert die Kundennummer bei der Bank.
    * @return Kundennummer.
    * @throws RemoteException
@@ -86,6 +93,13 @@ public interface Konto extends DBObject {
    * @throws RemoteException
    */
   public void setName(String name) throws RemoteException;
+
+	/**
+	 * Speichert die Bezeichnung des Kontos.
+   * @param bezeichnung Bezeichnung.
+   * @throws RemoteException
+   */
+  public void setBezeichnung(String bezeichnung) throws RemoteException;
 
   /**
    * Speichert die Waehrungsbezeichnung.
@@ -156,6 +170,9 @@ public interface Konto extends DBObject {
 
 /**********************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.10  2004/04/05 23:28:45  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.9  2004/04/04 18:30:23  willuhn
  * *** empty log message ***
  *

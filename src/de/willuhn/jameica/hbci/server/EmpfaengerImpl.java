@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/EmpfaengerImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/02/22 20:04:54 $
+ * $Revision: 1.3 $
+ * $Date: 2004/04/05 23:28:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -53,17 +53,6 @@ public class EmpfaengerImpl extends AbstractDBObject implements Empfaenger {
    * @see de.willuhn.datasource.db.AbstractDBObject#deleteCheck()
    */
   protected void deleteCheck() throws ApplicationException {
-		try {
-			DBIterator list = Settings.getDatabase().createList(Ueberweisung.class);
-			list.addFilter("empfaenger_id = '" + this.getID() + "'");
-			if (list.hasNext())
-				throw new ApplicationException("Empfänger kann nicht gelöscht werden, da Überweisungen existieren.");
-		}
-		catch (RemoteException e)
-		{
-			Application.getLog().error("error while deleteCheck in empfaenger",e);
-			throw new ApplicationException("Fehler beim Löschen des Empfängers",e);
-		}
   }
 
   /**
@@ -153,7 +142,8 @@ public class EmpfaengerImpl extends AbstractDBObject implements Empfaenger {
    */
   public DBIterator getUeberweisungen() throws RemoteException {
 		DBIterator list = Settings.getDatabase().createList(Ueberweisung.class);
-		list.addFilter("empfaenger_id = " + this.getID());
+		list.addFilter("empfaenger_blz = " + this.getBLZ());
+		list.addFilter("empfaenger_konto = " + this.getKontonummer());
 		return list;
   }
 
@@ -162,6 +152,9 @@ public class EmpfaengerImpl extends AbstractDBObject implements Empfaenger {
 
 /**********************************************************************
  * $Log: EmpfaengerImpl.java,v $
+ * Revision 1.3  2004/04/05 23:28:46  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2004/02/22 20:04:54  willuhn
  * @N Ueberweisung
  * @N Empfaenger

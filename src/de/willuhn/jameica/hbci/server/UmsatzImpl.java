@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/03/06 18:25:10 $
+ * $Revision: 1.4 $
+ * $Date: 2004/04/05 23:28:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ import java.rmi.RemoteException;
 import java.util.Date;
 
 import de.willuhn.datasource.db.AbstractDBObject;
+import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.PluginLoader;
 import de.willuhn.jameica.hbci.HBCI;
@@ -239,11 +240,66 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz {
 		setField("konto_id",new Integer(k.getID()));
   }
 
+  /**
+   * Wir ueberschreiben die Funktion hier, weil beim Abrufen der
+   * Umsaetze nur diejenigen gespeichert werden sollen, welche noch
+   * nicht in der Datenbank existieren.
+   * Da ein Umsatz von der Bank scheinbar keinen Identifier mitbringt,
+   * muessen wir selbst einen fachlichen Vergleich durchfuehren.
+   * TODO: Wenn ein Umsatz versehentlich doppelt gebucht wurde, versagt diese Funktion!
+   * @see de.willuhn.datasource.rmi.DBObject#equals(de.willuhn.datasource.rmi.DBObject)
+   */
+  public boolean equals(DBObject o) throws RemoteException {
+		try {
+			UmsatzImpl u = (UmsatzImpl) o;
+
+			// bevor wir anfangen, checken wir erstmal, ob wir es
+			// mit vollstaendigen Daten zu tun haben
+			u.insertCheck();
+			this.insertCheck();
+
+			boolean eq = u.getBetrag() == this.getBetrag();
+			eq = eq && this.getDatum().compareTo(u.getDatum()) == 0;
+			eq = eq && this.getKonto().equals(u.getKonto());
+			eq = eq && this.getValuta().compareTo(u.getValuta()) == 0;
+			eq = eq && this.getZweck().equals(u.getZweck());
+
+			if (!eq) return false; // ja, eigentlich koennte man das nach jeder Zeile checken
+
+			// Diese folgenden Felder koennen null sein.
+			eq = (this.getEmpfaengerBLZ() == null && u.getEmpfaengerBLZ() == null) ||
+					 (this.getEmpfaengerBLZ().equals(u.getEmpfaengerBLZ()));
+
+			if (!eq) return false;
+
+			eq = (this.getEmpfaengerKonto() == null && u.getEmpfaengerKonto() == null) ||
+					 (this.getEmpfaengerKonto().equals(u.getEmpfaengerKonto()));
+
+			if (!eq) return false;
+
+			eq = (this.getEmpfaengerName() == null && u.getEmpfaengerName() == null) ||
+					 (this.getEmpfaengerName().equals(u.getEmpfaengerName()));
+
+			if (!eq) return false;
+
+			return (this.getZweck2() == null && u.getZweck2() == null) ||
+					 	 (this.getZweck2().equals(u.getZweck2()));
+
+		}
+		catch (Exception e)
+		{
+		}
+		return false;
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.4  2004/04/05 23:28:46  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2004/03/06 18:25:10  willuhn
  * @D javadoc
  * @C removed empfaenger_id from umsatz
