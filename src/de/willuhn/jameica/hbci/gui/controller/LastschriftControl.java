@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/LastschriftControl.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/02/03 18:57:42 $
+ * $Revision: 1.4 $
+ * $Date: 2005/02/04 18:27:54 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,16 +31,16 @@ import de.willuhn.jameica.hbci.gui.action.LastschriftNew;
 import de.willuhn.jameica.hbci.gui.menus.LastschriftList;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
 import de.willuhn.jameica.hbci.rmi.Transfer;
-import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 
 /**
  * Ueberschreiben wir von UeberweisungControl, weil es fast das
  * gleiche ist.
  */
-public class LastschriftControl extends UeberweisungControl
+public class LastschriftControl extends AbstractBaseUeberweisungControl
 {
 
 	private TablePart table = null;
+  private Lastschrift transfer = null;
 	
   /**
    * ct.
@@ -60,11 +60,11 @@ public class LastschriftControl extends UeberweisungControl
     if (transfer != null)
       return transfer;
 
-    transfer = (Transfer) getCurrentObject();
+    transfer = (Lastschrift) getCurrentObject();
     if (transfer != null)
       return transfer;
       
-    transfer = (Transfer) Settings.getDBService().createObject(Lastschrift.class,null);
+    transfer = (Lastschrift) Settings.getDBService().createObject(Lastschrift.class,null);
     return transfer;
   }
 
@@ -83,12 +83,12 @@ public class LastschriftControl extends UeberweisungControl
 		table = new TablePart(list,new LastschriftNew());
 		table.setFormatter(new TableFormatter() {
 			public void format(TableItem item) {
-				Ueberweisung u = (Ueberweisung) item.getData();
-				if (u == null)
+        Lastschrift l = (Lastschrift) item.getData();
+				if (l == null)
 					return;
 
 				try {
-					if (u.getTermin().before(new Date()) && !u.ausgefuehrt())
+					if (l.getTermin().before(new Date()) && !l.ausgefuehrt())
 					{
 						item.setForeground(Settings.getUeberfaelligForeground());
 					}
@@ -123,6 +123,9 @@ public class LastschriftControl extends UeberweisungControl
 
 /**********************************************************************
  * $Log: LastschriftControl.java,v $
+ * Revision 1.4  2005/02/04 18:27:54  willuhn
+ * @C Refactoring zwischen Lastschrift und Ueberweisung
+ *
  * Revision 1.3  2005/02/03 18:57:42  willuhn
  * *** empty log message ***
  *

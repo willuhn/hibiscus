@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/LastschriftImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/01/19 00:16:05 $
+ * $Revision: 1.2 $
+ * $Date: 2005/02/04 18:27:54 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,7 +24,7 @@ import de.willuhn.jameica.hbci.rmi.Transfer;
  * und der Empfaenger hier nicht das Geld sondern die Forderung
  * erhaelt.
  */
-public class LastschriftImpl extends UeberweisungImpl implements Lastschrift
+public class LastschriftImpl extends AbstractBaseUeberweisungImpl implements Lastschrift
 {
 
   /**
@@ -64,6 +64,9 @@ public class LastschriftImpl extends UeberweisungImpl implements Lastschrift
 
 /**********************************************************************
  * $Log: LastschriftImpl.java,v $
+ * Revision 1.2  2005/02/04 18:27:54  willuhn
+ * @C Refactoring zwischen Lastschrift und Ueberweisung
+ *
  * Revision 1.1  2005/01/19 00:16:05  willuhn
  * @N Lastschriften
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.37 $
- * $Date: 2005/02/04 00:57:00 $
+ * $Revision: 1.38 $
+ * $Date: 2005/02/04 18:27:54 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,35 +15,28 @@ package de.willuhn.jameica.hbci.gui.controller;
 import java.rmi.RemoteException;
 import java.util.Date;
 
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TableItem;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractView;
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
-import de.willuhn.jameica.gui.dialogs.CalendarDialog;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
-import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
-import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.menus.UeberweisungList;
 import de.willuhn.jameica.hbci.rmi.Transfer;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
-import de.willuhn.logging.Logger;
 
 /**
  * Controller fuer die Ueberweisungen.
  */
-public class UeberweisungControl extends AbstractTransferControl
+public class UeberweisungControl extends AbstractBaseUeberweisungControl
 {
 
 	// Eingabe-Felder
@@ -51,6 +44,8 @@ public class UeberweisungControl extends AbstractTransferControl
 	private Input comment			 = null;
 	
 	private TablePart table		 = null;
+  
+  private Ueberweisung transfer = null;
 
   /**
    * ct.
@@ -70,11 +65,11 @@ public class UeberweisungControl extends AbstractTransferControl
     if (transfer != null)
       return transfer;
 
-    transfer = (Transfer) getCurrentObject();
+    transfer = (Ueberweisung) getCurrentObject();
     if (transfer != null)
       return transfer;
       
-    transfer = (Transfer) Settings.getDBService().createObject(Ueberweisung.class,null);
+    transfer = (Ueberweisung) Settings.getDBService().createObject(Ueberweisung.class,null);
 		return transfer;
 	}
 
@@ -88,7 +83,6 @@ public class UeberweisungControl extends AbstractTransferControl
 		if (table != null)
 			return table;
 
-		// TODO: Hier wird ggf. die falsche Impl (naemlich LastschriftIml) geladen
 		DBIterator list = Settings.getDBService().createList(Ueberweisung.class);
 
 		table = new TablePart(list,new de.willuhn.jameica.hbci.gui.action.UeberweisungNew());
@@ -128,240 +122,14 @@ public class UeberweisungControl extends AbstractTransferControl
 		return table;
 	}
 
-	/**
-	 * Liefert ein Kommentar-Feld zu dieser Ueberweisung.
-   * @return Kommentarfeld.
-   * @throws RemoteException
-   */
-  public Input getComment() throws RemoteException
-	{
-		if (comment != null)
-			return comment;
-		comment = new LabelInput("");
-		Ueberweisung u = (Ueberweisung) getTransfer();
-		if (u.ausgefuehrt())
-		{
-			comment.setValue(i18n.tr("Der Auftrag wurde bereits ausgeführt"));
-		}
-		else if (u.ueberfaellig())
-		{
-			comment.setValue(i18n.tr("Der Auftrag ist überfällig"));
-		}
-		return comment;
-	}
-
-	/**
-	 * Liefert das Eingabe-Feld fuer den Termin.
-   * @return Eingabe-Feld.
-   * @throws RemoteException
-   */
-  public DialogInput getTermin() throws RemoteException
-	{
-		final Ueberweisung u = (Ueberweisung) getTransfer();
-
-		if (termin != null)
-			return termin;
-		CalendarDialog cd = new CalendarDialog(CalendarDialog.POSITION_MOUSE);
-		cd.setTitle(i18n.tr("Termin"));
-		cd.addCloseListener(new Listener() {
-			public void handleEvent(Event event) {
-				if (event == null || event.data == null)
-					return;
-				Date choosen = (Date) event.data;
-				termin.setText(HBCI.DATEFORMAT.format(choosen));
-
-				try {
-					// Wenn das neue Datum spaeter als das aktuelle ist,
-					// nehmen wir den Kommentar weg
-					if (u.ueberfaellig() && choosen.after(new Date()));
-						getComment().setValue("");
-					if (choosen.before(new Date()))
-						getComment().setValue(i18n.tr("Der Auftrag ist überfällig."));
-				}
-				catch (RemoteException e) {/*ignore*/}
-			}
-		});
-
-		Date d = u.getTermin();
-		if (d == null)
-			d = new Date();
-		cd.setDate(d);
-		termin = new DialogInput(HBCI.DATEFORMAT.format(d),cd);
-		termin.disableClientControl();
-		termin.setValue(d);
-
-		if (u.ausgefuehrt())
-			termin.disable();
-
-		return termin;
-	}
-
-	/**
-   * Deaktiviert alle Eingabe-Felder.
-   */
-  private void disableAll()
-	{
-		try {
-			Ueberweisung u = (Ueberweisung) getTransfer();
-
-			if (!u.ausgefuehrt())
-				return;
-			getBetrag().disable();
-			getEmpfaengerBlz().disable();
-			getEmpfaengerKonto().disable();
-			getEmpfaengerName().disable();
-			getKontoAuswahl().disable();
-			getTermin().disable();
-			getZweck().disable();
-			getZweck2().disable();
-		}
-		catch (RemoteException e)
-		{
-			Logger.error("error while disabling fields",e);
-		}
-	}
-
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#handleStore()
-   */
-  public synchronized boolean handleStore()
-  {
-		try
-		{
-			Ueberweisung u = (Ueberweisung) getTransfer();
-			
-			if (u.ausgefuehrt())
-			{
-				GUI.getStatusBar().setErrorText(i18n.tr("Der Auftrag wurde bereits ausgeführt und kann daher nicht geändert werden"));
-				return false;
-			}
-
-			Date termin = (Date) getTermin().getValue();
-			if (termin == null)
-			{
-				try
-				{
-					termin = HBCI.DATEFORMAT.parse(getTermin().getText());
-				}
-				catch (Exception e)
-				{
-					GUI.getView().setErrorText("Bitte geben Sie einen Termin ein.");
-					return false;
-				}
-			}
-			u.setTermin(termin);
-			return super.handleStore();
-		}
-		catch (RemoteException re)
-		{
-			Logger.error("rollback failed",re);
-			Logger.error("error while storing ueberweisung",re);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern des Auftrags"));
-  	}
-		return false;
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getBetrag()
-   * Ueberschrieben, um das Control zu deaktivieren, wenn die Ueberweisung bereits ausgefuehrt wurde.
-   */
-  public Input getBetrag() throws RemoteException
-  {
-    Input i = super.getBetrag();
-    if (((Ueberweisung)getTransfer()).ausgefuehrt())
-    	i.disable();
-    return i;
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getEmpfaengerBlz()
-   * Ueberschrieben, um das Control zu deaktivieren, wenn die Ueberweisung bereits ausgefuehrt wurde.
-   */
-  public Input getEmpfaengerBlz() throws RemoteException
-  {
-		Input i = super.getEmpfaengerBlz();
-		if (((Ueberweisung)getTransfer()).ausgefuehrt())
-			i.disable();
-		return i;
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getEmpfaengerKonto()
-   * Ueberschrieben, um das Control zu deaktivieren, wenn die Ueberweisung bereits ausgefuehrt wurde.
-   */
-  public DialogInput getEmpfaengerKonto() throws RemoteException
-  {
-		DialogInput i = super.getEmpfaengerKonto();
-		if (((Ueberweisung)getTransfer()).ausgefuehrt())
-			i.disable();
-		return i;
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getEmpfaengerName()
-   * Ueberschrieben, um das Control zu deaktivieren, wenn die Ueberweisung bereits ausgefuehrt wurde.
-   */
-  public Input getEmpfaengerName() throws RemoteException
-  {
-		Input i = super.getEmpfaengerName();
-		if (((Ueberweisung)getTransfer()).ausgefuehrt())
-			i.disable();
-		return i;
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getKontoAuswahl()
-   * Ueberschrieben, um das Control zu deaktivieren, wenn die Ueberweisung bereits ausgefuehrt wurde.
-   */
-  public DialogInput getKontoAuswahl() throws RemoteException
-  {
-		DialogInput i = super.getKontoAuswahl();
-		if (((Ueberweisung)getTransfer()).ausgefuehrt())
-			i.disable();
-		return i;
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getStoreEmpfaenger()
-   * Ueberschrieben, um das Control zu deaktivieren, wenn die Ueberweisung bereits ausgefuehrt wurde.
-   */
-  public CheckboxInput getStoreEmpfaenger() throws RemoteException
-  {
-		CheckboxInput i = super.getStoreEmpfaenger();
-		if (((Ueberweisung)getTransfer()).ausgefuehrt())
-			i.disable();
-		return i;
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getZweck()
-   * Ueberschrieben, um das Control zu deaktivieren, wenn die Ueberweisung bereits ausgefuehrt wurde.
-   */
-  public Input getZweck() throws RemoteException
-  {
-		Input i = super.getZweck();
-		if (((Ueberweisung)getTransfer()).ausgefuehrt())
-			i.disable();
-		return i;
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getZweck2()
-   * Ueberschrieben, um das Control zu deaktivieren, wenn die Ueberweisung bereits ausgefuehrt wurde.
-   */
-  public Input getZweck2() throws RemoteException
-  {
-		Input i = super.getZweck2();
-		if (((Ueberweisung)getTransfer()).ausgefuehrt())
-			i.disable();
-		return i;
-  }
-
 }
 
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
+ * Revision 1.38  2005/02/04 18:27:54  willuhn
+ * @C Refactoring zwischen Lastschrift und Ueberweisung
+ *
  * Revision 1.37  2005/02/04 00:57:00  willuhn
  * *** empty log message ***
  *

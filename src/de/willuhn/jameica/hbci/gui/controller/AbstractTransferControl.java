@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.18 $
- * $Date: 2005/01/19 00:33:32 $
+ * $Revision: 1.19 $
+ * $Date: 2005/02/04 18:27:54 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -47,7 +47,6 @@ public abstract class AbstractTransferControl extends AbstractControl
 {
 
 	// Fach-Objekte
-	Transfer transfer         						= null;
 	private Empfaenger empfaenger 				= null;
 	private Konto konto										= null;
 	
@@ -76,24 +75,10 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 	/**
 	 * Liefert den Transfer.
-	 * Hinweis: Die Funktion kann <b>nicht</b> bei Bedarf einen
-	 * neuen Transfer erzeugen, weil sie ja nicht weiss, um welche
-	 * Art von Transfer es sich handelt (Ueberweisung oder Dauerauftrag).
-	 * Die implementierende Klasse muss diese Funktion also ueberschreiben,
-	 * <code>super.getTransfer</code> aufrufen, wenn neues Objekt erzeugen,
-	 * wenn <code>null</code> geliefert wird und ihn im Member <code>transfer</code>
-	 * speichern.
    * @return der Transfer oder <code>null</code> wenn keiner existiert.
    * @throws RemoteException
    */
-  public Transfer getTransfer() throws RemoteException
-	{
-		if (transfer != null)
-			return transfer;
-		
-		transfer = (Transfer) getCurrentObject();
-		return transfer;
-	}
+  public abstract Transfer getTransfer() throws RemoteException;
 
 	/**
 	 * Liefert das Konto der Ueberweisung.
@@ -410,6 +395,9 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
+ * Revision 1.19  2005/02/04 18:27:54  willuhn
+ * @C Refactoring zwischen Lastschrift und Ueberweisung
+ *
  * Revision 1.18  2005/01/19 00:33:32  willuhn
  * *** empty log message ***
  *

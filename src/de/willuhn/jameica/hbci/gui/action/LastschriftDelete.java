@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/Attic/LastschriftDelete.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/02/03 18:57:42 $
+ * $Revision: 1.3 $
+ * $Date: 2005/02/04 18:27:54 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -47,9 +47,6 @@ public class LastschriftDelete implements Action
 			if (u.isNewObject())
 				return;
 
-      if (u.ausgefuehrt())
-        throw new ApplicationException(i18n.tr("Lastschrift wurde bereits ausgeführt und darf daher nicht mehr gelöscht werden."));
-
 			YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
 			d.setTitle(i18n.tr("Lastschrift löschen"));
 			d.setText(i18n.tr("Wollen Sie diese Lastschrift wirklich löschen?"));
@@ -81,6 +78,9 @@ public class LastschriftDelete implements Action
 
 /**********************************************************************
  * $Log: LastschriftDelete.java,v $
+ * Revision 1.3  2005/02/04 18:27:54  willuhn
+ * @C Refactoring zwischen Lastschrift und Ueberweisung
+ *
  * Revision 1.2  2005/02/03 18:57:42  willuhn
  * *** empty log message ***
  *
