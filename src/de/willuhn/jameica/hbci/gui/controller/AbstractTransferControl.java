@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.24 $
- * $Date: 2005/03/02 17:59:31 $
+ * $Revision: 1.25 $
+ * $Date: 2005/03/05 19:11:25 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -167,7 +167,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 	{
 		if (empfName != null)
 			return empfName;
-		empfName = new TextInput(getTransfer().getGegenkontoName(),HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH);
+		empfName = new TextInput(getTransfer().getGegenkontoName(),HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
 		return empfName;
 	}
 
@@ -181,7 +181,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 		if (zweck != null)
 			return zweck;
 		// BUGZILLA #10 http://www.willuhn.de/bugzilla/show_bug.cgi?id=10
-		zweck = new TextInput(getTransfer().getZweck(),27);
+		zweck = new TextInput(getTransfer().getZweck(),HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH);
 		zweck.setValidChars(HBCIProperties.HBCI_DTAUS_VALIDCHARS);
 		return zweck;
 	}
@@ -196,7 +196,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 		if (zweck2 != null)
 			return zweck2;
 		// BUGZILLA #10 http://www.willuhn.de/bugzilla/show_bug.cgi?id=10
-		zweck2 = new TextInput(getTransfer().getZweck2(),27);
+		zweck2 = new TextInput(getTransfer().getZweck2(),HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH);
 		zweck2.setValidChars(HBCIProperties.HBCI_DTAUS_VALIDCHARS);
 		return zweck2;
 	}
@@ -396,6 +396,9 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
+ * Revision 1.25  2005/03/05 19:11:25  web0
+ * @N SammelLastschrift-Code complete
+ *
  * Revision 1.24  2005/03/02 17:59:31  web0
  * @N some refactoring
  *

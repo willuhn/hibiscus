@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/NewKeysDialog.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/02/03 23:57:05 $
- * $Author: willuhn $
+ * $Revision: 1.5 $
+ * $Date: 2005/03/05 19:11:25 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -57,10 +57,8 @@ public class NewKeysDialog extends AbstractDialog
 	private HBCIPassport passport;
 	private INILetter iniletter;
 	private I18N i18n;
-	private Boolean choosen;
 	
 	private Input printerList = null;
-	private PrintRequestAttributeSet printProps = null;
 
 	static
 	{
@@ -240,6 +238,9 @@ public class NewKeysDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: NewKeysDialog.java,v $
+ * Revision 1.5  2005/03/05 19:11:25  web0
+ * @N SammelLastschrift-Code complete
+ *
  * Revision 1.4  2005/02/03 23:57:05  willuhn
  * *** empty log message ***
  *

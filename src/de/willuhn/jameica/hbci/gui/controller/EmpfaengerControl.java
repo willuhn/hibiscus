@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EmpfaengerControl.java,v $
- * $Revision: 1.27 $
- * $Date: 2005/03/01 18:51:04 $
+ * $Revision: 1.28 $
+ * $Date: 2005/03/05 19:11:25 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -129,7 +129,7 @@ public class EmpfaengerControl extends AbstractControl {
 	{
 		if (name != null)
 			return name;
-		name = new TextInput(getEmpfaenger().getName(),HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH);
+		name = new TextInput(getEmpfaenger().getName(),HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
 		return name;
 	}
 
@@ -191,6 +191,9 @@ public class EmpfaengerControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: EmpfaengerControl.java,v $
+ * Revision 1.28  2005/03/05 19:11:25  web0
+ * @N SammelLastschrift-Code complete
+ *
  * Revision 1.27  2005/03/01 18:51:04  web0
  * @N Dialoge fuer Sammel-Lastschriften
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/SammelLastschriftExecute.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/03/02 00:22:05 $
+ * $Revision: 1.2 $
+ * $Date: 2005/03/05 19:11:25 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -17,9 +17,11 @@ import java.rmi.RemoteException;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.dialogs.SammelLastschriftDialog;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
+import de.willuhn.jameica.hbci.server.hbci.HBCISammelLastschriftJob;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -51,21 +53,23 @@ public class SammelLastschriftExecute implements Action
 			if (u.ausgefuehrt())
 				throw new ApplicationException(i18n.tr("Sammel-Lastschrift wurde bereits ausgeführt"));
 
+			if (u.getBuchungen().size() == 0)
+				throw new ApplicationException(i18n.tr("Sammel-Lastschrift enthält keine Buchungen"));
 			if (u.isNewObject())
 				u.store(); // wir speichern bei Bedarf selbst.
 
-			// TODO SammelLastschriftDialog d = new SammelLastschriftDialog(u,LastschriftDialog.POSITION_CENTER);
-//			try
-//			{
-//				if (!((Boolean)d.open()).booleanValue())
-//					return;
-//			}
-//			catch (Exception e)
-//			{
-//				Logger.error("error while showing confirm dialog",e);
-//				GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Ausführen der Sammel-Lastschrift"));
-//				return;
-//			}
+			SammelLastschriftDialog d = new SammelLastschriftDialog(u,SammelLastschriftDialog.POSITION_CENTER);
+			try
+			{
+				if (!((Boolean)d.open()).booleanValue())
+					return;
+			}
+			catch (Exception e)
+			{
+				Logger.error("error while showing confirm dialog",e);
+				GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Ausführen der Sammel-Lastschrift"));
+				return;
+			}
 
 			GUI.startSync(new Runnable()
       {
@@ -76,7 +80,7 @@ public class SammelLastschriftExecute implements Action
 						GUI.getStatusBar().startProgress();
 						GUI.getStatusBar().setStatusText(i18n.tr("Führe Sammel-Lastschrift aus..."));
 						HBCIFactory factory = HBCIFactory.getInstance();
-						// TODO factory.addJob(new HBCISammelLastschriftJob(u));
+						factory.addJob(new HBCISammelLastschriftJob(u));
 						factory.executeJobs(u.getKonto().getPassport().getHandle()); 
 						GUI.getStatusBar().setSuccessText(i18n.tr("Sammel-Lastschrift erfolgreich ausgeführt"));
         	}
@@ -114,6 +118,9 @@ public class SammelLastschriftExecute implements Action
 
 /**********************************************************************
  * $Log: SammelLastschriftExecute.java,v $
+ * Revision 1.2  2005/03/05 19:11:25  web0
+ * @N SammelLastschrift-Code complete
+ *
  * Revision 1.1  2005/03/02 00:22:05  web0
  * @N first code for "Sammellastschrift"
  *

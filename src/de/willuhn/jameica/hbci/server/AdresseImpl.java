@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AdresseImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/02/28 16:28:24 $
+ * $Revision: 1.3 $
+ * $Date: 2005/03/05 19:11:25 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -69,8 +69,8 @@ public class AdresseImpl extends AbstractDBObject implements Adresse {
 			if (getName() == null || getName().length() == 0)
 				throw new ApplicationException(i18n.tr("Bitte geben Sie einen Namen ein."));
 
-			if (getName().length() > HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH)
-				throw new ApplicationException(i18n.tr("Bitte geben Sie maximal {0} Zeichen für den Namen ein.",""+HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH));
+			if (getName().length() > HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH)
+				throw new ApplicationException(i18n.tr("Bitte geben Sie maximal {0} Zeichen für den Namen ein.",""+HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH));
 
 			if (getBLZ() == null || getBLZ().length() == 0)
 				throw new ApplicationException(i18n.tr("Bitte geben Sie eine BLZ ein."));
@@ -160,6 +160,9 @@ public class AdresseImpl extends AbstractDBObject implements Adresse {
 
 /**********************************************************************
  * $Log: AdresseImpl.java,v $
+ * Revision 1.3  2005/03/05 19:11:25  web0
+ * @N SammelLastschrift-Code complete
+ *
  * Revision 1.2  2005/02/28 16:28:24  web0
  * @N first code for "Sammellastschrift"
  *

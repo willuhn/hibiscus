@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SammelLastschriftControl.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/03/02 00:22:05 $
+ * $Revision: 1.5 $
+ * $Date: 2005/03/05 19:11:25 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -39,7 +39,6 @@ import de.willuhn.jameica.hbci.gui.action.SammelLastschriftNew;
 import de.willuhn.jameica.hbci.gui.menus.SammelLastBuchungList;
 import de.willuhn.jameica.hbci.gui.menus.SammelLastschriftList;
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.rmi.SammelLastBuchung;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.jameica.system.Application;
@@ -59,7 +58,6 @@ public class SammelLastschriftControl extends AbstractControl
   private I18N i18n                     	= null;
 
   private TablePart table               	= null;
-  private TablePart buchungen           	= null;
   private DialogInput kontoAuswahl				= null;
   private Input name                    	= null;
   private DialogInput termin            	= null;
@@ -125,39 +123,7 @@ public class SammelLastschriftControl extends AbstractControl
     });
     table.addColumn(i18n.tr("Empfänger-Konto"),"konto_id");
     table.addColumn(i18n.tr("Bezeichnung"),"bezeichnung");
-    table.addColumn(i18n.tr("Buchungen"),"dummy",new Formatter()
-    {
-      public String format(Object o)
-      {
-        // Ueber dieses Pseudo-Attribut zeigen wir alle Buchungen der
-        // Sammellastschrift an.
-        try
-        {
-          StringBuffer sb = new StringBuffer();
-          DBIterator di = getLastschrift().getBuchungen();
-          while (di.hasNext())
-          {
-            SammelLastBuchung b = (SammelLastBuchung) di.next();
-            String[] params = new String[]
-            {
-              b.getZweck(),
-              b.getGegenkontoName(),
-              HBCI.DECIMALFORMAT.format(b.getBetrag()),
-              getLastschrift().getKonto().getWaehrung()
-            };
-            sb.append(i18n.tr("[{0}] {1}, Betrag {2} {3}",params));
-            if (di.hasNext())
-              sb.append("\n");
-          }
-          return sb.toString();
-        }
-        catch (RemoteException e)
-        {
-          Logger.error("error while reading buchungen",e);
-          return i18n.tr("Buchungen nicht lesbar");
-        }
-      }
-    });
+    table.addColumn(i18n.tr("Enthaltene Buchungen"),"buchungen");
     table.addColumn(i18n.tr("Termin"),"termin", new DateFormatter(HBCI.LONGDATEFORMAT));
     table.addColumn(i18n.tr("Status"),"ausgefuehrt",new Formatter() {
       public String format(Object o) {
@@ -181,12 +147,9 @@ public class SammelLastschriftControl extends AbstractControl
    */
   public TablePart getBuchungen() throws RemoteException
   {
-    if (buchungen != null)
-      return buchungen;
-
     DBIterator list = getLastschrift().getBuchungen();
 
-    buchungen = new TablePart(list,new SammelLastBuchungNew());
+    TablePart buchungen = new TablePart(list,new SammelLastBuchungNew());
     buchungen.setFormatter(new TableFormatter() {
       public void format(TableItem item) {
         try {
@@ -363,6 +326,9 @@ public class SammelLastschriftControl extends AbstractControl
 
 /*****************************************************************************
  * $Log: SammelLastschriftControl.java,v $
+ * Revision 1.5  2005/03/05 19:11:25  web0
+ * @N SammelLastschrift-Code complete
+ *
  * Revision 1.4  2005/03/02 00:22:05  web0
  * @N first code for "Sammellastschrift"
  *

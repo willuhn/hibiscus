@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractBaseUeberweisungControl.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/03/02 17:59:31 $
+ * $Revision: 1.5 $
+ * $Date: 2005/03/05 19:11:25 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -25,7 +25,6 @@ import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
-import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.logging.Logger;
@@ -40,8 +39,6 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
 	private DialogInput termin = null;
 	private Input comment			 = null;
 	
-	private TablePart table		 = null;
-
   /**
    * ct.
    * @param view
@@ -260,6 +257,9 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
 
 /**********************************************************************
  * $Log: AbstractBaseUeberweisungControl.java,v $
+ * Revision 1.5  2005/03/05 19:11:25  web0
+ * @N SammelLastschrift-Code complete
+ *
  * Revision 1.4  2005/03/02 17:59:31  web0
  * @N some refactoring
  *

@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.30 $
- * $Date: 2005/02/08 22:28:00 $
- * $Author: willuhn $
+ * $Revision: 1.31 $
+ * $Date: 2005/03/05 19:11:25 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -19,7 +19,6 @@ import org.eclipse.swt.graphics.RGB;
 
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.parts.ProgressBar;
 import de.willuhn.jameica.security.Wallet;
 import de.willuhn.jameica.system.Application;
 
@@ -40,10 +39,6 @@ public class Settings
 	private static Color buchungHabenForeground = null;
 	private static Color ueberfaelligForeground = null;
 	
-	private static ProgressBar hbciProgress = null;
-
-	private static AccountContainer accountContainer = null;
-
   /**
    * Liefert den Datenbank-Service.
    * @return Datenbank.
@@ -235,6 +230,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.31  2005/03/05 19:11:25  web0
+ * @N SammelLastschrift-Code complete
+ *
  * Revision 1.30  2005/02/08 22:28:00  willuhn
  * *** empty log message ***
  *

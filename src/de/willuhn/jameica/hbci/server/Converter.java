@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.19 $
- * $Date: 2005/03/02 17:59:30 $
+ * $Revision: 1.20 $
+ * $Date: 2005/03/05 19:11:25 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -17,11 +17,15 @@ import java.rmi.RemoteException;
 import org.kapott.hbci.GV_Result.GVRDauerList;
 import org.kapott.hbci.GV_Result.GVRKUms;
 import org.kapott.hbci.structures.Konto;
+import org.kapott.hbci.structures.Value;
+import org.kapott.hbci.swift.DTAUS;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Adresse;
+import de.willuhn.jameica.hbci.rmi.SammelLastBuchung;
+import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.util.ApplicationException;
 
@@ -241,11 +245,39 @@ public class Converter {
 		return e;  	
 	}
 
+	/**
+	 * Konvertiert eine Sammel-Lastschrift in DTAUS-Format.
+   * @param s Sammel-Lastschrift.
+   * @return DTAUS-Repraesentation.
+   * @throws RemoteException
+   */
+  public static DTAUS HibiscusSammelLastschrift2DTAUS(SammelLastschrift s) throws RemoteException
+	{
+		DTAUS dtaus = new DTAUS(HibiscusKonto2HBCIKonto(s.getKonto()),DTAUS.TYPE_DEBIT);
+		DBIterator buchungen = s.getBuchungen();
+		SammelLastBuchung b = null;
+		while (buchungen.hasNext())
+		{
+			b = (SammelLastBuchung) buchungen.next();
+			final DTAUS.Transaction tr = dtaus.new Transaction();
+			tr.otherAccount = HibiscusAdresse2HBCIKonto(b.getGegenkonto());
+			tr.value = new Value(b.getBetrag());
+			tr.addUsage(b.getZweck());
+			String z2 = b.getZweck2();
+			if (z2 != null && z2.length() > 0)
+				tr.addUsage(z2);
+			dtaus.addEntry(tr);
+		}
+		return dtaus;
+	}
 }
 
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.20  2005/03/05 19:11:25  web0
+ * @N SammelLastschrift-Code complete
+ *
  * Revision 1.19  2005/03/02 17:59:30  web0
  * @N some refactoring
  *

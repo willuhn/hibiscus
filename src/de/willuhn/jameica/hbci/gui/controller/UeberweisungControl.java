@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.38 $
- * $Date: 2005/02/04 18:27:54 $
- * $Author: willuhn $
+ * $Revision: 1.39 $
+ * $Date: 2005/03/05 19:11:25 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -24,8 +24,6 @@ import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
-import de.willuhn.jameica.gui.input.DialogInput;
-import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
@@ -39,10 +37,6 @@ import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 public class UeberweisungControl extends AbstractBaseUeberweisungControl
 {
 
-	// Eingabe-Felder
-	private DialogInput termin = null;
-	private Input comment			 = null;
-	
 	private TablePart table		 = null;
   
   private Ueberweisung transfer = null;
@@ -127,6 +121,9 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
+ * Revision 1.39  2005/03/05 19:11:25  web0
+ * @N SammelLastschrift-Code complete
+ *
  * Revision 1.38  2005/02/04 18:27:54  willuhn
  * @C Refactoring zwischen Lastschrift und Ueberweisung
  *

@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCIJob.java,v $
- * $Revision: 1.14 $
- * $Date: 2004/11/14 19:21:37 $
- * $Author: willuhn $
+ * $Revision: 1.15 $
+ * $Date: 2005/03/05 19:11:25 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -21,11 +21,8 @@ import org.kapott.hbci.GV_Result.HBCIJobResult;
 import org.kapott.hbci.structures.Konto;
 import org.kapott.hbci.structures.Value;
 
-import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
-import de.willuhn.util.I18N;
 
 /**
  * Basis-Klasse fuer die HBCI-Jobs.
@@ -41,8 +38,6 @@ public abstract class AbstractHBCIJob
 	private org.kapott.hbci.GV.HBCIJob job = null;
 
 	private Hashtable params 			= new Hashtable(); 
-
-	private I18N i18n             = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 	/**
 	 * HBCI4Java verwendet intern eindeutige Job-Namen.
@@ -213,6 +208,9 @@ public abstract class AbstractHBCIJob
 
 /**********************************************************************
  * $Log: AbstractHBCIJob.java,v $
+ * Revision 1.15  2005/03/05 19:11:25  web0
+ * @N SammelLastschrift-Code complete
+ *
  * Revision 1.14  2004/11/14 19:21:37  willuhn
  * *** empty log message ***
  *

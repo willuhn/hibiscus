@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/SammelLastBuchungNew.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/03/02 00:22:05 $
+ * $Revision: 1.3 $
+ * $Date: 2005/03/05 19:11:25 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -16,16 +16,21 @@ import java.rmi.RemoteException;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.SammelLastBuchung;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
+import de.willuhn.util.I18N;
 
 /**
  * Action fuer neue Buchung in einer Sammel-Lastschrift.
  */
 public class SammelLastBuchungNew implements Action
 {
+
+	private I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
    * Als Context kann eine Sammel-Lastschrift oder eine einzelne
@@ -48,7 +53,7 @@ public class SammelLastBuchungNew implements Action
         SammelLastschrift s = (SammelLastschrift) context;
 				u = (SammelLastBuchung) Settings.getDBService().createObject(SammelLastBuchung.class,null);
 				if (s.isNewObject())
-					s.store(); // wir speichern eigenmaechtig
+					throw new ApplicationException(i18n.tr("Bitte speichern Sie zunächst die Sammel-Lastschrift"));
 				u.setSammelLastschrift(s);
 			}
 			catch (RemoteException e)
@@ -65,6 +70,9 @@ public class SammelLastBuchungNew implements Action
 
 /**********************************************************************
  * $Log: SammelLastBuchungNew.java,v $
+ * Revision 1.3  2005/03/05 19:11:25  web0
+ * @N SammelLastschrift-Code complete
+ *
  * Revision 1.2  2005/03/02 00:22:05  web0
  * @N first code for "Sammellastschrift"
  *

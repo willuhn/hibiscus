@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/SammelLastschriftImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/03/02 17:59:30 $
+ * $Revision: 1.4 $
+ * $Date: 2005/03/05 19:11:25 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -291,10 +291,51 @@ public class SammelLastschriftImpl extends AbstractDBObject
       Protokoll.TYP_SUCCESS);
   }
 
+  /**
+   * Ueberschrieben, um ein Pseudo-Attribut "buchungen" zu erzeugen, welches
+   * eine String-Repraesentation der enthaltenen Buchungen enthaelt.
+   * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
+   */
+  public Object getAttribute(String arg0) throws RemoteException
+  {
+  	if ("buchungen".equals(arg0))
+  	{
+			try
+			{
+				StringBuffer sb = new StringBuffer();
+				DBIterator di = getBuchungen();
+				while (di.hasNext())
+				{
+					SammelLastBuchung b = (SammelLastBuchung) di.next();
+					String[] params = new String[]
+					{
+						b.getZweck(),
+						b.getGegenkontoName(),
+						HBCI.DECIMALFORMAT.format(b.getBetrag()),
+						getKonto().getWaehrung()
+					};
+					sb.append(i18n.tr("[{0}] {1}, Betrag {2} {3}",params));
+					if (di.hasNext())
+						sb.append("\n");
+				}
+				return sb.toString();
+			}
+			catch (RemoteException e)
+			{
+				Logger.error("error while reading buchungen",e);
+				return i18n.tr("Buchungen nicht lesbar");
+			}
+  	}
+    return super.getAttribute(arg0);
+  }
+
 }
 
 /*****************************************************************************
  * $Log: SammelLastschriftImpl.java,v $
+ * Revision 1.4  2005/03/05 19:11:25  web0
+ * @N SammelLastschrift-Code complete
+ *
  * Revision 1.3  2005/03/02 17:59:30  web0
  * @N some refactoring
  *

@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/SammelLastBuchungImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/02/28 16:28:24 $
+ * $Revision: 1.2 $
+ * $Date: 2005/03/05 19:11:25 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@ import java.rmi.RemoteException;
 import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.db.AbstractDBObject;
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.Adresse;
@@ -82,6 +83,9 @@ public class SammelLastBuchungImpl extends AbstractDBObject implements SammelLas
 
       if (getGegenkontoName() == null || getGegenkontoName().length() == 0)
         throw new ApplicationException(i18n.tr("Bitte geben Sie den Namen des Kontoinhabers des Gegenkontos ein"));
+
+			if (getGegenkontoName().length() > HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH)
+				throw new ApplicationException(i18n.tr("Bitte geben Sie maximal {0} Zeichen für den Namen des Kontoinhabers ein",""+HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH));
 
       if (!HBCIUtils.checkAccountCRC(getGegenkontoBLZ(),getGegenkontoNummer()))
         throw new ApplicationException(i18n.tr("Ungültige BLZ/Kontonummer. Bitte prüfen Sie Ihre Eingaben."));
@@ -197,6 +201,32 @@ public class SammelLastBuchungImpl extends AbstractDBObject implements SammelLas
     setGegenkontoNummer(gegenkonto == null ? null : gegenkonto.getKontonummer());
   }
 
+	/**
+	 * @see de.willuhn.jameica.hbci.rmi.SammelLastBuchung#getGegenkonto()
+	 */
+	public Adresse getGegenkonto() throws RemoteException
+	{
+		// Wir schauen erstmal, ob wir diese Adresse in der Datenbank schon haben.
+		Logger.debug("checking if we allready have this address in the database");
+		DBIterator list = getService().createList(Adresse.class);
+		list.addFilter("kontonummer='"+getGegenkontoNummer()+"'");
+		list.addFilter("blz='"+getGegenkontoBLZ()+"'");
+		list.addFilter("name='"+getGegenkontoName()+"'");
+		if (list.hasNext())
+		{
+			Logger.debug("found one, returning this one");
+			return (Adresse) list.next();
+		}
+
+		// ne, nix gefunden
+		Logger.debug("no address found, creating a new one");
+		Adresse a = (Adresse) getService().createObject(Adresse.class,null);
+		a.setBLZ(getGegenkontoBLZ());
+		a.setName(getGegenkontoName());
+		a.setKontonummer(getGegenkontoNummer());
+		return a;
+	}
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SammelLastBuchung#getBetrag()
    */
@@ -267,6 +297,9 @@ public class SammelLastBuchungImpl extends AbstractDBObject implements SammelLas
 
 /*****************************************************************************
  * $Log: SammelLastBuchungImpl.java,v $
+ * Revision 1.2  2005/03/05 19:11:25  web0
+ * @N SammelLastschrift-Code complete
+ *
  * Revision 1.1  2005/02/28 16:28:24  web0
  * @N first code for "Sammellastschrift"
  *
