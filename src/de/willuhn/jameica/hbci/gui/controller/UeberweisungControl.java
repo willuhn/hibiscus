@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.26 $
- * $Date: 2004/07/23 15:51:44 $
+ * $Revision: 1.27 $
+ * $Date: 2004/08/01 13:08:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -50,9 +50,8 @@ public class UeberweisungControl extends AbstractTransferControl
 {
 
 	// Eingabe-Felder
-	private Input termin							= null;
-
-	private Input comment							= null;
+	private DialogInput termin = null;
+	private Input comment			 = null;
 
   /**
    * ct.
@@ -149,7 +148,7 @@ public class UeberweisungControl extends AbstractTransferControl
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public Input getTermin() throws RemoteException
+  public DialogInput getTermin() throws RemoteException
 	{
 		final Ueberweisung u = (Ueberweisung) getTransfer();
 
@@ -181,6 +180,7 @@ public class UeberweisungControl extends AbstractTransferControl
 			d = new Date();
 		cd.setDate(d);
 		termin = new DialogInput(HBCI.DATEFORMAT.format(d),cd);
+		termin.disableClientControl();
 
 		if (u.ausgefuehrt())
 			termin.disable();
@@ -256,7 +256,20 @@ public class UeberweisungControl extends AbstractTransferControl
 		try
 		{
 			Ueberweisung u = (Ueberweisung) getTransfer();
-			u.setTermin((Date)getTermin().getValue());
+			Date termin = (Date) getTermin().getValue();
+			if (termin == null)
+			{
+				try
+				{
+					termin = HBCI.DATEFORMAT.parse(getTermin().getText());
+				}
+				catch (Exception e)
+				{
+					GUI.getView().setErrorText("Bitte geben Sie einen Termin ein.");
+					return;
+				}
+			}
+			u.setTermin(termin);
 		}
 		catch (RemoteException re)
 		{
@@ -351,6 +364,9 @@ public class UeberweisungControl extends AbstractTransferControl
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
+ * Revision 1.27  2004/08/01 13:08:42  willuhn
+ * @B Handling von Ueberweisungsterminen
+ *
  * Revision 1.26  2004/07/23 15:51:44  willuhn
  * @C Rest des Refactorings
  *
