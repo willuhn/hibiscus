@@ -39,6 +39,7 @@
 	    <property name="define.package"       value="de.willuhn.jameica"/>
 
     	<property name="project.release"      value="releases/${version}-${build.number}"/>
+    	<property name="project.nightly"      value="releases/nightly"/>
     	<property name="project.src"          value="${project.release}/src/classes"/>
 	    <property name="project.tmp"          value="${project.release}/tmp"/>
 	    <property name="project.javadoc"      value="${project.release}/javadoc"/>
@@ -64,7 +65,11 @@
 
   </target>
 
-
+  <target depends="init" name="cvs" description="performs cvs update">
+    <exec executable="cvs" failonerror="true" dir="${basedir}">
+      <arg line="update -d"/>
+    </exec>
+  </target>
 
   <target depends="init" name="compile" description="compiles everything">
 
@@ -145,13 +150,6 @@
 	    </fileset>
 	</zip>
 
-  	<checksum file="${project.release}/${project.zipfilename}" />
-  	<echo message="Creating PGP signature" />
-  	<exec executable="kgpg" failonerror="true" timeout="60000">
-		<arg line="-S ${project.release}/${project.zipfilename}"/>
-  	</exec>
-  	<echo message="done" />
-
   </target>
 
 
@@ -180,12 +178,6 @@
 				<exclude name="${build.dir}/BUILD"/>
 			</fileset>
 		</zip>
-		<checksum file="${project.release}/${define.srcfilename}" />
-		<echo message="Creating PGP signature" />
-		<exec executable="kgpg" failonerror="true" timeout="60000">
-			<arg line="-S ${project.release}/${define.srcfilename}"/>
-		</exec>
-		<echo message="done" />
 	</target>
 
 
@@ -195,12 +187,31 @@
   </target>
 
 
+  <target name="sign" description="signs the jar/zip file">
+    <checksum file="${project.release}/${project.zipfilename}" />
+    <echo message="Creating PGP signature" />
+    <exec executable="kgpg" failonerror="true" timeout="60000">
+      <arg line="-S ${project.release}/${project.zipfilename}"/>
+    </exec>
+  </target>
 
-  <target depends="init,compile,cvstag,jar,javadoc,src,clean" description="build an official release" name="all" />
+  <target name="signsrc" description="signs the source zip">
+    <checksum file="${project.release}/${define.srcfilename}" />
+    <echo message="Creating PGP signature" />
+    <exec executable="kgpg" failonerror="true" timeout="60000">
+      <arg line="-S ${project.release}/${define.srcfilename}"/>
+    </exec>
+  </target>
 
-
+  <target depends="init,compile,cvstag,jar,sign,javadoc,src,signsrc,clean" description="build an official release" name="all" />
 
   <target depends="init,compile,jar,src,clean" description="build inofficial release" name="fast" />
 
+  <target depends="cvs,fast" description="build nightly build" name="nightly">
+    <mkdir dir="${project.nightly}"/>
+    <tstamp/>
+    <copy file="${project.release}/${project.zipfilename}" tofile="${project.nightly}/${define.pluginname}-${version}-${DSTAMP}.zip" />
+    <delete dir="${project.release}"/>
+  </target>
 
 </project>
