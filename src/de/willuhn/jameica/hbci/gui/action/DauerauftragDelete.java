@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/DauerauftragDelete.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/11/17 19:02:28 $
- * $Author: willuhn $
+ * $Revision: 1.9 $
+ * $Date: 2005/02/28 15:30:47 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -22,6 +22,7 @@ import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.server.hbci.HBCIDauerauftragDeleteJob;
+import de.willuhn.jameica.hbci.server.hbci.HBCIDauerauftragListJob;
 import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -98,6 +99,9 @@ public class DauerauftragDelete implements Action
 							GUI.getStatusBar().startProgress();
 							GUI.getStatusBar().setStatusText(i18n.tr("Lösche Dauerauftrag bei Bank..."));
 							HBCIFactory factory = HBCIFactory.getInstance();
+
+              // BUGZILLA #15 http://www.willuhn.de/bugzilla/show_bug.cgi?id=15
+              factory.addJob(new HBCIDauerauftragListJob(da.getKonto()));
 							factory.addJob(new HBCIDauerauftragDeleteJob(da,date));
 							factory.executeJobs(da.getKonto().getPassport().getHandle()); 
 							da.delete();
@@ -143,6 +147,9 @@ public class DauerauftragDelete implements Action
 
 /**********************************************************************
  * $Log: DauerauftragDelete.java,v $
+ * Revision 1.9  2005/02/28 15:30:47  web0
+ * @B Bugzilla #15
+ *
  * Revision 1.8  2004/11/17 19:02:28  willuhn
  * *** empty log message ***
  *

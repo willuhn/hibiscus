@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.43 $
- * $Date: 2005/02/27 17:11:49 $
+ * $Revision: 1.44 $
+ * $Date: 2005/02/28 15:30:47 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -77,7 +77,6 @@ public class HBCI extends AbstractPlugin
   public HBCI(File file)
   {
     super(file);
-    Locale l = Application.getConfig().getLocale();
   }
 
   /**
@@ -251,6 +250,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.44  2005/02/28 15:30:47  web0
+ * @B Bugzilla #15
+ *
  * Revision 1.43  2005/02/27 17:11:49  web0
  * @N first code for "Sammellastschrift"
  * @C "Empfaenger" renamed into "Adresse"
