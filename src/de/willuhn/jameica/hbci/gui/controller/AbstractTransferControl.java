@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/10/20 12:08:18 $
+ * $Revision: 1.11 $
+ * $Date: 2004/10/20 12:34:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -253,6 +253,7 @@ public abstract class AbstractTransferControl extends AbstractControl
   /**
    * @see de.willuhn.jameica.gui.controller.AbstractControl#handleDelete()
    */
+  // TODO: Der hier noch
   public synchronized void handleDelete() {
 		try {
 			if (getTransfer() == null || getTransfer().isNewObject())
@@ -271,13 +272,6 @@ public abstract class AbstractTransferControl extends AbstractControl
 			Logger.error("error while deleting transfer",e);
 			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Löschen des Auftrags."));
 		}
-  }
-
-  /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleCancel()
-   */
-  public void handleCancel() {
-		GUI.startPreviousView();
   }
 
 	/**
@@ -438,6 +432,9 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
+ * Revision 1.11  2004/10/20 12:34:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.10  2004/10/20 12:08:18  willuhn
  * @C MVC-Refactoring (new Controllers)
  *

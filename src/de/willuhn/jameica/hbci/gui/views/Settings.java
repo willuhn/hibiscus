@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Settings.java,v $
- * $Revision: 1.25 $
- * $Date: 2004/10/08 13:37:48 $
+ * $Revision: 1.26 $
+ * $Date: 2004/10/20 12:34:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,14 +12,13 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.views;
 
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-
 import de.willuhn.jameica.gui.AbstractView;
+import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.controller.SettingsControl;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -54,9 +53,9 @@ public class Settings extends AbstractView {
 		colors.addLabelPair(i18n.tr("Vordergrund überfällige Überweisungen"),control.getUeberfaelligForeground());
 
 		ButtonArea buttons = settings.createButtonArea(1);
-		buttons.addCustomButton(i18n.tr("gespeicherte Check-Summe löschen"),new Listener()
+		buttons.addButton(i18n.tr("gespeicherte Check-Summe löschen"),new Action()
     {
-      public void handleEvent(Event event)
+      public void handleAction(Object context) throws ApplicationException
       {
 				control.handleDeleteCheckSum();
       }
@@ -67,8 +66,14 @@ public class Settings extends AbstractView {
 		passports.addPart(control.getPassportListe());
 
 		ButtonArea buttons3 = new ButtonArea(getParent(),2);
-		buttons3.addCancelButton(control);
-		buttons3.addStoreButton(control);
+		buttons3.addButton(i18n.tr("Zurück"),new Back());
+		buttons3.addButton(i18n.tr("Speichern"),new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+      	control.handleStore();
+      }
+    });
 
   }
 
@@ -83,6 +88,9 @@ public class Settings extends AbstractView {
 
 /**********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.26  2004/10/20 12:34:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.25  2004/10/08 13:37:48  willuhn
  * *** empty log message ***
  *

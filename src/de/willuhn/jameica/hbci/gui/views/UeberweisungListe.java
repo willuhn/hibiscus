@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/UeberweisungListe.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/10/08 13:37:48 $
+ * $Revision: 1.9 $
+ * $Date: 2004/10/20 12:34:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.action.UeberweisungNeu;
 import de.willuhn.jameica.hbci.gui.controller.UeberweisungControl;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -43,7 +44,7 @@ public class UeberweisungListe extends AbstractView {
 			control.getUeberweisungListe().paint(getParent());
 
 			ButtonArea buttons = new ButtonArea(getParent(),1);
-			buttons.addCreateButton(i18n.tr("neue Überweisung"),control);
+			buttons.addButton(i18n.tr("neue Überweisung"),new UeberweisungNeu());
 
 		}
 		catch (Exception e)
@@ -64,6 +65,9 @@ public class UeberweisungListe extends AbstractView {
 
 /**********************************************************************
  * $Log: UeberweisungListe.java,v $
+ * Revision 1.9  2004/10/20 12:34:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.8  2004/10/08 13:37:48  willuhn
  * *** empty log message ***
  *

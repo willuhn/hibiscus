@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/License.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/10/08 13:37:47 $
+ * $Revision: 1.5 $
+ * $Date: 2004/10/20 12:34:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.controller.LicenseControl;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -41,7 +42,7 @@ public class License extends AbstractView {
 		libs.paint(getParent());
 
 		ButtonArea buttons = new ButtonArea(getParent(),1);
-		buttons.addCancelButton(control);
+		buttons.addButton(i18n.tr("Zurück"),new Back());
   }
 
   /**
@@ -55,6 +56,9 @@ public class License extends AbstractView {
 
 /**********************************************************************
  * $Log: License.java,v $
+ * Revision 1.5  2004/10/20 12:34:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2004/10/08 13:37:47  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/KontoNeu.java,v $
- * $Revision: 1.20 $
- * $Date: 2004/10/20 12:08:18 $
+ * $Revision: 1.21 $
+ * $Date: 2004/10/20 12:34:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,9 +14,6 @@ package de.willuhn.jameica.hbci.gui.views;
 
 import java.rmi.RemoteException;
 
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -26,6 +23,8 @@ import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.KontoDelete;
+import de.willuhn.jameica.hbci.gui.action.KontoFetchSaldo;
+import de.willuhn.jameica.hbci.gui.action.UmsatzListe;
 import de.willuhn.jameica.hbci.gui.controller.KontoControl;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -79,20 +78,8 @@ public class KontoNeu extends AbstractView {
 			saldo.addLabelPair(i18n.tr("letzte Aktualisierung"),		control.getSaldoDatum());
 
 			ButtonArea buttons = saldo.createButtonArea(2);
-			buttons.addCustomButton(i18n.tr("Saldo aktualisieren"), new Listener()
-      {
-        public void handleEvent(Event event)
-        {
-					control.handleRefreshSaldo();
-        }
-      });
-			buttons.addCustomButton(i18n.tr("Kontoauszüge"), new Listener()
-      {
-        public void handleEvent(Event event)
-        {
-					control.handleShowUmsaetze();
-        }
-      });
+			buttons.addButton(i18n.tr("Saldo aktualisieren"), new KontoFetchSaldo(),control.getKonto());
+			buttons.addButton(i18n.tr("Kontoauszüge"), 				new UmsatzListe(),control.getKonto());
 
 			new Headline(getParent(),i18n.tr("Protokoll des Kontos"));
 			control.getProtokoll().paint(getParent());
@@ -118,6 +105,9 @@ public class KontoNeu extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoNeu.java,v $
+ * Revision 1.21  2004/10/20 12:34:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.20  2004/10/20 12:08:18  willuhn
  * @C MVC-Refactoring (new Controllers)
  *

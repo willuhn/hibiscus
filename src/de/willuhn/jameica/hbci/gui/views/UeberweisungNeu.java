@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/UeberweisungNeu.java,v $
- * $Revision: 1.16 $
- * $Date: 2004/10/08 13:37:48 $
+ * $Revision: 1.17 $
+ * $Date: 2004/10/20 12:34:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,14 +12,14 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.views;
 
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-
 import de.willuhn.jameica.gui.AbstractView;
+import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.action.Back;
+import de.willuhn.jameica.hbci.gui.action.UeberweisungDelete;
 import de.willuhn.jameica.hbci.gui.controller.UeberweisungControl;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -61,16 +61,22 @@ public class UeberweisungNeu extends AbstractView {
 		group.addLabelPair(i18n.tr("Bemerkung"),								control.getComment());
 
 		ButtonArea buttonArea = new ButtonArea(getParent(),4);
-		buttonArea.addCustomButton(i18n.tr("jetzt ausführen"), new Listener()
+		buttonArea.addButton(i18n.tr("jetzt ausführen"), new Action()
     {
-      public void handleEvent(Event event)
+      public void handleAction(Object context) throws ApplicationException
       {
-				control.handleExecute();
+      	control.handleDelete();// TODO Der hier noch
       }
     });
-		buttonArea.addCancelButton(control);
-		buttonArea.addDeleteButton(control);
-		buttonArea.addStoreButton(control);
+		buttonArea.addButton(i18n.tr("Zurück"), 				 new Back());
+		buttonArea.addButton(i18n.tr("Löschen"),				 new UeberweisungDelete(), control.getTransfer());
+		buttonArea.addButton(i18n.tr("Speichern"), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+      	control.handleStore();
+      }
+    });
   }
 
   /**
@@ -84,6 +90,9 @@ public class UeberweisungNeu extends AbstractView {
 
 /**********************************************************************
  * $Log: UeberweisungNeu.java,v $
+ * Revision 1.17  2004/10/20 12:34:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.16  2004/10/08 13:37:48  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/KontoListe.java,v $
- * $Revision: 1.17 $
- * $Date: 2004/10/08 13:37:48 $
+ * $Revision: 1.18 $
+ * $Date: 2004/10/20 12:34:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,14 +12,13 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.views;
 
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-
 import de.willuhn.jameica.gui.AbstractView;
+import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.action.KontoNeu;
 import de.willuhn.jameica.hbci.gui.controller.KontoControl;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -46,22 +45,22 @@ public class KontoListe extends AbstractView {
 
 			control.getKontoListe().paint(getParent());
 			ButtonArea buttons = new ButtonArea(getParent(),1);
-			buttons.addCreateButton(i18n.tr("Neue Bankverbindung"),control);
+			buttons.addButton(i18n.tr("Neue Bankverbindung"),new KontoNeu());
 
 			LabelGroup group = new LabelGroup(getParent(),i18n.tr("Konten aus Medium lesen"));
 			group.addLabelPair(i18n.tr("Sicherheitsmedium"),control.getPassportAuswahl());
 
 			ButtonArea c = group.createButtonArea(2);
-			c.addCustomButton(i18n.tr("Medium konfigurieren"), new Listener()
+			c.addButton(i18n.tr("Medium konfigurieren"), new Action()
       {
-        public void handleEvent(Event event)
+        public void handleAction(Object context) throws ApplicationException
         {
 					control.handleConfigurePassport();
         }
       });
-			c.addCustomButton(i18n.tr("Daten aus Medium lesen"), new Listener()
+			c.addButton(i18n.tr("Daten aus Medium lesen"), new Action()
       {
-        public void handleEvent(Event event)
+        public void handleAction(Object context) throws ApplicationException
         {
 					control.handleReadFromPassport();
         }
@@ -86,6 +85,9 @@ public class KontoListe extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoListe.java,v $
+ * Revision 1.18  2004/10/20 12:34:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.17  2004/10/08 13:37:48  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/EmpfaengerNeu.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/10/19 23:33:31 $
+ * $Revision: 1.10 $
+ * $Date: 2004/10/20 12:34:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,11 +15,13 @@ package de.willuhn.jameica.hbci.gui.views;
 import java.rmi.RemoteException;
 
 import de.willuhn.jameica.gui.AbstractView;
+import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.Back;
+import de.willuhn.jameica.hbci.gui.action.EmpfaengerDelete;
 import de.willuhn.jameica.hbci.gui.controller.EmpfaengerControl;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -59,8 +61,14 @@ public class EmpfaengerNeu extends AbstractView {
 		// und noch die Abschicken-Knoepfe
 		ButtonArea buttonArea = new ButtonArea(getParent(),3);
 		buttonArea.addButton(i18n.tr("Zurück"),new Back());
-		buttonArea.addDeleteButton(control);
-		buttonArea.addStoreButton(control);
+		buttonArea.addButton(i18n.tr("Löschen"), new EmpfaengerDelete(), control.getEmpfaenger());
+		buttonArea.addButton(i18n.tr("Speichern"), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+      	control.handleStore();
+      }
+    });
 
 
   }
@@ -76,6 +84,9 @@ public class EmpfaengerNeu extends AbstractView {
 
 /**********************************************************************
  * $Log: EmpfaengerNeu.java,v $
+ * Revision 1.10  2004/10/20 12:34:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.9  2004/10/19 23:33:31  willuhn
  * *** empty log message ***
  *

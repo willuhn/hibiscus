@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/UmsatzListe.java,v $
- * $Revision: 1.11 $
- * $Date: 2004/10/17 16:28:46 $
+ * $Revision: 1.12 $
+ * $Date: 2004/10/20 12:34:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,14 +14,14 @@ package de.willuhn.jameica.hbci.gui.views;
 
 import java.rmi.RemoteException;
 
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.action.Back;
+import de.willuhn.jameica.hbci.gui.action.KontoDeleteUmsaetze;
+import de.willuhn.jameica.hbci.gui.action.KontoFetchUmsaetze;
 import de.willuhn.jameica.hbci.gui.controller.UmsatzControl;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -49,21 +49,9 @@ public class UmsatzListe extends AbstractView {
 			list.paint(getParent());
 			
 			ButtonArea buttons = new ButtonArea(getParent(),3);
-			buttons.addCustomButton(i18n.tr("Umsätze abrufen"), new Listener()
-      {
-        public void handleEvent(Event event)
-        {
-					control.handleFetchUmsaetze();
-        }
-      });
-			buttons.addCustomButton(i18n.tr("alle Umsätze löschen"), new Listener()
-      {
-        public void handleEvent(Event event)
-        {
-					control.handleDeleteUmsaetze();
-        }
-      });
-			buttons.addCancelButton(control);
+			buttons.addButton(i18n.tr("Umsätze abrufen"), new KontoFetchUmsaetze(),control.getKonto());
+			buttons.addButton(i18n.tr("alle Umsätze löschen"), new KontoDeleteUmsaetze(), control.getKonto());
+			buttons.addButton(i18n.tr("Zurück"),new Back());
 		}
 		catch (RemoteException e)
 		{
@@ -84,6 +72,9 @@ public class UmsatzListe extends AbstractView {
 
 /**********************************************************************
  * $Log: UmsatzListe.java,v $
+ * Revision 1.12  2004/10/20 12:34:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.11  2004/10/17 16:28:46  willuhn
  * @N Die ersten Dauerauftraege abgerufen ;)
  *
