@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.45 $
- * $Date: 2005/02/28 16:28:24 $
+ * $Revision: 1.46 $
+ * $Date: 2005/03/24 16:49:02 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import java.io.File;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.Locale;
 
 import org.kapott.hbci.manager.HBCIUtils;
@@ -54,18 +55,17 @@ public class HBCI extends AbstractPlugin
   public static DecimalFormat DECIMALFORMAT = (DecimalFormat) DecimalFormat.getInstance(Application.getConfig().getLocale());
 
   // Mapper von HBCI4Java nach jameica Loglevels
-  private static int[][] logMapping = new int[][]
-  {
-    {Level.ERROR.getValue(), 1},
-    {Level.WARN.getValue(),  2},
-    {Level.INFO.getValue(),  3},
-		{Level.DEBUG.getValue(), 5}
-  };
+  private static HashMap LOGMAPPING = new HashMap();
 
   static {
     DECIMALFORMAT.applyPattern("#0.00");
     DECIMALFORMAT.setGroupingUsed(false);
     DECIMALFORMAT.setMinimumFractionDigits(2);
+
+    LOGMAPPING.put(Level.ERROR, new Integer(HBCIUtils.LOG_ERR));
+    LOGMAPPING.put(Level.WARN,  new Integer(HBCIUtils.LOG_WARN));
+    LOGMAPPING.put(Level.INFO,  new Integer(HBCIUtils.LOG_INFO));
+    LOGMAPPING.put(Level.DEBUG, new Integer(HBCIUtils.LOG_DEBUG2));
   }
 
   private EmbeddedDatabase db = null;
@@ -161,17 +161,21 @@ public class HBCI extends AbstractPlugin
 		PassportRegistry.init();
 
 		try {
-			HBCIUtils.init(null,null,new HBCICallbackSWT());
-			int logLevel = 3;
+			int logLevel = HBCIUtils.LOG_INFO; // Default
 			try
 			{
-				logLevel = logMapping[Logger.getLevel().getValue()][1];
+        Level level = Logger.getLevel();
+        Logger.info("current jameica log level: " + level.getName() + " [" + level.getValue() + "]");
+				logLevel = ((Integer) LOGMAPPING.get(level)).intValue();
 			}
 			catch (Exception e)
 			{
+        Logger.warn("unable to map jameica log level into hbci4java log level. using default");
 				// Am wahrscheinlichsten ArrayIndexOutOfBoundsException
 				// Dann eben nicht ;)
 			}
+      Logger.info("HBCI4Java loglevel: " + logLevel);
+      HBCIUtils.init(null,null,new HBCICallbackSWT());
 			HBCIUtils.setParam("log.loglevel.default",""+logLevel);
 		}
 		catch (Exception e)
@@ -250,6 +254,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.46  2005/03/24 16:49:02  web0
+ * @B error in log mapping
+ *
  * Revision 1.45  2005/02/28 16:28:24  web0
  * @N first code for "Sammellastschrift"
  *
