@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/DauerauftragControl.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/07/16 00:07:31 $
+ * $Revision: 1.3 $
+ * $Date: 2004/07/20 00:11:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -98,6 +98,7 @@ public class DauerauftragControl extends AbstractTransferControl {
   public synchronized void handleStore()
   {
 		super.handleStore();
+		// TODO: Turnus
   }
 
   /**
@@ -118,6 +119,9 @@ public class DauerauftragControl extends AbstractTransferControl {
 
 /**********************************************************************
  * $Log: DauerauftragControl.java,v $
+ * Revision 1.3  2004/07/20 00:11:07  willuhn
+ * @C Code sharing zwischen Ueberweisung und Dauerauftrag
+ *
  * Revision 1.2  2004/07/16 00:07:31  willuhn
  * *** empty log message ***
  *

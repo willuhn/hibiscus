@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.16 $
- * $Date: 2004/06/30 20:58:29 $
+ * $Revision: 1.17 $
+ * $Date: 2004/07/20 00:11:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -72,7 +72,7 @@ public class Settings
 		if (buchungSollForeground != null)
 			return buchungSollForeground;
 
-		buchungSollForeground = new Color(GUI.getDisplay(),settings.getRGB("buchung.soll.fg",new RGB(0,0,0)));
+		buchungSollForeground = new Color(GUI.getDisplay(),settings.getRGB("buchung.soll.fg",new RGB(147,33,33)));
 		return buchungSollForeground;
 	}
 
@@ -98,7 +98,7 @@ public class Settings
 		if (buchungHabenForeground != null)
 			return buchungHabenForeground;
 
-		buchungHabenForeground = new Color(GUI.getDisplay(),settings.getRGB("buchung.haben.fg",new RGB(0,0,0)));
+		buchungHabenForeground = new Color(GUI.getDisplay(),settings.getRGB("buchung.haben.fg",new RGB(4,13,169)));
 		return buchungHabenForeground;
 	}
 
@@ -137,7 +137,7 @@ public class Settings
 		if (ueberfaelligForeground != null)
 			return ueberfaelligForeground;
 
-		ueberfaelligForeground = new Color(GUI.getDisplay(),settings.getRGB("ueberfaellig.fg",new RGB(0,0,0)));
+		ueberfaelligForeground = new Color(GUI.getDisplay(),settings.getRGB("ueberfaellig.fg",new RGB(140,0,0)));
 		return ueberfaelligForeground;
 	}
 
@@ -341,6 +341,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.17  2004/07/20 00:11:07  willuhn
+ * @C Code sharing zwischen Ueberweisung und Dauerauftrag
+ *
  * Revision 1.16  2004/06/30 20:58:29  willuhn
  * *** empty log message ***
  *
