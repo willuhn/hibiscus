@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/LastschriftList.java,v $
- * $Revision: 1.3 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/SammelLastschriftList.java,v $
+ * $Revision: 1.1 $
  * $Date: 2005/02/28 18:40:49 $
  * $Author: web0 $
  * $Locker:  $
@@ -17,46 +17,43 @@ import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.LastschriftDelete;
-import de.willuhn.jameica.hbci.gui.action.LastschriftDuplicate;
-import de.willuhn.jameica.hbci.gui.action.LastschriftExecute;
 import de.willuhn.jameica.hbci.gui.action.LastschriftNew;
-import de.willuhn.jameica.hbci.rmi.Lastschrift;
+import de.willuhn.jameica.hbci.gui.action.SammelLastschriftNew;
+import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Kontext-Menu, welches an Listen mit Lastschriften gehangen werden kann.
+ * Kontext-Menu, welches an Listen mit SammelLastschriften gehangen werden kann.
  * Es ist fix und fertig vorkonfiguriert und mit Elementen gefuellt.
  */
-public class LastschriftList extends ContextMenu
+public class SammelLastschriftList extends ContextMenu
 {
 	private I18N i18n	= null;
 
 	/**
 	 * Erzeugt ein Kontext-Menu fuer eine Liste von Lastschriften.
 	 */
-	public LastschriftList()
+	public SammelLastschriftList()
 	{
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-		addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"), new LastschriftNew()));
-		addItem(new NotActiveMenuItem(i18n.tr("Jetzt ausführen..."), new LastschriftExecute()));
-		addItem(new CheckedContextMenuItem(i18n.tr("Duplizieren"), new LastschriftDuplicate()));
+		addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"), new SammelLastschriftNew()));
+		//addItem(new NotActiveMenuItem(i18n.tr("Jetzt ausführen..."), new SammelLastschriftExecute()));
 		addItem(ContextMenuItem.SEPARATOR);
-		addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new LastschriftDelete()));
+		//addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new SammelLastschriftDelete()));
 		addItem(ContextMenuItem.SEPARATOR);
-		addItem(new ContextMenuItem(i18n.tr("Neue Lastschrift..."), new UNeu()));
+		addItem(new ContextMenuItem(i18n.tr("Neue Sammel-Lastschrift..."), new SNeu()));
 		
 	}
 
 	/**
-	 * Ueberschreiben wir, um <b>grundsaetzlich</b> eine neue Lastschrift
+	 * Ueberschreiben wir, um <b>grundsaetzlich</b> eine neue Sammel-Lastschrift
 	 * anzulegen - auch wenn der Focus auf einer existierenden liegt.
    */
-  private class UNeu extends LastschriftNew
+  private class SNeu extends LastschriftNew
 	{
     /**
      * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
@@ -93,7 +90,7 @@ public class LastschriftList extends ContextMenu
     		return false;
     	try
     	{
-				Lastschrift u = (Lastschrift) o;
+				SammelLastschrift u = (SammelLastschrift) o;
     		return !u.ausgefuehrt();
     	}
     	catch (Exception e)
@@ -107,14 +104,8 @@ public class LastschriftList extends ContextMenu
 
 
 /**********************************************************************
- * $Log: LastschriftList.java,v $
- * Revision 1.3  2005/02/28 18:40:49  web0
+ * $Log: SammelLastschriftList.java,v $
+ * Revision 1.1  2005/02/28 18:40:49  web0
  * @N first code for "Sammellastschrift"
- *
- * Revision 1.2  2005/01/19 00:33:32  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2005/01/19 00:16:04  willuhn
- * @N Lastschriften
  *
  **********************************************************************/
