@@ -8,7 +8,7 @@ ALTER CREATE TABLE login (
 
 ALTER CREATE TABLE konto (
   id NUMERIC default UNIQUEKEY('konto'),
-  login_id int(4) NOT NULL,
+  login_id int(4) NULL,
   kontonummer varchar(15) NOT NULL,
   blz varchar(15) NOT NULL,
   name varchar(255) NOT NULL,
