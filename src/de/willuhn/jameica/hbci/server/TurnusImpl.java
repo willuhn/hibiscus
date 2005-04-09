@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/TurnusImpl.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/11/26 01:23:13 $
- * $Author: willuhn $
+ * $Revision: 1.9 $
+ * $Date: 2005/04/09 16:56:30 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -94,7 +94,7 @@ public class TurnusImpl extends AbstractDBObject implements Turnus
 				throw new ApplicationException(i18n.tr("Bitte geben Sie ein gültiges Intervall ein"));
 
 			if (getZeiteinheit() == Turnus.ZEITEINHEIT_MONATLICH && (getTag() < 1 || getTag() > 31))
-				throw new ApplicationException(i18n.tr("Bei monatlicher Zeiteinheit darf der Zahltag nicht kleiner als 1 und nicht größer als 31 sein"));
+				throw new ApplicationException(i18n.tr("Bei monatlicher Zeiteinheit darf der Zahltag nicht kleiner als 1 und nicht größer als 31 sein. Angegebener Tag: {0}",""+getTag()));
 
 			if (getZeiteinheit() == Turnus.ZEITEINHEIT_WOECHENTLICH && (getTag() < 1 || getTag() > 7))
 				throw new ApplicationException(i18n.tr("Bitte wählen Sie einen gültigen Wochentag"));
@@ -244,6 +244,9 @@ public class TurnusImpl extends AbstractDBObject implements Turnus
 
 /**********************************************************************
  * $Log: TurnusImpl.java,v $
+ * Revision 1.9  2005/04/09 16:56:30  web0
+ * @N verbose output in turnus
+ *
  * Revision 1.8  2004/11/26 01:23:13  willuhn
  * *** empty log message ***
  *
