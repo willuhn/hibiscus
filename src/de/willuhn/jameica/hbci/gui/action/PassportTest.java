@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/PassportTest.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/04/05 21:51:54 $
+ * $Revision: 1.4 $
+ * $Date: 2005/04/12 23:19:29 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Level;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -64,6 +65,10 @@ public class PassportTest implements Action
             else
               GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Testen des Sicherheits-Mediums."));
 						Logger.warn("error while testing passport: " + e.getMessage());
+
+            // BUGZILLA 52 http://www.willuhn.de/bugzilla/show_bug.cgi?id=52
+            if (Logger.getLevel().equals(Level.DEBUG))
+              Logger.error("stacktrace for debugging purpose",e);
 					}
 				}
 			});
@@ -79,6 +84,9 @@ public class PassportTest implements Action
 
 /**********************************************************************
  * $Log: PassportTest.java,v $
+ * Revision 1.4  2005/04/12 23:19:29  web0
+ * @B Bug 52
+ *
  * Revision 1.3  2005/04/05 21:51:54  web0
  * @B Begrenzung aller BLZ-Eingaben auf 8 Zeichen
  *
