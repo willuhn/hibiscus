@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/HBCIVersionInput.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/04/05 23:43:53 $
+ * $Revision: 1.5 $
+ * $Date: 2005/04/18 09:28:45 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -36,7 +36,7 @@ public class HBCIVersionInput extends SelectInput implements Input
   private static I18N i18n;
 
   private static Hashtable nameLookup = new Hashtable();
-
+  
   static
   {
     i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
@@ -49,13 +49,30 @@ public class HBCIVersionInput extends SelectInput implements Input
   }
 
   /**
+   * @param passport Passport.
+   * @param selectedVersion die vorausgewaehlte HBCI-Version.
+   * @param showAll legt fest, ob alle HBCI-Versionen angezeigt werden sollen oder
+   * nur jene, welche laut Passport unterstuetzt werden.
+   * @throws RemoteException
+   */
+  /**
    * ct.
+   * @throws RemoteException
+   */
+  public HBCIVersionInput(HBCIPassport passport, String selectedVersion, boolean showAll) throws RemoteException
+  {
+    super(createList(passport,showAll),new HBCIVersionObject(selectedVersion));
+  }
+
+  /**
+   * ct.
+   * @param passport Passport.
    * @param selectedVersion die vorausgewaehlte HBCI-Version.
    * @throws RemoteException
    */
   public HBCIVersionInput(HBCIPassport passport, String selectedVersion) throws RemoteException
   {
-    super(createList(passport),new HBCIVersionObject(selectedVersion));
+    this(passport,selectedVersion,false);
   }
 
   /**
@@ -64,7 +81,7 @@ public class HBCIVersionInput extends SelectInput implements Input
    * @return Liste der unterstuetzten HBCI-Versionen.
    * @throws RemoteException
    */
-  private static GenericIterator createList(HBCIPassport passport) throws RemoteException
+  private static GenericIterator createList(HBCIPassport passport, boolean showAll) throws RemoteException
   {
     // Wir erzeugen eine Liste von HBCI-Versionen, die nur
     // genau die enthaelt, die vom Schluessel unterstuetzt werden
@@ -76,7 +93,7 @@ public class HBCIVersionInput extends SelectInput implements Input
     {
       String[] s = passport.getSuppVersions();
       // BUGZILLA 37 http://www.willuhn.de/bugzilla/show_bug.cgi?id=37
-      if (s == null || s.length == 0)
+      if (showAll || s == null || s.length == 0)
       {
         // Wir liefern alle HBCI-Versionen
         s = new String[nameLookup.size()];
@@ -213,6 +230,10 @@ public class HBCIVersionInput extends SelectInput implements Input
 
 /*****************************************************************************
  * $Log: HBCIVersionInput.java,v $
+ * Revision 1.5  2005/04/18 09:28:45  web0
+ * @B zu wenig HBCI-Versionen in Auswahl
+ * @B Refresh der Liste nach RDH-Schluesselimport
+ *
  * Revision 1.4  2005/04/05 23:43:53  web0
  * @C moved HBCIVersionInput into Hibiscus source tree
  *
