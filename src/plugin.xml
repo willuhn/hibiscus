@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<plugin name="Hibiscus" version="1.3">
+<plugin name="hibiscus" version="1.3">
 
   <description>HBCI-Onlinebanking-Plugin für Jameica</description>
   <url>http://www.willuhn.de/projects/hibiscus/releases/hibiscus.jam</url>
@@ -8,24 +8,24 @@
   <license>GPL - http://www.gnu.org/copyleft/gpl.html</license>
 
   <menu>
-    <item name="Hibiscus">
-      <item name="Einstellungen"                            action="de.willuhn.jameica.hbci.gui.action.Settings" />
-      <item name="Neue Überweisung"     shortcut="CTRL+U"   action="de.willuhn.jameica.hbci.gui.action.UeberweisungNew" />
+    <item id="hibiscus" name="Hibiscus">
+      <item id="hibiscus.settings" 		name="Einstellungen"                            action="de.willuhn.jameica.hbci.gui.action.Settings" />
+      <item id="hibiscus.newtransfer" 	name="Neue Überweisung"     shortcut="CTRL+U"   action="de.willuhn.jameica.hbci.gui.action.UeberweisungNew" />
       <item name="-" />
-      <item name="About"                                    action="de.willuhn.jameica.hbci.gui.action.About" />
-      <item name="Lizenzinformationen"                      action="de.willuhn.jameica.hbci.gui.action.License" />
+      <item id="hibiscus.about" 		name="About"                                    action="de.willuhn.jameica.hbci.gui.action.About" />
+      <item id="hibiscus.license" 		name="Lizenzinformationen"                      action="de.willuhn.jameica.hbci.gui.action.License" />
     </item>
   </menu>
 
   <navigation>
-    <item name="Hibiscus"             		icon-close="folder.gif" icon-open="folderopen.gif"  action="de.willuhn.jameica.hbci.gui.action.Welcome">
-      <item name="Konten"             		icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.KontoList" />
-      <item name="Adressbuch"         		icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.EmpfaengerList" />
-      <item name="Transfer"      			icon-close="folder.gif" icon-open="folderopen.gif">
-	    <item name="Daueraufträge"      	icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.DauerauftragList" />
-	    <item name="Einzellastschriften"    icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.LastschriftList" />
-	    <item name="Sammellastschriften"    icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.SammelLastschriftList" />
-        <item name="Überweisungen"      	icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.UeberweisungList" />
+    <item id="hibiscus" name="Hibiscus"             						icon-close="folder.gif" icon-open="folderopen.gif"  action="de.willuhn.jameica.hbci.gui.action.Welcome">
+      <item id="hibiscus.accounts" 				name="Konten"             	icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.KontoList" />
+      <item id="hibiscus.addresses" 			name="Adressbuch"         	icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.EmpfaengerList" />
+      <item id="hibiscus.transfer" 				name="Transfer"      		icon-close="folder.gif" icon-open="folderopen.gif">
+	    <item id="hibiscus.transfer.dauer" 		name="Daueraufträge"      	icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.DauerauftragList" />
+	    <item id="hibiscus.transfer.einzellast" name="Einzellastschriften"  icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.LastschriftList" />
+	    <item id="hibiscus.transfer.sammellast" name="Sammellastschriften"  icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.SammelLastschriftList" />
+        <item id="hibiscus.transfer.ueb" 		name="Überweisungen"      	icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.UeberweisungList" />
 	  </item>
     </item>
   </navigation>
