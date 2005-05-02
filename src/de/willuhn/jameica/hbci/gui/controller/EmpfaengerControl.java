@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EmpfaengerControl.java,v $
- * $Revision: 1.29 $
- * $Date: 2005/04/05 21:51:54 $
+ * $Revision: 1.30 $
+ * $Date: 2005/05/02 23:56:45 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -18,18 +18,15 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.manager.HBCIUtils;
 
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.TextInput;
-import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.menus.EmpfaengerList;
 import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -48,7 +45,10 @@ public class EmpfaengerControl extends AbstractControl {
 	private Input blz					= null;
 	private Input name				= null;
 
+  private Part list         = null;
+
 	private I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+
   /**
    * @param view
    */
@@ -82,14 +82,10 @@ public class EmpfaengerControl extends AbstractControl {
    */
   public Part getEmpfaengerListe() throws RemoteException
 	{
-		DBIterator list = Settings.getDBService().createList(Adresse.class);
-
-		TablePart table = new TablePart(list,new de.willuhn.jameica.hbci.gui.action.EmpfaengerNew());
-		table.addColumn(i18n.tr("Kontonummer"),"kontonummer");
-		table.addColumn(i18n.tr("Bankleitzahl"),"blz");
-		table.addColumn(i18n.tr("Name"),"name");
-		table.setContextMenu(new EmpfaengerList());
-		return table;
+    if (list != null)
+      return list;
+    list = new de.willuhn.jameica.hbci.gui.parts.EmpfaengerList(new de.willuhn.jameica.hbci.gui.action.EmpfaengerList());
+    return list;
 	}
 
 	/**
@@ -191,6 +187,11 @@ public class EmpfaengerControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: EmpfaengerControl.java,v $
+ * Revision 1.30  2005/05/02 23:56:45  web0
+ * @B bug 66, 67
+ * @C umsatzliste nach vorn verschoben
+ * @C protokoll nach hinten verschoben
+ *
  * Revision 1.29  2005/04/05 21:51:54  web0
  * @B Begrenzung aller BLZ-Eingaben auf 8 Zeichen
  *

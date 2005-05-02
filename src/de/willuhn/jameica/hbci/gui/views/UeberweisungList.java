@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UeberweisungList.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/03/09 01:07:02 $
+ * $Revision: 1.3 $
+ * $Date: 2005/05/02 23:56:45 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungNew;
 import de.willuhn.jameica.hbci.gui.controller.UeberweisungControl;
 import de.willuhn.jameica.system.Application;
@@ -43,7 +44,8 @@ public class UeberweisungList extends AbstractView {
 
 			control.getUeberweisungListe().paint(getParent());
 
-			ButtonArea buttons = new ButtonArea(getParent(),1);
+			ButtonArea buttons = new ButtonArea(getParent(),2);
+      buttons.addButton(i18n.tr("Zurück"),new Back());
 			buttons.addButton(i18n.tr("neue Überweisung"),new UeberweisungNew());
 
 		}
@@ -65,6 +67,11 @@ public class UeberweisungList extends AbstractView {
 
 /**********************************************************************
  * $Log: UeberweisungList.java,v $
+ * Revision 1.3  2005/05/02 23:56:45  web0
+ * @B bug 66, 67
+ * @C umsatzliste nach vorn verschoben
+ * @C protokoll nach hinten verschoben
+ *
  * Revision 1.2  2005/03/09 01:07:02  web0
  * @D javadoc fixes
  *

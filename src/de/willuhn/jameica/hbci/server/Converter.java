@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.23 $
- * $Date: 2005/03/09 01:07:02 $
+ * $Revision: 1.24 $
+ * $Date: 2005/05/02 23:56:45 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import java.rmi.RemoteException;
 import org.kapott.hbci.GV_Result.GVRDauerList;
 import org.kapott.hbci.GV_Result.GVRKUms;
 import org.kapott.hbci.structures.Konto;
+import org.kapott.hbci.structures.Saldo;
 import org.kapott.hbci.structures.Value;
 import org.kapott.hbci.swift.DTAUS;
 
@@ -72,14 +73,22 @@ public class Converter {
 		umsatz.setCustomerRef(u.customerref);
 		umsatz.setPrimanota(u.primanota);
 
-		try {
-			umsatz.setSaldo(u.saldo.value.value);
-		}
-		catch (NullPointerException e)
-		{
-			// Falls u.saldo null liefert
-			/* ignore */
-		}
+      //BUGZILLA 67 http://www.willuhn.de/bugzilla/show_bug.cgi?id=67
+      Saldo s = u.saldo;
+      if (s != null)
+      {
+        try {
+          if (s.cd.endsWith("C"))
+            umsatz.setSaldo(s.value.value); // Haben-Saldo
+          else
+          umsatz.setSaldo(-s.value.value);  // Soll-Saldo
+        }
+        catch (NullPointerException e)
+        {
+          // Falls u.saldo null liefert
+          /* ignore */
+        }
+      }
 
 		// C(redit) = HABEN
 		// D(ebit)  = SOLL
@@ -266,6 +275,11 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.24  2005/05/02 23:56:45  web0
+ * @B bug 66, 67
+ * @C umsatzliste nach vorn verschoben
+ * @C protokoll nach hinten verschoben
+ *
  * Revision 1.23  2005/03/09 01:07:02  web0
  * @D javadoc fixes
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.39 $
- * $Date: 2005/03/05 19:11:25 $
+ * $Revision: 1.40 $
+ * $Date: 2005/05/02 23:56:45 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -13,21 +13,12 @@
 package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
-import java.util.Date;
 
-import org.eclipse.swt.widgets.TableItem;
-
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Part;
-import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
-import de.willuhn.jameica.gui.formatter.DateFormatter;
-import de.willuhn.jameica.gui.formatter.Formatter;
-import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.parts.TablePart;
-import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.menus.UeberweisungList;
+import de.willuhn.jameica.hbci.gui.action.UeberweisungNew;
 import de.willuhn.jameica.hbci.rmi.Transfer;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 
@@ -77,42 +68,7 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
 		if (table != null)
 			return table;
 
-		DBIterator list = Settings.getDBService().createList(Ueberweisung.class);
-
-		table = new TablePart(list,new de.willuhn.jameica.hbci.gui.action.UeberweisungNew());
-		table.setFormatter(new TableFormatter() {
-      public void format(TableItem item) {
-      	Ueberweisung u = (Ueberweisung) item.getData();
-      	if (u == null)
-      		return;
-
-				try {
-					if (u.getTermin().before(new Date()) && !u.ausgefuehrt())
-					{
-						item.setForeground(Settings.getUeberfaelligForeground());
-					}
-				}
-				catch (RemoteException e) { /*ignore */}
-      }
-    });
-		table.addColumn(i18n.tr("Konto"),"konto_id");
-		table.addColumn(i18n.tr("Empfängername"),"empfaenger_name");
-		table.addColumn(i18n.tr("Empfängerkonto"),"empfaenger_konto");
-		table.addColumn(i18n.tr("Verwendungszweck"),"zweck");
-		table.addColumn(i18n.tr("Betrag"),"betrag", new CurrencyFormatter("",HBCI.DECIMALFORMAT));
-		table.addColumn(i18n.tr("Termin"),"termin", new DateFormatter(HBCI.LONGDATEFORMAT));
-		table.addColumn(i18n.tr("Status"),"ausgefuehrt",new Formatter() {
-      public String format(Object o) {
-				try {
-					int i = ((Integer) o).intValue();
-					return i == 1 ? i18n.tr("ausgeführt") : i18n.tr("offen");
-				}
-				catch (Exception e) {}
-				return ""+o;
-      }
-    });
-	
-		table.setContextMenu(new UeberweisungList());
+    table = new de.willuhn.jameica.hbci.gui.parts.UeberweisungList(new UeberweisungNew());
 		return table;
 	}
 
@@ -121,6 +77,11 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
+ * Revision 1.40  2005/05/02 23:56:45  web0
+ * @B bug 66, 67
+ * @C umsatzliste nach vorn verschoben
+ * @C protokoll nach hinten verschoben
+ *
  * Revision 1.39  2005/03/05 19:11:25  web0
  * @N SammelLastschrift-Code complete
  *

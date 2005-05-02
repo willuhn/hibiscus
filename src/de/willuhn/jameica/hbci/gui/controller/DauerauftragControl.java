@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/DauerauftragControl.java,v $
- * $Revision: 1.20 $
- * $Date: 2005/03/04 00:50:16 $
+ * $Revision: 1.21 $
+ * $Date: 2005/05/02 23:56:45 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -17,26 +17,18 @@ import java.util.Date;
 
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.TableItem;
 
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.dialogs.CalendarDialog;
-import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
-import de.willuhn.jameica.gui.formatter.Formatter;
-import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
-import de.willuhn.jameica.gui.parts.TablePart;
-import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.DauerauftragNew;
 import de.willuhn.jameica.hbci.gui.dialogs.TurnusDialog;
-import de.willuhn.jameica.hbci.gui.menus.DauerauftragList;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Transfer;
 import de.willuhn.jameica.hbci.rmi.Turnus;
@@ -47,12 +39,14 @@ import de.willuhn.logging.Logger;
  */
 public class DauerauftragControl extends AbstractTransferControl {
 
-	private Input orderID				= null;
-	private DialogInput turnus	= null;
+	private Input orderID				      = null;
+	private DialogInput turnus	      = null;
 	private DialogInput ersteZahlung	= null;
 	private DialogInput letzteZahlung	= null;
 
-  private Dauerauftrag transfer = null;
+  private Dauerauftrag transfer     = null;
+
+  private Part list                 = null;
 
   /**
    * ct.
@@ -86,49 +80,10 @@ public class DauerauftragControl extends AbstractTransferControl {
 	 */
 	public Part getDauerauftragListe() throws RemoteException
 	{
-		DBIterator list = Settings.getDBService().createList(Dauerauftrag.class);
-
-		TablePart table = new TablePart(list,new DauerauftragNew());
-
-		table.setFormatter(new TableFormatter()
-    {
-      public void format(TableItem item)
-      {
-      	try
-      	{
-      		if (item == null || item.getData() == null)
-      			return;
-      		Dauerauftrag d = (Dauerauftrag) item.getData();
-      		if (d.getLetzteZahlung() != null && new Date().after(d.getLetzteZahlung()))
-      			item.setForeground(Color.COMMENT.getSWTColor());
-      	}
-      	catch (Exception e)
-      	{
-      		Logger.error("error while checking finish date",e);
-      		GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Prüfen des Ablaufdatums eines Dauerauftrages"));
-      	}
-      }
-    });
-		table.addColumn(i18n.tr("Konto"),"konto_id");
-		table.addColumn(i18n.tr("Empfängername"),"empfaenger_name");
-		table.addColumn(i18n.tr("Empfängerkonto"),"empfaenger_konto");
-		table.addColumn(i18n.tr("Verwendungszweck"),"zweck");
-		table.addColumn(i18n.tr("Betrag"),"betrag", new CurrencyFormatter("",HBCI.DECIMALFORMAT));
-		table.addColumn(i18n.tr("Turnus"),"turnus_id");
-		table.addColumn(i18n.tr("aktiv?"),"orderid",new Formatter()
-    {
-      public String format(Object o)
-      {
-      	if (o == null)
-      		return "nein";
-				String s = o.toString();
-				if (s != null && s.length() > 0)
-					return i18n.tr("ja");
-				return i18n.tr("nein");
-      }
-    });
-		table.setContextMenu(new DauerauftragList());
-		return table;
+    if (list != null)
+      return list;
+    list = new de.willuhn.jameica.hbci.gui.parts.DauerauftragList(new DauerauftragNew());
+    return list;
 	}
 
 	/**
@@ -287,6 +242,11 @@ public class DauerauftragControl extends AbstractTransferControl {
 
 /**********************************************************************
  * $Log: DauerauftragControl.java,v $
+ * Revision 1.21  2005/05/02 23:56:45  web0
+ * @B bug 66, 67
+ * @C umsatzliste nach vorn verschoben
+ * @C protokoll nach hinten verschoben
+ *
  * Revision 1.20  2005/03/04 00:50:16  web0
  * @N Eingrauen abgelaufener Dauerauftraege
  * @N automatisches Loeschen von Dauerauftraegen, die lokal zwar

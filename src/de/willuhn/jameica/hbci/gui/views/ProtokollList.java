@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/LastschriftList.java,v $
- * $Revision: 1.4 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/ProtokollList.java,v $
+ * $Revision: 1.1 $
  * $Date: 2005/05/02 23:56:45 $
  * $Author: web0 $
  * $Locker:  $
@@ -17,17 +17,17 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.Back;
-import de.willuhn.jameica.hbci.gui.action.LastschriftNew;
-import de.willuhn.jameica.hbci.gui.controller.LastschriftControl;
+import de.willuhn.jameica.hbci.gui.controller.KontoControl;
+import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Zeigt eine Liste mit den vorhandenen Lastschrift an.
+ * Zeigt eine Liste der Protokoll-Eintraege eines Kontos an.
  */
-public class LastschriftList extends AbstractView {
+public class ProtokollList extends AbstractView {
 
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
@@ -36,23 +36,33 @@ public class LastschriftList extends AbstractView {
 
 		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-		GUI.getView().setTitle(i18n.tr("Vorhandene Einzel-Lastschriften"));
+    KontoControl control = new KontoControl(this);
+
+    Konto k = control.getKonto();
+    if (k != null)
+    {
+      String s1 = k.getBezeichnung();
+      if (s1 == null) s1 = "";
+
+      String s2 = k.getKontonummer();
+      GUI.getView().setTitle(i18n.tr("Protokoll des Kontos: {0} [Ktr.-Nr.: {1}]",new String[]{s1,s2}));
+    }
+    else
+      GUI.getView().setTitle(i18n.tr("Protokoll des Kontos"));
 		
-		LastschriftControl control = new LastschriftControl(this);
 		
 		try {
 
-			control.getLastschriftListe().paint(getParent());
+			control.getProtokoll().paint(getParent());
 
-			ButtonArea buttons = new ButtonArea(getParent(),2);
-      buttons.addButton(i18n.tr("Zurück"),new Back());
-			buttons.addButton(i18n.tr("neue Lastschrift"),new LastschriftNew());
+			ButtonArea buttons = new ButtonArea(getParent(),1);
+			buttons.addButton(i18n.tr("Zurück"),new Back(),null,true);
 
 		}
 		catch (Exception e)
 		{
-			Logger.error("error while loading lastschrift list",e);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Lesen der Lastschriften."));
+			Logger.error("error while loading protocol",e);
+			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Lesen des Konto-Protokolls."));
 		}
   }
 
@@ -66,19 +76,10 @@ public class LastschriftList extends AbstractView {
 
 
 /**********************************************************************
- * $Log: LastschriftList.java,v $
- * Revision 1.4  2005/05/02 23:56:45  web0
+ * $Log: ProtokollList.java,v $
+ * Revision 1.1  2005/05/02 23:56:45  web0
  * @B bug 66, 67
  * @C umsatzliste nach vorn verschoben
  * @C protokoll nach hinten verschoben
- *
- * Revision 1.3  2005/03/09 01:07:02  web0
- * @D javadoc fixes
- *
- * Revision 1.2  2005/02/28 16:28:24  web0
- * @N first code for "Sammellastschrift"
- *
- * Revision 1.1  2005/01/19 00:16:04  willuhn
- * @N Lastschriften
  *
  **********************************************************************/

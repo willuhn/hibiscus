@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.48 $
- * $Date: 2005/03/30 23:26:28 $
+ * $Revision: 1.49 $
+ * $Date: 2005/05/02 23:56:45 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -319,17 +319,33 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    */
   public DBIterator getUmsaetze() throws RemoteException {
 		DBIterator list = getService().createList(Umsatz.class);
-		list.addFilter("konto_id = " + getID() + " ORDER BY TONUMBER(datum) DESC");
+		list.addFilter("konto_id = " + getID());
+    list.setOrder(" ORDER BY TONUMBER(valuta) DESC");
 		return list;
   }
 
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Konto#getUmsaetze(int)
+   */
+  public DBIterator getUmsaetze(int days) throws RemoteException {
+    if (days <= 0)
+      return getUmsaetze();
+
+    long d = days * 24l * 60l * 60l * 1000l;
+    DBIterator list = getService().createList(Umsatz.class);
+    list.addFilter("konto_id = " + getID());
+    list.addFilter("TONUMBER(valuta) > " + (System.currentTimeMillis() - d));
+    list.setOrder("ORDER BY TONUMBER(valuta) DESC");
+    return list;
+  }
 
 	/**
    * @see de.willuhn.jameica.hbci.rmi.Konto#getUeberweisungen()
    */
   public DBIterator getUeberweisungen() throws RemoteException {
 		DBIterator list = getService().createList(Ueberweisung.class);
-		list.addFilter("konto_id = " + getID() + " ORDER BY TONUMBER(termin) DESC");
+		list.addFilter("konto_id = " + getID());
+    list.setOrder("ORDER BY TONUMBER(termin) DESC");
 		return list;
 	}
 
@@ -397,7 +413,8 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    */
   public DBIterator getProtokolle() throws RemoteException {
 		DBIterator list = getService().createList(Protokoll.class);
-		list.addFilter("konto_id = " + getID() + " ORDER BY TONUMBER(datum) DESC");
+		list.addFilter("konto_id = " + getID());
+    list.setOrder("ORDER BY TONUMBER(datum) DESC");
 		return list;
   }
   /**
@@ -477,6 +494,11 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.49  2005/05/02 23:56:45  web0
+ * @B bug 66, 67
+ * @C umsatzliste nach vorn verschoben
+ * @C protokoll nach hinten verschoben
+ *
  * Revision 1.48  2005/03/30 23:26:28  web0
  * @B bug 29
  * @B bug 30

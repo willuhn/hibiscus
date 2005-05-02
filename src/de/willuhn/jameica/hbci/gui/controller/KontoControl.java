@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.53 $
- * $Date: 2005/04/05 21:51:54 $
+ * $Revision: 1.54 $
+ * $Date: 2005/05/02 23:56:45 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -17,17 +17,13 @@ import java.util.Date;
 
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.TableItem;
 import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.pseudo.PseudoIterator;
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
-import de.willuhn.jameica.gui.formatter.DateFormatter;
-import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
@@ -39,11 +35,13 @@ import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.PassportRegistry;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.KontoFetchFromPassport;
+import de.willuhn.jameica.hbci.gui.action.KontoNew;
 import de.willuhn.jameica.hbci.gui.action.PassportDetail;
-import de.willuhn.jameica.hbci.gui.menus.KontoList;
+import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
+import de.willuhn.jameica.hbci.gui.parts.ProtokollList;
+import de.willuhn.jameica.hbci.gui.parts.UmsatzList;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -71,8 +69,10 @@ public class KontoControl extends AbstractControl {
 
 	private TablePart kontoList						= null;
 	private TablePart protokoll						= null;
+  private TablePart umsatzList          = null;
 
 	private I18N i18n;
+
   /**
    * ct.
    * @param view
@@ -119,32 +119,23 @@ public class KontoControl extends AbstractControl {
 		if (protokoll != null)
 			return protokoll;
 
-		protokoll = new TablePart(getKonto().getProtokolle(),null);
-		protokoll.setFormatter(new TableFormatter() {
-			public void format(TableItem item) {
-				Protokoll p = (Protokoll) item.getData();
-				if (p == null) return;
-				try {
-					if (p.getTyp() == Protokoll.TYP_ERROR)
-					{
-						item.setForeground(Color.ERROR.getSWTColor());
-					}
-					else if (p.getTyp() == Protokoll.TYP_SUCCESS)
-					{
-						item.setForeground(Color.SUCCESS.getSWTColor());
-					}
-				}
-				catch (RemoteException e)
-				{
-				}
-			}
-		});
-		protokoll.addColumn(i18n.tr("Datum"),"datum",new DateFormatter(HBCI.LONGDATEFORMAT));
-		protokoll.addColumn(i18n.tr("Kommentar"),"kommentar");
-		protokoll.disableSummary();
+		protokoll = new ProtokollList(getKonto(),null);
 		return protokoll;
-
 	}
+
+  /**
+   * Liefert eine Tabelle mit den Umsaetzen des Kontos.
+   * @return Tabelle.
+   * @throws RemoteException
+   */
+  public Part getUmsatzList() throws RemoteException
+  {
+    if (umsatzList != null)
+      return umsatzList;
+
+    umsatzList = new UmsatzList(getKonto(),30,new UmsatzDetail());
+    return umsatzList;
+  }
 
 	/**
 	 * Liefert das Eingabe-Feld fuer die Kontonummer.
@@ -297,30 +288,7 @@ public class KontoControl extends AbstractControl {
 		if (kontoList != null)
 			return kontoList;
 
-		DBIterator list = Settings.getDBService().createList(Konto.class);
-
-		kontoList = new TablePart(list,new de.willuhn.jameica.hbci.gui.action.KontoNew());
-		kontoList.addColumn(i18n.tr("Kontonummer"),"kontonummer");
-		kontoList.addColumn(i18n.tr("Bankleitzahl"),"blz");
-		kontoList.addColumn(i18n.tr("Bezeichnung"),"bezeichnung");
-		kontoList.addColumn(i18n.tr("Kontoinhaber"),"name");
-		kontoList.addColumn(i18n.tr("Saldo"),"saldo");
-		kontoList.setFormatter(new TableFormatter()
-    {
-      public void format(TableItem item)
-      {
-      	Konto k = (Konto) item.getData();
-				try {
-					item.setText(4,HBCI.DECIMALFORMAT.format(k.getSaldo()) + " " + k.getWaehrung());
-				}
-				catch (RemoteException e)
-				{
-					Logger.error("error while formatting saldo",e);
-				}
-      }
-    });
-    
-		kontoList.setContextMenu(new KontoList());
+    kontoList = new de.willuhn.jameica.hbci.gui.parts.KontoList(new KontoNew());
 		return kontoList;
 	}
 
@@ -458,6 +426,11 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.54  2005/05/02 23:56:45  web0
+ * @B bug 66, 67
+ * @C umsatzliste nach vorn verschoben
+ * @C protokoll nach hinten verschoben
+ *
  * Revision 1.53  2005/04/05 21:51:54  web0
  * @B Begrenzung aller BLZ-Eingaben auf 8 Zeichen
  *

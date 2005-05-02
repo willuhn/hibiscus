@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SammelLastschriftControl.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/03/05 19:11:25 $
+ * $Revision: 1.6 $
+ * $Date: 2005/05/02 23:56:45 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -23,8 +23,6 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.CalendarDialog;
 import de.willuhn.jameica.gui.dialogs.ListDialog;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
-import de.willuhn.jameica.gui.formatter.DateFormatter;
-import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
@@ -37,7 +35,6 @@ import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.SammelLastBuchungNew;
 import de.willuhn.jameica.hbci.gui.action.SammelLastschriftNew;
 import de.willuhn.jameica.hbci.gui.menus.SammelLastBuchungList;
-import de.willuhn.jameica.hbci.gui.menus.SammelLastschriftList;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.Terminable;
@@ -103,40 +100,7 @@ public class SammelLastschriftControl extends AbstractControl
     if (table != null)
       return table;
 
-    DBIterator list = Settings.getDBService().createList(SammelLastschrift.class);
-
-    table = new TablePart(list,new SammelLastschriftNew());
-    table.setFormatter(new TableFormatter() {
-      public void format(TableItem item) {
-        SammelLastschrift l = (SammelLastschrift) item.getData();
-        if (l == null)
-          return;
-
-        try {
-          if (l.getTermin().before(new Date()) && !l.ausgefuehrt())
-          {
-            item.setForeground(Settings.getUeberfaelligForeground());
-          }
-        }
-        catch (RemoteException e) { /*ignore */}
-      }
-    });
-    table.addColumn(i18n.tr("Empfänger-Konto"),"konto_id");
-    table.addColumn(i18n.tr("Bezeichnung"),"bezeichnung");
-    table.addColumn(i18n.tr("Enthaltene Buchungen"),"buchungen");
-    table.addColumn(i18n.tr("Termin"),"termin", new DateFormatter(HBCI.LONGDATEFORMAT));
-    table.addColumn(i18n.tr("Status"),"ausgefuehrt",new Formatter() {
-      public String format(Object o) {
-        try {
-          int i = ((Integer) o).intValue();
-          return i == 1 ? i18n.tr("ausgeführt") : i18n.tr("offen");
-        }
-        catch (Exception e) {}
-        return ""+o;
-      }
-    });
-  
-    table.setContextMenu(new SammelLastschriftList());
+    table = new de.willuhn.jameica.hbci.gui.parts.SammelLastschriftList(new SammelLastschriftNew());
     return table;
   }
 
@@ -326,6 +290,11 @@ public class SammelLastschriftControl extends AbstractControl
 
 /*****************************************************************************
  * $Log: SammelLastschriftControl.java,v $
+ * Revision 1.6  2005/05/02 23:56:45  web0
+ * @B bug 66, 67
+ * @C umsatzliste nach vorn verschoben
+ * @C protokoll nach hinten verschoben
+ *
  * Revision 1.5  2005/03/05 19:11:25  web0
  * @N SammelLastschrift-Code complete
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoNew.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/03/09 01:07:02 $
+ * $Revision: 1.3 $
+ * $Date: 2005/05/02 23:56:45 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -23,9 +23,11 @@ import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.KontoDelete;
-import de.willuhn.jameica.hbci.gui.action.KontoFetchSaldo;
+import de.willuhn.jameica.hbci.gui.action.KontoFetchUmsaetze;
+import de.willuhn.jameica.hbci.gui.action.ProtokollList;
 import de.willuhn.jameica.hbci.gui.action.UmsatzList;
 import de.willuhn.jameica.hbci.gui.controller.KontoControl;
+import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -43,9 +45,19 @@ public class KontoNew extends AbstractView {
 		
 		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-		GUI.getView().setTitle(i18n.tr("Bankverbindung bearbeiten"));
-		
-		final KontoControl control = new KontoControl(this);
+    final KontoControl control = new KontoControl(this);
+
+    Konto k = control.getKonto();
+    if (k != null)
+    {
+      String s1 = k.getBezeichnung();
+      if (s1 == null) s1 = "";
+
+      String s2 = k.getKontonummer();
+      GUI.getView().setTitle(i18n.tr("Konto-Details: {0} [Ktr.-Nr.: {1}]",new String[]{s1,s2}));
+    }
+    else
+  		GUI.getView().setTitle(i18n.tr("Konto-Details"));
 
 		try {
 
@@ -60,8 +72,9 @@ public class KontoNew extends AbstractView {
 			group.addLabelPair(i18n.tr("Sicherheitsmedium"),    		control.getPassportAuswahl());
 
 			// und noch die Abschicken-Knoepfe
-			ButtonArea buttonArea = group.createButtonArea(3);
+			ButtonArea buttonArea = group.createButtonArea(4);
 			buttonArea.addButton(i18n.tr("Zurück"),new Back());
+      buttonArea.addButton(i18n.tr("Protokoll des Kontos"),new ProtokollList(),control.getKonto());
 			buttonArea.addButton(i18n.tr("Konto löschen"),new KontoDelete(),control.getKonto());
 			buttonArea.addButton(i18n.tr("Speichern"),new Action()
       {
@@ -69,7 +82,7 @@ public class KontoNew extends AbstractView {
         {
         	control.handleStore();
         }
-      },null,true);
+      });
 
 
 			LabelGroup saldo = new LabelGroup(getParent(),i18n.tr("Finanzstatus"));
@@ -78,11 +91,11 @@ public class KontoNew extends AbstractView {
 			saldo.addLabelPair(i18n.tr("letzte Aktualisierung"),		control.getSaldoDatum());
 
 			ButtonArea buttons = saldo.createButtonArea(2);
-			buttons.addButton(i18n.tr("Saldo aktualisieren"), new KontoFetchSaldo(),control.getKonto());
-			buttons.addButton(i18n.tr("Kontoauszüge"), 				new UmsatzList(),control.getKonto());
+			buttons.addButton(i18n.tr("Saldo und Umsätze abrufen"), new KontoFetchUmsaetze(),control.getKonto(),true);
+			buttons.addButton(i18n.tr("Alle Umsätze anzeigen"), 	  new UmsatzList(),control.getKonto());
 
-			new Headline(getParent(),i18n.tr("Protokoll des Kontos"));
-			control.getProtokoll().paint(getParent());
+      new Headline(getParent(),i18n.tr("Umsätze der letzten 30 Tage"));
+      control.getUmsatzList().paint(getParent());
 
 			control.init();
 			
@@ -106,6 +119,11 @@ public class KontoNew extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoNew.java,v $
+ * Revision 1.3  2005/05/02 23:56:45  web0
+ * @B bug 66, 67
+ * @C umsatzliste nach vorn verschoben
+ * @C protokoll nach hinten verschoben
+ *
  * Revision 1.2  2005/03/09 01:07:02  web0
  * @D javadoc fixes
  *

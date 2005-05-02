@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzControl.java,v $
- * $Revision: 1.23 $
- * $Date: 2005/03/21 23:09:34 $
+ * $Revision: 1.24 $
+ * $Date: 2005/05/02 23:56:45 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -14,18 +14,11 @@ package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
 
-import org.eclipse.swt.widgets.TableItem;
-
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Part;
-import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
-import de.willuhn.jameica.gui.formatter.DateFormatter;
-import de.willuhn.jameica.gui.formatter.TableFormatter;
-import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.menus.UmsatzList;
+import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.system.Application;
@@ -76,36 +69,7 @@ public class UmsatzControl extends AbstractControl {
    */
   public Part getUmsatzListe() throws RemoteException
 	{
-		TablePart table = new TablePart(getKonto().getUmsaetze(),new de.willuhn.jameica.hbci.gui.action.UmsatzDetail());
-		table.setFormatter(new TableFormatter() {
-      public void format(TableItem item) {
-      	Umsatz u = (Umsatz) item.getData();
-      	if (u == null) return;
-				try {
-					if (u.getBetrag() < 0.0)
-					{
-						item.setForeground(Settings.getBuchungSollForeground());
-					}
-					else
-					{
-						item.setForeground(Settings.getBuchungHabenForeground());
-					}
-				}
-				catch (RemoteException e)
-				{
-				}
-      }
-    });
-    // BUGZILLA 23 http://www.willuhn.de/bugzilla/show_bug.cgi?id=23
-		table.addColumn(i18n.tr("Gegenkonto"),"empfaenger_name");
-		table.addColumn(i18n.tr("Betrag"),"betrag",
-			new CurrencyFormatter(getKonto().getWaehrung(),HBCI.DECIMALFORMAT));
-		table.addColumn(i18n.tr("Verwendungszweck"),"zweck");
-		table.addColumn(i18n.tr("Datum"),"datum",new DateFormatter(HBCI.DATEFORMAT));
-		table.addColumn(i18n.tr("Valuta"),"valuta",new DateFormatter(HBCI.DATEFORMAT));
-
-		table.setContextMenu(new UmsatzList());
-		return table;
+    return new de.willuhn.jameica.hbci.gui.parts.UmsatzList(getKonto(),new UmsatzDetail());
 	}
 
 }
@@ -113,6 +77,11 @@ public class UmsatzControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzControl.java,v $
+ * Revision 1.24  2005/05/02 23:56:45  web0
+ * @B bug 66, 67
+ * @C umsatzliste nach vorn verschoben
+ * @C protokoll nach hinten verschoben
+ *
  * Revision 1.23  2005/03/21 23:09:34  web0
  * @B bug 23
  *

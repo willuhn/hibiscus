@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Konto.java,v $
- * $Revision: 1.21 $
- * $Date: 2005/02/27 17:11:49 $
+ * $Revision: 1.22 $
+ * $Date: 2005/05/02 23:56:45 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -154,6 +154,14 @@ public interface Konto extends DBObject,Checksum
    */
   public DBIterator getUmsaetze() throws RemoteException;
 
+  /**
+   * Liefert eine Liste aller Umsaetze fuer die letzten x Tage.
+   * @param days Anzahl der Tage.
+   * @return Umsatzliste.
+   * @throws RemoteException
+   */
+  public DBIterator getUmsaetze(int days) throws RemoteException;
+
 	/**
 	 * Liefert eine Liste aller Ueberweisungen, die ueber dieses Konto getaetigt wurden.
 	 * @return Ueberweisungsliste.
@@ -211,6 +219,11 @@ public interface Konto extends DBObject,Checksum
 
 /**********************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.22  2005/05/02 23:56:45  web0
+ * @B bug 66, 67
+ * @C umsatzliste nach vorn verschoben
+ * @C protokoll nach hinten verschoben
+ *
  * Revision 1.21  2005/02/27 17:11:49  web0
  * @N first code for "Sammellastschrift"
  * @C "Empfaenger" renamed into "Adresse"
