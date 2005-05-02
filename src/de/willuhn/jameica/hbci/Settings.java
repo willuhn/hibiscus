@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.31 $
- * $Date: 2005/03/05 19:11:25 $
+ * $Revision: 1.32 $
+ * $Date: 2005/05/02 11:54:09 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -190,7 +190,7 @@ public class Settings
    */
   public static boolean getOnlineMode()
   {
-    return settings.getBoolean("online",true);
+    return settings.getBoolean("online",false);
   }
 
 	/**
@@ -230,6 +230,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.32  2005/05/02 11:54:09  web0
+ * *** empty log message ***
+ *
  * Revision 1.31  2005/03/05 19:11:25  web0
  * @N SammelLastschrift-Code complete
  *
