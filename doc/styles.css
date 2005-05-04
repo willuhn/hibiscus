@@ -1,0 +1,161 @@
+body  {
+  background-color        : #ffffff;
+  background-attachment   : fixed;
+  color                   : #000000;
+  margin                  : 10px;
+  font-family             : Verdana, Helvetica, Arial;
+  font-size               : 9pt;
+}
+
+p,h1,h2,h3,h4,ul,ol,li,div,td,th,address,blockquote,nobr,b,i {
+  font-family             : Verdana, Helvetica, Arial;
+  color                   : #000000;
+  font-size               : 9pt;
+}
+
+/* BEGIN Default table */
+table {
+}
+th {
+  text-align               : left;
+}
+td {
+  vertical-align           : top;
+  text-align               : left;
+}
+/* END Default table */
+
+
+/* BEGIN Daten-Tabellen */
+table.data {
+  width                    : 100%;
+  border                   : 1px solid #E0E0E0;
+  margin-top               : 14px;
+  margin-bottom            : 14px;
+}
+table.data th {
+  color                    : #ffffff;
+  padding-left             : 3px;
+  padding-right            : 10px;
+  background-color         : #b0b0a0;
+}
+table.data td {
+  background               : #f8f8f8;
+  margin                   : 0px;
+  padding-left             : 3px;
+  padding-right            : 10px;
+  font-size                : 7pt;
+  color                    : #505050;
+}
+/* END Daten-Tabellen */
+
+
+ol,ul {
+  list-style-position      : outside;
+  margin-top               : 5px;
+  margin-bottom            : 10px;
+}
+
+ul {
+  list-style-type          : disk;
+}
+
+span.klickpath {
+  background                : #f9f9f9;
+  border                    : 1px solid #a7a7a7;
+  padding-left              : 2px;
+  padding-right             : 2px;
+  font-size                 : 9pt;
+}
+li {
+  margin                    : 20px;
+}
+
+h1 {
+  color                    : #d76B00;
+  font-weight              : bold;
+  font-size                : 10pt;
+  margin-top               : 10px;
+  margin-bottom            : 30px;
+}
+
+h2 {
+  color                    : #909090;
+  font-weight              : bold;
+  font-size                : 9pt;
+  margin-top               : 30px;
+  margin-bottom            : 20px;
+}
+
+h3 {
+  font-weight              : normal;
+  font-size                : 7pt;
+  margin-top               : 5px;
+  margin-bottom            : 0px;
+}
+
+fieldset.warning
+{
+  color        : #800000;
+}
+
+fieldset.warning legend
+{
+  color                    : #900000;
+  font-weight              : bold;
+}
+
+div.comment {
+  margin-top               : 4px;
+  margin-bottom            : 4px;
+  padding-left             : 4px;
+  padding-top              : 2px;
+  border                   : 1px solid #E0E0E0;
+  font-size                : 7pt;
+  color                    : #707070;
+}
+
+div.box {
+  margin-top               : 4px;
+  margin-bottom            : 4px;
+  padding-left             : 4px;
+  padding-top              : 2px;
+  border                   : 1px solid #E0E0E0;
+  color                    : #404040;
+}
+
+pre {
+  margin-top               : 4px;
+  margin-bottom            : 4px;
+  padding                  : 4px;
+  border                   : 1px solid #E0E0E0;
+  font-family              : BitStream Vera Sans Mono, Terminal [DEC], Courier New, Courier;
+  font-size                : 8pt;
+  color                    : #505050;
+}
+
+a:link  {
+  color                    : #000088;
+  text-decoration          : none;
+}
+
+a:visited  {
+  color                    : #808080;
+  text-decoration          : none;
+}
+
+a:hover {
+  color                    : #0000dd;
+  text-decoration          : none;
+}
+
+a:active {
+  color                    : #0000dd;
+  text-decoration          : none;
+}
+
+a:focus {
+  color                    : #0000dd;
+  text-decoration          : none;
+}
+

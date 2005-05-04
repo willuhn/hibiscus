@@ -1,0 +1,221 @@
+<html>
+  <head>
+    <title>Hibiscus Dokumentation</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="language" content="de">
+    <meta name="author" content="Olaf Willuhn">
+    <link rel=stylesheet type="text/css" href="styles.css">
+  </head>
+
+  <body>
+
+  <h1>Installation</h1>
+  
+  <h2>Systemvoraussetzungen</h2>
+
+  <ul>
+    <li>
+      Java 1.4 oder hoeher (JRE oder SDK)
+    
+      <br/>
+      Geben Sie &quot;java -version&quot; an einer Shell (Windows: Eingabeaufforderung)
+      ein um die Version zu ueberprüfen.
+    
+      <br/>
+      Java können Sie von http://java.sun.com/j2se/index.jsp herunterladen.
+    </li>
+    
+    <li>
+      Jameica
+      <br/>
+      Kann von http://www.jameica.org heruntergeladen werden.
+    </li>
+  </ul>
+  
+  <h2>Installation und Konfiguration</h2>
+  
+  <ol>
+    <li>
+      Kopieren Sie den Inhalt dieser ZIP-Datei in das Verzeichnis &quot;plugins&quot;
+      innerhalb Ihrer Jameica-Installation.
+      <br/>
+      z.Bsp.:
+      
+      <table class="data">
+        <tr>
+          <td>Windows</td>
+          <td>C:\Progamme\jameica\plugins</td>
+        </tr>
+        <tr>
+          <td>Linux</td>
+          <td>/opt/jameica/plugins</td>
+        </tr>
+      </table>
+    </li>
+    
+    <li>
+      Starten Sie nun Jameica. Falls Sie die Anwendung zum ersten Mal starten,
+      werden Sie zur Neueingabe eines Master-Passwortes aufgefordert. Mithilfe
+      dieses Passwortes werden alle streng vertraulichen Informationen
+      verschlüsselt. Wählen Sie also bitte ein hinreichend sicheres
+      Passwort. Merken Sie es sich gut. Sie können es nachträglich auch
+      über <span class="klickpath">Datei&raquo;Master-Passwort ändern</span>
+      ändern.
+    <li>
+      Der Start sollte nun einige Sekunden länger dauern. Währenddessen wird
+      im Splashscreen der aktuelle Installations-Status des Plugins angezeigt.
+    </li>
+
+    <li>
+      Wählen Sie nun im Menu <span class="klickpath">Plugins&raquo;Hibiscus&raquo;Einstellungen</span>.
+      Klicken Sie in der Liste der verfügbaren Sicherheitsmedien (Chipkarte, PIN/TAN, Schlüsseldiskette)
+      doppelt auf das gewünschte Medium um den Konfigurations-Dialog zu öffnen und legen
+      Sie ein neues Sicherheitsmedium an. Klicken Sie anschliessend auf den Test-Button
+      um die korrekte Einrichtung zu prüfen.
+    
+      <div class="comment">
+        Nur Linux:
+        Beachten Sie bitte bei der Verwendung eines Chipkartenlesers, dass Sie mit
+        Ihrem Benutzer-Account Schreibrechte auf dem entsprechenden Device (serieller Port)
+        benötigen. Ändern Sie diese ggf. zum Beispiel durch folgend Befehl (als Root) ab:
+
+        <pre>$ chgrp users /dev/ttyS0 /dev/ttyS1; chmod 775 /dev/ttyS0 /dev/ttyS1</pre>
+      </div>
+
+    </li>
+    
+    <li>
+      Wechseln Sie in der Navigation zu <span class="klickpath">Jameica&raquo;Hibiscus&raquo;Konten</span>
+      um die Liste der verfügbaren Konten anzuzeigen. Wählen Sie in dem Kasten
+      &quot;Konten aus Medium lesen&quot; das soeben konfigurierte Medium aus und
+      klicken Sie auf &quot;Daten aus Medium lesen&quot;. Insofern Ihre Bank
+      dies unterstützt werden nun die verfügbaren Bankverbindungen automatisch
+      ermittelt. Sie werden ggf. zur Eingabe Ihrer PIN aufgefordert.
+      Falls Ihre Bank das Abrufen der Kontenliste nicht unterstützt, legen
+      Sie die gewünschten Bankverbindungen bitte manuell über den Button
+      &quot;Neue Bankverbindung&quot; an.
+    </li>
+    
+    <li>
+      Nachdem Sie durch Doppelklick auf eines der Konten die Detail-Ansicht
+      geöffnet haben, können Sie über &quot;Saldo und Umsätze abrufen&quot;
+      wählen.
+    </li>
+  </ol>
+  
+  <h2>Installation zusätzlicher Sicherheitsmedien</h2>
+  
+  Hibiscus enthält bereits die Unterstützung für
+  das Sicherheitsmedium DDV (Chipkarte mit synchronen Schluesseln),
+  Schlüsseldiskette und PIN/TAN. Die Installation weiterer Sicherheitsmedien
+  (insofern diese als Plugin für Hibiscus existieren) beschränkt sich i.d.R.
+  auf das Kopieren der Dateien in das Verzeichnis "lib". z.Bsp.:
+  
+  <table class="data">
+    <tr>
+      <td>Windows</td>
+      <td>C:\Progamme\jameica\plugins\hibiscus\lib</td>
+    </tr>
+    <tr>
+      <td>Linux</td>
+      <td>/opt/jameica/plugins/hibiscus/lib</td>
+    </tr>
+  </table>
+
+  Beim erneuten Start von Hibiscus werden diese automatisch erkannt unter
+  <span class="klickpath">Plugins&raquo;Hibiscus&raquo;Einstellungen</span>  
+  aufgelistet. Sollte das installierte Medium dort nicht erscheinen, prüfen Sie
+  die Log-Ausgaben von Jameica (entweder durch Öffnen der Log-Datei im Work-Verzeichnis
+  oder durch Klick auf den linken Bereich der Statusleiste von Jameica). Senden
+  Sie diese bitte an den Autor.
+  <br/>
+  Weitere Hinweise zur Installation entnehmen Sie bitte der Dokumentation
+  des jeweiligen Sicherheitsmediums.
+
+  <h2>Sicherheitshinweise</h2>
+
+  Hibiscus verwendet eine integrierte SQL-Datenbank (McKoi) zur Speicherung
+  der Konten, Bankverbindungen, Salden und Ueberweisungen. Die Daten werden
+  im &quot;Work&quot;-Verzeichnis von Jameica abgelegt. Das ist i.d.R.
+  
+  <table class="data">
+    <tr>
+      <td>Windows</td>
+      <td>C:\Dokumente und Einstellungen\&lt;benutzername&gt;\.jameica\hibiscus\db</td>
+    </tr>
+    <tr>
+      <td>Linux</td>
+      <td>/home/&lt;benutzername&gt;/.jameica/hibiscus/db</td>
+    </tr>
+  </table>
+
+  Diese Informationen werden unverschlüsselt in der Datenbank abgelegt.
+  Passen Sie also ggf. die Dateiberechtigungen so an, dass Sie nur von
+  Ihrem Benutzer-Account gelesen werden koennen bzw. achten Sie darauf,
+  dass die Daten nicht fuer Dritte zugaenglich sind.
+
+  String vertrauliche Informationen wie Passwörter, PIN oder TANs werden
+  jedoch grundätzlich gar nicht oder verschlüsselt gespeichert.
+
+  <h2>Hardware Support-Matrix</h2>
+
+  Durch die verschiedenen auf dem Markt erhältlichen Chipkartenleser und
+  unterschiedlichen Betriebssysteme ergibt sich eine Vielzahl von
+  Kombinationsmöglichkeiten. Derzeit ist hiervon nur ein Bruchteil
+  getestet. Prinziell sollte die Software aber überall funktionieren.
+  Mangels Testhardware und Software ist es mir leider nicht möglich, all
+  diese Kombinationen zu prüfen.
+
+  <br/><br/>
+  Bisher getestet:
+  
+  <table class="data">
+    <tr>
+      <th>Chipkartenleser</th>
+      <th>Betriebssystem</th>
+      <th>Status</th>
+    </tr>
+    <tr>
+      <td>Towitoko Kartenzwerg / Chipdrive Micro</td>
+      <td>Linux (GLIBC 2.2)</td>
+      <td>OK</td>
+    </tr>
+    <tr>
+      <td>Towitoko Kartenzwerg / Chipdrive Micro</td>
+      <td>Linux (GLIBC 2.3)</td>
+      <td>OK</td>
+    </tr>
+    <tr>
+      <td>Towitoko Kartenzwerg / Chipdrive Micro</td>
+      <td>Windows</td>
+      <td>CTAPI-Treiber ungetestet</td>
+    </tr>
+    <tr>
+      <td>Kaan Standard Plus USB</td>
+      <td>Linux (GLIBC 2.3)</td>
+      <td>OK</td>
+    </tr>
+    <tr>
+      <td>Kaan Standard Plus USB</td>
+      <td>Windows</td>
+      <td>OK</td>
+    </tr>
+    <tr>
+      <td>Chipdrive Pinpad / SCM SPR 332</td>
+      <td>Windows</td>
+      <td>OK</td>
+    </tr>
+    <tr>
+      <td>Chipdrive Pinpad / SCM SPR 332</td>
+      <td>Linux</td>
+      <td>kein CTAPI-Treiber gefunden</td>
+    </tr>
+  </table>
+  
+  Sollten Sie Hibiscus erfolgreich mit einem hier nicht aufgeführten
+  Chipkartenleser im Einsatz haben, dann schreiben Sie mir das bitte
+  an <a href="mailto:hibiscus@willuhn.de">hibiscus@willuhn.de</a> damit
+  ich diese Liste verfollständigen kann.
+  
+  </body>
+</html>
