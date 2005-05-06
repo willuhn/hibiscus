@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.24 $
- * $Date: 2005/02/28 15:30:47 $
+ * $Revision: 1.25 $
+ * $Date: 2005/05/06 14:05:04 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -212,6 +212,7 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 					break;
 
 				case HAVE_INST_MSG:
+          // BUGZILLA 68 http://www.willuhn.de/bugzilla/show_bug.cgi?id=68
 					DialogFactory.openSimple(i18n.tr("Instituts-Nachricht"),msg);
 					break;
 
@@ -422,6 +423,9 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.25  2005/05/06 14:05:04  web0
+ * *** empty log message ***
+ *
  * Revision 1.24  2005/02/28 15:30:47  web0
  * @B Bugzilla #15
  *

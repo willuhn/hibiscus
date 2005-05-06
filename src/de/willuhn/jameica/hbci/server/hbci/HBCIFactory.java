@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.26 $
- * $Date: 2005/03/09 01:07:02 $
+ * $Revision: 1.27 $
+ * $Date: 2005/05/06 14:05:04 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -13,9 +13,9 @@
 package de.willuhn.jameica.hbci.server.hbci;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Properties;
+import java.util.Vector;
 
 import org.kapott.hbci.GV.HBCIJob;
 import org.kapott.hbci.manager.HBCIHandler;
@@ -40,12 +40,12 @@ public class HBCIFactory {
 	private static boolean inProgress = false;
 	private static boolean cancelled  = false;
 
-	private Object mutex = new Object();
 
 	private static I18N i18n;
 	private static HBCIFactory factory;
-  	private ArrayList jobs = new ArrayList();
-		private ArrayList exclusiveJobs = new ArrayList();
+  	private Vector jobs = new Vector();
+		private Vector exclusiveJobs = new Vector();
+    private Object mutex = new Object();
 
   /**
    * ct.
@@ -211,8 +211,8 @@ public class HBCIFactory {
 			finally
 			{
 				stop();
-				jobs = new ArrayList(); // Jobqueue leer machen.
-				exclusiveJobs = new ArrayList(); // Jobqueue leer machen.
+				jobs = new Vector(); // Jobqueue leer machen.
+				exclusiveJobs = new Vector(); // Jobqueue leer machen.
 				try {
 					handle.close();
 				}
@@ -319,6 +319,9 @@ public class HBCIFactory {
 
 /**********************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.27  2005/05/06 14:05:04  web0
+ * *** empty log message ***
+ *
  * Revision 1.26  2005/03/09 01:07:02  web0
  * @D javadoc fixes
  *
