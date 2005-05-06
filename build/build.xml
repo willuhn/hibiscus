@@ -145,6 +145,9 @@
 
 		<copy file="${build.dir}/README" tofile="${project.zipdir}/README" />
 		<copy file="${build.dir}/COPYING" tofile="${project.zipdir}/COPYING" />
+		<copy todir="${project.zipdir}/doc">
+			<fileset dir="doc" />
+		</copy>
 
 
 		<!-- Jetzt muessen wir noch das ZIP-File erzeugen und signieren -->
@@ -186,6 +189,7 @@
 			<fileset dir=".">
 				<include name=".project" />
 				<include name=".classpath" />
+				<include name="doc/**" />
 				<include name="${lib.dir}/**" />
 				<include name="${src.dir}/**" />
 				<include name="${build.dir}/**" />
