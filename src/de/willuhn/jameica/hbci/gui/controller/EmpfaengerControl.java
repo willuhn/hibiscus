@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EmpfaengerControl.java,v $
- * $Revision: 1.31 $
- * $Date: 2005/05/08 15:12:20 $
+ * $Revision: 1.32 $
+ * $Date: 2005/05/08 17:48:51 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.manager.HBCIUtils;
 
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
@@ -28,7 +29,10 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerNew;
+import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
+import de.willuhn.jameica.hbci.gui.parts.UmsatzList;
 import de.willuhn.jameica.hbci.rmi.Adresse;
+import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -47,6 +51,7 @@ public class EmpfaengerControl extends AbstractControl {
 	private Input name				= null;
 
   private Part list         = null;
+  private Part umsatzList   = null;
 
 	private I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
@@ -88,6 +93,26 @@ public class EmpfaengerControl extends AbstractControl {
     list = new de.willuhn.jameica.hbci.gui.parts.EmpfaengerList(new EmpfaengerNew());
     return list;
 	}
+
+  // BUGZILLA 56 http://www.willuhn.de/bugzilla/show_bug.cgi?id=56
+  /**
+   * Liefert eine Liste von allen Umsaetzen an/von diese/dieser Adresse.
+   * @return Tabelle.
+   * @throws RemoteException
+   */
+  public Part getUmsatzListe() throws RemoteException
+  {
+    if (this.umsatzList != null)
+      return this.umsatzList;
+
+    // Wir ermitteln zuerst alle Konten und schauen dort jeweils nach den Umsaetzen
+    DBIterator umsaetze = Settings.getDBService().createList(Umsatz.class);
+    umsaetze.addFilter("empfaenger_konto = '" + getEmpfaenger().getKontonummer() + "'");
+    umsaetze.addFilter("empfaenger_blz = '" + getEmpfaenger().getBLZ() + "'");
+    umsaetze.setOrder(" ORDER BY TONUMBER(valuta) DESC");
+    this.umsatzList = new UmsatzList(umsaetze,new UmsatzDetail());
+    return this.umsatzList;
+  }
 
 	/**
 	 * Liefert das Eingabe-Feld fuer die Kontonummer.
@@ -188,6 +213,9 @@ public class EmpfaengerControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: EmpfaengerControl.java,v $
+ * Revision 1.32  2005/05/08 17:48:51  web0
+ * @N Bug 56
+ *
  * Revision 1.31  2005/05/08 15:12:20  web0
  * @B wrong action in EmpfaengerList
  *

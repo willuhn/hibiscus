@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/EmpfaengerNew.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/03/09 01:07:02 $
+ * $Revision: 1.4 $
+ * $Date: 2005/05/08 17:48:51 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.Back;
@@ -58,6 +59,10 @@ public class EmpfaengerNew extends AbstractView {
 			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Lesen der Empfängerdaten."));
 		}
 
+    
+    new Headline(getParent(),i18n.tr("Buchung von/an diese Adresse"));
+    control.getUmsatzListe().paint(getParent());
+
 		// und noch die Abschicken-Knoepfe
 		ButtonArea buttonArea = new ButtonArea(getParent(),3);
 		buttonArea.addButton(i18n.tr("Zurück"),new Back());
@@ -83,6 +88,9 @@ public class EmpfaengerNew extends AbstractView {
 
 /**********************************************************************
  * $Log: EmpfaengerNew.java,v $
+ * Revision 1.4  2005/05/08 17:48:51  web0
+ * @N Bug 56
+ *
  * Revision 1.3  2005/03/09 01:07:02  web0
  * @D javadoc fixes
  *

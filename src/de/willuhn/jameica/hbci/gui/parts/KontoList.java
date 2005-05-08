@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoList.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/05/02 23:56:45 $
+ * $Revision: 1.2 $
+ * $Date: 2005/05/08 17:48:51 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import java.rmi.RemoteException;
 
 import org.eclipse.swt.widgets.TableItem;
 
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
@@ -42,7 +43,7 @@ public class KontoList extends TablePart implements Part
    */
   public KontoList(Action action) throws RemoteException
   {
-    super(Settings.getDBService().createList(Konto.class), action);
+    super(init(), action);
     this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
     addColumn(i18n.tr("Kontonummer"),"kontonummer");
@@ -66,12 +67,22 @@ public class KontoList extends TablePart implements Part
     });
     setContextMenu(new de.willuhn.jameica.hbci.gui.menus.KontoList());
   }
+  
+  private static DBIterator init() throws RemoteException
+  {
+    DBIterator i = Settings.getDBService().createList(Konto.class);
+    i.setOrder("ORDER BY bezeichnung");
+    return i;
+  }
 
 }
 
 
 /**********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.2  2005/05/08 17:48:51  web0
+ * @N Bug 56
+ *
  * Revision 1.1  2005/05/02 23:56:45  web0
  * @B bug 66, 67
  * @C umsatzliste nach vorn verschoben

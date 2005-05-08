@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.54 $
- * $Date: 2005/05/02 23:56:45 $
+ * $Revision: 1.55 $
+ * $Date: 2005/05/08 17:48:51 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -213,7 +213,10 @@ public class KontoControl extends AbstractControl {
   {
     if (waehrung != null)
       return waehrung;
-    waehrung = new TextInput(getKonto().getWaehrung());
+    String w = getKonto().getWaehrung();
+    if (w == null || w.length() != 3)
+      w = HBCIProperties.CURRENCY_DEFAULT_DE;
+    waehrung = new TextInput(w);
     return waehrung;
   }
 
@@ -426,6 +429,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.55  2005/05/08 17:48:51  web0
+ * @N Bug 56
+ *
  * Revision 1.54  2005/05/02 23:56:45  web0
  * @B bug 66, 67
  * @C umsatzliste nach vorn verschoben
