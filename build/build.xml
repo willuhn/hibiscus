@@ -202,6 +202,8 @@
 
 	<target name="clean" description="cleanup">
 		<delete dir="${project.tmp}" />
+		<delete dir="${project.javadoc}" />
+		<delete dir="${project.zipdir}" />
 	</target>
 
 
