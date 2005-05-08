@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EmpfaengerControl.java,v $
- * $Revision: 1.30 $
- * $Date: 2005/05/02 23:56:45 $
+ * $Revision: 1.31 $
+ * $Date: 2005/05/08 15:12:20 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -27,6 +27,7 @@ import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.action.EmpfaengerNew;
 import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -84,7 +85,7 @@ public class EmpfaengerControl extends AbstractControl {
 	{
     if (list != null)
       return list;
-    list = new de.willuhn.jameica.hbci.gui.parts.EmpfaengerList(new de.willuhn.jameica.hbci.gui.action.EmpfaengerList());
+    list = new de.willuhn.jameica.hbci.gui.parts.EmpfaengerList(new EmpfaengerNew());
     return list;
 	}
 
@@ -187,6 +188,9 @@ public class EmpfaengerControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: EmpfaengerControl.java,v $
+ * Revision 1.31  2005/05/08 15:12:20  web0
+ * @B wrong action in EmpfaengerList
+ *
  * Revision 1.30  2005/05/02 23:56:45  web0
  * @B bug 66, 67
  * @C umsatzliste nach vorn verschoben
