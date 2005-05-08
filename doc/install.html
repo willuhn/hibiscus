@@ -47,14 +47,35 @@
           <td>C:\Progamme\jameica\plugins</td>
         </tr>
         <tr>
-          <td>Linux</td>
+          <td>Linux/Linux-AMD64/MacOS</td>
           <td>/opt/jameica/plugins</td>
         </tr>
       </table>
     </li>
     
     <li>
-      Starten Sie nun Jameica. Falls Sie die Anwendung zum ersten Mal starten,
+      Starten Sie nun Jameica mit dem entsprechenden Startscript für Ihre Betriebssystem:
+      
+      <table class="data">
+        <tr>
+          <td>Windows</td>
+          <td>C:\Progamme\jameica\jameica.bat</td>
+        </tr>
+        <tr>
+          <td>Linux</td>
+          <td>/opt/jameica/jameica.sh</td>
+        </tr>
+        <tr>
+          <td>Linux-AMD64</td>
+          <td>/opt/jameica/jameica-amd64.sh</td>
+        </tr>
+        <tr>
+          <td>MacOS</td>
+          <td>/opt/jameica/jameica-macos.sh</td>
+        </tr>
+      </table>
+      
+      Wenn Sie die Anwendung zum ersten Mal starten,
       werden Sie zur Neueingabe eines Master-Passwortes aufgefordert. Mithilfe
       dieses Passwortes werden alle streng vertraulichen Informationen
       verschlüsselt. Wählen Sie also bitte ein hinreichend sicheres
@@ -74,7 +95,7 @@
       um die korrekte Einrichtung zu prüfen.
     
       <div class="comment">
-        Nur Linux:
+        Nur Linux/Linux-AMD64:
         Beachten Sie bitte bei der Verwendung eines Chipkartenlesers, dass Sie mit
         Ihrem Benutzer-Account Schreibrechte auf dem entsprechenden Device (serieller Port)
         benötigen. Ändern Sie diese ggf. zum Beispiel durch folgend Befehl (als Root) ab:
@@ -117,7 +138,7 @@
       <td>C:\Progamme\jameica\plugins\hibiscus\lib</td>
     </tr>
     <tr>
-      <td>Linux</td>
+      <td>Linux/Linux-AMD64/MacOS</td>
       <td>/opt/jameica/plugins/hibiscus/lib</td>
     </tr>
   </table>
@@ -128,7 +149,8 @@
   die Log-Ausgaben von Jameica (entweder durch Öffnen der Log-Datei im Work-Verzeichnis
   oder durch Klick auf den linken Bereich der Statusleiste von Jameica). Senden
   Sie diese bitte an den Autor.
-  <br/>
+
+  <br/><br/>
   Weitere Hinweise zur Installation entnehmen Sie bitte der Dokumentation
   des jeweiligen Sicherheitsmediums.
 
@@ -144,18 +166,22 @@
       <td>C:\Dokumente und Einstellungen\&lt;benutzername&gt;\.jameica\hibiscus\db</td>
     </tr>
     <tr>
-      <td>Linux</td>
+      <td>Linux/Linux-AMD64/MacOS</td>
       <td>/home/&lt;benutzername&gt;/.jameica/hibiscus/db</td>
     </tr>
   </table>
 
   Diese Informationen werden unverschlüsselt in der Datenbank abgelegt.
   Passen Sie also ggf. die Dateiberechtigungen so an, dass Sie nur von
-  Ihrem Benutzer-Account gelesen werden koennen bzw. achten Sie darauf,
+  Ihrem Benutzer-Account gelesen werden können bzw. achten Sie darauf,
   dass die Daten nicht fuer Dritte zugaenglich sind.
 
+  <br/><br/>
   String vertrauliche Informationen wie Passwörter, PIN oder TANs werden
   jedoch grundätzlich gar nicht oder verschlüsselt gespeichert.
+
+  <br/><br/>
+  Erstellen Sie regelmässig Backups Ihres Workverzeichnisses.
 
   <h2>Hardware Support-Matrix</h2>
 
@@ -165,6 +191,9 @@
   getestet. Prinziell sollte die Software aber überall funktionieren.
   Mangels Testhardware und Software ist es mir leider nicht möglich, all
   diese Kombinationen zu prüfen.
+  <br/><br/>
+  Unter MacOS werden derzeit leider keine Chipkartenleser sondern nur
+  Schlüsseldiskette und PIN/TAN unterstützt.
 
   <br/><br/>
   Bisher getestet:
