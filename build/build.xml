@@ -207,21 +207,17 @@
 
 	<target name="sign" description="signs the jar/zip file">
 		<checksum file="${project.release}/${project.zipfilename}" />
-		<echo message="Creating PGP signature" />
+		<checksum file="${project.release}/${define.srcfilename}" />
+		<echo message="Creating PGP signatures" />
 		<exec executable="kgpg" failonerror="true" timeout="60000">
 			<arg line="-S ${project.release}/${project.zipfilename}" />
 		</exec>
-	</target>
-
-	<target name="signsrc" description="signs the source zip">
-		<checksum file="${project.release}/${define.srcfilename}" />
-		<echo message="Creating PGP signature" />
 		<exec executable="kgpg" failonerror="true" timeout="60000">
 			<arg line="-S ${project.release}/${define.srcfilename}" />
 		</exec>
 	</target>
 
-	<target depends="init,compile,cvstag,jar,sign,javadoc,src,signsrc,clean" description="build an official release" name="all" />
+	<target depends="init,compile,cvstag,jar,javadoc,src,sign,clean" description="build an official release" name="all" />
 
 	<target depends="init,compile,jar,src,clean" description="build inofficial release" name="fast" />
 
