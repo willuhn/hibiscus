@@ -33,27 +33,27 @@
 		<echo message="CVS-Tag: ${tag}" />
 		<echo message="BUILD  : ${build.number}" />
 
-		<property name="define.pluginname" value="hibiscus" />
-		<property name="define.jarfilename" value="hibiscus.jar" />
-		<property name="define.srcfilename" value="hibiscus.src.zip" />
-		<property name="define.javadocfilename" value="hibiscus.javadoc.zip" />
-		<property name="define.package" value="de.willuhn.jameica" />
+		<property name="define.pluginname" 			value="hibiscus" />
+		<property name="define.jarfilename" 		value="${define.pluginname}.jar" />
+		<property name="define.zipfilename" 		value="${define.pluginname}.zip" />
+		<property name="define.srcfilename" 		value="${define.pluginname}.src.zip" />
+		<property name="define.javadocfilename" 	value="${define.pluginname}.javadoc.zip" />
+		<property name="define.package" 			value="de.willuhn.jameica" />
 
-		<property name="project.release" value="releases/${version}-${build.number}" />
-		<property name="project.nightly" value="releases/nightly" />
-		<property name="project.src" value="${project.release}/src/classes" />
-		<property name="project.tmp" value="${project.release}/tmp" />
-		<property name="project.javadoc" value="${project.release}/javadoc" />
-		<property name="src.dir" value="src" />
-		<property name="icon.dir" value="${src.dir}/img" />
-		<property name="lang.dir" value="${src.dir}/lang" />
-		<property name="help.dir" value="${src.dir}/help" />
-		<property name="lib.dir" value="lib" />
-		<property name="sql.dir" value="sql" />
-		<property name="class.dir" value="${project.tmp}/bin" />
+		<property name="project.nightly" 			value="releases/nightly" />
+		<property name="project.release" 			value="releases/${version}-${build.number}" />
+		<property name="project.tmp" 				value="${project.release}/tmp" />
+		<property name="project.javadoc" 			value="${project.release}/javadoc" />
+		<property name="project.zipdir" 			value="${project.release}/${define.pluginname}" />
 
-		<property name="project.zipdir" value="${project.release}/${define.pluginname}" />
-		<property name="project.zipfilename" value="${define.pluginname}.zip" />
+		<property name="src.dir" 					value="src" />
+		<property name="icon.dir" 					value="${src.dir}/img" />
+		<property name="lang.dir" 					value="${src.dir}/lang" />
+		<property name="help.dir" 					value="${src.dir}/help" />
+		<property name="doc.dir" 					value="doc" />
+		<property name="lib.dir" 					value="lib" />
+		<property name="sql.dir" 					value="sql" />
+		<property name="class.dir" 					value="${project.tmp}/bin" />
 
 
 		<path id="compilepath">
@@ -146,18 +146,43 @@
 		<copy file="${build.dir}/README" tofile="${project.zipdir}/README" />
 		<copy file="${build.dir}/COPYING" tofile="${project.zipdir}/COPYING" />
 		<copy todir="${project.zipdir}/doc">
-			<fileset dir="doc" />
+			<fileset dir="${doc.dir}" />
 		</copy>
 
 
 		<!-- Jetzt muessen wir noch das ZIP-File erzeugen und signieren -->
-		<zip destfile="${project.release}/${project.zipfilename}">
+		<zip destfile="${project.release}/${define.zipfilename}">
 			<fileset dir="${project.release}">
 				<include name="${define.pluginname}" />
 				<include name="${define.pluginname}/**" />
 			</fileset>
 		</zip>
 
+	</target>
+
+
+
+	<target depends="init" name="src" description="build source package, depends compile target to make sure, the code has no errors">
+		<mkdir dir="${project.release}" />
+		<mkdir dir="${project.tmp}/${define.pluginname}" />
+		<copy todir="${project.tmp}/${define.pluginname}">
+			<fileset dir=".">
+				<include name=".project" />
+				<include name=".classpath" />
+				<include name="${doc.dir}/**" />
+				<include name="${lib.dir}/**" />
+				<include name="${src.dir}/**" />
+				<include name="${sql.dir}/**" />
+				<include name="${doc.dir}/**" />
+				<include name="${build.dir}/**" />
+				<exclude name="${build.dir}/BUILD" />
+			</fileset>
+		</copy>
+		<zip casesensitive="true" zipfile="${project.release}/${define.srcfilename}">
+			<fileset dir="${project.tmp}">
+				<include name="${define.pluginname}/**" />
+			</fileset>
+		</zip>
 	</target>
 
 
@@ -182,24 +207,6 @@
 	</target>
 
 
-
-	<target depends="init" name="src" description="build source package, depends compile target to make sure, the code has no errors">
-		<mkdir dir="${project.release}" />
-		<zip casesensitive="true" zipfile="${project.release}/${define.srcfilename}">
-			<fileset dir=".">
-				<include name=".project" />
-				<include name=".classpath" />
-				<include name="doc/**" />
-				<include name="${lib.dir}/**" />
-				<include name="${src.dir}/**" />
-				<include name="${build.dir}/**" />
-				<exclude name="${build.dir}/BUILD" />
-			</fileset>
-		</zip>
-	</target>
-
-
-
 	<target name="clean" description="cleanup">
 		<delete dir="${project.tmp}" />
 		<delete dir="${project.javadoc}" />
@@ -208,11 +215,11 @@
 
 
 	<target name="sign" description="signs the jar/zip file">
-		<checksum file="${project.release}/${project.zipfilename}" />
+		<checksum file="${project.release}/${define.zipfilename}" />
 		<checksum file="${project.release}/${define.srcfilename}" />
 		<echo message="Creating PGP signatures" />
 		<exec executable="kgpg" failonerror="true" timeout="60000">
-			<arg line="-S ${project.release}/${project.zipfilename}" />
+			<arg line="-S ${project.release}/${define.zipfilename}" />
 		</exec>
 		<exec executable="kgpg" failonerror="true" timeout="60000">
 			<arg line="-S ${project.release}/${define.srcfilename}" />
@@ -226,7 +233,7 @@
 	<target depends="init,cvs,compile,jar,javadoc,src" description="build nightly build" name="nightly">
 		<mkdir dir="${project.nightly}" />
 
-		<copy file="${project.release}/${project.zipfilename}" tofile="${project.nightly}/${define.pluginname}-${version}-nightly.zip" />
+		<copy file="${project.release}/${define.zipfilename}" tofile="${project.nightly}/${define.pluginname}-${version}-nightly.zip" />
 		<copy file="${project.release}/${define.srcfilename}" tofile="${project.nightly}/${define.pluginname}-${version}-nightly.src.zip" />
 		<copy file="${project.release}/${define.javadocfilename}" tofile="${project.nightly}/${define.pluginname}-${version}-nightly.javadoc.zip" />
 
