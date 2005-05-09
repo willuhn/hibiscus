@@ -1,0 +1,16 @@
+1.4
+  - NEW: Anzeige der Buchungen von/an Adresse in Adressbuchdetails
+  - NEW: Markierung mehrer Eintraege in Umsatzliste
+  - BUG: Siehe Bugzilla
+
+1.3
+  - NEW: Dauerauftraege
+  - NEW: Unterstuetzung fuer Reader "Kaan Standard Plus USB"
+  - NEW: Unterstuetzung fuer Reader "Chipdrive Pindpad USB" [nur Linux]
+  - NEW: Konfigurations-Presets fuer Chipkartenleser
+  - NEW: Kontext-Menues in diversen Tabellen
+  - NEW: Unterstuetzung fuer Schluesseldisketten
+  - NEW: Unterstuetzung fuer PIN/TAN
+  - NEW: Saldo- und Umsatzabfrage zusammengefasst
+  - NEW: Umsaetze der letzten 30 Tage in Konto-Details
+  - BUG: Siehe Bugzilla

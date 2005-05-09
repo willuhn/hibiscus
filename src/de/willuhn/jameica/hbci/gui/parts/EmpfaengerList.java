@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/EmpfaengerList.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/05/02 23:56:45 $
+ * $Revision: 1.2 $
+ * $Date: 2005/05/09 12:24:20 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -38,6 +38,7 @@ public class EmpfaengerList extends TablePart implements Part
   public EmpfaengerList(Action action) throws RemoteException
   {
     super(Settings.getDBService().createList(Adresse.class), action);
+    this.setMulti(true);
     this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     addColumn(i18n.tr("Kontonummer"),"kontonummer");
     addColumn(i18n.tr("Bankleitzahl"),"blz");
@@ -50,6 +51,11 @@ public class EmpfaengerList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: EmpfaengerList.java,v $
+ * Revision 1.2  2005/05/09 12:24:20  web0
+ * @N Changelog
+ * @N Support fuer Mehrfachmarkierungen
+ * @N Mehere Adressen en bloc aus Umsatzliste uebernehmen
+ *
  * Revision 1.1  2005/05/02 23:56:45  web0
  * @B bug 66, 67
  * @C umsatzliste nach vorn verschoben

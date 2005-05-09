@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/EmpfaengerList.java,v $
- * $Revision: 1.9 $
- * $Date: 2005/01/19 00:16:04 $
- * $Author: willuhn $
+ * $Revision: 1.10 $
+ * $Date: 2005/05/09 12:24:20 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -39,6 +39,7 @@ public class EmpfaengerList extends ContextMenu
 	{
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
+    // TODO Support fuer Mehrfachmarkierungen
 		addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"),new EmpfaengerNew()));
 		addItem(new CheckedContextMenuItem(i18n.tr("Neue Überweisung mit diesem Empfänger..."), new UeberweisungNew()));
 		addItem(new CheckedContextMenuItem(i18n.tr("Neue Lastschrift von diesem Konto einziehen..."), new LastschriftNew()));
@@ -54,6 +55,11 @@ public class EmpfaengerList extends ContextMenu
 
 /**********************************************************************
  * $Log: EmpfaengerList.java,v $
+ * Revision 1.10  2005/05/09 12:24:20  web0
+ * @N Changelog
+ * @N Support fuer Mehrfachmarkierungen
+ * @N Mehere Adressen en bloc aus Umsatzliste uebernehmen
+ *
  * Revision 1.9  2005/01/19 00:16:04  willuhn
  * @N Lastschriften
  *

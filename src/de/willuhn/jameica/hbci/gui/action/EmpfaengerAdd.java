@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/EmpfaengerAdd.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/03/02 17:59:30 $
+ * $Revision: 1.5 $
+ * $Date: 2005/05/09 12:24:20 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -11,6 +11,9 @@
  *
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.action;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
@@ -46,48 +49,74 @@ public class EmpfaengerAdd implements Action
 		if (context == null)
 			throw new ApplicationException(i18n.tr("Bitte wählen Sie eine Überweisung oder einen Umsatz aus"));
 
-		if (!(context instanceof Transfer) && !(context instanceof Umsatz))
+		if (!(context instanceof Transfer) && !(context instanceof Umsatz) && !(context instanceof Umsatz[]))
 			throw new ApplicationException(i18n.tr("Bitte wählen Sie eine Überweisung oder einen Umsatz aus"));
 
-		String blz 		= null;
-		String konto 	= null;
-		String name   = null;
-
+    ArrayList items = new ArrayList();
 		try {
 
 			if (context instanceof Transfer)
 			{
 				Transfer t = (Transfer) context;
-				blz   = t.getGegenkontoBLZ();
-				konto = t.getGegenkontoNummer();
-				name  = t.getGegenkontoName();
+        Adresse e = (Adresse) Settings.getDBService().createObject(Adresse.class,null);
+        e.setBLZ(t.getGegenkontoBLZ());
+        e.setKontonummer(t.getGegenkontoNummer());
+        e.setName(t.getGegenkontoName());
+        items.add(e);
 			}
 			else if (context instanceof Umsatz)
 			{
 				Umsatz u = (Umsatz) context;
-				blz   = u.getEmpfaengerBLZ();
-				konto = u.getEmpfaengerKonto();
-				name  = u.getEmpfaengerName();
+        Adresse e = (Adresse) Settings.getDBService().createObject(Adresse.class,null);
+        e.setBLZ(u.getEmpfaengerBLZ());
+        e.setKontonummer(u.getEmpfaengerKonto());
+        e.setName(u.getEmpfaengerName());
+        items.add(e);
 			}
+      else if (context instanceof Umsatz[])
+      {
+        Umsatz[] list = (Umsatz[]) context;
+        for (int i=0;i<list.length;++i)
+        {
+          Umsatz u = list[i];
+          Adresse e = (Adresse) Settings.getDBService().createObject(Adresse.class,null);
+          e.setBLZ(u.getEmpfaengerBLZ());
+          e.setKontonummer(u.getEmpfaengerKonto());
+          e.setName(u.getEmpfaengerName());
+          items.add(e);
+        }
+      }
 
-			// wir checken erstmal, ob wir den schon haben.
-			DBIterator list = Settings.getDBService().createList(Adresse.class);
-			list.addFilter("kontonummer = '" + konto + "'");
-			list.addFilter("blz = '" + blz + "'");
-			if (list.hasNext())
-			{
-				YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
-				d.setTitle(i18n.tr("Empfänger existiert"));
-				d.setText(i18n.tr("Ein Empfänger mit dieser Kontonummer und BLZ existiert bereits. " +
-						"Möchten Sie den Empfänger dennoch zum Adressbuch hinzufügen?"));
-				if (!((Boolean) d.open()).booleanValue()) return;
-			}
-			Adresse e = (Adresse) Settings.getDBService().createObject(Adresse.class,null);
-			e.setBLZ(blz);
-			e.setKontonummer(konto);
-			e.setName(name);
-			e.store();
-			GUI.getStatusBar().setSuccessText(i18n.tr("Adresse gespeichert"));
+      // Falls mehrere Eintraege markiert sind, kann es sein, dass einige
+      // davon doppelt da sind, die fischen wir raus.
+      HashMap seen = new HashMap();
+
+      for (int i=0;i<items.size();++i)
+      {
+        // wir checken erstmal, ob wir den schon haben.
+        Adresse e = (Adresse) items.get(i);
+
+        if (seen.get(e.getKontonummer() + "-" + e.getBLZ()) != null)
+          continue; // den haben wir schon
+
+        seen.put(e.getKontonummer() + "-" + e.getBLZ(),e);
+        DBIterator list = Settings.getDBService().createList(Adresse.class);
+        list.addFilter("kontonummer = '" + e.getKontonummer() + "'");
+        list.addFilter("blz = '" + e.getBLZ() + "'");
+        if (list.hasNext())
+        {
+          YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
+          d.setTitle(i18n.tr("Empfänger existiert"));
+          d.setText(i18n.tr("Ein Empfänger mit Kontonummer {0} und BLZ {1} existiert bereits. " +
+              "Möchten Sie den Empfänger dennoch zum Adressbuch hinzufügen?",new String[]{e.getKontonummer(),e.getBLZ()}));
+          if (!((Boolean) d.open()).booleanValue()) continue;
+        }
+        e.store();
+      }
+      if (items.size() == 1)
+  			GUI.getStatusBar().setSuccessText(i18n.tr("Adresse gespeichert"));
+      else
+        GUI.getStatusBar().setSuccessText(i18n.tr("Adressen gespeichert"));
 		}
 		catch (ApplicationException ae)
 		{
@@ -105,6 +134,11 @@ public class EmpfaengerAdd implements Action
 
 /**********************************************************************
  * $Log: EmpfaengerAdd.java,v $
+ * Revision 1.5  2005/05/09 12:24:20  web0
+ * @N Changelog
+ * @N Support fuer Mehrfachmarkierungen
+ * @N Mehere Adressen en bloc aus Umsatzliste uebernehmen
+ *
  * Revision 1.4  2005/03/02 17:59:30  web0
  * @N some refactoring
  *
