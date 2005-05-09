@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/EmpfaengerList.java,v $
- * $Revision: 1.11 $
- * $Date: 2005/05/09 15:02:12 $
+ * $Revision: 1.12 $
+ * $Date: 2005/05/09 17:26:56 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -41,7 +41,6 @@ public class EmpfaengerList extends ContextMenu
 	{
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-    // TODO Support fuer Mehrfachmarkierungen
 		addItem(new SingleItem(i18n.tr("Öffnen"),new EmpfaengerNew()));
 		addItem(new SingleItem(i18n.tr("Neue Überweisung mit diesem Empfänger..."), new UeberweisungNew()));
 		addItem(new SingleItem(i18n.tr("Neue Lastschrift von diesem Konto einziehen..."), new LastschriftNew()));
@@ -80,6 +79,9 @@ public class EmpfaengerList extends ContextMenu
 
 /**********************************************************************
  * $Log: EmpfaengerList.java,v $
+ * Revision 1.12  2005/05/09 17:26:56  web0
+ * @N Bugzilla 68
+ *
  * Revision 1.11  2005/05/09 15:02:12  web0
  * @N mehrere Adressen gleichzeitig loeschen
  *

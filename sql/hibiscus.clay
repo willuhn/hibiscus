@@ -826,6 +826,53 @@
 <foreign-key-list/>
 <index-list/>
 </table>
+<table name="systemnachricht" alias="" remarks="">
+<table-description/>
+<table-figure-bounds x="18" y="521" width="180" height="98"/>
+<column-list>
+<column name="id" alias="" remarks="" mandatory="true" column-size="1024" decimal-digits="0" default-value="UNIQUEKEY('systemnachricht')" auto-increment="false">
+<column-description/>
+<data-type name="NUMERIC" jdbc-type="2" selected-variant-pattern="NUMERIC(%p)">
+<variant type-name-pattern="NUMERIC(%p)" precision-variable="%p" precision-min="1" precision-max="31"/>
+<variant type-name-pattern="NUMERIC"/>
+<variant type-name-pattern="NUMERIC(%p,%s)" precision-variable="%p" precision-min="1" precision-max="31" scale-variable="%s" scale-min="0" scale-max="31"/>
+</data-type>
+</column>
+<column name="blz" alias="" remarks="" mandatory="true" column-size="255" decimal-digits="0" default-value="" auto-increment="false">
+<column-description/>
+<data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
+<variant type-name-pattern="VARCHAR"/>
+</data-type>
+</column>
+<column name="nachricht" alias="" remarks="" mandatory="true" column-size="0" decimal-digits="0" default-value="" auto-increment="false">
+<column-description/>
+<data-type name="TEXT" jdbc-type="-1" selected-variant-pattern="TEXT" literal-prefix="'" literal-suffix="'">
+<variant type-name-pattern="TEXT"/>
+<variant type-name-pattern="TEXT(%n)" precision-variable="%n" precision-min="1" precision-max="31"/>
+</data-type>
+</column>
+<column name="datum" alias="" remarks="" mandatory="true" column-size="0" decimal-digits="0" default-value="" auto-increment="false">
+<column-description/>
+<data-type name="DATE" jdbc-type="91" selected-variant-pattern="DATE" literal-prefix="'" literal-suffix="'">
+<variant type-name-pattern="DATE"/>
+</data-type>
+</column>
+<column name="gelesen" alias="" remarks="" mandatory="false" column-size="0" decimal-digits="0" default-value="" auto-increment="false">
+<column-description/>
+<data-type name="INTEGER" jdbc-type="4" selected-variant-pattern="INTEGER">
+<variant type-name-pattern="INTEGER"/>
+</data-type>
+</column>
+</column-list>
+<primary-key name="PK_SYSTEMNACHRICHT" alias="" remarks="">
+<primary-key-description/>
+<primary-key-column name="id"/>
+</primary-key>
+<unique-key-list/>
+<foreign-key-list/>
+<index-list/>
+</table>
 </table-list>
 </schema>
 </schema-list>

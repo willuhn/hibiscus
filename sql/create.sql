@@ -144,6 +144,16 @@ CREATE TABLE slastbuchung (
   PRIMARY KEY (id)
 );
 
+CREATE TABLE systemnachricht (
+  id NUMERIC default UNIQUEKEY('systemnachricht'),
+  blz varchar(15) NOT NULL,
+  nachricht text NOT NULL,
+  datum date NOT NULL,
+  gelesen int(1) NOT NULL,
+  UNIQUE (id),
+  PRIMARY KEY (id)
+);
+
 ALTER TABLE ueberweisung ADD CONSTRAINT fk_konto FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE umsatz ADD CONSTRAINT fk_konto2 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE protokoll ADD CONSTRAINT fk_konto3 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;

@@ -21,6 +21,7 @@
     <item id="hibiscus" name="Hibiscus"             						icon-close="folder.gif" icon-open="folderopen.gif"  action="de.willuhn.jameica.hbci.gui.action.Welcome">
       <item id="hibiscus.accounts" 				name="Konten"             	icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.KontoList" />
       <item id="hibiscus.addresses" 			name="Adressbuch"         	icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.EmpfaengerList" />
+      <item id="hibiscus.messages" 				name="System-Nachrichten"  	icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.NachrichtList" />
       <item id="hibiscus.transfer" 				name="Transfer"      		icon-close="folder.gif" icon-open="folderopen.gif">
 	    <item id="hibiscus.transfer.dauer" 		name="Daueraufträge"      	icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.DauerauftragList" />
 	    <item id="hibiscus.transfer.einzellast" name="Einzellastschriften"  icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.LastschriftList" />

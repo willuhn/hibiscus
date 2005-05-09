@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.25 $
- * $Date: 2005/05/06 14:05:04 $
+ * $Revision: 1.26 $
+ * $Date: 2005/05/09 17:26:56 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -28,6 +28,7 @@ import org.kapott.hbci.passport.HBCIPassport;
 
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.gui.DialogFactory;
+import de.willuhn.jameica.hbci.rmi.Nachricht;
 import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.security.Wallet;
 import de.willuhn.jameica.system.Application;
@@ -213,7 +214,21 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 				case HAVE_INST_MSG:
           // BUGZILLA 68 http://www.willuhn.de/bugzilla/show_bug.cgi?id=68
-					DialogFactory.openSimple(i18n.tr("Instituts-Nachricht"),msg);
+          try
+          {
+            Nachricht n = (Nachricht) Settings.getDBService().createObject(Nachricht.class,null);
+            n.setBLZ(passport.getBLZ());
+            n.setNachricht(msg);
+            n.setDatum(new Date());
+            n.store();
+            GUI.getStatusBar().setSuccessText(i18n.tr("System-Nachricht empfangen"));
+          }
+          catch (Exception e)
+          {
+            Logger.error("unable to store system message",e);
+            // Im Fehlerfall zeigen wir einfach den Dialog an
+            DialogFactory.openSimple(i18n.tr("Instituts-Nachricht"),msg);
+          }
 					break;
 
 				case HAVE_CRC_ERROR:
@@ -423,6 +438,9 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.26  2005/05/09 17:26:56  web0
+ * @N Bugzilla 68
+ *
  * Revision 1.25  2005/05/06 14:05:04  web0
  * *** empty log message ***
  *
