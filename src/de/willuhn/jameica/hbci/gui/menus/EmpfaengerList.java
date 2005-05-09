@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/EmpfaengerList.java,v $
- * $Revision: 1.10 $
- * $Date: 2005/05/09 12:24:20 $
+ * $Revision: 1.11 $
+ * $Date: 2005/05/09 15:02:12 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -12,6 +12,7 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.menus;
 
+import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
@@ -20,6 +21,7 @@ import de.willuhn.jameica.hbci.gui.action.EmpfaengerDelete;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerNew;
 import de.willuhn.jameica.hbci.gui.action.LastschriftNew;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungNew;
+import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 
@@ -40,9 +42,9 @@ public class EmpfaengerList extends ContextMenu
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
     // TODO Support fuer Mehrfachmarkierungen
-		addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"),new EmpfaengerNew()));
-		addItem(new CheckedContextMenuItem(i18n.tr("Neue Überweisung mit diesem Empfänger..."), new UeberweisungNew()));
-		addItem(new CheckedContextMenuItem(i18n.tr("Neue Lastschrift von diesem Konto einziehen..."), new LastschriftNew()));
+		addItem(new SingleItem(i18n.tr("Öffnen"),new EmpfaengerNew()));
+		addItem(new SingleItem(i18n.tr("Neue Überweisung mit diesem Empfänger..."), new UeberweisungNew()));
+		addItem(new SingleItem(i18n.tr("Neue Lastschrift von diesem Konto einziehen..."), new LastschriftNew()));
 		addItem(ContextMenuItem.SEPARATOR);
 		addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new EmpfaengerDelete()));
 		addItem(ContextMenuItem.SEPARATOR);
@@ -50,11 +52,37 @@ public class EmpfaengerList extends ContextMenu
 		addItem(new ContextMenuItem(i18n.tr("Neue Adresse..."), new EmpfaengerNew()));
 	}
 
+  /**
+   * Ueberschrieben, um zu pruefen, ob ein Array oder ein einzelnes Element markiert ist.
+   */
+  private class SingleItem extends CheckedContextMenuItem
+  {
+    /**
+     * @param text
+     * @param action
+     */
+    private SingleItem(String text, Action action)
+    {
+      super(text,action);
+    }
+    /**
+     * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
+     */
+    public boolean isEnabledFor(Object o)
+    {
+      if (o instanceof Adresse[])
+        return false;
+      return super.isEnabledFor(o);
+    }
+  }
 }
 
 
 /**********************************************************************
  * $Log: EmpfaengerList.java,v $
+ * Revision 1.11  2005/05/09 15:02:12  web0
+ * @N mehrere Adressen gleichzeitig loeschen
+ *
  * Revision 1.10  2005/05/09 12:24:20  web0
  * @N Changelog
  * @N Support fuer Mehrfachmarkierungen

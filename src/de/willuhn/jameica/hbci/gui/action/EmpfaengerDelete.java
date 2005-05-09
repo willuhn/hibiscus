@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/Attic/EmpfaengerDelete.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/02/27 17:11:49 $
+ * $Revision: 1.5 $
+ * $Date: 2005/05/09 15:02:11 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -38,38 +38,63 @@ public class EmpfaengerDelete implements Action
   {
   	I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-		if (context == null || !(context instanceof Adresse))
-			throw new ApplicationException(i18n.tr("Keine Empfängeradresse ausgewählt"));
+		if (context == null)
+      throw new ApplicationException(i18n.tr("Keine Adresse ausgewählt"));
+
+    if (!(context instanceof Adresse) && !(context instanceof Adresse[]))
+			throw new ApplicationException(i18n.tr("Keine Adresse ausgewählt"));
+
+    boolean array = (context instanceof Adresse[]);
+    // Sicherheitsabfrage
+    YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
+    if (array)
+    {
+      d.setTitle(i18n.tr("Adressen löschen"));
+      d.setText(i18n.tr("Wollen Sie diese {0} Adressen wirklich löschen?",""+((Adresse[])context).length));
+    }
+    else
+    {
+      d.setTitle(i18n.tr("Adresse löschen"));
+      d.setText(i18n.tr("Wollen Sie diese Adresse wirklich löschen?"));
+    }
+    try {
+      Boolean choice = (Boolean) d.open();
+      if (!choice.booleanValue())
+        return;
+    }
+    catch (Exception e)
+    {
+      Logger.error("error while deleting address",e);
+      GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Löschen der Adresse"));
+      return;
+    }
+
+    Adresse[] list = null;
+    if (array)
+      list = (Adresse[]) context;
+    else
+      list = new Adresse[]{(Adresse)context}; // Array mit einem Element
 
 		try {
 
-			Adresse empf = (Adresse) context;
-			if (empf.isNewObject())
-				return;
+      for (int i=0;i<list.length;++i)
+      {
+        if (list[i].isNewObject())
+          continue; // muss nicht geloescht werden
 
-			YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
-			d.setTitle(i18n.tr("Empfängeradresse löschen"));
-			d.setText(i18n.tr("Wollen Sie diese Empfängeradresse wirklich löschen?"));
+        // ok, wir loeschen das Objekt
+        list[i].delete();
+      }
+      if (array)
+        GUI.getStatusBar().setSuccessText(i18n.tr("{0} Adressen gelöscht.",""+list.length));
+      else
+        GUI.getStatusBar().setSuccessText(i18n.tr("Adresse gelöscht."));
 
-			try {
-				Boolean choice = (Boolean) d.open();
-				if (!choice.booleanValue())
-					return;
-			}
-			catch (Exception e)
-			{
-				Logger.error("error while deleting empfaenger",e);
-				return;
-			}
-
-			// ok, wir loeschen das Objekt
-			empf.delete();
-			GUI.getStatusBar().setSuccessText(i18n.tr("Empfängeradresse gelöscht."));
 		}
 		catch (RemoteException e)
 		{
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Löschen der Empfängeradresse."));
-			Logger.error("unable to delete empfaenger",e);
+			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Löschen der Adressen."));
+			Logger.error("unable to delete address",e);
 		}
   }
 
@@ -78,6 +103,9 @@ public class EmpfaengerDelete implements Action
 
 /**********************************************************************
  * $Log: EmpfaengerDelete.java,v $
+ * Revision 1.5  2005/05/09 15:02:11  web0
+ * @N mehrere Adressen gleichzeitig loeschen
+ *
  * Revision 1.4  2005/02/27 17:11:49  web0
  * @N first code for "Sammellastschrift"
  * @C "Empfaenger" renamed into "Adresse"
