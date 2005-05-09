@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUmsatzJob.java,v $
- * $Revision: 1.15 $
- * $Date: 2004/11/13 17:02:04 $
- * $Author: willuhn $
+ * $Revision: 1.16 $
+ * $Date: 2005/05/09 23:47:24 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -22,6 +22,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.Converter;
+import de.willuhn.jameica.hbci.server.filter.FilterEngine;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -119,10 +120,18 @@ public class HBCIUmsatzJob extends AbstractHBCIJob {
 				try
 				{
 					umsatz.store(); // den Umsatz haben wir noch nicht, speichern!
+          try
+          {
+            FilterEngine.getInstance().filter(umsatz);
+          }
+          catch (Exception e)
+          {
+            Logger.error("error while filtering umsatz",e);
+          }
 				}
-				catch (Exception e)
+				catch (Exception e2)
 				{
-					Logger.error("error while adding umsatz, skipping this one",e);
+					Logger.error("error while adding umsatz, skipping this one",e2);
 				}
 			}
 		}
@@ -135,6 +144,9 @@ public class HBCIUmsatzJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIUmsatzJob.java,v $
+ * Revision 1.16  2005/05/09 23:47:24  web0
+ * @N added first code for the filter framework
+ *
  * Revision 1.15  2004/11/13 17:02:04  willuhn
  * @N Bearbeiten des Zahlungsturnus
  *
