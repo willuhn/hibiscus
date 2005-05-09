@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/filter/Attic/FilterEngine.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/05/09 23:47:24 $
+ * $Revision: 1.2 $
+ * $Date: 2005/05/09 23:54:41 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -99,6 +99,7 @@ public class FilterEngine
    */
   public void filter(Umsatz u) throws RemoteException
   {
+    long start = System.currentTimeMillis();
     Logger.debug("filtering " + u.getAttribute(u.getPrimaryAttribute()));
     for (int i=0;i<this.targets.size();++i)
     {
@@ -162,6 +163,7 @@ public class FilterEngine
         }
       }
     }
+    Logger.info("used time: " + (System.currentTimeMillis() - start) + " millis");
   }
   
 }
@@ -169,6 +171,9 @@ public class FilterEngine
 
 /**********************************************************************
  * $Log: FilterEngine.java,v $
+ * Revision 1.2  2005/05/09 23:54:41  web0
+ * *** empty log message ***
+ *
  * Revision 1.1  2005/05/09 23:47:24  web0
  * @N added first code for the filter framework
  *
