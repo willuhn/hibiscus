@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoFetchDauerauftraege.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/11/13 17:02:04 $
- * $Author: willuhn $
+ * $Revision: 1.9 $
+ * $Date: 2005/05/10 22:26:15 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -74,7 +74,7 @@ public class KontoFetchDauerauftraege implements Action
 					GUI.getStatusBar().startProgress();
 					HBCIFactory factory = HBCIFactory.getInstance();
 					factory.addJob(new HBCIDauerauftragListJob(k));
-					factory.executeJobs(k.getPassport().getHandle());
+					factory.executeJobs(k);
 					GUI.getStatusBar().setSuccessText(i18n.tr("...Daueraufträge erfolgreich übertragen"));
 
 					new DauerauftragList().handleAction(k);
@@ -106,6 +106,9 @@ public class KontoFetchDauerauftraege implements Action
 
 /**********************************************************************
  * $Log: KontoFetchDauerauftraege.java,v $
+ * Revision 1.9  2005/05/10 22:26:15  web0
+ * @B bug 71
+ *
  * Revision 1.8  2004/11/13 17:02:04  willuhn
  * @N Bearbeiten des Zahlungsturnus
  *

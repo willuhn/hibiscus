@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoFetchSaldo.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/11/13 17:02:03 $
- * $Author: willuhn $
+ * $Revision: 1.8 $
+ * $Date: 2005/05/10 22:26:15 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -58,7 +58,7 @@ public class KontoFetchSaldo implements Action
 						GUI.getStatusBar().startProgress();
 						HBCIFactory factory = HBCIFactory.getInstance();
 						factory.addJob(new HBCISaldoJob(k));
-						factory.executeJobs(k.getPassport().getHandle());
+						factory.executeJobs(k);
 						GUI.getStatusBar().setSuccessText(i18n.tr("...Saldo erfolgreich abgerufen"));
 
 						new de.willuhn.jameica.hbci.gui.action.KontoNew().handleAction(k);
@@ -97,6 +97,9 @@ public class KontoFetchSaldo implements Action
 
 /**********************************************************************
  * $Log: KontoFetchSaldo.java,v $
+ * Revision 1.8  2005/05/10 22:26:15  web0
+ * @B bug 71
+ *
  * Revision 1.7  2004/11/13 17:02:03  willuhn
  * @N Bearbeiten des Zahlungsturnus
  *

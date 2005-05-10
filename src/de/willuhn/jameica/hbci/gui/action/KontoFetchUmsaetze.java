@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoFetchUmsaetze.java,v $
- * $Revision: 1.10 $
- * $Date: 2005/05/02 23:56:45 $
+ * $Revision: 1.11 $
+ * $Date: 2005/05/10 22:26:15 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -62,7 +62,7 @@ public class KontoFetchUmsaetze implements Action
 						// BUGZILLA #3 http://www.willuhn.de/bugzilla/show_bug.cgi?id=3
 						factory.addExclusiveJob(new HBCISaldoJob(k));
 
-						factory.executeJobs(k.getPassport().getHandle());
+						factory.executeJobs(k);
 						GUI.startView(GUI.getCurrentView().getClass(),k);
 						GUI.getStatusBar().setSuccessText(i18n.tr("...Umsätze erfolgreich übertragen"));
 					}
@@ -99,6 +99,9 @@ public class KontoFetchUmsaetze implements Action
 
 /**********************************************************************
  * $Log: KontoFetchUmsaetze.java,v $
+ * Revision 1.11  2005/05/10 22:26:15  web0
+ * @B bug 71
+ *
  * Revision 1.10  2005/05/02 23:56:45  web0
  * @B bug 66, 67
  * @C umsatzliste nach vorn verschoben

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.27 $
- * $Date: 2005/05/06 14:05:04 $
+ * $Revision: 1.28 $
+ * $Date: 2005/05/10 22:26:15 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -21,7 +21,9 @@ import org.kapott.hbci.GV.HBCIJob;
 import org.kapott.hbci.manager.HBCIHandler;
 
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
+import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -45,6 +47,7 @@ public class HBCIFactory {
 	private static HBCIFactory factory;
   	private Vector jobs = new Vector();
 		private Vector exclusiveJobs = new Vector();
+    private Konto currentKonto = null;
     private Object mutex = new Object();
 
   /**
@@ -105,22 +108,34 @@ public class HBCIFactory {
 
   /**
 	 * Fuehrt alle Jobs aus, die bis dato geadded wurden.
-	 * @param handle der Passport, ueber den die Jobs ausgefuehrt werden sollen.
+	 * @param Konto, ueber das die Jobs abgewickelt werden sollen.
 	 * @throws ApplicationException Bei Benutzer-Fehlern (zB kein HBCI-Medium konfiguriert).
 	 * @throws RemoteException Fehler beim Zugriff auf Fachobjekte.
    * @throws OperationCanceledException Wenn der User den Vorgang abbricht.
 	 */
-	public synchronized void executeJobs(PassportHandle handle) throws
+	public synchronized void executeJobs(Konto konto) throws
 		ApplicationException,
 		RemoteException,
 		OperationCanceledException
 	{
+
+    if (konto == null)
+      throw new ApplicationException(i18n.tr("Kein Konto ausgewählt"));
+
+    Passport passport = konto.getPassport();
+    
+    if (passport == null)
+      throw new ApplicationException(i18n.tr("Für dieses Konto ist kein Sicherheitsmedium konfiguriert"));
+
+    PassportHandle handle = passport.getHandle();
 
 		if (handle == null)
 			throw new ApplicationException(i18n.tr("Kein HBCI-Medium ausgewählt"));
 
 		synchronized(mutex)
 		{
+
+      this.currentKonto = konto;
 
 			if (jobs.size() == 0 && exclusiveJobs.size() == 0)
 			{
@@ -213,6 +228,7 @@ public class HBCIFactory {
 				stop();
 				jobs = new Vector(); // Jobqueue leer machen.
 				exclusiveJobs = new Vector(); // Jobqueue leer machen.
+        currentKonto = null; // Konto wieder loeschen
 				try {
 					handle.close();
 				}
@@ -314,11 +330,25 @@ public class HBCIFactory {
 		cancelled = true;
 	}
 
+  /**
+   * Liefert das aktuell verwendete Konto.
+   * Es wird nur dann ein Konto geliefert, wenn sich die HBCIFactory gerade
+   * in der Ausfuehrung von Jobs befindet (executeJobs()). Ansonsten liefert
+   * die Funktion immer null.
+   * @return das aktuelle Konto.
+   */
+  public Konto getCurrentKonto()
+  {
+    return this.currentKonto;
+  }
 }
 
 
 /**********************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.28  2005/05/10 22:26:15  web0
+ * @B bug 71
+ *
  * Revision 1.27  2005/05/06 14:05:04  web0
  * *** empty log message ***
  *
