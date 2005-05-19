@@ -154,6 +154,33 @@ CREATE TABLE systemnachricht (
   PRIMARY KEY (id)
 );
 
+CREATE TABLE filterpattern (
+  id NUMERIC default UNIQUEKEY('filterpattern'),
+  field varchar(255) NOT NULL,
+  typ int(1) NOT NULL,
+  pattern varchar(255) NOT NULL,
+  UNIQUE (id),
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE offeneposten (
+  id NUMERIC default UNIQUEKEY('offeneposten'),
+  bezeichnung varchar(255) NOT NULL,
+  offen int(1) NOT NULL,
+  datum date NULL,
+  UNIQUE (id),
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE op_pattern (
+  id NUMERIC default UNIQUEKEY('op_pattern'),
+  offeneposten_id int(4) NOT NULL,
+  filterpattern_id int(4) NOT NULL,
+  UNIQUE (id),
+  PRIMARY KEY (id)
+);
+
+
 ALTER TABLE ueberweisung ADD CONSTRAINT fk_konto FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE umsatz ADD CONSTRAINT fk_konto2 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE protokoll ADD CONSTRAINT fk_konto3 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
@@ -162,6 +189,8 @@ ALTER TABLE dauerauftrag ADD CONSTRAINT fk_konto4 FOREIGN KEY (konto_id) REFEREN
 ALTER TABLE lastschrift ADD CONSTRAINT fk_konto5 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE slastschrift ADD CONSTRAINT fk_konto6 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE slastbuchung ADD CONSTRAINT fk_slastschrift1 FOREIGN KEY (slastschrift_id) REFERENCES slastschrift (id) DEFERRABLE;
+ALTER TABLE op_pattern ADD CONSTRAINT fk_offeneposten_1 FOREIGN KEY (offeneposten_id) REFERENCES offeneposten (id) DEFERRABLE;
+ALTER TABLE op_pattern ADD CONSTRAINT fk_filterpattern_1 FOREIGN KEY (filterpattern_id) REFERENCES filterpattern (id) DEFERRABLE;
 
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (2,1,1,1);

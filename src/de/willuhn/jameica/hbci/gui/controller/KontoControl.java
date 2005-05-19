@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.55 $
- * $Date: 2005/05/08 17:48:51 $
+ * $Revision: 1.56 $
+ * $Date: 2005/05/19 23:31:07 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -238,8 +238,18 @@ public class KontoControl extends AbstractControl {
 			p[i] = new PassportObject(passports[i]);
 		}
 		PassportObject current = null;
-		if (getKonto() != null && getKonto().getPassport() != null)
-			current = new PassportObject(getKonto().getPassport());
+		if (getKonto() != null && getKonto().getPassportClass() != null)
+    {
+      try
+      {
+        current = new PassportObject(getKonto().getPassportClass());
+      }
+      catch (Exception e)
+      {
+        Logger.error("error while loading passport",e);
+        GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Laden des Sicherheitsmediums"));
+      }
+    }
 		passportAuswahl = new SelectInput(PseudoIterator.fromArray(p),current);
 		return passportAuswahl;
 	}
@@ -317,7 +327,7 @@ public class KontoControl extends AbstractControl {
 				return;
 			}
 			
-			getKonto().setPassport(po.getPassport());
+			getKonto().setPassportClass(po.getPassport().getClass().getName());
 
 			getKonto().setKontonummer((String)getKontonummer().getValue());
 			getKonto().setBLZ((String)getBlz().getValue());
@@ -429,6 +439,10 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.56  2005/05/19 23:31:07  web0
+ * @B RMI over SSL support
+ * @N added handbook
+ *
  * Revision 1.55  2005/05/08 17:48:51  web0
  * @N Bug 56
  *

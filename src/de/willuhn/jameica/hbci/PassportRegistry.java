@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/PassportRegistry.java,v $
- * $Revision: 1.10 $
- * $Date: 2005/01/30 20:45:35 $
- * $Author: willuhn $
+ * $Revision: 1.11 $
+ * $Date: 2005/05/19 23:31:07 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -18,7 +18,9 @@ import java.util.Hashtable;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.ClassFinder;
+import de.willuhn.util.I18N;
 
 /**
  * Sucht alle verfuegbaren Passports und prueft diese auf Verwendbarkeit.
@@ -28,11 +30,20 @@ public class PassportRegistry {
 	private static Hashtable passportsByName  = new Hashtable();
 	private static Hashtable passportsByClass = new Hashtable();
 
+  private static I18N i18n = null;
+
 	/**
    * Initialisiert die Passport-Registry.
    */
   public static void init()
 	{
+    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+
+    if (Application.inServerMode())
+    {
+      Logger.info("running in server mode, skipping passport support");
+      return;
+    }
 
 		try {
 			Logger.info("searching for available passports");
@@ -44,7 +55,7 @@ public class PassportRegistry {
 				try {
 					Passport p = (Passport) found[i].newInstance();
 					Application.getCallback().getStartupMonitor().setStatusText("init passport " + p.getName());
-					passportsByName.put(p.getName(),p);
+ 				  passportsByName.put(p.getName(),p);
 					passportsByClass.put(found[i].getName(),p);
 					Logger.info("[" + p.getName() + "] instantiated successfully");
 				}
@@ -72,6 +83,9 @@ public class PassportRegistry {
 	 */
 	public static Passport findByName(String name) throws Exception
 	{
+    if (Application.inServerMode())
+      throw new ApplicationException(i18n.tr("HBCI-Sicherheitsmedien werden im Server-Modus nicht unterstützt"));
+
 		if (name == null)
 			return null;
 		return (Passport) passportsByName.get(name);
@@ -85,6 +99,9 @@ public class PassportRegistry {
 	 */
 	public static Passport findByClass(String classname) throws Exception
 	{
+    if (Application.inServerMode())
+      throw new ApplicationException(i18n.tr("HBCI-Sicherheitsmedien werden im Server-Modus nicht unterstützt"));
+
 		if (classname == null)
 			return null;
 		Passport p = (Passport) passportsByClass.get(classname);
@@ -97,6 +114,11 @@ public class PassportRegistry {
    */
   public static Passport[] getPassports()
 	{
+    if (Application.inServerMode())
+    {
+      Logger.warn("passports not supported in server mode");
+      return new Passport[]{};
+    }
 		Enumeration e = passportsByName.elements();
 		Passport[] passports = new Passport[passportsByName.size()];
 		int i=0;
@@ -111,6 +133,10 @@ public class PassportRegistry {
 
 /**********************************************************************
  * $Log: PassportRegistry.java,v $
+ * Revision 1.11  2005/05/19 23:31:07  web0
+ * @B RMI over SSL support
+ * @N added handbook
+ *
  * Revision 1.10  2005/01/30 20:45:35  willuhn
  * *** empty log message ***
  *

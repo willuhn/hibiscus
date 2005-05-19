@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.28 $
- * $Date: 2005/05/10 22:26:15 $
+ * $Revision: 1.29 $
+ * $Date: 2005/05/19 23:31:07 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -21,6 +21,7 @@ import org.kapott.hbci.GV.HBCIJob;
 import org.kapott.hbci.manager.HBCIHandler;
 
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.PassportRegistry;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -122,7 +123,26 @@ public class HBCIFactory {
     if (konto == null)
       throw new ApplicationException(i18n.tr("Kein Konto ausgewählt"));
 
-    Passport passport = konto.getPassport();
+    Passport passport = null;
+    try
+    {
+      passport = PassportRegistry.findByClass(konto.getPassportClass());
+      // BUGZILLA #7 http://www.willuhn.de/bugzilla/show_bug.cgi?id=7
+      passport.init(konto);
+    }
+    catch (RemoteException re)
+    {
+      throw re;
+    }
+    catch (ApplicationException ae)
+    {
+      throw ae;
+    }
+    catch (Exception e)
+    {
+      Logger.error("error while loading passport",e);
+      throw new ApplicationException(i18n.tr("Fehler beim Laden des Sicherheitsmediums"));
+    }
     
     if (passport == null)
       throw new ApplicationException(i18n.tr("Für dieses Konto ist kein Sicherheitsmedium konfiguriert"));
@@ -346,6 +366,10 @@ public class HBCIFactory {
 
 /**********************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.29  2005/05/19 23:31:07  web0
+ * @B RMI over SSL support
+ * @N added handbook
+ *
  * Revision 1.28  2005/05/10 22:26:15  web0
  * @B bug 71
  *

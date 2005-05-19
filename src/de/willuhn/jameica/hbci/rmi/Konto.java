@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Konto.java,v $
- * $Revision: 1.22 $
- * $Date: 2005/05/02 23:56:45 $
+ * $Revision: 1.23 $
+ * $Date: 2005/05/19 23:31:07 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,6 @@ import java.util.Date;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
-import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -62,11 +61,12 @@ public interface Konto extends DBObject,Checksum
   public String getKundennummer() throws RemoteException;
 
 	/**
-	 * Liefert den Passport.
-   * @return Passport.
+	 * Liefert die Java-Klasse des zu verwendenden Passports.
+   * Dieser kann anschliessend mittels <code>PassportRegistry#findByClass(String)</code> geladen werden.
+   * @return Java-Klasse des Passports.
    * @throws RemoteException
    */
-  public Passport getPassport() throws RemoteException;
+  public String getPassportClass() throws RemoteException;
 	
   /**
    * Liefert die Waehrungs-Bezeichnung der Bankverbindung.
@@ -111,11 +111,11 @@ public interface Konto extends DBObject,Checksum
   public void setWaehrung(String waehrung) throws RemoteException;
 
 	/**
-	 * Speichert den zu verwendenden Passport.
+	 * Speichert den Namen der Java-Klasse des zu verwendenden Passports.
    * @param passport Passport.
    * @throws RemoteException
    */
-  public void setPassport(Passport passport) throws RemoteException;
+  public void setPassportClass(String passport) throws RemoteException;
 
 	/**
 	 * Speichert die Kundennummer.
@@ -219,6 +219,10 @@ public interface Konto extends DBObject,Checksum
 
 /**********************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.23  2005/05/19 23:31:07  web0
+ * @B RMI over SSL support
+ * @N added handbook
+ *
  * Revision 1.22  2005/05/02 23:56:45  web0
  * @B bug 66, 67
  * @C umsatzliste nach vorn verschoben

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCIProperties.java,v $
- * $Revision: 1.8 $
- * $Date: 2005/04/05 21:51:54 $
+ * $Revision: 1.9 $
+ * $Date: 2005/05/19 23:31:07 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -12,8 +12,11 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci;
 
+import org.kapott.hbci.manager.HBCIUtils;
+
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.Settings;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -97,6 +100,27 @@ public class HBCIProperties
     }
   }
 
+  /**
+   * Prueft die Gueltigkeit der BLZ/Kontonummer-Kombi anhand von Pruefziffern.
+   * @see HBCIUtils#checkAccountCRC(java.lang.String, java.lang.String)
+   * @param blz
+   * @param kontonummer
+   * @return true, wenn die Kombi ok ist.
+   */
+  public final static boolean checkAccountCRC(String blz, String kontonummer)
+  {
+    try
+    {
+      return HBCIUtils.checkAccountCRC(blz, kontonummer);
+    }
+    catch (Exception e)
+    {
+      Logger.warn("HBCI4Java subsystem seems to be not initialized for this thread group, adding thread group");
+      HBCI plugin = (HBCI) Application.getPluginLoader().getPlugin(HBCI.class);
+      HBCIUtils.initThread(null,null,plugin.getHBCICallback());
+      return HBCIUtils.checkAccountCRC(blz, kontonummer);
+    }
+  }
 
 	// disabled
 	private HBCIProperties()
@@ -108,6 +132,10 @@ public class HBCIProperties
 
 /**********************************************************************
  * $Log: HBCIProperties.java,v $
+ * Revision 1.9  2005/05/19 23:31:07  web0
+ * @B RMI over SSL support
+ * @N added handbook
+ *
  * Revision 1.8  2005/04/05 21:51:54  web0
  * @B Begrenzung aller BLZ-Eingaben auf 8 Zeichen
  *

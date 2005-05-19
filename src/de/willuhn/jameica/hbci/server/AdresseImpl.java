@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AdresseImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/03/09 01:07:02 $
+ * $Revision: 1.5 $
+ * $Date: 2005/05/19 23:31:07 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -13,8 +13,6 @@
 package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
-
-import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
@@ -78,7 +76,7 @@ public class AdresseImpl extends AbstractDBObject implements Adresse {
 			if (getKontonummer() == null || getKontonummer().length() == 0)
 				throw new ApplicationException(i18n.tr("Bitte geben Sie eine Kontonummer ein."));
 
-			if (!HBCIUtils.checkAccountCRC(getBLZ(),getKontonummer()))
+			if (!HBCIProperties.checkAccountCRC(getBLZ(),getKontonummer()))
 				throw new ApplicationException(i18n.tr("Ungültige BLZ/Kontonummer. Bitte prüfen Sie Ihre Eingaben."));
 
 		}
@@ -160,6 +158,10 @@ public class AdresseImpl extends AbstractDBObject implements Adresse {
 
 /**********************************************************************
  * $Log: AdresseImpl.java,v $
+ * Revision 1.5  2005/05/19 23:31:07  web0
+ * @B RMI over SSL support
+ * @N added handbook
+ *
  * Revision 1.4  2005/03/09 01:07:02  web0
  * @D javadoc fixes
  *

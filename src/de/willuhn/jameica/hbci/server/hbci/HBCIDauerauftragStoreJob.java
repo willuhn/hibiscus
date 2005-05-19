@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragStoreJob.java,v $
- * $Revision: 1.11 $
- * $Date: 2005/03/30 23:26:28 $
+ * $Revision: 1.12 $
+ * $Date: 2005/05/19 23:31:07 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -22,9 +22,11 @@ import org.kapott.hbci.GV_Result.GVRDauerNew;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.PassportRegistry;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
+import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.hbci.rmi.Adresse;
+import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.Turnus;
@@ -110,7 +112,12 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob {
 
 
 			// Jetzt noch die Tests fuer die Job-Restriktionen
-			Properties p = HBCIFactory.getInstance().getJobRestrictions(this,this.konto.getPassport().getHandle());
+
+      Passport passport = PassportRegistry.findByClass(this.konto.getPassportClass());
+      // BUGZILLA #7 http://www.willuhn.de/bugzilla/show_bug.cgi?id=7
+      passport.init(this.konto);
+
+			Properties p = HBCIFactory.getInstance().getJobRestrictions(this,passport.getHandle());
 			Enumeration keys = p.keys();
 			while (keys.hasMoreElements())
 			{
@@ -199,6 +206,10 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIDauerauftragStoreJob.java,v $
+ * Revision 1.12  2005/05/19 23:31:07  web0
+ * @B RMI over SSL support
+ * @N added handbook
+ *
  * Revision 1.11  2005/03/30 23:26:28  web0
  * @B bug 29
  * @B bug 30

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.47 $
- * $Date: 2005/05/09 17:26:56 $
+ * $Revision: 1.48 $
+ * $Date: 2005/05/19 23:31:07 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,8 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Locale;
 
+import org.kapott.hbci.callback.HBCICallback;
+import org.kapott.hbci.callback.HBCICallbackConsole;
 import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.db.EmbeddedDatabase;
@@ -69,6 +71,8 @@ public class HBCI extends AbstractPlugin
   }
 
   private EmbeddedDatabase db = null;
+  
+  private HBCICallback callback;
   
   /**
    * ct.
@@ -127,7 +131,7 @@ public class HBCI extends AbstractPlugin
 		if (checkSum.equals("kwi5vy1fvgOOVtoTYJYjuA==")) // 1.3
 			return;
 
-    if (checkSum.equals("DcR3PHBGYtTMnoP2T45kvg==")) // 1.4
+    if (checkSum.equals("X7/T2y5JsW3yJnEvx6ztKQ==")) // 1.4
       return;
 
 		throw new Exception("database checksum does not match any known version: " + checkSum);
@@ -160,31 +164,50 @@ public class HBCI extends AbstractPlugin
       f.mkdirs();
     }
 
-    Application.getCallback().getStartupMonitor().setStatusText("hibiscus: init passport registry");
-		PassportRegistry.init();
 
-		try {
-			int logLevel = HBCIUtils.LOG_INFO; // Default
-			try
-			{
+    if (!Application.inServerMode())
+    {
+      Application.getCallback().getStartupMonitor().setStatusText("hibiscus: init passport registry");
+      PassportRegistry.init();
+    }
+
+    Application.getCallback().getStartupMonitor().setStatusText("hibiscus: init hbci4java subsystem");
+
+    try {
+      int logLevel = HBCIUtils.LOG_INFO; // Default
+      try
+      {
         Level level = Logger.getLevel();
         Logger.info("current jameica log level: " + level.getName() + " [" + level.getValue() + "]");
-				logLevel = ((Integer) LOGMAPPING.get(level)).intValue();
-			}
-			catch (Exception e)
-			{
+        logLevel = ((Integer) LOGMAPPING.get(level)).intValue();
+      }
+      catch (Exception e)
+      {
         Logger.warn("unable to map jameica log level into hbci4java log level. using default");
-				// Am wahrscheinlichsten ArrayIndexOutOfBoundsException
-				// Dann eben nicht ;)
-			}
+        // Am wahrscheinlichsten ArrayIndexOutOfBoundsException
+        // Dann eben nicht ;)
+      }
       Logger.info("HBCI4Java loglevel: " + logLevel);
-      HBCIUtils.init(null,null,new HBCICallbackSWT());
-			HBCIUtils.setParam("log.loglevel.default",""+logLevel);
-		}
-		catch (Exception e)
-		{
-			throw new ApplicationException(getResources().getI18N().tr("Fehler beim Initialisieren des HBCI-Subsystems"),e);
-		}
+
+      if (Application.inServerMode())
+      {
+        Logger.info("init HBCI4Java subsystem with console callback");
+        this.callback = new HBCICallbackConsole();
+        HBCIUtils.init(null,null,this.callback);
+      }
+      else
+      {
+        Logger.info("init HBCI4Java subsystem with SWT callback");
+        this.callback = new HBCICallbackSWT();
+        HBCIUtils.init(null,null,this.callback);
+      }
+
+      HBCIUtils.setParam("log.loglevel.default",""+logLevel);
+    }
+    catch (Exception e)
+    {
+      throw new ApplicationException(getResources().getI18N().tr("Fehler beim Initialisieren des HBCI-Subsystems"),e);
+    }
   }
 
   /**
@@ -252,11 +275,31 @@ public class HBCI extends AbstractPlugin
   public void shutDown()
   {
   }
+
+  /**
+   * Liefert den verwendeten HBCI-Callback.
+   * Die Funktion ist ein Zugestaendnis an RMI.
+   * Hintergrund: HBCI4Java speichert seine Config pro ThreadGroup. Laeuft Hibiscus
+   * im Client/Server-Szenario und kommen von aussen (durch Clients) Anfragen rein,
+   * dann treffen die beim Server in den Threads der RMI-Runtime ein. Und die hat
+   * sich eine eigene Threadgroup geschaffen. Da wir RMI scheinbar nicht vorschreiben
+   * koennen, dass es unsere Threadgroup verwenden soll, muessen wir HBCI4Java
+   * pro ThreadGroup und damit ggf. mehrfach initialisieren.
+   * @return
+   */
+  HBCICallback getHBCICallback()
+  {
+    return this.callback;
+  }
 }
 
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.48  2005/05/19 23:31:07  web0
+ * @B RMI over SSL support
+ * @N added handbook
+ *
  * Revision 1.47  2005/05/09 17:26:56  web0
  * @N Bugzilla 68
  *

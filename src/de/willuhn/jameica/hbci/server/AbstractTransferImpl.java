@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AbstractTransferImpl.java,v $
- * $Revision: 1.20 $
- * $Date: 2005/03/05 19:11:25 $
+ * $Revision: 1.21 $
+ * $Date: 2005/05/19 23:31:07 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -13,8 +13,6 @@
 package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
-
-import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.jameica.hbci.HBCI;
@@ -75,7 +73,7 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
 			if (getGegenkontoName().length() > HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH)
 				throw new ApplicationException(i18n.tr("Bitte geben Sie maximal {0} Zeichen für den Namen des Kontoinhabers ein",""+HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH));
 
-			if (!HBCIUtils.checkAccountCRC(getGegenkontoBLZ(),getGegenkontoNummer()))
+			if (!HBCIProperties.checkAccountCRC(getGegenkontoBLZ(),getGegenkontoNummer()))
 				throw new ApplicationException(i18n.tr("Ungültige BLZ/Kontonummer. Bitte prüfen Sie Ihre Eingaben."));
 				
 			if (getZweck() == null || "".equals(getZweck()))
@@ -269,6 +267,10 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
 
 /**********************************************************************
  * $Log: AbstractTransferImpl.java,v $
+ * Revision 1.21  2005/05/19 23:31:07  web0
+ * @B RMI over SSL support
+ * @N added handbook
+ *
  * Revision 1.20  2005/03/05 19:11:25  web0
  * @N SammelLastschrift-Code complete
  *
