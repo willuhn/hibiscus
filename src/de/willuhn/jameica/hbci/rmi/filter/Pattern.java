@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/filter/Attic/Pattern.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/05/09 23:47:24 $
+ * $Revision: 1.2 $
+ * $Date: 2005/05/24 23:30:03 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -26,32 +26,32 @@ public interface Pattern extends DBObject
   /**
    * Filter-Typ: Feld stimmt mit Pattern genau ueberein.
    */
-  public final static int TYPE_EQUALS     = 1;
+  public final static int TYPE_EQUALS     = 0;
   
   /**
    * Filter-Typ: Feld enthaelt den Pattern.
    */
-  public final static int TYPE_CONTAINS   = 2;
+  public final static int TYPE_CONTAINS   = 1;
   
   /**
    * Filter-Typ: Feld beginnt mit Pattern.
    */
-  public final static int TYPE_STARTSWITH = 3;
+  public final static int TYPE_STARTSWITH = 2;
   
   /**
    * Filter-Typ: Feld endet mit Pattern.
    */
-  public final static int TYPE_ENDSWITH   = 4;
+  public final static int TYPE_ENDSWITH   = 3;
 
   /**
-   * Liefert den Namen des Umsatz-Attributes, mit dem verglichen werden soll.
+   * Liefert den Namen des Attributes, mit dem verglichen werden soll.
    * @return Name des Attributes.
    * @throws RemoteException
    */
   public String getField() throws RemoteException;
 
   /**
-   * Speichert den Namen des Umsatz-Attributes, mit dem verglichen werden soll.
+   * Speichert den Namen des Attributes, mit dem verglichen werden soll.
    * @param field
    * @throws RemoteException
    */
@@ -83,6 +83,14 @@ public interface Pattern extends DBObject
   public int getType() throws RemoteException;
 
   /**
+   * Liefert eine sprechenden lokalisierte Bezeichnung fuer den Typ.
+   * @param type Typ.
+   * @return Bezeichnung.
+   * @throws RemoteException
+   */
+  public String getNameForType(int type) throws RemoteException;
+
+  /**
    * Speichert den Typ des Patterns.
    * @param type Typ.
    * @throws RemoteException
@@ -107,6 +115,9 @@ public interface Pattern extends DBObject
 
 /**********************************************************************
  * $Log: Pattern.java,v $
+ * Revision 1.2  2005/05/24 23:30:03  web0
+ * @N Erster Code fuer OP-Verwaltung
+ *
  * Revision 1.1  2005/05/09 23:47:24  web0
  * @N added first code for the filter framework
  *

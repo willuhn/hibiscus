@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.48 $
- * $Date: 2005/05/19 23:31:07 $
+ * $Revision: 1.49 $
+ * $Date: 2005/05/24 23:30:03 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -131,7 +131,7 @@ public class HBCI extends AbstractPlugin
 		if (checkSum.equals("kwi5vy1fvgOOVtoTYJYjuA==")) // 1.3
 			return;
 
-    if (checkSum.equals("X7/T2y5JsW3yJnEvx6ztKQ==")) // 1.4
+    if (checkSum.equals("3g9Rf7zU0l9fbFxJeX7XTw==")) // 1.4
       return;
 
 		throw new Exception("database checksum does not match any known version: " + checkSum);
@@ -296,6 +296,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.49  2005/05/24 23:30:03  web0
+ * @N Erster Code fuer OP-Verwaltung
+ *
  * Revision 1.48  2005/05/19 23:31:07  web0
  * @B RMI over SSL support
  * @N added handbook

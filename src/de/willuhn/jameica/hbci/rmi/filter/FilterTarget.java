@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/filter/Attic/FilterTarget.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/05/09 23:47:24 $
+ * $Revision: 1.2 $
+ * $Date: 2005/05/24 23:30:03 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -22,6 +22,9 @@ import de.willuhn.jameica.hbci.rmi.Umsatz;
  * Interface fuer ein einzelnes Filter-Ziel der Filter-Engine.
  * Um am Filter-Mechanismus beim Abrufen neuer Umsaetze teilnehmen
  * zu koennen, muss dieses Interface implementiert werden.
+ * Wichtig: Die Implementierung muss einen parameterlosen
+ * Konstruktor mit dem Modifier &quot;public&quot; (Bean-Spezifikation)
+ * besitzen, um von der Filter-Engine instanziiert zu werden.
  */
 public interface FilterTarget extends Remote
 {
@@ -49,6 +52,9 @@ public interface FilterTarget extends Remote
 
 /**********************************************************************
  * $Log: FilterTarget.java,v $
+ * Revision 1.2  2005/05/24 23:30:03  web0
+ * @N Erster Code fuer OP-Verwaltung
+ *
  * Revision 1.1  2005/05/09 23:47:24  web0
  * @N added first code for the filter framework
  *

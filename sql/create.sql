@@ -144,7 +144,7 @@ CREATE TABLE slastbuchung (
   PRIMARY KEY (id)
 );
 
-CREATE TABLE systemnachricht (
+ALTER CREATE TABLE systemnachricht (
   id NUMERIC default UNIQUEKEY('systemnachricht'),
   blz varchar(15) NOT NULL,
   nachricht text NOT NULL,
@@ -154,32 +154,25 @@ CREATE TABLE systemnachricht (
   PRIMARY KEY (id)
 );
 
-CREATE TABLE filterpattern (
-  id NUMERIC default UNIQUEKEY('filterpattern'),
-  field varchar(255) NOT NULL,
-  typ int(1) NOT NULL,
-  pattern varchar(255) NOT NULL,
-  UNIQUE (id),
-  PRIMARY KEY (id)
-);
-
-CREATE TABLE offeneposten (
+ALTER CREATE TABLE offeneposten (
   id NUMERIC default UNIQUEKEY('offeneposten'),
+  umsatz_id int(4) NULL,
   bezeichnung varchar(255) NOT NULL,
-  offen int(1) NOT NULL,
   datum date NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );
 
-CREATE TABLE op_pattern (
+ALTER CREATE TABLE op_pattern (
   id NUMERIC default UNIQUEKEY('op_pattern'),
   offeneposten_id int(4) NOT NULL,
-  filterpattern_id int(4) NOT NULL,
+  field varchar(255) NOT NULL,
+  patterntype int(1) NOT NULL,
+  ignorecase int(1) NOT NULL,
+  pattern varchar(255) NOT NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );
-
 
 ALTER TABLE ueberweisung ADD CONSTRAINT fk_konto FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE umsatz ADD CONSTRAINT fk_konto2 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
@@ -190,7 +183,7 @@ ALTER TABLE lastschrift ADD CONSTRAINT fk_konto5 FOREIGN KEY (konto_id) REFERENC
 ALTER TABLE slastschrift ADD CONSTRAINT fk_konto6 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE slastbuchung ADD CONSTRAINT fk_slastschrift1 FOREIGN KEY (slastschrift_id) REFERENCES slastschrift (id) DEFERRABLE;
 ALTER TABLE op_pattern ADD CONSTRAINT fk_offeneposten_1 FOREIGN KEY (offeneposten_id) REFERENCES offeneposten (id) DEFERRABLE;
-ALTER TABLE op_pattern ADD CONSTRAINT fk_filterpattern_1 FOREIGN KEY (filterpattern_id) REFERENCES filterpattern (id) DEFERRABLE;
+ALTER TABLE offeneposten ADD CONSTRAINT fk_umsatz_1 FOREIGN KEY (umsatz_id) REFERENCES umsatz (id) DEFERRABLE;
 
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (2,1,1,1);

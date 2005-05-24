@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/filter/Attic/FilterEngine.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/05/10 22:26:15 $
+ * $Revision: 1.4 $
+ * $Date: 2005/05/24 23:30:03 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -152,7 +152,7 @@ public class FilterEngine
           else if (pattern[k].getType() == Pattern.TYPE_EQUALS)
             test = "^" + test + "$";
 
-          // TODO Java kann via Inlined Flag (?i) auch im regulaeren Ausdruck Gross-Kleinschreibung ignorieren.
+          // Java kann via Inlined Flag (?i) auch im regulaeren Ausdruck Gross-Kleinschreibung ignorieren.
           // Allerdings kenne ich die Syntax hierfuer nicht und weiss nicht, was schneller ist
           if (pattern[k].ignoreCase())
           {
@@ -163,8 +163,15 @@ public class FilterEngine
         }
         if (match)
         {
-          Logger.info("filter match for umsatz \"" + u.getAttribute(u.getPrimaryAttribute()) + "\"");
-          target.match(u,filter);
+          try
+          {
+            Logger.info("filter match for umsatz \"" + u.getAttribute(u.getPrimaryAttribute()) + "\"");
+            target.match(u,filter);
+          }
+          catch (Exception e)
+          {
+            // TODO Wie diese Exception behandeln?
+          }
         }
       }
     }
@@ -176,6 +183,9 @@ public class FilterEngine
 
 /**********************************************************************
  * $Log: FilterEngine.java,v $
+ * Revision 1.4  2005/05/24 23:30:03  web0
+ * @N Erster Code fuer OP-Verwaltung
+ *
  * Revision 1.3  2005/05/10 22:26:15  web0
  * @B bug 71
  *
