@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/EmpfaengerList.java,v $
- * $Revision: 1.12 $
- * $Date: 2005/05/09 17:26:56 $
+ * $Revision: 1.13 $
+ * $Date: 2005/05/25 00:42:04 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -20,9 +20,11 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerDelete;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerNew;
 import de.willuhn.jameica.hbci.gui.action.LastschriftNew;
+import de.willuhn.jameica.hbci.gui.action.OffenerPostenNew;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungNew;
 import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -44,11 +46,11 @@ public class EmpfaengerList extends ContextMenu
 		addItem(new SingleItem(i18n.tr("Öffnen"),new EmpfaengerNew()));
 		addItem(new SingleItem(i18n.tr("Neue Überweisung mit diesem Empfänger..."), new UeberweisungNew()));
 		addItem(new SingleItem(i18n.tr("Neue Lastschrift von diesem Konto einziehen..."), new LastschriftNew()));
+    addItem(new ContextMenuItem(i18n.tr("Offenen Posten anlegen..."), new OffenerPostenNew()));
 		addItem(ContextMenuItem.SEPARATOR);
 		addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new EmpfaengerDelete()));
-		addItem(ContextMenuItem.SEPARATOR);
-
-		addItem(new ContextMenuItem(i18n.tr("Neue Adresse..."), new EmpfaengerNew()));
+    addItem(ContextMenuItem.SEPARATOR);
+		addItem(new ContextMenuItem(i18n.tr("Neue Adresse..."), new ENeu()));
 	}
 
   /**
@@ -74,11 +76,30 @@ public class EmpfaengerList extends ContextMenu
       return super.isEnabledFor(o);
     }
   }
+
+  /**
+   * Ueberschreiben wir, um <b>grundsaetzlich</b> eine neue Adresse
+   * anzulegen - auch wenn der Focus auf einem existierenden liegt.
+   */
+  private class ENeu extends EmpfaengerNew
+  {
+    /**
+     * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
+     */
+    public void handleAction(Object context) throws ApplicationException
+    {
+      super.handleAction(null);
+    }
+  } 
+
 }
 
 
 /**********************************************************************
  * $Log: EmpfaengerList.java,v $
+ * Revision 1.13  2005/05/25 00:42:04  web0
+ * @N Dialoge fuer OP-Verwaltung
+ *
  * Revision 1.12  2005/05/09 17:26:56  web0
  * @N Bugzilla 68
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/OffenerPostenImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/05/24 23:30:03 $
+ * $Revision: 1.2 $
+ * $Date: 2005/05/25 00:42:04 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -212,11 +212,37 @@ public class OffenerPostenImpl extends AbstractDBObject implements OffenerPosten
     setAttribute("datum",date);
   }
 
+  /**
+   * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
+   */
+  public Object getAttribute(String arg0) throws RemoteException
+  {
+    // Ueberschrieben, um ein synthetisches Attribut "filter" zu erzeugen
+    if ("filter".equals(arg0))
+    {
+      Pattern[] p = getPattern();
+      if (p == null || p.length == 0)
+        return null;
+
+      StringBuffer sb = new StringBuffer();
+      for (int i=0;i<p.length;++i)
+      {
+        sb.append(p[i].getAttribute(p[i].getPrimaryAttribute()));
+        if (i<p.length-1)
+          sb.append("\n"); // ausser beim letzten Element einen Zeilenumbruch anhaengen
+      }
+      return sb.toString();
+    }
+    return super.getAttribute(arg0);
+  }
 }
 
 
 /**********************************************************************
  * $Log: OffenerPostenImpl.java,v $
+ * Revision 1.2  2005/05/25 00:42:04  web0
+ * @N Dialoge fuer OP-Verwaltung
+ *
  * Revision 1.1  2005/05/24 23:30:03  web0
  * @N Erster Code fuer OP-Verwaltung
  *

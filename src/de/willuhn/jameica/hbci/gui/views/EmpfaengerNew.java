@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/EmpfaengerNew.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/05/08 17:48:51 $
+ * $Revision: 1.5 $
+ * $Date: 2005/05/25 00:42:04 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -55,8 +55,8 @@ public class EmpfaengerNew extends AbstractView {
 		}
 		catch (RemoteException e)
 		{
-			Logger.error("error while reading konto",e);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Lesen der Empfängerdaten."));
+			Logger.error("error while reading address",e);
+			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Lesen der Adresse."));
 		}
 
     
@@ -88,6 +88,9 @@ public class EmpfaengerNew extends AbstractView {
 
 /**********************************************************************
  * $Log: EmpfaengerNew.java,v $
+ * Revision 1.5  2005/05/25 00:42:04  web0
+ * @N Dialoge fuer OP-Verwaltung
+ *
  * Revision 1.4  2005/05/08 17:48:51  web0
  * @N Bug 56
  *

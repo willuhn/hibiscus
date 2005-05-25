@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/AccountContainerDialog.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/04/05 21:51:54 $
+ * $Revision: 1.6 $
+ * $Date: 2005/05/25 00:42:04 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -114,22 +114,24 @@ public class AccountContainerDialog extends AbstractDialog
 	private Input getBLZ()
 	{
 		if (blz == null)
-			blz = new TextInput(passport.getBLZ(),HBCIProperties.HBCI_BLZ_LENGTH);
-			blz.setComment("");
-			blz.addListener(new Listener()
+    {
+      blz = new TextInput(passport.getBLZ(),HBCIProperties.HBCI_BLZ_LENGTH);
+      blz.setComment("");
+      blz.addListener(new Listener()
       {
         public void handleEvent(Event arg0)
         {
-        	try
-        	{
-        		blz.setComment(HBCIUtils.getNameForBLZ((String)blz.getValue()));
-        	}
-        	catch (Exception e)
-        	{
-        		// ignore
-        	}
+          try
+          {
+            blz.setComment(HBCIUtils.getNameForBLZ((String)blz.getValue()));
+          }
+          catch (Exception e)
+          {
+            // ignore
+          }
         }
       });
+    }
 		return blz;
 	}
 	
@@ -180,6 +182,9 @@ public class AccountContainerDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: AccountContainerDialog.java,v $
+ * Revision 1.6  2005/05/25 00:42:04  web0
+ * @N Dialoge fuer OP-Verwaltung
+ *
  * Revision 1.5  2005/04/05 21:51:54  web0
  * @B Begrenzung aller BLZ-Eingaben auf 8 Zeichen
  *
