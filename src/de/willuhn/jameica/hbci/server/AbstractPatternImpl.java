@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AbstractPatternImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/05/24 23:30:03 $
+ * $Revision: 1.2 $
+ * $Date: 2005/05/30 14:25:48 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -168,7 +168,7 @@ public abstract class AbstractPatternImpl extends AbstractDBObject implements Pa
     {
       return getField() + " " +
              getNameForType(this.getType()) + " " +
-             getPattern();
+             "\"" + getPattern() + "\"";
     }
     return super.getAttribute(arg0);
   }
@@ -185,7 +185,7 @@ public abstract class AbstractPatternImpl extends AbstractDBObject implements Pa
       case Pattern.TYPE_ENDSWITH:
         return i18n.tr("endet mit");
       case Pattern.TYPE_EQUALS:
-        return i18n.tr("entspricht genau");
+        return i18n.tr("entspricht");
       case Pattern.TYPE_STARTSWITH:
         return i18n.tr("beginnt mit");
       default:
@@ -194,11 +194,27 @@ public abstract class AbstractPatternImpl extends AbstractDBObject implements Pa
     }
   }
 
+  /**
+   * Ueberschrieben, um einige Werte vorzubelegen, falls sie fehlen.
+   * @see de.willuhn.datasource.db.AbstractDBObject#insert()
+   */
+  public void insert() throws RemoteException, ApplicationException
+  {
+    if (getAttribute("ignorecase") == null)
+      setIgnoreCase(true);
+    if (getAttribute("patterntype") == null)
+      setType(Pattern.TYPE_CONTAINS);
+    super.insert();
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: AbstractPatternImpl.java,v $
+ * Revision 1.2  2005/05/30 14:25:48  web0
+ * *** empty log message ***
+ *
  * Revision 1.1  2005/05/24 23:30:03  web0
  * @N Erster Code fuer OP-Verwaltung
  *

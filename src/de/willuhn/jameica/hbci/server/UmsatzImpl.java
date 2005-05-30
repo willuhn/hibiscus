@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.20 $
- * $Date: 2005/03/09 01:07:02 $
+ * $Revision: 1.21 $
+ * $Date: 2005/05/30 14:25:48 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -370,11 +370,26 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 		setAttribute("umsatztyp_id",typ);
   }
 
+  /**
+   * Ueberschrieben, um ein synthetisches Attribute "mergedzweck" zu erzeugen.
+   * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
+   */
+  public Object getAttribute(String arg0) throws RemoteException
+  {
+    if ("mergedzweck".equals(arg0))
+      return getZweck() + (getZweck2() != null ? getZweck2() : "");
+
+    return super.getAttribute(arg0);
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.21  2005/05/30 14:25:48  web0
+ * *** empty log message ***
+ *
  * Revision 1.20  2005/03/09 01:07:02  web0
  * @D javadoc fixes
  *
