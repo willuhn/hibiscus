@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractBaseUeberweisungImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/03/02 17:59:30 $
+ * $Revision: 1.4 $
+ * $Date: 2005/05/30 22:55:27 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -44,13 +44,6 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractTransferImpl
    */
   public String getPrimaryAttribute() throws RemoteException {
     return "zweck";
-  }
-
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#deleteCheck()
-   */
-  protected void deleteCheck() throws ApplicationException {
-  	// Kann geloescht werden
   }
 
   /**
@@ -143,6 +136,9 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractTransferImpl
 
 /**********************************************************************
  * $Log: AbstractBaseUeberweisungImpl.java,v $
+ * Revision 1.4  2005/05/30 22:55:27  web0
+ * *** empty log message ***
+ *
  * Revision 1.3  2005/03/02 17:59:30  web0
  * @N some refactoring
  *

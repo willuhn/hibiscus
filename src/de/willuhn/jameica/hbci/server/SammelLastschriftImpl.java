@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/SammelLastschriftImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/03/05 19:11:25 $
+ * $Revision: 1.5 $
+ * $Date: 2005/05/30 22:55:27 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -58,13 +58,6 @@ public class SammelLastschriftImpl extends AbstractDBObject
   public String getPrimaryAttribute() throws RemoteException
   {
     return "bezeichnung";
-  }
-
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#deleteCheck()
-   */
-  protected void deleteCheck() throws ApplicationException
-  {
   }
 
   /**
@@ -333,6 +326,9 @@ public class SammelLastschriftImpl extends AbstractDBObject
 
 /*****************************************************************************
  * $Log: SammelLastschriftImpl.java,v $
+ * Revision 1.5  2005/05/30 22:55:27  web0
+ * *** empty log message ***
+ *
  * Revision 1.4  2005/03/05 19:11:25  web0
  * @N SammelLastschrift-Code complete
  *

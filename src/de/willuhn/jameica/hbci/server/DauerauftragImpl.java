@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DauerauftragImpl.java,v $
- * $Revision: 1.17 $
- * $Date: 2005/03/04 00:16:43 $
+ * $Revision: 1.18 $
+ * $Date: 2005/05/30 22:55:27 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -59,15 +59,6 @@ public class DauerauftragImpl extends AbstractTransferImpl
   public String getPrimaryAttribute() throws RemoteException
   {
     return "zweck";
-  }
-
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#deleteCheck()
-   */
-  protected void deleteCheck() throws ApplicationException
-  {
-  	// koennen getrost geloescht werden - sind ja eh nur Spiegeldaten
-  	// die wir jederzeit wieder von der Bank holen koennen
   }
 
   /**
@@ -276,6 +267,9 @@ public class DauerauftragImpl extends AbstractTransferImpl
 
 /**********************************************************************
  * $Log: DauerauftragImpl.java,v $
+ * Revision 1.18  2005/05/30 22:55:27  web0
+ * *** empty log message ***
+ *
  * Revision 1.17  2005/03/04 00:16:43  web0
  * @B Bugzilla http://www.willuhn.de/bugzilla/show_bug.cgi?id=15
  *

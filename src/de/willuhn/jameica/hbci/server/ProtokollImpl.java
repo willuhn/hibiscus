@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/ProtokollImpl.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/11/12 18:25:07 $
- * $Author: willuhn $
+ * $Revision: 1.9 $
+ * $Date: 2005/05/30 22:55:27 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -51,14 +51,6 @@ public class ProtokollImpl extends AbstractDBObject implements Protokoll {
    */
   public String getPrimaryAttribute() throws RemoteException {
     return "kommentar";
-  }
-
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#deleteCheck()
-   */
-  protected void deleteCheck() throws ApplicationException {
-		// muessen sich loeschen lassen. Naemlich dann, wenn
-		// das Konto selbst geloescht wird.
   }
 
   /**
@@ -164,6 +156,9 @@ public class ProtokollImpl extends AbstractDBObject implements Protokoll {
 
 /**********************************************************************
  * $Log: ProtokollImpl.java,v $
+ * Revision 1.9  2005/05/30 22:55:27  web0
+ * *** empty log message ***
+ *
  * Revision 1.8  2004/11/12 18:25:07  willuhn
  * *** empty log message ***
  *

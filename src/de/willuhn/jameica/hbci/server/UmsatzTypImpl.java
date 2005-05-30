@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.10 $
- * $Date: 2005/02/28 16:28:24 $
+ * $Revision: 1.11 $
+ * $Date: 2005/05/30 22:55:27 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -55,15 +55,6 @@ public class UmsatzTypImpl extends AbstractDBObject implements UmsatzTyp {
   }
 
   /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#deleteCheck()
-   */
-  protected void deleteCheck() throws ApplicationException {
-		// Die Dinger koennen getrost geloescht werden.
-		// Wir muessen nur in der delete()-Methode alle evtl. vorhandenen
-		// Verknuepfungen zu Umsaetzen loeschen.
-  }
-
-  /**
    * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
    */
   protected void insertCheck() throws ApplicationException {
@@ -90,13 +81,6 @@ public class UmsatzTypImpl extends AbstractDBObject implements UmsatzTyp {
    */
   protected void updateCheck() throws ApplicationException {
 		insertCheck();
-  }
-
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
-   */
-  protected Class getForeignObject(String arg0) throws RemoteException {
-    return null;
   }
 
   /**
@@ -189,6 +173,9 @@ public class UmsatzTypImpl extends AbstractDBObject implements UmsatzTyp {
 
 /**********************************************************************
  * $Log: UmsatzTypImpl.java,v $
+ * Revision 1.11  2005/05/30 22:55:27  web0
+ * *** empty log message ***
+ *
  * Revision 1.10  2005/02/28 16:28:24  web0
  * @N first code for "Sammellastschrift"
  *

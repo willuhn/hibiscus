@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/TurnusImpl.java,v $
- * $Revision: 1.9 $
- * $Date: 2005/04/09 16:56:30 $
+ * $Revision: 1.10 $
+ * $Date: 2005/05/30 22:55:27 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -112,14 +112,6 @@ public class TurnusImpl extends AbstractDBObject implements Turnus
   protected void updateCheck() throws ApplicationException
   {
   	insertCheck();
-  }
-
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
-   */
-  protected Class getForeignObject(String arg0) throws RemoteException
-  {
-    return null;
   }
 
   /**
@@ -244,6 +236,9 @@ public class TurnusImpl extends AbstractDBObject implements Turnus
 
 /**********************************************************************
  * $Log: TurnusImpl.java,v $
+ * Revision 1.10  2005/05/30 22:55:27  web0
+ * *** empty log message ***
+ *
  * Revision 1.9  2005/04/09 16:56:30  web0
  * @N verbose output in turnus
  *

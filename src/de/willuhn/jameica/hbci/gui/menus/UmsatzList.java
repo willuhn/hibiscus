@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UmsatzList.java,v $
- * $Revision: 1.8 $
- * $Date: 2005/05/09 12:24:20 $
+ * $Revision: 1.9 $
+ * $Date: 2005/05/30 22:55:27 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -12,6 +12,8 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.menus;
 
+import de.willuhn.jameica.gui.extension.Extendable;
+import de.willuhn.jameica.gui.extension.ExtensionRegistry;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.hbci.HBCI;
@@ -25,7 +27,7 @@ import de.willuhn.util.I18N;
  * Liefert ein vorgefertigtes Kontext-Menu, welches an Listen von Umsaetzen
  * angehaengt werden kann.
  */
-public class UmsatzList extends ContextMenu
+public class UmsatzList extends ContextMenu implements Extendable
 {
 
 	private I18N i18n;
@@ -40,6 +42,9 @@ public class UmsatzList extends ContextMenu
 		addItem(new OpenItem());
 
 		addItem(new CheckedContextMenuItem(i18n.tr("Gegenkonto in Adressbuch übernehmen"),new EmpfaengerAdd()));
+
+    // Wir geben das Context-Menu jetzt noch zur Erweiterung frei.
+    ExtensionRegistry.extend(this);
 
 	}
 
@@ -62,11 +67,22 @@ public class UmsatzList extends ContextMenu
       return super.isEnabledFor(o);
     }
   }
+
+  /**
+   * @see de.willuhn.jameica.gui.extension.Extendable#getExtendableID()
+   */
+  public String getExtendableID()
+  {
+    return "hibiscus.context.umsatz.list";
+  }
 }
 
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.9  2005/05/30 22:55:27  web0
+ * *** empty log message ***
+ *
  * Revision 1.8  2005/05/09 12:24:20  web0
  * @N Changelog
  * @N Support fuer Mehrfachmarkierungen

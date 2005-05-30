@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AdresseImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/05/19 23:31:07 $
+ * $Revision: 1.6 $
+ * $Date: 2005/05/30 22:55:27 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -53,12 +53,6 @@ public class AdresseImpl extends AbstractDBObject implements Adresse {
   }
 
   /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#deleteCheck()
-   */
-  protected void deleteCheck() throws ApplicationException {
-  }
-
-  /**
    * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
    */
   protected void insertCheck() throws ApplicationException {
@@ -92,13 +86,6 @@ public class AdresseImpl extends AbstractDBObject implements Adresse {
    */
   protected void updateCheck() throws ApplicationException {
 		insertCheck();
-  }
-
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
-   */
-  protected Class getForeignObject(String field) throws RemoteException {
-    return null;
   }
 
   /**
@@ -158,6 +145,9 @@ public class AdresseImpl extends AbstractDBObject implements Adresse {
 
 /**********************************************************************
  * $Log: AdresseImpl.java,v $
+ * Revision 1.6  2005/05/30 22:55:27  web0
+ * *** empty log message ***
+ *
  * Revision 1.5  2005/05/19 23:31:07  web0
  * @B RMI over SSL support
  * @N added handbook

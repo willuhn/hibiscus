@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/SammelLastBuchungImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/05/19 23:31:07 $
+ * $Revision: 1.4 $
+ * $Date: 2005/05/30 22:55:27 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -54,14 +54,6 @@ public class SammelLastBuchungImpl extends AbstractDBObject implements SammelLas
   public String getPrimaryAttribute() throws RemoteException
   {
     return "zweck";
-  }
-
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#deleteCheck()
-   */
-  protected void deleteCheck() throws ApplicationException
-  {
-    // kann geloescht werden
   }
 
   /**
@@ -295,6 +287,9 @@ public class SammelLastBuchungImpl extends AbstractDBObject implements SammelLas
 
 /*****************************************************************************
  * $Log: SammelLastBuchungImpl.java,v $
+ * Revision 1.4  2005/05/30 22:55:27  web0
+ * *** empty log message ***
+ *
  * Revision 1.3  2005/05/19 23:31:07  web0
  * @B RMI over SSL support
  * @N added handbook
