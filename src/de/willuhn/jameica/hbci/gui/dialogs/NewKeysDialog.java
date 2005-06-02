@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/NewKeysDialog.java,v $
- * $Revision: 1.7 $
- * $Date: 2005/03/21 23:31:54 $
+ * $Revision: 1.8 $
+ * $Date: 2005/06/02 22:57:34 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -12,8 +12,13 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.dialogs;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.print.Doc;
 import javax.print.DocFlavor;
@@ -25,7 +30,9 @@ import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.MediaSizeName;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.FileDialog;
 import org.kapott.hbci.manager.HBCIUtils;
 import org.kapott.hbci.passport.HBCIPassport;
 import org.kapott.hbci.passport.INILetter;
@@ -33,7 +40,9 @@ import org.kapott.hbci.passport.INILetter;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.jameica.gui.Action;
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
+import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
@@ -41,6 +50,8 @@ import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.Settings;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -91,7 +102,7 @@ public class NewKeysDialog extends AbstractDialog
 		group.addLabelPair(i18n.tr("Schlüssel-Hashwert"),new LabelInput(HBCIUtils.data2hex(iniletter.getKeyHash())));
 		group.addLabelPair(i18n.tr("Drucker-Auswahl:"),getPrinterList());
 
-		ButtonArea buttons = new ButtonArea(parent,2);
+		ButtonArea buttons = new ButtonArea(parent,3);
 		buttons.addButton(i18n.tr("Drucken"),new Action()
 		{
 			public void handleAction(Object context) throws ApplicationException
@@ -99,6 +110,13 @@ public class NewKeysDialog extends AbstractDialog
 				print();
 			}
 		},null,true);
+    buttons.addButton(i18n.tr("Speichern unter..."),new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        save();
+      }
+    });
 		buttons.addButton(i18n.tr("Schliessen"), new Action()
 		{
 			public void handleAction(Object context) throws ApplicationException
@@ -130,9 +148,95 @@ public class NewKeysDialog extends AbstractDialog
 		}
 		catch (Exception e)
 		{
+      Logger.error("error while printing ini letter",e);
 			throw new ApplicationException(i18n.tr("Fehler beim Drucken des Ini-Briefs"),e);
 		}
 	}
+
+  /**
+   * Speichert den Ini-Brief ab.
+   * @throws ApplicationException
+   */
+  private void save() throws ApplicationException
+  {
+    FileDialog fd = new FileDialog(GUI.getShell(),SWT.SAVE);
+    fd.setText(i18n.tr("Bitte geben Sie den Dateinamen an , in dem der Ini-Brief gespeichert werden soll"));
+    fd.setFileName(i18n.tr("hibiscus-inibrief-{0}.txt",HBCI.FASTDATEFORMAT.format(new Date())));
+    
+    Settings settings = new Settings(this.getClass());
+    settings.setStoreWhenRead(true);
+    String path = settings.getString("lastdir",System.getProperty("user.home"));
+    if (path != null && path.length() > 0)
+      fd.setFilterPath(path);
+
+    String s = fd.open();
+    
+    if (s == null || s.length() == 0)
+    {
+      close();
+      return;
+    }
+
+    File file = new File(s);
+    if (file.exists())
+    {
+      try
+      {
+        YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
+        d.setTitle(i18n.tr("Datei existiert bereits"));
+        d.setText(i18n.tr("Möchten Sie die Datei überschreiben?"));
+        Boolean choice = (Boolean) d.open();
+        if (!choice.booleanValue())
+        {
+          // Dialog schliessen
+          close();
+          return;
+        }
+      }
+      catch (Exception e)
+      {
+        // Dialog schliessen
+        close();
+        Logger.error("error while saving ini letter",e);
+        throw new ApplicationException(i18n.tr("Fehler beim Speichern des INI-Briefs in {0}",s),e);
+      }
+    }
+    
+    OutputStream os = null;
+    try
+    {
+      os = new BufferedOutputStream(new FileOutputStream(file));
+      os.write(iniletter.toString().getBytes());
+
+      // Wir merken uns noch das Verzeichnis vom letzten mal
+      settings.setAttribute("lastdir",file.getParent());
+
+      // Dialog schliessen
+      close();
+      GUI.getStatusBar().setSuccessText(i18n.tr("INI-Brief gespeichert in {0}",s));
+    }
+    catch (Exception e)
+    {
+      Logger.error("error while writing ini letter to " + s,e);
+      throw new ApplicationException(i18n.tr("Fehler beim Speichern des INI-Briefs in {0}",s),e);
+    }
+    finally
+    {
+      if (os != null)
+      {
+        try
+        {
+          // Dialog schliessen
+          close();
+          os.close();
+        }
+        catch (Exception e)
+        {
+          // useless
+        }
+      }
+    }
+  }
 
 	/**
 	 * Liefert eine Liste der verfuegbaren Drucker.
@@ -230,6 +334,9 @@ public class NewKeysDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: NewKeysDialog.java,v $
+ * Revision 1.8  2005/06/02 22:57:34  web0
+ * @N Export von Konto-Umsaetzen
+ *
  * Revision 1.7  2005/03/21 23:31:54  web0
  * @B bug 24
  *

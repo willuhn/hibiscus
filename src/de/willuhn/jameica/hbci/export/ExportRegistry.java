@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/export/Attic/ExportRegistry.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/06/02 21:48:44 $
+ * $Revision: 1.2 $
+ * $Date: 2005/06/02 22:57:34 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -49,7 +49,9 @@ public class ExportRegistry
       {
         try
         {
+          Logger.info("trying to load " + list[i].getName());
           exporters[i] = (Exporter) list[i].newInstance();
+          Logger.info("loaded successfully");
         }
         catch (Exception e)
         {
@@ -71,6 +73,9 @@ public class ExportRegistry
    */
   public static Exporter[] getExporters()
   {
+    if (exporters == null)
+      init();
+
     return exporters;
   }
 }
@@ -78,6 +83,9 @@ public class ExportRegistry
 
 /**********************************************************************
  * $Log: ExportRegistry.java,v $
+ * Revision 1.2  2005/06/02 22:57:34  web0
+ * @N Export von Konto-Umsaetzen
+ *
  * Revision 1.1  2005/06/02 21:48:44  web0
  * @N Exporter-Package
  * @N CSV-Exporter
