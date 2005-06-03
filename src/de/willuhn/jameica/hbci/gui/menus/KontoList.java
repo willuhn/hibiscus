@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/KontoList.java,v $
- * $Revision: 1.9 $
- * $Date: 2005/01/19 00:16:04 $
- * $Author: willuhn $
+ * $Revision: 1.10 $
+ * $Date: 2005/06/03 17:14:20 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -43,6 +43,7 @@ public class KontoList extends ContextMenu
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 		addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"),new KontoNew()));
+    addItem(new ContextMenuItem(i18n.tr("Neues Konto..."), new KNeu()));
 		addItem(new CheckedContextMenuItem(i18n.tr("Kontoauszüge anzeigen..."), new UmsatzList()));
 		addItem(new CheckedContextMenuItem(i18n.tr("Saldo aktualisieren..."), new KontoFetchSaldo()));
 
@@ -53,7 +54,6 @@ public class KontoList extends ContextMenu
 		addItem(new ContextMenuItem(i18n.tr("Neue Überweisung..."), new UeberweisungNew()));
 		addItem(new ContextMenuItem(i18n.tr("Neuer Dauerauftrag..."), new DauerauftragNew()));
 		addItem(new ContextMenuItem(i18n.tr("Neue Lastschrift..."), new LastschriftNew()));
-		addItem(new ContextMenuItem(i18n.tr("Neues Konto..."), new KNeu()));
 	}
 
 	/**
@@ -76,6 +76,9 @@ public class KontoList extends ContextMenu
 
 /**********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.10  2005/06/03 17:14:20  web0
+ * @B NPE
+ *
  * Revision 1.9  2005/01/19 00:16:04  willuhn
  * @N Lastschriften
  *

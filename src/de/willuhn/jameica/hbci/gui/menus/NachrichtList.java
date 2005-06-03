@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/NachrichtList.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/05/09 17:26:56 $
+ * $Revision: 1.2 $
+ * $Date: 2005/06/03 17:14:20 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -37,7 +37,7 @@ public class NachrichtList extends ContextMenu
 	{
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-    addItem(new ContextMenuItem(i18n.tr("Als gelesen markieren"), new NachrichtMarkRead()));
+    addItem(new CheckedContextMenuItem(i18n.tr("Als gelesen markieren"), new NachrichtMarkRead()));
     addItem(ContextMenuItem.SEPARATOR);
 		addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new NachrichtDelete()));
 	}
@@ -46,6 +46,9 @@ public class NachrichtList extends ContextMenu
 
 /**********************************************************************
  * $Log: NachrichtList.java,v $
+ * Revision 1.2  2005/06/03 17:14:20  web0
+ * @B NPE
+ *
  * Revision 1.1  2005/05/09 17:26:56  web0
  * @N Bugzilla 68
  *

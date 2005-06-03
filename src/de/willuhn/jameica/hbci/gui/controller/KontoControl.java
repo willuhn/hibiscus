@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.56 $
- * $Date: 2005/05/19 23:31:07 $
+ * $Revision: 1.57 $
+ * $Date: 2005/06/03 17:14:20 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -217,6 +217,9 @@ public class KontoControl extends AbstractControl {
     if (w == null || w.length() != 3)
       w = HBCIProperties.CURRENCY_DEFAULT_DE;
     waehrung = new TextInput(w);
+
+    // NEU Waehrung ist READONLY
+    waehrung.disable();
     return waehrung;
   }
 
@@ -439,6 +442,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.57  2005/06/03 17:14:20  web0
+ * @B NPE
+ *
  * Revision 1.56  2005/05/19 23:31:07  web0
  * @B RMI over SSL support
  * @N added handbook
