@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Settings.java,v $
- * $Revision: 1.30 $
- * $Date: 2005/03/09 01:07:02 $
+ * $Revision: 1.31 $
+ * $Date: 2005/06/06 09:54:39 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -44,6 +44,7 @@ public class Settings extends AbstractView {
 		// Einstellungen
 		settings.addCheckbox(control.getOnlineMode(),i18n.tr("Bei Kommunikation mit der Bank Internetverbindung ohne Nachfrage herstellen"));
 		settings.addCheckbox(control.getCheckPin(),i18n.tr("PIN-Eingabe via Check-Summe prüfen"));
+    settings.addCheckbox(control.getShowTan(),i18n.tr("TANs während der Eingabe anzeigen"));
 		
 		settings.addLabelPair(i18n.tr("Limit für Aufträge"), control.getUeberweisungLimit());
 		
@@ -88,6 +89,9 @@ public class Settings extends AbstractView {
 
 /**********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.31  2005/06/06 09:54:39  web0
+ * *** empty log message ***
+ *
  * Revision 1.30  2005/03/09 01:07:02  web0
  * @D javadoc fixes
  *

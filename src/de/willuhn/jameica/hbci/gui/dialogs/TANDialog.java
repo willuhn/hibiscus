@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/TANDialog.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/06/02 22:57:34 $
+ * $Revision: 1.6 $
+ * $Date: 2005/06/06 09:54:39 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@ package de.willuhn.jameica.hbci.gui.dialogs;
 
 import de.willuhn.jameica.gui.dialogs.PasswordDialog;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 
@@ -33,7 +34,7 @@ public class TANDialog extends PasswordDialog {
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
     // Deaktivierung der Anzeige von Sternen im TAN-Dialog.
-    setUseStars(false);
+    setShowPassword(Settings.getShowTan());
 
     setTitle(i18n.tr("TAN-Eingabe"));
     setLabelText(i18n.tr("Ihre TAN"));
@@ -68,6 +69,9 @@ public class TANDialog extends PasswordDialog {
 
 /**********************************************************************
  * $Log: TANDialog.java,v $
+ * Revision 1.6  2005/06/06 09:54:39  web0
+ * *** empty log message ***
+ *
  * Revision 1.5  2005/06/02 22:57:34  web0
  * @N Export von Konto-Umsaetzen
  *
