@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/export/Attic/CSVExporter.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/06/02 21:48:44 $
+ * $Revision: 1.2 $
+ * $Date: 2005/06/06 10:37:01 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -45,6 +45,8 @@ public class CSVExporter implements Exporter
     i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
     StringBuffer header = new StringBuffer();
+    header.append(i18n.tr("#"));
+    header.append(DELIMTITER);
     header.append(i18n.tr("Eigene Kontonummer"));
     header.append(DELIMTITER);
     header.append(i18n.tr("Eigene Bankleitzahl"));
@@ -54,6 +56,8 @@ public class CSVExporter implements Exporter
     header.append(i18n.tr("Nummer des Gegenkontos"));
     header.append(DELIMTITER);
     header.append(i18n.tr("Bankleitzahl des Gegenkontos"));
+    header.append(DELIMTITER);
+    header.append(i18n.tr("Kontoinhaber des Gegenkontos"));
     header.append(DELIMTITER);
     header.append(i18n.tr("Betrag"));
     header.append(DELIMTITER);
@@ -100,6 +104,8 @@ public class CSVExporter implements Exporter
         konto = current.getKonto();
 
         StringBuffer sb = new StringBuffer();
+        sb.append((i+1)); // Fortlaufende Nummer
+        sb.append(DELIMTITER);
         sb.append(konto.getKontonummer());
         sb.append(DELIMTITER);
         sb.append(konto.getBLZ());
@@ -166,6 +172,9 @@ public class CSVExporter implements Exporter
 
 /**********************************************************************
  * $Log: CSVExporter.java,v $
+ * Revision 1.2  2005/06/06 10:37:01  web0
+ * *** empty log message ***
+ *
  * Revision 1.1  2005/06/02 21:48:44  web0
  * @N Exporter-Package
  * @N CSV-Exporter
