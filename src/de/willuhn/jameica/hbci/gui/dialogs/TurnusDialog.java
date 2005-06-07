@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/TurnusDialog.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/03/06 16:06:10 $
+ * $Revision: 1.4 $
+ * $Date: 2005/06/07 16:30:02 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -12,17 +12,18 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.dialogs;
 
-import java.rmi.RemoteException;
-
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.TableItem;
 
 import de.willuhn.jameica.gui.Action;
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
+import de.willuhn.jameica.gui.formatter.TableFormatter;
+import de.willuhn.jameica.gui.parts.ContextMenu;
+import de.willuhn.jameica.gui.parts.ContextMenuItem;
+import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.ButtonArea;
-import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.controller.TurnusControl;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Turnus;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -30,12 +31,14 @@ import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Turnus bearbeiten.
+ * Ein Dialog, welcher eine Liste der vorhandenen Turnus-Elemente anzeigt.
  */
 public class TurnusDialog extends AbstractDialog {
 
 	private I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-	private TurnusControl control = new TurnusControl();
+
+  private TablePart turnusList = null;
+  private Turnus turnus = null;
 
   /**
    * @param position
@@ -43,68 +46,217 @@ public class TurnusDialog extends AbstractDialog {
   public TurnusDialog(int position)
   {
     super(position);
-		this.setTitle(i18n.tr("Zahlungsturnus auswählen/bearbeiten"));
+		this.setTitle(i18n.tr("Zahlungsturnus auswählen"));
   }
 
 	/**
-	 * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-	 */
+   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
+   */
 	protected void paint(Composite parent) throws Exception
 	{
 
 		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-		LabelGroup group = new LabelGroup(parent,i18n.tr("Vorhandene Einträge"));
-		group.addPart(control.getTurnusList());
+    // Erzeugen der Liste mit den existierenden Elementen
+    turnusList = new TablePart(Settings.getDBService().createList(Turnus.class), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        try
+        {
+          // Bei Doppelklick aktuellen Turnus zuweisen
+          turnus = (Turnus) context;
+        }
+        catch (Exception e)
+        {
+          Logger.error("error while choosing turnus",e);
+        }
+        // und Dialog schliessen. getData() liefert dann den gerade ausgewaehlten zurueck.
+        close();
+      }
+    });
+    turnusList.addColumn(i18n.tr("Bezeichnung"),"bezeichnung");
+    turnusList.setMulti(false);
+    turnusList.disableSummary();
+
+    // Ein Formatter, der die initialen Turnusse rot markiert
+    turnusList.setFormatter(new TableFormatter()
+    {
+      public void format(TableItem item)
+      {
+        try {
+          Turnus t = (Turnus) item.getData();
+          if (t.isInitial())
+          {
+            item.setForeground(Settings.getBuchungSollForeground());
+          }
+        }
+        catch (Exception e)
+        {
+          Logger.error("error while formatting turnus",e);
+        }
+      }
+    });
+
+    ContextMenu c = new ContextMenu();
+
+    // Einer fuer die Neuanlage
+    c.addItem(new ContextMenuItem(i18n.tr("Neu..."), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        handleEdit(null);
+      }
+    }));
+
+    // Ein Contextmenu-Eintrag zum Bearbeiten    
+    c.addItem(new ContextMenuItem(i18n.tr("Bearbeiten..."), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        if (context == null || !(context instanceof Turnus))
+          return;
+        handleEdit((Turnus) context);
+      }
+    })
+    {
+      /**
+       * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
+       */
+      public boolean isEnabledFor(Object o)
+      {
+        try
+        {
+          if (o == null || !(o instanceof Turnus))
+            return false;
+          Turnus t = (Turnus) o;
+          if (t.isInitial())
+            return false;
+        }
+        catch (Exception e)
+        {
+          Logger.error("error while checking context menu item",e);
+        }
+        return super.isEnabledFor(o);
+      }
+    });
 
 
-		LabelGroup group2 = new LabelGroup(parent,i18n.tr("Eigenschaften"));
-
-		try {
-			group2.addLabelPair(i18n.tr("Zeiteinheit"),control.getZeiteinheit());
-			group2.addLabelPair(i18n.tr("Zahlung aller"),control.getIntervall());
-			group2.addLabelPair(i18n.tr("Zahlung am"), control.getTagWoechentlich());
-			group2.addLabelPair("", control.getTagMonatlich());
-			
-			group2.addSeparator();
-			group2.addLabelPair("", control.getComment());
-			
-		}
-		catch (RemoteException e)
-		{
-			Logger.error("error while reading turnus",e);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Lesen des Zahlungsturnus."));
-		}
+    // Ein Contextmenu-Eintrag zum Loeschen    
+    c.addItem(new ContextMenuItem(i18n.tr("Löschen..."), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        if (context == null || !(context instanceof Turnus))
+          return;
+        try
+        {
+          Turnus t = (Turnus) context;
+          t.delete();
+        }
+        catch (Exception e)
+        {
+          Logger.error("error while deleting turnus",e);
+        }
+      }
+    })
+    {
+      /**
+       * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
+       */
+      public boolean isEnabledFor(Object o)
+      {
+        try
+        {
+          if (o == null || !(o instanceof Turnus))
+            return false;
+          Turnus t = (Turnus) o;
+          if (t.isInitial())
+            return false;
+        }
+        catch (Exception e)
+        {
+          Logger.error("error while checking context menu item",e);
+        }
+        return super.isEnabledFor(o);
+      }
+    });
+   
+    turnusList.setContextMenu(c);
+    turnusList.paint(parent);
 
 		// und noch die Abschicken-Knoepfe
-		if (!control.getTurnus().isInitial())
+		ButtonArea buttonArea = new ButtonArea(parent,3);
+		buttonArea.addButton(i18n.tr("Neu"), new Action()
 		{
-			ButtonArea buttonArea = new ButtonArea(parent,3);
-			buttonArea.addButton(i18n.tr("Neu"), new Action()
+			public void handleAction(Object context) throws ApplicationException
 			{
-				public void handleAction(Object context) throws ApplicationException
-				{
-					control.handleCreate();
-				}
-			},null,true);
-			buttonArea.addButton(i18n.tr("Übernehmen"), new Action()
+        handleEdit(null);
+			}
+		},null);
+		buttonArea.addButton(i18n.tr("Übernehmen"), new Action()
+		{
+			public void handleAction(Object context) throws ApplicationException
 			{
-				public void handleAction(Object context) throws ApplicationException
-				{
-					control.handleStore();
-					close();
-				}
-			},null,true);
-			buttonArea.addButton(i18n.tr("Abbrechen"), new Action()
+        try
+        {
+          // aktuell markierten Turnus nehmen
+          turnus = (Turnus) turnusList.getSelection();
+        }
+        catch (Exception e)
+        {
+          Logger.error("error while choosing turnus",e);
+        }
+        // und Dialog schliessen
+				close();
+			}
+		},null,true);
+		buttonArea.addButton(i18n.tr("Abbrechen"), new Action()
+		{
+			public void handleAction(Object context) throws ApplicationException
 			{
-				public void handleAction(Object context) throws ApplicationException
-				{
-					close();
-				}
-			});
-		}
+        // Turnus entfernen
+        turnus = null;
+        
+        // und schliessen
+				close();
+			}
+		});
 
+  }
 
+  private void handleEdit(Turnus t)
+  {
+    boolean isNew = t == null;
+
+    // Turnus-Edit-Dialog ohne Turnus erzeugen
+    TurnusEditDialog te = new TurnusEditDialog(TurnusEditDialog.POSITION_MOUSE,t);
+    try
+    {
+      Turnus t2 = (Turnus) te.open();
+      if (t2 != null)
+      {
+        // Turnus zur Liste hinzufuegen wenn es eine Neuanlage ist
+        if (isNew)
+        {
+          turnusList.addItem(t2);
+        }
+        else
+        {
+          // Entfernen und hinzufuegen, um die Anzeige zu aktualisieren
+          turnusList.removeItem(t2);
+          turnusList.addItem(t2);
+        }
+            
+        // und markieren
+        
+        turnusList.select(t2);
+      }
+    }
+    catch (Exception e)
+    {
+      Logger.error("error while adding turnus",e);
+    }
   }
 
   /**
@@ -112,15 +264,16 @@ public class TurnusDialog extends AbstractDialog {
    */
   protected Object getData() throws Exception
   {
-  	Turnus t = control.getTurnus();
-  	return (t == null || t.isNewObject()) ? null : t;
+    return turnus;
   }
-
 }
 
 
 /**********************************************************************
  * $Log: TurnusDialog.java,v $
+ * Revision 1.4  2005/06/07 16:30:02  web0
+ * @B Turnus-Dialog "geradegezogen" und ergonomischer gestaltet
+ *
  * Revision 1.3  2005/03/06 16:06:10  web0
  * *** empty log message ***
  *

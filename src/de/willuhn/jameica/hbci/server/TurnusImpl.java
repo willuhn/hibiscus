@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/TurnusImpl.java,v $
- * $Revision: 1.10 $
- * $Date: 2005/05/30 22:55:27 $
+ * $Revision: 1.11 $
+ * $Date: 2005/06/07 16:30:02 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -18,7 +18,6 @@ import java.util.zip.CRC32;
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Turnus;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -67,11 +66,6 @@ public class TurnusImpl extends AbstractDBObject implements Turnus
 		try {
 			if (isInitial())
 				throw new ApplicationException(i18n.tr("Turnus ist Bestandteil der System-Daten und kann nicht gelöscht werden."));
-				
-			DBIterator list = getService().createList(Dauerauftrag.class);
-			list.addFilter("turnus_id = " + this.getID());
-			if (list.hasNext())
-				throw new ApplicationException(i18n.tr("Turnus kann nicht gelöscht werden, da er einem Dauerauftrag zugewiesen ist."));
 		}
 		catch (RemoteException e)
 		{
@@ -236,6 +230,9 @@ public class TurnusImpl extends AbstractDBObject implements Turnus
 
 /**********************************************************************
  * $Log: TurnusImpl.java,v $
+ * Revision 1.11  2005/06/07 16:30:02  web0
+ * @B Turnus-Dialog "geradegezogen" und ergonomischer gestaltet
+ *
  * Revision 1.10  2005/05/30 22:55:27  web0
  * *** empty log message ***
  *
