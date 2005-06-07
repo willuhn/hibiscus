@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/TurnusHelper.java,v $
- * $Revision: 1.10 $
- * $Date: 2005/03/09 01:07:02 $
+ * $Revision: 1.11 $
+ * $Date: 2005/06/07 22:19:57 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import org.kapott.hbci.GV_Result.GVRDauerList;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Turnus;
 import de.willuhn.jameica.system.Application;
@@ -127,7 +128,13 @@ public class TurnusHelper
 		if (ze == Turnus.ZEITEINHEIT_WOECHENTLICH)
 			s+= ", " + getWochentag(ta);
 		else if (ze == Turnus.ZEITEINHEIT_MONATLICH)
-			s+= ", " + i18n.tr("am {0}. des Monats","" + ta);
+    {
+      // BUGZILLA #49 http://www.willuhn.de/bugzilla/show_bug.cgi?id=49
+      if (ta == HBCIProperties.HBCI_LAST_OF_MONTH)
+        s+= ", " + i18n.tr("zum Monatsletzten");
+      else
+        s+= ", " + i18n.tr("am {0}. des Monats","" + ta);
+    }
 
 		return s;
 	}
@@ -178,6 +185,9 @@ public class TurnusHelper
 
 /**********************************************************************
  * $Log: TurnusHelper.java,v $
+ * Revision 1.11  2005/06/07 22:19:57  web0
+ * @B bug 49
+ *
  * Revision 1.10  2005/03/09 01:07:02  web0
  * @D javadoc fixes
  *

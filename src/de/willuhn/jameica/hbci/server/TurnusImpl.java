@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/TurnusImpl.java,v $
- * $Revision: 1.11 $
- * $Date: 2005/06/07 16:30:02 $
+ * $Revision: 1.12 $
+ * $Date: 2005/06/07 22:19:57 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import java.util.zip.CRC32;
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.Turnus;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -87,7 +88,8 @@ public class TurnusImpl extends AbstractDBObject implements Turnus
 			if (getIntervall() < 1)
 				throw new ApplicationException(i18n.tr("Bitte geben Sie ein gültiges Intervall ein"));
 
-			if (getZeiteinheit() == Turnus.ZEITEINHEIT_MONATLICH && (getTag() < 1 || getTag() > 31))
+      // BUGZILLA #49 http://www.willuhn.de/bugzilla/show_bug.cgi?id=49
+			if (getZeiteinheit() == Turnus.ZEITEINHEIT_MONATLICH && (getTag() < 1 || getTag() > 31) && getTag() != HBCIProperties.HBCI_LAST_OF_MONTH)
 				throw new ApplicationException(i18n.tr("Bei monatlicher Zeiteinheit darf der Zahltag nicht kleiner als 1 und nicht größer als 31 sein. Angegebener Tag: {0}",""+getTag()));
 
 			if (getZeiteinheit() == Turnus.ZEITEINHEIT_WOECHENTLICH && (getTag() < 1 || getTag() > 7))
@@ -230,6 +232,9 @@ public class TurnusImpl extends AbstractDBObject implements Turnus
 
 /**********************************************************************
  * $Log: TurnusImpl.java,v $
+ * Revision 1.12  2005/06/07 22:19:57  web0
+ * @B bug 49
+ *
  * Revision 1.11  2005/06/07 16:30:02  web0
  * @B Turnus-Dialog "geradegezogen" und ergonomischer gestaltet
  *

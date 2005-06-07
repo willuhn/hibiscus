@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/TurnusEditDialog.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/06/07 16:30:02 $
+ * $Revision: 1.2 $
+ * $Date: 2005/06/07 22:19:57 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -27,6 +27,7 @@ import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Turnus;
 import de.willuhn.jameica.hbci.server.TurnusHelper;
@@ -51,6 +52,7 @@ public class TurnusEditDialog extends AbstractDialog {
   private SelectInput tagWoechentlich = null;
 
   private String pleaseChoose         = i18n.tr("Bitte wählen...");
+  private String lastOfMonth          = i18n.tr("Zum Monatsletzten");
 
   /**
    * @param position
@@ -183,12 +185,13 @@ public class TurnusEditDialog extends AbstractDialog {
     if (tagMonatlich != null)
       return tagMonatlich;
 
-    String[] values = new String[31];
+    String[] values = new String[32];
     values[0] = this.pleaseChoose;
     for (int i=1;i<31;++i)
     {
       values[i] = ""+i;
     }
+    values[31] = this.lastOfMonth;
     tagMonatlich = new SelectInput(values,""+getTurnus().getTag());
     return tagMonatlich;
   }
@@ -236,7 +239,13 @@ public class TurnusEditDialog extends AbstractDialog {
       }
       else
       {
-        t.setTag(Integer.parseInt((String)getTagMonatlich().getValue()));
+        String s = (String)getTagMonatlich().getValue();
+        if (this.lastOfMonth.equals(s))
+          t.setTag(HBCIProperties.HBCI_LAST_OF_MONTH);
+        else if (this.pleaseChoose.equals(s))
+          t.setTag(1);
+        else
+          t.setTag(Integer.parseInt(s));
       }
 
       t.setIntervall(Integer.parseInt((String)getIntervall().getValue()));
@@ -407,6 +416,9 @@ public class TurnusEditDialog extends AbstractDialog {
 
 /**********************************************************************
  * $Log: TurnusEditDialog.java,v $
+ * Revision 1.2  2005/06/07 22:19:57  web0
+ * @B bug 49
+ *
  * Revision 1.1  2005/06/07 16:30:02  web0
  * @B Turnus-Dialog "geradegezogen" und ergonomischer gestaltet
  *
