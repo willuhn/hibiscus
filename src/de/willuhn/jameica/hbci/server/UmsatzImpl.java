@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.22 $
- * $Date: 2005/05/30 22:55:27 $
+ * $Revision: 1.23 $
+ * $Date: 2005/06/07 22:41:09 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -21,6 +21,7 @@ import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.system.Application;
@@ -375,11 +376,35 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
     return super.getAttribute(arg0);
   }
 
+  /**
+   * @see de.willuhn.datasource.rmi.Changeable#delete()
+   */
+  public void delete() throws RemoteException, ApplicationException
+  {
+    // BUGZILLA #70 http://www.willuhn.de/bugzilla/show_bug.cgi?id=70
+    Konto k = getKonto();
+    String[] fields = new String[]
+    {
+      getEmpfaengerName(),
+      getEmpfaengerKonto(),
+      getEmpfaengerBLZ(),
+      HBCI.DATEFORMAT.format(getValuta()),
+      getZweck(),
+      k.getWaehrung() + " " + HBCI.DECIMALFORMAT.format(getBetrag())
+    };
+    String msg = i18n.tr("Umsatz [Gegenkonto: {0}, Kto. {1} BLZ {2}], Valuta {3}, Zweck: {4}] {5} gelöscht",fields);
+    super.delete();
+    k.addToProtokoll(msg,Protokoll.TYP_SUCCESS);
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.23  2005/06/07 22:41:09  web0
+ * @B bug 70
+ *
  * Revision 1.22  2005/05/30 22:55:27  web0
  * *** empty log message ***
  *

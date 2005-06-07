@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Konto.java,v $
- * $Revision: 1.23 $
- * $Date: 2005/05/19 23:31:07 $
+ * $Revision: 1.24 $
+ * $Date: 2005/06/07 22:41:09 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,6 @@ import java.util.Date;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
-import de.willuhn.util.ApplicationException;
 
 /**
  * Bildet eine Bankverbindung in HBCI ab.
@@ -207,18 +206,14 @@ public interface Konto extends DBObject,Checksum
    * @throws RemoteException
    */
   public void addToProtokoll(String kommentar, int protokollTyp) throws RemoteException;
-	
-	/**
-	 * Loescht alle Umsaetze des Kontos.
-   * @throws RemoteException
-   * @throws ApplicationException
-   */
-  public void deleteUmsaetze() throws ApplicationException, RemoteException;
 }
 
 
 /**********************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.24  2005/06/07 22:41:09  web0
+ * @B bug 70
+ *
  * Revision 1.23  2005/05/19 23:31:07  web0
  * @B RMI over SSL support
  * @N added handbook

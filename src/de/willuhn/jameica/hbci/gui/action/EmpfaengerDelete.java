@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/Attic/EmpfaengerDelete.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/05/09 15:02:11 $
+ * $Revision: 1.6 $
+ * $Date: 2005/06/07 22:41:09 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -25,13 +25,13 @@ import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Action fuer Loeschen eines Empfaengers.
+ * Action fuer Loeschen von Adressen.
  */
 public class EmpfaengerDelete implements Action
 {
 
   /**
-   * Erwartet ein Objekt vom Typ <code>Empfaenger</code> im Context.
+   * Erwartet ein Objekt vom Typ <code>Adresse</code> oder <code>Adresse[]</code> im Context.
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
   public void handleAction(Object context) throws ApplicationException
@@ -103,6 +103,9 @@ public class EmpfaengerDelete implements Action
 
 /**********************************************************************
  * $Log: EmpfaengerDelete.java,v $
+ * Revision 1.6  2005/06/07 22:41:09  web0
+ * @B bug 70
+ *
  * Revision 1.5  2005/05/09 15:02:11  web0
  * @N mehrere Adressen gleichzeitig loeschen
  *
