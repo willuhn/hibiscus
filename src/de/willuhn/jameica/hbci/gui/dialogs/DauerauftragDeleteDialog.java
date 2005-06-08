@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/DauerauftragDeleteDialog.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/06/07 22:19:57 $
+ * $Revision: 1.3 $
+ * $Date: 2005/06/08 10:24:41 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -42,7 +42,7 @@ public class DauerauftragDeleteDialog extends AbstractDialog {
 
 	private I18N i18n;
 
-	private Date date              = new Date();
+	private Date date              = null;
   private DialogInput dateInput  = null;
   private CheckboxInput box      = null;
   private LabelInput comment     = null;
@@ -129,7 +129,7 @@ public class DauerauftragDeleteDialog extends AbstractDialog {
         Boolean b = (Boolean) box.getValue();
         if (b.booleanValue())
         {
-          date = new Date();
+          date = null;
         }
         else
         {
@@ -169,6 +169,9 @@ public class DauerauftragDeleteDialog extends AbstractDialog {
 
 /**********************************************************************
  * $Log: DauerauftragDeleteDialog.java,v $
+ * Revision 1.3  2005/06/08 10:24:41  web0
+ * @B dialog muss bei "naechstmoeglicher Zeitpunkt" null liefern
+ *
  * Revision 1.2  2005/06/07 22:19:57  web0
  * @B bug 49
  *
