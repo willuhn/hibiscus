@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.51 $
- * $Date: 2005/06/02 22:57:34 $
+ * $Revision: 1.52 $
+ * $Date: 2005/06/08 16:49:00 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -25,7 +25,7 @@ import org.kapott.hbci.callback.HBCICallbackConsole;
 import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.db.EmbeddedDatabase;
-import de.willuhn.jameica.hbci.export.ExportRegistry;
+import de.willuhn.jameica.hbci.io.IORegistry;
 import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Level;
@@ -214,7 +214,7 @@ public class HBCI extends AbstractPlugin
     Application.getCallback().getStartupMonitor().addPercentComplete(5);
 
     Application.getCallback().getStartupMonitor().setStatusText("hibiscus: init export filters");
-    ExportRegistry.init();
+    IORegistry.init();
     Application.getCallback().getStartupMonitor().addPercentComplete(3);
 
   }
@@ -305,6 +305,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.52  2005/06/08 16:49:00  web0
+ * @N new Import/Export-System
+ *
  * Revision 1.51  2005/06/02 22:57:34  web0
  * @N Export von Konto-Umsaetzen
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/export/Attic/CSVExporter.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/06/06 10:37:01 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Attic/CSVExporter.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2005/06/08 16:48:54 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -11,7 +11,7 @@
  *
  **********************************************************************/
 
-package de.willuhn.jameica.hbci.export;
+package de.willuhn.jameica.hbci.io;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -78,7 +78,7 @@ public class CSVExporter implements Exporter
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.export.Exporter#export(de.willuhn.jameica.hbci.rmi.Umsatz[], java.io.OutputStream)
+   * @see de.willuhn.jameica.hbci.io.Exporter#export(de.willuhn.jameica.hbci.rmi.Umsatz[], java.io.OutputStream)
    */
   public void export(Umsatz[] umsaetze, OutputStream os) throws RemoteException, ApplicationException
   {
@@ -160,7 +160,7 @@ public class CSVExporter implements Exporter
   }
   
   /**
-   * @see de.willuhn.jameica.hbci.export.Exporter#getName()
+   * @see de.willuhn.jameica.hbci.io.IO#getName()
    */
   public String getName()
   {
@@ -172,6 +172,9 @@ public class CSVExporter implements Exporter
 
 /**********************************************************************
  * $Log: CSVExporter.java,v $
+ * Revision 1.1  2005/06/08 16:48:54  web0
+ * @N new Import/Export-System
+ *
  * Revision 1.2  2005/06/06 10:37:01  web0
  * *** empty log message ***
  *
