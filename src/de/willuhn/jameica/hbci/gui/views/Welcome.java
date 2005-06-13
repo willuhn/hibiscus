@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/Welcome.java,v $
- * $Revision: 1.18 $
- * $Date: 2005/05/19 23:31:07 $
+ * $Revision: 1.19 $
+ * $Date: 2005/06/13 11:23:33 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -12,6 +12,10 @@
  **********************************************************************/
 
 package de.willuhn.jameica.hbci.gui.views;
+
+import java.net.URL;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
@@ -33,6 +37,16 @@ public class Welcome extends AbstractView
    */
   public void bind() throws Exception
   {
+  	try
+  	{
+  		URL u = new URL("https://www.willuhn.de");
+  		HttpsURLConnection conn = (HttpsURLConnection) u.openConnection();
+  		conn.connect();
+  	}
+  	catch (Throwable t)
+  	{
+  		t.printStackTrace();
+  	}
 
 		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 		WelcomeControl control = new WelcomeControl(this);
@@ -57,6 +71,9 @@ public class Welcome extends AbstractView
 
 /**********************************************************************
  * $Log: Welcome.java,v $
+ * Revision 1.19  2005/06/13 11:23:33  web0
+ * *** empty log message ***
+ *
  * Revision 1.18  2005/05/19 23:31:07  web0
  * @B RMI over SSL support
  * @N added handbook
