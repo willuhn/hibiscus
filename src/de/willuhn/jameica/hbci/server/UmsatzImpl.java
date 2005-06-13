@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.23 $
- * $Date: 2005/06/07 22:41:09 $
+ * $Revision: 1.24 $
+ * $Date: 2005/06/13 23:11:01 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -397,11 +397,30 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
     k.addToProtokoll(msg,Protokoll.TYP_SUCCESS);
   }
 
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getKommentar()
+   */
+  public String getKommentar() throws RemoteException
+  {
+    return (String) getAttribute("kommentar");
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setKommentar(java.lang.String)
+   */
+  public void setKommentar(String kommentar) throws RemoteException
+  {
+    setAttribute("kommentar",kommentar);
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.24  2005/06/13 23:11:01  web0
+ * *** empty log message ***
+ *
  * Revision 1.23  2005/06/07 22:41:09  web0
  * @B bug 70
  *

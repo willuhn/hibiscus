@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzDetail.java,v $
- * $Revision: 1.18 $
- * $Date: 2005/04/05 22:49:02 $
+ * $Revision: 1.19 $
+ * $Date: 2005/06/13 23:11:01 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -59,41 +59,48 @@ public class UmsatzDetail extends AbstractView {
     else
       GUI.getView().setTitle(i18n.tr("Buchungsdetails. Konto: {0} [Ktr.-Nr.: {1}, Saldo: {2}]",new String[]{s1,s2,s3}));
 
-    LabelGroup konten = new LabelGroup(getParent(),i18n.tr("Konten"));
+    LabelGroup detail = new LabelGroup(getParent(),i18n.tr("Details"));
 
 		// BUGZILLA 23 http://www.willuhn.de/bugzilla/show_bug.cgi?id=23
-    konten.addLabelPair(i18n.tr("persönliches Konto"),						control.getKonto());
-    konten.addLabelPair(i18n.tr("Kontoinhaber des Gegenkontos"),	control.getEmpfaengerName());
-    konten.addLabelPair(i18n.tr("Kontonummer des Gegenkontos"),		control.getEmpfaengerKonto());
+    detail.addLabelPair(i18n.tr("persönliches Konto"),						control.getKonto());
+    detail.addLabelPair(i18n.tr("Kontoinhaber des Gegenkontos"),	control.getEmpfaengerName());
+    detail.addLabelPair(i18n.tr("Kontonummer des Gegenkontos"),		control.getEmpfaengerKonto());
+
+    detail.addHeadline(i18n.tr("Datum und Betrag"));
+    detail.addLabelPair(i18n.tr("Betrag"),                        control.getBetrag());
+    detail.addLabelPair(i18n.tr("Datum der Buchung"),             control.getDatum());
+    detail.addLabelPair(i18n.tr("Valuta"),                        control.getValuta());
+    detail.addLabelPair(i18n.tr("Neuer Saldo"),                   control.getSaldo());
+
+    detail.addHeadline(i18n.tr("Sonstige Informationen"));
+    detail.addLabelPair(i18n.tr("Art der Buchung"),               control.getArt());
+    detail.addLabelPair(i18n.tr("Kundenreferenz"),                control.getCustomerRef());
+    detail.addLabelPair(i18n.tr("Primanota-Kennzeichen"),         control.getPrimanota());
 
     // BUGZILLA 30 http://www.willuhn.de/bugzilla/show_bug.cgi?id=30
     LabelGroup zweck = new LabelGroup(getParent(),i18n.tr("Verwendungszweck"));
+
     Umsatz u = control.getUmsatz();
     zweck.addText(u.getZweck(),true);
     String z2 = u.getZweck2();
     if (z2 != null && z2.length() > 0)
     {
-      zweck.addSeparator();
       zweck.addText(z2,true);
     }
    
-		// add.addLabelPair(i18n.tr("Verwendungszweck"),									control.getZweck());
-		// add.addLabelPair(i18n.tr("weiterer Verwendungszweck"),				control.getZweck2());
-    LabelGroup add = new LabelGroup(getParent(),i18n.tr("Details"));
-		add.addLabelPair(i18n.tr("Art der Buchung"),									control.getArt());
-		add.addLabelPair(i18n.tr("Kundenreferenz"),										control.getCustomerRef());
-		add.addLabelPair(i18n.tr("Primanota-Kennzeichen"),						control.getPrimanota());
 
-		LabelGroup umsatz = new LabelGroup(getParent(),i18n.tr("Datum und Beträge"));
-    
-		umsatz.addLabelPair(i18n.tr("Betrag"),												control.getBetrag());
-		umsatz.addLabelPair(i18n.tr("Datum der Buchung"),							control.getDatum());
-		umsatz.addLabelPair(i18n.tr("Valuta"),												control.getValuta());
-		umsatz.addSeparator();
-		umsatz.addLabelPair(i18n.tr("Neuer Saldo"),										control.getSaldo());
+    LabelGroup comment = new LabelGroup(getParent(),i18n.tr("Kommentar"));
+    comment.addLabelPair(i18n.tr("Kommentar zu dieser Buchung"),  control.getKommentar());
 
-    ButtonArea buttons = new ButtonArea(getParent(),2);
+    ButtonArea buttons = new ButtonArea(getParent(),3);
 		buttons.addButton(i18n.tr("Zurück"),new Back(),null,true);
+    buttons.addButton(i18n.tr("Speichern"),new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        control.handleStore();
+      }
+    });
     buttons.addButton(i18n.tr("Gegenkonto in Adressbuch übernehmen"),new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -113,6 +120,9 @@ public class UmsatzDetail extends AbstractView {
 
 /**********************************************************************
  * $Log: UmsatzDetail.java,v $
+ * Revision 1.19  2005/06/13 23:11:01  web0
+ * *** empty log message ***
+ *
  * Revision 1.18  2005/04/05 22:49:02  web0
  * @B bug 32
  *

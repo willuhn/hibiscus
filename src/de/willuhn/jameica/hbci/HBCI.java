@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.52 $
- * $Date: 2005/06/08 16:49:00 $
+ * $Revision: 1.53 $
+ * $Date: 2005/06/13 23:11:01 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -132,7 +132,7 @@ public class HBCI extends AbstractPlugin
 		if (checkSum.equals("kwi5vy1fvgOOVtoTYJYjuA==")) // 1.3
 			return;
 
-    if (checkSum.equals("DcR3PHBGYtTMnoP2T45kvg==")) // 1.4
+    if (checkSum.equals("UANsoO1kl5UhNkSBI8ZAlA==")) // 1.4
       return;
 
 		throw new Exception("database checksum does not match any known version: " + checkSum);
@@ -145,14 +145,30 @@ public class HBCI extends AbstractPlugin
   {
 		Logger.info("starting init process for hibiscus");
 
-		try {
+    try {
 			Application.getCallback().getStartupMonitor().setStatusText("hibiscus: checking database integrity");
-			checkConsistency();
+      ////////////////////////////////////////////////////////////////////////////
+      // TODO WIEDER ENTFERNEN, WENN RELEASED
+      // Damit wir die Updates nicht immer haendisch nachziehen muessen, rufen wir
+      // bei einem Fehler das letzte Update-Script nochmal auf.
+      try
+      {
+        File f = new File(getResources().getPath() + "/sql/update_1.3-1.4.sql");
+        getDatabase().executeSQLScript(f);
+      }
+      catch (Exception e2)
+      {
+        e2.printStackTrace();
+      }
+      ////////////////////////////////////////////////////////////////////////////
+
+      checkConsistency();
 		}
 		catch (Exception e)
 		{
-			throw new ApplicationException(
-				getResources().getI18N().tr("Fehler beim Prüfung der Datenbank-Integrität, " +					"Plugin wird aus Sicherheitsgründen deaktiviert"),e);
+      throw new ApplicationException(
+          getResources().getI18N().tr("Fehler beim Prüfung der Datenbank-Integrität, " +
+            "Plugin wird aus Sicherheitsgründen deaktiviert"),e);
 		}
 
     Application.getCallback().getStartupMonitor().setStatusText("hibiscus: checking passport directory");
@@ -216,7 +232,7 @@ public class HBCI extends AbstractPlugin
     Application.getCallback().getStartupMonitor().setStatusText("hibiscus: init export filters");
     IORegistry.init();
     Application.getCallback().getStartupMonitor().addPercentComplete(3);
-
+  
   }
 
   /**
@@ -305,6 +321,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.53  2005/06/13 23:11:01  web0
+ * *** empty log message ***
+ *
  * Revision 1.52  2005/06/08 16:49:00  web0
  * @N new Import/Export-System
  *

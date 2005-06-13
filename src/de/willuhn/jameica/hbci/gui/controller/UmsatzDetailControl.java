@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailControl.java,v $
- * $Revision: 1.16 $
- * $Date: 2005/03/09 01:07:02 $
+ * $Revision: 1.17 $
+ * $Date: 2005/06/13 23:11:01 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -19,12 +19,17 @@ import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
+import de.willuhn.jameica.gui.input.TextAreaInput;
+import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -51,6 +56,8 @@ public class UmsatzDetailControl extends AbstractControl {
 	private Input primanota				= null;
 	private Input art							= null;
 	private Input customerRef			= null;
+  
+  private Input kommentar       = null;
 
   /**
    * ct.
@@ -71,6 +78,19 @@ public class UmsatzDetailControl extends AbstractControl {
       return umsatz;
     umsatz = (Umsatz) getCurrentObject();
     return umsatz;
+  }
+
+  /**
+   * Liefert ein Eingabe-Feld fuer einen zusaetzlichen Kommentar
+   * @return
+   * @throws RemoteException
+   */
+  public Input getKommentar() throws RemoteException
+  {
+    if (this.kommentar != null)
+      return this.kommentar;
+    this.kommentar = new TextAreaInput(this.getUmsatz().getKommentar());
+    return this.kommentar;
   }
 
   /**
@@ -97,7 +117,11 @@ public class UmsatzDetailControl extends AbstractControl {
   {
     if (empfaengerName != null)
       return empfaengerName;
-    empfaengerName = new LabelInput(getUmsatz().getEmpfaengerName());
+    String name = getUmsatz().getEmpfaengerName();
+    if (name == null || name.length() == 0)
+      empfaengerName = new TextInput(null,255);
+    else
+      empfaengerName = new LabelInput(name);
     return empfaengerName;
   }
 
@@ -110,7 +134,14 @@ public class UmsatzDetailControl extends AbstractControl {
   {
     if (empfaengerKonto != null)
       return empfaengerKonto;
-    empfaengerKonto = new LabelInput(getUmsatz().getEmpfaengerKonto());
+
+    String konto = getUmsatz().getEmpfaengerKonto(); 
+    if (konto == null || konto.length() == 0)
+      empfaengerKonto = new TextInput(null,15);
+    else
+      empfaengerKonto = new LabelInput(konto);
+
+    // TODO BLZ muesste dann auch bearbeitbar sein
     empfaengerKonto.setComment(HBCIUtils.getNameForBLZ(getUmsatz().getEmpfaengerBLZ()));
     return empfaengerKonto;
   }
@@ -233,11 +264,35 @@ public class UmsatzDetailControl extends AbstractControl {
 		customerRef = new LabelInput(getUmsatz().getCustomerRef());
 		return customerRef;
 	}
+
+  /**
+   * Speichert den Umsatz.
+   */
+  public synchronized void handleStore() {
+    try {
+      getUmsatz().setKommentar((String)getKommentar().getValue());
+      getUmsatz().store();
+      GUI.getStatusBar().setSuccessText(i18n.tr("Umsatz gespeichert"));
+    }
+    catch (ApplicationException e2)
+    {
+      GUI.getView().setErrorText(e2.getMessage());
+    }
+    catch (RemoteException e)
+    {
+      Logger.error("error while storing umsatz",e);
+      GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern des Umsatzes"));
+    }
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: UmsatzDetailControl.java,v $
+ * Revision 1.17  2005/06/13 23:11:01  web0
+ * *** empty log message ***
+ *
  * Revision 1.16  2005/03/09 01:07:02  web0
  * @D javadoc fixes
  *
