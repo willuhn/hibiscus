@@ -16,9 +16,7 @@
 			<arguments>
 				<dictionary>
 					<key>LaunchConfigHandle</key>
-					<value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;launchConfiguration local=&quot;false&quot; path=&quot;/hibiscus/.externalToolBuilders/hibiscus_rmic.launch&quot;/&gt;
-</value>
+					<value>&lt;project&gt;/.externalToolBuilders/New_Builder.launch</value>
 				</dictionary>
 			</arguments>
 		</buildCommand>
