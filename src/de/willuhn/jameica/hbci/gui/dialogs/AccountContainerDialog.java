@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/AccountContainerDialog.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/05/25 00:42:04 $
+ * $Revision: 1.7 $
+ * $Date: 2005/06/13 09:18:21 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -31,6 +31,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -123,7 +124,34 @@ public class AccountContainerDialog extends AbstractDialog
         {
           try
           {
-            blz.setComment(HBCIUtils.getNameForBLZ((String)blz.getValue()));
+            String b = (String)blz.getValue();
+            blz.setComment(HBCIUtils.getNameForBLZ(b));
+            // Neu im aktuellen HBCI4Java-Snapshot. IP/Hostname zur BLZ ermitteln
+            try
+            {
+              String host = (String) getHost().getValue();
+              if (host == null || host.length() == 0)
+              {
+                String clazz = passport.getClass().getName();
+                if (clazz.toUpperCase().indexOf("PINTAN") != -1)
+                {
+                  Logger.info("auto detecting pin/tan url by blz");
+                  String s = HBCIUtils.getPinTanURLForBLZ(b);
+                  if (s != null && s.startsWith("https://"))
+                    s = s.replaceAll("https://","");
+                  getHost().setValue(s);
+                }
+                else
+                {
+                  Logger.info("auto detecting rdh/ddv ip by blz");
+                  getHost().setValue(HBCIUtils.getHBCIHostForBLZ(b));
+                }
+              }
+            }
+            catch (Exception e)
+            {
+              Logger.error("error while auto detecting url/ip for blz",e);
+            }
           }
           catch (Exception e)
           {
@@ -182,6 +210,9 @@ public class AccountContainerDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: AccountContainerDialog.java,v $
+ * Revision 1.7  2005/06/13 09:18:21  web0
+ * @N url autodetection while creating a new passport
+ *
  * Revision 1.6  2005/05/25 00:42:04  web0
  * @N Dialoge fuer OP-Verwaltung
  *
