@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/ProtokollList.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/05/02 23:56:45 $
+ * $Revision: 1.2 $
+ * $Date: 2005/06/15 16:10:48 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -37,8 +37,10 @@ public class ProtokollList extends TablePart implements Part
   private I18N i18n = null;
 
   /**
-   * @param list
+   * ct.
+   * @param konto
    * @param action
+   * @throws RemoteException
    */
   public ProtokollList(Konto konto, Action action) throws RemoteException
   {
@@ -73,6 +75,9 @@ public class ProtokollList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: ProtokollList.java,v $
+ * Revision 1.2  2005/06/15 16:10:48  web0
+ * @B javadoc fixes
+ *
  * Revision 1.1  2005/05/02 23:56:45  web0
  * @B bug 66, 67
  * @C umsatzliste nach vorn verschoben

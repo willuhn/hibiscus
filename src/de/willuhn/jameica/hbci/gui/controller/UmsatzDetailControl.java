@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailControl.java,v $
- * $Revision: 1.17 $
- * $Date: 2005/06/13 23:11:01 $
+ * $Revision: 1.18 $
+ * $Date: 2005/06/15 16:10:48 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -82,7 +82,7 @@ public class UmsatzDetailControl extends AbstractControl {
 
   /**
    * Liefert ein Eingabe-Feld fuer einen zusaetzlichen Kommentar
-   * @return
+   * @return liefert ein Eingabefeld fuer einen zusaetzlichen Kommentar.
    * @throws RemoteException
    */
   public Input getKommentar() throws RemoteException
@@ -290,6 +290,9 @@ public class UmsatzDetailControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzDetailControl.java,v $
+ * Revision 1.18  2005/06/15 16:10:48  web0
+ * @B javadoc fixes
+ *
  * Revision 1.17  2005/06/13 23:11:01  web0
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzControl.java,v $
- * $Revision: 1.24 $
- * $Date: 2005/05/02 23:56:45 $
+ * $Revision: 1.25 $
+ * $Date: 2005/06/15 16:10:48 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -17,19 +17,14 @@ import java.rmi.RemoteException;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Part;
-import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
-import de.willuhn.jameica.system.Application;
-import de.willuhn.util.I18N;
 
 /**
  * Controller, der fuer die Umsatz-Liste eines Kontos zustaendig ist.
  */
 public class UmsatzControl extends AbstractControl {
-
-	private I18N i18n;
 
 	// Fach-Objekte
 	private Konto konto = null;
@@ -40,7 +35,6 @@ public class UmsatzControl extends AbstractControl {
    */
   public UmsatzControl(AbstractView view) {
     super(view);
-    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
 	/**
@@ -77,6 +71,9 @@ public class UmsatzControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzControl.java,v $
+ * Revision 1.25  2005/06/15 16:10:48  web0
+ * @B javadoc fixes
+ *
  * Revision 1.24  2005/05/02 23:56:45  web0
  * @B bug 66, 67
  * @C umsatzliste nach vorn verschoben

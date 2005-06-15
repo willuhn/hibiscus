@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Attic/CSVExporter.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/06/08 16:48:54 $
+ * $Revision: 1.2 $
+ * $Date: 2005/06/15 16:10:48 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -39,6 +39,9 @@ public class CSVExporter implements Exporter
 
   private I18N i18n = null;
   
+  /**
+   * ct.
+   */
   public CSVExporter()
   {
     super();
@@ -172,6 +175,9 @@ public class CSVExporter implements Exporter
 
 /**********************************************************************
  * $Log: CSVExporter.java,v $
+ * Revision 1.2  2005/06/15 16:10:48  web0
+ * @B javadoc fixes
+ *
  * Revision 1.1  2005/06/08 16:48:54  web0
  * @N new Import/Export-System
  *
