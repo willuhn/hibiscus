@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.33 $
- * $Date: 2005/06/06 09:54:39 $
+ * $Revision: 1.34 $
+ * $Date: 2005/06/16 13:29:13 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -12,6 +12,7 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci;
 
+import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 
 import org.eclipse.swt.graphics.Color;
@@ -21,6 +22,9 @@ import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.security.Wallet;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.ServiceSettings;
+import de.willuhn.logging.Logger;
+import de.willuhn.util.I18N;
 
 /**
  * Verwaltet die Einstellungen des Plugins.
@@ -52,6 +56,24 @@ public class Settings
 			db = (DBService) Application.getServiceFactory().lookup(HBCI.class,"database");
 			return db;
 		}
+    catch (ConnectException ce)
+    {
+      // Die Exception fliegt nur bei RMI-Kommunikation mit fehlendem RMI-Server
+      I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+      String host = ServiceSettings.getLookupHost(HBCI.class,"database");
+      int    port = ServiceSettings.getLookupPort(HBCI.class,"database");
+      String msg = i18n.tr("Hibiscus-Server \"{0}\" nicht erreichbar", (host + ":" + port));
+      try
+      {
+        Application.getCallback().notifyUser(msg);
+        throw new RemoteException(msg);
+      }
+      catch (Exception e)
+      {
+        Logger.error("error while notifying user",e);
+        throw new RemoteException(msg);
+      }
+    }
 		catch (Exception e)
 		{
 			throw new RemoteException("unable to open/create database",e);
@@ -248,6 +270,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.34  2005/06/16 13:29:13  web0
+ * *** empty log message ***
+ *
  * Revision 1.33  2005/06/06 09:54:39  web0
  * *** empty log message ***
  *
