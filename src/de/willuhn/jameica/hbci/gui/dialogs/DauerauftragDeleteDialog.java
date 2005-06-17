@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/DauerauftragDeleteDialog.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/06/08 10:24:41 $
+ * $Revision: 1.4 $
+ * $Date: 2005/06/17 08:25:05 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -102,11 +102,8 @@ public class DauerauftragDeleteDialog extends AbstractDialog {
           comment.setValue(i18n.tr("Datum darf nicht in der Vergangenheit liegen"));
           return;
         }
-        else
-        {
-          comment.setValue("");
-        }
 
+        comment.setValue("");
         dateInput.setValue(date);
         dateInput.setText(HBCI.DATEFORMAT.format(date));
       }
@@ -169,6 +166,9 @@ public class DauerauftragDeleteDialog extends AbstractDialog {
 
 /**********************************************************************
  * $Log: DauerauftragDeleteDialog.java,v $
+ * Revision 1.4  2005/06/17 08:25:05  web0
+ * *** empty log message ***
+ *
  * Revision 1.3  2005/06/08 10:24:41  web0
  * @B dialog muss bei "naechstmoeglicher Zeitpunkt" null liefern
  *
