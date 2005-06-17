@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailControl.java,v $
- * $Revision: 1.18 $
- * $Date: 2005/06/15 16:10:48 $
+ * $Revision: 1.19 $
+ * $Date: 2005/06/17 17:36:34 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,8 @@ package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
 
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.jameica.gui.AbstractControl;
@@ -25,7 +27,9 @@ import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.TextAreaInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -46,6 +50,7 @@ public class UmsatzDetailControl extends AbstractControl {
 	private Input konto				 		= null;
 	private Input empfaengerName  = null;
 	private Input empfaengerKonto = null;
+  private Input empfaengerBlz   = null;
 	private Input betrag					= null;
 	private Input zweck						= null;
 	private Input zweck2					= null;
@@ -58,6 +63,11 @@ public class UmsatzDetailControl extends AbstractControl {
 	private Input customerRef			= null;
   
   private Input kommentar       = null;
+
+  private boolean changeEN = false;
+  private boolean changeEK = false;
+  private boolean changeEB = false;
+  private boolean changeZ1 = false;
 
   /**
    * ct.
@@ -104,7 +114,11 @@ public class UmsatzDetailControl extends AbstractControl {
       return konto;
     Konto k = getUmsatz().getKonto();
     konto = new LabelInput(k.getKontonummer());
-    konto.setComment(HBCIUtils.getNameForBLZ(k.getBLZ()));
+    String comment = k.getBezeichnung();
+    String s = HBCIUtils.getNameForBLZ(k.getBLZ());
+    if (s != null && s.length() > 0)
+      comment += " [" + s + "]";
+    konto.setComment(s);
     return konto;
   }
 
@@ -119,9 +133,14 @@ public class UmsatzDetailControl extends AbstractControl {
       return empfaengerName;
     String name = getUmsatz().getEmpfaengerName();
     if (name == null || name.length() == 0)
-      empfaengerName = new TextInput(null,255);
+    {
+      empfaengerName = new TextInput(null,HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
+      changeEN = true;
+    }
     else
+    {
       empfaengerName = new LabelInput(name);
+    }
     return empfaengerName;
   }
 
@@ -137,15 +156,55 @@ public class UmsatzDetailControl extends AbstractControl {
 
     String konto = getUmsatz().getEmpfaengerKonto(); 
     if (konto == null || konto.length() == 0)
-      empfaengerKonto = new TextInput(null,15);
+    {
+      empfaengerKonto = new TextInput(null);
+      changeEK = true;
+    }
     else
+    {
       empfaengerKonto = new LabelInput(konto);
-
-    // TODO BLZ muesste dann auch bearbeitbar sein
-    empfaengerKonto.setComment(HBCIUtils.getNameForBLZ(getUmsatz().getEmpfaengerBLZ()));
+    }
     return empfaengerKonto;
   }
   
+  /**
+   * Liefert ein Eingabe-Feld mit der BLZ des Empfaengers.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getEmpfaengerBLZ() throws RemoteException
+  {
+    if (empfaengerBlz != null)
+      return empfaengerBlz;
+
+    String blz = getUmsatz().getEmpfaengerBLZ(); 
+    if (blz == null || blz.length() == 0)
+    {
+      empfaengerBlz = new TextInput(null, HBCIProperties.HBCI_BLZ_LENGTH);
+      empfaengerBlz.setComment("");
+      empfaengerBlz.addListener(new Listener()
+      {
+        public void handleEvent(Event event)
+        {
+          if (empfaengerBlz == null)
+            return;
+          String s = (String) empfaengerBlz.getValue();
+          if (s == null || s.length() == 0)
+            return;
+          empfaengerBlz.setComment(HBCIUtils.getNameForBLZ(s));
+        }
+      });
+      changeEB = true;
+    }
+    else
+    {
+      empfaengerBlz= new LabelInput(blz);
+      empfaengerBlz.setComment(HBCIUtils.getNameForBLZ(blz));
+    }
+
+    return empfaengerBlz;
+  }
+
   /**
    * Liefert ein Eingabe-Feld mit Betrag der Buchung,
    * @return Eingabe-Feld.
@@ -169,7 +228,16 @@ public class UmsatzDetailControl extends AbstractControl {
   {
     if (zweck != null)
       return zweck;
-    zweck = new LabelInput(getUmsatz().getZweck());
+    String s = getUmsatz().getZweck();
+    if (s == null || s.length() == 0)
+    {
+      zweck = new TextInput(null,HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH);
+      changeZ1 = true;
+    }
+    else
+    {
+      zweck = new LabelInput(getUmsatz().getZweck());
+    }
     return zweck;
   }
 
@@ -269,17 +337,61 @@ public class UmsatzDetailControl extends AbstractControl {
    * Speichert den Umsatz.
    */
   public synchronized void handleStore() {
+
+    Umsatz u = getUmsatz();
     try {
-      getUmsatz().setKommentar((String)getKommentar().getValue());
+      
+      u.transactionBegin();
+      u.setKommentar((String)getKommentar().getValue());
+      
+      // BUGZILLA 75 http://www.willuhn.de/bugzilla/show_bug.cgi?id=75
+      // Und jetzt kommen noch die Felder, die evtl. bearbeitet werden duerfen.
+      if (changeEB) u.setEmpfaengerBLZ((String) getEmpfaengerBLZ().getValue());
+      if (changeEK) u.setEmpfaengerKonto((String) getEmpfaengerKonto().getValue());
+      if (changeEN) u.setEmpfaengerName((String) getEmpfaengerName().getValue());
+      if (changeZ1) u.setZweck((String) getZweck().getValue());
+      
+      if (changeEB || changeEK || changeEN || changeZ1)
+      {
+        String[] fields = new String[]
+       {
+         u.getEmpfaengerName(),
+         u.getEmpfaengerKonto(),
+         u.getEmpfaengerBLZ(),
+         HBCI.DATEFORMAT.format(u.getValuta()),
+         u.getZweck(),
+         u.getKonto().getWaehrung() + " " + HBCI.DECIMALFORMAT.format(u.getBetrag())
+       };
+       String msg = i18n.tr("Umsatz [Gegenkonto: {0}, Kto. {1} BLZ {2}], Valuta {3}, Zweck: {4}] {5} geändert",fields);
+       getUmsatz().getKonto().addToProtokoll(msg,Protokoll.TYP_SUCCESS);
+      }
+
       getUmsatz().store();
+      u.transactionCommit();
       GUI.getStatusBar().setSuccessText(i18n.tr("Umsatz gespeichert"));
     }
     catch (ApplicationException e2)
     {
+      try
+      {
+        u.transactionRollback();
+      }
+      catch (RemoteException e1)
+      {
+        Logger.error("unable to rollback transaction",e1);
+      }
       GUI.getView().setErrorText(e2.getMessage());
     }
     catch (RemoteException e)
     {
+      try
+      {
+        u.transactionRollback();
+      }
+      catch (RemoteException e1)
+      {
+        Logger.error("unable to rollback transaction",e1);
+      }
       Logger.error("error while storing umsatz",e);
       GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern des Umsatzes"));
     }
@@ -290,6 +402,9 @@ public class UmsatzDetailControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzDetailControl.java,v $
+ * Revision 1.19  2005/06/17 17:36:34  web0
+ * @B bug 75
+ *
  * Revision 1.18  2005/06/15 16:10:48  web0
  * @B javadoc fixes
  *

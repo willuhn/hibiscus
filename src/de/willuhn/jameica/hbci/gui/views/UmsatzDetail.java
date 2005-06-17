@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzDetail.java,v $
- * $Revision: 1.19 $
- * $Date: 2005/06/13 23:11:01 $
+ * $Revision: 1.20 $
+ * $Date: 2005/06/17 17:36:34 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -65,6 +65,7 @@ public class UmsatzDetail extends AbstractView {
     detail.addLabelPair(i18n.tr("persönliches Konto"),						control.getKonto());
     detail.addLabelPair(i18n.tr("Kontoinhaber des Gegenkontos"),	control.getEmpfaengerName());
     detail.addLabelPair(i18n.tr("Kontonummer des Gegenkontos"),		control.getEmpfaengerKonto());
+    detail.addLabelPair(i18n.tr("Bankleitzahl des Gegenkontos"),  control.getEmpfaengerBLZ());
 
     detail.addHeadline(i18n.tr("Datum und Betrag"));
     detail.addLabelPair(i18n.tr("Betrag"),                        control.getBetrag());
@@ -80,6 +81,7 @@ public class UmsatzDetail extends AbstractView {
     // BUGZILLA 30 http://www.willuhn.de/bugzilla/show_bug.cgi?id=30
     LabelGroup zweck = new LabelGroup(getParent(),i18n.tr("Verwendungszweck"));
 
+    // TODO Hier fehlt noch der Rest von Bug 75
     Umsatz u = control.getUmsatz();
     zweck.addText(u.getZweck(),true);
     String z2 = u.getZweck2();
@@ -120,6 +122,9 @@ public class UmsatzDetail extends AbstractView {
 
 /**********************************************************************
  * $Log: UmsatzDetail.java,v $
+ * Revision 1.20  2005/06/17 17:36:34  web0
+ * @B bug 75
+ *
  * Revision 1.19  2005/06/13 23:11:01  web0
  * *** empty log message ***
  *
