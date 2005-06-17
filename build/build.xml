@@ -64,7 +64,7 @@
 			<pathelement location="../jameica/releases/jameica-lib.jar" />
 			<pathelement location="../jameica/lib/de_willuhn_ds/de_willuhn_ds.jar" />
 			<pathelement location="../jameica/lib/de_willuhn_util/de_willuhn_util.jar" />
-			<pathelement location="${lib.dir}/hbci4java-2.5.0pre-20040810.jar" />
+			<pathelement location="${lib.dir}/hbci4java-2.5.0pre-20050525.jar" />
 		</path>
 
 	</target>
@@ -128,7 +128,7 @@
 				<attribute name="Implementation-Title" value="${define.pluginname}" />
 				<attribute name="Implementation-Version" value="${version}" />
 				<attribute name="Implementation-Buildnumber" value="${build.number}" />
-				<attribute name="Class-Path" value="lang help lib lib/hbci4java-2.4.7pre-20040525.jar" />
+				<attribute name="Class-Path" value="lang help lib lib/hbci4java-2.5.0pre-20050525.jar" />
 			</manifest>
 			<fileset dir="${class.dir}" />
 		</jar>
