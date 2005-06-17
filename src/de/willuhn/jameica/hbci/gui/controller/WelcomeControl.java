@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/WelcomeControl.java,v $
- * $Revision: 1.18 $
- * $Date: 2005/06/17 16:09:57 $
+ * $Revision: 1.19 $
+ * $Date: 2005/06/17 16:12:55 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -101,7 +101,7 @@ public class WelcomeControl extends AbstractControl {
 
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("<form><p/>");
-		buffer.append("<p><span color=\"header\" font=\"header\">" + i18n.tr("Ihre Konten") + "</span></p>");
+		buffer.append("<p><span color=\"header\" font=\"header\">" + i18n.tr("Ihre Konten im &Uuml;berblick") + "</span></p>");
 
     DBIterator i = Settings.getDBService().createList(Konto.class);
     while (i.hasNext())
@@ -126,6 +126,9 @@ public class WelcomeControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: WelcomeControl.java,v $
+ * Revision 1.19  2005/06/17 16:12:55  web0
+ * *** empty log message ***
+ *
  * Revision 1.18  2005/06/17 16:09:57  web0
  * *** empty log message ***
  *
