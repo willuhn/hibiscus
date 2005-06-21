@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoNew.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/05/08 17:48:51 $
+ * $Revision: 1.5 $
+ * $Date: 2005/06/21 21:48:24 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -74,8 +74,14 @@ public class KontoNew extends AbstractView {
 			group.addLabelPair(i18n.tr("Sicherheitsmedium"),    		control.getPassportAuswahl());
 
 			// und noch die Abschicken-Knoepfe
-			ButtonArea buttonArea = group.createButtonArea(4);
+			ButtonArea buttonArea = group.createButtonArea(5);
 			buttonArea.addButton(i18n.tr("Zurück"),new Back());
+      buttonArea.addButton(i18n.tr("Sicherheitsmedium konfigurieren"),new Action() {
+        public void handleAction(Object context) throws ApplicationException
+        {
+          control.handleConfigurePassport();
+        }
+      });
       buttonArea.addButton(i18n.tr("Protokoll des Kontos"),new ProtokollList(),control.getKonto());
 			buttonArea.addButton(i18n.tr("Konto löschen"),new KontoDelete(),control.getKonto());
 			buttonArea.addButton(i18n.tr("Speichern"),new Action()
@@ -121,6 +127,9 @@ public class KontoNew extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoNew.java,v $
+ * Revision 1.5  2005/06/21 21:48:24  web0
+ * @B bug 80
+ *
  * Revision 1.4  2005/05/08 17:48:51  web0
  * @N Bug 56
  *

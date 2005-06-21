@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.38 $
- * $Date: 2005/06/06 09:54:39 $
+ * $Revision: 1.39 $
+ * $Date: 2005/06/21 21:48:24 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -16,8 +16,6 @@ import java.rmi.RemoteException;
 
 import org.eclipse.swt.graphics.Color;
 
-import de.willuhn.datasource.GenericObject;
-import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
@@ -28,12 +26,13 @@ import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.ColorInput;
 import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.Input;
+import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
+import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.PassportRegistry;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.PassportDetail;
-import de.willuhn.jameica.hbci.passport.Passport;
+import de.willuhn.jameica.hbci.gui.parts.PassportList;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -77,27 +76,24 @@ public class SettingsControl extends AbstractControl {
     if (passportList != null)
       	return passportList;
 
-		Passport[] passports = PassportRegistry.getPassports();
-
-		GenericObject[] p = new GenericObject[passports.length];
-		for (int i=0;i<passports.length;++i)
-		{
-			p[i] = new PassportObject(passports[i]);
-		}
-		passportList = new TablePart(PseudoIterator.fromArray(p),new Action()
+    Action a = new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
-      	// Wir haben hier nicht direkt die Passports sondern noch einen
-      	// GenericObject-Wrapper drum rum (Passport-Objekt). Die Huelle
-      	// entfernen wir vorher noch
-      	PassportObject o = (PassportObject) context;
-      	if (o == null)
-      		return;
-				new PassportDetail().handleAction(o.getPassport());
+        // Wir haben hier nicht direkt die Passports sondern noch einen
+        // GenericObject-Wrapper drum rum (Passport-Objekt). Die Huelle
+        // entfernen wir vorher noch
+        PassportObject o = (PassportObject) context;
+        if (o == null)
+          return;
+        new PassportDetail().handleAction(o.getPassport());
       }
-    });
-		passportList.addColumn(i18n.tr("Bezeichnung"),"name");
+    };
+
+    passportList = new PassportList(a);
+    ContextMenu menu = new ContextMenu();
+    menu.addItem(new CheckedContextMenuItem(i18n.tr("Konfigurieren..."),a));
+    passportList.setContextMenu(menu);
 		return passportList;
 	}
 
@@ -240,6 +236,9 @@ public class SettingsControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.39  2005/06/21 21:48:24  web0
+ * @B bug 80
+ *
  * Revision 1.38  2005/06/06 09:54:39  web0
  * *** empty log message ***
  *

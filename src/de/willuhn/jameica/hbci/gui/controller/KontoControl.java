@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.57 $
- * $Date: 2005/06/03 17:14:20 $
+ * $Revision: 1.58 $
+ * $Date: 2005/06/21 21:48:24 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -38,11 +38,13 @@ import de.willuhn.jameica.hbci.gui.action.KontoFetchFromPassport;
 import de.willuhn.jameica.hbci.gui.action.KontoNew;
 import de.willuhn.jameica.hbci.gui.action.PassportDetail;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
+import de.willuhn.jameica.hbci.gui.dialogs.PassportAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.parts.ProtokollList;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzList;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -393,24 +395,23 @@ public class KontoControl extends AbstractControl {
 
 		try 
 		{
-			if (getPassportAuswahl().getValue() == null)
-			{
-				GUI.getStatusBar().setErrorText(i18n.tr("Kein Sicherheitsmedium verfügbar"));
-				return;
-			}
+      PassportAuswahlDialog d = new PassportAuswahlDialog(PassportAuswahlDialog.POSITION_CENTER);
+      Passport p = (Passport) d.open();
 
-			Passport p = ((PassportObject) getPassportAuswahl().getValue()).getPassport();
-			new KontoFetchFromPassport().handleAction(p);
+      new KontoFetchFromPassport().handleAction(p);
 		}
+    catch (OperationCanceledException oce)
+    {
+      // ignore
+    }
 		catch (ApplicationException ae)
 		{
 			GUI.getStatusBar().setErrorText(ae.getMessage());
 		}
-		catch (RemoteException e)
+		catch (Exception e)
 		{
 			Logger.error("error while reading passport from select box",e);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler bei der Ermittlung des Sicherheitsmediums"));
-			return;
+			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Auslesen der Konto-Informationen"));
 		}
 
 	}
@@ -442,6 +443,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.58  2005/06/21 21:48:24  web0
+ * @B bug 80
+ *
  * Revision 1.57  2005/06/03 17:14:20  web0
  * @B NPE
  *

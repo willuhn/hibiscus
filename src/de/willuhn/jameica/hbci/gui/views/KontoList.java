@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoList.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/03/09 01:07:02 $
+ * $Revision: 1.3 $
+ * $Date: 2005/06/21 21:48:24 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -16,8 +16,8 @@ import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.ButtonArea;
-import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.KontoNew;
 import de.willuhn.jameica.hbci.gui.controller.KontoControl;
 import de.willuhn.jameica.system.Application;
@@ -44,28 +44,15 @@ public class KontoList extends AbstractView {
 		try {
 
 			control.getKontoListe().paint(getParent());
-			ButtonArea buttons = new ButtonArea(getParent(),1);
-			buttons.addButton(i18n.tr("Neue Bankverbindung"),new KontoNew());
-
-			LabelGroup group = new LabelGroup(getParent(),i18n.tr("Konten aus Medium lesen"));
-			group.addLabelPair(i18n.tr("Sicherheitsmedium"),control.getPassportAuswahl());
-
-			ButtonArea c = group.createButtonArea(2);
-			c.addButton(i18n.tr("Medium konfigurieren"), new Action()
-      {
+			ButtonArea buttons = new ButtonArea(getParent(),3);
+      buttons.addButton(i18n.tr("Zurück"),new Back());
+      buttons.addButton(i18n.tr("Konten automatisch aus Sicherheitsmedium ermitteln"), new Action() {
         public void handleAction(Object context) throws ApplicationException
         {
-					control.handleConfigurePassport();
+          control.handleReadFromPassport();
         }
       });
-			c.addButton(i18n.tr("Daten aus Medium lesen"), new Action()
-      {
-        public void handleAction(Object context) throws ApplicationException
-        {
-					control.handleReadFromPassport();
-        }
-      });
-
+			buttons.addButton(i18n.tr("Neue Bankverbindung"),new KontoNew(),null,true);
 		}
 		catch (Exception e)
 		{
@@ -85,6 +72,9 @@ public class KontoList extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.3  2005/06/21 21:48:24  web0
+ * @B bug 80
+ *
  * Revision 1.2  2005/03/09 01:07:02  web0
  * @D javadoc fixes
  *

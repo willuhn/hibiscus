@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoFetchFromPassport.java,v $
- * $Revision: 1.9 $
- * $Date: 2005/05/19 23:31:07 $
+ * $Revision: 1.10 $
+ * $Date: 2005/06/21 21:48:24 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -21,6 +21,7 @@ import de.willuhn.jameica.hbci.gui.views.KontoList;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -57,7 +58,9 @@ public class KontoFetchFromPassport implements Action
 					Konto check = null;
 					Konto[] konten = p.getHandle().getKonten();
 
-					for (int i=0;i<konten.length;++i)
+					int created = 0;
+          int skipped = 0;
+          for (int i=0;i<konten.length;++i)
 					{
 						Logger.info("found konto " + konten[i].getKontonummer());
 						// Wir checken, ob's das Konto schon gibt
@@ -71,6 +74,7 @@ public class KontoFetchFromPassport implements Action
 							{
 								found = true;
 								Logger.info("  konto exists, skipping");
+                skipped++;
 								break;
 							}
 					
@@ -83,6 +87,7 @@ public class KontoFetchFromPassport implements Action
 							try {
 								konten[i].setPassportClass(p.getClass().getName()); // wir speichern den ausgewaehlten Passport.
 								konten[i].store();
+                created++;
 								Logger.info("konto saved successfully");
 							}
 							catch (Exception e)
@@ -95,8 +100,17 @@ public class KontoFetchFromPassport implements Action
 				
 					}
 					GUI.startView(KontoList.class,null);
-					GUI.getStatusBar().setSuccessText(i18n.tr("Konten erfolgreich ausgelesen"));
+          String[] values = new String[] {""+created,""+skipped};
+					GUI.getStatusBar().setSuccessText(i18n.tr("Konten erfolgreich ausgelesen. Angelegt: {0}, Übersprungen: {1}",values));
 				}
+        catch (OperationCanceledException oce)
+        {
+          // ignore
+        }
+        catch (ApplicationException ae)
+        {
+          GUI.getStatusBar().setErrorText(ae.getMessage());
+        }
 				catch (Throwable t)
 				{
 					Logger.error("error while reading data from passport",t);
@@ -115,6 +129,9 @@ public class KontoFetchFromPassport implements Action
 
 /**********************************************************************
  * $Log: KontoFetchFromPassport.java,v $
+ * Revision 1.10  2005/06/21 21:48:24  web0
+ * @B bug 80
+ *
  * Revision 1.9  2005/05/19 23:31:07  web0
  * @B RMI over SSL support
  * @N added handbook
