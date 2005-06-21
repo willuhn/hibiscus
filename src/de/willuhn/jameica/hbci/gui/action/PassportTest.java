@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/PassportTest.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/04/27 00:31:36 $
+ * $Revision: 1.6 $
+ * $Date: 2005/06/21 20:11:10 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -61,6 +61,10 @@ public class PassportTest implements Action
  													  // fehlschlaegt, ist nichts zum Schliessen da ;)
 						GUI.getStatusBar().setSuccessText(i18n.tr("Sicherheits-Medium erfolgreich getestet."));
 					}
+          catch (ApplicationException ae)
+          {
+            GUI.getStatusBar().setErrorText(ae.getMessage());
+          }
 					catch (RemoteException e)
 					{
             String msg = e.getMessage();
@@ -88,6 +92,9 @@ public class PassportTest implements Action
 
 /**********************************************************************
  * $Log: PassportTest.java,v $
+ * Revision 1.6  2005/06/21 20:11:10  web0
+ * @C cvs merge
+ *
  * Revision 1.5  2005/04/27 00:31:36  web0
  * @N real test connection
  * @N all hbci versions are now shown in select box

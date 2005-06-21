@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailControl.java,v $
- * $Revision: 1.19 $
- * $Date: 2005/06/17 17:36:34 $
+ * $Revision: 1.20 $
+ * $Date: 2005/06/21 20:11:10 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -402,6 +402,9 @@ public class UmsatzDetailControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzDetailControl.java,v $
+ * Revision 1.20  2005/06/21 20:11:10  web0
+ * @C cvs merge
+ *
  * Revision 1.19  2005/06/17 17:36:34  web0
  * @B bug 75
  *

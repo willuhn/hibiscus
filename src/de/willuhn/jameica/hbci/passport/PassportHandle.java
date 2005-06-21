@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passport/PassportHandle.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/10/19 23:40:14 $
- * $Author: willuhn $
+ * $Revision: 1.3 $
+ * $Date: 2005/06/21 20:11:10 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -18,6 +18,7 @@ import java.rmi.RemoteException;
 import org.kapott.hbci.manager.HBCIHandler;
 
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.util.ApplicationException;
 
 /**
  * Bildet die direkte Verbindung zum HBCIHandler aus HBCI4Java ab.
@@ -34,8 +35,9 @@ public interface PassportHandle extends Remote {
    * @return Handler, der diese Verbindung repraesentiert.
    * @throws RemoteException muss geworfen werden, wenn die Initialisierung fehlschlaegt.
    * Die Exeption sollte einen sinnvollen Fehlertext enthalten.
+   * @throws ApplicationException
    */
-  public HBCIHandler open() throws RemoteException;
+  public HBCIHandler open() throws RemoteException, ApplicationException;
 
   /**
    * Schliesst den Passport.
@@ -64,8 +66,9 @@ public interface PassportHandle extends Remote {
    * in Fachobjekte des HBCI-Plugins konvertiert werden.
    * @return Array mit Konten, die dieser Passport anbietet.
    * @throws RemoteException
+   * @throws ApplicationException
    */
-  public Konto[] getKonten() throws RemoteException;
+  public Konto[] getKonten() throws RemoteException, ApplicationException;
 
 
 }
@@ -73,6 +76,9 @@ public interface PassportHandle extends Remote {
 
 /**********************************************************************
  * $Log: PassportHandle.java,v $
+ * Revision 1.3  2005/06/21 20:11:10  web0
+ * @C cvs merge
+ *
  * Revision 1.2  2004/10/19 23:40:14  willuhn
  * *** empty log message ***
  *

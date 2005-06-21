@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCIJob.java,v $
- * $Revision: 1.16 $
- * $Date: 2005/03/09 01:07:02 $
+ * $Revision: 1.17 $
+ * $Date: 2005/06/21 20:11:10 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -103,7 +103,6 @@ public abstract class AbstractHBCIJob
 	{
 		try
 		{
-			// TODO: Das ist sicher nicht alles, was wir von der Bank erfahren. Was waere besser?
 			return getJobResult().getJobStatus().getRetVals()[0].text;
 		}
 		catch (ArrayIndexOutOfBoundsException aio)
@@ -207,6 +206,9 @@ public abstract class AbstractHBCIJob
 
 /**********************************************************************
  * $Log: AbstractHBCIJob.java,v $
+ * Revision 1.17  2005/06/21 20:11:10  web0
+ * @C cvs merge
+ *
  * Revision 1.16  2005/03/09 01:07:02  web0
  * @D javadoc fixes
  *
