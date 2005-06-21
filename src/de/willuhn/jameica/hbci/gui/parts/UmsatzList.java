@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/06/21 20:11:10 $
+ * $Revision: 1.6 $
+ * $Date: 2005/06/21 20:15:33 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -96,9 +96,9 @@ public class UmsatzList extends TablePart implements Part
     addColumn(i18n.tr("Gegenkonto"),                "empfaenger_name");
     addColumn(i18n.tr("Verwendungszweck"),          "zweck");
     addColumn(i18n.tr("Valuta"),                    "valuta", new DateFormatter(HBCI.DATEFORMAT));
+    addColumn(i18n.tr("Betrag"),                    "betrag", new CurrencyFormatter("",HBCI.DECIMALFORMAT));
     // BUGZILLA 66 http://www.willuhn.de/bugzilla/show_bug.cgi?id=66
     addColumn(i18n.tr("Saldo zu diesem Zeitpunkt"), "saldo",  new CurrencyFormatter("",HBCI.DECIMALFORMAT));
-    addColumn(i18n.tr("Betrag"),                    "betrag", new CurrencyFormatter("",HBCI.DECIMALFORMAT));
 
     setContextMenu(new de.willuhn.jameica.hbci.gui.menus.UmsatzList());
   }
@@ -107,6 +107,9 @@ public class UmsatzList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.6  2005/06/21 20:15:33  web0
+ * *** empty log message ***
+ *
  * Revision 1.5  2005/06/21 20:11:10  web0
  * @C cvs merge
  *
