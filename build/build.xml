@@ -32,28 +32,29 @@
 		<echo message="VERSION: ${appversion}" />
 		<echo message="CVS-Tag: ${tag}" />
 		<echo message="BUILD  : ${build.number}" />
+		<echo message="JAVA   : ${java.version}" />
 
 		<property name="define.pluginname" 			value="hibiscus" />
 		<property name="define.jarfilename" 		value="${define.pluginname}.jar" />
 		<property name="define.zipfilename" 		value="${define.pluginname}.zip" />
 		<property name="define.srcfilename" 		value="${define.pluginname}.src.zip" />
-		<property name="define.javadocfilename" 	value="${define.pluginname}.javadoc.zip" />
-		<property name="define.package" 			value="de.willuhn.jameica" />
+		<property name="define.javadocfilename" value="${define.pluginname}.javadoc.zip" />
+		<property name="define.package" 			  value="de.willuhn.jameica" />
 
-		<property name="project.nightly" 			value="releases/nightly" />
-		<property name="project.release" 			value="releases/${appversion}-${build.number}" />
-		<property name="project.tmp" 				value="${project.release}/tmp" />
-		<property name="project.javadoc" 			value="${project.release}/javadoc" />
-		<property name="project.zipdir" 			value="${project.release}/${define.pluginname}" />
+		<property name="project.nightly" 			  value="releases/nightly" />
+		<property name="project.release" 			  value="releases/${appversion}-${build.number}" />
+		<property name="project.tmp" 				    value="${project.release}/tmp" />
+		<property name="project.javadoc" 			  value="${project.release}/javadoc" />
+		<property name="project.zipdir" 			  value="${project.release}/${define.pluginname}" />
 
-		<property name="src.dir" 					value="src" />
-		<property name="icon.dir" 					value="${src.dir}/img" />
-		<property name="lang.dir" 					value="${src.dir}/lang" />
-		<property name="help.dir" 					value="${src.dir}/help" />
-		<property name="doc.dir" 					value="doc" />
-		<property name="lib.dir" 					value="lib" />
-		<property name="sql.dir" 					value="sql" />
-		<property name="class.dir" 					value="${project.tmp}/bin" />
+		<property name="src.dir" 					      value="src" />
+		<property name="icon.dir" 					    value="${src.dir}/img" />
+		<property name="lang.dir" 					    value="${src.dir}/lang" />
+		<property name="help.dir" 					    value="${src.dir}/help" />
+		<property name="doc.dir" 					      value="doc" />
+		<property name="lib.dir" 					      value="lib" />
+		<property name="sql.dir" 					      value="sql" />
+		<property name="class.dir" 					    value="${project.tmp}/bin" />
 
 
 		<path id="compilepath">
