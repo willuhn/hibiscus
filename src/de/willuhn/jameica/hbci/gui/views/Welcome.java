@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/Welcome.java,v $
- * $Revision: 1.21 $
- * $Date: 2005/06/17 16:11:33 $
+ * $Revision: 1.22 $
+ * $Date: 2005/06/21 20:25:10 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -26,7 +26,7 @@ import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * 
+ * View des Start-Bildschirms.
  */
 public class Welcome extends AbstractView
 {
@@ -67,6 +67,9 @@ public class Welcome extends AbstractView
 
 /**********************************************************************
  * $Log: Welcome.java,v $
+ * Revision 1.22  2005/06/21 20:25:10  web0
+ * *** empty log message ***
+ *
  * Revision 1.21  2005/06/17 16:11:33  web0
  * *** empty log message ***
  *
