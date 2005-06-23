@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/06/21 20:15:33 $
+ * $Revision: 1.7 $
+ * $Date: 2005/06/23 17:36:33 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -93,7 +93,8 @@ public class UmsatzList extends TablePart implements Part
     });
 
     // BUGZILLA 23 http://www.willuhn.de/bugzilla/show_bug.cgi?id=23
-    addColumn(i18n.tr("Gegenkonto"),                "empfaenger_name");
+    // BUGZILLA 86 http://www.willuhn.de/bugzilla/show_bug.cgi?id=86
+    addColumn(i18n.tr("Gegenkonto"),                "empfaenger");
     addColumn(i18n.tr("Verwendungszweck"),          "zweck");
     addColumn(i18n.tr("Valuta"),                    "valuta", new DateFormatter(HBCI.DATEFORMAT));
     addColumn(i18n.tr("Betrag"),                    "betrag", new CurrencyFormatter("",HBCI.DECIMALFORMAT));
@@ -107,6 +108,9 @@ public class UmsatzList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.7  2005/06/23 17:36:33  web0
+ * @B bug 84
+ *
  * Revision 1.6  2005/06/21 20:15:33  web0
  * *** empty log message ***
  *

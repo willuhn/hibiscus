@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.24 $
- * $Date: 2005/06/13 23:11:01 $
+ * $Revision: 1.25 $
+ * $Date: 2005/06/23 17:36:33 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -373,6 +373,21 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
     if ("mergedzweck".equals(arg0))
       return getZweck() + (getZweck2() != null ? getZweck2() : "");
 
+    // BUGZILLA 86 http://www.willuhn.de/bugzilla/show_bug.cgi?id=86
+    if ("empfaenger".equals(arg0))
+    {
+      String name = getEmpfaengerName();
+      if (name != null)
+        return name;
+
+      String kto = getEmpfaengerKonto();
+      String blz = getEmpfaengerBLZ();
+      if (kto == null || blz == null)
+        return null;
+
+      return i18n.tr("Kto. {0}, BLZ {1}", new String[]{kto,blz});
+    }
+
     return super.getAttribute(arg0);
   }
 
@@ -418,6 +433,9 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.25  2005/06/23 17:36:33  web0
+ * @B bug 84
+ *
  * Revision 1.24  2005/06/13 23:11:01  web0
  * *** empty log message ***
  *
