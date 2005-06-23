@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoList.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/06/21 20:11:10 $
+ * $Revision: 1.4 $
+ * $Date: 2005/06/23 22:01:04 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -25,7 +25,9 @@ import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.PassportRegistry;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -71,6 +73,24 @@ public class KontoList extends TablePart implements Part
     });
     addColumn(i18n.tr("Bezeichnung"),"bezeichnung");
     addColumn(i18n.tr("Kontoinhaber"),"name");
+    addColumn(i18n.tr("HBCI-Medium"),"passport_class", new Formatter() {
+      public String format(Object o)
+      {
+        if (o == null || !(o instanceof String))
+          return null;
+        Passport p;
+        try
+        {
+          p = PassportRegistry.findByClass((String)o);
+          return p.getName();
+        }
+        catch (Exception e)
+        {
+          Logger.error("error while loading hbci passport for konto",e);
+          return i18n.tr("Fehler beim Ermitteln des HBCI-Mediums");
+        }
+      }
+    });
     addColumn(i18n.tr("Saldo"),"saldo");
     setFormatter(new TableFormatter()
     {
@@ -78,7 +98,7 @@ public class KontoList extends TablePart implements Part
       {
         Konto k = (Konto) item.getData();
         try {
-          item.setText(4,HBCI.DECIMALFORMAT.format(k.getSaldo()) + " " + k.getWaehrung());
+          item.setText(5,HBCI.DECIMALFORMAT.format(k.getSaldo()) + " " + k.getWaehrung());
         }
         catch (RemoteException e)
         {
@@ -89,6 +109,11 @@ public class KontoList extends TablePart implements Part
     setContextMenu(new de.willuhn.jameica.hbci.gui.menus.KontoList());
   }
   
+  /**
+   * Initialisiert die Konten-Liste.
+   * @return Liste der Konten.
+   * @throws RemoteException
+   */
   private static DBIterator init() throws RemoteException
   {
     DBIterator i = Settings.getDBService().createList(Konto.class);
@@ -101,6 +126,9 @@ public class KontoList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.4  2005/06/23 22:01:04  web0
+ * @N added hbci media to account list
+ *
  * Revision 1.3  2005/06/21 20:11:10  web0
  * @C cvs merge
  *
