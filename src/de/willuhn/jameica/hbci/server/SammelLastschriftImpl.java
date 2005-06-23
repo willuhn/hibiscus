@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/SammelLastschriftImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/06/23 17:36:33 $
+ * $Revision: 1.7 $
+ * $Date: 2005/06/23 21:13:03 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -321,20 +321,13 @@ public class SammelLastschriftImpl extends AbstractDBObject
   	}
     return super.getAttribute(arg0);
   }
-
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getListQuery()
-   */
-  protected String getListQuery()
-  {
-    // BUGZILLA 84 http://www.willuhn.de/bugzilla/show_bug.cgi?id=84
-    return super.getListQuery() + "  ORDER BY TONUMBER(termin) DESC";
-  }
-
 }
 
 /*****************************************************************************
  * $Log: SammelLastschriftImpl.java,v $
+ * Revision 1.7  2005/06/23 21:13:03  web0
+ * @B bug 84
+ *
  * Revision 1.6  2005/06/23 17:36:33  web0
  * @B bug 84
  *

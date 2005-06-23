@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SammelLastschriftList.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/05/02 23:56:45 $
+ * $Revision: 1.2 $
+ * $Date: 2005/06/23 21:13:03 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import java.util.Date;
 
 import org.eclipse.swt.widgets.TableItem;
 
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
@@ -43,7 +44,7 @@ public class SammelLastschriftList extends TablePart implements Part
    */
   public SammelLastschriftList(Action action) throws RemoteException
   {
-    super(Settings.getDBService().createList(SammelLastschrift.class), action);
+    super(init(), action);
     this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     setFormatter(new TableFormatter() {
       public void format(TableItem item) {
@@ -78,11 +79,27 @@ public class SammelLastschriftList extends TablePart implements Part
     setContextMenu(new de.willuhn.jameica.hbci.gui.menus.SammelLastschriftList());
   }
 
+  // BUGZILLA 84 http://www.willuhn.de/bugzilla/show_bug.cgi?id=84
+  /**
+   * Initialisiert die Liste der Sammel-Lastschriften.
+   * @return Initialisiert die Liste der Sammel-Lastschriften.
+   * @throws RemoteException
+   */
+  private static DBIterator init() throws RemoteException
+  {
+    DBIterator list = Settings.getDBService().createList(SammelLastschrift.class);
+    list.setOrder("ORDER BY TONUMBER(termin) DESC");
+    return list;
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: SammelLastschriftList.java,v $
+ * Revision 1.2  2005/06/23 21:13:03  web0
+ * @B bug 84
+ *
  * Revision 1.1  2005/05/02 23:56:45  web0
  * @B bug 66, 67
  * @C umsatzliste nach vorn verschoben
