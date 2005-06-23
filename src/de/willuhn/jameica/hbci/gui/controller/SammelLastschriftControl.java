@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SammelLastschriftControl.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/05/02 23:56:45 $
+ * $Revision: 1.7 $
+ * $Date: 2005/06/23 23:03:20 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -21,7 +21,6 @@ import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.CalendarDialog;
-import de.willuhn.jameica.gui.dialogs.ListDialog;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.input.DialogInput;
@@ -34,6 +33,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.SammelLastBuchungNew;
 import de.willuhn.jameica.hbci.gui.action.SammelLastschriftNew;
+import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.menus.SammelLastBuchungList;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
@@ -146,11 +146,7 @@ public class SammelLastschriftControl extends AbstractControl
     if (kontoAuswahl != null)
       return kontoAuswahl;
 
-		ListDialog d = new ListDialog(Settings.getDBService().createList(Konto.class),ListDialog.POSITION_MOUSE);
-		d.addColumn(i18n.tr("Bezeichnung"),"bezeichnung");
-		d.addColumn(i18n.tr("Kontonummer"),"kontonummer");
-		d.addColumn(i18n.tr("BLZ"),"blz");
-		d.setTitle(i18n.tr("Auswahl des Kontos"));
+    KontoAuswahlDialog d = new KontoAuswahlDialog(KontoAuswahlDialog.POSITION_MOUSE);
 		d.addCloseListener(new Listener()
     {
       public void handleEvent(Event event)
@@ -290,6 +286,9 @@ public class SammelLastschriftControl extends AbstractControl
 
 /*****************************************************************************
  * $Log: SammelLastschriftControl.java,v $
+ * Revision 1.7  2005/06/23 23:03:20  web0
+ * @N much better KontoAuswahlDialog
+ *
  * Revision 1.6  2005/05/02 23:56:45  web0
  * @B bug 66, 67
  * @C umsatzliste nach vorn verschoben

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.26 $
- * $Date: 2005/04/05 21:51:54 $
+ * $Revision: 1.27 $
+ * $Date: 2005/06/23 23:03:20 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -32,6 +32,7 @@ import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Transfer;
@@ -104,11 +105,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 		if (kontoAuswahl != null)
 			return kontoAuswahl;
 
-		ListDialog d = new ListDialog(Settings.getDBService().createList(Konto.class),ListDialog.POSITION_MOUSE);
-		d.addColumn(i18n.tr("Bezeichnung"),"bezeichnung");
-		d.addColumn(i18n.tr("Kontonummer"),"kontonummer");
-		d.addColumn(i18n.tr("BLZ"),"blz");
-		d.setTitle(i18n.tr("Auswahl des Kontos"));
+    KontoAuswahlDialog d = new KontoAuswahlDialog(KontoAuswahlDialog.POSITION_MOUSE);
 		d.addCloseListener(new KontoListener());
 
 		Konto k = getKonto();
@@ -396,6 +393,9 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
+ * Revision 1.27  2005/06/23 23:03:20  web0
+ * @N much better KontoAuswahlDialog
+ *
  * Revision 1.26  2005/04/05 21:51:54  web0
  * @B Begrenzung aller BLZ-Eingaben auf 8 Zeichen
  *
