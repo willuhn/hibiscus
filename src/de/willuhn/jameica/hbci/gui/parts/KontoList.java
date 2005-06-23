@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoList.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/06/23 22:01:04 $
+ * $Revision: 1.5 $
+ * $Date: 2005/06/23 22:02:53 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -99,6 +99,8 @@ public class KontoList extends TablePart implements Part
         Konto k = (Konto) item.getData();
         try {
           item.setText(5,HBCI.DECIMALFORMAT.format(k.getSaldo()) + " " + k.getWaehrung());
+          if (k.getSaldo() < 0)
+            item.setForeground(Settings.getBuchungSollForeground());
         }
         catch (RemoteException e)
         {
@@ -117,7 +119,7 @@ public class KontoList extends TablePart implements Part
   private static DBIterator init() throws RemoteException
   {
     DBIterator i = Settings.getDBService().createList(Konto.class);
-    i.setOrder("ORDER BY bezeichnung");
+    i.setOrder("ORDER BY blz, bezeichnung");
     return i;
   }
 
@@ -126,6 +128,9 @@ public class KontoList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.5  2005/06/23 22:02:53  web0
+ * *** empty log message ***
+ *
  * Revision 1.4  2005/06/23 22:01:04  web0
  * @N added hbci media to account list
  *
