@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/DauerauftragDeleteDialog.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/06/21 20:11:10 $
+ * $Revision: 1.6 $
+ * $Date: 2005/06/23 17:05:33 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -26,6 +26,7 @@ import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.system.Application;
@@ -70,7 +71,7 @@ public class DauerauftragDeleteDialog extends AbstractDialog {
                           "Dauerauftrages zu einem definierten Datum nicht unterstützt. Wählen Sie " +
                           "in diesem Fall bitte \"Zum nächstmöglichen Zeitpunkt\""),true);
     
-    box = new CheckboxInput(false);
+    box = new CheckboxInput(true);
     box.addListener(new Listener()
     {
       public void handleEvent(Event event)
@@ -93,6 +94,14 @@ public class DauerauftragDeleteDialog extends AbstractDialog {
           return;
 
         date = (Date) event.data;
+        if (date == null)
+        {
+          comment.setValue(i18n.tr("Bitte wählen Sie ein Zieldatum aus"));
+          dateInput.setValue(null);
+          dateInput.setText(null);
+          return;
+        }
+
         // Wir rechnen nicht mit gestern sonder mit heute, weil "date"
         // keine Uhrzeit enthaelt, "today" jedoch schon und so selbst dann
         // ein Fehler kommen wuerde, wenn der User den aktuellen Tag auswaehlt
@@ -109,13 +118,15 @@ public class DauerauftragDeleteDialog extends AbstractDialog {
       }
     });
 
-    cd.setDate(date);
-    dateInput = new DialogInput(HBCI.DATEFORMAT.format(date),cd);
+    // BUGZILLA #85 http://www.willuhn.de/bugzilla/show_bug.cgi?id=85
+    cd.setDate(date == null ? new Date() : date);
+    dateInput = new DialogInput(date == null ? null : HBCI.DATEFORMAT.format(date),cd);
     dateInput.disableClientControl();
     dateInput.setValue(date);
 		group.addLabelPair(i18n.tr("Dauerauftrag löschen zum"),dateInput);
 
     comment = new LabelInput("");
+    comment.setColor(Color.ERROR);
     group.addLabelPair("",comment);
     
     ButtonArea b = new ButtonArea(parent,2);
@@ -131,6 +142,11 @@ public class DauerauftragDeleteDialog extends AbstractDialog {
         else
         {
           date = (Date) dateInput.getValue();
+          if (date == null)
+          {
+            comment.setValue(i18n.tr("Bitte wählen Sie ein Datum aus."));
+            return;
+          }
           // Wir rechnen nicht mit gestern sonder mit heute, weil "date"
           // keine Uhrzeit enthaelt, "today" jedoch schon und so selbst dann
           // ein Fehler kommen wuerde, wenn der User den aktuellen Tag auswaehlt
@@ -166,6 +182,9 @@ public class DauerauftragDeleteDialog extends AbstractDialog {
 
 /**********************************************************************
  * $Log: DauerauftragDeleteDialog.java,v $
+ * Revision 1.6  2005/06/23 17:05:33  web0
+ * @B bug 85
+ *
  * Revision 1.5  2005/06/21 20:11:10  web0
  * @C cvs merge
  *
