@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/DauerauftragDelete.java,v $
- * $Revision: 1.14 $
- * $Date: 2005/06/23 17:05:33 $
+ * $Revision: 1.15 $
+ * $Date: 2005/06/23 17:07:38 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -70,7 +70,7 @@ public class DauerauftragDelete implements Action
 				return;
 			}
 
-			if (!da.isActive())
+			if (da.isActive())
 			{
 
         DauerauftragDeleteDialog d2 = new DauerauftragDeleteDialog(DauerauftragDeleteDialog.POSITION_CENTER);
@@ -89,8 +89,6 @@ public class DauerauftragDelete implements Action
 					fd = null;
 				}
 				final Date date = fd;
-        System.out.println(date);
-        if (true) return;
 
 				// Uh, der wird auch online geloescht
 				GUI.startSync(new Runnable()
@@ -150,6 +148,9 @@ public class DauerauftragDelete implements Action
 
 /**********************************************************************
  * $Log: DauerauftragDelete.java,v $
+ * Revision 1.15  2005/06/23 17:07:38  web0
+ * @R removed debug code
+ *
  * Revision 1.14  2005/06/23 17:05:33  web0
  * @B bug 85
  *
