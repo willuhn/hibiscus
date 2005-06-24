@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/AccountContainerDialog.java,v $
- * $Revision: 1.7 $
- * $Date: 2005/06/13 09:18:21 $
+ * $Revision: 1.8 $
+ * $Date: 2005/06/24 14:55:49 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -44,12 +44,12 @@ public class AccountContainerDialog extends AbstractDialog
 	private AccountContainer container = null;
 	private I18N i18n = null;
 
-	private Input blz 				= null;
-	private Input host 				= null;
-	private Input port				= null;
-	private Input filter			= null;
-	private Input userid			= null;
-	private Input customerid	= null;
+	private Input blz 				  = null;
+	private Input host 				  = null;
+	private Input port				  = null;
+	private SelectInput filter	= null;
+	private Input userid			  = null;
+	private Input customerid	  = null;
 
   /**
    * ct.
@@ -138,7 +138,7 @@ public class AccountContainerDialog extends AbstractDialog
                   Logger.info("auto detecting pin/tan url by blz");
                   String s = HBCIUtils.getPinTanURLForBLZ(b);
                   if (s != null && s.startsWith("https://"))
-                    s = s.replaceAll("https://","");
+                    s = s.replaceFirst("https://","");
                   getHost().setValue(s);
                 }
                 else
@@ -166,7 +166,19 @@ public class AccountContainerDialog extends AbstractDialog
 	private Input getHost()
 	{
 		if (host == null)
-			host = new TextInput(passport.getHost());
+			host = new TextInput(passport.getHost())
+      {
+        public Object getValue()
+        {
+          // Ueberschrieben, um ggf. das https:// am Anfang abzuschneiden
+          String s = (String) super.getValue();
+          if (s == null)
+            return null;
+          if (s.startsWith("https://"))
+            s = s.replaceFirst("https://","");
+          return s;
+        }
+      };
 		host.setComment(i18n.tr("Bei PIN/TAN bitte ohne \"https://\" eingeben"));
 		return host;
 	}
@@ -197,12 +209,17 @@ public class AccountContainerDialog extends AbstractDialog
 		return customerid;
 	}
 
-	private Input getFilter()
+	private SelectInput getFilter()
 	{
 		if (filter == null)
 			filter = new SelectInput(new String[] {"None","Base64"},passport.getFilterType());
 		filter.setComment(i18n.tr("Bei PIN/TAN meist \"Base64\", sonst \"None\""));
-		return filter;
+
+    String clazz = passport.getClass().getName();
+    if (clazz.toUpperCase().indexOf("PINTAN") != -1)
+      filter.setPreselected("Base64");
+    
+    return filter;
 	}
 
 }
@@ -210,6 +227,9 @@ public class AccountContainerDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: AccountContainerDialog.java,v $
+ * Revision 1.8  2005/06/24 14:55:49  web0
+ * *** empty log message ***
+ *
  * Revision 1.7  2005/06/13 09:18:21  web0
  * @N url autodetection while creating a new passport
  *
