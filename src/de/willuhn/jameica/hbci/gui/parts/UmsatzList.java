@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.7 $
- * $Date: 2005/06/23 17:36:33 $
+ * $Revision: 1.8 $
+ * $Date: 2005/06/27 15:35:27 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -101,6 +101,9 @@ public class UmsatzList extends TablePart implements Part
     // BUGZILLA 66 http://www.willuhn.de/bugzilla/show_bug.cgi?id=66
     addColumn(i18n.tr("Saldo zu diesem Zeitpunkt"), "saldo",  new CurrencyFormatter("",HBCI.DECIMALFORMAT));
 
+    // BUGZILLA 84 http://www.willuhn.de/bugzilla/show_bug.cgi?id=84
+    setRememberOrder(true);
+
     setContextMenu(new de.willuhn.jameica.hbci.gui.menus.UmsatzList());
   }
 }
@@ -108,6 +111,9 @@ public class UmsatzList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.8  2005/06/27 15:35:27  web0
+ * @B bug 84
+ *
  * Revision 1.7  2005/06/23 17:36:33  web0
  * @B bug 84
  *

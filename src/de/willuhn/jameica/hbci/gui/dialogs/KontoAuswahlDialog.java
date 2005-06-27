@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/KontoAuswahlDialog.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/06/23 23:03:20 $
+ * $Revision: 1.5 $
+ * $Date: 2005/06/27 15:35:27 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -68,7 +68,7 @@ public class KontoAuswahlDialog extends AbstractDialog
 		final KontoList konten = new KontoList(a);
     konten.setContextMenu(null);
     konten.setMulti(false);
-    konten.disableSummary();
+    konten.setSummary(false);
     konten.paint(parent);
 
 		ButtonArea b = new ButtonArea(parent,2);
@@ -108,6 +108,9 @@ public class KontoAuswahlDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: KontoAuswahlDialog.java,v $
+ * Revision 1.5  2005/06/27 15:35:27  web0
+ * @B bug 84
+ *
  * Revision 1.4  2005/06/23 23:03:20  web0
  * @N much better KontoAuswahlDialog
  *

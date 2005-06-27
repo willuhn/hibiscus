@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/LastschriftList.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/06/23 21:13:03 $
+ * $Revision: 1.3 $
+ * $Date: 2005/06/27 15:35:27 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -79,6 +79,9 @@ public class LastschriftList extends TablePart implements Part
       }
     });
   
+    // BUGZILLA 84 http://www.willuhn.de/bugzilla/show_bug.cgi?id=84
+    setRememberOrder(true);
+
     setContextMenu(new de.willuhn.jameica.hbci.gui.menus.LastschriftList());
   }
 
@@ -100,6 +103,9 @@ public class LastschriftList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: LastschriftList.java,v $
+ * Revision 1.3  2005/06/27 15:35:27  web0
+ * @B bug 84
+ *
  * Revision 1.2  2005/06/23 21:13:03  web0
  * @B bug 84
  *

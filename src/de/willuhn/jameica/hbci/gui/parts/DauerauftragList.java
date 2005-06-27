@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/DauerauftragList.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/05/02 23:56:45 $
+ * $Revision: 1.2 $
+ * $Date: 2005/06/27 15:35:27 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -85,6 +85,10 @@ public class DauerauftragList extends TablePart implements Part
         return i18n.tr("nein");
       }
     });
+
+    // BUGZILLA 84 http://www.willuhn.de/bugzilla/show_bug.cgi?id=84
+    setRememberOrder(true);
+
     setContextMenu(new de.willuhn.jameica.hbci.gui.menus.DauerauftragList());
   }
 
@@ -93,6 +97,9 @@ public class DauerauftragList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: DauerauftragList.java,v $
+ * Revision 1.2  2005/06/27 15:35:27  web0
+ * @B bug 84
+ *
  * Revision 1.1  2005/05/02 23:56:45  web0
  * @B bug 66, 67
  * @C umsatzliste nach vorn verschoben

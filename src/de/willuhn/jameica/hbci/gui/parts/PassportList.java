@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/PassportList.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/06/21 21:48:24 $
+ * $Revision: 1.2 $
+ * $Date: 2005/06/27 15:35:27 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -54,7 +54,7 @@ public class PassportList extends TablePart implements Part
     this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
     this.setMulti(false);
-    this.disableSummary();
+    this.setSummary(false);
     addColumn(i18n.tr("Bezeichnung"),"name");
   }
 
@@ -75,6 +75,9 @@ public class PassportList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: PassportList.java,v $
+ * Revision 1.2  2005/06/27 15:35:27  web0
+ * @B bug 84
+ *
  * Revision 1.1  2005/06/21 21:48:24  web0
  * @B bug 80
  *

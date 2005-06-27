@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/EmpfaengerList.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/05/09 12:24:20 $
+ * $Revision: 1.3 $
+ * $Date: 2005/06/27 15:35:27 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -44,6 +44,10 @@ public class EmpfaengerList extends TablePart implements Part
     addColumn(i18n.tr("Bankleitzahl"),"blz");
     addColumn(i18n.tr("Name"),"name");
     setContextMenu(new de.willuhn.jameica.hbci.gui.menus.EmpfaengerList());
+
+    // BUGZILLA 84 http://www.willuhn.de/bugzilla/show_bug.cgi?id=84
+    setRememberOrder(true);
+
   }
 
 }
@@ -51,6 +55,9 @@ public class EmpfaengerList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: EmpfaengerList.java,v $
+ * Revision 1.3  2005/06/27 15:35:27  web0
+ * @B bug 84
+ *
  * Revision 1.2  2005/05/09 12:24:20  web0
  * @N Changelog
  * @N Support fuer Mehrfachmarkierungen
