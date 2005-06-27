@@ -17,7 +17,7 @@ CREATE TABLE empfaenger (
   id NUMERIC default UNIQUEKEY('empfaenger'),
   kontonummer varchar(15) NOT NULL,
   blz varchar(15) NOT NULL,
-  name varchar(255) NOT NULL,
+  name varchar(27) NOT NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );

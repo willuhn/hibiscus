@@ -29,3 +29,13 @@ ALTER CREATE TABLE umsatz (
   UNIQUE (id),
   PRIMARY KEY (id)
 );
+
+-- Name auf 27 Zeichen gekuerzt
+ALTER CREATE TABLE empfaenger (
+  id NUMERIC default UNIQUEKEY('empfaenger'),
+  kontonummer varchar(15) NOT NULL,
+  blz varchar(15) NOT NULL,
+  name varchar(27) NOT NULL,
+  UNIQUE (id),
+  PRIMARY KEY (id)
+);

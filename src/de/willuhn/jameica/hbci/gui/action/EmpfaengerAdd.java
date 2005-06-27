@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/EmpfaengerAdd.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/05/09 12:24:20 $
+ * $Revision: 1.6 $
+ * $Date: 2005/06/27 15:58:01 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.hbci.rmi.Transfer;
@@ -61,7 +62,7 @@ public class EmpfaengerAdd implements Action
         Adresse e = (Adresse) Settings.getDBService().createObject(Adresse.class,null);
         e.setBLZ(t.getGegenkontoBLZ());
         e.setKontonummer(t.getGegenkontoNummer());
-        e.setName(t.getGegenkontoName());
+        e.setName(strip(t.getGegenkontoName()));
         items.add(e);
 			}
 			else if (context instanceof Umsatz)
@@ -70,7 +71,7 @@ public class EmpfaengerAdd implements Action
         Adresse e = (Adresse) Settings.getDBService().createObject(Adresse.class,null);
         e.setBLZ(u.getEmpfaengerBLZ());
         e.setKontonummer(u.getEmpfaengerKonto());
-        e.setName(u.getEmpfaengerName());
+        e.setName(strip(u.getEmpfaengerName()));
         items.add(e);
 			}
       else if (context instanceof Umsatz[])
@@ -82,7 +83,7 @@ public class EmpfaengerAdd implements Action
           Adresse e = (Adresse) Settings.getDBService().createObject(Adresse.class,null);
           e.setBLZ(u.getEmpfaengerBLZ());
           e.setKontonummer(u.getEmpfaengerKonto());
-          e.setName(u.getEmpfaengerName());
+          e.setName(strip(u.getEmpfaengerName()));
           items.add(e);
         }
       }
@@ -129,11 +130,28 @@ public class EmpfaengerAdd implements Action
 		}
   }
 
+
+  // BUGZILLA 78 http://www.willuhn.de/bugzilla/show_bug.cgi?id=78
+  
+  /**
+   * Kuerzt den String um die angegebene Laenge.
+   * @param s String
+   * @return gekuerzter String.
+   */
+  private String strip(String s)
+  {
+    if (s == null || s.length() < HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH)
+      return s;
+    return s.substring(0,HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
+  }
 }
 
 
 /**********************************************************************
  * $Log: EmpfaengerAdd.java,v $
+ * Revision 1.6  2005/06/27 15:58:01  web0
+ * *** empty log message ***
+ *
  * Revision 1.5  2005/05/09 12:24:20  web0
  * @N Changelog
  * @N Support fuer Mehrfachmarkierungen
