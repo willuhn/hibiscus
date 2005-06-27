@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/DonateDialog.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/06/27 13:36:53 $
+ * $Revision: 1.2 $
+ * $Date: 2005/06/27 16:12:35 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -103,7 +103,9 @@ public class DonateDialog extends AbstractDialog
           ueberweisung.setGegenkonto(empfaenger);
           
           Boolean email = (Boolean) getBill().getValue();
-          ueberweisung.setZweck("Spende: Hibiscus");
+          ueberweisung.setZweck("Spende - Hibiscus");
+          
+          // TODO EMAIL @ RAUSNEHMEN
           ueberweisung.setZweck2(email.booleanValue() ? (String) getEMail().getValue() : null);
           ueberweisung.setKonto((Konto)getKontoauswahl().getValue());
         }
@@ -232,6 +234,9 @@ public class DonateDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: DonateDialog.java,v $
+ * Revision 1.2  2005/06/27 16:12:35  web0
+ * *** empty log message ***
+ *
  * Revision 1.1  2005/06/27 13:36:53  web0
  * @N added donate button
  *
