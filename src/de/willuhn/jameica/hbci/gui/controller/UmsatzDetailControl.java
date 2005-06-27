@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailControl.java,v $
- * $Revision: 1.21 $
- * $Date: 2005/06/27 14:18:49 $
+ * $Revision: 1.22 $
+ * $Date: 2005/06/27 14:37:14 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -156,7 +156,7 @@ public class UmsatzDetailControl extends AbstractControl {
     String konto = getUmsatz().getEmpfaengerKonto(); 
     if (konto == null || konto.length() == 0)
     {
-      empfaengerKonto = new TextInput(null);
+      empfaengerKonto = new TextInput(null,15);
       changeEK = true;
     }
     else
@@ -388,6 +388,9 @@ public class UmsatzDetailControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzDetailControl.java,v $
+ * Revision 1.22  2005/06/27 14:37:14  web0
+ * @B bug 75
+ *
  * Revision 1.21  2005/06/27 14:18:49  web0
  * @B bug 75
  *
