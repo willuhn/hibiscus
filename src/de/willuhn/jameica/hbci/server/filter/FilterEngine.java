@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/filter/Attic/FilterEngine.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/05/24 23:30:03 $
+ * $Revision: 1.5 $
+ * $Date: 2005/06/27 22:27:53 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -170,7 +170,7 @@ public class FilterEngine
           }
           catch (Exception e)
           {
-            // TODO Wie diese Exception behandeln?
+            Logger.error("error while filtering umsatz \"" + u.getAttribute(u.getPrimaryAttribute()) + "\"",e);
           }
         }
       }
@@ -183,6 +183,9 @@ public class FilterEngine
 
 /**********************************************************************
  * $Log: FilterEngine.java,v $
+ * Revision 1.5  2005/06/27 22:27:53  web0
+ * *** empty log message ***
+ *
  * Revision 1.4  2005/05/24 23:30:03  web0
  * @N Erster Code fuer OP-Verwaltung
  *
