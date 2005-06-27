@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/tests/TurnusRestriction.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/11/12 18:25:07 $
- * $Author: willuhn $
+ * $Revision: 1.3 $
+ * $Date: 2005/06/27 11:26:30 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -16,6 +16,7 @@ import java.rmi.RemoteException;
 import java.util.Properties;
 
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.Turnus;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -52,6 +53,7 @@ public class TurnusRestriction implements Restriction
   {
 		try
 		{
+      testTurnusDays();
 			testTurnusMonths();
 		}
 		catch (RemoteException e)
@@ -63,37 +65,80 @@ public class TurnusRestriction implements Restriction
 
 	private void testTurnusMonths() throws ApplicationException, RemoteException
 	{
-		// checken ob, monatlicher Turnus unterstuetzt wird.
-		if (turnus.getZeiteinheit() == Turnus.ZEITEINHEIT_MONATLICH)
+    // checken ob, monatlicher Turnus unterstuetzt wird.
+		if (turnus.getZeiteinheit() != Turnus.ZEITEINHEIT_MONATLICH)
+      return;
+
+    String turnusMonths = p.getProperty("turnusmonths");
+		if (turnusMonths == null || turnusMonths.length() == 0)
+			return; // keine Einschraenkung
+
+		int test = turnus.getIntervall();
+
+		Logger.debug("testing interval " + test + " against restriction \"turnusmonths\": " + turnusMonths);
+
+		for (int i=0;i<turnusMonths.length();i+=2)
 		{
-			String turnusMonths = p.getProperty("turnusmonths");
-			if (turnusMonths == null || turnusMonths.length() == 0)
-				return; // keine Einschraenkung
-
-			int test = turnus.getIntervall();
-
-			Logger.debug("testing interval " + test + " against restriction \"turnusmonths\": " + turnusMonths);
-
-			for (int i=0;i<turnusMonths.length();i+=2)
+			try
 			{
-				try
-				{
-					if (test == Integer.parseInt(turnusMonths.substring(i,i+2)))
-						return; // jepp, Bank hat diesen Turnus
-				}
-				catch (Exception e)
-				{
-					// skip
-				}
+				if (test == Integer.parseInt(turnusMonths.substring(i,i+2)))
+					return; // jepp, Bank hat diesen Turnus
 			}
-			throw new ApplicationException(i18n.tr("Turnus mit einem Intervall von {0} Monaten wird von Ihrer Bank nicht unterstützt",""+test));
+			catch (Exception e)
+			{
+				// skip
+			}
 		}
+		throw new ApplicationException(i18n.tr("Turnus mit einem Intervall von {0} Monaten wird von Ihrer Bank nicht unterstützt",""+test));
 	}
+
+  private void testTurnusDays() throws ApplicationException, RemoteException
+  {
+    // checken ob, monatlicher Turnus unterstuetzt wird.
+    if (turnus.getZeiteinheit() != Turnus.ZEITEINHEIT_MONATLICH)
+      return;
+
+    String days = p.getProperty("dayspermonth");
+    if (days == null || days.length() == 0)
+      return; // keine Einschraenkung
+
+    int test = turnus.getTag();
+
+    Logger.debug("testing interval " + test + " against restriction \"dayspermonth\": " + days);
+
+    StringBuffer sb = new StringBuffer();
+    for (int i=0;i<days.length();i+=2)
+    {
+      try
+      {
+        int d = Integer.parseInt(days.substring(i,i+2));
+        sb.append(","+d);
+        if (test == d)
+          return; // jepp, Bank hat diesen Turnus
+      }
+      catch (Exception e)
+      {
+        // skip
+      }
+    }
+
+    if (test == HBCIProperties.HBCI_LAST_OF_MONTH)
+      throw new ApplicationException(i18n.tr("Zahlungen zum Monatsletzten werden von Ihrer Bank nicht unterstützt"));
+
+    String s = sb.toString().substring(1);
+    String[] values = new String[] { ""+test,s};
+    throw new ApplicationException(i18n.tr("Zahlungen am {0}. des Monats werden von Ihrer Bank nicht unterstützt. Erlaubte Werte: {1}",values));
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: TurnusRestriction.java,v $
+ * Revision 1.3  2005/06/27 11:26:30  web0
+ * @N neuer Test bei Dauerauftraegen (zum Monatsletzten)
+ * @N neue DDV-Lib
+ *
  * Revision 1.2  2004/11/12 18:25:07  willuhn
  * *** empty log message ***
  *

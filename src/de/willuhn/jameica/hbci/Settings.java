@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.34 $
- * $Date: 2005/06/16 13:29:13 $
+ * $Revision: 1.35 $
+ * $Date: 2005/06/27 11:26:30 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -12,6 +12,7 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci;
 
+import java.io.File;
 import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 
@@ -158,6 +159,14 @@ public class Settings
 		if (libPath != null)
 			return libPath;
 		libPath = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getPath() + "/lib";
+    try
+    {
+      libPath = new File(libPath).getCanonicalPath();
+    }
+    catch (Exception e)
+    {
+      Logger.error("error while determining canonical path",e);
+    }
 		return libPath;
 	}
 
@@ -270,6 +279,10 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.35  2005/06/27 11:26:30  web0
+ * @N neuer Test bei Dauerauftraegen (zum Monatsletzten)
+ * @N neue DDV-Lib
+ *
  * Revision 1.34  2005/06/16 13:29:13  web0
  * *** empty log message ***
  *
