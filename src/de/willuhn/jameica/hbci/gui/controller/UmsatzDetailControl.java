@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailControl.java,v $
- * $Revision: 1.20 $
- * $Date: 2005/06/21 20:11:10 $
+ * $Revision: 1.21 $
+ * $Date: 2005/06/27 14:18:49 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -53,7 +53,6 @@ public class UmsatzDetailControl extends AbstractControl {
   private Input empfaengerBlz   = null;
 	private Input betrag					= null;
 	private Input zweck						= null;
-	private Input zweck2					= null;
 	private Input datum						= null;
 	private Input valuta					= null;
 
@@ -242,19 +241,6 @@ public class UmsatzDetailControl extends AbstractControl {
   }
 
   /**
-   * Liefert ein Eingabe-Feld mit Zeile 2 des Verwendungszwecks.
-   * @return Eingabe-Feld.
-   * @throws RemoteException
-   */
-  public Input getZweck2() throws RemoteException
-  {
-    if (zweck2 != null)
-      return zweck2;
-    zweck2 = new LabelInput(getUmsatz().getZweck2());
-    return zweck2;
-  }
-  
-  /**
    * Liefert ein Eingabe-Feld mit dem Datum der Buchung.
    * @return Eingabe-Feld.
    * @throws RemoteException
@@ -402,6 +388,9 @@ public class UmsatzDetailControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzDetailControl.java,v $
+ * Revision 1.21  2005/06/27 14:18:49  web0
+ * @B bug 75
+ *
  * Revision 1.20  2005/06/21 20:11:10  web0
  * @C cvs merge
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzDetail.java,v $
- * $Revision: 1.20 $
- * $Date: 2005/06/17 17:36:34 $
+ * $Revision: 1.21 $
+ * $Date: 2005/06/27 14:18:49 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -81,13 +81,20 @@ public class UmsatzDetail extends AbstractView {
     // BUGZILLA 30 http://www.willuhn.de/bugzilla/show_bug.cgi?id=30
     LabelGroup zweck = new LabelGroup(getParent(),i18n.tr("Verwendungszweck"));
 
-    // TODO Hier fehlt noch der Rest von Bug 75
+    // BUGZILLA 75 http://www.willuhn.de/bugzilla/show_bug.cgi?id=75
     Umsatz u = control.getUmsatz();
-    zweck.addText(u.getZweck(),true);
-    String z2 = u.getZweck2();
-    if (z2 != null && z2.length() > 0)
+    if (u.getZweck() == null || u.getZweck().length() == 0)
     {
-      zweck.addText(z2,true);
+      zweck.addLabelPair(i18n.tr("Verwendungszweck"),control.getZweck());
+    }
+    else
+    {
+      zweck.addText(u.getZweck(),true);
+      String z2 = u.getZweck2();
+      if (z2 != null && z2.length() > 0)
+      {
+        zweck.addText(z2,true);
+      }
     }
    
 
@@ -122,6 +129,9 @@ public class UmsatzDetail extends AbstractView {
 
 /**********************************************************************
  * $Log: UmsatzDetail.java,v $
+ * Revision 1.21  2005/06/27 14:18:49  web0
+ * @B bug 75
+ *
  * Revision 1.20  2005/06/17 17:36:34  web0
  * @B bug 75
  *
