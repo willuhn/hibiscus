@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragListJob.java,v $
- * $Revision: 1.19 $
- * $Date: 2005/06/28 08:04:00 $
+ * $Revision: 1.20 $
+ * $Date: 2005/06/28 08:07:24 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -158,21 +158,21 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
           try
           {
             k = auftrag.getKonto();
+            if (k != null && k.isNewObject())
+            {
+              Logger.info("current account is a new one, saving");
+              k.store();
+              auftrag.setKonto(k);
+            }
           }
           catch (Exception e)
           {
             Logger.warn("unable to auto assigning account");
           }
-          if (k == null)
+          if (k == null || k.isNewObject())
           {
             Logger.info("bank didn't sending account informations. assigning account by hand");
             auftrag.setKonto(konto);
-          }
-          else if (k.isNewObject())
-          {
-            Logger.info("current account is a new one, saving");
-            k.store();
-            auftrag.setKonto(k);
           }
 					auftrag.store();// den hammer nicht gefunden. Neu anlegen
 				}
@@ -218,6 +218,9 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIDauerauftragListJob.java,v $
+ * Revision 1.20  2005/06/28 08:07:24  web0
+ * @B bug 87
+ *
  * Revision 1.19  2005/06/28 08:04:00  web0
  * @B bug 87
  *
