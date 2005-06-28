@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/filter/Attic/Pattern.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/06/15 16:10:48 $
+ * $Revision: 1.5 $
+ * $Date: 2005/06/28 17:45:41 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -102,6 +102,13 @@ public interface Pattern extends DBObject
   public String getNameForField(String field) throws RemoteException;
 
   /**
+   * Liefert eine Liste der moeglichen Feld-Bezeichnungen.
+   * @return Liste der moeglichen Feld-Bezeichnungen.
+   * @throws RemoteException
+   */
+  public String[] getValidFields() throws RemoteException;
+  
+  /**
    * Speichert den Typ des Patterns.
    * @param type Typ.
    * @throws RemoteException
@@ -126,6 +133,9 @@ public interface Pattern extends DBObject
 
 /**********************************************************************
  * $Log: Pattern.java,v $
+ * Revision 1.5  2005/06/28 17:45:41  web0
+ * *** empty log message ***
+ *
  * Revision 1.4  2005/06/15 16:10:48  web0
  * @B javadoc fixes
  *
