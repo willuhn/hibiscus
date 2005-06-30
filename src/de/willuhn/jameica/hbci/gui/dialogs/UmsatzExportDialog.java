@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/UmsatzExportDialog.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/06/08 16:49:00 $
+ * $Revision: 1.4 $
+ * $Date: 2005/06/30 23:52:42 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -36,6 +36,7 @@ import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.io.ExportFormat;
 import de.willuhn.jameica.hbci.io.IORegistry;
 import de.willuhn.jameica.hbci.io.Exporter;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
@@ -101,9 +102,24 @@ public class UmsatzExportDialog extends AbstractDialog
    */
   private void export() throws ApplicationException
   {
+    Exp exp = null;
+
+    try
+    {
+      exp = (Exp) getExporterList().getValue();
+    }
+    catch (Exception e)
+    {
+      Logger.error("error while saving export file",e);
+      throw new ApplicationException(i18n.tr("Fehler beim Starten des Exports"),e);
+    }
+
+    if (exp == null || exp.exporter == null)
+      throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Export-Format aus"));
+
     FileDialog fd = new FileDialog(GUI.getShell(),SWT.SAVE);
     fd.setText(i18n.tr("Bitte geben Sie den Dateinamen ein, in der die Umsätze gespeichert werden sollen."));
-    fd.setFileName(i18n.tr("hibiscus-umsaetze-{0}.csv",HBCI.FASTDATEFORMAT.format(new Date())));
+    fd.setFileName(i18n.tr("hibiscus-umsaetze-{0}." + exp.format.getFileExtension(),HBCI.FASTDATEFORMAT.format(new Date())));
     String s = fd.open();
     
     Settings settings = new Settings(this.getClass());
@@ -138,7 +154,7 @@ public class UmsatzExportDialog extends AbstractDialog
       {
         // Dialog schliessem
         close();
-        Logger.error("error while saving ini letter",e);
+        Logger.error("error while saving export file",e);
         throw new ApplicationException(i18n.tr("Fehler beim Speichern der Export-Datei in {0}",s),e);
       }
     }
@@ -147,14 +163,10 @@ public class UmsatzExportDialog extends AbstractDialog
 
     try
     {
-      Exp exp = (Exp) getExporterList().getValue();
-      if (exp == null || exp.exporter == null)
-        throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Export-Format aus"));
-
       Exporter exporter = exp.exporter;
 
       os = new BufferedOutputStream(new FileOutputStream(file));
-      exporter.export(umsaetze,os);
+      exporter.export(exp.format,umsaetze,os);
 
       // Wir merken uns noch das Verzeichnis vom letzten mal
       settings.setAttribute("lastdir",file.getParent());
@@ -200,18 +212,32 @@ public class UmsatzExportDialog extends AbstractDialog
 
     ArrayList l = new ArrayList();
 
-		for (int i=0;i<exporters.length;++i)
+    int size = 0;
+
+    for (int i=0;i<exporters.length;++i)
 		{
-			l.add(new Exp(exporters[i]));
+      Exporter exp = exporters[i];
+      if (exp == null)
+        continue;
+      ExportFormat[] formats = exp.getExportFormats();
+      if (formats == null || formats.length == 0)
+      {
+        Logger.warn("exporter " + exp.getName() + " provides no export formats, skipping");
+      }
+      for (int j=0;j<formats.length;++j)
+      {
+        size++;
+        l.add(new Exp(exp,formats[j]));
+      }
 		}
 
-		if (l.size() == 0)
+		if (size == 0)
 		{
 			exporterListe = new LabelInput(i18n.tr("Keine Export-Filter verfügbar"));
 			return exporterListe;
 		}
 
-		Exp[] exp = (Exp[]) l.toArray(new Exp[l.size()]);
+		Exp[] exp = (Exp[]) l.toArray(new Exp[size]);
 		exporterListe = new SelectInput(PseudoIterator.fromArray(exp),null);
 		return exporterListe;
 	}
@@ -229,11 +255,13 @@ public class UmsatzExportDialog extends AbstractDialog
    */
   private class Exp implements GenericObject
 	{
-		private Exporter exporter = null;
+		private Exporter exporter   = null;
+    private ExportFormat format = null;
 		
-		private Exp(Exporter exporter)
+		private Exp(Exporter exporter, ExportFormat format)
 		{
 			this.exporter = exporter;
+      this.format = format;
 		}
 
     /**
@@ -241,7 +269,7 @@ public class UmsatzExportDialog extends AbstractDialog
      */
     public Object getAttribute(String arg0) throws RemoteException
     {
-      return this.exporter.getName();
+      return this.format.getName();
     }
 
     /**
@@ -257,7 +285,7 @@ public class UmsatzExportDialog extends AbstractDialog
      */
     public String getID() throws RemoteException
     {
-      return getClass().getName();
+      return this.exporter.getClass().getName() + "#" + this.format.getClass().getName();
     }
 
     /**
@@ -283,6 +311,9 @@ public class UmsatzExportDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: UmsatzExportDialog.java,v $
+ * Revision 1.4  2005/06/30 23:52:42  web0
+ * @N export via velocity
+ *
  * Revision 1.3  2005/06/08 16:49:00  web0
  * @N new Import/Export-System
  *

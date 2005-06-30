@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-    <classpathentry kind="src" path="src"/>
-    <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-    <classpathentry exported="true" kind="src" path="/jameica"/>
-    <classpathentry exported="true" kind="lib"
-        path="lib/hbci4java-2.5.0pre-20050525.jar" sourcepath="/hibiscus/lib.src/hbci4java-2.5.0pre-20050525-src.zip"/>
-    <classpathentry kind="output" path="bin"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="src" path="/jameica"/>
+	<classpathentry exported="true" sourcepath="lib.src/hbci4java-2.5.0pre-20050525-src.zip" kind="lib" path="lib/hbci4java-2.5.0pre-20050525.jar"/>
+	<classpathentry kind="lib" path="lib/commons-collections.jar"/>
+	<classpathentry kind="lib" path="lib/logkit-1.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/oro.jar"/>
+	<classpathentry kind="lib" path="lib/velocity-1.4.jar"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>
