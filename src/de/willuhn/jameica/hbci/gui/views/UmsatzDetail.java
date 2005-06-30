@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzDetail.java,v $
- * $Revision: 1.21 $
- * $Date: 2005/06/27 14:18:49 $
+ * $Revision: 1.22 $
+ * $Date: 2005/06/30 21:48:56 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -83,7 +83,7 @@ public class UmsatzDetail extends AbstractView {
 
     // BUGZILLA 75 http://www.willuhn.de/bugzilla/show_bug.cgi?id=75
     Umsatz u = control.getUmsatz();
-    if (u.getZweck() == null || u.getZweck().length() == 0)
+    if (u.getZweck() == null || u.getZweck().length() < 4 || u.hasChangedByUser())
     {
       zweck.addLabelPair(i18n.tr("Verwendungszweck"),control.getZweck());
     }
@@ -129,6 +129,9 @@ public class UmsatzDetail extends AbstractView {
 
 /**********************************************************************
  * $Log: UmsatzDetail.java,v $
+ * Revision 1.22  2005/06/30 21:48:56  web0
+ * @B bug 75
+ *
  * Revision 1.21  2005/06/27 14:18:49  web0
  * @B bug 75
  *

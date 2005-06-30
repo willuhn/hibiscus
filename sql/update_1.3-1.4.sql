@@ -26,6 +26,7 @@ ALTER CREATE TABLE umsatz (
   customerref varchar(100),
   umsatztyp_id int(4),
   kommentar text NULL,
+  checksum numeric NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );

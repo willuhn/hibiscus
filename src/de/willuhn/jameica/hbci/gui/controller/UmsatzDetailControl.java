@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailControl.java,v $
- * $Revision: 1.22 $
- * $Date: 2005/06/27 14:37:14 $
+ * $Revision: 1.23 $
+ * $Date: 2005/06/30 21:48:56 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -131,9 +131,9 @@ public class UmsatzDetailControl extends AbstractControl {
     if (empfaengerName != null)
       return empfaengerName;
     String name = getUmsatz().getEmpfaengerName();
-    if (name == null || name.length() == 0)
+    if (name == null || name.length() == 0 || getUmsatz().hasChangedByUser())
     {
-      empfaengerName = new TextInput(null,HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
+      empfaengerName = new TextInput(name,HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
       changeEN = true;
     }
     else
@@ -150,13 +150,14 @@ public class UmsatzDetailControl extends AbstractControl {
    */
   public Input getEmpfaengerKonto() throws RemoteException
   {
+    getUmsatz().getChecksum();
     if (empfaengerKonto != null)
       return empfaengerKonto;
 
     String konto = getUmsatz().getEmpfaengerKonto(); 
-    if (konto == null || konto.length() == 0)
+    if (konto == null || konto.length() == 0 || getUmsatz().hasChangedByUser())
     {
-      empfaengerKonto = new TextInput(null,15);
+      empfaengerKonto = new TextInput(konto,15);
       changeEK = true;
     }
     else
@@ -177,10 +178,14 @@ public class UmsatzDetailControl extends AbstractControl {
       return empfaengerBlz;
 
     String blz = getUmsatz().getEmpfaengerBLZ(); 
-    if (blz == null || blz.length() == 0)
+    if (blz == null || blz.length() == 0 || getUmsatz().hasChangedByUser())
     {
-      empfaengerBlz = new TextInput(null, HBCIProperties.HBCI_BLZ_LENGTH);
-      empfaengerBlz.setComment("");
+      empfaengerBlz = new TextInput(blz, HBCIProperties.HBCI_BLZ_LENGTH);
+      if (blz != null)
+        empfaengerBlz.setComment(HBCIUtils.getNameForBLZ(blz));
+      else
+        empfaengerBlz.setComment("");
+
       empfaengerBlz.addListener(new Listener()
       {
         public void handleEvent(Event event)
@@ -228,9 +233,9 @@ public class UmsatzDetailControl extends AbstractControl {
     if (zweck != null)
       return zweck;
     String s = getUmsatz().getZweck();
-    if (s == null || s.length() == 0)
+    if (s == null || s.length() < 4 || getUmsatz().hasChangedByUser())
     {
-      zweck = new TextInput(null,HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH);
+      zweck = new TextInput(s,HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH);
       changeZ1 = true;
     }
     else
@@ -330,6 +335,10 @@ public class UmsatzDetailControl extends AbstractControl {
       u.transactionBegin();
       u.setKommentar((String)getKommentar().getValue());
       
+      boolean b = (changeEB || changeEK || changeEN || changeZ1);
+
+      if (b) u.setChangedByUser();
+
       // BUGZILLA 75 http://www.willuhn.de/bugzilla/show_bug.cgi?id=75
       // Und jetzt kommen noch die Felder, die evtl. bearbeitet werden duerfen.
       if (changeEB) u.setEmpfaengerBLZ((String) getEmpfaengerBLZ().getValue());
@@ -337,19 +346,20 @@ public class UmsatzDetailControl extends AbstractControl {
       if (changeEN) u.setEmpfaengerName((String) getEmpfaengerName().getValue());
       if (changeZ1) u.setZweck((String) getZweck().getValue());
       
-      if (changeEB || changeEK || changeEN || changeZ1)
+      if (b)
       {
         String[] fields = new String[]
-       {
-         u.getEmpfaengerName(),
-         u.getEmpfaengerKonto(),
-         u.getEmpfaengerBLZ(),
-         HBCI.DATEFORMAT.format(u.getValuta()),
-         u.getZweck(),
-         u.getKonto().getWaehrung() + " " + HBCI.DECIMALFORMAT.format(u.getBetrag())
-       };
-       String msg = i18n.tr("Umsatz [Gegenkonto: {0}, Kto. {1} BLZ {2}], Valuta {3}, Zweck: {4}] {5} geändert",fields);
-       getUmsatz().getKonto().addToProtokoll(msg,Protokoll.TYP_SUCCESS);
+        {
+          u.getEmpfaengerName(),
+          u.getEmpfaengerKonto(),
+          u.getEmpfaengerBLZ(),
+          HBCI.DATEFORMAT.format(u.getValuta()),
+          u.getZweck(),
+          u.getKonto().getWaehrung() + " " + HBCI.DECIMALFORMAT.format(u.getBetrag())
+        };
+
+        String msg = i18n.tr("Umsatz [Gegenkonto: {0}, Kto. {1} BLZ {2}], Valuta {3}, Zweck: {4}] {5} geändert",fields);
+        getUmsatz().getKonto().addToProtokoll(msg,Protokoll.TYP_SUCCESS);
       }
 
       getUmsatz().store();
@@ -388,6 +398,9 @@ public class UmsatzDetailControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzDetailControl.java,v $
+ * Revision 1.23  2005/06/30 21:48:56  web0
+ * @B bug 75
+ *
  * Revision 1.22  2005/06/27 14:37:14  web0
  * @B bug 75
  *
