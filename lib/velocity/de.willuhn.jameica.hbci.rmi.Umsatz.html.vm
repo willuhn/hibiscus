@@ -170,7 +170,7 @@
 		<th>Kunden-Referenz</th>
 	  </tr>
 		
-      #foreach($umsatz in $umsaetze)
+      #foreach($umsatz in $objects)
         #set($konto = $umsatz.Konto)
 		#set($betrag = $umsatz.getBetrag().intValue())
 		<tr

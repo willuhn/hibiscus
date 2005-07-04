@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/VelocityExporter.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/06/30 23:52:42 $
+ * $Revision: 1.2 $
+ * $Date: 2005/07/04 12:41:39 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -20,15 +20,16 @@ import java.io.OutputStreamWriter;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.eclipse.swt.graphics.Image;
 
+import de.willuhn.datasource.GenericObject;
 import de.willuhn.io.FileFinder;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.plugin.PluginResources;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -42,7 +43,8 @@ public class VelocityExporter implements Exporter
 {
 
   private File templateDir        = null;
-  private ExportFormat[] formats  = null;
+
+  private HashMap formats         = new HashMap();
 
   private I18N i18n = null;
   
@@ -80,9 +82,9 @@ public class VelocityExporter implements Exporter
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.io.Exporter#export(de.willuhn.jameica.hbci.io.ExportFormat, de.willuhn.jameica.hbci.rmi.Umsatz[], java.io.OutputStream)
+   * @see de.willuhn.jameica.hbci.io.Exporter#export(de.willuhn.jameica.hbci.io.ExportFormat, java.lang.Class, de.willuhn.datasource.GenericObject[], java.io.OutputStream)
    */
-  public void export(ExportFormat format, Umsatz[] umsaetze, OutputStream os) throws RemoteException, ApplicationException
+  public void export(ExportFormat format, Class objectType, GenericObject[] objects, OutputStream os) throws RemoteException, ApplicationException
   {
     if (os == null)
       throw new ApplicationException(i18n.tr("Kein Ausgabe-Ziel für die Datei angegeben"));
@@ -90,7 +92,7 @@ public class VelocityExporter implements Exporter
     if (format == null)
       throw new ApplicationException(i18n.tr("Kein Ausgabe-Format angegeben"));
 
-    if (umsaetze == null || umsaetze.length == 0)
+    if (objects == null || objects.length == 0)
       throw new ApplicationException(i18n.tr("Keine zu exportierenden Umsätze angegeben"));
 
     Logger.debug("preparing velocity context");
@@ -99,14 +101,14 @@ public class VelocityExporter implements Exporter
     context.put("datum",        new Date());
     context.put("dateformat",   HBCI.DATEFORMAT);
     context.put("decimalformat",HBCI.DECIMALFORMAT);
-    context.put("umsaetze",     umsaetze);
+    context.put("objects",      objects);
 
     BufferedWriter writer = null;
     try
     {
       writer = new BufferedWriter(new OutputStreamWriter(os));
 
-      Template template = Velocity.getTemplate(format.getFileExtension() + ".vm");
+      Template template = Velocity.getTemplate(objectType.getName() + "." + format.getFileExtension() + ".vm");
       template.merge(context,writer);
     }
     catch (Exception e)
@@ -139,16 +141,22 @@ public class VelocityExporter implements Exporter
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.io.Exporter#getExportFormats()
+   * @see de.willuhn.jameica.hbci.io.Exporter#getExportFormats(java.lang.Class)
    */
-  public ExportFormat[] getExportFormats()
+  public ExportFormat[] getExportFormats(Class type)
   {
-    if (this.formats != null)
-      return this.formats;
+    if (type == null)
+      return new ExportFormat[0];
+    
+    ExportFormat[] loaded = (ExportFormat[]) this.formats.get(type);
+    if (loaded != null)
+      return loaded;
 
-    Logger.info("looking for velocity templates");
+    Logger.info("looking velocity templates for object type " + type.getClass());
     FileFinder finder = new FileFinder(this.templateDir);
-    finder.extension("vm");
+    String cn = type.getName().replaceAll("\\.","\\\\.");
+    finder.matches(cn + ".*?\\.vm$");
+
     File[] found = finder.findRecursive();
     
     ArrayList l = new ArrayList();
@@ -159,6 +167,7 @@ public class VelocityExporter implements Exporter
         continue;
       Logger.info("  found template: " + ef.getAbsolutePath());
       String name = ef.getName();
+      name = name.replaceAll(cn + "\\.",""); // Klassenname und Punkt dahinter entfernen
       int dot = name.indexOf(".");
       if (dot == -1)
         continue;
@@ -194,8 +203,9 @@ public class VelocityExporter implements Exporter
       };
       l.add(exf);
     }
-    this.formats = (ExportFormat[]) l.toArray(new ExportFormat[l.size()]);
-    return this.formats;
+    loaded = (ExportFormat[]) l.toArray(new ExportFormat[l.size()]);
+    this.formats.put(type,loaded);
+    return loaded;
     
   }
 
@@ -204,6 +214,9 @@ public class VelocityExporter implements Exporter
 
 /**********************************************************************
  * $Log: VelocityExporter.java,v $
+ * Revision 1.2  2005/07/04 12:41:39  web0
+ * @B bug 90
+ *
  * Revision 1.1  2005/06/30 23:52:42  web0
  * @N export via velocity
  *

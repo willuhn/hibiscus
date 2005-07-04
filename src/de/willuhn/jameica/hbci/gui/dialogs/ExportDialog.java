@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/UmsatzExportDialog.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/06/30 23:52:42 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/ExportDialog.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2005/07/04 12:41:39 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -37,9 +37,8 @@ import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.io.ExportFormat;
-import de.willuhn.jameica.hbci.io.IORegistry;
 import de.willuhn.jameica.hbci.io.Exporter;
-import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.jameica.hbci.io.IORegistry;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Logger;
@@ -47,26 +46,29 @@ import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Dialog, ueber den die Umsaetze exportiert werden koennen.
+ * Dialog, ueber den Daten exportiert werden koennen.
  */
-public class UmsatzExportDialog extends AbstractDialog
+public class ExportDialog extends AbstractDialog
 {
 
 	private I18N i18n;
 
-  private Input exporterListe = null;
-  private Umsatz[] umsaetze = null;	
+  private Input exporterListe     = null;
+  private GenericObject[] objects = null;	
+  private Class type              = null;
   
   /**
    * ct.
-   * @param umsaetze Liste der zu exportierenden Umsaetze.
+   * @param objects Liste der zu exportierenden Objekte.
+   * @param type die Art der zu exportierenden Objekte.
    */
-  public UmsatzExportDialog(Umsatz[] umsaetze)
+  public ExportDialog(GenericObject[] objects, Class type)
   {
     super(POSITION_CENTER);
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-		setTitle(i18n.tr("Konto-Umsätze exportieren"));
-    this.umsaetze = umsaetze;
+		setTitle(i18n.tr("Daten-Export"));
+    this.objects = objects;
+    this.type = type;
   }
 
   /**
@@ -84,6 +86,15 @@ public class UmsatzExportDialog extends AbstractDialog
 		{
 			public void handleAction(Object context) throws ApplicationException
 			{
+        try
+        {
+          if (getExporterList() instanceof LabelInput)
+            return;
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to check export format",e);
+        }
 				export();
 			}
 		},null,true);
@@ -97,7 +108,7 @@ public class UmsatzExportDialog extends AbstractDialog
   }
 
   /**
-   * Exportiert die Umsaetze.
+   * Exportiert die Daten.
    * @throws ApplicationException
    */
   private void export() throws ApplicationException
@@ -118,8 +129,8 @@ public class UmsatzExportDialog extends AbstractDialog
       throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Export-Format aus"));
 
     FileDialog fd = new FileDialog(GUI.getShell(),SWT.SAVE);
-    fd.setText(i18n.tr("Bitte geben Sie den Dateinamen ein, in der die Umsätze gespeichert werden sollen."));
-    fd.setFileName(i18n.tr("hibiscus-umsaetze-{0}." + exp.format.getFileExtension(),HBCI.FASTDATEFORMAT.format(new Date())));
+    fd.setText(i18n.tr("Bitte geben Sie eine Datei ein, in die die Daten exportiert werden sollen."));
+    fd.setFileName(i18n.tr("hibiscus-export-{0}." + exp.format.getFileExtension(),HBCI.FASTDATEFORMAT.format(new Date())));
     String s = fd.open();
     
     Settings settings = new Settings(this.getClass());
@@ -166,19 +177,19 @@ public class UmsatzExportDialog extends AbstractDialog
       Exporter exporter = exp.exporter;
 
       os = new BufferedOutputStream(new FileOutputStream(file));
-      exporter.export(exp.format,umsaetze,os);
+      exporter.export(exp.format,this.type,objects,os);
 
       // Wir merken uns noch das Verzeichnis vom letzten mal
       settings.setAttribute("lastdir",file.getParent());
 
       // Dialog schliessen
       close();
-      GUI.getStatusBar().setSuccessText(i18n.tr("Umsätze exportiert nach {0}",s));
+      GUI.getStatusBar().setSuccessText(i18n.tr("Daten exportiert nach {0}",s));
     }
     catch (Exception e)
     {
-      Logger.error("error while writing umsaetze to " + s,e);
-      throw new ApplicationException(i18n.tr("Fehler beim Exportieren der Umsätze in {0}",s),e);
+      Logger.error("error while writing objects to " + s,e);
+      throw new ApplicationException(i18n.tr("Fehler beim Exportieren der Daten in {0}",s),e);
     }
     finally
     {
@@ -219,7 +230,7 @@ public class UmsatzExportDialog extends AbstractDialog
       Exporter exp = exporters[i];
       if (exp == null)
         continue;
-      ExportFormat[] formats = exp.getExportFormats();
+      ExportFormat[] formats = exp.getExportFormats(type);
       if (formats == null || formats.length == 0)
       {
         Logger.warn("exporter " + exp.getName() + " provides no export formats, skipping");
@@ -310,7 +321,10 @@ public class UmsatzExportDialog extends AbstractDialog
 
 
 /**********************************************************************
- * $Log: UmsatzExportDialog.java,v $
+ * $Log: ExportDialog.java,v $
+ * Revision 1.1  2005/07/04 12:41:39  web0
+ * @B bug 90
+ *
  * Revision 1.4  2005/06/30 23:52:42  web0
  * @N export via velocity
  *

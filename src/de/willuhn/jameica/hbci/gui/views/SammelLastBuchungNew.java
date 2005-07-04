@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/SammelLastBuchungNew.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/03/09 01:07:02 $
+ * $Revision: 1.4 $
+ * $Date: 2005/07/04 12:41:39 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -63,7 +63,7 @@ public class SammelLastBuchungNew extends AbstractView {
       {
       	control.handleStore();
       }
-    });
+    },null,true);
   }
 
   /**
@@ -77,6 +77,9 @@ public class SammelLastBuchungNew extends AbstractView {
 
 /**********************************************************************
  * $Log: SammelLastBuchungNew.java,v $
+ * Revision 1.4  2005/07/04 12:41:39  web0
+ * @B bug 90
+ *
  * Revision 1.3  2005/03/09 01:07:02  web0
  * @D javadoc fixes
  *

@@ -1,4 +1,4 @@
-#foreach($umsatz in $umsaetze)
+#foreach($umsatz in $objects)
 #set($konto = $umsatz.Konto)
 $!{konto.Kontonummer};$!{konto.BLZ};$!{konto.Bezeichnung};$!{umsatz.EmpfaengerKonto};$!{umsatz.EmpfaengerBLZ};$!{umsatz.EmpfaengerName};$!{decimalformat.format(${umsatz.Betrag})};$!{dateformat.format(${umsatz.Valuta})};$!{dateformat.format(${umsatz.Datum})};$!{umsatz.Zweck};$!{umsatz.Zweck2};$!{decimalformat.format(${umsatz.Saldo})};$!{umsatz.Primanota};$!{umsatz.CustomerRef};
 #end

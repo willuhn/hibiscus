@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SammelLastschriftControl.java,v $
- * $Revision: 1.8 $
- * $Date: 2005/07/04 11:36:53 $
+ * $Revision: 1.9 $
+ * $Date: 2005/07/04 12:41:39 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -36,6 +36,7 @@ import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.SammelLastBuchungDelete;
+import de.willuhn.jameica.hbci.gui.action.SammelLastBuchungExport;
 import de.willuhn.jameica.hbci.gui.action.SammelLastBuchungNew;
 import de.willuhn.jameica.hbci.gui.action.SammelLastschriftNew;
 import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
@@ -174,6 +175,21 @@ public class SammelLastschriftControl extends AbstractControl
         {
           Logger.error("unable to load sammellastschrift",e);
           throw new ApplicationException(i18n.tr("Fehler beim Laden der Sammel-Lastschrift"));
+        }
+      }
+    }));
+    ctx.addItem(ContextMenuItem.SEPARATOR);
+    ctx.addItem(new ContextMenuItem(i18n.tr("Buchungen exportieren..."),new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        try
+        {
+          new SammelLastBuchungExport().handleAction(getLastschrift());
+        }
+        catch (RemoteException e)
+        {
+          Logger.error("unable to load sammellastschrift",e);
+          throw new ApplicationException(i18n.tr("Fehler beim Laden der Sammellastschrift"));
         }
       }
     }));
@@ -386,6 +402,9 @@ public class SammelLastschriftControl extends AbstractControl
 
 /*****************************************************************************
  * $Log: SammelLastschriftControl.java,v $
+ * Revision 1.9  2005/07/04 12:41:39  web0
+ * @B bug 90
+ *
  * Revision 1.8  2005/07/04 11:36:53  web0
  * @B bug 89
  *

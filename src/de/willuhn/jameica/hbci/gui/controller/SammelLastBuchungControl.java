@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SammelLastBuchungControl.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/07/04 11:36:53 $
+ * $Revision: 1.6 $
+ * $Date: 2005/07/04 12:41:39 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -205,7 +205,7 @@ public class SammelLastBuchungControl extends AbstractControl
 		return storeAddress;
 	}
 
-	/**
+  /**
 	 * Speichert den Geld-Transfer.
 	 * @return true, wenn das Speichern erfolgreich war.
 	 */
@@ -337,6 +337,9 @@ public class SammelLastBuchungControl extends AbstractControl
 
 /*****************************************************************************
  * $Log: SammelLastBuchungControl.java,v $
+ * Revision 1.6  2005/07/04 12:41:39  web0
+ * @B bug 90
+ *
  * Revision 1.5  2005/07/04 11:36:53  web0
  * @B bug 89
  *
