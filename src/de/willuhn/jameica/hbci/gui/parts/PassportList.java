@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/PassportList.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/06/27 15:35:27 $
+ * $Revision: 1.3 $
+ * $Date: 2005/07/04 21:57:08 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -26,6 +26,7 @@ import de.willuhn.jameica.hbci.PassportRegistry;
 import de.willuhn.jameica.hbci.gui.controller.PassportObject;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -60,7 +61,17 @@ public class PassportList extends TablePart implements Part
 
   private static GenericIterator init() throws RemoteException
   {
-    Passport[] passports = PassportRegistry.getPassports();
+
+    Passport[] passports = null;
+    try
+    {
+      passports = PassportRegistry.getPassports();
+    }
+    catch (Exception e)
+    {
+      Logger.error("error while loading the passport list",e);
+      throw new RemoteException("unable to load the passport list",e);
+    }
 
     GenericObject[] p = new GenericObject[passports.length];
     for (int i=0;i<passports.length;++i)
@@ -75,6 +86,9 @@ public class PassportList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: PassportList.java,v $
+ * Revision 1.3  2005/07/04 21:57:08  web0
+ * @B bug 80
+ *
  * Revision 1.2  2005/06/27 15:35:27  web0
  * @B bug 84
  *

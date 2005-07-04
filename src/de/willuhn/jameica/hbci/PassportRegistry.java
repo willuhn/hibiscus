@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/PassportRegistry.java,v $
- * $Revision: 1.11 $
- * $Date: 2005/05/19 23:31:07 $
+ * $Revision: 1.12 $
+ * $Date: 2005/07/04 21:57:08 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -55,8 +55,8 @@ public class PassportRegistry {
 				try {
 					Passport p = (Passport) found[i].newInstance();
 					Application.getCallback().getStartupMonitor().setStatusText("init passport " + p.getName());
- 				  passportsByName.put(p.getName(),p);
-					passportsByClass.put(found[i].getName(),p);
+ 				  passportsByName.put(p.getName(),found[i]);
+					passportsByClass.put(found[i].getName(),found[i]);
 					Logger.info("[" + p.getName() + "] instantiated successfully");
 				}
 				catch (Exception e)
@@ -75,7 +75,16 @@ public class PassportRegistry {
 		}
 	}
 	
-	/**
+  private static Passport load(Class c) throws Exception
+  {
+    if (c == null)
+      return null;
+    Passport p = (Passport) c.newInstance();
+    Logger.info("[" + c.getName() + "][" + p.getName() + "] instantiated successfully");
+    return p;
+  }
+
+  /**
 	 * Liefert eine Instanz des angegebenen Passports.
 	 * @param name Sprechender Name des Passports.
 	 * @return Instanz des Passports.
@@ -88,7 +97,7 @@ public class PassportRegistry {
 
 		if (name == null)
 			return null;
-		return (Passport) passportsByName.get(name);
+		return (Passport) load((Class) passportsByName.get(name));
 	}
 
 	/**
@@ -104,15 +113,16 @@ public class PassportRegistry {
 
 		if (classname == null)
 			return null;
-		Passport p = (Passport) passportsByClass.get(classname);
+		Passport p = (Passport) load((Class) passportsByClass.get(classname));
 		return p;
 	}
 
 	/**
 	 * Liefert ein Array mit allen verfuegbaren Passports.
    * @return Liste der Passports.
+   * @throws Exception
    */
-  public static Passport[] getPassports()
+  public static Passport[] getPassports() throws Exception
 	{
     if (Application.inServerMode())
     {
@@ -124,7 +134,7 @@ public class PassportRegistry {
 		int i=0;
 		while (e.hasMoreElements())
 		{
-			passports[i++] = (Passport) e.nextElement();
+			passports[i++] = (Passport) load((Class)e.nextElement());
 		}
 		return passports;
 	}
@@ -133,6 +143,9 @@ public class PassportRegistry {
 
 /**********************************************************************
  * $Log: PassportRegistry.java,v $
+ * Revision 1.12  2005/07/04 21:57:08  web0
+ * @B bug 80
+ *
  * Revision 1.11  2005/05/19 23:31:07  web0
  * @B RMI over SSL support
  * @N added handbook
