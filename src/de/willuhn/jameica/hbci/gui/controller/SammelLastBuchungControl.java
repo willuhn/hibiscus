@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SammelLastBuchungControl.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/04/05 21:51:54 $
+ * $Revision: 1.5 $
+ * $Date: 2005/07/04 11:36:53 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -215,7 +215,9 @@ public class SammelLastBuchungControl extends AbstractControl
   		
 			getBuchung().transactionBegin();
 
-			getBuchung().setBetrag(((Double)getBetrag().getValue()).doubleValue());
+      Double db = (Double)getBetrag().getValue();
+      if (db != null)
+        getBuchung().setBetrag(db.doubleValue());
 			getBuchung().setZweck((String)getZweck().getValue());
 			getBuchung().setZweck2((String)getZweck2().getValue());
 
@@ -335,6 +337,9 @@ public class SammelLastBuchungControl extends AbstractControl
 
 /*****************************************************************************
  * $Log: SammelLastBuchungControl.java,v $
+ * Revision 1.5  2005/07/04 11:36:53  web0
+ * @B bug 89
+ *
  * Revision 1.4  2005/04/05 21:51:54  web0
  * @B Begrenzung aller BLZ-Eingaben auf 8 Zeichen
  *

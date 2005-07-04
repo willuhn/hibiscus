@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/SammelLastschriftNew.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/02/28 16:28:24 $
+ * $Revision: 1.2 $
+ * $Date: 2005/07/04 11:36:53 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -55,6 +56,16 @@ public class SammelLastschriftNew implements Action
 			}
 		}
 
+		try
+    {
+      if (u == null)
+        u = (SammelLastschrift) Settings.getDBService().createObject(SammelLastschrift.class,null);
+    }
+    catch (RemoteException e)
+    {
+      Logger.error("unable to create sammellastschrift",e);
+    }
+
   	GUI.startView(de.willuhn.jameica.hbci.gui.views.SammelLastschriftNew.class,u);
   }
 
@@ -63,6 +74,9 @@ public class SammelLastschriftNew implements Action
 
 /**********************************************************************
  * $Log: SammelLastschriftNew.java,v $
+ * Revision 1.2  2005/07/04 11:36:53  web0
+ * @B bug 89
+ *
  * Revision 1.1  2005/02/28 16:28:24  web0
  * @N first code for "Sammellastschrift"
  *

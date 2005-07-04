@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/SammelLastschriftImpl.java,v $
- * $Revision: 1.7 $
- * $Date: 2005/06/23 21:13:03 $
+ * $Revision: 1.8 $
+ * $Date: 2005/07/04 11:36:53 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -291,7 +291,10 @@ public class SammelLastschriftImpl extends AbstractDBObject
    */
   public Object getAttribute(String arg0) throws RemoteException
   {
-  	if ("buchungen".equals(arg0))
+    if ("summe".equals(arg0))
+      return new Double(this.getSumme());
+
+    if ("buchungen".equals(arg0))
   	{
 			try
 			{
@@ -321,10 +324,29 @@ public class SammelLastschriftImpl extends AbstractDBObject
   	}
     return super.getAttribute(arg0);
   }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.SammelLastschrift#getSumme()
+   */
+  public double getSumme() throws RemoteException
+  {
+    // BUGZILLA 89 http://www.willuhn.de/bugzilla/show_bug.cgi?id=89
+    double sum = 0.0;
+    DBIterator list = getBuchungen();
+    while (list.hasNext())
+    {
+      SammelLastBuchung b = (SammelLastBuchung) list.next();
+      sum += b.getBetrag();
+    }
+    return sum;
+  }
 }
 
 /*****************************************************************************
  * $Log: SammelLastschriftImpl.java,v $
+ * Revision 1.8  2005/07/04 11:36:53  web0
+ * @B bug 89
+ *
  * Revision 1.7  2005/06/23 21:13:03  web0
  * @B bug 84
  *

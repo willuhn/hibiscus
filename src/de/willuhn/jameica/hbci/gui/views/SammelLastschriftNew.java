@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/SammelLastschriftNew.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/03/09 01:07:02 $
+ * $Revision: 1.6 $
+ * $Date: 2005/07/04 11:36:53 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -51,6 +51,7 @@ public class SammelLastschriftNew extends AbstractView {
     group.addLabelPair(i18n.tr("Termin"),control.getTermin());
 		
 		group.addSeparator();
+    group.addLabelPair(i18n.tr("Summe der Buchungen"),control.getSumme());
 		group.addLabelPair(i18n.tr("Bemerkung"),control.getComment());
 
     new Headline(getParent(),i18n.tr("Enthaltene Buchungen"));
@@ -60,7 +61,13 @@ public class SammelLastschriftNew extends AbstractView {
 
     ButtonArea buttons = new ButtonArea(getParent(),5);
     buttons.addButton(i18n.tr("Zurück"),new Back());
-    buttons.addButton(i18n.tr("Neue Buchung hinzufügen"), new SammelLastBuchungNew(),l);
+    buttons.addButton(i18n.tr("Neue Buchung hinzufügen"), new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        control.handleStore();
+        new SammelLastBuchungNew().handleAction(l);
+      }
+    });
     buttons.addButton(i18n.tr("Löschen"),new SammelLastschriftDelete(),control.getLastschrift());
 		buttons.addButton(i18n.tr("Speichern und ausführen"), new Action()
 		{
@@ -91,6 +98,9 @@ public class SammelLastschriftNew extends AbstractView {
 
 /**********************************************************************
  * $Log: SammelLastschriftNew.java,v $
+ * Revision 1.6  2005/07/04 11:36:53  web0
+ * @B bug 89
+ *
  * Revision 1.5  2005/03/09 01:07:02  web0
  * @D javadoc fixes
  *

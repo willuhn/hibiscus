@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SammelLastschriftList.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/06/23 21:13:03 $
+ * $Revision: 1.3 $
+ * $Date: 2005/07/04 11:36:53 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -21,11 +21,13 @@ import org.eclipse.swt.widgets.TableItem;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.Part;
+import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.system.Application;
@@ -64,6 +66,7 @@ public class SammelLastschriftList extends TablePart implements Part
     addColumn(i18n.tr("Empfänger-Konto"),"konto_id");
     addColumn(i18n.tr("Bezeichnung"),"bezeichnung");
     addColumn(i18n.tr("Enthaltene Buchungen"),"buchungen");
+    addColumn(i18n.tr("Summe"),"summe", new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
     addColumn(i18n.tr("Termin"),"termin", new DateFormatter(HBCI.LONGDATEFORMAT));
     addColumn(i18n.tr("Status"),"ausgefuehrt",new Formatter() {
       public String format(Object o) {
@@ -97,6 +100,9 @@ public class SammelLastschriftList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: SammelLastschriftList.java,v $
+ * Revision 1.3  2005/07/04 11:36:53  web0
+ * @B bug 89
+ *
  * Revision 1.2  2005/06/23 21:13:03  web0
  * @B bug 84
  *

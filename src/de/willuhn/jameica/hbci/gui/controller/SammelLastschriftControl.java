@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SammelLastschriftControl.java,v $
- * $Revision: 1.7 $
- * $Date: 2005/06/23 23:03:20 $
+ * $Revision: 1.8 $
+ * $Date: 2005/07/04 11:36:53 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.TableItem;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
+import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.CalendarDialog;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
@@ -27,15 +28,19 @@ import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.TextInput;
+import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
+import de.willuhn.jameica.gui.parts.ContextMenu;
+import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.action.SammelLastBuchungDelete;
 import de.willuhn.jameica.hbci.gui.action.SammelLastBuchungNew;
 import de.willuhn.jameica.hbci.gui.action.SammelLastschriftNew;
 import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
-import de.willuhn.jameica.hbci.gui.menus.SammelLastBuchungList;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.SammelLastBuchung;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.jameica.system.Application;
@@ -59,6 +64,7 @@ public class SammelLastschriftControl extends AbstractControl
   private Input name                    	= null;
   private DialogInput termin            	= null;
   private Input comment                 	= null;
+  private Input summe                     = null;
 
   /**
    * ct.
@@ -113,7 +119,13 @@ public class SammelLastschriftControl extends AbstractControl
   {
     DBIterator list = getLastschrift().getBuchungen();
 
-    TablePart buchungen = new TablePart(list,new SammelLastBuchungNew());
+    TablePart buchungen = new TablePart(list, new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        handleStore();
+        new SammelLastBuchungNew().handleAction(context);
+      }
+    });
     buchungen.setFormatter(new TableFormatter() {
       public void format(TableItem item) {
         try {
@@ -132,7 +144,40 @@ public class SammelLastschriftControl extends AbstractControl
     Konto k = getLastschrift().getKonto();
     String curr = k != null ? k.getWaehrung() : "";
     buchungen.addColumn(i18n.tr("Betrag"),"betrag",new CurrencyFormatter(curr,HBCI.DECIMALFORMAT));
-    buchungen.setContextMenu(new SammelLastBuchungList(getLastschrift()));
+
+    ContextMenu ctx = new ContextMenu();
+    ctx.addItem(new CheckedContextMenuItem(i18n.tr("Buchung öffnen"), new SammelLastBuchungNew()));
+    ctx.addItem(new NotActiveMenuItem(i18n.tr("Buchung löschen..."), new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        new SammelLastBuchungDelete().handleAction(context);
+        try
+        {
+          getSumme().setValue(HBCI.DECIMALFORMAT.format(getLastschrift().getSumme()));
+        }
+        catch (RemoteException e)
+        {
+          Logger.error("unable to refresh summary",e);
+        }
+      }
+    }));
+    ctx.addItem(ContextMenuItem.SEPARATOR);
+    ctx.addItem(new ContextMenuItem(i18n.tr("Neue Buchung..."),new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        handleStore();
+        try
+        {
+          new SammelLastBuchungNew().handleAction(getLastschrift());
+        }
+        catch (RemoteException e)
+        {
+          Logger.error("unable to load sammellastschrift",e);
+          throw new ApplicationException(i18n.tr("Fehler beim Laden der Sammel-Lastschrift"));
+        }
+      }
+    }));
+    buchungen.setContextMenu(ctx);
     return buchungen;
   }
 
@@ -159,6 +204,7 @@ public class SammelLastschriftControl extends AbstractControl
 					String b = konto.getBezeichnung();
 					getKontoAuswahl().setText(konto.getKontonummer());
 					getKontoAuswahl().setComment(b == null ? "" : b);
+          getSumme().setComment(konto.getWaehrung());
 				}
 				catch (RemoteException er)
 				{
@@ -224,6 +270,21 @@ public class SammelLastschriftControl extends AbstractControl
   }
 
   /**
+   * Liefert ein Anzeige-Feld mit der Gesamt-Summe der Buchungen.
+   * @return Anzeige-Feld.
+   * @throws RemoteException
+   */
+  public Input getSumme() throws RemoteException
+  {
+    if (this.summe != null)
+      return this.summe;
+    this.summe = new LabelInput(HBCI.DECIMALFORMAT.format(getLastschrift().getSumme()));
+    Konto k = getLastschrift().getKonto();
+    this.summe.setComment(k != null ? k.getWaehrung() : "");
+    return this.summe;
+  }
+  
+  /**
    * Liefert ein Kommentar-Feld zu dieser Ueberweisung.
    * @return Kommentarfeld.
    * @throws RemoteException
@@ -282,10 +343,52 @@ public class SammelLastschriftControl extends AbstractControl
       GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern der Sammel-Lastschrift"));
     }
   }
+
+
+  /**
+   * Ueberschreiben wir, damit das Item nur dann aktiv ist, wenn die
+   * Lastschrift noch nicht ausgefuehrt wurde.
+   */
+  private class NotActiveMenuItem extends ContextMenuItem
+  {
+    
+    /**
+     * ct.
+     * @param text anzuzeigender Text.
+     * @param a auszufuehrende Action.
+     */
+    public NotActiveMenuItem(String text, Action a)
+    {
+      super(text, a);
+    }
+
+    /**
+     * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
+     */
+    public boolean isEnabledFor(Object o)
+    {
+      if (o == null)
+        return false;
+      try
+      {
+        SammelLastBuchung u = (SammelLastBuchung) o;
+        return !u.getSammelLastschrift().ausgefuehrt();
+      }
+      catch (Exception e)
+      {
+        Logger.error("error while enable check in menu item",e);
+      }
+      return false;
+    }
+  }
+
 }
 
 /*****************************************************************************
  * $Log: SammelLastschriftControl.java,v $
+ * Revision 1.8  2005/07/04 11:36:53  web0
+ * @B bug 89
+ *
  * Revision 1.7  2005/06/23 23:03:20  web0
  * @N much better KontoAuswahlDialog
  *

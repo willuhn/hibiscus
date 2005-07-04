@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/SammelLastschrift.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/02/28 16:28:24 $
+ * $Revision: 1.3 $
+ * $Date: 2005/07/04 11:36:53 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -29,7 +29,14 @@ public interface SammelLastschrift extends DBObject, Terminable
    */
   public DBIterator getBuchungen() throws RemoteException;
 
-	/**
+  /**
+   * Liefert die Summe der enthaltenen Buchungen.
+   * @return Summe der enthaltenen Buchungen.
+   * @throws RemoteException
+   */
+  public double getSumme() throws RemoteException;
+
+  /**
 	 * Liefert das Konto, ueber das die Sammellastschrift gutgeschrieben wird.
    * @return Konto.
    * @throws RemoteException
@@ -61,6 +68,9 @@ public interface SammelLastschrift extends DBObject, Terminable
 
 /**********************************************************************
  * $Log: SammelLastschrift.java,v $
+ * Revision 1.3  2005/07/04 11:36:53  web0
+ * @B bug 89
+ *
  * Revision 1.2  2005/02/28 16:28:24  web0
  * @N first code for "Sammellastschrift"
  *

@@ -160,6 +160,7 @@
 	  <tr>
 		<th>Eigenes Konto</th>
 		<th>Gegenkonto</th>
+		<th>Art</th>
 		<th style="text-align:right">Betrag</th>
 		<th>Valuta-Datum</th>
 		<th>Buchungs-Datum</th>
@@ -172,11 +173,11 @@
       #foreach($umsatz in $umsaetze)
         #set($konto = $umsatz.Konto)
 		#set($betrag = $umsatz.getBetrag().intValue())
+		<tr
 		#if($betrag < 0)
-  		  <tr class="red">
-	    #else
-		  <tr>
+  		  class="red"
 		#end
+		>
 		  <td>
 			$!{konto.Bezeichnung}<br/>
 			Kto $!{konto.Kontonummer}<br/>
@@ -187,6 +188,7 @@
 			Kto $!{umsatz.EmpfaengerKonto}<br/>
 			BLZ $!{umsatz.EmpfaengerBLZ}
 		  </td>
+		  <td>$!{umsatz.Art}</td>
 		  <td style="text-align:right">$!{decimalformat.format(${umsatz.Betrag})} $!{konto.Waehrung}</td>
 		  <td>$!{dateformat.format(${umsatz.Valuta})}</td>
 		  <td>$!{dateformat.format(${umsatz.Datum})}</td>
