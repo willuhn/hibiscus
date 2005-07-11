@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Konto.java,v $
- * $Revision: 1.25 $
- * $Date: 2005/07/11 13:51:49 $
+ * $Revision: 1.26 $
+ * $Date: 2005/07/11 14:03:42 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -147,7 +147,8 @@ public interface Konto extends DBObject,Checksum
   public Date getSaldoDatum() throws RemoteException;
 
 	/**
-	 * Liefert eine Liste aller Umsaetze fuer das Konto.
+	 * Liefert eine Liste aller Umsaetze fuer das Konto in umgekehrter chronologischer Reihenfolge.
+   * Also die neuesten zuerst, die aeltesten zuletzt.
    * @return Umsatzliste.
    * @throws RemoteException
    */
@@ -225,6 +226,9 @@ public interface Konto extends DBObject,Checksum
 
 /**********************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.26  2005/07/11 14:03:42  web0
+ * *** empty log message ***
+ *
  * Revision 1.25  2005/07/11 13:51:49  web0
  * *** empty log message ***
  *
