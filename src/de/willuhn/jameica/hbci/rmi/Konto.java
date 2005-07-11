@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Konto.java,v $
- * $Revision: 1.24 $
- * $Date: 2005/06/07 22:41:09 $
+ * $Revision: 1.25 $
+ * $Date: 2005/07/11 13:51:49 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -154,6 +154,20 @@ public interface Konto extends DBObject,Checksum
   public DBIterator getUmsaetze() throws RemoteException;
 
   /**
+   * Liefert den ersten Umsatz.
+   * @return Umsatz.
+   * @throws RemoteException
+   */
+  public Umsatz getFirstUmsatz() throws RemoteException;
+  
+  /**
+   * Liefert den letzten Umsatz.
+   * @return letzter Umsatz.
+   * @throws RemoteException
+   */
+  public Umsatz getLastUmsatz() throws RemoteException;
+  
+  /**
    * Liefert eine Liste aller Umsaetze fuer die letzten x Tage.
    * @param days Anzahl der Tage.
    * @return Umsatzliste.
@@ -211,6 +225,9 @@ public interface Konto extends DBObject,Checksum
 
 /**********************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.25  2005/07/11 13:51:49  web0
+ * *** empty log message ***
+ *
  * Revision 1.24  2005/06/07 22:41:09  web0
  * @B bug 70
  *
