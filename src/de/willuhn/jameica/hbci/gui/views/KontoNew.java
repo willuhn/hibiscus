@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoNew.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/07/11 13:51:49 $
+ * $Revision: 1.7 $
+ * $Date: 2005/07/11 14:03:42 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -31,6 +31,7 @@ import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.KontoDelete;
 import de.willuhn.jameica.hbci.gui.action.KontoFetchUmsaetze;
@@ -122,12 +123,15 @@ public class KontoNew extends AbstractView {
       
       TabGroup tab2 = new TabGroup(folder,i18n.tr("Saldo im Verlauf"));
 
-      DBIterator umsaetze = k.getUmsaetze();
+      DBIterator list = Settings.getDBService().createList(Umsatz.class);
+      list.addFilter("konto_id = " + k.getID());
+      list.setOrder(" ORDER BY TONUMBER(valuta)");
+
       LineChart chart = new LineChart();
       chart.setTitle("Saldo im Verlauf");
       chart.setBorder(20);
       chart.setDecimalFormatter(new CurrencyFormatter(k.getWaehrung(),HBCI.DECIMALFORMAT));
-      chart.addData(umsaetze,"saldo",new org.eclipse.swt.graphics.Color(GUI.getDisplay(),0,0,240), new org.eclipse.swt.graphics.Color(GUI.getDisplay(),240,240,255));
+      chart.addData(list,"saldo",new org.eclipse.swt.graphics.Color(GUI.getDisplay(),0,0,240), new org.eclipse.swt.graphics.Color(GUI.getDisplay(),240,240,255));
       Umsatz first = k.getFirstUmsatz();
       Umsatz last = k.getLastUmsatz();
       DateFormat df = new SimpleDateFormat("MM/yyyy");
@@ -157,6 +161,9 @@ public class KontoNew extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoNew.java,v $
+ * Revision 1.7  2005/07/11 14:03:42  web0
+ * *** empty log message ***
+ *
  * Revision 1.6  2005/07/11 13:51:49  web0
  * *** empty log message ***
  *
