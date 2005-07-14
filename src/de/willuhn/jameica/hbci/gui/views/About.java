@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/About.java,v $
- * $Revision: 1.9 $
- * $Date: 2005/03/31 23:05:46 $
+ * $Revision: 1.10 $
+ * $Date: 2005/07/14 18:03:54 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -56,6 +56,7 @@ public class About extends AbstractView {
 
     AbstractPlugin plugin = Application.getPluginLoader().getPlugin(HBCI.class);
     group.addLabelPair(i18n.tr("Version"), new LabelInput(""+ plugin.getManifest().getVersion()));
+    group.addLabelPair(i18n.tr("Build-Nummer"), new LabelInput(""+ plugin.getBuildnumber() + " [" + plugin.getBuildDate() + "]"));
 
   }
 
@@ -70,6 +71,9 @@ public class About extends AbstractView {
 
 /**********************************************************************
  * $Log: About.java,v $
+ * Revision 1.10  2005/07/14 18:03:54  web0
+ * @N buildnumber/date in About-Dialog
+ *
  * Revision 1.9  2005/03/31 23:05:46  web0
  * @N geaenderte Startseite
  * @N klickbare Links
