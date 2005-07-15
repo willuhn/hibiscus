@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.40 $
- * $Date: 2005/06/23 21:22:19 $
+ * $Revision: 1.41 $
+ * $Date: 2005/07/15 09:19:35 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -220,7 +220,7 @@ public class SettingsControl extends AbstractControl {
 
 		try
 		{
-			Settings.getWallet().delete("hbci.passport.pinchecksum");
+			Settings.getWallet().deleteAll("hbci.passport.pinchecksum");
 			GUI.getStatusBar().setSuccessText(i18n.tr("Checksummen gelöscht."));
 		}
 		catch (Exception e)
@@ -233,6 +233,9 @@ public class SettingsControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.41  2005/07/15 09:19:35  web0
+ * *** empty log message ***
+ *
  * Revision 1.40  2005/06/23 21:22:19  web0
  * @B ClassCastException
  *
