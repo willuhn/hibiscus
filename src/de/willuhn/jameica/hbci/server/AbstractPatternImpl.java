@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AbstractPatternImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/07/11 18:12:47 $
+ * $Revision: 1.5 $
+ * $Date: 2005/07/20 17:00:37 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -183,7 +183,7 @@ public abstract class AbstractPatternImpl extends AbstractDBObject implements Pa
       case Pattern.TYPE_ENDSWITH:
         return i18n.tr("endet mit");
       case Pattern.TYPE_EQUALS:
-        return i18n.tr(":");
+        return i18n.tr("identisch mit");
       case Pattern.TYPE_STARTSWITH:
         return i18n.tr("beginnt mit");
       default:
@@ -210,6 +210,9 @@ public abstract class AbstractPatternImpl extends AbstractDBObject implements Pa
 
 /**********************************************************************
  * $Log: AbstractPatternImpl.java,v $
+ * Revision 1.5  2005/07/20 17:00:37  web0
+ * *** empty log message ***
+ *
  * Revision 1.4  2005/07/11 18:12:47  web0
  * *** empty log message ***
  *
