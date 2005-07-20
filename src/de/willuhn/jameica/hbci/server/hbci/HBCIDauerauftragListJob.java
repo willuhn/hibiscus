@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragListJob.java,v $
- * $Revision: 1.20 $
- * $Date: 2005/06/28 08:07:24 $
+ * $Revision: 1.21 $
+ * $Date: 2005/07/20 22:40:56 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -121,7 +121,9 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
 			{
 				auftrag = Converter.HBCIDauer2HibiscusDauerauftrag(lines[i]);
 
-				// BUGZILLA 22 http://www.willuhn.de/bugzilla/show_bug.cgi?id=22
+        Logger.info("checking dauerauftrag order id: " + auftrag.getOrderID());
+
+        // BUGZILLA 22 http://www.willuhn.de/bugzilla/show_bug.cgi?id=22
 				// BEGIN
 				String name = auftrag.getGegenkontoName();
 				Logger.debug("checking name length: " + name + ", chars: " + name.length());
@@ -144,7 +146,7 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
 					{
 						// Den haben wir schon, ueberschreiben wir
 						found = true;
-						Logger.info("overwriting dauerauftrag order id: " + auftrag.getOrderID());
+						Logger.info("found a local copy, overwriting with new bank data. order id: " + auftrag.getOrderID());
 						ex.overwrite(auftrag);
 						ex.store();
 						break;
@@ -152,7 +154,7 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
 				}
 				if (!found)
 				{
-					Logger.info("storing dauerauftrag order id: " + auftrag.getOrderID());
+					Logger.info("no local copy found. adding dauerauftrag order id: " + auftrag.getOrderID());
           // BUGZILLA 87 http://www.willuhn.de/bugzilla/show_bug.cgi?id=87
           Konto k = null;
           try
@@ -218,6 +220,9 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIDauerauftragListJob.java,v $
+ * Revision 1.21  2005/07/20 22:40:56  web0
+ * *** empty log message ***
+ *
  * Revision 1.20  2005/06/28 08:07:24  web0
  * @B bug 87
  *

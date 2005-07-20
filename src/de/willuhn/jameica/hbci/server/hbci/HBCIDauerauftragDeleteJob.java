@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragDeleteJob.java,v $
- * $Revision: 1.10 $
- * $Date: 2005/05/19 23:31:07 $
+ * $Revision: 1.11 $
+ * $Date: 2005/07/20 22:40:56 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -18,11 +18,16 @@ import java.util.Enumeration;
 import java.util.Properties;
 
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.PassportRegistry;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.passport.Passport;
+import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
+import de.willuhn.jameica.hbci.rmi.Turnus;
+import de.willuhn.jameica.hbci.server.Converter;
 import de.willuhn.jameica.hbci.server.hbci.tests.CanTermDelRestriction;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -65,8 +70,40 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
 			this.dauerauftrag = auftrag;
 			this.konto        = auftrag.getKonto();
 
-			setJobParam("orderid",auftrag.getOrderID());
+			setJobParam("orderid",this.dauerauftrag.getOrderID());
 
+      setJobParam("src",Converter.HibiscusKonto2HBCIKonto(konto));
+
+      String curr = konto.getWaehrung();
+      if (curr == null || curr.length() == 0)
+        curr = HBCIProperties.CURRENCY_DEFAULT_DE;
+
+      setJobParam("btg",dauerauftrag.getBetrag(),curr);
+
+      Adresse empfaenger = (Adresse) Settings.getDBService().createObject(Adresse.class,null);
+      empfaenger.setBLZ(dauerauftrag.getGegenkontoBLZ());
+      empfaenger.setKontonummer(dauerauftrag.getGegenkontoNummer());
+      empfaenger.setName(dauerauftrag.getGegenkontoName());
+      setJobParam("dst",Converter.HibiscusAdresse2HBCIKonto(empfaenger));
+      setJobParam("name",empfaenger.getName());
+
+      setJobParam("usage",dauerauftrag.getZweck());
+
+      String zweck2 = dauerauftrag.getZweck2();
+      if (zweck2 != null && zweck2.length() > 0)
+        setJobParam("usage_2",zweck2);
+
+      setJobParam("firstdate",dauerauftrag.getErsteZahlung());
+
+      Date letzteZahlung = dauerauftrag.getLetzteZahlung();
+      if (letzteZahlung != null)
+        setJobParam("lastdate",letzteZahlung);
+
+      Turnus turnus = dauerauftrag.getTurnus();
+      setJobParam("timeunit",turnus.getZeiteinheit() == Turnus.ZEITEINHEIT_MONATLICH ? "M" : "W");
+      setJobParam("turnus",turnus.getIntervall());
+      setJobParam("execday",turnus.getTag());
+      
 			if (date != null)
 			{
 				// Jetzt noch die Tests fuer die Job-Restriktionen
@@ -150,6 +187,9 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIDauerauftragDeleteJob.java,v $
+ * Revision 1.11  2005/07/20 22:40:56  web0
+ * *** empty log message ***
+ *
  * Revision 1.10  2005/05/19 23:31:07  web0
  * @B RMI over SSL support
  * @N added handbook
