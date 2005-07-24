@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragListJob.java,v $
- * $Revision: 1.21 $
- * $Date: 2005/07/20 22:40:56 $
+ * $Revision: 1.22 $
+ * $Date: 2005/07/24 17:00:04 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -146,9 +146,13 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
 					{
 						// Den haben wir schon, ueberschreiben wir
 						found = true;
-						Logger.info("found a local copy, overwriting with new bank data. order id: " + auftrag.getOrderID());
-						ex.overwrite(auftrag);
-						ex.store();
+            Logger.info("found a local copy. order id: " + auftrag.getOrderID() + ". Checking for modifications");
+            if (auftrag.getChecksum() != ex.getChecksum())
+            {
+              Logger.info("modifications found, upading local copy");
+              ex.overwrite(auftrag);
+              ex.store();
+            }
 						break;
 					}
 				}
@@ -205,12 +209,12 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
 					found = true;
 					break;
 				}
-				if (!found)
-				{
-					Logger.info("dauerauftrag order id: " + ex.getOrderID() + " does no longer exist online, can be deleted");
-					ex.delete();
-				}
 			}
+      if (!found)
+      {
+        Logger.info("dauerauftrag order id: " + ex.getOrderID() + " does no longer exist online, can be deleted");
+        ex.delete();
+      }
 		}
 
 		Logger.info("dauerauftrag list fetched successfully");
@@ -220,6 +224,9 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIDauerauftragListJob.java,v $
+ * Revision 1.22  2005/07/24 17:00:04  web0
+ * *** empty log message ***
+ *
  * Revision 1.21  2005/07/20 22:40:56  web0
  * *** empty log message ***
  *
