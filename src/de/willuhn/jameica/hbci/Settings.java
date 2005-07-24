@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.35 $
- * $Date: 2005/06/27 11:26:30 $
+ * $Revision: 1.36 $
+ * $Date: 2005/07/24 22:26:42 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -221,6 +221,25 @@ public class Settings
   }
 
   /**
+   * Prueft, ob Tausender-Punkte bei Betraegen verwendet werden sollen.
+   * @return true, wenn Tausender-Punkte verwendet werden sollen.
+   */
+  public static boolean getDecimalGrouping()
+  {
+    return settings.getBoolean("decimalgrouping",false);
+  }
+
+  /**
+   * Legt fest, ob Tausender-Punkte bei Betraegen verwendet werden sollen.
+   * @param grouping true, wenn Tausender-Punkte verwendet werden sollen.
+   */
+  public static void setDecimalGrouping(boolean grouping)
+  {
+    settings.setAttribute("decimalgrouping",grouping);
+    HBCI.DECIMALFORMAT.setGroupingUsed(grouping);
+  }
+
+  /**
    * Speichert, ob wir eine permanente Online-Verbindung haben und daher
    * vom HBCI-Kernel nicht dauernd gefragt werden muessen, ob wir eine
    * Internetverbindung haben wollen.
@@ -279,6 +298,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.36  2005/07/24 22:26:42  web0
+ * @B bug 101
+ *
  * Revision 1.35  2005/06/27 11:26:30  web0
  * @N neuer Test bei Dauerauftraegen (zum Monatsletzten)
  * @N neue DDV-Lib

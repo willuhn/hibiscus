@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.57 $
- * $Date: 2005/06/30 21:48:56 $
+ * $Revision: 1.58 $
+ * $Date: 2005/07/24 22:26:42 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -61,9 +61,9 @@ public class HBCI extends AbstractPlugin
   private static HashMap LOGMAPPING = new HashMap();
 
   static {
-    DECIMALFORMAT.applyPattern("#0.00");
-    DECIMALFORMAT.setGroupingUsed(false);
-    DECIMALFORMAT.setMinimumFractionDigits(2);
+    //  BUGZILLA 101 http://www.willuhn.de/bugzilla/show_bug.cgi?id=101
+    DECIMALFORMAT.applyPattern("###,###,##0.00");
+    DECIMALFORMAT.setGroupingUsed(Settings.getDecimalGrouping());
 
     LOGMAPPING.put(Level.ERROR, new Integer(HBCIUtils.LOG_ERR));
     LOGMAPPING.put(Level.WARN,  new Integer(HBCIUtils.LOG_WARN));
@@ -333,6 +333,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.58  2005/07/24 22:26:42  web0
+ * @B bug 101
+ *
  * Revision 1.57  2005/06/30 21:48:56  web0
  * @B bug 75
  *
