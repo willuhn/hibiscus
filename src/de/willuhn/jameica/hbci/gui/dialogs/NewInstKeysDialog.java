@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/NewInstKeysDialog.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/07/12 23:29:01 $
+ * $Revision: 1.6 $
+ * $Date: 2005/07/24 14:46:16 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -50,7 +50,7 @@ public class NewInstKeysDialog extends AbstractDialog
 		this.passport = p;
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 		setTitle(i18n.tr("Neue Bank-Schlüssel erhalten"));
-    setSize(520,SWT.DEFAULT);
+    setSize(540,SWT.DEFAULT);
   }
 
   /**
@@ -60,13 +60,13 @@ public class NewInstKeysDialog extends AbstractDialog
   {
 		LabelGroup group = new LabelGroup(parent,i18n.tr("Schlüsseldetails"));
 		group.addText(i18n.tr(
-      "Bitte vergleichen Sie die von der Bank übermittelten Schlüssel mit " +      "denen in Ihren Unterlagen.\nStimmen diese mit den folgenden Werten überein, " +      "dann bestätigen Sie bitte mit OK.\nAndernfalls brechen Sie den Vorgang aus " +      "Sicherheitsgründen bitte ab."),true);
+      "Bitte vergleichen Sie die von der Bank übermittelten Hash-Wert (Checksumme) mit " +      "denen in Ihren Unterlagen. Stimmen diese mit den folgenden Werten überein, " +      "dann bestätigen Sie bitte mit OK. Andernfalls brechen Sie den Vorgang aus " +      "Sicherheitsgründen bitte ab."),true);
 
 		INILetter iniletter = new INILetter(passport,INILetter.TYPE_INST);
 
     LabelInput hash = new LabelInput(HBCIUtils.data2hex(iniletter.getKeyHash()));
     hash.setColor(Color.ERROR);
-		group.addLabelPair(i18n.tr("Hash-Wert (Checksumme)") + ":",hash);
+		group.addLabelPair(i18n.tr("Hash-Wert") + ":",hash);
 
 		ButtonArea buttons = new ButtonArea(parent,2);
 		buttons.addButton(i18n.tr("OK"),new Action()
@@ -100,6 +100,9 @@ public class NewInstKeysDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: NewInstKeysDialog.java,v $
+ * Revision 1.6  2005/07/24 14:46:16  web0
+ * *** empty log message ***
+ *
  * Revision 1.5  2005/07/12 23:29:01  web0
  * *** empty log message ***
  *
