@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoNew.java,v $
- * $Revision: 1.8 $
- * $Date: 2005/07/11 14:08:10 $
+ * $Revision: 1.9 $
+ * $Date: 2005/07/26 23:00:03 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -28,7 +28,6 @@ import de.willuhn.jameica.gui.chart.LineChart;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Color;
-import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
@@ -85,6 +84,8 @@ public class KontoNew extends AbstractView {
 			group.addLabelPair(i18n.tr("Kundennummer"),							control.getKundennummer());
       group.addLabelPair(i18n.tr("Währungsbezeichnung"),  		control.getWaehrung());
 			group.addLabelPair(i18n.tr("Sicherheitsmedium"),    		control.getPassportAuswahl());
+			group.addSeparator();
+      group.addLabelPair(i18n.tr("Saldo"),                    control.getSaldo());
 
 			// und noch die Abschicken-Knoepfe
 			ButtonArea buttonArea = group.createButtonArea(5);
@@ -105,29 +106,19 @@ public class KontoNew extends AbstractView {
         }
       });
 
+      TabFolder folder = new TabFolder(getParent(),SWT.NONE);
+      folder.setLayoutData(new GridData(GridData.FILL_BOTH));
+      folder.setBackground(Color.BACKGROUND.getSWTColor());
 
-			LabelGroup saldo = new LabelGroup(getParent(),i18n.tr("Finanzstatus"));
+      TabGroup tab = new TabGroup(folder,i18n.tr("Umsätze der letzten 30 Tage"));
 
-			saldo.addLabelPair(i18n.tr("Saldo"),										control.getSaldo());
-			saldo.addLabelPair(i18n.tr("letzte Aktualisierung"),		control.getSaldoDatum());
-
-			ButtonArea buttons = saldo.createButtonArea(2);
-			buttons.addButton(i18n.tr("Saldo und Umsätze abrufen"), new KontoFetchUmsaetze(),control.getKonto(),true);
-			buttons.addButton(i18n.tr("Alle Umsätze anzeigen"), 	  new UmsatzList(),control.getKonto());
+      control.getUmsatzList().paint(tab.getComposite());
 
       DBIterator list = Settings.getDBService().createList(Umsatz.class);
       list.addFilter("konto_id = " + k.getID());
       list.setOrder(" ORDER BY TONUMBER(valuta)");
-      
       if (list.size() > 1)
       {
-        TabFolder folder = new TabFolder(getParent(),SWT.NONE);
-        folder.setLayoutData(new GridData(GridData.FILL_BOTH));
-        folder.setBackground(Color.BACKGROUND.getSWTColor());
-        
-        TabGroup tab = new TabGroup(folder,i18n.tr("Umsätze der letzten 30 Tage"));
-        control.getUmsatzList().paint(tab.getComposite());
-        
         TabGroup tab2 = new TabGroup(folder,i18n.tr("Saldo im Verlauf"));
 
         LineChart chart = new LineChart();
@@ -142,16 +133,13 @@ public class KontoNew extends AbstractView {
           chart.setXLabel(df.format(first.getValuta()),df.format(last.getValuta()));
         chart.paint(tab2.getComposite());
       }
-      else
-      {
-        new Headline(getParent(),i18n.tr("Umsätze der letzten 30 Tage"));
-        control.getUmsatzList().paint(getParent());
-      }
-
-      
 
 			control.init();
-			
+
+      ButtonArea buttons = new ButtonArea(getParent(),2);
+      buttons.addButton(i18n.tr("Saldo und Umsätze abrufen"), new KontoFetchUmsaetze(),control.getKonto(),true);
+      buttons.addButton(i18n.tr("Alle Umsätze anzeigen"),     new UmsatzList(),control.getKonto());
+
 		}
 		catch (RemoteException e)
 		{
@@ -172,6 +160,9 @@ public class KontoNew extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoNew.java,v $
+ * Revision 1.9  2005/07/26 23:00:03  web0
+ * @N Multithreading-Support fuer HBCI-Jobs
+ *
  * Revision 1.8  2005/07/11 14:08:10  web0
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoFetchSaldo.java,v $
- * $Revision: 1.8 $
- * $Date: 2005/05/10 22:26:15 $
+ * $Revision: 1.9 $
+ * $Date: 2005/07/26 23:00:03 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -21,7 +21,6 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.hbci.server.hbci.HBCISaldoJob;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -50,40 +49,12 @@ public class KontoFetchSaldo implements Action
 			if (k.isNewObject())
 				k.store();
 
+			HBCIFactory factory = HBCIFactory.getInstance();
+			factory.addJob(new HBCISaldoJob(k));
+			factory.executeJobs(k);
 
-			GUI.startSync(new Runnable() {
-				public void run() {
-					try {
-						GUI.getStatusBar().setStatusText(i18n.tr("Saldo wird abgerufen..."));
-						GUI.getStatusBar().startProgress();
-						HBCIFactory factory = HBCIFactory.getInstance();
-						factory.addJob(new HBCISaldoJob(k));
-						factory.executeJobs(k);
-						GUI.getStatusBar().setSuccessText(i18n.tr("...Saldo erfolgreich abgerufen"));
-
-						new de.willuhn.jameica.hbci.gui.action.KontoNew().handleAction(k);
-					}
-					catch (OperationCanceledException oce)
-					{
-						GUI.getStatusBar().setErrorText(i18n.tr("Vorgang abgebrochen"));
-					}
-					catch (ApplicationException e2)
-					{
-						GUI.getStatusBar().setErrorText(e2.getMessage());
-					}
-					catch (RemoteException e)
-					{
-						Logger.error("error while reading saldo",e);
-						GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Abrufen des Saldos.") + " [" + e.getMessage() + "]");
-					}
-					finally
-					{
-						GUI.getStatusBar().setStatusText("");
-						GUI.getStatusBar().stopProgress();
-					}
-				}
-			});
-
+      // TODO Das erst ausloesen, wenn die Jobs fertig sind.
+      // new de.willuhn.jameica.hbci.gui.action.KontoNew().handleAction(k);
 		}
 		catch (RemoteException e)
 		{
@@ -97,6 +68,9 @@ public class KontoFetchSaldo implements Action
 
 /**********************************************************************
  * $Log: KontoFetchSaldo.java,v $
+ * Revision 1.9  2005/07/26 23:00:03  web0
+ * @N Multithreading-Support fuer HBCI-Jobs
+ *
  * Revision 1.8  2005/05/10 22:26:15  web0
  * @B bug 71
  *

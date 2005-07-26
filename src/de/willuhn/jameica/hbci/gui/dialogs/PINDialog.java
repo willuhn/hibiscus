@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/PINDialog.java,v $
- * $Revision: 1.13 $
- * $Date: 2005/05/10 22:26:15 $
+ * $Revision: 1.14 $
+ * $Date: 2005/07/26 23:00:03 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.gui.dialogs;
 import java.rmi.RemoteException;
 import java.security.NoSuchAlgorithmException;
 
+import org.kapott.hbci.manager.HBCIUtils;
 import org.kapott.hbci.passport.HBCIPassport;
 
 import de.willuhn.jameica.gui.GUI;
@@ -75,9 +76,31 @@ public class PINDialog extends PasswordDialog {
 
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-    setTitle(i18n.tr("PIN-Eingabe"));
     setLabelText(i18n.tr("Ihre PIN"));
-    setText(i18n.tr("Bitte geben Sie Ihre PIN ein."));
+    String s = null;
+    try
+    {
+      s = konto.getBezeichnung();
+      s += " [" + i18n.tr("Nr.") + " " + konto.getKontonummer();
+      String name = HBCIUtils.getNameForBLZ(konto.getBLZ());
+      if (name != null && name.length() > 0)
+        s += " - " + name;
+      s += "]";
+    }
+    catch (Exception e)
+    {
+      // ignore
+    }
+    if (s != null)
+    {
+      setTitle(i18n.tr("PIN-Eingabe. Konto: {0}",s));
+      setText(i18n.tr("Bitte geben Sie Ihre PIN ein. Konto: {0}",s));
+    }
+    else
+    {
+      setTitle(i18n.tr("PIN-Eingabe"));
+      setText(i18n.tr("Bitte geben Sie Ihre PIN ein."));
+    }
 		setSideImage(SWTUtil.getImage("password.gif"));
   }
 
@@ -172,6 +195,9 @@ public class PINDialog extends PasswordDialog {
 
 /**********************************************************************
  * $Log: PINDialog.java,v $
+ * Revision 1.14  2005/07/26 23:00:03  web0
+ * @N Multithreading-Support fuer HBCI-Jobs
+ *
  * Revision 1.13  2005/05/10 22:26:15  web0
  * @B bug 71
  *

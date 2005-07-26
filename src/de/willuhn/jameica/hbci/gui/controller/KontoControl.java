@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.59 $
- * $Date: 2005/07/04 21:57:08 $
+ * $Revision: 1.60 $
+ * $Date: 2005/07/26 23:00:03 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -67,7 +67,6 @@ public class KontoControl extends AbstractControl {
   private Input kundennummer 		= null;
   
   private LabelInput saldo			= null;
-  private Input saldoDatum   		= null;
 
 	private TablePart kontoList						= null;
 	private TablePart protokoll						= null;
@@ -291,22 +290,11 @@ public class KontoControl extends AbstractControl {
       saldo.setColor(Color.ERROR);
     if (s > 0)
       saldo.setColor(Color.SUCCESS);
-		return saldo;
-	}
 
-	/**
-	 * Liefert ein Feld zur Anzeige des Datums des Saldos.
-   * @return Anzeige-Feld.
-   * @throws RemoteException
-   */
-  public Input getSaldoDatum() throws RemoteException
-	{
-		if (saldoDatum != null)
-			return saldoDatum;
-
-		Date d = getKonto().getSaldoDatum();
-		saldoDatum = new LabelInput(d == null ? "" : HBCI.LONGDATEFORMAT.format(d));
-		return saldoDatum;
+    Date d = getKonto().getSaldoDatum();
+    if (d != null)
+      saldo.setComment(i18n.tr("letzte Aktualisierung: {0}",HBCI.LONGDATEFORMAT.format(d)));
+    return saldo;
 	}
 
   /**
@@ -456,6 +444,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.60  2005/07/26 23:00:03  web0
+ * @N Multithreading-Support fuer HBCI-Jobs
+ *
  * Revision 1.59  2005/07/04 21:57:08  web0
  * @B bug 80
  *

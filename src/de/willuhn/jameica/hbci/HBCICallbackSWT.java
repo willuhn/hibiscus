@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.27 $
- * $Date: 2005/06/21 20:11:10 $
+ * $Revision: 1.28 $
+ * $Date: 2005/07/26 23:00:03 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -102,6 +102,8 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 			AccountContainer container = (AccountContainer) accountCache.get(passport);
 
+      String text = null;
+      
 			switch (reason) {
 				case NEED_PASSPHRASE_LOAD:
 				case NEED_PASSPHRASE_SAVE:
@@ -132,19 +134,25 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 					break;
 
 				case NEED_CHIPCARD:
-					GUI.getStatusBar().setSuccessText(i18n.tr("Bitte legen Sie Ihre HBCI-Chipkarte in das Lesegerät."));
+          text = i18n.tr("Bitte legen Sie Ihre HBCI-Chipkarte in das Lesegerät.");
+          HBCIFactory.getInstance().getProgressMonitor().setStatusText(text);
+					GUI.getStatusBar().setErrorText(text);
 					break;
 
 				case HAVE_CHIPCARD:
-					GUI.getStatusBar().setSuccessText(i18n.tr("HBCI-Chipkarte wird ausgelesen."));
+          text = i18n.tr("HBCI-Chipkarte wird ausgelesen.");
+          HBCIFactory.getInstance().getProgressMonitor().setStatusText(text);
+          GUI.getStatusBar().setSuccessText(text);
 					break;
 	
 				case NEED_HARDPIN:
-					GUI.getStatusBar().setSuccessText(i18n.tr("Bitte geben Sie die PIN in Ihren Chipkarten-Leser ein."));
+          text = i18n.tr("Bitte geben Sie die PIN in Ihren Chipkarten-Leser ein.");
+          HBCIFactory.getInstance().getProgressMonitor().setStatusText(text);
+          GUI.getStatusBar().setErrorText(text);
 					break;
 
 				case NEED_SOFTPIN:
-					retData.replace(0,retData.length(),DialogFactory.getPIN(passport));
+          retData.replace(0,retData.length(),DialogFactory.getPIN(passport));
 					break;
 				case NEED_PT_PIN:
 					retData.replace(0,retData.length(),DialogFactory.getPIN(passport));
@@ -154,11 +162,15 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 					break;
 
 				case HAVE_HARDPIN:
-					GUI.getStatusBar().setSuccessText(i18n.tr("PIN wurde eingegeben."));
+          text = i18n.tr("PIN wurde eingegeben.");
+          HBCIFactory.getInstance().getProgressMonitor().setStatusText(text);
+          GUI.getStatusBar().setSuccessText(text);
 					break;
 
 				case NEED_REMOVE_CHIPCARD:
-					GUI.getStatusBar().setErrorText(i18n.tr("Bitte entfernen Sie die Chipkarte aus dem Lesegerät."));
+          text = i18n.tr("Bitte entfernen Sie die Chipkarte aus dem Lesegerät.");
+          HBCIFactory.getInstance().getProgressMonitor().setStatusText(text);
+          GUI.getStatusBar().setErrorText(text);
 					break;
 
 				case NEED_CONNECTION:
@@ -229,7 +241,9 @@ public class HBCICallbackSWT extends AbstractHBCICallback
             n.setNachricht(msg);
             n.setDatum(new Date());
             n.store();
-            GUI.getStatusBar().setSuccessText(i18n.tr("System-Nachricht empfangen"));
+            text = i18n.tr("System-Nachricht empfangen");
+            GUI.getStatusBar().setSuccessText(text);
+            HBCIFactory.getInstance().getProgressMonitor().setStatusText(text);
           }
           catch (Exception e)
           {
@@ -447,6 +461,9 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.28  2005/07/26 23:00:03  web0
+ * @N Multithreading-Support fuer HBCI-Jobs
+ *
  * Revision 1.27  2005/06/21 20:11:10  web0
  * @C cvs merge
  *

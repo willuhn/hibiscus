@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/TANDialog.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/06/06 09:54:39 $
+ * $Revision: 1.7 $
+ * $Date: 2005/07/26 23:00:03 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -12,9 +12,13 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.dialogs;
 
+import org.kapott.hbci.manager.HBCIUtils;
+
 import de.willuhn.jameica.gui.dialogs.PasswordDialog;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 
@@ -36,9 +40,34 @@ public class TANDialog extends PasswordDialog {
     // Deaktivierung der Anzeige von Sternen im TAN-Dialog.
     setShowPassword(Settings.getShowTan());
 
-    setTitle(i18n.tr("TAN-Eingabe"));
     setLabelText(i18n.tr("Ihre TAN"));
-    setText(i18n.tr("Bitte geben Sie eine TAN-Nummer ein."));
+
+    String s = null;
+    try
+    {
+      Konto konto = HBCIFactory.getInstance().getCurrentKonto();
+      s = konto.getBezeichnung();
+      s += " [" + i18n.tr("Nr.") + " " + konto.getKontonummer();
+      String name = HBCIUtils.getNameForBLZ(konto.getBLZ());
+      if (name != null && name.length() > 0)
+        s += " - " + name;
+      s += "]";
+    }
+    catch (Exception e)
+    {
+      // ignore
+    }
+    if (s != null)
+    {
+      setText(i18n.tr("Bitte geben Sie eine TAN-Nummer ein. Konto: {0}",s));
+      setTitle(i18n.tr("TAN-Eingabe - Konto {0}",s));
+    }
+    else
+    {
+      setTitle(i18n.tr("TAN-Eingabe"));
+      setText(i18n.tr("Bitte geben Sie eine TAN-Nummer ein."));
+    }
+  
   }
 
 	/**
@@ -69,6 +98,9 @@ public class TANDialog extends PasswordDialog {
 
 /**********************************************************************
  * $Log: TANDialog.java,v $
+ * Revision 1.7  2005/07/26 23:00:03  web0
+ * @N Multithreading-Support fuer HBCI-Jobs
+ *
  * Revision 1.6  2005/06/06 09:54:39  web0
  * *** empty log message ***
  *

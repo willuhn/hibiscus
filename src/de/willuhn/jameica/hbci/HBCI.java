@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.58 $
- * $Date: 2005/07/24 22:26:42 $
+ * $Revision: 1.59 $
+ * $Date: 2005/07/26 23:00:03 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -37,6 +37,12 @@ import de.willuhn.util.ApplicationException;
  */
 public class HBCI extends AbstractPlugin
 {
+
+  /**
+   * Datums-Format dd.MM.yyyy HH:mm:ss.
+   */
+  public static DateFormat EXTRALONGDATEFORMAT   = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+
   /**
    * Datums-Format dd.MM.yyyy HH:mm.
    */
@@ -333,6 +339,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.59  2005/07/26 23:00:03  web0
+ * @N Multithreading-Support fuer HBCI-Jobs
+ *
  * Revision 1.58  2005/07/24 22:26:42  web0
  * @B bug 101
  *

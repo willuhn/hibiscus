@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoFetchUmsaetze.java,v $
- * $Revision: 1.11 $
- * $Date: 2005/05/10 22:26:15 $
+ * $Revision: 1.12 $
+ * $Date: 2005/07/26 23:00:03 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -22,7 +22,6 @@ import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.hbci.server.hbci.HBCISaldoJob;
 import de.willuhn.jameica.hbci.server.hbci.HBCIUmsatzJob;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -51,41 +50,16 @@ public class KontoFetchUmsaetze implements Action
 			if (k.isNewObject())
 				k.store();
 
-			GUI.startSync(new Runnable() {
-				public void run() {
-					try {
-						GUI.getStatusBar().setStatusText(i18n.tr("Umsätze werden abgerufen..."));
-						GUI.getStatusBar().startProgress();
-						HBCIFactory factory = HBCIFactory.getInstance();
-						factory.addJob(new HBCIUmsatzJob(k));
+			HBCIFactory factory = HBCIFactory.getInstance();
+			factory.addJob(new HBCIUmsatzJob(k));
 
-						// BUGZILLA #3 http://www.willuhn.de/bugzilla/show_bug.cgi?id=3
-						factory.addExclusiveJob(new HBCISaldoJob(k));
+			// BUGZILLA #3 http://www.willuhn.de/bugzilla/show_bug.cgi?id=3
+			factory.addExclusiveJob(new HBCISaldoJob(k));
 
-						factory.executeJobs(k);
-						GUI.startView(GUI.getCurrentView().getClass(),k);
-						GUI.getStatusBar().setSuccessText(i18n.tr("...Umsätze erfolgreich übertragen"));
-					}
-					catch (OperationCanceledException oce)
-					{
-						GUI.getStatusBar().setErrorText(i18n.tr("Vorgang abgebrochen"));
-					}
-					catch (ApplicationException e2)
-					{
-						GUI.getStatusBar().setErrorText(e2.getMessage());
-					}
-					catch (RemoteException e)
-					{
-						Logger.error("error while reading umsaetze",e);
-						GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Abrufen des Umsätze.") + " [" + e.getMessage() + "]");
-					}
-					finally
-					{
-						GUI.getStatusBar().stopProgress();
-						GUI.getStatusBar().setStatusText("");
-					}
-				}
-			});
+			factory.executeJobs(k);
+			
+      // TODO Erst ausfuehren, wenn die Jobs fertig sind
+      // GUI.startView(GUI.getCurrentView().getClass(),k);
 		}
 		catch (RemoteException e)
 		{
@@ -99,6 +73,9 @@ public class KontoFetchUmsaetze implements Action
 
 /**********************************************************************
  * $Log: KontoFetchUmsaetze.java,v $
+ * Revision 1.12  2005/07/26 23:00:03  web0
+ * @N Multithreading-Support fuer HBCI-Jobs
+ *
  * Revision 1.11  2005/05/10 22:26:15  web0
  * @B bug 71
  *
