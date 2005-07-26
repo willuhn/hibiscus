@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.32 $
- * $Date: 2005/07/26 23:00:03 $
+ * $Revision: 1.33 $
+ * $Date: 2005/07/26 23:57:18 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,8 @@ import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Vector;
 
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.GV.HBCIJob;
 import org.kapott.hbci.manager.HBCIHandler;
 
@@ -105,10 +107,11 @@ public class HBCIFactory {
   /**
 	 * Fuehrt alle Jobs aus, die bis dato geadded wurden.
 	 * @param konto Konto, ueber das die Jobs abgewickelt werden sollen.
+   * @param l ein optionaler Listener, der ausgefuehrt werden soll, wenn die HBCI-Factory fertig ist.
 	 * @throws ApplicationException Bei Benutzer-Fehlern (zB kein HBCI-Medium konfiguriert).
    * @throws OperationCanceledException Wenn der User den Vorgang abbricht.
 	 */
-	public synchronized void executeJobs(final Konto konto) throws
+	public synchronized void executeJobs(final Konto konto, Listener l) throws
 		ApplicationException,
 		OperationCanceledException
 	{
@@ -116,10 +119,19 @@ public class HBCIFactory {
     if (konto == null)
       throw new ApplicationException(i18n.tr("Kein Konto ausgewählt"));
 
-    this.worker = new Worker(konto);
+    this.worker = new Worker(konto,l);
     this.worker.start();
 	}
 	
+  /**
+   * Prueft, ob gerade HBCI-Auftraege verarbeitet werden.
+   * @return true, wenn gerade Auftraege verarbeitet werden.
+   */
+  public boolean inProgress()
+  {
+    return inProgress;
+  }
+  
 	/**
 	 * Gibt Informationen ueber den Job im Log aus.
    * @param job Job.
@@ -245,6 +257,7 @@ public class HBCIFactory {
   private class Worker extends Thread
   {
     private Konto konto             = null;
+    private Listener listener       = null;
 
     private ProgressMonitor monitor = null;
 
@@ -254,9 +267,10 @@ public class HBCIFactory {
 
     private boolean error           = false;
     
-    private Worker(Konto konto)
+    private Worker(Konto konto, Listener l)
     {
       this.konto = konto;
+      this.listener = l;
       this.monitor = new HBCIProgressMonitor();
     }
 
@@ -274,6 +288,8 @@ public class HBCIFactory {
      */
     public synchronized void run()
     {
+      int status = ProgressMonitor.STATUS_RUNNING;
+
       try
       {
         HBCIFactory.this.start();
@@ -504,7 +520,6 @@ public class HBCIFactory {
           }
           catch (Throwable t) {/* useless*/}
 
-          int status = ProgressMonitor.STATUS_DONE;
           String msg = null;
 
           if (error)
@@ -519,6 +534,7 @@ public class HBCIFactory {
           }
           else
           {
+            status = ProgressMonitor.STATUS_DONE;
             msg = "HBCI-Übertragung erfolgreich beendet";
           }
           getMonitor().setStatus(status);
@@ -529,6 +545,12 @@ public class HBCIFactory {
         {
           HBCIFactory.this.stop();
           GUI.getStatusBar().stopProgress();
+          if (this.listener != null)
+          {
+            Event e = new Event();
+            e.type = status;
+            this.listener.handleEvent(e);
+          }
         }
       }
     }
@@ -538,6 +560,9 @@ public class HBCIFactory {
 
 /**********************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.33  2005/07/26 23:57:18  web0
+ * @N Restliche HBCI-Jobs umgestellt
+ *
  * Revision 1.32  2005/07/26 23:00:03  web0
  * @N Multithreading-Support fuer HBCI-Jobs
  *

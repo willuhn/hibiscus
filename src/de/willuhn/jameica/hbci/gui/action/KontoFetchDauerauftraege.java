@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoFetchDauerauftraege.java,v $
- * $Revision: 1.9 $
- * $Date: 2005/05/10 22:26:15 $
+ * $Revision: 1.10 $
+ * $Date: 2005/07/26 23:57:18 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,9 @@
 package de.willuhn.jameica.hbci.gui.action;
 
 import java.rmi.RemoteException;
+
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -67,38 +70,31 @@ public class KontoFetchDauerauftraege implements Action
 			throw new ApplicationException(i18n.tr("Kein Konto ausgewählt"));
 
 		final Konto k = (Konto) context;
-		GUI.startSync(new Runnable() {
-			public void run() {
-				try {
-					GUI.getStatusBar().setStatusText(i18n.tr("Daueraufträge werden abgerufen..."));
-					GUI.getStatusBar().startProgress();
-					HBCIFactory factory = HBCIFactory.getInstance();
-					factory.addJob(new HBCIDauerauftragListJob(k));
-					factory.executeJobs(k);
-					GUI.getStatusBar().setSuccessText(i18n.tr("...Daueraufträge erfolgreich übertragen"));
 
-					new DauerauftragList().handleAction(k);
-				}
-				catch (OperationCanceledException oce)
-				{
-					GUI.getStatusBar().setErrorText(i18n.tr("Vorgang abgebrochen"));
-				}
-				catch (ApplicationException e2)
-				{
-					GUI.getView().setErrorText(i18n.tr(e2.getMessage()));
-				}
-				catch (RemoteException e)
-				{
-					Logger.error("error while reading dauerauftraege",e);
-					GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Abrufen der Daueraufträge.") + " [" + e.getMessage() + "]");
-				}
-				finally
-				{
-					GUI.getStatusBar().stopProgress();
-					GUI.getStatusBar().setStatusText("");
-				}
-			}
-		});
+    try
+    {
+      HBCIFactory factory = HBCIFactory.getInstance();
+      factory.addJob(new HBCIDauerauftragListJob(k));
+      factory.executeJobs(k, new Listener() {
+        public void handleEvent(Event event)
+        {
+          try
+          {
+            new DauerauftragList().handleAction(k);
+          }
+          catch (ApplicationException e)
+          {
+            GUI.getStatusBar().setErrorText(e.getMessage());
+          }
+        }
+      });
+
+    }
+    catch (RemoteException e)
+    {
+      Logger.error("error while fetching dauerauftrag",e);
+      GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Abrufen der Daueraufträge"));
+    }
   }
 
 }
@@ -106,6 +102,9 @@ public class KontoFetchDauerauftraege implements Action
 
 /**********************************************************************
  * $Log: KontoFetchDauerauftraege.java,v $
+ * Revision 1.10  2005/07/26 23:57:18  web0
+ * @N Restliche HBCI-Jobs umgestellt
+ *
  * Revision 1.9  2005/05/10 22:26:15  web0
  * @B bug 71
  *

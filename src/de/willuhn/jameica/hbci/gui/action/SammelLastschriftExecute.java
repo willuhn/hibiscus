@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/SammelLastschriftExecute.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/05/10 22:26:15 $
+ * $Revision: 1.7 $
+ * $Date: 2005/07/26 23:57:18 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,9 @@ package de.willuhn.jameica.hbci.gui.action;
 
 import java.rmi.RemoteException;
 
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
@@ -23,7 +26,6 @@ import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.hbci.server.hbci.HBCISammelLastschriftJob;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -71,42 +73,15 @@ public class SammelLastschriftExecute implements Action
 				return;
 			}
 
-			GUI.startSync(new Runnable()
-      {
-        public void run()
+      HBCIFactory factory = HBCIFactory.getInstance();
+      factory.addJob(new HBCISammelLastschriftJob(u));
+      factory.executeJobs(u.getKonto(), new Listener() {
+        public void handleEvent(Event event)
         {
-        	try
-        	{
-						GUI.getStatusBar().startProgress();
-						GUI.getStatusBar().setStatusText(i18n.tr("Führe Sammel-Lastschrift aus..."));
-						HBCIFactory factory = HBCIFactory.getInstance();
-						factory.addJob(new HBCISammelLastschriftJob(u));
-						factory.executeJobs(u.getKonto()); 
-						GUI.getStatusBar().setSuccessText(i18n.tr("Sammel-Lastschrift erfolgreich ausgeführt"));
-            // BUGZILLA 31 http://www.willuhn.de/bugzilla/show_bug.cgi?id=31
-            GUI.startView(SammelLastschriftNew.class,u);
-        	}
-					catch (OperationCanceledException oce)
-					{
-						GUI.getStatusBar().setErrorText(i18n.tr("Ausführung der Sammel-Lastschrift abgebrochen"));
-					}
-					catch (ApplicationException ae)
-					{
-						GUI.getStatusBar().setErrorText(ae.getMessage());
-					}
-					catch (RemoteException e)
-					{
-						Logger.error("error while executing sammellastschrift",e);
-						GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Ausführen der Sammel-Lastschrift") + " [" + e.getMessage() + "]");
-					}
-					finally
-					{
-						GUI.getStatusBar().stopProgress();
-						GUI.getStatusBar().setStatusText("");
-					}
+          // BUGZILLA 31 http://www.willuhn.de/bugzilla/show_bug.cgi?id=31
+          GUI.startView(SammelLastschriftNew.class,u);
         }
       });
-
 		}
 		catch (RemoteException e)
 		{
@@ -120,6 +95,9 @@ public class SammelLastschriftExecute implements Action
 
 /**********************************************************************
  * $Log: SammelLastschriftExecute.java,v $
+ * Revision 1.7  2005/07/26 23:57:18  web0
+ * @N Restliche HBCI-Jobs umgestellt
+ *
  * Revision 1.6  2005/05/10 22:26:15  web0
  * @B bug 71
  *

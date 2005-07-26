@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/DauerauftragDelete.java,v $
- * $Revision: 1.15 $
- * $Date: 2005/06/23 17:07:38 $
+ * $Revision: 1.16 $
+ * $Date: 2005/07/26 23:57:18 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,9 @@ package de.willuhn.jameica.hbci.gui.action;
 
 import java.rmi.RemoteException;
 import java.util.Date;
+
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -29,6 +32,7 @@ import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
+import de.willuhn.util.ProgressMonitor;
 
 /**
  * Action fuer Loeschen eines Dauerauftrages.
@@ -91,43 +95,32 @@ public class DauerauftragDelete implements Action
 				final Date date = fd;
 
 				// Uh, der wird auch online geloescht
-				GUI.startSync(new Runnable()
-				{
-					public void run()
-					{
-						try
-						{
-							GUI.getStatusBar().startProgress();
-							GUI.getStatusBar().setStatusText(i18n.tr("Lösche Dauerauftrag bei Bank..."));
-							HBCIFactory factory = HBCIFactory.getInstance();
-
-              // BUGZILLA #15 http://www.willuhn.de/bugzilla/show_bug.cgi?id=15
-              factory.addExclusiveJob(new HBCIDauerauftragListJob(da.getKonto()));
-							factory.addJob(new HBCIDauerauftragDeleteJob(da,date));
-							factory.executeJobs(da.getKonto()); 
-							da.delete();
-							GUI.getStatusBar().setSuccessText(i18n.tr("...Dauerauftrag erfolgreich gelöscht"));
-						}
-						catch (OperationCanceledException oce)
-						{
-							GUI.getStatusBar().setErrorText(i18n.tr("Vorgang abgebrochen"));
-						}
-						catch (ApplicationException ae)
-						{
-							GUI.getStatusBar().setErrorText(ae.getMessage());
-						}
-						catch (RemoteException e)
-						{
-							Logger.error("error while deleting dauerauftrag",e);
-							GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Löschen des Dauerauftrages") + " [" + e.getMessage() + "]");
-						}
-						finally
-						{
-							GUI.getStatusBar().stopProgress();
-							GUI.getStatusBar().setStatusText("");
-						}
-					}
-				});
+        // BUGZILLA #15 http://www.willuhn.de/bugzilla/show_bug.cgi?id=15
+        HBCIFactory factory = HBCIFactory.getInstance();
+        factory.addExclusiveJob(new HBCIDauerauftragListJob(da.getKonto()));
+        factory.addJob(new HBCIDauerauftragDeleteJob(da,date));
+        factory.executeJobs(da.getKonto(), new Listener() {
+          public void handleEvent(Event event)
+          {
+            if (event.type == ProgressMonitor.STATUS_DONE)
+            {
+              try
+              {
+                da.delete();
+              }
+              catch (ApplicationException e)
+              {
+                GUI.getStatusBar().setErrorText(e.getMessage());
+              }
+              catch (RemoteException re)
+              {
+                Logger.error("unable to delete local da copy",re);
+                GUI.getStatusBar().setErrorText(i18n.tr("Lokale Kopie des Dauerauftrages konnte nicht gelöscht werden"));
+              }
+              
+            }
+          }
+        }); 
 			}
 			else
 			{
@@ -148,6 +141,9 @@ public class DauerauftragDelete implements Action
 
 /**********************************************************************
  * $Log: DauerauftragDelete.java,v $
+ * Revision 1.16  2005/07/26 23:57:18  web0
+ * @N Restliche HBCI-Jobs umgestellt
+ *
  * Revision 1.15  2005/06/23 17:07:38  web0
  * @R removed debug code
  *

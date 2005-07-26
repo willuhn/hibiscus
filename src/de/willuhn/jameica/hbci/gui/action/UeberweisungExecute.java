@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/UeberweisungExecute.java,v $
- * $Revision: 1.10 $
- * $Date: 2005/05/10 22:26:15 $
+ * $Revision: 1.11 $
+ * $Date: 2005/07/26 23:57:18 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,9 @@ package de.willuhn.jameica.hbci.gui.action;
 
 import java.rmi.RemoteException;
 
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
@@ -23,7 +26,6 @@ import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.hbci.server.hbci.HBCIUeberweisungJob;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -69,41 +71,15 @@ public class UeberweisungExecute implements Action
 				return;
 			}
 
-			GUI.startSync(new Runnable()
-      {
-        public void run()
+      HBCIFactory factory = HBCIFactory.getInstance();
+      factory.addJob(new HBCIUeberweisungJob(u));
+      factory.executeJobs(u.getKonto(), new Listener() {
+        public void handleEvent(Event event)
         {
-        	try
-        	{
-						GUI.getStatusBar().startProgress();
-						GUI.getStatusBar().setStatusText(i18n.tr("Führe Überweisung aus..."));
-						HBCIFactory factory = HBCIFactory.getInstance();
-						factory.addJob(new HBCIUeberweisungJob(u));
-						factory.executeJobs(u.getKonto()); 
-						GUI.getStatusBar().setSuccessText(i18n.tr("Überweisung erfolgreich ausgeführt"));
-            // BUGZILLA 31 http://www.willuhn.de/bugzilla/show_bug.cgi?id=31
-            GUI.startView(UeberweisungNew.class,u);
-        	}
-					catch (OperationCanceledException oce)
-					{
-						GUI.getStatusBar().setErrorText(i18n.tr("Ausführung der Überweisung abgebrochen"));
-					}
-					catch (ApplicationException ae)
-					{
-						GUI.getStatusBar().setErrorText(ae.getMessage());
-					}
-					catch (RemoteException e)
-					{
-						Logger.error("error while executing ueberweisung",e);
-						GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Ausführen der Überweisung") + " [" + e.getMessage() + "]");
-					}
-					finally
-					{
-						GUI.getStatusBar().stopProgress();
-						GUI.getStatusBar().setStatusText("");
-					}
+          // BUGZILLA 31 http://www.willuhn.de/bugzilla/show_bug.cgi?id=31
+          GUI.startView(UeberweisungNew.class,u);
         }
-      });
+      }); 
 
 		}
 		catch (RemoteException e)
@@ -118,6 +94,9 @@ public class UeberweisungExecute implements Action
 
 /**********************************************************************
  * $Log: UeberweisungExecute.java,v $
+ * Revision 1.11  2005/07/26 23:57:18  web0
+ * @N Restliche HBCI-Jobs umgestellt
+ *
  * Revision 1.10  2005/05/10 22:26:15  web0
  * @B bug 71
  *

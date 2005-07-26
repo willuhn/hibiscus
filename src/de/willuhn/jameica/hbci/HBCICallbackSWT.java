@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.28 $
- * $Date: 2005/07/26 23:00:03 $
+ * $Revision: 1.29 $
+ * $Date: 2005/07/26 23:57:18 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -86,10 +86,11 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 			default:
 				Logger.warn(msg);
   	}
-    if (log)
+    if (log && HBCIFactory.getInstance().inProgress())
     {
       ProgressMonitor monitor = HBCIFactory.getInstance().getProgressMonitor();
       monitor.addPercentComplete(1);
+      
     }
   }
 
@@ -312,9 +313,12 @@ public class HBCICallbackSWT extends AbstractHBCICallback
   private void status(String text)
 	{
     Logger.info(text);
-    ProgressMonitor monitor = HBCIFactory.getInstance().getProgressMonitor();
-    monitor.log(text + "\n");
-    monitor.addPercentComplete(1);
+    if (HBCIFactory.getInstance().inProgress())
+    {
+      ProgressMonitor monitor = HBCIFactory.getInstance().getProgressMonitor();
+      monitor.log(text + "\n");
+      monitor.addPercentComplete(1);
+    }
 	}
 	
 	/**
@@ -461,6 +465,9 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.29  2005/07/26 23:57:18  web0
+ * @N Restliche HBCI-Jobs umgestellt
+ *
  * Revision 1.28  2005/07/26 23:00:03  web0
  * @N Multithreading-Support fuer HBCI-Jobs
  *

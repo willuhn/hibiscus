@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoFetchSaldo.java,v $
- * $Revision: 1.9 $
- * $Date: 2005/07/26 23:00:03 $
+ * $Revision: 1.10 $
+ * $Date: 2005/07/26 23:57:18 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,9 @@
 package de.willuhn.jameica.hbci.gui.action;
 
 import java.rmi.RemoteException;
+
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -51,10 +54,20 @@ public class KontoFetchSaldo implements Action
 
 			HBCIFactory factory = HBCIFactory.getInstance();
 			factory.addJob(new HBCISaldoJob(k));
-			factory.executeJobs(k);
+			factory.executeJobs(k, new Listener() {
+        public void handleEvent(Event event)
+        {
+          try
+          {
+            new de.willuhn.jameica.hbci.gui.action.KontoNew().handleAction(k);
+          }
+          catch (ApplicationException e)
+          {
+            GUI.getStatusBar().setErrorText(e.getMessage());
+          }
+        }
+      });
 
-      // TODO Das erst ausloesen, wenn die Jobs fertig sind.
-      // new de.willuhn.jameica.hbci.gui.action.KontoNew().handleAction(k);
 		}
 		catch (RemoteException e)
 		{
@@ -68,6 +81,9 @@ public class KontoFetchSaldo implements Action
 
 /**********************************************************************
  * $Log: KontoFetchSaldo.java,v $
+ * Revision 1.10  2005/07/26 23:57:18  web0
+ * @N Restliche HBCI-Jobs umgestellt
+ *
  * Revision 1.9  2005/07/26 23:00:03  web0
  * @N Multithreading-Support fuer HBCI-Jobs
  *
