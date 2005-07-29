@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoNew.java,v $
- * $Revision: 1.9 $
- * $Date: 2005/07/26 23:00:03 $
+ * $Revision: 1.10 $
+ * $Date: 2005/07/29 16:48:13 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -84,6 +84,7 @@ public class KontoNew extends AbstractView {
 			group.addLabelPair(i18n.tr("Kundennummer"),							control.getKundennummer());
       group.addLabelPair(i18n.tr("Währungsbezeichnung"),  		control.getWaehrung());
 			group.addLabelPair(i18n.tr("Sicherheitsmedium"),    		control.getPassportAuswahl());
+      group.addCheckbox(control.getSynchronize(),i18n.tr("Konto in Synchronisierung einbeziehen"));
 			group.addSeparator();
       group.addLabelPair(i18n.tr("Saldo"),                    control.getSaldo());
 
@@ -160,6 +161,9 @@ public class KontoNew extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoNew.java,v $
+ * Revision 1.10  2005/07/29 16:48:13  web0
+ * @N Synchronize
+ *
  * Revision 1.9  2005/07/26 23:00:03  web0
  * @N Multithreading-Support fuer HBCI-Jobs
  *

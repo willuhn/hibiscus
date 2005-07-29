@@ -10,6 +10,7 @@
   <menu>
     <item id="hibiscus.menu" 					              name="Hibiscus">
       <item id="hibiscus.menu.settings" 		        name="Einstellungen"                            action="de.willuhn.jameica.hbci.gui.action.Settings" />
+      <item id="hibiscus.menu.autocheck" 		        name="Konten synchronisieren"                   action="de.willuhn.jameica.hbci.gui.action.Synchronize" />
       <item id="hibiscus.menu.newtransfer" 		      name="Neue Überweisung"     shortcut="CTRL+U"   action="de.willuhn.jameica.hbci.gui.action.UeberweisungNew" />
       <item name="-" />
       <item id="hibiscus.menu.about" 			          name="About"                                    action="de.willuhn.jameica.hbci.gui.action.About" />

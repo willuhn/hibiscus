@@ -9,6 +9,7 @@ CREATE TABLE konto (
   passport_class varchar(1000) NOT NULL,
   saldo double,
   saldo_datum date,
+  synchronize int(1) NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );

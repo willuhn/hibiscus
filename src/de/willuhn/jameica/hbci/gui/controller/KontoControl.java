@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.60 $
- * $Date: 2005/07/26 23:00:03 $
+ * $Revision: 1.61 $
+ * $Date: 2005/07/29 16:48:13 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -24,6 +24,7 @@ import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
+import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
@@ -67,6 +68,8 @@ public class KontoControl extends AbstractControl {
   private Input kundennummer 		= null;
   
   private LabelInput saldo			= null;
+  
+  private CheckboxInput synchronize = null;
 
 	private TablePart kontoList						= null;
 	private TablePart protokoll						= null;
@@ -151,7 +154,20 @@ public class KontoControl extends AbstractControl {
 		return kontonummer;
 	}
 
-	/**
+  /**
+   * Liefert eine Checkbox fuer die Aktivierung des Auto-Check.
+   * @return Checkbox.
+   * @throws RemoteException
+   */
+  public CheckboxInput getSynchronize() throws RemoteException
+  {
+    if (this.synchronize != null)
+      return this.synchronize;
+    this.synchronize = new CheckboxInput(getKonto().getSynchronize());
+    return this.synchronize;
+  }
+  
+  /**
 	 * Liefert das Eingabe-Feld fuer die Bankleitzahl.
    * @return Eingabe-Feld.
    * @throws RemoteException
@@ -342,7 +358,9 @@ public class KontoControl extends AbstractControl {
       getKonto().setWaehrung((String)getWaehrung().getValue());
       getKonto().setKundennummer((String)getKundennummer().getValue());
       
-			// und jetzt speichern wir.
+      getKonto().setSynchronize(((Boolean)getSynchronize().getValue()).booleanValue());
+
+      // und jetzt speichern wir.
 			getKonto().store();
 			GUI.getStatusBar().setSuccessText(i18n.tr("Bankverbindung gespeichert."));
       GUI.getView().setSuccessText("");
@@ -444,6 +462,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.61  2005/07/29 16:48:13  web0
+ * @N Synchronize
+ *
  * Revision 1.60  2005/07/26 23:00:03  web0
  * @N Multithreading-Support fuer HBCI-Jobs
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractBaseUeberweisungControl.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/03/05 19:11:25 $
+ * $Revision: 1.6 $
+ * $Date: 2005/07/29 16:48:13 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -61,7 +61,7 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
     Terminable t = (Terminable) getTransfer();
 		if (t.ausgefuehrt())
 		{
-			comment.setValue(i18n.tr("Der Auftrag wurde bereits ausgeführt"));
+			comment.setValue(i18n.tr("Der Auftrag wurde ausgeführt"));
 		}
 		else if (t.ueberfaellig())
 		{
@@ -257,6 +257,9 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
 
 /**********************************************************************
  * $Log: AbstractBaseUeberweisungControl.java,v $
+ * Revision 1.6  2005/07/29 16:48:13  web0
+ * @N Synchronize
+ *
  * Revision 1.5  2005/03/05 19:11:25  web0
  * @N SammelLastschrift-Code complete
  *

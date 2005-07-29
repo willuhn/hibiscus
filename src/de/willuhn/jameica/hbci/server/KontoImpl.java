@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.54 $
- * $Date: 2005/07/11 13:51:49 $
+ * $Revision: 1.55 $
+ * $Date: 2005/07/29 16:48:13 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -472,11 +472,33 @@ public class KontoImpl extends AbstractDBObject implements Konto {
       return null;
     return (Umsatz) list.next();
   }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Konto#getSynchronize()
+   */
+  public boolean getSynchronize() throws RemoteException
+  {
+    Integer i = (Integer) getAttribute("synchronize");
+    if (i == null)
+      return false;
+    return i.intValue() == 1;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Konto#setSynchronize(boolean)
+   */
+  public void setSynchronize(boolean b) throws RemoteException
+  {
+    setAttribute("synchronize", new Integer(b ? 1 : 0));
+  }
 }
 
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.55  2005/07/29 16:48:13  web0
+ * @N Synchronize
+ *
  * Revision 1.54  2005/07/11 13:51:49  web0
  * *** empty log message ***
  *

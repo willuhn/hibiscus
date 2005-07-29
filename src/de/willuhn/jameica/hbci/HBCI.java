@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.59 $
- * $Date: 2005/07/26 23:00:03 $
+ * $Revision: 1.60 $
+ * $Date: 2005/07/29 16:48:13 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -138,7 +138,7 @@ public class HBCI extends AbstractPlugin
 		if (checkSum.equals("kwi5vy1fvgOOVtoTYJYjuA==")) // 1.3
 			return;
 
-    if (checkSum.equals("tCqQDJ51wjMhTWT/LEXfLA==")) // 1.4
+    if (checkSum.equals("CLH0F6qx+b+eKZQAmaG5eA==")) // 1.4
       return;
 
 		throw new Exception("database checksum does not match any known version: " + checkSum);
@@ -339,6 +339,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.60  2005/07/29 16:48:13  web0
+ * @N Synchronize
+ *
  * Revision 1.59  2005/07/26 23:00:03  web0
  * @N Multithreading-Support fuer HBCI-Jobs
  *
