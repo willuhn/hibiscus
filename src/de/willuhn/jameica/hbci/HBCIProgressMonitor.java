@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Attic/HBCIProgressMonitor.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/07/26 23:00:03 $
+ * $Revision: 1.2 $
+ * $Date: 2005/07/29 15:10:32 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,8 @@ import java.rmi.RemoteException;
 import java.util.Date;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.View;
@@ -43,7 +45,7 @@ public class HBCIProgressMonitor extends ProgressBar
     GUI.getDisplay().syncExec(new Runnable() {
       public void run()
       {
-        View view = GUI.getView();
+        final View view = GUI.getView();
         if (view.snappedIn())
           view.snapOut();
         
@@ -51,6 +53,13 @@ public class HBCIProgressMonitor extends ProgressBar
         {
           I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
           Panel panel = new Panel(i18n.tr("Status der HBCI-Übertragung"), HBCIProgressMonitor.this, false);
+          panel.addMinimizeListener(new Listener()
+          {
+            public void handleEvent(Event event)
+            {
+              view.snapOut();
+            }
+          });
           panel.paint(view.getSnapin());
           Logger.info("activating progress monitor");
           view.snapIn();
@@ -140,6 +149,9 @@ public class HBCIProgressMonitor extends ProgressBar
 
 /*********************************************************************
  * $Log: HBCIProgressMonitor.java,v $
+ * Revision 1.2  2005/07/29 15:10:32  web0
+ * @N minimize hbci progress dialog
+ *
  * Revision 1.1  2005/07/26 23:00:03  web0
  * @N Multithreading-Support fuer HBCI-Jobs
  *
