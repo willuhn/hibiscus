@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.55 $
- * $Date: 2005/07/29 16:48:13 $
+ * $Revision: 1.56 $
+ * $Date: 2005/08/01 16:10:41 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -480,7 +480,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
   {
     Integer i = (Integer) getAttribute("synchronize");
     if (i == null)
-      return false;
+      return true;
     return i.intValue() == 1;
   }
 
@@ -496,6 +496,9 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.56  2005/08/01 16:10:41  web0
+ * @N synchronize
+ *
  * Revision 1.55  2005/07/29 16:48:13  web0
  * @N Synchronize
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoList.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/06/27 15:35:27 $
+ * $Revision: 1.7 $
+ * $Date: 2005/08/01 16:10:41 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import java.rmi.RemoteException;
 import org.eclipse.swt.widgets.TableItem;
 import org.kapott.hbci.manager.HBCIUtils;
 
+import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.Part;
@@ -47,7 +48,18 @@ public class KontoList extends TablePart implements Part
    */
   public KontoList(Action action) throws RemoteException
   {
-    super(init(), action);
+    this(init(), action);
+  }
+
+  /**
+   * ct.
+   * @param konten
+   * @param action
+   */
+  public KontoList(GenericIterator konten, Action action)
+  {
+    super(konten,action);
+    
     this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
     addColumn(i18n.tr("Kontonummer"),"kontonummer");
@@ -132,6 +144,9 @@ public class KontoList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.7  2005/08/01 16:10:41  web0
+ * @N synchronize
+ *
  * Revision 1.6  2005/06/27 15:35:27  web0
  * @B bug 84
  *

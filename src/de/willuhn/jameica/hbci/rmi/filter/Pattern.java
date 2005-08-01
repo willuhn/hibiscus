@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/filter/Attic/Pattern.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/06/28 17:45:41 $
+ * $Revision: 1.6 $
+ * $Date: 2005/08/01 16:10:41 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -66,7 +66,7 @@ public interface Pattern extends DBObject
 
   /**
    * Speichert den Pattern, nach dem gesucht werden soll.
-   * @param pattern.
+   * @param pattern Pattern, nach dem gesucht werden soll.
    * @throws RemoteException
    */
   public void setPattern(String pattern) throws RemoteException;
@@ -133,6 +133,9 @@ public interface Pattern extends DBObject
 
 /**********************************************************************
  * $Log: Pattern.java,v $
+ * Revision 1.6  2005/08/01 16:10:41  web0
+ * @N synchronize
+ *
  * Revision 1.5  2005/06/28 17:45:41  web0
  * *** empty log message ***
  *
