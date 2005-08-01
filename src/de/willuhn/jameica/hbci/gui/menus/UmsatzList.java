@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UmsatzList.java,v $
- * $Revision: 1.11 $
- * $Date: 2005/06/07 22:41:09 $
+ * $Revision: 1.12 $
+ * $Date: 2005/08/01 23:27:42 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -81,13 +81,16 @@ public class UmsatzList extends ContextMenu implements Extendable
    */
   public String getExtendableID()
   {
-    return "hibiscus.context.umsatz.list";
+    return this.getClass().getName();
   }
 }
 
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.12  2005/08/01 23:27:42  web0
+ * *** empty log message ***
+ *
  * Revision 1.11  2005/06/07 22:41:09  web0
  * @B bug 70
  *

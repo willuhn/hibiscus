@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/KontoList.java,v $
- * $Revision: 1.10 $
- * $Date: 2005/06/03 17:14:20 $
+ * $Revision: 1.11 $
+ * $Date: 2005/08/01 23:27:42 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -12,6 +12,7 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.menus;
 
+import de.willuhn.jameica.gui.extension.Extendable;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
@@ -30,7 +31,7 @@ import de.willuhn.util.I18N;
 /**
  * Liefert ein vorgefertigtes Kontext-Menu, welches an Konto-Listen angehaengt werden kann.
  */
-public class KontoList extends ContextMenu
+public class KontoList extends ContextMenu implements Extendable 
 {
 
 	private I18N i18n;
@@ -69,13 +70,24 @@ public class KontoList extends ContextMenu
 		{
 			super.handleAction(null);
 		}
-	} 
+	}
+
+  /**
+   * @see de.willuhn.jameica.gui.extension.Extendable#getExtendableID()
+   */
+  public String getExtendableID()
+  {
+    return this.getClass().getName();
+  } 
 
 }
 
 
 /**********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.11  2005/08/01 23:27:42  web0
+ * *** empty log message ***
+ *
  * Revision 1.10  2005/06/03 17:14:20  web0
  * @B NPE
  *

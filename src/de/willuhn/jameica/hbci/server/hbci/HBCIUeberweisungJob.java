@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUeberweisungJob.java,v $
- * $Revision: 1.22 $
- * $Date: 2005/03/30 23:26:28 $
+ * $Revision: 1.23 $
+ * $Date: 2005/08/01 23:27:42 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -119,7 +119,7 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
 			String msg = i18n.tr("Fehler beim Ausführen der Überweisung") + " " + empfName;
 
 
-			String error = (statusText != null) ?
+			String error = (statusText != null && statusText.length() > 0) ?
 										i18n.tr("Fehlermeldung der Bank") + ": " + statusText :
 										i18n.tr("Unbekannter Fehler");
 
@@ -137,6 +137,9 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIUeberweisungJob.java,v $
+ * Revision 1.23  2005/08/01 23:27:42  web0
+ * *** empty log message ***
+ *
  * Revision 1.22  2005/03/30 23:26:28  web0
  * @B bug 29
  * @B bug 30

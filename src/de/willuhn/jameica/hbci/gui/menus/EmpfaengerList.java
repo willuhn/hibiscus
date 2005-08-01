@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/EmpfaengerList.java,v $
- * $Revision: 1.14 $
- * $Date: 2005/05/30 12:01:03 $
+ * $Revision: 1.15 $
+ * $Date: 2005/08/01 23:27:42 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -61,7 +61,7 @@ public class EmpfaengerList extends ContextMenu implements Extendable
    */
   public String getExtendableID()
   {
-    return "hibiscus.context.empfaenger.list";
+    return this.getClass().getName();
   } 
 
   /**
@@ -107,6 +107,9 @@ public class EmpfaengerList extends ContextMenu implements Extendable
 
 /**********************************************************************
  * $Log: EmpfaengerList.java,v $
+ * Revision 1.15  2005/08/01 23:27:42  web0
+ * *** empty log message ***
+ *
  * Revision 1.14  2005/05/30 12:01:03  web0
  * @R removed OP stuff
  *

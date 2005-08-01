@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.34 $
- * $Date: 2005/08/01 20:35:31 $
+ * $Revision: 1.35 $
+ * $Date: 2005/08/01 23:27:42 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -159,6 +159,15 @@ public class HBCIFactory {
    */
   public ProgressMonitor getProgressMonitor()
   {
+    if (this.worker == null)
+      return new ProgressMonitor() {
+        public void setPercentComplete(int arg0) {}
+        public void addPercentComplete(int arg0) {}
+        public int getPercentComplete() {return 0;}
+        public void setStatus(int arg0) {}
+        public void setStatusText(String arg0) {}
+        public void log(String arg0) {}
+      };
     return this.worker.getMonitor();
   }
   
@@ -209,7 +218,9 @@ public class HBCIFactory {
    */
   private synchronized void stop(int status)
   {
-  	inProgress = false;
+    inProgress = false;
+    this.worker = null;
+
     if (this.listener != null)
     {
       Event e = new Event();
@@ -255,6 +266,8 @@ public class HBCIFactory {
    */
   public Konto getCurrentKonto()
   {
+    if (this.worker == null)
+      return null;
     return this.worker.getKonto();
   }
   
@@ -563,6 +576,9 @@ public class HBCIFactory {
 
 /*******************************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.35  2005/08/01 23:27:42  web0
+ * *** empty log message ***
+ *
  * Revision 1.34  2005/08/01 20:35:31  web0
  * *** empty log message ***
  * Revision 1.33 2005/07/26 23:57:18 web0

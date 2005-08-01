@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.24 $
- * $Date: 2005/05/02 23:56:45 $
+ * $Revision: 1.25 $
+ * $Date: 2005/08/01 23:27:42 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -141,8 +141,15 @@ public class Converter {
 		DauerauftragImpl auftrag = (DauerauftragImpl) Settings.getDBService().createObject(Dauerauftrag.class,null);
 		auftrag.setErsteZahlung(d.firstdate);
 		auftrag.setLetzteZahlung(d.lastdate);
-		auftrag.setKonto(HBCIKonto2HibiscusKonto(d.my));
-		auftrag.setBetrag(d.value.value);
+    
+		// TODO: Das ist nicht eindeutig. Da der Converter schaut, ob er ein solches
+    // Konto schon hat und bei Bedarf das existierende verwendet. Es kann aber
+    // sein, dass ein User ein und das selbe Konto mit verschiedenen Sicherheitsmedien
+    // bedient. In diesem Fall wird der Dauerauftrag evtl. beim falschen Konto
+    // einsortiert.
+    auftrag.setKonto(HBCIKonto2HibiscusKonto(d.my));
+
+    auftrag.setBetrag(d.value.value);
 		auftrag.setOrderID(d.orderid);
 
 		// Jetzt noch der Empfaenger
@@ -190,15 +197,20 @@ public class Converter {
 	 * Existiert ein Konto mit dieser Kontonummer und BLZ bereits in Hibiscus,
 	 * wird jenes stattdessen zurueckgeliefert.
 	 * @param konto das HBCI4Java Konto.
+	 * @param passportClass optionale Angabe einer Passport-Klasse. Ist er angegeben wird, nur dann ein existierendes Konto
+   * verwendet, wenn neben Kontonummer und BLZ auch die Klasse des Passportuebereinstimmt.
 	 * @return unser Konto.
 	 * @throws RemoteException
 	 */
-	public static de.willuhn.jameica.hbci.rmi.Konto HBCIKonto2HibiscusKonto(Konto konto) throws RemoteException
+	public static de.willuhn.jameica.hbci.rmi.Konto HBCIKonto2HibiscusKonto(Konto konto, Class passportClass) throws RemoteException
 	{
 		DBIterator list = Settings.getDBService().createList(de.willuhn.jameica.hbci.rmi.Konto.class);
 		list.addFilter("kontonummer = '" + konto.number + "'");
 		list.addFilter("blz = '" + konto.blz + "'");
-		if (list.hasNext())
+    if (passportClass != null)
+      list.addFilter("passport_class = '" + passportClass.getName() + "'");
+
+    if (list.hasNext())
 			return (de.willuhn.jameica.hbci.rmi.Konto) list.next(); // Konto gibts schon
 
 		// Ne, wir erstellen ein neues
@@ -213,7 +225,20 @@ public class Converter {
 		return k;  	
 	}
 
-	/**
+  /**
+   * Konvertiert ein HBCI4Java-Konto in ein Hibiscus Konto.
+   * Existiert ein Konto mit dieser Kontonummer und BLZ bereits in Hibiscus,
+   * wird jenes stattdessen zurueckgeliefert.
+   * @param konto das HBCI4Java Konto.
+   * @return unser Konto.
+   * @throws RemoteException
+   */
+  public static de.willuhn.jameica.hbci.rmi.Konto HBCIKonto2HibiscusKonto(Konto konto) throws RemoteException
+  {
+    return HBCIKonto2HibiscusKonto(konto,null);
+  }
+
+  /**
 	 * Konvertiert einen Hibiscus-Adresse in ein HBCI4Java Konto.
 	 * @param adresse unsere Adresse.
 	 * @return das HBCI4Java Konto.
@@ -275,6 +300,9 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.25  2005/08/01 23:27:42  web0
+ * *** empty log message ***
+ *
  * Revision 1.24  2005/05/02 23:56:45  web0
  * @B bug 66, 67
  * @C umsatzliste nach vorn verschoben

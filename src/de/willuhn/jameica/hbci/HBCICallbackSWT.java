@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.29 $
- * $Date: 2005/07/26 23:57:18 $
+ * $Revision: 1.30 $
+ * $Date: 2005/08/01 23:27:42 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -90,7 +90,6 @@ public class HBCICallbackSWT extends AbstractHBCICallback
     {
       ProgressMonitor monitor = HBCIFactory.getInstance().getProgressMonitor();
       monitor.addPercentComplete(1);
-      
     }
   }
 
@@ -137,7 +136,7 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 				case NEED_CHIPCARD:
           text = i18n.tr("Bitte legen Sie Ihre HBCI-Chipkarte in das Lesegerät.");
           HBCIFactory.getInstance().getProgressMonitor().setStatusText(text);
-					GUI.getStatusBar().setErrorText(text);
+					GUI.getStatusBar().setSuccessText(text);
 					break;
 
 				case HAVE_CHIPCARD:
@@ -149,7 +148,7 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 				case NEED_HARDPIN:
           text = i18n.tr("Bitte geben Sie die PIN in Ihren Chipkarten-Leser ein.");
           HBCIFactory.getInstance().getProgressMonitor().setStatusText(text);
-          GUI.getStatusBar().setErrorText(text);
+          GUI.getStatusBar().setSuccessText(text);
 					break;
 
 				case NEED_SOFTPIN:
@@ -171,7 +170,7 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 				case NEED_REMOVE_CHIPCARD:
           text = i18n.tr("Bitte entfernen Sie die Chipkarte aus dem Lesegerät.");
           HBCIFactory.getInstance().getProgressMonitor().setStatusText(text);
-          GUI.getStatusBar().setErrorText(text);
+          GUI.getStatusBar().setSuccessText(text);
 					break;
 
 				case NEED_CONNECTION:
@@ -465,6 +464,9 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.30  2005/08/01 23:27:42  web0
+ * *** empty log message ***
+ *
  * Revision 1.29  2005/07/26 23:57:18  web0
  * @N Restliche HBCI-Jobs umgestellt
  *

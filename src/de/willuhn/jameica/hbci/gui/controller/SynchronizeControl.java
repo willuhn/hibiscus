@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/SynchronizeControl.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/01 16:10:41 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/01 23:27:42 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -58,6 +58,7 @@ public class SynchronizeControl extends AbstractControl
     list.addFilter("synchronize = 1 or synchronize is null");
     KontoList l = new KontoList(list,new KontoNew());
     l.setSummary(false);
+    
     return l;
   }
   
@@ -131,6 +132,9 @@ public class SynchronizeControl extends AbstractControl
 
 /*********************************************************************
  * $Log: SynchronizeControl.java,v $
+ * Revision 1.2  2005/08/01 23:27:42  web0
+ * *** empty log message ***
+ *
  * Revision 1.1  2005/08/01 16:10:41  web0
  * @N synchronize
  *
