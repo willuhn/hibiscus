@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.36 $
- * $Date: 2005/08/02 20:09:33 $
+ * $Revision: 1.37 $
+ * $Date: 2005/08/02 20:33:12 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.GV.HBCIJob;
 import org.kapott.hbci.manager.HBCIHandler;
+import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
@@ -224,15 +225,10 @@ public class HBCIFactory {
 
     if (this.listener != null)
     {
-      GUI.startSync(new Runnable() {
-        public void run()
-        {
-          Event e = new Event();
-          e.type = status;
-          Logger.info("executing listener");
-          listener.handleEvent(e);
-        }
-      });
+      Event e = new Event();
+      e.type = status;
+      Logger.info("executing listener");
+      listener.handleEvent(e);
     }
     Logger.info("finished");
   }
@@ -322,12 +318,21 @@ public class HBCIFactory {
 
       try
       {
+        StringBuffer sb = new StringBuffer();
+        sb.append(konto.getBezeichnung());
+        String blz = HBCIUtils.getNameForBLZ(konto.getBLZ());
+        if (blz != null && blz.length() > 0)
+          sb.append(" [" + blz + "]");
+        final String kn = sb.toString();
+        
+        
+        
         HBCIFactory.this.start();
         GUI.getStatusBar().startProgress();
         
         // //////////////////////////////////////////////////////////////////////
         // Passport erzeugen
-        getMonitor().setStatusText(i18n.tr("Lade HBCI-Sicherheitsmedium"));
+        getMonitor().setStatusText(i18n.tr("{0}: Lade HBCI-Sicherheitsmedium",kn));
         getMonitor().addPercentComplete(2);
         
         GUI.getDisplay().syncExec(new Runnable() {
@@ -337,7 +342,7 @@ public class HBCIFactory {
             {
               passport = PassportRegistry.findByClass(konto.getPassportClass());
               // BUGZILLA #7 http://www.willuhn.de/bugzilla/show_bug.cgi?id=7
-              getMonitor().setStatusText(i18n.tr("Initialisiere HBCI-Sicherheitsmedium"));
+              getMonitor().setStatusText(i18n.tr("{0}: Initialisiere HBCI-Sicherheitsmedium",kn));
 
               passport.init(konto);
             }
@@ -349,7 +354,7 @@ public class HBCIFactory {
             catch (Exception e)
             {
               Logger.error("unable to init passport",e);
-              getMonitor().setStatusText(i18n.tr("Fehler beim Initialisieren des Sicherheitsmediums"));
+              getMonitor().setStatusText(i18n.tr("{0}: Fehler beim Initialisieren des Sicherheitsmediums",kn));
               error = true;
             }
           }
@@ -359,7 +364,7 @@ public class HBCIFactory {
         if (passport == null)
         {
           Logger.error("no passport available");
-          getMonitor().setStatusText(i18n.tr("Kein Sicherheitsmedium angegeben"));
+          getMonitor().setStatusText(i18n.tr("{0}: Kein Sicherheitsmedium angegeben",kn));
           error = true;
           return;
         }
@@ -369,7 +374,7 @@ public class HBCIFactory {
 
         // //////////////////////////////////////////////////////////////////////
         // PassportHandle erzeugen
-        getMonitor().setStatusText(i18n.tr("Erzeuge HBCI-Handle"));
+        getMonitor().setStatusText(i18n.tr("{0}: Erzeuge HBCI-Handle",kn));
         getMonitor().addPercentComplete(2);
 
         GUI.getDisplay().syncExec(new Runnable() {
@@ -382,7 +387,7 @@ public class HBCIFactory {
             catch (RemoteException e1)
             {
               Logger.error("unable to create HBCI handle",e1);
-              getMonitor().setStatusText(i18n.tr("HBCI-Medium kann nicht initialisiert werden"));
+              getMonitor().setStatusText(i18n.tr("{0}: HBCI-Medium kann nicht initialisiert werden",kn));
               error = true;
             }
           }
@@ -392,7 +397,7 @@ public class HBCIFactory {
         if (handle == null)
         {
           Logger.error("unable to create HBCI handle");
-          getMonitor().setStatusText(i18n.tr("HBCI-Medium kann nicht initialisiert werden"));
+          getMonitor().setStatusText(i18n.tr("{0}: HBCI-Medium kann nicht initialisiert werden",kn));
           error = true;
           return;
         }
@@ -405,7 +410,7 @@ public class HBCIFactory {
         if (jobs.size() == 0 && exclusiveJobs.size() == 0)
         {
           Logger.warn("no hbci jobs defined");
-          getMonitor().setStatusText(i18n.tr("Keine auszuführenden HBCI-Aufträge angegeben"));
+          getMonitor().setStatusText(i18n.tr("{0}: Keine auszuführenden HBCI-Aufträge angegeben",kn));
           error = true;
           return;
         }
@@ -415,7 +420,7 @@ public class HBCIFactory {
         
         // //////////////////////////////////////////////////////////////////////
         // HBCI-Verbindung aufbauen
-        getMonitor().setStatusText(i18n.tr("Öffne HBCI-Verbindung"));
+        getMonitor().setStatusText(i18n.tr("{0}: Öffne HBCI-Verbindung",kn));
         getMonitor().addPercentComplete(2);
 
         GUI.getDisplay().syncExec(new Runnable() {
@@ -433,7 +438,7 @@ public class HBCIFactory {
             catch (Exception e)
             {
               Logger.error("unable to open handle",e);
-              getMonitor().setStatusText(i18n.tr("Fehler beim Öffnen der HBCI-Verbindung"));
+              getMonitor().setStatusText(i18n.tr("{0}: Fehler beim Öffnen der HBCI-Verbindung",kn));
               error = true;
             }
           }
@@ -450,7 +455,7 @@ public class HBCIFactory {
         {
           final AbstractHBCIJob job = (AbstractHBCIJob) exclusiveJobs.get(i);
           
-          getMonitor().setStatusText(i18n.tr("Aktiviere HBCI-Job: \"{0}\"",job.getIdentifier()));
+          getMonitor().setStatusText(i18n.tr("{0}: Aktiviere HBCI-Job: \"{1}\"",new String[]{kn,job.getIdentifier()}));
           getMonitor().addPercentComplete(2);
 
           Logger.info("executing exclusive job " + job.getIdentifier());
@@ -472,7 +477,7 @@ public class HBCIFactory {
         {
           final AbstractHBCIJob job = (AbstractHBCIJob) jobs.get(i);
           
-          getMonitor().setStatusText(i18n.tr("Aktiviere HBCI-Job: \"{0}\"",job.getIdentifier()));
+          getMonitor().setStatusText(i18n.tr("{0}: Aktiviere HBCI-Job: \"{1}\"",new String[]{kn,job.getIdentifier()}));
           getMonitor().addPercentComplete(2);
 
           Logger.info("adding job " + job.getIdentifier() + " to queue");
@@ -488,10 +493,10 @@ public class HBCIFactory {
         // //////////////////////////////////////////////////////////////////////
         // Jobs ausfuehren
         Logger.info("executing jobs");
-        getMonitor().setStatusText(i18n.tr("Führe HBCI-Jobs aus"));
+        getMonitor().setStatusText(i18n.tr("{0}: Führe HBCI-Jobs aus",kn));
         getMonitor().addPercentComplete(4);
         handler.execute();
-        getMonitor().setStatusText(i18n.tr("HBCI-Jobs ausgeführt"));
+        getMonitor().setStatusText(i18n.tr("{0}: HBCI-Jobs ausgeführt",kn));
         getMonitor().addPercentComplete(4);
         //
         // //////////////////////////////////////////////////////////////////////
@@ -502,7 +507,7 @@ public class HBCIFactory {
         for (int i=0;i<exclusiveJobs.size();++i)
         {
           final AbstractHBCIJob job = (AbstractHBCIJob) exclusiveJobs.get(i);
-          getMonitor().setStatusText(i18n.tr("Werte Ergebnis von HBCI-Job \"{0}\" aus",job.getIdentifier()));
+          getMonitor().setStatusText(i18n.tr("{0}: Werte Ergebnis von HBCI-Job \"{1}\" aus",new String[]{kn,job.getIdentifier()}));
           getMonitor().addPercentComplete(2);
           Logger.info("executing check for exclusive job " + job.getIdentifier());
           job.handleResult();
@@ -511,7 +516,7 @@ public class HBCIFactory {
         for (int i=0;i<jobs.size();++i)
         {
           final AbstractHBCIJob job = (AbstractHBCIJob) jobs.get(i);
-          getMonitor().setStatusText(i18n.tr("Werte Ergebnis von HBCI-Job \"{0}\" aus",job.getIdentifier()));
+          getMonitor().setStatusText(i18n.tr("{0}: Werte Ergebnis von HBCI-Job \"{1}\" aus",new String[]{kn,job.getIdentifier()}));
           getMonitor().addPercentComplete(2);
           Logger.info("executing check for job " + job.getIdentifier());
           job.handleResult();
@@ -584,6 +589,9 @@ public class HBCIFactory {
 
 /*******************************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.37  2005/08/02 20:33:12  web0
+ * *** empty log message ***
+ *
  * Revision 1.36  2005/08/02 20:09:33  web0
  * @B bug 106
  *
