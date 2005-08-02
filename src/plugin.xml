@@ -9,7 +9,7 @@
 
   <menu>
     <item id="hibiscus.menu" 					              name="Hibiscus">
-      <!-- <item id="hibiscus.menu.synchronize"	        name="Konten synchronisieren"  shortcut="Alt+S" action="de.willuhn.jameica.hbci.gui.action.Synchronize" /> //-->
+      <item id="hibiscus.menu.synchronize"	        name="Konten synchronisieren"  shortcut="Alt+S" action="de.willuhn.jameica.hbci.gui.action.Synchronize" />
       <item name="-" />
       <item id="hibiscus.menu.settings" 		        name="Einstellungen"                            action="de.willuhn.jameica.hbci.gui.action.Settings" />
       <item id="hibiscus.menu.about" 			          name="About"                                    action="de.willuhn.jameica.hbci.gui.action.About" />
@@ -23,7 +23,7 @@
       <item id="hibiscus.navi.accounts" 				    name="Konten"             		icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.KontoList" />
       <item id="hibiscus.navi.addresses" 				    name="Adressbuch"         		icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.EmpfaengerList" />
       <item id="hibiscus.navi.messages" 				    name="System-Nachrichten"  		icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.NachrichtList" />
-      <!-- <item id="hibiscus.navi.synchronize"	        name="Konten synchronisieren" icon-close="page.gif"   icon-open="page.gif"				action="de.willuhn.jameica.hbci.gui.action.Synchronize" /> //-->
+      <item id="hibiscus.navi.synchronize"	        name="Konten synchronisieren" icon-close="page.gif"   icon-open="page.gif"				action="de.willuhn.jameica.hbci.gui.action.Synchronize" />
       <item id="hibiscus.navi.transfer" 				    name="Transfer"      		    	icon-close="folder.gif" icon-open="folderopen.gif">
 	      <item id="hibiscus.navi.transfer.dauer" 		  name="Daueraufträge"      	icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.DauerauftragList" />
 	      <item id="hibiscus.navi.transfer.einzellast"	name="Einzellastschriften"  icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.LastschriftList" />

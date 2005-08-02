@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/SammelLastschriftDialog.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/04/05 22:49:02 $
+ * $Revision: 1.5 $
+ * $Date: 2005/08/02 20:09:33 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -12,18 +12,21 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.dialogs;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.kapott.hbci.manager.HBCIUtils;
 
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
+import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.rmi.SammelLastBuchung;
+import de.willuhn.jameica.hbci.gui.parts.SammelLastBuchungList;
+import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -54,7 +57,7 @@ public class SammelLastschriftDialog extends AbstractDialog {
 
     this.ueb = u;
     this.setTitle(i18n.tr("Sicher?"));
-    
+    this.setSize(SWT.DEFAULT,380);
   }
 
   /**
@@ -68,49 +71,38 @@ public class SammelLastschriftDialog extends AbstractDialog {
    * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
    */
   protected void paint(Composite parent) throws Exception {
-		LabelGroup group = new LabelGroup(parent,i18n.tr("Details der Lastschrift"));
-			
-		group.addText(i18n.tr("Sind Sie sicher, daß Sie die Sammel-Lastschrift jetzt einreichen wollen?") + "\n",true);
 
-		Input kto = new LabelInput(ueb.getKonto().getKontonummer());
-		kto.setComment(ueb.getKonto().getBezeichnung());
+    LabelGroup group = new LabelGroup(parent,"");
+			
+		group.addText(i18n.tr("Sind Sie sicher, daß Sie die Sammel-Lastschrift jetzt einreichen wollen?"),true);
+
+    group.addLabelPair(i18n.tr("Bezeichnung"),new LabelInput(ueb.getBezeichnung()));
+
+    // BUGZILLA 106 http://www.willuhn.de/bugzilla/show_bug.cgi?id=106
+    Konto k = ueb.getKonto();
+    
+    Input kto = new LabelInput(ueb.getKonto().getKontonummer());
+    String com = k.getBezeichnung();
+    String bank = HBCIUtils.getNameForBLZ(k.getBLZ());
+    if (bank != null && bank.length() > 0)
+      com += " [" + bank + "]";
+    
+		kto.setComment(com);
 		group.addLabelPair(i18n.tr("Gutschriftskonto"),kto);
 
+    Input s = new LabelInput(HBCI.DECIMALFORMAT.format(ueb.getSumme()));
+    s.setComment(k.getWaehrung());
+    group.addLabelPair(i18n.tr("Summe"),s);
 
-		group.addText("\n" + i18n.tr("Enthaltene Buchungen"),false);
+    new Headline(parent,i18n.tr("Enthaltene Buchungen"));
+    
+    TablePart buchungen = new SammelLastBuchungList(ueb,null);
+    buchungen.setMulti(false);
+    buchungen.setSummary(false);
 
-		DBIterator list = ueb.getBuchungen();
-		while (list.hasNext())
-		{
-			group.addSeparator();
-			SammelLastBuchung b = (SammelLastBuchung) list.next();
-			Input empfName = new LabelInput(b.getGegenkontoName());
-			group.addLabelPair(i18n.tr("Names des Zahlungspflichtigen"),empfName);
+    buchungen.paint(parent);
 
-			Input empfKto = new LabelInput(b.getGegenkontoNummer());
-			empfKto.setComment(b.getGegenkontoBLZ() + "/" + HBCIUtils.getNameForBLZ(b.getGegenkontoBLZ()));
-			group.addLabelPair(i18n.tr("Zu belastendes Konto"),empfKto);
-
-      Input betrag = new LabelInput(HBCI.DECIMALFORMAT.format(b.getBetrag()) + " " + ueb.getKonto().getWaehrung());
-      group.addLabelPair(i18n.tr("Betrag"),betrag);
-
-			String s = b.getZweck();
-			String s2 = b.getZweck2();
-			if (s2 != null && s2.length() > 0)
-				s += " / " + s2;
-			Input zweck = new LabelInput(s);
-			group.addLabelPair(i18n.tr("Verwendungszweck"),zweck);
-
-      // BUGZILLA 32 http://www.willuhn.de/bugzilla/show_bug.cgi?id=32
-      group.addText(b.getZweck(),true);
-      String z2 = b.getZweck2();
-      if (z2 != null && z2.length() > 0)
-      {
-        group.addText(z2,true);
-      }
-		}
-
-		ButtonArea b = group.createButtonArea(2);
+    ButtonArea b = new ButtonArea(parent,2);
 		b.addButton(i18n.tr("Jetzt ausführen"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -134,6 +126,9 @@ public class SammelLastschriftDialog extends AbstractDialog {
 
 /**********************************************************************
  * $Log: SammelLastschriftDialog.java,v $
+ * Revision 1.5  2005/08/02 20:09:33  web0
+ * @B bug 106
+ *
  * Revision 1.4  2005/04/05 22:49:02  web0
  * @B bug 32
  *

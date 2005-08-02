@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/SammelLastschriftNew.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/07/04 11:36:53 $
+ * $Revision: 1.7 $
+ * $Date: 2005/08/02 20:09:33 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -46,7 +46,7 @@ public class SammelLastschriftNew extends AbstractView {
 		GUI.getView().setTitle(i18n.tr("Sammel-Lastschrift bearbeiten"));
 		
 		LabelGroup group = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
-    group.addLabelPair(i18n.tr("persönliches Konto (Empfänger)"),control.getKontoAuswahl());
+    group.addLabelPair(i18n.tr("Gutschriftskonto"),control.getKontoAuswahl());
     group.addLabelPair(i18n.tr("Bezeichnung"),control.getName());
     group.addLabelPair(i18n.tr("Termin"),control.getTermin());
 		
@@ -98,6 +98,9 @@ public class SammelLastschriftNew extends AbstractView {
 
 /**********************************************************************
  * $Log: SammelLastschriftNew.java,v $
+ * Revision 1.7  2005/08/02 20:09:33  web0
+ * @B bug 106
+ *
  * Revision 1.6  2005/07/04 11:36:53  web0
  * @B bug 89
  *

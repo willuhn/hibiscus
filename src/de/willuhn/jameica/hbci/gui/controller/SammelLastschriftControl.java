@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SammelLastschriftControl.java,v $
- * $Revision: 1.9 $
- * $Date: 2005/07/04 12:41:39 $
+ * $Revision: 1.10 $
+ * $Date: 2005/08/02 20:09:33 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -14,16 +14,13 @@ import java.util.Date;
 
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.TableItem;
 
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.dialogs.CalendarDialog;
-import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
-import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
@@ -32,7 +29,6 @@ import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.gui.parts.TablePart;
-import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.SammelLastBuchungDelete;
@@ -40,6 +36,7 @@ import de.willuhn.jameica.hbci.gui.action.SammelLastBuchungExport;
 import de.willuhn.jameica.hbci.gui.action.SammelLastBuchungNew;
 import de.willuhn.jameica.hbci.gui.action.SammelLastschriftNew;
 import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
+import de.willuhn.jameica.hbci.gui.parts.SammelLastBuchungList;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SammelLastBuchung;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
@@ -116,35 +113,17 @@ public class SammelLastschriftControl extends AbstractControl
    * @return Liste der Buchungen.
    * @throws RemoteException
    */
-  public TablePart getBuchungen() throws RemoteException
+  public Part getBuchungen() throws RemoteException
   {
-    DBIterator list = getLastschrift().getBuchungen();
-
-    TablePart buchungen = new TablePart(list, new Action() {
+    Action a = new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         handleStore();
         new SammelLastBuchungNew().handleAction(context);
       }
-    });
-    buchungen.setFormatter(new TableFormatter() {
-      public void format(TableItem item) {
-        try {
-          if (getLastschrift().ausgefuehrt())
-          {
-            item.setForeground(Color.COMMENT.getSWTColor());
-          }
-        }
-        catch (RemoteException e) { /*ignore */}
-      }
-    });
-    buchungen.addColumn(i18n.tr("Verwendungszweck"),"zweck");
-    buchungen.addColumn(i18n.tr("Kontoinhaber"),"gegenkonto_name");
-    buchungen.addColumn(i18n.tr("Kontonummer"),"gegenkonto_nr");
-    buchungen.addColumn(i18n.tr("Bankleitzahl"),"gegenkonto_blz");
-    Konto k = getLastschrift().getKonto();
-    String curr = k != null ? k.getWaehrung() : "";
-    buchungen.addColumn(i18n.tr("Betrag"),"betrag",new CurrencyFormatter(curr,HBCI.DECIMALFORMAT));
+    };
+    
+    TablePart buchungen = new SammelLastBuchungList(getLastschrift(),a);
 
     ContextMenu ctx = new ContextMenu();
     ctx.addItem(new CheckedContextMenuItem(i18n.tr("Buchung öffnen"), new SammelLastBuchungNew()));
@@ -402,6 +381,9 @@ public class SammelLastschriftControl extends AbstractControl
 
 /*****************************************************************************
  * $Log: SammelLastschriftControl.java,v $
+ * Revision 1.10  2005/08/02 20:09:33  web0
+ * @B bug 106
+ *
  * Revision 1.9  2005/07/04 12:41:39  web0
  * @B bug 90
  *

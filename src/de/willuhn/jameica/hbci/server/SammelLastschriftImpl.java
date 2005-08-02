@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/SammelLastschriftImpl.java,v $
- * $Revision: 1.8 $
- * $Date: 2005/07/04 11:36:53 $
+ * $Revision: 1.9 $
+ * $Date: 2005/08/02 20:09:33 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -305,12 +305,11 @@ public class SammelLastschriftImpl extends AbstractDBObject
 					SammelLastBuchung b = (SammelLastBuchung) di.next();
 					String[] params = new String[]
 					{
-						b.getZweck(),
-						b.getGegenkontoName(),
-						HBCI.DECIMALFORMAT.format(b.getBetrag()),
-						getKonto().getWaehrung()
+            HBCI.DECIMALFORMAT.format(b.getBetrag()),
+            getKonto().getWaehrung(),
+						b.getGegenkontoName()
 					};
-					sb.append(i18n.tr("[{0}] {1}, Betrag {2} {3}",params));
+					sb.append(i18n.tr("{0} {1} \t {2}",params));
 					if (di.hasNext())
 						sb.append("\n");
 				}
@@ -344,6 +343,9 @@ public class SammelLastschriftImpl extends AbstractDBObject
 
 /*****************************************************************************
  * $Log: SammelLastschriftImpl.java,v $
+ * Revision 1.9  2005/08/02 20:09:33  web0
+ * @B bug 106
+ *
  * Revision 1.8  2005/07/04 11:36:53  web0
  * @B bug 89
  *
