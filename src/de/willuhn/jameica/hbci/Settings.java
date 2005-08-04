@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.36 $
- * $Date: 2005/07/24 22:26:42 $
- * $Author: web0 $
+ * $Revision: 1.37 $
+ * $Date: 2005/08/04 22:15:14 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci;
 import java.io.File;
 import java.rmi.ConnectException;
 import java.rmi.RemoteException;
+import java.util.Date;
 
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
@@ -291,13 +292,22 @@ public class Settings
   public static Wallet getWallet() throws Exception
   {
 		if (wallet == null)
-			wallet = Application.getSSLFactory().getWallet(HBCI.class);
+    {
+      wallet = Application.getSSLFactory().getWallet(HBCI.class);
+
+      // BUGZILLA 109 http://www.willuhn.de/bugzilla/show_bug.cgi?id=109
+      if (wallet.get("migration") == null)
+        wallet.set("migration",new Date().toString());
+    }
 		return wallet;
   }
 }
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.37  2005/08/04 22:15:14  willuhn
+ * @B bug 109
+ *
  * Revision 1.36  2005/07/24 22:26:42  web0
  * @B bug 101
  *
