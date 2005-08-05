@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/Attic/HBCISynchronizer.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/08/02 20:55:35 $
- * $Author: web0 $
+ * $Revision: 1.5 $
+ * $Date: 2005/08/05 16:33:42 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -92,6 +92,11 @@ public class HBCISynchronizer
       {
         Logger.info("syncing finished");
         GUI.getStatusBar().setStatusText(i18n.tr("Synchronisierung beendet"));
+
+        // Seite neu laden
+        // BUGZILLA 110 http://www.willuhn.de/bugzilla/show_bug.cgi?id=110
+        GUI.startView(GUI.getCurrentView().getClass(),GUI.getCurrentView().getCurrentObject());
+
         GUI.getDisplay().asyncExec(new Runnable() {
           public void run()
           {
@@ -213,6 +218,10 @@ public class HBCISynchronizer
 
 /*********************************************************************
  * $Log: HBCISynchronizer.java,v $
+ * Revision 1.5  2005/08/05 16:33:42  willuhn
+ * @B bug 108
+ * @B bug 110
+ *
  * Revision 1.4  2005/08/02 20:55:35  web0
  * *** empty log message ***
  *

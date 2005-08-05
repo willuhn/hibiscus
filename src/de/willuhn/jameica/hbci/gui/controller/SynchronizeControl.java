@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/SynchronizeControl.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/08/01 23:27:42 $
- * $Author: web0 $
+ * $Revision: 1.3 $
+ * $Date: 2005/08/05 16:33:42 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -18,14 +18,19 @@ import java.rmi.RemoteException;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
+import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.input.CheckboxInput;
+import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.KontoNew;
 import de.willuhn.jameica.hbci.gui.parts.KontoList;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.hbci.HBCISynchronizer;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
+import de.willuhn.util.I18N;
 
 /**
  * @author willuhn
@@ -39,12 +44,15 @@ public class SynchronizeControl extends AbstractControl
   private CheckboxInput syncUeb   = null;
   private CheckboxInput syncLast  = null;
   
+  private I18N i18n = null;
+  
   /**
    * @param view
    */
   public SynchronizeControl(AbstractView view) {
     super(view);
     settings.setStoreWhenRead(false);
+    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
   /**
@@ -57,6 +65,8 @@ public class SynchronizeControl extends AbstractControl
     DBIterator list = Settings.getDBService().createList(Konto.class);
     list.addFilter("synchronize = 1 or synchronize is null");
     KontoList l = new KontoList(list,new KontoNew());
+    // BUGZILLA 108 http://www.willuhn.de/bugzilla/show_bug.cgi?id=108
+    l.addColumn(i18n.tr("Saldo aktualisiert am"),"saldo_datum", new DateFormatter(HBCI.LONGDATEFORMAT));
     l.setSummary(false);
     
     return l;
@@ -119,8 +129,8 @@ public class SynchronizeControl extends AbstractControl
     }
     catch (Throwable t)
     {
-      // TODO
-      t.printStackTrace();
+      Logger.error("error while synchronizing",t);
+      GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Synchronisieren der Konten"));
     }
     finally
     {
@@ -132,6 +142,10 @@ public class SynchronizeControl extends AbstractControl
 
 /*********************************************************************
  * $Log: SynchronizeControl.java,v $
+ * Revision 1.3  2005/08/05 16:33:42  willuhn
+ * @B bug 108
+ * @B bug 110
+ *
  * Revision 1.2  2005/08/01 23:27:42  web0
  * *** empty log message ***
  *
