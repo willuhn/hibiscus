@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.61 $
- * $Date: 2005/07/29 16:48:13 $
- * $Author: web0 $
+ * $Revision: 1.62 $
+ * $Date: 2005/08/08 16:10:26 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -24,6 +24,7 @@ import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
+import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
@@ -324,6 +325,8 @@ public class KontoControl extends AbstractControl {
 			return kontoList;
 
     kontoList = new de.willuhn.jameica.hbci.gui.parts.KontoList(new KontoNew());
+    // BUGZILLA 108 http://www.willuhn.de/bugzilla/show_bug.cgi?id=108
+    kontoList.addColumn(i18n.tr("Saldo aktualisiert am"),"saldo_datum", new DateFormatter(HBCI.LONGDATEFORMAT));
 		return kontoList;
 	}
 
@@ -462,6 +465,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.62  2005/08/08 16:10:26  willuhn
+ * @B bug 108
+ *
  * Revision 1.61  2005/07/29 16:48:13  web0
  * @N Synchronize
  *
