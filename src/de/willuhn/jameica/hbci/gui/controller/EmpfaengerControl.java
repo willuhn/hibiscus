@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EmpfaengerControl.java,v $
- * $Revision: 1.32 $
- * $Date: 2005/05/08 17:48:51 $
- * $Author: web0 $
+ * $Revision: 1.33 $
+ * $Date: 2005/08/16 21:33:13 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -24,6 +24,7 @@ import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.input.Input;
+import de.willuhn.jameica.gui.input.TextAreaInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -49,6 +50,7 @@ public class EmpfaengerControl extends AbstractControl {
 	private Input kontonummer = null;
 	private Input blz					= null;
 	private Input name				= null;
+  private Input kommentar   = null;
 
   private Part list         = null;
   private Part umsatzList   = null;
@@ -127,6 +129,19 @@ public class EmpfaengerControl extends AbstractControl {
 		return kontonummer;
 	}
 
+  /**
+   * Liefert ein Eingabe-Feld fuer einen Kommentar.
+   * @return Kommentar.
+   * @throws RemoteException
+   */
+  public Input getKommentar() throws RemoteException
+  {
+    if (this.kommentar != null)
+      return this.kommentar;
+    this.kommentar = new TextAreaInput(getEmpfaenger().getKommentar());
+    return this.kommentar;
+  }
+  
 	/**
 	 * Liefert das Eingabe-Feld fuer die BLZ.
 	 * @return Eingabe-Feld.
@@ -171,6 +186,7 @@ public class EmpfaengerControl extends AbstractControl {
   		getEmpfaenger().setKontonummer((String)getKontonummer().getValue());
   		getEmpfaenger().setBLZ((String)getBlz().getValue());
   		getEmpfaenger().setName((String)getName().getValue());
+      getEmpfaenger().setKommentar((String)getKommentar().getValue());
   		getEmpfaenger().store();
   		GUI.getStatusBar().setSuccessText(i18n.tr("Adresse gespeichert"));
   	}
@@ -213,6 +229,11 @@ public class EmpfaengerControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: EmpfaengerControl.java,v $
+ * Revision 1.33  2005/08/16 21:33:13  willuhn
+ * @N Kommentar-Feld in Adressen
+ * @N Neuer Adress-Auswahl-Dialog
+ * @B Checkbox "in Adressbuch speichern" in Ueberweisungen
+ *
  * Revision 1.32  2005/05/08 17:48:51  web0
  * @N Bug 56
  *

@@ -53,6 +53,7 @@ ALTER CREATE TABLE empfaenger (
   kontonummer varchar(15) NOT NULL,
   blz varchar(15) NOT NULL,
   name varchar(27) NOT NULL,
+  kommentar varchar(1000) NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );

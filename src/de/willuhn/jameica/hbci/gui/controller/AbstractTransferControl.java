@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.27 $
- * $Date: 2005/06/23 23:03:20 $
- * $Author: web0 $
+ * $Revision: 1.28 $
+ * $Date: 2005/08/16 21:33:13 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -22,7 +22,6 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.dialogs.ListDialog;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DecimalInput;
@@ -32,6 +31,7 @@ import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.dialogs.AdresseAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -127,13 +127,8 @@ public abstract class AbstractTransferControl extends AbstractControl
 		if (empfkto != null)
 			return empfkto;
 
-		ListDialog d = new ListDialog(Settings.getDBService().createList(Adresse.class),ListDialog.POSITION_MOUSE);
-		d.addColumn(i18n.tr("Name"),"name");
-		d.addColumn(i18n.tr("Kontonummer"),"kontonummer");
-		d.addColumn(i18n.tr("BLZ"),"blz");
-		d.setTitle(i18n.tr("Auswahl des Gegenkontos"));
+    AdresseAuswahlDialog d = new AdresseAuswahlDialog(AdresseAuswahlDialog.POSITION_MOUSE);
 		d.addCloseListener(new EmpfaengerListener());
-
 		empfkto = new DialogInput(getTransfer().getGegenkontoNummer(),d);
 
 		return empfkto;
@@ -230,7 +225,10 @@ public abstract class AbstractTransferControl extends AbstractControl
 			return storeEmpfaenger;
 
 		// Nur bei neuen Transfers aktivieren
-		storeEmpfaenger = new CheckboxInput(getTransfer().isNewObject());
+    Transfer t = getTransfer();
+    // Checkbox nur setzen, wenn es eine neue Ueberweisung ist und
+    // noch kein Gegenkonto definiert ist.
+		storeEmpfaenger = new CheckboxInput(t.isNewObject() && t.getGegenkontoNummer() == null);
 
 		return storeEmpfaenger;
 	}
@@ -393,6 +391,11 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
+ * Revision 1.28  2005/08/16 21:33:13  willuhn
+ * @N Kommentar-Feld in Adressen
+ * @N Neuer Adress-Auswahl-Dialog
+ * @B Checkbox "in Adressbuch speichern" in Ueberweisungen
+ *
  * Revision 1.27  2005/06/23 23:03:20  web0
  * @N much better KontoAuswahlDialog
  *

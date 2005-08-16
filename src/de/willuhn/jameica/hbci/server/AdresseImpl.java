@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AdresseImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/05/30 22:55:27 $
- * $Author: web0 $
+ * $Revision: 1.7 $
+ * $Date: 2005/08/16 21:33:13 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -140,11 +140,32 @@ public class AdresseImpl extends AbstractDBObject implements Adresse {
 		return list;
   }
 
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Adresse#getKommentar()
+   */
+  public String getKommentar() throws RemoteException
+  {
+    return (String) getAttribute("kommentar");
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Adresse#setKommentar(java.lang.String)
+   */
+  public void setKommentar(String kommentar) throws RemoteException
+  {
+    setAttribute("kommentar",kommentar);
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: AdresseImpl.java,v $
+ * Revision 1.7  2005/08/16 21:33:13  willuhn
+ * @N Kommentar-Feld in Adressen
+ * @N Neuer Adress-Auswahl-Dialog
+ * @B Checkbox "in Adressbuch speichern" in Ueberweisungen
+ *
  * Revision 1.6  2005/05/30 22:55:27  web0
  * *** empty log message ***
  *
