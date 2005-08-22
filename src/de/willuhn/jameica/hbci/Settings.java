@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.37 $
- * $Date: 2005/08/04 22:15:14 $
+ * $Revision: 1.38 $
+ * $Date: 2005/08/22 10:36:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -190,7 +190,7 @@ public class Settings
    */
   public static void setCheckPin(boolean checkPin)
   {
-    settings.setAttribute("checkpin", checkPin ? "true" : "false");
+    settings.setAttribute("checkpin",checkPin);
   }
 
   /**
@@ -248,7 +248,25 @@ public class Settings
    */
   public static void setOnlineMode(boolean online)
   {
-    settings.setAttribute("online", online ? "true" : "false");
+    settings.setAttribute("online",online);
+  }
+
+  /**
+   * Liefert true, wenn die Kontonummern via Pruefsumme gecheckt werden sollen.
+   * @return true, wenn die Pruefziffern-Kontrolle aktiviert ist.
+   */
+  public static boolean getKontoCheck()
+  {
+    return settings.getBoolean("kontocheck",true);
+  }
+
+  /**
+   * Legt fest, ob die Kontonummern via Pruefsumme gecheckt werden sollen.
+   * @param check true, wenn gecheckt werden soll.
+   */
+  public static void setKontoCheck(boolean check)
+  {
+    settings.setAttribute("kontocheck",check);
   }
 
   /**
@@ -262,7 +280,7 @@ public class Settings
     return settings.getBoolean("online",false);
   }
 
-	/**
+  /**
 	 * Liefert das Limit bei Ueberweisungen.
 	 * Soll den Benutzer davor schuetzen, versehentlich zu grosse Betraege bei
 	 * einer Ueberweisung einzugeben.
@@ -305,6 +323,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.38  2005/08/22 10:36:37  willuhn
+ * @N bug 115, 116
+ *
  * Revision 1.37  2005/08/04 22:15:14  willuhn
  * @B bug 109
  *

@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCIProperties.java,v $
- * $Revision: 1.10 $
- * $Date: 2005/06/07 22:19:57 $
- * $Author: web0 $
+ * $Revision: 1.11 $
+ * $Date: 2005/08/22 10:36:37 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -116,6 +116,8 @@ public class HBCIProperties
    */
   public final static boolean checkAccountCRC(String blz, String kontonummer)
   {
+    if (!de.willuhn.jameica.hbci.Settings.getKontoCheck())
+      return true;
     try
     {
       return HBCIUtils.checkAccountCRC(blz, kontonummer);
@@ -139,6 +141,9 @@ public class HBCIProperties
 
 /**********************************************************************
  * $Log: HBCIProperties.java,v $
+ * Revision 1.11  2005/08/22 10:36:37  willuhn
+ * @N bug 115, 116
+ *
  * Revision 1.10  2005/06/07 22:19:57  web0
  * @B bug 49
  *

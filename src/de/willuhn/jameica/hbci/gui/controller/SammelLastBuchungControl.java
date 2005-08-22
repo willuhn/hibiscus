@@ -1,8 +1,8 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SammelLastBuchungControl.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/07/04 12:41:39 $
- * $Author: web0 $
+ * $Revision: 1.7 $
+ * $Date: 2005/08/22 10:36:38 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -29,6 +29,7 @@ import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.action.SammelLastBuchungNew;
 import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.hbci.rmi.SammelLastBuchung;
 import de.willuhn.jameica.system.Application;
@@ -207,9 +208,9 @@ public class SammelLastBuchungControl extends AbstractControl
 
   /**
 	 * Speichert den Geld-Transfer.
-	 * @return true, wenn das Speichern erfolgreich war.
+   * @param next legt fest, ob nach dem Speichern gleich zur naechsten Buchung gesprungen werden soll.
 	 */
-	public synchronized boolean handleStore()
+	public synchronized void handleStore(boolean next)
 	{
 		try {
   		
@@ -244,7 +245,7 @@ public class SammelLastBuchungControl extends AbstractControl
 					d.setTitle(i18n.tr("Adresse existiert"));
 					d.setText(i18n.tr("Eine Adresse mit dieser Kontonummer und BLZ existiert bereits. " +
 							"Möchten Sie sie dennoch zum Adressbuch hinzufügen?"));
-					if (!((Boolean) d.open()).booleanValue()) return false;
+					if (!((Boolean) d.open()).booleanValue()) return;
 				}
 				Adresse e = (Adresse) Settings.getDBService().createObject(Adresse.class,null);
 				e.setBLZ(blz);
@@ -257,7 +258,9 @@ public class SammelLastBuchungControl extends AbstractControl
 				GUI.getStatusBar().setSuccessText(i18n.tr("Buchung gespeichert"));
 			}
 			getBuchung().transactionCommit();
-			return true;
+      // BUGZILLA 116 http://www.willuhn.de/bugzilla/show_bug.cgi?id=116
+      if (next)
+        new SammelLastBuchungNew().handleAction(getBuchung().getSammelLastschrift());
 		}
 		catch (ApplicationException e)
 		{
@@ -282,7 +285,6 @@ public class SammelLastBuchungControl extends AbstractControl
 			Logger.error("error while storing buchung",e2);
 			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern der Buchung"));
 		}
-		return false;
 	}
 
 
@@ -337,6 +339,9 @@ public class SammelLastBuchungControl extends AbstractControl
 
 /*****************************************************************************
  * $Log: SammelLastBuchungControl.java,v $
+ * Revision 1.7  2005/08/22 10:36:38  willuhn
+ * @N bug 115, 116
+ *
  * Revision 1.6  2005/07/04 12:41:39  web0
  * @B bug 90
  *

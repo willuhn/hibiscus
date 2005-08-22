@@ -21,4 +21,22 @@
 		Prüfsumme mit der ermittelt werden kann, ob Ihre aktuelle Eingabe mit der Erst-Eingabe
 		übereinstimmt.
 	</li>
+	
+	<li>
+	  Wenn Sie die Option <b>TANs während der Eingabe anzeigen</b> aktivieren,
+	  werden die TAN-Nummern während der Eingabe im Klartext angezeigt, andernfalls
+	  wie die PIN gegen Sterne ersetzt.
+	</li>
+	
+	<li>
+	  Mit der Option <b>Tausender-Trennzeichen bei Geld-Beträgen verwenden</b>
+	  können Sie entscheiden, ob bei Geld-Beträgen ein Tausender-Punkt angezeigt
+	  werden soll.
+	</li>
+	
+	<li>
+	  Deaktivieren Sie die Option <b>Kontonummern via Prüfsumme der Bank testen</b>,
+	  wenn Sie nicht wünschen, dass Hibiscus die von Ihnen eingegebenen Kontonummern
+	  auf Plausibilität prüfen soll.
+	</li>
 </form>

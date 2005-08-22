@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/SammelLastschrift.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/07/04 11:36:53 $
- * $Author: web0 $
+ * $Revision: 1.4 $
+ * $Date: 2005/08/22 10:36:38 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -20,7 +20,7 @@ import de.willuhn.datasource.rmi.DBObject;
 /**
  * Interface fuer Sammellastschriften.
  */
-public interface SammelLastschrift extends DBObject, Terminable
+public interface SammelLastschrift extends DBObject, Terminable, Duplicatable
 {
 	/**
 	 * Liefert eine Liste der Buchungen fuer diese Sammellastschrift.
@@ -68,6 +68,9 @@ public interface SammelLastschrift extends DBObject, Terminable
 
 /**********************************************************************
  * $Log: SammelLastschrift.java,v $
+ * Revision 1.4  2005/08/22 10:36:38  willuhn
+ * @N bug 115, 116
+ *
  * Revision 1.3  2005/07/04 11:36:53  web0
  * @B bug 89
  *

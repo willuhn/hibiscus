@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/SammelLastschriftNew.java,v $
- * $Revision: 1.7 $
- * $Date: 2005/08/02 20:09:33 $
- * $Author: web0 $
+ * $Revision: 1.8 $
+ * $Date: 2005/08/22 10:36:37 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -61,14 +61,14 @@ public class SammelLastschriftNew extends AbstractView {
 
     ButtonArea buttons = new ButtonArea(getParent(),5);
     buttons.addButton(i18n.tr("Zurück"),new Back());
-    buttons.addButton(i18n.tr("Neue Buchung hinzufügen"), new Action() {
+    buttons.addButton(i18n.tr("Löschen"),new SammelLastschriftDelete(),control.getLastschrift());
+    buttons.addButton(i18n.tr("Neue Buchungen hinzufügen"), new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         control.handleStore();
         new SammelLastBuchungNew().handleAction(l);
       }
     });
-    buttons.addButton(i18n.tr("Löschen"),new SammelLastschriftDelete(),control.getLastschrift());
 		buttons.addButton(i18n.tr("Speichern und ausführen"), new Action()
 		{
 			public void handleAction(Object context) throws ApplicationException
@@ -98,6 +98,9 @@ public class SammelLastschriftNew extends AbstractView {
 
 /**********************************************************************
  * $Log: SammelLastschriftNew.java,v $
+ * Revision 1.8  2005/08/22 10:36:37  willuhn
+ * @N bug 115, 116
+ *
  * Revision 1.7  2005/08/02 20:09:33  web0
  * @B bug 106
  *

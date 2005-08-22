@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.42 $
- * $Date: 2005/07/24 22:26:42 $
- * $Author: web0 $
+ * $Revision: 1.43 $
+ * $Date: 2005/08/22 10:36:38 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -49,6 +49,7 @@ public class SettingsControl extends AbstractControl {
 	private CheckboxInput checkPin     			= null;
   private CheckboxInput showTan           = null;
   private CheckboxInput decimalGrouping   = null;
+  private CheckboxInput kontoCheck        = null;
 
 	private Input buchungSollFg     				= null;
 	private Input buchungHabenFg    				= null;
@@ -118,6 +119,18 @@ public class SettingsControl extends AbstractControl {
       return decimalGrouping;
     decimalGrouping = new CheckboxInput(Settings.getDecimalGrouping());
     return decimalGrouping;
+  }
+
+  /**
+   * Checkbox zur Aktivierung der Pruefziffernberechnung bei Kontonummern.
+   * @return Checkbox.
+   */
+  public CheckboxInput getKontoCheck()
+  {
+    if (kontoCheck != null)
+      return kontoCheck;
+    kontoCheck = new CheckboxInput(Settings.getKontoCheck());
+    return kontoCheck;
   }
 
   /**
@@ -248,6 +261,9 @@ public class SettingsControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.43  2005/08/22 10:36:38  willuhn
+ * @N bug 115, 116
+ *
  * Revision 1.42  2005/07/24 22:26:42  web0
  * @B bug 101
  *
