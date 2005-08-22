@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.43 $
- * $Date: 2005/08/22 10:36:38 $
+ * $Revision: 1.44 $
+ * $Date: 2005/08/22 10:38:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -222,6 +222,7 @@ public class SettingsControl extends AbstractControl {
 		Settings.setCheckPin(((Boolean)getCheckPin().getValue()).booleanValue());
     Settings.setShowTan(((Boolean)getShowTan().getValue()).booleanValue());
     Settings.setDecimalGrouping(((Boolean)getDecimalGrouping().getValue()).booleanValue());
+    Settings.setKontoCheck(((Boolean)getKontoCheck().getValue()).booleanValue());
 		
 		Settings.setUeberweisungLimit(((Double)getUeberweisungLimit().getValue()).doubleValue());
 
@@ -261,6 +262,9 @@ public class SettingsControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.44  2005/08/22 10:38:47  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.43  2005/08/22 10:36:38  willuhn
  * @N bug 115, 116
  *
