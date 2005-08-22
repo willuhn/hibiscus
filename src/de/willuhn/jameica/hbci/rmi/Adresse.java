@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Attic/Adresse.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/08/16 21:33:13 $
+ * $Revision: 1.3 $
+ * $Date: 2005/08/22 12:23:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -65,14 +65,6 @@ public interface Adresse extends DBObject {
   public void setName(String name) throws RemoteException;
   
   /**
-   * Liefert eine Liste der Ueberweisungen, die an diesen Empfaenger
-   * getaetigt wurden.
-   * @return Liste mit Ueberweisungen.
-   * @throws RemoteException
-   */
-  public DBIterator getUeberweisungen() throws RemoteException;
-
-  /**
    * Liefert einen zusaetzlichen Kommentar fuer den Adressbuch-Eintrag.
    * @return Kommentar.
    * @throws RemoteException
@@ -85,11 +77,29 @@ public interface Adresse extends DBObject {
    * @throws RemoteException
    */
   public void setKommentar(String kommentar) throws RemoteException;
+  
+  /**
+   * Liefert eine Liste von Umsaetzen, die von/an diese Adresse getaetigt wurden.
+   * @return Liste von Umsaetzen.
+   * @throws RemoteException
+   */
+  public DBIterator getUmsaetze() throws RemoteException;
+
+  /**
+   * Liefert eine Liste von Buchungen aus Sammellastschriften, die von dieser
+   * Adresse eingezogen wurden.
+   * @return Liste von Buchungen.
+   * @throws RemoteException
+   */
+  public DBIterator getSammellastBuchungen() throws RemoteException;
 }
 
 
 /**********************************************************************
  * $Log: Adresse.java,v $
+ * Revision 1.3  2005/08/22 12:23:18  willuhn
+ * @N bug 107
+ *
  * Revision 1.2  2005/08/16 21:33:13  willuhn
  * @N Kommentar-Feld in Adressen
  * @N Neuer Adress-Auswahl-Dialog

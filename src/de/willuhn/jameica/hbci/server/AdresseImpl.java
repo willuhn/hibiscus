@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AdresseImpl.java,v $
- * $Revision: 1.7 $
- * $Date: 2005/08/16 21:33:13 $
+ * $Revision: 1.8 $
+ * $Date: 2005/08/22 12:23:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,8 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.Adresse;
-import de.willuhn.jameica.hbci.rmi.Ueberweisung;
+import de.willuhn.jameica.hbci.rmi.SammelLastBuchung;
+import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -131,16 +132,6 @@ public class AdresseImpl extends AbstractDBObject implements Adresse {
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Adresse#getUeberweisungen()
-   */
-  public DBIterator getUeberweisungen() throws RemoteException {
-		DBIterator list = getService().createList(Ueberweisung.class);
-		list.addFilter("empfaenger_blz = " + this.getBLZ());
-		list.addFilter("empfaenger_konto = " + this.getKontonummer());
-		return list;
-  }
-
-  /**
    * @see de.willuhn.jameica.hbci.rmi.Adresse#getKommentar()
    */
   public String getKommentar() throws RemoteException
@@ -156,11 +147,38 @@ public class AdresseImpl extends AbstractDBObject implements Adresse {
     setAttribute("kommentar",kommentar);
   }
 
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Adresse#getUmsaetze()
+   */
+  public DBIterator getUmsaetze() throws RemoteException
+  {
+    DBIterator umsaetze = getService().createList(Umsatz.class);
+    umsaetze.addFilter("empfaenger_konto = '" + getKontonummer() + "'");
+    umsaetze.addFilter("empfaenger_blz = '" + getBLZ() + "'");
+    umsaetze.setOrder(" ORDER BY TONUMBER(valuta) DESC");
+    return umsaetze;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Adresse#getSammellastBuchungen()
+   */
+  public DBIterator getSammellastBuchungen() throws RemoteException
+  {
+    DBIterator buchungen = getService().createList(SammelLastBuchung.class);
+    buchungen.addFilter("gegenkonto_nr = '" + getKontonummer() + "'");
+    buchungen.addFilter("gegenkonto_blz = '" + getBLZ() + "'");
+    buchungen.setOrder(" ORDER BY id DESC");
+    return buchungen;
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: AdresseImpl.java,v $
+ * Revision 1.8  2005/08/22 12:23:18  willuhn
+ * @N bug 107
+ *
  * Revision 1.7  2005/08/16 21:33:13  willuhn
  * @N Kommentar-Feld in Adressen
  * @N Neuer Adress-Auswahl-Dialog

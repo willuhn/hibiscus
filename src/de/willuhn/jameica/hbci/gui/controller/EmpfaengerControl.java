@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EmpfaengerControl.java,v $
- * $Revision: 1.33 $
- * $Date: 2005/08/16 21:33:13 $
+ * $Revision: 1.34 $
+ * $Date: 2005/08/22 12:23:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,7 +18,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.manager.HBCIUtils;
 
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
@@ -30,10 +29,11 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerNew;
+import de.willuhn.jameica.hbci.gui.action.SammelLastBuchungNew;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
+import de.willuhn.jameica.hbci.gui.parts.SammelLastBuchungList;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzList;
 import de.willuhn.jameica.hbci.rmi.Adresse;
-import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -54,6 +54,7 @@ public class EmpfaengerControl extends AbstractControl {
 
   private Part list         = null;
   private Part umsatzList   = null;
+  private Part sammelList   = null;
 
 	private I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
@@ -107,16 +108,27 @@ public class EmpfaengerControl extends AbstractControl {
     if (this.umsatzList != null)
       return this.umsatzList;
 
-    // Wir ermitteln zuerst alle Konten und schauen dort jeweils nach den Umsaetzen
-    DBIterator umsaetze = Settings.getDBService().createList(Umsatz.class);
-    umsaetze.addFilter("empfaenger_konto = '" + getEmpfaenger().getKontonummer() + "'");
-    umsaetze.addFilter("empfaenger_blz = '" + getEmpfaenger().getBLZ() + "'");
-    umsaetze.setOrder(" ORDER BY TONUMBER(valuta) DESC");
-    this.umsatzList = new UmsatzList(umsaetze,new UmsatzDetail());
+    this.umsatzList = new UmsatzList(getEmpfaenger().getUmsaetze(),new UmsatzDetail());
     return this.umsatzList;
   }
 
-	/**
+  // BUGZILLA 107 http://www.willuhn.de/bugzilla/show_bug.cgi?id=107
+  /**
+   * Liefert eine Liste von allen Sammel-Lastschrift-Buchungen, die von dieser
+   * Adresse eingezogen wurden.
+   * @return Tabelle.
+   * @throws RemoteException
+   */
+  public Part getSammelLastListe() throws RemoteException
+  {
+    if (this.sammelList != null)
+      return this.sammelList;
+
+    this.sammelList = new SammelLastBuchungList(getEmpfaenger().getSammellastBuchungen(),new SammelLastBuchungNew());
+    return this.sammelList;
+  }
+
+  /**
 	 * Liefert das Eingabe-Feld fuer die Kontonummer.
    * @return Eingabe-Feld.
    * @throws RemoteException
@@ -229,6 +241,9 @@ public class EmpfaengerControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: EmpfaengerControl.java,v $
+ * Revision 1.34  2005/08/22 12:23:18  willuhn
+ * @N bug 107
+ *
  * Revision 1.33  2005/08/16 21:33:13  willuhn
  * @N Kommentar-Feld in Adressen
  * @N Neuer Adress-Auswahl-Dialog

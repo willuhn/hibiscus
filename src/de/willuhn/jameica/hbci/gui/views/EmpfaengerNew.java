@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/EmpfaengerNew.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/08/16 21:33:13 $
+ * $Revision: 1.7 $
+ * $Date: 2005/08/22 12:23:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@ package de.willuhn.jameica.hbci.gui.views;
 
 import java.rmi.RemoteException;
 
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -64,6 +65,14 @@ public class EmpfaengerNew extends AbstractView {
     new Headline(getParent(),i18n.tr("Buchung von/an diese Adresse"));
     control.getUmsatzListe().paint(getParent());
 
+    // BUGZILLA 107 http://www.willuhn.de/bugzilla/show_bug.cgi?id=107
+    DBIterator list = control.getEmpfaenger().getSammellastBuchungen();
+    if (list.size() > 0)
+    {
+      new Headline(getParent(),i18n.tr("Eingezogene Sammel-Lastschriften"));
+      control.getSammelLastListe().paint(getParent());
+    }
+
 		// und noch die Abschicken-Knoepfe
 		ButtonArea buttonArea = new ButtonArea(getParent(),3);
 		buttonArea.addButton(i18n.tr("Zurück"),new Back());
@@ -89,6 +98,9 @@ public class EmpfaengerNew extends AbstractView {
 
 /**********************************************************************
  * $Log: EmpfaengerNew.java,v $
+ * Revision 1.7  2005/08/22 12:23:18  willuhn
+ * @N bug 107
+ *
  * Revision 1.6  2005/08/16 21:33:13  willuhn
  * @N Kommentar-Feld in Adressen
  * @N Neuer Adress-Auswahl-Dialog

@@ -1,6 +1,6 @@
 <form>
 	<p>
-		<span color="header" font="header">Empfänger bearbeiten</span>
+		<span color="header" font="header">Adresse bearbeiten</span>
 	</p>
 	
 	<p>
