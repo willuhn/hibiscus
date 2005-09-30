@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/Attic/SammelLastBuchungExport.java,v $
- * $Revision: 1.2 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/Attic/SammelUeberweisungBuchungExport.java,v $
+ * $Revision: 1.1 $
  * $Date: 2005/09/30 00:08:50 $
  * $Author: willuhn $
  * $Locker:  $
@@ -12,30 +12,26 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.action;
 
-import de.willuhn.jameica.hbci.rmi.SammelLastBuchung;
+import de.willuhn.jameica.hbci.rmi.SammelUeberweisungBuchung;
 
 /**
  * Action, ueber die die Buchungen einer Sammellastschrift exportiert werden koennen.
  */
-public class SammelLastBuchungExport extends AbstractSammelTransferBuchungExport
+public class SammelUeberweisungBuchungExport extends AbstractSammelTransferBuchungExport
 {
   /**
    * @see de.willuhn.jameica.hbci.gui.action.AbstractSammelTransferBuchungExport#getExportClass()
    */
   Class getExportClass()
   {
-    return SammelLastBuchung.class;
+    return SammelUeberweisungBuchung.class;
   }
 
 }
 
-
 /**********************************************************************
- * $Log: SammelLastBuchungExport.java,v $
- * Revision 1.2  2005/09/30 00:08:50  willuhn
+ * $Log: SammelUeberweisungBuchungExport.java,v $
+ * Revision 1.1  2005/09/30 00:08:50  willuhn
  * @N SammelUeberweisungen (merged with SammelLastschrift)
- *
- * Revision 1.1  2005/07/04 12:41:39  web0
- * @B bug 90
  *
  **********************************************************************/

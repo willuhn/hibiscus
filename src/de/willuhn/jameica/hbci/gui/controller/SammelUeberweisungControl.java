@@ -1,6 +1,6 @@
 /*****************************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SammelLastschriftControl.java,v $
- * $Revision: 1.11 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SammelUeberweisungControl.java,v $
+ * $Revision: 1.1 $
  * $Date: 2005/09/30 00:08:51 $
  * $Author: willuhn $
  * $Locker:  $
@@ -22,15 +22,15 @@ import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.action.SammelLastBuchungExport;
-import de.willuhn.jameica.hbci.gui.action.SammelLastBuchungNew;
-import de.willuhn.jameica.hbci.gui.action.SammelLastschriftNew;
 import de.willuhn.jameica.hbci.gui.action.SammelTransferBuchungDelete;
+import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungBuchungExport;
+import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungBuchungNew;
+import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungNew;
 import de.willuhn.jameica.hbci.gui.parts.SammelTransferBuchungList;
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.rmi.SammelLastBuchung;
-import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
+import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
+import de.willuhn.jameica.hbci.rmi.SammelUeberweisungBuchung;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -40,19 +40,21 @@ import de.willuhn.util.I18N;
  * Implementierung des Controllers fuer den Dialog "Liste der Sammellastschriften".
  * @author willuhn
  */
-public class SammelLastschriftControl extends AbstractSammelTransferControl
+public class SammelUeberweisungControl extends AbstractSammelTransferControl
 {
+
 
   private I18N i18n                     	= null;
 
   private SammelTransfer transfer         = null;
+
   private TablePart table               	= null;
 
   /**
    * ct.
    * @param view
    */
-  public SammelLastschriftControl(AbstractView view)
+  public SammelUeberweisungControl(AbstractView view)
   {
     super(view);
     i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
@@ -70,7 +72,7 @@ public class SammelLastschriftControl extends AbstractSammelTransferControl
     if (transfer != null)
       return transfer;
 
-    transfer = (SammelLastschrift) Settings.getDBService().createObject(SammelLastschrift.class,null);
+    transfer = (SammelUeberweisung) Settings.getDBService().createObject(SammelUeberweisung.class,null);
     return transfer;
   }
 
@@ -82,7 +84,7 @@ public class SammelLastschriftControl extends AbstractSammelTransferControl
     if (table != null)
       return table;
 
-    table = new de.willuhn.jameica.hbci.gui.parts.SammelLastschriftList(new SammelLastschriftNew());
+    table = new de.willuhn.jameica.hbci.gui.parts.SammelUeberweisungList(new SammelUeberweisungNew());
     return table;
   }
 
@@ -95,14 +97,14 @@ public class SammelLastschriftControl extends AbstractSammelTransferControl
       public void handleAction(Object context) throws ApplicationException
       {
         handleStore();
-        new SammelLastBuchungNew().handleAction(context);
+        new SammelUeberweisungBuchungNew().handleAction(context);
       }
     };
     
     TablePart buchungen = new SammelTransferBuchungList(getTransfer(),a);
 
     ContextMenu ctx = new ContextMenu();
-    ctx.addItem(new CheckedContextMenuItem(i18n.tr("Buchung öffnen"), new SammelLastBuchungNew()));
+    ctx.addItem(new CheckedContextMenuItem(i18n.tr("Buchung öffnen"), new SammelUeberweisungBuchungNew()));
     ctx.addItem(new NotActiveMenuItem(i18n.tr("Buchung löschen..."), new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -124,12 +126,12 @@ public class SammelLastschriftControl extends AbstractSammelTransferControl
         handleStore();
         try
         {
-          new SammelLastBuchungNew().handleAction(getTransfer());
+          new SammelUeberweisungBuchungNew().handleAction(getTransfer());
         }
         catch (RemoteException e)
         {
-          Logger.error("unable to load sammellastschrift",e);
-          throw new ApplicationException(i18n.tr("Fehler beim Laden der Sammel-Lastschrift"));
+          Logger.error("unable to load sammelueberweisung",e);
+          throw new ApplicationException(i18n.tr("Fehler beim Laden der Sammel-Überweisung"));
         }
       }
     }));
@@ -139,12 +141,12 @@ public class SammelLastschriftControl extends AbstractSammelTransferControl
       {
         try
         {
-          new SammelLastBuchungExport().handleAction(getTransfer());
+          new SammelUeberweisungBuchungExport().handleAction(getTransfer());
         }
         catch (RemoteException e)
         {
-          Logger.error("unable to load sammellastschrift",e);
-          throw new ApplicationException(i18n.tr("Fehler beim Laden der Sammellastschrift"));
+          Logger.error("unable to load sammelueberweisung",e);
+          throw new ApplicationException(i18n.tr("Fehler beim Laden der Sammel-Überweisung"));
         }
       }
     }));
@@ -162,7 +164,7 @@ public class SammelLastschriftControl extends AbstractSammelTransferControl
       getTransfer().setBezeichnung((String)getName().getValue());
       getTransfer().setTermin((Date)getTermin().getValue());
       getTransfer().store();
-      GUI.getStatusBar().setSuccessText(i18n.tr("Sammel-Lastschrift gespeichert"));
+      GUI.getStatusBar().setSuccessText(i18n.tr("Sammel-Überweisung gespeichert"));
     }
     catch (ApplicationException e2)
     {
@@ -170,15 +172,15 @@ public class SammelLastschriftControl extends AbstractSammelTransferControl
     }
     catch (RemoteException e)
     {
-      Logger.error("error while storing sammellastschrift",e);
-      GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern der Sammel-Lastschrift"));
+      Logger.error("error while storing sammelueberweisung",e);
+      GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern der Sammel-Überweisung"));
     }
   }
 
 
   /**
    * Ueberschreiben wir, damit das Item nur dann aktiv ist, wenn die
-   * Lastschrift noch nicht ausgefuehrt wurde.
+   * Ueberweisung noch nicht ausgefuehrt wurde.
    */
   private class NotActiveMenuItem extends ContextMenuItem
   {
@@ -202,7 +204,7 @@ public class SammelLastschriftControl extends AbstractSammelTransferControl
         return false;
       try
       {
-        SammelLastBuchung u = (SammelLastBuchung) o;
+        SammelUeberweisungBuchung u = (SammelUeberweisungBuchung) o;
         return !u.getSammelTransfer().ausgefuehrt();
       }
       catch (Exception e)
@@ -216,40 +218,8 @@ public class SammelLastschriftControl extends AbstractSammelTransferControl
 }
 
 /*****************************************************************************
- * $Log: SammelLastschriftControl.java,v $
- * Revision 1.11  2005/09/30 00:08:51  willuhn
+ * $Log: SammelUeberweisungControl.java,v $
+ * Revision 1.1  2005/09/30 00:08:51  willuhn
  * @N SammelUeberweisungen (merged with SammelLastschrift)
- *
- * Revision 1.10  2005/08/02 20:09:33  web0
- * @B bug 106
- *
- * Revision 1.9  2005/07/04 12:41:39  web0
- * @B bug 90
- *
- * Revision 1.8  2005/07/04 11:36:53  web0
- * @B bug 89
- *
- * Revision 1.7  2005/06/23 23:03:20  web0
- * @N much better KontoAuswahlDialog
- *
- * Revision 1.6  2005/05/02 23:56:45  web0
- * @B bug 66, 67
- * @C umsatzliste nach vorn verschoben
- * @C protokoll nach hinten verschoben
- *
- * Revision 1.5  2005/03/05 19:11:25  web0
- * @N SammelLastschrift-Code complete
- *
- * Revision 1.4  2005/03/02 00:22:05  web0
- * @N first code for "Sammellastschrift"
- *
- * Revision 1.3  2005/03/01 18:51:04  web0
- * @N Dialoge fuer Sammel-Lastschriften
- *
- * Revision 1.2  2005/02/28 18:40:49  web0
- * @N first code for "Sammellastschrift"
- *
- * Revision 1.1  2005/02/28 16:28:24  web0
- * @N first code for "Sammellastschrift"
  *
 *****************************************************************************/

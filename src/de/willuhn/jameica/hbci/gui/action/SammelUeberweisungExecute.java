@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/SammelLastschriftExecute.java,v $
- * $Revision: 1.8 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/SammelUeberweisungExecute.java,v $
+ * $Revision: 1.1 $
  * $Date: 2005/09/30 00:08:50 $
  * $Author: willuhn $
  * $Locker:  $
@@ -18,18 +18,18 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.hbci.gui.views.SammelLastschriftNew;
-import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
+import de.willuhn.jameica.hbci.gui.views.SammelUeberweisungNew;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
+import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
 import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
-import de.willuhn.jameica.hbci.server.hbci.HBCISammelLastschriftJob;
+import de.willuhn.jameica.hbci.server.hbci.HBCISammelUeberweisungJob;
 import de.willuhn.util.ApplicationException;
 
 /**
- * Action, die zur Ausfuehrung einer Sammel-Lastschrift verwendet werden kann.
- * Er erwartet ein Objekt vom Typ <code>SammelLastschrift</code> als Context.
+ * Action, die zur Ausfuehrung einer Sammel-Ueberweisung verwendet werden kann.
+ * Er erwartet ein Objekt vom Typ <code>SammelUeberweisung</code> als Context.
  */
-public class SammelLastschriftExecute extends AbstractSammelTransferExecute
+public class SammelUeberweisungExecute extends AbstractSammelTransferExecute
 {
 
   /**
@@ -38,12 +38,12 @@ public class SammelLastschriftExecute extends AbstractSammelTransferExecute
   void execute(final SammelTransfer transfer) throws ApplicationException, RemoteException
   {
     HBCIFactory factory = HBCIFactory.getInstance();
-    factory.addJob(new HBCISammelLastschriftJob((SammelLastschrift)transfer));
+    factory.addJob(new HBCISammelUeberweisungJob((SammelUeberweisung) transfer));
     factory.executeJobs(transfer.getKonto(), new Listener() {
       public void handleEvent(Event event)
       {
         // BUGZILLA 31 http://www.willuhn.de/bugzilla/show_bug.cgi?id=31
-        GUI.startView(SammelLastschriftNew.class,transfer);
+        GUI.startView(SammelUeberweisungNew.class,transfer);
       }
     });
   }
@@ -52,8 +52,8 @@ public class SammelLastschriftExecute extends AbstractSammelTransferExecute
 
 
 /**********************************************************************
- * $Log: SammelLastschriftExecute.java,v $
- * Revision 1.8  2005/09/30 00:08:50  willuhn
+ * $Log: SammelUeberweisungExecute.java,v $
+ * Revision 1.1  2005/09/30 00:08:50  willuhn
  * @N SammelUeberweisungen (merged with SammelLastschrift)
  *
  * Revision 1.7  2005/07/26 23:57:18  web0

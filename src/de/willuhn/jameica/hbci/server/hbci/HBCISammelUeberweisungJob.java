@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCISammelLastschriftJob.java,v $
- * $Revision: 1.2 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCISammelUeberweisungJob.java,v $
+ * $Revision: 1.1 $
  * $Date: 2005/09/30 00:08:51 $
  * $Author: willuhn $
  * $Locker:  $
@@ -14,42 +14,38 @@ package de.willuhn.jameica.hbci.server.hbci;
 
 import java.rmi.RemoteException;
 
-import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
+import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
 import de.willuhn.util.ApplicationException;
 
 /**
- * Job fuer "Sammel-Lastschrift".
+ * Job fuer "Sammel-Ueberweisung".
  */
-public class HBCISammelLastschriftJob extends AbstractHBCISammelTransferJob
+public class HBCISammelUeberweisungJob extends AbstractHBCISammelTransferJob
 {
 
   /**
 	 * ct.
-   * @param lastschrift die auszufuehrende Sammel-Lastschrift.
+   * @param ueberweisung die auszufuehrende Sammel-Ueberweisung.
    * @throws ApplicationException
    * @throws RemoteException
    */
-  public HBCISammelLastschriftJob(SammelLastschrift lastschrift) throws ApplicationException, RemoteException
+  public HBCISammelUeberweisungJob(SammelUeberweisung ueberweisung) throws ApplicationException, RemoteException
 	{
-    super(lastschrift);
+    super(ueberweisung);
 	}
 
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getIdentifier()
    */
   String getIdentifier() {
-    return "MultiLast";
+    return "MultiUeb";
   }
-  
 }
 
 
 /**********************************************************************
- * $Log: HBCISammelLastschriftJob.java,v $
- * Revision 1.2  2005/09/30 00:08:51  willuhn
+ * $Log: HBCISammelUeberweisungJob.java,v $
+ * Revision 1.1  2005/09/30 00:08:51  willuhn
  * @N SammelUeberweisungen (merged with SammelLastschrift)
- *
- * Revision 1.1  2005/03/05 19:11:25  web0
- * @N SammelLastschrift-Code complete
  *
  **********************************************************************/

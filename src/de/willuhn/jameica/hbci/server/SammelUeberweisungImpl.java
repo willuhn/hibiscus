@@ -1,6 +1,6 @@
 /*****************************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/SammelLastschriftImpl.java,v $
- * $Revision: 1.11 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/SammelUeberweisungImpl.java,v $
+ * $Revision: 1.1 $
  * $Date: 2005/09/30 00:08:50 $
  * $Author: willuhn $
  * $Locker:  $
@@ -12,22 +12,22 @@ package de.willuhn.jameica.hbci.server;
 import java.rmi.RemoteException;
 
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.jameica.hbci.rmi.SammelLastBuchung;
-import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
+import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
+import de.willuhn.jameica.hbci.rmi.SammelUeberweisungBuchung;
 
 /**
  * Implementierung des Containers fuer Sammellastschrift-Buchungen.
  * @author willuhn
  */
-public class SammelLastschriftImpl extends AbstractSammelTransferImpl
-  implements SammelLastschrift
+public class SammelUeberweisungImpl extends AbstractSammelTransferImpl
+  implements SammelUeberweisung
 {
 
   /**
    * ct.
    * @throws java.rmi.RemoteException
    */
-  public SammelLastschriftImpl() throws RemoteException
+  public SammelUeberweisungImpl() throws RemoteException
   {
     super();
   }
@@ -37,23 +37,23 @@ public class SammelLastschriftImpl extends AbstractSammelTransferImpl
    */
   protected String getTableName()
   {
-    return "slastschrift";
+    return "sueberweisung";
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelLastschrift#getBuchungen()
+   * @see de.willuhn.jameica.hbci.rmi.SammelTransfer#getBuchungen()
    */
   public DBIterator getBuchungen() throws RemoteException
   {
-    DBIterator list = this.getService().createList(SammelLastBuchung.class);
-    list.addFilter("slastschrift_id = " + this.getID());
+    DBIterator list = this.getService().createList(SammelUeberweisungBuchung.class);
+    list.addFilter("sueberweisung_id = " + this.getID());
     return list;
   }
 }
 
 /*****************************************************************************
- * $Log: SammelLastschriftImpl.java,v $
- * Revision 1.11  2005/09/30 00:08:50  willuhn
+ * $Log: SammelUeberweisungImpl.java,v $
+ * Revision 1.1  2005/09/30 00:08:50  willuhn
  * @N SammelUeberweisungen (merged with SammelLastschrift)
  *
  * Revision 1.10  2005/08/22 10:36:38  willuhn

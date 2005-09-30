@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/SammelLastschriftList.java,v $
- * $Revision: 1.6 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/SammelUeberweisungList.java,v $
+ * $Revision: 1.1 $
  * $Date: 2005/09/30 00:08:51 $
  * $Author: willuhn $
  * $Locker:  $
@@ -17,41 +17,41 @@ import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.SammelLastBuchungExport;
-import de.willuhn.jameica.hbci.gui.action.SammelLastschriftExecute;
-import de.willuhn.jameica.hbci.gui.action.SammelLastschriftNew;
 import de.willuhn.jameica.hbci.gui.action.SammelTransferDelete;
 import de.willuhn.jameica.hbci.gui.action.SammelTransferDuplicate;
-import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
+import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungBuchungExport;
+import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungExecute;
+import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungNew;
+import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Kontext-Menu, welches an Listen mit SammelLastschriften gehangen werden kann.
+ * Kontext-Menu, welches an Listen mit SammelUeberweisungen gehangen werden kann.
  * Es ist fix und fertig vorkonfiguriert und mit Elementen gefuellt.
  */
-public class SammelLastschriftList extends ContextMenu
+public class SammelUeberweisungList extends ContextMenu
 {
 	private I18N i18n	= null;
 
 	/**
-	 * Erzeugt ein Kontext-Menu fuer eine Liste von Lastschriften.
+	 * Erzeugt ein Kontext-Menu fuer eine Liste von Sammel-Ueberweisungen.
 	 */
-	public SammelLastschriftList()
+	public SammelUeberweisungList()
 	{
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-		addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"), new SammelLastschriftNew()));
-    addItem(new ContextMenuItem(i18n.tr("Neue Sammel-Lastschrift..."), new SNeu()));
-		addItem(new NotActiveMenuItem(i18n.tr("Jetzt ausführen..."), new SammelLastschriftExecute()));
+		addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"), new SammelUeberweisungNew()));
+    addItem(new ContextMenuItem(i18n.tr("Neue Sammel-Überweisung..."), new SNeu()));
+		addItem(new NotActiveMenuItem(i18n.tr("Jetzt ausführen..."), new SammelUeberweisungExecute()));
     // BUGZILLA 115 http://www.willuhn.de/bugzilla/show_bug.cgi?id=115
     addItem(new CheckedContextMenuItem(i18n.tr("Duplizieren"), new SammelTransferDuplicate()));
 		addItem(ContextMenuItem.SEPARATOR);
 		addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new SammelTransferDelete()));
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new CheckedContextMenuItem(i18n.tr("Buchungen exportieren..."),new SammelLastBuchungExport()));
+    addItem(new CheckedContextMenuItem(i18n.tr("Buchungen exportieren..."),new SammelUeberweisungBuchungExport()));
 		
 	}
 
@@ -59,7 +59,7 @@ public class SammelLastschriftList extends ContextMenu
 	 * Ueberschreiben wir, um <b>grundsaetzlich</b> eine neue Sammel-Lastschrift
 	 * anzulegen - auch wenn der Focus auf einer existierenden liegt.
    */
-  private class SNeu extends SammelLastschriftNew
+  private class SNeu extends SammelUeberweisungNew
 	{
     /**
      * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
@@ -72,7 +72,7 @@ public class SammelLastschriftList extends ContextMenu
 	
 	/**
 	 * Ueberschreiben wir, damit das Item nur dann aktiv ist, wenn die
-	 * Lastschrift noch nicht ausgefuehrt wurde.
+	 * Sammel-Ueberweisung noch nicht ausgefuehrt wurde.
    */
   private class NotActiveMenuItem extends ContextMenuItem
 	{
@@ -96,7 +96,7 @@ public class SammelLastschriftList extends ContextMenu
     		return false;
     	try
     	{
-				SammelLastschrift u = (SammelLastschrift) o;
+				SammelUeberweisung u = (SammelUeberweisung) o;
     		return !u.ausgefuehrt();
     	}
     	catch (Exception e)
@@ -110,23 +110,8 @@ public class SammelLastschriftList extends ContextMenu
 
 
 /**********************************************************************
- * $Log: SammelLastschriftList.java,v $
- * Revision 1.6  2005/09/30 00:08:51  willuhn
+ * $Log: SammelUeberweisungList.java,v $
+ * Revision 1.1  2005/09/30 00:08:51  willuhn
  * @N SammelUeberweisungen (merged with SammelLastschrift)
- *
- * Revision 1.5  2005/08/22 10:36:38  willuhn
- * @N bug 115, 116
- *
- * Revision 1.4  2005/07/04 12:41:39  web0
- * @B bug 90
- *
- * Revision 1.3  2005/03/02 00:22:05  web0
- * @N first code for "Sammellastschrift"
- *
- * Revision 1.2  2005/03/01 18:51:04  web0
- * @N Dialoge fuer Sammel-Lastschriften
- *
- * Revision 1.1  2005/02/28 18:40:49  web0
- * @N first code for "Sammellastschrift"
  *
  **********************************************************************/

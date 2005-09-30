@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/SammelLastBuchungNew.java,v $
- * $Revision: 1.6 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/SammelUeberweisungBuchungNew.java,v $
+ * $Revision: 1.1 $
  * $Date: 2005/09/30 00:08:51 $
  * $Author: willuhn $
  * $Locker:  $
@@ -20,7 +20,7 @@ import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.SammelTransferBuchungDelete;
-import de.willuhn.jameica.hbci.gui.controller.SammelLastBuchungControl;
+import de.willuhn.jameica.hbci.gui.controller.SammelUeberweisungBuchungControl;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -29,14 +29,14 @@ import de.willuhn.util.I18N;
 /**
  * Bearbeitung einer Buchung in einer Sammel-Lastschriften.
  */
-public class SammelLastBuchungNew extends AbstractView {
+public class SammelUeberweisungBuchungNew extends AbstractView {
 
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
   public void bind() throws Exception {
 
-		final SammelLastBuchungControl control = new SammelLastBuchungControl(this);
+		final SammelUeberweisungBuchungControl control = new SammelUeberweisungBuchungControl(this);
 
 		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
@@ -44,11 +44,11 @@ public class SammelLastBuchungNew extends AbstractView {
     Integer i = (Integer) l.getAttribute("anzahl");
     GUI.getView().setTitle(i18n.tr("Buchung bearbeiten [Nr. {0}]",String.valueOf(i.intValue() + 1)));
 		
-		LabelGroup group = new LabelGroup(getParent(),i18n.tr("Zahlungspflichtiger"));
+		LabelGroup group = new LabelGroup(getParent(),i18n.tr("Empfänger"));
 		
-		group.addLabelPair(i18n.tr("Zu belastendes Konto"),							control.getGegenKonto());
-		group.addLabelPair(i18n.tr("BLZ des Zahlungspflichtigen"),			control.getGegenkontoBLZ());		
-		group.addLabelPair(i18n.tr("Name des Zahlungspflichtigen"),			control.getGegenkontoName());
+		group.addLabelPair(i18n.tr("Konto"),		control.getGegenKonto());
+		group.addLabelPair(i18n.tr("BLZ"),			control.getGegenkontoBLZ());		
+		group.addLabelPair(i18n.tr("Name"),			control.getGegenkontoName());
 		group.addCheckbox(control.getStoreAddress(),i18n.tr("Adressdaten im Adressbuch speichern"));
 
 		LabelGroup details = new LabelGroup(getParent(),i18n.tr("Details"));
@@ -87,23 +87,8 @@ public class SammelLastBuchungNew extends AbstractView {
 
 
 /**********************************************************************
- * $Log: SammelLastBuchungNew.java,v $
- * Revision 1.6  2005/09/30 00:08:51  willuhn
+ * $Log: SammelUeberweisungBuchungNew.java,v $
+ * Revision 1.1  2005/09/30 00:08:51  willuhn
  * @N SammelUeberweisungen (merged with SammelLastschrift)
- *
- * Revision 1.5  2005/08/22 10:36:37  willuhn
- * @N bug 115, 116
- *
- * Revision 1.4  2005/07/04 12:41:39  web0
- * @B bug 90
- *
- * Revision 1.3  2005/03/09 01:07:02  web0
- * @D javadoc fixes
- *
- * Revision 1.2  2005/03/05 19:11:25  web0
- * @N SammelLastschrift-Code complete
- *
- * Revision 1.1  2005/03/02 00:22:05  web0
- * @N first code for "Sammellastschrift"
  *
  **********************************************************************/

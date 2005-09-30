@@ -1,8 +1,8 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/Attic/SammelLastschriftDelete.java,v $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/Attic/SammelTransferBuchungDelete.java,v $
  * $Revision: 1.1 $
- * $Date: 2005/03/01 18:51:04 $
- * $Author: web0 $
+ * $Date: 2005/09/30 00:08:50 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -18,38 +18,41 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
+import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Action fuer Loeschen einer Sammel-Lastschrift.
+ * Action fuer Loeschen einer Buchung in eines Sammel-Auftrages.
  */
-public class SammelLastschriftDelete implements Action
+public class SammelTransferBuchungDelete implements Action
 {
 
   /**
-   * Erwartet ein Objekt vom Typ <code>SammelLastschrift</code> im Context.
+   * Erwartet ein Objekt vom Typ <code>SammelTransferBuchung</code> im Context.
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
   public void handleAction(Object context) throws ApplicationException
   {
   	I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-		if (context == null || !(context instanceof SammelLastschrift))
-			throw new ApplicationException(i18n.tr("Keine Sammel-Lastschrift ausgewählt"));
+		if (context == null || !(context instanceof SammelTransferBuchung))
+			throw new ApplicationException(i18n.tr("Keine Buchung ausgewählt"));
 
 		try {
 
-			SammelLastschrift u = (SammelLastschrift) context;
+			SammelTransferBuchung u = (SammelTransferBuchung) context;
 			if (u.isNewObject())
 				return;
 
+			if (u.getSammelTransfer().ausgefuehrt())
+				throw new ApplicationException(i18n.tr("Auftrag wurde bereits ausgeführt" +					"und kann daher nur noch als ganzes gelöscht werden"));
+
 			YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
-			d.setTitle(i18n.tr("Sammel-Lastschrift löschen"));
-			d.setText(i18n.tr("Wollen Sie diese Sammel-Lastschrift wirklich löschen?\n" +        "Alle enthaltenen Buchungen werden hierbei ebenfalls gelöscht."));
+			d.setTitle(i18n.tr("Buchung löschen"));
+			d.setText(i18n.tr("Wollen Sie diese Buchung wirklich löschen?"));
 
 			try {
 				Boolean choice = (Boolean) d.open();
@@ -58,27 +61,26 @@ public class SammelLastschriftDelete implements Action
 			}
 			catch (Exception e)
 			{
-				Logger.error("error while deleting sammellastschrift",e);
+				Logger.error("error while deleting buchung",e);
 				return;
 			}
 
 			// ok, wir loeschen das Objekt
 			u.delete();
-			GUI.getStatusBar().setSuccessText(i18n.tr("Sammel-Lastschrift gelöscht."));
+			GUI.getStatusBar().setSuccessText(i18n.tr("Buchung gelöscht."));
 		}
 		catch (RemoteException e)
 		{
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Löschen der Sammel-Lastschrift."));
-			Logger.error("unable to delete sammellastschrift",e);
+			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Löschen der Buchung."));
+			Logger.error("unable to delete buchung",e);
 		}
   }
 
 }
 
-
 /**********************************************************************
- * $Log: SammelLastschriftDelete.java,v $
- * Revision 1.1  2005/03/01 18:51:04  web0
- * @N Dialoge fuer Sammel-Lastschriften
+ * $Log: SammelTransferBuchungDelete.java,v $
+ * Revision 1.1  2005/09/30 00:08:50  willuhn
+ * @N SammelUeberweisungen (merged with SammelLastschrift)
  *
  **********************************************************************/

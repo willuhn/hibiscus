@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/SammelLastBuchungNew.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/07/04 11:36:53 $
- * $Author: web0 $
+ * $Revision: 1.5 $
+ * $Date: 2005/09/30 00:08:50 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -49,7 +49,7 @@ public class SammelLastBuchungNew implements Action
 				u = (SammelLastBuchung) Settings.getDBService().createObject(SammelLastBuchung.class,null);
 				if (s.isNewObject())
 					s.store();
-				u.setSammelLastschrift(s);
+				u.setSammelTransfer(s);
 			}
 			catch (RemoteException e)
 			{
@@ -65,6 +65,9 @@ public class SammelLastBuchungNew implements Action
 
 /**********************************************************************
  * $Log: SammelLastBuchungNew.java,v $
+ * Revision 1.5  2005/09/30 00:08:50  willuhn
+ * @N SammelUeberweisungen (merged with SammelLastschrift)
+ *
  * Revision 1.4  2005/07/04 11:36:53  web0
  * @B bug 89
  *

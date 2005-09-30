@@ -1,6 +1,6 @@
 /*****************************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SammelLastBuchungControl.java,v $
- * $Revision: 1.8 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SammelUeberweisungBuchungControl.java,v $
+ * $Revision: 1.1 $
  * $Date: 2005/09/30 00:08:51 $
  * $Author: willuhn $
  * $Locker:  $
@@ -18,10 +18,10 @@ import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.action.SammelLastBuchungNew;
+import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungBuchungNew;
 import de.willuhn.jameica.hbci.rmi.Adresse;
-import de.willuhn.jameica.hbci.rmi.SammelLastBuchung;
 import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
+import de.willuhn.jameica.hbci.rmi.SammelUeberweisungBuchung;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -31,7 +31,7 @@ import de.willuhn.util.I18N;
  * Controller fuer den Dialog "Buchung einer Sammellastschrift bearbeiten".
  * @author willuhn
  */
-public class SammelLastBuchungControl extends AbstractSammelTransferBuchungControl
+public class SammelUeberweisungBuchungControl extends AbstractSammelTransferBuchungControl
 {
 
 	// Fach-Objekte
@@ -43,7 +43,7 @@ public class SammelLastBuchungControl extends AbstractSammelTransferBuchungContr
    * ct.
    * @param view
    */
-  public SammelLastBuchungControl(AbstractView view)
+  public SammelUeberweisungBuchungControl(AbstractView view)
   {
     super(view);
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
@@ -56,7 +56,7 @@ public class SammelLastBuchungControl extends AbstractSammelTransferBuchungContr
 	{
 		if (this.buchung != null)
 			return this.buchung;
-		this.buchung = (SammelLastBuchung) this.getCurrentObject();
+		this.buchung = (SammelUeberweisungBuchung) this.getCurrentObject();
 		return this.buchung;
 	}
 
@@ -113,7 +113,7 @@ public class SammelLastBuchungControl extends AbstractSammelTransferBuchungContr
 			getBuchung().transactionCommit();
       // BUGZILLA 116 http://www.willuhn.de/bugzilla/show_bug.cgi?id=116
       if (next)
-        new SammelLastBuchungNew().handleAction(getBuchung().getSammelTransfer());
+        new SammelUeberweisungBuchungNew().handleAction(getBuchung().getSammelTransfer());
 		}
 		catch (ApplicationException e)
 		{
@@ -142,29 +142,8 @@ public class SammelLastBuchungControl extends AbstractSammelTransferBuchungContr
 }
 
 /*****************************************************************************
- * $Log: SammelLastBuchungControl.java,v $
- * Revision 1.8  2005/09/30 00:08:51  willuhn
+ * $Log: SammelUeberweisungBuchungControl.java,v $
+ * Revision 1.1  2005/09/30 00:08:51  willuhn
  * @N SammelUeberweisungen (merged with SammelLastschrift)
- *
- * Revision 1.7  2005/08/22 10:36:38  willuhn
- * @N bug 115, 116
- *
- * Revision 1.6  2005/07/04 12:41:39  web0
- * @B bug 90
- *
- * Revision 1.5  2005/07/04 11:36:53  web0
- * @B bug 89
- *
- * Revision 1.4  2005/04/05 21:51:54  web0
- * @B Begrenzung aller BLZ-Eingaben auf 8 Zeichen
- *
- * Revision 1.3  2005/03/09 01:07:02  web0
- * @D javadoc fixes
- *
- * Revision 1.2  2005/03/05 19:11:25  web0
- * @N SammelLastschrift-Code complete
- *
- * Revision 1.1  2005/03/02 17:59:31  web0
- * @N some refactoring
  *
 *****************************************************************************/

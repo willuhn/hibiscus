@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/SammelLastBuchung.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/03/05 19:11:25 $
- * $Author: web0 $
+ * $Revision: 1.4 $
+ * $Date: 2005/09/30 00:08:50 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -12,140 +12,20 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.rmi;
 
-import java.rmi.RemoteException;
-
-import de.willuhn.datasource.rmi.DBObject;
 
 /**
  * Interface fuer eine einzelne Buchung einer Sammellastschrift.
  */
-public interface SammelLastBuchung extends DBObject
+public interface SammelLastBuchung extends SammelTransferBuchung, Duplicatable
 {
-	/**
-	 * Liefert die zugeordnete Sammellastschrift.
-   * @return Sammellastschrift.
-   * @throws RemoteException
-   */
-  public SammelLastschrift getSammelLastschrift() throws RemoteException;
-
-	/**
-	 * Legt die zugehoerige Sammellastschrift fest.
-   * @param s Sammellastschrift.
-   * @throws RemoteException
-   */
-  public void setSammelLastschrift(SammelLastschrift s) throws RemoteException;
-
-	/**
-	 * Liefert die Kontonummer des Gegenkontos.
-   * @return Kontonummer.
-   * @throws RemoteException
-   */
-  public String getGegenkontoNummer() throws RemoteException;
-	
-	/**
-	 * Liefert die BLZ des Gegenkontos.
-   * @return BLZ.
-   * @throws RemoteException
-   */
-  public String getGegenkontoBLZ() throws RemoteException;
-
-	/**
-	 * Liefert den Namen des Kontoinhabers des Gegenkontos.
-   * @return Name.
-   * @throws RemoteException
-   */
-  public String getGegenkontoName() throws RemoteException;
-
-	/**
-	 * Speichert die Kontonummer des Gegenkontos.
-   * @param kontonummer
-   * @throws RemoteException
-   */
-  public void setGegenkontoNummer(String kontonummer) throws RemoteException;
-	
-	/**
-	 * Speichert die BLZ des Gegenkontos.
-   * @param blz
-   * @throws RemoteException
-   */
-  public void setGegenkontoBLZ(String blz) throws RemoteException;
-
-	/**
-	 * Speichert den Namen des Kontoinhabers des Gegenkontos.
-   * @param name
-   * @throws RemoteException
-   */
-  public void setGegenkontoName(String name) throws RemoteException;
-
-	/**
-	 * Speichert alle drei Eigenschaften des Gegenkontos mit denen der Adresse. 
-   * @param gegenkonto Adresse.
-   * @throws RemoteException
-   */
-  public void setGegenkonto(Adresse gegenkonto) throws RemoteException;
-
-	/**
-	 * Liefert das Gegenkonto als Adress-Objekt.
-	 * Das Adress-Objekt muss nicht zwangslaeufig in der Datenbank existieren.
-   * @return Adresse.
-   * @throws RemoteException
-   */
-  public Adresse getGegenkonto() throws RemoteException;
-	
-	/**
-	 * Liefert den Betrag.
-	 * @return Betrag.
-	 * @throws RemoteException
-	 */
-	public double getBetrag() throws RemoteException;
-	
-	/**
-	 * Liefert die Zeile 1 des Verwendungszwecks.
-	 * @return Zeile 1 des Verwendungszwecks.
-	 * @throws RemoteException
-	 */
-	public String getZweck() throws RemoteException;
-	
-	/**
-	 * Liefert die Zeile 2 des Verwendungszwecks.
-	 * @return Zeile 2 des Verwendungszwecks.
-	 * @throws RemoteException
-	 */
-	public String getZweck2() throws RemoteException;
-
-	/**
-	 * Speichert den zu ueberweisenden Betrag.
-	 * @param betrag Betrag.
-	 * @throws RemoteException
-	 */
-	public void setBetrag(double betrag) throws RemoteException;
-	
-	/**
-	 * Speichert den Zweck der Ueberweisung.
-	 * @param zweck Zweck der Ueberweisung.
-	 * @throws RemoteException
-	 */
-	public void setZweck(String zweck) throws RemoteException;
-	
-	/**
-	 * Speichert Zeile 2 des Verwendungszwecks.
-	 * @param zweck2 Zeile 2 des Verwendungszwecks.
-	 * @throws RemoteException
-	 */
-	public void setZweck2(String zweck2) throws RemoteException;
-
-	/**
-	 * Dupliziert die Buchung.
-	 * @return neue Buchung mit den gleichen Eigenschaften.
-	 * @throws RemoteException
-	 */
-	public SammelLastBuchung duplicate() throws RemoteException;
-
 }
 
 
 /**********************************************************************
  * $Log: SammelLastBuchung.java,v $
+ * Revision 1.4  2005/09/30 00:08:50  willuhn
+ * @N SammelUeberweisungen (merged with SammelLastschrift)
+ *
  * Revision 1.3  2005/03/05 19:11:25  web0
  * @N SammelLastschrift-Code complete
  *

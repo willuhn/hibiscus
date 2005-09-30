@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.25 $
- * $Date: 2005/08/01 23:27:42 $
- * $Author: web0 $
+ * $Revision: 1.26 $
+ * $Date: 2005/09/30 00:08:50 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -25,8 +25,8 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
-import de.willuhn.jameica.hbci.rmi.SammelLastBuchung;
-import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
+import de.willuhn.jameica.hbci.rmi.SammelTransfer;
+import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.util.ApplicationException;
 
@@ -271,19 +271,19 @@ public class Converter {
 	}
 
 	/**
-	 * Konvertiert eine Sammel-Lastschrift in DTAUS-Format.
-   * @param s Sammel-Lastschrift.
+	 * Konvertiert einen Sammel-Auftrag in DTAUS-Format.
+   * @param s Sammel-Auftrag.
    * @return DTAUS-Repraesentation.
    * @throws RemoteException
    */
-  public static DTAUS HibiscusSammelLastschrift2DTAUS(SammelLastschrift s) throws RemoteException
+  public static DTAUS HibiscusSammelTransfer2DTAUS(SammelTransfer s) throws RemoteException
 	{
 		DTAUS dtaus = new DTAUS(HibiscusKonto2HBCIKonto(s.getKonto()),DTAUS.TYPE_DEBIT);
 		DBIterator buchungen = s.getBuchungen();
-		SammelLastBuchung b = null;
+		SammelTransferBuchung b = null;
 		while (buchungen.hasNext())
 		{
-			b = (SammelLastBuchung) buchungen.next();
+			b = (SammelTransferBuchung) buchungen.next();
 			final DTAUS.Transaction tr = dtaus.new Transaction();
 			tr.otherAccount = HibiscusAdresse2HBCIKonto(b.getGegenkonto());
 			tr.value = new Value(b.getBetrag());
@@ -295,11 +295,15 @@ public class Converter {
 		}
 		return dtaus;
 	}
+  
 }
 
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.26  2005/09/30 00:08:50  willuhn
+ * @N SammelUeberweisungen (merged with SammelLastschrift)
+ *
  * Revision 1.25  2005/08/01 23:27:42  web0
  * *** empty log message ***
  *

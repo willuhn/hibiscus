@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/SammelLastschrift.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/08/22 10:36:38 $
+ * $Revision: 1.5 $
+ * $Date: 2005/09/30 00:08:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,62 +12,20 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.rmi;
 
-import java.rmi.RemoteException;
-
-import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.datasource.rmi.DBObject;
 
 /**
  * Interface fuer Sammellastschriften.
  */
-public interface SammelLastschrift extends DBObject, Terminable, Duplicatable
+public interface SammelLastschrift extends SammelTransfer
 {
-	/**
-	 * Liefert eine Liste der Buchungen fuer diese Sammellastschrift.
-   * @return Liste der Buchungen.
-   * @throws RemoteException
-   */
-  public DBIterator getBuchungen() throws RemoteException;
-
-  /**
-   * Liefert die Summe der enthaltenen Buchungen.
-   * @return Summe der enthaltenen Buchungen.
-   * @throws RemoteException
-   */
-  public double getSumme() throws RemoteException;
-
-  /**
-	 * Liefert das Konto, ueber das die Sammellastschrift gutgeschrieben wird.
-   * @return Konto.
-   * @throws RemoteException
-   */
-  public Konto getKonto() throws RemoteException;
-
-	/**
-	 * Speichert das Konto, ueber das die Sammellastschrift gutgeschrieben werden soll.
-   * @param konto Konto.
-   * @throws RemoteException
-   */
-  public void setKonto(Konto konto) throws RemoteException;
-
-  /**
-   * Liefert eine Bezeichnung der Sammellastschrift.
-   * @return Bezeichnung.
-   * @throws RemoteException
-   */
-  public String getBezeichnung() throws RemoteException;
-
-  /**
-   * Speichert die Bezeichnung.
-   * @param bezeichnung
-   * @throws RemoteException
-   */
-  public void setBezeichnung(String bezeichnung) throws RemoteException;
 }
 
 
 /**********************************************************************
  * $Log: SammelLastschrift.java,v $
+ * Revision 1.5  2005/09/30 00:08:50  willuhn
+ * @N SammelUeberweisungen (merged with SammelLastschrift)
+ *
  * Revision 1.4  2005/08/22 10:36:38  willuhn
  * @N bug 115, 116
  *
