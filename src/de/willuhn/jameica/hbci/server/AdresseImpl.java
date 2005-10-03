@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AdresseImpl.java,v $
- * $Revision: 1.8 $
- * $Date: 2005/08/22 12:23:18 $
+ * $Revision: 1.9 $
+ * $Date: 2005/10/03 16:17:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.hbci.rmi.SammelLastBuchung;
+import de.willuhn.jameica.hbci.rmi.SammelUeberweisungBuchung;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -171,11 +172,26 @@ public class AdresseImpl extends AbstractDBObject implements Adresse {
     return buchungen;
   }
 
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Adresse#getSammelUeberweisungBuchungen()
+   */
+  public DBIterator getSammelUeberweisungBuchungen() throws RemoteException
+  {
+    DBIterator buchungen = getService().createList(SammelUeberweisungBuchung.class);
+    buchungen.addFilter("gegenkonto_nr = '" + getKontonummer() + "'");
+    buchungen.addFilter("gegenkonto_blz = '" + getBLZ() + "'");
+    buchungen.setOrder(" ORDER BY id DESC");
+    return buchungen;
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: AdresseImpl.java,v $
+ * Revision 1.9  2005/10/03 16:17:57  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.8  2005/08/22 12:23:18  willuhn
  * @N bug 107
  *

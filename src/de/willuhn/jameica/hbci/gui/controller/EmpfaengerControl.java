@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EmpfaengerControl.java,v $
- * $Revision: 1.35 $
- * $Date: 2005/09/30 00:08:51 $
+ * $Revision: 1.36 $
+ * $Date: 2005/10/03 16:17:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,6 +30,7 @@ import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerNew;
 import de.willuhn.jameica.hbci.gui.action.SammelLastBuchungNew;
+import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungBuchungNew;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.parts.SammelTransferBuchungList;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzList;
@@ -55,6 +56,7 @@ public class EmpfaengerControl extends AbstractControl {
   private Part list         = null;
   private Part umsatzList   = null;
   private Part sammelList   = null;
+  private Part sammelList2  = null;
 
 	private I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
@@ -126,6 +128,21 @@ public class EmpfaengerControl extends AbstractControl {
 
     this.sammelList = new SammelTransferBuchungList(getEmpfaenger().getSammellastBuchungen(),new SammelLastBuchungNew());
     return this.sammelList;
+  }
+
+  /**
+   * Liefert eine Liste von allen Sammel-Ueberweisung-Buchungen, die an diese
+   * Adresse ueberwiesen wurden.
+   * @return Tabelle.
+   * @throws RemoteException
+   */
+  public Part getSammelUeberweisungListe() throws RemoteException
+  {
+    if (this.sammelList2 != null)
+      return this.sammelList2;
+
+    this.sammelList2 = new SammelTransferBuchungList(getEmpfaenger().getSammelUeberweisungBuchungen(),new SammelUeberweisungBuchungNew());
+    return this.sammelList2;
   }
 
   /**
@@ -241,6 +258,9 @@ public class EmpfaengerControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: EmpfaengerControl.java,v $
+ * Revision 1.36  2005/10/03 16:17:57  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.35  2005/09/30 00:08:51  willuhn
  * @N SammelUeberweisungen (merged with SammelLastschrift)
  *

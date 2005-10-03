@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Attic/Adresse.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/08/22 12:23:18 $
+ * $Revision: 1.4 $
+ * $Date: 2005/10/03 16:17:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -92,11 +92,22 @@ public interface Adresse extends DBObject {
    * @throws RemoteException
    */
   public DBIterator getSammellastBuchungen() throws RemoteException;
+  
+  /**
+   * Liefert eine Liste von Buchungen aus Sammelueberweisungen, die an diese
+   * Adresse ueberweisen wurden.
+   * @return Liste der Buchungen.
+   * @throws RemoteException
+   */
+  public DBIterator getSammelUeberweisungBuchungen() throws RemoteException;
 }
 
 
 /**********************************************************************
  * $Log: Adresse.java,v $
+ * Revision 1.4  2005/10/03 16:17:58  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2005/08/22 12:23:18  willuhn
  * @N bug 107
  *

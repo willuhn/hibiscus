@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/EmpfaengerNew.java,v $
- * $Revision: 1.7 $
- * $Date: 2005/08/22 12:23:18 $
+ * $Revision: 1.8 $
+ * $Date: 2005/10/03 16:17:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -62,7 +62,7 @@ public class EmpfaengerNew extends AbstractView {
 		}
 
     
-    new Headline(getParent(),i18n.tr("Buchung von/an diese Adresse"));
+    new Headline(getParent(),i18n.tr("Buchungen von/an diese Adresse"));
     control.getUmsatzListe().paint(getParent());
 
     // BUGZILLA 107 http://www.willuhn.de/bugzilla/show_bug.cgi?id=107
@@ -72,8 +72,15 @@ public class EmpfaengerNew extends AbstractView {
       new Headline(getParent(),i18n.tr("Eingezogene Sammel-Lastschriften"));
       control.getSammelLastListe().paint(getParent());
     }
+    DBIterator list2 = control.getEmpfaenger().getSammelUeberweisungBuchungen();
+    if (list2.size() > 0)
+    {
+      new Headline(getParent(),i18n.tr("Sammel-Überweisungen"));
+      control.getSammelUeberweisungListe().paint(getParent());
+    }
 
-		// und noch die Abschicken-Knoepfe
+
+    // und noch die Abschicken-Knoepfe
 		ButtonArea buttonArea = new ButtonArea(getParent(),3);
 		buttonArea.addButton(i18n.tr("Zurück"),new Back());
 		buttonArea.addButton(i18n.tr("Löschen"), new EmpfaengerDelete(), control.getEmpfaenger());
@@ -98,6 +105,9 @@ public class EmpfaengerNew extends AbstractView {
 
 /**********************************************************************
  * $Log: EmpfaengerNew.java,v $
+ * Revision 1.8  2005/10/03 16:17:58  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2005/08/22 12:23:18  willuhn
  * @N bug 107
  *
