@@ -146,7 +146,7 @@
 	
     #set($lastschrift = "")
 	#foreach($buchung in $objects)
-      #set($lastschrift = $buchung.SammelLastschrift)
+      #set($lastschrift = $buchung.SammelTransfer)
 	#end
 
 	#set($konto = $lastschrift.Konto)
