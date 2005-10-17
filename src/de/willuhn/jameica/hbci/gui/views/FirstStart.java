@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/FirstStart.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/10/17 15:11:42 $
+ * $Revision: 1.3 $
+ * $Date: 2005/10/17 15:12:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,20 +13,11 @@
 
 package de.willuhn.jameica.hbci.gui.views;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.widgets.Canvas;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.parts.FormTextPart;
 import de.willuhn.jameica.gui.util.ButtonArea;
-import de.willuhn.jameica.gui.util.Font;
-import de.willuhn.jameica.gui.util.Headline;
-import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.KontoList;
 import de.willuhn.jameica.hbci.gui.action.PassportDetail;
@@ -105,6 +96,9 @@ public class FirstStart extends AbstractView
 
 /*********************************************************************
  * $Log: FirstStart.java,v $
+ * Revision 1.3  2005/10/17 15:12:14  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2005/10/17 15:11:42  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.65 $
- * $Date: 2005/10/17 14:15:01 $
+ * $Revision: 1.66 $
+ * $Date: 2005/10/17 15:11:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,11 +25,12 @@ import org.kapott.hbci.callback.HBCICallbackConsole;
 import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.db.EmbeddedDatabase;
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.extension.Extendable;
 import de.willuhn.jameica.gui.extension.Extension;
 import de.willuhn.jameica.gui.extension.ExtensionRegistry;
 import de.willuhn.jameica.gui.internal.views.Start;
-import de.willuhn.jameica.hbci.gui.views.Welcome;
+import de.willuhn.jameica.hbci.gui.action.Welcome;
 import de.willuhn.jameica.hbci.io.IORegistry;
 import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.system.Application;
@@ -272,15 +273,11 @@ public class HBCI extends AbstractPlugin
         {
           try
           {
-            Start start = (Start) extendable;
-            Welcome welcome = new Welcome();
-            welcome.setParent(start.getParent());
-            welcome.setCurrentObject(start.getCurrentObject());
-            welcome.bind();
+            new Welcome().handleAction(extendable);
           }
-          catch(Exception ex)
+          catch (ApplicationException e)
           {
-            Logger.error("error while extending start page",ex);
+            GUI.getStatusBar().setErrorText(e.getMessage());
           }
         }
       };
@@ -375,6 +372,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.66  2005/10/17 15:11:42  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.65  2005/10/17 14:15:01  willuhn
  * @N FirstStart
  *
