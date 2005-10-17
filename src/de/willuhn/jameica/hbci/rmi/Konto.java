@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Konto.java,v $
- * $Revision: 1.27 $
- * $Date: 2005/07/29 16:48:13 $
- * $Author: web0 $
+ * $Revision: 1.28 $
+ * $Date: 2005/10/17 13:01:59 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -235,11 +235,33 @@ public interface Konto extends DBObject,Checksum
    * @throws RemoteException
    */
   public void addToProtokoll(String kommentar, int protokollTyp) throws RemoteException;
+  
+  /**
+   * Liefert die Ausgaben auf dem Konto im angegebenen Zeitraum.
+   * @param from Start-Datum.
+   * @param to End-Datum.
+   * @return Summe der Ausgaben.
+   * @throws RemoteException
+   */
+  public double getAusgaben(Date from, Date to) throws RemoteException;
+  
+  /**
+   * Liefert die Einnahmen auf dem Konto im angegebenen Zeitraum.
+   * @param from Start-Datum.
+   * @param to End-Datum.
+   * @return Summe der Einnahmen.
+   * @throws RemoteException
+   */
+  public double getEinnahmen(Date from, Date to) throws RemoteException;
 }
 
 
 /**********************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.28  2005/10/17 13:01:59  willuhn
+ * @N Synchronize auf Start-Seite verschoben
+ * @N Gesamt-Vermoegensuebersicht auf Start-Seite
+ *
  * Revision 1.27  2005/07/29 16:48:13  web0
  * @N Synchronize
  *

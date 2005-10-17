@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/Welcome.java,v $
- * $Revision: 1.22 $
- * $Date: 2005/06/21 20:25:10 $
- * $Author: web0 $
+ * $Revision: 1.23 $
+ * $Date: 2005/10/17 13:01:59 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -13,15 +13,17 @@
 
 package de.willuhn.jameica.hbci.gui.views;
 
-import org.eclipse.swt.SWTError;
-
 import de.willuhn.jameica.gui.AbstractView;
+import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.controller.WelcomeControl;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -38,21 +40,40 @@ public class Welcome extends AbstractView
   {
 
 		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-		WelcomeControl control = new WelcomeControl(this);
+    GUI.getView().setTitle(i18n.tr("Hibiscus - HBCI-Onlinebanking"));
 
-		GUI.getView().setTitle(i18n.tr("Hibiscus - HBCI-Onlinebanking"));
+    final WelcomeControl control = new WelcomeControl(this);
 
-    LabelGroup group = new LabelGroup(getParent(),i18n.tr("Offene Überweisungen"));
-    group.addPart(control.getOffeneUeberweisungen());
+    LabelGroup group = new LabelGroup(getParent(),i18n.tr("Gesamt-Übersicht"));
+    group.addLabelPair(i18n.tr("Saldo über alle Konten") + ":", control.getSaldo());
+    group.addSeparator();
+    group.addLabelPair(i18n.tr("Beginn des Zeitraumes") + ":", control.getStart());
+    group.addLabelPair(i18n.tr("Ende des Zeitraumes") + ":", control.getEnd());
+    group.addLabelPair(i18n.tr("Einnahmen") + ":", control.getEinnahmen());
+    group.addLabelPair(i18n.tr("Ausgaben") + ":", control.getAusgaben());
+    group.addSeparator();
+    group.addLabelPair(i18n.tr("Bilanz") + ":", control.getBilanz());
+    
+    new Headline(getParent(),i18n.tr("Konten synchronisieren"));
+    control.getKontoList().paint(getParent());
 
-    try
-    {
-      control.getQuickLinks().paint(getParent());
-    }
-    catch (SWTError e)
-    {
-      Logger.error("unable to paint quicklinks. this seems to be a known bug in the sax parser",e);
-    }
+    new Headline(getParent(),i18n.tr("Offene Überweisungen"));
+    control.getOffeneUeberweisungen().paint(getParent());
+
+    Container c = new LabelGroup(getParent(),i18n.tr("Optionen"));
+    
+    c.addCheckbox(control.getSyncUeb(),i18n.tr("Offene fällige Überweisungen senden"));
+    c.addCheckbox(control.getSyncLast(),i18n.tr("Offene fällige Lastschriften senden"));
+    c.addCheckbox(control.getSyncDauer(),i18n.tr("Daueraufträge synchronisieren"));
+    
+    ButtonArea b = new ButtonArea(getParent(),2);
+    b.addButton(i18n.tr("Zurück"), new Back());
+    b.addButton(i18n.tr("Synchronisierung starten"),new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        control.handleStart();
+      }
+    },null,true);
   }
 
   /**
@@ -67,6 +88,10 @@ public class Welcome extends AbstractView
 
 /**********************************************************************
  * $Log: Welcome.java,v $
+ * Revision 1.23  2005/10/17 13:01:59  willuhn
+ * @N Synchronize auf Start-Seite verschoben
+ * @N Gesamt-Vermoegensuebersicht auf Start-Seite
+ *
  * Revision 1.22  2005/06/21 20:25:10  web0
  * *** empty log message ***
  *

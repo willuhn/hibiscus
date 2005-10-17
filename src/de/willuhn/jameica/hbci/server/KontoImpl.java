@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.56 $
- * $Date: 2005/08/01 16:10:41 $
- * $Author: web0 $
+ * $Revision: 1.57 $
+ * $Date: 2005/10/17 13:01:59 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -13,6 +13,7 @@
 package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.zip.CRC32;
 
@@ -20,6 +21,7 @@ import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
@@ -491,11 +493,73 @@ public class KontoImpl extends AbstractDBObject implements Konto {
   {
     setAttribute("synchronize", new Integer(b ? 1 : 0));
   }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Konto#getAusgaben(java.util.Date, java.util.Date)
+   */
+  public double getAusgaben(Date from, Date to) throws RemoteException
+  {
+    return getSumme(from, to, true);
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Konto#getEinnahmen(java.util.Date, java.util.Date)
+   */
+  public double getEinnahmen(Date from, Date to) throws RemoteException
+  {
+    return getSumme(from, to, false);
+  }
+
+  /**
+   * Hilfsfunktion fuer Berechnung der Einnahmen und Ausgaben.
+   * @param from
+   * @param to
+   * @param ausgaben
+   * @return Summe.
+   * @throws RemoteException
+   */
+  private double getSumme(Date from, Date to, boolean ausgaben) throws RemoteException
+  {
+    // Zuruecksetzen der Uhrzeit auf 0:00
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(from);
+    cal.set(Calendar.HOUR_OF_DAY,0);
+    cal.set(Calendar.MINUTE,0);
+    cal.set(Calendar.SECOND,0);
+    
+    Date start = cal.getTime();
+    
+    // Setzen der Uhrzeit auf 23:59:59
+    cal.setTime(to);
+    cal.set(Calendar.HOUR_OF_DAY,23);
+    cal.set(Calendar.MINUTE,59);
+    cal.set(Calendar.SECOND,59);
+    
+    Date end = cal.getTime();
+
+    double sum = 0d;
+    DBIterator buchungen = Settings.getDBService().createList(Umsatz.class);
+    buchungen.addFilter("konto_id = " + this.getID());
+    buchungen.addFilter("tonumber(datum) >= " + start.getTime() + " AND tonumber(datum) <= " + end.getTime());
+    if (ausgaben) buchungen.addFilter("betrag < 0");
+    else          buchungen.addFilter("betrag > 0");
+    while (buchungen.hasNext())
+    {
+      Umsatz u = (Umsatz) buchungen.next();
+      sum += u.getBetrag();
+    }
+    return sum;
+    
+  }
 }
 
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.57  2005/10/17 13:01:59  willuhn
+ * @N Synchronize auf Start-Seite verschoben
+ * @N Gesamt-Vermoegensuebersicht auf Start-Seite
+ *
  * Revision 1.56  2005/08/01 16:10:41  web0
  * @N synchronize
  *

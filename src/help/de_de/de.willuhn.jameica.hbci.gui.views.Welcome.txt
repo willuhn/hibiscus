@@ -4,8 +4,19 @@
 	</p>
 	
 	<p>
-		In dieser Liste sehen Sie alle noch nicht ausgeführten
-		Überweisungen. Überfällige Buchungen werden hierbei
-		hervorgehoben.
+	  Auf dieser Seite können Sie alle regelmässig auszuführenden
+	  Geschäftsvorfälle (Salden aller Konten abrufen, offene Überweisungen
+	  absenden, etc.) &quot;in einem Rutsch&quot; ausführen.
+	</p>
+	
+	<p>
+	  <b>Hinweis:</b> Sie können die Liste der zu synchronisierenden Konten
+	  ändern, indem Sie das betreffende Konto öffnen und die Option
+	  <b>Konto in Synchronisierung einbeziehen</b> aktivieren/deaktivieren.
+	</p>
+
+	<p>
+		In der Liste &quot;Offene Überweisungen&quot; sehen Sie alle noch nicht ausgeführten
+		Überweisungen. Fällige Buchungen werden hierbei hervorgehoben.
 	</p>
 </form>
