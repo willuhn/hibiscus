@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/FirstStart.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/10/17 14:15:01 $
+ * $Revision: 1.2 $
+ * $Date: 2005/10/17 15:11:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,11 +13,20 @@
 
 package de.willuhn.jameica.hbci.gui.views;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.widgets.Canvas;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.parts.FormTextPart;
 import de.willuhn.jameica.gui.util.ButtonArea;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.Font;
+import de.willuhn.jameica.gui.util.Headline;
+import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.KontoList;
 import de.willuhn.jameica.hbci.gui.action.PassportDetail;
@@ -42,14 +51,17 @@ public class FirstStart extends AbstractView
   {
     final I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-    LabelGroup firstStart = new LabelGroup(getParent(),i18n.tr("Erste Schritte"));
-    firstStart.addText(i18n.tr("Sie starten Hibiscus zum ersten Mal. Bitte richten Sie " +
+    GUI.getView().setTitle(i18n.tr("Hibiscus - Erste Schritte"));
+
+    FormTextPart text = new FormTextPart();
+    text.setText("<form><p>" + i18n.tr("Sie starten Hibiscus zum ersten Mal. Bitte richten Sie " +
         "zunächst ein Sicherheitsmedium (Chipkarte, Schlüsseldiskette oder PIN/TAN) ein. " +
         "Wechseln Sie anschliessend zur Konten-Übersicht und rufen Sie die verfügbaren Konten ab " +
         "oder richten Sie diese manuell ein, falls Ihre Bank das automatische Abrufen der " +
-        "HBCI-Konten nicht unterstützt."), true);
+        "HBCI-Konten nicht unterstützt.") + "</p></form>");
+    text.paint(getParent());
     
-    ButtonArea buttons = firstStart.createButtonArea(2);
+    ButtonArea buttons = new ButtonArea(getParent(),2);
     Action a = new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -93,6 +105,9 @@ public class FirstStart extends AbstractView
 
 /*********************************************************************
  * $Log: FirstStart.java,v $
+ * Revision 1.2  2005/10/17 15:11:42  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2005/10/17 14:15:01  willuhn
  * @N FirstStart
  *
