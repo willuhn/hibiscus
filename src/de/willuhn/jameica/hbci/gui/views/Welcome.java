@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/Welcome.java,v $
- * $Revision: 1.23 $
- * $Date: 2005/10/17 13:01:59 $
+ * $Revision: 1.24 $
+ * $Date: 2005/10/17 14:15:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,7 @@
 
 package de.willuhn.jameica.hbci.gui.views;
 
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -21,8 +22,10 @@ import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.controller.WelcomeControl;
+import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -39,9 +42,17 @@ public class Welcome extends AbstractView
   public void bind() throws Exception
   {
 
-		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+		final I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     GUI.getView().setTitle(i18n.tr("Hibiscus - HBCI-Onlinebanking"));
 
+    // Wenn noch keine Konten existieren, dann Anleitung zum Einrichten anzeigen
+    DBIterator konten = Settings.getDBService().createList(Konto.class);
+    if (konten.size() == 0)
+    {
+      GUI.startView(FirstStart.class,null);
+      return;
+    }
+    
     final WelcomeControl control = new WelcomeControl(this);
 
     LabelGroup group = new LabelGroup(getParent(),i18n.tr("Gesamt-Übersicht"));
@@ -88,6 +99,9 @@ public class Welcome extends AbstractView
 
 /**********************************************************************
  * $Log: Welcome.java,v $
+ * Revision 1.24  2005/10/17 14:15:01  willuhn
+ * @N FirstStart
+ *
  * Revision 1.23  2005/10/17 13:01:59  willuhn
  * @N Synchronize auf Start-Seite verschoben
  * @N Gesamt-Vermoegensuebersicht auf Start-Seite

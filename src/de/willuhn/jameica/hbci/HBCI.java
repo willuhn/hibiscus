@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.64 $
- * $Date: 2005/10/17 13:44:55 $
+ * $Revision: 1.65 $
+ * $Date: 2005/10/17 14:15:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -306,7 +306,7 @@ public class HBCI extends AbstractPlugin
 			throw new ApplicationException(getResources().getI18N().tr("Fehler beim Erstellen der Datenbank"),e);
     }
   }
-
+  
   /**
    * @see de.willuhn.jameica.plugin.AbstractPlugin#update(double)
    */
@@ -375,6 +375,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.65  2005/10/17 14:15:01  willuhn
+ * @N FirstStart
+ *
  * Revision 1.64  2005/10/17 13:44:55  willuhn
  * *** empty log message ***
  *
