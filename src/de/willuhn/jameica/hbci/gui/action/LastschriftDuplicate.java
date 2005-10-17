@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/LastschriftDuplicate.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/01/19 00:16:04 $
+ * $Revision: 1.2 $
+ * $Date: 2005/10/17 22:00:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import java.rmi.RemoteException;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.views.LastschriftNew;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -67,6 +68,9 @@ public class LastschriftDuplicate implements Action
 
 /**********************************************************************
  * $Log: LastschriftDuplicate.java,v $
+ * Revision 1.2  2005/10/17 22:00:44  willuhn
+ * @B bug 143
+ *
  * Revision 1.1  2005/01/19 00:16:04  willuhn
  * @N Lastschriften
  *

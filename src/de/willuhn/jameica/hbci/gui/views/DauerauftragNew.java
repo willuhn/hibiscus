@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/DauerauftragNew.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/08/01 23:27:42 $
- * $Author: web0 $
+ * $Revision: 1.5 $
+ * $Date: 2005/10/17 22:00:44 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -46,9 +46,9 @@ public class DauerauftragNew extends AbstractView
 		LabelGroup konten = new LabelGroup(getParent(),i18n.tr("Konten"));
 		
 		konten.addLabelPair(i18n.tr("persönliches Konto"),				control.getKontoAuswahl());		
-		konten.addLabelPair(i18n.tr("Konto des Empfängers"),			control.getEmpfaengerKonto());		
-		konten.addLabelPair(i18n.tr("BLZ des Empfängers"),				control.getEmpfaengerBlz());		
-		konten.addLabelPair(i18n.tr("Name des Empfängers"),			control.getEmpfaengerName());
+    konten.addLabelPair(i18n.tr("Name Empfänger"),            control.getEmpfaengerName());
+		konten.addLabelPair(i18n.tr("Kontonummer Empfänger"),  		control.getEmpfaengerKonto());		
+		konten.addLabelPair(i18n.tr("BLZ Empfänger"),		       		control.getEmpfaengerBlz());		
 		konten.addCheckbox(control.getStoreEmpfaenger(),i18n.tr("Empfängerdaten im Adressbuch speichern"));
 
 		LabelGroup details = new LabelGroup(getParent(),i18n.tr("Details"));
@@ -101,6 +101,9 @@ public class DauerauftragNew extends AbstractView
 
 /**********************************************************************
  * $Log: DauerauftragNew.java,v $
+ * Revision 1.5  2005/10/17 22:00:44  willuhn
+ * @B bug 143
+ *
  * Revision 1.4  2005/08/01 23:27:42  web0
  * *** empty log message ***
  *
