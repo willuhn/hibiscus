@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/WelcomeControl.java,v $
- * $Revision: 1.21 $
- * $Date: 2005/10/17 13:01:59 $
+ * $Revision: 1.22 $
+ * $Date: 2005/10/17 13:44:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -300,6 +300,7 @@ public class WelcomeControl extends AbstractControl {
 		offeneUeberweisungen.addColumn(i18n.tr("Termin"),"termin", new DateFormatter(HBCI.LONGDATEFORMAT));
 
 		offeneUeberweisungen.setContextMenu(new UeberweisungList());
+    offeneUeberweisungen.setSummary(false);
 
 		return offeneUeberweisungen;
 	}
@@ -391,6 +392,9 @@ public class WelcomeControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: WelcomeControl.java,v $
+ * Revision 1.22  2005/10/17 13:44:55  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.21  2005/10/17 13:01:59  willuhn
  * @N Synchronize auf Start-Seite verschoben
  * @N Gesamt-Vermoegensuebersicht auf Start-Seite
