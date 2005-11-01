@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/org/kapott/hbci/comm/FilterHibiscus/Attic/Base64.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/05/03 22:43:19 $
- * $Author: web0 $
+ * $Revision: 1.2 $
+ * $Date: 2005/11/01 23:02:06 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -23,6 +23,7 @@ import de.willuhn.logging.Logger;
  * Implementierung eines alternativen Base64-Filters, da HBCIUtils.decodeBase64(byte[])
  * im 2.5er Snapshot von August 2004 leider ein Fehler enthalten ist. Die Klasse
  * wird via Filter.getInstance(String) instanziiert.
+ * @deprecated Kann eigentlich raus. Hat aber noch Bestandsschutz fuer existierende Installationen.
  */
 public class Base64 extends Filter
 {
@@ -68,6 +69,9 @@ public class Base64 extends Filter
 
 /**********************************************************************
  * $Log: Base64.java,v $
+ * Revision 1.2  2005/11/01 23:02:06  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2005/05/03 22:43:19  web0
  * @B Bug 39
  *
