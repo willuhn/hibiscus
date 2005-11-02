@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.26 $
- * $Date: 2005/09/30 00:08:50 $
+ * $Revision: 1.27 $
+ * $Date: 2005/11/02 17:33:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,8 +25,10 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
+import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
+import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.util.ApplicationException;
 
@@ -270,15 +272,45 @@ public class Converter {
 		return e;  	
 	}
 
-	/**
-	 * Konvertiert einen Sammel-Auftrag in DTAUS-Format.
-   * @param s Sammel-Auftrag.
+  /**
+   * Konvertiert eine Sammel-Ueberweisung in DTAUS-Format.
+   * @param su Sammel-Ueberweisung.
    * @return DTAUS-Repraesentation.
    * @throws RemoteException
    */
-  public static DTAUS HibiscusSammelTransfer2DTAUS(SammelTransfer s) throws RemoteException
+  public static DTAUS HibiscusSammelUeberweisung2DTAUS(SammelUeberweisung su) throws RemoteException
+  {
+    // TYPE_CREDIT = Sammelüberweisung
+    // TYPE_DEBIT = Sammellastschrift
+    return HibiscusSammelTransfer2DTAUS(su, DTAUS.TYPE_CREDIT);
+  }
+
+  /**
+   * Konvertiert eine Sammel-Lastschrift in DTAUS-Format.
+   * @param sl Sammel-Lastschrift.
+   * @return DTAUS-Repraesentation.
+   * @throws RemoteException
+   */
+  public static DTAUS HibiscusSammelLastschrift2DTAUS(SammelLastschrift sl) throws RemoteException
+  {
+    // TYPE_CREDIT = Sammelüberweisung
+    // TYPE_DEBIT = Sammellastschrift
+    return HibiscusSammelTransfer2DTAUS(sl, DTAUS.TYPE_DEBIT);
+  }
+
+  /**
+   * Hilfsfunktion. Ist private, damit niemand aus Versehen den falschen Type angibt.
+   * @param s Sammel-Transfer.
+   * @param type Art des Transfers.
+   * @see DTAUS#TYPE_CREDIT
+   * @see DTAUS#TYPE_DEBIT
+   * @return DTAUS-Repraesentation.
+   * @throws RemoteException
+   */
+  private static DTAUS HibiscusSammelTransfer2DTAUS(SammelTransfer s, int type) throws RemoteException
 	{
-		DTAUS dtaus = new DTAUS(HibiscusKonto2HBCIKonto(s.getKonto()),DTAUS.TYPE_DEBIT);
+
+    DTAUS dtaus = new DTAUS(HibiscusKonto2HBCIKonto(s.getKonto()),type);
 		DBIterator buchungen = s.getBuchungen();
 		SammelTransferBuchung b = null;
 		while (buchungen.hasNext())
@@ -301,6 +333,9 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.27  2005/11/02 17:33:31  willuhn
+ * @B fataler Bug in Sammellastschrift/Sammelueberweisung
+ *
  * Revision 1.26  2005/09/30 00:08:50  willuhn
  * @N SammelUeberweisungen (merged with SammelLastschrift)
  *

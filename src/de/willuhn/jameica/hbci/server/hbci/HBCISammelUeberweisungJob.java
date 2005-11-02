@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCISammelUeberweisungJob.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/09/30 00:08:51 $
+ * $Revision: 1.2 $
+ * $Date: 2005/11/02 17:33:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.server.hbci;
 import java.rmi.RemoteException;
 
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
+import de.willuhn.jameica.hbci.server.Converter;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -32,6 +33,7 @@ public class HBCISammelUeberweisungJob extends AbstractHBCISammelTransferJob
   public HBCISammelUeberweisungJob(SammelUeberweisung ueberweisung) throws ApplicationException, RemoteException
 	{
     super(ueberweisung);
+    setJobParam("data",Converter.HibiscusSammelUeberweisung2DTAUS(ueberweisung).toString());
 	}
 
   /**
@@ -45,6 +47,9 @@ public class HBCISammelUeberweisungJob extends AbstractHBCISammelTransferJob
 
 /**********************************************************************
  * $Log: HBCISammelUeberweisungJob.java,v $
+ * Revision 1.2  2005/11/02 17:33:31  willuhn
+ * @B fataler Bug in Sammellastschrift/Sammelueberweisung
+ *
  * Revision 1.1  2005/09/30 00:08:51  willuhn
  * @N SammelUeberweisungen (merged with SammelLastschrift)
  *

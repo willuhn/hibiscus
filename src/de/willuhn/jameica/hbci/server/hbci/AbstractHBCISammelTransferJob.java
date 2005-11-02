@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCISammelTransferJob.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/09/30 00:08:51 $
+ * $Revision: 1.2 $
+ * $Date: 2005/11/02 17:33:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -36,6 +36,8 @@ public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
 
   /**
 	 * ct.
+   * Achtung. Der Job-Parameter "data" fehlt noch und muss in den
+   * abgeleiteten Klassen gesetzt werden.
    * @param transfer der auszufuehrende Sammel-Transfer.
    * @throws ApplicationException
    * @throws RemoteException
@@ -56,8 +58,6 @@ public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
 			this.konto = transfer.getKonto();
 
 			setJobParam("my",Converter.HibiscusKonto2HBCIKonto(konto));
-			setJobParam("data",Converter.HibiscusSammelTransfer2DTAUS(transfer).toString());
-
 		}
 		catch (RemoteException e)
 		{
@@ -109,6 +109,9 @@ public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: AbstractHBCISammelTransferJob.java,v $
+ * Revision 1.2  2005/11/02 17:33:31  willuhn
+ * @B fataler Bug in Sammellastschrift/Sammelueberweisung
+ *
  * Revision 1.1  2005/09/30 00:08:51  willuhn
  * @N SammelUeberweisungen (merged with SammelLastschrift)
  *
