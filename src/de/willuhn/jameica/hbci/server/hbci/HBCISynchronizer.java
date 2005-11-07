@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/Attic/HBCISynchronizer.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/08/08 17:04:09 $
+ * $Revision: 1.7 $
+ * $Date: 2005/11/07 22:42:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -210,12 +210,8 @@ public class HBCISynchronizer
   private class Job
   {
     private Konto konto                 = null;
-    private Ueberweisung[] ueb          = null;
-    private Dauerauftrag[] dauer        = null;
-    private SammelLastschrift[] sammel  = null;
-    private Lastschrift[] last          = null;
     
-    private Job(Konto k) throws RemoteException
+    private Job(Konto k)
     {
       this.konto = k;
     }
@@ -225,6 +221,9 @@ public class HBCISynchronizer
 
 /*********************************************************************
  * $Log: HBCISynchronizer.java,v $
+ * Revision 1.7  2005/11/07 22:42:16  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.6  2005/08/08 17:04:09  willuhn
  * *** empty log message ***
  *
