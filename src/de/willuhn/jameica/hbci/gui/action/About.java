@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/About.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/03/31 23:05:46 $
- * $Author: web0 $
+ * $Revision: 1.4 $
+ * $Date: 2005/11/07 18:51:28 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -13,7 +13,6 @@
 package de.willuhn.jameica.hbci.gui.action;
 
 import de.willuhn.jameica.gui.Action;
-import de.willuhn.jameica.gui.dialogs.ViewDialog;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -33,11 +32,10 @@ public class About implements Action
   {
     I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  	ViewDialog d = new ViewDialog(new de.willuhn.jameica.hbci.gui.views.About(),ViewDialog.POSITION_CENTER);
-    d.setTitle(i18n.tr("About"));
+  	de.willuhn.jameica.hbci.gui.dialogs.About a = new de.willuhn.jameica.hbci.gui.dialogs.About(de.willuhn.jameica.hbci.gui.dialogs.About.POSITION_CENTER);
   	try
   	{
-			d.open();
+			a.open();
   	}
   	catch (Exception e)
   	{
@@ -51,6 +49,9 @@ public class About implements Action
 
 /**********************************************************************
  * $Log: About.java,v $
+ * Revision 1.4  2005/11/07 18:51:28  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2005/03/31 23:05:46  web0
  * @N geaenderte Startseite
  * @N klickbare Links

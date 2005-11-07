@@ -1,8 +1,8 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/About.java,v $
- * $Revision: 1.11 $
- * $Date: 2005/07/14 20:24:34 $
- * $Author: web0 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/About.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2005/11/07 18:51:28 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -10,18 +10,19 @@
  * All rights reserved
  *
  **********************************************************************/
-package de.willuhn.jameica.hbci.gui.views;
+package de.willuhn.jameica.hbci.gui.dialogs;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
-import de.willuhn.jameica.gui.AbstractView;
+import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.input.LabelInput;
+import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.internal.action.Program;
 import de.willuhn.jameica.gui.parts.FormTextPart;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.system.Application;
@@ -31,15 +32,29 @@ import de.willuhn.util.I18N;
 /**
  * About-Dialog.
  */
-public class About extends AbstractView {
+public class About extends AbstractDialog
+{
 
   /**
-   * @see de.willuhn.jameica.gui.AbstractView#bind()
+   * ct.
+   * @param position
    */
-  public void bind() throws Exception {
-    I18N i18n = Application.getI18n();
+  public About(int position)
+  {
+    super(position);
+  }
 
-    Label l = new Label(getParent(),SWT.BORDER);
+  /**
+   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
+   */
+  protected void paint(Composite parent) throws Exception
+  {
+    AbstractPlugin plugin = Application.getPluginLoader().getPlugin(HBCI.class);
+    I18N i18n = plugin.getResources().getI18N();
+
+    setTitle(i18n.tr("About"));
+
+    Label l = new Label(parent,SWT.BORDER);
     l.setImage(new Image(GUI.getDisplay(),getClass().getClassLoader().getResourceAsStream("img/hibiscus.jpg")));
 
     FormTextPart text = new FormTextPart();
@@ -48,22 +63,28 @@ public class About extends AbstractView {
       "<br/><p>Licence: GPL [<a href=\"" + Program.class.getName() + "\">http://www.gnu.org/copyleft/gpl.html</a>]</p>" +
       "<br/><p>Copyright by Olaf Willuhn [<a href=\"" + Program.class.getName() + "\">mailto:hibiscus@willuhn.de</a>]</p>" +
       "<p><a href=\"" + Program.class.getName() + "\">http://www.willuhn.de/projects/hibiscus/</a></p>" +
+      "<br/><p>Version: " + plugin.getManifest().getVersion() + "</p>" +
+      "<br/><p>Build: " + plugin.getBuildnumber() + " [Datum " + plugin.getBuildDate() + "]</p>" +
       "</form>");
 
-    text.paint(getParent());
+    text.paint(parent);
 
-    LabelGroup group = new LabelGroup(getParent(),i18n.tr("Hibiscus"));
-
-    AbstractPlugin plugin = Application.getPluginLoader().getPlugin(HBCI.class);
-    group.addLabelPair(i18n.tr("Version"), new LabelInput(""+ plugin.getManifest().getVersion()));
-    group.addLabelPair(i18n.tr("Build-Nummer"), new LabelInput(""+ plugin.getBuildnumber() + " [Datum " + plugin.getBuildDate() + "]"));
+    ButtonArea buttons = new ButtonArea(parent,1);
+    buttons.addButton("   " + i18n.tr("OK") + "   ",new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        close();
+      }
+    },null,true);
 
   }
 
   /**
-   * @see de.willuhn.jameica.gui.AbstractView#unbind()
+   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
    */
-  public void unbind() throws ApplicationException {
+  protected Object getData() throws Exception
+  {
+    return null;
   }
 
 }
@@ -71,6 +92,9 @@ public class About extends AbstractView {
 
 /**********************************************************************
  * $Log: About.java,v $
+ * Revision 1.1  2005/11/07 18:51:28  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.11  2005/07/14 20:24:34  web0
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/Welcome.java,v $
- * $Revision: 1.25 $
- * $Date: 2005/10/17 15:11:42 $
+ * $Revision: 1.26 $
+ * $Date: 2005/11/07 18:51:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,8 +17,6 @@ import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.ButtonArea;
-import de.willuhn.jameica.gui.util.Container;
-import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.Back;
@@ -54,17 +52,13 @@ public class Welcome extends AbstractView
     group.addSeparator();
     group.addLabelPair(i18n.tr("Bilanz") + ":", control.getBilanz());
     
-    new Headline(getParent(),i18n.tr("Konten synchronisieren"));
-    control.getKontoList().paint(getParent());
+    LabelGroup sync = new LabelGroup(getParent(),i18n.tr("Konten synchronisieren"));
+    control.getKontoList().paint(sync.getComposite());
 
-    new Headline(getParent(),i18n.tr("Offene Überweisungen"));
-    control.getOffeneUeberweisungen().paint(getParent());
-
-    Container c = new LabelGroup(getParent(),i18n.tr("Optionen"));
-    
-    c.addCheckbox(control.getSyncUeb(),i18n.tr("Offene fällige Überweisungen senden"));
-    c.addCheckbox(control.getSyncLast(),i18n.tr("Offene fällige Lastschriften senden"));
-    c.addCheckbox(control.getSyncDauer(),i18n.tr("Daueraufträge synchronisieren"));
+    sync.addHeadline(i18n.tr("Optionen"));
+    sync.addCheckbox(control.getSyncUeb(),i18n.tr("Offene fällige Überweisungen senden"));
+    sync.addCheckbox(control.getSyncLast(),i18n.tr("Offene fällige Lastschriften senden"));
+    sync.addCheckbox(control.getSyncDauer(),i18n.tr("Daueraufträge synchronisieren"));
     
     ButtonArea b = new ButtonArea(getParent(),2);
     b.addButton(i18n.tr("Zurück"), new Back());
@@ -88,6 +82,9 @@ public class Welcome extends AbstractView
 
 /**********************************************************************
  * $Log: Welcome.java,v $
+ * Revision 1.26  2005/11/07 18:51:28  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.25  2005/10/17 15:11:42  willuhn
  * *** empty log message ***
  *

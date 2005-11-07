@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/WelcomeControl.java,v $
- * $Revision: 1.22 $
- * $Date: 2005/10/17 13:44:55 $
+ * $Revision: 1.23 $
+ * $Date: 2005/11/07 18:51:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,7 +18,6 @@ import java.util.Date;
 
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.TableItem;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
@@ -26,23 +25,18 @@ import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.dialogs.CalendarDialog;
-import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
-import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
-import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.KontoNew;
-import de.willuhn.jameica.hbci.gui.menus.UeberweisungList;
 import de.willuhn.jameica.hbci.gui.parts.KontoList;
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.hbci.server.hbci.HBCISynchronizer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -57,8 +51,6 @@ public class WelcomeControl extends AbstractControl {
 
   private de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(HBCISynchronizer.class);
   
-  private TablePart offeneUeberweisungen	= null;
-
   private CheckboxInput syncDauer = null;
   private CheckboxInput syncUeb   = null;
   private CheckboxInput syncLast  = null;
@@ -268,44 +260,6 @@ public class WelcomeControl extends AbstractControl {
   }
 
   /**
-	 * Liefert eine Tabelle mit allen offenen Ueberweisungen.
-	 * @return Tabelle.
-	 * @throws RemoteException
-	 */
-	public Part getOffeneUeberweisungen() throws RemoteException
-	{
-		if (offeneUeberweisungen != null)
-			return offeneUeberweisungen;
-
-		DBIterator list = Settings.getDBService().createList(Ueberweisung.class);
-		list.addFilter("ausgefuehrt = 0");
-
-		offeneUeberweisungen = new TablePart(list,new de.willuhn.jameica.hbci.gui.action.UeberweisungNew());
-		offeneUeberweisungen.setFormatter(new TableFormatter() {
-      public void format(TableItem item) {
-				try {
-					Date current = new Date();
-					Ueberweisung u = (Ueberweisung) item.getData();
-					if (u.getTermin().before(current))
-					{
-						item.setForeground(Settings.getUeberfaelligForeground());
-					}
-				}
-				catch (RemoteException e) { /*ignore */}
-      }
-    });
-		offeneUeberweisungen.addColumn(i18n.tr("Konto"),"konto_id");
-		offeneUeberweisungen.addColumn(i18n.tr("Empfängers"),"empfaenger_name");
-		offeneUeberweisungen.addColumn(i18n.tr("Betrag"),"betrag", new CurrencyFormatter("",HBCI.DECIMALFORMAT));
-		offeneUeberweisungen.addColumn(i18n.tr("Termin"),"termin", new DateFormatter(HBCI.LONGDATEFORMAT));
-
-		offeneUeberweisungen.setContextMenu(new UeberweisungList());
-    offeneUeberweisungen.setSummary(false);
-
-		return offeneUeberweisungen;
-	}
-
-  /**
    * Liefert eine Liste der zu synchronisierenden Konten.
    * @return Liste der zu synchroinisierenden Konten.
    * @throws RemoteException
@@ -392,6 +346,9 @@ public class WelcomeControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: WelcomeControl.java,v $
+ * Revision 1.23  2005/11/07 18:51:28  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.22  2005/10/17 13:44:55  willuhn
  * *** empty log message ***
  *
