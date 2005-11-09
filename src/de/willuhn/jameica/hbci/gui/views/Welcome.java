@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/Welcome.java,v $
- * $Revision: 1.26 $
- * $Date: 2005/11/07 18:51:28 $
+ * $Revision: 1.27 $
+ * $Date: 2005/11/09 01:13:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,16 +13,20 @@
 
 package de.willuhn.jameica.hbci.gui.views;
 
+import java.util.Collections;
+import java.util.Vector;
+
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.ButtonArea;
-import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.Back;
-import de.willuhn.jameica.hbci.gui.controller.WelcomeControl;
+import de.willuhn.jameica.hbci.gui.boxes.Box;
+import de.willuhn.jameica.hbci.gui.dialogs.ChooseBoxesDialog;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
+import de.willuhn.util.ClassFinder;
 import de.willuhn.util.I18N;
 
 /**
@@ -40,32 +44,36 @@ public class Welcome extends AbstractView
 		final I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     GUI.getView().setTitle(i18n.tr("Hibiscus - HBCI-Onlinebanking"));
 
-    final WelcomeControl control = new WelcomeControl(this);
-
-    LabelGroup group = new LabelGroup(getParent(),i18n.tr("Gesamt-Übersicht"));
-    group.addLabelPair(i18n.tr("Saldo über alle Konten") + ":", control.getSaldo());
-    group.addSeparator();
-    group.addLabelPair(i18n.tr("Beginn des Zeitraumes") + ":", control.getStart());
-    group.addLabelPair(i18n.tr("Ende des Zeitraumes") + ":", control.getEnd());
-    group.addLabelPair(i18n.tr("Einnahmen") + ":", control.getEinnahmen());
-    group.addLabelPair(i18n.tr("Ausgaben") + ":", control.getAusgaben());
-    group.addSeparator();
-    group.addLabelPair(i18n.tr("Bilanz") + ":", control.getBilanz());
+    ClassFinder finder = Application.getClassLoader().getClassFinder();
+    Class[] boxes = finder.findImplementors(Box.class);
+    Vector v = new Vector();
+    for (int i=0;i<boxes.length;++i)
+    {
+      Box b = (Box) boxes[i].newInstance();
+      if (!b.isEnabled())
+        continue;
+      v.add(b);
+    }
+    Collections.sort(v);
+    for (int i=0;i<v.size();++i)
+    {
+      Box b = (Box) v.get(i);
+      b.paint(getParent());
+    }
     
-    LabelGroup sync = new LabelGroup(getParent(),i18n.tr("Konten synchronisieren"));
-    control.getKontoList().paint(sync.getComposite());
-
-    sync.addHeadline(i18n.tr("Optionen"));
-    sync.addCheckbox(control.getSyncUeb(),i18n.tr("Offene fällige Überweisungen senden"));
-    sync.addCheckbox(control.getSyncLast(),i18n.tr("Offene fällige Lastschriften senden"));
-    sync.addCheckbox(control.getSyncDauer(),i18n.tr("Daueraufträge synchronisieren"));
-    
-    ButtonArea b = new ButtonArea(getParent(),2);
-    b.addButton(i18n.tr("Zurück"), new Back());
-    b.addButton(i18n.tr("Synchronisierung starten"),new Action() {
+    ButtonArea buttons = new ButtonArea(getParent(),1);
+    buttons.addButton(i18n.tr("Startseite anpassen"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
-        control.handleStart();
+        ChooseBoxesDialog d = new ChooseBoxesDialog(ChooseBoxesDialog.POSITION_CENTER);
+        try
+        {
+          d.open();
+        }
+        catch (Exception e)
+        {
+          Logger.error("error while loading box config dialog",e);
+        }
       }
     },null,true);
   }
@@ -82,6 +90,10 @@ public class Welcome extends AbstractView
 
 /**********************************************************************
  * $Log: Welcome.java,v $
+ * Revision 1.27  2005/11/09 01:13:53  willuhn
+ * @N chipcard modul fuer AMD64 vergessen
+ * @N Startseite jetzt frei konfigurierbar
+ *
  * Revision 1.26  2005/11/07 18:51:28  willuhn
  * *** empty log message ***
  *

@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/NachrichtList.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/05/09 17:26:56 $
- * $Author: web0 $
+ * $Revision: 1.2 $
+ * $Date: 2005/11/09 01:13:53 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -80,7 +80,20 @@ public class NachrichtList extends TablePart implements Part
         return i18n.tr("{0} [BLZ: {1}]", new String[] {HBCIUtils.getNameForBLZ(blz),blz});
       }
     });
-    addColumn(i18n.tr("Nachricht"),"nachricht");
+    addColumn(i18n.tr("Nachricht"),"nachricht", new Formatter() {
+      public String format(Object o)
+      {
+        if (o == null)
+          return null;
+        String s = (String) o;
+        // TODO Ist das eine Sparkassen-Eigenart, dass die Nachrichten Festbreite haben?
+        // Na gut, wir brechen hart nach 100 Zeichen um, wenn keine Zeilenumbrueche drin sind
+        if (s.indexOf('\n') != -1)
+          return s;
+        s = s.replaceAll("(.{100})","$1\n");
+        return s;
+      }
+    });
     setContextMenu(new de.willuhn.jameica.hbci.gui.menus.NachrichtList());
   }
 
@@ -102,6 +115,10 @@ public class NachrichtList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: NachrichtList.java,v $
+ * Revision 1.2  2005/11/09 01:13:53  willuhn
+ * @N chipcard modul fuer AMD64 vergessen
+ * @N Startseite jetzt frei konfigurierbar
+ *
  * Revision 1.1  2005/05/09 17:26:56  web0
  * @N Bugzilla 68
  *
