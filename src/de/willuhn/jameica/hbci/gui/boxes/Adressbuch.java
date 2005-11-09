@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Adressbuch.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/11/09 01:13:53 $
+ * $Revision: 1.2 $
+ * $Date: 2005/11/09 01:14:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,7 +18,6 @@ import java.rmi.RemoteException;
 import org.eclipse.swt.widgets.Composite;
 
 import de.willuhn.jameica.gui.util.Headline;
-import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerNew;
 import de.willuhn.jameica.hbci.gui.parts.EmpfaengerList;
@@ -81,6 +80,9 @@ public class Adressbuch extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: Adressbuch.java,v $
+ * Revision 1.2  2005/11/09 01:14:14  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2005/11/09 01:13:53  willuhn
  * @N chipcard modul fuer AMD64 vergessen
  * @N Startseite jetzt frei konfigurierbar
