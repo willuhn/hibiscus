@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.57 $
- * $Date: 2005/10/17 13:01:59 $
+ * $Revision: 1.58 $
+ * $Date: 2005/11/10 23:32:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,6 +27,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
+import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.system.Application;
@@ -215,7 +216,16 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 				u.delete();
 			}
 
-			// und noch die Protokolle
+      // und jetzt die Sammel-Ueberweisungen
+      list = getSammelUeberweisungen();
+      SammelUeberweisung su = null;
+      while (list.hasNext())
+      {
+        su = (SammelUeberweisung) list.next();
+        su.delete();
+      }
+
+      // und noch die Protokolle
 			list = getProtokolle();
 			Protokoll p = null;
 			while (list.hasNext())
@@ -351,6 +361,16 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 		list.addFilter("konto_id = " + getID());
 		return list;
 	}
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Konto#getSammelUeberweisungen()
+   */
+  public DBIterator getSammelUeberweisungen() throws RemoteException
+  {
+    DBIterator list = getService().createList(SammelUeberweisung.class);
+    list.addFilter("konto_id = " + getID());
+    return list;
+  }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Konto#getBezeichnung()
@@ -556,6 +576,9 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.58  2005/11/10 23:32:59  willuhn
+ * @B foreign key to sueberweisung when deleting a konto
+ *
  * Revision 1.57  2005/10/17 13:01:59  willuhn
  * @N Synchronize auf Start-Seite verschoben
  * @N Gesamt-Vermoegensuebersicht auf Start-Seite
