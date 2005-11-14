@@ -34,6 +34,7 @@ CREATE TABLE ueberweisung (
   zweck varchar(27) NOT NULL,
   zweck2 varchar(27),
   termin date NOT NULL,
+  banktermin int(1) NULL,
   ausgefuehrt int(1) NOT NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
@@ -64,7 +65,6 @@ CREATE TABLE umsatz (
   primanota varchar(100),
   art varchar(100),
   customerref varchar(100),
-  umsatztyp_id int(4),
   kommentar text NULL,
   checksum numeric NULL,
   UNIQUE (id),
@@ -76,6 +76,15 @@ CREATE TABLE umsatztyp (
   name varchar(255) NOT NULL,
   field varchar(255) NOT NULL,
   pattern varchar(255) NOT NULL,
+  patterntype int(1) NOT NULL,
+  UNIQUE (id),
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE umsatzzuordnung (
+  id NUMERIC default UNIQUEKEY('umsatzzuordnung'),
+  umsatztyp_id int(4) NOT NULL,
+  umsatz_id int(4) NOT NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );
@@ -184,13 +193,15 @@ ALTER CREATE TABLE systemnachricht (
 ALTER TABLE ueberweisung ADD CONSTRAINT fk_konto FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE umsatz ADD CONSTRAINT fk_konto2 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE protokoll ADD CONSTRAINT fk_konto3 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
-ALTER TABLE umsatz ADD CONSTRAINT fk_umsatztyp FOREIGN KEY (umsatztyp_id) REFERENCES umsatztyp (id) DEFERRABLE;
 ALTER TABLE dauerauftrag ADD CONSTRAINT fk_konto4 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE lastschrift ADD CONSTRAINT fk_konto5 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE slastschrift ADD CONSTRAINT fk_konto6 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE slastbuchung ADD CONSTRAINT fk_slastschrift1 FOREIGN KEY (slastschrift_id) REFERENCES slastschrift (id) DEFERRABLE;
 ALTER TABLE sueberweisung ADD CONSTRAINT fk_konto7 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE sueberweisungbuchung ADD CONSTRAINT fk_sueberweisung1 FOREIGN KEY (sueberweisung_id) REFERENCES sueberweisung (id) DEFERRABLE;
+
+ALTER TABLE umsatzzuordnung ADD CONSTRAINT fk_umsatz FOREIGN KEY (umsatz_id) REFERENCES umsatz (id) DEFERRABLE;
+ALTER TABLE umsatzzuordnung ADD CONSTRAINT fk_umsatztyp FOREIGN KEY (umsatztyp_id) REFERENCES umsatztyp (id) DEFERRABLE;
 
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (2,1,1,1);

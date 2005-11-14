@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/UmsatzTyp.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/05/25 23:23:17 $
+ * $Revision: 1.2 $
+ * $Date: 2005/11/14 23:47:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,11 +16,13 @@ import java.rmi.RemoteException;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
+import de.willuhn.jameica.hbci.rmi.filter.Pattern;
 
 /**
  * Interface zur Einstufung von Umsaetzen in verschiedene Kategorien.
  */
-public interface UmsatzTyp extends DBObject {
+public interface UmsatzTyp extends DBObject, Pattern
+{
 
 	/**
 	 * Liefert den Namen des Umsatz-Typs.
@@ -30,20 +32,6 @@ public interface UmsatzTyp extends DBObject {
   public String getName() throws RemoteException;
 
 	/**
-	 * Liefert das Umsatz-Feld, welches geprueft werden soll.
-   * @return Feld, welches geprueft werden soll.
-   * @throws RemoteException
-   */
-  public String getField() throws RemoteException;
-
-	/**
-	 * Liefert den regulaeren Ausdruck, mit dem gesucht werden soll.
-   * @return regulaerer Ausdruck.
-   * @throws RemoteException
-   */
-  public String getPattern() throws RemoteException;
-	
-	/**
 	 * Speichert den Namen des Umsatz-Typs.
    * @param name Name des Umsatz-Typs.
    * @throws RemoteException
@@ -51,31 +39,20 @@ public interface UmsatzTyp extends DBObject {
   public void setName(String name) throws RemoteException;
 	
 	/**
-	 * Speichert das Umsatz-Feld, welches geprueft werden soll.
-   * @param field Feld, welches geprueft werden soll. 
-   * @throws RemoteException
-   */
-  public void setField(String field) throws RemoteException;
-	
-	/**
-	 * Speichert den regulaeren Ausdruck, mit dem gesucht werden soll.
-   * @param pattern regulaerer Ausdruck.
-   * @throws RemoteException
-   */
-  public void setPattern(String pattern) throws RemoteException;
-
-	/**
-	 * Liefert eine Liste aller Umsaetze dieses Typs.
+	 * Liefert eine Liste der Umsatz-Zuordnungen fuer diesen Umsatz.
    * @return Umsatz-Liste.
    * @throws RemoteException
    */
-  public DBIterator getUmsaetze() throws RemoteException;
+  public DBIterator getUmsatzZuordnungen() throws RemoteException;
 
 }
 
 
 /**********************************************************************
  * $Log: UmsatzTyp.java,v $
+ * Revision 1.2  2005/11/14 23:47:21  willuhn
+ * @N added first code for umsatz categories
+ *
  * Revision 1.1  2004/05/25 23:23:17  willuhn
  * @N UeberweisungTyp
  * @N Protokoll

@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.11 $
- * $Date: 2005/05/30 22:55:27 $
- * $Author: web0 $
+ * $Revision: 1.12 $
+ * $Date: 2005/11/14 23:47:20 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -17,8 +17,9 @@ import java.rmi.RemoteException;
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
+import de.willuhn.jameica.hbci.rmi.UmsatzZuordnung;
+import de.willuhn.jameica.hbci.rmi.filter.Pattern;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -91,14 +92,14 @@ public class UmsatzTypImpl extends AbstractDBObject implements UmsatzTyp {
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getField()
+   * @see de.willuhn.jameica.hbci.rmi.filter.Pattern#getField()
    */
   public String getField() throws RemoteException {
 		return (String) getAttribute("field");
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getPattern()
+   * @see de.willuhn.jameica.hbci.rmi.filter.Pattern#getPattern()
    */
   public String getPattern() throws RemoteException {
 		return (String) getAttribute("pattern");
@@ -112,14 +113,14 @@ public class UmsatzTypImpl extends AbstractDBObject implements UmsatzTyp {
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#setField(java.lang.String)
+   * @see de.willuhn.jameica.hbci.rmi.filter.Pattern#setField(java.lang.String)
    */
   public void setField(String field) throws RemoteException {
 		setAttribute("field",field);
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#setPattern(java.lang.String)
+   * @see de.willuhn.jameica.hbci.rmi.filter.Pattern#setPattern(java.lang.String)
    */
   public void setPattern(String pattern) throws RemoteException {
 		setAttribute("pattern",pattern);
@@ -135,12 +136,12 @@ public class UmsatzTypImpl extends AbstractDBObject implements UmsatzTyp {
 
 		
 			// wir entfernen uns aus allen Umsaetzen
-			DBIterator list = getUmsaetze();
-			Umsatz u = null;
+			DBIterator list = getUmsatzZuordnungen();
+			UmsatzZuordnung u = null;
 			while (list.hasNext())
 			{
-				u = (Umsatz) list.next();
-				u.setUmsatzTyp(null);
+				u = (UmsatzZuordnung) list.next();
+        u.delete();
 			}
 
 			// Jetzt koennen wir uns selbst loeschen
@@ -160,12 +161,97 @@ public class UmsatzTypImpl extends AbstractDBObject implements UmsatzTyp {
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getUmsaetze()
+   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getUmsatzZuordnungen()
    */
-  public DBIterator getUmsaetze() throws RemoteException {
-		DBIterator list = getService().createList(Umsatz.class);
-		list.addFilter("umsatztyp_id = " + getID() + " ORDER BY TONUMBER(datum)");
-		return list;
+  public DBIterator getUmsatzZuordnungen() throws RemoteException
+  {
+    DBIterator list = getService().createList(UmsatzZuordnung.class);
+    list.addFilter("umsatztyp_id = " + getID());
+    return list;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.filter.Pattern#getType()
+   */
+  public int getType() throws RemoteException
+  {
+    Integer i = (Integer) getAttribute("patterntype");
+    return i == null ? Pattern.TYPE_CONTAINS : i.intValue();
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.filter.Pattern#getNameForType(int)
+   */
+  public String getNameForType(int type) throws RemoteException
+  {
+    switch (type)
+    {
+      case Pattern.TYPE_CONTAINS:
+        return i18n.tr("enthält");
+      case Pattern.TYPE_ENDSWITH:
+        return i18n.tr("endet mit");
+      case Pattern.TYPE_EQUALS:
+        return i18n.tr("ist gleich");
+      case Pattern.TYPE_STARTSWITH:
+        return i18n.tr("beginnt mit");
+    }
+    throw new RemoteException("invalid pattern type " + type);
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.filter.Pattern#getNameForField(java.lang.String)
+   */
+  public String getNameForField(String field) throws RemoteException
+  {
+    if (field == null)
+      return null;
+    if ("empfaenger_konto".equals(field))
+      return i18n.tr("Kontonummer Gegenkonto");
+    if ("empfaenger_blz".equals(field))
+      return i18n.tr("BLZ Gegenkonto");
+    if ("empfaenger_name".equals(field))
+      return i18n.tr("Inhaber Gegenkonto");
+    if ("zweck".equals(field))
+      return i18n.tr("Verwendungszweck");
+    throw new RemoteException("invalid field " + field);
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.filter.Pattern#getValidFields()
+   */
+  public String[] getValidFields() throws RemoteException
+  {
+    return new String[]
+      {
+        "empfaenger_konto", 
+        "empfaenger_blz",
+        "empfaenger_name",
+        "zweck"
+      };
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.filter.Pattern#setType(int)
+   */
+  public void setType(int type) throws RemoteException
+  {
+    setAttribute("patterntype", new Integer(type));
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.filter.Pattern#ignoreCase()
+   */
+  public boolean ignoreCase() throws RemoteException
+  {
+    return true;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.filter.Pattern#setIgnoreCase(boolean)
+   */
+  public void setIgnoreCase(boolean b) throws RemoteException
+  {
+    // ignore
   }
 
 }
@@ -173,6 +259,9 @@ public class UmsatzTypImpl extends AbstractDBObject implements UmsatzTyp {
 
 /**********************************************************************
  * $Log: UmsatzTypImpl.java,v $
+ * Revision 1.12  2005/11/14 23:47:20  willuhn
+ * @N added first code for umsatz categories
+ *
  * Revision 1.11  2005/05/30 22:55:27  web0
  * *** empty log message ***
  *

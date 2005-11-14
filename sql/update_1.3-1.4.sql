@@ -25,6 +25,7 @@ ALTER CREATE TABLE systemnachricht (
 );
 
 -- Kommentar-Feld hinzugefuegt und "ZWECK" nullable
+-- Feld "umsatztyp_id" entfernt
 ALTER CREATE TABLE umsatz (
   id NUMERIC default UNIQUEKEY('umsatz'),
   konto_id int(4) NOT NULL,
@@ -40,7 +41,6 @@ ALTER CREATE TABLE umsatz (
   primanota varchar(100),
   art varchar(100),
   customerref varchar(100),
-  umsatztyp_id int(4),
   kommentar text NULL,
   checksum numeric NULL,
   UNIQUE (id),
@@ -81,6 +81,7 @@ ALTER CREATE TABLE sueberweisungbuchung (
   PRIMARY KEY (id)
 );
 
+-- Feld "banktermin" fuer Terminueberweisungen hinzugefuegt.
 ALTER CREATE TABLE ueberweisung (
   id NUMERIC default UNIQUEKEY('ueberweisung'),
   konto_id int(4) NOT NULL,
@@ -97,6 +98,29 @@ ALTER CREATE TABLE ueberweisung (
   PRIMARY KEY (id)
 );
 
+-- Feld "patterntype" hinzugefuegt
+ALTER CREATE TABLE umsatztyp (
+  id NUMERIC default UNIQUEKEY('umsatztyp'),
+  name varchar(255) NOT NULL,
+  field varchar(255) NOT NULL,
+  pattern varchar(255) NOT NULL,
+  patterntype int(1) NOT NULL,
+  UNIQUE (id),
+  PRIMARY KEY (id)
+);
+
+ALTER CREATE TABLE umsatzzuordnung (
+  id NUMERIC default UNIQUEKEY('umsatzzuordnung'),
+  umsatztyp_id int(4) NOT NULL,
+  umsatz_id int(4) NOT NULL,
+  UNIQUE (id),
+  PRIMARY KEY (id)
+);
+
+
 ALTER TABLE sueberweisung ADD CONSTRAINT fk_konto7 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE sueberweisungbuchung ADD CONSTRAINT fk_sueberweisung1 FOREIGN KEY (sueberweisung_id) REFERENCES sueberweisung (id) DEFERRABLE;
+
+ALTER TABLE umsatzzuordnung ADD CONSTRAINT fk_umsatz FOREIGN KEY (umsatz_id) REFERENCES umsatz (id) DEFERRABLE;
+ALTER TABLE umsatzzuordnung ADD CONSTRAINT fk_umsatztyp FOREIGN KEY (umsatztyp_id) REFERENCES umsatztyp (id) DEFERRABLE;
 

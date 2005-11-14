@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Umsatz.java,v $
- * $Revision: 1.10 $
- * $Date: 2005/06/30 21:48:56 $
- * $Author: web0 $
+ * $Revision: 1.11 $
+ * $Date: 2005/11/14 23:47:21 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -124,13 +124,6 @@ public interface Umsatz extends DBObject, Checksum
    */
   public String getCustomerRef() throws RemoteException;
 
-	/**
-	 * Liefert den Umsatz-Typ - insofern dieser schon zugewiesen wurde.
-   * @return Umsatz-Typ.
-   * @throws RemoteException
-   */
-  public UmsatzTyp getUmsatzTyp() throws RemoteException;
-
   /**
    * Liefert einen optionalen Kommentar, den der User zu dem Umsatz eintragen kann.
    * @return optionaler Kommentar.
@@ -243,13 +236,6 @@ public interface Umsatz extends DBObject, Checksum
 	 */
 	public void setCustomerRef(String ref) throws RemoteException;
 
-	/**
-	 * Speichert den Umsatz-Typ dieser Buchung.
-   * @param typ Umsatz-Typ.
-   * @throws RemoteException
-   */
-	public void setUmsatzTyp(UmsatzTyp typ) throws RemoteException;
-  
   /**
    * Prueft, ob der Umsatz vom User geaendert wurde.
    * @return true, wenn der Umsatz geaendert wurde.
@@ -268,6 +254,9 @@ public interface Umsatz extends DBObject, Checksum
 
 /**********************************************************************
  * $Log: Umsatz.java,v $
+ * Revision 1.11  2005/11/14 23:47:21  willuhn
+ * @N added first code for umsatz categories
+ *
  * Revision 1.10  2005/06/30 21:48:56  web0
  * @B bug 75
  *

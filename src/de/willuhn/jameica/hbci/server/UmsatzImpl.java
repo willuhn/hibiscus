@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.27 $
- * $Date: 2005/06/30 21:48:56 $
- * $Author: web0 $
+ * $Revision: 1.28 $
+ * $Date: 2005/11/14 23:47:20 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -353,20 +353,6 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getUmsatzTyp()
-   */
-  public UmsatzTyp getUmsatzTyp() throws RemoteException {
-		return (UmsatzTyp) getAttribute("umsatztyp_id");
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setUmsatzTyp(de.willuhn.jameica.hbci.rmi.UmsatzTyp)
-   */
-  public void setUmsatzTyp(UmsatzTyp typ) throws RemoteException {
-		setAttribute("umsatztyp_id",typ);
-  }
-
-  /**
    * Ueberschrieben, um ein synthetisches Attribute "mergedzweck" zu erzeugen.
    * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
    */
@@ -454,6 +440,9 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.28  2005/11/14 23:47:20  willuhn
+ * @N added first code for umsatz categories
+ *
  * Revision 1.27  2005/06/30 21:48:56  web0
  * @B bug 75
  *
