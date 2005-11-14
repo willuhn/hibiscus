@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.39 $
- * $Date: 2005/11/14 11:36:58 $
+ * $Revision: 1.40 $
+ * $Date: 2005/11/14 12:46:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -434,6 +434,12 @@ public class HBCIFactory {
             {
               handler = handle.open();
             }
+            catch (OperationCanceledException oce)
+            {
+              Logger.info("operation cancelled");
+              getMonitor().setStatusText(i18n.tr("Vorgang abgebrochen"));
+              error = true;
+            }
             catch (ApplicationException ae)
             {
               getMonitor().setStatusText(ae.getMessage());
@@ -593,6 +599,9 @@ public class HBCIFactory {
 
 /*******************************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.40  2005/11/14 12:46:20  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.39  2005/11/14 11:36:58  willuhn
  * @B bug 148
  *
