@@ -81,6 +81,22 @@ ALTER CREATE TABLE sueberweisungbuchung (
   PRIMARY KEY (id)
 );
 
+ALTER CREATE TABLE ueberweisung (
+  id NUMERIC default UNIQUEKEY('ueberweisung'),
+  konto_id int(4) NOT NULL,
+  empfaenger_konto varchar(15) NOT NULL,
+  empfaenger_blz varchar(15) NOT NULL,
+  empfaenger_name varchar(255),
+  betrag double NOT NULL,
+  zweck varchar(27) NOT NULL,
+  zweck2 varchar(27),
+  termin date NOT NULL,
+  banktermin int(1) NULL,
+  ausgefuehrt int(1) NOT NULL,
+  UNIQUE (id),
+  PRIMARY KEY (id)
+);
+
 ALTER TABLE sueberweisung ADD CONSTRAINT fk_konto7 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE sueberweisungbuchung ADD CONSTRAINT fk_sueberweisung1 FOREIGN KEY (sueberweisung_id) REFERENCES sueberweisung (id) DEFERRABLE;
 

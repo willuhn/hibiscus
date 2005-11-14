@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.40 $
- * $Date: 2005/05/02 23:56:45 $
- * $Author: web0 $
+ * $Revision: 1.41 $
+ * $Date: 2005/11/14 13:08:11 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -15,12 +15,15 @@ package de.willuhn.jameica.hbci.gui.controller;
 import java.rmi.RemoteException;
 
 import de.willuhn.jameica.gui.AbstractView;
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
+import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungNew;
 import de.willuhn.jameica.hbci.rmi.Transfer;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
+import de.willuhn.logging.Logger;
 
 /**
  * Controller fuer die Ueberweisungen.
@@ -31,6 +34,8 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
 	private TablePart table		 = null;
   
   private Ueberweisung transfer = null;
+  
+  private CheckboxInput bankTermin = null;
 
   /**
    * ct.
@@ -58,7 +63,24 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
 		return transfer;
 	}
 
-	/**
+  /**
+   * Liefert eine Checkbox, mit der der Benutzer auswaehlen kann, ob es sich
+   * um eine bankseitige Termin-Ueberweisung handelt.
+   * @return die Checkbox.
+   * @throws RemoteException
+   */
+  public CheckboxInput getBankTermin() throws RemoteException
+  {
+    if (this.bankTermin != null)
+      return this.bankTermin;
+    Ueberweisung u = (Ueberweisung) getTransfer();
+    this.bankTermin = new CheckboxInput(u.isTerminUeberweisung());
+    if (u.ausgefuehrt())
+      this.bankTermin.disable();
+    return this.bankTermin;
+  }
+  
+  /**
 	 * Liefert eine Tabelle mit allen vorhandenen Ueberweisungen.
 	 * @return Tabelle.
 	 * @throws RemoteException
@@ -72,11 +94,33 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
 		return table;
 	}
 
+  /**
+   * Ueberschrieben, um das Flag fuer die Termin-Ueberweisung zu speichern.
+   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#handleStore()
+   */
+  public synchronized boolean handleStore()
+  {
+    try
+    {
+      Ueberweisung u = (Ueberweisung) getTransfer();
+      u.setTerminUeberweisung(((Boolean)getBankTermin().getValue()).booleanValue());
+      return super.handleStore();
+    }
+    catch (RemoteException re)
+    {
+      Logger.error("error while storing ueberweisung",re);
+      GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern der Überweisung"));
+      return false;
+    }
+  }
 }
 
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
+ * Revision 1.41  2005/11/14 13:08:11  willuhn
+ * @N Termin-Ueberweisungen
+ *
  * Revision 1.40  2005/05/02 23:56:45  web0
  * @B bug 66, 67
  * @C umsatzliste nach vorn verschoben

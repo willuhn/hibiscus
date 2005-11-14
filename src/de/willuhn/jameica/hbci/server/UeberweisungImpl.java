@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UeberweisungImpl.java,v $
- * $Revision: 1.34 $
- * $Date: 2005/03/02 17:59:30 $
- * $Author: web0 $
+ * $Revision: 1.35 $
+ * $Date: 2005/11/14 13:08:11 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -54,12 +54,33 @@ public class UeberweisungImpl extends AbstractBaseUeberweisungImpl
     return u;
   }
 
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#isTerminUeberweisung()
+   */
+  public boolean isTerminUeberweisung() throws RemoteException
+  {
+    Integer i = (Integer) getAttribute("banktermin");
+    return i != null && i.intValue() == 1;
+    
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#setTerminUeberweisung(boolean)
+   */
+  public void setTerminUeberweisung(boolean termin) throws RemoteException
+  {
+    setAttribute("banktermin",termin ? new Integer(1) : null);
+  }
+
 
 }
 
 
 /**********************************************************************
  * $Log: UeberweisungImpl.java,v $
+ * Revision 1.35  2005/11/14 13:08:11  willuhn
+ * @N Termin-Ueberweisungen
+ *
  * Revision 1.34  2005/03/02 17:59:30  web0
  * @N some refactoring
  *

@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Ueberweisung.java,v $
- * $Revision: 1.14 $
- * $Date: 2005/03/02 17:59:30 $
- * $Author: web0 $
+ * $Revision: 1.15 $
+ * $Date: 2005/11/14 13:08:11 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -12,17 +12,35 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.rmi;
 
+import java.rmi.RemoteException;
+
 
 /**
  * Bildet eine Ueberweisung ab.
  */
 public interface Ueberweisung extends Transfer, Terminable, Duplicatable
 {
+  /**
+   * Prueft, ob es sich um einen bankseitige Termin-Ueberweisung handelt.
+   * @return true, wenn es eine bankseitige Termin-Ueberweisung ist.
+   * @throws RemoteException
+   */
+  public boolean isTerminUeberweisung() throws RemoteException;
+  
+  /**
+   * Legt fest, ob es sich um eine bankseitige Termin-Ueberweisung handelt.
+   * @param termin true, wenn es eine bankseitige Terminueberweisung sein soll.
+   * @throws RemoteException
+   */
+  public void setTerminUeberweisung(boolean termin) throws RemoteException;
 }
 
 
 /**********************************************************************
  * $Log: Ueberweisung.java,v $
+ * Revision 1.15  2005/11/14 13:08:11  willuhn
+ * @N Termin-Ueberweisungen
+ *
  * Revision 1.14  2005/03/02 17:59:30  web0
  * @N some refactoring
  *
