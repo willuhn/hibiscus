@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.30 $
- * $Date: 2005/08/01 23:27:42 $
- * $Author: web0 $
+ * $Revision: 1.31 $
+ * $Date: 2005/11/14 11:37:00 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -25,6 +25,7 @@ import org.kapott.hbci.exceptions.NeedKeyAckException;
 import org.kapott.hbci.manager.HBCIUtils;
 import org.kapott.hbci.manager.HBCIUtilsInternal;
 import org.kapott.hbci.passport.HBCIPassport;
+import org.kapott.hbci.passport.HBCIPassportRDHNew;
 
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.gui.DialogFactory;
@@ -93,6 +94,8 @@ public class HBCICallbackSWT extends AbstractHBCICallback
     }
   }
 
+  private long askPassword = 0;
+  
   /**
    * @see org.kapott.hbci.callback.HBCICallback#callback(org.kapott.hbci.passport.HBCIPassport, int, java.lang.String, int, java.lang.StringBuffer)
    */
@@ -105,32 +108,57 @@ public class HBCICallbackSWT extends AbstractHBCICallback
       String text = null;
       
 			switch (reason) {
+        
 				case NEED_PASSPHRASE_LOAD:
 				case NEED_PASSPHRASE_SAVE:
-					// Das ist das Passwort fuer die Passport-Datei.
-					// Es muss nicht sein, dass wir das auch noch dem
-					// Benutzer zumuten. Stattdessen erzeugen wir bei Bedarf
-					// selbst ein zufaelliges Passwort und speichern es
-					// in einem Jameica-Wallet.
-					Wallet w = Settings.getWallet();
-					// Wir haben ein Passwort pro Passport
+          
+          String pw = null;
+          
+          boolean isRDH = (passport instanceof HBCIPassportRDHNew);
 
-					String s = passport.getClass().getName();
-					String pw = (String) w.get("hbci.passport.password." + s);
-					if (pw == null)
-					{
-						// noch kein Passwort definiert. Dann erzeugen wir
-						// ein zufaelliges.
-						byte[] pass = new byte[8];
-						SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
-						random.nextBytes(pass);
-						pw = Base64.encode(pass);
+          // Das ist das Passwort fuer die Passport-Datei.
+          // Es muss nicht sein, dass wir das auch noch dem
+          // Benutzer zumuten. Stattdessen erzeugen wir bei Bedarf
+          // selbst ein zufaelliges Passwort und speichern es
+          // in einem Jameica-Wallet.
+          Wallet w = Settings.getWallet();
+          
+          // Wir haben ein Passwort pro Passport
+          String s = passport.getClass().getName();
+          
+          pw = (String) w.get("hbci.passport.password." + s);
 
-						// Und speichern es im Wallet.
-						w.set("hbci.passport.password." + s,pw);
-					}
+
+          // BUGZILLA 148
+          // Gna, das war echt tricky. Das die alten Passports auch noch beruecksichtigt
+          // werden sollen, ich dieses aber hier nicht unterscheiden kann, versuche
+          // ichs erstmal via Wallet selbst. Schlaegt das fehl, soll's der Benutzer machen.
+          long time = System.currentTimeMillis();
+          if (isRDH)
+          {
+            if (pw == null || (time - askPassword < 2000) || reason == NEED_PASSPHRASE_SAVE)
+            {
+              pw = reason == NEED_PASSPHRASE_LOAD ? DialogFactory.importPassport() : DialogFactory.exportPassport();
+              askPassword = 0;
+              retData.replace(0,retData.length(),pw);
+              break;
+            }
+            askPassword = time;
+          }
+          
+          if (pw == null && !isRDH)
+          {
+            // noch kein Passwort definiert. Dann erzeugen wir
+            // ein zufaelliges.
+            byte[] pass = new byte[8];
+            SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
+            random.nextBytes(pass);
+            pw = Base64.encode(pass);
+
+            // Und speichern es im Wallet.
+            w.set("hbci.passport.password." + s,pw);
+          }
 					retData.replace(0,retData.length(),pw);
-
 					break;
 
 				case NEED_CHIPCARD:
@@ -464,6 +492,9 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.31  2005/11/14 11:37:00  willuhn
+ * @B bug 148
+ *
  * Revision 1.30  2005/08/01 23:27:42  web0
  * *** empty log message ***
  *

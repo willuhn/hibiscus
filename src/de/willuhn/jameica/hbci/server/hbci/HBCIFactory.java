@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.38 $
- * $Date: 2005/08/05 16:33:41 $
+ * $Revision: 1.39 $
+ * $Date: 2005/11/14 11:36:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -281,8 +281,6 @@ public class HBCIFactory {
     return this.worker.getKonto();
   }
   
-  
-
   /**
    * Wir haben den Code zur Ausfuehrung in einen eigenen Thread verlagert damit
    * die GUI waehrenddessen nicht blockiert.
@@ -309,7 +307,7 @@ public class HBCIFactory {
     {
       return this.konto;
     }
-
+    
     private ProgressMonitor getMonitor()
     {
       return this.monitor;
@@ -595,6 +593,9 @@ public class HBCIFactory {
 
 /*******************************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.39  2005/11/14 11:36:58  willuhn
+ * @B bug 148
+ *
  * Revision 1.38  2005/08/05 16:33:41  willuhn
  * @B bug 108
  * @B bug 110
