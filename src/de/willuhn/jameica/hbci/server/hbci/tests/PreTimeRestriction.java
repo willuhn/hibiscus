@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/tests/PreTimeRestriction.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/11/14 19:21:37 $
+ * $Revision: 1.4 $
+ * $Date: 2005/11/14 13:38:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -81,7 +81,7 @@ public class PreTimeRestriction implements Restriction
 		cal.add(Calendar.DATE, i);
 		if (cal.getTime().after(date))
 		{
-			throw new ApplicationException(i18n.tr("Das Datum der ersten Zahlung muss mindestens {0} Tag(e) in der Zukunft liegen",min));
+			throw new ApplicationException(i18n.tr("Das Datum der Zahlung muss mindestens {0} Tag(e) in der Zukunft liegen",min));
 		}
 	}
 
@@ -111,7 +111,7 @@ public class PreTimeRestriction implements Restriction
 		cal.add(Calendar.DATE, i);
 		if (!cal.getTime().after(date))
 		{
-			throw new ApplicationException(i18n.tr("Das Datum der ersten Zahlung darf höchstens {0} Tag(e) in der Zukunft liegen",max));
+			throw new ApplicationException(i18n.tr("Das Datum der Zahlung darf höchstens {0} Tag(e) in der Zukunft liegen",max));
 		}
 	}
 
@@ -120,6 +120,9 @@ public class PreTimeRestriction implements Restriction
 
 /**********************************************************************
  * $Log: PreTimeRestriction.java,v $
+ * Revision 1.4  2005/11/14 13:38:43  willuhn
+ * @N Termin-Ueberweisungen
+ *
  * Revision 1.3  2004/11/14 19:21:37  willuhn
  * *** empty log message ***
  *

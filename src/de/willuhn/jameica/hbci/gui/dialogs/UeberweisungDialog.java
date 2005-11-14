@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/UeberweisungDialog.java,v $
- * $Revision: 1.12 $
- * $Date: 2005/04/05 22:49:02 $
- * $Author: web0 $
+ * $Revision: 1.13 $
+ * $Date: 2005/11/14 13:38:43 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -88,6 +88,11 @@ public class UeberweisungDialog extends AbstractDialog {
     Input betrag = new LabelInput(HBCI.DECIMALFORMAT.format(ueb.getBetrag()) + " " + ueb.getKonto().getWaehrung());
     group.addLabelPair(i18n.tr("Betrag"),betrag);
 
+    if (ueb.isTerminUeberweisung())
+    {
+      Input termin = new LabelInput(HBCI.DATEFORMAT.format(ueb.getTermin()));
+      group.addLabelPair(i18n.tr("Termin"),termin);
+    }
     // BUGZILLA 32 http://www.willuhn.de/bugzilla/show_bug.cgi?id=32
     LabelGroup zweck = new LabelGroup(parent,i18n.tr("Verwendungszweck"));
     zweck.addText(ueb.getZweck(),true);
@@ -123,6 +128,9 @@ public class UeberweisungDialog extends AbstractDialog {
 
 /**********************************************************************
  * $Log: UeberweisungDialog.java,v $
+ * Revision 1.13  2005/11/14 13:38:43  willuhn
+ * @N Termin-Ueberweisungen
+ *
  * Revision 1.12  2005/04/05 22:49:02  web0
  * @B bug 32
  *

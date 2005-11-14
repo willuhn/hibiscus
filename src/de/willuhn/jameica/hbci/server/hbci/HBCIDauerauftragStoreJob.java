@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragStoreJob.java,v $
- * $Revision: 1.12 $
- * $Date: 2005/05/19 23:31:07 $
- * $Author: web0 $
+ * $Revision: 1.13 $
+ * $Date: 2005/11/14 13:38:43 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -122,7 +122,7 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob {
 			while (keys.hasMoreElements())
 			{
 				String s = (String) keys.nextElement();
-				Logger.debug("[hbci job restriction] name: " + s + ", value: " + p.getProperty(s));
+				Logger.info("[hbci job restriction] name: " + s + ", value: " + p.getProperty(s));
 			}
 			new TurnusRestriction(turnus,p).test();
 			if (!active) // nur pruefen bei neuen Dauerauftraegen
@@ -206,6 +206,9 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIDauerauftragStoreJob.java,v $
+ * Revision 1.13  2005/11/14 13:38:43  willuhn
+ * @N Termin-Ueberweisungen
+ *
  * Revision 1.12  2005/05/19 23:31:07  web0
  * @B RMI over SSL support
  * @N added handbook
