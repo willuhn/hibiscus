@@ -181,7 +181,7 @@ CREATE TABLE sueberweisungbuchung (
   PRIMARY KEY (id)
 );
 
-ALTER CREATE TABLE systemnachricht (
+CREATE TABLE systemnachricht (
   id NUMERIC default UNIQUEKEY('systemnachricht'),
   blz varchar(15) NOT NULL,
   nachricht text NOT NULL,
