@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/filter/Attic/Pattern.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/08/01 16:10:41 $
- * $Author: web0 $
+ * $Revision: 1.7 $
+ * $Date: 2005/11/18 00:43:29 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -128,11 +128,28 @@ public interface Pattern extends DBObject
    * @throws RemoteException
    */
   public void setIgnoreCase(boolean b) throws RemoteException;
+  
+  /**
+   * Liefert den Namen des Pattern.
+   * @return Name
+   * @throws RemoteException
+   */
+  public String getName() throws RemoteException;
+  
+  /**
+   * Speichert den Namen des Patterns.
+   * @param name Name.
+   * @throws RemoteException
+   */
+  public void setName(String name) throws RemoteException;
 }
 
 
 /**********************************************************************
  * $Log: Pattern.java,v $
+ * Revision 1.7  2005/11/18 00:43:29  willuhn
+ * @B bug 21
+ *
  * Revision 1.6  2005/08/01 16:10:41  web0
  * @N synchronize
  *

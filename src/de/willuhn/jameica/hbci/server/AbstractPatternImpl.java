@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AbstractPatternImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/07/20 17:00:37 $
- * $Author: web0 $
+ * $Revision: 1.6 $
+ * $Date: 2005/11/18 00:43:29 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -46,7 +46,6 @@ public abstract class AbstractPatternImpl extends AbstractDBObject implements Pa
    */
   public String getPrimaryAttribute() throws RemoteException
   {
-    // synthetisches Attribut
     return "name";
   }
 
@@ -148,7 +147,7 @@ public abstract class AbstractPatternImpl extends AbstractDBObject implements Pa
   public boolean ignoreCase() throws RemoteException
   {
     Integer i = (Integer) getAttribute("ignorecase");
-    return i == null ? false : i.intValue() != 0;
+    return i == null ? true : i.intValue() != 0;
   }
 
   /**
@@ -164,8 +163,6 @@ public abstract class AbstractPatternImpl extends AbstractDBObject implements Pa
    */
   public Object getAttribute(String arg0) throws RemoteException
   {
-    if (arg0.equals("name"))
-      return getNameForField(getField());
     if (arg0.equals("this"))
       return this;
     return super.getAttribute(arg0);
@@ -187,8 +184,7 @@ public abstract class AbstractPatternImpl extends AbstractDBObject implements Pa
       case Pattern.TYPE_STARTSWITH:
         return i18n.tr("beginnt mit");
       default:
-        Logger.warn("pattern type " + type + " unknown");
-        return null;
+        throw new RemoteException("pattern type " + type + " unknown");
     }
   }
 
@@ -205,11 +201,29 @@ public abstract class AbstractPatternImpl extends AbstractDBObject implements Pa
     super.insert();
   }
 
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.filter.Pattern#getName()
+   */
+  public String getName() throws RemoteException
+  {
+    return (String) getAttribute("name");
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.filter.Pattern#setName(java.lang.String)
+   */
+  public void setName(String name) throws RemoteException
+  {
+    setAttribute("name",name);
+  }
 }
 
 
 /**********************************************************************
  * $Log: AbstractPatternImpl.java,v $
+ * Revision 1.6  2005/11/18 00:43:29  willuhn
+ * @B bug 21
+ *
  * Revision 1.5  2005/07/20 17:00:37  web0
  * *** empty log message ***
  *

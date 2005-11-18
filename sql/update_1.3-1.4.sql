@@ -104,7 +104,8 @@ ALTER CREATE TABLE umsatztyp (
   name varchar(255) NOT NULL,
   field varchar(255) NOT NULL,
   pattern varchar(255) NOT NULL,
-  patterntype int(1) NOT NULL,
+  patterntype int(1) NULL,
+  ignorecase int(1) NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );

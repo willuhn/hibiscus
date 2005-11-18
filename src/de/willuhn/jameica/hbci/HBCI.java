@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.68 $
- * $Date: 2005/11/14 23:47:21 $
+ * $Revision: 1.69 $
+ * $Date: 2005/11/18 00:43:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -133,7 +133,7 @@ public class HBCI extends AbstractPlugin
 
 		String checkSum = getDatabase().getMD5Sum();
 		if (checkSum.equals("KvynDJyxe6D1XUvSCkNAFA==")) // 1.0
-			return;
+      return;
 
 		if (checkSum.equals("Oj3JSimz84VKq44EEzQOZQ==")) // 1.1
 			return;
@@ -144,7 +144,7 @@ public class HBCI extends AbstractPlugin
 		if (checkSum.equals("kwi5vy1fvgOOVtoTYJYjuA==")) // 1.3
 			return;
 
-    if (checkSum.equals("hSibTJVqgW1wyAbHMGBfCQ==")) // 1.4
+    if (checkSum.equals("JtkHZYFRtWpxGR6nE8TYFw==")) // 1.4
       return;
 
 		throw new Exception("database checksum does not match any known version: " + checkSum);
@@ -372,6 +372,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.69  2005/11/18 00:43:29  willuhn
+ * @B bug 21
+ *
  * Revision 1.68  2005/11/14 23:47:21  willuhn
  * @N added first code for umsatz categories
  *
