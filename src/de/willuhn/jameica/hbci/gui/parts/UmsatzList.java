@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.9 $
- * $Date: 2005/11/14 21:41:02 $
+ * $Revision: 1.10 $
+ * $Date: 2005/11/18 17:39:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -144,8 +144,85 @@ public class UmsatzList extends TablePart
     label.setBackground(Color.BACKGROUND.getSWTColor());
     label.setText(i18n.tr("Zweck, Name oder Konto enthält"));
     label.setLayoutData(new GridData(GridData.BEGINNING));
+
     this.search = new TextInput("");
     this.search.paint(comp);
+
+//    final Button b = GUI.getStyleFactory().createButton(comp);
+//    b.setImage(SWTUtil.getImage("search.gif"));
+//    b.addSelectionListener(new SelectionAdapter()
+//    {
+//      public void widgetSelected(SelectionEvent e)
+//      {
+//        Menu menu = new Menu(GUI.getShell(),SWT.POP_UP);
+//        MenuItem item = new MenuItem(menu, SWT.PUSH);
+//        item.setText(i18n.tr("Als Umsatz-Filter speichern"));
+//        item.addListener(SWT.Selection, new Listener()
+//        {
+//          public void handleEvent (Event e)
+//          {
+//            try
+//            {
+//              String text = (String) search.getValue();
+//              if (text == null || text.length() == 0)
+//                return;
+//              
+//              UmsatzTyp typ = (UmsatzTyp) Settings.getDBService().createObject(UmsatzTyp.class,null);
+//              typ.setName(i18n.tr("Zweck, Name oder Konto enthält \"{0}\"",text));
+//              typ.setField("zweck");
+//              typ.setPattern(text);
+//              typ.setType(Pattern.TYPE_CONTAINS);
+//              typ.store();
+//              GUI.getStatusBar().setSuccessText(i18n.tr("Umsatz-Filter gespeichert"));
+//            }
+//            catch (Exception ex)
+//            {
+//              Logger.error("unable to store umsatz filter",ex);
+//              GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern des Umsatz-Filters"));
+//            }
+//          }
+//        });
+//        
+//        try
+//        {
+//          DBIterator i = Settings.getDBService().createList(UmsatzTyp.class);
+//          if (i.size() > 0)
+//          {
+//            new MenuItem(menu, SWT.SEPARATOR);
+//            while (i.hasNext())
+//            {
+//              final UmsatzTyp ut = (UmsatzTyp) i.next();
+//              final String s = ut.getPattern();
+//              final MenuItem mi = new MenuItem(menu, SWT.PUSH);
+//              mi.setText(s);
+//              mi.addListener(SWT.Selection, new Listener()
+//              {
+//                public void handleEvent(Event event)
+//                {
+//                  Logger.debug("applying filter " + s);
+//                  search.setValue(s);
+//                }
+//              });
+//              
+//            }
+//          }
+//          
+//        }
+//        catch (Exception ex)
+//        {
+//          Logger.error("unable to load umsatz filter",ex);
+//          GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Laden der Umsatz-Filters"));
+//        }
+//
+//        menu.setLocation(GUI.getDisplay().getCursorLocation());
+//        menu.setVisible(true);
+//        while (!menu.isDisposed() && menu.isVisible())
+//        {
+//          if (!GUI.getDisplay().readAndDispatch()) GUI.getDisplay().sleep();
+//        }
+//        menu.dispose();
+//      }
+//    });
     
     super.paint(parent);
 
@@ -291,6 +368,9 @@ public class UmsatzList extends TablePart
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.10  2005/11/18 17:39:12  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.9  2005/11/14 21:41:02  willuhn
  * @B bug 5
  *
