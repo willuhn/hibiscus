@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUeberweisungJob.java,v $
- * $Revision: 1.25 $
- * $Date: 2005/11/14 13:38:43 $
+ * $Revision: 1.26 $
+ * $Date: 2005/11/18 00:28:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -106,8 +106,6 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
           Logger.info("[hbci job restriction] name: " + s + ", value: " + p.getProperty(s));
         }
         new PreTimeRestriction(d,p).test();
-        throw new ApplicationException("test");
-        // TODO Hier noch checken
       }
     }
 		catch (RemoteException e)
@@ -167,6 +165,9 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIUeberweisungJob.java,v $
+ * Revision 1.26  2005/11/18 00:28:20  willuhn
+ * @R removed test code
+ *
  * Revision 1.25  2005/11/14 13:38:43  willuhn
  * @N Termin-Ueberweisungen
  *
