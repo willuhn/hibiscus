@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/ChooseBoxesDialog.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/11/09 01:13:53 $
+ * $Revision: 1.2 $
+ * $Date: 2005/11/20 23:39:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,6 @@
 package de.willuhn.jameica.hbci.gui.dialogs;
 
 import java.rmi.RemoteException;
-import java.util.Collections;
 import java.util.Vector;
 
 import org.eclipse.swt.widgets.Composite;
@@ -35,10 +34,10 @@ import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.Welcome;
 import de.willuhn.jameica.hbci.gui.boxes.Box;
+import de.willuhn.jameica.hbci.gui.boxes.BoxRegistry;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
-import de.willuhn.util.ClassFinder;
 import de.willuhn.util.I18N;
 
 /**
@@ -65,18 +64,13 @@ public class ChooseBoxesDialog extends AbstractDialog
    */
   protected void paint(Composite parent) throws Exception
   {
-    ClassFinder finder = Application.getClassLoader().getClassFinder();
-    Class[] boxes = finder.findImplementors(Box.class);
-    Vector v1 = new Vector();
-    for (int i=0;i<boxes.length;++i)
-    {
-      v1.add(boxes[i].newInstance());
-    }
-    Collections.sort(v1);
+    Box[] list = BoxRegistry.getBoxes();
+
+    // Wir kopieren die Daten in eine Liste von GenericObjects
     Vector v = new Vector();
-    for (int i=0;i<v1.size();++i)
+    for (int i=0;i<list.length;++i)
     {
-      v.add(new BoxObject((Box)v1.get(i)));
+      v.add(new BoxObject(list[i]));
     }
     
     GenericIterator iterator = PseudoIterator.fromArray((BoxObject[]) v.toArray(new BoxObject[v.size()]));
@@ -110,14 +104,14 @@ public class ChooseBoxesDialog extends AbstractDialog
 
     table.paint(parent);
 
-    ButtonArea buttons = new ButtonArea(parent,3);
+    ButtonArea buttons = new ButtonArea(parent,4);
     buttons.addButton(i18n.tr("Nach oben"), new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         BoxObject o = (BoxObject) table.getSelection();
         if (o == null)
           return;
-        o.box.up();
+        BoxRegistry.up(o.box);
         table.removeItem(o);
         try
         {
@@ -136,7 +130,7 @@ public class ChooseBoxesDialog extends AbstractDialog
         BoxObject o = (BoxObject) table.getSelection();
         if (o == null)
           return;
-        o.box.down();
+        BoxRegistry.down(o.box);
         table.removeItem(o);
         try
         {
@@ -156,6 +150,12 @@ public class ChooseBoxesDialog extends AbstractDialog
         new Welcome().handleAction(context);
       }
     },null,true);
+    buttons.addButton(i18n.tr("Abbrechen"), new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        close();
+      }
+    });
   }
 
   /**
@@ -302,6 +302,9 @@ public class ChooseBoxesDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: ChooseBoxesDialog.java,v $
+ * Revision 1.2  2005/11/20 23:39:11  willuhn
+ * @N box handling
+ *
  * Revision 1.1  2005/11/09 01:13:53  willuhn
  * @N chipcard modul fuer AMD64 vergessen
  * @N Startseite jetzt frei konfigurierbar

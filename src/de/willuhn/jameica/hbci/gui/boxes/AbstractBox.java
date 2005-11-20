@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Attic/AbstractBox.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/11/09 01:13:53 $
+ * $Revision: 1.2 $
+ * $Date: 2005/11/20 23:39:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,7 +20,7 @@ import de.willuhn.jameica.system.Settings;
  */
 public abstract class AbstractBox implements Box
 {
-  private Settings settings = new Settings(Box.class);
+  private static Settings settings = new Settings(Box.class);
 
   /**
    * ct.
@@ -54,24 +54,11 @@ public abstract class AbstractBox implements Box
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.gui.boxes.Box#up()
+   * @see de.willuhn.jameica.hbci.gui.boxes.Box#setIndex(int)
    */
-  public void up()
+  public void setIndex(int index)
   {
-    int index = getIndex();
-
-    // Wir verschieben den Index maximal bis 0
-    // TODO: Das Berechnen der Indizes funktioniert noch nicht fehlerfrei.
-    index = index < 1 ? 0 : index - 1;
     settings.setAttribute(this.getClass().getName() + ".index",index);
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.gui.boxes.Box#down()
-   */
-  public void down()
-  {
-    settings.setAttribute(this.getClass().getName() + ".index",getIndex() + 1);
   }
 
   /**
@@ -96,6 +83,9 @@ public abstract class AbstractBox implements Box
 
 /*********************************************************************
  * $Log: AbstractBox.java,v $
+ * Revision 1.2  2005/11/20 23:39:11  willuhn
+ * @N box handling
+ *
  * Revision 1.1  2005/11/09 01:13:53  willuhn
  * @N chipcard modul fuer AMD64 vergessen
  * @N Startseite jetzt frei konfigurierbar
