@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.29 $
- * $Date: 2005/11/20 22:04:19 $
+ * $Revision: 1.30 $
+ * $Date: 2005/11/22 17:31:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -115,13 +115,8 @@ public class Converter {
 
     // Selberparsen kann ich wohl vergessen, wenn 999 drin steht. Wenn selbst
     // Stefan das nicht macht, lass ich lieber gleich die Finger davon ;)
-    boolean changable = false;
     if (u.usage == null || u.usage.length == 0)
 		{
-      // Da wir den Umsatz selbst nicht parsen koennen, erlauben wir dem User
-      // Aenderungen
-      changable = true;
-      
       String usage = u.additional;
       if (usage == null || usage.length() == 0)
       {
@@ -171,9 +166,6 @@ public class Converter {
 		{
 		  umsatz.setEmpfaenger(HBCIKonto2HibiscusAdresse(u.other));
 		}
-    
-    if (changable)
-      umsatz.setChangedByUser();
 		return umsatz;
 	}
 
@@ -380,6 +372,9 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.30  2005/11/22 17:31:31  willuhn
+ * @B NPE
+ *
  * Revision 1.29  2005/11/20 22:04:19  willuhn
  * @N umsatz changable by user if usage not parsable
  *

@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUmsatzJob.java,v $
- * $Revision: 1.16 $
- * $Date: 2005/05/09 23:47:24 $
- * $Author: web0 $
+ * $Revision: 1.17 $
+ * $Date: 2005/11/22 17:31:31 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -115,6 +115,12 @@ public class HBCIUmsatzJob extends AbstractHBCIJob {
 		{
 			umsatz = Converter.HBCIUmsatz2HibiscusUmsatz(lines[i]);
 			umsatz.setKonto(konto); // muessen wir noch machen, weil der Converter das Konto nicht kennt
+      
+      // Wenn keine geparsten Verwendungszwecke da sind, machen wir
+      // den Umsatz editierbar.
+      if(lines[i].usage == null || lines[i].usage.length == 0)
+        umsatz.setChangedByUser();
+      
 			if (existing.contains(umsatz) == null)
 			{
 				try
@@ -144,6 +150,9 @@ public class HBCIUmsatzJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIUmsatzJob.java,v $
+ * Revision 1.17  2005/11/22 17:31:31  willuhn
+ * @B NPE
+ *
  * Revision 1.16  2005/05/09 23:47:24  web0
  * @N added first code for the filter framework
  *
