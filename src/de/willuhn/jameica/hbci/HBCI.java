@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.71 $
- * $Date: 2005/11/18 12:13:57 $
+ * $Revision: 1.46.2.1 $
+ * $Date: 2005/11/28 11:14:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,18 +20,9 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Locale;
 
-import org.kapott.hbci.callback.HBCICallback;
-import org.kapott.hbci.callback.HBCICallbackConsole;
 import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.db.EmbeddedDatabase;
-import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.extension.Extendable;
-import de.willuhn.jameica.gui.extension.Extension;
-import de.willuhn.jameica.gui.extension.ExtensionRegistry;
-import de.willuhn.jameica.gui.internal.views.Start;
-import de.willuhn.jameica.hbci.gui.action.Welcome;
-import de.willuhn.jameica.hbci.io.IORegistry;
 import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Level;
@@ -43,12 +34,6 @@ import de.willuhn.util.ApplicationException;
  */
 public class HBCI extends AbstractPlugin
 {
-
-  /**
-   * Datums-Format dd.MM.yyyy HH:mm:ss.
-   */
-  public static DateFormat EXTRALONGDATEFORMAT   = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-
   /**
    * Datums-Format dd.MM.yyyy HH:mm.
    */
@@ -73,9 +58,9 @@ public class HBCI extends AbstractPlugin
   private static HashMap LOGMAPPING = new HashMap();
 
   static {
-    //  BUGZILLA 101 http://www.willuhn.de/bugzilla/show_bug.cgi?id=101
-    DECIMALFORMAT.applyPattern("###,###,##0.00");
-    DECIMALFORMAT.setGroupingUsed(Settings.getDecimalGrouping());
+    DECIMALFORMAT.applyPattern("#0.00");
+    DECIMALFORMAT.setGroupingUsed(false);
+    DECIMALFORMAT.setMinimumFractionDigits(2);
 
     LOGMAPPING.put(Level.ERROR, new Integer(HBCIUtils.LOG_ERR));
     LOGMAPPING.put(Level.WARN,  new Integer(HBCIUtils.LOG_WARN));
@@ -84,8 +69,6 @@ public class HBCI extends AbstractPlugin
   }
 
   private EmbeddedDatabase db = null;
-  
-  private HBCICallback callback;
   
   /**
    * ct.
@@ -121,8 +104,7 @@ public class HBCI extends AbstractPlugin
    */
   private void checkConsistency() throws Exception
 	{
-    
-    if (Application.inClientMode())
+    if (Application.inClientMode() || !Settings.getCheckDatabase())
     {
       // Wenn wir als Client laufen, muessen wir uns
       // nicht um die Datenbank kuemmern. Das macht
@@ -133,7 +115,7 @@ public class HBCI extends AbstractPlugin
 
 		String checkSum = getDatabase().getMD5Sum();
 		if (checkSum.equals("KvynDJyxe6D1XUvSCkNAFA==")) // 1.0
-      return;
+			return;
 
 		if (checkSum.equals("Oj3JSimz84VKq44EEzQOZQ==")) // 1.1
 			return;
@@ -143,9 +125,6 @@ public class HBCI extends AbstractPlugin
 
 		if (checkSum.equals("kwi5vy1fvgOOVtoTYJYjuA==")) // 1.3
 			return;
-
-    if (checkSum.equals("JtkHZYFRtWpxGR6nE8TYFw==")) // 1.4
-      return;
 
 		throw new Exception("database checksum does not match any known version: " + checkSum);
 	}
@@ -157,42 +136,14 @@ public class HBCI extends AbstractPlugin
   {
 		Logger.info("starting init process for hibiscus");
 
-    try {
+		try {
 			Application.getCallback().getStartupMonitor().setStatusText("hibiscus: checking database integrity");
-
-      ////////////////////////////////////////////////////////////////////////////
-      // TODO WIEDER ENTFERNEN, WENN RELEASED
-      // Damit wir die Updates nicht immer haendisch nachziehen muessen, rufen wir
-      // bei einem Fehler das letzte Update-Script nochmal auf.
-			if (!Application.inClientMode())
-      {
-        try
-        {
-          de.willuhn.jameica.system.Settings s = new de.willuhn.jameica.system.Settings(HBCI.class);
-          double size = s.getDouble("sql-update-size",-1);
-          
-          File f = new File(getResources().getPath() + "/sql/update_1.3-1.4.sql");
-          
-          if (f.length() != size)
-          {
-            getDatabase().executeSQLScript(f);
-            s.setAttribute("sql-update-size",(double)f.length());
-          }
-        }
-        catch (Exception e2)
-        {
-          e2.printStackTrace();
-        }
-      }
-      ////////////////////////////////////////////////////////////////////////////
-
-      checkConsistency();
+			checkConsistency();
 		}
 		catch (Exception e)
 		{
-      throw new ApplicationException(
-          getResources().getI18N().tr("Fehler beim Prüfung der Datenbank-Integrität, " +
-            "Plugin wird aus Sicherheitsgründen deaktiviert"),e);
+			throw new ApplicationException(
+				getResources().getI18N().tr("Fehler beim Prüfung der Datenbank-Integrität, " +					"Plugin wird aus Sicherheitsgründen deaktiviert"),e);
 		}
 
     Application.getCallback().getStartupMonitor().setStatusText("hibiscus: checking passport directory");
@@ -205,85 +156,31 @@ public class HBCI extends AbstractPlugin
       f.mkdirs();
     }
 
+    Application.getCallback().getStartupMonitor().setStatusText("hibiscus: init passport registry");
+		PassportRegistry.init();
 
-    if (!Application.inServerMode())
-    {
-      Application.getCallback().getStartupMonitor().setStatusText("hibiscus: init passport registry");
-      PassportRegistry.init();
-      Application.getCallback().getStartupMonitor().addPercentComplete(3);
-
-    }
-
-    Application.getCallback().getStartupMonitor().setStatusText("hibiscus: init hbci4java subsystem");
-
-    try {
-      int logLevel = HBCIUtils.LOG_INFO; // Default
-      try
-      {
+		try {
+			int logLevel = HBCIUtils.LOG_INFO; // Default
+			try
+			{
         Level level = Logger.getLevel();
         Logger.info("current jameica log level: " + level.getName() + " [" + level.getValue() + "]");
-        logLevel = ((Integer) LOGMAPPING.get(level)).intValue();
-      }
-      catch (Exception e)
-      {
+				logLevel = ((Integer) LOGMAPPING.get(level)).intValue();
+			}
+			catch (Exception e)
+			{
         Logger.warn("unable to map jameica log level into hbci4java log level. using default");
-        // Am wahrscheinlichsten ArrayIndexOutOfBoundsException
-        // Dann eben nicht ;)
-      }
+				// Am wahrscheinlichsten ArrayIndexOutOfBoundsException
+				// Dann eben nicht ;)
+			}
       Logger.info("HBCI4Java loglevel: " + logLevel);
-
-      if (Application.inServerMode())
-      {
-        Logger.info("init HBCI4Java subsystem with console callback");
-        this.callback = new HBCICallbackConsole();
-      }
-      else
-      {
-        Logger.info("init HBCI4Java subsystem with SWT callback");
-        this.callback = new HBCICallbackSWT();
-      }
-      HBCIUtils.init(null,null,this.callback);
-      HBCIUtils.setParam("log.loglevel.default",""+logLevel);
-
-      de.willuhn.jameica.system.Settings s = new de.willuhn.jameica.system.Settings(HBCI.class);
-      String rewriters = s.getString("hbci4java.kernel.rewriters",null);
-      if (rewriters != null && rewriters.length() > 0)
-      {
-        Logger.warn("user defined rewriters found: " + rewriters);
-        HBCIUtils.setParam("kernel.rewriters",rewriters);
-      }
-      
-    }
-    catch (Exception e)
-    {
-      throw new ApplicationException(getResources().getI18N().tr("Fehler beim Initialisieren des HBCI-Subsystems"),e);
-    }
-    Application.getCallback().getStartupMonitor().addPercentComplete(5);
-
-    Application.getCallback().getStartupMonitor().setStatusText("hibiscus: init export filters");
-    IORegistry.init();
-
-    Application.getCallback().getStartupMonitor().addPercentComplete(3);
-    
-    // Wir erweitern noch die Jameica-Startseite
-    if (!Application.inServerMode())
-    {
-      Extension e = new Extension() {
-        public void extend(Extendable extendable)
-        {
-          try
-          {
-            new Welcome().handleAction(extendable);
-          }
-          catch (ApplicationException e)
-          {
-            GUI.getStatusBar().setErrorText(e.getMessage());
-          }
-        }
-      };
-      ExtensionRegistry.register(e,Start.class.getName());
-    }
-    
+      HBCIUtils.init(null,null,new HBCICallbackSWT());
+			HBCIUtils.setParam("log.loglevel.default",""+logLevel);
+		}
+		catch (Exception e)
+		{
+			throw new ApplicationException(getResources().getI18N().tr("Fehler beim Initialisieren des HBCI-Subsystems"),e);
+		}
   }
 
   /**
@@ -303,7 +200,7 @@ public class HBCI extends AbstractPlugin
 			throw new ApplicationException(getResources().getI18N().tr("Fehler beim Erstellen der Datenbank"),e);
     }
   }
-  
+
   /**
    * @see de.willuhn.jameica.plugin.AbstractPlugin#update(double)
    */
@@ -351,105 +248,13 @@ public class HBCI extends AbstractPlugin
   public void shutDown()
   {
   }
-
-  /**
-   * Liefert den verwendeten HBCI-Callback.
-   * Die Funktion ist ein Zugestaendnis an RMI.
-   * Hintergrund: HBCI4Java speichert seine Config pro ThreadGroup. Laeuft Hibiscus
-   * im Client/Server-Szenario und kommen von aussen (durch Clients) Anfragen rein,
-   * dann treffen die beim Server in den Threads der RMI-Runtime ein. Und die hat
-   * sich eine eigene Threadgroup geschaffen. Da wir RMI scheinbar nicht vorschreiben
-   * koennen, dass es unsere Threadgroup verwenden soll, muessen wir HBCI4Java
-   * pro ThreadGroup und damit ggf. mehrfach initialisieren.
-   * @return liefert den verwendeten HBCICallback.
-   */
-  HBCICallback getHBCICallback()
-  {
-    return this.callback;
-  }
 }
 
 
 /**********************************************************************
  * $Log: HBCI.java,v $
- * Revision 1.71  2005/11/18 12:13:57  willuhn
- * @B fixed md5 checksum
- *
- * Revision 1.70  2005/11/18 11:58:34  willuhn
- * *** empty log message ***
- *
- * Revision 1.69  2005/11/18 00:43:29  willuhn
- * @B bug 21
- *
- * Revision 1.68  2005/11/14 23:47:21  willuhn
- * @N added first code for umsatz categories
- *
- * Revision 1.67  2005/11/14 13:08:11  willuhn
- * @N Termin-Ueberweisungen
- *
- * Revision 1.66  2005/10/17 15:11:42  willuhn
- * *** empty log message ***
- *
- * Revision 1.65  2005/10/17 14:15:01  willuhn
- * @N FirstStart
- *
- * Revision 1.64  2005/10/17 13:44:55  willuhn
- * *** empty log message ***
- *
- * Revision 1.63  2005/09/30 00:08:51  willuhn
- * @N SammelUeberweisungen (merged with SammelLastschrift)
- *
- * Revision 1.62  2005/08/16 21:33:13  willuhn
- * @N Kommentar-Feld in Adressen
- * @N Neuer Adress-Auswahl-Dialog
- * @B Checkbox "in Adressbuch speichern" in Ueberweisungen
- *
- * Revision 1.61  2005/08/08 14:39:08  willuhn
- * @C user defined rewriter list
- *
- * Revision 1.60  2005/07/29 16:48:13  web0
- * @N Synchronize
- *
- * Revision 1.59  2005/07/26 23:00:03  web0
- * @N Multithreading-Support fuer HBCI-Jobs
- *
- * Revision 1.58  2005/07/24 22:26:42  web0
- * @B bug 101
- *
- * Revision 1.57  2005/06/30 21:48:56  web0
- * @B bug 75
- *
- * Revision 1.56  2005/06/27 11:26:30  web0
- * @N neuer Test bei Dauerauftraegen (zum Monatsletzten)
- * @N neue DDV-Lib
- *
- * Revision 1.55  2005/06/15 17:51:09  web0
- * *** empty log message ***
- *
- * Revision 1.54  2005/06/15 16:10:48  web0
- * @B javadoc fixes
- *
- * Revision 1.53  2005/06/13 23:11:01  web0
- * *** empty log message ***
- *
- * Revision 1.52  2005/06/08 16:49:00  web0
- * @N new Import/Export-System
- *
- * Revision 1.51  2005/06/02 22:57:34  web0
- * @N Export von Konto-Umsaetzen
- *
- * Revision 1.50  2005/05/30 12:01:03  web0
- * @R removed OP stuff
- *
- * Revision 1.49  2005/05/24 23:30:03  web0
- * @N Erster Code fuer OP-Verwaltung
- *
- * Revision 1.48  2005/05/19 23:31:07  web0
- * @B RMI over SSL support
- * @N added handbook
- *
- * Revision 1.47  2005/05/09 17:26:56  web0
- * @N Bugzilla 68
+ * Revision 1.46.2.1  2005/11/28 11:14:00  willuhn
+ * @C database check can be disabled
  *
  * Revision 1.46  2005/03/24 16:49:02  web0
  * @B error in log mapping

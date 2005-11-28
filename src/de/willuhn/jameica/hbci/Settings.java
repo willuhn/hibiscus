@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.38 $
- * $Date: 2005/08/22 10:36:37 $
+ * $Revision: 1.32.2.1 $
+ * $Date: 2005/11/28 11:14:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,10 +12,7 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci;
 
-import java.io.File;
-import java.rmi.ConnectException;
 import java.rmi.RemoteException;
-import java.util.Date;
 
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
@@ -24,9 +21,6 @@ import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.security.Wallet;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.jameica.system.ServiceSettings;
-import de.willuhn.logging.Logger;
-import de.willuhn.util.I18N;
 
 /**
  * Verwaltet die Einstellungen des Plugins.
@@ -58,24 +52,6 @@ public class Settings
 			db = (DBService) Application.getServiceFactory().lookup(HBCI.class,"database");
 			return db;
 		}
-    catch (ConnectException ce)
-    {
-      // Die Exception fliegt nur bei RMI-Kommunikation mit fehlendem RMI-Server
-      I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-      String host = ServiceSettings.getLookupHost(HBCI.class,"database");
-      int    port = ServiceSettings.getLookupPort(HBCI.class,"database");
-      String msg = i18n.tr("Hibiscus-Server \"{0}\" nicht erreichbar", (host + ":" + port));
-      try
-      {
-        Application.getCallback().notifyUser(msg);
-        throw new RemoteException(msg);
-      }
-      catch (Exception e)
-      {
-        Logger.error("error while notifying user",e);
-        throw new RemoteException(msg);
-      }
-    }
 		catch (Exception e)
 		{
 			throw new RemoteException("unable to open/create database",e);
@@ -160,14 +136,6 @@ public class Settings
 		if (libPath != null)
 			return libPath;
 		libPath = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getPath() + "/lib";
-    try
-    {
-      libPath = new File(libPath).getCanonicalPath();
-    }
-    catch (Exception e)
-    {
-      Logger.error("error while determining canonical path",e);
-    }
 		return libPath;
 	}
 
@@ -190,7 +158,7 @@ public class Settings
    */
   public static void setCheckPin(boolean checkPin)
   {
-    settings.setAttribute("checkpin",checkPin);
+    settings.setAttribute("checkpin", checkPin ? "true" : "false");
   }
 
   /**
@@ -204,40 +172,12 @@ public class Settings
   }
 
   /**
-   * Prueft, ob die TAN waehrend der Eingabe angezeigt werden soll.
-   * @return true, wenn die TANs angezeigt werden sollen.
+   * Prueft, ob die MD5-Checksumme der Datenbank geprueft werden soll.
+   * @return true, wenn die Checksumme geprueft werden soll.
    */
-  public static boolean getShowTan()
+  public static boolean getCheckDatabase()
   {
-    return settings.getBoolean("showtan",false);
-  }
-
-  /**
-   * Legt fest, ob die TANs bei der Eingabe angezeigt werden sollen.
-   * @param show true, wenn sie angezeigt werden sollen.
-   */
-  public static void setShowTan(boolean show)
-  {
-    settings.setAttribute("showtan",show);
-  }
-
-  /**
-   * Prueft, ob Tausender-Punkte bei Betraegen verwendet werden sollen.
-   * @return true, wenn Tausender-Punkte verwendet werden sollen.
-   */
-  public static boolean getDecimalGrouping()
-  {
-    return settings.getBoolean("decimalgrouping",false);
-  }
-
-  /**
-   * Legt fest, ob Tausender-Punkte bei Betraegen verwendet werden sollen.
-   * @param grouping true, wenn Tausender-Punkte verwendet werden sollen.
-   */
-  public static void setDecimalGrouping(boolean grouping)
-  {
-    settings.setAttribute("decimalgrouping",grouping);
-    HBCI.DECIMALFORMAT.setGroupingUsed(grouping);
+    return settings.getBoolean("checkdatabase",true);
   }
 
   /**
@@ -248,25 +188,7 @@ public class Settings
    */
   public static void setOnlineMode(boolean online)
   {
-    settings.setAttribute("online",online);
-  }
-
-  /**
-   * Liefert true, wenn die Kontonummern via Pruefsumme gecheckt werden sollen.
-   * @return true, wenn die Pruefziffern-Kontrolle aktiviert ist.
-   */
-  public static boolean getKontoCheck()
-  {
-    return settings.getBoolean("kontocheck",true);
-  }
-
-  /**
-   * Legt fest, ob die Kontonummern via Pruefsumme gecheckt werden sollen.
-   * @param check true, wenn gecheckt werden soll.
-   */
-  public static void setKontoCheck(boolean check)
-  {
-    settings.setAttribute("kontocheck",check);
+    settings.setAttribute("online", online ? "true" : "false");
   }
 
   /**
@@ -280,7 +202,7 @@ public class Settings
     return settings.getBoolean("online",false);
   }
 
-  /**
+	/**
 	 * Liefert das Limit bei Ueberweisungen.
 	 * Soll den Benutzer davor schuetzen, versehentlich zu grosse Betraege bei
 	 * einer Ueberweisung einzugeben.
@@ -310,37 +232,15 @@ public class Settings
   public static Wallet getWallet() throws Exception
   {
 		if (wallet == null)
-    {
-      wallet = Application.getSSLFactory().getWallet(HBCI.class);
-
-      // BUGZILLA 109 http://www.willuhn.de/bugzilla/show_bug.cgi?id=109
-      if (wallet.get("migration") == null)
-        wallet.set("migration",new Date().toString());
-    }
+			wallet = Application.getSSLFactory().getWallet(HBCI.class);
 		return wallet;
   }
 }
 
 /*********************************************************************
  * $Log: Settings.java,v $
- * Revision 1.38  2005/08/22 10:36:37  willuhn
- * @N bug 115, 116
- *
- * Revision 1.37  2005/08/04 22:15:14  willuhn
- * @B bug 109
- *
- * Revision 1.36  2005/07/24 22:26:42  web0
- * @B bug 101
- *
- * Revision 1.35  2005/06/27 11:26:30  web0
- * @N neuer Test bei Dauerauftraegen (zum Monatsletzten)
- * @N neue DDV-Lib
- *
- * Revision 1.34  2005/06/16 13:29:13  web0
- * *** empty log message ***
- *
- * Revision 1.33  2005/06/06 09:54:39  web0
- * *** empty log message ***
+ * Revision 1.32.2.1  2005/11/28 11:14:00  willuhn
+ * @C database check can be disabled
  *
  * Revision 1.32  2005/05/02 11:54:09  web0
  * *** empty log message ***
