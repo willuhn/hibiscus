@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.71 $
- * $Date: 2005/11/18 12:13:57 $
+ * $Revision: 1.72 $
+ * $Date: 2005/11/28 11:15:49 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -121,8 +121,7 @@ public class HBCI extends AbstractPlugin
    */
   private void checkConsistency() throws Exception
 	{
-    
-    if (Application.inClientMode())
+    if (Application.inClientMode() || !Settings.getCheckDatabase())
     {
       // Wenn wir als Client laufen, muessen wir uns
       // nicht um die Datenbank kuemmern. Das macht
@@ -372,6 +371,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.72  2005/11/28 11:15:49  willuhn
+ * @C database check can be disabled
+ *
  * Revision 1.71  2005/11/18 12:13:57  willuhn
  * @B fixed md5 checksum
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.38 $
- * $Date: 2005/08/22 10:36:37 $
+ * $Revision: 1.39 $
+ * $Date: 2005/11/28 11:15:49 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -204,6 +204,15 @@ public class Settings
   }
 
   /**
+   * Prueft, ob die MD5-Checksumme der Datenbank geprueft werden soll.
+   * @return true, wenn die Checksumme geprueft werden soll.
+   */
+  public static boolean getCheckDatabase()
+  {
+    return settings.getBoolean("checkdatabase",true);
+  }
+  
+  /**
    * Prueft, ob die TAN waehrend der Eingabe angezeigt werden soll.
    * @return true, wenn die TANs angezeigt werden sollen.
    */
@@ -323,6 +332,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.39  2005/11/28 11:15:49  willuhn
+ * @C database check can be disabled
+ *
  * Revision 1.38  2005/08/22 10:36:37  willuhn
  * @N bug 115, 116
  *
