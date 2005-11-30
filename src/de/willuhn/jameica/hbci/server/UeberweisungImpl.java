@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UeberweisungImpl.java,v $
- * $Revision: 1.35 $
- * $Date: 2005/11/14 13:08:11 $
+ * $Revision: 1.36 $
+ * $Date: 2005/11/30 23:21:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,7 @@
 package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
+import java.util.Date;
 
 import de.willuhn.jameica.hbci.rmi.Duplicatable;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
@@ -48,9 +49,11 @@ public class UeberweisungImpl extends AbstractBaseUeberweisungImpl
     u.setGegenkontoNummer(getGegenkontoNummer());
     u.setGegenkontoName(getGegenkontoName());
     u.setKonto(getKonto());
-    u.setTermin(getTermin());
     u.setZweck(getZweck());
     u.setZweck2(getZweck2());
+
+    // Als Termin nehmen wir aber das aktuelle Datum
+    u.setTermin(new Date());
     return u;
   }
 
@@ -78,6 +81,9 @@ public class UeberweisungImpl extends AbstractBaseUeberweisungImpl
 
 /**********************************************************************
  * $Log: UeberweisungImpl.java,v $
+ * Revision 1.36  2005/11/30 23:21:06  willuhn
+ * @B ObjectNotFoundException beim Abrufen der Dauerauftraege
+ *
  * Revision 1.35  2005/11/14 13:08:11  willuhn
  * @N Termin-Ueberweisungen
  *
