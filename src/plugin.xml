@@ -10,6 +10,7 @@
   <menu>
     <item id="hibiscus.menu"                        name="Hibiscus">
       <item id="hibiscus.menu.settings"             name="Einstellungen"                            action="de.willuhn.jameica.hbci.gui.action.Settings" />
+      <item name="-" />
       <item id="hibiscus.menu.about"                name="About"                                    action="de.willuhn.jameica.hbci.gui.action.About" />
       <item id="hibiscus.menu.license"              name="Lizenzinformationen"                      action="de.willuhn.jameica.hbci.gui.action.License" />
       <item id="hibiscus.menu.donate"               name="Spenden"                                  action="de.willuhn.jameica.hbci.gui.action.Donate" />

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.11 $
- * $Date: 2005/12/05 17:20:40 $
+ * $Revision: 1.12 $
+ * $Date: 2005/12/05 20:16:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -45,6 +45,7 @@ import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.action.UmsatzTypEdit;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
@@ -166,7 +167,7 @@ public class UmsatzList extends TablePart
       {
         Menu menu = new Menu(GUI.getShell(),SWT.POP_UP);
         MenuItem item = new MenuItem(menu, SWT.PUSH);
-        item.setText(i18n.tr("Als Umsatz-Filter speichern"));
+        item.setText(i18n.tr("Als Umsatz-Filter speichern..."));
         item.addListener(SWT.Selection, new Listener()
         {
           public void handleEvent (Event e)
@@ -177,8 +178,28 @@ public class UmsatzList extends TablePart
               if (text == null || text.length() == 0)
                 return;
               
+              // Mal schauen, obs den Typ schon gibt
+              DBIterator existing = Settings.getDBService().createList(UmsatzTyp.class);
+              existing.addFilter("pattern = '" + text + "'");
+              if (existing.size() > 0)
+              {
+                GUI.getStatusBar().setErrorText(i18n.tr("Umsatzfilter existiert bereits"));
+                return;
+              }
+              String name = null;
+              try
+              {
+                name = Application.getCallback().askUser(i18n.tr("Bitte geben Sie einen Namen für den Umsatz-Filter ein"),i18n.tr("Name des Filters"));
+              }
+              catch (Exception ex)
+              {
+                Logger.error("unable to ask for umsatz type name",ex);
+              }
+              if (name == null || name.length() == 0)
+                name = i18n.tr("Zweck, Name oder Konto enthält \"{0}\"",text);
+
               UmsatzTyp typ = (UmsatzTyp) Settings.getDBService().createObject(UmsatzTyp.class,null);
-              typ.setName(i18n.tr("Zweck, Name oder Konto enthält \"{0}\"",text));
+              typ.setName(name);
               typ.setPattern(text);
               typ.store();
               GUI.getStatusBar().setSuccessText(i18n.tr("Umsatz-Filter gespeichert"));
@@ -196,7 +217,24 @@ public class UmsatzList extends TablePart
           DBIterator i = Settings.getDBService().createList(UmsatzTyp.class);
           if (i.size() > 0)
           {
+            MenuItem edit = new MenuItem(menu, SWT.PUSH);
+            edit.setText(i18n.tr("Umsatz-Filter bearbeiten..."));
+            edit.addListener(SWT.Selection,new Listener() {
+              public void handleEvent(Event event)
+              {
+                try
+                {
+                  new UmsatzTypEdit().handleAction(null);
+                }
+                catch (Exception e)
+                {
+                  Logger.error("error while editing umsatz filter",e);
+                  GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Bearbeiten der Umsatz-Filter"));
+                }
+              }
+            });
             new MenuItem(menu, SWT.SEPARATOR);
+            
             while (i.hasNext())
             {
               final UmsatzTyp ut = (UmsatzTyp) i.next();
@@ -369,6 +407,9 @@ public class UmsatzList extends TablePart
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.12  2005/12/05 20:16:15  willuhn
+ * @N Umsatz-Filter Refactoring
+ *
  * Revision 1.11  2005/12/05 17:20:40  willuhn
  * @N Umsatz-Filter Refactoring
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.14 $
- * $Date: 2005/12/05 17:20:40 $
+ * $Revision: 1.15 $
+ * $Date: 2005/12/05 20:16:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,10 +19,10 @@ import org.kapott.hbci.GV_Result.GVRKUms.UmsLine;
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.hbci.rmi.UmsatzZuordnung;
-import de.willuhn.jameica.hbci.rmi.filter.UmsatzFilter;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -31,7 +31,7 @@ import de.willuhn.util.I18N;
 /**
  * Implementierung eines Umsatz-Typs.
  */
-public class UmsatzTypImpl extends AbstractDBObject implements UmsatzTyp, UmsatzFilter
+public class UmsatzTypImpl extends AbstractDBObject implements UmsatzTyp
 {
 
   private I18N i18n = null;
@@ -165,7 +165,7 @@ public class UmsatzTypImpl extends AbstractDBObject implements UmsatzTyp, Umsatz
     name = name.toLowerCase();
     kto  = kto.toLowerCase();
 
-    DBIterator types = getList();
+    DBIterator types = Settings.getDBService().createList(UmsatzTyp.class);
     while (types.hasNext())
     {
       UmsatzTyp typ = (UmsatzTyp) types.next();
@@ -184,7 +184,7 @@ public class UmsatzTypImpl extends AbstractDBObject implements UmsatzTyp, Umsatz
           kto.indexOf(pattern) != -1)
       {
         Logger.info("assigned umsatz to umsatz type " + typ.getName());
-        UmsatzZuordnung z = (UmsatzZuordnung) this.getService().createObject(UmsatzZuordnung.class,null);
+        UmsatzZuordnung z = (UmsatzZuordnung) Settings.getDBService().createObject(UmsatzZuordnung.class,null);
         z.setUmsatz(umsatz);
         z.setUmsatzTyp(typ);
         try
@@ -231,6 +231,9 @@ public class UmsatzTypImpl extends AbstractDBObject implements UmsatzTyp, Umsatz
 
 /**********************************************************************
  * $Log: UmsatzTypImpl.java,v $
+ * Revision 1.15  2005/12/05 20:16:15  willuhn
+ * @N Umsatz-Filter Refactoring
+ *
  * Revision 1.14  2005/12/05 17:20:40  willuhn
  * @N Umsatz-Filter Refactoring
  *

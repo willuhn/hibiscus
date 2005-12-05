@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/FilterEngine.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/12/05 17:20:40 $
+ * $Revision: 1.2 $
+ * $Date: 2005/12/05 20:16:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -115,7 +115,7 @@ public class FilterEngine
       }
       catch (Throwable t)
       {
-        Logger.error("error while applying umsatz filter " + filter.getClass().getName() + " - skipping");
+        Logger.error("error while applying umsatz filter " + filter.getClass().getName() + " - skipping",t);
       }
     }
     Logger.info("used time: " + (System.currentTimeMillis() - start) + " millis");
@@ -126,6 +126,9 @@ public class FilterEngine
 
 /**********************************************************************
  * $Log: FilterEngine.java,v $
+ * Revision 1.2  2005/12/05 20:16:15  willuhn
+ * @N Umsatz-Filter Refactoring
+ *
  * Revision 1.1  2005/12/05 17:20:40  willuhn
  * @N Umsatz-Filter Refactoring
  *

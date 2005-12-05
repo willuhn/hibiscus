@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/UmsatzTyp.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/12/05 17:20:40 $
+ * $Revision: 1.4 $
+ * $Date: 2005/12/05 20:16:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,11 +16,12 @@ import java.rmi.RemoteException;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
+import de.willuhn.jameica.hbci.rmi.filter.UmsatzFilter;
 
 /**
  * Interface zur Einstufung von Umsaetzen in verschiedene Kategorien.
  */
-public interface UmsatzTyp extends DBObject
+public interface UmsatzTyp extends DBObject, UmsatzFilter
 {
 
 	/**
@@ -71,6 +72,9 @@ public interface UmsatzTyp extends DBObject
 
 /**********************************************************************
  * $Log: UmsatzTyp.java,v $
+ * Revision 1.4  2005/12/05 20:16:15  willuhn
+ * @N Umsatz-Filter Refactoring
+ *
  * Revision 1.3  2005/12/05 17:20:40  willuhn
  * @N Umsatz-Filter Refactoring
  *
