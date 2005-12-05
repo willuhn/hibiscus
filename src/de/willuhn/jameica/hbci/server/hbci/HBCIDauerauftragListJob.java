@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragListJob.java,v $
- * $Revision: 1.23 $
- * $Date: 2005/11/30 23:21:06 $
+ * $Revision: 1.24 $
+ * $Date: 2005/12/05 10:58:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import java.rmi.RemoteException;
 import org.kapott.hbci.GV_Result.GVRDauerList;
 
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
@@ -127,12 +128,19 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
         Konto k = null;
         try
         {
-          k = auftrag.getKonto();
-          if (k != null && k.isNewObject())
+          try
           {
-            Logger.info("current account is a new one, saving");
-            k.store();
-            auftrag.setKonto(k);
+            k = auftrag.getKonto();
+            if (k != null && k.isNewObject())
+            {
+              Logger.info("current account is a new one, saving");
+              k.store();
+              auftrag.setKonto(k);
+            }
+          }
+          catch (ObjectNotFoundException one)
+          {
+            Logger.info("account not found, using current one");
           }
         }
         catch (Exception e)
@@ -141,7 +149,7 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
         }
         if (k == null || k.isNewObject())
         {
-          Logger.warn("bank didn't sending account informations. using current account");
+          Logger.warn("assigning current account");
           auftrag.setKonto(konto);
         }
 
@@ -226,6 +234,9 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIDauerauftragListJob.java,v $
+ * Revision 1.24  2005/12/05 10:58:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.23  2005/11/30 23:21:06  willuhn
  * @B ObjectNotFoundException beim Abrufen der Dauerauftraege
  *
