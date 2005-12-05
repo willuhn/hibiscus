@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/PassportRegistry.java,v $
- * $Revision: 1.12 $
- * $Date: 2005/07/04 21:57:08 $
- * $Author: web0 $
+ * $Revision: 1.13 $
+ * $Date: 2005/12/05 10:35:34 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -80,7 +80,7 @@ public class PassportRegistry {
     if (c == null)
       return null;
     Passport p = (Passport) c.newInstance();
-    Logger.info("[" + c.getName() + "][" + p.getName() + "] instantiated successfully");
+    Logger.debug("[" + c.getName() + "][" + p.getName() + "] instantiated successfully");
     return p;
   }
 
@@ -143,6 +143,9 @@ public class PassportRegistry {
 
 /**********************************************************************
  * $Log: PassportRegistry.java,v $
+ * Revision 1.13  2005/12/05 10:35:34  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.12  2005/07/04 21:57:08  web0
  * @B bug 80
  *
