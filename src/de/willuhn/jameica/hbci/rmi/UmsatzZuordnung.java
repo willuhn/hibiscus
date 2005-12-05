@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Attic/UmsatzZuordnung.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/11/14 23:47:21 $
+ * $Revision: 1.2 $
+ * $Date: 2005/12/05 17:20:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -35,11 +35,28 @@ public interface UmsatzZuordnung extends DBObject
    * @throws RemoteException
    */
   public UmsatzTyp getUmsatzTyp() throws RemoteException;
+  
+  /**
+   * Speichert den Umsatz der Zuordnung.
+   * @param umsatz Umsatz der Zuordnung.
+   * @throws RemoteException
+   */
+  public void setUmsatz(Umsatz umsatz) throws RemoteException;
+
+  /**
+   * Speichert den Umsatz-Typ der Zuordnung.
+   * @param typ Umsatz-Typ.
+   * @throws RemoteException
+   */
+  public void setUmsatzTyp(UmsatzTyp typ) throws RemoteException;
 }
 
 
 /*********************************************************************
  * $Log: UmsatzZuordnung.java,v $
+ * Revision 1.2  2005/12/05 17:20:40  willuhn
+ * @N Umsatz-Filter Refactoring
+ *
  * Revision 1.1  2005/11/14 23:47:21  willuhn
  * @N added first code for umsatz categories
  *

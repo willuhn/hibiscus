@@ -1,8 +1,8 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/filter/Attic/FilterEngine.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/06/27 22:27:53 $
- * $Author: web0 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/FilterEngine.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2005/12/05 17:20:40 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -11,15 +11,15 @@
  *
  **********************************************************************/
 
-package de.willuhn.jameica.hbci.server.filter;
+package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
+import org.kapott.hbci.GV_Result.GVRKUms;
+
 import de.willuhn.jameica.hbci.rmi.Umsatz;
-import de.willuhn.jameica.hbci.rmi.filter.Filter;
-import de.willuhn.jameica.hbci.rmi.filter.FilterTarget;
-import de.willuhn.jameica.hbci.rmi.filter.Pattern;
+import de.willuhn.jameica.hbci.rmi.filter.UmsatzFilter;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ClassFinder;
@@ -43,7 +43,7 @@ import de.willuhn.util.ClassFinder;
 public class FilterEngine
 {
   private static FilterEngine engine = null;
-    private ArrayList targets        = null;
+    private ArrayList filters        = null;
     private boolean enabled          = true;
 
   private FilterEngine()
@@ -54,25 +54,25 @@ public class FilterEngine
     ClassFinder finder = Application.getClassLoader().getClassFinder();
     try
     {
-      Class[] classes = finder.findImplementors(FilterTarget.class);
+      Class[] classes = finder.findImplementors(UmsatzFilter.class);
       if (classes == null || classes.length == 0)
       {
         Logger.warn("no filter targets found");
         return;
       }
-      this.targets = new ArrayList();
+      this.filters = new ArrayList();
       for (int i=0;i<classes.length;++i)
       {
         try
         {
-          this.targets.add((FilterTarget) classes[i].newInstance());
+          this.filters.add((UmsatzFilter) classes[i].newInstance());
         }
         catch (Exception e)
         {
           Logger.error("unable to load filter target " + classes[i].getName() + ", skipping",e);
         }
       }
-      Logger.info("loaded " + this.targets.size() + " filter targets");
+      Logger.info("loaded " + this.filters.size() + " filter targets");
     }
     catch (ClassNotFoundException e)
     {
@@ -94,85 +94,28 @@ public class FilterEngine
   }
 
   /**
-   * Filtert den Umsatz und leitet ihn bei Treffern an die entsprechenden
-   * Filter-Targets weiter.
+   * Filter einen einzelnen Umsatz durch die registrierten Filter.
    * @param u
+   * @param rawData die HBCI4Java-Rohdaten.
    * @throws RemoteException
    */
-  public void filter(Umsatz u) throws RemoteException
+  public void filter(Umsatz u, GVRKUms.UmsLine rawData) throws RemoteException
   {
     if (!this.enabled)
       return;
 
     long start = System.currentTimeMillis();
     Logger.debug("filtering " + u.getAttribute(u.getPrimaryAttribute()));
-    for (int i=0;i<this.targets.size();++i)
+    for (int i=0;i<this.filters.size();++i)
     {
-
-      FilterTarget target = (FilterTarget) this.targets.get(i);
-      Filter[] filters    = target.getFilters();
-
-      if (filters == null || filters.length == 0)
+      UmsatzFilter filter = (UmsatzFilter) this.filters.get(i);
+      try
       {
-        Logger.warn("no filters defined for target " + target.getClass().getName() + ", skipping");
-        continue;
+        filter.filter(u,rawData);
       }
-
-      for (int j=0;j<filters.length;++j)
+      catch (Throwable t)
       {
-        Filter filter = filters[j];
-
-        Pattern[] pattern = filter.getPattern();
-
-        if (pattern == null || pattern.length == 0)
-        {
-          Logger.warn("no pattern defined in filter " + filter.getClass().getName() + " for target " + target.getClass().getName() +", skipping");
-          continue;
-        }
-
-        boolean match = false;
-
-        for (int k=0;k<pattern.length;++k)
-        {
-          Object attribute = u.getAttribute(pattern[k].getField());
-          if (attribute == null) continue;
-
-          String s = attribute.toString();
-          if (s == null) continue;
-
-          String test = pattern[k].getPattern();
-          if (test == null) continue;
-
-          if (pattern[k].getType() == Pattern.TYPE_CONTAINS)
-            test = ".*" + test + ".*";
-          else if (pattern[k].getType() == Pattern.TYPE_STARTSWITH)
-            test = "^" + test + ".*";
-          else if (pattern[k].getType() == Pattern.TYPE_ENDSWITH)
-            test = ".*" + test + "$";
-          else if (pattern[k].getType() == Pattern.TYPE_EQUALS)
-            test = "^" + test + "$";
-
-          // Java kann via Inlined Flag (?i) auch im regulaeren Ausdruck Gross-Kleinschreibung ignorieren.
-          // Allerdings kenne ich die Syntax hierfuer nicht und weiss nicht, was schneller ist
-          if (pattern[k].ignoreCase())
-          {
-            test = test.toUpperCase();
-            s = s.toUpperCase();
-          }
-          match &= s.matches(test);
-        }
-        if (match)
-        {
-          try
-          {
-            Logger.info("filter match for umsatz \"" + u.getAttribute(u.getPrimaryAttribute()) + "\"");
-            target.match(u,filter);
-          }
-          catch (Exception e)
-          {
-            Logger.error("error while filtering umsatz \"" + u.getAttribute(u.getPrimaryAttribute()) + "\"",e);
-          }
-        }
+        Logger.error("error while applying umsatz filter " + filter.getClass().getName() + " - skipping");
       }
     }
     Logger.info("used time: " + (System.currentTimeMillis() - start) + " millis");
@@ -183,6 +126,9 @@ public class FilterEngine
 
 /**********************************************************************
  * $Log: FilterEngine.java,v $
+ * Revision 1.1  2005/12/05 17:20:40  willuhn
+ * @N Umsatz-Filter Refactoring
+ *
  * Revision 1.5  2005/06/27 22:27:53  web0
  * *** empty log message ***
  *

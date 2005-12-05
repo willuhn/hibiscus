@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.10 $
- * $Date: 2005/11/18 17:39:12 $
+ * $Revision: 1.11 $
+ * $Date: 2005/12/05 17:20:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,15 +19,21 @@ import java.util.ArrayList;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.TableItem;
 
 import de.willuhn.datasource.GenericIterator;
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
@@ -36,10 +42,12 @@ import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Color;
+import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
@@ -138,7 +146,7 @@ public class UmsatzList extends TablePart
     gd.horizontalSpan = 2;
     comp.setLayoutData(gd);
     comp.setBackground(Color.BACKGROUND.getSWTColor());
-    comp.setLayout(new GridLayout(2,false));
+    comp.setLayout(new GridLayout(3,false));
 
     final Label label = GUI.getStyleFactory().createLabel(comp,SWT.NONE);
     label.setBackground(Color.BACKGROUND.getSWTColor());
@@ -148,81 +156,83 @@ public class UmsatzList extends TablePart
     this.search = new TextInput("");
     this.search.paint(comp);
 
-//    final Button b = GUI.getStyleFactory().createButton(comp);
-//    b.setImage(SWTUtil.getImage("search.gif"));
-//    b.addSelectionListener(new SelectionAdapter()
-//    {
-//      public void widgetSelected(SelectionEvent e)
-//      {
-//        Menu menu = new Menu(GUI.getShell(),SWT.POP_UP);
-//        MenuItem item = new MenuItem(menu, SWT.PUSH);
-//        item.setText(i18n.tr("Als Umsatz-Filter speichern"));
-//        item.addListener(SWT.Selection, new Listener()
-//        {
-//          public void handleEvent (Event e)
-//          {
-//            try
-//            {
-//              String text = (String) search.getValue();
-//              if (text == null || text.length() == 0)
-//                return;
-//              
-//              UmsatzTyp typ = (UmsatzTyp) Settings.getDBService().createObject(UmsatzTyp.class,null);
-//              typ.setName(i18n.tr("Zweck, Name oder Konto enthält \"{0}\"",text));
-//              typ.setField("zweck");
-//              typ.setPattern(text);
-//              typ.setType(Pattern.TYPE_CONTAINS);
-//              typ.store();
-//              GUI.getStatusBar().setSuccessText(i18n.tr("Umsatz-Filter gespeichert"));
-//            }
-//            catch (Exception ex)
-//            {
-//              Logger.error("unable to store umsatz filter",ex);
-//              GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern des Umsatz-Filters"));
-//            }
-//          }
-//        });
-//        
-//        try
-//        {
-//          DBIterator i = Settings.getDBService().createList(UmsatzTyp.class);
-//          if (i.size() > 0)
-//          {
-//            new MenuItem(menu, SWT.SEPARATOR);
-//            while (i.hasNext())
-//            {
-//              final UmsatzTyp ut = (UmsatzTyp) i.next();
-//              final String s = ut.getPattern();
-//              final MenuItem mi = new MenuItem(menu, SWT.PUSH);
-//              mi.setText(s);
-//              mi.addListener(SWT.Selection, new Listener()
-//              {
-//                public void handleEvent(Event event)
-//                {
-//                  Logger.debug("applying filter " + s);
-//                  search.setValue(s);
-//                }
-//              });
-//              
-//            }
-//          }
-//          
-//        }
-//        catch (Exception ex)
-//        {
-//          Logger.error("unable to load umsatz filter",ex);
-//          GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Laden der Umsatz-Filters"));
-//        }
-//
-//        menu.setLocation(GUI.getDisplay().getCursorLocation());
-//        menu.setVisible(true);
-//        while (!menu.isDisposed() && menu.isVisible())
-//        {
-//          if (!GUI.getDisplay().readAndDispatch()) GUI.getDisplay().sleep();
-//        }
-//        menu.dispose();
-//      }
-//    });
+    final KL kl = new KL();
+
+    final Button b = GUI.getStyleFactory().createButton(comp);
+    b.setImage(SWTUtil.getImage("search.gif"));
+    b.addSelectionListener(new SelectionAdapter()
+    {
+      public void widgetSelected(SelectionEvent e)
+      {
+        Menu menu = new Menu(GUI.getShell(),SWT.POP_UP);
+        MenuItem item = new MenuItem(menu, SWT.PUSH);
+        item.setText(i18n.tr("Als Umsatz-Filter speichern"));
+        item.addListener(SWT.Selection, new Listener()
+        {
+          public void handleEvent (Event e)
+          {
+            try
+            {
+              String text = (String) search.getValue();
+              if (text == null || text.length() == 0)
+                return;
+              
+              UmsatzTyp typ = (UmsatzTyp) Settings.getDBService().createObject(UmsatzTyp.class,null);
+              typ.setName(i18n.tr("Zweck, Name oder Konto enthält \"{0}\"",text));
+              typ.setPattern(text);
+              typ.store();
+              GUI.getStatusBar().setSuccessText(i18n.tr("Umsatz-Filter gespeichert"));
+            }
+            catch (Exception ex)
+            {
+              Logger.error("unable to store umsatz filter",ex);
+              GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern des Umsatz-Filters"));
+            }
+          }
+        });
+        
+        try
+        {
+          DBIterator i = Settings.getDBService().createList(UmsatzTyp.class);
+          if (i.size() > 0)
+          {
+            new MenuItem(menu, SWT.SEPARATOR);
+            while (i.hasNext())
+            {
+              final UmsatzTyp ut = (UmsatzTyp) i.next();
+              final String s = ut.getPattern();
+              final MenuItem mi = new MenuItem(menu, SWT.PUSH);
+              mi.setText(s);
+              mi.addListener(SWT.Selection, new Listener()
+              {
+                public void handleEvent(Event event)
+                {
+                  Logger.debug("applying filter " + s);
+                  search.setValue(s);
+                  search.focus();
+                  kl.process();
+                }
+              });
+              
+            }
+          }
+          
+        }
+        catch (Exception ex)
+        {
+          Logger.error("unable to load umsatz filter",ex);
+          GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Laden der Umsatz-Filters"));
+        }
+
+        menu.setLocation(GUI.getDisplay().getCursorLocation());
+        menu.setVisible(true);
+        while (!menu.isDisposed() && menu.isVisible())
+        {
+          if (!GUI.getDisplay().readAndDispatch()) GUI.getDisplay().sleep();
+        }
+        menu.dispose();
+      }
+    });
     
     super.paint(parent);
 
@@ -236,16 +246,14 @@ public class UmsatzList extends TablePart
       umsaetze.add(u);
     }
     
-    KL kl = new KL();
     this.search.getControl().addKeyListener(kl);
   }
 
   // BUGZILLA 5
-  private class KL extends KeyAdapter implements SelectionListener
+  private class KL extends KeyAdapter
   {
     private Thread timeout = null;
-    private long count = 900l;
-    
+   
     /**
      * @see org.eclipse.swt.events.KeyListener#keyReleased(org.eclipse.swt.events.KeyEvent)
      */
@@ -260,7 +268,7 @@ public class UmsatzList extends TablePart
       }
       
       // Ein neuer Timer
-      timeout = new Thread()
+      timeout = new Thread("UmsatzList")
       {
         public void run()
         {
@@ -268,68 +276,11 @@ public class UmsatzList extends TablePart
           {
             // Wir warten 900ms. Vielleicht gibt der User inzwischen weitere
             // Sachen ein.
-            sleep(count);
-            
+            sleep(700l);
+
             // Ne, wir wurden nicht gekillt. Also machen wir uns ans Werk
+            process();
 
-            GUI.getDisplay().syncExec(new Runnable()
-            {
-              public void run()
-              {
-                try
-                {
-                  // Erstmal alle rausschmeissen
-                  removeAll();
-
-                  // Wir holen uns den aktuellen Text
-                  String text = (String) search.getValue();
-                  if (text.length() == 0) text = null;
-                  if (text != null) text = text.toLowerCase();
-
-                  Umsatz u    = null;
-                  String vwz1 = null;
-                  String vwz2 = null;
-                  String name = null;
-                  String kto  = null;
-
-                  for (int i=0;i<umsaetze.size();++i)
-                  {
-                    u = (Umsatz) umsaetze.get(i);
-
-                    vwz1 = u.getZweck();
-                    vwz2 = u.getZweck2();
-                    name = u.getEmpfaengerName();
-                    kto  = u.getEmpfaengerKonto();
-                    if (vwz1 == null) vwz1 = "";
-                    if (vwz2 == null) vwz2 = "";
-                    if (name == null) name = "";
-                    if (kto == null) kto = "";
-
-                    // Was zum Filtern da?
-                    if (text == null)
-                    {
-                      // ne
-                      addItem(u);
-                      continue;
-                    }
-                    
-                    boolean match = false;
-                    match |= (vwz1.toLowerCase().indexOf(text) != -1);
-                    match |= (vwz2.toLowerCase().indexOf(text) != -1);
-                    match |= (name.toLowerCase().indexOf(text) != -1);
-                    match |= (kto.toLowerCase().indexOf(text) != -1);
-
-                    if (match)
-                      addItem(u);
-                    
-                  }
-                }
-                catch (Exception e)
-                {
-                  Logger.error("error while loading umsatz",e);
-                }
-              }
-            });
           }
           catch (InterruptedException e)
           {
@@ -338,29 +289,79 @@ public class UmsatzList extends TablePart
           finally
           {
             timeout = null;
-            count = 900l;
           }
         }
       };
       timeout.start();
     }
-
-    /**
-     * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-     */
-    public void widgetSelected(SelectionEvent e)
+    
+    private void process()
     {
-      // Beim Klick auf die Checkbox muessen wir nichts warten
-      count = 0l;
-      keyReleased(null);
-    }
+      GUI.getDisplay().syncExec(new Runnable()
+      {
+        public void run()
+        {
+          try
+          {
+            // Erstmal alle rausschmeissen
+            removeAll();
 
-    /**
-     * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
-     */
-    public void widgetDefaultSelected(SelectionEvent e)
-    {
+            // Wir holen uns den aktuellen Text
+            String text = (String) search.getValue();
+
+            Umsatz u    = null;
+            String vwz1 = null;
+            String vwz2 = null;
+            String name = null;
+            String kto  = null;
+
+            for (int i=0;i<umsaetze.size();++i)
+            {
+              u = (Umsatz) umsaetze.get(i);
+
+              vwz1 = u.getZweck();
+              vwz2 = u.getZweck2();
+              name = u.getEmpfaengerName();
+              kto  = u.getEmpfaengerKonto();
+              if (vwz1 == null) vwz1 = "";
+              if (vwz2 == null) vwz2 = "";
+              if (name == null) name = "";
+              if (kto == null) kto = "";
+
+              vwz1 = vwz1.toLowerCase();
+              vwz2 = vwz2.toLowerCase();
+              name = name.toLowerCase();
+              kto  = kto.toLowerCase();
+
+              // Was zum Filtern da?
+              if (text == null || text.length() == 0)
+              {
+                // ne
+                addItem(u);
+                continue;
+              }
+              
+              if (text == null) text = "";
+              else text = text.toLowerCase();
+              
+              if (vwz1.indexOf(text) != -1 ||
+                  vwz2.indexOf(text) != -1 ||
+                  name.indexOf(text) != -1 ||
+                   kto.indexOf(text) != -1)
+              {
+                addItem(u);
+              }
+              
+            }
+          }
+          catch (Exception e)
+          {
+            Logger.error("error while loading umsatz",e);
+          }
+        }
+      });
     }
+    
   }
 
 }
@@ -368,6 +369,9 @@ public class UmsatzList extends TablePart
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.11  2005/12/05 17:20:40  willuhn
+ * @N Umsatz-Filter Refactoring
+ *
  * Revision 1.10  2005/11/18 17:39:12  willuhn
  * *** empty log message ***
  *

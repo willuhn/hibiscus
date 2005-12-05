@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.72 $
- * $Date: 2005/11/28 11:15:49 $
+ * $Revision: 1.73 $
+ * $Date: 2005/12/05 17:20:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -146,7 +146,10 @@ public class HBCI extends AbstractPlugin
     if (checkSum.equals("JtkHZYFRtWpxGR6nE8TYFw==")) // 1.4
       return;
 
-		throw new Exception("database checksum does not match any known version: " + checkSum);
+    if (checkSum.equals("415yZ1Kl+aqi8QtCoYn6nA==")) // 1.5
+      return;
+
+    throw new Exception("database checksum does not match any known version: " + checkSum);
 	}
 
   /**
@@ -371,6 +374,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.73  2005/12/05 17:20:40  willuhn
+ * @N Umsatz-Filter Refactoring
+ *
  * Revision 1.72  2005/11/28 11:15:49  willuhn
  * @C database check can be disabled
  *

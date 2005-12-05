@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.13 $
- * $Date: 2005/11/18 00:43:29 $
+ * $Revision: 1.14 $
+ * $Date: 2005/12/05 17:20:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,16 +14,27 @@ package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
 
+import org.kapott.hbci.GV_Result.GVRKUms.UmsLine;
+
+import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.hbci.rmi.UmsatzZuordnung;
+import de.willuhn.jameica.hbci.rmi.filter.UmsatzFilter;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
+import de.willuhn.util.I18N;
 
 /**
  * Implementierung eines Umsatz-Typs.
  */
-public class UmsatzTypImpl extends AbstractPatternImpl implements UmsatzTyp {
+public class UmsatzTypImpl extends AbstractDBObject implements UmsatzTyp, UmsatzFilter
+{
+
+  private I18N i18n = null;
 
   /**
    * ct.
@@ -31,6 +42,7 @@ public class UmsatzTypImpl extends AbstractPatternImpl implements UmsatzTyp {
    */
   public UmsatzTypImpl() throws RemoteException {
     super();
+    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
   /**
@@ -108,41 +120,120 @@ public class UmsatzTypImpl extends AbstractPatternImpl implements UmsatzTyp {
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.filter.Pattern#getNameForField(java.lang.String)
+   * @see de.willuhn.datasource.db.AbstractDBObject#getPrimaryAttribute()
    */
-  public String getNameForField(String field) throws RemoteException
+  public String getPrimaryAttribute() throws RemoteException
   {
-    if (field == null)
-      return null;
-    if ("empfaenger_konto".equals(field))
-      return i18n.tr("Kontonummer Gegenkonto");
-    if ("empfaenger_blz".equals(field))
-      return i18n.tr("BLZ Gegenkonto");
-    if ("empfaenger_name".equals(field))
-      return i18n.tr("Inhaber Gegenkonto");
-    if ("zweck".equals(field))
-      return i18n.tr("Verwendungszweck");
-    throw new RemoteException("invalid field " + field);
+    return "name";
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.filter.Pattern#getValidFields()
+   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getName()
    */
-  public String[] getValidFields() throws RemoteException
+  public String getName() throws RemoteException
   {
-    return new String[]
+    return (String) getAttribute("name");
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#setName(java.lang.String)
+   */
+  public void setName(String name) throws RemoteException
+  {
+    this.setAttribute("name",name);
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.filter.UmsatzFilter#filter(de.willuhn.jameica.hbci.rmi.Umsatz, org.kapott.hbci.GV_Result.GVRKUms.UmsLine)
+   */
+  public void filter(Umsatz umsatz, UmsLine rawData) throws RemoteException
+  {
+    if (umsatz == null)
+      return;
+
+    String vwz1 = umsatz.getZweck();
+    String vwz2 = umsatz.getZweck2();
+    String name = umsatz.getEmpfaengerName();
+    String kto  = umsatz.getEmpfaengerKonto();
+    if (vwz1 == null) vwz1 = "";
+    if (vwz2 == null) vwz2 = "";
+    if (name == null) name = "";
+    if (kto == null)   kto = "";
+
+    vwz1 = vwz1.toLowerCase();
+    vwz2 = vwz2.toLowerCase();
+    name = name.toLowerCase();
+    kto  = kto.toLowerCase();
+
+    DBIterator types = getList();
+    while (types.hasNext())
+    {
+      UmsatzTyp typ = (UmsatzTyp) types.next();
+      if (typ.isZugeordnet(umsatz))
+        return; // den haben wir bereits
+      
+      String pattern = typ.getPattern();
+      if (pattern == null) pattern = "";
+      
+      // Wir beachten Gross-Kleinschreibung grundsaetzlich nicht
+      pattern = pattern.toLowerCase();
+
+      if (vwz1.indexOf(pattern) != -1 ||
+          vwz2.indexOf(pattern) != -1 ||
+          name.indexOf(pattern) != -1 ||
+          kto.indexOf(pattern) != -1)
       {
-        "empfaenger_konto", 
-        "empfaenger_blz",
-        "empfaenger_name",
-        "zweck"
-      };
+        Logger.info("assigned umsatz to umsatz type " + typ.getName());
+        UmsatzZuordnung z = (UmsatzZuordnung) this.getService().createObject(UmsatzZuordnung.class,null);
+        z.setUmsatz(umsatz);
+        z.setUmsatzTyp(typ);
+        try
+        {
+          z.store();
+        }
+        catch (ApplicationException ae)
+        {
+          Logger.error("error while assigning umsatz",ae);
+          throw new RemoteException(i18n.tr("Fehler beim Zuordnen des Umsatzes"),ae);
+        }
+      }
+    }
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#isZugeordnet(de.willuhn.jameica.hbci.rmi.Umsatz)
+   */
+  public boolean isZugeordnet(Umsatz u) throws RemoteException
+  {
+    DBIterator list = getService().createList(UmsatzZuordnung.class);
+    list.addFilter("umsatztyp_id = " + getID());
+    list.addFilter("umsatz_id = " + u.getID());
+    return list.hasNext();
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getPattern()
+   */
+  public String getPattern() throws RemoteException
+  {
+    return (String) getAttribute("pattern");
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#setPattern(java.lang.String)
+   */
+  public void setPattern(String pattern) throws RemoteException
+  {
+    setAttribute("pattern",pattern);
   }
 }
 
 
 /**********************************************************************
  * $Log: UmsatzTypImpl.java,v $
+ * Revision 1.14  2005/12/05 17:20:40  willuhn
+ * @N Umsatz-Filter Refactoring
+ *
  * Revision 1.13  2005/11/18 00:43:29  willuhn
  * @B bug 21
  *
