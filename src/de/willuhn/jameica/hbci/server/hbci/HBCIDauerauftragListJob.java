@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragListJob.java,v $
- * $Revision: 1.24 $
- * $Date: 2005/12/05 10:58:02 $
+ * $Revision: 1.25 $
+ * $Date: 2005/12/05 16:07:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -121,37 +121,7 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
 			try
 			{
 				auftrag = Converter.HBCIDauer2HibiscusDauerauftrag(lines[i]);
-
-        Logger.info("checking dauerauftrag order id: " + auftrag.getOrderID());
-
-        // BUGZILLA 87 http://www.willuhn.de/bugzilla/show_bug.cgi?id=87
-        Konto k = null;
-        try
-        {
-          try
-          {
-            k = auftrag.getKonto();
-            if (k != null && k.isNewObject())
-            {
-              Logger.info("current account is a new one, saving");
-              k.store();
-              auftrag.setKonto(k);
-            }
-          }
-          catch (ObjectNotFoundException one)
-          {
-            Logger.info("account not found, using current one");
-          }
-        }
-        catch (Exception e)
-        {
-          Logger.error("unable to save account",e);
-        }
-        if (k == null || k.isNewObject())
-        {
-          Logger.warn("assigning current account");
-          auftrag.setKonto(konto);
-        }
+				checkKonto(auftrag);
 
         // BUGZILLA 22 http://www.willuhn.de/bugzilla/show_bug.cgi?id=22
 				// BEGIN
@@ -159,8 +129,7 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
 				Logger.debug("checking name length: " + name + ", chars: " + name.length());
 				if (name != null && name.length() > HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH)
 				{
-					Logger.warn("name of other account longer than " + HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH +
-						" chars. stripping");
+					Logger.warn("name of other account longer than " + HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH + " chars. stripping");
 					auftrag.setGegenkontoName(name.substring(0,HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH));
 				}
 				// END
@@ -211,7 +180,8 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
 			for (int i=0;i<lines.length;++i)
 			{
 				auftrag = Converter.HBCIDauer2HibiscusDauerauftrag(lines[i]);
-				if (auftrag.getOrderID() != null && 
+				checkKonto(auftrag);
+        if (auftrag.getOrderID() != null && 
 						auftrag.getOrderID().equals(ex.getOrderID()) &&
 					  auftrag.getKonto().equals(ex.getKonto())
 					 )
@@ -229,11 +199,53 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
 
 		Logger.info("dauerauftrag list fetched successfully");
   }
+  
+  /**
+   * Prueft, ob der Dauerauftrag ein Konto hat und weist ggf. eines zu
+   * @param auftrag
+   * @throws RemoteException
+   */
+  private void checkKonto(Dauerauftrag auftrag) throws RemoteException
+  {
+    Logger.info("checking dauerauftrag order id: " + auftrag.getOrderID());
+
+    // BUGZILLA 87 http://www.willuhn.de/bugzilla/show_bug.cgi?id=87
+    Konto k = null;
+    try
+    {
+      try
+      {
+        k = auftrag.getKonto();
+        if (k != null && k.isNewObject())
+        {
+          Logger.info("current account is a new one, saving");
+          k.store();
+          auftrag.setKonto(k);
+        }
+      }
+      catch (ObjectNotFoundException one)
+      {
+        Logger.info("account not found, using current account");
+      }
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to save account",e);
+    }
+    if (k == null || k.isNewObject())
+    {
+      Logger.warn("assigning current account");
+      auftrag.setKonto(konto);
+    }
+  }
 }
 
 
 /**********************************************************************
  * $Log: HBCIDauerauftragListJob.java,v $
+ * Revision 1.25  2005/12/05 16:07:17  willuhn
+ * @B ObjectNotFoundException
+ *
  * Revision 1.24  2005/12/05 10:58:02  willuhn
  * *** empty log message ***
  *
