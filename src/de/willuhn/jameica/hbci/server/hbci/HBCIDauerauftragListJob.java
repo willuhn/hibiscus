@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragListJob.java,v $
- * $Revision: 1.25 $
- * $Date: 2005/12/05 16:07:17 $
+ * $Revision: 1.22.2.1 $
+ * $Date: 2005/12/05 16:14:49 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -243,6 +243,9 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIDauerauftragListJob.java,v $
+ * Revision 1.22.2.1  2005/12/05 16:14:49  willuhn
+ * @B ObjectNotFoundException (backport into HIBISCUS_1_4)
+ *
  * Revision 1.25  2005/12/05 16:07:17  willuhn
  * @B ObjectNotFoundException
  *
