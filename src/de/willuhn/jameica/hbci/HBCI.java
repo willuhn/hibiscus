@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.73 $
- * $Date: 2005/12/05 17:20:40 $
+ * $Revision: 1.74 $
+ * $Date: 2005/12/08 17:23:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -72,6 +72,9 @@ public class HBCI extends AbstractPlugin
   // Mapper von HBCI4Java nach jameica Loglevels
   private static HashMap LOGMAPPING = new HashMap();
 
+  // Mapper von Datenbank-Hash zu Versionsnummer
+  private static HashMap DBMAPPING = new HashMap();
+  
   static {
     //  BUGZILLA 101 http://www.willuhn.de/bugzilla/show_bug.cgi?id=101
     DECIMALFORMAT.applyPattern("###,###,##0.00");
@@ -81,6 +84,14 @@ public class HBCI extends AbstractPlugin
     LOGMAPPING.put(Level.WARN,  new Integer(HBCIUtils.LOG_WARN));
     LOGMAPPING.put(Level.INFO,  new Integer(HBCIUtils.LOG_INFO));
     LOGMAPPING.put(Level.DEBUG, new Integer(HBCIUtils.LOG_DEBUG2));
+
+    DBMAPPING.put("KvynDJyxe6D1XUvSCkNAFA==",new Double(1.0));
+    DBMAPPING.put("Oj3JSimz84VKq44EEzQOZQ==",new Double(1.1));
+    DBMAPPING.put("NhTl6Nt8RmaRNz49M/SGiA==",new Double(1.2));
+    DBMAPPING.put("kwi5vy1fvgOOVtoTYJYjuA==",new Double(1.3));
+    DBMAPPING.put("JtkHZYFRtWpxGR6nE8TYFw==",new Double(1.4));
+    DBMAPPING.put("415yZ1Kl+aqi8QtCoYn6nA==",new Double(1.5));
+    
   }
 
   private EmbeddedDatabase db = null;
@@ -128,28 +139,9 @@ public class HBCI extends AbstractPlugin
       // der Server schon
       return;
     }
-
-
 		String checkSum = getDatabase().getMD5Sum();
-		if (checkSum.equals("KvynDJyxe6D1XUvSCkNAFA==")) // 1.0
-      return;
-
-		if (checkSum.equals("Oj3JSimz84VKq44EEzQOZQ==")) // 1.1
-			return;
-
-		if (checkSum.equals("NhTl6Nt8RmaRNz49M/SGiA==")) // 1.2
-			return;
-
-		if (checkSum.equals("kwi5vy1fvgOOVtoTYJYjuA==")) // 1.3
-			return;
-
-    if (checkSum.equals("JtkHZYFRtWpxGR6nE8TYFw==")) // 1.4
-      return;
-
-    if (checkSum.equals("415yZ1Kl+aqi8QtCoYn6nA==")) // 1.5
-      return;
-
-    throw new Exception("database checksum does not match any known version: " + checkSum);
+    if (DBMAPPING.get(checkSum) == null)
+      throw new Exception("database checksum does not match any known version: " + checkSum);
 	}
 
   /**
@@ -161,33 +153,6 @@ public class HBCI extends AbstractPlugin
 
     try {
 			Application.getCallback().getStartupMonitor().setStatusText("hibiscus: checking database integrity");
-
-      ////////////////////////////////////////////////////////////////////////////
-      // TODO WIEDER ENTFERNEN, WENN RELEASED
-      // Damit wir die Updates nicht immer haendisch nachziehen muessen, rufen wir
-      // bei einem Fehler das letzte Update-Script nochmal auf.
-			if (!Application.inClientMode())
-      {
-        try
-        {
-          de.willuhn.jameica.system.Settings s = new de.willuhn.jameica.system.Settings(HBCI.class);
-          double size = s.getDouble("sql-update-size",-1);
-          
-          File f = new File(getResources().getPath() + "/sql/update_1.3-1.4.sql");
-          
-          if (f.length() != size)
-          {
-            getDatabase().executeSQLScript(f);
-            s.setAttribute("sql-update-size",(double)f.length());
-          }
-        }
-        catch (Exception e2)
-        {
-          e2.printStackTrace();
-        }
-      }
-      ////////////////////////////////////////////////////////////////////////////
-
       checkConsistency();
 		}
 		catch (Exception e)
@@ -321,15 +286,27 @@ public class HBCI extends AbstractPlugin
 		df.setMinimumFractionDigits(1);
 		df.setGroupingUsed(false);
 
-		double newVersion = oldVersion + 0.1d;
-
-		File f = new File(getResources().getPath() + "/sql/update_" + 
-											df.format(oldVersion) + "-" + 
-											df.format(newVersion) + ".sql");
+    double newVersion = oldVersion + 0.1d;
 
 		try
 		{
-			Logger.info("checking sql file " + f.getAbsolutePath());
+      // Bevor wir irgendein Update fahren, checken wir, ob die Datenbank
+      // mit der von Jameica gemeldeten Version uebereinstimmt.
+      String checkSum = getDatabase().getMD5Sum();
+      Double expectedVersion = (Double) DBMAPPING.get(checkSum);
+      if (expectedVersion == null)
+        throw new ApplicationException(getResources().getI18N().tr("Update der Datenbank abgebrochen. Aktuelle Checksumme {0} entspricht keiner bekannten Hibiscus-Version",checkSum));
+
+      double d = expectedVersion.doubleValue();
+      if (d != oldVersion)
+        throw new ApplicationException(getResources().getI18N().tr("Update der Datenbank abgebrochen. Erwartete Datenbank-Version: {0}, tatsächliche Version: {1}", new String[]{df.format(oldVersion),df.format(d)}));
+
+      // OK, wir haben eine bekannte Version, dann koennen wir jetzt das Update starten
+      File f = new File(getResources().getPath() + "/sql/update_" + 
+          df.format(oldVersion) + "-" + 
+          df.format(newVersion) + ".sql");
+
+      Logger.info("checking sql file " + f.getAbsolutePath());
 			while (f.exists())
 			{
 				Logger.info("  file exists, executing");
@@ -340,7 +317,12 @@ public class HBCI extends AbstractPlugin
 									   df.format(oldVersion) + "-" + 
 									   df.format(newVersion) + ".sql");
 			}
+      Logger.info("Update from " + df.format(oldVersion) + " to " + df.format(newVersion) + " completed");
 		}
+    catch (ApplicationException ae)
+    {
+      throw ae;
+    }
 		catch (Exception e)
 		{
 			throw new ApplicationException(getResources().getI18N().tr("Fehler beim Update der Datenbank"),e);
@@ -374,6 +356,11 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.74  2005/12/08 17:23:51  willuhn
+ * @N Datenbank-Update wird jetzt nur noch durchgefuehrt,
+ * wenn die aktuelle Datenbank-Version bekannt ist. Sprich:
+ * Nichts an der Datenbank aendern, wenn ihr Zustand unklar ist
+ *
  * Revision 1.73  2005/12/05 17:20:40  willuhn
  * @N Umsatz-Filter Refactoring
  *
