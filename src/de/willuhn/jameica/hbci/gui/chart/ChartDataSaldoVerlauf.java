@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/ChartDataSaldoVerlauf.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/12/12 15:46:55 $
+ * $Revision: 1.2 $
+ * $Date: 2005/12/12 18:53:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -50,7 +50,7 @@ public class ChartDataSaldoVerlauf implements ChartData
   {
     DBIterator list = Settings.getDBService().createList(Umsatz.class);
     list.addFilter("konto_id = " + this.konto.getID());
-    list.setOrder(" ORDER BY TONUMBER(valuta) DESC");
+    list.setOrder(" ORDER BY TONUMBER(valuta) ASC");
     return list;
   }
 
@@ -108,6 +108,9 @@ public class ChartDataSaldoVerlauf implements ChartData
 
 /*********************************************************************
  * $Log: ChartDataSaldoVerlauf.java,v $
+ * Revision 1.2  2005/12/12 18:53:00  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2005/12/12 15:46:55  willuhn
  * @N Hibiscus verwendet jetzt Birt zum Erzeugen der Charts
  *

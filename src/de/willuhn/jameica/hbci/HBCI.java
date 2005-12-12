@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.74 $
- * $Date: 2005/12/08 17:23:51 $
+ * $Revision: 1.75 $
+ * $Date: 2005/12/12 18:51:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -317,7 +317,7 @@ public class HBCI extends AbstractPlugin
 									   df.format(oldVersion) + "-" + 
 									   df.format(newVersion) + ".sql");
 			}
-      Logger.info("Update from " + df.format(oldVersion) + " to " + df.format(newVersion) + " completed");
+      Logger.info("Update completed");
 		}
     catch (ApplicationException ae)
     {
@@ -356,6 +356,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.75  2005/12/12 18:51:32  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.74  2005/12/08 17:23:51  willuhn
  * @N Datenbank-Update wird jetzt nur noch durchgefuehrt,
  * wenn die aktuelle Datenbank-Version bekannt ist. Sprich:
