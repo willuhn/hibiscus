@@ -8,5 +8,15 @@
 	<classpathentry kind="lib" path="lib/oro.jar"/>
 	<classpathentry kind="lib" path="lib/velocity-1.4.jar"/>
 	<classpathentry exported="true" sourcepath="lib.src/hbci4java-2.5.0rc1-src.zip" kind="lib" path="lib/hbci4java-2.5.0rc1.jar"/>
+	<classpathentry kind="lib" path="lib/birt/common.jar"/>
+	<classpathentry kind="lib" path="lib/birt/common.resources.jar"/>
+	<classpathentry kind="lib" path="lib/birt/core.jar"/>
+	<classpathentry kind="lib" path="lib/birt/device-extension.jar"/>
+	<classpathentry kind="lib" path="lib/birt/engine.jar"/>
+	<classpathentry kind="lib" path="lib/birt/engine-extension.jar"/>
+	<classpathentry kind="lib" path="lib/birt/ecore.jar"/>
+	<classpathentry kind="lib" path="lib/birt/ecore.resources.jar"/>
+	<classpathentry kind="lib" path="lib/birt/ecore.xmi.jar"/>
+	<classpathentry kind="lib" path="lib/birt/js.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

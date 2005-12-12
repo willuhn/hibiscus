@@ -23,11 +23,11 @@
       <item id="hibiscus.navi.addresses"            name="Adressbuch"             icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.EmpfaengerList" />
       <item id="hibiscus.navi.messages"             name="System-Nachrichten"     icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.NachrichtList" />
       <item id="hibiscus.navi.transfer"             name="Transfer"               icon-close="folder.gif" icon-open="folderopen.gif">
-        <item id="hibiscus.navi.transfer.dauer"       name="Daueraufträge"        icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.DauerauftragList" />
         <item id="hibiscus.navi.transfer.ueb"         name="Einzelüberweisungen"  icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.UeberweisungList" />
         <item id="hibiscus.navi.transfer.sammelueb"   name="Sammelüberweisungen"  icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.SammelUeberweisungList" />
         <item id="hibiscus.navi.transfer.einzellast"  name="Einzellastschriften"  icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.LastschriftList" />
         <item id="hibiscus.navi.transfer.sammellast"  name="Sammellastschriften"  icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.SammelLastschriftList" />
+        <item id="hibiscus.navi.transfer.dauer"       name="Daueraufträge"        icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.DauerauftragList" />
       </item>
     </item>
   </navigation>

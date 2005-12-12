@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoNew.java,v $
- * $Revision: 1.11 $
- * $Date: 2005/11/14 21:41:02 $
+ * $Revision: 1.12 $
+ * $Date: 2005/12/12 15:46:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,33 +13,28 @@
 package de.willuhn.jameica.hbci.gui.views;
 
 import java.rmi.RemoteException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.TabFolder;
 
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.chart.LineChart;
-import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.KontoDelete;
 import de.willuhn.jameica.hbci.gui.action.KontoFetchUmsaetze;
 import de.willuhn.jameica.hbci.gui.action.ProtokollList;
 import de.willuhn.jameica.hbci.gui.action.UmsatzList;
+import de.willuhn.jameica.hbci.gui.chart.ChartDataSaldoVerlauf;
+import de.willuhn.jameica.hbci.gui.chart.LineChart;
 import de.willuhn.jameica.hbci.gui.controller.KontoControl;
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -111,29 +106,14 @@ public class KontoNew extends AbstractView {
       folder.setBackground(Color.BACKGROUND.getSWTColor());
 
       TabGroup tab = new TabGroup(folder,i18n.tr("Umsätze der letzten 30 Tage"));
-
       control.getUmsatzList().paint(tab.getComposite());
 
-      DBIterator list = Settings.getDBService().createList(Umsatz.class);
-      list.addFilter("konto_id = " + k.getID());
-      list.setOrder(" ORDER BY TONUMBER(valuta)");
-      if (list.size() > 1)
-      {
-        TabGroup tab2 = new TabGroup(folder,i18n.tr("Saldo im Verlauf"));
-
-        LineChart chart = new LineChart();
-        chart.setTitle("Saldo im Verlauf");
-        chart.setBorder(20);
-        chart.setDecimalFormatter(new CurrencyFormatter(k.getWaehrung(),HBCI.DECIMALFORMAT));
-        chart.addData(list,"saldo",new org.eclipse.swt.graphics.Color(GUI.getDisplay(),0,0,240), new org.eclipse.swt.graphics.Color(GUI.getDisplay(),240,240,255));
-        Umsatz first = k.getFirstUmsatz();
-        Umsatz last = k.getLastUmsatz();
-        DateFormat df = new SimpleDateFormat("MM/yyyy");
-        if (first != null && last != null)
-          chart.setXLabel(df.format(first.getValuta()),df.format(last.getValuta()));
-        chart.paint(tab2.getComposite());
-      }
-
+      TabGroup tab2 = new TabGroup(folder,i18n.tr("Saldo im Verlauf"));
+      LineChart chart = new LineChart();
+      chart.addData(new ChartDataSaldoVerlauf(control.getKonto()));
+      chart.setTitle(i18n.tr("Saldo im Verlauf"));
+      chart.paint(tab2.getComposite());
+      
 			control.init();
 
       ButtonArea buttons = new ButtonArea(getParent(),3);
@@ -161,6 +141,9 @@ public class KontoNew extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoNew.java,v $
+ * Revision 1.12  2005/12/12 15:46:55  willuhn
+ * @N Hibiscus verwendet jetzt Birt zum Erzeugen der Charts
+ *
  * Revision 1.11  2005/11/14 21:41:02  willuhn
  * @B bug 5
  *
