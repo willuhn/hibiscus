@@ -2,11 +2,11 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry exported="true" kind="src" path="/jameica"/>
 	<classpathentry kind="lib" path="lib/commons-collections.jar"/>
 	<classpathentry kind="lib" path="lib/logkit-1.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/oro.jar"/>
 	<classpathentry kind="lib" path="lib/velocity-1.4.jar"/>
 	<classpathentry exported="true" sourcepath="lib.src/hbci4java-2.5.0rc1-src.zip" kind="lib" path="lib/hbci4java-2.5.0rc1.jar"/>
+	<classpathentry kind="src" path="/jameica_1.2"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
