@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.12 $
- * $Date: 2005/12/05 20:16:15 $
+ * $Revision: 1.13 $
+ * $Date: 2005/12/13 00:06:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.gui.parts;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
@@ -34,11 +35,13 @@ import org.eclipse.swt.widgets.TableItem;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
+import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Color;
@@ -50,6 +53,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
@@ -60,6 +64,8 @@ public class UmsatzList extends TablePart
 {
 
   private TextInput search      = null;
+  private CheckboxInput regex   = null;
+
   
   private GenericIterator list  = null;
   private ArrayList umsaetze    = null;
@@ -149,6 +155,8 @@ public class UmsatzList extends TablePart
     comp.setBackground(Color.BACKGROUND.getSWTColor());
     comp.setLayout(new GridLayout(3,false));
 
+    // TODO: Die Aufteilung der Controls ist noch nicht schoen.
+    
     final Label label = GUI.getStyleFactory().createLabel(comp,SWT.NONE);
     label.setBackground(Color.BACKGROUND.getSWTColor());
     label.setText(i18n.tr("Zweck, Name oder Konto enthält"));
@@ -157,9 +165,27 @@ public class UmsatzList extends TablePart
     this.search = new TextInput("");
     this.search.paint(comp);
 
+    final Button b = GUI.getStyleFactory().createButton(comp);
+
     final KL kl = new KL();
 
-    final Button b = GUI.getStyleFactory().createButton(comp);
+    this.regex = new CheckboxInput(false);
+    this.regex.paint(comp);
+    this.regex.addListener(new Listener() {
+      public void handleEvent(Event event)
+      {
+        // TODO Das reagiert noch nicht
+        kl.process();
+      }
+    });
+
+    final Label label2 = GUI.getStyleFactory().createLabel(comp,SWT.NONE);
+    label2.setBackground(Color.BACKGROUND.getSWTColor());
+    label2.setText(i18n.tr("Suchbegriff ist ein regulärer Ausdruck"));
+    GridData gd2 = new GridData(GridData.FILL_HORIZONTAL);
+    gd2.horizontalSpan = 2;
+    label2.setLayoutData(gd2);
+    
     b.setImage(SWTUtil.getImage("search.gif"));
     b.addSelectionListener(new SelectionAdapter()
     {
@@ -181,26 +207,39 @@ public class UmsatzList extends TablePart
               // Mal schauen, obs den Typ schon gibt
               DBIterator existing = Settings.getDBService().createList(UmsatzTyp.class);
               existing.addFilter("pattern = '" + text + "'");
+              UmsatzTyp typ = null; 
               if (existing.size() > 0)
               {
-                GUI.getStatusBar().setErrorText(i18n.tr("Umsatzfilter existiert bereits"));
-                return;
+                if (!Application.getCallback().askUser(i18n.tr("Umsatz-Filter existiert bereits. Überschreiben?")))
+                  return;
+                
+                // Wenn wir ihn ueberschreiben, verwenden wir den Namen nochmal.
+                typ = (UmsatzTyp) existing.next();
               }
-              String name = null;
-              try
+              else
               {
-                name = Application.getCallback().askUser(i18n.tr("Bitte geben Sie einen Namen für den Umsatz-Filter ein"),i18n.tr("Name des Filters"));
-              }
-              catch (Exception ex)
-              {
-                Logger.error("unable to ask for umsatz type name",ex);
-              }
-              if (name == null || name.length() == 0)
-                name = i18n.tr("Zweck, Name oder Konto enthält \"{0}\"",text);
+                String name = null;
+                try
+                {
+                  name = Application.getCallback().askUser(i18n.tr("Bitte geben Sie einen Namen für den Umsatz-Filter ein"),i18n.tr("Name des Filters"));
+                }
+                catch (OperationCanceledException oce)
+                {
+                  return;
+                }
+                catch (Exception ex)
+                {
+                  Logger.error("unable to ask for umsatz type name",ex);
+                }
+                if (name == null || name.length() == 0)
+                  name = i18n.tr("Zweck, Name oder Konto enthält \"{0}\"",text);
 
-              UmsatzTyp typ = (UmsatzTyp) Settings.getDBService().createObject(UmsatzTyp.class,null);
-              typ.setName(name);
+                typ = (UmsatzTyp) Settings.getDBService().createObject(UmsatzTyp.class,null);
+                typ.setName(name);
+              }
+
               typ.setPattern(text);
+              typ.setRegex(((Boolean)regex.getValue()).booleanValue());
               typ.store();
               GUI.getStatusBar().setSuccessText(i18n.tr("Umsatz-Filter gespeichert"));
             }
@@ -238,15 +277,18 @@ public class UmsatzList extends TablePart
             while (i.hasNext())
             {
               final UmsatzTyp ut = (UmsatzTyp) i.next();
-              final String s = ut.getPattern();
+              final String s    = ut.getName();
+              final String p    = ut.getPattern();
+              final boolean ir  = ut.isRegex();
               final MenuItem mi = new MenuItem(menu, SWT.PUSH);
               mi.setText(s);
               mi.addListener(SWT.Selection, new Listener()
               {
                 public void handleEvent(Event event)
                 {
-                  Logger.debug("applying filter " + s);
-                  search.setValue(s);
+                  Logger.debug("applying filter " + p);
+                  regex.setValue(new Boolean(ir));
+                  search.setValue(p);
                   search.focus();
                   kl.process();
                 }
@@ -333,7 +375,7 @@ public class UmsatzList extends TablePart
       timeout.start();
     }
     
-    private void process()
+    private synchronized void process()
     {
       GUI.getDisplay().syncExec(new Runnable()
       {
@@ -347,29 +389,21 @@ public class UmsatzList extends TablePart
             // Wir holen uns den aktuellen Text
             String text = (String) search.getValue();
 
-            Umsatz u    = null;
-            String vwz1 = null;
-            String vwz2 = null;
-            String name = null;
-            String kto  = null;
+            Umsatz u = null;
+
+            UmsatzTyp typ = null;
+            
+            if (text != null && text.length() > 0)
+            {
+              DBService service = Settings.getDBService();
+              typ = (UmsatzTyp) service.createObject(UmsatzTyp.class,null);
+              typ.setPattern(text);
+              typ.setRegex(((Boolean)regex.getValue()).booleanValue());
+            }
 
             for (int i=0;i<umsaetze.size();++i)
             {
               u = (Umsatz) umsaetze.get(i);
-
-              vwz1 = u.getZweck();
-              vwz2 = u.getZweck2();
-              name = u.getEmpfaengerName();
-              kto  = u.getEmpfaengerKonto();
-              if (vwz1 == null) vwz1 = "";
-              if (vwz2 == null) vwz2 = "";
-              if (name == null) name = "";
-              if (kto == null) kto = "";
-
-              vwz1 = vwz1.toLowerCase();
-              vwz2 = vwz2.toLowerCase();
-              name = name.toLowerCase();
-              kto  = kto.toLowerCase();
 
               // Was zum Filtern da?
               if (text == null || text.length() == 0)
@@ -378,19 +412,18 @@ public class UmsatzList extends TablePart
                 addItem(u);
                 continue;
               }
-              
-              if (text == null) text = "";
-              else text = text.toLowerCase();
-              
-              if (vwz1.indexOf(text) != -1 ||
-                  vwz2.indexOf(text) != -1 ||
-                  name.indexOf(text) != -1 ||
-                   kto.indexOf(text) != -1)
+
+              if (typ.matches(u))
               {
+                // ggf. vorher geworfene Fehlermeldung wieder entfernen
+                GUI.getStatusBar().setErrorText("");
                 addItem(u);
               }
-              
             }
+          }
+          catch (PatternSyntaxException pe)
+          {
+            GUI.getStatusBar().setErrorText(pe.getLocalizedMessage());
           }
           catch (Exception e)
           {
@@ -407,6 +440,9 @@ public class UmsatzList extends TablePart
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.13  2005/12/13 00:06:26  willuhn
+ * @N UmsatzTyp erweitert
+ *
  * Revision 1.12  2005/12/05 20:16:15  willuhn
  * @N Umsatz-Filter Refactoring
  *

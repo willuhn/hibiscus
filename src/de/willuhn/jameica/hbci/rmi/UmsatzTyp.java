@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/UmsatzTyp.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/12/05 20:16:15 $
+ * $Revision: 1.5 $
+ * $Date: 2005/12/13 00:06:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,7 @@
 package de.willuhn.jameica.hbci.rmi;
 
 import java.rmi.RemoteException;
+import java.util.regex.PatternSyntaxException;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
@@ -66,12 +67,37 @@ public interface UmsatzTyp extends DBObject, UmsatzFilter
    * @throws RemoteException
    */
   public boolean isZugeordnet(Umsatz u) throws RemoteException;
+  
+  /**
+   * Prueft, ob es sich bei dem Pattern um einen regulaeren Ausdruck handelt.
+   * @return true, wenn es sich um einen regulaeren Ausdruck handelt.
+   * @throws RemoteException
+   */
+  public boolean isRegex() throws RemoteException;
+  
+  /**
+   * Speichert, ob es sich bei dem Pattern um einen regulaeren Ausdruck handelt.
+   * @param regex true, wenn es sich um einen regulaeren Ausdruck handelt.
+   * @throws RemoteException
+   */
+  public void setRegex(boolean regex) throws RemoteException;
 
+  /**
+   * Prueft, ob der Umsatz diesem Pattern entspricht.
+   * @param umsatz zu pruefender Umsatz.
+   * @return true, wenn er dem Pattern entspricht.
+   * @throws RemoteException
+   * @throws PatternSyntaxException wird geworden, wenn es ein regulaerer Ausdruck mit Fehlern ist.
+   */
+  public boolean matches(Umsatz umsatz) throws RemoteException, PatternSyntaxException;
 }
 
 
 /**********************************************************************
  * $Log: UmsatzTyp.java,v $
+ * Revision 1.5  2005/12/13 00:06:38  willuhn
+ * @N UmsatzTyp erweitert
+ *
  * Revision 1.4  2005/12/05 20:16:15  willuhn
  * @N Umsatz-Filter Refactoring
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.15 $
- * $Date: 2005/12/05 20:16:15 $
+ * $Revision: 1.16 $
+ * $Date: 2005/12/13 00:06:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,9 @@
 package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import org.kapott.hbci.GV_Result.GVRKUms.UmsLine;
 
@@ -151,20 +154,6 @@ public class UmsatzTypImpl extends AbstractDBObject implements UmsatzTyp
     if (umsatz == null)
       return;
 
-    String vwz1 = umsatz.getZweck();
-    String vwz2 = umsatz.getZweck2();
-    String name = umsatz.getEmpfaengerName();
-    String kto  = umsatz.getEmpfaengerKonto();
-    if (vwz1 == null) vwz1 = "";
-    if (vwz2 == null) vwz2 = "";
-    if (name == null) name = "";
-    if (kto == null)   kto = "";
-
-    vwz1 = vwz1.toLowerCase();
-    vwz2 = vwz2.toLowerCase();
-    name = name.toLowerCase();
-    kto  = kto.toLowerCase();
-
     DBIterator types = Settings.getDBService().createList(UmsatzTyp.class);
     while (types.hasNext())
     {
@@ -172,30 +161,29 @@ public class UmsatzTypImpl extends AbstractDBObject implements UmsatzTyp
       if (typ.isZugeordnet(umsatz))
         return; // den haben wir bereits
       
-      String pattern = typ.getPattern();
-      if (pattern == null) pattern = "";
-      
-      // Wir beachten Gross-Kleinschreibung grundsaetzlich nicht
-      pattern = pattern.toLowerCase();
-
-      if (vwz1.indexOf(pattern) != -1 ||
-          vwz2.indexOf(pattern) != -1 ||
-          name.indexOf(pattern) != -1 ||
-          kto.indexOf(pattern) != -1)
+      try
       {
-        Logger.info("assigned umsatz to umsatz type " + typ.getName());
-        UmsatzZuordnung z = (UmsatzZuordnung) Settings.getDBService().createObject(UmsatzZuordnung.class,null);
-        z.setUmsatz(umsatz);
-        z.setUmsatzTyp(typ);
-        try
+        if (typ.matches(umsatz))
         {
-          z.store();
+          Logger.info("assigned umsatz to umsatz type " + typ.getName());
+          UmsatzZuordnung z = (UmsatzZuordnung) Settings.getDBService().createObject(UmsatzZuordnung.class,null);
+          z.setUmsatz(umsatz);
+          z.setUmsatzTyp(typ);
+          try
+          {
+            z.store();
+          }
+          catch (ApplicationException ae)
+          {
+            Logger.error("error while assigning umsatz",ae);
+            throw new RemoteException(i18n.tr("Fehler beim Zuordnen des Umsatzes"),ae);
+          }
         }
-        catch (ApplicationException ae)
-        {
-          Logger.error("error while assigning umsatz",ae);
-          throw new RemoteException(i18n.tr("Fehler beim Zuordnen des Umsatzes"),ae);
-        }
+      }
+      catch (PatternSyntaxException pe)
+      {
+        // Fehler im regulaeren Ausdruck loggen wir
+        Logger.warn("invalid regex: " + pe.getMessage());
       }
     }
   }
@@ -226,11 +214,76 @@ public class UmsatzTypImpl extends AbstractDBObject implements UmsatzTyp
   {
     setAttribute("pattern",pattern);
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#matches(de.willuhn.jameica.hbci.rmi.Umsatz)
+   */
+  public boolean matches(Umsatz umsatz) throws RemoteException
+  {
+    String vwz1 = umsatz.getZweck();
+    String vwz2 = umsatz.getZweck2();
+    String name = umsatz.getEmpfaengerName();
+    String kto  = umsatz.getEmpfaengerKonto();
+
+    if (vwz1 == null) vwz1 = "";
+    if (vwz2 == null) vwz2 = "";
+    if (name == null) name = "";
+    if (kto == null)   kto = "";
+
+    vwz1 = vwz1.toLowerCase();
+    vwz2 = vwz2.toLowerCase();
+    name = name.toLowerCase();
+    kto  = kto.toLowerCase();
+    
+    String s = this.getPattern();
+    if (s != null)
+      s = s.toLowerCase();  // Wir beachten Gross-Kleinschreibung grundsaetzlich nicht
+
+    if (isRegex())
+    {
+      if (s == null)
+        s = ".*";
+      Pattern pattern = null;
+      
+      pattern = Pattern.compile(s);
+      Matcher mVwz1 = pattern.matcher(vwz1);
+      Matcher mVwz2 = pattern.matcher(vwz2);
+      Matcher mName = pattern.matcher(name);
+      Matcher mKto  = pattern.matcher(kto);
+      
+      return (mVwz1.matches() || mVwz2.matches() || mName.matches() || mKto.matches());
+    }
+
+    if (s == null)
+      s = "";
+    return (vwz1.indexOf(s) != -1 || vwz2.indexOf(s) != -1 || name.indexOf(s) != -1 || kto.indexOf(s) != -1);
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#isRegex()
+   */
+  public boolean isRegex() throws RemoteException
+  {
+    Integer i = (Integer) getAttribute("isregex");
+    return i != null && i.intValue() == 1;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#setRegex(boolean)
+   */
+  public void setRegex(boolean regex) throws RemoteException
+  {
+    setAttribute("isregex",new Integer(regex ? 1 : 0));
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: UmsatzTypImpl.java,v $
+ * Revision 1.16  2005/12/13 00:06:31  willuhn
+ * @N UmsatzTyp erweitert
+ *
  * Revision 1.15  2005/12/05 20:16:15  willuhn
  * @N Umsatz-Filter Refactoring
  *

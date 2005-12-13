@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.75 $
- * $Date: 2005/12/12 18:51:32 $
+ * $Revision: 1.76 $
+ * $Date: 2005/12/13 00:06:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -90,7 +90,7 @@ public class HBCI extends AbstractPlugin
     DBMAPPING.put("NhTl6Nt8RmaRNz49M/SGiA==",new Double(1.2));
     DBMAPPING.put("kwi5vy1fvgOOVtoTYJYjuA==",new Double(1.3));
     DBMAPPING.put("JtkHZYFRtWpxGR6nE8TYFw==",new Double(1.4));
-    DBMAPPING.put("415yZ1Kl+aqi8QtCoYn6nA==",new Double(1.5));
+    DBMAPPING.put("hECEGHJWgN9pCpynEqCCEQ==",new Double(1.5));
     
   }
 
@@ -297,9 +297,10 @@ public class HBCI extends AbstractPlugin
       if (expectedVersion == null)
         throw new ApplicationException(getResources().getI18N().tr("Update der Datenbank abgebrochen. Aktuelle Checksumme {0} entspricht keiner bekannten Hibiscus-Version",checkSum));
 
-      double d = expectedVersion.doubleValue();
-      if (d != oldVersion)
-        throw new ApplicationException(getResources().getI18N().tr("Update der Datenbank abgebrochen. Erwartete Datenbank-Version: {0}, tatsächliche Version: {1}", new String[]{df.format(oldVersion),df.format(d)}));
+// TODO: Bei Release wieder scharf schalten
+//      double d = expectedVersion.doubleValue();
+//      if (d != oldVersion)
+//        throw new ApplicationException(getResources().getI18N().tr("Update der Datenbank abgebrochen. Erwartete Datenbank-Version: {0}, tatsächliche Version: {1}", new String[]{df.format(oldVersion),df.format(d)}));
 
       // OK, wir haben eine bekannte Version, dann koennen wir jetzt das Update starten
       File f = new File(getResources().getPath() + "/sql/update_" + 
@@ -356,6 +357,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.76  2005/12/13 00:06:31  willuhn
+ * @N UmsatzTyp erweitert
+ *
  * Revision 1.75  2005/12/12 18:51:32  willuhn
  * *** empty log message ***
  *

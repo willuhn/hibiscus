@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.29 $
- * $Date: 2005/12/05 20:16:15 $
+ * $Revision: 1.30 $
+ * $Date: 2005/12/13 00:06:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -472,12 +472,14 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
     list.addFilter("umsatz_id = " + getID());
     return list;
   }
-
 }
 
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.30  2005/12/13 00:06:31  willuhn
+ * @N UmsatzTyp erweitert
+ *
  * Revision 1.29  2005/12/05 20:16:15  willuhn
  * @N Umsatz-Filter Refactoring
  *
