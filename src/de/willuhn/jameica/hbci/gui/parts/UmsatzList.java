@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.13 $
- * $Date: 2005/12/13 00:06:26 $
+ * $Revision: 1.14 $
+ * $Date: 2005/12/16 16:35:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,18 +20,14 @@ import java.util.regex.PatternSyntaxException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Text;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.rmi.DBIterator;
@@ -41,11 +37,10 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
+import de.willuhn.jameica.gui.input.ButtonInput;
 import de.willuhn.jameica.gui.input.CheckboxInput;
-import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.TablePart;
-import de.willuhn.jameica.gui.util.Color;
-import de.willuhn.jameica.gui.util.SWTUtil;
+import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.UmsatzTypEdit;
@@ -63,12 +58,14 @@ import de.willuhn.util.I18N;
 public class UmsatzList extends TablePart
 {
 
-  private TextInput search      = null;
+  private SearchInput search    = null;
   private CheckboxInput regex   = null;
 
   
   private GenericIterator list  = null;
   private ArrayList umsaetze    = null;
+  
+  private KL kl                 = new KL();
 
   private I18N i18n;
 
@@ -148,172 +145,22 @@ public class UmsatzList extends TablePart
    */
   public synchronized void paint(Composite parent) throws RemoteException
   {
-    final Composite comp = new Composite(parent,SWT.NONE);
-    final GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-    gd.horizontalSpan = 2;
-    comp.setLayoutData(gd);
-    comp.setBackground(Color.BACKGROUND.getSWTColor());
-    comp.setLayout(new GridLayout(3,false));
+    LabelGroup group = new LabelGroup(parent,i18n.tr("Filter"));
 
-    // TODO: Die Aufteilung der Controls ist noch nicht schoen.
-    
-    final Label label = GUI.getStyleFactory().createLabel(comp,SWT.NONE);
-    label.setBackground(Color.BACKGROUND.getSWTColor());
-    label.setText(i18n.tr("Zweck, Name oder Konto enthält"));
-    label.setLayoutData(new GridData(GridData.BEGINNING));
+    // Eingabe-Feld fuer die Suche mit Button hinten dran.
+    this.search = new SearchInput();
+    group.addLabelPair(i18n.tr("Zweck, Name oder Konto enthält"), this.search);
 
-    this.search = new TextInput("");
-    this.search.paint(comp);
-
-    final Button b = GUI.getStyleFactory().createButton(comp);
-
-    final KL kl = new KL();
-
+    // Checkbox zur Aktivierung von regulaeren Ausdruecken
     this.regex = new CheckboxInput(false);
-    this.regex.paint(comp);
     this.regex.addListener(new Listener() {
       public void handleEvent(Event event)
       {
-        // TODO Das reagiert noch nicht
         kl.process();
       }
     });
+    group.addCheckbox(this.regex,i18n.tr("Suchbegriff ist ein regulärer Ausdruck"));
 
-    final Label label2 = GUI.getStyleFactory().createLabel(comp,SWT.NONE);
-    label2.setBackground(Color.BACKGROUND.getSWTColor());
-    label2.setText(i18n.tr("Suchbegriff ist ein regulärer Ausdruck"));
-    GridData gd2 = new GridData(GridData.FILL_HORIZONTAL);
-    gd2.horizontalSpan = 2;
-    label2.setLayoutData(gd2);
-    
-    b.setImage(SWTUtil.getImage("search.gif"));
-    b.addSelectionListener(new SelectionAdapter()
-    {
-      public void widgetSelected(SelectionEvent e)
-      {
-        Menu menu = new Menu(GUI.getShell(),SWT.POP_UP);
-        MenuItem item = new MenuItem(menu, SWT.PUSH);
-        item.setText(i18n.tr("Als Umsatz-Filter speichern..."));
-        item.addListener(SWT.Selection, new Listener()
-        {
-          public void handleEvent (Event e)
-          {
-            try
-            {
-              String text = (String) search.getValue();
-              if (text == null || text.length() == 0)
-                return;
-              
-              // Mal schauen, obs den Typ schon gibt
-              DBIterator existing = Settings.getDBService().createList(UmsatzTyp.class);
-              existing.addFilter("pattern = '" + text + "'");
-              UmsatzTyp typ = null; 
-              if (existing.size() > 0)
-              {
-                if (!Application.getCallback().askUser(i18n.tr("Umsatz-Filter existiert bereits. Überschreiben?")))
-                  return;
-                
-                // Wenn wir ihn ueberschreiben, verwenden wir den Namen nochmal.
-                typ = (UmsatzTyp) existing.next();
-              }
-              else
-              {
-                String name = null;
-                try
-                {
-                  name = Application.getCallback().askUser(i18n.tr("Bitte geben Sie einen Namen für den Umsatz-Filter ein"),i18n.tr("Name des Filters"));
-                }
-                catch (OperationCanceledException oce)
-                {
-                  return;
-                }
-                catch (Exception ex)
-                {
-                  Logger.error("unable to ask for umsatz type name",ex);
-                }
-                if (name == null || name.length() == 0)
-                  name = i18n.tr("Zweck, Name oder Konto enthält \"{0}\"",text);
-
-                typ = (UmsatzTyp) Settings.getDBService().createObject(UmsatzTyp.class,null);
-                typ.setName(name);
-              }
-
-              typ.setPattern(text);
-              typ.setRegex(((Boolean)regex.getValue()).booleanValue());
-              typ.store();
-              GUI.getStatusBar().setSuccessText(i18n.tr("Umsatz-Filter gespeichert"));
-            }
-            catch (Exception ex)
-            {
-              Logger.error("unable to store umsatz filter",ex);
-              GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern des Umsatz-Filters"));
-            }
-          }
-        });
-        
-        try
-        {
-          DBIterator i = Settings.getDBService().createList(UmsatzTyp.class);
-          if (i.size() > 0)
-          {
-            MenuItem edit = new MenuItem(menu, SWT.PUSH);
-            edit.setText(i18n.tr("Umsatz-Filter bearbeiten..."));
-            edit.addListener(SWT.Selection,new Listener() {
-              public void handleEvent(Event event)
-              {
-                try
-                {
-                  new UmsatzTypEdit().handleAction(null);
-                }
-                catch (Exception e)
-                {
-                  Logger.error("error while editing umsatz filter",e);
-                  GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Bearbeiten der Umsatz-Filter"));
-                }
-              }
-            });
-            new MenuItem(menu, SWT.SEPARATOR);
-            
-            while (i.hasNext())
-            {
-              final UmsatzTyp ut = (UmsatzTyp) i.next();
-              final String s    = ut.getName();
-              final String p    = ut.getPattern();
-              final boolean ir  = ut.isRegex();
-              final MenuItem mi = new MenuItem(menu, SWT.PUSH);
-              mi.setText(s);
-              mi.addListener(SWT.Selection, new Listener()
-              {
-                public void handleEvent(Event event)
-                {
-                  Logger.debug("applying filter " + p);
-                  regex.setValue(new Boolean(ir));
-                  search.setValue(p);
-                  search.focus();
-                  kl.process();
-                }
-              });
-              
-            }
-          }
-          
-        }
-        catch (Exception ex)
-        {
-          Logger.error("unable to load umsatz filter",ex);
-          GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Laden der Umsatz-Filters"));
-        }
-
-        menu.setLocation(GUI.getDisplay().getCursorLocation());
-        menu.setVisible(true);
-        while (!menu.isDisposed() && menu.isVisible())
-        {
-          if (!GUI.getDisplay().readAndDispatch()) GUI.getDisplay().sleep();
-        }
-        menu.dispose();
-      }
-    });
-    
     super.paint(parent);
 
     // Wir kopieren den ganzen Kram in eine ArrayList, damit die
@@ -325,10 +172,193 @@ public class UmsatzList extends TablePart
       Umsatz u = (Umsatz) list.next();
       umsaetze.add(u);
     }
-    
-    this.search.getControl().addKeyListener(kl);
   }
 
+
+  /**
+   * Hilfsklasse fuer das Suchfeld.
+   * @author willuhn
+   */
+  private class SearchInput extends ButtonInput
+  {
+    private Text text         = null;
+
+    /**
+     * ct.
+     */
+    private SearchInput()
+    {
+      // Listener fuer den Button
+      this.addButtonListener(new Listener()
+      {
+        public void handleEvent(Event event)
+        {
+          Menu menu = new Menu(GUI.getShell(),SWT.POP_UP);
+          MenuItem item = new MenuItem(menu, SWT.PUSH);
+          item.setText(i18n.tr("Als Umsatz-Filter speichern..."));
+          item.addListener(SWT.Selection, new Listener()
+          {
+            public void handleEvent (Event e)
+            {
+              try
+              {
+                String text = (String) search.getValue();
+                if (text == null || text.length() == 0)
+                  return;
+                
+                // Mal schauen, obs den Typ schon gibt
+                DBIterator existing = Settings.getDBService().createList(UmsatzTyp.class);
+                existing.addFilter("pattern = '" + text + "'");
+                UmsatzTyp typ = null; 
+                if (existing.size() > 0)
+                {
+                  if (!Application.getCallback().askUser(i18n.tr("Umsatz-Filter existiert bereits. Überschreiben?")))
+                    return;
+                  
+                  // Wenn wir ihn ueberschreiben, verwenden wir den Namen nochmal.
+                  typ = (UmsatzTyp) existing.next();
+                }
+                else
+                {
+                  String name = null;
+                  try
+                  {
+                    name = Application.getCallback().askUser(i18n.tr("Bitte geben Sie einen Namen für den Umsatz-Filter ein"),i18n.tr("Name des Filters"));
+                  }
+                  catch (OperationCanceledException oce)
+                  {
+                    return;
+                  }
+                  catch (Exception ex)
+                  {
+                    Logger.error("unable to ask for umsatz type name",ex);
+                  }
+                  if (name == null || name.length() == 0)
+                    name = i18n.tr("Zweck, Name oder Konto enthält \"{0}\"",text);
+
+                  typ = (UmsatzTyp) Settings.getDBService().createObject(UmsatzTyp.class,null);
+                  typ.setName(name);
+                }
+
+                typ.setPattern(text);
+                typ.setRegex(((Boolean)regex.getValue()).booleanValue());
+                typ.store();
+                GUI.getStatusBar().setSuccessText(i18n.tr("Umsatz-Filter gespeichert"));
+              }
+              catch (Exception ex)
+              {
+                Logger.error("unable to store umsatz filter",ex);
+                GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern des Umsatz-Filters"));
+              }
+            }
+          });
+          
+          try
+          {
+            DBIterator i = Settings.getDBService().createList(UmsatzTyp.class);
+            if (i.size() > 0)
+            {
+              MenuItem edit = new MenuItem(menu, SWT.PUSH);
+              edit.setText(i18n.tr("Umsatz-Filter bearbeiten..."));
+              edit.addListener(SWT.Selection,new Listener() {
+                public void handleEvent(Event event)
+                {
+                  try
+                  {
+                    new UmsatzTypEdit().handleAction(null);
+                  }
+                  catch (Exception e)
+                  {
+                    Logger.error("error while editing umsatz filter",e);
+                    GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Bearbeiten der Umsatz-Filter"));
+                  }
+                }
+              });
+              new MenuItem(menu, SWT.SEPARATOR);
+              
+              while (i.hasNext())
+              {
+                final UmsatzTyp ut = (UmsatzTyp) i.next();
+                final String s    = ut.getName();
+                final String p    = ut.getPattern();
+                final boolean ir  = ut.isRegex();
+                final MenuItem mi = new MenuItem(menu, SWT.PUSH);
+                mi.setText(s);
+                mi.addListener(SWT.Selection, new Listener()
+                {
+                  public void handleEvent(Event event)
+                  {
+                    Logger.debug("applying filter " + p);
+                    regex.setValue(new Boolean(ir));
+                    search.setValue(p);
+                    search.focus();
+                    kl.process();
+                  }
+                });
+                
+              }
+            }
+            
+          }
+          catch (Exception ex)
+          {
+            Logger.error("unable to load umsatz filter",ex);
+            GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Laden der Umsatz-Filters"));
+          }
+
+          menu.setLocation(GUI.getDisplay().getCursorLocation());
+          menu.setVisible(true);
+          while (!menu.isDisposed() && menu.isVisible())
+          {
+            if (!GUI.getDisplay().readAndDispatch()) GUI.getDisplay().sleep();
+          }
+          menu.dispose();
+        }
+      });
+      
+      // Listener fuer das Text-Eingabe-Feld.
+      this.addListener(new Listener()
+      {
+        public void handleEvent(Event event)
+        {
+        }
+      });
+     
+    }
+
+    /**
+     * @see de.willuhn.jameica.gui.input.ButtonInput#getClientControl(org.eclipse.swt.widgets.Composite)
+     */
+    public Control getClientControl(Composite parent)
+    {
+      if (text != null)
+        return text;
+
+      this.text = GUI.getStyleFactory().createText(parent);
+      this.text.addKeyListener(kl);
+      return this.text;
+    }
+
+    /**
+     * @see de.willuhn.jameica.gui.input.Input#getValue()
+     */
+    public Object getValue()
+    {
+      return text == null ? null : text.getText();
+    }
+
+    /**
+     * @see de.willuhn.jameica.gui.input.Input#setValue(java.lang.Object)
+     */
+    public void setValue(Object value)
+    {
+      if (text == null || value == null || text.isDisposed())
+        return;
+      text.setText(value.toString());
+    }
+    
+  }
+  
   // BUGZILLA 5
   private class KL extends KeyAdapter
   {
@@ -432,7 +462,6 @@ public class UmsatzList extends TablePart
         }
       });
     }
-    
   }
 
 }
@@ -440,6 +469,9 @@ public class UmsatzList extends TablePart
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.14  2005/12/16 16:35:31  willuhn
+ * @N Filter UmsatzList width regular expressions
+ *
  * Revision 1.13  2005/12/13 00:06:26  willuhn
  * @N UmsatzTyp erweitert
  *

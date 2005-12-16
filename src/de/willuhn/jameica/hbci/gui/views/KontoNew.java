@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoNew.java,v $
- * $Revision: 1.12 $
- * $Date: 2005/12/12 15:46:55 $
+ * $Revision: 1.13 $
+ * $Date: 2005/12/16 16:35:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -101,11 +101,12 @@ public class KontoNew extends AbstractView {
         }
       });
 
-      TabFolder folder = new TabFolder(getParent(),SWT.NONE);
+      
+      TabFolder folder = new TabFolder(getParent(), SWT.NONE);
       folder.setLayoutData(new GridData(GridData.FILL_BOTH));
       folder.setBackground(Color.BACKGROUND.getSWTColor());
 
-      TabGroup tab = new TabGroup(folder,i18n.tr("Umsätze der letzten 30 Tage"));
+      TabGroup tab = new TabGroup(folder,i18n.tr("Umsätze der letzten 30 Tage"), false,1);
       control.getUmsatzList().paint(tab.getComposite());
 
       TabGroup tab2 = new TabGroup(folder,i18n.tr("Saldo im Verlauf"));
@@ -141,6 +142,9 @@ public class KontoNew extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoNew.java,v $
+ * Revision 1.13  2005/12/16 16:35:31  willuhn
+ * @N Filter UmsatzList width regular expressions
+ *
  * Revision 1.12  2005/12/12 15:46:55  willuhn
  * @N Hibiscus verwendet jetzt Birt zum Erzeugen der Charts
  *
