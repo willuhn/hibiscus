@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.76 $
- * $Date: 2005/12/13 00:06:31 $
+ * $Revision: 1.77 $
+ * $Date: 2005/12/17 18:59:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -292,12 +292,13 @@ public class HBCI extends AbstractPlugin
 		{
       // Bevor wir irgendein Update fahren, checken wir, ob die Datenbank
       // mit der von Jameica gemeldeten Version uebereinstimmt.
-      String checkSum = getDatabase().getMD5Sum();
-      Double expectedVersion = (Double) DBMAPPING.get(checkSum);
-      if (expectedVersion == null)
-        throw new ApplicationException(getResources().getI18N().tr("Update der Datenbank abgebrochen. Aktuelle Checksumme {0} entspricht keiner bekannten Hibiscus-Version",checkSum));
 
-// TODO: Bei Release wieder scharf schalten
+//     TODO: Bei Release wieder scharf schalten
+//      String checkSum = getDatabase().getMD5Sum();
+//      Double expectedVersion = (Double) DBMAPPING.get(checkSum);
+//      if (expectedVersion == null)
+//        throw new ApplicationException(getResources().getI18N().tr("Update der Datenbank abgebrochen. Aktuelle Checksumme {0} entspricht keiner bekannten Hibiscus-Version",checkSum));
+
 //      double d = expectedVersion.doubleValue();
 //      if (d != oldVersion)
 //        throw new ApplicationException(getResources().getI18N().tr("Update der Datenbank abgebrochen. Erwartete Datenbank-Version: {0}, tatsächliche Version: {1}", new String[]{df.format(oldVersion),df.format(d)}));
@@ -357,6 +358,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.77  2005/12/17 18:59:15  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.76  2005/12/13 00:06:31  willuhn
  * @N UmsatzTyp erweitert
  *
