@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/LineChart.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/12/20 00:03:27 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/Attic/PieChart.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2005/12/20 00:03:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,14 +17,10 @@ import java.rmi.RemoteException;
 import java.util.Vector;
 
 import org.eclipse.birt.chart.model.Chart;
-import org.eclipse.birt.chart.model.ChartWithAxes;
+import org.eclipse.birt.chart.model.ChartWithoutAxes;
 import org.eclipse.birt.chart.model.attribute.Anchor;
-import org.eclipse.birt.chart.model.attribute.AxisType;
 import org.eclipse.birt.chart.model.attribute.ChartDimension;
-import org.eclipse.birt.chart.model.attribute.IntersectionType;
-import org.eclipse.birt.chart.model.attribute.TickStyle;
 import org.eclipse.birt.chart.model.attribute.impl.ColorDefinitionImpl;
-import org.eclipse.birt.chart.model.component.Axis;
 import org.eclipse.birt.chart.model.component.Series;
 import org.eclipse.birt.chart.model.component.impl.SeriesImpl;
 import org.eclipse.birt.chart.model.data.NumberDataSet;
@@ -33,11 +29,11 @@ import org.eclipse.birt.chart.model.data.TextDataSet;
 import org.eclipse.birt.chart.model.data.impl.NumberDataSetImpl;
 import org.eclipse.birt.chart.model.data.impl.SeriesDefinitionImpl;
 import org.eclipse.birt.chart.model.data.impl.TextDataSetImpl;
-import org.eclipse.birt.chart.model.impl.ChartWithAxesImpl;
+import org.eclipse.birt.chart.model.impl.ChartWithoutAxesImpl;
 import org.eclipse.birt.chart.model.layout.Legend;
 import org.eclipse.birt.chart.model.layout.Plot;
-import org.eclipse.birt.chart.model.type.LineSeries;
-import org.eclipse.birt.chart.model.type.impl.LineSeriesImpl;
+import org.eclipse.birt.chart.model.type.PieSeries;
+import org.eclipse.birt.chart.model.type.impl.PieSeriesImpl;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
@@ -45,16 +41,16 @@ import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.logging.Logger;
 
 /**
- * Implementierung eines Linien-Diagramms.
+ * Implementierung eines Torten-Diagramms.
  */
-public class LineChart extends AbstractChart
+public class PieChart extends AbstractChart
 {
 
   /**
    * ct.
    * @throws Exception
    */
-  public LineChart() throws Exception
+  public PieChart() throws Exception
   {
     super();
   }
@@ -65,7 +61,7 @@ public class LineChart extends AbstractChart
   public Chart createChart() throws RemoteException
   {
     // Wir erzeugen ein Chart mit Axen.
-    ChartWithAxes chart = ChartWithAxesImpl.create();
+    ChartWithoutAxes chart = ChartWithoutAxesImpl.create();
     chart.getBlock().setBackground(ColorDefinitionImpl.WHITE()); // Hintergrundfarbe
     chart.getBlock().getOutline().setVisible(true); // Rahmen um alles
     chart.setDimension(ChartDimension.TWO_DIMENSIONAL_LITERAL); // Kein 3D
@@ -87,17 +83,17 @@ public class LineChart extends AbstractChart
     lg.getInsets().set(10, 5, 0, 0);
     lg.setAnchor(Anchor.NORTH_LITERAL);
   
-    // CUSTOMIZE THE X-AXIS
-    Axis xAxisPrimary = chart.getPrimaryBaseAxes()[0];
-    xAxisPrimary.setType(AxisType.TEXT_LITERAL);
-    xAxisPrimary.getMajorGrid().setTickStyle(TickStyle.BELOW_LITERAL);
-    xAxisPrimary.getOrigin().setType(IntersectionType.VALUE_LITERAL);
-    xAxisPrimary.getTitle().setVisible(false);
-  
-    // CUSTOMIZE THE Y-AXIS
-    Axis yAxisPrimary = chart.getPrimaryOrthogonalAxis(xAxisPrimary);
-    yAxisPrimary.getMajorGrid().setTickStyle(TickStyle.LEFT_LITERAL);
-    yAxisPrimary.setType(AxisType.LINEAR_LITERAL);
+//    // CUSTOMIZE THE X-AXIS
+//    Axis xAxisPrimary = chart.getPrimaryBaseAxes()[0];
+//    xAxisPrimary.setType(AxisType.TEXT_LITERAL);
+//    xAxisPrimary.getMajorGrid().setTickStyle(TickStyle.BELOW_LITERAL);
+//    xAxisPrimary.getOrigin().setType(IntersectionType.VALUE_LITERAL);
+//    xAxisPrimary.getTitle().setVisible(false);
+//  
+//    // CUSTOMIZE THE Y-AXIS
+//    Axis yAxisPrimary = chart.getPrimaryOrthogonalAxis(xAxisPrimary);
+//    yAxisPrimary.getMajorGrid().setTickStyle(TickStyle.LEFT_LITERAL);
+//    yAxisPrimary.setType(AxisType.LINEAR_LITERAL);
   
     Vector data = getData();
     for (int i=0;i<data.size();++i)
@@ -142,24 +138,25 @@ public class LineChart extends AbstractChart
       seCategory.setDataSet(categoryValues);
     
       //   CREATE THE VALUE ORTHOGONAL SERIES
-      LineSeries bs1 = (LineSeries) LineSeriesImpl.create();
-      if (label != null) bs1.setSeriesIdentifier(label);
-      bs1.setDataSet(orthoValues1);
-      bs1.getLabel().setVisible(false);
-      bs1.getMarker().setVisible(false);
-      bs1.getLineAttributes().setColor(ColorDefinitionImpl.BLUE());
+      PieSeries ps1 = (PieSeries) PieSeriesImpl.create();
+//      LineSeries bs1 = (LineSeries) LineSeriesImpl.create();
+      if (label != null) ps1.setSeriesIdentifier(label);
+      ps1.setDataSet(orthoValues1);
+      ps1.getLabel().setVisible(false);
+//      ps1.getMarker().setVisible(false);
+//      ps1.getLineAttributes().setColor(ColorDefinitionImpl.BLUE());
     
       //   WRAP THE BASE SERIES IN THE X-AXIS SERIES DEFINITION
       SeriesDefinition sdX = SeriesDefinitionImpl.create();
       sdX.getSeriesPalette().update(0); // SET THE COLORS IN THE PALETTE
-      xAxisPrimary.getSeriesDefinitions().add(sdX);
+//      xAxisPrimary.getSeriesDefinitions().add(sdX);
       sdX.getSeries().add(seCategory);
     
       //   WRAP THE ORTHOGONAL SERIES IN THE X-AXIS SERIES DEFINITION
       SeriesDefinition sdY = SeriesDefinitionImpl.create();
       sdY.getSeriesPalette().update(1); // SET THE COLOR IN THE PALETTE
-      yAxisPrimary.getSeriesDefinitions().add(sdY);
-      sdY.getSeries().add(bs1);
+//      yAxisPrimary.getSeriesDefinitions().add(sdY);
+      sdY.getSeries().add(ps1);
     }
     return chart;
   }
@@ -167,11 +164,8 @@ public class LineChart extends AbstractChart
 
 
 /*********************************************************************
- * $Log: LineChart.java,v $
- * Revision 1.2  2005/12/20 00:03:27  willuhn
+ * $Log: PieChart.java,v $
+ * Revision 1.1  2005/12/20 00:03:26  willuhn
  * @N Test-Code fuer Tortendiagramm-Auswertungen
- *
- * Revision 1.1  2005/12/12 15:46:55  willuhn
- * @N Hibiscus verwendet jetzt Birt zum Erzeugen der Charts
  *
  **********************************************************************/

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.16 $
- * $Date: 2005/12/13 00:06:31 $
+ * $Revision: 1.17 $
+ * $Date: 2005/12/20 00:03:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -276,11 +276,40 @@ public class UmsatzTypImpl extends AbstractDBObject implements UmsatzTyp
     setAttribute("isregex",new Integer(regex ? 1 : 0));
   }
 
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getUmsatz()
+   */
+  public double getUmsatz() throws RemoteException
+  {
+    // TODO Das kann man mal ueber einen SQL-Join schneller machen
+    double sum = 0.0d;
+    DBIterator i = getUmsatzZuordnungen();
+    while (i.hasNext())
+    {
+      UmsatzZuordnung zu = (UmsatzZuordnung) i.next();
+      Umsatz u = zu.getUmsatz();
+      sum += u.getBetrag();
+    }
+    return sum;
+  }
+
+  /**
+   * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
+   */
+  public Object getAttribute(String arg0) throws RemoteException
+  {
+    if ("umsatz".equals(arg0)) // Synthetisches Attribut "umsatz"
+      return new Double(getUmsatz());
+    return super.getAttribute(arg0);
+  }
 }
 
 
 /**********************************************************************
  * $Log: UmsatzTypImpl.java,v $
+ * Revision 1.17  2005/12/20 00:03:26  willuhn
+ * @N Test-Code fuer Tortendiagramm-Auswertungen
+ *
  * Revision 1.16  2005/12/13 00:06:31  willuhn
  * @N UmsatzTyp erweitert
  *
