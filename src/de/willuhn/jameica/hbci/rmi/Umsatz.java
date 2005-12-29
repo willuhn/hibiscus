@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Umsatz.java,v $
- * $Revision: 1.12 $
- * $Date: 2005/12/05 20:16:15 $
+ * $Revision: 1.13 $
+ * $Date: 2005/12/29 01:22:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,7 +15,6 @@ package de.willuhn.jameica.hbci.rmi;
 import java.rmi.RemoteException;
 import java.util.Date;
 
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
 
 /**
@@ -250,18 +249,15 @@ public interface Umsatz extends DBObject, Checksum
    * @throws RemoteException
    */
   public void setChangedByUser() throws RemoteException;
-  
-  /**
-   * Liefert die Umsatzzuordnungen.
-   * @return Umsatz-Zuordnungen.
-   * @throws RemoteException
-   */
-  public DBIterator getUmsatzZuordnungen() throws RemoteException;
 }
 
 
 /**********************************************************************
  * $Log: Umsatz.java,v $
+ * Revision 1.13  2005/12/29 01:22:12  willuhn
+ * @R UmsatzZuordnung entfernt
+ * @B Debugging am Pie-Chart
+ *
  * Revision 1.12  2005/12/05 20:16:15  willuhn
  * @N Umsatz-Filter Refactoring
  *

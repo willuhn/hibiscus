@@ -7,3 +7,6 @@ ALTER CREATE TABLE umsatztyp (
   UNIQUE (id),
   PRIMARY KEY (id)
 );
+
+-- Wird nicht mehr persistiert sondern on demand ermittelt
+DROP TABLE if exists umsatzzuordnung;

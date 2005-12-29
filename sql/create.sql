@@ -80,14 +80,6 @@ CREATE TABLE umsatztyp (
   PRIMARY KEY (id)
 );
 
-CREATE TABLE umsatzzuordnung (
-  id NUMERIC default UNIQUEKEY('umsatzzuordnung'),
-  umsatztyp_id int(4) NOT NULL,
-  umsatz_id int(4) NOT NULL,
-  UNIQUE (id),
-  PRIMARY KEY (id)
-);
-
 CREATE TABLE dauerauftrag (
   id NUMERIC default UNIQUEKEY('dauerauftrag'),
   konto_id int(4) NOT NULL,
@@ -198,9 +190,6 @@ ALTER TABLE slastschrift ADD CONSTRAINT fk_konto6 FOREIGN KEY (konto_id) REFEREN
 ALTER TABLE slastbuchung ADD CONSTRAINT fk_slastschrift1 FOREIGN KEY (slastschrift_id) REFERENCES slastschrift (id) DEFERRABLE;
 ALTER TABLE sueberweisung ADD CONSTRAINT fk_konto7 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE sueberweisungbuchung ADD CONSTRAINT fk_sueberweisung1 FOREIGN KEY (sueberweisung_id) REFERENCES sueberweisung (id) DEFERRABLE;
-
-ALTER TABLE umsatzzuordnung ADD CONSTRAINT fk_umsatz FOREIGN KEY (umsatz_id) REFERENCES umsatz (id) DEFERRABLE;
-ALTER TABLE umsatzzuordnung ADD CONSTRAINT fk_umsatztyp FOREIGN KEY (umsatztyp_id) REFERENCES umsatztyp (id) DEFERRABLE;
 
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (2,1,1,1);

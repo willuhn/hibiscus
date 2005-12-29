@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.30 $
- * $Date: 2005/12/13 00:06:31 $
+ * $Revision: 1.31 $
+ * $Date: 2005/12/29 01:22:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,14 +18,12 @@ import java.util.zip.CRC32;
 
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.db.AbstractDBObject;
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
-import de.willuhn.jameica.hbci.rmi.UmsatzZuordnung;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -399,33 +397,8 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
     };
     String msg = i18n.tr("Umsatz [Gegenkonto: {0}, Kto. {1} BLZ {2}], Valuta {3}, Zweck: {4}] {5} gelöscht",fields);
 
-    try {
-      this.transactionBegin();
-    
-      // wir entfernen auch alle Zuordnungen
-      DBIterator list = getUmsatzZuordnungen();
-      UmsatzZuordnung u = null;
-      while (list.hasNext())
-      {
-        u = (UmsatzZuordnung) list.next();
-        u.delete();
-      }
-
-      // Jetzt koennen wir uns selbst loeschen
-      super.delete();
-      this.transactionCommit();
-      k.addToProtokoll(msg,Protokoll.TYP_SUCCESS);
-    }
-    catch (RemoteException e)
-    {
-      this.transactionRollback();
-      throw e;
-    }
-    catch (ApplicationException e2)
-    {
-      this.transactionRollback();
-      throw e2;
-    }
+    super.delete();
+    k.addToProtokoll(msg,Protokoll.TYP_SUCCESS);
   }
 
   /**
@@ -462,21 +435,15 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
       return; // wurde schon markiert
     setAttribute("checksum",new Long(getChecksum()));
   }
-
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getUmsatzZuordnungen()
-   */
-  public DBIterator getUmsatzZuordnungen() throws RemoteException
-  {
-    DBIterator list = getService().createList(UmsatzZuordnung.class);
-    list.addFilter("umsatz_id = " + getID());
-    return list;
-  }
 }
 
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.31  2005/12/29 01:22:11  willuhn
+ * @R UmsatzZuordnung entfernt
+ * @B Debugging am Pie-Chart
+ *
  * Revision 1.30  2005/12/13 00:06:31  willuhn
  * @N UmsatzTyp erweitert
  *

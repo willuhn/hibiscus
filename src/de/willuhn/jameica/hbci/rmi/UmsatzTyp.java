@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/UmsatzTyp.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/12/20 00:03:27 $
+ * $Revision: 1.7 $
+ * $Date: 2005/12/29 01:22:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,14 +15,13 @@ package de.willuhn.jameica.hbci.rmi;
 import java.rmi.RemoteException;
 import java.util.regex.PatternSyntaxException;
 
-import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.rmi.DBObject;
-import de.willuhn.jameica.hbci.rmi.filter.UmsatzFilter;
 
 /**
  * Interface zur Einstufung von Umsaetzen in verschiedene Kategorien.
  */
-public interface UmsatzTyp extends DBObject, UmsatzFilter
+public interface UmsatzTyp extends DBObject
 {
 
 	/**
@@ -54,11 +53,11 @@ public interface UmsatzTyp extends DBObject, UmsatzFilter
   public void setPattern(String pattern) throws RemoteException;
   
 	/**
-	 * Liefert eine Liste der Umsatz-Zuordnungen fuer diesen Umsatz.
+	 * Liefert eine Liste von Umsaetzen, die diesem Umsatz-Typ entsprechen.
    * @return Umsatz-Liste.
    * @throws RemoteException
    */
-  public DBIterator getUmsatzZuordnungen() throws RemoteException;
+  public GenericIterator getUmsaetze() throws RemoteException;
   
   /**
    * Liefert die Hoehe des Umsatzes, der fuer diesen Umsatztyp auf allen Konten vorliegt.
@@ -66,14 +65,6 @@ public interface UmsatzTyp extends DBObject, UmsatzFilter
    * @throws RemoteException
    */
   public double getUmsatz() throws RemoteException;
-  
-  /**
-   * Prueft, ob der Umsatz diesem Typ bereits zugeordnet ist.
-   * @param u der zu pruefende Umsatz.
-   * @return true, wenn er bereits zugeordnet ist.
-   * @throws RemoteException
-   */
-  public boolean isZugeordnet(Umsatz u) throws RemoteException;
   
   /**
    * Prueft, ob es sich bei dem Pattern um einen regulaeren Ausdruck handelt.
@@ -102,6 +93,10 @@ public interface UmsatzTyp extends DBObject, UmsatzFilter
 
 /**********************************************************************
  * $Log: UmsatzTyp.java,v $
+ * Revision 1.7  2005/12/29 01:22:12  willuhn
+ * @R UmsatzZuordnung entfernt
+ * @B Debugging am Pie-Chart
+ *
  * Revision 1.6  2005/12/20 00:03:27  willuhn
  * @N Test-Code fuer Tortendiagramm-Auswertungen
  *

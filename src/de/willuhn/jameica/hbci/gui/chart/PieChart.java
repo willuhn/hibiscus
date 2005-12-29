@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/Attic/PieChart.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/12/20 00:03:26 $
+ * $Revision: 1.2 $
+ * $Date: 2005/12/29 01:22:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import org.eclipse.birt.chart.model.Chart;
 import org.eclipse.birt.chart.model.ChartWithoutAxes;
 import org.eclipse.birt.chart.model.attribute.Anchor;
 import org.eclipse.birt.chart.model.attribute.ChartDimension;
+import org.eclipse.birt.chart.model.attribute.Position;
 import org.eclipse.birt.chart.model.attribute.impl.ColorDefinitionImpl;
 import org.eclipse.birt.chart.model.component.Series;
 import org.eclipse.birt.chart.model.component.impl.SeriesImpl;
@@ -64,36 +65,25 @@ public class PieChart extends AbstractChart
     ChartWithoutAxes chart = ChartWithoutAxesImpl.create();
     chart.getBlock().setBackground(ColorDefinitionImpl.WHITE()); // Hintergrundfarbe
     chart.getBlock().getOutline().setVisible(true); // Rahmen um alles
-    chart.setDimension(ChartDimension.TWO_DIMENSIONAL_LITERAL); // Kein 3D
+    chart.setDimension(ChartDimension.TWO_DIMENSIONAL_WITH_DEPTH_LITERAL);
   
     // CUSTOMIZE THE PLOT
-    Plot p = chart.getPlot();
-    p.getClientArea().setBackground(ColorDefinitionImpl.TRANSPARENT());
-    p.getOutline().setVisible(false);
-    String title = getTitle();
-    if (title != null)
-    {
-      chart.getTitle().getLabel().getCaption().getFont().setSize(11);
-      chart.getTitle().getLabel().getCaption().setValue(title);
-    }
+//    Plot p = chart.getPlot();
+//    p.getClientArea().setBackground(ColorDefinitionImpl.TRANSPARENT());
+//    p.getOutline().setVisible(false);
+    chart.getTitle().setVisible(false);
+//    String title = getTitle();
+//    if (title != null)
+//    {
+//      chart.getTitle().getLabel().getCaption().getFont().setSize(11);
+//      chart.getTitle().getLabel().getCaption().setValue(title);
+//    }
   
     // CUSTOMIZE THE LEGEND 
     Legend lg = chart.getLegend();
     lg.getText().getFont().setSize(10);
     lg.getInsets().set(10, 5, 0, 0);
     lg.setAnchor(Anchor.NORTH_LITERAL);
-  
-//    // CUSTOMIZE THE X-AXIS
-//    Axis xAxisPrimary = chart.getPrimaryBaseAxes()[0];
-//    xAxisPrimary.setType(AxisType.TEXT_LITERAL);
-//    xAxisPrimary.getMajorGrid().setTickStyle(TickStyle.BELOW_LITERAL);
-//    xAxisPrimary.getOrigin().setType(IntersectionType.VALUE_LITERAL);
-//    xAxisPrimary.getTitle().setVisible(false);
-//  
-//    // CUSTOMIZE THE Y-AXIS
-//    Axis yAxisPrimary = chart.getPrimaryOrthogonalAxis(xAxisPrimary);
-//    yAxisPrimary.getMajorGrid().setTickStyle(TickStyle.LEFT_LITERAL);
-//    yAxisPrimary.setType(AxisType.LINEAR_LITERAL);
   
     Vector data = getData();
     for (int i=0;i<data.size();++i)
@@ -124,8 +114,13 @@ public class PieChart extends AbstractChart
           
           if (olabel == null || ovalue == null || !(ovalue instanceof Number))
             continue;
-          
-          dataLine.add(ovalue);
+
+          Double d = (Double) ovalue;
+          if (d.doubleValue() < 0)
+            d = new Double(-d.doubleValue());
+          dataLine.add(new Double(d.intValue()));
+          System.out.println(olabel + ":" + d);
+
           labelLine.add(format == null ? olabel : format.format(olabel));
         }
       }
@@ -139,24 +134,16 @@ public class PieChart extends AbstractChart
     
       //   CREATE THE VALUE ORTHOGONAL SERIES
       PieSeries ps1 = (PieSeries) PieSeriesImpl.create();
-//      LineSeries bs1 = (LineSeries) LineSeriesImpl.create();
       if (label != null) ps1.setSeriesIdentifier(label);
       ps1.setDataSet(orthoValues1);
       ps1.getLabel().setVisible(false);
-//      ps1.getMarker().setVisible(false);
-//      ps1.getLineAttributes().setColor(ColorDefinitionImpl.BLUE());
+//      ps1.setLabelPosition(Position.INSIDE_LITERAL);
     
-      //   WRAP THE BASE SERIES IN THE X-AXIS SERIES DEFINITION
-      SeriesDefinition sdX = SeriesDefinitionImpl.create();
-      sdX.getSeriesPalette().update(0); // SET THE COLORS IN THE PALETTE
-//      xAxisPrimary.getSeriesDefinitions().add(sdX);
-      sdX.getSeries().add(seCategory);
+      SeriesDefinition sd = SeriesDefinitionImpl.create();
+      sd.getSeriesPalette().update(0); // SET THE COLOR IN THE PALETTE
+      chart.getSeriesDefinitions().add(sd);
+      sd.getSeries().add(ps1);
     
-      //   WRAP THE ORTHOGONAL SERIES IN THE X-AXIS SERIES DEFINITION
-      SeriesDefinition sdY = SeriesDefinitionImpl.create();
-      sdY.getSeriesPalette().update(1); // SET THE COLOR IN THE PALETTE
-//      yAxisPrimary.getSeriesDefinitions().add(sdY);
-      sdY.getSeries().add(ps1);
     }
     return chart;
   }
@@ -165,6 +152,10 @@ public class PieChart extends AbstractChart
 
 /*********************************************************************
  * $Log: PieChart.java,v $
+ * Revision 1.2  2005/12/29 01:22:11  willuhn
+ * @R UmsatzZuordnung entfernt
+ * @B Debugging am Pie-Chart
+ *
  * Revision 1.1  2005/12/20 00:03:26  willuhn
  * @N Test-Code fuer Tortendiagramm-Auswertungen
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.17 $
- * $Date: 2005/12/20 00:03:26 $
+ * $Revision: 1.18 $
+ * $Date: 2005/12/29 01:22:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,19 +13,17 @@
 package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
-import org.kapott.hbci.GV_Result.GVRKUms.UmsLine;
-
+import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.db.AbstractDBObject;
+import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
-import de.willuhn.jameica.hbci.rmi.UmsatzZuordnung;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -79,47 +77,19 @@ public class UmsatzTypImpl extends AbstractDBObject implements UmsatzTyp
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.DBObject#delete()
+   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getUmsaetze()
    */
-  public void delete() throws RemoteException, ApplicationException {
-
-		try {
-			this.transactionBegin();
-
-		
-			// wir entfernen uns aus allen Umsaetzen
-			DBIterator list = getUmsatzZuordnungen();
-			UmsatzZuordnung u = null;
-			while (list.hasNext())
-			{
-				u = (UmsatzZuordnung) list.next();
-        u.delete();
-			}
-
-			// Jetzt koennen wir uns selbst loeschen
-			super.delete();
-			this.transactionCommit();
-		}
-		catch (RemoteException e)
-		{
-			this.transactionRollback();
-			throw e;
-		}
-		catch (ApplicationException e2)
-		{
-			this.transactionRollback();
-			throw e2;
-		}
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getUmsatzZuordnungen()
-   */
-  public DBIterator getUmsatzZuordnungen() throws RemoteException
+  public GenericIterator getUmsaetze() throws RemoteException
   {
-    DBIterator list = getService().createList(UmsatzZuordnung.class);
-    list.addFilter("umsatztyp_id = " + getID());
-    return list;
+    DBIterator list = getService().createList(Umsatz.class);
+    ArrayList result = new ArrayList();
+    while (list.hasNext())
+    {
+      Umsatz u = (Umsatz) list.next();
+      if (matches(u))
+        result.add(u);
+    }
+    return PseudoIterator.fromArray((Umsatz[])result.toArray(new Umsatz[result.size()]));
   }
 
   /**
@@ -144,59 +114,6 @@ public class UmsatzTypImpl extends AbstractDBObject implements UmsatzTyp
   public void setName(String name) throws RemoteException
   {
     this.setAttribute("name",name);
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.filter.UmsatzFilter#filter(de.willuhn.jameica.hbci.rmi.Umsatz, org.kapott.hbci.GV_Result.GVRKUms.UmsLine)
-   */
-  public void filter(Umsatz umsatz, UmsLine rawData) throws RemoteException
-  {
-    if (umsatz == null)
-      return;
-
-    DBIterator types = Settings.getDBService().createList(UmsatzTyp.class);
-    while (types.hasNext())
-    {
-      UmsatzTyp typ = (UmsatzTyp) types.next();
-      if (typ.isZugeordnet(umsatz))
-        return; // den haben wir bereits
-      
-      try
-      {
-        if (typ.matches(umsatz))
-        {
-          Logger.info("assigned umsatz to umsatz type " + typ.getName());
-          UmsatzZuordnung z = (UmsatzZuordnung) Settings.getDBService().createObject(UmsatzZuordnung.class,null);
-          z.setUmsatz(umsatz);
-          z.setUmsatzTyp(typ);
-          try
-          {
-            z.store();
-          }
-          catch (ApplicationException ae)
-          {
-            Logger.error("error while assigning umsatz",ae);
-            throw new RemoteException(i18n.tr("Fehler beim Zuordnen des Umsatzes"),ae);
-          }
-        }
-      }
-      catch (PatternSyntaxException pe)
-      {
-        // Fehler im regulaeren Ausdruck loggen wir
-        Logger.warn("invalid regex: " + pe.getMessage());
-      }
-    }
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#isZugeordnet(de.willuhn.jameica.hbci.rmi.Umsatz)
-   */
-  public boolean isZugeordnet(Umsatz u) throws RemoteException
-  {
-    DBIterator list = getService().createList(UmsatzZuordnung.class);
-    list.addFilter("umsatztyp_id = " + getID());
-    list.addFilter("umsatz_id = " + u.getID());
-    return list.hasNext();
   }
 
   /**
@@ -283,11 +200,10 @@ public class UmsatzTypImpl extends AbstractDBObject implements UmsatzTyp
   {
     // TODO Das kann man mal ueber einen SQL-Join schneller machen
     double sum = 0.0d;
-    DBIterator i = getUmsatzZuordnungen();
+    GenericIterator i = getUmsaetze();
     while (i.hasNext())
     {
-      UmsatzZuordnung zu = (UmsatzZuordnung) i.next();
-      Umsatz u = zu.getUmsatz();
+      Umsatz u = (Umsatz) i.next();
       sum += u.getBetrag();
     }
     return sum;
@@ -307,6 +223,10 @@ public class UmsatzTypImpl extends AbstractDBObject implements UmsatzTyp
 
 /**********************************************************************
  * $Log: UmsatzTypImpl.java,v $
+ * Revision 1.18  2005/12/29 01:22:11  willuhn
+ * @R UmsatzZuordnung entfernt
+ * @B Debugging am Pie-Chart
+ *
  * Revision 1.17  2005/12/20 00:03:26  willuhn
  * @N Test-Code fuer Tortendiagramm-Auswertungen
  *
