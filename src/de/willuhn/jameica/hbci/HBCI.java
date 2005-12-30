@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.79 $
- * $Date: 2005/12/30 00:14:45 $
+ * $Revision: 1.80 $
+ * $Date: 2005/12/30 00:27:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -153,6 +153,33 @@ public class HBCI extends AbstractPlugin
 
     try {
 			Application.getCallback().getStartupMonitor().setStatusText("hibiscus: checking database integrity");
+
+      ////////////////////////////////////////////////////////////////////////////
+      // TODO WIEDER ENTFERNEN, WENN RELEASED
+      // Damit wir die Updates nicht immer haendisch nachziehen muessen, rufen wir
+      // bei einem Fehler das letzte Update-Script nochmal auf.
+			if (!Application.inClientMode())
+      {
+        try
+        {
+          de.willuhn.jameica.system.Settings s = new de.willuhn.jameica.system.Settings(HBCI.class);
+          double size = s.getDouble("sql-update-size",-1);
+          
+          File f = new File(getResources().getPath() + "/sql/update_1.4-1.5.sql");
+          
+          if (f.length() != size)
+          {
+            getDatabase().executeSQLScript(f);
+            s.setAttribute("sql-update-size",(double)f.length());
+          }
+        }
+        catch (Exception e2)
+        {
+          e2.printStackTrace();
+        }
+      }
+      ////////////////////////////////////////////////////////////////////////////
+
       checkConsistency();
 		}
 		catch (Exception e)
@@ -358,6 +385,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.80  2005/12/30 00:27:52  willuhn
+ * @N sql update in init()
+ *
  * Revision 1.79  2005/12/30 00:14:45  willuhn
  * @N first working pie charts
  *
