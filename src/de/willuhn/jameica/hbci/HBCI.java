@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.78 $
- * $Date: 2005/12/29 01:22:12 $
+ * $Revision: 1.79 $
+ * $Date: 2005/12/30 00:14:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -90,7 +90,7 @@ public class HBCI extends AbstractPlugin
     DBMAPPING.put("NhTl6Nt8RmaRNz49M/SGiA==",new Double(1.2));
     DBMAPPING.put("kwi5vy1fvgOOVtoTYJYjuA==",new Double(1.3));
     DBMAPPING.put("JtkHZYFRtWpxGR6nE8TYFw==",new Double(1.4));
-    DBMAPPING.put("qUkr7exKWH+VjNvEaU7jug==",new Double(1.5));
+    DBMAPPING.put("a4VHFRr69c+LynZiczIICg==",new Double(1.5));
     
   }
 
@@ -358,6 +358,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.79  2005/12/30 00:14:45  willuhn
+ * @N first working pie charts
+ *
  * Revision 1.78  2005/12/29 01:22:12  willuhn
  * @R UmsatzZuordnung entfernt
  * @B Debugging am Pie-Chart

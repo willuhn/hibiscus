@@ -76,6 +76,7 @@ CREATE TABLE umsatztyp (
   name varchar(255) NOT NULL,
   pattern varchar(255) NOT NULL,
   isregex int(1) NULL,
+  iseinnahme int(1) NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );

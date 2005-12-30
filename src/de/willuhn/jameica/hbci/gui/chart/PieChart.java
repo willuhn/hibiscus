@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/Attic/PieChart.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/12/29 01:22:11 $
+ * $Revision: 1.3 $
+ * $Date: 2005/12/30 00:14:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,22 +24,22 @@ import org.eclipse.birt.chart.model.attribute.Position;
 import org.eclipse.birt.chart.model.attribute.impl.ColorDefinitionImpl;
 import org.eclipse.birt.chart.model.component.Series;
 import org.eclipse.birt.chart.model.component.impl.SeriesImpl;
-import org.eclipse.birt.chart.model.data.NumberDataSet;
 import org.eclipse.birt.chart.model.data.SeriesDefinition;
-import org.eclipse.birt.chart.model.data.TextDataSet;
 import org.eclipse.birt.chart.model.data.impl.NumberDataSetImpl;
 import org.eclipse.birt.chart.model.data.impl.SeriesDefinitionImpl;
 import org.eclipse.birt.chart.model.data.impl.TextDataSetImpl;
 import org.eclipse.birt.chart.model.impl.ChartWithoutAxesImpl;
 import org.eclipse.birt.chart.model.layout.Legend;
-import org.eclipse.birt.chart.model.layout.Plot;
 import org.eclipse.birt.chart.model.type.PieSeries;
 import org.eclipse.birt.chart.model.type.impl.PieSeriesImpl;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.gui.formatter.Formatter;
+import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
+import de.willuhn.util.I18N;
 
 /**
  * Implementierung eines Torten-Diagramms.
@@ -47,6 +47,8 @@ import de.willuhn.logging.Logger;
 public class PieChart extends AbstractChart
 {
 
+  private I18N i18n = null;
+  
   /**
    * ct.
    * @throws Exception
@@ -54,6 +56,7 @@ public class PieChart extends AbstractChart
   public PieChart() throws Exception
   {
     super();
+    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
   /**
@@ -65,19 +68,8 @@ public class PieChart extends AbstractChart
     ChartWithoutAxes chart = ChartWithoutAxesImpl.create();
     chart.getBlock().setBackground(ColorDefinitionImpl.WHITE()); // Hintergrundfarbe
     chart.getBlock().getOutline().setVisible(true); // Rahmen um alles
-    chart.setDimension(ChartDimension.TWO_DIMENSIONAL_WITH_DEPTH_LITERAL);
-  
-    // CUSTOMIZE THE PLOT
-//    Plot p = chart.getPlot();
-//    p.getClientArea().setBackground(ColorDefinitionImpl.TRANSPARENT());
-//    p.getOutline().setVisible(false);
+    chart.setDimension(ChartDimension.TWO_DIMENSIONAL_LITERAL);
     chart.getTitle().setVisible(false);
-//    String title = getTitle();
-//    if (title != null)
-//    {
-//      chart.getTitle().getLabel().getCaption().getFont().setSize(11);
-//      chart.getTitle().getLabel().getCaption().setValue(title);
-//    }
   
     // CUSTOMIZE THE LEGEND 
     Legend lg = chart.getLegend();
@@ -94,7 +86,6 @@ public class PieChart extends AbstractChart
       ChartData cd          = (ChartData) data.get(i);
       GenericIterator gi    = cd.getData();
       Formatter format      = cd.getLabelFormatter();
-      String label          = cd.getLabel();
       String dataAttribute  = cd.getDataAttribute();
       String labelAttribute = cd.getLabelAttribute();
 
@@ -102,7 +93,7 @@ public class PieChart extends AbstractChart
       {
         Logger.info("skipping data line, contains no data");
         dataLine.add(new Double(0));
-        labelLine.add("");
+        labelLine.add(i18n.tr("Nicht definiert"));
       }
       else
       {
@@ -115,35 +106,42 @@ public class PieChart extends AbstractChart
           if (olabel == null || ovalue == null || !(ovalue instanceof Number))
             continue;
 
-          Double d = (Double) ovalue;
-          if (d.doubleValue() < 0)
-            d = new Double(-d.doubleValue());
-          dataLine.add(new Double(d.intValue()));
-          System.out.println(olabel + ":" + d);
+          double d = ((Number) ovalue).doubleValue();
 
+          // Negative Werte versteht der PieChart nicht. Daher muessen wir hier
+          // den Betrag bilden.
+          d = Math.abs(d);
+
+          // Ausserdem runden wir auf 2 Stellen nach dem Komma
+          d = ((int)(d * 100)) / 100d;
+          dataLine.add(new Double(d));
           labelLine.add(format == null ? olabel : format.format(olabel));
         }
       }
 
-      TextDataSet categoryValues = TextDataSetImpl.create(labelLine);
-      NumberDataSet orthoValues1 = NumberDataSetImpl.create(dataLine);
-
-      //   CREATE THE CATEGORY BASE SERIES
-      Series seCategory = SeriesImpl.create();
-      seCategory.setDataSet(categoryValues);
-    
-      //   CREATE THE VALUE ORTHOGONAL SERIES
-      PieSeries ps1 = (PieSeries) PieSeriesImpl.create();
-      if (label != null) ps1.setSeriesIdentifier(label);
-      ps1.setDataSet(orthoValues1);
-      ps1.getLabel().setVisible(false);
-//      ps1.setLabelPosition(Position.INSIDE_LITERAL);
-    
       SeriesDefinition sd = SeriesDefinitionImpl.create();
-      sd.getSeriesPalette().update(0); // SET THE COLOR IN THE PALETTE
+      sd.getSeriesPalette().update(1);
       chart.getSeriesDefinitions().add(sd);
-      sd.getSeries().add(ps1);
-    
+      
+      Series seCategory = (Series) SeriesImpl.create();
+      seCategory.setDataSet(TextDataSetImpl.create(labelLine));
+      sd.getSeries().add(seCategory);
+
+      PieSeries sePie = (PieSeries) PieSeriesImpl.create();
+      sePie.setDataSet(NumberDataSetImpl.create(dataLine));
+      sePie.setLabelPosition(Position.OUTSIDE_LITERAL);
+      sePie.setSeriesIdentifier(getTitle());
+      sePie.setExplosion(0);
+//      sePie.setExplosionExpression("orthogonalValue<20 || orthogonalValue>50");
+      
+      SeriesDefinition sdValues = SeriesDefinitionImpl.create();
+      sd.getSeriesDefinitions().add(sdValues);
+      sdValues.getSeries().add(sePie);
+
+      //Min Slice
+      chart.setMinSlice(10);
+      chart.setMinSlicePercent(false);
+      chart.setMinSliceLabel("Sonstige");
     }
     return chart;
   }
@@ -152,6 +150,9 @@ public class PieChart extends AbstractChart
 
 /*********************************************************************
  * $Log: PieChart.java,v $
+ * Revision 1.3  2005/12/30 00:14:45  willuhn
+ * @N first working pie charts
+ *
  * Revision 1.2  2005/12/29 01:22:11  willuhn
  * @R UmsatzZuordnung entfernt
  * @B Debugging am Pie-Chart

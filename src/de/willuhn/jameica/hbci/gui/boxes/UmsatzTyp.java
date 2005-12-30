@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/UmsatzTyp.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/12/20 00:03:27 $
+ * $Revision: 1.2 $
+ * $Date: 2005/12/30 00:14:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,10 +15,12 @@ package de.willuhn.jameica.hbci.gui.boxes;
 
 import java.rmi.RemoteException;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.chart.ChartDataUmsatzTyp;
 import de.willuhn.jameica.hbci.gui.chart.PieChart;
@@ -73,11 +75,21 @@ public class UmsatzTyp extends AbstractBox
   {
     try
     {
-      LabelGroup group = new LabelGroup(parent,i18n.tr("Umsatz-Analyse"));
-      PieChart chart = new PieChart();
-      chart.setTitle(i18n.tr("Umsatz-Analyse"));
-      chart.addData(new ChartDataUmsatzTyp());
-      chart.paint(group.getComposite());
+      // Wir unterteilen das Composite in zwei Haelften. Eines fuer Einnahmen und
+      // eines fuer Ausgaben
+      Composite comp = new Composite(parent,SWT.NONE);
+      comp.setLayoutData(new GridData(GridData.FILL_BOTH));
+      comp.setLayout(new GridLayout(2,true));
+      
+      PieChart einnahmen = new PieChart();
+      einnahmen.setTitle(i18n.tr("Einnahmen"));
+      einnahmen.addData(new ChartDataUmsatzTyp(true));
+      einnahmen.paint(comp);
+
+      PieChart ausgaben = new PieChart();
+      ausgaben.setTitle(i18n.tr("Ausgaben"));
+      ausgaben.addData(new ChartDataUmsatzTyp(false));
+      ausgaben.paint(comp);
     }
     catch (Exception e)
     {
@@ -91,6 +103,9 @@ public class UmsatzTyp extends AbstractBox
 
 /*********************************************************************
  * $Log: UmsatzTyp.java,v $
+ * Revision 1.2  2005/12/30 00:14:45  willuhn
+ * @N first working pie charts
+ *
  * Revision 1.1  2005/12/20 00:03:27  willuhn
  * @N Test-Code fuer Tortendiagramm-Auswertungen
  *

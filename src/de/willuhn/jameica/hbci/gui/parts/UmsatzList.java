@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.14 $
- * $Date: 2005/12/16 16:35:31 $
+ * $Revision: 1.15 $
+ * $Date: 2005/12/30 00:14:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -44,11 +44,11 @@ import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.UmsatzTypEdit;
+import de.willuhn.jameica.hbci.gui.dialogs.UmsatzTypNewDialog;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
@@ -220,26 +220,9 @@ public class UmsatzList extends TablePart
                 }
                 else
                 {
-                  String name = null;
-                  try
-                  {
-                    name = Application.getCallback().askUser(i18n.tr("Bitte geben Sie einen Namen für den Umsatz-Filter ein"),i18n.tr("Name des Filters"));
-                  }
-                  catch (OperationCanceledException oce)
-                  {
-                    return;
-                  }
-                  catch (Exception ex)
-                  {
-                    Logger.error("unable to ask for umsatz type name",ex);
-                  }
-                  if (name == null || name.length() == 0)
-                    name = i18n.tr("Zweck, Name oder Konto enthält \"{0}\"",text);
-
-                  typ = (UmsatzTyp) Settings.getDBService().createObject(UmsatzTyp.class,null);
-                  typ.setName(name);
+                  UmsatzTypNewDialog d = new UmsatzTypNewDialog(UmsatzTypNewDialog.POSITION_MOUSE);
+                  typ = (UmsatzTyp) d.open();
                 }
-
                 typ.setPattern(text);
                 typ.setRegex(((Boolean)regex.getValue()).booleanValue());
                 typ.store();
@@ -469,6 +452,9 @@ public class UmsatzList extends TablePart
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.15  2005/12/30 00:14:45  willuhn
+ * @N first working pie charts
+ *
  * Revision 1.14  2005/12/16 16:35:31  willuhn
  * @N Filter UmsatzList width regular expressions
  *

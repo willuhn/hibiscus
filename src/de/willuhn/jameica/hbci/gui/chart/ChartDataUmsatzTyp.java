@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/ChartDataUmsatzTyp.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/12/20 00:03:27 $
+ * $Revision: 1.2 $
+ * $Date: 2005/12/30 00:14:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ package de.willuhn.jameica.hbci.gui.chart;
 import java.rmi.RemoteException;
 
 import de.willuhn.datasource.GenericIterator;
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
@@ -29,13 +30,16 @@ import de.willuhn.util.I18N;
 public class ChartDataUmsatzTyp implements ChartData
 {
   private I18N i18n = null;
+  private boolean einnahmen = true;
   
   /**
+   * @param einnahmen legt fest, ob es sich um Einnahmen oder Ausgaben handelt.
    * ct.
    */
-  public ChartDataUmsatzTyp()
+  public ChartDataUmsatzTyp(boolean einnahmen)
   {
     this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+    this.einnahmen = einnahmen;
   }
 
   /**
@@ -43,7 +47,9 @@ public class ChartDataUmsatzTyp implements ChartData
    */
   public GenericIterator getData() throws RemoteException
   {
-    return Settings.getDBService().createList(UmsatzTyp.class);
+    DBIterator list = Settings.getDBService().createList(UmsatzTyp.class);
+    list.addFilter("iseinnahme = " + (einnahmen ? "1" : "0"));
+    return list;
   }
 
   /**
@@ -83,6 +89,9 @@ public class ChartDataUmsatzTyp implements ChartData
 
 /*********************************************************************
  * $Log: ChartDataUmsatzTyp.java,v $
+ * Revision 1.2  2005/12/30 00:14:45  willuhn
+ * @N first working pie charts
+ *
  * Revision 1.1  2005/12/20 00:03:27  willuhn
  * @N Test-Code fuer Tortendiagramm-Auswertungen
  *
