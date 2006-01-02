@@ -59,8 +59,7 @@
 
 		<path id="compilepath">
 			<pathelement location="../jameica/lib/swt/linux/swt.jar" />
-			<pathelement location="../jameica/lib/swt/forms.jar" />
-			<pathelement location="../jameica/lib/swt/jface.jar" />
+      <pathelement location="../jameica/lib/velocity/velocity-1.4.jar" />
 			<pathelement location="../jameica/bin/" />
 			<pathelement location="../jameica/releases/jameica-lib.jar" />
 			<pathelement location="../jameica/lib/de_willuhn_ds/de_willuhn_ds.jar" />

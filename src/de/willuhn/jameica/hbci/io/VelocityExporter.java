@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/VelocityExporter.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/07/04 12:41:39 $
- * $Author: web0 $
+ * $Revision: 1.3 $
+ * $Date: 2006/01/02 17:38:12 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -48,25 +48,6 @@ public class VelocityExporter implements Exporter
 
   private I18N i18n = null;
   
-  static
-  {
-    try
-    {
-      // Velocity initialisieren
-      Logger.info("init velocity template engine");
-      Velocity.setProperty(Velocity.RESOURCE_LOADER,"hibiscus");
-      Velocity.setProperty("hibiscus.resource.loader.description","Hibiscus Velocity Loader");
-      Velocity.setProperty("hibiscus.resource.loader.class",VelocityLoader.class.getName());
-
-      Velocity.setProperty(Velocity.RUNTIME_LOG_LOGSYSTEM, new VelocityLogger());
-      Velocity.init();
-    }
-    catch (Throwable t)
-    {
-      Logger.error("velocity init failed",t);
-    }
-  }
-
   /**
    * ct.
    */
@@ -78,7 +59,6 @@ public class VelocityExporter implements Exporter
 
     PluginResources res = Application.getPluginLoader().getPlugin(HBCI.class).getResources();
     this.templateDir = new File(res.getPath() + File.separator + "lib","velocity");
-    Logger.info("velocity template dir: " + this.templateDir.getAbsolutePath());
   }
 
   /**
@@ -214,6 +194,9 @@ public class VelocityExporter implements Exporter
 
 /**********************************************************************
  * $Log: VelocityExporter.java,v $
+ * Revision 1.3  2006/01/02 17:38:12  willuhn
+ * @N moved Velocity to Jameica
+ *
  * Revision 1.2  2005/07/04 12:41:39  web0
  * @B bug 90
  *
