@@ -7,6 +7,6 @@
 	<classpathentry kind="lib" path="lib/oro.jar"/>
 	<classpathentry kind="lib" path="lib/velocity-1.4.jar"/>
 	<classpathentry exported="true" sourcepath="lib.src/hbci4java-2.5.0rc1-src.zip" kind="lib" path="lib/hbci4java-2.5.0rc1.jar"/>
-	<classpathentry kind="src" path="/jameica_1.2"/>
+	<classpathentry exported="true" kind="src" path="/jameica_1.2"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
