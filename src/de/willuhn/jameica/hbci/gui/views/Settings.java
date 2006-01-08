@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Settings.java,v $
- * $Revision: 1.33 $
- * $Date: 2005/08/22 10:36:37 $
+ * $Revision: 1.34 $
+ * $Date: 2006/01/08 23:23:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -56,7 +56,7 @@ public class Settings extends AbstractView {
 		colors.addLabelPair(i18n.tr("Vordergrund überfällige Überweisungen"),control.getUeberfaelligForeground());
 
 		ButtonArea buttons = settings.createButtonArea(1);
-		buttons.addButton(i18n.tr("gespeicherte Check-Summen löschen"),new Action()
+		buttons.addButton(i18n.tr("gespeicherte Prüfsummen löschen"),new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -91,6 +91,9 @@ public class Settings extends AbstractView {
 
 /**********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.34  2006/01/08 23:23:19  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.33  2005/08/22 10:36:37  willuhn
  * @N bug 115, 116
  *

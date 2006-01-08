@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/PINDialog.java,v $
- * $Revision: 1.14 $
- * $Date: 2005/07/26 23:00:03 $
- * $Author: web0 $
+ * $Revision: 1.15 $
+ * $Date: 2006/01/08 23:23:19 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -94,7 +94,16 @@ public class PINDialog extends PasswordDialog {
     if (s != null)
     {
       setTitle(i18n.tr("PIN-Eingabe. Konto: {0}",s));
-      setText(i18n.tr("Bitte geben Sie Ihre PIN ein. Konto: {0}",s));
+      
+      String text  = i18n.tr("Bitte geben Sie Ihre PIN ein. Konto: {0}",s);
+      
+//      text += "\n\n";
+//
+//      // BUGZILLA 174
+//      text += i18n.tr("Hinweis: Falls sich Ihre PIN geändert hat, dann löschen Sie bitte die Prüfsumme unter\n" +
+//                      "Plugins>Hibiscus>Einstellungen>Gespeicherte Prüfsummen löschen");
+      setText(text);
+
     }
     else
     {
@@ -168,6 +177,7 @@ public class PINDialog extends PasswordDialog {
 			}
 
       setErrorText(i18n.tr("PIN falsch.") + " " + getRetryString());
+
       return false;
 
     }
@@ -195,6 +205,9 @@ public class PINDialog extends PasswordDialog {
 
 /**********************************************************************
  * $Log: PINDialog.java,v $
+ * Revision 1.15  2006/01/08 23:23:19  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.14  2005/07/26 23:00:03  web0
  * @N Multithreading-Support fuer HBCI-Jobs
  *
