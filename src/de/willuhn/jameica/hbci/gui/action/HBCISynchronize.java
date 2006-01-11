@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/Attic/HBCISynchronizer.java,v $
- * $Revision: 1.7 $
- * $Date: 2005/11/07 22:42:16 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/HBCISynchronize.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2006/01/11 00:29:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,7 +11,7 @@
  *
  **********************************************************************/
 
-package de.willuhn.jameica.hbci.server.hbci;
+package de.willuhn.jameica.hbci.gui.action;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
@@ -28,57 +29,77 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
+import de.willuhn.jameica.hbci.server.hbci.HBCIDauerauftragListJob;
+import de.willuhn.jameica.hbci.server.hbci.HBCIDauerauftragStoreJob;
+import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
+import de.willuhn.jameica.hbci.server.hbci.HBCILastschriftJob;
+import de.willuhn.jameica.hbci.server.hbci.HBCISaldoJob;
+import de.willuhn.jameica.hbci.server.hbci.HBCISammelLastschriftJob;
+import de.willuhn.jameica.hbci.server.hbci.HBCIUeberweisungJob;
+import de.willuhn.jameica.hbci.server.hbci.HBCIUmsatzJob;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
+import de.willuhn.util.ProgressMonitor;
 
 /**
  * Hilfsklasse zum Ausfuehren der Synchronisierung.
  */
-public class HBCISynchronizer
+public class HBCISynchronize implements Action
 {
 
-  private de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(HBCISynchronizer.class);
+  private de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(HBCISynchronize.class);
   
   private I18N i18n = null;
   
   private Job[] jobs = null;
   private int index  = 0;
   
+  // Den merken wir uns, damit wir zum Schluss noch eine Zusammenfassung schreiben koennen.
+  private ProgressMonitor monitor = null;
+  
   /**
-   * Startet die Synchronisierung.
-   * @throws RemoteException 
+   * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
-  public void start() throws RemoteException
+  public void handleAction(Object context) throws ApplicationException
   {
     Logger.info("Start synchronize");
     
     i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-    DBIterator konten = Settings.getDBService().createList(Konto.class);
-
-    if (konten == null || konten.size() == 0)
+    try
     {
-      Logger.info("no accounts to syncronize");
-      return;
-    }
+      DBIterator konten = Settings.getDBService().createList(Konto.class);
 
-    Logger.info("creating synchronize list");
-    ArrayList list = new ArrayList();
-    
-    while (konten.hasNext())
-    {
-      Konto k = (Konto) konten.next();
-      if (!k.getSynchronize())
+      if (konten == null || konten.size() == 0)
       {
-        Logger.info("skipping konto " + k.getKontonummer());
-        continue;
+        Logger.info("no accounts to syncronize");
+        return;
       }
-      Logger.info("adding konto " + k.getKontonummer());
-      list.add(new Job(k));
+
+      Logger.info("creating synchronize list");
+      ArrayList list = new ArrayList();
+      
+      while (konten.hasNext())
+      {
+        Konto k = (Konto) konten.next();
+        if (!k.getSynchronize())
+        {
+          Logger.info("skipping konto " + k.getKontonummer());
+          continue;
+        }
+        Logger.info("adding konto " + k.getKontonummer());
+        list.add(new Job(k));
+      }
+      this.jobs = (Job[]) list.toArray(new Job[list.size()]);
+      sync();
     }
-    this.jobs = (Job[]) list.toArray(new Job[list.size()]);
-    sync();
+    catch (RemoteException e)
+    {
+      Logger.error("error while syncing",e);
+      throw new ApplicationException(i18n.tr("Fehler beim Synchronisieren der Konten"),e);
+    }
   }
   
   /**
@@ -93,10 +114,20 @@ public class HBCISynchronizer
         Logger.info("syncing finished");
         GUI.getStatusBar().setStatusText(i18n.tr("Synchronisierung beendet"));
 
+//        // BUGZILLA 178
+//        if (monitor != null)
+//        {
+//          // Zusammenfassung
+//          for (int i=0;i<)
+//        }
+//        monitor.setStatusText(i18n.tr("Synchronisiere Konto {0} [{1}]", new String[]{k.getBezeichnung(),k.getKontonummer()}));
+
+
         // Seite neu laden
         // BUGZILLA 110 http://www.willuhn.de/bugzilla/show_bug.cgi?id=110
         GUI.startView(GUI.getCurrentView().getClass(),GUI.getCurrentView().getCurrentObject());
 
+        // Entfernen des Status-Textes unten links (der verschwindet nicht von allein)
         GUI.getDisplay().asyncExec(new Runnable() {
           public void run()
           {
@@ -120,9 +151,9 @@ public class HBCISynchronizer
 
       Logger.info("creating hbci factory");
       HBCIFactory factory = HBCIFactory.getInstance();
+      monitor = factory.getProgressMonitor();
+      monitor.setStatusText(i18n.tr("Synchronisiere Konto {0} [{1}]", new String[]{k.getBezeichnung(),k.getKontonummer()}));
 
-      
-      factory.getProgressMonitor().setStatusText(i18n.tr("Synchronisiere Konto {0} [{1}]", new String[]{k.getBezeichnung(),k.getKontonummer()}));
       if (settings.getBoolean("sync.ueb",false))
       {
         Logger.info("adding open transfers");
@@ -188,14 +219,12 @@ public class HBCISynchronizer
       Logger.info("adding saldo job");
       factory.addExclusiveJob(new HBCISaldoJob(k));
       
-      
       factory.executeJobs(k,new Listener() {
         public void handleEvent(Event event)
         {
           // Nach Abschluss das naechste syncronisieren
           sync();
         }
-      
       });
     }
     catch (Exception e)
@@ -220,7 +249,11 @@ public class HBCISynchronizer
 
 
 /*********************************************************************
- * $Log: HBCISynchronizer.java,v $
+ * $Log: HBCISynchronize.java,v $
+ * Revision 1.1  2006/01/11 00:29:22  willuhn
+ * @C HBCISynchronizer nach gui.action verschoben
+ * @R undo bug 179 (blendet zu zeitig aus, wenn mehrere Jobs (Synchronize) laufen)
+ *
  * Revision 1.7  2005/11/07 22:42:16  willuhn
  * *** empty log message ***
  *

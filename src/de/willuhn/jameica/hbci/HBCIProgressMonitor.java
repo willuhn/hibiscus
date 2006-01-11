@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Attic/HBCIProgressMonitor.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/07/29 15:10:32 $
- * $Author: web0 $
+ * $Revision: 1.3 $
+ * $Date: 2006/01/11 00:29:21 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -57,7 +57,9 @@ public class HBCIProgressMonitor extends ProgressBar
           {
             public void handleEvent(Event event)
             {
+              Logger.info("closing hbci logger snapin");
               view.snapOut();
+              started = false;
             }
           });
           panel.paint(view.getSnapin());
@@ -103,10 +105,31 @@ public class HBCIProgressMonitor extends ProgressBar
   /**
    * @see de.willuhn.util.ProgressMonitor#setStatus(int)
    */
-  public void setStatus(int arg0)
+  public void setStatus(int status)
   {
     check();
-    super.setStatus(arg0);
+    super.setStatus(status);
+    // BUGZILLA 179
+//    if (started && status == STATUS_CANCEL || status == STATUS_DONE || status == STATUS_ERROR)
+//    {
+//      // Wir sind fertig. Dann starten wir einen Timeout und schliessen das
+//      // Fenster selbst nach ein paar Sekunden.
+//      GUI.getDisplay().asyncExec(new Runnable() {
+//        public void run()
+//        {
+//          GUI.getDisplay().timerExec(30000,new Runnable() {
+//            public void run()
+//            {
+//              if (!started)
+//                return;
+//              Logger.info("auto closing hbci logger snapin");
+//              GUI.getView().snapOut();
+//              started = false;
+//            }
+//          });
+//        }
+//      });
+//    }
   }
 
   /**
@@ -149,6 +172,10 @@ public class HBCIProgressMonitor extends ProgressBar
 
 /*********************************************************************
  * $Log: HBCIProgressMonitor.java,v $
+ * Revision 1.3  2006/01/11 00:29:21  willuhn
+ * @C HBCISynchronizer nach gui.action verschoben
+ * @R undo bug 179 (blendet zu zeitig aus, wenn mehrere Jobs (Synchronize) laufen)
+ *
  * Revision 1.2  2005/07/29 15:10:32  web0
  * @N minimize hbci progress dialog
  *

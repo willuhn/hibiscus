@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Sync.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/11/09 01:13:53 $
+ * $Revision: 1.2 $
+ * $Date: 2006/01/11 00:29:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,10 +27,10 @@ import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.action.HBCISynchronize;
 import de.willuhn.jameica.hbci.gui.action.KontoNew;
 import de.willuhn.jameica.hbci.gui.parts.KontoList;
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.server.hbci.HBCISynchronizer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -44,7 +44,7 @@ public class Sync extends AbstractBox implements Box
 
   private I18N i18n = null;
 
-  private de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(HBCISynchronizer.class);
+  private de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(HBCISynchronize.class);
   
   private CheckboxInput syncDauer = null;
   private CheckboxInput syncUeb   = null;
@@ -129,7 +129,7 @@ public class Sync extends AbstractBox implements Box
   {
     if (this.syncDauer != null)
       return this.syncDauer;
-    this.syncDauer = new CheckboxInput(settings.getBoolean("sync.dauer",true));
+    this.syncDauer = new CheckboxInput(settings.getBoolean("sync.dauer",false));
     return this.syncDauer;
   }
 
@@ -141,7 +141,7 @@ public class Sync extends AbstractBox implements Box
   {
     if (this.syncUeb != null)
       return this.syncUeb;
-    this.syncUeb = new CheckboxInput(settings.getBoolean("sync.ueb",true));
+    this.syncUeb = new CheckboxInput(settings.getBoolean("sync.ueb",false));
     return this.syncUeb;
   }
   
@@ -153,7 +153,7 @@ public class Sync extends AbstractBox implements Box
   {
     if (this.syncLast != null)
       return this.syncLast;
-    this.syncLast = new CheckboxInput(settings.getBoolean("sync.last",true));
+    this.syncLast = new CheckboxInput(settings.getBoolean("sync.last",false));
     return this.syncLast;
   }
 
@@ -172,8 +172,8 @@ public class Sync extends AbstractBox implements Box
       settings.setAttribute("sync.last",last);
       settings.setAttribute("sync.ueb",ueb);
       
-      HBCISynchronizer sync = new HBCISynchronizer();
-      sync.start();
+      HBCISynchronize sync = new HBCISynchronize();
+      sync.handleAction(null);
     }
     catch (Throwable t)
     {
@@ -190,6 +190,10 @@ public class Sync extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: Sync.java,v $
+ * Revision 1.2  2006/01/11 00:29:21  willuhn
+ * @C HBCISynchronizer nach gui.action verschoben
+ * @R undo bug 179 (blendet zu zeitig aus, wenn mehrere Jobs (Synchronize) laufen)
+ *
  * Revision 1.1  2005/11/09 01:13:53  willuhn
  * @N chipcard modul fuer AMD64 vergessen
  * @N Startseite jetzt frei konfigurierbar
