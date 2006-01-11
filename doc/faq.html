@@ -22,6 +22,7 @@
       <li>
         <a href="#errors">Bekannte Fehler</a>
         <ul>
+          <li><a href="#errors.os.ubuntu">Der Start bricht mit der Fehlermeldung &quot;java.lang.SecurityException: write access to /opt/jameica/jameica.lock denied&quot; ab</a></li>
           <li><a href="#errors.ums.missng">Es werden nicht alle Umsätze abgerufen</a></li>
           <li><a href="#errors.ums.umlaut">Die Verwendungszwecken einiger Umsätze werden nicht vollständig angezeigt</a></li>
         </ul>
@@ -137,6 +138,62 @@
 
         <p>
           <br/>
+          <a name="errors.os.ubuntu"></a>
+          <b>Der Start bricht mit der Fehlermeldung &quot;java.lang.SecurityException: write access to /opt/jameica/jameica.lock denied&quot; ab</b>
+          <br/><br/>
+
+          Dieser Fehler tritt meist bei Debian-basierten Distributionen
+          (z.Bsp. Ubuntu, Kubuntu) auf.<br/>
+          Diese verwenden standardm&auml;ssig nicht SUN Java sondern GNU Java (gcj).
+          Jameica funktioniert damit leider nicht (die Ursache konnte ich
+          bisher noch nicht finden). Einfachste L&ouml;sung:
+          
+          <ol>
+            <li>
+              Laden Sie sich Java (JRE oder JDK) von <a href="http://java.sun.com">java.sun.com</a>.
+              <br/>Z.Bsp.: <a href="http://javashoplm.sun.com/ECom/docs/Welcome.jsp?StoreId=22&PartDetailId=j2re-1.4.2_10-oth-JPR&SiteId=JSC&TransactionId=noreg">j2re-1_4_2_10-linux-i586.bin</a>
+            </li>
+            <li>
+              Kopieren Sie das heruntergeladene Archiv als User &quot;root&quot nach /usr/lib.
+            </li>
+            <li>
+             Starten Sie das selbstentpackende Archiv als User &quot;root&quot mit
+             <pre>sh ./j2re-1_4_2_10-linux-i586.bin</pre>
+             und folge den Installationsanweisungen. Achten Sie beim
+             Entpacken auf den Namen des erstellten Unterverzeichnisses.
+             Er lautet meist &quot;j2sdk...&quot;, &quot;j2jre...&quot;, &quot;jdk...&quot; oder &quot;jre...&quot;
+           </li>
+           <li>
+             Erstellen Sie bei Bedarf als User &quot;root&quot einen symbolischen Link nach /usr/lib/java,
+             damit Sie sich den Pfad einfacher merken können. Z.Bsp.
+             <pre>ln -s /usr/lib/&lt;Java-Verzeichnis&gt; /usr/lib/java</pre>
+           </li>
+           <li>
+             &Ouml;fnen Sie das Startscript /opt/jameica/jameica.sh als User &quot;root&quot in einem Text-Editor
+             und tragen Sie dort den zu verwendenden Java-Pfad ein. Z.Bsp.:
+             
+             <pre>
+#!/bin/sh
+
+# Linux Start-Script fuer regulaeren Standalone-Betrieb.
+# Jameica wird hierbei mit GUI gestartet.
+
+export JAVA_HOME=/usr/lib/java
+
+$JAVA_HOME/bin/java -Djava.library.path=lib/swt/linux -jar jameica-linux.jar $@
+             </pre>
+           </li>
+           <li>
+             Jetzt sollte sich die Anwendung starten lassen.
+           </li>
+          </ol>
+          Achten Sie bitte darauf, Jameica/Hibiscus <b>nicht</b> als User Root
+          zu starten. Auch wenn Ihnen die aufgrund der ursprünglichen Fehlermeldung
+          als notwendig erschien. Die Anwendung benötigt keinerlei Root-Rechte.
+        </p>
+
+        <p>
+          <br/>
           <a name="errors.ums.missing"></a>
           <b>Es werden nicht alle Umsätze abgerufen</b>
           <br/><br/>
@@ -193,7 +250,7 @@
     //-->
 
     <hr/>
-    $Revision: 1.3 $
+    $Revision: 1.4 $
 
   </body>
 </html>
