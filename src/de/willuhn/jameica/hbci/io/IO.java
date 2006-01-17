@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/IO.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/06/08 16:48:54 $
- * $Author: web0 $
+ * $Revision: 1.2 $
+ * $Date: 2006/01/17 00:22:36 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -19,15 +19,31 @@ package de.willuhn.jameica.hbci.io;
 public interface IO
 {
   /**
-   * Liefert einen sprechenden Namen des Moduls.
+   * Liefert einen sprechenden Namen des Exporters/Importers.
+   * Z.Bsp. "Swift MT-940 Format".
    * @return Name
    */
   public String getName();
+
+  /**
+   * Liefert eine Liste der von diesem unterstuetzten Datei-Formate.
+   * @param objectType Art der zu exportierenden/importierenden Objekte.
+   * Z.Bsb.: Umsatz.class oder SammellastBuchung.class.
+   * Abhaengig davon kann der Exporter/Importer eine unterschiedliche
+   * Liste von Dateiformaten liefern, die er zu dieser Objektart unterstuetzt.
+   * @return Liste der Export-Formate.
+   */
+  public IOFormat[] getIOFormats(Class objectType);
+
+
 }
 
 
 /*********************************************************************
  * $Log: IO.java,v $
+ * Revision 1.2  2006/01/17 00:22:36  willuhn
+ * @N erster Code fuer Swift MT940-Import
+ *
  * Revision 1.1  2005/06/08 16:48:54  web0
  * @N new Import/Export-System
  *

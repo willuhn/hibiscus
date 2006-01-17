@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/VelocityExporter.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/01/02 17:38:12 $
+ * $Revision: 1.4 $
+ * $Date: 2006/01/17 00:22:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,7 +25,6 @@ import java.util.HashMap;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
-import org.eclipse.swt.graphics.Image;
 
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.io.FileFinder;
@@ -62,9 +61,9 @@ public class VelocityExporter implements Exporter
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.io.Exporter#export(de.willuhn.jameica.hbci.io.ExportFormat, java.lang.Class, de.willuhn.datasource.GenericObject[], java.io.OutputStream)
+   * @see de.willuhn.jameica.hbci.io.Exporter#doExport(de.willuhn.jameica.hbci.io.IOFormat, de.willuhn.datasource.GenericObject[], java.io.OutputStream)
    */
-  public void export(ExportFormat format, Class objectType, GenericObject[] objects, OutputStream os) throws RemoteException, ApplicationException
+  public void doExport(IOFormat format, GenericObject[] objects, OutputStream os) throws RemoteException, ApplicationException
   {
     if (os == null)
       throw new ApplicationException(i18n.tr("Kein Ausgabe-Ziel für die Datei angegeben"));
@@ -88,7 +87,7 @@ public class VelocityExporter implements Exporter
     {
       writer = new BufferedWriter(new OutputStreamWriter(os));
 
-      Template template = Velocity.getTemplate(objectType.getName() + "." + format.getFileExtension() + ".vm");
+      Template template = Velocity.getTemplate(((VelocityFormat)format).getTemplate().getName());
       template.merge(context,writer);
     }
     catch (Exception e)
@@ -121,14 +120,14 @@ public class VelocityExporter implements Exporter
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.io.Exporter#getExportFormats(java.lang.Class)
+   * @see de.willuhn.jameica.hbci.io.IO#getIOFormats(java.lang.Class)
    */
-  public ExportFormat[] getExportFormats(Class type)
+  public IOFormat[] getIOFormats(Class type)
   {
     if (type == null)
-      return new ExportFormat[0];
+      return new IOFormat[0];
     
-    ExportFormat[] loaded = (ExportFormat[]) this.formats.get(type);
+    IOFormat[] loaded = (IOFormat[]) this.formats.get(type);
     if (loaded != null)
       return loaded;
 
@@ -143,50 +142,67 @@ public class VelocityExporter implements Exporter
     for (int i=0;i<found.length;++i)
     {
       final File ef = found[i];
-      if ("VM_global_library.vm".equalsIgnoreCase(ef.getName()))
-        continue;
       Logger.info("  found template: " + ef.getAbsolutePath());
+
       String name = ef.getName();
       name = name.replaceAll(cn + "\\.",""); // Klassenname und Punkt dahinter entfernen
       int dot = name.indexOf(".");
       if (dot == -1)
         continue;
-      final String ext = name.substring(0,dot);
+      String ext = name.substring(0,dot);
       if (ext == null || ext.length() == 0)
         continue;
-
-      final ExportFormat exf = new ExportFormat() {
-
-        /**
-         * @see de.willuhn.jameica.hbci.io.ExportFormat#getName()
-         */
-        public String getName()
-        {
-          return ext.toUpperCase() + "-" + i18n.tr("Format");
-        }
-
-        /**
-         * @see de.willuhn.jameica.hbci.io.ExportFormat#getFileExtension()
-         */
-        public String getFileExtension()
-        {
-          return ext;
-        }
-
-        /**
-         * @see de.willuhn.jameica.hbci.io.ExportFormat#getScreenshot()
-         */
-        public Image getScreenshot()
-        {
-          return null;
-        }
-      };
-      l.add(exf);
+      
+      l.add(new VelocityFormat(ext,ef));
     }
-    loaded = (ExportFormat[]) l.toArray(new ExportFormat[l.size()]);
+    loaded = (IOFormat[]) l.toArray(new IOFormat[l.size()]);
     this.formats.put(type,loaded);
     return loaded;
     
+  }
+  
+  /**
+   * Hilfsklase, die das IOFormat implementiert.
+   */
+  public class VelocityFormat implements IOFormat
+  {
+    private String extension = null;
+    private File template = null;
+    
+    /**
+     * @param extension
+     * @param f
+     */
+    public VelocityFormat(String extension,File f)
+    {
+      this.extension = extension;
+      this.template = f;
+    }
+    
+    /**
+     * @see de.willuhn.jameica.hbci.io.IOFormat#getName()
+     */
+    public String getName()
+    {
+      return extension.toUpperCase() + "-" + i18n.tr("Format");
+    }
+
+    /**
+     * @see de.willuhn.jameica.hbci.io.IOFormat#getFileExtension()
+     */
+    public String getFileExtension()
+    {
+      return extension;
+    }
+    
+    /**
+     * Liefert das Template-File.
+     * @return Template-File.
+     */
+    public File getTemplate()
+    {
+      return this.template;
+    }
   }
 
 }
@@ -194,6 +210,9 @@ public class VelocityExporter implements Exporter
 
 /**********************************************************************
  * $Log: VelocityExporter.java,v $
+ * Revision 1.4  2006/01/17 00:22:36  willuhn
+ * @N erster Code fuer Swift MT940-Import
+ *
  * Revision 1.3  2006/01/02 17:38:12  willuhn
  * @N moved Velocity to Jameica
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.80 $
- * $Date: 2005/12/30 00:27:52 $
+ * $Revision: 1.81 $
+ * $Date: 2006/01/17 00:22:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,7 +31,6 @@ import de.willuhn.jameica.gui.extension.Extension;
 import de.willuhn.jameica.gui.extension.ExtensionRegistry;
 import de.willuhn.jameica.gui.internal.views.Start;
 import de.willuhn.jameica.hbci.gui.action.Welcome;
-import de.willuhn.jameica.hbci.io.IORegistry;
 import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Level;
@@ -254,11 +253,6 @@ public class HBCI extends AbstractPlugin
     }
     Application.getCallback().getStartupMonitor().addPercentComplete(5);
 
-    Application.getCallback().getStartupMonitor().setStatusText("hibiscus: init export filters");
-    IORegistry.init();
-
-    Application.getCallback().getStartupMonitor().addPercentComplete(3);
-    
     // Wir erweitern noch die Jameica-Startseite
     if (!Application.inServerMode())
     {
@@ -385,6 +379,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.81  2006/01/17 00:22:37  willuhn
+ * @N erster Code fuer Swift MT940-Import
+ *
  * Revision 1.80  2005/12/30 00:27:52  willuhn
  * @N sql update in init()
  *

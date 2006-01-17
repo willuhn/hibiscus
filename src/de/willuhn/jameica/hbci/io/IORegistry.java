@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/IORegistry.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/06/08 16:48:54 $
- * $Author: web0 $
+ * $Revision: 1.2 $
+ * $Date: 2006/01/17 00:22:36 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -12,6 +12,8 @@
  **********************************************************************/
 
 package de.willuhn.jameica.hbci.io;
+
+import java.util.ArrayList;
 
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -24,47 +26,55 @@ public class IORegistry
 {
 
   // Liste der Export-Filter
-  private static Exporter[] exporters = null;
+  private static ArrayList exporters = null;
 
-  /**
-   * Initialisiert die Registry.
-   */
-  public static synchronized void init()
+  // Liste der Importer
+  private static ArrayList importers = null;
+
+  static
   {
-    if (exporters != null)
-      return; // wurde schonmal aufgerufen
-
+    Logger.info("looking for installed import/export filters");
+    exporters = load(Exporter.class);
+    importers = load(Importer.class);
+  }
+  
+  /**
+   * Sucht im Classpath nach allen Importern/Exportern.
+   * @param type zu ladender Typ.
+   * @return Liste der gefundenen Importer/Exporter.
+   */
+  private static synchronized ArrayList load(Class type)
+  {
+    ArrayList l = new ArrayList();
     try
     {
-      Logger.info("looking for installed export filters");
       ClassFinder finder = Application.getClassLoader().getClassFinder();
-      Class[] list = finder.findImplementors(Exporter.class);
+      Class[] list = finder.findImplementors(type);
       if (list == null || list.length == 0)
         throw new ClassNotFoundException();
 
-      // Initialisieren der Exporter
-      exporters = new Exporter[list.length];
-
+      // Initialisieren
       for (int i=0;i<list.length;++i)
       {
         try
         {
           Logger.info("trying to load " + list[i].getName());
-          exporters[i] = (Exporter) list[i].newInstance();
-          Logger.info("loaded successfully");
+          IO io = (IO) list[i].newInstance();
+          Logger.info("loaded: " + io.getName());
+          l.add(io);
         }
         catch (Exception e)
         {
-          Logger.error("error while loading export filter " + list[i].getName(),e);
+          Logger.error("error while loading import/export filter " + list[i].getName(),e);
         }
       }
 
     }
     catch (ClassNotFoundException e)
     {
-      Logger.warn("no export filters found");
-      exporters = new Exporter[0];
+      Logger.warn("no filters found for type: " + type.getName());
     }
+    return l;
   }
 
   /**
@@ -73,16 +83,26 @@ public class IORegistry
    */
   public static Exporter[] getExporters()
   {
-    if (exporters == null)
-      init();
-
-    return exporters;
+    return (Exporter[]) exporters.toArray(new Exporter[exporters.size()]);
   }
+
+  /**
+   * Liefert eine Liste aller verfuegbaren Import-Formate.
+   * @return Import-Filter.
+   */
+  public static Importer[] getImporters()
+  {
+    return (Importer[]) importers.toArray(new Importer[importers.size()]);
+  }
+  
 }
 
 
 /**********************************************************************
  * $Log: IORegistry.java,v $
+ * Revision 1.2  2006/01/17 00:22:36  willuhn
+ * @N erster Code fuer Swift MT940-Import
+ *
  * Revision 1.1  2005/06/08 16:48:54  web0
  * @N new Import/Export-System
  *

@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Exporter.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/07/04 12:41:39 $
- * $Author: web0 $
+ * $Revision: 1.4 $
+ * $Date: 2006/01/17 00:22:36 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -31,27 +31,20 @@ public interface Exporter extends IO
   /**
    * Exportiert die genannten Objekte in den angegebenen OutputStream.
    * @param format das vom User ausgewaehlte Export-Format.
-   * @param objectType Art der zu exportierenden Objekte.
    * @param objects die zu exportierenden Objekte.
    * @param os der Ziel-Ausgabe-Stream
    * @throws RemoteException
    * @throws ApplicationException 
    */
-  public void export(ExportFormat format, Class objectType, GenericObject[] objects, OutputStream os) throws RemoteException, ApplicationException;
-
-  /**
-   * Liefert eine Liste der von diesem Exporter unterstuetzten Export-Formate.
-   * @param objectType Art der zu exportierenden Objekte.
-   * Z.Bsb.: Umsatz.class oder SammellastBuchung.class.
-   * @return Liste der Export-Formate.
-   */
-  public ExportFormat[] getExportFormats(Class objectType);
-
+  public void doExport(IOFormat format, GenericObject[] objects, OutputStream os) throws RemoteException, ApplicationException;
 }
 
 
 /**********************************************************************
  * $Log: Exporter.java,v $
+ * Revision 1.4  2006/01/17 00:22:36  willuhn
+ * @N erster Code fuer Swift MT940-Import
+ *
  * Revision 1.3  2005/07/04 12:41:39  web0
  * @B bug 90
  *
