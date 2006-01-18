@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/SammelUeberweisungNew.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/09/30 00:08:51 $
+ * $Revision: 1.2 $
+ * $Date: 2006/01/18 00:51:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -86,18 +86,14 @@ public class SammelUeberweisungNew extends AbstractView {
     },null,true);
 
   }
-
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#unbind()
-   */
-  public void unbind() throws ApplicationException {
-  }
-
 }
 
 
 /**********************************************************************
  * $Log: SammelUeberweisungNew.java,v $
+ * Revision 1.2  2006/01/18 00:51:00  willuhn
+ * @B bug 65
+ *
  * Revision 1.1  2005/09/30 00:08:51  willuhn
  * @N SammelUeberweisungen (merged with SammelLastschrift)
  *

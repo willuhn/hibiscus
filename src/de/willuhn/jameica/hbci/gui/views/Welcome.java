@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/Welcome.java,v $
- * $Revision: 1.27 $
- * $Date: 2005/11/09 01:13:53 $
+ * $Revision: 1.28 $
+ * $Date: 2006/01/18 00:51:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -77,19 +77,14 @@ public class Welcome extends AbstractView
       }
     },null,true);
   }
-
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#unbind()
-   */
-  public void unbind() throws ApplicationException
-  {
-  }
-
 }
 
 
 /**********************************************************************
  * $Log: Welcome.java,v $
+ * Revision 1.28  2006/01/18 00:51:00  willuhn
+ * @B bug 65
+ *
  * Revision 1.27  2005/11/09 01:13:53  willuhn
  * @N chipcard modul fuer AMD64 vergessen
  * @N Startseite jetzt frei konfigurierbar

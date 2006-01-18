@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzList.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/06/07 22:41:09 $
- * $Author: web0 $
+ * $Revision: 1.6 $
+ * $Date: 2006/01/18 00:51:00 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -29,8 +29,20 @@ import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
+ * Listet alle Umsaetze auf.
  */
-public class UmsatzList extends AbstractView {
+public class UmsatzList extends AbstractView
+{
+  
+  private UmsatzControl control = null;
+  
+  /**
+   * ct.
+   */
+  public UmsatzList()
+  {
+    control = new UmsatzControl(this);
+  }
 
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
@@ -39,7 +51,6 @@ public class UmsatzList extends AbstractView {
 
 		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-    final UmsatzControl control = new UmsatzControl(this);
 
     // BUGZILLA 38 http://www.willuhn.de/bugzilla/show_bug.cgi?id=38
     Konto k = control.getKonto();
@@ -76,18 +87,23 @@ public class UmsatzList extends AbstractView {
 		}
 
   }
-
+  
   /**
-   * @see de.willuhn.jameica.gui.AbstractView#unbind()
+   * @see de.willuhn.jameica.gui.AbstractView#reload()
    */
-  public void unbind() throws ApplicationException {
+  public void reload() throws ApplicationException
+  {
+    control.handleReload();
+    super.reload();
   }
-
 }
 
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.6  2006/01/18 00:51:00  willuhn
+ * @B bug 65
+ *
  * Revision 1.5  2005/06/07 22:41:09  web0
  * @B bug 70
  *

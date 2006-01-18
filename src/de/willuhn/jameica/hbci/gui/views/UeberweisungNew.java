@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UeberweisungNew.java,v $
- * $Revision: 1.8 $
- * $Date: 2005/11/14 13:08:11 $
+ * $Revision: 1.9 $
+ * $Date: 2006/01/18 00:51:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -83,18 +83,14 @@ public class UeberweisungNew extends AbstractView {
       }
     },null);
   }
-
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#unbind()
-   */
-  public void unbind() throws ApplicationException {
-  }
-
 }
 
 
 /**********************************************************************
  * $Log: UeberweisungNew.java,v $
+ * Revision 1.9  2006/01/18 00:51:00  willuhn
+ * @B bug 65
+ *
  * Revision 1.8  2005/11/14 13:08:11  willuhn
  * @N Termin-Ueberweisungen
  *

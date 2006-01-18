@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/NachrichtList.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/05/09 17:26:56 $
- * $Author: web0 $
+ * $Revision: 1.2 $
+ * $Date: 2006/01/18 00:51:00 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -20,7 +20,6 @@ import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.controller.NachrichtControl;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
-import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -53,18 +52,14 @@ public class NachrichtList extends AbstractView {
 			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Lesen der System-Nachrichten."));
 		}
   }
-
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#unbind()
-   */
-  public void unbind() throws ApplicationException {
-  }
-
 }
 
 
 /**********************************************************************
  * $Log: NachrichtList.java,v $
+ * Revision 1.2  2006/01/18 00:51:00  willuhn
+ * @B bug 65
+ *
  * Revision 1.1  2005/05/09 17:26:56  web0
  * @N Bugzilla 68
  *

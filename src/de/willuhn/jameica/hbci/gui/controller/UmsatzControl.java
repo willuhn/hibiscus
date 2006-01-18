@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzControl.java,v $
- * $Revision: 1.25 $
- * $Date: 2005/06/15 16:10:48 $
- * $Author: web0 $
+ * $Revision: 1.26 $
+ * $Date: 2006/01/18 00:51:01 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -14,12 +14,19 @@ package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
 
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Part;
+import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
+import de.willuhn.jameica.hbci.gui.parts.UmsatzList;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
+import de.willuhn.util.ApplicationException;
+import de.willuhn.util.I18N;
 
 /**
  * Controller, der fuer die Umsatz-Liste eines Kontos zustaendig ist.
@@ -28,13 +35,19 @@ public class UmsatzControl extends AbstractControl {
 
 	// Fach-Objekte
 	private Konto konto = null;
+  
+  private UmsatzList umsaetze = null;
+  
+  private I18N i18n = null;
 
 	/**
    * ct.
    * @param view
    */
-  public UmsatzControl(AbstractView view) {
+  public UmsatzControl(AbstractView view)
+  {
     super(view);
+    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
 	/**
@@ -63,14 +76,41 @@ public class UmsatzControl extends AbstractControl {
    */
   public Part getUmsatzListe() throws RemoteException
 	{
-    return new de.willuhn.jameica.hbci.gui.parts.UmsatzList(getKonto(),new UmsatzDetail());
+    if (this.umsaetze == null)
+      this.umsaetze = new de.willuhn.jameica.hbci.gui.parts.UmsatzList(getKonto(),new UmsatzDetail());
+    return this.umsaetze;
 	}
+  
+  /**
+   * Laedt die Tabelle mit den Umsaetzen neu.
+   * @throws ApplicationException
+   */
+  public void handleReload() throws ApplicationException
+  {
+    try
+    {
+      UmsatzList list = ((UmsatzList)getUmsatzListe());
+      list.removeAll();
+      Konto k = getKonto();
+      DBIterator i = k.getUmsaetze();
+      while (i.hasNext())
+        list.addItem(i.next());
+    }
+    catch (RemoteException e)
+    {
+      Logger.error("error while reloading umsatz list",e);
+      throw new ApplicationException(i18n.tr("Fehler beim Neuladen der Umsätze"));
+    }
+  }
 
 }
 
 
 /**********************************************************************
  * $Log: UmsatzControl.java,v $
+ * Revision 1.26  2006/01/18 00:51:01  willuhn
+ * @B bug 65
+ *
  * Revision 1.25  2005/06/15 16:10:48  web0
  * @B javadoc fixes
  *

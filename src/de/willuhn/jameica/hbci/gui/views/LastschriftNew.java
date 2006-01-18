@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/LastschriftNew.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/10/17 22:00:44 $
+ * $Revision: 1.7 $
+ * $Date: 2006/01/18 00:51:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -84,18 +84,14 @@ public class LastschriftNew extends AbstractView {
       }
     });
   }
-
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#unbind()
-   */
-  public void unbind() throws ApplicationException {
-  }
-
 }
 
 
 /**********************************************************************
  * $Log: LastschriftNew.java,v $
+ * Revision 1.7  2006/01/18 00:51:00  willuhn
+ * @B bug 65
+ *
  * Revision 1.6  2005/10/17 22:00:44  willuhn
  * @B bug 143
  *

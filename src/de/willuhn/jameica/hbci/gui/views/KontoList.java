@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoList.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/06/21 21:48:24 $
- * $Author: web0 $
+ * $Revision: 1.4 $
+ * $Date: 2006/01/18 00:51:00 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -60,18 +60,14 @@ public class KontoList extends AbstractView {
 			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Lesen der Bankverbindungen."));
 		}
   }
-
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#unbind()
-   */
-  public void unbind() throws ApplicationException {
-  }
-
 }
 
 
 /**********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.4  2006/01/18 00:51:00  willuhn
+ * @B bug 65
+ *
  * Revision 1.3  2005/06/21 21:48:24  web0
  * @B bug 80
  *

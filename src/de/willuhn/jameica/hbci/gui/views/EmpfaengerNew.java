@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/EmpfaengerNew.java,v $
- * $Revision: 1.8 $
- * $Date: 2005/10/03 16:17:58 $
+ * $Revision: 1.9 $
+ * $Date: 2006/01/18 00:51:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -93,18 +93,14 @@ public class EmpfaengerNew extends AbstractView {
     },null,true);
 
   }
-
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#unbind()
-   */
-  public void unbind() throws ApplicationException {
-  }
-
 }
 
 
 /**********************************************************************
  * $Log: EmpfaengerNew.java,v $
+ * Revision 1.9  2006/01/18 00:51:00  willuhn
+ * @B bug 65
+ *
  * Revision 1.8  2005/10/03 16:17:58  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Settings.java,v $
- * $Revision: 1.34 $
- * $Date: 2006/01/08 23:23:19 $
+ * $Revision: 1.35 $
+ * $Date: 2006/01/18 00:51:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -79,18 +79,14 @@ public class Settings extends AbstractView {
     });
 
   }
-
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#unbind()
-   */
-  public void unbind() throws ApplicationException {
-  }
-
 }
 
 
 /**********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.35  2006/01/18 00:51:00  willuhn
+ * @B bug 65
+ *
  * Revision 1.34  2006/01/08 23:23:19  willuhn
  * *** empty log message ***
  *

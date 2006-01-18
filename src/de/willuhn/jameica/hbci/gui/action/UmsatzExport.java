@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/UmsatzExport.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/07/04 12:41:39 $
- * $Author: web0 $
+ * $Revision: 1.3 $
+ * $Date: 2006/01/18 00:51:01 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -23,7 +23,7 @@ import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Action, ueber die Umsaetze exportieren kann.
+ * Action, ueber die Umsaetze exportieren werden koennen.
  * Als Parameter kann eine einzelnes Umsatz-Objekt oder ein Array uebergeben werden.
  */
 public class UmsatzExport implements Action
@@ -75,6 +75,9 @@ public class UmsatzExport implements Action
 
 /**********************************************************************
  * $Log: UmsatzExport.java,v $
+ * Revision 1.3  2006/01/18 00:51:01  willuhn
+ * @B bug 65
+ *
  * Revision 1.2  2005/07/04 12:41:39  web0
  * @B bug 90
  *

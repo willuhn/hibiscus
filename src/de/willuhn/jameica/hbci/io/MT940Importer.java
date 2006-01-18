@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Attic/MT940Importer.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/01/17 00:22:36 $
+ * $Revision: 1.2 $
+ * $Date: 2006/01/18 00:51:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,11 +28,15 @@ import org.kapott.hbci.structures.Saldo;
 import org.kapott.hbci.structures.Value;
 import org.kapott.hbci.swift.Swift;
 
+import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
+import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.jameica.hbci.server.Converter;
+import de.willuhn.jameica.hbci.server.FilterEngine;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -56,9 +60,9 @@ public class MT940Importer implements Importer
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.io.Importer#doImport(de.willuhn.jameica.hbci.io.IOFormat,java.io.InputStream)
+   * @see de.willuhn.jameica.hbci.io.Importer#doImport(de.willuhn.datasource.GenericObject, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream)
    */
-  public void doImport(IOFormat format, InputStream is) throws RemoteException, ApplicationException
+  public void doImport(GenericObject context, IOFormat format, InputStream is) throws RemoteException, ApplicationException
   {
     // Quick&Dirty-Loesung.
     // Code kopiert von. GVKUmsAll aus HBCI4Java.
@@ -68,16 +72,27 @@ public class MT940Importer implements Importer
 
     try
     {
+      
+      de.willuhn.jameica.hbci.rmi.Konto konto = null;
+      
+      if (context != null && context instanceof de.willuhn.jameica.hbci.rmi.Konto)
+        konto = (de.willuhn.jameica.hbci.rmi.Konto) context;
+      
+      // Wir erzeugen das HBCI4Java-Umsatz-Objekt selbst. Dann muessen wir
+      // an der eigentlichen Parser-Routine nichts mehr aendern.
+      GVRKUms umsaetze = new GVRKUms();
 
       ByteArrayOutputStream bos = new ByteArrayOutputStream();
-      int count = 0;
+      int read = 0;
       byte[] buf = new byte[8192];
 
-      while (count != -1)
+      do
       {
-        count = is.read(buf);
-        bos.write(buf, 0, count);
+        read = is.read(buf);
+        if (read > 0)
+          bos.write(buf, 0, read);
       }
+      while (read != -1);
       bos.close();
 
       StringBuffer buffer = new StringBuffer(Swift.decodeUmlauts(bos.toString()));
@@ -92,7 +107,8 @@ public class MT940Importer implements Importer
           break;
         }
 
-        // extract konto data
+        ////////////////////////////////////////////////////////////////////////
+        // 1) Konto ermitteln
         String konto_info = Swift.getTagValue(st_tag, "25", 0);
         int pos = konto_info.indexOf("/");
         String blz    = null;
@@ -121,43 +137,47 @@ public class MT940Importer implements Importer
           number = konto_info;
         }
 
-        DBIterator konten = Settings.getDBService().createList(de.willuhn.jameica.hbci.rmi.Konto.class);
-        konten.addFilter("kontonummer = '" + number + "'");
-        konten.addFilter("blz = '" + blz + "'");
-        
-        de.willuhn.jameica.hbci.rmi.Konto konto = null;
-        if (konten.size() != 1)
+        if (konto == null)
         {
-          KontoAuswahlDialog d = new KontoAuswahlDialog(KontoAuswahlDialog.POSITION_CENTER);
-          d.setText(i18n.tr("Bitte wählen Sie das Konto aus, für das die Buchungen importiert werden sollen."));
-          try
+          DBIterator konten = Settings.getDBService().createList(de.willuhn.jameica.hbci.rmi.Konto.class);
+          konten.addFilter("kontonummer = '" + number + "'");
+          konten.addFilter("blz = '" + blz + "'");
+          
+          if (konten.size() > 0)
           {
-            konto = (de.willuhn.jameica.hbci.rmi.Konto) d.open();
+            konto = (de.willuhn.jameica.hbci.rmi.Konto) konten.next();
           }
-          catch (OperationCanceledException oce)
+          else
           {
-            throw oce;
+            KontoAuswahlDialog d = new KontoAuswahlDialog(KontoAuswahlDialog.POSITION_CENTER);
+            d.setText(i18n.tr("Bitte wählen Sie das Konto aus, für das die Buchungen importiert werden sollen."));
+            try
+            {
+              konto = (de.willuhn.jameica.hbci.rmi.Konto) d.open();
+            }
+            catch (OperationCanceledException oce)
+            {
+              throw oce;
+            }
+            catch (Exception e)
+            {
+              Logger.error("error while choosing konto",e);
+              throw new ApplicationException(i18n.tr("Fehler bei der Auswahl des Kontos"));
+            }
           }
-          catch (Exception e)
-          {
-            Logger.error("error while choosing konto",e);
-            throw new ApplicationException(i18n.tr("Fehler bei der Auswahl des Kontos"));
-          }
-        }
-        else
-        {
-          konto = (de.willuhn.jameica.hbci.rmi.Konto) konten.next();
         }
 
-        Umsatz umsatz = (Umsatz) Settings.getDBService().createObject(Umsatz.class,null);
-        umsatz.setKonto(konto);
-        
+        // Konto immer noch null?
+        if (konto == null)
+          throw new ApplicationException(i18n.tr("Kein Konto ausgewählt"));
+
+        ////////////////////////////////////////////////////////////////////////
+
+        ////////////////////////////////////////////////////////////////////////
         // extract "anfangssaldo"
-        GVRKUms.BTag btag=new GVRKUms.BTag();
+        GVRKUms.BTag btag = new GVRKUms.BTag();
         btag.start = new Saldo();
         
-        // TODO: Swift-Import Noch nicht fertig!
-
         String st_start = Swift.getTagValue(st_tag, "60F", 0);
         btag.starttype = 'F';
         if (st_start == null)
@@ -199,7 +219,6 @@ public class MT940Importer implements Importer
 
           // extract valuta
           line.valuta = dateFormat.parse(st_ums.substring(0, 6));
-          umsatz.setValuta(line.valuta);
 
           // extract bdate
           next = 0;
@@ -228,7 +247,6 @@ public class MT940Importer implements Importer
 
             next = 10;
           }
-          umsatz.setDatum(line.bdate);
 
           // extract credit/debit
           if (st_ums.charAt(next) == 'C' || st_ums.charAt(next) == 'D')
@@ -251,8 +269,7 @@ public class MT940Importer implements Importer
 
           // extract value and skip code
           int npos = st_ums.indexOf("N", next);
-          line.value.value = HBCIUtils.string2Value(st_ums
-              .substring(next, npos).replace(',', '.'));
+          line.value.value = HBCIUtils.string2Value(st_ums.substring(next, npos).replace(',', '.'));
           next = npos + 4;
 
           // update saldo
@@ -414,12 +431,72 @@ public class MT940Importer implements Importer
         }
 
         btag.end.value.curr = st_end.substring(next, next + 3);
-        btag.end.value.value = HBCIUtils.string2Value(st_end
-            .substring(next + 3).replace(',', '.'));
+        btag.end.value.value = HBCIUtils.string2Value(st_end.substring(next + 3).replace(',', '.'));
 
+        umsaetze.addTag(btag);
         buffer.delete(0, st_tag.length());
         booked = buffer.toString();
       }
+
+      // Wir vergleichen noch mit den Umsaetzen, die wir schon haben und
+      // speichern nur die neuen.
+      // TODO: Der Code ist nahezu 1:1 aus HBCIUmsatzJob kopiert. Koennte man mal noch mergen
+
+      DBIterator existing = konto.getUmsaetze();
+      GVRKUms.UmsLine[] lines = umsaetze.getFlatData();
+      
+      if (lines.length == 0)
+      {
+        konto.addToProtokoll(i18n.tr("Keine Umsätze importiert"),Protokoll.TYP_ERROR);
+        return;
+      }
+      
+      Umsatz umsatz = null;
+      
+      int created = 0;
+      int skipped = 0;
+      // Eine Transaktion beim Speichern brauchen wir nicht, weil beim
+      // naechsten Import die schon importierten erkannt und uebersprungen werden.
+      for (int i=0;i<lines.length;++i)
+      {
+        umsatz = Converter.HBCIUmsatz2HibiscusUmsatz(lines[i]);
+        umsatz.setKonto(konto); // muessen wir noch machen, weil der Converter das Konto nicht kennt
+        
+        // Wenn keine geparsten Verwendungszwecke da sind, machen wir
+        // den Umsatz editierbar.
+        if(lines[i].usage == null || lines[i].usage.length == 0)
+          umsatz.setChangedByUser();
+        
+        if (existing.contains(umsatz) == null)
+        {
+          try
+          {
+            umsatz.store(); // den Umsatz haben wir noch nicht, speichern!
+            created++;
+            try
+            {
+              FilterEngine.getInstance().filter(umsatz,lines[i]);
+            }
+            catch (Exception e)
+            {
+              Logger.error("error while filtering umsatz",e);
+            }
+          }
+          catch (Exception e2)
+          {
+            Logger.error("error while adding umsatz, skipping this one",e2);
+          }
+        }
+        else
+        {
+          skipped++;
+        }
+      }
+      konto.addToProtokoll(i18n.tr("{0} Umsätze importiert, {1} übersprungen (bereits vorhanden)", new String[]{""+created,""+skipped}),Protokoll.TYP_SUCCESS);
+    }
+    catch (OperationCanceledException oce)
+    {
+      Logger.warn("operation cancelled");
     }
     catch (IOException ioe)
     {
@@ -480,6 +557,9 @@ public class MT940Importer implements Importer
 
 /*******************************************************************************
  * $Log: MT940Importer.java,v $
+ * Revision 1.2  2006/01/18 00:51:01  willuhn
+ * @B bug 65
+ *
  * Revision 1.1  2006/01/17 00:22:36  willuhn
  * @N erster Code fuer Swift MT940-Import
  *

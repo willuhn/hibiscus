@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoNew.java,v $
- * $Revision: 1.13 $
- * $Date: 2005/12/16 16:35:31 $
+ * $Revision: 1.14 $
+ * $Date: 2006/01/18 00:51:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -130,18 +130,14 @@ public class KontoNew extends AbstractView {
 		}
 
   }
-
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#unbind()
-   */
-  public void unbind() throws ApplicationException {
-  }
-
 }
 
 
 /**********************************************************************
  * $Log: KontoNew.java,v $
+ * Revision 1.14  2006/01/18 00:51:00  willuhn
+ * @B bug 65
+ *
  * Revision 1.13  2005/12/16 16:35:31  willuhn
  * @N Filter UmsatzList width regular expressions
  *

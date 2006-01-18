@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzDetail.java,v $
- * $Revision: 1.22 $
- * $Date: 2005/06/30 21:48:56 $
- * $Author: web0 $
+ * $Revision: 1.23 $
+ * $Date: 2006/01/18 00:51:00 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -118,17 +118,14 @@ public class UmsatzDetail extends AbstractView {
       }
     });
   }
-
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#unbind()
-   */
-  public void unbind() throws ApplicationException {
-  }
 }
 
 
 /**********************************************************************
  * $Log: UmsatzDetail.java,v $
+ * Revision 1.23  2006/01/18 00:51:00  willuhn
+ * @B bug 65
+ *
  * Revision 1.22  2005/06/30 21:48:56  web0
  * @B bug 75
  *

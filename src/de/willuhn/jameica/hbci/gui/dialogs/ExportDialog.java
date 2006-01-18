@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/ExportDialog.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/01/17 00:22:37 $
+ * $Revision: 1.4 $
+ * $Date: 2006/01/18 00:51:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -141,7 +141,6 @@ public class ExportDialog extends AbstractDialog
 
     String s = fd.open();
     
-
     if (s == null || s.length() == 0)
     {
       close();
@@ -173,17 +172,16 @@ public class ExportDialog extends AbstractDialog
       }
     }
     
-    OutputStream os = null;
+    // Wir merken uns noch das Verzeichnis vom letzten mal
+    settings.setAttribute("lastdir",file.getParent());
 
     try
     {
       Exporter exporter = exp.exporter;
 
-      os = new BufferedOutputStream(new FileOutputStream(file));
-      exporter.doExport(exp.format,objects,os);
-
-      // Wir merken uns noch das Verzeichnis vom letzten mal
-      settings.setAttribute("lastdir",file.getParent());
+      // Der Exporter schliesst den OutputStream selbst
+      OutputStream os = new BufferedOutputStream(new FileOutputStream(file));
+      exporter.doExport(objects,exp.format,os);
 
       // Dialog schliessen
       close();
@@ -196,19 +194,8 @@ public class ExportDialog extends AbstractDialog
     }
     finally
     {
-      if (os != null)
-      {
-        try
-        {
-          os.close();
-        }
-        catch (Exception e)
-        {
-          // useless
-        }
-        // Dialog schliessem
-        close();
-      }
+      // Dialog schliessem
+      close();
     }
   }
 
@@ -325,6 +312,9 @@ public class ExportDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: ExportDialog.java,v $
+ * Revision 1.4  2006/01/18 00:51:01  willuhn
+ * @B bug 65
+ *
  * Revision 1.3  2006/01/17 00:22:37  willuhn
  * @N erster Code fuer Swift MT940-Import
  *

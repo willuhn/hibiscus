@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/DauerauftragNew.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/10/17 22:00:44 $
+ * $Revision: 1.6 $
+ * $Date: 2006/01/18 00:51:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -88,19 +88,14 @@ public class DauerauftragNew extends AbstractView
 			}
     },null,true);
   }
-
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#unbind()
-   */
-  public void unbind() throws ApplicationException
-  {
-  }
-
 }
 
 
 /**********************************************************************
  * $Log: DauerauftragNew.java,v $
+ * Revision 1.6  2006/01/18 00:51:00  willuhn
+ * @B bug 65
+ *
  * Revision 1.5  2005/10/17 22:00:44  willuhn
  * @B bug 143
  *

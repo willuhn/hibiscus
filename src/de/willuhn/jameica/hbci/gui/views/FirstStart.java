@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/FirstStart.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/10/17 15:12:14 $
+ * $Revision: 1.4 $
+ * $Date: 2006/01/18 00:51:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -83,19 +83,14 @@ public class FirstStart extends AbstractView
     buttons.addButton(i18n.tr("Sicherheitsmedium einrichten"),a,null,true);
     buttons.addButton(i18n.tr("Konten-Übersicht"),a2,null);
   }
-
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#unbind()
-   */
-  public void unbind() throws ApplicationException
-  {
-  }
-
 }
 
 
 /*********************************************************************
  * $Log: FirstStart.java,v $
+ * Revision 1.4  2006/01/18 00:51:00  willuhn
+ * @B bug 65
+ *
  * Revision 1.3  2005/10/17 15:12:14  willuhn
  * *** empty log message ***
  *
