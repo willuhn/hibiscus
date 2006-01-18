@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.81 $
- * $Date: 2006/01/17 00:22:37 $
+ * $Revision: 1.82 $
+ * $Date: 2006/01/18 18:40:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -42,11 +42,6 @@ import de.willuhn.util.ApplicationException;
  */
 public class HBCI extends AbstractPlugin
 {
-
-  /**
-   * Datums-Format dd.MM.yyyy HH:mm:ss.
-   */
-  public static DateFormat EXTRALONGDATEFORMAT   = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
   /**
    * Datums-Format dd.MM.yyyy HH:mm.
@@ -379,6 +374,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.82  2006/01/18 18:40:35  willuhn
+ * @N Redesign des Background-Task-Handlings
+ *
  * Revision 1.81  2006/01/17 00:22:37  willuhn
  * @N erster Code fuer Swift MT940-Import
  *
