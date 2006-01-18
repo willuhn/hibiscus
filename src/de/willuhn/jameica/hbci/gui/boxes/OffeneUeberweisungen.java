@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/OffeneUeberweisungen.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/11/09 01:13:53 $
+ * $Revision: 1.2 $
+ * $Date: 2006/01/18 10:08:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -80,7 +80,7 @@ public class OffeneUeberweisungen extends AbstractBox implements Box
   {
     DBIterator list = Settings.getDBService().createList(Ueberweisung.class);
     list.addFilter("ausgefuehrt = 0");
-    list.addFilter("tonumber(termin) <= " + new Date().getTime());
+    list.addFilter("(banktermin = 1 OR tonumber(termin) <= " + new Date().getTime() + ")");
 
     TablePart offeneUeberweisungen = new TablePart(list,new de.willuhn.jameica.hbci.gui.action.UeberweisungNew());
     offeneUeberweisungen.setFormatter(new TableFormatter() {
@@ -113,6 +113,9 @@ public class OffeneUeberweisungen extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: OffeneUeberweisungen.java,v $
+ * Revision 1.2  2006/01/18 10:08:21  willuhn
+ * @N Termin-Ueberweisungen werden immer auf der Startseite angezeigt
+ *
  * Revision 1.1  2005/11/09 01:13:53  willuhn
  * @N chipcard modul fuer AMD64 vergessen
  * @N Startseite jetzt frei konfigurierbar
