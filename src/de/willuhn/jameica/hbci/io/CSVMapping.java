@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Attic/CSVMapping.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/01/23 18:13:19 $
+ * $Revision: 1.2 $
+ * $Date: 2006/01/23 18:16:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -40,6 +40,15 @@ public class CSVMapping
     this.type  = type;
     this.names = names;
     read();
+  }
+  
+  /**
+   * Liefert eine Kopie der Hashtable mit den Namen.
+   * @return Hashtable mit den Namen.
+   */
+  public Hashtable getNames()
+  {
+    return (Hashtable) this.names.clone();
   }
 
   /**
@@ -106,6 +115,9 @@ public class CSVMapping
 
 /*********************************************************************
  * $Log: CSVMapping.java,v $
+ * Revision 1.2  2006/01/23 18:16:51  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2006/01/23 18:13:19  willuhn
  * @N first code for csv import
  *
