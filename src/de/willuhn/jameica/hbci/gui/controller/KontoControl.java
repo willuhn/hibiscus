@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.62 $
- * $Date: 2005/08/08 16:10:26 $
+ * $Revision: 1.63 $
+ * $Date: 2006/01/23 11:11:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -192,7 +192,7 @@ public class KontoControl extends AbstractControl {
 	{
 		if (name != null)
 			return name;
-		name = new TextInput(getKonto().getName());
+		name = new TextInput(getKonto().getName(),HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
 		return name;
 	}
 
@@ -465,6 +465,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.63  2006/01/23 11:11:36  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.62  2005/08/08 16:10:26  willuhn
  * @B bug 108
  *

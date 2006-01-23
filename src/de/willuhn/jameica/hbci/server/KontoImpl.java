@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.58 $
- * $Date: 2005/11/10 23:32:59 $
+ * $Revision: 1.59 $
+ * $Date: 2006/01/23 11:11:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -73,7 +73,10 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 			if (getName() == null || getName().length() == 0)
 				throw new ApplicationException(i18n.tr("Bitten geben Sie den Namen des Kontoinhabers ein."));
 
-			if (getKontonummer() == null || getKontonummer().length() == 0)
+      if (getName().length() > HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH)
+        throw new ApplicationException(i18n.tr("Bitte geben Sie maximal {0} Zeichen für den Namen des Kontoinhabers ein",""+HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH));
+
+      if (getKontonummer() == null || getKontonummer().length() == 0)
 				throw new ApplicationException(i18n.tr("Bitte geben Sie eine Kontonummer ein."));
 
 			if (getBLZ() == null || getBLZ().length() == 0)
@@ -576,6 +579,9 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.59  2006/01/23 11:11:36  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.58  2005/11/10 23:32:59  willuhn
  * @B foreign key to sueberweisung when deleting a konto
  *
