@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Attic/MT940Importer.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/01/18 00:51:01 $
+ * $Revision: 1.3 $
+ * $Date: 2006/01/23 00:36:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -42,6 +42,7 @@ import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
+import de.willuhn.util.ProgressMonitor;
 
 /**
  * Importer fuer Swift MT 940.
@@ -60,9 +61,9 @@ public class MT940Importer implements Importer
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.io.Importer#doImport(de.willuhn.datasource.GenericObject, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream)
+   * @see de.willuhn.jameica.hbci.io.Importer#doImport(de.willuhn.datasource.GenericObject, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor)
    */
-  public void doImport(GenericObject context, IOFormat format, InputStream is) throws RemoteException, ApplicationException
+  public void doImport(GenericObject context, IOFormat format, InputStream is, ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
     // Quick&Dirty-Loesung.
     // Code kopiert von. GVKUmsAll aus HBCI4Java.
@@ -82,6 +83,12 @@ public class MT940Importer implements Importer
       // an der eigentlichen Parser-Routine nichts mehr aendern.
       GVRKUms umsaetze = new GVRKUms();
 
+      if (monitor != null)
+      {
+        monitor.setStatusText(i18n.tr("Lese Datei ein"));
+        monitor.addPercentComplete(1);
+      }
+
       ByteArrayOutputStream bos = new ByteArrayOutputStream();
       int read = 0;
       byte[] buf = new byte[8192];
@@ -98,9 +105,11 @@ public class MT940Importer implements Importer
       StringBuffer buffer = new StringBuffer(Swift.decodeUmlauts(bos.toString()));
       String booked = buffer.toString();
 
+      int count = 1;
       // split into "buchungstage"
       while (booked.length() != 0)
       {
+
         String st_tag = Swift.getOneBlock(booked);
         if (st_tag == null)
         {
@@ -139,6 +148,12 @@ public class MT940Importer implements Importer
 
         if (konto == null)
         {
+          if (monitor != null)
+          {
+            monitor.setStatusText(i18n.tr("Ermittle Konto"));
+            monitor.addPercentComplete(1);
+          }
+
           DBIterator konten = Settings.getDBService().createList(de.willuhn.jameica.hbci.rmi.Konto.class);
           konten.addFilter("kontonummer = '" + number + "'");
           konten.addFilter("blz = '" + blz + "'");
@@ -209,8 +224,19 @@ public class MT940Importer implements Importer
         }
         int ums_counter = 0;
 
+        if (monitor != null)
+        {
+          monitor.addPercentComplete(1);
+        }
+
         while (true)
         {
+          if (monitor != null)
+          {
+            monitor.log(i18n.tr("Datensatz {0}",""+(count++)));
+            monitor.addPercentComplete(1);
+          }
+
           String st_ums = Swift.getTagValue(st_tag, "61", ums_counter);
           if (st_ums == null)
             break;
@@ -442,6 +468,12 @@ public class MT940Importer implements Importer
       // speichern nur die neuen.
       // TODO: Der Code ist nahezu 1:1 aus HBCIUmsatzJob kopiert. Koennte man mal noch mergen
 
+      if (monitor != null)
+      {
+        monitor.setStatusText(i18n.tr("Speichere Umsätze"));
+        monitor.addPercentComplete(1);
+      }
+
       DBIterator existing = konto.getUmsaetze();
       GVRKUms.UmsLine[] lines = umsaetze.getFlatData();
       
@@ -459,6 +491,11 @@ public class MT940Importer implements Importer
       // naechsten Import die schon importierten erkannt und uebersprungen werden.
       for (int i=0;i<lines.length;++i)
       {
+        if (monitor != null)
+        {
+          monitor.log(i18n.tr("Umsatz {0}", "" + (i+1)));
+          monitor.addPercentComplete(1);
+        }
         umsatz = Converter.HBCIUmsatz2HibiscusUmsatz(lines[i]);
         umsatz.setKonto(konto); // muessen wir noch machen, weil der Converter das Konto nicht kennt
         
@@ -491,6 +528,11 @@ public class MT940Importer implements Importer
         {
           skipped++;
         }
+      }
+      if (monitor != null)
+      {
+        monitor.setStatusText(i18n.tr("{0} Umsätze importiert, {1} übersprungen (bereits vorhanden)", new String[]{""+created,""+skipped}));
+        monitor.addPercentComplete(1);
       }
       konto.addToProtokoll(i18n.tr("{0} Umsätze importiert, {1} übersprungen (bereits vorhanden)", new String[]{""+created,""+skipped}),Protokoll.TYP_SUCCESS);
     }
@@ -557,6 +599,9 @@ public class MT940Importer implements Importer
 
 /*******************************************************************************
  * $Log: MT940Importer.java,v $
+ * Revision 1.3  2006/01/23 00:36:29  willuhn
+ * @N Import, Export und Chipkartentest laufen jetzt als Background-Task
+ *
  * Revision 1.2  2006/01/18 00:51:01  willuhn
  * @B bug 65
  *

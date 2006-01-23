@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Exporter.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/01/18 00:51:01 $
+ * $Revision: 1.6 $
+ * $Date: 2006/01/23 00:36:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import java.rmi.RemoteException;
 
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.util.ApplicationException;
+import de.willuhn.util.ProgressMonitor;
 
 /**
  * Basis-Interface aller Exporter.
@@ -34,15 +35,20 @@ public interface Exporter extends IO
    * @param format das vom User ausgewaehlte Export-Format.
    * @param os der Ziel-Ausgabe-Stream.
    * Der Exporter muss den OutputStream selbst schliessen!
+   * @param monitor ein Monitor, an den der Exporter Ausgaben ueber seinen
+   * Bearbeitungszustand ausgeben kann.
    * @throws RemoteException
    * @throws ApplicationException 
    */
-  public void doExport(GenericObject[] objects, IOFormat format, OutputStream os) throws RemoteException, ApplicationException;
+  public void doExport(GenericObject[] objects, IOFormat format, OutputStream os, ProgressMonitor monitor) throws RemoteException, ApplicationException;
 }
 
 
 /**********************************************************************
  * $Log: Exporter.java,v $
+ * Revision 1.6  2006/01/23 00:36:29  willuhn
+ * @N Import, Export und Chipkartentest laufen jetzt als Background-Task
+ *
  * Revision 1.5  2006/01/18 00:51:01  willuhn
  * @B bug 65
  *

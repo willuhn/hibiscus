@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/ExportDialog.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/01/18 00:51:01 $
+ * $Revision: 1.5 $
+ * $Date: 2006/01/23 00:36:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -36,14 +36,16 @@ import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.io.IOFormat;
 import de.willuhn.jameica.hbci.io.Exporter;
+import de.willuhn.jameica.hbci.io.IOFormat;
 import de.willuhn.jameica.hbci.io.IORegistry;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.BackgroundTask;
 import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
+import de.willuhn.util.ProgressMonitor;
 
 /**
  * Dialog, ueber den Daten exportiert werden koennen.
@@ -139,7 +141,7 @@ public class ExportDialog extends AbstractDialog
     if (path != null && path.length() > 0)
       fd.setFilterPath(path);
 
-    String s = fd.open();
+    final String s = fd.open();
     
     if (s == null || s.length() == 0)
     {
@@ -147,7 +149,7 @@ public class ExportDialog extends AbstractDialog
       return;
     }
 
-    File file = new File(s);
+    final File file = new File(s);
     if (file.exists())
     {
       try
@@ -175,28 +177,49 @@ public class ExportDialog extends AbstractDialog
     // Wir merken uns noch das Verzeichnis vom letzten mal
     settings.setAttribute("lastdir",file.getParent());
 
-    try
-    {
-      Exporter exporter = exp.exporter;
+    // Dialog schliessen
+    close();
 
-      // Der Exporter schliesst den OutputStream selbst
-      OutputStream os = new BufferedOutputStream(new FileOutputStream(file));
-      exporter.doExport(objects,exp.format,os);
+    final Exporter exporter = exp.exporter;
+    final IOFormat format = exp.format;
 
-      // Dialog schliessen
-      close();
-      GUI.getStatusBar().setSuccessText(i18n.tr("Daten exportiert nach {0}",s));
-    }
-    catch (Exception e)
-    {
-      Logger.error("error while writing objects to " + s,e);
-      throw new ApplicationException(i18n.tr("Fehler beim Exportieren der Daten in {0}",s),e);
-    }
-    finally
-    {
-      // Dialog schliessem
-      close();
-    }
+    BackgroundTask t = new BackgroundTask() {
+      public void run(ProgressMonitor monitor) throws ApplicationException
+      {
+        try
+        {
+          // Der Exporter schliesst den OutputStream selbst
+          OutputStream os = new BufferedOutputStream(new FileOutputStream(file));
+          exporter.doExport(objects,format,os,monitor);
+          monitor.setPercentComplete(100);
+          monitor.setStatus(ProgressMonitor.STATUS_DONE);
+          GUI.getStatusBar().setSuccessText(i18n.tr("Daten exportiert nach {0}",s));
+          monitor.setStatusText(i18n.tr("Daten exportiert nach {0}",s));
+        }
+        catch (ApplicationException ae)
+        {
+          monitor.setStatusText(ae.getMessage());
+          monitor.setStatus(ProgressMonitor.STATUS_ERROR);
+          throw ae;
+        }
+        catch (Exception e)
+        {
+          monitor.setStatus(ProgressMonitor.STATUS_ERROR);
+          Logger.error("error while writing objects to " + s,e);
+          ApplicationException ae = new ApplicationException(i18n.tr("Fehler beim Exportieren der Daten in {0}",s),e);
+          monitor.setStatusText(ae.getMessage());
+          throw ae;
+        }
+      }
+
+      public void interrupt() {}
+      public boolean isInterrupted()
+      {
+        return false;
+      }
+    };
+
+    Application.getController().start(t);
   }
 
 	/**
@@ -312,6 +335,9 @@ public class ExportDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: ExportDialog.java,v $
+ * Revision 1.5  2006/01/23 00:36:29  willuhn
+ * @N Import, Export und Chipkartentest laufen jetzt als Background-Task
+ *
  * Revision 1.4  2006/01/18 00:51:01  willuhn
  * @B bug 65
  *

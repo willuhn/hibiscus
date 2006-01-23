@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/PassportTest.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/06/21 20:11:10 $
- * $Author: web0 $
+ * $Revision: 1.7 $
+ * $Date: 2006/01/23 00:36:29 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -20,10 +20,14 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.BackgroundTask;
 import de.willuhn.logging.Level;
 import de.willuhn.logging.Logger;
+import de.willuhn.logging.Message;
+import de.willuhn.logging.targets.Target;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
+import de.willuhn.util.ProgressMonitor;
 
 /**
  * Action, die die Funktionsfaehigkeit eines Passports via oeffnen und schliessen testet.
@@ -43,48 +47,81 @@ public class PassportTest implements Action
 		if (context == null || (!(context instanceof Passport) && !(context instanceof PassportHandle)))
 			throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Sicherheits-Medium aus."));
 
-		GUI.getStatusBar().startProgress();
-		GUI.getStatusBar().setSuccessText(i18n.tr("Teste Sicherheits-Medium..."));
+		BackgroundTask task = new BackgroundTask() {
+      public void run(final ProgressMonitor monitor) throws ApplicationException
+      {
+        Target target = null;
+        try {
+          monitor.setStatusText(i18n.tr("Teste Sicherheits-Medium..."));
+          
+          target = new Target() {
+            public void write(Message msg) throws Exception
+            {
+              monitor.addPercentComplete(2);
+              monitor.log(msg.getText());
+            }
+            public void close() throws Exception
+            {
+            }
+          };
+          Logger.addTarget(target);
 
-		try
-		{
-			GUI.startSync(new Runnable() {
-				public void run() {
-					try {
-						PassportHandle handle = null;
-            if (context instanceof Passport)
-              handle = ((Passport)context).getHandle();
-            else
-              handle = (PassportHandle) context;
-						handle.open();
-						handle.close(); // nein, nicht im finally, denn wenn das Oeffnen
- 													  // fehlschlaegt, ist nichts zum Schliessen da ;)
-						GUI.getStatusBar().setSuccessText(i18n.tr("Sicherheits-Medium erfolgreich getestet."));
-					}
-          catch (ApplicationException ae)
-          {
-            GUI.getStatusBar().setErrorText(ae.getMessage());
-          }
-					catch (RemoteException e)
-					{
-            String msg = e.getMessage();
-            if (msg != null && msg.length() > 0)
-  						GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Testen des Sicherheits-Mediums: {0}",msg));
-            else
-              GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Testen des Sicherheits-Mediums."));
-						Logger.warn("error while testing passport: " + e.getMessage());
+          PassportHandle handle = null;
+          if (context instanceof Passport)
+            handle = ((Passport)context).getHandle();
+          else
+            handle = (PassportHandle) context;
+          handle.open();
+          handle.close(); // nein, nicht im finally, denn wenn das Oeffnen
+                          // fehlschlaegt, ist nichts zum Schliessen da ;)
 
-            // BUGZILLA 52 http://www.willuhn.de/bugzilla/show_bug.cgi?id=52
-            if (Logger.getLevel().equals(Level.DEBUG))
-              Logger.error("stacktrace for debugging purpose",e);
-					}
-				}
-			});
-		}
-		finally
-		{
-			GUI.getStatusBar().stopProgress();
-		}
+          monitor.setStatus(ProgressMonitor.STATUS_DONE);
+          monitor.setPercentComplete(100);
+          monitor.setStatusText(i18n.tr("Sicherheits-Medium erfolgreich getestet."));
+          GUI.getStatusBar().setSuccessText(i18n.tr("Sicherheits-Medium erfolgreich getestet."));
+        }
+        catch (ApplicationException ae)
+        {
+          GUI.getStatusBar().setErrorText(ae.getMessage());
+          monitor.setStatus(ProgressMonitor.STATUS_ERROR);
+          monitor.setPercentComplete(100);
+          monitor.setStatusText(ae.getMessage());
+        }
+        catch (RemoteException e)
+        {
+          String msg = e.getMessage();
+          if (msg != null && msg.length() > 0)
+            msg = i18n.tr("Fehler beim Testen des Sicherheits-Mediums: {0}",msg);
+          else
+            msg = i18n.tr("Fehler beim Testen des Sicherheits-Mediums.");
+
+          GUI.getStatusBar().setErrorText(msg);
+          monitor.setStatus(ProgressMonitor.STATUS_ERROR);
+          monitor.setPercentComplete(100);
+          monitor.setStatusText(msg);
+
+          Logger.warn("error while testing passport: " + e.getMessage());
+
+
+          // BUGZILLA 52 http://www.willuhn.de/bugzilla/show_bug.cgi?id=52
+          if (Logger.getLevel().equals(Level.DEBUG))
+            Logger.error("stacktrace for debugging purpose",e);
+        }
+        finally
+        {
+          if (target != null)
+            Logger.removeTarget(target);
+        }
+      }
+
+      public void interrupt() {}
+      public boolean isInterrupted()
+      {
+        return false;
+      }
+    };
+    
+    Application.getController().start(task);
   }
 
 }
@@ -92,6 +129,9 @@ public class PassportTest implements Action
 
 /**********************************************************************
  * $Log: PassportTest.java,v $
+ * Revision 1.7  2006/01/23 00:36:29  willuhn
+ * @N Import, Export und Chipkartentest laufen jetzt als Background-Task
+ *
  * Revision 1.6  2005/06/21 20:11:10  web0
  * @C cvs merge
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/VelocityExporter.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/01/18 00:51:01 $
+ * $Revision: 1.6 $
+ * $Date: 2006/01/23 00:36:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -34,6 +34,7 @@ import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
+import de.willuhn.util.ProgressMonitor;
 
 /**
  * Implementierung eines Exporters, welcher das Velocity-Framework nutzt.
@@ -61,9 +62,9 @@ public class VelocityExporter implements Exporter
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.io.Exporter#doExport(de.willuhn.datasource.GenericObject[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream)
+   * @see de.willuhn.jameica.hbci.io.Exporter#doExport(de.willuhn.datasource.GenericObject[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
    */
-  public void doExport(GenericObject[] objects, IOFormat format, OutputStream os) throws RemoteException, ApplicationException
+  public void doExport(GenericObject[] objects, IOFormat format, OutputStream os, ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
     if (os == null)
       throw new ApplicationException(i18n.tr("Kein Ausgabe-Ziel für die Datei angegeben"));
@@ -74,6 +75,11 @@ public class VelocityExporter implements Exporter
     if (objects == null || objects.length == 0)
       throw new ApplicationException(i18n.tr("Keine zu exportierenden Umsätze angegeben"));
 
+    if (monitor != null)
+    {
+      monitor.setStatusText(i18n.tr("Bereite Template vor"));
+      monitor.addPercentComplete(1);
+    }
     Logger.debug("preparing velocity context");
     VelocityContext context = new VelocityContext();
 
@@ -85,6 +91,11 @@ public class VelocityExporter implements Exporter
     BufferedWriter writer = null;
     try
     {
+      if (monitor != null)
+      {
+        monitor.setStatusText(i18n.tr("Exportiere Daten"));
+        monitor.addPercentComplete(4);
+      }
       writer = new BufferedWriter(new OutputStreamWriter(os));
 
       Template template = Velocity.getTemplate(((VelocityFormat)format).getTemplate().getName());
@@ -97,6 +108,11 @@ public class VelocityExporter implements Exporter
     }
     finally
     {
+      if (monitor != null)
+      {
+        monitor.setStatusText(i18n.tr("Schliesse Export-Datei"));
+        monitor.addPercentComplete(1);
+      }
       if (writer != null)
       {
         try
@@ -210,6 +226,9 @@ public class VelocityExporter implements Exporter
 
 /**********************************************************************
  * $Log: VelocityExporter.java,v $
+ * Revision 1.6  2006/01/23 00:36:29  willuhn
+ * @N Import, Export und Chipkartentest laufen jetzt als Background-Task
+ *
  * Revision 1.5  2006/01/18 00:51:01  willuhn
  * @B bug 65
  *
