@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.30 $
- * $Date: 2005/11/22 17:31:31 $
+ * $Revision: 1.31 $
+ * $Date: 2006/01/23 12:16:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -75,32 +75,22 @@ public class Converter {
 		umsatz.setCustomerRef(u.customerref);
 		umsatz.setPrimanota(u.primanota);
 
-      //BUGZILLA 67 http://www.willuhn.de/bugzilla/show_bug.cgi?id=67
-      Saldo s = u.saldo;
-      if (s != null)
+    //BUGZILLA 67 http://www.willuhn.de/bugzilla/show_bug.cgi?id=67
+    Saldo s = u.saldo;
+    if (s != null)
+    {
+      try
       {
-        try {
-          if (s.cd.endsWith("C"))
-            umsatz.setSaldo(s.value.value); // Haben-Saldo
-          else
-          umsatz.setSaldo(-s.value.value);  // Soll-Saldo
-        }
-        catch (NullPointerException e)
-        {
-          // Falls u.saldo null liefert
-          /* ignore */
-        }
+        umsatz.setSaldo(s.value.getDoubleValue());
       }
-
-		// C(redit) = HABEN
-		// D(ebit)  = SOLL
-		if (u.cd.endsWith("C"))
-			umsatz.setBetrag(u.value.value); // Haben-Buchung
-		else
-		{
-			umsatz.setBetrag(-u.value.value); // Soll-Buchung
-		}
-
+      catch (NullPointerException e)
+      {
+        // Falls u.saldo null liefert
+        /* ignore */
+      }
+    }
+    
+    umsatz.setBetrag(u.value.getDoubleValue());
 		umsatz.setDatum(u.bdate);
 		umsatz.setValuta(u.valuta);
 
@@ -190,7 +180,7 @@ public class Converter {
     // einsortiert.
     auftrag.setKonto(HBCIKonto2HibiscusKonto(d.my));
 
-    auftrag.setBetrag(d.value.value);
+    auftrag.setBetrag(d.value.getDoubleValue());
 		auftrag.setOrderID(d.orderid);
 
 		// Jetzt noch der Empfaenger
@@ -357,7 +347,7 @@ public class Converter {
 			b = (SammelTransferBuchung) buchungen.next();
 			final DTAUS.Transaction tr = dtaus.new Transaction();
 			tr.otherAccount = HibiscusAdresse2HBCIKonto(b.getGegenkonto());
-			tr.value = new Value(b.getBetrag());
+			tr.value = new Value(String.valueOf(b.getBetrag()));
 			tr.addUsage(b.getZweck());
 			String z2 = b.getZweck2();
 			if (z2 != null && z2.length() > 0)
@@ -372,6 +362,9 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.31  2006/01/23 12:16:57  willuhn
+ * @N Update auf HBCI4Java 2.5.0-rc5
+ *
  * Revision 1.30  2005/11/22 17:31:31  willuhn
  * @B NPE
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/ImportDialog.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/01/23 00:36:29 $
+ * $Revision: 1.3 $
+ * $Date: 2006/01/23 12:16:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -171,6 +171,7 @@ public class ImportDialog extends AbstractDialog
           monitor.setPercentComplete(100);
           monitor.setStatus(ProgressMonitor.STATUS_DONE);
           GUI.getStatusBar().setSuccessText(i18n.tr("Daten importiert aus {0}",s));
+          GUI.getCurrentView().reload();
         }
         catch (ApplicationException ae)
         {
@@ -311,6 +312,9 @@ public class ImportDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: ImportDialog.java,v $
+ * Revision 1.3  2006/01/23 12:16:57  willuhn
+ * @N Update auf HBCI4Java 2.5.0-rc5
+ *
  * Revision 1.2  2006/01/23 00:36:29  willuhn
  * @N Import, Export und Chipkartentest laufen jetzt als Background-Task
  *

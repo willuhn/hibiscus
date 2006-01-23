@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCISaldoJob.java,v $
- * $Revision: 1.17 $
- * $Date: 2005/07/26 23:00:03 $
- * $Author: web0 $
+ * $Revision: 1.18 $
+ * $Date: 2006/01/23 12:16:57 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -104,10 +104,7 @@ public class HBCISaldoJob extends AbstractHBCIJob {
 
     // Jetzt speichern wir noch den neuen Saldo.
     Saldo saldo = result.getEntries()[0].ready;
-    if (saldo.cd.endsWith("C"))
-  		konto.setSaldo(saldo.value.value);
-    else
-      konto.setSaldo(-saldo.value.value);
+    konto.setSaldo(saldo.value.getDoubleValue());
 
 		konto.store();
 		Logger.info("saldo fetched successfully");
@@ -117,6 +114,9 @@ public class HBCISaldoJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCISaldoJob.java,v $
+ * Revision 1.18  2006/01/23 12:16:57  willuhn
+ * @N Update auf HBCI4Java 2.5.0-rc5
+ *
  * Revision 1.17  2005/07/26 23:00:03  web0
  * @N Multithreading-Support fuer HBCI-Jobs
  *

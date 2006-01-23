@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UmsatzList.java,v $
- * $Revision: 1.13 $
- * $Date: 2006/01/18 00:51:01 $
+ * $Revision: 1.14 $
+ * $Date: 2006/01/23 12:16:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,8 +12,6 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.menus;
 
-import de.willuhn.jameica.gui.Action;
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.extension.Extendable;
 import de.willuhn.jameica.gui.extension.ExtensionRegistry;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
@@ -27,7 +25,6 @@ import de.willuhn.jameica.hbci.gui.action.UmsatzExport;
 import de.willuhn.jameica.hbci.gui.action.UmsatzImport;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -54,15 +51,7 @@ public class UmsatzList extends ContextMenu implements Extendable
     addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new UmsatzDelete()));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new CheckedContextMenuItem(i18n.tr("Umsätze exportieren..."),new UmsatzExport()));
-    addItem(new ContextMenuItem(i18n.tr("Umsätze importieren..."),new Action() {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        // Ueberschrieben, um die Seite ggf. neu zu laden
-        new UmsatzImport().handleAction(context);
-        GUI.getCurrentView().reload();
-      }
-    }));
-
+    addItem(new ContextMenuItem(i18n.tr("Umsätze importieren..."),new UmsatzImport()));
     // Wir geben das Context-Menu jetzt noch zur Erweiterung frei.
     ExtensionRegistry.extend(this);
 
@@ -100,6 +89,9 @@ public class UmsatzList extends ContextMenu implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.14  2006/01/23 12:16:57  willuhn
+ * @N Update auf HBCI4Java 2.5.0-rc5
+ *
  * Revision 1.13  2006/01/18 00:51:01  willuhn
  * @B bug 65
  *

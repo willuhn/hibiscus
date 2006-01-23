@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCIJob.java,v $
- * $Revision: 1.18 $
- * $Date: 2005/08/01 23:27:42 $
- * $Author: web0 $
+ * $Revision: 1.19 $
+ * $Date: 2006/01/23 12:16:57 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -187,7 +187,7 @@ public abstract class AbstractHBCIJob
 			Logger.warn("[job parameter] no name given");
 			return;
 		}
-		params.put(name,new Value(value,currency));
+		params.put(name,new Value(String.valueOf(value),currency));
 	}
 
 	/**
@@ -212,6 +212,9 @@ public abstract class AbstractHBCIJob
 
 /**********************************************************************
  * $Log: AbstractHBCIJob.java,v $
+ * Revision 1.19  2006/01/23 12:16:57  willuhn
+ * @N Update auf HBCI4Java 2.5.0-rc5
+ *
  * Revision 1.18  2005/08/01 23:27:42  web0
  * *** empty log message ***
  *
