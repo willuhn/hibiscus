@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/IOFormat.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/01/17 00:22:36 $
+ * $Revision: 1.2 $
+ * $Date: 2006/01/23 23:07:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -32,16 +32,19 @@ public interface IOFormat
   public String getName();
 
   /**
-   * Liefert die Datei-Endung des Formats.
-   * Angabe bitte ohne Punkt. Also zum Beispiel "csv" statt ".csv".
+   * Liefert die Datei-Endungen des Formats.
+   * Zum Beispiel "*.csv" oder "*.txt".
    * @return Datei-Endung.
    */
-  public String getFileExtension();
+  public String[] getFileExtensions();
 }
 
 
 /*********************************************************************
  * $Log: IOFormat.java,v $
+ * Revision 1.2  2006/01/23 23:07:23  willuhn
+ * @N csv import stuff
+ *
  * Revision 1.1  2006/01/17 00:22:36  willuhn
  * @N erster Code fuer Swift MT940-Import
  *

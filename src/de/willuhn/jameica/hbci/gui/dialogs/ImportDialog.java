@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/ImportDialog.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/01/23 12:16:57 $
+ * $Revision: 1.4 $
+ * $Date: 2006/01/23 23:07:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -133,7 +133,7 @@ public class ImportDialog extends AbstractDialog
 
     FileDialog fd = new FileDialog(GUI.getShell(),SWT.OPEN);
     fd.setText(i18n.tr("Bitte wählen Sie die Datei aus, welche für den Import verwendet werden soll."));
-    fd.setFilterNames(new String[]{"*." + imp.format.getFileExtension()});
+    fd.setFilterNames(imp.format.getFileExtensions());
 
     String path = settings.getString("lastdir",System.getProperty("user.home"));
     if (path != null && path.length() > 0)
@@ -177,6 +177,7 @@ public class ImportDialog extends AbstractDialog
         {
           monitor.setStatusText(ae.getMessage());
           monitor.setStatus(ProgressMonitor.STATUS_ERROR);
+          GUI.getStatusBar().setErrorText(ae.getMessage());
           throw ae;
         }
         catch (Exception e)
@@ -185,6 +186,7 @@ public class ImportDialog extends AbstractDialog
           Logger.error("error while reading objects from " + s,e);
           ApplicationException ae = new ApplicationException(i18n.tr("Fehler beim Importieren der Daten aus {0}",s),e);
           monitor.setStatusText(ae.getMessage());
+          GUI.getStatusBar().setErrorText(ae.getMessage());
           throw ae;
         }
       }
@@ -312,6 +314,9 @@ public class ImportDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: ImportDialog.java,v $
+ * Revision 1.4  2006/01/23 23:07:23  willuhn
+ * @N csv import stuff
+ *
  * Revision 1.3  2006/01/23 12:16:57  willuhn
  * @N Update auf HBCI4Java 2.5.0-rc5
  *

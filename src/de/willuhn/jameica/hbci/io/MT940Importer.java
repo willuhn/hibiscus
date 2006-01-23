@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Attic/MT940Importer.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/01/23 12:16:57 $
+ * $Revision: 1.5 $
+ * $Date: 2006/01/23 23:07:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.rmi.RemoteException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -65,6 +64,13 @@ public class MT940Importer implements Importer
    */
   public void doImport(GenericObject context, IOFormat format, InputStream is, ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
+
+    if (is == null)
+      throw new ApplicationException(i18n.tr("Keine zu importierende Datei ausgewählt"));
+    
+    if (format == null)
+      throw new ApplicationException(i18n.tr("Kein Datei-Format ausgewählt"));
+    
     // Quick&Dirty-Loesung.
     // Code kopiert von. GVKUmsAll aus HBCI4Java.
     // Das koennte man in der Tat mal schoen machen ;)
@@ -523,16 +529,16 @@ public class MT940Importer implements Importer
     catch (OperationCanceledException oce)
     {
       Logger.warn("operation cancelled");
+      throw new ApplicationException(i18n.tr("Import abgebrochen"));
     }
-    catch (IOException ioe)
+    catch (ApplicationException ae)
     {
-      Logger.error("error while reading file",ioe);
+      throw ae;
+    }
+    catch (Exception e)
+    {
+      Logger.error("error while reading file",e);
       throw new ApplicationException(i18n.tr("Fehler beim Import der Swift-Datei"));
-    }
-    catch (ParseException pe)
-    {
-      Logger.error("error while parsing file",pe);
-      throw new ApplicationException(i18n.tr("Fehler beim Lesen der Swift-Datei"));
     }
     finally
     {
@@ -563,6 +569,9 @@ public class MT940Importer implements Importer
    */
   public IOFormat[] getIOFormats(Class objectType)
   {
+    if (!Umsatz.class.equals(objectType))
+      return null; // Wir bieten uns nur fuer Umsaetze an
+    
     IOFormat f = new IOFormat() {
       public String getName()
       {
@@ -570,11 +579,11 @@ public class MT940Importer implements Importer
       }
 
       /**
-       * @see de.willuhn.jameica.hbci.io.IOFormat#getFileExtension()
+       * @see de.willuhn.jameica.hbci.io.IOFormat#getFileExtensions()
        */
-      public String getFileExtension()
+      public String[] getFileExtensions()
       {
-        return "sta";
+        return new String[] {"*.sta"};
       }
     };
     return new IOFormat[] { f };
@@ -583,6 +592,9 @@ public class MT940Importer implements Importer
 
 /*******************************************************************************
  * $Log: MT940Importer.java,v $
+ * Revision 1.5  2006/01/23 23:07:23  willuhn
+ * @N csv import stuff
+ *
  * Revision 1.4  2006/01/23 12:16:57  willuhn
  * @N Update auf HBCI4Java 2.5.0-rc5
  *
