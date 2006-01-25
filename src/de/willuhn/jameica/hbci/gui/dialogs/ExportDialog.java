@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/ExportDialog.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/01/23 00:36:29 $
+ * $Revision: 1.6 $
+ * $Date: 2006/01/25 09:22:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -135,7 +135,9 @@ public class ExportDialog extends AbstractDialog
 
     FileDialog fd = new FileDialog(GUI.getShell(),SWT.SAVE);
     fd.setText(i18n.tr("Bitte geben Sie eine Datei ein, in die die Daten exportiert werden sollen."));
-    fd.setFileName(i18n.tr("hibiscus-export-{0}." + exp.format.getFileExtension(),HBCI.FASTDATEFORMAT.format(new Date())));
+    String[] se = exp.format.getFileExtensions();
+    String ext = se == null ? "" : se[0];
+    fd.setFileName(i18n.tr("hibiscus-export-{0}." + ext,HBCI.FASTDATEFORMAT.format(new Date())));
 
     String path = settings.getString("lastdir",System.getProperty("user.home"));
     if (path != null && path.length() > 0)
@@ -335,6 +337,9 @@ public class ExportDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: ExportDialog.java,v $
+ * Revision 1.6  2006/01/25 09:22:05  willuhn
+ * @B compile error
+ *
  * Revision 1.5  2006/01/23 00:36:29  willuhn
  * @N Import, Export und Chipkartentest laufen jetzt als Background-Task
  *
