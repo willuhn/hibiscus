@@ -90,7 +90,11 @@
               über <span class="klickpath">Plugins&raquo;Hibiscus&raquo;Einstellungen</span>. Klicken Sie
               in der Liste der Sicherheitsmedien doppelt auf &quot;PIN/TAN&quot;. Sie sehen eine Liste
               mit vorhandenen Konfigurationen. Öffnen Sie die von Ihnen angelegte Konfiguration durch
-              Doppelklick und passen Sie die HBCI-Version an.
+              Doppelklick und passen Sie die HBCI-Version an. Testen Sie auf jeden Fall die Version "HBCI+".
+              Hintergrund: Das PIN/TAN-Verfahren sollte ursprünglich erst mit HBCI 3.0 (FinTS) eingeführt werden.
+              Viele Banken haben die Unterstützung hierfür jedoch bereits in HBCI 2.2 integriert. Zur besseren
+              Unterscheidung der beiden Versionen "HBCI 2.2 ohne PIN/TAN" und "HBCI 2.2 mit PIN/TAN" nennt
+              man letzteres "HBCI+". Viele Banken bezeichnen sie jedoch dennoch als "HBCI 2.2".
               <br/>
               Sollten Sie sich nicht sicher sein, können Sie auch alle vorhandenen HBCI-Versionen
               durchprobieren, indem Sie nach jeder Auswahl den Button &quot;Konfiguration testen&quot;
@@ -250,7 +254,7 @@ $JAVA_HOME/bin/java -Djava.library.path=lib/swt/linux -jar jameica-linux.jar $@
     //-->
 
     <hr/>
-    $Revision: 1.4 $
+    $Revision: 1.5 $
 
   </body>
 </html>
