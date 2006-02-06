@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Sync.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/01/11 00:29:21 $
+ * $Revision: 1.3 $
+ * $Date: 2006/02/06 17:16:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -180,16 +180,15 @@ public class Sync extends AbstractBox implements Box
       Logger.error("error while synchronizing",t);
       GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Synchronisieren der Konten"));
     }
-    finally
-    {
-      Logger.info("Synchronize finished");
-    }
   }
 }
 
 
 /*********************************************************************
  * $Log: Sync.java,v $
+ * Revision 1.3  2006/02/06 17:16:10  willuhn
+ * @B Fehler beim Synchronisieren mehrerer Konten (Dead-Lock)
+ *
  * Revision 1.2  2006/01/11 00:29:21  willuhn
  * @C HBCISynchronizer nach gui.action verschoben
  * @R undo bug 179 (blendet zu zeitig aus, wenn mehrere Jobs (Synchronize) laufen)
