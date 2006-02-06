@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.15 $
- * $Date: 2005/12/30 00:14:45 $
+ * $Revision: 1.16 $
+ * $Date: 2006/02/06 14:53:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -127,6 +127,7 @@ public class UmsatzList extends TablePart
 
     // BUGZILLA 23 http://www.willuhn.de/bugzilla/show_bug.cgi?id=23
     // BUGZILLA 86 http://www.willuhn.de/bugzilla/show_bug.cgi?id=86
+    addColumn("#","id");
     addColumn(i18n.tr("Gegenkonto"),                "empfaenger");
     addColumn(i18n.tr("Verwendungszweck"),          "zweck");
     addColumn(i18n.tr("Valuta"),                    "valuta", new DateFormatter(HBCI.DATEFORMAT));
@@ -452,6 +453,9 @@ public class UmsatzList extends TablePart
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.16  2006/02/06 14:53:39  willuhn
+ * @N new column "#" in umsatzlist
+ *
  * Revision 1.15  2005/12/30 00:14:45  willuhn
  * @N first working pie charts
  *

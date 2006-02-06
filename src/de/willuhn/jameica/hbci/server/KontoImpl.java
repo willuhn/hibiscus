@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.59 $
- * $Date: 2006/01/23 11:11:36 $
+ * $Revision: 1.60 $
+ * $Date: 2006/02/06 14:53:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -306,7 +306,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
   public DBIterator getUmsaetze() throws RemoteException {
 		DBIterator list = getService().createList(Umsatz.class);
 		list.addFilter("konto_id = " + getID());
-    list.setOrder(" ORDER BY TONUMBER(valuta) DESC");
+    list.setOrder("ORDER BY TONUMBER(valuta), id DESC");
 		return list;
   }
 
@@ -321,7 +321,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
     DBIterator list = getService().createList(Umsatz.class);
     list.addFilter("konto_id = " + getID());
     list.addFilter("TONUMBER(valuta) > " + (System.currentTimeMillis() - d));
-    list.setOrder("ORDER BY TONUMBER(valuta) DESC");
+    list.setOrder("ORDER BY TONUMBER(valuta), id DESC");
     return list;
   }
 
@@ -579,6 +579,9 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.60  2006/02/06 14:53:39  willuhn
+ * @N new column "#" in umsatzlist
+ *
  * Revision 1.59  2006/01/23 11:11:36  willuhn
  * *** empty log message ***
  *
