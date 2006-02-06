@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.28 $
- * $Date: 2005/08/16 21:33:13 $
+ * $Revision: 1.29 $
+ * $Date: 2006/02/06 16:03:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -52,14 +52,14 @@ public abstract class AbstractTransferControl extends AbstractControl
 	private Konto konto											= null;
 	
 	// Eingabe-Felder
-	private DialogInput kontoAuswahl			= null;
+	private DialogInput kontoAuswahl			  = null;
 	private Input betrag										= null;
 	private TextInput zweck									= null;
 	private TextInput zweck2								= null;
 
 	private DialogInput empfkto 						= null;
-	private Input empfName 									= null;
-	private Input empfblz 									= null;
+	private TextInput empfName 					  	= null;
+	private TextInput empfblz								= null;
 
 	private CheckboxInput storeEmpfaenger 	= null;
 
@@ -144,7 +144,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 		if (empfblz != null)
 			return empfblz;
 		empfblz = new TextInput(getTransfer().getGegenkontoBLZ(),HBCIProperties.HBCI_BLZ_LENGTH);
-
+		empfblz.setValidChars(HBCIProperties.HBCI_BLZ_VALIDCHARS);
 		empfblz.setComment("");
 		empfblz.addListener(new BLZListener());
 		return empfblz;
@@ -160,6 +160,8 @@ public abstract class AbstractTransferControl extends AbstractControl
 		if (empfName != null)
 			return empfName;
 		empfName = new TextInput(getTransfer().getGegenkontoName(),HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
+    // BUGZILLA 163
+    empfName.setValidChars(HBCIProperties.HBCI_DTAUS_VALIDCHARS);
 		return empfName;
 	}
 
@@ -391,6 +393,9 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
+ * Revision 1.29  2006/02/06 16:03:50  willuhn
+ * @B bug 163
+ *
  * Revision 1.28  2005/08/16 21:33:13  willuhn
  * @N Kommentar-Feld in Adressen
  * @N Neuer Adress-Auswahl-Dialog

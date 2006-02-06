@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractSammelTransferBuchungImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/09/30 00:08:50 $
+ * $Revision: 1.2 $
+ * $Date: 2006/02/06 16:03:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -64,11 +64,16 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
       if (getGegenkontoBLZ() == null || getGegenkontoBLZ().length() == 0)
         throw new ApplicationException(i18n.tr("Bitte geben Sie die BLZ des Gegenkontos ein"));
 
+      HBCIProperties.checkChars(getGegenkontoBLZ(), HBCIProperties.HBCI_BLZ_VALIDCHARS);
+
       if (getGegenkontoName() == null || getGegenkontoName().length() == 0)
         throw new ApplicationException(i18n.tr("Bitte geben Sie den Namen des Kontoinhabers des Gegenkontos ein"));
 
 			if (getGegenkontoName().length() > HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH)
 				throw new ApplicationException(i18n.tr("Bitte geben Sie maximal {0} Zeichen für den Namen des Kontoinhabers ein",""+HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH));
+
+      // BUGZILLA 163
+      HBCIProperties.checkChars(getGegenkontoName(), HBCIProperties.HBCI_DTAUS_VALIDCHARS);
 
       if (!HBCIProperties.checkAccountCRC(getGegenkontoBLZ(),getGegenkontoNummer()))
         throw new ApplicationException(i18n.tr("Ungültige BLZ/Kontonummer. Bitte prüfen Sie Ihre Eingaben."));
@@ -82,8 +87,8 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
       if (getZweck2() != null && getZweck2().length() > HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH)
         throw new ApplicationException(i18n.tr("Bitten geben Sie als weiteren Verwendungszweck maximal {0} Zeichen an",""+HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH));
 
-      HBCIProperties.checkChars(getZweck());
-      HBCIProperties.checkChars(getZweck2());
+      HBCIProperties.checkChars(getZweck(), HBCIProperties.HBCI_DTAUS_VALIDCHARS);
+      HBCIProperties.checkChars(getZweck2(), HBCIProperties.HBCI_DTAUS_VALIDCHARS);
     }
     catch (RemoteException e)
     {
@@ -282,6 +287,9 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferBuchungImpl.java,v $
+ * Revision 1.2  2006/02/06 16:03:50  willuhn
+ * @B bug 163
+ *
  * Revision 1.1  2005/09/30 00:08:50  willuhn
  * @N SammelUeberweisungen (merged with SammelLastschrift)
  *

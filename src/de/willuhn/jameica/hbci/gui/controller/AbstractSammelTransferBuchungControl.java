@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractSammelTransferBuchungControl.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/09/30 00:08:51 $
+ * $Revision: 1.2 $
+ * $Date: 2006/02/06 16:03:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,8 +49,8 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 	private TextInput zweck2								= null;
 
 	private DialogInput gkNummer 						= null;
-	private Input gkName 										= null;
-	private Input gkBLZ	 										= null;
+	private TextInput gkName								= null;
+	private TextInput gkBLZ									= null;
 
 	private CheckboxInput storeAddress		 	= null;
 
@@ -104,7 +104,7 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 		if (gkBLZ != null)
 			return gkBLZ;
 		gkBLZ = new TextInput(getBuchung().getGegenkontoBLZ(),HBCIProperties.HBCI_BLZ_LENGTH);
-
+    gkBLZ.setValidChars(HBCIProperties.HBCI_BLZ_VALIDCHARS);
 		gkBLZ.setComment("");
 		gkBLZ.addListener(new BLZListener());
 		return gkBLZ;
@@ -120,6 +120,8 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 		if (gkName != null)
 			return gkName;
 		gkName = new TextInput(getBuchung().getGegenkontoName(),HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
+    // BUGZILLA 163
+    gkName.setValidChars(HBCIProperties.HBCI_DTAUS_VALIDCHARS);
 		return gkName;
 	}
 
@@ -252,6 +254,9 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferBuchungControl.java,v $
+ * Revision 1.2  2006/02/06 16:03:50  willuhn
+ * @B bug 163
+ *
  * Revision 1.1  2005/09/30 00:08:51  willuhn
  * @N SammelUeberweisungen (merged with SammelLastschrift)
  *
