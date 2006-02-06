@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.31 $
- * $Date: 2005/12/29 01:22:11 $
+ * $Revision: 1.32 $
+ * $Date: 2006/02/06 23:03:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -358,6 +358,18 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
    */
   public Object getAttribute(String arg0) throws RemoteException
   {
+    if ("id-int".equals(arg0))
+    {
+      try
+      {
+        return new Integer(getID());
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to parse id: " + getID());
+        return getID();
+      }
+    }
     if ("mergedzweck".equals(arg0))
       return getZweck() + (getZweck2() != null ? getZweck2() : "");
 
@@ -440,6 +452,9 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.32  2006/02/06 23:03:23  willuhn
+ * @B Sortierung der Spalte "#"
+ *
  * Revision 1.31  2005/12/29 01:22:11  willuhn
  * @R UmsatzZuordnung entfernt
  * @B Debugging am Pie-Chart
