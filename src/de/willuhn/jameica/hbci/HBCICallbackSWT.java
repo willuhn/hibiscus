@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.31 $
- * $Date: 2005/11/14 11:37:00 $
+ * $Revision: 1.32 $
+ * $Date: 2006/02/06 15:40:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -186,7 +186,7 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 					retData.replace(0,retData.length(),DialogFactory.getPIN(passport));
 					break;
 				case NEED_PT_TAN:
-					retData.replace(0,retData.length(),DialogFactory.getTAN());
+					retData.replace(0,retData.length(),DialogFactory.getTAN(msg));
 					break;
 
 				case HAVE_HARDPIN:
@@ -492,6 +492,9 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.32  2006/02/06 15:40:44  willuhn
+ * @B bug 150
+ *
  * Revision 1.31  2005/11/14 11:37:00  willuhn
  * @B bug 148
  *

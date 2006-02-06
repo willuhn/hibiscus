@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/TANDialog.java,v $
- * $Revision: 1.9 $
- * $Date: 2005/08/02 20:33:12 $
- * $Author: web0 $
+ * $Revision: 1.10 $
+ * $Date: 2006/02/06 15:40:44 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -60,13 +60,22 @@ public class TANDialog extends PasswordDialog {
     }
     if (s != null)
     {
-      setText(i18n.tr("Bitte geben Sie eine TAN-Nummer ein. Konto: {0}",s));
+      // BUGZILLA: 150
+      String msg = getText();
+      if (msg == null || msg.length() == 0)
+        setText(i18n.tr("Bitte geben Sie eine TAN-Nummer ein. Konto: {0}",s));
+      else
+        setText(msg + "." + i18n.tr("Konto: {0}",s));
       setTitle(i18n.tr("TAN-Eingabe - Konto {0}",s));
     }
     else
     {
+      String msg = getText();
+      if (msg == null || msg.length() == 0)
+        setText(i18n.tr("Bitte geben Sie eine TAN-Nummer ein."));
+      else
+        setText(msg);
       setTitle(i18n.tr("TAN-Eingabe"));
-      setText(i18n.tr("Bitte geben Sie eine TAN-Nummer ein."));
     }
   
   }
@@ -99,6 +108,9 @@ public class TANDialog extends PasswordDialog {
 
 /**********************************************************************
  * $Log: TANDialog.java,v $
+ * Revision 1.10  2006/02/06 15:40:44  willuhn
+ * @B bug 150
+ *
  * Revision 1.9  2005/08/02 20:33:12  web0
  * *** empty log message ***
  *
