@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/EmpfaengerList.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/08/16 21:33:13 $
+ * $Revision: 1.5 $
+ * $Date: 2006/02/06 15:31:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,8 @@ package de.willuhn.jameica.hbci.gui.parts;
 
 import java.rmi.RemoteException;
 
+import org.kapott.hbci.manager.HBCIUtils;
+
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.formatter.Formatter;
@@ -23,6 +25,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
 /**
@@ -42,7 +45,26 @@ public class EmpfaengerList extends TablePart implements Part
     this.setMulti(true);
     this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     addColumn(i18n.tr("Kontonummer"),"kontonummer");
-    addColumn(i18n.tr("Bankleitzahl"),"blz");
+    addColumn(i18n.tr("Bankleitzahl"),"blz", new Formatter() {
+      public String format(Object o)
+      {
+        if (o == null)
+          return null;
+        try
+        {
+          String blz = o.toString();
+          String name = HBCIUtils.getNameForBLZ(blz);
+          if (name == null || name.length() == 0)
+            return blz;
+          return blz + " [" + name + "]";
+        }
+        catch (Exception e)
+        {
+          Logger.error("error while formatting blz",e);
+          return o.toString();
+        }
+      }
+    });
     addColumn(i18n.tr("Name"),"name");
     addColumn(i18n.tr("Kommentar"),"kommentar",new Formatter() {
       public String format(Object o)
@@ -70,6 +92,9 @@ public class EmpfaengerList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: EmpfaengerList.java,v $
+ * Revision 1.5  2006/02/06 15:31:00  willuhn
+ * @N Anzeige des Banknamens in Adressbuch-Liste
+ *
  * Revision 1.4  2005/08/16 21:33:13  willuhn
  * @N Kommentar-Feld in Adressen
  * @N Neuer Adress-Auswahl-Dialog
