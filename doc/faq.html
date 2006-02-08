@@ -16,6 +16,7 @@
         <ul>
           <li><a href="#passport.nosettings">[generell] Fehlermeldung &quot;Keine Konfigurationen gefunden&quot;</a></li>
           <li><a href="#passport.pintan.settings">[PIN/TAN] Fehlermeldung &quot;Fehler beim Erzeugen eines HBCIHandler Objektes&quot;</a></li>
+          <li><a href="#passport.pintan.length">[PIN/TAN] Hibiscus akzeptiert meine PIN nicht. Sie besitzt mehr als 6 Stellen</a></li>
           <li><a href="#passport.ddv.port">[Chipkarte] Fehler beim Testen des Chipkartenlesers (meist bei USB-Anschluss)</a></li>
         </ul>
       </li>
@@ -113,6 +114,33 @@
           </ul>
         </p>
 
+        <p>
+          <br/>
+          <a name="passport.pintan.length"></a>
+          <b>[PIN/TAN] Hibiscus akzeptiert meine PIN nicht. Sie besitzt mehr als 6 Stellen</b>
+          <br/><br/>
+          
+          Hibiscus erlaubt standardmässig nur maximal 6-stellige PINs.
+          Sie können diesen Wert jedoch ändern. Beenden Sie zunächst Hibiscus.
+          Öffnen Sie nun die folgende Datei in einem Text-Editor:
+
+          <br/>
+          <br/><pre>
+Linux: /home/&lt;username&gt;/.jameica/cfg/de.willuhn.jameica.hbci.HBCIProperties.properties
+Windows: C:\Dokumente und Einstellungen\&lt;username&gt;\.jameica\cfg\de.willuhn.jameica.hbci.HBCIProperties.properties</pre>
+          <br/>
+          
+          Fügen Sie dort eine neue Zeile in folgendem Format ein:
+          <pre>hbci.pin.maxlength=&lt;zahl&gt;</pre>
+
+          <br/>
+          Also zum Beispiel:
+          <pre>hbci.pin.maxlength=7</pre>
+
+          <br/>
+          Speichern Sie die Datei und starten Sie Hibiscus neu. Die Anwendung sollte nun auch längere PINs akzeptieren.
+        </p>
+        
         <p>
           <br/>
           <a name="passport.ddv.port"></a>
@@ -254,7 +282,7 @@ $JAVA_HOME/bin/java -Djava.library.path=lib/swt/linux -jar jameica-linux.jar $@
     //-->
 
     <hr/>
-    $Revision: 1.5 $
+    $Revision: 1.6 $
 
   </body>
 </html>
