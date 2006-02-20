@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AbstractTransferImpl.java,v $
- * $Revision: 1.22 $
- * $Date: 2006/02/06 16:03:50 $
+ * $Revision: 1.23 $
+ * $Date: 2006/02/20 17:33:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,6 @@ import java.rmi.RemoteException;
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
-import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
@@ -49,17 +48,10 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
    */
   protected void insertCheck() throws ApplicationException {
   	try {
-			if (getBetrag() == 0.0)
-				throw new ApplicationException(i18n.tr("Bitte geben Sie einen gültigen Betrag ein."));
-
 			if (getKonto() == null)
 				throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus."));
 			if (getKonto().isNewObject())
 				throw new ApplicationException(i18n.tr("Bitte speichern Sie zunächst das Konto"));
-
-			if (getBetrag() > Settings.getUeberweisungLimit())
-				throw new ApplicationException(i18n.tr("Auftragslimit überschritten: {0} ", 
-					HBCI.DECIMALFORMAT.format(Settings.getUeberweisungLimit()) + " " + getKonto().getWaehrung()));
 
 			if (getGegenkontoNummer() == null || getGegenkontoNummer().length() == 0)
 				throw new ApplicationException(i18n.tr("Bitte geben Sie die Kontonummer des Gegenkontos ein"));
@@ -272,6 +264,9 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
 
 /**********************************************************************
  * $Log: AbstractTransferImpl.java,v $
+ * Revision 1.23  2006/02/20 17:33:08  willuhn
+ * @B bug 197
+ *
  * Revision 1.22  2006/02/06 16:03:50  willuhn
  * @B bug 163
  *
