@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.32 $
- * $Date: 2006/02/06 15:40:44 $
+ * $Revision: 1.33 $
+ * $Date: 2006/02/20 11:43:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -288,7 +288,8 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 					throw new HBCI_Exception("reason not implemented");
 
 				default:
-						throw new HBCI_Exception("no reason given");
+				  Logger.error("unknown reason " + reason + ", datatype: " + datatype + ": " + msg);
+          throw new HBCI_Exception("unknown reason " + reason + ": " + msg);
 	
 			}
 
@@ -492,6 +493,9 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.33  2006/02/20 11:43:56  willuhn
+ * @B bug 200
+ *
  * Revision 1.32  2006/02/06 15:40:44  willuhn
  * @B bug 150
  *
