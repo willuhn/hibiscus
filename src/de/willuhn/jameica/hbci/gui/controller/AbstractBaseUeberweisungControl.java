@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractBaseUeberweisungControl.java,v $
- * $Revision: 1.7 $
- * $Date: 2005/11/14 13:08:07 $
+ * $Revision: 1.8 $
+ * $Date: 2006/02/20 17:58:48 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -83,6 +83,7 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
 			return termin;
 		CalendarDialog cd = new CalendarDialog(CalendarDialog.POSITION_MOUSE);
 		cd.setTitle(i18n.tr("Termin"));
+    cd.setText(i18n.tr("Bitte wählen Sie einen Termin"));
 		cd.addCloseListener(new Listener() {
 			public void handleEvent(Event event) {
 				if (event == null || event.data == null)
@@ -256,6 +257,9 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
 
 /**********************************************************************
  * $Log: AbstractBaseUeberweisungControl.java,v $
+ * Revision 1.8  2006/02/20 17:58:48  willuhn
+ * @B bug 201
+ *
  * Revision 1.7  2005/11/14 13:08:07  willuhn
  * @N Termin-Ueberweisungen
  *
