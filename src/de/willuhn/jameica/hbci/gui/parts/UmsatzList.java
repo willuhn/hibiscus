@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.18 $
- * $Date: 2006/02/06 23:08:28 $
+ * $Revision: 1.19 $
+ * $Date: 2006/02/20 22:57:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -299,15 +299,6 @@ public class UmsatzList extends TablePart
           menu.dispose();
         }
       });
-      
-      // Listener fuer das Text-Eingabe-Feld.
-      this.addListener(new Listener()
-      {
-        public void handleEvent(Event event)
-        {
-        }
-      });
-     
     }
 
     /**
@@ -406,8 +397,9 @@ public class UmsatzList extends TablePart
             Umsatz u = null;
 
             UmsatzTyp typ = null;
-            
-            if (text != null && text.length() > 0)
+
+            boolean empty = text == null || text.length() == 0;
+            if (!empty)
             {
               DBService service = Settings.getDBService();
               typ = (UmsatzTyp) service.createObject(UmsatzTyp.class,null);
@@ -420,7 +412,7 @@ public class UmsatzList extends TablePart
               u = (Umsatz) umsaetze.get(i);
 
               // Was zum Filtern da?
-              if (text == null || text.length() == 0)
+              if (empty)
               {
                 // ne
                 addItem(u);
@@ -453,6 +445,9 @@ public class UmsatzList extends TablePart
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.19  2006/02/20 22:57:22  willuhn
+ * @N Suchfeld in Adress-Liste
+ *
  * Revision 1.18  2006/02/06 23:08:28  willuhn
  * *** empty log message ***
  *
