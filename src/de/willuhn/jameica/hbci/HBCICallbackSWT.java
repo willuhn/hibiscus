@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.33 $
- * $Date: 2006/02/20 11:43:56 $
+ * $Revision: 1.34 $
+ * $Date: 2006/02/21 22:51:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -188,6 +188,11 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 				case NEED_PT_TAN:
 					retData.replace(0,retData.length(),DialogFactory.getTAN(msg));
 					break;
+          
+        // BUGZILLA 200
+        case NEED_PT_SECMECH:
+          retData.replace(0,retData.length(),DialogFactory.getPtSechMech(retData.toString()));
+          break;
 
 				case HAVE_HARDPIN:
           text = i18n.tr("PIN wurde eingegeben.");
@@ -493,6 +498,9 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.34  2006/02/21 22:51:36  willuhn
+ * @B bug 200
+ *
  * Revision 1.33  2006/02/20 11:43:56  willuhn
  * @B bug 200
  *
