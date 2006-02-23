@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/PtSechMechDialog.java,v $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/PtSecMechDialog.java,v $
  * $Revision: 1.1 $
- * $Date: 2006/02/21 22:51:36 $
+ * $Date: 2006/02/23 22:14:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,12 +21,17 @@ import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
+import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCICallbackSWT;
+import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
+import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -35,20 +40,22 @@ import de.willuhn.util.I18N;
  * Dialog zum zur Auswahl des Pin/Tan Scurity-Mechanismus.
  * BUGZILLA 200
  */
-public class PtSechMechDialog extends AbstractDialog
+public class PtSecMechDialog extends AbstractDialog
 {
-  private I18N i18n        = null;
-  private SelectInput type = null;
-  private String options   = null;
-  private Type choosen     = null;
+  private I18N i18n          = null;
+  private SelectInput type   = null;
+  private CheckboxInput save = null;
+  private String options     = null;
+  
+  private Type choosen       = null;
   
   /**
    * ct.
    * @param options die zur Verfuegung stehenden Optionen.
    */
-  public PtSechMechDialog(String options)
+  public PtSecMechDialog(String options)
   {
-    super(PtSechMechDialog.POSITION_CENTER);
+    super(PtSecMechDialog.POSITION_CENTER);
     this.options = options;
     i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     setTitle(i18n.tr("Auswahl des PIN/TAN-Verfahrens"));
@@ -64,6 +71,7 @@ public class PtSechMechDialog extends AbstractDialog
     group.addText(i18n.tr("Bitte wählen Sie das gewünschte PIN/TAN-Verfahren"),true);
     
     group.addLabelPair(i18n.tr("Bezeichnung"), getType());
+    group.addCheckbox(getSave(),i18n.tr("Auswahl speichern"));
     
     ButtonArea buttons = new ButtonArea(parent,2);
     buttons.addButton(i18n.tr("Übernehmen"),new Action() {
@@ -72,6 +80,25 @@ public class PtSechMechDialog extends AbstractDialog
         try
         {
           choosen = (Type) getType().getValue();
+          
+          if (choosen != null)
+          {
+            Boolean b = (Boolean) getSave().getValue();
+            if (b.booleanValue())
+            {
+              try
+              {
+                Settings s = new Settings(HBCICallbackSWT.class);
+                Konto k = HBCIFactory.getInstance().getCurrentKonto();
+                if (k != null)
+                  s.setAttribute("konto." + k.getID() + ".secmech",choosen.getID());
+              }
+              catch (RemoteException e)
+              {
+                Logger.error("unable to save selection",e);
+              }
+            }
+          }
           close();
         }
         catch (RemoteException e)
@@ -100,6 +127,19 @@ public class PtSechMechDialog extends AbstractDialog
   }
 
   /**
+   * Liefert eine Checkbox, mit der der User entscheiden kann, ob seine Auswahl gespeichert werden soll.
+   * @return Checkbox.
+   */
+  private CheckboxInput getSave()
+  {
+    if (this.save != null)
+      return this.save;
+    
+    this.save = new CheckboxInput(false);
+    return this.save;
+  }
+  
+  /**
    * Erzeugt eine Combo-Box mit der Auswahl der verfuegbaren Verfahren.
    * @return Auwahl-Feld.
    * @throws RemoteException
@@ -115,6 +155,7 @@ public class PtSechMechDialog extends AbstractDialog
     {
       types[i] = new Type(s[i]);
     }
+    
     this.type = new SelectInput(PseudoIterator.fromArray(types),null);
     return this.type;
   }
@@ -181,7 +222,10 @@ public class PtSechMechDialog extends AbstractDialog
 
 
 /*********************************************************************
- * $Log: PtSechMechDialog.java,v $
+ * $Log: PtSecMechDialog.java,v $
+ * Revision 1.1  2006/02/23 22:14:58  willuhn
+ * @B bug 200 (Speichern der Auswahl)
+ *
  * Revision 1.1  2006/02/21 22:51:36  willuhn
  * @B bug 200
  *
