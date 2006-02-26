@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.83 $
- * $Date: 2006/02/26 18:15:39 $
+ * $Revision: 1.84 $
+ * $Date: 2006/02/26 18:40:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -221,24 +221,19 @@ public class HBCI extends AbstractPlugin
       Logger.info("HBCI4Java loglevel: " + logLevel);
 
       if (Application.inServerMode())
-      {
-        Logger.info("init HBCI4Java subsystem with console callback");
         this.callback = new HBCICallbackConsole();
-      }
       else
+        this.callback = new HBCICallbackSWT();
+      
+      Logger.info("checking for custom callback");
+      String cb = getResources().getSettings().getString("hbcicallback.class",HBCICallbackSWT.class.getName());
+      if (cb != null && cb.length() > 0)
       {
-        String cb = getResources().getSettings().getString("callback.class",HBCICallbackSWT.class.getName());
-        Logger.info("init HBCI4Java subsystem, callback: cb");
-        try
-        {
-          this.callback = (HBCICallback) Application.getClassLoader().load(cb).newInstance();
-        }
-        catch (Throwable t)
-        {
-          Logger.error("unable to load callback " + cb + ", fallback to swt callback");
-          this.callback = new HBCICallbackSWT();
-        }
+        HBCICallback c = (HBCICallback) Application.getClassLoader().load(cb).newInstance();
+        Logger.info("custom callback: " + c.getClass().getName());
+        this.callback = c;
       }
+
       HBCIUtils.init(null,null,this.callback);
       HBCIUtils.setParam("log.loglevel.default",""+logLevel);
 
@@ -383,6 +378,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.84  2006/02/26 18:40:23  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.83  2006/02/26 18:15:39  willuhn
  * @N hbcicallback can be customized now
  *
