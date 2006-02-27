@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.84 $
- * $Date: 2006/02/26 18:40:23 $
+ * $Revision: 1.85 $
+ * $Date: 2006/02/27 16:54:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -229,9 +229,16 @@ public class HBCI extends AbstractPlugin
       String cb = getResources().getSettings().getString("hbcicallback.class",HBCICallbackSWT.class.getName());
       if (cb != null && cb.length() > 0)
       {
-        HBCICallback c = (HBCICallback) Application.getClassLoader().load(cb).newInstance();
-        Logger.info("custom callback: " + c.getClass().getName());
-        this.callback = c;
+        try
+        {
+          HBCICallback c = (HBCICallback) Application.getClassLoader().load(cb).newInstance();
+          Logger.info("custom callback: " + c.getClass().getName());
+          this.callback = c;
+        }
+        catch (Throwable t)
+        {
+          Logger.error("unable to load custom callback - fallback to default",t);
+        }
       }
 
       HBCIUtils.init(null,null,this.callback);
@@ -378,6 +385,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.85  2006/02/27 16:54:13  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.84  2006/02/26 18:40:23  willuhn
  * *** empty log message ***
  *
