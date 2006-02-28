@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DauerauftragImpl.java,v $
- * $Revision: 1.19 $
- * $Date: 2006/02/20 17:33:08 $
+ * $Revision: 1.20 $
+ * $Date: 2006/02/28 23:05:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,7 @@
 package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.zip.CRC32;
 
@@ -34,6 +35,19 @@ public class DauerauftragImpl extends AbstractTransferImpl
 {
 
 	private I18N i18n;
+  
+	// Hilfsmapping, um die Tages-Konstanten aus java.util.Calendar in
+  // integer von 1 (montag) - 7 (sonntag) umrechnen zu koennen
+  private final static int[] DAYMAP = new int[]
+    {
+      Calendar.MONDAY,
+      Calendar.TUESDAY,
+      Calendar.WEDNESDAY,
+      Calendar.THURSDAY,
+      Calendar.FRIDAY,
+      Calendar.SATURDAY,
+      Calendar.SUNDAY
+    };
 	
   /**
    * ct.
@@ -263,7 +277,73 @@ public class DauerauftragImpl extends AbstractTransferImpl
   {
   	if ("turnus_id".equals(arg0))
   		return getTurnus();
+    if ("naechste_zahlung".equals(arg0))
+      return getNaechsteZahlung();
     return super.getAttribute(arg0);
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Dauerauftrag#getNaechsteZahlung()
+   */
+  public Date getNaechsteZahlung() throws RemoteException
+  {
+    Date current = new Date();
+    Date erste   = getErsteZahlung();
+    if (erste == null)
+      return null;
+    if (erste.after(current))
+      return erste;
+    
+    Date letzte = getLetzteZahlung();
+    if (letzte != null && letzte.before(current))
+      return null;
+    
+    // OK, wenn wir hier angekommen sind, muessen wir rechnen ;)
+    Turnus t = getTurnus();
+    if (t == null)
+      return null;
+    
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(current);
+    
+    int ze  = t.getZeiteinheit();
+    int tag = t.getTag();
+    if (ze == Turnus.ZEITEINHEIT_WOECHENTLICH)
+    {
+      cal.setFirstDayOfWeek(Calendar.MONDAY);
+      cal.add(Calendar.WEEK_OF_YEAR,t.getIntervall());
+      // So, jetzt muessen wir noch den Tag pruefen und ggf. den der Folgewoche
+      // nehmen.
+      
+      // calTag ist unser Zahltag in java.util.Calendar-Schreibweise
+      int calTag = DAYMAP[tag-1]; // "-1" weil das Array bei 0 anfaengt
+      cal.set(Calendar.DAY_OF_WEEK,calTag);
+      Date test = cal.getTime();
+      if (current.after(test))
+      {
+        // Wir befinden uns schon hinter dem Zahltag.
+        // Also muessen wir noch in den naechsten Monat wechseln
+        cal.add(Calendar.WEEK_OF_YEAR,1);
+      }
+    }
+    else
+    {
+      // Siehe oben. Nur mit Monat statt Woche
+      cal.add(Calendar.MONTH,t.getIntervall());
+      if (tag == 99)
+        cal.set(Calendar.DAY_OF_MONTH,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+      else
+        cal.set(Calendar.DAY_OF_MONTH,tag);
+      Date test = cal.getTime();
+      if (current.after(test))
+      {
+        cal.add(Calendar.MONTH,1);
+        if (tag == 99)
+          cal.set(Calendar.DAY_OF_MONTH,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+      }
+      
+    }
+    return cal.getTime();
   }
 
 }
@@ -271,6 +351,9 @@ public class DauerauftragImpl extends AbstractTransferImpl
 
 /**********************************************************************
  * $Log: DauerauftragImpl.java,v $
+ * Revision 1.20  2006/02/28 23:05:59  willuhn
+ * @B bug 204
+ *
  * Revision 1.19  2006/02/20 17:33:08  willuhn
  * @B bug 197
  *

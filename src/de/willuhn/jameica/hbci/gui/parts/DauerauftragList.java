@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/DauerauftragList.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/06/27 15:35:27 $
- * $Author: web0 $
+ * $Revision: 1.3 $
+ * $Date: 2006/02/28 23:05:59 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -22,6 +22,7 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
+import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.parts.TablePart;
@@ -73,6 +74,7 @@ public class DauerauftragList extends TablePart implements Part
     addColumn(i18n.tr("Verwendungszweck"),"zweck");
     addColumn(i18n.tr("Betrag"),"betrag", new CurrencyFormatter("",HBCI.DECIMALFORMAT));
     addColumn(i18n.tr("Turnus"),"turnus_id");
+    addColumn(i18n.tr("Nächste Zahlung"),"naechste_zahlung", new DateFormatter(HBCI.DATEFORMAT));
     addColumn(i18n.tr("aktiv?"),"orderid",new Formatter()
     {
       public String format(Object o)
@@ -97,6 +99,9 @@ public class DauerauftragList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: DauerauftragList.java,v $
+ * Revision 1.3  2006/02/28 23:05:59  willuhn
+ * @B bug 204
+ *
  * Revision 1.2  2005/06/27 15:35:27  web0
  * @B bug 84
  *

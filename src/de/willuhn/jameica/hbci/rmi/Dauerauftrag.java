@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Dauerauftrag.java,v $
- * $Revision: 1.10 $
- * $Date: 2005/03/04 00:50:16 $
- * $Author: web0 $
+ * $Revision: 1.11 $
+ * $Date: 2006/02/28 23:05:59 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -37,6 +37,19 @@ public interface Dauerauftrag extends Transfer, Checksum
    */
   public Date getLetzteZahlung() throws RemoteException;
 
+  /**
+   * BUGZILLA 204
+   * Liefert das voraussichtliche Datum der naechsten Zahlung.
+   * Liegt das Datum der ersten Zahlung in der Zukunft, wird dieses
+   * zurueckgeliefert. Liegt das Datum der letzten Zahlung in der Vergangenheit,
+   * gilt der Dauerauftrag als abgelaufen und es wird <code>null</code>
+   * zurueckgeliefert. Andernfalls wird anhand des Zahlungsturnus das
+   * naechste Zahl-Datum ermittelt.
+   * @return Datum der naechsten Zahlung.
+   * @throws RemoteException
+   */
+  public Date getNaechsteZahlung() throws RemoteException;
+  
 	/**
 	 * Liefert den Zahlungsturnus fuer diesen Dauerauftrag.
    * @return Zahlungsturnus des Dauerauftrags.
@@ -103,6 +116,9 @@ public interface Dauerauftrag extends Transfer, Checksum
 
 /**********************************************************************
  * $Log: Dauerauftrag.java,v $
+ * Revision 1.11  2006/02/28 23:05:59  willuhn
+ * @B bug 204
+ *
  * Revision 1.10  2005/03/04 00:50:16  web0
  * @N Eingrauen abgelaufener Dauerauftraege
  * @N automatisches Loeschen von Dauerauftraegen, die lokal zwar

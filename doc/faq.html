@@ -26,6 +26,7 @@
           <li><a href="#errors.os.ubuntu">Der Start bricht mit der Fehlermeldung &quot;java.lang.SecurityException: write access to /opt/jameica/jameica.lock denied&quot; ab</a></li>
           <li><a href="#errors.ums.missng">Es werden nicht alle Umsätze abgerufen</a></li>
           <li><a href="#errors.ums.umlaut">Die Verwendungszwecken einiger Umsätze werden nicht vollständig angezeigt</a></li>
+          <li><a href="#errors.ueb.limit.postbank">Überweisungen mit meinem Postbank-Konto schlagen fehl</a></li>
         </ul>
       </li>
     </ol>
@@ -259,6 +260,21 @@ $JAVA_HOME/bin/java -Djava.library.path=lib/swt/linux -jar jameica-linux.jar $@
           <a href="http://sourceforge.net/mailarchive/forum.php?thread_id=6957215&forum_id=32946">http://sourceforge.net/mailarchive/forum.php?thread_id=6957215&forum_id=32946</a>
         </p>
 
+        <p>
+          <br/>
+          <a name="errors.ueb.limit.postbank"></a>
+          <b>Überweisungen mit meinem Postbank-Konto schlagen fehl</b>
+          <br/><br/>
+          Falls Überweisungen mit einem HBCI-Account bei der Postbank fehlschlagen, kann das auch an einem
+          zu niedrigen Überweisungslimit seitens der Postbank liegen.
+
+          <br/>
+          Siehe auch:
+          <br/>
+          <a href="http://www.willuhn.de/bugzilla/show_bug.cgi?id=203">http://www.willuhn.de/bugzilla/show_bug.cgi?id=203</a>
+          <br/>
+          <a href="http://www.postbank.de/pbde_pk_home/pbde_pk_produkteundpreise/pbde_pk_hilfe/pbde_pk_hilfe_faq_verteiler/pbde_pk_faq_online-banking/pbde_ge_faq_online_banking_43.html">http://www.postbank.de/pbde_pk_home/pbde_pk_produkteundpreise/pbde_pk_hilfe/pbde_pk_hilfe_faq_verteiler/pbde_pk_faq_online-banking/pbde_ge_faq_online_banking_43.html</a>
+        </p>
       </li>
 
 
@@ -282,7 +298,7 @@ $JAVA_HOME/bin/java -Djava.library.path=lib/swt/linux -jar jameica-linux.jar $@
     //-->
 
     <hr/>
-    $Revision: 1.6 $
+    $Revision: 1.7 $
 
   </body>
 </html>
