@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/AbstractChart.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/12/20 00:03:27 $
+ * $Revision: 1.2 $
+ * $Date: 2006/03/09 18:24:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -49,6 +50,9 @@ public abstract class AbstractChart implements Chart, PaintListener
   private Vector data         = new Vector();
   
   private I18N i18n           = null;
+  
+  private Composite parent    = null;
+  private Canvas canvas       = null;
 
   /**
    * ct.
@@ -91,6 +95,15 @@ public abstract class AbstractChart implements Chart, PaintListener
   }
   
   /**
+   * @see de.willuhn.jameica.hbci.gui.chart.Chart#removeData(de.willuhn.jameica.hbci.gui.chart.ChartData)
+   */
+  public void removeData(ChartData data)
+  {
+    if (data != null)
+      this.data.remove(data);
+  }
+
+  /**
    * Liefert die anzuzeigenden Daten.
    * @return Anzuzeigende Daten.
    */
@@ -112,11 +125,36 @@ public abstract class AbstractChart implements Chart, PaintListener
    */
   public void paint(Composite parent) throws RemoteException
   {
-    Canvas canvas = new Canvas(parent, SWT.NONE);
+    this.parent = parent;
+    redraw();
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.gui.chart.Chart#redraw()
+   */
+  public void redraw() throws RemoteException
+  {
+    if (this.parent == null)
+    {
+      Logger.warn("unable to redraw chart - no parent composite defined");
+      return;
+    }
+
+    if (this.canvas == null)
+    {
+      this.canvas = new Canvas(parent, SWT.NONE);
+    }
+    else
+    {
+      Logger.debug("dispose old chart");
+      SWTUtil.disposeChilds(this.canvas);
+    }
+    
     GridData gd = new GridData(GridData.FILL_BOTH);
-    canvas.setLayoutData(gd);
-    canvas.addPaintListener(this);
+    this.canvas.setLayoutData(gd);
+    this.canvas.addPaintListener(this);
     this.chart = createChart();
+    this.canvas.redraw();
   }
 
   /**
@@ -153,6 +191,9 @@ public abstract class AbstractChart implements Chart, PaintListener
 
 /*********************************************************************
  * $Log: AbstractChart.java,v $
+ * Revision 1.2  2006/03/09 18:24:05  willuhn
+ * @N Auswahl der Tage in Umsatz-Chart
+ *
  * Revision 1.1  2005/12/20 00:03:27  willuhn
  * @N Test-Code fuer Tortendiagramm-Auswertungen
  *

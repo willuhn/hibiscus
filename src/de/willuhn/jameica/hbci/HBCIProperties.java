@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCIProperties.java,v $
- * $Revision: 1.14 $
- * $Date: 2006/02/06 16:03:50 $
+ * $Revision: 1.15 $
+ * $Date: 2006/03/09 18:24:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -81,7 +81,6 @@ public class HBCIProperties
   public final static String CURRENCY_DEFAULT_DE = 
     settings.getString("currency.default.de","EUR");
 
-	
   // BUGZILLA 28 http://www.willuhn.de/bugzilla/show_bug.cgi?id=28
 	/**
 	 * Maximale Laenge fuer PINs.
@@ -92,10 +91,15 @@ public class HBCIProperties
 	/**
 	 * Minimale Laenge fuer PINs.
 	 */
-	public final static int HBCI_PIN_MINLENGTH =
-	  settings.getInt("hbci.pin.minlength",5);
+	public final static int HBCI_PIN_MINLENGTH = settings.getInt("hbci.pin.minlength",5);
 	
-	/**
+  /**
+   * Default-Anzahl von anzuzeigenden Tagen in der Umsatz-Preview.
+   */
+  public final static int UMSATZ_DEFAULT_DAYS = settings.getInt("umsatz.default.days",30);
+  
+
+  /**
    * Prueft die uebergebenen Strings auf Vorhandensein nicht erlaubter Zeichen.
    * @param chars zu testende Zeichen.
    * @param validChars Liste der gueltigen Zeichen.
@@ -147,6 +151,9 @@ public class HBCIProperties
 
 /**********************************************************************
  * $Log: HBCIProperties.java,v $
+ * Revision 1.15  2006/03/09 18:24:05  willuhn
+ * @N Auswahl der Tage in Umsatz-Chart
+ *
  * Revision 1.14  2006/02/06 16:03:50  willuhn
  * @B bug 163
  *

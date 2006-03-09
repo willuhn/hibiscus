@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.63 $
- * $Date: 2006/01/23 11:11:36 $
+ * $Revision: 1.64 $
+ * $Date: 2006/03/09 18:24:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -42,6 +42,7 @@ import de.willuhn.jameica.hbci.gui.action.PassportDetail;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.dialogs.PassportAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.parts.ProtokollList;
+import de.willuhn.jameica.hbci.gui.parts.UmsatzChart;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzList;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -65,7 +66,6 @@ public class KontoControl extends AbstractControl {
 	private Input name				 		= null;
 	private Input bezeichnung	 		= null;
 	private Input passportAuswahl = null;
-  private Input waehrung     		= null;
   private Input kundennummer 		= null;
   
   private LabelInput saldo			= null;
@@ -75,6 +75,7 @@ public class KontoControl extends AbstractControl {
 	private TablePart kontoList						= null;
 	private TablePart protokoll						= null;
   private TablePart umsatzList          = null;
+  private UmsatzChart umsatzChart       = null;
 
 	private I18N i18n;
 
@@ -138,11 +139,25 @@ public class KontoControl extends AbstractControl {
     if (umsatzList != null)
       return umsatzList;
 
-    umsatzList = new UmsatzList(getKonto(),30,new UmsatzDetail());
+    umsatzList = new UmsatzList(getKonto(),HBCIProperties.UMSATZ_DEFAULT_DAYS,new UmsatzDetail());
     return umsatzList;
   }
 
-	/**
+  /**
+   * Liefert einen Chart mit den Umsaetzen des Kontos.
+   * @return Tabelle.
+   * @throws RemoteException
+   */
+  public Part getUmsatzChart() throws RemoteException
+  {
+    if (umsatzChart != null)
+      return umsatzChart;
+
+    umsatzChart = new UmsatzChart(getKonto());
+    return umsatzChart;
+  }
+
+  /**
 	 * Liefert das Eingabe-Feld fuer die Kontonummer.
    * @return Eingabe-Feld.
    * @throws RemoteException
@@ -221,25 +236,6 @@ public class KontoControl extends AbstractControl {
 		kundennummer = new TextInput(getKonto().getKundennummer());
 		return kundennummer;
 	}
-
-  /**
-   * Liefert die Waehrungsbezeichnung.
-   * @return Waehrungsbezeichnung.
-   * @throws RemoteException
-   */
-  public Input getWaehrung() throws RemoteException
-  {
-    if (waehrung != null)
-      return waehrung;
-    String w = getKonto().getWaehrung();
-    if (w == null || w.length() != 3)
-      w = HBCIProperties.CURRENCY_DEFAULT_DE;
-    waehrung = new TextInput(w);
-
-    // NEU Waehrung ist READONLY
-    waehrung.disable();
-    return waehrung;
-  }
 
 	/**
 	 * Liefert das Auswahl-Feld fuer das Sicherheitsmedium.
@@ -358,7 +354,6 @@ public class KontoControl extends AbstractControl {
 			getKonto().setBLZ((String)getBlz().getValue());
 			getKonto().setName((String)getName().getValue());
 			getKonto().setBezeichnung((String)getBezeichnung().getValue());
-      getKonto().setWaehrung((String)getWaehrung().getValue());
       getKonto().setKundennummer((String)getKundennummer().getValue());
       
       getKonto().setSynchronize(((Boolean)getSynchronize().getValue()).booleanValue());
@@ -465,6 +460,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.64  2006/03/09 18:24:05  willuhn
+ * @N Auswahl der Tage in Umsatz-Chart
+ *
  * Revision 1.63  2006/01/23 11:11:36  willuhn
  * *** empty log message ***
  *

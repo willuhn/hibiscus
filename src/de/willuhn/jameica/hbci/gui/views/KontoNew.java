@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoNew.java,v $
- * $Revision: 1.14 $
- * $Date: 2006/01/18 00:51:00 $
+ * $Revision: 1.15 $
+ * $Date: 2006/03/09 18:24:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,13 +26,12 @@ import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.KontoDelete;
 import de.willuhn.jameica.hbci.gui.action.KontoFetchUmsaetze;
 import de.willuhn.jameica.hbci.gui.action.ProtokollList;
 import de.willuhn.jameica.hbci.gui.action.UmsatzList;
-import de.willuhn.jameica.hbci.gui.chart.ChartDataSaldoVerlauf;
-import de.willuhn.jameica.hbci.gui.chart.LineChart;
 import de.willuhn.jameica.hbci.gui.controller.KontoControl;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
@@ -50,7 +49,7 @@ public class KontoNew extends AbstractView {
    */
   public void bind() throws Exception {
 		
-		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+		final I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
     final KontoControl control = new KontoControl(this);
 
@@ -77,7 +76,6 @@ public class KontoNew extends AbstractView {
 			group.addLabelPair(i18n.tr("Bezeichnung des Kontos"),		control.getBezeichnung());
 			group.addLabelPair(i18n.tr("Kontoinhaber"),			    		control.getName());
 			group.addLabelPair(i18n.tr("Kundennummer"),							control.getKundennummer());
-      group.addLabelPair(i18n.tr("Währungsbezeichnung"),  		control.getWaehrung());
 			group.addLabelPair(i18n.tr("Sicherheitsmedium"),    		control.getPassportAuswahl());
       group.addCheckbox(control.getSynchronize(),i18n.tr("Konto in Synchronisierung einbeziehen"));
 			group.addSeparator();
@@ -106,16 +104,13 @@ public class KontoNew extends AbstractView {
       folder.setLayoutData(new GridData(GridData.FILL_BOTH));
       folder.setBackground(Color.BACKGROUND.getSWTColor());
 
-      TabGroup tab = new TabGroup(folder,i18n.tr("Umsätze der letzten 30 Tage"), false,1);
+      TabGroup tab = new TabGroup(folder,i18n.tr("Umsätze der letzten {0} Tage",""+HBCIProperties.UMSATZ_DEFAULT_DAYS), false,1);
       control.getUmsatzList().paint(tab.getComposite());
 
       TabGroup tab2 = new TabGroup(folder,i18n.tr("Saldo im Verlauf"));
-      LineChart chart = new LineChart();
-      chart.addData(new ChartDataSaldoVerlauf(control.getKonto()));
-      chart.setTitle(i18n.tr("Saldo im Verlauf"));
-      chart.paint(tab2.getComposite());
-      
-			control.init();
+      control.getUmsatzChart().paint(tab2.getComposite());
+
+      control.init();
 
       ButtonArea buttons = new ButtonArea(getParent(),3);
       buttons.addButton(i18n.tr("Zurück"),new Back(),null,true);
@@ -135,6 +130,9 @@ public class KontoNew extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoNew.java,v $
+ * Revision 1.15  2006/03/09 18:24:05  willuhn
+ * @N Auswahl der Tage in Umsatz-Chart
+ *
  * Revision 1.14  2006/01/18 00:51:00  willuhn
  * @B bug 65
  *
