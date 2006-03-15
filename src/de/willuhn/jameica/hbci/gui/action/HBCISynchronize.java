@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/HBCISynchronize.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/02/20 22:28:57 $
+ * $Revision: 1.4 $
+ * $Date: 2006/03/15 16:25:48 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -110,31 +110,18 @@ public class HBCISynchronize implements Action
       if (index >= jobs.length)
       {
         Logger.info("synchronize finished");
-        GUI.getStatusBar().setStatusText(i18n.tr("Synchronisierung beendet"));
+        GUI.getStatusBar().setSuccessText(i18n.tr("Synchronisierung beendet"));
 
         // Seite neu laden
         // BUGZILLA 110 http://www.willuhn.de/bugzilla/show_bug.cgi?id=110
         GUI.startView(GUI.getCurrentView().getClass(),GUI.getCurrentView().getCurrentObject());
-
-        // Entfernen des Status-Textes unten links (der verschwindet nicht von allein)
-        GUI.getDisplay().asyncExec(new Runnable() {
-          public void run()
-          {
-            GUI.getDisplay().timerExec(5000, new Runnable() {
-              public void run()
-              {
-                GUI.getStatusBar().setStatusText("");
-              }
-            });
-          }
-        });
         return;
       }
       
       final Job job = jobs[index++];
       final Konto k = job.konto;
 
-      GUI.getStatusBar().setStatusText(i18n.tr("Synchronisiere Konto {0} von {1}", new String[]{""+index,""+jobs.length}));
+      GUI.getStatusBar().setSuccessText(i18n.tr("Synchronisiere Konto {0} von {1}", new String[]{""+index,""+jobs.length}));
       
       Logger.info("synchronizing account: " + k.getKontonummer());
 
@@ -240,6 +227,9 @@ public class HBCISynchronize implements Action
 
 /*********************************************************************
  * $Log: HBCISynchronize.java,v $
+ * Revision 1.4  2006/03/15 16:25:48  willuhn
+ * @N Statusbar refactoring
+ *
  * Revision 1.3  2006/02/20 22:28:57  willuhn
  * @B bug 178
  *
