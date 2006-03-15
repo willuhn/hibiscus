@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCISaldoJob.java,v $
- * $Revision: 1.18 $
- * $Date: 2006/01/23 12:16:57 $
+ * $Revision: 1.19 $
+ * $Date: 2006/03/15 17:28:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -87,16 +87,11 @@ public class HBCISaldoJob extends AbstractHBCIJob {
   {
 		GVRSaldoReq result = (GVRSaldoReq) getJobResult();
 
-		String statusText = getStatusText();
 		if (!result.isOK())
 		{
-			String msg = (statusText != null) ?
-										i18n.tr("Fehlermeldung der Bank") + ": " + statusText :
-										i18n.tr("Unbekannter Fehler beim Abrufen des Saldos");
+			String msg = getStatusText();
 
-      if (result.getEntries() == null || result.getEntries().length == 0)
-        msg = i18n.tr("Keine Salden für das Konto verfügbar");
-			konto.addToProtokoll(i18n.tr("Fehler beim Abrufen das Saldos") + " ("+ msg +")",Protokoll.TYP_ERROR);
+      konto.addToProtokoll(i18n.tr("Fehler beim Abrufen das Saldos: {0}",msg),Protokoll.TYP_ERROR);
 			throw new ApplicationException(msg);
 		}
 
@@ -114,6 +109,9 @@ public class HBCISaldoJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCISaldoJob.java,v $
+ * Revision 1.19  2006/03/15 17:28:41  willuhn
+ * @C Refactoring der Anzeige der HBCI-Fehlermeldungen
+ *
  * Revision 1.18  2006/01/23 12:16:57  willuhn
  * @N Update auf HBCI4Java 2.5.0-rc5
  *

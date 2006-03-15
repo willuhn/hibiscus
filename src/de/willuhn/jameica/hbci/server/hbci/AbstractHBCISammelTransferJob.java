@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCISammelTransferJob.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/11/02 17:33:31 $
+ * $Revision: 1.3 $
+ * $Date: 2006/03/15 17:28:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -80,28 +80,24 @@ public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
    */
   void handleResult() throws ApplicationException, RemoteException
   {
-		String statusText = getStatusText();
-
-		String empfName = i18n.tr("an Konto") + " " + transfer.getKonto().getBezeichnung();
+		String empfName = transfer.getKonto().getBezeichnung();
 
 		if (!getJobResult().isOK())
 		{
 
-			String msg = i18n.tr("Fehler beim Ausführen des Sammel-Auftrages") + " " + empfName;
+			String msg = i18n.tr("Fehler beim Ausführen des Sammel-Auftrages über Konto {0}",empfName);
 
 
-			String error = (statusText != null) ?
-										i18n.tr("Fehlermeldung der Bank") + ": " + statusText :
-										i18n.tr("Unbekannter Fehler");
+			String error = getStatusText();
 
-			konto.addToProtokoll(msg + " ("+error+")",Protokoll.TYP_ERROR);
-			throw new ApplicationException(msg + " ("+error+")");
+			konto.addToProtokoll(msg + ": " + error,Protokoll.TYP_ERROR);
+			throw new ApplicationException(msg + ": " + error);
 		}
 
 
 		// Wir markieren die Ueberweisung als "ausgefuehrt"
 		transfer.setAusgefuehrt();
-    konto.addToProtokoll(i18n.tr("Sammel-Auftrag ausgeführt") + " " + empfName,Protokoll.TYP_SUCCESS);
+    konto.addToProtokoll(i18n.tr("Sammel-Auftrag ausgeführt über Konto {0}",empfName),Protokoll.TYP_SUCCESS);
 		Logger.info("sammellastschrift submitted successfully");
   }
 }
@@ -109,6 +105,9 @@ public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: AbstractHBCISammelTransferJob.java,v $
+ * Revision 1.3  2006/03/15 17:28:41  willuhn
+ * @C Refactoring der Anzeige der HBCI-Fehlermeldungen
+ *
  * Revision 1.2  2005/11/02 17:33:31  willuhn
  * @B fataler Bug in Sammellastschrift/Sammelueberweisung
  *

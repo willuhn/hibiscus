@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUmsatzJob.java,v $
- * $Revision: 1.18 $
- * $Date: 2005/12/05 17:20:40 $
+ * $Revision: 1.19 $
+ * $Date: 2006/03/15 17:28:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -89,14 +89,11 @@ public class HBCIUmsatzJob extends AbstractHBCIJob {
   {
 		GVRKUms result = (GVRKUms) getJobResult();
 
-		String statusText = getStatusText();
 		if (!result.isOK())
 		{
-			String msg = (statusText != null) ?
-										i18n.tr("Fehlermeldung der Bank") + ": " + statusText :
-										i18n.tr("Fehler beim Abrufen der Umsätze");
+			String msg = getStatusText();
 
-			konto.addToProtokoll(i18n.tr("Fehler beim Abrufen der Umsätze") + " ("+ msg +")",Protokoll.TYP_ERROR);
+			konto.addToProtokoll(i18n.tr("Fehler beim Abrufen der Umsätze: {0}",msg),Protokoll.TYP_ERROR);
 			throw new ApplicationException(msg);
 		}
 
@@ -150,6 +147,9 @@ public class HBCIUmsatzJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIUmsatzJob.java,v $
+ * Revision 1.19  2006/03/15 17:28:41  willuhn
+ * @C Refactoring der Anzeige der HBCI-Fehlermeldungen
+ *
  * Revision 1.18  2005/12/05 17:20:40  willuhn
  * @N Umsatz-Filter Refactoring
  *

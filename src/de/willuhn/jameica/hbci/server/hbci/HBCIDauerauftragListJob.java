@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragListJob.java,v $
- * $Revision: 1.25 $
- * $Date: 2005/12/05 16:07:17 $
+ * $Revision: 1.26 $
+ * $Date: 2006/03/15 17:28:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -88,14 +88,11 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
   void handleResult() throws ApplicationException, RemoteException
   {
 		GVRDauerList result = (GVRDauerList) getJobResult();
-		String statusText = getStatusText();
 		if (!result.isOK())
 		{
-			String msg = (statusText != null) ?
-										i18n.tr("Fehlermeldung der Bank") + ": " + statusText :
-										i18n.tr("Fehler beim Abrufen der Umsätze");
+			String msg = getStatusText();
 
-			konto.addToProtokoll(i18n.tr("Fehler beim Abrufen der Daueraufträge") + " ("+ msg +")",Protokoll.TYP_ERROR);
+			konto.addToProtokoll(i18n.tr("Fehler beim Abrufen der Daueraufträge: {0}",msg),Protokoll.TYP_ERROR);
 			throw new ApplicationException(msg);
 		}
 
@@ -243,6 +240,9 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIDauerauftragListJob.java,v $
+ * Revision 1.26  2006/03/15 17:28:41  willuhn
+ * @C Refactoring der Anzeige der HBCI-Fehlermeldungen
+ *
  * Revision 1.25  2005/12/05 16:07:17  willuhn
  * @B ObjectNotFoundException
  *

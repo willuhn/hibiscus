@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUeberweisungJob.java,v $
- * $Revision: 1.26 $
- * $Date: 2005/11/18 00:28:20 $
+ * $Revision: 1.27 $
+ * $Date: 2006/03/15 17:28:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -137,22 +137,18 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
    */
   void handleResult() throws ApplicationException, RemoteException
   {
-		String statusText = getStatusText();
-
-		String empfName = i18n.tr("an") + " " + ueberweisung.getGegenkontoName();
+		String empfName = ueberweisung.getGegenkontoName();
 
 		if (!getJobResult().isOK())
 		{
 
-			String msg = i18n.tr("Fehler beim Ausführen der Überweisung") + " " + empfName;
+			String msg = i18n.tr("Fehler beim Ausführen der Überweisung an {0}",empfName);
 
 
-			String error = (statusText != null && statusText.length() > 0) ?
-										i18n.tr("Fehlermeldung der Bank") + ": " + statusText :
-										i18n.tr("Unbekannter Fehler");
+			String error = getStatusText();
 
-			konto.addToProtokoll(msg + " ("+error+")",Protokoll.TYP_ERROR);
-			throw new ApplicationException(msg + " ("+error+")");
+			konto.addToProtokoll(msg + ": " + error,Protokoll.TYP_ERROR);
+			throw new ApplicationException(msg + ": " + error);
 		}
 
 		// Wir markieren die Ueberweisung als "ausgefuehrt"
@@ -165,6 +161,9 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIUeberweisungJob.java,v $
+ * Revision 1.27  2006/03/15 17:28:41  willuhn
+ * @C Refactoring der Anzeige der HBCI-Fehlermeldungen
+ *
  * Revision 1.26  2005/11/18 00:28:20  willuhn
  * @R removed test code
  *

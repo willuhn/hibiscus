@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCILastschriftJob.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/03/30 23:26:28 $
- * $Author: web0 $
+ * $Revision: 1.7 $
+ * $Date: 2006/03/15 17:28:41 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -113,28 +113,24 @@ public class HBCILastschriftJob extends AbstractHBCIJob
    */
   void handleResult() throws ApplicationException, RemoteException
   {
-		String statusText = getStatusText();
-
-		String empfName = i18n.tr("von") + " " + lastschrift.getGegenkontoName();
+		String empfName = lastschrift.getGegenkontoName();
 
 		if (!getJobResult().isOK())
 		{
 
-			String msg = i18n.tr("Fehler beim Ausführen der Lastschrift") + " " + empfName;
+			String msg = i18n.tr("Fehler beim Ausführen der Lastschrift von {0}",empfName);
 
 
-			String error = (statusText != null) ?
-										i18n.tr("Fehlermeldung der Bank") + ": " + statusText :
-										i18n.tr("Unbekannter Fehler");
+			String error = getStatusText();
 
-			konto.addToProtokoll(msg + " ("+error+")",Protokoll.TYP_ERROR);
-			throw new ApplicationException(msg + " ("+error+")");
+			konto.addToProtokoll(msg + ": " + error,Protokoll.TYP_ERROR);
+			throw new ApplicationException(msg + ": " + error);
 		}
 
 
 		// Wir markieren die Ueberweisung als "ausgefuehrt"
 		lastschrift.setAusgefuehrt();
-    konto.addToProtokoll(i18n.tr("Lastschrift ausgeführt") + " " + empfName,Protokoll.TYP_SUCCESS);
+    konto.addToProtokoll(i18n.tr("Lastschrift eingezogen von {0}",empfName),Protokoll.TYP_SUCCESS);
 		Logger.info("lastschrift submitted successfully");
   }
 }
@@ -142,6 +138,9 @@ public class HBCILastschriftJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCILastschriftJob.java,v $
+ * Revision 1.7  2006/03/15 17:28:41  willuhn
+ * @C Refactoring der Anzeige der HBCI-Fehlermeldungen
+ *
  * Revision 1.6  2005/03/30 23:26:28  web0
  * @B bug 29
  * @B bug 30

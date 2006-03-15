@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCIJob.java,v $
- * $Revision: 1.19 $
- * $Date: 2006/01/23 12:16:57 $
+ * $Revision: 1.20 $
+ * $Date: 2006/03/15 17:28:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,11 +18,15 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 
 import org.kapott.hbci.GV_Result.HBCIJobResult;
+import org.kapott.hbci.status.HBCIRetVal;
 import org.kapott.hbci.structures.Konto;
 import org.kapott.hbci.structures.Value;
 
+import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
+import de.willuhn.util.I18N;
 
 /**
  * Basis-Klasse fuer die HBCI-Jobs.
@@ -101,15 +105,31 @@ public abstract class AbstractHBCIJob
    */
   final String getStatusText()
 	{
+    String sr = null;
 		try
 		{
-      String s = getJobResult().getGlobStatus().getErrorString();
-      if (s != null && s.length() > 0)
-        return s;
-			s = getJobResult().getJobStatus().getErrorString();
-      if (s != null && s.length() > 0)
-        return s;
-      return getJobResult().getJobStatus().getRetVals()[0].text;
+      String sGlob = getJobResult().getGlobStatus().getErrorString();
+      Logger.info("global status: " + sGlob);
+
+      String sJob = getJobResult().getJobStatus().getErrorString();
+      Logger.info("job status: " + sJob);
+      
+      HBCIRetVal[] retValues = getJobResult().getJobStatus().getRetVals();
+      StringBuffer sb = new StringBuffer();
+      for (int i=0;i<retValues.length;++i)
+      {
+        Logger.info("retval[ " + i + "]: " + retValues[i].text);
+        sb.append(retValues[i].text);
+        if (i < (retValues.length - 1))
+          sb.append(" - ");
+      }
+      String sDetail = sb.toString();
+      if (sDetail != null && sDetail.length() > 0)
+        sr = sDetail;
+      else if (sJob != null && sJob.length() > 0)
+        sr = sJob;
+      else
+        sr = sGlob;
 		}
 		catch (ArrayIndexOutOfBoundsException aio)
 		{
@@ -119,7 +139,12 @@ public abstract class AbstractHBCIJob
 		{
 			Logger.error("error while reading status text",e2);
 		}
-		return null;
+    
+    I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+    if (sr != null && sr.length() > 0)
+      return i18n.tr("Fehlermeldung der Bank") + ": " + sr;
+    else
+      return i18n.tr("Unbekannter Fehler");
 	}
 
 	/**
@@ -212,6 +237,9 @@ public abstract class AbstractHBCIJob
 
 /**********************************************************************
  * $Log: AbstractHBCIJob.java,v $
+ * Revision 1.20  2006/03/15 17:28:41  willuhn
+ * @C Refactoring der Anzeige der HBCI-Fehlermeldungen
+ *
  * Revision 1.19  2006/01/23 12:16:57  willuhn
  * @N Update auf HBCI4Java 2.5.0-rc5
  *
