@@ -1,12 +1,12 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/UmsatzDaysInput.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/03/09 18:24:05 $
+ * $Revision: 1.2 $
+ * $Date: 2006/03/15 18:01:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
- * Copyright (c) by  bbv AG
+ * Copyright (c) by willuhn.webdesign
  * All rights reserved
  *
  **********************************************************************/
@@ -138,6 +138,9 @@ public class UmsatzDaysInput extends SelectInput
 
 /*********************************************************************
  * $Log: UmsatzDaysInput.java,v $
+ * Revision 1.2  2006/03/15 18:01:30  willuhn
+ * @N AbstractHBCIJob#getName
+ *
  * Revision 1.1  2006/03/09 18:24:05  willuhn
  * @N Auswahl der Tage in Umsatz-Chart
  *

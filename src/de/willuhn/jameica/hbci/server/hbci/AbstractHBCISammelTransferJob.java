@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCISammelTransferJob.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/03/15 17:28:41 $
+ * $Revision: 1.4 $
+ * $Date: 2006/03/15 18:01:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,7 +30,7 @@ import de.willuhn.util.I18N;
 public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
 {
 
-	private I18N i18n = null;
+	I18N i18n = null;
 	private SammelTransfer transfer = null;
 	private Konto konto = null;
 
@@ -80,12 +80,12 @@ public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
    */
   void handleResult() throws ApplicationException, RemoteException
   {
-		String empfName = transfer.getKonto().getBezeichnung();
+		String empfName = transfer.getBezeichnung();
 
 		if (!getJobResult().isOK())
 		{
 
-			String msg = i18n.tr("Fehler beim Ausführen des Sammel-Auftrages über Konto {0}",empfName);
+			String msg = i18n.tr("Fehler beim Ausführen des Sammel-Auftrages {0}",empfName);
 
 
 			String error = getStatusText();
@@ -97,14 +97,26 @@ public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
 
 		// Wir markieren die Ueberweisung als "ausgefuehrt"
 		transfer.setAusgefuehrt();
-    konto.addToProtokoll(i18n.tr("Sammel-Auftrag ausgeführt über Konto {0}",empfName),Protokoll.TYP_SUCCESS);
+    konto.addToProtokoll(i18n.tr("Sammel-Auftrag {0} ausgeführt",empfName),Protokoll.TYP_SUCCESS);
 		Logger.info("sammellastschrift submitted successfully");
+  }
+  
+  /**
+   * Liefert den Sammel-Transfer.
+   * @return der Sammel-Transfer.
+   */
+  SammelTransfer getSammelTransfer()
+  {
+    return this.transfer;
   }
 }
 
 
 /**********************************************************************
  * $Log: AbstractHBCISammelTransferJob.java,v $
+ * Revision 1.4  2006/03/15 18:01:30  willuhn
+ * @N AbstractHBCIJob#getName
+ *
  * Revision 1.3  2006/03/15 17:28:41  willuhn
  * @C Refactoring der Anzeige der HBCI-Fehlermeldungen
  *

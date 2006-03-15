@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCIJob.java,v $
- * $Revision: 1.21 $
- * $Date: 2006/03/15 17:34:28 $
+ * $Revision: 1.22 $
+ * $Date: 2006/03/15 18:01:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -50,6 +50,13 @@ public abstract class AbstractHBCIJob
 	 * @return Job-Identifier.
 	 */
   abstract String getIdentifier();
+  
+  /**
+   * Liefert einen sprechenden Namen fuer diesen Job.
+   * @return sprechender Name.
+   * @throws RemoteException
+   */
+  public abstract String getName() throws RemoteException;
 
   /**
 	 * Diese Funktion wird von der HBCIFactory nach Beendigung der Kommunikation mit der Bank ausgefuehrt.
@@ -237,6 +244,9 @@ public abstract class AbstractHBCIJob
 
 /**********************************************************************
  * $Log: AbstractHBCIJob.java,v $
+ * Revision 1.22  2006/03/15 18:01:30  willuhn
+ * @N AbstractHBCIJob#getName
+ *
  * Revision 1.21  2006/03/15 17:34:28  willuhn
  * *** empty log message ***
  *

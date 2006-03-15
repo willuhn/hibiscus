@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCISaldoJob.java,v $
- * $Revision: 1.19 $
- * $Date: 2006/03/15 17:28:41 $
+ * $Revision: 1.20 $
+ * $Date: 2006/03/15 18:01:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -80,6 +80,15 @@ public class HBCISaldoJob extends AbstractHBCIJob {
   }
 
   /**
+   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getName()
+   */
+  public String getName() throws RemoteException
+  {
+    String name = konto.getBezeichnung();
+    return i18n.tr("Abrufen des Saldos von Konto {0}",name);
+  }
+
+  /**
    * Prueft, ob das Abrufen des Saldo erfolgreich war.
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#handleResult()
    */
@@ -109,6 +118,9 @@ public class HBCISaldoJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCISaldoJob.java,v $
+ * Revision 1.20  2006/03/15 18:01:30  willuhn
+ * @N AbstractHBCIJob#getName
+ *
  * Revision 1.19  2006/03/15 17:28:41  willuhn
  * @C Refactoring der Anzeige der HBCI-Fehlermeldungen
  *

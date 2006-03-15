@@ -1,12 +1,12 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Importer.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/01/23 00:36:29 $
+ * $Revision: 1.5 $
+ * $Date: 2006/03/15 18:01:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
- * Copyright (c) by  bbv AG
+ * Copyright (c) by willuhn.webdesign
  * All rights reserved
  *
  **********************************************************************/
@@ -45,6 +45,9 @@ public interface Importer extends IO
 
 /*********************************************************************
  * $Log: Importer.java,v $
+ * Revision 1.5  2006/03/15 18:01:30  willuhn
+ * @N AbstractHBCIJob#getName
+ *
  * Revision 1.4  2006/01/23 00:36:29  willuhn
  * @N Import, Export und Chipkartentest laufen jetzt als Background-Task
  *

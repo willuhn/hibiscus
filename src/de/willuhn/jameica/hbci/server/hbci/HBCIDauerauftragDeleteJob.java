@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragDeleteJob.java,v $
- * $Revision: 1.12 $
- * $Date: 2006/03/15 17:28:41 $
+ * $Revision: 1.13 $
+ * $Date: 2006/03/15 18:01:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -176,11 +176,23 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
 		Logger.info("dauerauftrag deleted successfully");
 	}
 
+  /**
+   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getName()
+   */
+  public String getName() throws RemoteException
+  {
+    String empfName = dauerauftrag.getGegenkontoName();
+    return i18n.tr("Löschen des Dauerauftrages an {0}",empfName);
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: HBCIDauerauftragDeleteJob.java,v $
+ * Revision 1.13  2006/03/15 18:01:30  willuhn
+ * @N AbstractHBCIJob#getName
+ *
  * Revision 1.12  2006/03/15 17:28:41  willuhn
  * @C Refactoring der Anzeige der HBCI-Fehlermeldungen
  *

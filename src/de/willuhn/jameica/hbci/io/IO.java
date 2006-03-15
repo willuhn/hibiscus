@@ -1,12 +1,12 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/IO.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/01/17 00:22:36 $
+ * $Revision: 1.3 $
+ * $Date: 2006/03/15 18:01:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
- * Copyright (c) by  bbv AG
+ * Copyright (c) by willuhn.webdesign
  * All rights reserved
  *
  **********************************************************************/
@@ -41,6 +41,9 @@ public interface IO
 
 /*********************************************************************
  * $Log: IO.java,v $
+ * Revision 1.3  2006/03/15 18:01:30  willuhn
+ * @N AbstractHBCIJob#getName
+ *
  * Revision 1.2  2006/01/17 00:22:36  willuhn
  * @N erster Code fuer Swift MT940-Import
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUeberweisungJob.java,v $
- * $Revision: 1.27 $
- * $Date: 2006/03/15 17:28:41 $
+ * $Revision: 1.28 $
+ * $Date: 2006/03/15 18:01:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -132,6 +132,15 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
   }
   
   /**
+   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getName()
+   */
+  public String getName() throws RemoteException
+  {
+    String empfName = ueberweisung.getGegenkontoName();
+    return i18n.tr("Absenden der Überweisung an {0}",empfName);
+  }
+
+  /**
    * Prueft, ob die Ueberweisung erfolgreich war und markiert diese im Erfolgsfall als "ausgefuehrt".
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#handleResult()
    */
@@ -161,6 +170,9 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIUeberweisungJob.java,v $
+ * Revision 1.28  2006/03/15 18:01:30  willuhn
+ * @N AbstractHBCIJob#getName
+ *
  * Revision 1.27  2006/03/15 17:28:41  willuhn
  * @C Refactoring der Anzeige der HBCI-Fehlermeldungen
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragListJob.java,v $
- * $Revision: 1.26 $
- * $Date: 2006/03/15 17:28:41 $
+ * $Revision: 1.27 $
+ * $Date: 2006/03/15 18:01:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -79,7 +79,16 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
   {
     return "DauerList";
   }
-  
+
+  /**
+   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getName()
+   */
+  public String getName() throws RemoteException
+  {
+    String name = konto.getBezeichnung();
+    return i18n.tr("Abrufen der Daueraufträge von Konto {0}",name);
+  }
+
   /**
    * Prueft, ob das Abrufen der Dauerauftraege erfolgreich war und aktualisiert
    * die lokalen Kopien.
@@ -240,6 +249,9 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIDauerauftragListJob.java,v $
+ * Revision 1.27  2006/03/15 18:01:30  willuhn
+ * @N AbstractHBCIJob#getName
+ *
  * Revision 1.26  2006/03/15 17:28:41  willuhn
  * @C Refactoring der Anzeige der HBCI-Fehlermeldungen
  *
