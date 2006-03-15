@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCIJob.java,v $
- * $Revision: 1.20 $
- * $Date: 2006/03/15 17:28:41 $
+ * $Revision: 1.21 $
+ * $Date: 2006/03/15 17:34:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -121,7 +121,7 @@ public abstract class AbstractHBCIJob
         Logger.info("retval[ " + i + "]: " + retValues[i].text);
         sb.append(retValues[i].text);
         if (i < (retValues.length - 1))
-          sb.append(" - ");
+          sb.append(", ");
       }
       String sDetail = sb.toString();
       if (sDetail != null && sDetail.length() > 0)
@@ -237,6 +237,9 @@ public abstract class AbstractHBCIJob
 
 /**********************************************************************
  * $Log: AbstractHBCIJob.java,v $
+ * Revision 1.21  2006/03/15 17:34:28  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.20  2006/03/15 17:28:41  willuhn
  * @C Refactoring der Anzeige der HBCI-Fehlermeldungen
  *
