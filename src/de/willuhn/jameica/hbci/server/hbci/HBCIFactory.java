@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.41 $
- * $Date: 2006/01/18 18:40:35 $
+ * $Revision: 1.42 $
+ * $Date: 2006/03/16 18:23:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -469,7 +469,7 @@ public class HBCIFactory {
           if (interrupted) return;
           final AbstractHBCIJob job = (AbstractHBCIJob) exclusiveJobs.get(i);
           
-          monitor.setStatusText(i18n.tr("{0}: Aktiviere HBCI-Job: \"{1}\"",new String[]{kn,job.getIdentifier()}));
+          monitor.setStatusText(i18n.tr("{0}: Aktiviere HBCI-Job: \"{1}\"",new String[]{kn,job.getName()}));
           monitor.addPercentComplete(2);
 
           Logger.info("executing exclusive job " + job.getIdentifier());
@@ -492,7 +492,7 @@ public class HBCIFactory {
           if (interrupted) return;
           final AbstractHBCIJob job = (AbstractHBCIJob) jobs.get(i);
           
-          monitor.setStatusText(i18n.tr("{0}: Aktiviere HBCI-Job: \"{1}\"",new String[]{kn,job.getIdentifier()}));
+          monitor.setStatusText(i18n.tr("{0}: Aktiviere HBCI-Job: \"{1}\"",new String[]{kn,job.getName()}));
           monitor.addPercentComplete(2);
 
           Logger.info("adding job " + job.getIdentifier() + " to queue");
@@ -524,7 +524,7 @@ public class HBCIFactory {
         {
           if (interrupted) return;
           final AbstractHBCIJob job = (AbstractHBCIJob) exclusiveJobs.get(i);
-          monitor.setStatusText(i18n.tr("{0}: Werte Ergebnis von HBCI-Job \"{1}\" aus",new String[]{kn,job.getIdentifier()}));
+          monitor.setStatusText(i18n.tr("{0}: Werte Ergebnis von HBCI-Job \"{1}\" aus",new String[]{kn,job.getName()}));
           monitor.addPercentComplete(2);
           Logger.info("executing check for exclusive job " + job.getIdentifier());
           job.handleResult();
@@ -534,7 +534,7 @@ public class HBCIFactory {
         {
           if (interrupted) return;
           final AbstractHBCIJob job = (AbstractHBCIJob) jobs.get(i);
-          monitor.setStatusText(i18n.tr("{0}: Werte Ergebnis von HBCI-Job \"{1}\" aus",new String[]{kn,job.getIdentifier()}));
+          monitor.setStatusText(i18n.tr("{0}: Werte Ergebnis von HBCI-Job \"{1}\" aus",new String[]{kn,job.getName()}));
           monitor.addPercentComplete(2);
           Logger.info("executing check for job " + job.getIdentifier());
           job.handleResult();
@@ -623,6 +623,9 @@ public class HBCIFactory {
 
 /*******************************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.42  2006/03/16 18:23:36  willuhn
+ * @N first code for new synchronize system
+ *
  * Revision 1.41  2006/01/18 18:40:35  willuhn
  * @N Redesign des Background-Task-Handlings
  *
