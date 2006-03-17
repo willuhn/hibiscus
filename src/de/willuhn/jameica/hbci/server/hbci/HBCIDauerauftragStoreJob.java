@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragStoreJob.java,v $
- * $Revision: 1.15 $
- * $Date: 2006/03/15 18:01:30 $
+ * $Revision: 1.16 $
+ * $Date: 2006/03/17 00:51:25 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -160,8 +160,7 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob {
     String empfName = dauerauftrag.getGegenkontoName();
     if (active)
       return i18n.tr("Aktualisieren des Dauerauftrages an {0}",empfName);
-    else
-      return i18n.tr("Absenden des Dauerauftrages an {0}",empfName);
+    return i18n.tr("Absenden des Dauerauftrages an {0}",empfName);
   }
 
   /**
@@ -214,6 +213,9 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIDauerauftragStoreJob.java,v $
+ * Revision 1.16  2006/03/17 00:51:25  willuhn
+ * @N bug 209 Neues Synchronisierungs-Subsystem
+ *
  * Revision 1.15  2006/03/15 18:01:30  willuhn
  * @N AbstractHBCIJob#getName
  *

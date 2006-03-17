@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUmsatzJob.java,v $
- * $Revision: 1.20 $
- * $Date: 2006/03/15 18:01:30 $
+ * $Revision: 1.21 $
+ * $Date: 2006/03/17 00:51:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -85,7 +85,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob {
    */
   public String getName() throws RemoteException
   {
-    String name = konto.getBezeichnung();
+    String name = konto.getLongName();
     return i18n.tr("Abrufen der Umsätze von Konto {0}",name);
   }
   
@@ -156,6 +156,9 @@ public class HBCIUmsatzJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIUmsatzJob.java,v $
+ * Revision 1.21  2006/03/17 00:51:24  willuhn
+ * @N bug 209 Neues Synchronisierungs-Subsystem
+ *
  * Revision 1.20  2006/03/15 18:01:30  willuhn
  * @N AbstractHBCIJob#getName
  *

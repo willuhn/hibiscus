@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Sync.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/02/06 17:16:10 $
+ * $Revision: 1.4 $
+ * $Date: 2006/03/17 00:51:25 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,20 +17,14 @@ import java.rmi.RemoteException;
 
 import org.eclipse.swt.widgets.Composite;
 
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.Part;
-import de.willuhn.jameica.gui.formatter.DateFormatter;
-import de.willuhn.jameica.gui.input.CheckboxInput;
+import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.HBCISynchronize;
-import de.willuhn.jameica.hbci.gui.action.KontoNew;
-import de.willuhn.jameica.hbci.gui.parts.KontoList;
-import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.gui.parts.SynchronizeList;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -43,12 +37,7 @@ public class Sync extends AbstractBox implements Box
 {
 
   private I18N i18n = null;
-
-  private de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(HBCISynchronize.class);
-  
-  private CheckboxInput syncDauer = null;
-  private CheckboxInput syncUeb   = null;
-  private CheckboxInput syncLast  = null;
+  private SynchronizeList list = null;
 
   /**
    * ct.
@@ -72,13 +61,8 @@ public class Sync extends AbstractBox implements Box
   public void paint(Composite parent) throws RemoteException
   {
     LabelGroup sync = new LabelGroup(parent,getName());
-    getKontoList().paint(sync.getComposite());
+    getSynchronizeList().paint(sync.getComposite());
 
-    sync.addHeadline(i18n.tr("Optionen"));
-    sync.addCheckbox(getSyncUeb(),i18n.tr("Offene fällige Überweisungen senden"));
-    sync.addCheckbox(getSyncLast(),i18n.tr("Offene fällige Lastschriften senden"));
-    sync.addCheckbox(getSyncDauer(),i18n.tr("Daueraufträge synchronisieren"));
-    
     ButtonArea b = sync.createButtonArea(1);
     b.addButton(i18n.tr("Synchronisierung starten"),new Action() {
       public void handleAction(Object context) throws ApplicationException
@@ -88,6 +72,17 @@ public class Sync extends AbstractBox implements Box
     },null,true);
   }
 
+  /**
+   * Liefert die Liste der Synchronisierungs-Jobs.
+   * @return Liste.
+   * @throws RemoteException
+   */
+  private TablePart getSynchronizeList() throws RemoteException
+  {
+    if (this.list == null)
+      this.list = new SynchronizeList();
+    return this.list;
+  }
   /**
    * @see de.willuhn.jameica.hbci.gui.boxes.Box#getDefaultIndex()
    */
@@ -105,59 +100,6 @@ public class Sync extends AbstractBox implements Box
   }
 
   /**
-   * Liefert eine Liste der zu synchronisierenden Konten.
-   * @return Liste der zu synchroinisierenden Konten.
-   * @throws RemoteException
-   */
-  private Part getKontoList() throws RemoteException
-  {
-    DBIterator list = Settings.getDBService().createList(Konto.class);
-    list.addFilter("synchronize = 1 or synchronize is null");
-    KontoList l = new KontoList(list,new KontoNew());
-    // BUGZILLA 108 http://www.willuhn.de/bugzilla/show_bug.cgi?id=108
-    l.addColumn(i18n.tr("Saldo aktualisiert am"),"saldo_datum", new DateFormatter(HBCI.LONGDATEFORMAT));
-    l.setSummary(false);
-    
-    return l;
-  }
-  
-  /**
-   * Liefert eine Checkbox zur Aktivierung der Synchronisierung der Dauerauftraege.
-   * @return Checkbox.
-   */
-  private CheckboxInput getSyncDauer()
-  {
-    if (this.syncDauer != null)
-      return this.syncDauer;
-    this.syncDauer = new CheckboxInput(settings.getBoolean("sync.dauer",false));
-    return this.syncDauer;
-  }
-
-  /**
-   * Liefert eine Checkbox zur Aktivierung der Synchronisierung der Ueberweisungen.
-   * @return Checkbox.
-   */
-  private CheckboxInput getSyncUeb()
-  {
-    if (this.syncUeb != null)
-      return this.syncUeb;
-    this.syncUeb = new CheckboxInput(settings.getBoolean("sync.ueb",false));
-    return this.syncUeb;
-  }
-  
-  /**
-   * Liefert eine Checkbox zur Aktivierung der Synchronisierung der Lastschriften.
-   * @return Checkbox.
-   */
-  private CheckboxInput getSyncLast()
-  {
-    if (this.syncLast != null)
-      return this.syncLast;
-    this.syncLast = new CheckboxInput(settings.getBoolean("sync.last",false));
-    return this.syncLast;
-  }
-
-  /**
    * Startet die Synchronisierung der Konten.
    */
   private void handleStart()
@@ -165,13 +107,6 @@ public class Sync extends AbstractBox implements Box
     try
     {
       Logger.info("Start synchronize");
-      boolean dauer = ((Boolean)getSyncDauer().getValue()).booleanValue();
-      boolean last  = ((Boolean)getSyncLast().getValue()).booleanValue();
-      boolean ueb   = ((Boolean)getSyncUeb().getValue()).booleanValue();
-      settings.setAttribute("sync.dauer",dauer);
-      settings.setAttribute("sync.last",last);
-      settings.setAttribute("sync.ueb",ueb);
-      
       HBCISynchronize sync = new HBCISynchronize();
       sync.handleAction(null);
     }
@@ -186,6 +121,9 @@ public class Sync extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: Sync.java,v $
+ * Revision 1.4  2006/03/17 00:51:25  willuhn
+ * @N bug 209 Neues Synchronisierungs-Subsystem
+ *
  * Revision 1.3  2006/02/06 17:16:10  willuhn
  * @B Fehler beim Synchronisieren mehrerer Konten (Dead-Lock)
  *

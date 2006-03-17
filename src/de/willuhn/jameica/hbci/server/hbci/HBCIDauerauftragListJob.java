@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragListJob.java,v $
- * $Revision: 1.27 $
- * $Date: 2006/03/15 18:01:30 $
+ * $Revision: 1.28 $
+ * $Date: 2006/03/17 00:51:25 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -85,7 +85,7 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
    */
   public String getName() throws RemoteException
   {
-    String name = konto.getBezeichnung();
+    String name = konto.getLongName();
     return i18n.tr("Abrufen der Daueraufträge von Konto {0}",name);
   }
 
@@ -249,6 +249,9 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIDauerauftragListJob.java,v $
+ * Revision 1.28  2006/03/17 00:51:25  willuhn
+ * @N bug 209 Neues Synchronisierungs-Subsystem
+ *
  * Revision 1.27  2006/03/15 18:01:30  willuhn
  * @N AbstractHBCIJob#getName
  *

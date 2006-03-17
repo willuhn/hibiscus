@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Konto.java,v $
- * $Revision: 1.29 $
- * $Date: 2005/11/10 23:32:59 $
+ * $Revision: 1.30 $
+ * $Date: 2006/03/17 00:51:25 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -44,6 +44,13 @@ public interface Konto extends DBObject,Checksum
    * @throws RemoteException
    */
   public String getName() throws RemoteException;
+  
+  /**
+   * Liefert eine ausfuehrliche Bezeichnung des Kontos bestehend aus Bezeichnung, Kto und BLZ.
+   * @return ausfuehrliche Bezeichnung.
+   * @throws RemoteException
+   */
+  public String getLongName() throws RemoteException;
 	
 	/**
 	 * Liefert die Bezeichnung des Kontos.
@@ -265,6 +272,9 @@ public interface Konto extends DBObject,Checksum
 
 /**********************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.30  2006/03/17 00:51:25  willuhn
+ * @N bug 209 Neues Synchronisierungs-Subsystem
+ *
  * Revision 1.29  2005/11/10 23:32:59  willuhn
  * @B foreign key to sueberweisung when deleting a konto
  *
