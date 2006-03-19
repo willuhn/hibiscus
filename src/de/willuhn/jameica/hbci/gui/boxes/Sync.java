@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Sync.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/03/17 00:51:25 $
+ * $Revision: 1.5 $
+ * $Date: 2006/03/19 23:04:49 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -60,7 +60,8 @@ public class Sync extends AbstractBox implements Box
    */
   public void paint(Composite parent) throws RemoteException
   {
-    LabelGroup sync = new LabelGroup(parent,getName());
+    // BUGZILLA 209
+    LabelGroup sync = new LabelGroup(parent,getName(),true);
     getSynchronizeList().paint(sync.getComposite());
 
     ButtonArea b = sync.createButtonArea(1);
@@ -121,6 +122,9 @@ public class Sync extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: Sync.java,v $
+ * Revision 1.5  2006/03/19 23:04:49  willuhn
+ * @B bug 209
+ *
  * Revision 1.4  2006/03/17 00:51:25  willuhn
  * @N bug 209 Neues Synchronisierungs-Subsystem
  *
