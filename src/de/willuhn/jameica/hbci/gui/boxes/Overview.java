@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Overview.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/11/09 01:13:53 $
+ * $Revision: 1.2 $
+ * $Date: 2006/03/20 16:59:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,17 +22,18 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.CalendarDialog;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
+import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
@@ -43,13 +44,18 @@ import de.willuhn.util.I18N;
 public class Overview extends AbstractBox implements Box
 {
   private I18N i18n = null;
-  private Input saldo       = null;
-  private Input ausgaben    = null;
-  private Input einnahmen   = null;
-  private Input bilanz      = null;
+  private SelectInput kontoAuswahl = null;
+  private Input saldo              = null;
+  private Input ausgaben           = null;
+  private Input einnahmen          = null;
+  private Input bilanz             = null;
   
-  private Input start       = null;
-  private Input end         = null;
+  private Input start              = null;
+  private Input end                = null;
+  
+  private Date dStart              = null;
+  private Date dEnd                = null;
+  private Konto konto              = null;
 
   /**
    * ct.
@@ -73,10 +79,10 @@ public class Overview extends AbstractBox implements Box
   public void paint(Composite parent) throws RemoteException
   {
     LabelGroup group = new LabelGroup(parent,getName());
-    group.addLabelPair(i18n.tr("Saldo über alle Konten") + ":", getSaldo());
-    group.addSeparator();
+    group.addLabelPair(i18n.tr("Konto") + ":", getKontoAuswahl());
     group.addLabelPair(i18n.tr("Beginn des Zeitraumes") + ":", getStart());
     group.addLabelPair(i18n.tr("Ende des Zeitraumes") + ":", getEnd());
+    group.addLabelPair(i18n.tr("Saldo") + ":", getSaldo());
     group.addLabelPair(i18n.tr("Einnahmen") + ":", getEinnahmen());
     group.addLabelPair(i18n.tr("Ausgaben") + ":", getAusgaben());
     group.addSeparator();
@@ -98,24 +104,40 @@ public class Overview extends AbstractBox implements Box
   {
     return true;
   }
+  
+  /**
+   * Liefert eine Auswahlbox fuer das Konto.
+   * @return Auswahlbox.
+   * @throws RemoteException
+   */
+  private Input getKontoAuswahl() throws RemoteException
+  {
+    if (this.kontoAuswahl != null)
+      return this.kontoAuswahl;
+    
+    this.kontoAuswahl = new SelectInput(Settings.getDBService().createList(Konto.class),null);
+    this.kontoAuswahl.setPleaseChoose(i18n.tr("Alle Konten"));
+    this.kontoAuswahl.setAttribute("longname");
+    this.kontoAuswahl.addListener(new Listener() {
+      public void handleEvent(Event event)
+      {
+        konto = (Konto) kontoAuswahl.getValue();
+        refresh();
+      }
+    });
+    refresh();
+    return this.kontoAuswahl;
+  }
 
   /**
    * Liefert ein Anzeige-Feld mit dem Saldo ueber alle Konten.
    * @return Saldo ueber alle Konten.
-   * @throws RemoteException
    */
-  private Input getSaldo() throws RemoteException
+  private Input getSaldo()
   {
     if (this.saldo != null)
       return this.saldo;
-    double d = 0d;
-    DBIterator konten = Settings.getDBService().createList(Konto.class);
-    while (konten.hasNext())
-    {
-      Konto k = (Konto) konten.next();
-      d += k.getSaldo();
-    }
-    this.saldo = new LabelInput(HBCI.DECIMALFORMAT.format(d));
+    this.saldo = new LabelInput("");
     this.saldo.setComment(HBCIProperties.CURRENCY_DEFAULT_DE + " [" + HBCI.DATEFORMAT.format(new Date()) + "]");
     return this.saldo;
   }
@@ -132,33 +154,23 @@ public class Overview extends AbstractBox implements Box
     Calendar cal = Calendar.getInstance();
     cal.setTime(new Date());
     cal.set(Calendar.DAY_OF_MONTH,1);
-    Date begin = cal.getTime();
+    this.dStart = cal.getTime();
 
     CalendarDialog d = new CalendarDialog(CalendarDialog.POSITION_MOUSE);
     d.setTitle(i18n.tr("Start-Datum"));
-    d.setDate(begin);
+    d.setDate(dStart);
     d.setText(i18n.tr("Bitte wählen Sie das Start-Datum für die Berechnung"));
     d.addCloseListener(new Listener() {
       public void handleEvent(Event event)
       {
         if (event == null || event.data == null)
           return;
-        try
-        {
-          Date start = (Date) event.data;
-          ((DialogInput)getStart()).setText(HBCI.DATEFORMAT.format(start));
-          getStart().setValue(start);
-          calculate(start,(Date)getEnd().getValue());
-        }
-        catch (RemoteException e)
-        {
-          Logger.error("unable to calculate sum",e);
-          GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Berechnen der Summen"));
-        }
+        dStart = (Date) event.data;
+        refresh();
       }
     });
-    this.start = new DialogInput(HBCI.DATEFORMAT.format(begin),d);
-    this.start.setValue(begin);
+    this.start = new DialogInput(HBCI.DATEFORMAT.format(dStart),d);
+    this.start.setValue(dStart);
     ((DialogInput)this.start).disableClientControl();
     return this.start;
   }
@@ -175,10 +187,10 @@ public class Overview extends AbstractBox implements Box
     Calendar cal = Calendar.getInstance();
     cal.setTime(new Date());
     cal.set(Calendar.DAY_OF_MONTH,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
-    Date d2 = cal.getTime();
+    this.dEnd = cal.getTime();
 
     CalendarDialog d = new CalendarDialog(CalendarDialog.POSITION_MOUSE);
-    d.setDate(d2);
+    d.setDate(dEnd);
     d.setTitle(i18n.tr("End-Datum"));
     d.setText(i18n.tr("Bitte wählen Sie das End-Datum für die Berechnung"));
     d.addCloseListener(new Listener() {
@@ -186,66 +198,84 @@ public class Overview extends AbstractBox implements Box
       {
         if (event == null || event.data == null)
           return;
-        try
-        {
-          Date end = (Date) event.data;
-          ((DialogInput)getEnd()).setText(HBCI.DATEFORMAT.format(end));
-          getEnd().setValue(end);
-          calculate((Date)getStart().getValue(),end);
-        }
-        catch (RemoteException e)
-        {
-          Logger.error("unable to calculate sum",e);
-          GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Berechnen der Summen"));
-        }
+        dEnd = (Date) event.data;
       }
     });
-    this.end = new DialogInput(HBCI.DATEFORMAT.format(d2),d);
-    this.end.setValue(d2);
+    this.end = new DialogInput(HBCI.DATEFORMAT.format(dEnd),d);
+    this.end.setValue(dEnd);
     ((DialogInput)this.end).disableClientControl();
 
-    // Einmal am Anfang ausloesen
-    try
-    {
-      calculate((Date)getStart().getValue(),d2);
-    }
-    catch (RemoteException e)
-    {
-      Logger.error("unable to calculate sum",e);
-      GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Berechnen der Summen"));
-    }
     return this.end;
   }
 
   /**
-   * Hilfsfunktion zum Berechnen.
-   * @param start
-   * @param end
-   * @throws RemoteException
+   * Aktualisiert die Salden.
    */
-  private synchronized void calculate(Date start, Date end) throws RemoteException
+  private synchronized void refresh()
   {
-    if (start == null || end == null || start.after(end))
-      return;
-
-    double in = 0d;
-    double out = 0d;
-    DBIterator i = Settings.getDBService().createList(Konto.class);
-    while (i.hasNext())
+    try
     {
-      Konto k = (Konto) i.next();
-      in += k.getEinnahmen(start,end);
-      out += k.getAusgaben(start, end);
-    }
-    getAusgaben().setValue(HBCI.DECIMALFORMAT.format(out == 0d ? 0d : -out));
-    getEinnahmen().setValue(HBCI.DECIMALFORMAT.format(in));
+      ////////////////////////////////////////////////////////////////////////////
+      // Saldo ausrechnen
+      double d = 0d;
+      if (this.konto == null)
+      {
+        DBIterator konten = Settings.getDBService().createList(Konto.class);
+        while (konten.hasNext())
+        {
+          Konto k = (Konto) konten.next();
+          d += k.getSaldo();
+        }
+      }
+      else
+      {
+        d = this.konto.getSaldo();
+      }
+      getSaldo().setValue(HBCI.DECIMALFORMAT.format(d));
+      ////////////////////////////////////////////////////////////////////////////
 
-    double diff = in + out;
-    getBilanz().setValue(HBCI.DECIMALFORMAT.format(diff));
-    if (diff < 0)
-      ((LabelInput)getBilanz()).setColor(Color.ERROR);
-    else
-      ((LabelInput)getBilanz()).setColor(Color.SUCCESS);
+      if (dStart == null || dEnd == null || dStart.after(dEnd))
+        return;
+
+      ((DialogInput)getStart()).setText(HBCI.DATEFORMAT.format(dStart));
+      getStart().setValue(dStart);
+    
+      ((DialogInput)getEnd()).setText(HBCI.DATEFORMAT.format(dEnd));
+      getEnd().setValue(dEnd);
+
+      
+      double in = 0d;
+      double out = 0d;
+      if (this.konto == null)
+      {
+        DBIterator i = Settings.getDBService().createList(Konto.class);
+        while (i.hasNext())
+        {
+          Konto k = (Konto) i.next();
+          in  += k.getEinnahmen(dStart,dEnd);
+          out += k.getAusgaben(dStart, dEnd);
+        }
+      }
+      else
+      {
+        in  = this.konto.getEinnahmen(dStart,dEnd);
+        out = this.konto.getAusgaben(dStart,dEnd);
+      }
+      getAusgaben().setValue(HBCI.DECIMALFORMAT.format(out == 0d ? 0d : -out));
+      getEinnahmen().setValue(HBCI.DECIMALFORMAT.format(in));
+
+      double diff = in + out;
+      getBilanz().setValue(HBCI.DECIMALFORMAT.format(diff));
+      if (diff < 0)
+        ((LabelInput)getBilanz()).setColor(Color.ERROR);
+      else
+        ((LabelInput)getBilanz()).setColor(Color.SUCCESS);
+    }
+    catch (RemoteException e)
+    {
+      Logger.error("unable to calculate sum",e);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Berechnen der Bilanz"),StatusBarMessage.TYPE_ERROR));
+    }
   }
   
   /**
@@ -291,6 +321,9 @@ public class Overview extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: Overview.java,v $
+ * Revision 1.2  2006/03/20 16:59:01  willuhn
+ * @N Overview ueber alle Konten
+ *
  * Revision 1.1  2005/11/09 01:13:53  willuhn
  * @N chipcard modul fuer AMD64 vergessen
  * @N Startseite jetzt frei konfigurierbar
