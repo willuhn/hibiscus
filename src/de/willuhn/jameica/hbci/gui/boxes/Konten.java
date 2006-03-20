@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Adressbuch.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/03/20 00:35:53 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Konten.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2006/03/20 00:35:54 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,15 +19,15 @@ import org.eclipse.swt.widgets.Composite;
 
 import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.EmpfaengerNew;
-import de.willuhn.jameica.hbci.gui.parts.EmpfaengerList;
+import de.willuhn.jameica.hbci.gui.action.KontoNew;
+import de.willuhn.jameica.hbci.gui.parts.KontoList;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 
 /**
- * Box zur Anzeige der Adressen.
+ * Box zur Anzeige der Konten.
  */
-public class Adressbuch extends AbstractBox implements Box
+public class Konten extends AbstractBox implements Box
 {
 
   private I18N i18n = null;
@@ -35,7 +35,7 @@ public class Adressbuch extends AbstractBox implements Box
   /**
    * ct.
    */
-  public Adressbuch()
+  public Konten()
   {
     super();
     i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
@@ -46,7 +46,7 @@ public class Adressbuch extends AbstractBox implements Box
    */
   public String getName()
   {
-    return i18n.tr("Adressbuch");
+    return i18n.tr("Konten-Übersicht");
   }
 
   /**
@@ -54,7 +54,7 @@ public class Adressbuch extends AbstractBox implements Box
    */
   public int getDefaultIndex()
   {
-    return 3;
+    return 1;
   }
 
   /**
@@ -71,7 +71,7 @@ public class Adressbuch extends AbstractBox implements Box
   public void paint(Composite parent) throws RemoteException
   {
     new Headline(parent,getName());
-    EmpfaengerList l = new EmpfaengerList(new EmpfaengerNew());
+    KontoList l = new KontoList(new KontoNew());
     l.paint(parent);
   }
 
@@ -79,15 +79,8 @@ public class Adressbuch extends AbstractBox implements Box
 
 
 /*********************************************************************
- * $Log: Adressbuch.java,v $
- * Revision 1.3  2006/03/20 00:35:53  willuhn
+ * $Log: Konten.java,v $
+ * Revision 1.1  2006/03/20 00:35:54  willuhn
  * @N new box "Konten-Übersicht"
- *
- * Revision 1.2  2005/11/09 01:14:14  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2005/11/09 01:13:53  willuhn
- * @N chipcard modul fuer AMD64 vergessen
- * @N Startseite jetzt frei konfigurierbar
  *
  **********************************************************************/

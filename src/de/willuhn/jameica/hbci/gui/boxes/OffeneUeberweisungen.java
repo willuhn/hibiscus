@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/OffeneUeberweisungen.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/01/18 10:08:21 $
+ * $Revision: 1.3 $
+ * $Date: 2006/03/20 00:35:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -70,7 +70,7 @@ public class OffeneUeberweisungen extends AbstractBox implements Box
    */
   public int getDefaultIndex()
   {
-    return 3;
+    return 4;
   }
 
   /**
@@ -113,6 +113,9 @@ public class OffeneUeberweisungen extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: OffeneUeberweisungen.java,v $
+ * Revision 1.3  2006/03/20 00:35:53  willuhn
+ * @N new box "Konten-Übersicht"
+ *
  * Revision 1.2  2006/01/18 10:08:21  willuhn
  * @N Termin-Ueberweisungen werden immer auf der Startseite angezeigt
  *

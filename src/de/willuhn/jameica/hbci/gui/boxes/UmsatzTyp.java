@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/UmsatzTyp.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/12/30 00:14:45 $
+ * $Revision: 1.3 $
+ * $Date: 2006/03/20 00:35:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -65,7 +65,7 @@ public class UmsatzTyp extends AbstractBox
    */
   public int getDefaultIndex()
   {
-    return 4;
+    return 5;
   }
 
   /**
@@ -103,6 +103,9 @@ public class UmsatzTyp extends AbstractBox
 
 /*********************************************************************
  * $Log: UmsatzTyp.java,v $
+ * Revision 1.3  2006/03/20 00:35:53  willuhn
+ * @N new box "Konten-Übersicht"
+ *
  * Revision 1.2  2005/12/30 00:14:45  willuhn
  * @N first working pie charts
  *
