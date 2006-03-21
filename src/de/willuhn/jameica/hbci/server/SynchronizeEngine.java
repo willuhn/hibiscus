@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/SynchronizeEngine.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/03/17 00:51:25 $
+ * $Revision: 1.3 $
+ * $Date: 2006/03/21 00:43:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,9 @@ import java.util.ArrayList;
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.dialogs.SynchronizeOptionsDialog;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
@@ -36,6 +38,7 @@ import de.willuhn.jameica.hbci.server.hbci.synchronize.SynchronizeSammelLastschr
 import de.willuhn.jameica.hbci.server.hbci.synchronize.SynchronizeSammelUeberweisungJob;
 import de.willuhn.jameica.hbci.server.hbci.synchronize.SynchronizeUeberweisungJob;
 import de.willuhn.jameica.hbci.server.hbci.synchronize.SynchronizeUmsatzJob;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 
 /**
@@ -109,51 +112,70 @@ public class SynchronizeEngine
   {
     Logger.info("adding open transfers");
 
-    addTransfers(k.getUeberweisungen(),new TransferJobCreator() {
-      public SynchronizeJob create(Terminable t)
-      {
-        return new SynchronizeUeberweisungJob((Ueberweisung)t);
-      }
-    },list);
+    final String id = k.getID();
+    final de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
+    boolean umsatz = settings.getBoolean("sync.konto." + id + ".umsatz",true);
+    boolean ueb    = settings.getBoolean("sync.konto." + id + ".ueb",true);
+    boolean last   = settings.getBoolean("sync.konto." + id + ".last",true);
+    boolean dauer  = settings.getBoolean("sync.konto." + id + ".dauer",true);
 
-    addTransfers(k.getSammelUeberweisungen(),new TransferJobCreator() {
-      public SynchronizeJob create(Terminable t)
-      {
-        return new SynchronizeSammelUeberweisungJob((SammelUeberweisung)t);
-      }
-    },list);
-        
-    addTransfers(k.getLastschriften(),new TransferJobCreator() {
-      public SynchronizeJob create(Terminable t)
-      {
-        return new SynchronizeLastschriftJob((Lastschrift)t);
-      }
-    },list);
-
-    addTransfers(k.getSammelLastschriften(),new TransferJobCreator() {
-      public SynchronizeJob create(Terminable t)
-      {
-        return new SynchronizeSammelLastschriftJob((SammelLastschrift)t);
-      }
-    },list);
-
-    list.add(new SynchronizeDauerauftragListJob(k));
-
-    DBIterator i = k.getDauerauftraege();
-    while (i.hasNext())
+    if (ueb)
     {
-      Dauerauftrag u = (Dauerauftrag) i.next();
-      if (u.isActive())
-        continue;
-      list.add(new SynchronizeDauerauftragStoreJob(u));
+      addTransfers(k.getUeberweisungen(),new TransferJobCreator() {
+        public SynchronizeJob create(Terminable t)
+        {
+          return new SynchronizeUeberweisungJob((Ueberweisung)t);
+        }
+      },list);
+      addTransfers(k.getSammelUeberweisungen(),new TransferJobCreator() {
+        public SynchronizeJob create(Terminable t)
+        {
+          return new SynchronizeSammelUeberweisungJob((SammelUeberweisung)t);
+        }
+      },list);
     }
 
-    // Umsaetze und Salden werden zum Schluss ausgefuehrt,
-    // damit die oben gesendeten Ueberweisungen gleich mit
-    // erscheinen, insofern die Bank das unterstuetzt.
-    Logger.info("adding umsatz job");
-    list.add(new SynchronizeSaldoJob(k));
-    list.add(new SynchronizeUmsatzJob(k));
+
+    if (last)
+    {
+      addTransfers(k.getLastschriften(),new TransferJobCreator() {
+        public SynchronizeJob create(Terminable t)
+        {
+          return new SynchronizeLastschriftJob((Lastschrift)t);
+        }
+      },list);
+
+      addTransfers(k.getSammelLastschriften(),new TransferJobCreator() {
+        public SynchronizeJob create(Terminable t)
+        {
+          return new SynchronizeSammelLastschriftJob((SammelLastschrift)t);
+        }
+      },list);
+    }
+
+    if (dauer)
+    {
+      list.add(new SynchronizeDauerauftragListJob(k));
+      DBIterator i = k.getDauerauftraege();
+      while (i.hasNext())
+      {
+        Dauerauftrag u = (Dauerauftrag) i.next();
+        if (u.isActive())
+          continue;
+        list.add(new SynchronizeDauerauftragStoreJob(u));
+      }
+    }
+
+
+    if (umsatz)
+    {
+      // Umsaetze und Salden werden zum Schluss ausgefuehrt,
+      // damit die oben gesendeten Ueberweisungen gleich mit
+      // erscheinen, insofern die Bank das unterstuetzt.
+      Logger.info("adding umsatz job");
+      list.add(new SynchronizeSaldoJob(k));
+      list.add(new SynchronizeUmsatzJob(k));
+    }
   }
   
   private void addTransfers(GenericIterator transfers, TransferJobCreator creator, ArrayList list) throws RemoteException
@@ -184,6 +206,9 @@ public class SynchronizeEngine
 
 /**********************************************************************
  * $Log: SynchronizeEngine.java,v $
+ * Revision 1.3  2006/03/21 00:43:14  willuhn
+ * @B bug 209
+ *
  * Revision 1.2  2006/03/17 00:51:25  willuhn
  * @N bug 209 Neues Synchronisierungs-Subsystem
  *

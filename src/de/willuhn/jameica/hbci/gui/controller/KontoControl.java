@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.64 $
- * $Date: 2006/03/09 18:24:05 $
+ * $Revision: 1.65 $
+ * $Date: 2006/03/21 00:43:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,33 +19,34 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.manager.HBCIUtils;
 
-import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
+import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
-import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
+import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
-import de.willuhn.jameica.hbci.PassportRegistry;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.KontoFetchFromPassport;
 import de.willuhn.jameica.hbci.gui.action.KontoNew;
-import de.willuhn.jameica.hbci.gui.action.PassportDetail;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.dialogs.PassportAuswahlDialog;
+import de.willuhn.jameica.hbci.gui.dialogs.SynchronizeOptionsDialog;
+import de.willuhn.jameica.hbci.gui.input.PassportInput;
 import de.willuhn.jameica.hbci.gui.parts.ProtokollList;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzChart;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzList;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -71,6 +72,7 @@ public class KontoControl extends AbstractControl {
   private LabelInput saldo			= null;
   
   private CheckboxInput synchronize = null;
+  private Button synchronizeOptions = null;
 
 	private TablePart kontoList						= null;
 	private TablePart protokoll						= null;
@@ -180,7 +182,57 @@ public class KontoControl extends AbstractControl {
     if (this.synchronize != null)
       return this.synchronize;
     this.synchronize = new CheckboxInput(getKonto().getSynchronize());
+    this.synchronize.addListener(new Listener() {
+      public void handleEvent(Event event)
+      {
+        try
+        {
+          boolean b = ((Boolean)synchronize.getValue()).booleanValue();
+          getSynchronizeOptions().setEnabled(b);
+        }
+        catch (RemoteException e)
+        {
+          Logger.error("unable to configure synchronize options");
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Konfigurieren der Synchronisierungsoptionen"),StatusBarMessage.TYPE_ERROR));
+        }
+      }
+    });
+    getSynchronizeOptions().setEnabled(((Boolean)synchronize.getValue()).booleanValue());
     return this.synchronize;
+  }
+  
+  /**
+   * Liefert einen Button, ueber den die Synchronisierungsdetails konfiguriert
+   * werden.
+   * @return Button.
+   * @throws RemoteException
+   */
+  public Button getSynchronizeOptions() throws RemoteException
+  {
+    if (this.synchronizeOptions != null)
+      return this.synchronizeOptions;
+
+    this.synchronizeOptions = new Button(i18n.tr("Synchronisierungsoptionen"),new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        try
+        {
+          SynchronizeOptionsDialog d = new SynchronizeOptionsDialog(getKonto(),SynchronizeOptionsDialog.POSITION_CENTER);
+          d.open();
+        }
+        catch (ApplicationException ae)
+        {
+          throw ae;
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to configure synchronize options");
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Konfigurieren der Synchronisierungsoptionen"),StatusBarMessage.TYPE_ERROR));
+        }
+        
+      }
+    },getKonto());
+    return this.synchronizeOptions;
   }
   
   /**
@@ -241,46 +293,14 @@ public class KontoControl extends AbstractControl {
 	 * Liefert das Auswahl-Feld fuer das Sicherheitsmedium.
    * @return Eingabe-Feld.
    * @throws RemoteException
+   * @throws ApplicationException
    */
-  public Input getPassportAuswahl() throws RemoteException
+  public Input getPassportAuswahl() throws RemoteException, ApplicationException
 	{
 		if (passportAuswahl != null)
 			return passportAuswahl;
 
-    Passport[] passports = null;
-		try
-    {
-      passports = PassportRegistry.getPassports();
-    }
-    catch (Exception e)
-    {
-      Logger.error("error while loading passport list",e);
-      GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Laden der Sicherheitsmedien"));
-      passportAuswahl = new LabelInput(null);
-      return passportAuswahl;
-    }
-
-
-    PassportObject[] p = new PassportObject[passports.length];
-    for (int i=0;i<passports.length;++i)
-    {
-      p[i] = new PassportObject(passports[i]);
-    }
-    
-    PassportObject current = null;
-		if (getKonto() != null && getKonto().getPassportClass() != null)
-    {
-      try
-      {
-        current = new PassportObject(getKonto().getPassportClass());
-      }
-      catch (Exception e)
-      {
-        Logger.error("error while loading passport",e);
-        GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Laden des Sicherheitsmediums"));
-      }
-    }
-		passportAuswahl = new SelectInput(PseudoIterator.fromArray(p),current);
+		passportAuswahl = new PassportInput(getKonto());
 		return passportAuswahl;
 	}
 
@@ -340,15 +360,15 @@ public class KontoControl extends AbstractControl {
   public synchronized void handleStore() {
 		try {
 
-			PassportObject po = (PassportObject) getPassportAuswahl().getValue();
+			Passport p = (Passport) getPassportAuswahl().getValue();
 
-			if (po == null)
+			if (p == null)
 			{
 				GUI.getStatusBar().setErrorText(i18n.tr("Kein Sicherheitsmedium verfügbar."));
 				return;
 			}
 			
-			getKonto().setPassportClass(po.getPassport().getClass().getName());
+			getKonto().setPassportClass(p.getClass().getName());
 
 			getKonto().setKontonummer((String)getKontonummer().getValue());
 			getKonto().setBLZ((String)getBlz().getValue());
@@ -374,34 +394,6 @@ public class KontoControl extends AbstractControl {
 		}
 
   }
-
-	/**
-   * Oeffnet den Einstellungs-Dialog des gerade ausgewaehlten Passports.
-   */
-  public synchronized void handleConfigurePassport()
-	{
-		try 
-		{
-			if (getPassportAuswahl().getValue() == null)
-			{
-				GUI.getStatusBar().setErrorText(i18n.tr("Kein Sicherheitsmedium verfügbar"));
-				return;
-			}
-
-			Passport p = ((PassportObject) getPassportAuswahl().getValue()).getPassport();
-			new PassportDetail().handleAction(p);
-		}
-		catch (ApplicationException ae)
-		{
-			GUI.getStatusBar().setErrorText(ae.getMessage());
-		}
-		catch (RemoteException e)
-		{
-			Logger.error("error while reading passport from select box",e);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler bei der Ermittlung des Sicherheitsmediums"));
-			return;
-		}
-	}
 
 	/**
    * Liest alle ueber das Sicherheitsmedium verfuegbaren Konten
@@ -460,6 +452,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.65  2006/03/21 00:43:14  willuhn
+ * @B bug 209
+ *
  * Revision 1.64  2006/03/09 18:24:05  willuhn
  * @N Auswahl der Tage in Umsatz-Chart
  *

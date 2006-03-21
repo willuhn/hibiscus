@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SynchronizeList.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/03/19 23:04:49 $
+ * $Revision: 1.3 $
+ * $Date: 2006/03/21 00:43:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -40,7 +40,7 @@ public class SynchronizeList extends TablePart
   public SynchronizeList() throws RemoteException
   {
     super(SynchronizeEngine.getInstance().getSynchronizeJobs(),new MyAction());
-    addColumn(i18n.tr("Aufgabe"),"name");
+    addColumn(i18n.tr("Offene Synchronisierungsaufgaben"),"name");
   }
   
   /**
@@ -77,6 +77,9 @@ public class SynchronizeList extends TablePart
 
 /*********************************************************************
  * $Log: SynchronizeList.java,v $
+ * Revision 1.3  2006/03/21 00:43:14  willuhn
+ * @B bug 209
+ *
  * Revision 1.2  2006/03/19 23:04:49  willuhn
  * @B bug 209
  *

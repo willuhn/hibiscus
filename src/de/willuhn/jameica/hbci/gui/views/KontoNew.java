@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoNew.java,v $
- * $Revision: 1.15 $
- * $Date: 2006/03/09 18:24:05 $
+ * $Revision: 1.16 $
+ * $Date: 2006/03/21 00:43:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -83,12 +83,7 @@ public class KontoNew extends AbstractView {
 
 			// und noch die Abschicken-Knoepfe
 			ButtonArea buttonArea = group.createButtonArea(4);
-      buttonArea.addButton(i18n.tr("Sicherheitsmedium konfigurieren"),new Action() {
-        public void handleAction(Object context) throws ApplicationException
-        {
-          control.handleConfigurePassport();
-        }
-      });
+      buttonArea.addButton(control.getSynchronizeOptions());
       buttonArea.addButton(i18n.tr("Protokoll des Kontos"),new ProtokollList(),control.getKonto());
 			buttonArea.addButton(i18n.tr("Konto löschen"),new KontoDelete(),control.getKonto());
 			buttonArea.addButton(i18n.tr("Speichern"),new Action()
@@ -130,6 +125,9 @@ public class KontoNew extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoNew.java,v $
+ * Revision 1.16  2006/03/21 00:43:14  willuhn
+ * @B bug 209
+ *
  * Revision 1.15  2006/03/09 18:24:05  willuhn
  * @N Auswahl der Tage in Umsatz-Chart
  *
