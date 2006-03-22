@@ -220,11 +220,11 @@
 		<checksum file="${project.release}/${define.zipfilename}" />
 		<checksum file="${project.release}/${define.srcfilename}" />
 		<echo message="Creating PGP signatures" />
-		<exec executable="kgpg" failonerror="true" timeout="60000">
-			<arg line="-S ${project.release}/${define.zipfilename}" />
+		<exec executable="gpg" failonerror="true" timeout="60000">
+      <arg line="-asb --use-agent ${project.release}/${define.zipfilename}" />
 		</exec>
-		<exec executable="kgpg" failonerror="true" timeout="60000">
-			<arg line="-S ${project.release}/${define.srcfilename}" />
+		<exec executable="gpg" failonerror="true" timeout="60000">
+      <arg line="-asb --use-agent ${project.release}/${define.srcfilename}" />
 		</exec>
 	</target>
 
