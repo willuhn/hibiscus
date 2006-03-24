@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.85 $
- * $Date: 2006/02/27 16:54:13 $
+ * $Revision: 1.86 $
+ * $Date: 2006/03/24 00:15:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -69,25 +69,6 @@ public class HBCI extends AbstractPlugin
   // Mapper von Datenbank-Hash zu Versionsnummer
   private static HashMap DBMAPPING = new HashMap();
   
-  static {
-    //  BUGZILLA 101 http://www.willuhn.de/bugzilla/show_bug.cgi?id=101
-    DECIMALFORMAT.applyPattern("###,###,##0.00");
-    DECIMALFORMAT.setGroupingUsed(Settings.getDecimalGrouping());
-
-    LOGMAPPING.put(Level.ERROR, new Integer(HBCIUtils.LOG_ERR));
-    LOGMAPPING.put(Level.WARN,  new Integer(HBCIUtils.LOG_WARN));
-    LOGMAPPING.put(Level.INFO,  new Integer(HBCIUtils.LOG_INFO));
-    LOGMAPPING.put(Level.DEBUG, new Integer(HBCIUtils.LOG_DEBUG2));
-
-    DBMAPPING.put("KvynDJyxe6D1XUvSCkNAFA==",new Double(1.0));
-    DBMAPPING.put("Oj3JSimz84VKq44EEzQOZQ==",new Double(1.1));
-    DBMAPPING.put("NhTl6Nt8RmaRNz49M/SGiA==",new Double(1.2));
-    DBMAPPING.put("kwi5vy1fvgOOVtoTYJYjuA==",new Double(1.3));
-    DBMAPPING.put("JtkHZYFRtWpxGR6nE8TYFw==",new Double(1.4));
-    DBMAPPING.put("a4VHFRr69c+LynZiczIICg==",new Double(1.5));
-    
-  }
-
   private EmbeddedDatabase db = null;
   
   private HBCICallback callback;
@@ -145,6 +126,23 @@ public class HBCI extends AbstractPlugin
   {
 		Logger.info("starting init process for hibiscus");
 
+    //  BUGZILLA 101 http://www.willuhn.de/bugzilla/show_bug.cgi?id=101
+    DECIMALFORMAT.applyPattern("###,###,##0.00");
+    DECIMALFORMAT.setGroupingUsed(Settings.getDecimalGrouping());
+
+    LOGMAPPING.put(Level.ERROR, new Integer(HBCIUtils.LOG_ERR));
+    LOGMAPPING.put(Level.WARN,  new Integer(HBCIUtils.LOG_WARN));
+    LOGMAPPING.put(Level.INFO,  new Integer(HBCIUtils.LOG_INFO));
+    LOGMAPPING.put(Level.DEBUG, new Integer(HBCIUtils.LOG_DEBUG2));
+
+    DBMAPPING.put("KvynDJyxe6D1XUvSCkNAFA==",new Double(1.0));
+    DBMAPPING.put("Oj3JSimz84VKq44EEzQOZQ==",new Double(1.1));
+    DBMAPPING.put("NhTl6Nt8RmaRNz49M/SGiA==",new Double(1.2));
+    DBMAPPING.put("kwi5vy1fvgOOVtoTYJYjuA==",new Double(1.3));
+    DBMAPPING.put("JtkHZYFRtWpxGR6nE8TYFw==",new Double(1.4));
+    DBMAPPING.put("a4VHFRr69c+LynZiczIICg==",new Double(1.5));
+    
+
     try {
 			Application.getCallback().getStartupMonitor().setStatusText("hibiscus: checking database integrity");
 
@@ -156,12 +154,13 @@ public class HBCI extends AbstractPlugin
       {
         try
         {
-          de.willuhn.jameica.system.Settings s = new de.willuhn.jameica.system.Settings(HBCI.class);
+          de.willuhn.jameica.system.Settings s = getResources().getSettings();
           double size = s.getDouble("sql-update-size",-1);
           
           File f = new File(getResources().getPath() + "/sql/update_1.4-1.5.sql");
           
-          if (f.length() != size)
+          long length = f.length();
+          if (length != size)
           {
             getDatabase().executeSQLScript(f);
             s.setAttribute("sql-update-size",(double)f.length());
@@ -244,7 +243,7 @@ public class HBCI extends AbstractPlugin
       HBCIUtils.init(null,null,this.callback);
       HBCIUtils.setParam("log.loglevel.default",""+logLevel);
 
-      de.willuhn.jameica.system.Settings s = new de.willuhn.jameica.system.Settings(HBCI.class);
+      de.willuhn.jameica.system.Settings s = getResources().getSettings();
       String rewriters = s.getString("hbci4java.kernel.rewriters",null);
       if (rewriters != null && rewriters.length() > 0)
       {
@@ -385,6 +384,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.86  2006/03/24 00:15:36  willuhn
+ * @B Duplikate von Settings-Instanzen entfernt
+ *
  * Revision 1.85  2006/02/27 16:54:13  willuhn
  * *** empty log message ***
  *

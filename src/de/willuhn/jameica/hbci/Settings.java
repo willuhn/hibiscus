@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.39 $
- * $Date: 2005/11/28 11:15:49 $
+ * $Revision: 1.40 $
+ * $Date: 2006/03/24 00:15:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -35,7 +35,7 @@ import de.willuhn.util.I18N;
 public class Settings
 {
 
-  private static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(HBCI.class);
+  private static de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
   private static DBService db = null;
 	private static String workPath = null;
 	private static String libPath = null;
@@ -332,6 +332,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.40  2006/03/24 00:15:35  willuhn
+ * @B Duplikate von Settings-Instanzen entfernt
+ *
  * Revision 1.39  2005/11/28 11:15:49  willuhn
  * @C database check can be disabled
  *
