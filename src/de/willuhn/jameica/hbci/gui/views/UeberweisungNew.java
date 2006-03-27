@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UeberweisungNew.java,v $
- * $Revision: 1.9 $
- * $Date: 2006/01/18 00:51:00 $
+ * $Revision: 1.10 $
+ * $Date: 2006/03/27 16:46:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -46,10 +46,10 @@ public class UeberweisungNew extends AbstractView {
 		
 		LabelGroup konten = new LabelGroup(getParent(),i18n.tr("Konten"));
 		
-		konten.addLabelPair(i18n.tr("persönliches Konto"),				control.getKontoAuswahl());		
-    konten.addLabelPair(i18n.tr("Name Empfänger"),            control.getEmpfaengerName());
-		konten.addLabelPair(i18n.tr("Kontonummer Empfänger"),			control.getEmpfaengerKonto());		
-		konten.addLabelPair(i18n.tr("BLZ Empfänger"),				      control.getEmpfaengerBlz());		
+		konten.addLabelPair(i18n.tr("persönliches Konto"),				    control.getKontoAuswahl());		
+    konten.addLabelPair(i18n.tr("Kontonummer des Empfängers"),    control.getEmpfaengerKonto());    
+    konten.addLabelPair(i18n.tr("BLZ des Empfängers"),            control.getEmpfaengerBlz());    
+    konten.addLabelPair(i18n.tr("Name des Empfängers"),           control.getEmpfaengerName());
 		konten.addCheckbox(control.getStoreEmpfaenger(),i18n.tr("Empfängerdaten im Adressbuch speichern"));
 
 		LabelGroup details = new LabelGroup(getParent(),i18n.tr("Details"));
@@ -88,6 +88,9 @@ public class UeberweisungNew extends AbstractView {
 
 /**********************************************************************
  * $Log: UeberweisungNew.java,v $
+ * Revision 1.10  2006/03/27 16:46:21  willuhn
+ * @N GUI polish
+ *
  * Revision 1.9  2006/01/18 00:51:00  willuhn
  * @B bug 65
  *

@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractSammelTransferBuchungControl.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/02/06 16:03:50 $
+ * $Revision: 1.3 $
+ * $Date: 2006/03/27 16:46:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,7 +18,6 @@ import org.kapott.hbci.manager.HBCIUtils;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.dialogs.ListDialog;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.DialogInput;
@@ -26,7 +25,7 @@ import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
-import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.dialogs.AdresseAuswahlDialog;
 import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.system.Application;
@@ -82,15 +81,9 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 		if (gkNummer != null)
 			return gkNummer;
 
-		ListDialog d = new ListDialog(Settings.getDBService().createList(Adresse.class),ListDialog.POSITION_MOUSE);
-		d.addColumn(i18n.tr("Name"),"name");
-		d.addColumn(i18n.tr("Kontonummer"),"kontonummer");
-		d.addColumn(i18n.tr("BLZ"),"blz");
-		d.setTitle(i18n.tr("Auswahl des Gegenkontos"));
-		d.addCloseListener(new GegenkontoListener());
-
-		gkNummer = new DialogInput(getBuchung().getGegenkontoNummer(),d);
-
+    AdresseAuswahlDialog d = new AdresseAuswahlDialog(AdresseAuswahlDialog.POSITION_MOUSE);
+    d.addCloseListener(new GegenkontoListener());
+    gkNummer = new DialogInput(getBuchung().getGegenkontoNummer(),d);
 		return gkNummer;
 	}
 
@@ -254,6 +247,9 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferBuchungControl.java,v $
+ * Revision 1.3  2006/03/27 16:46:21  willuhn
+ * @N GUI polish
+ *
  * Revision 1.2  2006/02/06 16:03:50  willuhn
  * @B bug 163
  *
