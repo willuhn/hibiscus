@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/VelocityExporter.java,v $
- * $Revision: 1.7 $
- * $Date: 2006/01/23 23:07:23 $
+ * $Revision: 1.8 $
+ * $Date: 2006/03/27 22:36:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -208,7 +208,7 @@ public class VelocityExporter implements Exporter
      */
     public String[] getFileExtensions()
     {
-      return new String[]{"*." + extension};
+      return new String[]{extension};
     }
     
     /**
@@ -226,6 +226,9 @@ public class VelocityExporter implements Exporter
 
 /**********************************************************************
  * $Log: VelocityExporter.java,v $
+ * Revision 1.8  2006/03/27 22:36:04  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2006/01/23 23:07:23  willuhn
  * @N csv import stuff
  *
