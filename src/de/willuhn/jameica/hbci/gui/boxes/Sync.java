@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Sync.java,v $
- * $Revision: 1.6 $
- * $Date: 2006/03/20 00:35:53 $
+ * $Revision: 1.7 $
+ * $Date: 2006/03/27 21:34:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -81,7 +81,10 @@ public class Sync extends AbstractBox implements Box
   private TablePart getSynchronizeList() throws RemoteException
   {
     if (this.list == null)
+    {
       this.list = new SynchronizeList();
+      this.list.setSummary(false);
+    }
     return this.list;
   }
   /**
@@ -122,6 +125,9 @@ public class Sync extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: Sync.java,v $
+ * Revision 1.7  2006/03/27 21:34:16  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.6  2006/03/20 00:35:53  willuhn
  * @N new box "Konten-Übersicht"
  *

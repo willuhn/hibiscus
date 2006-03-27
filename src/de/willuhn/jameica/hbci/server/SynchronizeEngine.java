@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/SynchronizeEngine.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/03/21 00:44:40 $
+ * $Revision: 1.5 $
+ * $Date: 2006/03/27 21:34:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -113,10 +113,11 @@ public class SynchronizeEngine
 
     final String id = k.getID();
     final de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
+    boolean saldo  = settings.getBoolean("sync.konto." + id + ".saldo",true);
     boolean umsatz = settings.getBoolean("sync.konto." + id + ".umsatz",true);
-    boolean ueb    = settings.getBoolean("sync.konto." + id + ".ueb",true);
-    boolean last   = settings.getBoolean("sync.konto." + id + ".last",true);
-    boolean dauer  = settings.getBoolean("sync.konto." + id + ".dauer",true);
+    boolean ueb    = settings.getBoolean("sync.konto." + id + ".ueb",false);
+    boolean last   = settings.getBoolean("sync.konto." + id + ".last",false);
+    boolean dauer  = settings.getBoolean("sync.konto." + id + ".dauer",false);
 
     if (ueb)
     {
@@ -172,8 +173,12 @@ public class SynchronizeEngine
       // damit die oben gesendeten Ueberweisungen gleich mit
       // erscheinen, insofern die Bank das unterstuetzt.
       Logger.info("adding umsatz job");
-      list.add(new SynchronizeSaldoJob(k));
       list.add(new SynchronizeUmsatzJob(k));
+    }
+    if (saldo)
+    {
+      Logger.info("adding saldo job");
+      list.add(new SynchronizeSaldoJob(k));
     }
   }
   
@@ -205,6 +210,9 @@ public class SynchronizeEngine
 
 /**********************************************************************
  * $Log: SynchronizeEngine.java,v $
+ * Revision 1.5  2006/03/27 21:34:16  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2006/03/21 00:44:40  willuhn
  * *** empty log message ***
  *

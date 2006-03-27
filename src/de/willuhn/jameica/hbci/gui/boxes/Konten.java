@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Konten.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/03/20 00:35:54 $
+ * $Revision: 1.2 $
+ * $Date: 2006/03/27 21:34:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -72,6 +72,7 @@ public class Konten extends AbstractBox implements Box
   {
     new Headline(parent,getName());
     KontoList l = new KontoList(new KontoNew());
+    l.setSummary(false);
     l.paint(parent);
   }
 
@@ -80,6 +81,9 @@ public class Konten extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: Konten.java,v $
+ * Revision 1.2  2006/03/27 21:34:16  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2006/03/20 00:35:54  willuhn
  * @N new box "Konten-Übersicht"
  *

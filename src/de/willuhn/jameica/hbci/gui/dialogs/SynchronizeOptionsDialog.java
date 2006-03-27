@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/SynchronizeOptionsDialog.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/03/21 00:43:14 $
+ * $Revision: 1.2 $
+ * $Date: 2006/03/27 21:34:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -57,13 +57,15 @@ public class SynchronizeOptionsDialog extends AbstractDialog
     
     final String id = konto.getID();
     final Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
+    final CheckboxInput saldo  = new CheckboxInput(settings.getBoolean("sync.konto." + id + ".saldo",true));
     final CheckboxInput umsatz = new CheckboxInput(settings.getBoolean("sync.konto." + id + ".umsatz",true));
-    final CheckboxInput ueb    = new CheckboxInput(settings.getBoolean("sync.konto." + id + ".ueb",true));
-    final CheckboxInput last   = new CheckboxInput(settings.getBoolean("sync.konto." + id + ".last",true));
-    final CheckboxInput dauer  = new CheckboxInput(settings.getBoolean("sync.konto." + id + ".dauer",true));
+    final CheckboxInput ueb    = new CheckboxInput(settings.getBoolean("sync.konto." + id + ".ueb",false));
+    final CheckboxInput last   = new CheckboxInput(settings.getBoolean("sync.konto." + id + ".last",false));
+    final CheckboxInput dauer  = new CheckboxInput(settings.getBoolean("sync.konto." + id + ".dauer",false));
 
     group.addText(i18n.tr("Bitte wählen Sie aus, welche Geschäftsvorfälle bei\nder Synchronisierung des Kontos ausgeführt werden sollen."),false);
-    group.addCheckbox(umsatz,i18n.tr("Saldo und Umsätze abrufen"));
+    group.addCheckbox(saldo ,i18n.tr("Saldo abrufen"));
+    group.addCheckbox(umsatz,i18n.tr("Umsätze abrufen"));
     group.addCheckbox(ueb   ,i18n.tr("Überfällige Überweisungen absenden"));
     group.addCheckbox(last  ,i18n.tr("Überfällige Lastschriften einziehen"));
     group.addCheckbox(dauer ,i18n.tr("Daueraufträge synchronisieren"));
@@ -72,6 +74,7 @@ public class SynchronizeOptionsDialog extends AbstractDialog
     buttons.addButton(i18n.tr("Übernehmen"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
+        settings.setAttribute("sync.konto." + id + ".saldo",  ((Boolean)saldo.getValue()).booleanValue());
         settings.setAttribute("sync.konto." + id + ".umsatz", ((Boolean)umsatz.getValue()).booleanValue());
         settings.setAttribute("sync.konto." + id + ".ueb",    ((Boolean)ueb.getValue()).booleanValue());
         settings.setAttribute("sync.konto." + id + ".last",   ((Boolean)last.getValue()).booleanValue());
@@ -100,6 +103,9 @@ public class SynchronizeOptionsDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: SynchronizeOptionsDialog.java,v $
+ * Revision 1.2  2006/03/27 21:34:16  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2006/03/21 00:43:14  willuhn
  * @B bug 209
  *
