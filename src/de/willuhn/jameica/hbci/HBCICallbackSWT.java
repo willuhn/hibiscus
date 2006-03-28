@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.35 $
- * $Date: 2006/02/23 22:14:58 $
+ * $Revision: 1.36 $
+ * $Date: 2006/03/28 17:52:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -29,7 +29,6 @@ import org.kapott.hbci.passport.HBCIPassportRDHNew;
 
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.gui.DialogFactory;
-import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Nachricht;
 import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.security.Wallet;
@@ -49,7 +48,6 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 	private I18N i18n;
 	private Hashtable accountCache = new Hashtable();
-  private de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(this.getClass());
 
   /**
    * ct.
@@ -194,15 +192,11 @@ public class HBCICallbackSWT extends AbstractHBCICallback
         // BUGZILLA 200
         case NEED_PT_SECMECH:
 
-          Konto konto = HBCIFactory.getInstance().getCurrentKonto();
-          if (konto != null)
+          String type = Settings.getSecMech(HBCIFactory.getInstance().getCurrentKonto());
+          if (type != null && type.length() > 0)
           {
-            String type = settings.getString("konto." + konto.getID() + ".secmech",null);
-            if (type != null && type.length() > 0)
-            {
-              retData.replace(0,retData.length(),type);
-              break;
-            }
+            retData.replace(0,retData.length(),type);
+            break;
           }
           
           retData.replace(0,retData.length(),DialogFactory.getPtSechMech(retData.toString()));
@@ -512,6 +506,9 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.36  2006/03/28 17:52:23  willuhn
+ * @B bug 218
+ *
  * Revision 1.35  2006/02/23 22:14:58  willuhn
  * @B bug 200 (Speichern der Auswahl)
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/PtSecMechDialog.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/02/23 22:14:58 $
+ * $Revision: 1.2 $
+ * $Date: 2006/03/28 17:52:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,12 +26,11 @@ import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.HBCICallbackSWT;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
-import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -86,17 +85,20 @@ public class PtSecMechDialog extends AbstractDialog
             Boolean b = (Boolean) getSave().getValue();
             if (b.booleanValue())
             {
+              // BUGZILLA 218
               try
               {
-                Settings s = new Settings(HBCICallbackSWT.class);
-                Konto k = HBCIFactory.getInstance().getCurrentKonto();
-                if (k != null)
-                  s.setAttribute("konto." + k.getID() + ".secmech",choosen.getID());
+                Application.getCallback().notifyUser(
+                    i18n.tr("Sie können diese Vorauswahl später in der PIN/TAN-Konfiguration\n" +
+                             "über die Option \"Automatische Auswahl des TAN-Verfahrens löschen\"\n" +
+                             "wieder rückgängig machen."));
               }
-              catch (RemoteException e)
+              catch (Exception e)
               {
-                Logger.error("unable to save selection",e);
+                Logger.error("unable to notify user",e);
               }
+              Konto k = HBCIFactory.getInstance().getCurrentKonto();
+              Settings.setSecMech(k,choosen.getID());
             }
           }
           close();
@@ -223,6 +225,9 @@ public class PtSecMechDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: PtSecMechDialog.java,v $
+ * Revision 1.2  2006/03/28 17:52:23  willuhn
+ * @B bug 218
+ *
  * Revision 1.1  2006/02/23 22:14:58  willuhn
  * @B bug 200 (Speichern der Auswahl)
  *

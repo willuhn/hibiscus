@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.40 $
- * $Date: 2006/03/24 00:15:35 $
+ * $Revision: 1.41 $
+ * $Date: 2006/03/28 17:52:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,6 +22,7 @@ import org.eclipse.swt.graphics.RGB;
 
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.security.Wallet;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.ServiceSettings;
@@ -202,6 +203,42 @@ public class Settings
   {
     return settings.getBoolean("checkpin",true);
   }
+  
+  /**
+   * Liefert einen ggf gespeicherten Sicherheitsmechanismus fuer das Konto.
+   * @param konto zu testendes Konto.
+   * @return ID des Sicherheitsmechanismus.
+   */
+  public static String getSecMech(Konto konto)
+  {
+    try
+    {
+      return settings.getString("secmech.konto." + konto.getID(),null);
+    }
+    catch (RemoteException e)
+    {
+      Logger.error("unable to check secmech for konto",e);
+    }
+    return null;
+  }
+  
+  /**
+   * Speichert einen Sicherheitsmechanismus fuer fuer das Konto.
+   * @param konto zu testendes Konto.
+   * @param s der Sicherheitsmechanismus.
+   */
+  public static void setSecMech(Konto konto, String s)
+  {
+    try
+    {
+      settings.setAttribute("secmech.konto." + konto.getID(),s);
+    }
+    catch (RemoteException e)
+    {
+      Logger.error("unable to check secmech for konto",e);
+    }
+  }
+  
 
   /**
    * Prueft, ob die MD5-Checksumme der Datenbank geprueft werden soll.
@@ -332,6 +369,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.41  2006/03/28 17:52:23  willuhn
+ * @B bug 218
+ *
  * Revision 1.40  2006/03/24 00:15:35  willuhn
  * @B Duplikate von Settings-Instanzen entfernt
  *
