@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/KontoAuswahlDialog.java,v $
- * $Revision: 1.6 $
- * $Date: 2006/01/17 00:22:36 $
+ * $Revision: 1.7 $
+ * $Date: 2006/03/28 22:53:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@ package de.willuhn.jameica.hbci.gui.dialogs;
 
 import org.eclipse.swt.widgets.Composite;
 
+import de.willuhn.datasource.GenericIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.util.ButtonArea;
@@ -35,6 +36,8 @@ public class KontoAuswahlDialog extends AbstractDialog
 	private I18N i18n;
   private String text = null;
 	private Konto choosen = null;
+  
+  private GenericIterator konten = null;
 
   /**
    * ct.
@@ -42,10 +45,21 @@ public class KontoAuswahlDialog extends AbstractDialog
    */
   public KontoAuswahlDialog(int position)
   {
-    super(position);
-		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+    this(null,position);
+  }
 
-		this.setTitle(i18n.tr("Konto-Auswahl"));
+  /**
+   * ct.
+   * @param konten Liste der anzuzeigenden Konten.
+   * @param position
+   */
+  public KontoAuswahlDialog(GenericIterator konten, int position)
+  {
+    super(position);
+    this.konten = konten;
+    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+
+    this.setTitle(i18n.tr("Konto-Auswahl"));
   }
 
   /**
@@ -68,7 +82,7 @@ public class KontoAuswahlDialog extends AbstractDialog
         close();
       }
     };    
-		final KontoList konten = new KontoList(a);
+		final KontoList konten = this.konten != null ? new KontoList(this.konten,a) : new KontoList(a);
     konten.setContextMenu(null);
     konten.setMulti(false);
     konten.setSummary(false);
@@ -121,6 +135,9 @@ public class KontoAuswahlDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: KontoAuswahlDialog.java,v $
+ * Revision 1.7  2006/03/28 22:53:19  willuhn
+ * @B bug 218
+ *
  * Revision 1.6  2006/01/17 00:22:36  willuhn
  * @N erster Code fuer Swift MT940-Import
  *
