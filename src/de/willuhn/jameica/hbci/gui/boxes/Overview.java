@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Overview.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/03/20 16:59:01 $
+ * $Revision: 1.3 $
+ * $Date: 2006/03/30 20:56:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -87,6 +87,7 @@ public class Overview extends AbstractBox implements Box
     group.addLabelPair(i18n.tr("Ausgaben") + ":", getAusgaben());
     group.addSeparator();
     group.addLabelPair(i18n.tr("Bilanz") + ":", getBilanz());
+    refresh();
   }
 
   /**
@@ -125,7 +126,6 @@ public class Overview extends AbstractBox implements Box
         refresh();
       }
     });
-    refresh();
     return this.kontoAuswahl;
   }
 
@@ -321,6 +321,9 @@ public class Overview extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: Overview.java,v $
+ * Revision 1.3  2006/03/30 20:56:28  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2006/03/20 16:59:01  willuhn
  * @N Overview ueber alle Konten
  *
