@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/UmsatzDaysInput.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/03/15 18:01:30 $
+ * $Revision: 1.3 $
+ * $Date: 2006/03/30 22:22:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -53,6 +53,7 @@ public class UmsatzDaysInput extends SelectInput
     l.add(new DayObject(30,i18n.tr("30 Tage")));
     l.add(new DayObject(60,i18n.tr("60 Tage")));
     l.add(new DayObject(120,i18n.tr("120 Tage")));
+    l.add(new DayObject(365,i18n.tr("1 Jahr")));
     l.add(new DayObject(-1,i18n.tr("alle Umsätze")));
     
     return PseudoIterator.fromArray((DayObject[])l.toArray(new DayObject[l.size()]));
@@ -138,6 +139,9 @@ public class UmsatzDaysInput extends SelectInput
 
 /*********************************************************************
  * $Log: UmsatzDaysInput.java,v $
+ * Revision 1.3  2006/03/30 22:22:32  willuhn
+ * @B bug 217
+ *
  * Revision 1.2  2006/03/15 18:01:30  willuhn
  * @N AbstractHBCIJob#getName
  *

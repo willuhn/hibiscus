@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/EmpfaengerList.java,v $
- * $Revision: 1.6 $
- * $Date: 2006/02/20 22:57:22 $
+ * $Revision: 1.7 $
+ * $Date: 2006/03/30 22:22:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -211,7 +211,7 @@ public class EmpfaengerList extends TablePart implements Part
               if (empty)
               {
                 // ne
-                addItem(a);
+                EmpfaengerList.this.addItem(a);
                 continue;
               }
 
@@ -225,9 +225,10 @@ public class EmpfaengerList extends TablePart implements Part
 
               if (s1.indexOf(text) != -1 || s2.indexOf(text) != -1 || s3.indexOf(text) != -1)
               {
-                addItem(a);
+                EmpfaengerList.this.addItem(a);
               }
             }
+            EmpfaengerList.this.sort();
           }
           catch (Exception e)
           {
@@ -244,6 +245,9 @@ public class EmpfaengerList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: EmpfaengerList.java,v $
+ * Revision 1.7  2006/03/30 22:22:32  willuhn
+ * @B bug 217
+ *
  * Revision 1.6  2006/02/20 22:57:22  willuhn
  * @N Suchfeld in Adress-Liste
  *

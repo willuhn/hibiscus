@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.65 $
- * $Date: 2006/03/21 00:43:14 $
+ * $Revision: 1.66 $
+ * $Date: 2006/03/30 22:22:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -76,7 +76,7 @@ public class KontoControl extends AbstractControl {
 
 	private TablePart kontoList						= null;
 	private TablePart protokoll						= null;
-  private TablePart umsatzList          = null;
+  private UmsatzList umsatzList         = null;
   private UmsatzChart umsatzChart       = null;
 
 	private I18N i18n;
@@ -142,6 +142,7 @@ public class KontoControl extends AbstractControl {
       return umsatzList;
 
     umsatzList = new UmsatzList(getKonto(),HBCIProperties.UMSATZ_DEFAULT_DAYS,new UmsatzDetail());
+    umsatzList.setFilterVisible(false);
     return umsatzList;
   }
 
@@ -452,6 +453,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.66  2006/03/30 22:22:32  willuhn
+ * @B bug 217
+ *
  * Revision 1.65  2006/03/21 00:43:14  willuhn
  * @B bug 209
  *

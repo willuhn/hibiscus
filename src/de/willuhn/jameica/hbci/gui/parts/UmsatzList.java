@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.20 $
- * $Date: 2006/03/30 21:00:11 $
+ * $Revision: 1.21 $
+ * $Date: 2006/03/30 22:22:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,8 @@ package de.willuhn.jameica.hbci.gui.parts;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.swt.SWT;
@@ -46,6 +48,7 @@ import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.UmsatzTypEdit;
 import de.willuhn.jameica.hbci.gui.dialogs.UmsatzTypNewDialog;
+import de.willuhn.jameica.hbci.gui.input.UmsatzDaysInput;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
@@ -61,12 +64,15 @@ public class UmsatzList extends TablePart
 
   private SearchInput search    = null;
   private CheckboxInput regex   = null;
+  
+  private UmsatzDaysInput days  = null;
 
   
   private GenericIterator list  = null;
   private ArrayList umsaetze    = null;
   
-  private KL kl                 = new KL();
+  private KL kl                 = null;
+  private boolean filter        = true;
 
   private I18N i18n;
   
@@ -98,9 +104,8 @@ public class UmsatzList extends TablePart
   public UmsatzList(GenericIterator list, Action action)
   {
     super(list, action);
-    
+
     this.list = list;
-    
     this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     setMulti(true);
     setFormatter(new TableFormatter() {
@@ -143,26 +148,49 @@ public class UmsatzList extends TablePart
   }
   
   /**
+   * Schaltet die Anzeige der Umsatzfilter an oder aus.
+   * @param visible true, wenn die Umsatzfilter angezeigt werden sollen. Default: true.
+   */
+  public void setFilterVisible(boolean visible)
+  {
+    this.filter = visible;
+  }
+  
+  /**
    * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
    */
   public synchronized void paint(Composite parent) throws RemoteException
   {
-    LabelGroup group = new LabelGroup(parent,i18n.tr("Filter"));
+    if (this.filter)
+    {
+      if (this.kl == null)
+        this.kl = new KL();
 
-    // Eingabe-Feld fuer die Suche mit Button hinten dran.
-    this.search = new SearchInput();
-    group.addLabelPair(i18n.tr("Zweck, Name oder Konto enthält"), this.search);
+      LabelGroup group = new LabelGroup(parent,i18n.tr("Filter"));
 
-    // Checkbox zur Aktivierung von regulaeren Ausdruecken
-    this.regex = new CheckboxInput(false);
-    this.regex.addListener(new Listener() {
-      public void handleEvent(Event event)
-      {
-        kl.process();
-      }
-    });
-    group.addCheckbox(this.regex,i18n.tr("Suchbegriff ist ein regulärer Ausdruck"));
+      this.days = new UmsatzDaysInput();
+      this.days.addListener(new Listener() {
+        public void handleEvent(Event event)
+        {
+          kl.process();
+        }
+      });
+      group.addLabelPair(i18n.tr("Nur Umsätze des Zeitraumes"), this.days);
 
+      // Eingabe-Feld fuer die Suche mit Button hinten dran.
+      this.search = new SearchInput();
+      group.addLabelPair(i18n.tr("Zweck, Name oder Konto enthält"), this.search);
+
+      // Checkbox zur Aktivierung von regulaeren Ausdruecken
+      this.regex = new CheckboxInput(false);
+      this.regex.addListener(new Listener() {
+        public void handleEvent(Event event)
+        {
+          kl.process();
+        }
+      });
+      group.addCheckbox(this.regex,i18n.tr("Suchbegriff ist ein regulärer Ausdruck"));
+    }
     super.paint(parent);
 
     // Wir kopieren den ganzen Kram in eine ArrayList, damit die
@@ -174,6 +202,10 @@ public class UmsatzList extends TablePart
       Umsatz u = (Umsatz) list.next();
       umsaetze.add(u);
     }
+
+    // Und einmal starten bitte
+    if (this.filter)
+      kl.process();
   }
 
 
@@ -339,7 +371,16 @@ public class UmsatzList extends TablePart
   private class KL extends KeyAdapter
   {
     private Thread timeout = null;
+    private UmsatzTyp typ = null;
+    private Calendar cal = null;
    
+    private KL() throws RemoteException
+    {
+      DBService service = Settings.getDBService();
+      this.typ = (UmsatzTyp) service.createObject(UmsatzTyp.class,null);
+      this.cal = Calendar.getInstance();
+    }
+    
     /**
      * @see org.eclipse.swt.events.KeyListener#keyReleased(org.eclipse.swt.events.KeyEvent)
      */
@@ -395,42 +436,59 @@ public class UmsatzList extends TablePart
             // Wir holen uns den aktuellen Text
             String text = (String) search.getValue();
 
-            Umsatz u = null;
+            Umsatz u  = null;
+            Date date = null;
 
-            UmsatzTyp typ = null;
-
+            // BUGZILLA 217
+            Date limit = null;
+            int t = ((Integer) days.getValue()).intValue();
+            if (t > 0)
+            {
+              cal.setTime(new Date());
+              cal.add(Calendar.DAY_OF_YEAR,-t);
+              cal.set(Calendar.HOUR_OF_DAY,0);
+              cal.set(Calendar.MINUTE,0);
+              cal.set(Calendar.SECOND,0);
+              cal.set(Calendar.MILLISECOND,0);
+              limit = cal.getTime();
+            }
+            
             boolean empty = text == null || text.length() == 0;
+
             if (!empty)
             {
-              DBService service = Settings.getDBService();
-              typ = (UmsatzTyp) service.createObject(UmsatzTyp.class,null);
               typ.setPattern(text);
               typ.setRegex(((Boolean)regex.getValue()).booleanValue());
             }
-
+            
             for (int i=0;i<umsaetze.size();++i)
             {
               u = (Umsatz) umsaetze.get(i);
+              date = u.getValuta();
+
+              // Wenn der Umsatz ein Datum hat, welches vor dem Limit liegt. Dann raus damit
+              if (date != null && limit != null && date.before(limit))
+                continue;
 
               // Was zum Filtern da?
               if (empty)
               {
-                // ne
-                addItem(u);
+                UmsatzList.this.addItem(u);
                 continue;
               }
 
               if (typ.matches(u))
               {
                 // ggf. vorher geworfene Fehlermeldung wieder entfernen
-                GUI.getStatusBar().setErrorText("");
-                addItem(u);
+                GUI.getView().setErrorText("");
+                UmsatzList.this.addItem(u);
               }
             }
+            UmsatzList.this.sort();
           }
           catch (PatternSyntaxException pe)
           {
-            GUI.getStatusBar().setErrorText(pe.getLocalizedMessage());
+            GUI.getView().setErrorText(pe.getLocalizedMessage());
           }
           catch (Exception e)
           {
@@ -446,6 +504,9 @@ public class UmsatzList extends TablePart
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.21  2006/03/30 22:22:32  willuhn
+ * @B bug 217
+ *
  * Revision 1.20  2006/03/30 21:00:11  willuhn
  * *** empty log message ***
  *
