@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.19 $
- * $Date: 2006/02/20 22:57:22 $
+ * $Revision: 1.20 $
+ * $Date: 2006/03/30 21:00:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -42,6 +42,7 @@ import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.UmsatzTypEdit;
 import de.willuhn.jameica.hbci.gui.dialogs.UmsatzTypNewDialog;
@@ -131,9 +132,9 @@ public class UmsatzList extends TablePart
     addColumn(i18n.tr("Gegenkonto"),                "empfaenger");
     addColumn(i18n.tr("Verwendungszweck"),          "zweck");
     addColumn(i18n.tr("Valuta"),                    "valuta", new DateFormatter(HBCI.DATEFORMAT));
-    addColumn(i18n.tr("Betrag"),                    "betrag", new CurrencyFormatter("",HBCI.DECIMALFORMAT));
+    addColumn(i18n.tr("Betrag"),                    "betrag", new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
     // BUGZILLA 66 http://www.willuhn.de/bugzilla/show_bug.cgi?id=66
-    addColumn(i18n.tr("Saldo zu diesem Zeitpunkt"), "saldo",  new CurrencyFormatter("",HBCI.DECIMALFORMAT));
+    addColumn(i18n.tr("Saldo zu diesem Zeitpunkt"), "saldo",  new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
 
     // BUGZILLA 84 http://www.willuhn.de/bugzilla/show_bug.cgi?id=84
     setRememberOrder(true);
@@ -445,6 +446,9 @@ public class UmsatzList extends TablePart
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.20  2006/03/30 21:00:11  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.19  2006/02/20 22:57:22  willuhn
  * @N Suchfeld in Adress-Liste
  *
