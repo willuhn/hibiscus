@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UeberweisungList.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/11/13 17:02:04 $
+ * $Revision: 1.10 $
+ * $Date: 2006/03/30 22:56:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,16 +12,22 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.menus;
 
+import java.rmi.RemoteException;
+
 import de.willuhn.jameica.gui.Action;
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.action.TerminableMarkExecuted;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungDelete;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungDuplicate;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungExecute;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungNew;
+import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -47,6 +53,38 @@ public class UeberweisungList extends ContextMenu
 		addItem(new CheckedContextMenuItem(i18n.tr("Duplizieren"), new UeberweisungDuplicate()));
 		addItem(ContextMenuItem.SEPARATOR);
 		addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new UeberweisungDelete()));
+    addItem(new ContextMenuItem(i18n.tr("Als \"ausgeführt\" markieren..."), new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        new TerminableMarkExecuted().handleAction(context);
+        GUI.startView(GUI.getCurrentView().getClass(),GUI.getCurrentView().getCurrentObject());
+      }
+    }){
+      public boolean isEnabledFor(Object o)
+      {
+        if (o == null || (!(o instanceof Terminable) && !(o instanceof Terminable[])))
+          return false;
+        try
+        {
+          if (o instanceof Terminable)
+            return !((Terminable)o).ausgefuehrt();
+
+          Terminable[] t = (Terminable[]) o;
+          for (int i=0;i<t.length;++i)
+          {
+            if (t[i].ausgefuehrt())
+              return false;
+          }
+          return true;
+        }
+        catch (RemoteException e)
+        {
+          Logger.error("unable to check if terminable is allready executed",e);
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Prüfen, ob Auftrag bereits ausgeführt wurde"),StatusBarMessage.TYPE_ERROR));
+          return false;
+        }
+      }
+    });
 		addItem(ContextMenuItem.SEPARATOR);
 		addItem(new ContextMenuItem(i18n.tr("Neue Überweisung..."), new UNeu()));
 		
@@ -108,6 +146,9 @@ public class UeberweisungList extends ContextMenu
 
 /**********************************************************************
  * $Log: UeberweisungList.java,v $
+ * Revision 1.10  2006/03/30 22:56:46  willuhn
+ * @B bug 216
+ *
  * Revision 1.9  2004/11/13 17:02:04  willuhn
  * @N Bearbeiten des Zahlungsturnus
  *

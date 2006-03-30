@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/SammelUeberweisungList.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/09/30 00:08:51 $
+ * $Revision: 1.2 $
+ * $Date: 2006/03/30 22:56:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,7 +12,10 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.menus;
 
+import java.rmi.RemoteException;
+
 import de.willuhn.jameica.gui.Action;
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
@@ -22,7 +25,10 @@ import de.willuhn.jameica.hbci.gui.action.SammelTransferDuplicate;
 import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungBuchungExport;
 import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungExecute;
 import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungNew;
+import de.willuhn.jameica.hbci.gui.action.TerminableMarkExecuted;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
+import de.willuhn.jameica.hbci.rmi.Terminable;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -50,6 +56,38 @@ public class SammelUeberweisungList extends ContextMenu
     addItem(new CheckedContextMenuItem(i18n.tr("Duplizieren"), new SammelTransferDuplicate()));
 		addItem(ContextMenuItem.SEPARATOR);
 		addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new SammelTransferDelete()));
+    addItem(new ContextMenuItem(i18n.tr("Als \"ausgeführt\" markieren..."), new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        new TerminableMarkExecuted().handleAction(context);
+        GUI.startView(GUI.getCurrentView().getClass(),GUI.getCurrentView().getCurrentObject());
+      }
+    }){
+      public boolean isEnabledFor(Object o)
+      {
+        if (o == null || (!(o instanceof Terminable) && !(o instanceof Terminable[])))
+          return false;
+        try
+        {
+          if (o instanceof Terminable)
+            return !((Terminable)o).ausgefuehrt();
+
+          Terminable[] t = (Terminable[]) o;
+          for (int i=0;i<t.length;++i)
+          {
+            if (t[i].ausgefuehrt())
+              return false;
+          }
+          return true;
+        }
+        catch (RemoteException e)
+        {
+          Logger.error("unable to check if terminable is allready executed",e);
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Prüfen, ob Auftrag bereits ausgeführt wurde"),StatusBarMessage.TYPE_ERROR));
+          return false;
+        }
+      }
+    });
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new CheckedContextMenuItem(i18n.tr("Buchungen exportieren..."),new SammelUeberweisungBuchungExport()));
 		
@@ -111,6 +149,9 @@ public class SammelUeberweisungList extends ContextMenu
 
 /**********************************************************************
  * $Log: SammelUeberweisungList.java,v $
+ * Revision 1.2  2006/03/30 22:56:46  willuhn
+ * @B bug 216
+ *
  * Revision 1.1  2005/09/30 00:08:51  willuhn
  * @N SammelUeberweisungen (merged with SammelLastschrift)
  *
