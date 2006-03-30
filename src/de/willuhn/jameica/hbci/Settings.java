@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.42 $
- * $Date: 2006/03/28 22:53:19 $
+ * $Revision: 1.43 $
+ * $Date: 2006/03/30 08:30:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -211,6 +211,11 @@ public class Settings
    */
   public static String getSecMech(Konto konto)
   {
+    if (konto == null)
+    {
+      Logger.warn("no account given");
+      return null;
+    }
     try
     {
       return settings.getString("secmech.konto." + konto.getID(),null);
@@ -229,6 +234,11 @@ public class Settings
    */
   public static void setSecMech(Konto konto, String s)
   {
+    if (konto == null)
+    {
+      Logger.warn("no account given");
+      return;
+    }
     try
     {
       settings.setAttribute("secmech.konto." + konto.getID(),s);
@@ -370,6 +380,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.43  2006/03/30 08:30:38  willuhn
+ * @B bug 218
+ *
  * Revision 1.42  2006/03/28 22:53:19  willuhn
  * @B bug 218
  *
