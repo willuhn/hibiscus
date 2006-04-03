@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.19 $
- * $Date: 2005/12/30 00:14:45 $
+ * $Revision: 1.20 $
+ * $Date: 2006/04/03 21:39:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -81,7 +81,20 @@ public class UmsatzTypImpl extends AbstractDBObject implements UmsatzTyp
    */
   public GenericIterator getUmsaetze() throws RemoteException
   {
+    return getUmsaetze(-1);
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getUmsaetze(int)
+   */
+  public GenericIterator getUmsaetze(int days) throws RemoteException
+  {
     DBIterator list = getService().createList(Umsatz.class);
+    if (days > 0)
+    {
+      long d = days * 24l * 60l * 60l * 1000l;
+      list.addFilter("TONUMBER(valuta) > " + (System.currentTimeMillis() - d));
+    }
     ArrayList result = new ArrayList();
     while (list.hasNext())
     {
@@ -198,9 +211,21 @@ public class UmsatzTypImpl extends AbstractDBObject implements UmsatzTyp
    */
   public double getUmsatz() throws RemoteException
   {
+    return getUmsatz(-1);
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getUmsatz(int)
+   */
+  public double getUmsatz(int days) throws RemoteException
+  {
     // TODO Das kann man mal ueber einen SQL-Join schneller machen
     double sum = 0.0d;
-    GenericIterator i = getUmsaetze();
+    GenericIterator i = null;
+    if (days > 0)
+      i = getUmsaetze(days);
+    else
+      i = getUmsaetze();
     while (i.hasNext())
     {
       Umsatz u = (Umsatz) i.next();
@@ -216,6 +241,19 @@ public class UmsatzTypImpl extends AbstractDBObject implements UmsatzTyp
   {
     if ("umsatz".equals(arg0)) // Synthetisches Attribut "umsatz"
       return new Double(getUmsatz());
+    if (arg0 != null && arg0.startsWith("umsatz"))
+    {
+      // TODO: Beheben! Das ist haesslich!
+      try
+      {
+        String[] s = arg0.split(":");
+        return new Double(getUmsatz(Integer.parseInt(s[1])));
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to parse number of days: " + arg0);
+      }
+    }
     return super.getAttribute(arg0);
   }
 
@@ -240,6 +278,9 @@ public class UmsatzTypImpl extends AbstractDBObject implements UmsatzTyp
 
 /**********************************************************************
  * $Log: UmsatzTypImpl.java,v $
+ * Revision 1.20  2006/04/03 21:39:07  willuhn
+ * @N UmsatzChart
+ *
  * Revision 1.19  2005/12/30 00:14:45  willuhn
  * @N first working pie charts
  *

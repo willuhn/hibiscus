@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/Attic/UmsatzChart.java,v $
- * $Revision: 1.3 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTypChart.java,v $
+ * $Revision: 1.1 $
  * $Date: 2006/04/03 21:39:07 $
  * $Author: willuhn $
  * $Locker:  $
@@ -20,41 +20,37 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.util.Color;
+import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.chart.ChartData;
-import de.willuhn.jameica.hbci.gui.chart.ChartDataSaldoVerlauf;
-import de.willuhn.jameica.hbci.gui.chart.LineChart;
+import de.willuhn.jameica.hbci.gui.chart.ChartDataUmsatzTyp;
+import de.willuhn.jameica.hbci.gui.chart.PieChart;
 import de.willuhn.jameica.hbci.gui.input.UmsatzDaysInput;
-import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
 /**
- * Komponente, die den Umsatzverlauf eines Kontos grafisch anzeigt.
+ * Komponente, die die Umsatzverteilung grafisch anzeigt.
  * @author willuhn
  */
-public class UmsatzChart implements Part
+public class UmsatzTypChart implements Part
 {
   
   private I18N i18n   = null;
-  private Konto konto = null;
   private int start   = HBCIProperties.UMSATZ_DEFAULT_DAYS;
 
   /**
    * ct.
-   * @param konto das Konto.
    */
-  public UmsatzChart(Konto konto)
+  public UmsatzTypChart()
   {
-    this.konto = konto;
     this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
@@ -65,15 +61,23 @@ public class UmsatzChart implements Part
   {
     try
     {
-      final ChartData data = new ChartDataSaldoVerlauf(konto,start);
-      final LineChart chart = new LineChart();
-      chart.addData(data);
-      chart.setTitle(i18n.tr("Saldo im Verlauf der letzten {0} Tage",""+start));
+      final LabelGroup group = new LabelGroup(parent,i18n.tr("Umsatz-Verteilung"),true);
+      final ChartData eData = new ChartDataUmsatzTyp(true,start);
+      final ChartData aData = new ChartDataUmsatzTyp(false,start);
       
+      final PieChart einnahmen = new PieChart();
+      einnahmen.setTitle(i18n.tr("Einnahmen ({0} Tage)",""+start));
+      einnahmen.addData(eData);
+
+      final PieChart ausgaben = new PieChart();
+      ausgaben.setTitle(i18n.tr("Ausgaben ({0} Tage)",""+start));
+      ausgaben.addData(aData);
+
       final UmsatzDaysInput i = new UmsatzDaysInput();
       i.addListener(new Listener()
       {
-        private ChartData myData = null;
+        private ChartData myEData = null;
+        private ChartData myAData = null;
         public void handleEvent(Event event)
         {
           try
@@ -84,18 +88,27 @@ public class UmsatzChart implements Part
 
             start = newStart;
             
-            if (myData != null)
-              chart.removeData(myData);
-            else
-              chart.removeData(data);
+            if (myEData != null) einnahmen.removeData(myEData);
+            else                 einnahmen.removeData(eData);
+            if (myAData != null) ausgaben.removeData(myAData);
+            else                 ausgaben.removeData(aData);
 
-            myData = new ChartDataSaldoVerlauf(konto,newStart);
+            myEData = new ChartDataUmsatzTyp(true,newStart);
+            myAData = new ChartDataUmsatzTyp(false,newStart);
             if (newStart < 0)
-              chart.setTitle(i18n.tr("Saldo im Verlauf (alle Umsätze)"));
+            {
+              einnahmen.setTitle(i18n.tr("Einnahmen (alle Umsätze)"));
+              ausgaben.setTitle(i18n.tr("Ausgaben (alle Umsätze)"));
+            }
             else
-              chart.setTitle(i18n.tr("Saldo im Verlauf der letzten {0} Tage",""+newStart));
-            chart.addData(myData);
-            chart.redraw();
+            {
+              einnahmen.setTitle(i18n.tr("Einnahmen ({0} Tage)",""+newStart));
+              ausgaben.setTitle(i18n.tr("Ausgaben ({0} Tage)",""+newStart));
+            }
+            einnahmen.addData(myEData);
+            ausgaben.addData(myAData);
+            einnahmen.redraw();
+            ausgaben.redraw();
           }
           catch (Throwable t)
           {
@@ -106,25 +119,27 @@ public class UmsatzChart implements Part
       });
 
 
-      Label l = GUI.getStyleFactory().createLabel(parent,SWT.NONE);
-      l.setBackground(Color.BACKGROUND.getSWTColor());
-      l.setText(i18n.tr("Anzahl der anzuzeigenden Tage"));
-      i.paint(parent);
+      group.addLabelPair(i18n.tr("Anzahl der anzuzeigenden Tage"),i);
+//      Label l = GUI.getStyleFactory().createLabel(parent,SWT.NONE);
+//      l.setBackground(Color.BACKGROUND.getSWTColor());
+//      l.setText(i18n.tr("Anzahl der anzuzeigenden Tage"));
+//      i.paint(parent);
       
-      Composite comp = new Composite(parent,SWT.NONE);
+      Composite comp = new Composite(group.getComposite(),SWT.NONE);
       GridData gridData = new GridData(GridData.FILL_BOTH);
       gridData.horizontalSpan = 2;
       comp.setLayoutData(gridData);
       comp.setBackground(Color.BACKGROUND.getSWTColor());
 
-      GridLayout layout = new GridLayout();
+      GridLayout layout = new GridLayout(2,true);
       layout.horizontalSpacing = 0;
       layout.verticalSpacing = 0;
       layout.marginHeight = 0;
       layout.marginWidth = 0;
       comp.setLayout(layout);
       
-      chart.paint(comp);
+      einnahmen.paint(comp);
+      ausgaben.paint(comp);
     }
     catch (RemoteException re)
     {
@@ -133,7 +148,7 @@ public class UmsatzChart implements Part
     catch (Exception e)
     {
       Logger.error("unable to paint chart",e);
-      GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Anzeigen des Saldo-Verlaufs"));
+      GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Anzeigen der Umsatzverteilung"));
     }
   }
 
@@ -141,14 +156,8 @@ public class UmsatzChart implements Part
 
 
 /*********************************************************************
- * $Log: UmsatzChart.java,v $
- * Revision 1.3  2006/04/03 21:39:07  willuhn
+ * $Log: UmsatzTypChart.java,v $
+ * Revision 1.1  2006/04/03 21:39:07  willuhn
  * @N UmsatzChart
- *
- * Revision 1.2  2006/03/15 18:01:30  willuhn
- * @N AbstractHBCIJob#getName
- *
- * Revision 1.1  2006/03/09 18:24:05  willuhn
- * @N Auswahl der Tage in Umsatz-Chart
  *
  *********************************************************************/

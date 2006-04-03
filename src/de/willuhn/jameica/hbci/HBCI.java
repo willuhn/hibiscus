@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.87 $
- * $Date: 2006/04/03 20:37:52 $
+ * $Revision: 1.88 $
+ * $Date: 2006/04/03 21:39:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -147,7 +147,6 @@ public class HBCI extends AbstractPlugin
 			Application.getCallback().getStartupMonitor().setStatusText("hibiscus: checking database integrity");
 
 //      ////////////////////////////////////////////////////////////////////////////
-//      // TODO WIEDER ENTFERNEN, WENN RELEASED
 //      // Damit wir die Updates nicht immer haendisch nachziehen muessen, rufen wir
 //      // bei einem Fehler das letzte Update-Script nochmal auf.
 //			if (!Application.inClientMode())
@@ -383,6 +382,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.88  2006/04/03 21:39:07  willuhn
+ * @N UmsatzChart
+ *
  * Revision 1.87  2006/04/03 20:37:52  willuhn
  * *** empty log message ***
  *

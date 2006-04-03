@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/UmsatzTyp.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/03/20 00:35:53 $
+ * $Revision: 1.4 $
+ * $Date: 2006/04/03 21:39:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,25 +15,15 @@ package de.willuhn.jameica.hbci.gui.boxes;
 
 import java.rmi.RemoteException;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
-import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.chart.ChartDataUmsatzTyp;
-import de.willuhn.jameica.hbci.gui.chart.PieChart;
-import de.willuhn.jameica.system.Application;
-import de.willuhn.logging.Logger;
-import de.willuhn.util.I18N;
+import de.willuhn.jameica.hbci.gui.parts.UmsatzTypChart;
 
 /**
  * Implementierung einer Box, die die Umsatzverteilung anzeigt.
  */
 public class UmsatzTyp extends AbstractBox
 {
-  private I18N i18n = null;
 
   /**
    * ct.
@@ -41,7 +31,6 @@ public class UmsatzTyp extends AbstractBox
   public UmsatzTyp()
   {
     super();
-    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
   /**
@@ -73,29 +62,8 @@ public class UmsatzTyp extends AbstractBox
    */
   public void paint(Composite parent) throws RemoteException
   {
-    try
-    {
-      // Wir unterteilen das Composite in zwei Haelften. Eines fuer Einnahmen und
-      // eines fuer Ausgaben
-      Composite comp = new Composite(parent,SWT.NONE);
-      comp.setLayoutData(new GridData(GridData.FILL_BOTH));
-      comp.setLayout(new GridLayout(2,true));
-      
-      PieChart einnahmen = new PieChart();
-      einnahmen.setTitle(i18n.tr("Einnahmen"));
-      einnahmen.addData(new ChartDataUmsatzTyp(true));
-      einnahmen.paint(comp);
-
-      PieChart ausgaben = new PieChart();
-      ausgaben.setTitle(i18n.tr("Ausgaben"));
-      ausgaben.addData(new ChartDataUmsatzTyp(false));
-      ausgaben.paint(comp);
-    }
-    catch (Exception e)
-    {
-      Logger.error("unable to create pie chart",e);
-      GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Erzeugen des Diagramms"));
-    }
+    UmsatzTypChart chart = new UmsatzTypChart();
+    chart.paint(parent);
   }
 
 }
@@ -103,6 +71,9 @@ public class UmsatzTyp extends AbstractBox
 
 /*********************************************************************
  * $Log: UmsatzTyp.java,v $
+ * Revision 1.4  2006/04/03 21:39:07  willuhn
+ * @N UmsatzChart
+ *
  * Revision 1.3  2006/03/20 00:35:53  willuhn
  * @N new box "Konten-Übersicht"
  *
