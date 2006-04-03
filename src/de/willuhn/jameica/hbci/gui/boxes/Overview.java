@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Overview.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/03/30 20:56:28 $
+ * $Revision: 1.4 $
+ * $Date: 2006/04/03 20:37:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -50,8 +50,8 @@ public class Overview extends AbstractBox implements Box
   private Input einnahmen          = null;
   private Input bilanz             = null;
   
-  private Input start              = null;
-  private Input end                = null;
+  private DialogInput start        = null;
+  private DialogInput end          = null;
   
   private Date dStart              = null;
   private Date dEnd                = null;
@@ -166,6 +166,8 @@ public class Overview extends AbstractBox implements Box
         if (event == null || event.data == null)
           return;
         dStart = (Date) event.data;
+        start.setValue(dStart);
+        start.setText(HBCI.DATEFORMAT.format(dStart));
         refresh();
       }
     });
@@ -199,6 +201,9 @@ public class Overview extends AbstractBox implements Box
         if (event == null || event.data == null)
           return;
         dEnd = (Date) event.data;
+        end.setValue(dEnd);
+        end.setText(HBCI.DATEFORMAT.format(dEnd));
+        refresh();
       }
     });
     this.end = new DialogInput(HBCI.DATEFORMAT.format(dEnd),d);
@@ -321,6 +326,9 @@ public class Overview extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: Overview.java,v $
+ * Revision 1.4  2006/04/03 20:37:51  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2006/03/30 20:56:28  willuhn
  * *** empty log message ***
  *

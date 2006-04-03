@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.86 $
- * $Date: 2006/03/24 00:15:36 $
+ * $Revision: 1.87 $
+ * $Date: 2006/04/03 20:37:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -146,32 +146,32 @@ public class HBCI extends AbstractPlugin
     try {
 			Application.getCallback().getStartupMonitor().setStatusText("hibiscus: checking database integrity");
 
-      ////////////////////////////////////////////////////////////////////////////
-      // TODO WIEDER ENTFERNEN, WENN RELEASED
-      // Damit wir die Updates nicht immer haendisch nachziehen muessen, rufen wir
-      // bei einem Fehler das letzte Update-Script nochmal auf.
-			if (!Application.inClientMode())
-      {
-        try
-        {
-          de.willuhn.jameica.system.Settings s = getResources().getSettings();
-          double size = s.getDouble("sql-update-size",-1);
-          
-          File f = new File(getResources().getPath() + "/sql/update_1.4-1.5.sql");
-          
-          long length = f.length();
-          if (length != size)
-          {
-            getDatabase().executeSQLScript(f);
-            s.setAttribute("sql-update-size",(double)f.length());
-          }
-        }
-        catch (Exception e2)
-        {
-          e2.printStackTrace();
-        }
-      }
-      ////////////////////////////////////////////////////////////////////////////
+//      ////////////////////////////////////////////////////////////////////////////
+//      // TODO WIEDER ENTFERNEN, WENN RELEASED
+//      // Damit wir die Updates nicht immer haendisch nachziehen muessen, rufen wir
+//      // bei einem Fehler das letzte Update-Script nochmal auf.
+//			if (!Application.inClientMode())
+//      {
+//        try
+//        {
+//          de.willuhn.jameica.system.Settings s = getResources().getSettings();
+//          double size = s.getDouble("sql-update-size",-1);
+//          
+//          File f = new File(getResources().getPath() + "/sql/update_1.4-1.5.sql");
+//          
+//          long length = f.length();
+//          if (length != size)
+//          {
+//            getDatabase().executeSQLScript(f);
+//            s.setAttribute("sql-update-size",(double)f.length());
+//          }
+//        }
+//        catch (Exception e2)
+//        {
+//          e2.printStackTrace();
+//        }
+//      }
+//      ////////////////////////////////////////////////////////////////////////////
 
       checkConsistency();
 		}
@@ -319,12 +319,11 @@ public class HBCI extends AbstractPlugin
       // Bevor wir irgendein Update fahren, checken wir, ob die Datenbank
       // mit der von Jameica gemeldeten Version uebereinstimmt.
 
-//     TODO: Bei Release wieder scharf schalten
 //      String checkSum = getDatabase().getMD5Sum();
 //      Double expectedVersion = (Double) DBMAPPING.get(checkSum);
 //      if (expectedVersion == null)
 //        throw new ApplicationException(getResources().getI18N().tr("Update der Datenbank abgebrochen. Aktuelle Checksumme {0} entspricht keiner bekannten Hibiscus-Version",checkSum));
-
+//
 //      double d = expectedVersion.doubleValue();
 //      if (d != oldVersion)
 //        throw new ApplicationException(getResources().getI18N().tr("Update der Datenbank abgebrochen. Erwartete Datenbank-Version: {0}, tatsächliche Version: {1}", new String[]{df.format(oldVersion),df.format(d)}));
@@ -384,6 +383,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.87  2006/04/03 20:37:52  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.86  2006/03/24 00:15:36  willuhn
  * @B Duplikate von Settings-Instanzen entfernt
  *
