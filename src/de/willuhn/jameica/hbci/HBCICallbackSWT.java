@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.36 $
- * $Date: 2006/03/28 17:52:23 $
+ * $Revision: 1.37 $
+ * $Date: 2006/04/03 12:30:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -215,8 +215,7 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 					break;
 
 				case NEED_CONNECTION:
-					if (!Settings.getOnlineMode())
-						DialogFactory.openSimple(i18n.tr("Internet-Verbindung"),i18n.tr("Bitte stellen Sie sicher, dass eine Internetverbindung verfügbar ist."));
+				  DialogFactory.getConnection();
 					break;
 				case CLOSE_CONNECTION:
 					if (!Settings.getOnlineMode())
@@ -506,6 +505,9 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.37  2006/04/03 12:30:18  willuhn
+ * @N new InternetConnectionDialog
+ *
  * Revision 1.36  2006/03/28 17:52:23  willuhn
  * @B bug 218
  *
