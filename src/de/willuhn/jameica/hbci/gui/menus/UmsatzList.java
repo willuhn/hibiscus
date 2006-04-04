@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UmsatzList.java,v $
- * $Revision: 1.15 $
- * $Date: 2006/04/04 06:47:44 $
+ * $Revision: 1.16 $
+ * $Date: 2006/04/04 21:57:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,7 +22,6 @@ import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDelete;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.action.UmsatzExport;
-import de.willuhn.jameica.hbci.gui.action.UmsatzImport;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
@@ -89,6 +88,9 @@ public class UmsatzList extends ContextMenu implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.16  2006/04/04 21:57:57  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.15  2006/04/04 06:47:44  willuhn
  * *** empty log message ***
  *
