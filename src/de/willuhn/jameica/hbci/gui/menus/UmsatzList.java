@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UmsatzList.java,v $
- * $Revision: 1.14 $
- * $Date: 2006/01/23 12:16:57 $
+ * $Revision: 1.15 $
+ * $Date: 2006/04/04 06:47:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -51,7 +51,7 @@ public class UmsatzList extends ContextMenu implements Extendable
     addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new UmsatzDelete()));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new CheckedContextMenuItem(i18n.tr("Umsätze exportieren..."),new UmsatzExport()));
-    addItem(new ContextMenuItem(i18n.tr("Umsätze importieren..."),new UmsatzImport()));
+    //addItem(new ContextMenuItem(i18n.tr("Umsätze importieren..."),new UmsatzImport()));
     // Wir geben das Context-Menu jetzt noch zur Erweiterung frei.
     ExtensionRegistry.extend(this);
 
@@ -89,6 +89,9 @@ public class UmsatzList extends ContextMenu implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.15  2006/04/04 06:47:44  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.14  2006/01/23 12:16:57  willuhn
  * @N Update auf HBCI4Java 2.5.0-rc5
  *
