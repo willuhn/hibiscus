@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/TANDialog.java,v $
- * $Revision: 1.10 $
- * $Date: 2006/02/06 15:40:44 $
+ * $Revision: 1.11 $
+ * $Date: 2006/04/13 10:36:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,20 +27,24 @@ import de.willuhn.util.I18N;
  * Es muss weder Text, noch Titel oder LabelText gesetzt werden.
  * Das ist alles schon drin.
  */
-public class TANDialog extends PasswordDialog {
+public class TANDialog extends PasswordDialog
+{
 
 	private I18N i18n;
   /**
    * ct.
    */
-  public TANDialog() {
+  public TANDialog()
+  {
     super(TANDialog.POSITION_CENTER);
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
     // Deaktivierung der Anzeige von Sternen im TAN-Dialog.
     setShowPassword(Settings.getShowTan());
-
     setLabelText(i18n.tr("TAN"));
+    
+    // Einmal aufrufen, damit der Text gesetzt wird.
+    setText(null);
 
     String s = null;
     try
@@ -58,25 +62,9 @@ public class TANDialog extends PasswordDialog {
     {
       // ignore
     }
-    if (s != null)
-    {
-      // BUGZILLA: 150
-      String msg = getText();
-      if (msg == null || msg.length() == 0)
-        setText(i18n.tr("Bitte geben Sie eine TAN-Nummer ein. Konto: {0}",s));
-      else
-        setText(msg + "." + i18n.tr("Konto: {0}",s));
-      setTitle(i18n.tr("TAN-Eingabe - Konto {0}",s));
-    }
-    else
-    {
-      String msg = getText();
-      if (msg == null || msg.length() == 0)
-        setText(i18n.tr("Bitte geben Sie eine TAN-Nummer ein."));
-      else
-        setText(msg);
-      setTitle(i18n.tr("TAN-Eingabe"));
-    }
+
+    if (s != null) setTitle(i18n.tr("TAN-Eingabe - Konto {0}",s));
+    else           setTitle(i18n.tr("TAN-Eingabe"));
   
   }
 
@@ -94,6 +82,47 @@ public class TANDialog extends PasswordDialog {
 	}
 
 	/**
+   * BUGZILLA 150
+	 * @see de.willuhn.jameica.gui.dialogs.SimpleDialog#setText(java.lang.String)
+	 */
+	public void setText(String text)
+  {
+    ////////////////////////////////////////////////////////////////////////////
+    // Bezeichnung des Kontos ermitteln
+    String s = null;
+    try
+    {
+      Konto konto = HBCIFactory.getInstance().getCurrentKonto();
+      if (konto != null)
+      {
+        s = konto.getBezeichnung();
+        String name = HBCIUtils.getNameForBLZ(konto.getBLZ());
+        if (name != null && name.length() > 0)
+          s += " [" + name + "]";
+      }
+    }
+    catch (Exception e)
+    {
+      // ignore
+    }
+
+    if (s != null)
+    {
+      if (text == null || text.length() == 0)
+        super.setText(i18n.tr("Bitte geben Sie eine TAN-Nummer ein. Konto: {0}",s));
+      else
+        super.setText(text + ". " + i18n.tr("Konto: {0}",s));
+    }
+    else
+    {
+      if (text == null || text.length() == 0)
+        super.setText(i18n.tr("Bitte geben Sie eine TAN-Nummer ein."));
+      else
+        super.setText(text);
+    }
+  }
+  
+  /**
 	 * Liefert einen locale String mit der Anzahl der Restversuche.
 	 * z.Bsp.: "Noch 2 Versuche.".
    * @return String mit den Restversuchen.
@@ -108,6 +137,9 @@ public class TANDialog extends PasswordDialog {
 
 /**********************************************************************
  * $Log: TANDialog.java,v $
+ * Revision 1.11  2006/04/13 10:36:13  willuhn
+ * @B bug 150
+ *
  * Revision 1.10  2006/02/06 15:40:44  willuhn
  * @B bug 150
  *
