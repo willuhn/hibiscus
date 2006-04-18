@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SynchronizeList.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/03/21 00:43:14 $
+ * $Revision: 1.4 $
+ * $Date: 2006/04/18 22:38:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -41,6 +41,8 @@ public class SynchronizeList extends TablePart
   {
     super(SynchronizeEngine.getInstance().getSynchronizeJobs(),new MyAction());
     addColumn(i18n.tr("Offene Synchronisierungsaufgaben"),"name");
+    
+    this.setSummary(false);
   }
   
   /**
@@ -77,6 +79,9 @@ public class SynchronizeList extends TablePart
 
 /*********************************************************************
  * $Log: SynchronizeList.java,v $
+ * Revision 1.4  2006/04/18 22:38:16  willuhn
+ * @N bug 227
+ *
  * Revision 1.3  2006/03/21 00:43:14  willuhn
  * @B bug 209
  *

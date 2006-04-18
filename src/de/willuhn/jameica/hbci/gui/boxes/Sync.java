@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Sync.java,v $
- * $Revision: 1.7 $
- * $Date: 2006/03/27 21:34:16 $
+ * $Revision: 1.8 $
+ * $Date: 2006/04/18 22:38:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,15 +17,21 @@ import java.rmi.RemoteException;
 
 import org.eclipse.swt.widgets.Composite;
 
+import de.willuhn.datasource.GenericIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.HBCISynchronize;
+import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
+import de.willuhn.jameica.hbci.gui.dialogs.SynchronizeOptionsDialog;
 import de.willuhn.jameica.hbci.gui.parts.SynchronizeList;
+import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.server.SynchronizeEngine;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -37,7 +43,6 @@ public class Sync extends AbstractBox implements Box
 {
 
   private I18N i18n = null;
-  private SynchronizeList list = null;
 
   /**
    * ct.
@@ -62,9 +67,55 @@ public class Sync extends AbstractBox implements Box
   {
     // BUGZILLA 209
     LabelGroup sync = new LabelGroup(parent,getName(),true);
-    getSynchronizeList().paint(sync.getComposite());
+    final SynchronizeList list = new SynchronizeList();
+    list.paint(sync.getComposite());
 
-    ButtonArea b = sync.createButtonArea(1);
+    ButtonArea b = sync.createButtonArea(2);
+
+    // BUGZILLA 226
+    b.addButton(i18n.tr("Optionen..."),new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        try
+        {
+          KontoAuswahlDialog d1 = new KontoAuswahlDialog(SynchronizeEngine.getInstance().getSyncronizeKonten(),KontoAuswahlDialog.POSITION_CENTER);
+          d1.setText(i18n.tr("Bitte wählen Sie das Konto, für welches Sie die " +
+                             "Synchronisierungsoptionen ändern möchten."));
+          Konto k = (Konto) d1.open();
+          if (k == null)
+            return;
+
+          SynchronizeOptionsDialog d = new SynchronizeOptionsDialog(k,SynchronizeOptionsDialog.POSITION_CENTER);
+          d.open();
+          
+          // So, jetzt muessen wir die Liste der Sync-Jobs neu befuellen
+          list.removeAll();
+          GenericIterator items = SynchronizeEngine.getInstance().getSynchronizeJobs();
+          while (items.hasNext())
+          {
+            list.addItem(items.next());
+          }
+          
+          // und neu sortieren
+          list.sort();
+        }
+        catch (OperationCanceledException oce)
+        {
+          // ignore
+        }
+        catch (ApplicationException ae)
+        {
+          throw ae;
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to configure synchronize options");
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Konfigurieren der Synchronisierungsoptionen"),StatusBarMessage.TYPE_ERROR));
+        }
+        
+      }
+    });
+    
     b.addButton(i18n.tr("Synchronisierung starten"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -73,20 +124,6 @@ public class Sync extends AbstractBox implements Box
     },null,true);
   }
 
-  /**
-   * Liefert die Liste der Synchronisierungs-Jobs.
-   * @return Liste.
-   * @throws RemoteException
-   */
-  private TablePart getSynchronizeList() throws RemoteException
-  {
-    if (this.list == null)
-    {
-      this.list = new SynchronizeList();
-      this.list.setSummary(false);
-    }
-    return this.list;
-  }
   /**
    * @see de.willuhn.jameica.hbci.gui.boxes.Box#getDefaultIndex()
    */
@@ -125,6 +162,9 @@ public class Sync extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: Sync.java,v $
+ * Revision 1.8  2006/04/18 22:38:16  willuhn
+ * @N bug 227
+ *
  * Revision 1.7  2006/03/27 21:34:16  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/SynchronizeEngine.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/03/27 21:34:16 $
+ * $Revision: 1.6 $
+ * $Date: 2006/04/18 22:38:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.SynchronizeOptions;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
@@ -37,7 +37,6 @@ import de.willuhn.jameica.hbci.server.hbci.synchronize.SynchronizeSammelLastschr
 import de.willuhn.jameica.hbci.server.hbci.synchronize.SynchronizeSammelUeberweisungJob;
 import de.willuhn.jameica.hbci.server.hbci.synchronize.SynchronizeUeberweisungJob;
 import de.willuhn.jameica.hbci.server.hbci.synchronize.SynchronizeUmsatzJob;
-import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 
 /**
@@ -90,15 +89,25 @@ public class SynchronizeEngine
     }
     else
     {
-      DBIterator konten = Settings.getDBService().createList(Konto.class);
-      konten.addFilter("synchronize = 1");
-      
+      GenericIterator konten = getSyncronizeKonten();
       while (konten.hasNext())
       {
         findJobs((Konto) konten.next(),jobs);
       }
     }
     return PseudoIterator.fromArray((SynchronizeJob[]) jobs.toArray(new SynchronizeJob[jobs.size()]));
+  }
+  
+  /**
+   * Liefert die Liste der zu synchronisierenden Konten.
+   * @return Liste der zu synchronisierenden Konten.
+   * @throws RemoteException
+   */
+  public GenericIterator getSyncronizeKonten() throws RemoteException
+  {
+    DBIterator konten = Settings.getDBService().createList(Konto.class);
+    konten.addFilter("synchronize = 1");
+    return konten;
   }
 
   /**
@@ -111,15 +120,9 @@ public class SynchronizeEngine
   {
     Logger.info("adding open transfers");
 
-    final String id = k.getID();
-    final de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
-    boolean saldo  = settings.getBoolean("sync.konto." + id + ".saldo",true);
-    boolean umsatz = settings.getBoolean("sync.konto." + id + ".umsatz",true);
-    boolean ueb    = settings.getBoolean("sync.konto." + id + ".ueb",false);
-    boolean last   = settings.getBoolean("sync.konto." + id + ".last",false);
-    boolean dauer  = settings.getBoolean("sync.konto." + id + ".dauer",false);
+    final SynchronizeOptions options = new SynchronizeOptions(k);
 
-    if (ueb)
+    if (options.getSyncUeberweisungen())
     {
       addTransfers(k.getUeberweisungen(),new TransferJobCreator() {
         public SynchronizeJob create(Terminable t)
@@ -136,7 +139,7 @@ public class SynchronizeEngine
     }
 
 
-    if (last)
+    if (options.getSyncLastschriften())
     {
       addTransfers(k.getLastschriften(),new TransferJobCreator() {
         public SynchronizeJob create(Terminable t)
@@ -153,7 +156,7 @@ public class SynchronizeEngine
       },list);
     }
 
-    if (dauer)
+    if (options.getSyncDauerauftraege())
     {
       list.add(new SynchronizeDauerauftragListJob(k));
       DBIterator i = k.getDauerauftraege();
@@ -167,7 +170,7 @@ public class SynchronizeEngine
     }
 
 
-    if (umsatz)
+    if (options.getSyncUmsatz())
     {
       // Umsaetze und Salden werden zum Schluss ausgefuehrt,
       // damit die oben gesendeten Ueberweisungen gleich mit
@@ -175,7 +178,7 @@ public class SynchronizeEngine
       Logger.info("adding umsatz job");
       list.add(new SynchronizeUmsatzJob(k));
     }
-    if (saldo)
+    if (options.getSyncSaldo())
     {
       Logger.info("adding saldo job");
       list.add(new SynchronizeSaldoJob(k));
@@ -210,6 +213,9 @@ public class SynchronizeEngine
 
 /**********************************************************************
  * $Log: SynchronizeEngine.java,v $
+ * Revision 1.6  2006/04/18 22:38:16  willuhn
+ * @N bug 227
+ *
  * Revision 1.5  2006/03/27 21:34:16  willuhn
  * *** empty log message ***
  *

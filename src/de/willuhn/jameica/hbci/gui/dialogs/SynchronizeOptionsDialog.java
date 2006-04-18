@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/SynchronizeOptionsDialog.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/03/27 21:34:16 $
+ * $Revision: 1.3 $
+ * $Date: 2006/04/18 22:38:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,9 +21,9 @@ import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.SynchronizeOptions;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.jameica.system.Settings;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -55,13 +55,13 @@ public class SynchronizeOptionsDialog extends AbstractDialog
   {
     LabelGroup group = new LabelGroup(parent,i18n.tr("Optionen"));
     
-    final String id = konto.getID();
-    final Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
-    final CheckboxInput saldo  = new CheckboxInput(settings.getBoolean("sync.konto." + id + ".saldo",true));
-    final CheckboxInput umsatz = new CheckboxInput(settings.getBoolean("sync.konto." + id + ".umsatz",true));
-    final CheckboxInput ueb    = new CheckboxInput(settings.getBoolean("sync.konto." + id + ".ueb",false));
-    final CheckboxInput last   = new CheckboxInput(settings.getBoolean("sync.konto." + id + ".last",false));
-    final CheckboxInput dauer  = new CheckboxInput(settings.getBoolean("sync.konto." + id + ".dauer",false));
+    final SynchronizeOptions options = new SynchronizeOptions(konto);
+
+    final CheckboxInput saldo  = new CheckboxInput(options.getSyncSaldo());
+    final CheckboxInput umsatz = new CheckboxInput(options.getSyncUmsatz());
+    final CheckboxInput ueb    = new CheckboxInput(options.getSyncUeberweisungen());
+    final CheckboxInput last   = new CheckboxInput(options.getSyncLastschriften());
+    final CheckboxInput dauer  = new CheckboxInput(options.getSyncDauerauftraege());
 
     group.addText(i18n.tr("Bitte wählen Sie aus, welche Geschäftsvorfälle bei\nder Synchronisierung des Kontos ausgeführt werden sollen."),false);
     group.addCheckbox(saldo ,i18n.tr("Saldo abrufen"));
@@ -74,11 +74,11 @@ public class SynchronizeOptionsDialog extends AbstractDialog
     buttons.addButton(i18n.tr("Übernehmen"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
-        settings.setAttribute("sync.konto." + id + ".saldo",  ((Boolean)saldo.getValue()).booleanValue());
-        settings.setAttribute("sync.konto." + id + ".umsatz", ((Boolean)umsatz.getValue()).booleanValue());
-        settings.setAttribute("sync.konto." + id + ".ueb",    ((Boolean)ueb.getValue()).booleanValue());
-        settings.setAttribute("sync.konto." + id + ".last",   ((Boolean)last.getValue()).booleanValue());
-        settings.setAttribute("sync.konto." + id + ".dauer",  ((Boolean)dauer.getValue()).booleanValue());
+        options.setSyncSaldo(((Boolean)saldo.getValue()).booleanValue());
+        options.setSyncUmsatz(((Boolean)umsatz.getValue()).booleanValue());
+        options.setSyncUeberweisungen(((Boolean)ueb.getValue()).booleanValue());
+        options.setSyncLastschriften(((Boolean)last.getValue()).booleanValue());
+        options.setSyncDauerauftraege(((Boolean)dauer.getValue()).booleanValue());
         close();
       }
     });
@@ -103,6 +103,9 @@ public class SynchronizeOptionsDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: SynchronizeOptionsDialog.java,v $
+ * Revision 1.3  2006/04/18 22:38:16  willuhn
+ * @N bug 227
+ *
  * Revision 1.2  2006/03/27 21:34:16  willuhn
  * *** empty log message ***
  *

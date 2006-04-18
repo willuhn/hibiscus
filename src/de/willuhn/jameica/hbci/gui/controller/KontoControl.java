@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.66 $
- * $Date: 2006/03/30 22:22:32 $
+ * $Revision: 1.67 $
+ * $Date: 2006/04/18 22:38:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -220,6 +220,10 @@ public class KontoControl extends AbstractControl {
         {
           SynchronizeOptionsDialog d = new SynchronizeOptionsDialog(getKonto(),SynchronizeOptionsDialog.POSITION_CENTER);
           d.open();
+        }
+        catch (OperationCanceledException oce)
+        {
+          // ignore
         }
         catch (ApplicationException ae)
         {
@@ -453,6 +457,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.67  2006/04/18 22:38:16  willuhn
+ * @N bug 227
+ *
  * Revision 1.66  2006/03/30 22:22:32  willuhn
  * @B bug 217
  *
