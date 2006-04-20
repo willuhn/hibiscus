@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Attic/CSVImporter.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/01/23 23:07:23 $
+ * $Revision: 1.2 $
+ * $Date: 2006/04/20 08:44:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -76,8 +76,8 @@ public class CSVImporter implements Importer
   {
     try
     {
-//      if (context == null)
-//        throw new ApplicationException(i18n.tr("Art der zu importierenden Daten nicht ausgewählt"));
+      if (context == null)
+        throw new ApplicationException(i18n.tr("Art der zu importierenden Daten nicht ausgewählt"));
       
       if (is == null)
         throw new ApplicationException(i18n.tr("Keine zu importierende Datei ausgewählt"));
@@ -178,6 +178,9 @@ public class CSVImporter implements Importer
 
 /*******************************************************************************
  * $Log: CSVImporter.java,v $
+ * Revision 1.2  2006/04/20 08:44:21  willuhn
+ * @C s/Childs/Children/
+ *
  * Revision 1.1  2006/01/23 23:07:23  willuhn
  * @N csv import stuff
  *

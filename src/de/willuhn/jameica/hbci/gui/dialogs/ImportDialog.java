@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/ImportDialog.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/01/23 23:07:23 $
+ * $Revision: 1.5 $
+ * $Date: 2006/04/20 08:44:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -77,7 +77,7 @@ public class ImportDialog extends AbstractDialog
   protected void paint(Composite parent) throws Exception
   {
 		LabelGroup group = new LabelGroup(parent,i18n.tr("Auswahl des Import-Filters"));
-		group.addText(i18n.tr("Bitte wählen Sie das gewünschte Dateiformat aus für den Import aus"),true);
+		group.addText(i18n.tr("Bitte wählen Sie das gewünschte Dateiformat für den Import aus"),true);
 
 		group.addLabelPair(i18n.tr("Verfügbare Formate:"),getImporterList());
 
@@ -314,6 +314,9 @@ public class ImportDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: ImportDialog.java,v $
+ * Revision 1.5  2006/04/20 08:44:21  willuhn
+ * @C s/Childs/Children/
+ *
  * Revision 1.4  2006/01/23 23:07:23  willuhn
  * @N csv import stuff
  *

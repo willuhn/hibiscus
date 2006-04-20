@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/AbstractChart.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/03/09 18:24:05 $
+ * $Revision: 1.3 $
+ * $Date: 2006/04/20 08:44:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -147,7 +147,7 @@ public abstract class AbstractChart implements Chart, PaintListener
     else
     {
       Logger.debug("dispose old chart");
-      SWTUtil.disposeChilds(this.canvas);
+      SWTUtil.disposeChildren(this.canvas);
     }
     
     GridData gd = new GridData(GridData.FILL_BOTH);
@@ -191,6 +191,9 @@ public abstract class AbstractChart implements Chart, PaintListener
 
 /*********************************************************************
  * $Log: AbstractChart.java,v $
+ * Revision 1.3  2006/04/20 08:44:21  willuhn
+ * @C s/Childs/Children/
+ *
  * Revision 1.2  2006/03/09 18:24:05  willuhn
  * @N Auswahl der Tage in Umsatz-Chart
  *
