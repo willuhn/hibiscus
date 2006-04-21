@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/ImportDialog.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/04/20 08:44:21 $
+ * $Revision: 1.4.2.1 $
+ * $Date: 2006/04/21 09:15:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -39,6 +39,7 @@ import de.willuhn.jameica.hbci.io.IORegistry;
 import de.willuhn.jameica.hbci.io.Importer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.BackgroundTask;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -77,7 +78,7 @@ public class ImportDialog extends AbstractDialog
   protected void paint(Composite parent) throws Exception
   {
 		LabelGroup group = new LabelGroup(parent,i18n.tr("Auswahl des Import-Filters"));
-		group.addText(i18n.tr("Bitte wählen Sie das gewünschte Dateiformat für den Import aus"),true);
+		group.addText(i18n.tr("Bitte wählen Sie das gewünschte Dateiformat aus für den Import aus"),true);
 
 		group.addLabelPair(i18n.tr("Verfügbare Formate:"),getImporterList());
 
@@ -98,11 +99,11 @@ public class ImportDialog extends AbstractDialog
 				doImport();
 			}
 		},null,true);
-		buttons.addButton(i18n.tr("Schliessen"), new Action()
+		buttons.addButton(i18n.tr("Abbrechen"), new Action()
 		{
 			public void handleAction(Object context) throws ApplicationException
 			{
-				close();
+				throw new OperationCanceledException();
 			}
 		});
   }
@@ -314,8 +315,8 @@ public class ImportDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: ImportDialog.java,v $
- * Revision 1.5  2006/04/20 08:44:21  willuhn
- * @C s/Childs/Children/
+ * Revision 1.4.2.1  2006/04/21 09:15:10  willuhn
+ * @B MT940-Import wieder aktiviert
  *
  * Revision 1.4  2006/01/23 23:07:23  willuhn
  * @N csv import stuff
