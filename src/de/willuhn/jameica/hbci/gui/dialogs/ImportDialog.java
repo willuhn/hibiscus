@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/ImportDialog.java,v $
- * $Revision: 1.4.2.1 $
- * $Date: 2006/04/21 09:15:10 $
+ * $Revision: 1.4.2.2 $
+ * $Date: 2006/04/21 09:27:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -78,7 +78,7 @@ public class ImportDialog extends AbstractDialog
   protected void paint(Composite parent) throws Exception
   {
 		LabelGroup group = new LabelGroup(parent,i18n.tr("Auswahl des Import-Filters"));
-		group.addText(i18n.tr("Bitte wählen Sie das gewünschte Dateiformat aus für den Import aus"),true);
+		group.addText(i18n.tr("Bitte wählen Sie das gewünschte Dateiformat für den Import aus"),true);
 
 		group.addLabelPair(i18n.tr("Verfügbare Formate:"),getImporterList());
 
@@ -315,6 +315,9 @@ public class ImportDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: ImportDialog.java,v $
+ * Revision 1.4.2.2  2006/04/21 09:27:26  willuhn
+ * @B typo
+ *
  * Revision 1.4.2.1  2006/04/21 09:15:10  willuhn
  * @B MT940-Import wieder aktiviert
  *
