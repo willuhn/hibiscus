@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCILastschriftJob.java,v $
- * $Revision: 1.8 $
- * $Date: 2006/03/15 18:01:30 $
+ * $Revision: 1.9 $
+ * $Date: 2006/04/25 16:39:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -54,6 +54,9 @@ public class HBCILastschriftJob extends AbstractHBCIJob
 		
 			if (lastschrift.isNewObject())
 				lastschrift.store();
+
+      if (lastschrift.ausgefuehrt())
+        throw new ApplicationException(i18n.tr("Lastschrift wurde bereits ausgeführt"));
 
 			this.lastschrift = lastschrift;
 			this.konto = lastschrift.getKonto();
@@ -147,6 +150,9 @@ public class HBCILastschriftJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCILastschriftJob.java,v $
+ * Revision 1.9  2006/04/25 16:39:06  willuhn
+ * @N Konstruktoren von HBCI-Jobs werfen nun eine ApplicationException, wenn der Auftrag bereits ausgefuehrt wurde
+ *
  * Revision 1.8  2006/03/15 18:01:30  willuhn
  * @N AbstractHBCIJob#getName
  *

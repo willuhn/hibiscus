@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCISammelTransferJob.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/03/15 18:01:30 $
+ * $Revision: 1.5 $
+ * $Date: 2006/04/25 16:39:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -53,6 +53,9 @@ public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
 		
 			if (transfer.isNewObject())
 				transfer.store();
+
+      if (transfer.ausgefuehrt())
+        throw new ApplicationException(i18n.tr("Sammel-Auftrag wurde bereits ausgeführt"));
 
 			this.transfer = transfer;
 			this.konto = transfer.getKonto();
@@ -114,6 +117,9 @@ public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: AbstractHBCISammelTransferJob.java,v $
+ * Revision 1.5  2006/04/25 16:39:07  willuhn
+ * @N Konstruktoren von HBCI-Jobs werfen nun eine ApplicationException, wenn der Auftrag bereits ausgefuehrt wurde
+ *
  * Revision 1.4  2006/03/15 18:01:30  willuhn
  * @N AbstractHBCIJob#getName
  *

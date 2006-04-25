@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUeberweisungJob.java,v $
- * $Revision: 1.28 $
- * $Date: 2006/03/15 18:01:30 $
+ * $Revision: 1.29 $
+ * $Date: 2006/04/25 16:39:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -61,6 +61,9 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
 		
 			if (ueberweisung.isNewObject())
 				ueberweisung.store();
+      
+      if (ueberweisung.ausgefuehrt())
+        throw new ApplicationException(i18n.tr("Überweisung wurde bereits ausgeführt"));
 
       this.ueberweisung = ueberweisung;
       this.konto = this.ueberweisung.getKonto();
@@ -170,6 +173,9 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIUeberweisungJob.java,v $
+ * Revision 1.29  2006/04/25 16:39:07  willuhn
+ * @N Konstruktoren von HBCI-Jobs werfen nun eine ApplicationException, wenn der Auftrag bereits ausgefuehrt wurde
+ *
  * Revision 1.28  2006/03/15 18:01:30  willuhn
  * @N AbstractHBCIJob#getName
  *
