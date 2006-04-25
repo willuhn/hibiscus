@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Konto.java,v $
- * $Revision: 1.30 $
- * $Date: 2006/03/17 00:51:25 $
+ * $Revision: 1.31 $
+ * $Date: 2006/04/25 23:25:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -174,21 +174,15 @@ public interface Konto extends DBObject,Checksum
    * @throws RemoteException
    */
   public DBIterator getUmsaetze() throws RemoteException;
+  
+  /**
+   * BUGZILLA 81 http://www.willuhn.de/bugzilla/show_bug.cgi?id=81
+   * Liefert die Anzahl der Umsaetze auf dem Konto.
+   * @return Anzahl der Umsaetze auf dem Konto.
+   * @throws RemoteException
+   */
+  public int getNumUmsaetze() throws RemoteException;
 
-  /**
-   * Liefert den ersten Umsatz.
-   * @return Umsatz.
-   * @throws RemoteException
-   */
-  public Umsatz getFirstUmsatz() throws RemoteException;
-  
-  /**
-   * Liefert den letzten Umsatz.
-   * @return letzter Umsatz.
-   * @throws RemoteException
-   */
-  public Umsatz getLastUmsatz() throws RemoteException;
-  
   /**
    * Liefert eine Liste aller Umsaetze fuer die letzten x Tage.
    * @param days Anzahl der Tage.
@@ -272,6 +266,9 @@ public interface Konto extends DBObject,Checksum
 
 /**********************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.31  2006/04/25 23:25:12  willuhn
+ * @N bug 81
+ *
  * Revision 1.30  2006/03/17 00:51:25  willuhn
  * @N bug 209 Neues Synchronisierungs-Subsystem
  *

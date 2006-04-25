@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.64 $
- * $Date: 2006/03/20 17:49:01 $
+ * $Revision: 1.65 $
+ * $Date: 2006/04/25 23:25:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,8 @@
 package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.zip.CRC32;
@@ -23,11 +25,12 @@ import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
-import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
+import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
+import de.willuhn.jameica.hbci.rmi.ResultSetExtractor;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
@@ -446,6 +449,9 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    */
   public Object getAttribute(String arg0) throws RemoteException
   {
+    if ("numumsaetze".equals(arg0))
+      return new Integer(getNumUmsaetze());
+    
   	if ("longname".equals(arg0))
     {
       String bez = getBezeichnung();
@@ -495,32 +501,6 @@ public class KontoImpl extends AbstractDBObject implements Konto {
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getFirstUmsatz()
-   */
-  public Umsatz getFirstUmsatz() throws RemoteException
-  {
-    DBIterator list = getService().createList(Umsatz.class);
-    list.addFilter("konto_id = " + getID());
-    list.setOrder("ORDER BY TONUMBER(valuta) ASC");
-    if (!list.hasNext())
-      return null;
-    return (Umsatz) list.next();
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getLastUmsatz()
-   */
-  public Umsatz getLastUmsatz() throws RemoteException
-  {
-    DBIterator list = getService().createList(Umsatz.class);
-    list.addFilter("konto_id = " + getID());
-    list.setOrder("ORDER BY TONUMBER(valuta) DESC");
-    if (!list.hasNext())
-      return null;
-    return (Umsatz) list.next();
-  }
-
-  /**
    * @see de.willuhn.jameica.hbci.rmi.Konto#getSynchronize()
    */
   public boolean getSynchronize() throws RemoteException
@@ -565,6 +545,9 @@ public class KontoImpl extends AbstractDBObject implements Konto {
    */
   private double getSumme(Date from, Date to, boolean ausgaben) throws RemoteException
   {
+    if (this.isNewObject())
+      return 0.0d;
+    
     // Zuruecksetzen der Uhrzeit auf 0:00
     Calendar cal = Calendar.getInstance();
     cal.setTime(from);
@@ -580,22 +563,55 @@ public class KontoImpl extends AbstractDBObject implements Konto {
     cal.set(Calendar.HOUR_OF_DAY,23);
     cal.set(Calendar.MINUTE,59);
     cal.set(Calendar.SECOND,59);
+    cal.set(Calendar.MILLISECOND,999);
     
     Date end = cal.getTime();
 
-    double sum = 0d;
-    DBIterator buchungen = Settings.getDBService().createList(Umsatz.class);
-    buchungen.addFilter("konto_id = " + this.getID());
-    buchungen.addFilter("tonumber(datum) >= " + start.getTime() + " AND tonumber(datum) <= " + end.getTime());
-    if (ausgaben) buchungen.addFilter("betrag < 0");
-    else          buchungen.addFilter("betrag > 0");
-    while (buchungen.hasNext())
-    {
-      Umsatz u = (Umsatz) buchungen.next();
-      sum += u.getBetrag();
-    }
-    return sum;
+    // Die ID muss via tonumber umgewandelt werden, da wir sie als String uebergeben
+    String sql  = "select SUM(betrag) from umsatz where konto_id = TONUMBER(?) " +
+                  "and datum >= ? " +
+                  "and datum <= ? ";
+           sql += "and betrag " + (ausgaben ? "<" : ">") + " 0";
+
+    HBCIDBService service = (HBCIDBService) this.getService();
     
+    ResultSetExtractor rs = new ResultSetExtractor() {
+      public Object extract(ResultSet rs) throws RemoteException, SQLException
+      {
+        if (!rs.next())
+          return new Double(0.0d);
+        return new Double(rs.getDouble(1));
+      }
+    };
+    
+    Double d = (Double) service.execute(sql,new Object[]{this.getID(),start,end},rs);
+    return d == null ? 0.0d : d.doubleValue();
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Konto#getNumUmsaetze()
+   */
+  public int getNumUmsaetze() throws RemoteException
+  {
+    if (this.isNewObject())
+      return 0;
+
+    // Die ID muss via tonumber umgewandelt werden, da wir sie als String uebergeben
+    String sql  = "select count(id) from umsatz where konto_id = TONUMBER(?)";
+
+    HBCIDBService service = (HBCIDBService) this.getService();
+    
+    ResultSetExtractor rs = new ResultSetExtractor() {
+      public Object extract(ResultSet rs) throws RemoteException, SQLException
+      {
+        if (!rs.next())
+          return new Integer(0);
+        return new Integer(rs.getInt(1));
+      }
+    };
+    
+    Integer i = (Integer) service.execute(sql,new Object[]{this.getID()},rs);
+    return i == null ? 0 : i.intValue();
   }
 
   /**
@@ -605,11 +621,15 @@ public class KontoImpl extends AbstractDBObject implements Konto {
   {
     return (String) getAttribute("longname");
   }
+
 }
 
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.65  2006/04/25 23:25:11  willuhn
+ * @N bug 81
+ *
  * Revision 1.64  2006/03/20 17:49:01  willuhn
  * *** empty log message ***
  *

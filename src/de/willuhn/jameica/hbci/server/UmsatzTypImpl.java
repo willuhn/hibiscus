@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.20 $
- * $Date: 2006/04/03 21:39:07 $
+ * $Revision: 1.21 $
+ * $Date: 2006/04/25 23:25:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -219,13 +219,12 @@ public class UmsatzTypImpl extends AbstractDBObject implements UmsatzTyp
    */
   public double getUmsatz(int days) throws RemoteException
   {
-    // TODO Das kann man mal ueber einen SQL-Join schneller machen
+    // Das kann man mal ueber einen SQL-Join schneller machen
+    // Ne, kann man doch nicht, weil jeder Umsatz noch via matches()
+    // auf Treffer mit regulaeren Ausdruecken geprueft wird.
+    // In SQL ist das viel zu aufwaendig
     double sum = 0.0d;
-    GenericIterator i = null;
-    if (days > 0)
-      i = getUmsaetze(days);
-    else
-      i = getUmsaetze();
+    GenericIterator i = getUmsaetze(days);
     while (i.hasNext())
     {
       Umsatz u = (Umsatz) i.next();
@@ -278,6 +277,9 @@ public class UmsatzTypImpl extends AbstractDBObject implements UmsatzTyp
 
 /**********************************************************************
  * $Log: UmsatzTypImpl.java,v $
+ * Revision 1.21  2006/04/25 23:25:09  willuhn
+ * @N bug 81
+ *
  * Revision 1.20  2006/04/03 21:39:07  willuhn
  * @N UmsatzChart
  *
