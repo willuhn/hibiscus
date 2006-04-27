@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <clay-model clay-version="1.1.0">
-<database-model name="hibiscus" alias="" remarks="" author="" version="1.0" sql-dialect-id="jp.azzurri.clay.model.physical.dialect.McKoi_1_0_Dialect" begin-script="" end-script="">
+<database-model name="hibiscus_1.6" alias="" remarks="" author="" version="1.0" sql-dialect-id="jp.azzurri.clay.model.physical.dialect.McKoi_1_0_Dialect" begin-script="" end-script="">
 <database-model-description/>
 <schema-list>
 <schema name="APP" alias="" remarks="">
@@ -9,13 +9,13 @@
 <table-list>
 <table name="dauerauftrag" alias="" remarks="">
 <table-description/>
-<table-figure-bounds x="18" y="16" width="-1" height="-1"/>
+<table-figure-bounds x="560" y="499" width="-1" height="-1"/>
 <column-list>
 <column name="id" alias="" remarks="" mandatory="false" column-size="1024" decimal-digits="-1" default-value="UNIQUEKEY('dauerauftrag')" auto-increment="false">
 <column-description/>
 <data-type name="NUMERIC" jdbc-type="2" selected-variant-pattern="NUMERIC(%p)">
-<variant type-name-pattern="NUMERIC(%p)" precision-variable="%p" precision-min="1" precision-max="31"/>
 <variant type-name-pattern="NUMERIC"/>
+<variant type-name-pattern="NUMERIC(%p)" precision-variable="%p" precision-min="1" precision-max="31"/>
 <variant type-name-pattern="NUMERIC(%p,%s)" precision-variable="%p" precision-min="1" precision-max="31" scale-variable="%s" scale-min="0" scale-max="31"/>
 </data-type>
 </column>
@@ -28,22 +28,22 @@
 <column name="empfaenger_konto" alias="" remarks="" mandatory="true" column-size="15" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 <column name="empfaenger_blz" alias="" remarks="" mandatory="true" column-size="15" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 <column name="empfaenger_name" alias="" remarks="" mandatory="false" column-size="255" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 <column name="betrag" alias="" remarks="" mandatory="true" column-size="1024" decimal-digits="-1" default-value="" auto-increment="false">
@@ -55,15 +55,15 @@
 <column name="zweck" alias="" remarks="" mandatory="true" column-size="27" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 <column name="zweck2" alias="" remarks="" mandatory="false" column-size="27" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 <column name="erste_zahlung" alias="" remarks="" mandatory="true" column-size="0" decimal-digits="0" default-value="" auto-increment="false">
@@ -81,8 +81,8 @@
 <column name="orderid" alias="" remarks="" mandatory="false" column-size="20" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 <column name="zeiteinheit" alias="" remarks="" mandatory="true" column-size="1" decimal-digits="-1" default-value="" auto-increment="false">
@@ -110,7 +110,7 @@
 </primary-key>
 <unique-key-list/>
 <foreign-key-list>
-<foreign-key name="fk_konto4" alias="" remarks="" referenced-table-schema="APP" referenced-table="konto" referenced-key="_ANONYMOUS_CONSTRAINT_6" on-update="NO ACTION" on-delete="NO ACTION" source-multiplicity="0..*" target-multiplicity="1" source-entity-role="" target-entity-role="" source-relationship-type="" target-relationship-type="">
+<foreign-key name="fk_konto4" alias="" remarks="" referenced-table-schema="APP" referenced-table="konto" referenced-key="_ANONYMOUS_CONSTRAINT_260" on-update="NO ACTION" on-delete="NO ACTION" source-multiplicity="0..*" target-multiplicity="1" source-entity-role="" target-entity-role="" source-relationship-type="" target-relationship-type="">
 <foreign-key-description/>
 <foreign-key-figure>
 <fk-fig-bendpoint-list/>
@@ -122,39 +122,46 @@
 </table>
 <table name="empfaenger" alias="" remarks="">
 <table-description/>
-<table-figure-bounds x="229" y="405" width="-1" height="-1"/>
+<table-figure-bounds x="217" y="745" width="-1" height="-1"/>
 <column-list>
 <column name="id" alias="" remarks="" mandatory="false" column-size="1024" decimal-digits="-1" default-value="UNIQUEKEY('empfaenger')" auto-increment="false">
 <column-description/>
 <data-type name="NUMERIC" jdbc-type="2" selected-variant-pattern="NUMERIC(%p)">
-<variant type-name-pattern="NUMERIC(%p)" precision-variable="%p" precision-min="1" precision-max="31"/>
 <variant type-name-pattern="NUMERIC"/>
+<variant type-name-pattern="NUMERIC(%p)" precision-variable="%p" precision-min="1" precision-max="31"/>
 <variant type-name-pattern="NUMERIC(%p,%s)" precision-variable="%p" precision-min="1" precision-max="31" scale-variable="%s" scale-min="0" scale-max="31"/>
 </data-type>
 </column>
 <column name="kontonummer" alias="" remarks="" mandatory="true" column-size="15" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 <column name="blz" alias="" remarks="" mandatory="true" column-size="15" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
-<column name="name" alias="" remarks="" mandatory="true" column-size="255" decimal-digits="0" default-value="" auto-increment="false">
+<column name="name" alias="" remarks="" mandatory="true" column-size="27" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
+</data-type>
+</column>
+<column name="kommentar" alias="" remarks="" mandatory="false" column-size="1000" decimal-digits="0" default-value="" auto-increment="false">
+<column-description/>
+<data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
+<variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 </column-list>
-<primary-key name="_ANONYMOUS_CONSTRAINT_7" alias="" remarks="">
+<primary-key name="_ANONYMOUS_CONSTRAINT_263" alias="" remarks="">
 <primary-key-description/>
 <primary-key-column name="id"/>
 </primary-key>
@@ -164,63 +171,63 @@
 </table>
 <table name="konto" alias="" remarks="">
 <table-description/>
-<table-figure-bounds x="315" y="231" width="-1" height="-1"/>
+<table-figure-bounds x="297" y="150" width="-1" height="-1"/>
 <column-list>
 <column name="id" alias="" remarks="" mandatory="false" column-size="1024" decimal-digits="-1" default-value="UNIQUEKEY('konto')" auto-increment="false">
 <column-description/>
 <data-type name="NUMERIC" jdbc-type="2" selected-variant-pattern="NUMERIC(%p)">
-<variant type-name-pattern="NUMERIC(%p)" precision-variable="%p" precision-min="1" precision-max="31"/>
 <variant type-name-pattern="NUMERIC"/>
+<variant type-name-pattern="NUMERIC(%p)" precision-variable="%p" precision-min="1" precision-max="31"/>
 <variant type-name-pattern="NUMERIC(%p,%s)" precision-variable="%p" precision-min="1" precision-max="31" scale-variable="%s" scale-min="0" scale-max="31"/>
 </data-type>
 </column>
 <column name="kontonummer" alias="" remarks="" mandatory="true" column-size="15" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 <column name="blz" alias="" remarks="" mandatory="true" column-size="15" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 <column name="name" alias="" remarks="" mandatory="true" column-size="255" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 <column name="bezeichnung" alias="" remarks="" mandatory="false" column-size="255" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 <column name="kundennummer" alias="" remarks="" mandatory="true" column-size="255" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 <column name="waehrung" alias="" remarks="" mandatory="true" column-size="6" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 <column name="passport_class" alias="" remarks="" mandatory="true" column-size="1000" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 <column name="saldo" alias="" remarks="" mandatory="false" column-size="1024" decimal-digits="-1" default-value="" auto-increment="false">
@@ -235,8 +242,14 @@
 <variant type-name-pattern="DATE"/>
 </data-type>
 </column>
+<column name="synchronize" alias="" remarks="" mandatory="false" column-size="1" decimal-digits="-1" default-value="" auto-increment="false">
+<column-description/>
+<data-type name="INTEGER" jdbc-type="4" selected-variant-pattern="INTEGER">
+<variant type-name-pattern="INTEGER"/>
+</data-type>
+</column>
 </column-list>
-<primary-key name="_ANONYMOUS_CONSTRAINT_6" alias="" remarks="">
+<primary-key name="_ANONYMOUS_CONSTRAINT_260" alias="" remarks="">
 <primary-key-description/>
 <primary-key-column name="id"/>
 </primary-key>
@@ -246,13 +259,13 @@
 </table>
 <table name="lastschrift" alias="" remarks="">
 <table-description/>
-<table-figure-bounds x="289" y="9" width="-1" height="-1"/>
+<table-figure-bounds x="556" y="7" width="-1" height="-1"/>
 <column-list>
 <column name="id" alias="" remarks="" mandatory="false" column-size="1024" decimal-digits="-1" default-value="UNIQUEKEY('lastschrift')" auto-increment="false">
 <column-description/>
 <data-type name="NUMERIC" jdbc-type="2" selected-variant-pattern="NUMERIC(%p)">
-<variant type-name-pattern="NUMERIC(%p)" precision-variable="%p" precision-min="1" precision-max="31"/>
 <variant type-name-pattern="NUMERIC"/>
+<variant type-name-pattern="NUMERIC(%p)" precision-variable="%p" precision-min="1" precision-max="31"/>
 <variant type-name-pattern="NUMERIC(%p,%s)" precision-variable="%p" precision-min="1" precision-max="31" scale-variable="%s" scale-min="0" scale-max="31"/>
 </data-type>
 </column>
@@ -265,22 +278,22 @@
 <column name="empfaenger_konto" alias="" remarks="" mandatory="true" column-size="15" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 <column name="empfaenger_blz" alias="" remarks="" mandatory="true" column-size="15" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 <column name="empfaenger_name" alias="" remarks="" mandatory="false" column-size="255" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 <column name="betrag" alias="" remarks="" mandatory="true" column-size="1024" decimal-digits="-1" default-value="" auto-increment="false">
@@ -292,15 +305,15 @@
 <column name="zweck" alias="" remarks="" mandatory="true" column-size="27" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 <column name="zweck2" alias="" remarks="" mandatory="false" column-size="27" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 <column name="termin" alias="" remarks="" mandatory="true" column-size="0" decimal-digits="0" default-value="" auto-increment="false">
@@ -318,18 +331,18 @@
 <column name="typ" alias="" remarks="" mandatory="false" column-size="2" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 </column-list>
-<primary-key name="_ANONYMOUS_CONSTRAINT_14" alias="" remarks="">
+<primary-key name="_ANONYMOUS_CONSTRAINT_22" alias="" remarks="">
 <primary-key-description/>
 <primary-key-column name="id"/>
 </primary-key>
 <unique-key-list/>
 <foreign-key-list>
-<foreign-key name="fk_konto5" alias="" remarks="" referenced-table-schema="APP" referenced-table="konto" referenced-key="_ANONYMOUS_CONSTRAINT_6" on-update="NO ACTION" on-delete="NO ACTION" source-multiplicity="0..*" target-multiplicity="1" source-entity-role="" target-entity-role="" source-relationship-type="" target-relationship-type="">
+<foreign-key name="fk_konto_last" alias="" remarks="" referenced-table-schema="APP" referenced-table="konto" referenced-key="_ANONYMOUS_CONSTRAINT_260" on-update="NO ACTION" on-delete="NO ACTION" source-multiplicity="0..*" target-multiplicity="1" source-entity-role="" target-entity-role="" source-relationship-type="" target-relationship-type="">
 <foreign-key-description/>
 <foreign-key-figure>
 <fk-fig-bendpoint-list/>
@@ -341,13 +354,13 @@
 </table>
 <table name="protokoll" alias="" remarks="">
 <table-description/>
-<table-figure-bounds x="402" y="458" width="-1" height="-1"/>
+<table-figure-bounds x="312" y="14" width="-1" height="-1"/>
 <column-list>
 <column name="id" alias="" remarks="" mandatory="false" column-size="1024" decimal-digits="-1" default-value="UNIQUEKEY('protokoll')" auto-increment="false">
 <column-description/>
 <data-type name="NUMERIC" jdbc-type="2" selected-variant-pattern="NUMERIC(%p)">
-<variant type-name-pattern="NUMERIC(%p)" precision-variable="%p" precision-min="1" precision-max="31"/>
 <variant type-name-pattern="NUMERIC"/>
+<variant type-name-pattern="NUMERIC(%p)" precision-variable="%p" precision-min="1" precision-max="31"/>
 <variant type-name-pattern="NUMERIC(%p,%s)" precision-variable="%p" precision-min="1" precision-max="31" scale-variable="%s" scale-min="0" scale-max="31"/>
 </data-type>
 </column>
@@ -360,8 +373,8 @@
 <column name="kommentar" alias="" remarks="" mandatory="true" column-size="1000" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 <column name="datum" alias="" remarks="" mandatory="true" column-size="0" decimal-digits="0" default-value="" auto-increment="false">
@@ -383,7 +396,7 @@
 </primary-key>
 <unique-key-list/>
 <foreign-key-list>
-<foreign-key name="fk_konto3" alias="" remarks="" referenced-table-schema="APP" referenced-table="konto" referenced-key="_ANONYMOUS_CONSTRAINT_6" on-update="NO ACTION" on-delete="NO ACTION" source-multiplicity="0..*" target-multiplicity="1" source-entity-role="" target-entity-role="" source-relationship-type="" target-relationship-type="">
+<foreign-key name="fk_konto3" alias="" remarks="" referenced-table-schema="APP" referenced-table="konto" referenced-key="_ANONYMOUS_CONSTRAINT_260" on-update="NO ACTION" on-delete="NO ACTION" source-multiplicity="0..*" target-multiplicity="1" source-entity-role="" target-entity-role="" source-relationship-type="" target-relationship-type="">
 <foreign-key-description/>
 <foreign-key-figure>
 <fk-fig-bendpoint-list/>
@@ -395,13 +408,13 @@
 </table>
 <table name="slastbuchung" alias="" remarks="">
 <table-description/>
-<table-figure-bounds x="16" y="377" width="-1" height="-1"/>
+<table-figure-bounds x="10" y="23" width="-1" height="-1"/>
 <column-list>
 <column name="id" alias="" remarks="" mandatory="false" column-size="1024" decimal-digits="-1" default-value="UNIQUEKEY('slastbuchung')" auto-increment="false">
 <column-description/>
 <data-type name="NUMERIC" jdbc-type="2" selected-variant-pattern="NUMERIC(%p)">
-<variant type-name-pattern="NUMERIC(%p)" precision-variable="%p" precision-min="1" precision-max="31"/>
 <variant type-name-pattern="NUMERIC"/>
+<variant type-name-pattern="NUMERIC(%p)" precision-variable="%p" precision-min="1" precision-max="31"/>
 <variant type-name-pattern="NUMERIC(%p,%s)" precision-variable="%p" precision-min="1" precision-max="31" scale-variable="%s" scale-min="0" scale-max="31"/>
 </data-type>
 </column>
@@ -414,22 +427,22 @@
 <column name="gegenkonto_nr" alias="" remarks="" mandatory="true" column-size="15" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 <column name="gegenkonto_blz" alias="" remarks="" mandatory="true" column-size="15" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 <column name="gegenkonto_name" alias="" remarks="" mandatory="false" column-size="255" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 <column name="betrag" alias="" remarks="" mandatory="true" column-size="1024" decimal-digits="-1" default-value="" auto-increment="false">
@@ -441,25 +454,25 @@
 <column name="zweck" alias="" remarks="" mandatory="true" column-size="27" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 <column name="zweck2" alias="" remarks="" mandatory="false" column-size="27" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 </column-list>
-<primary-key name="_ANONYMOUS_CONSTRAINT_16" alias="" remarks="">
+<primary-key name="_ANONYMOUS_CONSTRAINT_24" alias="" remarks="">
 <primary-key-description/>
 <primary-key-column name="id"/>
 </primary-key>
 <unique-key-list/>
 <foreign-key-list>
-<foreign-key name="fk_slastschrift1" alias="" remarks="" referenced-table-schema="APP" referenced-table="slastschrift" referenced-key="_ANONYMOUS_CONSTRAINT_15" on-update="NO ACTION" on-delete="NO ACTION" source-multiplicity="0..*" target-multiplicity="1" source-entity-role="" target-entity-role="" source-relationship-type="" target-relationship-type="">
+<foreign-key name="fk_slastschrift1" alias="" remarks="" referenced-table-schema="APP" referenced-table="slastschrift" referenced-key="_ANONYMOUS_CONSTRAINT_25" on-update="NO ACTION" on-delete="NO ACTION" source-multiplicity="0..*" target-multiplicity="1" source-entity-role="" target-entity-role="" source-relationship-type="" target-relationship-type="">
 <foreign-key-description/>
 <foreign-key-figure>
 <fk-fig-bendpoint-list/>
@@ -471,13 +484,13 @@
 </table>
 <table name="slastschrift" alias="" remarks="">
 <table-description/>
-<table-figure-bounds x="18" y="244" width="-1" height="-1"/>
+<table-figure-bounds x="12" y="194" width="-1" height="-1"/>
 <column-list>
 <column name="id" alias="" remarks="" mandatory="false" column-size="1024" decimal-digits="-1" default-value="UNIQUEKEY('slastschrift')" auto-increment="false">
 <column-description/>
 <data-type name="NUMERIC" jdbc-type="2" selected-variant-pattern="NUMERIC(%p)">
-<variant type-name-pattern="NUMERIC(%p)" precision-variable="%p" precision-min="1" precision-max="31"/>
 <variant type-name-pattern="NUMERIC"/>
+<variant type-name-pattern="NUMERIC(%p)" precision-variable="%p" precision-min="1" precision-max="31"/>
 <variant type-name-pattern="NUMERIC(%p,%s)" precision-variable="%p" precision-min="1" precision-max="31" scale-variable="%s" scale-min="0" scale-max="31"/>
 </data-type>
 </column>
@@ -490,8 +503,8 @@
 <column name="bezeichnung" alias="" remarks="" mandatory="true" column-size="255" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 <column name="termin" alias="" remarks="" mandatory="true" column-size="0" decimal-digits="0" default-value="" auto-increment="false">
@@ -507,13 +520,13 @@
 </data-type>
 </column>
 </column-list>
-<primary-key name="_ANONYMOUS_CONSTRAINT_15" alias="" remarks="">
+<primary-key name="_ANONYMOUS_CONSTRAINT_25" alias="" remarks="">
 <primary-key-description/>
 <primary-key-column name="id"/>
 </primary-key>
 <unique-key-list/>
 <foreign-key-list>
-<foreign-key name="fk_konto6" alias="" remarks="" referenced-table-schema="APP" referenced-table="konto" referenced-key="_ANONYMOUS_CONSTRAINT_6" on-update="NO ACTION" on-delete="NO ACTION" source-multiplicity="0..*" target-multiplicity="1" source-entity-role="" target-entity-role="" source-relationship-type="" target-relationship-type="">
+<foreign-key name="fk_konto_slast" alias="" remarks="" referenced-table-schema="APP" referenced-table="konto" referenced-key="_ANONYMOUS_CONSTRAINT_260" on-update="NO ACTION" on-delete="NO ACTION" source-multiplicity="0..*" target-multiplicity="1" source-entity-role="" target-entity-role="" source-relationship-type="" target-relationship-type="">
 <foreign-key-description/>
 <foreign-key-figure>
 <fk-fig-bendpoint-list/>
@@ -523,15 +536,192 @@
 </foreign-key-list>
 <index-list/>
 </table>
+<table name="sueberweisung" alias="" remarks="">
+<table-description/>
+<table-figure-bounds x="13" y="321" width="-1" height="-1"/>
+<column-list>
+<column name="id" alias="" remarks="" mandatory="false" column-size="1024" decimal-digits="-1" default-value="UNIQUEKEY('sueberweisung')" auto-increment="false">
+<column-description/>
+<data-type name="NUMERIC" jdbc-type="2" selected-variant-pattern="NUMERIC(%p)">
+<variant type-name-pattern="NUMERIC"/>
+<variant type-name-pattern="NUMERIC(%p)" precision-variable="%p" precision-min="1" precision-max="31"/>
+<variant type-name-pattern="NUMERIC(%p,%s)" precision-variable="%p" precision-min="1" precision-max="31" scale-variable="%s" scale-min="0" scale-max="31"/>
+</data-type>
+</column>
+<column name="konto_id" alias="" remarks="" mandatory="true" column-size="4" decimal-digits="-1" default-value="" auto-increment="false">
+<column-description/>
+<data-type name="INTEGER" jdbc-type="4" selected-variant-pattern="INTEGER">
+<variant type-name-pattern="INTEGER"/>
+</data-type>
+</column>
+<column name="bezeichnung" alias="" remarks="" mandatory="true" column-size="255" decimal-digits="0" default-value="" auto-increment="false">
+<column-description/>
+<data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
+<variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
+</data-type>
+</column>
+<column name="termin" alias="" remarks="" mandatory="true" column-size="0" decimal-digits="0" default-value="" auto-increment="false">
+<column-description/>
+<data-type name="DATE" jdbc-type="91" selected-variant-pattern="DATE" literal-prefix="'" literal-suffix="'">
+<variant type-name-pattern="DATE"/>
+</data-type>
+</column>
+<column name="ausgefuehrt" alias="" remarks="" mandatory="true" column-size="1" decimal-digits="-1" default-value="" auto-increment="false">
+<column-description/>
+<data-type name="INTEGER" jdbc-type="4" selected-variant-pattern="INTEGER">
+<variant type-name-pattern="INTEGER"/>
+</data-type>
+</column>
+</column-list>
+<primary-key name="_ANONYMOUS_CONSTRAINT_264" alias="" remarks="">
+<primary-key-description/>
+<primary-key-column name="id"/>
+</primary-key>
+<unique-key-list/>
+<foreign-key-list>
+<foreign-key name="fk_konto7" alias="" remarks="" referenced-table-schema="APP" referenced-table="konto" referenced-key="_ANONYMOUS_CONSTRAINT_260" on-update="NO ACTION" on-delete="NO ACTION" source-multiplicity="0..*" target-multiplicity="1" source-entity-role="" target-entity-role="" source-relationship-type="" target-relationship-type="">
+<foreign-key-description/>
+<foreign-key-figure>
+<fk-fig-bendpoint-list/>
+</foreign-key-figure>
+<foreign-key-column column-name="konto_id" referenced-key-column-name="id"/>
+</foreign-key>
+</foreign-key-list>
+<index-list/>
+</table>
+<table name="sueberweisungbuchung" alias="" remarks="">
+<table-description/>
+<table-figure-bounds x="13" y="442" width="-1" height="-1"/>
+<column-list>
+<column name="id" alias="" remarks="" mandatory="false" column-size="1024" decimal-digits="-1" default-value="UNIQUEKEY('sueberweisungbuchung')" auto-increment="false">
+<column-description/>
+<data-type name="NUMERIC" jdbc-type="2" selected-variant-pattern="NUMERIC(%p)">
+<variant type-name-pattern="NUMERIC"/>
+<variant type-name-pattern="NUMERIC(%p)" precision-variable="%p" precision-min="1" precision-max="31"/>
+<variant type-name-pattern="NUMERIC(%p,%s)" precision-variable="%p" precision-min="1" precision-max="31" scale-variable="%s" scale-min="0" scale-max="31"/>
+</data-type>
+</column>
+<column name="sueberweisung_id" alias="" remarks="" mandatory="true" column-size="4" decimal-digits="-1" default-value="" auto-increment="false">
+<column-description/>
+<data-type name="INTEGER" jdbc-type="4" selected-variant-pattern="INTEGER">
+<variant type-name-pattern="INTEGER"/>
+</data-type>
+</column>
+<column name="gegenkonto_nr" alias="" remarks="" mandatory="true" column-size="15" decimal-digits="0" default-value="" auto-increment="false">
+<column-description/>
+<data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
+<variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
+</data-type>
+</column>
+<column name="gegenkonto_blz" alias="" remarks="" mandatory="true" column-size="15" decimal-digits="0" default-value="" auto-increment="false">
+<column-description/>
+<data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
+<variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
+</data-type>
+</column>
+<column name="gegenkonto_name" alias="" remarks="" mandatory="false" column-size="255" decimal-digits="0" default-value="" auto-increment="false">
+<column-description/>
+<data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
+<variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
+</data-type>
+</column>
+<column name="betrag" alias="" remarks="" mandatory="true" column-size="1024" decimal-digits="-1" default-value="" auto-increment="false">
+<column-description/>
+<data-type name="DOUBLE" jdbc-type="8" selected-variant-pattern="DOUBLE">
+<variant type-name-pattern="DOUBLE"/>
+</data-type>
+</column>
+<column name="zweck" alias="" remarks="" mandatory="true" column-size="27" decimal-digits="0" default-value="" auto-increment="false">
+<column-description/>
+<data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
+<variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
+</data-type>
+</column>
+<column name="zweck2" alias="" remarks="" mandatory="false" column-size="27" decimal-digits="0" default-value="" auto-increment="false">
+<column-description/>
+<data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
+<variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
+</data-type>
+</column>
+</column-list>
+<primary-key name="_ANONYMOUS_CONSTRAINT_265" alias="" remarks="">
+<primary-key-description/>
+<primary-key-column name="id"/>
+</primary-key>
+<unique-key-list/>
+<foreign-key-list>
+<foreign-key name="fk_sueberweisung1" alias="" remarks="" referenced-table-schema="APP" referenced-table="sueberweisung" referenced-key="_ANONYMOUS_CONSTRAINT_264" on-update="NO ACTION" on-delete="NO ACTION" source-multiplicity="0..*" target-multiplicity="1" source-entity-role="" target-entity-role="" source-relationship-type="" target-relationship-type="">
+<foreign-key-description/>
+<foreign-key-figure>
+<fk-fig-bendpoint-list/>
+</foreign-key-figure>
+<foreign-key-column column-name="sueberweisung_id" referenced-key-column-name="id"/>
+</foreign-key>
+</foreign-key-list>
+<index-list/>
+</table>
+<table name="systemnachricht" alias="" remarks="">
+<table-description/>
+<table-figure-bounds x="10" y="745" width="-1" height="-1"/>
+<column-list>
+<column name="id" alias="" remarks="" mandatory="false" column-size="1024" decimal-digits="-1" default-value="UNIQUEKEY('systemnachricht')" auto-increment="false">
+<column-description/>
+<data-type name="NUMERIC" jdbc-type="2" selected-variant-pattern="NUMERIC(%p)">
+<variant type-name-pattern="NUMERIC"/>
+<variant type-name-pattern="NUMERIC(%p)" precision-variable="%p" precision-min="1" precision-max="31"/>
+<variant type-name-pattern="NUMERIC(%p,%s)" precision-variable="%p" precision-min="1" precision-max="31" scale-variable="%s" scale-min="0" scale-max="31"/>
+</data-type>
+</column>
+<column name="blz" alias="" remarks="" mandatory="true" column-size="15" decimal-digits="0" default-value="" auto-increment="false">
+<column-description/>
+<data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
+<variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
+</data-type>
+</column>
+<column name="nachricht" alias="" remarks="" mandatory="true" column-size="1024" decimal-digits="0" default-value="" auto-increment="false">
+<column-description/>
+<data-type name="LONGVARCHAR" jdbc-type="-1" selected-variant-pattern="LONGVARCHAR(%n)" literal-prefix="'" literal-suffix="'">
+<variant type-name-pattern="LONGVARCHAR"/>
+<variant type-name-pattern="LONGVARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="31"/>
+</data-type>
+</column>
+<column name="datum" alias="" remarks="" mandatory="true" column-size="0" decimal-digits="0" default-value="" auto-increment="false">
+<column-description/>
+<data-type name="DATE" jdbc-type="91" selected-variant-pattern="DATE" literal-prefix="'" literal-suffix="'">
+<variant type-name-pattern="DATE"/>
+</data-type>
+</column>
+<column name="gelesen" alias="" remarks="" mandatory="true" column-size="1" decimal-digits="-1" default-value="" auto-increment="false">
+<column-description/>
+<data-type name="INTEGER" jdbc-type="4" selected-variant-pattern="INTEGER">
+<variant type-name-pattern="INTEGER"/>
+</data-type>
+</column>
+</column-list>
+<primary-key name="_ANONYMOUS_CONSTRAINT_261" alias="" remarks="">
+<primary-key-description/>
+<primary-key-column name="id"/>
+</primary-key>
+<unique-key-list/>
+<foreign-key-list/>
+<index-list/>
+</table>
 <table name="turnus" alias="" remarks="">
 <table-description/>
-<table-figure-bounds x="229" y="502" width="-1" height="-1"/>
+<table-figure-bounds x="416" y="746" width="-1" height="-1"/>
 <column-list>
 <column name="id" alias="" remarks="" mandatory="false" column-size="1024" decimal-digits="-1" default-value="UNIQUEKEY('turnus')" auto-increment="false">
 <column-description/>
 <data-type name="NUMERIC" jdbc-type="2" selected-variant-pattern="NUMERIC(%p)">
-<variant type-name-pattern="NUMERIC(%p)" precision-variable="%p" precision-min="1" precision-max="31"/>
 <variant type-name-pattern="NUMERIC"/>
+<variant type-name-pattern="NUMERIC(%p)" precision-variable="%p" precision-min="1" precision-max="31"/>
 <variant type-name-pattern="NUMERIC(%p,%s)" precision-variable="%p" precision-min="1" precision-max="31" scale-variable="%s" scale-min="0" scale-max="31"/>
 </data-type>
 </column>
@@ -570,13 +760,13 @@
 </table>
 <table name="ueberweisung" alias="" remarks="">
 <table-description/>
-<table-figure-bounds x="566" y="10" width="-1" height="-1"/>
+<table-figure-bounds x="557" y="225" width="-1" height="-1"/>
 <column-list>
 <column name="id" alias="" remarks="" mandatory="false" column-size="1024" decimal-digits="-1" default-value="UNIQUEKEY('ueberweisung')" auto-increment="false">
 <column-description/>
 <data-type name="NUMERIC" jdbc-type="2" selected-variant-pattern="NUMERIC(%p)">
-<variant type-name-pattern="NUMERIC(%p)" precision-variable="%p" precision-min="1" precision-max="31"/>
 <variant type-name-pattern="NUMERIC"/>
+<variant type-name-pattern="NUMERIC(%p)" precision-variable="%p" precision-min="1" precision-max="31"/>
 <variant type-name-pattern="NUMERIC(%p,%s)" precision-variable="%p" precision-min="1" precision-max="31" scale-variable="%s" scale-min="0" scale-max="31"/>
 </data-type>
 </column>
@@ -589,22 +779,22 @@
 <column name="empfaenger_konto" alias="" remarks="" mandatory="true" column-size="15" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 <column name="empfaenger_blz" alias="" remarks="" mandatory="true" column-size="15" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 <column name="empfaenger_name" alias="" remarks="" mandatory="false" column-size="255" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 <column name="betrag" alias="" remarks="" mandatory="true" column-size="1024" decimal-digits="-1" default-value="" auto-increment="false">
@@ -616,21 +806,27 @@
 <column name="zweck" alias="" remarks="" mandatory="true" column-size="27" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 <column name="zweck2" alias="" remarks="" mandatory="false" column-size="27" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 <column name="termin" alias="" remarks="" mandatory="true" column-size="0" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="DATE" jdbc-type="91" selected-variant-pattern="DATE" literal-prefix="'" literal-suffix="'">
 <variant type-name-pattern="DATE"/>
+</data-type>
+</column>
+<column name="banktermin" alias="" remarks="" mandatory="false" column-size="1" decimal-digits="-1" default-value="" auto-increment="false">
+<column-description/>
+<data-type name="INTEGER" jdbc-type="4" selected-variant-pattern="INTEGER">
+<variant type-name-pattern="INTEGER"/>
 </data-type>
 </column>
 <column name="ausgefuehrt" alias="" remarks="" mandatory="true" column-size="1" decimal-digits="-1" default-value="" auto-increment="false">
@@ -640,13 +836,13 @@
 </data-type>
 </column>
 </column-list>
-<primary-key name="_ANONYMOUS_CONSTRAINT_8" alias="" remarks="">
+<primary-key name="_ANONYMOUS_CONSTRAINT_266" alias="" remarks="">
 <primary-key-description/>
 <primary-key-column name="id"/>
 </primary-key>
 <unique-key-list/>
 <foreign-key-list>
-<foreign-key name="fk_konto" alias="" remarks="" referenced-table-schema="APP" referenced-table="konto" referenced-key="_ANONYMOUS_CONSTRAINT_6" on-update="NO ACTION" on-delete="NO ACTION" source-multiplicity="0..*" target-multiplicity="1" source-entity-role="" target-entity-role="" source-relationship-type="" target-relationship-type="">
+<foreign-key name="fk_konto_usb" alias="" remarks="" referenced-table-schema="APP" referenced-table="konto" referenced-key="_ANONYMOUS_CONSTRAINT_260" on-update="NO ACTION" on-delete="NO ACTION" source-multiplicity="0..*" target-multiplicity="1" source-entity-role="" target-entity-role="" source-relationship-type="" target-relationship-type="">
 <foreign-key-description/>
 <foreign-key-figure>
 <fk-fig-bendpoint-list/>
@@ -658,13 +854,13 @@
 </table>
 <table name="umsatz" alias="" remarks="">
 <table-description/>
-<table-figure-bounds x="566" y="189" width="-1" height="-1"/>
+<table-figure-bounds x="269" y="460" width="-1" height="-1"/>
 <column-list>
 <column name="id" alias="" remarks="" mandatory="false" column-size="1024" decimal-digits="-1" default-value="UNIQUEKEY('umsatz')" auto-increment="false">
 <column-description/>
 <data-type name="NUMERIC" jdbc-type="2" selected-variant-pattern="NUMERIC(%p)">
-<variant type-name-pattern="NUMERIC(%p)" precision-variable="%p" precision-min="1" precision-max="31"/>
 <variant type-name-pattern="NUMERIC"/>
+<variant type-name-pattern="NUMERIC(%p)" precision-variable="%p" precision-min="1" precision-max="31"/>
 <variant type-name-pattern="NUMERIC(%p,%s)" precision-variable="%p" precision-min="1" precision-max="31" scale-variable="%s" scale-min="0" scale-max="31"/>
 </data-type>
 </column>
@@ -677,22 +873,22 @@
 <column name="empfaenger_konto" alias="" remarks="" mandatory="false" column-size="15" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 <column name="empfaenger_blz" alias="" remarks="" mandatory="false" column-size="15" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 <column name="empfaenger_name" alias="" remarks="" mandatory="false" column-size="255" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 <column name="betrag" alias="" remarks="" mandatory="true" column-size="1024" decimal-digits="-1" default-value="" auto-increment="false">
@@ -701,18 +897,18 @@
 <variant type-name-pattern="DOUBLE"/>
 </data-type>
 </column>
-<column name="zweck" alias="" remarks="" mandatory="true" column-size="35" decimal-digits="0" default-value="" auto-increment="false">
+<column name="zweck" alias="" remarks="" mandatory="false" column-size="35" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 <column name="zweck2" alias="" remarks="" mandatory="false" column-size="35" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 <column name="datum" alias="" remarks="" mandatory="true" column-size="0" decimal-digits="0" default-value="" auto-increment="false">
@@ -736,136 +932,96 @@
 <column name="primanota" alias="" remarks="" mandatory="false" column-size="100" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 <column name="art" alias="" remarks="" mandatory="false" column-size="100" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
 <column name="customerref" alias="" remarks="" mandatory="false" column-size="100" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
-<column name="umsatztyp_id" alias="" remarks="" mandatory="false" column-size="4" decimal-digits="-1" default-value="" auto-increment="false">
+<column name="kommentar" alias="" remarks="" mandatory="false" column-size="1024" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
-<data-type name="INTEGER" jdbc-type="4" selected-variant-pattern="INTEGER">
-<variant type-name-pattern="INTEGER"/>
+<data-type name="LONGVARCHAR" jdbc-type="-1" selected-variant-pattern="LONGVARCHAR(%n)" literal-prefix="'" literal-suffix="'">
+<variant type-name-pattern="LONGVARCHAR"/>
+<variant type-name-pattern="LONGVARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="31"/>
+</data-type>
+</column>
+<column name="checksum" alias="" remarks="" mandatory="false" column-size="1024" decimal-digits="-1" default-value="" auto-increment="false">
+<column-description/>
+<data-type name="NUMERIC" jdbc-type="2" selected-variant-pattern="NUMERIC(%p)">
+<variant type-name-pattern="NUMERIC"/>
+<variant type-name-pattern="NUMERIC(%p)" precision-variable="%p" precision-min="1" precision-max="31"/>
+<variant type-name-pattern="NUMERIC(%p,%s)" precision-variable="%p" precision-min="1" precision-max="31" scale-variable="%s" scale-min="0" scale-max="31"/>
 </data-type>
 </column>
 </column-list>
-<primary-key name="_ANONYMOUS_CONSTRAINT_10" alias="" remarks="">
+<primary-key name="_ANONYMOUS_CONSTRAINT_262" alias="" remarks="">
 <primary-key-description/>
 <primary-key-column name="id"/>
 </primary-key>
 <unique-key-list/>
 <foreign-key-list>
-<foreign-key name="fk_konto2" alias="" remarks="" referenced-table-schema="APP" referenced-table="konto" referenced-key="_ANONYMOUS_CONSTRAINT_6" on-update="NO ACTION" on-delete="NO ACTION" source-multiplicity="0..*" target-multiplicity="1" source-entity-role="" target-entity-role="" source-relationship-type="" target-relationship-type="">
+<foreign-key name="fk_konto_ums" alias="" remarks="" referenced-table-schema="APP" referenced-table="konto" referenced-key="_ANONYMOUS_CONSTRAINT_260" on-update="NO ACTION" on-delete="NO ACTION" source-multiplicity="0..*" target-multiplicity="1" source-entity-role="" target-entity-role="" source-relationship-type="" target-relationship-type="">
 <foreign-key-description/>
 <foreign-key-figure>
 <fk-fig-bendpoint-list/>
 </foreign-key-figure>
 <foreign-key-column column-name="konto_id" referenced-key-column-name="id"/>
 </foreign-key>
-<foreign-key name="fk_umsatztyp" alias="" remarks="" referenced-table-schema="APP" referenced-table="umsatztyp" referenced-key="_ANONYMOUS_CONSTRAINT_11" on-update="NO ACTION" on-delete="NO ACTION" source-multiplicity="0..*" target-multiplicity="1" source-entity-role="" target-entity-role="" source-relationship-type="" target-relationship-type="">
-<foreign-key-description/>
-<foreign-key-figure>
-<fk-fig-bendpoint-list/>
-</foreign-key-figure>
-<foreign-key-column column-name="umsatztyp_id" referenced-key-column-name="id"/>
-</foreign-key>
 </foreign-key-list>
 <index-list/>
 </table>
 <table name="umsatztyp" alias="" remarks="">
 <table-description/>
-<table-figure-bounds x="610" y="478" width="-1" height="-1"/>
+<table-figure-bounds x="12" y="621" width="-1" height="-1"/>
 <column-list>
 <column name="id" alias="" remarks="" mandatory="false" column-size="1024" decimal-digits="-1" default-value="UNIQUEKEY('umsatztyp')" auto-increment="false">
 <column-description/>
 <data-type name="NUMERIC" jdbc-type="2" selected-variant-pattern="NUMERIC(%p)">
-<variant type-name-pattern="NUMERIC(%p)" precision-variable="%p" precision-min="1" precision-max="31"/>
 <variant type-name-pattern="NUMERIC"/>
+<variant type-name-pattern="NUMERIC(%p)" precision-variable="%p" precision-min="1" precision-max="31"/>
 <variant type-name-pattern="NUMERIC(%p,%s)" precision-variable="%p" precision-min="1" precision-max="31" scale-variable="%s" scale-min="0" scale-max="31"/>
 </data-type>
 </column>
 <column name="name" alias="" remarks="" mandatory="true" column-size="255" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
-</data-type>
-</column>
-<column name="field" alias="" remarks="" mandatory="true" column-size="255" decimal-digits="0" default-value="" auto-increment="false">
-<column-description/>
-<data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
 <variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
-<variant type-name-pattern="VARCHAR"/>
 </data-type>
 </column>
 <column name="pattern" alias="" remarks="" mandatory="true" column-size="255" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 <variant type-name-pattern="VARCHAR"/>
-</data-type>
-</column>
-</column-list>
-<primary-key name="_ANONYMOUS_CONSTRAINT_11" alias="" remarks="">
-<primary-key-description/>
-<primary-key-column name="id"/>
-</primary-key>
-<unique-key-list/>
-<foreign-key-list/>
-<index-list/>
-</table>
-<table name="systemnachricht" alias="" remarks="">
-<table-description/>
-<table-figure-bounds x="18" y="521" width="180" height="98"/>
-<column-list>
-<column name="id" alias="" remarks="" mandatory="true" column-size="1024" decimal-digits="0" default-value="UNIQUEKEY('systemnachricht')" auto-increment="false">
-<column-description/>
-<data-type name="NUMERIC" jdbc-type="2" selected-variant-pattern="NUMERIC(%p)">
-<variant type-name-pattern="NUMERIC(%p)" precision-variable="%p" precision-min="1" precision-max="31"/>
-<variant type-name-pattern="NUMERIC"/>
-<variant type-name-pattern="NUMERIC(%p,%s)" precision-variable="%p" precision-min="1" precision-max="31" scale-variable="%s" scale-min="0" scale-max="31"/>
-</data-type>
-</column>
-<column name="blz" alias="" remarks="" mandatory="true" column-size="255" decimal-digits="0" default-value="" auto-increment="false">
-<column-description/>
-<data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
 <variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
-<variant type-name-pattern="VARCHAR"/>
 </data-type>
 </column>
-<column name="nachricht" alias="" remarks="" mandatory="true" column-size="0" decimal-digits="0" default-value="" auto-increment="false">
+<column name="isregex" alias="" remarks="" mandatory="false" column-size="1" decimal-digits="-1" default-value="" auto-increment="false">
 <column-description/>
-<data-type name="TEXT" jdbc-type="-1" selected-variant-pattern="TEXT" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="TEXT"/>
-<variant type-name-pattern="TEXT(%n)" precision-variable="%n" precision-min="1" precision-max="31"/>
+<data-type name="INTEGER" jdbc-type="4" selected-variant-pattern="INTEGER">
+<variant type-name-pattern="INTEGER"/>
 </data-type>
 </column>
-<column name="datum" alias="" remarks="" mandatory="true" column-size="0" decimal-digits="0" default-value="" auto-increment="false">
-<column-description/>
-<data-type name="DATE" jdbc-type="91" selected-variant-pattern="DATE" literal-prefix="'" literal-suffix="'">
-<variant type-name-pattern="DATE"/>
-</data-type>
-</column>
-<column name="gelesen" alias="" remarks="" mandatory="false" column-size="0" decimal-digits="0" default-value="" auto-increment="false">
+<column name="iseinnahme" alias="" remarks="" mandatory="false" column-size="1" decimal-digits="-1" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="INTEGER" jdbc-type="4" selected-variant-pattern="INTEGER">
 <variant type-name-pattern="INTEGER"/>
 </data-type>
 </column>
 </column-list>
-<primary-key name="PK_SYSTEMNACHRICHT" alias="" remarks="">
+<primary-key name="_ANONYMOUS_CONSTRAINT_362" alias="" remarks="">
 <primary-key-description/>
 <primary-key-column name="id"/>
 </primary-key>
