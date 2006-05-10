@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/ProtokollList.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/01/18 00:51:00 $
+ * $Revision: 1.3 $
+ * $Date: 2006/05/10 12:51:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -44,7 +44,7 @@ public class ProtokollList extends AbstractView {
       if (s1 == null) s1 = "";
 
       String s2 = k.getKontonummer();
-      GUI.getView().setTitle(i18n.tr("Protokoll des Kontos: {0} [Ktr.-Nr.: {1}]",new String[]{s1,s2}));
+      GUI.getView().setTitle(i18n.tr("Protokoll des Kontos: {0} [Kto.-Nr.: {1}]",new String[]{s1,s2}));
     }
     else
       GUI.getView().setTitle(i18n.tr("Protokoll des Kontos"));
@@ -69,6 +69,9 @@ public class ProtokollList extends AbstractView {
 
 /**********************************************************************
  * $Log: ProtokollList.java,v $
+ * Revision 1.3  2006/05/10 12:51:37  willuhn
+ * @B typo s/Ktr/Kto/
+ *
  * Revision 1.2  2006/01/18 00:51:00  willuhn
  * @B bug 65
  *
