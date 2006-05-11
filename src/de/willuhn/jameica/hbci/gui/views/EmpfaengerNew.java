@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/EmpfaengerNew.java,v $
- * $Revision: 1.9 $
- * $Date: 2006/01/18 00:51:00 $
+ * $Revision: 1.9.2.1 $
+ * $Date: 2006/05/11 10:44:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -61,6 +61,17 @@ public class EmpfaengerNew extends AbstractView {
 			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Lesen der Adresse."));
 		}
 
+    // und noch die Abschicken-Knoepfe
+    ButtonArea buttonArea = new ButtonArea(getParent(),3);
+    buttonArea.addButton(i18n.tr("Zurück"),new Back());
+    buttonArea.addButton(i18n.tr("Löschen"), new EmpfaengerDelete(), control.getEmpfaenger());
+    buttonArea.addButton(i18n.tr("Speichern"), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        control.handleStore();
+      }
+    },null,true);
     
     new Headline(getParent(),i18n.tr("Buchungen von/an diese Adresse"));
     control.getUmsatzListe().paint(getParent());
@@ -78,26 +89,15 @@ public class EmpfaengerNew extends AbstractView {
       new Headline(getParent(),i18n.tr("Sammel-Überweisungen"));
       control.getSammelUeberweisungListe().paint(getParent());
     }
-
-
-    // und noch die Abschicken-Knoepfe
-		ButtonArea buttonArea = new ButtonArea(getParent(),3);
-		buttonArea.addButton(i18n.tr("Zurück"),new Back());
-		buttonArea.addButton(i18n.tr("Löschen"), new EmpfaengerDelete(), control.getEmpfaenger());
-		buttonArea.addButton(i18n.tr("Speichern"), new Action()
-    {
-      public void handleAction(Object context) throws ApplicationException
-      {
-      	control.handleStore();
-      }
-    },null,true);
-
   }
 }
 
 
 /**********************************************************************
  * $Log: EmpfaengerNew.java,v $
+ * Revision 1.9.2.1  2006/05/11 10:44:43  willuhn
+ * @B bug 232
+ *
  * Revision 1.9  2006/01/18 00:51:00  willuhn
  * @B bug 65
  *

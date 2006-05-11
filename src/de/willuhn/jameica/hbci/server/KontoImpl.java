@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.64 $
- * $Date: 2006/03/20 17:49:01 $
+ * $Revision: 1.64.2.1 $
+ * $Date: 2006/05/11 10:44:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -75,8 +75,7 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 			if (getName() == null || getName().length() == 0)
 				throw new ApplicationException(i18n.tr("Bitten geben Sie den Namen des Kontoinhabers ein."));
 
-      if (getName().length() > HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH)
-        throw new ApplicationException(i18n.tr("Bitte geben Sie maximal {0} Zeichen für den Namen des Kontoinhabers ein",""+HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH));
+      HBCIProperties.checkLength(getName(), HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
 
       if (getKontonummer() == null || getKontonummer().length() == 0)
 				throw new ApplicationException(i18n.tr("Bitte geben Sie eine Kontonummer ein."));
@@ -610,6 +609,9 @@ public class KontoImpl extends AbstractDBObject implements Konto {
 
 /**********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.64.2.1  2006/05/11 10:44:43  willuhn
+ * @B bug 232
+ *
  * Revision 1.64  2006/03/20 17:49:01  willuhn
  * *** empty log message ***
  *

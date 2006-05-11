@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AbstractTransferImpl.java,v $
- * $Revision: 1.23 $
- * $Date: 2006/02/20 17:33:08 $
+ * $Revision: 1.23.2.1 $
+ * $Date: 2006/05/11 10:44:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -64,8 +64,7 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
       if (getGegenkontoName() == null || getGegenkontoName().length() == 0)
 				throw new ApplicationException(i18n.tr("Bitte geben Sie den Namen des Kontoinhabers des Gegenkontos ein"));
 
-			if (getGegenkontoName().length() > HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH)
-				throw new ApplicationException(i18n.tr("Bitte geben Sie maximal {0} Zeichen für den Namen des Kontoinhabers ein",""+HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH));
+      HBCIProperties.checkLength(getGegenkontoName(), HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
 
       // BUGZILLA 163
       HBCIProperties.checkChars(getGegenkontoName(), HBCIProperties.HBCI_DTAUS_VALIDCHARS);
@@ -76,11 +75,8 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
 			if (getZweck() == null || "".equals(getZweck()))
 				throw new ApplicationException(i18n.tr("Bitte geben Sie einen Verwendungszweck ein"));
 
-			if (getZweck().length() > HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH)
-				throw new ApplicationException(i18n.tr("Bitten geben Sie als Verwendungszweck maximal {0} Zeichen an",""+HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH));
-				
-			if (getZweck2() != null && getZweck2().length() > HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH)
-				throw new ApplicationException(i18n.tr("Bitten geben Sie als weiteren Verwendungszweck maximal {0} Zeichen an",""+HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH));
+      HBCIProperties.checkLength(getZweck(), HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH);
+      HBCIProperties.checkLength(getZweck2(), HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH);
 
 			HBCIProperties.checkChars(getZweck(), HBCIProperties.HBCI_DTAUS_VALIDCHARS);
       HBCIProperties.checkChars(getZweck2(), HBCIProperties.HBCI_DTAUS_VALIDCHARS);
@@ -264,6 +260,9 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
 
 /**********************************************************************
  * $Log: AbstractTransferImpl.java,v $
+ * Revision 1.23.2.1  2006/05/11 10:44:43  willuhn
+ * @B bug 232
+ *
  * Revision 1.23  2006/02/20 17:33:08  willuhn
  * @B bug 197
  *

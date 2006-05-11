@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCIProperties.java,v $
- * $Revision: 1.15 $
- * $Date: 2006/03/09 18:24:05 $
+ * $Revision: 1.15.2.1 $
+ * $Date: 2006/05/11 10:44:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -118,6 +118,33 @@ public class HBCIProperties
   }
 
   /**
+   * BUGZILLA 232
+   * Prueft den uebergebenen String auf korrekte Laenge.
+   * Hierbei wird auch geprueft, ob die Laenge nach dem HBCI-Escaping noch korrekt ist.
+   * @param chars zu testende Zeichen.
+   * @param maxLength die maximale Laenge.
+   * @throws ApplicationException
+   */
+  public final static void checkLength(String chars, int maxLength) throws ApplicationException
+  {
+    if (chars == null || chars.length() == 0)
+      return;
+    
+    // Erstmal schauen, ob der Text ohne Codierung vielleicht schon zu lang ist.
+    if (chars.length() > maxLength)
+    {
+      throw new ApplicationException(i18n.tr("Der Text \"{0}\" ist zu lang. Bitte geben Sie maximal {1} Zeichen ein", new String[]{chars,""+maxLength}));
+    }
+
+    // Jetzt schauen wir, ob die Laenge vielleicht nach dem Escaping zu lang wird.
+    String s = chars.replaceAll("\\?","??");
+    s = s.replaceAll("\\+","?+");
+
+    if (s.length() > maxLength)
+      throw new ApplicationException(i18n.tr("Der Text \"{0}\" wird nach der HBCI-Kodierung zu lang. Entfernen Sie ggf. \"+\" oder \"?\"",chars));
+  }
+
+  /**
    * Prueft die Gueltigkeit der BLZ/Kontonummer-Kombi anhand von Pruefziffern.
    * @see HBCIUtils#checkAccountCRC(java.lang.String, java.lang.String)
    * @param blz
@@ -151,6 +178,9 @@ public class HBCIProperties
 
 /**********************************************************************
  * $Log: HBCIProperties.java,v $
+ * Revision 1.15.2.1  2006/05/11 10:44:43  willuhn
+ * @B bug 232
+ *
  * Revision 1.15  2006/03/09 18:24:05  willuhn
  * @N Auswahl der Tage in Umsatz-Chart
  *
