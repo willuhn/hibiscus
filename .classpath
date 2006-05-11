@@ -13,6 +13,6 @@
 	<classpathentry kind="lib" path="lib/birt/ecore.resources.jar"/>
 	<classpathentry kind="lib" path="lib/birt/ecore.xmi.jar"/>
 	<classpathentry kind="lib" path="lib/birt/js.jar"/>
-	<classpathentry exported="true" sourcepath="lib.src/hbci4java-2.5.0rc6-src.zip" kind="lib" path="lib/hbci4java-2.5.0rc6.jar"/>
+	<classpathentry kind="lib" path="lib/hbci4java-2.5.0rc7.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

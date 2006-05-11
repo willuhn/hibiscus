@@ -130,7 +130,7 @@
 				<attribute name="Implementation-Title" value="${define.pluginname}" />
 				<attribute name="Implementation-Version" value="${appversion}" />
 				<attribute name="Implementation-Buildnumber" value="${build.number}" />
-				<attribute name="Class-Path" value="lang help lib lib/hbci4java-2.5.0rc6.jar lib/commons-collections.jar lib/logkit-1.0.1.jar lib/oro.jar lib/velocity-1.4.jar lib/birt/device-extension.jar lib/birt/engine-extension.jar lib/birt/ecore.xmi.jar lib/birt/ecore.jar lib/birt/core.jar lib/birt/js.jar lib/birt/common.resources.jar lib/birt/engine.jar lib/birt/ecore.resources.jar lib/birt/common.jar" />
+				<attribute name="Class-Path" value="lang help lib lib/hbci4java-2.5.0rc7.jar lib/commons-collections.jar lib/logkit-1.0.1.jar lib/oro.jar lib/velocity-1.4.jar lib/birt/device-extension.jar lib/birt/engine-extension.jar lib/birt/ecore.xmi.jar lib/birt/ecore.jar lib/birt/core.jar lib/birt/js.jar lib/birt/common.resources.jar lib/birt/engine.jar lib/birt/ecore.resources.jar lib/birt/common.jar" />
       </manifest>
 			<fileset dir="${class.dir}" />
 		</jar>
