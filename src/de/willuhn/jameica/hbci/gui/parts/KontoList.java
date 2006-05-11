@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoList.java,v $
- * $Revision: 1.8 $
- * $Date: 2006/04/25 23:25:12 $
+ * $Revision: 1.9 $
+ * $Date: 2006/05/11 16:53:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -124,6 +124,9 @@ public class KontoList extends TablePart implements Part
     // BUGZILLA 84 http://www.willuhn.de/bugzilla/show_bug.cgi?id=84
     setRememberOrder(true);
 
+    // BUGZILLA 233 http://www.willuhn.de/bugzilla/show_bug.cgi?id=233
+    setRememberColWidths(true);
+
     setContextMenu(new de.willuhn.jameica.hbci.gui.menus.KontoList());
   }
   
@@ -144,6 +147,9 @@ public class KontoList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.9  2006/05/11 16:53:09  willuhn
+ * @B bug 233
+ *
  * Revision 1.8  2006/04/25 23:25:12  willuhn
  * @N bug 81
  *
