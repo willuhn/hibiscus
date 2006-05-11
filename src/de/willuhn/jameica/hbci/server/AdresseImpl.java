@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AdresseImpl.java,v $
- * $Revision: 1.9 $
- * $Date: 2005/10/03 16:17:57 $
+ * $Revision: 1.10 $
+ * $Date: 2006/05/11 10:57:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -63,8 +63,7 @@ public class AdresseImpl extends AbstractDBObject implements Adresse {
 			if (getName() == null || getName().length() == 0)
 				throw new ApplicationException(i18n.tr("Bitte geben Sie einen Namen ein."));
 
-			if (getName().length() > HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH)
-				throw new ApplicationException(i18n.tr("Bitte geben Sie maximal {0} Zeichen für den Namen ein.",""+HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH));
+      HBCIProperties.checkLength(getName(), HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
 
 			if (getBLZ() == null || getBLZ().length() == 0)
 				throw new ApplicationException(i18n.tr("Bitte geben Sie eine BLZ ein."));
@@ -189,6 +188,12 @@ public class AdresseImpl extends AbstractDBObject implements Adresse {
 
 /**********************************************************************
  * $Log: AdresseImpl.java,v $
+ * Revision 1.10  2006/05/11 10:57:35  willuhn
+ * @C merged Bug 232 into HEAD
+ *
+ * Revision 1.9.4.1  2006/05/11 10:44:43  willuhn
+ * @B bug 232
+ *
  * Revision 1.9  2005/10/03 16:17:57  willuhn
  * *** empty log message ***
  *
