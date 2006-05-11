@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoNew.java,v $
- * $Revision: 1.16 $
- * $Date: 2006/03/21 00:43:14 $
+ * $Revision: 1.16.2.1 $
+ * $Date: 2006/05/11 11:54:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -62,7 +62,7 @@ public class KontoNew extends AbstractView {
       String s2 = k.getKontonummer();
       if (s2 == null) s2 = "";
 
-      GUI.getView().setTitle(i18n.tr("Konto-Details: {0} [Ktr.-Nr.: {1}]",new String[]{s1,s2}));
+      GUI.getView().setTitle(i18n.tr("Konto-Details: {0} [Kto.-Nr.: {1}]",new String[]{s1,s2}));
     }
     else
   		GUI.getView().setTitle(i18n.tr("Konto-Details"));
@@ -125,6 +125,9 @@ public class KontoNew extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoNew.java,v $
+ * Revision 1.16.2.1  2006/05/11 11:54:38  willuhn
+ * @B typo s/Ktr/Kto/
+ *
  * Revision 1.16  2006/03/21 00:43:14  willuhn
  * @B bug 209
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzList.java,v $
- * $Revision: 1.6 $
- * $Date: 2006/01/18 00:51:00 $
+ * $Revision: 1.6.2.1 $
+ * $Date: 2006/05/11 11:54:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -66,9 +66,9 @@ public class UmsatzList extends AbstractView
       s3 = HBCI.DECIMALFORMAT.format(d) + " " + k.getWaehrung(); // Saldo wurde schonmal abgerufen
 
     if (s3 == null)
-  		GUI.getView().setTitle(i18n.tr("Kontoauszüge: {0} [Ktr.-Nr.: {1}]",new String[]{s1,s2}));
+  		GUI.getView().setTitle(i18n.tr("Kontoauszüge: {0} [Kto.-Nr.: {1}]",new String[]{s1,s2}));
     else
-      GUI.getView().setTitle(i18n.tr("Kontoauszüge: {0} [Ktr.-Nr.: {1}, Saldo: {2}]",new String[]{s1,s2,s3}));
+      GUI.getView().setTitle(i18n.tr("Kontoauszüge: {0} [Kto.-Nr.: {1}, Saldo: {2}]",new String[]{s1,s2,s3}));
 		
 
 		try {
@@ -101,6 +101,9 @@ public class UmsatzList extends AbstractView
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.6.2.1  2006/05/11 11:54:38  willuhn
+ * @B typo s/Ktr/Kto/
+ *
  * Revision 1.6  2006/01/18 00:51:00  willuhn
  * @B bug 65
  *
