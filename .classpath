@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry exported="true" kind="src" path="/jameica"/>
 	<classpathentry kind="lib" path="lib/birt/common.jar"/>
 	<classpathentry kind="lib" path="lib/birt/common.resources.jar"/>
 	<classpathentry kind="lib" path="lib/birt/core.jar"/>
@@ -14,5 +13,6 @@
 	<classpathentry kind="lib" path="lib/birt/ecore.xmi.jar"/>
 	<classpathentry kind="lib" path="lib/birt/js.jar"/>
 	<classpathentry exported="true" sourcepath="lib.src/hbci4java-2.5.0rc6-src.zip" kind="lib" path="lib/hbci4java-2.5.0rc6.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jameica_1_3"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
