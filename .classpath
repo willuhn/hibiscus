@@ -14,5 +14,6 @@
 	<classpathentry kind="lib" path="lib/birt/ecore.xmi.jar"/>
 	<classpathentry kind="lib" path="lib/birt/js.jar"/>
 	<classpathentry kind="lib" path="lib/hbci4java-2.5.0rc7.jar"/>
+	<classpathentry kind="lib" path="lib/itext-1.3.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
