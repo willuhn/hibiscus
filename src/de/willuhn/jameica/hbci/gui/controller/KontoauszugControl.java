@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/KontoauszugControl.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/05/15 12:05:22 $
- * $Author: willuhn $
+ * $Revision: 1.3 $
+ * $Date: 2006/05/15 20:12:38 $
+ * $Author: jost $
  * $Locker:  $
  * $State: Exp $
  *
@@ -42,7 +42,7 @@ import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
 /**
- * Controller fuer die Einstellungen.
+ * Controller fuer den Kontoauszug-Report
  */
 public class KontoauszugControl extends AbstractControl
 {
@@ -80,7 +80,8 @@ public class KontoauszugControl extends AbstractControl
     if (this.kontoAuswahl != null)
       return this.kontoAuswahl;
 
-    DBIterator it = de.willuhn.jameica.hbci.Settings.getDBService().createList(Konto.class);
+    DBIterator it = de.willuhn.jameica.hbci.Settings.getDBService().createList(
+        Konto.class);
     it.setOrder("ORDER BY blz, kontonummer");
     this.kontoAuswahl = new SelectInput(it, null);
     this.kontoAuswahl.setAttribute("longname");
@@ -170,21 +171,25 @@ public class KontoauszugControl extends AbstractControl
     {
       Konto k = (Konto) getKontoAuswahl().getValue();
       if (k == null)
-        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte wählen Sie ein Konto aus"), StatusBarMessage.TYPE_ERROR));
+        Application.getMessagingFactory().sendMessage(
+            new StatusBarMessage(i18n.tr("Bitte wählen Sie ein Konto aus"),
+                StatusBarMessage.TYPE_ERROR));
 
       Settings settings = new Settings(this.getClass());
-      String dir = settings.getString("lastdir",System.getProperty("user.home"));
-      
-      FileDialog fd = new FileDialog(GUI.getShell(),SWT.SAVE);
-      fd.setText(i18n.tr("Bitte wählen Sie das Verzeichnis, in dem Sie die Auswertung speichern möchten"));
+      String dir = settings.getString("lastdir", System
+          .getProperty("user.home"));
+
+      FileDialog fd = new FileDialog(GUI.getShell(), SWT.SAVE);
+      fd
+          .setText(i18n
+              .tr("Bitte wählen Sie das Verzeichnis, in dem Sie die Auswertung speichern möchten"));
       fd.setFilterPath(dir);
-      fd.setFileName(i18n.tr("konto_{0}_{1}-{2}.pdf", new String[]{k.getKontonummer(),
-                                                                   HBCI.FASTDATEFORMAT.format(dStart),
-                                                                   HBCI.FASTDATEFORMAT.format(dEnd)}));
-          
-      
+      fd.setFileName(i18n.tr("konto_{0}_{1}-{2}.pdf", new String[] {
+          k.getKontonummer(), HBCI.FASTDATEFORMAT.format(dStart),
+          HBCI.FASTDATEFORMAT.format(dEnd) }));
+
       String file = fd.open();
-      
+
       if (file == null)
       {
         // Dialog abgebrochen
@@ -192,53 +197,62 @@ public class KontoauszugControl extends AbstractControl
         return;
       }
       File f = new File(file);
-      
+
       // Wir merken uns das letzte ausgewaehlte Verzeichnis
-      settings.setAttribute("lastdir",f.getParent());
+      settings.setAttribute("lastdir", f.getParent());
       if (f.exists())
       {
         YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
         d.setTitle(i18n.tr("Datei existiert bereits"));
-        d.setText(i18n.tr("Die Datei \"{0}\" existiert bereits. Überschreiben?",f.getAbsolutePath()));
-        if (!((Boolean)d.open()).booleanValue())
+        d.setText(i18n.tr(
+            "Die Datei \"{0}\" existiert bereits. Überschreiben?", f
+                .getAbsolutePath()));
+        if (!((Boolean) d.open()).booleanValue())
           return;
       }
 
       KontoauszugReport rpt = new KontoauszugReport(HBCI.DATEFORMAT
           .format(dStart)
           + " - " + HBCI.DATEFORMAT.format(dEnd));
-      
+
       try
       {
         rpt.open(f.getAbsolutePath());
-        rpt.generate(k.getUmsaetze(dStart, dEnd));
+        rpt.generate(k, k.getUmsaetze(dStart, dEnd));
       }
       finally
       {
         rpt.close();
       }
-      
+
       // Zugeordnetes Programm starten (PDF-Viewer)
       new Program().handleAction(f);
     }
     catch (Exception e)
     {
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Erstellen der Auswertung"), StatusBarMessage.TYPE_ERROR));
-      Logger.error("unable to create report",e);
+      Application.getMessagingFactory().sendMessage(
+          new StatusBarMessage(i18n.tr("Fehler beim Erstellen der Auswertung"),
+              StatusBarMessage.TYPE_ERROR));
+      Logger.error("unable to create report", e);
     }
-    Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Auswertung erstellt"), StatusBarMessage.TYPE_SUCCESS));
+    Application.getMessagingFactory().sendMessage(
+        new StatusBarMessage(i18n.tr("Auswertung erstellt"),
+            StatusBarMessage.TYPE_SUCCESS));
   }
 
 }
 
 /*******************************************************************************
  * $Log: KontoauszugControl.java,v $
- * Revision 1.2  2006/05/15 12:05:22  willuhn
+ * Revision 1.3  2006/05/15 20:12:38  jost
+ * Zusätzlicher Parameter beim Aufruf des Kontoauszug-Reports
+ * Kommentare
+ * Revision 1.2 2006/05/15 12:05:22 willuhn
+ * 
  * @N FileDialog zur Auswahl von Pfad und Datei beim Speichern
  * @N YesNoDialog falls Datei bereits existiert
  * @C KontoImpl#getUmsaetze mit tonumber() statt dateob()
- *
- * Revision 1.1  2006/05/14 19:52:13  jost
- * Prerelease Kontoauszug-Report
+ * 
+ * Revision 1.1 2006/05/14 19:52:13 jost Prerelease Kontoauszug-Report
  * 
  ******************************************************************************/
