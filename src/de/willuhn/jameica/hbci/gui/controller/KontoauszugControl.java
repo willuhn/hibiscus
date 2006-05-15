@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/KontoauszugControl.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/05/14 19:52:13 $
- * $Author: jost $
+ * $Revision: 1.2 $
+ * $Date: 2006/05/15 12:05:22 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -12,28 +12,33 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.controller;
 
-import java.io.FileNotFoundException;
+import java.io.File;
 import java.rmi.RemoteException;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Listener;
-
-import com.lowagie.text.DocumentException;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.CalendarDialog;
+import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SelectInput;
+import de.willuhn.jameica.gui.internal.action.Program;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.reports.KontoauszugReport;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.Settings;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
 /**
@@ -51,8 +56,6 @@ public class KontoauszugControl extends AbstractControl
   private Date dStart = null;
 
   private Date dEnd = null;
-
-  private Konto konto = null;
 
   private I18N i18n = null;
 
@@ -77,20 +80,10 @@ public class KontoauszugControl extends AbstractControl
     if (this.kontoAuswahl != null)
       return this.kontoAuswahl;
 
-    Konto k = (Konto) de.willuhn.jameica.hbci.Settings.getDBService()
-        .createObject(Konto.class, null);
-    DBIterator it = k.getList();
+    DBIterator it = de.willuhn.jameica.hbci.Settings.getDBService().createList(Konto.class);
     it.setOrder("ORDER BY blz, kontonummer");
     this.kontoAuswahl = new SelectInput(it, null);
     this.kontoAuswahl.setAttribute("longname");
-    this.kontoAuswahl.addListener(new Listener()
-    {
-      public void handleEvent(Event event)
-      {
-        konto = (Konto) kontoAuswahl.getValue();
-      }
-    });
-
     return this.kontoAuswahl;
   }
 
@@ -170,57 +163,81 @@ public class KontoauszugControl extends AbstractControl
   /**
    * Startet den Report
    * 
-   * @throws RemoteException
    */
   public void startReport()
   {
-    GUI.getStatusBar().setSuccessText(i18n.tr("Report gestartet."));
-
     try
     {
-      if (konto == null)
+      Konto k = (Konto) getKontoAuswahl().getValue();
+      if (k == null)
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte wählen Sie ein Konto aus"), StatusBarMessage.TYPE_ERROR));
+
+      Settings settings = new Settings(this.getClass());
+      String dir = settings.getString("lastdir",System.getProperty("user.home"));
+      
+      FileDialog fd = new FileDialog(GUI.getShell(),SWT.SAVE);
+      fd.setText(i18n.tr("Bitte wählen Sie das Verzeichnis, in dem Sie die Auswertung speichern möchten"));
+      fd.setFilterPath(dir);
+      fd.setFileName(i18n.tr("konto_{0}_{1}-{2}.pdf", new String[]{k.getKontonummer(),
+                                                                   HBCI.FASTDATEFORMAT.format(dStart),
+                                                                   HBCI.FASTDATEFORMAT.format(dEnd)}));
+          
+      
+      String file = fd.open();
+      
+      if (file == null)
       {
-        Konto k = (Konto) de.willuhn.jameica.hbci.Settings.getDBService()
-            .createObject(Konto.class, null);
-        DBIterator it = k.getList();
-        it.setOrder("ORDER BY blz, kontonummer");
-        konto = (Konto) it.next();
+        // Dialog abgebrochen
+        Logger.info("operation cancelled");
+        return;
       }
-    }
-    catch (RemoteException e)
-    {
-      GUI.getStatusBar().setErrorText(e.getLocalizedMessage());
-    }
+      File f = new File(file);
+      
+      // Wir merken uns das letzte ausgewaehlte Verzeichnis
+      settings.setAttribute("lastdir",f.getParent());
+      if (f.exists())
+      {
+        YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
+        d.setTitle(i18n.tr("Datei existiert bereits"));
+        d.setText(i18n.tr("Die Datei \"{0}\" existiert bereits. Überschreiben?",f.getAbsolutePath()));
+        if (!((Boolean)d.open()).booleanValue())
+          return;
+      }
 
-    try
-    {
       KontoauszugReport rpt = new KontoauszugReport(HBCI.DATEFORMAT
           .format(dStart)
           + " - " + HBCI.DATEFORMAT.format(dEnd));
-      rpt.open(System.getProperty("user.home") + "/bla.pdf");
-      rpt.generate(this.konto.getUmsaetze(dStart, dEnd));
-      rpt.close();
+      
+      try
+      {
+        rpt.open(f.getAbsolutePath());
+        rpt.generate(k.getUmsaetze(dStart, dEnd));
+      }
+      finally
+      {
+        rpt.close();
+      }
+      
+      // Zugeordnetes Programm starten (PDF-Viewer)
+      new Program().handleAction(f);
     }
-    catch (RemoteException e)
+    catch (Exception e)
     {
-      GUI.getStatusBar().setErrorText(e.getLocalizedMessage());
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Erstellen der Auswertung"), StatusBarMessage.TYPE_ERROR));
+      Logger.error("unable to create report",e);
     }
-    catch (FileNotFoundException e)
-    {
-      e.printStackTrace();
-    }
-    catch (DocumentException e)
-    {
-      e.printStackTrace();
-    }
-
-    GUI.getStatusBar().setSuccessText(i18n.tr("Report erstellt."));
+    Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Auswertung erstellt"), StatusBarMessage.TYPE_SUCCESS));
   }
 
 }
 
 /*******************************************************************************
  * $Log: KontoauszugControl.java,v $
+ * Revision 1.2  2006/05/15 12:05:22  willuhn
+ * @N FileDialog zur Auswahl von Pfad und Datei beim Speichern
+ * @N YesNoDialog falls Datei bereits existiert
+ * @C KontoImpl#getUmsaetze mit tonumber() statt dateob()
+ *
  * Revision 1.1  2006/05/14 19:52:13  jost
  * Prerelease Kontoauszug-Report
  * 

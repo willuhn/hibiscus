@@ -29,10 +29,9 @@
         <item id="hibiscus.navi.transfer.sammellast"  name="Sammellastschriften"  icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.SammelLastschriftList" />
         <item id="hibiscus.navi.transfer.dauer"       name="Daueraufträge"        icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.DauerauftragList" />
       </item>
-      <!--
-      <item id="hibiscus.navi.reporting"             name="Reporting"             icon-close="folder.gif" icon-open="folderopen.gif">
+      <item id="hibiscus.navi.reporting"             name="Auswertungen"             icon-close="folder.gif" icon-open="folderopen.gif">
         <item id="hibiscus.navi.reporting.kontoauszug" name="Kontoauszug"         icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.KontoauszugRpt" />
-      </item> -->
+      </item>
     </item>
   </navigation>
 

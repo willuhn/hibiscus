@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/reports/Attic/Report.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/05/14 19:52:46 $
- * $Author: jost $
+ * $Revision: 1.2 $
+ * $Date: 2006/05/15 12:05:22 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -47,7 +47,6 @@ public class Report
 
   public void open(String file) throws FileNotFoundException, DocumentException
   {
-    GUI.getStatusBar().startProgress();
     rpt = new Document();
     PdfWriter.getInstance(rpt, new FileOutputStream(file));
     rpt.setMargins(50, 10, 50, 50);
@@ -67,8 +66,8 @@ public class Report
 
   public void close()
   {
-    rpt.close();
-    GUI.getStatusBar().stopProgress();
+    if (rpt != null)
+      rpt.close();
   }
 
   protected PdfPCell getDetailCell(String text, int align)
@@ -100,6 +99,11 @@ public class Report
 }
 /*******************************************************************************
  * $Log: Report.java,v $
+ * Revision 1.2  2006/05/15 12:05:22  willuhn
+ * @N FileDialog zur Auswahl von Pfad und Datei beim Speichern
+ * @N YesNoDialog falls Datei bereits existiert
+ * @C KontoImpl#getUmsaetze mit tonumber() statt dateob()
+ *
  * Revision 1.1  2006/05/14 19:52:46  jost
  * Prerelease Kontoauszug-Report
  *

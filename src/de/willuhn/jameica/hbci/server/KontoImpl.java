@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.67 $
- * $Date: 2006/05/14 19:53:42 $
- * $Author: jost $
+ * $Revision: 1.68 $
+ * $Date: 2006/05/15 12:05:22 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -15,7 +15,6 @@ package de.willuhn.jameica.hbci.server;
 import java.rmi.RemoteException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.zip.CRC32;
@@ -368,10 +367,8 @@ public class KontoImpl extends AbstractDBObject implements Konto
   {
     DBIterator list = getService().createList(Umsatz.class);
     list.addFilter("konto_id = " + getID());
-    // TODO Entsprechende Methode in die Klasse HBCI aufnehmen
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    list.addFilter("valuta >= DATEOB('" + sdf.format(start) + "')");
-    list.addFilter("valuta <= DATEOB('" + sdf.format(end) + "')");
+    list.addFilter("TONUMBER(valuta) >= " + start.getTime());
+    list.addFilter("TONUMBER(valuta) <= " + end.getTime());
     list.setOrder("ORDER BY TONUMBER(valuta), id DESC");
     return list;
   }
@@ -692,6 +689,11 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*******************************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.68  2006/05/15 12:05:22  willuhn
+ * @N FileDialog zur Auswahl von Pfad und Datei beim Speichern
+ * @N YesNoDialog falls Datei bereits existiert
+ * @C KontoImpl#getUmsaetze mit tonumber() statt dateob()
+ *
  * Revision 1.67  2006/05/14 19:53:42  jost
  * Prerelease Kontoauszug-Report
  * Revision 1.66 2006/05/11 10:57:35 willuhn
