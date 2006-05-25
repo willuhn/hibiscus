@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UeberweisungList.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/01/18 00:51:00 $
+ * $Revision: 1.5 $
+ * $Date: 2006/05/25 13:47:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.Back;
+import de.willuhn.jameica.hbci.gui.action.UeberweisungImport;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungNew;
 import de.willuhn.jameica.hbci.gui.controller.UeberweisungControl;
 import de.willuhn.jameica.system.Application;
@@ -43,8 +44,9 @@ public class UeberweisungList extends AbstractView {
 
 			control.getUeberweisungListe().paint(getParent());
 
-			ButtonArea buttons = new ButtonArea(getParent(),2);
+			ButtonArea buttons = new ButtonArea(getParent(),3);
       buttons.addButton(i18n.tr("Zurück"),new Back());
+      buttons.addButton(i18n.tr("Importieren..."),new UeberweisungImport());
 			buttons.addButton(i18n.tr("neue Überweisung"),new UeberweisungNew());
 
 		}
@@ -59,6 +61,9 @@ public class UeberweisungList extends AbstractView {
 
 /**********************************************************************
  * $Log: UeberweisungList.java,v $
+ * Revision 1.5  2006/05/25 13:47:03  willuhn
+ * @N Skeleton for DTAUS-Import
+ *
  * Revision 1.4  2006/01/18 00:51:00  willuhn
  * @B bug 65
  *

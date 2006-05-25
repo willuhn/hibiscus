@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/ImportDialog.java,v $
- * $Revision: 1.6 $
- * $Date: 2006/04/21 09:26:35 $
+ * $Revision: 1.7 $
+ * $Date: 2006/05/25 13:47:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -227,6 +227,7 @@ public class ImportDialog extends AbstractDialog
       if (formats == null || formats.length == 0)
       {
         Logger.warn("importer " + imp.getName() + " provides no import formats, skipping");
+        continue;
       }
       for (int j=0;j<formats.length;++j)
       {
@@ -315,6 +316,9 @@ public class ImportDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: ImportDialog.java,v $
+ * Revision 1.7  2006/05/25 13:47:03  willuhn
+ * @N Skeleton for DTAUS-Import
+ *
  * Revision 1.6  2006/04/21 09:26:35  willuhn
  * *** empty log message ***
  *
