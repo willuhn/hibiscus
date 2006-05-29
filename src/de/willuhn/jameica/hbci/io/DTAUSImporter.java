@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Attic/DTAUSImporter.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/05/29 20:41:21 $
+ * $Revision: 1.5 $
+ * $Date: 2006/05/29 21:20:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,12 +17,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.rmi.RemoteException;
 
+import org.eclipse.swt.SWTException;
+
 import de.jost_net.OBanToo.Dtaus.CSatz;
 import de.jost_net.OBanToo.Dtaus.DtausDateiParser;
 import de.jost_net.OBanToo.Dtaus.ESatz;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBService;
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
@@ -69,7 +72,7 @@ public class DTAUSImporter implements Importer
       {
         monitor.setPercentComplete(0);
         
-        monitor.setStatusText(i18n.tr("Importiere logische Datei Nr. {0}","+(i+1)"));
+        monitor.setStatusText(i18n.tr("Importiere logische Datei Nr. {0}",""+(i+1)));
         
         parser.setLogischeDatei(i+1);
         CSatz c = parser.next();
@@ -80,6 +83,7 @@ public class DTAUSImporter implements Importer
 
         double factor = 100 / e.getAnzahlDatensaetze();
         int count = 0;
+        int success = 0;
         
         DBService service = Settings.getDBService();
         while (c != null)
@@ -107,8 +111,10 @@ public class DTAUSImporter implements Importer
             {
               // Das Konto existiert nicht im Hibiscus-Datenbestand.
               // Also muss der User eins auswaehlen.
-              monitor.log(i18n.tr("Konto {0} [BLZ {1}] nicht gefunden",new String[]{""+c.getKontoAuftraggeber(),""+c.getBlzErstbeteiligt()}));
+              String txt = i18n.tr("Konto {0} [BLZ {1}] nicht gefunden",new String[]{""+c.getKontoAuftraggeber(),""+c.getBlzErstbeteiligt()});
+              monitor.log(txt);
               KontoAuswahlDialog d = new KontoAuswahlDialog(KontoAuswahlDialog.POSITION_CENTER);
+              d.setText(txt + "\n" + i18n.tr("Bitte wählen Sie das Konto aus, auf dem die Überweisung ausgeführt werden soll."));
               k = (Konto) d.open();
             }
             else
@@ -129,6 +135,7 @@ public class DTAUSImporter implements Importer
             
             // Ueberweisung speichern
             u.store();
+            success++;
           }
           catch (ApplicationException ace)
           {
@@ -137,11 +144,23 @@ public class DTAUSImporter implements Importer
           }
           catch (Exception e1)
           {
+            if (e1 instanceof SWTException)
+            {
+              if (e1.getCause() instanceof OperationCanceledException)
+              {
+                Logger.info("operation cancelled");
+                monitor.setStatusText(i18n.tr("Import abgebrochen"));
+                monitor.setStatus(ProgressMonitor.STATUS_CANCEL);
+                return;
+              }
+            }
+
             Logger.error("unable to import transfer",e1);
             monitor.log(i18n.tr("Fehler beim Import der Überweisung, überspringe Datensatz"));
           }
         }
-        monitor.setStatusText(i18n.tr("{0} Überweisungen erfolgreich importiert",""+count));
+        monitor.setStatusText(i18n.tr("{0} Überweisungen erfolgreich importiert",""+success));
+        // TODO Umsatz-Liste muss nach Import aktualisiert werden
       }
     }
     catch (OperationCanceledException oce)
@@ -149,7 +168,6 @@ public class DTAUSImporter implements Importer
       Logger.info("operation cancelled");
       monitor.setStatusText(i18n.tr("Import abgebrochen"));
       monitor.setStatus(ProgressMonitor.STATUS_CANCEL);
-      return;
     }
     catch (Exception e)
     {
@@ -214,6 +232,9 @@ public class DTAUSImporter implements Importer
 
 /*********************************************************************
  * $Log: DTAUSImporter.java,v $
+ * Revision 1.5  2006/05/29 21:20:07  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2006/05/29 20:41:21  willuhn
  * @N Import aller logischen Dateien
  *
