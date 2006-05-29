@@ -13,7 +13,8 @@
 	<classpathentry kind="lib" path="lib/birt/ecore.resources.jar"/>
 	<classpathentry kind="lib" path="lib/birt/ecore.xmi.jar"/>
 	<classpathentry kind="lib" path="lib/birt/js.jar"/>
-	<classpathentry kind="lib" path="lib/hbci4java-2.5.0rc7.jar"/>
+	<classpathentry sourcepath="lib.src/hbci4java-2.5.0rc7-src.zip" kind="lib" path="lib/hbci4java-2.5.0rc7.jar"/>
 	<classpathentry kind="lib" path="lib/itext-1.3.3.jar"/>
+	<classpathentry sourcepath="/obantoo/src" kind="lib" path="lib/obantoo-bin-0.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
