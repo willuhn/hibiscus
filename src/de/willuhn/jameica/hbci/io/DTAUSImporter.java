@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Attic/DTAUSImporter.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/05/29 09:16:12 $
+ * $Revision: 1.4 $
+ * $Date: 2006/05/29 20:41:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -58,77 +58,91 @@ public class DTAUSImporter implements Importer
   public void doImport(GenericObject context, IOFormat format, InputStream is,
       ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
-    //TODO:[Heiner] Hier den DTAUS-Import vornehmen.
-    /** /
+    /**/
     try
     {
       DtausDateiParser parser = new DtausDateiParser(is);
-      CSatz c = parser.next();
       
-      // Im E-Satz steht die Anzahl der Datensaetze. Die brauchen wir, um
-      // den Fortschrittsbalken mit sinnvollen Daten fuettern zu koennen.
-      ESatz e = parser.getESatz();
-
-      double factor = 100 / e.getAnzahlDatensaetze();
-      int count = 0;
+      int files = parser.getAnzahlLogischerDateien();
       
-      DBService service = Settings.getDBService();
-      while (c != null)
+      for (int i=0;i<files;++i)
       {
-        c = parser.next();
+        monitor.setPercentComplete(0);
+        
+        monitor.setStatusText(i18n.tr("Importiere logische Datei Nr. {0}","+(i+1)"));
+        
+        parser.setLogischeDatei(i+1);
+        CSatz c = parser.next();
+        
+        // Im E-Satz steht die Anzahl der Datensaetze. Die brauchen wir, um
+        // den Fortschrittsbalken mit sinnvollen Daten fuettern zu koennen.
+        ESatz e = parser.getESatz();
 
-        try
+        double factor = 100 / e.getAnzahlDatensaetze();
+        int count = 0;
+        
+        DBService service = Settings.getDBService();
+        while (c != null)
         {
-          // Mit diesem Factor sollte sich der Fortschrittsbalken
-          // bis zum Ende der DTAUS-Datei genau auf 100% bewegen
-          monitor.addPercentComplete((int)(++count % factor));
-          
-          monitor.log(i18n.tr("Importiere Überweisung an {0}",c.getNameEmpfaenger()));
-         
-          // Neue Ueberweisung erstellen
-          Ueberweisung u = (Ueberweisung) service.createObject(Ueberweisung.class,null);
+          c = parser.next();
 
-          // Konto suchen
-          DBIterator konten = service.createList(Konto.class);
-          konten.addFilter("kontonummer = '" + c.getKontoAuftraggeber() + "'");
-          konten.addFilter("blz = '" + c.getBlzErstbeteiligt() + "'");
-
-          Konto k = null;
-          if (!konten.hasNext())
+          try
           {
-            // Das Konto existiert nicht im Hibiscus-Datenbestand.
-            // Also muss der User eins auswaehlen.
-            monitor.log(i18n.tr("Konto {0} [BLZ {1}] nicht gefunden",new String[]{""+c.getKontoAuftraggeber(),""+c.getBlzErstbeteiligt()}));
-            KontoAuswahlDialog d = new KontoAuswahlDialog(KontoAuswahlDialog.POSITION_CENTER);
-            k = (Konto) d.open();
+            // Mit diesem Factor sollte sich der Fortschrittsbalken
+            // bis zum Ende der DTAUS-Datei genau auf 100% bewegen
+            monitor.addPercentComplete((int)(++count % factor));
+            
+            monitor.log(i18n.tr("Importiere Überweisung an {0}",c.getNameEmpfaenger()));
+           
+            // Neue Ueberweisung erstellen
+            Ueberweisung u = (Ueberweisung) service.createObject(Ueberweisung.class,null);
+
+            // Konto suchen
+            DBIterator konten = service.createList(Konto.class);
+            konten.addFilter("kontonummer = '" + c.getKontoAuftraggeber() + "'");
+            konten.addFilter("blz = '" + c.getBlzErstbeteiligt() + "'");
+
+            Konto k = null;
+            if (!konten.hasNext())
+            {
+              // Das Konto existiert nicht im Hibiscus-Datenbestand.
+              // Also muss der User eins auswaehlen.
+              monitor.log(i18n.tr("Konto {0} [BLZ {1}] nicht gefunden",new String[]{""+c.getKontoAuftraggeber(),""+c.getBlzErstbeteiligt()}));
+              KontoAuswahlDialog d = new KontoAuswahlDialog(KontoAuswahlDialog.POSITION_CENTER);
+              k = (Konto) d.open();
+            }
+            else
+            {
+              k = (Konto) konten.next();
+            }
+            u.setKonto(k);
+            u.setBetrag(c.getBetragInEuro());
+            u.setGegenkontoBLZ(Long.toString(c.getBlzEndbeguenstigt()));
+            u.setGegenkontoName(c.getNameEmpfaenger());
+            u.setGegenkontoNummer(Long.toString(c.getKontonummer()));
+            u.setZweck(c.getVerwendungszweck());
+            
+            // TODO: Hier fehlen noch die weiteren Verwendungszwecke.
+            // Die koennen aber ohnehin erst vollstaendig gelesen werden,
+            // wenn Hibiscus mehr als zwei Zeilen unterstuetzt.
+            // u.setZweck2(...);
+            
+            // Ueberweisung speichern
+            u.store();
           }
-          else
+          catch (ApplicationException ace)
           {
-            k = (Konto) konten.next();
+            monitor.log(ace.getMessage());
+            monitor.log(i18n.tr("Überspringe Datensatz"));
           }
-          u.setKonto(k);
-          u.setBetrag(c.getBetrag());
-          u.setGegenkontoBLZ(Long.toString(c.getBlzEndbeguenstigt()));
-          u.setGegenkontoName(c.getNameEmpfaenger());
-          u.setGegenkontoNummer(Long.toString(c.getKontonummer()));
-          u.setZweck(c.getVerwendungszweck());
-          // u.setZweck2(...);
-          
-          // Ueberweisung speichern
-          u.store();
+          catch (Exception e1)
+          {
+            Logger.error("unable to import transfer",e1);
+            monitor.log(i18n.tr("Fehler beim Import der Überweisung, überspringe Datensatz"));
+          }
         }
-        catch (ApplicationException ace)
-        {
-          monitor.log(ace.getMessage());
-          monitor.log(i18n.tr("Überspringe Datensatz"));
-        }
-        catch (Exception e1)
-        {
-          Logger.error("unable to import transfer",e1);
-          monitor.log(i18n.tr("Fehler beim Import der Überweisung, überspringe Datensatz"));
-        }
+        monitor.setStatusText(i18n.tr("{0} Überweisungen erfolgreich importiert",""+count));
       }
-      monitor.setStatusText(i18n.tr("{0} Überweisungen erfolgreich importiert",""+count));
     }
     catch (OperationCanceledException oce)
     {
@@ -200,6 +214,9 @@ public class DTAUSImporter implements Importer
 
 /*********************************************************************
  * $Log: DTAUSImporter.java,v $
+ * Revision 1.4  2006/05/29 20:41:21  willuhn
+ * @N Import aller logischen Dateien
+ *
  * Revision 1.3  2006/05/29 09:16:12  willuhn
  * *** empty log message ***
  *
