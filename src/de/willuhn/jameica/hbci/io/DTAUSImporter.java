@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Attic/DTAUSImporter.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/05/29 21:20:07 $
+ * $Revision: 1.6 $
+ * $Date: 2006/05/31 09:04:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ package de.willuhn.jameica.hbci.io;
 import java.io.IOException;
 import java.io.InputStream;
 import java.rmi.RemoteException;
+import java.util.Hashtable;
 
 import org.eclipse.swt.SWTException;
 
@@ -25,7 +26,6 @@ import de.jost_net.OBanToo.Dtaus.ESatz;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBService;
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
@@ -66,6 +66,11 @@ public class DTAUSImporter implements Importer
     {
       DtausDateiParser parser = new DtausDateiParser(is);
       
+      // Wir merken uns die Konten, die der User schonmal ausgewaehlt
+      // hat, um ihn nicht fuer jede Buchung mit immer wieder dem
+      // gleichen Konto zu nerven
+      Hashtable ht = new Hashtable();
+      
       int files = parser.getAnzahlLogischerDateien();
       
       for (int i=0;i<files;++i)
@@ -102,20 +107,33 @@ public class DTAUSImporter implements Importer
             Ueberweisung u = (Ueberweisung) service.createObject(Ueberweisung.class,null);
 
             // Konto suchen
+            
+            String kontonummer = Long.toString(c.getKontoAuftraggeber());
+            String blz         = Long.toString(c.getBlzErstbeteiligt());
             DBIterator konten = service.createList(Konto.class);
-            konten.addFilter("kontonummer = '" + c.getKontoAuftraggeber() + "'");
-            konten.addFilter("blz = '" + c.getBlzErstbeteiligt() + "'");
+            konten.addFilter("kontonummer = '" + kontonummer + "'");
+            konten.addFilter("blz = '" + blz + "'");
 
             Konto k = null;
             if (!konten.hasNext())
             {
               // Das Konto existiert nicht im Hibiscus-Datenbestand.
-              // Also muss der User eins auswaehlen.
-              String txt = i18n.tr("Konto {0} [BLZ {1}] nicht gefunden",new String[]{""+c.getKontoAuftraggeber(),""+c.getBlzErstbeteiligt()});
-              monitor.log(txt);
-              KontoAuswahlDialog d = new KontoAuswahlDialog(KontoAuswahlDialog.POSITION_CENTER);
-              d.setText(txt + "\n" + i18n.tr("Bitte wählen Sie das Konto aus, auf dem die Überweisung ausgeführt werden soll."));
-              k = (Konto) d.open();
+
+              // Erstmal schauen, ob der User das Konto schonmal ausgewaehlt hat:
+              k = (Konto) ht.get(kontonummer + blz);
+              if (k == null)
+              {
+                // Ne, hat er noch nicht.
+                // Also muss der User eins auswaehlen.
+                String txt = i18n.tr("Konto {0} [BLZ {1}] nicht gefunden",new String[]{kontonummer,blz});
+                monitor.log(txt);
+                KontoAuswahlDialog d = new KontoAuswahlDialog(KontoAuswahlDialog.POSITION_CENTER);
+                d.setText(txt + "\n" + i18n.tr("Bitte wählen Sie das Konto aus, auf dem die Überweisung ausgeführt werden soll."));
+                k = (Konto) d.open();
+                
+                if (k != null)
+                  ht.put(kontonummer + blz,k);
+              }
             }
             else
             {
@@ -232,6 +250,9 @@ public class DTAUSImporter implements Importer
 
 /*********************************************************************
  * $Log: DTAUSImporter.java,v $
+ * Revision 1.6  2006/05/31 09:04:21  willuhn
+ * @C Wir merken uns die vom User bereits ausgewaehlten Konten
+ *
  * Revision 1.5  2006/05/29 21:20:07  willuhn
  * *** empty log message ***
  *
