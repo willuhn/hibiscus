@@ -1,0 +1,6 @@
+<info>
+  <name>iText</name>
+  <description>a library that allows you to generate PDF files on the fly</description>
+  <url>http://www.lowagie.com/iText/</url>
+  <license>MPL - http://www.lowagie.com/iText/MPL-1.1.txt</license>
+</info>
