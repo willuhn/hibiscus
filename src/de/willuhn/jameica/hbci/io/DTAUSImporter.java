@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Attic/DTAUSImporter.java,v $
- * $Revision: 1.6 $
- * $Date: 2006/05/31 09:04:21 $
- * $Author: willuhn $
+ * $Revision: 1.7 $
+ * $Date: 2006/06/05 09:55:50 $
+ * $Author: jost $
  * $Locker:  $
  * $State: Exp $
  *
@@ -144,7 +144,7 @@ public class DTAUSImporter implements Importer
             u.setGegenkontoBLZ(Long.toString(c.getBlzEndbeguenstigt()));
             u.setGegenkontoName(c.getNameEmpfaenger());
             u.setGegenkontoNummer(Long.toString(c.getKontonummer()));
-            u.setZweck(c.getVerwendungszweck());
+            u.setZweck(c.getVerwendungszweck(1));
             
             // TODO: Hier fehlen noch die weiteren Verwendungszwecke.
             // Die koennen aber ohnehin erst vollstaendig gelesen werden,
@@ -250,6 +250,9 @@ public class DTAUSImporter implements Importer
 
 /*********************************************************************
  * $Log: DTAUSImporter.java,v $
+ * Revision 1.7  2006/06/05 09:55:50  jost
+ * Anpassung an obantoo 0.5
+ *
  * Revision 1.6  2006/05/31 09:04:21  willuhn
  * @C Wir merken uns die vom User bereits ausgewaehlten Konten
  *
