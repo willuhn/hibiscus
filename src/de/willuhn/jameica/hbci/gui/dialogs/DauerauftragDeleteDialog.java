@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/DauerauftragDeleteDialog.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/06/23 17:05:33 $
- * $Author: web0 $
+ * $Revision: 1.7 $
+ * $Date: 2006/06/06 21:42:21 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -67,9 +67,9 @@ public class DauerauftragDeleteDialog extends AbstractDialog {
 
 		LabelGroup group = new LabelGroup(parent,i18n.tr("Zieldatum zur Löschung des Dauerauftrages"));
 			
-  	group.addText(i18n.tr("Bitte wählen Sie das Datum aus, zu dem Sie den Dauerauftrag löschen wollen\n" +                          "Hinweis: Es ist durchaus möglich, dass Ihre Bank das Löschen eines " +
-                          "Dauerauftrages zu einem definierten Datum nicht unterstützt. Wählen Sie " +
-                          "in diesem Fall bitte \"Zum nächstmöglichen Zeitpunkt\""),true);
+  	group.addText(i18n.tr("Bitte wählen Sie das Datum aus, zu dem Sie den Dauerauftrag löschen wollen\n" +                          "Hinweis: Es ist durchaus möglich, dass Ihre Bank das Löschen eines\n" +
+                          "Dauerauftrages zu einem definierten Datum nicht unterstützt.\n" +
+                          "Wählen Sie in diesem Fall bitte \"Zum nächstmöglichen Zeitpunkt\""),true);
     
     box = new CheckboxInput(true);
     box.addListener(new Listener()
@@ -182,6 +182,9 @@ public class DauerauftragDeleteDialog extends AbstractDialog {
 
 /**********************************************************************
  * $Log: DauerauftragDeleteDialog.java,v $
+ * Revision 1.7  2006/06/06 21:42:21  willuhn
+ * @N Zeilenumbrueche in Dialogen (fuer Windows)
+ *
  * Revision 1.6  2005/06/23 17:05:33  web0
  * @B bug 85
  *

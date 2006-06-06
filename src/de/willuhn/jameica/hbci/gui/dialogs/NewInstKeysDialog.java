@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/NewInstKeysDialog.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/07/24 14:46:16 $
- * $Author: web0 $
+ * $Revision: 1.7 $
+ * $Date: 2006/06/06 21:42:21 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -60,7 +60,9 @@ public class NewInstKeysDialog extends AbstractDialog
   {
 		LabelGroup group = new LabelGroup(parent,i18n.tr("Schlüsseldetails"));
 		group.addText(i18n.tr(
-      "Bitte vergleichen Sie die von der Bank übermittelten Hash-Wert (Checksumme) mit " +      "denen in Ihren Unterlagen. Stimmen diese mit den folgenden Werten überein, " +      "dann bestätigen Sie bitte mit OK. Andernfalls brechen Sie den Vorgang aus " +      "Sicherheitsgründen bitte ab."),true);
+      "Bitte vergleichen Sie die von der Bank übermittelten Hash-Wert (Checksumme)\n" +
+      "mit denen in Ihren Unterlagen. Stimmen diese mit den folgenden Werten überein,\n" +      "dann bestätigen Sie bitte mit OK.\n" +
+      "Andernfalls brechen Sie den Vorgang aus Sicherheitsgründen bitte ab."),true);
 
 		INILetter iniletter = new INILetter(passport,INILetter.TYPE_INST);
 
@@ -100,6 +102,9 @@ public class NewInstKeysDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: NewInstKeysDialog.java,v $
+ * Revision 1.7  2006/06/06 21:42:21  willuhn
+ * @N Zeilenumbrueche in Dialogen (fuer Windows)
+ *
  * Revision 1.6  2005/07/24 14:46:16  web0
  * *** empty log message ***
  *
