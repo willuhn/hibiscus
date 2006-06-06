@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/DonateDialog.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/06/06 13:52:58 $
- * $Author: willuhn $
+ * $Revision: 1.5 $
+ * $Date: 2006/06/06 18:02:45 $
+ * $Author: jost $
  * $Locker:  $
  * $State: Exp $
  *
@@ -83,7 +83,7 @@ public class DonateDialog extends AbstractDialog
     group.addText(i18n.tr("Möchten Sie die Weiterentwicklung von Hibiscus mit einer Spende unterstützen?\n" +
                           "Dann wählen Sie einfach Ihr Konto aus und geben Sie den gewünschten Betrag ein.\n" +
                           "Wenn Sie die Option \"Spendenquittung\" aktivieren und Ihre eMail-Adresse eingeben,\n" +
-                          "erhalten Sie eine Rechnung in Höhre des Spendenbetrages für Ihre Buchhaltung."),true);
+                          "erhalten Sie eine Rechnung in Höhe des Spendenbetrages für Ihre Buchhaltung."),true);
     
     group.addLabelPair(i18n.tr("Ihr Konto"), getKontoauswahl());
     group.addLabelPair(i18n.tr("Betrag"), getBetrag());
@@ -239,6 +239,9 @@ public class DonateDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: DonateDialog.java,v $
+ * Revision 1.5  2006/06/06 18:02:45  jost
+ * Tippfehler beseitigt.
+ *
  * Revision 1.4  2006/06/06 13:52:58  willuhn
  * @N Linewraps in DonateDialog (sucking windows SWT behaviour)
  *
