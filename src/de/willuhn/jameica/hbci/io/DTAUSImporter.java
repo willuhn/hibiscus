@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Attic/DTAUSImporter.java,v $
- * $Revision: 1.8 $
- * $Date: 2006/06/06 21:37:55 $
+ * $Revision: 1.9 $
+ * $Date: 2006/06/06 22:41:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -80,7 +80,6 @@ public class DTAUSImporter implements Importer
         monitor.setStatusText(i18n.tr("Importiere logische Datei Nr. {0}",""+(i+1)));
         
         parser.setLogischeDatei(i+1);
-        CSatz c = parser.next();
         
         // Im E-Satz steht die Anzahl der Datensaetze. Die brauchen wir, um
         // den Fortschrittsbalken mit sinnvollen Daten fuettern zu koennen.
@@ -91,15 +90,21 @@ public class DTAUSImporter implements Importer
         int success = 0;
         
         DBService service = Settings.getDBService();
-        while (c != null)
-        {
-          c = parser.next();
 
+        CSatz c = null;
+        while ((c = parser.next()) != null)
+        {
           try
           {
             // Mit diesem Factor sollte sich der Fortschrittsbalken
             // bis zum Ende der DTAUS-Datei genau auf 100% bewegen
-            monitor.addPercentComplete((int)(++count % factor));
+            monitor.setPercentComplete((int)((++count) * factor));
+            
+            if (c == null)
+            {
+              monitor.log(i18n.tr("Überweisung {0} nicht lesbar. Überspringe",""+count));
+              continue;
+            }
             
             monitor.log(i18n.tr("Importiere Überweisung an {0}",c.getNameEmpfaenger()));
            
@@ -192,7 +197,6 @@ public class DTAUSImporter implements Importer
           }
         }
         monitor.setStatusText(i18n.tr("{0} Überweisungen erfolgreich importiert",""+success));
-        // TODO Umsatz-Liste muss nach Import aktualisiert werden
       }
     }
     catch (OperationCanceledException oce)
@@ -264,6 +268,11 @@ public class DTAUSImporter implements Importer
 
 /*********************************************************************
  * $Log: DTAUSImporter.java,v $
+ * Revision 1.9  2006/06/06 22:41:26  willuhn
+ * @N Generische Loesch-Action fuer DBObjects (DBObjectDelete)
+ * @N Live-Aktualisierung der Tabelle mit den importierten Ueberweisungen
+ * @B Korrekte Berechnung des Fortschrittsbalken bei Import
+ *
  * Revision 1.8  2006/06/06 21:37:55  willuhn
  * @R FilternEngine entfernt. Wird jetzt ueber das Jameica-Messaging-System abgewickelt
  *

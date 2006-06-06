@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.41 $
- * $Date: 2005/11/14 13:08:11 $
+ * $Revision: 1.42 $
+ * $Date: 2006/06/06 22:41:25 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,7 +16,6 @@ import java.rmi.RemoteException;
 
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.Settings;
@@ -85,7 +84,7 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
 	 * @return Tabelle.
 	 * @throws RemoteException
 	 */
-	public Part getUeberweisungListe() throws RemoteException
+	public TablePart getUeberweisungListe() throws RemoteException
 	{
 		if (table != null)
 			return table;
@@ -118,6 +117,11 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
+ * Revision 1.42  2006/06/06 22:41:25  willuhn
+ * @N Generische Loesch-Action fuer DBObjects (DBObjectDelete)
+ * @N Live-Aktualisierung der Tabelle mit den importierten Ueberweisungen
+ * @B Korrekte Berechnung des Fortschrittsbalken bei Import
+ *
  * Revision 1.41  2005/11/14 13:08:11  willuhn
  * @N Termin-Ueberweisungen
  *

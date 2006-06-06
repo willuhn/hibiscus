@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/LastschriftList.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/03/30 22:56:46 $
+ * $Revision: 1.5 $
+ * $Date: 2006/06/06 22:41:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,7 +20,7 @@ import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.LastschriftDelete;
+import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.LastschriftDuplicate;
 import de.willuhn.jameica.hbci.gui.action.LastschriftExecute;
 import de.willuhn.jameica.hbci.gui.action.LastschriftNew;
@@ -52,7 +52,7 @@ public class LastschriftList extends ContextMenu
 		addItem(new NotActiveMenuItem(i18n.tr("Jetzt ausführen..."), new LastschriftExecute()));
 		addItem(new CheckedContextMenuItem(i18n.tr("Duplizieren"), new LastschriftDuplicate()));
 		addItem(ContextMenuItem.SEPARATOR);
-		addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new LastschriftDelete()));
+		addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete()));
     addItem(new ContextMenuItem(i18n.tr("Als \"ausgeführt\" markieren..."), new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -146,6 +146,11 @@ public class LastschriftList extends ContextMenu
 
 /**********************************************************************
  * $Log: LastschriftList.java,v $
+ * Revision 1.5  2006/06/06 22:41:26  willuhn
+ * @N Generische Loesch-Action fuer DBObjects (DBObjectDelete)
+ * @N Live-Aktualisierung der Tabelle mit den importierten Ueberweisungen
+ * @B Korrekte Berechnung des Fortschrittsbalken bei Import
+ *
  * Revision 1.4  2006/03/30 22:56:46  willuhn
  * @B bug 216
  *

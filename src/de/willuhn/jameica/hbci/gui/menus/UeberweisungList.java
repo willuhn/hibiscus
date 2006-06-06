@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UeberweisungList.java,v $
- * $Revision: 1.10 $
- * $Date: 2006/03/30 22:56:46 $
+ * $Revision: 1.11 $
+ * $Date: 2006/06/06 22:41:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,8 +20,8 @@ import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.TerminableMarkExecuted;
-import de.willuhn.jameica.hbci.gui.action.UeberweisungDelete;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungDuplicate;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungExecute;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungNew;
@@ -48,12 +48,12 @@ public class UeberweisungList extends ContextMenu
 	{
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-		addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"), new UeberweisungNew()));
+		addItem(new SingleItem(i18n.tr("Öffnen"), new UeberweisungNew()));
 		addItem(new NotActiveMenuItem(i18n.tr("Jetzt ausführen..."), new UeberweisungExecute()));
-		addItem(new CheckedContextMenuItem(i18n.tr("Duplizieren"), new UeberweisungDuplicate()));
+		addItem(new SingleItem(i18n.tr("Duplizieren"), new UeberweisungDuplicate()));
 		addItem(ContextMenuItem.SEPARATOR);
-		addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new UeberweisungDelete()));
-    addItem(new ContextMenuItem(i18n.tr("Als \"ausgeführt\" markieren..."), new Action() {
+		addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete()));
+    addItem(new SingleItem(i18n.tr("Als \"ausgeführt\" markieren..."), new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         new TerminableMarkExecuted().handleAction(context);
@@ -89,6 +89,30 @@ public class UeberweisungList extends ContextMenu
 		addItem(new ContextMenuItem(i18n.tr("Neue Überweisung..."), new UNeu()));
 		
 	}
+
+  /**
+   * Ueberschrieben, um zu pruefen, ob ein Array oder ein einzelnes Element markiert ist.
+   */
+  private class SingleItem extends CheckedContextMenuItem
+  {
+    /**
+     * @param text
+     * @param action
+     */
+    private SingleItem(String text, Action action)
+    {
+      super(text,action);
+    }
+    /**
+     * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
+     */
+    public boolean isEnabledFor(Object o)
+    {
+      if (o instanceof Ueberweisung[])
+        return false;
+      return super.isEnabledFor(o);
+    }
+  }
 
 	/**
 	 * Ueberschreiben wir, um <b>grundsaetzlich</b> eine neue Ueberweisung
@@ -131,6 +155,8 @@ public class UeberweisungList extends ContextMenu
     		return false;
     	try
     	{
+        if (o instanceof Ueberweisung[])
+          return false;
     		Ueberweisung u = (Ueberweisung) o;
     		return !u.ausgefuehrt();
     	}
@@ -146,6 +172,11 @@ public class UeberweisungList extends ContextMenu
 
 /**********************************************************************
  * $Log: UeberweisungList.java,v $
+ * Revision 1.11  2006/06/06 22:41:26  willuhn
+ * @N Generische Loesch-Action fuer DBObjects (DBObjectDelete)
+ * @N Live-Aktualisierung der Tabelle mit den importierten Ueberweisungen
+ * @B Korrekte Berechnung des Fortschrittsbalken bei Import
+ *
  * Revision 1.10  2006/03/30 22:56:46  willuhn
  * @B bug 216
  *

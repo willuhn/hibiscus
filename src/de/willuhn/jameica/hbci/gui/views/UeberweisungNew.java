@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UeberweisungNew.java,v $
- * $Revision: 1.10 $
- * $Date: 2006/03/27 16:46:21 $
+ * $Revision: 1.11 $
+ * $Date: 2006/06/06 22:41:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,7 @@ import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.Back;
-import de.willuhn.jameica.hbci.gui.action.UeberweisungDelete;
+import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungExecute;
 import de.willuhn.jameica.hbci.gui.controller.UeberweisungControl;
 import de.willuhn.jameica.hbci.rmi.Transfer;
@@ -66,7 +66,7 @@ public class UeberweisungNew extends AbstractView {
 
 		ButtonArea buttonArea = new ButtonArea(getParent(),4);
 		buttonArea.addButton(i18n.tr("Zurück"), 				 				 new Back());
-		buttonArea.addButton(i18n.tr("Löschen"),				 				 new UeberweisungDelete(), transfer);
+		buttonArea.addButton(i18n.tr("Löschen"),				 				 new DBObjectDelete(), transfer);
 		buttonArea.addButton(i18n.tr("Speichern und ausführen"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -88,6 +88,11 @@ public class UeberweisungNew extends AbstractView {
 
 /**********************************************************************
  * $Log: UeberweisungNew.java,v $
+ * Revision 1.11  2006/06/06 22:41:26  willuhn
+ * @N Generische Loesch-Action fuer DBObjects (DBObjectDelete)
+ * @N Live-Aktualisierung der Tabelle mit den importierten Ueberweisungen
+ * @B Korrekte Berechnung des Fortschrittsbalken bei Import
+ *
  * Revision 1.10  2006/03/27 16:46:21  willuhn
  * @N GUI polish
  *
