@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Attic/DTAUSImporter.java,v $
- * $Revision: 1.7 $
- * $Date: 2006/06/05 09:55:50 $
- * $Author: jost $
+ * $Revision: 1.8 $
+ * $Date: 2006/06/06 21:37:55 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -104,7 +104,7 @@ public class DTAUSImporter implements Importer
             monitor.log(i18n.tr("Importiere Überweisung an {0}",c.getNameEmpfaenger()));
            
             // Neue Ueberweisung erstellen
-            Ueberweisung u = (Ueberweisung) service.createObject(Ueberweisung.class,null);
+            final Ueberweisung u = (Ueberweisung) service.createObject(Ueberweisung.class,null);
 
             // Konto suchen
             
@@ -154,6 +154,20 @@ public class DTAUSImporter implements Importer
             // Ueberweisung speichern
             u.store();
             success++;
+            try
+            {
+              ImportMessage im = new ImportMessage() {
+                public GenericObject getImportedObject() throws RemoteException
+                {
+                  return u;
+                }
+              };
+              Application.getMessagingFactory().sendMessage(im);
+            }
+            catch (Exception ex)
+            {
+              Logger.error("error while sending import message",ex);
+            }
           }
           catch (ApplicationException ace)
           {
@@ -250,6 +264,9 @@ public class DTAUSImporter implements Importer
 
 /*********************************************************************
  * $Log: DTAUSImporter.java,v $
+ * Revision 1.8  2006/06/06 21:37:55  willuhn
+ * @R FilternEngine entfernt. Wird jetzt ueber das Jameica-Messaging-System abgewickelt
+ *
  * Revision 1.7  2006/06/05 09:55:50  jost
  * Anpassung an obantoo 0.5
  *

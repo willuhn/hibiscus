@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Attic/MT940Importer.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/01/23 23:07:23 $
+ * $Revision: 1.6 $
+ * $Date: 2006/06/06 21:37:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -35,7 +35,6 @@ import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.Converter;
-import de.willuhn.jameica.hbci.server.FilterEngine;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -473,8 +472,6 @@ public class MT940Importer implements Importer
         return;
       }
       
-      Umsatz umsatz = null;
-      
       int created = 0;
       int skipped = 0;
       // Eine Transaktion beim Speichern brauchen wir nicht, weil beim
@@ -486,7 +483,7 @@ public class MT940Importer implements Importer
           monitor.log(i18n.tr("Umsatz {0}", "" + (i+1)));
           monitor.addPercentComplete(1);
         }
-        umsatz = Converter.HBCIUmsatz2HibiscusUmsatz(lines[i]);
+        final Umsatz umsatz = Converter.HBCIUmsatz2HibiscusUmsatz(lines[i]);
         umsatz.setKonto(konto); // muessen wir noch machen, weil der Converter das Konto nicht kennt
         
         // Wenn keine geparsten Verwendungszwecke da sind, machen wir
@@ -500,13 +497,20 @@ public class MT940Importer implements Importer
           {
             umsatz.store(); // den Umsatz haben wir noch nicht, speichern!
             created++;
+
             try
             {
-              FilterEngine.getInstance().filter(umsatz,lines[i]);
+              ImportMessage im = new ImportMessage() {
+                public GenericObject getImportedObject() throws RemoteException
+                {
+                  return umsatz;
+                }
+              };
+              Application.getMessagingFactory().sendMessage(im);
             }
             catch (Exception e)
             {
-              Logger.error("error while filtering umsatz",e);
+              Logger.error("error while sending import message",e);
             }
           }
           catch (Exception e2)
@@ -592,6 +596,9 @@ public class MT940Importer implements Importer
 
 /*******************************************************************************
  * $Log: MT940Importer.java,v $
+ * Revision 1.6  2006/06/06 21:37:55  willuhn
+ * @R FilternEngine entfernt. Wird jetzt ueber das Jameica-Messaging-System abgewickelt
+ *
  * Revision 1.5  2006/01/23 23:07:23  willuhn
  * @N csv import stuff
  *
