@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Attic/DTAUSImporter.java,v $
- * $Revision: 1.10 $
- * $Date: 2006/06/07 17:26:40 $
+ * $Revision: 1.11 $
+ * $Date: 2006/06/07 22:42:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,34 +26,27 @@ import de.jost_net.OBanToo.Dtaus.ESatz;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBService;
-import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.rmi.Lastschrift;
 import de.willuhn.jameica.hbci.rmi.Transfer;
-import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
-import de.willuhn.util.I18N;
 import de.willuhn.util.ProgressMonitor;
 
 /**
  * Import-Format fuer DTAUS-Dateien.
  */
-public class DTAUSImporter implements Importer
+public class DTAUSImporter extends AbstractDTAUSIO implements Importer
 {
-  private I18N i18n = null;
-
   /**
    * ct.
    */
   public DTAUSImporter()
   {
     super();
-    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
   
   
@@ -227,68 +220,16 @@ public class DTAUSImporter implements Importer
         }
       }
     }
-    /**/
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.io.IO#getName()
-   */
-  public String getName()
-  {
-    return i18n.tr("DTAUS-Format");
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.io.IO#getIOFormats(java.lang.Class)
-   */
-  public IOFormat[] getIOFormats(Class objectType)
-  {
-    // Kein Typ angegeben?
-    if (objectType == null)
-      return null;
-    
-    // Wir unterstuetzen erstmal nur Ueberweisungen und Lastschriften
-    if (!objectType.equals(Ueberweisung.class) && !objectType.equals(Lastschrift.class))
-      return null;
-
-    return new IOFormat[] { new MyIOFormat(objectType) };
-  }
-
-  /**
-   * Hilfsklasse, damit wir uns den Objekt-Typ merken koennen.
-   * @author willuhn
-   */
-  private class MyIOFormat implements IOFormat
-  {
-    private Class type = null;
-    
-    /**
-     * ct.
-     * @param type
-     */
-    private MyIOFormat(Class type)
-    {
-      this.type = type;
-    }
-    
-    public String getName()
-    {
-      return i18n.tr("DTAUS-Format");
-    }
-
-    /**
-     * @see de.willuhn.jameica.hbci.io.IOFormat#getFileExtensions()
-     */
-    public String[] getFileExtensions()
-    {
-      return new String[] {"*.dta"};
-    }
   }
 }
 
 
 /*********************************************************************
  * $Log: DTAUSImporter.java,v $
+ * Revision 1.11  2006/06/07 22:42:00  willuhn
+ * @N DTAUSExporter
+ * @N Abstrakte Basis-Klasse fuer Export und Import
+ *
  * Revision 1.10  2006/06/07 17:26:40  willuhn
  * @N DTAUS-Import fuer Lastschriften
  * @B Satusbar-Update in DTAUSImport gefixt
