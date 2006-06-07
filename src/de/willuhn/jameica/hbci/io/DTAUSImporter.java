@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Attic/DTAUSImporter.java,v $
- * $Revision: 1.9 $
- * $Date: 2006/06/06 22:41:26 $
+ * $Revision: 1.10 $
+ * $Date: 2006/06/07 17:26:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,6 +30,8 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.Lastschrift;
+import de.willuhn.jameica.hbci.rmi.Transfer;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -56,14 +58,17 @@ public class DTAUSImporter implements Importer
   
   
   /**
+   * Den Context ignorieren wir hier.
    * @see de.willuhn.jameica.hbci.io.Importer#doImport(de.willuhn.datasource.GenericObject, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor)
    */
   public void doImport(GenericObject context, IOFormat format, InputStream is,
       ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
-    /**/
     try
     {
+      if (format == null || !(format instanceof MyIOFormat))
+        throw new ApplicationException(i18n.tr("Unbekanntes Import-Format"));
+      
       DtausDateiParser parser = new DtausDateiParser(is);
       
       // Wir merken uns die Konten, die der User schonmal ausgewaehlt
@@ -85,7 +90,7 @@ public class DTAUSImporter implements Importer
         // den Fortschrittsbalken mit sinnvollen Daten fuettern zu koennen.
         ESatz e = parser.getESatz();
 
-        double factor = 100 / e.getAnzahlDatensaetze();
+        double factor = 100d / e.getAnzahlDatensaetze();
         int count = 0;
         int success = 0;
         
@@ -102,14 +107,14 @@ public class DTAUSImporter implements Importer
             
             if (c == null)
             {
-              monitor.log(i18n.tr("Überweisung {0} nicht lesbar. Überspringe",""+count));
+              monitor.log(i18n.tr("Auftrag {0} nicht lesbar. Überspringe",""+count));
               continue;
             }
             
-            monitor.log(i18n.tr("Importiere Überweisung an {0}",c.getNameEmpfaenger()));
+            monitor.log(i18n.tr("Importiere Auftrag an {0}",c.getNameEmpfaenger()));
            
-            // Neue Ueberweisung erstellen
-            final Ueberweisung u = (Ueberweisung) service.createObject(Ueberweisung.class,null);
+            // Neuen Auftrag erstellen
+            final Transfer t = (Transfer) service.createObject(((MyIOFormat)format).type,null);
 
             // Konto suchen
             
@@ -133,7 +138,7 @@ public class DTAUSImporter implements Importer
                 String txt = i18n.tr("Konto {0} [BLZ {1}] nicht gefunden",new String[]{kontonummer,blz});
                 monitor.log(txt);
                 KontoAuswahlDialog d = new KontoAuswahlDialog(KontoAuswahlDialog.POSITION_CENTER);
-                d.setText(txt + "\n" + i18n.tr("Bitte wählen Sie das Konto aus, auf dem die Überweisung ausgeführt werden soll."));
+                d.setText(txt + "\n" + i18n.tr("Bitte wählen Sie das Konto aus, auf dem der Auftrag ausgeführt werden soll."));
                 k = (Konto) d.open();
                 
                 if (k != null)
@@ -144,27 +149,26 @@ public class DTAUSImporter implements Importer
             {
               k = (Konto) konten.next();
             }
-            u.setKonto(k);
-            u.setBetrag(c.getBetragInEuro());
-            u.setGegenkontoBLZ(Long.toString(c.getBlzEndbeguenstigt()));
-            u.setGegenkontoName(c.getNameEmpfaenger());
-            u.setGegenkontoNummer(Long.toString(c.getKontonummer()));
-            u.setZweck(c.getVerwendungszweck(1));
+            t.setKonto(k);
+            t.setBetrag(c.getBetragInEuro());
+            t.setGegenkontoBLZ(Long.toString(c.getBlzEndbeguenstigt()));
+            t.setGegenkontoName(c.getNameEmpfaenger());
+            t.setGegenkontoNummer(Long.toString(c.getKontonummer()));
+            t.setZweck(c.getVerwendungszweck(1));
             
-            // TODO: Hier fehlen noch die weiteren Verwendungszwecke.
-            // Die koennen aber ohnehin erst vollstaendig gelesen werden,
-            // wenn Hibiscus mehr als zwei Zeilen unterstuetzt.
-            // u.setZweck2(...);
+            int z = c.getAnzahlVerwendungszwecke();
+            if (z > 1)
+              t.setZweck2(c.getVerwendungszweck(2));
             
             // Ueberweisung speichern
-            u.store();
+            t.store();
             success++;
             try
             {
               ImportMessage im = new ImportMessage() {
                 public GenericObject getImportedObject() throws RemoteException
                 {
-                  return u;
+                  return t;
                 }
               };
               Application.getMessagingFactory().sendMessage(im);
@@ -193,10 +197,10 @@ public class DTAUSImporter implements Importer
             }
 
             Logger.error("unable to import transfer",e1);
-            monitor.log(i18n.tr("Fehler beim Import der Überweisung, überspringe Datensatz"));
+            monitor.log(i18n.tr("Fehler beim Import des Auftrages, überspringe Datensatz"));
           }
         }
-        monitor.setStatusText(i18n.tr("{0} Überweisungen erfolgreich importiert",""+success));
+        monitor.setStatusText(i18n.tr("{0} Aufträge erfolgreich importiert",""+success));
       }
     }
     catch (OperationCanceledException oce)
@@ -239,35 +243,56 @@ public class DTAUSImporter implements Importer
    */
   public IOFormat[] getIOFormats(Class objectType)
   {
-    // Wir unterstuetzen erstmal nur Ueberweisungen und Lastschriften
+    // Kein Typ angegeben?
     if (objectType == null)
       return null;
     
-    if (!objectType.equals(Ueberweisung.class) && !objectType.equals(Ueberweisung.class))
+    // Wir unterstuetzen erstmal nur Ueberweisungen und Lastschriften
+    if (!objectType.equals(Ueberweisung.class) && !objectType.equals(Lastschrift.class))
       return null;
-    
-    IOFormat f = new IOFormat() {
-      public String getName()
-      {
-        return i18n.tr("DTAUS-Format");
-      }
 
-      /**
-       * @see de.willuhn.jameica.hbci.io.IOFormat#getFileExtensions()
-       */
-      public String[] getFileExtensions()
-      {
-        return new String[] {"*.dta"};
-      }
-    };
-    return new IOFormat[] { f };
+    return new IOFormat[] { new MyIOFormat(objectType) };
   }
 
+  /**
+   * Hilfsklasse, damit wir uns den Objekt-Typ merken koennen.
+   * @author willuhn
+   */
+  private class MyIOFormat implements IOFormat
+  {
+    private Class type = null;
+    
+    /**
+     * ct.
+     * @param type
+     */
+    private MyIOFormat(Class type)
+    {
+      this.type = type;
+    }
+    
+    public String getName()
+    {
+      return i18n.tr("DTAUS-Format");
+    }
+
+    /**
+     * @see de.willuhn.jameica.hbci.io.IOFormat#getFileExtensions()
+     */
+    public String[] getFileExtensions()
+    {
+      return new String[] {"*.dta"};
+    }
+  }
 }
 
 
 /*********************************************************************
  * $Log: DTAUSImporter.java,v $
+ * Revision 1.10  2006/06/07 17:26:40  willuhn
+ * @N DTAUS-Import fuer Lastschriften
+ * @B Satusbar-Update in DTAUSImport gefixt
+ *
  * Revision 1.9  2006/06/06 22:41:26  willuhn
  * @N Generische Loesch-Action fuer DBObjects (DBObjectDelete)
  * @N Live-Aktualisierung der Tabelle mit den importierten Ueberweisungen

@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/LastschriftControl.java,v $
- * $Revision: 1.8 $
- * $Date: 2005/05/02 23:56:45 $
- * $Author: web0 $
+ * $Revision: 1.9 $
+ * $Date: 2006/06/07 17:26:40 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -18,7 +18,6 @@ import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.parts.TablePart;
@@ -93,7 +92,7 @@ public class LastschriftControl extends AbstractBaseUeberweisungControl
    * @return Liste der Lastschriften.
    * @throws RemoteException
    */
-  public Part getLastschriftListe() throws RemoteException
+  public TablePart getLastschriftListe() throws RemoteException
   {
 		if (table != null)
 			return table;
@@ -200,6 +199,10 @@ public class LastschriftControl extends AbstractBaseUeberweisungControl
 
 /**********************************************************************
  * $Log: LastschriftControl.java,v $
+ * Revision 1.9  2006/06/07 17:26:40  willuhn
+ * @N DTAUS-Import fuer Lastschriften
+ * @B Satusbar-Update in DTAUSImport gefixt
+ *
  * Revision 1.8  2005/05/02 23:56:45  web0
  * @B bug 66, 67
  * @C umsatzliste nach vorn verschoben

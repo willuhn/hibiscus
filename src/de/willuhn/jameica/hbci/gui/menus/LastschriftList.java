@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/LastschriftList.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/06/06 22:41:26 $
+ * $Revision: 1.6 $
+ * $Date: 2006/06/07 17:26:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -48,12 +48,12 @@ public class LastschriftList extends ContextMenu
 	{
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-		addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"), new LastschriftNew()));
+		addItem(new SingleItem(i18n.tr("Öffnen"), new LastschriftNew()));
 		addItem(new NotActiveMenuItem(i18n.tr("Jetzt ausführen..."), new LastschriftExecute()));
-		addItem(new CheckedContextMenuItem(i18n.tr("Duplizieren"), new LastschriftDuplicate()));
+		addItem(new SingleItem(i18n.tr("Duplizieren"), new LastschriftDuplicate()));
 		addItem(ContextMenuItem.SEPARATOR);
 		addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete()));
-    addItem(new ContextMenuItem(i18n.tr("Als \"ausgeführt\" markieren..."), new Action() {
+    addItem(new SingleItem(i18n.tr("Als \"ausgeführt\" markieren..."), new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         new TerminableMarkExecuted().handleAction(context);
@@ -89,6 +89,30 @@ public class LastschriftList extends ContextMenu
 		addItem(new ContextMenuItem(i18n.tr("Neue Lastschrift..."), new UNeu()));
 		
 	}
+
+  /**
+   * Ueberschrieben, um zu pruefen, ob ein Array oder ein einzelnes Element markiert ist.
+   */
+  private class SingleItem extends CheckedContextMenuItem
+  {
+    /**
+     * @param text
+     * @param action
+     */
+    private SingleItem(String text, Action action)
+    {
+      super(text,action);
+    }
+    /**
+     * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
+     */
+    public boolean isEnabledFor(Object o)
+    {
+      if (o instanceof Lastschrift[])
+        return false;
+      return super.isEnabledFor(o);
+    }
+  }
 
 	/**
 	 * Ueberschreiben wir, um <b>grundsaetzlich</b> eine neue Lastschrift
@@ -131,6 +155,8 @@ public class LastschriftList extends ContextMenu
     		return false;
     	try
     	{
+        if (o instanceof Lastschrift[])
+          return false;
 				Lastschrift u = (Lastschrift) o;
     		return !u.ausgefuehrt();
     	}
@@ -146,6 +172,10 @@ public class LastschriftList extends ContextMenu
 
 /**********************************************************************
  * $Log: LastschriftList.java,v $
+ * Revision 1.6  2006/06/07 17:26:40  willuhn
+ * @N DTAUS-Import fuer Lastschriften
+ * @B Satusbar-Update in DTAUSImport gefixt
+ *
  * Revision 1.5  2006/06/06 22:41:26  willuhn
  * @N Generische Loesch-Action fuer DBObjects (DBObjectDelete)
  * @N Live-Aktualisierung der Tabelle mit den importierten Ueberweisungen

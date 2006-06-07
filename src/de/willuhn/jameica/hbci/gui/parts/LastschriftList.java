@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/LastschriftList.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/05/11 16:53:09 $
+ * $Revision: 1.6 $
+ * $Date: 2006/06/07 17:26:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -85,6 +85,8 @@ public class LastschriftList extends TablePart implements Part
 
     // BUGZILLA 233 http://www.willuhn.de/bugzilla/show_bug.cgi?id=233
     setRememberColWidths(true);
+    
+    setMulti(true);
 
     setContextMenu(new de.willuhn.jameica.hbci.gui.menus.LastschriftList());
   }
@@ -107,6 +109,10 @@ public class LastschriftList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: LastschriftList.java,v $
+ * Revision 1.6  2006/06/07 17:26:40  willuhn
+ * @N DTAUS-Import fuer Lastschriften
+ * @B Satusbar-Update in DTAUSImport gefixt
+ *
  * Revision 1.5  2006/05/11 16:53:09  willuhn
  * @B bug 233
  *

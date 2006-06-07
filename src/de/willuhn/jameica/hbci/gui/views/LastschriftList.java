@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/LastschriftList.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/01/18 00:50:59 $
+ * $Revision: 1.6 $
+ * $Date: 2006/06/07 17:26:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,21 +12,41 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.views;
 
+import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.Back;
+import de.willuhn.jameica.hbci.gui.action.LastschriftImport;
 import de.willuhn.jameica.hbci.gui.action.LastschriftNew;
 import de.willuhn.jameica.hbci.gui.controller.LastschriftControl;
+import de.willuhn.jameica.hbci.io.ImportMessage;
+import de.willuhn.jameica.hbci.rmi.Lastschrift;
+import de.willuhn.jameica.messaging.Message;
+import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
  * Zeigt eine Liste mit den vorhandenen Lastschrift an.
  */
 public class LastschriftList extends AbstractView {
+
+  private LastschriftControl  control = null;
+  private MessageConsumer mc          = null;
+  
+  /**
+   * ct.
+   */
+  public LastschriftList()
+  {
+    this.mc      = new LastMessageConsumer();
+    this.control = new LastschriftControl(this);
+  }
+    
 
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
@@ -37,16 +57,18 @@ public class LastschriftList extends AbstractView {
 
 		GUI.getView().setTitle(i18n.tr("Vorhandene Einzel-Lastschriften"));
 		
-		LastschriftControl control = new LastschriftControl(this);
-		
 		try {
 
 			control.getLastschriftListe().paint(getParent());
 
-			ButtonArea buttons = new ButtonArea(getParent(),2);
+			ButtonArea buttons = new ButtonArea(getParent(),3);
       buttons.addButton(i18n.tr("Zurück"),new Back());
+      buttons.addButton(i18n.tr("Importieren..."),new LastschriftImport());
 			buttons.addButton(i18n.tr("neue Lastschrift"),new LastschriftNew());
 
+      // Wir erstellen noch einen Message-Consumer, damit wir ueber neu eintreffende
+      // Lastschriften informiert werden.
+      Application.getMessagingFactory().registerMessageConsumer(this.mc);
 		}
 		catch (Exception e)
 		{
@@ -54,11 +76,82 @@ public class LastschriftList extends AbstractView {
 			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Lesen der Lastschriften."));
 		}
   }
+
+  /**
+   * @see de.willuhn.jameica.gui.AbstractView#unbind()
+   */
+  public void unbind() throws ApplicationException
+  {
+    Application.getMessagingFactory().unRegisterMessageConsumer(this.mc);
+    super.unbind();
+  }
+
+  /**
+   * Hilfsklasse damit wir ueber importierte Lastschriften informiert werden.
+   */
+  public class LastMessageConsumer implements MessageConsumer
+  {
+    /**
+     * ct.
+     */
+    public LastMessageConsumer()
+    {
+      super();
+    }
+
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
+     */
+    public Class[] getExpectedMessageTypes()
+    {
+      return new Class[]{ImportMessage.class};
+    }
+
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
+     */
+    public void handleMessage(Message message) throws Exception
+    {
+      if (message == null || !(message instanceof ImportMessage))
+        return;
+      final GenericObject o = ((ImportMessage)message).getImportedObject();
+      
+      if (o == null || !(o instanceof Lastschrift))
+        return;
+      
+      GUI.getDisplay().syncExec(new Runnable() {
+        public void run()
+        {
+          try
+          {
+            control.getLastschriftListe().addItem(o);
+          }
+          catch (Exception e)
+          {
+            Logger.error("unable to add object to list",e);
+          }
+        }
+      });
+    }
+
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
+     */
+    public boolean autoRegister()
+    {
+      return false;
+    }
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: LastschriftList.java,v $
+ * Revision 1.6  2006/06/07 17:26:39  willuhn
+ * @N DTAUS-Import fuer Lastschriften
+ * @B Satusbar-Update in DTAUSImport gefixt
+ *
  * Revision 1.5  2006/01/18 00:50:59  willuhn
  * @B bug 65
  *
