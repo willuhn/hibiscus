@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractSammelTransferControl.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/09/30 00:08:51 $
+ * $Revision: 1.2 $
+ * $Date: 2006/06/08 22:29:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -222,13 +222,19 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
 
   /**
    * Speichert den Sammel-Auftrag.
+   * @return true, wenn das Speichern erfolgreich war.
    */
-  public abstract void handleStore();
+  public abstract boolean handleStore();
 
 }
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferControl.java,v $
+ * Revision 1.2  2006/06/08 22:29:47  willuhn
+ * @N DTAUS-Import fuer Sammel-Lastschriften und Sammel-Ueberweisungen
+ * @B Eine Reihe kleinerer Bugfixes in Sammeltransfers
+ * @B Bug 197 besser geloest
+ *
  * Revision 1.1  2005/09/30 00:08:51  willuhn
  * @N SammelUeberweisungen (merged with SammelLastschrift)
  *

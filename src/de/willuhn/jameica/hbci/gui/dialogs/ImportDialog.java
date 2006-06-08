@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/ImportDialog.java,v $
- * $Revision: 1.7 $
- * $Date: 2006/05/25 13:47:03 $
+ * $Revision: 1.8 $
+ * $Date: 2006/06/08 22:29:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -226,7 +226,7 @@ public class ImportDialog extends AbstractDialog
       IOFormat[] formats = imp.getIOFormats(type);
       if (formats == null || formats.length == 0)
       {
-        Logger.warn("importer " + imp.getName() + " provides no import formats, skipping");
+        Logger.debug("importer " + imp.getName() + " provides no import formats for " + type.getName() + ", skipping");
         continue;
       }
       for (int j=0;j<formats.length;++j)
@@ -316,6 +316,11 @@ public class ImportDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: ImportDialog.java,v $
+ * Revision 1.8  2006/06/08 22:29:47  willuhn
+ * @N DTAUS-Import fuer Sammel-Lastschriften und Sammel-Ueberweisungen
+ * @B Eine Reihe kleinerer Bugfixes in Sammeltransfers
+ * @B Bug 197 besser geloest
+ *
  * Revision 1.7  2006/05/25 13:47:03  willuhn
  * @N Skeleton for DTAUS-Import
  *

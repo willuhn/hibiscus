@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UeberweisungList.java,v $
- * $Revision: 1.8 $
- * $Date: 2006/06/08 17:40:59 $
+ * $Revision: 1.9 $
+ * $Date: 2006/06/08 22:29:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,7 +12,6 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.views;
 
-import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.ButtonArea;
@@ -21,13 +20,8 @@ import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungImport;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungNew;
 import de.willuhn.jameica.hbci.gui.controller.UeberweisungControl;
-import de.willuhn.jameica.hbci.io.ImportMessage;
-import de.willuhn.jameica.hbci.rmi.Ueberweisung;
-import de.willuhn.jameica.messaging.Message;
-import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
-import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -35,18 +29,6 @@ import de.willuhn.util.I18N;
  */
 public class UeberweisungList extends AbstractView {
 
-  private UeberweisungControl control = null;
-  private MessageConsumer mc          = null;
-  
-  /**
-   * ct.
-   */
-  public UeberweisungList()
-  {
-    this.mc      = new UebMessageConsumer();
-    this.control = new UeberweisungControl(this);
-  }
-    
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
@@ -58,6 +40,7 @@ public class UeberweisungList extends AbstractView {
 		
 		
 		try {
+      UeberweisungControl control = new UeberweisungControl(this);
 
 			control.getUeberweisungListe().paint(getParent());
 
@@ -66,9 +49,6 @@ public class UeberweisungList extends AbstractView {
       buttons.addButton(i18n.tr("Importieren..."),new UeberweisungImport());
 			buttons.addButton(i18n.tr("neue Überweisung"),new UeberweisungNew());
 
-      // Wir erstellen noch einen Message-Consumer, damit wir ueber neu eintreffende
-      // Uebweiseungen informiert werden.
-      Application.getMessagingFactory().registerMessageConsumer(this.mc);
 
 		}
 		catch (Exception e)
@@ -77,82 +57,16 @@ public class UeberweisungList extends AbstractView {
 			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Lesen der Überweisungen."));
 		}
   }
-  
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#unbind()
-   */
-  public void unbind() throws ApplicationException
-  {
-    Application.getMessagingFactory().unRegisterMessageConsumer(this.mc);
-    super.unbind();
-  }
-  
-
-  /**
-   * TODO: Das Ueberwachen sollte eigentlich die Tabelle direkt machen.
-   * Allerdings fehlt mir dort noch ein dispose-Event, bei dem ich
-   * den Message-Consumer wieder entfernen kann. Muss in Jameica
-   * noch nachgeruestet werden.
-   * Hilfsklasse damit wir ueber importierte Ueberweisungen informiert werden.
-   */
-  public class UebMessageConsumer implements MessageConsumer
-  {
-    /**
-     * ct.
-     */
-    public UebMessageConsumer()
-    {
-      super();
-    }
-
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
-     */
-    public Class[] getExpectedMessageTypes()
-    {
-      return new Class[]{ImportMessage.class};
-    }
-
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
-     */
-    public void handleMessage(Message message) throws Exception
-    {
-      if (message == null || !(message instanceof ImportMessage))
-        return;
-      final GenericObject o = ((ImportMessage)message).getImportedObject();
-      
-      if (o == null || !(o instanceof Ueberweisung))
-        return;
-      
-      GUI.getDisplay().syncExec(new Runnable() {
-        public void run()
-        {
-          try
-          {
-            control.getUeberweisungListe().addItem(o);
-          }
-          catch (Exception e)
-          {
-            Logger.error("unable to add object to list",e);
-          }
-        }
-      });
-    }
-
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
-     */
-    public boolean autoRegister()
-    {
-      return false;
-    }
-  }
 }
 
 
 /**********************************************************************
  * $Log: UeberweisungList.java,v $
+ * Revision 1.9  2006/06/08 22:29:47  willuhn
+ * @N DTAUS-Import fuer Sammel-Lastschriften und Sammel-Ueberweisungen
+ * @B Eine Reihe kleinerer Bugfixes in Sammeltransfers
+ * @B Bug 197 besser geloest
+ *
  * Revision 1.8  2006/06/08 17:40:59  willuhn
  * @N Vorbereitungen fuer DTAUS-Import von Sammellastschriften und Umsaetzen
  *

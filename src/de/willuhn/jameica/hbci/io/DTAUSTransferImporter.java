@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/DTAUSTransferImporter.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/06/08 17:40:59 $
+ * $Revision: 1.2 $
+ * $Date: 2006/06/08 22:29:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -63,9 +63,8 @@ public class DTAUSTransferImporter extends AbstractDTAUSImporter
     super.doImport(context,format,is,monitor);
   }
 
-
   /**
-   * @see de.willuhn.jameica.hbci.io.AbstractDTAUSImporter#fill(de.willuhn.datasource.GenericObject, de.willuhn.datasource.GenericObject, de.jost_net.OBanToo.Dtaus.CSatz)
+   * @see de.willuhn.jameica.hbci.io.AbstractDTAUSImporter#fill(de.willuhn.datasource.rmi.DBObject, de.willuhn.datasource.GenericObject, de.jost_net.OBanToo.Dtaus.CSatz)
    */
   void fill(DBObject skel, GenericObject context, CSatz csatz)
     throws RemoteException, ApplicationException
@@ -150,6 +149,11 @@ public class DTAUSTransferImporter extends AbstractDTAUSImporter
 
 /*********************************************************************
  * $Log: DTAUSTransferImporter.java,v $
+ * Revision 1.2  2006/06/08 22:29:47  willuhn
+ * @N DTAUS-Import fuer Sammel-Lastschriften und Sammel-Ueberweisungen
+ * @B Eine Reihe kleinerer Bugfixes in Sammeltransfers
+ * @B Bug 197 besser geloest
+ *
  * Revision 1.1  2006/06/08 17:40:59  willuhn
  * @N Vorbereitungen fuer DTAUS-Import von Sammellastschriften und Umsaetzen
  *

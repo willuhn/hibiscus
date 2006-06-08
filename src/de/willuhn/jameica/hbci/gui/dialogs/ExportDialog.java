@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/ExportDialog.java,v $
- * $Revision: 1.6 $
- * $Date: 2006/01/25 09:22:05 $
+ * $Revision: 1.7 $
+ * $Date: 2006/06/08 22:29:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -248,7 +248,8 @@ public class ExportDialog extends AbstractDialog
       IOFormat[] formats = exp.getIOFormats(type);
       if (formats == null || formats.length == 0)
       {
-        Logger.warn("exporter " + exp.getName() + " provides no export formats, skipping");
+        Logger.warn("exporter " + exp.getName() + " provides no export formats for " + type + " skipping");
+        continue;
       }
       for (int j=0;j<formats.length;++j)
       {
@@ -337,6 +338,11 @@ public class ExportDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: ExportDialog.java,v $
+ * Revision 1.7  2006/06/08 22:29:47  willuhn
+ * @N DTAUS-Import fuer Sammel-Lastschriften und Sammel-Ueberweisungen
+ * @B Eine Reihe kleinerer Bugfixes in Sammeltransfers
+ * @B Bug 197 besser geloest
+ *
  * Revision 1.6  2006/01/25 09:22:05  willuhn
  * @B compile error
  *

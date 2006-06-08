@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/AbstractDTAUSImporter.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/06/08 17:40:59 $
+ * $Revision: 1.2 $
+ * $Date: 2006/06/08 22:29:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -175,7 +175,7 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
 
   /**
    * Muss von den abgeleiteten Klassen implementiert werden, damit sie dort das Hibiscus-Fachobjekt befuellen
-   * @param das schon vorbereitete Hibiscus-Fachobjekt.
+   * @param skel das schon vorbereitete Hibiscus-Fachobjekt.
    * @param context der Kontext. Kann zB ein Konto sein.
    * @param csatz der C-Satz mit den auszulesenden Daten.
    * @throws RemoteException
@@ -189,6 +189,11 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
 
 /*********************************************************************
  * $Log: AbstractDTAUSImporter.java,v $
+ * Revision 1.2  2006/06/08 22:29:47  willuhn
+ * @N DTAUS-Import fuer Sammel-Lastschriften und Sammel-Ueberweisungen
+ * @B Eine Reihe kleinerer Bugfixes in Sammeltransfers
+ * @B Bug 197 besser geloest
+ *
  * Revision 1.1  2006/06/08 17:40:59  willuhn
  * @N Vorbereitungen fuer DTAUS-Import von Sammellastschriften und Umsaetzen
  *

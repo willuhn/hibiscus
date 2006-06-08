@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/LastschriftList.java,v $
- * $Revision: 1.6 $
- * $Date: 2006/06/07 17:26:40 $
+ * $Revision: 1.7 $
+ * $Date: 2006/06/08 22:29:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,10 +16,15 @@ package de.willuhn.jameica.hbci.gui.parts;
 import java.rmi.RemoteException;
 import java.util.Date;
 
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TableItem;
 
+import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
@@ -29,8 +34,12 @@ import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.io.ImportMessage;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
+import de.willuhn.jameica.messaging.Message;
+import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
 /**
@@ -39,6 +48,8 @@ import de.willuhn.util.I18N;
 public class LastschriftList extends TablePart implements Part
 {
   private I18N i18n = null;
+
+  private MessageConsumer mc = null;
 
   /**
    * @param action
@@ -89,6 +100,12 @@ public class LastschriftList extends TablePart implements Part
     setMulti(true);
 
     setContextMenu(new de.willuhn.jameica.hbci.gui.menus.LastschriftList());
+
+    // Wir erstellen noch einen Message-Consumer, damit wir ueber neu eintreffende
+    // Lastschriften informiert werden.
+    this.mc = new LastMessageConsumer();
+    Application.getMessagingFactory().registerMessageConsumer(this.mc);
+
   }
 
   // BUGZILLA 84 http://www.willuhn.de/bugzilla/show_bug.cgi?id=84
@@ -104,11 +121,88 @@ public class LastschriftList extends TablePart implements Part
     return list;
   }
 
+  /**
+   * Ueberschrieben, um einen DisposeListener an das Composite zu haengen.
+   * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
+   */
+  public synchronized void paint(Composite parent) throws RemoteException
+  {
+    parent.addDisposeListener(new DisposeListener() {
+      public void widgetDisposed(DisposeEvent e)
+      {
+        Application.getMessagingFactory().unRegisterMessageConsumer(mc);
+      }
+    });
+    super.paint(parent);
+  }
+  
+  /**
+   * Hilfsklasse damit wir ueber importierte Lastschriften informiert werden.
+   */
+  public class LastMessageConsumer implements MessageConsumer
+  {
+    /**
+     * ct.
+     */
+    public LastMessageConsumer()
+    {
+      super();
+    }
+
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
+     */
+    public Class[] getExpectedMessageTypes()
+    {
+      return new Class[]{ImportMessage.class};
+    }
+
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
+     */
+    public void handleMessage(Message message) throws Exception
+    {
+      if (message == null || !(message instanceof ImportMessage))
+        return;
+      final GenericObject o = ((ImportMessage)message).getImportedObject();
+      
+      if (o == null || !(o instanceof Lastschrift))
+        return;
+      
+      GUI.getDisplay().syncExec(new Runnable() {
+        public void run()
+        {
+          try
+          {
+            addItem(o);
+          }
+          catch (Exception e)
+          {
+            Logger.error("unable to add object to list",e);
+          }
+        }
+      });
+    }
+
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
+     */
+    public boolean autoRegister()
+    {
+      return false;
+    }
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: LastschriftList.java,v $
+ * Revision 1.7  2006/06/08 22:29:47  willuhn
+ * @N DTAUS-Import fuer Sammel-Lastschriften und Sammel-Ueberweisungen
+ * @B Eine Reihe kleinerer Bugfixes in Sammeltransfers
+ * @B Bug 197 besser geloest
+ *
  * Revision 1.6  2006/06/07 17:26:40  willuhn
  * @N DTAUS-Import fuer Lastschriften
  * @B Satusbar-Update in DTAUSImport gefixt

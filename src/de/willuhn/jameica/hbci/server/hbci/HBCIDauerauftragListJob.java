@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragListJob.java,v $
- * $Revision: 1.28 $
- * $Date: 2006/03/17 00:51:25 $
+ * $Revision: 1.29 $
+ * $Date: 2006/06/08 22:29:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
@@ -105,105 +106,116 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
 			throw new ApplicationException(msg);
 		}
 
-		konto.addToProtokoll(i18n.tr("Daueraufträge abgerufen"),Protokoll.TYP_SUCCESS);
+    double limit = Settings.getUeberweisungLimit();
+    try
+    {
+      // BUGZILLA 197 Erzeugte sonst einen Fehler beim Abrufen grosser Dauerauftraege
+      // Wir setzen den Wert kurz aufs Maximum und setzen es im Finally zurueck
+      Settings.setUeberweisungLimit(Integer.MAX_VALUE); // Double.MAX_VALUE ist etwas derb gross ;)
+      
+      // So, jetzt kopieren wir das ResultSet noch in unsere
+      // eigenen Datenstrukturen.
 
-		// So, jetzt kopieren wir das ResultSet noch in unsere
-		// eigenen Datenstrukturen.
+      // Wir vergleichen noch mit den Dauerauftraegen, die wir schon haben und
+      // speichern nur die neuen. Achtung: Es kann sein, dass ein Dauerauftrag
+      // geaendert wurde, ohne dass wir davon erfahren haben (z.Bsp. wenn der
+      // Kunde ihn uebers Webfrontend der Bank geaendert hat. Folglich
+      // ueberschreiben wir Dauerauftraege auch dann schon, wenn die Order-ID
+      // uebereinstimmt.
+      DBIterator existing = konto.getDauerauftraege();
 
-		// Wir vergleichen noch mit den Dauerauftraegen, die wir schon haben und
-		// speichern nur die neuen. Achtung: Es kann sein, dass ein Dauerauftrag
-		// geaendert wurde, ohne dass wir davon erfahren haben (z.Bsp. wenn der
-		// Kunde ihn uebers Webfrontend der Bank geaendert hat. Folglich
-		// ueberschreiben wir Dauerauftraege auch dann schon, wenn die Order-ID
-		// uebereinstimmt.
-		DBIterator existing = konto.getDauerauftraege();
-
-		GVRDauerList.Dauer[] lines = result.getEntries();
-		Dauerauftrag auftrag;
-		Dauerauftrag ex;
-		Logger.info("checking for new and changed entries");
-		for (int i=0;i<lines.length;++i)
-		{
-			try
-			{
-				auftrag = Converter.HBCIDauer2HibiscusDauerauftrag(lines[i]);
-				checkKonto(auftrag);
-
-        // BUGZILLA 22 http://www.willuhn.de/bugzilla/show_bug.cgi?id=22
-				// BEGIN
-				String name = auftrag.getGegenkontoName();
-				Logger.debug("checking name length: " + name + ", chars: " + name.length());
-				if (name != null && name.length() > HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH)
-				{
-					Logger.warn("name of other account longer than " + HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH + " chars. stripping");
-					auftrag.setGegenkontoName(name.substring(0,HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH));
-				}
-				// END
-
-				boolean found = false;
-				while(existing.hasNext())
-				{
-					ex = (Dauerauftrag) existing.next();
-					if (auftrag.getOrderID() != null && 
-							auftrag.getOrderID().equals(ex.getOrderID()) &&
-							auftrag.getKonto().equals(ex.getKonto())
-						 )
-					{
-						// Den haben wir schon, ueberschreiben wir
-						found = true;
-            Logger.info("found a local copy. order id: " + auftrag.getOrderID() + ". Checking for modifications");
-            if (auftrag.getChecksum() != ex.getChecksum())
-            {
-              Logger.info("modifications found, updating local copy");
-              ex.overwrite(auftrag);
-              ex.store();
-            }
-						break;
-					}
-				}
-
-        if (!found)
-				{
-					Logger.info("no local copy found. adding dauerauftrag order id: " + auftrag.getOrderID());
-					auftrag.store();// den hammer nicht gefunden. Neu anlegen
-				}
-				existing.begin();
-			}
-			catch (Exception e)
-			{
-				Logger.error("error while checking dauerauftrag, skipping this one",e);
-			}
-		}
-
-		Logger.info("checking for deletable entries");
-		existing.begin();
-		while (existing.hasNext())
-		{
-			ex = (Dauerauftrag) existing.next();
-			if (!ex.isActive())
-				continue; // der existiert nicht bei der Bank und muss daher auch nicht geloescht werden.
-			boolean found = false;
-			for (int i=0;i<lines.length;++i)
-			{
-				auftrag = Converter.HBCIDauer2HibiscusDauerauftrag(lines[i]);
-				checkKonto(auftrag);
-        if (auftrag.getOrderID() != null && 
-						auftrag.getOrderID().equals(ex.getOrderID()) &&
-					  auftrag.getKonto().equals(ex.getKonto())
-					 )
-				{
-					found = true;
-					break;
-				}
-			}
-      if (!found)
+      GVRDauerList.Dauer[] lines = result.getEntries();
+      Dauerauftrag auftrag;
+      Dauerauftrag ex;
+      Logger.info("checking for new and changed entries");
+      for (int i=0;i<lines.length;++i)
       {
-        Logger.info("dauerauftrag order id: " + ex.getOrderID() + " does no longer exist online, can be deleted");
-        ex.delete();
-      }
-		}
+        try
+        {
+          auftrag = Converter.HBCIDauer2HibiscusDauerauftrag(lines[i]);
+          checkKonto(auftrag);
 
-		Logger.info("dauerauftrag list fetched successfully");
+          // BUGZILLA 22 http://www.willuhn.de/bugzilla/show_bug.cgi?id=22
+          // BEGIN
+          String name = auftrag.getGegenkontoName();
+          Logger.debug("checking name length: " + name + ", chars: " + name.length());
+          if (name != null && name.length() > HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH)
+          {
+            Logger.warn("name of other account longer than " + HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH + " chars. stripping");
+            auftrag.setGegenkontoName(name.substring(0,HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH));
+          }
+          // END
+
+          boolean found = false;
+          while(existing.hasNext())
+          {
+            ex = (Dauerauftrag) existing.next();
+            if (auftrag.getOrderID() != null && 
+                auftrag.getOrderID().equals(ex.getOrderID()) &&
+                auftrag.getKonto().equals(ex.getKonto())
+               )
+            {
+              // Den haben wir schon, ueberschreiben wir
+              found = true;
+              Logger.info("found a local copy. order id: " + auftrag.getOrderID() + ". Checking for modifications");
+              if (auftrag.getChecksum() != ex.getChecksum())
+              {
+                Logger.info("modifications found, updating local copy");
+                ex.overwrite(auftrag);
+                ex.store();
+              }
+              break;
+            }
+          }
+
+          if (!found)
+          {
+            Logger.info("no local copy found. adding dauerauftrag order id: " + auftrag.getOrderID());
+            auftrag.store();// den hammer nicht gefunden. Neu anlegen
+          }
+          existing.begin();
+        }
+        catch (Exception e)
+        {
+          Logger.error("error while checking dauerauftrag, skipping this one",e);
+        }
+      }
+
+      Logger.info("checking for deletable entries");
+      existing.begin();
+      while (existing.hasNext())
+      {
+        ex = (Dauerauftrag) existing.next();
+        if (!ex.isActive())
+          continue; // der existiert nicht bei der Bank und muss daher auch nicht geloescht werden.
+        boolean found = false;
+        for (int i=0;i<lines.length;++i)
+        {
+          auftrag = Converter.HBCIDauer2HibiscusDauerauftrag(lines[i]);
+          checkKonto(auftrag);
+          if (auftrag.getOrderID() != null && 
+              auftrag.getOrderID().equals(ex.getOrderID()) &&
+              auftrag.getKonto().equals(ex.getKonto())
+             )
+          {
+            found = true;
+            break;
+          }
+        }
+        if (!found)
+        {
+          Logger.info("dauerauftrag order id: " + ex.getOrderID() + " does no longer exist online, can be deleted");
+          ex.delete();
+        }
+      }
+
+      konto.addToProtokoll(i18n.tr("Daueraufträge abgerufen"),Protokoll.TYP_SUCCESS);
+      Logger.info("dauerauftrag list fetched successfully");
+    }
+    finally
+    {
+      Settings.setUeberweisungLimit(limit);
+    }
   }
   
   /**
@@ -249,6 +261,11 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIDauerauftragListJob.java,v $
+ * Revision 1.29  2006/06/08 22:29:47  willuhn
+ * @N DTAUS-Import fuer Sammel-Lastschriften und Sammel-Ueberweisungen
+ * @B Eine Reihe kleinerer Bugfixes in Sammeltransfers
+ * @B Bug 197 besser geloest
+ *
  * Revision 1.28  2006/03/17 00:51:25  willuhn
  * @N bug 209 Neues Synchronisierungs-Subsystem
  *

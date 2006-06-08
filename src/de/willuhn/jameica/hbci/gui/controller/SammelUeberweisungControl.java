@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SammelUeberweisungControl.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/09/30 00:08:51 $
+ * $Revision: 1.2 $
+ * $Date: 2006/06/08 22:29:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,6 +23,7 @@ import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.SammelTransferBuchungDelete;
+import de.willuhn.jameica.hbci.gui.action.SammelTransferBuchungImport;
 import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungBuchungExport;
 import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungBuchungNew;
 import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungNew;
@@ -96,7 +97,6 @@ public class SammelUeberweisungControl extends AbstractSammelTransferControl
     Action a = new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
-        handleStore();
         new SammelUeberweisungBuchungNew().handleAction(context);
       }
     };
@@ -123,25 +123,47 @@ public class SammelUeberweisungControl extends AbstractSammelTransferControl
     ctx.addItem(new ContextMenuItem(i18n.tr("Neue Buchung..."),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
-        handleStore();
-        try
+        if (handleStore())
         {
-          new SammelUeberweisungBuchungNew().handleAction(getTransfer());
-        }
-        catch (RemoteException e)
-        {
-          Logger.error("unable to load sammelueberweisung",e);
-          throw new ApplicationException(i18n.tr("Fehler beim Laden der Sammel-Überweisung"));
+          try
+          {
+            new SammelUeberweisungBuchungNew().handleAction(getTransfer());
+          }
+          catch (RemoteException e)
+          {
+            Logger.error("unable to load sammelueberweisung",e);
+            throw new ApplicationException(i18n.tr("Fehler beim Laden der Sammel-Überweisung"));
+          }
         }
       }
     }));
     ctx.addItem(ContextMenuItem.SEPARATOR);
+    ctx.addItem(new ContextMenuItem(i18n.tr("Buchungen importieren..."),new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        if (handleStore())
+        {
+          try
+          {
+            new SammelTransferBuchungImport().handleAction(getTransfer());
+          }
+          catch (RemoteException e)
+          {
+            Logger.error("unable to load sammellastschrift",e);
+            throw new ApplicationException(i18n.tr("Fehler beim Laden der Sammellastschrift"));
+          }
+        }
+      }
+    }));
     ctx.addItem(new ContextMenuItem(i18n.tr("Buchungen exportieren..."),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         try
         {
-          new SammelUeberweisungBuchungExport().handleAction(getTransfer());
+          SammelTransfer transfer = getTransfer();
+          if (transfer == null || transfer.getBuchungen().size() == 0)
+            return;
+          new SammelUeberweisungBuchungExport().handleAction(transfer);
         }
         catch (RemoteException e)
         {
@@ -157,7 +179,7 @@ public class SammelUeberweisungControl extends AbstractSammelTransferControl
   /**
    * @see de.willuhn.jameica.hbci.gui.controller.AbstractSammelTransferControl#handleStore()
    */
-  public synchronized void handleStore()
+  public synchronized boolean handleStore()
   {
     try {
       getTransfer().setKonto((Konto)getKontoAuswahl().getValue());
@@ -165,6 +187,7 @@ public class SammelUeberweisungControl extends AbstractSammelTransferControl
       getTransfer().setTermin((Date)getTermin().getValue());
       getTransfer().store();
       GUI.getStatusBar().setSuccessText(i18n.tr("Sammel-Überweisung gespeichert"));
+      return true;
     }
     catch (ApplicationException e2)
     {
@@ -175,6 +198,7 @@ public class SammelUeberweisungControl extends AbstractSammelTransferControl
       Logger.error("error while storing sammelueberweisung",e);
       GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern der Sammel-Überweisung"));
     }
+    return false;
   }
 
 
@@ -219,6 +243,11 @@ public class SammelUeberweisungControl extends AbstractSammelTransferControl
 
 /*****************************************************************************
  * $Log: SammelUeberweisungControl.java,v $
+ * Revision 1.2  2006/06/08 22:29:47  willuhn
+ * @N DTAUS-Import fuer Sammel-Lastschriften und Sammel-Ueberweisungen
+ * @B Eine Reihe kleinerer Bugfixes in Sammeltransfers
+ * @B Bug 197 besser geloest
+ *
  * Revision 1.1  2005/09/30 00:08:51  willuhn
  * @N SammelUeberweisungen (merged with SammelLastschrift)
  *
