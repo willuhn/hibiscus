@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Attic/CSVImporter.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/04/20 08:44:21 $
+ * $Revision: 1.3 $
+ * $Date: 2006/06/08 17:40:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -155,29 +155,35 @@ public class CSVImporter implements Importer
    */
   public IOFormat[] getIOFormats(Class objectType)
   {
-    if (!Umsatz.class.equals(objectType))
-      return null; // Wir bieten uns nur fuer Umsaetze an
-
-    IOFormat f = new IOFormat() {
-      public String getName()
-      {
-        return i18n.tr("CSV-Format");
-      }
-
-      /**
-       * @see de.willuhn.jameica.hbci.io.IOFormat#getFileExtensions()
-       */
-      public String[] getFileExtensions()
-      {
-        return new String[]{"*.csv","*.txt"};
-      }
-    };
-    return new IOFormat[] { f };
+    // TODO Temporaer abgeklemmt
+    return null;
+//    
+//    if (!Umsatz.class.equals(objectType))
+//      return null; // Wir bieten uns nur fuer Umsaetze an
+//
+//    IOFormat f = new IOFormat() {
+//      public String getName()
+//      {
+//        return i18n.tr("CSV-Format");
+//      }
+//
+//      /**
+//       * @see de.willuhn.jameica.hbci.io.IOFormat#getFileExtensions()
+//       */
+//      public String[] getFileExtensions()
+//      {
+//        return new String[]{"*.csv","*.txt"};
+//      }
+//    };
+//    return new IOFormat[] { f };
   }
 }
 
 /*******************************************************************************
  * $Log: CSVImporter.java,v $
+ * Revision 1.3  2006/06/08 17:40:59  willuhn
+ * @N Vorbereitungen fuer DTAUS-Import von Sammellastschriften und Umsaetzen
+ *
  * Revision 1.2  2006/04/20 08:44:21  willuhn
  * @C s/Childs/Children/
  *

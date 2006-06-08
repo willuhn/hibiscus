@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/LastschriftList.java,v $
- * $Revision: 1.6 $
- * $Date: 2006/06/07 17:26:39 $
+ * $Revision: 1.7 $
+ * $Date: 2006/06/08 17:40:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -87,6 +87,10 @@ public class LastschriftList extends AbstractView {
   }
 
   /**
+   * TODO: Das Ueberwachen sollte eigentlich die Tabelle direkt machen.
+   * Allerdings fehlt mir dort noch ein dispose-Event, bei dem ich
+   * den Message-Consumer wieder entfernen kann. Muss in Jameica
+   * noch nachgeruestet werden.
    * Hilfsklasse damit wir ueber importierte Lastschriften informiert werden.
    */
   public class LastMessageConsumer implements MessageConsumer
@@ -148,6 +152,9 @@ public class LastschriftList extends AbstractView {
 
 /**********************************************************************
  * $Log: LastschriftList.java,v $
+ * Revision 1.7  2006/06/08 17:40:59  willuhn
+ * @N Vorbereitungen fuer DTAUS-Import von Sammellastschriften und Umsaetzen
+ *
  * Revision 1.6  2006/06/07 17:26:39  willuhn
  * @N DTAUS-Import fuer Lastschriften
  * @B Satusbar-Update in DTAUSImport gefixt

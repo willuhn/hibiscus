@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Attic/DTAUSExporter.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/06/07 22:42:00 $
+ * $Revision: 1.2 $
+ * $Date: 2006/06/08 17:40:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,30 +13,15 @@
 
 package de.willuhn.jameica.hbci.io;
 
-import java.io.BufferedWriter;
-import java.io.File;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-
-import org.apache.velocity.Template;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.Velocity;
 
 import de.jost_net.OBanToo.Dtaus.DtausDateiWriter;
 import de.willuhn.datasource.GenericObject;
-import de.willuhn.io.FileFinder;
-import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Transfer;
-import de.willuhn.jameica.plugin.PluginResources;
-import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
-import de.willuhn.util.I18N;
 import de.willuhn.util.ProgressMonitor;
 
 /**
@@ -74,6 +59,7 @@ public class DTAUSExporter extends AbstractDTAUSIO implements Exporter
     {
       int success = 0;
       
+      // TODO
       DtausDateiWriter writer = new DtausDateiWriter(os);
       writer.writeASatz();
       for (int i=0;i<objects.length;++i)
@@ -110,11 +96,23 @@ public class DTAUSExporter extends AbstractDTAUSIO implements Exporter
       }
     }
   }
+
+  /**
+   * @see de.willuhn.jameica.hbci.io.AbstractDTAUSIO#getSupportedObjectTypes()
+   */
+  Class[] getSupportedObjectTypes()
+  {
+    // TODO
+    return null;
+  }
 }
 
 
 /**********************************************************************
  * $Log: DTAUSExporter.java,v $
+ * Revision 1.2  2006/06/08 17:40:59  willuhn
+ * @N Vorbereitungen fuer DTAUS-Import von Sammellastschriften und Umsaetzen
+ *
  * Revision 1.1  2006/06/07 22:42:00  willuhn
  * @N DTAUSExporter
  * @N Abstrakte Basis-Klasse fuer Export und Import

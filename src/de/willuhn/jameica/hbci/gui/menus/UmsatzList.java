@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UmsatzList.java,v $
- * $Revision: 1.18 $
- * $Date: 2006/06/06 22:41:26 $
+ * $Revision: 1.19 $
+ * $Date: 2006/06/08 17:40:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,6 +22,7 @@ import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.action.UmsatzExport;
+import de.willuhn.jameica.hbci.gui.action.UmsatzImport;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
@@ -50,7 +51,7 @@ public class UmsatzList extends ContextMenu implements Extendable
     addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete()));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new CheckedContextMenuItem(i18n.tr("Umsätze exportieren..."),new UmsatzExport()));
-    // addItem(new ContextMenuItem(i18n.tr("Umsätze importieren..."),new UmsatzImport()));
+    addItem(new ContextMenuItem(i18n.tr("Umsätze importieren..."),new UmsatzImport()));
     // Wir geben das Context-Menu jetzt noch zur Erweiterung frei.
     ExtensionRegistry.extend(this);
 
@@ -88,6 +89,9 @@ public class UmsatzList extends ContextMenu implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.19  2006/06/08 17:40:59  willuhn
+ * @N Vorbereitungen fuer DTAUS-Import von Sammellastschriften und Umsaetzen
+ *
  * Revision 1.18  2006/06/06 22:41:26  willuhn
  * @N Generische Loesch-Action fuer DBObjects (DBObjectDelete)
  * @N Live-Aktualisierung der Tabelle mit den importierten Ueberweisungen
