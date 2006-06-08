@@ -1,0 +1,11 @@
+<form>
+	<p>
+		<span color="header" font="header">Vorhandene Lastschriften</span>
+	</p>
+	
+	<p>
+		In dieser Liste sehen Sie alle existierenden Sammel-Lastschriften.
+		In der Spalte <b>Status</b> sehen Sie, ob die Lastschrift
+		bereits bei Ihrer Bank eingereicht wurde.
+	</p>
+</form>
