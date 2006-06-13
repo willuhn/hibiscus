@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UeberweisungNew.java,v $
- * $Revision: 1.11 $
- * $Date: 2006/06/06 22:41:26 $
+ * $Revision: 1.12 $
+ * $Date: 2006/06/13 20:09:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -62,7 +62,7 @@ public class UeberweisungNew extends AbstractView {
 
 		details.addSeparator();
 
-		details.addLabelPair(i18n.tr("Bemerkung"),								control.getComment());
+    details.addLabelPair("",                                  control.getComment());
 
 		ButtonArea buttonArea = new ButtonArea(getParent(),4);
 		buttonArea.addButton(i18n.tr("Zurück"), 				 				 new Back());
@@ -88,6 +88,9 @@ public class UeberweisungNew extends AbstractView {
 
 /**********************************************************************
  * $Log: UeberweisungNew.java,v $
+ * Revision 1.12  2006/06/13 20:09:06  willuhn
+ * @R Text "Bemerkung" entfernt
+ *
  * Revision 1.11  2006/06/06 22:41:26  willuhn
  * @N Generische Loesch-Action fuer DBObjects (DBObjectDelete)
  * @N Live-Aktualisierung der Tabelle mit den importierten Ueberweisungen
