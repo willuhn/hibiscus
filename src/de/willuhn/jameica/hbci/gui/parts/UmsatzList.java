@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.24 $
- * $Date: 2006/06/19 12:57:31 $
+ * $Revision: 1.25 $
+ * $Date: 2006/06/19 16:05:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -157,7 +157,7 @@ public class UmsatzList extends TablePart
     // Uebweiseungen informiert werden.
     this.mc = new UmsMessageConsumer();
     Application.getMessagingFactory().registerMessageConsumer(this.mc);
-}
+  }
   
   /**
    * Schaltet die Anzeige der Umsatzfilter an oder aus.
@@ -582,6 +582,9 @@ public class UmsatzList extends TablePart
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.25  2006/06/19 16:05:13  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.24  2006/06/19 12:57:31  willuhn
  * @N DTAUS-Import fuer Umsaetze
  * @B Formatierungsfehler in Umsatzliste
