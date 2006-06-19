@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/DTAUSSammelTransferImporter.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/06/08 22:29:47 $
+ * $Revision: 1.2 $
+ * $Date: 2006/06/19 12:57:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ package de.willuhn.jameica.hbci.io;
 import java.io.InputStream;
 import java.rmi.RemoteException;
 
+import de.jost_net.OBanToo.Dtaus.ASatz;
 import de.jost_net.OBanToo.Dtaus.CSatz;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBObject;
@@ -53,11 +54,11 @@ public class DTAUSSammelTransferImporter extends AbstractDTAUSImporter
     
     super.doImport(context, format, is, monitor);
   }
-  
+
   /**
-   * @see de.willuhn.jameica.hbci.io.AbstractDTAUSImporter#fill(de.willuhn.datasource.rmi.DBObject, de.willuhn.datasource.GenericObject, de.jost_net.OBanToo.Dtaus.CSatz)
+   * @see de.willuhn.jameica.hbci.io.AbstractDTAUSImporter#fill(de.willuhn.datasource.rmi.DBObject, de.willuhn.datasource.GenericObject, de.jost_net.OBanToo.Dtaus.CSatz, de.jost_net.OBanToo.Dtaus.ASatz)
    */
-  void fill(DBObject skel, GenericObject context, CSatz csatz)
+  void fill(DBObject skel, GenericObject context, CSatz csatz, ASatz asatz)
     throws RemoteException, ApplicationException
   {
     // Wir verlassen uns hier einfach drauf, dass es sich bei dem
@@ -94,6 +95,10 @@ public class DTAUSSammelTransferImporter extends AbstractDTAUSImporter
 
 /*********************************************************************
  * $Log: DTAUSSammelTransferImporter.java,v $
+ * Revision 1.2  2006/06/19 12:57:31  willuhn
+ * @N DTAUS-Import fuer Umsaetze
+ * @B Formatierungsfehler in Umsatzliste
+ *
  * Revision 1.1  2006/06/08 22:29:47  willuhn
  * @N DTAUS-Import fuer Sammel-Lastschriften und Sammel-Ueberweisungen
  * @B Eine Reihe kleinerer Bugfixes in Sammeltransfers

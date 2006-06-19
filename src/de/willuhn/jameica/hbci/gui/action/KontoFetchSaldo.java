@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoFetchSaldo.java,v $
- * $Revision: 1.10 $
- * $Date: 2005/07/26 23:57:18 $
- * $Author: web0 $
+ * $Revision: 1.11 $
+ * $Date: 2006/06/19 12:57:31 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -54,17 +54,10 @@ public class KontoFetchSaldo implements Action
 
 			HBCIFactory factory = HBCIFactory.getInstance();
 			factory.addJob(new HBCISaldoJob(k));
-			factory.executeJobs(k, new Listener() {
+      factory.executeJobs(k, new Listener() {
         public void handleEvent(Event event)
         {
-          try
-          {
-            new de.willuhn.jameica.hbci.gui.action.KontoNew().handleAction(k);
-          }
-          catch (ApplicationException e)
-          {
-            GUI.getStatusBar().setErrorText(e.getMessage());
-          }
+          GUI.startView(GUI.getCurrentView().getClass(),k);
         }
       });
 
@@ -81,6 +74,10 @@ public class KontoFetchSaldo implements Action
 
 /**********************************************************************
  * $Log: KontoFetchSaldo.java,v $
+ * Revision 1.11  2006/06/19 12:57:31  willuhn
+ * @N DTAUS-Import fuer Umsaetze
+ * @B Formatierungsfehler in Umsatzliste
+ *
  * Revision 1.10  2005/07/26 23:57:18  web0
  * @N Restliche HBCI-Jobs umgestellt
  *

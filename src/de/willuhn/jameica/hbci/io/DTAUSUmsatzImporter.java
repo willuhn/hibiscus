@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/DTAUSTransferImporter.java,v $
- * $Revision: 1.3 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/DTAUSUmsatzImporter.java,v $
+ * $Revision: 1.1 $
  * $Date: 2006/06/19 12:57:31 $
  * $Author: willuhn $
  * $Locker:  $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.io;
 
 import java.io.InputStream;
 import java.rmi.RemoteException;
+import java.util.Date;
 import java.util.Hashtable;
 
 import de.jost_net.OBanToo.Dtaus.ASatz;
@@ -26,25 +27,23 @@ import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.rmi.Lastschrift;
-import de.willuhn.jameica.hbci.rmi.Transfer;
-import de.willuhn.jameica.hbci.rmi.Ueberweisung;
+import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.ProgressMonitor;
 
 /**
- * DTAUS-Importer fuer Ueberweisungen und Lastschriften.
+ * DTAUS-Importer fuer Umsaetze.
  */
-public class DTAUSTransferImporter extends AbstractDTAUSImporter
+public class DTAUSUmsatzImporter extends AbstractDTAUSImporter
 {
   private Hashtable kontenCache = null;
   
   /**
    * ct.
    */
-  public DTAUSTransferImporter()
+  public DTAUSUmsatzImporter()
   {
     super();
   }
@@ -70,10 +69,7 @@ public class DTAUSTransferImporter extends AbstractDTAUSImporter
   void fill(DBObject skel, GenericObject context, CSatz csatz, ASatz asatz)
     throws RemoteException, ApplicationException
   {
-    // Wir verlassen uns hier einfach drauf, dass es sich bei dem
-    // Skelet um einen Transfer handelt. Schliesslich haben wir
-    // in getSupportedObjectTypes nur solche angegeben
-    Transfer t = (Transfer) skel;
+    Umsatz u = (Umsatz) skel;
 
     DBService service = Settings.getDBService();
 
@@ -97,7 +93,7 @@ public class DTAUSTransferImporter extends AbstractDTAUSImporter
         // Also muss der User eins auswaehlen.
         KontoAuswahlDialog d = new KontoAuswahlDialog(KontoAuswahlDialog.POSITION_CENTER);
         d.setText(i18n.tr("Konto {0} [BLZ {1}] nicht gefunden\n" +
-                          "Bitte wählen Sie das Konto aus, auf dem der Auftrag ausgeführt werden soll.",
+                          "Bitte wählen Sie das Konto aus, für das der Umsatz importiert werden soll.",
                           new String[]{kontonummer,blz}));
 
         try
@@ -106,7 +102,7 @@ public class DTAUSTransferImporter extends AbstractDTAUSImporter
         }
         catch (OperationCanceledException oce)
         {
-          throw new ApplicationException(i18n.tr("Auftrag wird übersprungen"));
+          throw new ApplicationException(i18n.tr("Umsatz wird übersprungen"));
         }
         catch (Exception e)
         {
@@ -121,16 +117,29 @@ public class DTAUSTransferImporter extends AbstractDTAUSImporter
     {
       k = (Konto) konten.next();
     }
-    t.setKonto(k);
-    t.setBetrag(csatz.getBetragInEuro());
-    t.setGegenkontoBLZ(Long.toString(csatz.getBlzEndbeguenstigt()));
-    t.setGegenkontoName(csatz.getNameEmpfaenger());
-    t.setGegenkontoNummer(Long.toString(csatz.getKontonummer()));
-    t.setZweck(csatz.getVerwendungszweck(1));
     
+    Date date = asatz.getAusfuehrungsdatum();
+    if (date == null)
+      date = new Date();
+
+    u.setKonto(k);
+    u.setArt(Long.toString(csatz.getTextschluessel()));
+    u.setCustomerRef(Long.toString(csatz.getInterneKundennummer()));
+    u.setDatum(date);
+    u.setValuta(date);
+      
+    u.setBetrag(csatz.getBetragInEuro());
+    u.setEmpfaengerBLZ(Long.toString(csatz.getBlzEndbeguenstigt()));
+    u.setEmpfaengerName(csatz.getNameEmpfaenger());
+    u.setEmpfaengerKonto(Long.toString(csatz.getKontonummer()));
+    u.setZweck(csatz.getVerwendungszweck(1));
+
     int z = csatz.getAnzahlVerwendungszwecke();
     if (z > 1)
-      t.setZweck2(csatz.getVerwendungszweck(2));
+      u.setZweck2(csatz.getVerwendungszweck(2));
+
+    u.setChangedByUser();
+  
   }
 
 
@@ -141,62 +150,16 @@ public class DTAUSTransferImporter extends AbstractDTAUSImporter
   {
     return new Class[]
       {
-        Ueberweisung.class,
-        Lastschrift.class
+        Umsatz.class
       };
   }
 }
 
 
 /*********************************************************************
- * $Log: DTAUSTransferImporter.java,v $
- * Revision 1.3  2006/06/19 12:57:31  willuhn
+ * $Log: DTAUSUmsatzImporter.java,v $
+ * Revision 1.1  2006/06/19 12:57:31  willuhn
  * @N DTAUS-Import fuer Umsaetze
  * @B Formatierungsfehler in Umsatzliste
- *
- * Revision 1.2  2006/06/08 22:29:47  willuhn
- * @N DTAUS-Import fuer Sammel-Lastschriften und Sammel-Ueberweisungen
- * @B Eine Reihe kleinerer Bugfixes in Sammeltransfers
- * @B Bug 197 besser geloest
- *
- * Revision 1.1  2006/06/08 17:40:59  willuhn
- * @N Vorbereitungen fuer DTAUS-Import von Sammellastschriften und Umsaetzen
- *
- * Revision 1.11  2006/06/07 22:42:00  willuhn
- * @N DTAUSExporter
- * @N Abstrakte Basis-Klasse fuer Export und Import
- *
- * Revision 1.10  2006/06/07 17:26:40  willuhn
- * @N DTAUS-Import fuer Lastschriften
- * @B Satusbar-Update in DTAUSImport gefixt
- *
- * Revision 1.9  2006/06/06 22:41:26  willuhn
- * @N Generische Loesch-Action fuer DBObjects (DBObjectDelete)
- * @N Live-Aktualisierung der Tabelle mit den importierten Ueberweisungen
- * @B Korrekte Berechnung des Fortschrittsbalken bei Import
- *
- * Revision 1.8  2006/06/06 21:37:55  willuhn
- * @R FilternEngine entfernt. Wird jetzt ueber das Jameica-Messaging-System abgewickelt
- *
- * Revision 1.7  2006/06/05 09:55:50  jost
- * Anpassung an obantoo 0.5
- *
- * Revision 1.6  2006/05/31 09:04:21  willuhn
- * @C Wir merken uns die vom User bereits ausgewaehlten Konten
- *
- * Revision 1.5  2006/05/29 21:20:07  willuhn
- * *** empty log message ***
- *
- * Revision 1.4  2006/05/29 20:41:21  willuhn
- * @N Import aller logischen Dateien
- *
- * Revision 1.3  2006/05/29 09:16:12  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2006/05/25 13:54:38  willuhn
- * @R removed imports (occurs compile errors in nightly build)
- *
- * Revision 1.1  2006/05/25 13:47:03  willuhn
- * @N Skeleton for DTAUS-Import
  *
  **********************************************************************/
