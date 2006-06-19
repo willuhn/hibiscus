@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoauszugList.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/05/15 20:14:51 $
- * $Author: jost $
+ * $Revision: 1.3 $
+ * $Date: 2006/06/19 16:20:25 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -11,8 +11,6 @@
  *
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.views;
-
-import java.rmi.RemoteException;
 
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
@@ -72,6 +70,9 @@ public class KontoauszugList extends AbstractView
 
 /*******************************************************************************
  * $Log: KontoauszugList.java,v $
+ * Revision 1.3  2006/06/19 16:20:25  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2006/05/15 20:14:51  jost
  * Ausgabe -> PDF-Ausgabe
  * Revision 1.1 2006/05/14 19:53:09 jost
