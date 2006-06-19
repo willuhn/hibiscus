@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCISaldoJob.java,v $
- * $Revision: 1.21 $
- * $Date: 2006/03/17 00:51:24 $
+ * $Revision: 1.22 $
+ * $Date: 2006/06/19 11:52:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -84,8 +84,7 @@ public class HBCISaldoJob extends AbstractHBCIJob {
    */
   public String getName() throws RemoteException
   {
-    String name = konto.getLongName();
-    return i18n.tr("Abrufen des Saldos von Konto {0}",name);
+    return i18n.tr("Saldo-Abruf {0}",konto.getLongName());
   }
 
   /**
@@ -118,6 +117,9 @@ public class HBCISaldoJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCISaldoJob.java,v $
+ * Revision 1.22  2006/06/19 11:52:15  willuhn
+ * @N Update auf hbci4java 2.5.0rc9
+ *
  * Revision 1.21  2006/03/17 00:51:24  willuhn
  * @N bug 209 Neues Synchronisierungs-Subsystem
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCISammelLastschriftJob.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/03/15 18:01:30 $
+ * $Revision: 1.5 $
+ * $Date: 2006/06/19 11:52:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -48,8 +48,7 @@ public class HBCISammelLastschriftJob extends AbstractHBCISammelTransferJob
    */
   public String getName() throws RemoteException
   {
-    String name = getSammelTransfer().getBezeichnung();
-    return i18n.tr("Absenden der Sammel-Lastschrift {0}",name);
+    return i18n.tr("Sammel-Lastschrift {0}",getSammelTransfer().getBezeichnung());
   }
 
 }
@@ -57,6 +56,9 @@ public class HBCISammelLastschriftJob extends AbstractHBCISammelTransferJob
 
 /**********************************************************************
  * $Log: HBCISammelLastschriftJob.java,v $
+ * Revision 1.5  2006/06/19 11:52:15  willuhn
+ * @N Update auf hbci4java 2.5.0rc9
+ *
  * Revision 1.4  2006/03/15 18:01:30  willuhn
  * @N AbstractHBCIJob#getName
  *
