@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SammelLastBuchungControl.java,v $
- * $Revision: 1.8 $
- * $Date: 2005/09/30 00:08:51 $
+ * $Revision: 1.9 $
+ * $Date: 2006/06/26 13:25:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,9 +17,11 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.SammelLastBuchungNew;
 import de.willuhn.jameica.hbci.rmi.Adresse;
+import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SammelLastBuchung;
 import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.system.Application;
@@ -111,6 +113,15 @@ public class SammelLastBuchungControl extends AbstractSammelTransferBuchungContr
 				GUI.getStatusBar().setSuccessText(i18n.tr("Buchung gespeichert"));
 			}
 			getBuchung().transactionCommit();
+
+      if (getBuchung().getBetrag() > Settings.getUeberweisungLimit())
+      {
+        Konto k = getBuchung().getSammelTransfer().getKonto();
+        String w = k != null ? k.getWaehrung() : HBCIProperties.CURRENCY_DEFAULT_DE;
+        GUI.getView().setErrorText(i18n.tr("Warnung: Auftragslimit überschritten: {0} ",
+            HBCI.DECIMALFORMAT.format(Settings.getUeberweisungLimit()) + " " + w));
+      }
+      
       // BUGZILLA 116 http://www.willuhn.de/bugzilla/show_bug.cgi?id=116
       if (next)
         new SammelLastBuchungNew().handleAction(getBuchung().getSammelTransfer());
@@ -143,6 +154,9 @@ public class SammelLastBuchungControl extends AbstractSammelTransferBuchungContr
 
 /*****************************************************************************
  * $Log: SammelLastBuchungControl.java,v $
+ * Revision 1.9  2006/06/26 13:25:20  willuhn
+ * @N Franks eBay-Parser
+ *
  * Revision 1.8  2005/09/30 00:08:51  willuhn
  * @N SammelUeberweisungen (merged with SammelLastschrift)
  *

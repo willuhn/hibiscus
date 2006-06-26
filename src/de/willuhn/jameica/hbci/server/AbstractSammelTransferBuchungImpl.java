@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractSammelTransferBuchungImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/06/08 22:29:47 $
+ * $Revision: 1.5 $
+ * $Date: 2006/06/26 13:25:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,10 +15,8 @@ import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
-import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.hbci.rmi.Duplicatable;
-import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -62,14 +60,6 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
 
       if (getBetrag() == 0.0)
         throw new ApplicationException(i18n.tr("Bitte geben Sie einen gültigen Betrag ein."));
-
-      if (getBetrag() > Settings.getUeberweisungLimit())
-      {
-        Konto k = getSammelTransfer().getKonto();
-        String w = k != null ? k.getWaehrung() : HBCIProperties.CURRENCY_DEFAULT_DE;
-        throw new ApplicationException(i18n.tr("Auftragslimit überschritten: {0} ", 
-            HBCI.DECIMALFORMAT.format(Settings.getUeberweisungLimit()) + " " + w));
-      }
 
       if (getGegenkontoNummer() == null || getGegenkontoNummer().length() == 0)
         throw new ApplicationException(i18n.tr("Bitte geben Sie die Kontonummer des Gegenkontos ein"));
@@ -209,9 +199,6 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
 	}
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelLastBuchung#getBetrag()
-   */
-  /**
    * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#getBetrag()
    */
   public double getBetrag() throws RemoteException
@@ -223,9 +210,6 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelLastBuchung#getZweck()
-   */
-  /**
    * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#getZweck()
    */
   public String getZweck() throws RemoteException
@@ -233,9 +217,6 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
     return (String) getAttribute("zweck");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelLastBuchung#getZweck2()
-   */
   /**
    * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#getZweck2()
    */
@@ -245,9 +226,6 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelLastBuchung#setBetrag(double)
-   */
-  /**
    * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#setBetrag(double)
    */
   public void setBetrag(double betrag) throws RemoteException
@@ -256,9 +234,6 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelLastBuchung#setZweck(java.lang.String)
-   */
-  /**
    * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#setZweck(java.lang.String)
    */
   public void setZweck(String zweck) throws RemoteException
@@ -266,9 +241,6 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
     setAttribute("zweck",zweck);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelLastBuchung#setZweck2(java.lang.String)
-   */
   /**
    * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#setZweck2(java.lang.String)
    */
@@ -296,6 +268,9 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferBuchungImpl.java,v $
+ * Revision 1.5  2006/06/26 13:25:20  willuhn
+ * @N Franks eBay-Parser
+ *
  * Revision 1.4  2006/06/08 22:29:47  willuhn
  * @N DTAUS-Import fuer Sammel-Lastschriften und Sammel-Ueberweisungen
  * @B Eine Reihe kleinerer Bugfixes in Sammeltransfers

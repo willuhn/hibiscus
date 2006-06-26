@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCISammelTransferJob.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/04/25 16:39:07 $
+ * $Revision: 1.6 $
+ * $Date: 2006/06/26 13:25:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,10 +14,13 @@ package de.willuhn.jameica.hbci.server.hbci;
 
 import java.rmi.RemoteException;
 
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
+import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.hbci.server.Converter;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -60,6 +63,16 @@ public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
 			this.transfer = transfer;
 			this.konto = transfer.getKonto();
 
+      DBIterator buchungen = this.transfer.getBuchungen();
+      while (buchungen.hasNext())
+      {
+        SammelTransferBuchung b = (SammelTransferBuchung) buchungen.next();
+        if (b.getBetrag() > Settings.getUeberweisungLimit())
+          throw new ApplicationException(i18n.tr("Auftragslimit überschritten: {0} ", 
+            HBCI.DECIMALFORMAT.format(Settings.getUeberweisungLimit()) + " " + this.konto.getWaehrung()));
+      }
+      
+      
 			setJobParam("my",Converter.HibiscusKonto2HBCIKonto(konto));
 		}
 		catch (RemoteException e)
@@ -117,6 +130,9 @@ public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: AbstractHBCISammelTransferJob.java,v $
+ * Revision 1.6  2006/06/26 13:25:20  willuhn
+ * @N Franks eBay-Parser
+ *
  * Revision 1.5  2006/04/25 16:39:07  willuhn
  * @N Konstruktoren von HBCI-Jobs werfen nun eine ApplicationException, wenn der Auftrag bereits ausgefuehrt wurde
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUeberweisungJob.java,v $
- * $Revision: 1.30 $
- * $Date: 2006/06/19 11:52:15 $
+ * $Revision: 1.31 $
+ * $Date: 2006/06/26 13:25:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -68,6 +68,10 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
       this.ueberweisung = ueberweisung;
       this.konto = this.ueberweisung.getKonto();
       this.isTermin = this.ueberweisung.isTerminUeberweisung();
+
+      if (this.ueberweisung.getBetrag() > Settings.getUeberweisungLimit())
+        throw new ApplicationException(i18n.tr("Auftragslimit überschritten: {0} ", 
+          HBCI.DECIMALFORMAT.format(Settings.getUeberweisungLimit()) + " " + this.konto.getWaehrung()));
 
 			setJobParam("src",Converter.HibiscusKonto2HBCIKonto(konto));
 
@@ -172,6 +176,9 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIUeberweisungJob.java,v $
+ * Revision 1.31  2006/06/26 13:25:20  willuhn
+ * @N Franks eBay-Parser
+ *
  * Revision 1.30  2006/06/19 11:52:15  willuhn
  * @N Update auf hbci4java 2.5.0rc9
  *

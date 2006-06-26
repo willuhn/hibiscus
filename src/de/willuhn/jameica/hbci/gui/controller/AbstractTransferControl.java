@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.29 $
- * $Date: 2006/02/06 16:03:50 $
+ * $Revision: 1.30 $
+ * $Date: 2006/06/26 13:25:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -286,7 +286,12 @@ public abstract class AbstractTransferControl extends AbstractControl
 				GUI.getStatusBar().setSuccessText(i18n.tr("Auftrag gespeichert"));
 			}
 			getTransfer().transactionCommit();
-			return true;
+
+      if (getTransfer().getBetrag() > Settings.getUeberweisungLimit())
+        GUI.getView().setErrorText(i18n.tr("Warnung: Auftragslimit überschritten: {0} ", 
+          HBCI.DECIMALFORMAT.format(Settings.getUeberweisungLimit()) + " " + getKonto().getWaehrung()));
+      
+      return true;
 		}
 		catch (ApplicationException e)
 		{
@@ -393,6 +398,9 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
+ * Revision 1.30  2006/06/26 13:25:20  willuhn
+ * @N Franks eBay-Parser
+ *
  * Revision 1.29  2006/02/06 16:03:50  willuhn
  * @B bug 163
  *
