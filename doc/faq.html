@@ -24,6 +24,7 @@
         <a href="#errors">Bekannte Fehler</a>
         <ul>
           <li><a href="#errors.os.ubuntu">Der Start bricht mit der Fehlermeldung &quot;java.lang.SecurityException: write access to /opt/jameica/jameica.lock denied&quot; ab</a></li>
+          <li><a href="#errors.os.java">Hibiscus startet überhaupt nicht. Auf der Konsole erscheint evtl. die Fehlermeldung &quot;java: command not found&quot;</a></li>
           <li><a href="#errors.ums.missng">Es werden nicht alle Umsätze abgerufen</a></li>
           <li><a href="#errors.ums.umlaut">Die Verwendungszwecken einiger Umsätze werden nicht vollständig angezeigt</a></li>
           <li><a href="#errors.ueb.limit.postbank">Überweisungen mit meinem Postbank-Konto schlagen fehl</a></li>
@@ -227,6 +228,22 @@ $JAVA_HOME/bin/java -Djava.library.path=lib/swt/linux -jar jameica-linux.jar $@
 
         <p>
           <br/>
+          <a name="errors.os.java"></a>
+          <b>Hibiscus startet überhaupt nicht. Auf der Konsole erscheint evtl. die Fehlermeldung &quot;java: command not found&quot;</b>
+          <br/><br/>
+          Auf dem Computer ist Java nicht installiert oder der Befehl &quot;java&quot; wurde nicht gefunden.
+          Laden Sie Sun Java von <a href="http://javashoplm.sun.com/ECom/docs/Welcome.jsp?StoreId=22&PartDetailId=j2re-1.4.2_12-oth-JPR&SiteId=JSC&TransactionId=noreg">http://javashoplm.sun.com/ECom/docs/Welcome.jsp?StoreId=22&PartDetailId=j2re-1.4.2_12-oth-JPR&SiteId=JSC&TransactionId=noreg</a>
+          und installieren Sie das Software-Paket. Anschliessend sollte der Befehl "java" gefunden werden.
+          <br/>
+          Falls Sie Linux verwenden, kann es durchaus sein, dass Java bereits installiert ist, jedoch lediglich nicht
+          im $PATH gefunden wird. Prüfen Sie daher in Ihrer Softwarepaket-Verwaltung, ob Java installiert ist.
+          Es befindet sich meist in /usr/lib/j2sdk&lt;versionsnummer&gt;. Befolgen Sie in diesem Fall die beiden
+          letzten Schritte der Frage <a href="#errors.os.ubuntu">..Start bricht mit der Fehlermeldung ...</a> (Anlegen
+          eines symbolischen Links und Anpassen des Startscripts jameica.sh.
+        </p>
+
+        <p>
+          <br/>
           <a name="errors.ums.missing"></a>
           <b>Es werden nicht alle Umsätze abgerufen</b>
           <br/><br/>
@@ -298,7 +315,7 @@ $JAVA_HOME/bin/java -Djava.library.path=lib/swt/linux -jar jameica-linux.jar $@
     //-->
 
     <hr/>
-    $Revision: 1.8 $
+    $Revision: 1.9 $
 
   </body>
 </html>
