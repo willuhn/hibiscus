@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Adressbuch.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/03/27 21:34:16 $
+ * $Revision: 1.5 $
+ * $Date: 2006/06/29 23:10:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,8 +17,11 @@ import java.rmi.RemoteException;
 
 import org.eclipse.swt.widgets.Composite;
 
+import de.willuhn.jameica.gui.boxes.AbstractBox;
+import de.willuhn.jameica.gui.boxes.Box;
 import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerNew;
 import de.willuhn.jameica.hbci.gui.parts.EmpfaengerList;
 import de.willuhn.jameica.system.Application;
@@ -42,15 +45,15 @@ public class Adressbuch extends AbstractBox implements Box
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.gui.boxes.Box#getName()
+   * @see de.willuhn.jameica.gui.boxes.Box#getName()
    */
   public String getName()
   {
-    return i18n.tr("Adressbuch");
+    return "Hibiscus: " + i18n.tr("Adressbuch");
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.gui.boxes.Box#getDefaultIndex()
+   * @see de.willuhn.jameica.gui.boxes.Box#getDefaultIndex()
    */
   public int getDefaultIndex()
   {
@@ -58,7 +61,7 @@ public class Adressbuch extends AbstractBox implements Box
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.gui.boxes.Box#getDefaultEnabled()
+   * @see de.willuhn.jameica.gui.boxes.Box#getDefaultEnabled()
    */
   public boolean getDefaultEnabled()
   {
@@ -76,11 +79,22 @@ public class Adressbuch extends AbstractBox implements Box
     l.paint(parent);
   }
 
+  /**
+   * @see de.willuhn.jameica.gui.boxes.Box#isActive()
+   */
+  public boolean isActive()
+  {
+    return super.isActive() && !Settings.isFirstStart();
+  }
 }
 
 
 /*********************************************************************
  * $Log: Adressbuch.java,v $
+ * Revision 1.5  2006/06/29 23:10:33  willuhn
+ * @R Box-System aus Hibiscus in Jameica-Source verschoben
+ * @C keine eigene Startseite mehr, jetzt alles ueber Jameica-Boxsystem geregelt
+ *
  * Revision 1.4  2006/03/27 21:34:16  willuhn
  * *** empty log message ***
  *

@@ -18,7 +18,7 @@
   </menu>
 
   <navigation>
-    <item id="hibiscus.navi" name="Hibiscus"                                      icon-close="folder.gif" icon-open="folderopen.gif"  action="de.willuhn.jameica.hbci.gui.action.Welcome">
+    <item id="hibiscus.navi" name="Hibiscus"                                      icon-close="folder.gif" icon-open="folderopen.gif">
       <item id="hibiscus.navi.accounts"             name="Konten"                 icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.KontoList" />
       <item id="hibiscus.navi.addresses"            name="Adressbuch"             icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.EmpfaengerList" />
       <item id="hibiscus.navi.messages"             name="System-Nachrichten"     icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.NachrichtList" />

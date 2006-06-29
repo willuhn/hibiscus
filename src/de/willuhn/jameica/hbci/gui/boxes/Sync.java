@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Sync.java,v $
- * $Revision: 1.8 $
- * $Date: 2006/04/18 22:38:16 $
+ * $Revision: 1.9 $
+ * $Date: 2006/06/29 23:10:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,9 +20,12 @@ import org.eclipse.swt.widgets.Composite;
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.boxes.AbstractBox;
+import de.willuhn.jameica.gui.boxes.Box;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.HBCISynchronize;
 import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.SynchronizeOptionsDialog;
@@ -53,11 +56,11 @@ public class Sync extends AbstractBox implements Box
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.gui.boxes.Box#getName()
+   * @see de.willuhn.jameica.gui.boxes.Box#getName()
    */
   public String getName()
   {
-    return i18n.tr("Konten synchronisieren");
+    return "Hibiscus: " + i18n.tr("Konten synchronisieren");
   }
 
   /**
@@ -125,7 +128,7 @@ public class Sync extends AbstractBox implements Box
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.gui.boxes.Box#getDefaultIndex()
+   * @see de.willuhn.jameica.gui.boxes.Box#getDefaultIndex()
    */
   public int getDefaultIndex()
   {
@@ -133,7 +136,7 @@ public class Sync extends AbstractBox implements Box
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.gui.boxes.Box#getDefaultEnabled()
+   * @see de.willuhn.jameica.gui.boxes.Box#getDefaultEnabled()
    */
   public boolean getDefaultEnabled()
   {
@@ -157,11 +160,24 @@ public class Sync extends AbstractBox implements Box
       GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Synchronisieren der Konten"));
     }
   }
+  
+  /**
+   * @see de.willuhn.jameica.gui.boxes.Box#isActive()
+   */
+  public boolean isActive()
+  {
+    return super.isActive() && !Settings.isFirstStart();
+  }
+
 }
 
 
 /*********************************************************************
  * $Log: Sync.java,v $
+ * Revision 1.9  2006/06/29 23:10:33  willuhn
+ * @R Box-System aus Hibiscus in Jameica-Source verschoben
+ * @C keine eigene Startseite mehr, jetzt alles ueber Jameica-Boxsystem geregelt
+ *
  * Revision 1.8  2006/04/18 22:38:16  willuhn
  * @N bug 227
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Overview.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/04/03 20:37:51 $
+ * $Revision: 1.5 $
+ * $Date: 2006/06/29 23:10:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,6 +22,8 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.jameica.gui.boxes.AbstractBox;
+import de.willuhn.jameica.gui.boxes.Box;
 import de.willuhn.jameica.gui.dialogs.CalendarDialog;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
@@ -66,11 +68,11 @@ public class Overview extends AbstractBox implements Box
   }
   
   /**
-   * @see de.willuhn.jameica.hbci.gui.boxes.Box#getName()
+   * @see de.willuhn.jameica.gui.boxes.Box#getName()
    */
   public String getName()
   {
-    return i18n.tr("Finanz-Übersicht");
+    return "Hibiscus: " + i18n.tr("Finanz-Übersicht");
   }
 
   /**
@@ -91,7 +93,7 @@ public class Overview extends AbstractBox implements Box
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.gui.boxes.Box#getDefaultIndex()
+   * @see de.willuhn.jameica.gui.boxes.Box#getDefaultIndex()
    */
   public int getDefaultIndex()
   {
@@ -99,7 +101,7 @@ public class Overview extends AbstractBox implements Box
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.gui.boxes.Box#getDefaultEnabled()
+   * @see de.willuhn.jameica.gui.boxes.Box#getDefaultEnabled()
    */
   public boolean getDefaultEnabled()
   {
@@ -321,11 +323,24 @@ public class Overview extends AbstractBox implements Box
     einnahmen.setComment(HBCIProperties.CURRENCY_DEFAULT_DE);
     return einnahmen;
   }
+  
+  /**
+   * @see de.willuhn.jameica.gui.boxes.Box#isActive()
+   */
+  public boolean isActive()
+  {
+    return super.isActive() && !Settings.isFirstStart();
+  }
+
 }
 
 
 /*********************************************************************
  * $Log: Overview.java,v $
+ * Revision 1.5  2006/06/29 23:10:33  willuhn
+ * @R Box-System aus Hibiscus in Jameica-Source verschoben
+ * @C keine eigene Startseite mehr, jetzt alles ueber Jameica-Boxsystem geregelt
+ *
  * Revision 1.4  2006/04/03 20:37:51  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/UmsatzTyp.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/04/03 21:39:07 $
+ * $Revision: 1.5 $
+ * $Date: 2006/06/29 23:10:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,8 @@ import java.rmi.RemoteException;
 
 import org.eclipse.swt.widgets.Composite;
 
+import de.willuhn.jameica.gui.boxes.AbstractBox;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzTypChart;
 
 /**
@@ -34,15 +36,15 @@ public class UmsatzTyp extends AbstractBox
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.gui.boxes.Box#getName()
+   * @see de.willuhn.jameica.gui.boxes.Box#getName()
    */
   public String getName()
   {
-    return "Umsatz-Analyse";
+    return "Hibiscus: " + "Umsatz-Analyse";
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.gui.boxes.Box#getDefaultEnabled()
+   * @see de.willuhn.jameica.gui.boxes.Box#getDefaultEnabled()
    */
   public boolean getDefaultEnabled()
   {
@@ -50,7 +52,7 @@ public class UmsatzTyp extends AbstractBox
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.gui.boxes.Box#getDefaultIndex()
+   * @see de.willuhn.jameica.gui.boxes.Box#getDefaultIndex()
    */
   public int getDefaultIndex()
   {
@@ -65,12 +67,25 @@ public class UmsatzTyp extends AbstractBox
     UmsatzTypChart chart = new UmsatzTypChart();
     chart.paint(parent);
   }
+  
+  /**
+   * @see de.willuhn.jameica.gui.boxes.Box#isActive()
+   */
+  public boolean isActive()
+  {
+    return super.isActive() && !Settings.isFirstStart();
+  }
+
 
 }
 
 
 /*********************************************************************
  * $Log: UmsatzTyp.java,v $
+ * Revision 1.5  2006/06/29 23:10:33  willuhn
+ * @R Box-System aus Hibiscus in Jameica-Source verschoben
+ * @C keine eigene Startseite mehr, jetzt alles ueber Jameica-Boxsystem geregelt
+ *
  * Revision 1.4  2006/04/03 21:39:07  willuhn
  * @N UmsatzChart
  *

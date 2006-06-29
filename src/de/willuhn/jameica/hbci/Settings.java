@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.43 $
- * $Date: 2006/03/30 08:30:38 $
+ * $Revision: 1.44 $
+ * $Date: 2006/06/29 23:10:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,9 +20,11 @@ import java.util.Date;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.security.Wallet;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.ServiceSettings;
@@ -376,10 +378,34 @@ public class Settings
     }
 		return wallet;
   }
+
+  /**
+   * Prueft, ob es der erste Hibiscus-Start ist bzw noch keine Konten existieren.
+   * @return true, wenn noch keine Konten existieren.
+   */
+  public static boolean isFirstStart()
+  {
+    try
+    {
+      DBIterator konten = Settings.getDBService().createList(Konto.class);
+      return konten == null || konten.size() == 0;
+    }
+    catch (RemoteException re)
+    {
+      Logger.error("unable to load konto list",re);
+      I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Liste der Konten kann nicht ermittelt werden"),StatusBarMessage.TYPE_ERROR));
+      return true;
+    }
+  }
 }
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.44  2006/06/29 23:10:33  willuhn
+ * @R Box-System aus Hibiscus in Jameica-Source verschoben
+ * @C keine eigene Startseite mehr, jetzt alles ueber Jameica-Boxsystem geregelt
+ *
  * Revision 1.43  2006/03/30 08:30:38  willuhn
  * @B bug 218
  *
