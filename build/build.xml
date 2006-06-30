@@ -90,19 +90,12 @@
 			<classpath refid="compilepath" />
 		</rmic>
 
-		<!--
-    <copy todir="${class.dir}/lang">
-      <fileset dir="${lang.dir}" />
-    </copy>
-//-->
 		<copy todir="${class.dir}/help">
 			<fileset dir="${help.dir}" />
 		</copy>
 		<copy todir="${class.dir}/img">
 			<fileset dir="${icon.dir}" />
 		</copy>
-
-		<copy file="${src.dir}/plugin.xml" tofile="${class.dir}/plugin.xml" />
 
 	</target>
 
@@ -145,8 +138,9 @@
 			<fileset dir="${lib.dir}" />
 		</copy>
 
-		<copy file="${build.dir}/README" tofile="${project.zipdir}/README" />
-		<copy file="${build.dir}/COPYING" tofile="${project.zipdir}/COPYING" />
+		<copy file="${build.dir}/README" todir="${project.zipdir}" />
+    <copy file="plugin.xml" todir="${project.zipdir}" />
+		<copy file="${build.dir}/COPYING" todir="${project.zipdir}" />
 		<copy todir="${project.zipdir}/doc">
 			<fileset dir="${doc.dir}" />
 		</copy>
@@ -171,6 +165,7 @@
 			<fileset dir=".">
 				<include name=".project" />
 				<include name=".classpath" />
+        <include name="plugin.xml" />
 				<include name="${doc.dir}/**" />
 				<include name="${lib.dir}/**" />
 				<include name="${src.dir}/**" />

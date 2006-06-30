@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<plugin name="hibiscus" version="1.6">
+<plugin name="hibiscus" version="1.6" class="de.willuhn.jameica.hbci.HBCI">
 
   <description>HBCI-Onlinebanking-Plugin für Jameica</description>
   <url>http://www.willuhn.de/projects/hibiscus/releases/hibiscus.jam</url>
@@ -16,6 +16,12 @@
       <item id="hibiscus.menu.donate"               name="Spenden"                                  action="de.willuhn.jameica.hbci.gui.action.Donate" />
     </item>
   </menu>
+  
+  <classfinder>
+    <include>hibiscus\.jar</include>
+    <include>hbci_passport_.*\.jar</include>
+    <include>.*\.class</include>
+  </classfinder>
 
   <navigation>
     <item id="hibiscus.navi" name="Hibiscus"                                      icon-close="folder.gif" icon-open="folderopen.gif">
