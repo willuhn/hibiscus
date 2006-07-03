@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/KontoauszugControl.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/05/15 20:12:38 $
- * $Author: jost $
+ * $Revision: 1.4 $
+ * $Date: 2006/07/03 23:04:32 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -12,33 +12,30 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.controller;
 
-import java.io.File;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.CalendarDialog;
-import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SelectInput;
-import de.willuhn.jameica.gui.internal.action.Program;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.reports.KontoauszugReport;
+import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.action.UmsatzExport;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Logger;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -48,30 +45,23 @@ public class KontoauszugControl extends AbstractControl
 {
 
   private SelectInput kontoAuswahl = null;
-
-  private DialogInput start = null;
-
-  private DialogInput end = null;
-
-  private Date dStart = null;
-
-  private Date dEnd = null;
+  private DialogInput start        = null;
+  private DialogInput end          = null;
 
   private I18N i18n = null;
 
   /**
+   * ct.
    * @param view
    */
   public KontoauszugControl(AbstractView view)
   {
     super(view);
-    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources()
-        .getI18N();
+    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
   /**
    * Liefert eine Auswahlbox fuer das Konto.
-   * 
    * @return Auswahlbox.
    * @throws RemoteException
    */
@@ -80,17 +70,16 @@ public class KontoauszugControl extends AbstractControl
     if (this.kontoAuswahl != null)
       return this.kontoAuswahl;
 
-    DBIterator it = de.willuhn.jameica.hbci.Settings.getDBService().createList(
-        Konto.class);
+    DBIterator it = de.willuhn.jameica.hbci.Settings.getDBService().createList(Konto.class);
     it.setOrder("ORDER BY blz, kontonummer");
     this.kontoAuswahl = new SelectInput(it, null);
     this.kontoAuswahl.setAttribute("longname");
+    this.kontoAuswahl.setPleaseChoose(i18n.tr("Alle Konten"));
     return this.kontoAuswahl;
   }
 
   /**
    * Liefert ein Auswahl-Feld fuer das Start-Datum.
-   * 
    * @return Auswahl-Feld.
    */
   public Input getStart()
@@ -101,7 +90,7 @@ public class KontoauszugControl extends AbstractControl
     Calendar cal = Calendar.getInstance();
     cal.setTime(new Date());
     cal.set(Calendar.DAY_OF_MONTH, 1);
-    this.dStart = cal.getTime();
+    Date dStart = cal.getTime();
 
     CalendarDialog d = new CalendarDialog(CalendarDialog.POSITION_MOUSE);
     d.setTitle(i18n.tr("Start-Datum"));
@@ -113,9 +102,9 @@ public class KontoauszugControl extends AbstractControl
       {
         if (event == null || event.data == null)
           return;
-        dStart = (Date) event.data;
-        start.setValue(dStart);
-        start.setText(HBCI.DATEFORMAT.format(dStart));
+        Date d = (Date) event.data;
+        start.setValue(d);
+        start.setText(HBCI.DATEFORMAT.format(d));
       }
     });
     this.start = new DialogInput(HBCI.DATEFORMAT.format(dStart), d);
@@ -126,7 +115,6 @@ public class KontoauszugControl extends AbstractControl
 
   /**
    * Liefert ein Auswahl-Feld fuer das End-Datum.
-   * 
    * @return Auswahl-Feld.
    */
   public Input getEnd()
@@ -137,7 +125,7 @@ public class KontoauszugControl extends AbstractControl
     Calendar cal = Calendar.getInstance();
     cal.setTime(new Date());
     cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
-    this.dEnd = cal.getTime();
+    Date dEnd = cal.getTime();
 
     CalendarDialog d = new CalendarDialog(CalendarDialog.POSITION_MOUSE);
     d.setDate(dEnd);
@@ -149,9 +137,9 @@ public class KontoauszugControl extends AbstractControl
       {
         if (event == null || event.data == null)
           return;
-        dEnd = (Date) event.data;
-        end.setValue(dEnd);
-        end.setText(HBCI.DATEFORMAT.format(dEnd));
+        Date d = (Date) event.data;
+        end.setValue(d);
+        end.setText(HBCI.DATEFORMAT.format(d));
       }
     });
     this.end = new DialogInput(HBCI.DATEFORMAT.format(dEnd), d);
@@ -165,85 +153,65 @@ public class KontoauszugControl extends AbstractControl
    * Startet den Report
    * 
    */
-  public void startReport()
+  public synchronized void handleStart()
   {
     try
     {
-      Konto k = (Konto) getKontoAuswahl().getValue();
+      Konto k    = (Konto) getKontoAuswahl().getValue();
+      Date start = (Date) getStart().getValue();
+      Date end   = (Date) getEnd().getValue();
+
+      DBIterator umsaetze = null;
+      
       if (k == null)
-        Application.getMessagingFactory().sendMessage(
-            new StatusBarMessage(i18n.tr("Bitte wählen Sie ein Konto aus"),
-                StatusBarMessage.TYPE_ERROR));
-
-      Settings settings = new Settings(this.getClass());
-      String dir = settings.getString("lastdir", System
-          .getProperty("user.home"));
-
-      FileDialog fd = new FileDialog(GUI.getShell(), SWT.SAVE);
-      fd
-          .setText(i18n
-              .tr("Bitte wählen Sie das Verzeichnis, in dem Sie die Auswertung speichern möchten"));
-      fd.setFilterPath(dir);
-      fd.setFileName(i18n.tr("konto_{0}_{1}-{2}.pdf", new String[] {
-          k.getKontonummer(), HBCI.FASTDATEFORMAT.format(dStart),
-          HBCI.FASTDATEFORMAT.format(dEnd) }));
-
-      String file = fd.open();
-
-      if (file == null)
       {
-        // Dialog abgebrochen
-        Logger.info("operation cancelled");
-        return;
+        // Alle Konten
+        umsaetze = Settings.getDBService().createList(Umsatz.class);
+        if (start != null) umsaetze.addFilter("TONUMBER(valuta) >= " + start.getTime());
+        if (end != null) umsaetze.addFilter("TONUMBER(valuta) <= " + end.getTime());
+        umsaetze.setOrder("ORDER BY TONUMBER(valuta), id DESC");
       }
-      File f = new File(file);
-
-      // Wir merken uns das letzte ausgewaehlte Verzeichnis
-      settings.setAttribute("lastdir", f.getParent());
-      if (f.exists())
+      else if (start == null || end == null)
       {
-        YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
-        d.setTitle(i18n.tr("Datei existiert bereits"));
-        d.setText(i18n.tr(
-            "Die Datei \"{0}\" existiert bereits. Überschreiben?", f
-                .getAbsolutePath()));
-        if (!((Boolean) d.open()).booleanValue())
-          return;
+        umsaetze = k.getUmsaetze();
       }
-
-      KontoauszugReport rpt = new KontoauszugReport(HBCI.DATEFORMAT
-          .format(dStart)
-          + " - " + HBCI.DATEFORMAT.format(dEnd));
-
-      try
+      else
       {
-        rpt.open(f.getAbsolutePath());
-        rpt.generate(k, k.getUmsaetze(dStart, dEnd));
+        umsaetze = k.getUmsaetze(start,end);
       }
-      finally
-      {
-        rpt.close();
-      }
+      
 
-      // Zugeordnetes Programm starten (PDF-Viewer)
-      new Program().handleAction(f);
+      ArrayList list = new ArrayList();
+      while (umsaetze.hasNext())
+      {
+        list.add(umsaetze.next());
+      }
+      
+      Umsatz[] u = (Umsatz[]) list.toArray(new Umsatz[list.size()]);
+      
+      if (u == null || u.length == 0)
+        throw new ApplicationException(i18n.tr("Im gewählten Zeitraum wurden keine Umsätze gefunden"));
+      
+      new UmsatzExport().handleAction(u);
+    }
+    catch (ApplicationException ae)
+    {
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getLocalizedMessage(),StatusBarMessage.TYPE_ERROR));
     }
     catch (Exception e)
     {
-      Application.getMessagingFactory().sendMessage(
-          new StatusBarMessage(i18n.tr("Fehler beim Erstellen der Auswertung"),
-              StatusBarMessage.TYPE_ERROR));
       Logger.error("unable to create report", e);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Erstellen der Auswertung"),StatusBarMessage.TYPE_ERROR));
     }
-    Application.getMessagingFactory().sendMessage(
-        new StatusBarMessage(i18n.tr("Auswertung erstellt"),
-            StatusBarMessage.TYPE_SUCCESS));
   }
 
 }
 
 /*******************************************************************************
  * $Log: KontoauszugControl.java,v $
+ * Revision 1.4  2006/07/03 23:04:32  willuhn
+ * @N PDF-Reportwriter in IO-API gepresst, damit er auch an anderen Stellen (z.Bsp. in der Umsatzliste) mitverwendet werden kann.
+ *
  * Revision 1.3  2006/05/15 20:12:38  jost
  * Zusätzlicher Parameter beim Aufruf des Kontoauszug-Reports
  * Kommentare
