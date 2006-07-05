@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/HBCISynchronize.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/03/17 00:51:25 $
+ * $Revision: 1.6 $
+ * $Date: 2006/07/05 22:18:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -42,7 +42,8 @@ public class HBCISynchronize implements Action
 {
 
   private I18N i18n = null;
-  
+
+  private GenericIterator selectedJobs = null;
   private Job[] jobs = null;
   private int index  = 0;
   
@@ -53,8 +54,13 @@ public class HBCISynchronize implements Action
   {
     Logger.info("Start synchronize");
     
+    if (context != null && (context instanceof GenericIterator))
+      this.selectedJobs = (GenericIterator) context;
+    
     i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
+    // Der Code hier sieht etwas umstaendlich aus. Das
+    // machen wir, weil wir die HBCI-Jobs nach Konten gruppieren
     try
     {
       DBIterator konten = Settings.getDBService().createList(Konto.class);
@@ -119,22 +125,38 @@ public class HBCISynchronize implements Action
       HBCIFactory factory = HBCIFactory.getInstance();
 
       GenericIterator list = SynchronizeEngine.getInstance().getSynchronizeJobs(k);
+      int count = 0;
       while (list.hasNext())
       {
         SynchronizeJob sj = (SynchronizeJob) list.next();
-        factory.addExclusiveJob(sj.createHBCIJob());
-      }
-      
-      factory.executeJobs(k,new Listener() {
-        public void handleEvent(Event event)
+        
+        if (this.selectedJobs != null && this.selectedJobs.contains(sj) == null)
         {
-          if (event.type == ProgressMonitor.STATUS_DONE)
-          {
-            // Nach erfolgreichem Abschluss das naechste syncronisieren
-            sync();
-          }
+          Logger.info("skipping job " + sj.getName() + " - not selected");
+          continue;
         }
-      });
+        factory.addExclusiveJob(sj.createHBCIJob());
+        count++;
+      }
+
+      if (count == 0)
+      {
+        Logger.info("nothing to do for account " + k.getAttribute("longname") + " - skipping");
+        sync();
+      }
+      else
+      {
+        factory.executeJobs(k,new Listener() {
+          public void handleEvent(Event event)
+          {
+            if (event.type == ProgressMonitor.STATUS_DONE)
+            {
+              // Nach erfolgreichem Abschluss das naechste syncronisieren
+              sync();
+            }
+          }
+        });
+      }
     }
     catch (Exception e)
     {
@@ -159,6 +181,9 @@ public class HBCISynchronize implements Action
 
 /*********************************************************************
  * $Log: HBCISynchronize.java,v $
+ * Revision 1.6  2006/07/05 22:18:16  willuhn
+ * @N Einzelne Sync-Jobs koennen nun selektiv auch einmalig direkt in der Sync-Liste deaktiviert werden
+ *
  * Revision 1.5  2006/03/17 00:51:25  willuhn
  * @N bug 209 Neues Synchronisierungs-Subsystem
  *

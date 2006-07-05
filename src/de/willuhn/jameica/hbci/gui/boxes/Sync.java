@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Sync.java,v $
- * $Revision: 1.9 $
- * $Date: 2006/06/29 23:10:33 $
+ * $Revision: 1.10 $
+ * $Date: 2006/07/05 22:18:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -46,6 +46,7 @@ public class Sync extends AbstractBox implements Box
 {
 
   private I18N i18n = null;
+  private SynchronizeList list = null;
 
   /**
    * ct.
@@ -68,9 +69,10 @@ public class Sync extends AbstractBox implements Box
    */
   public void paint(Composite parent) throws RemoteException
   {
+    this.list = new SynchronizeList();
+
     // BUGZILLA 209
     LabelGroup sync = new LabelGroup(parent,getName(),true);
-    final SynchronizeList list = new SynchronizeList();
     list.paint(sync.getComposite());
 
     ButtonArea b = sync.createButtonArea(2);
@@ -152,7 +154,7 @@ public class Sync extends AbstractBox implements Box
     {
       Logger.info("Start synchronize");
       HBCISynchronize sync = new HBCISynchronize();
-      sync.handleAction(null);
+      sync.handleAction(this.list == null ? null : this.list.getItems());
     }
     catch (Throwable t)
     {
@@ -174,6 +176,9 @@ public class Sync extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: Sync.java,v $
+ * Revision 1.10  2006/07/05 22:18:16  willuhn
+ * @N Einzelne Sync-Jobs koennen nun selektiv auch einmalig direkt in der Sync-Liste deaktiviert werden
+ *
  * Revision 1.9  2006/06/29 23:10:33  willuhn
  * @R Box-System aus Hibiscus in Jameica-Source verschoben
  * @C keine eigene Startseite mehr, jetzt alles ueber Jameica-Boxsystem geregelt

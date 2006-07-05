@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SynchronizeList.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/04/18 22:38:16 $
+ * $Revision: 1.5 $
+ * $Date: 2006/07/05 22:18:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,6 +43,7 @@ public class SynchronizeList extends TablePart
     addColumn(i18n.tr("Offene Synchronisierungsaufgaben"),"name");
     
     this.setSummary(false);
+    this.setCheckable(true);
   }
   
   /**
@@ -79,6 +80,9 @@ public class SynchronizeList extends TablePart
 
 /*********************************************************************
  * $Log: SynchronizeList.java,v $
+ * Revision 1.5  2006/07/05 22:18:16  willuhn
+ * @N Einzelne Sync-Jobs koennen nun selektiv auch einmalig direkt in der Sync-Liste deaktiviert werden
+ *
  * Revision 1.4  2006/04/18 22:38:16  willuhn
  * @N bug 227
  *
