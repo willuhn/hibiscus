@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SparQuote.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/07/13 23:09:36 $
+ * $Revision: 1.4 $
+ * $Date: 2006/07/13 23:28:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -207,7 +207,7 @@ public class SparQuote implements Part
     }
     
     
-    ArrayList list = new ArrayList();
+    ArrayList list  = new ArrayList();
     
     while (konten.hasNext())
     {
@@ -217,7 +217,7 @@ public class SparQuote implements Part
 
       UmsatzEntry currentEntry = null;
       String currentMonth      = null;
-      
+
       while (umsaetze.hasNext())
       {
         Umsatz u = (Umsatz) umsaetze.next();
@@ -243,9 +243,13 @@ public class SparQuote implements Part
         if (betrag > 0)
           currentEntry.einnahmen += betrag;
         else
-          currentEntry.ausgaben += -betrag;
+          currentEntry.ausgaben -= betrag;
       }
     }
+    
+    // TODO: Trend ermitteln
+    // http://de.wikibooks.org/wiki/Mathematik:_Statistik:_Glättungsverfahren
+    // http://de.wikibooks.org/wiki/Mathematik:_Statistik:_Trend_und_Saisonkomponente
     this.data = PseudoIterator.fromArray((UmsatzEntry[])list.toArray(new UmsatzEntry[list.size()]));
   }
 
@@ -383,6 +387,9 @@ public class SparQuote implements Part
 
 /*********************************************************************
  * $Log: SparQuote.java,v $
+ * Revision 1.4  2006/07/13 23:28:51  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2006/07/13 23:09:36  willuhn
  * *** empty log message ***
  *
