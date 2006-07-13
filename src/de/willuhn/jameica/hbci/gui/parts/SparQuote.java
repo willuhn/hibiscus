@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SparQuote.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/07/13 00:21:15 $
+ * $Revision: 1.2 $
+ * $Date: 2006/07/13 22:34:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -35,7 +35,7 @@ import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
-import de.willuhn.jameica.gui.input.DialogInput;
+import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Container;
@@ -46,7 +46,6 @@ import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.chart.ChartData;
 import de.willuhn.jameica.hbci.gui.chart.LineChart;
-import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -61,7 +60,6 @@ public class SparQuote implements Part
 {
   private static DateFormat DATEFORMAT = new SimpleDateFormat("MM.yyyy");
   
-  private DialogInput input    = null;
   private TablePart table      = null;
   private LineChart chart      = null;
   
@@ -93,29 +91,16 @@ public class SparQuote implements Part
       konten.begin();
       load();
     }
-    KontoAuswahlDialog d = new KontoAuswahlDialog(konten,KontoAuswahlDialog.POSITION_MOUSE);
-    d.addCloseListener(new Listener() {
+
+    final SelectInput auswahl = new SelectInput(Settings.getDBService().createList(Konto.class),konto);
+    auswahl.setPleaseChoose(i18n.tr("Alle Konten"));
+    auswahl.setAttribute("longname");
+    auswahl.addListener(new Listener() {
       public void handleEvent(Event event)
       {
-        if (event == null || event.data == null)
-          return;
-        
-        konto = (Konto) event.data;
-
+        konto = (Konto) auswahl.getValue();
         try
         {
-          SparQuote.this.input.setText(konto.getLongName());
-          double saldo    = konto.getSaldo();
-          Date saldoDatum = konto.getSaldoDatum();
-          
-          if (saldoDatum != null)
-          {
-            String[] values = new String[]{
-                HBCI.DECIMALFORMAT.format(saldo),
-                konto.getWaehrung(),
-                HBCI.DATEFORMAT.format(saldoDatum)};
-            SparQuote.this.input.setComment(i18n.tr("Saldo {0} {1} [aktualisiert am {2}]", values));
-          }
           load();
           redraw();
           if (chart != null)
@@ -129,11 +114,7 @@ public class SparQuote implements Part
       }
     });
     
-    this.input = new DialogInput(konto == null ? "" : konto.getLongName(),d);
-    this.input.setComment(i18n.tr("Bitte wählen Sie ein Konto aus"));
-    this.input.disableClientControl();
-    
-    container.addLabelPair(i18n.tr("Konto"),this.input);
+    container.addLabelPair(i18n.tr("Konto"),auswahl);
     
     // Wir initialisieren die Tabelle erstmal ohne Werte.
     this.table = new TablePart(data == null ? PseudoIterator.fromArray(new UmsatzEntry[]{new UmsatzEntry()}) : data,null);
@@ -211,39 +192,57 @@ public class SparQuote implements Part
    */
   private void load() throws RemoteException
   {
-    DBIterator umsaetze = konto.getUmsaetze();
-    umsaetze.setOrder("ORDER BY TONUMBER(valuta)"); // Reihenfolge umkehren
-
-    ArrayList list = new ArrayList();
-    UmsatzEntry currentEntry = null;
-    String currentMonth      = null;
+    GenericIterator konten = null;
     
-    while (umsaetze.hasNext())
+    if (konto == null)
     {
-      Umsatz u = (Umsatz) umsaetze.next();
-      Date valuta = u.getValuta();
-      if (valuta == null)
-      {
-        Logger.warn("no valuta found for umsatz, skipping record");
-        continue;
-      }
+      // Alle Konten
+      konten = Settings.getDBService().createList(Konto.class);
+    }
+    else
+    {
+      konten = PseudoIterator.fromArray(new Konto[]{konto});
+    }
+    
+    
+    ArrayList list = new ArrayList();
+    
+    while (konten.hasNext())
+    {
+      Konto k = (Konto) konten.next();
+      DBIterator umsaetze = k.getUmsaetze();
+      umsaetze.setOrder("ORDER BY TONUMBER(valuta)"); // Reihenfolge umkehren
+
+      UmsatzEntry currentEntry = null;
+      String currentMonth      = null;
       
-      String month = DATEFORMAT.format(valuta);
-      if (currentMonth == null || !month.equals(currentMonth))
+      while (umsaetze.hasNext())
       {
-        // einer neuer Monat
-        // Und nun einen neuen Datensatz anlegen
-        currentMonth = month;
-        currentEntry = new UmsatzEntry();
-        list.add(currentEntry);
-        currentEntry.monat = valuta;
+        Umsatz u = (Umsatz) umsaetze.next();
+        Date valuta = u.getValuta();
+        if (valuta == null)
+        {
+          Logger.warn("no valuta found for umsatz, skipping record");
+          continue;
+        }
+        
+        String month = DATEFORMAT.format(valuta);
+        if (currentMonth == null || !month.equals(currentMonth))
+        {
+          // einer neuer Monat
+          // Und nun einen neuen Datensatz anlegen
+          currentMonth = month;
+          currentEntry = new UmsatzEntry();
+          list.add(currentEntry);
+          currentEntry.monat = valuta;
+        }
+        
+        double betrag = u.getBetrag();
+        if (betrag > 0)
+          currentEntry.einnahmen += betrag;
+        else
+          currentEntry.ausgaben += -betrag;
       }
-      
-      double betrag = u.getBetrag();
-      if (betrag > 0)
-        currentEntry.einnahmen += betrag;
-      else
-        currentEntry.ausgaben += -betrag;
     }
     this.data = PseudoIterator.fromArray((UmsatzEntry[])list.toArray(new UmsatzEntry[list.size()]));
   }
@@ -332,7 +331,7 @@ public class SparQuote implements Part
      */
     public String getLabel() throws RemoteException
     {
-      return konto == null ? "" : konto.getBezeichnung();
+      return konto == null ? i18n.tr("Alle Konten") : konto.getBezeichnung();
     }
 
     /**
@@ -382,6 +381,9 @@ public class SparQuote implements Part
 
 /*********************************************************************
  * $Log: SparQuote.java,v $
+ * Revision 1.2  2006/07/13 22:34:06  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2006/07/13 00:21:15  willuhn
  * @N Neue Auswertung "Sparquote"
  *
