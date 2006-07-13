@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.42 $
- * $Date: 2006/03/16 18:23:36 $
+ * $Revision: 1.43 $
+ * $Date: 2006/07/13 22:10:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -357,8 +357,10 @@ public class HBCIFactory {
             }
             catch (Exception e)
             {
+              Throwable t = getCause(e);
               Logger.error("unable to init passport",e);
               monitor.setStatusText(i18n.tr("{0}: Fehler beim Initialisieren des Sicherheitsmediums",kn));
+              monitor.log(t.getMessage());
               error = true;
             }
           }
@@ -449,8 +451,10 @@ public class HBCIFactory {
             }
             catch (Exception e)
             {
+              Throwable t = getCause(e);
               Logger.error("unable to open handle",e);
               monitor.setStatusText(i18n.tr("{0}: Fehler beim Öffnen der HBCI-Verbindung",kn));
+              monitor.log(t.getMessage());
               error = true;
             }
           }
@@ -555,8 +559,10 @@ public class HBCIFactory {
       }
       catch (Throwable t)
       {
+        Throwable t2 = getCause(t);
         Logger.error("error while executing hbci jobs",t);
         monitor.setStatusText(i18n.tr("Fehler beim Ausführen der HBCI-Aufträge {0}", t.toString()));
+        monitor.log(t2.getMessage());
         error = true;
       }
       finally
@@ -618,11 +624,43 @@ public class HBCIFactory {
       return this.interrupted;
     }
   }
+  
+  /**
+   * Laeuft den Stack der Exceptions bis zur urspruenglichen hoch und liefert sie zurueck.
+   * HBCI4Java verpackt Exceptions oft tief ineinander. Sie werden gefangen, in eine
+   * neue gepackt und wieder geworfen. Um nun die eigentliche Fehlermeldung zu kriegen,
+   * suchen wir hier nach der ersten. 
+   * BUGZILLA 249
+   * @param t die Exception.
+   * @return die urspruengliche.
+   */
+  private static Throwable getCause(Throwable t)
+  {
+    Throwable cause = t;
+    
+    for (int i=0;i<20;++i) // maximal 20 Schritte nach oben
+    {
+      Throwable current = cause.getCause();
+
+      if (current == null)
+        break; // Ende, hier kommt nichts mehr
+      
+      if (current == cause) // Wir wiederholen uns
+        break;
+      
+      cause = current;
+    }
+    
+    return cause;
+  }
 }
 
 
 /*******************************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.43  2006/07/13 22:10:23  willuhn
+ * @B bug 249
+ *
  * Revision 1.42  2006/03/16 18:23:36  willuhn
  * @N first code for new synchronize system
  *
