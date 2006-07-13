@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/LineChart.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/12/20 00:03:27 $
+ * $Revision: 1.3 $
+ * $Date: 2006/07/13 23:09:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,6 +49,8 @@ import de.willuhn.logging.Logger;
  */
 public class LineChart extends AbstractChart
 {
+  private boolean curve  = false;
+  private boolean marker = false;
 
   /**
    * ct.
@@ -57,6 +59,25 @@ public class LineChart extends AbstractChart
   public LineChart() throws Exception
   {
     super();
+  }
+  
+  /**
+   * Legt fest, ob die Punkte gerade oder zu einer geschwungenen Linie verbunden werden sollen.
+   * Default: false.
+   * @param curve
+   */
+  public void setCurve(boolean curve)
+  {
+    this.curve = curve;
+  }
+  
+  /**
+   * Legt fest, ob auf der Linie fuer jeden Messwert noch ein kleines Kaestchen eingezeichnet wird.
+   * @param marker true, wenn Kaestchen auf die Linie sollen.
+   */
+  public void setShowMarker(boolean marker)
+  {
+    this.marker = marker;
   }
 
   /**
@@ -140,15 +161,17 @@ public class LineChart extends AbstractChart
       //   CREATE THE CATEGORY BASE SERIES
       Series seCategory = SeriesImpl.create();
       seCategory.setDataSet(categoryValues);
-    
+
+
       //   CREATE THE VALUE ORTHOGONAL SERIES
       LineSeries bs1 = (LineSeries) LineSeriesImpl.create();
       if (label != null) bs1.setSeriesIdentifier(label);
       bs1.setDataSet(orthoValues1);
       bs1.getLabel().setVisible(false);
-      bs1.getMarker().setVisible(false);
+      bs1.getMarker().setVisible(this.marker);
       bs1.getLineAttributes().setColor(ColorDefinitionImpl.BLUE());
-    
+      bs1.setCurve(curve);
+
       //   WRAP THE BASE SERIES IN THE X-AXIS SERIES DEFINITION
       SeriesDefinition sdX = SeriesDefinitionImpl.create();
       sdX.getSeriesPalette().update(0); // SET THE COLORS IN THE PALETTE
@@ -168,6 +191,9 @@ public class LineChart extends AbstractChart
 
 /*********************************************************************
  * $Log: LineChart.java,v $
+ * Revision 1.3  2006/07/13 23:09:36  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2005/12/20 00:03:27  willuhn
  * @N Test-Code fuer Tortendiagramm-Auswertungen
  *
