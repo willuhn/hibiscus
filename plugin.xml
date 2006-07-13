@@ -37,6 +37,7 @@
       </item>
       <item id="hibiscus.navi.reporting"             name="Auswertungen"             icon-close="folder.gif" icon-open="folderopen.gif">
         <item id="hibiscus.navi.reporting.kontoauszug" name="Kontoauszug"         icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.KontoauszugRpt" />
+        <item id="hibiscus.navi.reporting.sparquote"   name="Sparquote"           icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.SparQuote" />
       </item>
     </item>
   </navigation>

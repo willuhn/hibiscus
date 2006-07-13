@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Konto.java,v $
- * $Revision: 1.32 $
- * $Date: 2006/05/14 19:53:23 $
- * $Author: jost $
+ * $Revision: 1.33 $
+ * $Date: 2006/07/13 00:21:15 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -220,6 +220,7 @@ public interface Konto extends DBObject, Checksum
 
 	/**
 	 * Liefert eine Liste aller Umsaetze fuer die letzten x Tage.
+   * Die neuesten zuerst, die aeltesten zuletzt.
 	 * 
 	 * @param days
 	 *          Anzahl der Tage.
@@ -230,11 +231,10 @@ public interface Konto extends DBObject, Checksum
 
 	/**
 	 * Liefert eine Liste aller Umsaetze fuer den vorgegebenen Zeitraum.
+   * Die neuesten zuerst, die aeltesten zuletzt.
 	 * 
-	 * @param start
-	 *          Startdatum
-	 * @param end
-	 *          EndeDatum
+	 * @param start Startdatum
+	 * @param end EndeDatum
 	 * @return Umsatzliste.
 	 * @throws RemoteException
 	 */
@@ -332,6 +332,9 @@ public interface Konto extends DBObject, Checksum
 
 /*******************************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.33  2006/07/13 00:21:15  willuhn
+ * @N Neue Auswertung "Sparquote"
+ *
  * Revision 1.32  2006/05/14 19:53:23  jost
  * Prerelease Kontoauszug-Report
  * Revision 1.31 2006/04/25 23:25:12 willuhn

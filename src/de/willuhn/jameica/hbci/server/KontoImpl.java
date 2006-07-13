@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.68 $
- * $Date: 2006/05/15 12:05:22 $
+ * $Revision: 1.69 $
+ * $Date: 2006/07/13 00:21:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -367,8 +367,8 @@ public class KontoImpl extends AbstractDBObject implements Konto
   {
     DBIterator list = getService().createList(Umsatz.class);
     list.addFilter("konto_id = " + getID());
-    list.addFilter("TONUMBER(valuta) >= " + start.getTime());
-    list.addFilter("TONUMBER(valuta) <= " + end.getTime());
+    if (start != null) list.addFilter("TONUMBER(valuta) >= " + start.getTime());
+    if (end != null) list.addFilter("TONUMBER(valuta) <= " + end.getTime());
     list.setOrder("ORDER BY TONUMBER(valuta), id DESC");
     return list;
   }
@@ -689,6 +689,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*******************************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.69  2006/07/13 00:21:15  willuhn
+ * @N Neue Auswertung "Sparquote"
+ *
  * Revision 1.68  2006/05/15 12:05:22  willuhn
  * @N FileDialog zur Auswahl von Pfad und Datei beim Speichern
  * @N YesNoDialog falls Datei bereits existiert
