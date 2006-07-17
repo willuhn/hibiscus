@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/TANDialog.java,v $
- * $Revision: 1.11 $
- * $Date: 2006/04/13 10:36:13 $
+ * $Revision: 1.12 $
+ * $Date: 2006/07/17 15:50:49 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -81,11 +81,11 @@ public class TANDialog extends PasswordDialog
 		return true;
 	}
 
-	/**
+  /**
    * BUGZILLA 150
-	 * @see de.willuhn.jameica.gui.dialogs.SimpleDialog#setText(java.lang.String)
-	 */
-	public void setText(String text)
+   * @see PasswordDialog#setText(String)
+   */
+  public void setText(String text)
   {
     ////////////////////////////////////////////////////////////////////////////
     // Bezeichnung des Kontos ermitteln
@@ -137,6 +137,9 @@ public class TANDialog extends PasswordDialog
 
 /**********************************************************************
  * $Log: TANDialog.java,v $
+ * Revision 1.12  2006/07/17 15:50:49  willuhn
+ * @N Sparquote
+ *
  * Revision 1.11  2006/04/13 10:36:13  willuhn
  * @B bug 150
  *

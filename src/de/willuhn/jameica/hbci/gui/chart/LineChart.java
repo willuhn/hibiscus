@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/LineChart.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/07/13 23:09:36 $
+ * $Revision: 1.4 $
+ * $Date: 2006/07/17 15:50:49 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -38,6 +38,7 @@ import org.eclipse.birt.chart.model.layout.Legend;
 import org.eclipse.birt.chart.model.layout.Plot;
 import org.eclipse.birt.chart.model.type.LineSeries;
 import org.eclipse.birt.chart.model.type.impl.LineSeriesImpl;
+import org.eclipse.swt.graphics.Color;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
@@ -49,9 +50,6 @@ import de.willuhn.logging.Logger;
  */
 public class LineChart extends AbstractChart
 {
-  private boolean curve  = false;
-  private boolean marker = false;
-
   /**
    * ct.
    * @throws Exception
@@ -61,25 +59,6 @@ public class LineChart extends AbstractChart
     super();
   }
   
-  /**
-   * Legt fest, ob die Punkte gerade oder zu einer geschwungenen Linie verbunden werden sollen.
-   * Default: false.
-   * @param curve
-   */
-  public void setCurve(boolean curve)
-  {
-    this.curve = curve;
-  }
-  
-  /**
-   * Legt fest, ob auf der Linie fuer jeden Messwert noch ein kleines Kaestchen eingezeichnet wird.
-   * @param marker true, wenn Kaestchen auf die Linie sollen.
-   */
-  public void setShowMarker(boolean marker)
-  {
-    this.marker = marker;
-  }
-
   /**
    * @see de.willuhn.jameica.hbci.gui.chart.AbstractChart#createChart()
    */
@@ -168,9 +147,17 @@ public class LineChart extends AbstractChart
       if (label != null) bs1.setSeriesIdentifier(label);
       bs1.setDataSet(orthoValues1);
       bs1.getLabel().setVisible(false);
-      bs1.getMarker().setVisible(this.marker);
-      bs1.getLineAttributes().setColor(ColorDefinitionImpl.BLUE());
-      bs1.setCurve(curve);
+      bs1.getMarker().setVisible(false);
+      
+      if (cd instanceof LineChartData)
+      {
+        LineChartData lcd = (LineChartData) cd;
+        bs1.getMarker().setVisible(lcd.getShowMarker());
+        Color color = lcd.getColor();
+        if (color != null)
+          bs1.getLineAttributes().setColor(ColorDefinitionImpl.create(color.getRed(),color.getGreen(),color.getBlue()));
+        bs1.setCurve(lcd.getCurve());
+      }
 
       //   WRAP THE BASE SERIES IN THE X-AXIS SERIES DEFINITION
       SeriesDefinition sdX = SeriesDefinitionImpl.create();
@@ -191,6 +178,9 @@ public class LineChart extends AbstractChart
 
 /*********************************************************************
  * $Log: LineChart.java,v $
+ * Revision 1.4  2006/07/17 15:50:49  willuhn
+ * @N Sparquote
+ *
  * Revision 1.3  2006/07/13 23:09:36  willuhn
  * *** empty log message ***
  *

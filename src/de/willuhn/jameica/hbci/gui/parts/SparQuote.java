@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SparQuote.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/07/13 23:28:51 $
+ * $Revision: 1.5 $
+ * $Date: 2006/07/17 15:50:49 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -44,8 +44,8 @@ import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.chart.ChartData;
 import de.willuhn.jameica.hbci.gui.chart.LineChart;
+import de.willuhn.jameica.hbci.gui.chart.LineChartData;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -60,13 +60,14 @@ public class SparQuote implements Part
 {
   private static DateFormat DATEFORMAT = new SimpleDateFormat("MM.yyyy");
   
-  private TablePart table      = null;
-  private LineChart chart      = null;
+  private TablePart table       = null;
+  private LineChart chart       = null;
   
-  private Konto konto          = null;
-  private GenericIterator data = null;
+  private Konto konto           = null;
+  private GenericIterator data  = null;
+  private GenericIterator trend = null;
 
-  private I18N i18n         = null;
+  private I18N i18n             = null;
   
   /**
    * ct.
@@ -81,7 +82,6 @@ public class SparQuote implements Part
    */
   public void paint(Composite parent) throws RemoteException
   {
-
     Container container = new SimpleContainer(parent);
     
     DBIterator konten = Settings.getDBService().createList(Konto.class);
@@ -156,9 +156,8 @@ public class SparQuote implements Part
       TabGroup tab2 = new TabGroup(folder,i18n.tr("Grafische Auswertung"));
 
       this.chart = new LineChart();
-      this.chart.setCurve(true);
-      this.chart.setShowMarker(true);
       this.chart.addData(new ChartDataSparQuote());
+      this.chart.addData(new ChartDataTrend());
       this.chart.setTitle(i18n.tr("Sparquote im zeitlichen Verlauf"));
       this.chart.paint(tab2.getComposite());
     }
@@ -246,11 +245,42 @@ public class SparQuote implements Part
           currentEntry.ausgaben -= betrag;
       }
     }
+    this.data  = PseudoIterator.fromArray((UmsatzEntry[])list.toArray(new UmsatzEntry[list.size()]));
     
-    // TODO: Trend ermitteln
+    // Trend ermitteln
     // http://de.wikibooks.org/wiki/Mathematik:_Statistik:_Glättungsverfahren
     // http://de.wikibooks.org/wiki/Mathematik:_Statistik:_Trend_und_Saisonkomponente
-    this.data = PseudoIterator.fromArray((UmsatzEntry[])list.toArray(new UmsatzEntry[list.size()]));
+    
+    ArrayList trendList = new ArrayList();
+    for (int i=0;i<list.size();++i)
+      trendList.add(getDurchschnitt(list,i));
+    this.trend = PseudoIterator.fromArray((UmsatzEntry[])trendList.toArray(new UmsatzEntry[trendList.size()]));
+  }
+  
+  private UmsatzEntry getDurchschnitt(ArrayList list, int pos)
+  {
+    UmsatzEntry ue = new UmsatzEntry();
+    int found = 0;
+    for (int i=-4;i<=4;++i)
+    {
+      try
+      {
+        UmsatzEntry current = (UmsatzEntry)list.get(pos + i);
+        found++;
+        ue.ausgaben  += current.ausgaben;
+        ue.einnahmen += current.einnahmen;
+        if (i == 0)
+          ue.monat = current.monat;
+      }
+      catch (IndexOutOfBoundsException e)
+      {
+        // Ignore
+      }
+    }
+    ue.einnahmen /= found;
+    ue.ausgaben /= found;
+    
+    return ue;
   }
 
   /**
@@ -319,7 +349,7 @@ public class SparQuote implements Part
   /**
    * Implementierung eines Datensatzes fuer die Darstellung der Sparquote.
    */
-  private class ChartDataSparQuote implements ChartData
+  private class ChartDataSparQuote implements LineChartData
   {
 
     private Formatter formatter = null;
@@ -380,6 +410,67 @@ public class SparQuote implements Part
       };
     }
 
+    /**
+     * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#getColor()
+     */
+    public org.eclipse.swt.graphics.Color getColor() throws RemoteException
+    {
+      return Color.LINK.getSWTColor();
+    }
+
+    /**
+     * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#getCurve()
+     */
+    public boolean getCurve()
+    {
+      return true;
+    }
+
+    /**
+     * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#getShowMarker()
+     */
+    public boolean getShowMarker()
+    {
+      return false;
+    }
+  }
+
+  /**
+   * Implementiert die Datenspur fuer den Spar-Trend.
+   */
+  private class ChartDataTrend extends ChartDataSparQuote
+  {
+    /**
+     * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getData()
+     */
+    public GenericIterator getData() throws RemoteException
+    {
+      return trend == null ? PseudoIterator.fromArray(new UmsatzEntry[0]) : trend;
+    }
+
+    /**
+     * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getLabel()
+     */
+    public String getLabel() throws RemoteException
+    {
+      return i18n.tr("Durchschnitt");
+    }
+
+    /**
+     * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#getColor()
+     */
+    public org.eclipse.swt.graphics.Color getColor() throws RemoteException
+    {
+      return Color.ERROR.getSWTColor();
+    }
+
+    /**
+     * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#getShowMarker()
+     */
+    public boolean getShowMarker()
+    {
+      return false;
+    }
   }
 
 }
@@ -387,6 +478,9 @@ public class SparQuote implements Part
 
 /*********************************************************************
  * $Log: SparQuote.java,v $
+ * Revision 1.5  2006/07/17 15:50:49  willuhn
+ * @N Sparquote
+ *
  * Revision 1.4  2006/07/13 23:28:51  willuhn
  * *** empty log message ***
  *
