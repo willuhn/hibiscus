@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/LineChart.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/07/17 15:50:49 $
+ * $Revision: 1.5 $
+ * $Date: 2006/08/01 21:29:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,6 +21,7 @@ import org.eclipse.birt.chart.model.ChartWithAxes;
 import org.eclipse.birt.chart.model.attribute.Anchor;
 import org.eclipse.birt.chart.model.attribute.AxisType;
 import org.eclipse.birt.chart.model.attribute.ChartDimension;
+import org.eclipse.birt.chart.model.attribute.ColorDefinition;
 import org.eclipse.birt.chart.model.attribute.IntersectionType;
 import org.eclipse.birt.chart.model.attribute.TickStyle;
 import org.eclipse.birt.chart.model.attribute.impl.ColorDefinitionImpl;
@@ -36,9 +37,9 @@ import org.eclipse.birt.chart.model.data.impl.TextDataSetImpl;
 import org.eclipse.birt.chart.model.impl.ChartWithAxesImpl;
 import org.eclipse.birt.chart.model.layout.Legend;
 import org.eclipse.birt.chart.model.layout.Plot;
-import org.eclipse.birt.chart.model.type.LineSeries;
-import org.eclipse.birt.chart.model.type.impl.LineSeriesImpl;
-import org.eclipse.swt.graphics.Color;
+import org.eclipse.birt.chart.model.type.AreaSeries;
+import org.eclipse.birt.chart.model.type.impl.AreaSeriesImpl;
+import org.eclipse.emf.common.util.EList;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
@@ -141,35 +142,50 @@ public class LineChart extends AbstractChart
       Series seCategory = SeriesImpl.create();
       seCategory.setDataSet(categoryValues);
 
-
       //   CREATE THE VALUE ORTHOGONAL SERIES
-      LineSeries bs1 = (LineSeries) LineSeriesImpl.create();
+      AreaSeries bs1 = (AreaSeries) AreaSeriesImpl.create();
+
+      SeriesDefinition sdX = SeriesDefinitionImpl.create();
+      //sdX.getSeriesPalette().update(1);
+      xAxisPrimary.getSeriesDefinitions().add(sdX);
+      sdX.getSeries().add(seCategory);
+    
+      SeriesDefinition sdY = SeriesDefinitionImpl.create();
+      yAxisPrimary.getSeriesDefinitions().add(sdY);
+      sdY.getSeriesPalette().update(1);
+
       if (label != null) bs1.setSeriesIdentifier(label);
       bs1.setDataSet(orthoValues1);
       bs1.getLabel().setVisible(false);
       bs1.getMarker().setVisible(false);
       
+      // Einfaerben der Linie etwas dunkler als die Palette
+      EList colors = sdY.getSeriesPalette().getEntries();
+      ColorDefinition bg = (ColorDefinition) colors.get(i);
+      int r = bg.getRed() - 70;
+      int g = bg.getGreen() - 70;
+      int b = bg.getBlue() - 70;
+      if (r < 0) r = 0;
+      if (g < 0) g = 0;
+      if (b < 0) b = 0;
+
+      // Merkwuerdig. Wenn ich das nicht mache (obwohl ich mir
+      // die Farbe ja erst vorher von oben hole. dann malt er
+      // das nicht in diesen schoenen Pastell-Toenen ;)
+      sdY.getSeriesPalette().update(bg);
+
+      bs1.getLineAttributes().setColor(ColorDefinitionImpl.create(r,g,b));
+      bs1.getLineAttributes().setVisible(true);
+
       if (cd instanceof LineChartData)
       {
         LineChartData lcd = (LineChartData) cd;
         bs1.getMarker().setVisible(lcd.getShowMarker());
-        Color color = lcd.getColor();
-        if (color != null)
-          bs1.getLineAttributes().setColor(ColorDefinitionImpl.create(color.getRed(),color.getGreen(),color.getBlue()));
         bs1.setCurve(lcd.getCurve());
       }
 
-      //   WRAP THE BASE SERIES IN THE X-AXIS SERIES DEFINITION
-      SeriesDefinition sdX = SeriesDefinitionImpl.create();
-      sdX.getSeriesPalette().update(0); // SET THE COLORS IN THE PALETTE
-      xAxisPrimary.getSeriesDefinitions().add(sdX);
-      sdX.getSeries().add(seCategory);
-    
-      //   WRAP THE ORTHOGONAL SERIES IN THE X-AXIS SERIES DEFINITION
-      SeriesDefinition sdY = SeriesDefinitionImpl.create();
-      sdY.getSeriesPalette().update(1); // SET THE COLOR IN THE PALETTE
-      yAxisPrimary.getSeriesDefinitions().add(sdY);
       sdY.getSeries().add(bs1);
+
     }
     return chart;
   }
@@ -178,6 +194,9 @@ public class LineChart extends AbstractChart
 
 /*********************************************************************
  * $Log: LineChart.java,v $
+ * Revision 1.5  2006/08/01 21:29:12  willuhn
+ * @N Geaenderte LineCharts
+ *
  * Revision 1.4  2006/07/17 15:50:49  willuhn
  * @N Sparquote
  *

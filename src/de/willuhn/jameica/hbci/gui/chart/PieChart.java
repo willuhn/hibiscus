@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/Attic/PieChart.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/12/30 00:28:14 $
+ * $Revision: 1.5 $
+ * $Date: 2006/08/01 21:29:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -141,7 +141,7 @@ public class PieChart extends AbstractChart
       //Min Slice
       chart.setMinSlice(10);
       chart.setMinSlicePercent(false);
-      chart.setMinSliceLabel("Sonstige");
+      chart.setMinSliceLabel(i18n.tr("Sonstige"));
     }
     return chart;
   }
@@ -150,6 +150,9 @@ public class PieChart extends AbstractChart
 
 /*********************************************************************
  * $Log: PieChart.java,v $
+ * Revision 1.5  2006/08/01 21:29:12  willuhn
+ * @N Geaenderte LineCharts
+ *
  * Revision 1.4  2005/12/30 00:28:14  willuhn
  * @C piechart layout
  *

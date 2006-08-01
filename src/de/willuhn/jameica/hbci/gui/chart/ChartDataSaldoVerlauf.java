@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/ChartDataSaldoVerlauf.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/07/17 15:50:49 $
+ * $Revision: 1.5 $
+ * $Date: 2006/08/01 21:29:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,8 +17,6 @@ import java.rmi.RemoteException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import org.eclipse.swt.graphics.Color;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.rmi.DBIterator;
@@ -124,14 +122,6 @@ public class ChartDataSaldoVerlauf implements LineChartData
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#getColor()
-   */
-  public Color getColor() throws RemoteException
-  {
-    return de.willuhn.jameica.gui.util.Color.LINK.getSWTColor();
-  }
-
-  /**
    * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#getCurve()
    */
   public boolean getCurve()
@@ -152,6 +142,9 @@ public class ChartDataSaldoVerlauf implements LineChartData
 
 /*********************************************************************
  * $Log: ChartDataSaldoVerlauf.java,v $
+ * Revision 1.5  2006/08/01 21:29:12  willuhn
+ * @N Geaenderte LineCharts
+ *
  * Revision 1.4  2006/07/17 15:50:49  willuhn
  * @N Sparquote
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/LineChartData.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/07/17 15:50:49 $
+ * $Revision: 1.2 $
+ * $Date: 2006/08/01 21:29:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,8 +14,6 @@
 package de.willuhn.jameica.hbci.gui.chart;
 
 import java.rmi.RemoteException;
-
-import org.eclipse.swt.graphics.Color;
 
 
 /**
@@ -36,19 +34,14 @@ public interface LineChartData extends ChartData
    * @throws RemoteException
    */
   public boolean getShowMarker() throws RemoteException;
-
-  /**
-   * Liefert die zu verwendende Farbe.
-   * @return die Farbe.
-   * @throws RemoteException
-   */
-  public Color getColor() throws RemoteException;
-  
 }
 
 
 /*********************************************************************
  * $Log: LineChartData.java,v $
+ * Revision 1.2  2006/08/01 21:29:12  willuhn
+ * @N Geaenderte LineCharts
+ *
  * Revision 1.1  2006/07/17 15:50:49  willuhn
  * @N Sparquote
  *
