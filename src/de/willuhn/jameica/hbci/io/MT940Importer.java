@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Attic/MT940Importer.java,v $
- * $Revision: 1.7 $
- * $Date: 2006/06/19 11:52:17 $
+ * $Revision: 1.8 $
+ * $Date: 2006/08/02 17:49:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,8 +17,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.rmi.RemoteException;
+import java.util.Properties;
 
 import org.kapott.hbci.GV_Result.GVRKUms;
+import org.kapott.hbci.manager.HBCIKey;
+import org.kapott.hbci.passport.HBCIPassport;
+import org.kapott.hbci.structures.Konto;
 import org.kapott.hbci.swift.Swift;
 
 import de.willuhn.datasource.GenericObject;
@@ -72,7 +76,7 @@ public class MT940Importer implements Importer
       
       // Wir erzeugen das HBCI4Java-Umsatz-Objekt selbst. Dann muessen wir
       // an der eigentlichen Parser-Routine nichts mehr aendern.
-      GVRKUms umsaetze = new GVRKUms();
+      GVRKUms umsaetze = new MyGVRKUms();
 
       if (monitor != null)
         monitor.setStatusText(i18n.tr("Lese Datei ein"));
@@ -226,10 +230,98 @@ public class MT940Importer implements Importer
     };
     return new IOFormat[] { f };
   }
+  
+  
+  /**
+   * Hilfsklasse um getPassport umzubiegen.
+   * BUGZILLA 255
+   * @author willuhn
+   */
+  private class MyGVRKUms extends GVRKUms
+  {
+    /**
+     * Wir liefern hier einen Dummy-Passport zurueck.
+     * @see org.kapott.hbci.GV_Result.HBCIJobResultImpl#getPassport()
+     */
+    public HBCIPassport getPassport()
+    {
+      return new HBCIPassport()
+      {
+      
+        public void syncSysId() {}
+        public void syncSigId() {}
+        public void setUserId(String userid) {}
+        public void setPort(Integer port) {}
+        public void setHost(String host) {}
+        public void setFilterType(String filter) {}
+        public void setCustomerId(String customerid) {}
+        public void setCountry(String country) {}
+        public void setClientData(String id, Object o) {}
+        public void setBLZ(String blz) {}
+        public void saveChanges() {}
+        public boolean onlyBPDGVs() {return false;}
+        public boolean needUserKeys() {return false;}
+        public boolean needInstKeys() {return false;}
+        public boolean needDigKey() {return false;}
+        public boolean isSupported() {return false;}
+        public boolean hasMySigKey() {return false;}
+        public boolean hasMyEncKey() {return false;}
+        public boolean hasInstSigKey() {return false;}
+        public boolean hasInstEncKey() {return false;}
+        public boolean hasInstDigKey() {return false;}
+        public String getUserId() {return null;}
+        public String getUPDVersion() {return null;}
+        public Properties getUPD() {return null;}
+        public String[] getSuppVersions() {return null;}
+        public String[][] getSuppSecMethods() {return null;}
+        public String[] getSuppLangs() {return null;}
+        public String[][] getSuppCompMethods() {return null;}
+        public Integer getPort() {return null;}
+        public HBCIKey getMyPublicSigKey() {return null;}
+        public HBCIKey getMyPublicEncKey() {return null;}
+        public HBCIKey getMyPublicDigKey() {return null;}
+        public HBCIKey getMyPrivateSigKey() {return null;}
+        public HBCIKey getMyPrivateEncKey() {return null;}
+        public HBCIKey getMyPrivateDigKey() {return null;}
+        public int getMaxMsgSizeKB() {return 0;}
+        public int getMaxGVperMsg() {return 0;}
+        public HBCIKey getInstSigKey() {return null;}
+        public String getInstName() {return null;}
+        public HBCIKey getInstEncKey() {return null;}
+        public String getHost() {return null;}
+        public String getHBCIVersion() {return null;}
+        public String getFilterType() {return null;}
+        public String getDefaultLang() {return null;}
+        public String getCustomerId(int idx) {return null;}
+        public String getCustomerId() {return null;}
+        public String getCountry() {return null;}
+        public Object getClientData(String id) {return null;}
+        public String getBPDVersion() {return null;}
+        public Properties getBPD() {return null;}
+        public String getBLZ() {return null;}
+        public Konto[] getAccounts() {return null;}
+        public Konto getAccount(String number) {return null;}
+        public void fillAccountInfo(Konto account) {}
+        public void close() {}
+        public void clearUPD() {}
+        public void clearInstSigKey() {}
+        public void clearInstEncKey() {}
+        public void clearInstDigKey(){}
+        public void clearBPD(){}
+        public void changePassphrase(){}
+      
+      };
+    }
+    
+  }
 }
 
 /*******************************************************************************
  * $Log: MT940Importer.java,v $
+ * Revision 1.8  2006/08/02 17:49:44  willuhn
+ * @B Bug 255
+ * @N Erkennung des Kontos beim Import von Umsaetzen aus dem Kontextmenu heraus
+ *
  * Revision 1.7  2006/06/19 11:52:17  willuhn
  * @N Update auf hbci4java 2.5.0rc9
  *

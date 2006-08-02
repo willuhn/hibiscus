@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.25 $
- * $Date: 2006/06/19 16:05:13 $
+ * $Revision: 1.26 $
+ * $Date: 2006/08/02 17:49:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -74,7 +74,7 @@ public class UmsatzList extends TablePart
   
   private UmsatzDaysInput days  = null;
 
-  
+  private Konto konto           = null;
   private GenericIterator list  = null;
   private ArrayList umsaetze    = null;
   
@@ -91,6 +91,7 @@ public class UmsatzList extends TablePart
   public UmsatzList(Konto konto, Action action) throws RemoteException
   {
     this(konto,0,action);
+    this.konto = konto;
   }
 
   /**
@@ -151,8 +152,6 @@ public class UmsatzList extends TablePart
     // BUGZILLA 233 http://www.willuhn.de/bugzilla/show_bug.cgi?id=233
     setRememberColWidths(true);
 
-    setContextMenu(new de.willuhn.jameica.hbci.gui.menus.UmsatzList());
-
     // Wir erstellen noch einen Message-Consumer, damit wir ueber neu eintreffende
     // Uebweiseungen informiert werden.
     this.mc = new UmsMessageConsumer();
@@ -173,6 +172,8 @@ public class UmsatzList extends TablePart
    */
   public synchronized void paint(Composite parent) throws RemoteException
   {
+    setContextMenu(new de.willuhn.jameica.hbci.gui.menus.UmsatzList(this.konto));
+
     parent.addDisposeListener(new DisposeListener() {
       public void widgetDisposed(DisposeEvent e)
       {
@@ -582,6 +583,10 @@ public class UmsatzList extends TablePart
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.26  2006/08/02 17:49:44  willuhn
+ * @B Bug 255
+ * @N Erkennung des Kontos beim Import von Umsaetzen aus dem Kontextmenu heraus
+ *
  * Revision 1.25  2006/06/19 16:05:13  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UmsatzList.java,v $
- * $Revision: 1.19 $
- * $Date: 2006/06/08 17:40:59 $
+ * $Revision: 1.20 $
+ * $Date: 2006/08/02 17:49:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,8 +23,10 @@ import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.action.UmsatzExport;
 import de.willuhn.jameica.hbci.gui.action.UmsatzImport;
+import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -36,10 +38,19 @@ public class UmsatzList extends ContextMenu implements Extendable
 
 	private I18N i18n;
 
-	/**
+  /**
+   * Erzeugt ein Kontext-Menu fuer eine Liste von Umsaetzen.
+   */
+  public UmsatzList()
+  {
+    this(null);
+  }
+
+  /**
 	 * Erzeugt ein Kontext-Menu fuer eine Liste von Umsaetzen.
+   * @param konto optionale Angabe des Kontos.
 	 */
-	public UmsatzList()
+	public UmsatzList(final Konto konto)
 	{
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
@@ -51,7 +62,16 @@ public class UmsatzList extends ContextMenu implements Extendable
     addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete()));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new CheckedContextMenuItem(i18n.tr("Umsätze exportieren..."),new UmsatzExport()));
-    addItem(new ContextMenuItem(i18n.tr("Umsätze importieren..."),new UmsatzImport()));
+    addItem(new ContextMenuItem(i18n.tr("Umsätze importieren..."),new UmsatzImport()
+    {
+
+      public void handleAction(Object context) throws ApplicationException
+      {
+        super.handleAction(context == null ? konto : context);
+      }
+      
+    }
+    ));
     // Wir geben das Context-Menu jetzt noch zur Erweiterung frei.
     ExtensionRegistry.extend(this);
 
@@ -89,6 +109,10 @@ public class UmsatzList extends ContextMenu implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.20  2006/08/02 17:49:44  willuhn
+ * @B Bug 255
+ * @N Erkennung des Kontos beim Import von Umsaetzen aus dem Kontextmenu heraus
+ *
  * Revision 1.19  2006/06/08 17:40:59  willuhn
  * @N Vorbereitungen fuer DTAUS-Import von Sammellastschriften und Umsaetzen
  *
