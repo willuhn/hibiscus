@@ -28,7 +28,7 @@ import de.willuhn.util.I18N;
  * Bankleitzahl: 10010010
  * 
  * @author Frank
- * 
+ * FIXME: Nochmal ueberarbeiten und konfigurierbar machen
  */
 public class EbayKontoParser {
 
