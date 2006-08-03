@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.45 $
- * $Date: 2006/07/17 22:01:58 $
+ * $Revision: 1.46 $
+ * $Date: 2006/08/03 15:32:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -207,52 +207,6 @@ public class Settings
   }
   
   /**
-   * Liefert einen ggf gespeicherten Sicherheitsmechanismus fuer das Konto.
-   * @param konto zu testendes Konto.
-   * @return ID des Sicherheitsmechanismus.
-   */
-  public static String getSecMech(Konto konto)
-  {
-    if (konto == null)
-    {
-      Logger.warn("no account given");
-      return null;
-    }
-    try
-    {
-      return settings.getString("secmech.konto." + konto.getID(),null);
-    }
-    catch (RemoteException e)
-    {
-      Logger.error("unable to check secmech for konto",e);
-    }
-    return null;
-  }
-  
-  /**
-   * Speichert einen Sicherheitsmechanismus fuer fuer das Konto.
-   * @param konto zu testendes Konto.
-   * @param s der Sicherheitsmechanismus.
-   */
-  public static void setSecMech(Konto konto, String s)
-  {
-    if (konto == null)
-    {
-      Logger.warn("no account given");
-      return;
-    }
-    try
-    {
-      settings.setAttribute("secmech.konto." + konto.getID(),s);
-    }
-    catch (RemoteException e)
-    {
-      Logger.error("unable to check secmech for konto",e);
-    }
-  }
-  
-
-  /**
    * Prueft, ob die MD5-Checksumme der Datenbank geprueft werden soll.
    * @return true, wenn die Checksumme geprueft werden soll.
    */
@@ -261,24 +215,6 @@ public class Settings
     return settings.getBoolean("checkdatabase",true);
   }
   
-  /**
-   * Prueft, ob die TAN waehrend der Eingabe angezeigt werden soll.
-   * @return true, wenn die TANs angezeigt werden sollen.
-   */
-  public static boolean getShowTan()
-  {
-    return settings.getBoolean("showtan",false);
-  }
-
-  /**
-   * Legt fest, ob die TANs bei der Eingabe angezeigt werden sollen.
-   * @param show true, wenn sie angezeigt werden sollen.
-   */
-  public static void setShowTan(boolean show)
-  {
-    settings.setAttribute("showtan",show);
-  }
-
   /**
    * Prueft, ob Tausender-Punkte bei Betraegen verwendet werden sollen.
    * @return true, wenn Tausender-Punkte verwendet werden sollen.
@@ -402,6 +338,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.46  2006/08/03 15:32:35  willuhn
+ * @N Bug 62
+ *
  * Revision 1.45  2006/07/17 22:01:58  willuhn
  * *** empty log message ***
  *

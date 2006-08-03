@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.44 $
- * $Date: 2005/08/22 10:38:47 $
+ * $Revision: 1.45 $
+ * $Date: 2006/08/03 15:32:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -47,7 +47,6 @@ public class SettingsControl extends AbstractControl {
 	// Eingabe-Felder
 	private CheckboxInput onlineMode     		= null;
 	private CheckboxInput checkPin     			= null;
-  private CheckboxInput showTan           = null;
   private CheckboxInput decimalGrouping   = null;
   private CheckboxInput kontoCheck        = null;
 
@@ -145,18 +144,6 @@ public class SettingsControl extends AbstractControl {
 		return checkPin;
 	}
 
-  /**
-   * Liefert eine Checkbox zur Aktivierung oder Deaktivierung der TAN-Anzeige waehrend der Eingabe.
-   * @return Checkbox.
-   */
-  public CheckboxInput getShowTan()
-  {
-    if (showTan != null)
-      return showTan;
-    showTan = new CheckboxInput(Settings.getShowTan());
-    return showTan;
-  }
-
 	/**
 	 * Eingabe-Feld fuer ein Limit bei Ueberweisungen.
    * @return Eingabe-Feld.
@@ -220,7 +207,6 @@ public class SettingsControl extends AbstractControl {
 
 		Settings.setOnlineMode(((Boolean)getOnlineMode().getValue()).booleanValue());
 		Settings.setCheckPin(((Boolean)getCheckPin().getValue()).booleanValue());
-    Settings.setShowTan(((Boolean)getShowTan().getValue()).booleanValue());
     Settings.setDecimalGrouping(((Boolean)getDecimalGrouping().getValue()).booleanValue());
     Settings.setKontoCheck(((Boolean)getKontoCheck().getValue()).booleanValue());
 		
@@ -262,6 +248,9 @@ public class SettingsControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.45  2006/08/03 15:32:35  willuhn
+ * @N Bug 62
+ *
  * Revision 1.44  2005/08/22 10:38:47  willuhn
  * *** empty log message ***
  *

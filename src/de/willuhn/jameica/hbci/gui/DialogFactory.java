@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/DialogFactory.java,v $
- * $Revision: 1.25 $
- * $Date: 2006/04/03 12:30:18 $
+ * $Revision: 1.26 $
+ * $Date: 2006/08/03 15:32:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,8 +25,6 @@ import de.willuhn.jameica.hbci.gui.dialogs.NewKeysDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.PINDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.PassportLoadDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.PassportSaveDialog;
-import de.willuhn.jameica.hbci.gui.dialogs.PtSecMechDialog;
-import de.willuhn.jameica.hbci.gui.dialogs.TANDialog;
 import de.willuhn.logging.Logger;
 
 /**
@@ -142,49 +140,6 @@ public class DialogFactory {
 	}
 
   /**
-	 * Erzeugt einen TAN-Dialog.
-	 * Hinweis: Wirft eine RuntimeException, wenn der TAN-Dialog abgebrochen wurde.
-	 * Hintergrund: Der Dialog wurde aus dem HBCICallBack heraus aufgerufen und soll im
-	 * Fehlerfall den HBCI-Vorgang abbrechen.
-   * @param text anzuzeigender Text.
-	 * @return die eingegebene TAN.
-   * @throws Exception
-	 */
-	public static synchronized String getTAN(String text) throws Exception
-	{
-		check();
-		dialog = new TANDialog();
-    ((TANDialog)dialog).setText(text);
-		try {
-			return (String) dialog.open();
-		}
-		finally
-		{
-			close();
-		}
-	}
-
-  /**
-   * BUGZILLA 200
-   * Erzeugt einen Dialog zur Abfrage der PIN/TAN-Scurity-Methode.
-   * @param options die zur Verfuegung stehenden Optionen.
-   * @return die ID der Methode.
-   * @throws Exception
-   */
-  public static synchronized String getPtSechMech(String options) throws Exception
-  {
-    check();
-    dialog = new PtSecMechDialog(options);
-    try {
-      return (String) dialog.open();
-    }
-    finally
-    {
-      close();
-    }
-  }
-
-  /**
 	 * Erzeugt einen Dialog zur Eingabe von Account-Daten.
 	 * Hinweis: Wirft eine RuntimeException, wenn der Dialog abgebrochen wurde.
 	 * Hintergrund: Der Dialog wurde aus dem HBCICallBack heraus aufgerufen und soll im
@@ -281,6 +236,9 @@ public class DialogFactory {
 
 /**********************************************************************
  * $Log: DialogFactory.java,v $
+ * Revision 1.26  2006/08/03 15:32:35  willuhn
+ * @N Bug 62
+ *
  * Revision 1.25  2006/04/03 12:30:18  willuhn
  * @N new InternetConnectionDialog
  *

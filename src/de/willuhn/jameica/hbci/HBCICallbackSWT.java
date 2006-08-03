@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.38 $
- * $Date: 2006/07/13 22:10:24 $
+ * $Revision: 1.39 $
+ * $Date: 2006/08/03 15:32:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -29,6 +29,7 @@ import org.kapott.hbci.passport.HBCIPassportRDHNew;
 
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.gui.DialogFactory;
+import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.hbci.rmi.Nachricht;
 import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.security.Wallet;
@@ -104,6 +105,10 @@ public class HBCICallbackSWT extends AbstractHBCICallback
   public void callback(HBCIPassport passport, int reason, String msg, int datatype, StringBuffer retData) {
 
 		try {
+      
+      PassportHandle handle = HBCIFactory.getInstance().getCurrentPassportHandle();
+      if (handle != null)
+        handle.callback(passport,reason,msg,datatype,retData);
 
 			AccountContainer container = (AccountContainer) accountCache.get(passport);
 
@@ -163,23 +168,6 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 					retData.replace(0,retData.length(),pw);
 					break;
 
-				case NEED_CHIPCARD:
-          text = i18n.tr("Bitte legen Sie Ihre HBCI-Chipkarte in das Lesegerät.");
-          HBCIFactory.getInstance().getProgressMonitor().setStatusText(text);
-					GUI.getStatusBar().setSuccessText(text);
-					break;
-
-				case HAVE_CHIPCARD:
-          text = i18n.tr("HBCI-Chipkarte wird ausgelesen.");
-          HBCIFactory.getInstance().getProgressMonitor().setStatusText(text);
-          GUI.getStatusBar().setSuccessText(text);
-					break;
-	
-				case NEED_HARDPIN:
-          text = i18n.tr("Bitte geben Sie die PIN in Ihren Chipkarten-Leser ein.");
-          HBCIFactory.getInstance().getProgressMonitor().setStatusText(text);
-          GUI.getStatusBar().setSuccessText(text);
-					break;
 
 				case NEED_SOFTPIN:
           retData.replace(0,retData.length(),DialogFactory.getPIN(passport));
@@ -187,34 +175,14 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 				case NEED_PT_PIN:
 					retData.replace(0,retData.length(),DialogFactory.getPIN(passport));
 					break;
-				case NEED_PT_TAN:
-					retData.replace(0,retData.length(),DialogFactory.getTAN(msg));
-					break;
-          
-        // BUGZILLA 200
-        case NEED_PT_SECMECH:
 
-          String type = Settings.getSecMech(HBCIFactory.getInstance().getCurrentKonto());
-          if (type != null && type.length() > 0)
-          {
-            retData.replace(0,retData.length(),type);
-            break;
-          }
-          
-          retData.replace(0,retData.length(),DialogFactory.getPtSechMech(retData.toString()));
-          break;
+        // BUGZILLA 62, 200:
+        // Die Callbacks NEED_PT_TAN und NEED_PT_SECHMECH werden hier nicht mehr
+        // behandelt sondern direkt im PassportHandle des PIN/TAN-Passports.
 
-				case HAVE_HARDPIN:
-          text = i18n.tr("PIN wurde eingegeben.");
-          HBCIFactory.getInstance().getProgressMonitor().setStatusText(text);
-          GUI.getStatusBar().setSuccessText(text);
-					break;
-
-				case NEED_REMOVE_CHIPCARD:
-          text = i18n.tr("Bitte entfernen Sie die Chipkarte aus dem Lesegerät.");
-          HBCIFactory.getInstance().getProgressMonitor().setStatusText(text);
-          GUI.getStatusBar().setSuccessText(text);
-					break;
+        // Die folgenden Callbacks werden direkt im Chipcard-PassportHandle
+        // behandelt
+        // NEED_CHIPCARD, HAVE_CHIPCARD, NEED_HARDPIN, HAVE_HARDPIN, NEED_REMOVE_CHIPCARD:
 
 				case NEED_CONNECTION:
 				  DialogFactory.getConnection();
@@ -507,6 +475,9 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.39  2006/08/03 15:32:35  willuhn
+ * @N Bug 62
+ *
  * Revision 1.38  2006/07/13 22:10:24  willuhn
  * @B bug 249
  *
