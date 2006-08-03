@@ -27,7 +27,14 @@
           <li><a href="#errors.os.java">Hibiscus startet überhaupt nicht. Auf der Konsole erscheint evtl. die Fehlermeldung &quot;java: command not found&quot;</a></li>
           <li><a href="#errors.ums.missng">Es werden nicht alle Umsätze abgerufen</a></li>
           <li><a href="#errors.ums.umlaut">Die Verwendungszwecken einiger Umsätze werden nicht vollständig angezeigt</a></li>
-          <li><a href="#errors.ueb.limit.postbank">Überweisungen mit meinem Postbank-Konto schlagen fehl</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#bank">Tipps zu speziellen Banken</a>
+        <ul>
+          <li><a href="#bank.postbank.ueb.limit">Postbank: Überweisungen schlagen fehl</a></li>
+          <li><a href="#bank.cronbank.passport.pintan">Cronbank: Einrichtung von PIN/TAN</a></li>
+          <li><a href="#bank.comdirect.passport.pintan">Comdirect: Einrichtung von PIN/TAN</a></li>
         </ul>
       </li>
     </ol>
@@ -276,11 +283,16 @@ $JAVA_HOME/bin/java -Djava.library.path=lib/swt/linux -jar jameica-linux.jar $@
           <br/>
           <a href="http://sourceforge.net/mailarchive/forum.php?thread_id=6957215&forum_id=32946">http://sourceforge.net/mailarchive/forum.php?thread_id=6957215&forum_id=32946</a>
         </p>
+      </li>
+
+      <li>
+        <a name="bank"></a>
+        <b>Tipps zu speziellen Banken</b>
 
         <p>
           <br/>
-          <a name="errors.ueb.limit.postbank"></a>
-          <b>Überweisungen mit meinem Postbank-Konto schlagen fehl</b>
+          <a name="bank.postbank.ueb.limit"></a>
+          <b>Postbank: Überweisungen schlagen fehl</b>
           <br/><br/>
           Falls Überweisungen mit einem HBCI-Account bei der Postbank fehlschlagen, kann das auch an einem
           zu niedrigen Überweisungslimit seitens der Postbank liegen.
@@ -292,7 +304,75 @@ $JAVA_HOME/bin/java -Djava.library.path=lib/swt/linux -jar jameica-linux.jar $@
           <br/>
           <a href="http://www.postbank.de/pbde_pk_home/pbde_pk_produkteundpreise/pbde_pk_hilfe/pbde_pk_hilfe_faq_verteiler/pbde_pk_faq_online-banking/pbde_ge_faq_online_banking_43.html">http://www.postbank.de/</a>
         </p>
+
+        <p>
+          <br/>
+          <a name="bank.cronbank.passport.pintan"></a>
+          <b>Cronbank: Einrichtung von PIN/TAN</b>
+          <br/><br/>
+          (Anmerkung: Dies könnte auch mit Volksbank/Raiffeisenbank (VR Bank) gehen, der Privatkey
+          bei der Cronbank heißt VRNetKey bei den VR Banken; die URL zum Onlinebanking hält Ihre VR
+          Bank auf deren Homepage bereit)<br/><br/>
+
+          Die Nutzung von Hibiscus mit der Cronbank im PIN/TAN Verfahren ist recht einfach, das
+          Sicherheitsmedium PIN/Tan wird folgendermaßen konfiguriert:
+
+          <table class="data">
+            <tr>
+              <td>Bezeichnung</td><td>(optional)</td>
+            </tr>
+            <tr>
+              <td>Bankleitzahl</td><td>(entnehmen Sie Ihren Bankunterlagen)</td>
+            </tr>
+            <tr>
+              <td>Benutzerkennung</td><td>Ihr Privatkey</td>
+            </tr>
+            <tr>
+              <td>Kundenkennung</td><td>(leer lassen, wir bei der 1. Transaktion automatisch ermittelt)</td>
+            </tr>
+            <tr>
+              <td>URL der Bank</td><td>(entnehmen Sie Ihren Homebanking-Unterlagen, ohne https:// eingeben)</td>
+            </tr>
+            <tr>
+              <td>TCP-Port des Bank-Servers</td><td>443</td>
+            </tr>
+            <tr>
+              <td>Filter für Übertragung</td><td>Base64</td>
+            </tr>
+            <tr>
+              <td>HBCI-Version</td><td>HBCI+</td>
+            </tr>
+          </table>
+
+          Bevor HBCI genutzt werden kann muss allerdings einmal bei der Cronbank im Webinterface die PIN
+          geändert werden. Wenn die Fehlermeldung bei "Saldo und Umsätze abrufen" in Hibiscus lautet
+          "HKSAL 004 nicht erlaubt. Nur PIN-Aendern" ist dies der Fall. Besuchen Sie die Seite der
+          <a href="http://www.cronbank.de/" target="_new">Cronbank</a> und loggen Sie sich im
+          Onlinebanking ein. Ändern Sie nun ihre PIN. Mit der neuen PIN ist Hibiscus jetzt ohne
+          Fehlermeldung nutzbar. Falls Sie vorher schon mit der alten PIN probiert haben, deaktivieren
+          Sie über das Menü <span class="klickpath">Plugins&raquo;Hibiscus&raquo;Einstellungen</span> die Checkbox "PIN-Eingabe via Check-Summe prüfen".
+          Nun dürfte auch Ihre neue PIN als gültig erkannt werden und Sie sollten imstande sein, Saldo
+          und Umsätze abzurufen.
+          <br/>
+          (Danke an Tom Klingenberg für den Tipp)
+        </p>
+
+        <p>
+          <br/>
+          <a name="bank.comdirect.passport.pintan"></a>
+          <b>ComDirect: Einrichtung von PIN/TAN</b>
+          <br/><br/>
+          PIN/TAN-Sicherheitsmedium wie gehabt anlegen. Als HBCI-Version "HBCI+" verwenden.
+          Das Testen des Sicherheitsmedium über den Button "Sicherheitsmedium testen"
+          überspringen - es schlägt fehl. Anschließend das Konto manuell anlegen.
+          Der Kontonummer müssen hierbei zwei Nullen (00) angehängt werden.
+          Konto nun mit dem Sicherheitsmedium PIN/TAN verbinden.
+          <br/>
+          (Danke an Dominik Bruhn für den Tipp)
+        </p>
+
       </li>
+    </ol>
 
 
     <!--
@@ -309,13 +389,10 @@ $JAVA_HOME/bin/java -Djava.library.path=lib/swt/linux -jar jameica-linux.jar $@
         </p>
 
       </li>
-
-
-    </ol>
     //-->
 
     <hr/>
-    $Revision: 1.9 $
+    $Revision: 1.10 $
 
   </body>
 </html>
