@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailControl.java,v $
- * $Revision: 1.23 $
- * $Date: 2005/06/30 21:48:56 $
- * $Author: web0 $
+ * $Revision: 1.24 $
+ * $Date: 2006/08/03 23:12:57 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -22,12 +22,15 @@ import org.kapott.hbci.manager.HBCIUtils;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.TextAreaInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.gui.dialogs.AdresseAuswahlDialog;
+import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
@@ -133,7 +136,9 @@ public class UmsatzDetailControl extends AbstractControl {
     String name = getUmsatz().getEmpfaengerName();
     if (name == null || name.length() == 0 || getUmsatz().hasChangedByUser())
     {
-      empfaengerName = new TextInput(name,HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
+      AdresseAuswahlDialog d = new AdresseAuswahlDialog(AdresseAuswahlDialog.POSITION_MOUSE);
+      d.addCloseListener(new EmpfaengerListener());
+      empfaengerName = new DialogInput(name,d);
       changeEN = true;
     }
     else
@@ -154,7 +159,7 @@ public class UmsatzDetailControl extends AbstractControl {
     if (empfaengerKonto != null)
       return empfaengerKonto;
 
-    String konto = getUmsatz().getEmpfaengerKonto(); 
+    String konto =getUmsatz().getEmpfaengerKonto(); 
     if (konto == null || konto.length() == 0 || getUmsatz().hasChangedByUser())
     {
       empfaengerKonto = new TextInput(konto,15);
@@ -343,7 +348,7 @@ public class UmsatzDetailControl extends AbstractControl {
       // Und jetzt kommen noch die Felder, die evtl. bearbeitet werden duerfen.
       if (changeEB) u.setEmpfaengerBLZ((String) getEmpfaengerBLZ().getValue());
       if (changeEK) u.setEmpfaengerKonto((String) getEmpfaengerKonto().getValue());
-      if (changeEN) u.setEmpfaengerName((String) getEmpfaengerName().getValue());
+      if (changeEN) u.setEmpfaengerName(((DialogInput)getEmpfaengerName()).getText());
       if (changeZ1) u.setZweck((String) getZweck().getValue());
       
       if (b)
@@ -393,11 +398,50 @@ public class UmsatzDetailControl extends AbstractControl {
     }
   }
 
+  /**
+   * BUGZILLA 132
+   * Listener, der bei Auswahl des Empfaengers die restlichen Daten vervollstaendigt.
+   */
+  private class EmpfaengerListener implements Listener
+  {
+
+    /**
+     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+     */
+    public void handleEvent(Event event) {
+      if (event == null)
+        return;
+      Adresse empfaenger = (Adresse) event.data;
+      if (empfaenger == null)
+        return;
+      try {
+        if (changeEN) ((DialogInput)getEmpfaengerName()).setText(empfaenger.getName());
+        if (changeEK) getEmpfaengerKonto().setValue(empfaenger.getKontonummer());
+        if (changeEB)
+        {
+          String blz = empfaenger.getBLZ();
+          getEmpfaengerBLZ().setValue(blz);
+          String name = HBCIUtils.getNameForBLZ(blz);
+          getEmpfaengerBLZ().setComment(name);
+        }
+
+      }
+      catch (RemoteException er)
+      {
+        Logger.error("error while choosing empfaenger",er);
+        GUI.getStatusBar().setErrorText(i18n.tr("Fehler bei der Auswahl des Empfängers"));
+      }
+    }
+  }
+  
 }
 
 
 /**********************************************************************
  * $Log: UmsatzDetailControl.java,v $
+ * Revision 1.24  2006/08/03 23:12:57  willuhn
+ * @N Bug 132
+ *
  * Revision 1.23  2005/06/30 21:48:56  web0
  * @B bug 75
  *
