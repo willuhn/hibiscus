@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/Attic/PieChart.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/08/01 21:29:12 $
+ * $Revision: 1.6 $
+ * $Date: 2006/08/05 22:00:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -131,7 +131,7 @@ public class PieChart extends AbstractChart
       sePie.setDataSet(NumberDataSetImpl.create(dataLine));
       sePie.setLabelPosition(Position.INSIDE_LITERAL);
       sePie.setSeriesIdentifier(getTitle());
-      sePie.setExplosion(0);
+//      sePie.setExplosion(10);
 //      sePie.setExplosionExpression("orthogonalValue<20 || orthogonalValue>50");
       
       SeriesDefinition sdValues = SeriesDefinitionImpl.create();
@@ -150,6 +150,9 @@ public class PieChart extends AbstractChart
 
 /*********************************************************************
  * $Log: PieChart.java,v $
+ * Revision 1.6  2006/08/05 22:00:51  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2006/08/01 21:29:12  willuhn
  * @N Geaenderte LineCharts
  *

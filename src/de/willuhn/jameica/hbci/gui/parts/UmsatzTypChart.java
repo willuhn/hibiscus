@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTypChart.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/04/03 21:39:07 $
+ * $Revision: 1.2 $
+ * $Date: 2006/08/05 22:00:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -120,12 +120,8 @@ public class UmsatzTypChart implements Part
 
 
       group.addLabelPair(i18n.tr("Anzahl der anzuzeigenden Tage"),i);
-//      Label l = GUI.getStyleFactory().createLabel(parent,SWT.NONE);
-//      l.setBackground(Color.BACKGROUND.getSWTColor());
-//      l.setText(i18n.tr("Anzahl der anzuzeigenden Tage"));
-//      i.paint(parent);
       
-      Composite comp = new Composite(group.getComposite(),SWT.NONE);
+      final Composite comp = new Composite(group.getComposite(),SWT.NONE);
       GridData gridData = new GridData(GridData.FILL_BOTH);
       gridData.horizontalSpan = 2;
       comp.setLayoutData(gridData);
@@ -157,6 +153,9 @@ public class UmsatzTypChart implements Part
 
 /*********************************************************************
  * $Log: UmsatzTypChart.java,v $
+ * Revision 1.2  2006/08/05 22:00:51  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2006/04/03 21:39:07  willuhn
  * @N UmsatzChart
  *
