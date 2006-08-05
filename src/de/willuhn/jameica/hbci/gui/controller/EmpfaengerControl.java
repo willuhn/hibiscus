@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EmpfaengerControl.java,v $
- * $Revision: 1.36 $
- * $Date: 2005/10/03 16:17:57 $
+ * $Revision: 1.37 $
+ * $Date: 2006/08/05 20:44:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -54,9 +54,9 @@ public class EmpfaengerControl extends AbstractControl {
   private Input kommentar   = null;
 
   private Part list         = null;
-  private Part umsatzList   = null;
   private Part sammelList   = null;
   private Part sammelList2  = null;
+  private UmsatzList umsatzList   = null;
 
 	private I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
@@ -111,6 +111,7 @@ public class EmpfaengerControl extends AbstractControl {
       return this.umsatzList;
 
     this.umsatzList = new UmsatzList(getEmpfaenger().getUmsaetze(),new UmsatzDetail());
+    this.umsatzList.setFilterVisible(false);
     return this.umsatzList;
   }
 
@@ -258,6 +259,9 @@ public class EmpfaengerControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: EmpfaengerControl.java,v $
+ * Revision 1.37  2006/08/05 20:44:39  willuhn
+ * @B Bug 256
+ *
  * Revision 1.36  2005/10/03 16:17:57  willuhn
  * *** empty log message ***
  *

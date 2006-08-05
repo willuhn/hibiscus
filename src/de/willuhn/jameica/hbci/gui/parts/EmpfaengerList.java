@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/EmpfaengerList.java,v $
- * $Revision: 1.8 $
- * $Date: 2006/05/11 16:53:09 $
+ * $Revision: 1.9 $
+ * $Date: 2006/08/05 20:44:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -69,6 +69,7 @@ public class EmpfaengerList extends TablePart implements Part
     
     this.setMulti(true);
     this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+    addColumn(i18n.tr("Name"),"name");
     addColumn(i18n.tr("Kontonummer"),"kontonummer");
     addColumn(i18n.tr("Bankleitzahl"),"blz", new Formatter() {
       public String format(Object o)
@@ -90,7 +91,6 @@ public class EmpfaengerList extends TablePart implements Part
         }
       }
     });
-    addColumn(i18n.tr("Name"),"name");
     addColumn(i18n.tr("Kommentar"),"kommentar",new Formatter() {
       public String format(Object o)
       {
@@ -248,6 +248,9 @@ public class EmpfaengerList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: EmpfaengerList.java,v $
+ * Revision 1.9  2006/08/05 20:44:39  willuhn
+ * @B Bug 256
+ *
  * Revision 1.8  2006/05/11 16:53:09  willuhn
  * @B bug 233
  *
