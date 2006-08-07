@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractSammelTransferList.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/09/30 00:08:50 $
+ * $Revision: 1.2 $
+ * $Date: 2006/08/07 14:31:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,10 +16,15 @@ package de.willuhn.jameica.hbci.gui.parts;
 import java.rmi.RemoteException;
 import java.util.Date;
 
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TableItem;
 
 import de.willuhn.datasource.GenericIterator;
+import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.gui.Action;
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
@@ -29,8 +34,13 @@ import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.io.ImportMessage;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
+import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
+import de.willuhn.jameica.messaging.Message;
+import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
 /**
@@ -38,6 +48,7 @@ import de.willuhn.util.I18N;
  */
 public abstract class AbstractSammelTransferList extends TablePart implements Part
 {
+  private MessageConsumer mc = null;
   private I18N i18n = null;
 
   /**
@@ -79,12 +90,97 @@ public abstract class AbstractSammelTransferList extends TablePart implements Pa
         return ""+o;
       }
     });
+    // Wir erstellen noch einen Message-Consumer, damit wir ueber neu eintreffende
+    // Lastschriften informiert werden.
+    this.mc = new MyMessageConsumer();
+    Application.getMessagingFactory().registerMessageConsumer(this.mc);
   }
+  
+  /**
+   * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
+   */
+  public synchronized void paint(Composite parent) throws RemoteException
+  {
+    parent.addDisposeListener(new DisposeListener() {
+      public void widgetDisposed(DisposeEvent e)
+      {
+        Application.getMessagingFactory().unRegisterMessageConsumer(mc);
+      }
+    });
+    super.paint(parent);
+  }
+  
+  /**
+   * Hilfsklasse damit wir ueber importierte Lastschriften informiert werden.
+   */
+  public class MyMessageConsumer implements MessageConsumer
+  {
+    /**
+     * ct.
+     */
+    public MyMessageConsumer()
+    {
+      super();
+    }
+
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
+     */
+    public Class[] getExpectedMessageTypes()
+    {
+      return new Class[]{ImportMessage.class};
+    }
+
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
+     */
+    public void handleMessage(Message message) throws Exception
+    {
+      if (message == null || !(message instanceof ImportMessage))
+        return;
+      final GenericObject o = ((ImportMessage)message).getImportedObject();
+      
+      if (o == null || !(o instanceof SammelTransferBuchung))
+        return;
+      
+      GUI.getDisplay().syncExec(new Runnable() {
+        public void run()
+        {
+          try
+          {
+            SammelTransferBuchung b = (SammelTransferBuchung) o;
+            SammelTransfer transfer = b.getSammelTransfer();
+            if (transfer == null)
+              return;
+            removeItem(transfer);
+            addItem(transfer);
+          }
+          catch (Exception e)
+          {
+            Logger.error("unable to add object to list",e);
+          }
+        }
+      });
+    }
+
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
+     */
+    public boolean autoRegister()
+    {
+      return false;
+    }
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: AbstractSammelTransferList.java,v $
+ * Revision 1.2  2006/08/07 14:31:59  willuhn
+ * @B misc bugfixing
+ * @C Redesign des DTAUS-Imports fuer Sammeltransfers
+ *
  * Revision 1.1  2005/09/30 00:08:50  willuhn
  * @N SammelUeberweisungen (merged with SammelLastschrift)
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/AbstractDTAUSImporter.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/06/19 12:57:31 $
+ * $Revision: 1.4 $
+ * $Date: 2006/08/07 14:31:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -102,10 +102,8 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
             final DBObject skel = service.createObject(((MyIOFormat)format).type,null);
             
             // Mit Daten befuellen lassen
-            fill(skel,context,c,a);
+            create(skel,context,c,a);
 
-            // Und speichern
-            skel.store();
             success++;
 
             // Jetzt noch ggf. andere ueber das neue Objekt informieren
@@ -177,6 +175,7 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
 
   /**
    * Muss von den abgeleiteten Klassen implementiert werden, damit sie dort das Hibiscus-Fachobjekt befuellen
+   * und speichern.
    * @param skel das schon vorbereitete Hibiscus-Fachobjekt.
    * @param context der Kontext. Kann zB ein Konto sein.
    * @param csatz der C-Satz mit den auszulesenden Daten.
@@ -184,7 +183,7 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
    * @throws RemoteException
    * @throws ApplicationException
    */
-  abstract void fill(DBObject skel, GenericObject context, CSatz csatz, ASatz asatz)
+  abstract void create(DBObject skel, GenericObject context, CSatz csatz, ASatz asatz)
     throws RemoteException, ApplicationException;
 
 }
@@ -192,6 +191,10 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
 
 /*********************************************************************
  * $Log: AbstractDTAUSImporter.java,v $
+ * Revision 1.4  2006/08/07 14:31:59  willuhn
+ * @B misc bugfixing
+ * @C Redesign des DTAUS-Imports fuer Sammeltransfers
+ *
  * Revision 1.3  2006/06/19 12:57:31  willuhn
  * @N DTAUS-Import fuer Umsaetze
  * @B Formatierungsfehler in Umsatzliste

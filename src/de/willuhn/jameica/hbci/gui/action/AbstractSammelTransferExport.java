@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/Attic/AbstractSammelTransferBuchungExport.java,v $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/AbstractSammelTransferExport.java,v $
  * $Revision: 1.1 $
- * $Date: 2005/09/30 00:08:50 $
+ * $Date: 2006/08/07 14:31:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,48 +25,30 @@ import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Abstrakte Basis-Action, ueber die die Buchungen eines Sammel-Auftrages exportiert werden koennen.
+ * Abstrakte Basis-Action, ueber die Sammel-Auftraege exportiert werden koennen.
  */
-public abstract class AbstractSammelTransferBuchungExport implements Action
+public abstract class AbstractSammelTransferExport implements Action
 {
 
   /**
-   * Erwartet ein Objekt vom Typ <code>SammelTransferBuchung</code>, <code>SammelTransferBuchung[]</code>
-   * oder <code>SammelTransfer</code>. In letzterem Fall werden alle in diesem Auftrag
-   * enthaltenen Buchungen exportiert.
+   * Erwartet ein Objekt vom Typ <code>SammelTransfer</code>.
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
   public void handleAction(Object context) throws ApplicationException
   {
 		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-		if (context == null)
-			throw new ApplicationException(i18n.tr("Bitte wählen Sie mindestens eine Buchung aus"));
-
-		if (!(context instanceof SammelTransferBuchung) && !(context instanceof SammelTransferBuchung[]) && !(context instanceof SammelTransfer))
-			throw new ApplicationException(i18n.tr("Bitte wählen Sie einen oder mehrere Buchungen aus"));
+		if (context == null || !(context instanceof SammelTransfer))
+			throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Samml-Auftrag aus"));
 
     SammelTransferBuchung[] u = null;
 		try {
-
-			if (context instanceof SammelTransferBuchung)
-			{
-				u = new SammelTransferBuchung[1];
-        u[0] = (SammelTransferBuchung) context;
-			}
-      else if (context instanceof SammelTransferBuchung[])
+      DBIterator list = ((SammelTransfer) context).getBuchungen();
+      u = new SammelTransferBuchung[list.size()];
+      int i = 0;
+      while (list.hasNext())
       {
-        u = (SammelTransferBuchung[]) context;
-      }
-      else if (context instanceof SammelTransfer)
-      {
-        DBIterator list = ((SammelTransfer) context).getBuchungen();
-        u = new SammelTransferBuchung[list.size()];
-        int i = 0;
-        while (list.hasNext())
-        {
-          u[i++] = (SammelTransferBuchung) list.next();
-        }
+        u[i++] = (SammelTransferBuchung) list.next();
       }
 
       ExportDialog d = new ExportDialog(u, getExportClass());
@@ -94,7 +76,11 @@ public abstract class AbstractSammelTransferBuchungExport implements Action
 
 
 /**********************************************************************
- * $Log: AbstractSammelTransferBuchungExport.java,v $
+ * $Log: AbstractSammelTransferExport.java,v $
+ * Revision 1.1  2006/08/07 14:31:59  willuhn
+ * @B misc bugfixing
+ * @C Redesign des DTAUS-Imports fuer Sammeltransfers
+ *
  * Revision 1.1  2005/09/30 00:08:50  willuhn
  * @N SammelUeberweisungen (merged with SammelLastschrift)
  *

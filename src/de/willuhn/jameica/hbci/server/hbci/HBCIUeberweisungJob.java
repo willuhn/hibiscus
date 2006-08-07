@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUeberweisungJob.java,v $
- * $Revision: 1.31 $
- * $Date: 2006/06/26 13:25:20 $
+ * $Revision: 1.32 $
+ * $Date: 2006/08/07 14:31:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -167,8 +167,9 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
 		}
 
 		// Wir markieren die Ueberweisung als "ausgefuehrt"
+    Logger.info("mark ueberweisung as \"ausgefuehrt\"");
 		ueberweisung.setAusgefuehrt();
-    konto.addToProtokoll(i18n.tr("Überweisung ausgeführt") + " " + empfName,Protokoll.TYP_SUCCESS);
+    konto.addToProtokoll(i18n.tr("Überweisung ausgeführt an: ") + " " + empfName,Protokoll.TYP_SUCCESS);
 		Logger.info("ueberweisung submitted successfully");
   }
 }
@@ -176,6 +177,10 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIUeberweisungJob.java,v $
+ * Revision 1.32  2006/08/07 14:31:59  willuhn
+ * @B misc bugfixing
+ * @C Redesign des DTAUS-Imports fuer Sammeltransfers
+ *
  * Revision 1.31  2006/06/26 13:25:20  willuhn
  * @N Franks eBay-Parser
  *

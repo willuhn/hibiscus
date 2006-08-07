@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/SammelUeberweisungNew.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/06/13 20:09:05 $
+ * $Revision: 1.5 $
+ * $Date: 2006/08/07 14:31:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,7 +20,6 @@ import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.Back;
-import de.willuhn.jameica.hbci.gui.action.SammelTransferBuchungImport;
 import de.willuhn.jameica.hbci.gui.action.SammelTransferDelete;
 import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungBuchungNew;
 import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungExecute;
@@ -60,17 +59,9 @@ public class SammelUeberweisungNew extends AbstractView {
 
 		final SammelUeberweisung l = (SammelUeberweisung) control.getTransfer();
 
-    ButtonArea buttons = new ButtonArea(getParent(),6);
+    ButtonArea buttons = new ButtonArea(getParent(),5);
     buttons.addButton(i18n.tr("Zurück"),new Back());
     buttons.addButton(i18n.tr("Löschen"),new SammelTransferDelete(),control.getTransfer());
-    buttons.addButton(i18n.tr("Buchungen importieren..."), new Action() {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        // Erst speichern
-        if (control.handleStore())
-          new SammelTransferBuchungImport().handleAction(context);
-      }
-    },control.getTransfer());
     buttons.addButton(i18n.tr("Neue Buchungen hinzufügen"), new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -100,6 +91,10 @@ public class SammelUeberweisungNew extends AbstractView {
 
 /**********************************************************************
  * $Log: SammelUeberweisungNew.java,v $
+ * Revision 1.5  2006/08/07 14:31:59  willuhn
+ * @B misc bugfixing
+ * @C Redesign des DTAUS-Imports fuer Sammeltransfers
+ *
  * Revision 1.4  2006/06/13 20:09:05  willuhn
  * @R Text "Bemerkung" entfernt
  *

@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/SammelUeberweisungImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/09/30 00:08:50 $
+ * $Revision: 1.2 $
+ * $Date: 2006/08/07 14:31:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,8 +12,10 @@ package de.willuhn.jameica.hbci.server;
 import java.rmi.RemoteException;
 
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisungBuchung;
+import de.willuhn.util.ApplicationException;
 
 /**
  * Implementierung des Containers fuer Sammellastschrift-Buchungen.
@@ -49,10 +51,26 @@ public class SammelUeberweisungImpl extends AbstractSammelTransferImpl
     list.addFilter("sueberweisung_id = " + this.getID());
     return list;
   }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.SammelTransfer#createBuchung()
+   */
+  public SammelTransferBuchung createBuchung() throws RemoteException, ApplicationException
+  {
+    SammelUeberweisungBuchung b = (SammelUeberweisungBuchung) this.getService().createObject(SammelUeberweisungBuchung.class,null);
+    if (this.isNewObject())
+      store();
+    b.setSammelTransfer(this);
+    return b;
+  }
 }
 
 /*****************************************************************************
  * $Log: SammelUeberweisungImpl.java,v $
+ * Revision 1.2  2006/08/07 14:31:59  willuhn
+ * @B misc bugfixing
+ * @C Redesign des DTAUS-Imports fuer Sammeltransfers
+ *
  * Revision 1.1  2005/09/30 00:08:50  willuhn
  * @N SammelUeberweisungen (merged with SammelLastschrift)
  *

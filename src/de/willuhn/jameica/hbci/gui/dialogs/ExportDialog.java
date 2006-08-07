@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/ExportDialog.java,v $
- * $Revision: 1.8 $
- * $Date: 2006/07/03 23:04:32 $
+ * $Revision: 1.9 $
+ * $Date: 2006/08/07 14:31:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -34,6 +34,7 @@ import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.internal.action.Program;
+import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
@@ -83,25 +84,19 @@ public class ExportDialog extends AbstractDialog
 		LabelGroup group = new LabelGroup(parent,i18n.tr("Auswahl des Export-Filters"));
 		group.addText(i18n.tr("Bitte wählen Sie das gewünschte Dateiformat aus für den Export aus"),true);
 
-		group.addLabelPair(i18n.tr("Verfügbare Formate:"),getExporterList());
+    Input formats = getExporterList();
+		group.addLabelPair(i18n.tr("Verfügbare Formate:"),formats);
 
 		ButtonArea buttons = new ButtonArea(parent,2);
-		buttons.addButton(i18n.tr("Export starten"),new Action()
+		Button button = new Button(i18n.tr("Export starten"),new Action()
 		{
 			public void handleAction(Object context) throws ApplicationException
 			{
-        try
-        {
-          if (getExporterList() instanceof LabelInput)
-            return;
-        }
-        catch (Exception e)
-        {
-          Logger.error("unable to check export format",e);
-        }
 				export();
 			}
 		},null,true);
+    button.setEnabled(!(formats instanceof LabelInput));
+    buttons.addButton(button);
 		buttons.addButton(i18n.tr("Schliessen"), new Action()
 		{
 			public void handleAction(Object context) throws ApplicationException
@@ -353,6 +348,10 @@ public class ExportDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: ExportDialog.java,v $
+ * Revision 1.9  2006/08/07 14:31:59  willuhn
+ * @B misc bugfixing
+ * @C Redesign des DTAUS-Imports fuer Sammeltransfers
+ *
  * Revision 1.8  2006/07/03 23:04:32  willuhn
  * @N PDF-Reportwriter in IO-API gepresst, damit er auch an anderen Stellen (z.Bsp. in der Umsatzliste) mitverwendet werden kann.
  *

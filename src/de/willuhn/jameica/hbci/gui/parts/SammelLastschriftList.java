@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SammelLastschriftList.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/09/30 00:08:50 $
+ * $Revision: 1.6 $
+ * $Date: 2006/08/07 14:31:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,12 +49,15 @@ public class SammelLastschriftList extends AbstractSammelTransferList implements
     list.setOrder("ORDER BY TONUMBER(termin) DESC");
     return list;
   }
-
 }
 
 
 /**********************************************************************
  * $Log: SammelLastschriftList.java,v $
+ * Revision 1.6  2006/08/07 14:31:59  willuhn
+ * @B misc bugfixing
+ * @C Redesign des DTAUS-Imports fuer Sammeltransfers
+ *
  * Revision 1.5  2005/09/30 00:08:50  willuhn
  * @N SammelUeberweisungen (merged with SammelLastschrift)
  *

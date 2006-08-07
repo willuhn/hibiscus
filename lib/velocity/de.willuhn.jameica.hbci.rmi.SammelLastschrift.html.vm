@@ -142,19 +142,19 @@
     }
   </style>
   <body>
-	<h1>Sammel-Überweisung</h1>
+	<h1>Sammellastschrift</h1>
 	
-    #set($ueberweisung = "")
+  #set($lastschrift = "")
 	#foreach($buchung in $objects)
-      #set($ueberweisung = $buchung.SammelTransfer)
+    #set($lastschrift = $buchung.SammelTransfer)
 	#end
 
-	#set($konto = $ueberweisung.Konto)
+	#set($konto = $lastschrift.Konto)
 
 	<h2>Datum: $!{dateformat.format(${datum})}</h2>
-	<h2>Sammel-Überweisung: $!{ueberweisung.Bezeichnung}</h2>
-	<h2>Zu belastendes Konto: $!{konto.Bezeichnung} [Kto $!{konto.Kontonummer}, BLZ $!{konto.BLZ}]</h2>
-	<h2>Summe: $!{decimalformat.format(${ueberweisung.Summe})} $!{konto.Waehrung}</h2>
+	<h2>Lastschrift: $!{lastschrift.Bezeichnung}</h2>
+	<h2>Gutschriftskonto: $!{konto.Bezeichnung} [Kto $!{konto.Kontonummer}, BLZ $!{konto.BLZ}]</h2>
+	<h2>Summe: $!{decimalformat.format(${lastschrift.Summe})} $!{konto.Waehrung}</h2>
 	
 	<br/><br/>
 

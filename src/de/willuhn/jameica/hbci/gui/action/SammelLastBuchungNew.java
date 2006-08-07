@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/SammelLastBuchungNew.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/09/30 00:08:50 $
+ * $Revision: 1.6 $
+ * $Date: 2006/08/07 14:31:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,7 +16,6 @@ import java.rmi.RemoteException;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.SammelLastBuchung;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.util.ApplicationException;
@@ -46,10 +45,7 @@ public class SammelLastBuchungNew implements Action
 		{
 			try {
         SammelLastschrift s = (SammelLastschrift) context;
-				u = (SammelLastBuchung) Settings.getDBService().createObject(SammelLastBuchung.class,null);
-				if (s.isNewObject())
-					s.store();
-				u.setSammelTransfer(s);
+        u = (SammelLastBuchung) s.createBuchung();
 			}
 			catch (RemoteException e)
 			{
@@ -65,6 +61,10 @@ public class SammelLastBuchungNew implements Action
 
 /**********************************************************************
  * $Log: SammelLastBuchungNew.java,v $
+ * Revision 1.6  2006/08/07 14:31:59  willuhn
+ * @B misc bugfixing
+ * @C Redesign des DTAUS-Imports fuer Sammeltransfers
+ *
  * Revision 1.5  2005/09/30 00:08:50  willuhn
  * @N SammelUeberweisungen (merged with SammelLastschrift)
  *

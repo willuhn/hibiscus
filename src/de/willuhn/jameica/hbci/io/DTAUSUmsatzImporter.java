@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/DTAUSUmsatzImporter.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/06/19 12:57:31 $
+ * $Revision: 1.2 $
+ * $Date: 2006/08/07 14:31:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -64,9 +64,9 @@ public class DTAUSUmsatzImporter extends AbstractDTAUSImporter
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.io.AbstractDTAUSImporter#fill(de.willuhn.datasource.rmi.DBObject, de.willuhn.datasource.GenericObject, de.jost_net.OBanToo.Dtaus.CSatz, de.jost_net.OBanToo.Dtaus.ASatz)
+   * @see de.willuhn.jameica.hbci.io.AbstractDTAUSImporter#create(de.willuhn.datasource.rmi.DBObject, de.willuhn.datasource.GenericObject, de.jost_net.OBanToo.Dtaus.CSatz, de.jost_net.OBanToo.Dtaus.ASatz)
    */
-  void fill(DBObject skel, GenericObject context, CSatz csatz, ASatz asatz)
+  void create(DBObject skel, GenericObject context, CSatz csatz, ASatz asatz)
     throws RemoteException, ApplicationException
   {
     Umsatz u = (Umsatz) skel;
@@ -139,6 +139,7 @@ public class DTAUSUmsatzImporter extends AbstractDTAUSImporter
       u.setZweck2(csatz.getVerwendungszweck(2));
 
     u.setChangedByUser();
+    u.store();
   
   }
 
@@ -158,6 +159,10 @@ public class DTAUSUmsatzImporter extends AbstractDTAUSImporter
 
 /*********************************************************************
  * $Log: DTAUSUmsatzImporter.java,v $
+ * Revision 1.2  2006/08/07 14:31:59  willuhn
+ * @B misc bugfixing
+ * @C Redesign des DTAUS-Imports fuer Sammeltransfers
+ *
  * Revision 1.1  2006/06/19 12:57:31  willuhn
  * @N DTAUS-Import fuer Umsaetze
  * @B Formatierungsfehler in Umsatzliste

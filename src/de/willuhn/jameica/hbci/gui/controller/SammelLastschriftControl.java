@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SammelLastschriftControl.java,v $
- * $Revision: 1.12 $
- * $Date: 2006/06/08 22:29:47 $
+ * $Revision: 1.13 $
+ * $Date: 2006/08/07 14:31:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,11 +22,9 @@ import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.action.SammelLastBuchungExport;
 import de.willuhn.jameica.hbci.gui.action.SammelLastBuchungNew;
 import de.willuhn.jameica.hbci.gui.action.SammelLastschriftNew;
 import de.willuhn.jameica.hbci.gui.action.SammelTransferBuchungDelete;
-import de.willuhn.jameica.hbci.gui.action.SammelTransferBuchungImport;
 import de.willuhn.jameica.hbci.gui.parts.SammelTransferBuchungList;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SammelLastBuchung;
@@ -135,41 +133,6 @@ public class SammelLastschriftControl extends AbstractSammelTransferControl
         }
       }
     }));
-    ctx.addItem(ContextMenuItem.SEPARATOR);
-    ctx.addItem(new ContextMenuItem(i18n.tr("Buchungen importieren..."),new Action() {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        if (handleStore())
-        {
-          try
-          {
-            new SammelTransferBuchungImport().handleAction(getTransfer());
-          }
-          catch (RemoteException e)
-          {
-            Logger.error("unable to load sammellastschrift",e);
-            throw new ApplicationException(i18n.tr("Fehler beim Laden der Sammellastschrift"));
-          }
-        }
-      }
-    }));
-    ctx.addItem(new ContextMenuItem(i18n.tr("Buchungen exportieren..."),new Action() {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        try
-        {
-          SammelTransfer transfer = getTransfer();
-          if (transfer == null || transfer.getBuchungen().size() == 0)
-            return;
-          new SammelLastBuchungExport().handleAction(transfer);
-        }
-        catch (RemoteException e)
-        {
-          Logger.error("unable to load sammellastschrift",e);
-          throw new ApplicationException(i18n.tr("Fehler beim Laden der Sammellastschrift"));
-        }
-      }
-    }));
     buchungen.setContextMenu(ctx);
     return buchungen;
   }
@@ -241,6 +204,10 @@ public class SammelLastschriftControl extends AbstractSammelTransferControl
 
 /*****************************************************************************
  * $Log: SammelLastschriftControl.java,v $
+ * Revision 1.13  2006/08/07 14:31:59  willuhn
+ * @B misc bugfixing
+ * @C Redesign des DTAUS-Imports fuer Sammeltransfers
+ *
  * Revision 1.12  2006/06/08 22:29:47  willuhn
  * @N DTAUS-Import fuer Sammel-Lastschriften und Sammel-Ueberweisungen
  * @B Eine Reihe kleinerer Bugfixes in Sammeltransfers

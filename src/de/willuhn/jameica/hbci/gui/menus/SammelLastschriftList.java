@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/SammelLastschriftList.java,v $
- * $Revision: 1.7 $
- * $Date: 2006/03/30 22:56:46 $
+ * $Revision: 1.8 $
+ * $Date: 2006/08/07 14:31:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,8 +20,9 @@ import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.SammelLastBuchungExport;
 import de.willuhn.jameica.hbci.gui.action.SammelLastschriftExecute;
+import de.willuhn.jameica.hbci.gui.action.SammelLastschriftExport;
+import de.willuhn.jameica.hbci.gui.action.SammelLastschriftImport;
 import de.willuhn.jameica.hbci.gui.action.SammelLastschriftNew;
 import de.willuhn.jameica.hbci.gui.action.SammelTransferDelete;
 import de.willuhn.jameica.hbci.gui.action.SammelTransferDuplicate;
@@ -89,7 +90,8 @@ public class SammelLastschriftList extends ContextMenu
       }
     });
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new CheckedContextMenuItem(i18n.tr("Buchungen exportieren..."),new SammelLastBuchungExport()));
+    addItem(new ContextMenuItem(i18n.tr("Importieren..."),new SammelLastschriftImport()));
+    addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new SammelLastschriftExport()));
 		
 	}
 
@@ -149,6 +151,10 @@ public class SammelLastschriftList extends ContextMenu
 
 /**********************************************************************
  * $Log: SammelLastschriftList.java,v $
+ * Revision 1.8  2006/08/07 14:31:59  willuhn
+ * @B misc bugfixing
+ * @C Redesign des DTAUS-Imports fuer Sammeltransfers
+ *
  * Revision 1.7  2006/03/30 22:56:46  willuhn
  * @B bug 216
  *
