@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/SammelLastschriftList.java,v $
- * $Revision: 1.8 $
- * $Date: 2006/08/07 14:31:59 $
+ * $Revision: 1.9 $
+ * $Date: 2006/08/07 14:45:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -51,11 +51,9 @@ public class SammelLastschriftList extends ContextMenu
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 		addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"), new SammelLastschriftNew()));
-    addItem(new ContextMenuItem(i18n.tr("Neue Sammel-Lastschrift..."), new SNeu()));
 		addItem(new NotActiveMenuItem(i18n.tr("Jetzt ausführen..."), new SammelLastschriftExecute()));
     // BUGZILLA 115 http://www.willuhn.de/bugzilla/show_bug.cgi?id=115
     addItem(new CheckedContextMenuItem(i18n.tr("Duplizieren"), new SammelTransferDuplicate()));
-		addItem(ContextMenuItem.SEPARATOR);
 		addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new SammelTransferDelete()));
     addItem(new ContextMenuItem(i18n.tr("Als \"ausgeführt\" markieren..."), new Action() {
       public void handleAction(Object context) throws ApplicationException
@@ -89,6 +87,8 @@ public class SammelLastschriftList extends ContextMenu
         }
       }
     });
+    addItem(ContextMenuItem.SEPARATOR);
+    addItem(new ContextMenuItem(i18n.tr("Neue Sammel-Lastschrift..."), new SNeu()));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new ContextMenuItem(i18n.tr("Importieren..."),new SammelLastschriftImport()));
     addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new SammelLastschriftExport()));
@@ -151,6 +151,9 @@ public class SammelLastschriftList extends ContextMenu
 
 /**********************************************************************
  * $Log: SammelLastschriftList.java,v $
+ * Revision 1.9  2006/08/07 14:45:18  willuhn
+ * @B typos
+ *
  * Revision 1.8  2006/08/07 14:31:59  willuhn
  * @B misc bugfixing
  * @C Redesign des DTAUS-Imports fuer Sammeltransfers

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UeberweisungList.java,v $
- * $Revision: 1.9 $
- * $Date: 2006/06/08 22:29:47 $
+ * $Revision: 1.10 $
+ * $Date: 2006/08/07 14:45:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -47,7 +47,7 @@ public class UeberweisungList extends AbstractView {
 			ButtonArea buttons = new ButtonArea(getParent(),3);
       buttons.addButton(i18n.tr("Zurück"),new Back());
       buttons.addButton(i18n.tr("Importieren..."),new UeberweisungImport());
-			buttons.addButton(i18n.tr("neue Überweisung"),new UeberweisungNew());
+			buttons.addButton(i18n.tr("Neue Überweisung"),new UeberweisungNew());
 
 
 		}
@@ -62,6 +62,9 @@ public class UeberweisungList extends AbstractView {
 
 /**********************************************************************
  * $Log: UeberweisungList.java,v $
+ * Revision 1.10  2006/08/07 14:45:18  willuhn
+ * @B typos
+ *
  * Revision 1.9  2006/06/08 22:29:47  willuhn
  * @N DTAUS-Import fuer Sammel-Lastschriften und Sammel-Ueberweisungen
  * @B Eine Reihe kleinerer Bugfixes in Sammeltransfers

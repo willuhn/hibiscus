@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UeberweisungList.java,v $
- * $Revision: 1.12 $
- * $Date: 2006/06/08 17:40:59 $
+ * $Revision: 1.13 $
+ * $Date: 2006/08/07 14:45:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -52,7 +52,6 @@ public class UeberweisungList extends ContextMenu
 		addItem(new SingleItem(i18n.tr("Öffnen"), new UeberweisungNew()));
 		addItem(new NotActiveMenuItem(i18n.tr("Jetzt ausführen..."), new UeberweisungExecute()));
 		addItem(new SingleItem(i18n.tr("Duplizieren"), new UeberweisungDuplicate()));
-		addItem(ContextMenuItem.SEPARATOR);
 		addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete()));
     addItem(new SingleItem(i18n.tr("Als \"ausgeführt\" markieren..."), new Action() {
       public void handleAction(Object context) throws ApplicationException
@@ -86,9 +85,10 @@ public class UeberweisungList extends ContextMenu
         }
       }
     });
-    addItem(new ContextMenuItem(i18n.tr("Überweisungen importieren..."),new UeberweisungImport()));
-		addItem(ContextMenuItem.SEPARATOR);
-		addItem(new ContextMenuItem(i18n.tr("Neue Überweisung..."), new UNeu()));
+    addItem(ContextMenuItem.SEPARATOR);
+    addItem(new ContextMenuItem(i18n.tr("Neue Überweisung..."), new UNeu()));
+    addItem(ContextMenuItem.SEPARATOR);
+    addItem(new ContextMenuItem(i18n.tr("Importieren..."),new UeberweisungImport()));
 		
 	}
 
@@ -174,6 +174,9 @@ public class UeberweisungList extends ContextMenu
 
 /**********************************************************************
  * $Log: UeberweisungList.java,v $
+ * Revision 1.13  2006/08/07 14:45:18  willuhn
+ * @B typos
+ *
  * Revision 1.12  2006/06/08 17:40:59  willuhn
  * @N Vorbereitungen fuer DTAUS-Import von Sammellastschriften und Umsaetzen
  *

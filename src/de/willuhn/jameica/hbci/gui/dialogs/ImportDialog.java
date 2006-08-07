@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/ImportDialog.java,v $
- * $Revision: 1.8 $
- * $Date: 2006/06/08 22:29:47 $
+ * $Revision: 1.9 $
+ * $Date: 2006/08/07 14:45:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,6 +31,7 @@ import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
+import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
@@ -80,10 +81,11 @@ public class ImportDialog extends AbstractDialog
 		LabelGroup group = new LabelGroup(parent,i18n.tr("Auswahl des Import-Filters"));
 		group.addText(i18n.tr("Bitte wählen Sie das gewünschte Dateiformat für den Import aus"),true);
 
-		group.addLabelPair(i18n.tr("Verfügbare Formate:"),getImporterList());
+    Input formats = getImporterList();
+		group.addLabelPair(i18n.tr("Verfügbare Formate:"),formats);
 
 		ButtonArea buttons = new ButtonArea(parent,2);
-		buttons.addButton(i18n.tr("Import starten"),new Action()
+		Button button = new Button(i18n.tr("Import starten"),new Action()
 		{
 			public void handleAction(Object context) throws ApplicationException
 			{
@@ -99,6 +101,8 @@ public class ImportDialog extends AbstractDialog
 				doImport();
 			}
 		},null,true);
+    button.setEnabled(!(formats instanceof LabelInput));
+    buttons.addButton(button);
 		buttons.addButton(i18n.tr("Abbrechen"), new Action()
 		{
 			public void handleAction(Object context) throws ApplicationException
@@ -316,6 +320,9 @@ public class ImportDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: ImportDialog.java,v $
+ * Revision 1.9  2006/08/07 14:45:18  willuhn
+ * @B typos
+ *
  * Revision 1.8  2006/06/08 22:29:47  willuhn
  * @N DTAUS-Import fuer Sammel-Lastschriften und Sammel-Ueberweisungen
  * @B Eine Reihe kleinerer Bugfixes in Sammeltransfers

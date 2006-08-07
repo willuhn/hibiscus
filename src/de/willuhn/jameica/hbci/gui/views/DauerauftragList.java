@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/DauerauftragList.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/01/18 00:51:00 $
+ * $Revision: 1.5 $
+ * $Date: 2006/08/07 14:45:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -47,7 +47,7 @@ public class DauerauftragList extends AbstractView {
 			ButtonArea buttons = new ButtonArea(getParent(),3);
       buttons.addButton(i18n.tr("Zurück"),new Back());
 			buttons.addButton(i18n.tr("Existierende Daueraufträge abrufen"), 	new KontoFetchDauerauftraege());
-			buttons.addButton(i18n.tr("neuer Dauerauftrag"),									new DauerauftragNew(),null,true);
+			buttons.addButton(i18n.tr("Neuer Dauerauftrag"),									new DauerauftragNew(),null,true);
 
 		}
 		catch (Exception e)
@@ -61,6 +61,9 @@ public class DauerauftragList extends AbstractView {
 
 /**********************************************************************
  * $Log: DauerauftragList.java,v $
+ * Revision 1.5  2006/08/07 14:45:18  willuhn
+ * @B typos
+ *
  * Revision 1.4  2006/01/18 00:51:00  willuhn
  * @B bug 65
  *
