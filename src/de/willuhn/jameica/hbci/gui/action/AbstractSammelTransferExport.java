@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/AbstractSammelTransferExport.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/08/07 14:31:59 $
+ * $Revision: 1.2 $
+ * $Date: 2006/08/07 21:51:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,13 +12,11 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.action;
 
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.dialogs.ExportDialog;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
-import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -39,19 +37,11 @@ public abstract class AbstractSammelTransferExport implements Action
 		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 		if (context == null || !(context instanceof SammelTransfer))
-			throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Samml-Auftrag aus"));
+			throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Sammel-Auftrag aus"));
 
-    SammelTransferBuchung[] u = null;
-		try {
-      DBIterator list = ((SammelTransfer) context).getBuchungen();
-      u = new SammelTransferBuchung[list.size()];
-      int i = 0;
-      while (list.hasNext())
-      {
-        u[i++] = (SammelTransferBuchung) list.next();
-      }
-
-      ExportDialog d = new ExportDialog(u, getExportClass());
+		try
+    {
+		  ExportDialog d = new ExportDialog(new SammelTransfer[]{(SammelTransfer)context}, getExportClass());
       d.open();
 		}
 		catch (ApplicationException ae)
@@ -77,6 +67,9 @@ public abstract class AbstractSammelTransferExport implements Action
 
 /**********************************************************************
  * $Log: AbstractSammelTransferExport.java,v $
+ * Revision 1.2  2006/08/07 21:51:43  willuhn
+ * @N Erste Version des DTAUS-Exporters
+ *
  * Revision 1.1  2006/08/07 14:31:59  willuhn
  * @B misc bugfixing
  * @C Redesign des DTAUS-Imports fuer Sammeltransfers

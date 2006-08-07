@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/ImportDialog.java,v $
- * $Revision: 1.9 $
- * $Date: 2006/08/07 14:45:18 $
+ * $Revision: 1.10 $
+ * $Date: 2006/08/07 21:51:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -89,15 +89,6 @@ public class ImportDialog extends AbstractDialog
 		{
 			public void handleAction(Object context) throws ApplicationException
 			{
-        try
-        {
-          if (getImporterList() instanceof LabelInput)
-            return;
-        }
-        catch (Exception e)
-        {
-          Logger.error("unable to check import format",e);
-        }
 				doImport();
 			}
 		},null,true);
@@ -320,6 +311,9 @@ public class ImportDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: ImportDialog.java,v $
+ * Revision 1.10  2006/08/07 21:51:43  willuhn
+ * @N Erste Version des DTAUS-Exporters
+ *
  * Revision 1.9  2006/08/07 14:45:18  willuhn
  * @B typos
  *

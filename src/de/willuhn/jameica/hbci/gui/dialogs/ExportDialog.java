@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/ExportDialog.java,v $
- * $Revision: 1.9 $
- * $Date: 2006/08/07 14:31:59 $
+ * $Revision: 1.10 $
+ * $Date: 2006/08/07 21:51:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,6 +30,7 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
+import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
@@ -59,9 +60,12 @@ public class ExportDialog extends AbstractDialog
 	private I18N i18n;
 
   private Input exporterListe     = null;
+  private CheckboxInput openFile  = null;
   private GenericObject[] objects = null;	
   private Class type              = null;
-  
+
+  private Settings  settings      = null;
+
   /**
    * ct.
    * @param objects Liste der zu exportierenden Objekte.
@@ -69,11 +73,14 @@ public class ExportDialog extends AbstractDialog
    */
   public ExportDialog(GenericObject[] objects, Class type)
   {
-    super(POSITION_CENTER);
+    super(POSITION_MOUSE);
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 		setTitle(i18n.tr("Daten-Export"));
     this.objects = objects;
     this.type = type;
+
+    settings = new Settings(this.getClass());
+    settings.setStoreWhenRead(true);
   }
 
   /**
@@ -86,6 +93,13 @@ public class ExportDialog extends AbstractDialog
 
     Input formats = getExporterList();
 		group.addLabelPair(i18n.tr("Verfügbare Formate:"),formats);
+    
+    boolean exportEnabled = !(formats instanceof LabelInput);
+    
+    if (exportEnabled)
+    {
+      group.addCheckbox(getOpenFile(),i18n.tr("Datei nach dem Export öffnen"));
+    }
 
 		ButtonArea buttons = new ButtonArea(parent,2);
 		Button button = new Button(i18n.tr("Export starten"),new Action()
@@ -95,7 +109,7 @@ public class ExportDialog extends AbstractDialog
 				export();
 			}
 		},null,true);
-    button.setEnabled(!(formats instanceof LabelInput));
+    button.setEnabled(exportEnabled);
     buttons.addButton(button);
 		buttons.addButton(i18n.tr("Schliessen"), new Action()
 		{
@@ -127,13 +141,11 @@ public class ExportDialog extends AbstractDialog
     if (exp == null || exp.exporter == null)
       throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Export-Format aus"));
 
-    Settings settings = new Settings(this.getClass());
-    settings.setStoreWhenRead(true);
-
     FileDialog fd = new FileDialog(GUI.getShell(),SWT.SAVE);
     fd.setText(i18n.tr("Bitte geben Sie eine Datei ein, in die die Daten exportiert werden sollen."));
     String[] se = exp.format.getFileExtensions();
     String ext = se == null ? "" : se[0];
+    ext = ext.replaceAll("\\*.",""); // "*." entfernen
     fd.setFileName(i18n.tr("hibiscus-export-{0}." + ext,HBCI.FASTDATEFORMAT.format(new Date())));
 
     String path = settings.getString("lastdir",System.getProperty("user.home"));
@@ -153,7 +165,7 @@ public class ExportDialog extends AbstractDialog
     {
       try
       {
-        YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
+        YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_MOUSE);
         d.setTitle(i18n.tr("Datei existiert bereits"));
         d.setText(i18n.tr("Möchten Sie die Datei überschreiben?"));
         Boolean choice = (Boolean) d.open();
@@ -177,6 +189,8 @@ public class ExportDialog extends AbstractDialog
     settings.setAttribute("lastdir",file.getParent());
 
     // Dialog schliessen
+    final boolean open = ((Boolean)getOpenFile().getValue()).booleanValue();
+    settings.setAttribute("open",open);
     close();
 
     final Exporter exporter = exp.exporter;
@@ -194,19 +208,23 @@ public class ExportDialog extends AbstractDialog
           monitor.setStatus(ProgressMonitor.STATUS_DONE);
           GUI.getStatusBar().setSuccessText(i18n.tr("Daten exportiert nach {0}",s));
           monitor.setStatusText(i18n.tr("Daten exportiert nach {0}",s));
-          GUI.getDisplay().asyncExec(new Runnable() {
-            public void run()
-            {
-              try
+          
+          if (open)
+          {
+            GUI.getDisplay().asyncExec(new Runnable() {
+              public void run()
               {
-                new Program().handleAction(file);
+                try
+                {
+                  new Program().handleAction(file);
+                }
+                catch (ApplicationException ae)
+                {
+                  Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getLocalizedMessage(),StatusBarMessage.TYPE_ERROR));
+                }
               }
-              catch (ApplicationException ae)
-              {
-                Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getLocalizedMessage(),StatusBarMessage.TYPE_ERROR));
-              }
-            }
-          });
+            });
+          }
         }
         catch (ApplicationException ae)
         {
@@ -234,6 +252,17 @@ public class ExportDialog extends AbstractDialog
     Application.getController().start(t);
   }
 
+  /**
+   * Liefert eine Checkbox.
+   * @return Checkbox.
+   */
+  private CheckboxInput getOpenFile()
+  {
+    if (this.openFile == null)
+      this.openFile = new CheckboxInput(settings.getBoolean("open",true));
+    return this.openFile;
+  }
+  
 	/**
 	 * Liefert eine Liste der verfuegbaren Exporter.
    * @return Liste der Exporter.
@@ -348,6 +377,9 @@ public class ExportDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: ExportDialog.java,v $
+ * Revision 1.10  2006/08/07 21:51:43  willuhn
+ * @N Erste Version des DTAUS-Exporters
+ *
  * Revision 1.9  2006/08/07 14:31:59  willuhn
  * @B misc bugfixing
  * @C Redesign des DTAUS-Imports fuer Sammeltransfers
