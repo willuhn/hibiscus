@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.27 $
- * $Date: 2006/08/07 14:31:59 $
+ * $Revision: 1.28 $
+ * $Date: 2006/08/08 21:18:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -80,6 +80,8 @@ public class UmsatzList extends TablePart
   
   private KL kl                 = null;
   private boolean filter        = true;
+  
+  private static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(UmsatzList.class);
 
   private I18N i18n;
   
@@ -202,10 +204,12 @@ public class UmsatzList extends TablePart
       group.addLabelPair(i18n.tr("Zweck, Konto oder Kommentar enthält"), this.search);
 
       // Checkbox zur Aktivierung von regulaeren Ausdruecken
-      this.regex = new CheckboxInput(false);
+      this.regex = new CheckboxInput(settings.getBoolean("regex",false));
       this.regex.addListener(new Listener() {
         public void handleEvent(Event event)
         {
+          boolean b = ((Boolean)regex.getValue()).booleanValue();
+          settings.setAttribute("regex",b);
           kl.process();
         }
       });
@@ -363,6 +367,8 @@ public class UmsatzList extends TablePart
         return text;
 
       this.text = GUI.getStyleFactory().createText(parent);
+      // BUGZILLA 258
+      this.text.setText(settings.getString("search",""));
       this.text.addKeyListener(kl);
       return this.text;
     }
@@ -372,7 +378,9 @@ public class UmsatzList extends TablePart
      */
     public Object getValue()
     {
-      return text == null ? null : text.getText();
+      String s = text == null ? null : text.getText();
+      settings.setAttribute("search",s);
+      return s;
     }
 
     /**
@@ -583,6 +591,9 @@ public class UmsatzList extends TablePart
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.28  2006/08/08 21:18:21  willuhn
+ * @B Bug 258
+ *
  * Revision 1.27  2006/08/07 14:31:59  willuhn
  * @B misc bugfixing
  * @C Redesign des DTAUS-Imports fuer Sammeltransfers

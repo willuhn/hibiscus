@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/UmsatzDaysInput.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/03/30 22:22:32 $
+ * $Revision: 1.4 $
+ * $Date: 2006/08/08 21:18:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,6 +23,7 @@ import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.Settings;
 import de.willuhn.util.I18N;
 
 /**
@@ -32,6 +33,7 @@ import de.willuhn.util.I18N;
 public class UmsatzDaysInput extends SelectInput
 {
   private static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  private static Settings settings = new Settings(UmsatzDaysInput.class);
 
   /**
    * ct.
@@ -39,7 +41,8 @@ public class UmsatzDaysInput extends SelectInput
    */
   public UmsatzDaysInput() throws RemoteException
   {
-    super(init(),new DayObject(HBCIProperties.UMSATZ_DEFAULT_DAYS,i18n.tr("{0} Tage",""+HBCIProperties.UMSATZ_DEFAULT_DAYS)));
+    // BUGZILLA 258
+    super(init(),new DayObject(settings.getInt("days",HBCIProperties.UMSATZ_DEFAULT_DAYS)));
   }
 
   /**
@@ -50,11 +53,11 @@ public class UmsatzDaysInput extends SelectInput
   {
 
     ArrayList l = new ArrayList();
-    l.add(new DayObject(30,i18n.tr("30 Tage")));
-    l.add(new DayObject(60,i18n.tr("60 Tage")));
-    l.add(new DayObject(120,i18n.tr("120 Tage")));
-    l.add(new DayObject(365,i18n.tr("1 Jahr")));
-    l.add(new DayObject(-1,i18n.tr("alle Umsätze")));
+    l.add(new DayObject(30));
+    l.add(new DayObject(60));
+    l.add(new DayObject(120));
+    l.add(new DayObject(365));
+    l.add(new DayObject(-1));
     
     return PseudoIterator.fromArray((DayObject[])l.toArray(new DayObject[l.size()]));
   }
@@ -67,6 +70,7 @@ public class UmsatzDaysInput extends SelectInput
     DayObject o = (DayObject) super.getValue();
     if (o == null)
       return new Integer(-1);
+    settings.setAttribute("days",o.days);
     return new Integer(o.days);
   }
   
@@ -84,10 +88,21 @@ public class UmsatzDaysInput extends SelectInput
      * @param days Anzahl der Tage.
      * @param label Label.
      */
-    private DayObject(int days, String label)
+    private DayObject(int days)
     {
       this.days = days;
-      this.label = label;
+      
+      switch (days)
+      {
+        case 1:
+          this.label = i18n.tr("1 Tag");
+          break;
+        case -1:
+          this.label = i18n.tr("alle Umsätze");
+          break;
+        default:
+          this.label = i18n.tr("{0} Tage",""+days);
+      }
     }
     
     /**
@@ -139,6 +154,9 @@ public class UmsatzDaysInput extends SelectInput
 
 /*********************************************************************
  * $Log: UmsatzDaysInput.java,v $
+ * Revision 1.4  2006/08/08 21:18:21  willuhn
+ * @B Bug 258
+ *
  * Revision 1.3  2006/03/30 22:22:32  willuhn
  * @B bug 217
  *
