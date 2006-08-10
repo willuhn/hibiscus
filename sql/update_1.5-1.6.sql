@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------
 -- $Source: /cvsroot/hibiscus/hibiscus/sql/Attic/update_1.5-1.6.sql,v $
--- $Revision: 1.4 $
--- $Date: 2006/08/05 21:10:45 $
+-- $Revision: 1.5 $
+-- $Date: 2006/08/10 21:20:23 $
 -- $Author: willuhn $
 -- $Locker:  $
 -- $State: Exp $
@@ -25,15 +25,18 @@
 --ALTER TABLE lastschrift ADD CONSTRAINT fk_konto_last FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 
 
-insert into umsatztyp (id,name,pattern,isregex,iseinnahme) values (100,'Gehalt','(Lohn.*?)|(Gehalt.*?)',1,1);
-insert into umsatztyp (id,name,pattern,isregex,iseinnahme) values (101,'Miete','Miete',0,0);
-insert into umsatztyp (id,name,pattern,isregex,iseinnahme) values (102,'Kreditkarte','(Visa.*?)|(Mastercard.*?)|(American Express.*?)',1,0);
-insert into umsatztyp (id,name,pattern,isregex,iseinnahme) values (103,'GEZ','RUNDFUNKANST.',0,0);
-insert into umsatztyp (id,name,pattern,isregex,iseinnahme) values (104,'Telefon','(O2.*?)|(Telekom.*?)|(telecom.*?)|(Vodafone.*?)|(eplus.*?)|(t-mobile.*?)|(Arcor.*?)',1,0);
-insert into umsatztyp (id,name,pattern,isregex,iseinnahme) values (105,'EC','EC.*?',1,0);
+-- insert into umsatztyp (id,name,pattern,isregex,iseinnahme) values (100,'Gehalt','(Lohn.*?)|(Gehalt.*?)',1,1);
+-- insert into umsatztyp (id,name,pattern,isregex,iseinnahme) values (101,'Miete','Miete',0,0);
+-- insert into umsatztyp (id,name,pattern,isregex,iseinnahme) values (102,'Kreditkarte','(Visa.*?)|(Mastercard.*?)|(American Express.*?)',1,0);
+-- insert into umsatztyp (id,name,pattern,isregex,iseinnahme) values (103,'GEZ','RUNDFUNKANST.',0,0);
+-- insert into umsatztyp (id,name,pattern,isregex,iseinnahme) values (104,'Telefon','(O2.*?)|(Telekom.*?)|(telecom.*?)|(Vodafone.*?)|(eplus.*?)|(t-mobile.*?)|(Arcor.*?)',1,0);
+-- insert into umsatztyp (id,name,pattern,isregex,iseinnahme) values (105,'EC','EC.*?',1,0);
 
 ------------------------------------------------------------------------
 -- $Log: update_1.5-1.6.sql,v $
+-- Revision 1.5  2006/08/10 21:20:23  willuhn
+-- @B Bug 260 - uebergangsweise auskommentiert
+--
 -- Revision 1.4  2006/08/05 21:10:45  willuhn
 -- @N Vordefinierte Filter
 --
