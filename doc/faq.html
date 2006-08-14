@@ -35,6 +35,7 @@
           <li><a href="#bank.postbank.ueb.limit">Postbank: Überweisungen schlagen fehl</a></li>
           <li><a href="#bank.cronbank.passport.pintan">Cronbank: Einrichtung von PIN/TAN</a></li>
           <li><a href="#bank.comdirect.passport.pintan">Comdirect: Einrichtung von PIN/TAN</a></li>
+          <li><a href="#bank.raiffeisen.passport.pintan">Raiffeisen-Bank: Einrichtung von PIN/TAN</a></li>
         </ul>
       </li>
     </ol>
@@ -371,6 +372,16 @@ $JAVA_HOME/bin/java -Djava.library.path=lib/swt/linux -jar jameica-linux.jar $@
           (Danke an Dominik Bruhn für den Tipp)
         </p>
 
+        <p>
+          <br/>
+          <a name="bank.raiffeisen.passport.pintan"></a>
+          <b>Raiffeisen-Bank: Einrichtung von PIN/TAN</b>
+          <br/><br/>
+          PIN/TAN-Sicherheitsmedium wie gehabt anlegen. Als HBCI-Version "HBCI+" verwenden.
+          <br/>
+          Geben ihren VR-Netkey als Benutzerkennung ein und lassen Sie das Feld Kundennummer leer.
+        </p>
+
       </li>
     </ol>
 
@@ -392,7 +403,7 @@ $JAVA_HOME/bin/java -Djava.library.path=lib/swt/linux -jar jameica-linux.jar $@
     //-->
 
     <hr/>
-    $Revision: 1.10 $
+    $Revision: 1.11 $
 
   </body>
 </html>
