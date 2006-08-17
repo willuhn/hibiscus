@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EmpfaengerControl.java,v $
- * $Revision: 1.37 $
- * $Date: 2006/08/05 20:44:39 $
+ * $Revision: 1.38 $
+ * $Date: 2006/08/17 21:46:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -183,7 +183,10 @@ public class EmpfaengerControl extends AbstractControl {
 			return blz;
 		blz = new TextInput(getEmpfaenger().getBLZ(),HBCIProperties.HBCI_BLZ_LENGTH);
 		blz.setComment("");
-		blz.addListener(new BLZListener());
+    BLZListener l = new BLZListener();
+		blz.addListener(l);
+    // einmal ausfuehren
+    l.handleEvent(null);
 		return blz;
 	}
 
@@ -198,14 +201,6 @@ public class EmpfaengerControl extends AbstractControl {
 			return name;
 		name = new TextInput(getEmpfaenger().getName(),HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
 		return name;
-	}
-
-	/**
-	 * Initialisiert den Dialog und loest die EventHandler aus.
-	 */
-	public void init()
-	{
-		new BLZListener().handleEvent(null);
 	}
 
   /**
@@ -259,6 +254,9 @@ public class EmpfaengerControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: EmpfaengerControl.java,v $
+ * Revision 1.38  2006/08/17 21:46:16  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.37  2006/08/05 20:44:39  willuhn
  * @B Bug 256
  *

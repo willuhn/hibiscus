@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoNew.java,v $
- * $Revision: 1.17 $
- * $Date: 2006/05/10 12:51:37 $
+ * $Revision: 1.18 $
+ * $Date: 2006/08/17 21:46:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -82,7 +82,7 @@ public class KontoNew extends AbstractView {
       group.addLabelPair(i18n.tr("Saldo"),                    control.getSaldo());
 
 			// und noch die Abschicken-Knoepfe
-			ButtonArea buttonArea = group.createButtonArea(4);
+			ButtonArea buttonArea = new ButtonArea(getParent(),4);
       buttonArea.addButton(control.getSynchronizeOptions());
       buttonArea.addButton(i18n.tr("Protokoll des Kontos"),new ProtokollList(),control.getKonto());
 			buttonArea.addButton(i18n.tr("Konto löschen"),new KontoDelete(),control.getKonto());
@@ -105,8 +105,6 @@ public class KontoNew extends AbstractView {
       TabGroup tab2 = new TabGroup(folder,i18n.tr("Saldo im Verlauf"));
       control.getUmsatzChart().paint(tab2.getComposite());
 
-      control.init();
-
       ButtonArea buttons = new ButtonArea(getParent(),3);
       buttons.addButton(i18n.tr("Zurück"),new Back(),null,true);
       buttons.addButton(i18n.tr("Saldo und Umsätze abrufen"), new KontoFetchUmsaetze(),control.getKonto());
@@ -125,6 +123,9 @@ public class KontoNew extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoNew.java,v $
+ * Revision 1.18  2006/08/17 21:46:16  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.17  2006/05/10 12:51:37  willuhn
  * @B typo s/Ktr/Kto/
  *
