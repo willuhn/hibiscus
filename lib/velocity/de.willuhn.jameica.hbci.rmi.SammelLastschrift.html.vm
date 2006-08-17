@@ -142,44 +142,44 @@
     }
   </style>
   <body>
-	<h1>Sammellastschrift</h1>
+	<h1>Sammellastschriften</h1>
 	
-  #set($lastschrift = "")
-	#foreach($buchung in $objects)
-    #set($lastschrift = $buchung.SammelTransfer)
-	#end
+	#foreach($lastschrift in $objects)
 
-	#set($konto = $lastschrift.Konto)
+  	#set($konto = $lastschrift.Konto)
+  
+  	<h2>Datum: $!{dateformat.format(${datum})}</h2>
+  	<h2>Lastschrift: $!{lastschrift.Bezeichnung}</h2>
+  	<h2>Gutschriftskonto: $!{konto.Bezeichnung} [Kto $!{konto.Kontonummer}, BLZ $!{konto.BLZ}]</h2>
+  	<h2>Summe: $!{decimalformat.format(${lastschrift.Summe})} $!{konto.Waehrung}</h2>
+  	
+  	<table class="data">
+  	  <tr>
+  		<th>Gegenkonto</th>
+  		<th style="text-align:right">Betrag</th>
+  		<th>Verwendungszweck</th>
+  	  </tr>
+  		
+  		#set($buchungen = $lastschrift.BuchungenAsArray)
+      #foreach($buchung in $buchungen)
+  		<tr>
+  		  <td>
+  			$!{buchung.GegenkontoName}<br/>
+  			Kto $!{buchung.GegenkontoNummer}<br/>
+  			BLZ $!{buchung.GegenkontoBLZ}
+  		  </td>
+  		  <td style="text-align:right">$!{decimalformat.format(${buchung.Betrag})} $!{konto.Waehrung}</td>
+  		  <td>
+  			$!{buchung.Zweck}
+  			<br/>
+  			$!{buchung.Zweck2}
+  		  </td>
+  		</tr>
+  	  #end
+  	</table>
+  	<br/><br/>
+  
+  #end
 
-	<h2>Datum: $!{dateformat.format(${datum})}</h2>
-	<h2>Lastschrift: $!{lastschrift.Bezeichnung}</h2>
-	<h2>Gutschriftskonto: $!{konto.Bezeichnung} [Kto $!{konto.Kontonummer}, BLZ $!{konto.BLZ}]</h2>
-	<h2>Summe: $!{decimalformat.format(${lastschrift.Summe})} $!{konto.Waehrung}</h2>
-	
-	<br/><br/>
-
-	<table class="data">
-	  <tr>
-		<th>Gegenkonto</th>
-		<th style="text-align:right">Betrag</th>
-		<th>Verwendungszweck</th>
-	  </tr>
-		
-      #foreach($buchung in $objects)
-		<tr>
-		  <td>
-			$!{buchung.GegenkontoName}<br/>
-			Kto $!{buchung.GegenkontoNummer}<br/>
-			BLZ $!{buchung.GegenkontoBLZ}
-		  </td>
-		  <td style="text-align:right">$!{decimalformat.format(${buchung.Betrag})} $!{konto.Waehrung}</td>
-		  <td>
-			$!{buchung.Zweck}
-			<br/>
-			$!{buchung.Zweck2}
-		  </td>
-		</tr>
-	  #end
-	</table>
   </body>
 </html>

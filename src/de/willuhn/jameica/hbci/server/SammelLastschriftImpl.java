@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/SammelLastschriftImpl.java,v $
- * $Revision: 1.12 $
- * $Date: 2006/08/07 14:31:59 $
+ * $Revision: 1.13 $
+ * $Date: 2006/08/17 10:06:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -63,10 +63,14 @@ public class SammelLastschriftImpl extends AbstractSammelTransferImpl
     b.setSammelTransfer(this);
     return b;
   }
+
 }
 
 /*****************************************************************************
  * $Log: SammelLastschriftImpl.java,v $
+ * Revision 1.13  2006/08/17 10:06:32  willuhn
+ * @B Fehler in HTML-Export von Sammeltransfers
+ *
  * Revision 1.12  2006/08/07 14:31:59  willuhn
  * @B misc bugfixing
  * @C Redesign des DTAUS-Imports fuer Sammeltransfers

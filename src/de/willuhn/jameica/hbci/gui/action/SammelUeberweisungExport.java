@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/SammelUeberweisungExport.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/08/07 14:31:59 $
+ * $Revision: 1.2 $
+ * $Date: 2006/08/17 10:06:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,6 +21,9 @@ import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
 public class SammelUeberweisungExport extends AbstractSammelTransferExport
 {
 
+  /**
+   * @see de.willuhn.jameica.hbci.gui.action.AbstractSammelTransferExport#getExportClass()
+   */
   Class getExportClass()
   {
     return SammelUeberweisung.class;
@@ -31,6 +34,9 @@ public class SammelUeberweisungExport extends AbstractSammelTransferExport
 
 /*********************************************************************
  * $Log: SammelUeberweisungExport.java,v $
+ * Revision 1.2  2006/08/17 10:06:32  willuhn
+ * @B Fehler in HTML-Export von Sammeltransfers
+ *
  * Revision 1.1  2006/08/07 14:31:59  willuhn
  * @B misc bugfixing
  * @C Redesign des DTAUS-Imports fuer Sammeltransfers
