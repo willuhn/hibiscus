@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Attic/MT940Importer.java,v $
- * $Revision: 1.8 $
- * $Date: 2006/08/02 17:49:44 $
+ * $Revision: 1.9 $
+ * $Date: 2006/08/21 23:15:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,7 +26,6 @@ import org.kapott.hbci.structures.Konto;
 import org.kapott.hbci.swift.Swift;
 
 import de.willuhn.datasource.GenericObject;
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
@@ -100,7 +99,6 @@ public class MT940Importer implements Importer
       if (monitor != null)
         monitor.setStatusText(i18n.tr("Speichere Umsätze"));
       
-      DBIterator existing = konto.getUmsaetze();
       GVRKUms.UmsLine[] lines = umsaetze.getFlatData();
       
       if (lines.length == 0)
@@ -112,9 +110,8 @@ public class MT940Importer implements Importer
       double factor = 100d / (double) lines.length;
 
       int created = 0;
-      int skipped = 0;
-      // Eine Transaktion beim Speichern brauchen wir nicht, weil beim
-      // naechsten Import die schon importierten erkannt und uebersprungen werden.
+      int error   = 0;
+
       for (int i=0;i<lines.length;++i)
       {
         if (monitor != null)
@@ -124,53 +121,43 @@ public class MT940Importer implements Importer
           // bis zum Ende der Swift-MT940-Datei genau auf 100% bewegen
           monitor.setPercentComplete((int)((i+1) * factor));
         }
-        
-        final Umsatz umsatz = Converter.HBCIUmsatz2HibiscusUmsatz(lines[i]);
-        umsatz.setKonto(konto); // muessen wir noch machen, weil der Converter das Konto nicht kennt
-        
-        // Wenn keine geparsten Verwendungszwecke da sind, machen wir
-        // den Umsatz editierbar.
-        if(lines[i].usage == null || lines[i].usage.length == 0)
-          umsatz.setChangedByUser();
-        
-        if (existing.contains(umsatz) == null)
+
+        try
         {
+          final Umsatz umsatz = Converter.HBCIUmsatz2HibiscusUmsatz(lines[i]);
+          umsatz.setKonto(konto); // muessen wir noch machen, weil der Converter das Konto nicht kennt
+          umsatz.setChangedByUser();
+          umsatz.store();
+          created++;
           try
           {
-            umsatz.store(); // den Umsatz haben wir noch nicht, speichern!
-            created++;
-
-            try
-            {
-              ImportMessage im = new ImportMessage() {
-                public GenericObject getImportedObject() throws RemoteException
-                {
-                  return umsatz;
-                }
-              };
-              Application.getMessagingFactory().sendMessage(im);
-            }
-            catch (Exception e)
-            {
-              Logger.error("error while sending import message",e);
-            }
+            ImportMessage im = new ImportMessage() {
+              public GenericObject getImportedObject() throws RemoteException
+              {
+                return umsatz;
+              }
+            };
+            Application.getMessagingFactory().sendMessage(im);
           }
-          catch (Exception e2)
+          catch (Exception ex)
           {
-            Logger.error("error while adding umsatz, skipping this one",e2);
+            Logger.error("error while sending import message",ex);
           }
         }
-        else
+        catch (ApplicationException ae)
         {
-          skipped++;
+          monitor.log("  " + ae.getMessage());
+          error++;
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to import line",e);
+          monitor.log("  " + i18n.tr("Fehler beim Import des Datensatzes: {0}",e.getMessage()));
+          error++;
         }
       }
-      if (monitor != null)
-      {
-        monitor.setStatusText(i18n.tr("{0} Umsätze importiert, {1} übersprungen (bereits vorhanden)", new String[]{""+created,""+skipped}));
-        monitor.addPercentComplete(1);
-      }
-      konto.addToProtokoll(i18n.tr("{0} Umsätze importiert, {1} übersprungen (bereits vorhanden)", new String[]{""+created,""+skipped}),Protokoll.TYP_SUCCESS);
+      monitor.setStatusText(i18n.tr("{0} Umsätze erfolgreich importiert, {1} fehlerhafte übersprungen", new String[]{""+created,""+error}));
+      monitor.addPercentComplete(1);
     }
     catch (OperationCanceledException oce)
     {
@@ -318,6 +305,9 @@ public class MT940Importer implements Importer
 
 /*******************************************************************************
  * $Log: MT940Importer.java,v $
+ * Revision 1.9  2006/08/21 23:15:01  willuhn
+ * @N Bug 184 (CSV-Import)
+ *
  * Revision 1.8  2006/08/02 17:49:44  willuhn
  * @B Bug 255
  * @N Erkennung des Kontos beim Import von Umsaetzen aus dem Kontextmenu heraus

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Umsatz.java,v $
- * $Revision: 1.13 $
- * $Date: 2005/12/29 01:22:12 $
+ * $Revision: 1.14 $
+ * $Date: 2006/08/21 23:15:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ import java.rmi.RemoteException;
 import java.util.Date;
 
 import de.willuhn.datasource.rmi.DBObject;
+import de.willuhn.util.ApplicationException;
 
 /**
  * Bildet eine Zeile in den Kontoauszuegen ab.
@@ -249,11 +250,23 @@ public interface Umsatz extends DBObject, Checksum
    * @throws RemoteException
    */
   public void setChangedByUser() throws RemoteException;
+  
+  /**
+   * Erlaubt das Setzen von Attributen des Umsatzes ueber diese generische Funktion.
+   * @param name Name des Attributs.
+   * @param value Wert.
+   * @throws RemoteException
+   * @throws ApplicationException
+   */
+  public void setGenericAttribute(String name, String value) throws RemoteException, ApplicationException;
 }
 
 
 /**********************************************************************
  * $Log: Umsatz.java,v $
+ * Revision 1.14  2006/08/21 23:15:01  willuhn
+ * @N Bug 184 (CSV-Import)
+ *
  * Revision 1.13  2005/12/29 01:22:12  willuhn
  * @R UmsatzZuordnung entfernt
  * @B Debugging am Pie-Chart

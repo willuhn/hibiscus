@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.32 $
- * $Date: 2006/02/06 23:03:23 $
+ * $Revision: 1.33 $
+ * $Date: 2006/08/21 23:15:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,7 @@
 package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.zip.CRC32;
 
@@ -447,11 +448,67 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
       return; // wurde schon markiert
     setAttribute("checksum",new Long(getChecksum()));
   }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setAttribute(java.lang.String, java.lang.String)
+   */
+  public void setGenericAttribute(String name, String value) throws RemoteException, ApplicationException
+  {
+    if (name == null)
+      return;
+    
+    if (value == null)
+    {
+      super.setAttribute(name,value);
+      return;
+    }
+
+    try
+    {
+      if ("betrag".equals(name))
+      {
+        setBetrag(HBCI.DECIMALFORMAT.parse(value).doubleValue());
+        return;
+      }
+      if ("saldo".equals(name))
+      {
+        setSaldo(HBCI.DECIMALFORMAT.parse(value).doubleValue());
+        return;
+      }
+    }
+    catch (ParseException e)
+    {
+      throw new ApplicationException(i18n.tr("Betrag \"{0}\" besitzt nicht das Format 000,00",value));
+    }
+    
+    try
+    {
+      if ("datum".equals(name))
+      {
+        setDatum(HBCI.DATEFORMAT.parse(value));
+        return;
+      }
+      if ("valuta".equals(name))
+      {
+        setValuta(HBCI.DATEFORMAT.parse(value));
+        return;
+      }
+    }
+    catch (ParseException e)
+    {
+      throw new ApplicationException(i18n.tr("Datum \"{0}\" besitzt nicht das Format TT.MM.JJJJ",value));
+    }
+    
+    super.setAttribute(name,value);
+  }
 }
 
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.33  2006/08/21 23:15:01  willuhn
+ * @N Bug 184 (CSV-Import)
+ *
  * Revision 1.32  2006/02/06 23:03:23  willuhn
  * @B Sortierung der Spalte "#"
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/CSVImportDialog.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/01/23 23:07:23 $
+ * $Revision: 1.3 $
+ * $Date: 2006/08/21 23:15:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,7 +25,6 @@ import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
-import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
@@ -45,9 +44,8 @@ public class CSVImportDialog extends AbstractDialog
   private I18N i18n           = null;
   private CSVMapping mapping  = null;
   private String[] line       = null;
-  
+
   private ArrayList selects   = null;
-  private CheckboxInput skip  = null;
   
   /**
    * ct.
@@ -72,10 +70,9 @@ public class CSVImportDialog extends AbstractDialog
   protected void paint(Composite parent) throws Exception
   {
     LabelGroup group = new LabelGroup(parent,i18n.tr("Spalten in der Import-Datei"));
+    group.addText(i18n.tr("In der linken Spalte sehen Sie die erste Zeile Ihrer CSV-Datei.\n" +
+        "Ordnen Sie die Felder bitte über die Auswahl-Elemente auf der rechte Seite zu."),true);
     
-    this.skip = new CheckboxInput(this.mapping.skipFirstLine());
-    group.addCheckbox(this.skip,i18n.tr("Erste Zeile beim Import überspringen (Spalten-Name)"));
-
     this.selects   = new ArrayList();
     ArrayList list = new ArrayList();
     Hashtable ht   = this.mapping.getNames();
@@ -132,7 +129,6 @@ public class CSVImportDialog extends AbstractDialog
           else
             mapping.set(i,fo.field);
         }
-        mapping.setSkipFirstLine(((Boolean)skip.getValue()).booleanValue());
         close();
       }
     });
@@ -234,6 +230,9 @@ public class CSVImportDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: CSVImportDialog.java,v $
+ * Revision 1.3  2006/08/21 23:15:01  willuhn
+ * @N Bug 184 (CSV-Import)
+ *
  * Revision 1.2  2006/01/23 23:07:23  willuhn
  * @N csv import stuff
  *
