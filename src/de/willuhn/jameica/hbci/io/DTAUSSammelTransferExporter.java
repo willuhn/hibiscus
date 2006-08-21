@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/DTAUSSammelTransferExporter.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/08/21 23:15:01 $
+ * $Revision: 1.4 $
+ * $Date: 2006/08/21 23:15:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,7 +22,6 @@ import de.jost_net.OBanToo.Dtaus.DtausException;
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
@@ -191,6 +190,9 @@ public class DTAUSSammelTransferExporter extends AbstractDTAUSIO implements Expo
 
 /**********************************************************************
  * $Log: DTAUSSammelTransferExporter.java,v $
+ * Revision 1.4  2006/08/21 23:15:18  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2006/08/21 23:15:01  willuhn
  * @N Bug 184 (CSV-Import)
  *
