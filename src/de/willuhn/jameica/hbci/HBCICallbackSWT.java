@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.40 $
- * $Date: 2006/08/06 13:26:48 $
+ * $Revision: 1.41 $
+ * $Date: 2006/08/21 12:29:54 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,6 +49,7 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 	private I18N i18n;
 	private Hashtable accountCache = new Hashtable();
+  private PassportHandle currentHandle = null;
 
   /**
    * ct.
@@ -106,10 +107,9 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 		try {
       
-      PassportHandle handle = HBCIFactory.getInstance().getCurrentPassportHandle();
-      if (handle != null && handle.callback(passport,reason,msg,datatype,retData))
+      if (currentHandle != null && currentHandle.callback(passport,reason,msg,datatype,retData))
       {
-        Logger.info("callback [reason " + reason + "] handled by " + handle.getClass());
+        Logger.info("callback [reason " + reason + "] handled by " + currentHandle.getClass());
         return;
       }
 
@@ -344,6 +344,16 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 	}
 
   /**
+   * Speichert das aktuelle Handle.
+   * Haesslicher Workaround.
+   * @param handle
+   */
+  public void setCurrentHandle(PassportHandle handle)
+  {
+    this.currentHandle = handle;
+  }
+  
+  /**
    * @see org.kapott.hbci.callback.HBCICallback#status(org.kapott.hbci.passport.HBCIPassport, int, java.lang.Object[])
    */
   public void status(HBCIPassport passport, int statusTag, Object[] o) {
@@ -478,6 +488,9 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.41  2006/08/21 12:29:54  willuhn
+ * @N HBCICallbackSWT.setCurrentHandle
+ *
  * Revision 1.40  2006/08/06 13:26:48  willuhn
  * @B bug 257
  *

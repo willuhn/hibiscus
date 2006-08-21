@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.92 $
- * $Date: 2006/08/05 22:00:51 $
+ * $Revision: 1.93 $
+ * $Date: 2006/08/21 12:29:54 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -348,7 +348,7 @@ public class HBCI extends AbstractPlugin
    * pro ThreadGroup und damit ggf. mehrfach initialisieren.
    * @return liefert den verwendeten HBCICallback.
    */
-  HBCICallback getHBCICallback()
+  public HBCICallback getHBCICallback()
   {
     return this.callback;
   }
@@ -357,6 +357,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.93  2006/08/21 12:29:54  willuhn
+ * @N HBCICallbackSWT.setCurrentHandle
+ *
  * Revision 1.92  2006/08/05 22:00:51  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.44 $
- * $Date: 2006/08/03 15:32:34 $
+ * $Revision: 1.45 $
+ * $Date: 2006/08/21 12:29:48 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -282,19 +282,6 @@ public class HBCIFactory {
   }
   
   /**
-   * Liefert das aktuell verwendete PassportHandle. Es wird nur dann ein Handle geliefert,
-   * wenn sich die HBCIFactory gerade in der Ausfuehrung von Jobs befindet
-   * (executeJobs()). Ansonsten liefert die Funktion immer null.
-   * @return das aktuelle Handle.
-   */
-  public PassportHandle getCurrentPassportHandle()
-  {
-    if (this.worker == null)
-      return null;
-    return this.worker.getHandle();
-  }
-
-  /**
    * Wir haben den Code zur Ausfuehrung in einen eigenen Thread verlagert damit
    * die GUI waehrenddessen nicht blockiert.
    */
@@ -318,11 +305,6 @@ public class HBCIFactory {
     private Konto getKonto()
     {
       return this.konto;
-    }
-    
-    private PassportHandle getHandle()
-    {
-      return this.handle;
     }
     
     private ProgressMonitor getMonitor()
@@ -676,6 +658,9 @@ public class HBCIFactory {
 
 /*******************************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.45  2006/08/21 12:29:48  willuhn
+ * @N HBCICallbackSWT.setCurrentHandle
+ *
  * Revision 1.44  2006/08/03 15:32:34  willuhn
  * @N Bug 62
  *
