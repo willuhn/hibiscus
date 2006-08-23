@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AdresseImpl.java,v $
- * $Revision: 1.10 $
- * $Date: 2006/05/11 10:57:35 $
+ * $Revision: 1.11 $
+ * $Date: 2006/08/23 09:45:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -153,8 +153,8 @@ public class AdresseImpl extends AbstractDBObject implements Adresse {
   public DBIterator getUmsaetze() throws RemoteException
   {
     DBIterator umsaetze = getService().createList(Umsatz.class);
-    umsaetze.addFilter("empfaenger_konto = '" + getKontonummer() + "'");
-    umsaetze.addFilter("empfaenger_blz = '" + getBLZ() + "'");
+    umsaetze.addFilter("empfaenger_konto = ?",new Object[]{getKontonummer()});
+    umsaetze.addFilter("empfaenger_blz = ?",  new Object[]{getBLZ()});
     umsaetze.setOrder(" ORDER BY TONUMBER(valuta) DESC");
     return umsaetze;
   }
@@ -165,8 +165,8 @@ public class AdresseImpl extends AbstractDBObject implements Adresse {
   public DBIterator getSammellastBuchungen() throws RemoteException
   {
     DBIterator buchungen = getService().createList(SammelLastBuchung.class);
-    buchungen.addFilter("gegenkonto_nr = '" + getKontonummer() + "'");
-    buchungen.addFilter("gegenkonto_blz = '" + getBLZ() + "'");
+    buchungen.addFilter("gegenkonto_nr = ?",  new Object[]{getKontonummer()});
+    buchungen.addFilter("gegenkonto_blz = ?", new Object[]{getBLZ()});
     buchungen.setOrder(" ORDER BY id DESC");
     return buchungen;
   }
@@ -177,8 +177,8 @@ public class AdresseImpl extends AbstractDBObject implements Adresse {
   public DBIterator getSammelUeberweisungBuchungen() throws RemoteException
   {
     DBIterator buchungen = getService().createList(SammelUeberweisungBuchung.class);
-    buchungen.addFilter("gegenkonto_nr = '" + getKontonummer() + "'");
-    buchungen.addFilter("gegenkonto_blz = '" + getBLZ() + "'");
+    buchungen.addFilter("gegenkonto_nr = ?",  new Object[]{getKontonummer()});
+    buchungen.addFilter("gegenkonto_blz = ?", new Object[]{getBLZ()});
     buchungen.setOrder(" ORDER BY id DESC");
     return buchungen;
   }
@@ -188,6 +188,9 @@ public class AdresseImpl extends AbstractDBObject implements Adresse {
 
 /**********************************************************************
  * $Log: AdresseImpl.java,v $
+ * Revision 1.11  2006/08/23 09:45:14  willuhn
+ * @N Restliche DBIteratoren auf PreparedStatements umgestellt
+ *
  * Revision 1.10  2006/05/11 10:57:35  willuhn
  * @C merged Bug 232 into HEAD
  *

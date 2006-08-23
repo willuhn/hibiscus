@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/OffeneUeberweisungen.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/06/29 23:10:33 $
+ * $Revision: 1.5 $
+ * $Date: 2006/08/23 09:45:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -81,6 +81,7 @@ public class OffeneUeberweisungen extends AbstractBox implements Box
   public void paint(Composite parent) throws RemoteException
   {
     DBIterator list = Settings.getDBService().createList(Ueberweisung.class);
+    // TODO Auf PreparedStatement umstellen
     list.addFilter("ausgefuehrt = 0");
     list.addFilter("(banktermin = 1 OR tonumber(termin) <= " + new Date().getTime() + ")");
 
@@ -123,6 +124,9 @@ public class OffeneUeberweisungen extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: OffeneUeberweisungen.java,v $
+ * Revision 1.5  2006/08/23 09:45:14  willuhn
+ * @N Restliche DBIteratoren auf PreparedStatements umgestellt
+ *
  * Revision 1.4  2006/06/29 23:10:33  willuhn
  * @R Box-System aus Hibiscus in Jameica-Source verschoben
  * @C keine eigene Startseite mehr, jetzt alles ueber Jameica-Boxsystem geregelt

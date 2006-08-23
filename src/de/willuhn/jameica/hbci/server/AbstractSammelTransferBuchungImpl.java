@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractSammelTransferBuchungImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/06/26 13:25:20 $
+ * $Revision: 1.6 $
+ * $Date: 2006/08/23 09:45:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -180,9 +180,9 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
 		// Wir schauen erstmal, ob wir diese Adresse in der Datenbank schon haben.
 		Logger.debug("checking if we allready have this address in the database");
 		DBIterator list = getService().createList(Adresse.class);
-		list.addFilter("kontonummer='"+getGegenkontoNummer()+"'");
-		list.addFilter("blz='"+getGegenkontoBLZ()+"'");
-		list.addFilter("name='"+getGegenkontoName()+"'");
+		list.addFilter("kontonummer=?", new Object[]{getGegenkontoNummer()});
+		list.addFilter("blz=?",         new Object[]{getGegenkontoBLZ()});
+		list.addFilter("name=?",        new Object[]{getGegenkontoName()});
 		if (list.hasNext())
 		{
 			Logger.debug("found one, returning this one");
@@ -268,6 +268,9 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferBuchungImpl.java,v $
+ * Revision 1.6  2006/08/23 09:45:13  willuhn
+ * @N Restliche DBIteratoren auf PreparedStatements umgestellt
+ *
  * Revision 1.5  2006/06/26 13:25:20  willuhn
  * @N Franks eBay-Parser
  *

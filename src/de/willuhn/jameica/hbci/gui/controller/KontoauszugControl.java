@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/KontoauszugControl.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/07/03 23:04:32 $
+ * $Revision: 1.5 $
+ * $Date: 2006/08/23 09:45:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -167,6 +167,7 @@ public class KontoauszugControl extends AbstractControl
       {
         // Alle Konten
         umsaetze = Settings.getDBService().createList(Umsatz.class);
+        // TODO: Auf PreparedStatement umstellen
         if (start != null) umsaetze.addFilter("TONUMBER(valuta) >= " + start.getTime());
         if (end != null) umsaetze.addFilter("TONUMBER(valuta) <= " + end.getTime());
         umsaetze.setOrder("ORDER BY TONUMBER(valuta), id DESC");
@@ -209,6 +210,9 @@ public class KontoauszugControl extends AbstractControl
 
 /*******************************************************************************
  * $Log: KontoauszugControl.java,v $
+ * Revision 1.5  2006/08/23 09:45:14  willuhn
+ * @N Restliche DBIteratoren auf PreparedStatements umgestellt
+ *
  * Revision 1.4  2006/07/03 23:04:32  willuhn
  * @N PDF-Reportwriter in IO-API gepresst, damit er auch an anderen Stellen (z.Bsp. in der Umsatzliste) mitverwendet werden kann.
  *

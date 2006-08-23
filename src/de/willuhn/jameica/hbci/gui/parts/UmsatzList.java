@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.28 $
- * $Date: 2006/08/08 21:18:21 $
+ * $Revision: 1.29 $
+ * $Date: 2006/08/23 09:45:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -266,7 +266,7 @@ public class UmsatzList extends TablePart
                 
                 // Mal schauen, obs den Typ schon gibt
                 DBIterator existing = Settings.getDBService().createList(UmsatzTyp.class);
-                existing.addFilter("pattern = '" + text + "'");
+                existing.addFilter("pattern = ?", new Object[]{text});
                 UmsatzTyp typ = null; 
                 if (existing.size() > 0)
                 {
@@ -591,6 +591,9 @@ public class UmsatzList extends TablePart
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.29  2006/08/23 09:45:13  willuhn
+ * @N Restliche DBIteratoren auf PreparedStatements umgestellt
+ *
  * Revision 1.28  2006/08/08 21:18:21  willuhn
  * @B Bug 258
  *

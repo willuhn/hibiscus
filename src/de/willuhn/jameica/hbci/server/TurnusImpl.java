@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/TurnusImpl.java,v $
- * $Revision: 1.12 $
- * $Date: 2005/06/07 22:19:57 $
- * $Author: web0 $
+ * $Revision: 1.13 $
+ * $Date: 2006/08/23 09:45:13 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -216,6 +216,7 @@ public class TurnusImpl extends AbstractDBObject implements Turnus
   public void insert() throws RemoteException, ApplicationException
   {
 		DBIterator existing = getService().createList(Turnus.class);
+    // TODO Auf PreparedStatement umstellen
 		existing.addFilter("zeiteinheit = " + this.getZeiteinheit());
 		existing.addFilter("intervall = " + this.getIntervall());
 		existing.addFilter("tag = " + this.getTag());
@@ -232,6 +233,9 @@ public class TurnusImpl extends AbstractDBObject implements Turnus
 
 /**********************************************************************
  * $Log: TurnusImpl.java,v $
+ * Revision 1.13  2006/08/23 09:45:13  willuhn
+ * @N Restliche DBIteratoren auf PreparedStatements umgestellt
+ *
  * Revision 1.12  2005/06/07 22:19:57  web0
  * @B bug 49
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/ChartDataSaldoVerlauf.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/08/01 21:29:12 $
+ * $Revision: 1.6 $
+ * $Date: 2006/08/23 09:45:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -61,11 +61,12 @@ public class ChartDataSaldoVerlauf implements LineChartData
   public GenericIterator getData() throws RemoteException
   {
     DBIterator list = Settings.getDBService().createList(Umsatz.class);
-    list.addFilter("konto_id = " + this.konto.getID());
+    list.addFilter("konto_id = ?", new Object[]{this.konto.getID()});
 
     if (this.days > 0)
     {
       long d = days * 24l * 60l * 60l * 1000l;
+      // TODO Noch auf PreparedStatement umstellen
       list.addFilter("TONUMBER(valuta) > " + (System.currentTimeMillis() - d));
     }
     list.setOrder(" ORDER BY TONUMBER(valuta) ASC");
@@ -142,6 +143,9 @@ public class ChartDataSaldoVerlauf implements LineChartData
 
 /*********************************************************************
  * $Log: ChartDataSaldoVerlauf.java,v $
+ * Revision 1.6  2006/08/23 09:45:14  willuhn
+ * @N Restliche DBIteratoren auf PreparedStatements umgestellt
+ *
  * Revision 1.5  2006/08/01 21:29:12  willuhn
  * @N Geaenderte LineCharts
  *

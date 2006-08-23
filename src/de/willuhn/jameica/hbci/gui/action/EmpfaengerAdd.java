@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/EmpfaengerAdd.java,v $
- * $Revision: 1.7 $
- * $Date: 2005/10/17 22:00:44 $
+ * $Revision: 1.8 $
+ * $Date: 2006/08/23 09:45:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -102,8 +102,8 @@ public class EmpfaengerAdd implements Action
 
         seen.put(e.getKontonummer() + "-" + e.getBLZ(),e);
         DBIterator list = Settings.getDBService().createList(Adresse.class);
-        list.addFilter("kontonummer = '" + e.getKontonummer() + "'");
-        list.addFilter("blz = '" + e.getBLZ() + "'");
+        list.addFilter("kontonummer = ?", new Object[]{e.getKontonummer()});
+        list.addFilter("blz = ?",         new Object[]{e.getBLZ()});
         if (list.hasNext())
         {
           YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
@@ -149,6 +149,9 @@ public class EmpfaengerAdd implements Action
 
 /**********************************************************************
  * $Log: EmpfaengerAdd.java,v $
+ * Revision 1.8  2006/08/23 09:45:13  willuhn
+ * @N Restliche DBIteratoren auf PreparedStatements umgestellt
+ *
  * Revision 1.7  2005/10/17 22:00:44  willuhn
  * @B bug 143
  *

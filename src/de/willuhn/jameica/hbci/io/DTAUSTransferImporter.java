@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/DTAUSTransferImporter.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/08/07 14:31:59 $
+ * $Revision: 1.5 $
+ * $Date: 2006/08/23 09:45:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -81,8 +81,8 @@ public class DTAUSTransferImporter extends AbstractDTAUSImporter
     String kontonummer = Long.toString(csatz.getKontoAuftraggeber());
     String blz         = Long.toString(csatz.getBlzErstbeteiligt());
     DBIterator konten = service.createList(Konto.class);
-    konten.addFilter("kontonummer = '" + kontonummer + "'");
-    konten.addFilter("blz = '" + blz + "'");
+    konten.addFilter("kontonummer = ?", new Object[]{kontonummer});
+    konten.addFilter("blz = ?",         new Object[]{blz});
 
     Konto k = null;
     if (!konten.hasNext())
@@ -151,6 +151,9 @@ public class DTAUSTransferImporter extends AbstractDTAUSImporter
 
 /*********************************************************************
  * $Log: DTAUSTransferImporter.java,v $
+ * Revision 1.5  2006/08/23 09:45:14  willuhn
+ * @N Restliche DBIteratoren auf PreparedStatements umgestellt
+ *
  * Revision 1.4  2006/08/07 14:31:59  willuhn
  * @B misc bugfixing
  * @C Redesign des DTAUS-Imports fuer Sammeltransfers

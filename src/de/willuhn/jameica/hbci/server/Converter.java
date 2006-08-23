@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.31 $
- * $Date: 2006/01/23 12:16:57 $
+ * $Revision: 1.32 $
+ * $Date: 2006/08/23 09:45:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -236,10 +236,10 @@ public class Converter {
 	public static de.willuhn.jameica.hbci.rmi.Konto HBCIKonto2HibiscusKonto(Konto konto, Class passportClass) throws RemoteException
 	{
 		DBIterator list = Settings.getDBService().createList(de.willuhn.jameica.hbci.rmi.Konto.class);
-		list.addFilter("kontonummer = '" + konto.number + "'");
-		list.addFilter("blz = '" + konto.blz + "'");
+		list.addFilter("kontonummer = ?", new Object[]{konto.number});
+		list.addFilter("blz = ?",         new Object[]{konto.blz});
     if (passportClass != null)
-      list.addFilter("passport_class = '" + passportClass.getName() + "'");
+      list.addFilter("passport_class = ?", new Object[]{passportClass.getName()});
 
     if (list.hasNext())
 			return (de.willuhn.jameica.hbci.rmi.Konto) list.next(); // Konto gibts schon
@@ -362,6 +362,9 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.32  2006/08/23 09:45:13  willuhn
+ * @N Restliche DBIteratoren auf PreparedStatements umgestellt
+ *
  * Revision 1.31  2006/01/23 12:16:57  willuhn
  * @N Update auf HBCI4Java 2.5.0-rc5
  *

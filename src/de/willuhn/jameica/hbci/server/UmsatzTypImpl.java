@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.22 $
- * $Date: 2006/05/22 12:54:52 $
+ * $Revision: 1.23 $
+ * $Date: 2006/08/23 09:45:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -93,6 +93,7 @@ public class UmsatzTypImpl extends AbstractDBObject implements UmsatzTyp
     if (days > 0)
     {
       long d = days * 24l * 60l * 60l * 1000l;
+      // TODO Auf PreparedStatement umstellen
       list.addFilter("TONUMBER(valuta) > " + (System.currentTimeMillis() - d));
     }
     ArrayList result = new ArrayList();
@@ -281,6 +282,9 @@ public class UmsatzTypImpl extends AbstractDBObject implements UmsatzTyp
 
 /**********************************************************************
  * $Log: UmsatzTypImpl.java,v $
+ * Revision 1.23  2006/08/23 09:45:14  willuhn
+ * @N Restliche DBIteratoren auf PreparedStatements umgestellt
+ *
  * Revision 1.22  2006/05/22 12:54:52  willuhn
  * @N bug 235 (thanks to Markus)
  *
