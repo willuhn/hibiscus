@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/LastschriftNew.java,v $
- * $Revision: 1.10 $
- * $Date: 2006/06/13 20:09:06 $
+ * $Revision: 1.11 $
+ * $Date: 2006/08/23 09:57:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -74,7 +74,7 @@ public class LastschriftNew extends AbstractView {
         control.handleStore();
         new LastschriftExecute().handleAction(tranfer);
       }
-    },null,true);
+    },null);
     
 		buttonArea.addButton(i18n.tr("Speichern"), 			     new Action()
     {
@@ -82,13 +82,16 @@ public class LastschriftNew extends AbstractView {
       {
       	control.handleStore();
       }
-    });
+    },null,true);
   }
 }
 
 
 /**********************************************************************
  * $Log: LastschriftNew.java,v $
+ * Revision 1.11  2006/08/23 09:57:23  willuhn
+ * @C Changed default button
+ *
  * Revision 1.10  2006/06/13 20:09:06  willuhn
  * @R Text "Bemerkung" entfernt
  *
