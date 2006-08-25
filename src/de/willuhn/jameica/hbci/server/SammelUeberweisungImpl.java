@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/SammelUeberweisungImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/08/23 09:45:13 $
+ * $Revision: 1.4 $
+ * $Date: 2006/08/25 10:13:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -48,7 +48,7 @@ public class SammelUeberweisungImpl extends AbstractSammelTransferImpl
   public DBIterator getBuchungen() throws RemoteException
   {
     DBIterator list = this.getService().createList(SammelUeberweisungBuchung.class);
-    list.addFilter("sueberweisung_id = ?", new Object[]{this.getID()});
+    list.addFilter("sueberweisung_id = " + this.getID());
     return list;
   }
 
@@ -67,6 +67,9 @@ public class SammelUeberweisungImpl extends AbstractSammelTransferImpl
 
 /*****************************************************************************
  * $Log: SammelUeberweisungImpl.java,v $
+ * Revision 1.4  2006/08/25 10:13:43  willuhn
+ * @B Fremdschluessel NICHT mittels PreparedStatement, da die sonst gequotet und von McKoi nicht gefunden werden. BUGZILLA 278
+ *
  * Revision 1.3  2006/08/23 09:45:13  willuhn
  * @N Restliche DBIteratoren auf PreparedStatements umgestellt
  *

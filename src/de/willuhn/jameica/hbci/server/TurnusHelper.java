@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/TurnusHelper.java,v $
- * $Revision: 1.12 $
- * $Date: 2006/08/23 09:45:13 $
+ * $Revision: 1.13 $
+ * $Date: 2006/08/25 10:13:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -47,7 +47,6 @@ public class TurnusHelper
 		if ("W".equalsIgnoreCase(d.timeunit)) ze = Turnus.ZEITEINHEIT_WOECHENTLICH;
 
 		DBIterator list = Settings.getDBService().createList(Turnus.class);
-    // TODO Auf PreparedStatement umstellen
 		list.addFilter("zeiteinheit = " + ze);
 		list.addFilter("intervall = " + d.turnus);
 		list.addFilter("tag = " + d.execday);
@@ -186,6 +185,9 @@ public class TurnusHelper
 
 /**********************************************************************
  * $Log: TurnusHelper.java,v $
+ * Revision 1.13  2006/08/25 10:13:43  willuhn
+ * @B Fremdschluessel NICHT mittels PreparedStatement, da die sonst gequotet und von McKoi nicht gefunden werden. BUGZILLA 278
+ *
  * Revision 1.12  2006/08/23 09:45:13  willuhn
  * @N Restliche DBIteratoren auf PreparedStatements umgestellt
  *

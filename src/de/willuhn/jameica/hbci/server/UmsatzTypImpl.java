@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.23 $
- * $Date: 2006/08/23 09:45:14 $
+ * $Revision: 1.24 $
+ * $Date: 2006/08/25 10:13:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,7 @@
 package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -93,8 +94,7 @@ public class UmsatzTypImpl extends AbstractDBObject implements UmsatzTyp
     if (days > 0)
     {
       long d = days * 24l * 60l * 60l * 1000l;
-      // TODO Auf PreparedStatement umstellen
-      list.addFilter("TONUMBER(valuta) > " + (System.currentTimeMillis() - d));
+      list.addFilter("valuta > ?", new Object[]{new Date((System.currentTimeMillis() - d))});
     }
     ArrayList result = new ArrayList();
     while (list.hasNext())
@@ -282,6 +282,9 @@ public class UmsatzTypImpl extends AbstractDBObject implements UmsatzTyp
 
 /**********************************************************************
  * $Log: UmsatzTypImpl.java,v $
+ * Revision 1.24  2006/08/25 10:13:43  willuhn
+ * @B Fremdschluessel NICHT mittels PreparedStatement, da die sonst gequotet und von McKoi nicht gefunden werden. BUGZILLA 278
+ *
  * Revision 1.23  2006/08/23 09:45:14  willuhn
  * @N Restliche DBIteratoren auf PreparedStatements umgestellt
  *

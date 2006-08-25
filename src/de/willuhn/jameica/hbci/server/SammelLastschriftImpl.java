@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/SammelLastschriftImpl.java,v $
- * $Revision: 1.14 $
- * $Date: 2006/08/23 09:45:14 $
+ * $Revision: 1.15 $
+ * $Date: 2006/08/25 10:13:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -48,7 +48,7 @@ public class SammelLastschriftImpl extends AbstractSammelTransferImpl
   public DBIterator getBuchungen() throws RemoteException
   {
     DBIterator list = this.getService().createList(SammelLastBuchung.class);
-    list.addFilter("slastschrift_id = ?", new Object[]{this.getID()});
+    list.addFilter("slastschrift_id = " + this.getID());
     return list;
   }
 
@@ -68,6 +68,9 @@ public class SammelLastschriftImpl extends AbstractSammelTransferImpl
 
 /*****************************************************************************
  * $Log: SammelLastschriftImpl.java,v $
+ * Revision 1.15  2006/08/25 10:13:43  willuhn
+ * @B Fremdschluessel NICHT mittels PreparedStatement, da die sonst gequotet und von McKoi nicht gefunden werden. BUGZILLA 278
+ *
  * Revision 1.14  2006/08/23 09:45:14  willuhn
  * @N Restliche DBIteratoren auf PreparedStatements umgestellt
  *

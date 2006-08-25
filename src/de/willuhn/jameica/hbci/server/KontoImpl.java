@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.70 $
- * $Date: 2006/08/23 09:45:13 $
+ * $Revision: 1.71 $
+ * $Date: 2006/08/25 10:13:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -339,7 +339,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
   public DBIterator getUmsaetze() throws RemoteException
   {
     DBIterator list = getService().createList(Umsatz.class);
-    list.addFilter("konto_id = ?", new Object[]{getID()});
+    list.addFilter("konto_id = " + getID());
     list.setOrder("ORDER BY TONUMBER(valuta), id DESC");
     return list;
   }
@@ -354,9 +354,8 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
     long d = days * 24l * 60l * 60l * 1000l;
     DBIterator list = getService().createList(Umsatz.class);
-    list.addFilter("konto_id = ?", new Object[]{getID()});
-    // TODO Auf PreparedStatement umstellen
-    list.addFilter("TONUMBER(valuta) > " + (System.currentTimeMillis() - d));
+    list.addFilter("konto_id = " + getID());
+    list.addFilter("valuta > ?", new Object[]{new java.sql.Date((System.currentTimeMillis() - d))});
     list.setOrder("ORDER BY TONUMBER(valuta), id DESC");
     return list;
   }
@@ -367,10 +366,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
   public DBIterator getUmsaetze(Date start, Date end) throws RemoteException
   {
     DBIterator list = getService().createList(Umsatz.class);
-    list.addFilter("konto_id = ?", new Object[]{getID()});
-    // TODO Auf PreparedStatement umstellen
-    if (start != null) list.addFilter("TONUMBER(valuta) >= " + start.getTime());
-    if (end != null) list.addFilter("TONUMBER(valuta) <= " + end.getTime());
+    list.addFilter("konto_id = " + getID());
+    if (start != null) list.addFilter("valuta >= ?", new Object[]{new java.sql.Date(start.getTime())});
+    if (end != null) list.addFilter("valuta <= ?", new Object[]{new java.sql.Date(end.getTime())});
     list.setOrder("ORDER BY TONUMBER(valuta), id DESC");
     return list;
   }
@@ -381,7 +379,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
   public DBIterator getUeberweisungen() throws RemoteException
   {
     DBIterator list = getService().createList(Ueberweisung.class);
-    list.addFilter("konto_id = ?", new Object[]{getID()});
+    list.addFilter("konto_id = " + getID());
     list.setOrder("ORDER BY TONUMBER(termin) DESC");
     return list;
   }
@@ -392,7 +390,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
   public DBIterator getDauerauftraege() throws RemoteException
   {
     DBIterator list = getService().createList(Dauerauftrag.class);
-    list.addFilter("konto_id = ?", new Object[]{getID()});
+    list.addFilter("konto_id = " + getID());
     return list;
   }
 
@@ -402,7 +400,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
   public DBIterator getLastschriften() throws RemoteException
   {
     DBIterator list = getService().createList(Lastschrift.class);
-    list.addFilter("konto_id = ?", new Object[]{getID()});
+    list.addFilter("konto_id = " + getID());
     return list;
   }
 
@@ -412,7 +410,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
   public DBIterator getSammelLastschriften() throws RemoteException
   {
     DBIterator list = getService().createList(SammelLastschrift.class);
-    list.addFilter("konto_id = ?", new Object[]{getID()});
+    list.addFilter("konto_id = " + getID());
     return list;
   }
 
@@ -422,7 +420,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
   public DBIterator getSammelUeberweisungen() throws RemoteException
   {
     DBIterator list = getService().createList(SammelUeberweisung.class);
-    list.addFilter("konto_id = ?", new Object[]{getID()});
+    list.addFilter("konto_id = " + getID());
     return list;
   }
 
@@ -448,7 +446,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
   public DBIterator getProtokolle() throws RemoteException
   {
     DBIterator list = getService().createList(Protokoll.class);
-    list.addFilter("konto_id = ?", new Object[]{getID()});
+    list.addFilter("konto_id = " + getID());
     list.setOrder("ORDER BY TONUMBER(datum) DESC");
     return list;
   }
@@ -691,6 +689,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*******************************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.71  2006/08/25 10:13:43  willuhn
+ * @B Fremdschluessel NICHT mittels PreparedStatement, da die sonst gequotet und von McKoi nicht gefunden werden. BUGZILLA 278
+ *
  * Revision 1.70  2006/08/23 09:45:13  willuhn
  * @N Restliche DBIteratoren auf PreparedStatements umgestellt
  *
