@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.45 $
- * $Date: 2006/08/03 15:32:35 $
+ * $Revision: 1.46 $
+ * $Date: 2006/08/28 23:41:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -165,7 +165,7 @@ public class SettingsControl extends AbstractControl {
 	{
 		if (buchungSollFg != null)
 			return buchungSollFg;
-		buchungSollFg = new ColorInput(Settings.getBuchungSollForeground());
+		buchungSollFg = new ColorInput(Settings.getBuchungSollForeground(),false);
 		return buchungSollFg;
 	}
 
@@ -177,7 +177,7 @@ public class SettingsControl extends AbstractControl {
 	{
 		if (buchungHabenFg != null)
 			return buchungHabenFg;
-		buchungHabenFg = new ColorInput(Settings.getBuchungHabenForeground());
+		buchungHabenFg = new ColorInput(Settings.getBuchungHabenForeground(),true);
 		return buchungHabenFg;
 	}
 
@@ -189,7 +189,7 @@ public class SettingsControl extends AbstractControl {
 	{
 		if (ueberfaelligFg != null)
 			return ueberfaelligFg;
-		ueberfaelligFg = new ColorInput(Settings.getUeberfaelligForeground());
+		ueberfaelligFg = new ColorInput(Settings.getUeberfaelligForeground(),true);
 		return ueberfaelligFg;
 	}
 
@@ -248,6 +248,9 @@ public class SettingsControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.46  2006/08/28 23:41:44  willuhn
+ * @N ColorInput verbessert
+ *
  * Revision 1.45  2006/08/03 15:32:35  willuhn
  * @N Bug 62
  *
