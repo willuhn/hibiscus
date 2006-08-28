@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/SynchronizeEngine.java,v $
- * $Revision: 1.6 $
- * $Date: 2006/04/18 22:38:16 $
+ * $Revision: 1.7 $
+ * $Date: 2006/08/28 21:28:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -106,7 +106,7 @@ public class SynchronizeEngine
   public GenericIterator getSyncronizeKonten() throws RemoteException
   {
     DBIterator konten = Settings.getDBService().createList(Konto.class);
-    konten.addFilter("synchronize = 1");
+    konten.addFilter("synchronize = 1 or synchronize is null"); // BUGZILLA 277
     return konten;
   }
 
@@ -213,6 +213,9 @@ public class SynchronizeEngine
 
 /**********************************************************************
  * $Log: SynchronizeEngine.java,v $
+ * Revision 1.7  2006/08/28 21:28:26  willuhn
+ * @B bug 277
+ *
  * Revision 1.6  2006/04/18 22:38:16  willuhn
  * @N bug 227
  *
