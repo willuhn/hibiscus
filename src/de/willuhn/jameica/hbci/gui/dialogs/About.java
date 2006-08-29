@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/About.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/11/07 18:51:28 $
+ * $Revision: 1.2 $
+ * $Date: 2006/08/29 11:16:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,7 +13,6 @@
 package de.willuhn.jameica.hbci.gui.dialogs;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
@@ -23,6 +22,9 @@ import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.internal.action.Program;
 import de.willuhn.jameica.gui.parts.FormTextPart;
 import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.system.Application;
@@ -54,29 +56,31 @@ public class About extends AbstractDialog
 
     setTitle(i18n.tr("About"));
 
-    Label l = new Label(parent,SWT.BORDER);
-    l.setImage(new Image(GUI.getDisplay(),getClass().getClassLoader().getResourceAsStream("img/hibiscus.jpg")));
+    Label l = GUI.getStyleFactory().createLabel(parent,SWT.BORDER);
+    l.setImage(SWTUtil.getImage("hibiscus.jpg"));
 
+    Container container = new LabelGroup(parent,i18n.tr("About"),true);
+    
     FormTextPart text = new FormTextPart();
     text.setText("<form>" +
       "<p><b>Hibiscus - HBCI-Onlinebanking für Jameica</b></p>" +
-      "<br/><p>Licence: GPL [<a href=\"" + Program.class.getName() + "\">http://www.gnu.org/copyleft/gpl.html</a>]</p>" +
-      "<br/><p>Copyright by Olaf Willuhn [<a href=\"" + Program.class.getName() + "\">mailto:hibiscus@willuhn.de</a>]</p>" +
+      "<p>Licence: GPL [<a href=\"" + Program.class.getName() + "\">http://www.gnu.org/copyleft/gpl.html</a>]</p>" +
+      "<p>Copyright by Olaf Willuhn [<a href=\"" + Program.class.getName() + "\">mailto:hibiscus@willuhn.de</a>]</p>" +
       "<p><a href=\"" + Program.class.getName() + "\">http://www.willuhn.de/projects/hibiscus/</a></p>" +
-      "<br/><p>Version: " + plugin.getManifest().getVersion() + "</p>" +
-      "<br/><p>Build: " + plugin.getBuildnumber() + " [Datum " + plugin.getBuildDate() + "]</p>" +
+      "<p>Version: " + plugin.getManifest().getVersion() + "</p>" +
+      "<p>Build: " + plugin.getBuildnumber() + " [Datum " + plugin.getBuildDate() + "]</p>" +
       "</form>");
 
-    text.paint(parent);
+    container.addPart(text);
 
-    ButtonArea buttons = new ButtonArea(parent,1);
-    buttons.addButton("   " + i18n.tr("OK") + "   ",new Action() {
+    ButtonArea buttons = container.createButtonArea(1);
+    buttons.addButton("   " + i18n.tr("Schliessen") + "   ",new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         close();
       }
     },null,true);
-
+    setSize(SWT.DEFAULT,460); // BUGZILLA 269
   }
 
   /**
@@ -92,6 +96,9 @@ public class About extends AbstractDialog
 
 /**********************************************************************
  * $Log: About.java,v $
+ * Revision 1.2  2006/08/29 11:16:56  willuhn
+ * @B Bug 269
+ *
  * Revision 1.1  2005/11/07 18:51:28  willuhn
  * *** empty log message ***
  *
