@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/VelocityExporter.java,v $
- * $Revision: 1.8 $
- * $Date: 2006/03/27 22:36:04 $
+ * $Revision: 1.9 $
+ * $Date: 2006/09/05 13:56:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -147,7 +147,7 @@ public class VelocityExporter implements Exporter
     if (loaded != null)
       return loaded;
 
-    Logger.info("looking velocity templates for object type " + type.getClass());
+    Logger.info("looking velocity templates for object type " + type);
     FileFinder finder = new FileFinder(this.templateDir);
     String cn = type.getName().replaceAll("\\.","\\\\.");
     finder.matches(cn + ".*?\\.vm$");
@@ -226,6 +226,9 @@ public class VelocityExporter implements Exporter
 
 /**********************************************************************
  * $Log: VelocityExporter.java,v $
+ * Revision 1.9  2006/09/05 13:56:33  willuhn
+ * @B Class#getClass() allways returns "java.lang.Class" ;)
+ *
  * Revision 1.8  2006/03/27 22:36:04  willuhn
  * *** empty log message ***
  *
