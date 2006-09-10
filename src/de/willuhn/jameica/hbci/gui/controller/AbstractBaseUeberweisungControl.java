@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractBaseUeberweisungControl.java,v $
- * $Revision: 1.8 $
- * $Date: 2006/02/20 17:58:48 $
+ * $Revision: 1.9 $
+ * $Date: 2006/09/10 12:12:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,8 +20,8 @@ import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.dialogs.CalendarDialog;
 import de.willuhn.jameica.gui.input.CheckboxInput;
+import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
@@ -36,8 +36,8 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
 {
 
 	// Eingabe-Felder
-	private DialogInput termin = null;
-	private Input comment			 = null;
+	private DateInput termin = null;
+	private Input comment	   = null;
 	
   /**
    * ct.
@@ -75,41 +75,39 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public DialogInput getTermin() throws RemoteException
+  public DateInput getTermin() throws RemoteException
 	{
 		final Terminable bu = (Terminable) getTransfer();
 
 		if (termin != null)
 			return termin;
-		CalendarDialog cd = new CalendarDialog(CalendarDialog.POSITION_MOUSE);
-		cd.setTitle(i18n.tr("Termin"));
-    cd.setText(i18n.tr("Bitte wählen Sie einen Termin"));
-		cd.addCloseListener(new Listener() {
-			public void handleEvent(Event event) {
-				if (event == null || event.data == null)
-					return;
-				Date choosen = (Date) event.data;
-				termin.setText(HBCI.DATEFORMAT.format(choosen));
+    
+    Date d = bu.getTermin();
+    if (d == null)
+      d = new Date();
 
-				try {
-					// Wenn das neue Datum spaeter als das aktuelle ist,
-					// nehmen wir den Kommentar weg
-					if (bu.ueberfaellig() && choosen.after(new Date()));
-						getComment().setValue("");
-					if (choosen.before(new Date()))
-						getComment().setValue(i18n.tr("Der Auftrag ist überfällig."));
-				}
-				catch (RemoteException e) {/*ignore*/}
-			}
-		});
+    this.termin = new DateInput(d,HBCI.DATEFORMAT);
+    this.termin.setTitle(i18n.tr("Termin"));
+    this.termin.setText(i18n.tr("Bitte wählen Sie einen Termin"));
+    this.termin.setComment("");
+    this.termin.addListener(new Listener() {
+      public void handleEvent(Event event)
+      {
+        Date date = (Date) termin.getValue();
+        if (date == null)
+          return;
 
-		Date d = bu.getTermin();
-		if (d == null)
-			d = new Date();
-		cd.setDate(d);
-		termin = new DialogInput(HBCI.DATEFORMAT.format(d),cd);
-		termin.disableClientControl();
-		termin.setValue(d);
+        try {
+          // Wenn das neue Datum spaeter als das aktuelle ist,
+          // nehmen wir den Kommentar weg
+          if (bu.ueberfaellig() && date.after(new Date()));
+            getComment().setValue("");
+          if (date.before(new Date()))
+            getComment().setValue(i18n.tr("Der Auftrag ist überfällig."));
+        }
+        catch (RemoteException e) {/*ignore*/}
+      }
+    });
 
 		if (bu.ausgefuehrt())
 			termin.disable();
@@ -135,15 +133,8 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
 			Date termin = (Date) getTermin().getValue();
 			if (termin == null)
 			{
-				try
-				{
-					termin = HBCI.DATEFORMAT.parse(getTermin().getText());
-				}
-				catch (Exception e)
-				{
-					GUI.getView().setErrorText("Bitte geben Sie einen Termin ein.");
-					return false;
-				}
+			  GUI.getView().setErrorText("Bitte geben Sie einen Termin ein.");
+			  return false;
 			}
 			bu.setTermin(termin);
 			return super.handleStore();
@@ -257,6 +248,9 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
 
 /**********************************************************************
  * $Log: AbstractBaseUeberweisungControl.java,v $
+ * Revision 1.9  2006/09/10 12:12:41  willuhn
+ * @N Umstellung auf neues DateInput
+ *
  * Revision 1.8  2006/02/20 17:58:48  willuhn
  * @B bug 201
  *
