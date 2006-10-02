@@ -81,7 +81,7 @@
 
 		<mkdir dir="${class.dir}" />
 
-		<javac debug="true" debuglevel="lines,vars,source" deprecation="true" destdir="${class.dir}" srcdir="${src.dir}">
+		<javac debug="true" debuglevel="lines,vars,source" source="1.4" target="1.4" encoding="ISO-8859-1" deprecation="true" destdir="${class.dir}" srcdir="${src.dir}">
 			<classpath refid="compilepath" />
 		</javac>
 
