@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Attic/Adresse.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/10/03 16:17:58 $
+ * $Revision: 1.5 $
+ * $Date: 2006/10/05 16:42:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ import java.rmi.RemoteException;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
+import de.willuhn.util.ApplicationException;
 
 /**
  * Bildet einen Empfaenger ab.
@@ -100,11 +101,23 @@ public interface Adresse extends DBObject {
    * @throws RemoteException
    */
   public DBIterator getSammelUeberweisungBuchungen() throws RemoteException;
+
+  /**
+   * Erlaubt das Setzen von Attributen des Umsatzes ueber diese generische Funktion.
+   * @param name Name des Attributs.
+   * @param value Wert.
+   * @throws RemoteException
+   * @throws ApplicationException
+   */
+  public void setGenericAttribute(String name, String value) throws RemoteException, ApplicationException;
 }
 
 
 /**********************************************************************
  * $Log: Adresse.java,v $
+ * Revision 1.5  2006/10/05 16:42:28  willuhn
+ * @N CSV-Import/Export fuer Adressen
+ *
  * Revision 1.4  2005/10/03 16:17:58  willuhn
  * *** empty log message ***
  *

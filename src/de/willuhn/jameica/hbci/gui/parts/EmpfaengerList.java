@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/EmpfaengerList.java,v $
- * $Revision: 1.9 $
- * $Date: 2006/08/05 20:44:39 $
+ * $Revision: 1.10 $
+ * $Date: 2006/10/05 16:42:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,12 +16,15 @@ package de.willuhn.jameica.hbci.gui.parts;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.GenericIterator;
+import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
@@ -31,7 +34,10 @@ import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.io.ImportMessage;
 import de.willuhn.jameica.hbci.rmi.Adresse;
+import de.willuhn.jameica.messaging.Message;
+import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
@@ -47,6 +53,8 @@ public class EmpfaengerList extends TablePart implements Part
   private ArrayList empfaenger  = null;
   
   private I18N i18n = null;
+
+  private MessageConsumer mc = null;
 
   /**
    * @param action
@@ -110,8 +118,15 @@ public class EmpfaengerList extends TablePart implements Part
     // BUGZILLA 84 http://www.willuhn.de/bugzilla/show_bug.cgi?id=84
     setRememberOrder(true);
     
+    setMulti(true);
+    
     // BUGZILLA 233 http://www.willuhn.de/bugzilla/show_bug.cgi?id=233
     setRememberColWidths(true);
+
+    // Wir erstellen noch einen Message-Consumer, damit wir ueber neu eintreffende
+    // Empfaengerninformiert werden.
+    this.mc = new EmpfaengerMessageConsumer();
+    Application.getMessagingFactory().registerMessageConsumer(this.mc);
 
   }
 
@@ -128,6 +143,14 @@ public class EmpfaengerList extends TablePart implements Part
 
     this.search.getControl().addKeyListener(new KL());
 
+    // Damit wir den MessageConsumer beim Schliessen wieder entfernen
+    parent.addDisposeListener(new DisposeListener() {
+      public void widgetDisposed(DisposeEvent e)
+      {
+        Application.getMessagingFactory().unRegisterMessageConsumer(mc);
+      }
+    });
+
     super.paint(parent);
 
     // Wir kopieren den ganzen Kram in eine ArrayList, damit die
@@ -141,6 +164,66 @@ public class EmpfaengerList extends TablePart implements Part
     }
   }
 
+  
+  /**
+   * Hilfsklasse damit wir ueber importierte Empfaenger informiert werden.
+   */
+  public class EmpfaengerMessageConsumer implements MessageConsumer
+  {
+    /**
+     * ct.
+     */
+    public EmpfaengerMessageConsumer()
+    {
+      super();
+    }
+
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
+     */
+    public Class[] getExpectedMessageTypes()
+    {
+      return new Class[]{ImportMessage.class};
+    }
+
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
+     */
+    public void handleMessage(Message message) throws Exception
+    {
+      if (message == null || !(message instanceof ImportMessage))
+        return;
+      final GenericObject o = ((ImportMessage)message).getImportedObject();
+      
+      if (o == null || !(o instanceof Adresse))
+        return;
+      
+      GUI.getDisplay().syncExec(new Runnable() {
+        public void run()
+        {
+          try
+          {
+            addItem(o);
+          }
+          catch (Exception e)
+          {
+            Logger.error("unable to add object to list",e);
+          }
+        }
+      });
+    }
+
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
+     */
+    public boolean autoRegister()
+    {
+      return false;
+    }
+  }
+
+  
+  
   // BUGZILLA 5
   private class KL extends KeyAdapter
   {
@@ -248,6 +331,9 @@ public class EmpfaengerList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: EmpfaengerList.java,v $
+ * Revision 1.10  2006/10/05 16:42:28  willuhn
+ * @N CSV-Import/Export fuer Adressen
+ *
  * Revision 1.9  2006/08/05 20:44:39  willuhn
  * @B Bug 256
  *

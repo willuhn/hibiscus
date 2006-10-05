@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/EmpfaengerList.java,v $
- * $Revision: 1.16 $
- * $Date: 2006/06/06 22:41:26 $
+ * $Revision: 1.17 $
+ * $Date: 2006/10/05 16:42:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,8 @@ import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
+import de.willuhn.jameica.hbci.gui.action.EmpfaengerExport;
+import de.willuhn.jameica.hbci.gui.action.EmpfaengerImport;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerNew;
 import de.willuhn.jameica.hbci.gui.action.LastschriftNew;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungNew;
@@ -50,7 +52,10 @@ public class EmpfaengerList extends ContextMenu implements Extendable
 		addItem(ContextMenuItem.SEPARATOR);
 		addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete()));
     addItem(ContextMenuItem.SEPARATOR);
-		addItem(new ContextMenuItem(i18n.tr("Neue Adresse..."), new ENeu()));
+    addItem(new ContextMenuItem(i18n.tr("Neue Adresse..."), new ENeu()));
+    addItem(ContextMenuItem.SEPARATOR);
+    addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new EmpfaengerExport()));
+    addItem(new ContextMenuItem(i18n.tr("Importieren..."),new EmpfaengerImport()));
     
     // Wir geben das Context-Menu jetzt noch zur Erweiterung frei.
     ExtensionRegistry.extend(this);
@@ -107,6 +112,9 @@ public class EmpfaengerList extends ContextMenu implements Extendable
 
 /**********************************************************************
  * $Log: EmpfaengerList.java,v $
+ * Revision 1.17  2006/10/05 16:42:28  willuhn
+ * @N CSV-Import/Export fuer Adressen
+ *
  * Revision 1.16  2006/06/06 22:41:26  willuhn
  * @N Generische Loesch-Action fuer DBObjects (DBObjectDelete)
  * @N Live-Aktualisierung der Tabelle mit den importierten Ueberweisungen

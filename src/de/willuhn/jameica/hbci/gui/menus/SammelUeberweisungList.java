@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/SammelUeberweisungList.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/08/07 14:45:18 $
+ * $Revision: 1.5 $
+ * $Date: 2006/10/05 16:42:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -90,8 +90,8 @@ public class SammelUeberweisungList extends ContextMenu
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new ContextMenuItem(i18n.tr("Neue Sammel-Überweisung..."), new SNeu()));
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new ContextMenuItem(i18n.tr("Importieren..."),new SammelUeberweisungImport()));
     addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new SammelUeberweisungExport()));
+    addItem(new ContextMenuItem(i18n.tr("Importieren..."),new SammelUeberweisungImport()));
 		
 	}
 
@@ -151,6 +151,9 @@ public class SammelUeberweisungList extends ContextMenu
 
 /**********************************************************************
  * $Log: SammelUeberweisungList.java,v $
+ * Revision 1.5  2006/10/05 16:42:28  willuhn
+ * @N CSV-Import/Export fuer Adressen
+ *
  * Revision 1.4  2006/08/07 14:45:18  willuhn
  * @B typos
  *

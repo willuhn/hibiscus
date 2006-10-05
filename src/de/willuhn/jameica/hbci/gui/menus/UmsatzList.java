@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UmsatzList.java,v $
- * $Revision: 1.20 $
- * $Date: 2006/08/02 17:49:44 $
+ * $Revision: 1.21 $
+ * $Date: 2006/10/05 16:42:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -61,8 +61,8 @@ public class UmsatzList extends ContextMenu implements Extendable
     // BUGZILLA #70 http://www.willuhn.de/bugzilla/show_bug.cgi?id=70
     addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete()));
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new CheckedContextMenuItem(i18n.tr("Umsätze exportieren..."),new UmsatzExport()));
-    addItem(new ContextMenuItem(i18n.tr("Umsätze importieren..."),new UmsatzImport()
+    addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new UmsatzExport()));
+    addItem(new ContextMenuItem(i18n.tr("Importieren..."),new UmsatzImport()
     {
 
       public void handleAction(Object context) throws ApplicationException
@@ -109,6 +109,9 @@ public class UmsatzList extends ContextMenu implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.21  2006/10/05 16:42:28  willuhn
+ * @N CSV-Import/Export fuer Adressen
+ *
  * Revision 1.20  2006/08/02 17:49:44  willuhn
  * @B Bug 255
  * @N Erkennung des Kontos beim Import von Umsaetzen aus dem Kontextmenu heraus

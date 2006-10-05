@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AdresseImpl.java,v $
- * $Revision: 1.11 $
- * $Date: 2006/08/23 09:45:14 $
+ * $Revision: 1.12 $
+ * $Date: 2006/10/05 16:42:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -183,11 +183,25 @@ public class AdresseImpl extends AbstractDBObject implements Adresse {
     return buchungen;
   }
 
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setAttribute(java.lang.String, java.lang.String)
+   */
+  public void setGenericAttribute(String name, String value) throws RemoteException, ApplicationException
+  {
+    if (name == null)
+      return;
+    
+    super.setAttribute(name,value);
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: AdresseImpl.java,v $
+ * Revision 1.12  2006/10/05 16:42:28  willuhn
+ * @N CSV-Import/Export fuer Adressen
+ *
  * Revision 1.11  2006/08/23 09:45:14  willuhn
  * @N Restliche DBIteratoren auf PreparedStatements umgestellt
  *

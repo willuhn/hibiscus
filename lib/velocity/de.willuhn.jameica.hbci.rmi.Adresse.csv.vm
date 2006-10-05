@@ -1,0 +1,3 @@
+#foreach($adresse in $objects)
+$!{adresse.Kontonummer};$!{adresse.BLZ};$!{adresse.Name};$!{adresse.Kommentar}
+#end
