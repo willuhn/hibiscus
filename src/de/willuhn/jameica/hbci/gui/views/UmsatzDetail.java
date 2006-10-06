@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzDetail.java,v $
- * $Revision: 1.25 $
- * $Date: 2006/08/05 20:44:39 $
+ * $Revision: 1.26 $
+ * $Date: 2006/10/06 15:14:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ package de.willuhn.jameica.hbci.gui.views;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
@@ -83,14 +84,26 @@ public class UmsatzDetail extends AbstractView {
 
     // BUGZILLA 75 http://www.willuhn.de/bugzilla/show_bug.cgi?id=75
     Umsatz u = control.getUmsatz();
-    if (u.getZweck() == null || u.getZweck().length() < 4 || u.hasChangedByUser())
+    String z1 = u.getZweck();
+    String z2 = u.getZweck2();
+
+    // Wir erlauben das Bearbeiten des Verwendungszwecks1 in 3 Faellen:
+    // 1) Der Umsatz hat bisher keinen
+    // 2) Der Verwendungszweck ist kuerzer als 4 Zeichen
+    // 3) Der Verwendungszweck wurde vom User vorher schonmal geaendert
+    if (z1 == null || z1.length() < 4 || u.hasChangedByUser())
     {
       zweck.addLabelPair(i18n.tr("Verwendungszweck"),control.getZweck());
+
+      // BUGZILLA 263 http://www.willuhn.de/bugzilla/show_bug.cgi?id=263
+      if (z2 != null && z2.length() > 0)
+      {
+        zweck.addLabelPair(i18n.tr("Weiterer Verwendungszweck"),new LabelInput(z2));
+      }
     }
     else
     {
-      zweck.addText(u.getZweck(),true);
-      String z2 = u.getZweck2();
+      zweck.addText(z1,true);
       if (z2 != null && z2.length() > 0)
       {
         zweck.addText(z2,true);
@@ -122,6 +135,9 @@ public class UmsatzDetail extends AbstractView {
 
 /**********************************************************************
  * $Log: UmsatzDetail.java,v $
+ * Revision 1.26  2006/10/06 15:14:38  willuhn
+ * @B bug 263
+ *
  * Revision 1.25  2006/08/05 20:44:39  willuhn
  * @B Bug 256
  *
