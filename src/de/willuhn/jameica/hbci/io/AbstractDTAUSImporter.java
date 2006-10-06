@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/AbstractDTAUSImporter.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/08/07 14:31:59 $
+ * $Revision: 1.5 $
+ * $Date: 2006/10/06 14:18:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,9 +26,10 @@ import de.jost_net.OBanToo.Dtaus.ESatz;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.datasource.rmi.DBService;
-import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
+import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.ProgressMonitor;
@@ -38,6 +39,8 @@ import de.willuhn.util.ProgressMonitor;
  */
 public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements Importer
 {
+  private final static Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
+
   /**
    * ct.
    */
@@ -58,7 +61,10 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
       if (format == null || !(format instanceof MyIOFormat))
         throw new ApplicationException(i18n.tr("Unbekanntes Import-Format"));
       
-      DtausDateiParser parser = new DtausDateiParser(is);
+      int toleranz = settings.getInt("dtaus.fehlertoleranz",DtausDateiParser.SPEZIFIKATIONSKONFORM);
+      
+      Logger.info("dtaus error tolerance: " + toleranz);
+      DtausDateiParser parser = new DtausDateiParser(is,toleranz);
       
       int files = parser.getAnzahlLogischerDateien();
       
@@ -79,7 +85,7 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
         int count = 0;
         int success = 0;
         
-        DBService service = Settings.getDBService();
+        DBService service = de.willuhn.jameica.hbci.Settings.getDBService();
 
         CSatz c = null;
         while ((c = parser.next()) != null)
@@ -191,6 +197,9 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
 
 /*********************************************************************
  * $Log: AbstractDTAUSImporter.java,v $
+ * Revision 1.5  2006/10/06 14:18:01  willuhn
+ * @N neuer Parameter "dtaus.fehlertoleranz" in de.willuhn.jameica.hbci.HBCI.properties
+ *
  * Revision 1.4  2006/08/07 14:31:59  willuhn
  * @B misc bugfixing
  * @C Redesign des DTAUS-Imports fuer Sammeltransfers
