@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.47 $
- * $Date: 2006/08/29 11:16:56 $
+ * $Revision: 1.48 $
+ * $Date: 2006/10/06 13:08:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -47,6 +47,7 @@ public class SettingsControl extends AbstractControl {
 	// Eingabe-Felder
 	private CheckboxInput onlineMode     		= null;
 	private CheckboxInput checkPin     			= null;
+  private CheckboxInput cachePin          = null;
   private CheckboxInput decimalGrouping   = null;
   private CheckboxInput kontoCheck        = null;
 
@@ -144,7 +145,19 @@ public class SettingsControl extends AbstractControl {
 		return checkPin;
 	}
 
-	/**
+  /**
+   * Liefert eine Checkbox zur Aktivierung oder Deaktivierung des Pin-Caches.
+   * @return Checkbox.
+   */
+  public CheckboxInput getCachePin()
+  {
+    if (cachePin != null)
+      return cachePin;
+    cachePin = new CheckboxInput(Settings.getCachePin());
+    return cachePin;
+  }
+
+  /**
 	 * Eingabe-Feld fuer ein Limit bei Ueberweisungen.
    * @return Eingabe-Feld.
    */
@@ -207,6 +220,7 @@ public class SettingsControl extends AbstractControl {
 
 		Settings.setOnlineMode(((Boolean)getOnlineMode().getValue()).booleanValue());
 		Settings.setCheckPin(((Boolean)getCheckPin().getValue()).booleanValue());
+    Settings.setCachePin(((Boolean)getCachePin().getValue()).booleanValue());
     Settings.setDecimalGrouping(((Boolean)getDecimalGrouping().getValue()).booleanValue());
     Settings.setKontoCheck(((Boolean)getKontoCheck().getValue()).booleanValue());
 		
@@ -248,6 +262,9 @@ public class SettingsControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.48  2006/10/06 13:08:01  willuhn
+ * @B Bug 185, 211
+ *
  * Revision 1.47  2006/08/29 11:16:56  willuhn
  * @B Bug 269
  *

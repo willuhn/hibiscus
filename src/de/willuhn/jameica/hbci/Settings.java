@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.46 $
- * $Date: 2006/08/03 15:32:35 $
+ * $Revision: 1.47 $
+ * $Date: 2006/10/06 13:08:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -197,6 +197,15 @@ public class Settings
   }
 
   /**
+   * Legt fest, ob die PIN pro Session gecached werden soll.
+   * @param cachePin true, wenn die Pin gecached werden soll.
+   */
+  public static void setCachePin(boolean cachePin)
+  {
+    settings.setAttribute("cachepin",cachePin);
+  }
+
+  /**
    * Prueft, ob ein Hash der PIN gespeichert werden soll, um sie bei
    * erneuter Eingabe auf Richtigkeit pruefen zu koennen.
    * @return true, wenn die Pin gehasht gespeichert werden soll.
@@ -206,6 +215,15 @@ public class Settings
     return settings.getBoolean("checkpin",false);
   }
   
+  /**
+   * Prueft, ob die PIN-Eingaben pro Session zwischengespeichert werden sollen.
+   * @return true, wenn die Pin gecached werden soll.
+   */
+  public static boolean getCachePin()
+  {
+    return settings.getBoolean("cachepin",false);
+  }
+
   /**
    * Prueft, ob die MD5-Checksumme der Datenbank geprueft werden soll.
    * @return true, wenn die Checksumme geprueft werden soll.
@@ -305,7 +323,7 @@ public class Settings
   {
 		if (wallet == null)
     {
-      wallet = Application.getSSLFactory().getWallet(HBCI.class);
+      wallet = new Wallet(HBCI.class);
 
       // BUGZILLA 109 http://www.willuhn.de/bugzilla/show_bug.cgi?id=109
       // TODO Altes Wallet-Format kann mal raus
@@ -338,6 +356,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.47  2006/10/06 13:08:01  willuhn
+ * @B Bug 185, 211
+ *
  * Revision 1.46  2006/08/03 15:32:35  willuhn
  * @N Bug 62
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.41 $
- * $Date: 2006/08/21 12:29:54 $
+ * $Revision: 1.42 $
+ * $Date: 2006/10/06 13:08:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,8 @@
 
 package de.willuhn.jameica.hbci;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.security.SecureRandom;
 import java.util.Date;
 import java.util.Hashtable;
@@ -30,6 +32,7 @@ import org.kapott.hbci.passport.HBCIPassportRDHNew;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.gui.DialogFactory;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
+import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Nachricht;
 import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.security.Wallet;
@@ -50,7 +53,10 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 	private I18N i18n;
 	private Hashtable accountCache = new Hashtable();
   private PassportHandle currentHandle = null;
-
+  
+  // BUGZILLA 185
+  private Hashtable pinCache = new Hashtable();
+  
   /**
    * ct.
    */
@@ -148,7 +154,26 @@ public class HBCICallbackSWT extends AbstractHBCICallback
           {
             if (pw == null || (time - askPassword < 2000) || reason == NEED_PASSPHRASE_SAVE)
             {
-              pw = reason == NEED_PASSPHRASE_LOAD ? DialogFactory.importPassport() : DialogFactory.exportPassport();
+              if (reason == NEED_PASSPHRASE_LOAD)
+              {
+                // BUGZILLA 185: Das Schluesseldisketten keine PIN
+                // haben, speichern wir hier das Passport der Datei
+                // fuer die Session zwischen
+                pw = getCachedPIN(passport);
+                
+                if (pw == null)
+                {
+                  // Wir haben kein Passwort gecached oder
+                  // die Option ist deaktiviert. Also fragen
+                  // wir den User.
+                  pw = DialogFactory.importPassport();
+                  setCachedPIN(passport,pw);
+                }
+              }
+              else
+              {
+                pw = DialogFactory.exportPassport();
+              }
               askPassword = 0;
               retData.replace(0,retData.length(),pw);
               break;
@@ -173,10 +198,19 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 
 				case NEED_SOFTPIN:
-          retData.replace(0,retData.length(),DialogFactory.getPIN(passport));
-					break;
 				case NEED_PT_PIN:
-					retData.replace(0,retData.length(),DialogFactory.getPIN(passport));
+
+          String pin = getCachedPIN(passport);
+          if (pin == null)
+          {
+            // wir haben keine zwischengespeicherte PIN
+            // oder die Option wurde deaktiviert
+            // Also fragen wir den User
+            pin = DialogFactory.getPIN(passport);
+            setCachedPIN(passport,pin);
+          }
+          // PIN zurueckliefern.
+          retData.replace(0,retData.length(),pin);
 					break;
 
         // BUGZILLA 62, 200:
@@ -482,12 +516,98 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 		}
     
   }
+  
+  /**
+   * Prueft, ob eine gespeicherte PIN fuer diesen Passport vorliegt.
+   * @param passport der Passport.
+   * @return die PIN oder null, wenn keine gefunden wurde.
+   * @throws Exception
+   */
+  private final String getCachedPIN(HBCIPassport passport) throws Exception
+  {
+    String key = getCacheKey(passport);
+
+    // immer noch keine CustomerID da? Dann geben wir auf
+    if (key == null)
+      return null;
+
+    byte[] data = (byte[]) this.pinCache.get(key);
+
+    // Haben wir Daten?
+    if (data == null)
+      return null;
+    
+    ByteArrayInputStream bis  = new ByteArrayInputStream(data);
+    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    Application.getSSLFactory().decrypt(bis,bos);
+    String s = bos.toString();
+    if (s != null && s.length() > 0)
+      return s;
+    return null;
+  }
+  
+  /**
+   * Speichert die PIN temporaer fuer diese Session.
+   * @param passport der Passport.
+   * @param pin die PIN.
+   * @throws Exception
+   */
+  private final void setCachedPIN(HBCIPassport passport, String pin) throws Exception
+  {
+    String key = getCacheKey(passport);
+    
+    if (key == null)
+      return;
+    
+    byte[] data = pin.getBytes();
+    
+    ByteArrayInputStream bis  = new ByteArrayInputStream(data);
+    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    Application.getSSLFactory().encrypt(bis,bos);
+    this.pinCache.put(key,bos.toByteArray());
+  }
+  
+  /**
+   * Hilfsfunktion zum Ermitteln des Keys, zu dem die PIN gespeichert ist.
+   * @param passport
+   * @return die PIN oder null.
+   * @throws Exception
+   */
+  private String getCacheKey(HBCIPassport passport) throws Exception
+  {
+    if (!Settings.getCachePin())
+      return null;
+    
+    // Jetzt versuchen wir den Schluessel zu ermitteln, unter dem die
+    // PIN abgelegt ist. Normalerweise wuerde ich hier einfach die
+    // CustomerID des Passports nehmen. Bei Schluesseldiskette jedoch
+    // haben wir ein Henne-Ei-Problem. Die CustomerID befindet sich
+    // in der Passport-Datei. Und an die kommen wir erst ran, nachdem
+    // der User die PIN eingegeben hat. Also nehmen wir hier alternativ
+    // die Customer-ID des Kontos - insofern eine existiert.
+    String key = null;
+    
+    if (passport != null)
+      key = passport.getCustomerId();
+
+    if (key == null || key.length() == 0)
+    {
+      Konto k = HBCIFactory.getInstance().getCurrentKonto();
+      if (k != null)
+        key = k.getKundennummer();
+    }
+
+    return key != null && key.length() > 0 ? key : null;
+  }
 
 }
 
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.42  2006/10/06 13:08:01  willuhn
+ * @B Bug 185, 211
+ *
  * Revision 1.41  2006/08/21 12:29:54  willuhn
  * @N HBCICallbackSWT.setCurrentHandle
  *
