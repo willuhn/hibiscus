@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.42 $
- * $Date: 2006/10/06 13:08:01 $
+ * $Revision: 1.43 $
+ * $Date: 2006/10/06 13:18:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -590,11 +590,25 @@ public class HBCICallbackSWT extends AbstractHBCICallback
     if (passport != null)
       key = passport.getCustomerId();
 
-    if (key == null || key.length() == 0)
+    // Ggf. noch die BLZ anhaengen.
+    // Nur zur Sicherheit, falls die Kundenkennung bei mehreren
+    // Banken existiert
+    Konto k = HBCIFactory.getInstance().getCurrentKonto();
+    if (k != null)
     {
-      Konto k = HBCIFactory.getInstance().getCurrentKonto();
-      if (k != null)
+      if (key == null)
+      {
+        // Hu? Wir haben noch nicht mal eine Kundennummer aus
+        // dem Passport? Dann holen wir gleich die aus dem
+        // Konto.
         key = k.getKundennummer();
+      }
+      
+      // Wir haengen die BLZ nur dann an, wenn wir eine Kundennummer
+      // haben. Sonst wuerde der Key nur aus der BLZ bestehen und
+      // das ist zu unsicher.
+      if (key != null && key.length() > 0)
+        key += "." + k.getBLZ();
     }
 
     return key != null && key.length() > 0 ? key : null;
@@ -605,6 +619,9 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.43  2006/10/06 13:18:06  willuhn
+ * @B Bug 185, 211 (zusaetzlicher Suffix mit BLZ)
+ *
  * Revision 1.42  2006/10/06 13:08:01  willuhn
  * @B Bug 185, 211
  *
