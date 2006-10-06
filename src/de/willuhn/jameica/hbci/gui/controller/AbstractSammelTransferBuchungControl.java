@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractSammelTransferBuchungControl.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/03/27 16:46:21 $
+ * $Revision: 1.4 $
+ * $Date: 2006/10/06 16:00:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -84,6 +84,8 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
     AdresseAuswahlDialog d = new AdresseAuswahlDialog(AdresseAuswahlDialog.POSITION_MOUSE);
     d.addCloseListener(new GegenkontoListener());
     gkNummer = new DialogInput(getBuchung().getGegenkontoNummer(),d);
+    // BUGZILLA 280
+    gkNummer.setValidChars(HBCIProperties.HBCI_KTO_VALIDCHARS);
 		return gkNummer;
 	}
 
@@ -247,6 +249,9 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferBuchungControl.java,v $
+ * Revision 1.4  2006/10/06 16:00:42  willuhn
+ * @B Bug 280
+ *
  * Revision 1.3  2006/03/27 16:46:21  willuhn
  * @N GUI polish
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EmpfaengerControl.java,v $
- * $Revision: 1.38 $
- * $Date: 2006/08/17 21:46:16 $
+ * $Revision: 1.39 $
+ * $Date: 2006/10/06 16:00:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -46,16 +46,16 @@ import de.willuhn.util.I18N;
 public class EmpfaengerControl extends AbstractControl {
 
 	// Fach-Objekte
-	private Adresse empfaenger = null;
+	private Adresse empfaenger      = null;
 	// Eingabe-Felder
-	private Input kontonummer = null;
-	private Input blz					= null;
-	private Input name				= null;
-  private Input kommentar   = null;
+	private TextInput kontonummer   = null;
+	private TextInput blz					  = null;
+	private Input name				      = null;
+  private Input kommentar         = null;
 
-  private Part list         = null;
-  private Part sammelList   = null;
-  private Part sammelList2  = null;
+  private Part list               = null;
+  private Part sammelList         = null;
+  private Part sammelList2        = null;
   private UmsatzList umsatzList   = null;
 
 	private I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
@@ -156,7 +156,9 @@ public class EmpfaengerControl extends AbstractControl {
 		if (kontonummer != null)
 			return kontonummer;
 		kontonummer = new TextInput(getEmpfaenger().getKontonummer());
-		return kontonummer;
+    // BUGZILLA 280
+    kontonummer.setValidChars(HBCIProperties.HBCI_KTO_VALIDCHARS);
+    return kontonummer;
 	}
 
   /**
@@ -182,6 +184,8 @@ public class EmpfaengerControl extends AbstractControl {
 		if (blz != null)
 			return blz;
 		blz = new TextInput(getEmpfaenger().getBLZ(),HBCIProperties.HBCI_BLZ_LENGTH);
+    // BUGZILLA 280
+    blz.setValidChars(HBCIProperties.HBCI_BLZ_VALIDCHARS);
 		blz.setComment("");
     BLZListener l = new BLZListener();
 		blz.addListener(l);
@@ -254,6 +258,9 @@ public class EmpfaengerControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: EmpfaengerControl.java,v $
+ * Revision 1.39  2006/10/06 16:00:42  willuhn
+ * @B Bug 280
+ *
  * Revision 1.38  2006/08/17 21:46:16  willuhn
  * *** empty log message ***
  *

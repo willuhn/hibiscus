@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.73 $
- * $Date: 2006/08/28 21:28:26 $
+ * $Revision: 1.74 $
+ * $Date: 2006/10/06 16:00:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -93,6 +93,10 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
       if (getBLZ() == null || getBLZ().length() == 0)
         throw new ApplicationException(i18n.tr("Bitte geben Sie eine Bankleitzahl ein."));
+
+      // BUGZILLA 280
+      HBCIProperties.checkChars(getBLZ(), HBCIProperties.HBCI_BLZ_VALIDCHARS);
+      HBCIProperties.checkChars(getKontonummer(), HBCIProperties.HBCI_KTO_VALIDCHARS);
 
       if (getKundennummer() == null || getKundennummer().length() == 0)
         throw new ApplicationException(i18n.tr("Bitte geben Sie Ihre Kundennummer ein."));
@@ -682,6 +686,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*******************************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.74  2006/10/06 16:00:42  willuhn
+ * @B Bug 280
+ *
  * Revision 1.73  2006/08/28 21:28:26  willuhn
  * @B bug 277
  *

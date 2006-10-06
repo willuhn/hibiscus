@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCIProperties.java,v $
- * $Revision: 1.16 $
- * $Date: 2006/05/11 10:57:35 $
+ * $Revision: 1.17 $
+ * $Date: 2006/10/06 16:00:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -48,6 +48,12 @@ public class HBCIProperties
    * Liste der in Bankleitzahlen erlaubten Zeichen.
    */
   public final static String HBCI_BLZ_VALIDCHARS = settings.getString("hbci.blz.validchars","0123456789"); 
+
+  /**
+   * BUGZILLA 280
+   * Liste der in Kontonummern erlaubten Zeichen.
+   */
+  public final static String HBCI_KTO_VALIDCHARS = settings.getString("hbci.kto.validchars","0123456789"); 
 
   /**
    * Maximale Text-Laenge einer Verwendungszweck-Zeile.
@@ -98,7 +104,6 @@ public class HBCIProperties
    */
   public final static int UMSATZ_DEFAULT_DAYS = settings.getInt("umsatz.default.days",30);
   
-
   /**
    * Prueft die uebergebenen Strings auf Vorhandensein nicht erlaubter Zeichen.
    * @param chars zu testende Zeichen.
@@ -113,7 +118,7 @@ public class HBCIProperties
     for (int i=0;i<c.length;++i)
     {
       if (validChars.indexOf(c[i]) == -1)
-        throw new ApplicationException(i18n.tr("Das Zeichen \"{0}\" darf nicht verwendet werden",""+c[i])); 
+        throw new ApplicationException(i18n.tr("Das Zeichen \"{0}\" darf in \"{1}\" nicht verwendet werden",new String[]{""+c[i],chars})); 
     }
   }
 
@@ -178,6 +183,9 @@ public class HBCIProperties
 
 /**********************************************************************
  * $Log: HBCIProperties.java,v $
+ * Revision 1.17  2006/10/06 16:00:42  willuhn
+ * @B Bug 280
+ *
  * Revision 1.16  2006/05/11 10:57:35  willuhn
  * @C merged Bug 232 into HEAD
  *

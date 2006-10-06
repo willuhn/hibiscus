@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.69 $
- * $Date: 2006/08/17 21:46:16 $
+ * $Revision: 1.70 $
+ * $Date: 2006/10/06 16:00:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -62,12 +62,12 @@ public class KontoControl extends AbstractControl {
 	private Konto konto 			 		= null;
 	
 	// Eingabe-Felder
-	private Input kontonummer  		= null;
-	private Input blz          		= null;
-	private Input name				 		= null;
-	private Input bezeichnung	 		= null;
-	private Input passportAuswahl = null;
-  private Input kundennummer 		= null;
+	private TextInput kontonummer  		= null;
+	private TextInput blz          		= null;
+	private Input name				 		    = null;
+	private Input bezeichnung	 		    = null;
+	private Input passportAuswahl     = null;
+  private Input kundennummer 		    = null;
   
   private LabelInput saldo			= null;
   
@@ -170,6 +170,8 @@ public class KontoControl extends AbstractControl {
 		if (kontonummer != null)
 			return kontonummer;
 		kontonummer = new TextInput(getKonto().getKontonummer());
+    // BUGZILLA 280
+    kontonummer.setValidChars(HBCIProperties.HBCI_KTO_VALIDCHARS);
 		return kontonummer;
 	}
 
@@ -250,6 +252,8 @@ public class KontoControl extends AbstractControl {
 		if (blz != null)
 			return blz;
 		blz = new TextInput(getKonto().getBLZ(),HBCIProperties.HBCI_BLZ_LENGTH);
+    // BUGZILLA 280
+    blz.setValidChars(HBCIProperties.HBCI_BLZ_VALIDCHARS);
 		blz.setComment("");
     BLZListener l = new BLZListener();
 		blz.addListener(l);
@@ -453,6 +457,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.70  2006/10/06 16:00:42  willuhn
+ * @B Bug 280
+ *
  * Revision 1.69  2006/08/17 21:46:16  willuhn
  * *** empty log message ***
  *
