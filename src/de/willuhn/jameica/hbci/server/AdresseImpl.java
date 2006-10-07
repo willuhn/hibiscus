@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AdresseImpl.java,v $
- * $Revision: 1.13 $
- * $Date: 2006/10/06 16:00:42 $
+ * $Revision: 1.14 $
+ * $Date: 2006/10/07 19:50:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -188,7 +188,7 @@ public class AdresseImpl extends AbstractDBObject implements Adresse {
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setAttribute(java.lang.String, java.lang.String)
+   * @see de.willuhn.jameica.hbci.rmi.Adresse#setGenericAttribute(java.lang.String, java.lang.String)
    */
   public void setGenericAttribute(String name, String value) throws RemoteException, ApplicationException
   {
@@ -203,6 +203,9 @@ public class AdresseImpl extends AbstractDBObject implements Adresse {
 
 /**********************************************************************
  * $Log: AdresseImpl.java,v $
+ * Revision 1.14  2006/10/07 19:50:08  willuhn
+ * @D javadoc
+ *
  * Revision 1.13  2006/10/06 16:00:42  willuhn
  * @B Bug 280
  *
