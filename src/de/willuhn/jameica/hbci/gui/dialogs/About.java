@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/About.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/08/29 11:16:56 $
+ * $Revision: 1.3 $
+ * $Date: 2006/10/07 19:35:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -68,7 +68,7 @@ public class About extends AbstractDialog
       "<p>Copyright by Olaf Willuhn [<a href=\"" + Program.class.getName() + "\">mailto:hibiscus@willuhn.de</a>]</p>" +
       "<p><a href=\"" + Program.class.getName() + "\">http://www.willuhn.de/projects/hibiscus/</a></p>" +
       "<p>Version: " + plugin.getManifest().getVersion() + "</p>" +
-      "<p>Build: " + plugin.getBuildnumber() + " [Datum " + plugin.getBuildDate() + "]</p>" +
+      "<p>Build: " + plugin.getManifest().getBuildnumber() + " [Datum " + plugin.getManifest().getBuildDate() + "]</p>" +
       "</form>");
 
     container.addPart(text);
@@ -96,6 +96,9 @@ public class About extends AbstractDialog
 
 /**********************************************************************
  * $Log: About.java,v $
+ * Revision 1.3  2006/10/07 19:35:09  willuhn
+ * @B Zugriff auf buildnumber hatte sich mit neuem Pluginloader geaendert
+ *
  * Revision 1.2  2006/08/29 11:16:56  willuhn
  * @B Bug 269
  *
