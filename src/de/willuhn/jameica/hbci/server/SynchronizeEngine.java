@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/SynchronizeEngine.java,v $
- * $Revision: 1.7 $
- * $Date: 2006/08/28 21:28:26 $
+ * $Revision: 1.8 $
+ * $Date: 2006/10/09 21:43:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,12 +31,11 @@ import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.hbci.server.hbci.synchronize.SynchronizeDauerauftragListJob;
 import de.willuhn.jameica.hbci.server.hbci.synchronize.SynchronizeDauerauftragStoreJob;
+import de.willuhn.jameica.hbci.server.hbci.synchronize.SynchronizeKontoauszugJob;
 import de.willuhn.jameica.hbci.server.hbci.synchronize.SynchronizeLastschriftJob;
-import de.willuhn.jameica.hbci.server.hbci.synchronize.SynchronizeSaldoJob;
 import de.willuhn.jameica.hbci.server.hbci.synchronize.SynchronizeSammelLastschriftJob;
 import de.willuhn.jameica.hbci.server.hbci.synchronize.SynchronizeSammelUeberweisungJob;
 import de.willuhn.jameica.hbci.server.hbci.synchronize.SynchronizeUeberweisungJob;
-import de.willuhn.jameica.hbci.server.hbci.synchronize.SynchronizeUmsatzJob;
 import de.willuhn.logging.Logger;
 
 /**
@@ -170,18 +169,13 @@ public class SynchronizeEngine
     }
 
 
-    if (options.getSyncUmsatz())
+    if (options.getSyncKontoauszuege())
     {
       // Umsaetze und Salden werden zum Schluss ausgefuehrt,
       // damit die oben gesendeten Ueberweisungen gleich mit
       // erscheinen, insofern die Bank das unterstuetzt.
-      Logger.info("adding umsatz job");
-      list.add(new SynchronizeUmsatzJob(k));
-    }
-    if (options.getSyncSaldo())
-    {
-      Logger.info("adding saldo job");
-      list.add(new SynchronizeSaldoJob(k));
+      Logger.info("adding kontoauszug job");
+      list.add(new SynchronizeKontoauszugJob(k));
     }
   }
   
@@ -213,6 +207,9 @@ public class SynchronizeEngine
 
 /**********************************************************************
  * $Log: SynchronizeEngine.java,v $
+ * Revision 1.8  2006/10/09 21:43:26  willuhn
+ * @N Zusammenfassung der Geschaeftsvorfaelle "Umsaetze abrufen" und "Saldo abrufen" zu "Kontoauszuege abrufen" bei der Konto-Synchronisation
+ *
  * Revision 1.7  2006/08/28 21:28:26  willuhn
  * @B bug 277
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/SynchronizeOptions.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/04/18 22:38:16 $
+ * $Revision: 1.2 $
+ * $Date: 2006/10/09 21:43:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -40,21 +40,12 @@ public class SynchronizeOptions implements Serializable
   }
 
   /**
-   * Preft, ob der Saldo synchronisiert werden soll.
-   * @return true, wenn er synchronisiert werden soll.
-   */
-  public boolean getSyncSaldo()
-  {
-    return settings.getBoolean("sync.konto." + id + ".saldo",true);
-  }
-
-  /**
-   * Prueft, ob die Umsaetze abgerufen werden sollen.
+   * Prueft, ob die Kontoauszuege abgerufen werden sollen.
    * @return true, wenn sie synchronisiert werden sollen.
    */
-  public boolean getSyncUmsatz()
+  public boolean getSyncKontoauszuege()
   {
-    return settings.getBoolean("sync.konto." + id + ".umsatz",true);
+    return settings.getBoolean("sync.konto." + id + ".kontoauszug",true);
   }
   
   /**
@@ -85,23 +76,13 @@ public class SynchronizeOptions implements Serializable
   }
   
 
-
   /**
-   * Legt fest, ob der Saldo synchronisiert werden soll.
-   * @param b true, wenn er synchronisiert werden soll.
-   */
-  public void setSyncSaldo(boolean b)
-  {
-    settings.setAttribute("sync.konto." + id + ".saldo",b);
-  }
-
-  /**
-   * Legt fest, ob die Umsaetze abgerufen werden sollen.
+   * Legt fest, ob die Kontoauszuege abgerufen werden sollen.
    * @param b true, wenn sie synchronisiert werden sollen.
    */
-  public void setSyncUmsatz(boolean b)
+  public void setSyncKontoauszuege(boolean b)
   {
-    settings.setAttribute("sync.konto." + id + ".umsatz",b);
+    settings.setAttribute("sync.konto." + id + ".kontoauszug",b);
   }
   
   /**
@@ -136,6 +117,9 @@ public class SynchronizeOptions implements Serializable
 
 /*********************************************************************
  * $Log: SynchronizeOptions.java,v $
+ * Revision 1.2  2006/10/09 21:43:26  willuhn
+ * @N Zusammenfassung der Geschaeftsvorfaelle "Umsaetze abrufen" und "Saldo abrufen" zu "Kontoauszuege abrufen" bei der Konto-Synchronisation
+ *
  * Revision 1.1  2006/04/18 22:38:16  willuhn
  * @N bug 227
  *

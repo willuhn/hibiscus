@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/HBCISynchronize.java,v $
- * $Revision: 1.7 $
- * $Date: 2006/07/13 00:21:15 $
+ * $Revision: 1.8 $
+ * $Date: 2006/10/09 21:43:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,6 +28,7 @@ import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SynchronizeJob;
 import de.willuhn.jameica.hbci.server.SynchronizeEngine;
+import de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob;
 import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -135,7 +136,14 @@ public class HBCISynchronize implements Action
           Logger.info("skipping job " + sj.getName() + " - not selected");
           continue;
         }
-        factory.addExclusiveJob(sj.createHBCIJob());
+        AbstractHBCIJob[] currentJobs = sj.createHBCIJobs();
+        if (currentJobs != null)
+        {
+          for (int i=0;i<currentJobs.length;++i)
+          {
+            factory.addExclusiveJob(currentJobs[i]);
+          }
+        }
         count++;
       }
 
@@ -181,6 +189,9 @@ public class HBCISynchronize implements Action
 
 /*********************************************************************
  * $Log: HBCISynchronize.java,v $
+ * Revision 1.8  2006/10/09 21:43:26  willuhn
+ * @N Zusammenfassung der Geschaeftsvorfaelle "Umsaetze abrufen" und "Saldo abrufen" zu "Kontoauszuege abrufen" bei der Konto-Synchronisation
+ *
  * Revision 1.7  2006/07/13 00:21:15  willuhn
  * @N Neue Auswertung "Sparquote"
  *

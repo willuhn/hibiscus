@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/synchronize/Attic/SynchronizeUmsatzJob.java,v $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/synchronize/SynchronizeKontoauszugJob.java,v $
  * $Revision: 1.1 $
- * $Date: 2006/03/17 00:51:24 $
+ * $Date: 2006/10/09 21:43:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,30 +18,33 @@ import java.rmi.RemoteException;
 import de.willuhn.jameica.hbci.gui.action.KontoNew;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob;
+import de.willuhn.jameica.hbci.server.hbci.HBCISaldoJob;
 import de.willuhn.jameica.hbci.server.hbci.HBCIUmsatzJob;
 import de.willuhn.util.ApplicationException;
 
 /**
- * Ein Synchronize-Job fuer das Abrufen der Umsaetze eines Kontos.
+ * Ein Synchronize-Job fuer das Abrufen der Umsaetze und des Saldos eines Kontos.
  */
-public class SynchronizeUmsatzJob extends AbstractSynchronizeJob
+public class SynchronizeKontoauszugJob extends AbstractSynchronizeJob
 {
 
   /**
    * ct.
    * @param konto
    */
-  public SynchronizeUmsatzJob(Konto konto)
+  public SynchronizeKontoauszugJob(Konto konto)
   {
     super(konto);
   }
   
   /**
-   * @see de.willuhn.jameica.hbci.rmi.SynchronizeJob#createHBCIJob()
+   * @see de.willuhn.jameica.hbci.rmi.SynchronizeJob#createHBCIJobs()
    */
-  public AbstractHBCIJob createHBCIJob() throws RemoteException, ApplicationException
+  public AbstractHBCIJob[] createHBCIJobs() throws RemoteException, ApplicationException
   {
-    return new HBCIUmsatzJob((Konto)getContext());
+    return new AbstractHBCIJob[]{
+        new HBCISaldoJob((Konto)getContext()),
+        new HBCIUmsatzJob((Konto)getContext())};
   }
 
   /**
@@ -50,7 +53,7 @@ public class SynchronizeUmsatzJob extends AbstractSynchronizeJob
   public String getName() throws RemoteException
   {
     Konto k = (Konto) getContext();
-    return i18n.tr("Konto {0}: Umsätze abrufen",k.getLongName());
+    return i18n.tr("Konto {0}: Kontoauszüge abrufen",k.getLongName());
   }
 
   /**
@@ -64,7 +67,10 @@ public class SynchronizeUmsatzJob extends AbstractSynchronizeJob
 
 
 /*********************************************************************
- * $Log: SynchronizeUmsatzJob.java,v $
+ * $Log: SynchronizeKontoauszugJob.java,v $
+ * Revision 1.1  2006/10/09 21:43:26  willuhn
+ * @N Zusammenfassung der Geschaeftsvorfaelle "Umsaetze abrufen" und "Saldo abrufen" zu "Kontoauszuege abrufen" bei der Konto-Synchronisation
+ *
  * Revision 1.1  2006/03/17 00:51:24  willuhn
  * @N bug 209 Neues Synchronisierungs-Subsystem
  *
