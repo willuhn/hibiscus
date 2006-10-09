@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.74 $
- * $Date: 2006/10/06 16:00:42 $
- * $Author: willuhn $
+ * $Revision: 1.75 $
+ * $Date: 2006/10/09 16:56:55 $
+ * $Author: jost $
  * $Locker:  $
  * $State: Exp $
  *
@@ -328,6 +328,14 @@ public class KontoImpl extends AbstractDBObject implements Konto
   public Date getSaldoDatum() throws RemoteException
   {
     return (Date) getAttribute("saldo_datum");
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Konto#resetSaldoDatum()
+   */
+  public void resetSaldoDatum() throws RemoteException
+  {
+    setAttribute("saldo_datum", null);
   }
 
   /**
@@ -686,6 +694,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*******************************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.75  2006/10/09 16:56:55  jost
+ * Bug #284
+ *
  * Revision 1.74  2006/10/06 16:00:42  willuhn
  * @B Bug 280
  *
