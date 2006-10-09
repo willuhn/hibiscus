@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UmsatzList.java,v $
- * $Revision: 1.21 $
- * $Date: 2006/10/05 16:42:28 $
+ * $Revision: 1.22 $
+ * $Date: 2006/10/09 23:49:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -72,6 +72,7 @@ public class UmsatzList extends ContextMenu implements Extendable
       
     }
     ));
+    
     // Wir geben das Context-Menu jetzt noch zur Erweiterung frei.
     ExtensionRegistry.extend(this);
 
@@ -109,6 +110,9 @@ public class UmsatzList extends ContextMenu implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.22  2006/10/09 23:49:39  willuhn
+ * @N extendable
+ *
  * Revision 1.21  2006/10/05 16:42:28  willuhn
  * @N CSV-Import/Export fuer Adressen
  *
