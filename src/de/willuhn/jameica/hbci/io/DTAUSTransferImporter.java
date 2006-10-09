@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/DTAUSTransferImporter.java,v $
- * $Revision: 1.6 $
- * $Date: 2006/10/08 19:03:00 $
- * $Author: jost $
+ * $Revision: 1.7 $
+ * $Date: 2006/10/09 10:10:09 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -80,21 +80,20 @@ public class DTAUSTransferImporter extends AbstractDTAUSImporter
     // Konto suchen
     String kontonummer = Long.toString(asatz.getKonto());
     String blz         = Long.toString(asatz.getBlz());
-    DBIterator konten = service.createList(Konto.class);
-    konten.addFilter("kontonummer = ?", new Object[]{kontonummer});
-    konten.addFilter("blz = ?",         new Object[]{blz});
 
-    Konto k = null;
-    if (!konten.hasNext())
+    // Erstmal schauen, ob der User das Konto schonmal ausgewaehlt hat:
+    Konto k = (Konto) kontenCache.get(kontonummer + blz);
+
+    if (k == null)
     {
-      // Das Konto existiert nicht im Hibiscus-Datenbestand.
-
-      // Erstmal schauen, ob der User das Konto schonmal ausgewaehlt hat:
-      k = (Konto) kontenCache.get(kontonummer + blz);
-      if (k == null)
+      // Ne, dann schauen wir mal, ob wir das Konto in der DB finden
+      DBIterator konten = service.createList(Konto.class);
+      konten.addFilter("kontonummer = ?", new Object[]{kontonummer});
+      konten.addFilter("blz = ?",         new Object[]{blz});
+      if (!konten.hasNext())
       {
-        // Ne, hat er noch nicht.
-        // Also muss der User eins auswaehlen.
+        // Das Konto existiert nicht im Hibiscus-Datenbestand. Also soll der
+        // User eines auswaehlen
         KontoAuswahlDialog d = new KontoAuswahlDialog(KontoAuswahlDialog.POSITION_CENTER);
         d.setText(i18n.tr("Konto {0} [BLZ {1}] nicht gefunden\n" +
                           "Bitte wählen Sie das Konto aus, auf dem der Auftrag ausgeführt werden soll.",
@@ -112,15 +111,19 @@ public class DTAUSTransferImporter extends AbstractDTAUSImporter
         {
           Logger.error("unable to choose konto",e);
         }
-        
-        if (k != null)
-          kontenCache.put(kontonummer + blz,k);
       }
+      else
+      {
+        k = (Konto) konten.next();
+      }
+
+      if (k != null)
+        kontenCache.put(kontonummer + blz,k);
+      else
+        throw new ApplicationException(i18n.tr("Kein Konto ausgewählt"));
     }
-    else
-    {
-      k = (Konto) konten.next();
-    }
+      
+
     t.setKonto(k);
     t.setBetrag(csatz.getBetragInEuro());
     t.setGegenkontoBLZ(Long.toString(csatz.getBlzEndbeguenstigt()));
@@ -151,6 +154,9 @@ public class DTAUSTransferImporter extends AbstractDTAUSImporter
 
 /*********************************************************************
  * $Log: DTAUSTransferImporter.java,v $
+ * Revision 1.7  2006/10/09 10:10:09  willuhn
+ * @B unnoetige Datenbank-Abfrage auch wenn Konto bereits im Cache ist
+ *
  * Revision 1.6  2006/10/08 19:03:00  jost
  * Bugfix: Trotz korrekter Bankverbindung in der DTAUS-Datei kam der Kontenauswahldialog
  *
