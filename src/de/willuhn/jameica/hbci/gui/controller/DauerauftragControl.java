@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/DauerauftragControl.java,v $
- * $Revision: 1.22 $
- * $Date: 2006/10/09 23:56:13 $
+ * $Revision: 1.23 $
+ * $Date: 2006/10/10 22:55:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.Listener;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
-import de.willuhn.jameica.gui.dialogs.CalendarDialog;
+import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
@@ -41,8 +41,8 @@ public class DauerauftragControl extends AbstractTransferControl {
 
 	private Input orderID				      = null;
 	private DialogInput turnus	      = null;
-	private DialogInput ersteZahlung	= null; // TODO DateInput verwenden
-	private DialogInput letzteZahlung	= null; // TODO DateInput verwenden
+	private DateInput ersteZahlung	  = null;
+	private DateInput letzteZahlung	  = null;
 
   private Dauerauftrag transfer     = null;
 
@@ -144,24 +144,23 @@ public class DauerauftragControl extends AbstractTransferControl {
 	{
 		if (ersteZahlung != null)
 			return ersteZahlung;
-		CalendarDialog cd = new CalendarDialog(CalendarDialog.POSITION_MOUSE);
-		cd.setTitle(i18n.tr("Datum der ersten Zahlung"));
-		cd.addCloseListener(new Listener() {
-			public void handleEvent(Event event) {
-				if (event == null || event.data == null)
-					return;
-				Date choosen = (Date) event.data;
-				ersteZahlung.setText(HBCI.DATEFORMAT.format(choosen));
-			}
-		});
+    
+    Date d = ((Dauerauftrag)getTransfer()).getErsteZahlung();
+    if (d == null)
+      d = new Date();
 
-		Date d = ((Dauerauftrag)getTransfer()).getErsteZahlung();
-		if (d == null)
-			d = new Date();
-		cd.setDate(d);
-		ersteZahlung = new DialogInput(HBCI.DATEFORMAT.format(d),cd);
-		ersteZahlung.disableClientControl();
-		ersteZahlung.setValue(d);
+    ersteZahlung = new DateInput(d,HBCI.DATEFORMAT);
+    ersteZahlung.setComment("");
+		ersteZahlung.setTitle(i18n.tr("Datum der ersten Zahlung"));
+    ersteZahlung.setText(i18n.tr("Bitte geben Sie das Datum der ersten Zahlung ein"));
+    ersteZahlung.addListener(new Listener() {
+      public void handleEvent(Event event)
+      {
+        // Nur, um den Parser zu triggern
+        ersteZahlung.getValue();
+      }
+    
+    });
 		return ersteZahlung;
 	}
 
@@ -174,33 +173,22 @@ public class DauerauftragControl extends AbstractTransferControl {
 	{
 		if (letzteZahlung != null)
 			return letzteZahlung;
-		CalendarDialog cd = new CalendarDialog(CalendarDialog.POSITION_MOUSE);
-		cd.setTitle(i18n.tr("Datum der letzten Zahlung"));
-		cd.addCloseListener(new Listener() {
-			public void handleEvent(Event event) {
-				if (event == null || event.data == null)
-					return;
-				Date choosen = (Date) event.data;
-				letzteZahlung.setText(HBCI.DATEFORMAT.format(choosen));
-				try
-				{
-					((Dauerauftrag)getTransfer()).setLetzteZahlung(choosen);
-				}
-				catch (RemoteException e)
-				{
-					Logger.error("error while choosing end date",e);
-					GUI.getStatusBar().setErrorText(i18n.tr("Fehler bei der Auswahl des Datums"));
-				}
-			}
-		});
 
-		Date d = ((Dauerauftrag)getTransfer()).getLetzteZahlung();
-		if (d != null)
-			cd.setDate(d);
-		letzteZahlung = new DialogInput(d == null ? null : HBCI.DATEFORMAT.format(d),cd);
-		letzteZahlung.disableClientControl();
-		letzteZahlung.setValue(d);
-		return letzteZahlung;
+    Date d = ((Dauerauftrag)getTransfer()).getLetzteZahlung();
+
+    letzteZahlung = new DateInput(d,HBCI.DATEFORMAT);
+    letzteZahlung.setComment("");
+    letzteZahlung.setTitle(i18n.tr("Datum der letzten Zahlung"));
+    letzteZahlung.setText(i18n.tr("Bitte geben Sie das Datum der letzten Zahlung ein"));
+    letzteZahlung.addListener(new Listener() {
+      public void handleEvent(Event event)
+      {
+        // Nur, um den Parser zu triggern
+        letzteZahlung.getValue();
+      }
+    
+    });
+    return letzteZahlung;
 	}
 
   /**
@@ -242,6 +230,9 @@ public class DauerauftragControl extends AbstractTransferControl {
 
 /**********************************************************************
  * $Log: DauerauftragControl.java,v $
+ * Revision 1.23  2006/10/10 22:55:10  willuhn
+ * @N Alle Datumseingabe-Felder auf DateInput umgestellt
+ *
  * Revision 1.22  2006/10/09 23:56:13  willuhn
  * @N TODO-Tags
  *

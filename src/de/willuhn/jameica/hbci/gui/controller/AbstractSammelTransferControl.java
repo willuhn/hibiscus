@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractSammelTransferControl.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/10/09 23:56:13 $
+ * $Revision: 1.4 $
+ * $Date: 2006/10/10 22:55:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,7 @@ import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
-import de.willuhn.jameica.gui.dialogs.CalendarDialog;
+import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
@@ -45,7 +45,7 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
 
   private DialogInput kontoAuswahl				= null;
   private Input name                    	= null;
-  private DialogInput termin            	= null; // TODO: DateInput verwenden!
+  private DateInput termin              	= null;
   private Input comment                 	= null;
   private Input summe                     = null;
 
@@ -127,20 +127,27 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public DialogInput getTermin() throws RemoteException
+  public DateInput getTermin() throws RemoteException
   {
     final Terminable bu = (Terminable) getTransfer();
 
     if (termin != null)
       return termin;
-    CalendarDialog cd = new CalendarDialog(CalendarDialog.POSITION_MOUSE);
-    cd.setTitle(i18n.tr("Termin"));
-    cd.addCloseListener(new Listener() {
+    
+    Date d = bu.getTermin();
+    if (d == null)
+      d = new Date();
+
+    termin = new DateInput(d,HBCI.DATEFORMAT);
+    termin.setComment("");
+    termin.setText(i18n.tr("Bitte geben Sie den Termin des Auftrages ein"));
+    termin.setTitle(i18n.tr("Termin des Auftrages"));
+    termin.addListener(new Listener() {
       public void handleEvent(Event event) {
-        if (event == null || event.data == null)
+
+        Date choosen = (Date) termin.getValue();
+        if (choosen == null)
           return;
-        Date choosen = (Date) event.data;
-        termin.setText(HBCI.DATEFORMAT.format(choosen));
 
         try {
           // Wenn das neue Datum spaeter als das aktuelle ist,
@@ -153,14 +160,6 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
         catch (RemoteException e) {/*ignore*/}
       }
     });
-
-    Date d = bu.getTermin();
-    if (d == null)
-      d = new Date();
-    cd.setDate(d);
-    termin = new DialogInput(HBCI.DATEFORMAT.format(d),cd);
-    termin.disableClientControl();
-    termin.setValue(d);
 
     if (bu.ausgefuehrt())
       termin.disable();
@@ -230,6 +229,9 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferControl.java,v $
+ * Revision 1.4  2006/10/10 22:55:10  willuhn
+ * @N Alle Datumseingabe-Felder auf DateInput umgestellt
+ *
  * Revision 1.3  2006/10/09 23:56:13  willuhn
  * @N TODO-Tags
  *
