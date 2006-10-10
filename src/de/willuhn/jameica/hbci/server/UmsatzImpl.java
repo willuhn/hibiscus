@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.34 $
- * $Date: 2006/10/07 19:50:08 $
+ * $Revision: 1.35 $
+ * $Date: 2006/10/10 22:05:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -335,6 +335,9 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
     if (n != null && n.longValue() != 0)
       return n.longValue();
 
+    // BUGZILLA 148
+    Date datum   = getDatum();
+    Date valuta  = getValuta();
     String s = (""+getArt()).toUpperCase() +
 		           getBetrag() +
 		           getKonto().getChecksum() +
@@ -346,8 +349,8 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 		           getSaldo() +
 		           (""+getZweck()).toUpperCase() +
 		           (""+getZweck2()).toUpperCase() +
-		           HBCI.DATEFORMAT.format(getDatum()) +
-							 HBCI.DATEFORMAT.format(getValuta());
+		           datum == null ? "" : HBCI.DATEFORMAT.format(datum) +
+							 valuta == null ? "" : HBCI.DATEFORMAT.format(valuta);
 		CRC32 crc = new CRC32();
 		crc.update(s.getBytes());
     return crc.getValue();
@@ -506,6 +509,9 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.35  2006/10/10 22:05:32  willuhn
+ * @B Bug 148
+ *
  * Revision 1.34  2006/10/07 19:50:08  willuhn
  * @D javadoc
  *
