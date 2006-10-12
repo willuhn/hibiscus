@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.43 $
- * $Date: 2006/10/06 13:18:06 $
+ * $Revision: 1.44 $
+ * $Date: 2006/10/12 13:07:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,6 +28,7 @@ import org.kapott.hbci.manager.HBCIUtils;
 import org.kapott.hbci.manager.HBCIUtilsInternal;
 import org.kapott.hbci.passport.HBCIPassport;
 import org.kapott.hbci.passport.HBCIPassportRDHNew;
+import org.kapott.hbci.passport.HBCIPassportSIZRDHFile;
 
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.gui.DialogFactory;
@@ -104,7 +105,7 @@ public class HBCICallbackSWT extends AbstractHBCICallback
     }
   }
 
-  private long askPassword = 0;
+  private boolean retry = false;
   
   /**
    * @see org.kapott.hbci.callback.HBCICallback#callback(org.kapott.hbci.passport.HBCIPassport, int, java.lang.String, int, java.lang.StringBuffer)
@@ -128,60 +129,41 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 				case NEED_PASSPHRASE_LOAD:
 				case NEED_PASSPHRASE_SAVE:
           
-          String pw = null;
-          
-          boolean isRDH = (passport instanceof HBCIPassportRDHNew);
+          // BUGZILLA 289, 148
 
-          // Das ist das Passwort fuer die Passport-Datei.
-          // Es muss nicht sein, dass wir das auch noch dem
-          // Benutzer zumuten. Stattdessen erzeugen wir bei Bedarf
-          // selbst ein zufaelliges Passwort und speichern es
-          // in einem Jameica-Wallet.
+          HBCI plugin = (HBCI) Application.getPluginLoader().getPlugin(HBCI.class);
+
+          boolean isSizRDH = (passport instanceof HBCIPassportSIZRDHFile);
+          boolean isRDH    = (passport instanceof HBCIPassportRDHNew);
+          boolean forceAsk = plugin.getResources().getSettings().getBoolean("hbcicallback.askpassphrase.force",false);
+
+          // Wir laden ein ggf. automatisch erzeugtes Passwort
           Wallet w = Settings.getWallet();
-          
-          // Wir haben ein Passwort pro Passport
-          String s = passport.getClass().getName();
-          
-          pw = (String) w.get("hbci.passport.password." + s);
+          String pw = (String) w.get("hbci.passport.password." + passport.getClass().getName());
 
-
-          // BUGZILLA 148
-          // Gna, das war echt tricky. Das die alten Passports auch noch beruecksichtigt
-          // werden sollen, ich dieses aber hier nicht unterscheiden kann, versuche
-          // ichs erstmal via Wallet selbst. Schlaegt das fehl, soll's der Benutzer machen.
-          long time = System.currentTimeMillis();
-          if (isRDH)
+          // Falls wir eines gefunden haben, dann nehmen wir
+          // es nur, wenn es sich um den ersten Versuch handelt
+          if (!retry && !forceAsk && pw != null && pw.length() > 0)
           {
-            if (pw == null || (time - askPassword < 2000) || reason == NEED_PASSPHRASE_SAVE)
+            // Wir haben ein Passwort. Wir geben es aber nur
+            // noch in zwei Faellen zurueck:
+            // a) es ist eine alte Schluesseldiskette und dies ist
+            //    der erste Versuch
+            // b) es ist PIN/TAN oder Chipkarte
+            if (isRDH || (!isRDH && !isSizRDH))
             {
-              if (reason == NEED_PASSPHRASE_LOAD)
-              {
-                // BUGZILLA 185: Das Schluesseldisketten keine PIN
-                // haben, speichern wir hier das Passport der Datei
-                // fuer die Session zwischen
-                pw = getCachedPIN(passport);
-                
-                if (pw == null)
-                {
-                  // Wir haben kein Passwort gecached oder
-                  // die Option ist deaktiviert. Also fragen
-                  // wir den User.
-                  pw = DialogFactory.importPassport();
-                  setCachedPIN(passport,pw);
-                }
-              }
-              else
-              {
-                pw = DialogFactory.exportPassport();
-              }
-              askPassword = 0;
               retData.replace(0,retData.length(),pw);
+              retry = true;
               break;
             }
-            askPassword = time;
           }
           
-          if (pw == null && !isRDH)
+          // Flag zuruecksetzen
+          retry = false;
+
+          // Das Neuausdenken von Passworten machen wir nur noch
+          // bei PIN/TAN und Chipkarte
+          if (!forceAsk && !isRDH && !isSizRDH)
           {
             // noch kein Passwort definiert. Dann erzeugen wir
             // ein zufaelliges.
@@ -191,9 +173,35 @@ public class HBCICallbackSWT extends AbstractHBCICallback
             pw = Base64.encode(pass);
 
             // Und speichern es im Wallet.
-            w.set("hbci.passport.password." + s,pw);
+            w.set("hbci.passport.password." + passport.getClass().getName(),pw);
+            retData.replace(0,retData.length(),pw);
+            break;
           }
-					retData.replace(0,retData.length(),pw);
+
+          // So, damit bleiben hier nur noch RDH-Passports,
+          // bei denen der User das Passwort eingeben muss.
+
+          if (reason == NEED_PASSPHRASE_LOAD)
+          {
+            // BUGZILLA 185: Da Schluesseldisketten keine PIN
+            // haben, speichern wir hier das Passport der Datei
+            // fuer die Session zwischen
+            pw = getCachedPIN(passport);
+            
+            if (pw == null)
+            {
+              // Wir haben kein Passwort gecached oder
+              // die Option ist deaktiviert. Also fragen
+              // wir den User.
+              pw = DialogFactory.importPassport();
+              setCachedPIN(passport,pw);
+            }
+          }
+          else
+          {
+            pw = DialogFactory.exportPassport();
+          }
+          retData.replace(0,retData.length(),pw);
 					break;
 
 
@@ -302,7 +310,6 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 				case HAVE_CRC_ERROR:
 				case HAVE_ERROR:
-				case NEED_SIZENTRY_SELECT:
 					Logger.error("NOT IMPLEMENTED: " + msg+ " ["+retData.toString()+"]: ");
 					throw new HBCI_Exception("reason not implemented");
 
@@ -619,6 +626,9 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.44  2006/10/12 13:07:56  willuhn
+ * @B bug 289 + Callback NEED_SIZENTRY_SELECT
+ *
  * Revision 1.43  2006/10/06 13:18:06  willuhn
  * @B Bug 185, 211 (zusaetzlicher Suffix mit BLZ)
  *
