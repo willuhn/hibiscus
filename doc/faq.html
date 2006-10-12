@@ -23,6 +23,7 @@
       <li>
         <a href="#errors">Bekannte Fehler</a>
         <ul>
+          <li><a href="#errors.os.macos">MacOS: Jameica verlaubt beim Start ein Master-Passwort, welches ich jedoch nie vergeben habe</a></li>
           <li><a href="#errors.os.ubuntu">Der Start bricht mit der Fehlermeldung &quot;java.lang.SecurityException: write access to /opt/jameica/jameica.lock denied&quot; ab</a></li>
           <li><a href="#errors.os.java">Hibiscus startet überhaupt nicht. Auf der Konsole erscheint evtl. die Fehlermeldung &quot;java: command not found&quot;</a></li>
           <li><a href="#errors.ums.missng">Es werden nicht alle Umsätze abgerufen</a></li>
@@ -176,6 +177,19 @@ Windows: C:\Dokumente und Einstellungen\&lt;username&gt;\.jameica\cfg\de.willuhn
       <li>
         <a name="errors"></a>
         <b>Bekannte Fehler</b>
+
+        <p>
+          <br/>
+          <a name="errors.os.macos"></a>
+          <b>MacOS: Jameica verlaubt beim Start ein Master-Passwort, welches ich jedoch nie vergeben habe</b>
+          <br/><br/>
+            Dieser Fehler tritt auf, wenn Sie die Eingabe des Master-Passwortes
+            beim ersten Start überspringen. Wenn Sie beim nächsten Start keine
+            erneute Gelegenheit zur Vergabe des Masterpasswortes mehr erhalten,
+            dann löschen Sie bitte die Datei &quot;jameica.keystore&quot; im
+            Verzeichnis &quot;.jameica/cfg&quot;. Sie finden dieses Verzeichnis
+            in Ihrem Homebereich.
+        </p>
 
         <p>
           <br/>
@@ -392,7 +406,7 @@ $JAVA_HOME/bin/java -Djava.library.path=lib/swt/linux -jar jameica-linux.jar $@
     //-->
 
     <hr/>
-    $Revision: 1.12 $
+    $Revision: 1.13 $
 
   </body>
 </html>
