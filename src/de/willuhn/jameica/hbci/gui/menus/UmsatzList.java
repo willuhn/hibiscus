@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UmsatzList.java,v $
- * $Revision: 1.22 $
- * $Date: 2006/10/09 23:49:39 $
+ * $Revision: 1.21.2.1 $
+ * $Date: 2006/10/12 21:02:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -110,6 +110,9 @@ public class UmsatzList extends ContextMenu implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.21.2.1  2006/10/12 21:02:45  willuhn
+ * @C merged bugfixes (made directly after 1.6 tag) into 1.6 branch
+ *
  * Revision 1.22  2006/10/09 23:49:39  willuhn
  * @N extendable
  *

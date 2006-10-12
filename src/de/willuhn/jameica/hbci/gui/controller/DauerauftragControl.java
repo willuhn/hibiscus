@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/DauerauftragControl.java,v $
- * $Revision: 1.23 $
- * $Date: 2006/10/10 22:55:10 $
+ * $Revision: 1.21.8.1 $
+ * $Date: 2006/10/12 21:02:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -230,6 +230,9 @@ public class DauerauftragControl extends AbstractTransferControl {
 
 /**********************************************************************
  * $Log: DauerauftragControl.java,v $
+ * Revision 1.21.8.1  2006/10/12 21:02:44  willuhn
+ * @C merged bugfixes (made directly after 1.6 tag) into 1.6 branch
+ *
  * Revision 1.23  2006/10/10 22:55:10  willuhn
  * @N Alle Datumseingabe-Felder auf DateInput umgestellt
  *

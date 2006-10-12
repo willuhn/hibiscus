@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.44 $
- * $Date: 2006/10/12 13:07:56 $
+ * $Revision: 1.43.2.1 $
+ * $Date: 2006/10/12 21:02:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -626,6 +626,9 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.43.2.1  2006/10/12 21:02:45  willuhn
+ * @C merged bugfixes (made directly after 1.6 tag) into 1.6 branch
+ *
  * Revision 1.44  2006/10/12 13:07:56  willuhn
  * @B bug 289 + Callback NEED_SIZENTRY_SELECT
  *

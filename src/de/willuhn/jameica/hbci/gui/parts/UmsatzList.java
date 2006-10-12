@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.30 $
- * $Date: 2006/10/09 23:50:00 $
+ * $Revision: 1.29.2.1 $
+ * $Date: 2006/10/12 21:02:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -605,6 +605,9 @@ public class UmsatzList extends TablePart implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.29.2.1  2006/10/12 21:02:45  willuhn
+ * @C merged bugfixes (made directly after 1.6 tag) into 1.6 branch
+ *
  * Revision 1.30  2006/10/09 23:50:00  willuhn
  * @N extendable
  *

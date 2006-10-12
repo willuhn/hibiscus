@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.36 $
- * $Date: 2006/10/10 22:06:59 $
+ * $Revision: 1.34.2.1 $
+ * $Date: 2006/10/12 21:02:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -509,6 +509,9 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.34.2.1  2006/10/12 21:02:44  willuhn
+ * @C merged bugfixes (made directly after 1.6 tag) into 1.6 branch
+ *
  * Revision 1.36  2006/10/10 22:06:59  willuhn
  * @C s/48/84/
  *
