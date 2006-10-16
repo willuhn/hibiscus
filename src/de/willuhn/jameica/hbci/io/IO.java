@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/IO.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/03/15 18:01:30 $
+ * $Revision: 1.4 $
+ * $Date: 2006/10/16 12:51:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,6 +12,7 @@
  **********************************************************************/
 
 package de.willuhn.jameica.hbci.io;
+
 
 /**
  * Basis-Interface aller Importer und Exporter.
@@ -41,6 +42,9 @@ public interface IO
 
 /*********************************************************************
  * $Log: IO.java,v $
+ * Revision 1.4  2006/10/16 12:51:32  willuhn
+ * @B Uebernahme des originalen Datums aus dem Kontoauszug
+ *
  * Revision 1.3  2006/03/15 18:01:30  willuhn
  * @N AbstractHBCIJob#getName
  *
