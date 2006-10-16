@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/PDFUmsatzExporter.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/10/16 12:51:32 $
- * $Author: willuhn $
+ * $Revision: 1.3 $
+ * $Date: 2006/10/16 17:12:14 $
+ * $Author: jost $
  * $Locker:  $
  * $State: Exp $
  *
@@ -74,8 +74,10 @@ public class PDFUmsatzExporter implements Exporter
     if (objects == null || objects.length == 0)
       throw new ApplicationException(i18n.tr("Bitte wählen Sie die zu exportierenden Umsätze aus"));
 
-    Date startDate     = new Date();
-    Date endDate       = new Date();
+    Umsatz u = (Umsatz) objects[0];
+
+    Date startDate     = u.getDatum();
+    Date endDate       = u.getDatum();
     Hashtable umsaetze = new Hashtable();
     
     if (monitor != null) 
@@ -86,7 +88,7 @@ public class PDFUmsatzExporter implements Exporter
 
     for (int i=0;i<objects.length;++i)
     {
-      Umsatz u = (Umsatz) objects[i];
+      u = (Umsatz) objects[i];
       Konto k  = u.getKonto();
 
       // Wir ermitteln bei der Gelegenheit das Maximal- und Minimal-Datum
@@ -131,7 +133,7 @@ public class PDFUmsatzExporter implements Exporter
       rpt = new Document();
 
       PdfWriter.getInstance(rpt,os);
-      rpt.setMargins(50, 10, 50, 30); // links, rechts, oben, unten
+      rpt.setMargins(80, 30, 20, 20); // links, rechts, oben, unten
 
       AbstractPlugin plugin = Application.getPluginLoader().getPlugin(HBCI.class);
       rpt.addAuthor(i18n.tr("Hibiscus - Version {0}",""+plugin.getManifest().getVersion()));
@@ -207,7 +209,7 @@ public class PDFUmsatzExporter implements Exporter
         {
           if (monitor != null)  monitor.setPercentComplete((int)((count++) * factor));
 
-          Umsatz u = (Umsatz)list.get(i);
+          u = (Umsatz)list.get(i);
           table.addCell(getDetailCell((u.getValuta() != null ? HBCI.DATEFORMAT.format(u.getValuta()) : "" ) + "\n"
                                     + (u.getDatum() != null ? HBCI.DATEFORMAT.format(u.getDatum()) : ""), Element.ALIGN_LEFT));
           table.addCell(getDetailCell(notNull(u.getEmpfaengerName()) + "\n"
@@ -331,6 +333,10 @@ public class PDFUmsatzExporter implements Exporter
 
 /*********************************************************************
  * $Log: PDFUmsatzExporter.java,v $
+ * Revision 1.3  2006/10/16 17:12:14  jost
+ * 1. Randeintellungen korrigiert
+ * 2. Korrekte Datumsangabe bei Aufruf des Exports aus der Umsatzliste
+ *
  * Revision 1.2  2006/10/16 12:51:32  willuhn
  * @B Uebernahme des originalen Datums aus dem Kontoauszug
  *
