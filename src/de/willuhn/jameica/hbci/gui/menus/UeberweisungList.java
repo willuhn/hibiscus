@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UeberweisungList.java,v $
- * $Revision: 1.13 $
- * $Date: 2006/08/07 14:45:18 $
+ * $Revision: 1.14 $
+ * $Date: 2006/10/16 14:46:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,6 +24,7 @@ import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.TerminableMarkExecuted;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungDuplicate;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungExecute;
+import de.willuhn.jameica.hbci.gui.action.UeberweisungExport;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungImport;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungNew;
 import de.willuhn.jameica.hbci.rmi.Terminable;
@@ -88,6 +89,7 @@ public class UeberweisungList extends ContextMenu
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new ContextMenuItem(i18n.tr("Neue Überweisung..."), new UNeu()));
     addItem(ContextMenuItem.SEPARATOR);
+    addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new UeberweisungExport()));
     addItem(new ContextMenuItem(i18n.tr("Importieren..."),new UeberweisungImport()));
 		
 	}
@@ -174,6 +176,9 @@ public class UeberweisungList extends ContextMenu
 
 /**********************************************************************
  * $Log: UeberweisungList.java,v $
+ * Revision 1.14  2006/10/16 14:46:30  willuhn
+ * @N CSV-Export von Ueberweisungen und Lastschriften
+ *
  * Revision 1.13  2006/08/07 14:45:18  willuhn
  * @B typos
  *
