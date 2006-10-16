@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUmsatzJob.java,v $
- * $Revision: 1.24 $
- * $Date: 2006/10/09 16:55:31 $
- * $Author: jost $
+ * $Revision: 1.25 $
+ * $Date: 2006/10/16 23:36:25 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -13,7 +13,6 @@
 package de.willuhn.jameica.hbci.server.hbci;
 
 import java.rmi.RemoteException;
-import java.util.Date;
 
 import org.kapott.hbci.GV_Result.GVRKUms;
 
@@ -151,6 +150,9 @@ public class HBCIUmsatzJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIUmsatzJob.java,v $
+ * Revision 1.25  2006/10/16 23:36:25  willuhn
+ * @R unused import
+ *
  * Revision 1.24  2006/10/09 16:55:31  jost
  * Bug #284
  *
