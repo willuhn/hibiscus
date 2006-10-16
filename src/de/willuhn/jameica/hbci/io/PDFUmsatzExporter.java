@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/PDFUmsatzExporter.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/10/16 17:12:14 $
+ * $Revision: 1.4 $
+ * $Date: 2006/10/16 17:34:08 $
  * $Author: jost $
  * $Locker:  $
  * $State: Exp $
@@ -133,7 +133,7 @@ public class PDFUmsatzExporter implements Exporter
       rpt = new Document();
 
       PdfWriter.getInstance(rpt,os);
-      rpt.setMargins(80, 30, 20, 20); // links, rechts, oben, unten
+      rpt.setMargins(80, 30, 20, 30); // links, rechts, oben, unten
 
       AbstractPlugin plugin = Application.getPluginLoader().getPlugin(HBCI.class);
       rpt.addAuthor(i18n.tr("Hibiscus - Version {0}",""+plugin.getManifest().getVersion()));
@@ -333,6 +333,9 @@ public class PDFUmsatzExporter implements Exporter
 
 /*********************************************************************
  * $Log: PDFUmsatzExporter.java,v $
+ * Revision 1.4  2006/10/16 17:34:08  jost
+ * Nochmals Randkorrektur
+ *
  * Revision 1.3  2006/10/16 17:12:14  jost
  * 1. Randeintellungen korrigiert
  * 2. Korrekte Datumsangabe bei Aufruf des Exports aus der Umsatzliste
