@@ -36,6 +36,7 @@
           <li><a href="#bank.postbank.ueb.limit">Postbank: Überweisungen schlagen fehl</a></li>
           <li><a href="#bank.cronbank.passport.pintan">Cronbank: Einrichtung von PIN/TAN</a></li>
           <li><a href="#bank.comdirect.passport.pintan">Comdirect: Einrichtung von PIN/TAN</a></li>
+          <li><a href="#bank.postbank.passport.pintan">Postbank: Einrichtung von PIN/TAN</a></li>
         </ul>
       </li>
     </ol>
@@ -385,6 +386,19 @@ $JAVA_HOME/bin/java -Djava.library.path=lib/swt/linux -jar jameica-linux.jar $@
           (Danke an Dominik Bruhn für den Tipp)
         </p>
 
+        <p>
+          <br/>
+          <a name="bank.postbank.passport.pintan"></a>
+          <b>ComDirect: Einrichtung von PIN/TAN</b>
+          <br/><br/>
+          PIN/TAN-Sicherheitsmedium wie gehabt anlegen. Als HBCI-Version "HBCI+" verwenden
+          (auch wenn auf den Webseiten der Postbank &quot;HBCI 2.2&quot angegeben ist).
+          Verwenden Sie als Benutzer- und Kundenkennung jeweils Ihre Kontonummer.
+          Entfernen Sie hierbei jedoch führende Nullen. Benutzen Sie als Filter &quot;Base64&quot;.
+          <br/>
+          (Danke an Knut Singer für den Tipp)
+        </p>
+
       </li>
     </ol>
 
@@ -406,7 +420,7 @@ $JAVA_HOME/bin/java -Djava.library.path=lib/swt/linux -jar jameica-linux.jar $@
     //-->
 
     <hr/>
-    $Revision: 1.16 $
+    $Revision: 1.17 $
 
   </body>
 </html>
