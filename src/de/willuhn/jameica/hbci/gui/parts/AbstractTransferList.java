@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractTransferList.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/10/17 00:04:31 $
+ * $Revision: 1.2 $
+ * $Date: 2006/10/17 01:01:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,11 +14,15 @@
 package de.willuhn.jameica.hbci.gui.parts;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TableItem;
 import org.kapott.hbci.manager.HBCIUtils;
 
@@ -31,7 +35,10 @@ import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
+import de.willuhn.jameica.gui.input.DateInput;
+import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
@@ -50,9 +57,18 @@ import de.willuhn.util.I18N;
  */
 public abstract class AbstractTransferList extends TablePart implements Part
 {
-  private I18N i18n = null;
+  private I18N i18n           = null;
 
-  private MessageConsumer mc = null;
+  private MessageConsumer mc  = null;
+  
+  private Input from          = null;
+  private Input to            = null;
+  
+  private GenericIterator list  = null;
+  private ArrayList transfers   = null;
+
+  private de.willuhn.jameica.system.Settings settings = null;
+  
 
   /**
    * ct.
@@ -62,7 +78,10 @@ public abstract class AbstractTransferList extends TablePart implements Part
   public AbstractTransferList(GenericIterator list, Action action)
   {
     super(list, action);
-    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+    this.list = list;
+    this.i18n     = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+    this.settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
+
     setFormatter(new TableFormatter() {
       public void format(TableItem item) {
         Terminable l = (Terminable) item.getData();
@@ -162,9 +181,146 @@ public abstract class AbstractTransferList extends TablePart implements Part
         Application.getMessagingFactory().unRegisterMessageConsumer(mc);
       }
     });
+
+    LabelGroup group = new LabelGroup(parent,i18n.tr("Filter"));
+
+    // Als End-Datum nehmen wir das aktuelle Datum.
+    // Es sei denn, es ist ein aktuelles gespeichert
+    Date dTo = new Date();
+    String sTo = settings.getString("transferlist.filter.to",null);
+    if (sTo != null && sTo.length() > 0)
+    {
+      try
+      {
+        dTo = HBCI.DATEFORMAT.parse(sTo);
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to parse " + sTo,e);
+      }
+    }
+
+    // Als Startdatum nehmen wir den ersten des aktuellen Monats
+    // Es sei denn, es ist eines gespeichert
+    Date dFrom = null;
+    String sFrom = settings.getString("transferlist.filter.from",null);
+    if (sFrom != null && sFrom.length() > 0)
+    {
+      try
+      {
+        dFrom = HBCI.DATEFORMAT.parse(sFrom);
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to parse " + sFrom,e);
+      }
+    }
+
+    if (dFrom == null)
+    {
+      Calendar cal = Calendar.getInstance();
+      cal.setTime(dTo);
+      cal.set(Calendar.DAY_OF_MONTH,1);
+      dFrom = cal.getTime();
+    }
+
+    Listener l = new ChangedListener();
+    
+    from = new DateInput(dFrom, HBCI.DATEFORMAT);
+    from.addListener(l);
+    to = new DateInput(dTo, HBCI.DATEFORMAT);
+    to.addListener(l);
+    
+    group.addLabelPair(i18n.tr("Aufträge von"),from);
+    group.addLabelPair(i18n.tr("Aufträge bis"),to);
+   
     super.paint(parent);
+
+    // Wir kopieren den ganzen Kram in eine ArrayList, damit die
+    // Objekte beim Filter geladen bleiben
+    transfers = new ArrayList();
+    list.begin();
+    while (list.hasNext())
+    {
+      Terminable t = (Terminable) list.next();
+      transfers.add(t);
+    }
+    
+    // einmal ausloesen
+    l.handleEvent(null);
+
   }
   
+  /**
+   * Wird ausgeloest, wenn das Datum geaendert wird.
+   */
+  private class ChangedListener implements Listener
+  {
+
+    /**
+     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+     */
+    public void handleEvent(Event event)
+    {
+      try
+      {
+        Date dfrom = (Date) from.getValue();
+        Date dto   = (Date) to.getValue();
+        
+        if (dfrom != null && dto != null && dfrom.after(dto))
+        {
+          GUI.getView().setErrorText(i18n.tr("End-Datum muss sich nach dem Start-Datum befinden"));
+          return;
+        }
+        GUI.getView().setErrorText("");
+        
+        AbstractTransferList.this.removeAll();
+        
+        for (int i=0;i<transfers.size();++i)
+        {
+          Terminable t = (Terminable) transfers.get(i);
+          Date termin = t.getTermin();
+          if (termin == null || (dfrom == null && dto == null))
+          {
+            AbstractTransferList.this.addItem((Transfer)t);
+            continue;
+          }
+          boolean match = (dfrom == null || termin.after(dfrom) || termin.equals(dfrom)); // Entweder kein Start-Datum oder dahinter
+          match &= (dto == null || termin.before(dto) || termin.equals(dto)); // oder kein End-Datum oder davor
+          if (match)
+            AbstractTransferList.this.addItem((Transfer)t);
+        }
+        
+        // Sortierung wiederherstellen
+        AbstractTransferList.this.sort();
+
+      
+        // Wir speichern die Datums-Eingaben
+        // Das From-Datum speichern wir immer
+        if (dfrom != null)
+          settings.setAttribute("transferlist.filter.from",HBCI.DATEFORMAT.format(dfrom));
+        
+        // Das End-Datum speichern wir nur, wenn es nicht das aktuelle Datum ist
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY,0);
+        cal.set(Calendar.MINUTE,0);
+        cal.set(Calendar.SECOND,0);
+        cal.set(Calendar.MILLISECOND,0);
+        if (dto != null && cal.getTime().after(dto))
+          settings.setAttribute("transferlist.filter.to",HBCI.DATEFORMAT.format(dto));
+        else
+          settings.setAttribute("transferlist.filter.to",(String)null);
+        
+      
+      }
+      catch (RemoteException re)
+      {
+        Logger.error("unable to apply filter",re);
+      }
+    }
+    
+  }
+
   /**
    * Hilfsklasse damit wir ueber importierte Transfers informiert werden.
    */
@@ -227,6 +383,9 @@ public abstract class AbstractTransferList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: AbstractTransferList.java,v $
+ * Revision 1.2  2006/10/17 01:01:21  willuhn
+ * @N Filter fuer Ueberweisungen und Lastschriften
+ *
  * Revision 1.1  2006/10/17 00:04:31  willuhn
  * @N new Formatters in Transfer-Listen
  * @N merged UeberweisungList + LastschriftList into AbstractTransferList
