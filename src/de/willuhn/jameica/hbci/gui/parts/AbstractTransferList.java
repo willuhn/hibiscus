@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractSammelTransferList.java,v $
- * $Revision: 1.3 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractTransferList.java,v $
+ * $Revision: 1.1 $
  * $Date: 2006/10/17 00:04:31 $
  * $Author: willuhn $
  * $Locker:  $
@@ -20,6 +20,7 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TableItem;
+import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
@@ -36,8 +37,8 @@ import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.io.ImportMessage;
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.rmi.SammelTransfer;
-import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
+import de.willuhn.jameica.hbci.rmi.Terminable;
+import de.willuhn.jameica.hbci.rmi.Transfer;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.system.Application;
@@ -45,25 +46,26 @@ import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
 /**
- * Implementierung einer fix und fertig vorkonfigurierten Liste mit Sammel-Auftraegen.
+ * Implementierung einer fix und fertig vorkonfigurierten Liste mit Transfers.
  */
-public abstract class AbstractSammelTransferList extends TablePart implements Part
+public abstract class AbstractTransferList extends TablePart implements Part
 {
-  private MessageConsumer mc = null;
   private I18N i18n = null;
+
+  private MessageConsumer mc = null;
 
   /**
    * ct.
-   * @param list die anzuzeigende Liste.
+   * @param list Liste der anzuzeigenden Transfers.
    * @param action
    */
-  public AbstractSammelTransferList(GenericIterator list, Action action)
+  public AbstractTransferList(GenericIterator list, Action action)
   {
     super(list, action);
     this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     setFormatter(new TableFormatter() {
       public void format(TableItem item) {
-        SammelTransfer l = (SammelTransfer) item.getData();
+        Terminable l = (Terminable) item.getData();
         if (l == null)
           return;
 
@@ -102,9 +104,25 @@ public abstract class AbstractSammelTransferList extends TablePart implements Pa
       }
     
     });
-    addColumn(i18n.tr("Bezeichnung"),"bezeichnung");
-    addColumn(i18n.tr("Anzahl Buchungen"),"anzahl");
-    addColumn(i18n.tr("Summe"),"summe", new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
+    addColumn(i18n.tr("Gegenkonto Inhaber"),"empfaenger_name");
+    addColumn(i18n.tr("Gegenkonto BLZ"),"empfaenger_blz", new Formatter() {
+      /**
+       * @see de.willuhn.jameica.gui.formatter.Formatter#format(java.lang.Object)
+       */
+      public String format(Object o)
+      {
+        if (o == null)
+          return null;
+        String blz = o.toString();
+        String name = HBCIUtils.getNameForBLZ(blz);
+        if (name != null && name.length() > 0)
+          blz += " [" + name + "]";
+        return blz;
+      }
+    
+    });
+    addColumn(i18n.tr("Verwendungszweck"),"zweck");
+    addColumn(i18n.tr("Betrag"),"betrag", new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
     addColumn(i18n.tr("Termin"),"termin", new DateFormatter(HBCI.LONGDATEFORMAT));
     addColumn(i18n.tr("Status"),"ausgefuehrt",new Formatter() {
       public String format(Object o) {
@@ -116,13 +134,24 @@ public abstract class AbstractSammelTransferList extends TablePart implements Pa
         return ""+o;
       }
     });
-    // Wir erstellen noch einen Message-Consumer, damit wir ueber neu eintreffende
-    // Lastschriften informiert werden.
-    this.mc = new MyMessageConsumer();
-    Application.getMessagingFactory().registerMessageConsumer(this.mc);
-  }
   
+    // BUGZILLA 84 http://www.willuhn.de/bugzilla/show_bug.cgi?id=84
+    setRememberOrder(true);
+
+    // BUGZILLA 233 http://www.willuhn.de/bugzilla/show_bug.cgi?id=233
+    setRememberColWidths(true);
+    
+    setMulti(true);
+
+    // Wir erstellen noch einen Message-Consumer, damit wir ueber neu eintreffende
+    // Transfers informiert werden.
+    this.mc = new TransferMessageConsumer();
+    Application.getMessagingFactory().registerMessageConsumer(this.mc);
+
+  }
+
   /**
+   * Ueberschrieben, um einen DisposeListener an das Composite zu haengen.
    * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
    */
   public synchronized void paint(Composite parent) throws RemoteException
@@ -137,14 +166,14 @@ public abstract class AbstractSammelTransferList extends TablePart implements Pa
   }
   
   /**
-   * Hilfsklasse damit wir ueber importierte Lastschriften informiert werden.
+   * Hilfsklasse damit wir ueber importierte Transfers informiert werden.
    */
-  public class MyMessageConsumer implements MessageConsumer
+  public class TransferMessageConsumer implements MessageConsumer
   {
     /**
      * ct.
      */
-    public MyMessageConsumer()
+    public TransferMessageConsumer()
     {
       super();
     }
@@ -166,7 +195,7 @@ public abstract class AbstractSammelTransferList extends TablePart implements Pa
         return;
       final GenericObject o = ((ImportMessage)message).getImportedObject();
       
-      if (o == null || !(o instanceof SammelTransferBuchung))
+      if (o == null || !(o instanceof Transfer))
         return;
       
       GUI.getDisplay().syncExec(new Runnable() {
@@ -174,12 +203,7 @@ public abstract class AbstractSammelTransferList extends TablePart implements Pa
         {
           try
           {
-            SammelTransferBuchung b = (SammelTransferBuchung) o;
-            SammelTransfer transfer = b.getSammelTransfer();
-            if (transfer == null)
-              return;
-            removeItem(transfer);
-            addItem(transfer);
+            addItem(o);
           }
           catch (Exception e)
           {
@@ -202,16 +226,9 @@ public abstract class AbstractSammelTransferList extends TablePart implements Pa
 
 
 /**********************************************************************
- * $Log: AbstractSammelTransferList.java,v $
- * Revision 1.3  2006/10/17 00:04:31  willuhn
+ * $Log: AbstractTransferList.java,v $
+ * Revision 1.1  2006/10/17 00:04:31  willuhn
  * @N new Formatters in Transfer-Listen
  * @N merged UeberweisungList + LastschriftList into AbstractTransferList
- *
- * Revision 1.2  2006/08/07 14:31:59  willuhn
- * @B misc bugfixing
- * @C Redesign des DTAUS-Imports fuer Sammeltransfers
- *
- * Revision 1.1  2005/09/30 00:08:50  willuhn
- * @N SammelUeberweisungen (merged with SammelLastschrift)
  *
  **********************************************************************/
