@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/EmpfaengerList.java,v $
- * $Revision: 1.10 $
- * $Date: 2006/10/05 16:42:28 $
+ * $Revision: 1.11 $
+ * $Date: 2006/10/17 23:50:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,6 @@
 package de.willuhn.jameica.hbci.gui.parts;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -50,7 +49,6 @@ public class EmpfaengerList extends TablePart implements Part
   private TextInput search      = null;
 
   private GenericIterator list  = null;
-  private ArrayList empfaenger  = null;
   
   private I18N i18n = null;
 
@@ -152,16 +150,6 @@ public class EmpfaengerList extends TablePart implements Part
     });
 
     super.paint(parent);
-
-    // Wir kopieren den ganzen Kram in eine ArrayList, damit die
-    // Objekte beim Filter geladen bleiben
-    empfaenger = new ArrayList();
-    list.begin();
-    while (list.hasNext())
-    {
-      Adresse a = (Adresse) list.next();
-      empfaenger.add(a);
-    }
   }
 
   
@@ -279,7 +267,7 @@ public class EmpfaengerList extends TablePart implements Part
           try
           {
             // Erstmal alle rausschmeissen
-            removeAll();
+            EmpfaengerList.this.removeAll();
 
             Adresse a = null;
 
@@ -289,9 +277,10 @@ public class EmpfaengerList extends TablePart implements Part
             boolean empty = text == null || text.length() == 0;
             if (!empty) text = text.toLowerCase();
 
-            for (int i=0;i<empfaenger.size();++i)
+            list.begin();
+            while (list.hasNext())
             {
-              a = (Adresse) empfaenger.get(i);
+              a = (Adresse) list.next();
 
               // Was zum Filtern da?
               if (empty)
@@ -331,6 +320,9 @@ public class EmpfaengerList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: EmpfaengerList.java,v $
+ * Revision 1.11  2006/10/17 23:50:20  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.10  2006/10/05 16:42:28  willuhn
  * @N CSV-Import/Export fuer Adressen
  *
