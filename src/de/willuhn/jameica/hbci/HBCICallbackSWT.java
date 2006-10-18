@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.44 $
- * $Date: 2006/10/12 13:07:56 $
+ * $Revision: 1.45 $
+ * $Date: 2006/10/18 16:17:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -152,6 +152,7 @@ public class HBCICallbackSWT extends AbstractHBCICallback
             // b) es ist PIN/TAN oder Chipkarte
             if (isRDH || (!isRDH && !isSizRDH))
             {
+              Logger.info("using passport key from wallet, passport: " + passport.getClass().getName());
               retData.replace(0,retData.length(),pw);
               retry = true;
               break;
@@ -167,6 +168,7 @@ public class HBCICallbackSWT extends AbstractHBCICallback
           {
             // noch kein Passwort definiert. Dann erzeugen wir
             // ein zufaelliges.
+            Logger.info("creating new random passport key, passport: " + passport.getClass().getName());
             byte[] pass = new byte[8];
             SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
             random.nextBytes(pass);
@@ -193,12 +195,14 @@ public class HBCICallbackSWT extends AbstractHBCICallback
               // Wir haben kein Passwort gecached oder
               // die Option ist deaktiviert. Also fragen
               // wir den User.
+              Logger.info("ask user for passport load key, passport: " + passport.getClass().getName());
               pw = DialogFactory.importPassport();
               setCachedPIN(passport,pw);
             }
           }
           else
           {
+            Logger.info("ask user for passport save key, passport: " + passport.getClass().getName());
             pw = DialogFactory.exportPassport();
           }
           retData.replace(0,retData.length(),pw);
@@ -626,6 +630,9 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.45  2006/10/18 16:17:08  willuhn
+ * @N additional log infos
+ *
  * Revision 1.44  2006/10/12 13:07:56  willuhn
  * @B bug 289 + Callback NEED_SIZENTRY_SELECT
  *
