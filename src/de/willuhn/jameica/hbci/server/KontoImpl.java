@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.75 $
- * $Date: 2006/10/09 16:56:55 $
- * $Author: jost $
+ * $Revision: 1.76 $
+ * $Date: 2006/10/20 08:22:48 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -345,7 +345,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
   {
     DBIterator list = getService().createList(Umsatz.class);
     list.addFilter("konto_id = " + getID());
-    list.setOrder("ORDER BY TONUMBER(valuta), id DESC");
+    list.setOrder("ORDER BY TONUMBER(valuta) desc, id desc");
     return list;
   }
 
@@ -361,7 +361,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
     DBIterator list = getService().createList(Umsatz.class);
     list.addFilter("konto_id = " + getID());
     list.addFilter("valuta > ?", new Object[]{new java.sql.Date((System.currentTimeMillis() - d))});
-    list.setOrder("ORDER BY TONUMBER(valuta), id DESC");
+    list.setOrder("ORDER BY TONUMBER(valuta) desc, id desc");
     return list;
   }
 
@@ -374,7 +374,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
     list.addFilter("konto_id = " + getID());
     if (start != null) list.addFilter("valuta >= ?", new Object[]{new java.sql.Date(start.getTime())});
     if (end != null) list.addFilter("valuta <= ?", new Object[]{new java.sql.Date(end.getTime())});
-    list.setOrder("ORDER BY TONUMBER(valuta), id DESC");
+    list.setOrder("ORDER BY TONUMBER(valuta) desc, id desc");
     return list;
   }
 
@@ -694,6 +694,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*******************************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.76  2006/10/20 08:22:48  willuhn
+ * @B bug 297
+ *
  * Revision 1.75  2006/10/09 16:56:55  jost
  * Bug #284
  *
