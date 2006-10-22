@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/PDFUmsatzExporter.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/10/16 22:53:54 $
- * $Author: willuhn $
+ * $Revision: 1.6 $
+ * $Date: 2006/10/22 19:52:07 $
+ * $Author: jost $
  * $Locker:  $
  * $State: Exp $
  *
@@ -174,7 +174,7 @@ public class PDFUmsatzExporter implements Exporter
       table.addCell(getDetailCell("Zahlungsgrund",           Element.ALIGN_CENTER,Color.LIGHT_GRAY));
       table.addCell(getDetailCell("Betrag",                  Element.ALIGN_CENTER,Color.LIGHT_GRAY));
       table.addCell(getDetailCell("Saldo",                   Element.ALIGN_CENTER, Color.LIGHT_GRAY));
-      table.setHeaderRows(2);
+      table.setHeaderRows(1);
 
 
       int count = 0;
@@ -333,6 +333,9 @@ public class PDFUmsatzExporter implements Exporter
 
 /*********************************************************************
  * $Log: PDFUmsatzExporter.java,v $
+ * Revision 1.6  2006/10/22 19:52:07  jost
+ * Bug #301
+ *
  * Revision 1.5  2006/10/16 22:53:54  willuhn
  * @N noch Checks auf Nullpointer hinzugefuegt
  *
