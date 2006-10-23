@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/DTAUSSammelTransferExporter.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/08/21 23:15:18 $
+ * $Revision: 1.5 $
+ * $Date: 2006/10/23 21:16:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,6 +22,7 @@ import de.jost_net.OBanToo.Dtaus.DtausException;
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
@@ -179,17 +180,20 @@ public class DTAUSSammelTransferExporter extends AbstractDTAUSIO implements Expo
    */
   Class[] getSupportedObjectTypes()
   {
-    return new Class[0];
-//    return new Class[]{
-//        SammelUeberweisung.class,
-//        SammelLastschrift.class
-//    };
+//    return new Class[0];
+    return new Class[]{
+        SammelUeberweisung.class,
+        SammelLastschrift.class
+    };
   }
 }
 
 
 /**********************************************************************
  * $Log: DTAUSSammelTransferExporter.java,v $
+ * Revision 1.5  2006/10/23 21:16:51  willuhn
+ * @N eBaykontoParser umbenannt und ueberarbeitet
+ *
  * Revision 1.4  2006/08/21 23:15:18  willuhn
  * *** empty log message ***
  *

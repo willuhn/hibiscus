@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/UeberweisungNew.java,v $
- * $Revision: 1.6 $
- * $Date: 2006/06/26 13:25:20 $
+ * $Revision: 1.7 $
+ * $Date: 2006/10/23 21:16:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,18 +16,12 @@ import java.rmi.RemoteException;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.io.EbayKontoData;
-import de.willuhn.jameica.hbci.io.EbayKontoParser;
+import de.willuhn.jameica.hbci.io.ClipboardUeberweisungImporter;
 import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
-import de.willuhn.jameica.messaging.StatusBarMessage;
-import de.willuhn.jameica.system.Application;
-import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
-import de.willuhn.util.I18N;
 
 /**
  * Action fuer neue Ueberweisung.
@@ -44,8 +38,6 @@ public class UeberweisungNew implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
-	  final I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-	  
 		Ueberweisung u = null;
 
 		if (context instanceof Ueberweisung)
@@ -78,38 +70,8 @@ public class UeberweisungNew implements Action
 		}
 		else 
 		{
-			// Clipboard parsen
-			EbayKontoParser parser = new EbayKontoParser();
-			EbayKontoData data = null;
-      
-      try
-      {
-        try {
-          data = parser.readFromClipboard();
-        }
-        catch (ApplicationException ex)
-        {
-          Application.getController().getApplicationCallback().notifyUser(i18n.tr("Kontodaten aus Zwischenablage fehlerhaft.\n{0}",ex.getLocalizedMessage()));
-        }
-          
-        if (data != null)
-        {
-          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr(i18n.tr("In der Zwischenablage wurden Kontodaten gefunden.\nDie Überweisung wird damit vorbelegt.")),StatusBarMessage.TYPE_SUCCESS));
-             
-          u = (Ueberweisung) Settings.getDBService().createObject(Ueberweisung.class,null);
-          u.setGegenkontoName(data.getInhaber());
-          u.setGegenkontoBLZ(data.getBlz());
-          u.setGegenkontoNummer(data.getNummer());
-        }
-      }
-      catch (ApplicationException ae)
-      {
-        throw ae;
-      }
-      catch (Exception e)
-      {
-        Logger.error("unable to parse account data from clipboard",e);
-      }
+      ClipboardUeberweisungImporter i = new ClipboardUeberweisungImporter();
+      u = i.getUeberweisung();
     }
 		GUI.startView(de.willuhn.jameica.hbci.gui.views.UeberweisungNew.class,u);
  	}
@@ -118,6 +80,9 @@ public class UeberweisungNew implements Action
 
 /**********************************************************************
  * $Log: UeberweisungNew.java,v $
+ * Revision 1.7  2006/10/23 21:16:51  willuhn
+ * @N eBaykontoParser umbenannt und ueberarbeitet
+ *
  * Revision 1.6  2006/06/26 13:25:20  willuhn
  * @N Franks eBay-Parser
  *
