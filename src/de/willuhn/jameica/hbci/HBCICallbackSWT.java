@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.47 $
- * $Date: 2006/10/23 11:38:57 $
+ * $Revision: 1.48 $
+ * $Date: 2006/10/23 15:16:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,8 +13,6 @@
 
 package de.willuhn.jameica.hbci;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.security.SecureRandom;
 import java.util.Date;
 import java.util.Hashtable;
@@ -27,13 +25,12 @@ import org.kapott.hbci.exceptions.NeedKeyAckException;
 import org.kapott.hbci.manager.HBCIUtils;
 import org.kapott.hbci.manager.HBCIUtilsInternal;
 import org.kapott.hbci.passport.HBCIPassport;
-import org.kapott.hbci.passport.HBCIPassportRDHNew;
+import org.kapott.hbci.passport.HBCIPassportRDH;
 import org.kapott.hbci.passport.HBCIPassportSIZRDHFile;
 
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.gui.DialogFactory;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
-import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Nachricht;
 import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.security.Wallet;
@@ -54,9 +51,6 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 	private I18N i18n;
 	private Hashtable accountCache = new Hashtable();
   private PassportHandle currentHandle = null;
-  
-  // BUGZILLA 185
-  private Hashtable pinCache = new Hashtable();
   
   /**
    * ct.
@@ -105,8 +99,6 @@ public class HBCICallbackSWT extends AbstractHBCICallback
     }
   }
 
-  private long askPassword = 0;
-
   /**
    * @see org.kapott.hbci.callback.HBCICallback#callback(org.kapott.hbci.passport.HBCIPassport, int, java.lang.String, int, java.lang.StringBuffer)
    */
@@ -130,106 +122,58 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 				case NEED_PASSPHRASE_SAVE:
           
           // BUGZILLA 289, 148
+          // Neu: Wir behandeln hier nur noch PIN/TAN und Chipkarte
+          // und verwalten das Passwort fuer diese selbst. Die Abfragen
+          // fuer RDH sind im Passport implementiert.
 
           HBCI plugin = (HBCI) Application.getPluginLoader().getPlugin(HBCI.class);
-
-          boolean isSizRDH = (passport instanceof HBCIPassportSIZRDHFile);
-          boolean isRDH    = (passport instanceof HBCIPassportRDHNew);
           boolean forceAsk = plugin.getResources().getSettings().getBoolean("hbcicallback.askpassphrase.force",false);
 
-          // Wir laden ein ggf. automatisch erzeugtes Passwort
-          Wallet w = Settings.getWallet();
-          String pw = (String) w.get("hbci.passport.password." + passport.getClass().getName());
-
-          // Falls wir eines gefunden haben, dann nehmen wir
-          // es nur, wenn es sich um den ersten Versuch handelt
-          long now = System.currentTimeMillis();
+          boolean isRDH = (passport instanceof HBCIPassportSIZRDHFile) || (passport instanceof HBCIPassportRDH);
           
-          // Sind wir innerhalb von 2 Sekunden wieder hier?
-          boolean retry = (now - askPassword < 2000);
-
-          if (!forceAsk && pw != null && pw.length() > 0)
+          String pw = null;
+          
+          if (!forceAsk && !isRDH)
           {
-            // Wir haben ein Passwort. Wir geben es aber nur
-            // noch in zwei Faellen zurueck:
-            // a) es ist eine alte Schluesseldiskette und dies ist
-            //    der erste Versuch
-            // b) es ist PIN/TAN oder Chipkarte
-            if ((!retry && isRDH && reason == NEED_PASSPHRASE_LOAD) || (!isRDH && !isSizRDH))
+            // Wir laden ein ggf. automatisch erzeugtes Passwort
+            Wallet w = Settings.getWallet();
+            pw = (String) w.get("hbci.passport.password." + passport.getClass().getName());
+
+            if (pw != null && pw.length() > 0)
             {
               Logger.info("using passport key from wallet, passport: " + passport.getClass().getName());
               retData.replace(0,retData.length(),pw);
-              askPassword = now;
               break;
             }
-          }
-          
-          // Flag zuruecksetzen
-          askPassword = 0;
-
-          // Das Neuausdenken von Passworten machen wir nur noch
-          // bei PIN/TAN und Chipkarte. Und auch nur noch dann,
-          // wenn wir kein Passwort gefunden haben. Denn ansonsten
-          // riskieren wir, das Passwort zu ueberschreiben
-          if (pw == null && !forceAsk && !isRDH && !isSizRDH)
-          {
-            // noch kein Passwort definiert. Dann erzeugen wir
-            // ein zufaelliges.
-            Logger.info("creating new random passport key, passport: " + passport.getClass().getName());
-            byte[] pass = new byte[8];
-            SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
-            random.nextBytes(pass);
-            pw = Base64.encode(pass);
-
-            // Und speichern es im Wallet.
-            w.set("hbci.passport.password." + passport.getClass().getName(),pw);
-            retData.replace(0,retData.length(),pw);
-            break;
-          }
-
-          // So, damit bleiben hier nur noch RDH-Passports,
-          // bei denen der User das Passwort eingeben muss.
-
-          if (reason == NEED_PASSPHRASE_LOAD)
-          {
-            // BUGZILLA 185: Da Schluesseldisketten keine PIN
-            // haben, speichern wir hier das Passport der Datei
-            // fuer die Session zwischen
-            pw = getCachedPIN(passport);
             
             if (pw == null)
             {
-              // Wir haben kein Passwort gecached oder
-              // die Option ist deaktiviert. Also fragen
-              // wir den User.
-              Logger.info("ask user for passport load key, passport: " + passport.getClass().getName());
-              pw = DialogFactory.importPassport();
-              setCachedPIN(passport,pw);
+              // noch kein Passwort definiert. Dann erzeugen wir
+              // ein zufaelliges.
+              Logger.info("creating new random passport key, passport: " + passport.getClass().getName());
+              byte[] pass = new byte[8];
+              SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
+              random.nextBytes(pass);
+              pw = Base64.encode(pass);
+
+              // Und speichern es im Wallet.
+              w.set("hbci.passport.password." + passport.getClass().getName(),pw);
+              retData.replace(0,retData.length(),pw);
+              break;
             }
           }
+
+          if (reason == NEED_PASSPHRASE_LOAD)
+            pw = DialogFactory.importPassport(passport);
           else
-          {
-            Logger.info("ask user for passport save key, passport: " + passport.getClass().getName());
-            pw = DialogFactory.exportPassport();
-          }
+            pw = DialogFactory.exportPassport(passport);
           retData.replace(0,retData.length(),pw);
 					break;
 
 
 				case NEED_SOFTPIN:
 				case NEED_PT_PIN:
-
-          String pin = getCachedPIN(passport);
-          if (pin == null)
-          {
-            // wir haben keine zwischengespeicherte PIN
-            // oder die Option wurde deaktiviert
-            // Also fragen wir den User
-            pin = DialogFactory.getPIN(passport);
-            setCachedPIN(passport,pin);
-          }
-          // PIN zurueckliefern.
-          retData.replace(0,retData.length(),pin);
+          retData.replace(0,retData.length(),DialogFactory.getPIN(passport));
 					break;
 
         // BUGZILLA 62, 200:
@@ -534,109 +478,14 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 		}
     
   }
-  
-  /**
-   * Prueft, ob eine gespeicherte PIN fuer diesen Passport vorliegt.
-   * @param passport der Passport.
-   * @return die PIN oder null, wenn keine gefunden wurde.
-   * @throws Exception
-   */
-  private final String getCachedPIN(HBCIPassport passport) throws Exception
-  {
-    String key = getCacheKey(passport);
-
-    // immer noch keine CustomerID da? Dann geben wir auf
-    if (key == null)
-      return null;
-
-    byte[] data = (byte[]) this.pinCache.get(key);
-
-    // Haben wir Daten?
-    if (data == null)
-      return null;
-    
-    ByteArrayInputStream bis  = new ByteArrayInputStream(data);
-    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    Application.getSSLFactory().decrypt(bis,bos);
-    String s = bos.toString();
-    if (s != null && s.length() > 0)
-      return s;
-    return null;
-  }
-  
-  /**
-   * Speichert die PIN temporaer fuer diese Session.
-   * @param passport der Passport.
-   * @param pin die PIN.
-   * @throws Exception
-   */
-  private final void setCachedPIN(HBCIPassport passport, String pin) throws Exception
-  {
-    String key = getCacheKey(passport);
-    
-    if (key == null)
-      return;
-    
-    byte[] data = pin.getBytes();
-    
-    ByteArrayInputStream bis  = new ByteArrayInputStream(data);
-    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    Application.getSSLFactory().encrypt(bis,bos);
-    this.pinCache.put(key,bos.toByteArray());
-  }
-  
-  /**
-   * Hilfsfunktion zum Ermitteln des Keys, zu dem die PIN gespeichert ist.
-   * @param passport
-   * @return die PIN oder null.
-   * @throws Exception
-   */
-  private String getCacheKey(HBCIPassport passport) throws Exception
-  {
-    if (!Settings.getCachePin())
-      return null;
-    
-    // Jetzt versuchen wir den Schluessel zu ermitteln, unter dem die
-    // PIN abgelegt ist. Normalerweise wuerde ich hier einfach die
-    // CustomerID des Passports nehmen. Bei Schluesseldiskette jedoch
-    // haben wir ein Henne-Ei-Problem. Die CustomerID befindet sich
-    // in der Passport-Datei. Und an die kommen wir erst ran, nachdem
-    // der User die PIN eingegeben hat. Also nehmen wir hier alternativ
-    // die Customer-ID des Kontos - insofern eine existiert.
-    String key = null;
-    
-    if (passport != null)
-      key = passport.getCustomerId();
-
-    // Ggf. noch die BLZ anhaengen.
-    // Nur zur Sicherheit, falls die Kundenkennung bei mehreren
-    // Banken existiert
-    Konto k = HBCIFactory.getInstance().getCurrentKonto();
-    if (k != null)
-    {
-      if (key == null)
-      {
-        // Hu? Wir haben noch nicht mal eine Kundennummer aus
-        // dem Passport? Dann holen wir gleich die aus dem
-        // Konto.
-        key = k.getKundennummer();
-      }
-      
-      // Wir haengen die BLZ nur dann an, wenn wir eine Kundennummer
-      // haben. Sonst wuerde der Key nur aus der BLZ bestehen und
-      // das ist zu unsicher.
-      if (key != null && key.length() > 0)
-        key += "." + k.getBLZ();
-    }
-
-    return key != null && key.length() > 0 ? key : null;
-  }
-
 }
 
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.48  2006/10/23 15:16:12  willuhn
+ * @B Passwort-Handling ueberarbeitet
+ *
  * Revision 1.47  2006/10/23 11:38:57  willuhn
  * @B auto password handling
  *

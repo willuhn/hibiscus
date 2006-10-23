@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/DialogFactory.java,v $
- * $Revision: 1.26 $
- * $Date: 2006/08/03 15:32:35 $
+ * $Revision: 1.27 $
+ * $Date: 2006/10/23 15:16:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,11 +12,16 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.util.Hashtable;
+
 import org.kapott.hbci.passport.HBCIPassport;
 
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.dialogs.SimpleDialog;
 import de.willuhn.jameica.hbci.AccountContainer;
+import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.dialogs.AccountContainerDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.InternetConnectionDialog;
@@ -25,6 +30,9 @@ import de.willuhn.jameica.hbci.gui.dialogs.NewKeysDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.PINDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.PassportLoadDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.PassportSaveDialog;
+import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 
 /**
@@ -33,6 +41,9 @@ import de.willuhn.logging.Logger;
 public class DialogFactory {
 
 	private static AbstractDialog dialog = null;
+
+  // BUGZILLA 185
+  private static Hashtable pinCache = new Hashtable();
 
   /**
 	 * Erzeugt einen simplen Dialog mit einem OK-Button.
@@ -93,42 +104,77 @@ public class DialogFactory {
 	public static synchronized String getPIN(HBCIPassport passport) throws Exception
 	{
 		check();
-		dialog = new PINDialog(passport);
+
+    String pin = getCachedPIN(passport);
+    if (pin != null)
+      return pin;
+
+    dialog = new PINDialog(passport);
 		try {
-			return (String) dialog.open();
+			pin = (String) dialog.open();
 		}
 		finally
 		{
 			close();
 		}
+    setCachedPIN(passport,pin);
+    return pin;
 	}
 
 	/**
 	 * Dialog zur Eingabe des Passworts fuer das Sicherheitsmedium beim Laden eines zu importierenden Passports.
+   * @param passport der HBCI-Passport.
    * @return eingegebenes Passwort.
    * @throws Exception
    */
-  public static synchronized String importPassport() throws Exception
+  public static synchronized String importPassport(HBCIPassport passport) throws Exception
 	{
 		check();
-		dialog = new PassportLoadDialog(AbstractDialog.POSITION_CENTER);
-		try {
-			return (String) dialog.open();
-		}
-		finally
-		{
-			close();
-		}
+    
+    HBCI plugin = (HBCI) Application.getPluginLoader().getPlugin(HBCI.class);
+    boolean forceAsk = plugin.getResources().getSettings().getBoolean("hbcicallback.askpassphrase.force",false);
+
+    // BUGZILLA 185: Da Schluesseldisketten keine PIN
+    // haben, speichern wir hier das Passport der Datei
+    // fuer die Session zwischen
+    String pw = null;
+    
+    if (!forceAsk)
+    {
+      pw = getCachedPIN(passport);
+      if (pw != null)
+      {
+        Logger.info("using cached passport load key, passport: " + passport.getClass().getName());
+        return pw; // wir haben ein gecachtes Passwort, das nehmen wir
+      }
+    }
+
+    // Wir haben kein Passwort gecached oder
+    // die Option ist deaktiviert. Also fragen
+    // wir den User.
+    Logger.info("ask user for passport load key, passport: " + passport.getClass().getName());
+    dialog = new PassportLoadDialog(AbstractDialog.POSITION_CENTER);
+    try {
+      pw = (String) dialog.open();
+    }
+    finally
+    {
+      close();
+    }
+    setCachedPIN(passport,pw);
+    return pw;
 	}
 
 	/**
 	 * Dialog zur Eingabe des Passworts fuer das Sicherheitsmedium beim Speichern eines zu exportierenden Passports.
+   * @param passport der Passport.
 	 * @return eingegebenes Passwort.
 	 * @throws Exception
 	 */
-	public static synchronized String exportPassport() throws Exception
+	public static synchronized String exportPassport(HBCIPassport passport) throws Exception
 	{
 		check();
+    Logger.info("ask user for passport save key, passport: " + passport.getClass().getName());
 		dialog = new PassportSaveDialog(AbstractDialog.POSITION_CENTER);
 		try {
 			return (String) dialog.open();
@@ -230,12 +276,113 @@ public class DialogFactory {
 			dialog = null;
 		}
 	}
-	
+
+  /**
+   * Prueft, ob eine gespeicherte PIN fuer diesen Passport vorliegt.
+   * @param passport der Passport.
+   * @return die PIN oder null, wenn keine gefunden wurde.
+   * @throws Exception
+   */
+  private static String getCachedPIN(HBCIPassport passport) throws Exception
+  {
+    String key = getCacheKey(passport);
+
+    // immer noch keine CustomerID da? Dann geben wir auf
+    if (key == null)
+      return null;
+
+    byte[] data = (byte[]) pinCache.get(key);
+
+    // Haben wir Daten?
+    if (data == null)
+      return null;
+    
+    ByteArrayInputStream bis  = new ByteArrayInputStream(data);
+    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    Application.getSSLFactory().decrypt(bis,bos);
+    String s = bos.toString();
+    if (s != null && s.length() > 0)
+      return s;
+    return null;
+  }
+  
+  /**
+   * Speichert die PIN temporaer fuer diese Session.
+   * @param passport der Passport.
+   * @param pin die PIN.
+   * @throws Exception
+   */
+  private static void setCachedPIN(HBCIPassport passport, String pin) throws Exception
+  {
+    String key = getCacheKey(passport);
+    
+    if (key == null)
+      return;
+    
+    byte[] data = pin.getBytes();
+    
+    ByteArrayInputStream bis  = new ByteArrayInputStream(data);
+    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    Application.getSSLFactory().encrypt(bis,bos);
+    pinCache.put(key,bos.toByteArray());
+  }
+  
+  /**
+   * Hilfsfunktion zum Ermitteln des Keys, zu dem die PIN gespeichert ist.
+   * @param passport
+   * @return die PIN oder null.
+   * @throws Exception
+   */
+  private static String getCacheKey(HBCIPassport passport) throws Exception
+  {
+    if (!Settings.getCachePin())
+      return null;
+    
+    // Jetzt versuchen wir den Schluessel zu ermitteln, unter dem die
+    // PIN abgelegt ist. Normalerweise wuerde ich hier einfach die
+    // CustomerID des Passports nehmen. Bei Schluesseldiskette jedoch
+    // haben wir ein Henne-Ei-Problem. Die CustomerID befindet sich
+    // in der Passport-Datei. Und an die kommen wir erst ran, nachdem
+    // der User die PIN eingegeben hat. Also nehmen wir hier alternativ
+    // die Customer-ID des Kontos - insofern eine existiert.
+    String key = null;
+    
+    if (passport != null)
+      key = passport.getCustomerId();
+
+    // Ggf. noch die BLZ anhaengen.
+    // Nur zur Sicherheit, falls die Kundenkennung bei mehreren
+    // Banken existiert
+    Konto k = HBCIFactory.getInstance().getCurrentKonto();
+    if (k != null)
+    {
+      if (key == null)
+      {
+        // Hu? Wir haben noch nicht mal eine Kundennummer aus
+        // dem Passport? Dann holen wir gleich die aus dem
+        // Konto.
+        key = k.getKundennummer();
+      }
+      
+      // Wir haengen die BLZ nur dann an, wenn wir eine Kundennummer
+      // haben. Sonst wuerde der Key nur aus der BLZ bestehen und
+      // das ist zu unsicher.
+      if (key != null && key.length() > 0)
+        key += "." + k.getBLZ();
+    }
+
+    return key != null && key.length() > 0 ? key : null;
+  }
+  
+  
 }
 
 
 /**********************************************************************
  * $Log: DialogFactory.java,v $
+ * Revision 1.27  2006/10/23 15:16:12  willuhn
+ * @B Passwort-Handling ueberarbeitet
+ *
  * Revision 1.26  2006/08/03 15:32:35  willuhn
  * @N Bug 62
  *
