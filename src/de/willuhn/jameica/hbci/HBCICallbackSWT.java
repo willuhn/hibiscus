@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.46 $
- * $Date: 2006/10/23 10:48:04 $
+ * $Revision: 1.47 $
+ * $Date: 2006/10/23 11:38:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -105,8 +105,8 @@ public class HBCICallbackSWT extends AbstractHBCICallback
     }
   }
 
-  private boolean retry = false;
-  
+  private long askPassword = 0;
+
   /**
    * @see org.kapott.hbci.callback.HBCICallback#callback(org.kapott.hbci.passport.HBCIPassport, int, java.lang.String, int, java.lang.StringBuffer)
    */
@@ -143,24 +143,29 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
           // Falls wir eines gefunden haben, dann nehmen wir
           // es nur, wenn es sich um den ersten Versuch handelt
-          if (!retry && !forceAsk && pw != null && pw.length() > 0)
+          long now = System.currentTimeMillis();
+          
+          // Sind wir innerhalb von 2 Sekunden wieder hier?
+          boolean retry = (now - askPassword < 2000);
+
+          if (!forceAsk && pw != null && pw.length() > 0)
           {
             // Wir haben ein Passwort. Wir geben es aber nur
             // noch in zwei Faellen zurueck:
             // a) es ist eine alte Schluesseldiskette und dies ist
             //    der erste Versuch
             // b) es ist PIN/TAN oder Chipkarte
-            if (isRDH || (!isRDH && !isSizRDH))
+            if ((!retry && isRDH && reason == NEED_PASSPHRASE_LOAD) || (!isRDH && !isSizRDH))
             {
               Logger.info("using passport key from wallet, passport: " + passport.getClass().getName());
               retData.replace(0,retData.length(),pw);
-              retry = true;
+              askPassword = now;
               break;
             }
           }
           
           // Flag zuruecksetzen
-          retry = false;
+          askPassword = 0;
 
           // Das Neuausdenken von Passworten machen wir nur noch
           // bei PIN/TAN und Chipkarte. Und auch nur noch dann,
@@ -632,6 +637,9 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.47  2006/10/23 11:38:57  willuhn
+ * @B auto password handling
+ *
  * Revision 1.46  2006/10/23 10:48:04  willuhn
  * @B check for pw=null before generating a new password
  *
