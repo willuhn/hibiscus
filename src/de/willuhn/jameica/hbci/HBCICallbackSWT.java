@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.45 $
- * $Date: 2006/10/18 16:17:08 $
+ * $Revision: 1.46 $
+ * $Date: 2006/10/23 10:48:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -163,8 +163,10 @@ public class HBCICallbackSWT extends AbstractHBCICallback
           retry = false;
 
           // Das Neuausdenken von Passworten machen wir nur noch
-          // bei PIN/TAN und Chipkarte
-          if (!forceAsk && !isRDH && !isSizRDH)
+          // bei PIN/TAN und Chipkarte. Und auch nur noch dann,
+          // wenn wir kein Passwort gefunden haben. Denn ansonsten
+          // riskieren wir, das Passwort zu ueberschreiben
+          if (pw == null && !forceAsk && !isRDH && !isSizRDH)
           {
             // noch kein Passwort definiert. Dann erzeugen wir
             // ein zufaelliges.
@@ -630,6 +632,9 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.46  2006/10/23 10:48:04  willuhn
+ * @B check for pw=null before generating a new password
+ *
  * Revision 1.45  2006/10/18 16:17:08  willuhn
  * @N additional log infos
  *
