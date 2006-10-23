@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.31 $
- * $Date: 2006/10/17 23:50:20 $
+ * $Revision: 1.32 $
+ * $Date: 2006/10/23 22:30:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -218,7 +218,9 @@ public class UmsatzList extends TablePart implements Extendable
       });
       group.addCheckbox(this.regex,i18n.tr("Suchbegriff ist ein regulärer Ausdruck"));
     }
+    long start = System.currentTimeMillis();
     super.paint(parent);
+    System.out.println("used time: " + (System.currentTimeMillis() - start));
 
     // Und einmal starten bitte
     if (this.filter)
@@ -594,6 +596,9 @@ public class UmsatzList extends TablePart implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.32  2006/10/23 22:30:43  willuhn
+ * @C recompile ($LANG)
+ *
  * Revision 1.31  2006/10/17 23:50:20  willuhn
  * *** empty log message ***
  *
