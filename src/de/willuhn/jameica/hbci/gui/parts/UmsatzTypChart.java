@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTypChart.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/08/05 22:00:51 $
+ * $Revision: 1.3 $
+ * $Date: 2006/10/31 23:04:48 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,7 +27,6 @@ import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.chart.ChartData;
 import de.willuhn.jameica.hbci.gui.chart.ChartDataUmsatzTyp;
 import de.willuhn.jameica.hbci.gui.chart.PieChart;
@@ -44,7 +43,7 @@ public class UmsatzTypChart implements Part
 {
   
   private I18N i18n   = null;
-  private int start   = HBCIProperties.UMSATZ_DEFAULT_DAYS;
+  private int start   = UmsatzDaysInput.getDefaultDays();
 
   /**
    * ct.
@@ -153,6 +152,9 @@ public class UmsatzTypChart implements Part
 
 /*********************************************************************
  * $Log: UmsatzTypChart.java,v $
+ * Revision 1.3  2006/10/31 23:04:48  willuhn
+ * @B Wurde mit der falschen Anzahl Default-Tage initialisiert
+ *
  * Revision 1.2  2006/08/05 22:00:51  willuhn
  * *** empty log message ***
  *
