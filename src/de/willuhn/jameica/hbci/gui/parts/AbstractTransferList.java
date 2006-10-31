@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractTransferList.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/10/31 22:54:46 $
+ * $Revision: 1.5 $
+ * $Date: 2006/10/31 22:59:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -298,7 +298,7 @@ public abstract class AbstractTransferList extends TablePart implements Part
         cal.set(Calendar.MINUTE,0);
         cal.set(Calendar.SECOND,0);
         cal.set(Calendar.MILLISECOND,0);
-        if (dto != null && cal.getTime().after(dto))
+        if (dto != null && !cal.getTime().equals(dto))
           settings.setAttribute("transferlist.filter.to",HBCI.DATEFORMAT.format(dto));
         else
           settings.setAttribute("transferlist.filter.to",(String)null);
@@ -375,6 +375,9 @@ public abstract class AbstractTransferList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: AbstractTransferList.java,v $
+ * Revision 1.5  2006/10/31 22:59:03  willuhn
+ * @B Bis-Datum wurde nicht korrekt uebernommen
+ *
  * Revision 1.4  2006/10/31 22:54:46  willuhn
  * @N Ausgefuehrte Transfers eingrauen
  *
