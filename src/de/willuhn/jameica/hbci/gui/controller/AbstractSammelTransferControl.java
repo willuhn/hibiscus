@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractSammelTransferControl.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/10/10 22:55:10 $
+ * $Revision: 1.5 $
+ * $Date: 2006/10/31 23:21:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -229,11 +229,14 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferControl.java,v $
+ * Revision 1.5  2006/10/31 23:21:46  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2006/10/10 22:55:10  willuhn
  * @N Alle Datumseingabe-Felder auf DateInput umgestellt
  *
  * Revision 1.3  2006/10/09 23:56:13  willuhn
- * @N TODO-Tags
+ * @N T O D O-Tags
  *
  * Revision 1.2  2006/06/08 22:29:47  willuhn
  * @N DTAUS-Import fuer Sammel-Lastschriften und Sammel-Ueberweisungen
