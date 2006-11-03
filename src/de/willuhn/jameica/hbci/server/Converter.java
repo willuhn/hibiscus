@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.33 $
- * $Date: 2006/11/03 01:12:56 $
+ * $Revision: 1.34 $
+ * $Date: 2006/11/03 10:28:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -96,7 +96,15 @@ public class Converter {
     {
       String curr = u.other.curr;
       if (curr != null && "DEM".equals(curr))
-        betrag /= 1.95583;
+      {
+    	  double kurs = 1.95583;
+          betrag /= kurs;
+          
+          // Saldo auch noch umrechnen
+          double saldo = umsatz.getSaldo();
+          if (saldo != 0)
+        	  umsatz.setSaldo(saldo / kurs);
+      }
     }
 
     umsatz.setBetrag(betrag);
@@ -107,7 +115,7 @@ public class Converter {
     // Aus einer Mail von Stefan Palme
     //    Es geht noch besser. Wenn in "umsline.gvcode" nicht der Wert "999"
     //    drinsteht, sind die Variablen "text", "primanota", "usage", "other"
-    //    und "addkey" irgendwie sinnvoll gefüllt.  Steht in "gvcode" der Wert
+    //    und "addkey" irgendwie sinnvoll gefï¿½llt.  Steht in "gvcode" der Wert
     //    "999" drin, dann sind diese Variablen alle null, und der ungeparste 
     //    Inhalt des Feldes :86: steht komplett in "additional".
     
@@ -319,7 +327,7 @@ public class Converter {
    */
   public static DTAUS HibiscusSammelUeberweisung2DTAUS(SammelUeberweisung su) throws RemoteException
   {
-    // TYPE_CREDIT = Sammelüberweisung
+    // TYPE_CREDIT = Sammelï¿½berweisung
     // TYPE_DEBIT = Sammellastschrift
     return HibiscusSammelTransfer2DTAUS(su, DTAUS.TYPE_CREDIT);
   }
@@ -332,7 +340,7 @@ public class Converter {
    */
   public static DTAUS HibiscusSammelLastschrift2DTAUS(SammelLastschrift sl) throws RemoteException
   {
-    // TYPE_CREDIT = Sammelüberweisung
+    // TYPE_CREDIT = Sammelï¿½berweisung
     // TYPE_DEBIT = Sammellastschrift
     return HibiscusSammelTransfer2DTAUS(sl, DTAUS.TYPE_DEBIT);
   }
@@ -372,6 +380,9 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.34  2006/11/03 10:28:24  willuhn
+ * @B bug 318 (Saldo noch umrechnen)
+ *
  * Revision 1.33  2006/11/03 01:12:56  willuhn
  * @B Bug 318
  *
