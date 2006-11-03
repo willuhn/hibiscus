@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.32 $
- * $Date: 2006/08/23 09:45:13 $
+ * $Revision: 1.33 $
+ * $Date: 2006/11/03 01:12:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -90,7 +90,16 @@ public class Converter {
       }
     }
     
-    umsatz.setBetrag(u.value.getDoubleValue());
+    // BUGZILLA 318
+    double betrag = u.value.getDoubleValue();
+    if (u.other != null)
+    {
+      String curr = u.other.curr;
+      if (curr != null && "DEM".equals(curr))
+        betrag /= 1.95583;
+    }
+
+    umsatz.setBetrag(betrag);
 		umsatz.setDatum(u.bdate);
 		umsatz.setValuta(u.valuta);
 
@@ -156,6 +165,7 @@ public class Converter {
 		{
 		  umsatz.setEmpfaenger(HBCIKonto2HibiscusAdresse(u.other));
 		}
+    
 		return umsatz;
 	}
 
@@ -362,6 +372,9 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.33  2006/11/03 01:12:56  willuhn
+ * @B Bug 318
+ *
  * Revision 1.32  2006/08/23 09:45:13  willuhn
  * @N Restliche DBIteratoren auf PreparedStatements umgestellt
  *
