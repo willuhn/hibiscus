@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.33 $
- * $Date: 2006/10/23 22:31:15 $
+ * $Revision: 1.34 $
+ * $Date: 2006/11/06 23:12:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@
 package de.willuhn.jameica.hbci.gui.parts;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.PatternSyntaxException;
@@ -77,6 +78,7 @@ public class UmsatzList extends TablePart implements Extendable
 
   private Konto konto           = null;
   private GenericIterator list  = null;
+  private ArrayList umsaetze    = null;
   
   private KL kl                 = null;
   private boolean filter        = true;
@@ -218,7 +220,18 @@ public class UmsatzList extends TablePart implements Extendable
       });
       group.addCheckbox(this.regex,i18n.tr("Suchbegriff ist ein regulärer Ausdruck"));
     }
+    
     super.paint(parent);
+
+    // Wir kopieren den ganzen Kram in eine ArrayList, damit die
+    // Objekte beim Filter geladen bleiben
+    umsaetze = new ArrayList();
+    list.begin();
+    while (list.hasNext())
+    {
+      Umsatz u = (Umsatz) list.next();
+      umsaetze.add(u);
+    }
 
     // Und einmal starten bitte
     if (this.filter)
@@ -451,6 +464,9 @@ public class UmsatzList extends TablePart implements Extendable
         {
           try
           {
+            // Erstmal alle rausschmeissen
+            UmsatzList.this.removeAll();
+
             // Wir holen uns den aktuellen Text
             String text = (String) search.getValue();
 
@@ -479,13 +495,15 @@ public class UmsatzList extends TablePart implements Extendable
               typ.setRegex(((Boolean)regex.getValue()).booleanValue());
             }
             
-            // Erstmal alle rausschmeissen
-            UmsatzList.this.removeAll();
-
-            list.begin();
-            while (list.hasNext())
+            for (int i=0;i<umsaetze.size();++i)
             {
-              u = (Umsatz) list.next();
+              u = (Umsatz) umsaetze.get(i);
+              if (u.getID() == null) // Wurde zwischenzeitlich geloescht
+              {
+                umsaetze.remove(i);
+                i--;
+                continue;
+              }
               date = u.getValuta();
 
               // Wenn der Umsatz ein Datum hat, welches vor dem Limit liegt. Dann raus damit
@@ -560,7 +578,8 @@ public class UmsatzList extends TablePart implements Extendable
         {
           try
           {
-            addItem(o);
+            umsaetze.add(o);
+            sort(); // Neues Element einsortieren
           }
           catch (Exception e)
           {
@@ -594,6 +613,9 @@ public class UmsatzList extends TablePart implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.34  2006/11/06 23:12:38  willuhn
+ * @B Fehler bei Aktualisierung der Elemente nach Insert, Delete, Sort
+ *
  * Revision 1.33  2006/10/23 22:31:15  willuhn
  * @R removed debug output
  *
