@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoNew.java,v $
- * $Revision: 1.18 $
- * $Date: 2006/08/17 21:46:16 $
+ * $Revision: 1.19 $
+ * $Date: 2006/11/06 14:19:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,8 +12,6 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.views;
 
-import java.rmi.RemoteException;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.TabFolder;
@@ -23,7 +21,6 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Color;
-import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -35,7 +32,6 @@ import de.willuhn.jameica.hbci.gui.action.UmsatzList;
 import de.willuhn.jameica.hbci.gui.controller.KontoControl;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -67,62 +63,61 @@ public class KontoNew extends AbstractView {
     else
   		GUI.getView().setTitle(i18n.tr("Konto-Details"));
 
-		try {
+    // BUGZILLA 273
+    TabFolder kontofolder = new TabFolder(getParent(), SWT.NONE);
+    kontofolder.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+    kontofolder.setBackground(Color.BACKGROUND.getSWTColor());
+    TabGroup group = new TabGroup(kontofolder,i18n.tr("Eigenschaften"));
 
-			LabelGroup group = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
+		group.addLabelPair(i18n.tr("Bezeichnung des Kontos"),		control.getBezeichnung());
+    group.addLabelPair(i18n.tr("Kontoinhaber"),             control.getName());
+    group.addLabelPair(i18n.tr("Saldo"),                    control.getSaldo());
+    group.addSeparator();
+    group.addCheckbox(control.getSynchronize(),i18n.tr("Konto in Synchronisierung einbeziehen"));
 
-			group.addLabelPair(i18n.tr("Kontonummer"),			    		control.getKontonummer());
-			group.addLabelPair(i18n.tr("Bankleitzahl"),			    		control.getBlz());
-			group.addLabelPair(i18n.tr("Bezeichnung des Kontos"),		control.getBezeichnung());
-			group.addLabelPair(i18n.tr("Kontoinhaber"),			    		control.getName());
-			group.addLabelPair(i18n.tr("Kundennummer"),							control.getKundennummer());
-			group.addLabelPair(i18n.tr("Sicherheitsmedium"),    		control.getPassportAuswahl());
-      group.addCheckbox(control.getSynchronize(),i18n.tr("Konto in Synchronisierung einbeziehen"));
-			group.addSeparator();
-      group.addLabelPair(i18n.tr("Saldo"),                    control.getSaldo());
+    TabGroup erweitert = new TabGroup(kontofolder,i18n.tr("HBCI-Konfiguration"));
+    erweitert.addLabelPair(i18n.tr("Kontonummer"),          control.getKontonummer());
+    erweitert.addLabelPair(i18n.tr("Bankleitzahl"),         control.getBlz());
+    erweitert.addLabelPair(i18n.tr("Kundennummer"),         control.getKundennummer());
+    erweitert.addLabelPair(i18n.tr("Sicherheitsmedium"),    control.getPassportAuswahl());
 
-			// und noch die Abschicken-Knoepfe
-			ButtonArea buttonArea = new ButtonArea(getParent(),4);
-      buttonArea.addButton(control.getSynchronizeOptions());
-      buttonArea.addButton(i18n.tr("Protokoll des Kontos"),new ProtokollList(),control.getKonto());
-			buttonArea.addButton(i18n.tr("Konto löschen"),new KontoDelete(),control.getKonto());
-			buttonArea.addButton(i18n.tr("Speichern"),new Action()
+    // und noch die Abschicken-Knoepfe
+		ButtonArea buttonArea = new ButtonArea(getParent(),4);
+    buttonArea.addButton(control.getSynchronizeOptions());
+    buttonArea.addButton(i18n.tr("Protokoll des Kontos"),new ProtokollList(),control.getKonto());
+		buttonArea.addButton(i18n.tr("Konto löschen"),new KontoDelete(),control.getKonto());
+		buttonArea.addButton(i18n.tr("Speichern"),new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
       {
-        public void handleAction(Object context) throws ApplicationException
-        {
-        	control.handleStore();
-        }
-      });
+      	control.handleStore();
+      }
+    });
 
-      
-      TabFolder folder = new TabFolder(getParent(), SWT.NONE);
-      folder.setLayoutData(new GridData(GridData.FILL_BOTH));
-      folder.setBackground(Color.BACKGROUND.getSWTColor());
+    
+    TabFolder folder = new TabFolder(getParent(), SWT.NONE);
+    folder.setLayoutData(new GridData(GridData.FILL_BOTH));
+    folder.setBackground(Color.BACKGROUND.getSWTColor());
 
-      TabGroup tab = new TabGroup(folder,i18n.tr("Umsätze der letzten {0} Tage",""+HBCIProperties.UMSATZ_DEFAULT_DAYS), false,1);
-      control.getUmsatzList().paint(tab.getComposite());
+    TabGroup tab = new TabGroup(folder,i18n.tr("Umsätze der letzten {0} Tage",""+HBCIProperties.UMSATZ_DEFAULT_DAYS), false,1);
+    control.getUmsatzList().paint(tab.getComposite());
 
-      TabGroup tab2 = new TabGroup(folder,i18n.tr("Saldo im Verlauf"));
-      control.getUmsatzChart().paint(tab2.getComposite());
+    TabGroup tab2 = new TabGroup(folder,i18n.tr("Saldo im Verlauf"));
+    control.getUmsatzChart().paint(tab2.getComposite());
 
-      ButtonArea buttons = new ButtonArea(getParent(),3);
-      buttons.addButton(i18n.tr("Zurück"),new Back(),null,true);
-      buttons.addButton(i18n.tr("Saldo und Umsätze abrufen"), new KontoFetchUmsaetze(),control.getKonto());
-      buttons.addButton(i18n.tr("Alle Umsätze anzeigen"),     new UmsatzList(),control.getKonto());
-
-		}
-		catch (RemoteException e)
-		{
-			Logger.error("error while reading konto",e);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Lesen der Bankverbindungsdaten."));
-		}
-
+    ButtonArea buttons = new ButtonArea(getParent(),3);
+    buttons.addButton(i18n.tr("Zurück"),new Back(),null,true);
+    buttons.addButton(i18n.tr("Saldo und Umsätze abrufen"), new KontoFetchUmsaetze(),control.getKonto());
+    buttons.addButton(i18n.tr("Alle Umsätze anzeigen"),     new UmsatzList(),control.getKonto());
   }
 }
 
 
 /**********************************************************************
  * $Log: KontoNew.java,v $
+ * Revision 1.19  2006/11/06 14:19:14  willuhn
+ * @B Bug 273
+ *
  * Revision 1.18  2006/08/17 21:46:16  willuhn
  * *** empty log message ***
  *
