@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.34 $
- * $Date: 2006/11/06 23:12:38 $
+ * $Revision: 1.35 $
+ * $Date: 2006/11/06 23:19:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -579,7 +579,13 @@ public class UmsatzList extends TablePart implements Extendable
           try
           {
             umsaetze.add(o);
-            sort(); // Neues Element einsortieren
+            if (filter && kl != null)
+              kl.process();
+            else
+            {
+              addItem(o);
+              sort();
+            }
           }
           catch (Exception e)
           {
@@ -613,6 +619,9 @@ public class UmsatzList extends TablePart implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.35  2006/11/06 23:19:45  willuhn
+ * @B Fehler bei Aktualisierung der Elemente nach Insert, Delete, Sort
+ *
  * Revision 1.34  2006/11/06 23:12:38  willuhn
  * @B Fehler bei Aktualisierung der Elemente nach Insert, Delete, Sort
  *
