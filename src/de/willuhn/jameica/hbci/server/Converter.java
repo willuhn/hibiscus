@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.34 $
- * $Date: 2006/11/03 10:28:24 $
+ * $Revision: 1.35 $
+ * $Date: 2006/11/06 22:39:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -75,37 +75,31 @@ public class Converter {
 		umsatz.setCustomerRef(u.customerref);
 		umsatz.setPrimanota(u.primanota);
 
+    double kurs = 1.95583;
+
     //BUGZILLA 67 http://www.willuhn.de/bugzilla/show_bug.cgi?id=67
     Saldo s = u.saldo;
     if (s != null)
     {
-      try
+      Value v = s.value;
+      if (v != null)
       {
-        umsatz.setSaldo(s.value.getDoubleValue());
-      }
-      catch (NullPointerException e)
-      {
-        // Falls u.saldo null liefert
-        /* ignore */
+        // BUGZILLA 318
+        double saldo = v.getDoubleValue();
+        String curr  = v.getCurr();
+        if (curr != null && "DEM".equals(curr))
+          saldo /= kurs;
+        umsatz.setSaldo(saldo);
       }
     }
+
+    Value v = u.value;
+    double betrag = v.getDoubleValue();
+    String curr = v.getCurr();
     
     // BUGZILLA 318
-    double betrag = u.value.getDoubleValue();
-    if (u.other != null)
-    {
-      String curr = u.other.curr;
-      if (curr != null && "DEM".equals(curr))
-      {
-    	  double kurs = 1.95583;
-          betrag /= kurs;
-          
-          // Saldo auch noch umrechnen
-          double saldo = umsatz.getSaldo();
-          if (saldo != 0)
-        	  umsatz.setSaldo(saldo / kurs);
-      }
-    }
+    if (curr != null && "DEM".equals(curr))
+      betrag /= kurs;
 
     umsatz.setBetrag(betrag);
 		umsatz.setDatum(u.bdate);
@@ -380,6 +374,9 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.35  2006/11/06 22:39:30  willuhn
+ * @B bug 318
+ *
  * Revision 1.34  2006/11/03 10:28:24  willuhn
  * @B bug 318 (Saldo noch umrechnen)
  *
