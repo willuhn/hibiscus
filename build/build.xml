@@ -234,7 +234,10 @@
 		<copy file="${project.release}/${define.srcfilename}" tofile="${project.nightly}/${define.pluginname}-${appversion}-nightly.src.zip" />
 		<copy file="${project.release}/${define.javadocfilename}" tofile="${project.nightly}/${define.pluginname}-${appversion}-nightly.javadoc.zip" />
 
-		<delete dir="${project.release}" />
+      <!-- Die Datei brauchen die anderen Plugins zum Kompilieren //-->
+      <copy file="${project.zipdir}/${define.jarfilename}" tofile="releases/hibiscus-lib.jar" />
+
+    <delete dir="${project.release}" />
 	</target>
 
 </project>
