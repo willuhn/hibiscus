@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/DTAUSSammelTransferExporter.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/10/23 21:16:51 $
+ * $Revision: 1.6 $
+ * $Date: 2006/11/07 14:31:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -54,9 +54,11 @@ public class DTAUSSammelTransferExporter extends AbstractDTAUSIO implements Expo
     if (!(objects instanceof SammelTransfer[]))
       throw new ApplicationException(i18n.tr("Die zu exportierenden Daten enthalten keine Sammel-Aufträge"));
       
+    DtausDateiWriter writer = null;
+
     try
     {
-      DtausDateiWriter writer = new DtausDateiWriter(os);
+      writer = new DtausDateiWriter(os);
       for (int i=0;i<objects.length;++i)
       {
         SammelTransfer transfer   = (SammelTransfer) objects[i];
@@ -137,7 +139,6 @@ public class DTAUSSammelTransferExporter extends AbstractDTAUSIO implements Expo
         monitor.setStatusText(i18n.tr("{0} Aufträge erfolgreich exportiert",""+success));
       }
       writer.writeESatz();
-      os = null; // wird vokm DTAUSWriter geschlossen
     }
     catch (OperationCanceledException oce)
     {
@@ -160,6 +161,18 @@ public class DTAUSSammelTransferExporter extends AbstractDTAUSIO implements Expo
     }
     finally
     {
+      if (writer != null)
+      {
+        try
+        {
+          writer.close();
+          os = null;
+        }
+        catch (Exception e)
+        {
+          Logger.error("error while closing dtaus writer",e);
+        }
+      }
       // Outputstream schliessen, falls das noch nicht geschehen ist
       if (os != null)
       {
@@ -191,6 +204,9 @@ public class DTAUSSammelTransferExporter extends AbstractDTAUSIO implements Expo
 
 /**********************************************************************
  * $Log: DTAUSSammelTransferExporter.java,v $
+ * Revision 1.6  2006/11/07 14:31:14  willuhn
+ * @B DtausDateiwriter wurde nicht geschlossen
+ *
  * Revision 1.5  2006/10/23 21:16:51  willuhn
  * @N eBaykontoParser umbenannt und ueberarbeitet
  *
