@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/DTAUSSammelTransferExporter.java,v $
- * $Revision: 1.6 $
- * $Date: 2006/11/07 14:31:14 $
+ * $Revision: 1.7 $
+ * $Date: 2006/11/12 22:35:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -100,8 +100,7 @@ public class DTAUSSammelTransferExporter extends AbstractDTAUSIO implements Expo
         writer.setAAusfuehrungsdatum(transfer.getTermin());
         writer.setABLZBank(blz);
 
-        // TODO Ist das richtig rum?
-        String type = (transfer instanceof SammelUeberweisung) ? "LK" : "GK";
+        String type = (transfer instanceof SammelUeberweisung) ? "GK" : "LK";
         writer.setAGutschriftLastschrift(type);
         
         writer.setAKonto(Long.parseLong(konto.getKontonummer()));
@@ -204,6 +203,9 @@ public class DTAUSSammelTransferExporter extends AbstractDTAUSIO implements Expo
 
 /**********************************************************************
  * $Log: DTAUSSammelTransferExporter.java,v $
+ * Revision 1.7  2006/11/12 22:35:30  willuhn
+ * @B LK/GK-Kennzeichen verkehrtrum
+ *
  * Revision 1.6  2006/11/07 14:31:14  willuhn
  * @B DtausDateiwriter wurde nicht geschlossen
  *
