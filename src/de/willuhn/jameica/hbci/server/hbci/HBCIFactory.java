@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.45 $
- * $Date: 2006/08/21 12:29:48 $
+ * $Revision: 1.46 $
+ * $Date: 2006/11/15 00:13:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -509,43 +509,79 @@ public class HBCIFactory {
         // //////////////////////////////////////////////////////////////////////
 
         
-        // //////////////////////////////////////////////////////////////////////
-        // Jobs ausfuehren
         if (interrupted) return;
-        Logger.info("executing jobs");
-        monitor.setStatusText(i18n.tr("{0}: Führe HBCI-Jobs aus",kn));
-        monitor.addPercentComplete(4);
-        handler.execute();
-        monitor.setStatusText(i18n.tr("{0}: HBCI-Jobs ausgeführt",kn));
-        monitor.addPercentComplete(4);
-        //
-        // //////////////////////////////////////////////////////////////////////
-
-
-        // //////////////////////////////////////////////////////////////////////
-        // Job-Ergebnisse auswerten
-        for (int i=0;i<exclusiveJobs.size();++i)
-        {
-          if (interrupted) return;
-          final AbstractHBCIJob job = (AbstractHBCIJob) exclusiveJobs.get(i);
-          monitor.setStatusText(i18n.tr("{0}: Werte Ergebnis von HBCI-Job \"{1}\" aus",new String[]{kn,job.getName()}));
-          monitor.addPercentComplete(2);
-          Logger.info("executing check for exclusive job " + job.getIdentifier());
-          job.handleResult();
-        }
-
-        for (int i=0;i<jobs.size();++i)
-        {
-          if (interrupted) return;
-          final AbstractHBCIJob job = (AbstractHBCIJob) jobs.get(i);
-          monitor.setStatusText(i18n.tr("{0}: Werte Ergebnis von HBCI-Job \"{1}\" aus",new String[]{kn,job.getName()}));
-          monitor.addPercentComplete(2);
-          Logger.info("executing check for job " + job.getIdentifier());
-          job.handleResult();
-        }
-        //
-        // //////////////////////////////////////////////////////////////////////
         
+        // BUGZILLA 327
+        try
+        {
+          // //////////////////////////////////////////////////////////////////////
+          // Jobs ausfuehren
+          Logger.info("executing jobs");
+          monitor.setStatusText(i18n.tr("{0}: Führe HBCI-Jobs aus",kn));
+          monitor.addPercentComplete(4);
+          handler.execute();
+          monitor.setStatusText(i18n.tr("{0}: HBCI-Jobs ausgeführt",kn));
+          monitor.addPercentComplete(4);
+          //
+          // //////////////////////////////////////////////////////////////////////
+        }
+        finally
+        {
+          String name = null;
+
+          // //////////////////////////////////////////////////////////////////////
+          // Job-Ergebnisse auswerten
+          for (int i=0;i<exclusiveJobs.size();++i)
+          {
+            try
+            {
+              final AbstractHBCIJob job = (AbstractHBCIJob) exclusiveJobs.get(i);
+              name = job.getName();
+              monitor.setStatusText(i18n.tr("{0}: Werte Ergebnis von HBCI-Job \"{1}\" aus",new String[]{kn,name}));
+              monitor.addPercentComplete(2);
+              Logger.info("executing check for exclusive job " + job.getIdentifier());
+              job.handleResult();
+            }
+            catch (ApplicationException ae)
+            {
+              monitor.setStatusText(ae.getMessage());
+              error = true;
+            }
+            catch (Throwable t)
+            {
+              monitor.setStatusText(i18n.tr("Fehler beim Auswerten des HBCI-Auftrages {0}", name));
+              Logger.error("error while processing job result",t);
+              monitor.log(t.getMessage());
+              error = true;
+            }
+          }
+
+          for (int i=0;i<jobs.size();++i)
+          {
+            try
+            {
+              final AbstractHBCIJob job = (AbstractHBCIJob) jobs.get(i);
+              monitor.setStatusText(i18n.tr("{0}: Werte Ergebnis von HBCI-Job \"{1}\" aus",new String[]{kn,name}));
+              monitor.addPercentComplete(2);
+              Logger.info("executing check for job " + job.getIdentifier());
+              job.handleResult();
+            }
+            catch (ApplicationException ae)
+            {
+              monitor.setStatusText(ae.getMessage());
+              error = true;
+            }
+            catch (Throwable t)
+            {
+              monitor.setStatusText(i18n.tr("Fehler beim Auswerten des HBCI-Auftrages {0}", name));
+              Logger.error("error while processing job result",t);
+              monitor.log(t.getMessage());
+              error = true;
+            }
+          }
+          //
+          // //////////////////////////////////////////////////////////////////////
+        }
       }
       catch (OperationCanceledException e3)
       {
@@ -658,6 +694,9 @@ public class HBCIFactory {
 
 /*******************************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.46  2006/11/15 00:13:07  willuhn
+ * @B Bug 327
+ *
  * Revision 1.45  2006/08/21 12:29:48  willuhn
  * @N HBCICallbackSWT.setCurrentHandle
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCIJob.java,v $
- * $Revision: 1.23 $
- * $Date: 2006/03/17 00:51:24 $
+ * $Revision: 1.24 $
+ * $Date: 2006/11/15 00:13:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -108,7 +108,7 @@ public abstract class AbstractHBCIJob
 	
 	/**
 	 * Liefert den Status-Text, der vom HBCI-Kernel nach Ausfuehrung des Jobs zurueckgeliefert wurde.
-   * @return Status-Text oder <code>null</code> wenn dieser nicht ermittelbar ist.
+   * @return Status-Text oder <code>Unbekannter Fehler</code> wenn dieser nicht ermittelbar ist.
    */
   final String getStatusText()
 	{
@@ -149,7 +149,7 @@ public abstract class AbstractHBCIJob
     
     I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     if (sr != null && sr.length() > 0)
-      return i18n.tr("Fehlermeldung der Bank") + ": " + sr;
+      return i18n.tr("Fehlermeldung der Bank: {0}",sr);
     return i18n.tr("Unbekannter Fehler");
 	}
 
@@ -243,6 +243,9 @@ public abstract class AbstractHBCIJob
 
 /**********************************************************************
  * $Log: AbstractHBCIJob.java,v $
+ * Revision 1.24  2006/11/15 00:13:07  willuhn
+ * @B Bug 327
+ *
  * Revision 1.23  2006/03/17 00:51:24  willuhn
  * @N bug 209 Neues Synchronisierungs-Subsystem
  *
