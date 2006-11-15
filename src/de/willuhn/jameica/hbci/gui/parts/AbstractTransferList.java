@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractTransferList.java,v $
- * $Revision: 1.6 $
- * $Date: 2006/11/06 23:12:38 $
+ * $Revision: 1.7 $
+ * $Date: 2006/11/15 00:47:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -187,9 +187,9 @@ public abstract class AbstractTransferList extends TablePart implements Part
 
     LabelGroup group = new LabelGroup(parent,i18n.tr("Filter"));
 
-    // Als End-Datum nehmen wir das aktuelle Datum.
+    // Als End-Datum nehmen wir keines.
     // Es sei denn, es ist ein aktuelles gespeichert
-    Date dTo = new Date();
+    Date dTo = null;
     String sTo = settings.getString("transferlist.filter.to",null);
     if (sTo != null && sTo.length() > 0)
     {
@@ -393,6 +393,9 @@ public abstract class AbstractTransferList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: AbstractTransferList.java,v $
+ * Revision 1.7  2006/11/15 00:47:39  willuhn
+ * @C Bug 325
+ *
  * Revision 1.6  2006/11/06 23:12:38  willuhn
  * @B Fehler bei Aktualisierung der Elemente nach Insert, Delete, Sort
  *
