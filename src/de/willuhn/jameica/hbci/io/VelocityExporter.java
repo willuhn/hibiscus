@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/VelocityExporter.java,v $
- * $Revision: 1.9 $
- * $Date: 2006/09/05 13:56:33 $
+ * $Revision: 1.10 $
+ * $Date: 2006/11/15 00:36:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -84,6 +84,7 @@ public class VelocityExporter implements Exporter
     VelocityContext context = new VelocityContext();
 
     context.put("datum",        new Date());
+    context.put("charset",      System.getProperty("file.encoding")); // BUGZILLA 328
     context.put("dateformat",   HBCI.DATEFORMAT);
     context.put("decimalformat",HBCI.DECIMALFORMAT);
     context.put("objects",      objects);
@@ -226,6 +227,9 @@ public class VelocityExporter implements Exporter
 
 /**********************************************************************
  * $Log: VelocityExporter.java,v $
+ * Revision 1.10  2006/11/15 00:36:59  willuhn
+ * @B Bug 326
+ *
  * Revision 1.9  2006/09/05 13:56:33  willuhn
  * @B Class#getClass() allways returns "java.lang.Class" ;)
  *
