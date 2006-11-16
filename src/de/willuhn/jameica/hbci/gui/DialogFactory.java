@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/DialogFactory.java,v $
- * $Revision: 1.27 $
- * $Date: 2006/10/23 15:16:12 $
+ * $Revision: 1.28 $
+ * $Date: 2006/11/16 22:57:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -105,9 +105,18 @@ public class DialogFactory {
 	{
 		check();
 
+    boolean secondTry = System.currentTimeMillis() - lastTry < 200l;
+
+    if (secondTry) Logger.warn("cached pin seems to be wrong, asking user, passport: " + passport.getClass().getName());
+
     String pin = getCachedPIN(passport);
-    if (pin != null)
+    if (pin != null && !secondTry)
+    {
+      Logger.info("using cached pin, passport: " + passport.getClass().getName());
+      lastTry = System.currentTimeMillis();
       return pin;
+    }
+    lastTry = 0;
 
     dialog = new PINDialog(passport);
 		try {
@@ -121,6 +130,17 @@ public class DialogFactory {
     return pin;
 	}
 
+  // Diese Variable soll davor schuetzen, dass Hibiscus faelschlicherweise der
+  // Meinung ist, es wuerde das Passwort kennen, tut es aber gar nicht.
+  // Das kann z.Bsp. passieren, wenn der User zwei Accounts mit der gleichen BLZ,
+  // der gleichen Kundennummer aber verschiedenen Sicherheitsmedien hat. Sollte
+  // eigentlich nur in Testszenarien vorkommen, aber man weiss ja nie ;)
+  // Und da uns HBCI4Java schliesslich 3x nach dem Passwort fragt, wenn wir es falsch
+  // liefern, koenne wir auch pruefen, ob wir innerhalb der letzten halben Sekunde
+  // schonmal der Meinung waren, wir haetten eine Antwort gehabt. Ist das der Fall,
+  // dann soll beim naechsten Mal der User entscheiden.
+  private static long lastTry = 0;
+  
 	/**
 	 * Dialog zur Eingabe des Passworts fuer das Sicherheitsmedium beim Laden eines zu importierenden Passports.
    * @param passport der HBCI-Passport.
@@ -138,16 +158,22 @@ public class DialogFactory {
     // haben, speichern wir hier das Passport der Datei
     // fuer die Session zwischen
     String pw = null;
+
+    boolean secondTry = System.currentTimeMillis() - lastTry < 200l;
     
-    if (!forceAsk)
+    if (secondTry) Logger.warn("cached key seems to be wrong, asking user, passport: " + passport.getClass().getName());
+    
+    if (!forceAsk && !secondTry)
     {
       pw = getCachedPIN(passport);
       if (pw != null)
       {
         Logger.info("using cached passport load key, passport: " + passport.getClass().getName());
+        lastTry = System.currentTimeMillis();
         return pw; // wir haben ein gecachtes Passwort, das nehmen wir
       }
     }
+    lastTry = 0;
 
     // Wir haben kein Passwort gecached oder
     // die Option ist deaktiviert. Also fragen
@@ -348,7 +374,7 @@ public class DialogFactory {
     String key = null;
     
     if (passport != null)
-      key = passport.getCustomerId();
+      key = passport.getClass().getName() + "." + passport.getCustomerId();
 
     // Ggf. noch die BLZ anhaengen.
     // Nur zur Sicherheit, falls die Kundenkennung bei mehreren
@@ -380,6 +406,9 @@ public class DialogFactory {
 
 /**********************************************************************
  * $Log: DialogFactory.java,v $
+ * Revision 1.28  2006/11/16 22:57:33  willuhn
+ * @N gecachte PINs/Passwoerte werden nun nur noch einmal verwendet. Stimmen sie nicht, muss der User entscheiden
+ *
  * Revision 1.27  2006/10/23 15:16:12  willuhn
  * @B Passwort-Handling ueberarbeitet
  *
