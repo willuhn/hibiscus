@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractTransferList.java,v $
- * $Revision: 1.7 $
- * $Date: 2006/11/15 00:47:39 $
+ * $Revision: 1.8 $
+ * $Date: 2006/11/16 12:21:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -222,7 +222,6 @@ public abstract class AbstractTransferList extends TablePart implements Part
     if (dFrom == null)
     {
       Calendar cal = Calendar.getInstance();
-      cal.setTime(dTo);
       cal.set(Calendar.DAY_OF_MONTH,1);
       dFrom = cal.getTime();
     }
@@ -393,6 +392,9 @@ public abstract class AbstractTransferList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: AbstractTransferList.java,v $
+ * Revision 1.8  2006/11/16 12:21:02  willuhn
+ * @B NPE
+ *
  * Revision 1.7  2006/11/15 00:47:39  willuhn
  * @C Bug 325
  *
