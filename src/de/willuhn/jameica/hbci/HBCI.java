@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.93 $
- * $Date: 2006/08/21 12:29:54 $
+ * $Revision: 1.94 $
+ * $Date: 2006/11/17 00:06:48 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -151,13 +151,16 @@ public class HBCI extends AbstractPlugin
           de.willuhn.jameica.system.Settings s = getResources().getSettings();
           double size = s.getDouble("sql-update-size",-1);
           
-          File f = new File(getResources().getPath() + "/sql/update_1.5-1.6.sql");
+          File f = new File(getResources().getPath() + "/sql/update_1.6-1.7.sql");
           
-          long length = f.length();
-          if (length != size)
+          if (f.exists())
           {
-            s.setAttribute("sql-update-size",(double)f.length());
-            getDatabase().executeSQLScript(f);
+            long length = f.length();
+            if (length != size)
+            {
+              s.setAttribute("sql-update-size",(double)f.length());
+              getDatabase().executeSQLScript(f);
+            }
           }
         }
         catch (Exception e2)
@@ -357,6 +360,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.94  2006/11/17 00:06:48  willuhn
+ * @N increased version number in sql update script
+ *
  * Revision 1.93  2006/08/21 12:29:54  willuhn
  * @N HBCICallbackSWT.setCurrentHandle
  *
