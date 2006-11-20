@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/AbstractDTAUSImporter.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/10/06 14:18:01 $
+ * $Revision: 1.6 $
+ * $Date: 2006/11/20 23:07:54 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,6 +27,7 @@ import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.jameica.system.Settings;
@@ -197,6 +198,10 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
 
 /*********************************************************************
  * $Log: AbstractDTAUSImporter.java,v $
+ * Revision 1.6  2006/11/20 23:07:54  willuhn
+ * @N new package "messaging"
+ * @C moved ImportMessage into new package
+ *
  * Revision 1.5  2006/10/06 14:18:01  willuhn
  * @N neuer Parameter "dtaus.fehlertoleranz" in de.willuhn.jameica.hbci.HBCI.properties
  *

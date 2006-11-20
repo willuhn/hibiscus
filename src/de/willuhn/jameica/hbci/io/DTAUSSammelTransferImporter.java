@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/DTAUSSammelTransferImporter.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/08/23 09:45:14 $
+ * $Revision: 1.5 $
+ * $Date: 2006/11/20 23:07:54 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,6 +25,7 @@ import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
+import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
@@ -163,6 +164,10 @@ public class DTAUSSammelTransferImporter extends AbstractDTAUSImporter
 
 /*********************************************************************
  * $Log: DTAUSSammelTransferImporter.java,v $
+ * Revision 1.5  2006/11/20 23:07:54  willuhn
+ * @N new package "messaging"
+ * @C moved ImportMessage into new package
+ *
  * Revision 1.4  2006/08/23 09:45:14  willuhn
  * @N Restliche DBIteratoren auf PreparedStatements umgestellt
  *

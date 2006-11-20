@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Attic/ImportMessage.java,v $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/messaging/ImportMessage.java,v $
  * $Revision: 1.1 $
- * $Date: 2006/06/06 21:37:55 $
+ * $Date: 2006/11/20 23:07:54 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,7 +11,7 @@
  *
  **********************************************************************/
 
-package de.willuhn.jameica.hbci.io;
+package de.willuhn.jameica.hbci.messaging;
 
 import java.rmi.RemoteException;
 
@@ -37,6 +37,10 @@ public interface ImportMessage extends Message
 
 /*********************************************************************
  * $Log: ImportMessage.java,v $
+ * Revision 1.1  2006/11/20 23:07:54  willuhn
+ * @N new package "messaging"
+ * @C moved ImportMessage into new package
+ *
  * Revision 1.1  2006/06/06 21:37:55  willuhn
  * @R FilternEngine entfernt. Wird jetzt ueber das Jameica-Messaging-System abgewickelt
  *
