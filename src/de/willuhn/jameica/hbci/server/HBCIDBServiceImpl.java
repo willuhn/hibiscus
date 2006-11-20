@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/HBCIDBServiceImpl.java,v $
- * $Revision: 1.11 $
- * $Date: 2006/04/25 23:25:12 $
+ * $Revision: 1.12 $
+ * $Date: 2006/11/20 23:00:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,6 +24,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.ResultSetExtractor;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
@@ -33,6 +34,8 @@ import de.willuhn.util.I18N;
 public class HBCIDBServiceImpl extends EmbeddedDBServiceImpl implements HBCIDBService
 {
 
+  private final static Settings SETTINGS = new Settings(HBCIDBService.class);
+  
   /**
    * @throws RemoteException
    */
@@ -109,11 +112,22 @@ public class HBCIDBServiceImpl extends EmbeddedDBServiceImpl implements HBCIDBSe
     }
   }
 
+  /**
+   * @see de.willuhn.datasource.db.DBServiceImpl#getAutoCommit()
+   */
+  protected boolean getAutoCommit() throws RemoteException
+  {
+    return SETTINGS.getBoolean("autocommit",super.getAutoCommit());
+  }
+
 }
 
 
 /*********************************************************************
  * $Log: HBCIDBServiceImpl.java,v $
+ * Revision 1.12  2006/11/20 23:00:57  willuhn
+ * @N ability to configure autocommit behaviour
+ *
  * Revision 1.11  2006/04/25 23:25:12  willuhn
  * @N bug 81
  *
