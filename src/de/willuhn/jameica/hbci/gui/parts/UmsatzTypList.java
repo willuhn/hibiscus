@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTypList.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/12/30 00:14:45 $
+ * $Revision: 1.4 $
+ * $Date: 2006/11/23 17:25:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -71,7 +71,7 @@ public class UmsatzTypList extends TablePart implements Part
         UmsatzTyp typ = (UmsatzTyp) context;
         YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
         d.setTitle(i18n.tr("Wirklich löschen?"));
-        d.setText(i18n.tr("Wollen Sie den Umsatz-Filter wirklich löschen?\nDie Umsätze selbst bleiben hierbei erhalten"));
+        d.setText(i18n.tr("Wollen Sie die Umsatz-Kategorie wirklich löschen?\nDie Umsätze selbst bleiben hierbei erhalten"));
         try
         {
           Boolean b = (Boolean) d.open();
@@ -79,7 +79,7 @@ public class UmsatzTypList extends TablePart implements Part
           {
             typ.delete();
             removeItem(typ);
-            GUI.getStatusBar().setSuccessText(i18n.tr("Umsatz-Filter gelöscht"));
+            GUI.getStatusBar().setSuccessText(i18n.tr("Umsatz-Kategorie gelöscht"));
           }
         }
         catch (ApplicationException ae)
@@ -100,6 +100,9 @@ public class UmsatzTypList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: UmsatzTypList.java,v $
+ * Revision 1.4  2006/11/23 17:25:37  willuhn
+ * @N Umsatz-Kategorien - in PROGRESS!
+ *
  * Revision 1.3  2005/12/30 00:14:45  willuhn
  * @N first working pie charts
  *

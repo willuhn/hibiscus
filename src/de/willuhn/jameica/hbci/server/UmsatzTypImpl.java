@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.24 $
- * $Date: 2006/08/25 10:13:43 $
+ * $Revision: 1.25 $
+ * $Date: 2006/11/23 17:25:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.willuhn.datasource.GenericIterator;
-import de.willuhn.datasource.db.AbstractDBObject;
+import de.willuhn.datasource.db.AbstractDBObjectNode;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
@@ -33,7 +33,7 @@ import de.willuhn.util.I18N;
 /**
  * Implementierung eines Umsatz-Typs.
  */
-public class UmsatzTypImpl extends AbstractDBObject implements UmsatzTyp
+public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
 {
 
   private I18N i18n = null;
@@ -96,11 +96,17 @@ public class UmsatzTypImpl extends AbstractDBObject implements UmsatzTyp
       long d = days * 24l * 60l * 60l * 1000l;
       list.addFilter("valuta > ?", new Object[]{new Date((System.currentTimeMillis() - d))});
     }
+    
+    if (this.isNewObject()) // Neuer Umsatztyp. Der hat noch keine ID
+      list.addFilter("umsatztyp_id is null");
+    else // Gibts schon. Also koennen wir auch nach festzugeordneten suchen
+      list.addFilter("(umsatztyp_id is null or umsatztyp_id=?)",new String[]{this.getID()});
+
     ArrayList result = new ArrayList();
     while (list.hasNext())
     {
       Umsatz u = (Umsatz) list.next();
-      if (matches(u))
+      if (u.isAssigned() || matches(u)) // entweder fest zugeordnet oder passt via Suchfilter
         result.add(u);
     }
     return PseudoIterator.fromArray((Umsatz[])result.toArray(new Umsatz[result.size()]));
@@ -277,11 +283,65 @@ public class UmsatzTypImpl extends AbstractDBObject implements UmsatzTyp
   {
     setAttribute("iseinnahme",new Integer(einnahme ? 1 : 0));
   }
+
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#delete()
+   */
+  public void delete() throws RemoteException, ApplicationException
+  {
+    if (this.isNewObject())
+      return;
+
+    // Ueberschrieben, weil wir beim Loeschen pruefen muessen,
+    // ob wir irgendwelchen Umsaetzen zugeordnet sind und
+    // diese bei der Gelegenheit entfernen muessen.
+
+    DBIterator list = getService().createList(Umsatz.class);
+    list.addFilter("umsatztyp_id = ?",new String[]{this.getID()});
+    if (!list.hasNext())
+    {
+      // Ne, keine Umsaetze zugeordnet. Dann koennen wir getrost loeschen.
+      super.delete();
+      return;
+    }
+    else
+    {
+      try
+      {
+        // Wir haben zugeordnete Umsaetze. Dort muessen wir uns entfernen
+        Logger.info("removing assignments to existing umsatz objects");
+        transactionBegin();
+        while (list.hasNext())
+        {
+          Umsatz u = (Umsatz) list.next();
+          u.setUmsatzTyp(null);
+          u.store();
+        }
+        super.delete();
+        transactionCommit();
+      }
+      catch (RemoteException e)
+      {
+        this.transactionRollback();
+        throw e;
+      }
+      catch (ApplicationException e2)
+      {
+        this.transactionRollback();
+        throw e2;
+      }
+    }
+  }
+  
+  
 }
 
 
 /**********************************************************************
  * $Log: UmsatzTypImpl.java,v $
+ * Revision 1.25  2006/11/23 17:25:38  willuhn
+ * @N Umsatz-Kategorien - in PROGRESS!
+ *
  * Revision 1.24  2006/08/25 10:13:43  willuhn
  * @B Fremdschluessel NICHT mittels PreparedStatement, da die sonst gequotet und von McKoi nicht gefunden werden. BUGZILLA 278
  *

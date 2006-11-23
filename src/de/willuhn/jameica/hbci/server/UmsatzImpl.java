@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.37 $
- * $Date: 2006/10/18 17:28:32 $
+ * $Revision: 1.38 $
+ * $Date: 2006/11/23 17:25:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -504,11 +504,40 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
     
     super.setAttribute(name,value);
   }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getUmsatzTyp()
+   */
+  public UmsatzTyp getUmsatzTyp() throws RemoteException
+  {
+    return (UmsatzTyp) getAttribute("umsatztyp_id");
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setUmsatzTyp(de.willuhn.jameica.hbci.rmi.UmsatzTyp)
+   */
+  public void setUmsatzTyp(UmsatzTyp ut) throws RemoteException
+  {
+    setAttribute("umsatztyp_id",ut);
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Umsatz#isAssigned()
+   */
+  public boolean isAssigned() throws RemoteException
+  {
+    // Wir rufen direkt die Super-Methode auf, damit nicht erst
+    // das Umsatztyp-Objekt geladen werden muss
+    return super.getAttribute("umsatztyp_id") != null;
+  }
 }
 
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.38  2006/11/23 17:25:38  willuhn
+ * @N Umsatz-Kategorien - in PROGRESS!
+ *
  * Revision 1.37  2006/10/18 17:28:32  willuhn
  * @B Bug 299
  *

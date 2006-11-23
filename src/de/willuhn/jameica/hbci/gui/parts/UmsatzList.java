@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.36 $
- * $Date: 2006/11/20 23:07:54 $
+ * $Revision: 1.37 $
+ * $Date: 2006/11/23 17:25:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -51,8 +51,6 @@ import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.action.UmsatzTypEdit;
-import de.willuhn.jameica.hbci.gui.dialogs.UmsatzTypNewDialog;
 import de.willuhn.jameica.hbci.gui.input.UmsatzDaysInput;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -258,71 +256,12 @@ public class UmsatzList extends TablePart implements Extendable
         public void handleEvent(Event event)
         {
           Menu menu = new Menu(GUI.getShell(),SWT.POP_UP);
-          MenuItem item = new MenuItem(menu, SWT.PUSH);
-          item.setText(i18n.tr("Als Umsatz-Filter speichern..."));
-          item.addListener(SWT.Selection, new Listener()
-          {
-            public void handleEvent (Event e)
-            {
-              try
-              {
-                String text = (String) search.getValue();
-                if (text == null || text.length() == 0)
-                  return;
-                
-                // Mal schauen, obs den Typ schon gibt
-                DBIterator existing = Settings.getDBService().createList(UmsatzTyp.class);
-                existing.addFilter("pattern = ?", new Object[]{text});
-                UmsatzTyp typ = null; 
-                if (existing.size() > 0)
-                {
-                  if (!Application.getCallback().askUser(i18n.tr("Umsatz-Filter existiert bereits. Überschreiben?")))
-                    return;
-                  
-                  // Wenn wir ihn ueberschreiben, verwenden wir den Namen nochmal.
-                  typ = (UmsatzTyp) existing.next();
-                }
-                else
-                {
-                  UmsatzTypNewDialog d = new UmsatzTypNewDialog(UmsatzTypNewDialog.POSITION_MOUSE);
-                  typ = (UmsatzTyp) d.open();
-                }
-                typ.setPattern(text);
-                typ.setRegex(((Boolean)regex.getValue()).booleanValue());
-                typ.store();
-                GUI.getStatusBar().setSuccessText(i18n.tr("Umsatz-Filter gespeichert"));
-              }
-              catch (Exception ex)
-              {
-                Logger.error("unable to store umsatz filter",ex);
-                GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern des Umsatz-Filters"));
-              }
-            }
-          });
           
           try
           {
             DBIterator i = Settings.getDBService().createList(UmsatzTyp.class);
             if (i.size() > 0)
             {
-              MenuItem edit = new MenuItem(menu, SWT.PUSH);
-              edit.setText(i18n.tr("Umsatz-Filter bearbeiten..."));
-              edit.addListener(SWT.Selection,new Listener() {
-                public void handleEvent(Event event)
-                {
-                  try
-                  {
-                    new UmsatzTypEdit().handleAction(null);
-                  }
-                  catch (Exception e)
-                  {
-                    Logger.error("error while editing umsatz filter",e);
-                    GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Bearbeiten der Umsatz-Filter"));
-                  }
-                }
-              });
-              new MenuItem(menu, SWT.SEPARATOR);
-              
               while (i.hasNext())
               {
                 final UmsatzTyp ut = (UmsatzTyp) i.next();
@@ -350,7 +289,7 @@ public class UmsatzList extends TablePart implements Extendable
           catch (Exception ex)
           {
             Logger.error("unable to load umsatz filter",ex);
-            GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Laden der Umsatz-Filters"));
+            GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Laden der Umsatz-Kategorien"));
           }
 
           menu.setLocation(GUI.getDisplay().getCursorLocation());
@@ -619,6 +558,9 @@ public class UmsatzList extends TablePart implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.37  2006/11/23 17:25:37  willuhn
+ * @N Umsatz-Kategorien - in PROGRESS!
+ *
  * Revision 1.36  2006/11/20 23:07:54  willuhn
  * @N new package "messaging"
  * @C moved ImportMessage into new package
