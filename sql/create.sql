@@ -67,6 +67,7 @@ CREATE TABLE umsatz (
   customerref varchar(100),
   kommentar text NULL,
   checksum numeric NULL,
+  umsatztyp_id int(5) NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );
@@ -77,6 +78,7 @@ CREATE TABLE umsatztyp (
   pattern varchar(255) NOT NULL,
   isregex int(1) NULL,
   iseinnahme int(1) NULL,
+  parent_id int(5) NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );

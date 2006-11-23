@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.94 $
- * $Date: 2006/11/17 00:06:48 $
+ * $Revision: 1.95 $
+ * $Date: 2006/11/23 23:24:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -136,7 +136,7 @@ public class HBCI extends AbstractPlugin
     DBMAPPING.put("JtkHZYFRtWpxGR6nE8TYFw==",new Double(1.4));
     DBMAPPING.put("a4VHFRr69c+LynZiczIICg==",new Double(1.5));
     DBMAPPING.put("a4VHFRr69c+LynZiczIICg==",new Double(1.6));
-    
+    DBMAPPING.put("W20zxD8/jDgK30A/I1NE7w==",new Double(1.7));
 
     try {
 			Application.getCallback().getStartupMonitor().setStatusText("hibiscus: checking database integrity");
@@ -360,6 +360,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.95  2006/11/23 23:24:17  willuhn
+ * @N Umsatz-Kategorien: DB-Update, Edit
+ *
  * Revision 1.94  2006/11/17 00:06:48  willuhn
  * @N increased version number in sql update script
  *

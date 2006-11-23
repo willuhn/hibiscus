@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzTypControl.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/11/23 17:25:37 $
+ * $Revision: 1.2 $
+ * $Date: 2006/11/23 23:24:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,7 +26,10 @@ import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.UmsatzTypNew;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzTypList;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -35,31 +38,25 @@ import de.willuhn.util.I18N;
  */
 public class UmsatzTypControl extends AbstractControl
 {
-  private static String EINNAHME = null;
-  private static String AUSGABE = null;
 
-  private UmsatzTyp ut        = null;
+  private I18N i18n             = null;
 
-  private Part list           = null;
+  private UmsatzTyp ut          = null;
 
-  private TextInput name      = null;
-  private TextInput pattern   = null;
-  private CheckboxInput regex = null;
-  private SelectInput art     = null;
+  private Part list             = null;
+
+  private TextInput name        = null;
+  private TextInput pattern     = null;
+  private CheckboxInput regex   = null;
+  private SelectInput art       = null;
   
-  static
-  {
-    I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-    EINNAHME = i18n.tr("Einnahme");
-    AUSGABE  = i18n.tr("Ausgabe");
-  }
-
   /**
    * @param view
    */
   public UmsatzTypControl(AbstractView view)
   {
     super(view);
+    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
   
   /**
@@ -79,7 +76,7 @@ public class UmsatzTypControl extends AbstractControl
    * @return der aktuelle Umsatz-Typ.
    * @throws RemoteException
    */
-  private UmsatzTyp getUmsatzTyp() throws RemoteException
+  public UmsatzTyp getUmsatzTyp() throws RemoteException
   {
     if (this.ut != null)
       return this.ut;
@@ -138,17 +135,44 @@ public class UmsatzTypControl extends AbstractControl
     if (this.art == null)
     {
       boolean isEinnahme = getUmsatzTyp().isEinnahme();
-      String preselected = isEinnahme ? EINNAHME : AUSGABE;
-      this.art = new SelectInput(new String[]{AUSGABE,EINNAHME},preselected);
+      String preselected = isEinnahme ? UmsatzTyp.EINNAHME: UmsatzTyp.AUSGABE;
+      this.art = new SelectInput(new String[]{UmsatzTyp.AUSGABE,UmsatzTyp.EINNAHME},preselected);
     }
     return this.art;
   }
 
+  /**
+   * Speichert die Einstellungen.
+   */
+  public synchronized void handleStore()
+  {
+    try {
+      String s = (String) getArt().getValue();
+      getUmsatzTyp().setEinnahme(UmsatzTyp.EINNAHME.equals(s));
+      getUmsatzTyp().setName((String)getName().getValue());
+      getUmsatzTyp().setPattern((String)getPattern().getValue());
+      getUmsatzTyp().setRegex(((Boolean)getRegex().getValue()).booleanValue());
+      getUmsatzTyp().store();
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Umsatz-Kategorie gespeichert"), StatusBarMessage.TYPE_SUCCESS));
+    }
+    catch (ApplicationException e2)
+    {
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(e2.getMessage(), StatusBarMessage.TYPE_ERROR));
+    }
+    catch (RemoteException e)
+    {
+      Logger.error("error while storing umsatz type",e);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Speichern der Umsatz-Kategorie"), StatusBarMessage.TYPE_ERROR));
+    }
+  }
 }
 
 
 /*********************************************************************
  * $Log: UmsatzTypControl.java,v $
+ * Revision 1.2  2006/11/23 23:24:17  willuhn
+ * @N Umsatz-Kategorien: DB-Update, Edit
+ *
  * Revision 1.1  2006/11/23 17:25:37  willuhn
  * @N Umsatz-Kategorien - in PROGRESS!
  *

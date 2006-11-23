@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTypList.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/11/23 17:25:37 $
+ * $Revision: 1.5 $
+ * $Date: 2006/11/23 23:24:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,19 +16,13 @@ package de.willuhn.jameica.hbci.gui.parts;
 import java.rmi.RemoteException;
 
 import de.willuhn.jameica.gui.Action;
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
-import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.formatter.Formatter;
-import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
-import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.logging.Logger;
-import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -56,50 +50,23 @@ public class UmsatzTypList extends TablePart implements Part
         if (o == null)
           return i18n.tr("unbekannt");
         Integer i = (Integer) o;
-        return i.intValue() == 1 ? i18n.tr("Einnahme") : i18n.tr("Ausgabe");
+        return i.intValue() == 1 ? UmsatzTyp.EINNAHME : UmsatzTyp.AUSGABE;
       }
     });
-    setSummary(false);
-    
-    ContextMenu c = new ContextMenu();
-    
-    c.addItem(new CheckedContextMenuItem(i18n.tr("Löschen"), new Action() {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        if (context == null)
-          return;
-        UmsatzTyp typ = (UmsatzTyp) context;
-        YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
-        d.setTitle(i18n.tr("Wirklich löschen?"));
-        d.setText(i18n.tr("Wollen Sie die Umsatz-Kategorie wirklich löschen?\nDie Umsätze selbst bleiben hierbei erhalten"));
-        try
-        {
-          Boolean b = (Boolean) d.open();
-          if (b.booleanValue())
-          {
-            typ.delete();
-            removeItem(typ);
-            GUI.getStatusBar().setSuccessText(i18n.tr("Umsatz-Kategorie gelöscht"));
-          }
-        }
-        catch (ApplicationException ae)
-        {
-          GUI.getStatusBar().setErrorText(ae.getMessage());
-        }
-        catch (Exception e)
-        {
-          Logger.error("unable to delete umsatz type",e);
-          GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Löschen des Umsatz-Filters"));
-        }
-      }
-    }));
-    this.setContextMenu(c);
+
+    this.setMulti(true);
+    this.setRememberColWidths(true);
+    this.setRememberOrder(true);
+    this.setContextMenu(new de.willuhn.jameica.hbci.gui.menus.UmsatzTypList());
   }
 }
 
 
 /**********************************************************************
  * $Log: UmsatzTypList.java,v $
+ * Revision 1.5  2006/11/23 23:24:17  willuhn
+ * @N Umsatz-Kategorien: DB-Update, Edit
+ *
  * Revision 1.4  2006/11/23 17:25:37  willuhn
  * @N Umsatz-Kategorien - in PROGRESS!
  *

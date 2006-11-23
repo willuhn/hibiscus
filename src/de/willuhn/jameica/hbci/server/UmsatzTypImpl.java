@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.25 $
- * $Date: 2006/11/23 17:25:38 $
+ * $Revision: 1.26 $
+ * $Date: 2006/11/23 23:24:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -304,32 +304,30 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
       super.delete();
       return;
     }
-    else
+
+    try
     {
-      try
+      // Wir haben zugeordnete Umsaetze. Dort muessen wir uns entfernen
+      Logger.info("removing assignments to existing umsatz objects");
+      transactionBegin();
+      while (list.hasNext())
       {
-        // Wir haben zugeordnete Umsaetze. Dort muessen wir uns entfernen
-        Logger.info("removing assignments to existing umsatz objects");
-        transactionBegin();
-        while (list.hasNext())
-        {
-          Umsatz u = (Umsatz) list.next();
-          u.setUmsatzTyp(null);
-          u.store();
-        }
-        super.delete();
-        transactionCommit();
+        Umsatz u = (Umsatz) list.next();
+        u.setUmsatzTyp(null);
+        u.store();
       }
-      catch (RemoteException e)
-      {
-        this.transactionRollback();
-        throw e;
-      }
-      catch (ApplicationException e2)
-      {
-        this.transactionRollback();
-        throw e2;
-      }
+      super.delete();
+      transactionCommit();
+    }
+    catch (RemoteException e)
+    {
+      this.transactionRollback();
+      throw e;
+    }
+    catch (ApplicationException e2)
+    {
+      this.transactionRollback();
+      throw e2;
     }
   }
   
@@ -339,6 +337,9 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
 
 /**********************************************************************
  * $Log: UmsatzTypImpl.java,v $
+ * Revision 1.26  2006/11/23 23:24:17  willuhn
+ * @N Umsatz-Kategorien: DB-Update, Edit
+ *
  * Revision 1.25  2006/11/23 17:25:38  willuhn
  * @N Umsatz-Kategorien - in PROGRESS!
  *

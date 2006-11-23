@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.37 $
- * $Date: 2006/11/23 17:25:37 $
+ * $Revision: 1.38 $
+ * $Date: 2006/11/23 23:24:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -51,6 +51,7 @@ import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.dialogs.UmsatzTypNewDialog;
 import de.willuhn.jameica.hbci.gui.input.UmsatzDaysInput;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -58,8 +59,11 @@ import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -256,33 +260,81 @@ public class UmsatzList extends TablePart implements Extendable
         public void handleEvent(Event event)
         {
           Menu menu = new Menu(GUI.getShell(),SWT.POP_UP);
+          MenuItem item = new MenuItem(menu, SWT.PUSH);
+          item.setText(i18n.tr("Suchbegriff als Umsatz-Kategorie speichern..."));
+          item.addListener(SWT.Selection, new Listener()
+          {
+            public void handleEvent (Event e)
+            {
+              try
+              {
+                String text = (String) search.getValue();
+                if (text == null || text.length() == 0)
+                  return;
+                
+                // Mal schauen, obs den Typ schon gibt
+                DBIterator existing = Settings.getDBService().createList(UmsatzTyp.class);
+                existing.addFilter("pattern = ?", new Object[]{text});
+                UmsatzTyp typ = null; 
+                if (existing.size() > 0)
+                {
+                  if (!Application.getCallback().askUser(i18n.tr("Eine Umsatz-Kategorie mit diesem Suchbegriff existiert bereits. Überschreiben?")))
+                    return;
+                  
+                  // OK, ueberschreiben
+                  typ = (UmsatzTyp) existing.next();
+                }
+                else
+                {
+                  UmsatzTypNewDialog d = new UmsatzTypNewDialog(UmsatzTypNewDialog.POSITION_MOUSE);
+                  typ = (UmsatzTyp) d.open();
+                }
+                typ.setPattern(text);
+                typ.setRegex(((Boolean)regex.getValue()).booleanValue());
+                typ.store();
+                GUI.getStatusBar().setSuccessText(i18n.tr("Umsatz-Kategorie gespeichert"));
+              }
+              catch (ApplicationException ae)
+              {
+                Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getMessage(), StatusBarMessage.TYPE_ERROR));
+              }
+              catch (OperationCanceledException oce)
+              {
+                Logger.info("operation cancelled");
+                return;
+              }
+              catch (Exception ex)
+              {
+                Logger.error("unable to store umsatz filter",ex);
+                GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern der Umsatz-Kategorie"));
+              }
+            }
+          });
           
+          new MenuItem(menu, SWT.SEPARATOR);
           try
           {
             DBIterator i = Settings.getDBService().createList(UmsatzTyp.class);
-            if (i.size() > 0)
+            i.addFilter("pattern is not null"); // Wir wollen nur die mit Suchbegriff haben
+            while (i.hasNext())
             {
-              while (i.hasNext())
+              final UmsatzTyp ut = (UmsatzTyp) i.next();
+              final String s    = ut.getName();
+              final String p    = ut.getPattern();
+              final boolean ir  = ut.isRegex();
+              final MenuItem mi = new MenuItem(menu, SWT.PUSH);
+              mi.setText(s);
+              mi.addListener(SWT.Selection, new Listener()
               {
-                final UmsatzTyp ut = (UmsatzTyp) i.next();
-                final String s    = ut.getName();
-                final String p    = ut.getPattern();
-                final boolean ir  = ut.isRegex();
-                final MenuItem mi = new MenuItem(menu, SWT.PUSH);
-                mi.setText(s);
-                mi.addListener(SWT.Selection, new Listener()
+                public void handleEvent(Event event)
                 {
-                  public void handleEvent(Event event)
-                  {
-                    Logger.debug("applying filter " + p);
-                    regex.setValue(new Boolean(ir));
-                    search.setValue(p);
-                    search.focus();
-                    kl.process();
-                  }
-                });
-                
-              }
+                  Logger.debug("applying filter " + p);
+                  regex.setValue(new Boolean(ir));
+                  search.setValue(p);
+                  search.focus();
+                  kl.process();
+                }
+              });
             }
             
           }
@@ -558,8 +610,8 @@ public class UmsatzList extends TablePart implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
- * Revision 1.37  2006/11/23 17:25:37  willuhn
- * @N Umsatz-Kategorien - in PROGRESS!
+ * Revision 1.38  2006/11/23 23:24:17  willuhn
+ * @N Umsatz-Kategorien: DB-Update, Edit
  *
  * Revision 1.36  2006/11/20 23:07:54  willuhn
  * @N new package "messaging"

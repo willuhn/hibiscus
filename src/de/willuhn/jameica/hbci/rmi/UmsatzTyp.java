@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/UmsatzTyp.java,v $
- * $Revision: 1.9 $
- * $Date: 2006/04/03 21:39:07 $
+ * $Revision: 1.10 $
+ * $Date: 2006/11/23 23:24:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,12 +17,23 @@ import java.util.regex.PatternSyntaxException;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.rmi.DBObject;
+import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.system.Application;
 
 /**
  * Interface zur Einstufung von Umsaetzen in verschiedene Kategorien.
  */
 public interface UmsatzTyp extends DBObject
 {
+  /**
+   * Token, der einen Umsatztyp als Einnahme markiert.
+   */
+  public final static String EINNAHME = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N().tr("Einnahme");
+  
+  /**
+   * Token, der einen Umsatztyp als Ausgabe markiert.
+   */
+  public final static String AUSGABE = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N().tr("Ausgabe");
 
 	/**
 	 * Liefert den Namen des Umsatz-Typs.
@@ -123,6 +134,9 @@ public interface UmsatzTyp extends DBObject
 
 /**********************************************************************
  * $Log: UmsatzTyp.java,v $
+ * Revision 1.10  2006/11/23 23:24:17  willuhn
+ * @N Umsatz-Kategorien: DB-Update, Edit
+ *
  * Revision 1.9  2006/04/03 21:39:07  willuhn
  * @N UmsatzChart
  *
