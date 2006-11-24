@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.48 $
- * $Date: 2006/10/06 13:08:01 $
+ * $Revision: 1.49 $
+ * $Date: 2006/11/24 00:07:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,25 +18,21 @@ import org.eclipse.swt.graphics.Color;
 
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
-import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.ColorInput;
 import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.Input;
-import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
-import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.PassportDetail;
+import de.willuhn.jameica.hbci.gui.action.UmsatzTypNew;
 import de.willuhn.jameica.hbci.gui.parts.PassportList;
-import de.willuhn.jameica.hbci.passport.Passport;
+import de.willuhn.jameica.hbci.gui.parts.UmsatzTypList;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
-import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -56,6 +52,7 @@ public class SettingsControl extends AbstractControl {
 	private Input ueberfaelligFg    				= null;
 
 	private TablePart passportList 					= null;
+  private TablePart umsatzTypList         = null;
 
 	private Input ueberweisungLimit 				= null;
 
@@ -74,29 +71,30 @@ public class SettingsControl extends AbstractControl {
    * @return Tabelle mit den Passports.
    * @throws RemoteException
    */
-  public Part getPassportListe() throws RemoteException
+  public TablePart getPassportListe() throws RemoteException
 	{
     if (passportList != null)
       	return passportList;
 
-    Action a = new Action()
-    {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        if (context == null || !(context instanceof Passport))
-          return;
-        new PassportDetail().handleAction(context);
-      }
-    };
-
-    passportList = new PassportList(a);
-    ContextMenu menu = new ContextMenu();
-    menu.addItem(new CheckedContextMenuItem(i18n.tr("Konfigurieren..."),a));
-    passportList.setContextMenu(menu);
+    passportList = new PassportList(new PassportDetail());
 		return passportList;
 	}
 
-	/**
+  /**
+   * Liefert eine Tabelle mit den existierenden Umsatz-Kategorien.
+   * @return Tabelle mit den Umsatz-Kategorien.
+   * @throws RemoteException
+   */
+  public TablePart getUmsatzTypListe() throws RemoteException
+  {
+    if (umsatzTypList != null)
+        return umsatzTypList;
+
+    umsatzTypList = new UmsatzTypList(new UmsatzTypNew());
+    return umsatzTypList;
+  }
+
+  /**
 	 * Checkbox zur Auswahl des Online-Mode.
    * @return Checkbox.
    */
@@ -262,6 +260,10 @@ public class SettingsControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.49  2006/11/24 00:07:09  willuhn
+ * @C Konfiguration der Umsatz-Kategorien in View Einstellungen verschoben
+ * @N Redesign View Einstellungen
+ *
  * Revision 1.48  2006/10/06 13:08:01  willuhn
  * @B Bug 185, 211
  *

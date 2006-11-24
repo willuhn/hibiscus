@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTypList.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/11/23 23:24:17 $
+ * $Revision: 1.6 $
+ * $Date: 2006/11/24 00:07:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -55,6 +55,7 @@ public class UmsatzTypList extends TablePart implements Part
     });
 
     this.setMulti(true);
+    this.setSummary(false);
     this.setRememberColWidths(true);
     this.setRememberOrder(true);
     this.setContextMenu(new de.willuhn.jameica.hbci.gui.menus.UmsatzTypList());
@@ -64,6 +65,10 @@ public class UmsatzTypList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: UmsatzTypList.java,v $
+ * Revision 1.6  2006/11/24 00:07:09  willuhn
+ * @C Konfiguration der Umsatz-Kategorien in View Einstellungen verschoben
+ * @N Redesign View Einstellungen
+ *
  * Revision 1.5  2006/11/23 23:24:17  willuhn
  * @N Umsatz-Kategorien: DB-Update, Edit
  *

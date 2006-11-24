@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Settings.java,v $
- * $Revision: 1.37 $
- * $Date: 2006/10/06 13:08:01 $
+ * $Revision: 1.38 $
+ * $Date: 2006/11/24 00:07:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,17 +12,29 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.views;
 
+import java.rmi.RemoteException;
+
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.TabFolder;
+
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.ButtonArea;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.Color;
+import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.Back;
+import de.willuhn.jameica.hbci.gui.action.PassportDetail;
+import de.willuhn.jameica.hbci.gui.action.UmsatzTypNew;
 import de.willuhn.jameica.hbci.gui.controller.SettingsControl;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
+import de.willuhn.util.Session;
 
 /**
  * Einstellungs-Dialog.
@@ -30,47 +42,87 @@ import de.willuhn.util.I18N;
 public class Settings extends AbstractView {
 
   /**
+   * In der Session merken wir uns das letzte aktive Tab
+   */
+  private static Session session = null;
+
+  /**
+   * Der Tabfolder.
+   */
+  private TabFolder folder = null;
+
+  /**
+   * ct.
+   */
+  public Settings()
+  {
+    if (session == null)
+      session = new Session(30 * 60 * 1000l);
+  }
+  
+  /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
   public void bind() throws Exception {
 
-		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+		final I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 		GUI.getView().setTitle(i18n.tr("Einstellungen"));
 		final SettingsControl control = new SettingsControl(this);
 		
-		LabelGroup settings = new LabelGroup(getParent(),i18n.tr("Grundeinstellungen"));
-
-		// Einstellungen
-		settings.addCheckbox(control.getOnlineMode(),i18n.tr("Bei Kommunikation mit der Bank Internetverbindung ohne Nachfrage herstellen"));
-		settings.addCheckbox(control.getCheckPin(),i18n.tr("PIN-Eingaben via Check-Summe prüfen"));
-    settings.addCheckbox(control.getCachePin(),i18n.tr("PIN-Eingaben für die aktuelle Sitzung zwischenspeichern"));
-    settings.addCheckbox(control.getDecimalGrouping(),i18n.tr("Tausender-Trennzeichen bei Geld-Beträgen verwenden"));
-    settings.addCheckbox(control.getKontoCheck(),i18n.tr("Kontonummern via Prüfsumme der Bank testen"));
+		// Grund-Einstellungen
+    TabGroup system = new TabGroup(getTabFolder(),i18n.tr("Grundeinstellungen"));
+		system.addCheckbox(control.getOnlineMode(),i18n.tr("Bei Kommunikation mit der Bank Internetverbindung ohne Nachfrage herstellen"));
+    system.addCheckbox(control.getCheckPin(),i18n.tr("PIN-Eingaben via Check-Summe prüfen"));
+    system.addCheckbox(control.getCachePin(),i18n.tr("PIN-Eingaben für die aktuelle Sitzung zwischenspeichern"));
+    system.addCheckbox(control.getDecimalGrouping(),i18n.tr("Tausender-Trennzeichen bei Geld-Beträgen verwenden"));
+    system.addCheckbox(control.getKontoCheck(),i18n.tr("Kontonummern via Prüfsumme der Bank testen"));
+    system.addLabelPair(i18n.tr("Limit für Aufträge"), control.getUeberweisungLimit());
 		
-		settings.addLabelPair(i18n.tr("Limit für Aufträge"), control.getUeberweisungLimit());
-		
-		LabelGroup colors = new LabelGroup(getParent(),i18n.tr("Farben"));
-		colors.addLabelPair(i18n.tr("Vordergrund Sollbuchung"),control.getBuchungSollForeground());
-		colors.addLabelPair(i18n.tr("Vordergrund Habenbuchung"),control.getBuchungHabenForeground());
-		colors.addLabelPair(i18n.tr("Vordergrund überfällige Überweisungen"),control.getUeberfaelligForeground());
-
-		ButtonArea buttons = settings.createButtonArea(1);
-		buttons.addButton(i18n.tr("gespeicherte Prüfsummen löschen"),new Action()
+    ButtonArea sysbuttons = system.createButtonArea(1);
+    sysbuttons.addButton(i18n.tr("gespeicherte Prüfsummen löschen"),new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
-				control.handleDeleteCheckSum();
+        control.handleDeleteCheckSum();
       }
     });
 
-		// Passports
-		LabelGroup passports = new LabelGroup(getParent(),i18n.tr("Sicherheitsmedien"));
-		passports.addPart(control.getPassportListe());
+    // Farb-Einstellungen
+    TabGroup colors = new TabGroup(getTabFolder(),i18n.tr("Farben"));
+    colors.addLabelPair(i18n.tr("Vordergrund Sollbuchung"),control.getBuchungSollForeground());
+    colors.addLabelPair(i18n.tr("Vordergrund Habenbuchung"),control.getBuchungHabenForeground());
+		colors.addLabelPair(i18n.tr("Vordergrund überfällige Überweisungen"),control.getUeberfaelligForeground());
 
-		ButtonArea buttons3 = new ButtonArea(getParent(),2);
-		buttons3.addButton(i18n.tr("Zurück"),new Back());
-		buttons3.addButton(i18n.tr("Speichern"),new Action()
+		// Passports
+    TabGroup passports = new TabGroup(getTabFolder(),i18n.tr("HBCI-Sicherheitsmedien"));
+		passports.addPart(control.getPassportListe());
+    ButtonArea passportButtons = passports.createButtonArea(1);
+    passportButtons.addButton(i18n.tr("Sicherheitsmedium konfigurieren..."), new Action() {
+    
+      public void handleAction(Object context) throws ApplicationException
+      {
+        try
+        {
+          new PassportDetail().handleAction(control.getPassportListe().getSelection());
+        }
+        catch (RemoteException re)
+        {
+          Logger.error("unable to load passport",re);
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Öffnen des Sicherheitsmediums"), StatusBarMessage.TYPE_ERROR));
+        }
+      }
+    });
+
+    // Umsatz-Kategorien
+    TabGroup umsatztypes = new TabGroup(getTabFolder(),i18n.tr("Umsatz-Kategorien"));
+    umsatztypes.addPart(control.getUmsatzTypListe());
+    ButtonArea umsatzButtons = umsatztypes.createButtonArea(1);
+    umsatzButtons.addButton(i18n.tr("Neue Umsatz-Kategorie..."),new UmsatzTypNew());
+
+    ButtonArea buttons = new ButtonArea(getParent(),2);
+		buttons.addButton(i18n.tr("Zurück"),new Back());
+		buttons.addButton(i18n.tr("Speichern"),new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -78,12 +130,47 @@ public class Settings extends AbstractView {
       }
     });
 
+    // Mal checken, ob wir uns das zuletzt aktive Tab gemerkt haben.
+    Integer selection = (Integer) session.get("active");
+    if (selection != null)
+      getTabFolder().setSelection(selection.intValue());
   }
+
+  /**
+   * Liefert den Tab-Folder, in dem die einzelnen Module der Einstellungen
+   * untergebracht sind.
+   * @return der Tab-Folder.
+   */
+  public TabFolder getTabFolder()
+  {
+    if (this.folder != null)
+      return this.folder;
+    
+    this.folder = new TabFolder(getParent(), SWT.NONE);
+    this.folder.setLayoutData(new GridData(GridData.FILL_BOTH));
+    this.folder.setBackground(Color.BACKGROUND.getSWTColor());
+    return this.folder;
+  }
+
+  /**
+   * @see de.willuhn.jameica.gui.AbstractView#unbind()
+   */
+  public void unbind() throws ApplicationException
+  {
+    // Wir merken uns das aktive Tab fuer eine Weile, damit wir das gleich
+    // wieder anzeigen koennen, wenn der User zurueckkommt.
+    session.put("active",new Integer(getTabFolder().getSelectionIndex()));
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.38  2006/11/24 00:07:09  willuhn
+ * @C Konfiguration der Umsatz-Kategorien in View Einstellungen verschoben
+ * @N Redesign View Einstellungen
+ *
  * Revision 1.37  2006/10/06 13:08:01  willuhn
  * @B Bug 185, 211
  *

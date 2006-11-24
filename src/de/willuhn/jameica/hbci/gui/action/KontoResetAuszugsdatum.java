@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoResetAuszugsdatum.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/10/09 16:55:51 $
- * $Author: jost $
+ * $Revision: 1.2 $
+ * $Date: 2006/11/24 00:07:08 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -12,13 +12,11 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.action;
 
-import java.rmi.RemoteException;
-
 import de.willuhn.jameica.gui.Action;
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -41,46 +39,33 @@ public class KontoResetAuszugsdatum implements Action
         .getResources().getI18N();
 
     if (context == null || !(context instanceof Konto))
-    {
-      throw new ApplicationException(i18n.tr("Kein Konto ausgewählt"));
-    }
+      throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus"));
 
     try
     {
       Konto k = (Konto) context;
       if (k.isNewObject())
-      {
         return;
-      }
-      YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
-      d.setTitle(i18n.tr("Reset Kontoauszugsdatum"));
-      d.setText(i18n
-          .tr("Soll das Kontoauszugsdatum wirklich zurückgesetzt werden?\n"
-              + "Bei der nächsten Synchronisierung werden alle bei der Bank \n"
-              + "verfügbaren Umsätze abgeholt."));
 
-      try
-      {
-        Boolean choice = (Boolean) d.open();
-        if (!choice.booleanValue())
-          return;
-      }
-      catch (Exception e)
-      {
-        Logger.error("error while resetting saldo_date", e);
+      YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
+      d.setTitle(i18n.tr("Kontoauszugsdatum zurücksetzen"));
+      d.setText(i18n.tr("Soll das Kontoauszugsdatum wirklich zurückgesetzt werden?\n"
+                      + "Bei der nächsten Synchronisierung werden alle bei der Bank \n"
+                      + "verfügbaren Umsätze abgeholt."));
+
+      Boolean choice = (Boolean) d.open();
+      if (!choice.booleanValue())
         return;
-      }
 
       k.resetSaldoDatum();
       k.store();
-      GUI.getStatusBar().setSuccessText(
-          i18n.tr("Kontoauszugsdatum zurückgesetzt."));
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Kontoauszugsdatum zurückgesetzt."), StatusBarMessage.TYPE_SUCCESS));
     }
-    catch (RemoteException e)
+    catch (Exception e)
     {
-      GUI.getStatusBar().setErrorText(
-          i18n.tr("Fehler beim Zurücksetzen des Kontoauszugsdatums."));
-      Logger.error("unable to reset saldo_datum", e);
+      Logger.error("error while resetting saldo_date", e);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Zurücksetzen des Datums"), StatusBarMessage.TYPE_ERROR));
+      return;
     }
   }
 
@@ -88,6 +73,10 @@ public class KontoResetAuszugsdatum implements Action
 
 /*******************************************************************************
  * $Log: KontoResetAuszugsdatum.java,v $
+ * Revision 1.2  2006/11/24 00:07:08  willuhn
+ * @C Konfiguration der Umsatz-Kategorien in View Einstellungen verschoben
+ * @N Redesign View Einstellungen
+ *
  * Revision 1.1  2006/10/09 16:55:51  jost
  * Bug #284
  *

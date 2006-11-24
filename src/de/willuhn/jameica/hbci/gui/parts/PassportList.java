@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/PassportList.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/08/01 23:27:42 $
- * $Author: web0 $
+ * $Revision: 1.5 $
+ * $Date: 2006/11/24 00:07:09 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -20,9 +20,12 @@ import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.Part;
+import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
+import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.PassportRegistry;
+import de.willuhn.jameica.hbci.gui.action.PassportDetail;
 import de.willuhn.jameica.hbci.gui.controller.PassportObject;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.system.Application;
@@ -52,6 +55,10 @@ public class PassportList extends TablePart implements Part
       }
     });
     this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+
+    ContextMenu menu = new ContextMenu();
+    menu.addItem(new CheckedContextMenuItem(i18n.tr("Öffnen..."),new PassportDetail()));
+    this.setContextMenu(menu);
 
     this.setMulti(false);
     this.setSummary(false);
@@ -95,6 +102,10 @@ public class PassportList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: PassportList.java,v $
+ * Revision 1.5  2006/11/24 00:07:09  willuhn
+ * @C Konfiguration der Umsatz-Kategorien in View Einstellungen verschoben
+ * @N Redesign View Einstellungen
+ *
  * Revision 1.4  2005/08/01 23:27:42  web0
  * *** empty log message ***
  *

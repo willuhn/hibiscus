@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/KontoList.java,v $
- * $Revision: 1.12 $
- * $Date: 2006/10/09 16:56:07 $
- * $Author: jost $
+ * $Revision: 1.13 $
+ * $Date: 2006/11/24 00:07:09 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -48,23 +48,17 @@ public class KontoList extends ContextMenu implements Extendable
 
     addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"), new KontoNew()));
     addItem(new ContextMenuItem(i18n.tr("Neues Konto..."), new KNeu()));
-    addItem(new CheckedContextMenuItem(i18n.tr("Kontoauszüge anzeigen..."),
-        new UmsatzList()));
-    addItem(new CheckedContextMenuItem(i18n.tr("Saldo aktualisieren..."),
-        new KontoFetchSaldo()));
-    addItem(new CheckedContextMenuItem(i18n
-        .tr("Kontoauszugsdatum zurücksetzen"), new KontoResetAuszugsdatum()));
+    addItem(new CheckedContextMenuItem(i18n.tr("Kontoauszüge anzeigen..."),new UmsatzList()));
+    addItem(new CheckedContextMenuItem(i18n.tr("Saldo aktualisieren..."),new KontoFetchSaldo()));
+    addItem(new CheckedContextMenuItem(i18n.tr("Kontoauszugsdatum zurücksetzen..."), new KontoResetAuszugsdatum()));
 
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new KontoDelete()));
     addItem(ContextMenuItem.SEPARATOR);
 
-    addItem(new ContextMenuItem(i18n.tr("Neue Überweisung..."),
-        new UeberweisungNew()));
-    addItem(new ContextMenuItem(i18n.tr("Neuer Dauerauftrag..."),
-        new DauerauftragNew()));
-    addItem(new ContextMenuItem(i18n.tr("Neue Lastschrift..."),
-        new LastschriftNew()));
+    addItem(new ContextMenuItem(i18n.tr("Neue Überweisung..."),new UeberweisungNew()));
+    addItem(new ContextMenuItem(i18n.tr("Neuer Dauerauftrag..."),new DauerauftragNew()));
+    addItem(new ContextMenuItem(i18n.tr("Neue Lastschrift..."),new LastschriftNew()));
   }
 
   /**
@@ -94,6 +88,10 @@ public class KontoList extends ContextMenu implements Extendable
 
 /*******************************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.13  2006/11/24 00:07:09  willuhn
+ * @C Konfiguration der Umsatz-Kategorien in View Einstellungen verschoben
+ * @N Redesign View Einstellungen
+ *
  * Revision 1.12  2006/10/09 16:56:07  jost
  * Bug #284
  * Revision 1.11 2005/08/01 23:27:42 web0 *** empty log
