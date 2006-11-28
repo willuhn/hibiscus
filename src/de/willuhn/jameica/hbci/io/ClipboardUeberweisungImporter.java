@@ -3,34 +3,30 @@
  */
 package de.willuhn.jameica.hbci.io;
 
-import java.awt.Toolkit;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 
-import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.HBCIProperties;
+import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.dnd.TextTransfer;
+
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
-import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
-import de.willuhn.util.ApplicationException;
-import de.willuhn.util.I18N;
 
 /**
- * Ebay-Konto-Parser von Frank Fasterling.
- * 
- * Beispiel:
- * 
- * Name der Bank: Postbank Berlin
- * Kontoinhaber: Peter Mustermann
- * Kontonummer: 580938106
- * Bankleitzahl: 10010010
+ * Genersicher Parser fuer die Zwischenablage.
+ * Durchsucht diese nach sinnvollen Daten, um daraus ggf. eine
+ * neue Ueberweisung mit vorausgefuellten Werten erzeugen zu koennen.
  */
 public class ClipboardUeberweisungImporter
 {
+  private final static Pattern PT_KONTO = Pattern.compile("(.*Konto.*)|(.*Kto.*)", Pattern.CASE_INSENSITIVE);
+  private final static Pattern PT_BLZ   = Pattern.compile("(.*Bankleitzahl.*)|(.*BLZ.*)", Pattern.CASE_INSENSITIVE);
+  private final static Pattern PT_ZWECK = Pattern.compile("(.*zweck.*)", Pattern.CASE_INSENSITIVE);
+  private final static Pattern PT_NAME  = Pattern.compile("(.*Name.*)|(.*Empfänger.*)|(.*Empfaenger.*)", Pattern.CASE_INSENSITIVE);
 
 	/**
    * Versucht eine Ueberweisung aus der Zwischenablage zu erstellen.
@@ -38,23 +34,20 @@ public class ClipboardUeberweisungImporter
 	 */
 	public Ueberweisung getUeberweisung()
   {
-    I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
-    Transferable t = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
-
-    if (t == null || !t.isDataFlavorSupported(DataFlavor.stringFlavor))
-      return null;
-    
     try
     {
-      String text = (String) t.getTransferData(DataFlavor.stringFlavor);
-      if (text == null)
+      // BUGZILLA 336
+      final Clipboard cb = new Clipboard(GUI.getDisplay());
+      TextTransfer transfer = TextTransfer.getInstance();
+      String text = (String) cb.getContents(transfer);
+
+      if (text == null || text.length() == 0)
         return null;
 
       text = text.trim();
 
       StringTokenizer st = new StringTokenizer(text,System.getProperty("line.separator","\n"));
-  		List lines         = new ArrayList();
+      HashMap values = new HashMap();
 
       while (st.hasMoreTokens())
       {
@@ -62,58 +55,38 @@ public class ClipboardUeberweisungImporter
 				if (line == null || line.length() <= 0)
           continue;
 
-        line = line.replaceAll("\\s"," ").trim();
+        line = line.replaceAll("\\s"," ");
 
-        int doppelpunkt = line.indexOf(":");
-        if (doppelpunkt  == -1)
+        int sep = line.indexOf(":");
+        if (sep == -1)
           continue;
 
-        lines.add(line.substring(doppelpunkt + 1).trim());
+        values.put(line.substring(0,sep).trim(),line.substring(sep+1).trim());
 			}
 
-      // Nur wenn wir mind. 4 Zeilen gefunden haben
-      if (lines.size() < 4)
-        return null;
-          
-      String inhaber = (String) lines.get(1);
-      String nummer  = (String) lines.get(2);
-      String blz     = (String) lines.get(3);
-
-      // Test BLZ
-      if (blz.length() != HBCIProperties.HBCI_BLZ_LENGTH)
-      	throw new ApplicationException(i18n.tr("Die BLZ ist ungültig: \"{0}\"",blz));
-
-      try
-      {
-				Long.parseLong(blz);
-			}
-      catch (NumberFormatException nfe)
-      {
-        throw new ApplicationException(i18n.tr("Die BLZ ist ungültig: \"{0}\"",blz));
-			}
-					
-      // Test Kontonummer
-			try
-      {
-      	Long.parseLong(nummer);
-      }
-      catch (NumberFormatException nfe)
-      {
-        throw new ApplicationException(i18n.tr("Die Kontonummer ist ungültig: \"{0}\"",nummer));
-      }
-					
-			// Test Inhaber
-      HBCIProperties.checkLength(inhaber,HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
-      
       Ueberweisung u = (Ueberweisung) Settings.getDBService().createObject(Ueberweisung.class,null);
-      u.setGegenkontoBLZ(blz);
-      u.setGegenkontoName(inhaber);
-      u.setGegenkontoNummer(nummer);
+
+      Iterator i = values.keySet().iterator();
+      while (i.hasNext())
+      {
+        String s = (String) i.next();
+        String value = (String) values.get(s);
+        if (value == null || s == null)
+          continue;
+        if (PT_BLZ.matcher(s).matches())
+          u.setGegenkontoBLZ(value);
+        else if (PT_KONTO.matcher(s).matches())
+          u.setGegenkontoNummer(value);
+        else if (PT_NAME.matcher(s).matches())
+          u.setGegenkontoName(value);
+        else if (PT_ZWECK.matcher(s).matches())
+          u.setZweck(value);
+      }
       return u;
 		}
-    catch (Exception e)
+    catch (Throwable t)
     {
-      Logger.debug("unable to parse clipboard data: " + e.getMessage());
+      Logger.debug("unable to parse clipboard data: " + t.getMessage());
 		}
     return null;
   }
