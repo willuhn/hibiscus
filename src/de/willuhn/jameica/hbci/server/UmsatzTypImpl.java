@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.26 $
- * $Date: 2006/11/23 23:24:17 $
+ * $Revision: 1.27 $
+ * $Date: 2006/11/29 00:40:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -157,6 +157,12 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
    */
   public boolean matches(Umsatz umsatz) throws RemoteException
   {
+    String s = this.getPattern();
+    if (s == null || s.length() == 0)
+      return false;
+    
+    s = s.toLowerCase();  // Wir beachten Gross-Kleinschreibung grundsaetzlich nicht
+
     String vwz1 = umsatz.getZweck();
     String vwz2 = umsatz.getZweck2();
     String name = umsatz.getEmpfaengerName();
@@ -169,23 +175,11 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
     if (kto  == null) kto  = "";
     if (kom  == null) kom  = "";
 
-    vwz1 = vwz1.toLowerCase();
-    vwz2 = vwz2.toLowerCase();
-    name = name.toLowerCase();
-    kto  = kto.toLowerCase();
-    kom  = kom.toLowerCase();
-    
-    String s = this.getPattern();
-    if (s != null)
-      s = s.toLowerCase();  // Wir beachten Gross-Kleinschreibung grundsaetzlich nicht
-
     if (isRegex())
     {
-      if (s == null)
-        s = ".*";
       Pattern pattern = null;
       
-      pattern = Pattern.compile(s);
+      pattern = Pattern.compile(s, Pattern.CASE_INSENSITIVE);
       Matcher mVwz1 = pattern.matcher(vwz1);
       Matcher mVwz2 = pattern.matcher(vwz2);
       Matcher mName = pattern.matcher(name);
@@ -195,8 +189,12 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
       return (mVwz1.matches() || mVwz2.matches() || mName.matches() || mKto.matches() || mKom.matches());
     }
 
-    if (s == null)
-      s = "";
+    vwz1 = vwz1.toLowerCase();
+    vwz2 = vwz2.toLowerCase();
+    name = name.toLowerCase();
+    kto  = kto.toLowerCase();
+    kom  = kom.toLowerCase();
+
     return (vwz1.indexOf(s) != -1 || vwz2.indexOf(s) != -1 || name.indexOf(s) != -1 || kto.indexOf(s) != -1 || kom.indexOf(s) != -1);
   }
 
@@ -337,6 +335,10 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
 
 /**********************************************************************
  * $Log: UmsatzTypImpl.java,v $
+ * Revision 1.27  2006/11/29 00:40:37  willuhn
+ * @N Keylistener in Umsatzlist nur dann ausfuehren, wenn sich wirklich etwas geaendert hat
+ * @C UmsatzTyp.matches matcht jetzt bei leeren Pattern nicht mehr
+ *
  * Revision 1.26  2006/11/23 23:24:17  willuhn
  * @N Umsatz-Kategorien: DB-Update, Edit
  *

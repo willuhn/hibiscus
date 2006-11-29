@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/UmsatzTyp.java,v $
- * $Revision: 1.10 $
- * $Date: 2006/11/23 23:24:17 $
+ * $Revision: 1.11 $
+ * $Date: 2006/11/29 00:40:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -123,6 +123,8 @@ public interface UmsatzTyp extends DBObject
 
   /**
    * Prueft, ob der Umsatz diesem Pattern entspricht.
+   * Ist fuer den Umsatz-Typ kein Pattern definiert, liefert die Funktion
+   * immer false.
    * @param umsatz zu pruefender Umsatz.
    * @return true, wenn er dem Pattern entspricht.
    * @throws RemoteException
@@ -134,6 +136,10 @@ public interface UmsatzTyp extends DBObject
 
 /**********************************************************************
  * $Log: UmsatzTyp.java,v $
+ * Revision 1.11  2006/11/29 00:40:37  willuhn
+ * @N Keylistener in Umsatzlist nur dann ausfuehren, wenn sich wirklich etwas geaendert hat
+ * @C UmsatzTyp.matches matcht jetzt bei leeren Pattern nicht mehr
+ *
  * Revision 1.10  2006/11/23 23:24:17  willuhn
  * @N Umsatz-Kategorien: DB-Update, Edit
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.38 $
- * $Date: 2006/11/23 23:24:17 $
+ * $Revision: 1.39 $
+ * $Date: 2006/11/29 00:40:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -455,6 +455,9 @@ public class UmsatzList extends TablePart implements Extendable
         {
           try
           {
+            if (!hasChanged())
+              return;
+              
             // Erstmal alle rausschmeissen
             UmsatzList.this.removeAll();
 
@@ -501,7 +504,8 @@ public class UmsatzList extends TablePart implements Extendable
               if (date != null && limit != null && date.before(limit))
                 continue;
 
-              // Was zum Filtern da?
+              // Steht ein Suchwort drin?
+              // Nein? Dann sofort uebernehmen
               if (empty)
               {
                 UmsatzList.this.addItem(u);
@@ -527,6 +531,35 @@ public class UmsatzList extends TablePart implements Extendable
           }
         }
       });
+    }
+  }
+
+  private String lastSearch = "";
+  private Boolean lastRegex = Boolean.FALSE;
+  private Integer lastDays = null;
+  
+  /**
+   * Prueft, ob sich an den Such-Eingaben etwas geaendert hat.
+   * @return true, wenn sich den Eingaben etwas geaendert hat.
+   */
+  private boolean hasChanged()
+  {
+    // Such-Filter ist ueberhaupt nicht aktiv
+    if (!this.filter || this.search == null || this.regex == null || this.days == null)
+      return false;
+    
+    String s  = (String) this.search.getValue(); // liefert nie null
+    Boolean r = (Boolean) this.regex.getValue(); // liefert nie null
+    Integer i = (Integer) this.days.getValue();  // liefert nie null
+    try
+    {
+      return !r.equals(this.lastRegex) || !s.equals(this.lastSearch) || !i.equals(this.lastDays);
+    }
+    finally
+    {
+      this.lastSearch = s;
+      this.lastRegex = r;
+      this.lastDays = i;
     }
   }
 
@@ -610,6 +643,10 @@ public class UmsatzList extends TablePart implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.39  2006/11/29 00:40:37  willuhn
+ * @N Keylistener in Umsatzlist nur dann ausfuehren, wenn sich wirklich etwas geaendert hat
+ * @C UmsatzTyp.matches matcht jetzt bei leeren Pattern nicht mehr
+ *
  * Revision 1.38  2006/11/23 23:24:17  willuhn
  * @N Umsatz-Kategorien: DB-Update, Edit
  *
