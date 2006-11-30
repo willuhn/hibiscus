@@ -5,10 +5,6 @@
 	</p>
 
 	<p>
-		Die Überweisung wird in der Währung des ausgewählten Kontos ausgeführt.
-	</p>
-	
-	<p>
 		<b>Tipp:</b> Wenn Sie die Option <b>Empfängerdaten in Adressbuch speichern</b>
 		aktivieren, wird das eingegebene Gegenkonto automatisch in Ihrem
 		Adressbuch gespeichert.

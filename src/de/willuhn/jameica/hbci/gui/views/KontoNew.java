@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoNew.java,v $
- * $Revision: 1.19 $
- * $Date: 2006/11/06 14:19:14 $
+ * $Revision: 1.20 $
+ * $Date: 2006/11/30 23:48:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -40,14 +40,22 @@ import de.willuhn.util.I18N;
  */
 public class KontoNew extends AbstractView {
 
+  private I18N i18n            = null;
+  private KontoControl control = null;
+  
+  /**
+   * ct,
+   */
+  public KontoNew()
+  {
+    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+    this.control = new KontoControl(this);
+  }
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
   public void bind() throws Exception {
 		
-		final I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
-    final KontoControl control = new KontoControl(this);
 
     Konto k = control.getKonto();
     if (k != null)
@@ -110,11 +118,24 @@ public class KontoNew extends AbstractView {
     buttons.addButton(i18n.tr("Saldo und Umsätze abrufen"), new KontoFetchUmsaetze(),control.getKonto());
     buttons.addButton(i18n.tr("Alle Umsätze anzeigen"),     new UmsatzList(),control.getKonto());
   }
+  
+  /**
+   * @see de.willuhn.jameica.gui.AbstractView#reload()
+   */
+  public void reload() throws ApplicationException
+  {
+    control.handleReload();
+    super.reload();
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: KontoNew.java,v $
+ * Revision 1.20  2006/11/30 23:48:40  willuhn
+ * @N Erste Version der Umsatz-Kategorien drin
+ *
  * Revision 1.19  2006/11/06 14:19:14  willuhn
  * @B Bug 273
  *

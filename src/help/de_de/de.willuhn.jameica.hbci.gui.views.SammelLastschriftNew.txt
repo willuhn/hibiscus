@@ -5,10 +5,6 @@
 	</p>
 
 	<p>
-		Die Buchung wird in der Währung des ausgewählten Kontos beauftragt.
-	</p>
-	
-	<p>
 		Erstellen Sie für jeden Zahlungspflichtigen eine Buchung.
 		Klicken Sie hierzu bitte auf <b>Neue Buchung hinzufügen</b>.
 	</p>

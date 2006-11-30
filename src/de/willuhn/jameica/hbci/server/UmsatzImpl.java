@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.38 $
- * $Date: 2006/11/23 17:25:38 $
+ * $Revision: 1.39 $
+ * $Date: 2006/11/30 23:48:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.server;
 import java.rmi.RemoteException;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.zip.CRC32;
 
 import de.willuhn.datasource.GenericObject;
@@ -36,7 +37,12 @@ import de.willuhn.util.I18N;
 public class UmsatzImpl extends AbstractDBObject implements Umsatz
 {
 
-	private I18N i18n;
+	private transient I18N i18n;
+  
+  /**
+   * Cache fuer die Umsatz-Kategorien.
+   */
+  public final transient static Hashtable UMSATZTYP_CACHE = new Hashtable();
 
   /**
    * @throws RemoteException
@@ -510,7 +516,19 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
    */
   public UmsatzTyp getUmsatzTyp() throws RemoteException
   {
-    return (UmsatzTyp) getAttribute("umsatztyp_id");
+    String id = (String) super.getAttribute("umsatztyp_id");
+    if (id == null) // Nicht zugeordnet
+      return null;
+    
+    UmsatzTyp ut = (UmsatzTyp) UMSATZTYP_CACHE.get(id);
+    if (ut == null)
+    {
+      ut = (UmsatzTyp) getAttribute("umsatztyp_id");
+      if (ut == null)
+        return null; // CannotHappenException weil wir oben ja eigentlich schon auf umsatztyp_id != null testen. Aber man weiss ja nie ;)
+      UMSATZTYP_CACHE.put(id,ut);
+    }
+    return ut;
   }
 
   /**
@@ -535,6 +553,9 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.39  2006/11/30 23:48:40  willuhn
+ * @N Erste Version der Umsatz-Kategorien drin
+ *
  * Revision 1.38  2006/11/23 17:25:38  willuhn
  * @N Umsatz-Kategorien - in PROGRESS!
  *

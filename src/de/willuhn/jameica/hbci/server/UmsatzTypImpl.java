@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.27 $
- * $Date: 2006/11/29 00:40:37 $
+ * $Revision: 1.28 $
+ * $Date: 2006/11/30 23:48:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -36,7 +36,7 @@ import de.willuhn.util.I18N;
 public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
 {
 
-  private I18N i18n = null;
+  private transient I18N i18n = null;
 
   /**
    * ct.
@@ -59,8 +59,21 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
    */
   protected void insertCheck() throws ApplicationException {
 		try {
-			if (getName() == null || getName().length() == 0)
+      String name = getName();
+			if (name == null || name.length() == 0)
 				throw new ApplicationException(i18n.tr("Bitte geben Sie eine Bezeichnung ein."));
+      
+      // Wir pruefen, ob es bereits eine Kategorie mit diesem Namen gibt
+      DBIterator list = getService().createList(UmsatzTyp.class);
+      while (list.hasNext())
+      {
+        UmsatzTyp other = (UmsatzTyp) list.next();
+        if (other.equals(this))
+          continue; // Das sind wir selbst
+        if (name.equals(other.getName()))
+          throw new ApplicationException(i18n.tr("Es existiert bereits eine Kategorie mit dieser Bezeichnung"));
+      }
+      
 		}
 		catch (RemoteException e)
 		{
@@ -100,7 +113,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
     if (this.isNewObject()) // Neuer Umsatztyp. Der hat noch keine ID
       list.addFilter("umsatztyp_id is null");
     else // Gibts schon. Also koennen wir auch nach festzugeordneten suchen
-      list.addFilter("(umsatztyp_id is null or umsatztyp_id=?)",new String[]{this.getID()});
+      list.addFilter("(umsatztyp_id is null or umsatztyp_id=" + this.getID() + ")");
 
     ArrayList result = new ArrayList();
     while (list.hasNext())
@@ -290,6 +303,8 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
     if (this.isNewObject())
       return;
 
+    UmsatzImpl.UMSATZTYP_CACHE.remove(this.getID());
+
     // Ueberschrieben, weil wir beim Loeschen pruefen muessen,
     // ob wir irgendwelchen Umsaetzen zugeordnet sind und
     // diese bei der Gelegenheit entfernen muessen.
@@ -328,6 +343,16 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
       throw e2;
     }
   }
+
+  /**
+   * Ueberschrieben, um den Umsatztyp-Cache zu aktualisieren.
+   * @see de.willuhn.datasource.db.AbstractDBObject#store()
+   */
+  public void store() throws RemoteException, ApplicationException
+  {
+    super.store();
+    UmsatzImpl.UMSATZTYP_CACHE.put(this.getID(),this);
+  }
   
   
 }
@@ -335,6 +360,9 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
 
 /**********************************************************************
  * $Log: UmsatzTypImpl.java,v $
+ * Revision 1.28  2006/11/30 23:48:40  willuhn
+ * @N Erste Version der Umsatz-Kategorien drin
+ *
  * Revision 1.27  2006/11/29 00:40:37  willuhn
  * @N Keylistener in Umsatzlist nur dann ausfuehren, wenn sich wirklich etwas geaendert hat
  * @C UmsatzTyp.matches matcht jetzt bei leeren Pattern nicht mehr

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.39 $
- * $Date: 2006/11/29 00:40:37 $
+ * $Revision: 1.40 $
+ * $Date: 2006/11/30 23:48:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -149,6 +149,7 @@ public class UmsatzList extends TablePart implements Extendable
     addColumn(i18n.tr("Verwendungszweck"),          "zweck");
     addColumn(i18n.tr("Valuta"),                    "valuta", new DateFormatter(HBCI.DATEFORMAT));
     addColumn(i18n.tr("Betrag"),                    "betrag",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
+    addColumn(i18n.tr("Kategorie"),                 "umsatztyp_id");
     // BUGZILLA 66 http://www.willuhn.de/bugzilla/show_bug.cgi?id=66
     addColumn(i18n.tr("Saldo zu diesem Zeitpunkt"), "saldo",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
 
@@ -643,6 +644,9 @@ public class UmsatzList extends TablePart implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.40  2006/11/30 23:48:40  willuhn
+ * @N Erste Version der Umsatz-Kategorien drin
+ *
  * Revision 1.39  2006/11/29 00:40:37  willuhn
  * @N Keylistener in Umsatzlist nur dann ausfuehren, wenn sich wirklich etwas geaendert hat
  * @C UmsatzTyp.matches matcht jetzt bei leeren Pattern nicht mehr

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UmsatzList.java,v $
- * $Revision: 1.22 $
- * $Date: 2006/10/09 23:49:39 $
+ * $Revision: 1.23 $
+ * $Date: 2006/11/30 23:48:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,6 +12,8 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.menus;
 
+import de.willuhn.jameica.gui.Action;
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.extension.Extendable;
 import de.willuhn.jameica.gui.extension.ExtensionRegistry;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
@@ -20,6 +22,7 @@ import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
+import de.willuhn.jameica.hbci.gui.action.UmsatzAssign;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.action.UmsatzExport;
 import de.willuhn.jameica.hbci.gui.action.UmsatzImport;
@@ -57,6 +60,15 @@ public class UmsatzList extends ContextMenu implements Extendable
 		addItem(new OpenItem());
 
 		addItem(new CheckedContextMenuItem(i18n.tr("Gegenkonto in Adressbuch übernehmen"),new EmpfaengerAdd()));
+    addItem(new CheckedContextMenuItem(i18n.tr("Umsatz-Kategorie zuordnen..."),new Action() {
+    
+      public void handleAction(Object context) throws ApplicationException
+      {
+        new UmsatzAssign().handleAction(context);
+        GUI.getCurrentView().reload();
+      }
+    
+    }));
 
     // BUGZILLA #70 http://www.willuhn.de/bugzilla/show_bug.cgi?id=70
     addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete()));
@@ -110,6 +122,9 @@ public class UmsatzList extends ContextMenu implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.23  2006/11/30 23:48:40  willuhn
+ * @N Erste Version der Umsatz-Kategorien drin
+ *
  * Revision 1.22  2006/10/09 23:49:39  willuhn
  * @N extendable
  *

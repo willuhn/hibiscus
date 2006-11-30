@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzControl.java,v $
- * $Revision: 1.27 $
- * $Date: 2006/01/23 12:16:57 $
+ * $Revision: 1.28 $
+ * $Date: 2006/11/30 23:48:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,7 +18,7 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.Part;
+import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzList;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -68,7 +68,7 @@ public class UmsatzControl extends AbstractControl {
    * @return Tabelle.
    * @throws RemoteException
    */
-  public Part getUmsatzListe() throws RemoteException
+  public TablePart getUmsatzListe() throws RemoteException
 	{
     if (this.umsaetze == null)
       this.umsaetze = new de.willuhn.jameica.hbci.gui.parts.UmsatzList(getKonto(),new UmsatzDetail());
@@ -91,6 +91,7 @@ public class UmsatzControl extends AbstractControl {
           DBIterator i = k.getUmsaetze();
           while (i.hasNext())
             list.addItem(i.next());
+          list.sort();
         }
         catch (RemoteException e)
         {
@@ -105,6 +106,9 @@ public class UmsatzControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzControl.java,v $
+ * Revision 1.28  2006/11/30 23:48:40  willuhn
+ * @N Erste Version der Umsatz-Kategorien drin
+ *
  * Revision 1.27  2006/01/23 12:16:57  willuhn
  * @N Update auf HBCI4Java 2.5.0-rc5
  *
