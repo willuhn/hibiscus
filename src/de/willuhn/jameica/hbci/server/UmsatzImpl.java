@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.39 $
- * $Date: 2006/11/30 23:48:40 $
+ * $Revision: 1.40 $
+ * $Date: 2006/12/01 00:02:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -42,7 +42,7 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
   /**
    * Cache fuer die Umsatz-Kategorien.
    */
-  public final transient static Hashtable UMSATZTYP_CACHE = new Hashtable();
+  public final static Hashtable UMSATZTYP_CACHE = new Hashtable();
 
   /**
    * @throws RemoteException
@@ -553,6 +553,9 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.40  2006/12/01 00:02:34  willuhn
+ * @C made unserializable members transient
+ *
  * Revision 1.39  2006/11/30 23:48:40  willuhn
  * @N Erste Version der Umsatz-Kategorien drin
  *

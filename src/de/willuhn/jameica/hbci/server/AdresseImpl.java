@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AdresseImpl.java,v $
- * $Revision: 1.14 $
- * $Date: 2006/10/07 19:50:08 $
+ * $Revision: 1.15 $
+ * $Date: 2006/12/01 00:02:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,7 +31,8 @@ import de.willuhn.util.I18N;
  */
 public class AdresseImpl extends AbstractDBObject implements Adresse {
 
-  private I18N i18n = null;
+  private transient I18N i18n = null;
+
   /**
    * @throws RemoteException
    */
@@ -203,6 +204,9 @@ public class AdresseImpl extends AbstractDBObject implements Adresse {
 
 /**********************************************************************
  * $Log: AdresseImpl.java,v $
+ * Revision 1.15  2006/12/01 00:02:34  willuhn
+ * @C made unserializable members transient
+ *
  * Revision 1.14  2006/10/07 19:50:08  willuhn
  * @D javadoc
  *

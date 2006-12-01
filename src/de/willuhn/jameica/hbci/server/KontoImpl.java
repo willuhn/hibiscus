@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.76 $
- * $Date: 2006/10/20 08:22:48 $
+ * $Revision: 1.77 $
+ * $Date: 2006/12/01 00:02:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -46,7 +46,7 @@ import de.willuhn.util.I18N;
 public class KontoImpl extends AbstractDBObject implements Konto
 {
 
-  private I18N i18n;
+  private transient I18N i18n = null;
 
   /**
    * ct.
@@ -694,6 +694,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*******************************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.77  2006/12/01 00:02:34  willuhn
+ * @C made unserializable members transient
+ *
  * Revision 1.76  2006/10/20 08:22:48  willuhn
  * @B bug 297
  *

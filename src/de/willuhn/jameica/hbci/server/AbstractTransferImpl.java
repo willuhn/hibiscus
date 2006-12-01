@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AbstractTransferImpl.java,v $
- * $Revision: 1.27 $
- * $Date: 2006/10/06 16:00:42 $
+ * $Revision: 1.28 $
+ * $Date: 2006/12/01 00:02:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -32,7 +32,7 @@ import de.willuhn.util.I18N;
 public abstract class AbstractTransferImpl extends AbstractDBObject implements Transfer
 {
 
-	private I18N i18n;
+  private transient I18N i18n = null;
 
   /**
    * ct.
@@ -265,6 +265,9 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
 
 /**********************************************************************
  * $Log: AbstractTransferImpl.java,v $
+ * Revision 1.28  2006/12/01 00:02:34  willuhn
+ * @C made unserializable members transient
+ *
  * Revision 1.27  2006/10/06 16:00:42  willuhn
  * @B Bug 280
  *

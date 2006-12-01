@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/ProtokollImpl.java,v $
- * $Revision: 1.9 $
- * $Date: 2005/05/30 22:55:27 $
- * $Author: web0 $
+ * $Revision: 1.10 $
+ * $Date: 2006/12/01 00:02:34 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -29,7 +29,8 @@ import de.willuhn.util.I18N;
  */
 public class ProtokollImpl extends AbstractDBObject implements Protokoll {
 
-	private I18N i18n;
+  private transient I18N i18n = null;
+
   /**
    * ct.
    * @throws java.rmi.RemoteException
@@ -156,6 +157,9 @@ public class ProtokollImpl extends AbstractDBObject implements Protokoll {
 
 /**********************************************************************
  * $Log: ProtokollImpl.java,v $
+ * Revision 1.10  2006/12/01 00:02:34  willuhn
+ * @C made unserializable members transient
+ *
  * Revision 1.9  2005/05/30 22:55:27  web0
  * *** empty log message ***
  *

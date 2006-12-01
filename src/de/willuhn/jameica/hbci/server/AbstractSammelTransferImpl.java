@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractSammelTransferImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/08/17 10:06:32 $
+ * $Revision: 1.3 $
+ * $Date: 2006/12/01 00:02:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -34,7 +34,7 @@ import de.willuhn.util.I18N;
 public abstract class AbstractSammelTransferImpl extends AbstractDBObject implements SammelTransfer, Duplicatable, Terminable
 {
 
-  private I18N i18n;
+  private transient I18N i18n = null;
 
   /**
    * ct.
@@ -392,6 +392,9 @@ public abstract class AbstractSammelTransferImpl extends AbstractDBObject implem
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferImpl.java,v $
+ * Revision 1.3  2006/12/01 00:02:34  willuhn
+ * @C made unserializable members transient
+ *
  * Revision 1.2  2006/08/17 10:06:32  willuhn
  * @B Fehler in HTML-Export von Sammeltransfers
  *

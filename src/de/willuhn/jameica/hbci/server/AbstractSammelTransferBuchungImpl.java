@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractSammelTransferBuchungImpl.java,v $
- * $Revision: 1.7 $
- * $Date: 2006/10/06 16:00:42 $
+ * $Revision: 1.8 $
+ * $Date: 2006/12/01 00:02:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,7 +30,7 @@ import de.willuhn.util.I18N;
 public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject implements SammelTransferBuchung, Duplicatable
 {
 
-  private I18N i18n;
+  private transient I18N i18n = null;
 
   /**
    * @throws java.rmi.RemoteException
@@ -270,6 +270,9 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferBuchungImpl.java,v $
+ * Revision 1.8  2006/12/01 00:02:34  willuhn
+ * @C made unserializable members transient
+ *
  * Revision 1.7  2006/10/06 16:00:42  willuhn
  * @B Bug 280
  *

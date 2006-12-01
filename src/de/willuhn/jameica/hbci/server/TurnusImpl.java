@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/TurnusImpl.java,v $
- * $Revision: 1.14 $
- * $Date: 2006/08/25 10:13:43 $
+ * $Revision: 1.15 $
+ * $Date: 2006/12/01 00:02:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,7 +31,7 @@ import de.willuhn.util.I18N;
 public class TurnusImpl extends AbstractDBObject implements Turnus
 {
 
-	private I18N i18n = null;
+	private transient I18N i18n = null;
 
   /**
    * ct.
@@ -232,6 +232,9 @@ public class TurnusImpl extends AbstractDBObject implements Turnus
 
 /**********************************************************************
  * $Log: TurnusImpl.java,v $
+ * Revision 1.15  2006/12/01 00:02:34  willuhn
+ * @C made unserializable members transient
+ *
  * Revision 1.14  2006/08/25 10:13:43  willuhn
  * @B Fremdschluessel NICHT mittels PreparedStatement, da die sonst gequotet und von McKoi nicht gefunden werden. BUGZILLA 278
  *

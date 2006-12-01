@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DauerauftragImpl.java,v $
- * $Revision: 1.21 $
- * $Date: 2006/03/02 13:47:14 $
+ * $Revision: 1.22 $
+ * $Date: 2006/12/01 00:02:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -35,7 +35,7 @@ public class DauerauftragImpl extends AbstractTransferImpl
   implements Dauerauftrag
 {
 
-	private I18N i18n;
+  private transient I18N i18n = null;
   
 	// Hilfsmapping, um die Tages-Konstanten aus java.util.Calendar in
   // integer von 1 (montag) - 7 (sonntag) umrechnen zu koennen
@@ -352,6 +352,9 @@ public class DauerauftragImpl extends AbstractTransferImpl
 
 /**********************************************************************
  * $Log: DauerauftragImpl.java,v $
+ * Revision 1.22  2006/12/01 00:02:34  willuhn
+ * @C made unserializable members transient
+ *
  * Revision 1.21  2006/03/02 13:47:14  willuhn
  * @C replaced "99" with HBCI_LAST_OF_MONTH
  *
