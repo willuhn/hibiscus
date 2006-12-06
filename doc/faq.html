@@ -21,13 +21,14 @@
         </ul>
       </li>
       <li>
-        <a href="#errors">Bekannte Fehler</a>
+        <a href="#errors">Bekannte Fehler/Warnungen</a>
         <ul>
           <li><a href="#errors.os.macos">[MacOS] Jameica verlangt beim Start ein Master-Passwort, welches ich jedoch nie vergeben habe</a></li>
           <li><a href="#errors.os.ubuntu">Der Start bricht mit der Fehlermeldung &quot;java.lang.SecurityException: write access to /opt/jameica/jameica.lock denied&quot; ab</a></li>
           <li><a href="#errors.os.java">Hibiscus startet überhaupt nicht. Auf der Konsole erscheint evtl. die Fehlermeldung &quot;java: command not found&quot;</a></li>
           <li><a href="#errors.ums.missng">Es werden nicht alle Umsätze abgerufen</a></li>
           <li><a href="#errors.ums.umlaut">Die Verwendungszwecken einiger Umsätze werden nicht vollständig angezeigt</a></li>
+          <li><a href="#warning.hbci4java.fints">Beim Ausführen von HBCI-Geschäftsvorfällen erscheinen Warnungen der Art &quot;konnte folgenden nutzerdefinierten Wert nicht in Nachricht einsetzen: Crypted.CryptHead.SecProfile&quot;</a></li>
         </ul>
       </li>
       <li>
@@ -298,6 +299,17 @@ $JAVA_HOME/bin/java -Djava.library.path=lib/swt/linux -jar jameica-linux.jar $@
           <br/>
           <a href="http://sourceforge.net/mailarchive/forum.php?thread_id=6957215&forum_id=32946">http://sourceforge.net/mailarchive/forum.php?thread_id=6957215&forum_id=32946</a>
         </p>
+      
+        <p>
+          <br/>
+          <a name="warning.hbci4java.fints"></a>
+          <b>Beim Ausführen von HBCI-Geschäftsvorfällen erscheinen Warnungen der Art &quot;konnte folgenden nutzerdefinierten Wert nicht in Nachricht einsetzen: Crypted.CryptHead.SecProfile&quot;</b>
+          <br/><br/>
+          Hierbei handelt es sich um sog. "Sicherheitsprofile", die ab der HBCI-Version "FinTS" unterstützt werden.
+          HBCI4Java versucht diese mit an die Bank zu senden. Unterstützt die verwendete HBCI-Version dies jedoch
+          noch nicht, werden diese Warnungen im Log-Fenster angezeigt. Die Meldungen sind völlig harmlos und können ignoriert werden.
+        </p>
+      
       </li>
 
       <li>
@@ -422,7 +434,7 @@ $JAVA_HOME/bin/java -Djava.library.path=lib/swt/linux -jar jameica-linux.jar $@
     //-->
 
     <hr/>
-    $Revision: 1.19 $
+    $Revision: 1.20 $
 
   </body>
 </html>
