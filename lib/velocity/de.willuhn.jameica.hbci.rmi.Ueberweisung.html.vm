@@ -1,0 +1,203 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=$!{charset}" />
+  </head>
+  <style>
+    body  {
+      background-color        : #ffffff;
+      background-attachment   : fixed;
+      color                   : #000000;
+      margin-left             : 10px;
+      margin-right            : 10px;
+      margin-top              : 10px;
+      margin-bottom           : 0px;
+    }
+
+    p,h1,h2,h3,h4,ul,ol,li,div,td,th,address,blockquote,nobr,b,i {
+      font-family             : Verdana, Helvetica, Arial;
+      color                   : #000000;
+      font-size               : 8pt;
+    }
+
+    table {
+    }
+    th {
+      text-align               : left;
+    }
+    td {
+      vertical-align           : top;
+      text-align               : left;
+    }
+
+    table.data {
+      width                    : 100%;
+      border                   : 1px solid #E0E0E0;
+    }
+    table.data th {
+      color                    : #ffffff;
+      padding-left             : 3px;
+      padding-right            : 10px;
+      background-color         : #b0b0a0;
+    }
+    table.data td {
+      background               : #f8f8f8;
+      margin                   : 0px;
+      padding-left             : 3px;
+      padding-right            : 10px;
+      font-size                : 7pt;
+      color                    : #505050;
+	  white-space              : nowrap;
+    }
+	tr.red td {
+      background               : #fff1f1;
+      margin                   : 0px;
+      padding-left             : 3px;
+      padding-right            : 10px;
+      font-size                : 7pt;
+      color                    : #900000;
+	  white-space              : nowrap;
+	}
+
+    ol,ul {
+      list-style-position      : outside;
+    }
+    
+    ul {
+      list-style-type          : disk;
+      margin-top               : 0px;
+      margin-bottom            : 0px;
+    }
+    
+    h1 {
+      color                    : #d76B00;
+      font-weight              : bold;
+      font-size                : 10pt;
+      margin-top               : 1px;
+      margin-bottom            : 1px;
+    }
+    
+    h2 {
+      color                    : #000055;
+      font-weight              : bold;
+      font-size                : 8pt;
+      margin-top               : 1px;
+      margin-bottom            : 3px;
+    }
+    
+    h3 {
+      font-weight              : normal;
+      font-size                : 7pt;
+      margin-top               : 5px;
+      margin-bottom            : 0px;
+    }
+
+    div.comment {
+      margin-top               : 4px;
+      margin-bottom            : 4px;
+      padding-left             : 4px;
+      padding-top              : 2px;
+      border                   : 1px solid #E0E0E0;
+      font-size                : 7pt;
+      color                    : #707070;
+    }
+
+    div.box {
+      margin-top               : 4px;
+      margin-bottom            : 4px;
+      padding-left             : 4px;
+      padding-top              : 2px;
+      border                   : 1px solid #E0E0E0;
+      color                    : #404040;
+    }
+
+    pre {
+      margin-top               : 4px;
+      margin-bottom            : 4px;
+      padding                  : 4px;
+      border                   : 1px solid #E0E0E0;
+      font-family              : BitStream Vera Sans Mono, Terminal [DEC], Courier New, Courier;
+      font-size                : 8pt;
+      color                    : #505050;
+    }
+
+    select,input,textarea,file {
+      font-family             : Verdana, Helvetica, Arial;
+      background-color        : #ffffff;
+      border-style            : none;
+      border                   : solid 1px #909090;
+      font-size               : 8pt;
+    }
+
+    a:link  {
+      color                    : #000088;
+      text-decoration          : none;
+    }
+    
+    a:visited  {
+      color                    : #808080;
+      text-decoration          : none;
+    }
+    
+    a:hover {
+      color                    : #0000dd;
+      text-decoration          : none;
+    }
+    
+    a:active {
+      color                    : #0000dd;
+      text-decoration          : none;
+    }
+    
+    a:focus {
+      color                    : #0000dd;
+      text-decoration          : none;
+    }
+  </style>
+  <body>
+	
+  <h1>Überweisungen</h1>
+
+  <table class="data">
+  #foreach($t in $objects)
+    #set($konto = $t.Konto)
+    
+    <tr>
+      <td>Konto</td>
+      <td>
+        $!{konto.Bezeichnung} <br/>
+        $!{konto.Kontonummer} (BLZ: $!{konto.BLZ})
+      </td>
+    </tr>
+    
+    <tr>
+      <td>Gegenkonto</td>
+      <td>
+        $!{t.GegenkontoName} <br/>
+        $!{t.GegenkontoNummer} (BLZ: $!{t.GegenkontoBLZ})
+      </td>
+    </tr>
+    
+    <tr>
+      <td>Datum</td>
+      <td>$!{dateformat.format(${t.Termin})}</td>
+    </tr>
+
+    <tr>
+      <td>Betrag</td>
+      <td>$!{decimalformat.format(${t.Betrag})}</td>
+    </tr>
+    
+    <tr>
+      <td colspan="2">
+        <br/>
+          $!{t.Zweck}<br/>
+          $!{t.Zweck2};
+      </td>
+    </tr>
+  #end  
+  </table>
+	
+  </body>
+</html>
