@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.78 $
- * $Date: 2006/12/20 00:04:25 $
+ * $Revision: 1.79 $
+ * $Date: 2006/12/20 13:16:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -343,10 +343,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public DBIterator getUmsaetze() throws RemoteException
   {
-    DBIterator list = getService().createList(Umsatz.class);
-    list.addFilter("konto_id = " + getID());
-    list.setOrder("ORDER BY TONUMBER(valuta) desc, id desc");
-    return list;
+    return getUmsaetze(-1);
   }
 
   /**
@@ -354,14 +351,15 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public DBIterator getUmsaetze(int days) throws RemoteException
   {
-    if (days <= 0)
-      return getUmsaetze();
-
-    long d = days * 24l * 60l * 60l * 1000l;
     DBIterator list = getService().createList(Umsatz.class);
     list.addFilter("konto_id = " + getID());
+
     // BUGZILLA 341
-    list.addFilter("valuta >= ?", new Object[]{new java.sql.Date((System.currentTimeMillis() - d))});
+    if (days > 0)
+    {
+      long d = days * 24l * 60l * 60l * 1000l;
+      list.addFilter("valuta >= ?", new Object[]{new java.sql.Date((System.currentTimeMillis() - d))});
+    }
     list.setOrder("ORDER BY TONUMBER(valuta) desc, id desc");
     return list;
   }
@@ -695,6 +693,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*******************************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.79  2006/12/20 13:16:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.78  2006/12/20 00:04:25  willuhn
  * @B bug 341
  *
