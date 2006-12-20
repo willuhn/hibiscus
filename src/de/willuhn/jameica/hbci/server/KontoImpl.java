@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.77 $
- * $Date: 2006/12/01 00:02:34 $
+ * $Revision: 1.78 $
+ * $Date: 2006/12/20 00:04:25 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -360,7 +360,8 @@ public class KontoImpl extends AbstractDBObject implements Konto
     long d = days * 24l * 60l * 60l * 1000l;
     DBIterator list = getService().createList(Umsatz.class);
     list.addFilter("konto_id = " + getID());
-    list.addFilter("valuta > ?", new Object[]{new java.sql.Date((System.currentTimeMillis() - d))});
+    // BUGZILLA 341
+    list.addFilter("valuta >= ?", new Object[]{new java.sql.Date((System.currentTimeMillis() - d))});
     list.setOrder("ORDER BY TONUMBER(valuta) desc, id desc");
     return list;
   }
@@ -694,6 +695,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*******************************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.78  2006/12/20 00:04:25  willuhn
+ * @B bug 341
+ *
  * Revision 1.77  2006/12/01 00:02:34  willuhn
  * @C made unserializable members transient
  *
