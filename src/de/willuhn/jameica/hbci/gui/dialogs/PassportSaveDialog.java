@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/PassportSaveDialog.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/11/14 11:36:58 $
- * $Author: willuhn $
+ * $Revision: 1.5 $
+ * $Date: 2006/12/24 10:28:16 $
+ * $Author: jost $
  * $Locker:  $
  * $State: Exp $
  *
@@ -34,7 +34,7 @@ public class PassportSaveDialog extends NewPasswordDialog {
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
     setTitle(i18n.tr("Passwort-Eingabe"));
-    setLabelText(i18n.tr("Ihre Passwort"));
+    setLabelText(i18n.tr("Ihr Passwort"));
     setText(i18n.tr("Bitte vergeben Sie ein Passwort, mit dem der zu speichernde\nSchlüssel geschützt werden soll."));
   }
 }
@@ -42,6 +42,9 @@ public class PassportSaveDialog extends NewPasswordDialog {
 
 /**********************************************************************
  * $Log: PassportSaveDialog.java,v $
+ * Revision 1.5  2006/12/24 10:28:16  jost
+ * Korrektur Tippfehler
+ *
  * Revision 1.4  2005/11/14 11:36:58  willuhn
  * @B bug 148
  *
