@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/HBCIDBServiceImpl.java,v $
- * $Revision: 1.12 $
- * $Date: 2006/11/20 23:00:57 $
+ * $Revision: 1.13 $
+ * $Date: 2006/12/27 11:52:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,18 +14,12 @@
 package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
 
 import de.willuhn.datasource.db.EmbeddedDBServiceImpl;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
-import de.willuhn.jameica.hbci.rmi.ResultSetExtractor;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.Settings;
-import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
 /**
@@ -56,63 +50,6 @@ public class HBCIDBServiceImpl extends EmbeddedDBServiceImpl implements HBCIDBSe
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.HBCIDBService#execute(java.lang.String, java.lang.Object[], de.willuhn.jameica.hbci.rmi.ResultSetExtractor)
-   */
-  public Object execute(String sql, Object[] params, ResultSetExtractor extractor) throws RemoteException
-  {
-    PreparedStatement ps = null;
-    ResultSet rs = null;
-    try
-    {
-      ps = getConnection().prepareStatement(sql);
-      if (params != null)
-      {
-        for (int i=0;i<params.length;++i)
-        {
-          Object o = params[i];
-          if (o == null)
-            ps.setNull((i+1), Types.NULL);
-          else
-            ps.setObject((i+1),params[i]);
-        }
-      }
-
-      rs = ps.executeQuery();
-      return extractor.extract(rs);
-    }
-    catch (SQLException e)
-    {
-      Logger.error("error while executing sql statement",e);
-      throw new RemoteException("error while executing sql statement: " + e.getMessage(),e);
-    }
-    finally
-    {
-      if (rs != null)
-      {
-        try
-        {
-          rs.close();
-        }
-        catch (Throwable t)
-        {
-          Logger.error("error while closing resultset",t);
-        }
-      }
-      if (ps != null)
-      {
-        try
-        {
-          ps.close();
-        }
-        catch (Throwable t2)
-        {
-          Logger.error("error while closing statement",t2);
-        }
-      }
-    }
-  }
-
-  /**
    * @see de.willuhn.datasource.db.DBServiceImpl#getAutoCommit()
    */
   protected boolean getAutoCommit() throws RemoteException
@@ -125,6 +62,9 @@ public class HBCIDBServiceImpl extends EmbeddedDBServiceImpl implements HBCIDBSe
 
 /*********************************************************************
  * $Log: HBCIDBServiceImpl.java,v $
+ * Revision 1.13  2006/12/27 11:52:36  willuhn
+ * @C ResultsetExtractor moved into datasource
+ *
  * Revision 1.12  2006/11/20 23:00:57  willuhn
  * @N ability to configure autocommit behaviour
  *
