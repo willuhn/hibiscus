@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.75 $
- * $Date: 2006/10/09 16:56:55 $
- * $Author: jost $
+ * $Revision: 1.74.2.1 $
+ * $Date: 2006/12/27 11:54:25 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -23,6 +23,7 @@ import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.datasource.rmi.ResultSetExtractor;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
@@ -30,7 +31,6 @@ import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
-import de.willuhn.jameica.hbci.rmi.ResultSetExtractor;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
@@ -328,14 +328,6 @@ public class KontoImpl extends AbstractDBObject implements Konto
   public Date getSaldoDatum() throws RemoteException
   {
     return (Date) getAttribute("saldo_datum");
-  }
-  
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#resetSaldoDatum()
-   */
-  public void resetSaldoDatum() throws RemoteException
-  {
-    setAttribute("saldo_datum", null);
   }
 
   /**
@@ -694,8 +686,8 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*******************************************************************************
  * $Log: KontoImpl.java,v $
- * Revision 1.75  2006/10/09 16:56:55  jost
- * Bug #284
+ * Revision 1.74.2.1  2006/12/27 11:54:25  willuhn
+ * @C ResultsetExtractor moved into datasource
  *
  * Revision 1.74  2006/10/06 16:00:42  willuhn
  * @B Bug 280
