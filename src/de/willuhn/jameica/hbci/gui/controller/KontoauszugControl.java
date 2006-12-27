@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/KontoauszugControl.java,v $
- * $Revision: 1.7 $
- * $Date: 2006/10/16 12:51:32 $
+ * $Revision: 1.8 $
+ * $Date: 2006/12/27 17:56:49 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,17 +17,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
-import de.willuhn.jameica.gui.dialogs.CalendarDialog;
-import de.willuhn.jameica.gui.input.DialogInput;
+import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.UmsatzExport;
 import de.willuhn.jameica.hbci.io.Exporter;
@@ -46,8 +43,8 @@ public class KontoauszugControl extends AbstractControl
 {
 
   private SelectInput kontoAuswahl = null;
-  private DialogInput start        = null;
-  private DialogInput end          = null;
+  private DateInput start          = null;
+  private DateInput end            = null;
 
   private I18N i18n = null;
 
@@ -93,24 +90,7 @@ public class KontoauszugControl extends AbstractControl
     cal.set(Calendar.DAY_OF_MONTH, 1);
     Date dStart = cal.getTime();
 
-    CalendarDialog d = new CalendarDialog(CalendarDialog.POSITION_MOUSE);
-    d.setTitle(i18n.tr("Start-Datum"));
-    d.setDate(dStart);
-    d.setText(i18n.tr("Bitte wählen Sie das Start-Datum"));
-    d.addCloseListener(new Listener()
-    {
-      public void handleEvent(Event event)
-      {
-        if (event == null || event.data == null)
-          return;
-        Date d = (Date) event.data;
-        start.setValue(d);
-        start.setText(HBCI.DATEFORMAT.format(d));
-      }
-    });
-    this.start = new DialogInput(HBCI.DATEFORMAT.format(dStart), d);
-    this.start.setValue(dStart);
-    ((DialogInput) this.start).disableClientControl();
+    this.start = new DateInput(dStart, HBCI.DATEFORMAT);
     return this.start;
   }
 
@@ -127,26 +107,8 @@ public class KontoauszugControl extends AbstractControl
     cal.setTime(new Date());
     cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
     Date dEnd = cal.getTime();
-
-    CalendarDialog d = new CalendarDialog(CalendarDialog.POSITION_MOUSE);
-    d.setDate(dEnd);
-    d.setTitle(i18n.tr("End-Datum"));
-    d.setText(i18n.tr("Bitte wählen Sie das End-Datum"));
-    d.addCloseListener(new Listener()
-    {
-      public void handleEvent(Event event)
-      {
-        if (event == null || event.data == null)
-          return;
-        Date d = (Date) event.data;
-        end.setValue(d);
-        end.setText(HBCI.DATEFORMAT.format(d));
-      }
-    });
-    this.end = new DialogInput(HBCI.DATEFORMAT.format(dEnd), d);
-    this.end.setValue(dEnd);
-    ((DialogInput) this.end).disableClientControl();
-
+    
+    this.end = new DateInput(dEnd, HBCI.DATEFORMAT);
     return this.end;
   }
 
@@ -171,8 +133,16 @@ public class KontoauszugControl extends AbstractControl
       {
         // Alle Konten
         umsaetze = Settings.getDBService().createList(Umsatz.class);
-        if (start != null) umsaetze.addFilter("valuta >= ?", new Object[]{new java.sql.Date(start.getTime())});
-        if (end != null) umsaetze.addFilter("valuta <= ?", new Object[]{new java.sql.Date(end.getTime())});
+        if (start != null)
+        {
+          HBCIProperties.resetTime(start);
+          umsaetze.addFilter("valuta >= ?", new Object[]{new java.sql.Date(start.getTime())});
+        }
+        if (end != null) 
+        {
+          HBCIProperties.resetTime(end);
+          umsaetze.addFilter("valuta <= ?", new Object[]{new java.sql.Date(end.getTime())});
+        }
         umsaetze.setOrder("ORDER BY TONUMBER(valuta), id DESC");
       }
       else if (start == null || end == null)
@@ -208,11 +178,15 @@ public class KontoauszugControl extends AbstractControl
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Erstellen der Auswertung"),StatusBarMessage.TYPE_ERROR));
     }
   }
+  
 
 }
 
 /*******************************************************************************
  * $Log: KontoauszugControl.java,v $
+ * Revision 1.8  2006/12/27 17:56:49  willuhn
+ * @B Bug 341
+ *
  * Revision 1.7  2006/10/16 12:51:32  willuhn
  * @B Uebernahme des originalen Datums aus dem Kontoauszug
  *

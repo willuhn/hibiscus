@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Overview.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/06/29 23:10:33 $
+ * $Revision: 1.6 $
+ * $Date: 2006/12/27 17:56:49 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,8 +24,7 @@ import org.eclipse.swt.widgets.Listener;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.boxes.AbstractBox;
 import de.willuhn.jameica.gui.boxes.Box;
-import de.willuhn.jameica.gui.dialogs.CalendarDialog;
-import de.willuhn.jameica.gui.input.DialogInput;
+import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
@@ -52,8 +51,8 @@ public class Overview extends AbstractBox implements Box
   private Input einnahmen          = null;
   private Input bilanz             = null;
   
-  private DialogInput start        = null;
-  private DialogInput end          = null;
+  private DateInput start          = null;
+  private DateInput end            = null;
   
   private Date dStart              = null;
   private Date dEnd                = null;
@@ -157,25 +156,14 @@ public class Overview extends AbstractBox implements Box
     cal.setTime(new Date());
     cal.set(Calendar.DAY_OF_MONTH,1);
     this.dStart = cal.getTime();
-
-    CalendarDialog d = new CalendarDialog(CalendarDialog.POSITION_MOUSE);
-    d.setTitle(i18n.tr("Start-Datum"));
-    d.setDate(dStart);
-    d.setText(i18n.tr("Bitte wählen Sie das Start-Datum für die Berechnung"));
-    d.addCloseListener(new Listener() {
+    
+    this.start = new DateInput(this.dStart,HBCI.DATEFORMAT);
+    this.start.addListener(new Listener() {
       public void handleEvent(Event event)
       {
-        if (event == null || event.data == null)
-          return;
-        dStart = (Date) event.data;
-        start.setValue(dStart);
-        start.setText(HBCI.DATEFORMAT.format(dStart));
         refresh();
       }
     });
-    this.start = new DialogInput(HBCI.DATEFORMAT.format(dStart),d);
-    this.start.setValue(dStart);
-    ((DialogInput)this.start).disableClientControl();
     return this.start;
   }
   
@@ -193,25 +181,13 @@ public class Overview extends AbstractBox implements Box
     cal.set(Calendar.DAY_OF_MONTH,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
     this.dEnd = cal.getTime();
 
-    CalendarDialog d = new CalendarDialog(CalendarDialog.POSITION_MOUSE);
-    d.setDate(dEnd);
-    d.setTitle(i18n.tr("End-Datum"));
-    d.setText(i18n.tr("Bitte wählen Sie das End-Datum für die Berechnung"));
-    d.addCloseListener(new Listener() {
+    this.end = new DateInput(this.dEnd,HBCI.DATEFORMAT);
+    this.end.addListener(new Listener() {
       public void handleEvent(Event event)
       {
-        if (event == null || event.data == null)
-          return;
-        dEnd = (Date) event.data;
-        end.setValue(dEnd);
-        end.setText(HBCI.DATEFORMAT.format(dEnd));
         refresh();
       }
     });
-    this.end = new DialogInput(HBCI.DATEFORMAT.format(dEnd),d);
-    this.end.setValue(dEnd);
-    ((DialogInput)this.end).disableClientControl();
-
     return this.end;
   }
 
@@ -241,16 +217,12 @@ public class Overview extends AbstractBox implements Box
       getSaldo().setValue(HBCI.DECIMALFORMAT.format(d));
       ////////////////////////////////////////////////////////////////////////////
 
+      this.dStart = (Date) getStart().getValue();
+      this.dEnd   = (Date) getEnd().getValue();
+      
       if (dStart == null || dEnd == null || dStart.after(dEnd))
         return;
 
-      ((DialogInput)getStart()).setText(HBCI.DATEFORMAT.format(dStart));
-      getStart().setValue(dStart);
-    
-      ((DialogInput)getEnd()).setText(HBCI.DATEFORMAT.format(dEnd));
-      getEnd().setValue(dEnd);
-
-      
       double in = 0d;
       double out = 0d;
       if (this.konto == null)
@@ -337,6 +309,9 @@ public class Overview extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: Overview.java,v $
+ * Revision 1.6  2006/12/27 17:56:49  willuhn
+ * @B Bug 341
+ *
  * Revision 1.5  2006/06/29 23:10:33  willuhn
  * @R Box-System aus Hibiscus in Jameica-Source verschoben
  * @C keine eigene Startseite mehr, jetzt alles ueber Jameica-Boxsystem geregelt
