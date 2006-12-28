@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzTypControl.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/11/23 23:24:17 $
+ * $Revision: 1.3 $
+ * $Date: 2006/12/28 15:38:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -97,7 +97,10 @@ public class UmsatzTypControl extends AbstractControl
   public TextInput getName() throws RemoteException
   {
     if (this.name == null)
+    {
       this.name = new TextInput(getUmsatzTyp().getName());
+      this.name.setMandatory(true);
+    }
     return this.name;
   }
   
@@ -170,6 +173,9 @@ public class UmsatzTypControl extends AbstractControl
 
 /*********************************************************************
  * $Log: UmsatzTypControl.java,v $
+ * Revision 1.3  2006/12/28 15:38:43  willuhn
+ * @N Farbige Pflichtfelder
+ *
  * Revision 1.2  2006/11/23 23:24:17  willuhn
  * @N Umsatz-Kategorien: DB-Update, Edit
  *

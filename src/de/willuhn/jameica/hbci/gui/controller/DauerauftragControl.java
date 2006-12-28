@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/DauerauftragControl.java,v $
- * $Revision: 1.24 $
- * $Date: 2006/10/31 23:21:46 $
+ * $Revision: 1.25 $
+ * $Date: 2006/12/28 15:38:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -119,6 +119,7 @@ public class DauerauftragControl extends AbstractTransferControl {
 		turnus = new DialogInput(t == null ? "" : t.getBezeichnung(),td);
 		turnus.setValue(t);
 		turnus.disableClientControl();
+    turnus.setMandatory(true);
 		return turnus;
 	}
 
@@ -153,6 +154,7 @@ public class DauerauftragControl extends AbstractTransferControl {
     ersteZahlung.setComment("");
 		ersteZahlung.setTitle(i18n.tr("Datum der ersten Zahlung"));
     ersteZahlung.setText(i18n.tr("Bitte geben Sie das Datum der ersten Zahlung ein"));
+    ersteZahlung.setMandatory(true);
     ersteZahlung.addListener(new Listener() {
       public void handleEvent(Event event)
       {
@@ -230,6 +232,9 @@ public class DauerauftragControl extends AbstractTransferControl {
 
 /**********************************************************************
  * $Log: DauerauftragControl.java,v $
+ * Revision 1.25  2006/12/28 15:38:43  willuhn
+ * @N Farbige Pflichtfelder
+ *
  * Revision 1.24  2006/10/31 23:21:46  willuhn
  * *** empty log message ***
  *

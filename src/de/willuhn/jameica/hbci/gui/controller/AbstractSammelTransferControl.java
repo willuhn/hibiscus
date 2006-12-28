@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractSammelTransferControl.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/10/31 23:21:46 $
+ * $Revision: 1.6 $
+ * $Date: 2006/12/28 15:38:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -118,6 +118,7 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
 		kontoAuswahl.setComment(k == null ? "" : k.getBezeichnung());
 		kontoAuswahl.disableClientControl();
 		kontoAuswahl.setValue(k);
+    kontoAuswahl.setMandatory(true);
 
 		return kontoAuswahl;
   }
@@ -214,6 +215,7 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
     if (name != null)
       return name;
     name = new TextInput(getTransfer().getBezeichnung());
+    name.setMandatory(true);
     if (getTransfer().ausgefuehrt())
       name.disable();
     return name;
@@ -229,6 +231,9 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferControl.java,v $
+ * Revision 1.6  2006/12/28 15:38:43  willuhn
+ * @N Farbige Pflichtfelder
+ *
  * Revision 1.5  2006/10/31 23:21:46  willuhn
  * *** empty log message ***
  *

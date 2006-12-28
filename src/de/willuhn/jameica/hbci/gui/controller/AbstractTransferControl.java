@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.32 $
- * $Date: 2006/10/06 16:00:42 $
+ * $Revision: 1.33 $
+ * $Date: 2006/12/28 15:38:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -113,6 +113,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 		kontoAuswahl.setComment(k == null ? "" : k.getBezeichnung());
 		kontoAuswahl.disableClientControl();
 		kontoAuswahl.setValue(k);
+    kontoAuswahl.setMandatory(true);
 
 		return kontoAuswahl;
 	}
@@ -132,6 +133,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 		empfkto = new DialogInput(getTransfer().getGegenkontoNummer(),d);
     // BUGZILLA 280
     empfkto.setValidChars(HBCIProperties.HBCI_KTO_VALIDCHARS);
+    empfkto.setMandatory(true);
 		return empfkto;
 	}
 
@@ -148,6 +150,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 		empfblz.setValidChars(HBCIProperties.HBCI_BLZ_VALIDCHARS);
 		empfblz.setComment("");
 		empfblz.addListener(new BLZListener());
+    empfblz.setMandatory(true);
 		return empfblz;
 	}
 
@@ -163,6 +166,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 		empfName = new TextInput(getTransfer().getGegenkontoName(),HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
     // BUGZILLA 163
     empfName.setValidChars(HBCIProperties.HBCI_DTAUS_VALIDCHARS);
+    empfName.setMandatory(true);
 		return empfName;
 	}
 
@@ -178,6 +182,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 		// BUGZILLA #10 http://www.willuhn.de/bugzilla/show_bug.cgi?id=10
 		zweck = new TextInput(getTransfer().getZweck(),HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH);
 		zweck.setValidChars(HBCIProperties.HBCI_DTAUS_VALIDCHARS);
+    zweck.setMandatory(true);
 		return zweck;
 	}
 
@@ -211,6 +216,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 		// wir loesen den KontoListener aus, um die Waehrung sofort anzuzeigen
 		
 		betrag.setComment(getKonto() == null ? "" : getKonto().getWaehrung());
+    betrag.setMandatory(true);
 		new KontoListener().handleEvent(null);
 
 		return betrag;
@@ -399,6 +405,9 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
+ * Revision 1.33  2006/12/28 15:38:43  willuhn
+ * @N Farbige Pflichtfelder
+ *
  * Revision 1.32  2006/10/06 16:00:42  willuhn
  * @B Bug 280
  *

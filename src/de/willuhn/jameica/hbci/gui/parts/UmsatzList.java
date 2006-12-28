@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.40 $
- * $Date: 2006/11/30 23:48:40 $
+ * $Revision: 1.41 $
+ * $Date: 2006/12/28 15:38:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -47,6 +47,7 @@ import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.input.ButtonInput;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -364,7 +365,10 @@ public class UmsatzList extends TablePart implements Extendable
       if (text != null)
         return text;
 
-      this.text = GUI.getStyleFactory().createText(parent);
+//      this.text = GUI.getStyleFactory().createText(parent);
+      text = new Text(parent,SWT.NONE | SWT.SINGLE);
+      text.setForeground(Color.WIDGET_FG.getSWTColor());
+      text.setBackground(Color.WIDGET_BG.getSWTColor());
       // BUGZILLA 258
       this.text.setText(settings.getString("search",""));
       this.text.addKeyListener(kl);
@@ -644,6 +648,9 @@ public class UmsatzList extends TablePart implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.41  2006/12/28 15:38:42  willuhn
+ * @N Farbige Pflichtfelder
+ *
  * Revision 1.40  2006/11/30 23:48:40  willuhn
  * @N Erste Version der Umsatz-Kategorien drin
  *
