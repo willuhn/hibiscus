@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUmsatzJob.java,v $
- * $Revision: 1.25 $
- * $Date: 2006/10/16 23:36:25 $
+ * $Revision: 1.26 $
+ * $Date: 2006/12/29 15:26:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,8 +16,10 @@ import java.rmi.RemoteException;
 
 import org.kapott.hbci.GV_Result.GVRKUms;
 
+import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
@@ -118,10 +120,9 @@ public class HBCIUmsatzJob extends AbstractHBCIJob {
 		DBIterator existing = konto.getUmsaetze();
 
 		GVRKUms.UmsLine[] lines = result.getFlatData();
-		Umsatz umsatz;
 		for (int i=0;i<lines.length;++i)
 		{
-			umsatz = Converter.HBCIUmsatz2HibiscusUmsatz(lines[i]);
+			final Umsatz umsatz = Converter.HBCIUmsatz2HibiscusUmsatz(lines[i]);
 			umsatz.setKonto(konto); // muessen wir noch machen, weil der Converter das Konto nicht kennt
       
       // Wenn keine geparsten Verwendungszwecke da sind, machen wir
@@ -134,6 +135,13 @@ public class HBCIUmsatzJob extends AbstractHBCIJob {
 				try
 				{
 					umsatz.store(); // den Umsatz haben wir noch nicht, speichern!
+          Application.getMessagingFactory().sendMessage(new ImportMessage() {
+            public GenericObject getImportedObject() throws RemoteException
+            {
+              return umsatz;
+            }
+          
+          });
 				}
 				catch (Exception e2)
 				{
@@ -150,6 +158,9 @@ public class HBCIUmsatzJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIUmsatzJob.java,v $
+ * Revision 1.26  2006/12/29 15:26:56  willuhn
+ * @N ImportMessageConsumer
+ *
  * Revision 1.25  2006/10/16 23:36:25  willuhn
  * @R unused import
  *

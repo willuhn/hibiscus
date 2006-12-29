@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Sync.java,v $
- * $Revision: 1.10 $
- * $Date: 2006/07/05 22:18:16 $
+ * $Revision: 1.11 $
+ * $Date: 2006/12/29 15:26:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -72,7 +72,7 @@ public class Sync extends AbstractBox implements Box
     this.list = new SynchronizeList();
 
     // BUGZILLA 209
-    LabelGroup sync = new LabelGroup(parent,getName(),true);
+    LabelGroup sync = new LabelGroup(parent,getName(),false);
     list.paint(sync.getComposite());
 
     ButtonArea b = sync.createButtonArea(2);
@@ -176,6 +176,9 @@ public class Sync extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: Sync.java,v $
+ * Revision 1.11  2006/12/29 15:26:56  willuhn
+ * @N ImportMessageConsumer
+ *
  * Revision 1.10  2006/07/05 22:18:16  willuhn
  * @N Einzelne Sync-Jobs koennen nun selektiv auch einmalig direkt in der Sync-Liste deaktiviert werden
  *
