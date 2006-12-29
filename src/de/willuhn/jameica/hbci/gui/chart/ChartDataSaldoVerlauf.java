@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/ChartDataSaldoVerlauf.java,v $
- * $Revision: 1.7 $
- * $Date: 2006/08/25 10:13:43 $
+ * $Revision: 1.8 $
+ * $Date: 2006/12/29 14:28:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,6 +21,7 @@ import java.util.Date;
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.formatter.Formatter;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
@@ -66,7 +67,8 @@ public class ChartDataSaldoVerlauf implements LineChartData
     if (this.days > 0)
     {
       long d = days * 24l * 60l * 60l * 1000l;
-      list.addFilter("valuta > ?", new Object[]{new java.sql.Date((System.currentTimeMillis() - d))});
+      Date start = HBCIProperties.startOfDay(new Date(System.currentTimeMillis() - d));
+      list.addFilter("valuta >= ?", new Object[]{new java.sql.Date(start.getTime())});
     }
     list.setOrder(" ORDER BY TONUMBER(valuta) ASC");
     return list;
@@ -142,6 +144,10 @@ public class ChartDataSaldoVerlauf implements LineChartData
 
 /*********************************************************************
  * $Log: ChartDataSaldoVerlauf.java,v $
+ * Revision 1.8  2006/12/29 14:28:47  willuhn
+ * @B Bug 345
+ * @B jede Menge Bugfixes bei SQL-Statements mit Valuta
+ *
  * Revision 1.7  2006/08/25 10:13:43  willuhn
  * @B Fremdschluessel NICHT mittels PreparedStatement, da die sonst gequotet und von McKoi nicht gefunden werden. BUGZILLA 278
  *

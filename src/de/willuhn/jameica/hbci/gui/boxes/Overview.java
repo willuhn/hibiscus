@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Overview.java,v $
- * $Revision: 1.6 $
- * $Date: 2006/12/27 17:56:49 $
+ * $Revision: 1.7 $
+ * $Date: 2006/12/29 14:28:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -155,7 +155,7 @@ public class Overview extends AbstractBox implements Box
     Calendar cal = Calendar.getInstance();
     cal.setTime(new Date());
     cal.set(Calendar.DAY_OF_MONTH,1);
-    this.dStart = cal.getTime();
+    this.dStart = HBCIProperties.startOfDay(cal.getTime());
     
     this.start = new DateInput(this.dStart,HBCI.DATEFORMAT);
     this.start.addListener(new Listener() {
@@ -179,7 +179,7 @@ public class Overview extends AbstractBox implements Box
     Calendar cal = Calendar.getInstance();
     cal.setTime(new Date());
     cal.set(Calendar.DAY_OF_MONTH,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
-    this.dEnd = cal.getTime();
+    this.dEnd = HBCIProperties.endOfDay(cal.getTime());
 
     this.end = new DateInput(this.dEnd,HBCI.DATEFORMAT);
     this.end.addListener(new Listener() {
@@ -309,6 +309,10 @@ public class Overview extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: Overview.java,v $
+ * Revision 1.7  2006/12/29 14:28:47  willuhn
+ * @B Bug 345
+ * @B jede Menge Bugfixes bei SQL-Statements mit Valuta
+ *
  * Revision 1.6  2006/12/27 17:56:49  willuhn
  * @B Bug 341
  *

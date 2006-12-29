@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractTransferList.java,v $
- * $Revision: 1.10 $
- * $Date: 2006/12/27 17:56:49 $
+ * $Revision: 1.11 $
+ * $Date: 2006/12/29 14:28:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -223,7 +223,7 @@ public abstract class AbstractTransferList extends TablePart implements Part
     {
       Calendar cal = Calendar.getInstance();
       cal.set(Calendar.DAY_OF_MONTH,1);
-      dFrom = cal.getTime();
+      dFrom = HBCIProperties.startOfDay(cal.getTime());
     }
 
     Listener l = new ChangedListener();
@@ -309,9 +309,7 @@ public abstract class AbstractTransferList extends TablePart implements Part
           settings.setAttribute("transferlist.filter.from",HBCI.DATEFORMAT.format(dfrom));
         
         // Das End-Datum speichern wir nur, wenn es nicht das aktuelle Datum ist
-        Date date = new Date();
-        HBCIProperties.resetTime(date);
-        if (dto != null && !date.equals(dto))
+        if (dto != null && !HBCIProperties.startOfDay(new Date()).equals(dto))
           settings.setAttribute("transferlist.filter.to",HBCI.DATEFORMAT.format(dto));
         else
           settings.setAttribute("transferlist.filter.to",(String)null);
@@ -389,6 +387,10 @@ public abstract class AbstractTransferList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: AbstractTransferList.java,v $
+ * Revision 1.11  2006/12/29 14:28:47  willuhn
+ * @B Bug 345
+ * @B jede Menge Bugfixes bei SQL-Statements mit Valuta
+ *
  * Revision 1.10  2006/12/27 17:56:49  willuhn
  * @B Bug 341
  *

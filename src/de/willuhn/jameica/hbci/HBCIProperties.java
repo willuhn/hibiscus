@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCIProperties.java,v $
- * $Revision: 1.18 $
- * $Date: 2006/12/27 17:56:49 $
+ * $Revision: 1.19 $
+ * $Date: 2006/12/29 14:28:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -179,18 +179,33 @@ public class HBCIProperties
   /**
    * Resettet die Uhrzeit eines Datums.
    * @param date das Datum.
+   * @return das neue Datum.
    */
-  public static void resetTime(Date date)
+  public static Date startOfDay(Date date)
   {
-    if (date != null)
-    {
-      Calendar cal = Calendar.getInstance();
-      cal.setTime(date);
-      cal.set(Calendar.HOUR_OF_DAY,0);
-      cal.set(Calendar.MINUTE,0);
-      cal.set(Calendar.SECOND,0);
-      cal.set(Calendar.MILLISECOND,0);
-    }
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(date == null ? new Date() : date);
+    cal.set(Calendar.HOUR_OF_DAY,0);
+    cal.set(Calendar.MINUTE,0);
+    cal.set(Calendar.SECOND,0);
+    cal.set(Calendar.MILLISECOND,0);
+    return cal.getTime();
+  }
+
+  /**
+   * Setzt die Uhrzeit eines Datums auf 23:59:59.999.
+   * @param date das Datum.
+   * @return das neue Datum.
+   */
+  public static Date endOfDay(Date date)
+  {
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(date == null ? new Date() : date);
+    cal.set(Calendar.HOUR_OF_DAY,23);
+    cal.set(Calendar.MINUTE,59);
+    cal.set(Calendar.SECOND,59);
+    cal.set(Calendar.MILLISECOND,999);
+    return cal.getTime();
   }
 
   // disabled
@@ -203,6 +218,10 @@ public class HBCIProperties
 
 /**********************************************************************
  * $Log: HBCIProperties.java,v $
+ * Revision 1.19  2006/12/29 14:28:47  willuhn
+ * @B Bug 345
+ * @B jede Menge Bugfixes bei SQL-Statements mit Valuta
+ *
  * Revision 1.18  2006/12/27 17:56:49  willuhn
  * @B Bug 341
  *

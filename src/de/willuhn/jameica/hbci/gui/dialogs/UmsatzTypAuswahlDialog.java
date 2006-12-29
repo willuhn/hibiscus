@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/UmsatzTypAuswahlDialog.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/11/30 23:48:40 $
+ * $Revision: 1.2 $
+ * $Date: 2006/12/29 14:28:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -47,6 +47,19 @@ public class UmsatzTypAuswahlDialog extends AbstractDialog
   }
 
   /**
+   * @param position
+   * @param preselected der vorausgewaehlte Umsatztyp.
+   */
+  public UmsatzTypAuswahlDialog(int position, UmsatzTyp preselected)
+  {
+    super(position);
+    this.choosen = preselected;
+    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+
+    this.setTitle(i18n.tr("Umsatz-Kategorien"));
+  }
+
+  /**
    * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
    */
   protected Object getData() throws Exception
@@ -62,7 +75,7 @@ public class UmsatzTypAuswahlDialog extends AbstractDialog
     SimpleContainer group = new SimpleContainer(parent);
     group.addText(i18n.tr("Bitte wählen Sie die zu verwendende Kategorie aus."),true);
 
-    final UmsatzTypInput input = new UmsatzTypInput();
+    final UmsatzTypInput input = new UmsatzTypInput(this.choosen);
     input.setComment(null); // Hier keine Umsatz-Zahlen anzeigen. Das macht den Dialog haesslich
     
     group.addLabelPair(i18n.tr("Bezeichnung"),input);
@@ -90,6 +103,10 @@ public class UmsatzTypAuswahlDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: UmsatzTypAuswahlDialog.java,v $
+ * Revision 1.2  2006/12/29 14:28:47  willuhn
+ * @B Bug 345
+ * @B jede Menge Bugfixes bei SQL-Statements mit Valuta
+ *
  * Revision 1.1  2006/11/30 23:48:40  willuhn
  * @N Erste Version der Umsatz-Kategorien drin
  *

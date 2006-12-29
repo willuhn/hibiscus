@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.41 $
- * $Date: 2006/12/28 15:38:42 $
+ * $Revision: 1.42 $
+ * $Date: 2006/12/29 14:28:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -150,7 +150,7 @@ public class UmsatzList extends TablePart implements Extendable
     addColumn(i18n.tr("Verwendungszweck"),          "zweck");
     addColumn(i18n.tr("Valuta"),                    "valuta", new DateFormatter(HBCI.DATEFORMAT));
     addColumn(i18n.tr("Betrag"),                    "betrag",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
-    addColumn(i18n.tr("Kategorie"),                 "umsatztyp_id");
+    addColumn(i18n.tr("Kategorie"),                 "umsatztyp");
     // BUGZILLA 66 http://www.willuhn.de/bugzilla/show_bug.cgi?id=66
     addColumn(i18n.tr("Saldo zu diesem Zeitpunkt"), "saldo",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
 
@@ -648,6 +648,10 @@ public class UmsatzList extends TablePart implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.42  2006/12/29 14:28:47  willuhn
+ * @B Bug 345
+ * @B jede Menge Bugfixes bei SQL-Statements mit Valuta
+ *
  * Revision 1.41  2006/12/28 15:38:42  willuhn
  * @N Farbige Pflichtfelder
  *

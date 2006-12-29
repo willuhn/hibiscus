@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/UmsatzAssign.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/11/30 23:48:40 $
+ * $Revision: 1.2 $
+ * $Date: 2006/12/29 14:28:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -56,12 +56,31 @@ public class UmsatzAssign implements Action
 
     if (umsaetze.length == 0)
       throw new ApplicationException(i18n.tr("Bitte wählen Sie einen oder mehrere Umsätze aus"));
-      
-		try
-    {
-      UmsatzTypAuswahlDialog d = new UmsatzTypAuswahlDialog(UmsatzTypAuswahlDialog.POSITION_CENTER);
-      UmsatzTyp ut = (UmsatzTyp) d.open();
 
+    UmsatzTyp ut = null;
+    
+    try
+    {
+      UmsatzTypAuswahlDialog d = new UmsatzTypAuswahlDialog(UmsatzTypAuswahlDialog.POSITION_CENTER,umsaetze[0].getUmsatzTyp());
+      ut = (UmsatzTyp) d.open();
+    }
+    catch (OperationCanceledException oce)
+    {
+      return;
+    }
+    catch (ApplicationException ae)
+    {
+      throw ae;
+    }
+    catch (Exception e)
+    {
+      Logger.error("error while choosing umsatztyp",e);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Auswählen der Umsatz-Kategorie"), StatusBarMessage.TYPE_ERROR));
+    }
+      
+
+    try
+    {
       umsaetze[0].transactionBegin();
       for (int i=0;i<umsaetze.length;++i)
       {
@@ -74,11 +93,6 @@ public class UmsatzAssign implements Action
         Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Zuordnung der Kategorie entfernt"), StatusBarMessage.TYPE_SUCCESS));
       else
         Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Umsatz-Kategorie {0} zugeordnet", ut.getName()), StatusBarMessage.TYPE_SUCCESS));
-    }
-    catch (OperationCanceledException oce)
-    {
-      rollback(umsaetze[0]);
-      return;
     }
 		catch (ApplicationException ae)
 		{
@@ -112,6 +126,10 @@ public class UmsatzAssign implements Action
 
 /**********************************************************************
  * $Log: UmsatzAssign.java,v $
+ * Revision 1.2  2006/12/29 14:28:47  willuhn
+ * @B Bug 345
+ * @B jede Menge Bugfixes bei SQL-Statements mit Valuta
+ *
  * Revision 1.1  2006/11/30 23:48:40  willuhn
  * @N Erste Version der Umsatz-Kategorien drin
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.40 $
- * $Date: 2006/12/01 00:02:34 $
+ * $Revision: 1.41 $
+ * $Date: 2006/12/29 14:28:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -107,8 +107,6 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
   protected Class getForeignObject(String field) throws RemoteException {
 		if ("konto_id".equals(field))
 			return Konto.class;
-		if ("umsatztyp_id".equals(field))
-			return UmsatzTyp.class;
     return null;
   }
 
@@ -368,6 +366,8 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
    */
   public Object getAttribute(String arg0) throws RemoteException
   {
+    if ("umsatztyp".equals(arg0))
+      return getUmsatzTyp();
     if ("id-int".equals(arg0))
     {
       try
@@ -516,14 +516,17 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
    */
   public UmsatzTyp getUmsatzTyp() throws RemoteException
   {
-    String id = (String) super.getAttribute("umsatztyp_id");
-    if (id == null) // Nicht zugeordnet
+    Integer i = (Integer) super.getAttribute("umsatztyp_id");
+
+    if (i == null) // Nicht zugeordnet
       return null;
+    
+    String id = i.toString();
     
     UmsatzTyp ut = (UmsatzTyp) UMSATZTYP_CACHE.get(id);
     if (ut == null)
     {
-      ut = (UmsatzTyp) getAttribute("umsatztyp_id");
+      ut = (UmsatzTyp) getService().createObject(UmsatzTyp.class,id);
       if (ut == null)
         return null; // CannotHappenException weil wir oben ja eigentlich schon auf umsatztyp_id != null testen. Aber man weiss ja nie ;)
       UMSATZTYP_CACHE.put(id,ut);
@@ -536,7 +539,7 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
    */
   public void setUmsatzTyp(UmsatzTyp ut) throws RemoteException
   {
-    setAttribute("umsatztyp_id",ut);
+    setAttribute("umsatztyp_id",ut == null ? null : new Integer(ut.getID()));
   }
 
   /**
@@ -544,8 +547,6 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
    */
   public boolean isAssigned() throws RemoteException
   {
-    // Wir rufen direkt die Super-Methode auf, damit nicht erst
-    // das Umsatztyp-Objekt geladen werden muss
     return super.getAttribute("umsatztyp_id") != null;
   }
 }
@@ -553,6 +554,10 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.41  2006/12/29 14:28:47  willuhn
+ * @B Bug 345
+ * @B jede Menge Bugfixes bei SQL-Statements mit Valuta
+ *
  * Revision 1.40  2006/12/01 00:02:34  willuhn
  * @C made unserializable members transient
  *

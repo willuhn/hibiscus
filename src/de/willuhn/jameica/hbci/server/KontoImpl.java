@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.81 $
- * $Date: 2006/12/27 17:56:49 $
+ * $Revision: 1.82 $
+ * $Date: 2006/12/29 14:28:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,7 +15,7 @@ package de.willuhn.jameica.hbci.server;
 import java.rmi.RemoteException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Calendar;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.zip.CRC32;
 
@@ -358,7 +358,8 @@ public class KontoImpl extends AbstractDBObject implements Konto
     if (days > 0)
     {
       long d = days * 24l * 60l * 60l * 1000l;
-      list.addFilter("valuta >= ?", new Object[]{new java.sql.Date((System.currentTimeMillis() - d))});
+      Date start = HBCIProperties.startOfDay(new Date(System.currentTimeMillis() - d));
+      list.addFilter("valuta >= ?", new Object[]{new java.sql.Date(start.getTime())});
     }
     list.setOrder("ORDER BY TONUMBER(valuta) desc, id desc");
     return list;
@@ -371,8 +372,8 @@ public class KontoImpl extends AbstractDBObject implements Konto
   {
     DBIterator list = getService().createList(Umsatz.class);
     list.addFilter("konto_id = " + getID());
-    if (start != null) list.addFilter("valuta >= ?", new Object[]{new java.sql.Date(start.getTime())});
-    if (end != null) list.addFilter("valuta <= ?", new Object[]{new java.sql.Date(end.getTime())});
+    if (start != null) list.addFilter("valuta >= ?", new Object[]{new java.sql.Date(HBCIProperties.startOfDay(start).getTime())});
+    if (end != null) list.addFilter("valuta <= ?", new Object[]{new java.sql.Date(HBCIProperties.endOfDay(end).getTime())});
     list.setOrder("ORDER BY TONUMBER(valuta) desc, id desc");
     return list;
   }
@@ -610,24 +611,19 @@ public class KontoImpl extends AbstractDBObject implements Konto
     if (this.isNewObject())
       return 0.0d;
 
-    // Zuruecksetzen der Uhrzeit auf 0:00
-    HBCIProperties.resetTime(from);
-
-    // Setzen der Uhrzeit auf 23:59:59
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(to);
-    cal.set(Calendar.HOUR_OF_DAY, 23);
-    cal.set(Calendar.MINUTE, 59);
-    cal.set(Calendar.SECOND, 59);
-    cal.set(Calendar.MILLISECOND, 999);
-
-    Date end = cal.getTime();
-
-    // Die ID muss via tonumber umgewandelt werden, da wir sie als String
-    // uebergeben
-    String sql = "select SUM(betrag) from umsatz where konto_id = TONUMBER(?) "
-        + "and datum >= ? " + "and datum <= ? ";
-    sql += "and betrag " + (ausgaben ? "<" : ">") + " 0";
+    ArrayList params = new ArrayList();
+    
+    String sql = "select SUM(betrag) from umsatz where konto_id = " + this.getID() + " and betrag " + (ausgaben ? "<" : ">") + " 0";
+    if (from != null) 
+    {
+      params.add(new java.sql.Date(HBCIProperties.startOfDay(from).getTime()));
+      sql += " and datum >= ? ";
+    }
+    if (to != null)
+    {
+      params.add(new java.sql.Date(HBCIProperties.startOfDay(to).getTime()));
+      sql += " and datum <= ? ";
+    }
 
     HBCIDBService service = (HBCIDBService) this.getService();
 
@@ -641,7 +637,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
       }
     };
 
-    Double d = (Double) service.execute(sql, new Object[] {this.getID(),from, end}, rs);
+    Double d = (Double) service.execute(sql,params.toArray(), rs);
     return d == null ? 0.0d : d.doubleValue();
   }
 
@@ -655,7 +651,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
     // Die ID muss via tonumber umgewandelt werden, da wir sie als String
     // uebergeben
-    String sql = "select count(id) from umsatz where konto_id = TONUMBER(?)";
+    String sql = "select count(id) from umsatz where konto_id = " + this.getID();
 
     HBCIDBService service = (HBCIDBService) this.getService();
 
@@ -669,8 +665,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
       }
     };
 
-    Integer i = (Integer) service.execute(sql, new Object[] { this.getID() },
-        rs);
+    Integer i = (Integer) service.execute(sql, new Object[0],rs);
     return i == null ? 0 : i.intValue();
   }
 
@@ -686,6 +681,10 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*******************************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.82  2006/12/29 14:28:47  willuhn
+ * @B Bug 345
+ * @B jede Menge Bugfixes bei SQL-Statements mit Valuta
+ *
  * Revision 1.81  2006/12/27 17:56:49  willuhn
  * @B Bug 341
  *

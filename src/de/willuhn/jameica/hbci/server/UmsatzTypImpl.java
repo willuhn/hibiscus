@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.28 $
- * $Date: 2006/11/30 23:48:40 $
+ * $Revision: 1.29 $
+ * $Date: 2006/12/29 14:28:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,8 +13,8 @@
 package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
-import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,6 +23,7 @@ import de.willuhn.datasource.db.AbstractDBObjectNode;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.system.Application;
@@ -107,7 +108,8 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
     if (days > 0)
     {
       long d = days * 24l * 60l * 60l * 1000l;
-      list.addFilter("valuta > ?", new Object[]{new Date((System.currentTimeMillis() - d))});
+      Date start = HBCIProperties.startOfDay(new Date(System.currentTimeMillis() - d));
+      list.addFilter("valuta >= ?", new Object[]{new java.sql.Date(start.getTime())});
     }
     
     if (this.isNewObject()) // Neuer Umsatztyp. Der hat noch keine ID
@@ -310,7 +312,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
     // diese bei der Gelegenheit entfernen muessen.
 
     DBIterator list = getService().createList(Umsatz.class);
-    list.addFilter("umsatztyp_id = ?",new String[]{this.getID()});
+    list.addFilter("umsatztyp_id = " + this.getID());
     if (!list.hasNext())
     {
       // Ne, keine Umsaetze zugeordnet. Dann koennen wir getrost loeschen.
@@ -360,6 +362,10 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
 
 /**********************************************************************
  * $Log: UmsatzTypImpl.java,v $
+ * Revision 1.29  2006/12/29 14:28:47  willuhn
+ * @B Bug 345
+ * @B jede Menge Bugfixes bei SQL-Statements mit Valuta
+ *
  * Revision 1.28  2006/11/30 23:48:40  willuhn
  * @N Erste Version der Umsatz-Kategorien drin
  *
