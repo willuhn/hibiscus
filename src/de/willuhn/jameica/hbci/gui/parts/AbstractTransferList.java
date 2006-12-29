@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractTransferList.java,v $
- * $Revision: 1.11 $
- * $Date: 2006/12/29 14:28:47 $
+ * $Revision: 1.12 $
+ * $Date: 2006/12/29 16:09:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -145,7 +145,7 @@ public abstract class AbstractTransferList extends TablePart implements Part
     });
     addColumn(i18n.tr("Verwendungszweck"),"zweck");
     addColumn(i18n.tr("Betrag"),"betrag", new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
-    addColumn(i18n.tr("Termin"),"termin", new DateFormatter(HBCI.LONGDATEFORMAT));
+    addColumn(i18n.tr("Termin"),"termin", new DateFormatter(HBCI.DATEFORMAT));
     addColumn(i18n.tr("Status"),"ausgefuehrt",new Formatter() {
       public String format(Object o) {
         try {
@@ -387,6 +387,9 @@ public abstract class AbstractTransferList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: AbstractTransferList.java,v $
+ * Revision 1.12  2006/12/29 16:09:21  willuhn
+ * @R Uhrzeit aus Termin entfernt
+ *
  * Revision 1.11  2006/12/29 14:28:47  willuhn
  * @B Bug 345
  * @B jede Menge Bugfixes bei SQL-Statements mit Valuta
