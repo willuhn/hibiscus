@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/DauerauftragControl.java,v $
- * $Revision: 1.25 $
- * $Date: 2006/12/28 15:38:43 $
+ * $Revision: 1.26 $
+ * $Date: 2007/01/02 11:28:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -65,9 +65,9 @@ public class DauerauftragControl extends AbstractTransferControl {
     if (transfer != null)
       return transfer;
 
-    transfer = (Dauerauftrag) getCurrentObject();
-    if (transfer != null)
-      return transfer;
+    Object o = getCurrentObject();
+    if (o != null && (o instanceof Dauerauftrag))
+      return (Dauerauftrag) o;
       
     transfer = (Dauerauftrag) Settings.getDBService().createObject(Dauerauftrag.class,null);
     return transfer;
@@ -232,6 +232,9 @@ public class DauerauftragControl extends AbstractTransferControl {
 
 /**********************************************************************
  * $Log: DauerauftragControl.java,v $
+ * Revision 1.26  2007/01/02 11:28:04  willuhn
+ * @B ClassCastException
+ *
  * Revision 1.25  2006/12/28 15:38:43  willuhn
  * @N Farbige Pflichtfelder
  *
