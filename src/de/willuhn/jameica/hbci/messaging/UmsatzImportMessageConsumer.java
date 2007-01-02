@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/messaging/Attic/UmsatzImportMessageConsumer.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/12/29 15:26:56 $
+ * $Revision: 1.2 $
+ * $Date: 2007/01/02 11:31:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@
 package de.willuhn.jameica.hbci.messaging;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
@@ -69,17 +70,19 @@ public class UmsatzImportMessageConsumer implements MessageConsumer
    */
   public final static GenericIterator getNewUmsaetze() throws RemoteException
   {
-    if (umsaetze.size() == 0)
+//    if (umsaetze.size() == 0)
       return PseudoIterator.fromArray(new Umsatz[0]);
 
-    // TODO Die sollten nach ID sortiert ausgegeben werden
-    return null;
+//    ArrayList l = new ArrayList();
   }
 }
 
 
 /*********************************************************************
  * $Log: UmsatzImportMessageConsumer.java,v $
+ * Revision 1.2  2007/01/02 11:31:59  willuhn
+ * @B reload current view
+ *
  * Revision 1.1  2006/12/29 15:26:56  willuhn
  * @N ImportMessageConsumer
  *
