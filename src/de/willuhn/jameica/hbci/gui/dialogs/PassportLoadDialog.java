@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/PassportLoadDialog.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/12/24 10:28:06 $
+ * $Revision: 1.6 $
+ * $Date: 2007/01/05 17:23:24 $
  * $Author: jost $
  * $Locker:  $
  * $State: Exp $
@@ -35,7 +35,7 @@ public class PassportLoadDialog extends PasswordDialog {
 
     setTitle(i18n.tr("Passwort-Eingabe"));
     setLabelText(i18n.tr("Ihr Passwort"));
-    setText(i18n.tr("Bitte geben Sie das von Ihnen vergebene Passwort für dieses\nSicherheitsmedium ein."));
+    setText(i18n.tr("Bitte geben Sie das von Ihnen vergebene Passwort\nfür dieses Sicherheitsmedium ein."));
   }
 
 	/**
@@ -66,6 +66,9 @@ public class PassportLoadDialog extends PasswordDialog {
 
 /**********************************************************************
  * $Log: PassportLoadDialog.java,v $
+ * Revision 1.6  2007/01/05 17:23:24  jost
+ * Zeilenumbruch korrigiert.
+ *
  * Revision 1.5  2006/12/24 10:28:06  jost
  * Korrektur Tippfehler
  *
