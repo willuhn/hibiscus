@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/KontoauszugControl.java,v $
- * $Revision: 1.9 $
- * $Date: 2006/12/29 14:28:47 $
+ * $Revision: 1.10 $
+ * $Date: 2007/01/09 13:07:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.gui.controller;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 
 import de.willuhn.datasource.rmi.DBIterator;
@@ -141,7 +142,7 @@ public class KontoauszugControl extends AbstractControl
         {
           umsaetze.addFilter("valuta <= ?", new Object[]{new java.sql.Date(HBCIProperties.endOfDay(end).getTime())});
         }
-        umsaetze.setOrder("ORDER BY TONUMBER(valuta), id DESC");
+        umsaetze.setOrder("ORDER BY TONUMBER(valuta) desc, id desc");
       }
       else if (start == null || end == null)
       {
@@ -158,6 +159,10 @@ public class KontoauszugControl extends AbstractControl
       {
         list.add(umsaetze.next());
       }
+      
+      // Die o.g. Umsaetze kommen immer in umgekehrt chronologischer Reihenfolge.
+      // Fuer den Kontoauszug sortieren wie sie aber andersrum.
+      Collections.reverse(list);
       
       Umsatz[] u = (Umsatz[]) list.toArray(new Umsatz[list.size()]);
       
@@ -182,6 +187,9 @@ public class KontoauszugControl extends AbstractControl
 
 /*******************************************************************************
  * $Log: KontoauszugControl.java,v $
+ * Revision 1.10  2007/01/09 13:07:13  willuhn
+ * @B Sortierung der Umsaetze im Kontoauszug nun immer chronologisch
+ *
  * Revision 1.9  2006/12/29 14:28:47  willuhn
  * @B Bug 345
  * @B jede Menge Bugfixes bei SQL-Statements mit Valuta
