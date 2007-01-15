@@ -26,8 +26,6 @@
           <li><a href="#errors.os.macos">[MacOS] Jameica verlangt beim Start ein Master-Passwort, welches ich jedoch nie vergeben habe</a></li>
           <li><a href="#errors.os.ubuntu">Der Start bricht mit der Fehlermeldung &quot;java.lang.SecurityException: write access to /opt/jameica/jameica.lock denied&quot; ab</a></li>
           <li><a href="#errors.os.java">Hibiscus startet überhaupt nicht. Auf der Konsole erscheint evtl. die Fehlermeldung &quot;java: command not found&quot;</a></li>
-          <li><a href="#errors.ums.missng">Es werden nicht alle Umsätze abgerufen</a></li>
-          <li><a href="#errors.ums.umlaut">Die Verwendungszwecken einiger Umsätze werden nicht vollständig angezeigt</a></li>
           <li><a href="#warning.hbci4java.fints">Beim Ausführen von HBCI-Geschäftsvorfällen erscheinen Warnungen der Art &quot;konnte folgenden nutzerdefinierten Wert nicht in Nachricht einsetzen: Crypted.CryptHead.SecProfile&quot;</a></li>
         </ul>
       </li>
@@ -267,41 +265,6 @@ $JAVA_HOME/bin/java -Djava.library.path=lib/swt/linux -jar jameica-linux.jar $@
 
         <p>
           <br/>
-          <a name="errors.ums.missing"></a>
-          <b>Es werden nicht alle Umsätze abgerufen</b>
-          <br/><br/>
-          Dies ist ein Fehler in der von Hibiscus intern benutzten
-          HBCI-Implementierung &quot;HBCI4Java&quot; von Stefan Palme.
-          Der Fehler ist dem Autor bekannt und bereits (lokal) behoben.
-          Sobald diese neue HBCI4Java-Version erscheint, kann ich diese
-          in Hibiscus übernehmen.
-          <br/>
-          Siehe auch:
-          <br/>
-          <a href="http://www.willuhn.de/bugzilla/show_bug.cgi?id=35">http://www.willuhn.de/bugzilla/show_bug.cgi?id=35</a>
-          <br/>
-          <a href="http://sourceforge.net/mailarchive/forum.php?thread_id=6936286&forum_id=32946">http://sourceforge.net/mailarchive/forum.php?thread_id=6936286&forum_id=32946</a>
-        </p>
-
-        <p>
-          <br/>
-          <a name="errors.ums.umlaut"></a>
-          <b>Die Verwendungszwecken einiger Umsätze werden nicht vollständig angezeigt</b>
-          <br/><br/>
-          Dies ist ein Fehler im Base64 Decoding/Encoding von HBCI4Java.
-          Dennoch sollte er in Hibiscus nicht mehr auftreten (Nightly-Build ab 04.05.2005),
-          da inzwischen ein Workaround in Hibiscus existiert, welcher den Fehler in
-          HBCI4Java übergangsweise umschifft (bis die neue HCBI4Java-Release erscheint).
-          <br/>
-          Siehe auch:
-          <br/>
-          <a href="http://www.willuhn.de/bugzilla/show_bug.cgi?id=39">http://www.willuhn.de/bugzilla/show_bug.cgi?id=39</a>
-          <br/>
-          <a href="http://sourceforge.net/mailarchive/forum.php?thread_id=6957215&forum_id=32946">http://sourceforge.net/mailarchive/forum.php?thread_id=6957215&forum_id=32946</a>
-        </p>
-      
-        <p>
-          <br/>
           <a name="warning.hbci4java.fints"></a>
           <b>Beim Ausführen von HBCI-Geschäftsvorfällen erscheinen Warnungen der Art &quot;konnte folgenden nutzerdefinierten Wert nicht in Nachricht einsetzen: Crypted.CryptHead.SecProfile&quot;</b>
           <br/><br/>
@@ -434,7 +397,7 @@ $JAVA_HOME/bin/java -Djava.library.path=lib/swt/linux -jar jameica-linux.jar $@
     //-->
 
     <hr/>
-    $Revision: 1.20 $
+    $Revision: 1.21 $
 
   </body>
 </html>
