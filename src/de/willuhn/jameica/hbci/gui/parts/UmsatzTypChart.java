@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTypChart.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/10/31 23:04:48 $
+ * $Revision: 1.4 $
+ * $Date: 2007/01/16 12:35:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -65,11 +65,19 @@ public class UmsatzTypChart implements Part
       final ChartData aData = new ChartDataUmsatzTyp(false,start);
       
       final PieChart einnahmen = new PieChart();
-      einnahmen.setTitle(i18n.tr("Einnahmen ({0} Tage)",""+start));
+      final PieChart ausgaben  = new PieChart();
+      
+      if (start < 0)
+      {
+        einnahmen.setTitle(i18n.tr("Einnahmen (alle Umsätze)"));
+        ausgaben.setTitle(i18n.tr("Ausgaben (alle Umsätze)"));
+      }
+      else
+      {
+        einnahmen.setTitle(i18n.tr("Einnahmen ({0} Tage)",""+start));
+        ausgaben.setTitle(i18n.tr("Ausgaben ({0} Tage)",""+start));
+      }
       einnahmen.addData(eData);
-
-      final PieChart ausgaben = new PieChart();
-      ausgaben.setTitle(i18n.tr("Ausgaben ({0} Tage)",""+start));
       ausgaben.addData(aData);
 
       final UmsatzDaysInput i = new UmsatzDaysInput();
@@ -152,6 +160,9 @@ public class UmsatzTypChart implements Part
 
 /*********************************************************************
  * $Log: UmsatzTypChart.java,v $
+ * Revision 1.4  2007/01/16 12:35:43  willuhn
+ * @B "-1 Tage"
+ *
  * Revision 1.3  2006/10/31 23:04:48  willuhn
  * @B Wurde mit der falschen Anzahl Default-Tage initialisiert
  *
