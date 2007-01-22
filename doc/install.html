@@ -276,7 +276,14 @@
   diese Kombinationen zu prüfen.
   <br/><br/>
   Unter MacOS werden derzeit offiziell leider keine Chipkartenleser sondern nur
-  Schlüsseldiskette und PIN/TAN unterstützt.
+  Schlüsseldiskette und PIN/TAN unterstützt, da es mir an Testhardware mangelt.
+  <br/><br/>
+  Falls Sie einen Kartenleser besitzen, der nicht die CTAPI sondern nur
+  PC/SC unterstützt, dann können Sie den CTAPI-Wrapper der Firma SCM-Micro
+  verwenden. Sie finden Ihn unter <a href="ftp://ftp.scmmicro.com/security/drivers/SCR201_Installer_V2.17.zip">ftp://ftp.scmmicro.com/security/drivers/SCR201_Installer_V2.17.zip</a>.
+  Nach der Installation des Treibers finden Sie im Installationsverzeichnis
+  eine Datei &quot;ctpcsc.dll&quot;. Tragen Sie diese nun als CTAPI-Treiber
+  in Hibiscus ein.
 
   <br/><br/>
   Bisher getestet:
@@ -342,7 +349,7 @@
   ich diese Liste vervollständigen kann.
   
   <hr/>
-  $Revision: 1.10 $
+  $Revision: 1.11 $
 
   </body>
 
