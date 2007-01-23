@@ -36,6 +36,7 @@
           <li><a href="#bank.cronbank.passport.pintan">Cronbank: Einrichtung von PIN/TAN</a></li>
           <li><a href="#bank.comdirect.passport.pintan">Comdirect: Einrichtung von PIN/TAN</a></li>
           <li><a href="#bank.postbank.passport.pintan">Postbank: Einrichtung von PIN/TAN</a></li>
+          <li><a href="#bank.gls.passport.pintan">GLS-Bank: Einrichtung von PIN/TAN</a></li>
         </ul>
       </li>
     </ol>
@@ -376,6 +377,39 @@ $JAVA_HOME/bin/java -Djava.library.path=lib/swt/linux -jar jameica-linux.jar $@
           (Danke an Knut Singer für den Tipp)
         </p>
 
+        <p>
+          <br/>
+          <a name="bank.gls.passport.pintan"></a>
+          <b>GLS-Bank: Einrichtung von PIN/TAN</b>
+          <br/><br/>
+          <table class="data">
+            <tr>
+              <td>Kundenkennung</td><td>entspricht der Kontonummer</td>
+            </tr>
+            <tr>
+              <td>Benutzerkennung</td><td>Wie Kundenkennung jedoch ohne die letzten beiden Ziffern (Unterkontonummer)</td>
+            </tr>
+            <tr>
+              <td>URL der Bank</td><td>hbci-pintan.gad.de/cgi-bin/hbciservlet</td>
+            </tr>
+            <tr>
+              <td>TCP-Port des Bank-Servers</td><td>443</td>
+            </tr>
+            <tr>
+              <td>Filter für Übertragung</td><td>Base64</td>
+            </tr>
+            <tr>
+              <td>HBCI-Version</td><td>HBCI+</td>
+            </tr>
+          </table>
+
+          Wichtig: Bei der Benutzerkennung muss die Kontonummer verkürzt um die letzten
+          beiden Ziffern eingegeben werden. Lautet die Kontonummer also z.Bsp. &quot;1234567800&quot;,
+          so muss als Benutzerkennung &quot;12345678&quot; eingegeben werden.
+          <br/>
+          (Danke an Andreas Delleske für den Tipp)
+        </p>
+      
       </li>
     </ol>
 
@@ -397,7 +431,7 @@ $JAVA_HOME/bin/java -Djava.library.path=lib/swt/linux -jar jameica-linux.jar $@
     //-->
 
     <hr/>
-    $Revision: 1.21 $
+    $Revision: 1.22 $
 
   </body>
 </html>
