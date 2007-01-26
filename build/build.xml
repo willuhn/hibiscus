@@ -48,12 +48,13 @@
 		<property name="project.zipdir" 			  value="${project.release}/${define.pluginname}" />
 
 		<property name="src.dir" 					      value="src" />
-		<property name="icon.dir" 					    value="${src.dir}/img" />
+		<property name="img.dir" 					      value="${src.dir}/img" />
 		<property name="lang.dir" 					    value="${src.dir}/lang" />
 		<property name="help.dir" 					    value="${src.dir}/help" />
 		<property name="doc.dir" 					      value="doc" />
 		<property name="lib.dir" 					      value="lib" />
 		<property name="sql.dir" 					      value="sql" />
+    <property name="icon.dir"               value="icons" />
 		<property name="class.dir" 					    value="${project.tmp}/bin" />
 
 
@@ -94,7 +95,7 @@
 			<fileset dir="${help.dir}" />
 		</copy>
 		<copy todir="${class.dir}/img">
-			<fileset dir="${icon.dir}" />
+			<fileset dir="${img.dir}" />
 		</copy>
 
 	</target>
@@ -138,6 +139,11 @@
 			<fileset dir="${lib.dir}" />
 		</copy>
 
+    <mkdir dir="${project.zipdir}/icons" />
+    <copy todir="${project.zipdir}/icons">
+      <fileset dir="${icon.dir}" />
+    </copy>
+ 
 		<copy file="${build.dir}/README" todir="${project.zipdir}" />
     <copy file="plugin.xml" todir="${project.zipdir}" />
 		<copy file="${build.dir}/COPYING" todir="${project.zipdir}" />
@@ -169,6 +175,7 @@
 				<include name="${doc.dir}/**" />
 				<include name="${lib.dir}/**" />
 				<include name="${src.dir}/**" />
+        <include name="${icon.dir}/**" />
 				<include name="${sql.dir}/**" />
 				<include name="${doc.dir}/**" />
 				<include name="${build.dir}/**" />
