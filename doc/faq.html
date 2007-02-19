@@ -36,6 +36,7 @@
           <li><a href="#bank.cronbank.passport.pintan">Cronbank: Einrichtung von PIN/TAN</a></li>
           <li><a href="#bank.comdirect.passport.pintan">Comdirect: Einrichtung von PIN/TAN</a></li>
           <li><a href="#bank.postbank.passport.pintan">Postbank: Einrichtung von PIN/TAN</a></li>
+          <li><a href="#bank.dresdner.passport.pintan">Dresdner Bank: Einrichtung von PIN/TAN</a></li>
           <li><a href="#bank.gls.passport.pintan">GLS-Bank: Einrichtung von PIN/TAN</a></li>
         </ul>
       </li>
@@ -353,7 +354,7 @@ $JAVA_HOME/bin/java -Djava.library.path=lib/swt/linux -jar jameica-linux.jar $@
           <a name="bank.comdirect.passport.pintan"></a>
           <b>ComDirect: Einrichtung von PIN/TAN</b>
           <br/><br/>
-          PIN/TAN-Sicherheitsmedium wie gehabt anlegen. Als HBCI-Version "HBCI+" verwenden.
+          PIN/TAN-Sicherheitsmedium wie gehabt anlegen (Filter: Base64). Als HBCI-Version "HBCI+" verwenden.
           Das Testen des Sicherheitsmedium über den Button "Sicherheitsmedium testen"
           überspringen - es schlägt fehl. Anschließend das Konto manuell anlegen.
           Der Kontonummer müssen hierbei zwei Nullen (00) angehängt werden.
@@ -367,16 +368,31 @@ $JAVA_HOME/bin/java -Djava.library.path=lib/swt/linux -jar jameica-linux.jar $@
           <a name="bank.postbank.passport.pintan"></a>
           <b>Postbank: Einrichtung von PIN/TAN</b>
           <br/><br/>
-          PIN/TAN-Sicherheitsmedium wie gehabt anlegen. Als HBCI-Version "HBCI+" verwenden
-          (auch wenn auf den Webseiten der Postbank &quot;HBCI 2.2&quot angegeben ist).
+          PIN/TAN-Sicherheitsmedium wie gehabt anlegen (Filter: Base64). Als HBCI-Version "HBCI+" verwenden
+          (auch wenn auf den Webseiten der Postbank &quot;HBCI 2.2&quot; angegeben ist).
           Verwenden Sie als Benutzer- und Kundenkennung jeweils Ihre Kontonummer.
           Entfernen Sie hierbei jedoch führende Nullen. Benutzen Sie als Filter &quot;Base64&quot;.
           <br/>Wichtig: Benutzen Sie Benutzerkennung und Passwort Ihres &quot;alten&quot;
-          Postbank-Zugangs, nicht jene von &quot;Postbank direkt&quot!
+          Postbank-Zugangs, nicht jene von &quot;Postbank direkt&quot;!
           <br/>
           (Danke an Knut Singer für den Tipp)
         </p>
 
+        <p>
+          <br/>
+          <a name="bank.dresdner.passport.pintan"></a>
+          <b>Dresdner Bank: Einrichtung von PIN/TAN</b>
+          <br/><br/>
+          PIN/TAN-Sicherheitsmedium wie gehabt anlegen (Filter: Base64). Als HBCI-Version "HBCI+" verwenden
+          (auch wenn auf den Webseiten der Postbank &quot;HBCI 2.2&quot; angegeben ist).
+          Wichtig bei der Dresdner Bank ist die Eingabe einer zehnstelligen Kontonummer
+          (vorn mit Nullen auffüllen).<br/>
+          Im Gegensatz zum Verfahren &quot;Schlüsseldiskette&quot; muss man die &quot;normale&quot; BLZ
+          angeben (die der eigenen Filiale).
+          <br/>
+          (Danke an Stefan Bertels für den Tipp)
+        </p>
+        
         <p>
           <br/>
           <a name="bank.gls.passport.pintan"></a>
@@ -431,7 +447,7 @@ $JAVA_HOME/bin/java -Djava.library.path=lib/swt/linux -jar jameica-linux.jar $@
     //-->
 
     <hr/>
-    $Revision: 1.22 $
+    $Revision: 1.23 $
 
   </body>
 </html>
