@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.41 $
- * $Date: 2006/12/29 14:28:47 $
+ * $Revision: 1.42 $
+ * $Date: 2007/02/19 15:01:54 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,11 +15,14 @@ package de.willuhn.jameica.hbci.server;
 import java.rmi.RemoteException;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.zip.CRC32;
 
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.db.AbstractDBObject;
+import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -516,20 +519,51 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
    */
   public UmsatzTyp getUmsatzTyp() throws RemoteException
   {
+    if (UMSATZTYP_CACHE.size() == 0)
+    {
+      // Wir initialisieren den Cache
+      DBIterator list = getService().createList(UmsatzTyp.class);
+      while (list.hasNext())
+      {
+        UmsatzTyp t = (UmsatzTyp) list.next();
+        UMSATZTYP_CACHE.put(t.getID(),t);
+      }
+    }
+    
+    // ID von fest verdrahteten Kategorien
     Integer i = (Integer) super.getAttribute("umsatztyp_id");
 
-    if (i == null) // Nicht zugeordnet
+    if (i == null)
+    {
+      // Nicht zugeordnet, dann schauen wir mal, ob's eine dynamische Zuordnung gibt
+      Enumeration typen = UMSATZTYP_CACHE.elements();
+      while (typen.hasMoreElements())
+      {
+        UmsatzTyp ut = (UmsatzTyp) typen.nextElement();
+        if (ut.matches(this))
+          return ut;
+      }
+      // keine dynamische Umsatzkategorie gefunden. Dann raus hier
       return null;
-    
+    }
+   
+    // Wir haben eine ID und sie ist fest verdrahtet
     String id = i.toString();
     
     UmsatzTyp ut = (UmsatzTyp) UMSATZTYP_CACHE.get(id);
     if (ut == null)
     {
-      ut = (UmsatzTyp) getService().createObject(UmsatzTyp.class,id);
-      if (ut == null)
-        return null; // CannotHappenException weil wir oben ja eigentlich schon auf umsatztyp_id != null testen. Aber man weiss ja nie ;)
-      UMSATZTYP_CACHE.put(id,ut);
+      // Hu? Nicht im Cache? Dann ist sie waehrend der aktuellen Sitzung dazugekommen
+      // und wir laden sie noch in den Cache.
+      try
+      {
+        ut = (UmsatzTyp) getService().createObject(UmsatzTyp.class,id);
+        UMSATZTYP_CACHE.put(id,ut);
+      }
+      catch (ObjectNotFoundException one)
+      {
+        // inzwischen schon wieder geloescht worden. Ignorieren wir
+      }
     }
     return ut;
   }
@@ -554,6 +588,9 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.42  2007/02/19 15:01:54  willuhn
+ * @N Auch dynamische Umsatzkategorien in Umsatzliste zeigen
+ *
  * Revision 1.41  2006/12/29 14:28:47  willuhn
  * @B Bug 345
  * @B jede Menge Bugfixes bei SQL-Statements mit Valuta
