@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/DialogFactory.java,v $
- * $Revision: 1.28 $
- * $Date: 2006/11/16 22:57:33 $
+ * $Revision: 1.29 $
+ * $Date: 2007/02/21 12:10:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -354,6 +354,15 @@ public class DialogFactory {
   }
   
   /**
+   * Loescht den PIN-Cache.
+   * BUGZILLA 349
+   */
+  public static void clearPINCache()
+  {
+    pinCache.clear();
+  }
+  
+  /**
    * Hilfsfunktion zum Ermitteln des Keys, zu dem die PIN gespeichert ist.
    * @param passport
    * @return die PIN oder null.
@@ -406,6 +415,9 @@ public class DialogFactory {
 
 /**********************************************************************
  * $Log: DialogFactory.java,v $
+ * Revision 1.29  2007/02/21 12:10:36  willuhn
+ * Bug 349
+ *
  * Revision 1.28  2006/11/16 22:57:33  willuhn
  * @N gecachte PINs/Passwoerte werden nun nur noch einmal verwendet. Stimmen sie nicht, muss der User entscheiden
  *
