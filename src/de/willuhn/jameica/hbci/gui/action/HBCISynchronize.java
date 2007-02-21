@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/HBCISynchronize.java,v $
- * $Revision: 1.8 $
- * $Date: 2006/10/09 21:43:26 $
+ * $Revision: 1.9 $
+ * $Date: 2007/02/21 10:02:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -141,7 +141,9 @@ public class HBCISynchronize implements Action
         {
           for (int i=0;i<currentJobs.length;++i)
           {
-            factory.addExclusiveJob(currentJobs[i]);
+            // Wir fuehren alle exclusiv aus
+            currentJobs[i].setExclusive(true);
+            factory.addJob(currentJobs[i]);
           }
         }
         count++;
@@ -189,6 +191,9 @@ public class HBCISynchronize implements Action
 
 /*********************************************************************
  * $Log: HBCISynchronize.java,v $
+ * Revision 1.9  2007/02/21 10:02:27  willuhn
+ * @C Code zum Ausfuehren exklusiver Jobs redesigned
+ *
  * Revision 1.8  2006/10/09 21:43:26  willuhn
  * @N Zusammenfassung der Geschaeftsvorfaelle "Umsaetze abrufen" und "Saldo abrufen" zu "Kontoauszuege abrufen" bei der Konto-Synchronisation
  *

@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/DauerauftragExecute.java,v $
- * $Revision: 1.10 $
- * $Date: 2005/07/26 23:57:18 $
- * $Author: web0 $
+ * $Revision: 1.11 $
+ * $Date: 2007/02/21 10:02:27 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -49,8 +49,6 @@ public class DauerauftragExecute implements Action
 		{
 			final Dauerauftrag d = (Dauerauftrag) context;
 			
-			final HBCIDauerauftragStoreJob job = new HBCIDauerauftragStoreJob(d);
-			
 			DauerauftragDialog dd = new DauerauftragDialog(d,DauerauftragDialog.POSITION_CENTER);
 			try
 			{
@@ -69,8 +67,10 @@ public class DauerauftragExecute implements Action
 
       HBCIFactory factory = HBCIFactory.getInstance();
       // BUGZILLA #15 http://www.willuhn.de/bugzilla/show_bug.cgi?id=15
-      factory.addExclusiveJob(new HBCIDauerauftragListJob(d.getKonto()));
+      HBCIDauerauftragListJob job = new HBCIDauerauftragListJob(d.getKonto());
+      job.setExclusive(true);
       factory.addJob(job);
+      factory.addJob(new HBCIDauerauftragStoreJob(d));
       factory.executeJobs(d.getKonto(),null); 
 
 		}
@@ -85,6 +85,9 @@ public class DauerauftragExecute implements Action
 
 /**********************************************************************
  * $Log: DauerauftragExecute.java,v $
+ * Revision 1.11  2007/02/21 10:02:27  willuhn
+ * @C Code zum Ausfuehren exklusiver Jobs redesigned
+ *
  * Revision 1.10  2005/07/26 23:57:18  web0
  * @N Restliche HBCI-Jobs umgestellt
  *

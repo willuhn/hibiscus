@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoFetchUmsaetze.java,v $
- * $Revision: 1.15 $
- * $Date: 2007/01/02 11:44:47 $
+ * $Revision: 1.16 $
+ * $Date: 2007/02/21 10:02:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -60,7 +60,9 @@ public class KontoFetchUmsaetze implements Action
 			factory.addJob(new HBCIUmsatzJob(k));
 
 			// BUGZILLA #3 http://www.willuhn.de/bugzilla/show_bug.cgi?id=3
-			factory.addExclusiveJob(new HBCISaldoJob(k));
+      HBCISaldoJob saldo = new HBCISaldoJob(k);
+      saldo.setExclusive(true);
+			factory.addJob(saldo);
 
 			factory.executeJobs(k, new Listener() {
         public void handleEvent(Event event)
@@ -89,6 +91,9 @@ public class KontoFetchUmsaetze implements Action
 
 /**********************************************************************
  * $Log: KontoFetchUmsaetze.java,v $
+ * Revision 1.16  2007/02/21 10:02:27  willuhn
+ * @C Code zum Ausfuehren exklusiver Jobs redesigned
+ *
  * Revision 1.15  2007/01/02 11:44:47  willuhn
  * *** empty log message ***
  *

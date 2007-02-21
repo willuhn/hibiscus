@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.46 $
- * $Date: 2006/11/15 00:13:07 $
+ * $Revision: 1.47 $
+ * $Date: 2007/02/21 10:02:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -51,7 +51,6 @@ public class HBCIFactory {
   private static I18N i18n;
   private static HBCIFactory factory;
   	private Vector jobs = new Vector();
-  	private Vector exclusiveJobs = new Vector();
     private Worker worker = null;
     private Listener listener = null;
 
@@ -87,23 +86,6 @@ public class HBCIFactory {
   	  throw new ApplicationException(i18n.tr("Es läuft bereits eine andere HBCI-Abfrage."));
   
   	jobs.add(job);
-  }
-
-  /**
-   * Fuegt einen weiteren Job zur Queue hinzu. Dieser Job wird jedoch separat
-   * ausgefuehrt. Jobs, die ueber <code>addJob</code> hinzugefuegt wurden,
-   * werden en bloc vom HBCI-System ausgefuehrt. Jobs, die ueber diese Methode
-   * hier hinzugefuegt werden, werden alle einzeln ausgefuehrt.
-   * 
-   * @param job auszufuehrender Job.
-   * @throws ApplicationException
-   */
-  public synchronized void addExclusiveJob(AbstractHBCIJob job) throws ApplicationException
-  {
-  	if (inProgress)
-      throw new ApplicationException(i18n.tr("Es läuft bereits eine andere HBCI-Abfrage."));
-  
-  	exclusiveJobs.add(job);
   }
 
   /**
@@ -415,7 +397,7 @@ public class HBCIFactory {
 
         // //////////////////////////////////////////////////////////////////////
         // Jobs checken
-        if (jobs.size() == 0 && exclusiveJobs.size() == 0)
+        if (jobs.size() == 0)
         {
           Logger.warn("no hbci jobs defined");
           monitor.setStatusText(i18n.tr("{0}: Keine auszuführenden HBCI-Aufträge angegeben",kn));
@@ -464,32 +446,9 @@ public class HBCIFactory {
         //
         // //////////////////////////////////////////////////////////////////////
 
-        
         // //////////////////////////////////////////////////////////////////////
-        // Exclusive Jobs erzeugen
-        Logger.info("processing exclusive jobs");
-        for (int i=0;i<exclusiveJobs.size();++i)
-        {
-          if (interrupted) return;
-          final AbstractHBCIJob job = (AbstractHBCIJob) exclusiveJobs.get(i);
-          
-          monitor.setStatusText(i18n.tr("{0}: Aktiviere HBCI-Job: \"{1}\"",new String[]{kn,job.getName()}));
-          monitor.addPercentComplete(2);
-
-          Logger.info("executing exclusive job " + job.getIdentifier());
-          HBCIJob j = handler.newJob(job.getIdentifier());
-          dumpJob(j);
-          job.setJob(j);
-          handler.addJob(j);
-          handler.newMsg();
-        }
-        //
-        // //////////////////////////////////////////////////////////////////////
-
-        
-        // //////////////////////////////////////////////////////////////////////
-        // Regulaere Jobs erzeugen
-        Logger.info("processing batch jobs");
+        // Jobs erzeugen
+        Logger.info("processing jobs");
 
         for (int i=0;i<jobs.size();++i)
         {
@@ -504,6 +463,11 @@ public class HBCIFactory {
           dumpJob(j);
           job.setJob(j);
           handler.addJob(j);
+          if (job.isExclusive())
+          {
+            Logger.info("job will be executed in seperate hbci message");
+            handler.newMsg();
+          }
         }
         //
         // //////////////////////////////////////////////////////////////////////
@@ -531,36 +495,12 @@ public class HBCIFactory {
 
           // //////////////////////////////////////////////////////////////////////
           // Job-Ergebnisse auswerten
-          for (int i=0;i<exclusiveJobs.size();++i)
-          {
-            try
-            {
-              final AbstractHBCIJob job = (AbstractHBCIJob) exclusiveJobs.get(i);
-              name = job.getName();
-              monitor.setStatusText(i18n.tr("{0}: Werte Ergebnis von HBCI-Job \"{1}\" aus",new String[]{kn,name}));
-              monitor.addPercentComplete(2);
-              Logger.info("executing check for exclusive job " + job.getIdentifier());
-              job.handleResult();
-            }
-            catch (ApplicationException ae)
-            {
-              monitor.setStatusText(ae.getMessage());
-              error = true;
-            }
-            catch (Throwable t)
-            {
-              monitor.setStatusText(i18n.tr("Fehler beim Auswerten des HBCI-Auftrages {0}", name));
-              Logger.error("error while processing job result",t);
-              monitor.log(t.getMessage());
-              error = true;
-            }
-          }
-
           for (int i=0;i<jobs.size();++i)
           {
             try
             {
               final AbstractHBCIJob job = (AbstractHBCIJob) jobs.get(i);
+              name = job.getName();
               monitor.setStatusText(i18n.tr("{0}: Werte Ergebnis von HBCI-Job \"{1}\" aus",new String[]{kn,name}));
               monitor.addPercentComplete(2);
               Logger.info("executing check for job " + job.getIdentifier());
@@ -608,7 +548,6 @@ public class HBCIFactory {
           monitor.setStatusText(i18n.tr("Beende HBCI-Übertragung"));
           monitor.addPercentComplete(2);
           jobs = new Vector(); // Jobqueue leer machen.
-          exclusiveJobs = new Vector(); // Jobqueue leer machen.
           try {
             if (handle != null)
               handle.close();
@@ -694,6 +633,9 @@ public class HBCIFactory {
 
 /*******************************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.47  2007/02/21 10:02:27  willuhn
+ * @C Code zum Ausfuehren exklusiver Jobs redesigned
+ *
  * Revision 1.46  2006/11/15 00:13:07  willuhn
  * @B Bug 327
  *
