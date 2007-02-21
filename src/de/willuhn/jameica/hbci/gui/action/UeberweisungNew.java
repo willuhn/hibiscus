@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/UeberweisungNew.java,v $
- * $Revision: 1.7 $
- * $Date: 2006/10/23 21:16:51 $
+ * $Revision: 1.8 $
+ * $Date: 2007/02/21 11:58:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,7 @@
 package de.willuhn.jameica.hbci.gui.action;
 
 import java.rmi.RemoteException;
+import java.util.Date;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -21,6 +22,8 @@ import de.willuhn.jameica.hbci.io.ClipboardUeberweisungImporter;
 import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
+import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -53,6 +56,7 @@ public class UeberweisungNew implements Action
 			}
 			catch (RemoteException e)
 			{
+        Logger.error("error while creating transfer",e);
 				// Dann halt nicht
 			}
 		}
@@ -65,9 +69,33 @@ public class UeberweisungNew implements Action
 			}
 			catch (RemoteException e)
 			{
+        Logger.error("error while creating transfer",e);
 				// Dann halt nicht
 			}
 		}
+    else if (context instanceof Umsatz)
+    {
+      // BUGZILLA 315
+      try
+      {
+        Umsatz umsatz = (Umsatz) context;
+        u = (Ueberweisung) Settings.getDBService().createObject(Ueberweisung.class,null);
+        u.setBetrag(Math.abs(umsatz.getBetrag()));
+        u.setGegenkontoBLZ(umsatz.getEmpfaengerBLZ());
+        u.setGegenkontoName(umsatz.getEmpfaengerName());
+        u.setGegenkontoNummer(umsatz.getEmpfaengerKonto());
+        u.setKonto(umsatz.getKonto());
+        u.setTermin(new Date());
+        u.setZweck(umsatz.getZweck());
+        u.setZweck2(umsatz.getZweck2());
+      }
+      catch (RemoteException re)
+      {
+        Logger.error("error while creating transfer",re);
+        // Dann halt nicht
+      }
+      
+    }
 		else 
 		{
       ClipboardUeberweisungImporter i = new ClipboardUeberweisungImporter();
@@ -80,6 +108,9 @@ public class UeberweisungNew implements Action
 
 /**********************************************************************
  * $Log: UeberweisungNew.java,v $
+ * Revision 1.8  2007/02/21 11:58:52  willuhn
+ * @N Bug 315
+ *
  * Revision 1.7  2006/10/23 21:16:51  willuhn
  * @N eBaykontoParser umbenannt und ueberarbeitet
  *

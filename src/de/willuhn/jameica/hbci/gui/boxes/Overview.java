@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Overview.java,v $
- * $Revision: 1.7 $
- * $Date: 2006/12/29 14:28:47 $
+ * $Revision: 1.8 $
+ * $Date: 2007/02/21 11:58:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -238,9 +238,9 @@ public class Overview extends AbstractBox implements Box
       else
       {
         in  = this.konto.getEinnahmen(dStart,dEnd);
-        out = this.konto.getAusgaben(dStart,dEnd);
+        out = Math.abs(this.konto.getAusgaben(dStart,dEnd));
       }
-      getAusgaben().setValue(HBCI.DECIMALFORMAT.format(out == 0d ? 0d : -out));
+      getAusgaben().setValue(HBCI.DECIMALFORMAT.format(out));
       getEinnahmen().setValue(HBCI.DECIMALFORMAT.format(in));
 
       double diff = in + out;
@@ -309,6 +309,9 @@ public class Overview extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: Overview.java,v $
+ * Revision 1.8  2007/02/21 11:58:52  willuhn
+ * @N Bug 315
+ *
  * Revision 1.7  2006/12/29 14:28:47  willuhn
  * @B Bug 345
  * @B jede Menge Bugfixes bei SQL-Statements mit Valuta
