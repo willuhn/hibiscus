@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.47 $
- * $Date: 2007/02/21 10:02:27 $
+ * $Revision: 1.48 $
+ * $Date: 2007/02/21 10:20:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -588,6 +588,8 @@ public class HBCIFactory {
      */
     public void interrupt()
     {
+      monitor.setStatusText(i18n.tr("Breche HBCI-Übertragung ab"));
+      Logger.warn("mark hbci session as interrupted");
       this.interrupted = true;
     }
 
@@ -633,6 +635,9 @@ public class HBCIFactory {
 
 /*******************************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.48  2007/02/21 10:20:08  willuhn
+ * @N Log-Ausgabe, wenn HBCI-Session abgebrochen wurde
+ *
  * Revision 1.47  2007/02/21 10:02:27  willuhn
  * @C Code zum Ausfuehren exklusiver Jobs redesigned
  *
