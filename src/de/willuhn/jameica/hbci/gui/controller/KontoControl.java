@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.72 $
- * $Date: 2006/12/28 15:38:43 $
+ * $Revision: 1.73 $
+ * $Date: 2007/02/22 23:37:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -452,6 +452,14 @@ public class KontoControl extends AbstractControl {
             list.addItem(i.next());
           list.sort();
         }
+        catch (IllegalArgumentException iae)
+        {
+          // Fliegt, wenn der Dialog zwischenzeitlich verlassen
+          // wurde und die Tabelle disposed ist.
+          // Dann brechen wir ab und ignorieren den Fehler.
+          Logger.warn("umsatz table has be disposed in the meantime, skip reload");
+          return;
+        }
         catch (RemoteException e)
         {
           Logger.error("error while reloading umsatz list",e);
@@ -487,6 +495,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.73  2007/02/22 23:37:11  willuhn
+ * @B dont reload umsatz list when table has been disposed
+ *
  * Revision 1.72  2006/12/28 15:38:43  willuhn
  * @N Farbige Pflichtfelder
  *
