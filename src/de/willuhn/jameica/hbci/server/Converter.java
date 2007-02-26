@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.35 $
- * $Date: 2006/11/06 22:39:30 $
+ * $Revision: 1.36 $
+ * $Date: 2007/02/26 12:48:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,6 +22,7 @@ import org.kapott.hbci.structures.Value;
 import org.kapott.hbci.swift.DTAUS;
 
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
@@ -30,6 +31,9 @@ import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.jameica.hbci.server.parser.UmsatzParser;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -92,7 +96,7 @@ public class Converter {
         umsatz.setSaldo(saldo);
       }
     }
-
+    
     Value v = u.value;
     double betrag = v.getDoubleValue();
     String curr = v.getCurr();
@@ -109,7 +113,7 @@ public class Converter {
     // Aus einer Mail von Stefan Palme
     //    Es geht noch besser. Wenn in "umsline.gvcode" nicht der Wert "999"
     //    drinsteht, sind die Variablen "text", "primanota", "usage", "other"
-    //    und "addkey" irgendwie sinnvoll gefï¿½llt.  Steht in "gvcode" der Wert
+    //    und "addkey" irgendwie sinnvoll gefüllt.  Steht in "gvcode" der Wert
     //    "999" drin, dann sind diese Variablen alle null, und der ungeparste 
     //    Inhalt des Feldes :86: steht komplett in "additional".
     
@@ -132,19 +136,47 @@ public class Converter {
         // eigenen String und verwenden den dann zum Splitten.
         usage = usage.replaceAll("(.{27})","$1--##--##");
         String[] lines = usage.split("--##--##");
-
-        if (lines.length >= 1) umsatz.setZweck(lines[0]);
-        if (lines.length >= 2) umsatz.setZweck2(lines[1]);
-        if (lines.length >= 3)
+        
+        // Jetzt schauen wir noch, ob wir einen Spezialparser registriert haben
+        boolean success = false;
+        String parser = HBCIProperties.HBCI_TRANSFER_SPECIAL_PARSER;
+        if (parser != null && parser.length() > 0)
         {
-          // Wenn noch mehr da ist, pappen wir den Rest zusammen in
-          // den Kommentar
-          StringBuffer sb = new StringBuffer();
-          for (int i=2;i<lines.length;++i)
+          try
           {
-            sb.append(lines[i]);
+            // OK, wir haben einen. Mal schauen, ob wir den instanziieren koennen.
+            Class c = Application.getClassLoader().load(parser);
+            UmsatzParser up = (UmsatzParser) c.newInstance();
+            Logger.info("applying special parser: " + parser);
+            up.parse(lines,umsatz);
+            success = true;
           }
-          umsatz.setKommentar(sb.toString());
+          catch (Exception e)
+          {
+            Logger.error("error while loading special parser " + parser,e);
+          }
+          catch (NoClassDefFoundError ncd)
+          {
+            Logger.error("special parser not found: " + parser,ncd);
+          }
+        }
+
+        // Special-Parser wollte nicht. Also dann die regulaere Methode
+        if (!success)
+        {
+          if (lines.length >= 1) umsatz.setZweck(lines[0]);
+          if (lines.length >= 2) umsatz.setZweck2(lines[1]);
+          if (lines.length >= 3)
+          {
+            // Wenn noch mehr da ist, pappen wir den Rest zusammen in
+            // den Kommentar
+            StringBuffer sb = new StringBuffer();
+            for (int i=2;i<lines.length;++i)
+            {
+              sb.append(lines[i]);
+            }
+            umsatz.setKommentar(sb.toString());
+          }
         }
       }
 		}
@@ -167,7 +199,6 @@ public class Converter {
 		{
 		  umsatz.setEmpfaenger(HBCIKonto2HibiscusAdresse(u.other));
 		}
-    
 		return umsatz;
 	}
 
@@ -312,7 +343,7 @@ public class Converter {
 		e.setName(name);
 		return e;  	
 	}
-
+	
   /**
    * Konvertiert eine Sammel-Ueberweisung in DTAUS-Format.
    * @param su Sammel-Ueberweisung.
@@ -321,7 +352,7 @@ public class Converter {
    */
   public static DTAUS HibiscusSammelUeberweisung2DTAUS(SammelUeberweisung su) throws RemoteException
   {
-    // TYPE_CREDIT = Sammelï¿½berweisung
+    // TYPE_CREDIT = Sammelüberweisung
     // TYPE_DEBIT = Sammellastschrift
     return HibiscusSammelTransfer2DTAUS(su, DTAUS.TYPE_CREDIT);
   }
@@ -334,7 +365,7 @@ public class Converter {
    */
   public static DTAUS HibiscusSammelLastschrift2DTAUS(SammelLastschrift sl) throws RemoteException
   {
-    // TYPE_CREDIT = Sammelï¿½berweisung
+    // TYPE_CREDIT = Sammelüberweisung
     // TYPE_DEBIT = Sammellastschrift
     return HibiscusSammelTransfer2DTAUS(sl, DTAUS.TYPE_DEBIT);
   }
@@ -374,6 +405,9 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.36  2007/02/26 12:48:23  willuhn
+ * @N Spezial-PSD-Parser von Michael Lambers
+ *
  * Revision 1.35  2006/11/06 22:39:30  willuhn
  * @B bug 318
  *

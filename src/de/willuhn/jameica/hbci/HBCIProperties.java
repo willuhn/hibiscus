@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCIProperties.java,v $
- * $Revision: 1.19 $
- * $Date: 2006/12/29 14:28:47 $
+ * $Revision: 1.20 $
+ * $Date: 2007/02/26 12:48:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -97,7 +97,13 @@ public class HBCIProperties
 	public final static int HBCI_PIN_MAXLENGTH =
 		settings.getInt("hbci.pin.maxlength",6);
 	
-	/**
+  /**
+   * Ein ggf vorhandener Spezialparser fuer Umsaetze 
+   */
+  public final static String HBCI_TRANSFER_SPECIAL_PARSER = 
+    settings.getString("hbci.transfer.specialparser",null);
+
+  /**
 	 * Minimale Laenge fuer PINs.
 	 */
 	public final static int HBCI_PIN_MINLENGTH = settings.getInt("hbci.pin.minlength",5);
@@ -218,6 +224,9 @@ public class HBCIProperties
 
 /**********************************************************************
  * $Log: HBCIProperties.java,v $
+ * Revision 1.20  2007/02/26 12:48:23  willuhn
+ * @N Spezial-PSD-Parser von Michael Lambers
+ *
  * Revision 1.19  2006/12/29 14:28:47  willuhn
  * @B Bug 345
  * @B jede Menge Bugfixes bei SQL-Statements mit Valuta
