@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/InternetConnectionDialog.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/04/03 12:30:17 $
+ * $Revision: 1.2 $
+ * $Date: 2007/02/26 11:40:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -51,8 +51,8 @@ public class InternetConnectionDialog extends AbstractDialog
   {
     final CheckboxInput check = new CheckboxInput(Settings.getOnlineMode());
     LabelGroup g = new LabelGroup(parent,"");
-    g.addText(i18n.tr("Bitte stellen Sie sicher, dass eine Internetverbindung verfügbar ist."),true);
-    g.addCheckbox(check,Application.getI18n().tr("Verbindung künftig automatisch herstellen"));
+    g.addText(i18n.tr("Bitte stellen Sie eine Internetverbindung her und klicken Sie auf anschließend OK."),true);
+    g.addCheckbox(check,Application.getI18n().tr("Diesen Hinweis nicht mehr anzeigen"));
     ButtonArea buttons = new ButtonArea(parent,2);
     buttons.addButton("   " + i18n.tr("OK") + "   ", new Action() {
       public void handleAction(Object context) throws ApplicationException
@@ -77,6 +77,9 @@ public class InternetConnectionDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: InternetConnectionDialog.java,v $
+ * Revision 1.2  2007/02/26 11:40:06  willuhn
+ * @C Ergonomie-Vorschlag von Gottfried
+ *
  * Revision 1.1  2006/04/03 12:30:17  willuhn
  * @N new InternetConnectionDialog
  *
