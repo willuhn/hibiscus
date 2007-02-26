@@ -172,6 +172,23 @@ Windows: C:\Dokumente und Einstellungen\&lt;username&gt;\.jameica\cfg\de.willuhn
           Siehe auch:
           <br/>
           <a href="http://www.willuhn.de/bugzilla/show_bug.cgi?id=61">http://www.willuhn.de/bugzilla/show_bug.cgi?id=61</a>
+          <br/><br/>
+          <b>Nur Linux:</b> Ein weitere Ursache können fehlende Schreibrechte auf dem USB- oder COM-Anschluss
+          sein. Neuere Linux-Distributionen verwenden UDEV zur Erstellung der Devices (/dev/*). Das hat zur Folge,
+          dass die Gerätedateien erst zur Laufzeit erzeugt werden. Das Anpassen der Dateirechte mit dem Befehl
+          "chmod" ist hier somit nicht von Dauer. Legen Sie hierzu eine Datei &quot;/etc/udev/rules.d/10-chipcard.rules&quot;
+          mit folgendem Inhalt an:
+          <pre># Rechte des Kartenlesers korrekt setzen
+BUS=="usb", SYSFS{idVendor}=="1234", SYSFS{idProduct}=="5678", GROUP="users", MODE="0664"</pre>
+          Statt &quot;1234&quot; und &quot;5678&quot; müssen Sie jedoch die korrekte Vendor- und Product-ID Ihres
+          Chipkartenlesers eintragen. Das Ermitteln dieser Werte kann durchaus umständlich sein. Sie können zum
+          einen das System-Log &quot;/var/log/messages&quot; durchsuchen oder aber die Werte mit dem Programm
+          &quot;usbview&quot; ermitteln.
+          <br/>
+          Bsp.: &quot;Kobil Kaan Standard Standard Plus&quot;
+          <pre>Product-ID: 2012
+Vendor-ID: 0d46</pre>
+          Nach einem Neustart des Systems sollten die Dateirechte dann korrekt gesetzt sein.
         </p>
 
       </li>
@@ -447,7 +464,7 @@ $JAVA_HOME/bin/java -Djava.library.path=lib/swt/linux -jar jameica-linux.jar $@
     //-->
 
     <hr/>
-    $Revision: 1.23 $
+    $Revision: 1.24 $
 
   </body>
 </html>
