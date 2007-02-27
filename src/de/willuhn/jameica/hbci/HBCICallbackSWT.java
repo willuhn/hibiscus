@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.49 $
- * $Date: 2007/01/03 11:14:20 $
+ * $Revision: 1.50 $
+ * $Date: 2007/02/27 10:20:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -82,7 +82,10 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 			case HBCIUtils.LOG_WARN:
         // Die logge ich mit DEBUG - die nerven sonst
         if (msg != null && msg.startsWith("konnte folgenden nutzerdefinierten Wert nicht in Nachricht einsetzen:"))
+        {
           Logger.debug(msg);
+          log = false;
+        }
         else
           Logger.warn(msg);
 				break;
@@ -487,6 +490,9 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.50  2007/02/27 10:20:34  willuhn
+ * @C "konnte folgenden nutzerdef..." nicht in Progressmonitor anzeigen
+ *
  * Revision 1.49  2007/01/03 11:14:20  willuhn
  * @Nachrichten "konnte folgenden nutzerdefinierten Wert nicht in Nachricht einsetzen:.*" werden nur noch mit DEBUG geloggt
  *
