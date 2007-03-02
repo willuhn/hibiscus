@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/NeueUmsaetze.java,v $
- * $Revision: 1.1 $
- * $Date: 2007/01/30 18:25:33 $
+ * $Revision: 1.2 $
+ * $Date: 2007/03/02 14:49:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,6 +21,7 @@ import de.willuhn.datasource.GenericIterator;
 import de.willuhn.jameica.gui.boxes.AbstractBox;
 import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzList;
 import de.willuhn.jameica.system.Application;
@@ -79,11 +80,22 @@ public class NeueUmsaetze extends AbstractBox
     umsaetze.paint(parent);
   }
 
+  /**
+   * @see de.willuhn.jameica.gui.boxes.Box#isActive()
+   */
+  public boolean isActive()
+  {
+    return super.isActive() && !Settings.isFirstStart();
+  }
 }
 
 
 /*********************************************************************
  * $Log: NeueUmsaetze.java,v $
+ * Revision 1.2  2007/03/02 14:49:14  willuhn
+ * @R removed old firststart view
+ * @C do not show boxes on first start
+ *
  * Revision 1.1  2007/01/30 18:25:33  willuhn
  * @N Bug 302
  *

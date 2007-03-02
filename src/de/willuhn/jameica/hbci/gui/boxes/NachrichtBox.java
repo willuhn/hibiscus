@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/NachrichtBox.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/11/16 22:29:46 $
+ * $Revision: 1.2 $
+ * $Date: 2007/03/02 14:49:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -84,11 +84,22 @@ public class NachrichtBox extends AbstractBox implements Box
     list.paint(parent);
   }
 
+  /**
+   * @see de.willuhn.jameica.gui.boxes.Box#isActive()
+   */
+  public boolean isActive()
+  {
+    return super.isActive() && !Settings.isFirstStart();
+  }
 }
 
 
 /*********************************************************************
  * $Log: NachrichtBox.java,v $
+ * Revision 1.2  2007/03/02 14:49:14  willuhn
+ * @R removed old firststart view
+ * @C do not show boxes on first start
+ *
  * Revision 1.1  2006/11/16 22:29:46  willuhn
  * @N Bug 331
  *

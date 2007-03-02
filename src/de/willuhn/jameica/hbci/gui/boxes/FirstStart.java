@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/FirstStart.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/06/29 23:10:33 $
+ * $Revision: 1.2 $
+ * $Date: 2007/03/02 14:49:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -91,11 +91,13 @@ public class FirstStart extends AbstractBox
   {
     final I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     FormTextPart text = new FormTextPart();
-    text.setText("<form><p>" + i18n.tr("Sie starten Hibiscus zum ersten Mal. Bitte richten Sie " +
+    text.setText("<form><p><span color=\"header\" font=\"header\">" + i18n.tr("Herzlich willkommen") + "</span></p>" +
+        "<p>" + i18n.tr("Sie starten Hibiscus zum ersten Mal. Bitte richten Sie " +
         "zunächst ein Sicherheitsmedium (Chipkarte, Schlüsseldiskette oder PIN/TAN) ein. " +
         "Wechseln Sie anschliessend zur Konten-Übersicht und rufen Sie die verfügbaren Konten ab " +
         "oder richten Sie diese manuell ein, falls Ihre Bank das automatische Abrufen der " +
         "HBCI-Konten nicht unterstützt.") + "</p></form>");
+    
     text.paint(parent);
     
     ButtonArea buttons = new ButtonArea(parent,2);
@@ -126,7 +128,7 @@ public class FirstStart extends AbstractBox
         new KontoList().handleAction(null);
       }
     };
-    buttons.addButton(i18n.tr("Sicherheitsmedium einrichten"),a,null,true);
+    buttons.addButton(i18n.tr("Sicherheitsmedium einrichten >>"),a,null,true);
     buttons.addButton(i18n.tr("Konten-Übersicht"),a2,null);
   }
 }
@@ -134,6 +136,10 @@ public class FirstStart extends AbstractBox
 
 /*********************************************************************
  * $Log: FirstStart.java,v $
+ * Revision 1.2  2007/03/02 14:49:14  willuhn
+ * @R removed old firststart view
+ * @C do not show boxes on first start
+ *
  * Revision 1.1  2006/06/29 23:10:33  willuhn
  * @R Box-System aus Hibiscus in Jameica-Source verschoben
  * @C keine eigene Startseite mehr, jetzt alles ueber Jameica-Boxsystem geregelt
