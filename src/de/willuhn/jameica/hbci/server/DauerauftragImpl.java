@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DauerauftragImpl.java,v $
- * $Revision: 1.22 $
- * $Date: 2006/12/01 00:02:34 $
+ * $Revision: 1.23 $
+ * $Date: 2007/03/05 10:21:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -194,8 +194,9 @@ public class DauerauftragImpl extends AbstractTransferImpl
 			}
 
 			// Und jetzt noch checken, dass sich das Datum der letzten Zahlung
-			// hinter der ersten Zahlung befindet
-			if (getLetzteZahlung() != null && !getLetzteZahlung().after(getErsteZahlung()))
+			// nicht vor der ersten Zahlung befindet
+      // BUGZILLA 371
+			if (getLetzteZahlung() != null && getLetzteZahlung().before(getErsteZahlung()))
 				throw new ApplicationException(i18n.tr("Bei Angabe eines Datum für die letzte Zahlung muss dieses nach der ersten Zahlung liegen"));
 		}
 		catch (RemoteException e)
@@ -352,6 +353,9 @@ public class DauerauftragImpl extends AbstractTransferImpl
 
 /**********************************************************************
  * $Log: DauerauftragImpl.java,v $
+ * Revision 1.23  2007/03/05 10:21:20  willuhn
+ * @B Bug 371
+ *
  * Revision 1.22  2006/12/01 00:02:34  willuhn
  * @C made unserializable members transient
  *
