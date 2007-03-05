@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/AbstractDTAUSImporter.java,v $
- * $Revision: 1.6 $
- * $Date: 2006/11/20 23:07:54 $
+ * $Revision: 1.7 $
+ * $Date: 2007/03/05 15:38:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ package de.willuhn.jameica.hbci.io;
 import java.io.IOException;
 import java.io.InputStream;
 import java.rmi.RemoteException;
+import java.util.Hashtable;
 
 import org.eclipse.swt.SWTException;
 
@@ -24,10 +25,13 @@ import de.jost_net.OBanToo.Dtaus.CSatz;
 import de.jost_net.OBanToo.Dtaus.DtausDateiParser;
 import de.jost_net.OBanToo.Dtaus.ESatz;
 import de.willuhn.datasource.GenericObject;
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
+import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.jameica.system.Settings;
@@ -41,6 +45,7 @@ import de.willuhn.util.ProgressMonitor;
 public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements Importer
 {
   private final static Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
+  private Hashtable kontenCache = new Hashtable();
 
   /**
    * ct.
@@ -57,6 +62,11 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
   public void doImport(GenericObject context, IOFormat format, InputStream is,
       ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
+    // Wir merken uns die Konten, die der User schonmal ausgewaehlt
+    // hat, um ihn nicht fuer jede Buchung mit immer wieder dem
+    // gleichen Konto zu nerven
+    this.kontenCache.clear();
+
     try
     {
       if (format == null || !(format instanceof MyIOFormat))
@@ -179,6 +189,93 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
       }
     }
   }
+  
+  /**
+   * Sucht nach dem Konto mit der angegebenen Kontonummer und BLZ.
+   * @param kontonummer
+   * @param blz
+   * @return das gefundene Konto oder wenn es nicht gefunden wurde, dann das vom Benutzer ausgewaehlte.
+   * Die Funktion liefert nie <code>null</code> sondern wirft eine ApplicationException, wenn kein Konto ausgewaehlt wurde.
+   * @throws RemoteException
+   * @throws ApplicationException
+   * @throws OperationCanceledException
+   */
+  protected Konto findKonto(String kontonummer, String blz) throws RemoteException, ApplicationException
+  {
+    // Erstmal schauen, ob der User das Konto schonmal ausgewaehlt hat:
+    Konto k = (Konto) kontenCache.get(kontonummer + blz);
+
+    // Haben wir im Cache
+    if (k != null)
+      return k;
+    
+    // Wir suchen aber nur, wenn wirklich eine Kontonummer angegeben wurde
+    if (kontonummer != null && kontonummer.length() > 0)
+    {
+      // BUGZILLA 365
+      // Fuehrende Nullen schneiden wir ab
+      if (kontonummer.startsWith("0"))
+        kontonummer = kontonummer.replaceAll("^0{1,}","");
+
+      // Wir suchen nur in der Datenbank, wenn nach dem Kuerzen noch etwas
+      // von der Kontonummer uebrig ist
+      if (kontonummer.length() > 0)
+      {
+        DBService service = de.willuhn.jameica.hbci.Settings.getDBService();
+        DBIterator konten = service.createList(Konto.class);
+        konten.addFilter("kontonummer like '%" + kontonummer + "'");
+        konten.addFilter("blz = ?", new Object[]{blz});
+        while (konten.hasNext())
+        {
+          // Fuehrende Nullen abschneiden und dann vergleichen
+          Konto test = (Konto) konten.next();
+          String kTest = test.getKontonummer();
+          if (kTest == null || kTest.length() == 0)
+            continue;
+          if (kTest.startsWith("0"))
+            kTest = kTest.replaceAll("^0{1,}","");
+          
+          // Mal schauen, ob die Kontonummern jetzt uebereinstimmen
+          if (kTest.equals(kontonummer))
+          {
+            k = test;
+            break;
+          }
+        }
+      }
+    }
+
+    // Nichts gefunden. Dann fragen wir den User
+    if (k == null)
+    {
+      // Das Konto existiert nicht im Hibiscus-Datenbestand. Also soll der
+      // User eines auswaehlen
+      KontoAuswahlDialog d = new KontoAuswahlDialog(KontoAuswahlDialog.POSITION_CENTER);
+      d.setText(i18n.tr("Konto {0} [BLZ {1}] nicht gefunden\n" +
+                        "Bitte wählen Sie das zu verwendende Konto aus.",
+                        new String[]{kontonummer == null || kontonummer.length() == 0 ? i18n.tr("<unbekannt>") : kontonummer,blz}));
+
+      try
+      {
+        k = (Konto) d.open();
+      }
+      catch (OperationCanceledException oce)
+      {
+        throw new ApplicationException(i18n.tr("Auftrag wird übersprungen"));
+      }
+      catch (Exception e)
+      {
+        throw new ApplicationException(i18n.tr("Fehler beim Auswählen des Kontos"),e);
+      }
+    }
+
+    if (k != null)
+    {
+      kontenCache.put(kontonummer + blz,k);
+      return k;
+    }
+    throw new ApplicationException(i18n.tr("Kein Konto ausgewählt"));
+  }
 
   /**
    * Muss von den abgeleiteten Klassen implementiert werden, damit sie dort das Hibiscus-Fachobjekt befuellen
@@ -198,6 +295,9 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
 
 /*********************************************************************
  * $Log: AbstractDTAUSImporter.java,v $
+ * Revision 1.7  2007/03/05 15:38:43  willuhn
+ * @B Bug 365
+ *
  * Revision 1.6  2006/11/20 23:07:54  willuhn
  * @N new package "messaging"
  * @C moved ImportMessage into new package

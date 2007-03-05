@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/DTAUSUmsatzImporter.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/10/09 10:10:09 $
+ * $Revision: 1.6 $
+ * $Date: 2007/03/05 15:38:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,33 +13,21 @@
 
 package de.willuhn.jameica.hbci.io;
 
-import java.io.InputStream;
 import java.rmi.RemoteException;
 import java.util.Date;
-import java.util.Hashtable;
 
 import de.jost_net.OBanToo.Dtaus.ASatz;
 import de.jost_net.OBanToo.Dtaus.CSatz;
 import de.willuhn.datasource.GenericObject;
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
-import de.willuhn.datasource.rmi.DBService;
-import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
-import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
-import de.willuhn.jameica.system.OperationCanceledException;
-import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
-import de.willuhn.util.ProgressMonitor;
 
 /**
  * DTAUS-Importer fuer Umsaetze.
  */
 public class DTAUSUmsatzImporter extends AbstractDTAUSImporter
 {
-  private Hashtable kontenCache = null;
-  
   /**
    * ct.
    */
@@ -48,21 +36,6 @@ public class DTAUSUmsatzImporter extends AbstractDTAUSImporter
     super();
   }
   
-  
-  /**
-   * @see de.willuhn.jameica.hbci.io.Importer#doImport(de.willuhn.datasource.GenericObject, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor)
-   */
-  public void doImport(GenericObject context, IOFormat format, InputStream is,
-      ProgressMonitor monitor) throws RemoteException, ApplicationException
-  {
-    // Wir merken uns die Konten, die der User schonmal ausgewaehlt
-    // hat, um ihn nicht fuer jede Buchung mit immer wieder dem
-    // gleichen Konto zu nerven
-    this.kontenCache = new Hashtable();
-
-    super.doImport(context,format,is,monitor);
-  }
-
   /**
    * @see de.willuhn.jameica.hbci.io.AbstractDTAUSImporter#create(de.willuhn.datasource.rmi.DBObject, de.willuhn.datasource.GenericObject, de.jost_net.OBanToo.Dtaus.CSatz, de.jost_net.OBanToo.Dtaus.ASatz)
    */
@@ -71,67 +44,21 @@ public class DTAUSUmsatzImporter extends AbstractDTAUSImporter
   {
     Umsatz u = (Umsatz) skel;
 
-    DBService service = Settings.getDBService();
-
     // Konto suchen
     String kontonummer = Long.toString(asatz.getKonto());
     String blz         = Long.toString(asatz.getBlz());
 
-    // Erstmal schauen, ob der User das Konto schonmal ausgewaehlt hat:
-    Konto k = (Konto) kontenCache.get(kontonummer + blz);
+    u.setKonto(findKonto(kontonummer,blz));
 
-    if (k == null)
-    {
-      // Ne, dann schauen wir mal, ob wir das Konto in der DB finden
-      DBIterator konten = service.createList(Konto.class);
-      konten.addFilter("kontonummer = ?", new Object[]{kontonummer});
-      konten.addFilter("blz = ?",         new Object[]{blz});
-
-      if (!konten.hasNext())
-      {
-        // Das Konto existiert nicht im Hibiscus-Datenbestand. Also soll der
-        // User eines auswaehlen
-
-        KontoAuswahlDialog d = new KontoAuswahlDialog(KontoAuswahlDialog.POSITION_CENTER);
-        d.setText(i18n.tr("Konto {0} [BLZ {1}] nicht gefunden\n" +
-                          "Bitte wählen Sie das Konto aus, für das der Umsatz importiert werden soll.",
-                          new String[]{kontonummer,blz}));
-
-        try
-        {
-          k = (Konto) d.open();
-        }
-        catch (OperationCanceledException oce)
-        {
-          throw new ApplicationException(i18n.tr("Umsatz wird übersprungen"));
-        }
-        catch (Exception e)
-        {
-          Logger.error("unable to choose konto",e);
-        }
-      }
-      else
-      {
-        k = (Konto) konten.next();
-      }
-
-      if (k != null)
-        kontenCache.put(kontonummer + blz,k);
-      else
-        throw new ApplicationException(i18n.tr("Kein Konto ausgewählt"));
-    }
-
-    
     Date date = asatz.getAusfuehrungsdatum();
     if (date == null)
       date = new Date();
-
-    u.setKonto(k);
-    u.setArt(Long.toString(csatz.getTextschluessel()));
-    u.setCustomerRef(Long.toString(csatz.getInterneKundennummer()));
+    
     u.setDatum(date);
     u.setValuta(date);
       
+    u.setArt(Long.toString(csatz.getTextschluessel()));
+    u.setCustomerRef(Long.toString(csatz.getInterneKundennummer()));
     u.setBetrag(csatz.getBetragInEuro());
     u.setEmpfaengerBLZ(Long.toString(csatz.getBlzEndbeguenstigt()));
     u.setEmpfaengerName(csatz.getNameEmpfaenger());
@@ -163,6 +90,9 @@ public class DTAUSUmsatzImporter extends AbstractDTAUSImporter
 
 /*********************************************************************
  * $Log: DTAUSUmsatzImporter.java,v $
+ * Revision 1.6  2007/03/05 15:38:43  willuhn
+ * @B Bug 365
+ *
  * Revision 1.5  2006/10/09 10:10:09  willuhn
  * @B unnoetige Datenbank-Abfrage auch wenn Konto bereits im Cache ist
  *

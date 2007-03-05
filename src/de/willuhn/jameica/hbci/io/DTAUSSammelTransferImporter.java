@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/DTAUSSammelTransferImporter.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/11/20 23:07:54 $
+ * $Revision: 1.6 $
+ * $Date: 2007/03/05 15:38:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,19 +20,13 @@ import java.util.Hashtable;
 import de.jost_net.OBanToo.Dtaus.ASatz;
 import de.jost_net.OBanToo.Dtaus.CSatz;
 import de.willuhn.datasource.GenericObject;
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
-import de.willuhn.datasource.rmi.DBService;
-import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
-import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.ProgressMonitor;
@@ -59,7 +53,6 @@ public class DTAUSSammelTransferImporter extends AbstractDTAUSImporter
       ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
     this.transferCache = new Hashtable();
-
     super.doImport(context, format, is, monitor);
   }
 
@@ -75,43 +68,11 @@ public class DTAUSSammelTransferImporter extends AbstractDTAUSImporter
       t = (SammelTransfer) skel;
       this.transferCache.put(asatz,t);
 
-      DBService service = Settings.getDBService();
-
       // Konto suchen
       String kontonummer = Long.toString(asatz.getKonto());
       String blz         = Long.toString(asatz.getBlz());
-      DBIterator konten = service.createList(Konto.class);
-      konten.addFilter("kontonummer = ?", new Object[]{kontonummer});
-      konten.addFilter("blz = ?", new Object[]{blz});
 
-      Konto k = null;
-      if (!konten.hasNext())
-      {
-        // Das Konto existiert nicht im Hibiscus-Datenbestand.
-        KontoAuswahlDialog d = new KontoAuswahlDialog(KontoAuswahlDialog.POSITION_CENTER);
-        d.setText(i18n.tr("Konto {0} [BLZ {1}] nicht gefunden\n" +
-                          "Bitte wählen Sie das Konto aus, auf dem der Auftrag ausgeführt werden soll.",
-                          new String[]{kontonummer,blz}));
-
-        try
-        {
-          k = (Konto) d.open();
-        }
-        catch (OperationCanceledException oce)
-        {
-          throw oce;
-        }
-        catch (Exception e)
-        {
-          Logger.error("unable to choose konto",e);
-          throw new OperationCanceledException(i18n.tr("Fehler beim Auswählen des Kontos"));
-        }
-      }
-      else
-      {
-        k = (Konto) konten.next();
-      }
-      t.setKonto(k);
+      t.setKonto(findKonto(kontonummer,blz));
       t.setTermin(asatz.getAusfuehrungsdatum());
       t.setBezeichnung(asatz.getKundenname());
       t.store();
@@ -164,6 +125,9 @@ public class DTAUSSammelTransferImporter extends AbstractDTAUSImporter
 
 /*********************************************************************
  * $Log: DTAUSSammelTransferImporter.java,v $
+ * Revision 1.6  2007/03/05 15:38:43  willuhn
+ * @B Bug 365
+ *
  * Revision 1.5  2006/11/20 23:07:54  willuhn
  * @N new package "messaging"
  * @C moved ImportMessage into new package
