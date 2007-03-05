@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UeberweisungImpl.java,v $
- * $Revision: 1.36 $
- * $Date: 2005/11/30 23:21:06 $
+ * $Revision: 1.37 $
+ * $Date: 2007/03/05 09:49:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -75,12 +75,29 @@ public class UeberweisungImpl extends AbstractBaseUeberweisungImpl
     setAttribute("banktermin",termin ? new Integer(1) : null);
   }
 
+  /**
+   * @see de.willuhn.jameica.hbci.server.AbstractBaseUeberweisungImpl#ueberfaellig()
+   */
+  public boolean ueberfaellig() throws RemoteException
+  {
+    // BUGZILLA 370 Termin-Ueberweisungen gelten sofort als faellig
+    if (isTerminUeberweisung())
+      return !ausgefuehrt();
+    
+    return super.ueberfaellig();
+  }
+  
+  
+
 
 }
 
 
 /**********************************************************************
  * $Log: UeberweisungImpl.java,v $
+ * Revision 1.37  2007/03/05 09:49:53  willuhn
+ * @B Bug 370
+ *
  * Revision 1.36  2005/11/30 23:21:06  willuhn
  * @B ObjectNotFoundException beim Abrufen der Dauerauftraege
  *
