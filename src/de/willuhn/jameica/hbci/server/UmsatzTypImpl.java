@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.29 $
- * $Date: 2006/12/29 14:28:47 $
- * $Author: willuhn $
+ * $Revision: 1.30 $
+ * $Date: 2007/03/06 20:06:56 $
+ * $Author: jost $
  * $Locker:  $
  * $State: Exp $
  *
@@ -41,29 +41,36 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
 
   /**
    * ct.
+   * 
    * @throws RemoteException
    */
-  public UmsatzTypImpl() throws RemoteException {
+  public UmsatzTypImpl() throws RemoteException
+  {
     super();
-    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class)
+        .getResources().getI18N();
   }
 
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#getTableName()
    */
-  protected String getTableName() {
+  protected String getTableName()
+  {
     return "umsatztyp";
   }
 
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
    */
-  protected void insertCheck() throws ApplicationException {
-		try {
+  protected void insertCheck() throws ApplicationException
+  {
+    try
+    {
       String name = getName();
-			if (name == null || name.length() == 0)
-				throw new ApplicationException(i18n.tr("Bitte geben Sie eine Bezeichnung ein."));
-      
+      if (name == null || name.length() == 0)
+        throw new ApplicationException(i18n
+            .tr("Bitte geben Sie eine Bezeichnung ein."));
+
       // Wir pruefen, ob es bereits eine Kategorie mit diesem Namen gibt
       DBIterator list = getService().createList(UmsatzTyp.class);
       while (list.hasNext())
@@ -72,23 +79,26 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
         if (other.equals(this))
           continue; // Das sind wir selbst
         if (name.equals(other.getName()))
-          throw new ApplicationException(i18n.tr("Es existiert bereits eine Kategorie mit dieser Bezeichnung"));
+          throw new ApplicationException(i18n
+              .tr("Es existiert bereits eine Kategorie mit dieser Bezeichnung"));
       }
-      
-		}
-		catch (RemoteException e)
-		{
-			Logger.error("error while insert check",e);
-			throw new ApplicationException(i18n.tr("Fehler beim Speichern des Umsatz-Typs."));
-		}
+
+    }
+    catch (RemoteException e)
+    {
+      Logger.error("error while insert check", e);
+      throw new ApplicationException(i18n
+          .tr("Fehler beim Speichern des Umsatz-Typs."));
+    }
     super.insertCheck();
   }
 
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
    */
-  protected void updateCheck() throws ApplicationException {
-		insertCheck();
+  protected void updateCheck() throws ApplicationException
+  {
+    insertCheck();
   }
 
   /**
@@ -104,27 +114,49 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
    */
   public GenericIterator getUmsaetze(int days) throws RemoteException
   {
-    DBIterator list = getService().createList(Umsatz.class);
+    Date start = null;
     if (days > 0)
     {
       long d = days * 24l * 60l * 60l * 1000l;
-      Date start = HBCIProperties.startOfDay(new Date(System.currentTimeMillis() - d));
-      list.addFilter("valuta >= ?", new Object[]{new java.sql.Date(start.getTime())});
+      start = HBCIProperties
+          .startOfDay(new Date(System.currentTimeMillis() - d));
     }
-    
+    return getUmsaetze(start, null);
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getUmsaetze(Date, Date)
+   */
+  public GenericIterator getUmsaetze(Date von, Date bis) throws RemoteException
+  {
+    DBIterator list = getService().createList(Umsatz.class);
+    if (von != null)
+    {
+      list.addFilter("valuta >= ?", new Object[] { new java.sql.Date(von
+          .getTime()) });
+    }
+    if (bis != null)
+    {
+      list.addFilter("valuta <= ?", new Object[] { new java.sql.Date(bis
+          .getTime()) });
+    }
     if (this.isNewObject()) // Neuer Umsatztyp. Der hat noch keine ID
       list.addFilter("umsatztyp_id is null");
-    else // Gibts schon. Also koennen wir auch nach festzugeordneten suchen
-      list.addFilter("(umsatztyp_id is null or umsatztyp_id=" + this.getID() + ")");
+    else
+      // Gibts schon. Also koennen wir auch nach festzugeordneten suchen
+      list.addFilter("(umsatztyp_id is null or umsatztyp_id=" + this.getID()
+          + ")");
 
     ArrayList result = new ArrayList();
     while (list.hasNext())
     {
       Umsatz u = (Umsatz) list.next();
-      if (u.isAssigned() || matches(u)) // entweder fest zugeordnet oder passt via Suchfilter
+      if (u.isAssigned() || matches(u)) // entweder fest zugeordnet oder passt
+        // via Suchfilter
         result.add(u);
     }
-    return PseudoIterator.fromArray((Umsatz[])result.toArray(new Umsatz[result.size()]));
+    return PseudoIterator.fromArray((Umsatz[]) result.toArray(new Umsatz[result
+        .size()]));
   }
 
   /**
@@ -148,7 +180,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
    */
   public void setName(String name) throws RemoteException
   {
-    this.setAttribute("name",name);
+    this.setAttribute("name", name);
   }
 
   /**
@@ -164,9 +196,9 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
    */
   public void setPattern(String pattern) throws RemoteException
   {
-    setAttribute("pattern",pattern);
+    setAttribute("pattern", pattern);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#matches(de.willuhn.jameica.hbci.rmi.Umsatz)
    */
@@ -175,42 +207,50 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
     String s = this.getPattern();
     if (s == null || s.length() == 0)
       return false;
-    
-    s = s.toLowerCase();  // Wir beachten Gross-Kleinschreibung grundsaetzlich nicht
+
+    s = s.toLowerCase(); // Wir beachten Gross-Kleinschreibung grundsaetzlich
+    // nicht
 
     String vwz1 = umsatz.getZweck();
     String vwz2 = umsatz.getZweck2();
     String name = umsatz.getEmpfaengerName();
-    String kto  = umsatz.getEmpfaengerKonto();
-    String kom  = umsatz.getKommentar();
+    String kto = umsatz.getEmpfaengerKonto();
+    String kom = umsatz.getKommentar();
 
-    if (vwz1 == null) vwz1 = "";
-    if (vwz2 == null) vwz2 = "";
-    if (name == null) name = "";
-    if (kto  == null) kto  = "";
-    if (kom  == null) kom  = "";
+    if (vwz1 == null)
+      vwz1 = "";
+    if (vwz2 == null)
+      vwz2 = "";
+    if (name == null)
+      name = "";
+    if (kto == null)
+      kto = "";
+    if (kom == null)
+      kom = "";
 
     if (isRegex())
     {
       Pattern pattern = null;
-      
+
       pattern = Pattern.compile(s, Pattern.CASE_INSENSITIVE);
       Matcher mVwz1 = pattern.matcher(vwz1);
       Matcher mVwz2 = pattern.matcher(vwz2);
       Matcher mName = pattern.matcher(name);
-      Matcher mKto  = pattern.matcher(kto);
-      Matcher mKom  = pattern.matcher(kom);
-      
-      return (mVwz1.matches() || mVwz2.matches() || mName.matches() || mKto.matches() || mKom.matches());
+      Matcher mKto = pattern.matcher(kto);
+      Matcher mKom = pattern.matcher(kom);
+
+      return (mVwz1.matches() || mVwz2.matches() || mName.matches()
+          || mKto.matches() || mKom.matches());
     }
 
     vwz1 = vwz1.toLowerCase();
     vwz2 = vwz2.toLowerCase();
     name = name.toLowerCase();
-    kto  = kto.toLowerCase();
-    kom  = kom.toLowerCase();
+    kto = kto.toLowerCase();
+    kom = kom.toLowerCase();
 
-    return (vwz1.indexOf(s) != -1 || vwz2.indexOf(s) != -1 || name.indexOf(s) != -1 || kto.indexOf(s) != -1 || kom.indexOf(s) != -1);
+    return (vwz1.indexOf(s) != -1 || vwz2.indexOf(s) != -1
+        || name.indexOf(s) != -1 || kto.indexOf(s) != -1 || kom.indexOf(s) != -1);
   }
 
   /**
@@ -227,7 +267,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
    */
   public void setRegex(boolean regex) throws RemoteException
   {
-    setAttribute("isregex",new Integer(regex ? 1 : 0));
+    setAttribute("isregex", new Integer(regex ? 1 : 0));
   }
 
   /**
@@ -238,6 +278,25 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
     return getUmsatz(-1);
   }
 
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getUmsatz(Date, Date)
+   */
+  public double getUmsatz(Date von, Date bis) throws RemoteException
+  {
+    // Das kann man mal ueber einen SQL-Join schneller machen
+    // Ne, kann man doch nicht, weil jeder Umsatz noch via matches()
+    // auf Treffer mit regulaeren Ausdruecken geprueft wird.
+    // In SQL ist das viel zu aufwaendig
+    double sum = 0.0d;
+    GenericIterator i = getUmsaetze(von, bis);
+    while (i.hasNext())
+    {
+      Umsatz u = (Umsatz) i.next();
+      sum += u.getBetrag();
+    }
+    return sum;
+  }
+  
   /**
    * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getUmsatz(int)
    */
@@ -294,7 +353,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
    */
   public void setEinnahme(boolean einnahme) throws RemoteException
   {
-    setAttribute("iseinnahme",new Integer(einnahme ? 1 : 0));
+    setAttribute("iseinnahme", new Integer(einnahme ? 1 : 0));
   }
 
   /**
@@ -348,110 +407,110 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
 
   /**
    * Ueberschrieben, um den Umsatztyp-Cache zu aktualisieren.
+   * 
    * @see de.willuhn.datasource.db.AbstractDBObject#store()
    */
   public void store() throws RemoteException, ApplicationException
   {
     super.store();
-    UmsatzImpl.UMSATZTYP_CACHE.put(this.getID(),this);
+    UmsatzImpl.UMSATZTYP_CACHE.put(this.getID(), this);
   }
-  
-  
+
 }
 
-
-/**********************************************************************
+/*******************************************************************************
  * $Log: UmsatzTypImpl.java,v $
- * Revision 1.29  2006/12/29 14:28:47  willuhn
+ * Revision 1.30  2007/03/06 20:06:56  jost
+ * Neu: Umsatz-Kategorien-Übersicht
+ * Revision 1.29 2006/12/29 14:28:47 willuhn
+ * 
  * @B Bug 345
  * @B jede Menge Bugfixes bei SQL-Statements mit Valuta
- *
- * Revision 1.28  2006/11/30 23:48:40  willuhn
+ * 
+ * Revision 1.28 2006/11/30 23:48:40 willuhn
  * @N Erste Version der Umsatz-Kategorien drin
- *
- * Revision 1.27  2006/11/29 00:40:37  willuhn
- * @N Keylistener in Umsatzlist nur dann ausfuehren, wenn sich wirklich etwas geaendert hat
+ * 
+ * Revision 1.27 2006/11/29 00:40:37 willuhn
+ * @N Keylistener in Umsatzlist nur dann ausfuehren, wenn sich wirklich etwas
+ *    geaendert hat
  * @C UmsatzTyp.matches matcht jetzt bei leeren Pattern nicht mehr
- *
- * Revision 1.26  2006/11/23 23:24:17  willuhn
+ * 
+ * Revision 1.26 2006/11/23 23:24:17 willuhn
  * @N Umsatz-Kategorien: DB-Update, Edit
- *
- * Revision 1.25  2006/11/23 17:25:38  willuhn
+ * 
+ * Revision 1.25 2006/11/23 17:25:38 willuhn
  * @N Umsatz-Kategorien - in PROGRESS!
- *
- * Revision 1.24  2006/08/25 10:13:43  willuhn
- * @B Fremdschluessel NICHT mittels PreparedStatement, da die sonst gequotet und von McKoi nicht gefunden werden. BUGZILLA 278
- *
- * Revision 1.23  2006/08/23 09:45:14  willuhn
+ * 
+ * Revision 1.24 2006/08/25 10:13:43 willuhn
+ * @B Fremdschluessel NICHT mittels PreparedStatement, da die sonst gequotet und
+ *    von McKoi nicht gefunden werden. BUGZILLA 278
+ * 
+ * Revision 1.23 2006/08/23 09:45:14 willuhn
  * @N Restliche DBIteratoren auf PreparedStatements umgestellt
- *
- * Revision 1.22  2006/05/22 12:54:52  willuhn
+ * 
+ * Revision 1.22 2006/05/22 12:54:52 willuhn
  * @N bug 235 (thanks to Markus)
- *
- * Revision 1.21  2006/04/25 23:25:09  willuhn
+ * 
+ * Revision 1.21 2006/04/25 23:25:09 willuhn
  * @N bug 81
- *
- * Revision 1.20  2006/04/03 21:39:07  willuhn
+ * 
+ * Revision 1.20 2006/04/03 21:39:07 willuhn
  * @N UmsatzChart
- *
- * Revision 1.19  2005/12/30 00:14:45  willuhn
+ * 
+ * Revision 1.19 2005/12/30 00:14:45 willuhn
  * @N first working pie charts
- *
- * Revision 1.18  2005/12/29 01:22:11  willuhn
+ * 
+ * Revision 1.18 2005/12/29 01:22:11 willuhn
  * @R UmsatzZuordnung entfernt
  * @B Debugging am Pie-Chart
- *
- * Revision 1.17  2005/12/20 00:03:26  willuhn
+ * 
+ * Revision 1.17 2005/12/20 00:03:26 willuhn
  * @N Test-Code fuer Tortendiagramm-Auswertungen
- *
- * Revision 1.16  2005/12/13 00:06:31  willuhn
+ * 
+ * Revision 1.16 2005/12/13 00:06:31 willuhn
  * @N UmsatzTyp erweitert
- *
- * Revision 1.15  2005/12/05 20:16:15  willuhn
+ * 
+ * Revision 1.15 2005/12/05 20:16:15 willuhn
  * @N Umsatz-Filter Refactoring
- *
- * Revision 1.14  2005/12/05 17:20:40  willuhn
+ * 
+ * Revision 1.14 2005/12/05 17:20:40 willuhn
  * @N Umsatz-Filter Refactoring
- *
- * Revision 1.13  2005/11/18 00:43:29  willuhn
+ * 
+ * Revision 1.13 2005/11/18 00:43:29 willuhn
  * @B bug 21
- *
- * Revision 1.12  2005/11/14 23:47:20  willuhn
+ * 
+ * Revision 1.12 2005/11/14 23:47:20 willuhn
  * @N added first code for umsatz categories
- *
- * Revision 1.11  2005/05/30 22:55:27  web0
- * *** empty log message ***
- *
- * Revision 1.10  2005/02/28 16:28:24  web0
+ * 
+ * Revision 1.11 2005/05/30 22:55:27 web0 *** empty log message ***
+ * 
+ * Revision 1.10 2005/02/28 16:28:24 web0
  * @N first code for "Sammellastschrift"
- *
- * Revision 1.9  2004/11/12 18:25:07  willuhn
- * *** empty log message ***
- *
- * Revision 1.8  2004/08/18 23:13:51  willuhn
+ * 
+ * Revision 1.9 2004/11/12 18:25:07 willuhn *** empty log message ***
+ * 
+ * Revision 1.8 2004/08/18 23:13:51 willuhn
  * @D Javadoc
- *
- * Revision 1.7  2004/07/25 17:15:06  willuhn
+ * 
+ * Revision 1.7 2004/07/25 17:15:06 willuhn
  * @C PluginLoader is no longer static
- *
- * Revision 1.6  2004/07/23 15:51:44  willuhn
+ * 
+ * Revision 1.6 2004/07/23 15:51:44 willuhn
  * @C Rest des Refactorings
- *
- * Revision 1.5  2004/07/21 23:54:30  willuhn
- * *** empty log message ***
- *
- * Revision 1.4  2004/07/13 22:20:37  willuhn
+ * 
+ * Revision 1.5 2004/07/21 23:54:30 willuhn *** empty log message ***
+ * 
+ * Revision 1.4 2004/07/13 22:20:37 willuhn
  * @N Code fuer DauerAuftraege
  * @C paar Funktionsnamen umbenannt
- *
- * Revision 1.3  2004/06/30 20:58:29  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2004/06/17 00:14:10  willuhn
+ * 
+ * Revision 1.3 2004/06/30 20:58:29 willuhn *** empty log message ***
+ * 
+ * Revision 1.2 2004/06/17 00:14:10 willuhn
  * @N GenericObject, GenericIterator
- *
- * Revision 1.1  2004/05/25 23:23:17  willuhn
+ * 
+ * Revision 1.1 2004/05/25 23:23:17 willuhn
  * @N UeberweisungTyp
  * @N Protokoll
- *
- **********************************************************************/
+ * 
+ ******************************************************************************/

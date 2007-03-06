@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/UmsatzTyp.java,v $
- * $Revision: 1.11 $
- * $Date: 2006/11/29 00:40:37 $
- * $Author: willuhn $
+ * $Revision: 1.12 $
+ * $Date: 2007/03/06 20:06:40 $
+ * $Author: jost $
  * $Locker:  $
  * $State: Exp $
  *
@@ -13,6 +13,7 @@
 package de.willuhn.jameica.hbci.rmi;
 
 import java.rmi.RemoteException;
+import java.util.Date;
 import java.util.regex.PatternSyntaxException;
 
 import de.willuhn.datasource.GenericIterator;
@@ -71,6 +72,15 @@ public interface UmsatzTyp extends DBObject
   public GenericIterator getUmsaetze() throws RemoteException;
   
   /**
+   * Liefert eine Liste von Umsaetzen aus dem angegebenen Zeitraum.
+   * @param von Start-Datum. Wenn == null, dann bleibt es unberücksichtigt.
+   * @param bis Ende-Datum. Wenn == null, dann bleibt es unberücksichtigt.
+   * @return Umsatz-Liste.
+   * @throws RemoteException
+   */
+  public GenericIterator getUmsaetze(Date von, Date bis) throws RemoteException;
+  
+  /**
    * Liefert eine Liste von Umsaetzen der letzten Tage, die diesem Umsatz-Typ entsprechen.
    * @param days Anzahl der Tage.
    * @return Umsatz-Liste.
@@ -84,6 +94,15 @@ public interface UmsatzTyp extends DBObject
    * @throws RemoteException
    */
   public double getUmsatz() throws RemoteException;
+  
+  /**
+   * Liefert die Hoehe des Umsatzes aus dem angegebenen Zeitraum.
+   * @param von Start-Datum. Wenn == null, dann bleibt es unberücksichtigt.
+   * @param bis Ende-Datum. Wenn == null, dann bleibt es unberücksichtigt.
+   * @return Hoehe des Umsatzes.
+   * @throws RemoteException
+   */
+  public double getUmsatz(Date von, Date bis) throws RemoteException;
   
   /**
    * Liefert die Hoehe des Umsatzes der letzten Tage, der fuer diesen Umsatztyp auf allen Konten vorliegt.
@@ -136,6 +155,9 @@ public interface UmsatzTyp extends DBObject
 
 /**********************************************************************
  * $Log: UmsatzTyp.java,v $
+ * Revision 1.12  2007/03/06 20:06:40  jost
+ * Neu: Umsatz-Kategorien-Ãœbersicht
+ *
  * Revision 1.11  2006/11/29 00:40:37  willuhn
  * @N Keylistener in Umsatzlist nur dann ausfuehren, wenn sich wirklich etwas geaendert hat
  * @C UmsatzTyp.matches matcht jetzt bei leeren Pattern nicht mehr
