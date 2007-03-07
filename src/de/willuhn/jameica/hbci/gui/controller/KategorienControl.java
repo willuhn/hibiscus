@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/KategorienControl.java,v $
- * $Revision: 1.1 $
- * $Date: 2007/03/06 20:06:08 $
- * $Author: jost $
+ * $Revision: 1.2 $
+ * $Date: 2007/03/07 10:29:41 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -15,7 +15,6 @@ package de.willuhn.jameica.hbci.gui.controller;
 import java.rmi.RemoteException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 import de.willuhn.datasource.GenericIterator;
@@ -27,7 +26,6 @@ import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.parts.TreePart;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.KategorieItem;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -126,7 +124,7 @@ public class KategorienControl extends AbstractControl
     Date dEnd = null;
     try
     {
-      dEnd = sdf.parse(settings.getString("von", "31.12.2007"));
+      dEnd = sdf.parse(settings.getString("bis", "31.12.2007"));
     }
     catch (ParseException e)
     {
@@ -138,27 +136,27 @@ public class KategorienControl extends AbstractControl
 
   public TreePart getTree() throws RemoteException
   {
-    settings.setAttribute("von", sdf.format((Date) start.getValue()));
-    settings.setAttribute("bis", sdf.format((Date) end.getValue()));
+    settings.setAttribute("von", sdf.format((Date) getStart().getValue()));
+    settings.setAttribute("bis", sdf.format((Date) getEnd().getValue()));
     return new TreePart(getTreeData(), null);
   }
 
   public KategorieItem getTreeData() throws RemoteException
   {
-    KategorieItem root = new KategorieItem("Kategorien", new Double(0));
+    KategorieItem root = new KategorieItem(null,"Kategorien", new Double(0));
     DBIterator listKat = Settings.getDBService().createList(UmsatzTyp.class);
     while (listKat.hasNext())
     {
       UmsatzTyp typ = (UmsatzTyp) listKat.next();
-      KategorieItem kat = new KategorieItem(typ.getName(), typ.getUmsatz(
-          (Date) start.getValue(), (Date) end.getValue()));
+      KategorieItem kat = new KategorieItem(root, typ.getName(), new Double(typ.getUmsatz(
+          (Date) start.getValue(), (Date) end.getValue())));
       GenericIterator umsaetze = typ.getUmsaetze((Date) start.getValue(),
           (Date) end.getValue());
       while (umsaetze.hasNext())
       {
         Umsatz ums = (Umsatz) umsaetze.next();
-        KategorieItem umsatz = new KategorieItem(ums.getEmpfaengerName() + ", "
-            + ums.getZweck() + " " + ums.getZweck2(), ums.getBetrag());
+        KategorieItem umsatz = new KategorieItem(kat,ums.getEmpfaengerName() + ", "
+            + ums.getZweck() + " " + ums.getZweck2(), new Double(ums.getBetrag()));
         kat.addChild(umsatz);
       }
       root.addChild(kat);
@@ -169,6 +167,10 @@ public class KategorienControl extends AbstractControl
 
 /*******************************************************************************
  * $Log: KategorienControl.java,v $
+ * Revision 1.2  2007/03/07 10:29:41  willuhn
+ * @B rmi compile fix
+ * @B swt refresh behaviour
+ *
  * Revision 1.1  2007/03/06 20:06:08  jost
  * Neu: Umsatz-Kategorien-Übersicht
  *

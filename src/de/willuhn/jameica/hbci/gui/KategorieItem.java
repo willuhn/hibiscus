@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/Attic/KategorieItem.java,v $
- * $Revision: 1.1 $
- * $Date: 2007/03/06 20:05:34 $
- * $Author: jost $
+ * $Revision: 1.2 $
+ * $Date: 2007/03/07 10:29:41 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -26,14 +26,14 @@ import de.willuhn.jameica.hbci.HBCI;
 
 public class KategorieItem implements Item
 {
+  private KategorieItem parent;
   private String text;
-
-  private double betrag;
-
+  private Double betrag;
   private ArrayList childs;
 
-  public KategorieItem(String text, double betrag)
+  public KategorieItem(KategorieItem parent, String text, Double betrag)
   {
+    this.parent = parent;
     this.text = text;
     this.betrag = betrag;
     childs = new ArrayList();
@@ -47,7 +47,7 @@ public class KategorieItem implements Item
 
   public GenericObjectNode getParent() throws RemoteException
   {
-    return null;
+    return this.parent;
   }
 
   public GenericIterator getPath() throws RemoteException
@@ -62,12 +62,23 @@ public class KategorieItem implements Item
 
   public boolean hasChild(GenericObjectNode object) throws RemoteException
   {
-    return childs.size() > 0;
+    if (object == null)
+      return false;
+
+    for (int i=0;i<this.childs.size();++i)
+    {
+      GenericObject child = (GenericObject) this.childs.get(i);
+      if (child.equals(object))
+        return true;
+    }
+    return false;
   }
 
   public boolean equals(GenericObject other) throws RemoteException
   {
-    return false;
+    if (other == null)
+      return false;
+    return this.getID().equals(other.getID());
   }
 
   public Object getAttribute(String name) throws RemoteException
@@ -91,7 +102,9 @@ public class KategorieItem implements Item
 
   public String getID() throws RemoteException
   {
-    return "1";
+    if (this.parent != null)
+      return this.parent.getID() + "." + this.text;
+    return this.text;
   }
 
   public String getPrimaryAttribute() throws RemoteException
@@ -127,12 +140,24 @@ public class KategorieItem implements Item
 
   public String getExtendableID()
   {
+    try
+    {
+      return this.getID();
+    }
+    catch (RemoteException re)
+    {
+      re.printStackTrace();
+    }
     return null;
   }
 
 }
 /*******************************************************************************
  * $Log: KategorieItem.java,v $
+ * Revision 1.2  2007/03/07 10:29:41  willuhn
+ * @B rmi compile fix
+ * @B swt refresh behaviour
+ *
  * Revision 1.1  2007/03/06 20:05:34  jost
  * Neu: Umsatz-Kategorien-Übersicht
  *
