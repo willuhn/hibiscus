@@ -88,7 +88,6 @@
 
 		<rmic verify="true" base="${class.dir}">
 			<include name="**/*.class" />
-      <exclude name="**/KategorieItem.class" />  
 			<classpath refid="compilepath" />
 		</rmic>
 

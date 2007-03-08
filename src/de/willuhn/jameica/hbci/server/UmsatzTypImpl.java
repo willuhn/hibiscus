@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.30 $
- * $Date: 2007/03/06 20:06:56 $
- * $Author: jost $
+ * $Revision: 1.31 $
+ * $Date: 2007/03/08 18:56:39 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -321,8 +321,12 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
    */
   public Object getAttribute(String arg0) throws RemoteException
   {
-    if ("umsatz".equals(arg0)) // Synthetisches Attribut "umsatz"
+    if ("umsatz".equals(arg0))
       return new Double(getUmsatz());
+
+    if ("betrag".equals(arg0)) // Synthetisches Attribut "umsatz"/"betrag"
+      return new Double(getUmsatz());
+
     if (arg0 != null && arg0.startsWith("umsatz"))
     {
       // TODO: Beheben! Das ist haesslich!
@@ -420,6 +424,9 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
 
 /*******************************************************************************
  * $Log: UmsatzTypImpl.java,v $
+ * Revision 1.31  2007/03/08 18:56:39  willuhn
+ * @N Mehrere Spalten in Kategorie-Baum
+ *
  * Revision 1.30  2007/03/06 20:06:56  jost
  * Neu: Umsatz-Kategorien-Übersicht
  * Revision 1.29 2006/12/29 14:28:47 willuhn

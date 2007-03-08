@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/Attic/KategorieItem.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/03/07 10:29:41 $
+ * $Revision: 1.3 $
+ * $Date: 2007/03/08 18:56:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,67 +13,95 @@
 package de.willuhn.jameica.hbci.gui;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
+import java.util.Date;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.GenericObjectNode;
-import de.willuhn.datasource.pseudo.PseudoIterator;
-import de.willuhn.jameica.gui.Action;
-import de.willuhn.jameica.gui.Item;
-import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
-import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 
-public class KategorieItem implements Item
+/**
+ */
+public class KategorieItem implements GenericObjectNode
 {
-  private KategorieItem parent;
-  private String text;
-  private Double betrag;
-  private ArrayList childs;
+  private UmsatzTyp typ        = null;
+  private Date von             = null;
+  private Date bis             = null;
 
-  public KategorieItem(KategorieItem parent, String text, Double betrag)
+  /**
+   * ct.
+   * @param typ der Umsatztyp.
+   * @param von Start-Datum.
+   * @param bis End-Datum.
+   */
+  public KategorieItem(UmsatzTyp typ, Date von, Date bis)
   {
-    this.parent = parent;
-    this.text = text;
-    this.betrag = betrag;
-    childs = new ArrayList();
+    this.typ = typ;
+    this.von = von;
+    this.bis = bis;
   }
 
+  /**
+   * @see de.willuhn.datasource.GenericObjectNode#getChildren()
+   */
   public GenericIterator getChildren() throws RemoteException
   {
-    return PseudoIterator.fromArray((GenericObjectNode[]) childs
-        .toArray(new KategorieItem[childs.size()]));
+    return typ.getUmsaetze(von,bis);
   }
 
+  /**
+   * @see de.willuhn.datasource.GenericObjectNode#getParent()
+   */
   public GenericObjectNode getParent() throws RemoteException
   {
-    return this.parent;
+    return null;
   }
 
+  /**
+   * @see de.willuhn.datasource.GenericObjectNode#getPath()
+   */
   public GenericIterator getPath() throws RemoteException
   {
     return null;
   }
 
+  /**
+   * @see de.willuhn.datasource.GenericObjectNode#getPossibleParents()
+   */
   public GenericIterator getPossibleParents() throws RemoteException
   {
     return null;
   }
 
+  /**
+   * @see de.willuhn.datasource.GenericObjectNode#hasChild(de.willuhn.datasource.GenericObjectNode)
+   */
   public boolean hasChild(GenericObjectNode object) throws RemoteException
   {
     if (object == null)
       return false;
 
-    for (int i=0;i<this.childs.size();++i)
+    GenericIterator children = getChildren();
+    
+    try
     {
-      GenericObject child = (GenericObject) this.childs.get(i);
-      if (child.equals(object))
-        return true;
+      while (children.hasNext())
+      {
+        GenericObject child = children.next();
+        if (child.equals(object))
+          return true;
+      }
+      return false;
     }
-    return false;
+    finally
+    {
+      children.begin();
+    }
   }
 
+  /**
+   * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
+   */
   public boolean equals(GenericObject other) throws RemoteException
   {
     if (other == null)
@@ -81,79 +109,43 @@ public class KategorieItem implements Item
     return this.getID().equals(other.getID());
   }
 
+  /**
+   * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
+   */
   public Object getAttribute(String name) throws RemoteException
   {
-    if (name.equals("text"))
-    {
-      return text + "  |  "
-          + new CurrencyFormatter("", HBCI.DECIMALFORMAT).format(betrag);
-    }
-    if (name.equals("betrag"))
-    {
-      return betrag;
-    }
-    return null;
+    return this.typ.getAttribute(name);
   }
 
+  /**
+   * @see de.willuhn.datasource.GenericObject#getAttributeNames()
+   */
   public String[] getAttributeNames() throws RemoteException
   {
-    return new String[] { "text", "betrag" };
+    return new String[] { "name", "betrag" };
   }
 
+  /**
+   * @see de.willuhn.datasource.GenericObject#getID()
+   */
   public String getID() throws RemoteException
   {
-    if (this.parent != null)
-      return this.parent.getID() + "." + this.text;
-    return this.text;
+    return this.typ.getID();
   }
 
+  /**
+   * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
+   */
   public String getPrimaryAttribute() throws RemoteException
   {
-    return "text";
+    return "name";
   }
-
-  public void addChild(Item child) throws RemoteException
-  {
-    childs.add(child);
-  }
-
-  public Action getAction() throws RemoteException
-  {
-    return null;
-  }
-
-  public String getName() throws RemoteException
-  {
-    return null;
-  }
-
-  public boolean isEnabled() throws RemoteException
-  {
-    return true;
-  }
-
-  public void setEnabled(boolean enabled, boolean recursive)
-      throws RemoteException
-  {
-
-  }
-
-  public String getExtendableID()
-  {
-    try
-    {
-      return this.getID();
-    }
-    catch (RemoteException re)
-    {
-      re.printStackTrace();
-    }
-    return null;
-  }
-
 }
 /*******************************************************************************
  * $Log: KategorieItem.java,v $
+ * Revision 1.3  2007/03/08 18:56:39  willuhn
+ * @N Mehrere Spalten in Kategorie-Baum
+ *
  * Revision 1.2  2007/03/07 10:29:41  willuhn
  * @B rmi compile fix
  * @B swt refresh behaviour

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/KategorienControl.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/03/07 10:29:41 $
+ * $Revision: 1.3 $
+ * $Date: 2007/03/08 18:56:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,21 +15,25 @@ package de.willuhn.jameica.hbci.gui.controller;
 import java.rmi.RemoteException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
-import de.willuhn.datasource.GenericIterator;
+import de.willuhn.datasource.GenericObject;
+import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
+import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.parts.TreePart;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.KategorieItem;
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
@@ -134,39 +138,38 @@ public class KategorienControl extends AbstractControl
     return this.end;
   }
 
+  /**
+   * Liefert einen Baum von Umsatzkategorien mit den Umsaetzen.
+   * @return Baum mit Umsatz-Kategorien.
+   * @throws RemoteException
+   */
   public TreePart getTree() throws RemoteException
   {
-    settings.setAttribute("von", sdf.format((Date) getStart().getValue()));
-    settings.setAttribute("bis", sdf.format((Date) getEnd().getValue()));
-    return new TreePart(getTreeData(), null);
-  }
+    Date von = (Date) getStart().getValue();
+    Date bis = (Date) getEnd().getValue();
 
-  public KategorieItem getTreeData() throws RemoteException
-  {
-    KategorieItem root = new KategorieItem(null,"Kategorien", new Double(0));
-    DBIterator listKat = Settings.getDBService().createList(UmsatzTyp.class);
-    while (listKat.hasNext())
-    {
-      UmsatzTyp typ = (UmsatzTyp) listKat.next();
-      KategorieItem kat = new KategorieItem(root, typ.getName(), new Double(typ.getUmsatz(
-          (Date) start.getValue(), (Date) end.getValue())));
-      GenericIterator umsaetze = typ.getUmsaetze((Date) start.getValue(),
-          (Date) end.getValue());
-      while (umsaetze.hasNext())
-      {
-        Umsatz ums = (Umsatz) umsaetze.next();
-        KategorieItem umsatz = new KategorieItem(kat,ums.getEmpfaengerName() + ", "
-            + ums.getZweck() + " " + ums.getZweck2(), new Double(ums.getBetrag()));
-        kat.addChild(umsatz);
-      }
-      root.addChild(kat);
-    }
-    return root;
+    settings.setAttribute("von", sdf.format(von));
+    settings.setAttribute("bis", sdf.format(bis));
+    
+    ArrayList rootItems = new ArrayList();
+
+    DBService service = Settings.getDBService();
+    DBIterator list = service.createList(UmsatzTyp.class);
+    while (list.hasNext())
+      rootItems.add(new KategorieItem((UmsatzTyp)list.next(),von,bis));
+    
+    TreePart tp = new TreePart(PseudoIterator.fromArray((GenericObject[])rootItems.toArray(new GenericObject[rootItems.size()])), null);
+    tp.addColumn(i18n.tr("Bezeichnung"),"name");
+    tp.addColumn(i18n.tr("Betrag"),"betrag",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
+    return tp;
   }
 }
 
 /*******************************************************************************
  * $Log: KategorienControl.java,v $
+ * Revision 1.3  2007/03/08 18:56:39  willuhn
+ * @N Mehrere Spalten in Kategorie-Baum
+ *
  * Revision 1.2  2007/03/07 10:29:41  willuhn
  * @B rmi compile fix
  * @B swt refresh behaviour

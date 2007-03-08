@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.42 $
- * $Date: 2007/02/19 15:01:54 $
+ * $Revision: 1.43 $
+ * $Date: 2007/03/08 18:56:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -371,6 +371,11 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
   {
     if ("umsatztyp".equals(arg0))
       return getUmsatzTyp();
+    
+    // Fuer Kategoriebaum
+    if ("name".equals(arg0))
+      return getEmpfaengerName() + ": " + getZweck();
+      
     if ("id-int".equals(arg0))
     {
       try
@@ -588,6 +593,9 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.43  2007/03/08 18:56:39  willuhn
+ * @N Mehrere Spalten in Kategorie-Baum
+ *
  * Revision 1.42  2007/02/19 15:01:54  willuhn
  * @N Auch dynamische Umsatzkategorien in Umsatzliste zeigen
  *
