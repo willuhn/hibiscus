@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzTypControl.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/12/28 15:38:43 $
- * $Author: willuhn $
+ * $Revision: 1.4 $
+ * $Date: 2007/03/10 07:17:40 $
+ * $Author: jost $
  * $Locker:  $
  * $State: Exp $
  *
@@ -46,6 +46,7 @@ public class UmsatzTypControl extends AbstractControl
   private Part list             = null;
 
   private TextInput name        = null;
+  private TextInput nummer      = null;
   private TextInput pattern     = null;
   private CheckboxInput regex   = null;
   private SelectInput art       = null;
@@ -103,6 +104,21 @@ public class UmsatzTypControl extends AbstractControl
     }
     return this.name;
   }
+
+  /**
+   * Erzeugt das Eingabe-Feld fuer die Nummer.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public TextInput getNummer() throws RemoteException
+  {
+    if (this.nummer == null)
+    {
+      this.nummer = new TextInput(getUmsatzTyp().getNummer(),5);
+      this.nummer.setMandatory(false);
+    }
+    return this.nummer;
+  }
   
   /**
    * Erzeugt das Eingabe-Feld fuer den Such-Pattern.
@@ -153,6 +169,7 @@ public class UmsatzTypControl extends AbstractControl
       String s = (String) getArt().getValue();
       getUmsatzTyp().setEinnahme(UmsatzTyp.EINNAHME.equals(s));
       getUmsatzTyp().setName((String)getName().getValue());
+      getUmsatzTyp().setNummer((String)getNummer().getValue());
       getUmsatzTyp().setPattern((String)getPattern().getValue());
       getUmsatzTyp().setRegex(((Boolean)getRegex().getValue()).booleanValue());
       getUmsatzTyp().store();
@@ -164,6 +181,12 @@ public class UmsatzTypControl extends AbstractControl
     }
     catch (RemoteException e)
     {
+      //TODO Olaf, hier sollte der SQL-Returncode aus der SQL-Exeption in der RemoteException abfragbar gemacht werden.
+      if (e.getMessage().indexOf("unique constraint violation", 0) > -1)
+      {
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Eine Kategorie mit diesem Namen existiert bereits!"), StatusBarMessage.TYPE_ERROR));
+        return;
+      }
       Logger.error("error while storing umsatz type",e);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Speichern der Umsatz-Kategorie"), StatusBarMessage.TYPE_ERROR));
     }
@@ -173,6 +196,10 @@ public class UmsatzTypControl extends AbstractControl
 
 /*********************************************************************
  * $Log: UmsatzTypControl.java,v $
+ * Revision 1.4  2007/03/10 07:17:40  jost
+ * Neu: Nummer für die Sortierung der Umsatz-Kategorien
+ * Umsatzkategorien editierbar gemacht (Verlagerung vom Code -> DB)
+ *
  * Revision 1.3  2006/12/28 15:38:43  willuhn
  * @N Farbige Pflichtfelder
  *

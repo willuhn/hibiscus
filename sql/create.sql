@@ -75,11 +75,13 @@ CREATE TABLE umsatz (
 CREATE TABLE umsatztyp (
   id NUMERIC default UNIQUEKEY('umsatztyp'),
   name varchar(255) NOT NULL,
+  nummer varchar(5) NULL,
   pattern varchar(255) NOT NULL,
   isregex int(1) NULL,
   iseinnahme int(1) NULL,
   parent_id int(5) NULL,
   UNIQUE (id),
+  UNIQUE (name),
   PRIMARY KEY (id)
 );
 

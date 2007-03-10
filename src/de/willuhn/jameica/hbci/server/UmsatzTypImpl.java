@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.31 $
- * $Date: 2007/03/08 18:56:39 $
- * $Author: willuhn $
+ * $Revision: 1.32 $
+ * $Date: 2007/03/10 07:18:50 $
+ * $Author: jost $
  * $Locker:  $
  * $State: Exp $
  *
@@ -72,16 +72,18 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
             .tr("Bitte geben Sie eine Bezeichnung ein."));
 
       // Wir pruefen, ob es bereits eine Kategorie mit diesem Namen gibt
-      DBIterator list = getService().createList(UmsatzTyp.class);
-      while (list.hasNext())
-      {
-        UmsatzTyp other = (UmsatzTyp) list.next();
-        if (other.equals(this))
-          continue; // Das sind wir selbst
-        if (name.equals(other.getName()))
-          throw new ApplicationException(i18n
-              .tr("Es existiert bereits eine Kategorie mit dieser Bezeichnung"));
-      }
+      
+      // Diesen Job lassen wir jetzt von der Datenbank machen (Unique-Index)
+//      DBIterator list = getService().createList(UmsatzTyp.class);
+//      while (list.hasNext())
+//      {
+//        UmsatzTyp other = (UmsatzTyp) list.next();
+//        if (other.equals(this))
+//          continue; // Das sind wir selbst
+//        if (name.equals(other.getName()))
+//          throw new ApplicationException(i18n
+//              .tr("Es existiert bereits eine Kategorie mit dieser Bezeichnung"));
+//      }
 
     }
     catch (RemoteException e)
@@ -164,7 +166,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
    */
   public String getPrimaryAttribute() throws RemoteException
   {
-    return "name";
+    return "id";
   }
 
   /**
@@ -181,6 +183,22 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
   public void setName(String name) throws RemoteException
   {
     this.setAttribute("name", name);
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getNummer()
+   */
+  public String getNummer() throws RemoteException
+  {
+    return (String) getAttribute("nummer");
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#setNummer(java.lang.String)
+   */
+  public void setNummer(String nummer) throws RemoteException
+  {
+    this.setAttribute("nummer", nummer);
   }
 
   /**
@@ -424,6 +442,10 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
 
 /*******************************************************************************
  * $Log: UmsatzTypImpl.java,v $
+ * Revision 1.32  2007/03/10 07:18:50  jost
+ * Neu: Nummer für die Sortierung der Umsatz-Kategorien
+ * Umsatzkategorien editierbar gemacht (Verlagerung vom Code -> DB)
+ *
  * Revision 1.31  2007/03/08 18:56:39  willuhn
  * @N Mehrere Spalten in Kategorie-Baum
  *
