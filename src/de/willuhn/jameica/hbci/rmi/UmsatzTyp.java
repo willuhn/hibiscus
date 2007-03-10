@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/UmsatzTyp.java,v $
- * $Revision: 1.12 $
- * $Date: 2007/03/06 20:06:40 $
+ * $Revision: 1.13 $
+ * $Date: 2007/03/10 07:18:36 $
  * $Author: jost $
  * $Locker:  $
  * $State: Exp $
@@ -50,6 +50,21 @@ public interface UmsatzTyp extends DBObject
    */
   public void setName(String name) throws RemoteException;
 	
+  /**
+   * Liefert die Nummer des Umsatz-Typs. Die Nummer wird f�r die Sortierung bei der Auswertung
+   * eingesetzt.
+   * @return Nummer des Umsatz-Typs.
+   * @throws RemoteException
+   */
+  public String getNummer() throws RemoteException;
+  
+  /**
+   * Speichert die Nummer des Umsatz-Typs. 
+   * @param nummer Nummer des Umsatz-Typs
+   * @throws RemoteException
+   */
+  public void setNummer(String nummer) throws RemoteException;
+  
   /**
    * Liefert das Suchmuster fuer den Umsatztyp.
    * @return Suchmuster.
@@ -155,6 +170,9 @@ public interface UmsatzTyp extends DBObject
 
 /**********************************************************************
  * $Log: UmsatzTyp.java,v $
+ * Revision 1.13  2007/03/10 07:18:36  jost
+ * Neu: Nummer für die Sortierung der Umsatz-Kategorien
+ *
  * Revision 1.12  2007/03/06 20:06:40  jost
  * Neu: Umsatz-Kategorien-Übersicht
  *

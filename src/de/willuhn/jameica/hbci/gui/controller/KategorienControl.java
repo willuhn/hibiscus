@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/KategorienControl.java,v $
- * $Revision: 1.3 $
- * $Date: 2007/03/08 18:56:39 $
- * $Author: willuhn $
+ * $Revision: 1.4 $
+ * $Date: 2007/03/10 07:16:37 $
+ * $Author: jost $
  * $Locker:  $
  * $State: Exp $
  *
@@ -155,6 +155,7 @@ public class KategorienControl extends AbstractControl
 
     DBService service = Settings.getDBService();
     DBIterator list = service.createList(UmsatzTyp.class);
+    list.setOrder("order by nummer");
     while (list.hasNext())
       rootItems.add(new KategorieItem((UmsatzTyp)list.next(),von,bis));
     
@@ -167,6 +168,9 @@ public class KategorienControl extends AbstractControl
 
 /*******************************************************************************
  * $Log: KategorienControl.java,v $
+ * Revision 1.4  2007/03/10 07:16:37  jost
+ * Neu: Nummer für die Sortierung der Umsatz-Kategorien
+ *
  * Revision 1.3  2007/03/08 18:56:39  willuhn
  * @N Mehrere Spalten in Kategorie-Baum
  *

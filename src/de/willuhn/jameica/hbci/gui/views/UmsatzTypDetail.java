@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzTypDetail.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/11/23 23:24:17 $
- * $Author: willuhn $
+ * $Revision: 1.3 $
+ * $Date: 2007/03/10 07:18:14 $
+ * $Author: jost $
  * $Locker:  $
  * $State: Exp $
  *
@@ -52,6 +52,7 @@ public class UmsatzTypDetail extends AbstractView
 		
     LabelGroup group = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
     group.addLabelPair(i18n.tr("Bezeichnung"), control.getName());
+    group.addLabelPair(i18n.tr("Nummer"), control.getNummer());
     group.addLabelPair(i18n.tr("Suchbegriff"), control.getPattern());
     group.addCheckbox(control.getRegex(),i18n.tr("Suchbegriff ist ein regul‰rer Ausdruck"));
     group.addSeparator();
@@ -74,6 +75,9 @@ public class UmsatzTypDetail extends AbstractView
 
 /**********************************************************************
  * $Log: UmsatzTypDetail.java,v $
+ * Revision 1.3  2007/03/10 07:18:14  jost
+ * Neu: Nummer f√ºr die Sortierung der Umsatz-Kategorien
+ *
  * Revision 1.2  2006/11/23 23:24:17  willuhn
  * @N Umsatz-Kategorien: DB-Update, Edit
  *
