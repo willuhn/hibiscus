@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.32 $
- * $Date: 2007/03/10 07:18:50 $
- * $Author: jost $
+ * $Revision: 1.33 $
+ * $Date: 2007/03/12 13:58:56 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -72,18 +72,21 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
             .tr("Bitte geben Sie eine Bezeichnung ein."));
 
       // Wir pruefen, ob es bereits eine Kategorie mit diesem Namen gibt
-      
-      // Diesen Job lassen wir jetzt von der Datenbank machen (Unique-Index)
-//      DBIterator list = getService().createList(UmsatzTyp.class);
-//      while (list.hasNext())
-//      {
-//        UmsatzTyp other = (UmsatzTyp) list.next();
-//        if (other.equals(this))
-//          continue; // Das sind wir selbst
-//        if (name.equals(other.getName()))
-//          throw new ApplicationException(i18n
-//              .tr("Es existiert bereits eine Kategorie mit dieser Bezeichnung"));
-//      }
+      // willuhn: In der Datenbank ist das Feld zwar bereits als UNIQUE
+      // definiert. Damit wir beim Speichern aber nicht den SQL-Code parsen
+      // muessen (und der vermutlich bei einer anderen Datenbank anders lautet)
+      // machen wir die Pruefung vor dem Speichern trotzdem noch manuell.
+      // Beim Speichern ist das auch nicht zeitkritisch.
+      DBIterator list = getService().createList(UmsatzTyp.class);
+      while (list.hasNext())
+      {
+        UmsatzTyp other = (UmsatzTyp) list.next();
+        if (other.equals(this))
+          continue; // Das sind wir selbst
+        if (name.equals(other.getName()))
+          throw new ApplicationException(i18n
+              .tr("Es existiert bereits eine Kategorie mit dieser Bezeichnung"));
+      }
 
     }
     catch (RemoteException e)
@@ -442,6 +445,9 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
 
 /*******************************************************************************
  * $Log: UmsatzTypImpl.java,v $
+ * Revision 1.33  2007/03/12 13:58:56  willuhn
+ * @C Eindeutigkeit des Namens trotz UNIQUE-Key vorher in insertCheck pruefen - das spart das Parsen der SQLException
+ *
  * Revision 1.32  2007/03/10 07:18:50  jost
  * Neu: Nummer für die Sortierung der Umsatz-Kategorien
  * Umsatzkategorien editierbar gemacht (Verlagerung vom Code -> DB)

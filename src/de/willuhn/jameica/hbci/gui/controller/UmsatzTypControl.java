@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzTypControl.java,v $
- * $Revision: 1.4 $
- * $Date: 2007/03/10 07:17:40 $
- * $Author: jost $
+ * $Revision: 1.5 $
+ * $Date: 2007/03/12 13:58:56 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -181,12 +181,6 @@ public class UmsatzTypControl extends AbstractControl
     }
     catch (RemoteException e)
     {
-      //TODO Olaf, hier sollte der SQL-Returncode aus der SQL-Exeption in der RemoteException abfragbar gemacht werden.
-      if (e.getMessage().indexOf("unique constraint violation", 0) > -1)
-      {
-        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Eine Kategorie mit diesem Namen existiert bereits!"), StatusBarMessage.TYPE_ERROR));
-        return;
-      }
       Logger.error("error while storing umsatz type",e);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Speichern der Umsatz-Kategorie"), StatusBarMessage.TYPE_ERROR));
     }
@@ -196,6 +190,9 @@ public class UmsatzTypControl extends AbstractControl
 
 /*********************************************************************
  * $Log: UmsatzTypControl.java,v $
+ * Revision 1.5  2007/03/12 13:58:56  willuhn
+ * @C Eindeutigkeit des Namens trotz UNIQUE-Key vorher in insertCheck pruefen - das spart das Parsen der SQLException
+ *
  * Revision 1.4  2007/03/10 07:17:40  jost
  * Neu: Nummer für die Sortierung der Umsatz-Kategorien
  * Umsatzkategorien editierbar gemacht (Verlagerung vom Code -> DB)
