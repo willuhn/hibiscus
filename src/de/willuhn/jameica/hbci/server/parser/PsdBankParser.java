@@ -17,7 +17,7 @@ import de.willuhn.logging.Logger;
  *  
  * @author Michael Lambers
  * @date Aug 12, 2006
- * @version $Id: PsdBankParser.java,v 1.1 2007/02/26 12:48:23 willuhn Exp $
+ * @version $Id: PsdBankParser.java,v 1.2 2007/03/12 14:18:19 willuhn Exp $
  *
  */
 public class PsdBankParser implements UmsatzParser
@@ -27,7 +27,7 @@ public class PsdBankParser implements UmsatzParser
 	private static final int KONTONUMMER_INT       = 2;
 	private static final int BLZ_INT               = 3;
 	private static final int VERWENDUNGSZWECK_INT  = 4;
-	private static final int FAELLT_WEG_INT		     = 5;
+	private static final int FAELLT_WEG_INT		   = 5;
   
   //Das scheint bei der PSD Bank Westfalen Lippe (40090900) zu passen, wobei KTO/BLZ nur bei selbst initiierten Aktionen gefüllt ist
   private final static String expression = "#i\n#v\nKTO/BLZ #n/#b";
@@ -178,17 +178,17 @@ public class PsdBankParser implements UmsatzParser
 	/**
 	 */
 	public void parse(String[] lines, Umsatz umsatz) throws RemoteException
-  {
+	{
 		try {
       
-      StringBuffer sb_gesamt = new StringBuffer();
-      for (int i=0;i<lines.length;i++) {
-        sb_gesamt.append(lines[i]);
-        sb_gesamt.append('\n');
-      }
+			StringBuffer sb_gesamt = new StringBuffer();
+			for (int i=0;i<lines.length;i++) {
+				sb_gesamt.append(lines[i]);
+				sb_gesamt.append('\n');
+			}
       
-      String daten = sb_gesamt.toString();
-      ArrayList zweck = new ArrayList();
+			String daten = sb_gesamt.toString();
+			ArrayList zweck = new ArrayList();
       
 			/* Expression vorbereiten */
 			List expr = exprParser();
@@ -202,7 +202,7 @@ public class PsdBankParser implements UmsatzParser
 				if (daten.startsWith(start) == false)
 					throw new ParseException("Daten beginnen nicht mit dem vorgebenen Text " + start, 0);
 
-        /* Daten um diesen statischen Teil kürzen */
+				/* Daten um diesen statischen Teil kürzen */
 				daten = daten.substring(start.length());
 				
 				/* Erstes Element rausnehmen, damit es unten mit einer Variablen losgeht */
@@ -231,16 +231,26 @@ public class PsdBankParser implements UmsatzParser
 					/* Da die for-Schleife definitiv mit einer Variablen beginnt, ist letzterVariablentyp immer vorbelegt! */
 					switch (letzterVariablentyp) {
 						case INHABER_INT:
-              umsatz.setEmpfaengerName(r[1]);
+							umsatz.setEmpfaengerName(r[1]);
 							break;
 						case KONTONUMMER_INT:
-              umsatz.setEmpfaengerKonto(r[1]);
+							umsatz.setEmpfaengerKonto(r[1]);
 							break;
 						case BLZ_INT:
-              umsatz.setEmpfaengerBLZ(r[1]);
+							umsatz.setEmpfaengerBLZ(r[1]);
 							break;
 						case VERWENDUNGSZWECK_INT:
-              zweck.add(r[1]);
+							/* Sind in r[i] Zeilenumbrüche enthalten, führt das später
+							 * bei der Anzeige des Verwendungszwecks zu komischen Darstellungen.
+							 * Wir müssen also die Eingangsdaten splitten und pro Zeile
+							 * einen Eintrag in der ArrayList vornehmen, dann klappts auch in der GUI */
+							String[] splitted = r[1].split("\n");
+							for (int i = 0; i < splitted.length; i++) {
+								/* Leerzeilen im Verwendungszweck brauchen wir nicht */
+								if (splitted[i].trim().length() != 0) {
+									zweck.add(splitted[i]);
+								}
+							}
 							break;
 						case FAELLT_WEG_INT:
 							/* Diese Daten wunschgemäß ignorieren */
@@ -264,34 +274,39 @@ public class PsdBankParser implements UmsatzParser
 				}
 			}
       
-      // Jetzt noch die Verwendungszwecke anhaengen
-      if (zweck.size() > 0)
-      {
-        if (zweck.size() >= 1) umsatz.setZweck((String)zweck.get(1));
-        if (zweck.size() >= 2) umsatz.setZweck2((String)zweck.get(2));
-        if (zweck.size() >= 3)
-        {
-          // Wenn noch mehr da ist, pappen wir den Rest zusammen in
-          // den Kommentar
-          StringBuffer sb = new StringBuffer();
-          for (int i=2;i<zweck.size();++i)
-          {
-            sb.append(zweck.get(i).toString());
-          }
-          umsatz.setKommentar(sb.toString());
-        }
-      }
-      
-		}
-		catch (ParseException e)
-    {
-      Logger.error("unable to parse data",e);
+			// Jetzt noch die Verwendungszwecke anhaengen
+			if (zweck.size() > 0) {
+	    	  
+//				/* DEBUG */
+//				for (int x = 0; x < zweck.size(); x++) {
+//					System.out.println("Zeile " + x + ": " + (String)zweck.get(x));
+//				}
+				  
+				/* if (zweck.size() >= 1) */ // Können wir uns sparen. wenn > 0, dann gilt automatisch >= 1
+				umsatz.setZweck((String)zweck.get(0)); // Bugfix: get(1) -> get(0)
+				if (zweck.size() >= 2) umsatz.setZweck2((String)zweck.get(1)); // Bugfix: get(2) -> get(1)
+				if (zweck.size() >= 3) {
+					// Wenn noch mehr da ist, pappen wir den Rest zusammen in
+					// den Kommentar
+					StringBuffer sb = new StringBuffer();
+					for (int i=2;i<zweck.size();++i) {
+						sb.append(zweck.get(i).toString());
+					}
+					umsatz.setKommentar(sb.toString());
+				}
+			}
+     
+		} catch (ParseException e) {
+			Logger.error("unable to parse data",e);
 		}
 	}
 }
 
 /*********************************************************************
  * $Log: PsdBankParser.java,v $
+ * Revision 1.2  2007/03/12 14:18:19  willuhn
+ * @C Michael's Aenderungen
+ *
  * Revision 1.1  2007/02/26 12:48:23  willuhn
  * @N Spezial-PSD-Parser von Michael Lambers
  *
