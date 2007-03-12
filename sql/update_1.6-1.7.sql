@@ -1,8 +1,8 @@
 ------------------------------------------------------------------------
 -- $Source: /cvsroot/hibiscus/hibiscus/sql/Attic/update_1.6-1.7.sql,v $
--- $Revision: 1.2 $
--- $Date: 2007/03/10 07:19:12 $
--- $Author: jost $
+-- $Revision: 1.3 $
+-- $Date: 2007/03/12 14:38:28 $
+-- $Author: willuhn $
 -- $Locker:  $
 -- $State: Exp $
 --
@@ -37,6 +37,9 @@ ALTER CREATE TABLE umsatz (
 -- Neue Spalte "parent_id"
 -- Neue Spalte "nummer" - Heiner
 -- Unique-Index auf die Spalte "name"  - Heiner
+-- willuhn: Musste den Unique-Key wieder entfernen, weil das DB-Update bei
+-- einigen Usern fehlschlaegt, bei denen bereits Umsatz-Kategorien mit doppelten
+-- Namen existierten (Abwaertskompatibiliaet)
 ALTER CREATE TABLE umsatztyp (
   id NUMERIC default UNIQUEKEY('umsatztyp'),
   name varchar(255) NOT NULL,
@@ -46,7 +49,7 @@ ALTER CREATE TABLE umsatztyp (
   iseinnahme int(1) NULL,
   parent_id int(5) NULL,
   UNIQUE (id),
-  UNIQUE (name),
+--  UNIQUE (name),
   PRIMARY KEY (id)
 );
 
@@ -65,6 +68,9 @@ ALTER TABLE umsatztyp ADD CONSTRAINT fk_umsatztyp2 FOREIGN KEY (parent_id) REFER
 
 ------------------------------------------------------------------------
 -- $Log: update_1.6-1.7.sql,v $
+-- Revision 1.3  2007/03/12 14:38:28  willuhn
+-- @C unique-Key auf "name" wieder entfernt (Abwaertskompatibilitaet)
+--
 -- Revision 1.2  2007/03/10 07:19:12  jost
 -- Neu: Nummer für die Sortierung der Umsatz-Kategorien
 -- Umsatzkategorien editierbar gemacht (Verlagerung vom Code -> DB)
