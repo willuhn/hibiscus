@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.49 $
- * $Date: 2007/02/21 12:10:36 $
+ * $Revision: 1.50 $
+ * $Date: 2007/03/14 12:01:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -613,7 +613,7 @@ public class HBCIFactory {
    * @param t die Exception.
    * @return die urspruengliche.
    */
-  private static Throwable getCause(Throwable t)
+  public static Throwable getCause(Throwable t)
   {
     Throwable cause = t;
     
@@ -637,6 +637,9 @@ public class HBCIFactory {
 
 /*******************************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.50  2007/03/14 12:01:33  willuhn
+ * @N made getCause public
+ *
  * Revision 1.49  2007/02/21 12:10:36  willuhn
  * Bug 349
  *
