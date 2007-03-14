@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/TurnusEditDialog.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/06/07 22:19:57 $
- * $Author: web0 $
+ * $Revision: 1.3 $
+ * $Date: 2007/03/14 11:51:23 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -143,7 +143,7 @@ public class TurnusEditDialog extends AbstractDialog {
     if (intervall != null)
       return intervall;
 
-    intervall = new SelectInput(new String[]{this.pleaseChoose,"1","2","3","4","5","6"},""+getTurnus().getIntervall());
+    intervall = new SelectInput(new String[]{this.pleaseChoose,"1","2","3","4","5","6","12"},""+getTurnus().getIntervall());
 
     if (getTurnus().getZeiteinheit() == Turnus.ZEITEINHEIT_MONATLICH)
       intervall.setComment(i18n.tr("Monate"));
@@ -416,6 +416,9 @@ public class TurnusEditDialog extends AbstractDialog {
 
 /**********************************************************************
  * $Log: TurnusEditDialog.java,v $
+ * Revision 1.3  2007/03/14 11:51:23  willuhn
+ * @N Zahlungsturnus "12"
+ *
  * Revision 1.2  2005/06/07 22:19:57  web0
  * @B bug 49
  *
