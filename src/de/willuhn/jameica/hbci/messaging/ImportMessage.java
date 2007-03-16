@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/messaging/ImportMessage.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/11/20 23:07:54 $
+ * $Revision: 1.2 $
+ * $Date: 2007/03/16 14:40:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,10 +13,8 @@
 
 package de.willuhn.jameica.hbci.messaging;
 
-import java.rmi.RemoteException;
-
 import de.willuhn.datasource.GenericObject;
-import de.willuhn.jameica.messaging.Message;
+
 
 /**
  * Diese Art von Nachricht wird verschickt, wenn ein Datensatz importiert wurde.
@@ -24,19 +22,26 @@ import de.willuhn.jameica.messaging.Message;
  * in Jameica (Application.getMessagingFactory()) registrieren und diese
  * Arte von Nachrichten abonnieren.
  */
-public interface ImportMessage extends Message
+public class ImportMessage extends ObjectMessage
 {
+
   /**
-   * Liefert das gerade importierte Objekt.
-   * @return das importierte Objekt.
-   * @throws RemoteException
+   * ct.
+   * @param object
    */
-  public GenericObject getImportedObject() throws RemoteException;
+  public ImportMessage(GenericObject object)
+  {
+    super(object);
+  }
 }
 
 
 /*********************************************************************
  * $Log: ImportMessage.java,v $
+ * Revision 1.2  2007/03/16 14:40:02  willuhn
+ * @C Redesign ImportMessage
+ * @N Aktualisierung der Umsatztabelle nach Kategorie-Zuordnung
+ *
  * Revision 1.1  2006/11/20 23:07:54  willuhn
  * @N new package "messaging"
  * @C moved ImportMessage into new package

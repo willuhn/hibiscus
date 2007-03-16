@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/messaging/NeueUmsaetze.java,v $
- * $Revision: 1.1 $
- * $Date: 2007/01/30 18:25:33 $
+ * $Revision: 1.2 $
+ * $Date: 2007/03/16 14:40:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -58,7 +58,7 @@ public class NeueUmsaetze implements MessageConsumer
     if (first != null || message == null || !(message instanceof ImportMessage))
       return;
     
-    GenericObject o = ((ImportMessage)message).getImportedObject();
+    GenericObject o = ((ImportMessage)message).getObject();
     
     if (o == null || o.getID() == null || !(o instanceof Umsatz))
       return; // interessiert uns nicht
@@ -89,6 +89,10 @@ public class NeueUmsaetze implements MessageConsumer
 
 /*********************************************************************
  * $Log: NeueUmsaetze.java,v $
+ * Revision 1.2  2007/03/16 14:40:02  willuhn
+ * @C Redesign ImportMessage
+ * @N Aktualisierung der Umsatztabelle nach Kategorie-Zuordnung
+ *
  * Revision 1.1  2007/01/30 18:25:33  willuhn
  * @N Bug 302
  *

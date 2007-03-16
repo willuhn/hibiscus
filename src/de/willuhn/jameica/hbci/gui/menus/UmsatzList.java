@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UmsatzList.java,v $
- * $Revision: 1.26 $
- * $Date: 2007/03/16 14:35:56 $
- * $Author: jost $
+ * $Revision: 1.27 $
+ * $Date: 2007/03/16 14:40:02 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -12,14 +12,11 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.menus;
 
-import de.willuhn.jameica.gui.Action;
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.extension.Extendable;
 import de.willuhn.jameica.gui.extension.ExtensionRegistry;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
-import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
@@ -42,37 +39,29 @@ public class UmsatzList extends ContextMenu implements Extendable
 {
 
 	private I18N i18n;
-  
+
   /**
    * Erzeugt ein Kontext-Menu fuer eine Liste von Umsaetzen.
    */
-  public UmsatzList(TablePart table)
+  public UmsatzList()
   {
-    this(null, table);
+    this(null);
   }
 
   /**
 	 * Erzeugt ein Kontext-Menu fuer eine Liste von Umsaetzen.
    * @param konto optionale Angabe des Kontos.
 	 */
-	public UmsatzList(final Konto konto, final TablePart table)
+	public UmsatzList(final Konto konto)
 	{
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-		
+
 		addItem(new OpenItem());
 
 		addItem(new CheckedContextMenuItem(i18n.tr("Gegenkonto in Adressbuch übernehmen"),new EmpfaengerAdd()));
     // BUGZILLA 315
     addItem(new CheckedContextMenuItem(i18n.tr("Als neue Überweisung anlegen..."),new UeberweisungNew()));
-    addItem(new CheckedContextMenuItem(i18n.tr("Umsatz-Kategorie zuordnen..."),new Action() {
-    
-      public void handleAction(Object context) throws ApplicationException
-      {
-        new UmsatzAssign(table).handleAction(context);
-        GUI.getCurrentView().reload();
-      }
-    
-    }));
+    addItem(new CheckedContextMenuItem(i18n.tr("Umsatz-Kategorie zuordnen..."),new UmsatzAssign()));
 
     // BUGZILLA #70 http://www.willuhn.de/bugzilla/show_bug.cgi?id=70
     addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete()));
@@ -126,11 +115,9 @@ public class UmsatzList extends ContextMenu implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
- * Revision 1.26  2007/03/16 14:35:56  jost
- * Austausch der Tabellenzeile nach Umsattyp-Zuordnung
- *
- * Revision 1.25  2007/03/16 13:14:28  jost
- * Austausch der Tabellenzeile nach Umsattyp-Zuordnung
+ * Revision 1.27  2007/03/16 14:40:02  willuhn
+ * @C Redesign ImportMessage
+ * @N Aktualisierung der Umsatztabelle nach Kategorie-Zuordnung
  *
  * Revision 1.24  2007/02/21 11:58:52  willuhn
  * @N Bug 315

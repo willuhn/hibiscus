@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/UmsatzAssign.java,v $
- * $Revision: 1.3 $
- * $Date: 2007/03/16 13:14:16 $
- * $Author: jost $
+ * $Revision: 1.4 $
+ * $Date: 2007/03/16 14:40:02 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -14,9 +14,9 @@ package de.willuhn.jameica.hbci.gui.action;
 
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.jameica.gui.Action;
-import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.dialogs.UmsatzTypAuswahlDialog;
+import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -27,18 +27,12 @@ import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Ordnet ein oder mehreren Umsaetzen eine Kategorie zu.
+ * Ordnet ein oder meheren Umsaetzen eine Kategorie zu.
  */
 /**
  */
 public class UmsatzAssign implements Action
 {
-  private TablePart table;
-  
-  public UmsatzAssign(TablePart table)
-  {
-    this.table = table;
-  }
 
   /**
    * Erwartet ein Objekt vom Typ <code>Transfer</code>.
@@ -91,10 +85,9 @@ public class UmsatzAssign implements Action
       umsaetze[0].transactionBegin();
       for (int i=0;i<umsaetze.length;++i)
       {
-        int ind = table.removeItem(umsaetze[i]);
         umsaetze[i].setUmsatzTyp(ut);
         umsaetze[i].store();
-        table.addItem(umsaetze[i], ind);
+        Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(umsaetze[i]));
       }
       umsaetze[0].transactionCommit();
       
@@ -135,8 +128,9 @@ public class UmsatzAssign implements Action
 
 /**********************************************************************
  * $Log: UmsatzAssign.java,v $
- * Revision 1.3  2007/03/16 13:14:16  jost
- * Austausch der Tabellenzeile nach Umsattyp-Zuordnung
+ * Revision 1.4  2007/03/16 14:40:02  willuhn
+ * @C Redesign ImportMessage
+ * @N Aktualisierung der Umsatztabelle nach Kategorie-Zuordnung
  *
  * Revision 1.2  2006/12/29 14:28:47  willuhn
  * @B Bug 345

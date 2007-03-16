@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/AbstractDTAUSImporter.java,v $
- * $Revision: 1.7 $
- * $Date: 2007/03/05 15:38:43 $
+ * $Revision: 1.8 $
+ * $Date: 2007/03/16 14:40:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -126,13 +126,7 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
             // Jetzt noch ggf. andere ueber das neue Objekt informieren
             try
             {
-              ImportMessage im = new ImportMessage() {
-                public GenericObject getImportedObject() throws RemoteException
-                {
-                  return skel;
-                }
-              };
-              Application.getMessagingFactory().sendMessage(im);
+              Application.getMessagingFactory().sendMessage(new ImportMessage(skel));
             }
             catch (Exception ex)
             {
@@ -295,6 +289,10 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
 
 /*********************************************************************
  * $Log: AbstractDTAUSImporter.java,v $
+ * Revision 1.8  2007/03/16 14:40:02  willuhn
+ * @C Redesign ImportMessage
+ * @N Aktualisierung der Umsatztabelle nach Kategorie-Zuordnung
+ *
  * Revision 1.7  2007/03/05 15:38:43  willuhn
  * @B Bug 365
  *

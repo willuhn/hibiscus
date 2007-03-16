@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/DTAUSSammelTransferImporter.java,v $
- * $Revision: 1.6 $
- * $Date: 2007/03/05 15:38:43 $
+ * $Revision: 1.7 $
+ * $Date: 2007/03/16 14:40:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -94,13 +94,7 @@ public class DTAUSSammelTransferImporter extends AbstractDTAUSImporter
     // von den einzelnen Buchungen weiss.
     try
     {
-      ImportMessage im = new ImportMessage() {
-        public GenericObject getImportedObject() throws RemoteException
-        {
-          return b;
-        }
-      };
-      Application.getMessagingFactory().sendMessage(im);
+      Application.getMessagingFactory().sendMessage(new ImportMessage(b));
     }
     catch (Exception ex)
     {
@@ -125,6 +119,10 @@ public class DTAUSSammelTransferImporter extends AbstractDTAUSImporter
 
 /*********************************************************************
  * $Log: DTAUSSammelTransferImporter.java,v $
+ * Revision 1.7  2007/03/16 14:40:02  willuhn
+ * @C Redesign ImportMessage
+ * @N Aktualisierung der Umsatztabelle nach Kategorie-Zuordnung
+ *
  * Revision 1.6  2007/03/05 15:38:43  willuhn
  * @B Bug 365
  *

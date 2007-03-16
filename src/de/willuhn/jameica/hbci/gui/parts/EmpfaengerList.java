@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/EmpfaengerList.java,v $
- * $Revision: 1.12 $
- * $Date: 2006/11/20 23:07:54 $
+ * $Revision: 1.13 $
+ * $Date: 2007/03/16 14:40:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -181,7 +181,7 @@ public class EmpfaengerList extends TablePart implements Part
     {
       if (message == null || !(message instanceof ImportMessage))
         return;
-      final GenericObject o = ((ImportMessage)message).getImportedObject();
+      final GenericObject o = ((ImportMessage)message).getObject();
       
       if (o == null || !(o instanceof Adresse))
         return;
@@ -320,6 +320,10 @@ public class EmpfaengerList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: EmpfaengerList.java,v $
+ * Revision 1.13  2007/03/16 14:40:02  willuhn
+ * @C Redesign ImportMessage
+ * @N Aktualisierung der Umsatztabelle nach Kategorie-Zuordnung
+ *
  * Revision 1.12  2006/11/20 23:07:54  willuhn
  * @N new package "messaging"
  * @C moved ImportMessage into new package

@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.43 $
- * $Date: 2007/03/16 14:35:27 $
- * $Author: jost $
+ * $Revision: 1.44 $
+ * $Date: 2007/03/16 14:40:02 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -55,6 +55,8 @@ import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.dialogs.UmsatzTypNewDialog;
 import de.willuhn.jameica.hbci.gui.input.UmsatzDaysInput;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
+import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
+import de.willuhn.jameica.hbci.messaging.ObjectMessage;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
@@ -183,7 +185,7 @@ public class UmsatzList extends TablePart implements Extendable
    */
   public synchronized void paint(Composite parent) throws RemoteException
   {
-    setContextMenu(new de.willuhn.jameica.hbci.gui.menus.UmsatzList(this.konto, this));
+    setContextMenu(new de.willuhn.jameica.hbci.gui.menus.UmsatzList(this.konto));
 
     parent.addDisposeListener(new DisposeListener() {
       public void widgetDisposed(DisposeEvent e)
@@ -587,7 +589,10 @@ public class UmsatzList extends TablePart implements Extendable
      */
     public Class[] getExpectedMessageTypes()
     {
-      return new Class[]{ImportMessage.class};
+      return new Class[]{
+        ImportMessage.class,
+        ObjectChangedMessage.class
+      };
     }
 
     /**
@@ -595,33 +600,64 @@ public class UmsatzList extends TablePart implements Extendable
      */
     public void handleMessage(Message message) throws Exception
     {
-      if (message == null || !(message instanceof ImportMessage))
+      if (message == null)
         return;
-      final GenericObject o = ((ImportMessage)message).getImportedObject();
       
+      final GenericObject o = ((ObjectMessage)message).getObject();
+
       if (o == null || !(o instanceof Umsatz))
         return;
-      
-      GUI.getDisplay().syncExec(new Runnable() {
-        public void run()
-        {
-          try
+
+      // Ein Umsatz wurde geaendert
+      if (message instanceof ObjectChangedMessage)
+      {
+        GUI.getDisplay().syncExec(new Runnable() {
+          public void run()
           {
-            umsaetze.add(o);
-            if (filter && kl != null)
-              kl.process();
-            else
+            try
             {
-              addItem(o);
-              sort();
+              int index = removeItem(o);
+              if (index == -1)
+                return; // Objekt war nicht in der Tabelle
+              
+              // Aktualisieren, in dem wir es neu an der gleichen Position eintragen
+             addItem(o,index);
+             
+             // Wir markieren es noch in der Tabelle
+             select(o);
+            }
+            catch (Exception e)
+            {
+              Logger.error("unable to add object to list",e);
             }
           }
-          catch (Exception e)
+        });
+        return;
+      }
+      // Neuer Umsatz hinzugekommen
+      if (message instanceof ImportMessage)
+      {
+        GUI.getDisplay().syncExec(new Runnable() {
+          public void run()
           {
-            Logger.error("unable to add object to list",e);
+            try
+            {
+              umsaetze.add(o);
+              if (filter && kl != null)
+                kl.process();
+              else
+              {
+                addItem(o);
+                sort();
+              }
+            }
+            catch (Exception e)
+            {
+              Logger.error("unable to add object to list",e);
+            }
           }
-        }
-      });
+        });
+      }
     }
 
     /**
@@ -648,8 +684,9 @@ public class UmsatzList extends TablePart implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
- * Revision 1.43  2007/03/16 14:35:27  jost
- * Austausch der Tabellenzeile nach Umsattyp-Zuordnung
+ * Revision 1.44  2007/03/16 14:40:02  willuhn
+ * @C Redesign ImportMessage
+ * @N Aktualisierung der Umsatztabelle nach Kategorie-Zuordnung
  *
  * Revision 1.42  2006/12/29 14:28:47  willuhn
  * @B Bug 345

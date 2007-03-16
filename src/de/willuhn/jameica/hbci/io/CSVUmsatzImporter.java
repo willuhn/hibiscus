@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Attic/CSVUmsatzImporter.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/11/20 23:07:54 $
+ * $Revision: 1.3 $
+ * $Date: 2007/03/16 14:40:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -125,12 +125,7 @@ public class CSVUmsatzImporter implements Importer
           }
           u.setChangedByUser();
           u.store();
-          Application.getMessagingFactory().sendMessage(new ImportMessage() {
-            public GenericObject getImportedObject() throws RemoteException
-            {
-              return u;
-            }
-          });
+          Application.getMessagingFactory().sendMessage(new ImportMessage(u));
           created++;
         }
         catch (ApplicationException ae)
@@ -227,6 +222,10 @@ public class CSVUmsatzImporter implements Importer
 
 /*******************************************************************************
  * $Log: CSVUmsatzImporter.java,v $
+ * Revision 1.3  2007/03/16 14:40:02  willuhn
+ * @C Redesign ImportMessage
+ * @N Aktualisierung der Umsatztabelle nach Kategorie-Zuordnung
+ *
  * Revision 1.2  2006/11/20 23:07:54  willuhn
  * @N new package "messaging"
  * @C moved ImportMessage into new package

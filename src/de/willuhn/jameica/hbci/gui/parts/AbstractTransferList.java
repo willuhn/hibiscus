@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractTransferList.java,v $
- * $Revision: 1.12 $
- * $Date: 2006/12/29 16:09:21 $
+ * $Revision: 1.13 $
+ * $Date: 2007/03/16 14:40:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -352,7 +352,7 @@ public abstract class AbstractTransferList extends TablePart implements Part
     {
       if (message == null || !(message instanceof ImportMessage))
         return;
-      final GenericObject o = ((ImportMessage)message).getImportedObject();
+      final GenericObject o = ((ImportMessage)message).getObject();
       
       if (o == null || !(o instanceof Transfer))
         return;
@@ -387,6 +387,10 @@ public abstract class AbstractTransferList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: AbstractTransferList.java,v $
+ * Revision 1.13  2007/03/16 14:40:02  willuhn
+ * @C Redesign ImportMessage
+ * @N Aktualisierung der Umsatztabelle nach Kategorie-Zuordnung
+ *
  * Revision 1.12  2006/12/29 16:09:21  willuhn
  * @R Uhrzeit aus Termin entfernt
  *

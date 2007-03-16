@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SammelTransferBuchungList.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/11/20 23:07:54 $
+ * $Revision: 1.6 $
+ * $Date: 2007/03/16 14:40:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -229,7 +229,7 @@ public class SammelTransferBuchungList extends TablePart
     {
       if (message == null || !(message instanceof ImportMessage))
         return;
-      final GenericObject o = ((ImportMessage)message).getImportedObject();
+      final GenericObject o = ((ImportMessage)message).getObject();
       
       if (o == null || !(o instanceof SammelTransferBuchung))
         return;
@@ -264,6 +264,10 @@ public class SammelTransferBuchungList extends TablePart
 
 /*********************************************************************
  * $Log: SammelTransferBuchungList.java,v $
+ * Revision 1.6  2007/03/16 14:40:02  willuhn
+ * @C Redesign ImportMessage
+ * @N Aktualisierung der Umsatztabelle nach Kategorie-Zuordnung
+ *
  * Revision 1.5  2006/11/20 23:07:54  willuhn
  * @N new package "messaging"
  * @C moved ImportMessage into new package
