@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UmsatzList.java,v $
- * $Revision: 1.24 $
- * $Date: 2007/02/21 11:58:52 $
- * $Author: willuhn $
+ * $Revision: 1.25 $
+ * $Date: 2007/03/16 13:14:28 $
+ * $Author: jost $
  * $Locker:  $
  * $State: Exp $
  *
@@ -19,6 +19,7 @@ import de.willuhn.jameica.gui.extension.ExtensionRegistry;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
+import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
@@ -41,13 +42,16 @@ public class UmsatzList extends ContextMenu implements Extendable
 {
 
 	private I18N i18n;
+  
+  private TablePart table;
 
   /**
    * Erzeugt ein Kontext-Menu fuer eine Liste von Umsaetzen.
    */
-  public UmsatzList()
+  public UmsatzList(TablePart table)
   {
-    this(null);
+//    this(null);
+    this.table = table;
   }
 
   /**
@@ -67,7 +71,7 @@ public class UmsatzList extends ContextMenu implements Extendable
     
       public void handleAction(Object context) throws ApplicationException
       {
-        new UmsatzAssign().handleAction(context);
+        new UmsatzAssign(table).handleAction(context);
         GUI.getCurrentView().reload();
       }
     
@@ -125,6 +129,9 @@ public class UmsatzList extends ContextMenu implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.25  2007/03/16 13:14:28  jost
+ * Austausch der Tabellenzeile nach Umsattyp-Zuordnung
+ *
  * Revision 1.24  2007/02/21 11:58:52  willuhn
  * @N Bug 315
  *
