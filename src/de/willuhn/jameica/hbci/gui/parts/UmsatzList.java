@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.42 $
- * $Date: 2006/12/29 14:28:47 $
- * $Author: willuhn $
+ * $Revision: 1.43 $
+ * $Date: 2007/03/16 14:35:27 $
+ * $Author: jost $
  * $Locker:  $
  * $State: Exp $
  *
@@ -183,7 +183,7 @@ public class UmsatzList extends TablePart implements Extendable
    */
   public synchronized void paint(Composite parent) throws RemoteException
   {
-    setContextMenu(new de.willuhn.jameica.hbci.gui.menus.UmsatzList(this.konto));
+    setContextMenu(new de.willuhn.jameica.hbci.gui.menus.UmsatzList(this.konto, this));
 
     parent.addDisposeListener(new DisposeListener() {
       public void widgetDisposed(DisposeEvent e)
@@ -648,6 +648,9 @@ public class UmsatzList extends TablePart implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.43  2007/03/16 14:35:27  jost
+ * Austausch der Tabellenzeile nach Umsattyp-Zuordnung
+ *
  * Revision 1.42  2006/12/29 14:28:47  willuhn
  * @B Bug 345
  * @B jede Menge Bugfixes bei SQL-Statements mit Valuta
