@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.33 $
- * $Date: 2007/03/12 13:58:56 $
- * $Author: willuhn $
+ * $Revision: 1.34 $
+ * $Date: 2007/03/16 12:55:26 $
+ * $Author: jost $
  * $Locker:  $
  * $State: Exp $
  *
@@ -169,7 +169,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
    */
   public String getPrimaryAttribute() throws RemoteException
   {
-    return "id";
+    return "name";
   }
 
   /**
@@ -445,6 +445,9 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
 
 /*******************************************************************************
  * $Log: UmsatzTypImpl.java,v $
+ * Revision 1.34  2007/03/16 12:55:26  jost
+ * Bugfix: Kategorie wurde in der Kontenliste nicht korrekt angezeigt.
+ *
  * Revision 1.33  2007/03/12 13:58:56  willuhn
  * @C Eindeutigkeit des Namens trotz UNIQUE-Key vorher in insertCheck pruefen - das spart das Parsen der SQLException
  *
