@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/UmsatzTypInput.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/11/30 23:48:40 $
- * $Author: willuhn $
+ * $Revision: 1.2 $
+ * $Date: 2007/03/18 08:13:55 $
+ * $Author: jost $
  * $Locker:  $
  * $State: Exp $
  *
@@ -19,10 +19,10 @@ import java.util.Calendar;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
-import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -42,9 +42,9 @@ public class UmsatzTypInput extends SelectInput
    * ct.
    * @throws RemoteException
    */
-  public UmsatzTypInput() throws RemoteException
+  public UmsatzTypInput(DBIterator list) throws RemoteException
   {
-    this((UmsatzTyp)null);
+    this(list, (UmsatzTyp)null);
   }
 
   /**
@@ -52,9 +52,9 @@ public class UmsatzTypInput extends SelectInput
    * @param umsatz der vorselektierte Typ dieses Umsatzes.
    * @throws RemoteException
    */
-  public UmsatzTypInput(Umsatz umsatz) throws RemoteException
+  public UmsatzTypInput(DBIterator list, Umsatz umsatz) throws RemoteException
   {
-    this(umsatz == null ? null : umsatz.getUmsatzTyp());
+    this(list, umsatz == null ? null : umsatz.getUmsatzTyp());
   }
 
   /**
@@ -62,9 +62,9 @@ public class UmsatzTypInput extends SelectInput
    * @param umsatzTyp der vorselectierte Umsatz-Typ.
    * @throws RemoteException
    */
-  public UmsatzTypInput(UmsatzTyp umsatzTyp) throws RemoteException
+  public UmsatzTypInput(DBIterator list, UmsatzTyp umsatzTyp) throws RemoteException
   {
-    super(Settings.getDBService().createList(UmsatzTyp.class), umsatzTyp);
+    super(list, umsatzTyp);
     this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     this.setPleaseChoose(i18n.tr("<Keine Kategorie>"));
     refreshComment();
@@ -108,6 +108,9 @@ public class UmsatzTypInput extends SelectInput
 
 /*********************************************************************
  * $Log: UmsatzTypInput.java,v $
+ * Revision 1.2  2007/03/18 08:13:55  jost
+ * Sortierte Anzeige der Umsatz-Kategorien.
+ *
  * Revision 1.1  2006/11/30 23:48:40  willuhn
  * @N Erste Version der Umsatz-Kategorien drin
  *
