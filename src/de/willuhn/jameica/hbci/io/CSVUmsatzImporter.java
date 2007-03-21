@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Attic/CSVUmsatzImporter.java,v $
- * $Revision: 1.3 $
- * $Date: 2007/03/16 14:40:02 $
+ * $Revision: 1.4 $
+ * $Date: 2007/03/21 00:45:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,13 +21,16 @@ import java.util.Hashtable;
 import org.eclipse.swt.SWTException;
 
 import de.willuhn.datasource.GenericObject;
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.io.CSVFile;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.dialogs.CSVImportDialog;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -44,6 +47,7 @@ public class CSVUmsatzImporter implements Importer
   private static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
   private static Hashtable types = new Hashtable();
+  private Hashtable kategorieCache = null;
   
   static
   {
@@ -61,6 +65,7 @@ public class CSVUmsatzImporter implements Importer
     umsatz.put("art",i18n.tr("Art der Buchung"));
     umsatz.put("customerref",i18n.tr("Kundenreferenz"));
     umsatz.put("kommentar",i18n.tr("Kommentar"));
+    umsatz.put("umsatztyp",i18n.tr("Kategorie"));
     
     types.put(Umsatz.class,umsatz);
   
@@ -121,6 +126,14 @@ public class CSVUmsatzImporter implements Importer
             String name = mapping.get(i);
             if (name == null)
               continue; // nicht zugeordnet
+            
+            // BUGZILLA 373 Sonderregel fuer Umsatz-Typ. Nicht schoen,
+            // aber sonst muesste ich das direkt in UmsatzImpl machen
+            if ("umsatztyp".equals(name))
+            {
+              u.setUmsatzTyp(findUmsatzTyp(line[i]));
+              continue;
+            }
             u.setGenericAttribute(name,line[i]);
           }
           u.setChangedByUser();
@@ -218,10 +231,59 @@ public class CSVUmsatzImporter implements Importer
     };
     return new IOFormat[] { f };
   }
+  
+  /**
+   * Sucht nach einem Umsatztyp anhand des Namens oder
+   * legt ihn ggf selbst an.
+   * @param name der Name.
+   * @return der Umsatztyp.
+   */
+  private synchronized UmsatzTyp findUmsatzTyp(String name)
+  {
+    if (name == null || name.length() == 0)
+      return null;
+    
+    try
+    {
+      if (kategorieCache == null)
+      {
+        kategorieCache = new Hashtable();
+        DBIterator kategorien = Settings.getDBService().createList(UmsatzTyp.class);
+        while (kategorien.hasNext())
+        {
+          UmsatzTyp t = (UmsatzTyp) kategorien.next();
+          kategorieCache.put(t.getName().toLowerCase(),t);
+        }
+      }
+      
+      UmsatzTyp t = (UmsatzTyp) kategorieCache.get(name.toLowerCase());
+      if (t != null)
+        return t;
+      
+      // Nicht gefunden. Also neu anlegen
+      t = (UmsatzTyp) Settings.getDBService().createObject(UmsatzTyp.class,null);
+      t.setName(name);
+      t.store();
+      kategorieCache.put(name.toLowerCase(),t);
+      return t;
+    }
+    catch (ApplicationException ae)
+    {
+      Logger.error(i18n.tr("Fehler beim Anlegen der Kategorie {0}: ",name) + ae.getMessage());
+    }
+    catch (RemoteException re)
+    {
+      Logger.error("error while loading categories",re);
+    }
+    return null;
+  }
 }
 
 /*******************************************************************************
  * $Log: CSVUmsatzImporter.java,v $
+ * Revision 1.4  2007/03/21 00:45:32  willuhn
+ * @N Bug 373 - Export/Import der Umsatzkategorien zusammen mit den Umsatzen bei CSV-Format
+ *
  * Revision 1.3  2007/03/16 14:40:02  willuhn
  * @C Redesign ImportMessage
  * @N Aktualisierung der Umsatztabelle nach Kategorie-Zuordnung
