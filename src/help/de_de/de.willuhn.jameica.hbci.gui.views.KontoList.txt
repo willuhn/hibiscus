@@ -7,7 +7,7 @@
 		HBCI-Sicherheitsmedien bieten i.d.R. die Möglichkeit, die
 		über sie erreichbaren Konten automatisch zu
 		ermitteln - insofern dies Ihre Bank unterstützt.
-		Wählen Sie also einfach <b>Daten aus Medium lesen</b>
+		Wählen Sie also einfach <b>Konten automatisch aus Sicherheitsmedium</b>
 		um die Bankverbindungen zu ermitteln. Bereits
 		eingerichtete Konten werden hierbei nicht überschrieben.
 	</p>

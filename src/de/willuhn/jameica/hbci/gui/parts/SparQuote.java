@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SparQuote.java,v $
- * $Revision: 1.6 $
- * $Date: 2006/08/01 21:29:12 $
+ * $Revision: 1.7 $
+ * $Date: 2007/03/21 16:56:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,13 +17,12 @@ import java.rmi.RemoteException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TableItem;
 
@@ -31,12 +30,15 @@ import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
+import de.willuhn.jameica.gui.input.IntegerInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
@@ -44,6 +46,7 @@ import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.chart.LineChart;
 import de.willuhn.jameica.hbci.gui.chart.LineChartData;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -51,6 +54,7 @@ import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -64,6 +68,7 @@ public class SparQuote implements Part
   private LineChart chart       = null;
   
   private Konto konto           = null;
+  private int stichtag          = 1;
   private GenericIterator data  = null;
   private GenericIterator trend = null;
 
@@ -84,6 +89,7 @@ public class SparQuote implements Part
   {
     Container container = new SimpleContainer(parent);
     
+    // Wir nehmen standardmaessig das erste Konto
     DBIterator konten = Settings.getDBService().createList(Konto.class);
     if (konten.hasNext())
     {
@@ -92,29 +98,17 @@ public class SparQuote implements Part
       load();
     }
 
-    final SelectInput auswahl = new SelectInput(Settings.getDBService().createList(Konto.class),konto);
+    final SelectInput auswahl = new SelectInput(konten,konto);
     auswahl.setPleaseChoose(i18n.tr("Alle Konten"));
+    auswahl.setName(i18n.tr("Konto"));
     auswahl.setAttribute("longname");
-    auswahl.addListener(new Listener() {
-      public void handleEvent(Event event)
-      {
-        konto = (Konto) auswahl.getValue();
-        try
-        {
-          load();
-          redraw();
-          if (chart != null)
-            chart.redraw();
-        }
-        catch (RemoteException re)
-        {
-          Logger.error("error while calculating values",re);
-          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Ermitteln der Sparquote"),StatusBarMessage.TYPE_ERROR));
-        }
-      }
-    });
+    container.addInput(auswahl);
     
-    container.addLabelPair(i18n.tr("Konto"),auswahl);
+    // BUGZILLA 337
+    final IntegerInput si = new IntegerInput(this.stichtag);
+    si.setComment(i18n.tr(". Tag des Monats"));
+    si.setName(i18n.tr("Stichtag"));
+    container.addInput(si);
     
     // Wir initialisieren die Tabelle erstmal ohne Werte.
     this.table = new TablePart(data == null ? PseudoIterator.fromArray(new UmsatzEntry[]{new UmsatzEntry()}) : data,null);
@@ -148,9 +142,6 @@ public class SparQuote implements Part
     folder.setLayoutData(new GridData(GridData.FILL_BOTH));
     folder.setBackground(Color.BACKGROUND.getSWTColor());
 
-    TabGroup tab = new TabGroup(folder,i18n.tr("Tabellarische Auswertung"));
-    this.table.paint(tab.getComposite());
-    
     try
     {
       TabGroup tab2 = new TabGroup(folder,i18n.tr("Grafische Auswertung"));
@@ -166,6 +157,34 @@ public class SparQuote implements Part
       Logger.error("unable to create chart",e);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Erzeugen des Diagramms"),StatusBarMessage.TYPE_ERROR));
     }
+
+    TabGroup tab = new TabGroup(folder,i18n.tr("Tabellarische Auswertung"));
+    this.table.paint(tab.getComposite());
+
+    ButtonArea buttons = new ButtonArea(parent,2);
+    buttons.addButton(i18n.tr("Zurück"),new Back());
+    buttons.addButton(i18n.tr("Aktualisieren"), new Action() {
+    
+      public void handleAction(Object context) throws ApplicationException
+      {
+        konto = (Konto) auswahl.getValue();
+        Integer value = (Integer) si.getValue();
+        stichtag = value == null ? 1 : value.intValue();
+        try
+        {
+          load();
+          redraw();
+          if (chart != null)
+            chart.redraw();
+        }
+        catch (RemoteException re)
+        {
+          Logger.error("error while calculating values",re);
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Ermitteln der Sparquote"),StatusBarMessage.TYPE_ERROR));
+        }
+      }
+    
+    },null,true);
   }
 
   /**
@@ -193,57 +212,51 @@ public class SparQuote implements Part
    */
   private void load() throws RemoteException
   {
-    GenericIterator konten = null;
+    DBIterator umsaetze = null;
     
-    if (konto == null)
-    {
-      // Alle Konten
-      konten = Settings.getDBService().createList(Konto.class);
-    }
+    if (konto != null)
+      umsaetze = konto.getUmsaetze();
     else
-    {
-      konten = PseudoIterator.fromArray(new Konto[]{konto});
-    }
-    
-    
-    ArrayList list  = new ArrayList();
-    
-    while (konten.hasNext())
-    {
-      Konto k = (Konto) konten.next();
-      DBIterator umsaetze = k.getUmsaetze();
-      umsaetze.setOrder("ORDER BY TONUMBER(valuta)"); // Reihenfolge umkehren
+      umsaetze = Settings.getDBService().createList(Umsatz.class);
 
-      UmsatzEntry currentEntry = null;
-      String currentMonth      = null;
+    // Wichtig: Die Umsaetze muessen chronologisch sortiert sein.
+    umsaetze.setOrder("ORDER BY TONUMBER(valuta)"); // Reihenfolge umkehren
+    
+    ArrayList list           = new ArrayList();
+    UmsatzEntry currentEntry = null;
+    Calendar cal             = Calendar.getInstance();
+    Date currentLimit        = null;
 
-      while (umsaetze.hasNext())
+    while (umsaetze.hasNext())
+    {
+      Umsatz u = (Umsatz) umsaetze.next();
+      Date valuta = u.getValuta();
+      if (valuta == null)
       {
-        Umsatz u = (Umsatz) umsaetze.next();
-        Date valuta = u.getValuta();
-        if (valuta == null)
-        {
-          Logger.warn("no valuta found for umsatz, skipping record");
-          continue;
-        }
-        
-        String month = DATEFORMAT.format(valuta);
-        if (currentMonth == null || !month.equals(currentMonth))
-        {
-          // einer neuer Monat
-          // Und nun einen neuen Datensatz anlegen
-          currentMonth = month;
-          currentEntry = new UmsatzEntry();
-          list.add(currentEntry);
-          currentEntry.monat = valuta;
-        }
-        
-        double betrag = u.getBetrag();
-        if (betrag > 0)
-          currentEntry.einnahmen += betrag;
-        else
-          currentEntry.ausgaben -= betrag;
+        Logger.warn("no valuta found for umsatz, skipping record");
+        continue;
       }
+
+      if (currentLimit == null || valuta.after(currentLimit))
+      {
+        // Wir haben das Limit erreicht. Also beginnen wir einen neuen Block
+        currentEntry = new UmsatzEntry();
+        currentEntry.monat = valuta;
+        list.add(currentEntry);
+
+        // BUGZILLA 337
+        // Neues Limit definieren
+        cal.setTime(valuta);
+        cal.add(Calendar.MONTH,1);
+        cal.set(Calendar.DAY_OF_MONTH,stichtag);
+        currentLimit = cal.getTime();
+      }
+      
+      double betrag = u.getBetrag();
+      if (betrag > 0)
+        currentEntry.einnahmen += betrag;
+      else
+        currentEntry.ausgaben -= betrag;
     }
     this.data  = PseudoIterator.fromArray((UmsatzEntry[])list.toArray(new UmsatzEntry[list.size()]));
     
@@ -257,6 +270,13 @@ public class SparQuote implements Part
     this.trend = PseudoIterator.fromArray((UmsatzEntry[])trendList.toArray(new UmsatzEntry[trendList.size()]));
   }
   
+  /**
+   * Liefert einen synthetischen Umsatz-Entry basierend auf den
+   * Daten der 4 links und rechts daneben liegenden Monaten als Durchschnitt.
+   * @param list Liste der Umsaetze.
+   * @param pos Position.
+   * @return der Durchschnitt.
+   */
   private UmsatzEntry getDurchschnitt(ArrayList list, int pos)
   {
     UmsatzEntry ue = new UmsatzEntry();
@@ -269,7 +289,7 @@ public class SparQuote implements Part
         found++;
         ue.ausgaben  += current.ausgaben;
         ue.einnahmen += current.einnahmen;
-        if (i == 0)
+        if (i == 0) // Als Monat verwenden wir genau den aus der Mitte
           ue.monat = current.monat;
       }
       catch (IndexOutOfBoundsException e)
@@ -462,6 +482,11 @@ public class SparQuote implements Part
 
 /*********************************************************************
  * $Log: SparQuote.java,v $
+ * Revision 1.7  2007/03/21 16:56:56  willuhn
+ * @N Online-Hilfe aktualisiert
+ * @N Bug 337 (Stichtag in Sparquote)
+ * @C Refactoring in Sparquote
+ *
  * Revision 1.6  2006/08/01 21:29:12  willuhn
  * @N Geaenderte LineCharts
  *

@@ -1,0 +1,14 @@
+<form>
+	<p>
+		<span color="header" font="header">Sparquote eines Kontos</span>
+	</p>
+	
+	<p>
+	  Diese Auswertung stellt die monatlichen Ausgaben den Einnahmen
+	  gegenüber und bildet den sich daraus ergebenden Saldo grafisch
+	  im zeitlichen Verlauf ab. Die Linie <b>Durchschnitt</b>
+	  stellt das statistische Mittel des Saldos dar. Mit Hilfe
+	  dieser können Sie einen Trend erkennen, in den der Saldo
+	  des Kontos tendiert.
+	</p>
+</form>

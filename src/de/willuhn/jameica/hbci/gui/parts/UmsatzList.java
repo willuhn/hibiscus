@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.44 $
- * $Date: 2007/03/16 14:40:02 $
+ * $Revision: 1.45 $
+ * $Date: 2007/03/21 16:56:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -199,7 +199,7 @@ public class UmsatzList extends TablePart implements Extendable
       if (this.kl == null)
         this.kl = new KL();
 
-      LabelGroup group = new LabelGroup(parent,i18n.tr("Filter"));
+      LabelGroup group = new LabelGroup(parent,i18n.tr("Anzeige einschränken"));
 
       this.days = new UmsatzDaysInput();
       this.days.addListener(new Listener() {
@@ -684,6 +684,11 @@ public class UmsatzList extends TablePart implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.45  2007/03/21 16:56:56  willuhn
+ * @N Online-Hilfe aktualisiert
+ * @N Bug 337 (Stichtag in Sparquote)
+ * @C Refactoring in Sparquote
+ *
  * Revision 1.44  2007/03/16 14:40:02  willuhn
  * @C Redesign ImportMessage
  * @N Aktualisierung der Umsatztabelle nach Kategorie-Zuordnung

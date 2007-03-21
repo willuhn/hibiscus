@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/KontoauszugControl.java,v $
- * $Revision: 1.11 $
- * $Date: 2007/03/21 15:37:46 $
+ * $Revision: 1.12 $
+ * $Date: 2007/03/21 16:56:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -84,7 +84,7 @@ public class KontoauszugControl extends AbstractControl
     it.setOrder("ORDER BY blz, kontonummer");
     this.kontoAuswahl = new SelectInput(it, null);
     this.kontoAuswahl.setAttribute("longname");
-    this.kontoAuswahl.setPleaseChoose(i18n.tr("<Alle Konten>"));
+    this.kontoAuswahl.setPleaseChoose(i18n.tr("Alle Konten"));
     this.kontoAuswahl.addListener(this.listener);
     return this.kontoAuswahl;
   }
@@ -337,6 +337,11 @@ public class KontoauszugControl extends AbstractControl
 
 /*******************************************************************************
  * $Log: KontoauszugControl.java,v $
+ * Revision 1.12  2007/03/21 16:56:56  willuhn
+ * @N Online-Hilfe aktualisiert
+ * @N Bug 337 (Stichtag in Sparquote)
+ * @C Refactoring in Sparquote
+ *
  * Revision 1.11  2007/03/21 15:37:46  willuhn
  * @N Vorschau der Umsaetze in Auswertung "Kontoauszug"
  *

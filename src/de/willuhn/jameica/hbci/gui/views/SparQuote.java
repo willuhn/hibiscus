@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/SparQuote.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/07/13 00:21:15 $
+ * $Revision: 1.2 $
+ * $Date: 2007/03/21 16:56:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,9 +15,7 @@ package de.willuhn.jameica.hbci.gui.views;
 
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 
@@ -38,9 +36,6 @@ public class SparQuote extends AbstractView
 
     de.willuhn.jameica.hbci.gui.parts.SparQuote q = new de.willuhn.jameica.hbci.gui.parts.SparQuote();
     q.paint(getParent());
-    
-    ButtonArea buttons = new ButtonArea(getParent(),1);
-    buttons.addButton(i18n.tr("Zurück"),new Back(),null,true);
   }
 
 }
@@ -48,6 +43,11 @@ public class SparQuote extends AbstractView
 
 /*********************************************************************
  * $Log: SparQuote.java,v $
+ * Revision 1.2  2007/03/21 16:56:56  willuhn
+ * @N Online-Hilfe aktualisiert
+ * @N Bug 337 (Stichtag in Sparquote)
+ * @C Refactoring in Sparquote
+ *
  * Revision 1.1  2006/07/13 00:21:15  willuhn
  * @N Neue Auswertung "Sparquote"
  *

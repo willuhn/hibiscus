@@ -1,0 +1,14 @@
+<form>
+	<p>
+		<span color="header" font="header">Kontoauszüge</span>
+	</p>
+	
+	<p>
+		In dieser Liste sehen Sie alle Umsätze des angegebenen Zeitraumes.
+		Wählen Sie ein Konto aus oder ändern Sie das Start- und End-Datum
+		um die Anzeige weiter einzuschränken.
+		Wählen Sie anschließend <b>Kontoauszug exportieren...</b>, um
+		die angezeigten Umsätze z.Bsp. in einer PDF- oder CSV-Datei
+		zu speichern.
+	</p>
+</form>

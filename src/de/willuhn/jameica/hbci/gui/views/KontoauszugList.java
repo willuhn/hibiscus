@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoauszugList.java,v $
- * $Revision: 1.5 $
- * $Date: 2007/03/21 15:37:46 $
+ * $Revision: 1.6 $
+ * $Date: 2007/03/21 16:56:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.controller.KontoauszugControl;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -45,34 +46,39 @@ public class KontoauszugList extends AbstractView
    */
   public void bind() throws Exception
   {
-    GUI.getView().setTitle(i18n.tr("Kontoauszug"));
+    GUI.getView().setTitle(i18n.tr("Kontoauszüge"));
 
     final KontoauszugControl control = new KontoauszugControl(this);
-
-    LabelGroup settings = new LabelGroup(getParent(), i18n.tr("Filter"));
+    
+    LabelGroup settings = new LabelGroup(getParent(), i18n.tr("Anzeige einschränken"));
 
     settings.addLabelPair(i18n.tr("Konto"), control.getKontoAuswahl());
     settings.addLabelPair(i18n.tr("Start-Datum"), control.getStart());
     settings.addLabelPair(i18n.tr("End-Datum"), control.getEnd());
     
-    ButtonArea buttons = new ButtonArea(getParent(), 1);
-    buttons.addButton(i18n.tr("Kontoauszug erstellen..."), new Action()
+    new Headline(getParent(),i18n.tr("Gefundene Umsätze"));
+    control.getUmsatzList().paint(getParent());
+
+    ButtonArea buttons = new ButtonArea(getParent(), 2);
+    buttons.addButton(i18n.tr("Zurück"),new Back());
+    buttons.addButton(i18n.tr("Kontoauszug exportieren..."), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
         control.handlePrint();
       }
-    });
-
-    new Headline(getParent(),i18n.tr("Gefundene Umsätze"));
-    control.getUmsatzList().paint(getParent());
-
+    },null,true);
   }
 
 }
 
 /*******************************************************************************
  * $Log: KontoauszugList.java,v $
+ * Revision 1.6  2007/03/21 16:56:56  willuhn
+ * @N Online-Hilfe aktualisiert
+ * @N Bug 337 (Stichtag in Sparquote)
+ * @C Refactoring in Sparquote
+ *
  * Revision 1.5  2007/03/21 15:37:46  willuhn
  * @N Vorschau der Umsaetze in Auswertung "Kontoauszug"
  *
