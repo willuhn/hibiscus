@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/KategorienControl.java,v $
- * $Revision: 1.4 $
- * $Date: 2007/03/10 07:16:37 $
- * $Author: jost $
+ * $Revision: 1.5 $
+ * $Date: 2007/03/21 18:47:36 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -18,6 +18,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import org.eclipse.swt.widgets.TreeItem;
+
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
@@ -25,6 +27,8 @@ import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
+import de.willuhn.jameica.gui.formatter.DateFormatter;
+import de.willuhn.jameica.gui.formatter.TreeFormatter;
 import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SelectInput;
@@ -36,6 +40,7 @@ import de.willuhn.jameica.hbci.gui.KategorieItem;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
 /**
@@ -160,7 +165,37 @@ public class KategorienControl extends AbstractControl
       rootItems.add(new KategorieItem((UmsatzTyp)list.next(),von,bis));
     
     TreePart tp = new TreePart(PseudoIterator.fromArray((GenericObject[])rootItems.toArray(new GenericObject[rootItems.size()])), null);
+    tp.setRememberColWidths(true);
+    tp.setFormatter(new TreeFormatter() {
+    
+      public void format(TreeItem item)
+      {
+        if (item == null || item.getData() == null)
+          return;
+        try
+        {
+          GenericObject i = (GenericObject) item.getData();
+          Object value = i.getAttribute("betrag");
+          if (value == null || !(value instanceof Double))
+            return;
+          Double betrag = (Double) value;
+          if (betrag == null)
+            return;
+          if (betrag.doubleValue() < 0)
+            item.setForeground(Settings.getBuchungSollForeground());
+          else
+            item.setForeground(Settings.getBuchungHabenForeground());
+        }
+        catch (Exception e)
+        {
+          Logger.error("error while formatting item",e);
+        }
+      }
+    
+    });
     tp.addColumn(i18n.tr("Bezeichnung"),"name");
+    tp.addColumn(i18n.tr("Verwendungszweck"),          "zweck");
+    tp.addColumn(i18n.tr("Valuta"),                    "valuta", new DateFormatter(HBCI.DATEFORMAT));
     tp.addColumn(i18n.tr("Betrag"),"betrag",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
     return tp;
   }
@@ -168,6 +203,11 @@ public class KategorienControl extends AbstractControl
 
 /*******************************************************************************
  * $Log: KategorienControl.java,v $
+ * Revision 1.5  2007/03/21 18:47:36  willuhn
+ * @N Neue Spalte in Kategorie-Tree
+ * @N Sortierung des Kontoauszuges wie in Tabelle angezeigt
+ * @C Code cleanup
+ *
  * Revision 1.4  2007/03/10 07:16:37  jost
  * Neu: Nummer für die Sortierung der Umsatz-Kategorien
  *

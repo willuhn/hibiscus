@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/Kategorien.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/03/07 10:29:41 $
+ * $Revision: 1.3 $
+ * $Date: 2007/03/21 18:47:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -48,23 +48,26 @@ public class Kategorien extends AbstractView
     I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class)
         .getResources().getI18N();
 
-    GUI.getView().setTitle(i18n.tr("Umsatz-Kategorien"));
+    GUI.getView().setTitle(i18n.tr("Umsätze nach Kategorien"));
 
     final KategorienControl control = new KategorienControl(this);
 
-    LabelGroup settings = new LabelGroup(getParent(), i18n.tr("Filter"));
+    LabelGroup settings = new LabelGroup(getParent(), i18n.tr("Anzeige einschränken"));
 
     settings.addLabelPair(i18n.tr("Konto"), control.getKontoAuswahl());
     settings.addLabelPair(i18n.tr("Start-Datum"), control.getStart());
-    settings.addLabelPair(i18n.tr("Ende-Datum"), control.getEnd());
-
-    ButtonArea buttons1 = new ButtonArea(settings.getComposite(), 1);
+    settings.addLabelPair(i18n.tr("End-Datum"), control.getEnd());
 
     final Composite comp = new Composite(getParent(),SWT.NONE);
     comp.setLayoutData(new GridData(GridData.FILL_BOTH));
     comp.setLayout(new GridLayout());
     
-    buttons1.addButton(i18n.tr("Anzeigen"), new Action()
+    TreePart tree = control.getTree();
+    tree.paint(comp);
+
+    ButtonArea buttons = new ButtonArea(getParent(), 2);
+    buttons.addButton(i18n.tr("Zurück"), new Back());
+    buttons.addButton(i18n.tr("Aktualisieren"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -83,18 +86,17 @@ public class Kategorien extends AbstractView
           e.printStackTrace();
         }
       }
-    });
-
-    TreePart tree = control.getTree();
-    tree.paint(comp);
-
-    ButtonArea buttons2 = new ButtonArea(getParent(), 1);
-    buttons2.addButton(i18n.tr("Zurück"), new Back(), null, true);
+    },null,true);
   }
 
 }
 /*******************************************************************************
  * $Log: Kategorien.java,v $
+ * Revision 1.3  2007/03/21 18:47:36  willuhn
+ * @N Neue Spalte in Kategorie-Tree
+ * @N Sortierung des Kontoauszuges wie in Tabelle angezeigt
+ * @C Code cleanup
+ *
  * Revision 1.2  2007/03/07 10:29:41  willuhn
  * @B rmi compile fix
  * @B swt refresh behaviour

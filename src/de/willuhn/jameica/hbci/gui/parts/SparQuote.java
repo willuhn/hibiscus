@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SparQuote.java,v $
- * $Revision: 1.7 $
- * $Date: 2007/03/21 16:56:56 $
+ * $Revision: 1.8 $
+ * $Date: 2007/03/21 18:47:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -465,7 +465,7 @@ public class SparQuote implements Part
      */
     public String getLabel() throws RemoteException
     {
-      return i18n.tr("Durchschnitt");
+      return i18n.tr("Trend");
     }
 
     /**
@@ -482,6 +482,11 @@ public class SparQuote implements Part
 
 /*********************************************************************
  * $Log: SparQuote.java,v $
+ * Revision 1.8  2007/03/21 18:47:36  willuhn
+ * @N Neue Spalte in Kategorie-Tree
+ * @N Sortierung des Kontoauszuges wie in Tabelle angezeigt
+ * @C Code cleanup
+ *
  * Revision 1.7  2007/03/21 16:56:56  willuhn
  * @N Online-Hilfe aktualisiert
  * @N Bug 337 (Stichtag in Sparquote)

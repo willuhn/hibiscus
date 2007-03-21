@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/KontoauszugControl.java,v $
- * $Revision: 1.12 $
- * $Date: 2007/03/21 16:56:56 $
+ * $Revision: 1.13 $
+ * $Date: 2007/03/21 18:47:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,7 +15,6 @@ package de.willuhn.jameica.hbci.gui.controller;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 
 import org.eclipse.swt.widgets.Event;
@@ -170,7 +169,9 @@ public class KontoauszugControl extends AbstractControl
       if (start != null)  umsaetze.addFilter("valuta >= ?", new Object[]{new java.sql.Date(HBCIProperties.startOfDay(start).getTime())});
       if (end != null)  umsaetze.addFilter("valuta <= ?", new Object[]{new java.sql.Date(HBCIProperties.endOfDay(end).getTime())});
     }
-    umsaetze.setOrder("ORDER BY TONUMBER(valuta) desc, id desc");
+    
+    // Wir sortieren jetzt chronologisch vorwaerts
+    umsaetze.setOrder("ORDER BY TONUMBER(valuta) asc, id asc");
     return umsaetze;
   }
 
@@ -217,19 +218,14 @@ public class KontoauszugControl extends AbstractControl
       // Laden aus der Datenbank
       GenericIterator items = getUmsatzList().getItems();
 
-      ///////////////////////////////////////////////////////////////
-      // Im PDF sortieren wir andersrum
-      // TODO: Da die Daten nun direkt aus der SWT-Tabelle kommen,
-      // koennten wir uns die Umsortierung hier eigentlich schenken
-      // und genau in der Reihenfolge ausgeben, wie sie gerade in
-      // der Tabelle angezeigt werden.
       ArrayList list = new ArrayList();
       while (items.hasNext())
         list.add(items.next());
-        
-      // Die o.g. Umsaetze kommen immer in umgekehrt chronologischer Reihenfolge.
-      // Fuer den Kontoauszug sortieren wie sie aber andersrum.
-      Collections.reverse(list);
+
+      // Wir sortieren jetzt nicht mehr um sondern uebernehmen die
+      // Daten in der Reihenfolge, wie sie in der Tabelle angezeigt
+      // werden
+      // Collections.reverse(list);
         
       Umsatz[] u = (Umsatz[]) list.toArray(new Umsatz[list.size()]);
         
@@ -337,6 +333,11 @@ public class KontoauszugControl extends AbstractControl
 
 /*******************************************************************************
  * $Log: KontoauszugControl.java,v $
+ * Revision 1.13  2007/03/21 18:47:36  willuhn
+ * @N Neue Spalte in Kategorie-Tree
+ * @N Sortierung des Kontoauszuges wie in Tabelle angezeigt
+ * @C Code cleanup
+ *
  * Revision 1.12  2007/03/21 16:56:56  willuhn
  * @N Online-Hilfe aktualisiert
  * @N Bug 337 (Stichtag in Sparquote)

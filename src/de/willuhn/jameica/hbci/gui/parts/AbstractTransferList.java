@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractTransferList.java,v $
- * $Revision: 1.13 $
- * $Date: 2007/03/16 14:40:02 $
+ * $Revision: 1.14 $
+ * $Date: 2007/03/21 18:47:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -185,7 +185,7 @@ public abstract class AbstractTransferList extends TablePart implements Part
       }
     });
 
-    LabelGroup group = new LabelGroup(parent,i18n.tr("Filter"));
+    LabelGroup group = new LabelGroup(parent,i18n.tr("Anzeige einschränken"));
 
     // Als End-Datum nehmen wir keines.
     // Es sei denn, es ist ein aktuelles gespeichert
@@ -387,6 +387,11 @@ public abstract class AbstractTransferList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: AbstractTransferList.java,v $
+ * Revision 1.14  2007/03/21 18:47:36  willuhn
+ * @N Neue Spalte in Kategorie-Tree
+ * @N Sortierung des Kontoauszuges wie in Tabelle angezeigt
+ * @C Code cleanup
+ *
  * Revision 1.13  2007/03/16 14:40:02  willuhn
  * @C Redesign ImportMessage
  * @N Aktualisierung der Umsatztabelle nach Kategorie-Zuordnung

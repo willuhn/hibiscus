@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.43 $
- * $Date: 2007/03/08 18:56:39 $
+ * $Revision: 1.44 $
+ * $Date: 2007/03/21 18:47:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -374,7 +374,7 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
     
     // Fuer Kategoriebaum
     if ("name".equals(arg0))
-      return getEmpfaengerName() + ": " + getZweck();
+      return getEmpfaengerName();
       
     if ("id-int".equals(arg0))
     {
@@ -593,6 +593,11 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.44  2007/03/21 18:47:36  willuhn
+ * @N Neue Spalte in Kategorie-Tree
+ * @N Sortierung des Kontoauszuges wie in Tabelle angezeigt
+ * @C Code cleanup
+ *
  * Revision 1.43  2007/03/08 18:56:39  willuhn
  * @N Mehrere Spalten in Kategorie-Baum
  *
