@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/ExportDialog.java,v $
- * $Revision: 1.11 $
- * $Date: 2006/10/09 10:10:27 $
+ * $Revision: 1.12 $
+ * $Date: 2007/03/21 15:37:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 
 import org.eclipse.swt.SWT;
@@ -140,6 +141,8 @@ public class ExportDialog extends AbstractDialog
 
     if (exp == null || exp.exporter == null)
       throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Export-Format aus"));
+
+    settings.setAttribute("lastformat",exp.format.getClass().getName());
 
     FileDialog fd = new FileDialog(GUI.getShell(),SWT.SAVE);
     fd.setText(i18n.tr("Bitte geben Sie eine Datei ein, in die die Daten exportiert werden sollen."));
@@ -275,9 +278,10 @@ public class ExportDialog extends AbstractDialog
 
     Exporter[] exporters = IORegistry.getExporters();
 
-    ArrayList l = new ArrayList();
-
-    int size = 0;
+    int size          = 0;
+    ArrayList l       = new ArrayList();
+    String lastFormat = settings.getString("lastformat",null);
+    Exp selected      = null;
 
     for (int i=0;i<exporters.length;++i)
 		{
@@ -293,7 +297,11 @@ public class ExportDialog extends AbstractDialog
       for (int j=0;j<formats.length;++j)
       {
         size++;
-        l.add(new Exp(exp,formats[j]));
+        Exp e = new Exp(exp,formats[j]);
+        l.add(e);
+        
+        if (lastFormat != null && formats[j].getClass().getName().equals(lastFormat))
+          selected = e;
       }
 		}
 
@@ -303,8 +311,9 @@ public class ExportDialog extends AbstractDialog
 			return exporterListe;
 		}
 
+    Collections.sort(l);
 		Exp[] exp = (Exp[]) l.toArray(new Exp[size]);
-		exporterListe = new SelectInput(PseudoIterator.fromArray(exp),null);
+		exporterListe = new SelectInput(PseudoIterator.fromArray(exp),selected);
 		return exporterListe;
 	}
 
@@ -319,7 +328,7 @@ public class ExportDialog extends AbstractDialog
 	/**
 	 * Hilfsklasse zur Anzeige der Exporter.
    */
-  private class Exp implements GenericObject
+  private class Exp implements GenericObject, Comparable
 	{
 		private Exporter exporter   = null;
     private IOFormat format = null;
@@ -371,12 +380,33 @@ public class ExportDialog extends AbstractDialog
 	      return false;
 	    return this.getID().equals(arg0.getID());
     }
+
+    /**
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    public int compareTo(Object o)
+    {
+      if (o == null || !(o instanceof Exp))
+        return -1;
+      try
+      {
+        return this.format.getName().compareTo(((Exp)o).format.getName());
+      }
+      catch (Exception e)
+      {
+        // Tss, dann halt nicht
+      }
+      return 0;
+    }
 	}
 }
 
 
 /**********************************************************************
  * $Log: ExportDialog.java,v $
+ * Revision 1.12  2007/03/21 15:37:46  willuhn
+ * @N Vorschau der Umsaetze in Auswertung "Kontoauszug"
+ *
  * Revision 1.11  2006/10/09 10:10:27  willuhn
  * @C s/schliessen/abbrechen/
  *

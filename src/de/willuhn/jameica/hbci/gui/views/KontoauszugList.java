@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoauszugList.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/07/03 23:04:32 $
+ * $Revision: 1.5 $
+ * $Date: 2007/03/21 15:37:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.controller.KontoauszugControl;
@@ -52,16 +53,19 @@ public class KontoauszugList extends AbstractView
 
     settings.addLabelPair(i18n.tr("Konto"), control.getKontoAuswahl());
     settings.addLabelPair(i18n.tr("Start-Datum"), control.getStart());
-    settings.addLabelPair(i18n.tr("Ende-Datum"), control.getEnd());
-
+    settings.addLabelPair(i18n.tr("End-Datum"), control.getEnd());
+    
     ButtonArea buttons = new ButtonArea(getParent(), 1);
-    buttons.addButton(i18n.tr("Kontoauszug erstellen"), new Action()
+    buttons.addButton(i18n.tr("Kontoauszug erstellen..."), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
-        control.handleStart();
+        control.handlePrint();
       }
     });
+
+    new Headline(getParent(),i18n.tr("Gefundene Umsätze"));
+    control.getUmsatzList().paint(getParent());
 
   }
 
@@ -69,6 +73,9 @@ public class KontoauszugList extends AbstractView
 
 /*******************************************************************************
  * $Log: KontoauszugList.java,v $
+ * Revision 1.5  2007/03/21 15:37:46  willuhn
+ * @N Vorschau der Umsaetze in Auswertung "Kontoauszug"
+ *
  * Revision 1.4  2006/07/03 23:04:32  willuhn
  * @N PDF-Reportwriter in IO-API gepresst, damit er auch an anderen Stellen (z.Bsp. in der Umsatzliste) mitverwendet werden kann.
  *
