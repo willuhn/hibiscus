@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/KategorienControl.java,v $
- * $Revision: 1.5 $
- * $Date: 2007/03/21 18:47:36 $
+ * $Revision: 1.6 $
+ * $Date: 2007/03/22 14:23:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,17 +13,20 @@
 package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import org.eclipse.swt.widgets.TreeItem;
 
+import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
+import de.willuhn.datasource.GenericObjectNode;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
@@ -36,8 +39,8 @@ import de.willuhn.jameica.gui.parts.TreePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.KategorieItem;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -49,17 +52,17 @@ import de.willuhn.util.I18N;
 public class KategorienControl extends AbstractControl
 {
 
-  private SelectInput kontoAuswahl = null;
+  private SelectInput kontoAuswahl          = null;
+  private DateInput start                   = null;
+  private DateInput end                     = null;
+  private I18N i18n                         = null;
 
-  private DateInput start = null;
+  private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(KategorienControl.class);
 
-  private DateInput end = null;
-
-  private I18N i18n = null;
-
-  private de.willuhn.jameica.system.Settings settings = null;
-
-  private SimpleDateFormat sdf = null;
+  static
+  {
+    settings.setStoreWhenRead(true);
+  }
 
   /**
    * ct.
@@ -69,11 +72,7 @@ public class KategorienControl extends AbstractControl
   public KategorienControl(AbstractView view)
   {
     super(view);
-    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources()
-        .getI18N();
-    settings = new de.willuhn.jameica.system.Settings(this.getClass());
-    settings.setStoreWhenRead(true);
-    sdf = new SimpleDateFormat("dd.MM.yyyy");
+    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
   /**
@@ -87,8 +86,7 @@ public class KategorienControl extends AbstractControl
     if (this.kontoAuswahl != null)
       return this.kontoAuswahl;
 
-    DBIterator it = de.willuhn.jameica.hbci.Settings.getDBService().createList(
-        Konto.class);
+    DBIterator it = de.willuhn.jameica.hbci.Settings.getDBService().createList(Konto.class);
     it.setOrder("ORDER BY blz, kontonummer");
     this.kontoAuswahl = new SelectInput(it, null);
     this.kontoAuswahl.setAttribute("longname");
@@ -104,19 +102,25 @@ public class KategorienControl extends AbstractControl
   public Input getStart()
   {
     if (this.start != null)
-    {
       return this.start;
-    }
-    Date dStart = null;
+
+    // Standardmaessig verwenden wir das aktuelle Jahr als Bemessungszeitraum
+    Calendar cal = Calendar.getInstance();
+    cal.set(Calendar.MONTH,Calendar.JANUARY);
+    cal.set(Calendar.DATE,1);
+
+    Date d = HBCIProperties.startOfDay(cal.getTime());
     try
     {
-      dStart = sdf.parse(settings.getString("von", "01.01.2007"));
+      String s = settings.getString("laststart",null);
+      if (s != null && s.length() > 0)
+        d = HBCI.DATEFORMAT.parse(s);
     }
-    catch (ParseException e)
+    catch (Exception e)
     {
-      e.printStackTrace();
+      // ignore
     }
-    this.start = new DateInput(dStart, HBCI.DATEFORMAT);
+    this.start = new DateInput(d, HBCI.DATEFORMAT);
     return this.start;
   }
 
@@ -130,16 +134,22 @@ public class KategorienControl extends AbstractControl
     if (this.end != null)
       return this.end;
 
-    Date dEnd = null;
+    Calendar cal = Calendar.getInstance();
+    cal.set(Calendar.MONTH,Calendar.DECEMBER);
+    cal.set(Calendar.DATE,31);
+
+    Date d = HBCIProperties.endOfDay(cal.getTime());
     try
     {
-      dEnd = sdf.parse(settings.getString("bis", "31.12.2007"));
+      String s = settings.getString("lastend",null);
+      if (s != null && s.length() > 0)
+        d = HBCI.DATEFORMAT.parse(s);
     }
-    catch (ParseException e)
+    catch (Exception e)
     {
-      e.printStackTrace();
+      // ignore
     }
-    this.end = new DateInput(dEnd, HBCI.DATEFORMAT);
+    this.end = new DateInput(d, HBCI.DATEFORMAT);
     return this.end;
   }
 
@@ -150,21 +160,68 @@ public class KategorienControl extends AbstractControl
    */
   public TreePart getTree() throws RemoteException
   {
+    Konto konto = (Konto) (Konto) getKontoAuswahl().getValue();
+
     Date von = (Date) getStart().getValue();
     Date bis = (Date) getEnd().getValue();
+    // Wir merken uns die Werte fuer's naechste Mal
+    settings.setAttribute("laststart", von == null ? null : HBCI.DATEFORMAT.format(von));
+    settings.setAttribute("lastend",   bis == null ? null : HBCI.DATEFORMAT.format(bis));
 
-    settings.setAttribute("von", sdf.format(von));
-    settings.setAttribute("bis", sdf.format(bis));
+    ////////////////////////////////////////////////////////////////
+    // wir laden erstmal alle relevanten Umsaetze.
+    DBIterator umsaetze = null;
+    if (konto != null)
+    {
+      umsaetze = konto.getUmsaetze(von,bis);
+    }
+    else
+    {
+      umsaetze = Settings.getDBService().createList(Umsatz.class);
+      if (von != null) umsaetze.addFilter("valuta >= ?", new Object[]{new java.sql.Date(HBCIProperties.startOfDay(von).getTime())});
+      if (bis != null) umsaetze.addFilter("valuta <= ?", new Object[]{new java.sql.Date(HBCIProperties.endOfDay(bis).getTime())});
+      umsaetze.setOrder("ORDER BY TONUMBER(valuta) desc, id desc");
+    }
+    ////////////////////////////////////////////////////////////////
     
-    ArrayList rootItems = new ArrayList();
+    
+    ////////////////////////////////////////////////////////////////
+    // Jetzt ordnen wir alle Umsaetze den Kategorien zu. Man koennte
+    // alternativ auch die UmsatzTypen laden und sich dann von denen
+    // die Umsaetze holen. Allerdings wuerde das viel mehr SQL-Queries
+    // ausloesen und zum anderen koennte man dann nicht die Umsaetze
+    // finden, die nirgends zugeordnet sind.
 
-    DBService service = Settings.getDBService();
-    DBIterator list = service.createList(UmsatzTyp.class);
-    list.setOrder("order by nummer");
-    while (list.hasNext())
-      rootItems.add(new KategorieItem((UmsatzTyp)list.next(),von,bis));
+    HashMap lookup = new HashMap();
+    lookup.put(null,new Kategorie(null)); // Pseudo-Kategorie "Nicht zugeordnet"
     
-    TreePart tp = new TreePart(PseudoIterator.fromArray((GenericObject[])rootItems.toArray(new GenericObject[rootItems.size()])), null);
+    while (umsaetze.hasNext())
+    {
+      Umsatz u      = (Umsatz) umsaetze.next();
+      UmsatzTyp ut  = u.getUmsatzTyp();
+      Kategorie kat = (Kategorie) lookup.get(ut);
+      if (kat == null)
+      {
+        kat = new Kategorie(ut); // haben wir noch nicht. Also neu anlegen
+        lookup.put(ut,kat);
+      }
+      kat.umsaetze.add(u);
+    }
+    ////////////////////////////////////////////////////////////////
+
+    ////////////////////////////////////////////////////////////////
+    // Jetzt kopieren wir das noch in ein Array, damit wir es
+    // nach Nummer sortieren koennen
+    ArrayList list = new ArrayList();
+    Iterator it = lookup.keySet().iterator();
+    while (it.hasNext())
+      list.add(lookup.get(it.next()));
+    Collections.sort(list);
+    ////////////////////////////////////////////////////////////////
+
+    ////////////////////////////////////////////////////////////////
+    // Jetzt geben wir das ganze dem Tree
+    TreePart tp = new TreePart(PseudoIterator.fromArray((GenericObject[])list.toArray(new GenericObject[list.size()])), null);
     tp.setRememberColWidths(true);
     tp.setFormatter(new TreeFormatter() {
     
@@ -199,10 +256,173 @@ public class KategorienControl extends AbstractControl
     tp.addColumn(i18n.tr("Betrag"),"betrag",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
     return tp;
   }
+
+  /**
+   * Hilfsklasse, um eine Umsatzkategorie als GenericObjectNode abzubilden.
+   */
+  private class Kategorie implements GenericObjectNode, Comparable
+  {
+    private UmsatzTyp typ = null;
+    private ArrayList umsaetze = new ArrayList();
+    
+    /**
+     * ct.
+     * @param typ
+     */
+    private Kategorie(UmsatzTyp typ)
+    {
+      this.typ = typ;
+    }
+
+    /**
+     * @see de.willuhn.datasource.GenericObjectNode#getChildren()
+     */
+    public GenericIterator getChildren() throws RemoteException
+    {
+      return PseudoIterator.fromArray((GenericObject[])umsaetze.toArray(new GenericObject[umsaetze.size()]));
+    }
+
+    /**
+     * @see de.willuhn.datasource.GenericObjectNode#getParent()
+     */
+    public GenericObjectNode getParent() throws RemoteException
+    {
+      return null;
+    }
+
+    /**
+     * @see de.willuhn.datasource.GenericObjectNode#getPath()
+     */
+    public GenericIterator getPath() throws RemoteException
+    {
+      return null;
+    }
+
+    /**
+     * @see de.willuhn.datasource.GenericObjectNode#getPossibleParents()
+     */
+    public GenericIterator getPossibleParents() throws RemoteException
+    {
+      return null;
+    }
+
+    /**
+     * @see de.willuhn.datasource.GenericObjectNode#hasChild(de.willuhn.datasource.GenericObjectNode)
+     */
+    public boolean hasChild(GenericObjectNode node) throws RemoteException
+    {
+      for (int i=0;i<this.umsaetze.size();++i)
+      {
+        GenericObject o = (GenericObject) this.umsaetze.get(i);
+        if (o.equals(node))
+          return true;
+      }
+      return false;
+    }
+
+    /**
+     * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
+     */
+    public boolean equals(GenericObject other) throws RemoteException
+    {
+      if (other == null || !(other instanceof Kategorie))
+        return false;
+      return this.getID().equals(other.getID());
+    }
+
+    /**
+     * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
+     */
+    public Object getAttribute(String arg0) throws RemoteException
+    {
+      if (this.typ == null && "name".equalsIgnoreCase(arg0))
+        return  i18n.tr("Nicht zugeordnet");
+     
+      if ("betrag".equalsIgnoreCase(arg0))
+      {
+        // Rechnen wir manuell zusammen, damit der vom User eingegebene Datumsbereich
+        // uebereinstimmt. Wir koennten zwar auch typ.getUmsatz(Date,Date) aufrufen,
+        // allerdings wuerde das intern nochmal alle Umsaetze laden und haufen
+        // zusaetzliche SQL-Queries ausloesen
+        double betrag = 0.0d;
+        for (int i=0;i<this.umsaetze.size();++i)
+        {
+          Umsatz u = (Umsatz) this.umsaetze.get(i);
+          betrag+= u.getBetrag();
+        }
+        return new Double(betrag);
+      }
+      
+      return this.typ == null ? null : this.typ.getAttribute(arg0);
+    }
+
+    /**
+     * @see de.willuhn.datasource.GenericObject#getAttributeNames()
+     */
+    public String[] getAttributeNames() throws RemoteException
+    {
+      return this.typ == null ? new String[]{"name"} : this.typ.getAttributeNames();
+    }
+
+    /**
+     * @see de.willuhn.datasource.GenericObject#getID()
+     */
+    public String getID() throws RemoteException
+    {
+      return this.typ == null ? "<unassigned>" : this.typ.getID();
+    }
+
+    /**
+     * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
+     */
+    public String getPrimaryAttribute() throws RemoteException
+    {
+      return this.typ == null ? "name" : this.typ.getPrimaryAttribute();
+    }
+
+    /**
+     * Implementiert, damit wir nach dem Feld "nummer" sortieren koennen.
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    public int compareTo(Object o)
+    {
+      if (o == null || !(o instanceof Kategorie))
+        return -1;
+      
+      if (this.typ == null)
+        return -1; // Wir sind "Nicht zugeordnet" - und die steht immer oben
+      
+      Kategorie other = (Kategorie) o;
+      if (other.typ == null)
+        return 1; // Die sind "Nicht zugeordnet" - wir ordnen uns unter
+      
+      try
+      {
+        String n1 = this.typ.getNummer();
+        String n2 = other.typ.getNummer();
+
+        if (n1 == null)
+          return -1;
+        if (n2 == null)
+          return -1;
+        return n1.compareTo(n2);
+      }
+      catch (RemoteException re)
+      {
+        Logger.error("unable to determine umsatztyp number",re);
+      }
+      return 0;
+      
+    }
+    
+  }
 }
 
 /*******************************************************************************
  * $Log: KategorienControl.java,v $
+ * Revision 1.6  2007/03/22 14:23:56  willuhn
+ * @N Redesign Kategorie-Tree - ist jetzt erheblich schneller und enthaelt eine Pseudo-Kategorie "Nicht zugeordnet"
+ *
  * Revision 1.5  2007/03/21 18:47:36  willuhn
  * @N Neue Spalte in Kategorie-Tree
  * @N Sortierung des Kontoauszuges wie in Tabelle angezeigt

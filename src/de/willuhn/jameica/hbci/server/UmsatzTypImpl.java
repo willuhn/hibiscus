@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.34 $
- * $Date: 2007/03/16 12:55:26 $
- * $Author: jost $
+ * $Revision: 1.35 $
+ * $Date: 2007/03/22 14:23:56 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -345,9 +345,6 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
     if ("umsatz".equals(arg0))
       return new Double(getUmsatz());
 
-    if ("betrag".equals(arg0)) // Synthetisches Attribut "umsatz"/"betrag"
-      return new Double(getUmsatz());
-
     if (arg0 != null && arg0.startsWith("umsatz"))
     {
       // TODO: Beheben! Das ist haesslich!
@@ -445,6 +442,9 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
 
 /*******************************************************************************
  * $Log: UmsatzTypImpl.java,v $
+ * Revision 1.35  2007/03/22 14:23:56  willuhn
+ * @N Redesign Kategorie-Tree - ist jetzt erheblich schneller und enthaelt eine Pseudo-Kategorie "Nicht zugeordnet"
+ *
  * Revision 1.34  2007/03/16 12:55:26  jost
  * Bugfix: Kategorie wurde in der Kontenliste nicht korrekt angezeigt.
  *
