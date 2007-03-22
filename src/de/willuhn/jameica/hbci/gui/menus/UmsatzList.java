@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UmsatzList.java,v $
- * $Revision: 1.27 $
- * $Date: 2007/03/16 14:40:02 $
+ * $Revision: 1.28 $
+ * $Date: 2007/03/22 22:36:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,6 +12,7 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.menus;
 
+import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.extension.Extendable;
 import de.willuhn.jameica.gui.extension.ExtensionRegistry;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
@@ -58,15 +59,15 @@ public class UmsatzList extends ContextMenu implements Extendable
 
 		addItem(new OpenItem());
 
-		addItem(new CheckedContextMenuItem(i18n.tr("Gegenkonto in Adressbuch übernehmen"),new EmpfaengerAdd()));
+		addItem(new UmsatzItem(i18n.tr("Gegenkonto in Adressbuch übernehmen"),new EmpfaengerAdd()));
     // BUGZILLA 315
-    addItem(new CheckedContextMenuItem(i18n.tr("Als neue Überweisung anlegen..."),new UeberweisungNew()));
-    addItem(new CheckedContextMenuItem(i18n.tr("Umsatz-Kategorie zuordnen..."),new UmsatzAssign()));
+    addItem(new UmsatzItem(i18n.tr("Als neue Überweisung anlegen..."),new UeberweisungNew()));
+    addItem(new UmsatzItem(i18n.tr("Umsatz-Kategorie zuordnen..."),new UmsatzAssign()));
 
     // BUGZILLA #70 http://www.willuhn.de/bugzilla/show_bug.cgi?id=70
-    addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete()));
+    addItem(new UmsatzItem(i18n.tr("Löschen..."), new DBObjectDelete()));
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new UmsatzExport()));
+    addItem(new UmsatzItem(i18n.tr("Exportieren..."),new UmsatzExport()));
     addItem(new ContextMenuItem(i18n.tr("Importieren..."),new UmsatzImport()
     {
 
@@ -82,11 +83,38 @@ public class UmsatzList extends ContextMenu implements Extendable
     ExtensionRegistry.extend(this);
 
 	}
+  
+  /**
+   * Pruefen, ob es sich wirklich um einen Umsatz handelt.
+   */
+  private class UmsatzItem extends CheckedContextMenuItem
+  {
+    /**
+     * ct.
+     * @param text
+     * @param action
+     */
+    public UmsatzItem(String text, Action action)
+    {
+      super(text,action);
+    }
+
+    /**
+     * @see de.willuhn.jameica.gui.parts.CheckedContextMenuItem#isEnabledFor(java.lang.Object)
+     */
+    public boolean isEnabledFor(Object o)
+    {
+      if (!(o instanceof Umsatz) && !(o instanceof Umsatz[]))
+        return false;
+      return super.isEnabledFor(o);
+    }
+    
+  }
 
   /**
    * Ueberschrieben, um zu pruefen, ob ein Array oder ein einzelnes Element markiert ist.
    */
-  private class OpenItem extends CheckedContextMenuItem
+  private class OpenItem extends UmsatzItem
   {
     private OpenItem()
     {
@@ -115,6 +143,10 @@ public class UmsatzList extends ContextMenu implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.28  2007/03/22 22:36:42  willuhn
+ * @N Contextmenu in Trees
+ * @C Kategorie-Baum in separates TreePart ausgelagert
+ *
  * Revision 1.27  2007/03/16 14:40:02  willuhn
  * @C Redesign ImportMessage
  * @N Aktualisierung der Umsatztabelle nach Kategorie-Zuordnung
