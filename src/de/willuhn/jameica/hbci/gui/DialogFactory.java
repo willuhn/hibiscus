@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/DialogFactory.java,v $
- * $Revision: 1.29 $
- * $Date: 2007/02/21 12:10:36 $
+ * $Revision: 1.30 $
+ * $Date: 2007/03/22 23:43:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.Hashtable;
 
 import org.kapott.hbci.passport.HBCIPassport;
+import org.kapott.hbci.passport.HBCIPassportRDHNew;
 
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.dialogs.SimpleDialog;
@@ -373,6 +374,26 @@ public class DialogFactory {
     if (!Settings.getCachePin())
       return null;
     
+    String key = null;
+
+    // BUGZILLA 322: Bei Termin-Ueberweisungen und Dauerauftraegen
+    // werden vor dem Ausfuehren die Job-Restrictions aus dem
+    // Passport ermittelt. Dazu muss dieser geoffnet werden.
+    // Da die HBCIFactory zu dem Zeitpunkt aber noch nicht laeuft,
+    // kennen wir das Konto noch nicht. Mit dem Effekt, dass
+    // beim Ermitteln der Job-Restrictions ein anderer Key erstellt
+    // wird als beim tatsaechlichen Ausfuehren. Naemlich einmal
+    // mit Kundennummer und einmal ohne. Effekt: PIN muss zweimal
+    // eingegeben werden.
+    // Workaround: Wir pruefen, ob es sich um eine Schluesseldiskette
+    // handelt und nehmen in dem Fall direkt den kompletten
+    // Dateinamen als Key. Der ist eindeutig.
+    if (passport != null && (passport instanceof HBCIPassportRDHNew))
+      key = ((HBCIPassportRDHNew)passport).getFileName();
+    
+    if (key != null && key.length() > 0)
+      return key;
+
     // Jetzt versuchen wir den Schluessel zu ermitteln, unter dem die
     // PIN abgelegt ist. Normalerweise wuerde ich hier einfach die
     // CustomerID des Passports nehmen. Bei Schluesseldiskette jedoch
@@ -380,7 +401,9 @@ public class DialogFactory {
     // in der Passport-Datei. Und an die kommen wir erst ran, nachdem
     // der User die PIN eingegeben hat. Also nehmen wir hier alternativ
     // die Customer-ID des Kontos - insofern eine existiert.
-    String key = null;
+    // PS: Das Henne-Ei-Problem existiert durch o.g. Workaround (Bug 322)
+    // eigentlich nicht mehr. Ich lass das dennoch hier stehen, da
+    // es nicht stoert.
     
     if (passport != null)
       key = passport.getClass().getName() + "." + passport.getCustomerId();
@@ -415,6 +438,9 @@ public class DialogFactory {
 
 /**********************************************************************
  * $Log: DialogFactory.java,v $
+ * Revision 1.30  2007/03/22 23:43:37  willuhn
+ * @B Bug 322
+ *
  * Revision 1.29  2007/02/21 12:10:36  willuhn
  * Bug 349
  *
