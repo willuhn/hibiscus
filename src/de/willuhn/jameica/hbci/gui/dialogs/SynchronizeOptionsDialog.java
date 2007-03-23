@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/SynchronizeOptionsDialog.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/10/09 21:43:26 $
+ * $Revision: 1.5 $
+ * $Date: 2007/03/23 00:11:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -57,13 +57,15 @@ public class SynchronizeOptionsDialog extends AbstractDialog
     
     final SynchronizeOptions options = new SynchronizeOptions(konto);
 
+    final CheckboxInput saldo  = new CheckboxInput(options.getSyncSaldo());
     final CheckboxInput auszug = new CheckboxInput(options.getSyncKontoauszuege());
     final CheckboxInput ueb    = new CheckboxInput(options.getSyncUeberweisungen());
     final CheckboxInput last   = new CheckboxInput(options.getSyncLastschriften());
     final CheckboxInput dauer  = new CheckboxInput(options.getSyncDauerauftraege());
 
     group.addText(i18n.tr("Bitte wählen Sie aus, welche Geschäftsvorfälle bei\nder Synchronisierung des Kontos ausgeführt werden sollen."),false);
-    group.addCheckbox(auszug,i18n.tr("Kontoauszüge (Umsätze + Saldo)  abrufen"));
+    group.addCheckbox(saldo ,i18n.tr("Saldo abrufen"));
+    group.addCheckbox(auszug,i18n.tr("Kontoauszüge (Umsätze) abrufen"));
     group.addCheckbox(ueb   ,i18n.tr("Überfällige Überweisungen absenden"));
     group.addCheckbox(last  ,i18n.tr("Überfällige Lastschriften einziehen"));
     group.addCheckbox(dauer ,i18n.tr("Daueraufträge synchronisieren"));
@@ -72,6 +74,7 @@ public class SynchronizeOptionsDialog extends AbstractDialog
     buttons.addButton(i18n.tr("Übernehmen"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
+        options.setSyncSaldo(((Boolean)saldo.getValue()).booleanValue());
         options.setSyncKontoauszuege(((Boolean)auszug.getValue()).booleanValue());
         options.setSyncUeberweisungen(((Boolean)ueb.getValue()).booleanValue());
         options.setSyncLastschriften(((Boolean)last.getValue()).booleanValue());
@@ -100,6 +103,9 @@ public class SynchronizeOptionsDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: SynchronizeOptionsDialog.java,v $
+ * Revision 1.5  2007/03/23 00:11:51  willuhn
+ * @N Bug 346
+ *
  * Revision 1.4  2006/10/09 21:43:26  willuhn
  * @N Zusammenfassung der Geschaeftsvorfaelle "Umsaetze abrufen" und "Saldo abrufen" zu "Kontoauszuege abrufen" bei der Konto-Synchronisation
  *

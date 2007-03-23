@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/SynchronizeEngine.java,v $
- * $Revision: 1.8 $
- * $Date: 2006/10/09 21:43:26 $
+ * $Revision: 1.9 $
+ * $Date: 2007/03/23 00:11:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -169,12 +169,12 @@ public class SynchronizeEngine
     }
 
 
-    if (options.getSyncKontoauszuege())
+    if (options.getSyncKontoauszuege() || options.getSyncSaldo())
     {
       // Umsaetze und Salden werden zum Schluss ausgefuehrt,
       // damit die oben gesendeten Ueberweisungen gleich mit
       // erscheinen, insofern die Bank das unterstuetzt.
-      Logger.info("adding kontoauszug job");
+      Logger.info("adding kontoauszug/saldo job");
       list.add(new SynchronizeKontoauszugJob(k));
     }
   }
@@ -207,6 +207,9 @@ public class SynchronizeEngine
 
 /**********************************************************************
  * $Log: SynchronizeEngine.java,v $
+ * Revision 1.9  2007/03/23 00:11:51  willuhn
+ * @N Bug 346
+ *
  * Revision 1.8  2006/10/09 21:43:26  willuhn
  * @N Zusammenfassung der Geschaeftsvorfaelle "Umsaetze abrufen" und "Saldo abrufen" zu "Kontoauszuege abrufen" bei der Konto-Synchronisation
  *

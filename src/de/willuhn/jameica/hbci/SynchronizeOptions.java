@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/SynchronizeOptions.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/10/09 21:43:26 $
+ * $Revision: 1.3 $
+ * $Date: 2007/03/23 00:11:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -37,6 +37,20 @@ public class SynchronizeOptions implements Serializable
   {
     super();
     this.id = k == null ? null : k.getID();
+  }
+
+  /**
+   * BUGZILLA 346
+   * Prueft, ob die Kontoauszuege abgerufen werden sollen.
+   * @return true, wenn sie synchronisiert werden sollen.
+   */
+  public boolean getSyncSaldo()
+  {
+    // Da das vorher mit ".kontoauszug" zusammengefasst
+    // war, nehmen wir als Default-Wert auch den von dort.
+    // Damit wird beim ersten mal der Vorwert uebernommen.
+    // (Sanfte Migration)
+    return settings.getBoolean("sync.konto." + id + ".saldo",getSyncKontoauszuege());
   }
 
   /**
@@ -86,6 +100,15 @@ public class SynchronizeOptions implements Serializable
   }
   
   /**
+   * Legt fest, ob die Salden abgerufen werden sollen.
+   * @param b true, wenn sie synchronisiert werden sollen.
+   */
+  public void setSyncSaldo(boolean b)
+  {
+    settings.setAttribute("sync.konto." + id + ".saldo",b);
+  }
+
+  /**
    * Legt fest, ob offene und ueberfaellige Ueberweisungen abgesendet werden sollen.
    * @param b true, wenn sie synchronisiert werden sollen.
    */
@@ -117,6 +140,9 @@ public class SynchronizeOptions implements Serializable
 
 /*********************************************************************
  * $Log: SynchronizeOptions.java,v $
+ * Revision 1.3  2007/03/23 00:11:51  willuhn
+ * @N Bug 346
+ *
  * Revision 1.2  2006/10/09 21:43:26  willuhn
  * @N Zusammenfassung der Geschaeftsvorfaelle "Umsaetze abrufen" und "Saldo abrufen" zu "Kontoauszuege abrufen" bei der Konto-Synchronisation
  *
