@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.47 $
- * $Date: 2006/10/06 13:08:01 $
+ * $Revision: 1.48 $
+ * $Date: 2007/03/29 15:30:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,11 +24,11 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.security.Wallet;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.ServiceSettings;
 import de.willuhn.logging.Logger;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -78,6 +78,15 @@ public class Settings
         Logger.error("error while notifying user",e);
         throw new RemoteException(msg);
       }
+    }
+    catch (ApplicationException ae)
+    {
+      // Da interessiert uns der Stacktrace nicht
+      throw new RemoteException(ae.getMessage());
+    }
+    catch (RemoteException re)
+    {
+      throw re;
     }
 		catch (Exception e)
 		{
@@ -333,29 +342,53 @@ public class Settings
 		return wallet;
   }
 
+  private static Boolean firstStart = null;
+  
   /**
    * Prueft, ob es der erste Hibiscus-Start ist bzw noch keine Konten existieren.
    * @return true, wenn noch keine Konten existieren.
    */
   public static boolean isFirstStart()
   {
-    try
+    if (firstStart == null)
     {
-      DBIterator konten = Settings.getDBService().createList(Konto.class);
-      return konten == null || konten.size() == 0;
+      // Wir checken erstmal, ob das Plugin ueberhaupt geladen wurde
+      if (!Application.getPluginLoader().getManifest(HBCI.class).isInstalled())
+      {
+        // Nope, dann koennen wir uns den Rest schenken
+        firstStart = Boolean.TRUE;
+      }
+      else
+      {
+        try
+        {
+          DBIterator konten = Settings.getDBService().createList(Konto.class);
+          firstStart = Boolean.valueOf(konten == null || konten.size() == 0);
+        }
+        catch (RemoteException re)
+        {
+          Logger.error("unable to load konto list",re);
+          
+          // Wir liefern trotzdem true zurueck, weil sonst die ganzen Boxen
+          // auf der Startseite angezeigt werden. Das muss aber mal noch
+          // geaendert werden, da sie sich in dem Fall gar nicht mehr
+          // im Classpath befinden duerften. Denn wenn die Initialisierung
+          // des Plugins fehlschlaegt, sollte es auch aus dem Classpath
+          // undeployed werden
+          firstStart = Boolean.TRUE;
+        }
+      }
     }
-    catch (RemoteException re)
-    {
-      Logger.error("unable to load konto list",re);
-      I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Liste der Konten kann nicht ermittelt werden"),StatusBarMessage.TYPE_ERROR));
-      return true;
-    }
+    return firstStart.booleanValue();
   }
 }
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.48  2007/03/29 15:30:31  willuhn
+ * @N Uebersichtlichere Darstellung der Systemstart-Meldungen
+ * @C FirstStart-View bei Initialisierungsfehler nicht anzeigen
+ *
  * Revision 1.47  2006/10/06 13:08:01  willuhn
  * @B Bug 185, 211
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/FirstStart.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/03/02 14:49:14 $
+ * $Revision: 1.3 $
+ * $Date: 2007/03/29 15:30:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,6 +28,7 @@ import de.willuhn.jameica.hbci.gui.action.KontoList;
 import de.willuhn.jameica.hbci.gui.action.PassportDetail;
 import de.willuhn.jameica.hbci.gui.dialogs.PassportAuswahlDialog;
 import de.willuhn.jameica.hbci.passport.Passport;
+import de.willuhn.jameica.plugin.Manifest;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -80,8 +81,9 @@ public class FirstStart extends AbstractBox
    */
   public boolean isEnabled()
   {
-    // Diese Box kann nur beim ersten Start ausgewaehlt/angezeigt werden.
-    return Settings.isFirstStart();
+    // Diese Box kann nur beim ersten erfolgreichen Start ausgewaehlt/angezeigt werden.
+    Manifest mf = Application.getPluginLoader().getManifest(HBCI.class);
+    return  mf.isInstalled() && Settings.isFirstStart();
   }
   
   /**
@@ -136,6 +138,10 @@ public class FirstStart extends AbstractBox
 
 /*********************************************************************
  * $Log: FirstStart.java,v $
+ * Revision 1.3  2007/03/29 15:30:31  willuhn
+ * @N Uebersichtlichere Darstellung der Systemstart-Meldungen
+ * @C FirstStart-View bei Initialisierungsfehler nicht anzeigen
+ *
  * Revision 1.2  2007/03/02 14:49:14  willuhn
  * @R removed old firststart view
  * @C do not show boxes on first start
