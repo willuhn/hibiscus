@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/UmsatzTypInput.java,v $
- * $Revision: 1.3 $
- * $Date: 2007/03/21 18:47:36 $
+ * $Revision: 1.4 $
+ * $Date: 2007/04/02 23:01:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -41,8 +41,9 @@ public class UmsatzTypInput extends SelectInput
   /**
    * ct.
    * @param list Liste der Umsatz-Typen.
+   * @throws RemoteException
    */
-  public UmsatzTypInput(DBIterator list)
+  public UmsatzTypInput(DBIterator list) throws RemoteException
   {
     this(list, (UmsatzTyp)null);
   }
@@ -62,8 +63,9 @@ public class UmsatzTypInput extends SelectInput
    * ct.
    * @param list Liste der Umsatz-Typen.
    * @param umsatzTyp der vorselectierte Umsatz-Typ.
+   * @throws RemoteException
    */
-  public UmsatzTypInput(DBIterator list, UmsatzTyp umsatzTyp)
+  public UmsatzTypInput(DBIterator list, UmsatzTyp umsatzTyp) throws RemoteException
   {
     super(list, umsatzTyp);
     this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
@@ -109,6 +111,10 @@ public class UmsatzTypInput extends SelectInput
 
 /*********************************************************************
  * $Log: UmsatzTypInput.java,v $
+ * Revision 1.4  2007/04/02 23:01:17  willuhn
+ * @D diverse Javadoc-Warnings
+ * @C Umstellung auf neues SelectInput
+ *
  * Revision 1.3  2007/03/21 18:47:36  willuhn
  * @N Neue Spalte in Kategorie-Tree
  * @N Sortierung des Kontoauszuges wie in Tabelle angezeigt

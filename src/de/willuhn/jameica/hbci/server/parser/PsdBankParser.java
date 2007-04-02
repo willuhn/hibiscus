@@ -16,8 +16,7 @@ import de.willuhn.logging.Logger;
  * Diese Klasse bietet daher die Möglichkeit, den Verwendungszweck zu parsen und daraus die Infos zum Gegenkonto zu gewinnen.
  *  
  * @author Michael Lambers
- * @date Aug 12, 2006
- * @version $Id: PsdBankParser.java,v 1.2 2007/03/12 14:18:19 willuhn Exp $
+ * @version $Id: PsdBankParser.java,v 1.3 2007/04/02 23:01:17 willuhn Exp $
  *
  */
 public class PsdBankParser implements UmsatzParser
@@ -304,6 +303,10 @@ public class PsdBankParser implements UmsatzParser
 
 /*********************************************************************
  * $Log: PsdBankParser.java,v $
+ * Revision 1.3  2007/04/02 23:01:17  willuhn
+ * @D diverse Javadoc-Warnings
+ * @C Umstellung auf neues SelectInput
+ *
  * Revision 1.2  2007/03/12 14:18:19  willuhn
  * @C Michael's Aenderungen
  *

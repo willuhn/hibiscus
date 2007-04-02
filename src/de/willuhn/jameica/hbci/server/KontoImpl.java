@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.82 $
- * $Date: 2006/12/29 14:28:47 $
+ * $Revision: 1.83 $
+ * $Date: 2007/04/02 23:01:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -533,7 +533,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
       if (bez != null && bez.length() > 0)
         return i18n.tr("{0}, Kto. {1} [{2}]", new String[] { bez, kto, blz });
-      return i18n.tr("Kto. {0} [BLZ: {1}]", new String[] { kto, blz });
+      return i18n.tr("Kto. {0} [{1}]", new String[] { kto, blz });
     }
 
     return super.getAttribute(arg0);
@@ -681,6 +681,10 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*******************************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.83  2007/04/02 23:01:17  willuhn
+ * @D diverse Javadoc-Warnings
+ * @C Umstellung auf neues SelectInput
+ *
  * Revision 1.82  2006/12/29 14:28:47  willuhn
  * @B Bug 345
  * @B jede Menge Bugfixes bei SQL-Statements mit Valuta
