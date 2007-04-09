@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.73 $
- * $Date: 2007/02/22 23:37:11 $
+ * $Revision: 1.74 $
+ * $Date: 2007/04/09 22:45:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,6 @@ import java.util.Date;
 
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
@@ -41,6 +40,7 @@ import de.willuhn.jameica.hbci.gui.action.KontoNew;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.dialogs.PassportAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.SynchronizeOptionsDialog;
+import de.willuhn.jameica.hbci.gui.input.BLZInput;
 import de.willuhn.jameica.hbci.gui.input.PassportInput;
 import de.willuhn.jameica.hbci.gui.parts.ProtokollList;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzChart;
@@ -253,14 +253,8 @@ public class KontoControl extends AbstractControl {
 	{
 		if (blz != null)
 			return blz;
-		blz = new TextInput(getKonto().getBLZ(),HBCIProperties.HBCI_BLZ_LENGTH);
-    // BUGZILLA 280
-    blz.setValidChars(HBCIProperties.HBCI_BLZ_VALIDCHARS);
+		blz = new BLZInput(getKonto().getBLZ());
     blz.setMandatory(true);
-		blz.setComment("");
-    BLZListener l = new BLZListener();
-		blz.addListener(l);
-    l.handleEvent(null); // Einmal initial ausfuehren
 		return blz;
 	}
 
@@ -467,34 +461,14 @@ public class KontoControl extends AbstractControl {
       }
     });
   }
-  
-	/**
-	 * Sucht das Geldinstitut zur eingegebenen BLZ und zeigt es als Kommentar
-	 * hinter dem BLZ-Feld an.
-   */
-  private class BLZListener implements Listener
-	{
-
-    /**
-     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-     */
-    public void handleEvent(Event event) {
-
-			try {
-				String name = HBCIUtils.getNameForBLZ((String)getBlz().getValue());
-				getBlz().setComment(name);
-			}
-			catch (RemoteException e)
-			{
-				Logger.error("error while updating blz comment",e);
-			}
-    }
-	}
 }
 
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.74  2007/04/09 22:45:12  willuhn
+ * @N Bug 380
+ *
  * Revision 1.73  2007/02/22 23:37:11  willuhn
  * @B dont reload umsatz list when table has been disposed
  *

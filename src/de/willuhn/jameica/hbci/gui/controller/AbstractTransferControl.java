@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.33 $
- * $Date: 2006/12/28 15:38:43 $
+ * $Revision: 1.34 $
+ * $Date: 2007/04/09 22:45:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,7 +16,6 @@ import java.rmi.RemoteException;
 
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
@@ -33,6 +32,7 @@ import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.dialogs.AdresseAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
+import de.willuhn.jameica.hbci.gui.input.BLZInput;
 import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Transfer;
@@ -146,10 +146,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 	{
 		if (empfblz != null)
 			return empfblz;
-		empfblz = new TextInput(getTransfer().getGegenkontoBLZ(),HBCIProperties.HBCI_BLZ_LENGTH);
-		empfblz.setValidChars(HBCIProperties.HBCI_BLZ_VALIDCHARS);
-		empfblz.setComment("");
-		empfblz.addListener(new BLZListener());
+		empfblz = new BLZInput(getTransfer().getGegenkontoBLZ());
     empfblz.setMandatory(true);
 		return empfblz;
 	}
@@ -355,20 +352,6 @@ public abstract class AbstractTransferControl extends AbstractControl
 	}
 
 	/**
-	 * Listener, der den Namen des Geldinstitutes bei BLZ-Auswahl dranschreibt.
-   */
-  private class BLZListener implements Listener
-	{
-		/**
-     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-     */
-    public void handleEvent(Event event) {
-			String name = HBCIUtils.getNameForBLZ((String)empfblz.getValue());
-			empfblz.setComment(name);
-		}
-	}
-
-	/**
 	 * Listener, der bei Auswahl des Empfaengers die restlichen Daten vervollstaendigt.
    */
   private class EmpfaengerListener implements Listener
@@ -389,9 +372,6 @@ public abstract class AbstractTransferControl extends AbstractControl
 				getEmpfaengerName().setValue(empfaenger.getName());
 				// Wenn der Empfaenger aus dem Adressbuch kommt, deaktivieren wir die Checkbox
 				getStoreEmpfaenger().setValue(Boolean.FALSE);
-				
-				// und jetzt noch das Geld-Institut dranpappen
-				new BLZListener().handleEvent(null);
 			}
 			catch (RemoteException er)
 			{
@@ -405,6 +385,9 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
+ * Revision 1.34  2007/04/09 22:45:12  willuhn
+ * @N Bug 380
+ *
  * Revision 1.33  2006/12/28 15:38:43  willuhn
  * @N Farbige Pflichtfelder
  *

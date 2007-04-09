@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractSammelTransferBuchungControl.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/12/28 15:38:43 $
+ * $Revision: 1.6 $
+ * $Date: 2007/04/09 22:45:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,7 +13,6 @@ import java.rmi.RemoteException;
 
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
@@ -26,6 +25,7 @@ import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.dialogs.AdresseAuswahlDialog;
+import de.willuhn.jameica.hbci.gui.input.BLZInput;
 import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.system.Application;
@@ -99,10 +99,7 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 	{
 		if (gkBLZ != null)
 			return gkBLZ;
-		gkBLZ = new TextInput(getBuchung().getGegenkontoBLZ(),HBCIProperties.HBCI_BLZ_LENGTH);
-    gkBLZ.setValidChars(HBCIProperties.HBCI_BLZ_VALIDCHARS);
-		gkBLZ.setComment("");
-		gkBLZ.addListener(new BLZListener());
+		gkBLZ = new BLZInput(getBuchung().getGegenkontoBLZ());
     gkBLZ.setMandatory(true);
 		return gkBLZ;
 	}
@@ -204,20 +201,6 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 	public abstract void handleStore(boolean next);
 
 	/**
-	 * Listener, der den Namen des Geldinstitutes bei BLZ-Auswahl dranschreibt.
-	 */
-	private class BLZListener implements Listener
-	{
-		/**
-		 * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-		 */
-		public void handleEvent(Event event) {
-			String name = HBCIUtils.getNameForBLZ((String)gkBLZ.getValue());
-			gkBLZ.setComment(name);
-		}
-	}
-
-	/**
 	 * Listener, der bei Auswahl des Gegenkontos die restlichen Daten vervollstaendigt.
 	 */
 	private class GegenkontoListener implements Listener
@@ -238,9 +221,6 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 				getGegenkontoName().setValue(gegenKonto.getName());
 				// Wenn die Adresse aus dem Adressbuch kommt, deaktivieren wir die Checkbox
 				getStoreAddress().setValue(Boolean.FALSE);
-				
-				// und jetzt noch das Geld-Institut dranpappen
-				new BLZListener().handleEvent(null);
 			}
 			catch (RemoteException er)
 			{
@@ -254,6 +234,9 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferBuchungControl.java,v $
+ * Revision 1.6  2007/04/09 22:45:12  willuhn
+ * @N Bug 380
+ *
  * Revision 1.5  2006/12/28 15:38:43  willuhn
  * @N Farbige Pflichtfelder
  *

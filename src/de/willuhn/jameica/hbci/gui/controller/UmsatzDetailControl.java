@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailControl.java,v $
- * $Revision: 1.26 $
- * $Date: 2007/03/18 08:13:28 $
- * $Author: jost $
+ * $Revision: 1.27 $
+ * $Date: 2007/04/09 22:45:12 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -33,6 +33,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.dialogs.AdresseAuswahlDialog;
+import de.willuhn.jameica.hbci.gui.input.BLZInput;
 import de.willuhn.jameica.hbci.gui.input.UmsatzTypInput;
 import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -207,24 +208,7 @@ public class UmsatzDetailControl extends AbstractControl {
     String blz = getUmsatz().getEmpfaengerBLZ(); 
     if (blz == null || blz.length() == 0 || getUmsatz().hasChangedByUser())
     {
-      empfaengerBlz = new TextInput(blz, HBCIProperties.HBCI_BLZ_LENGTH);
-      if (blz != null)
-        empfaengerBlz.setComment(HBCIUtils.getNameForBLZ(blz));
-      else
-        empfaengerBlz.setComment("");
-
-      empfaengerBlz.addListener(new Listener()
-      {
-        public void handleEvent(Event event)
-        {
-          if (empfaengerBlz == null)
-            return;
-          String s = (String) empfaengerBlz.getValue();
-          if (s == null || s.length() == 0)
-            return;
-          empfaengerBlz.setComment(HBCIUtils.getNameForBLZ(s));
-        }
-      });
+      empfaengerBlz = new BLZInput(blz);
       changeEB = true;
     }
     else
@@ -232,7 +216,6 @@ public class UmsatzDetailControl extends AbstractControl {
       empfaengerBlz= new LabelInput(blz);
       empfaengerBlz.setComment(HBCIUtils.getNameForBLZ(blz));
     }
-
     return empfaengerBlz;
   }
 
@@ -462,6 +445,9 @@ public class UmsatzDetailControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzDetailControl.java,v $
+ * Revision 1.27  2007/04/09 22:45:12  willuhn
+ * @N Bug 380
+ *
  * Revision 1.26  2007/03/18 08:13:28  jost
  * Sortierte Anzeige der Umsatz-Kategorien.
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EmpfaengerControl.java,v $
- * $Revision: 1.40 $
- * $Date: 2006/12/28 15:38:43 $
+ * $Revision: 1.41 $
+ * $Date: 2007/04/09 22:45:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,10 +13,6 @@
 package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
-
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
@@ -32,6 +28,7 @@ import de.willuhn.jameica.hbci.gui.action.EmpfaengerNew;
 import de.willuhn.jameica.hbci.gui.action.SammelLastBuchungNew;
 import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungBuchungNew;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
+import de.willuhn.jameica.hbci.gui.input.BLZInput;
 import de.willuhn.jameica.hbci.gui.parts.SammelTransferBuchungList;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzList;
 import de.willuhn.jameica.hbci.rmi.Adresse;
@@ -184,15 +181,8 @@ public class EmpfaengerControl extends AbstractControl {
 	{
 		if (blz != null)
 			return blz;
-		blz = new TextInput(getEmpfaenger().getBLZ(),HBCIProperties.HBCI_BLZ_LENGTH);
-    // BUGZILLA 280
-    blz.setValidChars(HBCIProperties.HBCI_BLZ_VALIDCHARS);
-		blz.setComment("");
+		blz = new BLZInput(getEmpfaenger().getBLZ());
     blz.setMandatory(true);
-    BLZListener l = new BLZListener();
-		blz.addListener(l);
-    // einmal ausfuehren
-    l.handleEvent(null);
 		return blz;
 	}
 
@@ -232,35 +222,14 @@ public class EmpfaengerControl extends AbstractControl {
   		GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern der Adresse"));
   	}
   }
-
-	/**
-	 * Sucht das Geldinstitut zur eingegebenen BLZ und zeigt es als Kommentar
-	 * hinter dem BLZ-Feld an.
-	 */
-	private class BLZListener implements Listener
-	{
-
-		/**
-		 * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-		 */
-		public void handleEvent(Event event) {
-
-			try {
-				String name = HBCIUtils.getNameForBLZ((String)getBlz().getValue());
-				getBlz().setComment(name);
-			}
-			catch (RemoteException e)
-			{
-				Logger.error("error while updating blz comment",e);
-			}
-		}
-	}
-
 }
 
 
 /**********************************************************************
  * $Log: EmpfaengerControl.java,v $
+ * Revision 1.41  2007/04/09 22:45:12  willuhn
+ * @N Bug 380
+ *
  * Revision 1.40  2006/12/28 15:38:43  willuhn
  * @N Farbige Pflichtfelder
  *

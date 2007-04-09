@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/AccountContainerDialog.java,v $
- * $Revision: 1.8 $
- * $Date: 2005/06/24 14:55:49 $
- * $Author: web0 $
+ * $Revision: 1.9 $
+ * $Date: 2007/04/09 22:45:12 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -28,7 +28,7 @@ import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.AccountContainer;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.gui.input.BLZInput;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -116,8 +116,7 @@ public class AccountContainerDialog extends AbstractDialog
 	{
 		if (blz == null)
     {
-      blz = new TextInput(passport.getBLZ(),HBCIProperties.HBCI_BLZ_LENGTH);
-      blz.setComment("");
+      blz = new BLZInput(passport.getBLZ());
       blz.addListener(new Listener()
       {
         public void handleEvent(Event arg0)
@@ -125,37 +124,29 @@ public class AccountContainerDialog extends AbstractDialog
           try
           {
             String b = (String)blz.getValue();
-            blz.setComment(HBCIUtils.getNameForBLZ(b));
             // Neu im aktuellen HBCI4Java-Snapshot. IP/Hostname zur BLZ ermitteln
-            try
+            String host = (String) getHost().getValue();
+            if (host == null || host.length() == 0)
             {
-              String host = (String) getHost().getValue();
-              if (host == null || host.length() == 0)
+              String clazz = passport.getClass().getName();
+              if (clazz.toUpperCase().indexOf("PINTAN") != -1)
               {
-                String clazz = passport.getClass().getName();
-                if (clazz.toUpperCase().indexOf("PINTAN") != -1)
-                {
-                  Logger.info("auto detecting pin/tan url by blz");
-                  String s = HBCIUtils.getPinTanURLForBLZ(b);
-                  if (s != null && s.startsWith("https://"))
-                    s = s.replaceFirst("https://","");
-                  getHost().setValue(s);
-                }
-                else
-                {
-                  Logger.info("auto detecting rdh/ddv ip by blz");
-                  getHost().setValue(HBCIUtils.getHBCIHostForBLZ(b));
-                }
+                Logger.info("auto detecting pin/tan url by blz");
+                String s = HBCIUtils.getPinTanURLForBLZ(b);
+                if (s != null && s.startsWith("https://"))
+                  s = s.replaceFirst("https://","");
+                getHost().setValue(s);
               }
-            }
-            catch (Exception e)
-            {
-              Logger.error("error while auto detecting url/ip for blz",e);
+              else
+              {
+                Logger.info("auto detecting rdh/ddv ip by blz");
+                getHost().setValue(HBCIUtils.getHBCIHostForBLZ(b));
+              }
             }
           }
           catch (Exception e)
           {
-            // ignore
+            Logger.error("error while auto detecting url/ip for blz",e);
           }
         }
       });
@@ -227,6 +218,9 @@ public class AccountContainerDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: AccountContainerDialog.java,v $
+ * Revision 1.9  2007/04/09 22:45:12  willuhn
+ * @N Bug 380
+ *
  * Revision 1.8  2005/06/24 14:55:49  web0
  * *** empty log message ***
  *
