@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/AccountContainerDialog.java,v $
- * $Revision: 1.9 $
- * $Date: 2007/04/09 22:45:12 $
+ * $Revision: 1.10 $
+ * $Date: 2007/04/10 13:25:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -156,20 +156,32 @@ public class AccountContainerDialog extends AbstractDialog
 	
 	private Input getHost()
 	{
-		if (host == null)
-			host = new TextInput(passport.getHost())
+    if (host != null)
+      return host;
+
+    host = new TextInput(passport.getHost())
+    {
+      public Object getValue()
       {
-        public Object getValue()
-        {
-          // Ueberschrieben, um ggf. das https:// am Anfang abzuschneiden
-          String s = (String) super.getValue();
-          if (s == null)
-            return null;
-          if (s.startsWith("https://"))
-            s = s.replaceFirst("https://","");
-          return s;
-        }
-      };
+        // Ueberschrieben, um ggf. das https:// am Anfang abzuschneiden
+        String s = (String) super.getValue();
+        if (s == null)
+          return null;
+        if (s.startsWith("https://"))
+          s = s.replaceFirst("https://","");
+        return s.replaceAll(" ",""); // BUGZILLA 381
+      }
+    };
+    
+    // BUGZILLA 381
+    host.addListener(new Listener() {
+    
+      public void handleEvent(Event event)
+      {
+        getHost().setValue(getHost().getValue());
+      }
+    
+    });
 		host.setComment(i18n.tr("Bei PIN/TAN bitte ohne \"https://\" eingeben"));
 		return host;
 	}
@@ -218,6 +230,9 @@ public class AccountContainerDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: AccountContainerDialog.java,v $
+ * Revision 1.10  2007/04/10 13:25:14  willuhn
+ * @B Bug 381
+ *
  * Revision 1.9  2007/04/09 22:45:12  willuhn
  * @N Bug 380
  *
