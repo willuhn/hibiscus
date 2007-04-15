@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.36 $
- * $Date: 2007/02/26 12:48:23 $
+ * $Revision: 1.37 $
+ * $Date: 2007/04/15 22:23:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -262,6 +262,7 @@ public class Converter {
 		k.country = "DE";
 		k.curr = konto.getWaehrung();
 		k.customerid = konto.getKundennummer();
+    k.type = konto.getBezeichnung(); // BUGZILLA 338
 		k.name = konto.getName();
 		return k;  	
 	}
@@ -283,6 +284,10 @@ public class Converter {
 		list.addFilter("blz = ?",         new Object[]{konto.blz});
     if (passportClass != null)
       list.addFilter("passport_class = ?", new Object[]{passportClass.getName()});
+    
+    // BUGZILLA 338: Wenn das Konto eine Bezeichnung hat, muss sie uebereinstimmen
+    if (konto.type != null && konto.type.length() > 0)
+      list.addFilter("bezeichnung = ?", new Object[]{konto.type});
 
     if (list.hasNext())
 			return (de.willuhn.jameica.hbci.rmi.Konto) list.next(); // Konto gibts schon
@@ -405,6 +410,9 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.37  2007/04/15 22:23:16  willuhn
+ * @B Bug 338
+ *
  * Revision 1.36  2007/02/26 12:48:23  willuhn
  * @N Spezial-PSD-Parser von Michael Lambers
  *

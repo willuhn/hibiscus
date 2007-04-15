@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoFetchFromPassport.java,v $
- * $Revision: 1.12 $
- * $Date: 2006/03/15 16:25:48 $
+ * $Revision: 1.13 $
+ * $Date: 2007/04/15 22:23:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -66,25 +66,45 @@ public class KontoFetchFromPassport implements Action
 						// Wir checken, ob's das Konto schon gibt
 						boolean found = false;
 						Logger.info("  checking if allready exists");
-						while (existing.hasNext())
+
+            while (existing.hasNext())
 						{
 							check = (Konto) existing.next();
-							if (check.getBLZ().equals(konten[i].getBLZ()) &&
-								check.getKontonummer().equals(konten[i].getKontonummer()))
-							{
-                // Jetzt noch checken, ob die Passports uebereinstimmen
-                String pp = check.getPassportClass();
-                Logger.info("  checking for same passport");
-                if (pp == null || pp.equals(p.getClass().getName()))
-                {
-                  found = true;
-                  Logger.info("  konto exists, skipping");
-                  skipped++;
-                  break;
-                }
-							}
-					
+            
+              // BLZ stimmt nicht ueberein
+							if (!check.getBLZ().equals(konten[i].getBLZ()))
+                continue;
+
+              // Kontonummer stimmt nicht ueberein.
+							if (!check.getKontonummer().equals(konten[i].getKontonummer()))
+                continue;
+              
+              // Stimmen Passports ueberein?
+              String pp = check.getPassportClass();
+              if (pp == null || !pp.equals(p.getClass().getName()))
+                continue;
+              
+              
+              // BUGZILLA 338: Checken, ob Bezeichnung (=Type) uebereinstimmt
+              // Bezeichnung ist optional - wir checken nur, wenn auf beiden
+              // Seiten ein Name vorhanden ist und sie sich unterscheiden
+              String localType = check.getBezeichnung();
+              String newType   = konten[i].getBezeichnung();
+              boolean haveName = (localType != null && localType.length() > 0 &&
+                                 newType != null && newType.length() > 0);
+
+              // Die Konten gelten bereits als identisch, wenn
+              // eines von beiden keine Bezeichnung hat (dann genuegen
+              // die o.g. Kriterien). Andernfalls muessen die Bezeichnungen
+              // uebereinstimmen.
+              if (!haveName || newType.equals(localType))
+              {
+                found = true;
+                Logger.info("  konto exists, skipping");
+                skipped++;
+              }
 						}
+            
 						existing.begin();
 						if (!found)
 						{
@@ -134,6 +154,9 @@ public class KontoFetchFromPassport implements Action
 
 /**********************************************************************
  * $Log: KontoFetchFromPassport.java,v $
+ * Revision 1.13  2007/04/15 22:23:16  willuhn
+ * @B Bug 338
+ *
  * Revision 1.12  2006/03/15 16:25:48  willuhn
  * @N Statusbar refactoring
  *
