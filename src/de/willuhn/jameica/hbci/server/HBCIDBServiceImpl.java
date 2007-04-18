@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/HBCIDBServiceImpl.java,v $
- * $Revision: 1.13 $
- * $Date: 2006/12/27 11:52:36 $
+ * $Revision: 1.14 $
+ * $Date: 2007/04/18 17:03:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,19 +15,21 @@ package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
 
-import de.willuhn.datasource.db.EmbeddedDBServiceImpl;
+import de.willuhn.datasource.db.DBServiceImpl;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.rmi.DBSupport;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.Settings;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
 /**
  * @author willuhn
  */
-public class HBCIDBServiceImpl extends EmbeddedDBServiceImpl implements HBCIDBService
+public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
 {
-
+  private DBSupport driver = null;
   private final static Settings SETTINGS = new Settings(HBCIDBService.class);
   
   /**
@@ -35,9 +37,20 @@ public class HBCIDBServiceImpl extends EmbeddedDBServiceImpl implements HBCIDBSe
    */
   public HBCIDBServiceImpl() throws RemoteException
   {
-    super(Application.getPluginLoader().getPlugin(HBCI.class).getResources().getWorkPath() + "/db/db.conf",
-          "hibiscus","hibiscus");
+    super();
     this.setClassFinder(Application.getClassLoader().getClassFinder());
+    
+    String s = SETTINGS.getString("database.driver",DBSupportMcKoiImpl.class.getName());
+    Logger.info("loading database driver: " + s);
+    try
+    {
+      Class c = Application.getClassLoader().load(s);
+      this.driver = (DBSupport) c.newInstance();
+    }
+    catch (Throwable t)
+    {
+      throw new RemoteException("unable to load database driver " + s,t);
+    }
   }
 
   /**
@@ -57,11 +70,46 @@ public class HBCIDBServiceImpl extends EmbeddedDBServiceImpl implements HBCIDBSe
     return SETTINGS.getBoolean("autocommit",super.getAutoCommit());
   }
 
+  /**
+   * @see de.willuhn.datasource.db.DBServiceImpl#getJdbcDriver()
+   */
+  protected String getJdbcDriver() throws RemoteException
+  {
+    return this.driver.getJdbcDriver();
+  }
+
+  /**
+   * @see de.willuhn.datasource.db.DBServiceImpl#getJdbcPassword()
+   */
+  protected String getJdbcPassword() throws RemoteException
+  {
+    return this.driver.getJdbcPassword();
+  }
+
+  /**
+   * @see de.willuhn.datasource.db.DBServiceImpl#getJdbcUrl()
+   */
+  protected String getJdbcUrl() throws RemoteException
+  {
+    return this.driver.getJdbcUrl();
+  }
+
+  /**
+   * @see de.willuhn.datasource.db.DBServiceImpl#getJdbcUsername()
+   */
+  protected String getJdbcUsername() throws RemoteException
+  {
+    return this.driver.getJdbcUsername();
+  }
+
 }
 
 
 /*********************************************************************
  * $Log: HBCIDBServiceImpl.java,v $
+ * Revision 1.14  2007/04/18 17:03:06  willuhn
+ * @N Erster Code fuer Unterstuetzung von MySQL
+ *
  * Revision 1.13  2006/12/27 11:52:36  willuhn
  * @C ResultsetExtractor moved into datasource
  *
