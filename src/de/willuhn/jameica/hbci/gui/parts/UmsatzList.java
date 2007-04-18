@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.45 $
- * $Date: 2007/03/21 16:56:56 $
+ * $Revision: 1.46 $
+ * $Date: 2007/04/18 14:51:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -88,7 +88,7 @@ public class UmsatzList extends TablePart implements Extendable
   private KL kl                 = null;
   private boolean filter        = true;
   
-  private static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(UmsatzList.class);
+  private static de.willuhn.jameica.system.Settings mySettings = new de.willuhn.jameica.system.Settings(UmsatzList.class);
 
   private I18N i18n;
   
@@ -215,12 +215,12 @@ public class UmsatzList extends TablePart implements Extendable
       group.addLabelPair(i18n.tr("Zweck, Konto oder Kommentar enthält"), this.search);
 
       // Checkbox zur Aktivierung von regulaeren Ausdruecken
-      this.regex = new CheckboxInput(settings.getBoolean("regex",false));
+      this.regex = new CheckboxInput(mySettings.getBoolean("regex",false));
       this.regex.addListener(new Listener() {
         public void handleEvent(Event event)
         {
           boolean b = ((Boolean)regex.getValue()).booleanValue();
-          settings.setAttribute("regex",b);
+          mySettings.setAttribute("regex",b);
           kl.process();
         }
       });
@@ -372,7 +372,7 @@ public class UmsatzList extends TablePart implements Extendable
       text.setForeground(Color.WIDGET_FG.getSWTColor());
       text.setBackground(Color.WIDGET_BG.getSWTColor());
       // BUGZILLA 258
-      this.text.setText(settings.getString("search",""));
+      this.text.setText(mySettings.getString("search",""));
       this.text.addKeyListener(kl);
       return this.text;
     }
@@ -383,7 +383,7 @@ public class UmsatzList extends TablePart implements Extendable
     public Object getValue()
     {
       String s = text == null ? null : text.getText();
-      settings.setAttribute("search",s);
+      mySettings.setAttribute("search",s);
       return s;
     }
 
@@ -684,6 +684,9 @@ public class UmsatzList extends TablePart implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.46  2007/04/18 14:51:09  willuhn
+ * @C removed 2 warnings
+ *
  * Revision 1.45  2007/03/21 16:56:56  willuhn
  * @N Online-Hilfe aktualisiert
  * @N Bug 337 (Stichtag in Sparquote)

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractTransferList.java,v $
- * $Revision: 1.14 $
- * $Date: 2007/03/21 18:47:36 $
+ * $Revision: 1.15 $
+ * $Date: 2007/04/18 14:51:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -68,7 +68,7 @@ public abstract class AbstractTransferList extends TablePart implements Part
   private GenericIterator list  = null;
   private ArrayList transfers   = null;
 
-  private de.willuhn.jameica.system.Settings settings = null;
+  private de.willuhn.jameica.system.Settings mySettings = null;
   
 
   /**
@@ -80,8 +80,8 @@ public abstract class AbstractTransferList extends TablePart implements Part
   {
     super(list, action);
     this.list = list;
-    this.i18n     = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-    this.settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
+    this.i18n       = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+    this.mySettings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
 
     setFormatter(new TableFormatter() {
       public void format(TableItem item) {
@@ -190,7 +190,7 @@ public abstract class AbstractTransferList extends TablePart implements Part
     // Als End-Datum nehmen wir keines.
     // Es sei denn, es ist ein aktuelles gespeichert
     Date dTo = null;
-    String sTo = settings.getString("transferlist.filter.to",null);
+    String sTo = mySettings.getString("transferlist.filter.to",null);
     if (sTo != null && sTo.length() > 0)
     {
       try
@@ -206,7 +206,7 @@ public abstract class AbstractTransferList extends TablePart implements Part
     // Als Startdatum nehmen wir den ersten des aktuellen Monats
     // Es sei denn, es ist eines gespeichert
     Date dFrom = null;
-    String sFrom = settings.getString("transferlist.filter.from",null);
+    String sFrom = mySettings.getString("transferlist.filter.from",null);
     if (sFrom != null && sFrom.length() > 0)
     {
       try
@@ -306,13 +306,13 @@ public abstract class AbstractTransferList extends TablePart implements Part
         // Wir speichern die Datums-Eingaben
         // Das From-Datum speichern wir immer
         if (dfrom != null)
-          settings.setAttribute("transferlist.filter.from",HBCI.DATEFORMAT.format(dfrom));
+          mySettings.setAttribute("transferlist.filter.from",HBCI.DATEFORMAT.format(dfrom));
         
         // Das End-Datum speichern wir nur, wenn es nicht das aktuelle Datum ist
         if (dto != null && !HBCIProperties.startOfDay(new Date()).equals(dto))
-          settings.setAttribute("transferlist.filter.to",HBCI.DATEFORMAT.format(dto));
+          mySettings.setAttribute("transferlist.filter.to",HBCI.DATEFORMAT.format(dto));
         else
-          settings.setAttribute("transferlist.filter.to",(String)null);
+          mySettings.setAttribute("transferlist.filter.to",(String)null);
         
       
       }
@@ -387,6 +387,9 @@ public abstract class AbstractTransferList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: AbstractTransferList.java,v $
+ * Revision 1.15  2007/04/18 14:51:09  willuhn
+ * @C removed 2 warnings
+ *
  * Revision 1.14  2007/03/21 18:47:36  willuhn
  * @N Neue Spalte in Kategorie-Tree
  * @N Sortierung des Kontoauszuges wie in Tabelle angezeigt
