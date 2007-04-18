@@ -1,0 +1,206 @@
+/**********************************************************************
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzGroup.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2007/04/18 08:54:21 $
+ * $Author: willuhn $
+ * $Locker:  $
+ * $State: Exp $
+ *
+ * Copyright (c) by willuhn software & services
+ * All rights reserved
+ *
+ **********************************************************************/
+
+package de.willuhn.jameica.hbci.server;
+
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+
+import de.willuhn.datasource.GenericIterator;
+import de.willuhn.datasource.GenericObject;
+import de.willuhn.datasource.GenericObjectNode;
+import de.willuhn.datasource.pseudo.PseudoIterator;
+import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
+import de.willuhn.util.I18N;
+
+/**
+ * Hilfsklasse, um eine Gruppen von Umsaetzen samt Name als GenericObjectNode abzubilden.
+ */
+public class UmsatzGroup implements GenericObjectNode, Comparable
+{
+  private static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+
+  private UmsatzTyp typ = null;
+  private ArrayList umsaetze = new ArrayList();
+  
+  /**
+   * ct.
+   * @param typ
+   */
+  public UmsatzGroup(UmsatzTyp typ)
+  {
+    this.typ = typ;
+  }
+  
+  /**
+   * Fuegt der Gruppe einen neuen Umsatz hinzu.
+   * @param umsatz
+   */
+  public void add(Umsatz umsatz)
+  {
+    this.umsaetze.add(umsatz);
+  }
+
+  /**
+   * @see de.willuhn.datasource.GenericObjectNode#getChildren()
+   */
+  public GenericIterator getChildren() throws RemoteException
+  {
+    return PseudoIterator.fromArray((GenericObject[])umsaetze.toArray(new GenericObject[umsaetze.size()]));
+  }
+
+  /**
+   * @see de.willuhn.datasource.GenericObjectNode#getParent()
+   */
+  public GenericObjectNode getParent() throws RemoteException
+  {
+    return null;
+  }
+
+  /**
+   * @see de.willuhn.datasource.GenericObjectNode#getPath()
+   */
+  public GenericIterator getPath() throws RemoteException
+  {
+    return null;
+  }
+
+  /**
+   * @see de.willuhn.datasource.GenericObjectNode#getPossibleParents()
+   */
+  public GenericIterator getPossibleParents() throws RemoteException
+  {
+    return null;
+  }
+
+  /**
+   * @see de.willuhn.datasource.GenericObjectNode#hasChild(de.willuhn.datasource.GenericObjectNode)
+   */
+  public boolean hasChild(GenericObjectNode node) throws RemoteException
+  {
+    for (int i=0;i<this.umsaetze.size();++i)
+    {
+      GenericObject o = (GenericObject) this.umsaetze.get(i);
+      if (o.equals(node))
+        return true;
+    }
+    return false;
+  }
+
+  /**
+   * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
+   */
+  public boolean equals(GenericObject other) throws RemoteException
+  {
+    if (other == null || !(other instanceof UmsatzGroup))
+      return false;
+    return this.getID().equals(other.getID());
+  }
+
+  /**
+   * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
+   */
+  public Object getAttribute(String arg0) throws RemoteException
+  {
+    if (this.typ == null && "name".equalsIgnoreCase(arg0))
+      return  i18n.tr("Nicht zugeordnet");
+   
+    if ("betrag".equalsIgnoreCase(arg0))
+    {
+      // Rechnen wir manuell zusammen, damit der vom User eingegebene Datumsbereich
+      // uebereinstimmt. Wir koennten zwar auch typ.getUmsatz(Date,Date) aufrufen,
+      // allerdings wuerde das intern nochmal alle Umsaetze laden und haufen
+      // zusaetzliche SQL-Queries ausloesen
+      double betrag = 0.0d;
+      for (int i=0;i<this.umsaetze.size();++i)
+      {
+        Umsatz u = (Umsatz) this.umsaetze.get(i);
+        betrag+= u.getBetrag();
+      }
+      return new Double(betrag);
+    }
+    
+    return this.typ == null ? null : this.typ.getAttribute(arg0);
+  }
+
+  /**
+   * @see de.willuhn.datasource.GenericObject#getAttributeNames()
+   */
+  public String[] getAttributeNames() throws RemoteException
+  {
+    return this.typ == null ? new String[]{"name"} : this.typ.getAttributeNames();
+  }
+
+  /**
+   * @see de.willuhn.datasource.GenericObject#getID()
+   */
+  public String getID() throws RemoteException
+  {
+    return this.typ == null ? "<unassigned>" : this.typ.getID();
+  }
+
+  /**
+   * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
+   */
+  public String getPrimaryAttribute() throws RemoteException
+  {
+    return this.typ == null ? "name" : this.typ.getPrimaryAttribute();
+  }
+
+  /**
+   * Implementiert, damit wir nach dem Feld "nummer" sortieren koennen.
+   * @see java.lang.Comparable#compareTo(java.lang.Object)
+   */
+  public int compareTo(Object o)
+  {
+    if (o == null || !(o instanceof UmsatzGroup))
+      return -1;
+    
+    if (this.typ == null)
+      return -1; // Wir sind "Nicht zugeordnet" - und die steht immer oben
+    
+    UmsatzGroup other = (UmsatzGroup) o;
+    if (other.typ == null)
+      return 1; // Die sind "Nicht zugeordnet" - wir ordnen uns unter
+    
+    try
+    {
+      String n1 = this.typ.getNummer();
+      String n2 = other.typ.getNummer();
+
+      if (n1 == null)
+        return -1;
+      if (n2 == null)
+        return -1;
+      return n1.compareTo(n2);
+    }
+    catch (RemoteException re)
+    {
+      Logger.error("unable to determine umsatztyp number",re);
+    }
+    return 0;
+    
+  }
+}
+
+
+/*********************************************************************
+ * $Log: UmsatzGroup.java,v $
+ * Revision 1.1  2007/04/18 08:54:21  willuhn
+ * @N UmsatzGroup to fetch items from UmsatzTypTree
+ *
+ **********************************************************************/

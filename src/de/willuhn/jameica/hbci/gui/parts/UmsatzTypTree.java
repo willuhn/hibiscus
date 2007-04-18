@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTypTree.java,v $
- * $Revision: 1.1 $
- * $Date: 2007/03/22 22:36:42 $
+ * $Revision: 1.2 $
+ * $Date: 2007/04/18 08:54:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,7 +22,6 @@ import org.eclipse.swt.widgets.TreeItem;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
-import de.willuhn.datasource.GenericObjectNode;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
@@ -35,6 +34,7 @@ import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.menus.UmsatzList;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
+import de.willuhn.jameica.hbci.server.UmsatzGroup;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
@@ -106,19 +106,19 @@ public class UmsatzTypTree extends TreePart
     // finden, die nirgends zugeordnet sind.
 
     HashMap lookup = new HashMap();
-    lookup.put(null,new Kategorie(null)); // Pseudo-Kategorie "Nicht zugeordnet"
+    lookup.put(null,new UmsatzGroup(null)); // Pseudo-Kategorie "Nicht zugeordnet"
     
     while (list.hasNext())
     {
-      Umsatz u      = (Umsatz) list.next();
-      UmsatzTyp ut  = u.getUmsatzTyp();
-      Kategorie kat = (Kategorie) lookup.get(ut);
+      Umsatz u        = (Umsatz) list.next();
+      UmsatzTyp ut    = u.getUmsatzTyp();
+      UmsatzGroup kat = (UmsatzGroup) lookup.get(ut);
       if (kat == null)
       {
-        kat = new Kategorie(ut); // haben wir noch nicht. Also neu anlegen
+        kat = new UmsatzGroup(ut); // haben wir noch nicht. Also neu anlegen
         lookup.put(ut,kat);
       }
-      kat.umsaetze.add(u);
+      kat.add(u);
     }
     ////////////////////////////////////////////////////////////////
 
@@ -134,170 +134,13 @@ public class UmsatzTypTree extends TreePart
 
     return PseudoIterator.fromArray((GenericObject[])sort.toArray(new GenericObject[sort.size()]));
   }
-
-  /**
-   * Hilfsklasse, um eine Umsatzkategorie als GenericObjectNode abzubilden.
-   */
-  private static class Kategorie implements GenericObjectNode, Comparable
-  {
-    private UmsatzTyp typ = null;
-    private ArrayList umsaetze = new ArrayList();
-    
-    /**
-     * ct.
-     * @param typ
-     */
-    private Kategorie(UmsatzTyp typ)
-    {
-      this.typ = typ;
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObjectNode#getChildren()
-     */
-    public GenericIterator getChildren() throws RemoteException
-    {
-      return PseudoIterator.fromArray((GenericObject[])umsaetze.toArray(new GenericObject[umsaetze.size()]));
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObjectNode#getParent()
-     */
-    public GenericObjectNode getParent() throws RemoteException
-    {
-      return null;
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObjectNode#getPath()
-     */
-    public GenericIterator getPath() throws RemoteException
-    {
-      return null;
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObjectNode#getPossibleParents()
-     */
-    public GenericIterator getPossibleParents() throws RemoteException
-    {
-      return null;
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObjectNode#hasChild(de.willuhn.datasource.GenericObjectNode)
-     */
-    public boolean hasChild(GenericObjectNode node) throws RemoteException
-    {
-      for (int i=0;i<this.umsaetze.size();++i)
-      {
-        GenericObject o = (GenericObject) this.umsaetze.get(i);
-        if (o.equals(node))
-          return true;
-      }
-      return false;
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
-     */
-    public boolean equals(GenericObject other) throws RemoteException
-    {
-      if (other == null || !(other instanceof Kategorie))
-        return false;
-      return this.getID().equals(other.getID());
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
-     */
-    public Object getAttribute(String arg0) throws RemoteException
-    {
-      if (this.typ == null && "name".equalsIgnoreCase(arg0))
-        return  i18n.tr("Nicht zugeordnet");
-     
-      if ("betrag".equalsIgnoreCase(arg0))
-      {
-        // Rechnen wir manuell zusammen, damit der vom User eingegebene Datumsbereich
-        // uebereinstimmt. Wir koennten zwar auch typ.getUmsatz(Date,Date) aufrufen,
-        // allerdings wuerde das intern nochmal alle Umsaetze laden und haufen
-        // zusaetzliche SQL-Queries ausloesen
-        double betrag = 0.0d;
-        for (int i=0;i<this.umsaetze.size();++i)
-        {
-          Umsatz u = (Umsatz) this.umsaetze.get(i);
-          betrag+= u.getBetrag();
-        }
-        return new Double(betrag);
-      }
-      
-      return this.typ == null ? null : this.typ.getAttribute(arg0);
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#getAttributeNames()
-     */
-    public String[] getAttributeNames() throws RemoteException
-    {
-      return this.typ == null ? new String[]{"name"} : this.typ.getAttributeNames();
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#getID()
-     */
-    public String getID() throws RemoteException
-    {
-      return this.typ == null ? "<unassigned>" : this.typ.getID();
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
-     */
-    public String getPrimaryAttribute() throws RemoteException
-    {
-      return this.typ == null ? "name" : this.typ.getPrimaryAttribute();
-    }
-
-    /**
-     * Implementiert, damit wir nach dem Feld "nummer" sortieren koennen.
-     * @see java.lang.Comparable#compareTo(java.lang.Object)
-     */
-    public int compareTo(Object o)
-    {
-      if (o == null || !(o instanceof Kategorie))
-        return -1;
-      
-      if (this.typ == null)
-        return -1; // Wir sind "Nicht zugeordnet" - und die steht immer oben
-      
-      Kategorie other = (Kategorie) o;
-      if (other.typ == null)
-        return 1; // Die sind "Nicht zugeordnet" - wir ordnen uns unter
-      
-      try
-      {
-        String n1 = this.typ.getNummer();
-        String n2 = other.typ.getNummer();
-
-        if (n1 == null)
-          return -1;
-        if (n2 == null)
-          return -1;
-        return n1.compareTo(n2);
-      }
-      catch (RemoteException re)
-      {
-        Logger.error("unable to determine umsatztyp number",re);
-      }
-      return 0;
-      
-    }
-    
-  }
 }
 
 /*******************************************************************************
  * $Log: UmsatzTypTree.java,v $
+ * Revision 1.2  2007/04/18 08:54:21  willuhn
+ * @N UmsatzGroup to fetch items from UmsatzTypTree
+ *
  * Revision 1.1  2007/03/22 22:36:42  willuhn
  * @N Contextmenu in Trees
  * @C Kategorie-Baum in separates TreePart ausgelagert
