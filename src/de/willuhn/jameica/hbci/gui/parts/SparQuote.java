@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SparQuote.java,v $
- * $Revision: 1.8 $
- * $Date: 2007/03/21 18:47:36 $
+ * $Revision: 1.9 $
+ * $Date: 2007/04/19 18:12:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,6 +49,7 @@ import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.chart.LineChart;
 import de.willuhn.jameica.hbci.gui.chart.LineChartData;
+import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -220,7 +221,8 @@ public class SparQuote implements Part
       umsaetze = Settings.getDBService().createList(Umsatz.class);
 
     // Wichtig: Die Umsaetze muessen chronologisch sortiert sein.
-    umsaetze.setOrder("ORDER BY TONUMBER(valuta)"); // Reihenfolge umkehren
+    HBCIDBService service = (HBCIDBService) Settings.getDBService();
+    umsaetze.setOrder("ORDER BY " + service.getSQLTimestamp("valuta")); // Reihenfolge umkehren
     
     ArrayList list           = new ArrayList();
     UmsatzEntry currentEntry = null;
@@ -482,6 +484,9 @@ public class SparQuote implements Part
 
 /*********************************************************************
  * $Log: SparQuote.java,v $
+ * Revision 1.9  2007/04/19 18:12:21  willuhn
+ * @N MySQL-Support (GUI zum Konfigurieren fehlt noch)
+ *
  * Revision 1.8  2007/03/21 18:47:36  willuhn
  * @N Neue Spalte in Kategorie-Tree
  * @N Sortierung des Kontoauszuges wie in Tabelle angezeigt

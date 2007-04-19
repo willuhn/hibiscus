@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.83 $
- * $Date: 2007/04/02 23:01:17 $
+ * $Revision: 1.84 $
+ * $Date: 2007/04/19 18:12:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -351,7 +351,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public DBIterator getUmsaetze(int days) throws RemoteException
   {
-    DBIterator list = getService().createList(Umsatz.class);
+    HBCIDBService service = (HBCIDBService) getService();
+
+    DBIterator list = service.createList(Umsatz.class);
     list.addFilter("konto_id = " + getID());
 
     // BUGZILLA 341
@@ -361,7 +363,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
       Date start = HBCIProperties.startOfDay(new Date(System.currentTimeMillis() - d));
       list.addFilter("valuta >= ?", new Object[]{new java.sql.Date(start.getTime())});
     }
-    list.setOrder("ORDER BY TONUMBER(valuta) desc, id desc");
+    list.setOrder("ORDER BY " + service.getSQLTimestamp("valuta") + " desc, id desc");
     return list;
   }
 
@@ -370,11 +372,14 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public DBIterator getUmsaetze(Date start, Date end) throws RemoteException
   {
-    DBIterator list = getService().createList(Umsatz.class);
+    HBCIDBService service = (HBCIDBService) getService();
+
+    DBIterator list = service.createList(Umsatz.class);
     list.addFilter("konto_id = " + getID());
     if (start != null) list.addFilter("valuta >= ?", new Object[]{new java.sql.Date(HBCIProperties.startOfDay(start).getTime())});
     if (end != null) list.addFilter("valuta <= ?", new Object[]{new java.sql.Date(HBCIProperties.endOfDay(end).getTime())});
-    list.setOrder("ORDER BY TONUMBER(valuta) desc, id desc");
+
+    list.setOrder("ORDER BY " + service.getSQLTimestamp("valuta") + " desc, id desc");
     return list;
   }
 
@@ -383,9 +388,12 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public DBIterator getUeberweisungen() throws RemoteException
   {
-    DBIterator list = getService().createList(Ueberweisung.class);
+    HBCIDBService service = (HBCIDBService) getService();
+
+    DBIterator list = service.createList(Ueberweisung.class);
     list.addFilter("konto_id = " + getID());
-    list.setOrder("ORDER BY TONUMBER(termin) DESC");
+
+    list.setOrder("ORDER BY " + service.getSQLTimestamp("termin") + " DESC");
     return list;
   }
 
@@ -450,9 +458,11 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public DBIterator getProtokolle() throws RemoteException
   {
-    DBIterator list = getService().createList(Protokoll.class);
+    HBCIDBService service = (HBCIDBService) getService();
+
+    DBIterator list = service.createList(Protokoll.class);
     list.addFilter("konto_id = " + getID());
-    list.setOrder("ORDER BY TONUMBER(datum) DESC");
+    list.setOrder("ORDER BY " + service.getSQLTimestamp("datum") + " DESC");
     return list;
   }
 
@@ -649,8 +659,6 @@ public class KontoImpl extends AbstractDBObject implements Konto
     if (this.isNewObject())
       return 0;
 
-    // Die ID muss via tonumber umgewandelt werden, da wir sie als String
-    // uebergeben
     String sql = "select count(id) from umsatz where konto_id = " + this.getID();
 
     HBCIDBService service = (HBCIDBService) this.getService();
@@ -681,6 +689,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*******************************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.84  2007/04/19 18:12:21  willuhn
+ * @N MySQL-Support (GUI zum Konfigurieren fehlt noch)
+ *
  * Revision 1.83  2007/04/02 23:01:17  willuhn
  * @D diverse Javadoc-Warnings
  * @C Umstellung auf neues SelectInput

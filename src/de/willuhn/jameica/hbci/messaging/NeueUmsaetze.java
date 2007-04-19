@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/messaging/NeueUmsaetze.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/03/16 14:40:02 $
+ * $Revision: 1.3 $
+ * $Date: 2007/04/19 18:12:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
@@ -76,9 +77,12 @@ public class NeueUmsaetze implements MessageConsumer
   {
     if (first == null)
       return PseudoIterator.fromArray(new Umsatz[0]);
-    DBIterator list = Settings.getDBService().createList(Umsatz.class);
+
+    HBCIDBService service = (HBCIDBService) Settings.getDBService();
+    
+    DBIterator list = service.createList(Umsatz.class);
     list.addFilter("id >= " + first);
-    list.setOrder("ORDER BY TONUMBER(valuta) desc, id desc");
+    list.setOrder("ORDER BY " + service.getSQLTimestamp("valuta") + " desc, id desc");
     if (list.size() == 0)
       first = null; // Wenn nichts gefunden wurde, resetten wir uns
     return list;
@@ -89,6 +93,9 @@ public class NeueUmsaetze implements MessageConsumer
 
 /*********************************************************************
  * $Log: NeueUmsaetze.java,v $
+ * Revision 1.3  2007/04/19 18:12:21  willuhn
+ * @N MySQL-Support (GUI zum Konfigurieren fehlt noch)
+ *
  * Revision 1.2  2007/03/16 14:40:02  willuhn
  * @C Redesign ImportMessage
  * @N Aktualisierung der Umsatztabelle nach Kategorie-Zuordnung

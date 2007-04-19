@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/HBCIDBServiceImpl.java,v $
- * $Revision: 1.14 $
- * $Date: 2007/04/18 17:03:06 $
+ * $Revision: 1.15 $
+ * $Date: 2007/04/19 18:12:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,16 +13,21 @@
 
 package de.willuhn.jameica.hbci.server;
 
+import java.io.File;
 import java.rmi.RemoteException;
+import java.text.DecimalFormat;
+import java.util.Locale;
 
 import de.willuhn.datasource.db.DBServiceImpl;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.DBSupport;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
+import de.willuhn.jameica.plugin.PluginResources;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Logger;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
+import de.willuhn.util.ProgressMonitor;
 
 /**
  * @author willuhn
@@ -30,7 +35,6 @@ import de.willuhn.util.I18N;
 public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
 {
   private DBSupport driver = null;
-  private final static Settings SETTINGS = new Settings(HBCIDBService.class);
   
   /**
    * @throws RemoteException
@@ -38,6 +42,7 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
   public HBCIDBServiceImpl() throws RemoteException
   {
     super();
+    this.setClassloader(Application.getClassLoader());
     this.setClassFinder(Application.getClassLoader().getClassFinder());
     
     String s = SETTINGS.getString("database.driver",DBSupportMcKoiImpl.class.getName());
@@ -102,11 +107,93 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
     return this.driver.getJdbcUsername();
   }
 
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.HBCIDBService#checkConsistency()
+   */
+  public void checkConsistency() throws RemoteException, ApplicationException
+  {
+    this.driver.checkConsistency(getConnection());
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.HBCIDBService#install()
+   */
+  public void install() throws RemoteException
+  {
+    I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+    ProgressMonitor monitor = Application.getController().getApplicationCallback().getStartupMonitor();
+    monitor.setStatusText(i18n.tr("Installiere Hibiscus"));
+    this.driver.install();
+    
+    PluginResources res = Application.getPluginLoader().getPlugin(HBCI.class).getResources();
+    File file = new File(res.getPath() + File.separator + "sql","create.sql");
+    this.driver.execute(getConnection(),file);
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.HBCIDBService#update(double, double)
+   */
+  public void update(double oldVersion, double newVersion) throws RemoteException
+  {
+    Logger.info("starting update process for hibiscus");
+
+    DecimalFormat df = (DecimalFormat) DecimalFormat.getInstance(Locale.ENGLISH); // Punkt als Dezimal-Trenner
+    df.setMaximumFractionDigits(1);
+    df.setMinimumFractionDigits(1);
+    df.setGroupingUsed(false);
+
+    PluginResources res = Application.getPluginLoader().getPlugin(HBCI.class).getResources();
+
+    double target = newVersion;
+
+    try
+    {
+      // Wir wiederholen die Updates solange, bis wir bei der aktuellen
+      // Versionsnummer angekommen sind.
+      while (oldVersion < target)
+      {
+        newVersion = oldVersion + 0.1d;
+
+        File f = new File(res.getPath() + File.separator + "sql",
+            "update_" + df.format(oldVersion) + "-" + df.format(newVersion) + ".sql");
+
+        I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+        ProgressMonitor monitor = Application.getController().getApplicationCallback().getStartupMonitor();
+        monitor.setStatusText(i18n.tr("Führe Hibiscus-Update durch: von {0} zu {1}", new String[]{df.format(oldVersion),df.format(newVersion)}));
+
+        this.driver.execute(getConnection(),f);
+        
+        // OK, naechster Durchlauf
+        oldVersion = newVersion;
+      }
+      
+      Logger.info("Update completed");
+    }
+    catch (RemoteException re)
+    {
+      throw re;
+    }
+    catch (Exception e)
+    {
+      throw new RemoteException("unable to perform database update from " + oldVersion + " to " + newVersion,e);
+    }
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.HBCIDBService#getSQLTimestamp(java.lang.String)
+   */
+  public String getSQLTimestamp(String content) throws RemoteException
+  {
+    return this.driver.getSQLTimestamp(content);
+  }
 }
 
 
 /*********************************************************************
  * $Log: HBCIDBServiceImpl.java,v $
+ * Revision 1.15  2007/04/19 18:12:21  willuhn
+ * @N MySQL-Support (GUI zum Konfigurieren fehlt noch)
+ *
  * Revision 1.14  2007/04/18 17:03:06  willuhn
  * @N Erster Code fuer Unterstuetzung von MySQL
  *

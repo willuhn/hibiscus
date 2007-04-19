@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/NachrichtList.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/11/16 22:29:46 $
+ * $Revision: 1.5 $
+ * $Date: 2007/04/19 18:12:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,6 +28,7 @@ import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Nachricht;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -119,8 +120,10 @@ public class NachrichtList extends TablePart implements Part
    */
   private static DBIterator init() throws RemoteException
   {
-    DBIterator list = Settings.getDBService().createList(Nachricht.class);
-    list.setOrder("ORDER BY gelesen, blz, TONUMBER(datum) desc");
+    HBCIDBService service = (HBCIDBService) Settings.getDBService();
+
+    DBIterator list = service.createList(Nachricht.class);
+    list.setOrder("ORDER BY gelesen, blz, " + service.getSQLTimestamp("datum") + " desc");
     return list;
   }
 }
@@ -128,6 +131,9 @@ public class NachrichtList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: NachrichtList.java,v $
+ * Revision 1.5  2007/04/19 18:12:21  willuhn
+ * @N MySQL-Support (GUI zum Konfigurieren fehlt noch)
+ *
  * Revision 1.4  2006/11/16 22:29:46  willuhn
  * @N Bug 331
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AdresseImpl.java,v $
- * $Revision: 1.15 $
- * $Date: 2006/12/01 00:02:34 $
+ * $Revision: 1.16 $
+ * $Date: 2007/04/19 18:12:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.Adresse;
+import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.SammelLastBuchung;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisungBuchung;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
@@ -157,10 +158,12 @@ public class AdresseImpl extends AbstractDBObject implements Adresse {
    */
   public DBIterator getUmsaetze() throws RemoteException
   {
-    DBIterator umsaetze = getService().createList(Umsatz.class);
+    HBCIDBService service = (HBCIDBService) getService();
+    
+    DBIterator umsaetze = service.createList(Umsatz.class);
     umsaetze.addFilter("empfaenger_konto = ?",new Object[]{getKontonummer()});
     umsaetze.addFilter("empfaenger_blz = ?",  new Object[]{getBLZ()});
-    umsaetze.setOrder(" ORDER BY TONUMBER(valuta) DESC");
+    umsaetze.setOrder(" ORDER BY " + service.getSQLTimestamp("valuta") + " DESC");
     return umsaetze;
   }
 
@@ -204,6 +207,9 @@ public class AdresseImpl extends AbstractDBObject implements Adresse {
 
 /**********************************************************************
  * $Log: AdresseImpl.java,v $
+ * Revision 1.16  2007/04/19 18:12:21  willuhn
+ * @N MySQL-Support (GUI zum Konfigurieren fehlt noch)
+ *
  * Revision 1.15  2006/12/01 00:02:34  willuhn
  * @C made unserializable members transient
  *

@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.96 $
- * $Date: 2007/03/10 07:16:10 $
- * $Author: jost $
+ * $Revision: 1.97 $
+ * $Date: 2007/04/19 18:12:21 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -14,17 +14,18 @@
 package de.willuhn.jameica.hbci;
 
 import java.io.File;
+import java.rmi.RemoteException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
-import java.util.Locale;
 
 import org.kapott.hbci.callback.HBCICallback;
 import org.kapott.hbci.callback.HBCICallbackConsole;
 import org.kapott.hbci.manager.HBCIUtils;
 
-import de.willuhn.datasource.db.EmbeddedDatabase;
+import de.willuhn.jameica.hbci.rmi.HBCIDBService;
+import de.willuhn.jameica.hbci.server.HBCIDBServiceImpl;
 import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Level;
@@ -60,11 +61,6 @@ public class HBCI extends AbstractPlugin
   // Mapper von HBCI4Java nach jameica Loglevels
   private static HashMap LOGMAPPING = new HashMap();
 
-  // Mapper von Datenbank-Hash zu Versionsnummer
-  private static HashMap DBMAPPING = new HashMap();
-  
-  private EmbeddedDatabase db = null;
-  
   private HBCICallback callback;
   
   /**
@@ -75,43 +71,6 @@ public class HBCI extends AbstractPlugin
   {
     super(file);
   }
-
-  /**
-   * Liefert die Datenbank des Plugins.
-   * Lauft die Anwendung im Client-Mode, wird
-   * immer <code>null</code> zurueckgegeben.
-   * @return die Embedded Datenbank.
-   * @throws Exception
-   */
-  private EmbeddedDatabase getDatabase() throws Exception
-  {
-    if (Application.inClientMode())
-      return null;
-    if (db != null)
-      return db;
-    db = new EmbeddedDatabase(getResources().getWorkPath() + "/db","hibiscus","hibiscus");
-    return db;
-  }
-
-  /**
-   * Prueft, ob sich die Datenbank der Anwendung im erwarteten
-   * Zustand befindet (via MD5-Checksum). Entlarvt Manipulationen
-   * des DB-Schemas durch Dritte.
-   * @throws Exception
-   */
-  private void checkConsistency() throws Exception
-	{
-    if (Application.inClientMode() || !Settings.getCheckDatabase())
-    {
-      // Wenn wir als Client laufen, muessen wir uns
-      // nicht um die Datenbank kuemmern. Das macht
-      // der Server schon
-      return;
-    }
-		String checkSum = getDatabase().getMD5Sum();
-    if (DBMAPPING.get(checkSum) == null)
-      throw new Exception("database checksum does not match any known version: " + checkSum);
-	}
 
   /**
    * @see de.willuhn.jameica.plugin.AbstractPlugin#init()
@@ -129,99 +88,40 @@ public class HBCI extends AbstractPlugin
     LOGMAPPING.put(Level.INFO,  new Integer(HBCIUtils.LOG_INFO));
     LOGMAPPING.put(Level.DEBUG, new Integer(HBCIUtils.LOG_DEBUG2));
 
-    DBMAPPING.put("KvynDJyxe6D1XUvSCkNAFA==",new Double(1.0));
-    DBMAPPING.put("Oj3JSimz84VKq44EEzQOZQ==",new Double(1.1));
-    DBMAPPING.put("NhTl6Nt8RmaRNz49M/SGiA==",new Double(1.2));
-    DBMAPPING.put("kwi5vy1fvgOOVtoTYJYjuA==",new Double(1.3));
-    DBMAPPING.put("JtkHZYFRtWpxGR6nE8TYFw==",new Double(1.4));
-    DBMAPPING.put("a4VHFRr69c+LynZiczIICg==",new Double(1.5));
-    DBMAPPING.put("a4VHFRr69c+LynZiczIICg==",new Double(1.6));
-    DBMAPPING.put("EdG6qLQ0SXRgJ8QBtz5Vrg==", new Double(1.7));
-
-    try {
-			Application.getCallback().getStartupMonitor().setStatusText("hibiscus: checking database integrity");
-
-      ////////////////////////////////////////////////////////////////////////////
-      // Damit wir die Updates nicht immer haendisch nachziehen muessen, rufen wir
-      // bei einem Fehler das letzte Update-Script nochmal auf.
-			if (!Application.inClientMode())
-      {
-        try
-        {
-          de.willuhn.jameica.system.Settings s = getResources().getSettings();
-          double size = s.getDouble("sql-update-size",-1);
-          
-          File f = new File(getResources().getPath() + "/sql/update_1.6-1.7.sql");
-          
-          if (f.exists())
-          {
-            long length = f.length();
-            if (length != size)
-            {
-              s.setAttribute("sql-update-size",(double)f.length());
-              getDatabase().executeSQLScript(f);
-            }
-          }
-        }
-        catch (Exception e2)
-        {
-          Logger.error("unable to execute sql update script",e2);
-        }
-      }
-      ////////////////////////////////////////////////////////////////////////////
-
-      checkConsistency();
-		}
-		catch (Exception e)
-		{
-      throw new ApplicationException(
-          getResources().getI18N().tr("Fehler beim Pr¸fung der Datenbank-Integrit‰t, " +
-            "Plugin wird aus Sicherheitsgr¸nden deaktiviert"),e);
-		}
-
-    Application.getCallback().getStartupMonitor().setStatusText("hibiscus: checking passport directory");
+    /////////////////////////////////////////////////////////////////
+    // Passport-Verzeichnis ggf. automatisch anlegen
     String path = Settings.getWorkPath() + "/passports/";
-    Logger.info("checking if " + path + " exists");
     File f = new File(path);
-    if (!f.exists())
-    {
-      Logger.info("no, creating " + path);
-      f.mkdirs();
-    }
+    if (!f.exists()) f.mkdirs();
+    /////////////////////////////////////////////////////////////////
 
-
+    /////////////////////////////////////////////////////////////////
+    // Passports im Server-Mode nicht aktivieren - nicht remote-tauglich
     if (!Application.inServerMode())
     {
       Application.getCallback().getStartupMonitor().setStatusText("hibiscus: init passport registry");
       PassportRegistry.init();
       Application.getCallback().getStartupMonitor().addPercentComplete(3);
-
     }
+    else
+    {
+      Logger.warn("server-mode: passport registry will not be initialized!");
+    }
+    /////////////////////////////////////////////////////////////////
 
+    /////////////////////////////////////////////////////////////////
+    // HBCI4Java laden
     Application.getCallback().getStartupMonitor().setStatusText("hibiscus: init hbci4java subsystem");
+    try
+    {
 
-    try {
-      int logLevel = HBCIUtils.LOG_INFO; // Default
-      try
-      {
-        Level level = Logger.getLevel();
-        Logger.info("current jameica log level: " + level.getName() + " [" + level.getValue() + "]");
-        logLevel = ((Integer) LOGMAPPING.get(level)).intValue();
-      }
-      catch (Exception e)
-      {
-        Logger.warn("unable to map jameica log level into hbci4java log level. using default");
-        // Am wahrscheinlichsten ArrayIndexOutOfBoundsException
-        // Dann eben nicht ;)
-      }
-      Logger.info("HBCI4Java loglevel: " + logLevel);
-
+      //////////////////////////////////
+      // Callback erzeugen
       if (Application.inServerMode())
         this.callback = new HBCICallbackConsole();
       else
         this.callback = new HBCICallbackSWT();
-      
-      Logger.info("checking for custom callback");
+
       String cb = getResources().getSettings().getString("hbcicallback.class",HBCICallbackSWT.class.getName());
       if (cb != null && cb.length() > 0)
       {
@@ -236,17 +136,38 @@ public class HBCI extends AbstractPlugin
           Logger.error("unable to load custom callback - fallback to default",t);
         }
       }
+      //////////////////////////////////
+
 
       HBCIUtils.init(null,null,this.callback);
-      HBCIUtils.setParam("log.loglevel.default",""+logLevel);
 
-      de.willuhn.jameica.system.Settings s = getResources().getSettings();
-      String rewriters = s.getString("hbci4java.kernel.rewriters",null);
+
+      //////////////////////////////////
+      // Log-Level
+      int logLevel = HBCIUtils.LOG_INFO; // Default
+      try
+      {
+        logLevel = ((Integer) LOGMAPPING.get(Logger.getLevel())).intValue();
+      }
+      catch (Exception e)
+      {
+        // Am wahrscheinlichsten ArrayIndexOutOfBoundsException
+        // Dann eben nicht ;)
+        Logger.warn("unable to map jameica log level into hbci4java log level. using default");
+      }
+      HBCIUtils.setParam("log.loglevel.default",""+logLevel);
+      //////////////////////////////////
+
+      
+      //////////////////////////////////
+      // Rewriter
+      String rewriters = getResources().getSettings().getString("hbci4java.kernel.rewriters",null);
       if (rewriters != null && rewriters.length() > 0)
       {
         Logger.warn("user defined rewriters found: " + rewriters);
         HBCIUtils.setParam("kernel.rewriters",rewriters);
       }
+      //////////////////////////////////
       
     }
     catch (Exception e)
@@ -261,76 +182,27 @@ public class HBCI extends AbstractPlugin
    */
   public void install() throws ApplicationException
   {
-    if (Application.inClientMode())
-      return; // als Client muessen wir die DB nicht installieren
-
-		Logger.info("starting install process for hibiscus");
-    try {
-			getDatabase().executeSQLScript(new File(getResources().getPath() + "/sql/create.sql"));
-    }
-    catch (Exception e)
-    {
-			throw new ApplicationException(getResources().getI18N().tr("Fehler beim Erstellen der Datenbank"),e);
-    }
+    call(new ServiceCall() {
+    
+      public void call(HBCIDBService service) throws RemoteException
+      {
+        service.install();
+      }
+    });
   }
   
   /**
    * @see de.willuhn.jameica.plugin.AbstractPlugin#update(double)
    */
-  public void update(double oldVersion) throws ApplicationException
+  public void update(final double oldVersion) throws ApplicationException
   {
-    if (Application.inClientMode())
-      return; // Kein Update im Client-Mode noetig.
-
-		Logger.info("starting update process for hibiscus");
-
-		DecimalFormat df = (DecimalFormat) DecimalFormat.getInstance(Locale.ENGLISH);
-		df.setMaximumFractionDigits(1);
-		df.setMinimumFractionDigits(1);
-		df.setGroupingUsed(false);
-
-    double newVersion = oldVersion + 0.1d;
-
-		try
-		{
-      // Bevor wir irgendein Update fahren, checken wir, ob die Datenbank
-      // mit der von Jameica gemeldeten Version uebereinstimmt.
-
-//      String checkSum = getDatabase().getMD5Sum();
-//      Double expectedVersion = (Double) DBMAPPING.get(checkSum);
-//      if (expectedVersion == null)
-//        throw new ApplicationException(getResources().getI18N().tr("Update der Datenbank abgebrochen. Aktuelle Checksumme {0} entspricht keiner bekannten Hibiscus-Version",checkSum));
-//
-//      double d = expectedVersion.doubleValue();
-//      if (d != oldVersion)
-//        throw new ApplicationException(getResources().getI18N().tr("Update der Datenbank abgebrochen. Erwartete Datenbank-Version: {0}, tats‰chliche Version: {1}", new String[]{df.format(oldVersion),df.format(d)}));
-
-      // OK, wir haben eine bekannte Version, dann koennen wir jetzt das Update starten
-      File f = new File(getResources().getPath() + "/sql/update_" + 
-          df.format(oldVersion) + "-" + 
-          df.format(newVersion) + ".sql");
-
-      Logger.info("checking sql file " + f.getAbsolutePath());
-			while (f.exists())
-			{
-				Logger.info("  file exists, executing");
-				getDatabase().executeSQLScript(f);
-				oldVersion = newVersion;
-				newVersion = oldVersion + 0.1d;
-				f = new File(getResources().getPath() + "/sql/update_" + 
-									   df.format(oldVersion) + "-" + 
-									   df.format(newVersion) + ".sql");
-			}
-      Logger.info("Update completed");
-		}
-    catch (ApplicationException ae)
-    {
-      throw ae;
-    }
-		catch (Exception e)
-		{
-			throw new ApplicationException(getResources().getI18N().tr("Fehler beim Update der Datenbank"),e);
-		}
+    call(new ServiceCall() {
+      
+      public void call(HBCIDBService service) throws RemoteException
+      {
+        service.update(oldVersion,getManifest().getVersion());
+      }
+    });
   }
 
   /**
@@ -355,11 +227,66 @@ public class HBCI extends AbstractPlugin
   {
     return this.callback;
   }
+  
+  /**
+   * Hilfsmethode zum bequemen Ausfuehren von Aufrufen auf dem Service.
+   */
+  private interface ServiceCall
+  {
+    /**
+     * @param service
+     * @throws RemoteException
+     */
+    public void call(HBCIDBService service) throws RemoteException;
+  }
+  
+  /**
+   * Hilfsmethode zum bequemen Ausfuehren von Methoden auf dem Service.
+   * @param call der Call.
+   * @throws ApplicationException
+   */
+  private void call(ServiceCall call) throws ApplicationException
+  {
+    if (Application.inClientMode())
+      return; // als Client muessen wir die DB nicht installieren
+
+    HBCIDBService service = null;
+    try
+    {
+      // Da die Service-Factory zu diesem Zeitpunkt noch nicht da ist, erzeugen
+      // wir uns eine lokale Instanz des Services.
+      service = new HBCIDBServiceImpl();
+      service.start();
+      call.call(service);
+    }
+    catch (Exception e)
+    {
+      throw new ApplicationException(getResources().getI18N().tr("Fehler beim Erstellen der Datenbank"),e);
+    }
+    finally
+    {
+      if (service != null)
+      {
+        try
+        {
+          service.stop(true);
+        }
+        catch (Exception e)
+        {
+          Logger.error("error while closing db service",e);
+        }
+      }
+    }
+  }
+  
 }
 
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.97  2007/04/19 18:12:21  willuhn
+ * @N MySQL-Support (GUI zum Konfigurieren fehlt noch)
+ *
  * Revision 1.96  2007/03/10 07:16:10  jost
  * Neue Checksumme f√ºr die aktuelle DB-Version
  *

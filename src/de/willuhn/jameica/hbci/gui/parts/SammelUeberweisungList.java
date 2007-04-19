@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SammelUeberweisungList.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/09/30 00:08:50 $
+ * $Revision: 1.2 $
+ * $Date: 2007/04/19 18:12:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
 
 /**
@@ -44,8 +45,10 @@ public class SammelUeberweisungList extends AbstractSammelTransferList implement
    */
   private static DBIterator init() throws RemoteException
   {
-    DBIterator list = Settings.getDBService().createList(SammelUeberweisung.class);
-    list.setOrder("ORDER BY TONUMBER(termin) DESC");
+    HBCIDBService service = (HBCIDBService) Settings.getDBService();
+
+    DBIterator list = service.createList(SammelUeberweisung.class);
+    list.setOrder("ORDER BY " + service.getSQLTimestamp("termin") + " DESC");
     return list;
   }
 
@@ -54,6 +57,9 @@ public class SammelUeberweisungList extends AbstractSammelTransferList implement
 
 /**********************************************************************
  * $Log: SammelUeberweisungList.java,v $
+ * Revision 1.2  2007/04/19 18:12:21  willuhn
+ * @N MySQL-Support (GUI zum Konfigurieren fehlt noch)
+ *
  * Revision 1.1  2005/09/30 00:08:50  willuhn
  * @N SammelUeberweisungen (merged with SammelLastschrift)
  *

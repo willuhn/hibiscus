@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/KontoauszugControl.java,v $
- * $Revision: 1.14 $
- * $Date: 2007/04/10 23:28:03 $
+ * $Revision: 1.15 $
+ * $Date: 2007/04/19 18:12:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -36,6 +36,7 @@ import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.action.UmsatzExport;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzList;
 import de.willuhn.jameica.hbci.io.Exporter;
+import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -171,7 +172,8 @@ public class KontoauszugControl extends AbstractControl
     }
     
     // Wir sortieren jetzt chronologisch vorwaerts
-    umsaetze.setOrder("ORDER BY TONUMBER(valuta) asc, id asc");
+    HBCIDBService service = (HBCIDBService) Settings.getDBService();
+    umsaetze.setOrder("ORDER BY " + service.getSQLTimestamp("valuta") + " asc, id asc");
     return umsaetze;
   }
 
@@ -329,6 +331,9 @@ public class KontoauszugControl extends AbstractControl
 
 /*******************************************************************************
  * $Log: KontoauszugControl.java,v $
+ * Revision 1.15  2007/04/19 18:12:21  willuhn
+ * @N MySQL-Support (GUI zum Konfigurieren fehlt noch)
+ *
  * Revision 1.14  2007/04/10 23:28:03  willuhn
  * @N TablePart Redesign (removed dependencies from GenericIterator/GenericObject)
  *

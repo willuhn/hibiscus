@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzTypTreeControl.java,v $
- * $Revision: 1.1 $
- * $Date: 2007/03/22 22:36:42 $
+ * $Revision: 1.2 $
+ * $Date: 2007/04/19 18:12:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,6 +30,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzTypTree;
+import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -172,10 +173,13 @@ public class UmsatzTypTreeControl extends AbstractControl
     }
     else
     {
-      umsaetze = Settings.getDBService().createList(Umsatz.class);
+      HBCIDBService service = (HBCIDBService) Settings.getDBService();
+
+      umsaetze = service.createList(Umsatz.class);
       if (von != null) umsaetze.addFilter("valuta >= ?", new Object[]{new java.sql.Date(HBCIProperties.startOfDay(von).getTime())});
       if (bis != null) umsaetze.addFilter("valuta <= ?", new Object[]{new java.sql.Date(HBCIProperties.endOfDay(bis).getTime())});
-      umsaetze.setOrder("ORDER BY TONUMBER(valuta) desc, id desc");
+
+      umsaetze.setOrder("ORDER BY " + service.getSQLTimestamp("valuta") + " desc, id desc");
     }
     ////////////////////////////////////////////////////////////////
     
@@ -211,6 +215,9 @@ public class UmsatzTypTreeControl extends AbstractControl
 
 /*******************************************************************************
  * $Log: UmsatzTypTreeControl.java,v $
+ * Revision 1.2  2007/04/19 18:12:21  willuhn
+ * @N MySQL-Support (GUI zum Konfigurieren fehlt noch)
+ *
  * Revision 1.1  2007/03/22 22:36:42  willuhn
  * @N Contextmenu in Trees
  * @C Kategorie-Baum in separates TreePart ausgelagert
