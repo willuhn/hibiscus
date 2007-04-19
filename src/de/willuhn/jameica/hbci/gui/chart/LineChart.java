@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/LineChart.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/08/01 21:29:12 $
+ * $Revision: 1.6 $
+ * $Date: 2007/04/19 18:10:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -121,6 +121,8 @@ public class LineChart extends AbstractChart
       }
       else
       {
+        // Wir machen vorher nochmal ein Reset
+        gi.begin();
         while (gi.hasNext())
         {
           GenericObject o = gi.next();
@@ -194,6 +196,9 @@ public class LineChart extends AbstractChart
 
 /*********************************************************************
  * $Log: LineChart.java,v $
+ * Revision 1.6  2007/04/19 18:10:12  willuhn
+ * @B fehlendes Reset des Iterators vor der Verwendung
+ *
  * Revision 1.5  2006/08/01 21:29:12  willuhn
  * @N Geaenderte LineCharts
  *
