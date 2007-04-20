@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTypTree.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/04/18 08:54:21 $
+ * $Revision: 1.3 $
+ * $Date: 2007/04/20 09:50:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,10 +13,10 @@
 package de.willuhn.jameica.hbci.gui.parts;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -105,14 +105,15 @@ public class UmsatzTypTree extends TreePart
     // ausloesen und zum anderen koennte man dann nicht die Umsaetze
     // finden, die nirgends zugeordnet sind.
 
+    final Object placeholder = new Object();
     HashMap lookup = new HashMap();
-    lookup.put(null,new UmsatzGroup(null)); // Pseudo-Kategorie "Nicht zugeordnet"
+    lookup.put(placeholder,new UmsatzGroup(null)); // Pseudo-Kategorie "Nicht zugeordnet"
     
     while (list.hasNext())
     {
       Umsatz u        = (Umsatz) list.next();
       UmsatzTyp ut    = u.getUmsatzTyp();
-      UmsatzGroup kat = (UmsatzGroup) lookup.get(ut);
+      UmsatzGroup kat = (UmsatzGroup) lookup.get(ut == null ? placeholder : ut);
       if (kat == null)
       {
         kat = new UmsatzGroup(ut); // haben wir noch nicht. Also neu anlegen
@@ -125,19 +126,19 @@ public class UmsatzTypTree extends TreePart
     ////////////////////////////////////////////////////////////////
     // Jetzt kopieren wir das noch in ein Array, damit wir es
     // nach Nummer sortieren koennen
-    ArrayList sort = new ArrayList();
-    Iterator it = lookup.keySet().iterator();
-    while (it.hasNext())
-      sort.add(lookup.get(it.next()));
-    Collections.sort(sort);
+    List items = Arrays.asList(lookup.values().toArray());
+    Collections.sort(items);
     ////////////////////////////////////////////////////////////////
 
-    return PseudoIterator.fromArray((GenericObject[])sort.toArray(new GenericObject[sort.size()]));
+    return PseudoIterator.fromArray((GenericObject[])items.toArray(new GenericObject[items.size()]));
   }
 }
 
 /*******************************************************************************
  * $Log: UmsatzTypTree.java,v $
+ * Revision 1.3  2007/04/20 09:50:11  willuhn
+ * @B use placeholder as key instead of null
+ *
  * Revision 1.2  2007/04/18 08:54:21  willuhn
  * @N UmsatzGroup to fetch items from UmsatzTypTree
  *
