@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SammelUeberweisungBuchungControl.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/08/23 09:45:14 $
+ * $Revision: 1.4 $
+ * $Date: 2007/04/20 14:49:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,14 +11,13 @@ package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
 
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
 import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungBuchungNew;
 import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -89,29 +88,15 @@ public class SammelUeberweisungBuchungControl extends AbstractSammelTransferBuch
 			Boolean store = (Boolean) getStoreAddress().getValue();
 			if (store.booleanValue())
 			{
-
-				// wir checken erstmal, ob wir den schon haben.
-				DBIterator list = Settings.getDBService().createList(Adresse.class);
-				list.addFilter("kontonummer = ?", new Object[]{kto});
-				list.addFilter("blz = ?", new Object[]{blz});
-				if (list.hasNext())
-				{
-					YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
-					d.setTitle(i18n.tr("Adresse existiert"));
-					d.setText(i18n.tr("Eine Adresse mit dieser Kontonummer und BLZ existiert bereits. " +
-							"Möchten Sie sie dennoch zum Adressbuch hinzufügen?"));
-					if (!((Boolean) d.open()).booleanValue()) return;
-				}
-				Adresse e = (Adresse) Settings.getDBService().createObject(Adresse.class,null);
-				e.setBLZ(blz);
-				e.setKontonummer(kto);
-				e.setName(name);
-				e.store();
-				GUI.getStatusBar().setSuccessText(i18n.tr("Buchung und Adresse gespeichert"));
+        Adresse e = (Adresse) Settings.getDBService().createObject(Adresse.class,null);
+        e.setBLZ(blz);
+        e.setKontonummer(kto);
+        e.setName(name);
+        
+        // Zu schauen, ob die Adresse bereits existiert, ueberlassen wir der Action
+        new EmpfaengerAdd().handleAction(e);
 			}
-			else {
-				GUI.getStatusBar().setSuccessText(i18n.tr("Buchung gespeichert"));
-			}
+			GUI.getStatusBar().setSuccessText(i18n.tr("Buchung gespeichert"));
 			getBuchung().transactionCommit();
 
       if (getBuchung().getBetrag() > Settings.getUeberweisungLimit())
@@ -155,6 +140,10 @@ public class SammelUeberweisungBuchungControl extends AbstractSammelTransferBuch
 
 /*****************************************************************************
  * $Log: SammelUeberweisungBuchungControl.java,v $
+ * Revision 1.4  2007/04/20 14:49:05  willuhn
+ * @N Support fuer externe Adressbuecher
+ * @N Action "EmpfaengerAdd" "aufgebohrt"
+ *
  * Revision 1.3  2006/08/23 09:45:14  willuhn
  * @N Restliche DBIteratoren auf PreparedStatements umgestellt
  *

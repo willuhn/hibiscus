@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AdresseImpl.java,v $
- * $Revision: 1.16 $
- * $Date: 2007/04/19 18:12:21 $
+ * $Revision: 1.17 $
+ * $Date: 2007/04/20 14:49:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -96,21 +96,21 @@ public class AdresseImpl extends AbstractDBObject implements Adresse {
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Adresse#getKontonummer()
+   * @see de.willuhn.jameica.hbci.rmi.Address#getKontonummer()
    */
   public String getKontonummer() throws RemoteException {
     return (String) getAttribute("kontonummer");
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Adresse#getBLZ()
+   * @see de.willuhn.jameica.hbci.rmi.Address#getBLZ()
    */
   public String getBLZ() throws RemoteException {
 		return (String) getAttribute("blz");
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Adresse#getName()
+   * @see de.willuhn.jameica.hbci.rmi.Address#getName()
    */
   public String getName() throws RemoteException {
 		return (String) getAttribute("name");
@@ -138,7 +138,7 @@ public class AdresseImpl extends AbstractDBObject implements Adresse {
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Adresse#getKommentar()
+   * @see de.willuhn.jameica.hbci.rmi.Address#getKommentar()
    */
   public String getKommentar() throws RemoteException
   {
@@ -207,6 +207,10 @@ public class AdresseImpl extends AbstractDBObject implements Adresse {
 
 /**********************************************************************
  * $Log: AdresseImpl.java,v $
+ * Revision 1.17  2007/04/20 14:49:05  willuhn
+ * @N Support fuer externe Adressbuecher
+ * @N Action "EmpfaengerAdd" "aufgebohrt"
+ *
  * Revision 1.16  2007/04/19 18:12:21  willuhn
  * @N MySQL-Support (GUI zum Konfigurieren fehlt noch)
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Attic/CSVEmpfaengerImporter.java,v $
- * $Revision: 1.3 $
- * $Date: 2007/03/16 14:40:02 $
+ * $Revision: 1.4 $
+ * $Date: 2007/04/20 14:49:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,13 +21,12 @@ import java.util.Hashtable;
 import org.eclipse.swt.SWTException;
 
 import de.willuhn.datasource.GenericObject;
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.io.CSVFile;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.dialogs.CSVImportDialog;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
+import de.willuhn.jameica.hbci.rmi.AddressbookService;
 import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -89,7 +88,8 @@ public class CSVEmpfaengerImporter implements Importer
       int error   = 0;
       boolean first = true;
 
-      DBService service = (DBService) Application.getServiceFactory().lookup(HBCI.class,"database");
+      DBService service       = (DBService) Application.getServiceFactory().lookup(HBCI.class,"database");
+      AddressbookService book = (AddressbookService) Application.getServiceFactory().lookup(HBCI.class,"addressbook");
       do
       {
         if (!first)
@@ -102,6 +102,8 @@ public class CSVEmpfaengerImporter implements Importer
 
         try
         {
+          // Wir erzeugen aus den Daten erstmal eine Adresse. Nach der
+          // koennen wir dann suchen
           final Adresse a = (Adresse) service.createObject(Adresse.class,null);
           
           for (int i=0;i<line.length;++i)
@@ -112,18 +114,12 @@ public class CSVEmpfaengerImporter implements Importer
             a.setGenericAttribute(name,line[i]);
           }
           
-          // Bevor wir das Ding speichern, pruefen wir noch, ob es diesen
-          // Empfaenger bereits gibt und ueberspringen ihn
-          // wir checken erstmal, ob wir den schon haben.
-          DBIterator list = Settings.getDBService().createList(Adresse.class);
-          list.addFilter("kontonummer = ?", new Object[]{a.getKontonummer()});
-          list.addFilter("blz = ?",         new Object[]{a.getBLZ()});
-          if (list.hasNext())
+          if (book.contains(a) != null)
           {
-            monitor.log("  " + i18n.tr("Kto {0}, BLZ {1} existiert bereits, überspringe Datensatz", new String[]{a.getKontonummer(),a.getBLZ()}));
+            monitor.log("  " + i18n.tr("Adresse (Kto {0}, BLZ {1}) existiert bereits, überspringe Datensatz", new String[]{a.getKontonummer(),a.getBLZ()}));
             continue;
           }
-
+          
           a.store();
           Application.getMessagingFactory().sendMessage(new ImportMessage(a));
           created++;
@@ -222,6 +218,10 @@ public class CSVEmpfaengerImporter implements Importer
 
 /*******************************************************************************
  * $Log: CSVEmpfaengerImporter.java,v $
+ * Revision 1.4  2007/04/20 14:49:05  willuhn
+ * @N Support fuer externe Adressbuecher
+ * @N Action "EmpfaengerAdd" "aufgebohrt"
+ *
  * Revision 1.3  2007/03/16 14:40:02  willuhn
  * @C Redesign ImportMessage
  * @N Aktualisierung der Umsatztabelle nach Kategorie-Zuordnung

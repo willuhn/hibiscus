@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractSammelTransferBuchungImpl.java,v $
- * $Revision: 1.8 $
- * $Date: 2006/12/01 00:02:34 $
+ * $Revision: 1.9 $
+ * $Date: 2007/04/20 14:49:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,10 +12,8 @@ package de.willuhn.jameica.hbci.server;
 import java.rmi.RemoteException;
 
 import de.willuhn.datasource.db.AbstractDBObject;
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
-import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.hbci.rmi.Duplicatable;
 import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.system.Application;
@@ -165,42 +163,6 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#setGegenkonto(de.willuhn.jameica.hbci.rmi.Adresse)
-   */
-  public void setGegenkonto(Adresse gegenkonto) throws RemoteException
-  {
-    setGegenkontoBLZ(gegenkonto == null ? null : gegenkonto.getBLZ());
-    setGegenkontoName(gegenkonto == null ? null : gegenkonto.getName());
-    setGegenkontoNummer(gegenkonto == null ? null : gegenkonto.getKontonummer());
-  }
-
-	/**
-	 * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#getGegenkonto()
-	 */
-	public Adresse getGegenkonto() throws RemoteException
-	{
-		// Wir schauen erstmal, ob wir diese Adresse in der Datenbank schon haben.
-		Logger.debug("checking if we allready have this address in the database");
-		DBIterator list = getService().createList(Adresse.class);
-		list.addFilter("kontonummer=?", new Object[]{getGegenkontoNummer()});
-		list.addFilter("blz=?",         new Object[]{getGegenkontoBLZ()});
-		list.addFilter("name=?",        new Object[]{getGegenkontoName()});
-		if (list.hasNext())
-		{
-			Logger.debug("found one, returning this one");
-			return (Adresse) list.next();
-		}
-
-		// ne, nix gefunden
-		Logger.debug("no address found, creating a new one");
-		Adresse a = (Adresse) getService().createObject(Adresse.class,null);
-		a.setBLZ(getGegenkontoBLZ());
-		a.setName(getGegenkontoName());
-		a.setKontonummer(getGegenkontoNummer());
-		return a;
-	}
-
-  /**
    * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#getBetrag()
    */
   public double getBetrag() throws RemoteException
@@ -270,6 +232,10 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferBuchungImpl.java,v $
+ * Revision 1.9  2007/04/20 14:49:05  willuhn
+ * @N Support fuer externe Adressbuecher
+ * @N Action "EmpfaengerAdd" "aufgebohrt"
+ *
  * Revision 1.8  2006/12/01 00:02:34  willuhn
  * @C made unserializable members transient
  *

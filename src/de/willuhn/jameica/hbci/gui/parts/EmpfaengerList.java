@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/EmpfaengerList.java,v $
- * $Revision: 1.14 $
- * $Date: 2007/03/21 18:47:36 $
+ * $Revision: 1.15 $
+ * $Date: 2007/04/20 14:49:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,8 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.GenericIterator;
@@ -28,15 +30,18 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.formatter.Formatter;
+import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
+import de.willuhn.jameica.hbci.rmi.Addressbook;
+import de.willuhn.jameica.hbci.rmi.AddressbookService;
 import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
@@ -46,11 +51,10 @@ import de.willuhn.util.I18N;
  */
 public class EmpfaengerList extends TablePart implements Part
 {
-  private TextInput search      = null;
-
-  private GenericIterator list  = null;
-  
-  private I18N i18n = null;
+  private Addressbook book       = null;
+  private TextInput search       = null;
+  private I18N i18n              = null;
+  private KeyAdapter keyListener = null;
 
   private MessageConsumer mc = null;
 
@@ -60,18 +64,7 @@ public class EmpfaengerList extends TablePart implements Part
    */
   public EmpfaengerList(Action action) throws RemoteException
   {
-    this(Settings.getDBService().createList(Adresse.class), action);
-  }
-  
-  /**
-   * @param list
-   * @param action
-   */
-  public EmpfaengerList(GenericIterator list, Action action)
-  {
-    super(list,action);
-
-    this.list = list;
+    super(action);
     
     this.setMulti(true);
     this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
@@ -97,7 +90,8 @@ public class EmpfaengerList extends TablePart implements Part
         }
       }
     });
-    addColumn(i18n.tr("Kommentar"),"kommentar",new Formatter() {
+    addColumn(i18n.tr("Kommentar"),"kommentar",new Formatter()
+    {
       public String format(Object o)
       {
         if (o == null)
@@ -122,7 +116,7 @@ public class EmpfaengerList extends TablePart implements Part
     setRememberColWidths(true);
 
     // Wir erstellen noch einen Message-Consumer, damit wir ueber neu eintreffende
-    // Empfaengerninformiert werden.
+    // Adressen informiert werden.
     this.mc = new EmpfaengerMessageConsumer();
     Application.getMessagingFactory().registerMessageConsumer(this.mc);
 
@@ -135,11 +129,47 @@ public class EmpfaengerList extends TablePart implements Part
   {
     LabelGroup group = new LabelGroup(parent,i18n.tr("Anzeige einschränken"));
 
+    /////////////////////////////////////////////////////////////////
+    // Mal schauen, ob wir mehrere Adressbuecher haben. Ist das der Fall,
+    // dann zeigen wir eine Auswahlbox an.
+    try
+    {
+      AddressbookService service = (AddressbookService) Application.getServiceFactory().lookup(HBCI.class,"addressbook");
+      this.book = service; // Wir machen das gleich zum Default-Adressbuch
+      if (service.hasExternalAddressbooks())
+      {
+        // Es existieren mehrere. Wir zeigen eine Auswahl an
+        final SelectInput select = new SelectInput(service.getAddressbooks(),null);
+        select.setAttribute("name");
+        select.addListener(new Listener() {
+          public void handleEvent(Event event)
+          {
+            Object value = select.getValue();
+            if (value == null || !(value instanceof Addressbook))
+              return;
+            EmpfaengerList.this.book = (Addressbook) value;
+            reload(); // Anzeige aktualisieren
+          }
+        });
+        group.addLabelPair(i18n.tr("Adressbuch"), select);
+      }
+    }
+    catch (RemoteException re)
+    {
+      throw re;
+    }
+    catch (Exception e)
+    {
+      throw new RemoteException("unable to load addressbook service",e);
+    }
+    /////////////////////////////////////////////////////////////////
+
     // Eingabe-Feld fuer die Suche mit Button hinten dran.
     this.search = new TextInput("");
     group.addLabelPair(i18n.tr("Name. Konto oder BLZ enthält"), this.search);
 
-    this.search.getControl().addKeyListener(new KL());
+    this.keyListener = new KL();
+    this.search.getControl().addKeyListener(this.keyListener);
 
     // Damit wir den MessageConsumer beim Schliessen wieder entfernen
     parent.addDisposeListener(new DisposeListener() {
@@ -149,6 +179,10 @@ public class EmpfaengerList extends TablePart implements Part
       }
     });
 
+    // Wir machen ein initiales Reload fuer die Erstbefuellung
+    reload();
+
+    // Und jetzt kann sich die Tabelle malen
     super.paint(parent);
   }
 
@@ -186,19 +220,15 @@ public class EmpfaengerList extends TablePart implements Part
       if (o == null || !(o instanceof Adresse))
         return;
       
-      GUI.getDisplay().syncExec(new Runnable() {
-        public void run()
-        {
-          try
-          {
-            addItem(o);
-          }
-          catch (Exception e)
-          {
-            Logger.error("unable to add object to list",e);
-          }
-        }
-      });
+      // Falls ein ganzer Pulk von Update kommt, machen wir
+      // nicht jedesmal ein Reload - sondern feuern einfach
+      // nur das Event fuer "Text in Suchfeld eingegeben".
+      // Das wartet vorm Update immer noch ein paar Millisekunden
+      // Sollten ganz viele Updates schnell hintereinander
+      // kommen, wird das Update damit naemlich erst nach
+      // der letzten Aenderung durchgefuehrt.
+      if (EmpfaengerList.this.keyListener != null)
+        EmpfaengerList.this.keyListener.keyReleased(null);
     }
 
     /**
@@ -210,6 +240,41 @@ public class EmpfaengerList extends TablePart implements Part
     }
   }
 
+  
+  /**
+   * Aktualisiert die Liste der angezeigten Elemente abhaengig vom
+   * eingegebenen Suchtext und dem ggf. ausgewaehlten Adressbuch.
+   */
+  private synchronized void reload()
+  {
+    GUI.getDisplay().syncExec(new Runnable()
+    {
+      public void run()
+      {
+        try
+        {
+
+          // Erstmal leer machen
+          EmpfaengerList.this.removeAll();
+          
+          // Jetzt fragen wir das aktuelle Adressbuch nach den gesuchten Adressen
+          GenericIterator found = EmpfaengerList.this.book.findAddress((String) EmpfaengerList.this.search.getValue());
+          if (found == null)
+            return;
+          while (found.hasNext())
+            EmpfaengerList.this.addItem(found.next());
+
+          // Fertig. Jetzt nochmal neu sortieren
+          EmpfaengerList.this.sort();
+        }
+        catch (Exception e)
+        {
+          Logger.error("error while reloading addresses",e);
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Laden der Adressen"), StatusBarMessage.TYPE_ERROR));
+        }
+      }
+    });
+  }
   
   
   // BUGZILLA 5
@@ -231,7 +296,7 @@ public class EmpfaengerList extends TablePart implements Part
       }
       
       // Ein neuer Timer
-      timeout = new Thread("AddressList")
+      timeout = new Thread("AddressList Reload")
       {
         public void run()
         {
@@ -242,7 +307,7 @@ public class EmpfaengerList extends TablePart implements Part
             sleep(700l);
 
             // Ne, wir wurden nicht gekillt. Also machen wir uns ans Werk
-            process();
+            reload();
 
           }
           catch (InterruptedException e)
@@ -257,61 +322,6 @@ public class EmpfaengerList extends TablePart implements Part
       };
       timeout.start();
     }
-    
-    private synchronized void process()
-    {
-      GUI.getDisplay().syncExec(new Runnable()
-      {
-        public void run()
-        {
-          try
-          {
-            // Erstmal alle rausschmeissen
-            EmpfaengerList.this.removeAll();
-
-            Adresse a = null;
-
-            // Wir holen uns den aktuellen Text
-            String text = (String) search.getValue();
-
-            boolean empty = text == null || text.length() == 0;
-            if (!empty) text = text.toLowerCase();
-
-            list.begin();
-            while (list.hasNext())
-            {
-              a = (Adresse) list.next();
-
-              // Was zum Filtern da?
-              if (empty)
-              {
-                // ne
-                EmpfaengerList.this.addItem(a);
-                continue;
-              }
-
-              String s1 = a.getName();
-              String s2 = a.getKontonummer();
-              String s3 = a.getBLZ();
-              
-              s1 = s1 == null ? "" : s1.toLowerCase();
-              s2 = s2 == null ? "" : s2.toLowerCase();
-              s3 = s3 == null ? "" : s3.toLowerCase();
-
-              if (s1.indexOf(text) != -1 || s2.indexOf(text) != -1 || s3.indexOf(text) != -1)
-              {
-                EmpfaengerList.this.addItem(a);
-              }
-            }
-            EmpfaengerList.this.sort();
-          }
-          catch (Exception e)
-          {
-            Logger.error("error while loading address",e);
-          }
-        }
-      });
-    }
   }
   
   
@@ -320,6 +330,10 @@ public class EmpfaengerList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: EmpfaengerList.java,v $
+ * Revision 1.15  2007/04/20 14:49:05  willuhn
+ * @N Support fuer externe Adressbuecher
+ * @N Action "EmpfaengerAdd" "aufgebohrt"
+ *
  * Revision 1.14  2007/03/21 18:47:36  willuhn
  * @N Neue Spalte in Kategorie-Tree
  * @N Sortierung des Kontoauszuges wie in Tabelle angezeigt

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/SammelTransferBuchung.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/09/30 00:08:50 $
+ * $Revision: 1.2 $
+ * $Date: 2007/04/20 14:49:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -78,21 +78,6 @@ public interface SammelTransferBuchung extends DBObject
   public void setGegenkontoName(String name) throws RemoteException;
 
 	/**
-	 * Speichert alle drei Eigenschaften des Gegenkontos mit denen der Adresse. 
-   * @param gegenkonto Adresse.
-   * @throws RemoteException
-   */
-  public void setGegenkonto(Adresse gegenkonto) throws RemoteException;
-
-	/**
-	 * Liefert das Gegenkonto als Adress-Objekt.
-	 * Das Adress-Objekt muss nicht zwangslaeufig in der Datenbank existieren.
-   * @return Adresse.
-   * @throws RemoteException
-   */
-  public Adresse getGegenkonto() throws RemoteException;
-	
-	/**
 	 * Liefert den Betrag.
 	 * @return Betrag.
 	 * @throws RemoteException
@@ -139,6 +124,10 @@ public interface SammelTransferBuchung extends DBObject
 
 /**********************************************************************
  * $Log: SammelTransferBuchung.java,v $
+ * Revision 1.2  2007/04/20 14:49:05  willuhn
+ * @N Support fuer externe Adressbuecher
+ * @N Action "EmpfaengerAdd" "aufgebohrt"
+ *
  * Revision 1.1  2005/09/30 00:08:50  willuhn
  * @N SammelUeberweisungen (merged with SammelLastschrift)
  *

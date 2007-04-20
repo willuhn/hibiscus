@@ -1,0 +1,62 @@
+/**********************************************************************
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Address.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2007/04/20 14:49:05 $
+ * $Author: willuhn $
+ * $Locker:  $
+ * $State: Exp $
+ *
+ * Copyright (c) by willuhn software & services
+ * All rights reserved
+ *
+ **********************************************************************/
+
+package de.willuhn.jameica.hbci.rmi;
+
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+/**
+ * Basis-Interface fuer einen Adressbuch-Eintrag.
+ * Die deutschen Methoden-Namen (trotz englischem Interface-Namen)
+ * sind ein Zugestaendnis an die Hibiscus-API.
+ */
+public interface Address extends Remote
+{
+  /**
+   * Liefert die Kontonummer.
+   * @return Kontonummer.
+   * @throws RemoteException
+   */
+  public String getKontonummer() throws RemoteException;
+  
+  /**
+   * Liefert die BLZ.
+   * @return BLZ.
+   * @throws RemoteException
+   */
+  public String getBLZ() throws RemoteException;
+  
+  /**
+   * Liefert den Namen.
+   * @return Name.
+   * @throws RemoteException
+   */
+  public String getName() throws RemoteException;
+  
+  /**
+   * Liefert einen zusaetzlichen Kommentar fuer den Adressbuch-Eintrag.
+   * @return Kommentar.
+   * @throws RemoteException
+   */
+  public String getKommentar() throws RemoteException;
+}
+
+
+/*********************************************************************
+ * $Log: Address.java,v $
+ * Revision 1.1  2007/04/20 14:49:05  willuhn
+ * @N Support fuer externe Adressbuecher
+ * @N Action "EmpfaengerAdd" "aufgebohrt"
+ *
+ **********************************************************************/

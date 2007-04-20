@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/AbstractDTAUSImporter.java,v $
- * $Revision: 1.8 $
- * $Date: 2007/03/16 14:40:02 $
+ * $Revision: 1.9 $
+ * $Date: 2007/04/20 14:49:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -218,6 +218,7 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
         DBService service = de.willuhn.jameica.hbci.Settings.getDBService();
         DBIterator konten = service.createList(Konto.class);
         konten.addFilter("kontonummer like '%" + kontonummer + "'");
+        // konten.addFilter("kontonummer like ?", new Object[]{"%" + kontonummer}); TODO: PreparedStatment mit LIKE testen
         konten.addFilter("blz = ?", new Object[]{blz});
         while (konten.hasNext())
         {
@@ -289,6 +290,10 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
 
 /*********************************************************************
  * $Log: AbstractDTAUSImporter.java,v $
+ * Revision 1.9  2007/04/20 14:49:05  willuhn
+ * @N Support fuer externe Adressbuecher
+ * @N Action "EmpfaengerAdd" "aufgebohrt"
+ *
  * Revision 1.8  2007/03/16 14:40:02  willuhn
  * @C Redesign ImportMessage
  * @N Aktualisierung der Umsatztabelle nach Kategorie-Zuordnung

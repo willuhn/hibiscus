@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Attic/Adresse.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/10/05 16:42:28 $
+ * $Revision: 1.6 $
+ * $Date: 2007/04/20 14:49:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,29 +21,9 @@ import de.willuhn.util.ApplicationException;
 /**
  * Bildet einen Empfaenger ab.
  */
-public interface Adresse extends DBObject {
+public interface Adresse extends Address, DBObject
+{
 
-	/**
-	 * Liefert die Kontonummer des Empfaengers.
-   * @return Kontonummer.
-   * @throws RemoteException
-   */
-  public String getKontonummer() throws RemoteException;
-	
-	/**
-	 * Liefert die BLZ des Empfaengers.
-   * @return BLZ.
-   * @throws RemoteException
-   */
-  public String getBLZ() throws RemoteException;
-	
-	/**
-	 * Liefert den Namen des Empfaengers.
-   * @return Name.
-   * @throws RemoteException
-   */
-  public String getName() throws RemoteException;
-	
 	/**
 	 * Speichert die Kontonummer des Empfaengers.
    * @param kontonummer Kontonummer.
@@ -64,13 +44,6 @@ public interface Adresse extends DBObject {
    * @throws RemoteException
    */
   public void setName(String name) throws RemoteException;
-  
-  /**
-   * Liefert einen zusaetzlichen Kommentar fuer den Adressbuch-Eintrag.
-   * @return Kommentar.
-   * @throws RemoteException
-   */
-  public String getKommentar() throws RemoteException;
   
   /**
    * Speichert einen zusaetzlichen Kommentar fuer den Adressbuch-Eintrag.
@@ -115,6 +88,10 @@ public interface Adresse extends DBObject {
 
 /**********************************************************************
  * $Log: Adresse.java,v $
+ * Revision 1.6  2007/04/20 14:49:05  willuhn
+ * @N Support fuer externe Adressbuecher
+ * @N Action "EmpfaengerAdd" "aufgebohrt"
+ *
  * Revision 1.5  2006/10/05 16:42:28  willuhn
  * @N CSV-Import/Export fuer Adressen
  *

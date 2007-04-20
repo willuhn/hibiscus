@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/HBCIDBServiceImpl.java,v $
- * $Revision: 1.15 $
- * $Date: 2007/04/19 18:12:21 $
+ * $Revision: 1.16 $
+ * $Date: 2007/04/20 14:49:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -121,7 +121,7 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
   public void install() throws RemoteException
   {
     I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-    ProgressMonitor monitor = Application.getController().getApplicationCallback().getStartupMonitor();
+    ProgressMonitor monitor = Application.getCallback().getStartupMonitor();
     monitor.setStatusText(i18n.tr("Installiere Hibiscus"));
     this.driver.install();
     
@@ -158,7 +158,7 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
             "update_" + df.format(oldVersion) + "-" + df.format(newVersion) + ".sql");
 
         I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-        ProgressMonitor monitor = Application.getController().getApplicationCallback().getStartupMonitor();
+        ProgressMonitor monitor = Application.getCallback().getStartupMonitor();
         monitor.setStatusText(i18n.tr("Führe Hibiscus-Update durch: von {0} zu {1}", new String[]{df.format(oldVersion),df.format(newVersion)}));
 
         this.driver.execute(getConnection(),f);
@@ -191,6 +191,10 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
 
 /*********************************************************************
  * $Log: HBCIDBServiceImpl.java,v $
+ * Revision 1.16  2007/04/20 14:49:05  willuhn
+ * @N Support fuer externe Adressbuecher
+ * @N Action "EmpfaengerAdd" "aufgebohrt"
+ *
  * Revision 1.15  2007/04/19 18:12:21  willuhn
  * @N MySQL-Support (GUI zum Konfigurieren fehlt noch)
  *

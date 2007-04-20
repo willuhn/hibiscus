@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.38 $
- * $Date: 2007/04/19 17:47:27 $
+ * $Revision: 1.39 $
+ * $Date: 2007/04/20 14:49:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -334,8 +334,7 @@ public class Converter {
 	 */
 	public static Konto HibiscusAdresse2HBCIKonto(Adresse adresse) throws RemoteException
 	{
-		org.kapott.hbci.structures.Konto k =
-			new org.kapott.hbci.structures.Konto("DE",adresse.getBLZ(),adresse.getKontonummer());
+		Konto k = new Konto("DE",adresse.getBLZ(),adresse.getKontonummer());
 		k.name = adresse.getName();
 		return k;
 	}
@@ -403,7 +402,11 @@ public class Converter {
 		{
 			b = (SammelTransferBuchung) buchungen.next();
 			final DTAUS.Transaction tr = dtaus.new Transaction();
-			tr.otherAccount = HibiscusAdresse2HBCIKonto(b.getGegenkonto());
+      
+      Konto other = new Konto("DE",b.getGegenkontoBLZ(),b.getGegenkontoNummer());
+      other.name = b.getGegenkontoName();
+
+      tr.otherAccount = other;
 			tr.value = new Value(String.valueOf(b.getBetrag()));
 			tr.addUsage(b.getZweck());
 			String z2 = b.getZweck2();
@@ -419,6 +422,10 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.39  2007/04/20 14:49:05  willuhn
+ * @N Support fuer externe Adressbuecher
+ * @N Action "EmpfaengerAdd" "aufgebohrt"
+ *
  * Revision 1.38  2007/04/19 17:47:27  willuhn
  * @B Zeile 2 des Verwendungszwecks konnte ggf. zu lang werden
  *
