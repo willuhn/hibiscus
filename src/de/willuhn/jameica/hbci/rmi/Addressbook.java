@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Addressbook.java,v $
- * $Revision: 1.1 $
- * $Date: 2007/04/20 14:49:05 $
+ * $Revision: 1.2 $
+ * $Date: 2007/04/20 14:55:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -46,9 +46,9 @@ public interface Addressbook extends Remote
    * Die Objekte der Liste muessen vom Typ <code>Address</code> sein.
    * Die Funktion darf auch <code>null</code> zurueckliefern, wenn keine Adressen gefunden wurden.
    * @throws RemoteException
-   * @see {@link AddressbookService#findAddress(String)}
+   * @see {@link AddressbookService#findAddresses(String)}
    */
-  public GenericIterator findAddress(String text) throws RemoteException;
+  public GenericIterator findAddresses(String text) throws RemoteException;
   
   /**
    * Prueft, ob im Adressbuch eine Adresse <b>mit diesen Eigenschaften</b> enthalten ist.
@@ -62,6 +62,9 @@ public interface Addressbook extends Remote
 
 /*********************************************************************
  * $Log: Addressbook.java,v $
+ * Revision 1.2  2007/04/20 14:55:31  willuhn
+ * @C s/findAddress/findAddresses/
+ *
  * Revision 1.1  2007/04/20 14:49:05  willuhn
  * @N Support fuer externe Adressbuecher
  * @N Action "EmpfaengerAdd" "aufgebohrt"

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/EmpfaengerList.java,v $
- * $Revision: 1.15 $
- * $Date: 2007/04/20 14:49:05 $
+ * $Revision: 1.16 $
+ * $Date: 2007/04/20 14:55:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -258,7 +258,7 @@ public class EmpfaengerList extends TablePart implements Part
           EmpfaengerList.this.removeAll();
           
           // Jetzt fragen wir das aktuelle Adressbuch nach den gesuchten Adressen
-          GenericIterator found = EmpfaengerList.this.book.findAddress((String) EmpfaengerList.this.search.getValue());
+          GenericIterator found = EmpfaengerList.this.book.findAddresses((String) EmpfaengerList.this.search.getValue());
           if (found == null)
             return;
           while (found.hasNext())
@@ -330,6 +330,9 @@ public class EmpfaengerList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: EmpfaengerList.java,v $
+ * Revision 1.16  2007/04/20 14:55:31  willuhn
+ * @C s/findAddress/findAddresses/
+ *
  * Revision 1.15  2007/04/20 14:49:05  willuhn
  * @N Support fuer externe Adressbuecher
  * @N Action "EmpfaengerAdd" "aufgebohrt"

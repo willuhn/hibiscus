@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/HibiscusAddressbookImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2007/04/20 14:49:05 $
+ * $Revision: 1.2 $
+ * $Date: 2007/04/20 14:55:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -61,9 +61,9 @@ public class HibiscusAddressbookImpl extends UnicastRemoteObject implements Addr
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Addressbook#findAddress(java.lang.String)
+   * @see de.willuhn.jameica.hbci.rmi.Addressbook#findAddresses(java.lang.String)
    */
-  public GenericIterator findAddress(String text) throws RemoteException
+  public GenericIterator findAddresses(String text) throws RemoteException
   {
     DBIterator list = Settings.getDBService().createList(Adresse.class);
     if (text != null && text.length() > 0)
@@ -91,6 +91,9 @@ public class HibiscusAddressbookImpl extends UnicastRemoteObject implements Addr
 
 /*********************************************************************
  * $Log: HibiscusAddressbookImpl.java,v $
+ * Revision 1.2  2007/04/20 14:55:31  willuhn
+ * @C s/findAddress/findAddresses/
+ *
  * Revision 1.1  2007/04/20 14:49:05  willuhn
  * @N Support fuer externe Adressbuecher
  * @N Action "EmpfaengerAdd" "aufgebohrt"
