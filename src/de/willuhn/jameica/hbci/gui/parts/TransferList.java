@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/Attic/TransferList.java,v $
- * $Revision: 1.1 $
- * $Date: 2007/04/23 18:07:15 $
+ * $Revision: 1.2 $
+ * $Date: 2007/04/23 18:30:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
+import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.parts.TablePart;
@@ -58,6 +59,7 @@ public class TransferList extends TablePart
   {
     super(transfers, new TransferNew());
     
+    // TODO: Wird noch nicht aufgeloest
     addColumn(i18n.tr("Kontonummer"),"gegenkontoNummer");
     addColumn(i18n.tr("Inhaber"),"gegenkontoName");
     addColumn(i18n.tr("BLZ"),"gegenkontoBLZ", new Formatter() {
@@ -77,6 +79,7 @@ public class TransferList extends TablePart
     
     });
     addColumn(i18n.tr("Verwendungszweck"),"zweck");
+    addColumn(i18n.tr("Datum"),"datum", new DateFormatter(HBCI.DATEFORMAT));
     addColumn(i18n.tr("Betrag"),"betrag",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
 
     setFormatter(new TableFormatter() {
@@ -108,6 +111,9 @@ public class TransferList extends TablePart
 
 /**********************************************************************
  * $Log: TransferList.java,v $
+ * Revision 1.2  2007/04/23 18:30:42  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2007/04/23 18:07:15  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
