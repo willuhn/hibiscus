@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/HibiscusAddress.java,v $
- * $Revision: 1.1 $
- * $Date: 2007/04/23 18:07:14 $
+ * $Revision: 1.2 $
+ * $Date: 2007/04/23 21:03:48 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,6 @@ package de.willuhn.jameica.hbci.rmi;
 
 import java.rmi.RemoteException;
 
-import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.util.ApplicationException;
 
@@ -51,29 +50,6 @@ public interface HibiscusAddress extends Address, DBObject
    * @throws RemoteException
    */
   public void setKommentar(String kommentar) throws RemoteException;
-  
-  /**
-   * Liefert eine Liste von Umsaetzen, die von/an diese HibiscusAddress getaetigt wurden.
-   * @return Liste von Umsaetzen.
-   * @throws RemoteException
-   */
-  public GenericIterator getUmsaetze() throws RemoteException;
-
-  /**
-   * Liefert eine Liste von Buchungen aus Sammellastschriften, die von dieser
-   * HibiscusAddress eingezogen wurden.
-   * @return Liste von Buchungen.
-   * @throws RemoteException
-   */
-  public GenericIterator getSammellastBuchungen() throws RemoteException;
-  
-  /**
-   * Liefert eine Liste von Buchungen aus Sammelueberweisungen, die an diese
-   * HibiscusAddress ueberweisen wurden.
-   * @return Liste der Buchungen.
-   * @throws RemoteException
-   */
-  public GenericIterator getSammelUeberweisungBuchungen() throws RemoteException;
 
   /**
    * Erlaubt das Setzen von Attributen des Umsatzes ueber diese generische Funktion.
@@ -88,6 +64,9 @@ public interface HibiscusAddress extends Address, DBObject
 
 /**********************************************************************
  * $Log: HibiscusAddress.java,v $
+ * Revision 1.2  2007/04/23 21:03:48  willuhn
+ * @R "getTransfers" aus Address entfernt - hat im Adressbuch eigentlich nichts zu suchen
+ *
  * Revision 1.1  2007/04/23 18:07:14  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EmpfaengerControl.java,v $
- * $Revision: 1.42 $
- * $Date: 2007/04/23 18:07:15 $
+ * $Revision: 1.43 $
+ * $Date: 2007/04/23 21:03:48 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,7 @@ package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
 
-import de.willuhn.datasource.GenericIterator;
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
@@ -31,10 +31,13 @@ import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungBuchungNew;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
 import de.willuhn.jameica.hbci.gui.parts.SammelTransferBuchungList;
-import de.willuhn.jameica.hbci.gui.parts.TransferList;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzList;
 import de.willuhn.jameica.hbci.rmi.Address;
+import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
+import de.willuhn.jameica.hbci.rmi.SammelLastBuchung;
+import de.willuhn.jameica.hbci.rmi.SammelUeberweisungBuchung;
+import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -54,10 +57,9 @@ public class EmpfaengerControl extends AbstractControl {
   private Input kommentar         = null;
 
   private Part list               = null;
-  private Part transfers          = null;
   private Part sammelList         = null;
   private Part sammelList2        = null;
-  private UmsatzList umsatzList   = null;
+  private Part umsatzList         = null;
 
 	private I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
@@ -111,20 +113,6 @@ public class EmpfaengerControl extends AbstractControl {
     return list;
 	}
 
-  /**
-   * Liefert eine generische Liste von Transfers zu dieser Adresse.
-   * @return Tabelle.
-   * @throws RemoteException
-   */
-  public Part getTransfers() throws RemoteException
-  {
-    if (this.transfers != null)
-      return this.transfers;
-
-    this.transfers = new TransferList(getAddress());
-    return this.transfers;
-  }
-
   // BUGZILLA 56 http://www.willuhn.de/bugzilla/show_bug.cgi?id=56
   /**
    * Liefert eine Liste von allen Umsaetzen an/von diese/dieser Adresse.
@@ -133,15 +121,17 @@ public class EmpfaengerControl extends AbstractControl {
    */
   public Part getUmsatzListe() throws RemoteException
   {
-    if (!isHibiscusAdresse())
-      return null;
-
     if (this.umsatzList != null)
       return this.umsatzList;
 
-    GenericIterator list = ((HibiscusAddress) getAddress()).getUmsaetze();
+    HBCIDBService service = Settings.getDBService();
+    DBIterator list = service.createList(Umsatz.class);
+    list.addFilter("empfaenger_konto like ?",new Object[]{"%" + getAddress().getKontonummer()});
+    list.addFilter("empfaenger_blz = ?",  new Object[]{getAddress().getBLZ()});
+    list.setOrder(" ORDER BY " + service.getSQLTimestamp("valuta") + " DESC");
+
     this.umsatzList = new UmsatzList(list,new UmsatzDetail());
-    this.umsatzList.setFilterVisible(false);
+    ((UmsatzList)this.umsatzList).setFilterVisible(false);
     return this.umsatzList;
   }
 
@@ -154,13 +144,14 @@ public class EmpfaengerControl extends AbstractControl {
    */
   public Part getSammelLastListe() throws RemoteException
   {
-    if (!isHibiscusAdresse())
-      return null;
-
     if (this.sammelList != null)
       return this.sammelList;
 
-    GenericIterator list = ((HibiscusAddress) getAddress()).getSammellastBuchungen();
+    DBIterator list = Settings.getDBService().createList(SammelLastBuchung.class);
+    list.addFilter("gegenkonto_nr like ?",  new Object[]{"%" + getAddress().getKontonummer()});
+    list.addFilter("gegenkonto_blz = ?", new Object[]{getAddress().getBLZ()});
+    list.setOrder(" ORDER BY id DESC");
+
     this.sammelList = new SammelTransferBuchungList(list,new SammelLastBuchungNew());
     return this.sammelList;
   }
@@ -173,13 +164,14 @@ public class EmpfaengerControl extends AbstractControl {
    */
   public Part getSammelUeberweisungListe() throws RemoteException
   {
-    if (!isHibiscusAdresse())
-      return null;
-
     if (this.sammelList2 != null)
       return this.sammelList2;
 
-    GenericIterator list = ((HibiscusAddress) getAddress()).getSammelUeberweisungBuchungen();
+    DBIterator list = Settings.getDBService().createList(SammelUeberweisungBuchung.class);
+    list.addFilter("gegenkonto_nr like ?",  new Object[]{"%" + getAddress().getKontonummer()});
+    list.addFilter("gegenkonto_blz = ?", new Object[]{getAddress().getBLZ()});
+    list.setOrder(" ORDER BY id DESC");
+
     this.sammelList2 = new SammelTransferBuchungList(list,new SammelUeberweisungBuchungNew());
     return this.sammelList2;
   }
@@ -278,6 +270,9 @@ public class EmpfaengerControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: EmpfaengerControl.java,v $
+ * Revision 1.43  2007/04/23 21:03:48  willuhn
+ * @R "getTransfers" aus Address entfernt - hat im Adressbuch eigentlich nichts zu suchen
+ *
  * Revision 1.42  2007/04/23 18:07:15  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt

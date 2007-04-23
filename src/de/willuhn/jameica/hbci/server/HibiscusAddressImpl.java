@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/HibiscusAddressImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2007/04/23 18:07:15 $
+ * $Revision: 1.2 $
+ * $Date: 2007/04/23 21:03:48 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,20 +13,11 @@
 package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.List;
 
-import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.db.AbstractDBObject;
-import de.willuhn.datasource.pseudo.PseudoIterator;
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
-import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
-import de.willuhn.jameica.hbci.rmi.SammelLastBuchung;
-import de.willuhn.jameica.hbci.rmi.SammelUeberweisungBuchung;
-import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -158,19 +149,6 @@ public class HibiscusAddressImpl extends AbstractDBObject implements HibiscusAdd
   }
 
   /**
-   * Liefert eine Liste von Umsaetzen sowie Buchungen aus Sammel-Lastschriften und Sammel-Ueberweisungen.
-   * @see de.willuhn.jameica.hbci.rmi.Address#getTransfers()
-   */
-  public List getTransfers() throws RemoteException
-  {
-    ArrayList all = new ArrayList();
-    all.addAll(PseudoIterator.asList(getUmsaetze()));
-    all.addAll(PseudoIterator.asList(getSammellastBuchungen()));
-    all.addAll(PseudoIterator.asList(getSammelUeberweisungBuchungen()));
-    return all;
-  }
-
-  /**
    * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#setGenericAttribute(java.lang.String, java.lang.String)
    */
   public void setGenericAttribute(String name, String value) throws RemoteException, ApplicationException
@@ -180,49 +158,14 @@ public class HibiscusAddressImpl extends AbstractDBObject implements HibiscusAdd
     
     super.setAttribute(name,value);
   }
-
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#getSammelUeberweisungBuchungen()
-   */
-  public GenericIterator getSammelUeberweisungBuchungen() throws RemoteException
-  {
-    DBIterator ueb = getService().createList(SammelUeberweisungBuchung.class);
-    ueb.addFilter("gegenkonto_nr like ?",  new Object[]{"%" + getKontonummer()});
-    ueb.addFilter("gegenkonto_blz = ?", new Object[]{getBLZ()});
-    ueb.setOrder(" ORDER BY id DESC");
-    return ueb;
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#getSammellastBuchungen()
-   */
-  public GenericIterator getSammellastBuchungen() throws RemoteException
-  {
-    DBIterator last = getService().createList(SammelLastBuchung.class);
-    last.addFilter("gegenkonto_nr like ?",  new Object[]{"%" + getKontonummer()});
-    last.addFilter("gegenkonto_blz = ?", new Object[]{getBLZ()});
-    last.setOrder(" ORDER BY id DESC");
-    return last;
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#getUmsaetze()
-   */
-  public GenericIterator getUmsaetze() throws RemoteException
-  {
-    HBCIDBService service = (HBCIDBService) getService();
-    
-    DBIterator umsaetze = service.createList(Umsatz.class);
-    umsaetze.addFilter("empfaenger_konto like ?",new Object[]{"%" + getKontonummer()});
-    umsaetze.addFilter("empfaenger_blz = ?",  new Object[]{getBLZ()});
-    umsaetze.setOrder(" ORDER BY " + service.getSQLTimestamp("valuta") + " DESC");
-    return umsaetze;
-  }
 }
 
 
 /**********************************************************************
  * $Log: HibiscusAddressImpl.java,v $
+ * Revision 1.2  2007/04/23 21:03:48  willuhn
+ * @R "getTransfers" aus Address entfernt - hat im Adressbuch eigentlich nichts zu suchen
+ *
  * Revision 1.1  2007/04/23 18:07:15  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt

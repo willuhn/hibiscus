@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.48 $
- * $Date: 2007/03/29 15:30:31 $
+ * $Revision: 1.49 $
+ * $Date: 2007/04/23 21:03:48 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,8 +21,8 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.security.Wallet;
 import de.willuhn.jameica.system.Application;
@@ -39,7 +39,7 @@ public class Settings
 {
 
   private static de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
-  private static DBService db = null;
+  private static HBCIDBService db = null;
 	private static String workPath = null;
 	private static String libPath = null;
 	private static Wallet wallet = null;
@@ -53,12 +53,12 @@ public class Settings
    * @return Datenbank.
    * @throws RemoteException
    */
-  public static DBService getDBService() throws RemoteException
+  public static HBCIDBService getDBService() throws RemoteException
   {
     if (db != null)
       return db;
 		try {
-			db = (DBService) Application.getServiceFactory().lookup(HBCI.class,"database");
+			db = (HBCIDBService) Application.getServiceFactory().lookup(HBCI.class,"database");
 			return db;
 		}
     catch (ConnectException ce)
@@ -385,6 +385,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.49  2007/04/23 21:03:48  willuhn
+ * @R "getTransfers" aus Address entfernt - hat im Adressbuch eigentlich nichts zu suchen
+ *
  * Revision 1.48  2007/03/29 15:30:31  willuhn
  * @N Uebersichtlichere Darstellung der Systemstart-Meldungen
  * @C FirstStart-View bei Initialisierungsfehler nicht anzeigen

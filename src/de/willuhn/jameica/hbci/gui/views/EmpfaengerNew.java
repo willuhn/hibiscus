@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/EmpfaengerNew.java,v $
- * $Revision: 1.13 $
- * $Date: 2007/04/23 18:07:15 $
+ * $Revision: 1.14 $
+ * $Date: 2007/04/23 21:03:48 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,7 +16,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.TabFolder;
 
-import de.willuhn.datasource.GenericIterator;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -29,7 +28,6 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.controller.EmpfaengerControl;
-import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -74,40 +72,32 @@ public class EmpfaengerNew extends AbstractView {
           control.handleStore();
         }
       },null,true);
+    }
       
-      TabFolder folder = new TabFolder(getParent(), SWT.NONE);
-      GridData gd = new GridData(GridData.FILL_BOTH);
-      gd.heightHint = 100; // wir verdecken sonst den Kommentar
-      folder.setLayoutData(gd);
-      folder.setBackground(Color.BACKGROUND.getSWTColor());
+    TabFolder folder = new TabFolder(getParent(), SWT.NONE);
+    GridData gd = new GridData(GridData.FILL_BOTH);
+    gd.heightHint = 100; // wir verdecken sonst den Kommentar
+    folder.setLayoutData(gd);
+    folder.setBackground(Color.BACKGROUND.getSWTColor());
 
-      TabGroup tab = new TabGroup(folder,i18n.tr("Überweisungen"), false,1);
-      control.getUmsatzListe().paint(tab.getComposite());
+    TabGroup tab = new TabGroup(folder,i18n.tr("Kontoauszüge"), false,1);
+    control.getUmsatzListe().paint(tab.getComposite());
 
-      // BUGZILLA 107 http://www.willuhn.de/bugzilla/show_bug.cgi?id=107
-      GenericIterator list = ((HibiscusAddress)control.getAddress()).getSammellastBuchungen();
-      if (list.size() > 0)
-      {
-        TabGroup tab2 = new TabGroup(folder,i18n.tr("Eingezogene Sammel-Lastschriften"));
-        control.getSammelLastListe().paint(tab2.getComposite());
-      }
-      GenericIterator list2 = ((HibiscusAddress)control.getAddress()).getSammelUeberweisungBuchungen();
-      if (list2.size() > 0)
-      {
-        TabGroup tab3 = new TabGroup(folder,i18n.tr("Sammel-Überweisungen"));
-        control.getSammelUeberweisungListe().paint(tab3.getComposite());
-      }
-    }
-    else
-    {
-      control.getTransfers().paint(getParent());
-    }
+    // BUGZILLA 107 http://www.willuhn.de/bugzilla/show_bug.cgi?id=107
+    TabGroup tab2 = new TabGroup(folder,i18n.tr("Eingezogene Sammel-Lastschriften"));
+    control.getSammelLastListe().paint(tab2.getComposite());
+
+    TabGroup tab3 = new TabGroup(folder,i18n.tr("Sammel-Überweisungen"));
+    control.getSammelUeberweisungListe().paint(tab3.getComposite());
   }
 }
 
 
 /**********************************************************************
  * $Log: EmpfaengerNew.java,v $
+ * Revision 1.14  2007/04/23 21:03:48  willuhn
+ * @R "getTransfers" aus Address entfernt - hat im Adressbuch eigentlich nichts zu suchen
+ *
  * Revision 1.13  2007/04/23 18:07:15  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
