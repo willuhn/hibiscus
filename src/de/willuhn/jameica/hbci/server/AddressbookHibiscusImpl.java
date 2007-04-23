@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AddressbookHibiscusImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2007/04/23 18:07:15 $
+ * $Revision: 1.2 $
+ * $Date: 2007/04/23 18:17:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -76,7 +76,7 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
                      " LOWER(name) LIKE ? OR " +
                      " LOWER(kommentar) LIKE ?)",new Object[]{text,text,text,text});
     }
-    list.setOrder("ORDER by LOWER(name) DESC");
+    list.setOrder("ORDER by LOWER(name)");
     return PseudoIterator.asList(list);
   }
 
@@ -93,6 +93,9 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
 
 /*********************************************************************
  * $Log: AddressbookHibiscusImpl.java,v $
+ * Revision 1.2  2007/04/23 18:17:12  willuhn
+ * @B Falsche Standardreihenfolge
+ *
  * Revision 1.1  2007/04/23 18:07:15  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
