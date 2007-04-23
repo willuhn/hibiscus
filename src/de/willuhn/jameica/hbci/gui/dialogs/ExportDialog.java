@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/ExportDialog.java,v $
- * $Revision: 1.13 $
- * $Date: 2007/04/23 18:07:15 $
- * $Author: willuhn $
+ * $Revision: 1.14 $
+ * $Date: 2007/04/23 18:40:44 $
+ * $Author: jost $
  * $Locker:  $
  * $State: Exp $
  *
@@ -174,14 +174,14 @@ public class ExportDialog extends AbstractDialog
         Boolean choice = (Boolean) d.open();
         if (!choice.booleanValue())
         {
-          // Dialog schliessem
+          // Dialog schliessen
           close();
           return;
         }
       }
       catch (Exception e)
       {
-        // Dialog schliessem
+        // Dialog schliessen
         close();
         Logger.error("error while saving export file",e);
         throw new ApplicationException(i18n.tr("Fehler beim Speichern der Export-Datei in {0}",s),e);
@@ -404,6 +404,9 @@ public class ExportDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: ExportDialog.java,v $
+ * Revision 1.14  2007/04/23 18:40:44  jost
+ * Javadoc Tippfehler
+ *
  * Revision 1.13  2007/04/23 18:07:15  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
@@ -414,7 +417,7 @@ public class ExportDialog extends AbstractDialog
  * @N Vorschau der Umsaetze in Auswertung "Kontoauszug"
  *
  * Revision 1.11  2006/10/09 10:10:27  willuhn
- * @C s/schliessen/abbrechen/
+ * @C s/dessen/abbrechen/
  *
  * Revision 1.10  2006/08/07 21:51:43  willuhn
  * @N Erste Version des DTAUS-Exporters
