@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/SammelTransferBuchung.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/04/20 14:49:05 $
+ * $Revision: 1.3 $
+ * $Date: 2007/04/23 18:07:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,7 @@ import de.willuhn.datasource.rmi.DBObject;
 /**
  * Interface fuer eine einzelne Buchung eines Sammel-Transfers.
  */
-public interface SammelTransferBuchung extends DBObject
+public interface SammelTransferBuchung extends Transfer, DBObject
 {
 	/**
 	 * Liefert den zugeordneten Sammel-Transfer.
@@ -34,27 +34,6 @@ public interface SammelTransferBuchung extends DBObject
    * @throws RemoteException
    */
   public void setSammelTransfer(SammelTransfer s) throws RemoteException;
-
-	/**
-	 * Liefert die Kontonummer des Gegenkontos.
-   * @return Kontonummer.
-   * @throws RemoteException
-   */
-  public String getGegenkontoNummer() throws RemoteException;
-	
-	/**
-	 * Liefert die BLZ des Gegenkontos.
-   * @return BLZ.
-   * @throws RemoteException
-   */
-  public String getGegenkontoBLZ() throws RemoteException;
-
-	/**
-	 * Liefert den Namen des Kontoinhabers des Gegenkontos.
-   * @return Name.
-   * @throws RemoteException
-   */
-  public String getGegenkontoName() throws RemoteException;
 
 	/**
 	 * Speichert die Kontonummer des Gegenkontos.
@@ -76,27 +55,6 @@ public interface SammelTransferBuchung extends DBObject
    * @throws RemoteException
    */
   public void setGegenkontoName(String name) throws RemoteException;
-
-	/**
-	 * Liefert den Betrag.
-	 * @return Betrag.
-	 * @throws RemoteException
-	 */
-	public double getBetrag() throws RemoteException;
-	
-	/**
-	 * Liefert die Zeile 1 des Verwendungszwecks.
-	 * @return Zeile 1 des Verwendungszwecks.
-	 * @throws RemoteException
-	 */
-	public String getZweck() throws RemoteException;
-	
-	/**
-	 * Liefert die Zeile 2 des Verwendungszwecks.
-	 * @return Zeile 2 des Verwendungszwecks.
-	 * @throws RemoteException
-	 */
-	public String getZweck2() throws RemoteException;
 
 	/**
 	 * Speichert den zu ueberweisenden Betrag.
@@ -124,6 +82,12 @@ public interface SammelTransferBuchung extends DBObject
 
 /**********************************************************************
  * $Log: SammelTransferBuchung.java,v $
+ * Revision 1.3  2007/04/23 18:07:14  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.2  2007/04/20 14:49:05  willuhn
  * @N Support fuer externe Adressbuecher
  * @N Action "EmpfaengerAdd" "aufgebohrt"

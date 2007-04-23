@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.35 $
- * $Date: 2007/04/20 14:49:05 $
+ * $Revision: 1.36 $
+ * $Date: 2007/04/23 18:07:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -32,9 +32,10 @@ import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
 import de.willuhn.jameica.hbci.gui.dialogs.AdresseAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
-import de.willuhn.jameica.hbci.rmi.Adresse;
+import de.willuhn.jameica.hbci.rmi.Address;
+import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.rmi.Transfer;
+import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -47,7 +48,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 {
 
 	// Fach-Objekte
-	private Adresse empfaenger 							= null;
+	private Address gegenkonto 							= null;
 	private Konto konto											= null;
 	
 	// Eingabe-Felder
@@ -78,7 +79,7 @@ public abstract class AbstractTransferControl extends AbstractControl
    * @return der Transfer oder <code>null</code> wenn keiner existiert.
    * @throws RemoteException
    */
-  public abstract Transfer getTransfer() throws RemoteException;
+  public abstract HibiscusTransfer getTransfer() throws RemoteException;
 
 	/**
 	 * Liefert das Konto der Ueberweisung.
@@ -230,7 +231,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 			return storeEmpfaenger;
 
 		// Nur bei neuen Transfers aktivieren
-    Transfer t = getTransfer();
+    HibiscusTransfer t = getTransfer();
     // Checkbox nur setzen, wenn es eine neue Ueberweisung ist und
     // noch kein Gegenkonto definiert ist.
 		storeEmpfaenger = new CheckboxInput(t.isNewObject() && t.getGegenkontoNummer() == null);
@@ -265,7 +266,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 			Boolean store = (Boolean) getStoreEmpfaenger().getValue();
 			if (store.booleanValue())
 			{
-				Adresse e = (Adresse) Settings.getDBService().createObject(Adresse.class,null);
+				HibiscusAddress e = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
 				e.setBLZ(blz);
 				e.setKontonummer(kto);
 				e.setName(name);
@@ -348,13 +349,13 @@ public abstract class AbstractTransferControl extends AbstractControl
     public void handleEvent(Event event) {
     	if (event == null)
     		return;
-			empfaenger = (Adresse) event.data;
-			if (empfaenger == null)
+			gegenkonto = (Address) event.data;
+			if (gegenkonto == null)
 				return;
 			try {
-				getEmpfaengerKonto().setText(empfaenger.getKontonummer());
-				getEmpfaengerBlz().setValue(empfaenger.getBLZ());
-				getEmpfaengerName().setValue(empfaenger.getName());
+				getEmpfaengerKonto().setText(gegenkonto.getKontonummer());
+				getEmpfaengerBlz().setValue(gegenkonto.getBLZ());
+				getEmpfaengerName().setValue(gegenkonto.getName());
 				// Wenn der Empfaenger aus dem Adressbuch kommt, deaktivieren wir die Checkbox
 				getStoreEmpfaenger().setValue(Boolean.FALSE);
 			}
@@ -370,6 +371,12 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
+ * Revision 1.36  2007/04/23 18:07:15  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.35  2007/04/20 14:49:05  willuhn
  * @N Support fuer externe Adressbuecher
  * @N Action "EmpfaengerAdd" "aufgebohrt"

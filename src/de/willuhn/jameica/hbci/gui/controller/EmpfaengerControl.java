@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EmpfaengerControl.java,v $
- * $Revision: 1.41 $
- * $Date: 2007/04/09 22:45:12 $
+ * $Revision: 1.42 $
+ * $Date: 2007/04/23 18:07:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@ package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
 
+import de.willuhn.datasource.GenericIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
@@ -30,8 +31,10 @@ import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungBuchungNew;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
 import de.willuhn.jameica.hbci.gui.parts.SammelTransferBuchungList;
+import de.willuhn.jameica.hbci.gui.parts.TransferList;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzList;
-import de.willuhn.jameica.hbci.rmi.Adresse;
+import de.willuhn.jameica.hbci.rmi.Address;
+import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -43,7 +46,7 @@ import de.willuhn.util.I18N;
 public class EmpfaengerControl extends AbstractControl {
 
 	// Fach-Objekte
-	private Adresse empfaenger      = null;
+	private Address address         = null;
 	// Eingabe-Felder
 	private TextInput kontonummer   = null;
 	private TextInput blz					  = null;
@@ -51,6 +54,7 @@ public class EmpfaengerControl extends AbstractControl {
   private Input kommentar         = null;
 
   private Part list               = null;
+  private Part transfers          = null;
   private Part sammelList         = null;
   private Part sammelList2        = null;
   private UmsatzList umsatzList   = null;
@@ -65,23 +69,34 @@ public class EmpfaengerControl extends AbstractControl {
   }
 
 	/**
-	 * Liefert den Empfaenger.
+	 * Liefert die Adresse.
 	 * Existiert er nicht, wird ein neuer erzeugt.
-   * @return der Empfaenger.
+   * @return die Adresse.
    * @throws RemoteException
    */
-  public Adresse getEmpfaenger() throws RemoteException
+  public Address getAddress() throws RemoteException
 	{
-		if (empfaenger != null)
-			return empfaenger;
+		if (address != null)
+			return address;
 		
-		empfaenger = (Adresse) getCurrentObject();
-		if (empfaenger != null)
-			return empfaenger;
+    address = (Address) getCurrentObject();
+		if (address != null)
+			return address;
 
-		empfaenger = (Adresse) Settings.getDBService().createObject(Adresse.class,null);
-		return empfaenger;
+    address = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
+		return address;
 	}
+  
+  /**
+   * Prueft, ob es sich bei der Adresse um eine Hibiscus-Adresse handelt und diese aenderbar ist.
+   * @return true, wenn es eine Hibiscus-Adresse ist.
+   * @throws RemoteException
+   */
+  public boolean isHibiscusAdresse() throws RemoteException
+  {
+    Address a = getAddress();
+    return (a instanceof HibiscusAddress);
+  }
 
 	/**
 	 * Liefert eine Tabelle mit allen vorhandenen Empfaengern.
@@ -96,6 +111,20 @@ public class EmpfaengerControl extends AbstractControl {
     return list;
 	}
 
+  /**
+   * Liefert eine generische Liste von Transfers zu dieser Adresse.
+   * @return Tabelle.
+   * @throws RemoteException
+   */
+  public Part getTransfers() throws RemoteException
+  {
+    if (this.transfers != null)
+      return this.transfers;
+
+    this.transfers = new TransferList(getAddress());
+    return this.transfers;
+  }
+
   // BUGZILLA 56 http://www.willuhn.de/bugzilla/show_bug.cgi?id=56
   /**
    * Liefert eine Liste von allen Umsaetzen an/von diese/dieser Adresse.
@@ -104,10 +133,14 @@ public class EmpfaengerControl extends AbstractControl {
    */
   public Part getUmsatzListe() throws RemoteException
   {
+    if (!isHibiscusAdresse())
+      return null;
+
     if (this.umsatzList != null)
       return this.umsatzList;
 
-    this.umsatzList = new UmsatzList(getEmpfaenger().getUmsaetze(),new UmsatzDetail());
+    GenericIterator list = ((HibiscusAddress) getAddress()).getUmsaetze();
+    this.umsatzList = new UmsatzList(list,new UmsatzDetail());
     this.umsatzList.setFilterVisible(false);
     return this.umsatzList;
   }
@@ -121,10 +154,14 @@ public class EmpfaengerControl extends AbstractControl {
    */
   public Part getSammelLastListe() throws RemoteException
   {
+    if (!isHibiscusAdresse())
+      return null;
+
     if (this.sammelList != null)
       return this.sammelList;
 
-    this.sammelList = new SammelTransferBuchungList(getEmpfaenger().getSammellastBuchungen(),new SammelLastBuchungNew());
+    GenericIterator list = ((HibiscusAddress) getAddress()).getSammellastBuchungen();
+    this.sammelList = new SammelTransferBuchungList(list,new SammelLastBuchungNew());
     return this.sammelList;
   }
 
@@ -136,10 +173,14 @@ public class EmpfaengerControl extends AbstractControl {
    */
   public Part getSammelUeberweisungListe() throws RemoteException
   {
+    if (!isHibiscusAdresse())
+      return null;
+
     if (this.sammelList2 != null)
       return this.sammelList2;
 
-    this.sammelList2 = new SammelTransferBuchungList(getEmpfaenger().getSammelUeberweisungBuchungen(),new SammelUeberweisungBuchungNew());
+    GenericIterator list = ((HibiscusAddress) getAddress()).getSammelUeberweisungBuchungen();
+    this.sammelList2 = new SammelTransferBuchungList(list,new SammelUeberweisungBuchungNew());
     return this.sammelList2;
   }
 
@@ -152,9 +193,10 @@ public class EmpfaengerControl extends AbstractControl {
 	{
 		if (kontonummer != null)
 			return kontonummer;
-		kontonummer = new TextInput(getEmpfaenger().getKontonummer());
+		kontonummer = new TextInput(getAddress().getKontonummer());
     // BUGZILLA 280
     kontonummer.setValidChars(HBCIProperties.HBCI_KTO_VALIDCHARS);
+    kontonummer.setEnabled(isHibiscusAdresse());
     kontonummer.setMandatory(true);
     return kontonummer;
 	}
@@ -168,7 +210,8 @@ public class EmpfaengerControl extends AbstractControl {
   {
     if (this.kommentar != null)
       return this.kommentar;
-    this.kommentar = new TextAreaInput(getEmpfaenger().getKommentar());
+    this.kommentar = new TextAreaInput(getAddress().getKommentar());
+    this.kommentar.setEnabled(isHibiscusAdresse());
     return this.kommentar;
   }
   
@@ -181,7 +224,8 @@ public class EmpfaengerControl extends AbstractControl {
 	{
 		if (blz != null)
 			return blz;
-		blz = new BLZInput(getEmpfaenger().getBLZ());
+		blz = new BLZInput(getAddress().getBLZ());
+    blz.setEnabled(isHibiscusAdresse());
     blz.setMandatory(true);
 		return blz;
 	}
@@ -195,7 +239,8 @@ public class EmpfaengerControl extends AbstractControl {
 	{
 		if (name != null)
 			return name;
-		name = new TextInput(getEmpfaenger().getName(),HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
+		name = new TextInput(getAddress().getName(),HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
+    name.setEnabled(isHibiscusAdresse());
     name.setMandatory(true);
 		return name;
 	}
@@ -203,30 +248,42 @@ public class EmpfaengerControl extends AbstractControl {
   /**
    * Speichert den Empfaenger.
    */
-  public synchronized void handleStore() {
-  	try {
-  		getEmpfaenger().setKontonummer((String)getKontonummer().getValue());
-  		getEmpfaenger().setBLZ((String)getBlz().getValue());
-  		getEmpfaenger().setName((String)getName().getValue());
-      getEmpfaenger().setKommentar((String)getKommentar().getValue());
-  		getEmpfaenger().store();
-  		GUI.getStatusBar().setSuccessText(i18n.tr("Adresse gespeichert"));
-  	}
+  public synchronized void handleStore()
+  {
+    try {
+
+      if (isHibiscusAdresse())
+      {
+        HibiscusAddress a = (HibiscusAddress) getAddress();
+        a.setKontonummer((String)getKontonummer().getValue());
+        a.setBLZ((String)getBlz().getValue());
+        a.setName((String)getName().getValue());
+        a.setKommentar((String)getKommentar().getValue());
+        a.store();
+        GUI.getStatusBar().setSuccessText(i18n.tr("Adresse gespeichert"));
+      }
+    }
     catch (ApplicationException e2)
     {
       GUI.getView().setErrorText(e2.getMessage());
     }
-  	catch (RemoteException e)
-  	{
-  		Logger.error("error while storing address",e);
-  		GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern der Adresse"));
-  	}
+    catch (RemoteException e)
+    {
+      Logger.error("error while storing address",e);
+      GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern der Adresse"));
+    }
   }
 }
 
 
 /**********************************************************************
  * $Log: EmpfaengerControl.java,v $
+ * Revision 1.42  2007/04/23 18:07:15  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.41  2007/04/09 22:45:12  willuhn
  * @N Bug 380
  *
@@ -278,7 +335,7 @@ public class EmpfaengerControl extends AbstractControl {
  *
  * Revision 1.26  2005/02/27 17:11:49  web0
  * @N first code for "Sammellastschrift"
- * @C "Empfaenger" renamed into "Adresse"
+ * @C "Empfaenger" renamed into "HibiscusAddress"
  *
  * Revision 1.25  2004/11/13 17:02:04  willuhn
  * @N Bearbeiten des Zahlungsturnus

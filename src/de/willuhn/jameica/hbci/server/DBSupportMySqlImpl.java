@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DBSupportMySqlImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2007/04/19 18:12:21 $
+ * $Revision: 1.2 $
+ * $Date: 2007/04/23 18:07:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -102,11 +102,25 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl
   {
     return MessageFormat.format("(UNIX_TIMESTAMP({0})*1000)", new Object[]{content});
   }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.DBSupport#getInsertWithID()
+   */
+  public boolean getInsertWithID() throws RemoteException
+  {
+    return false;
+  }
 }
 
 
 /*********************************************************************
  * $Log: DBSupportMySqlImpl.java,v $
+ * Revision 1.2  2007/04/23 18:07:15  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.1  2007/04/19 18:12:21  willuhn
  * @N MySQL-Support (GUI zum Konfigurieren fehlt noch)
  *

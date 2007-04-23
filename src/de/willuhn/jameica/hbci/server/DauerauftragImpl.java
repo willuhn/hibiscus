@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DauerauftragImpl.java,v $
- * $Revision: 1.23 $
- * $Date: 2007/03/05 10:21:20 $
+ * $Revision: 1.24 $
+ * $Date: 2007/04/23 18:07:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,7 +31,7 @@ import de.willuhn.util.I18N;
 /**
  * Implementierung eines Dauer-Auftrags.
  */
-public class DauerauftragImpl extends AbstractTransferImpl
+public class DauerauftragImpl extends AbstractHibiscusTransferImpl
   implements Dauerauftrag
 {
 
@@ -353,6 +353,12 @@ public class DauerauftragImpl extends AbstractTransferImpl
 
 /**********************************************************************
  * $Log: DauerauftragImpl.java,v $
+ * Revision 1.24  2007/04/23 18:07:15  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.23  2007/03/05 10:21:20  willuhn
  * @B Bug 371
  *

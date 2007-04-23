@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Attic/CSVEmpfaengerImporter.java,v $
- * $Revision: 1.4 $
- * $Date: 2007/04/20 14:49:05 $
+ * $Revision: 1.5 $
+ * $Date: 2007/04/23 18:07:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,14 +20,14 @@ import java.util.Hashtable;
 
 import org.eclipse.swt.SWTException;
 
-import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.io.CSVFile;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.dialogs.CSVImportDialog;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
+import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.AddressbookService;
-import de.willuhn.jameica.hbci.rmi.Adresse;
+import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -53,14 +53,14 @@ public class CSVEmpfaengerImporter implements Importer
     empfaenger.put("name",i18n.tr("Name des Kto-Inhabers"));
     empfaenger.put("kommentar",i18n.tr("Kommentar"));
     
-    types.put(Adresse.class,empfaenger);
+    types.put(Address.class,empfaenger);
   
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.io.Importer#doImport(de.willuhn.datasource.GenericObject, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor)
+   * @see de.willuhn.jameica.hbci.io.Importer#doImport(java.lang.Object, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor)
    */
-  public void doImport(GenericObject context, IOFormat format, InputStream is, ProgressMonitor monitor) throws RemoteException, ApplicationException
+  public void doImport(Object context, IOFormat format, InputStream is, ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
     try
     {
@@ -70,7 +70,7 @@ public class CSVEmpfaengerImporter implements Importer
       if (format == null)
         throw new ApplicationException(i18n.tr("Kein Datei-Format ausgewählt"));
 
-      CSVMapping mapping = new CSVMapping(Adresse.class,(Hashtable) types.get(Adresse.class));
+      CSVMapping mapping = new CSVMapping(Address.class,(Hashtable) types.get(Address.class));
 
 
       monitor.setStatusText(i18n.tr("Lese Datei ein"));
@@ -104,7 +104,7 @@ public class CSVEmpfaengerImporter implements Importer
         {
           // Wir erzeugen aus den Daten erstmal eine Adresse. Nach der
           // koennen wir dann suchen
-          final Adresse a = (Adresse) service.createObject(Adresse.class,null);
+          final HibiscusAddress a = (HibiscusAddress) service.createObject(HibiscusAddress.class,null);
           
           for (int i=0;i<line.length;++i)
           {
@@ -195,7 +195,7 @@ public class CSVEmpfaengerImporter implements Importer
    */
   public IOFormat[] getIOFormats(Class objectType)
   {
-    if (!Adresse.class.equals(objectType))
+    if (!Address.class.equals(objectType))
       return null; // Wir bieten uns nur fuer Adressen an
 
     IOFormat f = new IOFormat() {
@@ -218,6 +218,12 @@ public class CSVEmpfaengerImporter implements Importer
 
 /*******************************************************************************
  * $Log: CSVEmpfaengerImporter.java,v $
+ * Revision 1.5  2007/04/23 18:07:14  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.4  2007/04/20 14:49:05  willuhn
  * @N Support fuer externe Adressbuecher
  * @N Action "EmpfaengerAdd" "aufgebohrt"

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/LastschriftControl.java,v $
- * $Revision: 1.9 $
- * $Date: 2006/06/07 17:26:40 $
+ * $Revision: 1.10 $
+ * $Date: 2007/04/23 18:07:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,7 +25,7 @@ import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.LastschriftNew;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
 import de.willuhn.jameica.hbci.rmi.Terminable;
-import de.willuhn.jameica.hbci.rmi.Transfer;
+import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
 import de.willuhn.logging.Logger;
 
 /**
@@ -52,7 +52,7 @@ public class LastschriftControl extends AbstractBaseUeberweisungControl
   /**
    * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getTransfer()
    */
-  public Transfer getTransfer() throws RemoteException
+  public HibiscusTransfer getTransfer() throws RemoteException
   {
     if (transfer != null)
       return transfer;
@@ -199,6 +199,12 @@ public class LastschriftControl extends AbstractBaseUeberweisungControl
 
 /**********************************************************************
  * $Log: LastschriftControl.java,v $
+ * Revision 1.10  2007/04/23 18:07:15  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.9  2006/06/07 17:26:40  willuhn
  * @N DTAUS-Import fuer Lastschriften
  * @B Satusbar-Update in DTAUSImport gefixt

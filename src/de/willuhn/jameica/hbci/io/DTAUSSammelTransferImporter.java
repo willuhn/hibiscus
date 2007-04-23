@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/DTAUSSammelTransferImporter.java,v $
- * $Revision: 1.7 $
- * $Date: 2007/03/16 14:40:02 $
+ * $Revision: 1.8 $
+ * $Date: 2007/04/23 18:07:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,6 @@ import java.util.Hashtable;
 
 import de.jost_net.OBanToo.Dtaus.ASatz;
 import de.jost_net.OBanToo.Dtaus.CSatz;
-import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
@@ -47,9 +46,9 @@ public class DTAUSSammelTransferImporter extends AbstractDTAUSImporter
   }
   
   /**
-   * @see de.willuhn.jameica.hbci.io.Importer#doImport(de.willuhn.datasource.GenericObject, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor)
+   * @see de.willuhn.jameica.hbci.io.Importer#doImport(java.lang.Object, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor)
    */
-  public void doImport(GenericObject context, IOFormat format, InputStream is,
+  public void doImport(Object context, IOFormat format, InputStream is,
       ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
     this.transferCache = new Hashtable();
@@ -57,9 +56,9 @@ public class DTAUSSammelTransferImporter extends AbstractDTAUSImporter
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.io.AbstractDTAUSImporter#create(de.willuhn.datasource.rmi.DBObject, de.willuhn.datasource.GenericObject, de.jost_net.OBanToo.Dtaus.CSatz, de.jost_net.OBanToo.Dtaus.ASatz)
+   * @see de.willuhn.jameica.hbci.io.AbstractDTAUSImporter#create(de.willuhn.datasource.rmi.DBObject, java.lang.Object, de.jost_net.OBanToo.Dtaus.CSatz, de.jost_net.OBanToo.Dtaus.ASatz)
    */
-  void create(DBObject skel, GenericObject context, CSatz csatz, ASatz asatz)
+  void create(DBObject skel, Object context, CSatz csatz, ASatz asatz)
     throws RemoteException, ApplicationException
   {
     SammelTransfer t = (SammelTransfer) this.transferCache.get(asatz);
@@ -119,6 +118,12 @@ public class DTAUSSammelTransferImporter extends AbstractDTAUSImporter
 
 /*********************************************************************
  * $Log: DTAUSSammelTransferImporter.java,v $
+ * Revision 1.8  2007/04/23 18:07:14  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.7  2007/03/16 14:40:02  willuhn
  * @C Redesign ImportMessage
  * @N Aktualisierung der Umsatztabelle nach Kategorie-Zuordnung

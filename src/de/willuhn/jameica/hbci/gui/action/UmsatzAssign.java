@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/UmsatzAssign.java,v $
- * $Revision: 1.4 $
- * $Date: 2007/03/16 14:40:02 $
+ * $Revision: 1.5 $
+ * $Date: 2007/04/23 18:07:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -29,13 +29,11 @@ import de.willuhn.util.I18N;
 /**
  * Ordnet ein oder meheren Umsaetzen eine Kategorie zu.
  */
-/**
- */
 public class UmsatzAssign implements Action
 {
 
   /**
-   * Erwartet ein Objekt vom Typ <code>Transfer</code>.
+   * Erwartet ein Objekt vom Typ <code>Umsatz</code> oder <code>Umsatz[]</code>.
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
   public void handleAction(Object context) throws ApplicationException
@@ -128,6 +126,12 @@ public class UmsatzAssign implements Action
 
 /**********************************************************************
  * $Log: UmsatzAssign.java,v $
+ * Revision 1.5  2007/04/23 18:07:14  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.4  2007/03/16 14:40:02  willuhn
  * @C Redesign ImportMessage
  * @N Aktualisierung der Umsatztabelle nach Kategorie-Zuordnung

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailControl.java,v $
- * $Revision: 1.27 $
- * $Date: 2007/04/09 22:45:12 $
+ * $Revision: 1.28 $
+ * $Date: 2007/04/23 18:07:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -35,7 +35,7 @@ import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.dialogs.AdresseAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
 import de.willuhn.jameica.hbci.gui.input.UmsatzTypInput;
-import de.willuhn.jameica.hbci.rmi.Adresse;
+import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
@@ -141,7 +141,7 @@ public class UmsatzDetailControl extends AbstractControl {
   {
     if (empfaengerName != null)
       return empfaengerName;
-    String name = getUmsatz().getEmpfaengerName();
+    String name = getUmsatz().getGegenkontoName();
     if (name == null || name.length() == 0 || getUmsatz().hasChangedByUser())
     {
       AdresseAuswahlDialog d = new AdresseAuswahlDialog(AdresseAuswahlDialog.POSITION_MOUSE);
@@ -182,7 +182,7 @@ public class UmsatzDetailControl extends AbstractControl {
     if (empfaengerKonto != null)
       return empfaengerKonto;
 
-    String konto =getUmsatz().getEmpfaengerKonto(); 
+    String konto =getUmsatz().getGegenkontoNummer(); 
     if (konto == null || konto.length() == 0 || getUmsatz().hasChangedByUser())
     {
       empfaengerKonto = new TextInput(konto,15);
@@ -205,7 +205,7 @@ public class UmsatzDetailControl extends AbstractControl {
     if (empfaengerBlz != null)
       return empfaengerBlz;
 
-    String blz = getUmsatz().getEmpfaengerBLZ(); 
+    String blz = getUmsatz().getGegenkontoBLZ(); 
     if (blz == null || blz.length() == 0 || getUmsatz().hasChangedByUser())
     {
       empfaengerBlz = new BLZInput(blz);
@@ -352,18 +352,18 @@ public class UmsatzDetailControl extends AbstractControl {
 
       // BUGZILLA 75 http://www.willuhn.de/bugzilla/show_bug.cgi?id=75
       // Und jetzt kommen noch die Felder, die evtl. bearbeitet werden duerfen.
-      if (changeEB) u.setEmpfaengerBLZ((String) getEmpfaengerBLZ().getValue());
-      if (changeEK) u.setEmpfaengerKonto((String) getEmpfaengerKonto().getValue());
-      if (changeEN) u.setEmpfaengerName(((DialogInput)getEmpfaengerName()).getText());
+      if (changeEB) u.setGegenkontoBLZ((String) getEmpfaengerBLZ().getValue());
+      if (changeEK) u.setGegenkontoNummer((String) getEmpfaengerKonto().getValue());
+      if (changeEN) u.setGegenkontoName(((DialogInput)getEmpfaengerName()).getText());
       if (changeZ1) u.setZweck((String) getZweck().getValue());
       
       if (b)
       {
         String[] fields = new String[]
         {
-          u.getEmpfaengerName(),
-          u.getEmpfaengerKonto(),
-          u.getEmpfaengerBLZ(),
+          u.getGegenkontoName(),
+          u.getGegenkontoNummer(),
+          u.getGegenkontoBLZ(),
           HBCI.DATEFORMAT.format(u.getValuta()),
           u.getZweck(),
           u.getKonto().getWaehrung() + " " + HBCI.DECIMALFORMAT.format(u.getBetrag())
@@ -417,7 +417,7 @@ public class UmsatzDetailControl extends AbstractControl {
     public void handleEvent(Event event) {
       if (event == null)
         return;
-      Adresse empfaenger = (Adresse) event.data;
+      Address empfaenger = (Address) event.data;
       if (empfaenger == null)
         return;
       try {
@@ -445,6 +445,12 @@ public class UmsatzDetailControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzDetailControl.java,v $
+ * Revision 1.28  2007/04/23 18:07:15  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.27  2007/04/09 22:45:12  willuhn
  * @N Bug 380
  *

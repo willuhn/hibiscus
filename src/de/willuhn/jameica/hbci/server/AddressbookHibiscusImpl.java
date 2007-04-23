@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/HibiscusAddressbookImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/04/20 14:55:31 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AddressbookHibiscusImpl.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2007/04/23 18:07:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,21 +15,22 @@ package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.List;
 
-import de.willuhn.datasource.GenericIterator;
+import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.Addressbook;
-import de.willuhn.jameica.hbci.rmi.Adresse;
+import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 
 /**
  * Implementierung des Hibiscus-Adressbuches.
  */
-public class HibiscusAddressbookImpl extends UnicastRemoteObject implements Addressbook
+public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addressbook
 {
   private transient I18N i18n = null;
 
@@ -37,7 +38,7 @@ public class HibiscusAddressbookImpl extends UnicastRemoteObject implements Addr
    * ct.
    * @throws RemoteException
    */
-  public HibiscusAddressbookImpl() throws RemoteException
+  public AddressbookHibiscusImpl() throws RemoteException
   {
     super();
     this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
@@ -51,7 +52,7 @@ public class HibiscusAddressbookImpl extends UnicastRemoteObject implements Addr
     if (address == null)
       return null;
     
-    DBIterator list = Settings.getDBService().createList(Adresse.class);
+    DBIterator list = Settings.getDBService().createList(HibiscusAddress.class);
     list.addFilter("kontonummer like ?", new Object[]{"%" + address.getKontonummer()}); // Fuehrende Nullen ignorieren
     list.addFilter("blz=?",              new Object[]{address.getBLZ()});
     list.addFilter("name=?",             new Object[]{address.getName()});
@@ -63,19 +64,20 @@ public class HibiscusAddressbookImpl extends UnicastRemoteObject implements Addr
   /**
    * @see de.willuhn.jameica.hbci.rmi.Addressbook#findAddresses(java.lang.String)
    */
-  public GenericIterator findAddresses(String text) throws RemoteException
+  public List findAddresses(String text) throws RemoteException
   {
-    DBIterator list = Settings.getDBService().createList(Adresse.class);
+    DBIterator list = Settings.getDBService().createList(HibiscusAddress.class);
     if (text != null && text.length() > 0)
     {
       // Gross-Kleinschreibung ignorieren wir
       text = "%" + text.toLowerCase() + "%";
-      list.addFilter("LOWER(kontonummer) LIKE ? OR " +
+      list.addFilter("(LOWER(kontonummer) LIKE ? OR " +
                      " LOWER(blz) LIKE ? OR " +
                      " LOWER(name) LIKE ? OR " +
-                     " LOWER(kommentar) LIKE ?",new Object[]{text,text,text,text});
+                     " LOWER(kommentar) LIKE ?)",new Object[]{text,text,text,text});
     }
-    return list;
+    list.setOrder("ORDER by LOWER(name) DESC");
+    return PseudoIterator.asList(list);
   }
 
   /**
@@ -90,7 +92,13 @@ public class HibiscusAddressbookImpl extends UnicastRemoteObject implements Addr
 
 
 /*********************************************************************
- * $Log: HibiscusAddressbookImpl.java,v $
+ * $Log: AddressbookHibiscusImpl.java,v $
+ * Revision 1.1  2007/04/23 18:07:15  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.2  2007/04/20 14:55:31  willuhn
  * @C s/findAddress/findAddresses/
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/EmpfaengerImport.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/10/05 16:42:28 $
+ * $Revision: 1.2 $
+ * $Date: 2007/04/23 18:07:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,7 +16,7 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.dialogs.ImportDialog;
-import de.willuhn.jameica.hbci.rmi.Adresse;
+import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -40,7 +40,7 @@ public class EmpfaengerImport implements Action
 
     try
     {
-      ImportDialog d = new ImportDialog(null, Adresse.class);
+      ImportDialog d = new ImportDialog(null, HibiscusAddress.class);
       d.open();
 		}
     catch (OperationCanceledException oce)
@@ -63,6 +63,12 @@ public class EmpfaengerImport implements Action
 
 /**********************************************************************
  * $Log: EmpfaengerImport.java,v $
+ * Revision 1.2  2007/04/23 18:07:14  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.1  2006/10/05 16:42:28  willuhn
  * @N CSV-Import/Export fuer Adressen
  *

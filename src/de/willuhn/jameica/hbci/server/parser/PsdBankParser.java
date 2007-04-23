@@ -16,7 +16,7 @@ import de.willuhn.logging.Logger;
  * Diese Klasse bietet daher die Möglichkeit, den Verwendungszweck zu parsen und daraus die Infos zum Gegenkonto zu gewinnen.
  *  
  * @author Michael Lambers
- * @version $Id: PsdBankParser.java,v 1.3 2007/04/02 23:01:17 willuhn Exp $
+ * @version $Id: PsdBankParser.java,v 1.4 2007/04/23 18:07:15 willuhn Exp $
  *
  */
 public class PsdBankParser implements UmsatzParser
@@ -230,13 +230,13 @@ public class PsdBankParser implements UmsatzParser
 					/* Da die for-Schleife definitiv mit einer Variablen beginnt, ist letzterVariablentyp immer vorbelegt! */
 					switch (letzterVariablentyp) {
 						case INHABER_INT:
-							umsatz.setEmpfaengerName(r[1]);
+							umsatz.setGegenkontoName(r[1]);
 							break;
 						case KONTONUMMER_INT:
-							umsatz.setEmpfaengerKonto(r[1]);
+							umsatz.setGegenkontoNummer(r[1]);
 							break;
 						case BLZ_INT:
-							umsatz.setEmpfaengerBLZ(r[1]);
+							umsatz.setGegenkontoBLZ(r[1]);
 							break;
 						case VERWENDUNGSZWECK_INT:
 							/* Sind in r[i] Zeilenumbrüche enthalten, führt das später
@@ -303,6 +303,12 @@ public class PsdBankParser implements UmsatzParser
 
 /*********************************************************************
  * $Log: PsdBankParser.java,v $
+ * Revision 1.4  2007/04/23 18:07:15  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.3  2007/04/02 23:01:17  willuhn
  * @D diverse Javadoc-Warnings
  * @C Umstellung auf neues SelectInput

@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SammelUeberweisungBuchungControl.java,v $
- * $Revision: 1.4 $
- * $Date: 2007/04/20 14:49:05 $
+ * $Revision: 1.5 $
+ * $Date: 2007/04/23 18:07:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,7 @@ import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
 import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungBuchungNew;
-import de.willuhn.jameica.hbci.rmi.Adresse;
+import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisungBuchung;
@@ -88,7 +88,7 @@ public class SammelUeberweisungBuchungControl extends AbstractSammelTransferBuch
 			Boolean store = (Boolean) getStoreAddress().getValue();
 			if (store.booleanValue())
 			{
-        Adresse e = (Adresse) Settings.getDBService().createObject(Adresse.class,null);
+        HibiscusAddress e = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
         e.setBLZ(blz);
         e.setKontonummer(kto);
         e.setName(name);
@@ -140,6 +140,12 @@ public class SammelUeberweisungBuchungControl extends AbstractSammelTransferBuch
 
 /*****************************************************************************
  * $Log: SammelUeberweisungBuchungControl.java,v $
+ * Revision 1.5  2007/04/23 18:07:15  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.4  2007/04/20 14:49:05  willuhn
  * @N Support fuer externe Adressbuecher
  * @N Action "EmpfaengerAdd" "aufgebohrt"

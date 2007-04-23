@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SammelLastBuchungControl.java,v $
- * $Revision: 1.11 $
- * $Date: 2007/04/20 14:49:05 $
+ * $Revision: 1.12 $
+ * $Date: 2007/04/23 18:07:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,7 @@ import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
 import de.willuhn.jameica.hbci.gui.action.SammelLastBuchungNew;
-import de.willuhn.jameica.hbci.rmi.Adresse;
+import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SammelLastBuchung;
 import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
@@ -88,7 +88,7 @@ public class SammelLastBuchungControl extends AbstractSammelTransferBuchungContr
 			Boolean store = (Boolean) getStoreAddress().getValue();
 			if (store.booleanValue())
 			{
-        Adresse e = (Adresse) Settings.getDBService().createObject(Adresse.class,null);
+        HibiscusAddress e = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
         e.setBLZ(blz);
         e.setKontonummer(kto);
         e.setName(name);
@@ -139,6 +139,12 @@ public class SammelLastBuchungControl extends AbstractSammelTransferBuchungContr
 
 /*****************************************************************************
  * $Log: SammelLastBuchungControl.java,v $
+ * Revision 1.12  2007/04/23 18:07:15  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.11  2007/04/20 14:49:05  willuhn
  * @N Support fuer externe Adressbuecher
  * @N Action "EmpfaengerAdd" "aufgebohrt"

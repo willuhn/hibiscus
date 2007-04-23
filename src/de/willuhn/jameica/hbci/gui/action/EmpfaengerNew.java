@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/EmpfaengerNew.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/03/31 23:05:46 $
- * $Author: web0 $
+ * $Revision: 1.5 $
+ * $Date: 2007/04/23 18:07:14 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -14,7 +14,7 @@ package de.willuhn.jameica.hbci.gui.action;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.hbci.rmi.Adresse;
+import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -29,9 +29,9 @@ public class EmpfaengerNew implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
-    Adresse e = null;
-    if (context instanceof Adresse)
-      e = (Adresse) context;
+    Address e = null;
+    if (context instanceof Address)
+      e = (Address) context;
 		GUI.startView(de.willuhn.jameica.hbci.gui.views.EmpfaengerNew.class,e);
   }
 
@@ -40,6 +40,12 @@ public class EmpfaengerNew implements Action
 
 /**********************************************************************
  * $Log: EmpfaengerNew.java,v $
+ * Revision 1.5  2007/04/23 18:07:14  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.4  2005/03/31 23:05:46  web0
  * @N geaenderte Startseite
  * @N klickbare Links

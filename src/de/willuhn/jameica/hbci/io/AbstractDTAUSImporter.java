@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/AbstractDTAUSImporter.java,v $
- * $Revision: 1.9 $
- * $Date: 2007/04/20 14:49:05 $
+ * $Revision: 1.10 $
+ * $Date: 2007/04/23 18:07:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,7 +24,6 @@ import de.jost_net.OBanToo.Dtaus.ASatz;
 import de.jost_net.OBanToo.Dtaus.CSatz;
 import de.jost_net.OBanToo.Dtaus.DtausDateiParser;
 import de.jost_net.OBanToo.Dtaus.ESatz;
-import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.datasource.rmi.DBService;
@@ -57,9 +56,9 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
   
 
   /**
-   * @see de.willuhn.jameica.hbci.io.Importer#doImport(de.willuhn.datasource.GenericObject, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor)
+   * @see de.willuhn.jameica.hbci.io.Importer#doImport(java.lang.Object, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor)
    */
-  public void doImport(GenericObject context, IOFormat format, InputStream is,
+  public void doImport(Object context, IOFormat format, InputStream is,
       ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
     // Wir merken uns die Konten, die der User schonmal ausgewaehlt
@@ -217,8 +216,7 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
       {
         DBService service = de.willuhn.jameica.hbci.Settings.getDBService();
         DBIterator konten = service.createList(Konto.class);
-        konten.addFilter("kontonummer like '%" + kontonummer + "'");
-        // konten.addFilter("kontonummer like ?", new Object[]{"%" + kontonummer}); TODO: PreparedStatment mit LIKE testen
+        konten.addFilter("kontonummer like ?", new Object[]{"%" + kontonummer});
         konten.addFilter("blz = ?", new Object[]{blz});
         while (konten.hasNext())
         {
@@ -282,7 +280,7 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
    * @throws RemoteException
    * @throws ApplicationException
    */
-  abstract void create(DBObject skel, GenericObject context, CSatz csatz, ASatz asatz)
+  abstract void create(DBObject skel, Object context, CSatz csatz, ASatz asatz)
     throws RemoteException, ApplicationException;
 
 }
@@ -290,6 +288,12 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
 
 /*********************************************************************
  * $Log: AbstractDTAUSImporter.java,v $
+ * Revision 1.10  2007/04/23 18:07:14  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.9  2007/04/20 14:49:05  willuhn
  * @N Support fuer externe Adressbuecher
  * @N Action "EmpfaengerAdd" "aufgebohrt"

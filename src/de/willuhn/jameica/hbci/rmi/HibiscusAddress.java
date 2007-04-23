@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Attic/Adresse.java,v $
- * $Revision: 1.6 $
- * $Date: 2007/04/20 14:49:05 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/HibiscusAddress.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2007/04/23 18:07:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,14 +14,14 @@ package de.willuhn.jameica.hbci.rmi;
 
 import java.rmi.RemoteException;
 
-import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.util.ApplicationException;
 
 /**
  * Bildet einen Empfaenger ab.
  */
-public interface Adresse extends Address, DBObject
+public interface HibiscusAddress extends Address, DBObject
 {
 
 	/**
@@ -53,27 +53,27 @@ public interface Adresse extends Address, DBObject
   public void setKommentar(String kommentar) throws RemoteException;
   
   /**
-   * Liefert eine Liste von Umsaetzen, die von/an diese Adresse getaetigt wurden.
+   * Liefert eine Liste von Umsaetzen, die von/an diese HibiscusAddress getaetigt wurden.
    * @return Liste von Umsaetzen.
    * @throws RemoteException
    */
-  public DBIterator getUmsaetze() throws RemoteException;
+  public GenericIterator getUmsaetze() throws RemoteException;
 
   /**
    * Liefert eine Liste von Buchungen aus Sammellastschriften, die von dieser
-   * Adresse eingezogen wurden.
+   * HibiscusAddress eingezogen wurden.
    * @return Liste von Buchungen.
    * @throws RemoteException
    */
-  public DBIterator getSammellastBuchungen() throws RemoteException;
+  public GenericIterator getSammellastBuchungen() throws RemoteException;
   
   /**
    * Liefert eine Liste von Buchungen aus Sammelueberweisungen, die an diese
-   * Adresse ueberweisen wurden.
+   * HibiscusAddress ueberweisen wurden.
    * @return Liste der Buchungen.
    * @throws RemoteException
    */
-  public DBIterator getSammelUeberweisungBuchungen() throws RemoteException;
+  public GenericIterator getSammelUeberweisungBuchungen() throws RemoteException;
 
   /**
    * Erlaubt das Setzen von Attributen des Umsatzes ueber diese generische Funktion.
@@ -87,7 +87,13 @@ public interface Adresse extends Address, DBObject
 
 
 /**********************************************************************
- * $Log: Adresse.java,v $
+ * $Log: HibiscusAddress.java,v $
+ * Revision 1.1  2007/04/23 18:07:14  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.6  2007/04/20 14:49:05  willuhn
  * @N Support fuer externe Adressbuecher
  * @N Action "EmpfaengerAdd" "aufgebohrt"

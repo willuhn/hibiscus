@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/DauerauftragNew.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/03/02 17:59:30 $
- * $Author: web0 $
+ * $Revision: 1.6 $
+ * $Date: 2007/04/23 18:07:14 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -18,8 +18,8 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
-import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -60,10 +60,10 @@ public class DauerauftragNew implements Action
 				// Dann halt nicht
 			}
 		}
-		else if (context instanceof Adresse)
+		else if (context instanceof Address)
 		{
 			try {
-				Adresse e = (Adresse) context;
+				Address e = (Address) context;
 				d = (Dauerauftrag) Settings.getDBService().createObject(Dauerauftrag.class,null);
 				d.setGegenkonto(e);
 			}
@@ -81,6 +81,12 @@ public class DauerauftragNew implements Action
 
 /**********************************************************************
  * $Log: DauerauftragNew.java,v $
+ * Revision 1.6  2007/04/23 18:07:14  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.5  2005/03/02 17:59:30  web0
  * @N some refactoring
  *

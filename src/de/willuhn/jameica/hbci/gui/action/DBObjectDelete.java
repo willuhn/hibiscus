@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/DBObjectDelete.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/06/06 22:41:26 $
+ * $Revision: 1.2 $
+ * $Date: 2007/04/23 18:07:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -42,7 +42,10 @@ public class DBObjectDelete implements Action
       throw new ApplicationException(i18n.tr("Keine zu löschenden Daten ausgewählt"));
 
     if (!(context instanceof DBObject) && !(context instanceof DBObject[]))
-			throw new ApplicationException(i18n.tr("Keine zu löschenden Daten ausgewählt"));
+    {
+      Logger.warn("wrong type to delete: " + context.getClass());
+      return;
+    }
 
     boolean array = (context instanceof DBObject[]);
     // Sicherheitsabfrage
@@ -103,6 +106,12 @@ public class DBObjectDelete implements Action
 
 /**********************************************************************
  * $Log: DBObjectDelete.java,v $
+ * Revision 1.2  2007/04/23 18:07:14  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.1  2006/06/06 22:41:26  willuhn
  * @N Generische Loesch-Action fuer DBObjects (DBObjectDelete)
  * @N Live-Aktualisierung der Tabelle mit den importierten Ueberweisungen

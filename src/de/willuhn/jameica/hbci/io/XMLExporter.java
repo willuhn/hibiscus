@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/XMLExporter.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/12/01 01:28:16 $
+ * $Revision: 1.2 $
+ * $Date: 2007/04/23 18:07:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,7 @@ import java.beans.XMLEncoder;
 import java.io.OutputStream;
 import java.rmi.RemoteException;
 
-import de.willuhn.datasource.GenericObject;
+import de.willuhn.datasource.BeanUtil;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -41,9 +41,9 @@ public class XMLExporter implements Exporter
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.io.Exporter#doExport(de.willuhn.datasource.GenericObject[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
+   * @see de.willuhn.jameica.hbci.io.Exporter#doExport(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
    */
-  public void doExport(GenericObject[] objects, IOFormat format,OutputStream os, final ProgressMonitor monitor) throws RemoteException, ApplicationException
+  public void doExport(Object[] objects, IOFormat format,OutputStream os, final ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
     try
     {
@@ -58,7 +58,7 @@ public class XMLExporter implements Exporter
       for (int i=0;i<objects.length;++i)
       {
         if (monitor != null)  monitor.setPercentComplete((int)((i) * factor));
-        Object name = objects[i].getAttribute(objects[i].getPrimaryAttribute());
+        Object name = BeanUtil.toString(objects[i]);
         if (name != null && monitor != null)
           monitor.log(i18n.tr("Speichere Datensatz {0}",name.toString()));
         e.writeObject(objects[i]);
@@ -115,6 +115,12 @@ public class XMLExporter implements Exporter
 
 /*********************************************************************
  * $Log: XMLExporter.java,v $
+ * Revision 1.2  2007/04/23 18:07:14  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.1  2006/12/01 01:28:16  willuhn
  * @N Experimenteller Import-Export-Code
  *

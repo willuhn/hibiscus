@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SammelTransferBuchungList.java,v $
- * $Revision: 1.6 $
- * $Date: 2007/03/16 14:40:02 $
+ * $Revision: 1.7 $
+ * $Date: 2007/04/23 18:07:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,8 +21,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TableItem;
 import org.kapott.hbci.manager.HBCIUtils;
 
+import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
@@ -57,7 +57,7 @@ public class SammelTransferBuchungList extends TablePart
    * @param list Liste von Buchungen (SammelTransferBuchung).
    * @param action Aktion, die beim Klick ausgefuehrt werden soll.
    */
-  public SammelTransferBuchungList(final DBIterator list, Action action)
+  public SammelTransferBuchungList(final GenericIterator list, Action action)
   {
     super(list,action);
     addColumn(i18n.tr("Auftrag"),"this", new Formatter() {
@@ -264,6 +264,12 @@ public class SammelTransferBuchungList extends TablePart
 
 /*********************************************************************
  * $Log: SammelTransferBuchungList.java,v $
+ * Revision 1.7  2007/04/23 18:07:15  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.6  2007/03/16 14:40:02  willuhn
  * @C Redesign ImportMessage
  * @N Aktualisierung der Umsatztabelle nach Kategorie-Zuordnung

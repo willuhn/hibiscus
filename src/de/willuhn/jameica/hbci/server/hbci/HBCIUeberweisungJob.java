@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUeberweisungJob.java,v $
- * $Revision: 1.32 $
- * $Date: 2006/08/07 14:31:59 $
+ * $Revision: 1.33 $
+ * $Date: 2007/04/23 18:07:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,7 +22,7 @@ import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.PassportRegistry;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.passport.Passport;
-import de.willuhn.jameica.hbci.rmi.Adresse;
+import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
@@ -82,12 +82,12 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
 
 			setJobParam("btg",ueberweisung.getBetrag(),curr);
 
-			Adresse empfaenger = (Adresse) Settings.getDBService().createObject(Adresse.class,null);
+			HibiscusAddress empfaenger = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
 			empfaenger.setBLZ(ueberweisung.getGegenkontoBLZ());
 			empfaenger.setKontonummer(ueberweisung.getGegenkontoNummer());
 			empfaenger.setName(ueberweisung.getGegenkontoName());
 
-			setJobParam("dst",Converter.HibiscusAdresse2HBCIKonto(empfaenger));
+			setJobParam("dst",Converter.Address2HBCIKonto(empfaenger));
 			setJobParam("name",empfaenger.getName());
 
 			setJobParam("usage",ueberweisung.getZweck());
@@ -177,6 +177,12 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIUeberweisungJob.java,v $
+ * Revision 1.33  2007/04/23 18:07:14  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.32  2006/08/07 14:31:59  willuhn
  * @B misc bugfixing
  * @C Redesign des DTAUS-Imports fuer Sammeltransfers

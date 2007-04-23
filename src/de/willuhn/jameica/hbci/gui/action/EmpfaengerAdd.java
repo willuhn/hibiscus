@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/EmpfaengerAdd.java,v $
- * $Revision: 1.9 $
- * $Date: 2007/04/20 14:49:05 $
+ * $Revision: 1.10 $
+ * $Date: 2007/04/23 18:07:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,7 +23,7 @@ import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.AddressbookService;
-import de.willuhn.jameica.hbci.rmi.Adresse;
+import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.Transfer;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -40,8 +40,7 @@ public class EmpfaengerAdd implements Action
 {
 
   /**
-   * Erwartet ein Objekt vom Typ <code>Umsatz</code> oder <code>Transfer</code> (bzw. Arrays davon)
-   * sowie Objekte des Typs <code>Adresse</code> bzw. <code>Adresse[]</code>.
+   * Erwartet ein Objekt vom Typ <code>Transfer</code> (bzw. Arrays davon)
    * Ausserdem Objekte des Typs <code>Address</code> sowie <code>Address[]</code> 
    * Die Empfaenger-Daten werden extrahiert und in der Datenbank gespeichert,
    * falls sie nicht schon existieren.
@@ -56,8 +55,6 @@ public class EmpfaengerAdd implements Action
 
 		if (!(context instanceof Transfer) &&
         !(context instanceof Transfer[]) &&
-        !(context instanceof Adresse) &&
-        !(context instanceof Adresse[]) &&
         !(context instanceof Address) &&
         !(context instanceof Address[]) &&
         !(context instanceof Umsatz) &&
@@ -84,14 +81,14 @@ public class EmpfaengerAdd implements Action
         }
       }
       ///////////////////////////////////////////////////////////////
-      // Adressen
-      else if (context instanceof Adresse)
+      // Hibiscus-Adressen
+      else if (context instanceof HibiscusAddress)
       {
         items.add(context);
       }
-      else if (context instanceof Adresse[])
+      else if (context instanceof HibiscusAddress[])
       {
-        Adresse[] list = (Adresse[]) context;
+        HibiscusAddress[] list = (HibiscusAddress[]) context;
         for (int i=0;i<list.length;++i)
         {
           items.add(list[i]);
@@ -114,22 +111,6 @@ public class EmpfaengerAdd implements Action
         }
       }
       ///////////////////////////////////////////////////////////////
-      // Umsatz
-			else if (context instanceof Umsatz)
-			{
-				Umsatz u = (Umsatz) context;
-        items.add(create(u.getEmpfaengerName(),u.getEmpfaengerKonto(),u.getEmpfaengerBLZ()));
-			}
-      else if (context instanceof Umsatz[])
-      {
-        Umsatz[] list = (Umsatz[]) context;
-        for (int i=0;i<list.length;++i)
-        {
-          Umsatz u = list[i];
-          items.add(create(u.getEmpfaengerName(),u.getEmpfaengerKonto(),u.getEmpfaengerBLZ()));
-        }
-      }
-      ///////////////////////////////////////////////////////////////
 
       if (items.size() == 0)
         return;
@@ -146,7 +127,7 @@ public class EmpfaengerAdd implements Action
       for (int i=0;i<items.size();++i)
       {
         // wir checken erstmal, ob wir den schon haben.
-        Adresse e = (Adresse) items.get(i);
+        HibiscusAddress e = (HibiscusAddress) items.get(i);
 
         if (e.getName() == null || e.getName().length() == 0)
         {
@@ -191,9 +172,9 @@ public class EmpfaengerAdd implements Action
    * @return das Adress-Objekt.
    * @throws RemoteException
    */
-  private Adresse create(String name, String kontonummer, String blz) throws RemoteException
+  private HibiscusAddress create(String name, String kontonummer, String blz) throws RemoteException
   {
-    Adresse e = (Adresse) Settings.getDBService().createObject(Adresse.class,null);
+    HibiscusAddress e = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
     e.setName(strip(name));
     e.setKontonummer(kontonummer);
     e.setBLZ(blz);
@@ -217,6 +198,12 @@ public class EmpfaengerAdd implements Action
 
 /**********************************************************************
  * $Log: EmpfaengerAdd.java,v $
+ * Revision 1.10  2007/04/23 18:07:14  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.9  2007/04/20 14:49:05  willuhn
  * @N Support fuer externe Adressbuecher
  * @N Action "EmpfaengerAdd" "aufgebohrt"

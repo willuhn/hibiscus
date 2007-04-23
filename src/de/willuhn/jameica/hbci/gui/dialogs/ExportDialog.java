@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/ExportDialog.java,v $
- * $Revision: 1.12 $
- * $Date: 2007/03/21 15:37:46 $
+ * $Revision: 1.13 $
+ * $Date: 2007/04/23 18:07:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -62,7 +62,7 @@ public class ExportDialog extends AbstractDialog
 
   private Input exporterListe     = null;
   private CheckboxInput openFile  = null;
-  private GenericObject[] objects = null;	
+  private Object[] objects        = null;	
   private Class type              = null;
 
   private Settings  settings      = null;
@@ -72,7 +72,7 @@ public class ExportDialog extends AbstractDialog
    * @param objects Liste der zu exportierenden Objekte.
    * @param type die Art der zu exportierenden Objekte.
    */
-  public ExportDialog(GenericObject[] objects, Class type)
+  public ExportDialog(Object[] objects, Class type)
   {
     super(POSITION_MOUSE);
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
@@ -291,7 +291,7 @@ public class ExportDialog extends AbstractDialog
       IOFormat[] formats = exp.getIOFormats(type);
       if (formats == null || formats.length == 0)
       {
-        Logger.warn("exporter " + exp.getName() + " provides no export formats for " + type + " skipping");
+        Logger.debug("exporter " + exp.getName() + " provides no export formats for " + type + " skipping");
         continue;
       }
       for (int j=0;j<formats.length;++j)
@@ -404,6 +404,12 @@ public class ExportDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: ExportDialog.java,v $
+ * Revision 1.13  2007/04/23 18:07:15  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.12  2007/03/21 15:37:46  willuhn
  * @N Vorschau der Umsaetze in Auswertung "Kontoauszug"
  *

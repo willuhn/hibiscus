@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractBaseUeberweisungImpl.java,v $
- * $Revision: 1.9 $
- * $Date: 2006/12/01 00:02:34 $
+ * $Revision: 1.10 $
+ * $Date: 2007/04/23 18:07:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,7 +25,7 @@ import de.willuhn.util.I18N;
 /**
  * Abstrakte Basis-Klasse fuer Ueberweisungen und Lastschriften.
  */
-public abstract class AbstractBaseUeberweisungImpl extends AbstractTransferImpl
+public abstract class AbstractBaseUeberweisungImpl extends AbstractHibiscusTransferImpl
   implements Terminable
 {
 
@@ -135,6 +135,12 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractTransferImpl
 
 /**********************************************************************
  * $Log: AbstractBaseUeberweisungImpl.java,v $
+ * Revision 1.10  2007/04/23 18:07:15  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.9  2006/12/01 00:02:34  willuhn
  * @C made unserializable members transient
  *

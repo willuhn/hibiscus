@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AddressbookServiceImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/04/20 14:55:31 $
+ * $Revision: 1.3 $
+ * $Date: 2007/04/23 18:07:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,10 +16,8 @@ package de.willuhn.jameica.hbci.server;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.List;
 
-import de.willuhn.datasource.GenericIterator;
-import de.willuhn.datasource.GenericObject;
-import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.Addressbook;
@@ -49,19 +47,21 @@ public class AddressbookServiceImpl extends UnicastRemoteObject implements Addre
   /**
    * @see de.willuhn.jameica.hbci.rmi.Addressbook#findAddresses(java.lang.String)
    */
-  public GenericIterator findAddresses(String text) throws RemoteException
+  public List findAddresses(String text) throws RemoteException
   {
     ArrayList result = new ArrayList();
     for (int i=0;i<this.books.length;++i)
     {
       if (books[i].getClass().equals(this.getClass()))
         continue; // WICHTIG: Uns selbst ueberspringen wir, um eine Rekursion zu vermeiden
-      GenericIterator list = this.books[i].findAddresses(text);
-      if (list == null || list.size() == 0)
+      List list = this.books[i].findAddresses(text);
+
+      if (list == null)
         continue;
-      result.addAll(PseudoIterator.asList(list));
+
+      result.addAll(list);
     }
-    return PseudoIterator.fromArray((GenericObject[])result.toArray(new GenericObject[result.size()]));
+    return result;
   }
 
   /**
@@ -198,6 +198,12 @@ public class AddressbookServiceImpl extends UnicastRemoteObject implements Addre
 
 /*********************************************************************
  * $Log: AddressbookServiceImpl.java,v $
+ * Revision 1.3  2007/04/23 18:07:15  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.2  2007/04/20 14:55:31  willuhn
  * @C s/findAddress/findAddresses/
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/DTAUSUmsatzImporter.java,v $
- * $Revision: 1.6 $
- * $Date: 2007/03/05 15:38:43 $
+ * $Revision: 1.7 $
+ * $Date: 2007/04/23 18:07:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,7 +18,6 @@ import java.util.Date;
 
 import de.jost_net.OBanToo.Dtaus.ASatz;
 import de.jost_net.OBanToo.Dtaus.CSatz;
-import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.util.ApplicationException;
@@ -37,9 +36,9 @@ public class DTAUSUmsatzImporter extends AbstractDTAUSImporter
   }
   
   /**
-   * @see de.willuhn.jameica.hbci.io.AbstractDTAUSImporter#create(de.willuhn.datasource.rmi.DBObject, de.willuhn.datasource.GenericObject, de.jost_net.OBanToo.Dtaus.CSatz, de.jost_net.OBanToo.Dtaus.ASatz)
+   * @see de.willuhn.jameica.hbci.io.AbstractDTAUSImporter#create(de.willuhn.datasource.rmi.DBObject, java.lang.Object, de.jost_net.OBanToo.Dtaus.CSatz, de.jost_net.OBanToo.Dtaus.ASatz)
    */
-  void create(DBObject skel, GenericObject context, CSatz csatz, ASatz asatz)
+  void create(DBObject skel, Object context, CSatz csatz, ASatz asatz)
     throws RemoteException, ApplicationException
   {
     Umsatz u = (Umsatz) skel;
@@ -60,9 +59,9 @@ public class DTAUSUmsatzImporter extends AbstractDTAUSImporter
     u.setArt(Long.toString(csatz.getTextschluessel()));
     u.setCustomerRef(Long.toString(csatz.getInterneKundennummer()));
     u.setBetrag(csatz.getBetragInEuro());
-    u.setEmpfaengerBLZ(Long.toString(csatz.getBlzEndbeguenstigt()));
-    u.setEmpfaengerName(csatz.getNameEmpfaenger());
-    u.setEmpfaengerKonto(Long.toString(csatz.getKontonummer()));
+    u.setGegenkontoBLZ(Long.toString(csatz.getBlzEndbeguenstigt()));
+    u.setGegenkontoName(csatz.getNameEmpfaenger());
+    u.setGegenkontoNummer(Long.toString(csatz.getKontonummer()));
     u.setZweck(csatz.getVerwendungszweck(1));
 
     int z = csatz.getAnzahlVerwendungszwecke();
@@ -90,6 +89,12 @@ public class DTAUSUmsatzImporter extends AbstractDTAUSImporter
 
 /*********************************************************************
  * $Log: DTAUSUmsatzImporter.java,v $
+ * Revision 1.7  2007/04/23 18:07:14  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.6  2007/03/05 15:38:43  willuhn
  * @B Bug 365
  *

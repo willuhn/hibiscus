@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Umsatz.java,v $
- * $Revision: 1.15 $
- * $Date: 2006/11/23 17:25:37 $
+ * $Revision: 1.16 $
+ * $Date: 2007/04/23 18:07:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,60 +26,9 @@ import de.willuhn.util.ApplicationException;
  * ueber HBCI-Geschaeftsvorfaelle von der Bank geliefert und nur von
  * dort geschrieben.
  */
-public interface Umsatz extends DBObject, Checksum
+public interface Umsatz extends HibiscusTransfer, DBObject, Checksum
 {
 
-	/**
-	 * Liefert das Konto, auf welches sich diese Umsaetze beziehen.
-   * @return Konto.
-   * @throws RemoteException
-   */
-  public Konto getKonto() throws RemoteException;
-	
-	/**
-	 * Liefert den Namen des Empfaengers der Zahlung.
-   * @return Empfaenger der Zahlung.
-   * @throws RemoteException
-   */
-  public String getEmpfaengerName() throws RemoteException;
-	
-  /**
-   * Liefert die Kontonummer des Empfaengers der Zahlung.
-   * @return Kontonummer des Empfaengers der Zahlung.
-   * @throws RemoteException
-   */
-  public String getEmpfaengerKonto() throws RemoteException;
-  
-  /**
-   * Liefert die BLZ des Empfaengers der Zahlung.
-   * @return BLZ des Empfaengers der Zahlung.
-   * @throws RemoteException
-   */
-  public String getEmpfaengerBLZ() throws RemoteException;
-  
-  /**
-	 * Betrag der Buchung. Soll-Buchungen werden durch negative
-	 * Werte dargestellt, Haben-Buchungen durch positive Werte.
-   * @return Buchungsbetrag.
-   * @throws RemoteException
-   */
-  public double getBetrag() throws RemoteException;
-	
-	/**
-	 * Text im Verwendungszweck.
-   * @return Verwendungszweck.
-   * @throws RemoteException
-   */
-  public String getZweck() throws RemoteException;
-	
-	/**
-	 * Fortsetzung des Verwendungszwecks.
-	 * Das Feld enthaelt alle restlichen Zeilen.
-   * @return weiterer Verwendungszweck.
-   * @throws RemoteException
-   */
-  public String getZweck2() throws RemoteException;
-	
 	/**
 	 * Liefert das Datum der Buchung.
    * @return Datum der Buchung.
@@ -139,62 +88,6 @@ public interface Umsatz extends DBObject, Checksum
    */
   public void setKommentar(String kommentar) throws RemoteException;
 
-  /**
-	 * Speichert das Konto, auf welches sich der Umsatz bezieht.
-   * @param k das Konto.
-   * @throws RemoteException
-   */
-  void setKonto(Konto k) throws RemoteException;
-
-	/**
-	 * Speichert Name,BLZ und Konto des Empfaengers en bloc.
-   * @param empf der zu speichernde Empfaenger.
-   * @throws RemoteException
-   */
-  void setEmpfaenger(Adresse empf) throws RemoteException;
-	
-	/**
-	 * Speichert den Namen des Empfaengers.
-   * @param name des Empfaenger.
-   * @throws RemoteException
-   */
-  public void setEmpfaengerName(String name) throws RemoteException;
-	
-  /**
-   * Speichert die Kontonummer des Empfaengers.
-   * @param konto Kontonummer des Empfaenger.
-   * @throws RemoteException
-   */
-	public void setEmpfaengerKonto(String konto) throws RemoteException;
-
-  /**
-   * Speichert die BLZ des Empfaengers.
-   * @param blz BLZ des Empfaenger.
-   * @throws RemoteException
-   */
-	public void setEmpfaengerBLZ(String blz) throws RemoteException;
-  
-  /**
-	 * Betrag der Buchung. Soll-Buchungen werden durch negative Werte dargestellt.
-   * @param d Betrag der Buchung.
-   * @throws RemoteException
-   */
-	public void setBetrag(double d) throws RemoteException;
-	
-	/**
-	 * Verwendungszweck.
-   * @param zweck
-   * @throws RemoteException
-   */
-	public void setZweck(String zweck) throws RemoteException;
-	
-	/**
-	 * weiterer Verwendungszweck. Darf <code>null</code> sein.
-   * @param zweck2
-   * @throws RemoteException
-   */
-	public void setZweck2(String zweck2) throws RemoteException;
-	
 	/**
 	 * Datum der Buchung.
    * @param d
@@ -285,6 +178,12 @@ public interface Umsatz extends DBObject, Checksum
 
 /**********************************************************************
  * $Log: Umsatz.java,v $
+ * Revision 1.16  2007/04/23 18:07:14  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.15  2006/11/23 17:25:37  willuhn
  * @N Umsatz-Kategorien - in PROGRESS!
  *

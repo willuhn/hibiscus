@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/UeberweisungNew.java,v $
- * $Revision: 1.8 $
- * $Date: 2007/02/21 11:58:52 $
+ * $Revision: 1.9 $
+ * $Date: 2007/04/23 18:07:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,7 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.io.ClipboardUeberweisungImporter;
-import de.willuhn.jameica.hbci.rmi.Adresse;
+import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
@@ -60,10 +60,10 @@ public class UeberweisungNew implements Action
 				// Dann halt nicht
 			}
 		}
-		else if (context instanceof Adresse)
+		else if (context instanceof Address)
 		{
 			try {
-				Adresse e = (Adresse) context;
+				Address e = (Address) context;
 				u = (Ueberweisung) Settings.getDBService().createObject(Ueberweisung.class,null);
 				u.setGegenkonto(e);
 			}
@@ -81,9 +81,9 @@ public class UeberweisungNew implements Action
         Umsatz umsatz = (Umsatz) context;
         u = (Ueberweisung) Settings.getDBService().createObject(Ueberweisung.class,null);
         u.setBetrag(Math.abs(umsatz.getBetrag()));
-        u.setGegenkontoBLZ(umsatz.getEmpfaengerBLZ());
-        u.setGegenkontoName(umsatz.getEmpfaengerName());
-        u.setGegenkontoNummer(umsatz.getEmpfaengerKonto());
+        u.setGegenkontoBLZ(umsatz.getGegenkontoBLZ());
+        u.setGegenkontoName(umsatz.getGegenkontoName());
+        u.setGegenkontoNummer(umsatz.getGegenkontoNummer());
         u.setKonto(umsatz.getKonto());
         u.setTermin(new Date());
         u.setZweck(umsatz.getZweck());
@@ -108,6 +108,12 @@ public class UeberweisungNew implements Action
 
 /**********************************************************************
  * $Log: UeberweisungNew.java,v $
+ * Revision 1.9  2007/04/23 18:07:14  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.8  2007/02/21 11:58:52  willuhn
  * @N Bug 315
  *

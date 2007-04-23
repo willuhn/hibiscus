@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/DonateDialog.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/06/06 18:02:45 $
- * $Author: jost $
+ * $Revision: 1.6 $
+ * $Date: 2007/04/23 18:07:15 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -33,7 +33,7 @@ import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.rmi.Adresse;
+import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.system.Application;
@@ -49,7 +49,7 @@ public class DonateDialog extends AbstractDialog
 {
   private I18N i18n = null;
 
-  private Adresse empfaenger = null;
+  private HibiscusAddress empfaenger = null;
   
   private DialogInput kontoAuswahl  = null;
   private Input betrag              = null;
@@ -74,7 +74,7 @@ public class DonateDialog extends AbstractDialog
    */
   protected void paint(Composite parent) throws Exception
   {
-    empfaenger = (Adresse) Settings.getDBService().createObject(Adresse.class,null);
+    empfaenger = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
     empfaenger.setBLZ("50530000");
     empfaenger.setKontonummer("325406");
     empfaenger.setName("Olaf Willuhn");
@@ -239,6 +239,12 @@ public class DonateDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: DonateDialog.java,v $
+ * Revision 1.6  2007/04/23 18:07:15  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.5  2006/06/06 18:02:45  jost
  * Tippfehler beseitigt.
  *

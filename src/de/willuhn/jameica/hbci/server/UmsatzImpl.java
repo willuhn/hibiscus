@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.44 $
- * $Date: 2007/03/21 18:47:36 $
+ * $Revision: 1.45 $
+ * $Date: 2007/04/23 18:07:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,7 +24,7 @@ import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.rmi.Adresse;
+import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
@@ -114,37 +114,37 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getKonto()
+   * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#getKonto()
    */
   public Konto getKonto() throws RemoteException {
     return (Konto) getAttribute("konto_id");
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getEmpfaengerName()
+   * @see de.willuhn.jameica.hbci.rmi.Transfer#getGegenkontoName()
    */
-  public String getEmpfaengerName() throws RemoteException {
+  public String getGegenkontoName() throws RemoteException {
     return (String) getAttribute("empfaenger_name");
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getEmpfaengerKonto()
+   * @see de.willuhn.jameica.hbci.rmi.Transfer#getGegenkontoNummer()
    */
-  public String getEmpfaengerKonto() throws RemoteException
+  public String getGegenkontoNummer() throws RemoteException
   {
     return (String) getAttribute("empfaenger_konto");
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getEmpfaengerBLZ()
+   * @see de.willuhn.jameica.hbci.rmi.Transfer#getGegenkontoBLZ()
    */
-  public String getEmpfaengerBLZ() throws RemoteException
+  public String getGegenkontoBLZ() throws RemoteException
   {
     return (String) getAttribute("empfaenger_blz");
   }
   
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getBetrag()
+   * @see de.willuhn.jameica.hbci.rmi.Transfer#getBetrag()
    */
   public double getBetrag() throws RemoteException {
 		Double d = (Double) getAttribute("betrag");
@@ -168,65 +168,66 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getZweck()
+   * @see de.willuhn.jameica.hbci.rmi.Transfer#getZweck()
    */
   public String getZweck() throws RemoteException {
 		return (String) getAttribute("zweck");
   }
 
 	/**
-	 * @see de.willuhn.jameica.hbci.rmi.Umsatz#getZweck2()
+	 * @see de.willuhn.jameica.hbci.rmi.Transfer#getZweck2()
 	 */
 	public String getZweck2() throws RemoteException {
 		return (String) getAttribute("zweck2");
 	}
 
 	/**
-	 * @see de.willuhn.jameica.hbci.rmi.Umsatz#setEmpfaenger(de.willuhn.jameica.hbci.rmi.Adresse)
+	 * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setGegenkonto(de.willuhn.jameica.hbci.rmi.Address)
 	 */
-	public void setEmpfaenger(Adresse empf) throws RemoteException
+	public void setGegenkonto(Address empf) throws RemoteException
 	{
-		setEmpfaengerBLZ(empf.getBLZ());
-		setEmpfaengerKonto(empf.getKontonummer());
-		setEmpfaengerName(empf.getName());
+		setGegenkontoBLZ(empf.getBLZ());
+		setGegenkontoNummer(empf.getKontonummer());
+		setGegenkontoName(empf.getName());
 	}
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setEmpfaengerName(java.lang.String)
+   * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setGegenkontoName(java.lang.String)
    */
-  public void setEmpfaengerName(String name) throws RemoteException {
+  public void setGegenkontoName(String name) throws RemoteException {
 		setAttribute("empfaenger_name",name);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setEmpfaengerKonto(java.lang.String)
-   */
-	public void setEmpfaengerKonto(String konto) throws RemoteException {
+	/**
+	 * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setGegenkontoNummer(java.lang.String)
+	 */
+	public void setGegenkontoNummer(String konto) throws RemoteException {
     setAttribute("empfaenger_konto",konto);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setEmpfaengerBLZ(java.lang.String)
-   */
-	public void setEmpfaengerBLZ(String blz) throws RemoteException {
+	/**
+	 * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setGegenkontoBLZ(java.lang.String)
+	 */
+	public void setGegenkontoBLZ(String blz) throws RemoteException {
     setAttribute("empfaenger_blz",blz);
   }
+  
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setBetrag(double)
+   * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setBetrag(double)
    */
   public void setBetrag(double d) throws RemoteException {
 		setAttribute("betrag",new Double(d));
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setZweck(java.lang.String)
+   * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setZweck(java.lang.String)
    */
   public void setZweck(String zweck) throws RemoteException {
 		setAttribute("zweck",zweck);
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setZweck2(java.lang.String)
+   * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setZweck2(java.lang.String)
    */
   public void setZweck2(String zweck2) throws RemoteException {
 		setAttribute("zweck2",zweck2);
@@ -247,7 +248,7 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setKonto(de.willuhn.jameica.hbci.rmi.Konto)
+   * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setKonto(de.willuhn.jameica.hbci.rmi.Konto)
    */
   public void setKonto(Konto k) throws RemoteException {
 		setAttribute("konto_id",k);
@@ -349,9 +350,9 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 		           getBetrag() +
 		           getKonto().getChecksum() +
 		           getCustomerRef() +
-		           getEmpfaengerBLZ() +
-		           getEmpfaengerKonto() +
-		           (""+getEmpfaengerName()).toUpperCase() +
+		           getGegenkontoBLZ() +
+		           getGegenkontoNummer() +
+		           (""+getGegenkontoName()).toUpperCase() +
 		           getPrimanota() +
 		           getSaldo() +
 		           (""+getZweck()).toUpperCase() +
@@ -374,7 +375,7 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
     
     // Fuer Kategoriebaum
     if ("name".equals(arg0))
-      return getEmpfaengerName();
+      return getGegenkontoName();
       
     if ("id-int".equals(arg0))
     {
@@ -394,12 +395,12 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
     // BUGZILLA 86 http://www.willuhn.de/bugzilla/show_bug.cgi?id=86
     if ("empfaenger".equals(arg0))
     {
-      String name = getEmpfaengerName();
+      String name = getGegenkontoName();
       if (name != null)
         return name;
 
-      String kto = getEmpfaengerKonto();
-      String blz = getEmpfaengerBLZ();
+      String kto = getGegenkontoNummer();
+      String blz = getGegenkontoBLZ();
       if (kto == null || blz == null)
         return null;
 
@@ -418,9 +419,9 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
     Konto k = getKonto();
     String[] fields = new String[]
     {
-      getEmpfaengerName(),
-      getEmpfaengerKonto(),
-      getEmpfaengerBLZ(),
+      getGegenkontoName(),
+      getGegenkontoNummer(),
+      getGegenkontoBLZ(),
       HBCI.DATEFORMAT.format(getValuta()),
       getZweck(),
       k.getWaehrung() + " " + HBCI.DECIMALFORMAT.format(getBetrag())
@@ -593,6 +594,12 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.45  2007/04/23 18:07:15  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.44  2007/03/21 18:47:36  willuhn
  * @N Neue Spalte in Kategorie-Tree
  * @N Sortierung des Kontoauszuges wie in Tabelle angezeigt

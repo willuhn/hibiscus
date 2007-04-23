@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UeberweisungNew.java,v $
- * $Revision: 1.13 $
- * $Date: 2006/08/23 09:57:23 $
+ * $Revision: 1.14 $
+ * $Date: 2007/04/23 18:07:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,7 +22,7 @@ import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungExecute;
 import de.willuhn.jameica.hbci.gui.controller.UeberweisungControl;
-import de.willuhn.jameica.hbci.rmi.Transfer;
+import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -38,7 +38,7 @@ public class UeberweisungNew extends AbstractView {
   public void bind() throws Exception {
 
 		final UeberweisungControl control = new UeberweisungControl(this);
-    final Transfer transfer = control.getTransfer();
+    final HibiscusTransfer transfer = control.getTransfer();
 
 		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
@@ -88,6 +88,12 @@ public class UeberweisungNew extends AbstractView {
 
 /**********************************************************************
  * $Log: UeberweisungNew.java,v $
+ * Revision 1.14  2007/04/23 18:07:15  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.13  2006/08/23 09:57:23  willuhn
  * @C Changed default button
  *

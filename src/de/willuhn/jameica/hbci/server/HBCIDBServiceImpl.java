@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/HBCIDBServiceImpl.java,v $
- * $Revision: 1.16 $
- * $Date: 2007/04/20 14:49:05 $
+ * $Revision: 1.17 $
+ * $Date: 2007/04/23 18:07:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -186,11 +186,27 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
   {
     return this.driver.getSQLTimestamp(content);
   }
+
+  /**
+   * @see de.willuhn.datasource.db.DBServiceImpl#getInsertWithID()
+   */
+  protected boolean getInsertWithID() throws RemoteException
+  {
+    return this.driver.getInsertWithID();
+  }
+  
+  
 }
 
 
 /*********************************************************************
  * $Log: HBCIDBServiceImpl.java,v $
+ * Revision 1.17  2007/04/23 18:07:15  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.16  2007/04/20 14:49:05  willuhn
  * @N Support fuer externe Adressbuecher
  * @N Action "EmpfaengerAdd" "aufgebohrt"

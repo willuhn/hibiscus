@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AbstractTransferImpl.java,v $
- * $Revision: 1.28 $
- * $Date: 2006/12/01 00:02:34 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractHibiscusTransferImpl.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2007/04/23 18:07:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,10 +17,10 @@ import java.rmi.RemoteException;
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
-import de.willuhn.jameica.hbci.rmi.Adresse;
+import de.willuhn.jameica.hbci.rmi.Address;
+import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
-import de.willuhn.jameica.hbci.rmi.Transfer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -29,7 +29,7 @@ import de.willuhn.util.I18N;
 /**
  * Abstrakte Basis-Implementierung von Geld-Transfers zwischen Konten.
  */
-public abstract class AbstractTransferImpl extends AbstractDBObject implements Transfer
+public abstract class AbstractHibiscusTransferImpl extends AbstractDBObject implements HibiscusTransfer
 {
 
   private transient I18N i18n = null;
@@ -38,7 +38,7 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
    * ct.
    * @throws RemoteException
    */
-  public AbstractTransferImpl() throws RemoteException {
+  public AbstractHibiscusTransferImpl() throws RemoteException {
     super();
     i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
@@ -110,7 +110,7 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#getKonto()
+   * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#getKonto()
    */
   public Konto getKonto() throws RemoteException {
     return (Konto) getAttribute("konto_id");
@@ -141,28 +141,28 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#setKonto(de.willuhn.jameica.hbci.rmi.Konto)
+   * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setKonto(de.willuhn.jameica.hbci.rmi.Konto)
    */
   public void setKonto(Konto konto) throws RemoteException {
 		setAttribute("konto_id",konto);
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#setBetrag(double)
+   * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setBetrag(double)
    */
   public void setBetrag(double betrag) throws RemoteException {
 		setAttribute("betrag", new Double(betrag));
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#setZweck(java.lang.String)
+   * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setZweck(java.lang.String)
    */
   public void setZweck(String zweck) throws RemoteException {
 		setAttribute("zweck",zweck);
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#setZweck2(java.lang.String)
+   * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setZweck2(java.lang.String)
    */
   public void setZweck2(String zweck2) throws RemoteException {
 		setAttribute("zweck2",zweck2);
@@ -190,21 +190,21 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#setGegenkontoNummer(java.lang.String)
+   * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setGegenkontoNummer(java.lang.String)
    */
   public void setGegenkontoNummer(String konto) throws RemoteException {
 		setAttribute("empfaenger_konto",konto);
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#setGegenkontoBLZ(java.lang.String)
+   * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setGegenkontoBLZ(java.lang.String)
    */
   public void setGegenkontoBLZ(String blz) throws RemoteException {
 		setAttribute("empfaenger_blz",blz);
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#setGegenkontoName(java.lang.String)
+   * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setGegenkontoName(java.lang.String)
    */
   public void setGegenkontoName(String name) throws RemoteException {
 		setAttribute("empfaenger_name",name);
@@ -248,11 +248,10 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
     k.addToProtokoll(i18n.tr("Auftrag [Gegenkonto: {0}, Kto. {1}, BLZ {2}] {3} {4} gespeichert",params),Protokoll.TYP_SUCCESS);
 	}
 
-
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#setGegenkonto(de.willuhn.jameica.hbci.rmi.Adresse)
+   * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setGegenkonto(de.willuhn.jameica.hbci.rmi.Address)
    */
-  public void setGegenkonto(Adresse e) throws RemoteException
+  public void setGegenkonto(Address e) throws RemoteException
   {
   	if (e == null)
   		return;
@@ -264,7 +263,13 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
 
 
 /**********************************************************************
- * $Log: AbstractTransferImpl.java,v $
+ * $Log: AbstractHibiscusTransferImpl.java,v $
+ * Revision 1.1  2007/04/23 18:07:15  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.28  2006/12/01 00:02:34  willuhn
  * @C made unserializable members transient
  *

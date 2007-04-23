@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/PDFUmsatzExporter.java,v $
- * $Revision: 1.6 $
- * $Date: 2006/10/22 19:52:07 $
- * $Author: jost $
+ * $Revision: 1.7 $
+ * $Date: 2007/04/23 18:07:14 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -34,7 +34,6 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 
-import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -64,9 +63,9 @@ public class PDFUmsatzExporter implements Exporter
   }
   
   /**
-   * @see de.willuhn.jameica.hbci.io.Exporter#doExport(de.willuhn.datasource.GenericObject[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
+   * @see de.willuhn.jameica.hbci.io.Exporter#doExport(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
    */
-  public void doExport(GenericObject[] objects, IOFormat format,
+  public void doExport(Object[] objects, IOFormat format,
       OutputStream os, ProgressMonitor monitor) throws RemoteException,
       ApplicationException
   {
@@ -212,7 +211,7 @@ public class PDFUmsatzExporter implements Exporter
           u = (Umsatz)list.get(i);
           table.addCell(getDetailCell((u.getValuta() != null ? HBCI.DATEFORMAT.format(u.getValuta()) : "" ) + "\n"
                                     + (u.getDatum() != null ? HBCI.DATEFORMAT.format(u.getDatum()) : ""), Element.ALIGN_LEFT));
-          table.addCell(getDetailCell(notNull(u.getEmpfaengerName()) + "\n"
+          table.addCell(getDetailCell(notNull(u.getGegenkontoName()) + "\n"
                                     + notNull(u.getArt()), Element.ALIGN_LEFT));
           table.addCell(getDetailCell(notNull(u.getZweck()) + "\n"
                                    + notNull(u.getZweck2()), Element.ALIGN_LEFT));
@@ -333,6 +332,12 @@ public class PDFUmsatzExporter implements Exporter
 
 /*********************************************************************
  * $Log: PDFUmsatzExporter.java,v $
+ * Revision 1.7  2007/04/23 18:07:14  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.6  2006/10/22 19:52:07  jost
  * Bug #301
  *

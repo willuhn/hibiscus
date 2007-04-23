@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/EmpfaengerNew.java,v $
- * $Revision: 1.12 $
- * $Date: 2006/08/17 21:46:16 $
+ * $Revision: 1.13 $
+ * $Date: 2007/04/23 18:07:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,7 +16,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.TabFolder;
 
-import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.datasource.GenericIterator;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -29,6 +29,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.controller.EmpfaengerControl;
+import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -58,39 +59,48 @@ public class EmpfaengerNew extends AbstractView {
     comment.addPart(control.getKommentar());
 
     // und noch die Abschicken-Knoepfe
-    ButtonArea buttonArea = new ButtonArea(getParent(),3);
+    ButtonArea buttonArea = new ButtonArea(getParent(),control.isHibiscusAdresse() ? 3 : 1);
     buttonArea.addButton(i18n.tr("Zurück"),new Back());
-    buttonArea.addButton(i18n.tr("Löschen"), new DBObjectDelete(), control.getEmpfaenger());
-    buttonArea.addButton(i18n.tr("Speichern"), new Action()
-    {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        control.handleStore();
-      }
-    },null,true);
-    
 
     new Headline(getParent(),i18n.tr("Buchungen von/an diese Adresse"));
 
-    TabFolder folder = new TabFolder(getParent(), SWT.NONE);
-    folder.setLayoutData(new GridData(GridData.FILL_BOTH));
-    folder.setBackground(Color.BACKGROUND.getSWTColor());
-
-    TabGroup tab = new TabGroup(folder,i18n.tr("Überweisungen"), false,1);
-    control.getUmsatzListe().paint(tab.getComposite());
-
-    // BUGZILLA 107 http://www.willuhn.de/bugzilla/show_bug.cgi?id=107
-    DBIterator list = control.getEmpfaenger().getSammellastBuchungen();
-    if (list.size() > 0)
+    if (control.isHibiscusAdresse())
     {
-      TabGroup tab2 = new TabGroup(folder,i18n.tr("Eingezogene Sammel-Lastschriften"));
-      control.getSammelLastListe().paint(tab2.getComposite());
+      buttonArea.addButton(i18n.tr("Löschen"), new DBObjectDelete(),control.getAddress());
+      buttonArea.addButton(i18n.tr("Speichern"), new Action()
+      {
+        public void handleAction(Object context) throws ApplicationException
+        {
+          control.handleStore();
+        }
+      },null,true);
+      
+      TabFolder folder = new TabFolder(getParent(), SWT.NONE);
+      GridData gd = new GridData(GridData.FILL_BOTH);
+      gd.heightHint = 100; // wir verdecken sonst den Kommentar
+      folder.setLayoutData(gd);
+      folder.setBackground(Color.BACKGROUND.getSWTColor());
+
+      TabGroup tab = new TabGroup(folder,i18n.tr("Überweisungen"), false,1);
+      control.getUmsatzListe().paint(tab.getComposite());
+
+      // BUGZILLA 107 http://www.willuhn.de/bugzilla/show_bug.cgi?id=107
+      GenericIterator list = ((HibiscusAddress)control.getAddress()).getSammellastBuchungen();
+      if (list.size() > 0)
+      {
+        TabGroup tab2 = new TabGroup(folder,i18n.tr("Eingezogene Sammel-Lastschriften"));
+        control.getSammelLastListe().paint(tab2.getComposite());
+      }
+      GenericIterator list2 = ((HibiscusAddress)control.getAddress()).getSammelUeberweisungBuchungen();
+      if (list2.size() > 0)
+      {
+        TabGroup tab3 = new TabGroup(folder,i18n.tr("Sammel-Überweisungen"));
+        control.getSammelUeberweisungListe().paint(tab3.getComposite());
+      }
     }
-    DBIterator list2 = control.getEmpfaenger().getSammelUeberweisungBuchungen();
-    if (list2.size() > 0)
+    else
     {
-      TabGroup tab3 = new TabGroup(folder,i18n.tr("Sammel-Überweisungen"));
-      control.getSammelUeberweisungListe().paint(tab3.getComposite());
+      control.getTransfers().paint(getParent());
     }
   }
 }
@@ -98,6 +108,12 @@ public class EmpfaengerNew extends AbstractView {
 
 /**********************************************************************
  * $Log: EmpfaengerNew.java,v $
+ * Revision 1.13  2007/04/23 18:07:15  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.12  2006/08/17 21:46:16  willuhn
  * *** empty log message ***
  *

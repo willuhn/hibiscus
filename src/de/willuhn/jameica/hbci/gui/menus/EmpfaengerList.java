@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/EmpfaengerList.java,v $
- * $Revision: 1.17 $
- * $Date: 2006/10/05 16:42:28 $
+ * $Revision: 1.18 $
+ * $Date: 2007/04/23 18:07:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,7 +25,7 @@ import de.willuhn.jameica.hbci.gui.action.EmpfaengerImport;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerNew;
 import de.willuhn.jameica.hbci.gui.action.LastschriftNew;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungNew;
-import de.willuhn.jameica.hbci.rmi.Adresse;
+import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -87,9 +87,7 @@ public class EmpfaengerList extends ContextMenu implements Extendable
      */
     public boolean isEnabledFor(Object o)
     {
-      if (o instanceof Adresse[])
-        return false;
-      return super.isEnabledFor(o);
+      return (o instanceof Address) && super.isEnabledFor(o);
     }
   }
 
@@ -112,6 +110,12 @@ public class EmpfaengerList extends ContextMenu implements Extendable
 
 /**********************************************************************
  * $Log: EmpfaengerList.java,v $
+ * Revision 1.18  2007/04/23 18:07:15  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.17  2006/10/05 16:42:28  willuhn
  * @N CSV-Import/Export fuer Adressen
  *

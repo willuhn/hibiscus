@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Dauerauftrag.java,v $
- * $Revision: 1.11 $
- * $Date: 2006/02/28 23:05:59 $
+ * $Revision: 1.12 $
+ * $Date: 2007/04/23 18:07:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,7 +20,7 @@ import de.willuhn.util.ApplicationException;
 /**
  * Bildet einen Dauerauftrag in Hibiscus ab.
  */
-public interface Dauerauftrag extends Transfer, Checksum
+public interface Dauerauftrag extends HibiscusTransfer, Checksum
 {
 
 	/**
@@ -116,6 +116,12 @@ public interface Dauerauftrag extends Transfer, Checksum
 
 /**********************************************************************
  * $Log: Dauerauftrag.java,v $
+ * Revision 1.12  2007/04/23 18:07:14  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.11  2006/02/28 23:05:59  willuhn
  * @B bug 204
  *

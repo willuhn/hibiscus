@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/EmpfaengerList.java,v $
- * $Revision: 1.16 $
- * $Date: 2007/04/20 14:55:31 $
+ * $Revision: 1.17 $
+ * $Date: 2007/04/23 18:07:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@
 package de.willuhn.jameica.hbci.gui.parts;
 
 import java.rmi.RemoteException;
+import java.util.List;
 
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -24,7 +25,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.manager.HBCIUtils;
 
-import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -36,13 +36,14 @@ import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
+import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.Addressbook;
 import de.willuhn.jameica.hbci.rmi.AddressbookService;
-import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
@@ -57,6 +58,8 @@ public class EmpfaengerList extends TablePart implements Part
   private KeyAdapter keyListener = null;
 
   private MessageConsumer mc = null;
+  
+  private static Settings mySettings = new Settings(EmpfaengerList.class);
 
   /**
    * @param action
@@ -110,16 +113,15 @@ public class EmpfaengerList extends TablePart implements Part
     // BUGZILLA 84 http://www.willuhn.de/bugzilla/show_bug.cgi?id=84
     setRememberOrder(true);
     
-    setMulti(true);
-    
     // BUGZILLA 233 http://www.willuhn.de/bugzilla/show_bug.cgi?id=233
     setRememberColWidths(true);
+
+    this.keyListener = new KL();
 
     // Wir erstellen noch einen Message-Consumer, damit wir ueber neu eintreffende
     // Adressen informiert werden.
     this.mc = new EmpfaengerMessageConsumer();
     Application.getMessagingFactory().registerMessageConsumer(this.mc);
-
   }
 
   /**
@@ -165,12 +167,11 @@ public class EmpfaengerList extends TablePart implements Part
     /////////////////////////////////////////////////////////////////
 
     // Eingabe-Feld fuer die Suche mit Button hinten dran.
-    this.search = new TextInput("");
+    this.search = new TextInput(mySettings.getString("search",null));
     group.addLabelPair(i18n.tr("Name. Konto oder BLZ enthält"), this.search);
-
-    this.keyListener = new KL();
     this.search.getControl().addKeyListener(this.keyListener);
 
+    
     // Damit wir den MessageConsumer beim Schliessen wieder entfernen
     parent.addDisposeListener(new DisposeListener() {
       public void widgetDisposed(DisposeEvent e)
@@ -184,6 +185,7 @@ public class EmpfaengerList extends TablePart implements Part
 
     // Und jetzt kann sich die Tabelle malen
     super.paint(parent);
+    super.sort();
   }
 
   
@@ -217,7 +219,7 @@ public class EmpfaengerList extends TablePart implements Part
         return;
       final GenericObject o = ((ImportMessage)message).getObject();
       
-      if (o == null || !(o instanceof Adresse))
+      if (o == null || !(o instanceof Address))
         return;
       
       // Falls ein ganzer Pulk von Update kommt, machen wir
@@ -258,11 +260,13 @@ public class EmpfaengerList extends TablePart implements Part
           EmpfaengerList.this.removeAll();
           
           // Jetzt fragen wir das aktuelle Adressbuch nach den gesuchten Adressen
-          GenericIterator found = EmpfaengerList.this.book.findAddresses((String) EmpfaengerList.this.search.getValue());
+          String text = (String) EmpfaengerList.this.search.getValue();
+          mySettings.setAttribute("search",text);
+          List found = EmpfaengerList.this.book.findAddresses(text);
           if (found == null)
             return;
-          while (found.hasNext())
-            EmpfaengerList.this.addItem(found.next());
+          for (int i=0;i<found.size();++i)
+            EmpfaengerList.this.addItem(found.get(i));
 
           // Fertig. Jetzt nochmal neu sortieren
           EmpfaengerList.this.sort();
@@ -330,6 +334,12 @@ public class EmpfaengerList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: EmpfaengerList.java,v $
+ * Revision 1.17  2007/04/23 18:07:14  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.16  2007/04/20 14:55:31  willuhn
  * @C s/findAddress/findAddresses/
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/AdresseAuswahlDialog.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/02/21 23:55:32 $
+ * $Revision: 1.3 $
+ * $Date: 2007/04/23 18:07:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,7 +20,7 @@ import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.parts.EmpfaengerList;
-import de.willuhn.jameica.hbci.rmi.Adresse;
+import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.util.ApplicationException;
@@ -33,7 +33,7 @@ public class AdresseAuswahlDialog extends AbstractDialog
 {
 
 	private I18N i18n;
-	private Adresse choosen = null;
+	private Address choosen = null;
 
   /**
    * ct.
@@ -56,9 +56,9 @@ public class AdresseAuswahlDialog extends AbstractDialog
     Action a = new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
-        if (context == null || !(context instanceof Adresse))
+        if (context == null || !(context instanceof Address))
           return;
-        choosen = (Adresse) context;
+        choosen = (Address) context;
         close();
       }
     };    
@@ -74,10 +74,10 @@ public class AdresseAuswahlDialog extends AbstractDialog
       public void handleAction(Object context) throws ApplicationException
       {
 				Object o = empf.getSelection();
-        if (o == null || !(o instanceof Adresse))
+        if (o == null || !(o instanceof Address))
           return;
 
-        choosen = (Adresse) o;
+        choosen = (Address) o;
         close();
       }
     });
@@ -105,6 +105,12 @@ public class AdresseAuswahlDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: AdresseAuswahlDialog.java,v $
+ * Revision 1.3  2007/04/23 18:07:15  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.2  2006/02/21 23:55:32  willuhn
  * @N Update auf hbci4java rc6
  *

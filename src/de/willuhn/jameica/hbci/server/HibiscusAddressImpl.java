@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AdresseImpl.java,v $
- * $Revision: 1.17 $
- * $Date: 2007/04/20 14:49:05 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/HibiscusAddressImpl.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2007/04/23 18:07:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,13 +13,17 @@
 package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.List;
 
+import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.db.AbstractDBObject;
+import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
-import de.willuhn.jameica.hbci.rmi.Adresse;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
+import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.SammelLastBuchung;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisungBuchung;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
@@ -30,14 +34,14 @@ import de.willuhn.util.I18N;
 
 /**
  */
-public class AdresseImpl extends AbstractDBObject implements Adresse {
+public class HibiscusAddressImpl extends AbstractDBObject implements HibiscusAddress {
 
   private transient I18N i18n = null;
 
   /**
    * @throws RemoteException
    */
-  public AdresseImpl() throws RemoteException {
+  public HibiscusAddressImpl() throws RemoteException {
     super();
     i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
@@ -117,21 +121,21 @@ public class AdresseImpl extends AbstractDBObject implements Adresse {
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Adresse#setKontonummer(java.lang.String)
+   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#setKontonummer(java.lang.String)
    */
   public void setKontonummer(String kontonummer) throws RemoteException {
   	setAttribute("kontonummer",kontonummer);
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Adresse#setBLZ(java.lang.String)
+   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#setBLZ(java.lang.String)
    */
   public void setBLZ(String blz) throws RemoteException {
   	setAttribute("blz",blz);
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Adresse#setName(java.lang.String)
+   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#setName(java.lang.String)
    */
   public void setName(String name) throws RemoteException {
   	setAttribute("name",name);
@@ -146,7 +150,7 @@ public class AdresseImpl extends AbstractDBObject implements Adresse {
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Adresse#setKommentar(java.lang.String)
+   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#setKommentar(java.lang.String)
    */
   public void setKommentar(String kommentar) throws RemoteException
   {
@@ -154,45 +158,20 @@ public class AdresseImpl extends AbstractDBObject implements Adresse {
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Adresse#getUmsaetze()
+   * Liefert eine Liste von Umsaetzen sowie Buchungen aus Sammel-Lastschriften und Sammel-Ueberweisungen.
+   * @see de.willuhn.jameica.hbci.rmi.Address#getTransfers()
    */
-  public DBIterator getUmsaetze() throws RemoteException
+  public List getTransfers() throws RemoteException
   {
-    HBCIDBService service = (HBCIDBService) getService();
-    
-    DBIterator umsaetze = service.createList(Umsatz.class);
-    umsaetze.addFilter("empfaenger_konto = ?",new Object[]{getKontonummer()});
-    umsaetze.addFilter("empfaenger_blz = ?",  new Object[]{getBLZ()});
-    umsaetze.setOrder(" ORDER BY " + service.getSQLTimestamp("valuta") + " DESC");
-    return umsaetze;
+    ArrayList all = new ArrayList();
+    all.addAll(PseudoIterator.asList(getUmsaetze()));
+    all.addAll(PseudoIterator.asList(getSammellastBuchungen()));
+    all.addAll(PseudoIterator.asList(getSammelUeberweisungBuchungen()));
+    return all;
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Adresse#getSammellastBuchungen()
-   */
-  public DBIterator getSammellastBuchungen() throws RemoteException
-  {
-    DBIterator buchungen = getService().createList(SammelLastBuchung.class);
-    buchungen.addFilter("gegenkonto_nr = ?",  new Object[]{getKontonummer()});
-    buchungen.addFilter("gegenkonto_blz = ?", new Object[]{getBLZ()});
-    buchungen.setOrder(" ORDER BY id DESC");
-    return buchungen;
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Adresse#getSammelUeberweisungBuchungen()
-   */
-  public DBIterator getSammelUeberweisungBuchungen() throws RemoteException
-  {
-    DBIterator buchungen = getService().createList(SammelUeberweisungBuchung.class);
-    buchungen.addFilter("gegenkonto_nr = ?",  new Object[]{getKontonummer()});
-    buchungen.addFilter("gegenkonto_blz = ?", new Object[]{getBLZ()});
-    buchungen.setOrder(" ORDER BY id DESC");
-    return buchungen;
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Adresse#setGenericAttribute(java.lang.String, java.lang.String)
+   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#setGenericAttribute(java.lang.String, java.lang.String)
    */
   public void setGenericAttribute(String name, String value) throws RemoteException, ApplicationException
   {
@@ -202,11 +181,54 @@ public class AdresseImpl extends AbstractDBObject implements Adresse {
     super.setAttribute(name,value);
   }
 
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#getSammelUeberweisungBuchungen()
+   */
+  public GenericIterator getSammelUeberweisungBuchungen() throws RemoteException
+  {
+    DBIterator ueb = getService().createList(SammelUeberweisungBuchung.class);
+    ueb.addFilter("gegenkonto_nr like ?",  new Object[]{"%" + getKontonummer()});
+    ueb.addFilter("gegenkonto_blz = ?", new Object[]{getBLZ()});
+    ueb.setOrder(" ORDER BY id DESC");
+    return ueb;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#getSammellastBuchungen()
+   */
+  public GenericIterator getSammellastBuchungen() throws RemoteException
+  {
+    DBIterator last = getService().createList(SammelLastBuchung.class);
+    last.addFilter("gegenkonto_nr like ?",  new Object[]{"%" + getKontonummer()});
+    last.addFilter("gegenkonto_blz = ?", new Object[]{getBLZ()});
+    last.setOrder(" ORDER BY id DESC");
+    return last;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#getUmsaetze()
+   */
+  public GenericIterator getUmsaetze() throws RemoteException
+  {
+    HBCIDBService service = (HBCIDBService) getService();
+    
+    DBIterator umsaetze = service.createList(Umsatz.class);
+    umsaetze.addFilter("empfaenger_konto like ?",new Object[]{"%" + getKontonummer()});
+    umsaetze.addFilter("empfaenger_blz = ?",  new Object[]{getBLZ()});
+    umsaetze.setOrder(" ORDER BY " + service.getSQLTimestamp("valuta") + " DESC");
+    return umsaetze;
+  }
 }
 
 
 /**********************************************************************
- * $Log: AdresseImpl.java,v $
+ * $Log: HibiscusAddressImpl.java,v $
+ * Revision 1.1  2007/04/23 18:07:15  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.17  2007/04/20 14:49:05  willuhn
  * @N Support fuer externe Adressbuecher
  * @N Action "EmpfaengerAdd" "aufgebohrt"

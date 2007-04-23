@@ -189,9 +189,9 @@
 			BLZ $!{konto.BLZ}
 		  </td>
 		  <td>
-			$!{umsatz.EmpfaengerName}<br/>
-			Kto $!{umsatz.EmpfaengerKonto}<br/>
-			BLZ $!{umsatz.EmpfaengerBLZ}
+			$!{umsatz.GegenkontoName}<br/>
+			Kto $!{umsatz.GegenkontoNummer}<br/>
+			BLZ $!{umsatz.GegenkontoBLZ}
 		  </td>
 		  <td>$!{umsatz.Art}</td>
 		  <td style="text-align:right">$!{decimalformat.format(${umsatz.Betrag})} $!{konto.Waehrung}</td>

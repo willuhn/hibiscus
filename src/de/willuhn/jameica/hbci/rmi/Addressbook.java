@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Addressbook.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/04/20 14:55:31 $
+ * $Revision: 1.3 $
+ * $Date: 2007/04/23 18:07:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,8 +15,7 @@ package de.willuhn.jameica.hbci.rmi;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-
-import de.willuhn.datasource.GenericIterator;
+import java.util.List;
 
 /**
  * Interface fuer ein einzelnes Adressbuch.
@@ -46,9 +45,9 @@ public interface Addressbook extends Remote
    * Die Objekte der Liste muessen vom Typ <code>Address</code> sein.
    * Die Funktion darf auch <code>null</code> zurueckliefern, wenn keine Adressen gefunden wurden.
    * @throws RemoteException
-   * @see {@link AddressbookService#findAddresses(String)}
+   * @see AddressbookService#findAddresses(String)
    */
-  public GenericIterator findAddresses(String text) throws RemoteException;
+  public List findAddresses(String text) throws RemoteException;
   
   /**
    * Prueft, ob im Adressbuch eine Adresse <b>mit diesen Eigenschaften</b> enthalten ist.
@@ -62,6 +61,12 @@ public interface Addressbook extends Remote
 
 /*********************************************************************
  * $Log: Addressbook.java,v $
+ * Revision 1.3  2007/04/23 18:07:14  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.2  2007/04/20 14:55:31  willuhn
  * @C s/findAddress/findAddresses/
  *

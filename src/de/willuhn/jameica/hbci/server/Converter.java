@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.39 $
- * $Date: 2007/04/20 14:49:05 $
+ * $Revision: 1.40 $
+ * $Date: 2007/04/23 18:07:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,7 +24,8 @@ import org.kapott.hbci.swift.DTAUS;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.rmi.Adresse;
+import de.willuhn.jameica.hbci.rmi.Address;
+import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
@@ -206,7 +207,7 @@ public class Converter {
 		// und jetzt noch der Empfaenger (wenn er existiert)
 		if (u.other != null) 
 		{
-		  umsatz.setEmpfaenger(HBCIKonto2HibiscusAdresse(u.other));
+		  umsatz.setGegenkonto(HBCIKonto2Address(u.other));
 		}
 		return umsatz;
 	}
@@ -236,7 +237,7 @@ public class Converter {
 		auftrag.setOrderID(d.orderid);
 
 		// Jetzt noch der Empfaenger
-		auftrag.setGegenkonto(HBCIKonto2HibiscusAdresse(d.other));
+		auftrag.setGegenkonto(HBCIKonto2Address(d.other));
 
 		// Verwendungszweck
 		if (d.usage.length == 0)
@@ -332,7 +333,7 @@ public class Converter {
 	 * @return das HBCI4Java Konto.
 	 * @throws RemoteException
 	 */
-	public static Konto HibiscusAdresse2HBCIKonto(Adresse adresse) throws RemoteException
+	public static Konto Address2HBCIKonto(Address adresse) throws RemoteException
 	{
 		Konto k = new Konto("DE",adresse.getBLZ(),adresse.getKontonummer());
 		k.name = adresse.getName();
@@ -345,13 +346,13 @@ public class Converter {
 	 * @return unsere Adresse.
 	 * @throws RemoteException
 	 */
-	public static Adresse HBCIKonto2HibiscusAdresse(Konto konto) throws RemoteException
+	public static Address HBCIKonto2Address(Konto konto) throws RemoteException
 	{
-		Adresse e = (Adresse) Settings.getDBService().createObject(Adresse.class,null);
+		HibiscusAddress e = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
 		e.setBLZ(konto.blz);
 		e.setKontonummer(konto.number);
 		String name = konto.name;
-		if (konto.name2 != null)
+		if (konto.name2 != null && konto.name2.length() > 0)
 			name += (" " + konto.name2);
 		e.setName(name);
 		return e;  	
@@ -422,6 +423,12 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.40  2007/04/23 18:07:15  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.39  2007/04/20 14:49:05  willuhn
  * @N Support fuer externe Adressbuecher
  * @N Action "EmpfaengerAdd" "aufgebohrt"

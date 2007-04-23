@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/LastschriftNew.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/03/02 17:59:30 $
- * $Author: web0 $
+ * $Revision: 1.4 $
+ * $Date: 2007/04/23 18:07:14 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -17,7 +17,7 @@ import java.rmi.RemoteException;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.rmi.Adresse;
+import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
 import de.willuhn.util.ApplicationException;
@@ -55,10 +55,10 @@ public class LastschriftNew implements Action
 				// Dann halt nicht
 			}
 		}
-		else if (context instanceof Adresse)
+		else if (context instanceof Address)
 		{
 			try {
-				Adresse e = (Adresse) context;
+				Address e = (Address) context;
 				u = (Lastschrift) Settings.getDBService().createObject(Lastschrift.class,null);
 				u.setGegenkonto(e);
 			}
@@ -76,6 +76,12 @@ public class LastschriftNew implements Action
 
 /**********************************************************************
  * $Log: LastschriftNew.java,v $
+ * Revision 1.4  2007/04/23 18:07:14  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.3  2005/03/02 17:59:30  web0
  * @N some refactoring
  *

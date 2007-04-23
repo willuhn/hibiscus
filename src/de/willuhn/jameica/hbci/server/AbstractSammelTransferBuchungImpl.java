@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractSammelTransferBuchungImpl.java,v $
- * $Revision: 1.9 $
- * $Date: 2007/04/20 14:49:05 $
+ * $Revision: 1.10 $
+ * $Date: 2007/04/23 18:07:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -54,7 +54,7 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
   {
     try {
       if (getSammelTransfer() == null)
-        throw new ApplicationException(i18n.tr("Bitte wählen Sie den zugehörigen Sammel-Transfer aus."));
+        throw new ApplicationException(i18n.tr("Bitte wählen Sie den zugehörigen Sammel-Auftrag aus."));
 
       if (getBetrag() == 0.0)
         throw new ApplicationException(i18n.tr("Bitte geben Sie einen gültigen Betrag ein."));
@@ -105,7 +105,7 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#getGegenkontoNummer()
+   * @see de.willuhn.jameica.hbci.rmi.Transfer#getGegenkontoNummer()
    */
   public String getGegenkontoNummer() throws RemoteException
   {
@@ -113,7 +113,7 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#getGegenkontoBLZ()
+   * @see de.willuhn.jameica.hbci.rmi.Transfer#getGegenkontoBLZ()
    */
   public String getGegenkontoBLZ() throws RemoteException
   {
@@ -131,7 +131,7 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#getGegenkontoName()
+   * @see de.willuhn.jameica.hbci.rmi.Transfer#getGegenkontoName()
    */
   public String getGegenkontoName() throws RemoteException
   {
@@ -163,7 +163,7 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#getBetrag()
+   * @see de.willuhn.jameica.hbci.rmi.Transfer#getBetrag()
    */
   public double getBetrag() throws RemoteException
   {
@@ -174,7 +174,7 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#getZweck()
+   * @see de.willuhn.jameica.hbci.rmi.Transfer#getZweck()
    */
   public String getZweck() throws RemoteException
   {
@@ -182,7 +182,7 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#getZweck2()
+   * @see de.willuhn.jameica.hbci.rmi.Transfer#getZweck2()
    */
   public String getZweck2() throws RemoteException
   {
@@ -232,6 +232,12 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferBuchungImpl.java,v $
+ * Revision 1.10  2007/04/23 18:07:15  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.9  2007/04/20 14:49:05  willuhn
  * @N Support fuer externe Adressbuecher
  * @N Action "EmpfaengerAdd" "aufgebohrt"

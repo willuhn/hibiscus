@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Importer.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/03/15 18:01:30 $
+ * $Revision: 1.6 $
+ * $Date: 2007/04/23 18:07:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,7 +16,6 @@ package de.willuhn.jameica.hbci.io;
 import java.io.InputStream;
 import java.rmi.RemoteException;
 
-import de.willuhn.datasource.GenericObject;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.ProgressMonitor;
 
@@ -38,13 +37,19 @@ public interface Importer extends IO
    * @throws RemoteException
    * @throws ApplicationException 
    */
-  public void doImport(GenericObject context, IOFormat format, InputStream is, ProgressMonitor monitor) throws RemoteException, ApplicationException;
+  public void doImport(Object context, IOFormat format, InputStream is, ProgressMonitor monitor) throws RemoteException, ApplicationException;
 
 }
 
 
 /*********************************************************************
  * $Log: Importer.java,v $
+ * Revision 1.6  2007/04/23 18:07:14  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.5  2006/03/15 18:01:30  willuhn
  * @N AbstractHBCIJob#getName
  *

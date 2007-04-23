@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/DBSupport.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/04/19 18:12:21 $
+ * $Revision: 1.3 $
+ * $Date: 2007/04/23 18:07:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -80,12 +80,27 @@ public interface DBSupport extends Serializable
    * @return Name der SQL-Funktion samt Parameter. Also zum Beispiel "TONUMBER(datum)".
    * @throws RemoteException
    */
-  public String getSQLTimestamp(String content) throws RemoteException;  
+  public String getSQLTimestamp(String content) throws RemoteException;
+  
+  /**
+   * Legt fest, ob SQL-Insert-Queries mit oder ohne ID erzeugt werden sollen.
+   * @return true, wenn die Insert-Queries mit ID erzeugt werden.
+   * @throws RemoteException
+   * @see de.willuhn.datasource.db.DBServiceImpl#getInsertWithID()
+   */
+  public boolean getInsertWithID() throws RemoteException;
+
 }
 
 
 /*********************************************************************
  * $Log: DBSupport.java,v $
+ * Revision 1.3  2007/04/23 18:07:14  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.2  2007/04/19 18:12:21  willuhn
  * @N MySQL-Support (GUI zum Konfigurieren fehlt noch)
  *

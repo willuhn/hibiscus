@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Lastschrift.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/03/02 17:59:30 $
- * $Author: web0 $
+ * $Revision: 1.5 $
+ * $Date: 2007/04/23 18:07:14 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -17,7 +17,7 @@ import java.rmi.RemoteException;
 /**
  * Ne Lastschrift ist ja auch nur ne Ueberweisung. Nur andersrum ;).
  */
-public interface Lastschrift extends Transfer, Terminable, Duplicatable
+public interface Lastschrift extends HibiscusTransfer, Terminable, Duplicatable
 {
 
 	/**
@@ -40,6 +40,12 @@ public interface Lastschrift extends Transfer, Terminable, Duplicatable
 
 /**********************************************************************
  * $Log: Lastschrift.java,v $
+ * Revision 1.5  2007/04/23 18:07:14  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.4  2005/03/02 17:59:30  web0
  * @N some refactoring
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/TerminableMarkExecuted.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/03/30 22:56:46 $
+ * $Revision: 1.2 $
+ * $Date: 2007/04/23 18:07:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,7 +18,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.Terminable;
-import de.willuhn.jameica.hbci.rmi.Transfer;
+import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -63,9 +63,9 @@ public class TerminableMarkExecuted implements Action
       for (int i=0;i<t.length;++i)
       {
         t[i].setAusgefuehrt();
-        if (t[i] instanceof Transfer)
+        if (t[i] instanceof HibiscusTransfer)
         {
-          Transfer tr = (Transfer) t[i];
+          HibiscusTransfer tr = (HibiscusTransfer) t[i];
           Konto k = tr.getKonto();
           if (k != null)
           {
@@ -99,6 +99,12 @@ public class TerminableMarkExecuted implements Action
 
 /**********************************************************************
  * $Log: TerminableMarkExecuted.java,v $
+ * Revision 1.2  2007/04/23 18:07:14  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.1  2006/03/30 22:56:46  willuhn
  * @B bug 216
  *

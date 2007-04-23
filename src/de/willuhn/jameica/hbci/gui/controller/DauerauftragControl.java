@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/DauerauftragControl.java,v $
- * $Revision: 1.26 $
- * $Date: 2007/01/02 11:28:04 $
+ * $Revision: 1.27 $
+ * $Date: 2007/04/23 18:07:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,7 +30,7 @@ import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.DauerauftragNew;
 import de.willuhn.jameica.hbci.gui.dialogs.TurnusDialog;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
-import de.willuhn.jameica.hbci.rmi.Transfer;
+import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
 import de.willuhn.jameica.hbci.rmi.Turnus;
 import de.willuhn.logging.Logger;
 
@@ -60,7 +60,7 @@ public class DauerauftragControl extends AbstractTransferControl {
 	 * Ueberschrieben, damit wir bei Bedarf einen neuen Dauerauftrag erzeugen koennen.
 	 * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getTransfer()
 	 */
-	public Transfer getTransfer() throws RemoteException
+	public HibiscusTransfer getTransfer() throws RemoteException
 	{
     if (transfer != null)
       return transfer;
@@ -232,6 +232,12 @@ public class DauerauftragControl extends AbstractTransferControl {
 
 /**********************************************************************
  * $Log: DauerauftragControl.java,v $
+ * Revision 1.27  2007/04/23 18:07:15  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.26  2007/01/02 11:28:04  willuhn
  * @B ClassCastException
  *

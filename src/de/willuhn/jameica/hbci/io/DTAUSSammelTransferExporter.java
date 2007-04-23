@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/DTAUSSammelTransferExporter.java,v $
- * $Revision: 1.7 $
- * $Date: 2006/11/12 22:35:30 $
+ * $Revision: 1.8 $
+ * $Date: 2007/04/23 18:07:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,7 +20,6 @@ import de.jost_net.OBanToo.Dtaus.CSatz;
 import de.jost_net.OBanToo.Dtaus.DtausDateiWriter;
 import de.jost_net.OBanToo.Dtaus.DtausException;
 import de.willuhn.datasource.GenericIterator;
-import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
@@ -38,9 +37,9 @@ public class DTAUSSammelTransferExporter extends AbstractDTAUSIO implements Expo
 {
 
   /**
-   * @see de.willuhn.jameica.hbci.io.Exporter#doExport(de.willuhn.datasource.GenericObject[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
+   * @see de.willuhn.jameica.hbci.io.Exporter#doExport(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
    */
-  public void doExport(GenericObject[] objects, IOFormat format, OutputStream os, ProgressMonitor monitor) throws RemoteException, ApplicationException
+  public void doExport(Object[] objects, IOFormat format, OutputStream os, ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
     if (os == null)
       throw new ApplicationException(i18n.tr("Kein Ausgabe-Ziel für die Datei angegeben"));
@@ -203,6 +202,12 @@ public class DTAUSSammelTransferExporter extends AbstractDTAUSIO implements Expo
 
 /**********************************************************************
  * $Log: DTAUSSammelTransferExporter.java,v $
+ * Revision 1.8  2007/04/23 18:07:14  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.7  2006/11/12 22:35:30  willuhn
  * @B LK/GK-Kennzeichen verkehrtrum
  *

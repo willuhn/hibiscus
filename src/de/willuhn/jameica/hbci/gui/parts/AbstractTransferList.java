@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractTransferList.java,v $
- * $Revision: 1.15 $
- * $Date: 2007/04/18 14:51:09 $
+ * $Revision: 1.16 $
+ * $Date: 2007/04/23 18:07:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -46,7 +46,7 @@ import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Terminable;
-import de.willuhn.jameica.hbci.rmi.Transfer;
+import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.system.Application;
@@ -290,13 +290,13 @@ public abstract class AbstractTransferList extends TablePart implements Part
           Date termin = t.getTermin();
           if (termin == null || (dfrom == null && dto == null))
           {
-            AbstractTransferList.this.addItem((Transfer)t);
+            AbstractTransferList.this.addItem((HibiscusTransfer)t);
             continue;
           }
           boolean match = (dfrom == null || termin.after(dfrom) || termin.equals(dfrom)); // Entweder kein Start-Datum oder dahinter
           match &= (dto == null || termin.before(dto) || termin.equals(dto)); // oder kein End-Datum oder davor
           if (match)
-            AbstractTransferList.this.addItem((Transfer)t);
+            AbstractTransferList.this.addItem((HibiscusTransfer)t);
         }
         
         // Sortierung wiederherstellen
@@ -354,7 +354,7 @@ public abstract class AbstractTransferList extends TablePart implements Part
         return;
       final GenericObject o = ((ImportMessage)message).getObject();
       
-      if (o == null || !(o instanceof Transfer))
+      if (o == null || !(o instanceof HibiscusTransfer))
         return;
       
       GUI.getDisplay().syncExec(new Runnable() {
@@ -387,6 +387,12 @@ public abstract class AbstractTransferList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: AbstractTransferList.java,v $
+ * Revision 1.16  2007/04/23 18:07:14  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.15  2007/04/18 14:51:09  willuhn
  * @C removed 2 warnings
  *

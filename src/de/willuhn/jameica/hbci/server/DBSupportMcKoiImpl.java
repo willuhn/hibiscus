@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/DBSupportMcKoiImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2007/04/20 14:49:05 $
+ * $Revision: 1.4 $
+ * $Date: 2007/04/23 18:07:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -144,11 +144,25 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl
   {
     return MessageFormat.format("tonumber({0})", new Object[]{content});
   }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.DBSupport#getInsertWithID()
+   */
+  public boolean getInsertWithID() throws RemoteException
+  {
+    return true;
+  }
 }
 
 
 /*********************************************************************
  * $Log: DBSupportMcKoiImpl.java,v $
+ * Revision 1.4  2007/04/23 18:07:15  willuhn
+ * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
+ * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
+ * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
+ * @N Anbindung externer Adressbuecher
+ *
  * Revision 1.3  2007/04/20 14:49:05  willuhn
  * @N Support fuer externe Adressbuecher
  * @N Action "EmpfaengerAdd" "aufgebohrt"
