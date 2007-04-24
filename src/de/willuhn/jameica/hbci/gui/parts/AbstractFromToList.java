@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractFromToList.java,v $
- * $Revision: 1.1 $
- * $Date: 2007/04/24 16:55:00 $
+ * $Revision: 1.2 $
+ * $Date: 2007/04/24 17:15:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -123,11 +123,12 @@ public abstract class AbstractFromToList extends TablePart implements Part
    
     // Erstbefuellung
     GenericIterator items = getList(prevFrom,prevTo);
-    if (items == null)
-      return;
-    
-    while (items.hasNext())
-      addItem(items.next());
+    if (items != null)
+    {
+      items.begin();
+      while (items.hasNext())
+        addItem(items.next());
+    }
 
     super.paint(parent);
   }
@@ -177,6 +178,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
         if (items == null)
           return;
         
+        items.begin();
         while (items.hasNext())
           addItem(items.next());
         
@@ -231,6 +233,9 @@ public abstract class AbstractFromToList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: AbstractFromToList.java,v $
+ * Revision 1.2  2007/04/24 17:15:51  willuhn
+ * @B Vergessen, "size" hochzuzaehlen, wenn Objekte vor paint() hinzugefuegt werden
+ *
  * Revision 1.1  2007/04/24 16:55:00  willuhn
  * @N Aktualisierte Daten nur bei geaendertem Datum laden
  *

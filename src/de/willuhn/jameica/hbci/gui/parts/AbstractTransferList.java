@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractTransferList.java,v $
- * $Revision: 1.17 $
- * $Date: 2007/04/24 16:55:00 $
+ * $Revision: 1.18 $
+ * $Date: 2007/04/24 17:15:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -133,9 +133,9 @@ public abstract class AbstractTransferList extends AbstractFromToList
     HBCIDBService service = (HBCIDBService) Settings.getDBService();
     
     DBIterator list = service.createList(getObjectType());
-    list.setOrder("ORDER BY " + service.getSQLTimestamp("termin") + " DESC");
     if (from != null) list.addFilter("termin >= ?", new Object[]{new java.sql.Date(HBCIProperties.startOfDay(from).getTime())});
     if (to   != null) list.addFilter("termin <= ?", new Object[]{new java.sql.Date(HBCIProperties.endOfDay(to).getTime())});
+    list.setOrder("ORDER BY " + service.getSQLTimestamp("termin") + " DESC");
     return list;
   }
   
@@ -149,6 +149,9 @@ public abstract class AbstractTransferList extends AbstractFromToList
 
 /**********************************************************************
  * $Log: AbstractTransferList.java,v $
+ * Revision 1.18  2007/04/24 17:15:51  willuhn
+ * @B Vergessen, "size" hochzuzaehlen, wenn Objekte vor paint() hinzugefuegt werden
+ *
  * Revision 1.17  2007/04/24 16:55:00  willuhn
  * @N Aktualisierte Daten nur bei geaendertem Datum laden
  *
