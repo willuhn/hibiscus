@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractTransferList.java,v $
- * $Revision: 1.16 $
- * $Date: 2007/04/23 18:07:14 $
+ * $Revision: 1.17 $
+ * $Date: 2007/04/24 16:55:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,74 +14,40 @@
 package de.willuhn.jameica.hbci.gui.parts;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TableItem;
 import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.GenericIterator;
-import de.willuhn.datasource.GenericObject;
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
-import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
-import de.willuhn.jameica.gui.input.DateInput;
-import de.willuhn.jameica.gui.input.Input;
-import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Color;
-import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.messaging.ImportMessage;
+import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Terminable;
-import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
-import de.willuhn.jameica.messaging.Message;
-import de.willuhn.jameica.messaging.MessageConsumer;
-import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
-import de.willuhn.util.I18N;
 
 /**
  * Implementierung einer fix und fertig vorkonfigurierten Liste mit Transfers.
  */
-public abstract class AbstractTransferList extends TablePart implements Part
+public abstract class AbstractTransferList extends AbstractFromToList
 {
-  private I18N i18n           = null;
-
-  private MessageConsumer mc  = null;
-  
-  private Input from          = null;
-  private Input to            = null;
-  
-  private GenericIterator list  = null;
-  private ArrayList transfers   = null;
-
-  private de.willuhn.jameica.system.Settings mySettings = null;
-  
 
   /**
    * ct.
-   * @param list Liste der anzuzeigenden Transfers.
    * @param action
    */
-  public AbstractTransferList(GenericIterator list, Action action)
+  public AbstractTransferList(Action action)
   {
-    super(list, action);
-    this.list = list;
-    this.i18n       = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-    this.mySettings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
+    super(action);
 
     setFormatter(new TableFormatter() {
       public void format(TableItem item) {
@@ -156,237 +122,36 @@ public abstract class AbstractTransferList extends TablePart implements Part
         return ""+o;
       }
     });
-  
-    // BUGZILLA 84 http://www.willuhn.de/bugzilla/show_bug.cgi?id=84
-    setRememberOrder(true);
-
-    // BUGZILLA 233 http://www.willuhn.de/bugzilla/show_bug.cgi?id=233
-    setRememberColWidths(true);
-    
     setMulti(true);
-
-    // Wir erstellen noch einen Message-Consumer, damit wir ueber neu eintreffende
-    // Transfers informiert werden.
-    this.mc = new TransferMessageConsumer();
-    Application.getMessagingFactory().registerMessageConsumer(this.mc);
-
   }
 
   /**
-   * Ueberschrieben, um einen DisposeListener an das Composite zu haengen.
-   * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
+   * @see de.willuhn.jameica.hbci.gui.parts.AbstractFromToList#getList(java.util.Date, java.util.Date)
    */
-  public synchronized void paint(Composite parent) throws RemoteException
+  protected GenericIterator getList(Date from, Date to) throws RemoteException
   {
-    parent.addDisposeListener(new DisposeListener() {
-      public void widgetDisposed(DisposeEvent e)
-      {
-        Application.getMessagingFactory().unRegisterMessageConsumer(mc);
-      }
-    });
-
-    LabelGroup group = new LabelGroup(parent,i18n.tr("Anzeige einschränken"));
-
-    // Als End-Datum nehmen wir keines.
-    // Es sei denn, es ist ein aktuelles gespeichert
-    Date dTo = null;
-    String sTo = mySettings.getString("transferlist.filter.to",null);
-    if (sTo != null && sTo.length() > 0)
-    {
-      try
-      {
-        dTo = HBCI.DATEFORMAT.parse(sTo);
-      }
-      catch (Exception e)
-      {
-        Logger.error("unable to parse " + sTo,e);
-      }
-    }
-
-    // Als Startdatum nehmen wir den ersten des aktuellen Monats
-    // Es sei denn, es ist eines gespeichert
-    Date dFrom = null;
-    String sFrom = mySettings.getString("transferlist.filter.from",null);
-    if (sFrom != null && sFrom.length() > 0)
-    {
-      try
-      {
-        dFrom = HBCI.DATEFORMAT.parse(sFrom);
-      }
-      catch (Exception e)
-      {
-        Logger.error("unable to parse " + sFrom,e);
-      }
-    }
-
-    if (dFrom == null)
-    {
-      Calendar cal = Calendar.getInstance();
-      cal.set(Calendar.DAY_OF_MONTH,1);
-      dFrom = HBCIProperties.startOfDay(cal.getTime());
-    }
-
-    Listener l = new ChangedListener();
+    HBCIDBService service = (HBCIDBService) Settings.getDBService();
     
-    from = new DateInput(dFrom, HBCI.DATEFORMAT);
-    from.addListener(l);
-    to = new DateInput(dTo, HBCI.DATEFORMAT);
-    to.addListener(l);
-    
-    group.addLabelPair(i18n.tr("Aufträge von"),from);
-    group.addLabelPair(i18n.tr("Aufträge bis"),to);
-   
-    super.paint(parent);
-
-    // Wir kopieren den ganzen Kram in eine ArrayList, damit die
-    // Objekte beim Filter geladen bleiben
-    transfers = new ArrayList();
-    list.begin();
-    while (list.hasNext())
-    {
-      Terminable t = (Terminable) list.next();
-      transfers.add(t);
-    }
-    
-    // einmal ausloesen
-    l.handleEvent(null);
-
+    DBIterator list = service.createList(getObjectType());
+    list.setOrder("ORDER BY " + service.getSQLTimestamp("termin") + " DESC");
+    if (from != null) list.addFilter("termin >= ?", new Object[]{new java.sql.Date(HBCIProperties.startOfDay(from).getTime())});
+    if (to   != null) list.addFilter("termin <= ?", new Object[]{new java.sql.Date(HBCIProperties.endOfDay(to).getTime())});
+    return list;
   }
   
   /**
-   * Wird ausgeloest, wenn das Datum geaendert wird.
+   * Liefert die Art der zu ladenden Objekte zurueck.
+   * @return Art der zu ladenden Objekte.
    */
-  private class ChangedListener implements Listener
-  {
-
-    /**
-     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-     */
-    public void handleEvent(Event event)
-    {
-      try
-      {
-        Date dfrom = (Date) from.getValue();
-        Date dto   = (Date) to.getValue();
-        
-        if (dfrom != null && dto != null && dfrom.after(dto))
-        {
-          GUI.getView().setErrorText(i18n.tr("End-Datum muss sich nach dem Start-Datum befinden"));
-          return;
-        }
-        GUI.getView().setErrorText("");
-        
-        AbstractTransferList.this.removeAll();
-
-        for (int i=0;i<transfers.size();++i)
-        {
-          Terminable t = (Terminable) transfers.get(i);
-          if (((GenericObject)t).getID() == null) // Wurde zwischenzeitlich geloescht
-          {
-            transfers.remove(i);
-            i--;
-            continue;
-          }
-          Date termin = t.getTermin();
-          if (termin == null || (dfrom == null && dto == null))
-          {
-            AbstractTransferList.this.addItem((HibiscusTransfer)t);
-            continue;
-          }
-          boolean match = (dfrom == null || termin.after(dfrom) || termin.equals(dfrom)); // Entweder kein Start-Datum oder dahinter
-          match &= (dto == null || termin.before(dto) || termin.equals(dto)); // oder kein End-Datum oder davor
-          if (match)
-            AbstractTransferList.this.addItem((HibiscusTransfer)t);
-        }
-        
-        // Sortierung wiederherstellen
-        AbstractTransferList.this.sort();
-
-      
-        // Wir speichern die Datums-Eingaben
-        // Das From-Datum speichern wir immer
-        if (dfrom != null)
-          mySettings.setAttribute("transferlist.filter.from",HBCI.DATEFORMAT.format(dfrom));
-        
-        // Das End-Datum speichern wir nur, wenn es nicht das aktuelle Datum ist
-        if (dto != null && !HBCIProperties.startOfDay(new Date()).equals(dto))
-          mySettings.setAttribute("transferlist.filter.to",HBCI.DATEFORMAT.format(dto));
-        else
-          mySettings.setAttribute("transferlist.filter.to",(String)null);
-        
-      
-      }
-      catch (RemoteException re)
-      {
-        Logger.error("unable to apply filter",re);
-      }
-    }
-    
-  }
-
-  /**
-   * Hilfsklasse damit wir ueber importierte Transfers informiert werden.
-   */
-  public class TransferMessageConsumer implements MessageConsumer
-  {
-    /**
-     * ct.
-     */
-    public TransferMessageConsumer()
-    {
-      super();
-    }
-
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
-     */
-    public Class[] getExpectedMessageTypes()
-    {
-      return new Class[]{ImportMessage.class};
-    }
-
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
-     */
-    public void handleMessage(Message message) throws Exception
-    {
-      if (message == null || !(message instanceof ImportMessage))
-        return;
-      final GenericObject o = ((ImportMessage)message).getObject();
-      
-      if (o == null || !(o instanceof HibiscusTransfer))
-        return;
-      
-      GUI.getDisplay().syncExec(new Runnable() {
-        public void run()
-        {
-          try
-          {
-            transfers.add(o);
-            sort();
-          }
-          catch (Exception e)
-          {
-            Logger.error("unable to add object to list",e);
-          }
-        }
-      });
-    }
-
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
-     */
-    public boolean autoRegister()
-    {
-      return false;
-    }
-  }
-
+  protected abstract Class getObjectType();
 }
 
 
 /**********************************************************************
  * $Log: AbstractTransferList.java,v $
+ * Revision 1.17  2007/04/24 16:55:00  willuhn
+ * @N Aktualisierte Daten nur bei geaendertem Datum laden
+ *
  * Revision 1.16  2007/04/23 18:07:14  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt

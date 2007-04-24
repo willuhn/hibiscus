@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UeberweisungList.java,v $
- * $Revision: 1.9 $
- * $Date: 2007/04/19 18:12:21 $
+ * $Revision: 1.10 $
+ * $Date: 2007/04/24 16:55:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,10 +15,7 @@ package de.willuhn.jameica.hbci.gui.parts;
 
 import java.rmi.RemoteException;
 
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
-import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 
 /**
@@ -33,29 +30,25 @@ public class UeberweisungList extends AbstractTransferList
    */
   public UeberweisungList(Action action) throws RemoteException
   {
-    super(init(), action);
+    super(action);
     setContextMenu(new de.willuhn.jameica.hbci.gui.menus.UeberweisungList());
   }
-  
-  // BUGZILLA 84 http://www.willuhn.de/bugzilla/show_bug.cgi?id=84
+
   /**
-   * Initialisiert die Liste der Ueberweisungen.
-   * @return Initialisiert die Liste der Ueberweisungen.
-   * @throws RemoteException
+   * @see de.willuhn.jameica.hbci.gui.parts.AbstractTransferList#getObjectType()
    */
-  private static DBIterator init() throws RemoteException
+  protected Class getObjectType()
   {
-    HBCIDBService service = (HBCIDBService) Settings.getDBService();
-    
-    DBIterator list = service.createList(Ueberweisung.class);
-    list.setOrder("ORDER BY " + service.getSQLTimestamp("termin") + " DESC");
-    return list;
+    return Ueberweisung.class;
   }
 }
 
 
 /**********************************************************************
  * $Log: UeberweisungList.java,v $
+ * Revision 1.10  2007/04/24 16:55:00  willuhn
+ * @N Aktualisierte Daten nur bei geaendertem Datum laden
+ *
  * Revision 1.9  2007/04/19 18:12:21  willuhn
  * @N MySQL-Support (GUI zum Konfigurieren fehlt noch)
  *

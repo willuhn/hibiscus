@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/ProtokollList.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/06/27 15:35:27 $
- * $Author: web0 $
+ * $Revision: 1.4 $
+ * $Date: 2007/04/24 16:55:00 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -14,50 +14,59 @@
 package de.willuhn.jameica.hbci.gui.parts;
 
 import java.rmi.RemoteException;
+import java.util.Date;
 
 import org.eclipse.swt.widgets.TableItem;
 
+import de.willuhn.datasource.GenericIterator;
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
-import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
-import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.system.Application;
-import de.willuhn.util.I18N;
+import de.willuhn.jameica.hbci.rmi.Protokoll;
 
 /**
  * Implementierung einer fix und fertig vorkonfigurierten Liste mit den Protokollen eines Kontos.
  */
-public class ProtokollList extends TablePart implements Part
+public class ProtokollList extends AbstractFromToList
 {
 
-  private I18N i18n = null;
-
+  private Konto konto = null;
+  
   /**
    * ct.
    * @param konto
    * @param action
-   * @throws RemoteException
    */
-  public ProtokollList(Konto konto, Action action) throws RemoteException
+  public ProtokollList(Konto konto, Action action)
   {
-    super(konto.getProtokolle(), action);
-    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-    setFormatter(new TableFormatter() {
-      public void format(TableItem item) {
-        de.willuhn.jameica.hbci.rmi.Protokoll p = (de.willuhn.jameica.hbci.rmi.Protokoll) item.getData();
-        if (p == null) return;
-        try {
-          if (p.getTyp() == de.willuhn.jameica.hbci.rmi.Protokoll.TYP_ERROR)
+    super(action);
+    this.konto = konto;
+    
+    this.setFormatter(new TableFormatter()
+    {
+      public void format(TableItem item)
+      {
+        Protokoll p = (Protokoll) item.getData();
+        if (p == null)
+          return;
+        try
+        {
+          int type = p.getTyp();
+          switch (type)
           {
-            item.setForeground(Color.ERROR.getSWTColor());
-          }
-          else if (p.getTyp() == de.willuhn.jameica.hbci.rmi.Protokoll.TYP_SUCCESS)
-          {
-            item.setForeground(Color.SUCCESS.getSWTColor());
+            case Protokoll.TYP_ERROR:
+              item.setForeground(Color.ERROR.getSWTColor());
+              break;
+            case Protokoll.TYP_SUCCESS:
+              item.setForeground(Color.SUCCESS.getSWTColor());
+              break;
+            default:
+              // none
           }
         }
         catch (RemoteException e)
@@ -65,16 +74,28 @@ public class ProtokollList extends TablePart implements Part
         }
       }
     });
-    addColumn(i18n.tr("Datum"),"datum",new DateFormatter(HBCI.LONGDATEFORMAT));
-    addColumn(i18n.tr("Kommentar"),"kommentar");
-    setSummary(false);
+    this.addColumn(i18n.tr("Datum"),"datum",new DateFormatter(HBCI.LONGDATEFORMAT));
+    this.addColumn(i18n.tr("Kommentar"),"kommentar");
   }
 
+  /**
+   * @see de.willuhn.jameica.hbci.gui.parts.AbstractFromToList#getList(java.util.Date, java.util.Date)
+   */
+  protected GenericIterator getList(Date from, Date to) throws RemoteException
+  {
+    DBIterator list = konto.getProtokolle();
+    if (from != null) list.addFilter("datum >= ?", new Object[]{new java.sql.Date(HBCIProperties.startOfDay(from).getTime())});
+    if (to   != null) list.addFilter("datum <= ?", new Object[]{new java.sql.Date(HBCIProperties.endOfDay(to).getTime())});
+    return list;
+  }
 }
 
 
 /**********************************************************************
  * $Log: ProtokollList.java,v $
+ * Revision 1.4  2007/04/24 16:55:00  willuhn
+ * @N Aktualisierte Daten nur bei geaendertem Datum laden
+ *
  * Revision 1.3  2005/06/27 15:35:27  web0
  * @B bug 84
  *
