@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzDetail.java,v $
- * $Revision: 1.27 $
- * $Date: 2006/11/30 23:48:40 $
+ * $Revision: 1.28 $
+ * $Date: 2007/04/24 17:52:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,12 +17,14 @@ import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.LabelInput;
+import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
 import de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl;
+import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.system.Application;
@@ -123,19 +125,35 @@ public class UmsatzDetail extends AbstractView {
         control.handleStore();
       }
     });
-    buttons.addButton(i18n.tr("Gegenkonto in Adressbuch übernehmen"),new Action()
+    
+    Button ab = null;
+
+    final Address found = control.getAddressbookEntry();
+    if (found != null)
     {
-      public void handleAction(Object context) throws ApplicationException
+      ab = new Button(i18n.tr("Gegenkonto In Adressbuch öffnen"),new de.willuhn.jameica.hbci.gui.action.EmpfaengerNew(),found);
+    }
+    else
+    {
+      ab = new Button(i18n.tr("Gegenkonto in Adressbuch übernehmen"),new Action()
       {
-				new EmpfaengerAdd().handleAction(control.getUmsatz());
-      }
-    });
+        public void handleAction(Object context) throws ApplicationException
+        {
+          new EmpfaengerAdd().handleAction(control.getUmsatz());
+        }
+      });
+    }
+    buttons.addButton(ab);
   }
 }
 
 
 /**********************************************************************
  * $Log: UmsatzDetail.java,v $
+ * Revision 1.28  2007/04/24 17:52:17  willuhn
+ * @N Bereits in den Umsatzdetails erkennen, ob die Adresse im Adressbuch ist
+ * @C Gross-Kleinschreibung in Adressbuch-Suche
+ *
  * Revision 1.27  2006/11/30 23:48:40  willuhn
  * @N Erste Version der Umsatz-Kategorien drin
  *

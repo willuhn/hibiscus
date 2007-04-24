@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailControl.java,v $
- * $Revision: 1.28 $
- * $Date: 2007/04/23 18:07:15 $
+ * $Revision: 1.29 $
+ * $Date: 2007/04/24 17:52:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -36,6 +36,8 @@ import de.willuhn.jameica.hbci.gui.dialogs.AdresseAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
 import de.willuhn.jameica.hbci.gui.input.UmsatzTypInput;
 import de.willuhn.jameica.hbci.rmi.Address;
+import de.willuhn.jameica.hbci.rmi.Addressbook;
+import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
@@ -111,6 +113,34 @@ public class UmsatzDetailControl extends AbstractControl {
       return this.kommentar;
     this.kommentar = new TextAreaInput(this.getUmsatz().getKommentar());
     return this.kommentar;
+  }
+  
+  /**
+   * Prueft, ob sich das Gegenkonto im Adressbuch befindet.
+   * @return die ggf. gefundene Adresse oder null.
+   * @throws RemoteException
+   */
+  public Address getAddressbookEntry() throws RemoteException
+  {
+    try
+    {
+      Umsatz u = getUmsatz();
+      HibiscusAddress e = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
+      Addressbook ab = (Addressbook) Application.getServiceFactory().lookup(HBCI.class,"addressbook");
+      e.setBLZ(u.getGegenkontoBLZ());
+      e.setKontonummer(u.getGegenkontoNummer());
+      e.setName(u.getGegenkontoName());
+      return ab.contains(e);
+    }
+    catch (RemoteException re)
+    {
+      throw re;
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to check, if address in addressbook");
+    }
+    return null;
   }
 
   /**
@@ -445,6 +475,10 @@ public class UmsatzDetailControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzDetailControl.java,v $
+ * Revision 1.29  2007/04/24 17:52:17  willuhn
+ * @N Bereits in den Umsatzdetails erkennen, ob die Adresse im Adressbuch ist
+ * @C Gross-Kleinschreibung in Adressbuch-Suche
+ *
  * Revision 1.28  2007/04/23 18:07:15  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt

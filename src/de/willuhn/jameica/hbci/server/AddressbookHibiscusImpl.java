@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AddressbookHibiscusImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/04/23 18:17:12 $
+ * $Revision: 1.3 $
+ * $Date: 2007/04/24 17:52:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -55,7 +55,7 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
     DBIterator list = Settings.getDBService().createList(HibiscusAddress.class);
     list.addFilter("kontonummer like ?", new Object[]{"%" + address.getKontonummer()}); // Fuehrende Nullen ignorieren
     list.addFilter("blz=?",              new Object[]{address.getBLZ()});
-    list.addFilter("name=?",             new Object[]{address.getName()});
+    list.addFilter("LOWER(name)=?",      new Object[]{address.getName().toLowerCase()});
     if (list.hasNext())
       return (Address) list.next();
     return null;
@@ -71,8 +71,8 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
     {
       // Gross-Kleinschreibung ignorieren wir
       text = "%" + text.toLowerCase() + "%";
-      list.addFilter("(LOWER(kontonummer) LIKE ? OR " +
-                     " LOWER(blz) LIKE ? OR " +
+      list.addFilter("(kontonummer LIKE ? OR " +
+                     " blz LIKE ? OR " +
                      " LOWER(name) LIKE ? OR " +
                      " LOWER(kommentar) LIKE ?)",new Object[]{text,text,text,text});
     }
@@ -93,6 +93,10 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
 
 /*********************************************************************
  * $Log: AddressbookHibiscusImpl.java,v $
+ * Revision 1.3  2007/04/24 17:52:17  willuhn
+ * @N Bereits in den Umsatzdetails erkennen, ob die Adresse im Adressbuch ist
+ * @C Gross-Kleinschreibung in Adressbuch-Suche
+ *
  * Revision 1.2  2007/04/23 18:17:12  willuhn
  * @B Falsche Standardreihenfolge
  *
