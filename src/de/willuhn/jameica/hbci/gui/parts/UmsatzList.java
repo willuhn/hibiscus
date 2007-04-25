@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.46 $
- * $Date: 2007/04/18 14:51:09 $
+ * $Revision: 1.47 $
+ * $Date: 2007/04/25 12:40:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -402,6 +402,7 @@ public class UmsatzList extends TablePart implements Extendable
   // BUGZILLA 5
   private class KL extends KeyAdapter
   {
+    private boolean sleep = true;
     private Thread timeout = null;
     private UmsatzTyp typ = null;
     private Calendar cal = null;
@@ -418,12 +419,12 @@ public class UmsatzList extends TablePart implements Extendable
      */
     public void keyReleased(KeyEvent e)
     {
-      // Mal schauen, ob schon ein Thread laeuft. Wenn ja, muessen wir den
-      // erst killen
+      // Wenn ein Timeout existiert, verlaengern wir einfach
+      // nur dessen Wartezeit
       if (timeout != null)
       {
-        timeout.interrupt();
-        timeout = null;
+        sleep = true;
+        return;
       }
       
       // Ein neuer Timer
@@ -433,9 +434,12 @@ public class UmsatzList extends TablePart implements Extendable
         {
           try
           {
-            // Wir warten 900ms. Vielleicht gibt der User inzwischen weitere
-            // Sachen ein.
-            sleep(700l);
+            do
+            {
+              sleep = false;
+              sleep(300l);
+            }
+            while (sleep); // Wir warten ggf. nochmal
 
             // Ne, wir wurden nicht gekillt. Also machen wir uns ans Werk
             process();
@@ -684,6 +688,9 @@ public class UmsatzList extends TablePart implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.47  2007/04/25 12:40:12  willuhn
+ * @N Besseres Warteverhalten nach Texteingabe in Umsatzliste und Adressbuch
+ *
  * Revision 1.46  2007/04/18 14:51:09  willuhn
  * @C removed 2 warnings
  *

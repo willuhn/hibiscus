@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/EmpfaengerList.java,v $
- * $Revision: 1.17 $
- * $Date: 2007/04/23 18:07:14 $
+ * $Revision: 1.18 $
+ * $Date: 2007/04/25 12:40:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -284,6 +284,7 @@ public class EmpfaengerList extends TablePart implements Part
   // BUGZILLA 5
   private class KL extends KeyAdapter
   {
+    private boolean sleep = true;
     private Thread timeout = null;
    
     /**
@@ -291,28 +292,31 @@ public class EmpfaengerList extends TablePart implements Part
      */
     public void keyReleased(KeyEvent e)
     {
-      // Mal schauen, ob schon ein Thread laeuft. Wenn ja, muessen wir den
-      // erst killen
+      // Wenn ein Timeout existiert, verlaengern wir einfach
+      // nur dessen Wartezeit
       if (timeout != null)
       {
-        timeout.interrupt();
-        timeout = null;
+        sleep = true;
+        return;
       }
       
       // Ein neuer Timer
       timeout = new Thread("AddressList Reload")
       {
+        
         public void run()
         {
           try
           {
-            // Wir warten 900ms. Vielleicht gibt der User inzwischen weitere
-            // Sachen ein.
-            sleep(700l);
+            do
+            {
+              sleep = false;
+              sleep(300l);
+            }
+            while (sleep); // Wir warten ggf. nochmal
 
             // Ne, wir wurden nicht gekillt. Also machen wir uns ans Werk
             reload();
-
           }
           catch (InterruptedException e)
           {
@@ -320,6 +324,7 @@ public class EmpfaengerList extends TablePart implements Part
           }
           finally
           {
+            // Wir liefen. Also loeschen wir uns
             timeout = null;
           }
         }
@@ -334,6 +339,9 @@ public class EmpfaengerList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: EmpfaengerList.java,v $
+ * Revision 1.18  2007/04/25 12:40:12  willuhn
+ * @N Besseres Warteverhalten nach Texteingabe in Umsatzliste und Adressbuch
+ *
  * Revision 1.17  2007/04/23 18:07:14  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
