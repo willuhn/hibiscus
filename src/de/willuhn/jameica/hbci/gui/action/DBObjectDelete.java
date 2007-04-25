@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/DBObjectDelete.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/04/23 18:07:14 $
+ * $Revision: 1.3 $
+ * $Date: 2007/04/25 14:07:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,16 +19,28 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.BackgroundTask;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
+import de.willuhn.util.ProgressMonitor;
 
 /**
  * Generische Action fuer das Loeschen von Datensaetzen.
  */
 public class DBObjectDelete implements Action
 {
+  private I18N i18n = null;
+  
+  /**
+   * ct.
+   */
+  public DBObjectDelete()
+  {
+    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  }
 
   /**
    * Erwartet ein Objekt vom Typ <code>DBObject</code> oder <code>DBObject[]</code> im Context.
@@ -36,8 +48,6 @@ public class DBObjectDelete implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
-  	I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
 		if (context == null)
       throw new ApplicationException(i18n.tr("Keine zu löschenden Daten ausgewählt"));
 
@@ -77,28 +87,106 @@ public class DBObjectDelete implements Action
       list = (DBObject[]) context;
     else
       list = new DBObject[]{(DBObject)context}; // Array mit einem Element
+    
+    Worker worker = new Worker(list);
+    if (list.length > 100)
+      Application.getController().start(worker);
+    else
+      worker.run(null);
+  }
+  
+  /**
+   * Damit koennen wir lange Loeschvorgaenge ggf. im Hintergrund laufen lassen
+   */
+  private class Worker implements BackgroundTask
+  {
+    private boolean cancel = false;
+    private DBObject[] list = null;
 
-		try {
+    /**
+     * ct.
+     * @param list
+     */
+    private Worker(DBObject[] list)
+    {
+      this.list = list;
+    }
+    
+    /**
+     * @see de.willuhn.jameica.system.BackgroundTask#interrupt()
+     */
+    public void interrupt()
+    {
+      this.cancel = true;
+    }
 
-      for (int i=0;i<list.length;++i)
+    /**
+     * @see de.willuhn.jameica.system.BackgroundTask#isInterrupted()
+     */
+    public boolean isInterrupted()
+    {
+      return this.cancel;
+    }
+
+    public void run(ProgressMonitor monitor) throws ApplicationException
+    {
+      try
       {
-        if (list[i].isNewObject())
-          continue; // muss nicht geloescht werden
+        if (monitor != null)
+          monitor.setStatusText(i18n.tr("Lösche {0} Datensätze",""+list.length));
 
-        // ok, wir loeschen das Objekt
-        list[i].delete();
+        double factor = 100d / list.length;
+        
+        for (int i=0;i<list.length;++i)
+        {
+          if (monitor != null && i % 4 == 0)
+            monitor.setPercentComplete((int)((i+4) * factor));
+
+          if (list[i].isNewObject())
+            continue; // muss nicht geloescht werden
+
+          // ok, wir loeschen das Objekt
+          list[i].delete();
+        }
+        
+        if (monitor != null)
+          monitor.setPercentComplete(100);
+        
+        String text = i18n.tr("Datensatz gelöscht.");
+        if (list.length > 1)
+          text = i18n.tr("{0} Datensätze gelöscht.",""+list.length);
+        
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(text,StatusBarMessage.TYPE_SUCCESS));
+        if (monitor != null)
+        {
+          monitor.setStatusText(text);
+          monitor.setStatus(ProgressMonitor.STATUS_DONE);
+        }
+
       }
-      if (array)
-        GUI.getStatusBar().setSuccessText(i18n.tr("{0} Datensätze gelöscht.",""+list.length));
-      else
-        GUI.getStatusBar().setSuccessText(i18n.tr("Datensatz gelöscht."));
+      catch (RemoteException e)
+      {
+        Logger.error("error while deleting objects",e);
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Löschen der Datensätze."), StatusBarMessage.TYPE_ERROR));
 
-		}
-		catch (RemoteException e)
-		{
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Löschen der Datensätze."));
-			Logger.error("unable to delete objects",e);
-		}
+        if (monitor != null)
+        {
+          monitor.setStatus(ProgressMonitor.STATUS_ERROR);
+          monitor.setStatusText(i18n.tr("Fehler beim Löschen der Daten"));
+          monitor.log(e.toString());
+        }
+      }
+      catch (ApplicationException ae)
+      {
+        if (monitor != null)
+        {
+          monitor.setStatus(ProgressMonitor.STATUS_ERROR);
+          monitor.setStatusText(ae.getMessage());
+        }
+        throw ae;
+      }
+    }
+    
   }
 
 }
@@ -106,6 +194,9 @@ public class DBObjectDelete implements Action
 
 /**********************************************************************
  * $Log: DBObjectDelete.java,v $
+ * Revision 1.3  2007/04/25 14:07:26  willuhn
+ * @N Loeschen von mehr als 100 Datensaetzen gleichzeitig im Hintergrund ausfuehren
+ *
  * Revision 1.2  2007/04/23 18:07:14  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
