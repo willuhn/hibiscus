@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.47 $
- * $Date: 2007/04/25 12:40:12 $
+ * $Revision: 1.48 $
+ * $Date: 2007/04/25 14:06:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,9 +14,9 @@
 package de.willuhn.jameica.hbci.gui.parts;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.swt.SWT;
@@ -35,6 +35,7 @@ import org.eclipse.swt.widgets.Text;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
+import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.gui.Action;
@@ -82,8 +83,7 @@ public class UmsatzList extends TablePart implements Extendable
   private UmsatzDaysInput days  = null;
 
   private Konto konto           = null;
-  private GenericIterator list  = null;
-  private ArrayList umsaetze    = null;
+  private List umsaetze         = null;
   
   private KL kl                 = null;
   private boolean filter        = true;
@@ -117,12 +117,13 @@ public class UmsatzList extends TablePart implements Extendable
   /**
    * @param list
    * @param action
+   * @throws RemoteException
    */
-  public UmsatzList(GenericIterator list, Action action)
+  public UmsatzList(GenericIterator list, Action action) throws RemoteException
   {
-    super(list, action);
-
-    this.list = list;
+    super(list,action);
+    this.umsaetze = PseudoIterator.asList(list);
+    
     this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     setMulti(true);
     setFormatter(new TableFormatter() {
@@ -226,18 +227,8 @@ public class UmsatzList extends TablePart implements Extendable
       });
       group.addCheckbox(this.regex,i18n.tr("Suchbegriff ist ein regulärer Ausdruck"));
     }
-    
-    super.paint(parent);
 
-    // Wir kopieren den ganzen Kram in eine ArrayList, damit die
-    // Objekte beim Filter geladen bleiben
-    umsaetze = new ArrayList();
-    list.begin();
-    while (list.hasNext())
-    {
-      Umsatz u = (Umsatz) list.next();
-      umsaetze.add(u);
-    }
+    super.paint(parent);
 
     // Und einmal starten bitte
     if (this.filter)
@@ -251,7 +242,7 @@ public class UmsatzList extends TablePart implements Extendable
    */
   private class SearchInput extends ButtonInput
   {
-    private Text text         = null;
+    private Text text = null;
 
     /**
      * ct.
@@ -688,6 +679,9 @@ public class UmsatzList extends TablePart implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.48  2007/04/25 14:06:57  willuhn
+ * @C Vermeidung paralleler Datenhaltung
+ *
  * Revision 1.47  2007/04/25 12:40:12  willuhn
  * @N Besseres Warteverhalten nach Texteingabe in Umsatzliste und Adressbuch
  *
