@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/ProtokollImpl.java,v $
- * $Revision: 1.10 $
- * $Date: 2006/12/01 00:02:34 $
+ * $Revision: 1.11 $
+ * $Date: 2007/04/25 15:06:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -71,7 +71,8 @@ public class ProtokollImpl extends AbstractDBObject implements Protokoll {
 
 			// beim Insert fuegen wir das Datum ein. Somit muss
 			// es nicht von aussen gesetzt werden.
-			setAttribute("datum", new Date());
+      if (getDatum() == null)
+        setAttribute("datum", new Date());
 
 		}
 		catch (RemoteException e)
@@ -157,6 +158,9 @@ public class ProtokollImpl extends AbstractDBObject implements Protokoll {
 
 /**********************************************************************
  * $Log: ProtokollImpl.java,v $
+ * Revision 1.11  2007/04/25 15:06:47  willuhn
+ * @N Datum nur ueberschreiben, wenn noch nicht gesetzt
+ *
  * Revision 1.10  2006/12/01 00:02:34  willuhn
  * @C made unserializable members transient
  *
