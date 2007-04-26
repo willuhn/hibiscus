@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/KontoauszugControl.java,v $
- * $Revision: 1.16 $
- * $Date: 2007/04/26 15:02:19 $
+ * $Revision: 1.17 $
+ * $Date: 2007/04/26 18:28:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,6 +31,7 @@ import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
@@ -66,7 +67,7 @@ public class KontoauszugControl extends AbstractControl
   private TextInput gegenkontoName     = null;
   private TextInput gegenkontoBLZ      = null;
 
-  private ReloadListener listener      = null;
+  private Listener listener            = null;
   private UmsatzList umsatzlist        = null;
 
   private I18N i18n = null;
@@ -79,7 +80,16 @@ public class KontoauszugControl extends AbstractControl
   {
     super(view);
     i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-    this.listener = new ReloadListener();
+
+    // bei Ausloesungen ueber SWT-Events verzoegern wir
+    // das Reload, um schnell aufeinanderfolgende Updates
+    // zu buendeln.
+    this.listener = new DelayedListener(new Listener() {
+      public void handleEvent(Event event)
+      {
+        handleReload();
+      }
+    });
   }
 
   /**
@@ -243,29 +253,31 @@ public class KontoauszugControl extends AbstractControl
   public synchronized void handleReload()
   {
     if (!hasChanged())
-    {
-      System.out.println("---------------");
       return;
-    }
-   
-    try
+
+    GUI.startSync(new Runnable() // Sanduhr einblenden
     {
-      System.out.println("+++++++++++++");
-      TablePart part = getUmsatzList();
-      part.removeAll();
-      
-      GenericIterator list = getUmsaetze();
-      while (list.hasNext())
-        part.addItem(list.next());
-      
-      // Zum Schluss Sortierung aktualisieren
-      part.sort();
-    }
-    catch (RemoteException re)
-    {
-      Logger.error("error while reloading table",re);
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren der Umsätze"), StatusBarMessage.TYPE_ERROR));
-    }
+      public void run()
+      {
+        try
+        {
+          TablePart part = getUmsatzList();
+          part.removeAll();
+          
+          GenericIterator list = getUmsaetze();
+          while (list.hasNext())
+            part.addItem(list.next());
+          
+          // Zum Schluss Sortierung aktualisieren
+          part.sort();
+        }
+        catch (Exception e)
+        {
+          Logger.error("error while reloading table",e);
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren der Umsätze"), StatusBarMessage.TYPE_ERROR));
+        }
+      }
+    });
   }
   
   /**
@@ -273,7 +285,10 @@ public class KontoauszugControl extends AbstractControl
    */
   public synchronized void handlePrint()
   {
-    // Vorher machen wir nochmal ein Reload.
+    // Vorher machen wir nochmal ein UNVERZOEGERTES Reload,
+    // denn es muss sichergestellt sein, dass die Tabelle
+    // aktuell ist, wenn wir als naechstes getItems()
+    // aufrufen
     handleReload();
 
     try
@@ -284,33 +299,17 @@ public class KontoauszugControl extends AbstractControl
       // Laden aus der Datenbank
       List list = getUmsatzList().getItems();
 
-      // Wir sortieren jetzt nicht mehr um sondern uebernehmen die
-      // Daten in der Reihenfolge, wie sie in der Tabelle angezeigt
-      // werden
-      // Collections.reverse(list);
-        
-      Umsatz[] u = (Umsatz[]) list.toArray(new Umsatz[list.size()]);
-        
-      if (u == null || u.length == 0)
+      if (list == null || list.size() == 0)
       {
-        GUI.getView().setErrorText(i18n.tr("Im gewählten Zeitraum wurden keine Umsätze gefunden"));
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Keine zu exportierenden Umsätze"), StatusBarMessage.TYPE_ERROR));
         return;
       }
 
-      Date start = (Date) getStart().getValue();
-      Date end   = (Date) getEnd().getValue();
-      
       // Start- und End-Datum als Contextparameter an Exporter uebergeben
-      if (start == null)
-        Exporter.SESSION.remove("pdf.start");
-      else
-        Exporter.SESSION.put("pdf.start",start);
-      
-      if (end == null)
-        Exporter.SESSION.remove("pdf.end");
-      else
-        Exporter.SESSION.put("pdf.end",end);
+      Exporter.SESSION.put("pdf.start",getStart().getValue());
+      Exporter.SESSION.put("pdf.end",getEnd().getValue());
 
+      Umsatz[] u = (Umsatz[]) list.toArray(new Umsatz[list.size()]);
       new UmsatzExport().handleAction(u);
     }
     catch (ApplicationException ae)
@@ -320,45 +319,32 @@ public class KontoauszugControl extends AbstractControl
     catch (RemoteException re)
     {
       Logger.error("error while reloading table",re);
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren der Umsätze"), StatusBarMessage.TYPE_ERROR));
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Exportieren der Umsätze"), StatusBarMessage.TYPE_ERROR));
     }
   }
   
   /**
    * Prueft, ob seit der letzten Aktion Eingaben geaendert wurden.
    * Ist das nicht der Fall, muss die Tabelle nicht neu geladen werden.
-   * @return true, wenn sich wirklich was geaendert hat.
+   * @return true, wenn sich die Daten geaendert haben.
    */
   private boolean hasChanged()
   {
     try
     {
       return getStart().hasChanged() ||
-             getEnd().hasChanged() ||
-             getKontoAuswahl().hasChanged() ||
-             getGegenkontoName().hasChanged() ||
-             getGegenkontoNummer().hasChanged() ||
-             getGegenkontoBLZ().hasChanged();
+                getEnd().hasChanged() ||
+                getKontoAuswahl().hasChanged() ||
+                getGegenkontoName().hasChanged() ||
+                getGegenkontoNummer().hasChanged() ||
+                getGegenkontoBLZ().hasChanged();
     }
     catch (Exception e)
     {
       Logger.error("unable to check change status",e);
-      return true;
+      return false;
     }
   }
-  
-  /**
-   * Wird ausgeloest, wenn eines der Eingabe-Felder geaendert wurde.
-   */
-  private class ReloadListener implements Listener
-  {
-    public synchronized void handleEvent(Event event)
-    {
-      handleReload();
-    }
-  }
-  
-  
   
   /**
    * Listener, der bei Auswahl der Adresse die restlichen Daten vervollstaendigt.
@@ -393,6 +379,9 @@ public class KontoauszugControl extends AbstractControl
 
 /*******************************************************************************
  * $Log: KontoauszugControl.java,v $
+ * Revision 1.17  2007/04/26 18:28:30  willuhn
+ * @N Ausfuehren der Reloads via DelayedListener
+ *
  * Revision 1.16  2007/04/26 15:02:19  willuhn
  * @N Zusaetzliche Suche nach Gegenkonto
  *
