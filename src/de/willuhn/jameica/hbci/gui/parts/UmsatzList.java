@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.48 $
- * $Date: 2007/04/25 14:06:57 $
+ * $Revision: 1.49 $
+ * $Date: 2007/04/26 12:20:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -310,7 +310,7 @@ public class UmsatzList extends TablePart implements Extendable
           try
           {
             DBIterator i = Settings.getDBService().createList(UmsatzTyp.class);
-            i.addFilter("pattern is not null"); // Wir wollen nur die mit Suchbegriff haben
+            i.addFilter("pattern is not null and pattern != ''"); // Wir wollen nur die mit Suchbegriff haben
             while (i.hasNext())
             {
               final UmsatzTyp ut = (UmsatzTyp) i.next();
@@ -679,6 +679,9 @@ public class UmsatzList extends TablePart implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.49  2007/04/26 12:20:12  willuhn
+ * @B In Umsatzsuche nur die Kategorien mit Pattern anzeigen
+ *
  * Revision 1.48  2007/04/25 14:06:57  willuhn
  * @C Vermeidung paralleler Datenhaltung
  *
