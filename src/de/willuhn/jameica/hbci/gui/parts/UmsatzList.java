@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.49 $
- * $Date: 2007/04/26 12:20:12 $
+ * $Revision: 1.50 $
+ * $Date: 2007/04/26 18:27:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -451,7 +451,8 @@ public class UmsatzList extends TablePart implements Extendable
     
     private synchronized void process()
     {
-      GUI.getDisplay().syncExec(new Runnable()
+      GUI.getView().setLogoText(i18n.tr("Aktualisiere Daten..."));
+      GUI.startSync(new Runnable()
       {
         public void run()
         {
@@ -530,6 +531,10 @@ public class UmsatzList extends TablePart implements Extendable
           catch (Exception e)
           {
             Logger.error("error while loading umsatz",e);
+          }
+          finally
+          {
+            GUI.getView().setLogoText("");
           }
         }
       });
@@ -679,6 +684,9 @@ public class UmsatzList extends TablePart implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.50  2007/04/26 18:27:58  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.49  2007/04/26 12:20:12  willuhn
  * @B In Umsatzsuche nur die Kategorien mit Pattern anzeigen
  *

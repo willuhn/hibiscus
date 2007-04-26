@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractFromToList.java,v $
- * $Revision: 1.4 $
- * $Date: 2007/04/26 15:02:36 $
+ * $Revision: 1.5 $
+ * $Date: 2007/04/26 18:27:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -202,7 +202,6 @@ public abstract class AbstractFromToList extends TablePart implements Part
           }
           while (sleep); // Wir warten ggf. nochmal
 
-          // Fehlertext ggf. entfernen
           GUI.getView().setLogoText(i18n.tr("Aktualisiere Daten..."));
           GUI.startSync(new Runnable()
           {
@@ -287,6 +286,9 @@ public abstract class AbstractFromToList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: AbstractFromToList.java,v $
+ * Revision 1.5  2007/04/26 18:27:38  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2007/04/26 15:02:36  willuhn
  * @N Optisches Feedback beim Neuladen der Daten
  *
