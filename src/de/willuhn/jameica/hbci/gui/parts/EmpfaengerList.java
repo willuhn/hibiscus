@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/EmpfaengerList.java,v $
- * $Revision: 1.18 $
- * $Date: 2007/04/25 12:40:12 $
+ * $Revision: 1.19 $
+ * $Date: 2007/04/26 15:02:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -249,7 +249,8 @@ public class EmpfaengerList extends TablePart implements Part
    */
   private synchronized void reload()
   {
-    GUI.getDisplay().syncExec(new Runnable()
+    GUI.getView().setLogoText(i18n.tr("Aktualisiere Daten..."));
+    GUI.startSync(new Runnable()
     {
       public void run()
       {
@@ -275,6 +276,10 @@ public class EmpfaengerList extends TablePart implements Part
         {
           Logger.error("error while reloading addresses",e);
           Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Laden der Adressen"), StatusBarMessage.TYPE_ERROR));
+        }
+        finally
+        {
+          GUI.getView().setLogoText("");
         }
       }
     });
@@ -339,6 +344,9 @@ public class EmpfaengerList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: EmpfaengerList.java,v $
+ * Revision 1.19  2007/04/26 15:02:36  willuhn
+ * @N Optisches Feedback beim Neuladen der Daten
+ *
  * Revision 1.18  2007/04/25 12:40:12  willuhn
  * @N Besseres Warteverhalten nach Texteingabe in Umsatzliste und Adressbuch
  *
