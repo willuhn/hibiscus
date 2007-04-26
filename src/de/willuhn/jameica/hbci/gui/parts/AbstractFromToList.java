@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractFromToList.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/04/24 17:15:51 $
+ * $Revision: 1.3 $
+ * $Date: 2007/04/26 13:59:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,6 +31,7 @@ import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
@@ -41,15 +42,15 @@ import de.willuhn.util.I18N;
 public abstract class AbstractFromToList extends TablePart implements Part
 {
 
-  protected I18N i18n   = null;
+  protected I18N i18n            = null;
   
-  private Input from    = null;
-  private Input to      = null;
-  
-  private Date prevFrom = null;
-  private Date prevTo   = null;
+  protected Input from           = null;
+  protected Input to             = null;
 
-  private de.willuhn.jameica.system.Settings mySettings = null;
+  private boolean sleep          = true;
+  private Thread timeout         = null;
+  
+  protected de.willuhn.jameica.system.Settings mySettings = null;
 
   /**
    * ct.
@@ -73,18 +74,49 @@ public abstract class AbstractFromToList extends TablePart implements Part
    */
   public synchronized void paint(Composite parent) throws RemoteException
   {
-    Listener l = new ChangedListener();
-
     LabelGroup group = new LabelGroup(parent,i18n.tr("Anzeige einschränken"));
+
+    Listener cl = new Listener() {
+      public void handleEvent(Event event) {
+        handleReload(false);
+      }
+    };
+    
+    // Als Startdatum nehmen wir den ersten des aktuellen Monats
+    // Es sei denn, es ist eines gespeichert
+    Date dFrom = null;
+    String sFrom = mySettings.getString("filter.from",null);
+    if (sFrom != null && sFrom.length() > 0)
+    {
+      try
+      {
+        dFrom = HBCI.DATEFORMAT.parse(sFrom);
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to parse " + sFrom,e);
+      }
+    }
+    if (dFrom == null)
+    {
+      Calendar cal = Calendar.getInstance();
+      cal.set(Calendar.DAY_OF_MONTH,1);
+      dFrom = HBCIProperties.startOfDay(cal.getTime());
+    }
+    
+    from = new DateInput(dFrom, HBCI.DATEFORMAT);
+    from.addListener(cl);
+    group.addLabelPair(i18n.tr("Anzeige von"),from);
 
     // Als End-Datum nehmen wir keines.
     // Es sei denn, es ist ein aktuelles gespeichert
     String sTo = mySettings.getString("filter.to",null);
+    Date dTo = null;
     if (sTo != null && sTo.length() > 0)
     {
       try
       {
-        prevTo = HBCI.DATEFORMAT.parse(sTo);
+        dTo = HBCI.DATEFORMAT.parse(sTo);
       }
       catch (Exception e)
       {
@@ -92,37 +124,13 @@ public abstract class AbstractFromToList extends TablePart implements Part
       }
     }
 
-    // Als Startdatum nehmen wir den ersten des aktuellen Monats
-    // Es sei denn, es ist eines gespeichert
-    String sFrom = mySettings.getString("filter.from",null);
-    if (sFrom != null && sFrom.length() > 0)
-    {
-      try
-      {
-        prevFrom = HBCI.DATEFORMAT.parse(sFrom);
-      }
-      catch (Exception e)
-      {
-        Logger.error("unable to parse " + sFrom,e);
-      }
-    }
-    if (prevFrom == null)
-    {
-      Calendar cal = Calendar.getInstance();
-      cal.set(Calendar.DAY_OF_MONTH,1);
-      prevFrom = HBCIProperties.startOfDay(cal.getTime());
-    }
     
-    from = new DateInput(prevFrom, HBCI.DATEFORMAT);
-    from.addListener(l);
-    to = new DateInput(prevTo, HBCI.DATEFORMAT);
-    to.addListener(l);
-    
-    group.addLabelPair(i18n.tr("Anzeige von"),from);
+    to = new DateInput(dTo, HBCI.DATEFORMAT);
+    to.addListener(cl);
     group.addLabelPair(i18n.tr("Anzeige bis"),to);
    
     // Erstbefuellung
-    GenericIterator items = getList(prevFrom,prevTo);
+    GenericIterator items = getList(dFrom,dTo);
     if (items != null)
     {
       items.begin();
@@ -131,6 +139,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
     }
 
     super.paint(parent);
+
   }
   
   /**
@@ -143,96 +152,147 @@ public abstract class AbstractFromToList extends TablePart implements Part
   protected abstract GenericIterator getList(Date from, Date to) throws RemoteException;
   
   /**
-   * Wird ausgeloest, wenn das Datum geaendert wird.
+   * Aktualisiert die Tabelle der angezeigten Daten.
+   * Die Aktualisierung geschieht um einige Millisekunden verzoegert,
+   * damit ggf. schnell aufeinander folgende Events gebuendelt werden.
+   * @param force true, wenn die Daten auch dann aktualisiert werden sollen,
+   * wenn an den Eingabe-Feldern nichts geaendert wurde.
    */
-  private class ChangedListener implements Listener
+  protected synchronized void handleReload(boolean force)
   {
-
-    /**
-     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-     */
-    public void handleEvent(Event event)
+    if (!force)
     {
-      try
+      // Wenn es kein forcierter Reload ist, pruefen wir,
+      // ob sich etwas geaendert hat oder Eingabe-Fehler
+      // vorliegen
+      if (!hasChanged())
+        return;
+
+      Date dfrom = (Date) from.getValue();
+      Date dto   = (Date) to.getValue();
+      
+      if (dfrom != null && dto != null && dfrom.after(dto))
       {
-        Date dfrom = (Date) from.getValue();
-        Date dto   = (Date) to.getValue();
-        
-        if (dfrom != null && dto != null && dfrom.after(dto))
-        {
-          GUI.getView().setErrorText(i18n.tr("End-Datum muss sich nach dem Start-Datum befinden"));
-          return;
-        }
-        
-        GUI.getView().setErrorText("");
-        
-        // Mal schauen, ob sich ueberhaupt was geaendert hat
-        if (compare(dfrom,prevFrom) && compare(dto,prevTo))
-          return; // Nichts geaendert
-
-        // erstmal alles entfernen.
-        removeAll();
-
-        // Liste neu laden
-        GenericIterator items = getList(dfrom,dto);
-        if (items == null)
-          return;
-        
-        items.begin();
-        while (items.hasNext())
-          addItem(items.next());
-        
-        // Sortierung wiederherstellen
-        sort();
-        
-        prevFrom = dfrom;
-        prevTo   = dto;
-
-        // Speichern der Werte aus den beiden Eingabe-Feldern.
-        // Das From-Datum speichern wir immer
-        try
-        {
-          mySettings.setAttribute("filter.from",dfrom == null ? (String)null : HBCI.DATEFORMAT.format(dfrom));
-          
-          // Das End-Datum speichern wir nur, wenn es nicht das aktuelle Datum ist
-          if (dto != null && !HBCIProperties.startOfDay(new Date()).equals(dto))
-            mySettings.setAttribute("transferlist.filter.to",HBCI.DATEFORMAT.format(dto));
-          else
-            mySettings.setAttribute("filter.to",(String)null);
-        }
-        catch (Exception ex)
-        {
-          Logger.error("unable to save dates",ex);
-        }
-
-      }
-      catch (RemoteException re)
-      {
-        Logger.error("unable to apply filter",re);
+        GUI.getView().setErrorText(i18n.tr("End-Datum muss sich nach dem Start-Datum befinden"));
+        return;
       }
     }
+    
+
+    // Wenn ein Timeout existiert, verlaengern wir einfach
+    // nur dessen Wartezeit
+    if (timeout != null)
+    {
+      sleep = true;
+      return;
+    }
+    
+    // Ein neuer Timer
+    GUI.getStatusBar().startProgress();
+    GUI.getView().setLogoText(i18n.tr("Aktualisiere Daten..."));
+    timeout = new Thread("TransferList Reload")
+    {
+      public void run()
+      {
+        try
+        {
+          do
+          {
+            sleep = false;
+            sleep(300l);
+          }
+          while (sleep); // Wir warten ggf. nochmal
+
+          GUI.getDisplay().syncExec(new Runnable()
+          {
+            public void run()
+            {
+              try
+              {
+                // Fehlertext ggf. entfernen
+                GUI.getView().setErrorText("");
+                
+                // Ne, wir wurden nicht gekillt. Also machen wir uns ans Werk
+                // erstmal alles entfernen.
+                removeAll();
+
+                // Liste neu laden
+                Date dfrom = (Date) from.getValue();
+                Date dto   = (Date) to.getValue();
+                GenericIterator items = getList(dfrom,dto);
+                if (items == null)
+                  return;
+                
+                items.begin();
+                while (items.hasNext())
+                  addItem(items.next());
+                
+                // Sortierung wiederherstellen
+                sort();
+                
+                // Speichern der Werte aus den beiden Eingabe-Feldern.
+                // Das From-Datum speichern wir immer
+                mySettings.setAttribute("filter.from",dfrom == null ? (String)null : HBCI.DATEFORMAT.format(dfrom));
+                  
+                // Das End-Datum speichern wir nur, wenn es nicht das aktuelle Datum ist
+                if (dto != null && !HBCIProperties.startOfDay(new Date()).equals(dto))
+                  mySettings.setAttribute("transferlist.filter.to",HBCI.DATEFORMAT.format(dto));
+                else
+                  mySettings.setAttribute("filter.to",(String)null);
+              }
+              catch (Exception e)
+              {
+                Logger.error("error while reloading table",e);
+                Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren der Tabelle"), StatusBarMessage.TYPE_ERROR));
+              }
+              finally
+              {
+                GUI.getView().setLogoText("");
+                GUI.getStatusBar().stopProgress();
+              }
+            }
+          });
+        }
+        catch (InterruptedException e)
+        {
+          return;
+        }
+        finally
+        {
+          // Wir liefen. Also loeschen wir uns
+          timeout = null;
+        }
+      }
+    };
+    timeout.start();
   }
   
   /**
-   * Vergleich zwei Datums-Angaben Nullpointer-sicher.
-   * @param d1 Datum 1.
-   * @param d2 Datum 2.
-   * @return true, wenn beide identisch oder null sind.
+   * Prueft, ob seit der letzten Aktion Eingaben geaendert wurden.
+   * Ist das nicht der Fall, muss die Tabelle nicht neu geladen werden.
+   * @return true, wenn sich wirklich was geaendert hat.
    */
-  private static boolean compare(Date d1, Date d2)
+  protected boolean hasChanged()
   {
-    if (d1 == d2)
+    try
+    {
+      return (from != null && from.hasChanged()) ||
+             (to != null && to.hasChanged());
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to check change status",e);
       return true;
-    
-    if (d1 == null || d2 == null)
-      return false;
-    return d1.equals(d2);
+    }
   }
 }
 
 
 /**********************************************************************
  * $Log: AbstractFromToList.java,v $
+ * Revision 1.3  2007/04/26 13:59:31  willuhn
+ * @N Besseres Reload-Verhalten in Transfer-Listen
+ *
  * Revision 1.2  2007/04/24 17:15:51  willuhn
  * @B Vergessen, "size" hochzuzaehlen, wenn Objekte vor paint() hinzugefuegt werden
  *

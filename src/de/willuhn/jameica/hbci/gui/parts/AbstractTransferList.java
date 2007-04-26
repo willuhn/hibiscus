@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractTransferList.java,v $
- * $Revision: 1.18 $
- * $Date: 2007/04/24 17:15:51 $
+ * $Revision: 1.19 $
+ * $Date: 2007/04/26 13:59:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,10 +16,14 @@ package de.willuhn.jameica.hbci.gui.parts;
 import java.rmi.RemoteException;
 import java.util.Date;
 
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TableItem;
 import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.GenericIterator;
+import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
@@ -30,9 +34,13 @@ import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Terminable;
+import de.willuhn.jameica.messaging.Message;
+import de.willuhn.jameica.messaging.MessageConsumer;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 
 /**
@@ -40,6 +48,7 @@ import de.willuhn.logging.Logger;
  */
 public abstract class AbstractTransferList extends AbstractFromToList
 {
+  private MessageConsumer mc = null;
 
   /**
    * ct.
@@ -123,7 +132,30 @@ public abstract class AbstractTransferList extends AbstractFromToList
       }
     });
     setMulti(true);
+
+    // Damit werden wir informiert, wenn Ueberweisungen/Lastschriften
+    // importiert wurden. Wir koennen sie dann gleich zur Tabelle hinzufuegen
+    this.mc = new TransferMessageConsumer();
+    Application.getMessagingFactory().registerMessageConsumer(this.mc);
+
   }
+
+  
+  /**
+   * @see de.willuhn.jameica.hbci.gui.parts.AbstractFromToList#paint(org.eclipse.swt.widgets.Composite)
+   */
+  public synchronized void paint(Composite parent) throws RemoteException
+  {
+    // Damit wir den MessageConsumer beim Schliessen wieder entfernen
+    parent.addDisposeListener(new DisposeListener() {
+      public void widgetDisposed(DisposeEvent e)
+      {
+        Application.getMessagingFactory().unRegisterMessageConsumer(mc);
+      }
+    });
+    super.paint(parent);
+  }
+
 
   /**
    * @see de.willuhn.jameica.hbci.gui.parts.AbstractFromToList#getList(java.util.Date, java.util.Date)
@@ -144,11 +176,63 @@ public abstract class AbstractTransferList extends AbstractFromToList
    * @return Art der zu ladenden Objekte.
    */
   protected abstract Class getObjectType();
+
+
+  /**
+   * Hilfsklasse damit wir ueber importierte Transfers informiert werden.
+   */
+  public class TransferMessageConsumer implements MessageConsumer
+  {
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
+     */
+    public Class[] getExpectedMessageTypes()
+    {
+      return new Class[]{ImportMessage.class};
+    }
+
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
+     */
+    public void handleMessage(Message message) throws Exception
+    {
+      if (message == null || !(message instanceof ImportMessage))
+        return;
+      
+      final GenericObject o = ((ImportMessage)message).getObject();
+      
+      if (o == null)
+        return;
+      
+      // Checken, ob uns der Transfer-Typ interessiert
+      if (!getObjectType().isAssignableFrom(o.getClass()))
+        return;
+
+      // Wir forcieren das Reload. Da in den Eingabefeldern
+      // nichts geaendert wurde, wuerde das Reload sonst nicht
+      // stattfinden. Um das Buendeln von Mass-Updates kuemmert
+      // sich handleReload() selbst, in dem es einen Timerthread
+      // verwendet
+      handleReload(true);
+    }
+
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
+     */
+    public boolean autoRegister()
+    {
+      return false;
+    }
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: AbstractTransferList.java,v $
+ * Revision 1.19  2007/04/26 13:59:31  willuhn
+ * @N Besseres Reload-Verhalten in Transfer-Listen
+ *
  * Revision 1.18  2007/04/24 17:15:51  willuhn
  * @B Vergessen, "size" hochzuzaehlen, wenn Objekte vor paint() hinzugefuegt werden
  *
