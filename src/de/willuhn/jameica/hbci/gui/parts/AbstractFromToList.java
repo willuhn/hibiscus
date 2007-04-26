@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractFromToList.java,v $
- * $Revision: 1.5 $
- * $Date: 2007/04/26 18:27:38 $
+ * $Revision: 1.6 $
+ * $Date: 2007/04/26 23:08:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,6 +28,7 @@ import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -47,9 +48,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
   protected Input from           = null;
   protected Input to             = null;
 
-  private boolean sleep          = true;
-  private Thread timeout         = null;
-  
+  protected Listener listener    = null;
   protected de.willuhn.jameica.system.Settings mySettings = null;
 
   /**
@@ -63,6 +62,18 @@ public abstract class AbstractFromToList extends TablePart implements Part
     this.i18n       = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     this.mySettings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
 
+    this.listener = new DelayedListener(new Listener() {
+      public void handleEvent(Event event) {
+        // Wenn das event "null" ist, kann es nicht
+        // von SWT ausgeloest worden sein sondern
+        // manuell von uns. In dem Fall machen wir ein
+        // forciertes Update - ohne zu beruecksichtigen,
+        // ob in den Eingabe-Feldern wirklich was geaendert
+        // wurde
+        handleReload(event == null);
+      }
+    });
+    
     this.setRememberOrder(true);
     this.setRememberColWidths(true);
     this.setSummary(true);
@@ -76,12 +87,6 @@ public abstract class AbstractFromToList extends TablePart implements Part
   {
     LabelGroup group = new LabelGroup(parent,i18n.tr("Anzeige einschränken"));
 
-    Listener cl = new Listener() {
-      public void handleEvent(Event event) {
-        handleReload(false);
-      }
-    };
-    
     // Als Startdatum nehmen wir den ersten des aktuellen Monats
     // Es sei denn, es ist eines gespeichert
     Date dFrom = null;
@@ -105,7 +110,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
     }
     
     from = new DateInput(dFrom, HBCI.DATEFORMAT);
-    from.addListener(cl);
+    from.addListener(this.listener);
     group.addLabelPair(i18n.tr("Anzeige von"),from);
 
     // Als End-Datum nehmen wir keines.
@@ -126,7 +131,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
 
     
     to = new DateInput(dTo, HBCI.DATEFORMAT);
-    to.addListener(cl);
+    to.addListener(this.listener);
     group.addLabelPair(i18n.tr("Anzeige bis"),to);
    
     // Erstbefuellung
@@ -158,7 +163,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
    * @param force true, wenn die Daten auch dann aktualisiert werden sollen,
    * wenn an den Eingabe-Feldern nichts geaendert wurde.
    */
-  protected synchronized void handleReload(boolean force)
+  private synchronized void handleReload(boolean force)
   {
     if (!force)
     {
@@ -177,90 +182,56 @@ public abstract class AbstractFromToList extends TablePart implements Part
         return;
       }
     }
-    
+
+    // Fehlertext "End-Datum muss ..." ggf. wieder entfernen
     GUI.getView().setErrorText("");
 
-    // Wenn ein Timeout existiert, verlaengern wir einfach
-    // nur dessen Wartezeit
-    if (timeout != null)
-    {
-      sleep = true;
-      return;
-    }
-    
-    // Ein neuer Timer
-    timeout = new Thread("TransferList Reload")
+    GUI.getView().setLogoText(i18n.tr("Aktualisiere Daten..."));
+    GUI.startSync(new Runnable() //Sanduhr anzeigen
     {
       public void run()
       {
         try
         {
-          do
-          {
-            sleep = false;
-            sleep(300l);
-          }
-          while (sleep); // Wir warten ggf. nochmal
+          // Ne, wir wurden nicht gekillt. Also machen wir uns ans Werk
+          // erstmal alles entfernen.
+          removeAll();
 
-          GUI.getView().setLogoText(i18n.tr("Aktualisiere Daten..."));
-          GUI.startSync(new Runnable()
-          {
-            public void run()
-            {
-              try
-              {
-                // Ne, wir wurden nicht gekillt. Also machen wir uns ans Werk
-                // erstmal alles entfernen.
-                removeAll();
-
-                // Liste neu laden
-                Date dfrom = (Date) from.getValue();
-                Date dto   = (Date) to.getValue();
-                GenericIterator items = getList(dfrom,dto);
-                if (items == null)
-                  return;
-                
-                items.begin();
-                while (items.hasNext())
-                  addItem(items.next());
-                
-                // Sortierung wiederherstellen
-                sort();
-                
-                // Speichern der Werte aus den beiden Eingabe-Feldern.
-                // Das From-Datum speichern wir immer
-                mySettings.setAttribute("filter.from",dfrom == null ? (String)null : HBCI.DATEFORMAT.format(dfrom));
-                  
-                // Das End-Datum speichern wir nur, wenn es nicht das aktuelle Datum ist
-                if (dto != null && !HBCIProperties.startOfDay(new Date()).equals(dto))
-                  mySettings.setAttribute("transferlist.filter.to",HBCI.DATEFORMAT.format(dto));
-                else
-                  mySettings.setAttribute("filter.to",(String)null);
-              }
-              catch (Exception e)
-              {
-                Logger.error("error while reloading table",e);
-                Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren der Tabelle"), StatusBarMessage.TYPE_ERROR));
-              }
-              finally
-              {
-                GUI.getView().setLogoText("");
-              }
-            }
-          });
+          // Liste neu laden
+          Date dfrom = (Date) from.getValue();
+          Date dto   = (Date) to.getValue();
+          GenericIterator items = getList(dfrom,dto);
+          if (items == null)
+            return;
+          
+          items.begin();
+          while (items.hasNext())
+            addItem(items.next());
+          
+          // Sortierung wiederherstellen
+          sort();
+          
+          // Speichern der Werte aus den beiden Eingabe-Feldern.
+          // Das From-Datum speichern wir immer
+          mySettings.setAttribute("filter.from",dfrom == null ? (String)null : HBCI.DATEFORMAT.format(dfrom));
+            
+          // Das End-Datum speichern wir nur, wenn es nicht das aktuelle Datum ist
+          if (dto != null && !HBCIProperties.startOfDay(new Date()).equals(dto))
+            mySettings.setAttribute("transferlist.filter.to",HBCI.DATEFORMAT.format(dto));
+          else
+            mySettings.setAttribute("filter.to",(String)null);
         }
-        catch (InterruptedException e)
+        catch (Exception e)
         {
-          return;
+          Logger.error("error while reloading table",e);
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren der Tabelle"), StatusBarMessage.TYPE_ERROR));
         }
         finally
         {
-          // Wir liefen. Also loeschen wir uns
-          timeout = null;
+          GUI.getView().setLogoText("");
         }
       }
-    };
-    timeout.start();
+    });
   }
   
   /**
@@ -286,6 +257,9 @@ public abstract class AbstractFromToList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: AbstractFromToList.java,v $
+ * Revision 1.6  2007/04/26 23:08:13  willuhn
+ * @C Umstellung auf DelayedListener
+ *
  * Revision 1.5  2007/04/26 18:27:38  willuhn
  * *** empty log message ***
  *

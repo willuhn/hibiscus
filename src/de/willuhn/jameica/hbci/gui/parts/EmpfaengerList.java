@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/EmpfaengerList.java,v $
- * $Revision: 1.19 $
- * $Date: 2007/04/26 15:02:36 $
+ * $Revision: 1.20 $
+ * $Date: 2007/04/26 23:08:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -33,6 +33,7 @@ import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
@@ -55,7 +56,7 @@ public class EmpfaengerList extends TablePart implements Part
   private Addressbook book       = null;
   private TextInput search       = null;
   private I18N i18n              = null;
-  private KeyAdapter keyListener = null;
+  private KeyAdapter listener    = null;
 
   private MessageConsumer mc = null;
   
@@ -69,8 +70,9 @@ public class EmpfaengerList extends TablePart implements Part
   {
     super(action);
     
-    this.setMulti(true);
     this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+    this.listener = new DelayedAdapter();
+
     addColumn(i18n.tr("Name"),"name");
     addColumn(i18n.tr("Kontonummer"),"kontonummer");
     addColumn(i18n.tr("Bankleitzahl"),"blz", new Formatter() {
@@ -108,15 +110,16 @@ public class EmpfaengerList extends TablePart implements Part
         return s.substring(0,29) + "...";
       }
     });
+    
     setContextMenu(new de.willuhn.jameica.hbci.gui.menus.EmpfaengerList());
 
+    this.setMulti(true);
+
     // BUGZILLA 84 http://www.willuhn.de/bugzilla/show_bug.cgi?id=84
-    setRememberOrder(true);
+    this.setRememberOrder(true);
     
     // BUGZILLA 233 http://www.willuhn.de/bugzilla/show_bug.cgi?id=233
-    setRememberColWidths(true);
-
-    this.keyListener = new KL();
+    this.setRememberColWidths(true);
 
     // Wir erstellen noch einen Message-Consumer, damit wir ueber neu eintreffende
     // Adressen informiert werden.
@@ -169,7 +172,7 @@ public class EmpfaengerList extends TablePart implements Part
     // Eingabe-Feld fuer die Suche mit Button hinten dran.
     this.search = new TextInput(mySettings.getString("search",null));
     group.addLabelPair(i18n.tr("Name. Konto oder BLZ enthält"), this.search);
-    this.search.getControl().addKeyListener(this.keyListener);
+    this.search.getControl().addKeyListener(this.listener);
 
     
     // Damit wir den MessageConsumer beim Schliessen wieder entfernen
@@ -229,8 +232,8 @@ public class EmpfaengerList extends TablePart implements Part
       // Sollten ganz viele Updates schnell hintereinander
       // kommen, wird das Update damit naemlich erst nach
       // der letzten Aenderung durchgefuehrt.
-      if (EmpfaengerList.this.keyListener != null)
-        EmpfaengerList.this.keyListener.keyReleased(null);
+      if (listener != null)
+        listener.keyReleased(null);
     }
 
     /**
@@ -250,7 +253,7 @@ public class EmpfaengerList extends TablePart implements Part
   private synchronized void reload()
   {
     GUI.getView().setLogoText(i18n.tr("Aktualisiere Daten..."));
-    GUI.startSync(new Runnable()
+    GUI.startSync(new Runnable() // Sanduhr anzeigen
     {
       public void run()
       {
@@ -285,65 +288,42 @@ public class EmpfaengerList extends TablePart implements Part
     });
   }
   
-  
-  // BUGZILLA 5
-  private class KL extends KeyAdapter
+  /**
+   * Da KeyAdapter/KeyListener nicht von swt.Listener abgeleitet
+   * sind, muessen wir leider dieses schraege Konstrukt verenden,
+   * um den DelayedListener verwenden zu koennen
+   */
+  private class DelayedAdapter extends KeyAdapter
   {
-    private boolean sleep = true;
-    private Thread timeout = null;
-   
+    private Listener forward = new DelayedListener(700,new Listener()
+    {
+      /**
+       * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+       */
+      public void handleEvent(Event event)
+      {
+        // hier kommt dann das verzoegerte Event an.
+        reload();
+      }
+    
+    });
+
     /**
-     * @see org.eclipse.swt.events.KeyListener#keyReleased(org.eclipse.swt.events.KeyEvent)
+     * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
      */
     public void keyReleased(KeyEvent e)
     {
-      // Wenn ein Timeout existiert, verlaengern wir einfach
-      // nur dessen Wartezeit
-      if (timeout != null)
-      {
-        sleep = true;
-        return;
-      }
-      
-      // Ein neuer Timer
-      timeout = new Thread("AddressList Reload")
-      {
-        
-        public void run()
-        {
-          try
-          {
-            do
-            {
-              sleep = false;
-              sleep(300l);
-            }
-            while (sleep); // Wir warten ggf. nochmal
-
-            // Ne, wir wurden nicht gekillt. Also machen wir uns ans Werk
-            reload();
-          }
-          catch (InterruptedException e)
-          {
-            return;
-          }
-          finally
-          {
-            // Wir liefen. Also loeschen wir uns
-            timeout = null;
-          }
-        }
-      };
-      timeout.start();
+      forward.handleEvent(null); // Das Event-Objekt interessiert uns eh nicht
     }
   }
-  
-  
 }
 
 
 /**********************************************************************
  * $Log: EmpfaengerList.java,v $
+ * Revision 1.20  2007/04/26 23:08:13  willuhn
+ * @C Umstellung auf DelayedListener
+ *
  * Revision 1.19  2007/04/26 15:02:36  willuhn
  * @N Optisches Feedback beim Neuladen der Daten
  *

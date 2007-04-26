@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.50 $
- * $Date: 2007/04/26 18:27:58 $
+ * $Revision: 1.51 $
+ * $Date: 2007/04/26 23:08:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -197,6 +197,7 @@ public class UmsatzList extends TablePart implements Extendable
 
     if (this.filter)
     {
+      // TODO: Koennte man auch mal noch auf DelayedListener umstellen, ist aber etwas umstaendlich hier
       if (this.kl == null)
         this.kl = new KL();
 
@@ -428,7 +429,7 @@ public class UmsatzList extends TablePart implements Extendable
             do
             {
               sleep = false;
-              sleep(300l);
+              sleep(700l);
             }
             while (sleep); // Wir warten ggf. nochmal
 
@@ -684,6 +685,9 @@ public class UmsatzList extends TablePart implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.51  2007/04/26 23:08:13  willuhn
+ * @C Umstellung auf DelayedListener
+ *
  * Revision 1.50  2007/04/26 18:27:58  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractTransferList.java,v $
- * $Revision: 1.19 $
- * $Date: 2007/04/26 13:59:31 $
+ * $Revision: 1.20 $
+ * $Date: 2007/04/26 23:08:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -213,8 +213,9 @@ public abstract class AbstractTransferList extends AbstractFromToList
       // stattfinden. Um das Buendeln von Mass-Updates kuemmert
       // sich handleReload() selbst, in dem es einen Timerthread
       // verwendet
-      handleReload(true);
-    }
+      if (listener != null)
+        listener.handleEvent(null);
+   }
 
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
@@ -230,6 +231,9 @@ public abstract class AbstractTransferList extends AbstractFromToList
 
 /**********************************************************************
  * $Log: AbstractTransferList.java,v $
+ * Revision 1.20  2007/04/26 23:08:13  willuhn
+ * @C Umstellung auf DelayedListener
+ *
  * Revision 1.19  2007/04/26 13:59:31  willuhn
  * @N Besseres Reload-Verhalten in Transfer-Listen
  *
