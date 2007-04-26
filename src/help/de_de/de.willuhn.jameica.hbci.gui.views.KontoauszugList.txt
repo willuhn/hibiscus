@@ -4,11 +4,9 @@
 	</p>
 	
 	<p>
-		In dieser Liste sehen Sie alle Ums‰tze des angegebenen Zeitraumes.
-		W‰hlen Sie ein Konto aus oder ‰ndern Sie das Start- und End-Datum
-		um die Anzeige weiter einzuschr‰nken.
-		W‰hlen Sie anschlieﬂend <b>Kontoauszug exportieren...</b>, um
-		die angezeigten Ums‰tze z.Bsp. in einer PDF- oder CSV-Datei
-		zu speichern.
+		In dieser Liste sehen Sie alle Ums‰tze, die den angegebenen Kriterien
+		entsprechen. 
+		W‰hlen Sie <b>Kontoauszug exportieren...</b>, um die angezeigten Ums‰tze
+		z.Bsp. in einer PDF- oder CSV-Datei zu speichern.
 	</p>
 </form>

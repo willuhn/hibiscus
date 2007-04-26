@@ -1,0 +1,16 @@
+<form>
+	<p>
+		<span color="header" font="header">Umsätze nach Kategorien</span>
+	</p>
+	
+	<p>
+		In dieser Liste sehen Sie alle Umsätze - gruppiert nach Kategorie,
+		die den angegebenen Kriterien entsprechen.
+		Zu jeder Kategorie wird ausserdem die Summe aller enthaltenen
+		Beträge angezeigt.
+	</p>
+	<p>
+	  Umsätze, die noch keiner Kategorie zugeordnet sind, werden
+	  unter <b>Nicht zugeordnet</b> aufgeführt.
+	</p>
+</form>
