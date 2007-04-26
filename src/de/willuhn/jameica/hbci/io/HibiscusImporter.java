@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Attic/HibiscusImporter.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/04/23 18:07:14 $
+ * $Revision: 1.3 $
+ * $Date: 2007/04/26 13:58:54 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,6 +23,8 @@ import de.willuhn.datasource.BeanUtil;
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.messaging.ImportMessage;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.ProgressMonitor;
@@ -67,6 +69,14 @@ public class HibiscusImporter extends AbstractHibiscusIO implements Importer
           AbstractDBObject newObject = (AbstractDBObject) service.createObject(current.getClass(),null);
           newObject.overwrite(current);
           newObject.store();
+          try
+          {
+            Application.getMessagingFactory().sendMessage(new ImportMessage(newObject));
+          }
+          catch (Exception ex)
+          {
+            Logger.error("error while sending import message",ex);
+          }
         }
         catch (Exception e)
         {
@@ -103,6 +113,9 @@ public class HibiscusImporter extends AbstractHibiscusIO implements Importer
 
 /*********************************************************************
  * $Log: HibiscusImporter.java,v $
+ * Revision 1.3  2007/04/26 13:58:54  willuhn
+ * @N Import-Message nach dem Import senden
+ *
  * Revision 1.2  2007/04/23 18:07:14  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
