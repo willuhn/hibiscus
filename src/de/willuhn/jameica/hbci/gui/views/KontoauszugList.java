@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoauszugList.java,v $
- * $Revision: 1.6 $
- * $Date: 2007/03/21 16:56:56 $
+ * $Revision: 1.7 $
+ * $Date: 2007/04/26 15:02:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,12 +12,17 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.views;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.TabFolder;
+
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Headline;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.controller.KontoauszugControl;
@@ -49,13 +54,23 @@ public class KontoauszugList extends AbstractView
     GUI.getView().setTitle(i18n.tr("Kontoauszüge"));
 
     final KontoauszugControl control = new KontoauszugControl(this);
-    
-    LabelGroup settings = new LabelGroup(getParent(), i18n.tr("Anzeige einschränken"));
 
-    settings.addLabelPair(i18n.tr("Konto"), control.getKontoAuswahl());
-    settings.addLabelPair(i18n.tr("Start-Datum"), control.getStart());
-    settings.addLabelPair(i18n.tr("End-Datum"), control.getEnd());
+    /////////////////////////////////////////////////////////////////
+    // Tab-Container
+    TabFolder folder = new TabFolder(getParent(), SWT.NONE);
+    folder.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+    folder.setBackground(Color.BACKGROUND.getSWTColor());
+
+    TabGroup zeitraum = new TabGroup(folder,i18n.tr("Konto/Zeitraum"));
+    zeitraum.addLabelPair(i18n.tr("Konto"), control.getKontoAuswahl());
+    zeitraum.addLabelPair(i18n.tr("Start-Datum"), control.getStart());
+    zeitraum.addLabelPair(i18n.tr("End-Datum"), control.getEnd());
     
+    TabGroup gegenkonto = new TabGroup(folder,i18n.tr("Gegenkonto"));
+    gegenkonto.addLabelPair(i18n.tr("Kontonummer enthält"),           control.getGegenkontoNummer());    
+    gegenkonto.addLabelPair(i18n.tr("BLZ enthält"),                   control.getGegenkontoBLZ());    
+    gegenkonto.addLabelPair(i18n.tr("Name des Kontoinhabers enthält"),control.getGegenkontoName());
+
     new Headline(getParent(),i18n.tr("Gefundene Umsätze"));
     control.getUmsatzList().paint(getParent());
 
@@ -74,6 +89,9 @@ public class KontoauszugList extends AbstractView
 
 /*******************************************************************************
  * $Log: KontoauszugList.java,v $
+ * Revision 1.7  2007/04/26 15:02:19  willuhn
+ * @N Zusaetzliche Suche nach Gegenkonto
+ *
  * Revision 1.6  2007/03/21 16:56:56  willuhn
  * @N Online-Hilfe aktualisiert
  * @N Bug 337 (Stichtag in Sparquote)
