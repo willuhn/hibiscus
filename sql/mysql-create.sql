@@ -208,3 +208,10 @@ ALTER TABLE ueberweisung ADD CONSTRAINT fk_ueberweisung_konto FOREIGN KEY (konto
 ALTER TABLE umsatz ADD CONSTRAINT fk_umsatz_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
 ALTER TABLE umsatz ADD CONSTRAINT fk_umsatz_umsatztyp FOREIGN KEY (umsatztyp_id) REFERENCES umsatztyp (id);
 ALTER TABLE dauerauftrag ADD CONSTRAINT fk_dauerauftrag_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
+
+-- Indizes fuer grosse Datenmengen
+ALTER TABLE umsatz ADD INDEX (datum);
+ALTER TABLE umsatz ADD INDEX (valuta);
+ALTER TABLE protokoll ADD INDEX (datum);
+ALTER TABLE ueberweisung ADD INDEX (termin);
+ALTER TABLE lastschrift ADD INDEX (termin);
