@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UmsatzTypList.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/11/23 17:25:38 $
+ * $Revision: 1.2 $
+ * $Date: 2007/04/26 12:20:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,11 +16,13 @@ import de.willuhn.jameica.gui.extension.Extendable;
 import de.willuhn.jameica.gui.extension.ExtensionRegistry;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
+import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.UmsatzTypNew;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -41,10 +43,27 @@ public class UmsatzTypList extends ContextMenu implements Extendable
 
 		addItem(new OpenItem());
     addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete()));
+    addItem(ContextMenuItem.SEPARATOR);
+    addItem(new ContextMenuItem(i18n.tr("Neue Umsatz-Kategorie..."), new UNeu()));
     // Wir geben das Context-Menu jetzt noch zur Erweiterung frei.
     ExtensionRegistry.extend(this);
 
 	}
+
+  /**
+   * Ueberschreiben wir, um <b>grundsaetzlich</b> eine neue Umsatzkategorie
+   * anzulegen - auch wenn der Focus auf einer existierenden liegt.
+   */
+  private class UNeu extends UmsatzTypNew
+  {
+    /**
+     * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
+     */
+    public void handleAction(Object context) throws ApplicationException
+    {
+      super.handleAction(null);
+    }
+  } 
 
   /**
    * Ueberschrieben, um zu pruefen, ob ein Array oder ein einzelnes Element markiert ist.
@@ -79,6 +98,9 @@ public class UmsatzTypList extends ContextMenu implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzTypList.java,v $
+ * Revision 1.2  2007/04/26 12:20:42  willuhn
+ * @N Menu-Eintrag "Neue Umsatz-Kategorie..."
+ *
  * Revision 1.1  2006/11/23 17:25:38  willuhn
  * @N Umsatz-Kategorien - in PROGRESS!
  *
