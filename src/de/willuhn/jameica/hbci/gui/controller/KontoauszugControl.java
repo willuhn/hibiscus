@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/KontoauszugControl.java,v $
- * $Revision: 1.17 $
- * $Date: 2007/04/26 18:28:30 $
+ * $Revision: 1.18 $
+ * $Date: 2007/04/27 15:30:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,37 +13,14 @@
 package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-
-import de.willuhn.datasource.GenericIterator;
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
-import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.input.DateInput;
-import de.willuhn.jameica.gui.input.DialogInput;
-import de.willuhn.jameica.gui.input.Input;
-import de.willuhn.jameica.gui.input.SelectInput;
-import de.willuhn.jameica.gui.input.TextInput;
-import de.willuhn.jameica.gui.parts.TablePart;
-import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.HBCIProperties;
-import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.action.UmsatzExport;
-import de.willuhn.jameica.hbci.gui.dialogs.AdresseAuswahlDialog;
-import de.willuhn.jameica.hbci.gui.input.BLZInput;
-import de.willuhn.jameica.hbci.gui.parts.UmsatzList;
-import de.willuhn.jameica.hbci.io.Exporter;
-import de.willuhn.jameica.hbci.rmi.Address;
-import de.willuhn.jameica.hbci.rmi.HBCIDBService;
-import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.gui.parts.KontoauszugList;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
@@ -57,19 +34,7 @@ import de.willuhn.util.I18N;
 public class KontoauszugControl extends AbstractControl
 {
 
-  // Suche nach Konto/zeitraum
-  private SelectInput kontoAuswahl     = null;
-  private DateInput start              = null;
-  private DateInput end                = null;
-
-  // Suche nach Gegenkonto
-  private DialogInput gegenkontoNummer = null;
-  private TextInput gegenkontoName     = null;
-  private TextInput gegenkontoBLZ      = null;
-
-  private Listener listener            = null;
-  private UmsatzList umsatzlist        = null;
-
+  private KontoauszugList list = null;
   private I18N i18n = null;
 
   /**
@@ -79,122 +44,7 @@ public class KontoauszugControl extends AbstractControl
   public KontoauszugControl(AbstractView view)
   {
     super(view);
-    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
-    // bei Ausloesungen ueber SWT-Events verzoegern wir
-    // das Reload, um schnell aufeinanderfolgende Updates
-    // zu buendeln.
-    this.listener = new DelayedListener(new Listener() {
-      public void handleEvent(Event event)
-      {
-        handleReload();
-      }
-    });
-  }
-
-  /**
-   * Liefert eine Auswahlbox fuer das Konto.
-   * @return Auswahlbox.
-   * @throws RemoteException
-   */
-  public Input getKontoAuswahl() throws RemoteException
-  {
-    if (this.kontoAuswahl != null)
-      return this.kontoAuswahl;
-
-    DBIterator it = de.willuhn.jameica.hbci.Settings.getDBService().createList(Konto.class);
-    it.setOrder("ORDER BY blz, kontonummer");
-    this.kontoAuswahl = new SelectInput(it, null);
-    this.kontoAuswahl.setAttribute("longname");
-    this.kontoAuswahl.setPleaseChoose(i18n.tr("Alle Konten"));
-    this.kontoAuswahl.addListener(this.listener);
-    return this.kontoAuswahl;
-  }
-
-  /**
-   * Liefert ein Auswahl-Feld fuer das Start-Datum.
-   * @return Auswahl-Feld.
-   */
-  public Input getStart()
-  {
-    if (this.start != null)
-      return this.start;
-
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(new Date());
-    cal.set(Calendar.DAY_OF_MONTH, 1);
-    Date dStart = HBCIProperties.startOfDay(cal.getTime());
-
-    this.start = new DateInput(dStart, HBCI.DATEFORMAT);
-    this.start.addListener(this.listener);
-    return this.start;
-  }
-
-  /**
-   * Liefert ein Auswahl-Feld fuer das End-Datum.
-   * @return Auswahl-Feld.
-   */
-  public Input getEnd()
-  {
-    if (this.end != null)
-      return this.end;
-
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(new Date());
-    cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
-    Date dEnd = HBCIProperties.endOfDay(cal.getTime());
-    
-    this.end = new DateInput(dEnd, HBCI.DATEFORMAT);
-    this.end.addListener(this.listener);
-    return this.end;
-  }
-  
-  /**
-   * Liefert das Eingabe-Feld fuer die Kontonummer des Gegenkontos.
-   * @return Eingabe-Feld.
-   * @throws RemoteException
-   */
-  public DialogInput getGegenkontoNummer() throws RemoteException
-  {
-    if (this.gegenkontoNummer != null)
-      return this.gegenkontoNummer;
-
-    AdresseAuswahlDialog d = new AdresseAuswahlDialog(AdresseAuswahlDialog.POSITION_MOUSE);
-    d.addCloseListener(new AddressListener());
-    this.gegenkontoNummer = new DialogInput("",d);
-    this.gegenkontoNummer.setValidChars(HBCIProperties.HBCI_KTO_VALIDCHARS);
-    this.gegenkontoNummer.addListener(this.listener);
-    return this.gegenkontoNummer;
-  }
-
-  /**
-   * Liefert das Eingabe-Feld fuer die BLZ.
-   * @return Eingabe-Feld.
-   * @throws RemoteException
-   */
-  public Input getGegenkontoBLZ() throws RemoteException
-  {
-    if (this.gegenkontoBLZ != null)
-      return this.gegenkontoBLZ;
-    
-    this.gegenkontoBLZ = new BLZInput("");
-    this.gegenkontoBLZ.addListener(this.listener);
-    return this.gegenkontoBLZ;
-  }
-
-  /**
-   * Liefert das Eingabe-Feld fuer den Namen des Kontoinhabers.
-   * @return Eingabe-Feld.
-   * @throws RemoteException
-   */
-  public Input getGegenkontoName() throws RemoteException
-  {
-    if (this.gegenkontoName != null)
-      return this.gegenkontoName;
-    this.gegenkontoName = new TextInput("",HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
-    this.gegenkontoName.setValidChars(HBCIProperties.HBCI_DTAUS_VALIDCHARS);
-    this.gegenkontoName.addListener(this.listener);
-    return this.gegenkontoName;
+    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
   /**
@@ -202,102 +52,34 @@ public class KontoauszugControl extends AbstractControl
    * @return Liste der Umsaetze.
    * @throws RemoteException
    */
-  public TablePart getUmsatzList() throws RemoteException
+  public KontoauszugList getKontoauszugList() throws RemoteException
   {
-    if (this.umsatzlist == null)
-    {
-      this.umsatzlist = new UmsatzList(getUmsaetze(), new UmsatzDetail());
-      this.umsatzlist.setFilterVisible(false);
-    }
-    return this.umsatzlist;
+    if (this.list == null)
+      this.list = new KontoauszugList(new UmsatzDetail());
+    return this.list;
   }
   
-  
-  /**
-   * Liefert die Liste der Umsaetze basierend auf der aktuellen Auswahl.
-   * @return Liste der Umsaetze.
-   * @throws RemoteException
-   */
-  private synchronized GenericIterator getUmsaetze() throws RemoteException
-  {
-    Konto k         = (Konto) getKontoAuswahl().getValue();
-    Date start      = (Date) getStart().getValue();
-    Date end        = (Date) getEnd().getValue();
-    String gkName   = (String) getGegenkontoName().getValue();
-    String gkBLZ    = (String) getGegenkontoBLZ().getValue();
-    String gkNummer = (String) getGegenkontoNummer().getText();
-    
-    HBCIDBService service = (HBCIDBService) Settings.getDBService();
-
-    DBIterator umsaetze = Settings.getDBService().createList(Umsatz.class);
-
-    /////////////////////////////////////////////////////////////////
-    // Konto und Zeitraum
-    if (k != null)     umsaetze.addFilter("konto_id = " + k.getID());
-    if (start != null) umsaetze.addFilter("valuta >= ?", new Object[]{new java.sql.Date(HBCIProperties.startOfDay(start).getTime())});
-    if (end != null)   umsaetze.addFilter("valuta <= ?", new Object[]{new java.sql.Date(HBCIProperties.endOfDay(end).getTime())});
-    /////////////////////////////////////////////////////////////////
-    // Gegenkonto
-    if (gkBLZ    != null && gkBLZ.length() > 0)    umsaetze.addFilter("empfaenger_blz like ?",new Object[]{"%" + gkBLZ + "%"});
-    if (gkNummer != null && gkNummer.length() > 0) umsaetze.addFilter("empfaenger_konto like ?",new Object[]{"%" + gkNummer + "%"});
-    if (gkName   != null && gkName.length() > 0)   umsaetze.addFilter("LOWER(empfaenger_name) like ?",new Object[]{"%" + gkName.toLowerCase() + "%"});
-    /////////////////////////////////////////////////////////////////
-    
-    umsaetze.setOrder("ORDER BY " + service.getSQLTimestamp("valuta") + " asc, id asc");
-    return umsaetze;
-  }
-
-  /**
-   * Aktualisiert die Tabelle der angezeigten Umsaetze.
-   */
-  public synchronized void handleReload()
-  {
-    if (!hasChanged())
-      return;
-
-    GUI.startSync(new Runnable() // Sanduhr einblenden
-    {
-      public void run()
-      {
-        try
-        {
-          TablePart part = getUmsatzList();
-          part.removeAll();
-          
-          GenericIterator list = getUmsaetze();
-          while (list.hasNext())
-            part.addItem(list.next());
-          
-          // Zum Schluss Sortierung aktualisieren
-          part.sort();
-        }
-        catch (Exception e)
-        {
-          Logger.error("error while reloading table",e);
-          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren der Umsätze"), StatusBarMessage.TYPE_ERROR));
-        }
-      }
-    });
-  }
   
   /**
    * Startet den Export.
    */
   public synchronized void handlePrint()
   {
-    // Vorher machen wir nochmal ein UNVERZOEGERTES Reload,
-    // denn es muss sichergestellt sein, dass die Tabelle
-    // aktuell ist, wenn wir als naechstes getItems()
-    // aufrufen
-    handleReload();
-
     try
     {
+      KontoauszugList auszug = getKontoauszugList();
+
+      // Vorher machen wir nochmal ein UNVERZOEGERTES Reload,
+      // denn es muss sichergestellt sein, dass die Tabelle
+      // aktuell ist, wenn wir als naechstes getItems()
+      // aufrufen
+      auszug.handleReload();
+
       // Wir laden die Umsaetze direkt aus der Tabelle.
       // Damit werden genau die ausgegeben, die gerade
       // angezeigt werden und wir sparen uns das erneute
       // Laden aus der Datenbank
-      List list = getUmsatzList().getItems();
+      List list = auszug.getItems();
 
       if (list == null || list.size() == 0)
       {
@@ -306,8 +88,9 @@ public class KontoauszugControl extends AbstractControl
       }
 
       // Start- und End-Datum als Contextparameter an Exporter uebergeben
-      Exporter.SESSION.put("pdf.start",getStart().getValue());
-      Exporter.SESSION.put("pdf.end",getEnd().getValue());
+      // TODO Parameter uebergeben
+//      Exporter.SESSION.put("pdf.start",getStart().getValue());
+//      Exporter.SESSION.put("pdf.end",getEnd().getValue());
 
       Umsatz[] u = (Umsatz[]) list.toArray(new Umsatz[list.size()]);
       new UmsatzExport().handleAction(u);
@@ -322,63 +105,13 @@ public class KontoauszugControl extends AbstractControl
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Exportieren der Umsätze"), StatusBarMessage.TYPE_ERROR));
     }
   }
-  
-  /**
-   * Prueft, ob seit der letzten Aktion Eingaben geaendert wurden.
-   * Ist das nicht der Fall, muss die Tabelle nicht neu geladen werden.
-   * @return true, wenn sich die Daten geaendert haben.
-   */
-  private boolean hasChanged()
-  {
-    try
-    {
-      return getStart().hasChanged() ||
-                getEnd().hasChanged() ||
-                getKontoAuswahl().hasChanged() ||
-                getGegenkontoName().hasChanged() ||
-                getGegenkontoNummer().hasChanged() ||
-                getGegenkontoBLZ().hasChanged();
-    }
-    catch (Exception e)
-    {
-      Logger.error("unable to check change status",e);
-      return false;
-    }
-  }
-  
-  /**
-   * Listener, der bei Auswahl der Adresse die restlichen Daten vervollstaendigt.
-   */
-  private class AddressListener implements Listener
-  {
-
-    /**
-     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-     */
-    public void handleEvent(Event event)
-    {
-      if (event == null || event.data == null)
-        return;
-
-      Address address = (Address) event.data;
-      try
-      {
-        getGegenkontoNummer().setText(address.getKontonummer());
-        getGegenkontoBLZ().setValue(address.getBLZ());
-        getGegenkontoName().setValue(address.getName());
-      }
-      catch (RemoteException er)
-      {
-        Logger.error("error while choosing gegenkonto",er);
-        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler bei der Auswahl des Gegenkontos"), StatusBarMessage.TYPE_ERROR));
-      }
-    }
-  }
-  
 }
 
 /*******************************************************************************
  * $Log: KontoauszugControl.java,v $
+ * Revision 1.18  2007/04/27 15:30:44  willuhn
+ * @N Kontoauszug-Liste in TablePart verschoben
+ *
  * Revision 1.17  2007/04/26 18:28:30  willuhn
  * @N Ausfuehren der Reloads via DelayedListener
  *
