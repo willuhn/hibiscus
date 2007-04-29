@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzTypTreeControl.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/04/19 18:12:21 $
- * $Author: willuhn $
+ * $Revision: 1.3 $
+ * $Date: 2007/04/29 10:19:35 $
+ * $Author: jost $
  * $Locker:  $
  * $State: Exp $
  *
@@ -178,8 +178,7 @@ public class UmsatzTypTreeControl extends AbstractControl
       umsaetze = service.createList(Umsatz.class);
       if (von != null) umsaetze.addFilter("valuta >= ?", new Object[]{new java.sql.Date(HBCIProperties.startOfDay(von).getTime())});
       if (bis != null) umsaetze.addFilter("valuta <= ?", new Object[]{new java.sql.Date(HBCIProperties.endOfDay(bis).getTime())});
-
-      umsaetze.setOrder("ORDER BY " + service.getSQLTimestamp("valuta") + " desc, id desc");
+      umsaetze.setOrder("ORDER BY " + service.getSQLTimestamp("valuta") + " asc, id desc");
     }
     ////////////////////////////////////////////////////////////////
     
@@ -215,8 +214,8 @@ public class UmsatzTypTreeControl extends AbstractControl
 
 /*******************************************************************************
  * $Log: UmsatzTypTreeControl.java,v $
- * Revision 1.2  2007/04/19 18:12:21  willuhn
- * @N MySQL-Support (GUI zum Konfigurieren fehlt noch)
+ * Revision 1.3  2007/04/29 10:19:35  jost
+ * Sortierung umgekehrt.
  *
  * Revision 1.1  2007/03/22 22:36:42  willuhn
  * @N Contextmenu in Trees
