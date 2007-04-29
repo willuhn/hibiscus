@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/PDFUmsatzExporter.java,v $
- * $Revision: 1.7 $
- * $Date: 2007/04/23 18:07:14 $
- * $Author: willuhn $
+ * $Revision: 1.8 $
+ * $Date: 2007/04/29 10:21:20 $
+ * $Author: jost $
  * $Locker:  $
  * $State: Exp $
  *
@@ -14,6 +14,7 @@
 package de.willuhn.jameica.hbci.io;
 
 import java.awt.Color;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -115,112 +116,58 @@ public class PDFUmsatzExporter implements Exporter
     d = (Date) Exporter.SESSION.get("pdf.end");
     if (d != null) endDate = d;
     
-    // Der Export
-    Document rpt = null;
-    
     try
     {
-      //////////////////////////////////////////////////////////////////////////
-      // Header erzeugen
-      if (monitor != null) 
-      {
-        monitor.setStatusText(i18n.tr("Erzeuge PDF-Datei"));
-        monitor.addPercentComplete(1);
-      }
-      String subTitle = i18n.tr("Kontoauszug {0} - {1}", new String[]{startDate == null ? "" : HBCI.DATEFORMAT.format(startDate),endDate == null ? "" : HBCI.DATEFORMAT.format(endDate)});
+      // Der Export
+      String subTitle = i18n.tr("{0} - {1}", new String[]{startDate == null ? "" : HBCI.DATEFORMAT.format(startDate),endDate == null ? "" : HBCI.DATEFORMAT.format(endDate)});
+      Reporter reporter = new Reporter(os,monitor, "Kontoauszug", subTitle, objects.length  );
 
-      rpt = new Document();
+      reporter.addHeaderColumn("Valuta / Buchungs- datum",Element.ALIGN_CENTER,30,  Color.LIGHT_GRAY);
+      reporter.addHeaderColumn("Empfänger/Einzahler",     Element.ALIGN_CENTER,100, Color.LIGHT_GRAY);
+      reporter.addHeaderColumn("Zahlungsgrund",           Element.ALIGN_CENTER,120, Color.LIGHT_GRAY);
+      reporter.addHeaderColumn("Betrag",                  Element.ALIGN_CENTER,30,  Color.LIGHT_GRAY);
+      reporter.addHeaderColumn("Saldo",                   Element.ALIGN_CENTER,30,  Color.LIGHT_GRAY);
+      reporter.createHeader();
 
-      PdfWriter.getInstance(rpt,os);
-      rpt.setMargins(80, 30, 20, 30); // links, rechts, oben, unten
-
-      AbstractPlugin plugin = Application.getPluginLoader().getPlugin(HBCI.class);
-      rpt.addAuthor(i18n.tr("Hibiscus - Version {0}",""+plugin.getManifest().getVersion()));
-
-      rpt.addTitle(subTitle);
-      //////////////////////////////////////////////////////////////////////////
-
-
-      //////////////////////////////////////////////////////////////////////////
-      // Footer erzeugen
-      Chunk fuss = new Chunk(i18n.tr("Ausgegeben am {0}              Seite:  ",HBCI.LONGDATEFORMAT.format(new Date())),FontFactory.getFont(FontFactory.HELVETICA, 8, Font.BOLD));
-      HeaderFooter hf = new HeaderFooter(new Phrase(fuss), true);
-      hf.setAlignment(Element.ALIGN_CENTER);
-      rpt.setFooter(hf);
-
-      rpt.open();
       
-      Paragraph pTitle = new Paragraph(i18n.tr("Kontoauszug"), FontFactory.getFont(FontFactory.HELVETICA_BOLD, 13));
-      pTitle.setAlignment(Element.ALIGN_CENTER);
-      rpt.add(pTitle);
-      Paragraph psubTitle = new Paragraph(subTitle, FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10));
-      psubTitle.setAlignment(Element.ALIGN_CENTER);
-      rpt.add(psubTitle);
-      //////////////////////////////////////////////////////////////////////////
-
-    
-      //////////////////////////////////////////////////////////////////////////
       // Iteration ueber Umsaetze
-      PdfPTable table = new PdfPTable(5);
-      float[] widths = { 30, 100, 120, 30, 30 };
-      table.setWidths(widths);
-      table.setWidthPercentage(100);
-      table.setSpacingBefore(10);
-      table.setSpacingAfter(0);
-
-      table.addCell(getDetailCell("Valuta / Buchungs- datum",Element.ALIGN_CENTER, Color.LIGHT_GRAY));
-      table.addCell(getDetailCell("Empfänger/Einzahler",     Element.ALIGN_CENTER,Color.LIGHT_GRAY));
-      table.addCell(getDetailCell("Zahlungsgrund",           Element.ALIGN_CENTER,Color.LIGHT_GRAY));
-      table.addCell(getDetailCell("Betrag",                  Element.ALIGN_CENTER,Color.LIGHT_GRAY));
-      table.addCell(getDetailCell("Saldo",                   Element.ALIGN_CENTER, Color.LIGHT_GRAY));
-      table.setHeaderRows(1);
-
-
-      int count = 0;
-      double factor = 1;
-      if (monitor != null)
-      {
-        factor = ((double)(100 - monitor.getPercentComplete())) / objects.length;
-        monitor.setStatusText(i18n.tr("Exportiere Umsätze"));
-      }
-
       Enumeration konten = umsaetze.keys();
       while (konten.hasMoreElements())
       {
         String id = (String) konten.nextElement();
         Konto konto = (Konto) Settings.getDBService().createObject(Konto.class,id);
         
-        PdfPCell cell = getDetailCell(konto.getLongName(), Element.ALIGN_CENTER,Color.LIGHT_GRAY);
+        PdfPCell cell = reporter.getDetailCell(konto.getLongName(), Element.ALIGN_CENTER,Color.LIGHT_GRAY);
         cell.setColspan(5);
-        table.addCell(cell);
+        reporter.addColumn(cell);
 
         ArrayList list = (ArrayList) umsaetze.get(id);
 
         if (list.size() == 0)
         {
-          PdfPCell empty = getDetailCell(i18n.tr("Keine Umsätze"), Element.ALIGN_CENTER,Color.LIGHT_GRAY);
+          PdfPCell empty = reporter.getDetailCell(i18n.tr("Keine Umsätze"), Element.ALIGN_CENTER,Color.LIGHT_GRAY);
           empty.setColspan(5);
-          table.addCell(empty);
+          reporter.addColumn(empty);
           continue;
         }
         
         for (int i=0;i<list.size();++i)
         {
-          if (monitor != null)  monitor.setPercentComplete((int)((count++) * factor));
 
           u = (Umsatz)list.get(i);
-          table.addCell(getDetailCell((u.getValuta() != null ? HBCI.DATEFORMAT.format(u.getValuta()) : "" ) + "\n"
+          reporter.addColumn(reporter.getDetailCell((u.getValuta() != null ? HBCI.DATEFORMAT.format(u.getValuta()) : "" ) + "\n"
                                     + (u.getDatum() != null ? HBCI.DATEFORMAT.format(u.getDatum()) : ""), Element.ALIGN_LEFT));
-          table.addCell(getDetailCell(notNull(u.getGegenkontoName()) + "\n"
-                                    + notNull(u.getArt()), Element.ALIGN_LEFT));
-          table.addCell(getDetailCell(notNull(u.getZweck()) + "\n"
-                                   + notNull(u.getZweck2()), Element.ALIGN_LEFT));
-          table.addCell(getDetailCell(u.getBetrag()));
-          table.addCell(getDetailCell(u.getSaldo()));
+          reporter.addColumn(reporter.getDetailCell(reporter.notNull(u.getGegenkontoName()) + "\n"
+                                    + reporter.notNull(u.getArt()), Element.ALIGN_LEFT));
+          reporter.addColumn(reporter.getDetailCell(reporter.notNull(u.getZweck()) + "\n"
+                                   + reporter.notNull(u.getZweck2()), Element.ALIGN_LEFT));
+          reporter.addColumn(reporter.getDetailCell(u.getBetrag()));
+          reporter.addColumn(reporter.getDetailCell(u.getSaldo()));
+          reporter.setNextRecord();
         }
 
       }
-      rpt.add(table);
+      reporter.close();
     
     }
     catch (DocumentException e)
@@ -228,71 +175,14 @@ public class PDFUmsatzExporter implements Exporter
       Logger.error("error while creating report",e);
       throw new ApplicationException(i18n.tr("Fehler beim Erzeugen des Reports"),e);
     }
-    finally
+    catch (IOException e)
     {
-      if (monitor != null)
-      {
-        monitor.setStatusText(i18n.tr("Schließe PDF-Datei"));
-      }
-      if (rpt != null)
-        rpt.close();
+      Logger.error("error while creating report",e);
+      throw new ApplicationException(i18n.tr("Fehler beim Erzeugen des Reports"),e);
     }
 
   }
 
-  /**
-   * Erzeugt eine Zelle der Tabelle.
-   * @param text der anzuzeigende Text.
-   * @param align die Ausrichtung.
-   * @param backgroundcolor die Hintergundfarbe.
-   * @return die erzeugte Zelle.
-   */
-  private PdfPCell getDetailCell(String text, int align, Color backgroundcolor)
-  {
-    PdfPCell cell = new PdfPCell(new Phrase(notNull(text), FontFactory.getFont(FontFactory.HELVETICA, 8)));
-    cell.setHorizontalAlignment(align);
-    cell.setBackgroundColor(backgroundcolor);
-    return cell;
-  }
-
-  /**
-   * Erzeugt eine Zelle der Tabelle.
-   * @param text der anzuzeigende Text.
-   * @param align die Ausrichtung.
-   * @return die erzeugte Zelle.
-   */
-  private PdfPCell getDetailCell(String text, int align)
-  {
-    return getDetailCell(text, align, Color.WHITE);
-  }
-
-  /**
-   * Erzeugt eine Zelle fuer die uebergebene Zahl.
-   * @param value die Zahl.
-   * @return die erzeugte Zelle.
-   */
-  private PdfPCell getDetailCell(double value)
-  {
-    Font f = null;
-    if (value >= 0)
-      f = FontFactory.getFont(FontFactory.HELVETICA, 8, Font.NORMAL,Color.BLACK);
-    else
-      f = FontFactory.getFont(FontFactory.HELVETICA, 8, Font.NORMAL, Color.RED);
-    PdfPCell cell = new PdfPCell(new Phrase(HBCI.DECIMALFORMAT.format(value), f));
-    cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-    return cell;
-  }
-
-  /**
-   * Gibt einen Leerstring aus, falls der Text null ist.
-   * @param text der Text.
-   * @return der Text oder Leerstring - niemals null.
-   */
-  private String notNull(String text)
-  {
-    return text == null ? "" : text;
-  }
-  
   /**
    * @see de.willuhn.jameica.hbci.io.IO#getName()
    */
@@ -332,6 +222,9 @@ public class PDFUmsatzExporter implements Exporter
 
 /*********************************************************************
  * $Log: PDFUmsatzExporter.java,v $
+ * Revision 1.8  2007/04/29 10:21:20  jost
+ * Umstellung auf neue Reporter-Klasse
+ *
  * Revision 1.7  2007/04/23 18:07:14  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
