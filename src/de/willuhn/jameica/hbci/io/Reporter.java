@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Reporter.java,v $
- * $Revision: 1.1 $
- * $Date: 2007/04/29 10:21:49 $
+ * $Revision: 1.2 $
+ * $Date: 2007/05/01 07:17:21 $
  * $Author: jost $
  * $Locker:  $
  * $State: Exp $
@@ -213,6 +213,11 @@ public class Reporter
     return getDetailCell(text, align, Color.WHITE);
   }
 
+  public PdfPCell getDetailCell(Double value)
+  {
+    return getDetailCell(value.doubleValue());
+  }
+
   /**
    * Erzeugt eine Zelle fuer die uebergebene Zahl.
    * 
@@ -249,7 +254,9 @@ public class Reporter
 
 /*******************************************************************************
  * $Log: Reporter.java,v $
- * Revision 1.1  2007/04/29 10:21:49  jost
- * PDF-Ausgabe jetzt zentral in einer Klasse
- *
+ * Revision 1.2  2007/05/01 07:17:21  jost
+ * Compilierfehler unter 1.4 verhindert.
+ * Revision 1.1 2007/04/29 10:21:49 jost PDF-Ausgabe
+ * jetzt zentral in einer Klasse
+ * 
  ******************************************************************************/
