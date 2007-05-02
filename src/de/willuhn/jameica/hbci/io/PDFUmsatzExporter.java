@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/PDFUmsatzExporter.java,v $
- * $Revision: 1.8 $
- * $Date: 2007/04/29 10:21:20 $
- * $Author: jost $
+ * $Revision: 1.9 $
+ * $Date: 2007/05/02 11:18:04 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -22,24 +22,14 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
-import com.lowagie.text.Font;
-import com.lowagie.text.FontFactory;
-import com.lowagie.text.HeaderFooter;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.pdf.PdfWriter;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
-import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -116,11 +106,13 @@ public class PDFUmsatzExporter implements Exporter
     d = (Date) Exporter.SESSION.get("pdf.end");
     if (d != null) endDate = d;
     
+    Reporter reporter = null;
+    
     try
     {
       // Der Export
       String subTitle = i18n.tr("{0} - {1}", new String[]{startDate == null ? "" : HBCI.DATEFORMAT.format(startDate),endDate == null ? "" : HBCI.DATEFORMAT.format(endDate)});
-      Reporter reporter = new Reporter(os,monitor, "Kontoauszug", subTitle, objects.length  );
+      reporter = new Reporter(os,monitor, "Kontoauszug", subTitle, objects.length  );
 
       reporter.addHeaderColumn("Valuta / Buchungs- datum",Element.ALIGN_CENTER,30,  Color.LIGHT_GRAY);
       reporter.addHeaderColumn("Empfänger/Einzahler",     Element.ALIGN_CENTER,100, Color.LIGHT_GRAY);
@@ -165,22 +157,35 @@ public class PDFUmsatzExporter implements Exporter
           reporter.addColumn(reporter.getDetailCell(u.getSaldo()));
           reporter.setNextRecord();
         }
-
       }
-      reporter.close();
-    
+      if (monitor != null) monitor.setStatus(ProgressMonitor.STATUS_DONE);
     }
     catch (DocumentException e)
     {
+      if (monitor != null) monitor.setStatus(ProgressMonitor.STATUS_ERROR);
       Logger.error("error while creating report",e);
       throw new ApplicationException(i18n.tr("Fehler beim Erzeugen des Reports"),e);
     }
     catch (IOException e)
     {
+      if (monitor != null) monitor.setStatus(ProgressMonitor.STATUS_ERROR);
       Logger.error("error while creating report",e);
       throw new ApplicationException(i18n.tr("Fehler beim Erzeugen des Reports"),e);
     }
-
+    finally
+    {
+      if (reporter != null)
+      {
+        try
+        {
+          reporter.close();
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to close report",e);
+        }
+      }
+    }
   }
 
   /**
@@ -222,6 +227,9 @@ public class PDFUmsatzExporter implements Exporter
 
 /*********************************************************************
  * $Log: PDFUmsatzExporter.java,v $
+ * Revision 1.9  2007/05/02 11:18:04  willuhn
+ * @C PDF-Export von Umsatz-Trees in IO-API gepresst ;)
+ *
  * Revision 1.8  2007/04/29 10:21:20  jost
  * Umstellung auf neue Reporter-Klasse
  *

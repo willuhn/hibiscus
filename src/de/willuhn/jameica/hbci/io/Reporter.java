@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Reporter.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/05/01 07:17:21 $
- * $Author: jost $
+ * $Revision: 1.3 $
+ * $Date: 2007/05/02 11:18:04 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -16,7 +16,6 @@ package de.willuhn.jameica.hbci.io;
 import java.awt.Color;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,11 +37,12 @@ import com.lowagie.text.pdf.PdfWriter;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 import de.willuhn.util.ProgressMonitor;
 
 /**
- * Erstellung von Reports
+ * Kapselt den Export von Daten im PDF-Format.
  */
 public class Reporter
 {
@@ -64,6 +64,15 @@ public class Reporter
 
   private ProgressMonitor monitor;
 
+  /**
+   * ct.
+   * @param out
+   * @param monitor
+   * @param title
+   * @param subtitle
+   * @param maxRecords
+   * @throws DocumentException
+   */
   public Reporter(OutputStream out, ProgressMonitor monitor, String title,
       String subtitle, int maxRecords) throws DocumentException
   {
@@ -74,10 +83,10 @@ public class Reporter
     rpt = new Document();
     PdfWriter.getInstance(rpt, out);
     rpt.setMargins(80, 30, 20, 20); // links, rechts, oben, unten
-    if (monitor != null)
+    if (this.monitor != null)
     {
-      monitor.setStatusText(i18n.tr("Erzeuge Liste"));
-      monitor.addPercentComplete(1);
+      this.monitor.setStatusText(i18n.tr("Erzeuge Liste"));
+      this.monitor.addPercentComplete(1);
     }
     AbstractPlugin plugin = Application.getPluginLoader().getPlugin(HBCI.class);
     rpt.addAuthor(i18n.tr("{0} - Version {1}",
@@ -100,13 +109,9 @@ public class Reporter
       URL url = loader.getResource("icons/hibiscus-icon-16x16.png");
       rpt.add(Image.getInstance(url));
     }
-    catch (MalformedURLException e)
+    catch (Exception e)
     {
-      e.printStackTrace();
-    }
-    catch (IOException e)
-    {
-      e.printStackTrace();
+      Logger.error("unable to add hibiscus icon, will be ignored",e);
     }
 
     Paragraph pTitle = new Paragraph(i18n.tr(title), FontFactory.getFont(
@@ -126,28 +131,52 @@ public class Reporter
     this.maxRecords = maxRecords;
   }
 
+  /**
+   * Fuegt einen neuen Absatz hinzu.
+   * @param p
+   * @throws DocumentException
+   */
   public void add(Paragraph p) throws DocumentException
   {
     rpt.add(p);
   }
 
+  /**
+   * Fuegt der Tabelle einen neuen Spaltenkopf hinzu.
+   * @param text
+   * @param align
+   * @param width
+   * @param color
+   */
   public void addHeaderColumn(String text, int align, int width, Color color)
   {
     headers.add(getDetailCell(text, align, color));
     widths.add(new Integer(width));
   }
 
+  /**
+   * Fuegt eine neue Spalte hinzu.
+   * @param cell
+   */
   public void addColumn(PdfPCell cell)
   {
     table.addCell(cell);
   }
 
+  /**
+   * Rueckt den Monitor weiter.
+   */
   public void setNextRecord()
   {
     currRecord++;
-    monitor.setPercentComplete(currRecord / maxRecords * 100);
+    if (monitor != null)
+      monitor.setPercentComplete(currRecord / maxRecords * 100);
   }
 
+  /**
+   * Erzeugt den Tabellen-Header.
+   * @throws DocumentException
+   */
   public void createHeader() throws DocumentException
   {
     table = new PdfPTable(headers.size());
@@ -169,14 +198,29 @@ public class Reporter
     table.setHeaderRows(1);
   }
 
+  /**
+   * Schliesst den Report.
+   * @throws IOException
+   * @throws DocumentException
+   */
   public void close() throws IOException, DocumentException
   {
-    monitor.setPercentComplete(100);
-    monitor.setStatusText("Liste aufbereitet");
-    monitor.setStatus(ProgressMonitor.STATUS_DONE);
-    rpt.add(table);
-    rpt.close();
-    out.close();
+    try
+    {
+      if (monitor != null)
+      {
+        monitor.setPercentComplete(100);
+        monitor.setStatusText("PDF-Export beendet");
+      }
+      rpt.add(table);
+      rpt.close();
+    }
+    finally
+    {
+      // Es muss sichergestellt sein, dass der OutputStream
+      // immer geschlossen wird
+      out.close();
+    }
   }
 
   /**
@@ -213,6 +257,11 @@ public class Reporter
     return getDetailCell(text, align, Color.WHITE);
   }
 
+  /**
+   * Erzeugt eine Zelle der Tabelle.
+   * @param value
+   * @return die erzeugte Zelle.
+   */
   public PdfPCell getDetailCell(Double value)
   {
     return getDetailCell(value.doubleValue());
@@ -254,6 +303,9 @@ public class Reporter
 
 /*******************************************************************************
  * $Log: Reporter.java,v $
+ * Revision 1.3  2007/05/02 11:18:04  willuhn
+ * @C PDF-Export von Umsatz-Trees in IO-API gepresst ;)
+ *
  * Revision 1.2  2007/05/01 07:17:21  jost
  * Compilierfehler unter 1.4 verhindert.
  * Revision 1.1 2007/04/29 10:21:49 jost PDF-Ausgabe

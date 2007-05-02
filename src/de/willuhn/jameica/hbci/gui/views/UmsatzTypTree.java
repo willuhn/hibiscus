@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzTypTree.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/04/29 10:20:50 $
- * $Author: jost $
+ * $Revision: 1.3 $
+ * $Date: 2007/05/02 11:18:04 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -26,7 +26,7 @@ import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.Back;
-import de.willuhn.jameica.hbci.gui.action.UmsatzKategorieListeAction;
+import de.willuhn.jameica.hbci.gui.action.UmsatzTypTreeExport;
 import de.willuhn.jameica.hbci.gui.controller.UmsatzTypTreeControl;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -67,8 +67,7 @@ public class UmsatzTypTree extends AbstractView
     ButtonArea buttons = new ButtonArea(getParent(), 3);
     buttons.addButton(i18n.tr("Zurück"), new Back());
 
-    buttons.addButton(i18n.tr("PDF-Ausgabe"), new UmsatzKategorieListeAction(),
-        control);
+    buttons.addButton(i18n.tr("Exportieren..."), new UmsatzTypTreeExport(),control.getUmsatzTree());
     buttons.addButton(i18n.tr("Aktualisieren"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -81,6 +80,9 @@ public class UmsatzTypTree extends AbstractView
 }
 /*******************************************************************************
  * $Log: UmsatzTypTree.java,v $
+ * Revision 1.3  2007/05/02 11:18:04  willuhn
+ * @C PDF-Export von Umsatz-Trees in IO-API gepresst ;)
+ *
  * Revision 1.2  2007/04/29 10:20:50  jost
  * Neu: PDF-Ausgabe der UmsÃ¤tze nach Kategorien
  * Revision 1.1 2007/03/22 22:36:42 willuhn
