@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/tests/PreTimeRestriction.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/11/14 13:38:43 $
+ * $Revision: 1.5 $
+ * $Date: 2007/05/02 12:03:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.Properties;
 
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -39,7 +40,7 @@ public class PreTimeRestriction implements Restriction
    */
   public PreTimeRestriction(Date ersteZahlung, Properties jobRestrictions)
   {
-  	this.date = ersteZahlung;
+  	this.date = HBCIProperties.startOfDay(ersteZahlung);
   	this.p = jobRestrictions;
   	
   	this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
@@ -75,11 +76,9 @@ public class PreTimeRestriction implements Restriction
 		}
 		
 		Calendar cal = Calendar.getInstance(Application.getConfig().getLocale());
-		cal.setTime(new Date());
-		cal.set(Calendar.HOUR_OF_DAY,0);
-		cal.set(Calendar.MINUTE,1);
 		cal.add(Calendar.DATE, i);
-		if (cal.getTime().after(date))
+    Date test = HBCIProperties.startOfDay(cal.getTime());
+		if (date.before(test))
 		{
 			throw new ApplicationException(i18n.tr("Das Datum der Zahlung muss mindestens {0} Tag(e) in der Zukunft liegen",min));
 		}
@@ -120,6 +119,9 @@ public class PreTimeRestriction implements Restriction
 
 /**********************************************************************
  * $Log: PreTimeRestriction.java,v $
+ * Revision 1.5  2007/05/02 12:03:40  willuhn
+ * @B Uhrzeit bei Vorlaufzeit nicht beruecksichtigen
+ *
  * Revision 1.4  2005/11/14 13:38:43  willuhn
  * @N Termin-Ueberweisungen
  *
