@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/Attic/KontoauszugControl.java,v $
- * $Revision: 1.18 $
- * $Date: 2007/04/27 15:30:44 $
+ * $Revision: 1.19 $
+ * $Date: 2007/05/02 12:40:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,6 +21,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.action.UmsatzExport;
 import de.willuhn.jameica.hbci.gui.parts.KontoauszugList;
+import de.willuhn.jameica.hbci.io.Exporter;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
@@ -88,9 +89,8 @@ public class KontoauszugControl extends AbstractControl
       }
 
       // Start- und End-Datum als Contextparameter an Exporter uebergeben
-      // TODO Parameter uebergeben
-//      Exporter.SESSION.put("pdf.start",getStart().getValue());
-//      Exporter.SESSION.put("pdf.end",getEnd().getValue());
+      Exporter.SESSION.put("pdf.start",auszug.getStart().getValue());
+      Exporter.SESSION.put("pdf.end",auszug.getEnd().getValue());
 
       Umsatz[] u = (Umsatz[]) list.toArray(new Umsatz[list.size()]);
       new UmsatzExport().handleAction(u);
@@ -109,6 +109,10 @@ public class KontoauszugControl extends AbstractControl
 
 /*******************************************************************************
  * $Log: KontoauszugControl.java,v $
+ * Revision 1.19  2007/05/02 12:40:18  willuhn
+ * @C UmsatzTree*-Exporter nur fuer Objekte des Typs "UmsatzTree" anbieten
+ * @C Start- und End-Datum in Kontoauszug speichern und an PDF-Export via Session uebergeben
+ *
  * Revision 1.18  2007/04/27 15:30:44  willuhn
  * @N Kontoauszug-Liste in TablePart verschoben
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/04/27 15:33:03 $
+ * $Revision: 1.3 $
+ * $Date: 2007/05/02 12:40:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,8 +18,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
@@ -28,6 +26,7 @@ import org.eclipse.swt.widgets.TabFolder;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.DateInput;
@@ -130,28 +129,6 @@ public class KontoauszugList extends UmsatzList
     
     super.paint(parent);
 
-    // TODO
-//    parent.addDisposeListener(new DisposeListener() {
-//      public void widgetDisposed(DisposeEvent e)
-//      {
-//        try
-//        {
-//          // Wir speichern hier alle eingegebenen Suchbegriffe fuer's naechste mal
-//          Date from = (Date) getStart().getValue();
-//          Date to   = (Date) getEnd().getValue();
-//          Konto k   = (Konto) getKontoAuswahl().getValue();
-//          mySettings.setAttribute("kontoauszug.list.from",from == null ? null : HBCI.DATEFORMAT.format(from));
-//          mySettings.setAttribute("kontoauszug.list.to",to == null ? null : HBCI.DATEFORMAT.format(to));
-//          mySettings.setAttribute("kontoauszug.list.konto",k == null ? null : k.getID());
-//        }
-//        catch (RemoteException re)
-//        {
-//          Logger.error("error while saving last filter settings",re);
-//        }
-//      }
-//    
-//    });
-
     // Zum Schluss Sortierung aktualisieren
     sort();
   }
@@ -166,9 +143,23 @@ public class KontoauszugList extends UmsatzList
     if (this.kontoAuswahl != null)
       return this.kontoAuswahl;
 
-    DBIterator it = de.willuhn.jameica.hbci.Settings.getDBService().createList(Konto.class);
+    DBIterator it = Settings.getDBService().createList(Konto.class);
     it.setOrder("ORDER BY blz, kontonummer");
-    this.kontoAuswahl = new SelectInput(it, null);
+    String id = mySettings.getString("kontoauszug.list.konto",null);
+    Konto k = null;
+    if (id != null)
+    {
+      try
+      {
+        k = (Konto) Settings.getDBService().createObject(Konto.class,id);
+      }
+      catch (ObjectNotFoundException e)
+      {
+        // Das angegebene Konto existiert nicht mehr
+        mySettings.setAttribute("kontoauszug.list.konto",(String)null);
+      }
+    }
+    this.kontoAuswahl = new SelectInput(it, k);
     this.kontoAuswahl.setAttribute("longname");
     this.kontoAuswahl.setPleaseChoose(i18n.tr("Alle Konten"));
     this.kontoAuswahl.addListener(this.listener);
@@ -179,15 +170,32 @@ public class KontoauszugList extends UmsatzList
    * Liefert ein Auswahl-Feld fuer das Start-Datum.
    * @return Auswahl-Feld.
    */
-  private Input getStart()
+  public Input getStart()
   {
     if (this.start != null)
       return this.start;
 
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(new Date());
-    cal.set(Calendar.DAY_OF_MONTH, 1);
-    Date dStart = HBCIProperties.startOfDay(cal.getTime());
+    Date dStart = null;
+    String s = mySettings.getString("kontoauszug.list.from",null);
+    if (s != null)
+    {
+      try
+      {
+        dStart = HBCI.DATEFORMAT.parse(s);
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to restore start date",e);
+        mySettings.setAttribute("kontoauszug.list.from",(String) null);
+      }
+    }
+    else
+    {
+      // Ansonsten nehmen wir den ersten des aktuellen Monats
+      Calendar cal = Calendar.getInstance();
+      cal.set(Calendar.DAY_OF_MONTH, 1);
+      dStart = cal.getTime();
+    }
 
     this.start = new DateInput(dStart, HBCI.DATEFORMAT);
     this.start.addListener(this.listener);
@@ -198,15 +206,32 @@ public class KontoauszugList extends UmsatzList
    * Liefert ein Auswahl-Feld fuer das End-Datum.
    * @return Auswahl-Feld.
    */
-  private Input getEnd()
+  public Input getEnd()
   {
     if (this.end != null)
       return this.end;
 
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(new Date());
-    cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
-    Date dEnd = HBCIProperties.endOfDay(cal.getTime());
+    Date dEnd = null;
+    String s = mySettings.getString("kontoauszug.list.to",null);
+    if (s != null)
+    {
+      try
+      {
+        dEnd = HBCI.DATEFORMAT.parse(s);
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to restore end date",e);
+        mySettings.setAttribute("kontoauszug.list.to",(String) null);
+      }
+    }
+    else
+    {
+      // Ansonsten nehmen wir den letzten des aktuellen Monats
+      Calendar cal = Calendar.getInstance();
+      cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+      dEnd = cal.getTime();
+    }
     
     this.end = new DateInput(dEnd, HBCI.DATEFORMAT);
     this.end.addListener(this.listener);
@@ -314,6 +339,22 @@ public class KontoauszugList extends UmsatzList
           GenericIterator list = getUmsaetze();
           while (list.hasNext())
             addItem(list.next());
+
+          // Aktuelle Werte speichern
+          try
+          {
+            // Wir speichern hier alle eingegebenen Suchbegriffe fuer's naechste mal
+            Date from = (Date) getStart().getValue();
+            Date to   = (Date) getEnd().getValue();
+            Konto k   = (Konto) getKontoAuswahl().getValue();
+            mySettings.setAttribute("kontoauszug.list.from",from == null ? null : HBCI.DATEFORMAT.format(from));
+            mySettings.setAttribute("kontoauszug.list.to",to == null ? null : HBCI.DATEFORMAT.format(to));
+            mySettings.setAttribute("kontoauszug.list.konto",k == null ? null : k.getID());
+          }
+          catch (RemoteException re)
+          {
+            Logger.error("error while saving last filter settings",re);
+          }
           
           // Zum Schluss Sortierung aktualisieren
           sort();
@@ -384,6 +425,10 @@ public class KontoauszugList extends UmsatzList
 
 /*********************************************************************
  * $Log: KontoauszugList.java,v $
+ * Revision 1.3  2007/05/02 12:40:18  willuhn
+ * @C UmsatzTree*-Exporter nur fuer Objekte des Typs "UmsatzTree" anbieten
+ * @C Start- und End-Datum in Kontoauszug speichern und an PDF-Export via Session uebergeben
+ *
  * Revision 1.2  2007/04/27 15:33:03  willuhn
  * @C Hier sind noch Nacharbeiten noetig
  *
