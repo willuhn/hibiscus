@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.3 $
- * $Date: 2007/05/02 12:40:18 $
+ * $Revision: 1.4 $
+ * $Date: 2007/05/02 13:01:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,6 +30,7 @@ import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.DateInput;
+import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SelectInput;
@@ -67,6 +68,10 @@ public class KontoauszugList extends UmsatzList
   private DialogInput gegenkontoNummer = null;
   private TextInput gegenkontoName     = null;
   private TextInput gegenkontoBLZ      = null;
+  
+  // Suche nach Betrag
+  private DecimalInput betragFrom      = null;
+  private DecimalInput betragTo        = null;
 
   private Listener listener            = null;
 
@@ -116,9 +121,13 @@ public class KontoauszugList extends UmsatzList
     zeitraum.addLabelPair(i18n.tr("End-Datum"), getEnd());
     
     TabGroup gegenkonto = new TabGroup(folder,i18n.tr("Gegenkonto"));
-    gegenkonto.addLabelPair(i18n.tr("Kontonummer enthält"),           getGegenkontoNummer());    
-    gegenkonto.addLabelPair(i18n.tr("BLZ enthält"),                   getGegenkontoBLZ());    
+    gegenkonto.addLabelPair(i18n.tr("Kontonummer enthält"),           getGegenkontoNummer());
+    gegenkonto.addLabelPair(i18n.tr("BLZ enthält"),                   getGegenkontoBLZ());
     gegenkonto.addLabelPair(i18n.tr("Name des Kontoinhabers enthält"),getGegenkontoName());
+
+    TabGroup betrag = new TabGroup(folder,i18n.tr("Beträge"));
+    betrag.addLabelPair(i18n.tr("Mindest-Betrag"),                    getMindestBetrag());
+    betrag.addLabelPair(i18n.tr("Höchst-Betrag"),                     getHoechstBetrag());
 
     new Headline(parent,i18n.tr("Gefundene Umsätze"));
 
@@ -138,7 +147,7 @@ public class KontoauszugList extends UmsatzList
    * @return Auswahlbox.
    * @throws RemoteException
    */
-  private Input getKontoAuswahl() throws RemoteException
+  public Input getKontoAuswahl() throws RemoteException
   {
     if (this.kontoAuswahl != null)
       return this.kontoAuswahl;
@@ -198,6 +207,7 @@ public class KontoauszugList extends UmsatzList
     }
 
     this.start = new DateInput(dStart, HBCI.DATEFORMAT);
+    this.start.setComment(i18n.tr("Frühestes Valuta-Datum"));
     this.start.addListener(this.listener);
     return this.start;
   }
@@ -234,6 +244,7 @@ public class KontoauszugList extends UmsatzList
     }
     
     this.end = new DateInput(dEnd, HBCI.DATEFORMAT);
+    this.end.setComment(i18n.tr("Spätestes Valuta-Datum"));
     this.end.addListener(this.listener);
     return this.end;
   }
@@ -243,7 +254,7 @@ public class KontoauszugList extends UmsatzList
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  private DialogInput getGegenkontoNummer() throws RemoteException
+  public DialogInput getGegenkontoNummer() throws RemoteException
   {
     if (this.gegenkontoNummer != null)
       return this.gegenkontoNummer;
@@ -261,7 +272,7 @@ public class KontoauszugList extends UmsatzList
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  private Input getGegenkontoBLZ() throws RemoteException
+  public Input getGegenkontoBLZ() throws RemoteException
   {
     if (this.gegenkontoBLZ != null)
       return this.gegenkontoBLZ;
@@ -276,7 +287,7 @@ public class KontoauszugList extends UmsatzList
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  private Input getGegenkontoName() throws RemoteException
+  public Input getGegenkontoName() throws RemoteException
   {
     if (this.gegenkontoName != null)
       return this.gegenkontoName;
@@ -284,6 +295,38 @@ public class KontoauszugList extends UmsatzList
     this.gegenkontoName.setValidChars(HBCIProperties.HBCI_DTAUS_VALIDCHARS);
     this.gegenkontoName.addListener(this.listener);
     return this.gegenkontoName;
+  }
+  
+  /**
+   * Liefert ein Eingabe-Feld fuer die Eingabe eines Mindestbetrages.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getMindestBetrag() throws RemoteException
+  {
+    if (this.betragFrom != null)
+      return this.betragFrom;
+    
+    this.betragFrom = new DecimalInput(mySettings.getDouble("kontoauszug.list.minbetrag",Double.NaN), HBCI.DECIMALFORMAT);
+    this.betragFrom.setComment(HBCIProperties.CURRENCY_DEFAULT_DE);
+    this.betragFrom.addListener(this.listener);
+    return this.betragFrom;
+  }
+
+  /**
+   * Liefert ein Eingabe-Feld fuer die Eingabe eines Hoechstbetrages.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getHoechstBetrag() throws RemoteException
+  {
+    if (this.betragTo != null)
+      return this.betragTo;
+    
+    this.betragTo = new DecimalInput(mySettings.getDouble("kontoauszug.list.maxbetrag",Double.NaN), HBCI.DECIMALFORMAT);
+    this.betragTo.setComment(HBCIProperties.CURRENCY_DEFAULT_DE);
+    this.betragTo.addListener(this.listener);
+    return this.betragTo;
   }
 
   /**
@@ -299,6 +342,8 @@ public class KontoauszugList extends UmsatzList
     String gkName   = (String) getGegenkontoName().getValue();
     String gkBLZ    = (String) getGegenkontoBLZ().getValue();
     String gkNummer = (String) getGegenkontoNummer().getText();
+    Double min      = (Double) getMindestBetrag().getValue();
+    Double max      = (Double) getHoechstBetrag().getValue();
     
     HBCIDBService service = (HBCIDBService) Settings.getDBService();
 
@@ -316,6 +361,20 @@ public class KontoauszugList extends UmsatzList
     if (gkName   != null && gkName.length() > 0)   umsaetze.addFilter("LOWER(empfaenger_name) like ?",new Object[]{"%" + gkName.toLowerCase() + "%"});
     /////////////////////////////////////////////////////////////////
     
+    /////////////////////////////////////////////////////////////////
+    // Betrag
+    if (min != null)
+    {
+      if (!Double.isNaN(min.doubleValue()))
+        umsaetze.addFilter("betrag >= ?",new Object[]{min});
+    }
+    if (max != null)
+    {
+      if (!Double.isNaN(max.doubleValue()))
+        umsaetze.addFilter("betrag <= ?",new Object[]{max});
+    }
+    /////////////////////////////////////////////////////////////////
+
     umsaetze.setOrder("ORDER BY " + service.getSQLTimestamp("valuta") + " asc, id asc");
     return umsaetze;
   }
@@ -347,9 +406,14 @@ public class KontoauszugList extends UmsatzList
             Date from = (Date) getStart().getValue();
             Date to   = (Date) getEnd().getValue();
             Konto k   = (Konto) getKontoAuswahl().getValue();
+            Double min = (Double) getMindestBetrag().getValue();
+            Double max = (Double) getHoechstBetrag().getValue();
             mySettings.setAttribute("kontoauszug.list.from",from == null ? null : HBCI.DATEFORMAT.format(from));
             mySettings.setAttribute("kontoauszug.list.to",to == null ? null : HBCI.DATEFORMAT.format(to));
             mySettings.setAttribute("kontoauszug.list.konto",k == null ? null : k.getID());
+            
+            mySettings.setAttribute("kontoauszug.list.minbetrag",min == null ? Double.NaN : min.doubleValue());
+            mySettings.setAttribute("kontoauszug.list.maxbetrag",max == null ? Double.NaN : max.doubleValue());
           }
           catch (RemoteException re)
           {
@@ -382,7 +446,9 @@ public class KontoauszugList extends UmsatzList
                 getKontoAuswahl().hasChanged() ||
                 getGegenkontoName().hasChanged() ||
                 getGegenkontoNummer().hasChanged() ||
-                getGegenkontoBLZ().hasChanged();
+                getGegenkontoBLZ().hasChanged() ||
+                getMindestBetrag().hasChanged() ||
+                getHoechstBetrag().hasChanged();
     }
     catch (Exception e)
     {
@@ -425,6 +491,9 @@ public class KontoauszugList extends UmsatzList
 
 /*********************************************************************
  * $Log: KontoauszugList.java,v $
+ * Revision 1.4  2007/05/02 13:01:12  willuhn
+ * @N Zusaetzlicher Filter nach Mindest- und Hoechstbetrag
+ *
  * Revision 1.3  2007/05/02 12:40:18  willuhn
  * @C UmsatzTree*-Exporter nur fuer Objekte des Typs "UmsatzTree" anbieten
  * @C Start- und End-Datum in Kontoauszug speichern und an PDF-Export via Session uebergeben
