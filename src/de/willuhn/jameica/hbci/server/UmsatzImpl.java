@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.45 $
- * $Date: 2007/04/23 18:07:15 $
+ * $Revision: 1.46 $
+ * $Date: 2007/05/04 15:45:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -346,6 +346,7 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
     // BUGZILLA 184
     Date datum   = getDatum();
     Date valuta  = getValuta();
+    
     String s = (""+getArt()).toUpperCase() +
 		           getBetrag() +
 		           getKonto().getChecksum() +
@@ -357,8 +358,8 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 		           getSaldo() +
 		           (""+getZweck()).toUpperCase() +
 		           (""+getZweck2()).toUpperCase() +
-		           (datum == null ? "" : HBCI.DATEFORMAT.format(datum)) +
-							 (valuta == null ? "" : HBCI.DATEFORMAT.format(valuta));
+		           (datum == null ? "" : datum.toString()) +  // Kein Format. Ist mal mit einem
+							 (valuta == null ? "" : datum.toString());  // ArrayIndexOutOfBoundsException fehlgeschlagen, weil das Datum ungueltig war 
 		CRC32 crc = new CRC32();
 		crc.update(s.getBytes());
     return crc.getValue();
@@ -594,6 +595,9 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.46  2007/05/04 15:45:08  willuhn
+ * @B ArrayIndexOutOfBoundsException bei ungueltigem Datum
+ *
  * Revision 1.45  2007/04/23 18:07:15  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
