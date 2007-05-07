@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/DBSupportMcKoiImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2007/04/23 18:07:15 $
+ * $Revision: 1.5 $
+ * $Date: 2007/05/07 09:27:25 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -152,11 +152,22 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl
   {
     return true;
   }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.DBSupport#checkConnection(java.sql.Connection)
+   */
+  public void checkConnection(Connection conn) throws RemoteException
+  {
+    // brauchen wir bei McKoi nicht
+  }
 }
 
 
 /*********************************************************************
  * $Log: DBSupportMcKoiImpl.java,v $
+ * Revision 1.5  2007/05/07 09:27:25  willuhn
+ * @N Automatisches Neuerstellen der JDBC-Connection bei MySQL
+ *
  * Revision 1.4  2007/04/23 18:07:15  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt

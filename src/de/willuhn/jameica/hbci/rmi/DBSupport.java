@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/DBSupport.java,v $
- * $Revision: 1.3 $
- * $Date: 2007/04/23 18:07:14 $
+ * $Revision: 1.4 $
+ * $Date: 2007/05/07 09:27:25 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -60,6 +60,13 @@ public interface DBSupport extends Serializable
   public void checkConsistency(Connection conn) throws RemoteException, ApplicationException;
   
   /**
+   * Prueft die Datenbankverbindung.
+   * @param conn die Datenbank-Connection.
+   * @throws RemoteException Wenn die Verbindung defekt ist und vom DB-Service neu erzeugt werden muss.
+   */
+  public void checkConnection(Connection conn) throws RemoteException;
+
+  /**
    * Richtet ggf. die Datenbank ein.
    * @throws RemoteException
    */
@@ -95,6 +102,9 @@ public interface DBSupport extends Serializable
 
 /*********************************************************************
  * $Log: DBSupport.java,v $
+ * Revision 1.4  2007/05/07 09:27:25  willuhn
+ * @N Automatisches Neuerstellen der JDBC-Connection bei MySQL
+ *
  * Revision 1.3  2007/04/23 18:07:14  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt

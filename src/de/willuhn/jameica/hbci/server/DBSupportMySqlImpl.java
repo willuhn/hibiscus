@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DBSupportMySqlImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/04/23 18:07:15 $
+ * $Revision: 1.3 $
+ * $Date: 2007/05/07 09:27:25 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,9 @@ package de.willuhn.jameica.hbci.server;
 import java.io.File;
 import java.rmi.RemoteException;
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.MessageFormat;
 
 import de.willuhn.jameica.hbci.HBCI;
@@ -110,11 +113,50 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl
   {
     return false;
   }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.DBSupport#checkConnection(java.sql.Connection)
+   */
+  public void checkConnection(Connection conn) throws RemoteException
+  {
+    Statement s  = null;
+    ResultSet rs = null;
+    try
+    {
+      s = conn.createStatement();
+      rs = s.executeQuery("select 1");
+    }
+    catch (SQLException e)
+    {
+      // das Ding liefert in getMessage() den kompletten Stacktrace mit, den brauchen wir
+      // nicht (das muellt uns nur das Log voll) Also fangen wir sie und werden eine neue
+      // saubere mit kurzem Fehlertext
+      String msg = e.getMessage();
+      if (msg != null && msg.indexOf("\n") != -1)
+        msg = msg.substring(0,msg.indexOf("\n"));
+      throw new RemoteException(msg);
+    }
+    finally
+    {
+      try
+      {
+        if (rs != null) rs.close();
+        if (s != null)  s.close();
+      }
+      catch (Exception e)
+      {
+        throw new RemoteException("unable to close statement/resultset",e);
+      }
+    }
+  }
 }
 
 
 /*********************************************************************
  * $Log: DBSupportMySqlImpl.java,v $
+ * Revision 1.3  2007/05/07 09:27:25  willuhn
+ * @N Automatisches Neuerstellen der JDBC-Connection bei MySQL
+ *
  * Revision 1.2  2007/04/23 18:07:15  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
