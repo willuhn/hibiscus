@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.46 $
- * $Date: 2007/05/04 15:45:08 $
+ * $Revision: 1.47 $
+ * $Date: 2007/05/11 17:26:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -347,6 +347,28 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
     Date datum   = getDatum();
     Date valuta  = getValuta();
     
+    String sd  = "";
+    String sv  = "";
+    
+    if (datum != null)
+    {
+      try {
+        sd = HBCI.DATEFORMAT.format(datum);
+      }
+      catch (Exception e) {
+        sd = datum.toString();
+      }
+    }
+    if (valuta != null)
+    {
+      try {
+        sv = HBCI.DATEFORMAT.format(valuta);
+      }
+      catch (Exception e) {
+        sv = valuta.toString();
+      }
+    }
+    
     String s = (""+getArt()).toUpperCase() +
 		           getBetrag() +
 		           getKonto().getChecksum() +
@@ -358,8 +380,8 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 		           getSaldo() +
 		           (""+getZweck()).toUpperCase() +
 		           (""+getZweck2()).toUpperCase() +
-		           (datum == null ? "" : datum.toString()) +  // Kein Format. Ist mal mit einem
-							 (valuta == null ? "" : datum.toString());  // ArrayIndexOutOfBoundsException fehlgeschlagen, weil das Datum ungueltig war 
+		           sd +
+							 sv;
 		CRC32 crc = new CRC32();
 		crc.update(s.getBytes());
     return crc.getValue();
@@ -595,6 +617,9 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.47  2007/05/11 17:26:45  willuhn
+ * @B Bugfix Verursachte falsche Checksummen und damit doppelte Umsaetze
+ *
  * Revision 1.46  2007/05/04 15:45:08  willuhn
  * @B ArrayIndexOutOfBoundsException bei ungueltigem Datum
  *
