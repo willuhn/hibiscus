@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/HBCISynchronize.java,v $
- * $Revision: 1.9 $
- * $Date: 2007/02/21 10:02:27 $
+ * $Revision: 1.10 $
+ * $Date: 2007/05/14 12:50:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,11 +15,14 @@ package de.willuhn.jameica.hbci.gui.action;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.datasource.GenericIterator;
+import de.willuhn.datasource.GenericObject;
+import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -55,11 +58,24 @@ public class HBCISynchronize implements Action
   {
     Logger.info("Start synchronize");
     
+    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+
+    if (context != null && (context instanceof List))
+    {
+      try
+      {
+        List list = (List) context;
+        this.selectedJobs = PseudoIterator.fromArray((GenericObject[])list.toArray(new GenericObject[list.size()]));
+      }
+      catch (RemoteException re)
+      {
+        Logger.error("unable to determine job list",re);
+        throw new ApplicationException(i18n.tr("Fehler beim Ermitteln der HBCI-Aufträge"));
+      }
+    }
     if (context != null && (context instanceof GenericIterator))
       this.selectedJobs = (GenericIterator) context;
     
-    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
     // Der Code hier sieht etwas umstaendlich aus. Das
     // machen wir, weil wir die HBCI-Jobs nach Konten gruppieren
     try
@@ -191,6 +207,9 @@ public class HBCISynchronize implements Action
 
 /*********************************************************************
  * $Log: HBCISynchronize.java,v $
+ * Revision 1.10  2007/05/14 12:50:41  willuhn
+ * @B wrong list format
+ *
  * Revision 1.9  2007/02/21 10:02:27  willuhn
  * @C Code zum Ausfuehren exklusiver Jobs redesigned
  *
