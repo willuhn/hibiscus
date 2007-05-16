@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SynchronizeList.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/07/05 22:18:16 $
+ * $Revision: 1.6 $
+ * $Date: 2007/05/16 11:32:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,7 +20,7 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.SynchronizeJob;
-import de.willuhn.jameica.hbci.server.SynchronizeEngine;
+import de.willuhn.jameica.hbci.server.hbci.synchronize.SynchronizeEngine;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -80,6 +80,9 @@ public class SynchronizeList extends TablePart
 
 /*********************************************************************
  * $Log: SynchronizeList.java,v $
+ * Revision 1.6  2007/05/16 11:32:30  willuhn
+ * @N Redesign der SynchronizeEngine. Ermittelt die HBCI-Jobs jetzt ueber generische "SynchronizeJobProvider". Damit ist die Liste der Sync-Jobs erweiterbar
+ *
  * Revision 1.5  2006/07/05 22:18:16  willuhn
  * @N Einzelne Sync-Jobs koennen nun selektiv auch einmalig direkt in der Sync-Liste deaktiviert werden
  *

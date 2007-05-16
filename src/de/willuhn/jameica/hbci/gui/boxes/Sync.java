@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Sync.java,v $
- * $Revision: 1.11 $
- * $Date: 2006/12/29 15:26:56 $
+ * $Revision: 1.12 $
+ * $Date: 2007/05/16 11:32:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,7 +31,7 @@ import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.SynchronizeOptionsDialog;
 import de.willuhn.jameica.hbci.gui.parts.SynchronizeList;
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.server.SynchronizeEngine;
+import de.willuhn.jameica.hbci.server.hbci.synchronize.SynchronizeEngine;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -83,7 +83,7 @@ public class Sync extends AbstractBox implements Box
       {
         try
         {
-          KontoAuswahlDialog d1 = new KontoAuswahlDialog(SynchronizeEngine.getInstance().getSyncronizeKonten(),KontoAuswahlDialog.POSITION_CENTER);
+          KontoAuswahlDialog d1 = new KontoAuswahlDialog(SynchronizeEngine.getInstance().getSynchronizeKonten(),KontoAuswahlDialog.POSITION_CENTER);
           d1.setText(i18n.tr("Bitte wählen Sie das Konto, für welches Sie die " +
                              "Synchronisierungsoptionen ändern möchten."));
           Konto k = (Konto) d1.open();
@@ -176,6 +176,9 @@ public class Sync extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: Sync.java,v $
+ * Revision 1.12  2007/05/16 11:32:30  willuhn
+ * @N Redesign der SynchronizeEngine. Ermittelt die HBCI-Jobs jetzt ueber generische "SynchronizeJobProvider". Damit ist die Liste der Sync-Jobs erweiterbar
+ *
  * Revision 1.11  2006/12/29 15:26:56  willuhn
  * @N ImportMessageConsumer
  *
