@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/HBCISynchronize.java,v $
- * $Revision: 1.11 $
- * $Date: 2007/05/16 11:32:30 $
+ * $Revision: 1.12 $
+ * $Date: 2007/05/16 13:59:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,6 @@
 package de.willuhn.jameica.hbci.gui.action;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.swt.widgets.Event;
@@ -23,7 +22,6 @@ import org.eclipse.swt.widgets.Listener;
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.pseudo.PseudoIterator;
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
@@ -47,9 +45,9 @@ public class HBCISynchronize implements Action
 
   private I18N i18n = null;
 
+  private GenericIterator konten       = null;
   private GenericIterator selectedJobs = null;
-  private Job[] jobs = null;
-  private int index  = 0;
+  private boolean success              = false;
   
   /**
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
@@ -59,6 +57,11 @@ public class HBCISynchronize implements Action
     Logger.info("Start synchronize");
     
     i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+
+    /////////////////////////////////////////////////////////////////
+    // ggf. uebergebene Liste von manuell ausgewaehlten Jobs
+    if (context != null && (context instanceof GenericIterator))
+      this.selectedJobs = (GenericIterator) context;
 
     if (context != null && (context instanceof List))
     {
@@ -73,38 +76,13 @@ public class HBCISynchronize implements Action
         throw new ApplicationException(i18n.tr("Fehler beim Ermitteln der HBCI-Aufträge"));
       }
     }
-    if (context != null && (context instanceof GenericIterator))
-      this.selectedJobs = (GenericIterator) context;
-    
-    // Der Code hier sieht etwas umstaendlich aus. Das
-    // machen wir, weil wir die HBCI-Jobs nach Konten gruppieren
+    /////////////////////////////////////////////////////////////////
+
     try
     {
-      DBIterator konten = Settings.getDBService().createList(Konto.class);
-
-      if (konten == null || konten.size() == 0)
-      {
-        Logger.info("no accounts to syncronize");
-        return;
-      }
-
-      Logger.info("creating synchronize list");
-      ArrayList list = new ArrayList();
-      
-      while (konten.hasNext())
-      {
-        Konto k = (Konto) konten.next();
-        if (!k.getSynchronize())
-        {
-          Logger.info("skipping konto " + k.getKontonummer());
-          continue;
-        }
-        Logger.info("adding konto " + k.getKontonummer());
-        list.add(new Job(k));
-      }
-      this.jobs = (Job[]) list.toArray(new Job[list.size()]);
-      Logger.info("accounts to synchronize: " + this.jobs.length);
-      sync();
+      this.konten = SynchronizeEngine.getInstance().getSynchronizeKonten();
+      success = true;
+      sync(ProgressMonitor.STATUS_NONE);
     }
     catch (RemoteException e)
     {
@@ -116,14 +94,45 @@ public class HBCISynchronize implements Action
   /**
    * Fuehrt die Syncronisierung des aktuellen Kontos durch.
    */
-  private void sync()
+  private void sync(int lastStatus)
   {
+
+    // Globalen Status merken
+    success &= (lastStatus == ProgressMonitor.STATUS_DONE || lastStatus == ProgressMonitor.STATUS_NONE);
+
+    // Bei Abbruch brechen wir immer ab ;)
+    if (lastStatus == ProgressMonitor.STATUS_CANCEL)
+    {
+      Logger.info("synchronize cancelled");
+      GUI.getStatusBar().setErrorText(i18n.tr("Synchronisierung abgebrochen"));
+      return;
+    }
+    
+    // Wenn wir einen Fehler haben und wir in dem
+    // Fall abbrechen sollen, dann tun wir das
+    if (!success && Settings.getCancelSyncOnError())
+    {
+      Logger.info("synchronize with errors finished");
+      GUI.getStatusBar().setErrorText(i18n.tr("Synchronisierung mit Fehlern beendet"));
+      return;
+    }
+
     try
     {
-      if (index >= jobs.length)
+      if (this.konten == null || !this.konten.hasNext())
       {
-        Logger.info("synchronize finished");
-        GUI.getStatusBar().setSuccessText(i18n.tr("Synchronisierung beendet"));
+        this.konten       = null;
+        this.selectedJobs = null;
+        if (success)
+        {
+          Logger.info("synchronize finished");
+          GUI.getStatusBar().setSuccessText(i18n.tr("Synchronisierung beendet"));
+        }
+        else
+        {
+          Logger.info("synchronize with errors finished");
+          GUI.getStatusBar().setErrorText(i18n.tr("Synchronisierung mit Fehlern beendet"));
+        }
 
         // Seite neu laden
         // BUGZILLA 110 http://www.willuhn.de/bugzilla/show_bug.cgi?id=110
@@ -131,12 +140,10 @@ public class HBCISynchronize implements Action
         return;
       }
       
-      final Job job = jobs[index++];
-      final Konto k = job.konto;
+      final Konto k = (Konto) this.konten.next();
 
-      GUI.getStatusBar().setSuccessText(i18n.tr("Synchronisiere Konto {0} von {1}", new String[]{""+index,""+jobs.length}));
-      
-      Logger.info("synchronizing account: " + k.getKontonummer());
+      GUI.getStatusBar().setSuccessText(i18n.tr("Synchronisiere Konto {0}", k.getLongName()));
+      Logger.info("synchronizing account: " + k.getLongName());
 
       Logger.info("creating hbci factory");
       HBCIFactory factory = HBCIFactory.getInstance();
@@ -157,8 +164,6 @@ public class HBCISynchronize implements Action
         {
           for (int i=0;i<currentJobs.length;++i)
           {
-            // Wir fuehren alle exclusiv aus
-            currentJobs[i].setExclusive(true);
             factory.addJob(currentJobs[i]);
           }
         }
@@ -168,18 +173,14 @@ public class HBCISynchronize implements Action
       if (count == 0)
       {
         Logger.info("nothing to do for account " + k.getLongName() + " - skipping");
-        sync();
+        sync(ProgressMonitor.STATUS_NONE);
       }
       else
       {
         factory.executeJobs(k,new Listener() {
           public void handleEvent(Event event)
           {
-            if (event.type == ProgressMonitor.STATUS_DONE)
-            {
-              // Nach erfolgreichem Abschluss das naechste syncronisieren
-              sync();
-            }
+            sync(event.type);
           }
         });
       }
@@ -189,24 +190,16 @@ public class HBCISynchronize implements Action
       Logger.error("unable to sync konto",e);
     }
   }
-  
-  /**
-   * Ein kleiner Container fuer die Jobs eines Kontos.
-   */
-  private class Job
-  {
-    private Konto konto = null;
-    
-    private Job(Konto k)
-    {
-      this.konto = k;
-    }
-  }
 }
 
 
 /*********************************************************************
  * $Log: HBCISynchronize.java,v $
+ * Revision 1.12  2007/05/16 13:59:53  willuhn
+ * @N Bug 227 HBCI-Synchronisierung auch im Fehlerfall fortsetzen
+ * @C Synchronizer ueberarbeitet
+ * @B HBCIFactory hat globalen Status auch bei Abbruch auf Error gesetzt
+ *
  * Revision 1.11  2007/05/16 11:32:30  willuhn
  * @N Redesign der SynchronizeEngine. Ermittelt die HBCI-Jobs jetzt ueber generische "SynchronizeJobProvider". Damit ist die Liste der Sync-Jobs erweiterbar
  *

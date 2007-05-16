@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.97 $
- * $Date: 2007/04/19 18:12:21 $
+ * $Revision: 1.98 $
+ * $Date: 2007/05/16 13:59:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -109,71 +109,7 @@ public class HBCI extends AbstractPlugin
     }
     /////////////////////////////////////////////////////////////////
 
-    /////////////////////////////////////////////////////////////////
-    // HBCI4Java laden
-    Application.getCallback().getStartupMonitor().setStatusText("hibiscus: init hbci4java subsystem");
-    try
-    {
-
-      //////////////////////////////////
-      // Callback erzeugen
-      if (Application.inServerMode())
-        this.callback = new HBCICallbackConsole();
-      else
-        this.callback = new HBCICallbackSWT();
-
-      String cb = getResources().getSettings().getString("hbcicallback.class",HBCICallbackSWT.class.getName());
-      if (cb != null && cb.length() > 0)
-      {
-        try
-        {
-          HBCICallback c = (HBCICallback) Application.getClassLoader().load(cb).newInstance();
-          Logger.info("custom callback: " + c.getClass().getName());
-          this.callback = c;
-        }
-        catch (Throwable t)
-        {
-          Logger.error("unable to load custom callback - fallback to default",t);
-        }
-      }
-      //////////////////////////////////
-
-
-      HBCIUtils.init(null,null,this.callback);
-
-
-      //////////////////////////////////
-      // Log-Level
-      int logLevel = HBCIUtils.LOG_INFO; // Default
-      try
-      {
-        logLevel = ((Integer) LOGMAPPING.get(Logger.getLevel())).intValue();
-      }
-      catch (Exception e)
-      {
-        // Am wahrscheinlichsten ArrayIndexOutOfBoundsException
-        // Dann eben nicht ;)
-        Logger.warn("unable to map jameica log level into hbci4java log level. using default");
-      }
-      HBCIUtils.setParam("log.loglevel.default",""+logLevel);
-      //////////////////////////////////
-
-      
-      //////////////////////////////////
-      // Rewriter
-      String rewriters = getResources().getSettings().getString("hbci4java.kernel.rewriters",null);
-      if (rewriters != null && rewriters.length() > 0)
-      {
-        Logger.warn("user defined rewriters found: " + rewriters);
-        HBCIUtils.setParam("kernel.rewriters",rewriters);
-      }
-      //////////////////////////////////
-      
-    }
-    catch (Exception e)
-    {
-      throw new ApplicationException(getResources().getI18N().tr("Fehler beim Initialisieren des HBCI-Subsystems"),e);
-    }
+    initHBCI(getResources().getSettings().getString("hbcicallback.class",HBCICallbackSWT.class.getName()));
     Application.getCallback().getStartupMonitor().addPercentComplete(5);
   }
 
@@ -213,14 +149,84 @@ public class HBCI extends AbstractPlugin
   }
 
   /**
-   * Liefert den verwendeten HBCI-Callback.
-   * Die Funktion ist ein Zugestaendnis an RMI.
-   * Hintergrund: HBCI4Java speichert seine Config pro ThreadGroup. Laeuft Hibiscus
-   * im Client/Server-Szenario und kommen von aussen (durch Clients) Anfragen rein,
-   * dann treffen die beim Server in den Threads der RMI-Runtime ein. Und die hat
-   * sich eine eigene Threadgroup geschaffen. Da wir RMI scheinbar nicht vorschreiben
-   * koennen, dass es unsere Threadgroup verwenden soll, muessen wir HBCI4Java
-   * pro ThreadGroup und damit ggf. mehrfach initialisieren.
+   * Initialisiert das HBCI4Java-Subsystem.
+   * @param callbackClass der zu verwendende Callback.
+   * @throws ApplicationException
+   */
+  public final synchronized void initHBCI(String callbackClass) throws ApplicationException
+  {
+    /////////////////////////////////////////////////////////////////
+    // HBCI4Java laden
+    Application.getCallback().getStartupMonitor().setStatusText("hibiscus: init hbci4java subsystem");
+    try
+    {
+
+      //////////////////////////////////
+      // Callback erzeugen
+      this.callback = null;
+      
+      if (callbackClass != null && callbackClass.length() > 0)
+      {
+        try
+        {
+          this.callback = (HBCICallback) Application.getClassLoader().load(callbackClass).newInstance();
+          Logger.info("custom callback: " + this.callback.getClass().getName());
+        }
+        catch (Throwable t)
+        {
+          Logger.error("unable to load custom callback - fallback to default",t);
+        }
+      }
+      
+      if (this.callback == null)
+      {
+        if (Application.inServerMode())
+          this.callback = new HBCICallbackConsole();
+        else
+          this.callback = new HBCICallbackSWT();
+      }
+      //////////////////////////////////
+
+
+      HBCIUtils.init(null,null,this.callback);
+
+
+      //////////////////////////////////
+      // Log-Level
+      int logLevel = HBCIUtils.LOG_INFO; // Default
+      try
+      {
+        logLevel = ((Integer) LOGMAPPING.get(Logger.getLevel())).intValue();
+      }
+      catch (Exception e)
+      {
+        // Am wahrscheinlichsten ArrayIndexOutOfBoundsException
+        // Dann eben nicht ;)
+        Logger.warn("unable to map jameica log level into hbci4java log level. using default");
+      }
+      HBCIUtils.setParam("log.loglevel.default",""+logLevel);
+      //////////////////////////////////
+
+      
+      //////////////////////////////////
+      // Rewriter
+      String rewriters = getResources().getSettings().getString("hbci4java.kernel.rewriters",null);
+      if (rewriters != null && rewriters.length() > 0)
+      {
+        Logger.warn("user defined rewriters found: " + rewriters);
+        HBCIUtils.setParam("kernel.rewriters",rewriters);
+      }
+      //////////////////////////////////
+      
+    }
+    catch (Exception e)
+    {
+      throw new ApplicationException(getResources().getI18N().tr("Fehler beim Initialisieren des HBCI-Subsystems"),e);
+    }
+  }
+  
+  /**
+   * Liefert den aktuellen HBCI-Callback.
    * @return liefert den verwendeten HBCICallback.
    */
   public HBCICallback getHBCICallback()
@@ -284,6 +290,11 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.98  2007/05/16 13:59:53  willuhn
+ * @N Bug 227 HBCI-Synchronisierung auch im Fehlerfall fortsetzen
+ * @C Synchronizer ueberarbeitet
+ * @B HBCIFactory hat globalen Status auch bei Abbruch auf Error gesetzt
+ *
  * Revision 1.97  2007/04/19 18:12:21  willuhn
  * @N MySQL-Support (GUI zum Konfigurieren fehlt noch)
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.50 $
- * $Date: 2007/03/14 12:01:33 $
+ * $Revision: 1.51 $
+ * $Date: 2007/05/16 13:59:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -509,15 +509,21 @@ public class HBCIFactory {
             }
             catch (ApplicationException ae)
             {
-              monitor.setStatusText(ae.getMessage());
-              error = true;
+              if (!interrupted)
+              {
+                monitor.setStatusText(ae.getMessage());
+                error = true;
+              }
             }
             catch (Throwable t)
             {
-              monitor.setStatusText(i18n.tr("Fehler beim Auswerten des HBCI-Auftrages {0}", name));
-              Logger.error("error while processing job result",t);
-              monitor.log(t.getMessage());
-              error = true;
+              if (!interrupted)
+              {
+                monitor.setStatusText(i18n.tr("Fehler beim Auswerten des HBCI-Auftrages {0}", name));
+                Logger.error("error while processing job result",t);
+                monitor.log(t.getMessage());
+                error = true;
+              }
             }
           }
           //
@@ -557,21 +563,21 @@ public class HBCIFactory {
 
           String msg = null;
 
+          if (!interrupted && !error)
+          {
+            status = ProgressMonitor.STATUS_DONE;
+            msg = "HBCI-Übertragung erfolgreich beendet";
+          }
+          if (interrupted)
+          {
+            status = ProgressMonitor.STATUS_CANCEL;
+            msg = "HBCI-Übertragung abgebrochen";
+          }
           if (error)
           {
             status = ProgressMonitor.STATUS_ERROR;
             msg = "HBCI-Übertragung mit Fehlern beendet";
             DialogFactory.clearPINCache();
-          }
-          else if (interrupted)
-          {
-            status = ProgressMonitor.STATUS_CANCEL;
-            msg = "HBCI-Übertragung abgebrochen";
-          }
-          else
-          {
-            status = ProgressMonitor.STATUS_DONE;
-            msg = "HBCI-Übertragung erfolgreich beendet";
           }
           monitor.setStatus(status);
           monitor.setStatusText(i18n.tr(msg));
@@ -637,6 +643,11 @@ public class HBCIFactory {
 
 /*******************************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.51  2007/05/16 13:59:53  willuhn
+ * @N Bug 227 HBCI-Synchronisierung auch im Fehlerfall fortsetzen
+ * @C Synchronizer ueberarbeitet
+ * @B HBCIFactory hat globalen Status auch bei Abbruch auf Error gesetzt
+ *
  * Revision 1.50  2007/03/14 12:01:33  willuhn
  * @N made getCause public
  *

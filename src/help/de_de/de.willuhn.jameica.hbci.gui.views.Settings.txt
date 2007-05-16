@@ -5,13 +5,7 @@
 
 	<li>
 		Wenn Sie über eine dauerhafte Internetverbindung verfügen,
-		können Sie die Option <b>keine Nachfrage vor Verbindungsaufbau</b> aktivieren.
-	</li>
-	
-	<li>
-		Sie können ein Limit für den Maximalbetrag einer Überweisung
-		definieren um zu verhindern, dass Sie versehentlich einen
-		zu grossen Betrag eingeben.
+		können Sie die Option <b>Dauerhafte Internetverbindung, Aufforderung zum Verbinden nicht erforderlich</b> aktivieren.
 	</li>
 	
 	<li>
@@ -23,20 +17,28 @@
 	</li>
 	
 	<li>
-	  Wenn Sie die Option <b>TANs während der Eingabe anzeigen</b> aktivieren,
-	  werden die TAN-Nummern während der Eingabe im Klartext angezeigt, andernfalls
-	  wie die PIN gegen Sterne ersetzt.
-	</li>
-	
+	  Deaktivieren Sie die Option <b>HBCI-Synchronisierung bei Fehler abbrechen</b>, wenn die
+		Synchronisierung auch dann fortgesetzt werden soll, wenn bei einem der auszuführenden
+		Aufträge ein Fehler auftrat. (nicht empfohlen, da hierbei ggf. aufgetretene Fehlermeldungen
+		nicht angezeigt werden).
+  </li>
+
 	<li>
 	  Mit der Option <b>Tausender-Trennzeichen bei Geld-Beträgen verwenden</b>
 	  können Sie entscheiden, ob bei Geld-Beträgen ein Tausender-Punkt angezeigt
 	  werden soll.
 	</li>
-	
+
 	<li>
 	  Deaktivieren Sie die Option <b>Kontonummern via Prüfsumme der Bank testen</b>,
 	  wenn Sie nicht wünschen, dass Hibiscus die von Ihnen eingegebenen Kontonummern
 	  auf Plausibilität prüfen soll.
 	</li>
+
+	<li>
+		Sie können ein Limit für den Maximalbetrag einer Überweisung
+		definieren um zu verhindern, dass Sie versehentlich einen
+		zu grossen Betrag eingeben.
+	</li>
+	
 </form>

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.50 $
- * $Date: 2006/11/30 23:48:40 $
+ * $Revision: 1.51 $
+ * $Date: 2007/05/16 13:59:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,6 +43,7 @@ public class SettingsControl extends AbstractControl {
 
 	// Eingabe-Felder
 	private CheckboxInput onlineMode     		= null;
+  private CheckboxInput cancelSyncOnError = null;
 	private CheckboxInput checkPin     			= null;
   private CheckboxInput cachePin          = null;
   private CheckboxInput decimalGrouping   = null;
@@ -106,6 +107,18 @@ public class SettingsControl extends AbstractControl {
 		onlineMode = new CheckboxInput(Settings.getOnlineMode());
 		return onlineMode;
 	}
+
+  /**
+   * Checkbox zur Auswahl das Abbruches der Synchronisierung bei Fehler.
+   * @return Checkbox.
+   */
+  public CheckboxInput getCancelSyncOnError()
+  {
+    if (cancelSyncOnError != null)
+      return cancelSyncOnError;
+    cancelSyncOnError = new CheckboxInput(Settings.getCancelSyncOnError());
+    return cancelSyncOnError;
+  }
 
   /**
    * Checkbox zur Auswahl von Dezimal-Trennzeichen in Betraegen.
@@ -222,6 +235,7 @@ public class SettingsControl extends AbstractControl {
     Settings.setCachePin(((Boolean)getCachePin().getValue()).booleanValue());
     Settings.setDecimalGrouping(((Boolean)getDecimalGrouping().getValue()).booleanValue());
     Settings.setKontoCheck(((Boolean)getKontoCheck().getValue()).booleanValue());
+    Settings.setCancelSyncOnError(((Boolean)getCancelSyncOnError().getValue()).booleanValue());
 		
 		Settings.setUeberweisungLimit(((Double)getUeberweisungLimit().getValue()).doubleValue());
 
@@ -261,6 +275,11 @@ public class SettingsControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.51  2007/05/16 13:59:53  willuhn
+ * @N Bug 227 HBCI-Synchronisierung auch im Fehlerfall fortsetzen
+ * @C Synchronizer ueberarbeitet
+ * @B HBCIFactory hat globalen Status auch bei Abbruch auf Error gesetzt
+ *
  * Revision 1.50  2006/11/30 23:48:40  willuhn
  * @N Erste Version der Umsatz-Kategorien drin
  *

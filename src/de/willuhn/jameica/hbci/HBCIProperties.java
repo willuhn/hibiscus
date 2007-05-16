@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCIProperties.java,v $
- * $Revision: 1.21 $
- * $Date: 2007/03/05 14:57:16 $
+ * $Revision: 1.22 $
+ * $Date: 2007/05/16 13:59:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -166,10 +166,8 @@ public class HBCIProperties
     }
     catch (Exception e)
     {
-      Logger.warn("HBCI4Java subsystem seems to be not initialized for this thread group, adding thread group");
-      HBCI plugin = (HBCI) Application.getPluginLoader().getPlugin(HBCI.class);
-      HBCIUtils.initThread(null,null,plugin.getHBCICallback());
-      return HBCIUtils.checkAccountCRC(blz, kontonummer);
+      Logger.info("HBCI4Java subsystem not initialized for this thread, skip crc check");
+      return true;
     }
   }
 
@@ -215,6 +213,11 @@ public class HBCIProperties
 
 /**********************************************************************
  * $Log: HBCIProperties.java,v $
+ * Revision 1.22  2007/05/16 13:59:53  willuhn
+ * @N Bug 227 HBCI-Synchronisierung auch im Fehlerfall fortsetzen
+ * @C Synchronizer ueberarbeitet
+ * @B HBCIFactory hat globalen Status auch bei Abbruch auf Error gesetzt
+ *
  * Revision 1.21  2007/03/05 14:57:16  willuhn
  * @B zusaetzlichen Laengen-Check (Workaround zu Bug 232) entfernt (ist inzwischen in HBCI4Java gefixt)
  *

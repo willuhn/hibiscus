@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Settings.java,v $
- * $Revision: 1.39 $
- * $Date: 2007/02/26 11:40:06 $
+ * $Revision: 1.40 $
+ * $Date: 2007/05/16 13:59:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -75,6 +75,7 @@ public class Settings extends AbstractView {
 		system.addCheckbox(control.getOnlineMode(),i18n.tr("Dauerhafte Internetverbindung, Aufforderung zum Verbinden nicht erforderlich"));
     system.addCheckbox(control.getCheckPin(),i18n.tr("PIN-Eingaben via Check-Summe prüfen"));
     system.addCheckbox(control.getCachePin(),i18n.tr("PIN-Eingaben für die aktuelle Sitzung zwischenspeichern"));
+    system.addCheckbox(control.getCancelSyncOnError(),i18n.tr("HBCI-Synchronisierung bei Fehler abbrechen"));
     system.addCheckbox(control.getDecimalGrouping(),i18n.tr("Tausender-Trennzeichen bei Geld-Beträgen verwenden"));
     system.addCheckbox(control.getKontoCheck(),i18n.tr("Kontonummern via Prüfsumme der Bank testen"));
     system.addLabelPair(i18n.tr("Limit für Aufträge"), control.getUeberweisungLimit());
@@ -167,6 +168,11 @@ public class Settings extends AbstractView {
 
 /**********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.40  2007/05/16 13:59:53  willuhn
+ * @N Bug 227 HBCI-Synchronisierung auch im Fehlerfall fortsetzen
+ * @C Synchronizer ueberarbeitet
+ * @B HBCIFactory hat globalen Status auch bei Abbruch auf Error gesetzt
+ *
  * Revision 1.39  2007/02/26 11:40:06  willuhn
  * @C Ergonomie-Vorschlag von Gottfried
  *
