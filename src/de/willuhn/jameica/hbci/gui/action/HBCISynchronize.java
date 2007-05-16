@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/HBCISynchronize.java,v $
- * $Revision: 1.12 $
- * $Date: 2007/05/16 13:59:53 $
+ * $Revision: 1.13 $
+ * $Date: 2007/05/16 14:44:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,6 +31,7 @@ import de.willuhn.jameica.hbci.rmi.SynchronizeJob;
 import de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob;
 import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.hbci.server.hbci.synchronize.SynchronizeEngine;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -54,10 +55,16 @@ public class HBCISynchronize implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
-    Logger.info("Start synchronize");
-    
     i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
+    if (HBCIFactory.getInstance().inProgress())
+    {
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Derzeit läuft bereits eine HBCI-Synchronisierung"), StatusBarMessage.TYPE_ERROR));
+      return;
+    }
+
+    Logger.info("Start synchronize");
+    
     /////////////////////////////////////////////////////////////////
     // ggf. uebergebene Liste von manuell ausgewaehlten Jobs
     if (context != null && (context instanceof GenericIterator))
@@ -195,6 +202,9 @@ public class HBCISynchronize implements Action
 
 /*********************************************************************
  * $Log: HBCISynchronize.java,v $
+ * Revision 1.13  2007/05/16 14:44:47  willuhn
+ * @C Parallele Ausfuehrung mehrerer Synchronisierungen unterbinden
+ *
  * Revision 1.12  2007/05/16 13:59:53  willuhn
  * @N Bug 227 HBCI-Synchronisierung auch im Fehlerfall fortsetzen
  * @C Synchronizer ueberarbeitet
