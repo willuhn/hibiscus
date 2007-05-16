@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoNew.java,v $
- * $Revision: 1.20 $
- * $Date: 2006/11/30 23:48:40 $
+ * $Revision: 1.21 $
+ * $Date: 2007/05/16 14:12:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -58,7 +58,7 @@ public class KontoNew extends AbstractView {
 		
 
     Konto k = control.getKonto();
-    if (k != null)
+    if (k != null && !k.isNewObject())
     {
       String s1 = k.getBezeichnung();
       if (s1 == null) s1 = "";
@@ -69,7 +69,7 @@ public class KontoNew extends AbstractView {
       GUI.getView().setTitle(i18n.tr("Konto-Details: {0} [Kto.-Nr.: {1}]",new String[]{s1,s2}));
     }
     else
-  		GUI.getView().setTitle(i18n.tr("Konto-Details"));
+  		GUI.getView().setTitle(i18n.tr("Konto-Details: Neues Konto"));
 
     // BUGZILLA 273
     TabFolder kontofolder = new TabFolder(getParent(), SWT.NONE);
@@ -133,6 +133,9 @@ public class KontoNew extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoNew.java,v $
+ * Revision 1.21  2007/05/16 14:12:33  willuhn
+ * @B Bug 400 Titel des Dialogs bei Neuanlage eines Kontos korrekt anzeigen
+ *
  * Revision 1.20  2006/11/30 23:48:40  willuhn
  * @N Erste Version der Umsatz-Kategorien drin
  *
