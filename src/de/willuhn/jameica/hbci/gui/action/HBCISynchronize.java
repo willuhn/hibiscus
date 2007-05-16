@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/HBCISynchronize.java,v $
- * $Revision: 1.13 $
- * $Date: 2007/05/16 14:44:47 $
+ * $Revision: 1.14 $
+ * $Date: 2007/05/16 14:49:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -119,7 +119,7 @@ public class HBCISynchronize implements Action
     // Fall abbrechen sollen, dann tun wir das
     if (!success && Settings.getCancelSyncOnError())
     {
-      Logger.info("synchronize with errors finished");
+      Logger.warn("synchronize finished with errors");
       GUI.getStatusBar().setErrorText(i18n.tr("Synchronisierung mit Fehlern beendet"));
       return;
     }
@@ -137,7 +137,7 @@ public class HBCISynchronize implements Action
         }
         else
         {
-          Logger.info("synchronize with errors finished");
+          Logger.warn("synchronize finished with errors");
           GUI.getStatusBar().setErrorText(i18n.tr("Synchronisierung mit Fehlern beendet"));
         }
 
@@ -202,6 +202,9 @@ public class HBCISynchronize implements Action
 
 /*********************************************************************
  * $Log: HBCISynchronize.java,v $
+ * Revision 1.14  2007/05/16 14:49:42  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.13  2007/05/16 14:44:47  willuhn
  * @C Parallele Ausfuehrung mehrerer Synchronisierungen unterbinden
  *
