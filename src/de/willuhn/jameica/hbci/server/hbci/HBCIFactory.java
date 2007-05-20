@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.51 $
- * $Date: 2007/05/16 13:59:53 $
+ * $Revision: 1.52 $
+ * $Date: 2007/05/20 23:45:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -208,7 +208,7 @@ public class HBCIFactory {
 
     if (this.listener != null)
     {
-      GUI.getDisplay().asyncExec(new Runnable()
+      Runnable r = new Runnable()
       {
         public void run()
         {
@@ -217,7 +217,9 @@ public class HBCIFactory {
           Logger.info("executing listener");
           listener.handleEvent(e);
         }
-      });
+      };
+      if (Application.inServerMode()) r.run();
+      else GUI.getDisplay().asyncExec(r);
     }
     Logger.info("finished");
   }
@@ -315,14 +317,15 @@ public class HBCIFactory {
         if (interrupted) return;
         
         HBCIFactory.this.start();
-        GUI.getStatusBar().startProgress();
+        if (!Application.inServerMode())
+          GUI.getStatusBar().startProgress();
         
         // //////////////////////////////////////////////////////////////////////
         // Passport erzeugen
         monitor.setStatusText(i18n.tr("{0}: Lade HBCI-Sicherheitsmedium",kn));
         monitor.addPercentComplete(2);
         
-        GUI.getDisplay().syncExec(new Runnable() {
+        Runnable r = new Runnable() {
           public void run()
           {
             try
@@ -331,6 +334,8 @@ public class HBCIFactory {
               // BUGZILLA #7 http://www.willuhn.de/bugzilla/show_bug.cgi?id=7
               monitor.setStatusText(i18n.tr("{0}: Initialisiere HBCI-Sicherheitsmedium",kn));
 
+              if (passport == null)
+                throw new ApplicationException(i18n.tr("Kein HBCI-Sicherheitsmedium für das Konto gefunden"));
               passport.init(konto);
             }
             catch (ApplicationException ae)
@@ -347,7 +352,11 @@ public class HBCIFactory {
               error = true;
             }
           }
-        });
+        };
+        
+        if (Application.inServerMode()) r.run();
+        else GUI.getDisplay().syncExec(r);
+        
         if (error) return;
         if (interrupted) return;
 
@@ -367,7 +376,7 @@ public class HBCIFactory {
         monitor.setStatusText(i18n.tr("{0}: Erzeuge HBCI-Handle",kn));
         monitor.addPercentComplete(2);
 
-        GUI.getDisplay().syncExec(new Runnable() {
+        r = new Runnable() {
           public void run()
           {
             try
@@ -381,7 +390,11 @@ public class HBCIFactory {
               error = true;
             }
           }
-        });
+        };
+        
+        if (Application.inServerMode()) r.run();
+        else GUI.getDisplay().syncExec(r);
+        
         if (error) return;
         if (interrupted) return;
 
@@ -414,7 +427,7 @@ public class HBCIFactory {
         monitor.setStatusText(i18n.tr("{0}: Öffne HBCI-Verbindung",kn));
         monitor.addPercentComplete(2);
 
-        GUI.getDisplay().syncExec(new Runnable() {
+        r = new Runnable() {
           public void run()
           {
             try
@@ -441,7 +454,10 @@ public class HBCIFactory {
               error = true;
             }
           }
-        });
+        };
+        if (Application.inServerMode()) r.run();
+        else GUI.getDisplay().syncExec(r);
+
         if (error) return;
         if (interrupted) return;
         //
@@ -585,7 +601,8 @@ public class HBCIFactory {
         }
         finally
         {
-          GUI.getStatusBar().stopProgress();
+          if (!Application.inServerMode())
+            GUI.getStatusBar().stopProgress();
           HBCIFactory.this.stop(status);
         }
       }
@@ -643,6 +660,9 @@ public class HBCIFactory {
 
 /*******************************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.52  2007/05/20 23:45:10  willuhn
+ * @N HBCI-Jobausfuehrung Servertauglich gemacht
+ *
  * Revision 1.51  2007/05/16 13:59:53  willuhn
  * @N Bug 227 HBCI-Synchronisierung auch im Fehlerfall fortsetzen
  * @C Synchronizer ueberarbeitet
