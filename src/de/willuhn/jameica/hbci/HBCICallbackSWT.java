@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.51 $
- * $Date: 2007/04/25 16:11:39 $
+ * $Revision: 1.52 $
+ * $Date: 2007/05/22 15:50:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -87,7 +87,7 @@ public class HBCICallbackSWT extends AbstractHBCICallback
           log = false;
           break;
         }
-        if (msg != null && msg.matches("Algorithmus .* nicht implementiert"))
+        if (msg != null && msg.matches(".* Algorithmus .* nicht implementiert"))
         {
           Logger.debug(msg);
           log = false;
@@ -496,6 +496,9 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.52  2007/05/22 15:50:17  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.51  2007/04/25 16:11:39  willuhn
  * @C Nachricht "Algorithmus * nicht implementiert" unterdruecken
  *
