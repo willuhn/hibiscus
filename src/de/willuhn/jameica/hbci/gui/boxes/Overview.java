@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Overview.java,v $
- * $Revision: 1.8 $
- * $Date: 2007/02/21 11:58:52 $
+ * $Revision: 1.9 $
+ * $Date: 2007/05/25 14:16:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -238,15 +238,18 @@ public class Overview extends AbstractBox implements Box
       else
       {
         in  = this.konto.getEinnahmen(dStart,dEnd);
-        out = Math.abs(this.konto.getAusgaben(dStart,dEnd));
+        out = this.konto.getAusgaben(dStart,dEnd);
       }
+      out = Math.abs(out); // BUGZILLA 405
       getAusgaben().setValue(HBCI.DECIMALFORMAT.format(out));
       getEinnahmen().setValue(HBCI.DECIMALFORMAT.format(in));
 
-      double diff = in + out;
+      double diff = in - out;
       getBilanz().setValue(HBCI.DECIMALFORMAT.format(diff));
       if (diff < 0)
         ((LabelInput)getBilanz()).setColor(Color.ERROR);
+      else if (diff == 0)
+        ((LabelInput)getBilanz()).setColor(Color.WIDGET_FG);
       else
         ((LabelInput)getBilanz()).setColor(Color.SUCCESS);
     }
@@ -309,6 +312,9 @@ public class Overview extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: Overview.java,v $
+ * Revision 1.9  2007/05/25 14:16:47  willuhn
+ * @B Bug 405
+ *
  * Revision 1.8  2007/02/21 11:58:52  willuhn
  * @N Bug 315
  *
