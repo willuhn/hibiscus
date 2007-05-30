@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/DBSupportMcKoiImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2007/05/30 09:34:55 $
+ * $Revision: 1.7 $
+ * $Date: 2007/05/30 09:41:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,8 +16,10 @@ package de.willuhn.jameica.hbci.server;
 import java.io.File;
 import java.rmi.RemoteException;
 import java.sql.Connection;
+import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.util.HashMap;
+import java.util.Locale;
 
 import de.willuhn.datasource.db.EmbeddedDatabase;
 import de.willuhn.jameica.hbci.HBCI;
@@ -92,8 +94,7 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl
 
     ////////////////////////////////////////////////////////////////////////////
     // Damit wir die Updates nicht immer haendisch nachziehen muessen, rufen wir
-    // das letzte Update-Script nochmal auf. Muss entfernt werden, wenn die
-    // Version released wird.
+    // das letzte Update-Script ggf. nochmal auf.
     if (!Application.inClientMode())
     {
       try
@@ -102,8 +103,17 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl
         de.willuhn.jameica.system.Settings s = res.getSettings();
         double size = s.getDouble("sql-update-size",-1);
         
-        File f = new File(res.getPath() + "/sql/update_1.6-1.7.sql");
-        
+        DecimalFormat df = (DecimalFormat) DecimalFormat.getInstance(Locale.ENGLISH); // Punkt als Dezimal-Trenner
+        df.setMaximumFractionDigits(1);
+        df.setMinimumFractionDigits(1);
+        df.setGroupingUsed(false);
+
+        double version    = Application.getPluginLoader().getManifest(HBCI.class).getVersion();
+        double oldVersion = version - 0.1d;
+
+        File f = new File(res.getPath() + File.separator + "sql",
+            "update_" + df.format(oldVersion) + "-" + df.format(version) + ".sql");
+
         if (f.exists())
         {
           long length = f.length();
@@ -201,6 +211,9 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl
 
 /*********************************************************************
  * $Log: DBSupportMcKoiImpl.java,v $
+ * Revision 1.7  2007/05/30 09:41:51  willuhn
+ * @N SQL-Update fuer Nightly-Build nun generisch
+ *
  * Revision 1.6  2007/05/30 09:34:55  willuhn
  * @B Seit Support fuer MySQL wurde die DB-Checksummen-Pruefung sowie das automatische SQL-Update bei Nightly-Builds vergessen
  *
