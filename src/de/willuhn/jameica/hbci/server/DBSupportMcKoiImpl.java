@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/DBSupportMcKoiImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2007/05/07 09:27:25 $
+ * $Revision: 1.6 $
+ * $Date: 2007/05/30 09:34:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,7 @@
 
 package de.willuhn.jameica.hbci.server;
 
+import java.io.File;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.text.MessageFormat;
@@ -21,7 +22,9 @@ import java.util.HashMap;
 import de.willuhn.datasource.db.EmbeddedDatabase;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.plugin.PluginResources;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.sql.CheckSum;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -44,7 +47,7 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl
     DBMAPPING.put("JtkHZYFRtWpxGR6nE8TYFw==",new Double(1.4));
     DBMAPPING.put("a4VHFRr69c+LynZiczIICg==",new Double(1.5));
     DBMAPPING.put("a4VHFRr69c+LynZiczIICg==",new Double(1.6));
-    DBMAPPING.put("EdG6qLQ0SXRgJ8QBtz5Vrg==", new Double(1.7));
+    DBMAPPING.put("EdG6qLQ0SXRgJ8QBtz5Vrg==",new Double(1.7));
   }
   
   /**
@@ -86,6 +89,40 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl
    */
   public void checkConsistency(Connection conn) throws RemoteException, ApplicationException
   {
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Damit wir die Updates nicht immer haendisch nachziehen muessen, rufen wir
+    // das letzte Update-Script nochmal auf. Muss entfernt werden, wenn die
+    // Version released wird.
+    if (!Application.inClientMode())
+    {
+      try
+      {
+        PluginResources res = Application.getPluginLoader().getPlugin(HBCI.class).getResources();
+        de.willuhn.jameica.system.Settings s = res.getSettings();
+        double size = s.getDouble("sql-update-size",-1);
+        
+        File f = new File(res.getPath() + "/sql/update_1.6-1.7.sql");
+        
+        if (f.exists())
+        {
+          long length = f.length();
+          if (length != size)
+          {
+            s.setAttribute("sql-update-size",(double)f.length());
+            execute(conn, f);
+          }
+          else
+            Logger.info("database up to date");
+        }
+      }
+      catch (Exception e2)
+      {
+        Logger.error("unable to execute sql update script",e2);
+      }
+    }
+    ////////////////////////////////////////////////////////////////////////////
+    
     if (!Settings.getCheckDatabase())
       return;
 
@@ -98,9 +135,8 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl
 
       String checkSum = CheckSum.md5(conn,null,"APP");
       if (DBMAPPING.get(checkSum) == null)
-      {
         throw new ApplicationException(i18n.tr("Datenbank-Checksumme ungültig: {0}. Datenbank-Version nicht kompatibel zur Hibiscus-Version?",checkSum));
-      }
+      monitor.setStatusText(i18n.tr("Datenbank-Checksumme korrekt"));
     }
     catch (ApplicationException ae)
     {
@@ -165,6 +201,9 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl
 
 /*********************************************************************
  * $Log: DBSupportMcKoiImpl.java,v $
+ * Revision 1.6  2007/05/30 09:34:55  willuhn
+ * @B Seit Support fuer MySQL wurde die DB-Checksummen-Pruefung sowie das automatische SQL-Update bei Nightly-Builds vergessen
+ *
  * Revision 1.5  2007/05/07 09:27:25  willuhn
  * @N Automatisches Neuerstellen der JDBC-Connection bei MySQL
  *

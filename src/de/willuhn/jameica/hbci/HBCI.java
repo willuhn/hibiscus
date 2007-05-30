@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.99 $
- * $Date: 2007/05/16 16:25:57 $
+ * $Revision: 1.100 $
+ * $Date: 2007/05/30 09:34:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -88,6 +88,15 @@ public class HBCI extends AbstractPlugin
     LOGMAPPING.put(Level.INFO,  new Integer(HBCIUtils.LOG_INFO));
     LOGMAPPING.put(Level.DEBUG, new Integer(HBCIUtils.LOG_DEBUG2));
 
+    call(new ServiceCall()
+    {
+      public void call(HBCIDBService service) throws ApplicationException, RemoteException
+      {
+        service.checkConsistency();
+      }
+    });
+    
+
     /////////////////////////////////////////////////////////////////
     // Passport-Verzeichnis ggf. automatisch anlegen
     String path = Settings.getWorkPath() + "/passports/";
@@ -120,7 +129,7 @@ public class HBCI extends AbstractPlugin
   {
     call(new ServiceCall() {
     
-      public void call(HBCIDBService service) throws RemoteException
+      public void call(HBCIDBService service) throws ApplicationException, RemoteException
       {
         service.install();
       }
@@ -134,7 +143,7 @@ public class HBCI extends AbstractPlugin
   {
     call(new ServiceCall() {
       
-      public void call(HBCIDBService service) throws RemoteException
+      public void call(HBCIDBService service) throws ApplicationException, RemoteException
       {
         service.update(oldVersion,getManifest().getVersion());
       }
@@ -182,7 +191,7 @@ public class HBCI extends AbstractPlugin
         try
         {
           this.callback = (HBCICallback) Application.getClassLoader().load(callbackClass).newInstance();
-          Logger.info("custom callback: " + this.callback.getClass().getName());
+          Logger.info("callback: " + this.callback.getClass().getName());
         }
         catch (Throwable t)
         {
@@ -250,9 +259,10 @@ public class HBCI extends AbstractPlugin
   {
     /**
      * @param service
+     * @throws ApplicationException
      * @throws RemoteException
      */
-    public void call(HBCIDBService service) throws RemoteException;
+    public void call(HBCIDBService service) throws ApplicationException, RemoteException;
   }
   
   /**
@@ -274,9 +284,13 @@ public class HBCI extends AbstractPlugin
       service.start();
       call.call(service);
     }
+    catch (ApplicationException ae)
+    {
+      throw ae;
+    }
     catch (Exception e)
     {
-      throw new ApplicationException(getResources().getI18N().tr("Fehler beim Erstellen der Datenbank"),e);
+      throw new ApplicationException(getResources().getI18N().tr("Fehler beim Initialisieren der Datenbank"),e);
     }
     finally
     {
@@ -299,6 +313,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.100  2007/05/30 09:34:55  willuhn
+ * @B Seit Support fuer MySQL wurde die DB-Checksummen-Pruefung sowie das automatische SQL-Update bei Nightly-Builds vergessen
+ *
  * Revision 1.99  2007/05/16 16:25:57  willuhn
  * @C Sauberes Re-Init des HBCI-Subsystem
  *
