@@ -8,7 +8,7 @@ CREATE TABLE konto (
      , waehrung VARCHAR(6) NOT NULL
      , passport_class TEXT NOT NULL
      , saldo DOUBLE
-     , saldo_datum DATE
+     , saldo_datum DATETIME
      , synchronize int(10)
      , UNIQUE (id)
      , PRIMARY KEY (id)
@@ -96,7 +96,7 @@ CREATE TABLE protokoll (
        id int(10) AUTO_INCREMENT
      , konto_id int(10) NOT NULL
      , kommentar VARCHAR(1000) NOT NULL
-     , datum DATE NOT NULL
+     , datum DATETIME NOT NULL
      , typ int(10) NOT NULL
      , UNIQUE (id)
      , PRIMARY KEY (id)
