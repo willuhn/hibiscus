@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCIProperties.java,v $
- * $Revision: 1.22 $
- * $Date: 2007/05/16 13:59:53 $
+ * $Revision: 1.23 $
+ * $Date: 2007/06/01 15:20:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -166,8 +166,9 @@ public class HBCIProperties
     }
     catch (Exception e)
     {
-      Logger.info("HBCI4Java subsystem not initialized for this thread, skip crc check");
-      return true;
+      Logger.warn("HBCI4Java subsystem seems to be not initialized for this thread group, adding thread group");
+      HBCIUtils.initThread(null,null);
+      return HBCIUtils.checkAccountCRC(blz, kontonummer);
     }
   }
 
@@ -213,6 +214,9 @@ public class HBCIProperties
 
 /**********************************************************************
  * $Log: HBCIProperties.java,v $
+ * Revision 1.23  2007/06/01 15:20:52  willuhn
+ * @B reinit hbci kernel on other threads
+ *
  * Revision 1.22  2007/05/16 13:59:53  willuhn
  * @N Bug 227 HBCI-Synchronisierung auch im Fehlerfall fortsetzen
  * @C Synchronizer ueberarbeitet
