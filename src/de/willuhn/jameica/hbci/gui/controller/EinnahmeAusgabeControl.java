@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EinnahmeAusgabeControl.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/06/04 17:37:00 $
- * $Author: willuhn $
+ * $Revision: 1.3 $
+ * $Date: 2007/06/04 18:35:28 $
+ * $Author: jost $
  * $Locker:  $
  * $State: Exp $
  *
@@ -27,6 +27,8 @@ import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
+import de.willuhn.jameica.gui.dialogs.AbstractDialog;
+import de.willuhn.jameica.gui.dialogs.SimpleDialog;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.input.DateInput;
@@ -223,9 +225,9 @@ public class EinnahmeAusgabeControl extends AbstractControl
   }
 
   /**
-   * Liefert einen Baum von Umsatzkategorien mit den Umsaetzen.
+   * Liefert eine Tabelle mit den Einnahmen/Ausgaben und Salden
    * 
-   * @return Baum mit Umsatz-Kategorien.
+   * @return Tabelle mit den Einnahmen/Ausgaben und Salden
    * @throws RemoteException
    */
   public TablePart getTable() throws RemoteException
@@ -247,9 +249,10 @@ public class EinnahmeAusgabeControl extends AbstractControl
     table.addColumn(i18n.tr("Endsaldo"), "endsaldo", new CurrencyFormatter(
         HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
     table.addColumn(i18n.tr("Bemerkung"), "bemerkung");
-    
-    table.setFormatter(new TableFormatter() {
-    
+
+    table.setFormatter(new TableFormatter()
+    {
+
       public void format(TableItem item)
       {
         if (item == null)
@@ -258,7 +261,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
         try
         {
           Double einnahmen = (Double) ea.getAttribute("einnahme");
-          Double ausgaben  = (Double) ea.getAttribute("ausgabe");
+          Double ausgaben = (Double) ea.getAttribute("ausgabe");
           if (einnahmen == null || ausgaben == null)
             return;
           if (einnahmen.doubleValue() > ausgaben.doubleValue())
@@ -270,10 +273,10 @@ public class EinnahmeAusgabeControl extends AbstractControl
         }
         catch (Exception e)
         {
-          Logger.error("unable to format line",e);
+          Logger.error("unable to format line", e);
         }
       }
-    
+
     });
 
     table.setRememberColWidths(true);
@@ -344,9 +347,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
   }
 
   /**
-   * Aktualisiert den Tree. Die Funktion erwartet das Composite, in dem der Tree
-   * gezeichnet werden soll, da TreePart das Entfernen von Elementen noch nicht
-   * unterstuetzt.
+   * Aktualisiert die Tabelle.
    * 
    * @param comp
    * @throws RemoteException
@@ -354,6 +355,23 @@ public class EinnahmeAusgabeControl extends AbstractControl
   public void handleReload() throws RemoteException
   {
     this.table.removeAll();
+    Date t_start = (Date) start.getValue();
+    Date t_end = (Date) end.getValue();
+    if (t_start != null && t_end != null && t_start.after(t_end))
+    {
+      SimpleDialog sd = new SimpleDialog(AbstractDialog.POSITION_CENTER);
+      sd.setText("Das Anfangsdatum liegt nach dem Endedatum");
+      try
+      {
+        sd.open();
+        return;
+      }
+      catch (Exception e)
+      {
+        e.printStackTrace();
+      }
+    }
+
     EinnahmeAusgabe[] eae = this.getWerte();
     for (int i = 0; i < eae.length; i++)
     {
@@ -364,12 +382,15 @@ public class EinnahmeAusgabeControl extends AbstractControl
 
 /*******************************************************************************
  * $Log: EinnahmeAusgabeControl.java,v $
- * Revision 1.2  2007/06/04 17:37:00  willuhn
+ * Revision 1.3  2007/06/04 18:35:28  jost
+ * Zusätzliche Plausi: Startdatum muß vor Endedatum liegen.
+ * Revision 1.2 2007/06/04 17:37:00
+ * willuhn
+ * 
  * @D javadoc
  * @C java 1.4 compatibility
  * @N table colorized
- *
- * Revision 1.1  2007/06/04 15:58:00  jost
- * Neue Auswertung: Einnahmen/Ausgaben
- *
+ * 
+ * Revision 1.1 2007/06/04 15:58:00 jost Neue Auswertung: Einnahmen/Ausgaben
+ * 
  ******************************************************************************/
