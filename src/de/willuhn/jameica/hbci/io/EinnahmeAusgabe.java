@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Attic/EinnahmeAusgabe.java,v $
- * $Revision: 1.1 $
- * $Date: 2007/06/04 15:58:31 $
- * $Author: jost $
+ * $Revision: 1.2 $
+ * $Date: 2007/06/04 17:37:00 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -44,6 +44,16 @@ public class EinnahmeAusgabe implements Serializable, GenericObject
 
   String bemerkung = "";
 
+  /**
+   * ct.
+   * @param text
+   * @param startdatum
+   * @param anfangssaldo
+   * @param einnahme
+   * @param ausgabe
+   * @param enddatum
+   * @param endsaldo
+   */
   public EinnahmeAusgabe(String text, Date startdatum, double anfangssaldo,
       double einnahme, double ausgabe, Date enddatum, double endsaldo)
   {
@@ -61,11 +71,17 @@ public class EinnahmeAusgabe implements Serializable, GenericObject
     }
   }
 
+  /**
+   * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
+   */
   public boolean equals(GenericObject other) throws RemoteException
   {
     return other.getAttribute("text").equals(text);
   }
 
+  /**
+   * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
+   */
   public Object getAttribute(String name) throws RemoteException
   {
     if (name.equals("text"))
@@ -74,19 +90,19 @@ public class EinnahmeAusgabe implements Serializable, GenericObject
     }
     if (name.equals("anfangssaldo"))
     {
-      return anfangssaldo;
+      return new Double(anfangssaldo);
     }
     if (name.equals("einnahme"))
     {
-      return einnahme;
+      return new Double(einnahme);
     }
     if (name.equals("ausgabe"))
     {
-      return ausgabe;
+      return new Double(ausgabe);
     }
     if (name.equals("endsaldo"))
     {
-      return endsaldo;
+      return new Double(endsaldo);
     }
     if (name.equals("bemerkung"))
     {
@@ -95,17 +111,26 @@ public class EinnahmeAusgabe implements Serializable, GenericObject
     return null;
   }
 
+  /**
+   * @see de.willuhn.datasource.GenericObject#getAttributeNames()
+   */
   public String[] getAttributeNames() throws RemoteException
   {
-    return new String[] { "test", "anfangssaldo", "einnahme", "ausgabe",
+    return new String[] { "text", "anfangssaldo", "einnahme", "ausgabe",
         "endsaldo", "bemerkung" };
   }
 
+  /**
+   * @see de.willuhn.datasource.GenericObject#getID()
+   */
   public String getID() throws RemoteException
   {
-    return "1";
+    return (text + anfangssaldo + einnahme + ausgabe + endsaldo + bemerkung);
   }
 
+  /**
+   * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
+   */
   public String getPrimaryAttribute() throws RemoteException
   {
     return "text";
@@ -114,6 +139,11 @@ public class EinnahmeAusgabe implements Serializable, GenericObject
 
 /*******************************************************************************
  * $Log: EinnahmeAusgabe.java,v $
+ * Revision 1.2  2007/06/04 17:37:00  willuhn
+ * @D javadoc
+ * @C java 1.4 compatibility
+ * @N table colorized
+ *
  * Revision 1.1  2007/06/04 15:58:31  jost
  * Neue Auswertung: Einnahmen/Ausgaben
  *

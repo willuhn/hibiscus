@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/EinnahmenAusgaben.java,v $
- * $Revision: 1.1 $
- * $Date: 2007/06/04 15:58:14 $
- * $Author: jost $
+ * $Revision: 1.2 $
+ * $Date: 2007/06/04 17:37:00 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -41,10 +41,10 @@ public class EinnahmenAusgaben extends AbstractView
 
     final EinnahmeAusgabeControl control = new EinnahmeAusgabeControl(this);
 
-    LabelGroup group = new LabelGroup(getParent(), i18n.tr("Eigenschaften"));
-    group.addLabelPair(i18n.tr("Auswahl"), control.getKontoAuswahl());
-    group.addLabelPair(i18n.tr("Startdatum"), control.getStart());
-    group.addLabelPair(i18n.tr("Endedatum"), control.getEnd());
+    LabelGroup group = new LabelGroup(getParent(), i18n.tr("Anzeige einschränken"));
+    group.addLabelPair(i18n.tr("Konto"), control.getKontoAuswahl());
+    group.addLabelPair(i18n.tr("Start-Datum"), control.getStart());
+    group.addLabelPair(i18n.tr("End-Datum"), control.getEnd());
 
     final TablePart table = control.getTable();
     table.paint(this.getParent());
@@ -56,6 +56,11 @@ public class EinnahmenAusgaben extends AbstractView
 }
 /*******************************************************************************
  * $Log: EinnahmenAusgaben.java,v $
+ * Revision 1.2  2007/06/04 17:37:00  willuhn
+ * @D javadoc
+ * @C java 1.4 compatibility
+ * @N table colorized
+ *
  * Revision 1.1  2007/06/04 15:58:14  jost
  * Neue Auswertung: Einnahmen/Ausgaben
  *

@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EinnahmeAusgabeControl.java,v $
- * $Revision: 1.1 $
- * $Date: 2007/06/04 15:58:00 $
- * $Author: jost $
+ * $Revision: 1.2 $
+ * $Date: 2007/06/04 17:37:00 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -19,6 +19,7 @@ import java.util.Date;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.TableItem;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
@@ -27,15 +28,19 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
+import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.io.EinnahmeAusgabe;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
 /**
@@ -235,13 +240,41 @@ public class EinnahmeAusgabeControl extends AbstractControl
     table.addColumn(i18n.tr("Anfangssaldo"), "anfangssaldo",
         new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,
             HBCI.DECIMALFORMAT));
-    table.addColumn(i18n.tr("Einnahme"), "einnahme", new CurrencyFormatter(
+    table.addColumn(i18n.tr("Einnahmen"), "einnahme", new CurrencyFormatter(
         HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
-    table.addColumn(i18n.tr("Ausgabe"), "ausgabe", new CurrencyFormatter(
+    table.addColumn(i18n.tr("Ausgaben"), "ausgabe", new CurrencyFormatter(
         HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
     table.addColumn(i18n.tr("Endsaldo"), "endsaldo", new CurrencyFormatter(
         HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
     table.addColumn(i18n.tr("Bemerkung"), "bemerkung");
+    
+    table.setFormatter(new TableFormatter() {
+    
+      public void format(TableItem item)
+      {
+        if (item == null)
+          return;
+        EinnahmeAusgabe ea = (EinnahmeAusgabe) item.getData();
+        try
+        {
+          Double einnahmen = (Double) ea.getAttribute("einnahme");
+          Double ausgaben  = (Double) ea.getAttribute("ausgabe");
+          if (einnahmen == null || ausgaben == null)
+            return;
+          if (einnahmen.doubleValue() > ausgaben.doubleValue())
+            item.setForeground(Settings.getBuchungHabenForeground());
+          else if (einnahmen.doubleValue() < ausgaben.doubleValue())
+            item.setForeground(Settings.getBuchungSollForeground());
+          else
+            item.setForeground(Color.WIDGET_FG.getSWTColor());
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to format line",e);
+        }
+      }
+    
+    });
 
     table.setRememberColWidths(true);
     return table;
@@ -331,6 +364,11 @@ public class EinnahmeAusgabeControl extends AbstractControl
 
 /*******************************************************************************
  * $Log: EinnahmeAusgabeControl.java,v $
+ * Revision 1.2  2007/06/04 17:37:00  willuhn
+ * @D javadoc
+ * @C java 1.4 compatibility
+ * @N table colorized
+ *
  * Revision 1.1  2007/06/04 15:58:00  jost
  * Neue Auswertung: Einnahmen/Ausgaben
  *
