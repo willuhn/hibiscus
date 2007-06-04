@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractFromToList.java,v $
- * $Revision: 1.6 $
- * $Date: 2007/04/26 23:08:13 $
+ * $Revision: 1.7 $
+ * $Date: 2007/06/04 22:18:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -90,7 +90,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
     // Als Startdatum nehmen wir den ersten des aktuellen Monats
     // Es sei denn, es ist eines gespeichert
     Date dFrom = null;
-    String sFrom = mySettings.getString("filter.from",null);
+    String sFrom = mySettings.getString("transferlist.filter.from",null);
     if (sFrom != null && sFrom.length() > 0)
     {
       try
@@ -115,7 +115,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
 
     // Als End-Datum nehmen wir keines.
     // Es sei denn, es ist ein aktuelles gespeichert
-    String sTo = mySettings.getString("filter.to",null);
+    String sTo = mySettings.getString("transferlist.filter.to",null);
     Date dTo = null;
     if (sTo != null && sTo.length() > 0)
     {
@@ -213,13 +213,13 @@ public abstract class AbstractFromToList extends TablePart implements Part
           
           // Speichern der Werte aus den beiden Eingabe-Feldern.
           // Das From-Datum speichern wir immer
-          mySettings.setAttribute("filter.from",dfrom == null ? (String)null : HBCI.DATEFORMAT.format(dfrom));
+          mySettings.setAttribute("transferlist.filter.from",dfrom == null ? (String)null : HBCI.DATEFORMAT.format(dfrom));
             
           // Das End-Datum speichern wir nur, wenn es nicht das aktuelle Datum ist
           if (dto != null && !HBCIProperties.startOfDay(new Date()).equals(dto))
             mySettings.setAttribute("transferlist.filter.to",HBCI.DATEFORMAT.format(dto));
           else
-            mySettings.setAttribute("filter.to",(String)null);
+            mySettings.setAttribute("transferlist.filter.to",(String)null);
         }
         catch (Exception e)
         {
@@ -257,6 +257,9 @@ public abstract class AbstractFromToList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: AbstractFromToList.java,v $
+ * Revision 1.7  2007/06/04 22:18:29  willuhn
+ * @B typo
+ *
  * Revision 1.6  2007/04/26 23:08:13  willuhn
  * @C Umstellung auf DelayedListener
  *
