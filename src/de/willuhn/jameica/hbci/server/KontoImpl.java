@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.84 $
- * $Date: 2007/04/19 18:12:21 $
- * $Author: willuhn $
+ * $Revision: 1.85 $
+ * $Date: 2007/06/04 15:59:23 $
+ * $Author: jost $
  * $Locker:  $
  * $State: Exp $
  *
@@ -84,35 +84,43 @@ public class KontoImpl extends AbstractDBObject implements Konto
     try
     {
       if (getName() == null || getName().length() == 0)
-        throw new ApplicationException(i18n.tr("Bitten geben Sie den Namen des Kontoinhabers ein."));
+        throw new ApplicationException(i18n
+            .tr("Bitten geben Sie den Namen des Kontoinhabers ein."));
 
-      HBCIProperties.checkLength(getName(),HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
+      HBCIProperties.checkLength(getName(),
+          HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
 
       if (getKontonummer() == null || getKontonummer().length() == 0)
-        throw new ApplicationException(i18n.tr("Bitte geben Sie eine Kontonummer ein."));
+        throw new ApplicationException(i18n
+            .tr("Bitte geben Sie eine Kontonummer ein."));
 
       if (getBLZ() == null || getBLZ().length() == 0)
-        throw new ApplicationException(i18n.tr("Bitte geben Sie eine Bankleitzahl ein."));
+        throw new ApplicationException(i18n
+            .tr("Bitte geben Sie eine Bankleitzahl ein."));
 
       // BUGZILLA 280
       HBCIProperties.checkChars(getBLZ(), HBCIProperties.HBCI_BLZ_VALIDCHARS);
-      HBCIProperties.checkChars(getKontonummer(), HBCIProperties.HBCI_KTO_VALIDCHARS);
+      HBCIProperties.checkChars(getKontonummer(),
+          HBCIProperties.HBCI_KTO_VALIDCHARS);
 
       if (getKundennummer() == null || getKundennummer().length() == 0)
-        throw new ApplicationException(i18n.tr("Bitte geben Sie Ihre Kundennummer ein."));
+        throw new ApplicationException(i18n
+            .tr("Bitte geben Sie Ihre Kundennummer ein."));
 
       // BUGZILLA 29 http://www.willuhn.de/bugzilla/show_bug.cgi?id=29
       if (getWaehrung() == null || getWaehrung().length() != 3)
         setWaehrung(HBCIProperties.CURRENCY_DEFAULT_DE);
 
       if (!HBCIProperties.checkAccountCRC(getBLZ(), getKontonummer()))
-        throw new ApplicationException(i18n.tr("Ungültige BLZ/Kontonummer. Bitte prüfen Sie Ihre Eingaben."));
+        throw new ApplicationException(i18n
+            .tr("Ungültige BLZ/Kontonummer. Bitte prüfen Sie Ihre Eingaben."));
 
     }
     catch (RemoteException e)
     {
       Logger.error("error while insertcheck", e);
-      throw new ApplicationException(i18n.tr("Fehler bei der Prüfung der Daten"));
+      throw new ApplicationException(i18n
+          .tr("Fehler bei der Prüfung der Daten"));
     }
   }
 
@@ -323,13 +331,70 @@ public class KontoImpl extends AbstractDBObject implements Konto
   }
 
   /**
+   * @see de.willuhn.jameica.hbci.rmi.Konto#getAnfangsSaldo()
+   */
+  public double getAnfangsSaldo(Date datum) throws RemoteException
+  {
+    HBCIDBService service = (HBCIDBService) getService();
+
+    DBIterator list = service.createList(Umsatz.class);
+    list.addFilter("konto_id = " + getID());
+    Date start = HBCIProperties.startOfDay(datum);
+    list.addFilter("valuta >= ?", new Object[] { new java.sql.Date(start
+        .getTime()) });
+    list.setOrder("ORDER BY " + service.getSQLTimestamp("valuta")
+        + " asc, id asc");
+    if (list.size() > 0)
+    {
+      Umsatz u = (Umsatz) list.next();
+      return u.getSaldo() + u.getBetrag() * -1;
+    }
+    list = service.createList(Umsatz.class);
+    // Im angegebenen Zeitraum waren keine Umsätze zu finden. Deshalb suchen wir
+    // frühere Umsätze.
+    list.addFilter("konto_id = " + getID());
+    list.addFilter("valuta < ?", new Object[] { new java.sql.Date(start
+        .getTime()) });
+    list.setOrder("ORDER BY " + service.getSQLTimestamp("valuta")
+        + " desc, id desc");
+    if (list.size() > 0)
+    {
+      Umsatz u = (Umsatz) list.next();
+      return u.getSaldo();
+    }
+    return 0.0d;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Konto#getEndSaldo()
+   */
+  public double getEndSaldo(Date datum) throws RemoteException
+  {
+    HBCIDBService service = (HBCIDBService) getService();
+
+    DBIterator list = service.createList(Umsatz.class);
+    list.addFilter("konto_id = " + getID());
+    Date end = HBCIProperties.endOfDay(datum);
+    list.addFilter("valuta <= ?", new Object[] { new java.sql.Date(end
+        .getTime()) });
+    list.setOrder("ORDER BY " + service.getSQLTimestamp("valuta")
+        + " desc, id desc");
+    if (list.size() > 0)
+    {
+      Umsatz u = (Umsatz) list.next();
+      return u.getSaldo();
+    }
+    return 0.0d;
+  }
+
+  /**
    * @see de.willuhn.jameica.hbci.rmi.Konto#getSaldoDatum()
    */
   public Date getSaldoDatum() throws RemoteException
   {
     return (Date) getAttribute("saldo_datum");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.Konto#resetSaldoDatum()
    */
@@ -360,10 +425,14 @@ public class KontoImpl extends AbstractDBObject implements Konto
     if (days > 0)
     {
       long d = days * 24l * 60l * 60l * 1000l;
-      Date start = HBCIProperties.startOfDay(new Date(System.currentTimeMillis() - d));
-      list.addFilter("valuta >= ?", new Object[]{new java.sql.Date(start.getTime())});
+      Date start = HBCIProperties.startOfDay(new Date(System
+          .currentTimeMillis()
+          - d));
+      list.addFilter("valuta >= ?", new Object[] { new java.sql.Date(start
+          .getTime()) });
     }
-    list.setOrder("ORDER BY " + service.getSQLTimestamp("valuta") + " desc, id desc");
+    list.setOrder("ORDER BY " + service.getSQLTimestamp("valuta")
+        + " desc, id desc");
     return list;
   }
 
@@ -376,10 +445,15 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
     DBIterator list = service.createList(Umsatz.class);
     list.addFilter("konto_id = " + getID());
-    if (start != null) list.addFilter("valuta >= ?", new Object[]{new java.sql.Date(HBCIProperties.startOfDay(start).getTime())});
-    if (end != null) list.addFilter("valuta <= ?", new Object[]{new java.sql.Date(HBCIProperties.endOfDay(end).getTime())});
+    if (start != null)
+      list.addFilter("valuta >= ?", new Object[] { new java.sql.Date(
+          HBCIProperties.startOfDay(start).getTime()) });
+    if (end != null)
+      list.addFilter("valuta <= ?", new Object[] { new java.sql.Date(
+          HBCIProperties.endOfDay(end).getTime()) });
 
-    list.setOrder("ORDER BY " + service.getSQLTimestamp("valuta") + " desc, id desc");
+    list.setOrder("ORDER BY " + service.getSQLTimestamp("valuta")
+        + " desc, id desc");
     return list;
   }
 
@@ -622,9 +696,10 @@ public class KontoImpl extends AbstractDBObject implements Konto
       return 0.0d;
 
     ArrayList params = new ArrayList();
-    
-    String sql = "select SUM(betrag) from umsatz where konto_id = " + this.getID() + " and betrag " + (ausgaben ? "<" : ">") + " 0";
-    if (from != null) 
+
+    String sql = "select SUM(betrag) from umsatz where konto_id = "
+        + this.getID() + " and betrag " + (ausgaben ? "<" : ">") + " 0";
+    if (from != null)
     {
       params.add(new java.sql.Date(HBCIProperties.startOfDay(from).getTime()));
       sql += " and datum >= ? ";
@@ -647,7 +722,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
       }
     };
 
-    Double d = (Double) service.execute(sql,params.toArray(), rs);
+    Double d = (Double) service.execute(sql, params.toArray(), rs);
     return d == null ? 0.0d : d.doubleValue();
   }
 
@@ -659,7 +734,8 @@ public class KontoImpl extends AbstractDBObject implements Konto
     if (this.isNewObject())
       return 0;
 
-    String sql = "select count(id) from umsatz where konto_id = " + this.getID();
+    String sql = "select count(id) from umsatz where konto_id = "
+        + this.getID();
 
     HBCIDBService service = (HBCIDBService) this.getService();
 
@@ -673,7 +749,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
       }
     };
 
-    Integer i = (Integer) service.execute(sql, new Object[0],rs);
+    Integer i = (Integer) service.execute(sql, new Object[0], rs);
     return i == null ? 0 : i.intValue();
   }
 
@@ -689,64 +765,65 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*******************************************************************************
  * $Log: KontoImpl.java,v $
- * Revision 1.84  2007/04/19 18:12:21  willuhn
+ * Revision 1.85  2007/06/04 15:59:23  jost
+ * Neue Auswertung: Einnahmen/Ausgaben
+ * Revision 1.84 2007/04/19 18:12:21 willuhn
+ * 
  * @N MySQL-Support (GUI zum Konfigurieren fehlt noch)
- *
- * Revision 1.83  2007/04/02 23:01:17  willuhn
+ * 
+ * Revision 1.83 2007/04/02 23:01:17 willuhn
  * @D diverse Javadoc-Warnings
  * @C Umstellung auf neues SelectInput
- *
- * Revision 1.82  2006/12/29 14:28:47  willuhn
+ * 
+ * Revision 1.82 2006/12/29 14:28:47 willuhn
  * @B Bug 345
  * @B jede Menge Bugfixes bei SQL-Statements mit Valuta
- *
- * Revision 1.81  2006/12/27 17:56:49  willuhn
+ * 
+ * Revision 1.81 2006/12/27 17:56:49 willuhn
  * @B Bug 341
- *
- * Revision 1.80  2006/12/27 11:52:36  willuhn
+ * 
+ * Revision 1.80 2006/12/27 11:52:36 willuhn
  * @C ResultsetExtractor moved into datasource
- *
- * Revision 1.79  2006/12/20 13:16:02  willuhn
- * *** empty log message ***
- *
- * Revision 1.78  2006/12/20 00:04:25  willuhn
+ * 
+ * Revision 1.79 2006/12/20 13:16:02 willuhn *** empty log message ***
+ * 
+ * Revision 1.78 2006/12/20 00:04:25 willuhn
  * @B bug 341
- *
- * Revision 1.77  2006/12/01 00:02:34  willuhn
+ * 
+ * Revision 1.77 2006/12/01 00:02:34 willuhn
  * @C made unserializable members transient
- *
- * Revision 1.76  2006/10/20 08:22:48  willuhn
+ * 
+ * Revision 1.76 2006/10/20 08:22:48 willuhn
  * @B bug 297
- *
- * Revision 1.75  2006/10/09 16:56:55  jost
- * Bug #284
- *
- * Revision 1.74  2006/10/06 16:00:42  willuhn
+ * 
+ * Revision 1.75 2006/10/09 16:56:55 jost Bug #284
+ * 
+ * Revision 1.74 2006/10/06 16:00:42 willuhn
  * @B Bug 280
- *
- * Revision 1.73  2006/08/28 21:28:26  willuhn
+ * 
+ * Revision 1.73 2006/08/28 21:28:26 willuhn
  * @B bug 277
- *
- * Revision 1.72  2006/08/28 10:22:32  willuhn
+ * 
+ * Revision 1.72 2006/08/28 10:22:32 willuhn
  * @B Default-Wert fuer Konto-Synchronisierung
- *
- * Revision 1.71  2006/08/25 10:13:43  willuhn
- * @B Fremdschluessel NICHT mittels PreparedStatement, da die sonst gequotet und von McKoi nicht gefunden werden. BUGZILLA 278
- *
- * Revision 1.70  2006/08/23 09:45:13  willuhn
+ * 
+ * Revision 1.71 2006/08/25 10:13:43 willuhn
+ * @B Fremdschluessel NICHT mittels PreparedStatement, da die sonst gequotet und
+ *    von McKoi nicht gefunden werden. BUGZILLA 278
+ * 
+ * Revision 1.70 2006/08/23 09:45:13 willuhn
  * @N Restliche DBIteratoren auf PreparedStatements umgestellt
- *
- * Revision 1.69  2006/07/13 00:21:15  willuhn
+ * 
+ * Revision 1.69 2006/07/13 00:21:15 willuhn
  * @N Neue Auswertung "Sparquote"
- *
- * Revision 1.68  2006/05/15 12:05:22  willuhn
+ * 
+ * Revision 1.68 2006/05/15 12:05:22 willuhn
  * @N FileDialog zur Auswahl von Pfad und Datei beim Speichern
  * @N YesNoDialog falls Datei bereits existiert
  * @C KontoImpl#getUmsaetze mit tonumber() statt dateob()
- *
- * Revision 1.67  2006/05/14 19:53:42  jost
- * Prerelease Kontoauszug-Report
- * Revision 1.66 2006/05/11 10:57:35 willuhn
+ * 
+ * Revision 1.67 2006/05/14 19:53:42 jost Prerelease Kontoauszug-Report Revision
+ * 1.66 2006/05/11 10:57:35 willuhn
  * 
  * @C merged Bug 232 into HEAD
  * 
