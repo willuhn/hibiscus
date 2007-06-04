@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractTransferList.java,v $
- * $Revision: 1.20 $
- * $Date: 2007/04/26 23:08:13 $
+ * $Revision: 1.21 $
+ * $Date: 2007/06/04 23:23:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,6 +31,7 @@ import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.util.Color;
+import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
@@ -183,6 +184,17 @@ public abstract class AbstractTransferList extends AbstractFromToList
    */
   public class TransferMessageConsumer implements MessageConsumer
   {
+    private DelayedListener delayed = null;
+    
+    /**
+     * ct.
+     */
+    private TransferMessageConsumer()
+    {
+      if (listener != null)
+        this.delayed = new DelayedListener(listener);
+    }
+    
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
      */
@@ -210,12 +222,10 @@ public abstract class AbstractTransferList extends AbstractFromToList
 
       // Wir forcieren das Reload. Da in den Eingabefeldern
       // nichts geaendert wurde, wuerde das Reload sonst nicht
-      // stattfinden. Um das Buendeln von Mass-Updates kuemmert
-      // sich handleReload() selbst, in dem es einen Timerthread
-      // verwendet
-      if (listener != null)
-        listener.handleEvent(null);
-   }
+      // stattfinden.
+      if (delayed != null)
+        delayed.handleEvent(null);
+    }
 
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
@@ -231,6 +241,9 @@ public abstract class AbstractTransferList extends AbstractFromToList
 
 /**********************************************************************
  * $Log: AbstractTransferList.java,v $
+ * Revision 1.21  2007/06/04 23:23:47  willuhn
+ * @B error while saving transfer list date
+ *
  * Revision 1.20  2007/04/26 23:08:13  willuhn
  * @C Umstellung auf DelayedListener
  *

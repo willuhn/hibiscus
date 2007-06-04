@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractFromToList.java,v $
- * $Revision: 1.7 $
- * $Date: 2007/06/04 22:18:29 $
+ * $Revision: 1.8 $
+ * $Date: 2007/06/04 23:23:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,7 +28,6 @@ import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.parts.TablePart;
-import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -45,8 +44,8 @@ public abstract class AbstractFromToList extends TablePart implements Part
 
   protected I18N i18n            = null;
   
-  protected Input from           = null;
-  protected Input to             = null;
+  private Input from             = null;
+  private Input to               = null;
 
   protected Listener listener    = null;
   protected de.willuhn.jameica.system.Settings mySettings = null;
@@ -62,7 +61,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
     this.i18n       = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     this.mySettings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
 
-    this.listener = new DelayedListener(new Listener() {
+    this.listener = new Listener() {
       public void handleEvent(Event event) {
         // Wenn das event "null" ist, kann es nicht
         // von SWT ausgeloest worden sein sondern
@@ -72,21 +71,21 @@ public abstract class AbstractFromToList extends TablePart implements Part
         // wurde
         handleReload(event == null);
       }
-    });
+    };
     
     this.setRememberOrder(true);
     this.setRememberColWidths(true);
     this.setSummary(true);
   }
-
+  
   /**
-   * Ueberschrieben, um einen DisposeListener an das Composite zu haengen.
-   * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
+   * Liefert das Eingabe-Datum fuer das Start-Datum.
+   * @return Eingabe-Feld.
    */
-  public synchronized void paint(Composite parent) throws RemoteException
+  private synchronized Input getFrom()
   {
-    LabelGroup group = new LabelGroup(parent,i18n.tr("Anzeige einschränken"));
-
+    if (this.from != null)
+      return this.from;
     // Als Startdatum nehmen wir den ersten des aktuellen Monats
     // Es sei denn, es ist eines gespeichert
     Date dFrom = null;
@@ -109,9 +108,19 @@ public abstract class AbstractFromToList extends TablePart implements Part
       dFrom = HBCIProperties.startOfDay(cal.getTime());
     }
     
-    from = new DateInput(dFrom, HBCI.DATEFORMAT);
-    from.addListener(this.listener);
-    group.addLabelPair(i18n.tr("Anzeige von"),from);
+    this.from = new DateInput(dFrom, HBCI.DATEFORMAT);
+    this.from.addListener(this.listener);
+    return this.from;
+  }
+  
+  /**
+   * Liefert das Eingabe-Datum fuer das End-Datum.
+   * @return Eingabe-Feld.
+   */
+  public synchronized Input getTo()
+  {
+    if (this.to != null)
+      return this.to;
 
     // Als End-Datum nehmen wir keines.
     // Es sei denn, es ist ein aktuelles gespeichert
@@ -130,12 +139,24 @@ public abstract class AbstractFromToList extends TablePart implements Part
     }
 
     
-    to = new DateInput(dTo, HBCI.DATEFORMAT);
-    to.addListener(this.listener);
-    group.addLabelPair(i18n.tr("Anzeige bis"),to);
+    this.to = new DateInput(dTo, HBCI.DATEFORMAT);
+    this.to.addListener(this.listener);
+    return this.to;
+  }
+
+  /**
+   * Ueberschrieben, um einen DisposeListener an das Composite zu haengen.
+   * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
+   */
+  public synchronized void paint(Composite parent) throws RemoteException
+  {
+    LabelGroup group = new LabelGroup(parent,i18n.tr("Anzeige einschränken"));
+
+    group.addLabelPair(i18n.tr("Anzeige von"),getFrom());
+    group.addLabelPair(i18n.tr("Anzeige bis"),getTo());
    
     // Erstbefuellung
-    GenericIterator items = getList(dFrom,dTo);
+    GenericIterator items = getList((Date)getFrom().getValue(),(Date)getTo().getValue());
     if (items != null)
     {
       items.begin();
@@ -144,7 +165,6 @@ public abstract class AbstractFromToList extends TablePart implements Part
     }
 
     super.paint(parent);
-
   }
   
   /**
@@ -165,6 +185,9 @@ public abstract class AbstractFromToList extends TablePart implements Part
    */
   private synchronized void handleReload(boolean force)
   {
+    final Date dfrom = (Date) getFrom().getValue();
+    final Date dto   = (Date) getTo().getValue();
+    
     if (!force)
     {
       // Wenn es kein forcierter Reload ist, pruefen wir,
@@ -173,9 +196,6 @@ public abstract class AbstractFromToList extends TablePart implements Part
       if (!hasChanged())
         return;
 
-      Date dfrom = (Date) from.getValue();
-      Date dto   = (Date) to.getValue();
-      
       if (dfrom != null && dto != null && dfrom.after(dto))
       {
         GUI.getView().setErrorText(i18n.tr("End-Datum muss sich nach dem Start-Datum befinden"));
@@ -198,8 +218,6 @@ public abstract class AbstractFromToList extends TablePart implements Part
           removeAll();
 
           // Liste neu laden
-          Date dfrom = (Date) from.getValue();
-          Date dto   = (Date) to.getValue();
           GenericIterator items = getList(dfrom,dto);
           if (items == null)
             return;
@@ -216,7 +234,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
           mySettings.setAttribute("transferlist.filter.from",dfrom == null ? (String)null : HBCI.DATEFORMAT.format(dfrom));
             
           // Das End-Datum speichern wir nur, wenn es nicht das aktuelle Datum ist
-          if (dto != null && !HBCIProperties.startOfDay(new Date()).equals(dto))
+          if (dto != null && !HBCIProperties.startOfDay(new Date()).equals(HBCIProperties.startOfDay(dto)))
             mySettings.setAttribute("transferlist.filter.to",HBCI.DATEFORMAT.format(dto));
           else
             mySettings.setAttribute("transferlist.filter.to",(String)null);
@@ -257,6 +275,9 @@ public abstract class AbstractFromToList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: AbstractFromToList.java,v $
+ * Revision 1.8  2007/06/04 23:23:47  willuhn
+ * @B error while saving transfer list date
+ *
  * Revision 1.7  2007/06/04 22:18:29  willuhn
  * @B typo
  *
