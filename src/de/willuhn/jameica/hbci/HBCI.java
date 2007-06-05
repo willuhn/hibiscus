@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.100 $
- * $Date: 2007/05/30 09:34:55 $
+ * $Revision: 1.101 $
+ * $Date: 2007/06/05 00:41:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -225,6 +225,8 @@ public class HBCI extends AbstractPlugin
       }
       HBCIUtils.setParam("log.loglevel.default",""+logLevel);
       //////////////////////////////////
+      
+      HBCIUtils.setParam("client.product.name","HBCI4Java (Hibiscus " + getManifest().getVersion() + ")");
 
       
       //////////////////////////////////
@@ -313,6 +315,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.101  2007/06/05 00:41:53  willuhn
+ * @N send product identifier in HKVVB
+ *
  * Revision 1.100  2007/05/30 09:34:55  willuhn
  * @B Seit Support fuer MySQL wurde die DB-Checksummen-Pruefung sowie das automatische SQL-Update bei Nightly-Builds vergessen
  *
