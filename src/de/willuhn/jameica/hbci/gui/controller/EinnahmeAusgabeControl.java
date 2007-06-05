@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EinnahmeAusgabeControl.java,v $
- * $Revision: 1.3 $
- * $Date: 2007/06/04 18:35:28 $
- * $Author: jost $
+ * $Revision: 1.4 $
+ * $Date: 2007/06/05 08:40:06 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -27,8 +27,7 @@ import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
-import de.willuhn.jameica.gui.dialogs.AbstractDialog;
-import de.willuhn.jameica.gui.dialogs.SimpleDialog;
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.input.DateInput;
@@ -359,18 +358,10 @@ public class EinnahmeAusgabeControl extends AbstractControl
     Date t_end = (Date) end.getValue();
     if (t_start != null && t_end != null && t_start.after(t_end))
     {
-      SimpleDialog sd = new SimpleDialog(AbstractDialog.POSITION_CENTER);
-      sd.setText("Das Anfangsdatum liegt nach dem Endedatum");
-      try
-      {
-        sd.open();
-        return;
-      }
-      catch (Exception e)
-      {
-        e.printStackTrace();
-      }
+      GUI.getView().setErrorText(i18n.tr("Das Anfangsdatum muss End-Datum liegen"));
+      return;
     }
+    GUI.getView().setErrorText(""); // ggf. vorher angezeigten Fehler loeschen
 
     EinnahmeAusgabe[] eae = this.getWerte();
     for (int i = 0; i < eae.length; i++)
@@ -382,6 +373,9 @@ public class EinnahmeAusgabeControl extends AbstractControl
 
 /*******************************************************************************
  * $Log: EinnahmeAusgabeControl.java,v $
+ * Revision 1.4  2007/06/05 08:40:06  willuhn
+ * @C Fehlermeldung via Dialog gegen Hinweistext in Title ersetzt
+ *
  * Revision 1.3  2007/06/04 18:35:28  jost
  * Zusätzliche Plausi: Startdatum muß vor Endedatum liegen.
  * Revision 1.2 2007/06/04 17:37:00
