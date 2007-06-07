@@ -1,0 +1,10 @@
+<form>
+	<p>
+		<span color="header" font="header">Einnahmen/Ausgaben</span>
+	</p>
+	
+	<p>
+	  Auflistung und PDF-Export der Anfangssaldi, Einnahmen, Ausgaben
+	  und Endsaldi eines oder aller Konten.
+	</p>
+</form>
