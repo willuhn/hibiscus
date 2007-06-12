@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Settings.java,v $
- * $Revision: 1.40 $
- * $Date: 2007/05/16 13:59:53 $
+ * $Revision: 1.41 $
+ * $Date: 2007/06/12 08:56:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -117,7 +117,7 @@ public class Settings extends AbstractView {
 
     // Umsatz-Kategorien
     TabGroup umsatztypes = new TabGroup(getTabFolder(),i18n.tr("Umsatz-Kategorien"));
-    umsatztypes.addPart(control.getUmsatzTypListe());
+    control.getUmsatzTypListe().paint(umsatztypes.getComposite()); // BUGZILLA 410
     ButtonArea umsatzButtons = umsatztypes.createButtonArea(1);
     umsatzButtons.addButton(i18n.tr("Neue Umsatz-Kategorie..."),new UmsatzTypNew());
 
@@ -168,6 +168,9 @@ public class Settings extends AbstractView {
 
 /**********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.41  2007/06/12 08:56:01  willuhn
+ * @B Bug 410
+ *
  * Revision 1.40  2007/05/16 13:59:53  willuhn
  * @N Bug 227 HBCI-Synchronisierung auch im Fehlerfall fortsetzen
  * @C Synchronizer ueberarbeitet
