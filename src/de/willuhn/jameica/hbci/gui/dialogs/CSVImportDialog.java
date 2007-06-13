@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/CSVImportDialog.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/08/21 23:15:01 $
+ * $Revision: 1.4 $
+ * $Date: 2007/06/13 09:43:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,6 +28,7 @@ import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.ScrolledContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.io.CSVMapping;
 import de.willuhn.jameica.system.Application;
@@ -61,7 +62,7 @@ public class CSVImportDialog extends AbstractDialog
     this.line = line;
     this.mapping = mapping;
     setTitle(i18n.tr("Zuordnung der Spalten"));
-    // setSize(350,300);
+    setSize(460,350);
   }
   
   /**
@@ -73,6 +74,9 @@ public class CSVImportDialog extends AbstractDialog
     group.addText(i18n.tr("In der linken Spalte sehen Sie die erste Zeile Ihrer CSV-Datei.\n" +
         "Ordnen Sie die Felder bitte über die Auswahl-Elemente auf der rechte Seite zu."),true);
     
+    // BUGZILLA 412
+    ScrolledContainer container = new ScrolledContainer(parent);
+
     this.selects   = new ArrayList();
     ArrayList list = new ArrayList();
     Hashtable ht   = this.mapping.getNames();
@@ -111,7 +115,7 @@ public class CSVImportDialog extends AbstractDialog
       // spaeter wieder auslesen koennen.
       this.selects.add(select);
       
-      group.addLabelPair((i+1) + ". " + line[i],select); 
+      container.addLabelPair((i+1) + ". " + line[i],select); 
     }
     
     ButtonArea b = new ButtonArea(parent,2);
@@ -230,6 +234,9 @@ public class CSVImportDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: CSVImportDialog.java,v $
+ * Revision 1.4  2007/06/13 09:43:05  willuhn
+ * @B Bug 412
+ *
  * Revision 1.3  2006/08/21 23:15:01  willuhn
  * @N Bug 184 (CSV-Import)
  *
