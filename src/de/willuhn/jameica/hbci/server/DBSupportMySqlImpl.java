@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DBSupportMySqlImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2007/05/07 09:27:25 $
+ * $Revision: 1.4 $
+ * $Date: 2007/06/14 18:02:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -87,8 +87,8 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl
     if (sqlScript == null)
       return; // Ignore
 
-    String suffix = HBCIDBService.SETTINGS.getString("database.driver.mysql.scriptsuffix","mysql-");
-    File f = new File(suffix + sqlScript.getAbsolutePath());
+    String prefix = HBCIDBService.SETTINGS.getString("database.driver.mysql.scriptprefix","mysql-");
+    File f = new File(sqlScript.getParent(),prefix + sqlScript.getName());
     
     I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     
@@ -154,6 +154,9 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl
 
 /*********************************************************************
  * $Log: DBSupportMySqlImpl.java,v $
+ * Revision 1.4  2007/06/14 18:02:47  willuhn
+ * @B s/suffix/prefix/
+ *
  * Revision 1.3  2007/05/07 09:27:25  willuhn
  * @N Automatisches Neuerstellen der JDBC-Connection bei MySQL
  *
