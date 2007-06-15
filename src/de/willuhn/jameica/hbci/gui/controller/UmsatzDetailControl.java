@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailControl.java,v $
- * $Revision: 1.29 $
- * $Date: 2007/04/24 17:52:17 $
+ * $Revision: 1.30 $
+ * $Date: 2007/06/15 11:20:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -29,6 +29,7 @@ import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextAreaInput;
 import de.willuhn.jameica.gui.input.TextInput;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
@@ -62,12 +63,12 @@ public class UmsatzDetailControl extends AbstractControl {
 	private Input empfaengerName  = null;
 	private Input empfaengerKonto = null;
   private Input empfaengerBlz   = null;
-	private Input betrag					= null;
+	private LabelInput betrag	  	= null;
 	private Input zweck						= null;
 	private Input datum						= null;
 	private Input valuta					= null;
 
-	private Input saldo						= null;
+	private LabelInput saldo		  = null;
 	private Input primanota				= null;
 	private Input art							= null;
 	private Input customerRef			= null;
@@ -212,7 +213,7 @@ public class UmsatzDetailControl extends AbstractControl {
     if (empfaengerKonto != null)
       return empfaengerKonto;
 
-    String konto =getUmsatz().getGegenkontoNummer(); 
+    String konto = getUmsatz().getGegenkontoNummer(); 
     if (konto == null || konto.length() == 0 || getUmsatz().hasChangedByUser())
     {
       empfaengerKonto = new TextInput(konto,15);
@@ -221,6 +222,20 @@ public class UmsatzDetailControl extends AbstractControl {
     else
     {
       empfaengerKonto = new LabelInput(konto);
+      String blz = getUmsatz().getGegenkontoBLZ();
+      try
+      {
+        String name = HBCIUtils.getNameForBLZ(blz);
+        if (name != null && name.length() > 0)
+          blz = name;
+        else
+          blz = i18n.tr("BLZ") + ": " + blz;
+      }
+      catch (Exception e)
+      {
+        // ignore
+      }
+      empfaengerKonto.setComment(blz);
     }
     return empfaengerKonto;
   }
@@ -258,8 +273,18 @@ public class UmsatzDetailControl extends AbstractControl {
   {
     if (betrag != null)
       return betrag;
-    betrag = new LabelInput(HBCI.DECIMALFORMAT.format(getUmsatz().getBetrag()));
+    
+    double s = getUmsatz().getBetrag();
+    betrag = new LabelInput(HBCI.DECIMALFORMAT.format(s));
     betrag.setComment(getUmsatz().getKonto().getWaehrung());
+    
+    if (s < 0)
+      betrag.setColor(Color.ERROR);
+    else if (s > 0)
+      betrag.setColor(Color.SUCCESS);
+    else
+      betrag.setColor(Color.WIDGET_FG);
+
     return betrag;
   }
 
@@ -320,9 +345,19 @@ public class UmsatzDetailControl extends AbstractControl {
 	{
 		if (saldo != null)
 			return saldo;
-		saldo = new LabelInput(HBCI.DECIMALFORMAT.format(getUmsatz().getSaldo()));
+    
+    double s = getUmsatz().getSaldo();
+		saldo = new LabelInput(HBCI.DECIMALFORMAT.format(s));
 		saldo.setComment(getUmsatz().getKonto().getWaehrung());
-		return saldo;
+
+    if (s < 0)
+      saldo.setColor(Color.ERROR);
+    else if (s > 0)
+      saldo.setColor(Color.SUCCESS);
+    else
+      saldo.setColor(Color.WIDGET_FG);
+    
+    return saldo;
 	}
 
 	/**
@@ -475,6 +510,11 @@ public class UmsatzDetailControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzDetailControl.java,v $
+ * Revision 1.30  2007/06/15 11:20:32  willuhn
+ * @N Saldo in Kontodetails via Messaging sofort aktualisieren
+ * @N Mehr Details in den Namen der Synchronize-Jobs
+ * @N Layout der Umsatzdetail-Anzeige ueberarbeitet
+ *
  * Revision 1.29  2007/04/24 17:52:17  willuhn
  * @N Bereits in den Umsatzdetails erkennen, ob die Adresse im Adressbuch ist
  * @C Gross-Kleinschreibung in Adressbuch-Suche

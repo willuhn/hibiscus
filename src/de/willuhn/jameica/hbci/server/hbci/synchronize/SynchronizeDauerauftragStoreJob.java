@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/synchronize/SynchronizeDauerauftragStoreJob.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/10/09 21:43:26 $
+ * $Revision: 1.3 $
+ * $Date: 2007/06/15 11:20:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.server.hbci.synchronize;
 
 import java.rmi.RemoteException;
 
+import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.DauerauftragNew;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -52,7 +53,15 @@ public class SynchronizeDauerauftragStoreJob extends AbstractSynchronizeJob
   {
     Dauerauftrag dauer = (Dauerauftrag) getContext();
     Konto k = dauer.getKonto();
-    return i18n.tr("Konto {0}: Dauerauftrag an {1} absenden",new String[]{k.getLongName(), dauer.getGegenkontoName()});
+    String[] params = new String[] {
+        k.getLongName(),
+        dauer.getZweck(),
+        HBCI.DECIMALFORMAT.format(dauer.getBetrag()),
+        k.getWaehrung(),
+        dauer.getGegenkontoName(),
+        dauer.getTurnus().getBezeichnung()
+       };
+    return i18n.tr("{0}: ({1}) {2} {3} an {4}, Turnus: {5}",params);
   }
 
   /**
@@ -67,6 +76,11 @@ public class SynchronizeDauerauftragStoreJob extends AbstractSynchronizeJob
 
 /*********************************************************************
  * $Log: SynchronizeDauerauftragStoreJob.java,v $
+ * Revision 1.3  2007/06/15 11:20:32  willuhn
+ * @N Saldo in Kontodetails via Messaging sofort aktualisieren
+ * @N Mehr Details in den Namen der Synchronize-Jobs
+ * @N Layout der Umsatzdetail-Anzeige ueberarbeitet
+ *
  * Revision 1.2  2006/10/09 21:43:26  willuhn
  * @N Zusammenfassung der Geschaeftsvorfaelle "Umsaetze abrufen" und "Saldo abrufen" zu "Kontoauszuege abrufen" bei der Konto-Synchronisation
  *

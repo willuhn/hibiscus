@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoNew.java,v $
- * $Revision: 1.21 $
- * $Date: 2007/05/16 14:12:33 $
+ * $Revision: 1.22 $
+ * $Date: 2007/06/15 11:20:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -127,12 +127,25 @@ public class KontoNew extends AbstractView {
     control.handleReload();
     super.reload();
   }
+  
+  /**
+   * @see de.willuhn.jameica.gui.AbstractView#unbind()
+   */
+  public void unbind() throws ApplicationException
+  {
+    Application.getMessagingFactory().unRegisterMessageConsumer(control.getSaldoMessageConsumer());
+  }
 
 }
 
 
 /**********************************************************************
  * $Log: KontoNew.java,v $
+ * Revision 1.22  2007/06/15 11:20:31  willuhn
+ * @N Saldo in Kontodetails via Messaging sofort aktualisieren
+ * @N Mehr Details in den Namen der Synchronize-Jobs
+ * @N Layout der Umsatzdetail-Anzeige ueberarbeitet
+ *
  * Revision 1.21  2007/05/16 14:12:33  willuhn
  * @B Bug 400 Titel des Dialogs bei Neuanlage eines Kontos korrekt anzeigen
  *

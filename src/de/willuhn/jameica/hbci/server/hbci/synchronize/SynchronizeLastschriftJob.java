@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/synchronize/SynchronizeLastschriftJob.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/10/09 21:43:26 $
+ * $Revision: 1.3 $
+ * $Date: 2007/06/15 11:20:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.server.hbci.synchronize;
 
 import java.rmi.RemoteException;
 
+import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.LastschriftNew;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
@@ -52,7 +53,14 @@ public class SynchronizeLastschriftJob extends AbstractSynchronizeJob
   {
     Lastschrift last = (Lastschrift) getContext();
     Konto k = last.getKonto();
-    return i18n.tr("Konto {0}: Lastschrift von {1} einziehen",new String[]{k.getLongName(), last.getGegenkontoName()});
+    String[] params = new String[] {
+        k.getLongName(),
+        last.getZweck(),
+        HBCI.DECIMALFORMAT.format(last.getBetrag()),
+        k.getWaehrung(),
+        last.getGegenkontoName()
+       };
+    return i18n.tr("{0}: ({1}) {2} {3} von {4} einziehen",params);
   }
 
   /**
@@ -67,6 +75,11 @@ public class SynchronizeLastschriftJob extends AbstractSynchronizeJob
 
 /*********************************************************************
  * $Log: SynchronizeLastschriftJob.java,v $
+ * Revision 1.3  2007/06/15 11:20:32  willuhn
+ * @N Saldo in Kontodetails via Messaging sofort aktualisieren
+ * @N Mehr Details in den Namen der Synchronize-Jobs
+ * @N Layout der Umsatzdetail-Anzeige ueberarbeitet
+ *
  * Revision 1.2  2006/10/09 21:43:26  willuhn
  * @N Zusammenfassung der Geschaeftsvorfaelle "Umsaetze abrufen" und "Saldo abrufen" zu "Kontoauszuege abrufen" bei der Konto-Synchronisation
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/synchronize/SynchronizeKontoauszugJob.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/03/23 00:11:51 $
+ * $Revision: 1.3 $
+ * $Date: 2007/06/15 11:20:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -63,7 +63,7 @@ public class SynchronizeKontoauszugJob extends AbstractSynchronizeJob
     Konto k = (Konto) getContext();
     SynchronizeOptions o = new SynchronizeOptions(k);
     
-    String s = "Konto {0}: ";
+    String s = "{0}: ";
     
     if (o.getSyncKontoauszuege())
       s += "Kontoauszüge";
@@ -89,6 +89,11 @@ public class SynchronizeKontoauszugJob extends AbstractSynchronizeJob
 
 /*********************************************************************
  * $Log: SynchronizeKontoauszugJob.java,v $
+ * Revision 1.3  2007/06/15 11:20:32  willuhn
+ * @N Saldo in Kontodetails via Messaging sofort aktualisieren
+ * @N Mehr Details in den Namen der Synchronize-Jobs
+ * @N Layout der Umsatzdetail-Anzeige ueberarbeitet
+ *
  * Revision 1.2  2007/03/23 00:11:51  willuhn
  * @N Bug 346
  *

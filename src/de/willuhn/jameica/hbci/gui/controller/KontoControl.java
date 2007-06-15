@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.74 $
- * $Date: 2007/04/09 22:45:12 $
+ * $Revision: 1.75 $
+ * $Date: 2007/06/15 11:20:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -45,8 +45,11 @@ import de.willuhn.jameica.hbci.gui.input.PassportInput;
 import de.willuhn.jameica.hbci.gui.parts.ProtokollList;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzChart;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzList;
+import de.willuhn.jameica.hbci.messaging.SaldoMessage;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.messaging.Message;
+import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -70,7 +73,8 @@ public class KontoControl extends AbstractControl {
 	private Input passportAuswahl     = null;
   private Input kundennummer 		    = null;
   
-  private LabelInput saldo			= null;
+  private LabelInput saldo			        = null;
+  private SaldoMessageConsumer consumer = null;
   
   private CheckboxInput synchronize = null;
   private Button synchronizeOptions = null;
@@ -324,22 +328,24 @@ public class KontoControl extends AbstractControl {
 		if (saldo != null)
 			return saldo;
 			
-		double s = getKonto().getSaldo();
-		saldo = new LabelInput(
-			s == 0.0 && getKonto().getSaldoDatum() == null ?
-				"" :
-				HBCI.DECIMALFORMAT.format(s) + " " + getKonto().getWaehrung());
-    if (s < 0)
-      saldo.setColor(Color.ERROR);
-    if (s > 0)
-      saldo.setColor(Color.SUCCESS);
-
-    Date d = getKonto().getSaldoDatum();
-    if (d != null)
-      saldo.setComment(i18n.tr("letzte Aktualisierung: {0}",HBCI.LONGDATEFORMAT.format(d)));
+		saldo = new LabelInput("");
+    saldo.setComment(""); // Platz fuer Kommentar reservieren
+    // Einmal ausloesen, damit das Feld mit Inhalt gefuellt wird.
+    this.consumer = new SaldoMessageConsumer();
+    Application.getMessagingFactory().registerMessageConsumer(this.consumer);
+    Application.getMessagingFactory().sendMessage(new SaldoMessage(getKonto()));
     return saldo;
 	}
-
+  
+  /**
+   * Liefert einen Saldo-MessageConsumer.
+   * @return Consumer.
+   */
+  public MessageConsumer getSaldoMessageConsumer()
+  {
+    return this.consumer;
+  }
+  
   /**
 	 * Liefert eine Tabelle mit allen vorhandenen Bankverbindungen.
    * @return Tabelle mit Bankverbindungen.
@@ -445,6 +451,7 @@ public class KontoControl extends AbstractControl {
           while (i.hasNext())
             list.addItem(i.next());
           list.sort();
+          Application.getMessagingFactory().sendMessage(new SaldoMessage(getKonto()));
         }
         catch (IllegalArgumentException iae)
         {
@@ -461,11 +468,96 @@ public class KontoControl extends AbstractControl {
       }
     });
   }
+
+  /**
+   * Wird beim Eintreffen neuer Salden benachrichtigt und aktualisiert ggf die Anzeige.
+   */
+  private class SaldoMessageConsumer implements MessageConsumer
+  {
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
+     */
+    public boolean autoRegister()
+    {
+      return false;
+    }
+
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
+     */
+    public Class[] getExpectedMessageTypes()
+    {
+      return new Class[]{SaldoMessage.class};
+    }
+
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
+     */
+    public void handleMessage(final Message message) throws Exception
+    {
+      GUI.getDisplay().syncExec(new Runnable() {
+        
+        public void run()
+        {
+          try
+          {
+            if (saldo == null)
+            {
+              // Eingabe-Feld existiert nicht. Also abmelden
+              Application.getMessagingFactory().unRegisterMessageConsumer(SaldoMessageConsumer.this);
+              return;
+            }
+            
+            SaldoMessage msg = (SaldoMessage) message;
+            Konto k = msg.getKonto();
+            if (k == null || !k.equals(getKonto()))
+              return; // Kein Konto oder nicht unseres
+
+            double s = k.getSaldo();
+            Date   d = k.getSaldoDatum();
+            if (d == null)
+            {
+              // Kein Datum, kein Saldo
+              saldo.setValue("");
+              saldo.setComment(i18n.tr("noch kein Saldo abgerufen"));
+            }
+            else
+            {
+              saldo.setValue(HBCI.DECIMALFORMAT.format(s) + " " + getKonto().getWaehrung());
+              if (s < 0)
+                saldo.setColor(Color.ERROR);
+              else if (s > 0)
+                saldo.setColor(Color.SUCCESS);
+              else
+                saldo.setColor(Color.WIDGET_FG);
+
+              saldo.setComment(i18n.tr("letzte Aktualisierung: {0}",HBCI.LONGDATEFORMAT.format(d)));
+            }
+          }
+          catch (Exception e)
+          {
+            // Wenn hier ein Fehler auftrat, deregistrieren wir uns wieder
+            Logger.error("unable to refresh saldo",e);
+            Application.getMessagingFactory().unRegisterMessageConsumer(SaldoMessageConsumer.this);
+          }
+        }
+      
+      });
+    }
+    
+  }
+
+
 }
 
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.75  2007/06/15 11:20:32  willuhn
+ * @N Saldo in Kontodetails via Messaging sofort aktualisieren
+ * @N Mehr Details in den Namen der Synchronize-Jobs
+ * @N Layout der Umsatzdetail-Anzeige ueberarbeitet
+ *
  * Revision 1.74  2007/04/09 22:45:12  willuhn
  * @N Bug 380
  *

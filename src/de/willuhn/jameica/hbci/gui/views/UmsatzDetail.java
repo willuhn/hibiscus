@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzDetail.java,v $
- * $Revision: 1.28 $
- * $Date: 2007/04/24 17:52:17 $
+ * $Revision: 1.29 $
+ * $Date: 2007/06/15 11:20:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,13 +13,18 @@
 
 package de.willuhn.jameica.hbci.gui.views;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.TabFolder;
+
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.Color;
+import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
@@ -47,28 +52,30 @@ public class UmsatzDetail extends AbstractView {
     // BUGZILLA 38 http://www.willuhn.de/bugzilla/show_bug.cgi?id=38
     Konto k = control.getUmsatz().getKonto();
 
-    String s1 = k.getBezeichnung();
+    String s1 = k.getLongName();
     if (s1 == null) s1 = "";
 
-    String s2 = k.getKontonummer();
-    
     double d = k.getSaldo();
-    String s3 = null;
+    String s2 = null;
     if (k.getSaldoDatum() != null)
-      s3 = HBCI.DECIMALFORMAT.format(d) + " " + k.getWaehrung(); // Saldo wurde schonmal abgerufen
+      s2 = HBCI.DECIMALFORMAT.format(d) + " " + k.getWaehrung(); // Saldo wurde schonmal abgerufen
 
-    if (s3 == null)
-      GUI.getView().setTitle(i18n.tr("Buchungsdetails. Konto: {0} [Kto.-Nr.: {1}]",new String[]{s1,s2}));
+    if (s2 == null)
+      GUI.getView().setTitle(i18n.tr("Buchungsdetails. {0}",s1));
     else
-      GUI.getView().setTitle(i18n.tr("Buchungsdetails. Konto: {0} [Kto.-Nr.: {1}, Saldo: {2}]",new String[]{s1,s2,s3}));
+      GUI.getView().setTitle(i18n.tr("Buchungsdetails. {0}, Saldo: {1}",new String[]{s1,s2}));
 
-    LabelGroup detail = new LabelGroup(getParent(),i18n.tr("Details"));
+    TabFolder kontofolder = new TabFolder(getParent(), SWT.NONE);
+    kontofolder.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+    kontofolder.setBackground(Color.BACKGROUND.getSWTColor());
+    TabGroup detail = new TabGroup(kontofolder,i18n.tr("Details"));
 
 		// BUGZILLA 23 http://www.willuhn.de/bugzilla/show_bug.cgi?id=23
-    detail.addLabelPair(i18n.tr("persönliches Konto"),						control.getKonto());
-    detail.addLabelPair(i18n.tr("Kontoinhaber des Gegenkontos"),	control.getEmpfaengerName());
-    detail.addLabelPair(i18n.tr("Kontonummer des Gegenkontos"),		control.getEmpfaengerKonto());
-    detail.addLabelPair(i18n.tr("Bankleitzahl des Gegenkontos"),  control.getEmpfaengerBLZ());
+    detail.addHeadline(i18n.tr("Gegenkonto"));
+    detail.addLabelPair(i18n.tr("Inhaber"),                       control.getEmpfaengerName());
+    detail.addLabelPair(i18n.tr("Kontonummer"),                   control.getEmpfaengerKonto());
+    if (control.getUmsatz().hasChangedByUser())
+      detail.addLabelPair(i18n.tr("BLZ"),                         control.getEmpfaengerBLZ());
 
     detail.addHeadline(i18n.tr("Datum und Betrag"));
     detail.addLabelPair(i18n.tr("Betrag"),                        control.getBetrag());
@@ -83,7 +90,7 @@ public class UmsatzDetail extends AbstractView {
     detail.addLabelPair(i18n.tr("Umsatz-Kategorie"),              control.getUmsatzTyp());
 
     // BUGZILLA 30 http://www.willuhn.de/bugzilla/show_bug.cgi?id=30
-    LabelGroup zweck = new LabelGroup(getParent(),i18n.tr("Verwendungszweck"));
+    detail.addHeadline(i18n.tr("Verwendungszweck"));
 
     // BUGZILLA 75 http://www.willuhn.de/bugzilla/show_bug.cgi?id=75
     Umsatz u = control.getUmsatz();
@@ -96,25 +103,25 @@ public class UmsatzDetail extends AbstractView {
     // 3) Der Verwendungszweck wurde vom User vorher schonmal geaendert
     if (z1 == null || z1.length() < 4 || u.hasChangedByUser())
     {
-      zweck.addLabelPair(i18n.tr("Verwendungszweck"),control.getZweck());
+      detail.addLabelPair(i18n.tr("Verwendungszweck"),control.getZweck());
 
       // BUGZILLA 263 http://www.willuhn.de/bugzilla/show_bug.cgi?id=263
       if (z2 != null && z2.length() > 0)
       {
-        zweck.addLabelPair(i18n.tr("Weiterer Verwendungszweck"),new LabelInput(z2));
+        detail.addLabelPair(i18n.tr("Weiterer Verwendungszweck"),new LabelInput(z2));
       }
     }
     else
     {
-      zweck.addText(z1,true);
+      detail.addText(z1,true);
       if (z2 != null && z2.length() > 0)
       {
-        zweck.addText(z2,true);
+        detail.addText(z2,true);
       }
     }
    
-    LabelGroup comment = new LabelGroup(getParent(),i18n.tr("Kommentar zu dieser Buchung"),true);
-    comment.addPart(control.getKommentar());
+    TabGroup comment = new TabGroup(kontofolder,i18n.tr("Kommentar zu dieser Buchung"));
+    control.getKommentar().paint(comment.getComposite());
 
     ButtonArea buttons = new ButtonArea(getParent(),3);
 		buttons.addButton(i18n.tr("Zurück"),new Back(),null,true);
@@ -150,6 +157,11 @@ public class UmsatzDetail extends AbstractView {
 
 /**********************************************************************
  * $Log: UmsatzDetail.java,v $
+ * Revision 1.29  2007/06/15 11:20:32  willuhn
+ * @N Saldo in Kontodetails via Messaging sofort aktualisieren
+ * @N Mehr Details in den Namen der Synchronize-Jobs
+ * @N Layout der Umsatzdetail-Anzeige ueberarbeitet
+ *
  * Revision 1.28  2007/04/24 17:52:17  willuhn
  * @N Bereits in den Umsatzdetails erkennen, ob die Adresse im Adressbuch ist
  * @C Gross-Kleinschreibung in Adressbuch-Suche

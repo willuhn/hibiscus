@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/synchronize/SynchronizeSammelLastschriftJob.java,v $
- * $Revision: 1.3 $
- * $Date: 2007/04/02 23:01:17 $
+ * $Revision: 1.4 $
+ * $Date: 2007/06/15 11:20:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.server.hbci.synchronize;
 
 import java.rmi.RemoteException;
 
+import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.SammelLastschriftNew;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
@@ -52,7 +53,13 @@ public class SynchronizeSammelLastschriftJob extends AbstractSynchronizeJob
   {
     SammelLastschrift last = (SammelLastschrift) getContext();
     Konto k = last.getKonto();
-    return i18n.tr("Konto {0}: Sammel-Lastschrift {1} einziehen",new String[]{k.getLongName(), last.getBezeichnung()});
+    String[] params = new String[] {
+        k.getLongName(),
+        last.getBezeichnung(),
+        HBCI.DECIMALFORMAT.format(last.getSumme()),
+        k.getWaehrung()
+       };
+    return i18n.tr("{0}: ({1}) {2} {3} als Sammel-Lastschrift einziehen",params);
   }
 
   /**
@@ -67,6 +74,11 @@ public class SynchronizeSammelLastschriftJob extends AbstractSynchronizeJob
 
 /*********************************************************************
  * $Log: SynchronizeSammelLastschriftJob.java,v $
+ * Revision 1.4  2007/06/15 11:20:32  willuhn
+ * @N Saldo in Kontodetails via Messaging sofort aktualisieren
+ * @N Mehr Details in den Namen der Synchronize-Jobs
+ * @N Layout der Umsatzdetail-Anzeige ueberarbeitet
+ *
  * Revision 1.3  2007/04/02 23:01:17  willuhn
  * @D diverse Javadoc-Warnings
  * @C Umstellung auf neues SelectInput

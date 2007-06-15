@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/synchronize/SynchronizeUeberweisungJob.java,v $
- * $Revision: 1.3 $
- * $Date: 2007/04/02 23:01:17 $
+ * $Revision: 1.4 $
+ * $Date: 2007/06/15 11:20:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.server.hbci.synchronize;
 
 import java.rmi.RemoteException;
 
+import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungNew;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
@@ -52,7 +53,14 @@ public class SynchronizeUeberweisungJob extends AbstractSynchronizeJob
   {
     Ueberweisung ueb = (Ueberweisung) getContext();
     Konto k = ueb.getKonto();
-    return i18n.tr("Konto {0}: Überweisung an {1} absenden",new String[]{k.getLongName(), ueb.getGegenkontoName()});
+    String[] params = new String[] {
+        k.getLongName(),
+        ueb.getZweck(),
+        HBCI.DECIMALFORMAT.format(ueb.getBetrag()),
+        k.getWaehrung(),
+        ueb.getGegenkontoName()
+       };
+    return i18n.tr("{0}: ({1}) {2} {3} an {4} überweisen",params);
   }
 
   /**
@@ -67,6 +75,11 @@ public class SynchronizeUeberweisungJob extends AbstractSynchronizeJob
 
 /*********************************************************************
  * $Log: SynchronizeUeberweisungJob.java,v $
+ * Revision 1.4  2007/06/15 11:20:32  willuhn
+ * @N Saldo in Kontodetails via Messaging sofort aktualisieren
+ * @N Mehr Details in den Namen der Synchronize-Jobs
+ * @N Layout der Umsatzdetail-Anzeige ueberarbeitet
+ *
  * Revision 1.3  2007/04/02 23:01:17  willuhn
  * @D diverse Javadoc-Warnings
  * @C Umstellung auf neues SelectInput
