@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EinnahmeAusgabeControl.java,v $
- * $Revision: 1.4 $
- * $Date: 2007/06/05 08:40:06 $
- * $Author: willuhn $
+ * $Revision: 1.5 $
+ * $Date: 2007/06/19 17:55:09 $
+ * $Author: jost $
  * $Locker:  $
  * $State: Exp $
  *
@@ -60,13 +60,13 @@ public class EinnahmeAusgabeControl extends AbstractControl
 
   private TablePart table = null;
 
-  double summeAnfangssaldo = 0.0d;
+  private double summeAnfangssaldo = 0.0d;
 
-  double summeEinnahmen = 0.0d;
+  private double summeEinnahmen = 0.0d;
 
-  double summeAusgaben = 0.0d;
+  private double summeAusgaben = 0.0d;
 
-  double summeEndsaldo = 0.0d;
+  private double summeEndsaldo = 0.0d;
 
   private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(
       EinnahmeAusgabeControl.class);
@@ -373,6 +373,9 @@ public class EinnahmeAusgabeControl extends AbstractControl
 
 /*******************************************************************************
  * $Log: EinnahmeAusgabeControl.java,v $
+ * Revision 1.5  2007/06/19 17:55:09  jost
+ * Sichtbarkeit der Members eingeschränkt.
+ *
  * Revision 1.4  2007/06/05 08:40:06  willuhn
  * @C Fehlermeldung via Dialog gegen Hinweistext in Title ersetzt
  *
