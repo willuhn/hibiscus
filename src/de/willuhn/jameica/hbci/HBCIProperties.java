@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCIProperties.java,v $
- * $Revision: 1.23 $
- * $Date: 2007/06/01 15:20:52 $
+ * $Revision: 1.24 $
+ * $Date: 2007/06/21 14:06:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -167,7 +167,7 @@ public class HBCIProperties
     catch (Exception e)
     {
       Logger.warn("HBCI4Java subsystem seems to be not initialized for this thread group, adding thread group");
-      HBCIUtils.initThread(null,null);
+      HBCIUtils.initThread(null,null,((HBCI)Application.getPluginLoader().getPlugin(HBCI.class)).getHBCICallback());
       return HBCIUtils.checkAccountCRC(blz, kontonummer);
     }
   }
@@ -214,6 +214,9 @@ public class HBCIProperties
 
 /**********************************************************************
  * $Log: HBCIProperties.java,v $
+ * Revision 1.24  2007/06/21 14:06:30  willuhn
+ * @B reinit von HBCI4Java mit aktuellem Callback
+ *
  * Revision 1.23  2007/06/01 15:20:52  willuhn
  * @B reinit hbci kernel on other threads
  *
