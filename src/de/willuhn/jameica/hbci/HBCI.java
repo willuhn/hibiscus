@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.101 $
- * $Date: 2007/06/05 00:41:53 $
+ * $Revision: 1.102 $
+ * $Date: 2007/06/21 11:33:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -102,20 +102,6 @@ public class HBCI extends AbstractPlugin
     String path = Settings.getWorkPath() + "/passports/";
     File f = new File(path);
     if (!f.exists()) f.mkdirs();
-    /////////////////////////////////////////////////////////////////
-
-    /////////////////////////////////////////////////////////////////
-    // Passports im Server-Mode nicht aktivieren - nicht remote-tauglich
-    if (!Application.inServerMode())
-    {
-      Application.getCallback().getStartupMonitor().setStatusText("hibiscus: init passport registry");
-      PassportRegistry.init();
-      Application.getCallback().getStartupMonitor().addPercentComplete(3);
-    }
-    else
-    {
-      Logger.warn("server-mode: passport registry will not be initialized!");
-    }
     /////////////////////////////////////////////////////////////////
 
     initHBCI(getResources().getSettings().getString("hbcicallback.class",HBCICallbackSWT.class.getName()));
@@ -315,6 +301,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.102  2007/06/21 11:33:13  willuhn
+ * @N PassportRegistry erst bei Bedarf initialisieren
+ *
  * Revision 1.101  2007/06/05 00:41:53  willuhn
  * @N send product identifier in HKVVB
  *
