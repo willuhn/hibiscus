@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.50 $
- * $Date: 2007/05/16 13:59:53 $
+ * $Revision: 1.51 $
+ * $Date: 2007/06/21 11:02:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,7 +26,6 @@ import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.security.Wallet;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.jameica.system.ServiceSettings;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -65,8 +64,8 @@ public class Settings
     {
       // Die Exception fliegt nur bei RMI-Kommunikation mit fehlendem RMI-Server
       I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-      String host = ServiceSettings.getLookupHost(HBCI.class,"database");
-      int    port = ServiceSettings.getLookupPort(HBCI.class,"database");
+      String host = Application.getServiceFactory().getLookupHost(HBCI.class,"database");
+      int    port = Application.getServiceFactory().getLookupPort(HBCI.class,"database");
       String msg = i18n.tr("Hibiscus-Server \"{0}\" nicht erreichbar", (host + ":" + port));
       try
       {
@@ -405,6 +404,11 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.51  2007/06/21 11:02:44  willuhn
+ * @C ServiceSettings in ServiceFactory verschoben
+ * @N Aenderungen an Service-Bindings sofort uebernehmen
+ * @C Moeglichkeit, Service-Bindings wieder entfernen zu koennen
+ *
  * Revision 1.50  2007/05/16 13:59:53  willuhn
  * @N Bug 227 HBCI-Synchronisierung auch im Fehlerfall fortsetzen
  * @C Synchronizer ueberarbeitet
