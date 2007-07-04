@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/SammelUeberweisungExecute.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/09/30 00:08:50 $
+ * $Revision: 1.2 $
+ * $Date: 2007/07/04 09:16:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import java.rmi.RemoteException;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.gui.views.SammelUeberweisungNew;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
@@ -37,13 +38,18 @@ public class SammelUeberweisungExecute extends AbstractSammelTransferExecute
    */
   void execute(final SammelTransfer transfer) throws ApplicationException, RemoteException
   {
+    // Wir merken uns die aktuelle Seite und aktualisieren sie nur,
+    // wenn sie sich nicht geaendert hat.
+    final AbstractView oldView = GUI.getCurrentView();
+
     HBCIFactory factory = HBCIFactory.getInstance();
     factory.addJob(new HBCISammelUeberweisungJob((SammelUeberweisung) transfer));
     factory.executeJobs(transfer.getKonto(), new Listener() {
       public void handleEvent(Event event)
       {
-        // BUGZILLA 31 http://www.willuhn.de/bugzilla/show_bug.cgi?id=31
-        GUI.startView(SammelUeberweisungNew.class,transfer);
+        final AbstractView newView = GUI.getCurrentView();
+        if (oldView == newView && transfer == newView.getCurrentObject())
+          GUI.startView(SammelUeberweisungNew.class,transfer);
       }
     });
   }
@@ -53,6 +59,9 @@ public class SammelUeberweisungExecute extends AbstractSammelTransferExecute
 
 /**********************************************************************
  * $Log: SammelUeberweisungExecute.java,v $
+ * Revision 1.2  2007/07/04 09:16:24  willuhn
+ * @B Aktuelle View nach Ausfuehrung eines HBCI-Jobs nur noch dann aktualisieren, wenn sie sich zwischenzeitlich nicht geaendert hat
+ *
  * Revision 1.1  2005/09/30 00:08:50  willuhn
  * @N SammelUeberweisungen (merged with SammelLastschrift)
  *

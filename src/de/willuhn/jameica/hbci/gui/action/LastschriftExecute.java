@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/LastschriftExecute.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/07/26 23:57:18 $
- * $Author: web0 $
+ * $Revision: 1.7 $
+ * $Date: 2007/07/04 09:16:24 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -17,6 +17,7 @@ import java.rmi.RemoteException;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
@@ -71,13 +72,18 @@ public class LastschriftExecute implements Action
 				return;
 			}
 
+      // Wir merken uns die aktuelle Seite und aktualisieren sie nur,
+      // wenn sie sich nicht geaendert hat.
+      final AbstractView oldView = GUI.getCurrentView();
+
       HBCIFactory factory = HBCIFactory.getInstance();
       factory.addJob(new HBCILastschriftJob(u));
       factory.executeJobs(u.getKonto(), new Listener() {
         public void handleEvent(Event event)
         {
-          // BUGZILLA 31 http://www.willuhn.de/bugzilla/show_bug.cgi?id=31
-          GUI.startView(LastschriftNew.class,u);
+          final AbstractView newView = GUI.getCurrentView();
+          if (oldView == newView && u == newView.getCurrentObject())
+            GUI.startView(LastschriftNew.class,u);
         }
       }); 
 
@@ -95,6 +101,9 @@ public class LastschriftExecute implements Action
 
 /**********************************************************************
  * $Log: LastschriftExecute.java,v $
+ * Revision 1.7  2007/07/04 09:16:24  willuhn
+ * @B Aktuelle View nach Ausfuehrung eines HBCI-Jobs nur noch dann aktualisieren, wenn sie sich zwischenzeitlich nicht geaendert hat
+ *
  * Revision 1.6  2005/07/26 23:57:18  web0
  * @N Restliche HBCI-Jobs umgestellt
  *

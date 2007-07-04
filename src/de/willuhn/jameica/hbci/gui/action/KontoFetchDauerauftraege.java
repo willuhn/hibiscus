@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoFetchDauerauftraege.java,v $
- * $Revision: 1.10 $
- * $Date: 2005/07/26 23:57:18 $
- * $Author: web0 $
+ * $Revision: 1.11 $
+ * $Date: 2007/07/04 09:16:23 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -17,10 +17,12 @@ import java.rmi.RemoteException;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
+import de.willuhn.jameica.hbci.gui.views.DauerauftragList;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.hbci.HBCIDauerauftragListJob;
 import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
@@ -73,19 +75,18 @@ public class KontoFetchDauerauftraege implements Action
 
     try
     {
+      // Wir merken uns die aktuelle Seite und aktualisieren sie nur,
+      // wenn sie sich nicht geaendert hat.
+      final AbstractView oldView = GUI.getCurrentView();
+
       HBCIFactory factory = HBCIFactory.getInstance();
       factory.addJob(new HBCIDauerauftragListJob(k));
       factory.executeJobs(k, new Listener() {
         public void handleEvent(Event event)
         {
-          try
-          {
-            new DauerauftragList().handleAction(k);
-          }
-          catch (ApplicationException e)
-          {
-            GUI.getStatusBar().setErrorText(e.getMessage());
-          }
+          final AbstractView newView = GUI.getCurrentView();
+          if (oldView == newView)
+            GUI.startView(DauerauftragList.class,null);
         }
       });
 
@@ -102,6 +103,9 @@ public class KontoFetchDauerauftraege implements Action
 
 /**********************************************************************
  * $Log: KontoFetchDauerauftraege.java,v $
+ * Revision 1.11  2007/07/04 09:16:23  willuhn
+ * @B Aktuelle View nach Ausfuehrung eines HBCI-Jobs nur noch dann aktualisieren, wenn sie sich zwischenzeitlich nicht geaendert hat
+ *
  * Revision 1.10  2005/07/26 23:57:18  web0
  * @N Restliche HBCI-Jobs umgestellt
  *

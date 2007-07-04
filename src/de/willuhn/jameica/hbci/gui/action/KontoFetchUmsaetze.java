@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoFetchUmsaetze.java,v $
- * $Revision: 1.16 $
- * $Date: 2007/02/21 10:02:27 $
+ * $Revision: 1.17 $
+ * $Date: 2007/07/04 09:16:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -69,7 +69,9 @@ public class KontoFetchUmsaetze implements Action
         {
           try
           {
-            currentView.reload();
+            AbstractView newView = GUI.getCurrentView();
+            if (newView == currentView)
+              currentView.reload();
           }
           catch (ApplicationException e)
           {
@@ -91,6 +93,9 @@ public class KontoFetchUmsaetze implements Action
 
 /**********************************************************************
  * $Log: KontoFetchUmsaetze.java,v $
+ * Revision 1.17  2007/07/04 09:16:23  willuhn
+ * @B Aktuelle View nach Ausfuehrung eines HBCI-Jobs nur noch dann aktualisieren, wenn sie sich zwischenzeitlich nicht geaendert hat
+ *
  * Revision 1.16  2007/02/21 10:02:27  willuhn
  * @C Code zum Ausfuehren exklusiver Jobs redesigned
  *
