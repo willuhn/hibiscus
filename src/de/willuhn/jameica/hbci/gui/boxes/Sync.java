@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Sync.java,v $
- * $Revision: 1.12 $
- * $Date: 2007/05/16 11:32:30 $
+ * $Revision: 1.13 $
+ * $Date: 2007/07/10 09:33:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,7 +23,7 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.boxes.AbstractBox;
 import de.willuhn.jameica.gui.boxes.Box;
 import de.willuhn.jameica.gui.util.ButtonArea;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.HBCISynchronize;
@@ -69,13 +69,13 @@ public class Sync extends AbstractBox implements Box
    */
   public void paint(Composite parent) throws RemoteException
   {
+    new Headline(parent,getName());
+
+    // BUGZILLA 433
     this.list = new SynchronizeList();
+    list.paint(parent);
 
-    // BUGZILLA 209
-    LabelGroup sync = new LabelGroup(parent,getName(),false);
-    list.paint(sync.getComposite());
-
-    ButtonArea b = sync.createButtonArea(2);
+    ButtonArea b = new ButtonArea(parent,2);
 
     // BUGZILLA 226
     b.addButton(i18n.tr("Optionen..."),new Action() {
@@ -176,6 +176,9 @@ public class Sync extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: Sync.java,v $
+ * Revision 1.13  2007/07/10 09:33:38  willuhn
+ * @B Bug 433
+ *
  * Revision 1.12  2007/05/16 11:32:30  willuhn
  * @N Redesign der SynchronizeEngine. Ermittelt die HBCI-Jobs jetzt ueber generische "SynchronizeJobProvider". Damit ist die Liste der Sync-Jobs erweiterbar
  *
