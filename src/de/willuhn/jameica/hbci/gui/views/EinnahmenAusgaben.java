@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/EinnahmenAusgaben.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/06/04 17:37:00 $
+ * $Revision: 1.3 $
+ * $Date: 2007/07/16 12:01:48 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.EinnahmeAusgabeExport;
 import de.willuhn.jameica.hbci.gui.controller.EinnahmeAusgabeControl;
 import de.willuhn.jameica.system.Application;
@@ -49,13 +50,16 @@ public class EinnahmenAusgaben extends AbstractView
     final TablePart table = control.getTable();
     table.paint(this.getParent());
 
-    ButtonArea buttons = new ButtonArea(getParent(), 1);
-    buttons
-        .addButton("Export", new EinnahmeAusgabeExport(), control.getWerte());
+    ButtonArea buttons = new ButtonArea(getParent(), 2);
+    buttons.addButton(i18n.tr("Zurück"),new Back());
+    buttons.addButton(i18n.tr("Exportieren..."), new EinnahmeAusgabeExport(), control.getWerte());
   }
 }
 /*******************************************************************************
  * $Log: EinnahmenAusgaben.java,v $
+ * Revision 1.3  2007/07/16 12:01:48  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2007/06/04 17:37:00  willuhn
  * @D javadoc
  * @C java 1.4 compatibility
