@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/DBSupport.java,v $
- * $Revision: 1.4 $
- * $Date: 2007/05/07 09:27:25 $
+ * $Revision: 1.5 $
+ * $Date: 2007/07/16 12:51:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -93,7 +93,7 @@ public interface DBSupport extends Serializable
    * Legt fest, ob SQL-Insert-Queries mit oder ohne ID erzeugt werden sollen.
    * @return true, wenn die Insert-Queries mit ID erzeugt werden.
    * @throws RemoteException
-   * @see de.willuhn.datasource.db.DBServiceImpl#getInsertWithID()
+   * Siehe auch: de.willuhn.datasource.db.DBServiceImpl#getInsertWithID()
    */
   public boolean getInsertWithID() throws RemoteException;
 
@@ -102,6 +102,9 @@ public interface DBSupport extends Serializable
 
 /*********************************************************************
  * $Log: DBSupport.java,v $
+ * Revision 1.5  2007/07/16 12:51:15  willuhn
+ * @D javadoc
+ *
  * Revision 1.4  2007/05/07 09:27:25  willuhn
  * @N Automatisches Neuerstellen der JDBC-Connection bei MySQL
  *

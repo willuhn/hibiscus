@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/DBObjectDelete.java,v $
- * $Revision: 1.3 $
- * $Date: 2007/04/25 14:07:26 $
+ * $Revision: 1.4 $
+ * $Date: 2007/07/16 12:51:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -128,6 +128,9 @@ public class DBObjectDelete implements Action
       return this.cancel;
     }
 
+    /**
+     * @see de.willuhn.jameica.system.BackgroundTask#run(de.willuhn.util.ProgressMonitor)
+     */
     public void run(ProgressMonitor monitor) throws ApplicationException
     {
       try
@@ -194,6 +197,9 @@ public class DBObjectDelete implements Action
 
 /**********************************************************************
  * $Log: DBObjectDelete.java,v $
+ * Revision 1.4  2007/07/16 12:51:15  willuhn
+ * @D javadoc
+ *
  * Revision 1.3  2007/04/25 14:07:26  willuhn
  * @N Loeschen von mehr als 100 Datensaetzen gleichzeitig im Hintergrund ausfuehren
  *

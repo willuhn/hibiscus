@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/EinnahmeAusgabeExport.java,v $
- * $Revision: 1.1 $
- * $Date: 2007/06/04 15:57:25 $
- * $Author: jost $
+ * $Revision: 1.2 $
+ * $Date: 2007/07/16 12:51:15 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -29,6 +29,7 @@ public class EinnahmeAusgabeExport implements Action
 {
   /**
    * Erwartet ein Objekt vom Typ <code>GenericIterator</code>
+   * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
   public void handleAction(Object context) throws ApplicationException
   {
@@ -66,6 +67,9 @@ public class EinnahmeAusgabeExport implements Action
 
 /*******************************************************************************
  * $Log: EinnahmeAusgabeExport.java,v $
+ * Revision 1.2  2007/07/16 12:51:15  willuhn
+ * @D javadoc
+ *
  * Revision 1.1  2007/06/04 15:57:25  jost
  * Neue Auswertung: Einnahmen/Ausgaben
  *

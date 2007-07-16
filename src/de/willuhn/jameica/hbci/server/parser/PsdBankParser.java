@@ -16,7 +16,7 @@ import de.willuhn.logging.Logger;
  * Diese Klasse bietet daher die Möglichkeit, den Verwendungszweck zu parsen und daraus die Infos zum Gegenkonto zu gewinnen.
  *  
  * @author Michael Lambers
- * @version $Id: PsdBankParser.java,v 1.4 2007/04/23 18:07:15 willuhn Exp $
+ * @version $Id: PsdBankParser.java,v 1.5 2007/07/16 12:51:15 willuhn Exp $
  *
  */
 public class PsdBankParser implements UmsatzParser
@@ -176,6 +176,11 @@ public class PsdBankParser implements UmsatzParser
 	 */
 	/**
 	 */
+	/**
+	 * @param lines die Umsatzzeile.
+	 * @param umsatz das Umsatz-Template.
+	 * @throws RemoteException 
+	 */
 	public void parse(String[] lines, Umsatz umsatz) throws RemoteException
 	{
 		try {
@@ -303,6 +308,9 @@ public class PsdBankParser implements UmsatzParser
 
 /*********************************************************************
  * $Log: PsdBankParser.java,v $
+ * Revision 1.5  2007/07/16 12:51:15  willuhn
+ * @D javadoc
+ *
  * Revision 1.4  2007/04/23 18:07:15  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt

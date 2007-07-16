@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.85 $
- * $Date: 2007/06/04 15:59:23 $
- * $Author: jost $
+ * $Revision: 1.86 $
+ * $Date: 2007/07/16 12:51:15 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -331,7 +331,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getAnfangsSaldo()
+   * @see de.willuhn.jameica.hbci.rmi.Konto#getAnfangsSaldo(java.util.Date)
    */
   public double getAnfangsSaldo(Date datum) throws RemoteException
   {
@@ -366,7 +366,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getEndSaldo()
+   * @see de.willuhn.jameica.hbci.rmi.Konto#getEndSaldo(java.util.Date)
    */
   public double getEndSaldo(Date datum) throws RemoteException
   {
@@ -765,6 +765,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*******************************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.86  2007/07/16 12:51:15  willuhn
+ * @D javadoc
+ *
  * Revision 1.85  2007/06/04 15:59:23  jost
  * Neue Auswertung: Einnahmen/Ausgaben
  * Revision 1.84 2007/04/19 18:12:21 willuhn
