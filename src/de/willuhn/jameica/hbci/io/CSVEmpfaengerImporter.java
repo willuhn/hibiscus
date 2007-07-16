@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Attic/CSVEmpfaengerImporter.java,v $
- * $Revision: 1.5 $
- * $Date: 2007/04/23 18:07:14 $
+ * $Revision: 1.6 $
+ * $Date: 2007/07/16 12:48:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,7 +25,6 @@ import de.willuhn.io.CSVFile;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.dialogs.CSVImportDialog;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
-import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.AddressbookService;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.system.Application;
@@ -53,7 +52,7 @@ public class CSVEmpfaengerImporter implements Importer
     empfaenger.put("name",i18n.tr("Name des Kto-Inhabers"));
     empfaenger.put("kommentar",i18n.tr("Kommentar"));
     
-    types.put(Address.class,empfaenger);
+    types.put(HibiscusAddress.class,empfaenger);
   
   }
 
@@ -70,7 +69,7 @@ public class CSVEmpfaengerImporter implements Importer
       if (format == null)
         throw new ApplicationException(i18n.tr("Kein Datei-Format ausgewählt"));
 
-      CSVMapping mapping = new CSVMapping(Address.class,(Hashtable) types.get(Address.class));
+      CSVMapping mapping = new CSVMapping(HibiscusAddress.class,(Hashtable) types.get(HibiscusAddress.class));
 
 
       monitor.setStatusText(i18n.tr("Lese Datei ein"));
@@ -195,7 +194,7 @@ public class CSVEmpfaengerImporter implements Importer
    */
   public IOFormat[] getIOFormats(Class objectType)
   {
-    if (!Address.class.equals(objectType))
+    if (!HibiscusAddress.class.equals(objectType))
       return null; // Wir bieten uns nur fuer Adressen an
 
     IOFormat f = new IOFormat() {
@@ -218,6 +217,9 @@ public class CSVEmpfaengerImporter implements Importer
 
 /*******************************************************************************
  * $Log: CSVEmpfaengerImporter.java,v $
+ * Revision 1.6  2007/07/16 12:48:32  willuhn
+ * @B Fehler beim CSV-Import/Export von Adressen
+ *
  * Revision 1.5  2007/04/23 18:07:14  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
