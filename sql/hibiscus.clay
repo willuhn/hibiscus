@@ -9,7 +9,7 @@
 <table-list>
 <table name="dauerauftrag" alias="" remarks="">
 <table-description/>
-<table-figure-bounds x="560" y="499" width="-1" height="-1"/>
+<table-figure-bounds x="350" y="16" width="-1" height="-1"/>
 <column-list>
 <column name="id" alias="" remarks="" mandatory="false" column-size="1024" decimal-digits="-1" default-value="UNIQUEKEY('dauerauftrag')" auto-increment="false">
 <column-description/>
@@ -122,7 +122,7 @@
 </table>
 <table name="empfaenger" alias="" remarks="">
 <table-description/>
-<table-figure-bounds x="217" y="745" width="-1" height="-1"/>
+<table-figure-bounds x="1006" y="13" width="-1" height="-1"/>
 <column-list>
 <column name="id" alias="" remarks="" mandatory="false" column-size="1024" decimal-digits="-1" default-value="UNIQUEKEY('empfaenger')" auto-increment="false">
 <column-description/>
@@ -171,7 +171,7 @@
 </table>
 <table name="konto" alias="" remarks="">
 <table-description/>
-<table-figure-bounds x="297" y="150" width="-1" height="-1"/>
+<table-figure-bounds x="596" y="284" width="-1" height="-1"/>
 <column-list>
 <column name="id" alias="" remarks="" mandatory="false" column-size="1024" decimal-digits="-1" default-value="UNIQUEKEY('konto')" auto-increment="false">
 <column-description/>
@@ -259,7 +259,7 @@
 </table>
 <table name="lastschrift" alias="" remarks="">
 <table-description/>
-<table-figure-bounds x="556" y="7" width="-1" height="-1"/>
+<table-figure-bounds x="594" y="15" width="-1" height="-1"/>
 <column-list>
 <column name="id" alias="" remarks="" mandatory="false" column-size="1024" decimal-digits="-1" default-value="UNIQUEKEY('lastschrift')" auto-increment="false">
 <column-description/>
@@ -342,7 +342,7 @@
 </primary-key>
 <unique-key-list/>
 <foreign-key-list>
-<foreign-key name="fk_konto_last" alias="" remarks="" referenced-table-schema="APP" referenced-table="konto" referenced-key="_ANONYMOUS_CONSTRAINT_260" on-update="NO ACTION" on-delete="NO ACTION" source-multiplicity="0..*" target-multiplicity="1" source-entity-role="" target-entity-role="" source-relationship-type="" target-relationship-type="">
+<foreign-key name="FK_lastschrift_1" alias="" remarks="" referenced-table-schema="APP" referenced-table="konto" referenced-key="_ANONYMOUS_CONSTRAINT_260" on-update="" on-delete="" source-multiplicity="0..*" target-multiplicity="1" source-entity-role="" target-entity-role="" source-relationship-type="" target-relationship-type="">
 <foreign-key-description/>
 <foreign-key-figure>
 <fk-fig-bendpoint-list/>
@@ -354,7 +354,7 @@
 </table>
 <table name="protokoll" alias="" remarks="">
 <table-description/>
-<table-figure-bounds x="312" y="14" width="-1" height="-1"/>
+<table-figure-bounds x="840" y="282" width="-1" height="-1"/>
 <column-list>
 <column name="id" alias="" remarks="" mandatory="false" column-size="1024" decimal-digits="-1" default-value="UNIQUEKEY('protokoll')" auto-increment="false">
 <column-description/>
@@ -399,6 +399,7 @@
 <foreign-key name="fk_konto3" alias="" remarks="" referenced-table-schema="APP" referenced-table="konto" referenced-key="_ANONYMOUS_CONSTRAINT_260" on-update="NO ACTION" on-delete="NO ACTION" source-multiplicity="0..*" target-multiplicity="1" source-entity-role="" target-entity-role="" source-relationship-type="" target-relationship-type="">
 <foreign-key-description/>
 <foreign-key-figure>
+<fk-fig-target-terminal x="158" y="44"/>
 <fk-fig-bendpoint-list/>
 </foreign-key-figure>
 <foreign-key-column column-name="konto_id" referenced-key-column-name="id"/>
@@ -408,7 +409,7 @@
 </table>
 <table name="slastbuchung" alias="" remarks="">
 <table-description/>
-<table-figure-bounds x="10" y="23" width="-1" height="-1"/>
+<table-figure-bounds x="351" y="423" width="-1" height="-1"/>
 <column-list>
 <column name="id" alias="" remarks="" mandatory="false" column-size="1024" decimal-digits="-1" default-value="UNIQUEKEY('slastbuchung')" auto-increment="false">
 <column-description/>
@@ -484,7 +485,7 @@
 </table>
 <table name="slastschrift" alias="" remarks="">
 <table-description/>
-<table-figure-bounds x="12" y="194" width="-1" height="-1"/>
+<table-figure-bounds x="349" y="280" width="-1" height="-1"/>
 <column-list>
 <column name="id" alias="" remarks="" mandatory="false" column-size="1024" decimal-digits="-1" default-value="UNIQUEKEY('slastschrift')" auto-increment="false">
 <column-description/>
@@ -529,6 +530,7 @@
 <foreign-key name="fk_konto_slast" alias="" remarks="" referenced-table-schema="APP" referenced-table="konto" referenced-key="_ANONYMOUS_CONSTRAINT_260" on-update="NO ACTION" on-delete="NO ACTION" source-multiplicity="0..*" target-multiplicity="1" source-entity-role="" target-entity-role="" source-relationship-type="" target-relationship-type="">
 <foreign-key-description/>
 <foreign-key-figure>
+<fk-fig-target-terminal x="0" y="64"/>
 <fk-fig-bendpoint-list/>
 </foreign-key-figure>
 <foreign-key-column column-name="konto_id" referenced-key-column-name="id"/>
@@ -538,7 +540,7 @@
 </table>
 <table name="sueberweisung" alias="" remarks="">
 <table-description/>
-<table-figure-bounds x="13" y="321" width="-1" height="-1"/>
+<table-figure-bounds x="596" y="502" width="-1" height="-1"/>
 <column-list>
 <column name="id" alias="" remarks="" mandatory="false" column-size="1024" decimal-digits="-1" default-value="UNIQUEKEY('sueberweisung')" auto-increment="false">
 <column-description/>
@@ -592,7 +594,7 @@
 </table>
 <table name="sueberweisungbuchung" alias="" remarks="">
 <table-description/>
-<table-figure-bounds x="13" y="442" width="-1" height="-1"/>
+<table-figure-bounds x="601" y="627" width="-1" height="-1"/>
 <column-list>
 <column name="id" alias="" remarks="" mandatory="false" column-size="1024" decimal-digits="-1" default-value="UNIQUEKEY('sueberweisungbuchung')" auto-increment="false">
 <column-description/>
@@ -668,7 +670,7 @@
 </table>
 <table name="systemnachricht" alias="" remarks="">
 <table-description/>
-<table-figure-bounds x="10" y="745" width="-1" height="-1"/>
+<table-figure-bounds x="1007" y="119" width="-1" height="-1"/>
 <column-list>
 <column name="id" alias="" remarks="" mandatory="false" column-size="1024" decimal-digits="-1" default-value="UNIQUEKEY('systemnachricht')" auto-increment="false">
 <column-description/>
@@ -715,7 +717,7 @@
 </table>
 <table name="turnus" alias="" remarks="">
 <table-description/>
-<table-figure-bounds x="416" y="746" width="-1" height="-1"/>
+<table-figure-bounds x="1007" y="227" width="-1" height="-1"/>
 <column-list>
 <column name="id" alias="" remarks="" mandatory="false" column-size="1024" decimal-digits="-1" default-value="UNIQUEKEY('turnus')" auto-increment="false">
 <column-description/>
@@ -760,7 +762,7 @@
 </table>
 <table name="ueberweisung" alias="" remarks="">
 <table-description/>
-<table-figure-bounds x="557" y="225" width="-1" height="-1"/>
+<table-figure-bounds x="802" y="14" width="-1" height="-1"/>
 <column-list>
 <column name="id" alias="" remarks="" mandatory="false" column-size="1024" decimal-digits="-1" default-value="UNIQUEKEY('ueberweisung')" auto-increment="false">
 <column-description/>
@@ -845,6 +847,7 @@
 <foreign-key name="fk_konto_usb" alias="" remarks="" referenced-table-schema="APP" referenced-table="konto" referenced-key="_ANONYMOUS_CONSTRAINT_260" on-update="NO ACTION" on-delete="NO ACTION" source-multiplicity="0..*" target-multiplicity="1" source-entity-role="" target-entity-role="" source-relationship-type="" target-relationship-type="">
 <foreign-key-description/>
 <foreign-key-figure>
+<fk-fig-target-terminal x="132" y="1"/>
 <fk-fig-bendpoint-list/>
 </foreign-key-figure>
 <foreign-key-column column-name="konto_id" referenced-key-column-name="id"/>
@@ -854,7 +857,7 @@
 </table>
 <table name="umsatz" alias="" remarks="">
 <table-description/>
-<table-figure-bounds x="269" y="460" width="-1" height="-1"/>
+<table-figure-bounds x="836" y="392" width="-1" height="-1"/>
 <column-list>
 <column name="id" alias="" remarks="" mandatory="false" column-size="1024" decimal-digits="-1" default-value="UNIQUEKEY('umsatz')" auto-increment="false">
 <column-description/>
@@ -965,14 +968,27 @@
 <variant type-name-pattern="NUMERIC(%p,%s)" precision-variable="%p" precision-min="1" precision-max="31" scale-variable="%s" scale-min="0" scale-max="31"/>
 </data-type>
 </column>
+<column name="umsatztyp_id" alias="" remarks="" mandatory="false" column-size="5" decimal-digits="-1" default-value="" auto-increment="false">
+<column-description/>
+<data-type name="INTEGER" jdbc-type="4" selected-variant-pattern="INTEGER">
+<variant type-name-pattern="INTEGER"/>
+</data-type>
+</column>
 </column-list>
-<primary-key name="_ANONYMOUS_CONSTRAINT_262" alias="" remarks="">
+<primary-key name="_ANONYMOUS_CONSTRAINT_369" alias="" remarks="">
 <primary-key-description/>
 <primary-key-column name="id"/>
 </primary-key>
 <unique-key-list/>
 <foreign-key-list>
-<foreign-key name="fk_konto_ums" alias="" remarks="" referenced-table-schema="APP" referenced-table="konto" referenced-key="_ANONYMOUS_CONSTRAINT_260" on-update="NO ACTION" on-delete="NO ACTION" source-multiplicity="0..*" target-multiplicity="1" source-entity-role="" target-entity-role="" source-relationship-type="" target-relationship-type="">
+<foreign-key name="fk_umsatztyp1" alias="" remarks="" referenced-table-schema="APP" referenced-table="umsatztyp" referenced-key="_ANONYMOUS_CONSTRAINT_370" on-update="NO ACTION" on-delete="NO ACTION" source-multiplicity="0..*" target-multiplicity="1" source-entity-role="" target-entity-role="" source-relationship-type="" target-relationship-type="">
+<foreign-key-description/>
+<foreign-key-figure>
+<fk-fig-bendpoint-list/>
+</foreign-key-figure>
+<foreign-key-column column-name="umsatztyp_id" referenced-key-column-name="id"/>
+</foreign-key>
+<foreign-key name="FK_umsatz_2" alias="" remarks="" referenced-table-schema="APP" referenced-table="konto" referenced-key="_ANONYMOUS_CONSTRAINT_260" on-update="" on-delete="" source-multiplicity="0..*" target-multiplicity="1" source-entity-role="" target-entity-role="" source-relationship-type="" target-relationship-type="">
 <foreign-key-description/>
 <foreign-key-figure>
 <fk-fig-bendpoint-list/>
@@ -984,7 +1000,7 @@
 </table>
 <table name="umsatztyp" alias="" remarks="">
 <table-description/>
-<table-figure-bounds x="12" y="621" width="-1" height="-1"/>
+<table-figure-bounds x="866" y="694" width="-1" height="-1"/>
 <column-list>
 <column name="id" alias="" remarks="" mandatory="false" column-size="1024" decimal-digits="-1" default-value="UNIQUEKEY('umsatztyp')" auto-increment="false">
 <column-description/>
@@ -1001,7 +1017,14 @@
 <variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
 </data-type>
 </column>
-<column name="pattern" alias="" remarks="" mandatory="true" column-size="255" decimal-digits="0" default-value="" auto-increment="false">
+<column name="nummer" alias="" remarks="" mandatory="false" column-size="5" decimal-digits="0" default-value="" auto-increment="false">
+<column-description/>
+<data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
+<variant type-name-pattern="VARCHAR"/>
+<variant type-name-pattern="VARCHAR(%n)" precision-variable="%n" precision-min="1" precision-max="2147483647"/>
+</data-type>
+</column>
+<column name="pattern" alias="" remarks="" mandatory="false" column-size="255" decimal-digits="0" default-value="" auto-increment="false">
 <column-description/>
 <data-type name="VARCHAR" jdbc-type="12" selected-variant-pattern="VARCHAR(%n)" literal-prefix="'" literal-suffix="'">
 <variant type-name-pattern="VARCHAR"/>
@@ -1020,8 +1043,14 @@
 <variant type-name-pattern="INTEGER"/>
 </data-type>
 </column>
+<column name="parent_id" alias="" remarks="" mandatory="false" column-size="5" decimal-digits="-1" default-value="" auto-increment="false">
+<column-description/>
+<data-type name="INTEGER" jdbc-type="4" selected-variant-pattern="INTEGER">
+<variant type-name-pattern="INTEGER"/>
+</data-type>
+</column>
 </column-list>
-<primary-key name="_ANONYMOUS_CONSTRAINT_362" alias="" remarks="">
+<primary-key name="_ANONYMOUS_CONSTRAINT_370" alias="" remarks="">
 <primary-key-description/>
 <primary-key-column name="id"/>
 </primary-key>

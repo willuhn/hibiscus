@@ -1,0 +1,283 @@
+<html>
+  <head>
+    <title>Hibiscus Dokumentation</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="language" content="de">
+    <meta name="author" content="Olaf Willuhn">
+    <link rel=stylesheet type="text/css" href="styles.css">
+    <script language="JavaScript" src="common.js" type="text/javascript"></script>
+  </head>
+
+  <body>
+
+  <h1>Installation</h1>
+  
+  <h2>Systemvoraussetzungen</h2>
+
+  <ul>
+    <li>
+      Java 1.4 oder hoeher (JRE oder SDK)
+    
+      <br/>
+      Geben Sie &quot;java -version&quot; an einer Shell (Windows: Eingabeaufforderung)
+      ein um die Version zu ueberprüfen.
+    
+      <br/>
+      Java können Sie von <a target="_new" href="http://java.sun.com/j2se/index.jsp">http://java.sun.com/j2se/index.jsp</a> herunterladen.
+    </li>
+    
+    <li>
+      Jameica
+      <br/>
+      Kann von <a target="_new" href="http://www.willuhn.de/projects/jameica/">http://www.willuhn.de/projects/jameica/</a> heruntergeladen werden.
+    </li>
+  </ul>
+  
+  <h2>Installation</h2>
+  
+  <ol>
+    <li>
+      Entpacken Sie die ZIP-Datei jameica-&lt;version&gt;.zip
+      in das von Ihnen gewünschte Programm-Verzeichnis, z.Bsp.:
+
+      <table class="data">
+        <tr>
+          <td>Windows</td>
+          <td>C:\Progamme\</td>
+        </tr>
+        <tr>
+          <td>Linux/Linux-AMD64</td>
+          <td>/opt</td>
+        </tr>
+      </table>
+
+      Anschliessend sollte dort ein Verzeichnis &quot;jameica&quot; existieren.
+
+      <table class="data">
+        <tr>
+          <td>MacOS</td>
+          <td>
+            Entpacken Sie die ZIP-Datei jameica-&lt;version&gt;.zip und kopieren
+            Sie den Inhalt in den Programmordner. Sie erhalten nun ein neues
+            Programmsymbol &quot;Jameica&quot;.
+          </td>
+        </tr>
+      </table>
+      
+    </li>
+    <li>
+      Entpacken Sie ZIP-Datei hibiscus-&lt;version&gt;.zip in das Verzeichnis &quot;plugins&quot;
+      innerhalb Ihrer Jameica-Installation.
+      <br/>
+      z.Bsp.:
+      
+      <table class="data">
+        <tr>
+          <td>Windows</td>
+          <td>C:\Progamme\jameica\plugins</td>
+        </tr>
+        <tr>
+          <td>Linux/Linux-AMD64</td>
+          <td>/opt/jameica/plugins</td>
+        </tr>
+      </table>
+      
+      Hierbei wird ein Unterverzeichnis &quot;hibiscus&quot; angelegt.
+
+      <table class="data">
+        <tr>
+          <td>MacOS</td>
+          <td>
+            Klicken Sie mit der rechten Maustaste auf das Programmsymbol
+            und wählen Sie im Kontextmenü die Option &quot;Paketinhalt anzeigen&quot;. [<a href="javascript:openWindow('grafx/mac-install-01.png')">Abbildung &raquo;</a>]
+            <br/>
+            Entpacken Sie nun die ZIP-Datei hibiscus-&lt;version&gt;.zip und kopieren
+            Sie deren Inhalt in das Unterverzeichnis &quot;plugins&quot; von Jameica.
+            [<a href="javascript:openWindow('grafx/mac-install-02.png')">Abbildung &raquo;</a>]
+          </td>
+        </tr>
+      </table>
+
+    </li>
+  </ol>
+      
+  <h2>Erster Start und Konfiguration</h2>
+
+  <ol>
+    <li>
+      Starten Sie nun Jameica mit dem entsprechenden Startscript für Ihre Betriebssystem:
+      
+      <table class="data">
+        <tr>
+          <td>Windows</td>
+          <td>
+            cd C:\Progamme\jameica
+            jameica.bat
+          </td>
+        </tr>
+        <tr>
+          <td>Linux</td>
+          <td>
+            /opt/jameica/jameica.sh
+          </td>
+        </tr>
+        <tr>
+          <td>Linux-AMD64</td>
+          <td>
+            /opt/jameica/jameica-amd64.sh
+          </td>
+        </tr>
+        <tr>
+          <td>MacOS</td>
+          <td>
+            Starten Sie die Anwendung über das Programsymbol &quot;Jameica&quot;
+          </td>
+        </tr>
+      </table>
+
+      <fieldset>
+        <legend>Nur Windows</legend>
+        Achten Sie bitte darauf, dass Sie sich beim Aufruf des Startscripts
+        im Programmverzeichnis befinden müssen. Andernfalls wird Jameica wichtige
+        Programmbibliotheken nicht finden können und den Start mit einem
+        Fehler abbrechen. Sollten Sie eine Verknüpfung in Ihrem Startmenü
+        oder auf dem Desktop anlegen wollen, gehen Sie bitte wie folgt vor:
+        <ol>
+          <li style="margin-top: 0px; margin-bottom: 0px;">
+            Klicken Sie mit der rechten Maustaste auf den Desktop und wählen Sie
+            <span class="klickpath">Neu&raquo;Verknüpfung</span>
+          </li>
+          <li style="margin-top: 0px; margin-bottom: 0px;">
+            Geben Sie &quot;C:\Progamme\jameica\jameica.bat&quot; als Programmpfad ein.
+          </li>
+          <li style="margin-top: 0px; margin-bottom: 0px;">
+            Geben Sie als Name &quot;Hibiscus&quot; ein.
+          </li>
+          <li style="margin-top: 0px; margin-bottom: 0px;">
+            Klicken Sie nun mit der rechten Maustaste auf die Verknüpfung
+            und wählen Sie <span class="klickpath">Eigenschaften</span>
+          </li>
+          <li style="margin-top: 0px; margin-bottom: 0px;">
+            Geben Sie im Feld &quot;Ausühren in&quot; bitte &quot;C:\Progamme\jameica&quot;
+            ein.
+          </li>
+          <li style="margin-top: 0px; margin-bottom: 0px;">
+            Schliessen Sie das Fenster mit &quot;OK&quot;
+          </li>
+        </ol>
+      </fieldset>
+     </li>
+     
+     <li>
+      Wenn Sie die Anwendung nun zum ersten Mal starten,
+      werden Sie zur Neueingabe eines Master-Passwortes aufgefordert. Mithilfe
+      dieses Passwortes werden alle streng vertraulichen Informationen
+      verschlüsselt. Wählen Sie also bitte ein hinreichend sicheres
+      Passwort. Merken Sie es sich gut. Sie können es nachträglich auch
+      über <span class="klickpath">Datei&raquo;Master-Passwort ändern</span>
+      ändern.
+      <br/><br/>
+      <fieldset>
+        <legend>Nur MacOS</legend>
+        Falls Sie die Eingabe des Master-Passwortes beim ersten Start
+        überspringen und Sie beim nächsten Start erneute Gelegenheit
+        zur Neuvergabe des Masterpasswortes mehr erhalten, dann löschen
+        Sie bitte die Datei &quot;jameica.keystore&quot; im Verzeichnis
+        &quot;.jameica/cfg&quot;. Sie finden dieses Verzeichnis in Ihrem
+        Homebereich.
+      </fieldset>
+    </li>
+
+    <li>
+      Der Start sollte nun einige Sekunden länger dauern. Währenddessen wird
+      im Splashscreen der aktuelle Installations-Status des Plugins angezeigt.
+    </li>
+
+    <li>
+      Ihnen wird nun ein Dialog "Erste Schritte" angezeigt. Klicken
+      Sie auf <span class="klickpath">Sicherheitsmedium einrichten</span> und folgen
+      Sie bitte den Anweisungen, um Ihren Chipkartenleser, Ihre Schlüsseldiskette oder
+      eine PIN/TAN-Konfiguration einzurichten. Klicken Sie dort anschliessend auf
+      den Test-Button, um die korrekte Konfiguration zu prüfen.
+    </li>
+    
+    <li>
+      Wechseln Sie in der Navigation zu <span class="klickpath">Jameica&raquo;Hibiscus&raquo;Konten</span>
+      um die Liste der verfügbaren Konten anzuzeigen. Klicken Sie auf den Button
+      &quot;Konten automatisch aus Sicherheitsmedium ermitteln&quot;. Wählen Sie in dem sich öffnenden
+      Fenster das soeben konfigurierte Medium aus und klicken Sie auf &quot;Übernehmen&quot;. Insofern
+      Ihre Bank dies unterstützt werden nun die verfügbaren Bankverbindungen automatisch
+      ermittelt. Sie werden ggf. zur Eingabe Ihrer PIN aufgefordert.
+      Falls Ihre Bank das Abrufen der Kontenliste nicht unterstützt, legen
+      Sie die gewünschten Bankverbindungen bitte manuell über den Button
+      &quot;Neue Bankverbindung&quot; an.
+    </li>
+
+    <li>
+      Nachdem Sie durch Doppelklick auf eines der Konten die Detail-Ansicht
+      geöffnet haben, können Sie nun über &quot;Saldo und Umsätze abrufen&quot;
+      den aktuellen Kontostand sowie die verfügbaren Kontoauszüge abrufen.
+    </li>
+  </ol>
+  
+  <h2>Sicherheitshinweise</h2>
+
+  <ol>
+    <li>
+		  Erstellen Sie regelmässig Backups Ihres Benutzer-Verzeichnisses.
+		
+		  <table class="data">
+		    <tr>
+		      <td>Windows</td>
+		      <td>C:\Dokumente und Einstellungen\&lt;benutzername&gt;\.jameica</td>
+		    </tr>
+		    <tr>
+		      <td>Linux/Linux-AMD64/MacOS</td>
+		      <td>/home/&lt;benutzername&gt;/.jameica</td>
+		    </tr>
+		  </table>
+		</li>
+		
+		<li>
+		  Hibiscus verwendet eine integrierte SQL-Datenbank (McKoi) zur Speicherung
+		  der Konten, Bankverbindungen, Salden und Ueberweisungen. Die Daten werden
+		  im &quot;Benutzer&quot;-Verzeichnis von Jameica abgelegt. Das ist i.d.R.
+		  
+		  <table class="data">
+		    <tr>
+		      <td>Windows</td>
+		      <td>C:\Dokumente und Einstellungen\&lt;benutzername&gt;\.jameica\hibiscus\db</td>
+		    </tr>
+		    <tr>
+		      <td>Linux/Linux-AMD64/MacOS</td>
+		      <td>/home/&lt;benutzername&gt;/.jameica/hibiscus/db</td>
+		    </tr>
+		  </table>
+
+		  Diese Informationen werden unverschlüsselt in der Datenbank abgelegt.
+		  Passen Sie also ggf. die Dateiberechtigungen so an, dass Sie nur von
+		  Ihrem Benutzer-Account gelesen werden können bzw. achten Sie darauf,
+		  dass die Daten nicht fuer Dritte zugaenglich sind.
+		</li>
+		
+		<li>
+		  Streng vertrauliche Informationen wie Passwörter, PIN oder TANs werden
+		  jedoch entweder gar nicht oder nur verschlüsselt gespeichert.
+		</li>
+  </ol>
+
+  <h2>Unterstützte Chipkartenleser</h2>
+  
+  Eine Liste der bisher getesteten Chipkartenleser finden Sie im Wiki
+  unter <a href="http://hibiscus.berlios.de/doku.php?id=support:list:kartenleser">http://hibiscus.berlios.de/doku.php?id=support:list:kartenleser</a>.
+
+  Sollten Sie Hibiscus erfolgreich mit einem nicht aufgeführten
+  Chipkartenleser im Einsatz haben, dann fügen Sie Ihn einfach
+  der Liste hinzu.
+  
+  <hr/>
+  $Revision: 1.1 $
+
+  </body>
+
+</html>
