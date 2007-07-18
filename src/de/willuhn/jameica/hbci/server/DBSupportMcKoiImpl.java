@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/DBSupportMcKoiImpl.java,v $
- * $Revision: 1.7 $
- * $Date: 2007/05/30 09:41:51 $
+ * $Revision: 1.8 $
+ * $Date: 2007/07/18 09:45:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -50,6 +50,7 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl
     DBMAPPING.put("a4VHFRr69c+LynZiczIICg==",new Double(1.5));
     DBMAPPING.put("a4VHFRr69c+LynZiczIICg==",new Double(1.6));
     DBMAPPING.put("EdG6qLQ0SXRgJ8QBtz5Vrg==",new Double(1.7));
+    DBMAPPING.put("EdG6qLQ0SXRgJ8QBtz5Vrg==",new Double(1.8));
   }
   
   /**
@@ -211,6 +212,9 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl
 
 /*********************************************************************
  * $Log: DBSupportMcKoiImpl.java,v $
+ * Revision 1.8  2007/07/18 09:45:18  willuhn
+ * @B Neue Version 1.8 in DB-Checks nachgezogen
+ *
  * Revision 1.7  2007/05/30 09:41:51  willuhn
  * @N SQL-Update fuer Nightly-Build nun generisch
  *
