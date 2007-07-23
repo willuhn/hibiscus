@@ -9,6 +9,7 @@
 
   <menu>
     <item id="hibiscus.menu"                        name="Hibiscus">
+			<item                                         name="Handbuch"                shortcut="ALT+H" action="de.willuhn.jameica.hbci.gui.action.HandbuchAction"/>
       <item id="hibiscus.menu.settings"             name="Einstellungen"                            action="de.willuhn.jameica.hbci.gui.action.Settings" />
       <item name="-" />
       <item id="hibiscus.menu.about"                name="About"                                    action="de.willuhn.jameica.hbci.gui.action.About" />
