@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DBSupportMySqlImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2007/06/14 18:02:47 $
+ * $Revision: 1.5 $
+ * $Date: 2007/07/28 15:51:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -149,11 +149,26 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl
       }
     }
   }
+
+  /**
+   * @see de.willuhn.datasource.db.DBServiceImpl#getTransactionIsolationLevel()
+   */
+  public int getTransactionIsolationLevel() throws RemoteException
+  {
+    // damit sehen wir Datenbank-Updates durch andere
+    // ohne vorher ein COMMIT machen zu muessen
+    // Insbesondere bei MySQL sinnvoll.
+    return Connection.TRANSACTION_READ_COMMITTED;
+  }
+
 }
 
 
 /*********************************************************************
  * $Log: DBSupportMySqlImpl.java,v $
+ * Revision 1.5  2007/07/28 15:51:26  willuhn
+ * @B Bug 447
+ *
  * Revision 1.4  2007/06/14 18:02:47  willuhn
  * @B s/suffix/prefix/
  *

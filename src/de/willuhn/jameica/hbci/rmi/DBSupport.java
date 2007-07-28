@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/DBSupport.java,v $
- * $Revision: 1.5 $
- * $Date: 2007/07/16 12:51:15 $
+ * $Revision: 1.6 $
+ * $Date: 2007/07/28 15:51:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -97,11 +97,20 @@ public interface DBSupport extends Serializable
    */
   public boolean getInsertWithID() throws RemoteException;
 
+  /**
+   * Liefert das Transaction-Isolation-Level.
+   * @see de.willuhn.datasource.db.DBServiceImpl#getTransactionIsolationLevel()
+   */
+  public int getTransactionIsolationLevel() throws RemoteException;
+
 }
 
 
 /*********************************************************************
  * $Log: DBSupport.java,v $
+ * Revision 1.6  2007/07/28 15:51:26  willuhn
+ * @B Bug 447
+ *
  * Revision 1.5  2007/07/16 12:51:15  willuhn
  * @D javadoc
  *

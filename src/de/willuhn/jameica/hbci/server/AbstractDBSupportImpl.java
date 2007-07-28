@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractDBSupportImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/07/18 09:45:18 $
+ * $Revision: 1.3 $
+ * $Date: 2007/07/28 15:51:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -87,11 +87,22 @@ public abstract class AbstractDBSupportImpl implements DBSupport
     // Leere Dummy-Implementierung
   }
 
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.DBSupport#getTransactionIsolationLevel()
+   */
+  public int getTransactionIsolationLevel() throws RemoteException
+  {
+    return -1;
+  }
+
 }
 
 
 /*********************************************************************
  * $Log: AbstractDBSupportImpl.java,v $
+ * Revision 1.3  2007/07/28 15:51:26  willuhn
+ * @B Bug 447
+ *
  * Revision 1.2  2007/07/18 09:45:18  willuhn
  * @B Neue Version 1.8 in DB-Checks nachgezogen
  *
