@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.47 $
- * $Date: 2007/05/11 17:26:45 $
+ * $Revision: 1.48 $
+ * $Date: 2007/08/07 23:54:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -399,7 +399,15 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
     // Fuer Kategoriebaum
     if ("name".equals(arg0))
       return getGegenkontoName();
-      
+
+    if ("valuta_pseudo".equals(arg0))
+      return getPseudoDate(getValuta());
+    if ("datum_pseudo".equals(arg0))
+      return getPseudoDate(getValuta());
+
+    // Casten der ID nach INT, damit die Sortierung
+    // numerisch statt alphanumerisch erfolgt
+    // Wird von der Umsatzliste genutzt
     if ("id-int".equals(arg0))
     {
       try
@@ -431,6 +439,36 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
     }
 
     return super.getAttribute(arg0);
+  }
+  
+  /**
+   * BUGZILLA 394
+   * Haengt an das Datumsfeld eine Pseudouhrzeit basierend auf der ID des Datensatzes an.
+   * Damit wird bei der Sortierung nach diesem Wert auch die "natuerliche Reihenfolge"
+   * der Umsaetze beruecksichtigt, in der die Daten von der Bank geliefert werden.
+   * Auch dann, wenn nur nach dem Datum sortiert wird.
+   * @param date das Datum.
+   * @return das Datum, erweitert um eine Pseudo-Uhrzeit.
+   * @throws RemoteException
+   */
+  private Date getPseudoDate(Date date) throws RemoteException
+  {
+    if (date == null) // Einige Banken liefern weder Datum noch Valuta
+      return null;
+
+    try
+    {
+      return new Date(date.getTime() + Long.parseLong(getID()));
+    }
+    catch (RemoteException re)
+    {
+      throw re;
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable append pseudo time to " + date + " for ID: " + getID());
+      return date;
+    }
   }
 
   /**
@@ -617,6 +655,9 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.48  2007/08/07 23:54:15  willuhn
+ * @B Bug 394 - Erster Versuch. An einigen Stellen (z.Bsp. konto.getAnfangsSaldo) war ich mir noch nicht sicher. Heiner?
+ *
  * Revision 1.47  2007/05/11 17:26:45  willuhn
  * @B Bugfix Verursachte falsche Checksummen und damit doppelte Umsaetze
  *

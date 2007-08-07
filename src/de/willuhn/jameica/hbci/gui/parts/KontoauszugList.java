@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.4 $
- * $Date: 2007/05/02 13:01:12 $
+ * $Revision: 1.5 $
+ * $Date: 2007/08/07 23:54:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -45,9 +45,8 @@ import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.dialogs.AdresseAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
 import de.willuhn.jameica.hbci.rmi.Address;
-import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -345,9 +344,7 @@ public class KontoauszugList extends UmsatzList
     Double min      = (Double) getMindestBetrag().getValue();
     Double max      = (Double) getHoechstBetrag().getValue();
     
-    HBCIDBService service = (HBCIDBService) Settings.getDBService();
-
-    DBIterator umsaetze = Settings.getDBService().createList(Umsatz.class);
+    DBIterator umsaetze = UmsatzUtil.getUmsaetze();
 
     /////////////////////////////////////////////////////////////////
     // Konto und Zeitraum
@@ -374,8 +371,6 @@ public class KontoauszugList extends UmsatzList
         umsaetze.addFilter("betrag <= ?",new Object[]{max});
     }
     /////////////////////////////////////////////////////////////////
-
-    umsaetze.setOrder("ORDER BY " + service.getSQLTimestamp("valuta") + " asc, id asc");
     return umsaetze;
   }
 
@@ -491,6 +486,9 @@ public class KontoauszugList extends UmsatzList
 
 /*********************************************************************
  * $Log: KontoauszugList.java,v $
+ * Revision 1.5  2007/08/07 23:54:15  willuhn
+ * @B Bug 394 - Erster Versuch. An einigen Stellen (z.Bsp. konto.getAnfangsSaldo) war ich mir noch nicht sicher. Heiner?
+ *
  * Revision 1.4  2007/05/02 13:01:12  willuhn
  * @N Zusaetzlicher Filter nach Mindest- und Hoechstbetrag
  *

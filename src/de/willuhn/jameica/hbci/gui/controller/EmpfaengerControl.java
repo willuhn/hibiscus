@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EmpfaengerControl.java,v $
- * $Revision: 1.43 $
- * $Date: 2007/04/23 21:03:48 $
+ * $Revision: 1.44 $
+ * $Date: 2007/08/07 23:54:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -33,11 +33,10 @@ import de.willuhn.jameica.hbci.gui.input.BLZInput;
 import de.willuhn.jameica.hbci.gui.parts.SammelTransferBuchungList;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzList;
 import de.willuhn.jameica.hbci.rmi.Address;
-import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.SammelLastBuchung;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisungBuchung;
-import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -124,11 +123,9 @@ public class EmpfaengerControl extends AbstractControl {
     if (this.umsatzList != null)
       return this.umsatzList;
 
-    HBCIDBService service = Settings.getDBService();
-    DBIterator list = service.createList(Umsatz.class);
+    DBIterator list = UmsatzUtil.getUmsaetzeBackwards();
     list.addFilter("empfaenger_konto like ?",new Object[]{"%" + getAddress().getKontonummer()});
     list.addFilter("empfaenger_blz = ?",  new Object[]{getAddress().getBLZ()});
-    list.setOrder(" ORDER BY " + service.getSQLTimestamp("valuta") + " DESC");
 
     this.umsatzList = new UmsatzList(list,new UmsatzDetail());
     ((UmsatzList)this.umsatzList).setFilterVisible(false);
@@ -270,6 +267,9 @@ public class EmpfaengerControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: EmpfaengerControl.java,v $
+ * Revision 1.44  2007/08/07 23:54:15  willuhn
+ * @B Bug 394 - Erster Versuch. An einigen Stellen (z.Bsp. konto.getAnfangsSaldo) war ich mir noch nicht sicher. Heiner?
+ *
  * Revision 1.43  2007/04/23 21:03:48  willuhn
  * @R "getTransfers" aus Address entfernt - hat im Adressbuch eigentlich nichts zu suchen
  *

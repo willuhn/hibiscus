@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.86 $
- * $Date: 2007/07/16 12:51:15 $
+ * $Revision: 1.87 $
+ * $Date: 2007/08/07 23:54:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -416,9 +416,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public DBIterator getUmsaetze(int days) throws RemoteException
   {
-    HBCIDBService service = (HBCIDBService) getService();
-
-    DBIterator list = service.createList(Umsatz.class);
+    DBIterator list = UmsatzUtil.getUmsaetzeBackwards();
     list.addFilter("konto_id = " + getID());
 
     // BUGZILLA 341
@@ -431,8 +429,6 @@ public class KontoImpl extends AbstractDBObject implements Konto
       list.addFilter("valuta >= ?", new Object[] { new java.sql.Date(start
           .getTime()) });
     }
-    list.setOrder("ORDER BY " + service.getSQLTimestamp("valuta")
-        + " desc, id desc");
     return list;
   }
 
@@ -441,9 +437,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public DBIterator getUmsaetze(Date start, Date end) throws RemoteException
   {
-    HBCIDBService service = (HBCIDBService) getService();
-
-    DBIterator list = service.createList(Umsatz.class);
+    DBIterator list = UmsatzUtil.getUmsaetzeBackwards();
     list.addFilter("konto_id = " + getID());
     if (start != null)
       list.addFilter("valuta >= ?", new Object[] { new java.sql.Date(
@@ -451,9 +445,6 @@ public class KontoImpl extends AbstractDBObject implements Konto
     if (end != null)
       list.addFilter("valuta <= ?", new Object[] { new java.sql.Date(
           HBCIProperties.endOfDay(end).getTime()) });
-
-    list.setOrder("ORDER BY " + service.getSQLTimestamp("valuta")
-        + " desc, id desc");
     return list;
   }
 
@@ -765,6 +756,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*******************************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.87  2007/08/07 23:54:15  willuhn
+ * @B Bug 394 - Erster Versuch. An einigen Stellen (z.Bsp. konto.getAnfangsSaldo) war ich mir noch nicht sicher. Heiner?
+ *
  * Revision 1.86  2007/07/16 12:51:15  willuhn
  * @D javadoc
  *

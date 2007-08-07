@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SparQuote.java,v $
- * $Revision: 1.9 $
- * $Date: 2007/04/19 18:12:21 $
+ * $Revision: 1.10 $
+ * $Date: 2007/08/07 23:54:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,9 +49,9 @@ import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.chart.LineChart;
 import de.willuhn.jameica.hbci.gui.chart.LineChartData;
-import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -215,15 +215,10 @@ public class SparQuote implements Part
   {
     DBIterator umsaetze = null;
     
+    umsaetze = UmsatzUtil.getUmsaetze();
     if (konto != null)
-      umsaetze = konto.getUmsaetze();
-    else
-      umsaetze = Settings.getDBService().createList(Umsatz.class);
+      umsaetze.addFilter("konto_id = " + konto.getID());
 
-    // Wichtig: Die Umsaetze muessen chronologisch sortiert sein.
-    HBCIDBService service = (HBCIDBService) Settings.getDBService();
-    umsaetze.setOrder("ORDER BY " + service.getSQLTimestamp("valuta")); // Reihenfolge umkehren
-    
     ArrayList list           = new ArrayList();
     UmsatzEntry currentEntry = null;
     Calendar cal             = Calendar.getInstance();
@@ -484,6 +479,9 @@ public class SparQuote implements Part
 
 /*********************************************************************
  * $Log: SparQuote.java,v $
+ * Revision 1.10  2007/08/07 23:54:15  willuhn
+ * @B Bug 394 - Erster Versuch. An einigen Stellen (z.Bsp. konto.getAnfangsSaldo) war ich mir noch nicht sicher. Heiner?
+ *
  * Revision 1.9  2007/04/19 18:12:21  willuhn
  * @N MySQL-Support (GUI zum Konfigurieren fehlt noch)
  *

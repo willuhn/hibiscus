@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/messaging/NeueUmsaetze.java,v $
- * $Revision: 1.3 $
- * $Date: 2007/04/19 18:12:21 $
+ * $Revision: 1.4 $
+ * $Date: 2007/08/07 23:54:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,9 +19,8 @@ import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
 
@@ -78,11 +77,8 @@ public class NeueUmsaetze implements MessageConsumer
     if (first == null)
       return PseudoIterator.fromArray(new Umsatz[0]);
 
-    HBCIDBService service = (HBCIDBService) Settings.getDBService();
-    
-    DBIterator list = service.createList(Umsatz.class);
+    DBIterator list = UmsatzUtil.getUmsaetzeBackwards();
     list.addFilter("id >= " + first);
-    list.setOrder("ORDER BY " + service.getSQLTimestamp("valuta") + " desc, id desc");
     if (list.size() == 0)
       first = null; // Wenn nichts gefunden wurde, resetten wir uns
     return list;
@@ -93,6 +89,9 @@ public class NeueUmsaetze implements MessageConsumer
 
 /*********************************************************************
  * $Log: NeueUmsaetze.java,v $
+ * Revision 1.4  2007/08/07 23:54:15  willuhn
+ * @B Bug 394 - Erster Versuch. An einigen Stellen (z.Bsp. konto.getAnfangsSaldo) war ich mir noch nicht sicher. Heiner?
+ *
  * Revision 1.3  2007/04/19 18:12:21  willuhn
  * @N MySQL-Support (GUI zum Konfigurieren fehlt noch)
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.36 $
- * $Date: 2007/04/23 18:07:15 $
+ * $Revision: 1.37 $
+ * $Date: 2007/08/07 23:54:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -134,7 +134,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
    */
   public GenericIterator getUmsaetze(Date von, Date bis) throws RemoteException
   {
-    DBIterator list = getService().createList(Umsatz.class);
+    DBIterator list = UmsatzUtil.getUmsaetze();
     if (von != null)
     {
       list.addFilter("valuta >= ?", new Object[] { new java.sql.Date(von
@@ -392,7 +392,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
     // ob wir irgendwelchen Umsaetzen zugeordnet sind und
     // diese bei der Gelegenheit entfernen muessen.
 
-    DBIterator list = getService().createList(Umsatz.class);
+    DBIterator list = UmsatzUtil.getUmsaetzeBackwards();
     list.addFilter("umsatztyp_id = " + this.getID());
     if (!list.hasNext())
     {
@@ -442,6 +442,9 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
 
 /*******************************************************************************
  * $Log: UmsatzTypImpl.java,v $
+ * Revision 1.37  2007/08/07 23:54:15  willuhn
+ * @B Bug 394 - Erster Versuch. An einigen Stellen (z.Bsp. konto.getAnfangsSaldo) war ich mir noch nicht sicher. Heiner?
+ *
  * Revision 1.36  2007/04/23 18:07:15  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
