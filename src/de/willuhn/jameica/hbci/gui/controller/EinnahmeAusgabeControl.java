@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EinnahmeAusgabeControl.java,v $
- * $Revision: 1.7 $
- * $Date: 2007/07/17 12:36:44 $
+ * $Revision: 1.8 $
+ * $Date: 2007/08/07 12:04:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -247,7 +247,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
         HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
     table.addColumn(i18n.tr("Endsaldo"), "endsaldo", new CurrencyFormatter(
         HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
-//    table.addColumn(i18n.tr("Bemerkung"), "bemerkung");
+    table.addColumn(i18n.tr("Bemerkung"), "bemerkung");
 
     table.setFormatter(new TableFormatter()
     {
@@ -371,6 +371,9 @@ public class EinnahmeAusgabeControl extends AbstractControl
 
 /*******************************************************************************
  * $Log: EinnahmeAusgabeControl.java,v $
+ * Revision 1.8  2007/08/07 12:04:43  willuhn
+ * @C Spalte "Bemerkung" wieder eingefuegt
+ *
  * Revision 1.7  2007/07/17 12:36:44  willuhn
  * @C Spalte "Bemerkung" fuer RELEASE auskommentiert. Deren Bedeutung verstehen die User irgendwie nicht - hatte schon mehrere Anfragen von Usern erhalten. Daher entferne ich sie fuer das Release und nehm sie danach wieder rein ;)
  *
