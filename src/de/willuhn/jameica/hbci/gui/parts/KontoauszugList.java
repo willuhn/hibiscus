@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.5 $
- * $Date: 2007/08/07 23:54:15 $
+ * $Revision: 1.6 $
+ * $Date: 2007/08/09 11:01:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,8 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
@@ -73,8 +75,8 @@ public class KontoauszugList extends UmsatzList
   private DecimalInput betragTo        = null;
 
   private Listener listener            = null;
-
-  private de.willuhn.jameica.system.Settings mySettings = null;
+  
+  private boolean disposed = false; // BUGZILLA 462
 
   private I18N i18n = null;
 
@@ -88,7 +90,6 @@ public class KontoauszugList extends UmsatzList
     super((GenericIterator)null,action);
 
     this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-    this.mySettings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
     this.setFilterVisible(false);
 
     // bei Ausloesungen ueber SWT-Events verzoegern wir
@@ -135,6 +136,12 @@ public class KontoauszugList extends UmsatzList
     while (list.hasNext())
       addItem(list.next());
     
+    parent.addDisposeListener(new DisposeListener() {
+      public void widgetDisposed(DisposeEvent e)
+      {
+        disposed = true;
+      }
+    });
     super.paint(parent);
 
     // Zum Schluss Sortierung aktualisieren
@@ -379,9 +386,9 @@ public class KontoauszugList extends UmsatzList
    */
   public synchronized void handleReload()
   {
-    if (!hasChanged())
+    if (!hasChanged() || disposed)
       return;
-
+    
     GUI.startSync(new Runnable() // Sanduhr einblenden
     {
       public void run()
@@ -486,6 +493,9 @@ public class KontoauszugList extends UmsatzList
 
 /*********************************************************************
  * $Log: KontoauszugList.java,v $
+ * Revision 1.6  2007/08/09 11:01:24  willuhn
+ * @B Bug 462
+ *
  * Revision 1.5  2007/08/07 23:54:15  willuhn
  * @B Bug 394 - Erster Versuch. An einigen Stellen (z.Bsp. konto.getAnfangsSaldo) war ich mir noch nicht sicher. Heiner?
  *

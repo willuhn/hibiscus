@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.53 $
- * $Date: 2007/08/07 23:54:15 $
+ * $Revision: 1.54 $
+ * $Date: 2007/08/09 11:01:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -89,7 +89,7 @@ public class UmsatzList extends TablePart implements Extendable
   private KL kl                 = null;
   private boolean filter        = true;
   
-  private static de.willuhn.jameica.system.Settings mySettings = new de.willuhn.jameica.system.Settings(UmsatzList.class);
+  protected static de.willuhn.jameica.system.Settings mySettings = new de.willuhn.jameica.system.Settings(UmsatzList.class);
 
   private I18N i18n;
   
@@ -689,6 +689,9 @@ public class UmsatzList extends TablePart implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.54  2007/08/09 11:01:38  willuhn
+ * @B Bug 462
+ *
  * Revision 1.53  2007/08/07 23:54:15  willuhn
  * @B Bug 394 - Erster Versuch. An einigen Stellen (z.Bsp. konto.getAnfangsSaldo) war ich mir noch nicht sicher. Heiner?
  *
