@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.54 $
- * $Date: 2007/08/09 11:01:38 $
+ * $Revision: 1.55 $
+ * $Date: 2007/08/09 12:04:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -50,6 +50,7 @@ import de.willuhn.jameica.gui.input.ButtonInput;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Color;
+import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -57,6 +58,7 @@ import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.dialogs.UmsatzTypNewDialog;
 import de.willuhn.jameica.hbci.gui.input.UmsatzDaysInput;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
+import de.willuhn.jameica.hbci.messaging.NeueUmsaetze;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.messaging.ObjectMessage;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -130,19 +132,38 @@ public class UmsatzList extends TablePart implements Extendable
     
     this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     setMulti(true);
-    setFormatter(new TableFormatter() {
-      public void format(TableItem item) {
+    setFormatter(new TableFormatter()
+    {
+      public void format(TableItem item)
+      {
         Umsatz u = (Umsatz) item.getData();
         if (u == null) return;
+
+        // BUGZILLA 302
+        // Die ID ermitteln wir fuer jeden Datensatz neu, weil
+        // sich der Wert zwischenzeitlich aendern kann, wenn neue hinzukommen,
+        // waehrend die Tabelle aktiv ist.
+        String firstID = NeueUmsaetze.getID();
         try {
+          if (firstID != null)
+          {
+            try
+            {
+              if (((Integer)u.getAttribute("id-int")).compareTo(new Integer(firstID)) >= 0)
+                item.setFont(Font.BOLD.getSWTFont());
+              else
+                item.setFont(Font.DEFAULT.getSWTFont());
+            }
+            catch (Exception e)
+            {
+              // Dann wirds halt nicht fett gedruckt.
+              Logger.error("unable to parse ID for umsatz",e);
+            }
+          }
           if (u.getBetrag() < 0.0)
-          {
             item.setForeground(Settings.getBuchungSollForeground());
-          }
           else
-          {
             item.setForeground(Settings.getBuchungHabenForeground());
-          }
         }
         catch (RemoteException e)
         {
@@ -689,6 +710,9 @@ public class UmsatzList extends TablePart implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.55  2007/08/09 12:04:39  willuhn
+ * @N Bug 302
+ *
  * Revision 1.54  2007/08/09 11:01:38  willuhn
  * @B Bug 462
  *

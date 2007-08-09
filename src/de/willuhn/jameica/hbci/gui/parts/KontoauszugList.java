@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.7 $
- * $Date: 2007/08/09 11:38:59 $
+ * $Revision: 1.8 $
+ * $Date: 2007/08/09 12:04:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -139,6 +139,7 @@ public class KontoauszugList extends UmsatzList
     parent.addDisposeListener(new DisposeListener() {
       public void widgetDisposed(DisposeEvent e)
       {
+        GUI.getView().setLogoText(""); // Hinweis-Test wieder ausblenden BUGZILLA 449
         disposed = true;
       }
     });
@@ -498,6 +499,9 @@ public class KontoauszugList extends UmsatzList
 
 /*********************************************************************
  * $Log: KontoauszugList.java,v $
+ * Revision 1.8  2007/08/09 12:04:39  willuhn
+ * @N Bug 302
+ *
  * Revision 1.7  2007/08/09 11:38:59  willuhn
  * @N Bug 449
  *
