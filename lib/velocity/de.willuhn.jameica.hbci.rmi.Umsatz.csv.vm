@@ -2,5 +2,5 @@
 #set($konto = $umsatz.Konto)
 #set($kat = "")
 #set($kat = $!{umsatz.UmsatzTyp.Name})
-$!{konto.Kontonummer};$!{konto.BLZ};$!{konto.Bezeichnung};$!{umsatz.GegenkontoNummer};$!{umsatz.GegenkontoBLZ};$!{umsatz.GegenkontoName};$!{decimalformat.format(${umsatz.Betrag})};$!{dateformat.format(${umsatz.Valuta})};$!{dateformat.format(${umsatz.Datum})};$!{umsatz.Zweck};$!{umsatz.Zweck2};$!{decimalformat.format(${umsatz.Saldo})};$!{umsatz.Primanota};$!{umsatz.CustomerRef};$!{kat}
+$!{konto.Kontonummer};$!{konto.BLZ};$!{konto.Bezeichnung};$!{umsatz.GegenkontoNummer};$!{umsatz.GegenkontoBLZ};$!{umsatz.GegenkontoName};$!{decimalformat.format(${umsatz.Betrag})};$!{dateformat.format(${umsatz.Valuta})};$!{dateformat.format(${umsatz.Datum})};$!{umsatz.Zweck};$!{umsatz.Zweck2};$!{decimalformat.format(${umsatz.Saldo})};$!{umsatz.Primanota};$!{umsatz.CustomerRef};$!{kat};$!{umsatz.Kommentar}
 #end

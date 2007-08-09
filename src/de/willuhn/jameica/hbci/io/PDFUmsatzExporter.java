@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/PDFUmsatzExporter.java,v $
- * $Revision: 1.9 $
- * $Date: 2007/05/02 11:18:04 $
+ * $Revision: 1.10 $
+ * $Date: 2007/08/09 10:19:54 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -151,8 +151,19 @@ public class PDFUmsatzExporter implements Exporter
                                     + (u.getDatum() != null ? HBCI.DATEFORMAT.format(u.getDatum()) : ""), Element.ALIGN_LEFT));
           reporter.addColumn(reporter.getDetailCell(reporter.notNull(u.getGegenkontoName()) + "\n"
                                     + reporter.notNull(u.getArt()), Element.ALIGN_LEFT));
-          reporter.addColumn(reporter.getDetailCell(reporter.notNull(u.getZweck()) + "\n"
-                                   + reporter.notNull(u.getZweck2()), Element.ALIGN_LEFT));
+
+          String kommentar = u.getKommentar();
+          if (kommentar != null && kommentar.length() > 0)
+          {
+            reporter.addColumn(reporter.getDetailCell(reporter.notNull(u.getZweck()) + "\n" +
+                                                      reporter.notNull(u.getZweck2()) + "\n" + 
+                                                      kommentar, Element.ALIGN_LEFT));
+          }
+          else
+          {
+            reporter.addColumn(reporter.getDetailCell(reporter.notNull(u.getZweck()) + "\n"
+                + reporter.notNull(u.getZweck2()), Element.ALIGN_LEFT));
+          }
           reporter.addColumn(reporter.getDetailCell(u.getBetrag()));
           reporter.addColumn(reporter.getDetailCell(u.getSaldo()));
           reporter.setNextRecord();
@@ -227,6 +238,9 @@ public class PDFUmsatzExporter implements Exporter
 
 /*********************************************************************
  * $Log: PDFUmsatzExporter.java,v $
+ * Revision 1.10  2007/08/09 10:19:54  willuhn
+ * @N Kommentar eines Umsatzes mit exportieren, falls vorhanden. Siehe auch BUGZILLA #445
+ *
  * Revision 1.9  2007/05/02 11:18:04  willuhn
  * @C PDF-Export von Umsatz-Trees in IO-API gepresst ;)
  *

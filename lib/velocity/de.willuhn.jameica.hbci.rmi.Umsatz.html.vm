@@ -175,12 +175,12 @@
 		<th>Kunden-Referenz</th>
 	  </tr>
 		
-      #foreach($umsatz in $objects)
-        #set($konto = $umsatz.Konto)
+    #foreach($umsatz in $objects)
+      #set($konto = $umsatz.Konto)
 		#set($betrag = $umsatz.getBetrag().intValue())
 		<tr
 		#if($betrag < 0)
-  		  class="red"
+  	  class="red"
 		#end
 		>
 		  <td>
@@ -201,6 +201,10 @@
 			$!{umsatz.Zweck}
 			<br/>
 			$!{umsatz.Zweck2}
+  		#if($!{umsatz.Kommentar} != "")
+  		  <br/>
+  			$!{umsatz.Kommentar}
+  	  #end
 		  </td>
 		  <td style="text-align:right">$!{decimalformat.format(${umsatz.Saldo})} $!{konto.Waehrung}</td>
 		  <td>$!{umsatz.Primanota}</td>
