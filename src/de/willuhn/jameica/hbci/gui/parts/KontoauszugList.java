@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.8 $
- * $Date: 2007/08/09 12:04:39 $
+ * $Revision: 1.9 $
+ * $Date: 2007/08/09 12:19:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -359,9 +359,11 @@ public class KontoauszugList extends UmsatzList
 
     /////////////////////////////////////////////////////////////////
     // Konto und Zeitraum
-    if (k != null)     {umsaetze.addFilter("konto_id = " + k.getID());hasFilter = true;}
-    if (start != null) {umsaetze.addFilter("valuta >= ?", new Object[]{new java.sql.Date(HBCIProperties.startOfDay(start).getTime())});hasFilter = true;}
-    if (end != null)   {umsaetze.addFilter("valuta <= ?", new Object[]{new java.sql.Date(HBCIProperties.endOfDay(end).getTime())});hasFilter = true;}
+    // Der Warnhinweis wird nicht fuer die Filter auf dem ersten TAB
+    // angewendet, da sie dort offensichtlich sind
+    if (k != null)     umsaetze.addFilter("konto_id = " + k.getID());
+    if (start != null) umsaetze.addFilter("valuta >= ?", new Object[]{new java.sql.Date(HBCIProperties.startOfDay(start).getTime())});
+    if (end != null)   umsaetze.addFilter("valuta <= ?", new Object[]{new java.sql.Date(HBCIProperties.endOfDay(end).getTime())});
     /////////////////////////////////////////////////////////////////
     // Gegenkonto
     if (gkBLZ    != null && gkBLZ.length() > 0)    {umsaetze.addFilter("empfaenger_blz like ?",new Object[]{"%" + gkBLZ + "%"});hasFilter = true;}
@@ -382,8 +384,8 @@ public class KontoauszugList extends UmsatzList
       hasFilter = true;
     }
     /////////////////////////////////////////////////////////////////
-    
-    GUI.getView().setLogoText(hasFilter ? i18n.tr("Hinweis: Aufgrund der Suchkriterien werden möglicherweise nicht alls Umsätze angezeigt") : "");
+
+    GUI.getView().setLogoText(hasFilter ? i18n.tr("Hinweis: Aufgrund weiterer Suchkriterien werden möglicherweise nicht alle Umsätze angezeigt") : "");
     return umsaetze;
   }
 
@@ -499,6 +501,9 @@ public class KontoauszugList extends UmsatzList
 
 /*********************************************************************
  * $Log: KontoauszugList.java,v $
+ * Revision 1.9  2007/08/09 12:19:55  willuhn
+ * @N Bug 449 - Filterkriterien auf dem ersten Tab werden fuer Warnhinweis nicht beruecksichtigt weil sie offensichtlich sind
+ *
  * Revision 1.8  2007/08/09 12:04:39  willuhn
  * @N Bug 302
  *
