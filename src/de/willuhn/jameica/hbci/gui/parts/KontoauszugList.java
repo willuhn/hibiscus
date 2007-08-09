@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.6 $
- * $Date: 2007/08/09 11:01:24 $
+ * $Revision: 1.7 $
+ * $Date: 2007/08/09 11:38:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -352,32 +352,37 @@ public class KontoauszugList extends UmsatzList
     Double max      = (Double) getHoechstBetrag().getValue();
     
     DBIterator umsaetze = UmsatzUtil.getUmsaetze();
+    
+    // BUGZILLA 449
+    boolean hasFilter = false;
 
     /////////////////////////////////////////////////////////////////
     // Konto und Zeitraum
-    if (k != null)     umsaetze.addFilter("konto_id = " + k.getID());
-    if (start != null) umsaetze.addFilter("valuta >= ?", new Object[]{new java.sql.Date(HBCIProperties.startOfDay(start).getTime())});
-    if (end != null)   umsaetze.addFilter("valuta <= ?", new Object[]{new java.sql.Date(HBCIProperties.endOfDay(end).getTime())});
+    if (k != null)     {umsaetze.addFilter("konto_id = " + k.getID());hasFilter = true;}
+    if (start != null) {umsaetze.addFilter("valuta >= ?", new Object[]{new java.sql.Date(HBCIProperties.startOfDay(start).getTime())});hasFilter = true;}
+    if (end != null)   {umsaetze.addFilter("valuta <= ?", new Object[]{new java.sql.Date(HBCIProperties.endOfDay(end).getTime())});hasFilter = true;}
     /////////////////////////////////////////////////////////////////
     // Gegenkonto
-    if (gkBLZ    != null && gkBLZ.length() > 0)    umsaetze.addFilter("empfaenger_blz like ?",new Object[]{"%" + gkBLZ + "%"});
-    if (gkNummer != null && gkNummer.length() > 0) umsaetze.addFilter("empfaenger_konto like ?",new Object[]{"%" + gkNummer + "%"});
-    if (gkName   != null && gkName.length() > 0)   umsaetze.addFilter("LOWER(empfaenger_name) like ?",new Object[]{"%" + gkName.toLowerCase() + "%"});
+    if (gkBLZ    != null && gkBLZ.length() > 0)    {umsaetze.addFilter("empfaenger_blz like ?",new Object[]{"%" + gkBLZ + "%"});hasFilter = true;}
+    if (gkNummer != null && gkNummer.length() > 0) {umsaetze.addFilter("empfaenger_konto like ?",new Object[]{"%" + gkNummer + "%"});hasFilter = true;}
+    if (gkName   != null && gkName.length() > 0)   {umsaetze.addFilter("LOWER(empfaenger_name) like ?",new Object[]{"%" + gkName.toLowerCase() + "%"});hasFilter = true;}
     /////////////////////////////////////////////////////////////////
-    
+
     /////////////////////////////////////////////////////////////////
     // Betrag
-    if (min != null)
+    if (min != null && !(Double.isNaN(min.doubleValue())))
     {
-      if (!Double.isNaN(min.doubleValue()))
-        umsaetze.addFilter("betrag >= ?",new Object[]{min});
+      umsaetze.addFilter("betrag >= ?",new Object[]{min});
+      hasFilter = true;
     }
-    if (max != null)
+    if (max != null && (!Double.isNaN(max.doubleValue())))
     {
-      if (!Double.isNaN(max.doubleValue()))
-        umsaetze.addFilter("betrag <= ?",new Object[]{max});
+      umsaetze.addFilter("betrag <= ?",new Object[]{max});
+      hasFilter = true;
     }
     /////////////////////////////////////////////////////////////////
+    
+    GUI.getView().setLogoText(hasFilter ? i18n.tr("Hinweis: Aufgrund der Suchkriterien werden möglicherweise nicht alls Umsätze angezeigt") : "");
     return umsaetze;
   }
 
@@ -493,6 +498,9 @@ public class KontoauszugList extends UmsatzList
 
 /*********************************************************************
  * $Log: KontoauszugList.java,v $
+ * Revision 1.7  2007/08/09 11:38:59  willuhn
+ * @N Bug 449
+ *
  * Revision 1.6  2007/08/09 11:01:24  willuhn
  * @B Bug 462
  *
