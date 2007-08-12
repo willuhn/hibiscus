@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTypTree.java,v $
- * $Revision: 1.3 $
- * $Date: 2007/04/20 09:50:11 $
+ * $Revision: 1.4 $
+ * $Date: 2007/08/12 22:02:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -87,7 +87,7 @@ public class UmsatzTypTree extends TreePart
     });
     this.addColumn(i18n.tr("Bezeichnung"),      "name");
     this.addColumn(i18n.tr("Verwendungszweck"), "zweck");
-    this.addColumn(i18n.tr("Valuta"),           "valuta", new DateFormatter(HBCI.DATEFORMAT));
+    this.addColumn(i18n.tr("Datum"),            "datum_pseudo", new DateFormatter(HBCI.DATEFORMAT));
     this.addColumn(i18n.tr("Betrag"),           "betrag",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
   }
 
@@ -136,6 +136,9 @@ public class UmsatzTypTree extends TreePart
 
 /*******************************************************************************
  * $Log: UmsatzTypTree.java,v $
+ * Revision 1.4  2007/08/12 22:02:10  willuhn
+ * @C BUGZILLA 394 - restliche Umstellungen von Valuta auf Buchungsdatum
+ *
  * Revision 1.3  2007/04/20 09:50:11  willuhn
  * @B use placeholder as key instead of null
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EinnahmeAusgabeControl.java,v $
- * $Revision: 1.8 $
- * $Date: 2007/08/07 12:04:43 $
+ * $Revision: 1.9 $
+ * $Date: 2007/08/12 22:02:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -238,15 +238,10 @@ public class EinnahmeAusgabeControl extends AbstractControl
         .fromArray((GenericObject[]) getWerte());
     table = new TablePart(eintr, null);
     table.addColumn(i18n.tr("Text"), "text");
-    table.addColumn(i18n.tr("Anfangssaldo"), "anfangssaldo",
-        new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,
-            HBCI.DECIMALFORMAT));
-    table.addColumn(i18n.tr("Einnahmen"), "einnahme", new CurrencyFormatter(
-        HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
-    table.addColumn(i18n.tr("Ausgaben"), "ausgabe", new CurrencyFormatter(
-        HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
-    table.addColumn(i18n.tr("Endsaldo"), "endsaldo", new CurrencyFormatter(
-        HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
+    table.addColumn(i18n.tr("Anfangssaldo"), "anfangssaldo",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
+    table.addColumn(i18n.tr("Einnahmen"), "einnahme", new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
+    table.addColumn(i18n.tr("Ausgaben"), "ausgabe", new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
+    table.addColumn(i18n.tr("Endsaldo"), "endsaldo", new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
     table.addColumn(i18n.tr("Bemerkung"), "bemerkung");
 
     table.setFormatter(new TableFormatter()
@@ -307,8 +302,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
     }
     else
     {
-      DBIterator it = de.willuhn.jameica.hbci.Settings.getDBService()
-          .createList(Konto.class);
+      DBIterator it = de.willuhn.jameica.hbci.Settings.getDBService().createList(Konto.class);
       it.setOrder("ORDER BY blz, kontonummer");
       int index = 0;
       eae = new EinnahmeAusgabe[it.size() + 1];
@@ -328,15 +322,15 @@ public class EinnahmeAusgabeControl extends AbstractControl
   private void ermittelnWerte(Konto konto, EinnahmeAusgabe[] eae, int index)
       throws RemoteException
   {
-    double anfangssaldo = konto.getAnfangsSaldo((Date) this.getStart()
-        .getValue());
+    double anfangssaldo = konto.getAnfangsSaldo((Date) this.getStart().getValue());
     summeAnfangssaldo += anfangssaldo;
-    double einnahmen = konto.getEinnahmen((Date) start.getValue(), (Date) end
-        .getValue());
+
+    double einnahmen = konto.getEinnahmen((Date) start.getValue(), (Date) end.getValue());
     summeEinnahmen += einnahmen;
-    double ausgaben = konto.getAusgaben((Date) start.getValue(), (Date) end
-        .getValue());
+
+    double ausgaben = konto.getAusgaben((Date) start.getValue(), (Date) end.getValue());
     summeAusgaben += ausgaben;
+
     double endsaldo = konto.getEndSaldo((Date) end.getValue());
     summeEndsaldo += endsaldo;
 
@@ -371,6 +365,9 @@ public class EinnahmeAusgabeControl extends AbstractControl
 
 /*******************************************************************************
  * $Log: EinnahmeAusgabeControl.java,v $
+ * Revision 1.9  2007/08/12 22:02:10  willuhn
+ * @C BUGZILLA 394 - restliche Umstellungen von Valuta auf Buchungsdatum
+ *
  * Revision 1.8  2007/08/07 12:04:43  willuhn
  * @C Spalte "Bemerkung" wieder eingefuegt
  *
