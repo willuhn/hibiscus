@@ -1,13 +1,10 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DBSupportMySqlImpl.java,v $
- * $Revision: 1.6 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DBSupportPostgreSQLImpl.java,v $
+ * $Revision: 1.1 $
  * $Date: 2007/08/20 15:30:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
- *
- * Copyright (c) by willuhn software & services
- * All rights reserved
  *
  **********************************************************************/
 
@@ -27,16 +24,16 @@ import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 
 /**
- * Implementierung des Datenbank-Supports fuer MySQL.
+ * Implementierung des Datenbank-Supports fuer PostgreSQL.
  */
-public class DBSupportMySqlImpl extends AbstractDBSupportImpl
+public class DBSupportPostgreSQLImpl extends AbstractDBSupportImpl
 {
   /**
    * @see de.willuhn.jameica.hbci.rmi.DBSupport#getJdbcDriver()
    */
   public String getJdbcDriver()
   {
-    return HBCIDBService.SETTINGS.getString("database.driver.mysql.jdbcdriver","com.mysql.jdbc.Driver");
+    return HBCIDBService.SETTINGS.getString("database.driver.postgresql.jdbcdriver","org.postgresql.Driver");
   }
 
   /**
@@ -44,7 +41,7 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl
    */
   public String getJdbcPassword()
   {
-    String key = "database.driver.mysql.password";
+    String key = "database.driver.postgresql.password";
 
 // TODO: Erst moeglich, wenn eine GUI zum Eingeben des Passwortes existiert
 //    try
@@ -65,7 +62,7 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl
    */
   public String getJdbcUrl()
   {
-    return HBCIDBService.SETTINGS.getString("database.driver.mysql.jdbcurl","jdbc:mysql://localhost:3306/hibiscus?useUnicode=Yes&characterEncoding=ISO8859_1");
+    return HBCIDBService.SETTINGS.getString("database.driver .postgresql.jdbcurl","jdbc:postgresql://localhost:5432/hibiscus");
   }
 
   /**
@@ -73,7 +70,7 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl
    */
   public String getJdbcUsername()
   {
-    return HBCIDBService.SETTINGS.getString("database.driver.mysql.username","hibiscus");
+    return HBCIDBService.SETTINGS.getString("database.driver.postgresql.username","hibiscus");
   }
 
   /**
@@ -87,13 +84,13 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl
     if (sqlScript == null)
       return; // Ignore
 
-    String prefix = HBCIDBService.SETTINGS.getString("database.driver.mysql.scriptprefix","mysql-");
+    String prefix = HBCIDBService.SETTINGS.getString("database.driver.postgresql.scriptprefix","postgresql-");
     File f = new File(sqlScript.getParent(),prefix + sqlScript.getName());
     
     I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     
-    String text = i18n.tr("Bei der Verwendung von MySQL werden Datenbank-Updates " +
-        "nicht automatisch ausgeführt. Bitte führen Sie das folgende SQL-Script " +
+    String text = i18n.tr("Bei der Verwendung von PostgreSQL werden Datenbank-Updates " +
+        "nicht automatisch ausgefuehrt. Bitte fuehren Sie das folgende SQL-Script " +
         "manuell aus:\n{0}",f.getAbsolutePath());
     Application.addWelcomeMessage(text);
   }
@@ -103,7 +100,7 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl
    */
   public String getSQLTimestamp(String content) throws RemoteException
   {
-    return MessageFormat.format("(UNIX_TIMESTAMP({0})*1000)", new Object[]{content});
+    return MessageFormat.format("({0}::timestamp)", new Object[]{content});
   }
 
   /**
@@ -157,7 +154,7 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl
   {
     // damit sehen wir Datenbank-Updates durch andere
     // ohne vorher ein COMMIT machen zu muessen
-    // Insbesondere bei MySQL sinnvoll.
+    // Bei PostgreSQL eigentlich nicht sinnvoll, da autocommit der default ist.
     return Connection.TRANSACTION_READ_COMMITTED;
   }
 
@@ -165,29 +162,11 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl
 
 
 /*********************************************************************
- * $Log: DBSupportMySqlImpl.java,v $
- * Revision 1.6  2007/08/20 15:30:28  willuhn
+ * $Log: DBSupportPostgreSQLImpl.java,v $
+ * Revision 1.1  2007/08/20 15:30:28  willuhn
  * @N PostGreSqlSupport von Ralf Burger
  *
- * Revision 1.5  2007/07/28 15:51:26  willuhn
- * @B Bug 447
- *
- * Revision 1.4  2007/06/14 18:02:47  willuhn
- * @B s/suffix/prefix/
- *
- * Revision 1.3  2007/05/07 09:27:25  willuhn
- * @N Automatisches Neuerstellen der JDBC-Connection bei MySQL
- *
- * Revision 1.2  2007/04/23 18:07:15  willuhn
- * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
- * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
- * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
- * @N Anbindung externer Adressbuecher
- *
- * Revision 1.1  2007/04/19 18:12:21  willuhn
- * @N MySQL-Support (GUI zum Konfigurieren fehlt noch)
- *
- * Revision 1.1  2007/04/18 17:03:06  willuhn
- * @N Erster Code fuer Unterstuetzung von MySQL
+
+ * @N Erster Code fuer Unterstuetzung von PostgreSQL
  *
  **********************************************************************/
