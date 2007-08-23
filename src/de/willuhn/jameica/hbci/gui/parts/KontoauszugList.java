@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.9 $
- * $Date: 2007/08/09 12:19:55 $
+ * $Revision: 1.10 $
+ * $Date: 2007/08/23 12:37:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -73,6 +73,7 @@ public class KontoauszugList extends UmsatzList
   // Suche nach Betrag
   private DecimalInput betragFrom      = null;
   private DecimalInput betragTo        = null;
+  private TextInput text               = null;
 
   private Listener listener            = null;
   
@@ -125,9 +126,11 @@ public class KontoauszugList extends UmsatzList
     gegenkonto.addLabelPair(i18n.tr("BLZ enthält"),                   getGegenkontoBLZ());
     gegenkonto.addLabelPair(i18n.tr("Name des Kontoinhabers enthält"),getGegenkontoName());
 
-    TabGroup betrag = new TabGroup(folder,i18n.tr("Beträge"));
+    TabGroup betrag = new TabGroup(folder,i18n.tr("Betrag/Verwendungszweck"));
     betrag.addLabelPair(i18n.tr("Mindest-Betrag"),                    getMindestBetrag());
     betrag.addLabelPair(i18n.tr("Höchst-Betrag"),                     getHoechstBetrag());
+    betrag.addSeparator();
+    betrag.addLabelPair(i18n.tr("Verwendungszweck/Kommentar enthält"), getText());
 
     new Headline(parent,i18n.tr("Gefundene Umsätze"));
 
@@ -305,6 +308,20 @@ public class KontoauszugList extends UmsatzList
   }
   
   /**
+   * Liefert das Eingabe-Feld fuer Verwendungszweck/Kommentar.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getText() throws RemoteException
+  {
+    if (this.text != null)
+      return this.text;
+    this.text = new TextInput("",HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH);
+    this.text.addListener(this.listener);
+    return this.text;
+  }
+
+  /**
    * Liefert ein Eingabe-Feld fuer die Eingabe eines Mindestbetrages.
    * @return Eingabe-Feld.
    * @throws RemoteException
@@ -314,7 +331,7 @@ public class KontoauszugList extends UmsatzList
     if (this.betragFrom != null)
       return this.betragFrom;
     
-    this.betragFrom = new DecimalInput(mySettings.getDouble("kontoauszug.list.minbetrag",Double.NaN), HBCI.DECIMALFORMAT);
+    this.betragFrom = new DecimalInput(Double.NaN, HBCI.DECIMALFORMAT);
     this.betragFrom.setComment(HBCIProperties.CURRENCY_DEFAULT_DE);
     this.betragFrom.addListener(this.listener);
     return this.betragFrom;
@@ -330,7 +347,7 @@ public class KontoauszugList extends UmsatzList
     if (this.betragTo != null)
       return this.betragTo;
     
-    this.betragTo = new DecimalInput(mySettings.getDouble("kontoauszug.list.maxbetrag",Double.NaN), HBCI.DECIMALFORMAT);
+    this.betragTo = new DecimalInput(Double.NaN, HBCI.DECIMALFORMAT);
     this.betragTo.setComment(HBCIProperties.CURRENCY_DEFAULT_DE);
     this.betragTo.addListener(this.listener);
     return this.betragTo;
@@ -351,6 +368,7 @@ public class KontoauszugList extends UmsatzList
     String gkNummer = (String) getGegenkontoNummer().getText();
     Double min      = (Double) getMindestBetrag().getValue();
     Double max      = (Double) getHoechstBetrag().getValue();
+    String zk       = (String) getText().getValue();
     
     DBIterator umsaetze = UmsatzUtil.getUmsaetze();
     
@@ -384,6 +402,16 @@ public class KontoauszugList extends UmsatzList
       hasFilter = true;
     }
     /////////////////////////////////////////////////////////////////
+    
+    /////////////////////////////////////////////////////////////////
+    // Zweck/Kommentar
+    if (zk != null && zk.length() > 0) {
+      zk = "%" + zk.toLowerCase() + "%";
+      umsaetze.addFilter("(LOWER(zweck) like ? OR LOWER(zweck2) like ? OR LOWER(kommentar) like ?)",new Object[]{zk,zk,zk});
+      hasFilter = true;
+    }
+    /////////////////////////////////////////////////////////////////
+
 
     GUI.getView().setLogoText(hasFilter ? i18n.tr("Hinweis: Aufgrund weiterer Suchkriterien werden möglicherweise nicht alle Umsätze angezeigt") : "");
     return umsaetze;
@@ -416,14 +444,9 @@ public class KontoauszugList extends UmsatzList
             Date from = (Date) getStart().getValue();
             Date to   = (Date) getEnd().getValue();
             Konto k   = (Konto) getKontoAuswahl().getValue();
-            Double min = (Double) getMindestBetrag().getValue();
-            Double max = (Double) getHoechstBetrag().getValue();
             mySettings.setAttribute("kontoauszug.list.from",from == null ? null : HBCI.DATEFORMAT.format(from));
             mySettings.setAttribute("kontoauszug.list.to",to == null ? null : HBCI.DATEFORMAT.format(to));
             mySettings.setAttribute("kontoauszug.list.konto",k == null ? null : k.getID());
-            
-            mySettings.setAttribute("kontoauszug.list.minbetrag",min == null ? Double.NaN : min.doubleValue());
-            mySettings.setAttribute("kontoauszug.list.maxbetrag",max == null ? Double.NaN : max.doubleValue());
           }
           catch (RemoteException re)
           {
@@ -458,7 +481,8 @@ public class KontoauszugList extends UmsatzList
                 getGegenkontoNummer().hasChanged() ||
                 getGegenkontoBLZ().hasChanged() ||
                 getMindestBetrag().hasChanged() ||
-                getHoechstBetrag().hasChanged();
+                getHoechstBetrag().hasChanged() ||
+                getText().hasChanged();
     }
     catch (Exception e)
     {
@@ -501,6 +525,10 @@ public class KontoauszugList extends UmsatzList
 
 /*********************************************************************
  * $Log: KontoauszugList.java,v $
+ * Revision 1.10  2007/08/23 12:37:32  willuhn
+ * @N Neues Filterkriterium "Verwendungszweck/Kommentar"
+ * @C "Betrag von", "Betrag bis" nicht mehr speichern -> zu verwirrend
+ *
  * Revision 1.9  2007/08/09 12:19:55  willuhn
  * @N Bug 449 - Filterkriterien auf dem ersten Tab werden fuer Warnhinweis nicht beruecksichtigt weil sie offensichtlich sind
  *
