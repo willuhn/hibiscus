@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzTypControl.java,v $
- * $Revision: 1.6 $
- * $Date: 2007/06/12 08:56:01 $
+ * $Revision: 1.7 $
+ * $Date: 2007/08/24 22:22:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,9 +14,15 @@
 package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.SelectInput;
@@ -132,6 +138,39 @@ public class UmsatzTypControl extends AbstractControl
     {
       this.pattern = new TextInput(getUmsatzTyp().getPattern());
       this.pattern.setComment(i18n.tr("Für automatische Zuordnung anhand von Suchbegriffen"));
+      this.pattern.addListener(new Listener()
+      {
+      
+        public void handleEvent(Event event)
+        {
+          // Wir testen sofort, ob der regulaere Ausdruck vielleicht
+          // ungueltig ist
+          try
+          {
+            GUI.getView().setErrorText("");
+            String p = (String) pattern.getValue();
+            if (p == null || p.length() == 0)
+              return;
+            boolean b = ((Boolean)getRegex().getValue()).booleanValue();
+            if (b)
+            {
+              try
+              {
+                Pattern.compile(p);
+              }
+              catch (PatternSyntaxException pse)
+              {
+                GUI.getView().setErrorText(i18n.tr("Regulärer Ausdruck ungültig: {0}",pse.getDescription()));
+              }
+            }
+          }
+          catch (Exception e)
+          {
+            Logger.error("unable to verify pattern",e);
+          }
+        }
+      
+      });
     }
     return this.pattern;
   }
@@ -194,6 +233,9 @@ public class UmsatzTypControl extends AbstractControl
 
 /*********************************************************************
  * $Log: UmsatzTypControl.java,v $
+ * Revision 1.7  2007/08/24 22:22:00  willuhn
+ * @N Regulaere Ausdruecke vorm Speichern testen
+ *
  * Revision 1.6  2007/06/12 08:56:01  willuhn
  * @B Bug 410
  *
