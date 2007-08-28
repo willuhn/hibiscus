@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTypTree.java,v $
- * $Revision: 1.4 $
- * $Date: 2007/08/12 22:02:10 $
+ * $Revision: 1.5 $
+ * $Date: 2007/08/28 09:47:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -55,7 +55,6 @@ public class UmsatzTypTree extends TreePart
   public UmsatzTypTree(GenericIterator list) throws RemoteException
   {
     super(init(list), new UmsatzDetail());
-
     this.setRememberColWidths(true);
     this.setContextMenu(new UmsatzList());
     this.setFormatter(new TreeFormatter() {
@@ -136,6 +135,9 @@ public class UmsatzTypTree extends TreePart
 
 /*******************************************************************************
  * $Log: UmsatzTypTree.java,v $
+ * Revision 1.5  2007/08/28 09:47:09  willuhn
+ * @N Bug 395
+ *
  * Revision 1.4  2007/08/12 22:02:10  willuhn
  * @C BUGZILLA 394 - restliche Umstellungen von Valuta auf Buchungsdatum
  *

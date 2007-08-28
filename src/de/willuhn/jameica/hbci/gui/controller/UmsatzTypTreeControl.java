@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzTypTreeControl.java,v $
- * $Revision: 1.5 $
- * $Date: 2007/08/12 22:02:10 $
+ * $Revision: 1.6 $
+ * $Date: 2007/08/28 09:47:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,9 +15,11 @@ package de.willuhn.jameica.hbci.gui.controller;
 import java.rmi.RemoteException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.eclipse.swt.widgets.Composite;
 
+import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
@@ -48,7 +50,7 @@ public class UmsatzTypTreeControl extends AbstractControl
   private DateInput end                     = null;
   private I18N i18n                         = null;
   private UmsatzTypTree tree                = null;
-
+  
   private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(UmsatzTypTreeControl.class);
 
   static
@@ -189,7 +191,31 @@ public class UmsatzTypTreeControl extends AbstractControl
     ////////////////////////////////////////////////////////////////
     
     this.tree = new UmsatzTypTree(umsaetze);
+    this.tree.setExpanded(settings.getBoolean("expanded",false));
     return this.tree;
+  }
+  
+  /**
+   * Klappt alle Elemente auf oder zu.
+   */
+  public void handleExpand()
+  {
+    try
+    {
+      TreePart tree = getTree();
+      boolean current = !settings.getBoolean("expanded",false);
+      List items = tree.getItems();
+      for (int i=0;i<items.size();++i)
+      {
+        tree.setExpanded((GenericObject)items.get(i),current);
+      }
+      settings.setAttribute("expanded",current);
+    }
+    catch (RemoteException re)
+    {
+      Logger.error("unable to expand tree",re);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aufklappen/Zuklappen"), StatusBarMessage.TYPE_ERROR));
+    }
   }
   
   /**
@@ -220,6 +246,9 @@ public class UmsatzTypTreeControl extends AbstractControl
 
 /*******************************************************************************
  * $Log: UmsatzTypTreeControl.java,v $
+ * Revision 1.6  2007/08/28 09:47:09  willuhn
+ * @N Bug 395
+ *
  * Revision 1.5  2007/08/12 22:02:10  willuhn
  * @C BUGZILLA 394 - restliche Umstellungen von Valuta auf Buchungsdatum
  *
