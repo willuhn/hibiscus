@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/KontoList.java,v $
- * $Revision: 1.13 $
- * $Date: 2006/11/24 00:07:09 $
+ * $Revision: 1.14 $
+ * $Date: 2007/08/28 10:08:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,8 +19,8 @@ import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.DauerauftragNew;
 import de.willuhn.jameica.hbci.gui.action.KontoDelete;
+import de.willuhn.jameica.hbci.gui.action.KontoFetchUmsaetze;
 import de.willuhn.jameica.hbci.gui.action.KontoNew;
-import de.willuhn.jameica.hbci.gui.action.KontoFetchSaldo;
 import de.willuhn.jameica.hbci.gui.action.KontoResetAuszugsdatum;
 import de.willuhn.jameica.hbci.gui.action.LastschriftNew;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungNew;
@@ -49,10 +49,10 @@ public class KontoList extends ContextMenu implements Extendable
     addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"), new KontoNew()));
     addItem(new ContextMenuItem(i18n.tr("Neues Konto..."), new KNeu()));
     addItem(new CheckedContextMenuItem(i18n.tr("Kontoauszüge anzeigen..."),new UmsatzList()));
-    addItem(new CheckedContextMenuItem(i18n.tr("Saldo aktualisieren..."),new KontoFetchSaldo()));
-    addItem(new CheckedContextMenuItem(i18n.tr("Kontoauszugsdatum zurücksetzen..."), new KontoResetAuszugsdatum()));
+    addItem(new CheckedContextMenuItem(i18n.tr("Saldo/Kontoauszüge abrufen..."),new KontoFetchUmsaetze())); // BUGZILLA 473
 
     addItem(ContextMenuItem.SEPARATOR);
+    addItem(new CheckedContextMenuItem(i18n.tr("Kontoauszugsdatum zurücksetzen..."), new KontoResetAuszugsdatum()));
     addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new KontoDelete()));
     addItem(ContextMenuItem.SEPARATOR);
 
@@ -88,6 +88,9 @@ public class KontoList extends ContextMenu implements Extendable
 
 /*******************************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.14  2007/08/28 10:08:53  willuhn
+ * @N Bug 473
+ *
  * Revision 1.13  2006/11/24 00:07:09  willuhn
  * @C Konfiguration der Umsatz-Kategorien in View Einstellungen verschoben
  * @N Redesign View Einstellungen
