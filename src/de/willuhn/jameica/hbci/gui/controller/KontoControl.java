@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.75 $
- * $Date: 2007/06/15 11:20:32 $
+ * $Revision: 1.76 $
+ * $Date: 2007/08/29 10:04:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -509,7 +509,7 @@ public class KontoControl extends AbstractControl {
             }
             
             SaldoMessage msg = (SaldoMessage) message;
-            Konto k = msg.getKonto();
+            Konto k = (Konto)msg.getObject();
             if (k == null || !k.equals(getKonto()))
               return; // Kein Konto oder nicht unseres
 
@@ -553,6 +553,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.76  2007/08/29 10:04:42  willuhn
+ * @N Bug 476
+ *
  * Revision 1.75  2007/06/15 11:20:32  willuhn
  * @N Saldo in Kontodetails via Messaging sofort aktualisieren
  * @N Mehr Details in den Namen der Synchronize-Jobs

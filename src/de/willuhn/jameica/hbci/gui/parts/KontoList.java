@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoList.java,v $
- * $Revision: 1.9 $
- * $Date: 2006/05/11 16:53:09 $
+ * $Revision: 1.10 $
+ * $Date: 2007/08/29 10:04:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,12 +15,17 @@ package de.willuhn.jameica.hbci.gui.parts;
 
 import java.rmi.RemoteException;
 
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TableItem;
 import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.GenericIterator;
+import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
@@ -28,8 +33,13 @@ import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.PassportRegistry;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
+import de.willuhn.jameica.hbci.messaging.ObjectMessage;
+import de.willuhn.jameica.hbci.messaging.SaldoMessage;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.messaging.Message;
+import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
@@ -39,6 +49,9 @@ import de.willuhn.util.I18N;
  */
 public class KontoList extends TablePart implements Part
 {
+  
+  // BUGZILLA 476
+  private MessageConsumer mc = null;
 
   private I18N i18n;
 
@@ -128,8 +141,25 @@ public class KontoList extends TablePart implements Part
     setRememberColWidths(true);
 
     setContextMenu(new de.willuhn.jameica.hbci.gui.menus.KontoList());
+    
+    this.mc = new SaldoMessageConsumer();
+    Application.getMessagingFactory().registerMessageConsumer(this.mc);
   }
   
+  /**
+   * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
+   */
+  public synchronized void paint(Composite parent) throws RemoteException
+  {
+    parent.addDisposeListener(new DisposeListener() {
+      public void widgetDisposed(DisposeEvent e)
+      {
+        Application.getMessagingFactory().unRegisterMessageConsumer(mc);
+      }
+    });
+    super.paint(parent);
+  }
+
   /**
    * Initialisiert die Konten-Liste.
    * @return Liste der Konten.
@@ -141,12 +171,84 @@ public class KontoList extends TablePart implements Part
     i.setOrder("ORDER BY blz, bezeichnung");
     return i;
   }
+  
+  
+  /**
+   * Hilfsklasse damit wir ueber neue Salden informiert werden.
+   */
+  public class SaldoMessageConsumer implements MessageConsumer
+  {
+    /**
+     * ct.
+     */
+    public SaldoMessageConsumer()
+    {
+      super();
+    }
 
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
+     */
+    public Class[] getExpectedMessageTypes()
+    {
+      return new Class[]{
+        SaldoMessage.class,
+        ObjectChangedMessage.class
+      };
+    }
+
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
+     */
+    public void handleMessage(Message message) throws Exception
+    {
+      if (message == null)
+        return;
+      
+      final GenericObject o = ((ObjectMessage)message).getObject();
+
+      if (o == null || !(o instanceof Konto))
+        return;
+
+      GUI.getDisplay().syncExec(new Runnable() {
+        public void run()
+        {
+          try
+          {
+            int index = removeItem(o);
+            if (index == -1)
+              return; // Objekt war nicht in der Tabelle
+            
+            // Aktualisieren, in dem wir es neu an der gleichen Position eintragen
+           addItem(o,index);
+           
+           // Wir markieren es noch in der Tabelle
+           select(o);
+          }
+          catch (Exception e)
+          {
+            Logger.error("unable to add object to list",e);
+          }
+        }
+      });
+    }
+
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
+     */
+    public boolean autoRegister()
+    {
+      return false;
+    }
+  }
 }
 
 
 /**********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.10  2007/08/29 10:04:42  willuhn
+ * @N Bug 476
+ *
  * Revision 1.9  2006/05/11 16:53:09  willuhn
  * @B bug 233
  *
