@@ -95,7 +95,7 @@ CREATE TABLE slastschrift (
 CREATE TABLE protokoll (
        id int(10) AUTO_INCREMENT
      , konto_id int(10) NOT NULL
-     , kommentar VARCHAR(1000) NOT NULL
+     , kommentar TEXT NOT NULL
      , datum DATETIME NOT NULL
      , typ int(10) NOT NULL
      , UNIQUE (id)
