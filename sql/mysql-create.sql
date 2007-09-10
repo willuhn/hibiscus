@@ -160,7 +160,7 @@ CREATE TABLE umsatz (
      , art VARCHAR(100)
      , customerref VARCHAR(100)
      , kommentar TEXT
-     , checksum int(10)
+     , checksum bigint(16)
      , umsatztyp_id int(10)
      , UNIQUE (id)
      , PRIMARY KEY (id)
