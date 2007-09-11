@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DBSupportPostgreSQLImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2007/08/20 15:30:28 $
+ * $Revision: 1.2 $
+ * $Date: 2007/09/11 09:26:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -86,13 +86,15 @@ public class DBSupportPostgreSQLImpl extends AbstractDBSupportImpl
 
     String prefix = HBCIDBService.SETTINGS.getString("database.driver.postgresql.scriptprefix","postgresql-");
     File f = new File(sqlScript.getParent(),prefix + sqlScript.getName());
-    
-    I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-    
-    String text = i18n.tr("Bei der Verwendung von PostgreSQL werden Datenbank-Updates " +
-        "nicht automatisch ausgefuehrt. Bitte fuehren Sie das folgende SQL-Script " +
-        "manuell aus:\n{0}",f.getAbsolutePath());
-    Application.addWelcomeMessage(text);
+    if (f.exists())
+    {
+      I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+      
+      String text = i18n.tr("Bei der Verwendung von PostgreSQL werden Datenbank-Updates " +
+          "nicht automatisch ausgefuehrt. Bitte fuehren Sie das folgende SQL-Script " +
+          "manuell aus:\n{0}",f.getAbsolutePath());
+      Application.addWelcomeMessage(text);
+    }
   }
   
   /**
@@ -163,6 +165,9 @@ public class DBSupportPostgreSQLImpl extends AbstractDBSupportImpl
 
 /*********************************************************************
  * $Log: DBSupportPostgreSQLImpl.java,v $
+ * Revision 1.2  2007/09/11 09:26:08  willuhn
+ * @N SQL-Update-Hinweis nur anzeigen, wenn Datei existiert
+ *
  * Revision 1.1  2007/08/20 15:30:28  willuhn
  * @N PostGreSqlSupport von Ralf Burger
  *
