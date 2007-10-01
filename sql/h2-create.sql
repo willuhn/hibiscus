@@ -65,7 +65,7 @@ CREATE TABLE umsatz (
   primanota varchar(100),
   art varchar(100),
   customerref varchar(100),
-  kommentar text NULL,
+  kommentar varchar(1000) NULL,
   checksum numeric NULL,
   umsatztyp_id int(5) NULL,
   UNIQUE (id),
@@ -179,7 +179,7 @@ CREATE TABLE sueberweisungbuchung (
 CREATE TABLE systemnachricht (
   id IDENTITY,
   blz varchar(15) NOT NULL,
-  nachricht text NOT NULL,
+  nachricht varchar(1000) NOT NULL,
   datum date NOT NULL,
   gelesen int(1) NOT NULL,
   UNIQUE (id),
