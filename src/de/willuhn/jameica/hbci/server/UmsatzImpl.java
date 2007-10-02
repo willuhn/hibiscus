@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.50 $
- * $Date: 2007/10/01 09:37:42 $
+ * $Revision: 1.51 $
+ * $Date: 2007/10/02 16:08:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,7 +12,6 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.server;
 
-import java.io.Reader;
 import java.rmi.RemoteException;
 import java.text.ParseException;
 import java.util.Date;
@@ -499,34 +498,7 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
    */
   public String getKommentar() throws RemoteException
   {
-    Object o = getAttribute("kommentar");
-    if (o == null)
-      return null;
-    if (o instanceof String)
-      return (String) o;
-
-    try
-    {
-      Reader reader = (Reader) o;
-      
-      StringBuffer sb = new StringBuffer();
-      int read = 0;
-      char[] buf = new char[8192];
-
-      do
-      {
-        read = reader.read(buf);
-        if (read > 0)
-          sb.append(buf,0,read);
-      }
-      while (read != -1);
-      reader.close();
-      return sb.toString();
-    }
-    catch (Exception e)
-    {
-      throw new RemoteException("unable to read comment",e);
-    }
+    return (String) getAttribute("kommentar");
   }
 
   /**
@@ -683,6 +655,9 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.51  2007/10/02 16:08:55  willuhn
+ * @C Bugfix mit dem falschen Spaltentyp nochmal ueberarbeitet
+ *
  * Revision 1.50  2007/10/01 09:37:42  willuhn
  * @B H2: Felder vom Typ "TEXT" werden von H2 als InputStreamReader geliefert. Felder umsatz.kommentar und protokoll.nachricht auf "VARCHAR(1000)" geaendert und fuer Migration in den Gettern beides beruecksichtigt
  *

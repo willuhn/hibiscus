@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/NachrichtImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2007/10/01 09:37:42 $
+ * $Revision: 1.5 $
+ * $Date: 2007/10/02 16:08:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,7 +13,6 @@
 
 package de.willuhn.jameica.hbci.server;
 
-import java.io.Reader;
 import java.rmi.RemoteException;
 import java.util.Date;
 
@@ -117,34 +116,7 @@ public class NachrichtImpl extends AbstractDBObject implements Nachricht
    */
   public String getNachricht() throws RemoteException
   {
-    Object o = getAttribute("nachricht");
-    if (o == null)
-      return null;
-    if (o instanceof String)
-      return (String) o;
-
-    try
-    {
-      Reader reader = (Reader) o;
-      
-      StringBuffer sb = new StringBuffer();
-      int read = 0;
-      char[] buf = new char[8192];
-
-      do
-      {
-        read = reader.read(buf);
-        if (read > 0)
-          sb.append(buf,0,read);
-      }
-      while (read != -1);
-      reader.close();
-      return sb.toString();
-    }
-    catch (Exception e)
-    {
-      throw new RemoteException("unable to read message",e);
-    }
+    return (String) getAttribute("nachricht");
   }
 
   /**
@@ -196,6 +168,9 @@ public class NachrichtImpl extends AbstractDBObject implements Nachricht
 
 /**********************************************************************
  * $Log: NachrichtImpl.java,v $
+ * Revision 1.5  2007/10/02 16:08:55  willuhn
+ * @C Bugfix mit dem falschen Spaltentyp nochmal ueberarbeitet
+ *
  * Revision 1.4  2007/10/01 09:37:42  willuhn
  * @B H2: Felder vom Typ "TEXT" werden von H2 als InputStreamReader geliefert. Felder umsatz.kommentar und protokoll.nachricht auf "VARCHAR(1000)" geaendert und fuer Migration in den Gettern beides beruecksichtigt
  *
