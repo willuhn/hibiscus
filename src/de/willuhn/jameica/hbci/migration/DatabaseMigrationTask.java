@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/migration/Attic/DatabaseMigrationTask.java,v $
- * $Revision: 1.1 $
- * $Date: 2007/10/04 22:07:55 $
+ * $Revision: 1.2 $
+ * $Date: 2007/10/04 23:39:49 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import de.willuhn.datasource.BeanUtil;
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
+import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.server.DauerauftragImpl;
 import de.willuhn.jameica.hbci.server.HibiscusAddressImpl;
@@ -32,9 +33,11 @@ import de.willuhn.jameica.hbci.server.TurnusImpl;
 import de.willuhn.jameica.hbci.server.UeberweisungImpl;
 import de.willuhn.jameica.hbci.server.UmsatzImpl;
 import de.willuhn.jameica.hbci.server.UmsatzTypImpl;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.BackgroundTask;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
+import de.willuhn.util.I18N;
 import de.willuhn.util.ProgressMonitor;
 
 /**
@@ -42,18 +45,28 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class DatabaseMigrationTask implements BackgroundTask
 {
+  protected I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  static de.willuhn.jameica.system.Settings SETTINGS = new de.willuhn.jameica.system.Settings(DatabaseMigrationTask.class);
+
   private boolean cancel = false;
   private HBCIDBService source = null;
   private HBCIDBService target = null;
 
   /**
-   * ct.
+   * Legt die Datenquelle fest.
    * @param source Datenquelle.
-   * @param target Datenziel.
    */
-  public DatabaseMigrationTask(HBCIDBService source, HBCIDBService target)
+  public void setSource(HBCIDBService source)
   {
     this.source = source;
+  }
+  
+  /**
+   * Legt das Datenziel fest.
+   * @param target Datenziel.
+   */
+  public void setTarget(HBCIDBService target)
+  {
     this.target = target;
   }
   
@@ -78,8 +91,12 @@ public class DatabaseMigrationTask implements BackgroundTask
    */
   public void run(ProgressMonitor monitor) throws ApplicationException
   {
+    if (true)
+      throw new ApplicationException("Noch nicht fertig - siehe TODO");
+      
     try
     {
+      monitor.log(i18n.tr("Starte Datenmigration"));
       copy(TurnusImpl.class,monitor);
       copy(UmsatzTypImpl.class,monitor);
 
@@ -104,7 +121,7 @@ public class DatabaseMigrationTask implements BackgroundTask
       copy(ProtokollImpl.class,monitor);
 
       monitor.setStatus(ProgressMonitor.STATUS_DONE);
-      monitor.setStatusText("Fertig");
+      monitor.setStatusText(i18n.tr("Fertig"));
     }
     catch (ApplicationException ae)
     {
@@ -132,11 +149,11 @@ public class DatabaseMigrationTask implements BackgroundTask
    */
   private void copy(Class type, ProgressMonitor monitor) throws Exception
   {
-    monitor.setStatusText("Kopiere " + type.getName());
+    monitor.setStatusText(i18n.tr("Kopiere " + type.getName()));
 
   long count = 0;
   
-//    monitor.log("  Zieltabelle leeren");
+//    monitor.log(i18n.tr("  Zieltabelle leeren"));
 //    DBIterator existing = target.createList(type);
 //    while (existing.hasNext())
 //    {
@@ -146,9 +163,14 @@ public class DatabaseMigrationTask implements BackgroundTask
 //      ex.transactionCommit();
 //      count++;
 //    }
-//    monitor.log("  Gelöschte Datensätze: " + count);
+//    monitor.log(i18n.tr("  Gelöschte Datensätze: {0}",""+count));
 //
-    DBIterator i = source.createList(type);
+
+  // TODO: Es muss noch beruecksichtigt werden, wenn Quell- und Zieldatenbank
+  //       Identifier unterschiedlich schreiben. McKoi klein <-> H2 GROSS
+  // System.setProperty(HBCIDBServiceImpl.class.getName() + ".uppercase","false");
+
+  DBIterator i = source.createList(type);
     
     AbstractDBObject to = null;
 
@@ -157,6 +179,7 @@ public class DatabaseMigrationTask implements BackgroundTask
     while (!cancel && i.hasNext())
     {
       DBObject from = (DBObject) i.next();
+
       to            = (AbstractDBObject) target.createObject(type,null);
 
       String id = null;
@@ -165,9 +188,9 @@ public class DatabaseMigrationTask implements BackgroundTask
         id = from.getID();
         to.transactionBegin();
         to.overwrite(from);
-        if (++count % 1000 == 0)
+        if (++count % 100 == 0)
         {
-          monitor.log("  Kopierte Datensätze: " + count);
+          monitor.log(i18n.tr("  Kopierte Datensätze: {0}",""+count));
           monitor.addPercentComplete(1);
         }
         to.setID(id);
@@ -179,13 +202,13 @@ public class DatabaseMigrationTask implements BackgroundTask
         Logger.error("unable to copy record",e);
         if (to == null)
         {
-          monitor.log("Fehler beim Kopieren des Datensatzes, überspringe");
+          monitor.log(i18n.tr("Fehler beim Kopieren des Datensatzes, überspringe"));
         }
         else
         {
           try
           {
-            monitor.log("  Fehler beim Kopieren von [ID: " + id + "]: " + BeanUtil.toString(to) + ", überspringe");
+            monitor.log(i18n.tr("  Fehler beim Kopieren von [ID: {0}]: {1}, überspringe", new String[]{id,BeanUtil.toString(to)}));
             to.transactionRollback();
           }
           catch (Exception e2)
@@ -195,13 +218,16 @@ public class DatabaseMigrationTask implements BackgroundTask
         }
       }
     }
-    monitor.addPercentComplete(10);
+    monitor.addPercentComplete(5);
   }
 }
 
 
 /*********************************************************************
  * $Log: DatabaseMigrationTask.java,v $
+ * Revision 1.2  2007/10/04 23:39:49  willuhn
+ * @N Datenmigration McKoi->H2 (in progress)
+ *
  * Revision 1.1  2007/10/04 22:07:55  willuhn
  * @N Generisches Migrationstool zum Kopieren der Daten aus einer Hibiscus-Datenbank in eine andere
  *

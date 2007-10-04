@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/HBCIDBServiceImpl.java,v $
- * $Revision: 1.22 $
- * $Date: 2007/08/23 12:43:07 $
+ * $Revision: 1.23 $
+ * $Date: 2007/10/04 23:39:49 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -51,7 +51,7 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
    * @param driverClass der zu verwendende Treiber.
    * @throws RemoteException
    */
-  protected HBCIDBServiceImpl(String driverClass) throws RemoteException
+  public HBCIDBServiceImpl(String driverClass) throws RemoteException
   {
     super();
     this.setClassloader(Application.getClassLoader());
@@ -236,6 +236,9 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
 
 /*********************************************************************
  * $Log: HBCIDBServiceImpl.java,v $
+ * Revision 1.23  2007/10/04 23:39:49  willuhn
+ * @N Datenmigration McKoi->H2 (in progress)
+ *
  * Revision 1.22  2007/08/23 12:43:07  willuhn
  * @C BUGZILLA 275 - Umstellung der Default-Datenbank auf H2
  *
