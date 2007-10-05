@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/migration/Attic/DatabaseMigrationTask.java,v $
- * $Revision: 1.4 $
- * $Date: 2007/10/05 15:55:26 $
+ * $Revision: 1.5 $
+ * $Date: 2007/10/05 16:16:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -205,7 +205,7 @@ public class DatabaseMigrationTask implements BackgroundTask
       }
       catch (Exception e)
       {
-        Logger.error("unable to copy record",e);
+        Logger.error("unable to copy record " + type.getName() + ":" + id,e);
         if (to == null)
         {
           monitor.log(i18n.tr("Fehler beim Kopieren des Datensatzes, überspringe"));
@@ -231,6 +231,9 @@ public class DatabaseMigrationTask implements BackgroundTask
 
 /*********************************************************************
  * $Log: DatabaseMigrationTask.java,v $
+ * Revision 1.5  2007/10/05 16:16:58  willuhn
+ * @C temporaer noch deaktiviert, bis hinreichend getestet
+ *
  * Revision 1.4  2007/10/05 15:55:26  willuhn
  * @B Korrigieren ueberlanger Verwendungszwecke
  *
