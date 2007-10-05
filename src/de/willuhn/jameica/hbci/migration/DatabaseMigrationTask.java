@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/migration/Attic/DatabaseMigrationTask.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/10/04 23:39:49 $
+ * $Revision: 1.3 $
+ * $Date: 2007/10/05 15:27:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,8 +17,8 @@ import de.willuhn.datasource.BeanUtil;
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
+import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.server.DauerauftragImpl;
 import de.willuhn.jameica.hbci.server.HibiscusAddressImpl;
 import de.willuhn.jameica.hbci.server.KontoImpl;
@@ -49,14 +49,14 @@ public class DatabaseMigrationTask implements BackgroundTask
   static de.willuhn.jameica.system.Settings SETTINGS = new de.willuhn.jameica.system.Settings(DatabaseMigrationTask.class);
 
   private boolean cancel = false;
-  private HBCIDBService source = null;
-  private HBCIDBService target = null;
+  private DBService source = null;
+  private DBService target = null;
 
   /**
    * Legt die Datenquelle fest.
    * @param source Datenquelle.
    */
-  public void setSource(HBCIDBService source)
+  public void setSource(DBService source)
   {
     this.source = source;
   }
@@ -65,7 +65,7 @@ public class DatabaseMigrationTask implements BackgroundTask
    * Legt das Datenziel fest.
    * @param target Datenziel.
    */
-  public void setTarget(HBCIDBService target)
+  public void setTarget(DBService target)
   {
     this.target = target;
   }
@@ -91,9 +91,6 @@ public class DatabaseMigrationTask implements BackgroundTask
    */
   public void run(ProgressMonitor monitor) throws ApplicationException
   {
-    if (true)
-      throw new ApplicationException("Noch nicht fertig - siehe TODO");
-      
     try
     {
       monitor.log(i18n.tr("Starte Datenmigration"));
@@ -166,10 +163,6 @@ public class DatabaseMigrationTask implements BackgroundTask
 //    monitor.log(i18n.tr("  Gelöschte Datensätze: {0}",""+count));
 //
 
-  // TODO: Es muss noch beruecksichtigt werden, wenn Quell- und Zieldatenbank
-  //       Identifier unterschiedlich schreiben. McKoi klein <-> H2 GROSS
-  // System.setProperty(HBCIDBServiceImpl.class.getName() + ".uppercase","false");
-
   DBIterator i = source.createList(type);
     
     AbstractDBObject to = null;
@@ -225,6 +218,9 @@ public class DatabaseMigrationTask implements BackgroundTask
 
 /*********************************************************************
  * $Log: DatabaseMigrationTask.java,v $
+ * Revision 1.3  2007/10/05 15:27:14  willuhn
+ * @N Migration auf H2 laeuft! ;)
+ *
  * Revision 1.2  2007/10/04 23:39:49  willuhn
  * @N Datenmigration McKoi->H2 (in progress)
  *

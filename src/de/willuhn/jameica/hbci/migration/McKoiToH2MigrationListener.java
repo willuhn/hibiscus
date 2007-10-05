@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/migration/Attic/McKoiToH2MigrationListener.java,v $
- * $Revision: 1.1 $
- * $Date: 2007/10/04 23:39:49 $
+ * $Revision: 1.2 $
+ * $Date: 2007/10/05 15:27:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,9 +13,15 @@
 
 package de.willuhn.jameica.hbci.migration;
 
+import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.rmi.HBCIDBService;
+import de.willuhn.jameica.hbci.server.DBSupportMcKoiImpl;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.messaging.SystemMessage;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
+import de.willuhn.util.I18N;
 
 
 /**
@@ -31,7 +37,7 @@ public class McKoiToH2MigrationListener implements MessageConsumer
    */
   public boolean autoRegister()
   {
-    return false;
+    return true;
   }
 
   /**
@@ -47,29 +53,29 @@ public class McKoiToH2MigrationListener implements MessageConsumer
    */
   public void handleMessage(Message message) throws Exception
   {
-//    if (message == null || !(message instanceof SystemMessage))
-//      return;
-//    
-//    if (((SystemMessage) message).getStatusCode() != SystemMessage.SYSTEM_STARTED)
-//      return;
-//    
-//    // Checken, ob Migration schon lief
-//    if (DatabaseMigrationTask.SETTINGS.getString("migration.mckoi-to-h2",null) != null)
-//      return; // lief bereits
-//    
-//    // Checken, ob ueberhaupt die McKoi-Datenbank genutzt wird
-//    String driver = HBCIDBService.SETTINGS.getString("database.driver",null);
-//    if (driver == null || !driver.equals(DBSupportMcKoiImpl.class.getName()))
-//      return;
-//    
-//    I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-//    
-//    String text = i18n.tr("Das Datenbank-Format von Hibiscus wurde umgestellt.\nMöchten Sie jetzt die Übernahme der Daten in das neue Format durchführen?");
-//    if (!Application.getCallback().askUser(text))
-//      return;
-//    
-//    Logger.warn("starting database migration from mckoi to h2");
-//    Application.getController().start(new McKoiToH2MigrationTask());
+    if (message == null || !(message instanceof SystemMessage))
+      return;
+    
+    if (((SystemMessage) message).getStatusCode() != SystemMessage.SYSTEM_STARTED)
+      return;
+    
+    // Checken, ob Migration schon lief
+    if (DatabaseMigrationTask.SETTINGS.getString("migration.mckoi-to-h2",null) != null)
+      return; // lief bereits
+    
+    // Checken, ob ueberhaupt die McKoi-Datenbank genutzt wird
+    String driver = HBCIDBService.SETTINGS.getString("database.driver",null);
+    if (driver == null || !driver.equals(DBSupportMcKoiImpl.class.getName()))
+      return;
+    
+    I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+    
+    String text = i18n.tr("Das Datenbank-Format von Hibiscus wurde umgestellt.\nMöchten Sie jetzt die Übernahme der Daten in das neue Format durchführen?");
+    if (!Application.getCallback().askUser(text))
+      return;
+    
+    Logger.warn("starting database migration from mckoi to h2");
+    Application.getController().start(new McKoiToH2MigrationTask());
   }
 
 }
@@ -77,6 +83,9 @@ public class McKoiToH2MigrationListener implements MessageConsumer
 
 /**********************************************************************
  * $Log: McKoiToH2MigrationListener.java,v $
+ * Revision 1.2  2007/10/05 15:27:14  willuhn
+ * @N Migration auf H2 laeuft! ;)
+ *
  * Revision 1.1  2007/10/04 23:39:49  willuhn
  * @N Datenmigration McKoi->H2 (in progress)
  *
