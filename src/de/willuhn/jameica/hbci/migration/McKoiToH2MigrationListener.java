@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/migration/Attic/McKoiToH2MigrationListener.java,v $
- * $Revision: 1.3 $
- * $Date: 2007/10/05 16:16:58 $
+ * $Revision: 1.4 $
+ * $Date: 2007/10/05 17:07:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -54,8 +54,8 @@ public class McKoiToH2MigrationListener implements MessageConsumer
   public void handleMessage(Message message) throws Exception
   {
     if (true)
-      return; // TODO temporaer noch deaktiviert, bis hinreichend getestet
-    
+    return; // TODO temporaer noch deaktiviert, bis hinreichend getestet
+
     if (message == null || !(message instanceof SystemMessage))
       return;
     
@@ -86,6 +86,9 @@ public class McKoiToH2MigrationListener implements MessageConsumer
 
 /**********************************************************************
  * $Log: McKoiToH2MigrationListener.java,v $
+ * Revision 1.4  2007/10/05 17:07:05  willuhn
+ * @N Jetzt aber - Migration fertig ;) ..temporaer aber noch in McKoiToH2MigrationListener deaktiviert
+ *
  * Revision 1.3  2007/10/05 16:16:58  willuhn
  * @C temporaer noch deaktiviert, bis hinreichend getestet
  *

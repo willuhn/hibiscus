@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/migration/Attic/McKoiToH2MigrationTask.java,v $
- * $Revision: 1.4 $
- * $Date: 2007/10/05 16:16:58 $
+ * $Revision: 1.5 $
+ * $Date: 2007/10/05 17:07:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,8 @@ import java.rmi.RemoteException;
 import java.util.Date;
 
 import de.willuhn.datasource.db.AbstractDBObject;
+import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.jameica.gui.internal.action.FileClose;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
@@ -24,6 +26,7 @@ import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.DBSupportH2Impl;
 import de.willuhn.jameica.hbci.server.HBCIDBServiceImpl;
+import de.willuhn.jameica.hbci.server.ProtokollImpl;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -117,7 +120,33 @@ public class McKoiToH2MigrationTask extends DatabaseMigrationTask
         u.setKommentar(rest + System.getProperty("line.separator","\n") + comment);
       }
     }
+    
     super.fixObject(object,monitor);
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.migration.DatabaseMigrationTask#copy(java.lang.Class, de.willuhn.util.ProgressMonitor)
+   */
+  protected void copy(Class type, ProgressMonitor monitor) throws Exception
+  {
+    // Ist noetig, weil beim Anlegen der Konten automatisch Protokoll-Eintraege
+    // angelegt werden, die muessen vor dem Kopieren wieder raus.
+    if (type.equals(ProtokollImpl.class))
+    {
+      long count = 0;
+      Logger.info("cleanup protokoll table");
+      DBIterator existing = target.createList(type);
+      while (existing.hasNext())
+      {
+        DBObject ex = (DBObject) existing.next();
+        ex.transactionBegin();
+        ex.delete();
+        ex.transactionCommit();
+        count++;
+      }
+      Logger.info("deleted records: " + count);
+    }
+    super.copy(type, monitor);
   }
 
   /**
@@ -148,6 +177,9 @@ public class McKoiToH2MigrationTask extends DatabaseMigrationTask
 
 /**********************************************************************
  * $Log: McKoiToH2MigrationTask.java,v $
+ * Revision 1.5  2007/10/05 17:07:05  willuhn
+ * @N Jetzt aber - Migration fertig ;) ..temporaer aber noch in McKoiToH2MigrationListener deaktiviert
+ *
  * Revision 1.4  2007/10/05 16:16:58  willuhn
  * @C temporaer noch deaktiviert, bis hinreichend getestet
  *

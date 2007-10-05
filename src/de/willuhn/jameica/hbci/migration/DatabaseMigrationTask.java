@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/migration/Attic/DatabaseMigrationTask.java,v $
- * $Revision: 1.5 $
- * $Date: 2007/10/05 16:16:58 $
+ * $Revision: 1.6 $
+ * $Date: 2007/10/05 17:07:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -51,8 +51,8 @@ public class DatabaseMigrationTask implements BackgroundTask
   static de.willuhn.jameica.system.Settings SETTINGS = new de.willuhn.jameica.system.Settings(DatabaseMigrationTask.class);
 
   private boolean cancel = false;
-  private DBService source = null;
-  private DBService target = null;
+  protected DBService source = null;
+  protected DBService target = null;
 
   /**
    * Legt die Datenquelle fest.
@@ -96,6 +96,8 @@ public class DatabaseMigrationTask implements BackgroundTask
     try
     {
       monitor.log(i18n.tr("Starte Datenmigration"));
+      Logger.info("################################################");
+      Logger.info("starting data migration");
       copy(TurnusImpl.class,monitor);
       copy(UmsatzTypImpl.class,monitor);
 
@@ -156,35 +158,18 @@ public class DatabaseMigrationTask implements BackgroundTask
    * @param monitor Monitor.
    * @throws Exception
    */
-  private void copy(Class type, ProgressMonitor monitor) throws Exception
+  protected void copy(Class type, ProgressMonitor monitor) throws Exception
   {
     monitor.setStatusText(i18n.tr("Kopiere " + type.getName()));
+    Logger.info("  copying " + type.getName());
 
-  long count = 0;
-  
-//    monitor.log(i18n.tr("  Zieltabelle leeren"));
-//    DBIterator existing = target.createList(type);
-//    while (existing.hasNext())
-//    {
-//      DBObject ex = (DBObject) existing.next();
-//      ex.transactionBegin();
-//      ex.delete();
-//      ex.transactionCommit();
-//      count++;
-//    }
-//    monitor.log(i18n.tr("  Gelöschte Datensätze: {0}",""+count));
-//
-
-  DBIterator i = source.createList(type);
-    
+    long count          = 0;
+    DBIterator i        = source.createList(type);
     AbstractDBObject to = null;
-
-    count = 0;
 
     while (!cancel && i.hasNext())
     {
       DBObject from = (DBObject) i.next();
-
       to            = (AbstractDBObject) target.createObject(type,null);
 
       String id = null;
@@ -196,6 +181,7 @@ public class DatabaseMigrationTask implements BackgroundTask
         if (++count % 100 == 0)
         {
           monitor.log(i18n.tr("  Kopierte Datensätze: {0}",""+count));
+          Logger.info("  copied records: " + count);
           monitor.addPercentComplete(1);
         }
         to.setID(id);
@@ -205,7 +191,7 @@ public class DatabaseMigrationTask implements BackgroundTask
       }
       catch (Exception e)
       {
-        Logger.error("unable to copy record " + type.getName() + ":" + id,e);
+        Logger.error("unable to copy record " + type.getName() + ":" + id + ": " + BeanUtil.toString(from),e);
         if (to == null)
         {
           monitor.log(i18n.tr("Fehler beim Kopieren des Datensatzes, überspringe"));
@@ -231,6 +217,9 @@ public class DatabaseMigrationTask implements BackgroundTask
 
 /*********************************************************************
  * $Log: DatabaseMigrationTask.java,v $
+ * Revision 1.6  2007/10/05 17:07:05  willuhn
+ * @N Jetzt aber - Migration fertig ;) ..temporaer aber noch in McKoiToH2MigrationListener deaktiviert
+ *
  * Revision 1.5  2007/10/05 16:16:58  willuhn
  * @C temporaer noch deaktiviert, bis hinreichend getestet
  *
