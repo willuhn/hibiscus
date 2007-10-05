@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/migration/Attic/DatabaseMigrationTask.java,v $
- * $Revision: 1.3 $
- * $Date: 2007/10/05 15:27:14 $
+ * $Revision: 1.4 $
+ * $Date: 2007/10/05 15:55:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,6 +12,8 @@
  **********************************************************************/
 
 package de.willuhn.jameica.hbci.migration;
+
+import java.rmi.RemoteException;
 
 import de.willuhn.datasource.BeanUtil;
 import de.willuhn.datasource.db.AbstractDBObject;
@@ -139,6 +141,16 @@ public class DatabaseMigrationTask implements BackgroundTask
   }
   
   /**
+   * Kann von der abgeleiteten Klasse ueberschrieben werden, um Daten zu korrigieren.
+   * @param object das ggf noch zu korrigierende Objekt.
+   * @param monitor Monitor.
+   * @throws RemoteException
+   */
+  protected void fixObject(AbstractDBObject object, ProgressMonitor monitor) throws RemoteException
+  {
+  }
+  
+  /**
    * Kopiert eine einzelne Tabelle.
    * @param type Objekttyp.
    * @param monitor Monitor.
@@ -187,6 +199,7 @@ public class DatabaseMigrationTask implements BackgroundTask
           monitor.addPercentComplete(1);
         }
         to.setID(id);
+        fixObject(to,monitor);
         to.insert();
         to.transactionCommit();
       }
@@ -218,6 +231,9 @@ public class DatabaseMigrationTask implements BackgroundTask
 
 /*********************************************************************
  * $Log: DatabaseMigrationTask.java,v $
+ * Revision 1.4  2007/10/05 15:55:26  willuhn
+ * @B Korrigieren ueberlanger Verwendungszwecke
+ *
  * Revision 1.3  2007/10/05 15:27:14  willuhn
  * @N Migration auf H2 laeuft! ;)
  *
