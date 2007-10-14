@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SparQuote.java,v $
- * $Revision: 1.10 $
- * $Date: 2007/08/07 23:54:15 $
+ * $Revision: 1.11 $
+ * $Date: 2007/10/14 22:51:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -234,7 +234,7 @@ public class SparQuote implements Part
         continue;
       }
 
-      if (currentLimit == null || valuta.after(currentLimit))
+      if (currentLimit == null || valuta.after(currentLimit) || valuta.equals(currentLimit))
       {
         // Wir haben das Limit erreicht. Also beginnen wir einen neuen Block
         currentEntry = new UmsatzEntry();
@@ -246,7 +246,7 @@ public class SparQuote implements Part
         cal.setTime(valuta);
         cal.add(Calendar.MONTH,1);
         cal.set(Calendar.DAY_OF_MONTH,stichtag);
-        currentLimit = cal.getTime();
+        currentLimit = HBCIProperties.startOfDay(cal.getTime());
       }
       
       double betrag = u.getBetrag();
@@ -479,6 +479,9 @@ public class SparQuote implements Part
 
 /*********************************************************************
  * $Log: SparQuote.java,v $
+ * Revision 1.11  2007/10/14 22:51:32  willuhn
+ * @B Der 1. floss in den Vormonat
+ *
  * Revision 1.10  2007/08/07 23:54:15  willuhn
  * @B Bug 394 - Erster Versuch. An einigen Stellen (z.Bsp. konto.getAnfangsSaldo) war ich mir noch nicht sicher. Heiner?
  *
