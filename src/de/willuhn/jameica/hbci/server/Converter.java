@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.40 $
- * $Date: 2007/04/23 18:07:15 $
+ * $Revision: 1.41 $
+ * $Date: 2007/10/14 23:26:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -410,6 +410,7 @@ public class Converter {
       tr.otherAccount = other;
 			tr.value = new Value(String.valueOf(b.getBetrag()));
 			tr.addUsage(b.getZweck());
+      tr.key = b.getTextSchluessel();
 			String z2 = b.getZweck2();
 			if (z2 != null && z2.length() > 0)
 				tr.addUsage(z2);
@@ -423,6 +424,9 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.41  2007/10/14 23:26:59  willuhn
+ * @N Textschluessel in Sammelauftraegen - wird noch nicht persistiert
+ *
  * Revision 1.40  2007/04/23 18:07:15  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt

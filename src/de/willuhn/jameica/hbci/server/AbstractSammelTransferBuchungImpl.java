@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractSammelTransferBuchungImpl.java,v $
- * $Revision: 1.10 $
- * $Date: 2007/04/23 18:07:15 $
+ * $Revision: 1.11 $
+ * $Date: 2007/10/14 23:26:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -29,6 +29,9 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
 {
 
   private transient I18N i18n = null;
+  
+  // TODO: Textschluessel muss noch in der Datenbank hinzugefuegt werden
+  private String schluessel   = null;
 
   /**
    * @throws java.rmi.RemoteException
@@ -226,12 +229,32 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
     b.setSammelTransfer(getSammelTransfer());
     b.setZweck(getZweck());
     b.setZweck2(getZweck2());
+    b.setTextSchluessel(getTextSchluessel());
     return (Duplicatable) b;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#getTextSchluessel()
+   */
+  public String getTextSchluessel() throws RemoteException
+  {
+    return this.schluessel;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#setTextSchluessel(java.lang.String)
+   */
+  public void setTextSchluessel(String schluessel) throws RemoteException
+  {
+    this.schluessel = schluessel;
   }
 }
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferBuchungImpl.java,v $
+ * Revision 1.11  2007/10/14 23:26:59  willuhn
+ * @N Textschluessel in Sammelauftraegen - wird noch nicht persistiert
+ *
  * Revision 1.10  2007/04/23 18:07:15  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
