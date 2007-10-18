@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragListJob.java,v $
- * $Revision: 1.31 $
- * $Date: 2006/06/26 13:25:20 $
+ * $Revision: 1.32 $
+ * $Date: 2007/10/18 10:24:49 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,6 @@ import java.rmi.RemoteException;
 import org.kapott.hbci.GV_Result.GVRDauerList;
 
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
@@ -124,7 +123,10 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
       try
       {
         auftrag = Converter.HBCIDauer2HibiscusDauerauftrag(lines[i]);
-        checkKonto(auftrag);
+        
+        // Die Auftraege sind ueber das angegebene Konto abgerufen worden. Also
+        // weisen wir dieses auch hart zu
+        auftrag.setKonto(this.konto);
 
         // BUGZILLA 22 http://www.willuhn.de/bugzilla/show_bug.cgi?id=22
         // BEGIN
@@ -183,7 +185,9 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
       for (int i=0;i<lines.length;++i)
       {
         auftrag = Converter.HBCIDauer2HibiscusDauerauftrag(lines[i]);
-        checkKonto(auftrag);
+        // Die Auftraege sind ueber das angegebene Konto abgerufen worden. Also
+        // weisen wir dieses auch hart zu
+        auftrag.setKonto(this.konto);
         if (auftrag.getOrderID() != null && 
             auftrag.getOrderID().equals(ex.getOrderID()) &&
             auftrag.getKonto().equals(ex.getKonto())
@@ -203,50 +207,15 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
     konto.addToProtokoll(i18n.tr("Daueraufträge abgerufen"),Protokoll.TYP_SUCCESS);
     Logger.info("dauerauftrag list fetched successfully");
   }
-  
-  /**
-   * Prueft, ob der Dauerauftrag ein Konto hat und weist ggf. eines zu
-   * @param auftrag
-   * @throws RemoteException
-   */
-  private void checkKonto(Dauerauftrag auftrag) throws RemoteException
-  {
-    Logger.info("checking dauerauftrag order id: " + auftrag.getOrderID());
-
-    // BUGZILLA 87 http://www.willuhn.de/bugzilla/show_bug.cgi?id=87
-    Konto k = null;
-    try
-    {
-      try
-      {
-        k = auftrag.getKonto();
-        if (k != null && k.isNewObject())
-        {
-          Logger.info("current account is a new one, saving");
-          k.store();
-          auftrag.setKonto(k);
-        }
-      }
-      catch (ObjectNotFoundException one)
-      {
-        Logger.info("account not found, using current account");
-      }
-    }
-    catch (Exception e)
-    {
-      Logger.error("unable to save account",e);
-    }
-    if (k == null || k.isNewObject())
-    {
-      Logger.warn("assigning current account");
-      auftrag.setKonto(konto);
-    }
-  }
 }
 
 
 /**********************************************************************
  * $Log: HBCIDauerauftragListJob.java,v $
+ * Revision 1.32  2007/10/18 10:24:49  willuhn
+ * @B Foreign-Objects in AbstractDBObject auch dann korrekt behandeln, wenn sie noch nicht gespeichert wurden
+ * @C Beim Abrufen der Dauerauftraege nicht mehr nach Konten suchen sondern hart dem Konto zuweisen, ueber das sie abgerufen wurden
+ *
  * Revision 1.31  2006/06/26 13:25:20  willuhn
  * @N Franks eBay-Parser
  *

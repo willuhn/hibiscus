@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DauerauftragImpl.java,v $
- * $Revision: 1.24 $
- * $Date: 2007/04/23 18:07:15 $
+ * $Revision: 1.25 $
+ * $Date: 2007/10/18 10:24:49 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -157,14 +157,6 @@ public class DauerauftragImpl extends AbstractHibiscusTransferImpl
   }
 
   /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
-   */
-  protected Class getForeignObject(String field) throws RemoteException
-  {
-    return super.getForeignObject(field);
-  }
-
-  /**
    * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
    */
   protected void insertCheck() throws ApplicationException
@@ -205,14 +197,6 @@ public class DauerauftragImpl extends AbstractHibiscusTransferImpl
 			throw new ApplicationException(i18n.tr("Fehler bei der Prüfung des Dauerauftrags"));
 		}
     super.insertCheck();
-  }
-
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
-   */
-  protected void updateCheck() throws ApplicationException
-  {
-    super.updateCheck();
   }
 
   /**
@@ -353,6 +337,10 @@ public class DauerauftragImpl extends AbstractHibiscusTransferImpl
 
 /**********************************************************************
  * $Log: DauerauftragImpl.java,v $
+ * Revision 1.25  2007/10/18 10:24:49  willuhn
+ * @B Foreign-Objects in AbstractDBObject auch dann korrekt behandeln, wenn sie noch nicht gespeichert wurden
+ * @C Beim Abrufen der Dauerauftraege nicht mehr nach Konten suchen sondern hart dem Konto zuweisen, ueber das sie abgerufen wurden
+ *
  * Revision 1.24  2007/04/23 18:07:15  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
