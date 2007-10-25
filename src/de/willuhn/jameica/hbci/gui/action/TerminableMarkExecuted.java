@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/TerminableMarkExecuted.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/04/23 18:07:14 $
+ * $Revision: 1.3 $
+ * $Date: 2007/10/25 15:47:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.gui.action;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.Terminable;
@@ -68,9 +69,8 @@ public class TerminableMarkExecuted implements Action
           HibiscusTransfer tr = (HibiscusTransfer) t[i];
           Konto k = tr.getKonto();
           if (k != null)
-          {
             k.addToProtokoll(i18n.tr("Auftrag \"{0}\" [Gegenkonto {1}, BLZ {2}] manuell als \"ausgeführt\" markiert",new String[]{tr.getZweck(),tr.getGegenkontoName(),tr.getGegenkontoBLZ()}),Protokoll.TYP_SUCCESS);
-          }
+          Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(tr));
         }
       }
       if (t.length == 1)
@@ -99,6 +99,9 @@ public class TerminableMarkExecuted implements Action
 
 /**********************************************************************
  * $Log: TerminableMarkExecuted.java,v $
+ * Revision 1.3  2007/10/25 15:47:21  willuhn
+ * @N Einzelauftraege zu Sammel-Auftraegen zusammenfassen (BUGZILLA 402)
+ *
  * Revision 1.2  2007/04/23 18:07:14  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt

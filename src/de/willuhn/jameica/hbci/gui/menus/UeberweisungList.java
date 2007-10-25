@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UeberweisungList.java,v $
- * $Revision: 1.14 $
- * $Date: 2006/10/16 14:46:30 $
+ * $Revision: 1.15 $
+ * $Date: 2007/10/25 15:47:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,7 +15,6 @@ package de.willuhn.jameica.hbci.gui.menus;
 import java.rmi.RemoteException;
 
 import de.willuhn.jameica.gui.Action;
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
@@ -26,8 +25,8 @@ import de.willuhn.jameica.hbci.gui.action.UeberweisungDuplicate;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungExecute;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungExport;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungImport;
+import de.willuhn.jameica.hbci.gui.action.UeberweisungMerge;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungNew;
-import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
@@ -51,41 +50,11 @@ public class UeberweisungList extends ContextMenu
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 		addItem(new SingleItem(i18n.tr("Öffnen"), new UeberweisungNew()));
-		addItem(new NotActiveMenuItem(i18n.tr("Jetzt ausführen..."), new UeberweisungExecute()));
+		addItem(new NotActiveSingleMenuItem(i18n.tr("Jetzt ausführen..."), new UeberweisungExecute()));
 		addItem(new SingleItem(i18n.tr("Duplizieren"), new UeberweisungDuplicate()));
 		addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete()));
-    addItem(new SingleItem(i18n.tr("Als \"ausgeführt\" markieren..."), new Action() {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        new TerminableMarkExecuted().handleAction(context);
-        GUI.startView(GUI.getCurrentView().getClass(),GUI.getCurrentView().getCurrentObject());
-      }
-    }){
-      public boolean isEnabledFor(Object o)
-      {
-        if (o == null || (!(o instanceof Terminable) && !(o instanceof Terminable[])))
-          return false;
-        try
-        {
-          if (o instanceof Terminable)
-            return !((Terminable)o).ausgefuehrt();
-
-          Terminable[] t = (Terminable[]) o;
-          for (int i=0;i<t.length;++i)
-          {
-            if (t[i].ausgefuehrt())
-              return false;
-          }
-          return true;
-        }
-        catch (RemoteException e)
-        {
-          Logger.error("unable to check if terminable is allready executed",e);
-          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Prüfen, ob Auftrag bereits ausgeführt wurde"),StatusBarMessage.TYPE_ERROR));
-          return false;
-        }
-      }
-    });
+    addItem(new NotActiveMultiMenuItem(i18n.tr("Als \"ausgeführt\" markieren..."), new TerminableMarkExecuted()));
+    addItem(new NotActiveMultiMenuItem(i18n.tr("Zu Sammel-Überweisung zusammenfassen..."), new UeberweisungMerge()));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new ContextMenuItem(i18n.tr("Neue Überweisung..."), new UNeu()));
     addItem(ContextMenuItem.SEPARATOR);
@@ -137,7 +106,7 @@ public class UeberweisungList extends ContextMenu
 	 * Ueberschreiben wir, damit das Item nur dann aktiv ist, wenn die
 	 * Ueberweisung noch nicht ausgefuehrt wurde.
    */
-  private class NotActiveMenuItem extends ContextMenuItem
+  private class NotActiveSingleMenuItem extends CheckedContextMenuItem
 	{
 		
     /**
@@ -145,7 +114,7 @@ public class UeberweisungList extends ContextMenu
      * @param text anzuzeigender Text.
      * @param a auszufuehrende Action.
      */
-    public NotActiveMenuItem(String text, Action a)
+    public NotActiveSingleMenuItem(String text, Action a)
     {
       super(text, a);
     }
@@ -155,27 +124,79 @@ public class UeberweisungList extends ContextMenu
      */
     public boolean isEnabledFor(Object o)
     {
-    	if (o == null)
-    		return false;
-    	try
+      if (o == null || !(o instanceof Ueberweisung))
+        return false;
+
+      try
     	{
         if (o instanceof Ueberweisung[])
           return false;
-    		Ueberweisung u = (Ueberweisung) o;
-    		return !u.ausgefuehrt();
+        Ueberweisung u = (Ueberweisung) o;
+        return !u.ausgefuehrt();
     	}
     	catch (Exception e)
     	{
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Prüfen, ob Auftrag bereits ausgeführt wurde"),StatusBarMessage.TYPE_ERROR));
     		Logger.error("error while enable check in menu item",e);
     	}
     	return false;
     }
 	}
+
+  /**
+   * Liefert nur dann true, wenn alle uebergebenen Ueberweisungen noch nicht
+   * ausgefuehrt wurden.
+   */
+  private class NotActiveMultiMenuItem extends CheckedContextMenuItem
+  {
+    
+    /**
+     * ct.
+     * @param text anzuzeigender Text.
+     * @param a auszufuehrende Action.
+     */
+    public NotActiveMultiMenuItem(String text, Action a)
+    {
+      super(text, a);
+    }
+
+    /**
+     * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
+     */
+    public boolean isEnabledFor(Object o)
+    {
+      if (o == null || (!(o instanceof Ueberweisung) && !(o instanceof Ueberweisung[])))
+        return false;
+      try
+      {
+        if (o instanceof Ueberweisung)
+          return !((Ueberweisung)o).ausgefuehrt();
+
+        Ueberweisung[] t = (Ueberweisung[]) o;
+        for (int i=0;i<t.length;++i)
+        {
+          if (t[i].ausgefuehrt())
+            return false;
+        }
+        return true;
+      }
+      catch (RemoteException e)
+      {
+        Logger.error("unable to check if terminable is allready executed",e);
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Prüfen, ob Auftrag bereits ausgeführt wurde"),StatusBarMessage.TYPE_ERROR));
+      }
+      return false;
+    }
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: UeberweisungList.java,v $
+ * Revision 1.15  2007/10/25 15:47:21  willuhn
+ * @N Einzelauftraege zu Sammel-Auftraegen zusammenfassen (BUGZILLA 402)
+ *
  * Revision 1.14  2006/10/16 14:46:30  willuhn
  * @N CSV-Export von Ueberweisungen und Lastschriften
  *
