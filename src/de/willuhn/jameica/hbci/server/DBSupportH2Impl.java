@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DBSupportH2Impl.java,v $
- * $Revision: 1.5 $
- * $Date: 2007/10/02 16:08:55 $
+ * $Revision: 1.6 $
+ * $Date: 2007/10/27 13:31:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,16 +25,12 @@ import java.util.HashMap;
 import java.util.Locale;
 
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.plugin.PluginResources;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
-import de.willuhn.sql.CheckSum;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.Base64;
-import de.willuhn.util.I18N;
-import de.willuhn.util.ProgressMonitor;
 
 /**
  * Implementierung des Datenbank-Supports fuer H2-Database (http://www.h2database.com).
@@ -186,30 +182,34 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
       }
     }
     ////////////////////////////////////////////////////////////////////////////
-    
-    if (!Settings.getCheckDatabase())
-      return;
-
-    I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
-    try
-    {
-      ProgressMonitor monitor = Application.getCallback().getStartupMonitor();
-      monitor.setStatusText(i18n.tr("Prüfe Datenbank-Integrität"));
-
-      String checkSum = CheckSum.md5(conn,null,null);
-      if (DBMAPPING.get(checkSum) == null)
-        throw new ApplicationException(i18n.tr("Datenbank-Checksumme ungültig: {0}. Datenbank-Version nicht kompatibel zur Hibiscus-Version?",checkSum));
-      monitor.setStatusText(i18n.tr("Datenbank-Checksumme korrekt"));
-    }
-    catch (ApplicationException ae)
-    {
-      throw ae;
-    }
-    catch (Exception e)
-    {
-      throw new RemoteException(i18n.tr("Fehler beim Prüfen der Datenbank"),e);
-    }
+  
+// TODO: Checksummen-Pruefung uebergangsweise deaktiviert, da andere H2-Versionen
+//       (konkret die in der RPM-Version) die Tabellen- und Spaltenbezeichnungen
+//       wohl in einer anderen Reihenfolge liefern und damit eine andere Checksumme
+//       erzeugt wird als die erwartete.
+//    if (!Settings.getCheckDatabase())
+//      return;
+//
+//    I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+//
+//    try
+//    {
+//      ProgressMonitor monitor = Application.getCallback().getStartupMonitor();
+//      monitor.setStatusText(i18n.tr("Prüfe Datenbank-Integrität"));
+//
+//      String checkSum = CheckSum.md5(conn,null,null);
+//      if (DBMAPPING.get(checkSum) == null)
+//        throw new ApplicationException(i18n.tr("Datenbank-Checksumme ungültig: {0}. Datenbank-Version nicht kompatibel zur Hibiscus-Version?",checkSum));
+//      monitor.setStatusText(i18n.tr("Datenbank-Checksumme korrekt"));
+//    }
+//    catch (ApplicationException ae)
+//    {
+//      throw ae;
+//    }
+//    catch (Exception e)
+//    {
+//      throw new RemoteException(i18n.tr("Fehler beim Prüfen der Datenbank"),e);
+//    }
   }
 
   /**
@@ -264,6 +264,9 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
 
 /*********************************************************************
  * $Log: DBSupportH2Impl.java,v $
+ * Revision 1.6  2007/10/27 13:31:41  willuhn
+ * @C Checksummen-Pruefung temporaer deaktiviert
+ *
  * Revision 1.5  2007/10/02 16:08:55  willuhn
  * @C Bugfix mit dem falschen Spaltentyp nochmal ueberarbeitet
  *
