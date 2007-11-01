@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractSammelTransferBuchungControl.java,v $
- * $Revision: 1.7 $
- * $Date: 2007/04/23 18:07:15 $
+ * $Revision: 1.8 $
+ * $Date: 2007/11/01 22:04:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@ import java.rmi.RemoteException;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
@@ -221,6 +222,32 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 				getGegenkontoName().setValue(gegenKonto.getName());
 				// Wenn die Adresse aus dem Adressbuch kommt, deaktivieren wir die Checkbox
 				getStoreAddress().setValue(Boolean.FALSE);
+        
+        // BUGZILLA 408
+        // Verwendungszweck automatisch vervollstaendigen
+        try
+        {
+          String zweck = (String) getZweck().getValue();
+          String zweck2 = (String) getZweck2().getValue();
+          if ((zweck != null && zweck.length() > 0) || (zweck2 != null && zweck2.length() > 0))
+            return;
+          
+          DBIterator list = getBuchung().getList();
+          list.addFilter("gegenkonto_nr = ?",new Object[]{gegenKonto.getKontonummer()});
+          list.addFilter("gegenkonto_blz = ?",  new Object[]{gegenKonto.getBLZ()});
+          list.setOrder("order by id desc");
+          if (list.hasNext())
+          {
+            SammelTransferBuchung t = (SammelTransferBuchung) list.next();
+            getZweck().setValue(t.getZweck());
+            getZweck2().setValue(t.getZweck2());
+          }
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to autocomplete subject",e);
+        }
+
 			}
 			catch (RemoteException er)
 			{
@@ -234,6 +261,9 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferBuchungControl.java,v $
+ * Revision 1.8  2007/11/01 22:04:24  willuhn
+ * @N Bugzilla 408
+ *
  * Revision 1.7  2007/04/23 18:07:15  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
