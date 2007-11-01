@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTypTree.java,v $
- * $Revision: 1.5 $
- * $Date: 2007/08/28 09:47:09 $
+ * $Revision: 1.6 $
+ * $Date: 2007/11/01 21:07:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -56,6 +56,7 @@ public class UmsatzTypTree extends TreePart
   {
     super(init(list), new UmsatzDetail());
     this.setRememberColWidths(true);
+    this.setRememberOrder(true);
     this.setContextMenu(new UmsatzList());
     this.setFormatter(new TreeFormatter() {
     
@@ -135,6 +136,9 @@ public class UmsatzTypTree extends TreePart
 
 /*******************************************************************************
  * $Log: UmsatzTypTree.java,v $
+ * Revision 1.6  2007/11/01 21:07:27  willuhn
+ * @N Spalten von Tabellen und mehrspaltigen Trees koennen mit mit Drag&Drop umsortiert werden. Die Sortier-Reihenfolge wird automatisch gespeichert und wiederhergestellt
+ *
  * Revision 1.5  2007/08/28 09:47:09  willuhn
  * @N Bug 395
  *
