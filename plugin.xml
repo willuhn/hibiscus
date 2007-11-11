@@ -8,13 +8,19 @@
   <license>GPL - http://www.gnu.org/copyleft/gpl.html</license>
 
   <menu>
-    <item id="hibiscus.menu"                        name="Hibiscus">
-			<item                                         name="Handbuch"                shortcut="ALT+H" action="de.willuhn.jameica.hbci.gui.action.HandbuchAction"/>
-      <item id="hibiscus.menu.settings"             name="Einstellungen"                            action="de.willuhn.jameica.hbci.gui.action.Settings" />
+    <item id="hibiscus.menu"                         name="Hibiscus">
+      <item id="hibiscus.menu.transfer"              name="Zahlungsverkehr">
+        <item id="hibiscus.menu.transfer.ueb"        name="Neue Überweisung..."       shortcut="ALT+U"    action="de.willuhn.jameica.hbci.gui.action.UeberweisungNew" />
+        <item id="hibiscus.menu.transfer.last"       name="Neue Lastschrift..."       shortcut="ALT+L"    action="de.willuhn.jameica.hbci.gui.action.LastschriftNew" />
+        <item id="hibiscus.menu.transfer.sammelueb"  name="Neue Sammelüberweisung..." shortcut="ALT+S"    action="de.willuhn.jameica.hbci.gui.action.SammelUeberweisungNew" />
+        <item id="hibiscus.menu.transfer.sammellast" name="Neue Sammellastschrift..." shortcut="ALT+F"    action="de.willuhn.jameica.hbci.gui.action.SammelLastschriftNew" />
+      </item>
+      <item id="hibiscus.menu.settings"              name="Einstellungen"                            action="de.willuhn.jameica.hbci.gui.action.Settings" />
       <item name="-" />
-      <item id="hibiscus.menu.about"                name="About"                                    action="de.willuhn.jameica.hbci.gui.action.About" />
-      <item id="hibiscus.menu.license"              name="Lizenzinformationen"                      action="de.willuhn.jameica.hbci.gui.action.License" />
-      <item id="hibiscus.menu.donate"               name="Spenden"                                  action="de.willuhn.jameica.hbci.gui.action.Donate" />
+      <item id="hibiscus.menu.handbuch"              name="Handbuch"                                 action="de.willuhn.jameica.hbci.gui.action.HandbuchAction"/>
+      <item id="hibiscus.menu.license"               name="Lizenzinformationen"                      action="de.willuhn.jameica.hbci.gui.action.License" />
+      <item id="hibiscus.menu.donate"                name="Spenden"                                  action="de.willuhn.jameica.hbci.gui.action.Donate" />
+      <item id="hibiscus.menu.about"                 name="About"                                    action="de.willuhn.jameica.hbci.gui.action.About" />
     </item>
   </menu>
   
@@ -30,9 +36,9 @@
       <item id="hibiscus.navi.addresses"                    name="Adressbuch"           icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.EmpfaengerList" />
       <item id="hibiscus.navi.messages"                     name="System-Nachrichten"   icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.NachrichtList" />
       <item id="hibiscus.navi.transfer"                     name="Zahlungsverkehr"      icon-close="folder.gif" icon-open="folderopen.gif">
-        <item id="hibiscus.navi.transfer.ueb"               name="Einzelüberweisungen"  icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.UeberweisungList" />
+        <item id="hibiscus.navi.transfer.ueb"               name="Überweisungen"        icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.UeberweisungList" />
+        <item id="hibiscus.navi.transfer.einzellast"        name="Lastschriften"        icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.LastschriftList" />
         <item id="hibiscus.navi.transfer.sammelueb"         name="Sammelüberweisungen"  icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.SammelUeberweisungList" />
-        <item id="hibiscus.navi.transfer.einzellast"        name="Einzellastschriften"  icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.LastschriftList" />
         <item id="hibiscus.navi.transfer.sammellast"        name="Sammellastschriften"  icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.SammelLastschriftList" />
         <item id="hibiscus.navi.transfer.dauer"             name="Daueraufträge"        icon-close="page.gif"   icon-open="page.gif"        action="de.willuhn.jameica.hbci.gui.action.DauerauftragList" />
       </item>
