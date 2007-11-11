@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUeberweisungJob.java,v $
- * $Revision: 1.33 $
- * $Date: 2007/04/23 18:07:14 $
+ * $Revision: 1.34 $
+ * $Date: 2007/11/11 19:44:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,6 +21,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.PassportRegistry;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -169,6 +170,7 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
 		// Wir markieren die Ueberweisung als "ausgefuehrt"
     Logger.info("mark ueberweisung as \"ausgefuehrt\"");
 		ueberweisung.setAusgefuehrt();
+    Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(ueberweisung)); // BUGZILLA 501
     konto.addToProtokoll(i18n.tr("Überweisung ausgeführt an: ") + " " + empfName,Protokoll.TYP_SUCCESS);
 		Logger.info("ueberweisung submitted successfully");
   }
@@ -177,6 +179,9 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIUeberweisungJob.java,v $
+ * Revision 1.34  2007/11/11 19:44:28  willuhn
+ * @N Bug 501
+ *
  * Revision 1.33  2007/04/23 18:07:14  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
