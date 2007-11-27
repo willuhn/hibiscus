@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCIProperties.java,v $
- * $Revision: 1.26 $
- * $Date: 2007/09/11 15:10:35 $
+ * $Revision: 1.27 $
+ * $Date: 2007/11/27 17:15:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -169,7 +169,8 @@ public class HBCIProperties
       try
       {
         Logger.warn("HBCI4Java subsystem seems to be not initialized for this thread group, adding thread group");
-        HBCIUtils.initThread(null,null,((HBCI)Application.getPluginLoader().getPlugin(HBCI.class)).getHBCICallback());
+        HBCI plugin = (HBCI) Application.getPluginLoader().getPlugin(HBCI.class);
+        HBCIUtils.initThread(plugin.getResources().getClassLoader(),null,plugin.getHBCICallback());
         return HBCIUtils.checkAccountCRC(blz, kontonummer);
       }
       catch (Exception e2)
@@ -222,6 +223,9 @@ public class HBCIProperties
 
 /**********************************************************************
  * $Log: HBCIProperties.java,v $
+ * Revision 1.27  2007/11/27 17:15:57  willuhn
+ * @C HBCI4Java mit Classloader des Plugins initialisieren
+ *
  * Revision 1.26  2007/09/11 15:10:35  willuhn
  * @N Default-Wert fuer maximale PIN-Laenge auf 10 erhoeht
  *
