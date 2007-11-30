@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UeberweisungImpl.java,v $
- * $Revision: 1.37 $
- * $Date: 2007/03/05 09:49:53 $
+ * $Revision: 1.38 $
+ * $Date: 2007/11/30 18:37:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -51,9 +51,10 @@ public class UeberweisungImpl extends AbstractBaseUeberweisungImpl
     u.setKonto(getKonto());
     u.setZweck(getZweck());
     u.setZweck2(getZweck2());
-
+    
     // Als Termin nehmen wir aber das aktuelle Datum
     u.setTermin(new Date());
+    u.setTerminUeberweisung(isTerminUeberweisung());
     return u;
   }
 
@@ -95,6 +96,9 @@ public class UeberweisungImpl extends AbstractBaseUeberweisungImpl
 
 /**********************************************************************
  * $Log: UeberweisungImpl.java,v $
+ * Revision 1.38  2007/11/30 18:37:08  willuhn
+ * @B Bug 509
+ *
  * Revision 1.37  2007/03/05 09:49:53  willuhn
  * @B Bug 370
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/HBCISynchronize.java,v $
- * $Revision: 1.14 $
- * $Date: 2007/05/16 14:49:42 $
+ * $Revision: 1.15 $
+ * $Date: 2007/11/30 18:37:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@
 package de.willuhn.jameica.hbci.gui.action;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.swt.widgets.Event;
@@ -152,11 +153,9 @@ public class HBCISynchronize implements Action
       GUI.getStatusBar().setSuccessText(i18n.tr("Synchronisiere Konto {0}", k.getLongName()));
       Logger.info("synchronizing account: " + k.getLongName());
 
-      Logger.info("creating hbci factory");
-      HBCIFactory factory = HBCIFactory.getInstance();
-
+      // BUGZILLA 509
+      ArrayList jobs = new ArrayList();
       GenericIterator list = SynchronizeEngine.getInstance().getSynchronizeJobs(k);
-      int count = 0;
       while (list.hasNext())
       {
         SynchronizeJob sj = (SynchronizeJob) list.next();
@@ -170,31 +169,48 @@ public class HBCISynchronize implements Action
         if (currentJobs != null)
         {
           for (int i=0;i<currentJobs.length;++i)
-          {
-            factory.addJob(currentJobs[i]);
-          }
+            jobs.add(currentJobs[i]);
         }
-        count++;
       }
 
-      if (count == 0)
+      if (jobs.size() == 0)
       {
         Logger.info("nothing to do for account " + k.getLongName() + " - skipping");
         sync(ProgressMonitor.STATUS_NONE);
       }
       else
       {
+        Logger.info("creating hbci factory");
+        HBCIFactory factory = HBCIFactory.getInstance();
+        for (int i=0;i<jobs.size();++i)
+          factory.addJob((AbstractHBCIJob)jobs.get(i));
+
         factory.executeJobs(k,new Listener() {
           public void handleEvent(Event event)
           {
-            sync(event.type);
+            try
+            {
+              sync(event.type);
+            }
+            catch (Exception e)
+            {
+              
+            }
           }
         });
       }
     }
     catch (Exception e)
     {
-      Logger.error("unable to sync konto",e);
+      if (e instanceof ApplicationException)
+      {
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(e.getMessage(),StatusBarMessage.TYPE_ERROR));
+      }
+      else
+      {
+        Logger.error("unable to sync konto",e);
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Ausführen der HBCI-Synchronisierung"),StatusBarMessage.TYPE_ERROR));
+      }
     }
   }
 }
@@ -202,6 +218,9 @@ public class HBCISynchronize implements Action
 
 /*********************************************************************
  * $Log: HBCISynchronize.java,v $
+ * Revision 1.15  2007/11/30 18:37:08  willuhn
+ * @B Bug 509
+ *
  * Revision 1.14  2007/05/16 14:49:42  willuhn
  * *** empty log message ***
  *
