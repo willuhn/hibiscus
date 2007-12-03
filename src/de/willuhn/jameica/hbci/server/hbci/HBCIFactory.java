@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.52 $
- * $Date: 2007/05/20 23:45:10 $
+ * $Revision: 1.53 $
+ * $Date: 2007/12/03 13:17:54 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -33,6 +33,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.BackgroundTask;
 import de.willuhn.jameica.system.OperationCanceledException;
+import de.willuhn.logging.Level;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -84,7 +85,10 @@ public class HBCIFactory {
   public synchronized void addJob(AbstractHBCIJob job) throws ApplicationException
   {
   	if (inProgress)
-  	  throw new ApplicationException(i18n.tr("Es läuft bereits eine andere HBCI-Abfrage."));
+    {
+      Logger.write(Level.DEBUG,"hbci factory in progress - informative stacktrace",new Exception());
+      throw new ApplicationException(i18n.tr("Es läuft bereits eine andere HBCI-Abfrage."));
+    }
   
   	jobs.add(job);
   }
@@ -175,7 +179,8 @@ public class HBCIFactory {
     
     if (h == null)
       throw new ApplicationException(i18n.tr("Kein Sicherheitsmedium ausgewählt"));
-    
+
+    Logger.info("checking job restrictions");
     start();
     
     try {
@@ -189,7 +194,10 @@ public class HBCIFactory {
       try {
         h.close();
       }
-      catch (Throwable t) {/* useless */}
+      catch (Throwable t) {
+        Logger.error("error while closing hbci handler",t);
+      }
+      Logger.info("job restrictions checked");
     }
   }
 
@@ -660,6 +668,9 @@ public class HBCIFactory {
 
 /*******************************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.53  2007/12/03 13:17:54  willuhn
+ * @N Debugging-Infos
+ *
  * Revision 1.52  2007/05/20 23:45:10  willuhn
  * @N HBCI-Jobausfuehrung Servertauglich gemacht
  *
