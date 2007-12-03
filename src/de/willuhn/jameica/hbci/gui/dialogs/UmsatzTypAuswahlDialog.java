@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/UmsatzTypAuswahlDialog.java,v $
- * $Revision: 1.3 $
- * $Date: 2007/03/18 08:13:40 $
- * $Author: jost $
+ * $Revision: 1.4 $
+ * $Date: 2007/12/03 10:00:27 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -78,7 +78,7 @@ public class UmsatzTypAuswahlDialog extends AbstractDialog
     group.addText(i18n.tr("Bitte wählen Sie die zu verwendende Kategorie aus."),true);
 
     DBIterator list = Settings.getDBService().createList(UmsatzTyp.class);
-    list.setOrder("ORDER BY nummer");
+    list.setOrder("ORDER BY nummer,name");
     final UmsatzTypInput input = new UmsatzTypInput(list,this.choosen);
     
     input.setComment(null); // Hier keine Umsatz-Zahlen anzeigen. Das macht den Dialog haesslich
@@ -108,6 +108,9 @@ public class UmsatzTypAuswahlDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: UmsatzTypAuswahlDialog.java,v $
+ * Revision 1.4  2007/12/03 10:00:27  willuhn
+ * @N Umsatz-Kategorien nach Name sortieren, wenn keine Nummer angegeben
+ *
  * Revision 1.3  2007/03/18 08:13:40  jost
  * Sortierte Anzeige der Umsatz-Kategorien.
  *

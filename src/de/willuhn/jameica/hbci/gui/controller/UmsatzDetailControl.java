@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailControl.java,v $
- * $Revision: 1.30 $
- * $Date: 2007/06/15 11:20:32 $
+ * $Revision: 1.31 $
+ * $Date: 2007/12/03 10:00:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -197,7 +197,7 @@ public class UmsatzDetailControl extends AbstractControl {
     if (this.umsatzTyp != null)
       return this.umsatzTyp;
     DBIterator list = Settings.getDBService().createList(UmsatzTyp.class);
-    list.setOrder("ORDER BY nummer");
+    list.setOrder("ORDER BY nummer,name");
     this.umsatzTyp = new UmsatzTypInput(list,getUmsatz());
     return this.umsatzTyp;
   }
@@ -510,6 +510,9 @@ public class UmsatzDetailControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzDetailControl.java,v $
+ * Revision 1.31  2007/12/03 10:00:27  willuhn
+ * @N Umsatz-Kategorien nach Name sortieren, wenn keine Nummer angegeben
+ *
  * Revision 1.30  2007/06/15 11:20:32  willuhn
  * @N Saldo in Kontodetails via Messaging sofort aktualisieren
  * @N Mehr Details in den Namen der Synchronize-Jobs
