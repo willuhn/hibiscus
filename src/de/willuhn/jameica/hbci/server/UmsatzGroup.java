@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzGroup.java,v $
- * $Revision: 1.1 $
- * $Date: 2007/04/18 08:54:21 $
+ * $Revision: 1.2 $
+ * $Date: 2007/12/04 23:59:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -44,6 +44,15 @@ public class UmsatzGroup implements GenericObjectNode, Comparable
   public UmsatzGroup(UmsatzTyp typ)
   {
     this.typ = typ;
+  }
+  
+  /**
+   * Liefert den zugehoerigen Umsatztyp.
+   * @return
+   */
+  public UmsatzTyp getUmsatzTyp()
+  {
+    return this.typ;
   }
   
   /**
@@ -200,6 +209,9 @@ public class UmsatzGroup implements GenericObjectNode, Comparable
 
 /*********************************************************************
  * $Log: UmsatzGroup.java,v $
+ * Revision 1.2  2007/12/04 23:59:00  willuhn
+ * @N Bug 512
+ *
  * Revision 1.1  2007/04/18 08:54:21  willuhn
  * @N UmsatzGroup to fetch items from UmsatzTypTree
  *

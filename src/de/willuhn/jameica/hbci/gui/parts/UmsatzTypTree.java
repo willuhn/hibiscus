@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTypTree.java,v $
- * $Revision: 1.6 $
- * $Date: 2007/11/01 21:07:27 $
+ * $Revision: 1.7 $
+ * $Date: 2007/12/04 23:59:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,28 +23,36 @@ import org.eclipse.swt.widgets.TreeItem;
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.pseudo.PseudoIterator;
+import de.willuhn.jameica.gui.Action;
+import de.willuhn.jameica.gui.extension.Extendable;
+import de.willuhn.jameica.gui.extension.Extension;
+import de.willuhn.jameica.gui.extension.ExtensionRegistry;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.TreeFormatter;
+import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
+import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.gui.parts.TreePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
+import de.willuhn.jameica.hbci.gui.action.UmsatzTypNew;
 import de.willuhn.jameica.hbci.gui.menus.UmsatzList;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.hbci.server.UmsatzGroup;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
  * Liefert einen fertig konfigurierten Tree mit Umsaetzen in deren Kategorien.
  */
-public class UmsatzTypTree extends TreePart
+public class UmsatzTypTree extends TreePart implements Extension
 {
-
+  private static boolean registered = false;
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
@@ -55,6 +63,13 @@ public class UmsatzTypTree extends TreePart
   public UmsatzTypTree(GenericIterator list) throws RemoteException
   {
     super(init(list), new UmsatzDetail());
+    
+    // BUGZILLA 512
+    if (!registered)
+    {
+      ExtensionRegistry.register(this,UmsatzList.class.getName());
+      registered = true;
+    }
     this.setRememberColWidths(true);
     this.setRememberOrder(true);
     this.setContextMenu(new UmsatzList());
@@ -132,10 +147,58 @@ public class UmsatzTypTree extends TreePart
 
     return PseudoIterator.fromArray((GenericObject[])items.toArray(new GenericObject[items.size()]));
   }
+
+  /**
+   * @see de.willuhn.jameica.gui.extension.Extension#extend(de.willuhn.jameica.gui.extension.Extendable)
+   */
+  public void extend(Extendable extendable)
+  {
+    if (extendable == null || !(extendable instanceof UmsatzList))
+      return;
+    UmsatzList l = (UmsatzList) extendable;
+    l.addItem(ContextMenuItem.SEPARATOR);
+    l.addItem(new GroupItem(i18n.tr("Kategorie bearbeiten..."),new UmsatzTypNew()));
+    l.addItem(new ContextMenuItem(i18n.tr("Neue Kategorie anlegen..."),new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        new UmsatzTypNew().handleAction(null);
+      }
+    }));
+  }
+  
+  /**
+   * Menu-Item fuer Umsatzgruppen.
+   */
+  private class GroupItem extends CheckedContextMenuItem
+  {
+    /**
+     * ct.
+     * @param name
+     * @param action
+     */
+    private GroupItem(String name, Action action)
+    {
+      super(name,action);
+    }
+
+    /**
+     * @see de.willuhn.jameica.gui.parts.CheckedContextMenuItem#isEnabledFor(java.lang.Object)
+     */
+    public boolean isEnabledFor(Object o)
+    {
+      if (o != null && (o instanceof UmsatzGroup))
+        return super.isEnabledFor(o);
+      return false;
+    }
+  }
 }
 
 /*******************************************************************************
  * $Log: UmsatzTypTree.java,v $
+ * Revision 1.7  2007/12/04 23:59:00  willuhn
+ * @N Bug 512
+ *
  * Revision 1.6  2007/11/01 21:07:27  willuhn
  * @N Spalten von Tabellen und mehrspaltigen Trees koennen mit mit Drag&Drop umsortiert werden. Die Sortier-Reihenfolge wird automatisch gespeichert und wiederhergestellt
  *

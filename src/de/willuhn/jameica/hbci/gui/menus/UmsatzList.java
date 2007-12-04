@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UmsatzList.java,v $
- * $Revision: 1.28 $
- * $Date: 2007/03/22 22:36:42 $
+ * $Revision: 1.29 $
+ * $Date: 2007/12/04 23:59:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -104,9 +104,9 @@ public class UmsatzList extends ContextMenu implements Extendable
      */
     public boolean isEnabledFor(Object o)
     {
-      if (!(o instanceof Umsatz) && !(o instanceof Umsatz[]))
-        return false;
-      return super.isEnabledFor(o);
+      if ((o instanceof Umsatz) || (o instanceof Umsatz[]))
+        return super.isEnabledFor(o);
+      return false;
     }
     
   }
@@ -125,9 +125,9 @@ public class UmsatzList extends ContextMenu implements Extendable
      */
     public boolean isEnabledFor(Object o)
     {
-      if (o instanceof Umsatz[])
-        return false;
-      return super.isEnabledFor(o);
+      if (o instanceof Umsatz)
+        return super.isEnabledFor(o);
+      return false;
     }
   }
 
@@ -143,6 +143,9 @@ public class UmsatzList extends ContextMenu implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.29  2007/12/04 23:59:00  willuhn
+ * @N Bug 512
+ *
  * Revision 1.28  2007/03/22 22:36:42  willuhn
  * @N Contextmenu in Trees
  * @C Kategorie-Baum in separates TreePart ausgelagert
