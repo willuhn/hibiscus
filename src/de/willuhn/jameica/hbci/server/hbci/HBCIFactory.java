@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.53 $
- * $Date: 2007/12/03 13:17:54 $
+ * $Revision: 1.54 $
+ * $Date: 2007/12/04 11:24:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -181,8 +181,6 @@ public class HBCIFactory {
       throw new ApplicationException(i18n.tr("Kein Sicherheitsmedium ausgewählt"));
 
     Logger.info("checking job restrictions");
-    start();
-    
     try {
       HBCIHandler handler = h.open();
       HBCIJob j = handler.newJob(job.getIdentifier());
@@ -190,7 +188,6 @@ public class HBCIFactory {
     }
     finally
     {
-      stop(ProgressMonitor.STATUS_DONE);
       try {
         h.close();
       }
@@ -213,6 +210,7 @@ public class HBCIFactory {
     Logger.info("stopping hbci factory");
     inProgress = false;
     this.worker = null;
+    this.jobs.clear();
 
     if (this.listener != null)
     {
@@ -224,6 +222,7 @@ public class HBCIFactory {
           e.type = status;
           Logger.info("executing listener");
           listener.handleEvent(e);
+          listener = null;
         }
       };
       if (Application.inServerMode()) r.run();
@@ -324,6 +323,17 @@ public class HBCIFactory {
         
         if (interrupted) return;
         
+        // //////////////////////////////////////////////////////////////////////
+        // Jobs checken
+        if (jobs.size() == 0)
+        {
+          Logger.warn("no hbci jobs defined");
+          monitor.setStatusText(i18n.tr("{0}: Keine auszuführenden HBCI-Aufträge angegeben",kn));
+          return;
+        }
+        //
+        // //////////////////////////////////////////////////////////////////////
+
         HBCIFactory.this.start();
         if (!Application.inServerMode())
           GUI.getStatusBar().startProgress();
@@ -417,19 +427,6 @@ public class HBCIFactory {
         // //////////////////////////////////////////////////////////////////////
         
 
-        // //////////////////////////////////////////////////////////////////////
-        // Jobs checken
-        if (jobs.size() == 0)
-        {
-          Logger.warn("no hbci jobs defined");
-          monitor.setStatusText(i18n.tr("{0}: Keine auszuführenden HBCI-Aufträge angegeben",kn));
-          error = true;
-          return;
-        }
-        //
-        // //////////////////////////////////////////////////////////////////////
-
-        
         // //////////////////////////////////////////////////////////////////////
         // HBCI-Verbindung aufbauen
         monitor.setStatusText(i18n.tr("{0}: Öffne HBCI-Verbindung",kn));
@@ -578,7 +575,7 @@ public class HBCIFactory {
         {
           monitor.setStatusText(i18n.tr("Beende HBCI-Übertragung"));
           monitor.addPercentComplete(2);
-          jobs = new Vector(); // Jobqueue leer machen.
+          jobs.clear(); // Jobqueue leer machen.
           try {
             if (handle != null)
               handle.close();
@@ -668,6 +665,9 @@ public class HBCIFactory {
 
 /*******************************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.54  2007/12/04 11:24:38  willuhn
+ * @B Bug 509
+ *
  * Revision 1.53  2007/12/03 13:17:54  willuhn
  * @N Debugging-Infos
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/HBCISynchronize.java,v $
- * $Revision: 1.16 $
- * $Date: 2007/12/03 13:17:54 $
+ * $Revision: 1.17 $
+ * $Date: 2007/12/04 11:24:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -154,6 +154,7 @@ public class HBCISynchronize implements Action
       Logger.info("synchronizing account: " + k.getLongName());
 
       // BUGZILLA 509
+      Logger.info("searching for jobs to execute");
       ArrayList jobs = new ArrayList();
       GenericIterator list = SynchronizeEngine.getInstance().getSynchronizeJobs(k);
       while (list.hasNext())
@@ -162,14 +163,18 @@ public class HBCISynchronize implements Action
         
         if (this.selectedJobs != null && this.selectedJobs.contains(sj) == null)
         {
-          Logger.info("skipping job " + sj.getName() + " - not selected");
+          Logger.info("  skipping job " + sj.getName() + " - not selected");
           continue;
         }
         AbstractHBCIJob[] currentJobs = sj.createHBCIJobs();
         if (currentJobs != null)
         {
           for (int i=0;i<currentJobs.length;++i)
-            jobs.add(currentJobs[i]);
+          {
+            AbstractHBCIJob j = currentJobs[i];
+            Logger.info("  adding job " + j.getName());
+            jobs.add(j);
+          }
         }
       }
 
@@ -181,11 +186,14 @@ public class HBCISynchronize implements Action
       else
       {
         Logger.info("creating hbci factory");
-        HBCIFactory factory = HBCIFactory.getInstance();
         for (int i=0;i<jobs.size();++i)
-          factory.addJob((AbstractHBCIJob)jobs.get(i));
+        {
+          AbstractHBCIJob j = (AbstractHBCIJob)jobs.get(i);
+          Logger.info("  activating job " + j.getName());
+          HBCIFactory.getInstance().addJob(j);
+        }
 
-        factory.executeJobs(k,new Listener() {
+        HBCIFactory.getInstance().executeJobs(k,new Listener() {
           public void handleEvent(Event event)
           {
             try
@@ -218,6 +226,9 @@ public class HBCISynchronize implements Action
 
 /*********************************************************************
  * $Log: HBCISynchronize.java,v $
+ * Revision 1.17  2007/12/04 11:24:38  willuhn
+ * @B Bug 509
+ *
  * Revision 1.16  2007/12/03 13:17:54  willuhn
  * @N Debugging-Infos
  *
