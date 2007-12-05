@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.54 $
- * $Date: 2007/12/04 11:24:38 $
+ * $Revision: 1.55 $
+ * $Date: 2007/12/05 22:42:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -222,7 +222,6 @@ public class HBCIFactory {
           e.type = status;
           Logger.info("executing listener");
           listener.handleEvent(e);
-          listener = null;
         }
       };
       if (Application.inServerMode()) r.run();
@@ -665,6 +664,9 @@ public class HBCIFactory {
 
 /*******************************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.55  2007/12/05 22:42:57  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.54  2007/12/04 11:24:38  willuhn
  * @B Bug 509
  *
