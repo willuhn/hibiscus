@@ -266,90 +266,17 @@
 		</li>
   </ol>
 
-  <h2>Hardware Support-Matrix</h2>
-
-  Durch die verschiedenen auf dem Markt erhältlichen Chipkartenleser und
-  unterschiedlichen Betriebssysteme ergibt sich eine Vielzahl von
-  Kombinationsmöglichkeiten. Derzeit ist hiervon nur ein Bruchteil
-  getestet. Prinziell sollte die Software aber überall funktionieren.
-  Mangels Testhardware und Software ist es mir leider nicht möglich, all
-  diese Kombinationen zu prüfen.
-  <br/><br/>
-  Unter MacOS werden derzeit offiziell leider keine Chipkartenleser sondern nur
-  Schlüsseldiskette und PIN/TAN unterstützt, da es mir an Testhardware mangelt.
-  <br/><br/>
-  Falls Sie einen Kartenleser besitzen, der nicht die CTAPI sondern nur
-  PC/SC unterstützt, dann können Sie den CTAPI-Wrapper der Firma SCM-Micro
-  verwenden. Sie finden Ihn unter <a href="ftp://ftp.scmmicro.com/security/drivers/SCR201_Installer_V2.17.zip">ftp://ftp.scmmicro.com/security/drivers/SCR201_Installer_V2.17.zip</a>.
-  Nach der Installation des Treibers finden Sie im Installationsverzeichnis
-  eine Datei &quot;ctpcsc.dll&quot;. Tragen Sie diese nun als CTAPI-Treiber
-  in Hibiscus ein.
-
-  <br/><br/>
-  Bisher getestet:
+  <h2>Unterstützte Chipkartenleser</h2>
   
-  <table class="data">
-    <tr>
-      <th>Chipkartenleser</th>
-      <th>Status</th>
-    </tr>
-    <tr>
-      <td>Towitoko Kartenzwerg / Chipdrive Micro</td>
-      <td>
-        Linux: OK
-        <br/>
-        Windows: ungetestet
-      </td>
-    </tr>
-    <tr>
-      <td>Kaan Standard Plus USB</td>
-      <td>
-        Linux: OK
-        <br/>
-        Windows: OK
-      </td>
-    </tr>
-    <tr>
-      <td>Chipdrive Pinpad / SCM SPR 332</td>
-      <td>
-        Linux: kein CTAPI-Treiber gefunden
-        <br/>
-        Windows: OK
-      </td>
-    </tr>
-    <tr>
-      <td>Reiner SCT Cyberjack USB</td>
-      <td>
-        Linux: OK
-        <br/>
-        Windows: OK
-      </td>
-    </tr>
-    <tr>
-      <td>Reiner SCT e-com USB</td>
-      <td>
-        Linux: OK
-        <br/>
-        Windows: OK (in Hibiscus als "COM2")
-      </td>
-    </tr>
-    <tr>
-      <td>Omnikey Cardman 4000</td>
-      <td>
-        Linux: unbekannt
-        <br/>
-        Windows: OK
-      </td>
-    </tr>
-  </table>
+  Eine Liste der bisher getesteten Chipkartenleser finden Sie im Wiki
+  unter <a href="http://hibiscus.berlios.de/doku.php?id=support:list:kartenleser">http://hibiscus.berlios.de/doku.php?id=support:list:kartenleser</a>.
 
-  Sollten Sie Hibiscus erfolgreich mit einem hier nicht aufgeführten
-  Chipkartenleser im Einsatz haben, dann schreiben Sie mir das bitte
-  an <a href="mailto:hibiscus@willuhn.de">hibiscus@willuhn.de</a> damit
-  ich diese Liste vervollständigen kann.
+  Sollten Sie Hibiscus erfolgreich mit einem nicht aufgeführten
+  Chipkartenleser im Einsatz haben, dann fügen Sie Ihn einfach
+  der Liste hinzu.
   
   <hr/>
-  $Revision: 1.11 $
+  $Revision: 1.12 $
 
   </body>
 
