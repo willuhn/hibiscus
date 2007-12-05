@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/PassportTest.java,v $
- * $Revision: 1.7 $
- * $Date: 2006/01/23 00:36:29 $
+ * $Revision: 1.8 $
+ * $Date: 2007/12/05 10:58:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,16 +12,14 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.action;
 
-import java.rmi.RemoteException;
-
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.BackgroundTask;
-import de.willuhn.logging.Level;
 import de.willuhn.logging.Logger;
 import de.willuhn.logging.Message;
 import de.willuhn.logging.targets.Target;
@@ -58,7 +56,7 @@ public class PassportTest implements Action
             public void write(Message msg) throws Exception
             {
               monitor.addPercentComplete(2);
-              monitor.log(msg.getText());
+              format(monitor,msg.getText());
             }
             public void close() throws Exception
             {
@@ -87,25 +85,32 @@ public class PassportTest implements Action
           monitor.setPercentComplete(100);
           monitor.setStatusText(ae.getMessage());
         }
-        catch (RemoteException e)
+        catch (Exception e)
         {
-          String msg = e.getMessage();
-          if (msg != null && msg.length() > 0)
-            msg = i18n.tr("Fehler beim Testen des Sicherheits-Mediums: {0}",msg);
-          else
-            msg = i18n.tr("Fehler beim Testen des Sicherheits-Mediums.");
+          // Sonst wird alles doppelt geloggt
+          if (target != null)
+            Logger.removeTarget(target);
 
-          GUI.getStatusBar().setErrorText(msg);
           monitor.setStatus(ProgressMonitor.STATUS_ERROR);
+          String errorText = i18n.tr("Fehler beim Testen des Sicherheits-Mediums.");
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(errorText, StatusBarMessage.TYPE_ERROR));
+          monitor.setStatusText(errorText);
+
+          monitor.log(i18n.tr("Aufgetretene Fehlermeldungen:"));
+          monitor.log("-----------------------------");
+          Throwable current = e;
+          for (int i=0;i<10;++i)
+          {
+            if (current == null)
+              break; // Wir sind oben angekommen
+            format(monitor,current.getMessage()); // Loggen
+            Throwable parent = current.getCause();
+            if (parent == null || parent == current)
+              break; // oben angekommen
+            current = parent;
+          }
+          monitor.log("-----------------------------");
           monitor.setPercentComplete(100);
-          monitor.setStatusText(msg);
-
-          Logger.warn("error while testing passport: " + e.getMessage());
-
-
-          // BUGZILLA 52 http://www.willuhn.de/bugzilla/show_bug.cgi?id=52
-          if (Logger.getLevel().equals(Level.DEBUG))
-            Logger.error("stacktrace for debugging purpose",e);
         }
         finally
         {
@@ -123,12 +128,56 @@ public class PassportTest implements Action
     
     Application.getController().start(task);
   }
+  
+  /**
+   * Schneidet Stacktrace-Elemente aus dem Text raus.
+   * @param monitor Monitor, an den geloggt werden soll.
+   * @param msg Die Nachricht.
+   */
+  private void format(ProgressMonitor monitor, String msg)
+  {
+    if (msg == null || msg.length() == 0)
+      return;
+    // Wenn der Fehlertext ein Mehrzeiler ist, ignoren wir alle Stracktrace-Elemente
+    String[] stack = msg.split(System.getProperty("line.separator","\n"));
+    if (stack != null && stack.length > 1)
+    {
+      for (int k=0;k<stack.length;++k)
+      {
+        String ks = stack[k];
+        if (ks == null || ks.length() == 0)
+          continue;
+        if (ks.matches("\\tat.*")) // Stacktrace-Elemente
+          continue;
+        if (ks.matches("\\t\\.\\.\\..*")) // Stacktrace-Elemente
+          continue;
+        if (ks.matches("HBCI4Java stacktrace END ---"))
+          continue;
+        if (ks.matches("HBCI4Java Exception END ---"))
+          continue;
+        ks = ks.replaceAll("HBCI4Java Exception BEGIN ---","");
+        ks = ks.replaceAll("HBCI4Java stacktrace BEGIN ---org.kapott.hbci.exceptions.HBCI_Exception: ","");
+        ks = ks.replaceAll("Caused by: ","");
+        ks = ks.replaceAll(".*?Exception:","");
+        if (ks.length() == 0)
+          continue;
+        monitor.log("  " + ks);
+      }
+    }
+    else
+    {
+      monitor.log("  " + msg);
+    }
+  }
 
 }
 
 
 /**********************************************************************
  * $Log: PassportTest.java,v $
+ * Revision 1.8  2007/12/05 10:58:43  willuhn
+ * @N Lesbarere und ausfuehrlichere Fehlermeldungen beim Testen des Sicherheitsmediums
+ *
  * Revision 1.7  2006/01/23 00:36:29  willuhn
  * @N Import, Export und Chipkartentest laufen jetzt als Background-Task
  *

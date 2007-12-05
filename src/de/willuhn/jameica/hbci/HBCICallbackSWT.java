@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.52 $
- * $Date: 2007/05/22 15:50:17 $
+ * $Revision: 1.53 $
+ * $Date: 2007/12/05 10:58:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -67,20 +67,24 @@ public class HBCICallbackSWT extends AbstractHBCICallback
   public void log(String msg, int level, Date date, StackTraceElement trace)
   {
     boolean log = true;
+    String type = null;
   	switch (level)
   	{
   		case HBCIUtils.LOG_DEBUG2:
 			case HBCIUtils.LOG_DEBUG:
   			Logger.debug(msg);
         log = false;
+        type ="debug";
   			break;
 
 			case HBCIUtils.LOG_INFO:
 				Logger.info(msg);
+        type = "info";
 				break;
 
 			case HBCIUtils.LOG_WARN:
         // Die logge ich mit DEBUG - die nerven sonst
+        type = "warn";
         if (msg != null && msg.startsWith("konnte folgenden nutzerdefinierten Wert nicht in Nachricht einsetzen:"))
         {
           Logger.debug(msg);
@@ -97,6 +101,7 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 				break;
 
   		case HBCIUtils.LOG_ERR:
+        type = "error";
 				Logger.error(msg + " " + trace.toString());
 				break;
 
@@ -107,7 +112,10 @@ public class HBCICallbackSWT extends AbstractHBCICallback
     if (log && HBCIFactory.getInstance().inProgress())
     {
       ProgressMonitor monitor = HBCIFactory.getInstance().getProgressMonitor();
-      monitor.log(msg);
+      if (type != null)
+        monitor.log("[" + type + "] " + msg);
+      else
+        monitor.log(msg);
       monitor.addPercentComplete(1);
     }
   }
@@ -496,6 +504,9 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.53  2007/12/05 10:58:43  willuhn
+ * @N Lesbarere und ausfuehrlichere Fehlermeldungen beim Testen des Sicherheitsmediums
+ *
  * Revision 1.52  2007/05/22 15:50:17  willuhn
  * *** empty log message ***
  *
