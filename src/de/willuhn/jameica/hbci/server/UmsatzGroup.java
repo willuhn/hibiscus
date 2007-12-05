@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzGroup.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/12/04 23:59:00 $
+ * $Revision: 1.3 $
+ * $Date: 2007/12/05 00:09:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -188,14 +188,23 @@ public class UmsatzGroup implements GenericObjectNode, Comparable
     
     try
     {
-      String n1 = this.typ.getNummer();
-      String n2 = other.typ.getNummer();
+      // BUGZILLA 512
+      // Gruppiert nach Einnahmen und Ausgaben
+      if (this.typ.isEinnahme() && !other.typ.isEinnahme())
+        return -1; // Einnahmen zuerst
+      
+      String n1  = this.typ.getNummer();  if (n1  == null) n1  = "";
+      String n2  = other.typ.getNummer(); if (n2  == null) n2  = "";
+      String na1 = this.typ.getName();    if (na1 == null) na1 = "";
+      String na2 = other.typ.getName();   if (na2 == null) na2 = "";
 
-      if (n1 == null)
-        return -1;
-      if (n2 == null)
-        return -1;
-      return n1.compareTo(n2);
+      // erst nach Numer
+      int numberCompare = n1.compareTo(n2);
+      if (numberCompare != 0)
+        return numberCompare;
+      
+      // Falls Nummer identisch/leer, dann nach Name
+      return na1.compareTo(na2);
     }
     catch (RemoteException re)
     {
@@ -209,6 +218,9 @@ public class UmsatzGroup implements GenericObjectNode, Comparable
 
 /*********************************************************************
  * $Log: UmsatzGroup.java,v $
+ * Revision 1.3  2007/12/05 00:09:28  willuhn
+ * @N Bug 512 - Sortierung der Kategorien auch nach Name und Typ (Einnahmen vor Ausgaben)
+ *
  * Revision 1.2  2007/12/04 23:59:00  willuhn
  * @N Bug 512
  *
