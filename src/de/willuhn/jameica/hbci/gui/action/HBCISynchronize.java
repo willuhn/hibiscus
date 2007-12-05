@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/HBCISynchronize.java,v $
- * $Revision: 1.17 $
- * $Date: 2007/12/04 11:24:38 $
+ * $Revision: 1.18 $
+ * $Date: 2007/12/05 22:45:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -89,6 +89,7 @@ public class HBCISynchronize implements Action
     try
     {
       this.konten = SynchronizeEngine.getInstance().getSynchronizeKonten();
+      Logger.info("Accounts to synchronize: " + this.konten.size());
       success = true;
       sync(ProgressMonitor.STATUS_NONE);
     }
@@ -226,6 +227,9 @@ public class HBCISynchronize implements Action
 
 /*********************************************************************
  * $Log: HBCISynchronize.java,v $
+ * Revision 1.18  2007/12/05 22:45:59  willuhn
+ * @N Bug 513 Debug-Ausgaben eingebaut
+ *
  * Revision 1.17  2007/12/04 11:24:38  willuhn
  * @B Bug 509
  *

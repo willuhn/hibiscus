@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.55 $
- * $Date: 2007/12/05 22:42:57 $
+ * $Revision: 1.56 $
+ * $Date: 2007/12/05 22:45:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -214,6 +214,7 @@ public class HBCIFactory {
 
     if (this.listener != null)
     {
+      Logger.info("init listener");
       Runnable r = new Runnable()
       {
         public void run()
@@ -664,6 +665,9 @@ public class HBCIFactory {
 
 /*******************************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.56  2007/12/05 22:45:59  willuhn
+ * @N Bug 513 Debug-Ausgaben eingebaut
+ *
  * Revision 1.55  2007/12/05 22:42:57  willuhn
  * *** empty log message ***
  *
