@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragStoreJob.java,v $
- * $Revision: 1.19 $
- * $Date: 2007/04/23 18:07:14 $
+ * $Revision: 1.20 $
+ * $Date: 2007/12/06 14:25:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -180,40 +180,36 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob {
 	{
 		String empfName = dauerauftrag.getGegenkontoName();
 
-		if (!getJobResult().isOK())
+		if (getJobResult().isOK())
 		{
+      if (dauerauftrag.isActive())
+        konto.addToProtokoll(i18n.tr("Dauerauftrag aktualisiert an {0}",empfName),Protokoll.TYP_SUCCESS);
+      else
+        konto.addToProtokoll(i18n.tr("Dauerauftrag ausgeführt an {0} ",empfName),Protokoll.TYP_SUCCESS);
 
-			String msg = i18n.tr("Fehler beim Ausführen des Dauerauftrages an {0}",empfName);
+      // jetzt muessen wir noch die Order-ID speichern, wenn er neu eingereicht wurde
+      String orderID = null;
+      if (!active)
+      {
+        GVRDauerNew result = (GVRDauerNew) this.getJobResult();
+        orderID = result.getOrderId();
+      }
+      else
+      {
+        GVRDauerEdit result = (GVRDauerEdit) this.getJobResult();
+        orderID = result.getOrderId();
+      }
+      // Der Auftrag war neu, dann muessen wir noch die Order-ID speichern
+      dauerauftrag.setOrderID(orderID);
+      dauerauftrag.store();
 
-
-			String error = getStatusText();
-
-			konto.addToProtokoll(msg + ": " + error,Protokoll.TYP_ERROR);
-			throw new ApplicationException(msg + ": " + error);
+      Logger.info("dauerauftrag submitted successfully");
+      return;
 		}
-
-		if (dauerauftrag.isActive())
-			konto.addToProtokoll(i18n.tr("Dauerauftrag aktualisiert an {0}",empfName),Protokoll.TYP_SUCCESS);
-		else
-			konto.addToProtokoll(i18n.tr("Dauerauftrag ausgeführt an {0} ",empfName),Protokoll.TYP_SUCCESS);
-
-		// jetzt muessen wir noch die Order-ID speichern, wenn er neu eingereicht wurde
-		String orderID = null;
-		if (!active)
-		{
-			GVRDauerNew result = (GVRDauerNew) this.getJobResult();
-			orderID = result.getOrderId();
-		}
-		else
-		{
-			GVRDauerEdit result = (GVRDauerEdit) this.getJobResult();
-			orderID = result.getOrderId();
-		}
-		// Der Auftrag war neu, dann muessen wir noch die Order-ID speichern
-		dauerauftrag.setOrderID(orderID);
-		dauerauftrag.store();
-
-		Logger.info("dauerauftrag submitted successfully");
+    String msg = i18n.tr("Fehler beim Ausführen des Dauerauftrages an {0}",empfName);
+    String error = getStatusText();
+    konto.addToProtokoll(msg + ": " + error,Protokoll.TYP_ERROR);
+    throw new ApplicationException(msg + ": " + error);
 	}
 
 }
@@ -221,6 +217,9 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIDauerauftragStoreJob.java,v $
+ * Revision 1.20  2007/12/06 14:25:32  willuhn
+ * @B Bug 494
+ *
  * Revision 1.19  2007/04/23 18:07:14  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUeberweisungJob.java,v $
- * $Revision: 1.34 $
- * $Date: 2007/11/11 19:44:28 $
+ * $Revision: 1.35 $
+ * $Date: 2007/12/06 14:25:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -155,30 +155,30 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
   {
 		String empfName = ueberweisung.getGegenkontoName();
 
-		if (!getJobResult().isOK())
+		if (getJobResult().isOK())
 		{
-
-			String msg = i18n.tr("Fehler beim Ausführen der Überweisung an {0}",empfName);
-
-
-			String error = getStatusText();
-
-			konto.addToProtokoll(msg + ": " + error,Protokoll.TYP_ERROR);
-			throw new ApplicationException(msg + ": " + error);
+      // Wir markieren die Ueberweisung als "ausgefuehrt"
+      Logger.info("mark ueberweisung as \"ausgefuehrt\"");
+      ueberweisung.setAusgefuehrt();
+      Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(ueberweisung)); // BUGZILLA 501
+      konto.addToProtokoll(i18n.tr("Überweisung ausgeführt an: ") + " " + empfName,Protokoll.TYP_SUCCESS);
+      Logger.info("ueberweisung submitted successfully");
+      return;
 		}
 
-		// Wir markieren die Ueberweisung als "ausgefuehrt"
-    Logger.info("mark ueberweisung as \"ausgefuehrt\"");
-		ueberweisung.setAusgefuehrt();
-    Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(ueberweisung)); // BUGZILLA 501
-    konto.addToProtokoll(i18n.tr("Überweisung ausgeführt an: ") + " " + empfName,Protokoll.TYP_SUCCESS);
-		Logger.info("ueberweisung submitted successfully");
+    String msg = i18n.tr("Fehler beim Ausführen der Überweisung an {0}",empfName);
+    String error = getStatusText();
+    konto.addToProtokoll(msg + ": " + error,Protokoll.TYP_ERROR);
+    throw new ApplicationException(msg + ": " + error);
   }
 }
 
 
 /**********************************************************************
  * $Log: HBCIUeberweisungJob.java,v $
+ * Revision 1.35  2007/12/06 14:25:32  willuhn
+ * @B Bug 494
+ *
  * Revision 1.34  2007/11/11 19:44:28  willuhn
  * @N Bug 501
  *

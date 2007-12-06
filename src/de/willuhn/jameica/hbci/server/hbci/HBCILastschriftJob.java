@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCILastschriftJob.java,v $
- * $Revision: 1.12 $
- * $Date: 2007/04/23 18:07:14 $
+ * $Revision: 1.13 $
+ * $Date: 2007/12/06 14:25:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -130,29 +130,27 @@ public class HBCILastschriftJob extends AbstractHBCIJob
   {
 		String empfName = lastschrift.getGegenkontoName();
 
-		if (!getJobResult().isOK())
+		if (getJobResult().isOK())
 		{
-
-			String msg = i18n.tr("Fehler beim Ausführen der Lastschrift von {0}",empfName);
-
-
-			String error = getStatusText();
-
-			konto.addToProtokoll(msg + ": " + error,Protokoll.TYP_ERROR);
-			throw new ApplicationException(msg + ": " + error);
+      // Wir markieren die Ueberweisung als "ausgefuehrt"
+      lastschrift.setAusgefuehrt();
+      konto.addToProtokoll(i18n.tr("Lastschrift eingezogen von {0}",empfName),Protokoll.TYP_SUCCESS);
+      Logger.info("lastschrift submitted successfully");
+      return;
 		}
-
-
-		// Wir markieren die Ueberweisung als "ausgefuehrt"
-		lastschrift.setAusgefuehrt();
-    konto.addToProtokoll(i18n.tr("Lastschrift eingezogen von {0}",empfName),Protokoll.TYP_SUCCESS);
-		Logger.info("lastschrift submitted successfully");
+    String msg = i18n.tr("Fehler beim Ausführen der Lastschrift von {0}",empfName);
+    String error = getStatusText();
+    konto.addToProtokoll(msg + ": " + error,Protokoll.TYP_ERROR);
+    throw new ApplicationException(msg + ": " + error);
   }
 }
 
 
 /**********************************************************************
  * $Log: HBCILastschriftJob.java,v $
+ * Revision 1.13  2007/12/06 14:25:32  willuhn
+ * @B Bug 494
+ *
  * Revision 1.12  2007/04/23 18:07:14  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt

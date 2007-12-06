@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCISaldoJob.java,v $
- * $Revision: 1.23 $
- * $Date: 2007/06/15 11:20:32 $
+ * $Revision: 1.24 $
+ * $Date: 2007/12/06 14:25:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -96,29 +96,31 @@ public class HBCISaldoJob extends AbstractHBCIJob {
   {
 		GVRSaldoReq result = (GVRSaldoReq) getJobResult();
 
-		if (!result.isOK())
+		if (result.isOK())
 		{
-			String msg = getStatusText();
+      konto.addToProtokoll(i18n.tr("Saldo abgerufen"),Protokoll.TYP_SUCCESS);
 
-      konto.addToProtokoll(i18n.tr("Fehler beim Abrufen das Saldos: {0}",msg),Protokoll.TYP_ERROR);
-			throw new ApplicationException(msg);
+      // Jetzt speichern wir noch den neuen Saldo.
+      Saldo saldo = result.getEntries()[0].ready;
+      konto.setSaldo(saldo.value.getDoubleValue());
+
+      konto.store();
+      Application.getMessagingFactory().sendMessage(new SaldoMessage(konto));
+      Logger.info("saldo fetched successfully");
+      return;
 		}
-
-		konto.addToProtokoll(i18n.tr("Saldo abgerufen"),Protokoll.TYP_SUCCESS);
-
-    // Jetzt speichern wir noch den neuen Saldo.
-    Saldo saldo = result.getEntries()[0].ready;
-    konto.setSaldo(saldo.value.getDoubleValue());
-
-		konto.store();
-    Application.getMessagingFactory().sendMessage(new SaldoMessage(konto));
-		Logger.info("saldo fetched successfully");
+    String msg = getStatusText();
+    konto.addToProtokoll(i18n.tr("Fehler beim Abrufen das Saldos: {0}",msg),Protokoll.TYP_ERROR);
+    throw new ApplicationException(msg);
   }
 }
 
 
 /**********************************************************************
  * $Log: HBCISaldoJob.java,v $
+ * Revision 1.24  2007/12/06 14:25:32  willuhn
+ * @B Bug 494
+ *
  * Revision 1.23  2007/06/15 11:20:32  willuhn
  * @N Saldo in Kontodetails via Messaging sofort aktualisieren
  * @N Mehr Details in den Namen der Synchronize-Jobs

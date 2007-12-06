@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCISammelTransferJob.java,v $
- * $Revision: 1.6 $
- * $Date: 2006/06/26 13:25:20 $
+ * $Revision: 1.7 $
+ * $Date: 2007/12/06 14:25:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -98,23 +98,19 @@ public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
   {
 		String empfName = transfer.getBezeichnung();
 
-		if (!getJobResult().isOK())
+		if (getJobResult().isOK())
 		{
+      // Wir markieren die Ueberweisung als "ausgefuehrt"
+      transfer.setAusgefuehrt();
+      konto.addToProtokoll(i18n.tr("Sammel-Auftrag {0} ausgeführt",empfName),Protokoll.TYP_SUCCESS);
+      Logger.info("sammellastschrift submitted successfully");
+      return;
+    }
 
-			String msg = i18n.tr("Fehler beim Ausführen des Sammel-Auftrages {0}",empfName);
-
-
-			String error = getStatusText();
-
-			konto.addToProtokoll(msg + ": " + error,Protokoll.TYP_ERROR);
-			throw new ApplicationException(msg + ": " + error);
-		}
-
-
-		// Wir markieren die Ueberweisung als "ausgefuehrt"
-		transfer.setAusgefuehrt();
-    konto.addToProtokoll(i18n.tr("Sammel-Auftrag {0} ausgeführt",empfName),Protokoll.TYP_SUCCESS);
-		Logger.info("sammellastschrift submitted successfully");
+    String msg = i18n.tr("Fehler beim Ausführen des Sammel-Auftrages {0}",empfName);
+    String error = getStatusText();
+    konto.addToProtokoll(msg + ": " + error,Protokoll.TYP_ERROR);
+    throw new ApplicationException(msg + ": " + error);
   }
   
   /**
@@ -130,6 +126,9 @@ public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: AbstractHBCISammelTransferJob.java,v $
+ * Revision 1.7  2007/12/06 14:25:32  willuhn
+ * @B Bug 494
+ *
  * Revision 1.6  2006/06/26 13:25:20  willuhn
  * @N Franks eBay-Parser
  *

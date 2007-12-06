@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragDeleteJob.java,v $
- * $Revision: 1.15 $
- * $Date: 2007/04/23 18:07:14 $
+ * $Revision: 1.16 $
+ * $Date: 2007/12/06 14:25:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -159,21 +159,18 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
 	{
 		String empfName = dauerauftrag.getGegenkontoName();
 
-		if (!getJobResult().isOK())
+		if (getJobResult().isOK())
 		{
-
-			String msg = i18n.tr("Fehler beim Löschen des Dauerauftrages an {0}",empfName);
-
-
-			String error = getStatusText();
-
-			konto.addToProtokoll(msg + ": " + error,Protokoll.TYP_ERROR);
-			throw new ApplicationException(msg + ": " + error);
+      konto.addToProtokoll(i18n.tr("Dauerauftrag gelöscht an {0}",empfName),Protokoll.TYP_SUCCESS);
+      dauerauftrag.delete();
+      Logger.info("dauerauftrag deleted successfully");
+      return;
 		}
+    String msg = i18n.tr("Fehler beim Löschen des Dauerauftrages an {0}",empfName);
+    String error = getStatusText();
+    konto.addToProtokoll(msg + ": " + error,Protokoll.TYP_ERROR);
+    throw new ApplicationException(msg + ": " + error);
 
-		konto.addToProtokoll(i18n.tr("Dauerauftrag gelöscht an {0}",empfName),Protokoll.TYP_SUCCESS);
-		dauerauftrag.delete();
-		Logger.info("dauerauftrag deleted successfully");
 	}
 
   /**
@@ -189,6 +186,9 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIDauerauftragDeleteJob.java,v $
+ * Revision 1.16  2007/12/06 14:25:32  willuhn
+ * @B Bug 494
+ *
  * Revision 1.15  2007/04/23 18:07:14  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
