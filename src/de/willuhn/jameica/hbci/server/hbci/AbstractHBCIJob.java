@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCIJob.java,v $
- * $Revision: 1.25 $
- * $Date: 2007/02/21 10:02:27 $
+ * $Revision: 1.26 $
+ * $Date: 2007/12/06 23:53:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -112,7 +112,7 @@ public abstract class AbstractHBCIJob
    */
   final String getStatusText()
 	{
-    String sr = null;
+    String sr = "";
 		try
 		{
       String sGlob = getJobResult().getGlobStatus().getErrorString();
@@ -132,11 +132,11 @@ public abstract class AbstractHBCIJob
       }
       String sDetail = sb.toString();
       if (sDetail != null && sDetail.length() > 0)
-        sr = sDetail;
-      else if (sJob != null && sJob.length() > 0)
-        sr = sJob;
-      else
-        sr = sGlob;
+        sr += System.getProperty("line.separator","\n") + sDetail;
+      if (sJob != null && sJob.length() > 0)
+        sr += System.getProperty("line.separator","\n") + sJob;
+      if (sGlob != null && sGlob.length() > 0)
+        sr += System.getProperty("line.separator","\n") + sGlob;
 		}
 		catch (ArrayIndexOutOfBoundsException aio)
 		{
@@ -263,6 +263,9 @@ public abstract class AbstractHBCIJob
 
 /**********************************************************************
  * $Log: AbstractHBCIJob.java,v $
+ * Revision 1.26  2007/12/06 23:53:56  willuhn
+ * @B Bug 490
+ *
  * Revision 1.25  2007/02/21 10:02:27  willuhn
  * @C Code zum Ausfuehren exklusiver Jobs redesigned
  *

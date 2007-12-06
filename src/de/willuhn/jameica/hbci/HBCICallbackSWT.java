@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.53 $
- * $Date: 2007/12/05 10:58:43 $
+ * $Revision: 1.54 $
+ * $Date: 2007/12/06 23:53:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -74,12 +74,10 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 			case HBCIUtils.LOG_DEBUG:
   			Logger.debug(msg);
         log = false;
-        type ="debug";
   			break;
 
 			case HBCIUtils.LOG_INFO:
 				Logger.info(msg);
-        type = "info";
 				break;
 
 			case HBCIUtils.LOG_WARN:
@@ -504,6 +502,9 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.54  2007/12/06 23:53:56  willuhn
+ * @B Bug 490
+ *
  * Revision 1.53  2007/12/05 10:58:43  willuhn
  * @N Lesbarere und ausfuehrlichere Fehlermeldungen beim Testen des Sicherheitsmediums
  *

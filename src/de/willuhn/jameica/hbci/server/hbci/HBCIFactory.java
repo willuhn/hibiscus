@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.56 $
- * $Date: 2007/12/05 22:45:59 $
+ * $Revision: 1.57 $
+ * $Date: 2007/12/06 23:53:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -147,7 +147,7 @@ public class HBCIFactory {
    */
   public ProgressMonitor getProgressMonitor()
   {
-    if (this.worker == null)
+    if (this.worker == null || this.worker.getMonitor() == null)
       return new ProgressMonitor() {
         public void setPercentComplete(int arg0) {}
         public void addPercentComplete(int arg0) {}
@@ -165,31 +165,38 @@ public class HBCIFactory {
    * weiterverarbeitet, um zum Beispiel die Auswahlmoeglichkeiten in der
    * Benutzeroberflaeche auf die tatsaechlichen Moeglichkeiten der Bank zu
    * beschraenken.
+   * @param konto das zugehoerige Konto.
    * @param job zu testender Job.
-   * @param h der Passport, ueber den der Job getestet werden soll.
    * @return Liste der Restriktionen.
-   * @throws ApplicationException
-   * @throws RemoteException
+   * @throws Exception
    */
-  public synchronized Properties getJobRestrictions(AbstractHBCIJob job, PassportHandle h)
-    throws ApplicationException, RemoteException
+  public synchronized Properties getJobRestrictions(Konto konto, AbstractHBCIJob job) throws Exception
   {
+    if (konto == null)
+      throw new ApplicationException(i18n.tr("Kein Sicherheitsmedium ausgewählt"));
+
     if (job == null)
       throw new ApplicationException(i18n.tr("Kein Job ausgewählt"));
     
-    if (h == null)
-      throw new ApplicationException(i18n.tr("Kein Sicherheitsmedium ausgewählt"));
 
     Logger.info("checking job restrictions");
+    PassportHandle ph = null;
     try {
-      HBCIHandler handler = h.open();
+      Passport passport = PassportRegistry.findByClass(konto.getPassportClass());
+      passport.init(konto);
+      ph = passport.getHandle();
+
+      this.worker = new Worker(konto); // BUGZILLA 490 Nicht starten, nur erzeugen
+      HBCIHandler handler = ph.open();
       HBCIJob j = handler.newJob(job.getIdentifier());
       return j.getJobRestrictions();
     }
     finally
     {
+      this.worker = null;
       try {
-        h.close();
+        if (ph != null)
+          ph.close();
       }
       catch (Throwable t) {
         Logger.error("error while closing hbci handler",t);
@@ -665,6 +672,9 @@ public class HBCIFactory {
 
 /*******************************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.57  2007/12/06 23:53:56  willuhn
+ * @B Bug 490
+ *
  * Revision 1.56  2007/12/05 22:45:59  willuhn
  * @N Bug 513 Debug-Ausgaben eingebaut
  *

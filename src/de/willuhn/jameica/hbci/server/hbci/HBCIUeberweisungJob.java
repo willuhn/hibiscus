@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUeberweisungJob.java,v $
- * $Revision: 1.35 $
- * $Date: 2007/12/06 14:25:32 $
+ * $Revision: 1.36 $
+ * $Date: 2007/12/06 23:53:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,10 +19,8 @@ import java.util.Properties;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
-import de.willuhn.jameica.hbci.PassportRegistry;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
-import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
@@ -102,11 +100,7 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
         Date d = this.ueberweisung.getTermin();
         setJobParam("date",d);
 
-        Passport passport = PassportRegistry.findByClass(this.konto.getPassportClass());
-        // BUGZILLA #7 http://www.willuhn.de/bugzilla/show_bug.cgi?id=7
-        passport.init(this.konto);
-
-        Properties p = HBCIFactory.getInstance().getJobRestrictions(this,passport.getHandle());
+        Properties p = HBCIFactory.getInstance().getJobRestrictions(this.konto,this);
         Enumeration keys = p.keys();
         while (keys.hasMoreElements())
         {
@@ -176,6 +170,9 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIUeberweisungJob.java,v $
+ * Revision 1.36  2007/12/06 23:53:56  willuhn
+ * @B Bug 490
+ *
  * Revision 1.35  2007/12/06 14:25:32  willuhn
  * @B Bug 494
  *
