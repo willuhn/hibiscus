@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DBSupportH2Impl.java,v $
- * $Revision: 1.6 $
- * $Date: 2007/10/27 13:31:41 $
+ * $Revision: 1.7 $
+ * $Date: 2007/12/06 17:57:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,7 +21,6 @@ import java.security.SecureRandom;
 import java.sql.Connection;
 import java.text.DecimalFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
 
 import de.willuhn.jameica.hbci.HBCI;
@@ -37,15 +36,6 @@ import de.willuhn.util.Base64;
  */
 public class DBSupportH2Impl extends AbstractDBSupportImpl
 {
-  // Mapper von Datenbank-Hash zu Versionsnummer
-  private static HashMap DBMAPPING = new HashMap();
-
-  static
-  {
-    DBMAPPING.put("n3baqzmjyysHSvpJZ98i6g==",new Double(1.7));
-    DBMAPPING.put("VhQ1ZlEHcFY+9Nwg+wWtYw==",new Double(1.8));
-  }
-  
   /**
    * ct.
    */
@@ -182,34 +172,6 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
       }
     }
     ////////////////////////////////////////////////////////////////////////////
-  
-// TODO: Checksummen-Pruefung uebergangsweise deaktiviert, da andere H2-Versionen
-//       (konkret die in der RPM-Version) die Tabellen- und Spaltenbezeichnungen
-//       wohl in einer anderen Reihenfolge liefern und damit eine andere Checksumme
-//       erzeugt wird als die erwartete.
-//    if (!Settings.getCheckDatabase())
-//      return;
-//
-//    I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-//
-//    try
-//    {
-//      ProgressMonitor monitor = Application.getCallback().getStartupMonitor();
-//      monitor.setStatusText(i18n.tr("Prüfe Datenbank-Integrität"));
-//
-//      String checkSum = CheckSum.md5(conn,null,null);
-//      if (DBMAPPING.get(checkSum) == null)
-//        throw new ApplicationException(i18n.tr("Datenbank-Checksumme ungültig: {0}. Datenbank-Version nicht kompatibel zur Hibiscus-Version?",checkSum));
-//      monitor.setStatusText(i18n.tr("Datenbank-Checksumme korrekt"));
-//    }
-//    catch (ApplicationException ae)
-//    {
-//      throw ae;
-//    }
-//    catch (Exception e)
-//    {
-//      throw new RemoteException(i18n.tr("Fehler beim Prüfen der Datenbank"),e);
-//    }
   }
 
   /**
@@ -264,6 +226,9 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
 
 /*********************************************************************
  * $Log: DBSupportH2Impl.java,v $
+ * Revision 1.7  2007/12/06 17:57:21  willuhn
+ * @N Erster Code fuer das neue Versionierungs-System
+ *
  * Revision 1.6  2007/10/27 13:31:41  willuhn
  * @C Checksummen-Pruefung temporaer deaktiviert
  *

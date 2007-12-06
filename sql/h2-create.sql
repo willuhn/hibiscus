@@ -186,6 +186,15 @@ CREATE TABLE systemnachricht (
   PRIMARY KEY (id)
 );
 
+CREATE TABLE version (
+  id IDENTITY,
+  name varchar(255) NOT NULL,
+  version int(5) NOT NULL,
+  UNIQUE (id),
+  PRIMARY KEY (id)
+);
+
+
 ALTER TABLE ueberweisung ADD CONSTRAINT fk_konto FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE umsatz ADD CONSTRAINT fk_konto2 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE protokoll ADD CONSTRAINT fk_konto3 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;

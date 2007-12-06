@@ -185,6 +185,14 @@ CREATE TABLE dauerauftrag (
      , PRIMARY KEY (id)
 )TYPE=InnoDB;
 
+CREATE TABLE version (
+       id int(10) AUTO_INCREMENT
+     , name VARCHAR(15) NOT NULL
+     , version int(10) NOT NULL
+     , UNIQUE (id)
+     , PRIMARY KEY (id)
+)TYPE=InnoDB;
+
 CREATE INDEX idx_lastschrift_konto ON lastschrift(konto_id);
 CREATE INDEX idx_sueberweisung_konto ON sueberweisung(konto_id);
 CREATE INDEX idx_umsatztyp_umsatztyp ON umsatztyp(parent_id);

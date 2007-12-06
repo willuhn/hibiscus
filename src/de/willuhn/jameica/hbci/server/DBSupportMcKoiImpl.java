@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/DBSupportMcKoiImpl.java,v $
- * $Revision: 1.8 $
- * $Date: 2007/07/18 09:45:18 $
+ * $Revision: 1.9 $
+ * $Date: 2007/12/06 17:57:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,16 +18,13 @@ import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
-import java.util.HashMap;
 import java.util.Locale;
 
 import de.willuhn.datasource.db.EmbeddedDatabase;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.plugin.PluginResources;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
-import de.willuhn.sql.CheckSum;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 import de.willuhn.util.ProgressMonitor;
@@ -37,22 +34,6 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class DBSupportMcKoiImpl extends AbstractDBSupportImpl
 {
-  // Mapper von Datenbank-Hash zu Versionsnummer
-  private static HashMap DBMAPPING = new HashMap();
-
-  static
-  {
-    DBMAPPING.put("KvynDJyxe6D1XUvSCkNAFA==",new Double(1.0));
-    DBMAPPING.put("Oj3JSimz84VKq44EEzQOZQ==",new Double(1.1));
-    DBMAPPING.put("NhTl6Nt8RmaRNz49M/SGiA==",new Double(1.2));
-    DBMAPPING.put("kwi5vy1fvgOOVtoTYJYjuA==",new Double(1.3));
-    DBMAPPING.put("JtkHZYFRtWpxGR6nE8TYFw==",new Double(1.4));
-    DBMAPPING.put("a4VHFRr69c+LynZiczIICg==",new Double(1.5));
-    DBMAPPING.put("a4VHFRr69c+LynZiczIICg==",new Double(1.6));
-    DBMAPPING.put("EdG6qLQ0SXRgJ8QBtz5Vrg==",new Double(1.7));
-    DBMAPPING.put("EdG6qLQ0SXRgJ8QBtz5Vrg==",new Double(1.8));
-  }
-  
   /**
    * @see de.willuhn.jameica.hbci.rmi.DBSupport#getJdbcDriver()
    */
@@ -133,30 +114,6 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl
       }
     }
     ////////////////////////////////////////////////////////////////////////////
-    
-    if (!Settings.getCheckDatabase())
-      return;
-
-    I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
-    try
-    {
-      ProgressMonitor monitor = Application.getCallback().getStartupMonitor();
-      monitor.setStatusText(i18n.tr("Prüfe Datenbank-Integrität"));
-
-      String checkSum = CheckSum.md5(conn,null,"APP");
-      if (DBMAPPING.get(checkSum) == null)
-        throw new ApplicationException(i18n.tr("Datenbank-Checksumme ungültig: {0}. Datenbank-Version nicht kompatibel zur Hibiscus-Version?",checkSum));
-      monitor.setStatusText(i18n.tr("Datenbank-Checksumme korrekt"));
-    }
-    catch (ApplicationException ae)
-    {
-      throw ae;
-    }
-    catch (Exception e)
-    {
-      throw new RemoteException(i18n.tr("Fehler beim Prüfen der Datenbank"),e);
-    }
   }
 
   /**
@@ -212,6 +169,9 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl
 
 /*********************************************************************
  * $Log: DBSupportMcKoiImpl.java,v $
+ * Revision 1.9  2007/12/06 17:57:21  willuhn
+ * @N Erster Code fuer das neue Versionierungs-System
+ *
  * Revision 1.8  2007/07/18 09:45:18  willuhn
  * @B Neue Version 1.8 in DB-Checks nachgezogen
  *
