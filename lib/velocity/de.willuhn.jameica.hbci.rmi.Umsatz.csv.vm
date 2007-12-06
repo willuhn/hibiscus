@@ -1,3 +1,4 @@
+Kontonummer;BLZ;Konto;Gegenkonto;Gegenkonto BLZ;Gegenkonto Inhaber;Betrag;Valuta;Datum;Verwendungszweck;weiterer Verwendungszweck;Zwischensumme;Primanota;Kundenreferenz;Kategorie;Kommentar
 #foreach($umsatz in $objects)
 #set($konto = $umsatz.Konto)
 #set($kat = "")

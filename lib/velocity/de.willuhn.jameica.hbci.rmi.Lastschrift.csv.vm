@@ -1,3 +1,4 @@
+Kontonummer;BLZ;Konto;Gegenkonto;BLZ Gegenkonto;Zahlungspflichtiger;Betrag;Datum;Verwendungszweck;weiterer Verwendungszweck
 #foreach($t in $objects)
 #set($konto = $t.Konto)
 $!{konto.Kontonummer};$!{konto.BLZ};$!{konto.Bezeichnung};$!{t.GegenkontoNummer};$!{t.GegenkontoBLZ};$!{t.GegenkontoName};$!{decimalformat.format(${t.Betrag})};$!{dateformat.format(${t.Termin})};$!{t.Zweck};$!{t.Zweck2};
