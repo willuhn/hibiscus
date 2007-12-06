@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/SammelUeberweisungList.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/10/05 16:42:28 $
+ * $Revision: 1.6 $
+ * $Date: 2007/12/06 23:53:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -51,10 +51,13 @@ public class SammelUeberweisungList extends ContextMenu
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 		addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"), new SammelUeberweisungNew()));
-		addItem(new NotActiveMenuItem(i18n.tr("Jetzt ausführen..."), new SammelUeberweisungExecute()));
     // BUGZILLA 115 http://www.willuhn.de/bugzilla/show_bug.cgi?id=115
-    addItem(new CheckedContextMenuItem(i18n.tr("Duplizieren"), new SammelTransferDuplicate()));
-		addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new SammelTransferDelete()));
+    addItem(new CheckedContextMenuItem(i18n.tr("Duplizieren..."), new SammelTransferDuplicate()));
+    addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new SammelTransferDelete()));
+    addItem(ContextMenuItem.SEPARATOR);
+    addItem(new ContextMenuItem(i18n.tr("Neue Sammel-Überweisung..."), new SNeu()));
+    addItem(ContextMenuItem.SEPARATOR);
+		addItem(new NotActiveMenuItem(i18n.tr("Jetzt ausführen..."), new SammelUeberweisungExecute()));
     addItem(new ContextMenuItem(i18n.tr("Als \"ausgeführt\" markieren..."), new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -87,8 +90,6 @@ public class SammelUeberweisungList extends ContextMenu
         }
       }
     });
-    addItem(ContextMenuItem.SEPARATOR);
-    addItem(new ContextMenuItem(i18n.tr("Neue Sammel-Überweisung..."), new SNeu()));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new SammelUeberweisungExport()));
     addItem(new ContextMenuItem(i18n.tr("Importieren..."),new SammelUeberweisungImport()));
@@ -151,6 +152,9 @@ public class SammelUeberweisungList extends ContextMenu
 
 /**********************************************************************
  * $Log: SammelUeberweisungList.java,v $
+ * Revision 1.6  2007/12/06 23:53:35  willuhn
+ * @C Menu-Eintraege uebersichtlicher angeordnet
+ *
  * Revision 1.5  2006/10/05 16:42:28  willuhn
  * @N CSV-Import/Export fuer Adressen
  *

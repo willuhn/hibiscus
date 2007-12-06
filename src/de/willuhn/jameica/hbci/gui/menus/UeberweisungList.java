@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UeberweisungList.java,v $
- * $Revision: 1.15 $
- * $Date: 2007/10/25 15:47:21 $
+ * $Revision: 1.16 $
+ * $Date: 2007/12/06 23:53:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -50,13 +50,14 @@ public class UeberweisungList extends ContextMenu
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 		addItem(new SingleItem(i18n.tr("Öffnen"), new UeberweisungNew()));
-		addItem(new NotActiveSingleMenuItem(i18n.tr("Jetzt ausführen..."), new UeberweisungExecute()));
-		addItem(new SingleItem(i18n.tr("Duplizieren"), new UeberweisungDuplicate()));
-		addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete()));
-    addItem(new NotActiveMultiMenuItem(i18n.tr("Als \"ausgeführt\" markieren..."), new TerminableMarkExecuted()));
-    addItem(new NotActiveMultiMenuItem(i18n.tr("Zu Sammel-Überweisung zusammenfassen..."), new UeberweisungMerge()));
+    addItem(new SingleItem(i18n.tr("Duplizieren..."), new UeberweisungDuplicate()));
+    addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete()));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new ContextMenuItem(i18n.tr("Neue Überweisung..."), new UNeu()));
+    addItem(new NotActiveMultiMenuItem(i18n.tr("Zu Sammel-Überweisung zusammenfassen..."), new UeberweisungMerge()));
+    addItem(ContextMenuItem.SEPARATOR);
+    addItem(new NotActiveSingleMenuItem(i18n.tr("Jetzt ausführen..."), new UeberweisungExecute()));
+    addItem(new NotActiveMultiMenuItem(i18n.tr("Als \"ausgeführt\" markieren..."), new TerminableMarkExecuted()));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new UeberweisungExport()));
     addItem(new ContextMenuItem(i18n.tr("Importieren..."),new UeberweisungImport()));
@@ -194,6 +195,9 @@ public class UeberweisungList extends ContextMenu
 
 /**********************************************************************
  * $Log: UeberweisungList.java,v $
+ * Revision 1.16  2007/12/06 23:53:35  willuhn
+ * @C Menu-Eintraege uebersichtlicher angeordnet
+ *
  * Revision 1.15  2007/10/25 15:47:21  willuhn
  * @N Einzelauftraege zu Sammel-Auftraegen zusammenfassen (BUGZILLA 402)
  *

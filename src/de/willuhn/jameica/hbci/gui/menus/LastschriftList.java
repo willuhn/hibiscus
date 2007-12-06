@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/LastschriftList.java,v $
- * $Revision: 1.10 $
- * $Date: 2007/10/25 15:47:21 $
+ * $Revision: 1.11 $
+ * $Date: 2007/12/06 23:53:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -50,13 +50,14 @@ public class LastschriftList extends ContextMenu
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 		addItem(new SingleItem(i18n.tr("Öffnen"), new LastschriftNew()));
-		addItem(new NotActiveSingleMenuItem(i18n.tr("Jetzt ausführen..."), new LastschriftExecute()));
-		addItem(new SingleItem(i18n.tr("Duplizieren"), new LastschriftDuplicate()));
-		addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete()));
-    addItem(new NotActiveMultiMenuItem(i18n.tr("Als \"ausgeführt\" markieren..."), new TerminableMarkExecuted()));
-    addItem(new NotActiveMultiMenuItem(i18n.tr("Zu Sammel-Lastschrift zusammenfassen..."), new LastschriftMerge()));
+    addItem(new SingleItem(i18n.tr("Duplizieren..."), new LastschriftDuplicate()));
+    addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete()));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new ContextMenuItem(i18n.tr("Neue Lastschrift..."), new UNeu()));
+    addItem(new NotActiveMultiMenuItem(i18n.tr("Zu Sammel-Lastschrift zusammenfassen..."), new LastschriftMerge()));
+    addItem(ContextMenuItem.SEPARATOR);
+    addItem(new NotActiveSingleMenuItem(i18n.tr("Jetzt ausführen..."), new LastschriftExecute()));
+    addItem(new NotActiveMultiMenuItem(i18n.tr("Als \"ausgeführt\" markieren..."), new TerminableMarkExecuted()));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new LastschriftExport()));
     addItem(new ContextMenuItem(i18n.tr("Importieren..."),new LastschriftImport()));
@@ -193,6 +194,9 @@ public class LastschriftList extends ContextMenu
 
 /**********************************************************************
  * $Log: LastschriftList.java,v $
+ * Revision 1.11  2007/12/06 23:53:35  willuhn
+ * @C Menu-Eintraege uebersichtlicher angeordnet
+ *
  * Revision 1.10  2007/10/25 15:47:21  willuhn
  * @N Einzelauftraege zu Sammel-Auftraegen zusammenfassen (BUGZILLA 402)
  *
