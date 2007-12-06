@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.105 $
- * $Date: 2007/11/27 17:15:57 $
+ * $Revision: 1.106 $
+ * $Date: 2007/12/06 09:24:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -65,11 +65,10 @@ public class HBCI extends AbstractPlugin
   
   /**
    * ct.
-   * @param file
    */
-  public HBCI(File file)
+  public HBCI()
   {
-    super(file);
+    super();
   }
 
   /**
@@ -301,6 +300,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.106  2007/12/06 09:24:26  willuhn
+ * @C neuer Jameica-Konstruktor
+ *
  * Revision 1.105  2007/11/27 17:15:57  willuhn
  * @C HBCI4Java mit Classloader des Plugins initialisieren
  *
