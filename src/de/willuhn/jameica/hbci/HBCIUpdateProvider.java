@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Attic/HBCIUpdateProvider.java,v $
- * $Revision: 1.1 $
- * $Date: 2007/12/06 17:57:21 $
+ * $Revision: 1.2 $
+ * $Date: 2007/12/07 00:48:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,7 +23,6 @@ import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.sql.version.UpdateProvider;
 import de.willuhn.util.ApplicationException;
-import de.willuhn.util.I18N;
 import de.willuhn.util.ProgressMonitor;
 
 /**
@@ -31,9 +30,9 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class HBCIUpdateProvider implements UpdateProvider
 {
-  
+  private HBCI plugin     = null;  
   private Version version = null;
-  private I18N i18n       = null;
+  private Connection conn = null;
 
   /**
    * ct
@@ -41,19 +40,19 @@ public class HBCIUpdateProvider implements UpdateProvider
    * @throws RemoteException
    * @throws ApplicationException
    */
-  protected HBCIUpdateProvider(String name) throws ApplicationException, RemoteException
+  protected HBCIUpdateProvider(HBCI plugin, Connection conn, String name) throws ApplicationException, RemoteException
   {
+    this.plugin  = plugin;
+    this.conn    = conn;
     this.version = VersionUtil.getVersion(name);
-    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
   /**
    * @see de.willuhn.sql.version.UpdateProvider#getConnection()
    */
-  public Connection getConnection() throws ApplicationException
+  public synchronized Connection getConnection() throws ApplicationException
   {
-    // TODO Auto-generated method stub
-    return null;
+    return this.conn;
   }
 
   /**
@@ -68,7 +67,7 @@ public class HBCIUpdateProvider implements UpdateProvider
     catch (RemoteException re)
     {
       Logger.error("unable to read current version number");
-      throw new ApplicationException(i18n.tr("Fehler beim Ermitteln der aktuellen Versionsnummer"));
+      throw new ApplicationException(plugin.getResources().getI18N().tr("Fehler beim Ermitteln der aktuellen Versionsnummer"));
     }
   }
 
@@ -77,8 +76,9 @@ public class HBCIUpdateProvider implements UpdateProvider
    */
   public ProgressMonitor getProgressMonitor()
   {
-    // TODO Auto-generated method stub
-    return null;
+    // Liefert den Splashscreen oder im Servermode einen
+    // Pseudo-Monitor.
+    return Application.getController().getApplicationCallback().getStartupMonitor();
   }
 
   /**
@@ -86,8 +86,8 @@ public class HBCIUpdateProvider implements UpdateProvider
    */
   public File getUpdatePath() throws ApplicationException
   {
-    // TODO Auto-generated method stub
-    return null;
+    // Ist das Unterverzeichnis "plugins" im Plugin
+    return new File(plugin.getResources().getPath(),"updates");
   }
 
   /**
@@ -118,7 +118,7 @@ public class HBCIUpdateProvider implements UpdateProvider
         throw (ApplicationException) e;
       
       Logger.error("unable to read current version number",e);
-      throw new ApplicationException(i18n.tr("Fehler beim Ermitteln der aktuellen Versionsnummer"));
+      throw new ApplicationException(plugin.getResources().getI18N().tr("Fehler beim Ermitteln der aktuellen Versionsnummer"));
     }
   }
 
@@ -127,6 +127,9 @@ public class HBCIUpdateProvider implements UpdateProvider
 
 /*********************************************************************
  * $Log: HBCIUpdateProvider.java,v $
+ * Revision 1.2  2007/12/07 00:48:05  willuhn
+ * @N weiterer Code fuer den neuen Update-Mechanismus
+ *
  * Revision 1.1  2007/12/06 17:57:21  willuhn
  * @N Erster Code fuer das neue Versionierungs-System
  *
