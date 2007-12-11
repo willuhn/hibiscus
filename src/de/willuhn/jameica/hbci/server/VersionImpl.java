@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/VersionImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2007/12/06 17:57:21 $
+ * $Revision: 1.2 $
+ * $Date: 2007/12/11 00:33:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -77,6 +77,8 @@ public class VersionImpl extends AbstractDBObject implements Version
    */
   public void setVersion(int newVersion) throws RemoteException
   {
+    if (newVersion < 0)
+      throw new RemoteException("version cannot be smaller than zero");
     setAttribute("version",new Integer(newVersion));
   }
 
@@ -117,6 +119,15 @@ public class VersionImpl extends AbstractDBObject implements Version
   {
     insertCheck();
   }
+
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#insert()
+   */
+  public void insert() throws RemoteException, ApplicationException
+  {
+    setVersion(getVersion()); // speichert automatisch die Startnummer
+    super.insert();
+  }
   
   
 
@@ -125,6 +136,9 @@ public class VersionImpl extends AbstractDBObject implements Version
 
 /*********************************************************************
  * $Log: VersionImpl.java,v $
+ * Revision 1.2  2007/12/11 00:33:35  willuhn
+ * @N Scharfschaltung des neuen Update-Prozesses
+ *
  * Revision 1.1  2007/12/06 17:57:21  willuhn
  * @N Erster Code fuer das neue Versionierungs-System
  *

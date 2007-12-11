@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/HBCIDBServiceImpl.java,v $
- * $Revision: 1.23 $
- * $Date: 2007/10/04 23:39:49 $
+ * $Revision: 1.24 $
+ * $Date: 2007/12/11 00:33:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,12 +21,16 @@ import java.text.DecimalFormat;
 import java.util.Locale;
 
 import de.willuhn.datasource.db.DBServiceImpl;
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.DBSupport;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
+import de.willuhn.jameica.hbci.rmi.Version;
 import de.willuhn.jameica.plugin.PluginResources;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
+import de.willuhn.sql.version.UpdateProvider;
+import de.willuhn.sql.version.Updater;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 import de.willuhn.util.ProgressMonitor;
@@ -125,6 +129,11 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
   public void checkConsistency() throws RemoteException, ApplicationException
   {
     this.driver.checkConsistency(getConnection());
+    Logger.info("init update provider");
+    UpdateProvider provider = new HBCIUpdateProvider(getConnection(),getVersion("db"));
+    Updater updater = new Updater(provider);
+    updater.execute();
+    Logger.info("updates finished");
   }
 
   /**
@@ -231,11 +240,42 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
     // BUGZILLA 447
     return this.driver.getTransactionIsolationLevel();
   }
+  
+  
+  /**
+   * Liefert ein Versionsobjekt fuer die genannte Version.
+   * Bei Bedarf wird sie automatisch erstellt.
+   * @param name Name der Version.
+   * @return das Versionsobjekt.
+   * @throws RemoteException
+   * @throws ApplicationException
+   */
+  private Version getVersion(String name) throws RemoteException, ApplicationException
+  {
+    if (name == null || name.length() == 0)
+    {
+      I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+      throw new ApplicationException(i18n.tr("Keine Versionsbezeichnung angegeben"));
+    }
+    DBIterator list = this.createList(Version.class);
+    list.addFilter("name = ?", new String[]{name});
+    if (list.hasNext())
+      return (Version) list.next();
+    
+    // Neue Version erstellen
+    Version v = (Version) this.createObject(Version.class,null);
+    v.setName(name);
+    v.store();
+    return v;
+  }
 }
 
 
 /*********************************************************************
  * $Log: HBCIDBServiceImpl.java,v $
+ * Revision 1.24  2007/12/11 00:33:35  willuhn
+ * @N Scharfschaltung des neuen Update-Prozesses
+ *
  * Revision 1.23  2007/10/04 23:39:49  willuhn
  * @N Datenmigration McKoi->H2 (in progress)
  *

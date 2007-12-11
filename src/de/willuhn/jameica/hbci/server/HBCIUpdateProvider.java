@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Attic/HBCIUpdateProvider.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/12/07 00:48:05 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/HBCIUpdateProvider.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2007/12/11 00:33:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,14 +11,15 @@
  *
  **********************************************************************/
 
-package de.willuhn.jameica.hbci;
+package de.willuhn.jameica.hbci.server;
 
 import java.io.File;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 
+import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Version;
-import de.willuhn.jameica.hbci.server.VersionUtil;
+import de.willuhn.jameica.plugin.PluginResources;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.sql.version.UpdateProvider;
@@ -30,21 +31,20 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class HBCIUpdateProvider implements UpdateProvider
 {
-  private HBCI plugin     = null;  
-  private Version version = null;
-  private Connection conn = null;
+  private Version version     = null;
+  private Connection conn     = null;
+  private PluginResources res = null;
 
   /**
    * ct
-   * @param name
-   * @throws RemoteException
-   * @throws ApplicationException
+   * @param conn Datenbank-Verbindung.
+   * @param version Version der Datenbank.
    */
-  protected HBCIUpdateProvider(HBCI plugin, Connection conn, String name) throws ApplicationException, RemoteException
+  protected HBCIUpdateProvider(Connection conn, Version version)
   {
-    this.plugin  = plugin;
     this.conn    = conn;
-    this.version = VersionUtil.getVersion(name);
+    this.version = version;
+    this.res     = Application.getPluginLoader().getPlugin(HBCI.class).getResources();
   }
 
   /**
@@ -67,7 +67,7 @@ public class HBCIUpdateProvider implements UpdateProvider
     catch (RemoteException re)
     {
       Logger.error("unable to read current version number");
-      throw new ApplicationException(plugin.getResources().getI18N().tr("Fehler beim Ermitteln der aktuellen Versionsnummer"));
+      throw new ApplicationException(res.getI18N().tr("Fehler beim Ermitteln der aktuellen Versionsnummer"));
     }
   }
 
@@ -87,7 +87,7 @@ public class HBCIUpdateProvider implements UpdateProvider
   public File getUpdatePath() throws ApplicationException
   {
     // Ist das Unterverzeichnis "plugins" im Plugin
-    return new File(plugin.getResources().getPath(),"updates");
+    return new File(res.getPath(),"updates");
   }
 
   /**
@@ -98,6 +98,7 @@ public class HBCIUpdateProvider implements UpdateProvider
     int current = getCurrentVersion();
     try
     {
+      Logger.info("applying new version [" + this.version.getName() + "]: " + newVersion);
       this.version.setVersion(newVersion);
       this.version.store();
     }
@@ -118,7 +119,7 @@ public class HBCIUpdateProvider implements UpdateProvider
         throw (ApplicationException) e;
       
       Logger.error("unable to read current version number",e);
-      throw new ApplicationException(plugin.getResources().getI18N().tr("Fehler beim Ermitteln der aktuellen Versionsnummer"));
+      throw new ApplicationException(res.getI18N().tr("Fehler beim Ermitteln der aktuellen Versionsnummer"));
     }
   }
 
@@ -127,6 +128,9 @@ public class HBCIUpdateProvider implements UpdateProvider
 
 /*********************************************************************
  * $Log: HBCIUpdateProvider.java,v $
+ * Revision 1.1  2007/12/11 00:33:35  willuhn
+ * @N Scharfschaltung des neuen Update-Prozesses
+ *
  * Revision 1.2  2007/12/07 00:48:05  willuhn
  * @N weiterer Code fuer den neuen Update-Mechanismus
  *
