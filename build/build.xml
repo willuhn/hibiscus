@@ -47,6 +47,7 @@
 		<property name="project.javadoc" 			  value="${project.release}/javadoc" />
 		<property name="project.zipdir" 			  value="${project.release}/${define.pluginname}" />
 
+		<property name="update.dir"     	      value="updates" />
 		<property name="src.dir" 					      value="src" />
 		<property name="img.dir" 					      value="${src.dir}/img" />
 		<property name="lang.dir" 					    value="${src.dir}/lang" />
@@ -144,6 +145,11 @@
       <fileset dir="${icon.dir}" />
     </copy>
  
+    <mkdir dir="${project.zipdir}/updates" />
+    <copy todir="${project.zipdir}/updates">
+      <fileset dir="${update.dir}" />
+    </copy>
+
 		<copy file="${build.dir}/README" todir="${project.zipdir}" />
     <copy file="plugin.xml" todir="${project.zipdir}" />
 		<copy file="${build.dir}/COPYING" todir="${project.zipdir}" />
@@ -172,6 +178,7 @@
 				<include name=".project" />
 				<include name=".classpath" />
         <include name="plugin.xml" />
+				<include name="${update.dir}/**" />
 				<include name="${doc.dir}/**" />
 				<include name="${lib.dir}/**" />
 				<include name="${src.dir}/**" />
