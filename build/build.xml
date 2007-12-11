@@ -66,10 +66,11 @@
 			<pathelement location="../jameica/releases/jameica-lib.jar" />
 			<pathelement location="../jameica/lib/de_willuhn_ds/de_willuhn_ds.jar" />
 			<pathelement location="../jameica/lib/de_willuhn_util/de_willuhn_util.jar" />
+      <pathelement location="${class.dir}"/> <!-- wird fuer die Update class-Files gebraucht //-->
       <fileset dir="${lib.dir}">
         <include name="**/*.jar" />
       </fileset>
-		</path>
+    </path>
 
 	</target>
 
@@ -147,7 +148,7 @@
  
     <mkdir dir="${project.zipdir}/updates" />
     <javac debug="true" debuglevel="lines,vars,source" source="1.4" target="1.4" encoding="ISO-8859-1" deprecation="true" destdir="${project.zipdir}/updates" srcdir="${update.dir}">
-      <classpath refid="compilepath" />
+      <classpath refid="compilepath"/>
     </javac>
     <copy todir="${project.zipdir}/updates">
       <fileset dir="${update.dir}">
