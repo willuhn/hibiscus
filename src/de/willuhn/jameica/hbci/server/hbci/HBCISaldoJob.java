@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCISaldoJob.java,v $
- * $Revision: 1.27 $
- * $Date: 2007/12/11 13:17:26 $
+ * $Revision: 1.28 $
+ * $Date: 2007/12/11 13:46:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import org.kapott.hbci.GV_Result.GVRSaldoReq;
 import org.kapott.hbci.structures.Saldo;
 
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.messaging.SaldoMessage;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
@@ -56,7 +57,12 @@ public class HBCISaldoJob extends AbstractHBCIJob {
 			this.konto = konto;
 
 			setJobParam("my",Converter.HibiscusKonto2HBCIKonto(konto));
-		}
+
+      String curr = konto.getWaehrung();
+      if (curr == null || curr.length() == 0)
+        curr = HBCIProperties.CURRENCY_DEFAULT_DE;
+      setJobParam("my.curr",curr);
+    }
 		catch (RemoteException e)
 		{
 			throw e;
@@ -118,6 +124,9 @@ public class HBCISaldoJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCISaldoJob.java,v $
+ * Revision 1.28  2007/12/11 13:46:47  willuhn
+ * @N Waehrung auch bei Saldo-Abfrage - siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=43618#43618
+ *
  * Revision 1.27  2007/12/11 13:17:26  willuhn
  * @N Waehrung bei Umsatzabfrage - siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=43618#43618
  *
