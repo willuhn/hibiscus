@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.76 $
- * $Date: 2007/08/29 10:04:42 $
+ * $Revision: 1.77 $
+ * $Date: 2007/12/11 12:23:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -67,6 +67,7 @@ public class KontoControl extends AbstractControl {
 	
 	// Eingabe-Felder
 	private TextInput kontonummer  		= null;
+  private TextInput unterkonto      = null;
 	private TextInput blz          		= null;
 	private Input name				 		    = null;
 	private Input bezeichnung	 		    = null;
@@ -180,6 +181,21 @@ public class KontoControl extends AbstractControl {
     kontonummer.setMandatory(true);
 		return kontonummer;
 	}
+
+  /**
+   * Liefert das Eingabe-Feld fuer die Unterkontonummer.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getUnterkonto() throws RemoteException
+  {
+    if (unterkonto != null)
+      return unterkonto;
+    unterkonto = new TextInput(getKonto().getUnterkonto(),10);
+    unterkonto.setValidChars(HBCIProperties.HBCI_KTO_VALIDCHARS);
+    unterkonto.setComment(i18n.tr("Kann meist frei gelassen werden"));
+    return unterkonto;
+  }
 
   /**
    * Liefert eine Checkbox fuer die Aktivierung des Auto-Check.
@@ -381,6 +397,7 @@ public class KontoControl extends AbstractControl {
 			getKonto().setPassportClass(p.getClass().getName());
 
 			getKonto().setKontonummer((String)getKontonummer().getValue());
+      getKonto().setUnterkonto((String)getUnterkonto().getValue());
 			getKonto().setBLZ((String)getBlz().getValue());
 			getKonto().setName((String)getName().getValue());
 			getKonto().setBezeichnung((String)getBezeichnung().getValue());
@@ -553,6 +570,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.77  2007/12/11 12:23:26  willuhn
+ * @N Bug 355
+ *
  * Revision 1.76  2007/08/29 10:04:42  willuhn
  * @N Bug 476
  *

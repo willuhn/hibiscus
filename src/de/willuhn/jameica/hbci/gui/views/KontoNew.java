@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoNew.java,v $
- * $Revision: 1.22 $
- * $Date: 2007/06/15 11:20:31 $
+ * $Revision: 1.23 $
+ * $Date: 2007/12/11 12:23:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -85,6 +85,7 @@ public class KontoNew extends AbstractView {
 
     TabGroup erweitert = new TabGroup(kontofolder,i18n.tr("HBCI-Konfiguration"));
     erweitert.addLabelPair(i18n.tr("Kontonummer"),          control.getKontonummer());
+    erweitert.addLabelPair(i18n.tr("Unterkontonummer"),     control.getUnterkonto());
     erweitert.addLabelPair(i18n.tr("Bankleitzahl"),         control.getBlz());
     erweitert.addLabelPair(i18n.tr("Kundennummer"),         control.getKundennummer());
     erweitert.addLabelPair(i18n.tr("Sicherheitsmedium"),    control.getPassportAuswahl());
@@ -141,6 +142,9 @@ public class KontoNew extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoNew.java,v $
+ * Revision 1.23  2007/12/11 12:23:26  willuhn
+ * @N Bug 355
+ *
  * Revision 1.22  2007/06/15 11:20:31  willuhn
  * @N Saldo in Kontodetails via Messaging sofort aktualisieren
  * @N Mehr Details in den Namen der Synchronize-Jobs
