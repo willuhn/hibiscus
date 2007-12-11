@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/HBCIDBServiceImpl.java,v $
- * $Revision: 1.24 $
- * $Date: 2007/12/11 00:33:35 $
+ * $Revision: 1.25 $
+ * $Date: 2007/12/11 15:23:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -33,6 +33,7 @@ import de.willuhn.sql.version.UpdateProvider;
 import de.willuhn.sql.version.Updater;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
+import de.willuhn.util.MultipleClassLoader;
 import de.willuhn.util.ProgressMonitor;
 
 /**
@@ -58,14 +59,15 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
   public HBCIDBServiceImpl(String driverClass) throws RemoteException
   {
     super();
-    this.setClassloader(Application.getClassLoader());
-    this.setClassFinder(Application.getClassLoader().getClassFinder());
+    MultipleClassLoader cl = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getClassLoader();
+    this.setClassloader(cl);
+    this.setClassFinder(cl.getClassFinder());
     if (driverClass == null)
       throw new RemoteException("no driver given");
     Logger.info("loading database driver: " + driverClass);
     try
     {
-      Class c = Application.getClassLoader().load(driverClass);
+      Class c = cl.load(driverClass);
       this.driver = (DBSupport) c.newInstance();
     }
     catch (Throwable t)
@@ -273,6 +275,9 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
 
 /*********************************************************************
  * $Log: HBCIDBServiceImpl.java,v $
+ * Revision 1.25  2007/12/11 15:23:53  willuhn
+ * @N Class-Update fuer neue Tabellen "op" und "op_buchung"
+ *
  * Revision 1.24  2007/12/11 00:33:35  willuhn
  * @N Scharfschaltung des neuen Update-Prozesses
  *
