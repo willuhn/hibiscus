@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/migration/Attic/DatabaseMigrationTask.java,v $
- * $Revision: 1.6 $
- * $Date: 2007/10/05 17:07:05 $
+ * $Revision: 1.7 $
+ * $Date: 2007/12/11 00:43:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -35,6 +35,7 @@ import de.willuhn.jameica.hbci.server.TurnusImpl;
 import de.willuhn.jameica.hbci.server.UeberweisungImpl;
 import de.willuhn.jameica.hbci.server.UmsatzImpl;
 import de.willuhn.jameica.hbci.server.UmsatzTypImpl;
+import de.willuhn.jameica.hbci.server.VersionImpl;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.BackgroundTask;
 import de.willuhn.logging.Logger;
@@ -98,6 +99,7 @@ public class DatabaseMigrationTask implements BackgroundTask
       monitor.log(i18n.tr("Starte Datenmigration"));
       Logger.info("################################################");
       Logger.info("starting data migration");
+      copy(VersionImpl.class,monitor);
       copy(TurnusImpl.class,monitor);
       copy(UmsatzTypImpl.class,monitor);
 
@@ -217,6 +219,9 @@ public class DatabaseMigrationTask implements BackgroundTask
 
 /*********************************************************************
  * $Log: DatabaseMigrationTask.java,v $
+ * Revision 1.7  2007/12/11 00:43:38  willuhn
+ * @N Version ebenfalls migrieren
+ *
  * Revision 1.6  2007/10/05 17:07:05  willuhn
  * @N Jetzt aber - Migration fertig ;) ..temporaer aber noch in McKoiToH2MigrationListener deaktiviert
  *
