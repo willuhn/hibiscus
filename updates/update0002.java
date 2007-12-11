@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/updates/update0002.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/12/11 15:25:18 $
+ * $Revision: 1.3 $
+ * $Date: 2007/12/11 16:10:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -45,6 +45,8 @@ public class update0002 implements Update
         "CREATE TABLE op (" +
         "    id IDENTITY," +
         "    name varchar(255) not NULL," +
+        "    pattern varchar(255) NULL," +
+        "    isregex int(1) NULL," + 
         "    betrag double NOT NULL," +
         "    termin date NULL," +
         "    kommentar varchar(1000) NULL," +
@@ -64,6 +66,8 @@ public class update0002 implements Update
         "CREATE TABLE op (" +
         "    id NUMERIC default UNIQUEKEY('op')," +
         "    name varchar(255) not NULL," +
+        "    pattern varchar(255) NULL," +
+        "    isregex int(1) NULL," + 
         "    betrag double NOT NULL," +
         "    termin date NULL," +
         "    kommentar varchar(1000) NULL," +
@@ -83,6 +87,8 @@ public class update0002 implements Update
         "CREATE TABLE op (" +
         "    id int(10) AUTO_INCREMENT," +
         "    name varchar(255) not NULL," +
+        "    pattern varchar(255) NULL," +
+        "    isregex int(1) NULL," + 
         "    betrag double NOT NULL," +
         "    termin date NULL," +
         "    kommentar varchar(1000) NULL," +
@@ -143,6 +149,9 @@ public class update0002 implements Update
 
 /*********************************************************************
  * $Log: update0002.java,v $
+ * Revision 1.3  2007/12/11 16:10:11  willuhn
+ * @N Erster Code fuer "Offene Posten-Verwaltung"
+ *
  * Revision 1.2  2007/12/11 15:25:18  willuhn
  * @N Class-Update fuer neue Tabellen "op" und "op_buchung"
  *
