@@ -1,6 +1,7 @@
 CREATE TABLE konto (
   id IDENTITY,
   kontonummer varchar(15) NOT NULL,
+  unterkonto varchar(10) null,
   blz varchar(15) NOT NULL,
   name varchar(255) NOT NULL,
   bezeichnung varchar(255),
@@ -194,6 +195,26 @@ CREATE TABLE version (
   PRIMARY KEY (id)
 );
 
+CREATE TABLE op (
+  id IDENTITY,
+  name varchar(255) not NULL,
+  pattern varchar(255) NULL,
+  isregex int(1) NULL,
+  betrag double NOT NULL,
+  termin date NULL,
+  kommentar varchar(1000) NULL,
+  UNIQUE (id),
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE op_buchung (
+  id IDENTITY,
+  umsatz_id int(10) NOT NULL,
+  op_id int(10) NOT NULL,
+  UNIQUE (id),
+  PRIMARY KEY (id)
+);
+
 
 ALTER TABLE ueberweisung ADD CONSTRAINT fk_konto FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE umsatz ADD CONSTRAINT fk_konto2 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
@@ -225,5 +246,7 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
+  
+INSERT INTO version (name,version) values ('db',2);
   
 COMMIT;

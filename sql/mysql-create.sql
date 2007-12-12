@@ -1,6 +1,7 @@
 CREATE TABLE konto (
        id int(10) AUTO_INCREMENT
      , kontonummer VARCHAR(15) NOT NULL
+     , unterkonto varchar(10) null
      , blz VARCHAR(15) NOT NULL
      , name VARCHAR(255) NOT NULL
      , bezeichnung VARCHAR(255)
@@ -193,6 +194,27 @@ CREATE TABLE version (
      , PRIMARY KEY (id)
 )TYPE=InnoDB;
 
+CREATE TABLE op (
+  id int(10) AUTO_INCREMENT,
+  name varchar(255) not NULL,
+  pattern varchar(255) NULL,
+  isregex int(1) NULL,
+  betrag double NOT NULL,
+  termin date NULL,
+  kommentar varchar(1000) NULL,
+  UNIQUE (id),
+  PRIMARY KEY (id)
+)TYPE=InnoDB;
+
+CREATE TABLE op_buchung (
+  id int(10) AUTO_INCREMENT,
+  umsatz_id int(10) NOT NULL,
+  op_id int(10) NOT NULL,
+  UNIQUE (id),
+  PRIMARY KEY (id)
+)TYPE=InnoDB;
+
+
 CREATE INDEX idx_lastschrift_konto ON lastschrift(konto_id);
 CREATE INDEX idx_sueberweisung_konto ON sueberweisung(konto_id);
 CREATE INDEX idx_umsatztyp_umsatztyp ON umsatztyp(parent_id);
@@ -223,3 +245,6 @@ ALTER TABLE umsatz ADD INDEX (valuta);
 ALTER TABLE protokoll ADD INDEX (datum);
 ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
+
+
+INSERT INTO version (name,version) values ('db',2);
