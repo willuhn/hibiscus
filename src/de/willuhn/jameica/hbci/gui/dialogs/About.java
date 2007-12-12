@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/About.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/10/07 19:35:09 $
+ * $Revision: 1.4 $
+ * $Date: 2007/12/12 11:17:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
@@ -26,6 +27,8 @@ import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.rmi.Version;
 import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -54,6 +57,10 @@ public class About extends AbstractDialog
     AbstractPlugin plugin = Application.getPluginLoader().getPlugin(HBCI.class);
     I18N i18n = plugin.getResources().getI18N();
 
+    DBIterator list = Settings.getDBService().createList(Version.class);
+    list.addFilter("name = ?", new String[]{"db"});
+    Version version = (Version) list.next();
+    
     setTitle(i18n.tr("About"));
 
     Label l = GUI.getStyleFactory().createLabel(parent,SWT.BORDER);
@@ -67,7 +74,8 @@ public class About extends AbstractDialog
       "<p>Licence: GPL [<a href=\"" + Program.class.getName() + "\">http://www.gnu.org/copyleft/gpl.html</a>]</p>" +
       "<p>Copyright by Olaf Willuhn [<a href=\"" + Program.class.getName() + "\">mailto:hibiscus@willuhn.de</a>]</p>" +
       "<p><a href=\"" + Program.class.getName() + "\">http://www.willuhn.de/projects/hibiscus/</a></p>" +
-      "<p>Version: " + plugin.getManifest().getVersion() + "</p>" +
+      "<p>Software-Version: " + plugin.getManifest().getVersion() + "</p>" +
+      "<p>Datenbank-Version: " + version.getVersion() + "</p>" +
       "<p>Build: " + plugin.getManifest().getBuildnumber() + " [Datum " + plugin.getManifest().getBuildDate() + "]</p>" +
       "</form>");
 
@@ -96,6 +104,9 @@ public class About extends AbstractDialog
 
 /**********************************************************************
  * $Log: About.java,v $
+ * Revision 1.4  2007/12/12 11:17:41  willuhn
+ * @N Datenbank-Version in About-Dialog anzeigen
+ *
  * Revision 1.3  2006/10/07 19:35:09  willuhn
  * @B Zugriff auf buildnumber hatte sich mit neuem Pluginloader geaendert
  *
