@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.43 $
- * $Date: 2007/12/11 12:23:26 $
+ * $Revision: 1.44 $
+ * $Date: 2007/12/13 14:20:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -253,7 +253,14 @@ public class Converter {
 		// restlichen leider ignorieren um nicht ueber die 27-Zeichen Maximum
 		// pro Zweck zu kommen.
 		if (d.usage.length > 1)
-			auftrag.setZweck2(d.usage[1]);
+    {
+      // BUGZILLA 517
+      String usage2 = d.usage[1];
+      if (usage2 != null)
+        usage2 = usage2.trim();
+      if (usage2 != null && usage2.length() > 0)
+        auftrag.setZweck2(usage2);
+    }
 
 		auftrag.setTurnus(TurnusHelper.createByDauerAuftrag(d));
 		return auftrag;
@@ -433,6 +440,9 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.44  2007/12/13 14:20:00  willuhn
+ * @B Bug 517
+ *
  * Revision 1.43  2007/12/11 12:23:26  willuhn
  * @N Bug 355
  *

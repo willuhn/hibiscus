@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragDeleteJob.java,v $
- * $Revision: 1.17 $
- * $Date: 2007/12/06 23:53:56 $
+ * $Revision: 1.18 $
+ * $Date: 2007/12/13 14:20:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -88,6 +88,8 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
       setJobParam("usage",dauerauftrag.getZweck());
 
       String zweck2 = dauerauftrag.getZweck2();
+      if (zweck2 != null)
+        zweck2 = zweck2.trim(); // BUGZILLA 517
       if (zweck2 != null && zweck2.length() > 0)
         setJobParam("usage_2",zweck2);
 
@@ -179,6 +181,9 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIDauerauftragDeleteJob.java,v $
+ * Revision 1.18  2007/12/13 14:20:00  willuhn
+ * @B Bug 517
+ *
  * Revision 1.17  2007/12/06 23:53:56  willuhn
  * @B Bug 490
  *
