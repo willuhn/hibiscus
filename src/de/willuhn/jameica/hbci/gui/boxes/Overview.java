@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Overview.java,v $
- * $Revision: 1.9 $
- * $Date: 2007/05/25 14:16:47 $
+ * $Revision: 1.10 $
+ * $Date: 2007/12/18 17:10:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -29,7 +29,8 @@ import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.util.Color;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
@@ -79,7 +80,7 @@ public class Overview extends AbstractBox implements Box
    */
   public void paint(Composite parent) throws RemoteException
   {
-    LabelGroup group = new LabelGroup(parent,getName());
+    Container group = new SimpleContainer(parent);
     group.addLabelPair(i18n.tr("Konto") + ":", getKontoAuswahl());
     group.addLabelPair(i18n.tr("Beginn des Zeitraumes") + ":", getStart());
     group.addLabelPair(i18n.tr("Ende des Zeitraumes") + ":", getEnd());
@@ -312,6 +313,10 @@ public class Overview extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: Overview.java,v $
+ * Revision 1.10  2007/12/18 17:10:22  willuhn
+ * @N Neues ExpandPart
+ * @N Boxen auf der Startseite koennen jetzt zusammengeklappt werden
+ *
  * Revision 1.9  2007/05/25 14:16:47  willuhn
  * @B Bug 405
  *

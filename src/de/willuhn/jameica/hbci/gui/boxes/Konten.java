@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Konten.java,v $
- * $Revision: 1.4 $
- * $Date: 2007/08/29 10:04:42 $
+ * $Revision: 1.5 $
+ * $Date: 2007/12/18 17:10:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,7 +20,6 @@ import org.eclipse.swt.widgets.Composite;
 import de.willuhn.jameica.gui.boxes.AbstractBox;
 import de.willuhn.jameica.gui.boxes.Box;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
-import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.KontoNew;
@@ -74,7 +73,6 @@ public class Konten extends AbstractBox implements Box
    */
   public void paint(Composite parent) throws RemoteException
   {
-    new Headline(parent,getName());
     KontoList l = new KontoList(new KontoNew());
     l.addColumn(i18n.tr("Saldo aktualisiert am"),"saldo_datum", new DateFormatter(HBCI.LONGDATEFORMAT));
     l.setSummary(false);
@@ -94,6 +92,10 @@ public class Konten extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: Konten.java,v $
+ * Revision 1.5  2007/12/18 17:10:22  willuhn
+ * @N Neues ExpandPart
+ * @N Boxen auf der Startseite koennen jetzt zusammengeklappt werden
+ *
  * Revision 1.4  2007/08/29 10:04:42  willuhn
  * @N Bug 476
  *

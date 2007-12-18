@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Adressbuch.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/06/29 23:10:33 $
+ * $Revision: 1.6 $
+ * $Date: 2007/12/18 17:10:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,6 @@ import org.eclipse.swt.widgets.Composite;
 
 import de.willuhn.jameica.gui.boxes.AbstractBox;
 import de.willuhn.jameica.gui.boxes.Box;
-import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerNew;
@@ -73,7 +72,6 @@ public class Adressbuch extends AbstractBox implements Box
    */
   public void paint(Composite parent) throws RemoteException
   {
-    new Headline(parent,getName());
     EmpfaengerList l = new EmpfaengerList(new EmpfaengerNew());
     l.setSummary(false);
     l.paint(parent);
@@ -91,6 +89,10 @@ public class Adressbuch extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: Adressbuch.java,v $
+ * Revision 1.6  2007/12/18 17:10:22  willuhn
+ * @N Neues ExpandPart
+ * @N Boxen auf der Startseite koennen jetzt zusammengeklappt werden
+ *
  * Revision 1.5  2006/06/29 23:10:33  willuhn
  * @R Box-System aus Hibiscus in Jameica-Source verschoben
  * @C keine eigene Startseite mehr, jetzt alles ueber Jameica-Boxsystem geregelt

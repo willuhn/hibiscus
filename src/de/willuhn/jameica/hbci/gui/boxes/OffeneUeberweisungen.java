@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/OffeneUeberweisungen.java,v $
- * $Revision: 1.8 $
- * $Date: 2007/12/14 11:16:47 $
+ * $Revision: 1.9 $
+ * $Date: 2007/12/18 17:10:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,7 +26,6 @@ import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.parts.TablePart;
-import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.menus.UeberweisungList;
@@ -106,7 +105,6 @@ public class OffeneUeberweisungen extends AbstractBox implements Box
     offeneUeberweisungen.setContextMenu(new UeberweisungList());
     offeneUeberweisungen.setSummary(false);
     
-    new Headline(parent,getName());
     offeneUeberweisungen.paint(parent);
   }
 
@@ -123,6 +121,10 @@ public class OffeneUeberweisungen extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: OffeneUeberweisungen.java,v $
+ * Revision 1.9  2007/12/18 17:10:22  willuhn
+ * @N Neues ExpandPart
+ * @N Boxen auf der Startseite koennen jetzt zusammengeklappt werden
+ *
  * Revision 1.8  2007/12/14 11:16:47  willuhn
  * @N Box "Offene und faellige Ueberweisungen" wieder aktiviert (Mail von Falk vom 14.12.2007)
  *

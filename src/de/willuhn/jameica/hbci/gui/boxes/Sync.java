@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Sync.java,v $
- * $Revision: 1.13 $
- * $Date: 2007/07/10 09:33:38 $
+ * $Revision: 1.14 $
+ * $Date: 2007/12/18 17:10:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,7 +23,6 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.boxes.AbstractBox;
 import de.willuhn.jameica.gui.boxes.Box;
 import de.willuhn.jameica.gui.util.ButtonArea;
-import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.HBCISynchronize;
@@ -69,8 +68,6 @@ public class Sync extends AbstractBox implements Box
    */
   public void paint(Composite parent) throws RemoteException
   {
-    new Headline(parent,getName());
-
     // BUGZILLA 433
     this.list = new SynchronizeList();
     list.paint(parent);
@@ -176,6 +173,10 @@ public class Sync extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: Sync.java,v $
+ * Revision 1.14  2007/12/18 17:10:22  willuhn
+ * @N Neues ExpandPart
+ * @N Boxen auf der Startseite koennen jetzt zusammengeklappt werden
+ *
  * Revision 1.13  2007/07/10 09:33:38  willuhn
  * @B Bug 433
  *
