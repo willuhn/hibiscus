@@ -225,7 +225,7 @@
 
   <target depends="init,compile,cvstag,jar,signjar,zip,javadoc,src,sign,clean" description="build an official release" name="all" />
 
-  <target depends="init,compile,jar,signjar,zip,src,clean" description="build inofficial release" name="fast" />
+  <target depends="init,compile,jar,zip,src,clean" description="build inofficial release" name="fast" />
 
   <target depends="init,cvs,compile,jar,zip,javadoc,src" description="build nightly build" name="nightly">
     <mkdir dir="${project.nightly}" />
