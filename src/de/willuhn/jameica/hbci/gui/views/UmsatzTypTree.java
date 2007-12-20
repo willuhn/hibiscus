@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzTypTree.java,v $
- * $Revision: 1.4 $
- * $Date: 2007/08/28 09:47:09 $
+ * $Revision: 1.5 $
+ * $Date: 2007/12/20 18:28:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,6 +12,8 @@
  **********************************************************************/
 
 package de.willuhn.jameica.hbci.gui.views;
+
+import java.rmi.RemoteException;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -29,6 +31,7 @@ import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.UmsatzTypTreeExport;
 import de.willuhn.jameica.hbci.gui.controller.UmsatzTypTreeControl;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -43,15 +46,13 @@ public class UmsatzTypTree extends AbstractView
    */
   public void bind() throws Exception
   {
-    I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class)
-        .getResources().getI18N();
+    final I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
     GUI.getView().setTitle(i18n.tr("Umsätze nach Kategorien"));
 
     final UmsatzTypTreeControl control = new UmsatzTypTreeControl(this);
 
-    LabelGroup settings = new LabelGroup(getParent(), i18n
-        .tr("Anzeige einschränken"));
+    LabelGroup settings = new LabelGroup(getParent(), i18n.tr("Anzeige einschränken"));
 
     settings.addLabelPair(i18n.tr("Konto"), control.getKontoAuswahl());
     settings.addLabelPair(i18n.tr("Start-Datum"), control.getStart());
@@ -74,7 +75,25 @@ public class UmsatzTypTree extends AbstractView
         control.handleExpand();
       }
     });
-    buttons.addButton(i18n.tr("Exportieren..."), new UmsatzTypTreeExport(),control.getUmsatzTree());
+    buttons.addButton(i18n.tr("Exportieren..."), new Action(){
+      public void handleAction(Object context) throws ApplicationException
+      {
+        // Muss ich in die Action verpacken, weil der Button sonst mit dem
+        // Default-Tree gefuellt wird. Wird die Aktion dann tatsaechlich
+        // ausgefuehrt, wuerde die Action immer den gleichen Tree erhalten -
+        // unabhaengig davon, was in der View gerade angezeigt wird.
+        // Siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=43866#43866
+        try
+        {
+          new UmsatzTypTreeExport().handleAction(control.getUmsatzTree());
+        }
+        catch (RemoteException re)
+        {
+          Logger.error("unable to load umsatz tree",re);
+          throw new ApplicationException(i18n.tr("Fehler beim Laden der Umsätze"),re);
+        }
+      }
+    });
     buttons.addButton(i18n.tr("Aktualisieren"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -87,6 +106,9 @@ public class UmsatzTypTree extends AbstractView
 }
 /*******************************************************************************
  * $Log: UmsatzTypTree.java,v $
+ * Revision 1.5  2007/12/20 18:28:22  willuhn
+ * @B Ausgewaehltes Konto wird beim Export nicht beruecksichtigt
+ *
  * Revision 1.4  2007/08/28 09:47:09  willuhn
  * @N Bug 395
  *
