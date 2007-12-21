@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/migration/Attic/McKoiToH2MigrationTask.java,v $
- * $Revision: 1.5 $
- * $Date: 2007/10/05 17:07:05 $
+ * $Revision: 1.6 $
+ * $Date: 2007/12/21 13:46:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,6 +24,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.jameica.hbci.rmi.Version;
 import de.willuhn.jameica.hbci.server.DBSupportH2Impl;
 import de.willuhn.jameica.hbci.server.HBCIDBServiceImpl;
 import de.willuhn.jameica.hbci.server.ProtokollImpl;
@@ -56,6 +57,15 @@ public class McKoiToH2MigrationTask extends DatabaseMigrationTask
       target.start();
       target.install();
       
+      // Die Versionstabelle wird bereits bei der Erstellung mit
+      // einem Initial-Wert erzeugt. Den loeschen wir, weil wir
+      // die Datenbank-Version aus der Quelle uebernehmen.
+      DBIterator versions = target.createList(Version.class);
+      while (versions.hasNext())
+      {
+        Version v = (Version) versions.next();
+        v.delete();
+      }
       setTarget(target);
     }
     catch (RemoteException re)
@@ -177,6 +187,9 @@ public class McKoiToH2MigrationTask extends DatabaseMigrationTask
 
 /**********************************************************************
  * $Log: McKoiToH2MigrationTask.java,v $
+ * Revision 1.6  2007/12/21 13:46:20  willuhn
+ * @N H2-Migration scharf geschaltet
+ *
  * Revision 1.5  2007/10/05 17:07:05  willuhn
  * @N Jetzt aber - Migration fertig ;) ..temporaer aber noch in McKoiToH2MigrationListener deaktiviert
  *

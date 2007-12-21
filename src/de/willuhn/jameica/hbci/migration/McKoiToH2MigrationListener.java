@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/migration/Attic/McKoiToH2MigrationListener.java,v $
- * $Revision: 1.5 $
- * $Date: 2007/10/05 17:14:18 $
+ * $Revision: 1.6 $
+ * $Date: 2007/12/21 13:46:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -39,7 +39,7 @@ public class McKoiToH2MigrationListener implements MessageConsumer
   public boolean autoRegister()
   {
     Settings s = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
-    return s.getBoolean("migration.h2",false);
+    return s.getBoolean("migration.h2",true);
   }
 
   /**
@@ -71,12 +71,15 @@ public class McKoiToH2MigrationListener implements MessageConsumer
       return;
     
     Settings s = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
-    if (!s.getBoolean("migration.h2",false))
+    if (!s.getBoolean("migration.h2",true))
       return;
 
     I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     
-    String text = i18n.tr("Das Datenbank-Format von Hibiscus wurde umgestellt.\nMöchten Sie jetzt die Übernahme der Daten in das neue Format durchführen?");
+    String text = i18n.tr("Das Datenbank-Format von Hibiscus wird umgestellt.\n" +
+        "Sie finden weitere Informationen zu diesem Thema unter\n\n" +
+        "http://hibiscus.berlios.de/doku.php?id=support:h2-migration\n\n" +
+        "Möchten Sie jetzt die Übernahme der Daten in das neue Format durchführen?");
     if (!Application.getCallback().askUser(text))
       return;
     
@@ -89,6 +92,9 @@ public class McKoiToH2MigrationListener implements MessageConsumer
 
 /**********************************************************************
  * $Log: McKoiToH2MigrationListener.java,v $
+ * Revision 1.6  2007/12/21 13:46:20  willuhn
+ * @N H2-Migration scharf geschaltet
+ *
  * Revision 1.5  2007/10/05 17:14:18  willuhn
  * @N Start der Migration konfigurierbar gemacht
  *
