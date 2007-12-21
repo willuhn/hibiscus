@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/AbstractDTAUSImporter.java,v $
- * $Revision: 1.10 $
- * $Date: 2007/04/23 18:07:14 $
+ * $Revision: 1.11 $
+ * $Date: 2007/12/21 14:13:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -71,7 +71,7 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
       if (format == null || !(format instanceof MyIOFormat))
         throw new ApplicationException(i18n.tr("Unbekanntes Import-Format"));
       
-      int toleranz = settings.getInt("dtaus.fehlertoleranz",DtausDateiParser.SPEZIFIKATIONSKONFORM);
+      int toleranz = settings.getInt("dtaus.fehlertoleranz",DtausDateiParser.UMLAUTUMSETZUNG);
       
       Logger.info("dtaus error tolerance: " + toleranz);
       DtausDateiParser parser = new DtausDateiParser(is,toleranz);
@@ -288,6 +288,9 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
 
 /*********************************************************************
  * $Log: AbstractDTAUSImporter.java,v $
+ * Revision 1.11  2007/12/21 14:13:15  willuhn
+ * @C Default-Format auf Umlautumsetzung (CP850) geaendert
+ *
  * Revision 1.10  2007/04/23 18:07:14  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
