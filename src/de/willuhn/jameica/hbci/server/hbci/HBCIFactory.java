@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.57 $
- * $Date: 2007/12/06 23:53:56 $
+ * $Revision: 1.58 $
+ * $Date: 2007/12/21 17:37:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -491,7 +491,7 @@ public class HBCIFactory {
           HBCIJob j = handler.newJob(job.getIdentifier());
           dumpJob(j);
           job.setJob(j);
-          handler.addJob(j);
+          j.addToQueue();
           if (job.isExclusive())
           {
             Logger.info("job will be executed in seperate hbci message");
@@ -672,6 +672,9 @@ public class HBCIFactory {
 
 /*******************************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.58  2007/12/21 17:37:29  willuhn
+ * @N Update auf HBCI4Java 2.5.6
+ *
  * Revision 1.57  2007/12/06 23:53:56  willuhn
  * @B Bug 490
  *
