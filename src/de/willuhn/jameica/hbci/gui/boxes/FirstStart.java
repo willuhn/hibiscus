@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/FirstStart.java,v $
- * $Revision: 1.3 $
- * $Date: 2007/03/29 15:30:31 $
+ * $Revision: 1.4 $
+ * $Date: 2007/12/29 18:45:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -133,11 +133,22 @@ public class FirstStart extends AbstractBox
     buttons.addButton(i18n.tr("Sicherheitsmedium einrichten >>"),a,null,true);
     buttons.addButton(i18n.tr("Konten-Übersicht"),a2,null);
   }
+
+  /**
+   * @see de.willuhn.jameica.gui.boxes.AbstractBox#getHeight()
+   */
+  public int getHeight()
+  {
+    return 200;
+  }
 }
 
 
 /*********************************************************************
  * $Log: FirstStart.java,v $
+ * Revision 1.4  2007/12/29 18:45:37  willuhn
+ * @N Hoehe von Boxen explizit konfigurierbar
+ *
  * Revision 1.3  2007/03/29 15:30:31  willuhn
  * @N Uebersichtlichere Darstellung der Systemstart-Meldungen
  * @C FirstStart-View bei Initialisierungsfehler nicht anzeigen

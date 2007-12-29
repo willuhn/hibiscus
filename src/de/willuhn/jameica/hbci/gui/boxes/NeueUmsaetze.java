@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/NeueUmsaetze.java,v $
- * $Revision: 1.3 $
- * $Date: 2007/12/18 17:10:22 $
+ * $Revision: 1.4 $
+ * $Date: 2007/12/29 18:45:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -85,11 +85,22 @@ public class NeueUmsaetze extends AbstractBox
   {
     return super.isActive() && !Settings.isFirstStart();
   }
+  
+  /**
+   * @see de.willuhn.jameica.gui.boxes.AbstractBox#getHeight()
+   */
+  public int getHeight()
+  {
+    return 150;
+  }
 }
 
 
 /*********************************************************************
  * $Log: NeueUmsaetze.java,v $
+ * Revision 1.4  2007/12/29 18:45:37  willuhn
+ * @N Hoehe von Boxen explizit konfigurierbar
+ *
  * Revision 1.3  2007/12/18 17:10:22  willuhn
  * @N Neues ExpandPart
  * @N Boxen auf der Startseite koennen jetzt zusammengeklappt werden
