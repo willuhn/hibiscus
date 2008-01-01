@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/migration/Attic/McKoiToH2MigrationTask.java,v $
- * $Revision: 1.6 $
- * $Date: 2007/12/21 13:46:20 $
+ * $Revision: 1.7 $
+ * $Date: 2008/01/01 13:04:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,6 +23,7 @@ import de.willuhn.jameica.gui.internal.action.FileClose;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
+import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.Version;
 import de.willuhn.jameica.hbci.server.DBSupportH2Impl;
@@ -130,6 +131,18 @@ public class McKoiToH2MigrationTask extends DatabaseMigrationTask
         u.setKommentar(rest + System.getProperty("line.separator","\n") + comment);
       }
     }
+    // Die Kommentare koennen ggf. laenger als 1000 Zeichen sein.
+    // H2 toleriert das nicht - daher korrigieren wir die Laenge
+    // Siehe: http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?t=7888
+    else if (object instanceof Protokoll)
+    {
+      Protokoll p = (Protokoll) object;
+      String k = p.getKommentar();
+      if (k == null || k.length() <= 1000)
+        return;
+      monitor.log(i18n.tr("  Korrigiere Kommentar von Protokoll-Eintrag [ID: {0}]",p.getID()));
+      p.setKommentar(k.substring(0,999));
+    }
     
     super.fixObject(object,monitor);
   }
@@ -187,6 +200,9 @@ public class McKoiToH2MigrationTask extends DatabaseMigrationTask
 
 /**********************************************************************
  * $Log: McKoiToH2MigrationTask.java,v $
+ * Revision 1.7  2008/01/01 13:04:51  willuhn
+ * @B Korrektur der Laenge von Kommentaren in Protokollen
+ *
  * Revision 1.6  2007/12/21 13:46:20  willuhn
  * @N H2-Migration scharf geschaltet
  *
