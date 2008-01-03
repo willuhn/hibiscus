@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/ProtokollImpl.java,v $
- * $Revision: 1.11 $
- * $Date: 2007/04/25 15:06:47 $
+ * $Revision: 1.12 $
+ * $Date: 2008/01/03 00:15:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -52,6 +52,18 @@ public class ProtokollImpl extends AbstractDBObject implements Protokoll {
    */
   public String getPrimaryAttribute() throws RemoteException {
     return "kommentar";
+  }
+
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#store()
+   */
+  public void store() throws RemoteException, ApplicationException
+  {
+    // Kommentar ggf. auf 1000 Zeichen kuerzen - H2 hat sich sonst affig ;)
+    String k = getKommentar();
+    if (k != null && k.length() > 1000)
+      setKommentar(k.substring(0,999));
+    super.store();
   }
 
   /**
@@ -158,6 +170,9 @@ public class ProtokollImpl extends AbstractDBObject implements Protokoll {
 
 /**********************************************************************
  * $Log: ProtokollImpl.java,v $
+ * Revision 1.12  2008/01/03 00:15:11  willuhn
+ * @B Korrektur der Laenge von Kommentaren in Protokollen
+ *
  * Revision 1.11  2007/04/25 15:06:47  willuhn
  * @N Datum nur ueberschreiben, wenn noch nicht gesetzt
  *
