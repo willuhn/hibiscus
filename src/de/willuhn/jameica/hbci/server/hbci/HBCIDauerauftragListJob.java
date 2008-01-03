@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragListJob.java,v $
- * $Revision: 1.32 $
- * $Date: 2007/10/18 10:24:49 $
+ * $Revision: 1.33 $
+ * $Date: 2008/01/03 13:26:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -190,7 +190,7 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
         auftrag.setKonto(this.konto);
         if (auftrag.getOrderID() != null && 
             auftrag.getOrderID().equals(ex.getOrderID()) &&
-            auftrag.getKonto().equals(ex.getKonto())
+            this.konto.getID().equals(ex.getKonto().getID())
            )
         {
           found = true;
@@ -212,6 +212,9 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIDauerauftragListJob.java,v $
+ * Revision 1.33  2008/01/03 13:26:08  willuhn
+ * @B Test-Bugfix - Dauerauftraege wurden doppelt angelegt
+ *
  * Revision 1.32  2007/10/18 10:24:49  willuhn
  * @B Foreign-Objects in AbstractDBObject auch dann korrekt behandeln, wenn sie noch nicht gespeichert wurden
  * @C Beim Abrufen der Dauerauftraege nicht mehr nach Konten suchen sondern hart dem Konto zuweisen, ueber das sie abgerufen wurden
