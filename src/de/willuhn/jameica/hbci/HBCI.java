@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.106 $
- * $Date: 2007/12/06 09:24:26 $
+ * $Revision: 1.107 $
+ * $Date: 2008/01/03 18:20:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,6 +26,9 @@ import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.server.HBCIDBServiceImpl;
+import de.willuhn.jameica.messaging.Message;
+import de.willuhn.jameica.messaging.MessageConsumer;
+import de.willuhn.jameica.messaging.SettingsChangedMessage;
 import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Level;
@@ -209,6 +212,31 @@ public class HBCI extends AbstractPlugin
         Logger.warn("unable to map jameica log level into hbci4java log level. using default");
       }
       HBCIUtils.setParam("log.loglevel.default",""+logLevel);
+      Application.getMessagingFactory().registerMessageConsumer(new MessageConsumer() {
+        public void handleMessage(Message message) throws Exception
+        {
+          try
+          {
+            int ll = ((Integer) LOGMAPPING.get(Logger.getLevel())).intValue();
+            Logger.info("changing hbci4java loglevel to " + ll);
+            HBCIUtils.setParam("log.loglevel.default",""+ ll);
+          }
+          catch (Exception e)
+          {
+            Logger.write(Level.INFO,"unable to update hbci4java log level",e);
+          }
+        }
+        public Class[] getExpectedMessageTypes()
+        {
+          return new Class[]{SettingsChangedMessage.class};
+        }
+      
+        public boolean autoRegister()
+        {
+          return false;
+        }
+      
+      });
       //////////////////////////////////
       
       HBCIUtils.setParam("client.product.name","HBCI4Java (Hibiscus " + getManifest().getVersion() + ")");
@@ -300,6 +328,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.107  2008/01/03 18:20:31  willuhn
+ * @N geaendertes Jameica-Loglevel live in HBCI4Java uebernehmen
+ *
  * Revision 1.106  2007/12/06 09:24:26  willuhn
  * @C neuer Jameica-Konstruktor
  *
