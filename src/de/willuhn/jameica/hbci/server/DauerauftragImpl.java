@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DauerauftragImpl.java,v $
- * $Revision: 1.25 $
- * $Date: 2007/10/18 10:24:49 $
+ * $Revision: 1.26 $
+ * $Date: 2008/01/04 23:42:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -162,6 +162,9 @@ public class DauerauftragImpl extends AbstractHibiscusTransferImpl
   protected void insertCheck() throws ApplicationException
   {
 		try {
+      Date ersteZahlung = getErsteZahlung();
+      Date letzteZahlung = getLetzteZahlung();
+      
       // BUGZILLA 197
       if (getBetrag() == 0.0)
         throw new ApplicationException(i18n.tr("Bitte geben Sie einen gültigen Betrag ein."));
@@ -169,7 +172,7 @@ public class DauerauftragImpl extends AbstractHibiscusTransferImpl
       if (getTurnus() == null)
 				throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Zahlungsturnus aus"));
 
-			if (getErsteZahlung() == null)
+			if (ersteZahlung == null)
 				throw new ApplicationException(i18n.tr("Bitte geben Sie ein Datum für die erste Zahlung an"));
 
 			// Jetzt muessen wir noch checken, ob sich das Datum nicht in der Vergangenheit
@@ -181,15 +184,15 @@ public class DauerauftragImpl extends AbstractHibiscusTransferImpl
 			if (!isActive())
 			{
 				Date today = new Date(System.currentTimeMillis() - (1000l * 60 * 60 * 24));
-				if (getErsteZahlung().before(today))
+				if (ersteZahlung.before(today))
 					throw new ApplicationException(i18n.tr("Bitte wählen Sie für die erste Zahlung ein Datum in der Zukunft"));
 			}
 
 			// Und jetzt noch checken, dass sich das Datum der letzten Zahlung
 			// nicht vor der ersten Zahlung befindet
       // BUGZILLA 371
-			if (getLetzteZahlung() != null && getLetzteZahlung().before(getErsteZahlung()))
-				throw new ApplicationException(i18n.tr("Bei Angabe eines Datum für die letzte Zahlung muss dieses nach der ersten Zahlung liegen"));
+			if (letzteZahlung != null && letzteZahlung.before(ersteZahlung))
+				throw new ApplicationException(i18n.tr("Bei Angabe eines Datum für die letzte Zahlung ({0}) muss dieses nach der ersten Zahlung ({1}) liegen", new String[]{HBCI.DATEFORMAT.format(letzteZahlung), HBCI.DATEFORMAT.format(ersteZahlung)}));
 		}
 		catch (RemoteException e)
 		{
@@ -337,6 +340,9 @@ public class DauerauftragImpl extends AbstractHibiscusTransferImpl
 
 /**********************************************************************
  * $Log: DauerauftragImpl.java,v $
+ * Revision 1.26  2008/01/04 23:42:33  willuhn
+ * @N Bemaengeltes Datum in Dauerauftraegen mit ausgeben (Debugging)
+ *
  * Revision 1.25  2007/10/18 10:24:49  willuhn
  * @B Foreign-Objects in AbstractDBObject auch dann korrekt behandeln, wenn sie noch nicht gespeichert wurden
  * @C Beim Abrufen der Dauerauftraege nicht mehr nach Konten suchen sondern hart dem Konto zuweisen, ueber das sie abgerufen wurden
