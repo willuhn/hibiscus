@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/OffeneUeberweisungen.java,v $
- * $Revision: 1.9 $
- * $Date: 2007/12/18 17:10:22 $
+ * $Revision: 1.10 $
+ * $Date: 2008/01/04 16:39:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -75,6 +75,14 @@ public class OffeneUeberweisungen extends AbstractBox implements Box
   }
 
   /**
+   * @see de.willuhn.jameica.gui.boxes.AbstractBox#getHeight()
+   */
+  public int getHeight()
+  {
+    return 150;
+  }
+
+  /**
    * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
    */
   public void paint(Composite parent) throws RemoteException
@@ -121,6 +129,9 @@ public class OffeneUeberweisungen extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: OffeneUeberweisungen.java,v $
+ * Revision 1.10  2008/01/04 16:39:31  willuhn
+ * @N Weitere Hoehen-Angaben von Komponenten
+ *
  * Revision 1.9  2007/12/18 17:10:22  willuhn
  * @N Neues ExpandPart
  * @N Boxen auf der Startseite koennen jetzt zusammengeklappt werden

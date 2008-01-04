@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/UmsatzTyp.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/06/29 23:10:33 $
+ * $Revision: 1.6 $
+ * $Date: 2008/01/04 16:39:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -60,6 +60,14 @@ public class UmsatzTyp extends AbstractBox
   }
 
   /**
+   * @see de.willuhn.jameica.gui.boxes.AbstractBox#getHeight()
+   */
+  public int getHeight()
+  {
+    return 350;
+  }
+
+  /**
    * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
    */
   public void paint(Composite parent) throws RemoteException
@@ -82,6 +90,9 @@ public class UmsatzTyp extends AbstractBox
 
 /*********************************************************************
  * $Log: UmsatzTyp.java,v $
+ * Revision 1.6  2008/01/04 16:39:31  willuhn
+ * @N Weitere Hoehen-Angaben von Komponenten
+ *
  * Revision 1.5  2006/06/29 23:10:33  willuhn
  * @R Box-System aus Hibiscus in Jameica-Source verschoben
  * @C keine eigene Startseite mehr, jetzt alles ueber Jameica-Boxsystem geregelt

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Sync.java,v $
- * $Revision: 1.14 $
- * $Date: 2007/12/18 17:10:22 $
+ * $Revision: 1.15 $
+ * $Date: 2008/01/04 16:39:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -143,6 +143,14 @@ public class Sync extends AbstractBox implements Box
   }
 
   /**
+   * @see de.willuhn.jameica.gui.boxes.AbstractBox#getHeight()
+   */
+  public int getHeight()
+  {
+    return 200;
+  }
+
+  /**
    * Startet die Synchronisierung der Konten.
    */
   private void handleStart()
@@ -173,6 +181,9 @@ public class Sync extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: Sync.java,v $
+ * Revision 1.15  2008/01/04 16:39:31  willuhn
+ * @N Weitere Hoehen-Angaben von Komponenten
+ *
  * Revision 1.14  2007/12/18 17:10:22  willuhn
  * @N Neues ExpandPart
  * @N Boxen auf der Startseite koennen jetzt zusammengeklappt werden

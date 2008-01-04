@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Adressbuch.java,v $
- * $Revision: 1.6 $
- * $Date: 2007/12/18 17:10:22 $
+ * $Revision: 1.7 $
+ * $Date: 2008/01/04 16:39:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -68,6 +68,14 @@ public class Adressbuch extends AbstractBox implements Box
   }
 
   /**
+   * @see de.willuhn.jameica.gui.boxes.AbstractBox#getHeight()
+   */
+  public int getHeight()
+  {
+    return 200;
+  }
+
+  /**
    * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
    */
   public void paint(Composite parent) throws RemoteException
@@ -89,6 +97,9 @@ public class Adressbuch extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: Adressbuch.java,v $
+ * Revision 1.7  2008/01/04 16:39:31  willuhn
+ * @N Weitere Hoehen-Angaben von Komponenten
+ *
  * Revision 1.6  2007/12/18 17:10:22  willuhn
  * @N Neues ExpandPart
  * @N Boxen auf der Startseite koennen jetzt zusammengeklappt werden
