@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/HibiscusAddress.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/04/23 21:03:48 $
+ * $Revision: 1.3 $
+ * $Date: 2008/01/09 23:32:54 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -34,10 +34,19 @@ public interface HibiscusAddress extends Address, DBObject
 	 * Speichert die BLZ des Empfaengers.
    * @param blz BLZ.
    * @throws RemoteException
+   * @depricated Bitte stattdessen setBlz(String) verwenden.
    */
   public void setBLZ(String blz) throws RemoteException;
 	
-	/**
+  /**
+   * Speichert die BLZ des Empfaengers.
+   * @param blz BLZ.
+   * @throws RemoteException
+   * BUGZILLA 534
+   */
+  public void setBlz(String blz) throws RemoteException;
+
+  /**
 	 * Speichert den Namen des Empfaengers.
    * @param name Name.
    * @throws RemoteException
@@ -64,6 +73,9 @@ public interface HibiscusAddress extends Address, DBObject
 
 /**********************************************************************
  * $Log: HibiscusAddress.java,v $
+ * Revision 1.3  2008/01/09 23:32:54  willuhn
+ * @B Bug 534
+ *
  * Revision 1.2  2007/04/23 21:03:48  willuhn
  * @R "getTransfers" aus Address entfernt - hat im Adressbuch eigentlich nichts zu suchen
  *

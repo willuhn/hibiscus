@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Address.java,v $
- * $Revision: 1.3 $
- * $Date: 2007/04/23 21:03:48 $
+ * $Revision: 1.4 $
+ * $Date: 2008/01/09 23:32:54 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -34,9 +34,18 @@ public interface Address extends Remote
    * Liefert die BLZ.
    * @return BLZ.
    * @throws RemoteException
+   * @depricated Bitte stattdessen getBlz() verwenden.
    */
   public String getBLZ() throws RemoteException;
-  
+
+  /**
+   * Liefert die BLZ.
+   * @return BLZ.
+   * @throws RemoteException
+   * BUGZILLA 534
+   */
+  public String getBlz() throws RemoteException;
+
   /**
    * Liefert den Namen.
    * @return Name.
@@ -55,6 +64,9 @@ public interface Address extends Remote
 
 /*********************************************************************
  * $Log: Address.java,v $
+ * Revision 1.4  2008/01/09 23:32:54  willuhn
+ * @B Bug 534
+ *
  * Revision 1.3  2007/04/23 21:03:48  willuhn
  * @R "getTransfers" aus Address entfernt - hat im Adressbuch eigentlich nichts zu suchen
  *
