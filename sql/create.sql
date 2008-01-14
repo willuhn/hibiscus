@@ -97,7 +97,7 @@ CREATE TABLE dauerauftrag (
   zweck2 varchar(27),
   erste_zahlung date NOT NULL,
   letzte_zahlung date,
-  orderid varchar(20),
+  orderid varchar(100),
   zeiteinheit int(1) NOT NULL,
   intervall int(2) NOT NULL,
   tag int(2) NOT NULL,
