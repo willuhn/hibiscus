@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Attic/MT940Importer.java,v $
- * $Revision: 1.12 $
- * $Date: 2007/04/23 18:07:14 $
+ * $Revision: 1.13 $
+ * $Date: 2008/01/22 13:34:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -44,14 +44,6 @@ public class MT940Importer implements Importer
 {
 
   private I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
-  /**
-   * ct.
-   */
-  public MT940Importer()
-  {
-    super();
-  }
 
   /**
    * @see de.willuhn.jameica.hbci.io.Importer#doImport(java.lang.Object, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor)
@@ -299,6 +291,9 @@ public class MT940Importer implements Importer
 
 /*******************************************************************************
  * $Log: MT940Importer.java,v $
+ * Revision 1.13  2008/01/22 13:34:45  willuhn
+ * @N Neuer XML-Import/-Export
+ *
  * Revision 1.12  2007/04/23 18:07:14  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt

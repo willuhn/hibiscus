@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/XMLExporter.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/04/23 18:07:14 $
+ * $Revision: 1.3 $
+ * $Date: 2008/01/22 13:34:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,13 +13,17 @@
 
 package de.willuhn.jameica.hbci.io;
 
-import java.beans.XMLEncoder;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.rmi.RemoteException;
 
 import de.willuhn.datasource.BeanUtil;
+import de.willuhn.datasource.GenericObject;
+import de.willuhn.datasource.serialize.Writer;
+import de.willuhn.datasource.serialize.XmlWriter;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 import de.willuhn.util.ProgressMonitor;
@@ -45,6 +49,8 @@ public class XMLExporter implements Exporter
    */
   public void doExport(Object[] objects, IOFormat format,OutputStream os, final ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
+    Writer writer = null;
+
     try
     {
       double factor = 1;
@@ -54,15 +60,20 @@ public class XMLExporter implements Exporter
         monitor.setStatusText(i18n.tr("Exportiere Daten"));
       }
 
-      XMLEncoder e = new XMLEncoder(os);
+      writer = new XmlWriter(os);
       for (int i=0;i<objects.length;++i)
       {
         if (monitor != null)  monitor.setPercentComplete((int)((i) * factor));
         Object name = BeanUtil.toString(objects[i]);
         if (name != null && monitor != null)
           monitor.log(i18n.tr("Speichere Datensatz {0}",name.toString()));
-        e.writeObject(objects[i]);
+        writer.write((GenericObject)objects[i]);
       }
+    }
+    catch (IOException e)
+    {
+      Logger.error("unable to write xml file",e);
+      throw new ApplicationException(i18n.tr("Fehler beim Export der Daten. " + e.getMessage()));
     }
     finally
     {
@@ -72,7 +83,8 @@ public class XMLExporter implements Exporter
       }
       try
       {
-        os.close();
+        if (writer != null)
+          writer.close();
       }
       catch (Exception e) {/*useless*/}
     }
@@ -83,23 +95,26 @@ public class XMLExporter implements Exporter
    */
   public IOFormat[] getIOFormats(Class objectType)
   {
-    return null;
-//    return new IOFormat[]{new IOFormat() {
-//    
-//      public String getName()
-//      {
-//        return i18n.tr("XML-Format");
-//      }
-//    
-//      /**
-//       * @see de.willuhn.jameica.hbci.io.IOFormat#getFileExtensions()
-//       */
-//      public String[] getFileExtensions()
-//      {
-//        return new String[]{"xml"};
-//      }
-//    
-//    }};
+    if (objectType == null)
+      return null;
+    
+    if (!GenericObject.class.isAssignableFrom(objectType))
+      return null; // Export fuer alles moeglich, was von GenericObject abgeleitet ist
+
+    return new IOFormat[]{new IOFormat() {
+      public String getName()
+      {
+        return i18n.tr("XML-Format");
+      }
+    
+      /**
+       * @see de.willuhn.jameica.hbci.io.IOFormat#getFileExtensions()
+       */
+      public String[] getFileExtensions()
+      {
+        return new String[]{"xml"};
+      }
+    }};
   }
 
   /**
@@ -115,6 +130,9 @@ public class XMLExporter implements Exporter
 
 /*********************************************************************
  * $Log: XMLExporter.java,v $
+ * Revision 1.3  2008/01/22 13:34:45  willuhn
+ * @N Neuer XML-Import/-Export
+ *
  * Revision 1.2  2007/04/23 18:07:14  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
