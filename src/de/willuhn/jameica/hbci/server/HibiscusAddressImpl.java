@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/HibiscusAddressImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2008/01/09 23:32:54 $
+ * $Revision: 1.4 $
+ * $Date: 2008/02/04 18:48:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -134,7 +134,7 @@ public class HibiscusAddressImpl extends AbstractDBObject implements HibiscusAdd
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#setBLZ(java.lang.String)
+   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#setBlz(java.lang.String)
    */
   public void setBlz(String blz) throws RemoteException {
     setAttribute("blz",blz);
@@ -178,6 +178,9 @@ public class HibiscusAddressImpl extends AbstractDBObject implements HibiscusAdd
 
 /**********************************************************************
  * $Log: HibiscusAddressImpl.java,v $
+ * Revision 1.4  2008/02/04 18:48:18  willuhn
+ * @D javadoc
+ *
  * Revision 1.3  2008/01/09 23:32:54  willuhn
  * @B Bug 534
  *
