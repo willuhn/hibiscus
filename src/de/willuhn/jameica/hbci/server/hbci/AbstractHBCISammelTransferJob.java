@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCISammelTransferJob.java,v $
- * $Revision: 1.7 $
- * $Date: 2007/12/06 14:25:32 $
+ * $Revision: 1.8 $
+ * $Date: 2008/02/04 18:56:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import java.rmi.RemoteException;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
@@ -102,6 +103,7 @@ public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
 		{
       // Wir markieren die Ueberweisung als "ausgefuehrt"
       transfer.setAusgefuehrt();
+      Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(transfer)); // BUGZILLA 545
       konto.addToProtokoll(i18n.tr("Sammel-Auftrag {0} ausgeführt",empfName),Protokoll.TYP_SUCCESS);
       Logger.info("sammellastschrift submitted successfully");
       return;
@@ -126,6 +128,9 @@ public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: AbstractHBCISammelTransferJob.java,v $
+ * Revision 1.8  2008/02/04 18:56:45  willuhn
+ * @B Bug 545
+ *
  * Revision 1.7  2007/12/06 14:25:32  willuhn
  * @B Bug 494
  *
