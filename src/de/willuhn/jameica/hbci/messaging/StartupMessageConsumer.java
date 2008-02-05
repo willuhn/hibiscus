@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/messaging/Attic/StartupMessageConsumer.java,v $
- * $Revision: 1.2 $
- * $Date: 2008/01/25 12:24:05 $
+ * $Revision: 1.3 $
+ * $Date: 2008/02/05 00:48:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -88,6 +88,7 @@ public class StartupMessageConsumer implements MessageConsumer
     Logger.info("register message consumers for query lookups");
     Application.getMessagingFactory().getMessagingQueue("hibiscus.query.bankname").registerMessageConsumer(new QueryBanknameMessageConsumer());
     Application.getMessagingFactory().getMessagingQueue("hibiscus.query.accountcrc").registerMessageConsumer(new QueryAccountCRCMessageConsumer());
+    Application.getMessagingFactory().getMessagingQueue("hibiscus.transfer.lastschrift").registerMessageConsumer(new TransferLastschriftMessageConsumer());
   }
 
 }
@@ -95,6 +96,9 @@ public class StartupMessageConsumer implements MessageConsumer
 
 /*********************************************************************
  * $Log: StartupMessageConsumer.java,v $
+ * Revision 1.3  2008/02/05 00:48:43  willuhn
+ * @N Generischer MessageConsumer zur Erstellung von Lastschriften (Siehe Mail an Markus vom 04.02.2008)
+ *
  * Revision 1.2  2008/01/25 12:24:05  willuhn
  * @B Messaging-Consumer zu frueh registriert
  *
