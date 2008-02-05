@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/messaging/TransferLastschriftMessageConsumer.java,v $
- * $Revision: 1.1 $
- * $Date: 2008/02/05 00:48:43 $
+ * $Revision: 1.2 $
+ * $Date: 2008/02/05 00:51:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -81,8 +81,13 @@ public class TransferLastschriftMessageConsumer implements MessageConsumer
       ls                = (Lastschrift) service.createObject(Lastschrift.class,null);
       
       Number betrag = (Number) params.get("value");
-      ls.setBetrag(betrag.doubleValue());
+      if (betrag != null)
+        ls.setBetrag(betrag.doubleValue());
       
+      String type = (String) params.get("type");
+      if (type != null)
+        ls.setTyp(type);
+
       Date termin = (Date) params.get("date");
       ls.setTermin(termin != null ? termin : new Date());
       
@@ -91,8 +96,7 @@ public class TransferLastschriftMessageConsumer implements MessageConsumer
       ls.setGegenkontoName((String) params.get("other.name"));
       ls.setGegenkontoNummer((String) params.get("other.account"));
       ls.setGegenkontoBLZ((String) params.get("other.blz"));
-      ls.setTyp((String) params.get("type"));
-
+      
       // Jetzt schauen wir noch, ob wir das Konto finden,
       // ueber das der Auftrag abgewickelt werden soll.
       String konto = (String) params.get("my.account");
@@ -143,6 +147,9 @@ public class TransferLastschriftMessageConsumer implements MessageConsumer
 
 /**********************************************************************
  * $Log: TransferLastschriftMessageConsumer.java,v $
+ * Revision 1.2  2008/02/05 00:51:03  willuhn
+ * @C NPE-Checks
+ *
  * Revision 1.1  2008/02/05 00:48:43  willuhn
  * @N Generischer MessageConsumer zur Erstellung von Lastschriften (Siehe Mail an Markus vom 04.02.2008)
  *
