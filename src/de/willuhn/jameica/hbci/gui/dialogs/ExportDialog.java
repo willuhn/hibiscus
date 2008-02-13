@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/ExportDialog.java,v $
- * $Revision: 1.15 $
- * $Date: 2008/02/13 23:15:29 $
+ * $Revision: 1.16 $
+ * $Date: 2008/02/13 23:22:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -361,7 +361,7 @@ public class ExportDialog extends AbstractDialog
      */
     public String getID() throws RemoteException
     {
-      return this.exporter.getClass().getName() + "#" + this.format.getClass().getName();
+      return this.exporter.getClass().getName() + "#" + this.format.getName();
     }
 
     /**
@@ -405,6 +405,9 @@ public class ExportDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: ExportDialog.java,v $
+ * Revision 1.16  2008/02/13 23:22:24  willuhn
+ * @B http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?t=8175 (Nachtrag)
+ *
  * Revision 1.15  2008/02/13 23:15:29  willuhn
  * @B http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?t=8175
  *
