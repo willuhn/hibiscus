@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/LastschriftImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/03/02 17:59:30 $
- * $Author: web0 $
+ * $Revision: 1.6 $
+ * $Date: 2008/02/15 17:39:10 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -16,6 +16,7 @@ import java.rmi.RemoteException;
 
 import de.willuhn.jameica.hbci.rmi.Duplicatable;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
+import de.willuhn.jameica.hbci.rmi.Transfer;
 
 /**
  * Bildet eine Lastschrift ab. Ist fast das gleiche wie eine
@@ -83,11 +84,22 @@ public class LastschriftImpl extends AbstractBaseUeberweisungImpl
 		}
   }
 
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Transfer#getTransferTyp()
+   */
+  public int getTransferTyp() throws RemoteException
+  {
+    return Transfer.TYP_LASTSCHRIFT;
+  }
 }
 
 
 /**********************************************************************
  * $Log: LastschriftImpl.java,v $
+ * Revision 1.6  2008/02/15 17:39:10  willuhn
+ * @N BUGZILLA 188 Basis-API fuer weitere Zeilen Verwendungszweck. GUI fehlt noch
+ * @N DB-Update 0005. Speichern des Textschluessels bei Sammelauftragsbuchungen in der Datenbank
+ *
  * Revision 1.5  2005/03/02 17:59:30  web0
  * @N some refactoring
  *

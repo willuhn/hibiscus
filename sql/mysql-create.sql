@@ -112,6 +112,7 @@ CREATE TABLE slastbuchung (
      , betrag DOUBLE NOT NULL
      , zweck VARCHAR(27) NOT NULL
      , zweck2 VARCHAR(27)
+     , typ VARCHAR(2)
      , UNIQUE (id)
      , PRIMARY KEY (id)
 )TYPE=InnoDB;
@@ -125,6 +126,7 @@ CREATE TABLE sueberweisungbuchung (
      , betrag DOUBLE NOT NULL
      , zweck VARCHAR(27) NOT NULL
      , zweck2 VARCHAR(27)
+     , typ VARCHAR(2)
      , UNIQUE (id)
      , PRIMARY KEY (id)
 )TYPE=InnoDB;
@@ -214,6 +216,14 @@ CREATE TABLE op_buchung (
   PRIMARY KEY (id)
 )TYPE=InnoDB;
 
+CREATE TABLE verwendungszweck (
+  id int(10) AUTO_INCREMENT,
+  typ int(1) NOT NULL,
+  auftrag_id int(10) NOT NULL,
+  zweck varchar(27) NOT NULL,
+  UNIQUE (id),
+  PRIMARY KEY (id)
+)TYPE=InnoDB;
 
 CREATE INDEX idx_lastschrift_konto ON lastschrift(konto_id);
 CREATE INDEX idx_sueberweisung_konto ON sueberweisung(konto_id);
@@ -226,6 +236,7 @@ CREATE INDEX idx_ueberweisung_konto ON ueberweisung(konto_id);
 CREATE INDEX idx_umsatz_konto ON umsatz(konto_id);
 CREATE INDEX idx_umsatz_umsatztyp ON umsatz(umsatztyp_id);
 CREATE INDEX idx_dauerauftrag_konto ON dauerauftrag(konto_id);
+CREATE INDEX idx_zweck ON verwendungszweck(typ,auftrag_id);
 
 ALTER TABLE lastschrift ADD CONSTRAINT fk_lastschrift_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
 ALTER TABLE sueberweisung ADD CONSTRAINT fk_sueberweisung_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
@@ -247,4 +258,4 @@ ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
 
-INSERT INTO version (name,version) values ('db',3);
+INSERT INTO version (name,version) values ('db',5);

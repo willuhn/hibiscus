@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/SammelUeberweisungBuchungImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/09/30 00:08:50 $
+ * $Revision: 1.2 $
+ * $Date: 2008/02/15 17:39:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@ import java.rmi.RemoteException;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisungBuchung;
+import de.willuhn.jameica.hbci.rmi.Transfer;
 
 /**
  * Implementierung einer einzelnen Buchung einer Sammel-Ueberweisung.
@@ -63,10 +64,23 @@ public class SammelUeberweisungBuchungImpl extends AbstractSammelTransferBuchung
   {
     setAttribute("sueberweisung_id",s);
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Transfer#getTransferTyp()
+   */
+  public int getTransferTyp() throws RemoteException
+  {
+    return Transfer.TYP_SUEB_BUCHUNG;
+  }
+
 }
 
 /*****************************************************************************
  * $Log: SammelUeberweisungBuchungImpl.java,v $
+ * Revision 1.2  2008/02/15 17:39:10  willuhn
+ * @N BUGZILLA 188 Basis-API fuer weitere Zeilen Verwendungszweck. GUI fehlt noch
+ * @N DB-Update 0005. Speichern des Textschluessels bei Sammelauftragsbuchungen in der Datenbank
+ *
  * Revision 1.1  2005/09/30 00:08:50  willuhn
  * @N SammelUeberweisungen (merged with SammelLastschrift)
  *

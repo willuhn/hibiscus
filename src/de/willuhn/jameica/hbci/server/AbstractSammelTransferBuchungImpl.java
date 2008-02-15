@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractSammelTransferBuchungImpl.java,v $
- * $Revision: 1.11 $
- * $Date: 2007/10/14 23:26:59 $
+ * $Revision: 1.12 $
+ * $Date: 2008/02/15 17:39:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,6 +11,7 @@ package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
 
+import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -30,9 +31,6 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
 
   private transient I18N i18n = null;
   
-  // TODO: Textschluessel muss noch in der Datenbank hinzugefuegt werden
-  private String schluessel   = null;
-
   /**
    * @throws java.rmi.RemoteException
    */
@@ -238,7 +236,7 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
    */
   public String getTextSchluessel() throws RemoteException
   {
-    return this.schluessel;
+    return (String) getAttribute("typ");
   }
 
   /**
@@ -246,12 +244,24 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
    */
   public void setTextSchluessel(String schluessel) throws RemoteException
   {
-    this.schluessel = schluessel;
+    setAttribute("typ",schluessel);
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Transfer#getWeitereVerwendungszwecke()
+   */
+  public GenericIterator getWeitereVerwendungszwecke() throws RemoteException
+  {
+    return VerwendungszweckUtil.get(this);
   }
 }
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferBuchungImpl.java,v $
+ * Revision 1.12  2008/02/15 17:39:10  willuhn
+ * @N BUGZILLA 188 Basis-API fuer weitere Zeilen Verwendungszweck. GUI fehlt noch
+ * @N DB-Update 0005. Speichern des Textschluessels bei Sammelauftragsbuchungen in der Datenbank
+ *
  * Revision 1.11  2007/10/14 23:26:59  willuhn
  * @N Textschluessel in Sammelauftraegen - wird noch nicht persistiert
  *

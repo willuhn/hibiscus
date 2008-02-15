@@ -150,6 +150,7 @@ CREATE TABLE slastbuchung (
   betrag double NOT NULL,
   zweck varchar(27) NOT NULL,
   zweck2 varchar(27),
+  typ varchar(2) NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );
@@ -173,6 +174,7 @@ CREATE TABLE sueberweisungbuchung (
   betrag double NOT NULL,
   zweck varchar(27) NOT NULL,
   zweck2 varchar(27),
+  typ varchar(2) NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );
@@ -215,6 +217,15 @@ CREATE TABLE op_buchung (
   PRIMARY KEY (id)
 );
 
+CREATE TABLE verwendungszweck (
+  id IDENTITY,
+  typ int(1) NOT NULL,
+  auftrag_id int(10) NOT NULL,
+  zweck varchar(27) NOT NULL,
+  UNIQUE (id),
+  PRIMARY KEY (id)
+);
+
 
 ALTER TABLE ueberweisung ADD CONSTRAINT fk_konto FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE umsatz ADD CONSTRAINT fk_konto2 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
@@ -247,6 +258,6 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',3);
+INSERT INTO version (name,version) values ('db',5);
   
 COMMIT;

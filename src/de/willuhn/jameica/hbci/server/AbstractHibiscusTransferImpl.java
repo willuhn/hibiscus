@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractHibiscusTransferImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2007/10/18 10:24:49 $
+ * $Revision: 1.4 $
+ * $Date: 2008/02/15 17:39:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@ package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
 
+import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -263,11 +264,23 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractDBObject impl
   	setGegenkontoNummer(e.getKontonummer());
   	setGegenkontoName(e.getName());
   }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Transfer#getWeitereVerwendungszwecke()
+   */
+  public GenericIterator getWeitereVerwendungszwecke() throws RemoteException
+  {
+    return VerwendungszweckUtil.get(this);
+  }
 }
 
 
 /**********************************************************************
  * $Log: AbstractHibiscusTransferImpl.java,v $
+ * Revision 1.4  2008/02/15 17:39:10  willuhn
+ * @N BUGZILLA 188 Basis-API fuer weitere Zeilen Verwendungszweck. GUI fehlt noch
+ * @N DB-Update 0005. Speichern des Textschluessels bei Sammelauftragsbuchungen in der Datenbank
+ *
  * Revision 1.3  2007/10/18 10:24:49  willuhn
  * @B Foreign-Objects in AbstractDBObject auch dann korrekt behandeln, wenn sie noch nicht gespeichert wurden
  * @C Beim Abrufen der Dauerauftraege nicht mehr nach Konten suchen sondern hart dem Konto zuweisen, ueber das sie abgerufen wurden
