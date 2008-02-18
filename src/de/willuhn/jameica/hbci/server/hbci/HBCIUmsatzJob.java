@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUmsatzJob.java,v $
- * $Revision: 1.29 $
- * $Date: 2007/12/11 13:46:48 $
+ * $Revision: 1.30 $
+ * $Date: 2008/02/18 15:17:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,8 @@
 package de.willuhn.jameica.hbci.server.hbci;
 
 import java.rmi.RemoteException;
+import java.util.Calendar;
+import java.util.Date;
 
 import org.kapott.hbci.GV_Result.GVRKUms;
 
@@ -24,6 +26,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.Converter;
+import de.willuhn.jameica.plugin.PluginResources;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -47,7 +50,8 @@ public class HBCIUmsatzJob extends AbstractHBCIJob {
 	{
 		try
 		{
-			i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+      PluginResources res = Application.getPluginLoader().getPlugin(HBCI.class).getResources();
+			i18n = res.getI18N();
 
 			if (konto == null)
 				throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus")); 
@@ -58,8 +62,25 @@ public class HBCIUmsatzJob extends AbstractHBCIJob {
 			this.konto = konto;
 
 			setJobParam("my",Converter.HibiscusKonto2HBCIKonto(konto));
-      if (konto.getSaldoDatum() != null)
-        setJobParam("startdate", konto.getSaldoDatum());
+      
+      Date saldoDatum = konto.getSaldoDatum();
+      if (saldoDatum != null)
+      {
+        // Mal schauen, ob wir ein konfiguriertes Offset haben
+        int offset = res.getSettings().getInt("umsatz.startdate.offset",0);
+        if (offset != 0)
+        {
+          Logger.info("using custom offset for startdate: " + offset);
+          Calendar cal = Calendar.getInstance();
+          cal.setTime(saldoDatum);
+          cal.add(Calendar.DATE,offset);
+          saldoDatum = cal.getTime();
+        }
+        
+        saldoDatum = HBCIProperties.startOfDay(saldoDatum);
+        Logger.info("startdate: " + HBCI.LONGDATEFORMAT.format(saldoDatum));
+        setJobParam("startdate", saldoDatum);
+      }
 
       String curr = konto.getWaehrung();
       if (curr == null || curr.length() == 0)
@@ -155,6 +176,9 @@ public class HBCIUmsatzJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCIUmsatzJob.java,v $
+ * Revision 1.30  2008/02/18 15:17:28  willuhn
+ * @N offset in startdate bei Umsatzabruf konfigurierbar (via "umsatz.startdate.offset")
+ *
  * Revision 1.29  2007/12/11 13:46:48  willuhn
  * @N Waehrung auch bei Saldo-Abfrage - siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=43618#43618
  *
