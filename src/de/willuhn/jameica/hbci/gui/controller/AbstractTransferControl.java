@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.37 $
- * $Date: 2007/11/01 21:56:28 $
+ * $Revision: 1.38 $
+ * $Date: 2008/02/22 00:52:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -33,6 +33,7 @@ import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
 import de.willuhn.jameica.hbci.gui.dialogs.AdresseAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
+import de.willuhn.jameica.hbci.gui.parts.ErweiterteVerwendungszwecke;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
@@ -57,6 +58,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 	private Input betrag										= null;
 	private TextInput zweck									= null;
 	private TextInput zweck2								= null;
+  private ErweiterteVerwendungszwecke ewz = null;
 
 	private DialogInput empfkto 						= null;
 	private TextInput empfName 					  	= null;
@@ -198,6 +200,20 @@ public abstract class AbstractTransferControl extends AbstractControl
 		zweck2.setValidChars(HBCIProperties.HBCI_DTAUS_VALIDCHARS);
 		return zweck2;
 	}
+  
+  /**
+   * Liefert eine Liste erweiterter Verwendungszwecke.
+   * @return Liste erweiterter Verwendungszwecke.
+   * @throws RemoteException
+   */
+  public ErweiterteVerwendungszwecke getErweiterteVerwendungszwecke() throws RemoteException
+  {
+    if (this.ewz != null)
+      return this.ewz;
+    
+    this.ewz = new ErweiterteVerwendungszwecke(this.getTransfer());
+    return this.ewz;
+  }
 
 
 	/**
@@ -262,6 +278,27 @@ public abstract class AbstractTransferControl extends AbstractControl
 			getTransfer().setGegenkontoNummer(kto);
 			getTransfer().setGegenkontoBLZ(blz);
 			getTransfer().setGegenkontoName(name);
+      
+// TODO !EVZ
+//      // Urspruengliche erweiterte Verwendungszwecke loeschen
+//      String[] list = getErweiterteVerwendungszwecke().getTexts();
+//      GenericIterator orig = getTransfer().getWeitereVerwendungszwecke();
+//      if (orig != null)
+//      {
+//        while (orig.hasNext())
+//        {
+//          Verwendungszweck z = (Verwendungszweck) orig.next();
+//          z.delete();
+//        }
+//      }
+//      // Neue Texteingaben speichern
+//      for (int i=0;i<list.length;++i)
+//      {
+//        if (list[i] == null || list[i].length() == 0)
+//          continue; // leere Zeilen ueberspringen
+//        VerwendungszweckUtil.create(getTransfer(),list[i]);
+//      }
+      
 			getTransfer().store();
 
 			Boolean store = (Boolean) getStoreEmpfaenger().getValue();
@@ -399,6 +436,9 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
+ * Revision 1.38  2008/02/22 00:52:36  willuhn
+ * @N Erste Dialoge fuer erweiterte Verwendungszwecke (noch auskommentiert)
+ *
  * Revision 1.37  2007/11/01 21:56:28  willuhn
  * @N Bugzilla 408
  *

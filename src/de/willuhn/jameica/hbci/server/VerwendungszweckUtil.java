@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/VerwendungszweckUtil.java,v $
- * $Revision: 1.1 $
- * $Date: 2008/02/15 17:39:10 $
+ * $Revision: 1.2 $
+ * $Date: 2008/02/22 00:52:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
 
+import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.jameica.hbci.HBCI;
@@ -36,9 +37,9 @@ public class VerwendungszweckUtil
    * @return Liste der gefundenen Verwendungszwecke, sortiert nach ID.
    * @throws RemoteException
    */
-  public static DBIterator get(Transfer t) throws RemoteException
+  public static GenericIterator get(Transfer t) throws RemoteException
   {
-    if (t instanceof DBObject)
+    if (!(t instanceof DBObject))
       return null;
     
     DBObject g = (DBObject) t;
@@ -86,6 +87,9 @@ public class VerwendungszweckUtil
 
 /*********************************************************************
  * $Log: VerwendungszweckUtil.java,v $
+ * Revision 1.2  2008/02/22 00:52:35  willuhn
+ * @N Erste Dialoge fuer erweiterte Verwendungszwecke (noch auskommentiert)
+ *
  * Revision 1.1  2008/02/15 17:39:10  willuhn
  * @N BUGZILLA 188 Basis-API fuer weitere Zeilen Verwendungszweck. GUI fehlt noch
  * @N DB-Update 0005. Speichern des Textschluessels bei Sammelauftragsbuchungen in der Datenbank

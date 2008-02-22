@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UeberweisungNew.java,v $
- * $Revision: 1.14 $
- * $Date: 2007/04/23 18:07:15 $
+ * $Revision: 1.15 $
+ * $Date: 2008/02/22 00:52:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -52,18 +52,30 @@ public class UeberweisungNew extends AbstractView {
     konten.addLabelPair(i18n.tr("Name des Empfängers"),           control.getEmpfaengerName());
 		konten.addCheckbox(control.getStoreEmpfaenger(),i18n.tr("Empfängerdaten im Adressbuch speichern"));
 
-		LabelGroup details = new LabelGroup(getParent(),i18n.tr("Details"));
+//  TODO !EVZ
+//    TabFolder folder = new TabFolder(getParent(), SWT.NONE);
+//    folder.setLayoutData(new GridData(GridData.FILL_BOTH));
+//    folder.setBackground(Color.BACKGROUND.getSWTColor());
+//
+//    TabGroup details = new TabGroup(folder,i18n.tr("Details"));
 
+    LabelGroup details = new LabelGroup(getParent(),i18n.tr("Details"));
 		details.addLabelPair(i18n.tr("Verwendungszweck"),					control.getZweck());
 		details.addLabelPair(i18n.tr("weiterer Verwendungszweck"),control.getZweck2());
-		details.addLabelPair(i18n.tr("Betrag"),										control.getBetrag());
-    details.addLabelPair(i18n.tr("Termin"),										control.getTermin());
+    details.addLabelPair(i18n.tr("Betrag"),                   control.getBetrag());
+    details.addLabelPair(i18n.tr("Termin"),                   control.getTermin());
     details.addCheckbox(control.getBankTermin(), i18n.tr("Als Termin-Überweisung an Bank senden"));
-
-		details.addSeparator();
-
+    details.addSeparator();
     details.addLabelPair("",                                  control.getComment());
 
+    
+
+    
+//  TODO !EVZ
+//    TabGroup zweckList = new TabGroup(folder,i18n.tr("Weitere Verwendungszwecke"));
+//    ScrolledContainer scrolled = new ScrolledContainer(zweckList.getComposite());
+//    scrolled.addPart(control.getErweiterteVerwendungszwecke());
+    
 		ButtonArea buttonArea = new ButtonArea(getParent(),4);
 		buttonArea.addButton(i18n.tr("Zurück"), 				 				 new Back());
 		buttonArea.addButton(i18n.tr("Löschen"),				 				 new DBObjectDelete(), transfer);
@@ -88,6 +100,9 @@ public class UeberweisungNew extends AbstractView {
 
 /**********************************************************************
  * $Log: UeberweisungNew.java,v $
+ * Revision 1.15  2008/02/22 00:52:36  willuhn
+ * @N Erste Dialoge fuer erweiterte Verwendungszwecke (noch auskommentiert)
+ *
  * Revision 1.14  2007/04/23 18:07:15  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
