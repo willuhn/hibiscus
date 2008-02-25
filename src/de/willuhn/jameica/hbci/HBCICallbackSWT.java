@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.54 $
- * $Date: 2007/12/06 23:53:56 $
+ * $Revision: 1.55 $
+ * $Date: 2008/02/25 22:17:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -283,6 +283,8 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 					break;
 
 				case HAVE_CRC_ERROR:
+          Logger.error("NOT IMPLEMENTED: " + msg+ " ["+retData.toString()+"]: ");
+          break;
 				case HAVE_ERROR:
 					Logger.error("NOT IMPLEMENTED: " + msg+ " ["+retData.toString()+"]: ");
 					throw new HBCI_Exception("reason not implemented");
@@ -502,6 +504,9 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.55  2008/02/25 22:17:18  willuhn
+ * @C keine Exception werfen bei CRC-Error
+ *
  * Revision 1.54  2007/12/06 23:53:56  willuhn
  * @B Bug 490
  *
