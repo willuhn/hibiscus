@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/LineChart.java,v $
- * $Revision: 1.6 $
- * $Date: 2007/04/19 18:10:12 $
+ * $Revision: 1.7 $
+ * $Date: 2008/02/26 01:01:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,9 @@
 package de.willuhn.jameica.hbci.gui.chart;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Random;
 import java.util.Vector;
 
 import org.eclipse.birt.chart.model.Chart;
@@ -25,6 +28,7 @@ import org.eclipse.birt.chart.model.attribute.ColorDefinition;
 import org.eclipse.birt.chart.model.attribute.IntersectionType;
 import org.eclipse.birt.chart.model.attribute.TickStyle;
 import org.eclipse.birt.chart.model.attribute.impl.ColorDefinitionImpl;
+import org.eclipse.birt.chart.model.attribute.impl.PaletteImpl;
 import org.eclipse.birt.chart.model.component.Axis;
 import org.eclipse.birt.chart.model.component.Series;
 import org.eclipse.birt.chart.model.component.impl.SeriesImpl;
@@ -44,6 +48,7 @@ import org.eclipse.emf.common.util.EList;
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.gui.formatter.Formatter;
+import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.logging.Logger;
 
 /**
@@ -51,6 +56,42 @@ import de.willuhn.logging.Logger;
  */
 public class LineChart extends AbstractChart
 {
+  private static ArrayList colorCache = new ArrayList();
+  
+  // Basis-Palette
+  static
+  {
+    // Eclipse-Farben
+    colorCache.add(new int[]{225,225,255});
+    colorCache.add(new int[]{223,197,41});
+    colorCache.add(new int[]{249,225,191});
+    colorCache.add(new int[]{255,205,225});
+    colorCache.add(new int[]{225,255,225});
+    colorCache.add(new int[]{255,191,255});
+    colorCache.add(new int[]{185,185,221});
+    colorCache.add(new int[]{40,255,148});
+    colorCache.add(new int[]{225,225,255});
+
+    // Pastel-Farben
+    colorCache.add(new int[]{255,161,161});
+    colorCache.add(new int[]{255,215,161});
+    colorCache.add(new int[]{250,255,161});
+    colorCache.add(new int[]{197,255,161});
+    colorCache.add(new int[]{161,255,213});
+    colorCache.add(new int[]{161,255,253});
+    colorCache.add(new int[]{161,192,255});
+    colorCache.add(new int[]{243,161,255});
+
+    // Satte Farben
+    colorCache.add(new int[]{255,74,74});
+    colorCache.add(new int[]{255,255,74});
+    colorCache.add(new int[]{74,255,74});
+    colorCache.add(new int[]{74,255,255});
+    colorCache.add(new int[]{74,74,255});
+    colorCache.add(new int[]{255,74,255});
+
+  }
+  
   /**
    * ct.
    * @throws Exception
@@ -71,6 +112,8 @@ public class LineChart extends AbstractChart
     chart.getBlock().getOutline().setVisible(true); // Rahmen um alles
     chart.setDimension(ChartDimension.TWO_DIMENSIONAL_LITERAL); // Kein 3D
   
+    int fontSize = Font.DEFAULT.getSWTFont().getFontData()[0].getHeight();
+
     // CUSTOMIZE THE PLOT
     Plot p = chart.getPlot();
     p.getClientArea().setBackground(ColorDefinitionImpl.TRANSPARENT());
@@ -78,14 +121,14 @@ public class LineChart extends AbstractChart
     String title = getTitle();
     if (title != null)
     {
-      chart.getTitle().getLabel().getCaption().getFont().setSize(11);
+      chart.getTitle().getLabel().getCaption().getFont().setSize(Font.H2.getSWTFont().getFontData()[0].getHeight());
       chart.getTitle().getLabel().getCaption().setValue(title);
     }
   
     // CUSTOMIZE THE LEGEND 
     Legend lg = chart.getLegend();
-    lg.getText().getFont().setSize(10);
-    lg.getInsets().set(10, 5, 0, 0);
+    lg.getText().getFont().setSize(fontSize);
+    lg.getInsets().set(20, 5, 0, 0);
     lg.setAnchor(Anchor.NORTH_LITERAL);
   
     // CUSTOMIZE THE X-AXIS
@@ -94,13 +137,16 @@ public class LineChart extends AbstractChart
     xAxisPrimary.getMajorGrid().setTickStyle(TickStyle.BELOW_LITERAL);
     xAxisPrimary.getOrigin().setType(IntersectionType.VALUE_LITERAL);
     xAxisPrimary.getTitle().setVisible(false);
+    xAxisPrimary.getLabel().getCaption().getFont().setSize(fontSize);
   
     // CUSTOMIZE THE Y-AXIS
     Axis yAxisPrimary = chart.getPrimaryOrthogonalAxis(xAxisPrimary);
     yAxisPrimary.getMajorGrid().setTickStyle(TickStyle.LEFT_LITERAL);
     yAxisPrimary.setType(AxisType.LINEAR_LITERAL);
+    yAxisPrimary.getLabel().getCaption().getFont().setSize(fontSize);
   
     Vector data = getData();
+    
     for (int i=0;i<data.size();++i)
     {
       final Vector labelLine = new Vector();
@@ -148,41 +194,46 @@ public class LineChart extends AbstractChart
       AreaSeries bs1 = (AreaSeries) AreaSeriesImpl.create();
 
       SeriesDefinition sdX = SeriesDefinitionImpl.create();
-      //sdX.getSeriesPalette().update(1);
       xAxisPrimary.getSeriesDefinitions().add(sdX);
       sdX.getSeries().add(seCategory);
     
       SeriesDefinition sdY = SeriesDefinitionImpl.create();
       yAxisPrimary.getSeriesDefinitions().add(sdY);
-      sdY.getSeriesPalette().update(1);
 
       if (label != null) bs1.setSeriesIdentifier(label);
       bs1.setDataSet(orthoValues1);
       bs1.getLabel().setVisible(false);
-      bs1.getMarker().setVisible(false);
+  
+
+      int[] color = null;
+      if (cd instanceof LineChartData)
+        color = ((LineChartData)cd).getColor();
+
+      if (color == null)
+        color = createRandomColor(i);
       
-      // Einfaerben der Linie etwas dunkler als die Palette
+      ColorDefinition bg = ColorDefinitionImpl.create(color[0],color[1],color[2]);
+      bg.setTransparency(200);
+
+      sdY.setSeriesPalette(PaletteImpl.create(bg));
       EList colors = sdY.getSeriesPalette().getEntries();
-      ColorDefinition bg = (ColorDefinition) colors.get(i);
-      int r = bg.getRed() - 70;
-      int g = bg.getGreen() - 70;
-      int b = bg.getBlue() - 70;
+      colors.add(bg);
+
+      sdY.getSeriesPalette().update(bg);
+
+      // Die Linie selbst machen wir etwas dunkler als die Hintergrundfarbe
+      int r = color[0] - 90;
+      int g = color[1] - 90;
+      int b = color[2] - 90;
       if (r < 0) r = 0;
       if (g < 0) g = 0;
       if (b < 0) b = 0;
-
-      // Merkwuerdig. Wenn ich das nicht mache (obwohl ich mir
-      // die Farbe ja erst vorher von oben hole. dann malt er
-      // das nicht in diesen schoenen Pastell-Toenen ;)
-      sdY.getSeriesPalette().update(bg);
-
       bs1.getLineAttributes().setColor(ColorDefinitionImpl.create(r,g,b));
       bs1.getLineAttributes().setVisible(true);
 
       if (cd instanceof LineChartData)
       {
         LineChartData lcd = (LineChartData) cd;
-        bs1.getMarker().setVisible(lcd.getShowMarker());
         bs1.setCurve(lcd.getCurve());
       }
 
@@ -191,11 +242,48 @@ public class LineChart extends AbstractChart
     }
     return chart;
   }
+  
+  /**
+   * Erzeugt die RGB-Werte fuer eine Zufalls-Farbe
+   * @param pos
+   * @return RGB-Werte.
+   */
+  private int[] createRandomColor(int pos)
+  {
+    int[] color = null;
+    
+    // Haben wir hier schon eine Farbe im Cache?
+    if (colorCache.size() > pos)
+      return (int[]) colorCache.get(pos);
+
+    Random rand = new Random();
+    
+    int brightness = 40;
+    
+    color = new int[]{
+      255 - brightness - rand.nextInt(30),
+      255 - brightness - rand.nextInt(30),
+      255 - brightness - rand.nextInt(30)
+    };
+    
+    // Farbrichtung rotieren
+    // Stellt sicher, dass kein Grau rauskommt, sondern eine
+    // Farbe dominiert
+    color[pos % 3] = 255;
+    colorCache.add(pos,color);
+    System.out.println(Arrays.toString(color));
+    return color;
+  }
 }
 
 
 /*********************************************************************
  * $Log: LineChart.java,v $
+ * Revision 1.7  2008/02/26 01:01:16  willuhn
+ * @N Update auf Birt 2 (bessere Zeichen-Qualitaet, u.a. durch Anti-Aliasing)
+ * @N Neuer Chart "Umsatz-Kategorien im Verlauf"
+ * @N Charts erst beim ersten Paint-Event zeichnen. Dadurch laesst sich z.Bsp. die Konto-View schneller oeffnen, da der Saldo-Verlauf nicht berechnet werden muss
+ *
  * Revision 1.6  2007/04/19 18:10:12  willuhn
  * @B fehlendes Reset des Iterators vor der Verwendung
  *

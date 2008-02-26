@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/Attic/PieChart.java,v $
- * $Revision: 1.6 $
- * $Date: 2006/08/05 22:00:51 $
+ * $Revision: 1.7 $
+ * $Date: 2008/02/26 01:01:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -36,6 +36,7 @@ import org.eclipse.birt.chart.model.type.impl.PieSeriesImpl;
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.gui.formatter.Formatter;
+import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -73,8 +74,8 @@ public class PieChart extends AbstractChart
   
     // CUSTOMIZE THE LEGEND 
     Legend lg = chart.getLegend();
-    lg.getText().getFont().setSize(10);
-    lg.getInsets().set(10, 5, 0, 0);
+    lg.getText().getFont().setSize(Font.DEFAULT.getSWTFont().getFontData()[0].getHeight());
+    lg.getInsets().set(20, 5, 0, 0);
     lg.setAnchor(Anchor.NORTH_LITERAL);
   
     Vector data = getData();
@@ -131,8 +132,9 @@ public class PieChart extends AbstractChart
       sePie.setDataSet(NumberDataSetImpl.create(dataLine));
       sePie.setLabelPosition(Position.INSIDE_LITERAL);
       sePie.setSeriesIdentifier(getTitle());
-//      sePie.setExplosion(10);
-//      sePie.setExplosionExpression("orthogonalValue<20 || orthogonalValue>50");
+      sePie.setExplosion(7);
+      
+      // sePie.setExplosionExpression("orthogonalValue<20 || orthogonalValue>50");
       
       SeriesDefinition sdValues = SeriesDefinitionImpl.create();
       sd.getSeriesDefinitions().add(sdValues);
@@ -150,6 +152,11 @@ public class PieChart extends AbstractChart
 
 /*********************************************************************
  * $Log: PieChart.java,v $
+ * Revision 1.7  2008/02/26 01:01:16  willuhn
+ * @N Update auf Birt 2 (bessere Zeichen-Qualitaet, u.a. durch Anti-Aliasing)
+ * @N Neuer Chart "Umsatz-Kategorien im Verlauf"
+ * @N Charts erst beim ersten Paint-Event zeichnen. Dadurch laesst sich z.Bsp. die Konto-View schneller oeffnen, da der Saldo-Verlauf nicht berechnet werden muss
+ *
  * Revision 1.6  2006/08/05 22:00:51  willuhn
  * *** empty log message ***
  *

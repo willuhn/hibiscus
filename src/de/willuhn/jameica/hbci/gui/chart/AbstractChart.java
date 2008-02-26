@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/AbstractChart.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/04/20 08:44:21 $
+ * $Revision: 1.4 $
+ * $Date: 2008/02/26 01:01:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,6 @@ import java.rmi.RemoteException;
 import java.util.Vector;
 
 import org.eclipse.birt.chart.device.IDeviceRenderer;
-import org.eclipse.birt.chart.exception.ChartException;
 import org.eclipse.birt.chart.factory.Generator;
 import org.eclipse.birt.chart.model.attribute.Bounds;
 import org.eclipse.birt.chart.model.attribute.impl.BoundsImpl;
@@ -104,6 +103,15 @@ public abstract class AbstractChart implements Chart, PaintListener
   }
 
   /**
+   * @see de.willuhn.jameica.hbci.gui.chart.Chart#removeAllData()
+   */
+  public void removeAllData()
+  {
+    if (this.data != null)
+      this.data.clear();
+  }
+  
+  /**
    * Liefert die anzuzeigenden Daten.
    * @return Anzuzeigende Daten.
    */
@@ -153,7 +161,7 @@ public abstract class AbstractChart implements Chart, PaintListener
     GridData gd = new GridData(GridData.FILL_BOTH);
     this.canvas.setLayoutData(gd);
     this.canvas.addPaintListener(this);
-    this.chart = createChart();
+    this.chart = null;
     this.canvas.redraw();
   }
 
@@ -177,11 +185,14 @@ public abstract class AbstractChart implements Chart, PaintListener
     Generator gr = Generator.instance();
     
     try {
-      gr.render(idr,gr.build(idr.getDisplayServer(),this.chart, null,bo,null));
+      if (this.chart == null)
+        this.chart = createChart();
+      
+      gr.render(idr,gr.build(idr.getDisplayServer(),this.chart,bo,null,null));
     }
-    catch (ChartException gex)
+    catch (Exception ex)
     {
-      Logger.error("unable to paint chart",gex);
+      Logger.error("unable to paint chart",ex);
       GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Zeichnen des Diagramms"));
     }
   }
@@ -191,6 +202,11 @@ public abstract class AbstractChart implements Chart, PaintListener
 
 /*********************************************************************
  * $Log: AbstractChart.java,v $
+ * Revision 1.4  2008/02/26 01:01:16  willuhn
+ * @N Update auf Birt 2 (bessere Zeichen-Qualitaet, u.a. durch Anti-Aliasing)
+ * @N Neuer Chart "Umsatz-Kategorien im Verlauf"
+ * @N Charts erst beim ersten Paint-Event zeichnen. Dadurch laesst sich z.Bsp. die Konto-View schneller oeffnen, da der Saldo-Verlauf nicht berechnet werden muss
+ *
  * Revision 1.3  2006/04/20 08:44:21  willuhn
  * @C s/Childs/Children/
  *

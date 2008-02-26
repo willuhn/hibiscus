@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzTypTree.java,v $
- * $Revision: 1.5 $
- * $Date: 2007/12/20 18:28:22 $
+ * $Revision: 1.6 $
+ * $Date: 2008/02/26 01:01:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,22 +14,27 @@
 package de.willuhn.jameica.hbci.gui.views;
 
 import java.rmi.RemoteException;
+import java.util.Date;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.TabFolder;
 
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.parts.TreePart;
 import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.UmsatzTypTreeExport;
 import de.willuhn.jameica.hbci.gui.controller.UmsatzTypTreeControl;
+import de.willuhn.jameica.hbci.gui.parts.UmsatzTypVerlauf;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -58,12 +63,23 @@ public class UmsatzTypTree extends AbstractView
     settings.addLabelPair(i18n.tr("Start-Datum"), control.getStart());
     settings.addLabelPair(i18n.tr("End-Datum"), control.getEnd());
 
+    TabFolder folder = new TabFolder(getParent(), SWT.NONE);
+    folder.setLayoutData(new GridData(GridData.FILL_BOTH));
+    folder.setBackground(Color.BACKGROUND.getSWTColor());
+    
+    TabGroup table = new TabGroup(folder,i18n.tr("Tabellarisch"));
+    
     // Hilfs-Composite, damit wir dessen Inhalt sauber disposen koennen.
-    final Composite comp = new Composite(getParent(), SWT.NONE);
+    final Composite comp = new Composite(table.getComposite(), SWT.NONE);
     comp.setLayoutData(new GridData(GridData.FILL_BOTH));
     comp.setLayout(new GridLayout());
     TreePart tree = control.getTree();
     tree.paint(comp);
+    
+    final TabGroup chart = new TabGroup(folder,i18n.tr("Im Verlauf"));
+    final UmsatzTypVerlauf v = new UmsatzTypVerlauf();
+    v.setData(tree.getItems(),(Date) control.getStart().getValue(),(Date) control.getEnd().getValue());
+    v.paint(chart.getComposite());
 
     ButtonArea buttons = new ButtonArea(getParent(), 4);
     buttons.addButton(i18n.tr("Zurück"), new Back());
@@ -99,6 +115,18 @@ public class UmsatzTypTree extends AbstractView
       public void handleAction(Object context) throws ApplicationException
       {
         control.handleReload(comp);
+        try
+        {
+          v.setData(control.getTree().getItems(),
+                    (Date) control.getStart().getValue(),
+                    (Date) control.getEnd().getValue());
+          v.redraw();
+        }
+        catch (RemoteException re)
+        {
+          Logger.error("unable to refresh diagram",re);
+          throw new ApplicationException(i18n.tr("Fehler beim Aktualisieren des Diagramms"));
+        }
       }
     }, null, true);
   }
@@ -106,6 +134,11 @@ public class UmsatzTypTree extends AbstractView
 }
 /*******************************************************************************
  * $Log: UmsatzTypTree.java,v $
+ * Revision 1.6  2008/02/26 01:01:16  willuhn
+ * @N Update auf Birt 2 (bessere Zeichen-Qualitaet, u.a. durch Anti-Aliasing)
+ * @N Neuer Chart "Umsatz-Kategorien im Verlauf"
+ * @N Charts erst beim ersten Paint-Event zeichnen. Dadurch laesst sich z.Bsp. die Konto-View schneller oeffnen, da der Saldo-Verlauf nicht berechnet werden muss
+ *
  * Revision 1.5  2007/12/20 18:28:22  willuhn
  * @B Ausgewaehltes Konto wird beim Export nicht beruecksichtigt
  *

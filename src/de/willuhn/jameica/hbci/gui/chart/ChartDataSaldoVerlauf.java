@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/ChartDataSaldoVerlauf.java,v $
- * $Revision: 1.10 $
- * $Date: 2007/08/07 23:54:16 $
+ * $Revision: 1.11 $
+ * $Date: 2008/02/26 01:01:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -137,11 +137,23 @@ public class ChartDataSaldoVerlauf implements LineChartData
     return false;
   }
 
+  /**
+   * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#getColor()
+   */
+  public int[] getColor() throws RemoteException
+  {
+    return null;
+  }
 }
 
 
 /*********************************************************************
  * $Log: ChartDataSaldoVerlauf.java,v $
+ * Revision 1.11  2008/02/26 01:01:16  willuhn
+ * @N Update auf Birt 2 (bessere Zeichen-Qualitaet, u.a. durch Anti-Aliasing)
+ * @N Neuer Chart "Umsatz-Kategorien im Verlauf"
+ * @N Charts erst beim ersten Paint-Event zeichnen. Dadurch laesst sich z.Bsp. die Konto-View schneller oeffnen, da der Saldo-Verlauf nicht berechnet werden muss
+ *
  * Revision 1.10  2007/08/07 23:54:16  willuhn
  * @B Bug 394 - Erster Versuch. An einigen Stellen (z.Bsp. konto.getAnfangsSaldo) war ich mir noch nicht sicher. Heiner?
  *

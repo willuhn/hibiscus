@@ -4,18 +4,19 @@
 	<classpathentry including="*.java" kind="src" output="updates" path="updates"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="src" path="/jameica"/>
-	<classpathentry kind="lib" path="lib/birt/common.jar"/>
-	<classpathentry kind="lib" path="lib/birt/common.resources.jar"/>
-	<classpathentry kind="lib" path="lib/birt/core.jar"/>
-	<classpathentry kind="lib" path="lib/birt/device-extension.jar"/>
-	<classpathentry kind="lib" path="lib/birt/engine.jar"/>
-	<classpathentry kind="lib" path="lib/birt/engine-extension.jar"/>
-	<classpathentry kind="lib" path="lib/birt/ecore.jar"/>
-	<classpathentry kind="lib" path="lib/birt/ecore.resources.jar"/>
-	<classpathentry kind="lib" path="lib/birt/ecore.xmi.jar"/>
 	<classpathentry kind="lib" path="lib/birt/js.jar"/>
 	<classpathentry kind="lib" path="lib/itext-2.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/obantoo-bin-1.4.7.jar"/>
-	<classpathentry exported="true" sourcepath="lib.src/hbci4java-2.5.6-src.zip" kind="lib" path="lib/hbci4java-2.5.6.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/hbci4java-2.5.6.jar" sourcepath="lib.src/hbci4java-2.5.6-src.zip"/>
+	<classpathentry kind="lib" path="lib/birt/org.eclipse.birt.chart.device.extension_2.1.0.N20060628-1351.jar"/>
+	<classpathentry kind="lib" path="lib/birt/org.eclipse.birt.chart.device.swt_2.1.0.N20060628-1351.jar"/>
+	<classpathentry kind="lib" path="lib/birt/org.eclipse.birt.chart.engine_2.1.0.N20060628-1351.jar"/>
+	<classpathentry kind="lib" path="lib/birt/org.eclipse.birt.chart.engine.extension_2.1.0.N20060628-1351.jar"/>
+	<classpathentry kind="lib" path="lib/birt/org.eclipse.birt.chart.ui.extension_2.1.0.N20060628-1351.jar"/>
+	<classpathentry kind="lib" path="lib/birt/org.eclipse.birt.core_2.1.0.N20060628-1351.jar"/>
+	<classpathentry kind="lib" path="lib/birt/org.eclipse.birt.core.ui_2.1.0.N20060628-1351.jar"/>
+	<classpathentry kind="lib" path="lib/birt/org.eclipse.emf.common_2.2.1.v200609210005.jar"/>
+	<classpathentry kind="lib" path="lib/birt/org.eclipse.emf.ecore_2.2.1.v200609210005.jar"/>
+	<classpathentry kind="lib" path="lib/birt/org.eclipse.emf.ecore.xmi_2.2.1.v200609210005.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
