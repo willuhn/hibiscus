@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SparQuote.java,v $
- * $Revision: 1.12 $
- * $Date: 2008/02/26 01:01:16 $
+ * $Revision: 1.13 $
+ * $Date: 2008/02/26 01:12:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -436,14 +436,6 @@ public class SparQuote implements Part
     }
 
     /**
-     * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#getShowMarker()
-     */
-    public boolean getShowMarker()
-    {
-      return false;
-    }
-
-    /**
      * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#getColor()
      */
     public int[] getColor() throws RemoteException
@@ -472,14 +464,6 @@ public class SparQuote implements Part
     {
       return i18n.tr("Trend");
     }
-
-    /**
-     * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#getShowMarker()
-     */
-    public boolean getShowMarker()
-    {
-      return false;
-    }
   }
 
 }
@@ -487,6 +471,9 @@ public class SparQuote implements Part
 
 /*********************************************************************
  * $Log: SparQuote.java,v $
+ * Revision 1.13  2008/02/26 01:12:30  willuhn
+ * @R nicht mehr benoetigte Funktion entfernt
+ *
  * Revision 1.12  2008/02/26 01:01:16  willuhn
  * @N Update auf Birt 2 (bessere Zeichen-Qualitaet, u.a. durch Anti-Aliasing)
  * @N Neuer Chart "Umsatz-Kategorien im Verlauf"

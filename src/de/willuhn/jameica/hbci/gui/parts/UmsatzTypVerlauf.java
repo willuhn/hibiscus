@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTypVerlauf.java,v $
- * $Revision: 1.1 $
- * $Date: 2008/02/26 01:01:16 $
+ * $Revision: 1.2 $
+ * $Date: 2008/02/26 01:12:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -265,14 +265,6 @@ public class UmsatzTypVerlauf implements Part
      */
     public boolean getCurve()
     {
-      return true;
-    }
-
-    /**
-     * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#getShowMarker()
-     */
-    public boolean getShowMarker()
-    {
       return false;
     }
 
@@ -349,6 +341,9 @@ public class UmsatzTypVerlauf implements Part
 
 /*********************************************************************
  * $Log: UmsatzTypVerlauf.java,v $
+ * Revision 1.2  2008/02/26 01:12:30  willuhn
+ * @R nicht mehr benoetigte Funktion entfernt
+ *
  * Revision 1.1  2008/02/26 01:01:16  willuhn
  * @N Update auf Birt 2 (bessere Zeichen-Qualitaet, u.a. durch Anti-Aliasing)
  * @N Neuer Chart "Umsatz-Kategorien im Verlauf"
