@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/PINDialog.java,v $
- * $Revision: 1.16 $
- * $Date: 2006/07/05 23:29:29 $
+ * $Revision: 1.17 $
+ * $Date: 2008/02/27 16:12:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -133,19 +133,19 @@ public class PINDialog extends PasswordDialog {
       public void paint(Composite parent) throws RemoteException
       {
         checkPinText = new Label(parent,SWT.WRAP);
-        checkPinText .setBackground(Color.BACKGROUND.getSWTColor());
+        checkPinText.setBackground(Color.BACKGROUND.getSWTColor());
         if (Settings.getCheckPin())
           checkPinText.setText(checkPinComment);
         else
-          checkPinText .setText("\n\n\n");
+          checkPinText.setText("\n\n\n");
         checkPinText.setForeground(Color.COMMENT.getSWTColor());
-        checkPinText .setLayoutData(new GridData(GridData.FILL_BOTH));
+        checkPinText.setLayoutData(new GridData(GridData.FILL_BOTH));
         // Workaround fuer Windows, weil dort mehrzeilige
         // Labels nicht korrekt umgebrochen werden.
-        checkPinText .addControlListener(new ControlAdapter() {
+        checkPinText.addControlListener(new ControlAdapter() {
           public void controlResized(ControlEvent e)
           {
-            checkPinText .setSize(checkPinText .computeSize(checkPinText.getSize().x,SWT.DEFAULT));
+            checkPinText.setSize(checkPinText.computeSize(checkPinText.getSize().x,SWT.DEFAULT));
           }
         });
       }
@@ -268,6 +268,9 @@ public class PINDialog extends PasswordDialog {
 
 /**********************************************************************
  * $Log: PINDialog.java,v $
+ * Revision 1.17  2008/02/27 16:12:57  willuhn
+ * @N Passwort-Dialog fuer Schluesseldiskette mit mehr Informationen (Konto, Dateiname)
+ *
  * Revision 1.16  2006/07/05 23:29:29  willuhn
  * @B bug 174
  *

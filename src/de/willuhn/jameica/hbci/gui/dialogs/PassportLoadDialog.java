@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/PassportLoadDialog.java,v $
- * $Revision: 1.6 $
- * $Date: 2007/01/05 17:23:24 $
- * $Author: jost $
+ * $Revision: 1.7 $
+ * $Date: 2008/02/27 16:12:57 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -12,8 +12,25 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.dialogs;
 
+import java.rmi.RemoteException;
+
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.kapott.hbci.manager.HBCIUtils;
+import org.kapott.hbci.passport.HBCIPassport;
+import org.kapott.hbci.passport.HBCIPassportRDHNew;
+
+import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.dialogs.PasswordDialog;
+import de.willuhn.jameica.gui.util.Color;
+import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 
@@ -22,23 +39,87 @@ import de.willuhn.util.I18N;
  */
 public class PassportLoadDialog extends PasswordDialog {
 
-	private I18N i18n;
+	private I18N i18n = null;
+  private String filename = null;
+
   /**
    * ct.
-   * @param position Position des Dialogs.
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#POSITION_CENTER
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#POSITION_MOUSE
+   * @param passport optionale Angabe des Passports.
    */
-  public PassportLoadDialog(int position) {
-    super(position);
-		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  public PassportLoadDialog(HBCIPassport passport)
+  {
+    super(POSITION_CENTER);
+    setSize(550,SWT.DEFAULT);
+    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-    setTitle(i18n.tr("Passwort-Eingabe"));
+    Konto konto = HBCIFactory.getInstance().getCurrentKonto();
+    
+    String s = null;
+    try
+    {
+      s = konto.getBezeichnung();
+      s += " [" + i18n.tr("Nr.") + " " + konto.getKontonummer();
+      String name = HBCIUtils.getNameForBLZ(konto.getBLZ());
+      if (name != null && name.length() > 0)
+        s += " - " + name;
+      s += "]";
+    }
+    catch (Exception e)
+    {
+      // ignore
+    }
+    
+    String text = null;
+    if (s != null)
+    {
+      setTitle(i18n.tr("Schlüsseldiskette. Konto: {0}",s));
+      text = i18n.tr("Bitte geben Sie das Passwort der Schlüsseldiskette ein.\nKonto: {0}",s);
+    }
+    else
+    {
+      setTitle(i18n.tr("Schlüsseldiskette"));
+      text = i18n.tr("Bitte geben Sie das Passwort der Schlüsseldiskette ein.");
+    }
+    
+    if (passport != null && (passport instanceof HBCIPassportRDHNew))
+      this.filename = ((HBCIPassportRDHNew)passport).getFilename();
+
+    setText(text);
     setLabelText(i18n.tr("Ihr Passwort"));
-    setText(i18n.tr("Bitte geben Sie das von Ihnen vergebene Passwort\nfür dieses Sicherheitsmedium ein."));
+  }
+  
+  /**
+   * @see de.willuhn.jameica.gui.dialogs.PasswordDialog#extend(de.willuhn.jameica.gui.util.Container)
+   */
+  protected void extend(Container container) throws Exception
+  {
+    if (this.filename == null)
+      return;
+    
+    Part p = new Part() {
+      public void paint(Composite parent) throws RemoteException
+      {
+        String text = i18n.tr("Schlüssel-Datei: {0}",filename);
+
+        final Label comment = new Label(parent,SWT.WRAP);
+        comment.setBackground(Color.BACKGROUND.getSWTColor());
+        comment.setText(text);
+        comment.setForeground(Color.COMMENT.getSWTColor());
+        comment.setLayoutData(new GridData(GridData.FILL_BOTH));
+        // Workaround fuer Windows, weil dort mehrzeilige
+        // Labels nicht korrekt umgebrochen werden.
+        comment.addControlListener(new ControlAdapter() {
+          public void controlResized(ControlEvent e)
+          {
+            comment.setSize(comment.computeSize(comment.getSize().x,SWT.DEFAULT));
+          }
+        });
+      }
+    };
+    container.addPart(p);
   }
 
-	/**
+  /**
    * @see de.willuhn.jameica.gui.dialogs.PasswordDialog#checkPassword(java.lang.String)
    */
   protected boolean checkPassword(String password)
@@ -66,6 +147,9 @@ public class PassportLoadDialog extends PasswordDialog {
 
 /**********************************************************************
  * $Log: PassportLoadDialog.java,v $
+ * Revision 1.7  2008/02/27 16:12:57  willuhn
+ * @N Passwort-Dialog fuer Schluesseldiskette mit mehr Informationen (Konto, Dateiname)
+ *
  * Revision 1.6  2007/01/05 17:23:24  jost
  * Zeilenumbruch korrigiert.
  *

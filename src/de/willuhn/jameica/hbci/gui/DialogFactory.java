@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/DialogFactory.java,v $
- * $Revision: 1.31 $
- * $Date: 2007/12/21 17:37:39 $
+ * $Revision: 1.32 $
+ * $Date: 2008/02/27 16:12:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -180,7 +180,7 @@ public class DialogFactory {
     // die Option ist deaktiviert. Also fragen
     // wir den User.
     Logger.info("ask user for passport load key, passport: " + passport.getClass().getName());
-    dialog = new PassportLoadDialog(AbstractDialog.POSITION_CENTER);
+    dialog = new PassportLoadDialog(passport);
     try {
       pw = (String) dialog.open();
     }
@@ -438,6 +438,9 @@ public class DialogFactory {
 
 /**********************************************************************
  * $Log: DialogFactory.java,v $
+ * Revision 1.32  2008/02/27 16:12:57  willuhn
+ * @N Passwort-Dialog fuer Schluesseldiskette mit mehr Informationen (Konto, Dateiname)
+ *
  * Revision 1.31  2007/12/21 17:37:39  willuhn
  * @N Update auf HBCI4Java 2.5.6
  *
