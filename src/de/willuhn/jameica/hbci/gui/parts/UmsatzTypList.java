@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTypList.java,v $
- * $Revision: 1.8 $
- * $Date: 2008/02/13 23:44:27 $
+ * $Revision: 1.9 $
+ * $Date: 2008/02/27 10:31:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -56,7 +56,7 @@ public class UmsatzTypList extends TablePart implements Part
     super(Settings.getDBService().createList(UmsatzTyp.class), action);
     this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     addColumn(i18n.tr("Bezeichnung"),"name");
-    addColumn(i18n.tr("Nummer"),"nummer");
+    addColumn(i18n.tr("Nummer"),"nummer-int"); // BUGZILLA 554
     addColumn(i18n.tr("Zweck, Name oder Konto enthält"),"pattern");
     addColumn(i18n.tr("Umsatzart"),"iseinnahme",new Formatter() {
       public String format(Object o)
@@ -153,6 +153,9 @@ public class UmsatzTypList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: UmsatzTypList.java,v $
+ * Revision 1.9  2008/02/27 10:31:20  willuhn
+ * @B Bug 554
+ *
  * Revision 1.8  2008/02/13 23:44:27  willuhn
  * @R Hibiscus-Eigenformat (binaer-serialisierte Objekte) bei Export und Import abgeklemmt
  * @N Import und Export von Umsatz-Kategorien im XML-Format
