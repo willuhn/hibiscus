@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/NeueUmsaetze.java,v $
- * $Revision: 1.4 $
- * $Date: 2007/12/29 18:45:37 $
+ * $Revision: 1.5 $
+ * $Date: 2008/03/04 10:36:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -91,13 +91,16 @@ public class NeueUmsaetze extends AbstractBox
    */
   public int getHeight()
   {
-    return 150;
+    return 220;
   }
 }
 
 
 /*********************************************************************
  * $Log: NeueUmsaetze.java,v $
+ * Revision 1.5  2008/03/04 10:36:41  willuhn
+ * @N Default-Hoehe vergroessert
+ *
  * Revision 1.4  2007/12/29 18:45:37  willuhn
  * @N Hoehe von Boxen explizit konfigurierbar
  *
