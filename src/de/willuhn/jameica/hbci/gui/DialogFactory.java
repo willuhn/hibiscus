@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/DialogFactory.java,v $
- * $Revision: 1.32 $
- * $Date: 2008/02/27 16:12:57 $
+ * $Revision: 1.33 $
+ * $Date: 2008/03/11 23:13:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.Hashtable;
 
 import org.kapott.hbci.passport.HBCIPassport;
+import org.kapott.hbci.passport.HBCIPassportPinTan;
 import org.kapott.hbci.passport.HBCIPassportRDHNew;
 
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
@@ -313,6 +314,7 @@ public class DialogFactory {
   private static String getCachedPIN(HBCIPassport passport) throws Exception
   {
     String key = getCacheKey(passport);
+    Logger.debug("cache id: " + key);
 
     // immer noch keine CustomerID da? Dann geben wir auf
     if (key == null)
@@ -406,7 +408,20 @@ public class DialogFactory {
     // es nicht stoert.
     
     if (passport != null)
-      key = passport.getClass().getName() + "." + passport.getCustomerId();
+    {
+      // Ausserdem haengen wir noch die User-ID dran
+      key = passport.getClass().getName() + "." + passport.getCustomerId() + "." + passport.getUserId();
+
+      // Workaround, weil wohl versehentlich die falsche PIn verwendet
+      // wurde, wenn ein User mehrere Accounts bei der gleichen Bank
+      // hat. Keine Ahnung, was der User da fuer eine merkwuerdige
+      // Konstellation hatte (gleiche Bank, gleiche Kundenkennung und
+      // dennoch unterschiedliche PINs?)
+      // Daher papp ich hier extra noch den Dateinamen dran
+      if (passport instanceof HBCIPassportPinTan)
+        key += ("." + ((HBCIPassportPinTan)passport).getFileName());
+    }
+
 
     // Ggf. noch die BLZ anhaengen.
     // Nur zur Sicherheit, falls die Kundenkennung bei mehreren
@@ -438,6 +453,9 @@ public class DialogFactory {
 
 /**********************************************************************
  * $Log: DialogFactory.java,v $
+ * Revision 1.33  2008/03/11 23:13:11  willuhn
+ * @B Fix wegen falscher Pin (siehe Mail von Alexander vom 11.03.)
+ *
  * Revision 1.32  2008/02/27 16:12:57  willuhn
  * @N Passwort-Dialog fuer Schluesseldiskette mit mehr Informationen (Konto, Dateiname)
  *
