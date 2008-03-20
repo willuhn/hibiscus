@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/AbstractChart.java,v $
- * $Revision: 1.4 $
- * $Date: 2008/02/26 01:01:16 $
+ * $Revision: 1.5 $
+ * $Date: 2008/03/20 10:20:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,6 +22,7 @@ import org.eclipse.birt.chart.model.attribute.Bounds;
 import org.eclipse.birt.chart.model.attribute.impl.BoundsImpl;
 import org.eclipse.birt.chart.util.PluginSettings;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Rectangle;
@@ -29,9 +30,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
@@ -170,30 +171,44 @@ public abstract class AbstractChart implements Chart, PaintListener
    */
   public void paintControl(PaintEvent pe)
   {
-    // Wir geben den Context an, auf dem gezeichnet werden soll.
-    idr.setProperty(IDeviceRenderer.GRAPHICS_CONTEXT, pe.gc);
-    
-    // Wir holen uns das Composite dazu.
-    Composite co = (Composite) pe.getSource();
-    Rectangle re = co.getClientArea();
-    Bounds bo = BoundsImpl.create(re.x, re.y,re.width, re.height);
-
-    // Skalieren das Teil auf Bildschirm-Format (72 DPI).
-    bo.scale(72d / idr.getDisplayServer().getDpiResolution());
-        
-    // Erzeugen einen Generator
-    Generator gr = Generator.instance();
-    
     try {
+      // Wir geben den Context an, auf dem gezeichnet werden soll.
+      idr.setProperty(IDeviceRenderer.GRAPHICS_CONTEXT, pe.gc);
+      
+      // Wir holen uns das Composite dazu.
+      Composite co = (Composite) pe.getSource();
+      Rectangle re = co.getClientArea();
+      Bounds bo = BoundsImpl.create(re.x, re.y,re.width, re.height);
+
+      // Skalieren das Teil auf Bildschirm-Format (72 DPI).
+      bo.scale(72d / idr.getDisplayServer().getDpiResolution());
+          
+      // Erzeugen einen Generator
+      Generator gr = Generator.instance();
+      
       if (this.chart == null)
         this.chart = createChart();
       
       gr.render(idr,gr.build(idr.getDisplayServer(),this.chart,bo,null,null));
     }
+    catch (SWTException se)
+    {
+      // Windows 2000-Behaviour
+      String text = se.getMessage();
+      if (text != null && text.indexOf("GDI+") != -1)
+      {
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler: Bitte installieren Sie GDI+"),StatusBarMessage.TYPE_ERROR));
+      }
+      else
+      {
+        Logger.error("unable to paint chart",se);
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Zeichnen des Diagramms"),StatusBarMessage.TYPE_ERROR));
+      }
+    }
     catch (Exception ex)
     {
       Logger.error("unable to paint chart",ex);
-      GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Zeichnen des Diagramms"));
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Zeichnen des Diagramms"),StatusBarMessage.TYPE_ERROR));
     }
   }
 
@@ -202,6 +217,9 @@ public abstract class AbstractChart implements Chart, PaintListener
 
 /*********************************************************************
  * $Log: AbstractChart.java,v $
+ * Revision 1.5  2008/03/20 10:20:09  willuhn
+ * @C Fehler fangen, wenn GDI+ nicht installiert ist (nur Windows 2000)
+ *
  * Revision 1.4  2008/02/26 01:01:16  willuhn
  * @N Update auf Birt 2 (bessere Zeichen-Qualitaet, u.a. durch Anti-Aliasing)
  * @N Neuer Chart "Umsatz-Kategorien im Verlauf"
