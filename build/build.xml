@@ -140,7 +140,9 @@
     <copy file="plugin.xml" todir="${project.zipdir}" />
     <copy file="${build.dir}/COPYING" todir="${project.zipdir}" />
     <copy todir="${project.zipdir}/doc">
-      <fileset dir="${doc.dir}" />
+      <fileset dir="${doc.dir}">
+        <include name="hibiscus_*" />
+      </fileset>
     </copy>
 
 
@@ -170,7 +172,6 @@
         <include name="${src.dir}/**" />
         <include name="${icon.dir}/**" />
         <include name="${sql.dir}/**" />
-        <include name="${doc.dir}/**" />
         <include name="${build.dir}/**" />
         <exclude name="${build.dir}/BUILD" />
       </fileset>
