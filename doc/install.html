@@ -23,7 +23,7 @@
       ein um die Version zu ueberprüfen.
     
       <br/>
-      Java können Sie von <a target="_new" href="http://java.sun.com/j2se/index.jsp">http://java.sun.com/j2se/index.jsp</a> herunterladen.
+      Java können Sie von <a target="_new" href="http://www.java.com/de/download/manual.jsp">http://www.java.com/de/download/manual.jsp</a> herunterladen.
     </li>
     
     <li>
@@ -46,7 +46,7 @@
           <td>C:\Programme\</td>
         </tr>
         <tr>
-          <td>Linux/Linux-AMD64</td>
+          <td>Linux</td>
           <td>/opt</td>
         </tr>
       </table>
@@ -57,7 +57,7 @@
         <tr>
           <td>MacOS</td>
           <td>
-            Entpacken Sie die ZIP-Datei jameica-&lt;version&gt;.zip und kopieren
+            Entpacken Sie die ZIP-Datei jameica-macos.zip und kopieren
             Sie den Inhalt in den Programmordner. Sie erhalten nun ein neues
             Programmsymbol &quot;Jameica&quot;.
           </td>
@@ -77,7 +77,7 @@
           <td>C:\Programme\jameica\plugins</td>
         </tr>
         <tr>
-          <td>Linux/Linux-AMD64</td>
+          <td>Linux</td>
           <td>/opt/jameica/plugins</td>
         </tr>
       </table>
@@ -130,7 +130,7 @@
         <tr>
           <td>MacOS</td>
           <td>
-            Starten Sie die Anwendung über das Programsymbol &quot;Jameica&quot;
+            Starten Sie die Anwendung über das Programsymbol &quot;Jameica&quot; oder manuell mit dem Script "jameica-macos.sh".
           </td>
         </tr>
       </table>
@@ -220,63 +220,17 @@
     </li>
   </ol>
   
-  <h2>Sicherheitshinweise</h2>
-
-  <ol>
-    <li>
-		  Erstellen Sie regelmässig Backups Ihres Benutzer-Verzeichnisses.
-		
-		  <table class="data">
-		    <tr>
-		      <td>Windows</td>
-		      <td>C:\Dokumente und Einstellungen\&lt;benutzername&gt;\.jameica</td>
-		    </tr>
-		    <tr>
-		      <td>Linux/Linux-AMD64/MacOS</td>
-		      <td>/home/&lt;benutzername&gt;/.jameica</td>
-		    </tr>
-		  </table>
-		</li>
-		
-		<li>
-		  Hibiscus verwendet eine integrierte SQL-Datenbank (McKoi) zur Speicherung
-		  der Konten, Bankverbindungen, Salden und Ueberweisungen. Die Daten werden
-		  im &quot;Benutzer&quot;-Verzeichnis von Jameica abgelegt. Das ist i.d.R.
-		  
-		  <table class="data">
-		    <tr>
-		      <td>Windows</td>
-		      <td>C:\Dokumente und Einstellungen\&lt;benutzername&gt;\.jameica\hibiscus\db</td>
-		    </tr>
-		    <tr>
-		      <td>Linux/Linux-AMD64/MacOS</td>
-		      <td>/home/&lt;benutzername&gt;/.jameica/hibiscus/db</td>
-		    </tr>
-		  </table>
-
-		  Diese Informationen werden unverschlüsselt in der Datenbank abgelegt.
-		  Passen Sie also ggf. die Dateiberechtigungen so an, dass Sie nur von
-		  Ihrem Benutzer-Account gelesen werden können bzw. achten Sie darauf,
-		  dass die Daten nicht fuer Dritte zugaenglich sind.
-		</li>
-		
-		<li>
-		  Streng vertrauliche Informationen wie Passwörter, PIN oder TANs werden
-		  jedoch entweder gar nicht oder nur verschlüsselt gespeichert.
-		</li>
-  </ol>
-
-  <h2>Unterstützte Chipkartenleser</h2>
+  <h2>Weiterführende Informationen</h2>
   
-  Eine Liste der bisher getesteten Chipkartenleser finden Sie im Wiki
-  unter <a href="http://hibiscus.berlios.de/doku.php?id=support:list:kartenleser">http://hibiscus.berlios.de/doku.php?id=support:list:kartenleser</a>.
-
-  Sollten Sie Hibiscus erfolgreich mit einem nicht aufgeführten
-  Chipkartenleser im Einsatz haben, dann fügen Sie Ihn einfach
-  der Liste hinzu.
+  Im Wiki unter <a href="http://hibiscus.berlios.de">hibiscus.berlios.de</a> finden Sie eine
+  Reihe weiterer Informationen zu <a href="http://hibiscus.berlios.de/doku.php?id=support:list:kartenleser">unterstützten Chipkartenlesern</a>
+  , bisher <a href="http://hibiscus.berlios.de/doku.php?id=support:list:banken">getesteten Banken</a>,
+  <a href="http://hibiscus.berlios.de/doku.php?id=support:faq">Antworten auf oft gestellte Fragen</a>,
+  Informationen zur <a href="http://hibiscus.berlios.de/doku.php?id=support:backup">Datensicherung des Benutzerverzeichnisses</a> und
+  dem <a href="http://hibiscus.berlios.de/doku.php?id=support:fehlermelden">Vorgehen beim Auftreten von Fehlern</a>.
   
   <hr/>
-  $Revision: 1.15 $
+  $Revision: 1.16 $
 
   </body>
 
