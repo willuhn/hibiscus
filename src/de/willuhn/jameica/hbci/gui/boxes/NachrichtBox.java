@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/NachrichtBox.java,v $
- * $Revision: 1.3 $
- * $Date: 2007/12/18 17:10:22 $
+ * $Revision: 1.4 $
+ * $Date: 2008/04/01 09:46:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -110,7 +110,6 @@ public class NachrichtBox extends AbstractBox implements Box
       sb.append("</p>");
     }
     sb.append("</form>");
-    System.out.println(sb.toString());
     text.setText(sb.toString());
     text.paint(parent);
   }
@@ -147,6 +146,9 @@ public class NachrichtBox extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: NachrichtBox.java,v $
+ * Revision 1.4  2008/04/01 09:46:15  willuhn
+ * @R removed debug output
+ *
  * Revision 1.3  2007/12/18 17:10:22  willuhn
  * @N Neues ExpandPart
  * @N Boxen auf der Startseite koennen jetzt zusammengeklappt werden
