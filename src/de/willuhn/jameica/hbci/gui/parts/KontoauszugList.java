@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.10 $
- * $Date: 2007/08/23 12:37:32 $
+ * $Revision: 1.11 $
+ * $Date: 2008/04/06 23:21:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ package de.willuhn.jameica.hbci.gui.parts;
 import java.rmi.RemoteException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -37,6 +38,7 @@ import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
+import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.Headline;
@@ -44,14 +46,20 @@ import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.action.Back;
+import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
+import de.willuhn.jameica.hbci.gui.action.UmsatzExport;
 import de.willuhn.jameica.hbci.gui.dialogs.AdresseAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
+import de.willuhn.jameica.hbci.io.Exporter;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 
@@ -83,12 +91,11 @@ public class KontoauszugList extends UmsatzList
 
   /**
    * ct.
-   * @param action die auszufuehrende Aktion.
    * @throws RemoteException
    */
-  public KontoauszugList(Action action) throws RemoteException
+  public KontoauszugList() throws RemoteException
   {
-    super((GenericIterator)null,action);
+    super((GenericIterator)null,new UmsatzDetail());
 
     this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     this.setFilterVisible(false);
@@ -131,6 +138,23 @@ public class KontoauszugList extends UmsatzList
     betrag.addLabelPair(i18n.tr("Höchst-Betrag"),                     getHoechstBetrag());
     betrag.addSeparator();
     betrag.addLabelPair(i18n.tr("Verwendungszweck/Kommentar enthält"), getText());
+
+    ButtonArea buttons = new ButtonArea(parent, 3);
+    buttons.addButton(i18n.tr("Zurück"),new Back());
+    buttons.addButton(i18n.tr("Exportieren..."), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        handlePrint();
+      }
+    });
+    buttons.addButton(i18n.tr("Aktualisieren"), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        handleReload();
+      }
+    },null,true);
 
     new Headline(parent,i18n.tr("Gefundene Umsätze"));
 
@@ -418,9 +442,52 @@ public class KontoauszugList extends UmsatzList
   }
 
   /**
+   * Startet den Export.
+   */
+  private synchronized void handlePrint()
+  {
+    try
+    {
+      // Vorher machen wir nochmal ein UNVERZOEGERTES Reload,
+      // denn es muss sichergestellt sein, dass die Tabelle
+      // aktuell ist, wenn wir als naechstes getItems()
+      // aufrufen
+      handleReload();
+
+      // Wir laden die Umsaetze direkt aus der Tabelle.
+      // Damit werden genau die ausgegeben, die gerade
+      // angezeigt werden und wir sparen uns das erneute
+      // Laden aus der Datenbank
+      List list = getItems();
+
+      if (list == null || list.size() == 0)
+      {
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Keine zu exportierenden Umsätze"), StatusBarMessage.TYPE_ERROR));
+        return;
+      }
+
+      // Start- und End-Datum als Contextparameter an Exporter uebergeben
+      Exporter.SESSION.put("pdf.start",getStart().getValue());
+      Exporter.SESSION.put("pdf.end",getEnd().getValue());
+
+      Umsatz[] u = (Umsatz[]) list.toArray(new Umsatz[list.size()]);
+      new UmsatzExport().handleAction(u);
+    }
+    catch (ApplicationException ae)
+    {
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getLocalizedMessage(),StatusBarMessage.TYPE_ERROR));
+    }
+    catch (RemoteException re)
+    {
+      Logger.error("error while reloading table",re);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Exportieren der Umsätze"), StatusBarMessage.TYPE_ERROR));
+    }
+  }
+
+  /**
    * Aktualisiert die Tabelle der angezeigten Umsaetze.
    */
-  public synchronized void handleReload()
+  private synchronized void handleReload()
   {
     if (!hasChanged() || disposed)
       return;
@@ -525,6 +592,10 @@ public class KontoauszugList extends UmsatzList
 
 /*********************************************************************
  * $Log: KontoauszugList.java,v $
+ * Revision 1.11  2008/04/06 23:21:43  willuhn
+ * @C Bug 575
+ * @N Der Vereinheitlichung wegen alle Buttons in den Auswertungen nach oben verschoben. Sie sind dann naeher an den Filter-Controls -> ergonomischer
+ *
  * Revision 1.10  2007/08/23 12:37:32  willuhn
  * @N Neues Filterkriterium "Verwendungszweck/Kommentar"
  * @C "Betrag von", "Betrag bis" nicht mehr speichern -> zu verwirrend

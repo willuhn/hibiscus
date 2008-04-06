@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SparQuote.java,v $
- * $Revision: 1.13 $
- * $Date: 2008/02/26 01:12:30 $
+ * $Revision: 1.14 $
+ * $Date: 2008/04/06 23:21:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,6 +23,8 @@ import java.util.Date;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TableItem;
 
@@ -40,8 +42,8 @@ import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Color;
-import de.willuhn.jameica.gui.util.Container;
-import de.willuhn.jameica.gui.util.SimpleContainer;
+import de.willuhn.jameica.gui.util.DelayedListener;
+import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -54,6 +56,7 @@ import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Level;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -65,15 +68,20 @@ public class SparQuote implements Part
 {
   private static DateFormat DATEFORMAT = new SimpleDateFormat("MM.yyyy");
   
-  private TablePart table       = null;
-  private LineChart chart       = null;
+  private TablePart table          = null;
+  private LineChart chart          = null;
+  private SelectInput kontoauswahl = null;
+  private IntegerInput tagAuswahl  = null;
   
-  private Konto konto           = null;
-  private int stichtag          = 1;
-  private GenericIterator data  = null;
-  private GenericIterator trend = null;
+  private GenericIterator data     = null;
+  private GenericIterator trend    = null;
+  private Konto konto              = null;
+  private int stichtag             = 1;
+  
+  private I18N i18n                = null;
 
-  private I18N i18n             = null;
+  private Listener listener        = null; // BUGZILLA 575
+
   
   /**
    * ct.
@@ -81,6 +89,74 @@ public class SparQuote implements Part
   public SparQuote()
   {
     this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+    this.listener = new Listener()
+    {
+      public void handleEvent(Event event)
+      {
+        try
+        {
+          konto = (Konto) getKontoAuswahl().getValue();
+          Integer value = (Integer) getTagAuswahl().getValue();
+          stichtag = value == null ? 1 : value.intValue();
+
+          load();
+          redraw();
+          if (chart != null)
+            chart.redraw();
+        }
+        catch (Exception e)
+        {
+          // ignorieren wir. Durch den Delayed-Listener kann dieses
+          // Event auch aufgerufen werden, wenn der Dialog schon verlassen wurde
+          // Daher nur zu Debugging-Zwecken.
+          Logger.write(Level.DEBUG,"unable to redraw data, it seems, the view was allready closed",e);
+        }
+      }
+    };
+  }
+  
+  /**
+   * Liefert die Konto-Auwahl.
+   * @return die Konto-Auswahl.
+   * @throws RemoteException
+   */
+  private SelectInput getKontoAuswahl() throws RemoteException
+  {
+    if (this.kontoauswahl != null)
+      return this.kontoauswahl;
+
+    // Wir nehmen standardmaessig das erste Konto
+    DBIterator konten = Settings.getDBService().createList(Konto.class);
+    if (konten.hasNext())
+    {
+      this.konto = (Konto) konten.next();
+      konten.begin();
+    }
+
+    this.kontoauswahl = new SelectInput(konten,this.konto);
+    this.kontoauswahl.setPleaseChoose(i18n.tr("Alle Konten"));
+    this.kontoauswahl.setName(i18n.tr("Konto"));
+    this.kontoauswahl.setAttribute("longname");
+    this.kontoauswahl.addListener(new DelayedListener(500,this.listener));
+    return this.kontoauswahl;
+  }
+  
+  /**
+   * Liefert ein Eingabefeld fuer den Stichtag.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  private IntegerInput getTagAuswahl() throws RemoteException
+  {
+    if (this.tagAuswahl != null)
+      return this.tagAuswahl;
+
+    // BUGZILLA 337
+    this.tagAuswahl = new IntegerInput(this.stichtag);
+    this.tagAuswahl.setComment(i18n.tr(". Tag des Monats"));
+    this.tagAuswahl.setName(i18n.tr("Stichtag"));
+    this.tagAuswahl.addListener(new DelayedListener(500,this.listener));
+    return this.tagAuswahl;
   }
   
   /**
@@ -88,28 +164,23 @@ public class SparQuote implements Part
    */
   public void paint(Composite parent) throws RemoteException
   {
-    Container container = new SimpleContainer(parent);
-    
-    // Wir nehmen standardmaessig das erste Konto
-    DBIterator konten = Settings.getDBService().createList(Konto.class);
-    if (konten.hasNext())
-    {
-      this.konto = (Konto) konten.next();
-      konten.begin();
-      load();
-    }
+    load();
 
-    final SelectInput auswahl = new SelectInput(konten,konto);
-    auswahl.setPleaseChoose(i18n.tr("Alle Konten"));
-    auswahl.setName(i18n.tr("Konto"));
-    auswahl.setAttribute("longname");
-    container.addInput(auswahl);
+    LabelGroup filter = new LabelGroup(parent,i18n.tr("Anzeige einschränken"));
     
-    // BUGZILLA 337
-    final IntegerInput si = new IntegerInput(this.stichtag);
-    si.setComment(i18n.tr(". Tag des Monats"));
-    si.setName(i18n.tr("Stichtag"));
-    container.addInput(si);
+    filter.addInput(getKontoAuswahl());
+    filter.addInput(getTagAuswahl());
+
+    ButtonArea topButtons = new ButtonArea(parent,2);
+    topButtons.addButton(i18n.tr("Zurück"),new Back());
+    topButtons.addButton(i18n.tr("Aktualisieren"), new Action() {
+      
+      public void handleAction(Object context) throws ApplicationException
+      {
+        listener.handleEvent(null);
+      }
+    
+    },null,true);
     
     // Wir initialisieren die Tabelle erstmal ohne Werte.
     this.table = new TablePart(data == null ? PseudoIterator.fromArray(new UmsatzEntry[]{new UmsatzEntry()}) : data,null);
@@ -161,31 +232,6 @@ public class SparQuote implements Part
 
     TabGroup tab = new TabGroup(folder,i18n.tr("Tabellarische Auswertung"));
     this.table.paint(tab.getComposite());
-
-    ButtonArea buttons = new ButtonArea(parent,2);
-    buttons.addButton(i18n.tr("Zurück"),new Back());
-    buttons.addButton(i18n.tr("Aktualisieren"), new Action() {
-    
-      public void handleAction(Object context) throws ApplicationException
-      {
-        konto = (Konto) auswahl.getValue();
-        Integer value = (Integer) si.getValue();
-        stichtag = value == null ? 1 : value.intValue();
-        try
-        {
-          load();
-          redraw();
-          if (chart != null)
-            chart.redraw();
-        }
-        catch (RemoteException re)
-        {
-          Logger.error("error while calculating values",re);
-          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Ermitteln der Sparquote"),StatusBarMessage.TYPE_ERROR));
-        }
-      }
-    
-    },null,true);
   }
 
   /**
@@ -471,6 +517,10 @@ public class SparQuote implements Part
 
 /*********************************************************************
  * $Log: SparQuote.java,v $
+ * Revision 1.14  2008/04/06 23:21:43  willuhn
+ * @C Bug 575
+ * @N Der Vereinheitlichung wegen alle Buttons in den Auswertungen nach oben verschoben. Sie sind dann naeher an den Filter-Controls -> ergonomischer
+ *
  * Revision 1.13  2008/02/26 01:12:30  willuhn
  * @R nicht mehr benoetigte Funktion entfernt
  *

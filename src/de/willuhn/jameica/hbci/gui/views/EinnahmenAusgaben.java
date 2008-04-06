@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/EinnahmenAusgaben.java,v $
- * $Revision: 1.3 $
- * $Date: 2007/07/16 12:01:48 $
+ * $Revision: 1.4 $
+ * $Date: 2008/04/06 23:21:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,7 +13,10 @@
 
 package de.willuhn.jameica.hbci.gui.views;
 
+import java.rmi.RemoteException;
+
 import de.willuhn.jameica.gui.AbstractView;
+import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.ButtonArea;
@@ -22,7 +25,10 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.EinnahmeAusgabeExport;
 import de.willuhn.jameica.hbci.gui.controller.EinnahmeAusgabeControl;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -35,8 +41,7 @@ public class EinnahmenAusgaben extends AbstractView
    */
   public void bind() throws Exception
   {
-    I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class)
-        .getResources().getI18N();
+    final I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
     GUI.getView().setTitle(i18n.tr("Einnahmen/Ausgaben"));
 
@@ -47,16 +52,41 @@ public class EinnahmenAusgaben extends AbstractView
     group.addLabelPair(i18n.tr("Start-Datum"), control.getStart());
     group.addLabelPair(i18n.tr("End-Datum"), control.getEnd());
 
+    ButtonArea buttons = new ButtonArea(getParent(), 3);
+    buttons.addButton(i18n.tr("Zurück"),new Back());
+    buttons.addButton(i18n.tr("Exportieren..."), new EinnahmeAusgabeExport(), control.getWerte());
+    buttons.addButton(i18n.tr("Aktualisieren"), new Action()
+    {
+    
+      /**
+       * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
+       */
+      public void handleAction(Object context) throws ApplicationException
+      {
+        try
+        {
+          control.handleReload();
+        }
+        catch (RemoteException re)
+        {
+          Logger.error("unable to reload data",re);
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren der Daten"),StatusBarMessage.TYPE_ERROR));
+        }
+      }
+    
+    },null,true);
+
     final TablePart table = control.getTable();
     table.paint(this.getParent());
 
-    ButtonArea buttons = new ButtonArea(getParent(), 2);
-    buttons.addButton(i18n.tr("Zurück"),new Back());
-    buttons.addButton(i18n.tr("Exportieren..."), new EinnahmeAusgabeExport(), control.getWerte());
   }
 }
 /*******************************************************************************
  * $Log: EinnahmenAusgaben.java,v $
+ * Revision 1.4  2008/04/06 23:21:43  willuhn
+ * @C Bug 575
+ * @N Der Vereinheitlichung wegen alle Buttons in den Auswertungen nach oben verschoben. Sie sind dann naeher an den Filter-Controls -> ergonomischer
+ *
  * Revision 1.3  2007/07/16 12:01:48  willuhn
  * *** empty log message ***
  *

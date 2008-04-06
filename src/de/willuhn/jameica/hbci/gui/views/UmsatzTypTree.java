@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzTypTree.java,v $
- * $Revision: 1.6 $
- * $Date: 2008/02/26 01:01:16 $
+ * $Revision: 1.7 $
+ * $Date: 2008/04/06 23:21:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -63,24 +63,6 @@ public class UmsatzTypTree extends AbstractView
     settings.addLabelPair(i18n.tr("Start-Datum"), control.getStart());
     settings.addLabelPair(i18n.tr("End-Datum"), control.getEnd());
 
-    TabFolder folder = new TabFolder(getParent(), SWT.NONE);
-    folder.setLayoutData(new GridData(GridData.FILL_BOTH));
-    folder.setBackground(Color.BACKGROUND.getSWTColor());
-    
-    TabGroup table = new TabGroup(folder,i18n.tr("Tabellarisch"));
-    
-    // Hilfs-Composite, damit wir dessen Inhalt sauber disposen koennen.
-    final Composite comp = new Composite(table.getComposite(), SWT.NONE);
-    comp.setLayoutData(new GridData(GridData.FILL_BOTH));
-    comp.setLayout(new GridLayout());
-    TreePart tree = control.getTree();
-    tree.paint(comp);
-    
-    final TabGroup chart = new TabGroup(folder,i18n.tr("Im Verlauf"));
-    final UmsatzTypVerlauf v = new UmsatzTypVerlauf();
-    v.setData(tree.getItems(),(Date) control.getStart().getValue(),(Date) control.getEnd().getValue());
-    v.paint(chart.getComposite());
-
     ButtonArea buttons = new ButtonArea(getParent(), 4);
     buttons.addButton(i18n.tr("Zurück"), new Back());
 
@@ -110,6 +92,25 @@ public class UmsatzTypTree extends AbstractView
         }
       }
     });
+
+    TabFolder folder = new TabFolder(getParent(), SWT.NONE);
+    folder.setLayoutData(new GridData(GridData.FILL_BOTH));
+    folder.setBackground(Color.BACKGROUND.getSWTColor());
+    
+    TabGroup table = new TabGroup(folder,i18n.tr("Tabellarisch"));
+    
+    // Hilfs-Composite, damit wir dessen Inhalt sauber disposen koennen.
+    final Composite comp = new Composite(table.getComposite(), SWT.NONE);
+    comp.setLayoutData(new GridData(GridData.FILL_BOTH));
+    comp.setLayout(new GridLayout());
+    TreePart tree = control.getTree();
+    tree.paint(comp);
+    
+    final TabGroup chart = new TabGroup(folder,i18n.tr("Im Verlauf"));
+    final UmsatzTypVerlauf v = new UmsatzTypVerlauf();
+    v.setData(tree.getItems(),(Date) control.getStart().getValue(),(Date) control.getEnd().getValue());
+    v.paint(chart.getComposite());
+
     buttons.addButton(i18n.tr("Aktualisieren"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -129,11 +130,16 @@ public class UmsatzTypTree extends AbstractView
         }
       }
     }, null, true);
+  
   }
 
 }
 /*******************************************************************************
  * $Log: UmsatzTypTree.java,v $
+ * Revision 1.7  2008/04/06 23:21:43  willuhn
+ * @C Bug 575
+ * @N Der Vereinheitlichung wegen alle Buttons in den Auswertungen nach oben verschoben. Sie sind dann naeher an den Filter-Controls -> ergonomischer
+ *
  * Revision 1.6  2008/02/26 01:01:16  willuhn
  * @N Update auf Birt 2 (bessere Zeichen-Qualitaet, u.a. durch Anti-Aliasing)
  * @N Neuer Chart "Umsatz-Kategorien im Verlauf"

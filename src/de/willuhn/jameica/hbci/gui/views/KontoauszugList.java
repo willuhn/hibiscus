@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoauszugList.java,v $
- * $Revision: 1.9 $
- * $Date: 2007/05/02 12:40:18 $
+ * $Revision: 1.10 $
+ * $Date: 2008/04/06 23:21:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,19 +12,10 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.views;
 
-import java.rmi.RemoteException;
-
 import de.willuhn.jameica.gui.AbstractView;
-import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.Back;
-import de.willuhn.jameica.hbci.gui.controller.KontoauszugControl;
-import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.logging.Logger;
-import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -50,40 +41,18 @@ public class KontoauszugList extends AbstractView
   {
     GUI.getView().setTitle(i18n.tr("Kontoauszüge"));
 
-    final KontoauszugControl control = new KontoauszugControl(this);
-    control.getKontoauszugList().paint(getParent());
-
-
-    ButtonArea buttons = new ButtonArea(getParent(), 3);
-    buttons.addButton(i18n.tr("Zurück"),new Back());
-    buttons.addButton(i18n.tr("Exportieren..."), new Action()
-    {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        control.handlePrint();
-      }
-    });
-    buttons.addButton(i18n.tr("Aktualisieren"), new Action()
-    {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        try
-        {
-          control.getKontoauszugList().handleReload();
-        }
-        catch (RemoteException re)
-        {
-          Logger.error("unable to reload list",re);
-          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren der Liste"), StatusBarMessage.TYPE_ERROR));
-        }
-      }
-    },null,true);
+    de.willuhn.jameica.hbci.gui.parts.KontoauszugList list = new de.willuhn.jameica.hbci.gui.parts.KontoauszugList();
+    list.paint(getParent());
   }
 
 }
 
 /*******************************************************************************
  * $Log: KontoauszugList.java,v $
+ * Revision 1.10  2008/04/06 23:21:43  willuhn
+ * @C Bug 575
+ * @N Der Vereinheitlichung wegen alle Buttons in den Auswertungen nach oben verschoben. Sie sind dann naeher an den Filter-Controls -> ergonomischer
+ *
  * Revision 1.9  2007/05/02 12:40:18  willuhn
  * @C UmsatzTree*-Exporter nur fuer Objekte des Typs "UmsatzTree" anbieten
  * @C Start- und End-Datum in Kontoauszug speichern und an PDF-Export via Session uebergeben
