@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/DonateDialog.java,v $
- * $Revision: 1.6 $
- * $Date: 2007/04/23 18:07:15 $
+ * $Revision: 1.7 $
+ * $Date: 2008/04/07 16:15:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,11 +14,12 @@
 package de.willuhn.jameica.hbci.gui.dialogs;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -27,7 +28,7 @@ import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
-import de.willuhn.jameica.gui.input.LabelInput;
+import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
@@ -49,11 +50,9 @@ public class DonateDialog extends AbstractDialog
 {
   private I18N i18n = null;
 
-  private HibiscusAddress empfaenger = null;
-  
   private DialogInput kontoAuswahl  = null;
   private Input betrag              = null;
-  private Input empfaengerInput     = null;
+  private SelectInput empfaenger    = null;
   private CheckboxInput bill        = null;
   private Input email               = null;
   
@@ -67,6 +66,7 @@ public class DonateDialog extends AbstractDialog
     super(position);
     i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     setTitle(i18n.tr("Spenden"));
+    setSize(470,SWT.DEFAULT);
   }
 
   /**
@@ -74,20 +74,49 @@ public class DonateDialog extends AbstractDialog
    */
   protected void paint(Composite parent) throws Exception
   {
-    empfaenger = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
-    empfaenger.setBLZ("50530000");
-    empfaenger.setKontonummer("325406");
-    empfaenger.setName("Olaf Willuhn");
+    // BUGZILLA 577
+    ArrayList list = new ArrayList();
+
+    HibiscusAddress hibiscus = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
+    hibiscus.setBLZ(new String(new char[]{'5','0','5','3','0','0','0','0'}));
+    hibiscus.setKontonummer(new String(new char[]{'3','2','5','4','0','6'}));
+    hibiscus.setName("Olaf Willuhn");
+    hibiscus.setKommentar("Autor Hibiscus");
+    list.add(hibiscus);
+    
+    HibiscusAddress hbci4java = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
+    hbci4java.setBLZ(new String(new char[]{'8','6','0','5','5','5','9','2'}));
+    hbci4java.setKontonummer(new String(new char[]{'1','8','0','0','2','1','4','2','1','5'}));
+    hbci4java.setName("Stefan Palme");
+    hbci4java.setKommentar("Autor HBCI4Java");
+    list.add(hbci4java);
+
+    empfaenger = new SelectInput(list,null);
+    empfaenger.setComment(hibiscus.getKommentar());
+    empfaenger.addListener(new Listener() {
+      public void handleEvent(Event event)
+      {
+        try
+        {
+          HibiscusAddress a = (HibiscusAddress) empfaenger.getValue();
+          empfaenger.setComment(a.getKommentar());
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to display comment",e);
+        }
+      }
+    });
 
     LabelGroup group = new LabelGroup(parent,"");
-    group.addText(i18n.tr("Möchten Sie die Weiterentwicklung von Hibiscus mit einer Spende unterstützen?\n" +
+    group.addText(i18n.tr("Möchten Sie die Weiterentwicklung von Hibiscus/HBCI4Java mit einer Spende unterstützen?\n" +
                           "Dann wählen Sie einfach Ihr Konto aus und geben Sie den gewünschten Betrag ein.\n" +
                           "Wenn Sie die Option \"Spendenquittung\" aktivieren und Ihre eMail-Adresse eingeben,\n" +
                           "erhalten Sie eine Rechnung in Höhe des Spendenbetrages für Ihre Buchhaltung."),true);
     
     group.addLabelPair(i18n.tr("Ihr Konto"), getKontoauswahl());
     group.addLabelPair(i18n.tr("Betrag"), getBetrag());
-    group.addLabelPair(i18n.tr("Empfänger"), getEmpfaenger());
+    group.addLabelPair(i18n.tr("Empfänger"), this.empfaenger);
     group.addSeparator();
     group.addCheckbox(getBill(),"Spendenquittung");
     group.addLabelPair("Ihre eMail-Adresse", getEMail());
@@ -100,7 +129,7 @@ public class DonateDialog extends AbstractDialog
         {
           ueberweisung = (Ueberweisung) Settings.getDBService().createObject(Ueberweisung.class,null);
           ueberweisung.setBetrag(((Double)getBetrag().getValue()).doubleValue());
-          ueberweisung.setGegenkonto(empfaenger);
+          ueberweisung.setGegenkonto((HibiscusAddress)empfaenger.getValue());
           
           Boolean email = (Boolean) getBill().getValue();
           ueberweisung.setZweck("Spende - Hibiscus");
@@ -156,26 +185,6 @@ public class DonateDialog extends AbstractDialog
       return betrag;
     betrag = new DecimalInput(0.0,HBCI.DECIMALFORMAT);
     return betrag;
-  }
-  
-  private Input getEmpfaenger() throws RemoteException
-  {
-    if (empfaengerInput != null)
-      return empfaengerInput;
-    empfaengerInput = new LabelInput(i18n.tr("{0}, Kto.: {1}", new String[]{empfaenger.getName(),empfaenger.getKontonummer()}));
-    String blz = empfaenger.getBLZ();
-    try
-    {
-      String name = HBCIUtils.getNameForBLZ(blz);
-      if (name != null && name.length() > 0)
-        blz += " [" + name + "]";
-    }
-    catch (Exception e)
-    {
-      // ignore
-    }
-    empfaengerInput.setComment(blz);
-    return empfaengerInput;
   }
   
   private CheckboxInput getBill()
@@ -239,6 +248,9 @@ public class DonateDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: DonateDialog.java,v $
+ * Revision 1.7  2008/04/07 16:15:34  willuhn
+ * @N Bug 577
+ *
  * Revision 1.6  2007/04/23 18:07:15  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
