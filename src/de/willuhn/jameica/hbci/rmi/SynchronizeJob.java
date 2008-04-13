@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/SynchronizeJob.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/10/09 21:43:26 $
+ * $Revision: 1.4 $
+ * $Date: 2008/04/13 04:20:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -46,11 +46,24 @@ public interface SynchronizeJob extends GenericObject
    * @throws ApplicationException
    */
   public void configure() throws RemoteException, ApplicationException;
+  
+  /**
+   * Prueft, ob es sich um einen wiederkehrenden Job handelt.
+   * Saldo- und Umsatzabfragen sind zBsp wiederkehrend, Ueberweisungen
+   * jedoch nicht.
+   * BUGZILLA 583
+   * @return true, wenn es sich um einen wiederholenden Job handelt.
+   * @throws RemoteException
+   */
+  public boolean isRecurring() throws RemoteException;
 }
 
 
 /*********************************************************************
  * $Log: SynchronizeJob.java,v $
+ * Revision 1.4  2008/04/13 04:20:41  willuhn
+ * @N Bug 583
+ *
  * Revision 1.3  2006/10/09 21:43:26  willuhn
  * @N Zusammenfassung der Geschaeftsvorfaelle "Umsaetze abrufen" und "Saldo abrufen" zu "Kontoauszuege abrufen" bei der Konto-Synchronisation
  *

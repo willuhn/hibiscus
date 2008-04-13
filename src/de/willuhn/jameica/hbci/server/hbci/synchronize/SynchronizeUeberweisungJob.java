@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/synchronize/SynchronizeUeberweisungJob.java,v $
- * $Revision: 1.5 $
- * $Date: 2007/12/03 13:14:09 $
+ * $Revision: 1.6 $
+ * $Date: 2008/04/13 04:20:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -82,11 +82,22 @@ public class SynchronizeUeberweisungJob extends AbstractSynchronizeJob
   {
     new UeberweisungNew().handleAction(getContext());
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.SynchronizeJob#isRecurring()
+   */
+  public boolean isRecurring() throws RemoteException
+  {
+    return false;
+  }
 }
 
 
 /*********************************************************************
  * $Log: SynchronizeUeberweisungJob.java,v $
+ * Revision 1.6  2008/04/13 04:20:41  willuhn
+ * @N Bug 583
+ *
  * Revision 1.5  2007/12/03 13:14:09  willuhn
  * @N Bei Termin-Ueberweisungen Termin mit anzeigen
  *
