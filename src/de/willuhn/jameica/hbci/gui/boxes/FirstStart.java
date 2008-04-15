@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/FirstStart.java,v $
- * $Revision: 1.4 $
- * $Date: 2007/12/29 18:45:37 $
+ * $Revision: 1.5 $
+ * $Date: 2008/04/15 16:16:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -96,7 +96,7 @@ public class FirstStart extends AbstractBox
     text.setText("<form><p><span color=\"header\" font=\"header\">" + i18n.tr("Herzlich willkommen") + "</span></p>" +
         "<p>" + i18n.tr("Sie starten Hibiscus zum ersten Mal. Bitte richten Sie " +
         "zunächst ein Sicherheitsmedium (Chipkarte, Schlüsseldiskette oder PIN/TAN) ein. " +
-        "Wechseln Sie anschliessend zur Konten-Übersicht und rufen Sie die verfügbaren Konten ab " +
+        "Wechseln Sie anschließend zur Konten-Übersicht und rufen Sie die verfügbaren Konten ab " +
         "oder richten Sie diese manuell ein, falls Ihre Bank das automatische Abrufen der " +
         "HBCI-Konten nicht unterstützt.") + "</p></form>");
     
@@ -146,6 +146,9 @@ public class FirstStart extends AbstractBox
 
 /*********************************************************************
  * $Log: FirstStart.java,v $
+ * Revision 1.5  2008/04/15 16:16:34  willuhn
+ * @B BUGZILLA 584
+ *
  * Revision 1.4  2007/12/29 18:45:37  willuhn
  * @N Hoehe von Boxen explizit konfigurierbar
  *

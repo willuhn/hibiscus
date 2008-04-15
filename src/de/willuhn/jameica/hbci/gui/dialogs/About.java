@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/About.java,v $
- * $Revision: 1.4 $
- * $Date: 2007/12/12 11:17:41 $
+ * $Revision: 1.5 $
+ * $Date: 2008/04/15 16:16:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -82,7 +82,7 @@ public class About extends AbstractDialog
     container.addPart(text);
 
     ButtonArea buttons = container.createButtonArea(1);
-    buttons.addButton("   " + i18n.tr("Schliessen") + "   ",new Action() {
+    buttons.addButton("   " + i18n.tr("Schlieﬂen") + "   ",new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         close();
@@ -104,6 +104,9 @@ public class About extends AbstractDialog
 
 /**********************************************************************
  * $Log: About.java,v $
+ * Revision 1.5  2008/04/15 16:16:34  willuhn
+ * @B BUGZILLA 584
+ *
  * Revision 1.4  2007/12/12 11:17:41  willuhn
  * @N Datenbank-Version in About-Dialog anzeigen
  *

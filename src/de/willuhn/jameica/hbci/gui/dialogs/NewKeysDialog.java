@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/NewKeysDialog.java,v $
- * $Revision: 1.8 $
- * $Date: 2005/06/02 22:57:34 $
- * $Author: web0 $
+ * $Revision: 1.9 $
+ * $Date: 2008/04/15 16:16:34 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -117,7 +117,7 @@ public class NewKeysDialog extends AbstractDialog
         save();
       }
     });
-		buttons.addButton(i18n.tr("Schliessen"), new Action()
+		buttons.addButton(i18n.tr("Schlieﬂen"), new Action()
 		{
 			public void handleAction(Object context) throws ApplicationException
 			{
@@ -334,6 +334,9 @@ public class NewKeysDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: NewKeysDialog.java,v $
+ * Revision 1.9  2008/04/15 16:16:34  willuhn
+ * @B BUGZILLA 584
+ *
  * Revision 1.8  2005/06/02 22:57:34  web0
  * @N Export von Konto-Umsaetzen
  *
