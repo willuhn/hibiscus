@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Overview.java,v $
- * $Revision: 1.10 $
- * $Date: 2007/12/18 17:10:22 $
+ * $Revision: 1.11 $
+ * $Date: 2008/04/23 13:20:54 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -85,8 +85,8 @@ public class Overview extends AbstractBox implements Box
     group.addLabelPair(i18n.tr("Beginn des Zeitraumes") + ":", getStart());
     group.addLabelPair(i18n.tr("Ende des Zeitraumes") + ":", getEnd());
     group.addLabelPair(i18n.tr("Saldo") + ":", getSaldo());
-    group.addLabelPair(i18n.tr("Einnahmen") + ":", getEinnahmen());
-    group.addLabelPair(i18n.tr("Ausgaben") + ":", getAusgaben());
+    group.addLabelPair(i18n.tr("Einnahmen im Zeitraum") + ":", getEinnahmen());
+    group.addLabelPair(i18n.tr("Ausgaben im Zeitraum") + ":", getAusgaben());
     group.addSeparator();
     group.addLabelPair(i18n.tr("Bilanz") + ":", getBilanz());
     refresh();
@@ -216,6 +216,9 @@ public class Overview extends AbstractBox implements Box
         d = this.konto.getSaldo();
       }
       getSaldo().setValue(HBCI.DECIMALFORMAT.format(d));
+      if (d < 0)       ((LabelInput)getSaldo()).setColor(Color.ERROR);
+      else if (d == 0) ((LabelInput)getSaldo()).setColor(Color.WIDGET_FG);
+      else             ((LabelInput)getSaldo()).setColor(Color.SUCCESS);
       ////////////////////////////////////////////////////////////////////////////
 
       this.dStart = (Date) getStart().getValue();
@@ -284,6 +287,7 @@ public class Overview extends AbstractBox implements Box
       return this.ausgaben;
     ausgaben = new LabelInput("");
     ausgaben.setComment(HBCIProperties.CURRENCY_DEFAULT_DE);
+    ((LabelInput)ausgaben).setColor(Color.ERROR);
     return ausgaben;
   }
 
@@ -297,6 +301,7 @@ public class Overview extends AbstractBox implements Box
       return this.einnahmen;
     einnahmen = new LabelInput("");
     einnahmen.setComment(HBCIProperties.CURRENCY_DEFAULT_DE);
+    ((LabelInput)einnahmen).setColor(Color.SUCCESS);
     return einnahmen;
   }
   
@@ -313,6 +318,9 @@ public class Overview extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: Overview.java,v $
+ * Revision 1.11  2008/04/23 13:20:54  willuhn
+ * @B Bug 588
+ *
  * Revision 1.10  2007/12/18 17:10:22  willuhn
  * @N Neues ExpandPart
  * @N Boxen auf der Startseite koennen jetzt zusammengeklappt werden
