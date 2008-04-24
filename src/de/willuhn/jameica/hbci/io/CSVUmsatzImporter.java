@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Attic/CSVUmsatzImporter.java,v $
- * $Revision: 1.6 $
- * $Date: 2008/04/06 23:29:42 $
+ * $Revision: 1.7 $
+ * $Date: 2008/04/24 11:37:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,16 +13,20 @@
 
 package de.willuhn.jameica.hbci.io;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.rmi.RemoteException;
 import java.util.Hashtable;
+import java.util.List;
 
 import org.eclipse.swt.SWTException;
+import org.supercsv.io.CsvListReader;
+import org.supercsv.io.ICsvListReader;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBService;
-import de.willuhn.io.CSVFile;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.dialogs.CSVImportDialog;
@@ -45,29 +49,25 @@ public class CSVUmsatzImporter implements Importer
 
   private static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  private static Hashtable types = new Hashtable();
+  private static Hashtable fieldMap = new Hashtable();
   private Hashtable kategorieCache = null;
   
   static
   {
-    Hashtable umsatz = new Hashtable();
-    umsatz.put("empfaenger_konto",i18n.tr("Gegenkonto Kto-Nummer"));
-    umsatz.put("empfaenger_blz",i18n.tr("Gegenkonto BLZ"));
-    umsatz.put("empfaenger_name",i18n.tr("Gegenkonto Kto-Inhaber"));
-    umsatz.put("betrag",i18n.tr("Betrag (im Format 000,00)"));
-    umsatz.put("zweck",i18n.tr("Verwendungszweck"));
-    umsatz.put("zweck2",i18n.tr("weiterer Verwendungszweck"));
-    umsatz.put("datum",i18n.tr("Datum (im Format (TT.MM.JJJJ)"));
-    umsatz.put("valuta",i18n.tr("Valuta (im Format (TT.MM.JJJJ)"));
-    umsatz.put("saldo",i18n.tr("Saldo (im Format 000,00)"));
-    umsatz.put("primanota",i18n.tr("Primanota"));
-    umsatz.put("art",i18n.tr("Art der Buchung"));
-    umsatz.put("customerref",i18n.tr("Kundenreferenz"));
-    umsatz.put("kommentar",i18n.tr("Kommentar"));
-    umsatz.put("umsatztyp",i18n.tr("Kategorie"));
-    
-    types.put(Umsatz.class,umsatz);
-  
+    fieldMap.put("art",i18n.tr("Art der Buchung"));
+    fieldMap.put("empfaenger_konto",i18n.tr("Gegenkonto Kto-Nummer"));
+    fieldMap.put("empfaenger_blz",i18n.tr("Gegenkonto BLZ"));
+    fieldMap.put("empfaenger_name",i18n.tr("Gegenkonto Kto-Inhaber"));
+    fieldMap.put("betrag",i18n.tr("Betrag (im Format 000,00)"));
+    fieldMap.put("zweck",i18n.tr("Verwendungszweck"));
+    fieldMap.put("zweck2",i18n.tr("weiterer Verwendungszweck"));
+    fieldMap.put("datum",i18n.tr("Datum (im Format (TT.MM.JJJJ)"));
+    fieldMap.put("valuta",i18n.tr("Valuta (im Format (TT.MM.JJJJ)"));
+    fieldMap.put("saldo",i18n.tr("Saldo (im Format 000,00)"));
+    fieldMap.put("primanota",i18n.tr("Primanota"));
+    fieldMap.put("customerref",i18n.tr("Kundenreferenz"));
+    fieldMap.put("kommentar",i18n.tr("Kommentar"));
+    fieldMap.put("umsatztyp",i18n.tr("Kategorie"));
   }
 
   /**
@@ -75,6 +75,8 @@ public class CSVUmsatzImporter implements Importer
    */
   public void doImport(Object context, IOFormat format, InputStream is, ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
+    ICsvListReader csv = null;
+    
     try
     {
       if (context == null || !(context instanceof Konto))
@@ -86,33 +88,36 @@ public class CSVUmsatzImporter implements Importer
       if (format == null)
         throw new ApplicationException(i18n.tr("Kein Datei-Format ausgewählt"));
 
-      CSVMapping mapping = new CSVMapping(Umsatz.class,(Hashtable) types.get(Umsatz.class));
-
-
       monitor.setStatusText(i18n.tr("Lese Datei ein"));
       monitor.addPercentComplete(1);
 
-      CSVFile csv = new CSVFile(is);
-      if (!csv.hasNext())
+
+      CSVMapping mapping = new CSVMapping(Umsatz.class,fieldMap);
+      csv = new CsvListReader(new InputStreamReader(new BufferedInputStream(is),mapping.getFileEncoding()),mapping.toCsvPreference());
+
+      List line = csv.read();
+      if (line == null || line.size() == 0)
         throw new ApplicationException(i18n.tr("CSV-Datei enthält keine Daten"));
       
-      String[] line = csv.next();
-      CSVImportDialog d = new CSVImportDialog(line,mapping,CSVImportDialog.POSITION_CENTER);
+      CSVImportDialog d = new CSVImportDialog((String[])line.toArray(new String[line.size()]),mapping,CSVImportDialog.POSITION_CENTER);
       d.open();
 
-      int created = 0;
-      int error   = 0;
-      boolean first = true;
-      Umsatz u = null;
+      // Parameter aktualisieren, die der User ggf. geaendert hat
+      csv.setPreferences(mapping.toCsvPreference());
+      
+      // Ggf. erste Zeile ueberspringen
+      if (mapping.getSkipFirst())
+        line = csv.read();
+      
+      int created  = 0;
+      int error    = 0;
+      Umsatz u     = null;
+      String name  = null;
+      String value = null;
 
       DBService service = (DBService) Application.getServiceFactory().lookup(HBCI.class,"database");
       do
       {
-        if (!first)
-          line = csv.next();
-
-        first = false;
-        
         monitor.log(i18n.tr("Importiere Zeile {0}", ""+(1+error+created)));
         monitor.addPercentComplete(1);
 
@@ -121,20 +126,34 @@ public class CSVUmsatzImporter implements Importer
           u = (Umsatz) service.createObject(Umsatz.class,null);
           u.setKonto((Konto) context);
           
-          for (int i=0;i<line.length;++i)
+          for (int i=0;i<line.size();++i)
           {
-            String name = mapping.get(i);
+            name = mapping.get(i);
             if (name == null)
               continue; // nicht zugeordnet
             
+            value = (String) line.get(i);
+            if (value == null) value = "";
+            
+            // trim
+            value = value.trim();
+            
             // BUGZILLA 373 Sonderregel fuer Umsatz-Typ. Nicht schoen,
             // aber sonst muesste ich das direkt in UmsatzImpl machen
-            if ("umsatztyp".equals(name))
-            {
-              u.setUmsatzTyp(findUmsatzTyp(line[i]));
+            if ("umsatztyp".equals(name)) {
+              u.setUmsatzTyp(findUmsatzTyp(value));
               continue;
             }
-            u.setGenericAttribute(name,line[i]);
+            if ("betrag".equals(name)) {
+              u.setBetrag(parseBetrag(value));
+              continue;
+            }
+            if ("saldo".equals(name)) {
+              u.setSaldo(parseBetrag(value));
+              continue;
+            }
+
+            u.setGenericAttribute(name,value);
           }
           u.setChangedByUser();
           u.store();
@@ -153,7 +172,7 @@ public class CSVUmsatzImporter implements Importer
           error++;
         }
       }
-      while (csv.hasNext());
+      while ((line = csv.read()) != null);
       
       monitor.setStatusText(i18n.tr("{0} Datensätze erfolgreich importiert, {1} fehlerhafte übersprungen", new String[]{""+created,""+error}));
       monitor.addPercentComplete(1);
@@ -185,11 +204,11 @@ public class CSVUmsatzImporter implements Importer
     }
     finally
     {
-      if (is != null)
+      if (csv != null)
       {
         try
         {
-          is.close();
+          csv.close();
         }
         catch (IOException e)
         {
@@ -230,6 +249,49 @@ public class CSVUmsatzImporter implements Importer
       }
     };
     return new IOFormat[] { f };
+  }
+  
+  /**
+   * Parst einen Text als Betrag.
+   * @param betrag der zu parsende Betrag.
+   * @return der Betrag.
+   * @throws ApplicationException
+   */
+  private double parseBetrag(String betrag) throws ApplicationException
+  {
+    try
+    {
+      if (betrag == null || betrag.length() == 0)
+        throw new Exception();
+
+      // Wir ersetzen alles, was nicht Zahl, Komma oder Punkt ist.
+      // Damit entfernen wir automatisch alle Waehrungskennzeichen
+      betrag = betrag.replaceAll("[^0-9-,\\.]","");
+
+      // Nix mehr zum Parsen uebrig?
+      if (betrag.length() == 0)
+        throw new Exception();
+      
+      // Wenn der Text jetzt Punkt UND Komma enthaelt, entfernen wir die Punkte
+      if (betrag.indexOf(".") != -1 && betrag.indexOf(",") != -1)
+        betrag = betrag.replaceAll("\\.","");
+      
+      // Wenn jetzt immer ein Punkt drin sind, muss es ein Komma sein
+      if (betrag.indexOf(".") != -1)
+        betrag = betrag.replaceFirst("\\.",",");
+      
+      // Wenn jetzt immer noch ein Punkt drin ist, sah der Text
+      // vorher so aus: 123.456.000
+      // Dann entfernen wir alle Punkte
+      betrag = betrag.replaceAll("\\.","");
+      
+      return HBCI.DECIMALFORMAT.parse(betrag).doubleValue();
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to parse string " + betrag + " as double",e);
+      throw new ApplicationException(i18n.tr("Text \"{0}\" ist kein gültiger Betrag",betrag));
+    }
   }
   
   /**
@@ -281,6 +343,9 @@ public class CSVUmsatzImporter implements Importer
 
 /*******************************************************************************
  * $Log: CSVUmsatzImporter.java,v $
+ * Revision 1.7  2008/04/24 11:37:21  willuhn
+ * @N BUGZILLA 304
+ *
  * Revision 1.6  2008/04/06 23:29:42  willuhn
  * @B koennte ggf. beim Import grosser Datenmengen einen OutOfMemoryError ausloesen
  *

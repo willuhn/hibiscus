@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Attic/CSVEmpfaengerImporter.java,v $
- * $Revision: 1.6 $
- * $Date: 2007/07/16 12:48:32 $
+ * $Revision: 1.7 $
+ * $Date: 2008/04/24 11:37:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,15 +13,19 @@
 
 package de.willuhn.jameica.hbci.io;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.rmi.RemoteException;
 import java.util.Hashtable;
+import java.util.List;
 
 import org.eclipse.swt.SWTException;
+import org.supercsv.io.CsvListReader;
+import org.supercsv.io.ICsvListReader;
 
 import de.willuhn.datasource.rmi.DBService;
-import de.willuhn.io.CSVFile;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.dialogs.CSVImportDialog;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
@@ -42,18 +46,14 @@ public class CSVEmpfaengerImporter implements Importer
 
   private static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  private static Hashtable types = new Hashtable();
+  private static Hashtable typeMap = new Hashtable();
   
   static
   {
-    Hashtable empfaenger = new Hashtable();
-    empfaenger.put("kontonummer",i18n.tr("Kontonummer"));
-    empfaenger.put("blz",i18n.tr("Bankleitzahl"));
-    empfaenger.put("name",i18n.tr("Name des Kto-Inhabers"));
-    empfaenger.put("kommentar",i18n.tr("Kommentar"));
-    
-    types.put(HibiscusAddress.class,empfaenger);
-  
+    typeMap.put("kontonummer",i18n.tr("Kontonummer"));
+    typeMap.put("blz",i18n.tr("Bankleitzahl"));
+    typeMap.put("name",i18n.tr("Name des Kto-Inhabers"));
+    typeMap.put("kommentar",i18n.tr("Kommentar"));
   }
 
   /**
@@ -61,6 +61,8 @@ public class CSVEmpfaengerImporter implements Importer
    */
   public void doImport(Object context, IOFormat format, InputStream is, ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
+    ICsvListReader csv = null;
+    
     try
     {
       if (is == null)
@@ -69,33 +71,37 @@ public class CSVEmpfaengerImporter implements Importer
       if (format == null)
         throw new ApplicationException(i18n.tr("Kein Datei-Format ausgewählt"));
 
-      CSVMapping mapping = new CSVMapping(HibiscusAddress.class,(Hashtable) types.get(HibiscusAddress.class));
-
-
       monitor.setStatusText(i18n.tr("Lese Datei ein"));
       monitor.addPercentComplete(1);
 
-      CSVFile csv = new CSVFile(is);
-      if (!csv.hasNext())
+
+      CSVMapping mapping = new CSVMapping(HibiscusAddress.class,typeMap);
+      csv = new CsvListReader(new InputStreamReader(new BufferedInputStream(is),mapping.getFileEncoding()),mapping.toCsvPreference());
+
+      List line = csv.read();
+      if (line == null || line.size() == 0)
         throw new ApplicationException(i18n.tr("CSV-Datei enthält keine Daten"));
       
-      String[] line = csv.next();
-      CSVImportDialog d = new CSVImportDialog(line,mapping,CSVImportDialog.POSITION_CENTER);
+      CSVImportDialog d = new CSVImportDialog((String[])line.toArray(new String[line.size()]),mapping,CSVImportDialog.POSITION_CENTER);
       d.open();
 
-      int created = 0;
-      int error   = 0;
-      boolean first = true;
+      // Parameter aktualisieren, die der User ggf. geaendert hat
+      csv.setPreferences(mapping.toCsvPreference());
+      
+      // Ggf. erste Zeile ueberspringen
+      if (mapping.getSkipFirst())
+        line = csv.read();
+      
+      int created       = 0;
+      int error         = 0;
+      HibiscusAddress a = null;
+      String name       = null;
+      String value      = null;
 
       DBService service       = (DBService) Application.getServiceFactory().lookup(HBCI.class,"database");
       AddressbookService book = (AddressbookService) Application.getServiceFactory().lookup(HBCI.class,"addressbook");
       do
       {
-        if (!first)
-          line = csv.next();
-
-        first = false;
-        
         monitor.log(i18n.tr("Importiere Zeile {0}", ""+(1+error+created)));
         monitor.addPercentComplete(1);
 
@@ -103,14 +109,21 @@ public class CSVEmpfaengerImporter implements Importer
         {
           // Wir erzeugen aus den Daten erstmal eine Adresse. Nach der
           // koennen wir dann suchen
-          final HibiscusAddress a = (HibiscusAddress) service.createObject(HibiscusAddress.class,null);
+          a = (HibiscusAddress) service.createObject(HibiscusAddress.class,null);
           
-          for (int i=0;i<line.length;++i)
+          for (int i=0;i<line.size();++i)
           {
-            String name = mapping.get(i);
+            name = mapping.get(i);
             if (name == null)
               continue; // nicht zugeordnet
-            a.setGenericAttribute(name,line[i]);
+            
+            value = (String) line.get(i);
+            if (value == null) value = "";
+            
+            // trim
+            value = value.trim();
+
+            a.setGenericAttribute(name,value);
           }
           
           if (book.contains(a) != null)
@@ -135,7 +148,7 @@ public class CSVEmpfaengerImporter implements Importer
           error++;
         }
       }
-      while (csv.hasNext());
+      while ((line = csv.read()) != null);
       
       monitor.setStatusText(i18n.tr("{0} Datensätze erfolgreich importiert, {1} fehlerhafte übersprungen", new String[]{""+created,""+error}));
       monitor.addPercentComplete(1);
@@ -167,11 +180,11 @@ public class CSVEmpfaengerImporter implements Importer
     }
     finally
     {
-      if (is != null)
+      if (csv != null)
       {
         try
         {
-          is.close();
+          csv.close();
         }
         catch (IOException e)
         {
@@ -217,6 +230,9 @@ public class CSVEmpfaengerImporter implements Importer
 
 /*******************************************************************************
  * $Log: CSVEmpfaengerImporter.java,v $
+ * Revision 1.7  2008/04/24 11:37:21  willuhn
+ * @N BUGZILLA 304
+ *
  * Revision 1.6  2007/07/16 12:48:32  willuhn
  * @B Fehler beim CSV-Import/Export von Adressen
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/CSVImportDialog.java,v $
- * $Revision: 1.4 $
- * $Date: 2007/06/13 09:43:05 $
+ * $Revision: 1.5 $
+ * $Date: 2008/04/24 11:37:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,14 +19,19 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
+import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.SelectInput;
+import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.gui.util.ScrolledContainer;
 import de.willuhn.jameica.hbci.HBCI;
@@ -41,12 +46,19 @@ import de.willuhn.util.I18N;
  */
 public class CSVImportDialog extends AbstractDialog
 {
+  private final static String[] CHARSETS = new String[]{"ISO-8859-1","ISO-8859-15","UTF-8"};
 
   private I18N i18n           = null;
   private CSVMapping mapping  = null;
   private String[] line       = null;
 
   private ArrayList selects   = null;
+  
+  private TextInput sepChar       = null;
+  private TextInput quoteChar     = null;
+  private SelectInput encoding    = null;
+  private CheckboxInput skipFirst = null;
+  
   
   /**
    * ct.
@@ -62,7 +74,7 @@ public class CSVImportDialog extends AbstractDialog
     this.line = line;
     this.mapping = mapping;
     setTitle(i18n.tr("Zuordnung der Spalten"));
-    setSize(460,350);
+    setSize(580,450);
   }
   
   /**
@@ -70,12 +82,20 @@ public class CSVImportDialog extends AbstractDialog
    */
   protected void paint(Composite parent) throws Exception
   {
-    LabelGroup group = new LabelGroup(parent,i18n.tr("Spalten in der Import-Datei"));
-    group.addText(i18n.tr("In der linken Spalte sehen Sie die erste Zeile Ihrer CSV-Datei.\n" +
-        "Ordnen Sie die Felder bitte über die Auswahl-Elemente auf der rechte Seite zu."),true);
+    // BUGZILLA 281
+    LabelGroup options = new LabelGroup(parent,i18n.tr("Optionen"));
+    options.addInput(this.getCharset());
+    options.addInput(this.getSeparatorChar());
+    options.addInput(this.getQuoteChar());
+    options.addInput(this.getSkipFirst());
     
     // BUGZILLA 412
+    new Headline(parent,i18n.tr("Feld-Zuordnungen"));
     ScrolledContainer container = new ScrolledContainer(parent);
+
+    container.addText(i18n.tr("In der linken Spalte sehen Sie die erste Zeile Ihrer CSV-Datei.\n" +
+        "Ordnen Sie die Felder bitte über die Auswahl-Elemente auf der rechte Seite zu."),true);
+    
 
     this.selects   = new ArrayList();
     ArrayList list = new ArrayList();
@@ -153,6 +173,94 @@ public class CSVImportDialog extends AbstractDialog
   {
     return this.mapping;
   }
+  
+  
+  
+  /**
+   * Liefert ein Eingabe-Feld fuer das Trennzeichen.
+   * @return Eingabe-Feld.
+   */
+  private TextInput getSeparatorChar()
+  {
+    if (this.sepChar == null)
+    {
+      this.sepChar = new TextInput(mapping.getSeparatorChar(),1);
+      this.sepChar.setComment(i18n.tr("Zeichen, mit dem die Spalten getrennt sind"));
+      this.sepChar.setMandatory(true);
+      this.sepChar.setName(i18n.tr("Trennzeichen"));
+      this.sepChar.addListener(new Listener() {
+        public void handleEvent(Event event) {
+          mapping.setSeparatorChar((String)sepChar.getValue());
+        }
+      
+      });
+    }
+    return this.sepChar;
+  }
+  
+  /**
+   * Liefert ein Eingabe-Feld fuer das Quoting-Zeichen.
+   * @return Eingabe-Feld.
+   */
+  private TextInput getQuoteChar()
+  {
+    if (this.quoteChar == null)
+    {
+      this.quoteChar = new TextInput(mapping.getQuotingChar(),1);
+      this.quoteChar.setComment(i18n.tr("Zeichen, mit dem die Spalten umschlossen sind"));
+      this.quoteChar.setMandatory(false);
+      this.quoteChar.setName(i18n.tr("Anführungszeichen"));
+      this.quoteChar.addListener(new Listener() {
+        public void handleEvent(Event event) {
+          mapping.setQuotingChar((String) quoteChar.getValue());
+        }
+      
+      });
+    }
+    return this.quoteChar;
+  }
+  
+  /**
+   * Liefert ein Eingabe-Feld fuer den Zeichensatz.
+   * @return Eingabe
+   */
+  private SelectInput getCharset()
+  {
+    if (this.encoding == null)
+    {
+      this.encoding = new SelectInput(CHARSETS,mapping.getFileEncoding());
+      this.encoding.setComment(i18n.tr("Zeichensatz der CSV-Datei"));
+      this.encoding.setName(i18n.tr("Zeichensatz"));
+      this.encoding.setMandatory(true);
+      this.encoding.setEditable(true);
+      this.encoding.addListener(new Listener() {
+        public void handleEvent(Event event) {
+          mapping.setFileEncoding((String)encoding.getValue());
+        }
+      });
+    }
+    return this.encoding;
+  }
+  
+  /**
+   * Liefert eine Checkbox, mit der die erste Zeile der Datei ignoriert werden kann.
+   * @return Checkbox.
+   */
+  private CheckboxInput getSkipFirst()
+  {
+    if (this.skipFirst == null)
+    {
+      this.skipFirst = new CheckboxInput(mapping.getSkipFirst());
+      this.skipFirst.setName(i18n.tr("Erste Zeile der CSV-Datei überspringen"));
+      this.skipFirst.addListener(new Listener() {
+        public void handleEvent(Event event) {
+          mapping.setSkipFirst(((Boolean) skipFirst.getValue()).booleanValue());
+        }
+      });
+    }
+    return this.skipFirst;
+  }
+  
   
   /**
    * Hilfsklasse zum Anzeigen der Feld-Bezeichner.
@@ -234,6 +342,9 @@ public class CSVImportDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: CSVImportDialog.java,v $
+ * Revision 1.5  2008/04/24 11:37:21  willuhn
+ * @N BUGZILLA 304
+ *
  * Revision 1.4  2007/06/13 09:43:05  willuhn
  * @B Bug 412
  *
