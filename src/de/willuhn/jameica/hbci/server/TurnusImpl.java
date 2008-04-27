@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/TurnusImpl.java,v $
- * $Revision: 1.15 $
- * $Date: 2006/12/01 00:02:34 $
+ * $Revision: 1.16 $
+ * $Date: 2008/04/27 22:22:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,7 +31,7 @@ import de.willuhn.util.I18N;
 public class TurnusImpl extends AbstractDBObject implements Turnus
 {
 
-	private transient I18N i18n = null;
+  private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
    * ct.
@@ -40,7 +40,6 @@ public class TurnusImpl extends AbstractDBObject implements Turnus
   public TurnusImpl() throws RemoteException
   {
     super();
-    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
   /**
@@ -232,6 +231,9 @@ public class TurnusImpl extends AbstractDBObject implements Turnus
 
 /**********************************************************************
  * $Log: TurnusImpl.java,v $
+ * Revision 1.16  2008/04/27 22:22:56  willuhn
+ * @C I18N-Referenzen statisch
+ *
  * Revision 1.15  2006/12/01 00:02:34  willuhn
  * @C made unserializable members transient
  *

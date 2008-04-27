@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.89 $
- * $Date: 2007/12/11 12:23:26 $
+ * $Revision: 1.90 $
+ * $Date: 2008/04/27 22:22:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -46,7 +46,7 @@ import de.willuhn.util.I18N;
 public class KontoImpl extends AbstractDBObject implements Konto
 {
 
-  private transient I18N i18n = null;
+  private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
    * ct.
@@ -56,8 +56,6 @@ public class KontoImpl extends AbstractDBObject implements Konto
   public KontoImpl() throws RemoteException
   {
     super();
-    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources()
-        .getI18N();
   }
 
   /**
@@ -761,6 +759,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*******************************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.90  2008/04/27 22:22:56  willuhn
+ * @C I18N-Referenzen statisch
+ *
  * Revision 1.89  2007/12/11 12:23:26  willuhn
  * @N Bug 355
  *

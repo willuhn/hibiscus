@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.40 $
- * $Date: 2008/02/27 10:31:20 $
+ * $Revision: 1.41 $
+ * $Date: 2008/04/27 22:22:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -37,8 +37,7 @@ import de.willuhn.util.I18N;
  */
 public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
 {
-
-  private transient I18N i18n = null;
+  private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
    * ct.
@@ -48,8 +47,6 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
   public UmsatzTypImpl() throws RemoteException
   {
     super();
-    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class)
-        .getResources().getI18N();
   }
 
   /**
@@ -488,6 +485,9 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
 
 /*******************************************************************************
  * $Log: UmsatzTypImpl.java,v $
+ * Revision 1.41  2008/04/27 22:22:56  willuhn
+ * @C I18N-Referenzen statisch
+ *
  * Revision 1.40  2008/02/27 10:31:20  willuhn
  * @B Bug 554
  *

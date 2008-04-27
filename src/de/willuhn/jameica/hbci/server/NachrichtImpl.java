@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/NachrichtImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2007/10/02 16:08:55 $
+ * $Revision: 1.6 $
+ * $Date: 2008/04/27 22:22:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,7 +30,7 @@ import de.willuhn.util.I18N;
 public class NachrichtImpl extends AbstractDBObject implements Nachricht
 {
 
-  private transient I18N i18n = null;
+  private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
    * @throws java.rmi.RemoteException
@@ -38,7 +38,6 @@ public class NachrichtImpl extends AbstractDBObject implements Nachricht
   public NachrichtImpl() throws RemoteException
   {
     super();
-    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
   /**
@@ -168,6 +167,9 @@ public class NachrichtImpl extends AbstractDBObject implements Nachricht
 
 /**********************************************************************
  * $Log: NachrichtImpl.java,v $
+ * Revision 1.6  2008/04/27 22:22:56  willuhn
+ * @C I18N-Referenzen statisch
+ *
  * Revision 1.5  2007/10/02 16:08:55  willuhn
  * @C Bugfix mit dem falschen Spaltentyp nochmal ueberarbeitet
  *

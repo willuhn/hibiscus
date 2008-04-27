@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AddressbookServiceImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2007/04/23 18:07:15 $
+ * $Revision: 1.4 $
+ * $Date: 2008/04/27 22:22:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,7 +31,7 @@ import de.willuhn.util.I18N;
  */
 public class AddressbookServiceImpl extends UnicastRemoteObject implements AddressbookService
 {
-  private transient I18N i18n = null;
+  private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private Addressbook[] books = null;
 
   /**
@@ -41,7 +41,6 @@ public class AddressbookServiceImpl extends UnicastRemoteObject implements Addre
   public AddressbookServiceImpl() throws RemoteException
   {
     super();
-    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
   /**
@@ -198,6 +197,9 @@ public class AddressbookServiceImpl extends UnicastRemoteObject implements Addre
 
 /*********************************************************************
  * $Log: AddressbookServiceImpl.java,v $
+ * Revision 1.4  2008/04/27 22:22:56  willuhn
+ * @C I18N-Referenzen statisch
+ *
  * Revision 1.3  2007/04/23 18:07:15  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt

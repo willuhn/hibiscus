@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/ProtokollImpl.java,v $
- * $Revision: 1.12 $
- * $Date: 2008/01/03 00:15:11 $
+ * $Revision: 1.13 $
+ * $Date: 2008/04/27 22:22:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -29,7 +29,7 @@ import de.willuhn.util.I18N;
  */
 public class ProtokollImpl extends AbstractDBObject implements Protokoll {
 
-  private transient I18N i18n = null;
+  private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
    * ct.
@@ -37,7 +37,6 @@ public class ProtokollImpl extends AbstractDBObject implements Protokoll {
    */
   public ProtokollImpl() throws RemoteException {
     super();
-    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
   /**
@@ -170,6 +169,9 @@ public class ProtokollImpl extends AbstractDBObject implements Protokoll {
 
 /**********************************************************************
  * $Log: ProtokollImpl.java,v $
+ * Revision 1.13  2008/04/27 22:22:56  willuhn
+ * @C I18N-Referenzen statisch
+ *
  * Revision 1.12  2008/01/03 00:15:11  willuhn
  * @B Korrektur der Laenge von Kommentaren in Protokollen
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AddressbookHibiscusImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2007/04/24 17:52:17 $
+ * $Revision: 1.4 $
+ * $Date: 2008/04/27 22:22:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -32,7 +32,7 @@ import de.willuhn.util.I18N;
  */
 public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addressbook
 {
-  private transient I18N i18n = null;
+  private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
    * ct.
@@ -41,7 +41,6 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
   public AddressbookHibiscusImpl() throws RemoteException
   {
     super();
-    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
   /**
@@ -93,6 +92,9 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
 
 /*********************************************************************
  * $Log: AddressbookHibiscusImpl.java,v $
+ * Revision 1.4  2008/04/27 22:22:56  willuhn
+ * @C I18N-Referenzen statisch
+ *
  * Revision 1.3  2007/04/24 17:52:17  willuhn
  * @N Bereits in den Umsatzdetails erkennen, ob die Adresse im Adressbuch ist
  * @C Gross-Kleinschreibung in Adressbuch-Suche

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DauerauftragImpl.java,v $
- * $Revision: 1.27 $
- * $Date: 2008/02/15 17:39:10 $
+ * $Revision: 1.28 $
+ * $Date: 2008/04/27 22:22:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -36,7 +36,7 @@ public class DauerauftragImpl extends AbstractHibiscusTransferImpl
   implements Dauerauftrag
 {
 
-  private transient I18N i18n = null;
+  private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
 	// Hilfsmapping, um die Tages-Konstanten aus java.util.Calendar in
   // integer von 1 (montag) - 7 (sonntag) umrechnen zu koennen
@@ -58,7 +58,6 @@ public class DauerauftragImpl extends AbstractHibiscusTransferImpl
   public DauerauftragImpl() throws RemoteException
   {
     super();
-    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
   /**
@@ -348,6 +347,9 @@ public class DauerauftragImpl extends AbstractHibiscusTransferImpl
 
 /**********************************************************************
  * $Log: DauerauftragImpl.java,v $
+ * Revision 1.28  2008/04/27 22:22:56  willuhn
+ * @C I18N-Referenzen statisch
+ *
  * Revision 1.27  2008/02/15 17:39:10  willuhn
  * @N BUGZILLA 188 Basis-API fuer weitere Zeilen Verwendungszweck. GUI fehlt noch
  * @N DB-Update 0005. Speichern des Textschluessels bei Sammelauftragsbuchungen in der Datenbank
