@@ -74,9 +74,9 @@ public class ClipboardUeberweisungImporter
         if (value == null || s == null)
           continue;
         if (PT_BLZ.matcher(s).matches())
-          u.setGegenkontoBLZ(value);
+          u.setGegenkontoBLZ(value.replaceAll(" ",""));
         else if (PT_KONTO.matcher(s).matches())
-          u.setGegenkontoNummer(value);
+          u.setGegenkontoNummer(value.replaceAll(" ",""));
         else if (PT_NAME.matcher(s).matches())
           u.setGegenkontoName(value);
         else if (PT_ZWECK.matcher(s).matches())
