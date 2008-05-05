@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/PassportTest.java,v $
- * $Revision: 1.8 $
- * $Date: 2007/12/05 10:58:43 $
+ * $Revision: 1.9 $
+ * $Date: 2008/05/05 10:22:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,7 +13,6 @@
 package de.willuhn.jameica.hbci.gui.action;
 
 import de.willuhn.jameica.gui.Action;
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
@@ -51,7 +50,9 @@ public class PassportTest implements Action
         Target target = null;
         try {
           monitor.setStatusText(i18n.tr("Teste Sicherheits-Medium..."));
-          
+
+          // Log-Ausgaben temporaer auch mit im Progressbar-Fenster
+          // ausgeben
           target = new Target() {
             public void write(Message msg) throws Exception
             {
@@ -76,20 +77,22 @@ public class PassportTest implements Action
           monitor.setStatus(ProgressMonitor.STATUS_DONE);
           monitor.setPercentComplete(100);
           monitor.setStatusText(i18n.tr("Sicherheits-Medium erfolgreich getestet."));
-          GUI.getStatusBar().setSuccessText(i18n.tr("Sicherheits-Medium erfolgreich getestet."));
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Sicherheits-Medium erfolgreich getestet."), StatusBarMessage.TYPE_SUCCESS));
+          removeTarget(target);
         }
         catch (ApplicationException ae)
         {
-          GUI.getStatusBar().setErrorText(ae.getMessage());
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getMessage(), StatusBarMessage.TYPE_ERROR));
           monitor.setStatus(ProgressMonitor.STATUS_ERROR);
           monitor.setPercentComplete(100);
           monitor.setStatusText(ae.getMessage());
+          removeTarget(target);
         }
         catch (Exception e)
         {
-          // Sonst wird alles doppelt geloggt
-          if (target != null)
-            Logger.removeTarget(target);
+          // Wir entfernen das Ding vor dem Ausgeben der Fehlermeldungen.
+          // die kommen sonst alle doppelt.
+          removeTarget(target);
 
           monitor.setStatus(ProgressMonitor.STATUS_ERROR);
           String errorText = i18n.tr("Fehler beim Testen des Sicherheits-Mediums.");
@@ -112,11 +115,6 @@ public class PassportTest implements Action
           monitor.log("-----------------------------");
           monitor.setPercentComplete(100);
         }
-        finally
-        {
-          if (target != null)
-            Logger.removeTarget(target);
-        }
       }
 
       public void interrupt() {}
@@ -127,6 +125,23 @@ public class PassportTest implements Action
     };
     
     Application.getController().start(task);
+  }
+  
+  /**
+   * @param t
+   */
+  private void removeTarget(final Target t)
+  {
+    if (t == null)
+      return;
+    Thread thread = new Thread() {
+      public void run()
+      {
+        Logger.removeTarget(t);
+        Logger.info("log target removed");
+      }
+    };
+    thread.start();
   }
   
   /**
@@ -175,6 +190,9 @@ public class PassportTest implements Action
 
 /**********************************************************************
  * $Log: PassportTest.java,v $
+ * Revision 1.9  2008/05/05 10:22:18  willuhn
+ * @B MACOS - Log-Target am Ende in einem separaten Thread entfernen. Ich bin mir nicht sicher, ob das was bringt. Muss das mal noch auf'm Mac testen
+ *
  * Revision 1.8  2007/12/05 10:58:43  willuhn
  * @N Lesbarere und ausfuehrlichere Fehlermeldungen beim Testen des Sicherheitsmediums
  *
