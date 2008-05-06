@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/About.java,v $
- * $Revision: 1.5 $
- * $Date: 2008/04/15 16:16:34 $
+ * $Revision: 1.6 $
+ * $Date: 2008/05/06 10:10:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -29,8 +29,10 @@ import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Version;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -47,6 +49,7 @@ public class About extends AbstractDialog
   public About(int position)
   {
     super(position);
+    setTitle("About...");
   }
 
   /**
@@ -55,7 +58,7 @@ public class About extends AbstractDialog
   protected void paint(Composite parent) throws Exception
   {
     AbstractPlugin plugin = Application.getPluginLoader().getPlugin(HBCI.class);
-    I18N i18n = plugin.getResources().getI18N();
+    final I18N i18n = plugin.getResources().getI18N();
 
     DBIterator list = Settings.getDBService().createList(Version.class);
     list.addFilter("name = ?", new String[]{"db"});
@@ -81,7 +84,22 @@ public class About extends AbstractDialog
 
     container.addPart(text);
 
-    ButtonArea buttons = container.createButtonArea(1);
+    ButtonArea buttons = container.createButtonArea(2);
+    buttons.addButton(i18n.tr("Diaognose-Informationen"), new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        try
+        {
+          new DebugDialog(DebugDialog.POSITION_CENTER).open();
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to display debug dialog",e);
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Anzeigen der Diagnose-Informationen"), StatusBarMessage.TYPE_ERROR));
+        }
+      }
+    
+    });
     buttons.addButton("   " + i18n.tr("Schlieﬂen") + "   ",new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -104,6 +122,9 @@ public class About extends AbstractDialog
 
 /**********************************************************************
  * $Log: About.java,v $
+ * Revision 1.6  2008/05/06 10:10:56  willuhn
+ * @N Diagnose-Dialog, mit dem man die JDBC-Verbindungsdaten (u.a. auch das JDBC-Passwort) ausgeben kann
+ *
  * Revision 1.5  2008/04/15 16:16:34  willuhn
  * @B BUGZILLA 584
  *

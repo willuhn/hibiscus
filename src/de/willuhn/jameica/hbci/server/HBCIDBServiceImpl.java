@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/HBCIDBServiceImpl.java,v $
- * $Revision: 1.25 $
- * $Date: 2007/12/11 15:23:53 $
+ * $Revision: 1.26 $
+ * $Date: 2008/05/06 10:10:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -270,11 +270,22 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
     v.store();
     return v;
   }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.HBCIDBService#getDriver()
+   */
+  public DBSupport getDriver() throws RemoteException
+  {
+    return this.driver;
+  }
 }
 
 
 /*********************************************************************
  * $Log: HBCIDBServiceImpl.java,v $
+ * Revision 1.26  2008/05/06 10:10:56  willuhn
+ * @N Diagnose-Dialog, mit dem man die JDBC-Verbindungsdaten (u.a. auch das JDBC-Passwort) ausgeben kann
+ *
  * Revision 1.25  2007/12/11 15:23:53  willuhn
  * @N Class-Update fuer neue Tabellen "op" und "op_buchung"
  *
