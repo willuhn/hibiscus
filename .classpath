@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry including="*.java" kind="src" output="updates" path="updates"/>
+	<classpathentry including="*.java" output="updates" kind="src" path="updates"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="src" path="/jameica"/>
 	<classpathentry kind="lib" path="lib/birt/js.jar"/>
 	<classpathentry kind="lib" path="lib/itext-2.0.1.jar"/>
-	<classpathentry kind="lib" path="/home/heiner/projekte/hibiscus/lib/obantoo-bin-1.4.10.jar"/>
 	<classpathentry kind="lib" path="lib/birt/org.eclipse.birt.chart.device.extension_2.1.0.N20060628-1351.jar"/>
 	<classpathentry kind="lib" path="lib/birt/org.eclipse.birt.chart.device.swt_2.1.0.N20060628-1351.jar"/>
 	<classpathentry kind="lib" path="lib/birt/org.eclipse.birt.chart.engine_2.1.0.N20060628-1351.jar"/>
@@ -17,7 +16,8 @@
 	<classpathentry kind="lib" path="lib/birt/org.eclipse.emf.common_2.2.1.v200609210005.jar"/>
 	<classpathentry kind="lib" path="lib/birt/org.eclipse.emf.ecore_2.2.1.v200609210005.jar"/>
 	<classpathentry kind="lib" path="lib/birt/org.eclipse.emf.ecore.xmi_2.2.1.v200609210005.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/hbci4java-2.5.7.jar" sourcepath="lib.src/hbci4java-2.5.7-src.zip"/>
+	<classpathentry exported="true" sourcepath="lib.src/hbci4java-2.5.7-src.zip" kind="lib" path="lib/hbci4java-2.5.7.jar"/>
 	<classpathentry kind="lib" path="lib/supercsv-1.31.jar"/>
+	<classpathentry kind="lib" path="lib/obantoo-bin-1.4.10.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
