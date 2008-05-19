@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCIProperties.java,v $
- * $Revision: 1.27 $
- * $Date: 2007/11/27 17:15:57 $
+ * $Revision: 1.28 $
+ * $Date: 2008/05/19 22:35:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,9 +43,7 @@ public class HBCIProperties
 	 * Liste der in DTAUS erlaubten Zeichen.
 	 */
 	public final static String HBCI_DTAUS_VALIDCHARS =
-		settings.getString("hbci.dtaus.validchars",
-											 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ,.&-+*%/$üöäÜÖÄß"
-		); 
+		settings.getString("hbci.dtaus.validchars", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ,.&-+*%/$üöäÜÖÄß"); 
 
   /**
    * Liste der in Bankleitzahlen erlaubten Zeichen.
@@ -61,47 +59,55 @@ public class HBCIProperties
   /**
    * Maximale Text-Laenge einer Verwendungszweck-Zeile.
    */
-  public final static int HBCI_TRANSFER_USAGE_MAXLENGTH =
-    settings.getInt("hbci.transfer.usage.maxlength",27);
+  public final static int HBCI_TRANSFER_USAGE_MAXLENGTH = settings.getInt("hbci.transfer.usage.maxlength",27);
+
+  /**
+   * Maximale Laenge einer Kontonummer.
+   * Sollte eigentlich 10-stellig sein, da die CRC-Pruefungen ohnehin
+   * nur bis dahin gelten. Aber fuer den Fall, dass auch mal noch
+   * VISA-Konten unterstuetzt werden, lass ich es vorerst mal auf
+   * 15 Stellen stehen (das ist das Datenbank-Limit) und deklarieren
+   * es als "weiches" Limit.
+   */
+  public final static int HBCI_KTO_MAXLENGTH_SOFT = settings.getInt("hbci.kto.maxlength.soft",15);
+  
+  /**
+   * Das harte Limit fuer Kontonummern, die CRC-Checks bestehen sollen
+   */
+  public final static int HBCI_KTO_MAXLENGTH_HARD = settings.getInt("hbci.kto.maxlength.hard",10);
 
   // BUGZILLA #49 http://www.willuhn.de/bugzilla/show_bug.cgi?id=49
   /**
    * Reservierter Tag fuer "Monatsletzten".
    */
-  public final static int HBCI_LAST_OF_MONTH =
-    settings.getInt("hbci.lastofmonth",99);
+  public final static int HBCI_LAST_OF_MONTH = settings.getInt("hbci.lastofmonth",99);
 
   /**
    * Laenge von Bankleitzahlen.
    */
-  public final static int HBCI_BLZ_LENGTH =
-    settings.getInt("hbci.blz.maxlength",8);
+  public final static int HBCI_BLZ_LENGTH = settings.getInt("hbci.blz.maxlength",8);
 
 	/**
 	 * Maximale Text-Laenge fuer Namen.
 	 */
-	public final static int HBCI_TRANSFER_NAME_MAXLENGTH =
-		settings.getInt("hbci.transfer.name.maxlength",27);
+	public final static int HBCI_TRANSFER_NAME_MAXLENGTH = settings.getInt("hbci.transfer.name.maxlength",27);
 
   // BUGZILLA 29 http://www.willuhn.de/bugzilla/show_bug.cgi?id=29
   /**
    * Default-Waehrungs-Bezeichnung in Deutschland. 
    */
-  public final static String CURRENCY_DEFAULT_DE = 
-    settings.getString("currency.default.de","EUR");
+  public final static String CURRENCY_DEFAULT_DE = settings.getString("currency.default.de","EUR");
 
   // BUGZILLA 28 http://www.willuhn.de/bugzilla/show_bug.cgi?id=28
 	/**
 	 * Maximale Laenge fuer PINs.
 	 */
-	public final static int HBCI_PIN_MAXLENGTH =
-		settings.getInt("hbci.pin.maxlength",10);
+	public final static int HBCI_PIN_MAXLENGTH = settings.getInt("hbci.pin.maxlength",10);
 	
   /**
    * Ein ggf vorhandener Spezialparser fuer Umsaetze 
    */
-  public final static String HBCI_TRANSFER_SPECIAL_PARSER = 
-    settings.getString("hbci.transfer.specialparser",null);
+  public final static String HBCI_TRANSFER_SPECIAL_PARSER = settings.getString("hbci.transfer.specialparser",null);
 
   /**
 	 * Minimale Laenge fuer PINs.
@@ -162,6 +168,13 @@ public class HBCIProperties
       return true;
     try
     {
+      if (kontonummer == null || 
+          kontonummer.length() == 0 ||
+          kontonummer.length() > HBCI_KTO_MAXLENGTH_HARD)
+      {
+        Logger.warn("account number [" + kontonummer + "] out of range, skip crc check");
+        return true;
+      }
       return HBCIUtils.checkAccountCRC(blz, kontonummer);
     }
     catch (Exception e)
@@ -223,6 +236,10 @@ public class HBCIProperties
 
 /**********************************************************************
  * $Log: HBCIProperties.java,v $
+ * Revision 1.28  2008/05/19 22:35:53  willuhn
+ * @N Maximale Laenge von Kontonummern konfigurierbar (Soft- und Hardlimit)
+ * @N Laengenpruefungen der Kontonummer in Dialogen und Fachobjekten
+ *
  * Revision 1.27  2007/11/27 17:15:57  willuhn
  * @C HBCI4Java mit Classloader des Plugins initialisieren
  *

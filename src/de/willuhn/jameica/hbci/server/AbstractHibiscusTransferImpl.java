@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractHibiscusTransferImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2008/04/27 22:22:56 $
+ * $Revision: 1.6 $
+ * $Date: 2008/05/19 22:35:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -62,6 +62,7 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractDBObject impl
       // BUGZILLA 280
       HBCIProperties.checkChars(getGegenkontoNummer(), HBCIProperties.HBCI_KTO_VALIDCHARS);
       HBCIProperties.checkChars(getGegenkontoBLZ(), HBCIProperties.HBCI_BLZ_VALIDCHARS);
+      HBCIProperties.checkLength(getGegenkontoNummer(), HBCIProperties.HBCI_KTO_MAXLENGTH_HARD);
 
       if (getBetrag() == 0.0)
         throw new ApplicationException(i18n.tr("Bitte geben Sie einen gültigen Betrag ein."));
@@ -276,6 +277,10 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractDBObject impl
 
 /**********************************************************************
  * $Log: AbstractHibiscusTransferImpl.java,v $
+ * Revision 1.6  2008/05/19 22:35:53  willuhn
+ * @N Maximale Laenge von Kontonummern konfigurierbar (Soft- und Hardlimit)
+ * @N Laengenpruefungen der Kontonummer in Dialogen und Fachobjekten
+ *
  * Revision 1.5  2008/04/27 22:22:56  willuhn
  * @C I18N-Referenzen statisch
  *

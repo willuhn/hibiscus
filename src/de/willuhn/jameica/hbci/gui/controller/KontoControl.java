@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.77 $
- * $Date: 2007/12/11 12:23:26 $
+ * $Revision: 1.78 $
+ * $Date: 2008/05/19 22:35:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -175,7 +175,7 @@ public class KontoControl extends AbstractControl {
 	{
 		if (kontonummer != null)
 			return kontonummer;
-		kontonummer = new TextInput(getKonto().getKontonummer());
+		kontonummer = new TextInput(getKonto().getKontonummer(),HBCIProperties.HBCI_KTO_MAXLENGTH_HARD);
     // BUGZILLA 280
     kontonummer.setValidChars(HBCIProperties.HBCI_KTO_VALIDCHARS);
     kontonummer.setMandatory(true);
@@ -191,7 +191,7 @@ public class KontoControl extends AbstractControl {
   {
     if (unterkonto != null)
       return unterkonto;
-    unterkonto = new TextInput(getKonto().getUnterkonto(),10);
+    unterkonto = new TextInput(getKonto().getUnterkonto(),HBCIProperties.HBCI_KTO_MAXLENGTH_HARD);
     unterkonto.setValidChars(HBCIProperties.HBCI_KTO_VALIDCHARS);
     unterkonto.setComment(i18n.tr("Kann meist frei gelassen werden"));
     return unterkonto;
@@ -570,6 +570,10 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.78  2008/05/19 22:35:53  willuhn
+ * @N Maximale Laenge von Kontonummern konfigurierbar (Soft- und Hardlimit)
+ * @N Laengenpruefungen der Kontonummer in Dialogen und Fachobjekten
+ *
  * Revision 1.77  2007/12/11 12:23:26  willuhn
  * @N Bug 355
  *

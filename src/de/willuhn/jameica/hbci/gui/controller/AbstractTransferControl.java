@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.38 $
- * $Date: 2008/02/22 00:52:36 $
+ * $Revision: 1.39 $
+ * $Date: 2008/05/19 22:35:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -135,6 +135,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 		d.addCloseListener(new EmpfaengerListener());
 		empfkto = new DialogInput(getTransfer().getGegenkontoNummer(),d);
     // BUGZILLA 280
+    empfkto.setMaxLength(HBCIProperties.HBCI_KTO_MAXLENGTH_HARD);
     empfkto.setValidChars(HBCIProperties.HBCI_KTO_VALIDCHARS);
     empfkto.setMandatory(true);
 		return empfkto;
@@ -436,6 +437,10 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
+ * Revision 1.39  2008/05/19 22:35:53  willuhn
+ * @N Maximale Laenge von Kontonummern konfigurierbar (Soft- und Hardlimit)
+ * @N Laengenpruefungen der Kontonummer in Dialogen und Fachobjekten
+ *
  * Revision 1.38  2008/02/22 00:52:36  willuhn
  * @N Erste Dialoge fuer erweiterte Verwendungszwecke (noch auskommentiert)
  *
