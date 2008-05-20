@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCIProperties.java,v $
- * $Revision: 1.28 $
- * $Date: 2008/05/19 22:35:53 $
+ * $Revision: 1.29 $
+ * $Date: 2008/05/20 22:47:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -153,6 +153,25 @@ public class HBCIProperties
     // Erstmal schauen, ob der Text ohne Codierung vielleicht schon zu lang ist.
     if (chars.length() > maxLength)
       throw new ApplicationException(i18n.tr("Der Text \"{0}\" ist zu lang. Bitte geben Sie maximal {1} Zeichen ein", new String[]{chars,""+maxLength}));
+
+    // Achtung: Jetzt kommts! Festhalten! ;)
+    // In der deutschen Sprache gibt es keinen Grossbuchstaben von "ß".
+    // Wird nun ein Text von Java in Grossbuchstaben umgewandelt (mittels String#toUpperCase())
+    // bleibt nicht etwa das "ß" erhalten. Nein, es wird gegen "SS" ersetzt.
+    // Haben wir nun einen String, der exakt maxLength lang ist und enthält er
+    // ein "ß" wuerden wir das hier tolerieren, bei der Ausfuehrung des
+    // Geschaeftsvorfalls wuerde es jedoch zu einem Fehler kommen, da dort
+    // der Text automatisch in Grossbuchstaben umgewandelt wird (geschieht
+    // bei HBCI generell), damit das "ß" gegen "SS" ersetzt wird und der
+    // Text am Ende genau um ein Zeichen zu lang wird. Verrueckt, oder? ;)
+    // Da ggf. auch mehrere "ß" enthalten sind, ersetzen wir alle und schauen
+    // dann, wie lang der Text geworden ist.
+    if (chars.indexOf("ß") != -1)
+    {
+      String s = chars.replaceAll("ß","ss");
+      if (s.length() > maxLength)
+        throw new ApplicationException(i18n.tr("Der Text \"{0}\" wird nach der HBCI-Kodierung (ß wird hierbei gegen SS ersetzt) zu lang.",chars));
+    }
   }
 
   /**
@@ -236,6 +255,9 @@ public class HBCIProperties
 
 /**********************************************************************
  * $Log: HBCIProperties.java,v $
+ * Revision 1.29  2008/05/20 22:47:06  willuhn
+ * @B "ß" wird bei Umwandlung in Grossbuchstaben zu "SS" und muss bei der Laengenpruefung daher doppelt gezaehlt werden
+ *
  * Revision 1.28  2008/05/19 22:35:53  willuhn
  * @N Maximale Laenge von Kontonummern konfigurierbar (Soft- und Hardlimit)
  * @N Laengenpruefungen der Kontonummer in Dialogen und Fachobjekten
