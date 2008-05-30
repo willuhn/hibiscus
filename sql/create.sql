@@ -226,6 +226,14 @@ CREATE TABLE verwendungszweck (
   PRIMARY KEY (id)
 );
 
+CREATE TABLE property (
+  id NUMERIC default UNIQUEKEY('property'),
+  name varchar(255) NOT NULL,
+  content varchar(255) NULL,
+  UNIQUE (id),
+  PRIMARY KEY (id)
+);
+
 
 ALTER TABLE ueberweisung ADD CONSTRAINT fk_konto FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE umsatz ADD CONSTRAINT fk_konto2 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
@@ -258,4 +266,4 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',5);
+INSERT INTO version (name,version) values ('db',6);

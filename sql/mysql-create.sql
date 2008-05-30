@@ -225,6 +225,14 @@ CREATE TABLE verwendungszweck (
   PRIMARY KEY (id)
 )TYPE=InnoDB;
 
+CREATE TABLE property (
+  id int(10) AUTO_INCREMENT,
+  name varchar(255) NOT NULL,
+  content varchar(255) NULL,
+  UNIQUE (id),
+  PRIMARY KEY (id)
+)TYPE=InnoDB;
+
 CREATE INDEX idx_lastschrift_konto ON lastschrift(konto_id);
 CREATE INDEX idx_sueberweisung_konto ON sueberweisung(konto_id);
 CREATE INDEX idx_umsatztyp_umsatztyp ON umsatztyp(parent_id);
@@ -258,4 +266,4 @@ ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
 
-INSERT INTO version (name,version) values ('db',5);
+INSERT INTO version (name,version) values ('db',6);
