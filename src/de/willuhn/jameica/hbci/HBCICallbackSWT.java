@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.56 $
- * $Date: 2008/02/25 22:21:15 $
+ * $Revision: 1.57 $
+ * $Date: 2008/05/30 12:01:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,6 @@ import java.util.Hashtable;
 
 import org.eclipse.swt.SWTException;
 import org.kapott.hbci.GV.HBCIJob;
-import org.kapott.hbci.callback.AbstractHBCICallback;
 import org.kapott.hbci.exceptions.HBCI_Exception;
 import org.kapott.hbci.exceptions.NeedKeyAckException;
 import org.kapott.hbci.manager.HBCIUtils;
@@ -45,7 +44,7 @@ import de.willuhn.util.ProgressMonitor;
  * Dieser HBCICallbackSWT implementiert den HBCICallbackSWT des HBCI-Systems und
  * schreibt die Log-Ausgaben in das Jameica-Log.
  */
-public class HBCICallbackSWT extends AbstractHBCICallback
+public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
 {
 
 	private I18N i18n;
@@ -502,6 +501,9 @@ public class HBCICallbackSWT extends AbstractHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.57  2008/05/30 12:01:37  willuhn
+ * @N Gemeinsame Basisimplementierung des HBCICallback in Hibiscus und Payment-Server
+ *
  * Revision 1.56  2008/02/25 22:21:15  willuhn
  * @R undo
  *
