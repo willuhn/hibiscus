@@ -231,6 +231,7 @@ CREATE TABLE property (
   name varchar(255) NOT NULL,
   content varchar(255) NULL,
   UNIQUE (id),
+  UNIQUE (name),
   PRIMARY KEY (id)
 );
 
