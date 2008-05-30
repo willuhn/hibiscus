@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractBaseUeberweisungControl.java,v $
- * $Revision: 1.9 $
- * $Date: 2006/09/10 12:12:41 $
+ * $Revision: 1.10 $
+ * $Date: 2008/05/30 12:02:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -226,8 +226,7 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
   public Input getZweck() throws RemoteException
   {
 		Input i = super.getZweck();
-		if (((Terminable)getTransfer()).ausgefuehrt())
-			i.disable();
+    i.setEnabled(!((Terminable)getTransfer()).ausgefuehrt());
 		return i;
   }
 
@@ -235,11 +234,12 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
    * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getZweck2()
    * Ueberschrieben, um das Control zu deaktivieren, wenn die Ueberweisung bereits ausgefuehrt wurde.
    */
-  public Input getZweck2() throws RemoteException
+  public DialogInput getZweck2() throws RemoteException
   {
-		Input i = super.getZweck2();
-		if (((Terminable)getTransfer()).ausgefuehrt())
-			i.disable();
+		DialogInput i = super.getZweck2();
+    if (((Terminable)getTransfer()).ausgefuehrt())
+      i.disableClientControl();
+    i.disableButton(); // TODO EVZ - Freischalten, wenn alles implementiert ist
 		return i;
   }
 
@@ -248,6 +248,9 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
 
 /**********************************************************************
  * $Log: AbstractBaseUeberweisungControl.java,v $
+ * Revision 1.10  2008/05/30 12:02:08  willuhn
+ * @N Erster Code fuer erweiterte Verwendungszwecke - NOCH NICHT FREIGESCHALTET!
+ *
  * Revision 1.9  2006/09/10 12:12:41  willuhn
  * @N Umstellung auf neues DateInput
  *

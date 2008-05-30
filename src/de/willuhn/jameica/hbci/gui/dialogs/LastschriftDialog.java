@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/LastschriftDialog.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/04/05 22:49:02 $
- * $Author: web0 $
+ * $Revision: 1.5 $
+ * $Date: 2008/05/30 12:02:08 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.gui.dialogs;
 import org.eclipse.swt.widgets.Composite;
 import org.kapott.hbci.manager.HBCIUtils;
 
+import de.willuhn.datasource.GenericIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.input.Input;
@@ -23,6 +24,7 @@ import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
+import de.willuhn.jameica.hbci.rmi.Verwendungszweck;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -90,12 +92,19 @@ public class LastschriftDialog extends AbstractDialog {
 
     // BUGZILLA 32 http://www.willuhn.de/bugzilla/show_bug.cgi?id=32
     LabelGroup zweck = new LabelGroup(parent,i18n.tr("Verwendungszweck"));
-    zweck.addText(ueb.getZweck(),true);
+    zweck.addText(ueb.getZweck(),false);
     String z2 = ueb.getZweck2();
     if (z2 != null && z2.length() > 0)
+      zweck.addText(z2,false);
+
+    GenericIterator moreUsages = ueb.getWeitereVerwendungszwecke();
+    while (moreUsages != null && moreUsages.hasNext())
     {
-      zweck.addSeparator();
-      zweck.addText(z2,true);
+      Verwendungszweck z = (Verwendungszweck) moreUsages.next();
+      String text = z.getText();
+      if (text == null || text.length() == 0)
+        continue;
+      zweck.addText(text,false);
     }
 
 
@@ -123,6 +132,9 @@ public class LastschriftDialog extends AbstractDialog {
 
 /**********************************************************************
  * $Log: LastschriftDialog.java,v $
+ * Revision 1.5  2008/05/30 12:02:08  willuhn
+ * @N Erster Code fuer erweiterte Verwendungszwecke - NOCH NICHT FREIGESCHALTET!
+ *
  * Revision 1.4  2005/04/05 22:49:02  web0
  * @B bug 32
  *

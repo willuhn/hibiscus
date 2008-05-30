@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UeberweisungNew.java,v $
- * $Revision: 1.15 $
- * $Date: 2008/02/22 00:52:36 $
+ * $Revision: 1.16 $
+ * $Date: 2008/05/30 12:02:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.gui.views;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
@@ -22,7 +23,7 @@ import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungExecute;
 import de.willuhn.jameica.hbci.gui.controller.UeberweisungControl;
-import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
+import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -38,7 +39,7 @@ public class UeberweisungNew extends AbstractView {
   public void bind() throws Exception {
 
 		final UeberweisungControl control = new UeberweisungControl(this);
-    final HibiscusTransfer transfer = control.getTransfer();
+    final Ueberweisung transfer = (Ueberweisung) control.getTransfer();
 
 		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
@@ -52,13 +53,6 @@ public class UeberweisungNew extends AbstractView {
     konten.addLabelPair(i18n.tr("Name des Empfängers"),           control.getEmpfaengerName());
 		konten.addCheckbox(control.getStoreEmpfaenger(),i18n.tr("Empfängerdaten im Adressbuch speichern"));
 
-//  TODO !EVZ
-//    TabFolder folder = new TabFolder(getParent(), SWT.NONE);
-//    folder.setLayoutData(new GridData(GridData.FILL_BOTH));
-//    folder.setBackground(Color.BACKGROUND.getSWTColor());
-//
-//    TabGroup details = new TabGroup(folder,i18n.tr("Details"));
-
     LabelGroup details = new LabelGroup(getParent(),i18n.tr("Details"));
 		details.addLabelPair(i18n.tr("Verwendungszweck"),					control.getZweck());
 		details.addLabelPair(i18n.tr("weiterer Verwendungszweck"),control.getZweck2());
@@ -68,38 +62,36 @@ public class UeberweisungNew extends AbstractView {
     details.addSeparator();
     details.addLabelPair("",                                  control.getComment());
 
-    
-
-    
-//  TODO !EVZ
-//    TabGroup zweckList = new TabGroup(folder,i18n.tr("Weitere Verwendungszwecke"));
-//    ScrolledContainer scrolled = new ScrolledContainer(zweckList.getComposite());
-//    scrolled.addPart(control.getErweiterteVerwendungszwecke());
-    
 		ButtonArea buttonArea = new ButtonArea(getParent(),4);
 		buttonArea.addButton(i18n.tr("Zurück"), 				 				 new Back());
 		buttonArea.addButton(i18n.tr("Löschen"),				 				 new DBObjectDelete(), transfer);
-		buttonArea.addButton(i18n.tr("Speichern und ausführen"), new Action()
-    {
-      public void handleAction(Object context) throws ApplicationException
-      {
+
+    Button execute = new Button(i18n.tr("Jetzt ausführen"), new Action() {
+      public void handleAction(Object context) throws ApplicationException {
 				control.handleStore();
 				new UeberweisungExecute().handleAction(transfer);
       }
     },null);
-		buttonArea.addButton(i18n.tr("Speichern"), 			     new Action()
-    {
-      public void handleAction(Object context) throws ApplicationException
-      {
+    execute.setEnabled(!transfer.ausgefuehrt());
+    
+    Button store = new Button(i18n.tr("Speichern"), new Action() {
+      public void handleAction(Object context) throws ApplicationException {
       	control.handleStore();
       }
     },null,true);
+    store.setEnabled(!transfer.ausgefuehrt());
+    
+    buttonArea.addButton(execute);
+    buttonArea.addButton(store);
   }
 }
 
 
 /**********************************************************************
  * $Log: UeberweisungNew.java,v $
+ * Revision 1.16  2008/05/30 12:02:08  willuhn
+ * @N Erster Code fuer erweiterte Verwendungszwecke - NOCH NICHT FREIGESCHALTET!
+ *
  * Revision 1.15  2008/02/22 00:52:36  willuhn
  * @N Erste Dialoge fuer erweiterte Verwendungszwecke (noch auskommentiert)
  *

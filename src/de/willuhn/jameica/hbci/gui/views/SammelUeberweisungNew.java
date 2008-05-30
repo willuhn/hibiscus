@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/SammelUeberweisungNew.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/08/07 14:31:59 $
+ * $Revision: 1.6 $
+ * $Date: 2008/05/30 12:02:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.gui.views;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.LabelGroup;
@@ -24,6 +25,7 @@ import de.willuhn.jameica.hbci.gui.action.SammelTransferDelete;
 import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungBuchungNew;
 import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungExecute;
 import de.willuhn.jameica.hbci.gui.controller.SammelUeberweisungControl;
+import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -40,6 +42,7 @@ public class SammelUeberweisungNew extends AbstractView {
   public void bind() throws Exception {
 
 		final SammelUeberweisungControl control = new SammelUeberweisungControl(this);
+    SammelTransfer transfer = control.getTransfer();
 
 		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
@@ -62,28 +65,33 @@ public class SammelUeberweisungNew extends AbstractView {
     ButtonArea buttons = new ButtonArea(getParent(),5);
     buttons.addButton(i18n.tr("Zurück"),new Back());
     buttons.addButton(i18n.tr("Löschen"),new SammelTransferDelete(),control.getTransfer());
-    buttons.addButton(i18n.tr("Neue Buchungen hinzufügen"), new Action() {
-      public void handleAction(Object context) throws ApplicationException
-      {
+    
+    Button add = new Button(i18n.tr("Neue Buchungen hinzufügen"), new Action() {
+      public void handleAction(Object context) throws ApplicationException {
         if (control.handleStore())
           new SammelUeberweisungBuchungNew().handleAction(l);
       }
     });
-		buttons.addButton(i18n.tr("Speichern und ausführen"), new Action()
-		{
-			public void handleAction(Object context) throws ApplicationException
-			{
+    add.setEnabled(!transfer.ausgefuehrt());
+    
+		Button execute = new Button(i18n.tr("Jetzt ausführen"), new Action() {
+			public void handleAction(Object context) throws ApplicationException {
         if (control.handleStore())
   				new SammelUeberweisungExecute().handleAction(l);
 			}
 		},null,true);
-    buttons.addButton(i18n.tr("Speichern"),new Action()
-    {
-      public void handleAction(Object context) throws ApplicationException
-      {
+    execute.setEnabled(!transfer.ausgefuehrt());
+    
+    Button store = new Button(i18n.tr("Speichern"),new Action() {
+      public void handleAction(Object context) throws ApplicationException {
         control.handleStore();
       }
     },null,true);
+    store.setEnabled(!transfer.ausgefuehrt());
+    
+    buttons.addButton(add);
+    buttons.addButton(execute);
+    buttons.addButton(store);
 
   }
 }
@@ -91,6 +99,9 @@ public class SammelUeberweisungNew extends AbstractView {
 
 /**********************************************************************
  * $Log: SammelUeberweisungNew.java,v $
+ * Revision 1.6  2008/05/30 12:02:08  willuhn
+ * @N Erster Code fuer erweiterte Verwendungszwecke - NOCH NICHT FREIGESCHALTET!
+ *
  * Revision 1.5  2006/08/07 14:31:59  willuhn
  * @B misc bugfixing
  * @C Redesign des DTAUS-Imports fuer Sammeltransfers

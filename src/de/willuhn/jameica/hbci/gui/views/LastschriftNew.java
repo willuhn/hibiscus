@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/LastschriftNew.java,v $
- * $Revision: 1.12 $
- * $Date: 2007/04/23 18:07:15 $
+ * $Revision: 1.13 $
+ * $Date: 2008/05/30 12:02:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.gui.views;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
@@ -22,7 +23,7 @@ import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.LastschriftExecute;
 import de.willuhn.jameica.hbci.gui.controller.LastschriftControl;
-import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
+import de.willuhn.jameica.hbci.rmi.Lastschrift;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -38,7 +39,7 @@ public class LastschriftNew extends AbstractView {
   public void bind() throws Exception {
 
 		final LastschriftControl control = new LastschriftControl(this);
-    final HibiscusTransfer tranfer = control.getTransfer();
+    final Lastschrift tranfer = (Lastschrift) control.getTransfer();
 
 		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
@@ -67,28 +68,33 @@ public class LastschriftNew extends AbstractView {
 		ButtonArea buttonArea = new ButtonArea(getParent(),4);
 		buttonArea.addButton(i18n.tr("Zurück"), 				 				 new Back());
 		buttonArea.addButton(i18n.tr("Löschen"),				 				 new DBObjectDelete(), tranfer);
-		buttonArea.addButton(i18n.tr("Speichern und ausführen"), new Action()
-    {
-      public void handleAction(Object context) throws ApplicationException
-      {
+		
+    Button execute = new Button(i18n.tr("Jetzt ausführen"), new Action() {
+      public void handleAction(Object context) throws ApplicationException {
         control.handleStore();
         new LastschriftExecute().handleAction(tranfer);
       }
     },null);
+    execute.setEnabled(!tranfer.ausgefuehrt());
     
-		buttonArea.addButton(i18n.tr("Speichern"), 			     new Action()
-    {
-      public void handleAction(Object context) throws ApplicationException
-      {
+		Button store = new Button(i18n.tr("Speichern"), new Action() {
+      public void handleAction(Object context) throws ApplicationException {
       	control.handleStore();
       }
     },null,true);
+    store.setEnabled(!tranfer.ausgefuehrt());
+    
+    buttonArea.addButton(execute);
+    buttonArea.addButton(store);
   }
 }
 
 
 /**********************************************************************
  * $Log: LastschriftNew.java,v $
+ * Revision 1.13  2008/05/30 12:02:08  willuhn
+ * @N Erster Code fuer erweiterte Verwendungszwecke - NOCH NICHT FREIGESCHALTET!
+ *
  * Revision 1.12  2007/04/23 18:07:15  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt

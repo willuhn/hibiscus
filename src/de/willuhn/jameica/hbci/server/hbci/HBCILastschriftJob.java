@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCILastschriftJob.java,v $
- * $Revision: 1.14 $
- * $Date: 2007/12/06 14:42:26 $
+ * $Revision: 1.15 $
+ * $Date: 2008/05/30 12:02:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@ package de.willuhn.jameica.hbci.server.hbci;
 
 import java.rmi.RemoteException;
 
+import de.willuhn.datasource.GenericIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
@@ -22,6 +23,7 @@ import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
+import de.willuhn.jameica.hbci.rmi.Verwendungszweck;
 import de.willuhn.jameica.hbci.server.Converter;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -92,6 +94,18 @@ public class HBCILastschriftJob extends AbstractHBCIJob
 			String zweck2 = lastschrift.getZweck2();
 			if (zweck2 != null && zweck2.length() > 0)
 				setJobParam("usage_2",zweck2);
+      
+      GenericIterator moreUsages = lastschrift.getWeitereVerwendungszwecke();
+      int pos = 3;
+      while (moreUsages != null && moreUsages.hasNext())
+      {
+        Verwendungszweck zweck = (Verwendungszweck) moreUsages.next();
+        String text = zweck.getText();
+        if (text == null || text.length() == 0)
+          continue;
+        setJobParam("usage_" + pos,text);
+        pos++;
+      }
 		}
 		catch (RemoteException e)
 		{
@@ -150,6 +164,9 @@ public class HBCILastschriftJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCILastschriftJob.java,v $
+ * Revision 1.15  2008/05/30 12:02:08  willuhn
+ * @N Erster Code fuer erweiterte Verwendungszwecke - NOCH NICHT FREIGESCHALTET!
+ *
  * Revision 1.14  2007/12/06 14:42:26  willuhn
  * @B Bug 480
  *

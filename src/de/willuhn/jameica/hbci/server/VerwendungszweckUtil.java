@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/VerwendungszweckUtil.java,v $
- * $Revision: 1.2 $
- * $Date: 2008/02/22 00:52:35 $
+ * $Revision: 1.3 $
+ * $Date: 2008/05/30 12:02:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@
 package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.rmi.DBIterator;
@@ -34,7 +35,7 @@ public class VerwendungszweckUtil
   /**
    * Liefert eine Liste der gefundenen Verwendungszwecke fuer diesen Transfer.
    * @param t der Transfer.
-   * @return Liste der gefundenen Verwendungszwecke, sortiert nach ID.
+   * @return Liste der gefundenen Verwendungszwecke, sortiert nach ID oder null, wenn der Transfer neu ist.
    * @throws RemoteException
    */
   public static GenericIterator get(Transfer t) throws RemoteException
@@ -51,6 +52,27 @@ public class VerwendungszweckUtil
     list.addFilter("auftrag_id = " + g.getID());
     list.setOrder("order by id");
     return list;
+  }
+  
+  /**
+   * Wandelt die Liste der erweiterten Verwendungszwecke des Transfers in ein
+   * Array um.
+   * @param transfer der Transfer.
+   * @return Erweiterte Verwendungszwecke als String-Array. Nie null sondern hoechstens ein leeres Array
+   * @throws RemoteException
+   */
+  public static String[] toArray(Transfer transfer) throws RemoteException
+  {
+    GenericIterator it = transfer.getWeitereVerwendungszwecke();
+    if (it == null)
+      return new String[0]; // Keine Verwendungszwecke
+    ArrayList list = new ArrayList();
+    while (it.hasNext())
+    {
+      Verwendungszweck z = (Verwendungszweck) it.next();
+      list.add(z.getText());
+    }
+    return (String[]) list.toArray(new String[list.size()]);
   }
 
   /**
@@ -87,6 +109,9 @@ public class VerwendungszweckUtil
 
 /*********************************************************************
  * $Log: VerwendungszweckUtil.java,v $
+ * Revision 1.3  2008/05/30 12:02:08  willuhn
+ * @N Erster Code fuer erweiterte Verwendungszwecke - NOCH NICHT FREIGESCHALTET!
+ *
  * Revision 1.2  2008/02/22 00:52:35  willuhn
  * @N Erste Dialoge fuer erweiterte Verwendungszwecke (noch auskommentiert)
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUeberweisungJob.java,v $
- * $Revision: 1.36 $
- * $Date: 2007/12/06 23:53:56 $
+ * $Revision: 1.37 $
+ * $Date: 2008/05/30 12:02:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.Properties;
 
+import de.willuhn.datasource.GenericIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
@@ -25,6 +26,7 @@ import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
+import de.willuhn.jameica.hbci.rmi.Verwendungszweck;
 import de.willuhn.jameica.hbci.server.Converter;
 import de.willuhn.jameica.hbci.server.hbci.tests.PreTimeRestriction;
 import de.willuhn.jameica.system.Application;
@@ -94,6 +96,18 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
 			String zweck2 = ueberweisung.getZweck2();
 			if (zweck2 != null && zweck2.length() > 0)
 				setJobParam("usage_2",zweck2);
+      
+      GenericIterator moreUsages = ueberweisung.getWeitereVerwendungszwecke();
+      int pos = 3;
+      while (moreUsages != null && moreUsages.hasNext())
+      {
+        Verwendungszweck zweck = (Verwendungszweck) moreUsages.next();
+        String text = zweck.getText();
+        if (text == null || text.length() == 0)
+          continue;
+        setJobParam("usage_" + pos,text);
+        pos++;
+      }
 
       if (isTermin)
       {
@@ -170,6 +184,9 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIUeberweisungJob.java,v $
+ * Revision 1.37  2008/05/30 12:02:08  willuhn
+ * @N Erster Code fuer erweiterte Verwendungszwecke - NOCH NICHT FREIGESCHALTET!
+ *
  * Revision 1.36  2007/12/06 23:53:56  willuhn
  * @B Bug 490
  *

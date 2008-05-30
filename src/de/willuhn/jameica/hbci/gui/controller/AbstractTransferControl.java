@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.39 $
- * $Date: 2008/05/19 22:35:53 $
+ * $Revision: 1.40 $
+ * $Date: 2008/05/30 12:02:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import java.rmi.RemoteException;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
@@ -32,12 +33,16 @@ import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
 import de.willuhn.jameica.hbci.gui.dialogs.AdresseAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
+import de.willuhn.jameica.hbci.gui.dialogs.VerwendungszweckDialog;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
-import de.willuhn.jameica.hbci.gui.parts.ErweiterteVerwendungszwecke;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.Terminable;
+import de.willuhn.jameica.hbci.rmi.Verwendungszweck;
+import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -50,21 +55,21 @@ public abstract class AbstractTransferControl extends AbstractControl
 {
 
 	// Fach-Objekte
-	private Address gegenkonto 							= null;
-	private Konto konto											= null;
+	private Address gegenkonto 							   = null;
+	private Konto konto											   = null;
 	
 	// Eingabe-Felder
-	private DialogInput kontoAuswahl			  = null;
-	private Input betrag										= null;
-	private TextInput zweck									= null;
-	private TextInput zweck2								= null;
-  private ErweiterteVerwendungszwecke ewz = null;
+	private DialogInput kontoAuswahl			     = null;
+	private Input betrag										   = null;
+	private TextInput zweck									   = null;
+	private DialogInput zweck2							   = null;
+  private VerwendungszweckDialog zweckDialog = null;
 
-	private DialogInput empfkto 						= null;
-	private TextInput empfName 					  	= null;
-	private TextInput empfblz								= null;
+	private DialogInput empfkto 						   = null;
+	private TextInput empfName 					  	   = null;
+	private TextInput empfblz								   = null;
 
-	private CheckboxInput storeEmpfaenger 	= null;
+	private CheckboxInput storeEmpfaenger 	   = null;
 
 	I18N i18n;
 
@@ -192,31 +197,42 @@ public abstract class AbstractTransferControl extends AbstractControl
 	 * @return Eingabe-Feld.
 	 * @throws RemoteException
 	 */
-	public Input getZweck2() throws RemoteException
+	public DialogInput getZweck2() throws RemoteException
 	{
 		if (zweck2 != null)
 			return zweck2;
 		// BUGZILLA #10 http://www.willuhn.de/bugzilla/show_bug.cgi?id=10
-		zweck2 = new TextInput(getTransfer().getZweck2(),HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH);
-		zweck2.setValidChars(HBCIProperties.HBCI_DTAUS_VALIDCHARS);
+    HibiscusTransfer t = getTransfer();
+    String[] lines = VerwendungszweckUtil.toArray(t);
+    final String buttonText = "weitere Zeilen ({0})...";
+    boolean readOnly = false;
+    if (t instanceof Terminable)
+      readOnly = ((Terminable)t).ausgefuehrt();
+    this.zweckDialog = new VerwendungszweckDialog(lines,readOnly,VerwendungszweckDialog.POSITION_MOUSE);
+    this.zweckDialog.addCloseListener(new Listener() {
+      public void handleEvent(Event event)
+      {
+        try
+        {
+          String[] newLines = (String[]) zweckDialog.getData();
+          if (newLines != null) // andernfalls wurde "Abbrechen" gedrueckt
+            zweck2.setButtonText(i18n.tr(buttonText,Integer.toString(newLines.length)));
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to update line count",e);
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren der Zeilen-Anzahl"), StatusBarMessage.TYPE_ERROR));
+        }
+      }
+    
+    });
+		zweck2 = new DialogInput(getTransfer().getZweck2(),this.zweckDialog);
+    zweck2.setButtonText(i18n.tr(buttonText,Integer.toString(lines.length)));
+    zweck2.setMaxLength(HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH);
+    zweck2.setValidChars(HBCIProperties.HBCI_DTAUS_VALIDCHARS);
 		return zweck2;
 	}
   
-  /**
-   * Liefert eine Liste erweiterter Verwendungszwecke.
-   * @return Liste erweiterter Verwendungszwecke.
-   * @throws RemoteException
-   */
-  public ErweiterteVerwendungszwecke getErweiterteVerwendungszwecke() throws RemoteException
-  {
-    if (this.ewz != null)
-      return this.ewz;
-    
-    this.ewz = new ErweiterteVerwendungszwecke(this.getTransfer());
-    return this.ewz;
-  }
-
-
 	/**
 	 * Liefert das Eingabe-Feld fuer den Betrag.
 	 * @return Eingabe-Feld.
@@ -270,7 +286,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 			getTransfer().setBetrag(((Double)getBetrag().getValue()).doubleValue());
 			getTransfer().setKonto((Konto)getKontoAuswahl().getValue());
 			getTransfer().setZweck((String)getZweck().getValue());
-			getTransfer().setZweck2((String)getZweck2().getValue());
+			getTransfer().setZweck2(getZweck2().getText());  // "getText()" ist wichtig, weil das ein DialogInput ist
 
 			String kto  = ((DialogInput) getEmpfaengerKonto()).getText();
 			String blz  = (String)getEmpfaengerBlz().getValue();
@@ -279,29 +295,41 @@ public abstract class AbstractTransferControl extends AbstractControl
 			getTransfer().setGegenkontoNummer(kto);
 			getTransfer().setGegenkontoBLZ(blz);
 			getTransfer().setGegenkontoName(name);
-      
-// TODO !EVZ
-//      // Urspruengliche erweiterte Verwendungszwecke loeschen
-//      String[] list = getErweiterteVerwendungszwecke().getTexts();
-//      GenericIterator orig = getTransfer().getWeitereVerwendungszwecke();
-//      if (orig != null)
-//      {
-//        while (orig.hasNext())
-//        {
-//          Verwendungszweck z = (Verwendungszweck) orig.next();
-//          z.delete();
-//        }
-//      }
-//      // Neue Texteingaben speichern
-//      for (int i=0;i<list.length;++i)
-//      {
-//        if (list[i] == null || list[i].length() == 0)
-//          continue; // leere Zeilen ueberspringen
-//        VerwendungszweckUtil.create(getTransfer(),list[i]);
-//      }
-      
-			getTransfer().store();
 
+      // Erst den Auftrag selbst speichern, damit er eine ID hat.
+      // Die zusaetzlichen Verwendungszwecke kommen danach
+      getTransfer().store();
+
+      // Geaenderte Verwendungszwecke uebernehmen. Allerdings nur, wenn
+      // der Dialog tatsaechlich geoffnet und auf "Uebernehmen" geklickt wurde
+      String[] lines = (String[]) this.zweckDialog.getData();
+      if (lines != null)
+      {
+        // Wir loeschen die urspruenglichen weg
+        GenericIterator orig = getTransfer().getWeitereVerwendungszwecke();
+        if (orig != null)
+        {
+          while (orig.hasNext())
+          {
+            Verwendungszweck z = (Verwendungszweck) orig.next();
+            z.delete();
+          }
+        }
+        
+        // und schreiben sie dann komplett neu
+        for (int i=0;i<lines.length;++i)
+        {
+          // leere Zeilen ueberspringen
+          if (lines[i] == null)
+            continue;
+          String text = lines[i].trim();
+          if (text.length() == 0)
+            continue;
+          
+          VerwendungszweckUtil.create(getTransfer(),text);
+        }
+      }
+      
 			Boolean store = (Boolean) getStoreEmpfaenger().getValue();
 			if (store.booleanValue())
 			{
@@ -403,7 +431,7 @@ public abstract class AbstractTransferControl extends AbstractControl
         try
         {
           String zweck = (String) getZweck().getValue();
-          String zweck2 = (String) getZweck2().getValue();
+          String zweck2 = getZweck2().getText(); // "getText()" ist wichtig, weil das ein DialogInput ist
           if ((zweck != null && zweck.length() > 0) || (zweck2 != null && zweck2.length() > 0))
             return;
           
@@ -415,7 +443,7 @@ public abstract class AbstractTransferControl extends AbstractControl
           {
             HibiscusTransfer t = (HibiscusTransfer) list.next();
             getZweck().setValue(t.getZweck());
-            getZweck2().setValue(t.getZweck2());
+            getZweck2().setText(t.getZweck2()); // "setText()" ist wichtig, weil das ein DialogInput ist
           }
         }
         catch (Exception e)
@@ -437,6 +465,9 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
+ * Revision 1.40  2008/05/30 12:02:08  willuhn
+ * @N Erster Code fuer erweiterte Verwendungszwecke - NOCH NICHT FREIGESCHALTET!
+ *
  * Revision 1.39  2008/05/19 22:35:53  willuhn
  * @N Maximale Laenge von Kontonummern konfigurierbar (Soft- und Hardlimit)
  * @N Laengenpruefungen der Kontonummer in Dialogen und Fachobjekten

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCIProperties.java,v $
- * $Revision: 1.29 $
- * $Date: 2008/05/20 22:47:06 $
+ * $Revision: 1.30 $
+ * $Date: 2008/05/30 12:02:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -60,6 +60,11 @@ public class HBCIProperties
    * Maximale Text-Laenge einer Verwendungszweck-Zeile.
    */
   public final static int HBCI_TRANSFER_USAGE_MAXLENGTH = settings.getInt("hbci.transfer.usage.maxlength",27);
+
+  /**
+   * Maximale Anzahl von Verwendungszwecken.
+   */
+  public final static int HBCI_TRANSFER_USAGE_MAXNUM = settings.getInt("hbci.transfer.usage.maxnum",10);
 
   /**
    * Maximale Laenge einer Kontonummer.
@@ -255,6 +260,9 @@ public class HBCIProperties
 
 /**********************************************************************
  * $Log: HBCIProperties.java,v $
+ * Revision 1.30  2008/05/30 12:02:08  willuhn
+ * @N Erster Code fuer erweiterte Verwendungszwecke - NOCH NICHT FREIGESCHALTET!
+ *
  * Revision 1.29  2008/05/20 22:47:06  willuhn
  * @B "ß" wird bei Umwandlung in Grossbuchstaben zu "SS" und muss bei der Laengenpruefung daher doppelt gezaehlt werden
  *
