@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/HBCIDBServiceImpl.java,v $
- * $Revision: 1.26 $
- * $Date: 2008/05/06 10:10:56 $
+ * $Revision: 1.27 $
+ * $Date: 2008/05/30 14:23:48 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,11 +21,9 @@ import java.text.DecimalFormat;
 import java.util.Locale;
 
 import de.willuhn.datasource.db.DBServiceImpl;
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.DBSupport;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
-import de.willuhn.jameica.hbci.rmi.Version;
 import de.willuhn.jameica.plugin.PluginResources;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -132,7 +130,7 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
   {
     this.driver.checkConsistency(getConnection());
     Logger.info("init update provider");
-    UpdateProvider provider = new HBCIUpdateProvider(getConnection(),getVersion("db"));
+    UpdateProvider provider = new HBCIUpdateProvider(getConnection(),VersionUtil.getVersion(this,"db"));
     Updater updater = new Updater(provider);
     updater.execute();
     Logger.info("updates finished");
@@ -243,34 +241,6 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
     return this.driver.getTransactionIsolationLevel();
   }
   
-  
-  /**
-   * Liefert ein Versionsobjekt fuer die genannte Version.
-   * Bei Bedarf wird sie automatisch erstellt.
-   * @param name Name der Version.
-   * @return das Versionsobjekt.
-   * @throws RemoteException
-   * @throws ApplicationException
-   */
-  private Version getVersion(String name) throws RemoteException, ApplicationException
-  {
-    if (name == null || name.length() == 0)
-    {
-      I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-      throw new ApplicationException(i18n.tr("Keine Versionsbezeichnung angegeben"));
-    }
-    DBIterator list = this.createList(Version.class);
-    list.addFilter("name = ?", new String[]{name});
-    if (list.hasNext())
-      return (Version) list.next();
-    
-    // Neue Version erstellen
-    Version v = (Version) this.createObject(Version.class,null);
-    v.setName(name);
-    v.store();
-    return v;
-  }
-
   /**
    * @see de.willuhn.jameica.hbci.rmi.HBCIDBService#getDriver()
    */
@@ -283,6 +253,9 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
 
 /*********************************************************************
  * $Log: HBCIDBServiceImpl.java,v $
+ * Revision 1.27  2008/05/30 14:23:48  willuhn
+ * @N Vollautomatisches und versioniertes Speichern der BPD und UPD in der neuen Property-Tabelle
+ *
  * Revision 1.26  2008/05/06 10:10:56  willuhn
  * @N Diagnose-Dialog, mit dem man die JDBC-Verbindungsdaten (u.a. auch das JDBC-Passwort) ausgeben kann
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/AbstractHibiscusHBCICallback.java,v $
- * $Revision: 1.2 $
- * $Date: 2008/05/30 12:31:41 $
+ * $Revision: 1.3 $
+ * $Date: 2008/05/30 14:23:48 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,8 +13,18 @@
 
 package de.willuhn.jameica.hbci;
 
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Properties;
+
 import org.kapott.hbci.callback.AbstractHBCICallback;
 import org.kapott.hbci.passport.HBCIPassport;
+import org.kapott.hbci.structures.Konto;
+
+import de.willuhn.jameica.hbci.rmi.Version;
+import de.willuhn.jameica.hbci.server.DBPropertyUtil;
+import de.willuhn.jameica.hbci.server.VersionUtil;
+import de.willuhn.logging.Logger;
 
 /**
  * Abstrakte Basis-Implementierung des HBCI-Callback.
@@ -32,30 +42,107 @@ public abstract class AbstractHibiscusHBCICallback extends AbstractHBCICallback
     if (passport == null)
       return;
     
-    if (passport.getBPDVersion() != null)
+    try
+    {
       updateBPD(passport);
-    
-    if (passport.getUPDVersion() != null)
       updateUPD(passport);
-
+    }
+    catch (Exception e)
+    {
+      Logger.error("error while updating bpd/upd - will be ignored",e);
+    }
   }
   
   /**
    * Aktualisiert die BPD.
    * @param bpd
    */
-  private void updateBPD(HBCIPassport passport)
+  private void updateBPD(HBCIPassport passport) throws Exception
   {
-    
+    update(passport,passport.getBPD(),passport.getBPDVersion(),"bpd");
   }
 
   /**
    * Aktualisiert die UPD.
    * @param upd
    */
-  private void updateUPD(HBCIPassport passport)
+  private void updateUPD(HBCIPassport passport) throws Exception
   {
+    update(passport,passport.getUPD(),passport.getUPDVersion(),"upd");
+  }
+
+  /**
+   * Aktualisiert die genannten Daten.
+   * @param passport Passport.
+   * @param data die Daten.
+   * @param version Version der Daten.
+   * @param prefix Prefix.
+   * @throws Exception
+   */
+  private void update(HBCIPassport passport, Properties data, String version, String prefix) throws Exception
+  {
+    String user = passport.getUserId();
+    if (version == null || version.length() == 0 ||
+        user == null || user.length() == 0 ||
+        data == null || data.size() == 0)
+    {
+      Logger.info("[" + prefix + "] no version, no userid or no data found, skipping update");
+      return;
+    }
     
+    int nv = Integer.parseInt(version);
+    Version v = VersionUtil.getVersion(Settings.getDBService(),prefix + "." + user);
+    int cv = v.getVersion();
+    
+    // Keine neue Version
+    if (nv == cv)
+      return;
+    
+    // Hu? Gespeicherte Version aktueller als neue?
+    if (nv < cv || cv < 0 || nv < 0)
+    {
+      Logger.warn("SUSPECT - new " + prefix + " version [" + nv + "] smaller than current [" + cv + "] or version smaller than zero");
+      return;
+    }
+
+    Logger.info("got new " + prefix + " version. old: " + cv + ", new: " + nv + ", updating cache");
+    String[] customerID = getCustomerIDs(passport);
+    for (Enumeration keys = data.keys();keys.hasMoreElements();)
+    {
+      for (int i=0;i<customerID.length;++i)
+      {
+        String name = (String) keys.nextElement();
+        DBPropertyUtil.set(prefix + "." + customerID[i] + "." + name,data.getProperty(name));
+      }
+    }
+    // Speichern der neuen Versionsnummer
+    v.setVersion(nv);
+    v.store();
+  }
+  
+  /**
+   * Ermittelt die Customer-IDs aus dem Passport.
+   * @param passport Passport.
+   * @return Liste der Customer-IDs.
+   */
+  private String[] getCustomerIDs(HBCIPassport passport)
+  {
+    Konto[] accounts = passport.getAccounts();
+
+    // Das macht HBCI4Java in passport.getCustomerId() genauso
+    // Wenn keine Customer-IDs vorhanden sind, wird die User-ID genommen
+    if (accounts == null || accounts.length == 0)
+      return new String[]{passport.getUserId()};
+
+    // Hash zum Vermeiden von Doppeln
+    Hashtable values = new Hashtable();
+    for (int i=0;i<accounts.length;++i)
+    {
+      String value = accounts[i].customerid;
+      if (value != null)
+        values.put(value,value);
+    }
+    return (String[]) values.values().toArray(new String[values.size()]);
   }
 
 }
@@ -63,6 +150,9 @@ public abstract class AbstractHibiscusHBCICallback extends AbstractHBCICallback
 
 /*********************************************************************
  * $Log: AbstractHibiscusHBCICallback.java,v $
+ * Revision 1.3  2008/05/30 14:23:48  willuhn
+ * @N Vollautomatisches und versioniertes Speichern der BPD und UPD in der neuen Property-Tabelle
+ *
  * Revision 1.2  2008/05/30 12:31:41  willuhn
  * @N Erster Code fuer gecachte BPD/UPD
  *
