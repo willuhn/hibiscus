@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.40 $
- * $Date: 2008/05/30 12:02:08 $
+ * $Revision: 1.41 $
+ * $Date: 2008/06/02 08:06:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -230,6 +230,7 @@ public abstract class AbstractTransferControl extends AbstractControl
     zweck2.setButtonText(i18n.tr(buttonText,Integer.toString(lines.length)));
     zweck2.setMaxLength(HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH);
     zweck2.setValidChars(HBCIProperties.HBCI_DTAUS_VALIDCHARS);
+    zweck2.disableButton(); // TODO EVZ - Freischalten, wenn alles implementiert ist
 		return zweck2;
 	}
   
@@ -465,6 +466,9 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
+ * Revision 1.41  2008/06/02 08:06:29  willuhn
+ * @C Button fuer weitere Verwendungszwecke vorerst gesperrt
+ *
  * Revision 1.40  2008/05/30 12:02:08  willuhn
  * @N Erster Code fuer erweiterte Verwendungszwecke - NOCH NICHT FREIGESCHALTET!
  *
