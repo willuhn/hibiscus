@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/updates/update0002.java,v $
- * $Revision: 1.5 $
+ * $Source: /cvsroot/hibiscus/hibiscus/updates/update0007.java,v $
+ * $Revision: 1.1 $
  * $Date: 2008/06/15 21:55:51 $
  * $Author: willuhn $
  * $Locker:  $
@@ -29,79 +29,44 @@ import de.willuhn.util.I18N;
 
 
 /**
- * Datenbank-Update fuer "Offene Posten".
+ * Korrigiertes Datenbank-Update fuer neue Tabelle "property".
+ * Die Spalte "content" war u.U. zu kurz.
  */
-public class update0002 implements Update
+public class update0007 implements Update
 {
   private Map statements = new HashMap();
   
   /**
    * ct
    */
-  public update0002()
+  public update0007()
   {
     // Update fuer H2
     statements.put(DBSupportH2Impl.class.getName(),
-        "CREATE TABLE op (" +
+        "DROP TABLE property;\n" +
+        "CREATE TABLE property (" +
         "    id IDENTITY," +
-        "    name varchar(255) not NULL," +
-        "    pattern varchar(255) NULL," +
-        "    isregex int(1) NULL," + 
-        "    betrag double NOT NULL," +
-        "    termin date NULL," +
-        "    kommentar varchar(1000) NULL," +
+        "    name varchar(255) NOT NULL," +
+        "    content varchar(1000) NULL," +
         "    UNIQUE (id)," +
-        "    PRIMARY KEY (id)" +
-        ");\n" +
-        "CREATE TABLE op_buchung (" +
-        "    id IDENTITY," +
-        "    umsatz_id int(10) NOT NULL," +
-        "    op_id int(10) NOT NULL," +
-        "    UNIQUE (id)," +
+        "    UNIQUE (name)," +
         "    PRIMARY KEY (id)" +
         ");\n");
-    
+
     // Update fuer McKoi
     statements.put(DBSupportMcKoiImpl.class.getName(),
-        "CREATE TABLE op (" +
-        "    id NUMERIC default UNIQUEKEY('op')," +
-        "    name varchar(255) not NULL," +
-        "    pattern varchar(255) NULL," +
-        "    isregex int(1) NULL," + 
-        "    betrag double NOT NULL," +
-        "    termin date NULL," +
-        "    kommentar varchar(1000) NULL," +
+        "ALTER CREATE TABLE property (" +
+        "    id NUMERIC default UNIQUEKEY('property')," +
+        "    name varchar(255) NOT NULL," +
+        "    content varchar(1000) NULL," +
         "    UNIQUE (id)," +
-        "    PRIMARY KEY (id)" +
-        ");\n" +
-        "CREATE TABLE op_buchung (" +
-        "    id NUMERIC default UNIQUEKEY('op_buchung')," +
-        "    umsatz_id int(10) NOT NULL," +
-        "    op_id int(10) NOT NULL," +
-        "    UNIQUE (id)," +
+        "    UNIQUE (name)," +
         "    PRIMARY KEY (id)" +
         ");\n");
     
     // Update fuer MySQL
     statements.put(DBSupportMySqlImpl.class.getName(),
-        "CREATE TABLE op (" +
-        "    id int(10) AUTO_INCREMENT," +
-        "    name varchar(255) not NULL," +
-        "    pattern varchar(255) NULL," +
-        "    isregex int(1) NULL," + 
-        "    betrag double NOT NULL," +
-        "    termin date NULL," +
-        "    kommentar text NULL," +
-        "    UNIQUE (id)," +
-        "    PRIMARY KEY (id)" +
-        ")TYPE=InnoDB;\n" +
-        "CREATE TABLE op_buchung (" +
-        "    id int(10) AUTO_INCREMENT," +
-        "    umsatz_id int(10) NOT NULL," +
-        "    op_id int(10) NOT NULL," +
-        "    UNIQUE (id)," +
-        "    PRIMARY KEY (id)" +
-        ")TYPE=InnoDB;\n");
+        "ALTER TABLE property CHANGE content content text null;");
   }
 
   /**
@@ -121,9 +86,9 @@ public class update0002 implements Update
     
     try
     {
-      Logger.info("create sql tables for update0002");
+      Logger.info("create sql table for update0007");
       ScriptExecutor.execute(new StringReader(sql),myProvider.getConnection(),myProvider.getProgressMonitor());
-      myProvider.getProgressMonitor().log(i18n.tr("Tabellen für Offene-Posten-Verwaltung erstellt"));
+      myProvider.getProgressMonitor().log(i18n.tr("Tabelle 'property' aktualisiert"));
     }
     catch (ApplicationException ae)
     {
@@ -141,28 +106,16 @@ public class update0002 implements Update
    */
   public String getName()
   {
-    return "Datenbank-Update für \"Offene Posten\"";
+    return "Korrigiertes Datenbank-Update für neue Tabelle \"property\"";
   }
 
 }
 
 
 /*********************************************************************
- * $Log: update0002.java,v $
- * Revision 1.5  2008/06/15 21:55:51  willuhn
+ * $Log: update0007.java,v $
+ * Revision 1.1  2008/06/15 21:55:51  willuhn
  * @N update007 - Spalte "content" vergroessert
  * @B Fix in update002 - verursachte Fehler auf alten MySQL-Versionen
- *
- * Revision 1.4  2007/12/12 10:02:44  willuhn
- * @N Datenbank-Updates auch in Create-Scripts nachziehen
- *
- * Revision 1.3  2007/12/11 16:10:11  willuhn
- * @N Erster Code fuer "Offene Posten-Verwaltung"
- *
- * Revision 1.2  2007/12/11 15:25:18  willuhn
- * @N Class-Update fuer neue Tabellen "op" und "op_buchung"
- *
- * Revision 1.1  2007/12/11 15:23:53  willuhn
- * @N Class-Update fuer neue Tabellen "op" und "op_buchung"
  *
  **********************************************************************/

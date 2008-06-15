@@ -228,7 +228,7 @@ CREATE TABLE verwendungszweck (
 CREATE TABLE property (
   id int(10) AUTO_INCREMENT,
   name varchar(255) NOT NULL,
-  content varchar(255) NULL,
+  content text NULL,
   UNIQUE (id),
   UNIQUE (name),
   PRIMARY KEY (id)
@@ -267,4 +267,4 @@ ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
 
-INSERT INTO version (name,version) values ('db',6);
+INSERT INTO version (name,version) values ('db',7);
