@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/DTAUSSammelTransferImporter.java,v $
- * $Revision: 1.8 $
- * $Date: 2007/04/23 18:07:14 $
+ * $Revision: 1.9 $
+ * $Date: 2008/06/30 13:04:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -75,6 +75,14 @@ public class DTAUSSammelTransferImporter extends AbstractDTAUSImporter
       t.setTermin(asatz.getAusfuehrungsdatum());
       t.setBezeichnung(asatz.getKundenname());
       t.store();
+      try
+      {
+        Application.getMessagingFactory().sendMessage(new ImportMessage(t));
+      }
+      catch (Exception ex)
+      {
+        Logger.error("error while sending import message",ex);
+      }
     }
 
     final SammelTransferBuchung b = t.createBuchung();
@@ -118,6 +126,9 @@ public class DTAUSSammelTransferImporter extends AbstractDTAUSImporter
 
 /*********************************************************************
  * $Log: DTAUSSammelTransferImporter.java,v $
+ * Revision 1.9  2008/06/30 13:04:10  willuhn
+ * @N Von-Bis-Filter auch in Sammel-Auftraegen
+ *
  * Revision 1.8  2007/04/23 18:07:14  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt

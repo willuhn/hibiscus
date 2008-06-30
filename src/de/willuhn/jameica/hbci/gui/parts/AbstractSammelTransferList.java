@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractSammelTransferList.java,v $
- * $Revision: 1.7 $
- * $Date: 2008/02/04 18:56:45 $
+ * $Revision: 1.8 $
+ * $Date: 2008/06/30 13:04:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,20 +23,20 @@ import org.eclipse.swt.widgets.TableItem;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
-import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
-import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.messaging.ObjectMessage;
+import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
@@ -44,25 +44,21 @@ import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
-import de.willuhn.util.I18N;
 
 /**
  * Implementierung einer fix und fertig vorkonfigurierten Liste mit Sammel-Auftraegen.
  */
-public abstract class AbstractSammelTransferList extends TablePart implements Part
+public abstract class AbstractSammelTransferList extends AbstractFromToList
 {
   private MessageConsumer mc = null;
-  private I18N i18n = null;
 
   /**
    * ct.
-   * @param list die anzuzeigende Liste.
    * @param action
    */
-  public AbstractSammelTransferList(GenericIterator list, Action action)
+  public AbstractSammelTransferList(Action action)
   {
-    super(list, action);
-    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+    super(action);
     setFormatter(new TableFormatter() {
       public void format(TableItem item) {
         SammelTransfer l = (SammelTransfer) item.getData();
@@ -120,10 +116,30 @@ public abstract class AbstractSammelTransferList extends TablePart implements Pa
     });
     // Wir erstellen noch einen Message-Consumer, damit wir ueber neu eintreffende
     // Lastschriften informiert werden.
-    this.mc = new MyMessageConsumer();
+    this.mc = new TransferMessageConsumer();
     Application.getMessagingFactory().registerMessageConsumer(this.mc);
   }
   
+  /**
+   * @see de.willuhn.jameica.hbci.gui.parts.AbstractFromToList#getList(java.util.Date, java.util.Date)
+   */
+  protected GenericIterator getList(Date from, Date to) throws RemoteException
+  {
+    HBCIDBService service = (HBCIDBService) Settings.getDBService();
+    
+    DBIterator list = service.createList(getObjectType());
+    if (from != null) list.addFilter("termin >= ?", new Object[]{new java.sql.Date(HBCIProperties.startOfDay(from).getTime())});
+    if (to   != null) list.addFilter("termin <= ?", new Object[]{new java.sql.Date(HBCIProperties.endOfDay(to).getTime())});
+    list.setOrder("ORDER BY " + service.getSQLTimestamp("termin") + " DESC");
+    return list;
+  }
+  
+  /**
+   * Liefert die Art der zu ladenden Objekte zurueck.
+   * @return Art der zu ladenden Objekte.
+   */
+  protected abstract Class getObjectType();
+
   /**
    * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
    */
@@ -139,26 +155,29 @@ public abstract class AbstractSammelTransferList extends TablePart implements Pa
   }
   
   /**
-   * Hilfsklasse damit wir ueber importierte Lastschriften informiert werden.
+   * Hilfsklasse damit wir ueber importierte Transfers informiert werden.
    */
-  public class MyMessageConsumer implements MessageConsumer
+  public class TransferMessageConsumer implements MessageConsumer
   {
+    private DelayedListener delayed = null;
+    
     /**
      * ct.
      */
-    public MyMessageConsumer()
+    private TransferMessageConsumer()
     {
-      super();
+      if (listener != null)
+        this.delayed = new DelayedListener(listener);
     }
-
+    
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
      */
     public Class[] getExpectedMessageTypes()
     {
       return new Class[]{
-          ImportMessage.class,
-          ObjectChangedMessage.class // BUGZILLA 545
+        ImportMessage.class,
+        ObjectChangedMessage.class
       };
     }
 
@@ -169,8 +188,7 @@ public abstract class AbstractSammelTransferList extends TablePart implements Pa
     {
       if (message == null)
         return;
-
-      // BUGZILLA 545
+      
       final GenericObject o = ((ObjectMessage)message).getObject();
       
       if (o == null)
@@ -180,34 +198,11 @@ public abstract class AbstractSammelTransferList extends TablePart implements Pa
       if (!(o instanceof SammelTransfer) && !(o instanceof SammelTransferBuchung))
         return;
 
-      GUI.getDisplay().syncExec(new Runnable() {
-        public void run()
-        {
-          try
-          {
-            SammelTransfer transfer = null;
-            if (o instanceof SammelTransfer)
-            {
-              transfer = (SammelTransfer) o;
-            }
-            else
-            {
-              SammelTransferBuchung b = (SammelTransferBuchung) o;
-              transfer = b.getSammelTransfer();
-            }
-
-            if (transfer == null)
-              return;
-            removeItem(transfer);
-            addItem(transfer);
-            sort();
-          }
-          catch (Exception e)
-          {
-            Logger.error("unable to add object to list",e);
-          }
-        }
-      });
+      // Wir forcieren das Reload. Da in den Eingabefeldern
+      // nichts geaendert wurde, wuerde das Reload sonst nicht
+      // stattfinden.
+      if (delayed != null)
+        delayed.handleEvent(null);
     }
 
     /**
@@ -218,12 +213,14 @@ public abstract class AbstractSammelTransferList extends TablePart implements Pa
       return false;
     }
   }
-
 }
 
 
 /**********************************************************************
  * $Log: AbstractSammelTransferList.java,v $
+ * Revision 1.8  2008/06/30 13:04:10  willuhn
+ * @N Von-Bis-Filter auch in Sammel-Auftraegen
+ *
  * Revision 1.7  2008/02/04 18:56:45  willuhn
  * @B Bug 545
  *

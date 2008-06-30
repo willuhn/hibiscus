@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SammelLastschriftList.java,v $
- * $Revision: 1.7 $
- * $Date: 2007/04/19 18:12:21 $
+ * $Revision: 1.8 $
+ * $Date: 2008/06/30 13:04:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,11 +15,8 @@ package de.willuhn.jameica.hbci.gui.parts;
 
 import java.rmi.RemoteException;
 
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.Part;
-import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 
 /**
@@ -34,29 +31,25 @@ public class SammelLastschriftList extends AbstractSammelTransferList implements
    */
   public SammelLastschriftList(Action action) throws RemoteException
   {
-    super(init(), action);
+    super(action);
     setContextMenu(new de.willuhn.jameica.hbci.gui.menus.SammelLastschriftList());
   }
 
-  // BUGZILLA 84 http://www.willuhn.de/bugzilla/show_bug.cgi?id=84
   /**
-   * Initialisiert die Liste der Sammel-Lastschriften.
-   * @return Initialisiert die Liste der Sammel-Lastschriften.
-   * @throws RemoteException
+   * @see de.willuhn.jameica.hbci.gui.parts.AbstractSammelTransferList#getObjectType()
    */
-  private static DBIterator init() throws RemoteException
+  protected Class getObjectType()
   {
-    HBCIDBService service = (HBCIDBService) Settings.getDBService();
-
-    DBIterator list = service.createList(SammelLastschrift.class);
-    list.setOrder("ORDER BY " + service.getSQLTimestamp("termin") + " DESC");
-    return list;
+    return SammelLastschrift.class;
   }
 }
 
 
 /**********************************************************************
  * $Log: SammelLastschriftList.java,v $
+ * Revision 1.8  2008/06/30 13:04:10  willuhn
+ * @N Von-Bis-Filter auch in Sammel-Auftraegen
+ *
  * Revision 1.7  2007/04/19 18:12:21  willuhn
  * @N MySQL-Support (GUI zum Konfigurieren fehlt noch)
  *
