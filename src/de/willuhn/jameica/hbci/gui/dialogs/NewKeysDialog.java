@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/NewKeysDialog.java,v $
- * $Revision: 1.9 $
- * $Date: 2008/04/15 16:16:34 $
+ * $Revision: 1.10 $
+ * $Date: 2008/07/15 11:18:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -38,7 +38,6 @@ import org.kapott.hbci.passport.HBCIPassport;
 import org.kapott.hbci.passport.INILetter;
 
 import de.willuhn.datasource.GenericObject;
-import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
@@ -46,6 +45,7 @@ import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
+import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
@@ -99,17 +99,21 @@ public class NewKeysDialog extends AbstractDialog
 		group.addText(i18n.tr(
       "Bitte drucken Sie den Ini-Brief aus und senden Ihn an Ihre Bank.\n" +      "Nach der Freischaltung durch Ihr Geldinstitut kann dieser Schlüssel\n" +      "verwendet werden."),true);
 
+    Input printers = getPrinterList();
+    
 		group.addLabelPair(i18n.tr("Schlüssel-Hashwert"),new LabelInput(HBCIUtils.data2hex(iniletter.getKeyHash())));
-		group.addLabelPair(i18n.tr("Drucker-Auswahl:"),getPrinterList());
+		group.addLabelPair(i18n.tr("Drucker-Auswahl:"),printers);
 
+    Button print = new Button(i18n.tr("Drucken"),new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        print();
+      }
+    },null,true);
+    print.setEnabled((printers instanceof SelectInput)); // Drucken nur moeglich, wenn Drucker vorhanden.
 		ButtonArea buttons = new ButtonArea(parent,3);
-		buttons.addButton(i18n.tr("Drucken"),new Action()
-		{
-			public void handleAction(Object context) throws ApplicationException
-			{
-				print();
-			}
-		},null,true);
+		buttons.addButton(print);
     buttons.addButton(i18n.tr("Speichern unter..."),new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -262,9 +266,8 @@ public class NewKeysDialog extends AbstractDialog
 			return printerList;
 		}
 
-		Printer[] printers = (Printer[]) l.toArray(new Printer[l.size()]);
-		printerList = new SelectInput(PseudoIterator.fromArray(printers),null);
-		return printerList;
+		this.printerList = new SelectInput(l,null);
+		return this.printerList;
 	}
 
   /**
@@ -334,6 +337,9 @@ public class NewKeysDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: NewKeysDialog.java,v $
+ * Revision 1.10  2008/07/15 11:18:12  willuhn
+ * @B Druck-Button deaktivieren, wenn keine Drucker gefunden
+ *
  * Revision 1.9  2008/04/15 16:16:34  willuhn
  * @B BUGZILLA 584
  *
