@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.52 $
- * $Date: 2007/12/06 17:57:21 $
+ * $Revision: 1.53 $
+ * $Date: 2008/07/24 09:59:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -319,7 +319,7 @@ public class Settings
    */
   public static double getUeberweisungLimit()
 	{
-		return settings.getDouble("ueberweisunglimit",1000.0);
+		return settings.getDouble("ueberweisunglimit",5000.0);
 	}
 	
 	/**
@@ -395,6 +395,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.53  2008/07/24 09:59:37  willuhn
+ * @C Default-Wert des Auftragslimits erhoeht. 1.000,- waren in der Tat etwas wenig ;)
+ *
  * Revision 1.52  2007/12/06 17:57:21  willuhn
  * @N Erster Code fuer das neue Versionierungs-System
  *
