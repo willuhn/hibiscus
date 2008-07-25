@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/HBCIVersionInput.java,v $
- * $Revision: 1.11 $
- * $Date: 2007/07/24 13:51:25 $
+ * $Revision: 1.12 $
+ * $Date: 2008/07/25 11:06:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,14 +11,13 @@ package de.willuhn.jameica.hbci.gui.input;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Enumeration;
+import java.util.Arrays;
 import java.util.Hashtable;
+import java.util.List;
 
 import org.kapott.hbci.passport.HBCIPassport;
 
-import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
-import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.hbci.HBCI;
@@ -44,20 +43,17 @@ public class HBCIVersionInput extends SelectInput implements Input
     nameLookup.put("201","HBCI 2.01");
     nameLookup.put("210","HBCI 2.1");
     nameLookup.put("220","HBCI 2.2");
-    nameLookup.put("plus","HBCI+");
+    nameLookup.put("plus","HBCI+ (HBCI 2.2 mit PIN/TAN-Unterstützung)");
     nameLookup.put("300","FinTS 3.0");
   }
 
   /**
-   * @param passport Passport.
-   * @param selectedVersion die vorausgewaehlte HBCI-Version.
-   * @param showAll legt fest, ob alle HBCI-Versionen angezeigt werden sollen oder
-   * nur jene, welche laut Passport unterstuetzt werden.
+   * ct.
    * @throws RemoteException
    */
-  public HBCIVersionInput(HBCIPassport passport, String selectedVersion, boolean showAll) throws RemoteException
+  public HBCIVersionInput() throws RemoteException
   {
-    super(createList(passport,showAll),selectedVersion == null ? null : new HBCIVersionObject(selectedVersion));
+    this(null,null);
   }
 
   /**
@@ -68,69 +64,44 @@ public class HBCIVersionInput extends SelectInput implements Input
    */
   public HBCIVersionInput(HBCIPassport passport, String selectedVersion) throws RemoteException
   {
-    this(passport,selectedVersion,true);
-  }
-
-  /**
-   * ct.
-   * @param selectedVersion die vorausgewaehlte HBCI-Version.
-   * @throws RemoteException
-   */
-  public HBCIVersionInput(String selectedVersion) throws RemoteException
-  {
-    this(null,selectedVersion,true);
+    super(createList(passport),selectedVersion == null ? null : new HBCIVersionObject(selectedVersion));
+    this.setName(i18n.tr("HBCI-Version"));
   }
 
   /**
    * Erzeugt einen GenericIterator fuer die Auswahl der HBCI-Versionen.
    * @param passport Passport.
-   * @param showAll legt fest, ob alle HBCI-Versionen angezeigt werden sollen oder
-   * nur jene, welche laut Passport unterstuetzt werden.
    * @return Liste der unterstuetzten HBCI-Versionen.
    * @throws RemoteException
    */
-  private static GenericIterator createList(HBCIPassport passport, boolean showAll) throws RemoteException
+  private static List createList(HBCIPassport passport) throws RemoteException
   {
-    // Wir erzeugen eine Liste von HBCI-Versionen, die nur
-    // genau die enthaelt, die vom Schluessel unterstuetzt werden
-
-    ArrayList l = new ArrayList();
-    l.add(new HBCIVersionObject(null)); // Default-Wert
-
     try
     {
       String[] s = null;
       if (passport != null)
-        s = passport.getSuppVersions();
-      // BUGZILLA 37 http://www.willuhn.de/bugzilla/show_bug.cgi?id=37
-      if (showAll || s == null || s.length == 0)
-      {
-        // Wir liefern alle HBCI-Versionen
-        s = new String[nameLookup.size()];
-        Enumeration e = nameLookup.keys();
-        int i = 0;
-        while (e.hasMoreElements())
-        {
-          String sk = (String) e.nextElement();
-          if (sk == null || sk.length() == 0)
-            continue;
-          s[i++] = sk;
-        }
-      }
+        s = passport.getSuppVersions(); // Wir haben einen Passport, dann nur die unterstuetzten anzeigen
 
+      // BUGZILLA 37 http://www.willuhn.de/bugzilla/show_bug.cgi?id=37
+      // Ansonsten alle, die wir kennen
+      if (s == null || s.length == 0)
+        s = (String[]) nameLookup.keySet().toArray(new String[nameLookup.size()]);
+
+      Arrays.sort(s); // Sortieren
+
+      ArrayList l = new ArrayList();
+      l.add(new HBCIVersionObject(null)); // Default-Wert (ohne Versionsnummer)
       for (int i=0;i<s.length;++i)
       {
         l.add(new HBCIVersionObject(s[i]));
       }
+      return l;
     }
     catch (Exception e)
     {
       Logger.error("error while loading hbci versions from key",e);
       throw new RemoteException(i18n.tr("Fehler beim Lesen der unterstützten HBCI-Versionen"),e);
     }
-
-    HBCIVersionObject[] array = (HBCIVersionObject[]) l.toArray(new HBCIVersionObject[l.size()]);
-    return PseudoIterator.fromArray(array);
   }
 
   /**
@@ -140,7 +111,7 @@ public class HBCIVersionInput extends SelectInput implements Input
   private static class HBCIVersionObject implements GenericObject
   {
 
-    private String id   = null;
+    private String id = null;
 
     /**
      * ct.
@@ -148,7 +119,7 @@ public class HBCIVersionInput extends SelectInput implements Input
      */
     private HBCIVersionObject(String id)
     {
-      this.id   = id;
+      this.id = id;
     }
 
     /**
@@ -258,6 +229,10 @@ public class HBCIVersionInput extends SelectInput implements Input
 
 /*****************************************************************************
  * $Log: HBCIVersionInput.java,v $
+ * Revision 1.12  2008/07/25 11:06:44  willuhn
+ * @N Auswahl-Dialog fuer HBCI-Version
+ * @N Code-Cleanup
+ *
  * Revision 1.11  2007/07/24 13:51:25  willuhn
  * @N BUGZILLA 61
  *

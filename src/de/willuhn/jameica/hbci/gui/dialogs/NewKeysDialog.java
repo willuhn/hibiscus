@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/NewKeysDialog.java,v $
- * $Revision: 1.10 $
- * $Date: 2008/07/15 11:18:12 $
+ * $Revision: 1.11 $
+ * $Date: 2008/07/25 11:06:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -41,7 +41,6 @@ import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
-import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
@@ -50,6 +49,7 @@ import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -181,34 +181,14 @@ public class NewKeysDialog extends AbstractDialog
       return;
     }
 
-    File file = new File(s);
-    if (file.exists())
-    {
-      try
-      {
-        YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
-        d.setTitle(i18n.tr("Datei existiert bereits"));
-        d.setText(i18n.tr("Möchten Sie die Datei überschreiben?"));
-        Boolean choice = (Boolean) d.open();
-        if (!choice.booleanValue())
-        {
-          // Dialog schliessen
-          close();
-          return;
-        }
-      }
-      catch (Exception e)
-      {
-        // Dialog schliessen
-        close();
-        Logger.error("error while saving ini letter",e);
-        throw new ApplicationException(i18n.tr("Fehler beim Speichern des INI-Briefs in {0}",s),e);
-      }
-    }
-    
     OutputStream os = null;
     try
     {
+      File file = new File(s);
+      String overwrite = i18n.tr("Die Datei {0} existiert bereits. Überschreiben?");
+      if (file.exists() && !Application.getCallback().askUser(overwrite,new String[]{file.getAbsolutePath()}))
+        throw new OperationCanceledException("interrupted, user did not want to overwrite " + file.getAbsolutePath());
+
       os = new BufferedOutputStream(new FileOutputStream(file));
       os.write(iniletter.toString().getBytes());
 
@@ -218,6 +198,14 @@ public class NewKeysDialog extends AbstractDialog
       // Dialog schliessen
       close();
       GUI.getStatusBar().setSuccessText(i18n.tr("INI-Brief gespeichert in {0}",s));
+    }
+    catch (OperationCanceledException oce)
+    {
+      Logger.warn(oce.getMessage());
+    }
+    catch (ApplicationException ae)
+    {
+      throw ae;
     }
     catch (Exception e)
     {
@@ -337,6 +325,10 @@ public class NewKeysDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: NewKeysDialog.java,v $
+ * Revision 1.11  2008/07/25 11:06:44  willuhn
+ * @N Auswahl-Dialog fuer HBCI-Version
+ * @N Code-Cleanup
+ *
  * Revision 1.10  2008/07/15 11:18:12  willuhn
  * @B Druck-Button deaktivieren, wenn keine Drucker gefunden
  *
