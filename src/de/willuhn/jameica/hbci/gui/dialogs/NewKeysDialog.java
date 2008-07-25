@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/NewKeysDialog.java,v $
- * $Revision: 1.11 $
- * $Date: 2008/07/25 11:06:44 $
+ * $Revision: 1.12 $
+ * $Date: 2008/07/25 13:31:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -46,7 +46,7 @@ import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -82,11 +82,12 @@ public class NewKeysDialog extends AbstractDialog
   public NewKeysDialog(HBCIPassport p)
   {
     super(NewKeysDialog.POSITION_CENTER);
-		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-		setTitle(i18n.tr("Ini-Brief erzeugen"));
+    this.passport = p;
 
+    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+		setTitle(i18n.tr("INI-Brief erzeugen"));
+    setSize(500,SWT.DEFAULT);
 
-		this.passport = p;
 		iniletter = new INILetter(passport,INILetter.TYPE_USER);
   }
 
@@ -95,14 +96,14 @@ public class NewKeysDialog extends AbstractDialog
    */
   protected void paint(Composite parent) throws Exception
   {
-		LabelGroup group = new LabelGroup(parent,i18n.tr("Ini-Brief"));
+		SimpleContainer group = new SimpleContainer(parent);
 		group.addText(i18n.tr(
-      "Bitte drucken Sie den Ini-Brief aus und senden Ihn an Ihre Bank.\n" +      "Nach der Freischaltung durch Ihr Geldinstitut kann dieser Schlüssel\n" +      "verwendet werden."),true);
+      "Bitte drucken Sie den INI-Brief aus und senden Ihn an Ihre Bank.\n" +      "Nach der Freischaltung durch Ihr Geldinstitut kann dieser Schlüssel verwendet werden."),true);
 
     Input printers = getPrinterList();
     
-		group.addLabelPair(i18n.tr("Schlüssel-Hashwert"),new LabelInput(HBCIUtils.data2hex(iniletter.getKeyHash())));
-		group.addLabelPair(i18n.tr("Drucker-Auswahl:"),printers);
+		group.addLabelPair(i18n.tr("Schlüssel-Hashwert"),new LabelInput(HBCIUtils.data2hex(iniletter.getKeyHash()).toUpperCase()));
+		group.addLabelPair(i18n.tr("Drucker-Auswahl"),printers);
 
     Button print = new Button(i18n.tr("Drucken"),new Action()
     {
@@ -121,11 +122,11 @@ public class NewKeysDialog extends AbstractDialog
         save();
       }
     });
-		buttons.addButton(i18n.tr("Schließen"), new Action()
+		buttons.addButton(i18n.tr("Abbrechen"), new Action()
 		{
 			public void handleAction(Object context) throws ApplicationException
 			{
-				close();
+				throw new OperationCanceledException("cancelled in ini letter dialog");
 			}
 		});
   }
@@ -325,6 +326,9 @@ public class NewKeysDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: NewKeysDialog.java,v $
+ * Revision 1.12  2008/07/25 13:31:06  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.11  2008/07/25 11:06:44  willuhn
  * @N Auswahl-Dialog fuer HBCI-Version
  * @N Code-Cleanup

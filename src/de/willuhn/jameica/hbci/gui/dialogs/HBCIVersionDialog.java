@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/HBCIVersionDialog.java,v $
- * $Revision: 1.1 $
- * $Date: 2008/07/25 11:06:44 $
+ * $Revision: 1.2 $
+ * $Date: 2008/07/25 13:31:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,8 +49,6 @@ public class HBCIVersionDialog extends AbstractDialog
    */
   protected Object getData() throws Exception
   {
-    if (version == null)
-      throw new OperationCanceledException();
     return version;
   }
 
@@ -70,6 +68,7 @@ public class HBCIVersionDialog extends AbstractDialog
       public void handleAction(Object context) throws ApplicationException
       {
         version = (String) input.getValue();
+        close();
       }
     },null,true);
     buttons.addButton(i18n.tr("Abbrechen"), new Action() {
@@ -86,6 +85,9 @@ public class HBCIVersionDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: HBCIVersionDialog.java,v $
+ * Revision 1.2  2008/07/25 13:31:06  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2008/07/25 11:06:44  willuhn
  * @N Auswahl-Dialog fuer HBCI-Version
  * @N Code-Cleanup
