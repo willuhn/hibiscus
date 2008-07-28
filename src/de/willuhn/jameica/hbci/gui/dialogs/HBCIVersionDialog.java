@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/HBCIVersionDialog.java,v $
- * $Revision: 1.2 $
- * $Date: 2008/07/25 13:31:06 $
+ * $Revision: 1.3 $
+ * $Date: 2008/07/28 09:31:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -79,12 +79,14 @@ public class HBCIVersionDialog extends AbstractDialog
     
     });
   }
-
 }
 
 
 /*********************************************************************
  * $Log: HBCIVersionDialog.java,v $
+ * Revision 1.3  2008/07/28 09:31:10  willuhn
+ * @N Abfrage der HBCI-Version via Messaging
+ *
  * Revision 1.2  2008/07/25 13:31:06  willuhn
  * *** empty log message ***
  *
