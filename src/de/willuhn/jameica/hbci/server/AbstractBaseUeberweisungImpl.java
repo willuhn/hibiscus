@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractBaseUeberweisungImpl.java,v $
- * $Revision: 1.11 $
- * $Date: 2008/04/27 22:22:56 $
+ * $Revision: 1.12 $
+ * $Date: 2008/08/01 11:05:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ import java.rmi.RemoteException;
 import java.util.Date;
 
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.rmi.BaseUeberweisung;
 import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -26,7 +27,7 @@ import de.willuhn.util.I18N;
  * Abstrakte Basis-Klasse fuer Ueberweisungen und Lastschriften.
  */
 public abstract class AbstractBaseUeberweisungImpl extends AbstractHibiscusTransferImpl
-  implements Terminable
+  implements BaseUeberweisung, Terminable
 {
 
   private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
@@ -129,11 +130,30 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractHibiscusTrans
       whileStore = false;
     }
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.BaseUeberweisung#getTextSchluessel()
+   */
+  public String getTextSchluessel() throws RemoteException
+  {
+    return (String) getAttribute("typ");
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.BaseUeberweisung#setTextSchluessel(java.lang.String)
+   */
+  public void setTextSchluessel(String schluessel) throws RemoteException
+  {
+    setAttribute("typ",schluessel);
+  }
 }
 
 
 /**********************************************************************
  * $Log: AbstractBaseUeberweisungImpl.java,v $
+ * Revision 1.12  2008/08/01 11:05:14  willuhn
+ * @N BUGZILLA 587
+ *
  * Revision 1.11  2008/04/27 22:22:56  willuhn
  * @C I18N-Referenzen statisch
  *

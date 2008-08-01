@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/LastschriftImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2008/02/15 17:39:10 $
+ * $Revision: 1.7 $
+ * $Date: 2008/08/01 11:05:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -57,32 +57,9 @@ public class LastschriftImpl extends AbstractBaseUeberweisungImpl
 		u.setTermin(getTermin());
 		u.setZweck(getZweck());
 		u.setZweck2(getZweck2());
+    u.setTextSchluessel(getTextSchluessel());
 		return u;
 	}
-
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Lastschrift#getTyp()
-   */
-  public String getTyp() throws RemoteException
-  {
-    return (String) getAttribute("typ");
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Lastschrift#setTyp(java.lang.String)
-   */
-  public void setTyp(String typ) throws RemoteException
-  {
-  	if (typ == null)
-			setAttribute("typ",null);
-		else
-		{
-			if (!typ.equals("04") && !typ.equals("05"))
-				throw new RemoteException("type " + typ + " not allowed");
-
-			setAttribute("typ",typ);
-		}
-  }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Transfer#getTransferTyp()
@@ -96,6 +73,9 @@ public class LastschriftImpl extends AbstractBaseUeberweisungImpl
 
 /**********************************************************************
  * $Log: LastschriftImpl.java,v $
+ * Revision 1.7  2008/08/01 11:05:14  willuhn
+ * @N BUGZILLA 587
+ *
  * Revision 1.6  2008/02/15 17:39:10  willuhn
  * @N BUGZILLA 188 Basis-API fuer weitere Zeilen Verwendungszweck. GUI fehlt noch
  * @N DB-Update 0005. Speichern des Textschluessels bei Sammelauftragsbuchungen in der Datenbank

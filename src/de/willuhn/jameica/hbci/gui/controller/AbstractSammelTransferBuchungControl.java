@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractSammelTransferBuchungControl.java,v $
- * $Revision: 1.9 $
- * $Date: 2008/05/19 22:35:53 $
+ * $Revision: 1.10 $
+ * $Date: 2008/08/01 11:05:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,6 +22,7 @@ import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
+import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -89,6 +90,7 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
     gkNummer.setMaxLength(HBCIProperties.HBCI_KTO_MAXLENGTH_HARD);
     gkNummer.setValidChars(HBCIProperties.HBCI_KTO_VALIDCHARS);
     gkNummer.setMandatory(true);
+    gkNummer.setEnabled(!getBuchung().getSammelTransfer().ausgefuehrt());
 		return gkNummer;
 	}
 
@@ -103,6 +105,7 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 			return gkBLZ;
 		gkBLZ = new BLZInput(getBuchung().getGegenkontoBLZ());
     gkBLZ.setMandatory(true);
+    gkBLZ.setEnabled(!getBuchung().getSammelTransfer().ausgefuehrt());
 		return gkBLZ;
 	}
 
@@ -119,6 +122,7 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
     // BUGZILLA 163
     gkName.setValidChars(HBCIProperties.HBCI_DTAUS_VALIDCHARS);
     gkName.setMandatory(true);
+    gkName.setEnabled(!getBuchung().getSammelTransfer().ausgefuehrt());
 		return gkName;
 	}
 
@@ -134,6 +138,7 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 		zweck = new TextInput(getBuchung().getZweck(),HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH);
 		zweck.setValidChars(HBCIProperties.HBCI_DTAUS_VALIDCHARS);
     zweck.setMandatory(true);
+    zweck.setEnabled(!getBuchung().getSammelTransfer().ausgefuehrt());
 		return zweck;
 	}
 
@@ -148,6 +153,7 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 			return zweck2;
 		zweck2 = new TextInput(getBuchung().getZweck2(),HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH);
 		zweck2.setValidChars(HBCIProperties.HBCI_DTAUS_VALIDCHARS);
+    zweck2.setEnabled(!getBuchung().getSammelTransfer().ausgefuehrt());
 		return zweck2;
 	}
 
@@ -163,6 +169,7 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 			return betrag;
 		betrag = new DecimalInput(getBuchung().getBetrag(),HBCI.DECIMALFORMAT);
     betrag.setMandatory(true);
+    betrag.setEnabled(!getBuchung().getSammelTransfer().ausgefuehrt());
 
 		// wir loesen den KontoListener aus, um die Waehrung sofort anzuzeigen
 		
@@ -178,6 +185,13 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 		}
 		return betrag;
 	}
+  
+  /**
+   * Liefert ein Auswahlfeld fuer den Textschluessel.
+   * @return Auswahlfeld.
+   * @throws RemoteException
+   */
+  public abstract SelectInput getTextSchluessel() throws RemoteException;
 
 	/**
 	 * Liefert eine CheckBox ueber die ausgewaehlt werden kann,
@@ -192,6 +206,7 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 
 		// Nur bei neuen Buchungen aktivieren
 		storeAddress = new CheckboxInput(getBuchung().isNewObject());
+    storeAddress.setEnabled(!getBuchung().getSammelTransfer().ausgefuehrt());
 
 		return storeAddress;
 	}
@@ -262,6 +277,9 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferBuchungControl.java,v $
+ * Revision 1.10  2008/08/01 11:05:14  willuhn
+ * @N BUGZILLA 587
+ *
  * Revision 1.9  2008/05/19 22:35:53  willuhn
  * @N Maximale Laenge von Kontonummern konfigurierbar (Soft- und Hardlimit)
  * @N Laengenpruefungen der Kontonummer in Dialogen und Fachobjekten

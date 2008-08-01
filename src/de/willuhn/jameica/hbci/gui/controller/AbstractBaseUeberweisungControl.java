@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractBaseUeberweisungControl.java,v $
- * $Revision: 1.11 $
- * $Date: 2008/06/02 08:06:29 $
+ * $Revision: 1.12 $
+ * $Date: 2008/08/01 11:05:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,6 +26,8 @@ import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.TextSchluessel;
+import de.willuhn.jameica.hbci.rmi.BaseUeberweisung;
 import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.logging.Logger;
 
@@ -36,8 +38,8 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
 {
 
 	// Eingabe-Felder
-	private DateInput termin = null;
-	private Input comment	   = null;
+	private DateInput termin           = null;
+	private Input comment	             = null;
 	
   /**
    * ct.
@@ -114,7 +116,14 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
 
 		return termin;
 	}
-
+  
+  /**
+   * Liefert ein Auswahlfeld fuer den Textschluessel.
+   * @return Auswahlfeld.
+   * @throws RemoteException
+   */
+  public abstract Input getTextSchluessel() throws RemoteException;
+  
   /**
    * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#handleStore()
    */
@@ -122,7 +131,7 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
   {
 		try
 		{
-			Terminable bu = (Terminable) getTransfer();
+      BaseUeberweisung bu = (BaseUeberweisung) getTransfer();
 			
 			if (bu.ausgefuehrt())
 			{
@@ -137,6 +146,10 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
 			  return false;
 			}
 			bu.setTermin(termin);
+      
+      TextSchluessel s = (TextSchluessel) getTextSchluessel().getValue();
+      bu.setTextSchluessel(s == null ? null : s.getCode());
+
 			return super.handleStore();
 		}
 		catch (RemoteException re)
@@ -247,6 +260,9 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
 
 /**********************************************************************
  * $Log: AbstractBaseUeberweisungControl.java,v $
+ * Revision 1.12  2008/08/01 11:05:14  willuhn
+ * @N BUGZILLA 587
+ *
  * Revision 1.11  2008/06/02 08:06:29  willuhn
  * @C Button fuer weitere Verwendungszwecke vorerst gesperrt
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Lastschrift.java,v $
- * $Revision: 1.5 $
- * $Date: 2007/04/23 18:07:14 $
+ * $Revision: 1.6 $
+ * $Date: 2008/08/01 11:05:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,34 +12,20 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.rmi;
 
-import java.rmi.RemoteException;
 
 /**
  * Ne Lastschrift ist ja auch nur ne Ueberweisung. Nur andersrum ;).
  */
-public interface Lastschrift extends HibiscusTransfer, Terminable, Duplicatable
+public interface Lastschrift extends BaseUeberweisung, Duplicatable
 {
-
-	/**
-	 * Liefert den Typ der Lastschrift.
-	 * Moegliche Werte: 04 oder 05.
-   * @return Typ der Lastschrift.
-   * @throws RemoteException
-   */
-  public String getTyp() throws RemoteException;
-	
-	/**
-	 * Legt den Typ der Lastschrift fest.
-	 * Moegliche Werte sind 04 oder 05.
-   * @param typ Typ.
-   * @throws RemoteException
-   */
-  public void setTyp(String typ) throws RemoteException;
 }
 
 
 /**********************************************************************
  * $Log: Lastschrift.java,v $
+ * Revision 1.6  2008/08/01 11:05:14  willuhn
+ * @N BUGZILLA 587
+ *
  * Revision 1.5  2007/04/23 18:07:14  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt

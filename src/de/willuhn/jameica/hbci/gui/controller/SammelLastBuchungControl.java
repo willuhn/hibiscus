@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SammelLastBuchungControl.java,v $
- * $Revision: 1.12 $
- * $Date: 2007/04/23 18:07:15 $
+ * $Revision: 1.13 $
+ * $Date: 2008/08/01 11:05:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,9 +14,11 @@ import java.rmi.RemoteException;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.DialogInput;
+import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.TextSchluessel;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
 import de.willuhn.jameica.hbci.gui.action.SammelLastBuchungNew;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
@@ -37,6 +39,7 @@ public class SammelLastBuchungControl extends AbstractSammelTransferBuchungContr
 
 	// Fach-Objekte
 	private SammelTransferBuchung buchung	  = null;
+  private SelectInput textschluessel      = null;
 	
 	private I18N i18n                       = null;
 
@@ -75,6 +78,9 @@ public class SammelLastBuchungControl extends AbstractSammelTransferBuchungContr
         getBuchung().setBetrag(db.doubleValue());
 			getBuchung().setZweck((String)getZweck().getValue());
 			getBuchung().setZweck2((String)getZweck2().getValue());
+      
+      TextSchluessel ts = (TextSchluessel) getTextSchluessel().getValue();
+      getBuchung().setTextSchluessel(ts == null ? null : ts.getCode());
 
 			String kto  = ((DialogInput) getGegenKonto()).getText();
 			String blz  = (String)getGegenkontoBLZ().getValue();
@@ -135,10 +141,26 @@ public class SammelLastBuchungControl extends AbstractSammelTransferBuchungContr
 			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern der Buchung"));
 		}
 	}
+  
+  /**
+   * @see de.willuhn.jameica.hbci.gui.controller.AbstractSammelTransferBuchungControl#getTextSchluessel()
+   */
+  public SelectInput getTextSchluessel() throws RemoteException
+  {
+    if (this.textschluessel != null)
+      return this.textschluessel;
+    this.textschluessel = new SelectInput(TextSchluessel.get(new String[]{"05","04"}),TextSchluessel.get(((SammelTransferBuchung)getBuchung()).getTextSchluessel()));
+    this.textschluessel.setEnabled(!getBuchung().getSammelTransfer().ausgefuehrt());
+    return this.textschluessel;
+  }
+
 }
 
 /*****************************************************************************
  * $Log: SammelLastBuchungControl.java,v $
+ * Revision 1.13  2008/08/01 11:05:14  willuhn
+ * @N BUGZILLA 587
+ *
  * Revision 1.12  2007/04/23 18:07:15  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt

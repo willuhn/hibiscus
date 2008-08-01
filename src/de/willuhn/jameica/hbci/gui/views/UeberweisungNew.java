@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UeberweisungNew.java,v $
- * $Revision: 1.16 $
- * $Date: 2008/05/30 12:02:08 $
+ * $Revision: 1.17 $
+ * $Date: 2008/08/01 11:05:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -57,6 +57,7 @@ public class UeberweisungNew extends AbstractView {
 		details.addLabelPair(i18n.tr("Verwendungszweck"),					control.getZweck());
 		details.addLabelPair(i18n.tr("weiterer Verwendungszweck"),control.getZweck2());
     details.addLabelPair(i18n.tr("Betrag"),                   control.getBetrag());
+    details.addLabelPair(i18n.tr("Textschlüssel"),            control.getTextSchluessel());
     details.addLabelPair(i18n.tr("Termin"),                   control.getTermin());
     details.addCheckbox(control.getBankTermin(), i18n.tr("Als Termin-Überweisung an Bank senden"));
     details.addSeparator();
@@ -89,6 +90,9 @@ public class UeberweisungNew extends AbstractView {
 
 /**********************************************************************
  * $Log: UeberweisungNew.java,v $
+ * Revision 1.17  2008/08/01 11:05:14  willuhn
+ * @N BUGZILLA 587
+ *
  * Revision 1.16  2008/05/30 12:02:08  willuhn
  * @N Erster Code fuer erweiterte Verwendungszwecke - NOCH NICHT FREIGESCHALTET!
  *

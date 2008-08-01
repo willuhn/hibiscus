@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUeberweisungJob.java,v $
- * $Revision: 1.37 $
- * $Date: 2008/05/30 12:02:08 $
+ * $Revision: 1.38 $
+ * $Date: 2008/08/01 11:05:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -82,6 +82,10 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
         curr = HBCIProperties.CURRENCY_DEFAULT_DE;
 
 			setJobParam("btg",ueberweisung.getBetrag(),curr);
+      
+      String key = this.ueberweisung.getTextSchluessel();
+      if (key != null && key.length() > 0)
+        setJobParam("key",key);
 
 			HibiscusAddress empfaenger = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
 			empfaenger.setBLZ(ueberweisung.getGegenkontoBLZ());
@@ -184,6 +188,9 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIUeberweisungJob.java,v $
+ * Revision 1.38  2008/08/01 11:05:14  willuhn
+ * @N BUGZILLA 587
+ *
  * Revision 1.37  2008/05/30 12:02:08  willuhn
  * @N Erster Code fuer erweiterte Verwendungszwecke - NOCH NICHT FREIGESCHALTET!
  *

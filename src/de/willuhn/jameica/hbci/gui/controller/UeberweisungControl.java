@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.43 $
- * $Date: 2007/04/23 18:07:15 $
+ * $Revision: 1.44 $
+ * $Date: 2008/08/01 11:05:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,10 +17,15 @@ import java.rmi.RemoteException;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.CheckboxInput;
+import de.willuhn.jameica.gui.input.Input;
+import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.TextSchluessel;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungNew;
+import de.willuhn.jameica.hbci.rmi.BaseUeberweisung;
 import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
+import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.logging.Logger;
 
@@ -30,11 +35,10 @@ import de.willuhn.logging.Logger;
 public class UeberweisungControl extends AbstractBaseUeberweisungControl
 {
 
-	private TablePart table		 = null;
-  
-  private Ueberweisung transfer = null;
-  
-  private CheckboxInput bankTermin = null;
+	private TablePart table		         = null;
+  private Ueberweisung transfer      = null;
+  private CheckboxInput bankTermin   = null;
+  private SelectInput textschluessel = null;
 
   /**
    * ct.
@@ -92,7 +96,20 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
     table = new de.willuhn.jameica.hbci.gui.parts.UeberweisungList(new UeberweisungNew());
 		return table;
 	}
+  
+  /**
+   * @see de.willuhn.jameica.hbci.gui.controller.AbstractBaseUeberweisungControl#getTextSchluessel()
+   */
+  public Input getTextSchluessel() throws RemoteException
+  {
+    if (textschluessel != null)
+      return textschluessel;
 
+    textschluessel = new SelectInput(TextSchluessel.get(new String[]{"51","53","54"}),TextSchluessel.get(((BaseUeberweisung)getTransfer()).getTextSchluessel()));
+    textschluessel.setEnabled(!((Terminable)getTransfer()).ausgefuehrt());
+    return textschluessel;
+  }
+  
   /**
    * Ueberschrieben, um das Flag fuer die Termin-Ueberweisung zu speichern.
    * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#handleStore()
@@ -117,6 +134,9 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
+ * Revision 1.44  2008/08/01 11:05:14  willuhn
+ * @N BUGZILLA 587
+ *
  * Revision 1.43  2007/04/23 18:07:15  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt

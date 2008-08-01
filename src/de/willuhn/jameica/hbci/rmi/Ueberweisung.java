@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Ueberweisung.java,v $
- * $Revision: 1.16 $
- * $Date: 2007/04/23 18:07:14 $
+ * $Revision: 1.17 $
+ * $Date: 2008/08/01 11:05:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,7 +18,7 @@ import java.rmi.RemoteException;
 /**
  * Bildet eine Ueberweisung ab.
  */
-public interface Ueberweisung extends HibiscusTransfer, Terminable, Duplicatable
+public interface Ueberweisung extends BaseUeberweisung, Duplicatable
 {
   /**
    * Prueft, ob es sich um einen bankseitige Termin-Ueberweisung handelt.
@@ -38,6 +38,9 @@ public interface Ueberweisung extends HibiscusTransfer, Terminable, Duplicatable
 
 /**********************************************************************
  * $Log: Ueberweisung.java,v $
+ * Revision 1.17  2008/08/01 11:05:14  willuhn
+ * @N BUGZILLA 587
+ *
  * Revision 1.16  2007/04/23 18:07:14  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt

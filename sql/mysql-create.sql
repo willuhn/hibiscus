@@ -143,6 +143,7 @@ CREATE TABLE ueberweisung (
      , termin DATE NOT NULL
      , banktermin int(10)
      , ausgefuehrt int(10) NOT NULL
+     , typ VARCHAR(2)
      , UNIQUE (id)
      , PRIMARY KEY (id)
 )TYPE=InnoDB;
@@ -267,4 +268,4 @@ ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
 
-INSERT INTO version (name,version) values ('db',7);
+INSERT INTO version (name,version) values ('db',8);

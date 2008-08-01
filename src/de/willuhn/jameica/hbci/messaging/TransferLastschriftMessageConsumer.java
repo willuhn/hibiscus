@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/messaging/TransferLastschriftMessageConsumer.java,v $
- * $Revision: 1.3 $
- * $Date: 2008/02/05 10:28:17 $
+ * $Revision: 1.4 $
+ * $Date: 2008/08/01 11:05:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -87,7 +87,7 @@ public class TransferLastschriftMessageConsumer implements MessageConsumer
       
       String type = (String) params.get("type");
       if (type != null)
-        ls.setTyp(type);
+        ls.setTextSchluessel(type);
 
       Date termin = (Date) params.get("date");
       ls.setTermin(termin != null ? termin : new Date());
@@ -152,6 +152,9 @@ public class TransferLastschriftMessageConsumer implements MessageConsumer
 
 /**********************************************************************
  * $Log: TransferLastschriftMessageConsumer.java,v $
+ * Revision 1.4  2008/08/01 11:05:14  willuhn
+ * @N BUGZILLA 587
+ *
  * Revision 1.3  2008/02/05 10:28:17  willuhn
  * @B
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/SammelLastBuchungNew.java,v $
- * $Revision: 1.9 $
- * $Date: 2006/06/08 22:29:47 $
+ * $Revision: 1.10 $
+ * $Date: 2008/08/01 11:05:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.gui.views;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
@@ -55,31 +56,39 @@ public class SammelLastBuchungNew extends AbstractView {
 		details.addLabelPair(i18n.tr("Verwendungszweck"),					control.getZweck());
 		details.addLabelPair(i18n.tr("weiterer Verwendungszweck"),control.getZweck2());
 		details.addLabelPair(i18n.tr("Betrag"),										control.getBetrag());
+    details.addLabelPair(i18n.tr("Textschlüssel"),            control.getTextSchluessel());
 
 		ButtonArea buttonArea = new ButtonArea(getParent(),4);
 		buttonArea.addButton(i18n.tr("Zurück"), 				 				       new Back());
-		buttonArea.addButton(i18n.tr("Löschen"),				 				       new SammelTransferBuchungDelete(), control.getBuchung());
-		buttonArea.addButton(i18n.tr("Speichern"), 			     		 new Action()
-    {
-      public void handleAction(Object context) throws ApplicationException
-      {
-      	control.handleStore(false);
+    Button delete = new Button(i18n.tr("Löschen"), new SammelTransferBuchungDelete(),control.getBuchung());
+    delete.setEnabled(!l.ausgefuehrt());
+    buttonArea.addButton(delete);
+
+    Button store = new Button(i18n.tr("Speichern"), new Action() {
+      public void handleAction(Object context) throws ApplicationException {
+        control.handleStore(false);
       }
     });
+    store.setEnabled(!l.ausgefuehrt());
+    buttonArea.addButton(store);
+    
     // BUGZILLA 116 http://www.willuhn.de/bugzilla/show_bug.cgi?id=116
-    buttonArea.addButton(i18n.tr("Speichern und nächste Buchung"), new Action()
-    {
-      public void handleAction(Object context) throws ApplicationException
-      {
+    Button store2 = new Button(i18n.tr("Speichern und nächste Buchung"), new Action() {
+      public void handleAction(Object context) throws ApplicationException {
         control.handleStore(true);
       }
     },null,true);
+    store2.setEnabled(!l.ausgefuehrt());
+    buttonArea.addButton(store2);
   }
 }
 
 
 /**********************************************************************
  * $Log: SammelLastBuchungNew.java,v $
+ * Revision 1.10  2008/08/01 11:05:14  willuhn
+ * @N BUGZILLA 587
+ *
  * Revision 1.9  2006/06/08 22:29:47  willuhn
  * @N DTAUS-Import fuer Sammel-Lastschriften und Sammel-Ueberweisungen
  * @B Eine Reihe kleinerer Bugfixes in Sammeltransfers
