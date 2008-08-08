@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/UmsatzAssign.java,v $
- * $Revision: 1.5 $
- * $Date: 2007/04/23 18:07:14 $
+ * $Revision: 1.6 $
+ * $Date: 2008/08/08 08:43:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -60,7 +60,11 @@ public class UmsatzAssign implements Action
     
     try
     {
-      UmsatzTypAuswahlDialog d = new UmsatzTypAuswahlDialog(UmsatzTypAuswahlDialog.POSITION_CENTER,umsaetze[0].getUmsatzTyp());
+      Boolean b = null;
+      double betrag = umsaetze[0].getBetrag();
+      if (betrag != 0.0d)
+        b = new Boolean(betrag > 0);
+      UmsatzTypAuswahlDialog d = new UmsatzTypAuswahlDialog(UmsatzTypAuswahlDialog.POSITION_CENTER,umsaetze[0].getUmsatzTyp(),b);
       ut = (UmsatzTyp) d.open();
     }
     catch (OperationCanceledException oce)
@@ -126,6 +130,9 @@ public class UmsatzAssign implements Action
 
 /**********************************************************************
  * $Log: UmsatzAssign.java,v $
+ * Revision 1.6  2008/08/08 08:43:41  willuhn
+ * @N BUGZILLA 614
+ *
  * Revision 1.5  2007/04/23 18:07:14  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt

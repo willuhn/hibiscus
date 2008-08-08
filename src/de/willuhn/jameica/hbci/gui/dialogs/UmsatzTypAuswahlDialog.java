@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/UmsatzTypAuswahlDialog.java,v $
- * $Revision: 1.5 $
- * $Date: 2008/08/08 08:30:35 $
+ * $Revision: 1.6 $
+ * $Date: 2008/08/08 08:43:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -36,16 +36,14 @@ public class UmsatzTypAuswahlDialog extends AbstractDialog
 {
   private I18N i18n         = null;
   private UmsatzTyp choosen = null;
+  private Boolean einnahme  = null;
 
   /**
    * @param position
    */
   public UmsatzTypAuswahlDialog(int position)
   {
-    super(position);
-    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
-    this.setTitle(i18n.tr("Umsatz-Kategorien"));
+    this(position,null);
   }
 
   /**
@@ -54,8 +52,19 @@ public class UmsatzTypAuswahlDialog extends AbstractDialog
    */
   public UmsatzTypAuswahlDialog(int position, UmsatzTyp preselected)
   {
+    this(position,preselected,null);
+  }
+
+  /**
+   * @param position
+   * @param preselected der vorausgewaehlte Umsatztyp.
+   * @param einnahme true, wenn nur Einnahmen angezeigt werden sollen, falls falls es nur Ausgaben sein sollen, null wenn beides angezeigt werden soll.
+   */
+  public UmsatzTypAuswahlDialog(int position, UmsatzTyp preselected, Boolean einnahme)
+  {
     super(position);
     this.choosen = preselected;
+    this.einnahme = einnahme;
     i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
     this.setTitle(i18n.tr("Umsatz-Kategorien"));
@@ -75,9 +84,16 @@ public class UmsatzTypAuswahlDialog extends AbstractDialog
   protected void paint(Composite parent) throws Exception
   {
     SimpleContainer group = new SimpleContainer(parent);
-    group.addText(i18n.tr("Bitte wählen Sie die zu verwendende Kategorie aus."),true);
+    
+    if (einnahme != null)
+      group.addText(i18n.tr("Bitte wählen Sie die zu verwendende {0}-Kategorie aus.",(einnahme.booleanValue() ? UmsatzTyp.EINNAHME : UmsatzTyp.AUSGABE)),true);
+    else
+      group.addText(i18n.tr("Bitte wählen Sie die zu verwendende Kategorie aus."),true);
 
     DBIterator list = Settings.getDBService().createList(UmsatzTyp.class);
+    if (einnahme != null)
+      list.addFilter("iseinnahme = " + (einnahme.booleanValue() ? "1" : "0"));
+    
     list.setOrder("ORDER BY name");
     final UmsatzTypInput input = new UmsatzTypInput(list,this.choosen);
     
@@ -108,6 +124,9 @@ public class UmsatzTypAuswahlDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: UmsatzTypAuswahlDialog.java,v $
+ * Revision 1.6  2008/08/08 08:43:41  willuhn
+ * @N BUGZILLA 614
+ *
  * Revision 1.5  2008/08/08 08:30:35  willuhn
  * @B 544
  *
