@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/UmsatzTypAuswahlDialog.java,v $
- * $Revision: 1.6 $
- * $Date: 2008/08/08 08:43:41 $
+ * $Revision: 1.7 $
+ * $Date: 2008/08/08 08:57:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -91,11 +91,8 @@ public class UmsatzTypAuswahlDialog extends AbstractDialog
       group.addText(i18n.tr("Bitte wählen Sie die zu verwendende Kategorie aus."),true);
 
     DBIterator list = Settings.getDBService().createList(UmsatzTyp.class);
-    if (einnahme != null)
-      list.addFilter("iseinnahme = " + (einnahme.booleanValue() ? "1" : "0"));
-    
     list.setOrder("ORDER BY name");
-    final UmsatzTypInput input = new UmsatzTypInput(list,this.choosen);
+    final UmsatzTypInput input = new UmsatzTypInput(list,this.choosen,this.einnahme);
     
     input.setComment(null); // Hier keine Umsatz-Zahlen anzeigen. Das macht den Dialog haesslich
     
@@ -124,6 +121,9 @@ public class UmsatzTypAuswahlDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: UmsatzTypAuswahlDialog.java,v $
+ * Revision 1.7  2008/08/08 08:57:14  willuhn
+ * @N BUGZILLA 614
+ *
  * Revision 1.6  2008/08/08 08:43:41  willuhn
  * @N BUGZILLA 614
  *

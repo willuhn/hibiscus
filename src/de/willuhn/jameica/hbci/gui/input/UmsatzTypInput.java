@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/UmsatzTypInput.java,v $
- * $Revision: 1.4 $
- * $Date: 2007/04/02 23:01:17 $
+ * $Revision: 1.5 $
+ * $Date: 2008/08/08 08:57:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -37,6 +37,7 @@ public class UmsatzTypInput extends SelectInput
 {
 
   private I18N i18n = null;
+
   
   /**
    * ct.
@@ -56,7 +57,7 @@ public class UmsatzTypInput extends SelectInput
    */
   public UmsatzTypInput(DBIterator list, Umsatz umsatz) throws RemoteException
   {
-    this(list, umsatz == null ? null : umsatz.getUmsatzTyp());
+    this(list, umsatz == null ? null : umsatz.getUmsatzTyp(),umsatz == null ? null : new Boolean(umsatz.getBetrag() > 0.0d));
   }
 
   /**
@@ -67,7 +68,20 @@ public class UmsatzTypInput extends SelectInput
    */
   public UmsatzTypInput(DBIterator list, UmsatzTyp umsatzTyp) throws RemoteException
   {
-    super(list, umsatzTyp);
+    this(list,umsatzTyp,null);
+  }
+  
+  /**
+   * ct.
+   * @param list Liste der Umsatz-Typen.
+   * @param umsatzTyp der vorselectierte Umsatz-Typ.
+   * @param einnahme true, wenn nur Einnahmen angezeigt werden sollen, falls falls es nur Ausgaben sein sollen, null wenn beides angezeigt werden soll.
+   * @throws RemoteException
+   */
+  public UmsatzTypInput(DBIterator list, UmsatzTyp umsatzTyp, Boolean einnahme) throws RemoteException
+  {
+    super(filter(list,einnahme), umsatzTyp);
+
     this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     this.setPleaseChoose(i18n.tr("<Keine Kategorie>"));
     refreshComment();
@@ -83,6 +97,20 @@ public class UmsatzTypInput extends SelectInput
     });
   }
   
+  /**
+   * Haengt an den Iterator ggf noch einen Filter an.
+   * @param list der Iterator.
+   * @param einnahme optionales Boolean.
+   * @return korrigierte Liste.
+   * @throws RemoteException
+   */
+  private static DBIterator filter(DBIterator list, Boolean einnahme) throws RemoteException
+  {
+    if (einnahme != null)
+      list.addFilter("iseinnahme = " + (einnahme.booleanValue() ? "1" : "0"));
+    return list;
+  }
+
   /**
    * Aktualisiert den Kommentar.
    */
@@ -111,6 +139,9 @@ public class UmsatzTypInput extends SelectInput
 
 /*********************************************************************
  * $Log: UmsatzTypInput.java,v $
+ * Revision 1.5  2008/08/08 08:57:14  willuhn
+ * @N BUGZILLA 614
+ *
  * Revision 1.4  2007/04/02 23:01:17  willuhn
  * @D diverse Javadoc-Warnings
  * @C Umstellung auf neues SelectInput

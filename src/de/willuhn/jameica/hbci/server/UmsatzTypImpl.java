@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.41 $
- * $Date: 2008/04/27 22:22:56 $
+ * $Revision: 1.42 $
+ * $Date: 2008/08/08 08:57:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -235,12 +235,20 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
    */
   public boolean matches(Umsatz umsatz) throws RemoteException
   {
+    // BUGZILLA 614 - wenn die Kategorie gar nicht passt, koennen wir gleich abbrechen
+    double betrag    = umsatz.getBetrag();
+    boolean einnahme = this.isEinnahme();
+    if (betrag != 0.0d)
+    {
+      if ((betrag < 0.0d && einnahme) || (betrag > 0.0d && !einnahme))
+        return false;
+    }
+
     String s = this.getPattern();
     if (s == null || s.length() == 0)
       return false;
 
-    s = s.toLowerCase(); // Wir beachten Gross-Kleinschreibung grundsaetzlich
-    // nicht
+    s = s.toLowerCase(); // Wir beachten Gross-Kleinschreibung grundsaetzlich nicht
 
     String vwz1 = umsatz.getZweck();
     String vwz2 = umsatz.getZweck2();
@@ -485,6 +493,9 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
 
 /*******************************************************************************
  * $Log: UmsatzTypImpl.java,v $
+ * Revision 1.42  2008/08/08 08:57:14  willuhn
+ * @N BUGZILLA 614
+ *
  * Revision 1.41  2008/04/27 22:22:56  willuhn
  * @C I18N-Referenzen statisch
  *
