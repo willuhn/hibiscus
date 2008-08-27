@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/DauerauftragControl.java,v $
- * $Revision: 1.27 $
- * $Date: 2007/04/23 18:07:15 $
+ * $Revision: 1.28 $
+ * $Date: 2008/08/27 14:42:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -32,6 +32,8 @@ import de.willuhn.jameica.hbci.gui.dialogs.TurnusDialog;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
 import de.willuhn.jameica.hbci.rmi.Turnus;
+import de.willuhn.jameica.messaging.StatusBarMessage;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 
 /**
@@ -39,6 +41,7 @@ import de.willuhn.logging.Logger;
  */
 public class DauerauftragControl extends AbstractTransferControl {
 
+  private Listener nextDate         = new NextDateListener();
 	private Input orderID				      = null;
 	private DialogInput turnus	      = null;
 	private DateInput ersteZahlung	  = null;
@@ -106,6 +109,7 @@ public class DauerauftragControl extends AbstractTransferControl {
 				{
 					((Dauerauftrag)getTransfer()).setTurnus(choosen);
 					getTurnus().setText(choosen.getBezeichnung());
+          nextDate.handleEvent(null);
 				}
 				catch (RemoteException e)
 				{
@@ -146,23 +150,21 @@ public class DauerauftragControl extends AbstractTransferControl {
 		if (ersteZahlung != null)
 			return ersteZahlung;
     
-    Date d = ((Dauerauftrag)getTransfer()).getErsteZahlung();
+    final Dauerauftrag t = (Dauerauftrag) getTransfer();
+    Date d = t.getErsteZahlung();
     if (d == null)
+    {
       d = new Date();
+      t.setErsteZahlung(d);
+    }
 
-    ersteZahlung = new DateInput(d,HBCI.DATEFORMAT);
+    ersteZahlung = new DateInput(d);
     ersteZahlung.setComment("");
 		ersteZahlung.setTitle(i18n.tr("Datum der ersten Zahlung"));
     ersteZahlung.setText(i18n.tr("Bitte geben Sie das Datum der ersten Zahlung ein"));
     ersteZahlung.setMandatory(true);
-    ersteZahlung.addListener(new Listener() {
-      public void handleEvent(Event event)
-      {
-        // Nur, um den Parser zu triggern
-        ersteZahlung.getValue();
-      }
-    
-    });
+    ersteZahlung.addListener(this.nextDate);
+    this.nextDate.handleEvent(null); // einmal ausloesen fuer initialen Text
 		return ersteZahlung;
 	}
 
@@ -227,11 +229,43 @@ public class DauerauftragControl extends AbstractTransferControl {
     return i;
   }
 
+  /**
+   * Listener, der das Datum der naechsten Zahlung aktualisiert.
+   */
+  private class NextDateListener implements Listener
+  {
+    /**
+     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+     */
+    public void handleEvent(Event event)
+    {
+      try
+      {
+        final Dauerauftrag t = (Dauerauftrag) getTransfer();
+        Date ez = (Date) ersteZahlung.getValue();
+        t.setErsteZahlung(ez);
+        Date next = t.getNaechsteZahlung();
+        if (next != null)
+          ersteZahlung.setComment(i18n.tr("Nächste Zahlung: {0}", HBCI.DATEFORMAT.format(next)));
+        else
+          ersteZahlung.setComment("");
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to apply first payment date",e);
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Ermitteln der nächsten Zahlung"), StatusBarMessage.TYPE_ERROR));
+      }
+    }
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: DauerauftragControl.java,v $
+ * Revision 1.28  2008/08/27 14:42:24  willuhn
+ * @N Naechstes Ausfuehrungsdatum in Detailansicht anzeigen
+ *
  * Revision 1.27  2007/04/23 18:07:15  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
