@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/AbstractDTAUSImporter.java,v $
- * $Revision: 1.11 $
- * $Date: 2007/12/21 14:13:15 $
+ * $Revision: 1.12 $
+ * $Date: 2008/08/29 21:58:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -73,8 +73,31 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
       
       int toleranz = settings.getInt("dtaus.fehlertoleranz",DtausDateiParser.UMLAUTUMSETZUNG);
       
-      Logger.info("dtaus error tolerance: " + toleranz);
-      DtausDateiParser parser = new DtausDateiParser(is,toleranz);
+      /* Aus http://de.wikipedia.org/wiki/Datenträgeraustauschverfahren:
+       * "Bei der Kodierung der Zeichen schreibt die "Spezifikation der Datenformate",
+       * Version 2.2 vom 29. Oktober 2007 (Final Version) des Zentralen Kreditausschusses
+       * (ZKA) die DIN-66003-Kodierung vor, bei der die deutschen Umlaute und das ß im 
+       * Bereich der ASCII-Kodierung definiert sind.[1] DIN 66003 ist die deutsche
+       * Bezeichnung für den deutschen Teil der internationalen Norm ISO 646. Die Bundesbank
+       * erwähnt in ihrer Spezifikation abweichend hierzu eine Kodierung der Zeichen mittels
+       * der MS-DOS Codepage 437. Beide Kodierungen entsprechen nicht der weitläufig
+       * verwendeten ISO-8859-Kodierung, die in keiner der beiden Spezifikationen als
+       * gültige Kodierung einer DTAUS-Datei spezifiziert ist."
+       *
+       * Insbesondere aufgrund des letzten Satzes ist es meiner Meinung nach
+       * zu viel des Guten, hier noch einen extra Auswahl-Dialog fuer den
+       * Zeichensatz anzubieten. Zumal es den User unnoetig verunsichern wuerde.
+       * Welcher User weiss schon, mit welchem Zeichensatz seine DTAUS-Datei
+       * erzeugt wurde und was ueberhaupt ein Zeichensatz ist?
+       * 
+       * Wir nehmen daher per Default Latin1. Wenn das fehlschlaegt, kann der User 
+       * den Parameter "dtaus.encoding" manuell setzen.
+       */
+      String encoding = settings.getString("dtaus.encoding","ISO-8859-1");
+      
+      Logger.info("dtaus tolerance: " + toleranz);
+      Logger.info("dtaus encoding : " + encoding);
+      DtausDateiParser parser = new DtausDateiParser(is,toleranz,encoding);
       
       int files = parser.getAnzahlLogischerDateien();
       
@@ -288,6 +311,9 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
 
 /*********************************************************************
  * $Log: AbstractDTAUSImporter.java,v $
+ * Revision 1.12  2008/08/29 21:58:39  willuhn
+ * @N Encoding via Config-Datei einstellbar - per Default wird "Latin1" verwendet.
+ *
  * Revision 1.11  2007/12/21 14:13:15  willuhn
  * @C Default-Format auf Umlautumsetzung (CP850) geaendert
  *
