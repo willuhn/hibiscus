@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Settings.java,v $
- * $Revision: 1.42 $
- * $Date: 2008/07/22 22:30:01 $
+ * $Revision: 1.43 $
+ * $Date: 2008/08/29 14:30:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -148,7 +148,7 @@ public class Settings extends AbstractView {
   public void unbind() throws ApplicationException
   {
     // Wir merken uns das aktive Tab
-    lastActiveTab = Integer.valueOf(getTabFolder().getSelectionIndex());
+    lastActiveTab = new Integer(getTabFolder().getSelectionIndex());
   }
 
 }
@@ -156,6 +156,9 @@ public class Settings extends AbstractView {
 
 /**********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.43  2008/08/29 14:30:36  willuhn
+ * @C Java 1.4 Compatibility - wieso zur Hoelle sind die Fehler vorher nie aufgefallen? Ich compiliere immer gegen 1.4? Suspekt
+ *
  * Revision 1.42  2008/07/22 22:30:01  willuhn
  * @C Zum Speichern des letzten aktiven Tabs braucht man gar keine Session sondern nur einen statischen Integer. Keine Ahnung, warum ich das mal so umstaendlich implementiert hatte ;)
  *

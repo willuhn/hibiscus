@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/LineChart.java,v $
- * $Revision: 1.7 $
- * $Date: 2008/02/26 01:01:16 $
+ * $Revision: 1.8 $
+ * $Date: 2008/08/29 14:30:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,7 +15,6 @@ package de.willuhn.jameica.hbci.gui.chart;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 import java.util.Vector;
 
@@ -271,7 +270,6 @@ public class LineChart extends AbstractChart
     // Farbe dominiert
     color[pos % 3] = 255;
     colorCache.add(pos,color);
-    System.out.println(Arrays.toString(color));
     return color;
   }
 }
@@ -279,6 +277,9 @@ public class LineChart extends AbstractChart
 
 /*********************************************************************
  * $Log: LineChart.java,v $
+ * Revision 1.8  2008/08/29 14:30:19  willuhn
+ * @C Java 1.4 Compatibility - wieso zur Hoelle sind die Fehler vorher nie aufgefallen? Ich compiliere immer gegen 1.4? Suspekt
+ *
  * Revision 1.7  2008/02/26 01:01:16  willuhn
  * @N Update auf Birt 2 (bessere Zeichen-Qualitaet, u.a. durch Anti-Aliasing)
  * @N Neuer Chart "Umsatz-Kategorien im Verlauf"
