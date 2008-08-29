@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Attic/CSVUmsatzImporter.java,v $
- * $Revision: 1.7 $
- * $Date: 2008/04/24 11:37:21 $
+ * $Revision: 1.8 $
+ * $Date: 2008/08/29 16:56:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.rmi.RemoteException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -48,6 +51,7 @@ public class CSVUmsatzImporter implements Importer
 {
 
   private static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  private static DateFormat SHORTDATEFORMAT = new SimpleDateFormat("dd.MM.yy");
   
   private static Hashtable fieldMap = new Hashtable();
   private Hashtable kategorieCache = null;
@@ -150,6 +154,14 @@ public class CSVUmsatzImporter implements Importer
             }
             if ("saldo".equals(name)) {
               u.setSaldo(parseBetrag(value));
+              continue;
+            }
+            if ("datum".equals(name)) {
+              u.setDatum(parseDatum(value));
+              continue;
+            }
+            if ("valuta".equals(name)) {
+              u.setValuta(parseDatum(value));
               continue;
             }
 
@@ -295,6 +307,29 @@ public class CSVUmsatzImporter implements Importer
   }
   
   /**
+   * Parst den Wert als Datum.
+   * @param date das Datum.
+   * @return das geparste Datum.
+   * @throws ApplicationException
+   */
+  private Date parseDatum(String date) throws ApplicationException
+  {
+    try
+    {
+      if (date == null || date.length() == 0)
+        return null;
+      if (date.matches("[0-9]{1,2}\\.[0-9]{1,2}\\.[0-9]{2}"))
+        return SHORTDATEFORMAT.parse(date);
+      return HBCI.DATEFORMAT.parse(date);
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to parse string " + date + " as date",e);
+      throw new ApplicationException(i18n.tr("Text \"{0}\" ist kein gültiges Datum",date));
+    }
+  }
+  
+  /**
    * Sucht nach einem Umsatztyp anhand des Namens oder
    * legt ihn ggf selbst an.
    * @param name der Name.
@@ -343,6 +378,9 @@ public class CSVUmsatzImporter implements Importer
 
 /*******************************************************************************
  * $Log: CSVUmsatzImporter.java,v $
+ * Revision 1.8  2008/08/29 16:56:06  willuhn
+ * @N BUGZILLA 615
+ *
  * Revision 1.7  2008/04/24 11:37:21  willuhn
  * @N BUGZILLA 304
  *
