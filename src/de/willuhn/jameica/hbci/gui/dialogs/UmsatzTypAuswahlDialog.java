@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/UmsatzTypAuswahlDialog.java,v $
- * $Revision: 1.7 $
- * $Date: 2008/08/08 08:57:14 $
+ * $Revision: 1.8 $
+ * $Date: 2008/08/29 16:46:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,6 +12,8 @@
  **********************************************************************/
 
 package de.willuhn.jameica.hbci.gui.dialogs;
+
+import java.rmi.RemoteException;
 
 import org.eclipse.swt.widgets.Composite;
 
@@ -34,37 +36,52 @@ import de.willuhn.util.I18N;
  */
 public class UmsatzTypAuswahlDialog extends AbstractDialog
 {
-  private I18N i18n         = null;
-  private UmsatzTyp choosen = null;
-  private Boolean einnahme  = null;
+  private I18N i18n          = null;
+  private UmsatzTyp choosen  = null;
+  private int typ            = UmsatzTyp.TYP_EGAL;
+  
+  private UmsatzTypInput input = null;
 
   /**
+   * ct.
    * @param position
+   * @param typ Filter auf Kategorie-Typen.
+   * Kategorien vom Typ "egal" werden grundsaetzlich angezeigt.
+   * @see UmsatzTyp#TYP_AUSGABE
+   * @see UmsatzTyp#TYP_EINNAHME
+   * @throws RemoteException
    */
-  public UmsatzTypAuswahlDialog(int position)
+  public UmsatzTypAuswahlDialog(int position, int typ) throws RemoteException
   {
-    this(position,null);
+    this(position,null,typ);
   }
 
   /**
+   * ct.
    * @param position
    * @param preselected der vorausgewaehlte Umsatztyp.
+   * @throws RemoteException
    */
-  public UmsatzTypAuswahlDialog(int position, UmsatzTyp preselected)
+  public UmsatzTypAuswahlDialog(int position, UmsatzTyp preselected) throws RemoteException
   {
-    this(position,preselected,null);
+    this(position,preselected,UmsatzTyp.TYP_EGAL);
   }
-
+  
   /**
+   * ct.
    * @param position
    * @param preselected der vorausgewaehlte Umsatztyp.
-   * @param einnahme true, wenn nur Einnahmen angezeigt werden sollen, falls falls es nur Ausgaben sein sollen, null wenn beides angezeigt werden soll.
+   * @param typ Filter auf Kategorie-Typen.
+   * Kategorien vom Typ "egal" werden grundsaetzlich angezeigt.
+   * @see UmsatzTyp#TYP_AUSGABE
+   * @see UmsatzTyp#TYP_EINNAHME
+   * @throws RemoteException
    */
-  public UmsatzTypAuswahlDialog(int position, UmsatzTyp preselected, Boolean einnahme)
+  private UmsatzTypAuswahlDialog(int position, UmsatzTyp preselected, int typ) throws RemoteException
   {
     super(position);
     this.choosen = preselected;
-    this.einnahme = einnahme;
+    this.typ = typ;
     i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
     this.setTitle(i18n.tr("Umsatz-Kategorien"));
@@ -85,14 +102,15 @@ public class UmsatzTypAuswahlDialog extends AbstractDialog
   {
     SimpleContainer group = new SimpleContainer(parent);
     
-    if (einnahme != null)
-      group.addText(i18n.tr("Bitte wählen Sie die zu verwendende {0}-Kategorie aus.",(einnahme.booleanValue() ? UmsatzTyp.EINNAHME : UmsatzTyp.AUSGABE)),true);
-    else
-      group.addText(i18n.tr("Bitte wählen Sie die zu verwendende Kategorie aus."),true);
+    group.addText(i18n.tr("Bitte wählen Sie die zu verwendende Kategorie aus."),true);
 
     DBIterator list = Settings.getDBService().createList(UmsatzTyp.class);
     list.setOrder("ORDER BY name");
-    final UmsatzTypInput input = new UmsatzTypInput(list,this.choosen,this.einnahme);
+    
+    if (this.choosen != null)
+      this.input = new UmsatzTypInput(list,this.choosen);
+    else
+      this.input = new UmsatzTypInput(list,this.typ);
     
     input.setComment(null); // Hier keine Umsatz-Zahlen anzeigen. Das macht den Dialog haesslich
     
@@ -121,6 +139,9 @@ public class UmsatzTypAuswahlDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: UmsatzTypAuswahlDialog.java,v $
+ * Revision 1.8  2008/08/29 16:46:24  willuhn
+ * @N BUGZILLA 616
+ *
  * Revision 1.7  2008/08/08 08:57:14  willuhn
  * @N BUGZILLA 614
  *

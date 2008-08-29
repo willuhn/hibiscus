@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzTypControl.java,v $
- * $Revision: 1.7 $
- * $Date: 2007/08/24 22:22:00 $
+ * $Revision: 1.8 $
+ * $Date: 2008/08/29 16:46:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,12 +14,14 @@
 package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
@@ -32,6 +34,7 @@ import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.UmsatzTypNew;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzTypList;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
+import de.willuhn.jameica.hbci.server.UmsatzTypUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -196,9 +199,12 @@ public class UmsatzTypControl extends AbstractControl
   {
     if (this.art == null)
     {
-      boolean isEinnahme = getUmsatzTyp().isEinnahme();
-      String preselected = isEinnahme ? UmsatzTyp.EINNAHME: UmsatzTyp.AUSGABE;
-      this.art = new SelectInput(new String[]{UmsatzTyp.AUSGABE,UmsatzTyp.EINNAHME},preselected);
+      ArrayList list = new ArrayList();
+      list.add(new UmsatzTypObject(UmsatzTyp.TYP_EGAL));
+      list.add(new UmsatzTypObject(UmsatzTyp.TYP_EINNAHME));
+      list.add(new UmsatzTypObject(UmsatzTyp.TYP_AUSGABE));
+      
+      this.art = new SelectInput(list,new UmsatzTypObject(getUmsatzTyp().getTyp()));
     }
     return this.art;
   }
@@ -209,8 +215,8 @@ public class UmsatzTypControl extends AbstractControl
   public synchronized void handleStore()
   {
     try {
-      String s = (String) getArt().getValue();
-      getUmsatzTyp().setEinnahme(UmsatzTyp.EINNAHME.equals(s));
+      UmsatzTypObject t = (UmsatzTypObject) getArt().getValue();
+      getUmsatzTyp().setTyp(t == null ? UmsatzTyp.TYP_EGAL : t.typ);
       getUmsatzTyp().setName((String)getName().getValue());
       getUmsatzTyp().setNummer((String)getNummer().getValue());
       getUmsatzTyp().setPattern((String)getPattern().getValue());
@@ -228,11 +234,84 @@ public class UmsatzTypControl extends AbstractControl
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Speichern der Umsatz-Kategorie"), StatusBarMessage.TYPE_ERROR));
     }
   }
+  
+  /**
+   * Hilfsklasse fuer die Art der Kategorie.
+   */
+  public static class UmsatzTypObject implements GenericObject
+  {
+    private int typ = UmsatzTyp.TYP_EGAL;
+    
+    /**
+     * ct
+     * @param typ der Umsatz-Typ.
+     */
+    private UmsatzTypObject(int typ)
+    {
+      this.typ = typ;
+    }
+    
+    /**
+     * Liefert den Typ.
+     * @return der Typ.
+     */
+    public int getTyp()
+    {
+      return this.typ;
+    }
+
+    /**
+     * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
+     */
+    public boolean equals(GenericObject other) throws RemoteException
+    {
+      if (other == this)
+        return true;
+      if (other == null || !(other instanceof UmsatzTypObject))
+        return false;
+      return this.typ == ((UmsatzTypObject)other).typ;
+    }
+
+    /**
+     * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
+     */
+    public Object getAttribute(String arg0) throws RemoteException
+    {
+      return UmsatzTypUtil.getNameForType(this.typ);
+    }
+
+    /**
+     * @see de.willuhn.datasource.GenericObject#getAttributeNames()
+     */
+    public String[] getAttributeNames() throws RemoteException
+    {
+      return new String[]{"name"};
+    }
+
+    /**
+     * @see de.willuhn.datasource.GenericObject#getID()
+     */
+    public String getID() throws RemoteException
+    {
+      return Integer.toString(this.typ);
+    }
+
+    /**
+     * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
+     */
+    public String getPrimaryAttribute() throws RemoteException
+    {
+      return "name";
+    }
+  }
 }
 
 
 /*********************************************************************
  * $Log: UmsatzTypControl.java,v $
+ * Revision 1.8  2008/08/29 16:46:23  willuhn
+ * @N BUGZILLA 616
+ *
  * Revision 1.7  2007/08/24 22:22:00  willuhn
  * @N Regulaere Ausdruecke vorm Speichern testen
  *

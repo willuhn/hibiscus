@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTypList.java,v $
- * $Revision: 1.9 $
- * $Date: 2008/02/27 10:31:20 $
+ * $Revision: 1.10 $
+ * $Date: 2008/08/29 16:46:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,6 +31,7 @@ import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.messaging.ObjectMessage;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
+import de.willuhn.jameica.hbci.server.UmsatzTypUtil;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.system.Application;
@@ -58,13 +59,12 @@ public class UmsatzTypList extends TablePart implements Part
     addColumn(i18n.tr("Bezeichnung"),"name");
     addColumn(i18n.tr("Nummer"),"nummer-int"); // BUGZILLA 554
     addColumn(i18n.tr("Zweck, Name oder Konto enthält"),"pattern");
-    addColumn(i18n.tr("Umsatzart"),"iseinnahme",new Formatter() {
+    addColumn(i18n.tr("Umsatzart"),"umsatztyp",new Formatter() {
       public String format(Object o)
       {
         if (o == null)
-          return i18n.tr("unbekannt");
-        Integer i = (Integer) o;
-        return i.intValue() == 1 ? UmsatzTyp.EINNAHME : UmsatzTyp.AUSGABE;
+          return i18n.tr("egal");
+        return UmsatzTypUtil.getNameForType(((Integer) o).intValue());
       }
     });
 
@@ -153,6 +153,9 @@ public class UmsatzTypList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: UmsatzTypList.java,v $
+ * Revision 1.10  2008/08/29 16:46:24  willuhn
+ * @N BUGZILLA 616
+ *
  * Revision 1.9  2008/02/27 10:31:20  willuhn
  * @B Bug 554
  *

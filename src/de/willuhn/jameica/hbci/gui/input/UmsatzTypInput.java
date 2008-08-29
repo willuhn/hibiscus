@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/UmsatzTypInput.java,v $
- * $Revision: 1.5 $
- * $Date: 2008/08/08 08:57:14 $
+ * $Revision: 1.6 $
+ * $Date: 2008/08/29 16:46:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,7 +23,6 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
-import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
@@ -38,49 +37,44 @@ public class UmsatzTypInput extends SelectInput
 
   private I18N i18n = null;
 
-  
   /**
    * ct.
    * @param list Liste der Umsatz-Typen.
+   * @param typ Filter auf Kategorie-Typen.
+   * Kategorien vom Typ "egal" werden grundsaetzlich angezeigt.
+   * @see UmsatzTyp#TYP_AUSGABE
+   * @see UmsatzTyp#TYP_EINNAHME
    * @throws RemoteException
    */
-  public UmsatzTypInput(DBIterator list) throws RemoteException
+  public UmsatzTypInput(DBIterator list, int typ) throws RemoteException
   {
-    this(list, (UmsatzTyp)null);
+    this(list,null,typ);
   }
 
   /**
    * ct.
    * @param list Liste der Umsatz-Typen.
-   * @param umsatz der vorselektierte Typ dieses Umsatzes.
-   * @throws RemoteException
-   */
-  public UmsatzTypInput(DBIterator list, Umsatz umsatz) throws RemoteException
-  {
-    this(list, umsatz == null ? null : umsatz.getUmsatzTyp(),umsatz == null ? null : new Boolean(umsatz.getBetrag() > 0.0d));
-  }
-
-  /**
-   * ct.
-   * @param list Liste der Umsatz-Typen.
-   * @param umsatzTyp der vorselectierte Umsatz-Typ.
+   * @param umsatzTyp der vorselektierter Umsatz-Typ.
    * @throws RemoteException
    */
   public UmsatzTypInput(DBIterator list, UmsatzTyp umsatzTyp) throws RemoteException
   {
-    this(list,umsatzTyp,null);
+    this(list,umsatzTyp,UmsatzTyp.TYP_EGAL);
   }
-  
+
   /**
    * ct.
    * @param list Liste der Umsatz-Typen.
    * @param umsatzTyp der vorselectierte Umsatz-Typ.
-   * @param einnahme true, wenn nur Einnahmen angezeigt werden sollen, falls falls es nur Ausgaben sein sollen, null wenn beides angezeigt werden soll.
+   * @param typ Filter auf Kategorie-Typen.
+   * Kategorien vom Typ "egal" werden grundsaetzlich angezeigt.
+   * @see UmsatzTyp#TYP_AUSGABE
+   * @see UmsatzTyp#TYP_EINNAHME
    * @throws RemoteException
    */
-  public UmsatzTypInput(DBIterator list, UmsatzTyp umsatzTyp, Boolean einnahme) throws RemoteException
+  private UmsatzTypInput(DBIterator list, UmsatzTyp umsatzTyp, int typ) throws RemoteException
   {
-    super(filter(list,einnahme), umsatzTyp);
+    super(filter(list,typ), umsatzTyp);
 
     this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     this.setPleaseChoose(i18n.tr("<Keine Kategorie>"));
@@ -100,14 +94,14 @@ public class UmsatzTypInput extends SelectInput
   /**
    * Haengt an den Iterator ggf noch einen Filter an.
    * @param list der Iterator.
-   * @param einnahme optionales Boolean.
+   * @param typ der Kategorie-Typ.
    * @return korrigierte Liste.
    * @throws RemoteException
    */
-  private static DBIterator filter(DBIterator list, Boolean einnahme) throws RemoteException
+  private static DBIterator filter(DBIterator list, int typ) throws RemoteException
   {
-    if (einnahme != null)
-      list.addFilter("iseinnahme = " + (einnahme.booleanValue() ? "1" : "0"));
+    if (typ != UmsatzTyp.TYP_EGAL)
+      list.addFilter("umsatztyp = " + typ + " or umsatztyp = " + UmsatzTyp.TYP_EGAL + " or umsatztyp is null");
     return list;
   }
 
@@ -139,6 +133,9 @@ public class UmsatzTypInput extends SelectInput
 
 /*********************************************************************
  * $Log: UmsatzTypInput.java,v $
+ * Revision 1.6  2008/08/29 16:46:24  willuhn
+ * @N BUGZILLA 616
+ *
  * Revision 1.5  2008/08/08 08:57:14  willuhn
  * @N BUGZILLA 614
  *

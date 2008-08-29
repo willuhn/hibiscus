@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzGroup.java,v $
- * $Revision: 1.5 $
- * $Date: 2008/04/27 22:22:56 $
+ * $Revision: 1.6 $
+ * $Date: 2008/08/29 16:46:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -190,8 +190,12 @@ public class UmsatzGroup implements GenericObjectNode, Comparable
     {
       // BUGZILLA 512
       // Gruppiert nach Einnahmen und Ausgaben
-      if (this.typ.isEinnahme() && !other.typ.isEinnahme())
-        return -1; // Einnahmen zuerst
+      
+      // Erst Ausgaben, dann Einnahmen, dann Rest
+      int thisType  = this.typ.getTyp();
+      int otherType = other.typ.getTyp();
+      if (thisType != otherType)
+        return thisType < otherType ? -1 : 1;
       
       String n1  = this.typ.getNummer();  if (n1  == null) n1  = "";
       String n2  = other.typ.getNummer(); if (n2  == null) n2  = "";
@@ -218,6 +222,9 @@ public class UmsatzGroup implements GenericObjectNode, Comparable
 
 /*********************************************************************
  * $Log: UmsatzGroup.java,v $
+ * Revision 1.6  2008/08/29 16:46:24  willuhn
+ * @N BUGZILLA 616
+ *
  * Revision 1.5  2008/04/27 22:22:56  willuhn
  * @C I18N-Referenzen statisch
  *

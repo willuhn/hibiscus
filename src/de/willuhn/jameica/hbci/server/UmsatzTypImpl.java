@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.42 $
- * $Date: 2008/08/08 08:57:14 $
+ * $Revision: 1.43 $
+ * $Date: 2008/08/29 16:46:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -94,16 +94,14 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
         if (other.equals(this))
           continue; // Das sind wir selbst
         if (name.equals(other.getName()))
-          throw new ApplicationException(i18n
-              .tr("Es existiert bereits eine Kategorie mit dieser Bezeichnung"));
+          throw new ApplicationException(i18n.tr("Es existiert bereits eine Kategorie mit dieser Bezeichnung"));
       }
 
     }
     catch (RemoteException e)
     {
       Logger.error("error while insert check", e);
-      throw new ApplicationException(i18n
-          .tr("Fehler beim Speichern des Umsatz-Typs."));
+      throw new ApplicationException(i18n.tr("Fehler beim Speichern des Umsatz-Typs."));
     }
     super.insertCheck();
   }
@@ -133,8 +131,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
     if (days > 0)
     {
       long d = days * 24l * 60l * 60l * 1000l;
-      start = HBCIProperties
-          .startOfDay(new Date(System.currentTimeMillis() - d));
+      start = HBCIProperties.startOfDay(new Date(System.currentTimeMillis() - d));
     }
     return getUmsaetze(start, null);
   }
@@ -145,33 +142,27 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
   public GenericIterator getUmsaetze(Date von, Date bis) throws RemoteException
   {
     DBIterator list = UmsatzUtil.getUmsaetze();
+
     if (von != null)
-    {
-      list.addFilter("valuta >= ?", new Object[] { new java.sql.Date(von
-          .getTime()) });
-    }
+      list.addFilter("valuta >= ?", new Object[] {new java.sql.Date(von.getTime())});
+    
     if (bis != null)
-    {
-      list.addFilter("valuta <= ?", new Object[] { new java.sql.Date(bis
-          .getTime()) });
-    }
+      list.addFilter("valuta <= ?", new Object[] {new java.sql.Date(bis.getTime())});
+
     if (this.isNewObject()) // Neuer Umsatztyp. Der hat noch keine ID
       list.addFilter("umsatztyp_id is null");
     else
       // Gibts schon. Also koennen wir auch nach festzugeordneten suchen
-      list.addFilter("(umsatztyp_id is null or umsatztyp_id=" + this.getID()
-          + ")");
+      list.addFilter("(umsatztyp_id is null or umsatztyp_id=" + this.getID() + ")");
 
     ArrayList result = new ArrayList();
     while (list.hasNext())
     {
       Umsatz u = (Umsatz) list.next();
-      if (u.isAssigned() || matches(u)) // entweder fest zugeordnet oder passt
-        // via Suchfilter
+      if (u.isAssigned() || matches(u)) // entweder fest zugeordnet oder passt via Suchfilter
         result.add(u);
     }
-    return PseudoIterator.fromArray((Umsatz[]) result.toArray(new Umsatz[result
-        .size()]));
+    return PseudoIterator.fromArray((Umsatz[]) result.toArray(new Umsatz[result.size()]));
   }
 
   /**
@@ -236,11 +227,14 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
   public boolean matches(Umsatz umsatz) throws RemoteException
   {
     // BUGZILLA 614 - wenn die Kategorie gar nicht passt, koennen wir gleich abbrechen
-    double betrag    = umsatz.getBetrag();
-    boolean einnahme = this.isEinnahme();
+    double betrag = umsatz.getBetrag();
+    int typ       = this.getTyp();
+    
     if (betrag != 0.0d)
     {
-      if ((betrag < 0.0d && einnahme) || (betrag > 0.0d && !einnahme))
+      // Betrag kleiner als null aber als Einnahme kategorisiert ODER
+      // Betrag groesser als null aber als Ausgabe kategorisiert
+      if ((betrag < 0.0d && (typ == UmsatzTyp.TYP_EINNAHME)) || (betrag > 0.0d && (typ == UmsatzTyp.TYP_AUSGABE)))
         return false;
     }
 
@@ -278,8 +272,12 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
       Matcher mKto = pattern.matcher(kto);
       Matcher mKom = pattern.matcher(kom);
 
-      return (mVwz1.matches() || mVwz2.matches() || mName.matches()
-          || mKto.matches() || mKom.matches());
+      return (mVwz1.matches() ||
+              mVwz2.matches() ||
+              mName.matches() ||
+              mKto.matches()  ||
+              mKom.matches()
+             );
     }
 
     vwz1 = vwz1.toLowerCase();
@@ -288,8 +286,12 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
     kto = kto.toLowerCase();
     kom = kom.toLowerCase();
 
-    return (vwz1.indexOf(s) != -1 || vwz2.indexOf(s) != -1
-        || name.indexOf(s) != -1 || kto.indexOf(s) != -1 || kom.indexOf(s) != -1);
+    return (vwz1.indexOf(s) != -1 || 
+            vwz2.indexOf(s) != -1 ||
+            name.indexOf(s) != -1 ||
+            kto.indexOf(s)  != -1 ||
+            kom.indexOf(s) != -1
+           );
   }
 
   /**
@@ -381,7 +383,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
     if ("umsatz".equals(arg0))
       return new Double(getUmsatz());
 
-    if (arg0 != null && arg0.startsWith("umsatz"))
+    if (arg0 != null && arg0.startsWith("umsatz:"))
     {
       // TODO: Beheben! Das ist haesslich!
       try
@@ -395,23 +397,6 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
       }
     }
     return super.getAttribute(arg0);
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#isEinnahme()
-   */
-  public boolean isEinnahme() throws RemoteException
-  {
-    Integer i = (Integer) getAttribute("iseinnahme");
-    return i != null && i.intValue() == 1;
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#setEinnahme(boolean)
-   */
-  public void setEinnahme(boolean einnahme) throws RemoteException
-  {
-    setAttribute("iseinnahme", new Integer(einnahme ? 1 : 0));
   }
 
   /**
@@ -489,10 +474,30 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
   {
   }
 
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getTyp()
+   */
+  public int getTyp() throws RemoteException
+  {
+    Integer i = (Integer) getAttribute("umsatztyp");
+    return i == null ? UmsatzTyp.TYP_EGAL : i.intValue();
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#setTyp(int)
+   */
+  public void setTyp(int typ) throws RemoteException
+  {
+    setAttribute("umsatztyp",new Integer(typ));
+  }
+
 }
 
 /*******************************************************************************
  * $Log: UmsatzTypImpl.java,v $
+ * Revision 1.43  2008/08/29 16:46:24  willuhn
+ * @N BUGZILLA 616
+ *
  * Revision 1.42  2008/08/08 08:57:14  willuhn
  * @N BUGZILLA 614
  *

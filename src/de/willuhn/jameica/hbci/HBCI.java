@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.108 $
- * $Date: 2008/01/25 12:24:05 $
+ * $Revision: 1.109 $
+ * $Date: 2008/08/29 16:46:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -279,6 +279,7 @@ public class HBCI extends AbstractPlugin
     }
     catch (Exception e)
     {
+      Logger.error("unable to init db service",e);
       throw new ApplicationException(getResources().getI18N().tr("Fehler beim Initialisieren der Datenbank"),e);
     }
     finally
@@ -302,6 +303,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.109  2008/08/29 16:46:24  willuhn
+ * @N BUGZILLA 616
+ *
  * Revision 1.108  2008/01/25 12:24:05  willuhn
  * @B Messaging-Consumer zu frueh registriert
  *

@@ -77,7 +77,7 @@ CREATE TABLE umsatztyp (
      , nummer VARCHAR(5)
      , pattern VARCHAR(255)
      , isregex int(10)
-     , iseinnahme int(10)
+     , umsatztyp int(10)
      , parent_id int(10)
      , UNIQUE (id)
      , PRIMARY KEY (id)
@@ -268,4 +268,4 @@ ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
 
-INSERT INTO version (name,version) values ('db',8);
+INSERT INTO version (name,version) values ('db',9);

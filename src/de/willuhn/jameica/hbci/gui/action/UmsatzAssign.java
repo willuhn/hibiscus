@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/UmsatzAssign.java,v $
- * $Revision: 1.6 $
- * $Date: 2008/08/08 08:43:41 $
+ * $Revision: 1.7 $
+ * $Date: 2008/08/29 16:46:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -60,11 +60,28 @@ public class UmsatzAssign implements Action
     
     try
     {
-      Boolean b = null;
-      double betrag = umsaetze[0].getBetrag();
-      if (betrag != 0.0d)
-        b = new Boolean(betrag > 0);
-      UmsatzTypAuswahlDialog d = new UmsatzTypAuswahlDialog(UmsatzTypAuswahlDialog.POSITION_CENTER,umsaetze[0].getUmsatzTyp(),b);
+      UmsatzTypAuswahlDialog d = null;
+      if (umsaetze.length != 1)
+      {
+        d = new UmsatzTypAuswahlDialog(UmsatzTypAuswahlDialog.POSITION_CENTER, UmsatzTyp.TYP_EGAL);
+      }
+      else
+      {
+        // Mal schauen, ob der Umsatz schon einen Typ hat
+        UmsatzTyp type = umsaetze[0].getUmsatzTyp();
+        if (type != null)
+        {
+          // Ja, hat er. Dann diesen vorauswaehlen und nur gleichartige anzeigen
+          d = new UmsatzTypAuswahlDialog(UmsatzTypAuswahlDialog.POSITION_CENTER,type);
+        }
+        else
+        {
+          // Ansonsten einen Dialog anzeigen, bei dem nur die zum Betrag
+          // passenden Kategorien angezeigt werden
+          int typ = umsaetze[0].getBetrag() > 0 ? UmsatzTyp.TYP_EINNAHME : UmsatzTyp.TYP_AUSGABE;
+          d = new UmsatzTypAuswahlDialog(UmsatzTypAuswahlDialog.POSITION_CENTER,typ);
+        }
+      }
       ut = (UmsatzTyp) d.open();
     }
     catch (OperationCanceledException oce)
@@ -130,6 +147,9 @@ public class UmsatzAssign implements Action
 
 /**********************************************************************
  * $Log: UmsatzAssign.java,v $
+ * Revision 1.7  2008/08/29 16:46:23  willuhn
+ * @N BUGZILLA 616
+ *
  * Revision 1.6  2008/08/08 08:43:41  willuhn
  * @N BUGZILLA 614
  *

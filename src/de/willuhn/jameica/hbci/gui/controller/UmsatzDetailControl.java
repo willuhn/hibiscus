@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailControl.java,v $
- * $Revision: 1.32 $
- * $Date: 2007/12/14 17:06:36 $
+ * $Revision: 1.33 $
+ * $Date: 2008/08/29 16:46:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -198,7 +198,19 @@ public class UmsatzDetailControl extends AbstractControl {
       return this.umsatzTyp;
     DBIterator list = Settings.getDBService().createList(UmsatzTyp.class);
     list.setOrder("ORDER BY nummer,name");
-    this.umsatzTyp = new UmsatzTypInput(list,getUmsatz());
+    Umsatz u = getUmsatz();
+    UmsatzTyp ut = u == null ? null : u.getUmsatzTyp();
+    if (ut == null)
+    {
+      int typ = UmsatzTyp.TYP_EGAL;
+      if (u != null)
+        typ = u.getBetrag() > 0 ? UmsatzTyp.TYP_EINNAHME : UmsatzTyp.TYP_AUSGABE;
+      this.umsatzTyp = new UmsatzTypInput(list,typ);
+    }
+    else
+    {
+      this.umsatzTyp = new UmsatzTypInput(list,ut);
+    }
     return this.umsatzTyp;
   }
 
@@ -508,6 +520,9 @@ public class UmsatzDetailControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzDetailControl.java,v $
+ * Revision 1.33  2008/08/29 16:46:23  willuhn
+ * @N BUGZILLA 616
+ *
  * Revision 1.32  2007/12/14 17:06:36  willuhn
  * @B Bug 518
  *

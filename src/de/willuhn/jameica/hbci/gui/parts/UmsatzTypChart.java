@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTypChart.java,v $
- * $Revision: 1.4 $
- * $Date: 2007/01/16 12:35:43 $
+ * $Revision: 1.5 $
+ * $Date: 2008/08/29 16:46:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,6 +31,7 @@ import de.willuhn.jameica.hbci.gui.chart.ChartData;
 import de.willuhn.jameica.hbci.gui.chart.ChartDataUmsatzTyp;
 import de.willuhn.jameica.hbci.gui.chart.PieChart;
 import de.willuhn.jameica.hbci.gui.input.UmsatzDaysInput;
+import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
@@ -61,8 +62,8 @@ public class UmsatzTypChart implements Part
     try
     {
       final LabelGroup group = new LabelGroup(parent,i18n.tr("Umsatz-Verteilung"),true);
-      final ChartData eData = new ChartDataUmsatzTyp(true,start);
-      final ChartData aData = new ChartDataUmsatzTyp(false,start);
+      final ChartData eData = new ChartDataUmsatzTyp(UmsatzTyp.TYP_EINNAHME,start);
+      final ChartData aData = new ChartDataUmsatzTyp(UmsatzTyp.TYP_AUSGABE,start);
       
       final PieChart einnahmen = new PieChart();
       final PieChart ausgaben  = new PieChart();
@@ -100,8 +101,8 @@ public class UmsatzTypChart implements Part
             if (myAData != null) ausgaben.removeData(myAData);
             else                 ausgaben.removeData(aData);
 
-            myEData = new ChartDataUmsatzTyp(true,newStart);
-            myAData = new ChartDataUmsatzTyp(false,newStart);
+            myEData = new ChartDataUmsatzTyp(UmsatzTyp.TYP_EINNAHME,newStart);
+            myAData = new ChartDataUmsatzTyp(UmsatzTyp.TYP_AUSGABE,newStart);
             if (newStart < 0)
             {
               einnahmen.setTitle(i18n.tr("Einnahmen (alle Umsätze)"));
@@ -160,6 +161,9 @@ public class UmsatzTypChart implements Part
 
 /*********************************************************************
  * $Log: UmsatzTypChart.java,v $
+ * Revision 1.5  2008/08/29 16:46:24  willuhn
+ * @N BUGZILLA 616
+ *
  * Revision 1.4  2007/01/16 12:35:43  willuhn
  * @B "-1 Tage"
  *

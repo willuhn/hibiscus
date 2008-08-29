@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/UmsatzTyp.java,v $
- * $Revision: 1.14 $
- * $Date: 2008/02/26 01:01:16 $
+ * $Revision: 1.15 $
+ * $Date: 2008/08/29 16:46:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,8 +18,6 @@ import java.util.regex.PatternSyntaxException;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.rmi.DBObject;
-import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.system.Application;
 
 /**
  * Interface zur Einstufung von Umsaetzen in verschiedene Kategorien.
@@ -27,15 +25,20 @@ import de.willuhn.jameica.system.Application;
 public interface UmsatzTyp extends DBObject
 {
   /**
-   * Token, der einen Umsatztyp als Einnahme markiert.
+   * Umsatzkategorie vom Typ "Ausgabe".
    */
-  public final static String EINNAHME = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N().tr("Einnahme");
+  public final static int TYP_AUSGABE  = 0;
   
   /**
-   * Token, der einen Umsatztyp als Ausgabe markiert.
+   * Umsatzkategorie vom Typ "Einnahme".
    */
-  public final static String AUSGABE = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N().tr("Ausgabe");
+  public final static int TYP_EINNAHME = 1;
 
+  /**
+   * Umsatzkategorie vom Typ "Egal".
+   */
+  public final static int TYP_EGAL     = 2;
+  
 	/**
 	 * Liefert den Namen des Umsatz-Typs.
    * @return Name des Umsatz-Typs.
@@ -135,18 +138,24 @@ public interface UmsatzTyp extends DBObject
   public boolean isRegex() throws RemoteException;
   
   /**
-   * Prueft, ob sich der Filter auf Einnahmen oder Ausgaben bezieht.
-   * @return true, wenn es eine Einnahme ist. Sonst false.
+   * Liefert den Typ der Kategorie.
+   * @return Typ der Kategorie.
+   * @see UmsatzTyp#TYP_AUSGABE
+   * @see UmsatzTyp#TYP_EINNAHME
+   * @see UmsatzTyp#TYP_EGAL
    * @throws RemoteException
    */
-  public boolean isEinnahme() throws RemoteException;
+  public int getTyp() throws RemoteException;
   
   /**
-   * Speichert, ob es sich um eine Einnahme handelt.
-   * @param einnahme true, wenn es eine Einnahme ist, sonst false.
+   * Speichert den Typ der Kategorie.
+   * @param typ Typ der Kategorie.
+   * @see UmsatzTyp#TYP_AUSGABE
+   * @see UmsatzTyp#TYP_EINNAHME
+   * @see UmsatzTyp#TYP_EGAL
    * @throws RemoteException
    */
-  public void setEinnahme(boolean einnahme) throws RemoteException;
+  public void setTyp(int typ) throws RemoteException;
   
   /**
    * Speichert, ob es sich bei dem Pattern um einen regulaeren Ausdruck handelt.
@@ -184,6 +193,9 @@ public interface UmsatzTyp extends DBObject
 
 /**********************************************************************
  * $Log: UmsatzTyp.java,v $
+ * Revision 1.15  2008/08/29 16:46:24  willuhn
+ * @N BUGZILLA 616
+ *
  * Revision 1.14  2008/02/26 01:01:16  willuhn
  * @N Update auf Birt 2 (bessere Zeichen-Qualitaet, u.a. durch Anti-Aliasing)
  * @N Neuer Chart "Umsatz-Kategorien im Verlauf"
