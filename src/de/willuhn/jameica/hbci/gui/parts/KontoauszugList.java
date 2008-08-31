@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.11 $
- * $Date: 2008/04/06 23:21:43 $
+ * $Revision: 1.12 $
+ * $Date: 2008/08/31 13:50:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -358,6 +358,32 @@ public class KontoauszugList extends UmsatzList
     this.betragFrom = new DecimalInput(Double.NaN, HBCI.DECIMALFORMAT);
     this.betragFrom.setComment(HBCIProperties.CURRENCY_DEFAULT_DE);
     this.betragFrom.addListener(this.listener);
+    this.betragFrom.addListener(new Listener()
+    {
+      public void handleEvent(Event event)
+      {
+        try
+        {
+          // forciert gleich die Formatierung mit Komma und Nachkommastellen
+          Double thisValue = (Double) betragFrom.getValue();
+          if (thisValue == null || thisValue.isNaN())
+            return;
+          betragFrom.setValue(thisValue);
+
+//          // Wenn beim Hoechstbetrag noch nichts eingegeben ist, uebernehmen
+//          // wird dort automatisch den Mindestbetrag
+//          // Vorschlag von Roberto aus Mail vom 30.08.2008
+//          Input i = getHoechstBetrag();
+//          Double value = (Double) i.getValue();
+//          if (value == null || value.isNaN())
+//            i.setValue(betragFrom.getValue());
+        }
+        catch (Exception e)
+        {
+          Logger.error("error while auto applying max value",e);
+        }
+      }
+    });
     return this.betragFrom;
   }
 
@@ -374,6 +400,24 @@ public class KontoauszugList extends UmsatzList
     this.betragTo = new DecimalInput(Double.NaN, HBCI.DECIMALFORMAT);
     this.betragTo.setComment(HBCIProperties.CURRENCY_DEFAULT_DE);
     this.betragTo.addListener(this.listener);
+    this.betragTo.addListener(new Listener()
+    {
+      public void handleEvent(Event event)
+      {
+        try
+        {
+          // forciert die Formatierung mit Komma und Nachkommastellen
+          Double thisValue = (Double) betragTo.getValue();
+          if (thisValue == null || thisValue.isNaN())
+            return;
+          betragTo.setValue(thisValue);
+        }
+        catch (Exception e)
+        {
+          Logger.error("error while auto formatting",e);
+        }
+      }
+    });
     return this.betragTo;
   }
 
@@ -592,6 +636,9 @@ public class KontoauszugList extends UmsatzList
 
 /*********************************************************************
  * $Log: KontoauszugList.java,v $
+ * Revision 1.12  2008/08/31 13:50:42  willuhn
+ * @N Automatische Betragsformatierung
+ *
  * Revision 1.11  2008/04/06 23:21:43  willuhn
  * @C Bug 575
  * @N Der Vereinheitlichung wegen alle Buttons in den Auswertungen nach oben verschoben. Sie sind dann naeher an den Filter-Controls -> ergonomischer
