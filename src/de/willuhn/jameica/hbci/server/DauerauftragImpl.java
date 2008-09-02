@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DauerauftragImpl.java,v $
- * $Revision: 1.28 $
- * $Date: 2008/04/27 22:22:56 $
+ * $Revision: 1.29 $
+ * $Date: 2008/09/02 22:10:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,13 +13,11 @@
 package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.zip.CRC32;
 
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.Checksum;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Transfer;
@@ -38,19 +36,6 @@ public class DauerauftragImpl extends AbstractHibiscusTransferImpl
 
   private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-	// Hilfsmapping, um die Tages-Konstanten aus java.util.Calendar in
-  // integer von 1 (montag) - 7 (sonntag) umrechnen zu koennen
-  private final static int[] DAYMAP = new int[]
-    {
-      Calendar.MONDAY,
-      Calendar.TUESDAY,
-      Calendar.WEDNESDAY,
-      Calendar.THURSDAY,
-      Calendar.FRIDAY,
-      Calendar.SATURDAY,
-      Calendar.SUNDAY
-    };
-	
   /**
    * ct.
    * @throws RemoteException
@@ -276,63 +261,10 @@ public class DauerauftragImpl extends AbstractHibiscusTransferImpl
    */
   public Date getNaechsteZahlung() throws RemoteException
   {
-    Date current = new Date();
-    Date erste   = getErsteZahlung();
-    if (erste == null)
-      return null;
-    if (erste.after(current))
-      return erste;
-    
-    Date letzte = getLetzteZahlung();
-    if (letzte != null && letzte.before(current))
-      return null;
-    
-    // OK, wenn wir hier angekommen sind, muessen wir rechnen ;)
-    Turnus t = getTurnus();
-    if (t == null)
-      return null;
-    
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(current);
-    
-    int ze  = t.getZeiteinheit();
-    int tag = t.getTag();
-    if (ze == Turnus.ZEITEINHEIT_WOECHENTLICH)
-    {
-      cal.setFirstDayOfWeek(Calendar.MONDAY);
-      cal.add(Calendar.WEEK_OF_YEAR,t.getIntervall());
-      // So, jetzt muessen wir noch den Tag pruefen und ggf. den der Folgewoche
-      // nehmen.
-      
-      // calTag ist unser Zahltag in java.util.Calendar-Schreibweise
-      int calTag = DAYMAP[tag-1]; // "-1" weil das Array bei 0 anfaengt
-      cal.set(Calendar.DAY_OF_WEEK,calTag);
-      Date test = cal.getTime();
-      if (current.after(test))
-      {
-        // Wir befinden uns schon hinter dem Zahltag.
-        // Also muessen wir noch in den naechsten Monat wechseln
-        cal.add(Calendar.WEEK_OF_YEAR,1);
-      }
-    }
-    else
-    {
-      // Siehe oben. Nur mit Monat statt Woche
-      cal.add(Calendar.MONTH,t.getIntervall());
-      if (tag == HBCIProperties.HBCI_LAST_OF_MONTH)
-        cal.set(Calendar.DAY_OF_MONTH,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
-      else
-        cal.set(Calendar.DAY_OF_MONTH,tag);
-      Date test = cal.getTime();
-      if (current.after(test))
-      {
-        cal.add(Calendar.MONTH,1);
-        if (tag == HBCIProperties.HBCI_LAST_OF_MONTH)
-          cal.set(Calendar.DAY_OF_MONTH,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
-      }
-      
-    }
-    return cal.getTime();
+    return DauerauftragUtil.getNaechsteZahlung(this.getErsteZahlung(),
+                                               this.getLetzteZahlung(),
+                                               this.getTurnus(),
+                                               new Date());
   }
 
   /**
@@ -347,6 +279,9 @@ public class DauerauftragImpl extends AbstractHibiscusTransferImpl
 
 /**********************************************************************
  * $Log: DauerauftragImpl.java,v $
+ * Revision 1.29  2008/09/02 22:10:26  willuhn
+ * @B BUGZILLA 617 - Berechnungsfunktion grundlegend ueberarbeitet.
+ *
  * Revision 1.28  2008/04/27 22:22:56  willuhn
  * @C I18N-Referenzen statisch
  *
