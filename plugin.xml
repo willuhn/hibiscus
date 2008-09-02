@@ -18,9 +18,16 @@
       <item id="hibiscus.menu.settings"              name="Einstellungen"                            action="de.willuhn.jameica.hbci.gui.action.Settings" />
       <item name="-" />
       <item id="hibiscus.menu.handbuch"              name="Handbuch"                                 action="de.willuhn.jameica.hbci.gui.action.HandbuchAction"/>
-      <item id="hibiscus.menu.license"               name="Lizenzinformationen"                      action="de.willuhn.jameica.hbci.gui.action.License" />
       <item id="hibiscus.menu.donate"                name="Spenden"                                  action="de.willuhn.jameica.hbci.gui.action.Donate" />
+      <item name="-" />
       <item id="hibiscus.menu.about"                 name="About"                                    action="de.willuhn.jameica.hbci.gui.action.About" />
+      <item name="-" />
+      <item id="hibiscus.menu.ext"                   name="Erweitert">
+        <item id="hibiscus.menu.ext.license"         name="Lizenzinformationen"                      action="de.willuhn.jameica.hbci.gui.action.License" />
+        <item name="-" />
+        <item id="hibiscus.menu.ext.backup.create"   name="Diagnose-Backup erstellen"                action="de.willuhn.jameica.hbci.gui.action.BackupCreate" />
+        <item id="hibiscus.menu.ext.backup.restore"  name="Diagnose-Backup importieren"              action="de.willuhn.jameica.hbci.gui.action.BackupRestore" />
+      </item>
     </item>
   </menu>
   
