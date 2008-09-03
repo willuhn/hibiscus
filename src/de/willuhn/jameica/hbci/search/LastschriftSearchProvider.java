@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/search/UeberweisungSearchProvider.java,v $
- * $Revision: 1.2 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/search/LastschriftSearchProvider.java,v $
+ * $Revision: 1.1 $
  * $Date: 2008/09/03 11:13:51 $
  * $Author: willuhn $
  * $Locker:  $
@@ -20,9 +20,9 @@ import java.util.List;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.action.UeberweisungNew;
+import de.willuhn.jameica.hbci.gui.action.LastschriftNew;
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.rmi.Ueberweisung;
+import de.willuhn.jameica.hbci.rmi.Lastschrift;
 import de.willuhn.jameica.search.Result;
 import de.willuhn.jameica.search.SearchProvider;
 import de.willuhn.jameica.system.Application;
@@ -32,16 +32,16 @@ import de.willuhn.util.I18N;
 
 
 /**
- * Implementierung einen Search-Provider fuer die Suche in Ueberweisungen.
+ * Implementierung einen Search-Provider fuer die Suche in Lastschriften.
  */
-public class UeberweisungSearchProvider implements SearchProvider
+public class LastschriftSearchProvider implements SearchProvider
 {
   /**
    * @see de.willuhn.jameica.search.SearchProvider#getName()
    */
   public String getName()
   {
-    return Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N().tr("Überweisungen");
+    return Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N().tr("Lastschriften");
   }
 
   /**
@@ -54,7 +54,7 @@ public class UeberweisungSearchProvider implements SearchProvider
       return null;
     
     String text = "%" + search.toLowerCase() + "%";
-    DBIterator list = Settings.getDBService().createList(Ueberweisung.class);
+    DBIterator list = Settings.getDBService().createList(Lastschrift.class);
     list.addFilter("LOWER(zweck) LIKE ? OR " +
                    "LOWER(zweck2) LIKE ? OR " +
                    "LOWER(empfaenger_name) LIKE ? OR " +
@@ -65,7 +65,7 @@ public class UeberweisungSearchProvider implements SearchProvider
     ArrayList results = new ArrayList();
     while (list.hasNext())
     {
-      results.add(new MyResult((Ueberweisung)list.next()));
+      results.add(new MyResult((Lastschrift)list.next()));
     }
     return results;
   }
@@ -75,15 +75,15 @@ public class UeberweisungSearchProvider implements SearchProvider
    */
   private class MyResult implements Result
   {
-    private Ueberweisung u = null;
+    private Lastschrift l = null;
     
     /**
      * ct.
-     * @param u
+     * @param l
      */
-    private MyResult(Ueberweisung u)
+    private MyResult(Lastschrift l)
     {
-      this.u = u;
+      this.l = l;
     }
 
     /**
@@ -91,7 +91,7 @@ public class UeberweisungSearchProvider implements SearchProvider
      */
     public void execute() throws RemoteException, ApplicationException
     {
-      new UeberweisungNew().handleAction(this.u);
+      new LastschriftNew().handleAction(this.l);
     }
 
     /**
@@ -101,16 +101,16 @@ public class UeberweisungSearchProvider implements SearchProvider
     {
       try
       {
-        Konto k = u.getKonto();
+        Konto k = l.getKonto();
         String[] params = new String[] {
             k.getLongName(),
-            u.getZweck(),
-            HBCI.DECIMALFORMAT.format(u.getBetrag()),
+            l.getZweck(),
+            HBCI.DECIMALFORMAT.format(l.getBetrag()),
             k.getWaehrung(),
-            u.getGegenkontoName()
+            l.getGegenkontoName()
            };
         I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-        return i18n.tr("{0}: ({1}) {2} {3} an {4}",params);
+        return i18n.tr("{0}: ({1}) {2} {3} von {4}",params);
       }
       catch (RemoteException re)
       {
@@ -125,8 +125,8 @@ public class UeberweisungSearchProvider implements SearchProvider
 
 
 /**********************************************************************
- * $Log: UeberweisungSearchProvider.java,v $
- * Revision 1.2  2008/09/03 11:13:51  willuhn
+ * $Log: LastschriftSearchProvider.java,v $
+ * Revision 1.1  2008/09/03 11:13:51  willuhn
  * @N Mehr Suchprovider
  *
  * Revision 1.1  2008/09/03 00:12:06  willuhn

@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/search/UeberweisungSearchProvider.java,v $
- * $Revision: 1.2 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/search/KontoSearchProvider.java,v $
+ * $Revision: 1.1 $
  * $Date: 2008/09/03 11:13:51 $
  * $Author: willuhn $
  * $Locker:  $
@@ -17,31 +17,31 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.kapott.hbci.manager.HBCIUtils;
+
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.action.UeberweisungNew;
+import de.willuhn.jameica.hbci.gui.action.KontoNew;
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.search.Result;
 import de.willuhn.jameica.search.SearchProvider;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
-import de.willuhn.util.I18N;
 
 
 /**
- * Implementierung einen Search-Provider fuer die Suche in Ueberweisungen.
+ * Implementierung einen Search-Provider fuer die Suche nach Konten.
  */
-public class UeberweisungSearchProvider implements SearchProvider
+public class KontoSearchProvider implements SearchProvider
 {
   /**
    * @see de.willuhn.jameica.search.SearchProvider#getName()
    */
   public String getName()
   {
-    return Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N().tr("Überweisungen");
+    return Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N().tr("Konten");
   }
 
   /**
@@ -52,20 +52,20 @@ public class UeberweisungSearchProvider implements SearchProvider
   {
     if (search == null || search.length() == 0)
       return null;
-    
+
     String text = "%" + search.toLowerCase() + "%";
-    DBIterator list = Settings.getDBService().createList(Ueberweisung.class);
-    list.addFilter("LOWER(zweck) LIKE ? OR " +
-                   "LOWER(zweck2) LIKE ? OR " +
-                   "LOWER(empfaenger_name) LIKE ? OR " +
-                   "empfaenger_konto LIKE ? OR " +
-                   "empfaenger_blz LIKE ?",
+    DBIterator list = Settings.getDBService().createList(Konto.class);
+    list.addFilter("LOWER(name) LIKE ? OR " +
+                   "LOWER(bezeichnung) LIKE ? OR " +
+                   "kontonummer LIKE ? OR " +
+                   "blz LIKE ? OR " +
+                   "kundennummer LIKE ?",
                    new String[]{text,text,text,text,text});
 
     ArrayList results = new ArrayList();
     while (list.hasNext())
     {
-      results.add(new MyResult((Ueberweisung)list.next()));
+      results.add(new MyResult((Konto)list.next()));
     }
     return results;
   }
@@ -75,15 +75,15 @@ public class UeberweisungSearchProvider implements SearchProvider
    */
   private class MyResult implements Result
   {
-    private Ueberweisung u = null;
+    private Konto konto = null;
     
     /**
      * ct.
-     * @param u
+     * @param k
      */
-    private MyResult(Ueberweisung u)
+    private MyResult(Konto k)
     {
-      this.u = u;
+      this.konto = k;
     }
 
     /**
@@ -91,7 +91,7 @@ public class UeberweisungSearchProvider implements SearchProvider
      */
     public void execute() throws RemoteException, ApplicationException
     {
-      new UeberweisungNew().handleAction(this.u);
+      new KontoNew().handleAction(this.konto);
     }
 
     /**
@@ -101,16 +101,12 @@ public class UeberweisungSearchProvider implements SearchProvider
     {
       try
       {
-        Konto k = u.getKonto();
-        String[] params = new String[] {
-            k.getLongName(),
-            u.getZweck(),
-            HBCI.DECIMALFORMAT.format(u.getBetrag()),
-            k.getWaehrung(),
-            u.getGegenkontoName()
-           };
-        I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-        return i18n.tr("{0}: ({1}) {2} {3} an {4}",params);
+        String bank = HBCIUtils.getNameForBLZ(this.konto.getBLZ());
+        String bez = this.konto.getBezeichnung();
+        
+        if (bank != null && bank.length() > 0)
+          return bez + ", " + bank;
+        return bez;
       }
       catch (RemoteException re)
       {
@@ -125,11 +121,8 @@ public class UeberweisungSearchProvider implements SearchProvider
 
 
 /**********************************************************************
- * $Log: UeberweisungSearchProvider.java,v $
- * Revision 1.2  2008/09/03 11:13:51  willuhn
+ * $Log: KontoSearchProvider.java,v $
+ * Revision 1.1  2008/09/03 11:13:51  willuhn
  * @N Mehr Suchprovider
- *
- * Revision 1.1  2008/09/03 00:12:06  willuhn
- * @N Erster Code fuer Searchprovider in Hibiscus
  *
  **********************************************************************/
