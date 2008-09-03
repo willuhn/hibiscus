@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.53 $
- * $Date: 2008/04/27 22:22:56 $
+ * $Revision: 1.54 $
+ * $Date: 2008/09/03 21:29:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -264,14 +264,15 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
    * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
    */
   public boolean equals(GenericObject o) throws RemoteException {
-		if (o == null)
+		if (o == null || !(o instanceof Umsatz))
 			return false;
 		try {
 			Umsatz other = (Umsatz) o;
 			return other.getChecksum() == getChecksum();
 		}
-		catch (ClassCastException e)
+		catch (Exception e)
 		{
+      Logger.error("error while comparing objects",e);
 			return false;
 		}
   }
@@ -672,6 +673,9 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.54  2008/09/03 21:29:44  willuhn
+ * @C BUGZILLA 622 - Debug-Ausgaben
+ *
  * Revision 1.53  2008/04/27 22:22:56  willuhn
  * @C I18N-Referenzen statisch
  *
