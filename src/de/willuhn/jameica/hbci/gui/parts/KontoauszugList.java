@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.15 $
- * $Date: 2008/09/03 08:27:04 $
+ * $Revision: 1.16 $
+ * $Date: 2008/09/04 09:34:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -382,12 +382,7 @@ public class KontoauszugList extends UmsatzList
             if (value == null || value.isNaN())
             {
               i.setValue(betragFrom.getValue());
-              
-              // Test mit "setSelection" weil "selectAll" unter Windows
-              // nicht richtig zu funktionieren scheint
-              Text t = (Text) i.getControl();
-              t.setSelection(0,t.getText().length()-1);
-              //((Text) i.getControl()).selectAll();
+              ((Text) i.getControl()).selectAll();
             }
           }
         }
@@ -649,6 +644,9 @@ public class KontoauszugList extends UmsatzList
 
 /*********************************************************************
  * $Log: KontoauszugList.java,v $
+ * Revision 1.16  2008/09/04 09:34:16  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.15  2008/09/03 08:27:04  willuhn
  * @C Test - "selectAll" gegen "setSelection" ersetzt
  *
