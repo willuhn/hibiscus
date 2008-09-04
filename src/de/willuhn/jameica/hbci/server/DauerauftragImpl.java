@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DauerauftragImpl.java,v $
- * $Revision: 1.29 $
- * $Date: 2008/09/02 22:10:26 $
+ * $Revision: 1.30 $
+ * $Date: 2008/09/04 23:42:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -261,10 +261,10 @@ public class DauerauftragImpl extends AbstractHibiscusTransferImpl
    */
   public Date getNaechsteZahlung() throws RemoteException
   {
-    return DauerauftragUtil.getNaechsteZahlung(this.getErsteZahlung(),
-                                               this.getLetzteZahlung(),
-                                               this.getTurnus(),
-                                               new Date());
+    return TurnusHelper.getNaechsteZahlung(this.getErsteZahlung(),
+                                           this.getLetzteZahlung(),
+                                           this.getTurnus(),
+                                           new Date());
   }
 
   /**
@@ -279,6 +279,11 @@ public class DauerauftragImpl extends AbstractHibiscusTransferImpl
 
 /**********************************************************************
  * $Log: DauerauftragImpl.java,v $
+ * Revision 1.30  2008/09/04 23:42:33  willuhn
+ * @N Searchprovider fuer Sammel- und Dauerauftraege
+ * @N Sortierung von Ueberweisungen und Lastschriften in Suchergebnissen
+ * @C "getNaechsteZahlung" von DauerauftragUtil nach TurnusHelper verschoben
+ *
  * Revision 1.29  2008/09/02 22:10:26  willuhn
  * @B BUGZILLA 617 - Berechnungsfunktion grundlegend ueberarbeitet.
  *

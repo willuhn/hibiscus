@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/TurnusHelper.java,v $
- * $Revision: 1.13 $
- * $Date: 2006/08/25 10:13:43 $
+ * $Revision: 1.14 $
+ * $Date: 2008/09/04 23:42:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,8 @@
 package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
+import java.util.Calendar;
+import java.util.Date;
 
 import org.kapott.hbci.GV_Result.GVRDauerList;
 
@@ -32,7 +34,143 @@ public class TurnusHelper
 {
 
 	private static String[] wochentage = null;
-	
+
+  // Hilfsmapping, um die Tages-Konstanten aus java.util.Calendar in
+  // integer von 1 (montag) - 7 (sonntag) umrechnen zu koennen
+  private final static int[] DAYMAP = new int[]
+    {
+      Calendar.MONDAY,
+      Calendar.TUESDAY,
+      Calendar.WEDNESDAY,
+      Calendar.THURSDAY,
+      Calendar.FRIDAY,
+      Calendar.SATURDAY,
+      Calendar.SUNDAY
+    };
+  
+  
+  /**
+   * Liefert ein String-Array mit den Bezeichnungen der Wochentage.
+   * Hinweis: Da es sich um ein Array handelt, zaehlt der Index
+   * natuerlich nicht von 1-7 sondern von 0-6.
+   * @return Bezeichnungen der Wochentage.
+   */
+  public static String[] getWochentage()
+  {
+    if (wochentage != null)
+      return wochentage;
+
+    I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+
+    wochentage = new String[]
+    {
+      i18n.tr("Montag"),
+      i18n.tr("Dienstag"),
+      i18n.tr("Mittwoch"),
+      i18n.tr("Donnerstag"),
+      i18n.tr("Freitag"),
+      i18n.tr("Samstag"),
+      i18n.tr("Sonntag")
+    };
+    
+    return wochentage;
+  }
+
+  /**
+   * Liefert die Bezeichnung des Werktages mit dem genannten Index.
+   * Den zum Zahltag des Turnus gehoerenden kann man dann wie folgt ermitteln:<br>
+   * <code>String tag = TurnusHelper.getWochentag(turnus.getTag())</code>.
+   * @param index Index des Wochentages von 1 - 7.
+   * @return Bezeichnung des Wochentages, oder <code>null</code> wenn der Index
+   * ausserhalb des definierten Bereichs liegt.
+   */
+  public static String getWochentag(int index)
+  {
+    if (index < 1 || index > 7)
+      return null;
+    return getWochentage()[index - 1];
+  }
+
+
+  /**
+   * Berechnet das naechste Ausfuehrungsdatum fuer einen Turnus.
+   * @param ersteZahlung Datum der ersten Zahlung.
+   * @param letzteZahlung Datum der letzten Zahlung.
+   * @param turnus Turnus.
+   * @param valuta Stichtag, zu dem die Berechnung erfolgen soll.
+   * Ist kein Datum angegeben, wird das aktuelle verwendet.
+   * @return das ermittelte Datum oder <code>null</code>, wenn keines mehr existiert.
+   * @throws RemoteException
+   */
+  public static Date getNaechsteZahlung(Date ersteZahlung, Date letzteZahlung, Turnus turnus, Date valuta) throws RemoteException
+  {
+    // Keine erste Zahlung angegeben und kein Turnus. Nichts ermittelbar
+    if (ersteZahlung == null || turnus == null)
+      return null;
+    
+    if (valuta == null)
+      valuta = new Date();
+    
+    // Das Datum der ersten Zahlung liegt in der Zukunft oder ist heute. Dann brauchen
+    // wir gar nicht rechnen, sondern koennen gleich das nehmen.
+    if (ersteZahlung.after(valuta) || ersteZahlung.equals(valuta))
+      return ersteZahlung;
+
+    // Auftrag bereits abgelaufen, da sich das Valuta-Datum hinter
+    // der letzten Ausfuehrung befindet
+    if (letzteZahlung != null && letzteZahlung.before(valuta))
+      return null;
+
+    // OK, wenn wir hier angekommen sind, muessen wir rechnen ;)
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(ersteZahlung);
+    cal.setFirstDayOfWeek(Calendar.MONDAY);
+    
+    int ze  = turnus.getZeiteinheit();
+    int tag = turnus.getTag();
+    int iv  = turnus.getIntervall();
+
+    Date test = null;
+    
+    // eigentlich gehoert hier ein "while true" hin, ich will aber eine
+    // Abbruchbedingung, damit das Teil keine 1000 Jahre in die Zukunft
+    // rechnet ;)
+    for (int i=0;i<1000;++i)
+    {
+      // Woechentlich
+      if (ze == Turnus.ZEITEINHEIT_WOECHENTLICH)
+      {
+        // Wochentag festlegen
+        int calTag = DAYMAP[tag-1]; // "-1" weil das Array bei 0 anfaengt
+        cal.set(Calendar.DAY_OF_WEEK,calTag);
+
+        test = cal.getTime();
+        if (test != null && (test.after(valuta)) || test.equals(valuta))
+          return test; // Datum gefunden
+
+        // Ne, dann Anzahl der Wochen drauf rechnen
+        cal.add(Calendar.WEEK_OF_YEAR,iv);
+      }
+      // Monatlich
+      else
+      {
+        // Tag im Monat festlegen
+        if (tag == HBCIProperties.HBCI_LAST_OF_MONTH)
+          cal.set(Calendar.DAY_OF_MONTH,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+        else
+          cal.set(Calendar.DAY_OF_MONTH,tag);
+
+        test = cal.getTime();
+        if (test != null && (test.after(valuta)) || test.equals(valuta))
+          return test; // Datum gefunden
+
+        // Ne, dann Anzahl der Monate drauf rechnen
+        cal.add(Calendar.MONTH,iv);
+      }
+    }
+    return null; // kein Datum ermittelbar
+  }
+
 	/**
 	 * Prueft, ob es in der lokalen Datenbank einen Zahlungsturnus gibt,
 	 * der den Eigenschaften des uebergebenen Dauerauftrags aus HBCI4Java
@@ -138,53 +276,16 @@ public class TurnusHelper
 
 		return s;
 	}
-	
-  /**
-	 * Liefert die Bezeichnung des Werktages mit dem genannten Index.
-	 * Den zum Zahltag des Turnus gehoerenden kann man dann wie folgt ermitteln:<br>
-	 * <code>String tag = TurnusHelper.getWochentag(turnus.getTag())</code>.
-   * @param index Index des Wochentages von 1 - 7.
-   * @return Bezeichnung des Wochentages, oder <code>null</code> wenn der Index
-   * ausserhalb des definierten Bereichs liegt.
-   */
-  public static String getWochentag(int index)
-	{
-		if (index < 1 || index > 7)
-			return null;
-		return getWochentage()[index - 1];
-	}
-
-	/**
-	 * Liefert ein String-Array mit den Bezeichnungen der Wochentage.
-	 * Hinweis: Da es sich um ein Array handelt, zaehlt der Index
-	 * natuerlich nicht von 1-7 sondern von 0-6.
-	 * @return Bezeichnungen der Wochentage.
-	 */
-  public static String[] getWochentage()
-	{
-		if (wochentage != null)
-			return wochentage;
-
-		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
-		wochentage = new String[]
-		{
-			i18n.tr("Montag"),
-			i18n.tr("Dienstag"),
-			i18n.tr("Mittwoch"),
-			i18n.tr("Donnerstag"),
-			i18n.tr("Freitag"),
-			i18n.tr("Samstag"),
-			i18n.tr("Sonntag")
-		};
-		
-		return wochentage;
-	}
 }
 
 
 /**********************************************************************
  * $Log: TurnusHelper.java,v $
+ * Revision 1.14  2008/09/04 23:42:33  willuhn
+ * @N Searchprovider fuer Sammel- und Dauerauftraege
+ * @N Sortierung von Ueberweisungen und Lastschriften in Suchergebnissen
+ * @C "getNaechsteZahlung" von DauerauftragUtil nach TurnusHelper verschoben
+ *
  * Revision 1.13  2006/08/25 10:13:43  willuhn
  * @B Fremdschluessel NICHT mittels PreparedStatement, da die sonst gequotet und von McKoi nicht gefunden werden. BUGZILLA 278
  *

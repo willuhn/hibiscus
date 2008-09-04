@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/search/LastschriftSearchProvider.java,v $
- * $Revision: 1.2 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/search/SammelUeberweisungSearchProvider.java,v $
+ * $Revision: 1.1 $
  * $Date: 2008/09/04 23:42:33 $
  * $Author: willuhn $
  * $Locker:  $
@@ -14,16 +14,16 @@
 package de.willuhn.jameica.hbci.search;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Hashtable;
 import java.util.List;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.action.LastschriftNew;
-import de.willuhn.jameica.hbci.rmi.HBCIDBService;
-import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.rmi.Lastschrift;
+import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungNew;
+import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
+import de.willuhn.jameica.hbci.rmi.SammelUeberweisungBuchung;
 import de.willuhn.jameica.search.Result;
 import de.willuhn.jameica.search.SearchProvider;
 import de.willuhn.jameica.system.Application;
@@ -33,16 +33,16 @@ import de.willuhn.util.I18N;
 
 
 /**
- * Implementierung einen Search-Provider fuer die Suche in Lastschriften.
+ * Implementierung einen Search-Provider fuer die Suche in Sammel-Ueberweisungen.
  */
-public class LastschriftSearchProvider implements SearchProvider
+public class SammelUeberweisungSearchProvider implements SearchProvider
 {
   /**
    * @see de.willuhn.jameica.search.SearchProvider#getName()
    */
   public String getName()
   {
-    return Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N().tr("Lastschriften");
+    return Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N().tr("Sammel-Überweisungen");
   }
 
   /**
@@ -55,22 +55,37 @@ public class LastschriftSearchProvider implements SearchProvider
       return null;
     
     String text = "%" + search.toLowerCase() + "%";
-    HBCIDBService service = (HBCIDBService) Settings.getDBService();
-    DBIterator list = service.createList(Lastschrift.class);
+    
+    // Wir speichern die Daten erstmal in einem Hash, damit wir Duplikate rausfischen koennen
+    Hashtable hash = new Hashtable();
+    
+    // Schritt 1: Die Buchungen von Sammel-Auftraegen
+    DBIterator list = Settings.getDBService().createList(SammelUeberweisungBuchung.class);
     list.addFilter("LOWER(zweck) LIKE ? OR " +
                    "LOWER(zweck2) LIKE ? OR " +
-                   "LOWER(empfaenger_name) LIKE ? OR " +
-                   "empfaenger_konto LIKE ? OR " +
-                   "empfaenger_blz LIKE ?",
+                   "LOWER(gegenkonto_name) LIKE ? OR " +
+                   "gegenkonto_nr LIKE ? OR " +
+                   "gegenkonto_blz LIKE ?",
                    new String[]{text,text,text,text,text});
-    list.setOrder("ORDER BY " + service.getSQLTimestamp("termin") + " DESC");
 
-    ArrayList results = new ArrayList();
     while (list.hasNext())
     {
-      results.add(new MyResult((Lastschrift)list.next()));
+      SammelUeberweisungBuchung buchung = (SammelUeberweisungBuchung) list.next();
+      SammelUeberweisung ueb = (SammelUeberweisung) buchung.getSammelTransfer();
+      hash.put(ueb.getID(),new MyResult(ueb));
     }
-    return results;
+    
+    // Schritt 2: Sammel-Auftraege selbst
+    list = Settings.getDBService().createList(SammelUeberweisung.class);
+    list.addFilter("LOWER(bezeichnung) LIKE ?",new String[]{text});
+
+    while (list.hasNext())
+    {
+      SammelUeberweisung ueb = (SammelUeberweisung) list.next();
+      hash.put(ueb.getID(),new MyResult(ueb));
+    }
+
+    return Arrays.asList(hash.values().toArray(new MyResult[hash.size()]));
   }
   
   /**
@@ -78,15 +93,15 @@ public class LastschriftSearchProvider implements SearchProvider
    */
   private class MyResult implements Result
   {
-    private Lastschrift l = null;
+    private SammelUeberweisung u = null;
     
     /**
      * ct.
-     * @param l
+     * @param u
      */
-    private MyResult(Lastschrift l)
+    private MyResult(SammelUeberweisung u)
     {
-      this.l = l;
+      this.u = u;
     }
 
     /**
@@ -94,7 +109,7 @@ public class LastschriftSearchProvider implements SearchProvider
      */
     public void execute() throws RemoteException, ApplicationException
     {
-      new LastschriftNew().handleAction(this.l);
+      new SammelUeberweisungNew().handleAction(this.u);
     }
 
     /**
@@ -104,16 +119,8 @@ public class LastschriftSearchProvider implements SearchProvider
     {
       try
       {
-        Konto k = l.getKonto();
-        String[] params = new String[] {
-            k.getLongName(),
-            l.getZweck(),
-            HBCI.DECIMALFORMAT.format(l.getBetrag()),
-            k.getWaehrung(),
-            l.getGegenkontoName()
-           };
         I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-        return i18n.tr("{0}: ({1}) {2} {3} von {4}",params);
+        return i18n.tr("{0}: {1}",new String[] {HBCI.DATEFORMAT.format(u.getTermin()),u.getBezeichnung()});
       }
       catch (RemoteException re)
       {
@@ -128,16 +135,10 @@ public class LastschriftSearchProvider implements SearchProvider
 
 
 /**********************************************************************
- * $Log: LastschriftSearchProvider.java,v $
- * Revision 1.2  2008/09/04 23:42:33  willuhn
+ * $Log: SammelUeberweisungSearchProvider.java,v $
+ * Revision 1.1  2008/09/04 23:42:33  willuhn
  * @N Searchprovider fuer Sammel- und Dauerauftraege
  * @N Sortierung von Ueberweisungen und Lastschriften in Suchergebnissen
  * @C "getNaechsteZahlung" von DauerauftragUtil nach TurnusHelper verschoben
- *
- * Revision 1.1  2008/09/03 11:13:51  willuhn
- * @N Mehr Suchprovider
- *
- * Revision 1.1  2008/09/03 00:12:06  willuhn
- * @N Erster Code fuer Searchprovider in Hibiscus
  *
  **********************************************************************/
