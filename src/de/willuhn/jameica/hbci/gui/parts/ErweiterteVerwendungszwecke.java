@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/ErweiterteVerwendungszwecke.java,v $
- * $Revision: 1.2 $
- * $Date: 2008/05/30 12:02:08 $
+ * $Revision: 1.3 $
+ * $Date: 2008/09/16 23:43:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,6 +28,10 @@ import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.ScrolledContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
+import de.willuhn.jameica.hbci.rmi.Terminable;
+import de.willuhn.jameica.hbci.server.AccountUtil;
+import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.Settings;
 import de.willuhn.util.ApplicationException;
@@ -42,19 +46,20 @@ public class ErweiterteVerwendungszwecke implements Part
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
   private String[] orig        = null;
-  private boolean readOnly     = false;
   private ArrayList fields     = new ArrayList();
   private Button add           = null;
+  
+  private HibiscusTransfer transfer = null;
 
   /**
    * ct.
-   * @param lines die Zeilen Verwendungszweck.
-   * @param readOnly true, wenn alle Felder Read-Only sein sollen.
+   * @param transfer der Auftrag.
+   * @throws RemoteException
    */
-  public ErweiterteVerwendungszwecke(String[] lines, boolean readOnly)
+  public ErweiterteVerwendungszwecke(HibiscusTransfer transfer) throws RemoteException
   {
-    this.orig = lines;
-    this.readOnly = readOnly;
+    this.transfer = transfer;
+    this.orig     = VerwendungszweckUtil.toArray(this.transfer);
   }
 
   /**
@@ -63,7 +68,10 @@ public class ErweiterteVerwendungszwecke implements Part
   public void paint(Composite parent) throws RemoteException
   {
     this.fields.clear();
-    
+
+    final int maxusage     = AccountUtil.getMaxUsageUeb(transfer.getKonto());
+    final boolean readOnly = ((this.transfer instanceof Terminable) && ((Terminable)this.transfer).ausgefuehrt());
+
     Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
     int size = settings.getInt("transfertype.usagelist.size",5);
     if (orig != null && orig.length > size)
@@ -72,7 +80,7 @@ public class ErweiterteVerwendungszwecke implements Part
     final Container container = new ScrolledContainer(parent);
     for (int i=0;i<size;++i)
     {
-      createLine(container,(orig != null && orig.length > i) ? orig[i] : null,i);
+      createLine(container,(orig != null && orig.length > i) ? orig[i] : null,i,readOnly);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -81,14 +89,14 @@ public class ErweiterteVerwendungszwecke implements Part
       public void handleAction(Object context) throws ApplicationException
       {
         int size = fields.size();
-        createLine(container,null,size);
+        createLine(container,null,size,readOnly);
         Composite comp = container.getComposite();
         comp.setSize(comp.computeSize(SWT.DEFAULT, SWT.DEFAULT)); // Groesse neu berechnen, damit der Scrollbalken passt
-        add.setEnabled(!readOnly && size+3 < HBCIProperties.HBCI_TRANSFER_USAGE_MAXNUM);
+        add.setEnabled(!readOnly && size+3 < maxusage);
         
       }
     });
-    this.add.setEnabled(!this.readOnly && size+3 <= HBCIProperties.HBCI_TRANSFER_USAGE_MAXNUM);
+    this.add.setEnabled(!readOnly && size+3 <= maxusage);
     ButtonArea buttons = new ButtonArea(parent,1);
     buttons.addButton(add);
     //
@@ -104,10 +112,10 @@ public class ErweiterteVerwendungszwecke implements Part
    * @param text Anzuzeigender Text im Eingabefeld.
    * @param pos Position des Verwendungszwecks.
    */
-  private void createLine(Container container, String text, int pos)
+  private void createLine(Container container, String text, int pos, boolean readonly)
   {
     final TextInput zweck = new TextInput(text,HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH);
-    zweck.setEnabled(!this.readOnly);
+    zweck.setEnabled(!readonly);
     zweck.setName(i18n.tr("Verwendungszweck {0}","" + (pos+3)));
     zweck.setValidChars(HBCIProperties.HBCI_DTAUS_VALIDCHARS);
 
@@ -159,6 +167,9 @@ public class ErweiterteVerwendungszwecke implements Part
 
 /**********************************************************************
  * $Log: ErweiterteVerwendungszwecke.java,v $
+ * Revision 1.3  2008/09/16 23:43:32  willuhn
+ * @N BPDs fuer Anzahl der moeglichen Zeilen Verwendungszweck auswerten - IN PROGRESS
+ *
  * Revision 1.2  2008/05/30 12:02:08  willuhn
  * @N Erster Code fuer erweiterte Verwendungszwecke - NOCH NICHT FREIGESCHALTET!
  *

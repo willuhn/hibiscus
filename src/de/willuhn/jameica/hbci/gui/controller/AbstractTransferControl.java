@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.41 $
- * $Date: 2008/06/02 08:06:29 $
+ * $Revision: 1.42 $
+ * $Date: 2008/09/16 23:43:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -39,7 +39,6 @@ import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.jameica.hbci.rmi.Verwendungszweck;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -202,13 +201,8 @@ public abstract class AbstractTransferControl extends AbstractControl
 		if (zweck2 != null)
 			return zweck2;
 		// BUGZILLA #10 http://www.willuhn.de/bugzilla/show_bug.cgi?id=10
-    HibiscusTransfer t = getTransfer();
-    String[] lines = VerwendungszweckUtil.toArray(t);
     final String buttonText = "weitere Zeilen ({0})...";
-    boolean readOnly = false;
-    if (t instanceof Terminable)
-      readOnly = ((Terminable)t).ausgefuehrt();
-    this.zweckDialog = new VerwendungszweckDialog(lines,readOnly,VerwendungszweckDialog.POSITION_MOUSE);
+    this.zweckDialog = new VerwendungszweckDialog(getTransfer(),VerwendungszweckDialog.POSITION_MOUSE);
     this.zweckDialog.addCloseListener(new Listener() {
       public void handleEvent(Event event)
       {
@@ -227,7 +221,7 @@ public abstract class AbstractTransferControl extends AbstractControl
     
     });
 		zweck2 = new DialogInput(getTransfer().getZweck2(),this.zweckDialog);
-    zweck2.setButtonText(i18n.tr(buttonText,Integer.toString(lines.length)));
+    zweck2.setButtonText(i18n.tr(buttonText,Integer.toString(VerwendungszweckUtil.toArray(getTransfer()).length)));
     zweck2.setMaxLength(HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH);
     zweck2.setValidChars(HBCIProperties.HBCI_DTAUS_VALIDCHARS);
     zweck2.disableButton(); // TODO EVZ - Freischalten, wenn alles implementiert ist
@@ -327,6 +321,9 @@ public abstract class AbstractTransferControl extends AbstractControl
           if (text.length() == 0)
             continue;
           
+          // TODO: Checken, ob die aktuelle Anzahl der Verwendungszwecke
+          // noch mit den BPDs des ausgewaehlten Kontos erlaubt ist
+          // Sinnvollerweise direkt in AbstractHibiscusTransferImpl.[updateCheck|insertCheck]
           VerwendungszweckUtil.create(getTransfer(),text);
         }
       }
@@ -396,6 +393,10 @@ public abstract class AbstractTransferControl extends AbstractControl
 				getKontoAuswahl().setText(konto.getKontonummer());
 				getKontoAuswahl().setComment(b == null ? "" : b);
 				getBetrag().setComment(konto.getWaehrung());
+        
+        // Wird u.a. benoetigt, damit anhand des Auftrages ermittelt werden
+        // kann, wieviele Zeilen Verwendungszweck jetzt moeglich sind
+        getTransfer().setKonto(konto);
 			}
 			catch (RemoteException er)
 			{
@@ -466,6 +467,9 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
+ * Revision 1.42  2008/09/16 23:43:32  willuhn
+ * @N BPDs fuer Anzahl der moeglichen Zeilen Verwendungszweck auswerten - IN PROGRESS
+ *
  * Revision 1.41  2008/06/02 08:06:29  willuhn
  * @C Button fuer weitere Verwendungszwecke vorerst gesperrt
  *

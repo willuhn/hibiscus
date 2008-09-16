@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/VerwendungszweckDialog.java,v $
- * $Revision: 1.1 $
- * $Date: 2008/05/30 12:02:08 $
+ * $Revision: 1.2 $
+ * $Date: 2008/09/16 23:43:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,6 +28,9 @@ import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.parts.ErweiterteVerwendungszwecke;
+import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
+import de.willuhn.jameica.hbci.rmi.Terminable;
+import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -46,16 +49,19 @@ public class VerwendungszweckDialog extends AbstractDialog
 
   /**
    * ct
-   * @param lines die Zeilen Verwendungszweck.
-   * @param readOnly true, wenn der Dialog Read-Only sein soll.
+   * @param transfer der Auftrag.
    * @param pos Position des Dialogs.
+   * @throws RemoteException
    */
-  public VerwendungszweckDialog(String[] lines, boolean readOnly, int pos)
+  public VerwendungszweckDialog(HibiscusTransfer transfer, int pos) throws RemoteException
   {
     super(pos);
-    this.readOnly = readOnly;
-    this.ewz = new ErweiterteVerwendungszwecke(lines,readOnly);
+
     setTitle(i18n.tr("Weitere Verwendungszwecke"));
+
+    this.lines    = VerwendungszweckUtil.toArray(transfer);
+    this.ewz      = new ErweiterteVerwendungszwecke(transfer);
+    this.readOnly = ((transfer instanceof Terminable) && ((Terminable)transfer).ausgefuehrt());
   }
 
   /**
@@ -115,6 +121,9 @@ public class VerwendungszweckDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: VerwendungszweckDialog.java,v $
+ * Revision 1.2  2008/09/16 23:43:32  willuhn
+ * @N BPDs fuer Anzahl der moeglichen Zeilen Verwendungszweck auswerten - IN PROGRESS
+ *
  * Revision 1.1  2008/05/30 12:02:08  willuhn
  * @N Erster Code fuer erweiterte Verwendungszwecke - NOCH NICHT FREIGESCHALTET!
  *
