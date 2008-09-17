@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractHibiscusTransferImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2008/05/19 22:35:53 $
+ * $Revision: 1.7 $
+ * $Date: 2008/09/17 23:44:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -90,6 +90,9 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractDBObject impl
 
 			HBCIProperties.checkChars(getZweck(), HBCIProperties.HBCI_DTAUS_VALIDCHARS);
       HBCIProperties.checkChars(getZweck2(), HBCIProperties.HBCI_DTAUS_VALIDCHARS);
+      
+      // TODO EVZ - Checken, ob die Anzahl der Verwendungszwecke korrekt ist
+      // AccountUtil.checkMaxUsage(this);
   	}
   	catch (RemoteException e)
   	{
@@ -277,6 +280,9 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractDBObject impl
 
 /**********************************************************************
  * $Log: AbstractHibiscusTransferImpl.java,v $
+ * Revision 1.7  2008/09/17 23:44:29  willuhn
+ * @B SQL-Query fuer MaxUsage-Abfrage korrigiert
+ *
  * Revision 1.6  2008/05/19 22:35:53  willuhn
  * @N Maximale Laenge von Kontonummern konfigurierbar (Soft- und Hardlimit)
  * @N Laengenpruefungen der Kontonummer in Dialogen und Fachobjekten

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.58 $
- * $Date: 2008/05/30 12:31:41 $
+ * $Revision: 1.59 $
+ * $Date: 2008/09/17 23:44:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -494,7 +494,7 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
 				break;
 
 			default:
-				throw new HBCI_Exception(HBCIUtilsInternal.getLocMsg("STATUS_INVALID",Integer.toString(statusTag)));
+				throw new HBCI_Exception(HBCIUtilsInternal.getLocMsg("STATUS_INVALID",String.valueOf(statusTag)));
 		}
     
   }
@@ -503,6 +503,9 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.59  2008/09/17 23:44:29  willuhn
+ * @B SQL-Query fuer MaxUsage-Abfrage korrigiert
+ *
  * Revision 1.58  2008/05/30 12:31:41  willuhn
  * @N Erster Code fuer gecachte BPD/UPD
  *

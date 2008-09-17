@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.42 $
- * $Date: 2008/09/16 23:43:32 $
+ * $Revision: 1.43 $
+ * $Date: 2008/09/17 23:44:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -210,7 +210,7 @@ public abstract class AbstractTransferControl extends AbstractControl
         {
           String[] newLines = (String[]) zweckDialog.getData();
           if (newLines != null) // andernfalls wurde "Abbrechen" gedrueckt
-            zweck2.setButtonText(i18n.tr(buttonText,Integer.toString(newLines.length)));
+            zweck2.setButtonText(i18n.tr(buttonText,String.valueOf(newLines.length)));
         }
         catch (Exception e)
         {
@@ -221,7 +221,7 @@ public abstract class AbstractTransferControl extends AbstractControl
     
     });
 		zweck2 = new DialogInput(getTransfer().getZweck2(),this.zweckDialog);
-    zweck2.setButtonText(i18n.tr(buttonText,Integer.toString(VerwendungszweckUtil.toArray(getTransfer()).length)));
+    zweck2.setButtonText(i18n.tr(buttonText,String.valueOf(VerwendungszweckUtil.toArray(getTransfer()).length)));
     zweck2.setMaxLength(HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH);
     zweck2.setValidChars(HBCIProperties.HBCI_DTAUS_VALIDCHARS);
     zweck2.disableButton(); // TODO EVZ - Freischalten, wenn alles implementiert ist
@@ -321,9 +321,6 @@ public abstract class AbstractTransferControl extends AbstractControl
           if (text.length() == 0)
             continue;
           
-          // TODO: Checken, ob die aktuelle Anzahl der Verwendungszwecke
-          // noch mit den BPDs des ausgewaehlten Kontos erlaubt ist
-          // Sinnvollerweise direkt in AbstractHibiscusTransferImpl.[updateCheck|insertCheck]
           VerwendungszweckUtil.create(getTransfer(),text);
         }
       }
@@ -467,6 +464,9 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
+ * Revision 1.43  2008/09/17 23:44:29  willuhn
+ * @B SQL-Query fuer MaxUsage-Abfrage korrigiert
+ *
  * Revision 1.42  2008/09/16 23:43:32  willuhn
  * @N BPDs fuer Anzahl der moeglichen Zeilen Verwendungszweck auswerten - IN PROGRESS
  *

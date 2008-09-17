@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AccountUtil.java,v $
- * $Revision: 1.1 $
- * $Date: 2008/09/16 23:43:32 $
+ * $Revision: 1.2 $
+ * $Date: 2008/09/17 23:44:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,14 +14,16 @@
 package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
-import de.willuhn.datasource.rmi.ResultSetExtractor;
+import de.willuhn.datasource.GenericIterator;
+import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
-import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
+import de.willuhn.util.ApplicationException;
+import de.willuhn.util.I18N;
 
 
 /**
@@ -45,22 +47,13 @@ public class AccountUtil
     
     // Kundennummer korrekt?
     String kd = konto.getKundennummer();
-    if (kd == null || kd.length() == 0 || !kd.trim().matches("[0-9]{1,30}"))
+    if (kd == null || kd.length() == 0 || !kd.trim().matches("[0-9a-zA-Z]{1,30}"))
       return defaultValue;
     
-    kd = kd.trim();
+    kd = "bpd." + kd.trim() + ".%UebPar%.ParUeb.maxusage";
     
-    // TODO: Das SQL-Statement wirft eine "org.h2.jdbc.JdbcSQLException: Unerlaubter Wert 1 für Parameter parameterIndex"
-    String q = "select min(content) from property where name like 'bpd.?.%UebPar%.ParUeb.maxusage'";
-    String s = (String) Settings.getDBService().execute(q,new String[]{kd}, new ResultSetExtractor()
-    {
-      public Object extract(ResultSet rs) throws RemoteException, SQLException
-      {
-        return rs.next() ? rs.getString(1) : null;
-      }
-    });
-    if (s == null)
-      return defaultValue;
+    String q = "select min(content) from property where name like ?";
+    String s = DBPropertyUtil.query(q,new String[]{kd},String.valueOf(defaultValue));
     
     try
     {
@@ -72,11 +65,38 @@ public class AccountUtil
     }
     return defaultValue;
   }
+  
+  /**
+   * Prueft, ob die Anzahl der Verwendungszwecke nicht die Maximal-Anzahl aus den BPD uebersteigt.
+   * @param transfer der zu testende Transfer.
+   * @throws RemoteException
+   * @throws ApplicationException
+   */
+  public static void checkMaxUsage(HibiscusTransfer transfer) throws RemoteException, ApplicationException
+  {
+    if (transfer == null)
+      return;
+    
+    GenericIterator it = transfer.getWeitereVerwendungszwecke();
+    if (it == null)
+      return;
+    
+    // "2" sind die ersten beiden Zeilen, die bei getWeitereVerwendungszwecke nicht mitgeliefert werden
+    int allowed = AccountUtil.getMaxUsageUeb(transfer.getKonto());
+    if ((it.size() + 2) > allowed)
+    {
+      I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+      throw new ApplicationException(i18n.tr("Zuviele weitere Zeilen Verwendungszweck. Maximal erlaubt: {0}",String.valueOf(allowed)));
+    }
+  }
 }
 
 
 /**********************************************************************
  * $Log: AccountUtil.java,v $
+ * Revision 1.2  2008/09/17 23:44:29  willuhn
+ * @B SQL-Query fuer MaxUsage-Abfrage korrigiert
+ *
  * Revision 1.1  2008/09/16 23:43:32  willuhn
  * @N BPDs fuer Anzahl der moeglichen Zeilen Verwendungszweck auswerten - IN PROGRESS
  *

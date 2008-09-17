@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzTypControl.java,v $
- * $Revision: 1.8 $
- * $Date: 2008/08/29 16:46:23 $
+ * $Revision: 1.9 $
+ * $Date: 2008/09/17 23:44:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -293,7 +293,7 @@ public class UmsatzTypControl extends AbstractControl
      */
     public String getID() throws RemoteException
     {
-      return Integer.toString(this.typ);
+      return String.valueOf(this.typ);
     }
 
     /**
@@ -309,6 +309,9 @@ public class UmsatzTypControl extends AbstractControl
 
 /*********************************************************************
  * $Log: UmsatzTypControl.java,v $
+ * Revision 1.9  2008/09/17 23:44:29  willuhn
+ * @B SQL-Query fuer MaxUsage-Abfrage korrigiert
+ *
  * Revision 1.8  2008/08/29 16:46:23  willuhn
  * @N BUGZILLA 616
  *
