@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCIJob.java,v $
- * $Revision: 1.27 $
- * $Date: 2008/09/23 11:24:27 $
+ * $Revision: 1.28 $
+ * $Date: 2008/09/23 11:28:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -196,7 +196,7 @@ public abstract class AbstractHBCIJob
       for (int i=0;i<retValues.length;++i)
       {
         Logger.info("retval[ " + i + "]: " + retValues[i].text);
-        sb.append(retValues[i].text);
+        sb.append(retValues[i].code + " - " + retValues[i].text);
         if (i < (retValues.length - 1))
           sb.append(", ");
       }
@@ -333,6 +333,9 @@ public abstract class AbstractHBCIJob
 
 /**********************************************************************
  * $Log: AbstractHBCIJob.java,v $
+ * Revision 1.28  2008/09/23 11:28:30  willuhn
+ * @N Statuscode auch bei Erfolg mit loggen
+ *
  * Revision 1.27  2008/09/23 11:24:27  willuhn
  * @C Auswertung der Job-Results umgestellt. Die Entscheidung, ob Fehler oder Erfolg findet nun nur noch an einer Stelle (in AbstractHBCIJob) statt. Ausserdem wird ein Job auch dann als erfolgreich erledigt markiert, wenn der globale Job-Status zwar fehlerhaft war, aber fuer den einzelnen Auftrag nicht zweifelsfrei ermittelt werden konnte, ob er erfolgreich war oder nicht. Es koennte unter Umstaenden sein, eine Ueberweisung faelschlicherweise als ausgefuehrt markiert (wenn globaler Status OK, aber Job-Status != ERROR). Das ist aber allemal besser, als sie doppelt auszufuehren.
  *
