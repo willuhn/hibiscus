@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragDeleteJob.java,v $
- * $Revision: 1.18 $
- * $Date: 2007/12/13 14:20:00 $
+ * $Revision: 1.19 $
+ * $Date: 2008/09/23 11:24:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,15 +30,12 @@ import de.willuhn.jameica.hbci.server.hbci.tests.CanTermDelRestriction;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
-import de.willuhn.util.I18N;
 
 /**
  * Job fuer "Dauerauftrag loeschen".
  */
 public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
 {
-
-	private I18N i18n 								= null;
 	private Dauerauftrag dauerauftrag = null;
 	private Konto konto 							= null;
 
@@ -52,6 +49,7 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
    */
   public HBCIDauerauftragDeleteJob(Dauerauftrag auftrag, Date date) throws RemoteException, ApplicationException
 	{
+    super();
 		try
 		{
 			i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
@@ -144,30 +142,6 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
     return "DauerDel";
   }
 
-
-	/**
-	 * Prueft, ob das Loeschen bei der Bank erfolgreich war und loescht den
-	 * Dauerauftrag anschliessend in der Datenbank.
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#handleResult()
-   */
-	void handleResult() throws ApplicationException, RemoteException
-	{
-		String empfName = dauerauftrag.getGegenkontoName();
-
-		if (getJobResult().isOK())
-		{
-      konto.addToProtokoll(i18n.tr("Dauerauftrag gelöscht an {0}",empfName),Protokoll.TYP_SUCCESS);
-      dauerauftrag.delete();
-      Logger.info("dauerauftrag deleted successfully");
-      return;
-		}
-    String msg = i18n.tr("Fehler beim Löschen des Dauerauftrages an {0}",empfName);
-    String error = getStatusText();
-    konto.addToProtokoll(msg + ": " + error,Protokoll.TYP_ERROR);
-    throw new ApplicationException(msg + ": " + error);
-
-	}
-
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getName()
    */
@@ -176,11 +150,33 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
     return i18n.tr("Dauerauftrag an {0} löschen",dauerauftrag.getGegenkontoName());
   }
 
+  /**
+   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markExecuted()
+   */
+  void markExecuted() throws RemoteException, ApplicationException
+  {
+    dauerauftrag.delete();
+    konto.addToProtokoll(i18n.tr("Dauerauftrag gelöscht an {0}",dauerauftrag.getGegenkontoName()),Protokoll.TYP_SUCCESS);
+    Logger.info("dauerauftrag deleted successfully");
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markFailed(java.lang.String)
+   */
+  String markFailed(String error) throws RemoteException, ApplicationException
+  {
+    String msg = i18n.tr("Fehler beim Löschen des Dauerauftrages an {0}: {1}",new String[]{dauerauftrag.getGegenkontoName(),error});
+    konto.addToProtokoll(msg,Protokoll.TYP_ERROR);
+    return msg;
+  }
 }
 
 
 /**********************************************************************
  * $Log: HBCIDauerauftragDeleteJob.java,v $
+ * Revision 1.19  2008/09/23 11:24:27  willuhn
+ * @C Auswertung der Job-Results umgestellt. Die Entscheidung, ob Fehler oder Erfolg findet nun nur noch an einer Stelle (in AbstractHBCIJob) statt. Ausserdem wird ein Job auch dann als erfolgreich erledigt markiert, wenn der globale Job-Status zwar fehlerhaft war, aber fuer den einzelnen Auftrag nicht zweifelsfrei ermittelt werden konnte, ob er erfolgreich war oder nicht. Es koennte unter Umstaenden sein, eine Ueberweisung faelschlicherweise als ausgefuehrt markiert (wenn globaler Status OK, aber Job-Status != ERROR). Das ist aber allemal besser, als sie doppelt auszufuehren.
+ *
  * Revision 1.18  2007/12/13 14:20:00  willuhn
  * @B Bug 517
  *
@@ -195,48 +191,4 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
  * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
  * @N Anbindung externer Adressbuecher
- *
- * Revision 1.14  2006/06/19 11:52:15  willuhn
- * @N Update auf hbci4java 2.5.0rc9
- *
- * Revision 1.13  2006/03/15 18:01:30  willuhn
- * @N AbstractHBCIJob#getName
- *
- * Revision 1.12  2006/03/15 17:28:41  willuhn
- * @C Refactoring der Anzeige der HBCI-Fehlermeldungen
- *
- * Revision 1.11  2005/07/20 22:40:56  web0
- * *** empty log message ***
- *
- * Revision 1.10  2005/05/19 23:31:07  web0
- * @B RMI over SSL support
- * @N added handbook
- *
- * Revision 1.9  2005/03/02 17:59:30  web0
- * @N some refactoring
- *
- * Revision 1.8  2004/11/18 23:46:21  willuhn
- * *** empty log message ***
- *
- * Revision 1.7  2004/11/17 19:02:28  willuhn
- * *** empty log message ***
- *
- * Revision 1.6  2004/11/14 19:21:37  willuhn
- * *** empty log message ***
- *
- * Revision 1.5  2004/11/13 17:02:04  willuhn
- * @N Bearbeiten des Zahlungsturnus
- *
- * Revision 1.4  2004/11/12 18:25:08  willuhn
- * *** empty log message ***
- *
- * Revision 1.3  2004/10/26 23:47:08  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2004/10/25 22:39:14  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2004/10/25 17:58:56  willuhn
- * @N Haufen Dauerauftrags-Code
- *
  **********************************************************************/

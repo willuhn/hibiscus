@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUeberweisungJob.java,v $
- * $Revision: 1.38 $
- * $Date: 2008/08/01 11:05:14 $
+ * $Revision: 1.39 $
+ * $Date: 2008/09/23 11:24:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -32,7 +32,6 @@ import de.willuhn.jameica.hbci.server.hbci.tests.PreTimeRestriction;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
-import de.willuhn.util.I18N;
 
 /**
  * Job fuer "Ueberweisung".
@@ -40,7 +39,6 @@ import de.willuhn.util.I18N;
 public class HBCIUeberweisungJob extends AbstractHBCIJob
 {
 
-	private I18N i18n = null;
 	private Ueberweisung ueberweisung = null;
   private boolean isTermin = false;
 	private Konto konto = null;
@@ -53,9 +51,9 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
    */
   public HBCIUeberweisungJob(Ueberweisung ueberweisung) throws ApplicationException, RemoteException
 	{
+    super();
 		try
 		{
-			i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 			if (ueberweisung == null)
 				throw new ApplicationException(i18n.tr("Bitte geben Sie eine Überweisung an"));
@@ -160,34 +158,33 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
   }
 
   /**
-   * Prueft, ob die Ueberweisung erfolgreich war und markiert diese im Erfolgsfall als "ausgefuehrt".
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#handleResult()
+   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markExecuted()
    */
-  void handleResult() throws ApplicationException, RemoteException
+  void markExecuted() throws RemoteException, ApplicationException
   {
-		String empfName = ueberweisung.getGegenkontoName();
+    ueberweisung.setAusgefuehrt();
+    Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(ueberweisung)); // BUGZILLA 501
+    konto.addToProtokoll(i18n.tr("Überweisung ausgeführt an: {0}",ueberweisung.getGegenkontoName()),Protokoll.TYP_SUCCESS);
+    Logger.info("ueberweisung submitted successfully");
+  }
 
-		if (getJobResult().isOK())
-		{
-      // Wir markieren die Ueberweisung als "ausgefuehrt"
-      Logger.info("mark ueberweisung as \"ausgefuehrt\"");
-      ueberweisung.setAusgefuehrt();
-      Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(ueberweisung)); // BUGZILLA 501
-      konto.addToProtokoll(i18n.tr("Überweisung ausgeführt an: ") + " " + empfName,Protokoll.TYP_SUCCESS);
-      Logger.info("ueberweisung submitted successfully");
-      return;
-		}
-
-    String msg = i18n.tr("Fehler beim Ausführen der Überweisung an {0}",empfName);
-    String error = getStatusText();
-    konto.addToProtokoll(msg + ": " + error,Protokoll.TYP_ERROR);
-    throw new ApplicationException(msg + ": " + error);
+  /**
+   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markFailed(java.lang.String)
+   */
+  String markFailed(String error) throws ApplicationException, RemoteException
+  {
+    String msg = i18n.tr("Fehler beim Ausführen der Überweisung an {0}: {1}",new String[]{ueberweisung.getGegenkontoName(),error});
+    konto.addToProtokoll(msg,Protokoll.TYP_ERROR);
+    return msg;
   }
 }
 
 
 /**********************************************************************
  * $Log: HBCIUeberweisungJob.java,v $
+ * Revision 1.39  2008/09/23 11:24:27  willuhn
+ * @C Auswertung der Job-Results umgestellt. Die Entscheidung, ob Fehler oder Erfolg findet nun nur noch an einer Stelle (in AbstractHBCIJob) statt. Ausserdem wird ein Job auch dann als erfolgreich erledigt markiert, wenn der globale Job-Status zwar fehlerhaft war, aber fuer den einzelnen Auftrag nicht zweifelsfrei ermittelt werden konnte, ob er erfolgreich war oder nicht. Es koennte unter Umstaenden sein, eine Ueberweisung faelschlicherweise als ausgefuehrt markiert (wenn globaler Status OK, aber Job-Status != ERROR). Das ist aber allemal besser, als sie doppelt auszufuehren.
+ *
  * Revision 1.38  2008/08/01 11:05:14  willuhn
  * @N BUGZILLA 587
  *
@@ -208,106 +205,4 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
  * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
  * @N Anbindung externer Adressbuecher
- *
- * Revision 1.32  2006/08/07 14:31:59  willuhn
- * @B misc bugfixing
- * @C Redesign des DTAUS-Imports fuer Sammeltransfers
- *
- * Revision 1.31  2006/06/26 13:25:20  willuhn
- * @N Franks eBay-Parser
- *
- * Revision 1.30  2006/06/19 11:52:15  willuhn
- * @N Update auf hbci4java 2.5.0rc9
- *
- * Revision 1.29  2006/04/25 16:39:07  willuhn
- * @N Konstruktoren von HBCI-Jobs werfen nun eine ApplicationException, wenn der Auftrag bereits ausgefuehrt wurde
- *
- * Revision 1.28  2006/03/15 18:01:30  willuhn
- * @N AbstractHBCIJob#getName
- *
- * Revision 1.27  2006/03/15 17:28:41  willuhn
- * @C Refactoring der Anzeige der HBCI-Fehlermeldungen
- *
- * Revision 1.26  2005/11/18 00:28:20  willuhn
- * @R removed test code
- *
- * Revision 1.25  2005/11/14 13:38:43  willuhn
- * @N Termin-Ueberweisungen
- *
- * Revision 1.24  2005/11/14 13:08:11  willuhn
- * @N Termin-Ueberweisungen
- *
- * Revision 1.23  2005/08/01 23:27:42  web0
- * *** empty log message ***
- *
- * Revision 1.22  2005/03/30 23:26:28  web0
- * @B bug 29
- * @B bug 30
- *
- * Revision 1.21  2005/03/02 17:59:30  web0
- * @N some refactoring
- *
- * Revision 1.20  2005/02/27 17:11:49  web0
- * @N first code for "Sammellastschrift"
- * @C "Empfaenger" renamed into "Adresse"
- *
- * Revision 1.19  2005/02/03 18:57:42  willuhn
- * *** empty log message ***
- *
- * Revision 1.18  2005/02/02 18:19:46  willuhn
- * *** empty log message ***
- *
- * Revision 1.17  2004/11/13 17:02:04  willuhn
- * @N Bearbeiten des Zahlungsturnus
- *
- * Revision 1.16  2004/11/12 18:25:08  willuhn
- * *** empty log message ***
- *
- * Revision 1.15  2004/10/26 23:47:08  willuhn
- * *** empty log message ***
- *
- * Revision 1.14  2004/10/25 22:39:14  willuhn
- * *** empty log message ***
- *
- * Revision 1.13  2004/10/25 17:58:56  willuhn
- * @N Haufen Dauerauftrags-Code
- *
- * Revision 1.12  2004/10/23 17:34:31  willuhn
- * *** empty log message ***
- *
- * Revision 1.11  2004/10/18 23:38:17  willuhn
- * @C Refactoring
- * @C Aufloesung der Listener und Ersatz gegen Actions
- *
- * Revision 1.10  2004/07/25 17:15:06  willuhn
- * @C PluginLoader is no longer static
- *
- * Revision 1.9  2004/07/21 23:54:31  willuhn
- * *** empty log message ***
- *
- * Revision 1.8  2004/07/14 23:48:31  willuhn
- * @N mehr Code fuer Dauerauftraege
- *
- * Revision 1.7  2004/07/09 00:04:40  willuhn
- * @C Redesign
- *
- * Revision 1.6  2004/06/30 20:58:29  willuhn
- * *** empty log message ***
- *
- * Revision 1.5  2004/05/25 23:23:18  willuhn
- * @N UeberweisungTyp
- * @N Protokoll
- *
- * Revision 1.4  2004/04/27 22:30:04  willuhn
- * *** empty log message ***
- *
- * Revision 1.3  2004/04/24 19:04:51  willuhn
- * @N Ueberweisung.execute works!! ;)
- *
- * Revision 1.2  2004/04/22 23:46:50  willuhn
- * @N UeberweisungJob
- *
- * Revision 1.1  2004/04/19 22:05:51  willuhn
- * @C HBCIJobs refactored
- *
  **********************************************************************/

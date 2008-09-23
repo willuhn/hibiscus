@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragListJob.java,v $
- * $Revision: 1.33 $
- * $Date: 2008/01/03 13:26:08 $
+ * $Revision: 1.34 $
+ * $Date: 2008/09/23 11:24:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,14 +26,13 @@ import de.willuhn.jameica.hbci.server.Converter;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
-import de.willuhn.util.I18N;
 
 /**
  * Job fuer "Dauerauftraege abrufen".
  */
-public class HBCIDauerauftragListJob extends AbstractHBCIJob {
+public class HBCIDauerauftragListJob extends AbstractHBCIJob
+{
 
-	private I18N i18n = null;
 	private Konto konto = null;
 
   /**
@@ -43,6 +42,7 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
    */
   public HBCIDauerauftragListJob(Konto konto) throws ApplicationException, RemoteException
 	{
+    super();
 		try
 		{
 			i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
@@ -88,21 +88,11 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
   }
 
   /**
-   * Prueft, ob das Abrufen der Dauerauftraege erfolgreich war und aktualisiert
-   * die lokalen Kopien.
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#handleResult()
+   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markExecuted()
    */
-  void handleResult() throws ApplicationException, RemoteException
+  void markExecuted() throws RemoteException, ApplicationException
   {
 		GVRDauerList result = (GVRDauerList) getJobResult();
-		if (!result.isOK())
-		{
-			String msg = getStatusText();
-
-			konto.addToProtokoll(i18n.tr("Fehler beim Abrufen der Daueraufträge: {0}",msg),Protokoll.TYP_ERROR);
-			throw new ApplicationException(msg);
-		}
-
     // So, jetzt kopieren wir das ResultSet noch in unsere
     // eigenen Datenstrukturen.
 
@@ -207,114 +197,28 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob {
     konto.addToProtokoll(i18n.tr("Daueraufträge abgerufen"),Protokoll.TYP_SUCCESS);
     Logger.info("dauerauftrag list fetched successfully");
   }
+
+  /**
+   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markFailed(java.lang.String)
+   */
+  String markFailed(String error) throws RemoteException, ApplicationException
+  {
+    String msg = i18n.tr("Fehler beim Abrufen der Daueraufträge: {0}",error);
+    konto.addToProtokoll(msg,Protokoll.TYP_ERROR);
+    return msg;
+  }
 }
 
 
 /**********************************************************************
  * $Log: HBCIDauerauftragListJob.java,v $
+ * Revision 1.34  2008/09/23 11:24:27  willuhn
+ * @C Auswertung der Job-Results umgestellt. Die Entscheidung, ob Fehler oder Erfolg findet nun nur noch an einer Stelle (in AbstractHBCIJob) statt. Ausserdem wird ein Job auch dann als erfolgreich erledigt markiert, wenn der globale Job-Status zwar fehlerhaft war, aber fuer den einzelnen Auftrag nicht zweifelsfrei ermittelt werden konnte, ob er erfolgreich war oder nicht. Es koennte unter Umstaenden sein, eine Ueberweisung faelschlicherweise als ausgefuehrt markiert (wenn globaler Status OK, aber Job-Status != ERROR). Das ist aber allemal besser, als sie doppelt auszufuehren.
+ *
  * Revision 1.33  2008/01/03 13:26:08  willuhn
  * @B Test-Bugfix - Dauerauftraege wurden doppelt angelegt
  *
  * Revision 1.32  2007/10/18 10:24:49  willuhn
  * @B Foreign-Objects in AbstractDBObject auch dann korrekt behandeln, wenn sie noch nicht gespeichert wurden
  * @C Beim Abrufen der Dauerauftraege nicht mehr nach Konten suchen sondern hart dem Konto zuweisen, ueber das sie abgerufen wurden
- *
- * Revision 1.31  2006/06/26 13:25:20  willuhn
- * @N Franks eBay-Parser
- *
- * Revision 1.30  2006/06/19 11:52:15  willuhn
- * @N Update auf hbci4java 2.5.0rc9
- *
- * Revision 1.29  2006/06/08 22:29:47  willuhn
- * @N DTAUS-Import fuer Sammel-Lastschriften und Sammel-Ueberweisungen
- * @B Eine Reihe kleinerer Bugfixes in Sammeltransfers
- * @B Bug 197 besser geloest
- *
- * Revision 1.28  2006/03/17 00:51:25  willuhn
- * @N bug 209 Neues Synchronisierungs-Subsystem
- *
- * Revision 1.27  2006/03/15 18:01:30  willuhn
- * @N AbstractHBCIJob#getName
- *
- * Revision 1.26  2006/03/15 17:28:41  willuhn
- * @C Refactoring der Anzeige der HBCI-Fehlermeldungen
- *
- * Revision 1.25  2005/12/05 16:07:17  willuhn
- * @B ObjectNotFoundException
- *
- * Revision 1.24  2005/12/05 10:58:02  willuhn
- * *** empty log message ***
- *
- * Revision 1.23  2005/11/30 23:21:06  willuhn
- * @B ObjectNotFoundException beim Abrufen der Dauerauftraege
- *
- * Revision 1.22  2005/07/24 17:00:04  web0
- * *** empty log message ***
- *
- * Revision 1.21  2005/07/20 22:40:56  web0
- * *** empty log message ***
- *
- * Revision 1.20  2005/06/28 08:07:24  web0
- * @B bug 87
- *
- * Revision 1.19  2005/06/28 08:04:00  web0
- * @B bug 87
- *
- * Revision 1.18  2005/06/27 21:28:41  web0
- * @B bug 87
- *
- * Revision 1.17  2005/03/06 17:15:45  web0
- * *** empty log message ***
- *
- * Revision 1.16  2005/03/06 17:10:57  web0
- * *** empty log message ***
- *
- * Revision 1.15  2005/03/06 17:05:48  web0
- * @B bugzilla 22
- *
- * Revision 1.14  2005/03/06 16:53:52  web0
- * @B bugzilla 22
- *
- * Revision 1.13  2005/03/04 00:50:16  web0
- * @N Eingrauen abgelaufener Dauerauftraege
- * @N automatisches Loeschen von Dauerauftraegen, die lokal zwar
- * noch als aktiv markiert sind, bei der Bank jedoch nicht mehr existieren
- *
- * Revision 1.12  2004/11/14 19:21:37  willuhn
- * *** empty log message ***
- *
- * Revision 1.11  2004/11/13 17:02:04  willuhn
- * @N Bearbeiten des Zahlungsturnus
- *
- * Revision 1.10  2004/11/12 18:25:08  willuhn
- * *** empty log message ***
- *
- * Revision 1.9  2004/10/25 22:39:14  willuhn
- * *** empty log message ***
- *
- * Revision 1.8  2004/10/25 17:58:56  willuhn
- * @N Haufen Dauerauftrags-Code
- *
- * Revision 1.7  2004/10/24 17:19:02  willuhn
- * *** empty log message ***
- *
- * Revision 1.6  2004/10/23 17:34:31  willuhn
- * *** empty log message ***
- *
- * Revision 1.5  2004/10/18 23:38:17  willuhn
- * @C Refactoring
- * @C Aufloesung der Listener und Ersatz gegen Actions
- *
- * Revision 1.4  2004/10/17 16:28:46  willuhn
- * @N Die ersten Dauerauftraege abgerufen ;)
- *
- * Revision 1.3  2004/07/25 17:15:06  willuhn
- * @C PluginLoader is no longer static
- *
- * Revision 1.2  2004/07/21 23:54:30  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2004/07/14 23:48:31  willuhn
- * @N mehr Code fuer Dauerauftraege
- *
  **********************************************************************/

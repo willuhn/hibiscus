@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCIJob.java,v $
- * $Revision: 1.26 $
- * $Date: 2007/12/06 23:53:56 $
+ * $Revision: 1.27 $
+ * $Date: 2008/09/23 11:24:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import java.util.Hashtable;
 
 import org.kapott.hbci.GV_Result.HBCIJobResult;
 import org.kapott.hbci.status.HBCIRetVal;
+import org.kapott.hbci.status.HBCIStatus;
 import org.kapott.hbci.structures.Konto;
 import org.kapott.hbci.structures.Value;
 
@@ -38,11 +39,20 @@ import de.willuhn.util.I18N;
  */
 public abstract class AbstractHBCIJob
 {
+  protected I18N i18n = null;
 
 	private org.kapott.hbci.GV.HBCIJob job = null;
   private boolean exclusive              = false;
 	private Hashtable params 			         = new Hashtable(); 
 
+  /**
+   * ct
+   */
+  protected AbstractHBCIJob()
+  {
+    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  }
+  
 	/**
 	 * HBCI4Java verwendet intern eindeutige Job-Namen.
 	 * Diese Funktion liefert genau den Namen fuer genau den
@@ -59,16 +69,22 @@ public abstract class AbstractHBCIJob
   public abstract String getName() throws RemoteException;
 
   /**
-	 * Diese Funktion wird von der HBCIFactory nach Beendigung der Kommunikation mit der Bank ausgefuehrt.
-	 * Hier kann jeder HBCI-Job (also jede abgeleitete Klasse) pruefen, ob er mit
-	 * dem Ergebnis zufrieden ist. Hierfuer kann sich der Job fuer gewoehnlich mittels
-	 * <code>getJobResult()</code> die Ergebnis-Informationen holen und ggf eine ApplicationException
-	 * werfen, wenn damit etwas nicht in Ordnung ist. 
+   * Markiert den Auftrag als erledigt.
    * @throws RemoteException
    * @throws ApplicationException
    */
-  abstract void handleResult() throws RemoteException, ApplicationException;
-
+  abstract void markExecuted() throws RemoteException, ApplicationException;
+  
+  /**
+   * Markiert den Auftrag als fehlerhaft.
+   * @param error der Fehlertext aus der HBCI-Nachricht.
+   * @return der Fehlertext, wie er weitergeworfen werden soll.
+   * Hier kann der Implementierer noch weitere Informationen zum Job hinzufuegen.
+   * @throws RemoteException
+   * @throws ApplicationException
+   */
+  abstract String markFailed(String error) throws RemoteException, ApplicationException;
+  
 	/**
 	 * Diese Funktion wird von der HBCIFactory intern aufgerufen.
 	 * Sie uebergibt hier den erzeugten HBCI-Job der Abfrage.
@@ -105,7 +121,61 @@ public abstract class AbstractHBCIJob
 	{
 		return job.getJobResult();
 	}
-	
+
+  /**
+   * Diese Funktion wird von der HBCIFactory nach Beendigung der Kommunikation mit der Bank ausgefuehrt.
+   * Sie prueft globalen Status und Job-Status und ruft entsprechend markExecuted() oder markFailed(String) auf. 
+   * @throws RemoteException
+   * @throws ApplicationException
+   */
+  final void handleResult() throws ApplicationException, RemoteException
+  {
+    HBCIJobResult result = getJobResult();
+    if (result.isOK())
+    {
+      // Globaler Status ist OK - Job wurde zweifelsfrei erfolgreich ausgefuehrt
+      // Wir markieren die Ueberweisung als "ausgefuehrt"
+      markExecuted();
+      return;
+    }
+
+    // Globaler Status ist nicht OK. Mal schauen, was der Job-Status sagt
+    String statusText = getStatusText();
+    if (result.getJobStatus().getStatusCode() == HBCIStatus.STATUS_OK)
+    {
+      // Wir haben zwar global einen Fehler. Aber zumindest der Auftrag
+      // scheint in Ordnung zu sein. Wir markieren ihn sicherheitshalber
+      // als ausgefuehrt (damit er nicht mehrfach ausgefuhert wird), melden
+      // den globalen Fehler aber trotzdem weiter
+      try
+      {
+        markExecuted();
+      }
+      catch (Exception e)
+      {
+        // Das ist ein Folge-Fehler. Den loggen wir. Wir werfen aber die originale
+        // Fehlermeldung weiter
+        Logger.error("unable to mark job as executed",e);
+      }
+      throw new ApplicationException(statusText);
+    }
+
+    // Nichts hat geklappt. Weder der globale Status ist in Ordnung
+    // noch der Job-Status. Wir geben dem Job die Moeglichkeit, ihn
+    // als fehlerhaft zu markieren.
+    String error = null;
+    try
+    {
+      error = markFailed(statusText);
+    }
+    catch (Exception e)
+    {
+      // Folge-Fehler. Loggen. Aber originale Meldung weiterwerfen
+      Logger.error("unable to mark job as failed",e);
+    }
+    throw new ApplicationException(error != null && error.length() > 0 ? error : statusText);
+  }
+  
 	/**
 	 * Liefert den Status-Text, der vom HBCI-Kernel nach Ausfuehrung des Jobs zurueckgeliefert wurde.
    * @return Status-Text oder <code>Unbekannter Fehler</code> wenn dieser nicht ermittelbar ist.
@@ -263,6 +333,9 @@ public abstract class AbstractHBCIJob
 
 /**********************************************************************
  * $Log: AbstractHBCIJob.java,v $
+ * Revision 1.27  2008/09/23 11:24:27  willuhn
+ * @C Auswertung der Job-Results umgestellt. Die Entscheidung, ob Fehler oder Erfolg findet nun nur noch an einer Stelle (in AbstractHBCIJob) statt. Ausserdem wird ein Job auch dann als erfolgreich erledigt markiert, wenn der globale Job-Status zwar fehlerhaft war, aber fuer den einzelnen Auftrag nicht zweifelsfrei ermittelt werden konnte, ob er erfolgreich war oder nicht. Es koennte unter Umstaenden sein, eine Ueberweisung faelschlicherweise als ausgefuehrt markiert (wenn globaler Status OK, aber Job-Status != ERROR). Das ist aber allemal besser, als sie doppelt auszufuehren.
+ *
  * Revision 1.26  2007/12/06 23:53:56  willuhn
  * @B Bug 490
  *

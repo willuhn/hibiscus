@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragStoreJob.java,v $
- * $Revision: 1.21 $
- * $Date: 2007/12/06 23:53:56 $
+ * $Revision: 1.22 $
+ * $Date: 2008/09/23 11:24:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -34,16 +34,15 @@ import de.willuhn.jameica.hbci.server.hbci.tests.TurnusRestriction;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
-import de.willuhn.util.I18N;
 
 /**
  * Job fuer "Dauerauftrag bei der Bank speichern".
  * Der Job erkennt selbst, ob der Dauerauftrag bei der Bank neu angelegt werden
  * muss oder ob bereits einer vorliegt, der nur geaendert werden muss.
  */
-public class HBCIDauerauftragStoreJob extends AbstractHBCIJob {
+public class HBCIDauerauftragStoreJob extends AbstractHBCIJob
+{
 
-	private I18N i18n 								= null;
 	private Dauerauftrag dauerauftrag = null;
 	private Konto konto 							= null;
 
@@ -57,6 +56,7 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob {
    */
   public HBCIDauerauftragStoreJob(Dauerauftrag auftrag) throws ApplicationException, RemoteException
 	{
+    super();
 		try
 		{
 			i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
@@ -165,51 +165,54 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob {
   }
 
   /**
-	 * Prueft, ob das Senden des Dauerauftrags erfolgreich war und speichert im
-	 * Erfolgsfall die Order-ID.
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#handleResult()
-	 */
-	void handleResult() throws ApplicationException, RemoteException
-	{
-		String empfName = dauerauftrag.getGegenkontoName();
+   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markExecuted()
+   */
+  void markExecuted() throws RemoteException, ApplicationException
+  {
+    String empfName = dauerauftrag.getGegenkontoName();
 
-		if (getJobResult().isOK())
-		{
-      if (dauerauftrag.isActive())
-        konto.addToProtokoll(i18n.tr("Dauerauftrag aktualisiert an {0}",empfName),Protokoll.TYP_SUCCESS);
-      else
-        konto.addToProtokoll(i18n.tr("Dauerauftrag ausgeführt an {0} ",empfName),Protokoll.TYP_SUCCESS);
+    if (dauerauftrag.isActive())
+      konto.addToProtokoll(i18n.tr("Dauerauftrag aktualisiert an {0}",empfName),Protokoll.TYP_SUCCESS);
+    else
+      konto.addToProtokoll(i18n.tr("Dauerauftrag ausgeführt an {0} ",empfName),Protokoll.TYP_SUCCESS);
 
-      // jetzt muessen wir noch die Order-ID speichern, wenn er neu eingereicht wurde
-      String orderID = null;
-      if (!active)
-      {
-        GVRDauerNew result = (GVRDauerNew) this.getJobResult();
-        orderID = result.getOrderId();
-      }
-      else
-      {
-        GVRDauerEdit result = (GVRDauerEdit) this.getJobResult();
-        orderID = result.getOrderId();
-      }
-      // Der Auftrag war neu, dann muessen wir noch die Order-ID speichern
-      dauerauftrag.setOrderID(orderID);
-      dauerauftrag.store();
+    // jetzt muessen wir noch die Order-ID speichern, wenn er neu eingereicht wurde
+    String orderID = null;
+    if (!active)
+    {
+      GVRDauerNew result = (GVRDauerNew) this.getJobResult();
+      orderID = result.getOrderId();
+    }
+    else
+    {
+      GVRDauerEdit result = (GVRDauerEdit) this.getJobResult();
+      orderID = result.getOrderId();
+    }
+    // Der Auftrag war neu, dann muessen wir noch die Order-ID speichern
+    dauerauftrag.setOrderID(orderID);
+    dauerauftrag.store();
 
-      Logger.info("dauerauftrag submitted successfully");
-      return;
-		}
-    String msg = i18n.tr("Fehler beim Ausführen des Dauerauftrages an {0}",empfName);
-    String error = getStatusText();
-    konto.addToProtokoll(msg + ": " + error,Protokoll.TYP_ERROR);
-    throw new ApplicationException(msg + ": " + error);
-	}
+    Logger.info("dauerauftrag submitted successfully");
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markFailed(java.lang.String)
+   */
+  String markFailed(String error) throws RemoteException, ApplicationException
+  {
+    String msg = i18n.tr("Fehler beim Ausführen des Dauerauftrages an {0}: {1}",new String[]{dauerauftrag.getGegenkontoName(),error});
+    konto.addToProtokoll(msg,Protokoll.TYP_ERROR);
+    return msg;
+  }
 
 }
 
 
 /**********************************************************************
  * $Log: HBCIDauerauftragStoreJob.java,v $
+ * Revision 1.22  2008/09/23 11:24:27  willuhn
+ * @C Auswertung der Job-Results umgestellt. Die Entscheidung, ob Fehler oder Erfolg findet nun nur noch an einer Stelle (in AbstractHBCIJob) statt. Ausserdem wird ein Job auch dann als erfolgreich erledigt markiert, wenn der globale Job-Status zwar fehlerhaft war, aber fuer den einzelnen Auftrag nicht zweifelsfrei ermittelt werden konnte, ob er erfolgreich war oder nicht. Es koennte unter Umstaenden sein, eine Ueberweisung faelschlicherweise als ausgefuehrt markiert (wenn globaler Status OK, aber Job-Status != ERROR). Das ist aber allemal besser, als sie doppelt auszufuehren.
+ *
  * Revision 1.21  2007/12/06 23:53:56  willuhn
  * @B Bug 490
  *
@@ -221,62 +224,4 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob {
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
  * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
  * @N Anbindung externer Adressbuecher
- *
- * Revision 1.18  2006/06/26 13:25:20  willuhn
- * @N Franks eBay-Parser
- *
- * Revision 1.17  2006/06/19 11:52:15  willuhn
- * @N Update auf hbci4java 2.5.0rc9
- *
- * Revision 1.16  2006/03/17 00:51:25  willuhn
- * @N bug 209 Neues Synchronisierungs-Subsystem
- *
- * Revision 1.15  2006/03/15 18:01:30  willuhn
- * @N AbstractHBCIJob#getName
- *
- * Revision 1.14  2006/03/15 17:28:41  willuhn
- * @C Refactoring der Anzeige der HBCI-Fehlermeldungen
- *
- * Revision 1.13  2005/11/14 13:38:43  willuhn
- * @N Termin-Ueberweisungen
- *
- * Revision 1.12  2005/05/19 23:31:07  web0
- * @B RMI over SSL support
- * @N added handbook
- *
- * Revision 1.11  2005/03/30 23:26:28  web0
- * @B bug 29
- * @B bug 30
- *
- * Revision 1.10  2005/03/02 17:59:30  web0
- * @N some refactoring
- *
- * Revision 1.9  2005/02/28 23:59:57  web0
- * @B http://www.willuhn.de/bugzilla/show_bug.cgi?id=15
- *
- * Revision 1.8  2005/02/27 17:11:49  web0
- * @N first code for "Sammellastschrift"
- * @C "Empfaenger" renamed into "Adresse"
- *
- * Revision 1.7  2004/11/13 17:02:04  willuhn
- * @N Bearbeiten des Zahlungsturnus
- *
- * Revision 1.6  2004/11/12 18:25:07  willuhn
- * *** empty log message ***
- *
- * Revision 1.5  2004/10/29 00:33:00  willuhn
- * *** empty log message ***
- *
- * Revision 1.4  2004/10/29 00:32:32  willuhn
- * @N HBCI job restrictions
- *
- * Revision 1.3  2004/10/26 23:47:08  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2004/10/25 22:39:14  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2004/10/25 17:58:56  willuhn
- * @N Haufen Dauerauftrags-Code
- *
  **********************************************************************/

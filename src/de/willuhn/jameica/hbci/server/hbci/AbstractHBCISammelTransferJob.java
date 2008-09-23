@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCISammelTransferJob.java,v $
- * $Revision: 1.8 $
- * $Date: 2008/02/04 18:56:45 $
+ * $Revision: 1.9 $
+ * $Date: 2008/09/23 11:24:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,7 +26,6 @@ import de.willuhn.jameica.hbci.server.Converter;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
-import de.willuhn.util.I18N;
 
 /**
  * Abstrakter Basis-Job fuer Sammel-Transfers.
@@ -34,7 +33,6 @@ import de.willuhn.util.I18N;
 public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
 {
 
-	I18N i18n = null;
 	private SammelTransfer transfer = null;
 	private Konto konto = null;
 
@@ -48,6 +46,7 @@ public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
    */
   public AbstractHBCISammelTransferJob(SammelTransfer transfer) throws ApplicationException, RemoteException
 	{
+    super();
 		try
 		{
 			i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
@@ -92,30 +91,6 @@ public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
 	}
 
   /**
-   * Prueft, ob der Sammel-Auftrag erfolgreich war und markiert diese im Erfolgsfall als "ausgefuehrt".
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#handleResult()
-   */
-  void handleResult() throws ApplicationException, RemoteException
-  {
-		String empfName = transfer.getBezeichnung();
-
-		if (getJobResult().isOK())
-		{
-      // Wir markieren die Ueberweisung als "ausgefuehrt"
-      transfer.setAusgefuehrt();
-      Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(transfer)); // BUGZILLA 545
-      konto.addToProtokoll(i18n.tr("Sammel-Auftrag {0} ausgeführt",empfName),Protokoll.TYP_SUCCESS);
-      Logger.info("sammellastschrift submitted successfully");
-      return;
-    }
-
-    String msg = i18n.tr("Fehler beim Ausführen des Sammel-Auftrages {0}",empfName);
-    String error = getStatusText();
-    konto.addToProtokoll(msg + ": " + error,Protokoll.TYP_ERROR);
-    throw new ApplicationException(msg + ": " + error);
-  }
-  
-  /**
    * Liefert den Sammel-Transfer.
    * @return der Sammel-Transfer.
    */
@@ -123,33 +98,38 @@ public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
   {
     return this.transfer;
   }
+
+  /**
+   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markExecuted()
+   */
+  void markExecuted() throws RemoteException, ApplicationException
+  {
+    transfer.setAusgefuehrt();
+    Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(transfer)); // BUGZILLA 545
+    konto.addToProtokoll(i18n.tr("Sammel-Auftrag {0} ausgeführt",transfer.getBezeichnung()),Protokoll.TYP_SUCCESS);
+    Logger.info("sammellastschrift submitted successfully");
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markFailed(java.lang.String)
+   */
+  String markFailed(String error) throws RemoteException, ApplicationException
+  {
+    String msg = i18n.tr("Fehler beim Ausführen des Sammel-Auftrages {0}: {1}",new String[]{transfer.getBezeichnung(),error});
+    konto.addToProtokoll(msg,Protokoll.TYP_ERROR);
+    return msg;
+  }
 }
 
 
 /**********************************************************************
  * $Log: AbstractHBCISammelTransferJob.java,v $
+ * Revision 1.9  2008/09/23 11:24:27  willuhn
+ * @C Auswertung der Job-Results umgestellt. Die Entscheidung, ob Fehler oder Erfolg findet nun nur noch an einer Stelle (in AbstractHBCIJob) statt. Ausserdem wird ein Job auch dann als erfolgreich erledigt markiert, wenn der globale Job-Status zwar fehlerhaft war, aber fuer den einzelnen Auftrag nicht zweifelsfrei ermittelt werden konnte, ob er erfolgreich war oder nicht. Es koennte unter Umstaenden sein, eine Ueberweisung faelschlicherweise als ausgefuehrt markiert (wenn globaler Status OK, aber Job-Status != ERROR). Das ist aber allemal besser, als sie doppelt auszufuehren.
+ *
  * Revision 1.8  2008/02/04 18:56:45  willuhn
  * @B Bug 545
  *
  * Revision 1.7  2007/12/06 14:25:32  willuhn
  * @B Bug 494
- *
- * Revision 1.6  2006/06/26 13:25:20  willuhn
- * @N Franks eBay-Parser
- *
- * Revision 1.5  2006/04/25 16:39:07  willuhn
- * @N Konstruktoren von HBCI-Jobs werfen nun eine ApplicationException, wenn der Auftrag bereits ausgefuehrt wurde
- *
- * Revision 1.4  2006/03/15 18:01:30  willuhn
- * @N AbstractHBCIJob#getName
- *
- * Revision 1.3  2006/03/15 17:28:41  willuhn
- * @C Refactoring der Anzeige der HBCI-Fehlermeldungen
- *
- * Revision 1.2  2005/11/02 17:33:31  willuhn
- * @B fataler Bug in Sammellastschrift/Sammelueberweisung
- *
- * Revision 1.1  2005/09/30 00:08:51  willuhn
- * @N SammelUeberweisungen (merged with SammelLastschrift)
- *
  **********************************************************************/
