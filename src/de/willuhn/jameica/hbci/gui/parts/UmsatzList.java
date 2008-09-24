@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.55 $
- * $Date: 2007/08/09 12:04:39 $
+ * $Revision: 1.56 $
+ * $Date: 2008/09/24 10:24:48 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -164,6 +164,12 @@ public class UmsatzList extends TablePart implements Extendable
             item.setForeground(Settings.getBuchungSollForeground());
           else
             item.setForeground(Settings.getBuchungHabenForeground());
+
+          // Saldo nicht mit einfaerben, dass irritiert sonst,
+          // wenn die Buchung zwar einen negativen Betrag hat,
+          // der Saldo aber einen positiven (und umgekehrt)
+          item.setForeground(6,Color.WIDGET_FG.getSWTColor());
+        
         }
         catch (RemoteException e)
         {
@@ -710,6 +716,9 @@ public class UmsatzList extends TablePart implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.56  2008/09/24 10:24:48  willuhn
+ * @C Saldo in Umsatzliste nicht mit faerben
+ *
  * Revision 1.55  2007/08/09 12:04:39  willuhn
  * @N Bug 302
  *
