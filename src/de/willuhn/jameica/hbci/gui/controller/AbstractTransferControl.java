@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.43 $
- * $Date: 2008/09/17 23:44:29 $
+ * $Revision: 1.44 $
+ * $Date: 2008/09/29 14:47:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -263,7 +263,12 @@ public abstract class AbstractTransferControl extends AbstractControl
     HibiscusTransfer t = getTransfer();
     // Checkbox nur setzen, wenn es eine neue Ueberweisung ist und
     // noch kein Gegenkonto definiert ist.
-		storeEmpfaenger = new CheckboxInput(t.isNewObject() && t.getGegenkontoNummer() == null);
+    boolean enabled = t.isNewObject() && t.getGegenkontoNummer() == null;
+    
+    // Per Hidden-Parameter kann die Checkbox komplett ausgeschaltet werden
+    de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
+    enabled &= settings.getBoolean("transfer.addressbook.autoadd",true);
+		storeEmpfaenger = new CheckboxInput(enabled);
 
 		return storeEmpfaenger;
 	}
@@ -464,6 +469,9 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
+ * Revision 1.44  2008/09/29 14:47:05  willuhn
+ * @N BUGZILLA 635
+ *
  * Revision 1.43  2008/09/17 23:44:29  willuhn
  * @B SQL-Query fuer MaxUsage-Abfrage korrigiert
  *
