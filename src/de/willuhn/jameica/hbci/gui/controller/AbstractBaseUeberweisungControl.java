@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractBaseUeberweisungControl.java,v $
- * $Revision: 1.12 $
- * $Date: 2008/08/01 11:05:14 $
+ * $Revision: 1.13 $
+ * $Date: 2008/09/29 23:48:54 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,7 +24,6 @@ import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
-import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.TextSchluessel;
 import de.willuhn.jameica.hbci.rmi.BaseUeberweisung;
@@ -39,7 +38,6 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
 
 	// Eingabe-Felder
 	private DateInput termin           = null;
-	private Input comment	             = null;
 	
   /**
    * ct.
@@ -49,28 +47,6 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
   {
     super(view);
   }
-
-	/**
-	 * Liefert ein Kommentar-Feld zu dieser Ueberweisung.
-   * @return Kommentarfeld.
-   * @throws RemoteException
-   */
-  public Input getComment() throws RemoteException
-	{
-		if (comment != null)
-			return comment;
-		comment = new LabelInput("");
-    Terminable t = (Terminable) getTransfer();
-		if (t.ausgefuehrt())
-		{
-			comment.setValue(i18n.tr("Der Auftrag wurde ausgeführt"));
-		}
-		else if (t.ueberfaellig())
-		{
-			comment.setValue(i18n.tr("Der Auftrag ist überfällig"));
-		}
-		return comment;
-	}
 
 	/**
 	 * Liefert das Eingabe-Feld fuer den Termin.
@@ -89,30 +65,33 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
       d = new Date();
 
     this.termin = new DateInput(d,HBCI.DATEFORMAT);
+    this.termin.setEnabled(!bu.ausgefuehrt());
     this.termin.setTitle(i18n.tr("Termin"));
     this.termin.setText(i18n.tr("Bitte wählen Sie einen Termin"));
-    this.termin.setComment("");
+
+    if (bu.ausgefuehrt())
+      this.termin.setComment(i18n.tr("Der Auftrag wurde bereits ausgeführt"));
+    else if (bu.ueberfaellig())
+      this.termin.setComment(i18n.tr("Der Auftrag ist überfällig"));
+    else
+      this.termin.setComment(""); // Platzhalter
+
     this.termin.addListener(new Listener() {
       public void handleEvent(Event event)
       {
-        Date date = (Date) termin.getValue();
-        if (date == null)
-          return;
-
         try {
-          // Wenn das neue Datum spaeter als das aktuelle ist,
-          // nehmen wir den Kommentar weg
-          if (bu.ueberfaellig() && date.after(new Date()));
-            getComment().setValue("");
-          if (date.before(new Date()))
-            getComment().setValue(i18n.tr("Der Auftrag ist überfällig."));
+          Date date = (Date) termin.getValue();
+          if (date != null && !date.after(new Date()))
+            termin.setComment(i18n.tr("Der Auftrag ist überfällig"));
+          else
+            termin.setComment("");
         }
-        catch (RemoteException e) {/*ignore*/}
+        catch (Exception e) {
+          Logger.error("unable to check overdue",e);
+        }
       }
     });
 
-		if (bu.ausgefuehrt())
-			termin.disable();
 
 		return termin;
 	}
@@ -260,6 +239,9 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
 
 /**********************************************************************
  * $Log: AbstractBaseUeberweisungControl.java,v $
+ * Revision 1.13  2008/09/29 23:48:54  willuhn
+ * @N Ueberfaellig-Hinweis hinter Auswahlfeld fuer Termin verschoben - spart Platz
+ *
  * Revision 1.12  2008/08/01 11:05:14  willuhn
  * @N BUGZILLA 587
  *

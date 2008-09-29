@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.44 $
- * $Date: 2008/09/29 14:47:05 $
+ * $Revision: 1.45 $
+ * $Date: 2008/09/29 23:48:54 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -243,6 +243,24 @@ public abstract class AbstractTransferControl extends AbstractControl
 		
 		betrag.setComment(getKonto() == null ? "" : getKonto().getWaehrung());
     betrag.setMandatory(true);
+    
+    // Forciert das korrekte Formatieren des Betrages nach Focus-Wechsel
+    betrag.addListener(new Listener() {
+      public void handleEvent(Event event) {
+        try
+        {
+          Double value = (Double) betrag.getValue();
+          if (value == null)
+            return;
+          betrag.setValue(value);
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to autoformat value",e);
+        }
+      }
+    
+    });
 		new KontoListener().handleEvent(null);
 
 		return betrag;
@@ -469,6 +487,9 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
+ * Revision 1.45  2008/09/29 23:48:54  willuhn
+ * @N Ueberfaellig-Hinweis hinter Auswahlfeld fuer Termin verschoben - spart Platz
+ *
  * Revision 1.44  2008/09/29 14:47:05  willuhn
  * @N BUGZILLA 635
  *

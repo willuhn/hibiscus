@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UeberweisungNew.java,v $
- * $Revision: 1.17 $
- * $Date: 2008/08/01 11:05:14 $
+ * $Revision: 1.18 $
+ * $Date: 2008/09/29 23:48:54 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -60,8 +60,6 @@ public class UeberweisungNew extends AbstractView {
     details.addLabelPair(i18n.tr("Textschlüssel"),            control.getTextSchluessel());
     details.addLabelPair(i18n.tr("Termin"),                   control.getTermin());
     details.addCheckbox(control.getBankTermin(), i18n.tr("Als Termin-Überweisung an Bank senden"));
-    details.addSeparator();
-    details.addLabelPair("",                                  control.getComment());
 
 		ButtonArea buttonArea = new ButtonArea(getParent(),4);
 		buttonArea.addButton(i18n.tr("Zurück"), 				 				 new Back());
@@ -90,6 +88,9 @@ public class UeberweisungNew extends AbstractView {
 
 /**********************************************************************
  * $Log: UeberweisungNew.java,v $
+ * Revision 1.18  2008/09/29 23:48:54  willuhn
+ * @N Ueberfaellig-Hinweis hinter Auswahlfeld fuer Termin verschoben - spart Platz
+ *
  * Revision 1.17  2008/08/01 11:05:14  willuhn
  * @N BUGZILLA 587
  *
