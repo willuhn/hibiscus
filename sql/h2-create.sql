@@ -229,7 +229,7 @@ CREATE TABLE verwendungszweck (
 
 CREATE TABLE property (
   id IDENTITY,
-  name varchar(255) NOT NULL,
+  name varchar(1000) NOT NULL,
   content varchar(1000) NULL,
   UNIQUE (id),
   UNIQUE (name),
@@ -268,6 +268,6 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',9);
+INSERT INTO version (name,version) values ('db',10);
   
 COMMIT;
