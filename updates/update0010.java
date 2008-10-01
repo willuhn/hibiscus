@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/updates/update0010.java,v $
- * $Revision: 1.1 $
- * $Date: 2008/10/01 10:42:51 $
+ * $Revision: 1.2 $
+ * $Date: 2008/10/01 11:06:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -58,7 +58,9 @@ public class update0010 implements Update
     
     // Update fuer MySQL
     statements.put(DBSupportMySqlImpl.class.getName(),
-        "ALTER TABLE property CHANGE name name TEXT NOT NULL;");
+        "ALTER TABLE property DROP KEY name;\n" +
+        "ALTER TABLE property CHANGE name name TEXT NOT NULL;\n" +
+        "ALTER TABLE property ADD UNIQUE KEY (name(512));\n");
   }
 
   /**
@@ -106,6 +108,9 @@ public class update0010 implements Update
 
 /*********************************************************************
  * $Log: update0010.java,v $
+ * Revision 1.2  2008/10/01 11:06:08  willuhn
+ * @B DB-Update 10: Unique-Key korrigiert (bei Spalten vom Typ "TEXT" muss die Laenge des Index mit angegeben werden. Siehe http://www.mydigitallife.info/2007/07/09/mysql-error-1170-42000-blobtext-column-used-in-key-specification-without-a-key-length/
+ *
  * Revision 1.1  2008/10/01 10:42:51  willuhn
  * @N Spalte "name" in Tabelle "property" vergroessert - es gibt Parameter, die laenger als 255 Zeichen sind. DB-Update 10
  *

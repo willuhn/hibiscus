@@ -231,7 +231,7 @@ CREATE TABLE property (
   name text NOT NULL,
   content text NULL,
   UNIQUE (id),
-  UNIQUE (name),
+  UNIQUE KEY name (name(512)),
   PRIMARY KEY (id)
 )TYPE=InnoDB;
 
