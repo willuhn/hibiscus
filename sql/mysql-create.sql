@@ -191,7 +191,7 @@ CREATE TABLE dauerauftrag (
 
 CREATE TABLE version (
        id int(10) AUTO_INCREMENT
-     , name VARCHAR(15) NOT NULL
+     , name VARCHAR(255) NOT NULL
      , version int(10) NOT NULL
      , UNIQUE (id)
      , PRIMARY KEY (id)
@@ -268,4 +268,4 @@ ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
 
-INSERT INTO version (name,version) values ('db',10);
+INSERT INTO version (name,version) values ('db',11);
