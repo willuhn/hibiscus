@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.43 $
- * $Date: 2008/08/29 16:46:24 $
+ * $Revision: 1.44 $
+ * $Date: 2008/10/10 16:45:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -242,55 +242,56 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
     if (s == null || s.length() == 0)
       return false;
 
-    s = s.toLowerCase(); // Wir beachten Gross-Kleinschreibung grundsaetzlich nicht
+    String[] list = s.toLowerCase().split(","); // Wir beachten Gross-Kleinschreibung grundsaetzlich nicht
 
     String vwz1 = umsatz.getZweck();
     String vwz2 = umsatz.getZweck2();
     String name = umsatz.getGegenkontoName();
-    String kto = umsatz.getGegenkontoNummer();
-    String kom = umsatz.getKommentar();
+    String kto  = umsatz.getGegenkontoNummer();
+    String kom  = umsatz.getKommentar();
 
-    if (vwz1 == null)
-      vwz1 = "";
-    if (vwz2 == null)
-      vwz2 = "";
-    if (name == null)
-      name = "";
-    if (kto == null)
-      kto = "";
-    if (kom == null)
-      kom = "";
+    if (vwz1 == null) vwz1 = "";
+    if (vwz2 == null) vwz2 = "";
+    if (name == null) name = "";
+    if (kto  == null) kto = "";
+    if (kom  == null) kom = "";
 
-    if (isRegex())
+    if (!isRegex())
     {
-      Pattern pattern = null;
+      vwz1 = vwz1.toLowerCase();
+      vwz2 = vwz2.toLowerCase();
+      name = name.toLowerCase();
+      kto = kto.toLowerCase();
+      kom = kom.toLowerCase();
 
-      pattern = Pattern.compile(s, Pattern.CASE_INSENSITIVE);
-      Matcher mVwz1 = pattern.matcher(vwz1);
-      Matcher mVwz2 = pattern.matcher(vwz2);
-      Matcher mName = pattern.matcher(name);
-      Matcher mKto = pattern.matcher(kto);
-      Matcher mKom = pattern.matcher(kom);
-
-      return (mVwz1.matches() ||
-              mVwz2.matches() ||
-              mName.matches() ||
-              mKto.matches()  ||
-              mKom.matches()
-             );
+      for (int i=0;i<list.length;++i)
+      {
+        String test = list[i].trim();
+        if (vwz1.indexOf(test) != -1 || vwz2.indexOf(test) != -1 ||
+            name.indexOf(test) != -1 || kto.indexOf(test)  != -1 ||
+            kom.indexOf(test) != -1)
+        {
+          return true;
+        }
+      }
+      return false;
     }
+    
+    
+    Pattern pattern = null;
 
-    vwz1 = vwz1.toLowerCase();
-    vwz2 = vwz2.toLowerCase();
-    name = name.toLowerCase();
-    kto = kto.toLowerCase();
-    kom = kom.toLowerCase();
+    pattern = Pattern.compile(s, Pattern.CASE_INSENSITIVE);
+    Matcher mVwz1 = pattern.matcher(vwz1);
+    Matcher mVwz2 = pattern.matcher(vwz2);
+    Matcher mName = pattern.matcher(name);
+    Matcher mKto = pattern.matcher(kto);
+    Matcher mKom = pattern.matcher(kom);
 
-    return (vwz1.indexOf(s) != -1 || 
-            vwz2.indexOf(s) != -1 ||
-            name.indexOf(s) != -1 ||
-            kto.indexOf(s)  != -1 ||
-            kom.indexOf(s) != -1
+    return (mVwz1.matches() ||
+            mVwz2.matches() ||
+            mName.matches() ||
+            mKto.matches()  ||
+            mKom.matches()
            );
   }
 
@@ -495,6 +496,9 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
 
 /*******************************************************************************
  * $Log: UmsatzTypImpl.java,v $
+ * Revision 1.44  2008/10/10 16:45:35  willuhn
+ * @N Moeglichkeit, mehrere Suchbegriffe mit Komma zu verknuepfen, ohne hierfuer regulaere Ausdruecke nutzen zu muessen.
+ *
  * Revision 1.43  2008/08/29 16:46:24  willuhn
  * @N BUGZILLA 616
  *
