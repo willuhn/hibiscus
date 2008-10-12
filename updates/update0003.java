@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/updates/update0003.java,v $
- * $Revision: 1.1 $
- * $Date: 2008/01/14 23:18:55 $
+ * $Revision: 1.2 $
+ * $Date: 2008/10/12 22:10:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -83,7 +83,7 @@ public class update0003 implements Update
     String driver = HBCIDBService.SETTINGS.getString("database.driver",null);
     String sql = (String) statements.get(driver);
     if (sql == null)
-      throw new ApplicationException(i18n.tr("Datenbank {0} wird unterstützt",driver));
+      throw new ApplicationException(i18n.tr("Datenbank {0} wird nicht unterstützt",driver));
     
     try
     {
@@ -115,6 +115,10 @@ public class update0003 implements Update
 
 /*********************************************************************
  * $Log: update0003.java,v $
+ * Revision 1.2  2008/10/12 22:10:20  willuhn
+ * @B Typo in den Updates
+ * @B Spalten-Sortierung und -breite fuer in den Positionen von Sammelauftraegen nicht gespeichert
+ *
  * Revision 1.1  2008/01/14 23:18:55  willuhn
  * @B BUGZILLA 538
  *

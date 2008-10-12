@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/updates/update0010.java,v $
- * $Revision: 1.2 $
- * $Date: 2008/10/01 11:06:08 $
+ * $Revision: 1.3 $
+ * $Date: 2008/10/12 22:10:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -76,7 +76,7 @@ public class update0010 implements Update
     String driver = HBCIDBService.SETTINGS.getString("database.driver",null);
     String sql = (String) statements.get(driver);
     if (sql == null)
-      throw new ApplicationException(i18n.tr("Datenbank {0} wird unterstützt",driver));
+      throw new ApplicationException(i18n.tr("Datenbank {0} nicht wird unterstützt",driver));
     
     try
     {
@@ -108,6 +108,10 @@ public class update0010 implements Update
 
 /*********************************************************************
  * $Log: update0010.java,v $
+ * Revision 1.3  2008/10/12 22:10:20  willuhn
+ * @B Typo in den Updates
+ * @B Spalten-Sortierung und -breite fuer in den Positionen von Sammelauftraegen nicht gespeichert
+ *
  * Revision 1.2  2008/10/01 11:06:08  willuhn
  * @B DB-Update 10: Unique-Key korrigiert (bei Spalten vom Typ "TEXT" muss die Laenge des Index mit angegeben werden. Siehe http://www.mydigitallife.info/2007/07/09/mysql-error-1170-42000-blobtext-column-used-in-key-specification-without-a-key-length/
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/updates/update0004.java,v $
- * $Revision: 1.1 $
- * $Date: 2008/02/15 17:39:10 $
+ * $Revision: 1.2 $
+ * $Date: 2008/10/12 22:10:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -88,7 +88,7 @@ public class update0004 implements Update
     String driver = HBCIDBService.SETTINGS.getString("database.driver",null);
     String sql = (String) statements.get(driver);
     if (sql == null)
-      throw new ApplicationException(i18n.tr("Datenbank {0} wird unterstützt",driver));
+      throw new ApplicationException(i18n.tr("Datenbank {0} wird nicht unterstützt",driver));
     
     try
     {
@@ -120,6 +120,10 @@ public class update0004 implements Update
 
 /*********************************************************************
  * $Log: update0004.java,v $
+ * Revision 1.2  2008/10/12 22:10:20  willuhn
+ * @B Typo in den Updates
+ * @B Spalten-Sortierung und -breite fuer in den Positionen von Sammelauftraegen nicht gespeichert
+ *
  * Revision 1.1  2008/02/15 17:39:10  willuhn
  * @N BUGZILLA 188 Basis-API fuer weitere Zeilen Verwendungszweck. GUI fehlt noch
  * @N DB-Update 0005. Speichern des Textschluessels bei Sammelauftragsbuchungen in der Datenbank
