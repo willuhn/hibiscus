@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractSammelTransferBuchungControl.java,v $
- * $Revision: 1.10 $
- * $Date: 2008/08/01 11:05:14 $
+ * $Revision: 1.11 $
+ * $Date: 2008/10/15 21:40:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -167,7 +167,10 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 	{
 		if (betrag != null)
 			return betrag;
-		betrag = new DecimalInput(getBuchung().getBetrag(),HBCI.DECIMALFORMAT);
+    
+    SammelTransferBuchung b = getBuchung();
+    double d = b.isNewObject() ? Double.NaN : b.getBetrag();
+		betrag = new DecimalInput(d,HBCI.DECIMALFORMAT);
     betrag.setMandatory(true);
     betrag.setEnabled(!getBuchung().getSammelTransfer().ausgefuehrt());
 
@@ -277,6 +280,9 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferBuchungControl.java,v $
+ * Revision 1.11  2008/10/15 21:40:32  willuhn
+ * @N BUGZILLA 448
+ *
  * Revision 1.10  2008/08/01 11:05:14  willuhn
  * @N BUGZILLA 587
  *
