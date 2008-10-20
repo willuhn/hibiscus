@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AddressbookServiceImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2008/04/27 22:22:56 $
+ * $Revision: 1.5 $
+ * $Date: 2008/10/20 09:18:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -32,6 +32,7 @@ import de.willuhn.util.I18N;
 public class AddressbookServiceImpl extends UnicastRemoteObject implements AddressbookService
 {
   private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  private boolean started = false;
   private Addressbook[] books = null;
 
   /**
@@ -48,12 +49,14 @@ public class AddressbookServiceImpl extends UnicastRemoteObject implements Addre
    */
   public List findAddresses(String text) throws RemoteException
   {
+    Addressbook[] books = getAddressbooks();
+
     ArrayList result = new ArrayList();
-    for (int i=0;i<this.books.length;++i)
+    for (int i=0;i<books.length;++i)
     {
       if (books[i].getClass().equals(this.getClass()))
         continue; // WICHTIG: Uns selbst ueberspringen wir, um eine Rekursion zu vermeiden
-      List list = this.books[i].findAddresses(text);
+      List list = books[i].findAddresses(text);
 
       if (list == null)
         continue;
@@ -72,7 +75,9 @@ public class AddressbookServiceImpl extends UnicastRemoteObject implements Addre
    */
   public Address contains(Address address) throws RemoteException
   {
-    for (int i=0;i<this.books.length;++i)
+    Addressbook[] books = getAddressbooks();
+
+    for (int i=0;i<books.length;++i)
     {
       if (books[i].getClass().equals(this.getClass()))
         continue; // WICHTIG: Uns selbst ueberspringen wir, um eine Rekursion zu vermeiden
@@ -86,8 +91,50 @@ public class AddressbookServiceImpl extends UnicastRemoteObject implements Addre
   /**
    * @see de.willuhn.jameica.hbci.rmi.AddressbookService#getAddressbooks()
    */
-  public Addressbook[] getAddressbooks() throws RemoteException
+  public synchronized Addressbook[] getAddressbooks() throws RemoteException
   {
+    if (this.books == null)
+    {
+      try
+      {
+        Logger.info("loading addressbooks");
+        Class[] found = Application.getClassLoader().getClassFinder().findImplementors(Addressbook.class);
+        ArrayList list = new ArrayList();
+        
+        // Uns selbst tun wir immer zuerst rein.
+        // Damit stehen wir immer oben in der Liste
+        list.add(this);
+        
+        for(int i=0;i<found.length;++i)
+        {
+          if (found[i].equals(this.getClass()))
+            continue; // Das sind wir selbst
+          try
+          {
+            Addressbook a = (Addressbook) found[i].newInstance();
+            Logger.info("  " + a.getName());
+            list.add(a);
+          }
+          catch (Throwable t)
+          {
+            Logger.error("unable to load addressbook " + found[i] + ", skipping");
+          }
+        }
+        this.books = (Addressbook[]) list.toArray(new Addressbook[list.size()]);
+      }
+      catch (ClassNotFoundException e)
+      {
+        Logger.error("no addressbooks found, suspekt!");
+      }
+      
+      // Sollte eigentlich nie passieren. Daher nur zur Sicherheit
+      if (this.books == null || this.books.length == 0)
+      {
+        Logger.error("no addressbooks found, suspekt!");
+        this.books = new Addressbook[0];
+      }
+
+    }
     return this.books;
   }
 
@@ -100,7 +147,8 @@ public class AddressbookServiceImpl extends UnicastRemoteObject implements Addre
     // Adressbuch 2 ist das Hibiscus-Adressbuch
     // --> Diese beiden existieren immer in Hibiscus
     // Existiert noch mindestens eins mehr, dann haben wir externe 
-    return this.books != null && this.books.length > 2;
+    Addressbook[] books = getAddressbooks();
+    return books != null && books.length > 2;
   }
 
   /**
@@ -124,7 +172,7 @@ public class AddressbookServiceImpl extends UnicastRemoteObject implements Addre
    */
   public boolean isStarted() throws RemoteException
   {
-    return this.books != null;
+    return this.started;
   }
 
   /**
@@ -137,47 +185,7 @@ public class AddressbookServiceImpl extends UnicastRemoteObject implements Addre
       Logger.warn("service allready started, skipping request");
       return;
     }
-    
-    try
-    {
-      Logger.info("loading addressbooks");
-      Class[] found = Application.getClassLoader().getClassFinder().findImplementors(Addressbook.class);
-      ArrayList list = new ArrayList();
-      
-      // Uns selbst tun wir immer zuerst rein.
-      // Damit stehen wir immer oben in der Liste
-      list.add(this);
-      
-      for(int i=0;i<found.length;++i)
-      {
-        if (found[i].equals(this.getClass()))
-          continue; // Das sind wir selbst
-        try
-        {
-          Addressbook a = (Addressbook) found[i].newInstance();
-          Logger.info("  " + a.getName());
-          list.add(a);
-        }
-        catch (Throwable t)
-        {
-          Logger.error("unable to load addressbook " + found[i] + ", skipping");
-        }
-      }
-      this.books = (Addressbook[]) list.toArray(new Addressbook[list.size()]);
-    }
-    catch (ClassNotFoundException e)
-    {
-      Logger.error("no addressbooks found, suspekt!");
-    }
-    
-    // Sollte eigentlich nie passieren. Daher nur zur Sicherheit
-    if (this.books == null || this.books.length == 0)
-    {
-      Logger.error("no addressbooks found, suspekt!");
-      // Dann tun wir uns selbst rein ;)
-      // Dort werden dann zwar nie Adressen gefunden. Aber wenigstens existiert eins.
-      this.books = new Addressbook[]{this};
-    }
+    this.started = true;
   }
 
   /**
@@ -191,12 +199,16 @@ public class AddressbookServiceImpl extends UnicastRemoteObject implements Addre
       return;
     }
     this.books = null;
+    this.started = false;
   }
 }
 
 
 /*********************************************************************
  * $Log: AddressbookServiceImpl.java,v $
+ * Revision 1.5  2008/10/20 09:18:56  willuhn
+ * @B BUGZILLA 641
+ *
  * Revision 1.4  2008/04/27 22:22:56  willuhn
  * @C I18N-Referenzen statisch
  *
