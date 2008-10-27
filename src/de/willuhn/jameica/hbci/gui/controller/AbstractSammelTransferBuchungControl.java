@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractSammelTransferBuchungControl.java,v $
- * $Revision: 1.11 $
- * $Date: 2008/10/15 21:40:32 $
+ * $Revision: 1.12 $
+ * $Date: 2008/10/27 09:23:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -169,8 +169,10 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 			return betrag;
     
     SammelTransferBuchung b = getBuchung();
-    double d = b.isNewObject() ? Double.NaN : b.getBetrag();
-		betrag = new DecimalInput(d,HBCI.DECIMALFORMAT);
+    double d = b.getBetrag();
+    if (d == 0.0d) d = Double.NaN;
+
+    betrag = new DecimalInput(d,HBCI.DECIMALFORMAT);
     betrag.setMandatory(true);
     betrag.setEnabled(!getBuchung().getSammelTransfer().ausgefuehrt());
 
@@ -280,6 +282,9 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferBuchungControl.java,v $
+ * Revision 1.12  2008/10/27 09:23:38  willuhn
+ * @B Beim Duplizieren wurde der Betrag nicht uebernommen
+ *
  * Revision 1.11  2008/10/15 21:40:32  willuhn
  * @N BUGZILLA 448
  *
