@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.110 $
- * $Date: 2008/09/26 15:37:47 $
+ * $Revision: 1.111 $
+ * $Date: 2008/11/04 11:55:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,11 +19,13 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.Properties;
 
 import org.kapott.hbci.callback.HBCICallback;
 import org.kapott.hbci.callback.HBCICallbackConsole;
 import org.kapott.hbci.manager.HBCIUtils;
 
+import de.willuhn.jameica.hbci.messaging.InfoPointMessageConsumer;
 import de.willuhn.jameica.hbci.messaging.QueryAccountCRCMessageConsumer;
 import de.willuhn.jameica.hbci.messaging.QueryBanknameMessageConsumer;
 import de.willuhn.jameica.hbci.messaging.QueryHBCIVersionMessageConsumer;
@@ -67,7 +69,8 @@ public class HBCI extends AbstractPlugin
    */
   public final static HashMap LOGMAPPING = new HashMap();
 
-  private HBCICallback callback;
+  private HBCICallback callback = null;
+  private Properties hbciProps  = null;
   
   /**
    * ct.
@@ -116,6 +119,7 @@ public class HBCI extends AbstractPlugin
     Application.getMessagingFactory().getMessagingQueue("hibiscus.query.bankname").registerMessageConsumer(new QueryBanknameMessageConsumer());
     Application.getMessagingFactory().getMessagingQueue("hibiscus.query.accountcrc").registerMessageConsumer(new QueryAccountCRCMessageConsumer());
     Application.getMessagingFactory().getMessagingQueue("hibiscus.transfer.lastschrift").registerMessageConsumer(new TransferLastschriftMessageConsumer());
+    Application.getMessagingFactory().getMessagingQueue("hibiscus.infopoint").registerMessageConsumer(new InfoPointMessageConsumer());
     
     Application.getCallback().getStartupMonitor().addPercentComplete(5);
   }
@@ -206,7 +210,15 @@ public class HBCI extends AbstractPlugin
       }
       //////////////////////////////////
 
-      HBCIUtils.init(getResources().getClassLoader(),null,this.callback);
+
+      this.hbciProps = new Properties();
+      this.hbciProps.put("client.product.name","HBCI4Java (Hibiscus " + getManifest().getVersion() + ")");
+      
+      // Wir aktivieren das Infopoint-Feature erstmal. Ob wir das Senden
+      // dann zulassen entscheiden wir erst, wenn der Callback aufgerufen
+      // wird. Wir schicken in dem Fall eine QueryMessage an den Channel
+      // "hibiscus.infopoint".
+      this.hbciProps.put("infoPoint.enabled","1");
 
       //////////////////////////////////
       // Log-Level
@@ -221,11 +233,8 @@ public class HBCI extends AbstractPlugin
         // Dann eben nicht ;)
         Logger.warn("unable to map jameica log level into hbci4java log level. using default");
       }
-      HBCIUtils.setParam("log.loglevel.default",""+logLevel);
+      this.hbciProps.put("log.loglevel.default",""+logLevel);
       //////////////////////////////////
-      
-      HBCIUtils.setParam("client.product.name","HBCI4Java (Hibiscus " + getManifest().getVersion() + ")");
-
       
       //////////////////////////////////
       // Rewriter
@@ -233,9 +242,11 @@ public class HBCI extends AbstractPlugin
       if (rewriters != null && rewriters.length() > 0)
       {
         Logger.warn("user defined rewriters found: " + rewriters);
-        HBCIUtils.setParam("kernel.rewriters",rewriters);
+        this.hbciProps.put("kernel.rewriters",rewriters);
       }
       //////////////////////////////////
+
+      HBCIUtils.init(this.hbciProps,this.callback);
     }
     catch (Exception e)
     {
@@ -250,6 +261,15 @@ public class HBCI extends AbstractPlugin
   public HBCICallback getHBCICallback()
   {
     return this.callback;
+  }
+  
+  /**
+   * Liefert die Properties, mit denen HBCI4Java initialisiert wurde.
+   * @return die Properties, mit denen HBCI4Java initialisiert wurde.
+   */
+  public Properties getHBCIPropetries()
+  {
+    return this.hbciProps;
   }
   
   /**
@@ -314,6 +334,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.111  2008/11/04 11:55:17  willuhn
+ * @N Update auf HBCI4Java 2.5.9
+ *
  * Revision 1.110  2008/09/26 15:37:47  willuhn
  * @N Da das Messaging-System inzwischen Consumer solange sammeln kann, bis sie initialisiert ist, besteht kein Bedarf mehr, das explizite Registrieren von Consumern bis zum Versand der SystemMessage.SYSTEM_STARTED zu verzoegern
  *
