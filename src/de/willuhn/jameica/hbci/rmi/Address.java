@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Address.java,v $
- * $Revision: 1.4 $
- * $Date: 2008/01/09 23:32:54 $
+ * $Revision: 1.5 $
+ * $Date: 2008/11/05 09:26:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -34,7 +34,7 @@ public interface Address extends Remote
    * Liefert die BLZ.
    * @return BLZ.
    * @throws RemoteException
-   * @depricated Bitte stattdessen getBlz() verwenden.
+   * @deprecated Bitte stattdessen getBlz() verwenden.
    */
   public String getBLZ() throws RemoteException;
 
@@ -64,6 +64,9 @@ public interface Address extends Remote
 
 /*********************************************************************
  * $Log: Address.java,v $
+ * Revision 1.5  2008/11/05 09:26:40  willuhn
+ * @B tag typo
+ *
  * Revision 1.4  2008/01/09 23:32:54  willuhn
  * @B Bug 534
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/HibiscusAddress.java,v $
- * $Revision: 1.3 $
- * $Date: 2008/01/09 23:32:54 $
+ * $Revision: 1.4 $
+ * $Date: 2008/11/05 09:26:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -34,7 +34,7 @@ public interface HibiscusAddress extends Address, DBObject
 	 * Speichert die BLZ des Empfaengers.
    * @param blz BLZ.
    * @throws RemoteException
-   * @depricated Bitte stattdessen setBlz(String) verwenden.
+   * @deprecated Bitte stattdessen setBlz(String) verwenden.
    */
   public void setBLZ(String blz) throws RemoteException;
 	
@@ -73,6 +73,9 @@ public interface HibiscusAddress extends Address, DBObject
 
 /**********************************************************************
  * $Log: HibiscusAddress.java,v $
+ * Revision 1.4  2008/11/05 09:26:57  willuhn
+ * @B tag typo
+ *
  * Revision 1.3  2008/01/09 23:32:54  willuhn
  * @B Bug 534
  *
