@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCISaldoJob.java,v $
- * $Revision: 1.29 $
- * $Date: 2008/09/23 11:24:26 $
+ * $Revision: 1.30 $
+ * $Date: 2008/11/07 14:02:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.server.hbci;
 import java.rmi.RemoteException;
 
 import org.kapott.hbci.GV_Result.GVRSaldoReq;
+import org.kapott.hbci.GV_Result.GVRSaldoReq.Info;
 import org.kapott.hbci.structures.Saldo;
 
 import de.willuhn.jameica.hbci.HBCI;
@@ -102,7 +103,11 @@ public class HBCISaldoJob extends AbstractHBCIJob {
     konto.addToProtokoll(i18n.tr("Saldo abgerufen"),Protokoll.TYP_SUCCESS);
 
     // Jetzt speichern wir noch den neuen Saldo.
-    Saldo saldo = result.getEntries()[0].ready;
+    Info[] info = result.getEntries();
+    if (info == null || info.length == 0)
+      throw new ApplicationException(i18n.tr("Keine Saldo-Informationen erhalten"));
+    
+    Saldo saldo = info[0].ready;
     konto.setSaldo(saldo.value.getDoubleValue());
 
     konto.store();
@@ -124,6 +129,9 @@ public class HBCISaldoJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCISaldoJob.java,v $
+ * Revision 1.30  2008/11/07 14:02:08  willuhn
+ * @B ArrayIndexOutOfBoundsException, wenn keine Saldo-Infos vorliegen
+ *
  * Revision 1.29  2008/09/23 11:24:26  willuhn
  * @C Auswertung der Job-Results umgestellt. Die Entscheidung, ob Fehler oder Erfolg findet nun nur noch an einer Stelle (in AbstractHBCIJob) statt. Ausserdem wird ein Job auch dann als erfolgreich erledigt markiert, wenn der globale Job-Status zwar fehlerhaft war, aber fuer den einzelnen Auftrag nicht zweifelsfrei ermittelt werden konnte, ob er erfolgreich war oder nicht. Es koennte unter Umstaenden sein, eine Ueberweisung faelschlicherweise als ausgefuehrt markiert (wenn globaler Status OK, aber Job-Status != ERROR). Das ist aber allemal besser, als sie doppelt auszufuehren.
  *
