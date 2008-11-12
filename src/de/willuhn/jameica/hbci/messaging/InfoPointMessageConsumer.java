@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/messaging/InfoPointMessageConsumer.java,v $
- * $Revision: 1.1 $
- * $Date: 2008/11/04 11:55:23 $
+ * $Revision: 1.2 $
+ * $Date: 2008/11/12 15:48:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,7 +49,7 @@ public class InfoPointMessageConsumer implements MessageConsumer
     QueryMessage msg = (QueryMessage) message;
     // Wir loggen das erstmal nur, senden aber noch nichts.
     Logger.info("got infopoint ack request: " + msg.getName());
-    Logger.info("xml data: " + msg.getData());
+    Logger.debug("xml data: " + msg.getData());
     msg.setData(Boolean.FALSE);
   }
 
@@ -58,6 +58,9 @@ public class InfoPointMessageConsumer implements MessageConsumer
 
 /*********************************************************************
  * $Log: InfoPointMessageConsumer.java,v $
+ * Revision 1.2  2008/11/12 15:48:17  willuhn
+ * @C changed loglevel
+ *
  * Revision 1.1  2008/11/04 11:55:23  willuhn
  * @N Update auf HBCI4Java 2.5.9
  *

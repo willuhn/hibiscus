@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/AbstractHibiscusHBCICallback.java,v $
- * $Revision: 1.3 $
- * $Date: 2008/05/30 14:23:48 $
+ * $Revision: 1.4 $
+ * $Date: 2008/11/12 15:50:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -86,7 +86,7 @@ public abstract class AbstractHibiscusHBCICallback extends AbstractHBCICallback
         user == null || user.length() == 0 ||
         data == null || data.size() == 0)
     {
-      Logger.info("[" + prefix + "] no version, no userid or no data found, skipping update");
+      Logger.debug("[" + prefix + "] no version, no userid or no data found, skipping update");
       return;
     }
     
@@ -150,6 +150,9 @@ public abstract class AbstractHibiscusHBCICallback extends AbstractHBCICallback
 
 /*********************************************************************
  * $Log: AbstractHibiscusHBCICallback.java,v $
+ * Revision 1.4  2008/11/12 15:50:38  willuhn
+ * @C changed loglevel
+ *
  * Revision 1.3  2008/05/30 14:23:48  willuhn
  * @N Vollautomatisches und versioniertes Speichern der BPD und UPD in der neuen Property-Tabelle
  *
