@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragDeleteJob.java,v $
- * $Revision: 1.19 $
- * $Date: 2008/09/23 11:24:27 $
+ * $Revision: 1.20 $
+ * $Date: 2008/11/17 23:30:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -77,7 +77,7 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
       setJobParam("btg",dauerauftrag.getBetrag(),curr);
 
       HibiscusAddress empfaenger = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
-      empfaenger.setBLZ(dauerauftrag.getGegenkontoBLZ());
+      empfaenger.setBlz(dauerauftrag.getGegenkontoBLZ());
       empfaenger.setKontonummer(dauerauftrag.getGegenkontoNummer());
       empfaenger.setName(dauerauftrag.getGegenkontoName());
       setJobParam("dst",Converter.Address2HBCIKonto(empfaenger));
@@ -174,6 +174,9 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIDauerauftragDeleteJob.java,v $
+ * Revision 1.20  2008/11/17 23:30:00  willuhn
+ * @C Aufrufe der depeicated BLZ-Funktionen angepasst
+ *
  * Revision 1.19  2008/09/23 11:24:27  willuhn
  * @C Auswertung der Job-Results umgestellt. Die Entscheidung, ob Fehler oder Erfolg findet nun nur noch an einer Stelle (in AbstractHBCIJob) statt. Ausserdem wird ein Job auch dann als erfolgreich erledigt markiert, wenn der globale Job-Status zwar fehlerhaft war, aber fuer den einzelnen Auftrag nicht zweifelsfrei ermittelt werden konnte, ob er erfolgreich war oder nicht. Es koennte unter Umstaenden sein, eine Ueberweisung faelschlicherweise als ausgefuehrt markiert (wenn globaler Status OK, aber Job-Status != ERROR). Das ist aber allemal besser, als sie doppelt auszufuehren.
  *

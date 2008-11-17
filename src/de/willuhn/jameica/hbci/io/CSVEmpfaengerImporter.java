@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Attic/CSVEmpfaengerImporter.java,v $
- * $Revision: 1.7 $
- * $Date: 2008/04/24 11:37:21 $
+ * $Revision: 1.8 $
+ * $Date: 2008/11/17 23:30:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -128,7 +128,7 @@ public class CSVEmpfaengerImporter implements Importer
           
           if (book.contains(a) != null)
           {
-            monitor.log("  " + i18n.tr("Adresse (Kto {0}, BLZ {1}) existiert bereits, überspringe Datensatz", new String[]{a.getKontonummer(),a.getBLZ()}));
+            monitor.log("  " + i18n.tr("Adresse (Kto {0}, BLZ {1}) existiert bereits, überspringe Datensatz", new String[]{a.getKontonummer(),a.getBlz()}));
             continue;
           }
           
@@ -230,6 +230,9 @@ public class CSVEmpfaengerImporter implements Importer
 
 /*******************************************************************************
  * $Log: CSVEmpfaengerImporter.java,v $
+ * Revision 1.8  2008/11/17 23:30:00  willuhn
+ * @C Aufrufe der depeicated BLZ-Funktionen angepasst
+ *
  * Revision 1.7  2008/04/24 11:37:21  willuhn
  * @N BUGZILLA 304
  *

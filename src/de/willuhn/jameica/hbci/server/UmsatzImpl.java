@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.54 $
- * $Date: 2008/09/03 21:29:44 $
+ * $Revision: 1.55 $
+ * $Date: 2008/11/17 23:30:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -187,7 +187,7 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 	 */
 	public void setGegenkonto(Address empf) throws RemoteException
 	{
-		setGegenkontoBLZ(empf.getBLZ());
+		setGegenkontoBLZ(empf.getBlz());
 		setGegenkontoNummer(empf.getKontonummer());
 		setGegenkontoName(empf.getName());
 	}
@@ -673,6 +673,9 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.55  2008/11/17 23:30:00  willuhn
+ * @C Aufrufe der depeicated BLZ-Funktionen angepasst
+ *
  * Revision 1.54  2008/09/03 21:29:44  willuhn
  * @C BUGZILLA 622 - Debug-Ausgaben
  *

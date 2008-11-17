@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EmpfaengerControl.java,v $
- * $Revision: 1.45 $
- * $Date: 2008/05/19 22:35:53 $
+ * $Revision: 1.46 $
+ * $Date: 2008/11/17 23:29:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -125,7 +125,7 @@ public class EmpfaengerControl extends AbstractControl {
 
     DBIterator list = UmsatzUtil.getUmsaetzeBackwards();
     list.addFilter("empfaenger_konto like ?",new Object[]{"%" + getAddress().getKontonummer()});
-    list.addFilter("empfaenger_blz = ?",  new Object[]{getAddress().getBLZ()});
+    list.addFilter("empfaenger_blz = ?",  new Object[]{getAddress().getBlz()});
 
     this.umsatzList = new UmsatzList(list,new UmsatzDetail());
     ((UmsatzList)this.umsatzList).setFilterVisible(false);
@@ -146,7 +146,7 @@ public class EmpfaengerControl extends AbstractControl {
 
     DBIterator list = Settings.getDBService().createList(SammelLastBuchung.class);
     list.addFilter("gegenkonto_nr like ?",  new Object[]{"%" + getAddress().getKontonummer()});
-    list.addFilter("gegenkonto_blz = ?", new Object[]{getAddress().getBLZ()});
+    list.addFilter("gegenkonto_blz = ?", new Object[]{getAddress().getBlz()});
     list.setOrder(" ORDER BY id DESC");
 
     this.sammelList = new SammelTransferBuchungList(list,new SammelLastBuchungNew());
@@ -166,7 +166,7 @@ public class EmpfaengerControl extends AbstractControl {
 
     DBIterator list = Settings.getDBService().createList(SammelUeberweisungBuchung.class);
     list.addFilter("gegenkonto_nr like ?",  new Object[]{"%" + getAddress().getKontonummer()});
-    list.addFilter("gegenkonto_blz = ?", new Object[]{getAddress().getBLZ()});
+    list.addFilter("gegenkonto_blz = ?", new Object[]{getAddress().getBlz()});
     list.setOrder(" ORDER BY id DESC");
 
     this.sammelList2 = new SammelTransferBuchungList(list,new SammelUeberweisungBuchungNew());
@@ -213,7 +213,7 @@ public class EmpfaengerControl extends AbstractControl {
 	{
 		if (blz != null)
 			return blz;
-		blz = new BLZInput(getAddress().getBLZ());
+		blz = new BLZInput(getAddress().getBlz());
     blz.setEnabled(isHibiscusAdresse());
     blz.setMandatory(true);
 		return blz;
@@ -245,7 +245,7 @@ public class EmpfaengerControl extends AbstractControl {
       {
         HibiscusAddress a = (HibiscusAddress) getAddress();
         a.setKontonummer((String)getKontonummer().getValue());
-        a.setBLZ((String)getBlz().getValue());
+        a.setBlz((String)getBlz().getValue());
         a.setName((String)getName().getValue());
         a.setKommentar((String)getKommentar().getValue());
         a.store();
@@ -267,6 +267,9 @@ public class EmpfaengerControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: EmpfaengerControl.java,v $
+ * Revision 1.46  2008/11/17 23:29:59  willuhn
+ * @C Aufrufe der depeicated BLZ-Funktionen angepasst
+ *
  * Revision 1.45  2008/05/19 22:35:53  willuhn
  * @N Maximale Laenge von Kontonummern konfigurierbar (Soft- und Hardlimit)
  * @N Laengenpruefungen der Kontonummer in Dialogen und Fachobjekten

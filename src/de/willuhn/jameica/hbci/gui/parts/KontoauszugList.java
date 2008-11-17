@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.16 $
- * $Date: 2008/09/04 09:34:16 $
+ * $Revision: 1.17 $
+ * $Date: 2008/11/17 23:29:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -628,7 +628,7 @@ public class KontoauszugList extends UmsatzList
       try
       {
         getGegenkontoNummer().setText(address.getKontonummer());
-        getGegenkontoBLZ().setValue(address.getBLZ());
+        getGegenkontoBLZ().setValue(address.getBlz());
         getGegenkontoName().setValue(address.getName());
       }
       catch (RemoteException er)
@@ -644,6 +644,9 @@ public class KontoauszugList extends UmsatzList
 
 /*********************************************************************
  * $Log: KontoauszugList.java,v $
+ * Revision 1.17  2008/11/17 23:29:59  willuhn
+ * @C Aufrufe der depeicated BLZ-Funktionen angepasst
+ *
  * Revision 1.16  2008/09/04 09:34:16  willuhn
  * *** empty log message ***
  *

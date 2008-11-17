@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.44 $
- * $Date: 2007/12/13 14:20:00 $
+ * $Revision: 1.45 $
+ * $Date: 2008/11/17 23:30:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -348,7 +348,7 @@ public class Converter {
 	 */
 	public static Konto Address2HBCIKonto(Address adresse) throws RemoteException
 	{
-		Konto k = new Konto("DE",adresse.getBLZ(),adresse.getKontonummer());
+		Konto k = new Konto("DE",adresse.getBlz(),adresse.getKontonummer());
 		k.name = adresse.getName();
 		return k;
 	}
@@ -362,7 +362,7 @@ public class Converter {
 	public static Address HBCIKonto2Address(Konto konto) throws RemoteException
 	{
 		HibiscusAddress e = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
-		e.setBLZ(konto.blz);
+		e.setBlz(konto.blz);
 		e.setKontonummer(konto.number);
 		String name = konto.name;
 		if (konto.name2 != null && konto.name2.length() > 0)
@@ -440,6 +440,9 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.45  2008/11/17 23:30:00  willuhn
+ * @C Aufrufe der depeicated BLZ-Funktionen angepasst
+ *
  * Revision 1.44  2007/12/13 14:20:00  willuhn
  * @B Bug 517
  *

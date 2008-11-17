@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/EmpfaengerAdd.java,v $
- * $Revision: 1.10 $
- * $Date: 2007/04/23 18:07:14 $
+ * $Revision: 1.11 $
+ * $Date: 2008/11/17 23:30:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -99,7 +99,7 @@ public class EmpfaengerAdd implements Action
       else if (context instanceof Address)
       {
         Address a = (Address) context;
-        items.add(create(a.getName(),a.getKontonummer(),a.getBLZ()));
+        items.add(create(a.getName(),a.getKontonummer(),a.getBlz()));
       }
       else if (context instanceof Address[])
       {
@@ -107,7 +107,7 @@ public class EmpfaengerAdd implements Action
         for (int i=0;i<list.length;++i)
         {
           Address a = list[i];
-          items.add(create(a.getName(),a.getKontonummer(),a.getBLZ()));
+          items.add(create(a.getName(),a.getKontonummer(),a.getBlz()));
         }
       }
       ///////////////////////////////////////////////////////////////
@@ -131,10 +131,10 @@ public class EmpfaengerAdd implements Action
 
         if (e.getName() == null || e.getName().length() == 0)
         {
-          Logger.warn("address [kto. " + e.getKontonummer() + ", blz " + e.getBLZ() + " has no name, skipping");
+          Logger.warn("address [kto. " + e.getKontonummer() + ", blz " + e.getBlz() + " has no name, skipping");
           continue;
         }
-        String key = e.getName() + "-" + e.getKontonummer() + "-" + e.getBLZ();
+        String key = e.getName() + "-" + e.getKontonummer() + "-" + e.getBlz();
         if (seen.get(key) != null)
           continue; // den hatten wir schonmal. Und wir wollen den User doch nicht immer wieder fragen
 
@@ -142,7 +142,7 @@ public class EmpfaengerAdd implements Action
 
         if (book.contains(e) != null)
         {
-          if (!Application.getCallback().askUser(question,new String[]{e.getName(),e.getKontonummer(),e.getBLZ()}))
+          if (!Application.getCallback().askUser(question,new String[]{e.getName(),e.getKontonummer(),e.getBlz()}))
             continue;
         }
         
@@ -177,7 +177,7 @@ public class EmpfaengerAdd implements Action
     HibiscusAddress e = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
     e.setName(strip(name));
     e.setKontonummer(kontonummer);
-    e.setBLZ(blz);
+    e.setBlz(blz);
     return e;
   }
 
@@ -198,6 +198,9 @@ public class EmpfaengerAdd implements Action
 
 /**********************************************************************
  * $Log: EmpfaengerAdd.java,v $
+ * Revision 1.11  2008/11/17 23:30:00  willuhn
+ * @C Aufrufe der depeicated BLZ-Funktionen angepasst
+ *
  * Revision 1.10  2007/04/23 18:07:14  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailControl.java,v $
- * $Revision: 1.33 $
- * $Date: 2008/08/29 16:46:23 $
+ * $Revision: 1.34 $
+ * $Date: 2008/11/17 23:29:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -128,7 +128,7 @@ public class UmsatzDetailControl extends AbstractControl {
       Umsatz u = getUmsatz();
       HibiscusAddress e = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
       Addressbook ab = (Addressbook) Application.getServiceFactory().lookup(HBCI.class,"addressbook");
-      e.setBLZ(u.getGegenkontoBLZ());
+      e.setBlz(u.getGegenkontoBLZ());
       e.setKontonummer(u.getGegenkontoNummer());
       e.setName(u.getGegenkontoName());
       return ab.contains(e);
@@ -500,7 +500,7 @@ public class UmsatzDetailControl extends AbstractControl {
         if (changeEK) getEmpfaengerKonto().setValue(empfaenger.getKontonummer());
         if (changeEB)
         {
-          String blz = empfaenger.getBLZ();
+          String blz = empfaenger.getBlz();
           getEmpfaengerBLZ().setValue(blz);
           String name = HBCIUtils.getNameForBLZ(blz);
           getEmpfaengerBLZ().setComment(name);
@@ -520,6 +520,9 @@ public class UmsatzDetailControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzDetailControl.java,v $
+ * Revision 1.34  2008/11/17 23:29:59  willuhn
+ * @C Aufrufe der depeicated BLZ-Funktionen angepasst
+ *
  * Revision 1.33  2008/08/29 16:46:23  willuhn
  * @N BUGZILLA 616
  *

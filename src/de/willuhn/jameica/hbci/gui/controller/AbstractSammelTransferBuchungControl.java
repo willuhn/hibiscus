@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractSammelTransferBuchungControl.java,v $
- * $Revision: 1.12 $
- * $Date: 2008/10/27 09:23:38 $
+ * $Revision: 1.13 $
+ * $Date: 2008/11/17 23:30:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -239,7 +239,7 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 				return;
 			try {
 				getGegenKonto().setText(gegenKonto.getKontonummer());
-				getGegenkontoBLZ().setValue(gegenKonto.getBLZ());
+				getGegenkontoBLZ().setValue(gegenKonto.getBlz());
 				getGegenkontoName().setValue(gegenKonto.getName());
 				// Wenn die Adresse aus dem Adressbuch kommt, deaktivieren wir die Checkbox
 				getStoreAddress().setValue(Boolean.FALSE);
@@ -255,7 +255,7 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
           
           DBIterator list = getBuchung().getList();
           list.addFilter("gegenkonto_nr = ?",new Object[]{gegenKonto.getKontonummer()});
-          list.addFilter("gegenkonto_blz = ?",  new Object[]{gegenKonto.getBLZ()});
+          list.addFilter("gegenkonto_blz = ?",  new Object[]{gegenKonto.getBlz()});
           list.setOrder("order by id desc");
           if (list.hasNext())
           {
@@ -282,6 +282,9 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferBuchungControl.java,v $
+ * Revision 1.13  2008/11/17 23:30:00  willuhn
+ * @C Aufrufe der depeicated BLZ-Funktionen angepasst
+ *
  * Revision 1.12  2008/10/27 09:23:38  willuhn
  * @B Beim Duplizieren wurde der Betrag nicht uebernommen
  *

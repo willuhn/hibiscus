@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/DonateDialog.java,v $
- * $Revision: 1.7 $
- * $Date: 2008/04/07 16:15:34 $
+ * $Revision: 1.8 $
+ * $Date: 2008/11/17 23:30:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -78,14 +78,14 @@ public class DonateDialog extends AbstractDialog
     ArrayList list = new ArrayList();
 
     HibiscusAddress hibiscus = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
-    hibiscus.setBLZ(new String(new char[]{'5','0','5','3','0','0','0','0'}));
+    hibiscus.setBlz(new String(new char[]{'5','0','5','3','0','0','0','0'}));
     hibiscus.setKontonummer(new String(new char[]{'3','2','5','4','0','6'}));
     hibiscus.setName("Olaf Willuhn");
     hibiscus.setKommentar("Autor Hibiscus");
     list.add(hibiscus);
     
     HibiscusAddress hbci4java = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
-    hbci4java.setBLZ(new String(new char[]{'8','6','0','5','5','5','9','2'}));
+    hbci4java.setBlz(new String(new char[]{'8','6','0','5','5','5','9','2'}));
     hbci4java.setKontonummer(new String(new char[]{'1','8','0','0','2','1','4','2','1','5'}));
     hbci4java.setName("Stefan Palme");
     hbci4java.setKommentar("Autor HBCI4Java");
@@ -248,6 +248,9 @@ public class DonateDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: DonateDialog.java,v $
+ * Revision 1.8  2008/11/17 23:30:00  willuhn
+ * @C Aufrufe der depeicated BLZ-Funktionen angepasst
+ *
  * Revision 1.7  2008/04/07 16:15:34  willuhn
  * @N Bug 577
  *

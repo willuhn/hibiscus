@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractHibiscusTransferImpl.java,v $
- * $Revision: 1.7 $
- * $Date: 2008/09/17 23:44:29 $
+ * $Revision: 1.8 $
+ * $Date: 2008/11/17 23:30:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -263,7 +263,7 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractDBObject impl
   {
   	if (e == null)
   		return;
-    setGegenkontoBLZ(e.getBLZ());
+    setGegenkontoBLZ(e.getBlz());
   	setGegenkontoNummer(e.getKontonummer());
   	setGegenkontoName(e.getName());
   }
@@ -280,6 +280,9 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractDBObject impl
 
 /**********************************************************************
  * $Log: AbstractHibiscusTransferImpl.java,v $
+ * Revision 1.8  2008/11/17 23:30:00  willuhn
+ * @C Aufrufe der depeicated BLZ-Funktionen angepasst
+ *
  * Revision 1.7  2008/09/17 23:44:29  willuhn
  * @B SQL-Query fuer MaxUsage-Abfrage korrigiert
  *

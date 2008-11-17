@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AddressbookHibiscusImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2008/04/27 22:22:56 $
+ * $Revision: 1.5 $
+ * $Date: 2008/11/17 23:30:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -53,7 +53,7 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
     
     DBIterator list = Settings.getDBService().createList(HibiscusAddress.class);
     list.addFilter("kontonummer like ?", new Object[]{"%" + address.getKontonummer()}); // Fuehrende Nullen ignorieren
-    list.addFilter("blz=?",              new Object[]{address.getBLZ()});
+    list.addFilter("blz=?",              new Object[]{address.getBlz()});
     list.addFilter("LOWER(name)=?",      new Object[]{address.getName().toLowerCase()});
     if (list.hasNext())
       return (Address) list.next();
@@ -92,6 +92,9 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
 
 /*********************************************************************
  * $Log: AddressbookHibiscusImpl.java,v $
+ * Revision 1.5  2008/11/17 23:30:00  willuhn
+ * @C Aufrufe der depeicated BLZ-Funktionen angepasst
+ *
  * Revision 1.4  2008/04/27 22:22:56  willuhn
  * @C I18N-Referenzen statisch
  *

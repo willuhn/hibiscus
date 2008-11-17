@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SammelLastBuchungControl.java,v $
- * $Revision: 1.13 $
- * $Date: 2008/08/01 11:05:14 $
+ * $Revision: 1.14 $
+ * $Date: 2008/11/17 23:30:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -95,7 +95,7 @@ public class SammelLastBuchungControl extends AbstractSammelTransferBuchungContr
 			if (store.booleanValue())
 			{
         HibiscusAddress e = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
-        e.setBLZ(blz);
+        e.setBlz(blz);
         e.setKontonummer(kto);
         e.setName(name);
         
@@ -158,6 +158,9 @@ public class SammelLastBuchungControl extends AbstractSammelTransferBuchungContr
 
 /*****************************************************************************
  * $Log: SammelLastBuchungControl.java,v $
+ * Revision 1.14  2008/11/17 23:30:00  willuhn
+ * @C Aufrufe der depeicated BLZ-Funktionen angepasst
+ *
  * Revision 1.13  2008/08/01 11:05:14  willuhn
  * @N BUGZILLA 587
  *
