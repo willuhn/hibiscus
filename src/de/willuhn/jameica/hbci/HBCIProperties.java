@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCIProperties.java,v $
- * $Revision: 1.31 $
- * $Date: 2008/11/04 11:55:16 $
+ * $Revision: 1.32 $
+ * $Date: 2008/11/24 00:12:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -109,11 +109,6 @@ public class HBCIProperties
 	 */
 	public final static int HBCI_PIN_MAXLENGTH = settings.getInt("hbci.pin.maxlength",10);
 	
-  /**
-   * Ein ggf vorhandener Spezialparser fuer Umsaetze 
-   */
-  public final static String HBCI_TRANSFER_SPECIAL_PARSER = settings.getString("hbci.transfer.specialparser",null);
-
   /**
 	 * Minimale Laenge fuer PINs.
 	 */
@@ -260,6 +255,9 @@ public class HBCIProperties
 
 /**********************************************************************
  * $Log: HBCIProperties.java,v $
+ * Revision 1.32  2008/11/24 00:12:08  willuhn
+ * @R Spezial-Umsatzparser entfernt - wird kuenftig direkt in HBCI4Java gemacht
+ *
  * Revision 1.31  2008/11/04 11:55:16  willuhn
  * @N Update auf HBCI4Java 2.5.9
  *

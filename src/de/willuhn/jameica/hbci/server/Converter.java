@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.45 $
- * $Date: 2008/11/17 23:30:00 $
+ * $Revision: 1.46 $
+ * $Date: 2008/11/24 00:12:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,19 +22,15 @@ import org.kapott.hbci.structures.Value;
 import org.kapott.hbci.swift.DTAUS;
 
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Address;
-import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
+import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
-import de.willuhn.jameica.hbci.server.parser.UmsatzParser;
-import de.willuhn.jameica.system.Application;
-import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -138,46 +134,18 @@ public class Converter {
         usage = usage.replaceAll("(.{27})","$1--##--##");
         String[] lines = usage.split("--##--##");
         
-        // Jetzt schauen wir noch, ob wir einen Spezialparser registriert haben
-        boolean success = false;
-        String parser = HBCIProperties.HBCI_TRANSFER_SPECIAL_PARSER;
-        if (parser != null && parser.length() > 0)
+        if (lines.length >= 1) umsatz.setZweck(lines[0]);
+        if (lines.length >= 2) umsatz.setZweck2(lines[1]);
+        if (lines.length >= 3)
         {
-          try
+          // Wenn noch mehr da ist, pappen wir den Rest zusammen in
+          // den Kommentar
+          StringBuffer sb = new StringBuffer();
+          for (int i=2;i<lines.length;++i)
           {
-            // OK, wir haben einen. Mal schauen, ob wir den instanziieren koennen.
-            Class c = Application.getClassLoader().load(parser);
-            UmsatzParser up = (UmsatzParser) c.newInstance();
-            Logger.info("applying special parser: " + parser);
-            up.parse(lines,umsatz);
-            success = true;
+            sb.append(lines[i]);
           }
-          catch (Exception e)
-          {
-            Logger.error("error while loading special parser " + parser,e);
-          }
-          catch (NoClassDefFoundError ncd)
-          {
-            Logger.error("special parser not found: " + parser,ncd);
-          }
-        }
-
-        // Special-Parser wollte nicht. Also dann die regulaere Methode
-        if (!success)
-        {
-          if (lines.length >= 1) umsatz.setZweck(lines[0]);
-          if (lines.length >= 2) umsatz.setZweck2(lines[1]);
-          if (lines.length >= 3)
-          {
-            // Wenn noch mehr da ist, pappen wir den Rest zusammen in
-            // den Kommentar
-            StringBuffer sb = new StringBuffer();
-            for (int i=2;i<lines.length;++i)
-            {
-              sb.append(lines[i]);
-            }
-            umsatz.setKommentar(sb.toString());
-          }
+          umsatz.setKommentar(sb.toString());
         }
       }
 		}
@@ -440,6 +408,9 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.46  2008/11/24 00:12:07  willuhn
+ * @R Spezial-Umsatzparser entfernt - wird kuenftig direkt in HBCI4Java gemacht
+ *
  * Revision 1.45  2008/11/17 23:30:00  willuhn
  * @C Aufrufe der depeicated BLZ-Funktionen angepasst
  *
