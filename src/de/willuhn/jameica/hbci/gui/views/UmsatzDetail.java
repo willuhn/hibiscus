@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzDetail.java,v $
- * $Revision: 1.29 $
- * $Date: 2007/06/15 11:20:32 $
+ * $Revision: 1.30 $
+ * $Date: 2008/11/25 00:13:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,18 +13,15 @@
 
 package de.willuhn.jameica.hbci.gui.views;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.TabFolder;
-
+import de.willuhn.datasource.GenericIterator;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
-import de.willuhn.jameica.gui.util.Color;
-import de.willuhn.jameica.gui.util.TabGroup;
+import de.willuhn.jameica.gui.util.ColumnLayout;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
@@ -32,6 +29,7 @@ import de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.jameica.hbci.rmi.Verwendungszweck;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -65,32 +63,35 @@ public class UmsatzDetail extends AbstractView {
     else
       GUI.getView().setTitle(i18n.tr("Buchungsdetails. {0}, Saldo: {1}",new String[]{s1,s2}));
 
-    TabFolder kontofolder = new TabFolder(getParent(), SWT.NONE);
-    kontofolder.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-    kontofolder.setBackground(Color.BACKGROUND.getSWTColor());
-    TabGroup detail = new TabGroup(kontofolder,i18n.tr("Details"));
+    ColumnLayout columns = new ColumnLayout(getParent(),2);
+    SimpleContainer left = new SimpleContainer(columns.getComposite());
 
 		// BUGZILLA 23 http://www.willuhn.de/bugzilla/show_bug.cgi?id=23
-    detail.addHeadline(i18n.tr("Gegenkonto"));
-    detail.addLabelPair(i18n.tr("Inhaber"),                       control.getEmpfaengerName());
-    detail.addLabelPair(i18n.tr("Kontonummer"),                   control.getEmpfaengerKonto());
+    left.addHeadline(i18n.tr("Gegenkonto"));
+    left.addLabelPair(i18n.tr("Inhaber"),                       control.getEmpfaengerName());
+    left.addLabelPair(i18n.tr("Kontonummer"),                   control.getEmpfaengerKonto());
     if (control.getUmsatz().hasChangedByUser())
-      detail.addLabelPair(i18n.tr("BLZ"),                         control.getEmpfaengerBLZ());
+      left.addLabelPair(i18n.tr("BLZ"),                         control.getEmpfaengerBLZ());
 
-    detail.addHeadline(i18n.tr("Datum und Betrag"));
-    detail.addLabelPair(i18n.tr("Betrag"),                        control.getBetrag());
-    detail.addLabelPair(i18n.tr("Datum der Buchung"),             control.getDatum());
-    detail.addLabelPair(i18n.tr("Valuta"),                        control.getValuta());
-    detail.addLabelPair(i18n.tr("Neuer Saldo"),                   control.getSaldo());
+    left.addHeadline(i18n.tr("Datum und Betrag"));
+    left.addLabelPair(i18n.tr("Betrag"),                        control.getBetrag());
+    left.addLabelPair(i18n.tr("Datum der Buchung"),             control.getDatum());
+    left.addLabelPair(i18n.tr("Valuta"),                        control.getValuta());
+    left.addLabelPair(i18n.tr("Neuer Saldo"),                   control.getSaldo());
 
-    detail.addHeadline(i18n.tr("Sonstige Informationen"));
-    detail.addLabelPair(i18n.tr("Art der Buchung"),               control.getArt());
-    detail.addLabelPair(i18n.tr("Kundenreferenz"),                control.getCustomerRef());
-    detail.addLabelPair(i18n.tr("Primanota-Kennzeichen"),         control.getPrimanota());
-    detail.addLabelPair(i18n.tr("Umsatz-Kategorie"),              control.getUmsatzTyp());
+    SimpleContainer right = new SimpleContainer(columns.getComposite(),true);
+    right.addHeadline(i18n.tr("Notizen"));
+    right.addPart(control.getKommentar());
+
+    SimpleContainer bottom = new SimpleContainer(getParent(),true);
+    bottom.addHeadline(i18n.tr("Sonstige Informationen"));
+    bottom.addLabelPair(i18n.tr("Art der Buchung"),               control.getArt());
+    bottom.addLabelPair(i18n.tr("Kundenreferenz"),                control.getCustomerRef());
+    bottom.addLabelPair(i18n.tr("Primanota-Kennzeichen"),         control.getPrimanota());
+    bottom.addLabelPair(i18n.tr("Umsatz-Kategorie"),              control.getUmsatzTyp());
 
     // BUGZILLA 30 http://www.willuhn.de/bugzilla/show_bug.cgi?id=30
-    detail.addHeadline(i18n.tr("Verwendungszweck"));
+    bottom.addHeadline(i18n.tr("Verwendungszweck"));
 
     // BUGZILLA 75 http://www.willuhn.de/bugzilla/show_bug.cgi?id=75
     Umsatz u = control.getUmsatz();
@@ -103,26 +104,30 @@ public class UmsatzDetail extends AbstractView {
     // 3) Der Verwendungszweck wurde vom User vorher schonmal geaendert
     if (z1 == null || z1.length() < 4 || u.hasChangedByUser())
     {
-      detail.addLabelPair(i18n.tr("Verwendungszweck"),control.getZweck());
+      bottom.addLabelPair(i18n.tr("Verwendungszweck"),control.getZweck());
 
       // BUGZILLA 263 http://www.willuhn.de/bugzilla/show_bug.cgi?id=263
       if (z2 != null && z2.length() > 0)
       {
-        detail.addLabelPair(i18n.tr("Weiterer Verwendungszweck"),new LabelInput(z2));
+        bottom.addLabelPair(i18n.tr("Weiterer Verwendungszweck"),new LabelInput(z2));
       }
     }
     else
     {
-      detail.addText(z1,true);
+      bottom.addText(z1,true);
       if (z2 != null && z2.length() > 0)
       {
-        detail.addText(z2,true);
+        bottom.addText(z2,true);
       }
     }
+    
+    GenericIterator weitereZeilen = control.getUmsatz().getWeitereVerwendungszwecke();
+    while (weitereZeilen.hasNext())
+    {
+      Verwendungszweck z = (Verwendungszweck) weitereZeilen.next();
+      bottom.addText(z.getText(),true);
+    }
    
-    TabGroup comment = new TabGroup(kontofolder,i18n.tr("Kommentar zu dieser Buchung"));
-    control.getKommentar().paint(comment.getComposite());
-
     ButtonArea buttons = new ButtonArea(getParent(),3);
 		buttons.addButton(i18n.tr("Zurück"),new Back(),null,true);
     buttons.addButton(i18n.tr("Speichern"),new Action()
@@ -157,6 +162,10 @@ public class UmsatzDetail extends AbstractView {
 
 /**********************************************************************
  * $Log: UmsatzDetail.java,v $
+ * Revision 1.30  2008/11/25 00:13:47  willuhn
+ * @N Erweiterte Verwendungswecke anzeigen
+ * @N Notizen nicht mehr in einem separaten Tab sondern in der rechten Spalte anzeigen
+ *
  * Revision 1.29  2007/06/15 11:20:32  willuhn
  * @N Saldo in Kontodetails via Messaging sofort aktualisieren
  * @N Mehr Details in den Namen der Synchronize-Jobs

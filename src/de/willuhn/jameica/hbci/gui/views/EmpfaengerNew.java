@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/EmpfaengerNew.java,v $
- * $Revision: 1.14 $
- * $Date: 2007/04/23 21:03:48 $
+ * $Revision: 1.15 $
+ * $Date: 2008/11/25 00:13:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,8 +21,9 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Color;
+import de.willuhn.jameica.gui.util.ColumnLayout;
 import de.willuhn.jameica.gui.util.Headline;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.Back;
@@ -47,14 +48,18 @@ public class EmpfaengerNew extends AbstractView {
 		GUI.getView().setTitle(i18n.tr("Adresse bearbeiten"));
 		
 		final EmpfaengerControl control = new EmpfaengerControl(this);
-		LabelGroup group = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
 
-		group.addLabelPair(i18n.tr("Kontonummer"),			    		control.getKontonummer());
-		group.addLabelPair(i18n.tr("Bankleitzahl"),			    		control.getBlz());
-		group.addLabelPair(i18n.tr("Name"),			    						control.getName());
+    ColumnLayout columns = new ColumnLayout(getParent(),2);
 
-    LabelGroup comment = new LabelGroup(getParent(),i18n.tr("Kommentar"),true);
-    comment.addPart(control.getKommentar());
+    SimpleContainer left = new SimpleContainer(columns.getComposite());
+		left.addHeadline(i18n.tr("Eigenschaften"));
+		left.addLabelPair(i18n.tr("Kontonummer"),	 control.getKontonummer());
+		left.addLabelPair(i18n.tr("Bankleitzahl"), control.getBlz());
+		left.addLabelPair(i18n.tr("Name"),			   control.getName());
+
+    SimpleContainer right = new SimpleContainer(columns.getComposite(),true);
+    right.addHeadline(i18n.tr("Notizen"));
+    right.addPart(control.getKommentar());
 
     // und noch die Abschicken-Knoepfe
     ButtonArea buttonArea = new ButtonArea(getParent(),control.isHibiscusAdresse() ? 3 : 1);
@@ -95,6 +100,10 @@ public class EmpfaengerNew extends AbstractView {
 
 /**********************************************************************
  * $Log: EmpfaengerNew.java,v $
+ * Revision 1.15  2008/11/25 00:13:47  willuhn
+ * @N Erweiterte Verwendungswecke anzeigen
+ * @N Notizen nicht mehr in einem separaten Tab sondern in der rechten Spalte anzeigen
+ *
  * Revision 1.14  2007/04/23 21:03:48  willuhn
  * @R "getTransfers" aus Address entfernt - hat im Adressbuch eigentlich nichts zu suchen
  *
