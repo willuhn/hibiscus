@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCILastschriftJob.java,v $
- * $Revision: 1.18 $
- * $Date: 2008/11/17 23:30:00 $
+ * $Revision: 1.19 $
+ * $Date: 2008/11/26 00:39:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,6 @@ package de.willuhn.jameica.hbci.server.hbci;
 
 import java.rmi.RemoteException;
 
-import de.willuhn.datasource.GenericIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
@@ -23,7 +22,6 @@ import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
-import de.willuhn.jameica.hbci.rmi.Verwendungszweck;
 import de.willuhn.jameica.hbci.server.Converter;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -93,15 +91,13 @@ public class HBCILastschriftJob extends AbstractHBCIJob
 			if (zweck2 != null && zweck2.length() > 0)
 				setJobParam("usage_2",zweck2);
       
-      GenericIterator moreUsages = lastschrift.getWeitereVerwendungszwecke();
+      String[] lines = lastschrift.getWeitereVerwendungszwecke();
       int pos = 3;
-      while (moreUsages != null && moreUsages.hasNext())
+      for (int i=0;i<lines.length;++i)
       {
-        Verwendungszweck zweck = (Verwendungszweck) moreUsages.next();
-        String text = zweck.getText();
-        if (text == null || text.length() == 0)
+        if (lines[i] == null || lines[i].length() == 0)
           continue;
-        setJobParam("usage_" + pos,text);
+        setJobParam("usage_" + pos,lines[i]);
         pos++;
       }
 		}
@@ -162,6 +158,9 @@ public class HBCILastschriftJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCILastschriftJob.java,v $
+ * Revision 1.19  2008/11/26 00:39:36  willuhn
+ * @N Erste Version erweiterter Verwendungszwecke. Muss dringend noch getestet werden.
+ *
  * Revision 1.18  2008/11/17 23:30:00  willuhn
  * @C Aufrufe der depeicated BLZ-Funktionen angepasst
  *

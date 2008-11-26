@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AccountUtil.java,v $
- * $Revision: 1.2 $
- * $Date: 2008/09/17 23:44:29 $
+ * $Revision: 1.3 $
+ * $Date: 2008/11/26 00:39:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,7 +15,6 @@ package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
 
-import de.willuhn.datasource.GenericIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
@@ -77,13 +76,13 @@ public class AccountUtil
     if (transfer == null)
       return;
     
-    GenericIterator it = transfer.getWeitereVerwendungszwecke();
-    if (it == null)
+    String[] lines = transfer.getWeitereVerwendungszwecke();
+    if (lines.length == 0)
       return;
     
     // "2" sind die ersten beiden Zeilen, die bei getWeitereVerwendungszwecke nicht mitgeliefert werden
     int allowed = AccountUtil.getMaxUsageUeb(transfer.getKonto());
-    if ((it.size() + 2) > allowed)
+    if ((lines.length + 2) > allowed)
     {
       I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
       throw new ApplicationException(i18n.tr("Zuviele weitere Zeilen Verwendungszweck. Maximal erlaubt: {0}",String.valueOf(allowed)));
@@ -94,6 +93,9 @@ public class AccountUtil
 
 /**********************************************************************
  * $Log: AccountUtil.java,v $
+ * Revision 1.3  2008/11/26 00:39:36  willuhn
+ * @N Erste Version erweiterter Verwendungszwecke. Muss dringend noch getestet werden.
+ *
  * Revision 1.2  2008/09/17 23:44:29  willuhn
  * @B SQL-Query fuer MaxUsage-Abfrage korrigiert
  *

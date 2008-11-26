@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/VerwendungszweckImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2008/02/15 17:39:10 $
+ * $Revision: 1.2 $
+ * $Date: 2008/11/26 00:39:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -72,17 +72,14 @@ public class VerwendungszweckImpl extends AbstractDBObject implements Verwendung
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Verwendungszweck#apply(de.willuhn.jameica.hbci.rmi.Transfer)
+   * @see de.willuhn.jameica.hbci.rmi.Verwendungszweck#setTransfer(de.willuhn.jameica.hbci.rmi.Transfer)
    */
-  public void apply(Transfer t) throws RemoteException, ApplicationException
+  public void setTransfer(Transfer t) throws RemoteException, ApplicationException
   {
     I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-    if (!this.isNewObject())
-      throw new ApplicationException(i18n.tr("Verwendungszweck wurde bereits gespeichert"));
-
     if (!(t instanceof DBObject))
-      throw new ApplicationException(i18n.tr("Verwendungszweck kann für diesen Datensatz-Typ nicht angelegt werden"));
+      throw new ApplicationException(i18n.tr("Auftrag unterstützt keine erweiterten Verwendungszwecke"));
     
     DBObject g = (DBObject) t;
     if (g.isNewObject())
@@ -96,6 +93,9 @@ public class VerwendungszweckImpl extends AbstractDBObject implements Verwendung
 
 /*********************************************************************
  * $Log: VerwendungszweckImpl.java,v $
+ * Revision 1.2  2008/11/26 00:39:36  willuhn
+ * @N Erste Version erweiterter Verwendungszwecke. Muss dringend noch getestet werden.
+ *
  * Revision 1.1  2008/02/15 17:39:10  willuhn
  * @N BUGZILLA 188 Basis-API fuer weitere Zeilen Verwendungszweck. GUI fehlt noch
  * @N DB-Update 0005. Speichern des Textschluessels bei Sammelauftragsbuchungen in der Datenbank

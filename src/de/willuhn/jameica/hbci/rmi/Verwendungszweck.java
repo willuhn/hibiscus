@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Attic/Verwendungszweck.java,v $
- * $Revision: 1.1 $
- * $Date: 2008/02/15 17:39:10 $
+ * $Revision: 1.2 $
+ * $Date: 2008/11/26 00:39:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -39,18 +39,20 @@ public interface Verwendungszweck extends DBObject
   
   /**
    * Weist diesem Verwendungszweck den Auftrag zu.
-   * Dieser Aufruf funktioniert nur mit neuen ungespeicherten Verwendungszwecken.
    * @param t der Auftrag.
    * @throws RemoteException
    * @throws ApplicationException
    */
-  public void apply(Transfer t) throws RemoteException, ApplicationException;
+  public void setTransfer(Transfer t) throws RemoteException, ApplicationException;
   
 }
 
 
 /*********************************************************************
  * $Log: Verwendungszweck.java,v $
+ * Revision 1.2  2008/11/26 00:39:36  willuhn
+ * @N Erste Version erweiterter Verwendungszwecke. Muss dringend noch getestet werden.
+ *
  * Revision 1.1  2008/02/15 17:39:10  willuhn
  * @N BUGZILLA 188 Basis-API fuer weitere Zeilen Verwendungszweck. GUI fehlt noch
  * @N DB-Update 0005. Speichern des Textschluessels bei Sammelauftragsbuchungen in der Datenbank

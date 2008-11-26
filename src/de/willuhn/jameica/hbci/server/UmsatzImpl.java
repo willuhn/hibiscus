@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.55 $
- * $Date: 2008/11/17 23:30:00 $
+ * $Revision: 1.56 $
+ * $Date: 2008/11/26 00:39:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,6 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.zip.CRC32;
 
-import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
@@ -44,10 +43,12 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 	private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  /**
+	private transient String[] verwendungszwecke = null;
+	
+	/**
    * Cache fuer die Umsatz-Kategorien.
    */
-  public final static Hashtable UMSATZTYP_CACHE = new Hashtable();
+  public transient final static Hashtable UMSATZTYP_CACHE = new Hashtable();
 
   /**
    * @throws RemoteException
@@ -474,25 +475,58 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.Changeable#delete()
+   * @see de.willuhn.datasource.db.AbstractDBObject#delete()
    */
   public void delete() throws RemoteException, ApplicationException
   {
-    // BUGZILLA #70 http://www.willuhn.de/bugzilla/show_bug.cgi?id=70
-    Konto k = getKonto();
-    String[] fields = new String[]
+    try
     {
-      getGegenkontoName(),
-      getGegenkontoNummer(),
-      getGegenkontoBLZ(),
-      HBCI.DATEFORMAT.format(getValuta()),
-      getZweck(),
-      k.getWaehrung() + " " + HBCI.DECIMALFORMAT.format(getBetrag())
-    };
-    String msg = i18n.tr("Umsatz [Gegenkonto: {0}, Kto. {1} BLZ {2}], Valuta {3}, Zweck: {4}] {5} gelöscht",fields);
+      this.transactionBegin();
 
-    super.delete();
-    k.addToProtokoll(msg,Protokoll.TYP_SUCCESS);
+      Konto k = this.getKonto();
+
+      VerwendungszweckUtil.delete(this); // Loescht die erweiterten Verwendungszwecke
+      super.delete();
+      
+      if (k != null)
+      {
+        String[] fields = new String[] {
+          getGegenkontoName(),
+          getGegenkontoNummer(),
+          getGegenkontoBLZ(),
+          HBCI.DATEFORMAT.format(getValuta()),
+          getZweck(),
+          k.getWaehrung() + " " + HBCI.DECIMALFORMAT.format(getBetrag())
+        };
+        k.addToProtokoll(i18n.tr("Umsatz [Gegenkonto: {0}, Kto. {1} BLZ {2}], Valuta {3}, Zweck: {4}] {5} gelöscht",fields),Protokoll.TYP_SUCCESS);
+      }
+      
+      this.transactionCommit();
+    }
+    catch (RemoteException re)
+    {
+      try
+      {
+        this.transactionRollback();
+      }
+      catch (Exception e2)
+      {
+        Logger.error("unable to rollback transaction",e2);
+      }
+      throw re;
+    }
+    catch (ApplicationException ae)
+    {
+      try
+      {
+        this.transactionRollback();
+      }
+      catch (Exception e2)
+      {
+        Logger.error("unable to rollback transaction",e2);
+      }
+      throw ae;
+    }
   }
 
   /**
@@ -664,15 +698,69 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
   /**
    * @see de.willuhn.jameica.hbci.rmi.Transfer#getWeitereVerwendungszwecke()
    */
-  public GenericIterator getWeitereVerwendungszwecke() throws RemoteException
+  public String[] getWeitereVerwendungszwecke() throws RemoteException
   {
-    return VerwendungszweckUtil.get(this);
+    if (this.verwendungszwecke == null)
+      this.verwendungszwecke = VerwendungszweckUtil.get(this);
+    return this.verwendungszwecke;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setWeitereVerwendungszwecke(java.lang.String[])
+   */
+  public void setWeitereVerwendungszwecke(String[] list) throws RemoteException
+  {
+    this.verwendungszwecke = list;
+  }
+
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#store()
+   */
+  public void store() throws RemoteException, ApplicationException
+  {
+    try
+    {
+      this.transactionBegin();
+      super.store();
+      
+      if (this.verwendungszwecke != null)
+        VerwendungszweckUtil.store(this,this.verwendungszwecke);
+
+      this.transactionCommit();
+    }
+    catch (RemoteException re)
+    {
+      try
+      {
+        this.transactionRollback();
+      }
+      catch (Exception e2)
+      {
+        Logger.error("unable to rollback transaction",e2);
+      }
+      throw re;
+    }
+    catch (ApplicationException ae)
+    {
+      try
+      {
+        this.transactionRollback();
+      }
+      catch (Exception e2)
+      {
+        Logger.error("unable to rollback transaction",e2);
+      }
+      throw ae;
+    }
   }
 }
 
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.56  2008/11/26 00:39:36  willuhn
+ * @N Erste Version erweiterter Verwendungszwecke. Muss dringend noch getestet werden.
+ *
  * Revision 1.55  2008/11/17 23:30:00  willuhn
  * @C Aufrufe der depeicated BLZ-Funktionen angepasst
  *
@@ -685,173 +773,4 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
  * Revision 1.52  2008/02/15 17:39:10  willuhn
  * @N BUGZILLA 188 Basis-API fuer weitere Zeilen Verwendungszweck. GUI fehlt noch
  * @N DB-Update 0005. Speichern des Textschluessels bei Sammelauftragsbuchungen in der Datenbank
- *
- * Revision 1.51  2007/10/02 16:08:55  willuhn
- * @C Bugfix mit dem falschen Spaltentyp nochmal ueberarbeitet
- *
- * Revision 1.50  2007/10/01 09:37:42  willuhn
- * @B H2: Felder vom Typ "TEXT" werden von H2 als InputStreamReader geliefert. Felder umsatz.kommentar und protokoll.nachricht auf "VARCHAR(1000)" geaendert und fuer Migration in den Gettern beides beruecksichtigt
- *
- * Revision 1.49  2007/08/09 12:23:14  willuhn
- * @B Bug 394 Typo
- *
- * Revision 1.48  2007/08/07 23:54:15  willuhn
- * @B Bug 394 - Erster Versuch. An einigen Stellen (z.Bsp. konto.getAnfangsSaldo) war ich mir noch nicht sicher. Heiner?
- *
- * Revision 1.47  2007/05/11 17:26:45  willuhn
- * @B Bugfix Verursachte falsche Checksummen und damit doppelte Umsaetze
- *
- * Revision 1.46  2007/05/04 15:45:08  willuhn
- * @B ArrayIndexOutOfBoundsException bei ungueltigem Datum
- *
- * Revision 1.45  2007/04/23 18:07:15  willuhn
- * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
- * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
- * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
- * @N Anbindung externer Adressbuecher
- *
- * Revision 1.44  2007/03/21 18:47:36  willuhn
- * @N Neue Spalte in Kategorie-Tree
- * @N Sortierung des Kontoauszuges wie in Tabelle angezeigt
- * @C Code cleanup
- *
- * Revision 1.43  2007/03/08 18:56:39  willuhn
- * @N Mehrere Spalten in Kategorie-Baum
- *
- * Revision 1.42  2007/02/19 15:01:54  willuhn
- * @N Auch dynamische Umsatzkategorien in Umsatzliste zeigen
- *
- * Revision 1.41  2006/12/29 14:28:47  willuhn
- * @B Bug 345
- * @B jede Menge Bugfixes bei SQL-Statements mit Valuta
- *
- * Revision 1.40  2006/12/01 00:02:34  willuhn
- * @C made unserializable members transient
- *
- * Revision 1.39  2006/11/30 23:48:40  willuhn
- * @N Erste Version der Umsatz-Kategorien drin
- *
- * Revision 1.38  2006/11/23 17:25:38  willuhn
- * @N Umsatz-Kategorien - in PROGRESS!
- *
- * Revision 1.37  2006/10/18 17:28:32  willuhn
- * @B Bug 299
- *
- * Revision 1.36  2006/10/10 22:06:59  willuhn
- * @C s/48/84/
- *
- * Revision 1.35  2006/10/10 22:05:32  willuhn
- * @B Bug 148
- *
- * Revision 1.34  2006/10/07 19:50:08  willuhn
- * @D javadoc
- *
- * Revision 1.33  2006/08/21 23:15:01  willuhn
- * @N Bug 184 (CSV-Import)
- *
- * Revision 1.32  2006/02/06 23:03:23  willuhn
- * @B Sortierung der Spalte "#"
- *
- * Revision 1.31  2005/12/29 01:22:11  willuhn
- * @R UmsatzZuordnung entfernt
- * @B Debugging am Pie-Chart
- *
- * Revision 1.30  2005/12/13 00:06:31  willuhn
- * @N UmsatzTyp erweitert
- *
- * Revision 1.29  2005/12/05 20:16:15  willuhn
- * @N Umsatz-Filter Refactoring
- *
- * Revision 1.28  2005/11/14 23:47:20  willuhn
- * @N added first code for umsatz categories
- *
- * Revision 1.27  2005/06/30 21:48:56  web0
- * @B bug 75
- *
- * Revision 1.26  2005/06/27 14:37:14  web0
- * @B bug 75
- *
- * Revision 1.25  2005/06/23 17:36:33  web0
- * @B bug 84
- *
- * Revision 1.24  2005/06/13 23:11:01  web0
- * *** empty log message ***
- *
- * Revision 1.23  2005/06/07 22:41:09  web0
- * @B bug 70
- *
- * Revision 1.22  2005/05/30 22:55:27  web0
- * *** empty log message ***
- *
- * Revision 1.21  2005/05/30 14:25:48  web0
- * *** empty log message ***
- *
- * Revision 1.20  2005/03/09 01:07:02  web0
- * @D javadoc fixes
- *
- * Revision 1.19  2005/02/27 17:11:49  web0
- * @N first code for "Sammellastschrift"
- * @C "Empfaenger" renamed into "Adresse"
- *
- * Revision 1.18  2005/02/19 16:49:32  willuhn
- * @B bugs 3,8,10
- *
- * Revision 1.17  2004/11/12 18:25:07  willuhn
- * *** empty log message ***
- *
- * Revision 1.16  2004/10/23 17:34:31  willuhn
- * *** empty log message ***
- *
- * Revision 1.15  2004/10/17 16:28:46  willuhn
- * @N Die ersten Dauerauftraege abgerufen ;)
- *
- * Revision 1.14  2004/08/18 23:13:51  willuhn
- * @D Javadoc
- *
- * Revision 1.13  2004/07/25 17:15:06  willuhn
- * @C PluginLoader is no longer static
- *
- * Revision 1.12  2004/07/23 15:51:44  willuhn
- * @C Rest des Refactorings
- *
- * Revision 1.11  2004/07/21 23:54:30  willuhn
- * *** empty log message ***
- *
- * Revision 1.10  2004/07/13 22:20:37  willuhn
- * @N Code fuer DauerAuftraege
- * @C paar Funktionsnamen umbenannt
- *
- * Revision 1.9  2004/07/04 17:07:59  willuhn
- * @B Umsaetze wurden teilweise nicht als bereits vorhanden erkannt und wurden somit doppelt angezeigt
- *
- * Revision 1.8  2004/06/30 20:58:29  willuhn
- * *** empty log message ***
- *
- * Revision 1.7  2004/06/17 00:14:10  willuhn
- * @N GenericObject, GenericIterator
- *
- * Revision 1.6  2004/05/25 23:23:17  willuhn
- * @N UeberweisungTyp
- * @N Protokoll
- *
- * Revision 1.5  2004/04/27 22:23:56  willuhn
- * @N configurierbarer CTAPI-Treiber
- * @C konkrete Passport-Klassen (DDV) nach de.willuhn.jameica.passports verschoben
- * @N verschiedenste Passport-Typen sind jetzt voellig frei erweiterbar (auch die Config-Dialoge)
- * @N crc32 Checksumme in Umsatz
- * @N neue Felder im Umsatz
- *
- * Revision 1.4  2004/04/05 23:28:46  willuhn
- * *** empty log message ***
- *
- * Revision 1.3  2004/03/06 18:25:10  willuhn
- * @D javadoc
- * @C removed empfaenger_id from umsatz
- *
- * Revision 1.2  2004/03/05 08:38:47  willuhn
- * @N umsaetze works now
- *
- * Revision 1.1  2004/03/05 00:04:10  willuhn
- * @N added code for umsatzlist
- *
  **********************************************************************/

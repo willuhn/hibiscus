@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.47 $
- * $Date: 2008/11/25 01:03:12 $
+ * $Revision: 1.48 $
+ * $Date: 2008/11/26 00:39:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,7 @@
 package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 import org.kapott.hbci.GV_Result.GVRDauerList;
 import org.kapott.hbci.GV_Result.GVRKUms;
@@ -157,25 +158,17 @@ public class Converter {
       // Die kommt in den zweiten Verwendungszweck
       if (u.usage.length > 1)
         umsatz.setZweck2(u.usage[1]);
-      
-      // Noch mehr Zeilen?
-      // Die kommen in den Kommentar
+
+      // Erweiterte Verwendungszwecke?
       if (u.usage.length > 2)
       {
-        StringBuffer sb = new StringBuffer();
+        ArrayList lines = new ArrayList();
         for (int i=2;i<u.usage.length;++i)
-        {
-          sb.append(u.usage[i]);
-        }
-        umsatz.setKommentar(sb.toString());
+          lines.add(u.usage[i]);
+        umsatz.setWeitereVerwendungszwecke((String[])lines.toArray(new String[lines.size()]));
       }
 		}
     
-    // TODO EVZ: Hier muessten eigentlich noch die erweiterten Verwendungszwecke angehaengt werden
-    // Das geht aber leider nicht, weil dafuer der Umsatz gespeichert sein muss. Ist er zu diesem
-    // Zeitpunkt aber leider nocht nicht.
-
-
 		// und jetzt noch der Empfaenger (wenn er existiert)
 		if (u.other != null) 
 		{
@@ -412,6 +405,9 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.48  2008/11/26 00:39:36  willuhn
+ * @N Erste Version erweiterter Verwendungszwecke. Muss dringend noch getestet werden.
+ *
  * Revision 1.47  2008/11/25 01:03:12  willuhn
  * *** empty log message ***
  *
@@ -420,154 +416,4 @@ public class Converter {
  *
  * Revision 1.45  2008/11/17 23:30:00  willuhn
  * @C Aufrufe der depeicated BLZ-Funktionen angepasst
- *
- * Revision 1.44  2007/12/13 14:20:00  willuhn
- * @B Bug 517
- *
- * Revision 1.43  2007/12/11 12:23:26  willuhn
- * @N Bug 355
- *
- * Revision 1.42  2007/10/26 22:56:56  willuhn
- * @B Textschluessel nur dann angeben, wenn einer festgelegt wurde - erzeugt sonst eine NPE in DTAUS#toString
- *
- * Revision 1.41  2007/10/14 23:26:59  willuhn
- * @N Textschluessel in Sammelauftraegen - wird noch nicht persistiert
- *
- * Revision 1.40  2007/04/23 18:07:15  willuhn
- * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
- * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
- * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
- * @N Anbindung externer Adressbuecher
- *
- * Revision 1.39  2007/04/20 14:49:05  willuhn
- * @N Support fuer externe Adressbuecher
- * @N Action "EmpfaengerAdd" "aufgebohrt"
- *
- * Revision 1.38  2007/04/19 17:47:27  willuhn
- * @B Zeile 2 des Verwendungszwecks konnte ggf. zu lang werden
- *
- * Revision 1.37  2007/04/15 22:23:16  willuhn
- * @B Bug 338
- *
- * Revision 1.36  2007/02/26 12:48:23  willuhn
- * @N Spezial-PSD-Parser von Michael Lambers
- *
- * Revision 1.35  2006/11/06 22:39:30  willuhn
- * @B bug 318
- *
- * Revision 1.34  2006/11/03 10:28:24  willuhn
- * @B bug 318 (Saldo noch umrechnen)
- *
- * Revision 1.33  2006/11/03 01:12:56  willuhn
- * @B Bug 318
- *
- * Revision 1.32  2006/08/23 09:45:13  willuhn
- * @N Restliche DBIteratoren auf PreparedStatements umgestellt
- *
- * Revision 1.31  2006/01/23 12:16:57  willuhn
- * @N Update auf HBCI4Java 2.5.0-rc5
- *
- * Revision 1.30  2005/11/22 17:31:31  willuhn
- * @B NPE
- *
- * Revision 1.29  2005/11/20 22:04:19  willuhn
- * @N umsatz changable by user if usage not parsable
- *
- * Revision 1.28  2005/11/18 00:19:11  willuhn
- * @B bug 146
- *
- * Revision 1.27  2005/11/02 17:33:31  willuhn
- * @B fataler Bug in Sammellastschrift/Sammelueberweisung
- *
- * Revision 1.26  2005/09/30 00:08:50  willuhn
- * @N SammelUeberweisungen (merged with SammelLastschrift)
- *
- * Revision 1.25  2005/08/01 23:27:42  web0
- * *** empty log message ***
- *
- * Revision 1.24  2005/05/02 23:56:45  web0
- * @B bug 66, 67
- * @C umsatzliste nach vorn verschoben
- * @C protokoll nach hinten verschoben
- *
- * Revision 1.23  2005/03/09 01:07:02  web0
- * @D javadoc fixes
- *
- * Revision 1.22  2005/03/06 18:04:17  web0
- * @B Converter hat beim Konvertieren eines HBCI4Java-Kontos in eine Adresse ggf. eine lokal vorhandene geliefert
- *
- * Revision 1.21  2005/03/06 14:04:26  web0
- * @N SammelLastschrift seems to work now
- *
- * Revision 1.20  2005/03/05 19:11:25  web0
- * @N SammelLastschrift-Code complete
- *
- * Revision 1.19  2005/03/02 17:59:30  web0
- * @N some refactoring
- *
- * Revision 1.18  2005/02/27 17:11:49  web0
- * @N first code for "Sammellastschrift"
- * @C "Empfaenger" renamed into "Adresse"
- *
- * Revision 1.17  2004/10/24 17:19:02  willuhn
- * *** empty log message ***
- *
- * Revision 1.16  2004/10/23 17:34:31  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2004/10/18 23:38:17  willuhn
- * @C Refactoring
- * @C Aufloesung der Listener und Ersatz gegen Actions
- *
- * Revision 1.14  2004/10/17 16:28:46  willuhn
- * @N Die ersten Dauerauftraege abgerufen ;)
- *
- * Revision 1.13  2004/07/23 15:51:44  willuhn
- * @C Rest des Refactorings
- *
- * Revision 1.12  2004/07/20 21:48:00  willuhn
- * @N ContextMenus
- *
- * Revision 1.11  2004/07/14 23:48:31  willuhn
- * @N mehr Code fuer Dauerauftraege
- *
- * Revision 1.10  2004/07/04 17:07:58  willuhn
- * @B Umsaetze wurden teilweise nicht als bereits vorhanden erkannt und wurden somit doppelt angezeigt
- *
- * Revision 1.9  2004/06/10 20:56:33  willuhn
- * @D javadoc comments fixed
- *
- * Revision 1.8  2004/05/05 22:14:47  willuhn
- * *** empty log message ***
- *
- * Revision 1.7  2004/04/27 23:50:15  willuhn
- * *** empty log message ***
- *
- * Revision 1.6  2004/04/27 22:23:56  willuhn
- * @N configurierbarer CTAPI-Treiber
- * @C konkrete Passport-Klassen (DDV) nach de.willuhn.jameica.passports verschoben
- * @N verschiedenste Passport-Typen sind jetzt voellig frei erweiterbar (auch die Config-Dialoge)
- * @N crc32 Checksumme in Umsatz
- * @N neue Felder im Umsatz
- *
- * Revision 1.5  2004/04/25 17:41:05  willuhn
- * @D javadoc
- *
- * Revision 1.4  2004/04/22 23:46:50  willuhn
- * @N UeberweisungJob
- *
- * Revision 1.3  2004/04/19 22:05:51  willuhn
- * @C HBCIJobs refactored
- *
- * Revision 1.2  2004/03/06 18:25:10  willuhn
- * @D javadoc
- * @C removed empfaenger_id from umsatz
- *
- * Revision 1.1  2004/03/05 00:19:23  willuhn
- * @D javadoc fixes
- * @C Converter moved into server package
- *
- * Revision 1.1  2004/03/05 00:04:10  willuhn
- * @N added code for umsatzlist
- *
  **********************************************************************/

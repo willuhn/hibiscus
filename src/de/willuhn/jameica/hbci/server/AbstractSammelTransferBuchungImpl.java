@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractSammelTransferBuchungImpl.java,v $
- * $Revision: 1.14 $
- * $Date: 2008/05/19 22:35:53 $
+ * $Revision: 1.15 $
+ * $Date: 2008/11/26 00:39:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,7 +11,6 @@ package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
 
-import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -31,6 +30,8 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
 
   private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
+  private transient String[] verwendungszwecke = null;
+
   /**
    * @throws java.rmi.RemoteException
    */
@@ -250,14 +251,107 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
   /**
    * @see de.willuhn.jameica.hbci.rmi.Transfer#getWeitereVerwendungszwecke()
    */
-  public GenericIterator getWeitereVerwendungszwecke() throws RemoteException
+  public String[] getWeitereVerwendungszwecke() throws RemoteException
   {
-    return VerwendungszweckUtil.get(this);
+    if (this.verwendungszwecke == null)
+      this.verwendungszwecke = VerwendungszweckUtil.get(this);
+    return this.verwendungszwecke;
   }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setWeitereVerwendungszwecke(java.lang.String[])
+   */
+  public void setWeitereVerwendungszwecke(String[] list) throws RemoteException
+  {
+    this.verwendungszwecke = list;
+  }
+
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#store()
+   */
+  public void store() throws RemoteException, ApplicationException
+  {
+    try
+    {
+      this.transactionBegin();
+      super.store();
+      
+      if (this.verwendungszwecke != null)
+        VerwendungszweckUtil.store(this,this.verwendungszwecke);
+      
+      this.transactionCommit();
+    }
+    catch (RemoteException re)
+    {
+      try
+      {
+        this.transactionRollback();
+      }
+      catch (Exception e2)
+      {
+        Logger.error("unable to rollback transaction",e2);
+      }
+      throw re;
+    }
+    catch (ApplicationException ae)
+    {
+      try
+      {
+        this.transactionRollback();
+      }
+      catch (Exception e2)
+      {
+        Logger.error("unable to rollback transaction",e2);
+      }
+      throw ae;
+    }
+  }
+
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#delete()
+   */
+  public void delete() throws RemoteException, ApplicationException
+  {
+    try
+    {
+      this.transactionBegin();
+      VerwendungszweckUtil.delete(this); // Loescht die erweiterten Verwendungszwecke
+      super.delete();
+      this.transactionCommit();
+    }
+    catch (RemoteException re)
+    {
+      try
+      {
+        this.transactionRollback();
+      }
+      catch (Exception e2)
+      {
+        Logger.error("unable to rollback transaction",e2);
+      }
+      throw re;
+    }
+    catch (ApplicationException ae)
+    {
+      try
+      {
+        this.transactionRollback();
+      }
+      catch (Exception e2)
+      {
+        Logger.error("unable to rollback transaction",e2);
+      }
+      throw ae;
+    }
+  }
+
 }
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferBuchungImpl.java,v $
+ * Revision 1.15  2008/11/26 00:39:36  willuhn
+ * @N Erste Version erweiterter Verwendungszwecke. Muss dringend noch getestet werden.
+ *
  * Revision 1.14  2008/05/19 22:35:53  willuhn
  * @N Maximale Laenge von Kontonummern konfigurierbar (Soft- und Hardlimit)
  * @N Laengenpruefungen der Kontonummer in Dialogen und Fachobjekten

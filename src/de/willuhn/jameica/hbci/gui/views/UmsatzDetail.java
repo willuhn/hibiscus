@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzDetail.java,v $
- * $Revision: 1.30 $
- * $Date: 2008/11/25 00:13:47 $
+ * $Revision: 1.31 $
+ * $Date: 2008/11/26 00:39:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,7 +13,6 @@
 
 package de.willuhn.jameica.hbci.gui.views;
 
-import de.willuhn.datasource.GenericIterator;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -29,7 +28,6 @@ import de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
-import de.willuhn.jameica.hbci.rmi.Verwendungszweck;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -121,13 +119,14 @@ public class UmsatzDetail extends AbstractView {
       }
     }
     
-    GenericIterator weitereZeilen = control.getUmsatz().getWeitereVerwendungszwecke();
-    while (weitereZeilen.hasNext())
+    String[] lines = control.getUmsatz().getWeitereVerwendungszwecke();
+    for (int i=0;i<lines.length;++i)
     {
-      Verwendungszweck z = (Verwendungszweck) weitereZeilen.next();
-      bottom.addText(z.getText(),true);
+      if (lines[i] == null || lines[i].length() == 0)
+        continue;
+      bottom.addText(lines[i],true);
     }
-   
+
     ButtonArea buttons = new ButtonArea(getParent(),3);
 		buttons.addButton(i18n.tr("Zurück"),new Back(),null,true);
     buttons.addButton(i18n.tr("Speichern"),new Action()
@@ -162,6 +161,9 @@ public class UmsatzDetail extends AbstractView {
 
 /**********************************************************************
  * $Log: UmsatzDetail.java,v $
+ * Revision 1.31  2008/11/26 00:39:36  willuhn
+ * @N Erste Version erweiterter Verwendungszwecke. Muss dringend noch getestet werden.
+ *
  * Revision 1.30  2008/11/25 00:13:47  willuhn
  * @N Erweiterte Verwendungswecke anzeigen
  * @N Notizen nicht mehr in einem separaten Tab sondern in der rechten Spalte anzeigen

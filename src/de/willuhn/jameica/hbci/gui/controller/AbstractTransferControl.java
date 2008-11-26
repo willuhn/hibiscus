@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.48 $
- * $Date: 2008/11/17 23:29:59 $
+ * $Revision: 1.49 $
+ * $Date: 2008/11/26 00:39:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,6 @@ import java.rmi.RemoteException;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
-import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
@@ -39,8 +38,6 @@ import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.rmi.Verwendungszweck;
-import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -221,10 +218,9 @@ public abstract class AbstractTransferControl extends AbstractControl
     
     });
 		zweck2 = new DialogInput(getTransfer().getZweck2(),this.zweckDialog);
-    zweck2.setButtonText(i18n.tr(buttonText,String.valueOf(VerwendungszweckUtil.toArray(getTransfer()).length)));
+    zweck2.setButtonText(i18n.tr(buttonText,String.valueOf(getTransfer().getWeitereVerwendungszwecke().length)));
     zweck2.setMaxLength(HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH);
     zweck2.setValidChars(HBCIProperties.HBCI_DTAUS_VALIDCHARS);
-    zweck2.disableButton(); // TODO EVZ - Freischalten, wenn alles implementiert ist
 		return zweck2;
 	}
   
@@ -317,39 +313,14 @@ public abstract class AbstractTransferControl extends AbstractControl
 			getTransfer().setGegenkontoBLZ(blz);
 			getTransfer().setGegenkontoName(name);
 
-      // Erst den Auftrag selbst speichern, damit er eine ID hat.
-      // Die zusaetzlichen Verwendungszwecke kommen danach
-      getTransfer().store();
 
       // Geaenderte Verwendungszwecke uebernehmen. Allerdings nur, wenn
       // der Dialog tatsaechlich geoffnet und auf "Uebernehmen" geklickt wurde
       String[] lines = (String[]) this.zweckDialog.getData();
       if (lines != null)
-      {
-        // Wir loeschen die urspruenglichen weg
-        GenericIterator orig = getTransfer().getWeitereVerwendungszwecke();
-        if (orig != null)
-        {
-          while (orig.hasNext())
-          {
-            Verwendungszweck z = (Verwendungszweck) orig.next();
-            z.delete();
-          }
-        }
+        getTransfer().setWeitereVerwendungszwecke(lines);
         
-        // und schreiben sie dann komplett neu
-        for (int i=0;i<lines.length;++i)
-        {
-          // leere Zeilen ueberspringen
-          if (lines[i] == null)
-            continue;
-          String text = lines[i].trim();
-          if (text.length() == 0)
-            continue;
-          
-          VerwendungszweckUtil.create(getTransfer(),text);
-        }
-      }
+      getTransfer().store();
       
 			Boolean store = (Boolean) getStoreEmpfaenger().getValue();
 			if (store.booleanValue())
@@ -490,6 +461,9 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
+ * Revision 1.49  2008/11/26 00:39:36  willuhn
+ * @N Erste Version erweiterter Verwendungszwecke. Muss dringend noch getestet werden.
+ *
  * Revision 1.48  2008/11/17 23:29:59  willuhn
  * @C Aufrufe der depeicated BLZ-Funktionen angepasst
  *

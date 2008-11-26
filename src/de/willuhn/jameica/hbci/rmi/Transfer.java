@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Transfer.java,v $
- * $Revision: 1.10 $
- * $Date: 2008/02/15 17:39:10 $
+ * $Revision: 1.11 $
+ * $Date: 2008/11/26 00:39:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,8 +14,6 @@ package de.willuhn.jameica.hbci.rmi;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-
-import de.willuhn.datasource.GenericIterator;
 
 /**
  * Basis-Interface fuer eine Geld-Bewegung.
@@ -95,23 +93,26 @@ public interface Transfer extends Remote
 	public String getZweck2() throws RemoteException;
   
   /**
-   * Liefert eine Liste erweiterter Verwendungszwecke.
-   * @return Liste erweiterter Verwendungszwecke.
-   * @throws RemoteException
-   */
-  public GenericIterator getWeitereVerwendungszwecke() throws RemoteException;
-  
-  /**
    * Liefert den Transfer-Typ.
    * @return Transfer-Typ.
    * @throws RemoteException
    */
   public int getTransferTyp() throws RemoteException;
+  
+  /**
+   * Liefert eine Liste erweiterter Verwendungszwecke.
+   * @return Liste erweiterter Verwendungszwecke.
+   * @throws RemoteException
+   */
+  public String[] getWeitereVerwendungszwecke() throws RemoteException;
 }
 
 
 /**********************************************************************
  * $Log: Transfer.java,v $
+ * Revision 1.11  2008/11/26 00:39:36  willuhn
+ * @N Erste Version erweiterter Verwendungszwecke. Muss dringend noch getestet werden.
+ *
  * Revision 1.10  2008/02/15 17:39:10  willuhn
  * @N BUGZILLA 188 Basis-API fuer weitere Zeilen Verwendungszweck. GUI fehlt noch
  * @N DB-Update 0005. Speichern des Textschluessels bei Sammelauftragsbuchungen in der Datenbank

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/VerwendungszweckUtil.java,v $
- * $Revision: 1.3 $
- * $Date: 2008/05/30 12:02:08 $
+ * $Revision: 1.4 $
+ * $Date: 2008/11/26 00:39:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,7 +16,6 @@ package de.willuhn.jameica.hbci.server;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
-import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.jameica.hbci.HBCI;
@@ -24,6 +23,7 @@ import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Transfer;
 import de.willuhn.jameica.hbci.rmi.Verwendungszweck;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -35,80 +35,173 @@ public class VerwendungszweckUtil
   /**
    * Liefert eine Liste der gefundenen Verwendungszwecke fuer diesen Transfer.
    * @param t der Transfer.
-   * @return Liste der gefundenen Verwendungszwecke, sortiert nach ID oder null, wenn der Transfer neu ist.
+   * @return Liste der gefundenen Verwendungszwecke.
+   * Sortiert nach ID oder ein leeres Array, wenn keine erweiterten Verwendungszwecke vorliegen.
+   * Die Funktion liefert NIE NULL sondern hoechstens ein leeres Array.
    * @throws RemoteException
    */
-  public static GenericIterator get(Transfer t) throws RemoteException
+  public static String[] get(Transfer t) throws RemoteException
   {
     if (!(t instanceof DBObject))
-      return null;
+      return new String[0];
     
     DBObject g = (DBObject) t;
     if (g.isNewObject())
-      return null;
+      return new String[0];
     
     DBIterator list = Settings.getDBService().createList(Verwendungszweck.class);
     list.addFilter("typ = " + t.getTransferTyp());
     list.addFilter("auftrag_id = " + g.getID());
     list.setOrder("order by id");
-    return list;
+    ArrayList l = new ArrayList();
+    while (list.hasNext())
+    {
+      Verwendungszweck z = (Verwendungszweck) list.next();
+      l.add(z.getText());
+    }
+    return (String[]) l.toArray(new String[l.size()]);
   }
   
   /**
-   * Wandelt die Liste der erweiterten Verwendungszwecke des Transfers in ein
-   * Array um.
-   * @param transfer der Transfer.
-   * @return Erweiterte Verwendungszwecke als String-Array. Nie null sondern hoechstens ein leeres Array
-   * @throws RemoteException
-   */
-  public static String[] toArray(Transfer transfer) throws RemoteException
-  {
-    GenericIterator it = transfer.getWeitereVerwendungszwecke();
-    if (it == null)
-      return new String[0]; // Keine Verwendungszwecke
-    ArrayList list = new ArrayList();
-    while (it.hasNext())
-    {
-      Verwendungszweck z = (Verwendungszweck) it.next();
-      list.add(z.getText());
-    }
-    return (String[]) list.toArray(new String[list.size()]);
-  }
-
-  /**
-   * Legt einen neuen Verwendungszweck fuer den Transfer an.
-   * Der Verwendungszweck wird sofort gespeichert.
+   * Speichert die erweiterten Verwendungszwecke fuer einen Auftrag in der Datenbank.
    * @param t der Transfer.
-   * @param text der zu speichernde Text.
-   * @return der erstellte Verwendungszweck.
+   * @param list Liste der Verwendungszwecke.
    * @throws RemoteException
    * @throws ApplicationException
    */
-  public static Verwendungszweck create(Transfer t, String text) throws RemoteException, ApplicationException
+  public static void store(Transfer t, String[] list) throws RemoteException, ApplicationException
   {
     I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-    if (text == null || text.length() == 0)
-      throw new ApplicationException(i18n.tr("Kein Verwendungszweck angegeben"));
-    
+    if (t == null)
+      throw new ApplicationException(i18n.tr("Kein Auftrag angegeben"));
+
     if (!(t instanceof DBObject))
-      throw new ApplicationException(i18n.tr("Verwendungszweck kann für diesen Datensatz-Typ nicht angelegt werden"));
+      throw new ApplicationException(i18n.tr("Auftrag unterstützt keine erweiterten Verwendungszwecke"));
     
     DBObject g = (DBObject) t;
     if (g.isNewObject())
       throw new ApplicationException(i18n.tr("Bitte speichern Sie zuerst den Auftrag"));
-    
-    Verwendungszweck zweck = (Verwendungszweck) Settings.getDBService().createObject(Verwendungszweck.class,null);
-    zweck.apply(t);
-    zweck.setText(text);
-    zweck.store();
-    return zweck;
+
+    try
+    {
+      g.transactionBegin();
+
+      // Wir loeschen die existierenden erst komplett weg
+      delete(t);
+      
+      // und schreiben sie dann komplett neu
+      for (int i=0;i<list.length;++i)
+      {
+        // leere Zeilen ueberspringen
+        if (list[i] == null)
+          continue;
+        String text = list[i].trim();
+        if (text.length() == 0)
+          continue;
+        
+        Verwendungszweck zweck = (Verwendungszweck) Settings.getDBService().createObject(Verwendungszweck.class,null);
+        zweck.setTransfer(t);
+        zweck.setText(text);
+        zweck.store();
+      }
+      
+      // Transaktion committen
+      g.transactionCommit();
+    }
+    catch (RemoteException re)
+    {
+      try
+      {
+        g.transactionRollback();
+      }
+      catch (Exception e2)
+      {
+        Logger.error("unable to rollback transaction",e2);
+      }
+      throw re;
+    }
+    catch (ApplicationException ae)
+    {
+      try
+      {
+        g.transactionRollback();
+      }
+      catch (Exception e2)
+      {
+        Logger.error("unable to rollback transaction",e2);
+      }
+      throw ae;
+    }
   }
+  
+  /**
+   * Loescht die erweiterten Verwendungszwecke fuer diesen Auftrag in der Datenbank.
+   * @param t der Transfer.
+   * @throws RemoteException
+   * @throws ApplicationException
+   */
+  public static void delete(Transfer t) throws RemoteException, ApplicationException
+  {
+    if (t == null)
+      return;
+
+    if (!(t instanceof DBObject))
+      return;
+    
+    DBObject g = (DBObject) t;
+    if (g.isNewObject())
+      return;
+
+    try
+    {
+      g.transactionBegin();
+
+      DBIterator it = Settings.getDBService().createList(Verwendungszweck.class);
+      it.addFilter("typ = " + t.getTransferTyp());
+      it.addFilter("auftrag_id = " + g.getID());
+      while (it.hasNext())
+      {
+        Verwendungszweck z = (Verwendungszweck) it.next();
+        z.delete();
+      }
+      // Transaktion committen
+      g.transactionCommit();
+    }
+    catch (RemoteException re)
+    {
+      try
+      {
+        g.transactionRollback();
+      }
+      catch (Exception e2)
+      {
+        Logger.error("unable to rollback transaction",e2);
+      }
+      throw re;
+    }
+    catch (ApplicationException ae)
+    {
+      try
+      {
+        g.transactionRollback();
+      }
+      catch (Exception e2)
+      {
+        Logger.error("unable to rollback transaction",e2);
+      }
+      throw ae;
+    }
+  }
+
 }
 
 
 /*********************************************************************
  * $Log: VerwendungszweckUtil.java,v $
+ * Revision 1.4  2008/11/26 00:39:36  willuhn
+ * @N Erste Version erweiterter Verwendungszwecke. Muss dringend noch getestet werden.
+ *
  * Revision 1.3  2008/05/30 12:02:08  willuhn
  * @N Erster Code fuer erweiterte Verwendungszwecke - NOCH NICHT FREIGESCHALTET!
  *

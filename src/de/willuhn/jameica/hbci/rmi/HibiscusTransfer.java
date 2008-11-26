@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/HibiscusTransfer.java,v $
- * $Revision: 1.1 $
- * $Date: 2007/04/23 18:07:14 $
+ * $Revision: 1.2 $
+ * $Date: 2008/11/26 00:39:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -84,11 +84,21 @@ public interface HibiscusTransfer extends Transfer, DBObject
    * @throws RemoteException
    */
   public void setZweck2(String zweck2) throws RemoteException;
+
+  /**
+   * Speichert eine Liste erweiterter Verwendungszwecke.
+   * @param list Liste erweiterter Verwendungszwecke.
+   * @throws RemoteException
+   */
+  public void setWeitereVerwendungszwecke(String[] list) throws RemoteException;
 }
 
 
 /**********************************************************************
  * $Log: HibiscusTransfer.java,v $
+ * Revision 1.2  2008/11/26 00:39:36  willuhn
+ * @N Erste Version erweiterter Verwendungszwecke. Muss dringend noch getestet werden.
+ *
  * Revision 1.1  2007/04/23 18:07:14  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
