@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCIProperties.java,v $
- * $Revision: 1.32 $
- * $Date: 2008/11/24 00:12:08 $
+ * $Revision: 1.33 $
+ * $Date: 2008/11/30 22:33:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -103,11 +103,12 @@ public class HBCIProperties
    */
   public final static String CURRENCY_DEFAULT_DE = settings.getString("currency.default.de","EUR");
 
-  // BUGZILLA 28 http://www.willuhn.de/bugzilla/show_bug.cgi?id=28
+  // BUGZILLA 28  http://www.willuhn.de/bugzilla/show_bug.cgi?id=28
+  // BUGZILLA 659 http://www.willuhn.de/bugzilla/show_bug.cgi?id=659
 	/**
 	 * Maximale Laenge fuer PINs.
 	 */
-	public final static int HBCI_PIN_MAXLENGTH = settings.getInt("hbci.pin.maxlength",10);
+	public final static int HBCI_PIN_MAXLENGTH = settings.getInt("hbci.pin.maxlength",20);
 	
   /**
 	 * Minimale Laenge fuer PINs.
@@ -255,6 +256,9 @@ public class HBCIProperties
 
 /**********************************************************************
  * $Log: HBCIProperties.java,v $
+ * Revision 1.33  2008/11/30 22:33:56  willuhn
+ * @N BUGZILLA 659 - Maximale PIN-Laenge nun 20 Zeichen
+ *
  * Revision 1.32  2008/11/24 00:12:08  willuhn
  * @R Spezial-Umsatzparser entfernt - wird kuenftig direkt in HBCI4Java gemacht
  *
