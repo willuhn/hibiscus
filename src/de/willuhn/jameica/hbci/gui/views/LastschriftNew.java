@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/LastschriftNew.java,v $
- * $Revision: 1.15 $
- * $Date: 2008/09/29 23:48:54 $
+ * $Revision: 1.16 $
+ * $Date: 2008/11/30 23:24:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -67,8 +67,8 @@ public class LastschriftNew extends AbstractView {
 		
     Button execute = new Button(i18n.tr("Jetzt ausführen"), new Action() {
       public void handleAction(Object context) throws ApplicationException {
-        control.handleStore();
-        new LastschriftExecute().handleAction(tranfer);
+        if (control.handleStore()) // BUGZILLA 661
+          new LastschriftExecute().handleAction(tranfer);
       }
     },null);
     execute.setEnabled(!tranfer.ausgefuehrt());
@@ -88,6 +88,9 @@ public class LastschriftNew extends AbstractView {
 
 /**********************************************************************
  * $Log: LastschriftNew.java,v $
+ * Revision 1.16  2008/11/30 23:24:57  willuhn
+ * @B BUGZILLA 661
+ *
  * Revision 1.15  2008/09/29 23:48:54  willuhn
  * @N Ueberfaellig-Hinweis hinter Auswahlfeld fuer Termin verschoben - spart Platz
  *
