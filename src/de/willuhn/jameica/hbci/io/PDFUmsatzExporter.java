@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/PDFUmsatzExporter.java,v $
- * $Revision: 1.10 $
- * $Date: 2007/08/09 10:19:54 $
+ * $Revision: 1.11 $
+ * $Date: 2008/12/01 23:54:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -152,18 +152,44 @@ public class PDFUmsatzExporter implements Exporter
           reporter.addColumn(reporter.getDetailCell(reporter.notNull(u.getGegenkontoName()) + "\n"
                                     + reporter.notNull(u.getArt()), Element.ALIGN_LEFT));
 
-          String kommentar = u.getKommentar();
-          if (kommentar != null && kommentar.length() > 0)
+          StringBuffer sb = new StringBuffer();
+          
+          sb.append(u.getZweck());
+          sb.append("\n");
+
+          String z2 = u.getZweck2();
+          if (z2 != null && z2.length() > 0)
           {
-            reporter.addColumn(reporter.getDetailCell(reporter.notNull(u.getZweck()) + "\n" +
-                                                      reporter.notNull(u.getZweck2()) + "\n" + 
-                                                      kommentar, Element.ALIGN_LEFT));
+            sb.append(z2);
+            sb.append("\n");
+          }
+          
+          String[] ewz = u.getWeitereVerwendungszwecke();
+          if (ewz != null && ewz.length > 0)
+          {
+            for (int k=0;k<ewz.length;++k)
+            {
+              if (ewz[k] == null || ewz.length == 0)
+                continue;
+              sb.append(ewz[k]);
+              sb.append("\n");
+            }
           }
           else
           {
-            reporter.addColumn(reporter.getDetailCell(reporter.notNull(u.getZweck()) + "\n"
-                + reporter.notNull(u.getZweck2()), Element.ALIGN_LEFT));
+            // Fuer Rueckwaertskompatibilitaet geben wir bei den
+            // Umsaetzen, bei denen noch keine Erweiterten Verwendungszwecke
+            // existieren, die Kommentare noch mit aus. Dort standen
+            // ja mal die weiteren Verwendungszwecke drin
+            String comment = u.getKommentar();
+            if (comment != null && comment.length() > 0)
+            {
+              sb.append(comment);
+              sb.append("\n");
+            }
           }
+          reporter.addColumn(reporter.getDetailCell(sb.toString(), Element.ALIGN_LEFT));
+          
           reporter.addColumn(reporter.getDetailCell(u.getBetrag()));
           reporter.addColumn(reporter.getDetailCell(u.getSaldo()));
           reporter.setNextRecord();
@@ -238,6 +264,9 @@ public class PDFUmsatzExporter implements Exporter
 
 /*********************************************************************
  * $Log: PDFUmsatzExporter.java,v $
+ * Revision 1.11  2008/12/01 23:54:42  willuhn
+ * @N BUGZILLA 188 Erweiterte Verwendungszwecke in Exports/Imports und Sammelauftraegen
+ *
  * Revision 1.10  2007/08/09 10:19:54  willuhn
  * @N Kommentar eines Umsatzes mit exportieren, falls vorhanden. Siehe auch BUGZILLA #445
  *

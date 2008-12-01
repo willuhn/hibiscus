@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractSammelTransferBuchungImpl.java,v $
- * $Revision: 1.15 $
- * $Date: 2008/11/26 00:39:36 $
+ * $Revision: 1.16 $
+ * $Date: 2008/12/01 23:54:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -90,6 +90,8 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
 
       HBCIProperties.checkChars(getZweck(), HBCIProperties.HBCI_DTAUS_VALIDCHARS);
       HBCIProperties.checkChars(getZweck2(), HBCIProperties.HBCI_DTAUS_VALIDCHARS);
+      
+      AccountUtil.checkMaxUsage(this);
     }
     catch (RemoteException e)
     {
@@ -259,7 +261,7 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setWeitereVerwendungszwecke(java.lang.String[])
+   * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#setWeitereVerwendungszwecke(java.lang.String[])
    */
   public void setWeitereVerwendungszwecke(String[] list) throws RemoteException
   {
@@ -349,6 +351,9 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferBuchungImpl.java,v $
+ * Revision 1.16  2008/12/01 23:54:42  willuhn
+ * @N BUGZILLA 188 Erweiterte Verwendungszwecke in Exports/Imports und Sammelauftraegen
+ *
  * Revision 1.15  2008/11/26 00:39:36  willuhn
  * @N Erste Version erweiterter Verwendungszwecke. Muss dringend noch getestet werden.
  *

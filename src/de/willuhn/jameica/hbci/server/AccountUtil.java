@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AccountUtil.java,v $
- * $Revision: 1.3 $
- * $Date: 2008/11/26 00:39:36 $
+ * $Revision: 1.4 $
+ * $Date: 2008/12/01 23:54:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,8 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.SammelTransfer;
+import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -76,23 +78,52 @@ public class AccountUtil
     if (transfer == null)
       return;
     
-    String[] lines = transfer.getWeitereVerwendungszwecke();
-    if (lines.length == 0)
+    checkMaxUsage(transfer.getKonto(),transfer.getWeitereVerwendungszwecke());
+  }
+
+  /**
+   * Prueft, ob die Anzahl der Verwendungszwecke nicht die Maximal-Anzahl aus den BPD uebersteigt.
+   * @param buchung die zu testende Buchung.
+   * @throws RemoteException
+   * @throws ApplicationException
+   */
+  public static void checkMaxUsage(SammelTransferBuchung buchung) throws RemoteException, ApplicationException
+  {
+    if (buchung == null)
+      return;
+    
+    SammelTransfer t = buchung.getSammelTransfer();
+    checkMaxUsage(t == null ? null : t.getKonto(),buchung.getWeitereVerwendungszwecke());
+  }
+
+  /**
+   * Prueft, ob die Anzahl der Verwendungszwecke nicht die Maximal-Anzahl aus den BPD uebersteigt.
+   * @param transfer der zu testende Transfer.
+   * @throws RemoteException
+   * @throws ApplicationException
+   */
+  private static void checkMaxUsage(Konto konto, String[] lines) throws RemoteException, ApplicationException
+  {
+    if (lines == null || lines.length == 0)
       return;
     
     // "2" sind die ersten beiden Zeilen, die bei getWeitereVerwendungszwecke nicht mitgeliefert werden
-    int allowed = AccountUtil.getMaxUsageUeb(transfer.getKonto());
+    int allowed = AccountUtil.getMaxUsageUeb(konto);
     if ((lines.length + 2) > allowed)
     {
       I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
       throw new ApplicationException(i18n.tr("Zuviele weitere Zeilen Verwendungszweck. Maximal erlaubt: {0}",String.valueOf(allowed)));
     }
   }
+
 }
 
 
 /**********************************************************************
  * $Log: AccountUtil.java,v $
+ * Revision 1.4  2008/12/01 23:54:42  willuhn
+ * @N BUGZILLA 188 Erweiterte Verwendungszwecke in Exports/Imports und Sammelauftraegen
+ *
  * Revision 1.3  2008/11/26 00:39:36  willuhn
  * @N Erste Version erweiterter Verwendungszwecke. Muss dringend noch getestet werden.
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/VerwendungszweckDialog.java,v $
- * $Revision: 1.3 $
- * $Date: 2008/11/26 00:39:36 $
+ * $Revision: 1.4 $
+ * $Date: 2008/12/01 23:54:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -29,6 +29,8 @@ import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.parts.ErweiterteVerwendungszwecke;
 import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
+import de.willuhn.jameica.hbci.rmi.SammelTransfer;
+import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -47,6 +49,16 @@ public class VerwendungszweckDialog extends AbstractDialog
   private boolean readOnly = false;
 
   /**
+   * @param pos Position des Dialogs.
+   * @throws RemoteException
+   */
+  private VerwendungszweckDialog(int pos) throws RemoteException
+  {
+    super(pos);
+    setTitle(i18n.tr("Weitere Verwendungszwecke"));
+  }
+  
+  /**
    * ct
    * @param transfer der Auftrag.
    * @param pos Position des Dialogs.
@@ -54,13 +66,26 @@ public class VerwendungszweckDialog extends AbstractDialog
    */
   public VerwendungszweckDialog(HibiscusTransfer transfer, int pos) throws RemoteException
   {
-    super(pos);
-
-    setTitle(i18n.tr("Weitere Verwendungszwecke"));
-
+    this(pos);
     this.lines    = transfer.getWeitereVerwendungszwecke();
     this.ewz      = new ErweiterteVerwendungszwecke(transfer);
     this.readOnly = ((transfer instanceof Terminable) && ((Terminable)transfer).ausgefuehrt());
+  }
+
+  /**
+   * ct
+   * @param buchung die Buchung.
+   * @param pos Position des Dialogs.
+   * @throws RemoteException
+   */
+  public VerwendungszweckDialog(SammelTransferBuchung buchung, int pos) throws RemoteException
+  {
+    this(pos);
+    this.lines    = buchung.getWeitereVerwendungszwecke();
+    this.ewz      = new ErweiterteVerwendungszwecke(buchung);
+
+    SammelTransfer tf = buchung.getSammelTransfer();
+    this.readOnly = tf.ausgefuehrt();
   }
 
   /**
@@ -120,6 +145,9 @@ public class VerwendungszweckDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: VerwendungszweckDialog.java,v $
+ * Revision 1.4  2008/12/01 23:54:42  willuhn
+ * @N BUGZILLA 188 Erweiterte Verwendungszwecke in Exports/Imports und Sammelauftraegen
+ *
  * Revision 1.3  2008/11/26 00:39:36  willuhn
  * @N Erste Version erweiterter Verwendungszwecke. Muss dringend noch getestet werden.
  *

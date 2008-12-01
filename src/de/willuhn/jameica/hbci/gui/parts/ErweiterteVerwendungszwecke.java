@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/ErweiterteVerwendungszwecke.java,v $
- * $Revision: 1.4 $
- * $Date: 2008/11/26 00:39:36 $
+ * $Revision: 1.5 $
+ * $Date: 2008/12/01 23:54:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -29,6 +29,9 @@ import de.willuhn.jameica.gui.util.ScrolledContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
+import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.SammelTransfer;
+import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.jameica.hbci.server.AccountUtil;
 import de.willuhn.jameica.system.Application;
@@ -42,13 +45,14 @@ import de.willuhn.util.I18N;
  */
 public class ErweiterteVerwendungszwecke implements Part
 {
-  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  private final static I18N i18n    = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  private String[] orig        = null;
-  private ArrayList fields     = new ArrayList();
-  private Button add           = null;
+  private String[] orig             = null;
+  private ArrayList fields          = new ArrayList();
+  private Button add                = null;
   
-  private HibiscusTransfer transfer = null;
+  private boolean readonly          = false;
+  private Konto konto               = null;
 
   /**
    * ct.
@@ -57,8 +61,22 @@ public class ErweiterteVerwendungszwecke implements Part
    */
   public ErweiterteVerwendungszwecke(HibiscusTransfer transfer) throws RemoteException
   {
-    this.transfer = transfer;
-    this.orig     = this.transfer.getWeitereVerwendungszwecke();
+    this.konto    = transfer.getKonto();
+    this.readonly = ((transfer instanceof Terminable) && ((Terminable)transfer).ausgefuehrt());
+    this.orig     = transfer.getWeitereVerwendungszwecke();
+  }
+
+  /**
+   * ct.
+   * @param buchung die Buchung.
+   * @throws RemoteException
+   */
+  public ErweiterteVerwendungszwecke(SammelTransferBuchung buchung) throws RemoteException
+  {
+    SammelTransfer tf = buchung.getSammelTransfer();
+    this.konto        = tf.getKonto();
+    this.readonly     = tf.ausgefuehrt();
+    this.orig         = buchung.getWeitereVerwendungszwecke();
   }
 
   /**
@@ -68,8 +86,7 @@ public class ErweiterteVerwendungszwecke implements Part
   {
     this.fields.clear();
 
-    final int maxusage     = AccountUtil.getMaxUsageUeb(transfer.getKonto());
-    final boolean readOnly = ((this.transfer instanceof Terminable) && ((Terminable)this.transfer).ausgefuehrt());
+    final int maxusage = AccountUtil.getMaxUsageUeb(konto);
 
     Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
     int size = settings.getInt("transfertype.usagelist.size",5);
@@ -79,7 +96,7 @@ public class ErweiterteVerwendungszwecke implements Part
     final Container container = new ScrolledContainer(parent);
     for (int i=0;i<size;++i)
     {
-      createLine(container,(orig != null && orig.length > i) ? orig[i] : null,i,readOnly);
+      createLine(container,(orig != null && orig.length > i) ? orig[i] : null,i,readonly);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -88,14 +105,14 @@ public class ErweiterteVerwendungszwecke implements Part
       public void handleAction(Object context) throws ApplicationException
       {
         int size = fields.size();
-        createLine(container,null,size,readOnly);
+        createLine(container,null,size,readonly);
         Composite comp = container.getComposite();
         comp.setSize(comp.computeSize(SWT.DEFAULT, SWT.DEFAULT)); // Groesse neu berechnen, damit der Scrollbalken passt
-        add.setEnabled(!readOnly && size+3 < maxusage);
+        add.setEnabled(!readonly && size+3 < maxusage);
         
       }
     });
-    this.add.setEnabled(!readOnly && size+3 <= maxusage);
+    this.add.setEnabled(!readonly && size+3 <= maxusage);
     ButtonArea buttons = new ButtonArea(parent,1);
     buttons.addButton(add);
     //
@@ -166,6 +183,9 @@ public class ErweiterteVerwendungszwecke implements Part
 
 /**********************************************************************
  * $Log: ErweiterteVerwendungszwecke.java,v $
+ * Revision 1.5  2008/12/01 23:54:42  willuhn
+ * @N BUGZILLA 188 Erweiterte Verwendungszwecke in Exports/Imports und Sammelauftraegen
+ *
  * Revision 1.4  2008/11/26 00:39:36  willuhn
  * @N Erste Version erweiterter Verwendungszwecke. Muss dringend noch getestet werden.
  *

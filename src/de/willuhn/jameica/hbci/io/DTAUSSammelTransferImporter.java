@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/DTAUSSammelTransferImporter.java,v $
- * $Revision: 1.9 $
- * $Date: 2008/06/30 13:04:10 $
+ * $Revision: 1.10 $
+ * $Date: 2008/12/01 23:54:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.io;
 
 import java.io.InputStream;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 import de.jost_net.OBanToo.Dtaus.ASatz;
@@ -95,6 +96,16 @@ public class DTAUSSammelTransferImporter extends AbstractDTAUSImporter
     int z = csatz.getAnzahlVerwendungszwecke();
     if (z > 1)
       b.setZweck2(csatz.getVerwendungszweck(2));
+
+    // Erweiterte Verwendungszwecke?
+    if (z > 2)
+    {
+      ArrayList l = new ArrayList();
+      for (int i=3;i<=z;++i)
+        l.add(csatz.getVerwendungszweck(i));
+      b.setWeitereVerwendungszwecke((String[])l.toArray(new String[l.size()]));
+    }
+
     b.store();
 
     // Das muessen wir hier uebernehmen, da AbstractDTAUSImporter nichts
@@ -126,6 +137,9 @@ public class DTAUSSammelTransferImporter extends AbstractDTAUSImporter
 
 /*********************************************************************
  * $Log: DTAUSSammelTransferImporter.java,v $
+ * Revision 1.10  2008/12/01 23:54:42  willuhn
+ * @N BUGZILLA 188 Erweiterte Verwendungszwecke in Exports/Imports und Sammelauftraegen
+ *
  * Revision 1.9  2008/06/30 13:04:10  willuhn
  * @N Von-Bis-Filter auch in Sammel-Auftraegen
  *

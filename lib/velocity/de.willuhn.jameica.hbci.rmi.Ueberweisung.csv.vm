@@ -1,5 +1,5 @@
-Kontonummer;BLZ;Konto;Gegenkonto;BLZ Gegenkonto;Empfänger;Betrag;Datum;Verwendungszweck;weiterer Verwendungszweck
+Kontonummer;BLZ;Konto;Gegenkonto;BLZ Gegenkonto;Empfänger;Betrag;Datum;Verwendungszweck;Verwendungszweck 2;Weitere Verwendungszwecke
 #foreach($t in $objects)
 #set($konto = $t.Konto)
-$!{konto.Kontonummer};$!{konto.BLZ};$!{konto.Bezeichnung};$!{t.GegenkontoNummer};$!{t.GegenkontoBLZ};$!{t.GegenkontoName};$!{decimalformat.format(${t.Betrag})};$!{dateformat.format(${t.Termin})};$!{t.Zweck};$!{t.Zweck2};
+$!{konto.Kontonummer};$!{konto.BLZ};$!{konto.Bezeichnung};$!{t.GegenkontoNummer};$!{t.GegenkontoBLZ};$!{t.GegenkontoName};$!{decimalformat.format(${t.Betrag})};$!{dateformat.format(${t.Termin})};$!{t.Zweck};$!{t.Zweck2};#foreach($ewz in $t.WeitereVerwendungszwecke)$!{ewz} #end;
 #end

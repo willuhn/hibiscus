@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractSammelTransferBuchungControl.java,v $
- * $Revision: 1.13 $
- * $Date: 2008/11/17 23:30:00 $
+ * $Revision: 1.14 $
+ * $Date: 2008/12/01 23:54:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,9 +27,11 @@ import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.dialogs.AdresseAuswahlDialog;
+import de.willuhn.jameica.hbci.gui.dialogs.VerwendungszweckDialog;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
@@ -42,20 +44,21 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 {
 
 	// Fach-Objekte
-	private Address gegenKonto							= null;
+	private Address gegenKonto				 = null;
 	
 	// Eingabe-Felder
-	private Input betrag										= null;
-	private TextInput zweck									= null;
-	private TextInput zweck2								= null;
+	private Input betrag							 = null;
+	private TextInput zweck            = null;
+	private DialogInput zweck2				 = null;
+  VerwendungszweckDialog zweckDialog = null;
 
-	private DialogInput gkNummer 						= null;
-	private TextInput gkName								= null;
-	private TextInput gkBLZ									= null;
+	private DialogInput gkNummer 			 = null;
+	private TextInput gkName					 = null;
+	private TextInput gkBLZ						 = null;
 
-	private CheckboxInput storeAddress		 	= null;
+	private CheckboxInput storeAddress = null;
 
-	private I18N i18n                       = null;
+	private I18N i18n                  = null;
 
   /**
    * ct.
@@ -142,20 +145,42 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 		return zweck;
 	}
 
-	/**
-	 * Liefert das Eingabe-Feld fuer den "weiteren" Verwendungszweck.
-	 * @return Eingabe-Feld.
-	 * @throws RemoteException
-	 */
-	public Input getZweck2() throws RemoteException
-	{
-		if (zweck2 != null)
-			return zweck2;
-		zweck2 = new TextInput(getBuchung().getZweck2(),HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH);
-		zweck2.setValidChars(HBCIProperties.HBCI_DTAUS_VALIDCHARS);
+	 /**
+   * Liefert das Eingabe-Feld fuer den "weiteren" Verwendungszweck.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public DialogInput getZweck2() throws RemoteException
+  {
+    if (zweck2 != null)
+      return zweck2;
+    final String buttonText = "weitere Zeilen ({0})...";
+    this.zweckDialog = new VerwendungszweckDialog(getBuchung(),VerwendungszweckDialog.POSITION_MOUSE);
+    this.zweckDialog.addCloseListener(new Listener() {
+      public void handleEvent(Event event)
+      {
+        try
+        {
+          String[] newLines = (String[]) zweckDialog.getData();
+          if (newLines != null) // andernfalls wurde "Abbrechen" gedrueckt
+            zweck2.setButtonText(i18n.tr(buttonText,String.valueOf(newLines.length)));
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to update line count",e);
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren der Zeilen-Anzahl"), StatusBarMessage.TYPE_ERROR));
+        }
+      }
+    
+    });
+    zweck2 = new DialogInput(getBuchung().getZweck2(),this.zweckDialog);
+    zweck2.setButtonText(i18n.tr(buttonText,String.valueOf(getBuchung().getWeitereVerwendungszwecke().length)));
+    zweck2.setMaxLength(HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH);
+    zweck2.setValidChars(HBCIProperties.HBCI_DTAUS_VALIDCHARS);
     zweck2.setEnabled(!getBuchung().getSammelTransfer().ausgefuehrt());
-		return zweck2;
-	}
+    return zweck2;
+  }
+  
 
 
 	/**
@@ -249,7 +274,7 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
         try
         {
           String zweck = (String) getZweck().getValue();
-          String zweck2 = (String) getZweck2().getValue();
+          String zweck2 = (String) getZweck2().getText();
           if ((zweck != null && zweck.length() > 0) || (zweck2 != null && zweck2.length() > 0))
             return;
           
@@ -261,7 +286,7 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
           {
             SammelTransferBuchung t = (SammelTransferBuchung) list.next();
             getZweck().setValue(t.getZweck());
-            getZweck2().setValue(t.getZweck2());
+            getZweck2().setText(t.getZweck2());
           }
         }
         catch (Exception e)
@@ -282,6 +307,9 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferBuchungControl.java,v $
+ * Revision 1.14  2008/12/01 23:54:42  willuhn
+ * @N BUGZILLA 188 Erweiterte Verwendungszwecke in Exports/Imports und Sammelauftraegen
+ *
  * Revision 1.13  2008/11/17 23:30:00  willuhn
  * @C Aufrufe der depeicated BLZ-Funktionen angepasst
  *

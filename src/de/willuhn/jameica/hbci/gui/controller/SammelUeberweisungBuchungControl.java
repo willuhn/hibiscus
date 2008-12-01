@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SammelUeberweisungBuchungControl.java,v $
- * $Revision: 1.7 $
- * $Date: 2008/11/17 23:30:00 $
+ * $Revision: 1.8 $
+ * $Date: 2008/12/01 23:54:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -77,7 +77,7 @@ public class SammelUeberweisungBuchungControl extends AbstractSammelTransferBuch
       if (db != null)
         getBuchung().setBetrag(db.doubleValue());
 			getBuchung().setZweck((String)getZweck().getValue());
-			getBuchung().setZweck2((String)getZweck2().getValue());
+      getBuchung().setZweck2((String)getZweck2().getText());  // "getText()" ist wichtig, weil das ein DialogInput ist
       
       TextSchluessel ts = (TextSchluessel) getTextSchluessel().getValue();
       getBuchung().setTextSchluessel(ts == null ? null : ts.getCode());
@@ -89,6 +89,13 @@ public class SammelUeberweisungBuchungControl extends AbstractSammelTransferBuch
 			getBuchung().setGegenkontoNummer(kto);
 			getBuchung().setGegenkontoBLZ(blz);
 			getBuchung().setGegenkontoName(name);
+
+      // Geaenderte Verwendungszwecke uebernehmen. Allerdings nur, wenn
+      // der Dialog tatsaechlich geoffnet und auf "Uebernehmen" geklickt wurde
+      String[] lines = (String[]) this.zweckDialog.getData();
+      if (lines != null)
+        getBuchung().setWeitereVerwendungszwecke(lines);
+			
 			getBuchung().store();
 
 			Boolean store = (Boolean) getStoreAddress().getValue();
@@ -158,6 +165,9 @@ public class SammelUeberweisungBuchungControl extends AbstractSammelTransferBuch
 
 /*****************************************************************************
  * $Log: SammelUeberweisungBuchungControl.java,v $
+ * Revision 1.8  2008/12/01 23:54:42  willuhn
+ * @N BUGZILLA 188 Erweiterte Verwendungszwecke in Exports/Imports und Sammelauftraegen
+ *
  * Revision 1.7  2008/11/17 23:30:00  willuhn
  * @C Aufrufe der depeicated BLZ-Funktionen angepasst
  *

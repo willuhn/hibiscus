@@ -147,41 +147,43 @@
     }
   </style>
   <body>
-	<h1>Sammelüberweisungen</h1>
+    <h1>Sammelüberweisungen</h1>
 	
-	#foreach($ueberweisung in $objects)
-  	#set($konto = $ueberweisung.Konto)
+    #foreach($ueberweisung in $objects)
+      #set($konto = $ueberweisung.Konto)
 
-  	<h2>Datum: $!{dateformat.format(${datum})}</h2>
-  	<h2>Sammel-Überweisung: $!{ueberweisung.Bezeichnung}</h2>
-  	<h2>Zu belastendes Konto: $!{konto.Bezeichnung} [Kto $!{konto.Kontonummer}, BLZ $!{konto.BLZ}]</h2>
-  	<h2>Summe: $!{decimalformat.format(${ueberweisung.Summe})} $!{konto.Waehrung}</h2>
+      <h2>Datum: $!{dateformat.format(${datum})}</h2>
+      <h2>Sammel-Überweisung: $!{ueberweisung.Bezeichnung}</h2>
+      <h2>Zu belastendes Konto: $!{konto.Bezeichnung} [Kto $!{konto.Kontonummer}, BLZ $!{konto.BLZ}]</h2>
+      <h2>Summe: $!{decimalformat.format(${ueberweisung.Summe})} $!{konto.Waehrung}</h2>
   	
-  	<table class="data">
-  	  <tr>
-  		<th>Gegenkonto</th>
-  		<th style="text-align:right">Betrag</th>
-  		<th>Verwendungszweck</th>
-  	  </tr>
+      <table class="data">
+        <tr>
+  	  <th>Gegenkonto</th>
+  	  <th style="text-align:right">Betrag</th>
+  	  <th>Verwendungszweck</th>
+  	</tr>
   		
-  		#set($buchungen = $ueberweisung.BuchungenAsArray)
-      #foreach($buchung in $buchungen)
-    		<tr>
-    		  <td>
-    			$!{buchung.GegenkontoName}<br/>
-    			Kto $!{buchung.GegenkontoNummer}<br/>
-    			BLZ $!{buchung.GegenkontoBLZ}
-    		  </td>
-    		  <td style="text-align:right">$!{decimalformat.format(${buchung.Betrag})} $!{konto.Waehrung}</td>
-    		  <td>
-    			$!{buchung.Zweck}
-    			<br/>
-    			$!{buchung.Zweck2}
-    		  </td>
-    		</tr>
-  	  #end
-  	</table>
-  	<br/><br/>
-  #end
+        #set($buchungen = $ueberweisung.BuchungenAsArray)
+        #foreach($buchung in $buchungen)
+          <tr>
+            <td>
+              $!{buchung.GegenkontoName}<br/>
+              Kto $!{buchung.GegenkontoNummer}<br/>
+              BLZ $!{buchung.GegenkontoBLZ}
+            </td>
+            <td style="text-align:right">$!{decimalformat.format(${buchung.Betrag})} $!{konto.Waehrung}</td>
+            <td>
+              $!{buchung.Zweck}<br/>
+              $!{buchung.Zweck2}<br/>
+              #foreach($ewz in $buchung.WeitereVerwendungszwecke)
+                $!{ewz}<br/>
+              #end
+            </td>
+          </tr>
+  	#end
+      </table>
+      <br/><br/>
+    #end
   </body>
 </html>

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/DTAUSSammelTransferExporter.java,v $
- * $Revision: 1.8 $
- * $Date: 2007/04/23 18:07:14 $
+ * $Revision: 1.9 $
+ * $Date: 2008/12/01 23:54:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -131,6 +131,12 @@ public class DTAUSSammelTransferExporter extends AbstractDTAUSIO implements Expo
           String zweck2 = buchung.getZweck2();
           if (zweck2 != null && zweck2.length() > 0)
             writer.addCVerwendungszweck(zweck2);
+          String[] ewz = buchung.getWeitereVerwendungszwecke();
+          if (ewz != null && ewz.length > 0)
+          {
+            for (int k=0;k<ewz.length;++k)
+              writer.addCVerwendungszweck(ewz[k]);
+          }
           writer.writeCSatz();
           success++;
         }
@@ -202,6 +208,9 @@ public class DTAUSSammelTransferExporter extends AbstractDTAUSIO implements Expo
 
 /**********************************************************************
  * $Log: DTAUSSammelTransferExporter.java,v $
+ * Revision 1.9  2008/12/01 23:54:42  willuhn
+ * @N BUGZILLA 188 Erweiterte Verwendungszwecke in Exports/Imports und Sammelauftraegen
+ *
  * Revision 1.8  2007/04/23 18:07:14  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt

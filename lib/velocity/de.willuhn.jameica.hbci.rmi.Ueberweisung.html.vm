@@ -191,9 +191,11 @@
     
     <tr>
       <td colspan="2">
-        <br/>
-          $!{t.Zweck}<br/>
-          $!{t.Zweck2};
+        $!{t.Zweck}<br/>
+        $!{t.Zweck2}<br/>
+        #foreach($ewz in $t.WeitereVerwendungszwecke)
+          $!{ewz}<br/>
+        #end
       </td>
     </tr>
   #end  
