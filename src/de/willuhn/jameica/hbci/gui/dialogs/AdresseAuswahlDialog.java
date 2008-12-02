@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/AdresseAuswahlDialog.java,v $
- * $Revision: 1.3 $
- * $Date: 2007/04/23 18:07:15 $
+ * $Revision: 1.4 $
+ * $Date: 2008/12/02 10:52:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,8 @@
 package de.willuhn.jameica.hbci.gui.dialogs;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.widgets.Composite;
 
 import de.willuhn.jameica.gui.Action;
@@ -53,6 +55,14 @@ public class AdresseAuswahlDialog extends AbstractDialog
    */
   protected void paint(Composite parent) throws Exception
   {
+    // Dialog bei Druck auf ESC automatisch schliessen
+    parent.addKeyListener(new KeyAdapter() {
+      public void keyReleased(KeyEvent e) {
+        if (e.keyCode == SWT.ESC)
+          throw new OperationCanceledException();
+      }
+    });
+
     Action a = new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -105,6 +115,10 @@ public class AdresseAuswahlDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: AdresseAuswahlDialog.java,v $
+ * Revision 1.4  2008/12/02 10:52:23  willuhn
+ * @B DecimalInput kann NULL liefern
+ * @B Double.NaN beruecksichtigen
+ *
  * Revision 1.3  2007/04/23 18:07:15  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt

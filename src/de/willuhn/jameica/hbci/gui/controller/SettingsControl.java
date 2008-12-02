@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.51 $
- * $Date: 2007/05/16 13:59:53 $
+ * $Revision: 1.52 $
+ * $Date: 2008/12/02 10:52:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -237,7 +237,8 @@ public class SettingsControl extends AbstractControl {
     Settings.setKontoCheck(((Boolean)getKontoCheck().getValue()).booleanValue());
     Settings.setCancelSyncOnError(((Boolean)getCancelSyncOnError().getValue()).booleanValue());
 		
-		Settings.setUeberweisungLimit(((Double)getUeberweisungLimit().getValue()).doubleValue());
+    Double limit = (Double) getUeberweisungLimit().getValue();
+		Settings.setUeberweisungLimit(limit == null ? 0.0d : limit.doubleValue());
 
 		GUI.getStatusBar().setSuccessText(i18n.tr("Einstellungen gespeichert."));
   }
@@ -275,6 +276,10 @@ public class SettingsControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.52  2008/12/02 10:52:23  willuhn
+ * @B DecimalInput kann NULL liefern
+ * @B Double.NaN beruecksichtigen
+ *
  * Revision 1.51  2007/05/16 13:59:53  willuhn
  * @N Bug 227 HBCI-Synchronisierung auch im Fehlerfall fortsetzen
  * @C Synchronizer ueberarbeitet

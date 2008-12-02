@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractSammelTransferBuchungImpl.java,v $
- * $Revision: 1.16 $
- * $Date: 2008/12/01 23:54:42 $
+ * $Revision: 1.17 $
+ * $Date: 2008/12/02 10:52:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -57,7 +57,8 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
       if (getSammelTransfer() == null)
         throw new ApplicationException(i18n.tr("Bitte wählen Sie den zugehörigen Sammel-Auftrag aus."));
 
-      if (getBetrag() == 0.0)
+      double betrag = getBetrag();
+      if (betrag == 0.0 || Double.isNaN(betrag))
         throw new ApplicationException(i18n.tr("Bitte geben Sie einen gültigen Betrag ein."));
 
       if (getGegenkontoNummer() == null || getGegenkontoNummer().length() == 0)
@@ -351,6 +352,10 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferBuchungImpl.java,v $
+ * Revision 1.17  2008/12/02 10:52:23  willuhn
+ * @B DecimalInput kann NULL liefern
+ * @B Double.NaN beruecksichtigen
+ *
  * Revision 1.16  2008/12/01 23:54:42  willuhn
  * @N BUGZILLA 188 Erweiterte Verwendungszwecke in Exports/Imports und Sammelauftraegen
  *

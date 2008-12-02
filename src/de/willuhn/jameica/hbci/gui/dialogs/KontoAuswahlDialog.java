@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/KontoAuswahlDialog.java,v $
- * $Revision: 1.7 $
- * $Date: 2006/03/28 22:53:19 $
+ * $Revision: 1.8 $
+ * $Date: 2008/12/02 10:52:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,6 +12,9 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.dialogs;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.widgets.Composite;
 
 import de.willuhn.datasource.GenericIterator;
@@ -67,7 +70,15 @@ public class KontoAuswahlDialog extends AbstractDialog
    */
   protected void paint(Composite parent) throws Exception
   {
-		LabelGroup group = new LabelGroup(parent,i18n.tr("Verfügbare Konten"));
+    // Dialog bei Druck auf ESC automatisch schliessen
+    parent.addKeyListener(new KeyAdapter() {
+      public void keyReleased(KeyEvent e) {
+        if (e.keyCode == SWT.ESC)
+          throw new OperationCanceledException();
+      }
+    });
+
+    LabelGroup group = new LabelGroup(parent,i18n.tr("Verfügbare Konten"));
 			
 		if (text == null || text.length() == 0)
       text = i18n.tr("Bitte wählen Sie das gewünschte Konto aus.");
@@ -135,6 +146,10 @@ public class KontoAuswahlDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: KontoAuswahlDialog.java,v $
+ * Revision 1.8  2008/12/02 10:52:23  willuhn
+ * @B DecimalInput kann NULL liefern
+ * @B Double.NaN beruecksichtigen
+ *
  * Revision 1.7  2006/03/28 22:53:19  willuhn
  * @B bug 218
  *

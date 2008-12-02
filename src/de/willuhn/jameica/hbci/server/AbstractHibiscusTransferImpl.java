@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractHibiscusTransferImpl.java,v $
- * $Revision: 1.9 $
- * $Date: 2008/11/26 00:39:36 $
+ * $Revision: 1.10 $
+ * $Date: 2008/12/02 10:52:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -65,7 +65,8 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractDBObject impl
       HBCIProperties.checkChars(getGegenkontoBLZ(), HBCIProperties.HBCI_BLZ_VALIDCHARS);
       HBCIProperties.checkLength(getGegenkontoNummer(), HBCIProperties.HBCI_KTO_MAXLENGTH_HARD);
 
-      if (getBetrag() == 0.0)
+      double betrag = getBetrag();
+      if (betrag == 0.0 || Double.isNaN(betrag))
         throw new ApplicationException(i18n.tr("Bitte geben Sie einen gültigen Betrag ein."));
 
       if (getGegenkontoName() == null || getGegenkontoName().length() == 0)
@@ -358,6 +359,10 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractDBObject impl
 
 /**********************************************************************
  * $Log: AbstractHibiscusTransferImpl.java,v $
+ * Revision 1.10  2008/12/02 10:52:23  willuhn
+ * @B DecimalInput kann NULL liefern
+ * @B Double.NaN beruecksichtigen
+ *
  * Revision 1.9  2008/11/26 00:39:36  willuhn
  * @N Erste Version erweiterter Verwendungszwecke. Muss dringend noch getestet werden.
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DauerauftragImpl.java,v $
- * $Revision: 1.30 $
- * $Date: 2008/09/04 23:42:33 $
+ * $Revision: 1.31 $
+ * $Date: 2008/12/02 10:52:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -151,7 +151,8 @@ public class DauerauftragImpl extends AbstractHibiscusTransferImpl
       Date letzteZahlung = getLetzteZahlung();
       
       // BUGZILLA 197
-      if (getBetrag() == 0.0)
+      double betrag = getBetrag();
+      if (betrag == 0.0 || Double.isNaN(betrag))
         throw new ApplicationException(i18n.tr("Bitte geben Sie einen gültigen Betrag ein."));
 
       if (getTurnus() == null)
@@ -279,6 +280,10 @@ public class DauerauftragImpl extends AbstractHibiscusTransferImpl
 
 /**********************************************************************
  * $Log: DauerauftragImpl.java,v $
+ * Revision 1.31  2008/12/02 10:52:23  willuhn
+ * @B DecimalInput kann NULL liefern
+ * @B Double.NaN beruecksichtigen
+ *
  * Revision 1.30  2008/09/04 23:42:33  willuhn
  * @N Searchprovider fuer Sammel- und Dauerauftraege
  * @N Sortierung von Ueberweisungen und Lastschriften in Suchergebnissen

@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SammelUeberweisungBuchungControl.java,v $
- * $Revision: 1.8 $
- * $Date: 2008/12/01 23:54:42 $
+ * $Revision: 1.9 $
+ * $Date: 2008/12/02 10:52:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -74,8 +74,7 @@ public class SammelUeberweisungBuchungControl extends AbstractSammelTransferBuch
 			getBuchung().transactionBegin();
 
       Double db = (Double)getBetrag().getValue();
-      if (db != null)
-        getBuchung().setBetrag(db.doubleValue());
+      getBuchung().setBetrag(db == null ? Double.NaN : db.doubleValue());
 			getBuchung().setZweck((String)getZweck().getValue());
       getBuchung().setZweck2((String)getZweck2().getText());  // "getText()" ist wichtig, weil das ein DialogInput ist
       
@@ -165,6 +164,10 @@ public class SammelUeberweisungBuchungControl extends AbstractSammelTransferBuch
 
 /*****************************************************************************
  * $Log: SammelUeberweisungBuchungControl.java,v $
+ * Revision 1.9  2008/12/02 10:52:23  willuhn
+ * @B DecimalInput kann NULL liefern
+ * @B Double.NaN beruecksichtigen
+ *
  * Revision 1.8  2008/12/01 23:54:42  willuhn
  * @N BUGZILLA 188 Erweiterte Verwendungszwecke in Exports/Imports und Sammelauftraegen
  *
