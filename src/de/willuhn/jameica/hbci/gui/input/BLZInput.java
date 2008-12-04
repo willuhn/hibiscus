@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/BLZInput.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/07/16 12:51:15 $
+ * $Revision: 1.3 $
+ * $Date: 2008/12/04 23:20:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -39,12 +39,12 @@ public class BLZInput extends TextInput
    */
   public BLZInput(String value)
   {
-    super(value, HBCIProperties.HBCI_BLZ_LENGTH);
+    super(value, HBCIProperties.HBCI_BLZ_LENGTH + 3);
     
     this.i18n     = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     this.listener = new BLZListener();
 
-    this.setValidChars(HBCIProperties.HBCI_BLZ_VALIDCHARS);
+    this.setValidChars(HBCIProperties.HBCI_BLZ_VALIDCHARS + " ");
     this.setName(i18n.tr("BLZ"));
     this.setComment("");
     this.addListener(this.listener);
@@ -79,9 +79,16 @@ public class BLZInput extends TextInput
       {
         String b = (String)getValue();
         if (b != null && b.length() > 0)
+        {
+          // Wir schnipseln gleich noch Leerzeichen raus
+          b = b.replaceAll(" ","");
+          BLZInput.super.setValue(b);
           setComment(HBCIUtils.getNameForBLZ(b));
+        }
         else
+        {
           setComment("");
+        }
       }
       catch (Exception e)
       {
@@ -95,6 +102,9 @@ public class BLZInput extends TextInput
 
 /**********************************************************************
  * $Log: BLZInput.java,v $
+ * Revision 1.3  2008/12/04 23:20:37  willuhn
+ * @N BUGZILLA 310
+ *
  * Revision 1.2  2007/07/16 12:51:15  willuhn
  * @D javadoc
  *

@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractSammelTransferBuchungControl.java,v $
- * $Revision: 1.14 $
- * $Date: 2008/12/01 23:54:42 $
+ * $Revision: 1.15 $
+ * $Date: 2008/12/04 23:20:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -90,10 +90,20 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
     d.addCloseListener(new GegenkontoListener());
     gkNummer = new DialogInput(getBuchung().getGegenkontoNummer(),d);
     // BUGZILLA 280
-    gkNummer.setMaxLength(HBCIProperties.HBCI_KTO_MAXLENGTH_HARD);
-    gkNummer.setValidChars(HBCIProperties.HBCI_KTO_VALIDCHARS);
+    gkNummer.setMaxLength(HBCIProperties.HBCI_KTO_MAXLENGTH_SOFT);
+    gkNummer.setValidChars(HBCIProperties.HBCI_KTO_VALIDCHARS + " ");
     gkNummer.setMandatory(true);
     gkNummer.setEnabled(!getBuchung().getSammelTransfer().ausgefuehrt());
+    gkNummer.addListener(new Listener()
+    {
+      public void handleEvent(Event event)
+      {
+        String s = gkNummer.getText();
+        if (s == null || s.length() == 0 || s.indexOf(" ") == -1)
+          return;
+        gkNummer.setText(s.replaceAll(" ",""));
+      }
+    });
 		return gkNummer;
 	}
 
@@ -307,6 +317,9 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferBuchungControl.java,v $
+ * Revision 1.15  2008/12/04 23:20:37  willuhn
+ * @N BUGZILLA 310
+ *
  * Revision 1.14  2008/12/01 23:54:42  willuhn
  * @N BUGZILLA 188 Erweiterte Verwendungszwecke in Exports/Imports und Sammelauftraegen
  *

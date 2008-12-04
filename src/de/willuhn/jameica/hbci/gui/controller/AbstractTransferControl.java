@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.50 $
- * $Date: 2008/12/02 10:52:23 $
+ * $Revision: 1.51 $
+ * $Date: 2008/12/04 23:20:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -136,9 +136,19 @@ public abstract class AbstractTransferControl extends AbstractControl
 		d.addCloseListener(new EmpfaengerListener());
 		empfkto = new DialogInput(getTransfer().getGegenkontoNummer(),d);
     // BUGZILLA 280
-    empfkto.setMaxLength(HBCIProperties.HBCI_KTO_MAXLENGTH_HARD);
-    empfkto.setValidChars(HBCIProperties.HBCI_KTO_VALIDCHARS);
+    empfkto.setMaxLength(HBCIProperties.HBCI_KTO_MAXLENGTH_SOFT);
+    empfkto.setValidChars(HBCIProperties.HBCI_KTO_VALIDCHARS + " ");
     empfkto.setMandatory(true);
+    empfkto.addListener(new Listener()
+    {
+      public void handleEvent(Event event)
+      {
+        String s = empfkto.getText();
+        if (s == null || s.length() == 0 || s.indexOf(" ") == -1)
+          return;
+        empfkto.setText(s.replaceAll(" ",""));
+      }
+    });
 		return empfkto;
 	}
 
@@ -463,6 +473,9 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
+ * Revision 1.51  2008/12/04 23:20:37  willuhn
+ * @N BUGZILLA 310
+ *
  * Revision 1.50  2008/12/02 10:52:23  willuhn
  * @B DecimalInput kann NULL liefern
  * @B Double.NaN beruecksichtigen
