@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/Attic/AbstractTransferMerge.java,v $
- * $Revision: 1.1 $
- * $Date: 2007/10/25 15:47:21 $
+ * $Revision: 1.2 $
+ * $Date: 2008/12/04 21:30:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -87,6 +87,7 @@ public abstract class AbstractTransferMerge implements Action
         buchung.setGegenkontoNummer(transfers[i].getGegenkontoNummer());
         buchung.setZweck(transfers[i].getZweck());
         buchung.setZweck2(transfers[i].getZweck2());
+        buchung.setWeitereVerwendungszwecke(transfers[i].getWeitereVerwendungszwecke());
         buchung.store();
         
         if (delete)
@@ -146,6 +147,9 @@ public abstract class AbstractTransferMerge implements Action
 
 /**********************************************************************
  * $Log: AbstractTransferMerge.java,v $
+ * Revision 1.2  2008/12/04 21:30:06  willuhn
+ * @N BUGZILLA 188
+ *
  * Revision 1.1  2007/10/25 15:47:21  willuhn
  * @N Einzelauftraege zu Sammel-Auftraegen zusammenfassen (BUGZILLA 402)
  *
