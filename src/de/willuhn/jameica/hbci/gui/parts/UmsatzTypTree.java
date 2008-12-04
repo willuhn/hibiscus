@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTypTree.java,v $
- * $Revision: 1.7 $
- * $Date: 2007/12/04 23:59:00 $
+ * $Revision: 1.8 $
+ * $Date: 2008/12/04 22:03:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -72,6 +72,7 @@ public class UmsatzTypTree extends TreePart implements Extension
     }
     this.setRememberColWidths(true);
     this.setRememberOrder(true);
+    this.setMulti(true);
     this.setContextMenu(new UmsatzList());
     this.setFormatter(new TreeFormatter() {
     
@@ -196,6 +197,9 @@ public class UmsatzTypTree extends TreePart implements Extension
 
 /*******************************************************************************
  * $Log: UmsatzTypTree.java,v $
+ * Revision 1.8  2008/12/04 22:03:34  willuhn
+ * @N BUGZILLA 665
+ *
  * Revision 1.7  2007/12/04 23:59:00  willuhn
  * @N Bug 512
  *
