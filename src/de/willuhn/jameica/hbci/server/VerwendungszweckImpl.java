@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/VerwendungszweckImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2008/11/26 00:39:36 $
+ * $Revision: 1.3 $
+ * $Date: 2008/12/09 13:01:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -86,13 +86,16 @@ public class VerwendungszweckImpl extends AbstractDBObject implements Verwendung
       throw new ApplicationException(i18n.tr("Bitte speichern Sie zuerst den Auftrag"));
 
     this.setAttribute("typ",new Integer(t.getTransferTyp()));
-    this.setAttribute("auftrag_id",g.getID());
+    this.setAttribute("auftrag_id",new Integer(g.getID()));
   }
 }
 
 
 /*********************************************************************
  * $Log: VerwendungszweckImpl.java,v $
+ * Revision 1.3  2008/12/09 13:01:47  willuhn
+ * @B auftrag_id wurde mit dem falschen Typ gespeichert - erzeugte unter MySQL eine ClassCastException Integer <-> String
+ *
  * Revision 1.2  2008/11/26 00:39:36  willuhn
  * @N Erste Version erweiterter Verwendungszwecke. Muss dringend noch getestet werden.
  *
