@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCIProperties.java,v $
- * $Revision: 1.33 $
- * $Date: 2008/11/30 22:33:56 $
+ * $Revision: 1.34 $
+ * $Date: 2008/12/14 23:18:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -64,7 +64,7 @@ public class HBCIProperties
   /**
    * Maximale Anzahl von Verwendungszwecken.
    */
-  public final static int HBCI_TRANSFER_USAGE_MAXNUM = settings.getInt("hbci.transfer.usage.maxnum",10);
+  public final static int HBCI_TRANSFER_USAGE_MAXNUM = settings.getInt("hbci.transfer.usage.maxnum",14);
 
   /**
    * Maximale Laenge einer Kontonummer.
@@ -256,6 +256,9 @@ public class HBCIProperties
 
 /**********************************************************************
  * $Log: HBCIProperties.java,v $
+ * Revision 1.34  2008/12/14 23:18:35  willuhn
+ * @N BUGZILLA 188 - REFACTORING
+ *
  * Revision 1.33  2008/11/30 22:33:56  willuhn
  * @N BUGZILLA 659 - Maximale PIN-Laenge nun 20 Zeichen
  *

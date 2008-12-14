@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/search/UmsatzSearchProvider.java,v $
- * $Revision: 1.2 $
- * $Date: 2008/09/03 11:13:51 $
+ * $Revision: 1.3 $
+ * $Date: 2008/12/14 23:18:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -58,6 +58,7 @@ public class UmsatzSearchProvider implements SearchProvider
     DBIterator list = UmsatzUtil.getUmsaetzeBackwards();
     list.addFilter("LOWER(zweck) LIKE ? OR " +
                    "LOWER(zweck2) LIKE ? OR " +
+                   "LOWER(zweck3) LIKE ? OR " +
                    "LOWER(empfaenger_name) LIKE ? OR " +
                    "empfaenger_konto LIKE ? OR " +
                    "empfaenger_blz LIKE ? OR " +
@@ -65,7 +66,7 @@ public class UmsatzSearchProvider implements SearchProvider
                    "LOWER(art) LIKE ? OR " +
                    "LOWER(customerref) LIKE ? OR " +
                    "LOWER(kommentar) LIKE ?",
-                   new String[]{text,text,text,text,text,text,text,text,text});
+                   new String[]{text,text,text,text,text,text,text,text,text,text});
 
     ArrayList results = new ArrayList();
     while (list.hasNext())
@@ -144,6 +145,9 @@ public class UmsatzSearchProvider implements SearchProvider
 
 /**********************************************************************
  * $Log: UmsatzSearchProvider.java,v $
+ * Revision 1.3  2008/12/14 23:18:35  willuhn
+ * @N BUGZILLA 188 - REFACTORING
+ *
  * Revision 1.2  2008/09/03 11:13:51  willuhn
  * @N Mehr Suchprovider
  *

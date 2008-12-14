@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/search/SammelUeberweisungSearchProvider.java,v $
- * $Revision: 1.1 $
- * $Date: 2008/09/04 23:42:33 $
+ * $Revision: 1.2 $
+ * $Date: 2008/12/14 23:18:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -63,10 +63,11 @@ public class SammelUeberweisungSearchProvider implements SearchProvider
     DBIterator list = Settings.getDBService().createList(SammelUeberweisungBuchung.class);
     list.addFilter("LOWER(zweck) LIKE ? OR " +
                    "LOWER(zweck2) LIKE ? OR " +
+                   "LOWER(zweck3) LIKE ? OR " +
                    "LOWER(gegenkonto_name) LIKE ? OR " +
                    "gegenkonto_nr LIKE ? OR " +
                    "gegenkonto_blz LIKE ?",
-                   new String[]{text,text,text,text,text});
+                   new String[]{text,text,text,text,text,text});
 
     while (list.hasNext())
     {
@@ -136,6 +137,9 @@ public class SammelUeberweisungSearchProvider implements SearchProvider
 
 /**********************************************************************
  * $Log: SammelUeberweisungSearchProvider.java,v $
+ * Revision 1.2  2008/12/14 23:18:35  willuhn
+ * @N BUGZILLA 188 - REFACTORING
+ *
  * Revision 1.1  2008/09/04 23:42:33  willuhn
  * @N Searchprovider fuer Sammel- und Dauerauftraege
  * @N Sortierung von Ueberweisungen und Lastschriften in Suchergebnissen

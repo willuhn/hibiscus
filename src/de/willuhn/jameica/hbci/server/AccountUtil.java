@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AccountUtil.java,v $
- * $Revision: 1.4 $
- * $Date: 2008/12/01 23:54:42 $
+ * $Revision: 1.5 $
+ * $Date: 2008/12/14 23:18:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import java.rmi.RemoteException;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
@@ -43,7 +44,7 @@ public class AccountUtil
     int defaultValue = HBCIProperties.HBCI_TRANSFER_USAGE_MAXNUM;
     
     // Konto angegeben?
-    if (konto == null)
+    if (konto == null || !Settings.getKontoCheck())
       return defaultValue;
     
     // Kundennummer korrekt?
@@ -121,6 +122,9 @@ public class AccountUtil
 
 /**********************************************************************
  * $Log: AccountUtil.java,v $
+ * Revision 1.5  2008/12/14 23:18:35  willuhn
+ * @N BUGZILLA 188 - REFACTORING
+ *
  * Revision 1.4  2008/12/01 23:54:42  willuhn
  * @N BUGZILLA 188 Erweiterte Verwendungszwecke in Exports/Imports und Sammelauftraegen
  *

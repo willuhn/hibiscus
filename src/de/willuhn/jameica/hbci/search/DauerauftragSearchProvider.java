@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/search/DauerauftragSearchProvider.java,v $
- * $Revision: 1.1 $
- * $Date: 2008/09/04 23:42:33 $
+ * $Revision: 1.2 $
+ * $Date: 2008/12/14 23:18:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -59,10 +59,11 @@ public class DauerauftragSearchProvider implements SearchProvider
     DBIterator list = service.createList(Dauerauftrag.class);
     list.addFilter("LOWER(zweck) LIKE ? OR " +
                    "LOWER(zweck2) LIKE ? OR " +
+                   "LOWER(zweck3) LIKE ? OR " +
                    "LOWER(empfaenger_name) LIKE ? OR " +
                    "empfaenger_konto LIKE ? OR " +
                    "empfaenger_blz LIKE ?",
-                   new String[]{text,text,text,text,text});
+                   new String[]{text,text,text,text,text,text});
     list.setOrder("ORDER BY " + service.getSQLTimestamp("erste_zahlung") + " DESC");
 
     ArrayList results = new ArrayList();
@@ -129,6 +130,9 @@ public class DauerauftragSearchProvider implements SearchProvider
 
 /**********************************************************************
  * $Log: DauerauftragSearchProvider.java,v $
+ * Revision 1.2  2008/12/14 23:18:35  willuhn
+ * @N BUGZILLA 188 - REFACTORING
+ *
  * Revision 1.1  2008/09/04 23:42:33  willuhn
  * @N Searchprovider fuer Sammel- und Dauerauftraege
  * @N Sortierung von Ueberweisungen und Lastschriften in Suchergebnissen

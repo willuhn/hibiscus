@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractSammelTransferBuchungImpl.java,v $
- * $Revision: 1.17 $
- * $Date: 2008/12/02 10:52:23 $
+ * $Revision: 1.18 $
+ * $Date: 2008/12/14 23:18:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,8 +30,6 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
 
   private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  private transient String[] verwendungszwecke = null;
-
   /**
    * @throws java.rmi.RemoteException
    */
@@ -256,9 +254,7 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
    */
   public String[] getWeitereVerwendungszwecke() throws RemoteException
   {
-    if (this.verwendungszwecke == null)
-      this.verwendungszwecke = VerwendungszweckUtil.get(this);
-    return this.verwendungszwecke;
+    return VerwendungszweckUtil.split((String)this.getAttribute("zweck3"));
   }
 
   /**
@@ -266,92 +262,15 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
    */
   public void setWeitereVerwendungszwecke(String[] list) throws RemoteException
   {
-    this.verwendungszwecke = list;
+    setAttribute("zweck3",VerwendungszweckUtil.merge(list));
   }
-
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#store()
-   */
-  public void store() throws RemoteException, ApplicationException
-  {
-    try
-    {
-      this.transactionBegin();
-      super.store();
-      
-      if (this.verwendungszwecke != null)
-        VerwendungszweckUtil.store(this,this.verwendungszwecke);
-      
-      this.transactionCommit();
-    }
-    catch (RemoteException re)
-    {
-      try
-      {
-        this.transactionRollback();
-      }
-      catch (Exception e2)
-      {
-        Logger.error("unable to rollback transaction",e2);
-      }
-      throw re;
-    }
-    catch (ApplicationException ae)
-    {
-      try
-      {
-        this.transactionRollback();
-      }
-      catch (Exception e2)
-      {
-        Logger.error("unable to rollback transaction",e2);
-      }
-      throw ae;
-    }
-  }
-
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#delete()
-   */
-  public void delete() throws RemoteException, ApplicationException
-  {
-    try
-    {
-      this.transactionBegin();
-      VerwendungszweckUtil.delete(this); // Loescht die erweiterten Verwendungszwecke
-      super.delete();
-      this.transactionCommit();
-    }
-    catch (RemoteException re)
-    {
-      try
-      {
-        this.transactionRollback();
-      }
-      catch (Exception e2)
-      {
-        Logger.error("unable to rollback transaction",e2);
-      }
-      throw re;
-    }
-    catch (ApplicationException ae)
-    {
-      try
-      {
-        this.transactionRollback();
-      }
-      catch (Exception e2)
-      {
-        Logger.error("unable to rollback transaction",e2);
-      }
-      throw ae;
-    }
-  }
-
 }
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferBuchungImpl.java,v $
+ * Revision 1.18  2008/12/14 23:18:35  willuhn
+ * @N BUGZILLA 188 - REFACTORING
+ *
  * Revision 1.17  2008/12/02 10:52:23  willuhn
  * @B DecimalInput kann NULL liefern
  * @B Double.NaN beruecksichtigen

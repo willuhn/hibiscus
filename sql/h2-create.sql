@@ -34,6 +34,7 @@ CREATE TABLE ueberweisung (
   betrag double NOT NULL,
   zweck varchar(27) NOT NULL,
   zweck2 varchar(27),
+  zweck3 varchar(1000),
   termin date NOT NULL,
   banktermin int(1) NULL,
   ausgefuehrt int(1) NOT NULL,
@@ -61,6 +62,7 @@ CREATE TABLE umsatz (
   betrag double NOT NULL,
   zweck varchar(35),
   zweck2 varchar(35),
+  zweck3 varchar(1000),
   datum date NOT NULL,
   valuta date NOT NULL,
   saldo double,
@@ -96,6 +98,7 @@ CREATE TABLE dauerauftrag (
   betrag double NOT NULL,
   zweck varchar(27) NOT NULL,
   zweck2 varchar(27),
+  zweck3 varchar(1000),
   erste_zahlung date NOT NULL,
   letzte_zahlung date,
   orderid varchar(100),
@@ -125,6 +128,7 @@ CREATE TABLE lastschrift (
   betrag double NOT NULL,
   zweck varchar(27) NOT NULL,
   zweck2 varchar(27),
+  zweck3 varchar(1000),
   termin date NOT NULL,
   ausgefuehrt int(1) NOT NULL,
   typ varchar(2) NULL,
@@ -151,6 +155,7 @@ CREATE TABLE slastbuchung (
   betrag double NOT NULL,
   zweck varchar(27) NOT NULL,
   zweck2 varchar(27),
+  zweck3 varchar(1000),
   typ varchar(2) NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
@@ -175,6 +180,7 @@ CREATE TABLE sueberweisungbuchung (
   betrag double NOT NULL,
   zweck varchar(27) NOT NULL,
   zweck2 varchar(27),
+  zweck3 varchar(1000),
   typ varchar(2) NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
@@ -214,15 +220,6 @@ CREATE TABLE op_buchung (
   id IDENTITY,
   umsatz_id int(10) NOT NULL,
   op_id int(10) NOT NULL,
-  UNIQUE (id),
-  PRIMARY KEY (id)
-);
-
-CREATE TABLE verwendungszweck (
-  id IDENTITY,
-  typ int(1) NOT NULL,
-  auftrag_id int(10) NOT NULL,
-  zweck varchar(27) NOT NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );
@@ -268,6 +265,6 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',11);
+INSERT INTO version (name,version) values ('db',12);
   
 COMMIT;
