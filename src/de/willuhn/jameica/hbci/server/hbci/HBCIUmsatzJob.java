@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUmsatzJob.java,v $
- * $Revision: 1.32 $
- * $Date: 2008/11/25 00:52:38 $
+ * $Revision: 1.33 $
+ * $Date: 2008/12/15 10:57:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -38,7 +38,8 @@ import de.willuhn.util.ApplicationException;
 public class HBCIUmsatzJob extends AbstractHBCIJob
 {
 
-	private Konto konto = null;
+	private Konto konto     = null;
+	private Date saldoDatum = null;
 
   /**
 	 * ct.
@@ -64,7 +65,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
 
 			setJobParam("my",Converter.HibiscusKonto2HBCIKonto(konto));
       
-      Date saldoDatum = konto.getSaldoDatum();
+      this.saldoDatum = konto.getSaldoDatum();
       if (saldoDatum != null)
       {
         // Mal schauen, ob wir ein konfiguriertes Offset haben
@@ -73,14 +74,14 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
         {
           Logger.info("using custom offset for startdate: " + offset);
           Calendar cal = Calendar.getInstance();
-          cal.setTime(saldoDatum);
+          cal.setTime(this.saldoDatum);
           cal.add(Calendar.DATE,offset);
-          saldoDatum = cal.getTime();
+          this.saldoDatum = cal.getTime();
         }
         
-        saldoDatum = HBCIProperties.startOfDay(saldoDatum);
-        Logger.info("startdate: " + HBCI.LONGDATEFORMAT.format(saldoDatum));
-        setJobParam("startdate", saldoDatum);
+        this.saldoDatum = HBCIProperties.startOfDay(this.saldoDatum);
+        Logger.info("startdate: " + HBCI.LONGDATEFORMAT.format(this.saldoDatum));
+        setJobParam("startdate", this.saldoDatum);
       }
 
       String curr = konto.getWaehrung();
@@ -131,7 +132,17 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
 
 		// Wir vergleichen noch mit den Umsaetzen, die wir schon haben und
 		// speichern nur die neuen.
-		DBIterator existing = konto.getUmsaetze();
+		Date d = null;
+		if (this.saldoDatum != null)
+		{
+      PluginResources res = Application.getPluginLoader().getPlugin(HBCI.class).getResources();
+      Calendar cal = Calendar.getInstance();
+      cal.setTime(this.saldoDatum);
+      cal.add(Calendar.DATE,res.getSettings().getInt("umsatz.mergewindow.offset",-30));
+      d = cal.getTime();
+		}
+    Logger.info("merge window: " + d + " - " + new Date());
+		DBIterator existing = konto.getUmsaetze(d,null);
 
 		GVRKUms.UmsLine[] lines = result.getFlatData();
 		for (int i=0;i<lines.length;++i)
@@ -176,6 +187,9 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIUmsatzJob.java,v $
+ * Revision 1.33  2008/12/15 10:57:44  willuhn
+ * @N Beim Synchronisieren mit den vorhandenen Umsaetzen nicht mehr mit allen Umsaetzen des Kontos vergleichen sondern nur noch mite den relevanten Daten aus dem "Merge-Window". Das umfasst den Bereich ab ${startdatum} - 30 Tage
+ *
  * Revision 1.32  2008/11/25 00:52:38  willuhn
  * @N Wenn Auslandsueberweisungen nicht gespeichert werden konnten, dann wenigstens einen Hinweis melden
  *
