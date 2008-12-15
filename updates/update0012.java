@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/updates/update0012.java,v $
- * $Revision: 1.1 $
- * $Date: 2008/12/14 23:18:35 $
+ * $Revision: 1.2 $
+ * $Date: 2008/12/15 10:46:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import java.util.Map;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
@@ -101,11 +102,11 @@ public class update0012 implements Update
       s.setAttribute("hbci.transfer.usage.maxnum",14);
     }
     
+    HBCIUpdateProvider myProvider = (HBCIUpdateProvider) provider;
+    I18N i18n = myProvider.getResources().getI18N();
+
     try
     {
-      HBCIUpdateProvider myProvider = (HBCIUpdateProvider) provider;
-      I18N i18n = myProvider.getResources().getI18N();
-
       // Wenn wir eine Tabelle erstellen wollen, muessen wir wissen, welche
       // SQL-Dialekt wir sprechen
       String driver = HBCIDBService.SETTINGS.getString("database.driver",null);
@@ -167,45 +168,52 @@ public class update0012 implements Update
             
             boolean ausgefuehrt = false;
             
-            switch (currentType.intValue())
+            try
             {
-            
-              case Transfer.TYP_UEBERWEISUNG:
-                Ueberweisung tu  = (Ueberweisung) service.createObject(Ueberweisung.class,s);
-                tu.setWeitereVerwendungszwecke(sl);
-                ausgefuehrt = tu.ausgefuehrt();
-                if (ausgefuehrt) ((AbstractDBObject)tu).setAttribute("ausgefuehrt",new Integer(0));
-                tu.store();
-                if (ausgefuehrt) tu.setAusgefuehrt();
-                break;
-              case Transfer.TYP_LASTSCHRIFT:
-                Lastschrift tl = (Lastschrift) service.createObject(Lastschrift.class,s);
-                tl.setWeitereVerwendungszwecke(sl);
-                ausgefuehrt = tl.ausgefuehrt();
-                if (ausgefuehrt) ((AbstractDBObject)tl).setAttribute("ausgefuehrt",new Integer(0));
-                tl.store();
-                if (ausgefuehrt) tl.setAusgefuehrt();
-                break;
-              case Transfer.TYP_DAUERAUFTRAG:
-                Dauerauftrag td = (Dauerauftrag) service.createObject(Dauerauftrag.class,s);
-                td.setWeitereVerwendungszwecke(sl);
-                td.store();
-                break;
-              case Transfer.TYP_UMSATZ:
-                Umsatz tum = (Umsatz) service.createObject(Umsatz.class,s);
-                tum.setWeitereVerwendungszwecke(sl);
-                tum.store();
-                break;
-              case Transfer.TYP_SLAST_BUCHUNG:
-                SammelLastBuchung tsb = (SammelLastBuchung) service.createObject(SammelLastBuchung.class,s);
-                tsb.setWeitereVerwendungszwecke(sl);
-                tsb.store();
-                break;
-              case Transfer.TYP_SUEB_BUCHUNG:
-                SammelUeberweisungBuchung tub = (SammelUeberweisungBuchung) service.createObject(SammelUeberweisungBuchung.class,s);
-                tub.setWeitereVerwendungszwecke(sl);
-                tub.store();
-                break;
+              switch (currentType.intValue())
+              {
+              
+                case Transfer.TYP_UEBERWEISUNG:
+                  Ueberweisung tu  = (Ueberweisung) service.createObject(Ueberweisung.class,s);
+                  tu.setWeitereVerwendungszwecke(sl);
+                  ausgefuehrt = tu.ausgefuehrt();
+                  if (ausgefuehrt) ((AbstractDBObject)tu).setAttribute("ausgefuehrt",new Integer(0));
+                  tu.store();
+                  if (ausgefuehrt) tu.setAusgefuehrt();
+                  break;
+                case Transfer.TYP_LASTSCHRIFT:
+                  Lastschrift tl = (Lastschrift) service.createObject(Lastschrift.class,s);
+                  tl.setWeitereVerwendungszwecke(sl);
+                  ausgefuehrt = tl.ausgefuehrt();
+                  if (ausgefuehrt) ((AbstractDBObject)tl).setAttribute("ausgefuehrt",new Integer(0));
+                  tl.store();
+                  if (ausgefuehrt) tl.setAusgefuehrt();
+                  break;
+                case Transfer.TYP_DAUERAUFTRAG:
+                  Dauerauftrag td = (Dauerauftrag) service.createObject(Dauerauftrag.class,s);
+                  td.setWeitereVerwendungszwecke(sl);
+                  td.store();
+                  break;
+                case Transfer.TYP_UMSATZ:
+                  Umsatz tum = (Umsatz) service.createObject(Umsatz.class,s);
+                  tum.setWeitereVerwendungszwecke(sl);
+                  tum.store();
+                  break;
+                case Transfer.TYP_SLAST_BUCHUNG:
+                  SammelLastBuchung tsb = (SammelLastBuchung) service.createObject(SammelLastBuchung.class,s);
+                  tsb.setWeitereVerwendungszwecke(sl);
+                  tsb.store();
+                  break;
+                case Transfer.TYP_SUEB_BUCHUNG:
+                  SammelUeberweisungBuchung tub = (SammelUeberweisungBuchung) service.createObject(SammelUeberweisungBuchung.class,s);
+                  tub.setWeitereVerwendungszwecke(sl);
+                  tub.store();
+                  break;
+              }
+            }
+            catch (ObjectNotFoundException onf)
+            {
+              Logger.warn(onf.getMessage() + ", skipping");
             }
           }
           currentId = null;
@@ -245,11 +253,29 @@ public class update0012 implements Update
         }
       }
     }
+    catch (ApplicationException ae)
+    {
+      Logger.error("rollback update",ae);
+      String sql = "ALTER TABLE ueberweisung DROP zweck3;\n" +
+                   "ALTER TABLE umsatz DROP zweck3;\n" +
+                   "ALTER TABLE dauerauftrag DROP zweck3;\n" +
+                   "ALTER TABLE lastschrift DROP zweck3;\n" +
+                   "ALTER TABLE slastbuchung DROP zweck3;\n" +
+                   "ALTER TABLE sueberweisungbuchung DROP zweck3;\n";
+      try
+      {
+        ScriptExecutor.execute(new StringReader(sql),myProvider.getConnection(),myProvider.getProgressMonitor());
+      }
+      catch (Exception e2)
+      {
+        Logger.error("rollback failed",e2);
+      }
+      throw ae;
+    }
     finally
     {
       Settings.setKontoCheck(kontoCheck);
     }
-
   }
 
   /**
@@ -265,6 +291,10 @@ public class update0012 implements Update
 
 /*********************************************************************
  * $Log: update0012.java,v $
+ * Revision 1.2  2008/12/15 10:46:04  willuhn
+ * @B Verwendungszwecke ueberspringen, wenn die zugehoerigen Objekte nicht mehr gefunden wurden
+ * @N rollback des Updates im Fehlerfall durch Entfernen der Spalte "zweck3"
+ *
  * Revision 1.1  2008/12/14 23:18:35  willuhn
  * @N BUGZILLA 188 - REFACTORING
  *
