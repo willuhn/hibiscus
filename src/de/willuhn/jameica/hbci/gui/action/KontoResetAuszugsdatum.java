@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoResetAuszugsdatum.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/11/24 00:07:08 $
+ * $Revision: 1.3 $
+ * $Date: 2008/12/15 10:52:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.gui.action;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
@@ -59,6 +60,7 @@ public class KontoResetAuszugsdatum implements Action
 
       k.resetSaldoDatum();
       k.store();
+      Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(k));
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Kontoauszugsdatum zurückgesetzt."), StatusBarMessage.TYPE_SUCCESS));
     }
     catch (Exception e)
@@ -73,6 +75,9 @@ public class KontoResetAuszugsdatum implements Action
 
 /*******************************************************************************
  * $Log: KontoResetAuszugsdatum.java,v $
+ * Revision 1.3  2008/12/15 10:52:16  willuhn
+ * @N ObjectChangedMessage, um die Tabelle live zu aktualisieren
+ *
  * Revision 1.2  2006/11/24 00:07:08  willuhn
  * @C Konfiguration der Umsatz-Kategorien in View Einstellungen verschoben
  * @N Redesign View Einstellungen
