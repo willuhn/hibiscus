@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.91 $
- * $Date: 2008/05/19 22:35:53 $
+ * $Revision: 1.92 $
+ * $Date: 2008/12/15 10:28:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -411,11 +411,8 @@ public class KontoImpl extends AbstractDBObject implements Konto
     if (days > 0)
     {
       long d = days * 24l * 60l * 60l * 1000l;
-      Date start = HBCIProperties.startOfDay(new Date(System
-          .currentTimeMillis()
-          - d));
-      list.addFilter("valuta >= ?", new Object[] { new java.sql.Date(start
-          .getTime()) });
+      Date start = HBCIProperties.startOfDay(new Date(System.currentTimeMillis() - d));
+      list.addFilter("valuta >= ?", new Object[] {new java.sql.Date(start.getTime())});
     }
     return list;
   }
@@ -759,6 +756,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*******************************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.92  2008/12/15 10:28:14  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.91  2008/05/19 22:35:53  willuhn
  * @N Maximale Laenge von Kontonummern konfigurierbar (Soft- und Hardlimit)
  * @N Laengenpruefungen der Kontonummer in Dialogen und Fachobjekten
