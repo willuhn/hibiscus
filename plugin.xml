@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<plugin xmlns="http://www.willuhn.de/schema/jameica-plugin" 
+<plugin xmlns="http://www.willuhn.de/schema/jameica-plugin"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.willuhn.de/schema/jameica-plugin http://www.willuhn.de/schema/jameica-plugin-1.0.xsd"
         name="hibiscus" version="1.9" class="de.willuhn.jameica.hbci.HBCI">
 
   <description>HBCI-Onlinebanking-Plugin für Jameica</description>
-  <url>http://www.willuhn.de/projects/hibiscus/releases/hibiscus.jam</url>
+  <url>https://www.willuhn.de/projects/hibiscus/releases/nightly/hibiscus-1.9-nightly.zip</url>
   <homepage>http://www.willuhn.de/projects/hibiscus</homepage>
   <license>GPL - http://www.gnu.org/copyleft/gpl.html</license>
 
@@ -33,7 +33,7 @@
       </item>
     </item>
   </menu>
-  
+
   <classfinder>
     <include>hibiscus\.jar</include>
     <include>hbci_passport_.*\.jar</include>
@@ -66,6 +66,6 @@
     <service name="database"    depends="" autostart="true" class="de.willuhn.jameica.hbci.rmi.HBCIDBService" />
     <service name="addressbook" depends="" autostart="true" class="de.willuhn.jameica.hbci.rmi.AddressbookService" />
   </services>
-  
+
 </plugin>
 
