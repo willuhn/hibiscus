@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/DTAUSSammelTransferImporter.java,v $
- * $Revision: 1.10 $
- * $Date: 2008/12/01 23:54:42 $
+ * $Revision: 1.11 $
+ * $Date: 2008/12/17 23:24:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -92,6 +92,7 @@ public class DTAUSSammelTransferImporter extends AbstractDTAUSImporter
     b.setGegenkontoName(csatz.getNameEmpfaenger());
     b.setGegenkontoNummer(Long.toString(csatz.getKontonummer()));
     b.setZweck(csatz.getVerwendungszweck(1));
+    b.setTextSchluessel(mapDtausToTextschluessel(b,csatz.getTextschluessel()));
     
     int z = csatz.getAnzahlVerwendungszwecke();
     if (z > 1)
@@ -137,6 +138,9 @@ public class DTAUSSammelTransferImporter extends AbstractDTAUSImporter
 
 /*********************************************************************
  * $Log: DTAUSSammelTransferImporter.java,v $
+ * Revision 1.11  2008/12/17 23:24:23  willuhn
+ * @N Korrektes Mapping der Textschluessel beim Export/Import von Sammelauftraegen von/nach DTAUS
+ *
  * Revision 1.10  2008/12/01 23:54:42  willuhn
  * @N BUGZILLA 188 Erweiterte Verwendungszwecke in Exports/Imports und Sammelauftraegen
  *

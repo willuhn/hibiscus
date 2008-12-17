@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/DTAUSSammelTransferExporter.java,v $
- * $Revision: 1.9 $
- * $Date: 2008/12/01 23:54:42 $
+ * $Revision: 1.10 $
+ * $Date: 2008/12/17 23:24:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,7 +16,6 @@ package de.willuhn.jameica.hbci.io;
 import java.io.OutputStream;
 import java.rmi.RemoteException;
 
-import de.jost_net.OBanToo.Dtaus.CSatz;
 import de.jost_net.OBanToo.Dtaus.DtausDateiWriter;
 import de.jost_net.OBanToo.Dtaus.DtausException;
 import de.willuhn.datasource.GenericIterator;
@@ -106,9 +105,6 @@ public class DTAUSSammelTransferExporter extends AbstractDTAUSIO implements Expo
         writer.setAKundenname(konto.getName());
         writer.writeASatz();
         
-        // TODO Nicht schoen. Ausserdem werden die beiden Lastschrift-Typen (Abbuchung:04, Einzugserm. 05) noch nicht unterschieden
-        int textSchluessel = (transfer instanceof SammelUeberweisung) ? CSatz.TS_UEBERWEISUNGSGUTSCHRIFT : CSatz.TS_LASTSCHRIFT_EINZUGSERMAECHTIGUNGSVERFAHREN;
-
         while (buchungen.hasNext())
         {
           // Mit diesem Factor sollte sich der Fortschrittsbalken
@@ -116,7 +112,7 @@ public class DTAUSSammelTransferExporter extends AbstractDTAUSIO implements Expo
           monitor.setPercentComplete((int)((++count) * factor));
 
           SammelTransferBuchung buchung = (SammelTransferBuchung) buchungen.next();
-
+          
           monitor.log(i18n.tr("Exportiere Datensatz {0}",buchung.getGegenkontoName()));
           
           writer.setCBetragInEuro(buchung.getBetrag());
@@ -125,7 +121,7 @@ public class DTAUSSammelTransferExporter extends AbstractDTAUSIO implements Expo
           writer.setCKonto(Long.parseLong(buchung.getGegenkontoNummer()));
           writer.setCName(buchung.getGegenkontoName());
           writer.setCInterneKundennummer(kundenNummer);
-          writer.setCTextschluessel(textSchluessel);
+          writer.setCTextschluessel(mapTextschluesselToDtaus(buchung));
           
           writer.addCVerwendungszweck(buchung.getZweck());
           String zweck2 = buchung.getZweck2();
@@ -208,6 +204,9 @@ public class DTAUSSammelTransferExporter extends AbstractDTAUSIO implements Expo
 
 /**********************************************************************
  * $Log: DTAUSSammelTransferExporter.java,v $
+ * Revision 1.10  2008/12/17 23:24:23  willuhn
+ * @N Korrektes Mapping der Textschluessel beim Export/Import von Sammelauftraegen von/nach DTAUS
+ *
  * Revision 1.9  2008/12/01 23:54:42  willuhn
  * @N BUGZILLA 188 Erweiterte Verwendungszwecke in Exports/Imports und Sammelauftraegen
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/AbstractDTAUSIO.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/06/08 17:40:59 $
+ * $Revision: 1.3 $
+ * $Date: 2008/12/17 23:24:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,7 +13,12 @@
 
 package de.willuhn.jameica.hbci.io;
 
+import java.rmi.RemoteException;
+
+import de.jost_net.OBanToo.Dtaus.CSatz;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
+import de.willuhn.jameica.hbci.rmi.SammelUeberweisungBuchung;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 
@@ -39,6 +44,44 @@ public abstract class AbstractDTAUSIO implements IO
   public String getName()
   {
     return i18n.tr("DTAUS-Format");
+  }
+  
+  /**
+   * Mappt den Textschluessel von Hibiscus zu DTAUS.
+   * @param buchung Buchung.
+   * @return Textschluessel.
+   * @throws RemoteException
+   */
+  protected int mapTextschluesselToDtaus(SammelTransferBuchung buchung) throws RemoteException
+  {
+    if (buchung == null)
+      return CSatz.TS_UEBERWEISUNGSGUTSCHRIFT;
+
+    int ts = (buchung instanceof SammelUeberweisungBuchung) ? CSatz.TS_UEBERWEISUNGSGUTSCHRIFT : CSatz.TS_LASTSCHRIFT_ABBUCHUNGSVERFAHREN;
+    String textschluessel = buchung.getTextSchluessel();
+    if (textschluessel != null)
+    {
+      if (textschluessel.equals("05"))
+        ts = CSatz.TS_LASTSCHRIFT_EINZUGSERMAECHTIGUNGSVERFAHREN;
+      else if (textschluessel.equals("53"))
+        ts = CSatz.TS_UEBERWEISUNG_LOHN_GEHALT_RENTE;
+    }
+    return ts;
+  }
+  
+  /**
+   * Mappt den DTAUS-Textschluessel von DTAUS zu Hibiscus.
+   * @param buchung die Buchung.
+   * @param ts Textschluessel aus DTAUS.
+   * @return Textschluessel in Hibiscus.
+   */
+  protected String mapDtausToTextschluessel(SammelTransferBuchung buchung, long ts)
+  {
+    if (ts == CSatz.TS_LASTSCHRIFT_EINZUGSERMAECHTIGUNGSVERFAHREN)
+      return "05";
+    if (ts == CSatz.TS_UEBERWEISUNG_LOHN_GEHALT_RENTE)
+      return "53";
+    return (buchung instanceof SammelUeberweisungBuchung) ? "51" : "04";
   }
  
   /**
@@ -107,6 +150,9 @@ public abstract class AbstractDTAUSIO implements IO
 
 /*********************************************************************
  * $Log: AbstractDTAUSIO.java,v $
+ * Revision 1.3  2008/12/17 23:24:23  willuhn
+ * @N Korrektes Mapping der Textschluessel beim Export/Import von Sammelauftraegen von/nach DTAUS
+ *
  * Revision 1.2  2006/06/08 17:40:59  willuhn
  * @N Vorbereitungen fuer DTAUS-Import von Sammellastschriften und Umsaetzen
  *
