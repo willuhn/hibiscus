@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Attic/HibiscusImporter.java,v $
- * $Revision: 1.3 $
- * $Date: 2007/04/26 13:58:54 $
+ * $Revision: 1.4 $
+ * $Date: 2008/12/17 22:49:48 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -44,7 +44,6 @@ public class HibiscusImporter extends AbstractHibiscusIO implements Importer
     ObjectInputStream ois = null;
     try
     {
-      // TODO: Mit der verflucht heissen Nadel gestrickt! ;)
       ois = new ObjectInputStream(is);
       AbstractDBObject current = null;
       DBService service = Settings.getDBService();
@@ -113,6 +112,9 @@ public class HibiscusImporter extends AbstractHibiscusIO implements Importer
 
 /*********************************************************************
  * $Log: HibiscusImporter.java,v $
+ * Revision 1.4  2008/12/17 22:49:48  willuhn
+ * @R t o d o  tag entfernt
+ *
  * Revision 1.3  2007/04/26 13:58:54  willuhn
  * @N Import-Message nach dem Import senden
  *

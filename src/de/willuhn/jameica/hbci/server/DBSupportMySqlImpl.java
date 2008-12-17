@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DBSupportMySqlImpl.java,v $
- * $Revision: 1.7 $
- * $Date: 2007/09/11 09:26:08 $
+ * $Revision: 1.8 $
+ * $Date: 2008/12/17 22:48:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -44,20 +44,7 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl
    */
   public String getJdbcPassword()
   {
-    String key = "database.driver.mysql.password";
-
-// TODO: Erst moeglich, wenn eine GUI zum Eingeben des Passwortes existiert
-//    try
-//    {
-//      // Das Passwort verschluesseln wir nach Moeglichkeit
-//      Wallet wallet = Settings.getWallet();
-//      return (String) wallet.get(key);
-//    }
-//    catch (Exception e)
-//    {
-//      Logger.error("unable to read jdbc password from wallet, using plaintext fallback",e);
-      return HBCIDBService.SETTINGS.getString(key,null);
-//    }
+    return HBCIDBService.SETTINGS.getString("database.driver.mysql.password",null);
   }
 
   /**
@@ -168,6 +155,9 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl
 
 /*********************************************************************
  * $Log: DBSupportMySqlImpl.java,v $
+ * Revision 1.8  2008/12/17 22:48:51  willuhn
+ * @R t o d o  tag entfernt
+ *
  * Revision 1.7  2007/09/11 09:26:08  willuhn
  * @N SQL-Update-Hinweis nur anzeigen, wenn Datei existiert
  *

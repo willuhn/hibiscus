@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/SammelTransfer.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/08/17 10:06:32 $
+ * $Revision: 1.4 $
+ * $Date: 2008/12/17 22:48:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -33,8 +33,9 @@ public interface SammelTransfer extends DBObject, Terminable, Duplicatable
 
   /**
    * Liefert die Buchungen des Sammeltransfers als Array.
+   * Convenience-Funktion fuer Velocity (fuer den Export). Das versteht leider nur Arrays/List,
+   * kann also nicht mit einem DBIterator umgehen.
    * @return Liste der Buchungen.
-   * TODO: Das ist nicht schoen. Aber Velocity (fuer den Export) versteht leider nur Arrays.
    * @throws RemoteException
    */
   public SammelTransferBuchung[] getBuchungenAsArray() throws RemoteException;
@@ -86,6 +87,9 @@ public interface SammelTransfer extends DBObject, Terminable, Duplicatable
 
 /**********************************************************************
  * $Log: SammelTransfer.java,v $
+ * Revision 1.4  2008/12/17 22:48:17  willuhn
+ * @R t o d o  tag entfernt
+ *
  * Revision 1.3  2006/08/17 10:06:32  willuhn
  * @B Fehler in HTML-Export von Sammeltransfers
  *

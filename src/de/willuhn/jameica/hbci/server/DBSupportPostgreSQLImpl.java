@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DBSupportPostgreSQLImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/09/11 09:26:08 $
+ * $Revision: 1.3 $
+ * $Date: 2008/12/17 22:49:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -41,20 +41,7 @@ public class DBSupportPostgreSQLImpl extends AbstractDBSupportImpl
    */
   public String getJdbcPassword()
   {
-    String key = "database.driver.postgresql.password";
-
-// TODO: Erst moeglich, wenn eine GUI zum Eingeben des Passwortes existiert
-//    try
-//    {
-//      // Das Passwort verschluesseln wir nach Moeglichkeit
-//      Wallet wallet = Settings.getWallet();
-//      return (String) wallet.get(key);
-//    }
-//    catch (Exception e)
-//    {
-//      Logger.error("unable to read jdbc password from wallet, using plaintext fallback",e);
-      return HBCIDBService.SETTINGS.getString(key,null);
-//    }
+    return HBCIDBService.SETTINGS.getString("database.driver.postgresql.password",null);
   }
 
   /**
@@ -165,6 +152,9 @@ public class DBSupportPostgreSQLImpl extends AbstractDBSupportImpl
 
 /*********************************************************************
  * $Log: DBSupportPostgreSQLImpl.java,v $
+ * Revision 1.3  2008/12/17 22:49:09  willuhn
+ * @R t o d o  tag entfernt
+ *
  * Revision 1.2  2007/09/11 09:26:08  willuhn
  * @N SQL-Update-Hinweis nur anzeigen, wenn Datei existiert
  *

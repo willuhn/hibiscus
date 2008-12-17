@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.44 $
- * $Date: 2008/10/10 16:45:35 $
+ * $Revision: 1.45 $
+ * $Date: 2008/12/17 22:46:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -386,7 +386,6 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
 
     if (arg0 != null && arg0.startsWith("umsatz:"))
     {
-      // TODO: Beheben! Das ist haesslich!
       try
       {
         String[] s = arg0.split(":");
@@ -496,6 +495,9 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
 
 /*******************************************************************************
  * $Log: UmsatzTypImpl.java,v $
+ * Revision 1.45  2008/12/17 22:46:36  willuhn
+ * @R t o d o  tag entfernt
+ *
  * Revision 1.44  2008/10/10 16:45:35  willuhn
  * @N Moeglichkeit, mehrere Suchbegriffe mit Komma zu verknuepfen, ohne hierfuer regulaere Ausdruecke nutzen zu muessen.
  *
