@@ -10,6 +10,8 @@
   <homepage>http://www.willuhn.de/projects/hibiscus</homepage>
   <license>GPL - http://www.gnu.org/copyleft/gpl.html</license>
 
+  <requires jameica="1.7"/>
+
   <menu>
     <item id="hibiscus.menu"                         name="Hibiscus">
       <item id="hibiscus.menu.transfer"              name="Zahlungsverkehr">
