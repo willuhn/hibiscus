@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UeberweisungList.java,v $
- * $Revision: 1.16 $
- * $Date: 2007/12/06 23:53:35 $
+ * $Revision: 1.17 $
+ * $Date: 2008/12/19 01:12:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
+import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.TerminableMarkExecuted;
@@ -49,18 +50,18 @@ public class UeberweisungList extends ContextMenu
 	{
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-		addItem(new SingleItem(i18n.tr("Öffnen"), new UeberweisungNew()));
-    addItem(new SingleItem(i18n.tr("Duplizieren..."), new UeberweisungDuplicate()));
-    addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete()));
+		addItem(new SingleItem(i18n.tr("Öffnen"), new UeberweisungNew(),"document-open.png"));
+    addItem(new ContextMenuItem(i18n.tr("Neue Überweisung..."), new UNeu(),"text-x-generic.png"));
+    addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new ContextMenuItem(i18n.tr("Neue Überweisung..."), new UNeu()));
-    addItem(new NotActiveMultiMenuItem(i18n.tr("Zu Sammel-Überweisung zusammenfassen..."), new UeberweisungMerge()));
+    addItem(new SingleItem(i18n.tr("Duplizieren..."), new UeberweisungDuplicate(),"edit-copy.png"));
+    addItem(new NotActiveMultiMenuItem(i18n.tr("Zu Sammel-Überweisung zusammenfassen..."), new UeberweisungMerge(),"mail-send-receive.png"));
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new NotActiveSingleMenuItem(i18n.tr("Jetzt ausführen..."), new UeberweisungExecute()));
-    addItem(new NotActiveMultiMenuItem(i18n.tr("Als \"ausgeführt\" markieren..."), new TerminableMarkExecuted()));
+    addItem(new NotActiveSingleMenuItem(i18n.tr("Jetzt ausführen..."), new UeberweisungExecute(),"emblem-important.png"));
+    addItem(new NotActiveMultiMenuItem(i18n.tr("Als \"ausgeführt\" markieren..."), new TerminableMarkExecuted(),"emblem-default.png"));
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new UeberweisungExport()));
-    addItem(new ContextMenuItem(i18n.tr("Importieren..."),new UeberweisungImport()));
+    addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new UeberweisungExport(),"document-save.png"));
+    addItem(new ContextMenuItem(i18n.tr("Importieren..."),new UeberweisungImport(),"document-open.png"));
 		
 	}
 
@@ -72,10 +73,13 @@ public class UeberweisungList extends ContextMenu
     /**
      * @param text
      * @param action
+     * @param optionale Angabe eines Icons.
      */
-    private SingleItem(String text, Action action)
+    private SingleItem(String text, Action action, String icon)
     {
       super(text,action);
+      if (icon != null)
+        setImage(SWTUtil.getImage(icon));
     }
     /**
      * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
@@ -114,10 +118,11 @@ public class UeberweisungList extends ContextMenu
      * ct.
      * @param text anzuzeigender Text.
      * @param a auszufuehrende Action.
+     * @param icon optionales Icon.
      */
-    public NotActiveSingleMenuItem(String text, Action a)
+    public NotActiveSingleMenuItem(String text, Action a, String icon)
     {
-      super(text, a);
+      super(text, a, icon);
     }
 
 	  /**
@@ -155,10 +160,11 @@ public class UeberweisungList extends ContextMenu
      * ct.
      * @param text anzuzeigender Text.
      * @param a auszufuehrende Action.
+     * @param icon optionales Icon.
      */
-    public NotActiveMultiMenuItem(String text, Action a)
+    public NotActiveMultiMenuItem(String text, Action a, String icon)
     {
-      super(text, a);
+      super(text, a, icon);
     }
 
     /**
@@ -195,55 +201,12 @@ public class UeberweisungList extends ContextMenu
 
 /**********************************************************************
  * $Log: UeberweisungList.java,v $
+ * Revision 1.17  2008/12/19 01:12:09  willuhn
+ * @N Icons in Contextmenus
+ *
  * Revision 1.16  2007/12/06 23:53:35  willuhn
  * @C Menu-Eintraege uebersichtlicher angeordnet
  *
  * Revision 1.15  2007/10/25 15:47:21  willuhn
  * @N Einzelauftraege zu Sammel-Auftraegen zusammenfassen (BUGZILLA 402)
- *
- * Revision 1.14  2006/10/16 14:46:30  willuhn
- * @N CSV-Export von Ueberweisungen und Lastschriften
- *
- * Revision 1.13  2006/08/07 14:45:18  willuhn
- * @B typos
- *
- * Revision 1.12  2006/06/08 17:40:59  willuhn
- * @N Vorbereitungen fuer DTAUS-Import von Sammellastschriften und Umsaetzen
- *
- * Revision 1.11  2006/06/06 22:41:26  willuhn
- * @N Generische Loesch-Action fuer DBObjects (DBObjectDelete)
- * @N Live-Aktualisierung der Tabelle mit den importierten Ueberweisungen
- * @B Korrekte Berechnung des Fortschrittsbalken bei Import
- *
- * Revision 1.10  2006/03/30 22:56:46  willuhn
- * @B bug 216
- *
- * Revision 1.9  2004/11/13 17:02:04  willuhn
- * @N Bearbeiten des Zahlungsturnus
- *
- * Revision 1.8  2004/11/12 18:25:08  willuhn
- * *** empty log message ***
- *
- * Revision 1.7  2004/10/25 17:58:56  willuhn
- * @N Haufen Dauerauftrags-Code
- *
- * Revision 1.6  2004/10/18 23:38:17  willuhn
- * @C Refactoring
- * @C Aufloesung der Listener und Ersatz gegen Actions
- *
- * Revision 1.5  2004/08/18 23:13:51  willuhn
- * @D Javadoc
- *
- * Revision 1.4  2004/07/25 17:15:06  willuhn
- * @C PluginLoader is no longer static
- *
- * Revision 1.3  2004/07/21 23:54:31  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2004/07/20 23:31:49  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2004/07/20 21:48:00  willuhn
- * @N ContextMenus
- *
  **********************************************************************/

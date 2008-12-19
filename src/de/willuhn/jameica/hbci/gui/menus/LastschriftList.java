@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/LastschriftList.java,v $
- * $Revision: 1.11 $
- * $Date: 2007/12/06 23:53:35 $
+ * $Revision: 1.12 $
+ * $Date: 2008/12/19 01:12:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,18 +49,18 @@ public class LastschriftList extends ContextMenu
 	{
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-		addItem(new SingleItem(i18n.tr("Öffnen"), new LastschriftNew()));
-    addItem(new SingleItem(i18n.tr("Duplizieren..."), new LastschriftDuplicate()));
-    addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete()));
+		addItem(new SingleItem(i18n.tr("Öffnen"), new LastschriftNew(),"document-open.png"));
+    addItem(new ContextMenuItem(i18n.tr("Neue Lastschrift..."), new UNeu(),"text-x-generic.png"));
+    addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new ContextMenuItem(i18n.tr("Neue Lastschrift..."), new UNeu()));
-    addItem(new NotActiveMultiMenuItem(i18n.tr("Zu Sammel-Lastschrift zusammenfassen..."), new LastschriftMerge()));
+    addItem(new SingleItem(i18n.tr("Duplizieren..."), new LastschriftDuplicate(),"edit-copy.png"));
+    addItem(new NotActiveMultiMenuItem(i18n.tr("Zu Sammel-Lastschrift zusammenfassen..."), new LastschriftMerge(),"mail-send-receive.png"));
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new NotActiveSingleMenuItem(i18n.tr("Jetzt ausführen..."), new LastschriftExecute()));
-    addItem(new NotActiveMultiMenuItem(i18n.tr("Als \"ausgeführt\" markieren..."), new TerminableMarkExecuted()));
+    addItem(new NotActiveSingleMenuItem(i18n.tr("Jetzt ausführen..."), new LastschriftExecute(),"emblem-important.png"));
+    addItem(new NotActiveMultiMenuItem(i18n.tr("Als \"ausgeführt\" markieren..."), new TerminableMarkExecuted(),"emblem-default.png"));
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new LastschriftExport()));
-    addItem(new ContextMenuItem(i18n.tr("Importieren..."),new LastschriftImport()));
+    addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new LastschriftExport(),"document-save.png"));
+    addItem(new ContextMenuItem(i18n.tr("Importieren..."),new LastschriftImport(),"document-open.png"));
 		
 	}
 
@@ -70,12 +70,14 @@ public class LastschriftList extends ContextMenu
   private class SingleItem extends CheckedContextMenuItem
   {
     /**
-     * @param text
-     * @param action
+     * ct.
+     * @param text Text.
+     * @param action Aktion.
+     * @param icon optionales Icon.
      */
-    private SingleItem(String text, Action action)
+    private SingleItem(String text, Action action, String icon)
     {
-      super(text,action);
+      super(text,action,icon);
     }
     /**
      * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
@@ -114,10 +116,11 @@ public class LastschriftList extends ContextMenu
      * ct.
      * @param text anzuzeigender Text.
      * @param a auszufuehrende Action.
+     * @param icon optionales Icon.
      */
-    public NotActiveSingleMenuItem(String text, Action a)
+    public NotActiveSingleMenuItem(String text, Action a, String icon)
     {
-      super(text, a);
+      super(text, a, icon);
     }
 
 	  /**
@@ -154,10 +157,11 @@ public class LastschriftList extends ContextMenu
      * ct.
      * @param text anzuzeigender Text.
      * @param a auszufuehrende Action.
+     * @param icon optionales Icon.
      */
-    public NotActiveMultiMenuItem(String text, Action a)
+    public NotActiveMultiMenuItem(String text, Action a, String icon)
     {
-      super(text, a);
+      super(text, a, icon);
     }
 
     /**
@@ -194,40 +198,12 @@ public class LastschriftList extends ContextMenu
 
 /**********************************************************************
  * $Log: LastschriftList.java,v $
+ * Revision 1.12  2008/12/19 01:12:09  willuhn
+ * @N Icons in Contextmenus
+ *
  * Revision 1.11  2007/12/06 23:53:35  willuhn
  * @C Menu-Eintraege uebersichtlicher angeordnet
  *
  * Revision 1.10  2007/10/25 15:47:21  willuhn
  * @N Einzelauftraege zu Sammel-Auftraegen zusammenfassen (BUGZILLA 402)
- *
- * Revision 1.9  2006/10/16 14:46:30  willuhn
- * @N CSV-Export von Ueberweisungen und Lastschriften
- *
- * Revision 1.8  2006/08/07 14:45:18  willuhn
- * @B typos
- *
- * Revision 1.7  2006/06/08 17:40:59  willuhn
- * @N Vorbereitungen fuer DTAUS-Import von Sammellastschriften und Umsaetzen
- *
- * Revision 1.6  2006/06/07 17:26:40  willuhn
- * @N DTAUS-Import fuer Lastschriften
- * @B Satusbar-Update in DTAUSImport gefixt
- *
- * Revision 1.5  2006/06/06 22:41:26  willuhn
- * @N Generische Loesch-Action fuer DBObjects (DBObjectDelete)
- * @N Live-Aktualisierung der Tabelle mit den importierten Ueberweisungen
- * @B Korrekte Berechnung des Fortschrittsbalken bei Import
- *
- * Revision 1.4  2006/03/30 22:56:46  willuhn
- * @B bug 216
- *
- * Revision 1.3  2005/02/28 18:40:49  web0
- * @N first code for "Sammellastschrift"
- *
- * Revision 1.2  2005/01/19 00:33:32  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2005/01/19 00:16:04  willuhn
- * @N Lastschriften
- *
  **********************************************************************/

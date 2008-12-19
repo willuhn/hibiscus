@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/KontoList.java,v $
- * $Revision: 1.14 $
- * $Date: 2007/08/28 10:08:53 $
+ * $Revision: 1.15 $
+ * $Date: 2008/12/19 01:12:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -46,14 +46,14 @@ public class KontoList extends ContextMenu implements Extendable
     i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources()
         .getI18N();
 
-    addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"), new KontoNew()));
-    addItem(new ContextMenuItem(i18n.tr("Neues Konto..."), new KNeu()));
-    addItem(new CheckedContextMenuItem(i18n.tr("Kontoauszüge anzeigen..."),new UmsatzList()));
-    addItem(new CheckedContextMenuItem(i18n.tr("Saldo/Kontoauszüge abrufen..."),new KontoFetchUmsaetze())); // BUGZILLA 473
-
+    addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"), new KontoNew(),"document-open.png"));
+    addItem(new ContextMenuItem(i18n.tr("Neues Konto..."), new KNeu(),"text-x-generic.png"));
+    addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new KontoDelete(),"user-trash-full.png"));
     addItem(ContextMenuItem.SEPARATOR);
+    addItem(new CheckedContextMenuItem(i18n.tr("Kontoauszüge anzeigen..."),new UmsatzList()));
+    addItem(ContextMenuItem.SEPARATOR);
+    addItem(new CheckedContextMenuItem(i18n.tr("Saldo/Kontoauszüge abrufen..."),new KontoFetchUmsaetze(),"emblem-important.png")); // BUGZILLA 473
     addItem(new CheckedContextMenuItem(i18n.tr("Kontoauszugsdatum zurücksetzen..."), new KontoResetAuszugsdatum()));
-    addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new KontoDelete()));
     addItem(ContextMenuItem.SEPARATOR);
 
     addItem(new ContextMenuItem(i18n.tr("Neue Überweisung..."),new UeberweisungNew()));
@@ -88,6 +88,9 @@ public class KontoList extends ContextMenu implements Extendable
 
 /*******************************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.15  2008/12/19 01:12:09  willuhn
+ * @N Icons in Contextmenus
+ *
  * Revision 1.14  2007/08/28 10:08:53  willuhn
  * @N Bug 473
  *
