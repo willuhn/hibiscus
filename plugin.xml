@@ -44,22 +44,22 @@
   </classfinder>
 
   <navigation>
-    <item id="hibiscus.navi"                                name="Hibiscus"                icon-close="folder.png">
-      <item id="hibiscus.navi.accounts"                     name="Konten"                  icon-close="system-file-manager.png"         action="de.willuhn.jameica.hbci.gui.action.KontoList" />
-      <item id="hibiscus.navi.addresses"                    name="Adressbuch"              icon-close="contact-new.png"                 action="de.willuhn.jameica.hbci.gui.action.EmpfaengerList" />
-      <item id="hibiscus.navi.messages"                     name="System-Nachrichten"      icon-close="dialog-information.png"          action="de.willuhn.jameica.hbci.gui.action.NachrichtList" />
-      <item id="hibiscus.navi.transfer"                     name="Zahlungsverkehr"         icon-close="folder.png">
-        <item id="hibiscus.navi.transfer.ueb"               name="Überweisungen"           icon-close="stock_next.png"                  action="de.willuhn.jameica.hbci.gui.action.UeberweisungList" />
-        <item id="hibiscus.navi.transfer.einzellast"        name="Lastschriften"           icon-close="stock_previous.png"              action="de.willuhn.jameica.hbci.gui.action.LastschriftList" />
-        <item id="hibiscus.navi.transfer.sammelueb"         name="Sammelüberweisungen"     icon-close="stock_navigator-shift-right.png" action="de.willuhn.jameica.hbci.gui.action.SammelUeberweisungList" />
-        <item id="hibiscus.navi.transfer.sammellast"        name="Sammellastschriften"     icon-close="stock_navigator-shift-left.png"  action="de.willuhn.jameica.hbci.gui.action.SammelLastschriftList" />
-        <item id="hibiscus.navi.transfer.dauer"             name="Daueraufträge"           icon-close="stock_form-time-field.png"       action="de.willuhn.jameica.hbci.gui.action.DauerauftragList" />
+    <item id="hibiscus.navi"                                 name="Hibiscus"                icon-close="folder.png">
+      <item id="hibiscus.navi.accounts"                      name="Konten"                  icon-close="system-file-manager.png"         action="de.willuhn.jameica.hbci.gui.action.KontoList" />
+      <item id="hibiscus.navi.addresses"                     name="Adressbuch"              icon-close="contact-new.png"                 action="de.willuhn.jameica.hbci.gui.action.EmpfaengerList" />
+      <item id="hibiscus.navi.messages"                      name="System-Nachrichten"      icon-close="dialog-information.png"          action="de.willuhn.jameica.hbci.gui.action.NachrichtList" />
+      <item id="hibiscus.navi.transfer"                      name="Zahlungsverkehr"         icon-close="folder.png">
+        <item id="hibiscus.navi.transfer.ueb"                name="Überweisungen"           icon-close="stock_next.png"                  action="de.willuhn.jameica.hbci.gui.action.UeberweisungList" />
+        <item id="hibiscus.navi.transfer.einzellast"         name="Lastschriften"           icon-close="stock_previous.png"              action="de.willuhn.jameica.hbci.gui.action.LastschriftList" />
+        <item id="hibiscus.navi.transfer.sammelueb"          name="Sammelüberweisungen"     icon-close="stock_navigator-shift-right.png" action="de.willuhn.jameica.hbci.gui.action.SammelUeberweisungList" />
+        <item id="hibiscus.navi.transfer.sammellast"         name="Sammellastschriften"     icon-close="stock_navigator-shift-left.png"  action="de.willuhn.jameica.hbci.gui.action.SammelLastschriftList" />
+        <item id="hibiscus.navi.transfer.dauer"              name="Daueraufträge"           icon-close="stock_form-time-field.png"       action="de.willuhn.jameica.hbci.gui.action.DauerauftragList" />
       </item>
-      <item id="hibiscus.navi.reporting"                    name="Auswertungen"            icon-close="folder.png">
-        <item id="hibiscus.navi.reporting.kontoauszug"      name="Kontoauszüge"            icon-close="office-calendar.png"             action="de.willuhn.jameica.hbci.gui.action.KontoauszugRpt" />
-        <item id="hibiscus.navi.reporting.kategorien"       name="Umsätze nach Kategorien" icon-close="x-office-spreadsheet.png"        action="de.willuhn.jameica.hbci.gui.action.UmsatzTypTree" />
-        <item id="hibiscus.navi.reporting.einnahmenausgaben" name="Einnahmen/Ausgaben"     icon-close="stock_insert-rows.png"           action="de.willuhn.jameica.hbci.gui.action.EinnahmenAusgaben" />
-        <item id="hibiscus.navi.reporting.sparquote"        name="Sparquote"               icon-close="utilities-system-monitor.png"    action="de.willuhn.jameica.hbci.gui.action.SparQuote" />
+      <item id="hibiscus.navi.reporting"                     name="Auswertungen"            icon-close="folder.png">
+        <item id="hibiscus.navi.reporting.kontoauszug"       name="Kontoauszüge"            icon-close="office-calendar.png"             action="de.willuhn.jameica.hbci.gui.action.KontoauszugRpt" />
+        <item id="hibiscus.navi.reporting.kategorien"        name="Umsätze nach Kategorien" icon-close="x-office-spreadsheet.png"        action="de.willuhn.jameica.hbci.gui.action.UmsatzTypTree" />
+        <item id="hibiscus.navi.reporting.einnahmenausgaben" name="Einnahmen/Ausgaben"      icon-close="stock_insert-rows.png"           action="de.willuhn.jameica.hbci.gui.action.EinnahmenAusgaben" />
+        <item id="hibiscus.navi.reporting.sparquote"         name="Sparquote"               icon-close="utilities-system-monitor.png"    action="de.willuhn.jameica.hbci.gui.action.SparQuote" />
       </item>
     </item>
   </navigation>

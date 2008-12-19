@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/SammelUeberweisungList.java,v $
- * $Revision: 1.6 $
- * $Date: 2007/12/06 23:53:35 $
+ * $Revision: 1.7 $
+ * $Date: 2008/12/19 12:16:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -50,21 +50,20 @@ public class SammelUeberweisungList extends ContextMenu
 	{
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-		addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"), new SammelUeberweisungNew()));
-    // BUGZILLA 115 http://www.willuhn.de/bugzilla/show_bug.cgi?id=115
-    addItem(new CheckedContextMenuItem(i18n.tr("Duplizieren..."), new SammelTransferDuplicate()));
-    addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new SammelTransferDelete()));
+		addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"), new SammelUeberweisungNew(),"document-open.png"));
+    addItem(new ContextMenuItem(i18n.tr("Neue Sammel-Überweisung..."), new SNeu(),"text-x-generic.png"));
+    addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new SammelTransferDelete(),"user-trash-full.png"));
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new ContextMenuItem(i18n.tr("Neue Sammel-Überweisung..."), new SNeu()));
+    addItem(new CheckedContextMenuItem(i18n.tr("Duplizieren..."), new SammelTransferDuplicate(),"edit-copy.png"));
     addItem(ContextMenuItem.SEPARATOR);
-		addItem(new NotActiveMenuItem(i18n.tr("Jetzt ausführen..."), new SammelUeberweisungExecute()));
+		addItem(new NotActiveMenuItem(i18n.tr("Jetzt ausführen..."), new SammelUeberweisungExecute(),"emblem-important.png"));
     addItem(new ContextMenuItem(i18n.tr("Als \"ausgeführt\" markieren..."), new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         new TerminableMarkExecuted().handleAction(context);
         GUI.startView(GUI.getCurrentView().getClass(),GUI.getCurrentView().getCurrentObject());
       }
-    }){
+    },"emblem-default.png"){
       public boolean isEnabledFor(Object o)
       {
         if (o == null || (!(o instanceof Terminable) && !(o instanceof Terminable[])))
@@ -91,8 +90,8 @@ public class SammelUeberweisungList extends ContextMenu
       }
     });
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new SammelUeberweisungExport()));
-    addItem(new ContextMenuItem(i18n.tr("Importieren..."),new SammelUeberweisungImport()));
+    addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new SammelUeberweisungExport(),"document-save.png"));
+    addItem(new ContextMenuItem(i18n.tr("Importieren..."),new SammelUeberweisungImport(),"document-open.png"));
 		
 	}
 
@@ -122,10 +121,11 @@ public class SammelUeberweisungList extends ContextMenu
      * ct.
      * @param text anzuzeigender Text.
      * @param a auszufuehrende Action.
+     * @param icon optionales Icon.
      */
-    public NotActiveMenuItem(String text, Action a)
+    public NotActiveMenuItem(String text, Action a, String icon)
     {
-      super(text, a);
+      super(text, a, icon);
     }
 
 	  /**
@@ -152,6 +152,10 @@ public class SammelUeberweisungList extends ContextMenu
 
 /**********************************************************************
  * $Log: SammelUeberweisungList.java,v $
+ * Revision 1.7  2008/12/19 12:16:05  willuhn
+ * @N Mehr Icons
+ * @C Reihenfolge der Contextmenu-Eintraege vereinheitlicht
+ *
  * Revision 1.6  2007/12/06 23:53:35  willuhn
  * @C Menu-Eintraege uebersichtlicher angeordnet
  *

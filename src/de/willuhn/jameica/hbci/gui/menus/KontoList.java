@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/KontoList.java,v $
- * $Revision: 1.15 $
- * $Date: 2008/12/19 01:12:09 $
+ * $Revision: 1.16 $
+ * $Date: 2008/12/19 12:16:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -47,18 +47,18 @@ public class KontoList extends ContextMenu implements Extendable
         .getI18N();
 
     addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"), new KontoNew(),"document-open.png"));
-    addItem(new ContextMenuItem(i18n.tr("Neues Konto..."), new KNeu(),"text-x-generic.png"));
+    addItem(new ContextMenuItem(i18n.tr("Neues Konto..."), new KNeu(),"system-file-manager.png"));
     addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new KontoDelete(),"user-trash-full.png"));
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new CheckedContextMenuItem(i18n.tr("Kontoauszüge anzeigen..."),new UmsatzList()));
+    addItem(new CheckedContextMenuItem(i18n.tr("Kontoauszüge anzeigen..."),new UmsatzList(),"text-x-generic.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new CheckedContextMenuItem(i18n.tr("Saldo/Kontoauszüge abrufen..."),new KontoFetchUmsaetze(),"emblem-important.png")); // BUGZILLA 473
-    addItem(new CheckedContextMenuItem(i18n.tr("Kontoauszugsdatum zurücksetzen..."), new KontoResetAuszugsdatum()));
+    addItem(new CheckedContextMenuItem(i18n.tr("Kontoauszugsdatum zurücksetzen..."), new KontoResetAuszugsdatum(),"edit-undo.png"));
     addItem(ContextMenuItem.SEPARATOR);
 
-    addItem(new ContextMenuItem(i18n.tr("Neue Überweisung..."),new UeberweisungNew()));
-    addItem(new ContextMenuItem(i18n.tr("Neuer Dauerauftrag..."),new DauerauftragNew()));
-    addItem(new ContextMenuItem(i18n.tr("Neue Lastschrift..."),new LastschriftNew()));
+    addItem(new ContextMenuItem(i18n.tr("Neue Überweisung..."),new UeberweisungNew(),"stock_next.png"));
+    addItem(new ContextMenuItem(i18n.tr("Neue Lastschrift..."),new LastschriftNew(),"stock_previous.png"));
+    addItem(new ContextMenuItem(i18n.tr("Neuer Dauerauftrag..."),new DauerauftragNew(),"stock_form-time-field.png"));
   }
 
   /**
@@ -88,6 +88,10 @@ public class KontoList extends ContextMenu implements Extendable
 
 /*******************************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.16  2008/12/19 12:16:05  willuhn
+ * @N Mehr Icons
+ * @C Reihenfolge der Contextmenu-Eintraege vereinheitlicht
+ *
  * Revision 1.15  2008/12/19 01:12:09  willuhn
  * @N Icons in Contextmenus
  *

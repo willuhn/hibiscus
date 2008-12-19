@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UmsatzList.java,v $
- * $Revision: 1.29 $
- * $Date: 2007/12/04 23:59:00 $
+ * $Revision: 1.30 $
+ * $Date: 2008/12/19 12:16:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -58,16 +58,13 @@ public class UmsatzList extends ContextMenu implements Extendable
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 		addItem(new OpenItem());
-
-		addItem(new UmsatzItem(i18n.tr("Gegenkonto in Adressbuch übernehmen"),new EmpfaengerAdd()));
-    // BUGZILLA 315
-    addItem(new UmsatzItem(i18n.tr("Als neue Überweisung anlegen..."),new UeberweisungNew()));
-    addItem(new UmsatzItem(i18n.tr("Umsatz-Kategorie zuordnen..."),new UmsatzAssign()));
-
-    // BUGZILLA #70 http://www.willuhn.de/bugzilla/show_bug.cgi?id=70
-    addItem(new UmsatzItem(i18n.tr("Löschen..."), new DBObjectDelete()));
+    addItem(new UmsatzItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new UmsatzItem(i18n.tr("Exportieren..."),new UmsatzExport()));
+    addItem(new UmsatzItem(i18n.tr("Gegenkonto in Adressbuch übernehmen"),new EmpfaengerAdd(),"contact-new.png"));
+    addItem(new UmsatzItem(i18n.tr("Als neue Überweisung anlegen..."),new UeberweisungNew(),"stock_next.png"));
+    addItem(new UmsatzItem(i18n.tr("Umsatz-Kategorie zuordnen..."),new UmsatzAssign(),"x-office-spreadsheet.png"));
+    addItem(ContextMenuItem.SEPARATOR);
+    addItem(new UmsatzItem(i18n.tr("Exportieren..."),new UmsatzExport(),"document-save.png"));
     addItem(new ContextMenuItem(i18n.tr("Importieren..."),new UmsatzImport()
     {
 
@@ -77,7 +74,7 @@ public class UmsatzList extends ContextMenu implements Extendable
       }
       
     }
-    ));
+    ,"document-open.png"));
     
     // Wir geben das Context-Menu jetzt noch zur Erweiterung frei.
     ExtensionRegistry.extend(this);
@@ -91,12 +88,13 @@ public class UmsatzList extends ContextMenu implements Extendable
   {
     /**
      * ct.
-     * @param text
-     * @param action
+     * @param text Label.
+     * @param action Action.
+     * @param icon optionales Icon.
      */
-    public UmsatzItem(String text, Action action)
+    public UmsatzItem(String text, Action action, String icon)
     {
-      super(text,action);
+      super(text,action,icon);
     }
 
     /**
@@ -118,7 +116,7 @@ public class UmsatzList extends ContextMenu implements Extendable
   {
     private OpenItem()
     {
-      super(i18n.tr("Öffnen"),new UmsatzDetail());
+      super(i18n.tr("Öffnen"),new UmsatzDetail(),"document-open.png");
     }
     /**
      * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
@@ -143,6 +141,10 @@ public class UmsatzList extends ContextMenu implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.30  2008/12/19 12:16:05  willuhn
+ * @N Mehr Icons
+ * @C Reihenfolge der Contextmenu-Eintraege vereinheitlicht
+ *
  * Revision 1.29  2007/12/04 23:59:00  willuhn
  * @N Bug 512
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/EmpfaengerList.java,v $
- * $Revision: 1.19 $
- * $Date: 2008/12/19 01:12:09 $
+ * $Revision: 1.20 $
+ * $Date: 2008/12/19 12:16:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
+import de.willuhn.jameica.hbci.gui.action.DauerauftragNew;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerExport;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerImport;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerNew;
@@ -50,8 +51,9 @@ public class EmpfaengerList extends ContextMenu implements Extendable
     addItem(new ContextMenuItem(i18n.tr("Neue Adresse..."), new ENeu(),"contact-new.png"));
     addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new SingleItem(i18n.tr("Neue Überweisung mit diesem Empfänger..."), new UeberweisungNew(),"stock_next.png"));
-    addItem(new SingleItem(i18n.tr("Neue Lastschrift von diesem Konto einziehen..."), new LastschriftNew(),"stock_previous.png"));
+    addItem(new ContextMenuItem(i18n.tr("Neue Überweisung..."),new UeberweisungNew(),"stock_next.png"));
+    addItem(new ContextMenuItem(i18n.tr("Neue Lastschrift..."),new LastschriftNew(),"stock_previous.png"));
+    addItem(new ContextMenuItem(i18n.tr("Neuer Dauerauftrag..."),new DauerauftragNew(),"stock_form-time-field.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new EmpfaengerExport(),"document-save.png"));
     addItem(new ContextMenuItem(i18n.tr("Importieren..."),new EmpfaengerImport(),"document-open.png"));
@@ -110,6 +112,10 @@ public class EmpfaengerList extends ContextMenu implements Extendable
 
 /**********************************************************************
  * $Log: EmpfaengerList.java,v $
+ * Revision 1.20  2008/12/19 12:16:05  willuhn
+ * @N Mehr Icons
+ * @C Reihenfolge der Contextmenu-Eintraege vereinheitlicht
+ *
  * Revision 1.19  2008/12/19 01:12:09  willuhn
  * @N Icons in Contextmenus
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/PassportList.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/11/24 00:07:09 $
+ * $Revision: 1.6 $
+ * $Date: 2008/12/19 12:16:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -57,7 +57,7 @@ public class PassportList extends TablePart implements Part
     this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
     ContextMenu menu = new ContextMenu();
-    menu.addItem(new CheckedContextMenuItem(i18n.tr("Öffnen..."),new PassportDetail()));
+    menu.addItem(new CheckedContextMenuItem(i18n.tr("Öffnen..."),new PassportDetail(),"document-open.png"));
     this.setContextMenu(menu);
 
     this.setMulti(false);
@@ -102,6 +102,10 @@ public class PassportList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: PassportList.java,v $
+ * Revision 1.6  2008/12/19 12:16:05  willuhn
+ * @N Mehr Icons
+ * @C Reihenfolge der Contextmenu-Eintraege vereinheitlicht
+ *
  * Revision 1.5  2006/11/24 00:07:09  willuhn
  * @C Konfiguration der Umsatz-Kategorien in View Einstellungen verschoben
  * @N Redesign View Einstellungen

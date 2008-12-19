@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UmsatzTypList.java,v $
- * $Revision: 1.3 $
- * $Date: 2008/02/13 23:44:27 $
+ * $Revision: 1.4 $
+ * $Date: 2008/12/19 12:16:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -44,12 +44,11 @@ public class UmsatzTypList extends ContextMenu implements Extendable
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 		addItem(new OpenItem());
-    addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete()));
+    addItem(new ContextMenuItem(i18n.tr("Neue Umsatz-Kategorie..."), new UNeu(),"text-x-generic.png"));
+    addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new ContextMenuItem(i18n.tr("Neue Umsatz-Kategorie..."), new UNeu()));
-    addItem(ContextMenuItem.SEPARATOR);
-    addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new UmsatzTypExport()));
-    addItem(new ContextMenuItem(i18n.tr("Importieren..."),new UmsatzTypImport()));
+    addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new UmsatzTypExport(),"document-save.png"));
+    addItem(new ContextMenuItem(i18n.tr("Importieren..."),new UmsatzTypImport(),"document-open.png"));
     // Wir geben das Context-Menu jetzt noch zur Erweiterung frei.
     ExtensionRegistry.extend(this);
 
@@ -77,7 +76,7 @@ public class UmsatzTypList extends ContextMenu implements Extendable
   {
     private OpenItem()
     {
-      super(i18n.tr("Öffnen"),new UmsatzTypNew());
+      super(i18n.tr("Öffnen"),new UmsatzTypNew(),"document-open.png");
     }
 
     /**
@@ -103,6 +102,10 @@ public class UmsatzTypList extends ContextMenu implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzTypList.java,v $
+ * Revision 1.4  2008/12/19 12:16:05  willuhn
+ * @N Mehr Icons
+ * @C Reihenfolge der Contextmenu-Eintraege vereinheitlicht
+ *
  * Revision 1.3  2008/02/13 23:44:27  willuhn
  * @R Hibiscus-Eigenformat (binaer-serialisierte Objekte) bei Export und Import abgeklemmt
  * @N Import und Export von Umsatz-Kategorien im XML-Format
