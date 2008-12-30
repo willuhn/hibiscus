@@ -56,14 +56,9 @@
 
     <mkdir dir="${class.dir}" />
 
-    <javac debug="true" debuglevel="lines,vars,source" source="1.4" target="1.4" encoding="${define.encoding}" deprecation="true" destdir="${class.dir}" srcdir="${src.dir}">
+    <javac debug="true" debuglevel="lines,vars,source" source="1.5" target="1.5" encoding="${define.encoding}" deprecation="true" destdir="${class.dir}" srcdir="${src.dir}">
       <classpath refid="compilepath" />
     </javac>
-
-    <rmic verify="true" base="${class.dir}">
-      <include name="**/*.class" />
-      <classpath refid="compilepath" />
-    </rmic>
 
     <copy todir="${class.dir}/help">
       <fileset dir="${help.dir}" />
@@ -127,7 +122,7 @@
     </copy>
 
     <mkdir dir="${project.zipdir}/updates" />
-    <javac debug="true" debuglevel="lines,vars,source" source="1.4" target="1.4" encoding="${define.encoding}" deprecation="true" destdir="${project.zipdir}/updates" srcdir="${update.dir}">
+    <javac debug="true" debuglevel="lines,vars,source" source="1.5" target="1.5" encoding="${define.encoding}" deprecation="true" destdir="${project.zipdir}/updates" srcdir="${update.dir}">
       <classpath refid="compilepath" />
     </javac>
     <copy todir="${project.zipdir}/updates">
@@ -232,9 +227,9 @@
   <target depends="init,cvs,compile,jar,zip,javadoc,src" description="build nightly build" name="nightly">
     <mkdir dir="${project.nightly}" />
 
-    <copy file="${project.release}/${define.zipfilename}" tofile="${project.nightly}/${define.pluginname}-${appversion}-nightly.zip" />
-    <copy file="${project.release}/${define.srcfilename}" tofile="${project.nightly}/${define.pluginname}-${appversion}-nightly.src.zip" />
-    <copy file="${project.release}/${define.javadocfilename}" tofile="${project.nightly}/${define.pluginname}-${appversion}-nightly.javadoc.zip" />
+    <copy file="${project.release}/${define.zipfilename}" tofile="${project.nightly}/${define.pluginname}-${appversion}.zip" />
+    <copy file="${project.release}/${define.srcfilename}" tofile="${project.nightly}/${define.pluginname}-${appversion}.src.zip" />
+    <copy file="${project.release}/${define.javadocfilename}" tofile="${project.nightly}/${define.pluginname}-${appversion}.javadoc.zip" />
 
     <!-- Die Datei brauchen die anderen Plugins zum Kompilieren //-->
     <copy file="${project.zipdir}/${define.jarfilename}" tofile="releases/hibiscus-lib.jar" />
