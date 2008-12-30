@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/HBCIDBService.java,v $
- * $Revision: 1.5 $
- * $Date: 2008/05/06 10:10:56 $
+ * $Revision: 1.6 $
+ * $Date: 2008/12/30 15:21:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -32,7 +32,7 @@ public interface HBCIDBService extends DBService
    * @param newVersion neue Version.
    * @throws RemoteException Wenn beim Update ein Fehler auftrat.
    */
-  public void update(double oldVersion, double newVersion) throws RemoteException;
+  public void update(de.willuhn.jameica.plugin.Version oldVersion, de.willuhn.jameica.plugin.Version newVersion) throws RemoteException;
   
   /**
    * Initialisiert/Erzeugt die Datenbank.
@@ -67,6 +67,9 @@ public interface HBCIDBService extends DBService
 
 /*****************************************************************************
  * $Log: HBCIDBService.java,v $
+ * Revision 1.6  2008/12/30 15:21:40  willuhn
+ * @N Umstellung auf neue Versionierung
+ *
  * Revision 1.5  2008/05/06 10:10:56  willuhn
  * @N Diagnose-Dialog, mit dem man die JDBC-Verbindungsdaten (u.a. auch das JDBC-Passwort) ausgeben kann
  *

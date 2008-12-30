@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.111 $
- * $Date: 2008/11/04 11:55:17 $
+ * $Revision: 1.112 $
+ * $Date: 2008/12/30 15:21:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -33,6 +33,7 @@ import de.willuhn.jameica.hbci.messaging.TransferLastschriftMessageConsumer;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.server.HBCIDBServiceImpl;
 import de.willuhn.jameica.plugin.AbstractPlugin;
+import de.willuhn.jameica.plugin.Version;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Level;
 import de.willuhn.logging.Logger;
@@ -96,15 +97,6 @@ public class HBCI extends AbstractPlugin
     LOGMAPPING.put(Level.INFO,  new Integer(HBCIUtils.LOG_INFO));
     LOGMAPPING.put(Level.DEBUG, new Integer(HBCIUtils.LOG_DEBUG2));
 
-    call(new ServiceCall()
-    {
-      public void call(HBCIDBService service) throws ApplicationException, RemoteException
-      {
-        service.checkConsistency();
-      }
-    });
-    
-
     /////////////////////////////////////////////////////////////////
     // Passport-Verzeichnis ggf. automatisch anlegen
     String path = Settings.getWorkPath() + "/passports/";
@@ -139,9 +131,9 @@ public class HBCI extends AbstractPlugin
   }
   
   /**
-   * @see de.willuhn.jameica.plugin.AbstractPlugin#update(double)
+   * @see de.willuhn.jameica.plugin.AbstractPlugin#update(de.willuhn.jameica.plugin.Version)
    */
-  public void update(final double oldVersion) throws ApplicationException
+  public void update(final Version oldVersion) throws ApplicationException
   {
     call(new ServiceCall() {
       
@@ -334,6 +326,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.112  2008/12/30 15:21:40  willuhn
+ * @N Umstellung auf neue Versionierung
+ *
  * Revision 1.111  2008/11/04 11:55:17  willuhn
  * @N Update auf HBCI4Java 2.5.9
  *

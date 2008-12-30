@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/DBSupport.java,v $
- * $Revision: 1.7 $
- * $Date: 2008/02/04 18:48:18 $
+ * $Revision: 1.8 $
+ * $Date: 2008/12/30 15:21:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,8 +17,6 @@ import java.io.File;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.sql.Connection;
-
-import de.willuhn.util.ApplicationException;
 
 /**
  * Interface fuer eine unterstuetzte Datenbank.
@@ -50,14 +48,6 @@ public interface DBSupport extends Serializable
    * @return das Passwort.
    */
   public String getJdbcPassword();
-  
-  /**
-   * Checkt die Konsistenz der Datenbank.
-   * @param conn die Datenbank-Connection.
-   * @throws RemoteException Wenn es beim Pruefen der Datenbank-Konsistenz zu einem Fehler kam.
-   * @throws ApplicationException wenn die Datenbank-Konsistenz nicht gewaehrleistet ist.
-   */
-  public void checkConsistency(Connection conn) throws RemoteException, ApplicationException;
   
   /**
    * Prueft die Datenbankverbindung.
@@ -109,6 +99,9 @@ public interface DBSupport extends Serializable
 
 /*********************************************************************
  * $Log: DBSupport.java,v $
+ * Revision 1.8  2008/12/30 15:21:40  willuhn
+ * @N Umstellung auf neue Versionierung
+ *
  * Revision 1.7  2008/02/04 18:48:18  willuhn
  * @D javadoc
  *

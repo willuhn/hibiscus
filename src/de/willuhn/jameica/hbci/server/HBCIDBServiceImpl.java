@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/HBCIDBServiceImpl.java,v $
- * $Revision: 1.27 $
- * $Date: 2008/05/30 14:23:48 $
+ * $Revision: 1.28 $
+ * $Date: 2008/12/30 15:21:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,6 +25,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.DBSupport;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.plugin.PluginResources;
+import de.willuhn.jameica.plugin.Version;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.sql.version.UpdateProvider;
@@ -128,7 +129,6 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
    */
   public void checkConsistency() throws RemoteException, ApplicationException
   {
-    this.driver.checkConsistency(getConnection());
     Logger.info("init update provider");
     UpdateProvider provider = new HBCIUpdateProvider(getConnection(),VersionUtil.getVersion(this,"db"));
     Updater updater = new Updater(provider);
@@ -152,9 +152,9 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.HBCIDBService#update(double, double)
+   * @see de.willuhn.jameica.hbci.rmi.HBCIDBService#update(de.willuhn.jameica.plugin.Version, de.willuhn.jameica.plugin.Version)
    */
-  public void update(double oldVersion, double newVersion) throws RemoteException
+  public void update(Version oldVersion, Version newVersion) throws RemoteException
   {
     Logger.info("starting update process for hibiscus");
 
@@ -165,27 +165,29 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
 
     PluginResources res = Application.getPluginLoader().getPlugin(HBCI.class).getResources();
 
-    double target = newVersion;
+    double target = Double.parseDouble(newVersion.getMajor() + "." + newVersion.getMinor());
+    double old    = Double.parseDouble(oldVersion.getMajor() + "." + oldVersion.getMinor());
+    double newV   = target;
 
     try
     {
       // Wir wiederholen die Updates solange, bis wir bei der aktuellen
       // Versionsnummer angekommen sind.
-      while (oldVersion < target)
+      while (old < target)
       {
-        newVersion = oldVersion + 0.1d;
+        newV = old + 0.1d;
 
         File f = new File(res.getPath() + File.separator + "sql",
-            "update_" + df.format(oldVersion) + "-" + df.format(newVersion) + ".sql");
+            "update_" + df.format(old) + "-" + df.format(newV) + ".sql");
 
         I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
         ProgressMonitor monitor = Application.getCallback().getStartupMonitor();
-        monitor.setStatusText(i18n.tr("Führe Hibiscus-Update durch: von {0} zu {1}", new String[]{df.format(oldVersion),df.format(newVersion)}));
+        monitor.setStatusText(i18n.tr("Führe Hibiscus-Update durch: von {0} zu {1}", new String[]{df.format(old),df.format(newV)}));
 
         this.driver.execute(getConnection(),f);
         
         // OK, naechster Durchlauf
-        oldVersion = newVersion;
+        old = newV;
       }
       
       Logger.info("Update completed");
@@ -253,6 +255,9 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
 
 /*********************************************************************
  * $Log: HBCIDBServiceImpl.java,v $
+ * Revision 1.28  2008/12/30 15:21:40  willuhn
+ * @N Umstellung auf neue Versionierung
+ *
  * Revision 1.27  2008/05/30 14:23:48  willuhn
  * @N Vollautomatisches und versioniertes Speichern der BPD und UPD in der neuen Property-Tabelle
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/DBSupportMcKoiImpl.java,v $
- * $Revision: 1.9 $
- * $Date: 2007/12/06 17:57:21 $
+ * $Revision: 1.10 $
+ * $Date: 2008/12/30 15:21:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,19 +13,13 @@
 
 package de.willuhn.jameica.hbci.server;
 
-import java.io.File;
 import java.rmi.RemoteException;
 import java.sql.Connection;
-import java.text.DecimalFormat;
 import java.text.MessageFormat;
-import java.util.Locale;
 
 import de.willuhn.datasource.db.EmbeddedDatabase;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.plugin.PluginResources;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.logging.Logger;
-import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 import de.willuhn.util.ProgressMonitor;
 
@@ -66,54 +60,6 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl
   public String getJdbcUsername()
   {
     return "hibiscus";
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.server.AbstractDBSupportImpl#checkConsistency(java.sql.Connection)
-   */
-  public void checkConsistency(Connection conn) throws RemoteException, ApplicationException
-  {
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Damit wir die Updates nicht immer haendisch nachziehen muessen, rufen wir
-    // das letzte Update-Script ggf. nochmal auf.
-    if (!Application.inClientMode())
-    {
-      try
-      {
-        PluginResources res = Application.getPluginLoader().getPlugin(HBCI.class).getResources();
-        de.willuhn.jameica.system.Settings s = res.getSettings();
-        double size = s.getDouble("sql-update-size",-1);
-        
-        DecimalFormat df = (DecimalFormat) DecimalFormat.getInstance(Locale.ENGLISH); // Punkt als Dezimal-Trenner
-        df.setMaximumFractionDigits(1);
-        df.setMinimumFractionDigits(1);
-        df.setGroupingUsed(false);
-
-        double version    = Application.getPluginLoader().getManifest(HBCI.class).getVersion();
-        double oldVersion = version - 0.1d;
-
-        File f = new File(res.getPath() + File.separator + "sql",
-            "update_" + df.format(oldVersion) + "-" + df.format(version) + ".sql");
-
-        if (f.exists())
-        {
-          long length = f.length();
-          if (length != size)
-          {
-            s.setAttribute("sql-update-size",(double)f.length());
-            execute(conn, f);
-          }
-          else
-            Logger.info("database up to date");
-        }
-      }
-      catch (Exception e2)
-      {
-        Logger.error("unable to execute sql update script",e2);
-      }
-    }
-    ////////////////////////////////////////////////////////////////////////////
   }
 
   /**
@@ -169,6 +115,9 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl
 
 /*********************************************************************
  * $Log: DBSupportMcKoiImpl.java,v $
+ * Revision 1.10  2008/12/30 15:21:40  willuhn
+ * @N Umstellung auf neue Versionierung
+ *
  * Revision 1.9  2007/12/06 17:57:21  willuhn
  * @N Erster Code fuer das neue Versionierungs-System
  *

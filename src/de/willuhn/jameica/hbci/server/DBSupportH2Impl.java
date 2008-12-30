@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DBSupportH2Impl.java,v $
- * $Revision: 1.7 $
- * $Date: 2007/12/06 17:57:21 $
+ * $Revision: 1.8 $
+ * $Date: 2008/12/30 15:21:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,16 +19,12 @@ import java.io.File;
 import java.rmi.RemoteException;
 import java.security.SecureRandom;
 import java.sql.Connection;
-import java.text.DecimalFormat;
 import java.util.Date;
-import java.util.Locale;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
-import de.willuhn.jameica.plugin.PluginResources;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
-import de.willuhn.util.ApplicationException;
 import de.willuhn.util.Base64;
 
 /**
@@ -125,56 +121,6 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.server.AbstractDBSupportImpl#checkConsistency(java.sql.Connection)
-   */
-  public void checkConsistency(Connection conn) throws RemoteException, ApplicationException
-  {
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Damit wir die Updates nicht immer haendisch nachziehen muessen, rufen wir
-    // das letzte Update-Script ggf. nochmal auf.
-    if (!Application.inClientMode())
-    {
-      try
-      {
-        PluginResources res = Application.getPluginLoader().getPlugin(HBCI.class).getResources();
-        de.willuhn.jameica.system.Settings s = res.getSettings();
-        double size = s.getDouble("sql-update-size",-1);
-        
-        DecimalFormat df = (DecimalFormat) DecimalFormat.getInstance(Locale.ENGLISH); // Punkt als Dezimal-Trenner
-        df.setMaximumFractionDigits(1);
-        df.setMinimumFractionDigits(1);
-        df.setGroupingUsed(false);
-
-        double version    = Application.getPluginLoader().getManifest(HBCI.class).getVersion();
-        double oldVersion = version - 0.1d;
-
-        File _f = new File(res.getPath() + File.separator + "sql",
-            "update_" + df.format(oldVersion) + "-" + df.format(version) + ".sql");
-
-        File f = new File(_f.getParent(),HBCIDBService.SETTINGS.getString("database.driver.h2.scriptprefix","h2-") + _f.getName());
-
-        if (f.exists())
-        {
-          long length = f.length();
-          if (length != size)
-          {
-            s.setAttribute("sql-update-size",(double)f.length());
-            execute(conn, _f); // wir uebergeben den Original-Namen weil execute den Prefix selbst davorschreibt
-          }
-          else
-            Logger.info("database up to date");
-        }
-      }
-      catch (Exception e2)
-      {
-        Logger.error("unable to execute sql update script",e2);
-      }
-    }
-    ////////////////////////////////////////////////////////////////////////////
-  }
-
-  /**
    * Ueberschrieben, weil SQL-Scripts bei H2 mit einem Prefix versehen werden.
    * Das soll der Admin sicherheitshalber manuell durchfuehren. Wir hinterlassen stattdessen
    * nur einen Hinweistext mit den auszufuehrenden SQL-Scripts.
@@ -226,6 +172,9 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
 
 /*********************************************************************
  * $Log: DBSupportH2Impl.java,v $
+ * Revision 1.8  2008/12/30 15:21:40  willuhn
+ * @N Umstellung auf neue Versionierung
+ *
  * Revision 1.7  2007/12/06 17:57:21  willuhn
  * @N Erster Code fuer das neue Versionierungs-System
  *
