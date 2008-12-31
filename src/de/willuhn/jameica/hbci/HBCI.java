@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.112 $
- * $Date: 2008/12/30 15:21:40 $
+ * $Revision: 1.113 $
+ * $Date: 2008/12/31 12:17:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -204,7 +204,9 @@ public class HBCI extends AbstractPlugin
 
 
       this.hbciProps = new Properties();
-      this.hbciProps.put("client.product.name","HBCI4Java (Hibiscus " + getManifest().getVersion() + ")");
+      
+      Version v = getManifest().getVersion(); // client.product.name darf hoechstens 25 Zeichen lang sein
+      this.hbciProps.put("client.product.name","HBCI4Java (Hibiscus " + v.getMajor() + "." + v.getMinor() + ")");
       
       // Wir aktivieren das Infopoint-Feature erstmal. Ob wir das Senden
       // dann zulassen entscheiden wir erst, wenn der Callback aufgerufen
@@ -326,6 +328,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.113  2008/12/31 12:17:37  willuhn
+ * @B client.product.name darf hoechstens 25 Zeichen lang sein
+ *
  * Revision 1.112  2008/12/30 15:21:40  willuhn
  * @N Umstellung auf neue Versionierung
  *
