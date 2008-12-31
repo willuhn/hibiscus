@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.45 $
- * $Date: 2008/12/17 22:46:36 $
+ * $Revision: 1.46 $
+ * $Date: 2008/12/31 12:29:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -249,6 +249,19 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
     String name = umsatz.getGegenkontoName();
     String kto  = umsatz.getGegenkontoNummer();
     String kom  = umsatz.getKommentar();
+    
+    String[] ewz = umsatz.getWeitereVerwendungszwecke();
+    String vwz3 = "";
+    if (ewz != null && ewz.length > 0)
+    {
+      StringBuffer sb = new StringBuffer();
+      for (int i=0;i<ewz.length;++i)
+      {
+        sb.append(ewz[i]);
+        sb.append(" ");
+      }
+      vwz3 = sb.toString();
+    }
 
     if (vwz1 == null) vwz1 = "";
     if (vwz2 == null) vwz2 = "";
@@ -260,6 +273,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
     {
       vwz1 = vwz1.toLowerCase();
       vwz2 = vwz2.toLowerCase();
+      vwz3 = vwz3.toLowerCase();
       name = name.toLowerCase();
       kto = kto.toLowerCase();
       kom = kom.toLowerCase();
@@ -267,7 +281,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
       for (int i=0;i<list.length;++i)
       {
         String test = list[i].trim();
-        if (vwz1.indexOf(test) != -1 || vwz2.indexOf(test) != -1 ||
+        if (vwz1.indexOf(test) != -1 || vwz2.indexOf(test) != -1 || vwz3.indexOf(test) != -1 ||
             name.indexOf(test) != -1 || kto.indexOf(test)  != -1 ||
             kom.indexOf(test) != -1)
         {
@@ -283,12 +297,14 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
     pattern = Pattern.compile(s, Pattern.CASE_INSENSITIVE);
     Matcher mVwz1 = pattern.matcher(vwz1);
     Matcher mVwz2 = pattern.matcher(vwz2);
+    Matcher mVwz3 = pattern.matcher(vwz3);
     Matcher mName = pattern.matcher(name);
     Matcher mKto = pattern.matcher(kto);
     Matcher mKom = pattern.matcher(kom);
 
     return (mVwz1.matches() ||
             mVwz2.matches() ||
+            mVwz3.matches() ||
             mName.matches() ||
             mKto.matches()  ||
             mKom.matches()
@@ -495,6 +511,9 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
 
 /*******************************************************************************
  * $Log: UmsatzTypImpl.java,v $
+ * Revision 1.46  2008/12/31 12:29:36  willuhn
+ * @N Auch in erweiterten Verwendungszwecken nach Suchbegriffen fuer Umsatzkategorie suchen
+ *
  * Revision 1.45  2008/12/17 22:46:36  willuhn
  * @R t o d o  tag entfernt
  *
