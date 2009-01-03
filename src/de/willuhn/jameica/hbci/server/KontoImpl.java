@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.92 $
- * $Date: 2008/12/15 10:28:14 $
+ * $Revision: 1.93 $
+ * $Date: 2009/01/03 23:23:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -604,7 +604,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public long getChecksum() throws RemoteException
   {
-    String s = getBLZ() + getKontonummer() + getKundennummer();
+    String s = getBLZ() + getKontonummer() + getKundennummer() + getUnterkonto();
     CRC32 crc = new CRC32();
     crc.update(s.getBytes());
     return crc.getValue();
@@ -756,6 +756,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*******************************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.93  2009/01/03 23:23:38  willuhn
+ * @N Unterkontonummer wird jetzt fuer Checksumme mit beruecksichtigt - konnte vorher dazu fuehren, dass zwei eigentlich verschiedene Konten als identisch angesehen wurden
+ *
  * Revision 1.92  2008/12/15 10:28:14  willuhn
  * *** empty log message ***
  *
