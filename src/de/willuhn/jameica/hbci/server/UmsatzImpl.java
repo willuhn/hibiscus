@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.59 $
- * $Date: 2009/01/04 01:25:47 $
+ * $Revision: 1.60 $
+ * $Date: 2009/01/04 01:32:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,6 +24,7 @@ import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
@@ -90,6 +91,19 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 			if (getValuta() == null)
 				throw new ApplicationException(i18n.tr("Valuta fehlt."));
+			
+			// "35" ist das DB-Limit
+      HBCIProperties.checkLength(getZweck(),35);
+      HBCIProperties.checkLength(getZweck2(),35);
+      String[] ewz = getWeitereVerwendungszwecke();
+      if (ewz != null && ewz.length > 0)
+      {
+        for (int i=0;i<ewz.length;++i)
+        {
+          HBCIProperties.checkLength(ewz[i],35);
+        }
+      }
+			
 		}
 		catch (RemoteException e)
 		{
@@ -707,6 +721,9 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.60  2009/01/04 01:32:57  willuhn
+ * @N Laengen-Check - ist jetzt noetig, da Umsaetze nun manuell geaendert werden koennen
+ *
  * Revision 1.59  2009/01/04 01:25:47  willuhn
  * @N Checksumme von Umsaetzen wird nun generell beim Anlegen des Datensatzes gespeichert. Damit koennen Umsaetze nun problemlos geaendert werden, ohne mit "hasChangedByUser" checken zu muessen. Die Checksumme bleibt immer erhalten, weil sie in UmsatzImpl#insert() sofort zu Beginn angelegt wird
  * @N Umsaetze sind nun vollstaendig editierbar
