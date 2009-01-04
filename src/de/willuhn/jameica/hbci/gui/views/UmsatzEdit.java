@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzDetail.java,v $
- * $Revision: 1.32 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/UmsatzEdit.java,v $
+ * $Revision: 1.1 $
  * $Date: 2009/01/04 01:25:47 $
  * $Author: willuhn $
  * $Locker:  $
@@ -16,32 +16,28 @@ package de.willuhn.jameica.hbci.gui.views;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.ColumnLayout;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.Back;
-import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
-import de.willuhn.jameica.hbci.gui.action.UmsatzEdit;
-import de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl;
-import de.willuhn.jameica.hbci.rmi.Address;
+import de.willuhn.jameica.hbci.gui.controller.UmsatzDetailEditControl;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Bildet die Detailansicht einer Buchung ab.
+ * Bildet die Edit-Ansicht einer Buchung ab.
  */
-public class UmsatzDetail extends AbstractView {
+public class UmsatzEdit extends AbstractView {
 
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
   public void bind() throws Exception {
 
-    final UmsatzDetailControl control = new UmsatzDetailControl(this);
+    final UmsatzDetailEditControl control = new UmsatzDetailEditControl(this);
     final I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
     // BUGZILLA 38 http://www.willuhn.de/bugzilla/show_bug.cgi?id=38
@@ -88,9 +84,8 @@ public class UmsatzDetail extends AbstractView {
     bottom.addLabelPair(i18n.tr("Umsatz-Kategorie"),              control.getUmsatzTyp());
     bottom.addLabelPair(i18n.tr("Verwendungszweck"),              control.getZweck());
 
-    ButtonArea buttons = new ButtonArea(getParent(),4);
+    ButtonArea buttons = new ButtonArea(getParent(),2);
 		buttons.addButton(i18n.tr("Zurück"),new Back(),null,true);
-    buttons.addButton(i18n.tr("Bearbeiten"),new UmsatzEdit(),getCurrentObject());
     buttons.addButton(i18n.tr("Speichern"),new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -98,48 +93,14 @@ public class UmsatzDetail extends AbstractView {
         control.handleStore();
       }
     });
-    
-    Button ab = null;
-
-    final Address found = control.getAddressbookEntry();
-    if (found != null)
-    {
-      ab = new Button(i18n.tr("Gegenkonto In Adressbuch öffnen"),new de.willuhn.jameica.hbci.gui.action.EmpfaengerNew(),found);
-    }
-    else
-    {
-      ab = new Button(i18n.tr("Gegenkonto in Adressbuch übernehmen"),new Action()
-      {
-        public void handleAction(Object context) throws ApplicationException
-        {
-          new EmpfaengerAdd().handleAction(control.getUmsatz());
-        }
-      });
-    }
-    buttons.addButton(ab);
   }
 }
 
 
 /**********************************************************************
- * $Log: UmsatzDetail.java,v $
- * Revision 1.32  2009/01/04 01:25:47  willuhn
+ * $Log: UmsatzEdit.java,v $
+ * Revision 1.1  2009/01/04 01:25:47  willuhn
  * @N Checksumme von Umsaetzen wird nun generell beim Anlegen des Datensatzes gespeichert. Damit koennen Umsaetze nun problemlos geaendert werden, ohne mit "hasChangedByUser" checken zu muessen. Die Checksumme bleibt immer erhalten, weil sie in UmsatzImpl#insert() sofort zu Beginn angelegt wird
  * @N Umsaetze sind nun vollstaendig editierbar
  *
- * Revision 1.31  2008/11/26 00:39:36  willuhn
- * @N Erste Version erweiterter Verwendungszwecke. Muss dringend noch getestet werden.
- *
- * Revision 1.30  2008/11/25 00:13:47  willuhn
- * @N Erweiterte Verwendungswecke anzeigen
- * @N Notizen nicht mehr in einem separaten Tab sondern in der rechten Spalte anzeigen
- *
- * Revision 1.29  2007/06/15 11:20:32  willuhn
- * @N Saldo in Kontodetails via Messaging sofort aktualisieren
- * @N Mehr Details in den Namen der Synchronize-Jobs
- * @N Layout der Umsatzdetail-Anzeige ueberarbeitet
- *
- * Revision 1.28  2007/04/24 17:52:17  willuhn
- * @N Bereits in den Umsatzdetails erkennen, ob die Adresse im Adressbuch ist
- * @C Gross-Kleinschreibung in Adressbuch-Suche
  **********************************************************************/

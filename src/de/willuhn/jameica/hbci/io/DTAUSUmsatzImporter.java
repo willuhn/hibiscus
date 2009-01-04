@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/DTAUSUmsatzImporter.java,v $
- * $Revision: 1.8 $
- * $Date: 2008/12/01 23:54:42 $
+ * $Revision: 1.9 $
+ * $Date: 2009/01/04 01:25:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -77,8 +77,6 @@ public class DTAUSUmsatzImporter extends AbstractDTAUSImporter
         l.add(csatz.getVerwendungszweck(i));
       u.setWeitereVerwendungszwecke((String[])l.toArray(new String[l.size()]));
     }
-    
-    u.setChangedByUser();
     u.store();
   
   }
@@ -99,6 +97,10 @@ public class DTAUSUmsatzImporter extends AbstractDTAUSImporter
 
 /*********************************************************************
  * $Log: DTAUSUmsatzImporter.java,v $
+ * Revision 1.9  2009/01/04 01:25:47  willuhn
+ * @N Checksumme von Umsaetzen wird nun generell beim Anlegen des Datensatzes gespeichert. Damit koennen Umsaetze nun problemlos geaendert werden, ohne mit "hasChangedByUser" checken zu muessen. Die Checksumme bleibt immer erhalten, weil sie in UmsatzImpl#insert() sofort zu Beginn angelegt wird
+ * @N Umsaetze sind nun vollstaendig editierbar
+ *
  * Revision 1.8  2008/12/01 23:54:42  willuhn
  * @N BUGZILLA 188 Erweiterte Verwendungszwecke in Exports/Imports und Sammelauftraegen
  *

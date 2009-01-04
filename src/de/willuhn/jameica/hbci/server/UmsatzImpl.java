@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.58 $
- * $Date: 2008/12/14 23:18:35 $
+ * $Revision: 1.59 $
+ * $Date: 2009/01/04 01:25:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -103,6 +103,19 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
    */
   protected void updateCheck() throws ApplicationException {
 		insertCheck();
+  }
+
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#insert()
+   */
+  public void insert() throws RemoteException, ApplicationException
+  {
+    // Wir speichern die Checksumme nun grundsaetzlich beim
+    // Anlegen des Datensatzes. Dann koennen wir anschliessend
+    // beliebig aendern und muessens uns nicht mehr mit
+    // "hasChangedByUser" herumschlagen
+    setAttribute("checksum",new Long(getChecksum()));
+    super.insert();
   }
 
   /**
@@ -544,25 +557,6 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#hasChangedByUser()
-   */
-  public boolean hasChangedByUser() throws RemoteException
-  {
-    Number n = (Number) this.getAttribute("checksum");
-    return (n != null && n.longValue() != 0);
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setChangedByUser()
-   */
-  public void setChangedByUser() throws RemoteException
-  {
-    if (hasChangedByUser())
-      return; // wurde schon markiert
-    setAttribute("checksum",new Long(getChecksum()));
-  }
-
-  /**
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#setGenericAttribute(java.lang.String, java.lang.String)
    */
   public void setGenericAttribute(String name, String value) throws RemoteException, ApplicationException
@@ -713,6 +707,10 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.59  2009/01/04 01:25:47  willuhn
+ * @N Checksumme von Umsaetzen wird nun generell beim Anlegen des Datensatzes gespeichert. Damit koennen Umsaetze nun problemlos geaendert werden, ohne mit "hasChangedByUser" checken zu muessen. Die Checksumme bleibt immer erhalten, weil sie in UmsatzImpl#insert() sofort zu Beginn angelegt wird
+ * @N Umsaetze sind nun vollstaendig editierbar
+ *
  * Revision 1.58  2008/12/14 23:18:35  willuhn
  * @N BUGZILLA 188 - REFACTORING
  *
