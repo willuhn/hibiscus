@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.17 $
- * $Date: 2008/11/17 23:29:59 $
+ * $Revision: 1.18 $
+ * $Date: 2009/01/04 16:18:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -52,6 +52,7 @@ import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.action.UmsatzExport;
 import de.willuhn.jameica.hbci.gui.dialogs.AdresseAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
+import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.io.Exporter;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -187,8 +188,6 @@ public class KontoauszugList extends UmsatzList
     if (this.kontoAuswahl != null)
       return this.kontoAuswahl;
 
-    DBIterator it = Settings.getDBService().createList(Konto.class);
-    it.setOrder("ORDER BY blz, kontonummer");
     String id = mySettings.getString("kontoauszug.list.konto",null);
     Konto k = null;
     if (id != null)
@@ -203,9 +202,8 @@ public class KontoauszugList extends UmsatzList
         mySettings.setAttribute("kontoauszug.list.konto",(String)null);
       }
     }
-    this.kontoAuswahl = new SelectInput(it, k);
-    this.kontoAuswahl.setAttribute("longname");
-    this.kontoAuswahl.setPleaseChoose(i18n.tr("Alle Konten"));
+    this.kontoAuswahl = new KontoInput(k);
+    this.kontoAuswahl.setPleaseChoose(i18n.tr("<Alle Konten>"));
     this.kontoAuswahl.addListener(this.listener);
     return this.kontoAuswahl;
   }
@@ -644,6 +642,9 @@ public class KontoauszugList extends UmsatzList
 
 /*********************************************************************
  * $Log: KontoauszugList.java,v $
+ * Revision 1.18  2009/01/04 16:18:22  willuhn
+ * @N BUGZILLA 404 - Kontoauswahl via SelectBox
+ *
  * Revision 1.17  2008/11/17 23:29:59  willuhn
  * @C Aufrufe der depeicated BLZ-Funktionen angepasst
  *

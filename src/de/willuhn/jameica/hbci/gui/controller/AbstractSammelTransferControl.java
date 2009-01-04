@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractSammelTransferControl.java,v $
- * $Revision: 1.6 $
- * $Date: 2006/12/28 15:38:43 $
+ * $Revision: 1.7 $
+ * $Date: 2009/01/04 16:18:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,21 +17,18 @@ import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.input.DateInput;
-import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
+import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
 /**
@@ -43,7 +40,7 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
 
   private I18N i18n                     	= null;
 
-  private DialogInput kontoAuswahl				= null;
+  private Input kontoAuswahl				      = null;
   private Input name                    	= null;
   private DateInput termin              	= null;
   private Input comment                 	= null;
@@ -85,42 +82,16 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
    * @return Auswahl-Feld.
    * @throws RemoteException
    */
-  public DialogInput getKontoAuswahl() throws RemoteException
+  public Input getKontoAuswahl() throws RemoteException
   {
-    if (kontoAuswahl != null)
-      return kontoAuswahl;
-
-    KontoAuswahlDialog d = new KontoAuswahlDialog(KontoAuswahlDialog.POSITION_MOUSE);
-		d.addCloseListener(new Listener()
-    {
-      public void handleEvent(Event event)
-      {
-				if (event == null || event.data == null)
-					return;
-				Konto konto = (Konto) event.data;
-
-				try {
-					String b = konto.getBezeichnung();
-					getKontoAuswahl().setText(konto.getKontonummer());
-					getKontoAuswahl().setComment(b == null ? "" : b);
-          getSumme().setComment(konto.getWaehrung());
-				}
-				catch (RemoteException er)
-				{
-					Logger.error("error while updating currency",er);
-					GUI.getStatusBar().setErrorText(i18n.tr("Fehler bei der Auswahl des Kontos"));
-				}
-      }
-    });
-
-		Konto k = getTransfer().getKonto();
-		kontoAuswahl = new DialogInput(k == null ? "" : k.getKontonummer(),d);
-		kontoAuswahl.setComment(k == null ? "" : k.getBezeichnung());
-		kontoAuswahl.disableClientControl();
-		kontoAuswahl.setValue(k);
-    kontoAuswahl.setMandatory(true);
-
-		return kontoAuswahl;
+    if (this.kontoAuswahl != null)
+      return this.kontoAuswahl;
+    
+    Konto k = getTransfer().getKonto();
+    this.kontoAuswahl = new KontoInput(k);
+    this.kontoAuswahl.setMandatory(true);
+    
+    return this.kontoAuswahl;
   }
 
   /**
@@ -231,6 +202,9 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferControl.java,v $
+ * Revision 1.7  2009/01/04 16:18:22  willuhn
+ * @N BUGZILLA 404 - Kontoauswahl via SelectBox
+ *
  * Revision 1.6  2006/12/28 15:38:43  willuhn
  * @N Farbige Pflichtfelder
  *

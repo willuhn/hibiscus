@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractBaseUeberweisungControl.java,v $
- * $Revision: 1.13 $
- * $Date: 2008/09/29 23:48:54 $
+ * $Revision: 1.14 $
+ * $Date: 2009/01/04 16:18:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -191,11 +191,10 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
    * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getKontoAuswahl()
    * Ueberschrieben, um das Control zu deaktivieren, wenn die Ueberweisung bereits ausgefuehrt wurde.
    */
-  public DialogInput getKontoAuswahl() throws RemoteException
+  public Input getKontoAuswahl() throws RemoteException
   {
-		DialogInput i = super.getKontoAuswahl();
-		if (((Terminable)getTransfer()).ausgefuehrt())
-			i.disable();
+		Input i = super.getKontoAuswahl();
+		i.setEnabled(!((Terminable)getTransfer()).ausgefuehrt());
 		return i;
   }
 
@@ -239,6 +238,9 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
 
 /**********************************************************************
  * $Log: AbstractBaseUeberweisungControl.java,v $
+ * Revision 1.14  2009/01/04 16:18:22  willuhn
+ * @N BUGZILLA 404 - Kontoauswahl via SelectBox
+ *
  * Revision 1.13  2008/09/29 23:48:54  willuhn
  * @N Ueberfaellig-Hinweis hinter Auswahlfeld fuer Termin verschoben - spart Platz
  *

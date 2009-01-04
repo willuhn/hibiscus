@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.51 $
- * $Date: 2008/12/04 23:20:37 $
+ * $Revision: 1.52 $
+ * $Date: 2009/01/04 16:18:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,9 +31,9 @@ import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
 import de.willuhn.jameica.hbci.gui.dialogs.AdresseAuswahlDialog;
-import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.VerwendungszweckDialog;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
+import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
@@ -55,7 +55,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 	private Konto konto											   = null;
 	
 	// Eingabe-Felder
-	private DialogInput kontoAuswahl			     = null;
+	private Input kontoAuswahl			           = null;
 	private Input betrag										   = null;
 	private TextInput zweck									   = null;
 	private DialogInput zweck2							   = null;
@@ -66,7 +66,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 	private TextInput empfblz								   = null;
 
 	private CheckboxInput storeEmpfaenger 	   = null;
-
+	
 	I18N i18n;
 
   /**
@@ -104,24 +104,23 @@ public abstract class AbstractTransferControl extends AbstractControl
    * @return Auswahl-Feld.
    * @throws RemoteException
    */
-  public DialogInput getKontoAuswahl() throws RemoteException
+  public Input getKontoAuswahl() throws RemoteException
 	{
-		if (kontoAuswahl != null)
-			return kontoAuswahl;
+		if (this.kontoAuswahl != null)
+		  return this.kontoAuswahl;
+		
+    Konto k = getKonto();
+    KontoListener kl = new KontoListener();
+		this.kontoAuswahl = new KontoInput(k);
+		this.kontoAuswahl.setMandatory(true);
+    this.kontoAuswahl.addListener(kl);
+    
+    // einmal ausloesen
+    kl.handleEvent(null);
 
-    KontoAuswahlDialog d = new KontoAuswahlDialog(KontoAuswahlDialog.POSITION_MOUSE);
-		d.addCloseListener(new KontoListener());
-
-		Konto k = getKonto();
-		kontoAuswahl = new DialogInput(k == null ? "" : k.getKontonummer(),d);
-		kontoAuswahl.setComment(k == null ? "" : k.getBezeichnung());
-		kontoAuswahl.disableClientControl();
-		kontoAuswahl.setValue(k);
-    kontoAuswahl.setMandatory(true);
-
-		return kontoAuswahl;
+    return this.kontoAuswahl;
 	}
-
+  
 	/**
 	 * Liefert das Eingabe-Feld fuer den Empfaenger.
    * @return Eingabe-Feld.
@@ -390,16 +389,18 @@ public abstract class AbstractTransferControl extends AbstractControl
 		 * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
 		 */
 		public void handleEvent(Event event) {
-			if (event == null || event.data == null)
-				return;
-			konto = (Konto) event.data;
 
 			try {
-				String b = konto.getBezeichnung();
-				getKontoAuswahl().setText(konto.getKontonummer());
-				getKontoAuswahl().setComment(b == null ? "" : b);
-				getBetrag().setComment(konto.getWaehrung());
-        
+        Object o = getKontoAuswahl().getValue();
+        if (o == null || !(o instanceof Konto))
+        {
+          getBetrag().setComment("");
+          return;
+        }
+
+        Konto konto = (Konto) o;
+	      getBetrag().setComment(konto.getWaehrung());
+
         // Wird u.a. benoetigt, damit anhand des Auftrages ermittelt werden
         // kann, wieviele Zeilen Verwendungszweck jetzt moeglich sind
         getTransfer().setKonto(konto);
@@ -473,6 +474,9 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
+ * Revision 1.52  2009/01/04 16:18:22  willuhn
+ * @N BUGZILLA 404 - Kontoauswahl via SelectBox
+ *
  * Revision 1.51  2008/12/04 23:20:37  willuhn
  * @N BUGZILLA 310
  *

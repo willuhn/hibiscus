@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/DauerauftragControl.java,v $
- * $Revision: 1.28 $
- * $Date: 2008/08/27 14:42:24 $
+ * $Revision: 1.29 $
+ * $Date: 2009/01/04 16:18:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -221,11 +221,10 @@ public class DauerauftragControl extends AbstractTransferControl {
    * schon aktiv ist.
    * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getKontoAuswahl()
    */
-  public DialogInput getKontoAuswahl() throws RemoteException
+  public Input getKontoAuswahl() throws RemoteException
   {
-    DialogInput i = super.getKontoAuswahl();
-    if (((Dauerauftrag)getTransfer()).isActive())
-    	i.disable();
+    Input i = super.getKontoAuswahl();
+    i.setEnabled(!((Dauerauftrag)getTransfer()).isActive());
     return i;
   }
 
@@ -263,6 +262,9 @@ public class DauerauftragControl extends AbstractTransferControl {
 
 /**********************************************************************
  * $Log: DauerauftragControl.java,v $
+ * Revision 1.29  2009/01/04 16:18:22  willuhn
+ * @N BUGZILLA 404 - Kontoauswahl via SelectBox
+ *
  * Revision 1.28  2008/08/27 14:42:24  willuhn
  * @N Naechstes Ausfuehrungsdatum in Detailansicht anzeigen
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.93 $
- * $Date: 2009/01/03 23:23:38 $
+ * $Revision: 1.94 $
+ * $Date: 2009/01/04 16:18:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -82,18 +82,15 @@ public class KontoImpl extends AbstractDBObject implements Konto
     try
     {
       if (getName() == null || getName().length() == 0)
-        throw new ApplicationException(i18n
-            .tr("Bitten geben Sie den Namen des Kontoinhabers ein."));
+        throw new ApplicationException(i18n.tr("Bitten geben Sie den Namen des Kontoinhabers ein."));
 
       HBCIProperties.checkLength(getName(), HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
 
       if (getKontonummer() == null || getKontonummer().length() == 0)
-        throw new ApplicationException(i18n
-            .tr("Bitte geben Sie eine Kontonummer ein."));
+        throw new ApplicationException(i18n.tr("Bitte geben Sie eine Kontonummer ein."));
 
       if (getBLZ() == null || getBLZ().length() == 0)
-        throw new ApplicationException(i18n
-            .tr("Bitte geben Sie eine Bankleitzahl ein."));
+        throw new ApplicationException(i18n.tr("Bitte geben Sie eine Bankleitzahl ein."));
 
       // BUGZILLA 280
       HBCIProperties.checkChars(getBLZ(), HBCIProperties.HBCI_BLZ_VALIDCHARS);
@@ -102,23 +99,20 @@ public class KontoImpl extends AbstractDBObject implements Konto
       HBCIProperties.checkLength(getUnterkonto(), HBCIProperties.HBCI_KTO_MAXLENGTH_HARD);
 
       if (getKundennummer() == null || getKundennummer().length() == 0)
-        throw new ApplicationException(i18n
-            .tr("Bitte geben Sie Ihre Kundennummer ein."));
+        throw new ApplicationException(i18n.tr("Bitte geben Sie Ihre Kundennummer ein."));
 
       // BUGZILLA 29 http://www.willuhn.de/bugzilla/show_bug.cgi?id=29
       if (getWaehrung() == null || getWaehrung().length() != 3)
         setWaehrung(HBCIProperties.CURRENCY_DEFAULT_DE);
 
       if (!HBCIProperties.checkAccountCRC(getBLZ(), getKontonummer()))
-        throw new ApplicationException(i18n
-            .tr("Ungültige BLZ/Kontonummer. Bitte prüfen Sie Ihre Eingaben."));
+        throw new ApplicationException(i18n.tr("Ungültige BLZ/Kontonummer. Bitte prüfen Sie Ihre Eingaben."));
 
     }
     catch (RemoteException e)
     {
       Logger.error("error while insertcheck", e);
-      throw new ApplicationException(i18n
-          .tr("Fehler bei der Prüfung der Daten"));
+      throw new ApplicationException(i18n.tr("Fehler bei der Prüfung der Daten"));
     }
   }
 
@@ -756,6 +750,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*******************************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.94  2009/01/04 16:18:22  willuhn
+ * @N BUGZILLA 404 - Kontoauswahl via SelectBox
+ *
  * Revision 1.93  2009/01/03 23:23:38  willuhn
  * @N Unterkontonummer wird jetzt fuer Checksumme mit beruecksichtigt - konnte vorher dazu fuehren, dass zwei eigentlich verschiedene Konten als identisch angesehen wurden
  *
