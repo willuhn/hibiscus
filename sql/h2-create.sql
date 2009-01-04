@@ -11,6 +11,7 @@ CREATE TABLE konto (
   saldo double,
   saldo_datum datetime,
   synchronize int(1) NULL,
+  kommentar varchar(1000) NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );
@@ -265,6 +266,6 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',12);
+INSERT INTO version (name,version) values ('db',13);
   
 COMMIT;

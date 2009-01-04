@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.94 $
- * $Date: 2009/01/04 16:18:22 $
+ * $Revision: 1.95 $
+ * $Date: 2009/01/04 17:43:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -746,10 +746,28 @@ public class KontoImpl extends AbstractDBObject implements Konto
     setAttribute("unterkonto",unterkonto);
   }
 
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Konto#getKommentar()
+   */
+  public String getKommentar() throws RemoteException
+  {
+    return (String) getAttribute("kommentar");
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Konto#setKommentar(java.lang.String)
+   */
+  public void setKommentar(String kommentar) throws RemoteException
+  {
+    setAttribute("kommentar",kommentar);
+  }
 }
 
 /*******************************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.95  2009/01/04 17:43:29  willuhn
+ * @N BUGZILLA 532
+ *
  * Revision 1.94  2009/01/04 16:18:22  willuhn
  * @N BUGZILLA 404 - Kontoauswahl via SelectBox
  *
@@ -787,238 +805,4 @@ public class KontoImpl extends AbstractDBObject implements Konto
  * Revision 1.83 2007/04/02 23:01:17 willuhn
  * @D diverse Javadoc-Warnings
  * @C Umstellung auf neues SelectInput
- * 
- * Revision 1.82 2006/12/29 14:28:47 willuhn
- * @B Bug 345
- * @B jede Menge Bugfixes bei SQL-Statements mit Valuta
- * 
- * Revision 1.81 2006/12/27 17:56:49 willuhn
- * @B Bug 341
- * 
- * Revision 1.80 2006/12/27 11:52:36 willuhn
- * @C ResultsetExtractor moved into datasource
- * 
- * Revision 1.79 2006/12/20 13:16:02 willuhn *** empty log message ***
- * 
- * Revision 1.78 2006/12/20 00:04:25 willuhn
- * @B bug 341
- * 
- * Revision 1.77 2006/12/01 00:02:34 willuhn
- * @C made unserializable members transient
- * 
- * Revision 1.76 2006/10/20 08:22:48 willuhn
- * @B bug 297
- * 
- * Revision 1.75 2006/10/09 16:56:55 jost Bug #284
- * 
- * Revision 1.74 2006/10/06 16:00:42 willuhn
- * @B Bug 280
- * 
- * Revision 1.73 2006/08/28 21:28:26 willuhn
- * @B bug 277
- * 
- * Revision 1.72 2006/08/28 10:22:32 willuhn
- * @B Default-Wert fuer Konto-Synchronisierung
- * 
- * Revision 1.71 2006/08/25 10:13:43 willuhn
- * @B Fremdschluessel NICHT mittels PreparedStatement, da die sonst gequotet und
- *    von McKoi nicht gefunden werden. BUGZILLA 278
- * 
- * Revision 1.70 2006/08/23 09:45:13 willuhn
- * @N Restliche DBIteratoren auf PreparedStatements umgestellt
- * 
- * Revision 1.69 2006/07/13 00:21:15 willuhn
- * @N Neue Auswertung "Sparquote"
- * 
- * Revision 1.68 2006/05/15 12:05:22 willuhn
- * @N FileDialog zur Auswahl von Pfad und Datei beim Speichern
- * @N YesNoDialog falls Datei bereits existiert
- * @C KontoImpl#getUmsaetze mit tonumber() statt dateob()
- * 
- * Revision 1.67 2006/05/14 19:53:42 jost Prerelease Kontoauszug-Report Revision
- * 1.66 2006/05/11 10:57:35 willuhn
- * 
- * @C merged Bug 232 into HEAD
- * 
- * Revision 1.65 2006/04/25 23:25:11 willuhn
- * @N bug 81
- * 
- * Revision 1.64 2006/03/20 17:49:01 willuhn *** empty log message ***
- * 
- * Revision 1.63 2006/03/17 00:51:25 willuhn
- * @N bug 209 Neues Synchronisierungs-Subsystem
- * 
- * Revision 1.62 2006/03/09 23:00:07 willuhn
- * @B Summen-Berechnung
- * 
- * Revision 1.61 2006/03/09 18:24:05 willuhn
- * @N Auswahl der Tage in Umsatz-Chart
- * 
- * Revision 1.60 2006/02/06 14:53:39 willuhn
- * @N new column "#" in umsatzlist
- * 
- * Revision 1.59 2006/01/23 11:11:36 willuhn *** empty log message ***
- * 
- * Revision 1.58 2005/11/10 23:32:59 willuhn
- * @B foreign key to sueberweisung when deleting a konto
- * 
- * Revision 1.57 2005/10/17 13:01:59 willuhn
- * @N Synchronize auf Start-Seite verschoben
- * @N Gesamt-Vermoegensuebersicht auf Start-Seite
- * 
- * Revision 1.56 2005/08/01 16:10:41 web0
- * @N synchronize
- * 
- * Revision 1.55 2005/07/29 16:48:13 web0
- * @N Synchronize
- * 
- * Revision 1.54 2005/07/11 13:51:49 web0 *** empty log message ***
- * 
- * Revision 1.53 2005/06/07 22:41:09 web0
- * @B bug 70
- * 
- * Revision 1.52 2005/05/30 22:55:27 web0 *** empty log message ***
- * 
- * Revision 1.51 2005/05/19 23:31:07 web0
- * @B RMI over SSL support
- * @N added handbook
- * 
- * Revision 1.50 2005/05/08 17:48:51 web0
- * @N Bug 56
- * 
- * Revision 1.49 2005/05/02 23:56:45 web0
- * @B bug 66, 67
- * @C umsatzliste nach vorn verschoben
- * @C protokoll nach hinten verschoben
- * 
- * Revision 1.48 2005/03/30 23:26:28 web0
- * @B bug 29
- * @B bug 30
- * 
- * Revision 1.47 2005/03/09 01:07:02 web0
- * @D javadoc fixes
- * 
- * Revision 1.46 2005/02/28 16:28:24 web0
- * @N first code for "Sammellastschrift"
- * 
- * Revision 1.45 2005/02/27 17:11:49 web0
- * @N first code for "Sammellastschrift"
- * @C "Empfaenger" renamed into "Adresse"
- * 
- * Revision 1.44 2005/02/20 19:04:44 web0
- * @B Bug 7
- * 
- * Revision 1.43 2005/02/03 23:57:05 willuhn *** empty log message ***
- * 
- * Revision 1.42 2005/02/03 18:57:42 willuhn *** empty log message ***
- * 
- * Revision 1.41 2005/02/02 18:19:47 willuhn *** empty log message ***
- * 
- * Revision 1.40 2004/11/17 19:02:28 willuhn *** empty log message ***
- * 
- * Revision 1.39 2004/11/15 18:09:18 willuhn
- * @N Login fuer die gesamte Anwendung
- * 
- * Revision 1.38 2004/11/12 18:25:07 willuhn *** empty log message ***
- * 
- * Revision 1.37 2004/10/25 23:12:02 willuhn *** empty log message ***
- * 
- * Revision 1.36 2004/10/25 22:39:14 willuhn *** empty log message ***
- * 
- * Revision 1.35 2004/10/25 17:58:56 willuhn
- * @N Haufen Dauerauftrags-Code
- * 
- * Revision 1.34 2004/10/24 17:19:02 willuhn *** empty log message ***
- * 
- * Revision 1.33 2004/10/17 16:28:46 willuhn
- * @N Die ersten Dauerauftraege abgerufen ;)
- * 
- * Revision 1.32 2004/08/18 23:13:51 willuhn
- * @D Javadoc
- * 
- * Revision 1.31 2004/07/25 17:15:06 willuhn
- * @C PluginLoader is no longer static
- * 
- * Revision 1.30 2004/07/23 15:51:44 willuhn
- * @C Rest des Refactorings
- * 
- * Revision 1.29 2004/07/21 23:54:30 willuhn *** empty log message ***
- * 
- * Revision 1.28 2004/07/13 22:20:37 willuhn
- * @N Code fuer DauerAuftraege
- * @C paar Funktionsnamen umbenannt
- * 
- * Revision 1.27 2004/07/09 00:04:40 willuhn
- * @C Redesign
- * 
- * Revision 1.26 2004/07/04 17:07:59 willuhn
- * @B Umsaetze wurden teilweise nicht als bereits vorhanden erkannt und wurden
- *    somit doppelt angezeigt
- * 
- * Revision 1.25 2004/06/30 20:58:28 willuhn *** empty log message ***
- * 
- * Revision 1.24 2004/06/17 00:14:10 willuhn
- * @N GenericObject, GenericIterator
- * 
- * Revision 1.23 2004/06/07 22:22:33 willuhn
- * @B Spalte "Passport" in KontoListe entfernt - nicht mehr noetig
- * 
- * Revision 1.22 2004/06/03 00:23:43 willuhn *** empty log message ***
- * 
- * Revision 1.21 2004/05/25 23:23:17 willuhn
- * @N UeberweisungTyp
- * @N Protokoll
- * 
- * Revision 1.20 2004/05/05 22:14:47 willuhn *** empty log message ***
- * 
- * Revision 1.19 2004/05/04 23:07:24 willuhn
- * @C refactored Passport stuff
- * 
- * Revision 1.18 2004/04/19 22:05:51 willuhn
- * @C HBCIJobs refactored
- * 
- * Revision 1.17 2004/04/14 23:53:46 willuhn *** empty log message ***
- * 
- * Revision 1.16 2004/04/05 23:28:46 willuhn *** empty log message ***
- * 
- * Revision 1.15 2004/04/04 18:30:23 willuhn *** empty log message ***
- * 
- * Revision 1.14 2004/03/19 01:44:13 willuhn *** empty log message ***
- * 
- * Revision 1.13 2004/03/06 18:25:10 willuhn
- * @D javadoc
- * @C removed empfaenger_id from umsatz
- * 
- * Revision 1.12 2004/03/05 08:38:47 willuhn
- * @N umsaetze works now
- * 
- * Revision 1.11 2004/03/05 00:30:41 willuhn *** empty log message ***
- * 
- * Revision 1.10 2004/03/05 00:19:23 willuhn
- * @D javadoc fixes
- * @C Converter moved into server package
- * 
- * Revision 1.9 2004/03/05 00:04:10 willuhn
- * @N added code for umsatzlist
- * 
- * Revision 1.8 2004/02/27 01:10:18 willuhn
- * @N passport config refactored
- * 
- * Revision 1.7 2004/02/17 01:01:38 willuhn *** empty log message ***
- * 
- * Revision 1.6 2004/02/17 00:53:22 willuhn
- * @N SaldoAbfrage
- * @N Ueberweisung
- * @N Empfaenger
- * 
- * Revision 1.5 2004/02/12 23:46:46 willuhn *** empty log message ***
- * 
- * Revision 1.4 2004/02/12 00:38:41 willuhn *** empty log message ***
- * 
- * Revision 1.3 2004/02/11 15:40:42 willuhn *** empty log message ***
- * 
- * Revision 1.2 2004/02/11 10:33:59 willuhn *** empty log message ***
- * 
- * Revision 1.1 2004/02/11 00:11:20 willuhn *** empty log message ***
- * 
  ******************************************************************************/

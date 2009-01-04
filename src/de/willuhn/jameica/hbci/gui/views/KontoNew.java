@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoNew.java,v $
- * $Revision: 1.23 $
- * $Date: 2007/12/11 12:23:26 $
+ * $Revision: 1.24 $
+ * $Date: 2009/01/04 17:43:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,6 +21,8 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Color;
+import de.willuhn.jameica.gui.util.ColumnLayout;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -71,24 +73,26 @@ public class KontoNew extends AbstractView {
     else
   		GUI.getView().setTitle(i18n.tr("Konto-Details: Neues Konto"));
 
-    // BUGZILLA 273
-    TabFolder kontofolder = new TabFolder(getParent(), SWT.NONE);
-    kontofolder.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-    kontofolder.setBackground(Color.BACKGROUND.getSWTColor());
-    TabGroup group = new TabGroup(kontofolder,i18n.tr("Eigenschaften"));
+    ColumnLayout columns = new ColumnLayout(getParent(),2);
+    SimpleContainer left = new SimpleContainer(columns.getComposite());
 
-		group.addLabelPair(i18n.tr("Bezeichnung des Kontos"),		control.getBezeichnung());
-    group.addLabelPair(i18n.tr("Kontoinhaber"),             control.getName());
-    group.addLabelPair(i18n.tr("Saldo"),                    control.getSaldo());
-    group.addSeparator();
-    group.addCheckbox(control.getSynchronize(),i18n.tr("Konto in Synchronisierung einbeziehen"));
+    left.addHeadline(i18n.tr("Eigenschaften"));
 
-    TabGroup erweitert = new TabGroup(kontofolder,i18n.tr("HBCI-Konfiguration"));
-    erweitert.addLabelPair(i18n.tr("Kontonummer"),          control.getKontonummer());
-    erweitert.addLabelPair(i18n.tr("Unterkontonummer"),     control.getUnterkonto());
-    erweitert.addLabelPair(i18n.tr("Bankleitzahl"),         control.getBlz());
-    erweitert.addLabelPair(i18n.tr("Kundennummer"),         control.getKundennummer());
-    erweitert.addLabelPair(i18n.tr("Sicherheitsmedium"),    control.getPassportAuswahl());
+		left.addLabelPair(i18n.tr("Bezeichnung des Kontos"),	 control.getBezeichnung());
+		left.addLabelPair(i18n.tr("Kontoinhaber"),             control.getName());
+		left.addLabelPair(i18n.tr("Saldo"),                    control.getSaldo());
+    left.addHeadline(i18n.tr("HBCI-Konfiguration"));
+		left.addLabelPair(i18n.tr("Kontonummer"),              control.getKontonummer());
+		left.addLabelPair(i18n.tr("Unterkontonummer"),         control.getUnterkonto());
+		left.addLabelPair(i18n.tr("Bankleitzahl"),             control.getBlz());
+		left.addLabelPair(i18n.tr("Kundennummer"),             control.getKundennummer());
+		left.addLabelPair(i18n.tr("Sicherheitsmedium"),        control.getPassportAuswahl());
+		left.addSeparator();
+		left.addCheckbox(control.getSynchronize(),i18n.tr("Konto in Synchronisierung einbeziehen"));
+
+    SimpleContainer right = new SimpleContainer(columns.getComposite(),true);
+    right.addHeadline(i18n.tr("Notizen"));
+    right.addPart(control.getKommentar());
 
     // und noch die Abschicken-Knoepfe
 		ButtonArea buttonArea = new ButtonArea(getParent(),4);
@@ -142,6 +146,9 @@ public class KontoNew extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoNew.java,v $
+ * Revision 1.24  2009/01/04 17:43:29  willuhn
+ * @N BUGZILLA 532
+ *
  * Revision 1.23  2007/12/11 12:23:26  willuhn
  * @N Bug 355
  *

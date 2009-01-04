@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoList.java,v $
- * $Revision: 1.11 $
- * $Date: 2009/01/04 16:38:55 $
+ * $Revision: 1.12 $
+ * $Date: 2009/01/04 17:43:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -98,7 +98,7 @@ public class KontoList extends TablePart implements Part
       }
     });
     addColumn(i18n.tr("Bezeichnung"),"bezeichnung");
-    //addColumn(i18n.tr("Kontoinhaber"),"name");
+    addColumn(i18n.tr("Kommentar"),"kommentar");
     addColumn(i18n.tr("HBCI-Medium"),"passport_class", new Formatter() {
       public String format(Object o)
       {
@@ -255,6 +255,9 @@ public class KontoList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.12  2009/01/04 17:43:29  willuhn
+ * @N BUGZILLA 532
+ *
  * Revision 1.11  2009/01/04 16:38:55  willuhn
  * @N BUGZILLA 523 - ein Konto kann jetzt als Default markiert werden. Das wird bei Auftraegen vorausgewaehlt und ist fett markiert
  *

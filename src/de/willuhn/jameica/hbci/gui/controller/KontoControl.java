@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.78 $
- * $Date: 2008/05/19 22:35:53 $
+ * $Revision: 1.79 $
+ * $Date: 2009/01/04 17:43:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,6 +28,7 @@ import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
+import de.willuhn.jameica.gui.input.TextAreaInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.TablePart;
@@ -73,6 +74,7 @@ public class KontoControl extends AbstractControl {
 	private Input bezeichnung	 		    = null;
 	private Input passportAuswahl     = null;
   private Input kundennummer 		    = null;
+  private Input kommentar           = null;
   
   private LabelInput saldo			        = null;
   private SaldoMessageConsumer consumer = null;
@@ -354,6 +356,19 @@ public class KontoControl extends AbstractControl {
 	}
   
   /**
+   * Liefert ein Eingabe-Feld fuer einen Kommentar.
+   * @return Kommentar.
+   * @throws RemoteException
+   */
+  public Input getKommentar() throws RemoteException
+  {
+    if (this.kommentar != null)
+      return this.kommentar;
+    this.kommentar = new TextAreaInput(getKonto().getKommentar());
+    return this.kommentar;
+  }
+
+  /**
    * Liefert einen Saldo-MessageConsumer.
    * @return Consumer.
    */
@@ -402,6 +417,7 @@ public class KontoControl extends AbstractControl {
 			getKonto().setName((String)getName().getValue());
 			getKonto().setBezeichnung((String)getBezeichnung().getValue());
       getKonto().setKundennummer((String)getKundennummer().getValue());
+      getKonto().setKommentar((String) getKommentar().getValue());
       
       getKonto().setSynchronize(((Boolean)getSynchronize().getValue()).booleanValue());
 
@@ -548,7 +564,7 @@ public class KontoControl extends AbstractControl {
               else
                 saldo.setColor(Color.WIDGET_FG);
 
-              saldo.setComment(i18n.tr("letzte Aktualisierung: {0}",HBCI.LONGDATEFORMAT.format(d)));
+              saldo.setComment(i18n.tr("vom {0}",HBCI.LONGDATEFORMAT.format(d)));
             }
           }
           catch (Exception e)
@@ -570,6 +586,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.79  2009/01/04 17:43:30  willuhn
+ * @N BUGZILLA 532
+ *
  * Revision 1.78  2008/05/19 22:35:53  willuhn
  * @N Maximale Laenge von Kontonummern konfigurierbar (Soft- und Hardlimit)
  * @N Laengenpruefungen der Kontonummer in Dialogen und Fachobjekten

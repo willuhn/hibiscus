@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/PassportInput.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/06/19 10:57:04 $
+ * $Revision: 1.3 $
+ * $Date: 2009/01/04 17:43:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -141,13 +141,14 @@ public class PassportInput extends AbstractInput
   public Control getControl()
   {
     Composite comp = new Composite(getParent(),SWT.NONE);
+    comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+    comp.setBackground(Color.BACKGROUND.getSWTColor());
     GridLayout layout = new GridLayout(2, false);
     layout.marginHeight=0;
     layout.marginWidth=0;
     layout.horizontalSpacing = 5;
     layout.verticalSpacing = 0;
     comp.setLayout(layout);
-    comp.setBackground(Color.BACKGROUND.getSWTColor());
   
     this.auswahl.paint(comp);
   
@@ -228,6 +229,9 @@ public class PassportInput extends AbstractInput
 
 /*********************************************************************
  * $Log: PassportInput.java,v $
+ * Revision 1.3  2009/01/04 17:43:29  willuhn
+ * @N BUGZILLA 532
+ *
  * Revision 1.2  2006/06/19 10:57:04  willuhn
  * @N neue Methode setEnabled(boolean) in Input
  *

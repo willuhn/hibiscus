@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Konto.java,v $
- * $Revision: 1.37 $
- * $Date: 2007/12/11 12:23:26 $
+ * $Revision: 1.38 $
+ * $Date: 2009/01/04 17:43:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -369,10 +369,27 @@ public interface Konto extends DBObject, Checksum
 	 * @throws RemoteException
 	 */
 	public double getEinnahmen(Date from, Date to) throws RemoteException;
+
+  /**
+   * Speichert einen zusaetzlichen Kommentar fuer das Konto.
+   * @param kommentar
+   * @throws RemoteException
+   */
+  public void setKommentar(String kommentar) throws RemoteException;
+
+  /**
+   * Liefert einen zusaetzlichen Kommentar fuer das Konto.
+   * @return Kommentar.
+   * @throws RemoteException
+   */
+  public String getKommentar() throws RemoteException;
 }
 
 /*******************************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.38  2009/01/04 17:43:29  willuhn
+ * @N BUGZILLA 532
+ *
  * Revision 1.37  2007/12/11 12:23:26  willuhn
  * @N Bug 355
  *
@@ -383,99 +400,4 @@ public interface Konto extends DBObject, Checksum
  *
  * Revision 1.35  2007/06/04 15:59:03  jost
  * Neue Auswertung: Einnahmen/Ausgaben
- *
- * Revision 1.34  2006/10/09 16:56:32  jost
- * Bug #284
- *
- * Revision 1.33  2006/07/13 00:21:15  willuhn
- * @N Neue Auswertung "Sparquote"
- *
- * Revision 1.32  2006/05/14 19:53:23  jost
- * Prerelease Kontoauszug-Report
- * Revision 1.31 2006/04/25 23:25:12 willuhn
- * 
- * @N bug 81
- * 
- * Revision 1.30 2006/03/17 00:51:25 willuhn
- * @N bug 209 Neues Synchronisierungs-Subsystem
- * 
- * Revision 1.29 2005/11/10 23:32:59 willuhn
- * @B foreign key to sueberweisung when deleting a konto
- * 
- * Revision 1.28 2005/10/17 13:01:59 willuhn
- * @N Synchronize auf Start-Seite verschoben
- * @N Gesamt-Vermoegensuebersicht auf Start-Seite
- * 
- * Revision 1.27 2005/07/29 16:48:13 web0
- * @N Synchronize
- * 
- * Revision 1.26 2005/07/11 14:03:42 web0 *** empty log message ***
- * 
- * Revision 1.25 2005/07/11 13:51:49 web0 *** empty log message ***
- * 
- * Revision 1.24 2005/06/07 22:41:09 web0
- * @B bug 70
- * 
- * Revision 1.23 2005/05/19 23:31:07 web0
- * @B RMI over SSL support
- * @N added handbook
- * 
- * Revision 1.22 2005/05/02 23:56:45 web0
- * @B bug 66, 67
- * @C umsatzliste nach vorn verschoben
- * @C protokoll nach hinten verschoben
- * 
- * Revision 1.21 2005/02/27 17:11:49 web0
- * @N first code for "Sammellastschrift"
- * @C "Empfaenger" renamed into "Adresse"
- * 
- * Revision 1.20 2005/02/03 23:57:05 willuhn *** empty log message ***
- * 
- * Revision 1.19 2004/10/25 23:12:02 willuhn *** empty log message ***
- * 
- * Revision 1.18 2004/10/25 22:39:14 willuhn *** empty log message ***
- * 
- * Revision 1.17 2004/10/25 17:58:57 willuhn
- * @N Haufen Dauerauftrags-Code
- * 
- * Revision 1.16 2004/10/24 17:19:03 willuhn *** empty log message ***
- * 
- * Revision 1.15 2004/10/17 16:28:46 willuhn
- * @N Die ersten Dauerauftraege abgerufen ;)
- * 
- * Revision 1.14 2004/07/09 00:04:40 willuhn
- * @C Redesign
- * 
- * Revision 1.13 2004/05/25 23:23:17 willuhn
- * @N UeberweisungTyp
- * @N Protokoll
- * 
- * Revision 1.12 2004/05/05 22:14:47 willuhn *** empty log message ***
- * 
- * Revision 1.11 2004/04/14 23:53:46 willuhn *** empty log message ***
- * 
- * Revision 1.10 2004/04/05 23:28:45 willuhn *** empty log message ***
- * 
- * Revision 1.9 2004/04/04 18:30:23 willuhn *** empty log message ***
- * 
- * Revision 1.8 2004/03/05 00:04:10 willuhn
- * @N added code for umsatzlist
- * 
- * Revision 1.7 2004/02/25 23:11:46 willuhn *** empty log message ***
- * 
- * Revision 1.6 2004/02/17 01:01:38 willuhn *** empty log message ***
- * 
- * Revision 1.5 2004/02/17 00:53:22 willuhn
- * @N SaldoAbfrage
- * @N Ueberweisung
- * @N Empfaenger
- * 
- * Revision 1.4 2004/02/12 23:46:46 willuhn *** empty log message ***
- * 
- * Revision 1.3 2004/02/12 00:38:40 willuhn *** empty log message ***
- * 
- * Revision 1.2 2004/02/11 15:40:42 willuhn *** empty log message ***
- * 
- * Revision 1.1 2004/02/11 00:11:20 willuhn *** empty log message ***
- * 
  ******************************************************************************/
