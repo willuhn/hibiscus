@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/UmsatzEdit.java,v $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/AbstractUmsatzDetail.java,v $
  * $Revision: 1.1 $
- * $Date: 2009/01/04 01:25:47 $
+ * $Date: 2009/01/04 14:47:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,32 +14,35 @@
 package de.willuhn.jameica.hbci.gui.views;
 
 import de.willuhn.jameica.gui.AbstractView;
-import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.ColumnLayout;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.Back;
-import de.willuhn.jameica.hbci.gui.controller.UmsatzDetailEditControl;
+import de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Bildet die Edit-Ansicht einer Buchung ab.
+ * Bildet die Detailansicht einer Buchung ab.
  */
-public class UmsatzEdit extends AbstractView {
+public abstract class AbstractUmsatzDetail extends AbstractView {
+
+  /**
+   * Liefert den Controller.
+   * @return der Controller.
+   */
+  protected abstract UmsatzDetailControl getControl();
+
+  I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
   public void bind() throws Exception {
 
-    final UmsatzDetailEditControl control = new UmsatzDetailEditControl(this);
-    final I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
+    final UmsatzDetailControl control = getControl();
+    
     // BUGZILLA 38 http://www.willuhn.de/bugzilla/show_bug.cgi?id=38
     Konto k = control.getUmsatz().getKonto();
 
@@ -66,9 +69,9 @@ public class UmsatzEdit extends AbstractView {
     left.addLabelPair(i18n.tr("BLZ"),                           control.getEmpfaengerBLZ());
 
     left.addHeadline(i18n.tr("Datum und Betrag"));
-    left.addLabelPair(i18n.tr("Betrag"),                        control.getBetrag());
     left.addLabelPair(i18n.tr("Datum der Buchung"),             control.getDatum());
     left.addLabelPair(i18n.tr("Valuta"),                        control.getValuta());
+    left.addLabelPair(i18n.tr("Betrag"),                        control.getBetrag());
     left.addLabelPair(i18n.tr("Neuer Saldo"),                   control.getSaldo());
 
     SimpleContainer right = new SimpleContainer(columns.getComposite(),true);
@@ -83,24 +86,13 @@ public class UmsatzEdit extends AbstractView {
     SimpleContainer bottom = new SimpleContainer(getParent(),true);
     bottom.addLabelPair(i18n.tr("Umsatz-Kategorie"),              control.getUmsatzTyp());
     bottom.addLabelPair(i18n.tr("Verwendungszweck"),              control.getZweck());
-
-    ButtonArea buttons = new ButtonArea(getParent(),2);
-		buttons.addButton(i18n.tr("Zurück"),new Back(),null,true);
-    buttons.addButton(i18n.tr("Speichern"),new Action()
-    {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        control.handleStore();
-      }
-    });
   }
 }
 
 
 /**********************************************************************
- * $Log: UmsatzEdit.java,v $
- * Revision 1.1  2009/01/04 01:25:47  willuhn
- * @N Checksumme von Umsaetzen wird nun generell beim Anlegen des Datensatzes gespeichert. Damit koennen Umsaetze nun problemlos geaendert werden, ohne mit "hasChangedByUser" checken zu muessen. Die Checksumme bleibt immer erhalten, weil sie in UmsatzImpl#insert() sofort zu Beginn angelegt wird
- * @N Umsaetze sind nun vollstaendig editierbar
+ * $Log: AbstractUmsatzDetail.java,v $
+ * Revision 1.1  2009/01/04 14:47:53  willuhn
+ * @N Bearbeiten der Umsaetze nochmal ueberarbeitet - Codecleanup
  *
  **********************************************************************/

@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/Attic/UmsatzEdit.java,v $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/UmsatzDetailEdit.java,v $
  * $Revision: 1.1 $
- * $Date: 2009/01/04 01:25:47 $
+ * $Date: 2009/01/04 14:47:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,7 +20,7 @@ import de.willuhn.util.ApplicationException;
 /**
  * Action zum Bearbeiten eines Umsatzes.
  */
-public class UmsatzEdit implements Action
+public class UmsatzDetailEdit implements Action
 {
 
   /**
@@ -31,14 +31,17 @@ public class UmsatzEdit implements Action
   {
     if (!(context instanceof Umsatz))
       return;
-		GUI.startView(de.willuhn.jameica.hbci.gui.views.UmsatzEdit.class,context);
+		GUI.startView(de.willuhn.jameica.hbci.gui.views.UmsatzDetailEdit.class,context);
   }
 
 }
 
 
 /**********************************************************************
- * $Log: UmsatzEdit.java,v $
+ * $Log: UmsatzDetailEdit.java,v $
+ * Revision 1.1  2009/01/04 14:47:53  willuhn
+ * @N Bearbeiten der Umsaetze nochmal ueberarbeitet - Codecleanup
+ *
  * Revision 1.1  2009/01/04 01:25:47  willuhn
  * @N Checksumme von Umsaetzen wird nun generell beim Anlegen des Datensatzes gespeichert. Damit koennen Umsaetze nun problemlos geaendert werden, ohne mit "hasChangedByUser" checken zu muessen. Die Checksumme bleibt immer erhalten, weil sie in UmsatzImpl#insert() sofort zu Beginn angelegt wird
  * @N Umsaetze sind nun vollstaendig editierbar

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailControl.java,v $
- * $Revision: 1.35 $
- * $Date: 2009/01/04 01:25:47 $
+ * $Revision: 1.36 $
+ * $Date: 2009/01/04 14:47:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,12 +22,12 @@ import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.DateInput;
-import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextAreaInput;
 import de.willuhn.jameica.gui.input.TextInput;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.input.AddressInput;
@@ -60,11 +60,11 @@ public class UmsatzDetailControl extends AbstractControl {
 	private Input empfaengerName  = null;
 	private Input empfaengerKonto = null;
   private Input empfaengerBlz   = null;
-	private Input betrag	  	    = null;
 	private Input datum						= null;
 	private Input valuta					= null;
 	private Input zweck           = null;
 
+  private LabelInput betrag     = null;
 	private LabelInput saldo		  = null;
 	private Input primanota				= null;
 	private Input art							= null;
@@ -234,14 +234,21 @@ public class UmsatzDetailControl extends AbstractControl {
    */
   public Input getBetrag() throws RemoteException
   {
-    if (this.betrag != null)
-      return this.betrag;
+    if (betrag != null)
+      return betrag;
     
     double s = getUmsatz().getBetrag();
-    this.betrag = new DecimalInput(s,HBCI.DECIMALFORMAT);
-    this.betrag.setComment(getUmsatz().getKonto().getWaehrung());
-    this.betrag.setEnabled(false);
-    return this.betrag;
+    betrag = new LabelInput(HBCI.DECIMALFORMAT.format(s));
+    betrag.setComment(getUmsatz().getKonto().getWaehrung());
+    
+    if (s < 0)
+      betrag.setColor(Color.ERROR);
+    else if (s > 0)
+      betrag.setColor(Color.SUCCESS);
+    else
+      betrag.setColor(Color.WIDGET_FG);
+
+    return betrag;
   }
 
   /**
@@ -281,13 +288,21 @@ public class UmsatzDetailControl extends AbstractControl {
 	 */
 	public Input getSaldo() throws RemoteException
 	{
-		if (this.saldo != null)
-			return this.saldo;
+		if (saldo != null)
+			return saldo;
     
     double s = getUmsatz().getSaldo();
-    this.saldo = new LabelInput(HBCI.DECIMALFORMAT.format(s));
-    this.saldo.setComment(getUmsatz().getKonto().getWaehrung());
-    return this.saldo;
+		saldo = new LabelInput(HBCI.DECIMALFORMAT.format(s));
+		saldo.setComment(getUmsatz().getKonto().getWaehrung());
+
+    if (s < 0)
+      saldo.setColor(Color.ERROR);
+    else if (s > 0)
+      saldo.setColor(Color.SUCCESS);
+    else
+      saldo.setColor(Color.WIDGET_FG);
+    
+    return saldo;
 	}
 
 	/**
@@ -401,6 +416,9 @@ public class UmsatzDetailControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzDetailControl.java,v $
+ * Revision 1.36  2009/01/04 14:47:53  willuhn
+ * @N Bearbeiten der Umsaetze nochmal ueberarbeitet - Codecleanup
+ *
  * Revision 1.35  2009/01/04 01:25:47  willuhn
  * @N Checksumme von Umsaetzen wird nun generell beim Anlegen des Datensatzes gespeichert. Damit koennen Umsaetze nun problemlos geaendert werden, ohne mit "hasChangedByUser" checken zu muessen. Die Checksumme bleibt immer erhalten, weil sie in UmsatzImpl#insert() sofort zu Beginn angelegt wird
  * @N Umsaetze sind nun vollstaendig editierbar

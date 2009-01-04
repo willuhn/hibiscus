@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailEditControl.java,v $
- * $Revision: 1.1 $
- * $Date: 2009/01/04 01:25:47 $
+ * $Revision: 1.2 $
+ * $Date: 2009/01/04 14:47:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,10 +24,12 @@ import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SearchInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Address;
+import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
@@ -39,6 +41,9 @@ import de.willuhn.util.ApplicationException;
  */
 public class UmsatzDetailEditControl extends UmsatzDetailControl
 {
+  private Input betrag = null;
+  private Input saldo  = null;
+  
 	/**
    * ct.
    * @param view
@@ -90,10 +95,65 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
    */
   public Input getBetrag() throws RemoteException
   {
-    Input input = super.getBetrag();
-    if (!input.isEnabled())
-      input.setEnabled(true);
-    return input;
+    if (this.betrag == null)
+    {
+      this.betrag = new DecimalInput(getUmsatz().getBetrag(),HBCI.DECIMALFORMAT);
+      this.betrag.setMandatory(true);
+      
+      Konto konto = getUmsatz().getKonto();
+      this.betrag.setComment(konto == null ? "" : konto.getWaehrung());
+      // Forciert das korrekte Formatieren des Betrages nach Focus-Wechsel
+      this.betrag.addListener(new Listener() {
+        public void handleEvent(Event event) {
+          try
+          {
+            Double value = (Double) betrag.getValue();
+            if (value == null)
+              return;
+            betrag.setValue(value);
+          }
+          catch (Exception e)
+          {
+            Logger.error("unable to autoformat value",e);
+          }
+        }
+      
+      });
+    }
+    return this.betrag;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl#getSaldo()
+   */
+  public Input getSaldo() throws RemoteException
+  {
+    if (this.saldo == null)
+    {
+      this.saldo = new DecimalInput(getUmsatz().getSaldo(),HBCI.DECIMALFORMAT);
+      this.saldo.setMandatory(true);
+      
+      Konto konto = getUmsatz().getKonto();
+      this.saldo.setComment(konto == null ? "" : konto.getWaehrung());
+      // Forciert das korrekte Formatieren des Betrages nach Focus-Wechsel
+      this.saldo.addListener(new Listener() {
+        public void handleEvent(Event event) {
+          try
+          {
+            Double value = (Double) saldo.getValue();
+            if (value == null)
+              return;
+            saldo.setValue(value);
+          }
+          catch (Exception e)
+          {
+            Logger.error("unable to autoformat value",e);
+          }
+        }
+      
+      });
+    }
+    return this.saldo;
   }
 
   /**
@@ -114,7 +174,10 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
   {
     Input input = super.getDatum();
     if (!input.isEnabled())
+    {
+      input.setMandatory(true);
       input.setEnabled(true);
+    }
     return input;
   }
 
@@ -125,7 +188,10 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
   {
     Input input = super.getValuta();
     if (!input.isEnabled())
+    {
+      input.setMandatory(true);
       input.setEnabled(true);
+    }
     return input;
   }
 
@@ -167,7 +233,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
 	}
 
   /**
-   * Speichert den Umsatz.
+   * @see de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl#handleStore()
    */
   public synchronized void handleStore() {
 
@@ -186,6 +252,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
       u.setArt((String)getArt().getValue());
       
       u.setBetrag((Double)getBetrag().getValue());
+      u.setSaldo((Double)getSaldo().getValue());
       u.setCustomerRef((String)getCustomerRef().getValue());
       u.setDatum((Date)getDatum().getValue());
       u.setPrimanota((String)getPrimanota().getValue());
@@ -223,6 +290,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
           getEmpfaengerName().hasChanged() ||
           getZweck().hasChanged() ||
           getBetrag().hasChanged() ||
+          getSaldo().hasChanged() ||
           getDatum().hasChanged() ||
           getValuta().hasChanged() ||
           getPrimanota().hasChanged() ||
@@ -309,6 +377,9 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
 
 /**********************************************************************
  * $Log: UmsatzDetailEditControl.java,v $
+ * Revision 1.2  2009/01/04 14:47:53  willuhn
+ * @N Bearbeiten der Umsaetze nochmal ueberarbeitet - Codecleanup
+ *
  * Revision 1.1  2009/01/04 01:25:47  willuhn
  * @N Checksumme von Umsaetzen wird nun generell beim Anlegen des Datensatzes gespeichert. Damit koennen Umsaetze nun problemlos geaendert werden, ohne mit "hasChangedByUser" checken zu muessen. Die Checksumme bleibt immer erhalten, weil sie in UmsatzImpl#insert() sofort zu Beginn angelegt wird
  * @N Umsaetze sind nun vollstaendig editierbar
