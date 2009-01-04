@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/HBCIVersionInput.java,v $
- * $Revision: 1.14 $
- * $Date: 2009/01/04 23:10:37 $
+ * $Revision: 1.13.2.1 $
+ * $Date: 2009/01/04 23:17:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -242,8 +242,8 @@ public class HBCIVersionInput extends SelectInput implements Input
 
 /*****************************************************************************
  * $Log: HBCIVersionInput.java,v $
- * Revision 1.14  2009/01/04 23:10:37  willuhn
- * @B BUGZILLA 684
+ * Revision 1.13.2.1  2009/01/04 23:17:51  willuhn
+ * @B BUGZILLA 684 - backport into branch 1.9
  *
  * Revision 1.13  2008/07/25 13:31:06  willuhn
  * *** empty log message ***
