@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/KontoList.java,v $
- * $Revision: 1.16 $
- * $Date: 2008/12/19 12:16:05 $
+ * $Revision: 1.17 $
+ * $Date: 2009/01/04 16:38:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,13 +13,14 @@
 package de.willuhn.jameica.hbci.gui.menus;
 
 import de.willuhn.jameica.gui.extension.Extendable;
-import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
+import de.willuhn.jameica.gui.parts.CheckedSingleContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.DauerauftragNew;
 import de.willuhn.jameica.hbci.gui.action.KontoDelete;
 import de.willuhn.jameica.hbci.gui.action.KontoFetchUmsaetze;
+import de.willuhn.jameica.hbci.gui.action.KontoMarkDefault;
 import de.willuhn.jameica.hbci.gui.action.KontoNew;
 import de.willuhn.jameica.hbci.gui.action.KontoResetAuszugsdatum;
 import de.willuhn.jameica.hbci.gui.action.LastschriftNew;
@@ -43,17 +44,17 @@ public class KontoList extends ContextMenu implements Extendable
    */
   public KontoList()
   {
-    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources()
-        .getI18N();
+    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-    addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"), new KontoNew(),"document-open.png"));
+    addItem(new CheckedSingleContextMenuItem(i18n.tr("Öffnen"), new KontoNew(),"document-open.png"));
     addItem(new ContextMenuItem(i18n.tr("Neues Konto..."), new KNeu(),"system-file-manager.png"));
-    addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new KontoDelete(),"user-trash-full.png"));
+    addItem(new CheckedSingleContextMenuItem(i18n.tr("Löschen..."), new KontoDelete(),"user-trash-full.png"));
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new CheckedContextMenuItem(i18n.tr("Kontoauszüge anzeigen..."),new UmsatzList(),"text-x-generic.png"));
+    addItem(new CheckedSingleContextMenuItem(i18n.tr("Kontoauszüge anzeigen..."),new UmsatzList(),"text-x-generic.png"));
+    addItem(new CheckedSingleContextMenuItem(i18n.tr("Als Standardkonto festlegen"),new KontoMarkDefault(),"emblem-default.png"));
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new CheckedContextMenuItem(i18n.tr("Saldo/Kontoauszüge abrufen..."),new KontoFetchUmsaetze(),"emblem-important.png")); // BUGZILLA 473
-    addItem(new CheckedContextMenuItem(i18n.tr("Kontoauszugsdatum zurücksetzen..."), new KontoResetAuszugsdatum(),"edit-undo.png"));
+    addItem(new CheckedSingleContextMenuItem(i18n.tr("Saldo/Kontoauszüge abrufen..."),new KontoFetchUmsaetze(),"emblem-important.png")); // BUGZILLA 473
+    addItem(new CheckedSingleContextMenuItem(i18n.tr("Kontoauszugsdatum zurücksetzen..."), new KontoResetAuszugsdatum(),"edit-undo.png"));
     addItem(ContextMenuItem.SEPARATOR);
 
     addItem(new ContextMenuItem(i18n.tr("Neue Überweisung..."),new UeberweisungNew(),"stock_next.png"));
@@ -88,6 +89,9 @@ public class KontoList extends ContextMenu implements Extendable
 
 /*******************************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.17  2009/01/04 16:38:55  willuhn
+ * @N BUGZILLA 523 - ein Konto kann jetzt als Default markiert werden. Das wird bei Auftraegen vorausgewaehlt und ist fett markiert
+ *
  * Revision 1.16  2008/12/19 12:16:05  willuhn
  * @N Mehr Icons
  * @C Reihenfolge der Contextmenu-Eintraege vereinheitlicht

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoList.java,v $
- * $Revision: 1.10 $
- * $Date: 2007/08/29 10:04:42 $
+ * $Revision: 1.11 $
+ * $Date: 2009/01/04 16:38:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,6 +30,7 @@ import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.PassportRegistry;
 import de.willuhn.jameica.hbci.Settings;
@@ -126,6 +127,12 @@ public class KontoList extends TablePart implements Part
           item.setText(4,HBCI.DECIMALFORMAT.format(k.getSaldo()) + " " + k.getWaehrung());
           if (k.getSaldo() < 0)
             item.setForeground(Settings.getBuchungSollForeground());
+          
+          Konto kd = Settings.getDefaultKonto();
+          if (kd != null && kd.equals(k))
+            item.setFont(Font.BOLD.getSWTFont());
+          else
+            item.setFont(Font.DEFAULT.getSWTFont());
         }
         catch (RemoteException e)
         {
@@ -223,7 +230,9 @@ public class KontoList extends TablePart implements Part
            addItem(o,index);
            
            // Wir markieren es noch in der Tabelle
-           select(o);
+           Object prev = getSelection();
+           if (prev != null && prev == o)
+             select(o);
           }
           catch (Exception e)
           {
@@ -246,6 +255,9 @@ public class KontoList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.11  2009/01/04 16:38:55  willuhn
+ * @N BUGZILLA 523 - ein Konto kann jetzt als Default markiert werden. Das wird bei Auftraegen vorausgewaehlt und ist fett markiert
+ *
  * Revision 1.10  2007/08/29 10:04:42  willuhn
  * @N Bug 476
  *

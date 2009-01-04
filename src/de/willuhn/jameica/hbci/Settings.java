@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.54 $
- * $Date: 2008/12/17 22:53:22 $
+ * $Revision: 1.55 $
+ * $Date: 2009/01/04 16:38:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -343,6 +344,50 @@ public class Settings
       wallet = new Wallet(HBCI.class);
 		return wallet;
   }
+  
+  /**
+   * Liefert das Default-Konto.
+   * @return das Default-Konto.
+   */
+  public static Konto getDefaultKonto()
+  {
+    String id = settings.getString("defaultkonto.id",null);
+    if (id == null || id.length() == 0)
+      return null;
+    try
+    {
+      return (Konto) getDBService().createObject(Konto.class,id);
+    }
+    catch (ObjectNotFoundException nfe)
+    {
+      // Konto existiert nicht mehr, resetten
+      settings.setAttribute("defaultkonto.id",(String)null);
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to determine default account",e);
+    }
+    return null;
+  }
+  
+  /**
+   * Speichert das Default-Konto.
+   * @param konto das Default-Konto oder NULL, wenn keines das Default-Konto sein soll.
+   */
+  public static void setDefaultKonto(Konto konto)
+  {
+    try
+    {
+      String id = konto == null ? null : konto.getID();
+      settings.setAttribute("defaultkonto.id",id);
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to apply default account",e);
+      // Einstellung loeschen
+      settings.setAttribute("defaultkonto.id",(String) null);
+    }
+  }
 
   private static Boolean firstStart = null;
   
@@ -387,6 +432,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.55  2009/01/04 16:38:55  willuhn
+ * @N BUGZILLA 523 - ein Konto kann jetzt als Default markiert werden. Das wird bei Auftraegen vorausgewaehlt und ist fett markiert
+ *
  * Revision 1.54  2008/12/17 22:53:22  willuhn
  * @R steinalten Migrationscode entfernt
  *
