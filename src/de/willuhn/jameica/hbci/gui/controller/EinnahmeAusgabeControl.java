@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EinnahmeAusgabeControl.java,v $
- * $Revision: 1.9 $
- * $Date: 2007/08/12 22:02:10 $
+ * $Revision: 1.10 $
+ * $Date: 2009/01/12 00:46:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -38,6 +38,7 @@ import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.io.EinnahmeAusgabe;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
@@ -99,12 +100,8 @@ public class EinnahmeAusgabeControl extends AbstractControl
     if (this.kontoAuswahl != null)
       return this.kontoAuswahl;
 
-    DBIterator it = de.willuhn.jameica.hbci.Settings.getDBService().createList(
-        Konto.class);
-    it.setOrder("ORDER BY blz, kontonummer");
-    this.kontoAuswahl = new SelectInput(it, null);
-    this.kontoAuswahl.setAttribute("longname");
-    this.kontoAuswahl.setPleaseChoose(i18n.tr("Alle Konten"));
+    this.kontoAuswahl = new KontoInput(null);
+    this.kontoAuswahl.setPleaseChoose(i18n.tr("<Alle Konten>"));
     this.kontoAuswahl.addListener(new Listener()
     {
       public void handleEvent(Event event)
@@ -154,6 +151,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
       // ignore
     }
     this.start = new DateInput(d, HBCI.DATEFORMAT);
+    this.start.setComment(i18n.tr("Frühestes Valuta-Datum"));
     this.start.addListener(new Listener()
     {
       public void handleEvent(Event event)
@@ -201,6 +199,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
       // ignore
     }
     this.end = new DateInput(d, HBCI.DATEFORMAT);
+    this.end.setComment(i18n.tr("Spätestes Valuta-Datum"));
     this.end.addListener(new Listener()
     {
       public void handleEvent(Event event)
@@ -365,6 +364,9 @@ public class EinnahmeAusgabeControl extends AbstractControl
 
 /*******************************************************************************
  * $Log: EinnahmeAusgabeControl.java,v $
+ * Revision 1.10  2009/01/12 00:46:50  willuhn
+ * @N Vereinheitlichtes KontoInput in den Auswertungen
+ *
  * Revision 1.9  2007/08/12 22:02:10  willuhn
  * @C BUGZILLA 394 - restliche Umstellungen von Valuta auf Buchungsdatum
  *

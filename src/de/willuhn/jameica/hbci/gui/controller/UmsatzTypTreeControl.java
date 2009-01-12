@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzTypTreeControl.java,v $
- * $Revision: 1.6 $
- * $Date: 2007/08/28 09:47:09 $
+ * $Revision: 1.7 $
+ * $Date: 2009/01/12 00:46:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,6 +30,7 @@ import de.willuhn.jameica.gui.parts.TreePart;
 import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzTypTree;
 import de.willuhn.jameica.hbci.io.UmsatzTree;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -79,12 +80,9 @@ public class UmsatzTypTreeControl extends AbstractControl
   {
     if (this.kontoAuswahl != null)
       return this.kontoAuswahl;
-
-    DBIterator it = de.willuhn.jameica.hbci.Settings.getDBService().createList(Konto.class);
-    it.setOrder("ORDER BY blz, kontonummer");
-    this.kontoAuswahl = new SelectInput(it, null);
-    this.kontoAuswahl.setAttribute("longname");
-    this.kontoAuswahl.setPleaseChoose(i18n.tr("Alle Konten"));
+    
+    this.kontoAuswahl = new KontoInput(null);
+    this.kontoAuswahl.setPleaseChoose(i18n.tr("<Alle Konten>"));
     return this.kontoAuswahl;
   }
 
@@ -115,6 +113,7 @@ public class UmsatzTypTreeControl extends AbstractControl
       // ignore
     }
     this.start = new DateInput(d, HBCI.DATEFORMAT);
+    this.start.setComment(i18n.tr("Frühestes Valuta-Datum"));
     return this.start;
   }
 
@@ -144,6 +143,7 @@ public class UmsatzTypTreeControl extends AbstractControl
       // ignore
     }
     this.end = new DateInput(d, HBCI.DATEFORMAT);
+    this.end.setComment(i18n.tr("Spätestes Valuta-Datum"));
     return this.end;
   }
   
@@ -246,6 +246,9 @@ public class UmsatzTypTreeControl extends AbstractControl
 
 /*******************************************************************************
  * $Log: UmsatzTypTreeControl.java,v $
+ * Revision 1.7  2009/01/12 00:46:50  willuhn
+ * @N Vereinheitlichtes KontoInput in den Auswertungen
+ *
  * Revision 1.6  2007/08/28 09:47:09  willuhn
  * @N Bug 395
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SparQuote.java,v $
- * $Revision: 1.14 $
- * $Date: 2008/04/06 23:21:43 $
+ * $Revision: 1.15 $
+ * $Date: 2009/01/12 00:46:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -51,6 +51,7 @@ import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.chart.LineChart;
 import de.willuhn.jameica.hbci.gui.chart.LineChartData;
+import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
@@ -75,7 +76,6 @@ public class SparQuote implements Part
   
   private GenericIterator data     = null;
   private GenericIterator trend    = null;
-  private Konto konto              = null;
   private int stichtag             = 1;
   
   private I18N i18n                = null;
@@ -95,7 +95,6 @@ public class SparQuote implements Part
       {
         try
         {
-          konto = (Konto) getKontoAuswahl().getValue();
           Integer value = (Integer) getTagAuswahl().getValue();
           stichtag = value == null ? 1 : value.intValue();
 
@@ -125,18 +124,8 @@ public class SparQuote implements Part
     if (this.kontoauswahl != null)
       return this.kontoauswahl;
 
-    // Wir nehmen standardmaessig das erste Konto
-    DBIterator konten = Settings.getDBService().createList(Konto.class);
-    if (konten.hasNext())
-    {
-      this.konto = (Konto) konten.next();
-      konten.begin();
-    }
-
-    this.kontoauswahl = new SelectInput(konten,this.konto);
-    this.kontoauswahl.setPleaseChoose(i18n.tr("Alle Konten"));
-    this.kontoauswahl.setName(i18n.tr("Konto"));
-    this.kontoauswahl.setAttribute("longname");
+    this.kontoauswahl = new KontoInput(null);
+    this.kontoauswahl.setPleaseChoose(i18n.tr("<Alle Konten>"));
     this.kontoauswahl.addListener(new DelayedListener(500,this.listener));
     return this.kontoauswahl;
   }
@@ -262,6 +251,8 @@ public class SparQuote implements Part
     DBIterator umsaetze = null;
     
     umsaetze = UmsatzUtil.getUmsaetze();
+    
+    Konto konto = (Konto) getKontoAuswahl().getValue();
     if (konto != null)
       umsaetze.addFilter("konto_id = " + konto.getID());
 
@@ -430,6 +421,7 @@ public class SparQuote implements Part
      */
     public String getLabel() throws RemoteException
     {
+      Konto konto = (Konto) getKontoAuswahl().getValue();
       return konto == null ? i18n.tr("Alle Konten") : konto.getBezeichnung();
     }
 
@@ -517,6 +509,9 @@ public class SparQuote implements Part
 
 /*********************************************************************
  * $Log: SparQuote.java,v $
+ * Revision 1.15  2009/01/12 00:46:50  willuhn
+ * @N Vereinheitlichtes KontoInput in den Auswertungen
+ *
  * Revision 1.14  2008/04/06 23:21:43  willuhn
  * @C Bug 575
  * @N Der Vereinheitlichung wegen alle Buttons in den Auswertungen nach oben verschoben. Sie sind dann naeher an den Filter-Controls -> ergonomischer

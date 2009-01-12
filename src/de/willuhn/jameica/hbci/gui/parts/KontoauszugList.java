@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.18 $
- * $Date: 2009/01/04 16:18:22 $
+ * $Revision: 1.19 $
+ * $Date: 2009/01/12 00:46:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,7 +30,6 @@ import org.eclipse.swt.widgets.Text;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.DateInput;
@@ -46,7 +45,6 @@ import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
-import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.action.UmsatzExport;
@@ -188,21 +186,7 @@ public class KontoauszugList extends UmsatzList
     if (this.kontoAuswahl != null)
       return this.kontoAuswahl;
 
-    String id = mySettings.getString("kontoauszug.list.konto",null);
-    Konto k = null;
-    if (id != null)
-    {
-      try
-      {
-        k = (Konto) Settings.getDBService().createObject(Konto.class,id);
-      }
-      catch (ObjectNotFoundException e)
-      {
-        // Das angegebene Konto existiert nicht mehr
-        mySettings.setAttribute("kontoauszug.list.konto",(String)null);
-      }
-    }
-    this.kontoAuswahl = new KontoInput(k);
+    this.kontoAuswahl = new KontoInput(null);
     this.kontoAuswahl.setPleaseChoose(i18n.tr("<Alle Konten>"));
     this.kontoAuswahl.addListener(this.listener);
     return this.kontoAuswahl;
@@ -642,6 +626,9 @@ public class KontoauszugList extends UmsatzList
 
 /*********************************************************************
  * $Log: KontoauszugList.java,v $
+ * Revision 1.19  2009/01/12 00:46:50  willuhn
+ * @N Vereinheitlichtes KontoInput in den Auswertungen
+ *
  * Revision 1.18  2009/01/04 16:18:22  willuhn
  * @N BUGZILLA 404 - Kontoauswahl via SelectBox
  *

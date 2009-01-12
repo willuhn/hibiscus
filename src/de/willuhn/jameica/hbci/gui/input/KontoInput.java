@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/KontoInput.java,v $
- * $Revision: 1.2 $
- * $Date: 2009/01/04 16:38:55 $
+ * $Revision: 1.3 $
+ * $Date: 2009/01/12 00:46:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -46,6 +46,7 @@ public class KontoInput extends SelectInput
   public KontoInput(Konto konto) throws RemoteException
   {
     super(init(),konto);
+    setName(i18n.tr("Konto"));
     setPleaseChoose(i18n.tr("Bitte wählen..."));
     this.setComment("");
     
@@ -170,6 +171,9 @@ public class KontoInput extends SelectInput
 
 /**********************************************************************
  * $Log: KontoInput.java,v $
+ * Revision 1.3  2009/01/12 00:46:50  willuhn
+ * @N Vereinheitlichtes KontoInput in den Auswertungen
+ *
  * Revision 1.2  2009/01/04 16:38:55  willuhn
  * @N BUGZILLA 523 - ein Konto kann jetzt als Default markiert werden. Das wird bei Auftraegen vorausgewaehlt und ist fett markiert
  *
