@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.58 $
- * $Date: 2007/12/21 17:37:29 $
+ * $Revision: 1.59 $
+ * $Date: 2009/01/16 22:44:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -266,6 +266,16 @@ public class HBCIFactory {
     if (this.worker != null)
   	  this.worker.interrupt();
   }
+
+  /**
+   * Liefert true, wenn der Benutzer die gerade laufende Aktion abgebrochen hat.
+   * @return true, wenn der Benutzer die gerade laufende Aktion abgebrochen hat.
+   */
+  public boolean isCancelled()
+  {
+    return this.worker != null && this.worker.isInterrupted();
+  }
+  
 
   /**
    * Liefert das aktuell verwendete Konto. Es wird nur dann ein Konto geliefert,
@@ -672,6 +682,9 @@ public class HBCIFactory {
 
 /*******************************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.59  2009/01/16 22:44:21  willuhn
+ * @B Wenn eine HBCI-Session vom User abgebrochen wurde, liefert das JobResult#isOK() u.U. trotzdem true, was dazu fuehrt, dass eine Ueberweisung versehentlich als ausgefuehrt markiert wurde. Neue Funktion "markCancelled()" eingefuehrt.
+ *
  * Revision 1.58  2007/12/21 17:37:29  willuhn
  * @N Update auf HBCI4Java 2.5.6
  *
@@ -709,172 +722,4 @@ public class HBCIFactory {
  *
  * Revision 1.47  2007/02/21 10:02:27  willuhn
  * @C Code zum Ausfuehren exklusiver Jobs redesigned
- *
- * Revision 1.46  2006/11/15 00:13:07  willuhn
- * @B Bug 327
- *
- * Revision 1.45  2006/08/21 12:29:48  willuhn
- * @N HBCICallbackSWT.setCurrentHandle
- *
- * Revision 1.44  2006/08/03 15:32:34  willuhn
- * @N Bug 62
- *
- * Revision 1.43  2006/07/13 22:10:23  willuhn
- * @B bug 249
- *
- * Revision 1.42  2006/03/16 18:23:36  willuhn
- * @N first code for new synchronize system
- *
- * Revision 1.41  2006/01/18 18:40:35  willuhn
- * @N Redesign des Background-Task-Handlings
- *
- * Revision 1.40  2005/11/14 12:46:20  willuhn
- * *** empty log message ***
- *
- * Revision 1.39  2005/11/14 11:36:58  willuhn
- * @B bug 148
- *
- * Revision 1.38  2005/08/05 16:33:41  willuhn
- * @B bug 108
- * @B bug 110
- *
- * Revision 1.37  2005/08/02 20:33:12  web0
- * *** empty log message ***
- *
- * Revision 1.36  2005/08/02 20:09:33  web0
- * @B bug 106
- *
- * Revision 1.35  2005/08/01 23:27:42  web0
- * *** empty log message ***
- *
- * Revision 1.34  2005/08/01 20:35:31  web0
- * *** empty log message ***
- * Revision 1.33 2005/07/26 23:57:18 web0
- * 
- * @N Restliche HBCI-Jobs umgestellt
- * 
- * Revision 1.32 2005/07/26 23:00:03 web0
- * @N Multithreading-Support fuer HBCI-Jobs
- * 
- * Revision 1.31 2005/06/21 20:11:10 web0
- * @C cvs merge
- * 
- * Revision 1.30 2005/06/15 16:10:48 web0
- * @B javadoc fixes
- * 
- * Revision 1.29 2005/05/19 23:31:07 web0
- * @B RMI over SSL support
- * @N added handbook
- * 
- * Revision 1.28 2005/05/10 22:26:15 web0
- * @B bug 71
- * 
- * Revision 1.27 2005/05/06 14:05:04 web0 *** empty log message ***
- * 
- * Revision 1.26 2005/03/09 01:07:02 web0
- * @D javadoc fixes
- * 
- * Revision 1.25 2005/03/06 16:33:57 web0
- * @B huu, job results of exclusive jobs were not executed
- * 
- * Revision 1.24 2005/03/05 19:11:25 web0
- * @N SammelLastschrift-Code complete
- * 
- * Revision 1.23 2005/02/28 23:59:57 web0
- * @B http://www.willuhn.de/bugzilla/show_bug.cgi?id=15
- * 
- * Revision 1.22 2005/02/01 17:15:37 willuhn *** empty log message ***
- * 
- * Revision 1.21 2004/11/13 17:02:04 willuhn
- * @N Bearbeiten des Zahlungsturnus
- * 
- * Revision 1.20 2004/11/12 18:25:08 willuhn *** empty log message ***
- * 
- * Revision 1.19 2004/11/04 22:30:33 willuhn *** empty log message ***
- * 
- * Revision 1.18 2004/11/02 18:48:32 willuhn *** empty log message ***
- * 
- * Revision 1.17 2004/10/29 00:32:32 willuhn
- * @N HBCI job restrictions
- * 
- * Revision 1.16 2004/10/26 23:47:08 willuhn *** empty log message ***
- * 
- * Revision 1.15 2004/10/25 22:39:14 willuhn *** empty log message ***
- * 
- * Revision 1.14 2004/10/25 17:58:56 willuhn
- * @N Haufen Dauerauftrags-Code
- * 
- * Revision 1.13 2004/10/24 17:19:02 willuhn *** empty log message ***
- * 
- * Revision 1.12 2004/10/19 23:33:31 willuhn *** empty log message ***
- * 
- * Revision 1.11 2004/10/18 23:38:17 willuhn
- * @C Refactoring
- * @C Aufloesung der Listener und Ersatz gegen Actions
- * 
- * Revision 1.10 2004/07/25 17:15:06 willuhn
- * @C PluginLoader is no longer static
- * 
- * Revision 1.9 2004/07/21 23:54:31 willuhn *** empty log message ***
- * 
- * Revision 1.8 2004/06/30 20:58:29 willuhn *** empty log message ***
- * 
- * Revision 1.7 2004/06/10 20:56:33 willuhn
- * @D javadoc comments fixed
- * 
- * Revision 1.6 2004/05/05 22:14:47 willuhn *** empty log message ***
- * 
- * Revision 1.5 2004/05/04 23:07:23 willuhn
- * @C refactored Passport stuff
- * 
- * Revision 1.4 2004/04/27 22:23:56 willuhn
- * @N configurierbarer CTAPI-Treiber
- * @C konkrete Passport-Klassen (DDV) nach de.willuhn.jameica.passports
- *    verschoben
- * @N verschiedenste Passport-Typen sind jetzt voellig frei erweiterbar (auch
- *    die Config-Dialoge)
- * @N crc32 Checksumme in Umsatz
- * @N neue Felder im Umsatz
- * 
- * Revision 1.3 2004/04/24 19:04:51 willuhn
- * @N Ueberweisung.execute works!! ;)
- * 
- * Revision 1.2 2004/04/22 23:46:50 willuhn
- * @N UeberweisungJob
- * 
- * Revision 1.1 2004/04/19 22:05:51 willuhn
- * @C HBCIJobs refactored
- * 
- * Revision 1.1 2004/04/14 23:53:46 willuhn *** empty log message ***
- * 
- * Revision 1.10 2004/04/05 23:28:46 willuhn *** empty log message ***
- * 
- * Revision 1.9 2004/04/04 18:30:23 willuhn *** empty log message ***
- * 
- * Revision 1.8 2004/03/11 08:55:42 willuhn
- * @N UmsatzDetails
- * 
- * Revision 1.7 2004/03/06 18:25:10 willuhn
- * @D javadoc
- * @C removed empfaenger_id from umsatz
- * 
- * Revision 1.6 2004/03/05 00:19:23 willuhn
- * @D javadoc fixes
- * @C Converter moved into server package
- * 
- * Revision 1.5 2004/03/05 00:04:10 willuhn
- * @N added code for umsatzlist
- * 
- * Revision 1.4 2004/02/21 19:49:04 willuhn
- * @N PINDialog
- * 
- * Revision 1.3 2004/02/20 01:25:25 willuhn *** empty log message ***
- * 
- * Revision 1.2 2004/02/17 01:01:38 willuhn *** empty log message ***
- * 
- * Revision 1.1 2004/02/17 00:53:22 willuhn
- * @N SaldoAbfrage
- * @N Ueberweisung
- * @N Empfaenger
- * 
  ******************************************************************************/
