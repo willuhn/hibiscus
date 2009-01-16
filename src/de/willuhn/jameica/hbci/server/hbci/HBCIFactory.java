@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.59 $
- * $Date: 2009/01/16 22:44:21 $
+ * $Revision: 1.60 $
+ * $Date: 2009/01/16 22:50:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -270,6 +270,7 @@ public class HBCIFactory {
   /**
    * Liefert true, wenn der Benutzer die gerade laufende Aktion abgebrochen hat.
    * @return true, wenn der Benutzer die gerade laufende Aktion abgebrochen hat.
+   * BUGZILLA 690
    */
   public boolean isCancelled()
   {
@@ -682,6 +683,9 @@ public class HBCIFactory {
 
 /*******************************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.60  2009/01/16 22:50:00  willuhn
+ * @N bugzilla token
+ *
  * Revision 1.59  2009/01/16 22:44:21  willuhn
  * @B Wenn eine HBCI-Session vom User abgebrochen wurde, liefert das JobResult#isOK() u.U. trotzdem true, was dazu fuehrt, dass eine Ueberweisung versehentlich als ausgefuehrt markiert wurde. Neue Funktion "markCancelled()" eingefuehrt.
  *
