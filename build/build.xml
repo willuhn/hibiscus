@@ -101,7 +101,11 @@
 
   <target depends="jar" name="signjar" description="signs the zip files">
     <loadfile property="storepass" srcFile="${signjar.storepass}" />
-    <signjar alias="${signjar.alias}" storepass="${storepass}" keystore="${signjar.keystore}" verbose="true" jar="${project.zipdir}/${define.jarfilename}" />
+    <signjar alias="${signjar.alias}"
+    	       storepass="${storepass}"
+    	       keystore="${signjar.keystore}"
+    	       verbose="true"
+    	       jar="${project.zipdir}/${define.jarfilename}" />
   </target>
 
   <target depends="jar" name="zip" description="generates the zip files">
@@ -201,24 +205,48 @@
   </target>
 
 
-  <target name="clean" description="cleanup">
+  <target name="sign" description="signs the jar/zip file" depends="zip">
+    <echo message="Creating MD5 checksum files" />
+    <checksum file="${project.release}/${define.zipfilename}" />
+    
+    <echo message="Creating PGP signatures" />
+    <exec executable="gpg" failonerror="true" timeout="60000">
+      <arg line="-asb --use-agent ${project.release}/${define.zipfilename}" />
+    </exec>
+
+    <echo message="Creating SHA1 signatures" />
+    <loadfile property="storepass" srcFile="${signjar.storepass}" />
+    <java classname="de.willuhn.security.Signature" failonerror="true" dir="${project.release}" fork="true">
+      <classpath refid="compilepath" />
+      <arg line="sign -keystore ${signjar.keystore} -storepass ${storepass} -alias ${signjar.alias} -keypass ${storepass} -file ${define.zipfilename} -sig ${define.zipfilename}.sha1"/>
+    </java>
+  </target>
+
+  <target name="signsrc" description="signs the source file" depends="src">
+    <echo message="Creating MD5 checksum files" />
+    <checksum file="${project.release}/${define.srcfilename}" />
+    
+    <echo message="Creating PGP signatures" />
+    <exec executable="gpg" failonerror="true" timeout="60000">
+      <arg line="-asb --use-agent ${project.release}/${define.srcfilename}" />
+    </exec>
+
+    <echo message="Creating SHA1 signatures" />
+    <loadfile property="storepass" srcFile="${signjar.storepass}" />
+    <java classname="de.willuhn.security.Signature" failonerror="true" dir="${project.release}" fork="true">
+      <classpath refid="compilepath" />
+      <arg line="sign -keystore ${signjar.keystore} -storepass ${storepass} -alias ${signjar.alias} -keypass ${storepass} -file ${define.srcfilename} -sig ${define.srcfilename}.sha1"/>
+    </java>
+  </target>
+
+	
+	<target name="clean" description="cleanup">
     <delete dir="${project.tmp}" />
     <delete dir="${project.javadoc}" />
     <delete dir="${project.zipdir}" />
   </target>
 
 
-  <target name="sign" description="signs the jar/zip file">
-    <checksum file="${project.release}/${define.zipfilename}" />
-    <checksum file="${project.release}/${define.srcfilename}" />
-    <echo message="Creating PGP signatures" />
-    <exec executable="gpg" failonerror="true" timeout="60000">
-      <arg line="-asb --use-agent ${project.release}/${define.zipfilename}" />
-    </exec>
-    <exec executable="gpg" failonerror="true" timeout="60000">
-      <arg line="-asb --use-agent ${project.release}/${define.srcfilename}" />
-    </exec>
-  </target>
 
   <target depends="init,compile,cvstag,jar,signjar,zip,javadoc,src,sign,clean" description="build an official release" name="all" />
 
