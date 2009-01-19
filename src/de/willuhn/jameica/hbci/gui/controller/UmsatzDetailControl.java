@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailControl.java,v $
- * $Revision: 1.36 $
- * $Date: 2009/01/04 14:47:53 $
+ * $Revision: 1.37 $
+ * $Date: 2009/01/19 22:45:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -131,7 +131,7 @@ public class UmsatzDetailControl extends AbstractControl {
     }
     catch (Exception e)
     {
-      Logger.error("unable to check, if address in addressbook");
+      Logger.error("unable to check, if address in addressbook",e);
     }
     return null;
   }
@@ -416,6 +416,9 @@ public class UmsatzDetailControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzDetailControl.java,v $
+ * Revision 1.37  2009/01/19 22:45:26  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.36  2009/01/04 14:47:53  willuhn
  * @N Bearbeiten der Umsaetze nochmal ueberarbeitet - Codecleanup
  *
