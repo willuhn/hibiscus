@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Sync.java,v $
- * $Revision: 1.15 $
- * $Date: 2008/01/04 16:39:31 $
+ * $Revision: 1.16 $
+ * $Date: 2009/01/20 10:51:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -116,14 +116,14 @@ public class Sync extends AbstractBox implements Box
         }
         
       }
-    });
+    },null,false,"document-properties.png");
     
     b.addButton(i18n.tr("Synchronisierung starten"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         handleStart();
       }
-    },null,true);
+    },null,true,"mail-send-receive.png");
   }
 
   /**
@@ -181,6 +181,9 @@ public class Sync extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: Sync.java,v $
+ * Revision 1.16  2009/01/20 10:51:46  willuhn
+ * @N Mehr Icons - fuer Buttons
+ *
  * Revision 1.15  2008/01/04 16:39:31  willuhn
  * @N Weitere Hoehen-Angaben von Komponenten
  *

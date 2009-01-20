@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/SammelUeberweisungBuchungNew.java,v $
- * $Revision: 1.5 $
- * $Date: 2008/08/01 11:05:14 $
+ * $Revision: 1.6 $
+ * $Date: 2009/01/20 10:51:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,11 +15,11 @@ package de.willuhn.jameica.hbci.gui.views;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.SammelTransferBuchungDelete;
 import de.willuhn.jameica.hbci.gui.controller.SammelUeberweisungBuchungControl;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
@@ -59,7 +59,7 @@ public class SammelUeberweisungBuchungNew extends AbstractView {
     details.addLabelPair(i18n.tr("Textschlüssel"),            control.getTextSchluessel());
 
 		ButtonArea buttonArea = new ButtonArea(getParent(),4);
-		buttonArea.addButton(i18n.tr("Zurück"), 				 				       new Back());
+    buttonArea.addButton(new Back(l.ausgefuehrt()));
     
     Button delete = new Button(i18n.tr("Löschen"), new SammelTransferBuchungDelete(),control.getBuchung());
     delete.setEnabled(!l.ausgefuehrt());
@@ -78,7 +78,7 @@ public class SammelUeberweisungBuchungNew extends AbstractView {
       public void handleAction(Object context) throws ApplicationException {
         control.handleStore(true);
       }
-    },null,true);
+    },null,!l.ausgefuehrt());
     store2.setEnabled(!l.ausgefuehrt());
     buttonArea.addButton(store2);
   }
@@ -87,6 +87,9 @@ public class SammelUeberweisungBuchungNew extends AbstractView {
 
 /**********************************************************************
  * $Log: SammelUeberweisungBuchungNew.java,v $
+ * Revision 1.6  2009/01/20 10:51:46  willuhn
+ * @N Mehr Icons - fuer Buttons
+ *
  * Revision 1.5  2008/08/01 11:05:14  willuhn
  * @N BUGZILLA 587
  *

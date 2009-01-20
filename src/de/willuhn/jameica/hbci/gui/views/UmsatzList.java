@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzList.java,v $
- * $Revision: 1.8 $
- * $Date: 2006/06/19 11:52:17 $
+ * $Revision: 1.9 $
+ * $Date: 2009/01/20 10:51:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,9 +17,9 @@ import java.rmi.RemoteException;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
+import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.KontoFetchUmsaetze;
 import de.willuhn.jameica.hbci.gui.action.UmsatzImport;
 import de.willuhn.jameica.hbci.gui.controller.UmsatzControl;
@@ -78,7 +78,7 @@ public class UmsatzList extends AbstractView
 			list.paint(getParent());
 			
 			ButtonArea buttons = new ButtonArea(getParent(),3);
-			buttons.addButton(i18n.tr("Zurück"),new Back(),null,true);
+      buttons.addButton(new Back());
       buttons.addButton(i18n.tr("Umsätze importieren..."), new UmsatzImport(),control.getKonto());
 			buttons.addButton(i18n.tr("Umsätze abrufen"), new KontoFetchUmsaetze(),control.getKonto());
 		}
@@ -103,6 +103,9 @@ public class UmsatzList extends AbstractView
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.9  2009/01/20 10:51:45  willuhn
+ * @N Mehr Icons - fuer Buttons
+ *
  * Revision 1.8  2006/06/19 11:52:17  willuhn
  * @N Update auf hbci4java 2.5.0rc9
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/LastschriftList.java,v $
- * $Revision: 1.9 $
- * $Date: 2006/08/07 14:45:18 $
+ * $Revision: 1.10 $
+ * $Date: 2009/01/20 10:51:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,9 +14,9 @@ package de.willuhn.jameica.hbci.gui.views;
 
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.LastschriftImport;
 import de.willuhn.jameica.hbci.gui.action.LastschriftNew;
 import de.willuhn.jameica.hbci.gui.controller.LastschriftControl;
@@ -45,9 +45,9 @@ public class LastschriftList extends AbstractView {
 			control.getLastschriftListe().paint(getParent());
 
 			ButtonArea buttons = new ButtonArea(getParent(),3);
-      buttons.addButton(i18n.tr("Zurück"),new Back());
+      buttons.addButton(new Back(false));
       buttons.addButton(i18n.tr("Importieren..."),new LastschriftImport());
-			buttons.addButton(i18n.tr("Neue Lastschrift"),new LastschriftNew());
+			buttons.addButton(i18n.tr("Neue Lastschrift"),new LastschriftNew(),null,true);
 
 		}
 		catch (Exception e)
@@ -61,6 +61,9 @@ public class LastschriftList extends AbstractView {
 
 /**********************************************************************
  * $Log: LastschriftList.java,v $
+ * Revision 1.10  2009/01/20 10:51:45  willuhn
+ * @N Mehr Icons - fuer Buttons
+ *
  * Revision 1.9  2006/08/07 14:45:18  willuhn
  * @B typos
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UeberweisungList.java,v $
- * $Revision: 1.10 $
- * $Date: 2006/08/07 14:45:18 $
+ * $Revision: 1.11 $
+ * $Date: 2009/01/20 10:51:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,9 +14,9 @@ package de.willuhn.jameica.hbci.gui.views;
 
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungImport;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungNew;
 import de.willuhn.jameica.hbci.gui.controller.UeberweisungControl;
@@ -45,9 +45,9 @@ public class UeberweisungList extends AbstractView {
 			control.getUeberweisungListe().paint(getParent());
 
 			ButtonArea buttons = new ButtonArea(getParent(),3);
-      buttons.addButton(i18n.tr("Zurück"),new Back());
+      buttons.addButton(new Back(false));
       buttons.addButton(i18n.tr("Importieren..."),new UeberweisungImport());
-			buttons.addButton(i18n.tr("Neue Überweisung"),new UeberweisungNew());
+			buttons.addButton(i18n.tr("Neue Überweisung"),new UeberweisungNew(),null,true);
 
 
 		}
@@ -62,6 +62,9 @@ public class UeberweisungList extends AbstractView {
 
 /**********************************************************************
  * $Log: UeberweisungList.java,v $
+ * Revision 1.11  2009/01/20 10:51:46  willuhn
+ * @N Mehr Icons - fuer Buttons
+ *
  * Revision 1.10  2006/08/07 14:45:18  willuhn
  * @B typos
  *

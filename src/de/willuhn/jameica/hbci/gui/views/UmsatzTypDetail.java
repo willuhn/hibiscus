@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzTypDetail.java,v $
- * $Revision: 1.3 $
- * $Date: 2007/03/10 07:18:14 $
- * $Author: jost $
+ * $Revision: 1.4 $
+ * $Date: 2009/01/20 10:51:45 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -15,10 +15,10 @@ package de.willuhn.jameica.hbci.gui.views;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.controller.UmsatzTypControl;
 import de.willuhn.jameica.system.Application;
@@ -30,14 +30,6 @@ import de.willuhn.util.I18N;
  */
 public class UmsatzTypDetail extends AbstractView
 {
-  
-  /**
-   * ct.
-   */
-  public UmsatzTypDetail()
-  {
-  }
-
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
@@ -60,7 +52,7 @@ public class UmsatzTypDetail extends AbstractView
 
     
     ButtonArea buttons = new ButtonArea(getParent(),3);
-	  buttons.addButton(i18n.tr("Zurück"),    new Back(),null,true);
+    buttons.addButton(new Back(false));
     buttons.addButton(i18n.tr("Löschen"),   new DBObjectDelete(),control.getCurrentObject());
     buttons.addButton(i18n.tr("Speichern"), new Action()
     {
@@ -75,6 +67,9 @@ public class UmsatzTypDetail extends AbstractView
 
 /**********************************************************************
  * $Log: UmsatzTypDetail.java,v $
+ * Revision 1.4  2009/01/20 10:51:45  willuhn
+ * @N Mehr Icons - fuer Buttons
+ *
  * Revision 1.3  2007/03/10 07:18:14  jost
  * Neu: Nummer fÃ¼r die Sortierung der Umsatz-Kategorien
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoNew.java,v $
- * $Revision: 1.24 $
- * $Date: 2009/01/04 17:43:29 $
+ * $Revision: 1.25 $
+ * $Date: 2009/01/20 10:51:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.TabFolder;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.ColumnLayout;
@@ -26,7 +27,6 @@ import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
-import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.KontoDelete;
 import de.willuhn.jameica.hbci.gui.action.KontoFetchUmsaetze;
 import de.willuhn.jameica.hbci.gui.action.ProtokollList;
@@ -87,25 +87,27 @@ public class KontoNew extends AbstractView {
 		left.addLabelPair(i18n.tr("Bankleitzahl"),             control.getBlz());
 		left.addLabelPair(i18n.tr("Kundennummer"),             control.getKundennummer());
 		left.addLabelPair(i18n.tr("Sicherheitsmedium"),        control.getPassportAuswahl());
-		left.addSeparator();
-		left.addCheckbox(control.getSynchronize(),i18n.tr("Konto in Synchronisierung einbeziehen"));
 
     SimpleContainer right = new SimpleContainer(columns.getComposite(),true);
     right.addHeadline(i18n.tr("Notizen"));
     right.addPart(control.getKommentar());
 
+    SimpleContainer bottom = new SimpleContainer(getParent());
+    bottom.addSeparator();
+    bottom.addCheckbox(control.getSynchronize(),i18n.tr("Konto in Synchronisierung einbeziehen"));
+
     // und noch die Abschicken-Knoepfe
 		ButtonArea buttonArea = new ButtonArea(getParent(),4);
     buttonArea.addButton(control.getSynchronizeOptions());
-    buttonArea.addButton(i18n.tr("Protokoll des Kontos"),new ProtokollList(),control.getKonto());
-		buttonArea.addButton(i18n.tr("Konto löschen"),new KontoDelete(),control.getKonto());
+    buttonArea.addButton(i18n.tr("Protokoll des Kontos"),new ProtokollList(),control.getKonto(),false,"dialog-information.png");
+		buttonArea.addButton(i18n.tr("Konto löschen"),new KontoDelete(),control.getKonto(),false,"user-trash-full.png");
 		buttonArea.addButton(i18n.tr("Speichern"),new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
       	control.handleStore();
       }
-    });
+    },null,false,"document-save.png");
 
     
     TabFolder folder = new TabFolder(getParent(), SWT.NONE);
@@ -119,9 +121,9 @@ public class KontoNew extends AbstractView {
     control.getUmsatzChart().paint(tab2.getComposite());
 
     ButtonArea buttons = new ButtonArea(getParent(),3);
-    buttons.addButton(i18n.tr("Zurück"),new Back(),null,true);
-    buttons.addButton(i18n.tr("Saldo und Umsätze abrufen"), new KontoFetchUmsaetze(),control.getKonto());
-    buttons.addButton(i18n.tr("Alle Umsätze anzeigen"),     new UmsatzList(),control.getKonto());
+    buttons.addButton(new Back());
+    buttons.addButton(i18n.tr("Saldo und Umsätze abrufen"), new KontoFetchUmsaetze(),control.getKonto(),false,"mail-send-receive.png");
+    buttons.addButton(i18n.tr("Alle Umsätze anzeigen"),     new UmsatzList(),control.getKonto(),false,"text-x-generic.png");
   }
   
   /**
@@ -146,6 +148,9 @@ public class KontoNew extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoNew.java,v $
+ * Revision 1.25  2009/01/20 10:51:46  willuhn
+ * @N Mehr Icons - fuer Buttons
+ *
  * Revision 1.24  2009/01/04 17:43:29  willuhn
  * @N BUGZILLA 532
  *

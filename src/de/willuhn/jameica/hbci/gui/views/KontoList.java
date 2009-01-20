@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoList.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/01/18 00:51:00 $
+ * $Revision: 1.5 $
+ * $Date: 2009/01/20 10:51:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,9 +15,9 @@ package de.willuhn.jameica.hbci.gui.views;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.KontoNew;
 import de.willuhn.jameica.hbci.gui.controller.KontoControl;
 import de.willuhn.jameica.system.Application;
@@ -45,14 +45,14 @@ public class KontoList extends AbstractView {
 
 			control.getKontoListe().paint(getParent());
 			ButtonArea buttons = new ButtonArea(getParent(),3);
-      buttons.addButton(i18n.tr("Zurück"),new Back());
+      buttons.addButton(new Back());
       buttons.addButton(i18n.tr("Konten automatisch aus Sicherheitsmedium ermitteln"), new Action() {
         public void handleAction(Object context) throws ApplicationException
         {
           control.handleReadFromPassport();
         }
       });
-			buttons.addButton(i18n.tr("Neue Bankverbindung"),new KontoNew(),null,true);
+			buttons.addButton(i18n.tr("Neue Bankverbindung"),new KontoNew());
 		}
 		catch (Exception e)
 		{
@@ -65,6 +65,9 @@ public class KontoList extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.5  2009/01/20 10:51:45  willuhn
+ * @N Mehr Icons - fuer Buttons
+ *
  * Revision 1.4  2006/01/18 00:51:00  willuhn
  * @B bug 65
  *

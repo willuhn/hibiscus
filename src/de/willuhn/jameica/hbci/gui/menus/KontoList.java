@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/KontoList.java,v $
- * $Revision: 1.17 $
- * $Date: 2009/01/04 16:38:55 $
+ * $Revision: 1.18 $
+ * $Date: 2009/01/20 10:51:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -53,7 +53,7 @@ public class KontoList extends ContextMenu implements Extendable
     addItem(new CheckedSingleContextMenuItem(i18n.tr("Kontoauszüge anzeigen..."),new UmsatzList(),"text-x-generic.png"));
     addItem(new CheckedSingleContextMenuItem(i18n.tr("Als Standardkonto festlegen"),new KontoMarkDefault(),"emblem-default.png"));
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new CheckedSingleContextMenuItem(i18n.tr("Saldo/Kontoauszüge abrufen..."),new KontoFetchUmsaetze(),"emblem-important.png")); // BUGZILLA 473
+    addItem(new CheckedSingleContextMenuItem(i18n.tr("Saldo/Kontoauszüge abrufen..."),new KontoFetchUmsaetze(),"mail-send-receive.png")); // BUGZILLA 473
     addItem(new CheckedSingleContextMenuItem(i18n.tr("Kontoauszugsdatum zurücksetzen..."), new KontoResetAuszugsdatum(),"edit-undo.png"));
     addItem(ContextMenuItem.SEPARATOR);
 
@@ -89,6 +89,9 @@ public class KontoList extends ContextMenu implements Extendable
 
 /*******************************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.18  2009/01/20 10:51:46  willuhn
+ * @N Mehr Icons - fuer Buttons
+ *
  * Revision 1.17  2009/01/04 16:38:55  willuhn
  * @N BUGZILLA 523 - ein Konto kann jetzt als Default markiert werden. Das wird bei Auftraegen vorausgewaehlt und ist fett markiert
  *

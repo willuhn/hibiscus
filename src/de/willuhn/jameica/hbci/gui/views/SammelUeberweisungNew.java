@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/SammelUeberweisungNew.java,v $
- * $Revision: 1.6 $
- * $Date: 2008/05/30 12:02:08 $
+ * $Revision: 1.7 $
+ * $Date: 2009/01/20 10:51:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,12 +15,12 @@ package de.willuhn.jameica.hbci.gui.views;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.SammelTransferDelete;
 import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungBuchungNew;
 import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungExecute;
@@ -63,7 +63,7 @@ public class SammelUeberweisungNew extends AbstractView {
 		final SammelUeberweisung l = (SammelUeberweisung) control.getTransfer();
 
     ButtonArea buttons = new ButtonArea(getParent(),5);
-    buttons.addButton(i18n.tr("Zurück"),new Back());
+    buttons.addButton(new Back(transfer.ausgefuehrt()));
     buttons.addButton(i18n.tr("Löschen"),new SammelTransferDelete(),control.getTransfer());
     
     Button add = new Button(i18n.tr("Neue Buchungen hinzufügen"), new Action() {
@@ -79,14 +79,14 @@ public class SammelUeberweisungNew extends AbstractView {
         if (control.handleStore())
   				new SammelUeberweisungExecute().handleAction(l);
 			}
-		},null,true);
+		});
     execute.setEnabled(!transfer.ausgefuehrt());
     
     Button store = new Button(i18n.tr("Speichern"),new Action() {
       public void handleAction(Object context) throws ApplicationException {
         control.handleStore();
       }
-    },null,true);
+    },null,!transfer.ausgefuehrt());
     store.setEnabled(!transfer.ausgefuehrt());
     
     buttons.addButton(add);
@@ -99,6 +99,9 @@ public class SammelUeberweisungNew extends AbstractView {
 
 /**********************************************************************
  * $Log: SammelUeberweisungNew.java,v $
+ * Revision 1.7  2009/01/20 10:51:45  willuhn
+ * @N Mehr Icons - fuer Buttons
+ *
  * Revision 1.6  2008/05/30 12:02:08  willuhn
  * @N Erster Code fuer erweiterte Verwendungszwecke - NOCH NICHT FREIGESCHALTET!
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.79 $
- * $Date: 2009/01/04 17:43:30 $
+ * $Revision: 1.80 $
+ * $Date: 2009/01/20 10:51:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -262,7 +262,7 @@ public class KontoControl extends AbstractControl {
         }
         
       }
-    },getKonto());
+    },getKonto(),false,"document-properties.png");
     return this.synchronizeOptions;
   }
   
@@ -586,6 +586,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.80  2009/01/20 10:51:46  willuhn
+ * @N Mehr Icons - fuer Buttons
+ *
  * Revision 1.79  2009/01/04 17:43:30  willuhn
  * @N BUGZILLA 532
  *

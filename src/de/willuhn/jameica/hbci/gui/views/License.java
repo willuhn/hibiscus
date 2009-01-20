@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/License.java,v $
- * $Revision: 1.7 $
- * $Date: 2006/01/18 00:51:00 $
+ * $Revision: 1.8 $
+ * $Date: 2009/01/20 10:51:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,8 +15,8 @@ package de.willuhn.jameica.hbci.gui.views;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
+import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.util.ButtonArea;
-import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.controller.LicenseControl;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
@@ -41,13 +41,16 @@ public class License extends AbstractView {
 		libs.paint(getParent());
 
 		ButtonArea buttons = new ButtonArea(getParent(),1);
-		buttons.addButton(i18n.tr("Zurück"),new Back());
+    buttons.addButton(new Back());
   }
 }
 
 
 /**********************************************************************
  * $Log: License.java,v $
+ * Revision 1.8  2009/01/20 10:51:45  willuhn
+ * @N Mehr Icons - fuer Buttons
+ *
  * Revision 1.7  2006/01/18 00:51:00  willuhn
  * @B bug 65
  *

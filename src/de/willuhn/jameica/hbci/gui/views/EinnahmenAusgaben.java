@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/EinnahmenAusgaben.java,v $
- * $Revision: 1.4 $
- * $Date: 2008/04/06 23:21:43 $
+ * $Revision: 1.5 $
+ * $Date: 2009/01/20 10:51:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,11 +18,11 @@ import java.rmi.RemoteException;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.EinnahmeAusgabeExport;
 import de.willuhn.jameica.hbci.gui.controller.EinnahmeAusgabeControl;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -53,7 +53,7 @@ public class EinnahmenAusgaben extends AbstractView
     group.addLabelPair(i18n.tr("End-Datum"), control.getEnd());
 
     ButtonArea buttons = new ButtonArea(getParent(), 3);
-    buttons.addButton(i18n.tr("Zurück"),new Back());
+    buttons.addButton(new Back(false));
     buttons.addButton(i18n.tr("Exportieren..."), new EinnahmeAusgabeExport(), control.getWerte());
     buttons.addButton(i18n.tr("Aktualisieren"), new Action()
     {
@@ -83,6 +83,9 @@ public class EinnahmenAusgaben extends AbstractView
 }
 /*******************************************************************************
  * $Log: EinnahmenAusgaben.java,v $
+ * Revision 1.5  2009/01/20 10:51:46  willuhn
+ * @N Mehr Icons - fuer Buttons
+ *
  * Revision 1.4  2008/04/06 23:21:43  willuhn
  * @C Bug 575
  * @N Der Vereinheitlichung wegen alle Buttons in den Auswertungen nach oben verschoben. Sie sind dann naeher an den Filter-Controls -> ergonomischer

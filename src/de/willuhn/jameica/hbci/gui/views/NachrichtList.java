@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/NachrichtList.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/01/18 00:51:00 $
+ * $Revision: 1.3 $
+ * $Date: 2009/01/20 10:51:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,9 +14,9 @@ package de.willuhn.jameica.hbci.gui.views;
 
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.controller.NachrichtControl;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -43,7 +43,7 @@ public class NachrichtList extends AbstractView {
 			control.getListe().paint(getParent());
 
 			ButtonArea buttons = new ButtonArea(getParent(),1);
-      buttons.addButton(i18n.tr("Zurück"),new Back());
+      buttons.addButton(new Back());
 
 		}
 		catch (Exception e)
@@ -57,6 +57,9 @@ public class NachrichtList extends AbstractView {
 
 /**********************************************************************
  * $Log: NachrichtList.java,v $
+ * Revision 1.3  2009/01/20 10:51:45  willuhn
+ * @N Mehr Icons - fuer Buttons
+ *
  * Revision 1.2  2006/01/18 00:51:00  willuhn
  * @B bug 65
  *

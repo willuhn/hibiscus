@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/ProtokollList.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/05/10 12:51:37 $
+ * $Revision: 1.4 $
+ * $Date: 2009/01/20 10:51:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,9 +14,9 @@ package de.willuhn.jameica.hbci.gui.views;
 
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.controller.KontoControl;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
@@ -55,7 +55,7 @@ public class ProtokollList extends AbstractView {
 			control.getProtokoll().paint(getParent());
 
 			ButtonArea buttons = new ButtonArea(getParent(),1);
-			buttons.addButton(i18n.tr("Zurück"),new Back(),null,true);
+      buttons.addButton(new Back());
 
 		}
 		catch (Exception e)
@@ -69,6 +69,9 @@ public class ProtokollList extends AbstractView {
 
 /**********************************************************************
  * $Log: ProtokollList.java,v $
+ * Revision 1.4  2009/01/20 10:51:46  willuhn
+ * @N Mehr Icons - fuer Buttons
+ *
  * Revision 1.3  2006/05/10 12:51:37  willuhn
  * @B typo s/Ktr/Kto/
  *

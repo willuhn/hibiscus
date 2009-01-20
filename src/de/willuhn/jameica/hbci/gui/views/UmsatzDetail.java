@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzDetail.java,v $
- * $Revision: 1.33 $
- * $Date: 2009/01/04 14:47:53 $
+ * $Revision: 1.34 $
+ * $Date: 2009/01/20 10:51:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,9 +14,9 @@
 package de.willuhn.jameica.hbci.gui.views;
 
 import de.willuhn.jameica.gui.Action;
+import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
-import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
 import de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl;
 import de.willuhn.jameica.hbci.rmi.Address;
@@ -37,7 +37,7 @@ public class UmsatzDetail extends AbstractUmsatzDetail
     super.bind();
 
     ButtonArea buttons = new ButtonArea(getParent(),4);
-		buttons.addButton(i18n.tr("Zurück"),new Back(),null,true);
+    buttons.addButton(new Back());
     buttons.addButton(i18n.tr("Bearbeiten"),new de.willuhn.jameica.hbci.gui.action.UmsatzDetailEdit(),getCurrentObject());
     buttons.addButton(i18n.tr("Speichern"),new Action()
     {
@@ -81,6 +81,9 @@ public class UmsatzDetail extends AbstractUmsatzDetail
 
 /**********************************************************************
  * $Log: UmsatzDetail.java,v $
+ * Revision 1.34  2009/01/20 10:51:45  willuhn
+ * @N Mehr Icons - fuer Buttons
+ *
  * Revision 1.33  2009/01/04 14:47:53  willuhn
  * @N Bearbeiten der Umsaetze nochmal ueberarbeitet - Codecleanup
  *

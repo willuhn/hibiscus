@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzTypTree.java,v $
- * $Revision: 1.7 $
- * $Date: 2008/04/06 23:21:43 $
+ * $Revision: 1.8 $
+ * $Date: 2009/01/20 10:51:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,13 +25,13 @@ import org.eclipse.swt.widgets.TabFolder;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.TreePart;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.UmsatzTypTreeExport;
 import de.willuhn.jameica.hbci.gui.controller.UmsatzTypTreeControl;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzTypVerlauf;
@@ -64,7 +64,7 @@ public class UmsatzTypTree extends AbstractView
     settings.addLabelPair(i18n.tr("End-Datum"), control.getEnd());
 
     ButtonArea buttons = new ButtonArea(getParent(), 4);
-    buttons.addButton(i18n.tr("Zurück"), new Back());
+    buttons.addButton(new Back());
 
     buttons.addButton(i18n.tr("Alle aufklappen/zuklappen"), new Action() {
     
@@ -136,6 +136,9 @@ public class UmsatzTypTree extends AbstractView
 }
 /*******************************************************************************
  * $Log: UmsatzTypTree.java,v $
+ * Revision 1.8  2009/01/20 10:51:46  willuhn
+ * @N Mehr Icons - fuer Buttons
+ *
  * Revision 1.7  2008/04/06 23:21:43  willuhn
  * @C Bug 575
  * @N Der Vereinheitlichung wegen alle Buttons in den Auswertungen nach oben verschoben. Sie sind dann naeher an den Filter-Controls -> ergonomischer

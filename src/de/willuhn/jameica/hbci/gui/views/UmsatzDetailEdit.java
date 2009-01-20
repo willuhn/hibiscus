@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzDetailEdit.java,v $
- * $Revision: 1.1 $
- * $Date: 2009/01/04 14:47:53 $
+ * $Revision: 1.2 $
+ * $Date: 2009/01/20 10:51:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,8 +14,8 @@
 package de.willuhn.jameica.hbci.gui.views;
 
 import de.willuhn.jameica.gui.Action;
+import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.util.ButtonArea;
-import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl;
 import de.willuhn.jameica.hbci.gui.controller.UmsatzDetailEditControl;
 import de.willuhn.util.ApplicationException;
@@ -34,14 +34,14 @@ public class UmsatzDetailEdit extends AbstractUmsatzDetail
   {
     super.bind();
     ButtonArea buttons = new ButtonArea(getParent(),2);
-		buttons.addButton(i18n.tr("Zurück"),new Back(),null,true);
+    buttons.addButton(new Back(false));
     buttons.addButton(i18n.tr("Speichern"),new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
         getControl().handleStore();
       }
-    });
+    },null,true);
   }
 
   /**
@@ -58,6 +58,9 @@ public class UmsatzDetailEdit extends AbstractUmsatzDetail
 
 /**********************************************************************
  * $Log: UmsatzDetailEdit.java,v $
+ * Revision 1.2  2009/01/20 10:51:46  willuhn
+ * @N Mehr Icons - fuer Buttons
+ *
  * Revision 1.1  2009/01/04 14:47:53  willuhn
  * @N Bearbeiten der Umsaetze nochmal ueberarbeitet - Codecleanup
  *

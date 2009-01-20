@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UeberweisungNew.java,v $
- * $Revision: 1.19 $
- * $Date: 2008/11/30 23:24:57 $
+ * $Revision: 1.20 $
+ * $Date: 2009/01/20 10:51:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,11 +15,11 @@ package de.willuhn.jameica.hbci.gui.views;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungExecute;
 import de.willuhn.jameica.hbci.gui.controller.UeberweisungControl;
@@ -62,7 +62,7 @@ public class UeberweisungNew extends AbstractView {
     details.addCheckbox(control.getBankTermin(), i18n.tr("Als Termin-Überweisung an Bank senden"));
 
 		ButtonArea buttonArea = new ButtonArea(getParent(),4);
-		buttonArea.addButton(i18n.tr("Zurück"), 				 				 new Back());
+    buttonArea.addButton(new Back(transfer.ausgefuehrt()));
 		buttonArea.addButton(i18n.tr("Löschen"),				 				 new DBObjectDelete(), transfer);
 
     Button execute = new Button(i18n.tr("Jetzt ausführen"), new Action() {
@@ -77,7 +77,7 @@ public class UeberweisungNew extends AbstractView {
       public void handleAction(Object context) throws ApplicationException {
       	control.handleStore();
       }
-    },null,true);
+    },null,!transfer.ausgefuehrt());
     store.setEnabled(!transfer.ausgefuehrt());
     
     buttonArea.addButton(execute);
@@ -88,6 +88,9 @@ public class UeberweisungNew extends AbstractView {
 
 /**********************************************************************
  * $Log: UeberweisungNew.java,v $
+ * Revision 1.20  2009/01/20 10:51:46  willuhn
+ * @N Mehr Icons - fuer Buttons
+ *
  * Revision 1.19  2008/11/30 23:24:57  willuhn
  * @B BUGZILLA 661
  *

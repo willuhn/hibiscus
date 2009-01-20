@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/EmpfaengerNew.java,v $
- * $Revision: 1.15 $
- * $Date: 2008/11/25 00:13:47 $
+ * $Revision: 1.16 $
+ * $Date: 2009/01/20 10:51:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.TabFolder;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.ColumnLayout;
@@ -26,7 +27,6 @@ import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.controller.EmpfaengerControl;
 import de.willuhn.jameica.system.Application;
@@ -63,7 +63,7 @@ public class EmpfaengerNew extends AbstractView {
 
     // und noch die Abschicken-Knoepfe
     ButtonArea buttonArea = new ButtonArea(getParent(),control.isHibiscusAdresse() ? 3 : 1);
-    buttonArea.addButton(i18n.tr("Zurück"),new Back());
+    buttonArea.addButton(new Back(false));
 
     new Headline(getParent(),i18n.tr("Buchungen von/an diese Adresse"));
 
@@ -100,6 +100,9 @@ public class EmpfaengerNew extends AbstractView {
 
 /**********************************************************************
  * $Log: EmpfaengerNew.java,v $
+ * Revision 1.16  2009/01/20 10:51:45  willuhn
+ * @N Mehr Icons - fuer Buttons
+ *
  * Revision 1.15  2008/11/25 00:13:47  willuhn
  * @N Erweiterte Verwendungswecke anzeigen
  * @N Notizen nicht mehr in einem separaten Tab sondern in der rechten Spalte anzeigen
