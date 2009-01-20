@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SparQuote.java,v $
- * $Revision: 1.15 $
- * $Date: 2009/01/12 00:46:50 $
+ * $Revision: 1.16 $
+ * $Date: 2009/01/20 09:33:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -282,7 +282,13 @@ public class SparQuote implements Part
         // Neues Limit definieren
         cal.setTime(valuta);
         cal.add(Calendar.MONTH,1);
-        cal.set(Calendar.DAY_OF_MONTH,stichtag);
+        
+        // BUGZILLA 691
+        if (stichtag > cal.getActualMaximum(Calendar.DAY_OF_MONTH))
+          cal.set(Calendar.DAY_OF_MONTH,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+        else
+          cal.set(Calendar.DAY_OF_MONTH, stichtag);
+
         currentLimit = HBCIProperties.startOfDay(cal.getTime());
       }
       
@@ -509,6 +515,9 @@ public class SparQuote implements Part
 
 /*********************************************************************
  * $Log: SparQuote.java,v $
+ * Revision 1.16  2009/01/20 09:33:15  willuhn
+ * @B BUGZILLA 691
+ *
  * Revision 1.15  2009/01/12 00:46:50  willuhn
  * @N Vereinheitlichtes KontoInput in den Auswertungen
  *
