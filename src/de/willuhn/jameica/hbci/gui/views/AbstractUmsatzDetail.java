@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/AbstractUmsatzDetail.java,v $
- * $Revision: 1.1 $
- * $Date: 2009/01/04 14:47:53 $
+ * $Revision: 1.2 $
+ * $Date: 2009/01/20 10:00:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -69,29 +69,35 @@ public abstract class AbstractUmsatzDetail extends AbstractView {
     left.addLabelPair(i18n.tr("BLZ"),                           control.getEmpfaengerBLZ());
 
     left.addHeadline(i18n.tr("Datum und Betrag"));
-    left.addLabelPair(i18n.tr("Datum der Buchung"),             control.getDatum());
+    left.addLabelPair(i18n.tr("Datum"),                         control.getDatum());
     left.addLabelPair(i18n.tr("Valuta"),                        control.getValuta());
+    left.addSeparator();
     left.addLabelPair(i18n.tr("Betrag"),                        control.getBetrag());
     left.addLabelPair(i18n.tr("Neuer Saldo"),                   control.getSaldo());
 
     SimpleContainer right = new SimpleContainer(columns.getComposite(),true);
+    right.addHeadline(i18n.tr("Sonstige Informationen"));
+    right.addLabelPair(i18n.tr("Art der Buchung"),              control.getArt());
+    right.addLabelPair(i18n.tr("Kundenreferenz"),               control.getCustomerRef());
+    right.addLabelPair(i18n.tr("Primanota-Kennzeichen"),        control.getPrimanota());
+
     right.addHeadline(i18n.tr("Notizen"));
     right.addPart(control.getKommentar());
 
-    right.addHeadline(i18n.tr("Sonstige Informationen"));
-    right.addLabelPair(i18n.tr("Art der Buchung"),               control.getArt());
-    right.addLabelPair(i18n.tr("Kundenreferenz"),                control.getCustomerRef());
-    right.addLabelPair(i18n.tr("Primanota-Kennzeichen"),         control.getPrimanota());
-
     SimpleContainer bottom = new SimpleContainer(getParent(),true);
-    bottom.addLabelPair(i18n.tr("Umsatz-Kategorie"),              control.getUmsatzTyp());
-    bottom.addLabelPair(i18n.tr("Verwendungszweck"),              control.getZweck());
+    bottom.addSeparator();
+    bottom.addLabelPair(i18n.tr("Umsatz-Kategorie"),            control.getUmsatzTyp());
+    bottom.addHeadline(i18n.tr("Verwendungszweck"));
+    bottom.addPart(control.getZweck());
   }
 }
 
 
 /**********************************************************************
  * $Log: AbstractUmsatzDetail.java,v $
+ * Revision 1.2  2009/01/20 10:00:06  willuhn
+ * @C Layout der Umsatzdetails nochmal leicht ueberarbeitet
+ *
  * Revision 1.1  2009/01/04 14:47:53  willuhn
  * @N Bearbeiten der Umsaetze nochmal ueberarbeitet - Codecleanup
  *
