@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.50 $
- * $Date: 2009/01/20 09:43:34 $
+ * $Revision: 1.51 $
+ * $Date: 2009/01/25 18:04:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -135,7 +135,8 @@ public class Converter {
       }
 		}
 
-		umsatz.setZweck(lines[0]);
+    if (lines.length > 0)
+  		umsatz.setZweck(lines[0]);
     if (lines.length > 1)
       umsatz.setZweck2(lines[1]);
 
@@ -400,6 +401,9 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.51  2009/01/25 18:04:08  willuhn
+ * @B BUGZILLA 694
+ *
  * Revision 1.50  2009/01/20 09:43:34  willuhn
  * @C Verteilen der Verwendungszwecke vereinfacht
  *
