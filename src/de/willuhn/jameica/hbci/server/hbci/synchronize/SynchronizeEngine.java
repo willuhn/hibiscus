@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/synchronize/SynchronizeEngine.java,v $
- * $Revision: 1.1 $
- * $Date: 2007/05/16 11:32:30 $
+ * $Revision: 1.2 $
+ * $Date: 2009/01/26 23:17:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,6 +22,7 @@ import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.SynchronizeOptions;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SynchronizeJob;
 import de.willuhn.jameica.hbci.rmi.SynchronizeJobProvider;
@@ -139,9 +140,16 @@ public class SynchronizeEngine implements SynchronizeJobProvider
   public GenericIterator getSynchronizeKonten() throws RemoteException
   {
     DBIterator konten = Settings.getDBService().createList(Konto.class);
-    konten.addFilter("synchronize = 1 or synchronize is null"); // BUGZILLA 277
     konten.setOrder("order by id"); // Konten-Sortierung immer gleich
-    return konten;
+    ArrayList l = new ArrayList();
+    while (konten.hasNext())
+    {
+      Konto k = (Konto) konten.next();
+      SynchronizeOptions o = new SynchronizeOptions(k);
+      if (o.getSynchronize())
+        l.add(k);
+    }
+    return PseudoIterator.fromArray((Konto[])l.toArray(new Konto[l.size()]));
   }
 
   /**
@@ -157,6 +165,9 @@ public class SynchronizeEngine implements SynchronizeJobProvider
 
 /**********************************************************************
  * $Log: SynchronizeEngine.java,v $
+ * Revision 1.2  2009/01/26 23:17:46  willuhn
+ * @R Feld "synchronize" aus Konto-Tabelle entfernt. Aufgrund der Synchronize-Optionen pro Konto ist die Information redundant und ergibt sich implizit, wenn fuer ein Konto irgendeine der Synchronisations-Optionen aktiviert ist
+ *
  * Revision 1.1  2007/05/16 11:32:30  willuhn
  * @N Redesign der SynchronizeEngine. Ermittelt die HBCI-Jobs jetzt ueber generische "SynchronizeJobProvider". Damit ist die Liste der Sync-Jobs erweiterbar
  *

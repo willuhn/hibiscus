@@ -10,7 +10,6 @@ CREATE TABLE konto (
      , passport_class TEXT NOT NULL
      , saldo DOUBLE
      , saldo_datum DATETIME
-     , synchronize int(10)
      , kommentar TEXT
      , UNIQUE (id)
      , PRIMARY KEY (id)
@@ -265,4 +264,4 @@ ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
 
-INSERT INTO version (name,version) values ('db',13);
+INSERT INTO version (name,version) values ('db',14);

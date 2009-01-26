@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.80 $
- * $Date: 2009/01/20 10:51:46 $
+ * $Revision: 1.81 $
+ * $Date: 2009/01/26 23:17:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,9 +15,6 @@ package de.willuhn.jameica.hbci.gui.controller;
 import java.rmi.RemoteException;
 import java.util.Date;
 
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
@@ -25,7 +22,6 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
-import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.TextAreaInput;
@@ -79,7 +75,6 @@ public class KontoControl extends AbstractControl {
   private LabelInput saldo			        = null;
   private SaldoMessageConsumer consumer = null;
   
-  private CheckboxInput synchronize = null;
   private Button synchronizeOptions = null;
 
 	private TablePart kontoList						= null;
@@ -199,35 +194,6 @@ public class KontoControl extends AbstractControl {
     return unterkonto;
   }
 
-  /**
-   * Liefert eine Checkbox fuer die Aktivierung des Auto-Check.
-   * @return Checkbox.
-   * @throws RemoteException
-   */
-  public CheckboxInput getSynchronize() throws RemoteException
-  {
-    if (this.synchronize != null)
-      return this.synchronize;
-    this.synchronize = new CheckboxInput(getKonto().getSynchronize());
-    this.synchronize.addListener(new Listener() {
-      public void handleEvent(Event event)
-      {
-        try
-        {
-          boolean b = ((Boolean)synchronize.getValue()).booleanValue();
-          getSynchronizeOptions().setEnabled(b);
-        }
-        catch (RemoteException e)
-        {
-          Logger.error("unable to configure synchronize options");
-          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Konfigurieren der Synchronisierungsoptionen"),StatusBarMessage.TYPE_ERROR));
-        }
-      }
-    });
-    getSynchronizeOptions().setEnabled(((Boolean)synchronize.getValue()).booleanValue());
-    return this.synchronize;
-  }
-  
   /**
    * Liefert einen Button, ueber den die Synchronisierungsdetails konfiguriert
    * werden.
@@ -419,8 +385,6 @@ public class KontoControl extends AbstractControl {
       getKonto().setKundennummer((String)getKundennummer().getValue());
       getKonto().setKommentar((String) getKommentar().getValue());
       
-      getKonto().setSynchronize(((Boolean)getSynchronize().getValue()).booleanValue());
-
       // und jetzt speichern wir.
 			getKonto().store();
 			GUI.getStatusBar().setSuccessText(i18n.tr("Bankverbindung gespeichert."));
@@ -586,6 +550,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.81  2009/01/26 23:17:46  willuhn
+ * @R Feld "synchronize" aus Konto-Tabelle entfernt. Aufgrund der Synchronize-Optionen pro Konto ist die Information redundant und ergibt sich implizit, wenn fuer ein Konto irgendeine der Synchronisations-Optionen aktiviert ist
+ *
  * Revision 1.80  2009/01/20 10:51:46  willuhn
  * @N Mehr Icons - fuer Buttons
  *

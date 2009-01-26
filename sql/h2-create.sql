@@ -10,7 +10,6 @@ CREATE TABLE konto (
   passport_class varchar(1000) NOT NULL,
   saldo double,
   saldo_datum datetime,
-  synchronize int(1) NULL,
   kommentar varchar(1000) NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
@@ -266,6 +265,6 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',13);
+INSERT INTO version (name,version) values ('db',14);
   
 COMMIT;

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/SynchronizeOptions.java,v $
- * $Revision: 1.3 $
- * $Date: 2007/03/23 00:11:51 $
+ * $Revision: 1.4 $
+ * $Date: 2009/01/26 23:17:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -37,6 +37,19 @@ public class SynchronizeOptions implements Serializable
   {
     super();
     this.id = k == null ? null : k.getID();
+  }
+  
+  /**
+   * Prueft, ob irgendeine Synchronisierungsoption fuer das Konto aktiviert ist.
+   * @return true, wenn irgendeine Option aktiv ist.
+   */
+  public boolean getSynchronize()
+  {
+    return getSyncSaldo() ||
+           getSyncKontoauszuege() ||
+           getSyncDauerauftraege() ||
+           getSyncLastschriften() ||
+           getSyncUeberweisungen();
   }
 
   /**
@@ -140,6 +153,9 @@ public class SynchronizeOptions implements Serializable
 
 /*********************************************************************
  * $Log: SynchronizeOptions.java,v $
+ * Revision 1.4  2009/01/26 23:17:46  willuhn
+ * @R Feld "synchronize" aus Konto-Tabelle entfernt. Aufgrund der Synchronize-Optionen pro Konto ist die Information redundant und ergibt sich implizit, wenn fuer ein Konto irgendeine der Synchronisations-Optionen aktiviert ist
+ *
  * Revision 1.3  2007/03/23 00:11:51  willuhn
  * @N Bug 346
  *

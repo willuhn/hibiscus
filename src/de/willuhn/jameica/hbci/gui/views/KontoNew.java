@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoNew.java,v $
- * $Revision: 1.25 $
- * $Date: 2009/01/20 10:51:46 $
+ * $Revision: 1.26 $
+ * $Date: 2009/01/26 23:17:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -77,24 +77,20 @@ public class KontoNew extends AbstractView {
     SimpleContainer left = new SimpleContainer(columns.getComposite());
 
     left.addHeadline(i18n.tr("Eigenschaften"));
+    left.addLabelPair(i18n.tr("Bezeichnung des Kontos"),   control.getBezeichnung());
+    left.addLabelPair(i18n.tr("Kontoinhaber"),             control.getName());
+    left.addLabelPair(i18n.tr("Saldo"),                    control.getSaldo());
 
-		left.addLabelPair(i18n.tr("Bezeichnung des Kontos"),	 control.getBezeichnung());
-		left.addLabelPair(i18n.tr("Kontoinhaber"),             control.getName());
-		left.addLabelPair(i18n.tr("Saldo"),                    control.getSaldo());
     left.addHeadline(i18n.tr("HBCI-Konfiguration"));
+    left.addLabelPair(i18n.tr("Kundennummer"),             control.getKundennummer());
 		left.addLabelPair(i18n.tr("Kontonummer"),              control.getKontonummer());
 		left.addLabelPair(i18n.tr("Unterkontonummer"),         control.getUnterkonto());
 		left.addLabelPair(i18n.tr("Bankleitzahl"),             control.getBlz());
-		left.addLabelPair(i18n.tr("Kundennummer"),             control.getKundennummer());
 		left.addLabelPair(i18n.tr("Sicherheitsmedium"),        control.getPassportAuswahl());
 
     SimpleContainer right = new SimpleContainer(columns.getComposite(),true);
     right.addHeadline(i18n.tr("Notizen"));
     right.addPart(control.getKommentar());
-
-    SimpleContainer bottom = new SimpleContainer(getParent());
-    bottom.addSeparator();
-    bottom.addCheckbox(control.getSynchronize(),i18n.tr("Konto in Synchronisierung einbeziehen"));
 
     // und noch die Abschicken-Knoepfe
 		ButtonArea buttonArea = new ButtonArea(getParent(),4);
@@ -148,6 +144,9 @@ public class KontoNew extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoNew.java,v $
+ * Revision 1.26  2009/01/26 23:17:46  willuhn
+ * @R Feld "synchronize" aus Konto-Tabelle entfernt. Aufgrund der Synchronize-Optionen pro Konto ist die Information redundant und ergibt sich implizit, wenn fuer ein Konto irgendeine der Synchronisations-Optionen aktiviert ist
+ *
  * Revision 1.25  2009/01/20 10:51:46  willuhn
  * @N Mehr Icons - fuer Buttons
  *
