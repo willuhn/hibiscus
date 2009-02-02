@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.57 $
- * $Date: 2008/12/17 22:49:34 $
+ * $Revision: 1.58 $
+ * $Date: 2009/02/02 14:49:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -78,18 +78,19 @@ import de.willuhn.util.I18N;
  */
 public class UmsatzList extends TablePart implements Extendable
 {
-  private MessageConsumer mc    = null;
+  private MessageConsumer mcChanged = null;
+  private MessageConsumer mcNew     = null;
 
-  private SearchInput search    = null;
-  private CheckboxInput regex   = null;
+  private SearchInput search        = null;
+  private CheckboxInput regex       = null;
   
-  private UmsatzDaysInput days  = null;
+  private UmsatzDaysInput days      = null;
 
-  private Konto konto           = null;
-  private List umsaetze         = null;
+  private Konto konto               = null;
+  private List umsaetze             = null;
   
-  private KL kl                 = null;
-  private boolean filter        = true;
+  private KL kl                     = null;
+  private boolean filter            = true;
   
   protected static de.willuhn.jameica.system.Settings mySettings = new de.willuhn.jameica.system.Settings(UmsatzList.class);
 
@@ -194,10 +195,12 @@ public class UmsatzList extends TablePart implements Extendable
     // BUGZILLA 233 http://www.willuhn.de/bugzilla/show_bug.cgi?id=233
     setRememberColWidths(true);
 
-    // Wir erstellen noch einen Message-Consumer, damit wir ueber neu eintreffende
-    // Umsaetze informiert werden.
-    this.mc = new UmsMessageConsumer();
-    Application.getMessagingFactory().registerMessageConsumer(this.mc);
+    // Wir erstellen noch Message-Consumer, damit wir ueber neu eintreffende
+    // und geaenderte Umsaetze informiert werden.
+    this.mcChanged = new UmsatzChangedMessageConsumer();
+    this.mcNew     = new UmsatzNewMessageConsumer();
+    Application.getMessagingFactory().registerMessageConsumer(this.mcChanged);
+    Application.getMessagingFactory().registerMessageConsumer(this.mcNew);
 
     // Wir geben die Tabelle jetzt noch zur Erweiterung frei.
     ExtensionRegistry.extend(this);
@@ -222,7 +225,8 @@ public class UmsatzList extends TablePart implements Extendable
     parent.addDisposeListener(new DisposeListener() {
       public void widgetDisposed(DisposeEvent e)
       {
-        Application.getMessagingFactory().unRegisterMessageConsumer(mc);
+        Application.getMessagingFactory().unRegisterMessageConsumer(mcChanged);
+        Application.getMessagingFactory().unRegisterMessageConsumer(mcNew);
       }
     });
 
@@ -605,23 +609,14 @@ public class UmsatzList extends TablePart implements Extendable
   /**
    * Hilfsklasse damit wir ueber importierte Umsaetze informiert werden.
    */
-  public class UmsMessageConsumer implements MessageConsumer
+  public class UmsatzChangedMessageConsumer implements MessageConsumer
   {
-    /**
-     * ct.
-     */
-    public UmsMessageConsumer()
-    {
-      super();
-    }
-
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
      */
     public Class[] getExpectedMessageTypes()
     {
       return new Class[]{
-        ImportMessage.class,
         ObjectChangedMessage.class
       };
     }
@@ -639,56 +634,27 @@ public class UmsatzList extends TablePart implements Extendable
       if (o == null || !(o instanceof Umsatz))
         return;
 
-      // Ein Umsatz wurde geaendert
-      if (message instanceof ObjectChangedMessage)
-      {
-        GUI.getDisplay().syncExec(new Runnable() {
-          public void run()
+      GUI.getDisplay().syncExec(new Runnable() {
+        public void run()
+        {
+          try
           {
-            try
-            {
-              int index = removeItem(o);
-              if (index == -1)
-                return; // Objekt war nicht in der Tabelle
-              
-              // Aktualisieren, in dem wir es neu an der gleichen Position eintragen
-             addItem(o,index);
-             
-             // Wir markieren es noch in der Tabelle
-             select(o);
-            }
-            catch (Exception e)
-            {
-              Logger.error("unable to add object to list",e);
-            }
+            int index = removeItem(o);
+            if (index == -1)
+              return; // Objekt war nicht in der Tabelle
+            
+            // Aktualisieren, in dem wir es neu an der gleichen Position eintragen
+           addItem(o,index);
+           
+           // Wir markieren es noch in der Tabelle
+           select(o);
           }
-        });
-        return;
-      }
-      // Neuer Umsatz hinzugekommen
-      if (message instanceof ImportMessage)
-      {
-        GUI.getDisplay().syncExec(new Runnable() {
-          public void run()
+          catch (Exception e)
           {
-            try
-            {
-              umsaetze.add(o);
-              if (filter && kl != null)
-                kl.process();
-              else
-              {
-                addItem(o);
-                sort();
-              }
-            }
-            catch (Exception e)
-            {
-              Logger.error("unable to add object to list",e);
-            }
+            Logger.error("unable to add object to list",e);
           }
-        });
-      }
+        }
+      });
     }
 
     /**
@@ -701,6 +667,69 @@ public class UmsatzList extends TablePart implements Extendable
   }
 
 
+  /**
+   * Hilfsklasse damit wir ueber importierte Umsaetze informiert werden.
+   */
+  public class UmsatzNewMessageConsumer implements MessageConsumer
+  {
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
+     */
+    public Class[] getExpectedMessageTypes()
+    {
+      return new Class[]{
+        ImportMessage.class,
+      };
+    }
+
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
+     */
+    public void handleMessage(Message message) throws Exception
+    {
+      if (message == null)
+        return;
+      
+      final GenericObject o = ((ObjectMessage)message).getObject();
+
+      if (o == null || !(o instanceof Umsatz))
+        return;
+
+      GUI.getDisplay().syncExec(new Runnable() {
+        public void run()
+        {
+          try
+          {
+            // BUGZILLA 692 haben wir den schon?
+            if (umsaetze.contains(o))
+              return;
+
+            umsaetze.add(o);
+            if (filter && kl != null)
+              kl.process();
+            else
+            {
+              addItem(o);
+              sort();
+            }
+          }
+          catch (Exception e)
+          {
+            Logger.error("unable to add object to list",e);
+          }
+        }
+      });
+    }
+
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
+     */
+    public boolean autoRegister()
+    {
+      return false;
+    }
+  }
+  
   /**
    * @see de.willuhn.jameica.gui.extension.Extendable#getExtendableID()
    */
@@ -715,6 +744,9 @@ public class UmsatzList extends TablePart implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.58  2009/02/02 14:49:14  willuhn
+ * @B BUGZILLA 692
+ *
  * Revision 1.57  2008/12/17 22:49:34  willuhn
  * @R t o d o  tag entfernt
  *
