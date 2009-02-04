@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.60 $
- * $Date: 2009/01/04 01:32:57 $
+ * $Revision: 1.61 $
+ * $Date: 2009/02/04 23:06:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -716,11 +716,34 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
   {
     setAttribute("zweck3",VerwendungszweckUtil.merge(list));
   }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getFlags()
+   */
+  public int getFlags() throws RemoteException
+  {
+    Integer i = (Integer) this.getAttribute("flags");
+    return i == null ? Umsatz.FLAG_NONE : i.intValue();
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setFlags(int)
+   */
+  public void setFlags(int flags) throws RemoteException
+  {
+    if (flags < 0)
+      return; // ungueltig
+    
+    this.setAttribute("flags",new Integer(flags));
+  }
 }
 
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.61  2009/02/04 23:06:24  willuhn
+ * @N BUGZILLA 308 - Umsaetze als "geprueft" markieren
+ *
  * Revision 1.60  2009/01/04 01:32:57  willuhn
  * @N Laengen-Check - ist jetzt noetig, da Umsaetze nun manuell geaendert werden koennen
  *

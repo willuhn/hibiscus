@@ -171,6 +171,7 @@ CREATE TABLE umsatz (
      , kommentar TEXT
      , checksum bigint(16)
      , umsatztyp_id int(10)
+     , flags int(1)
      , UNIQUE (id)
      , PRIMARY KEY (id)
 )TYPE=InnoDB;
@@ -264,4 +265,4 @@ ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
 
-INSERT INTO version (name,version) values ('db',14);
+INSERT INTO version (name,version) values ('db',15);

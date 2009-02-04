@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UmsatzList.java,v $
- * $Revision: 1.30 $
- * $Date: 2008/12/19 12:16:05 $
+ * $Revision: 1.31 $
+ * $Date: 2009/02/04 23:06:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,6 +26,7 @@ import de.willuhn.jameica.hbci.gui.action.UmsatzAssign;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.action.UmsatzExport;
 import de.willuhn.jameica.hbci.gui.action.UmsatzImport;
+import de.willuhn.jameica.hbci.gui.action.UmsatzSetFlags;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.system.Application;
@@ -63,6 +64,9 @@ public class UmsatzList extends ContextMenu implements Extendable
     addItem(new UmsatzItem(i18n.tr("Gegenkonto in Adressbuch übernehmen"),new EmpfaengerAdd(),"contact-new.png"));
     addItem(new UmsatzItem(i18n.tr("Als neue Überweisung anlegen..."),new UeberweisungNew(),"stock_next.png"));
     addItem(new UmsatzItem(i18n.tr("Umsatz-Kategorie zuordnen..."),new UmsatzAssign(),"x-office-spreadsheet.png"));
+    addItem(ContextMenuItem.SEPARATOR);
+    addItem(new UmsatzItem(i18n.tr("als \"geprüft\" markieren..."),new UmsatzSetFlags(Umsatz.FLAG_CHECKED,true),"emblem-default.png"));
+    addItem(new UmsatzItem(i18n.tr("als \"ungeprüft\" markieren..."),new UmsatzSetFlags(Umsatz.FLAG_CHECKED,false),"edit-undo.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new UmsatzItem(i18n.tr("Exportieren..."),new UmsatzExport(),"document-save.png"));
     addItem(new ContextMenuItem(i18n.tr("Importieren..."),new UmsatzImport()
@@ -141,6 +145,9 @@ public class UmsatzList extends ContextMenu implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.31  2009/02/04 23:06:24  willuhn
+ * @N BUGZILLA 308 - Umsaetze als "geprueft" markieren
+ *
  * Revision 1.30  2008/12/19 12:16:05  willuhn
  * @N Mehr Icons
  * @C Reihenfolge der Contextmenu-Eintraege vereinheitlicht

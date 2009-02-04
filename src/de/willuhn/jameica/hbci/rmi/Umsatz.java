@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Umsatz.java,v $
- * $Revision: 1.17 $
- * $Date: 2009/01/04 01:25:47 $
+ * $Revision: 1.18 $
+ * $Date: 2009/02/04 23:06:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,6 +28,15 @@ import de.willuhn.util.ApplicationException;
  */
 public interface Umsatz extends HibiscusTransfer, DBObject, Checksum
 {
+  /**
+   * Flag "kein Flag".
+   */
+  public final static int FLAG_NONE    = 0;
+
+  /**
+   * Flag "Geprueft".
+   */
+  public final static int FLAG_CHECKED = 1 << 0;
 
 	/**
 	 * Liefert das Datum der Buchung.
@@ -159,11 +168,35 @@ public interface Umsatz extends HibiscusTransfer, DBObject, Checksum
    * @throws RemoteException
    */
   public boolean isAssigned() throws RemoteException;
+  
+  /**
+   * Liefert ein Bit-Feld mit Flags des Umsatzes.
+   * Ein Umsatz kann mit verschiedenen Flags markiert
+   * werden. Das kann zum Beispiel "geprueft" sein.
+   * Damit fuer kuenftige weitere Flags nicht immer
+   * ein neues Feld zur Datenbank hinzugefuegt werden
+   * muss, verwenden wir hier ein Bitfeld. Damit koennen
+   * mehrere Flags in einem Wert codiert werden.
+   * @return Bit-Feld mit den Flags des Umsatzes.
+   * @throws RemoteException
+   */
+  public int getFlags() throws RemoteException;
+  
+  /**
+   * Speichert die Flags einen Umsatzes.
+   * @param flags die Flags in Form eines Bit-Feldes.
+   * @see Umsatz#FLAG_CHECKED
+   * @throws RemoteException
+   */
+  public void setFlags(int flags) throws RemoteException;
 }
 
 
 /**********************************************************************
  * $Log: Umsatz.java,v $
+ * Revision 1.18  2009/02/04 23:06:24  willuhn
+ * @N BUGZILLA 308 - Umsaetze als "geprueft" markieren
+ *
  * Revision 1.17  2009/01/04 01:25:47  willuhn
  * @N Checksumme von Umsaetzen wird nun generell beim Anlegen des Datensatzes gespeichert. Damit koennen Umsaetze nun problemlos geaendert werden, ohne mit "hasChangedByUser" checken zu muessen. Die Checksumme bleibt immer erhalten, weil sie in UmsatzImpl#insert() sofort zu Beginn angelegt wird
  * @N Umsaetze sind nun vollstaendig editierbar

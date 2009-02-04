@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.58 $
- * $Date: 2009/02/02 14:49:14 $
+ * $Revision: 1.59 $
+ * $Date: 2009/02/04 23:06:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -52,6 +52,7 @@ import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
@@ -169,11 +170,15 @@ public class UmsatzList extends TablePart implements Extendable
           // Saldo nicht mit einfaerben, dass irritiert sonst,
           // wenn die Buchung zwar einen negativen Betrag hat,
           // der Saldo aber einen positiven (und umgekehrt)
-          item.setForeground(6,Color.WIDGET_FG.getSWTColor());
+          item.setForeground(7,Color.WIDGET_FG.getSWTColor());
+          
+          if ((u.getFlags() & Umsatz.FLAG_CHECKED) != 0)
+            item.setImage(1,SWTUtil.getImage("emblem-default.png"));
         
         }
         catch (RemoteException e)
         {
+          Logger.error("unable to format line",e);
         }
       }
     });
@@ -181,6 +186,7 @@ public class UmsatzList extends TablePart implements Extendable
     // BUGZILLA 23 http://www.willuhn.de/bugzilla/show_bug.cgi?id=23
     // BUGZILLA 86 http://www.willuhn.de/bugzilla/show_bug.cgi?id=86
     addColumn("#","id-int");
+    addColumn(i18n.tr("Flags"),                   null);
     addColumn(i18n.tr("Gegenkonto"),                "empfaenger");
     addColumn(i18n.tr("Verwendungszweck"),          "zweck");
     addColumn(i18n.tr("Datum"),                     "datum_pseudo", new DateFormatter(HBCI.DATEFORMAT));
@@ -744,6 +750,9 @@ public class UmsatzList extends TablePart implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.59  2009/02/04 23:06:24  willuhn
+ * @N BUGZILLA 308 - Umsaetze als "geprueft" markieren
+ *
  * Revision 1.58  2009/02/02 14:49:14  willuhn
  * @B BUGZILLA 692
  *
