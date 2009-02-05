@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.49 $
- * $Date: 2008/12/01 23:54:42 $
+ * $Revision: 1.49.2.1 $
+ * $Date: 2009/02/05 11:38:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -107,6 +107,9 @@ public class Converter {
 		umsatz.setDatum(u.bdate);
 		umsatz.setValuta(u.valuta);
 
+		////////////////////////////////////////////////////////////////////////////
+		// Verwendungszweck
+		
     // BUGZILLA 146
     // Aus einer Mail von Stefan Palme
     //    Es geht noch besser. Wenn in "umsline.gvcode" nicht der Wert "999"
@@ -114,61 +117,42 @@ public class Converter {
     //    und "addkey" irgendwie sinnvoll gefüllt.  Steht in "gvcode" der Wert
     //    "999" drin, dann sind diese Variablen alle null, und der ungeparste 
     //    Inhalt des Feldes :86: steht komplett in "additional".
-    
 
+		String[] lines = u.usage;
     // Selberparsen kann ich wohl vergessen, wenn 999 drin steht. Wenn selbst
     // Stefan das nicht macht, lass ich lieber gleich die Finger davon ;)
-    if (u.usage == null || u.usage.length == 0)
+    if (lines == null || lines.length == 0)
 		{
       String usage = u.additional;
-      if (usage == null || usage.length() == 0)
-      {
-        // Wir haben ueberhaupt nichts.
-        umsatz.setZweck("-");
-      }
-      else
+      if (usage != null && usage.length() > 0)
       {
         // Java's Regex-Implementierung ist sowas von daemlich.
         // String.split() macht nur Rotz, wenn man mit Quantifierern
         // arbeitet. Also ersetzten wir erst mal alles gegen nen
         // eigenen String und verwenden den dann zum Splitten.
         usage = usage.replaceAll("(.{27})","$1--##--##");
-        String[] lines = usage.split("--##--##");
-        
-        if (lines.length >= 1) umsatz.setZweck(lines[0]);
-        if (lines.length >= 2) umsatz.setZweck2(lines[1]);
-        if (lines.length >= 3)
-        {
-          // Wenn noch mehr da ist, pappen wir den Rest zusammen in
-          // den Kommentar
-          StringBuffer sb = new StringBuffer();
-          for (int i=2;i<lines.length;++i)
-          {
-            sb.append(lines[i]);
-          }
-          umsatz.setKommentar(sb.toString());
-        }
+        lines = usage.split("--##--##");
       }
 		}
-		else {
-      // erste Zeile in den ersten Verwendungszweck
-			umsatz.setZweck(u.usage[0]);
-      
-      // Noch eine Zeile?
-      // Die kommt in den zweiten Verwendungszweck
-      if (u.usage.length > 1)
-        umsatz.setZweck2(u.usage[1]);
 
-      // Erweiterte Verwendungszwecke?
-      if (u.usage.length > 2)
-      {
-        ArrayList lines = new ArrayList();
-        for (int i=2;i<u.usage.length;++i)
-          lines.add(u.usage[i]);
-        umsatz.setWeitereVerwendungszwecke((String[])lines.toArray(new String[lines.size()]));
-      }
+    if (lines.length > 0)
+  		umsatz.setZweck(lines[0]);
+    if (lines.length > 1)
+      umsatz.setZweck2(lines[1]);
+
+    // Erweiterte Verwendungszwecke?
+    if (lines.length > 2)
+    {
+      ArrayList al = new ArrayList();
+      for (int i=2;i<lines.length;++i)
+        al.add(lines[i]);
+      umsatz.setWeitereVerwendungszwecke((String[])al.toArray(new String[al.size()]));
 		}
+    //
+    ////////////////////////////////////////////////////////////////////////////
     
+    ////////////////////////////////////////////////////////////////////////////
+    // Gegenkonto
 		// und jetzt noch der Empfaenger (wenn er existiert)
 		if (u.other != null) 
 		{
@@ -417,6 +401,15 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.49.2.1  2009/02/05 11:38:47  willuhn
+ * @B BUGZILLA 694 - backport into 1.9
+ *
+ * Revision 1.51  2009/01/25 18:04:08  willuhn
+ * @B BUGZILLA 694
+ *
+ * Revision 1.50  2009/01/20 09:43:34  willuhn
+ * @C Verteilen der Verwendungszwecke vereinfacht
+ *
  * Revision 1.49  2008/12/01 23:54:42  willuhn
  * @N BUGZILLA 188 Erweiterte Verwendungszwecke in Exports/Imports und Sammelauftraegen
  *
