@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SparQuote.java,v $
- * $Revision: 1.14 $
- * $Date: 2008/04/06 23:21:43 $
+ * $Revision: 1.14.2.1 $
+ * $Date: 2009/02/05 11:34:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -291,7 +291,12 @@ public class SparQuote implements Part
         // Neues Limit definieren
         cal.setTime(valuta);
         cal.add(Calendar.MONTH,1);
-        cal.set(Calendar.DAY_OF_MONTH,stichtag);
+        
+        // BUGZILLA 691
+        if (stichtag > cal.getActualMaximum(Calendar.DAY_OF_MONTH))
+          cal.set(Calendar.DAY_OF_MONTH,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+        else
+          cal.set(Calendar.DAY_OF_MONTH,stichtag);
         currentLimit = HBCIProperties.startOfDay(cal.getTime());
       }
       
@@ -517,6 +522,9 @@ public class SparQuote implements Part
 
 /*********************************************************************
  * $Log: SparQuote.java,v $
+ * Revision 1.14.2.1  2009/02/05 11:34:40  willuhn
+ * @B BUGZILLA 691 - backport into 1.9
+ *
  * Revision 1.14  2008/04/06 23:21:43  willuhn
  * @C Bug 575
  * @N Der Vereinheitlichung wegen alle Buttons in den Auswertungen nach oben verschoben. Sie sind dann naeher an den Filter-Controls -> ergonomischer
