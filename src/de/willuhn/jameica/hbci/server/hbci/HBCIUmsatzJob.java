@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUmsatzJob.java,v $
- * $Revision: 1.35 $
- * $Date: 2009/01/04 01:25:47 $
+ * $Revision: 1.34.2.1 $
+ * $Date: 2009/02/05 11:57:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -29,6 +29,7 @@ import de.willuhn.jameica.hbci.server.Converter;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.plugin.PluginResources;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
@@ -124,9 +125,36 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
    */
   void markExecuted() throws RemoteException, ApplicationException
   {
+    Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
+
     konto.addToProtokoll(i18n.tr("Umsätze abgerufen"),Protokoll.TYP_SUCCESS);
 
 		GVRKUms result = (GVRKUms) getJobResult();
+
+		////////////////////////////////////////////////////////////////////////////
+		// vorgemerkte Umsaetze zu Debugging-Zwecken ausgeben
+		if (settings.getBoolean("umsatz.notbooked.log",false))
+		{
+		  try
+		  {
+	      String notbooked = result.getResultData().getProperty("notbooked");
+	      if (notbooked != null && notbooked.length() > 0)
+	      {
+	        Logger.info("got notbooked entries, data following...");
+	        Logger.info(notbooked);
+	      }
+	      else
+	      {
+	        Logger.info("got no notbooked entries");
+	      }
+		  }
+		  catch (Exception e)
+		  {
+		    Logger.error("error while checking for notbooked entries",e);
+		  }
+		}
+    ////////////////////////////////////////////////////////////////////////////
+		
 
     GVRKUms.UmsLine[] lines = result.getFlatData();
     if (lines == null || lines.length == 0)
@@ -143,10 +171,9 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
 		Date d = null;
 		if (this.saldoDatum != null)
 		{
-      PluginResources res = Application.getPluginLoader().getPlugin(HBCI.class).getResources();
       Calendar cal = Calendar.getInstance();
       cal.setTime(this.saldoDatum);
-      cal.add(Calendar.DATE,res.getSettings().getInt("umsatz.mergewindow.offset",-30));
+      cal.add(Calendar.DATE,settings.getInt("umsatz.mergewindow.offset",-30));
       d = cal.getTime();
 		}
     Logger.info("merge window: " + d + " - " + new Date());
@@ -156,6 +183,11 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
 		{
 			final Umsatz umsatz = Converter.HBCIUmsatz2HibiscusUmsatz(lines[i]);
 			umsatz.setKonto(konto); // muessen wir noch machen, weil der Converter das Konto nicht kennt
+      
+      // Wenn keine geparsten Verwendungszwecke da sind, machen wir
+      // den Umsatz editierbar.
+      if(lines[i].usage == null || lines[i].usage.length == 0)
+        umsatz.setChangedByUser();
       
 			if (existing.contains(umsatz) == null)
 			{
@@ -189,9 +221,8 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIUmsatzJob.java,v $
- * Revision 1.35  2009/01/04 01:25:47  willuhn
- * @N Checksumme von Umsaetzen wird nun generell beim Anlegen des Datensatzes gespeichert. Damit koennen Umsaetze nun problemlos geaendert werden, ohne mit "hasChangedByUser" checken zu muessen. Die Checksumme bleibt immer erhalten, weil sie in UmsatzImpl#insert() sofort zu Beginn angelegt wird
- * @N Umsaetze sind nun vollstaendig editierbar
+ * Revision 1.34.2.1  2009/02/05 11:57:20  willuhn
+ * @N Loggen der vorgemerkten Umsaetze
  *
  * Revision 1.34  2008/12/15 11:01:52  willuhn
  * @C Merge komplett weglassen, wenn gar keine Umsaetze empfangen wurden
