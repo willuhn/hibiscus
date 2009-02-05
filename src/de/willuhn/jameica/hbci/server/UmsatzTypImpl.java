@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.46 $
- * $Date: 2008/12/31 12:29:36 $
+ * $Revision: 1.45.2.1 $
+ * $Date: 2009/02/05 11:42:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -249,7 +249,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
     String name = umsatz.getGegenkontoName();
     String kto  = umsatz.getGegenkontoNummer();
     String kom  = umsatz.getKommentar();
-    
+
     String[] ewz = umsatz.getWeitereVerwendungszwecke();
     String vwz3 = "";
     if (ewz != null && ewz.length > 0)
@@ -511,8 +511,8 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
 
 /*******************************************************************************
  * $Log: UmsatzTypImpl.java,v $
- * Revision 1.46  2008/12/31 12:29:36  willuhn
- * @N Auch in erweiterten Verwendungszwecken nach Suchbegriffen fuer Umsatzkategorie suchen
+ * Revision 1.45.2.1  2009/02/05 11:42:37  willuhn
+ * @N Auch in erweiterten Verwendungszwecken Suchbegriff suchen
  *
  * Revision 1.45  2008/12/17 22:46:36  willuhn
  * @R t o d o  tag entfernt
