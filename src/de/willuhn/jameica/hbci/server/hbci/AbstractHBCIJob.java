@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCIJob.java,v $
- * $Revision: 1.28 $
- * $Date: 2008/09/23 11:28:30 $
+ * $Revision: 1.28.2.1 $
+ * $Date: 2009/02/05 11:51:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -86,6 +86,18 @@ public abstract class AbstractHBCIJob
   abstract String markFailed(String error) throws RemoteException, ApplicationException;
   
 	/**
+   * Wird aufgerufen, wenn der User den Vorgang abgebrochen hat.
+   * Kann von den Jobs implementiert werden, muss aber nicht.
+   * @throws RemoteException
+   * @throws ApplicationException
+   * BUGZILLA 690
+   */
+  void markCancelled() throws RemoteException, ApplicationException
+  {
+    
+  }
+
+	/**
 	 * Diese Funktion wird von der HBCIFactory intern aufgerufen.
 	 * Sie uebergibt hier den erzeugten HBCI-Job der Abfrage.
 	 * @param job der erzeugte Job.
@@ -131,6 +143,13 @@ public abstract class AbstractHBCIJob
   final void handleResult() throws ApplicationException, RemoteException
   {
     HBCIJobResult result = getJobResult();
+    if (HBCIFactory.getInstance().isCancelled()) // BUGZILLA 690
+    {
+      Logger.warn("hbci session cancelled by user, mark job as cancelled");
+      markCancelled();
+      return;
+    }
+    
     if (result.isOK())
     {
       // Globaler Status ist OK - Job wurde zweifelsfrei erfolgreich ausgefuehrt
@@ -333,6 +352,9 @@ public abstract class AbstractHBCIJob
 
 /**********************************************************************
  * $Log: AbstractHBCIJob.java,v $
+ * Revision 1.28.2.1  2009/02/05 11:51:15  willuhn
+ * @C misc backports
+ *
  * Revision 1.28  2008/09/23 11:28:30  willuhn
  * @N Statuscode auch bei Erfolg mit loggen
  *

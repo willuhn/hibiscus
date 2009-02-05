@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragListJob.java,v $
- * $Revision: 1.36 $
- * $Date: 2009/01/04 22:13:27 $
+ * $Revision: 1.34.2.1 $
+ * $Date: 2009/02/05 11:51:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -207,6 +207,9 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIDauerauftragListJob.java,v $
+ * Revision 1.34.2.1  2009/02/05 11:51:13  willuhn
+ * @C misc backports
+ *
  * Revision 1.36  2009/01/04 22:13:27  willuhn
  * @R redundanten Konto-Check auch beim Loeschen von Dauerauftraegen entfernt
  *
