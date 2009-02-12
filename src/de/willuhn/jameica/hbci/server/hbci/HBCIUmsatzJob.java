@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUmsatzJob.java,v $
- * $Revision: 1.35 $
- * $Date: 2009/01/04 01:25:47 $
+ * $Revision: 1.36 $
+ * $Date: 2009/02/12 16:14:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.server.hbci;
 import java.rmi.RemoteException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.kapott.hbci.GV_Result.GVRKUms;
 
@@ -128,8 +129,8 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
 
 		GVRKUms result = (GVRKUms) getJobResult();
 
-    GVRKUms.UmsLine[] lines = result.getFlatData();
-    if (lines == null || lines.length == 0)
+    List lines = result.getFlatData();
+    if (lines == null || lines.size() == 0)
     {
       Logger.info("got no new data");
       return;
@@ -152,9 +153,9 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
     Logger.info("merge window: " + d + " - " + new Date());
 		DBIterator existing = konto.getUmsaetze(d,null);
 
-		for (int i=0;i<lines.length;++i)
+		for (int i=0;i<lines.size();++i)
 		{
-			final Umsatz umsatz = Converter.HBCIUmsatz2HibiscusUmsatz(lines[i]);
+			final Umsatz umsatz = Converter.HBCIUmsatz2HibiscusUmsatz((GVRKUms.UmsLine)lines.get(i));
 			umsatz.setKonto(konto); // muessen wir noch machen, weil der Converter das Konto nicht kennt
       
 			if (existing.contains(umsatz) == null)
@@ -189,6 +190,9 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIUmsatzJob.java,v $
+ * Revision 1.36  2009/02/12 16:14:34  willuhn
+ * @N HBCI4Java-Version mit Unterstuetzung fuer vorgemerkte Umsaetze
+ *
  * Revision 1.35  2009/01/04 01:25:47  willuhn
  * @N Checksumme von Umsaetzen wird nun generell beim Anlegen des Datensatzes gespeichert. Damit koennen Umsaetze nun problemlos geaendert werden, ohne mit "hasChangedByUser" checken zu muessen. Die Checksumme bleibt immer erhalten, weil sie in UmsatzImpl#insert() sofort zu Beginn angelegt wird
  * @N Umsaetze sind nun vollstaendig editierbar

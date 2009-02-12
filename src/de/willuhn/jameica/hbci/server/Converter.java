@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.51 $
- * $Date: 2009/01/25 18:04:08 $
+ * $Revision: 1.52 $
+ * $Date: 2009/02/12 16:14:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,8 @@ package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.kapott.hbci.GV_Result.GVRDauerList;
 import org.kapott.hbci.GV_Result.GVRKUms;
@@ -118,10 +120,10 @@ public class Converter {
     //    "999" drin, dann sind diese Variablen alle null, und der ungeparste 
     //    Inhalt des Feldes :86: steht komplett in "additional".
 
-		String[] lines = u.usage;
+		List<String> lines = u.usage;
     // Selberparsen kann ich wohl vergessen, wenn 999 drin steht. Wenn selbst
     // Stefan das nicht macht, lass ich lieber gleich die Finger davon ;)
-    if (lines == null || lines.length == 0)
+    if (lines == null || lines.size() == 0)
 		{
       String usage = u.additional;
       if (usage != null && usage.length() > 0)
@@ -131,21 +133,21 @@ public class Converter {
         // arbeitet. Also ersetzten wir erst mal alles gegen nen
         // eigenen String und verwenden den dann zum Splitten.
         usage = usage.replaceAll("(.{27})","$1--##--##");
-        lines = usage.split("--##--##");
+        lines = Arrays.asList(usage.split("--##--##"));
       }
 		}
 
-    if (lines.length > 0)
-  		umsatz.setZweck(lines[0]);
-    if (lines.length > 1)
-      umsatz.setZweck2(lines[1]);
+    int size = lines.size();
+    
+    if (size > 0) umsatz.setZweck(lines.get(0));
+    if (size > 1) umsatz.setZweck2(lines.get(1));
 
     // Erweiterte Verwendungszwecke?
-    if (lines.length > 2)
+    if (size > 2)
     {
       ArrayList al = new ArrayList();
-      for (int i=2;i<lines.length;++i)
-        al.add(lines[i]);
+      for (int i=2;i<size;++i)
+        al.add(lines.get(i));
       umsatz.setWeitereVerwendungszwecke((String[])al.toArray(new String[al.size()]));
 		}
     //
@@ -401,6 +403,9 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.52  2009/02/12 16:14:33  willuhn
+ * @N HBCI4Java-Version mit Unterstuetzung fuer vorgemerkte Umsaetze
+ *
  * Revision 1.51  2009/01/25 18:04:08  willuhn
  * @B BUGZILLA 694
  *
