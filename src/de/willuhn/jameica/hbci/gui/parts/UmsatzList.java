@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.59 $
- * $Date: 2009/02/04 23:06:24 $
+ * $Revision: 1.60 $
+ * $Date: 2009/02/12 18:37:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -162,16 +162,24 @@ public class UmsatzList extends TablePart implements Extendable
               Logger.error("unable to parse ID for umsatz",e);
             }
           }
-          if (u.getBetrag() < 0.0)
-            item.setForeground(Settings.getBuchungSollForeground());
-          else
-            item.setForeground(Settings.getBuchungHabenForeground());
-
-          // Saldo nicht mit einfaerben, dass irritiert sonst,
-          // wenn die Buchung zwar einen negativen Betrag hat,
-          // der Saldo aber einen positiven (und umgekehrt)
-          item.setForeground(7,Color.WIDGET_FG.getSWTColor());
           
+          if ((u.getFlags() & Umsatz.FLAG_NOTBOOKED) != 0)
+          {
+            item.setForeground(Color.COMMENT.getSWTColor());
+          }
+          else
+          {
+            if (u.getBetrag() < 0.0)
+              item.setForeground(Settings.getBuchungSollForeground());
+            else
+              item.setForeground(Settings.getBuchungHabenForeground());
+
+            // Saldo nicht mit einfaerben, dass irritiert sonst,
+            // wenn die Buchung zwar einen negativen Betrag hat,
+            // der Saldo aber einen positiven (und umgekehrt)
+            item.setForeground(7,Color.WIDGET_FG.getSWTColor());
+          }
+
           if ((u.getFlags() & Umsatz.FLAG_CHECKED) != 0)
             item.setImage(1,SWTUtil.getImage("emblem-default.png"));
         
@@ -750,6 +758,9 @@ public class UmsatzList extends TablePart implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.60  2009/02/12 18:37:17  willuhn
+ * @N Erster Code fuer vorgemerkte Umsaetze
+ *
  * Revision 1.59  2009/02/04 23:06:24  willuhn
  * @N BUGZILLA 308 - Umsaetze als "geprueft" markieren
  *

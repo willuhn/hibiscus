@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UmsatzList.java,v $
- * $Revision: 1.31 $
- * $Date: 2009/02/04 23:06:24 $
+ * $Revision: 1.32 $
+ * $Date: 2009/02/12 18:37:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,6 +11,8 @@
  *
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.menus;
+
+import java.rmi.RemoteException;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.extension.Extendable;
@@ -30,6 +32,7 @@ import de.willuhn.jameica.hbci.gui.action.UmsatzSetFlags;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -59,14 +62,14 @@ public class UmsatzList extends ContextMenu implements Extendable
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 		addItem(new OpenItem());
-    addItem(new UmsatzItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
+    addItem(new UmsatzBookedItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new UmsatzItem(i18n.tr("Gegenkonto in Adressbuch übernehmen"),new EmpfaengerAdd(),"contact-new.png"));
     addItem(new UmsatzItem(i18n.tr("Als neue Überweisung anlegen..."),new UeberweisungNew(),"stock_next.png"));
     addItem(new UmsatzItem(i18n.tr("Umsatz-Kategorie zuordnen..."),new UmsatzAssign(),"x-office-spreadsheet.png"));
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new UmsatzItem(i18n.tr("als \"geprüft\" markieren..."),new UmsatzSetFlags(Umsatz.FLAG_CHECKED,true),"emblem-default.png"));
-    addItem(new UmsatzItem(i18n.tr("als \"ungeprüft\" markieren..."),new UmsatzSetFlags(Umsatz.FLAG_CHECKED,false),"edit-undo.png"));
+    addItem(new UmsatzBookedItem(i18n.tr("als \"geprüft\" markieren..."),new UmsatzSetFlags(Umsatz.FLAG_CHECKED,true),"emblem-default.png"));
+    addItem(new UmsatzBookedItem(i18n.tr("als \"ungeprüft\" markieren..."),new UmsatzSetFlags(Umsatz.FLAG_CHECKED,false),"edit-undo.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new UmsatzItem(i18n.tr("Exportieren..."),new UmsatzExport(),"document-save.png"));
     addItem(new ContextMenuItem(i18n.tr("Importieren..."),new UmsatzImport()
@@ -84,7 +87,7 @@ public class UmsatzList extends ContextMenu implements Extendable
     ExtensionRegistry.extend(this);
 
 	}
-  
+	
   /**
    * Pruefen, ob es sich wirklich um einen Umsatz handelt.
    */
@@ -140,11 +143,63 @@ public class UmsatzList extends ContextMenu implements Extendable
   {
     return this.getClass().getName();
   }
+
+  /**
+   * Ueberschrieben, um nur fuer gebuchte Umsaetze zu aktivieren
+   */
+  private class UmsatzBookedItem extends UmsatzItem
+  {
+    /**
+     * ct.
+     * @param text Label.
+     * @param action Action.
+     * @param icon optionales Icon.
+     */
+    public UmsatzBookedItem(String text, Action action, String icon)
+    {
+      super(text,action,icon);
+    }
+    /**
+     * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
+     */
+    public boolean isEnabledFor(Object o)
+    {
+      if ((o instanceof Umsatz) || (o instanceof Umsatz[]))
+      {
+        Umsatz[] umsaetze = null;
+        
+        if (o instanceof Umsatz)
+          umsaetze = new Umsatz[]{(Umsatz) o};
+        else
+          umsaetze = (Umsatz[]) o;
+
+        try
+        {
+          for (int i=0;i<umsaetze.length;++i)
+          {
+            if ((umsaetze[i].getFlags() & Umsatz.FLAG_NOTBOOKED) != 0)
+              return false;
+          }
+        }
+        catch (RemoteException re)
+        {
+          Logger.error("unable to check for not-booked entries",re);
+        }
+        return super.isEnabledFor(o);
+      }
+      return false;
+    }
+  }
+  
+
 }
 
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.32  2009/02/12 18:37:18  willuhn
+ * @N Erster Code fuer vorgemerkte Umsaetze
+ *
  * Revision 1.31  2009/02/04 23:06:24  willuhn
  * @N BUGZILLA 308 - Umsaetze als "geprueft" markieren
  *

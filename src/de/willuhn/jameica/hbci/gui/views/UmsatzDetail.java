@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzDetail.java,v $
- * $Revision: 1.34 $
- * $Date: 2009/01/20 10:51:45 $
+ * $Revision: 1.35 $
+ * $Date: 2009/02/12 18:37:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
 import de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl;
 import de.willuhn.jameica.hbci.rmi.Address;
+import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -38,18 +39,23 @@ public class UmsatzDetail extends AbstractUmsatzDetail
 
     ButtonArea buttons = new ButtonArea(getParent(),4);
     buttons.addButton(new Back());
-    buttons.addButton(i18n.tr("Bearbeiten"),new de.willuhn.jameica.hbci.gui.action.UmsatzDetailEdit(),getCurrentObject());
+    
+    Umsatz u = getControl().getUmsatz();
+    Button edit = new Button(i18n.tr("Bearbeiten"),new de.willuhn.jameica.hbci.gui.action.UmsatzDetailEdit(),u);
+    edit.setEnabled((u.getFlags() & Umsatz.FLAG_NOTBOOKED) == 0);
+    
+    buttons.addButton(edit);
     buttons.addButton(i18n.tr("Speichern"),new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
-        control.handleStore();
+        getControl().handleStore();
       }
     });
     
     Button ab = null;
 
-    final Address found = control.getAddressbookEntry();
+    final Address found = getControl().getAddressbookEntry();
     if (found != null)
     {
       ab = new Button(i18n.tr("Gegenkonto In Adressbuch öffnen"),new de.willuhn.jameica.hbci.gui.action.EmpfaengerNew(),found);
@@ -60,7 +66,7 @@ public class UmsatzDetail extends AbstractUmsatzDetail
       {
         public void handleAction(Object context) throws ApplicationException
         {
-          new EmpfaengerAdd().handleAction(control.getUmsatz());
+          new EmpfaengerAdd().handleAction(getControl().getUmsatz());
         }
       });
     }
@@ -81,6 +87,9 @@ public class UmsatzDetail extends AbstractUmsatzDetail
 
 /**********************************************************************
  * $Log: UmsatzDetail.java,v $
+ * Revision 1.35  2009/02/12 18:37:18  willuhn
+ * @N Erster Code fuer vorgemerkte Umsaetze
+ *
  * Revision 1.34  2009/01/20 10:51:45  willuhn
  * @N Mehr Icons - fuer Buttons
  *

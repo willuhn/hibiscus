@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUmsatzJob.java,v $
- * $Revision: 1.36 $
- * $Date: 2009/02/12 16:14:34 $
+ * $Revision: 1.37 $
+ * $Date: 2009/02/12 18:37:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,6 +23,7 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
+import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
@@ -136,12 +137,10 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
       return;
     }
 
-    // So, jetzt kopieren wir das ResultSet noch in unsere
-		// eigenen Datenstrukturen.
 
-		// Wir vergleichen noch mit den Umsaetzen, die wir schon haben und
-		// speichern nur die neuen.
-		Date d = null;
+    ////////////////////////////////////////////////////////////////////////////
+    // Merge-Fenster ermitteln
+    Date d = null;
 		if (this.saldoDatum != null)
 		{
       PluginResources res = Application.getPluginLoader().getPlugin(HBCI.class).getResources();
@@ -151,31 +150,123 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
       d = cal.getTime();
 		}
     Logger.info("merge window: " + d + " - " + new Date());
-		DBIterator existing = konto.getUmsaetze(d,null);
+    //
+    ////////////////////////////////////////////////////////////////////////////
 
+    ////////////////////////////////////////////////////////////////////////////
+    // zu mergende Umsaetze ermitteln
+    DBIterator existing = konto.getUmsaetze(d,null);
+    //
+    ////////////////////////////////////////////////////////////////////////////
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Gebuchte Umsaetze
+		Logger.info("applying booked entries");
 		for (int i=0;i<lines.size();++i)
 		{
 			final Umsatz umsatz = Converter.HBCIUmsatz2HibiscusUmsatz((GVRKUms.UmsLine)lines.get(i));
 			umsatz.setKonto(konto); // muessen wir noch machen, weil der Converter das Konto nicht kennt
-      
-			if (existing.contains(umsatz) == null)
+
+      if (existing.contains(umsatz) != null)
+        continue; // Haben wir schon
+
+			// Wir koennen nicht einfach mit "existing.contains(umsatz)" nachschauen, ob der schon
+			// existiert, weil die vorgemerkten Umsaetze andere Salden haben
+			final Umsatz notbooked = findNotBooked(existing,umsatz);
+			if (notbooked != null)
 			{
-				try
-				{
-					umsatz.store(); // den Umsatz haben wir noch nicht, speichern!
+			  try
+			  {
+	        Logger.debug("umsatz allready exists as not-booked [id: " + notbooked.getID() + "], removing not-booked flag");
+	        notbooked.applyBooked(umsatz);
+	        notbooked.store();
+          Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(notbooked));
+			  }
+        catch (Exception e2)
+        {
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Vorgemerkter Umsatz konnte nicht aktualisiert werden. Bitte prüfen Sie das System-Protokoll"),StatusBarMessage.TYPE_ERROR));
+          Logger.error("error while updating not-booked umsatz, skipping",e2);
+        }
+			}
+			else
+			{
+        try
+        {
+          umsatz.store(); // den Umsatz haben wir noch nicht, speichern!
           Application.getMessagingFactory().sendMessage(new ImportMessage(umsatz));
-				}
-				catch (Exception e2)
-				{
-				  Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Nicht alle empfangenen Umsätze konnten gespeichert werden. Bitte prüfen Sie das System-Protokoll"),StatusBarMessage.TYPE_ERROR));
-					Logger.error("error while adding umsatz, skipping this one",e2);
-				}
+        }
+        catch (Exception e2)
+        {
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Nicht alle empfangenen Umsätze konnten gespeichert werden. Bitte prüfen Sie das System-Protokoll"),StatusBarMessage.TYPE_ERROR));
+          Logger.error("error while adding umsatz, skipping this one",e2);
+        }
 			}
 		}
+		//
+    ////////////////////////////////////////////////////////////////////////////
 
-		Logger.info("umsatz list fetched successfully");
+		
+    ////////////////////////////////////////////////////////////////////////////
+    // Vorgemerkte Umsaetze
+		Logger.info("applying not-booked (vorgemerkte) entries");
+    lines = result.getFlatDataUnbooked();
+    if (lines != null && lines.size() > 0)
+    {
+      for (int i=0;i<lines.size();++i)
+      {
+        final Umsatz umsatz = Converter.HBCIUmsatz2HibiscusUmsatz((GVRKUms.UmsLine)lines.get(i));
+        umsatz.setKonto(konto);
+        
+        if (existing.contains(umsatz) != null)
+          continue; // Haben wir schon
+        
+        try
+        {
+          umsatz.setFlags(Umsatz.FLAG_NOTBOOKED);
+          umsatz.store();
+          Application.getMessagingFactory().sendMessage(new ImportMessage(umsatz));
+        }
+        catch (Exception e2)
+        {
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Nicht alle empfangenen Umsätze konnten gespeichert werden. Bitte prüfen Sie das System-Protokoll"),StatusBarMessage.TYPE_ERROR));
+          Logger.error("error while adding umsatz, skipping this one",e2);
+        }
+      }
+    }
+    //
+    ////////////////////////////////////////////////////////////////////////////
+
+    Logger.info("umsatz list fetched successfully");
   }
+  
+  /**
+   * Durchsucht die Liste der Umsaetze nach einem vorgemerkten Umsatz mit den gleichen Eigenschaften
+   * @param existing Liste der Umsaetze.
+   * @param u gesuchter Umsatz.
+   * @return der vorgemerkte Umsatz, wenn er gefunden wurde.
+   * @throws RemoteException
+   */
+  private Umsatz findNotBooked(DBIterator existing, Umsatz u) throws RemoteException
+  {
+    if (u == null)
+      return null;
 
+    long ref = u.getTinyChecksum();
+
+    existing.begin();
+    while (existing.hasNext())
+    {
+      Umsatz c = (Umsatz) existing.next();
+      if ((c.getFlags() & Umsatz.FLAG_NOTBOOKED) == 0)
+        continue; // ist gar kein vorgemerkter Umsatz
+      if (c.getTinyChecksum() == ref)
+        return c;
+    }
+    
+    // Nichts gefunden
+    return null;
+  }
+  
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markFailed(java.lang.String)
    */
@@ -190,6 +281,9 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIUmsatzJob.java,v $
+ * Revision 1.37  2009/02/12 18:37:18  willuhn
+ * @N Erster Code fuer vorgemerkte Umsaetze
+ *
  * Revision 1.36  2009/02/12 16:14:34  willuhn
  * @N HBCI4Java-Version mit Unterstuetzung fuer vorgemerkte Umsaetze
  *
