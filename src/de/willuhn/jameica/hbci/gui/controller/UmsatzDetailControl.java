@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailControl.java,v $
- * $Revision: 1.37 $
- * $Date: 2009/01/19 22:45:26 $
+ * $Revision: 1.38 $
+ * $Date: 2009/02/12 23:55:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -29,6 +29,7 @@ import de.willuhn.jameica.gui.input.TextAreaInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.input.AddressInput;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
@@ -206,7 +207,7 @@ public class UmsatzDetailControl extends AbstractControl {
   {
     if (this.empfaengerKonto == null)
     {
-      this.empfaengerKonto = new TextInput(getUmsatz().getGegenkontoNummer(),15);
+      this.empfaengerKonto = new TextInput(getUmsatz().getGegenkontoNummer(),HBCIProperties.HBCI_IBAN_MAXLENGTH);
       this.empfaengerKonto.setEnabled(false);
     }
     return this.empfaengerKonto;
@@ -416,6 +417,9 @@ public class UmsatzDetailControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzDetailControl.java,v $
+ * Revision 1.38  2009/02/12 23:55:57  willuhn
+ * @N Erster Code fuer Unterstuetzung von Auslandsueberweisungen: In Tabelle "umsatz" die Spalte "empfaenger_konto" auf 40 Stellen erweitert und Eingabefeld bis max. 34 Stellen, damit IBANs gespeichert werden koennen
+ *
  * Revision 1.37  2009/01/19 22:45:26  willuhn
  * *** empty log message ***
  *

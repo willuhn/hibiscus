@@ -56,7 +56,7 @@ CREATE TABLE protokoll (
 CREATE TABLE umsatz (
   id NUMERIC default UNIQUEKEY('umsatz'),
   konto_id int(4) NOT NULL,
-  empfaenger_konto varchar(15),
+  empfaenger_konto varchar(40),
   empfaenger_blz varchar(15),
   empfaenger_name varchar(255),
   betrag double NOT NULL,
@@ -266,4 +266,4 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',15);
+INSERT INTO version (name,version) values ('db',16);

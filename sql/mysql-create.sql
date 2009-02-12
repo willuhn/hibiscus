@@ -155,7 +155,7 @@ CREATE TABLE ueberweisung (
 CREATE TABLE umsatz (
        id int(10) AUTO_INCREMENT
      , konto_id int(10) NOT NULL
-     , empfaenger_konto VARCHAR(15)
+     , empfaenger_konto VARCHAR(40)
      , empfaenger_blz VARCHAR(15)
      , empfaenger_name VARCHAR(255)
      , betrag DOUBLE NOT NULL
@@ -265,4 +265,4 @@ ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
 
-INSERT INTO version (name,version) values ('db',15);
+INSERT INTO version (name,version) values ('db',16);

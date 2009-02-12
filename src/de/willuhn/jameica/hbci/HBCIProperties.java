@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCIProperties.java,v $
- * $Revision: 1.34 $
- * $Date: 2008/12/14 23:18:35 $
+ * $Revision: 1.35 $
+ * $Date: 2009/02/12 23:55:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -71,8 +71,7 @@ public class HBCIProperties
    * Sollte eigentlich 10-stellig sein, da die CRC-Pruefungen ohnehin
    * nur bis dahin gelten. Aber fuer den Fall, dass auch mal noch
    * VISA-Konten unterstuetzt werden, lass ich es vorerst mal auf
-   * 15 Stellen stehen (das ist das Datenbank-Limit) und deklarieren
-   * es als "weiches" Limit.
+   * 15 Stellen stehen und deklarieren es als "weiches" Limit.
    */
   public final static int HBCI_KTO_MAXLENGTH_SOFT = settings.getInt("hbci.kto.maxlength.soft",15);
   
@@ -80,6 +79,12 @@ public class HBCIProperties
    * Das harte Limit fuer Kontonummern, die CRC-Checks bestehen sollen
    */
   public final static int HBCI_KTO_MAXLENGTH_HARD = settings.getInt("hbci.kto.maxlength.hard",10);
+
+  /**
+   * Maximale Laenge einer IBAN.
+   */
+  public final static int HBCI_IBAN_MAXLENGTH = settings.getInt("hbci.iban.maxlength",34);
+
 
   // BUGZILLA #49 http://www.willuhn.de/bugzilla/show_bug.cgi?id=49
   /**
@@ -256,6 +261,9 @@ public class HBCIProperties
 
 /**********************************************************************
  * $Log: HBCIProperties.java,v $
+ * Revision 1.35  2009/02/12 23:55:57  willuhn
+ * @N Erster Code fuer Unterstuetzung von Auslandsueberweisungen: In Tabelle "umsatz" die Spalte "empfaenger_konto" auf 40 Stellen erweitert und Eingabefeld bis max. 34 Stellen, damit IBANs gespeichert werden koennen
+ *
  * Revision 1.34  2008/12/14 23:18:35  willuhn
  * @N BUGZILLA 188 - REFACTORING
  *
