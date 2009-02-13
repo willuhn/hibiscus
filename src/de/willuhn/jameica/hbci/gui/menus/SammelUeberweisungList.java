@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/SammelUeberweisungList.java,v $
- * $Revision: 1.7 $
- * $Date: 2008/12/19 12:16:05 $
+ * $Revision: 1.8 $
+ * $Date: 2009/02/13 14:17:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,7 +20,7 @@ import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.SammelTransferDelete;
+import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.SammelTransferDuplicate;
 import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungExecute;
 import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungExport;
@@ -50,11 +50,11 @@ public class SammelUeberweisungList extends ContextMenu
 	{
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-		addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"), new SammelUeberweisungNew(),"document-open.png"));
+		addItem(new SingleItem(i18n.tr("Öffnen"), new SammelUeberweisungNew(),"document-open.png"));
     addItem(new ContextMenuItem(i18n.tr("Neue Sammel-Überweisung..."), new SNeu(),"text-x-generic.png"));
-    addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new SammelTransferDelete(),"user-trash-full.png"));
+    addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new CheckedContextMenuItem(i18n.tr("Duplizieren..."), new SammelTransferDuplicate(),"edit-copy.png"));
+    addItem(new SingleItem(i18n.tr("Duplizieren..."), new SammelTransferDuplicate(),"edit-copy.png"));
     addItem(ContextMenuItem.SEPARATOR);
 		addItem(new NotActiveMenuItem(i18n.tr("Jetzt ausführen..."), new SammelUeberweisungExecute(),"emblem-important.png"));
     addItem(new ContextMenuItem(i18n.tr("Als \"ausgeführt\" markieren..."), new Action() {
@@ -110,6 +110,31 @@ public class SammelUeberweisungList extends ContextMenu
     }
 	} 
 	
+  /**
+   * Ueberschrieben, um zu pruefen, ob ein Array oder ein einzelnes Element markiert ist.
+   */
+  private class SingleItem extends CheckedContextMenuItem
+  {
+    /**
+     * @param text
+     * @param action
+     * @param optionale Angabe eines Icons.
+     */
+    private SingleItem(String text, Action action, String icon)
+    {
+      super(text,action,icon);
+    }
+    /**
+     * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
+     */
+    public boolean isEnabledFor(Object o)
+    {
+      if (o instanceof SammelUeberweisung[])
+        return false;
+      return super.isEnabledFor(o);
+    }
+  }
+
 	/**
 	 * Ueberschreiben wir, damit das Item nur dann aktiv ist, wenn die
 	 * Sammel-Ueberweisung noch nicht ausgefuehrt wurde.
@@ -133,7 +158,7 @@ public class SammelUeberweisungList extends ContextMenu
      */
     public boolean isEnabledFor(Object o)
     {
-    	if (o == null)
+    	if (o == null || !(o instanceof SammelUeberweisung))
     		return false;
     	try
     	{
@@ -152,6 +177,9 @@ public class SammelUeberweisungList extends ContextMenu
 
 /**********************************************************************
  * $Log: SammelUeberweisungList.java,v $
+ * Revision 1.8  2009/02/13 14:17:01  willuhn
+ * @N BUGZILLA 700
+ *
  * Revision 1.7  2008/12/19 12:16:05  willuhn
  * @N Mehr Icons
  * @C Reihenfolge der Contextmenu-Eintraege vereinheitlicht

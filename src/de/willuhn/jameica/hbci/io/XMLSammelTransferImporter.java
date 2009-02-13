@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/XMLImporter.java,v $
- * $Revision: 1.3 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/XMLSammelTransferImporter.java,v $
+ * $Revision: 1.1 $
  * $Date: 2009/02/13 14:17:01 $
  * $Author: willuhn $
  * $Locker:  $
@@ -29,21 +29,18 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
+import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
-import de.willuhn.util.I18N;
 import de.willuhn.util.ProgressMonitor;
 
 /**
  * Importer fuer das Hibiscus-eigene XML-Format.
  */
-public class XMLImporter implements Importer
+public class XMLSammelTransferImporter extends XMLImporter
 {
-
-  protected final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
   /**
    * @see de.willuhn.jameica.hbci.io.Importer#doImport(java.lang.Object, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor)
    */
@@ -64,7 +61,6 @@ public class XMLImporter implements Importer
         public GenericObject create(String type, String id, Map values) throws Exception
         {
           AbstractDBObject object = (AbstractDBObject) Settings.getDBService().createObject(loader.loadClass(type),null);
-          // object.setID(id); // Keine ID angeben, da wir die Daten neu anlegen wollen
           Iterator i = values.keySet().iterator();
           while (i.hasNext())
           {
@@ -82,6 +78,8 @@ public class XMLImporter implements Importer
       int created = 0;
       int error   = 0;
 
+      SammelTransfer currentTransfer = null;
+      
       DBObject object = null;
       while ((object = (DBObject) reader.read()) != null)
       {
@@ -94,6 +92,12 @@ public class XMLImporter implements Importer
 
         try
         {
+          // Ist noetig, damit die Buchungen die neue ID des Transfers kriegen
+          if (object instanceof SammelTransfer)
+            currentTransfer = (SammelTransfer) object;
+          else
+            ((SammelTransferBuchung)object).setSammelTransfer(currentTransfer);
+          
           object.store();
           Application.getMessagingFactory().sendMessage(new ImportMessage(object));
           created++;
@@ -148,25 +152,16 @@ public class XMLImporter implements Importer
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.io.IO#getName()
-   */
-  public String getName()
-  {
-    return i18n.tr("XML-Format");
-  }
-
-  /**
    * @see de.willuhn.jameica.hbci.io.IO#getIOFormats(java.lang.Class)
    */
   public IOFormat[] getIOFormats(Class objectType)
   {
-    if (!GenericObject.class.isAssignableFrom(objectType))
-      return null; // Import fuer alles moeglich, was von GenericObject abgeleitet ist
+    if (objectType == null)
+      return null;
     
-    // BUGZILLA 700
-    if (SammelTransfer.class.isAssignableFrom(objectType))
-      return null; // Keine Sammel-Auftraege - die muessen gesondert behandelt werden.
-
+    if (!SammelTransfer.class.isAssignableFrom(objectType))
+      return null; // Nur fuer Sammel-Auftraege anbieten - fuer alle anderen tut es die Basis-Implementierung
+    
     IOFormat f = new IOFormat() {
       public String getName()
       {
@@ -186,16 +181,8 @@ public class XMLImporter implements Importer
 }
 
 /*******************************************************************************
- * $Log: XMLImporter.java,v $
- * Revision 1.3  2009/02/13 14:17:01  willuhn
+ * $Log: XMLSammelTransferImporter.java,v $
+ * Revision 1.1  2009/02/13 14:17:01  willuhn
  * @N BUGZILLA 700
- *
- * Revision 1.2  2008/02/13 23:44:27  willuhn
- * @R Hibiscus-Eigenformat (binaer-serialisierte Objekte) bei Export und Import abgeklemmt
- * @N Import und Export von Umsatz-Kategorien im XML-Format
- * @B Verzaehler bei XML-Import
- *
- * Revision 1.1  2008/01/22 13:34:45  willuhn
- * @N Neuer XML-Import/-Export
  *
  ******************************************************************************/

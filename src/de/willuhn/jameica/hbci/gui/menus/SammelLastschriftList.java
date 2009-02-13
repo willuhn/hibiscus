@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/SammelLastschriftList.java,v $
- * $Revision: 1.12 $
- * $Date: 2008/12/19 12:16:05 $
+ * $Revision: 1.13 $
+ * $Date: 2009/02/13 14:17:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,11 +20,11 @@ import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.SammelLastschriftExecute;
 import de.willuhn.jameica.hbci.gui.action.SammelLastschriftExport;
 import de.willuhn.jameica.hbci.gui.action.SammelLastschriftImport;
 import de.willuhn.jameica.hbci.gui.action.SammelLastschriftNew;
-import de.willuhn.jameica.hbci.gui.action.SammelTransferDelete;
 import de.willuhn.jameica.hbci.gui.action.SammelTransferDuplicate;
 import de.willuhn.jameica.hbci.gui.action.TerminableMarkExecuted;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
@@ -50,11 +50,11 @@ public class SammelLastschriftList extends ContextMenu
 	{
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-		addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"), new SammelLastschriftNew(),"document-open.png"));
+		addItem(new SingleItem(i18n.tr("Öffnen"), new SammelLastschriftNew(),"document-open.png"));
     addItem(new ContextMenuItem(i18n.tr("Neue Sammel-Lastschrift..."), new SNeu(),"text-x-generic.png"));
-    addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new SammelTransferDelete(),"user-trash-full.png"));
+    addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new CheckedContextMenuItem(i18n.tr("Duplizieren..."), new SammelTransferDuplicate(),"edit-copy.png"));
+    addItem(new SingleItem(i18n.tr("Duplizieren..."), new SammelTransferDuplicate(),"edit-copy.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new NotActiveMenuItem(i18n.tr("Jetzt ausführen..."), new SammelLastschriftExecute(),"emblem-important.png"));
     addItem(new ContextMenuItem(i18n.tr("Als \"ausgeführt\" markieren..."), new Action() {
@@ -109,7 +109,33 @@ public class SammelLastschriftList extends ContextMenu
     	super.handleAction(null);
     }
 	} 
-	
+
+  /**
+   * Ueberschrieben, um zu pruefen, ob ein Array oder ein einzelnes Element markiert ist.
+   */
+  private class SingleItem extends CheckedContextMenuItem
+  {
+    /**
+     * @param text
+     * @param action
+     * @param optionale Angabe eines Icons.
+     */
+    private SingleItem(String text, Action action, String icon)
+    {
+      super(text,action,icon);
+    }
+    /**
+     * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
+     */
+    public boolean isEnabledFor(Object o)
+    {
+      if (o instanceof SammelLastschrift[])
+        return false;
+      return super.isEnabledFor(o);
+    }
+  }
+
+  
 	/**
 	 * Ueberschreiben wir, damit das Item nur dann aktiv ist, wenn die
 	 * Lastschrift noch nicht ausgefuehrt wurde.
@@ -133,7 +159,7 @@ public class SammelLastschriftList extends ContextMenu
      */
     public boolean isEnabledFor(Object o)
     {
-    	if (o == null)
+    	if (o == null || !(o instanceof SammelLastschrift))
     		return false;
     	try
     	{
@@ -152,6 +178,9 @@ public class SammelLastschriftList extends ContextMenu
 
 /**********************************************************************
  * $Log: SammelLastschriftList.java,v $
+ * Revision 1.13  2009/02/13 14:17:01  willuhn
+ * @N BUGZILLA 700
+ *
  * Revision 1.12  2008/12/19 12:16:05  willuhn
  * @N Mehr Icons
  * @C Reihenfolge der Contextmenu-Eintraege vereinheitlicht

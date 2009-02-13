@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/XMLExporter.java,v $
- * $Revision: 1.3 $
- * $Date: 2008/01/22 13:34:45 $
+ * $Revision: 1.4 $
+ * $Date: 2009/02/13 14:17:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,6 +22,7 @@ import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.serialize.Writer;
 import de.willuhn.datasource.serialize.XmlWriter;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -34,16 +35,8 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class XMLExporter implements Exporter
 {
-  private I18N i18n = null;
+  protected final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  /**
-   * ct. 
-   */
-  public XMLExporter()
-  {
-    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  }
-
   /**
    * @see de.willuhn.jameica.hbci.io.Exporter#doExport(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
    */
@@ -101,6 +94,10 @@ public class XMLExporter implements Exporter
     if (!GenericObject.class.isAssignableFrom(objectType))
       return null; // Export fuer alles moeglich, was von GenericObject abgeleitet ist
 
+    // BUGZILLA 700
+    if (SammelTransfer.class.isAssignableFrom(objectType))
+      return null; // Keine Sammel-Auftraege - die muessen gesondert behandelt werden.
+
     return new IOFormat[]{new IOFormat() {
       public String getName()
       {
@@ -130,6 +127,9 @@ public class XMLExporter implements Exporter
 
 /*********************************************************************
  * $Log: XMLExporter.java,v $
+ * Revision 1.4  2009/02/13 14:17:01  willuhn
+ * @N BUGZILLA 700
+ *
  * Revision 1.3  2008/01/22 13:34:45  willuhn
  * @N Neuer XML-Import/-Export
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UeberweisungList.java,v $
- * $Revision: 1.17 $
- * $Date: 2008/12/19 01:12:09 $
+ * $Revision: 1.18 $
+ * $Date: 2009/02/13 14:17:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,7 +18,6 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
-import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.TerminableMarkExecuted;
@@ -77,9 +76,7 @@ public class UeberweisungList extends ContextMenu
      */
     private SingleItem(String text, Action action, String icon)
     {
-      super(text,action);
-      if (icon != null)
-        setImage(SWTUtil.getImage(icon));
+      super(text,action,icon);
     }
     /**
      * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
@@ -201,6 +198,9 @@ public class UeberweisungList extends ContextMenu
 
 /**********************************************************************
  * $Log: UeberweisungList.java,v $
+ * Revision 1.18  2009/02/13 14:17:01  willuhn
+ * @N BUGZILLA 700
+ *
  * Revision 1.17  2008/12/19 01:12:09  willuhn
  * @N Icons in Contextmenus
  *

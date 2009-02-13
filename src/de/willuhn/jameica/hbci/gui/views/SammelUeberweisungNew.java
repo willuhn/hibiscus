@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/SammelUeberweisungNew.java,v $
- * $Revision: 1.7 $
- * $Date: 2009/01/20 10:51:45 $
+ * $Revision: 1.8 $
+ * $Date: 2009/02/13 14:17:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,7 +21,7 @@ import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.SammelTransferDelete;
+import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungBuchungNew;
 import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungExecute;
 import de.willuhn.jameica.hbci.gui.controller.SammelUeberweisungControl;
@@ -64,7 +64,7 @@ public class SammelUeberweisungNew extends AbstractView {
 
     ButtonArea buttons = new ButtonArea(getParent(),5);
     buttons.addButton(new Back(transfer.ausgefuehrt()));
-    buttons.addButton(i18n.tr("Löschen"),new SammelTransferDelete(),control.getTransfer());
+    buttons.addButton(i18n.tr("Löschen"),new DBObjectDelete(),control.getTransfer());
     
     Button add = new Button(i18n.tr("Neue Buchungen hinzufügen"), new Action() {
       public void handleAction(Object context) throws ApplicationException {
@@ -99,6 +99,9 @@ public class SammelUeberweisungNew extends AbstractView {
 
 /**********************************************************************
  * $Log: SammelUeberweisungNew.java,v $
+ * Revision 1.8  2009/02/13 14:17:01  willuhn
+ * @N BUGZILLA 700
+ *
  * Revision 1.7  2009/01/20 10:51:45  willuhn
  * @N Mehr Icons - fuer Buttons
  *
