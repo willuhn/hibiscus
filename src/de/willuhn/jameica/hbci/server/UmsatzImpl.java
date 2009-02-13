@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.62 $
- * $Date: 2009/02/12 18:37:18 $
+ * $Revision: 1.63 $
+ * $Date: 2009/02/13 10:52:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -771,7 +771,9 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
   {
     String s = this.getGegenkontoNummer() +
                this.getGegenkontoBLZ() + 
-               this.getBetrag();
+               this.getBetrag() +
+               (""+this.getZweck()).toUpperCase() +
+               (""+this.getZweck2()).toUpperCase();
 
     Date valuta = this.getValuta();
     if (valuta != null)
@@ -793,6 +795,9 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.63  2009/02/13 10:52:18  willuhn
+ * @N Verwendungszweck mit in Tiny-Checksum uebernehmen, damit die Buchungen auch dann gefunden werden, wenn das Gegenkonto von der Bank nicht gefuellt wird
+ *
  * Revision 1.62  2009/02/12 18:37:18  willuhn
  * @N Erster Code fuer vorgemerkte Umsaetze
  *
