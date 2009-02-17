@@ -54,7 +54,7 @@ CREATE TABLE turnus (
 
 CREATE TABLE empfaenger (
        id int(10) AUTO_INCREMENT
-     , kontonummer VARCHAR(15) NOT NULL
+     , kontonummer VARCHAR(40) NOT NULL
      , blz VARCHAR(15) NOT NULL
      , name VARCHAR(27) NOT NULL
      , kommentar TEXT
@@ -152,6 +152,20 @@ CREATE TABLE ueberweisung (
      , PRIMARY KEY (id)
 )TYPE=InnoDB;
 
+CREATE TABLE aueberweisung (
+       id int(10) AUTO_INCREMENT
+     , konto_id int(10) NOT NULL
+     , empfaenger_konto VARCHAR(40) NOT NULL
+     , empfaenger_bank VARCHAR(140) NOT NULL
+     , empfaenger_name VARCHAR(140) NOT NULL
+     , betrag DOUBLE NOT NULL
+     , zweck VARCHAR(140)
+     , termin DATE NOT NULL
+     , ausgefuehrt int(10) NOT NULL
+     , UNIQUE (id)
+     , PRIMARY KEY (id)
+)TYPE=InnoDB;
+
 CREATE TABLE umsatz (
        id int(10) AUTO_INCREMENT
      , konto_id int(10) NOT NULL
@@ -244,6 +258,7 @@ CREATE INDEX idx_ueberweisung_konto ON ueberweisung(konto_id);
 CREATE INDEX idx_umsatz_konto ON umsatz(konto_id);
 CREATE INDEX idx_umsatz_umsatztyp ON umsatz(umsatztyp_id);
 CREATE INDEX idx_dauerauftrag_konto ON dauerauftrag(konto_id);
+CREATE INDEX idx_aueberweisung_konto ON aueberweisung(konto_id);
 
 ALTER TABLE lastschrift ADD CONSTRAINT fk_lastschrift_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
 ALTER TABLE sueberweisung ADD CONSTRAINT fk_sueberweisung_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
@@ -256,6 +271,7 @@ ALTER TABLE ueberweisung ADD CONSTRAINT fk_ueberweisung_konto FOREIGN KEY (konto
 ALTER TABLE umsatz ADD CONSTRAINT fk_umsatz_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
 ALTER TABLE umsatz ADD CONSTRAINT fk_umsatz_umsatztyp FOREIGN KEY (umsatztyp_id) REFERENCES umsatztyp (id);
 ALTER TABLE dauerauftrag ADD CONSTRAINT fk_dauerauftrag_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
+ALTER TABLE aueberweisung ADD CONSTRAINT fk_aueberweisung_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
 
 -- Indizes fuer grosse Datenmengen
 ALTER TABLE umsatz ADD INDEX (datum);
@@ -265,4 +281,4 @@ ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
 
-INSERT INTO version (name,version) values ('db',16);
+INSERT INTO version (name,version) values ('db',18);

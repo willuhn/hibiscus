@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/updates/update0016.java,v $
- * $Revision: 1.2 $
+ * $Source: /cvsroot/hibiscus/hibiscus/updates/update0017.java,v $
+ * $Revision: 1.1 $
  * $Date: 2009/02/17 00:00:02 $
  * $Author: willuhn $
  * $Locker:  $
@@ -29,52 +29,68 @@ import de.willuhn.util.I18N;
 
 
 /**
- * Erweitert die Spalte "empfaenger_konto" auf 40 Stellen, um auch IBANs speichern zu koennen.
- * Eigentlich reichen fuer die IBAN 34 Stellen - aber wir lassen mal etwas Sicherheitspuffer.
- * Vielleicht fuer Kreditkartennummern.
+ * Erzeugt die Tabelle "aueberweisung" fuer Auslandsueberweisungen
  */
-public class update0016 implements Update
+public class update0017 implements Update
 {
   private Map statements = new HashMap();
   
   /**
    * ct
    */
-  public update0016()
+  public update0017()
   {
     // Update fuer H2
     statements.put(DBSupportH2Impl.class.getName(),
-        "ALTER TABLE umsatz ALTER COLUMN empfaenger_konto VARCHAR(40);\n");
+        "CREATE TABLE aueberweisung (" +
+        "    id IDENTITY," +
+        "    konto_id int(4) NOT NULL," +
+        "    empfaenger_konto varchar(40) NOT NULL," +
+        "    empfaenger_bank varchar(140) NOT NULL," +
+        "    empfaenger_name varchar(140) NOT NULL," +
+        "    betrag double NOT NULL," +
+        "    zweck varchar(140)," +
+        "    termin date NOT NULL," +
+        "    ausgefuehrt int(1) NOT NULL," +
+        "    UNIQUE (id)," +
+        "    PRIMARY KEY (id)" +
+        "  );\n" +
+        "ALTER TABLE aueberweisung ADD CONSTRAINT fk_konto8 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;\n");
 
     // Update fuer McKoi
     statements.put(DBSupportMcKoiImpl.class.getName(),
-        "ALTER CREATE TABLE umsatz (" +
-        "    id NUMERIC default UNIQUEKEY('umsatz')," +
+        "CREATE TABLE aueberweisung (" +
+        "    id NUMERIC default UNIQUEKEY('aueberweisung')," +
         "    konto_id int(4) NOT NULL," +
-        "    empfaenger_konto varchar(40)," +
-        "    empfaenger_blz varchar(15)," +
-        "    empfaenger_name varchar(255)," +
+        "    empfaenger_konto varchar(40) NOT NULL," +
+        "    empfaenger_bank varchar(140) NOT NULL," +
+        "    empfaenger_name varchar(140) NOT NULL," +
         "    betrag double NOT NULL," +
-        "    zweck varchar(35)," +
-        "    zweck2 varchar(35)," +
-        "    zweck3 varchar(1000)," +
-        "    datum date NOT NULL," +
-        "    valuta date NOT NULL," +
-        "    saldo double," +
-        "    primanota varchar(100)," +
-        "    art varchar(100)," +
-        "    customerref varchar(100)," +
-        "    kommentar text NULL," +
-        "    checksum numeric NULL," +
-        "    umsatztyp_id int(5) NULL," +
-        "    flags int(1) NULL," +
+        "    zweck varchar(140)," +
+        "    termin date NOT NULL," +
+        "    ausgefuehrt int(1) NOT NULL," +
         "    UNIQUE (id)," +
         "    PRIMARY KEY (id)" +
-        "  );\n");
+        "  );\n" +
+        "ALTER TABLE aueberweisung ADD CONSTRAINT fk_konto8 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;\n");
     
     // Update fuer MySQL
     statements.put(DBSupportMySqlImpl.class.getName(),
-        "ALTER TABLE umsatz CHANGE empfaenger_konto empfaenger_konto VARCHAR(40);\n");
+        "CREATE TABLE aueberweisung (" +
+        "    id int(10) AUTO_INCREMENT" +
+        "  , konto_id int(10) NOT NULL" +
+        "  , empfaenger_konto VARCHAR(40) NOT NULL" +
+        "  , empfaenger_bank VARCHAR(140) NOT NULL" +
+        "  , empfaenger_name VARCHAR(140) NOT NULL" +
+        "  , betrag DOUBLE NOT NULL" +
+        "  , zweck VARCHAR(140)" +
+        "  , termin DATE NOT NULL" +
+        "  , ausgefuehrt int(10) NOT NULL" +
+        "  , UNIQUE (id)" +
+        "  , PRIMARY KEY (id)" +
+        ")TYPE=InnoDB;\n" +
+        "CREATE INDEX idx_aueberweisung_konto ON aueberweisung(konto_id);\n" +
+        "ALTER TABLE aueberweisung ADD CONSTRAINT fk_aueberweisung_konto FOREIGN KEY (konto_id) REFERENCES konto (id);\n");
   }
 
   /**
@@ -94,9 +110,9 @@ public class update0016 implements Update
     
     try
     {
-      Logger.info("create sql table for update0016");
+      Logger.info("create sql table for update0017");
       ScriptExecutor.execute(new StringReader(sql),myProvider.getConnection(),myProvider.getProgressMonitor());
-      myProvider.getProgressMonitor().log(i18n.tr("Tabelle 'umsatz' aktualisiert"));
+      myProvider.getProgressMonitor().log(i18n.tr("Tabelle 'aueberweisung' erstellt"));
     }
     catch (ApplicationException ae)
     {
@@ -114,18 +130,15 @@ public class update0016 implements Update
    */
   public String getName()
   {
-    return "Datenbank-Update für Tabelle \"umsatz\"";
+    return "Datenbank-Update für Tabelle \"aueberweisung\"";
   }
 
 }
 
 
 /*********************************************************************
- * $Log: update0016.java,v $
- * Revision 1.2  2009/02/17 00:00:02  willuhn
+ * $Log: update0017.java,v $
+ * Revision 1.1  2009/02/17 00:00:02  willuhn
  * @N BUGZILLA 159 - Erster Code fuer Auslands-Ueberweisungen
- *
- * Revision 1.1  2009/02/12 23:55:57  willuhn
- * @N Erster Code fuer Unterstuetzung von Auslandsueberweisungen: In Tabelle "umsatz" die Spalte "empfaenger_konto" auf 40 Stellen erweitert und Eingabefeld bis max. 34 Stellen, damit IBANs gespeichert werden koennen
  *
  **********************************************************************/

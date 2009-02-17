@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/DauerauftragList.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/05/11 16:53:09 $
+ * $Revision: 1.6 $
+ * $Date: 2009/02/17 00:00:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,6 +30,8 @@ import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.parts.columns.BlzColumn;
+import de.willuhn.jameica.hbci.gui.parts.columns.KontoColumn;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -69,9 +71,9 @@ public class DauerauftragList extends TablePart implements Part
         }
       }
     });
-    addColumn(i18n.tr("Konto"),"konto_id");
-    addColumn(i18n.tr("Empfängername"),"empfaenger_name");
-    addColumn(i18n.tr("Empfängerkonto"),"empfaenger_konto");
+    addColumn(new KontoColumn("konto_id"));
+    addColumn(i18n.tr("Gegenkonto Inhaber"),"empfaenger_name");
+    addColumn(new BlzColumn("empfaenger_blz"));
     addColumn(i18n.tr("Verwendungszweck"),"zweck");
     addColumn(i18n.tr("Betrag"),"betrag", new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
     addColumn(i18n.tr("Turnus"),"turnus_id");
@@ -103,6 +105,9 @@ public class DauerauftragList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: DauerauftragList.java,v $
+ * Revision 1.6  2009/02/17 00:00:02  willuhn
+ * @N BUGZILLA 159 - Erster Code fuer Auslands-Ueberweisungen
+ *
  * Revision 1.5  2006/05/11 16:53:09  willuhn
  * @B bug 233
  *

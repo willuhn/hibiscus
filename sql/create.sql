@@ -17,7 +17,7 @@ CREATE TABLE konto (
 
 CREATE TABLE empfaenger (
   id NUMERIC default UNIQUEKEY('empfaenger'),
-  kontonummer varchar(15) NOT NULL,
+  kontonummer varchar(40) NOT NULL,
   blz varchar(15) NOT NULL,
   name varchar(27) NOT NULL,
   kommentar varchar(1000) NULL,
@@ -39,6 +39,20 @@ CREATE TABLE ueberweisung (
   banktermin int(1) NULL,
   ausgefuehrt int(1) NOT NULL,
   typ varchar(2) NULL,
+  UNIQUE (id),
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE aueberweisung (
+  id NUMERIC default UNIQUEKEY('aueberweisung'),
+  konto_id int(4) NOT NULL,
+  empfaenger_konto varchar(40) NOT NULL,
+  empfaenger_bank varchar(140) NOT NULL,
+  empfaenger_name varchar(140) NOT NULL,
+  betrag double NOT NULL,
+  zweck varchar(140),
+  termin date NOT NULL,
+  ausgefuehrt int(1) NOT NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );
@@ -244,6 +258,7 @@ ALTER TABLE slastschrift ADD CONSTRAINT fk_konto6 FOREIGN KEY (konto_id) REFEREN
 ALTER TABLE slastbuchung ADD CONSTRAINT fk_slastschrift1 FOREIGN KEY (slastschrift_id) REFERENCES slastschrift (id) DEFERRABLE;
 ALTER TABLE sueberweisung ADD CONSTRAINT fk_konto7 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE sueberweisungbuchung ADD CONSTRAINT fk_sueberweisung1 FOREIGN KEY (sueberweisung_id) REFERENCES sueberweisung (id) DEFERRABLE;
+ALTER TABLE aueberweisung ADD CONSTRAINT fk_konto8 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 
 -- Bevor wir Daten speichern koennen, muessen wir ein COMMIT machen
 COMMIT;
@@ -266,4 +281,4 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',16);
+INSERT INTO version (name,version) values ('db',18);

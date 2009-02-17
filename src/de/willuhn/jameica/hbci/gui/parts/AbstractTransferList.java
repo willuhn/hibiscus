@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractTransferList.java,v $
- * $Revision: 1.22 $
- * $Date: 2007/10/25 15:47:21 $
+ * $Revision: 1.23 $
+ * $Date: 2009/02/17 00:00:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,7 +20,6 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TableItem;
-import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
@@ -28,23 +27,23 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
-import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.parts.columns.AusgefuehrtColumn;
+import de.willuhn.jameica.hbci.gui.parts.columns.BlzColumn;
+import de.willuhn.jameica.hbci.gui.parts.columns.KontoColumn;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.messaging.ObjectMessage;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
-import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.logging.Logger;
 
 /**
  * Implementierung einer fix und fertig vorkonfigurierten Liste mit Transfers.
@@ -79,61 +78,7 @@ public abstract class AbstractTransferList extends AbstractFromToList
       }
     });
 
-    addColumn(i18n.tr("Konto"),"konto_id", new Formatter() {
-      /**
-       * @see de.willuhn.jameica.gui.formatter.Formatter#format(java.lang.Object)
-       */
-      public String format(Object o)
-      {
-        if (o == null || !(o instanceof Konto))
-          return null;
-        Konto k = (Konto) o;
-        try
-        {
-          String s = k.getKontonummer();
-          String name = k.getBezeichnung();
-          if (name != null && name.length() > 0)
-            s += " [" + name + "]";
-          return s;
-        }
-        catch (RemoteException r)
-        {
-          Logger.error("unable to display konto",r);
-          return null;
-        }
-      }
-    
-    });
-    addColumn(i18n.tr("Gegenkonto Inhaber"),"empfaenger_name");
-    addColumn(i18n.tr("Gegenkonto BLZ"),"empfaenger_blz", new Formatter() {
-      /**
-       * @see de.willuhn.jameica.gui.formatter.Formatter#format(java.lang.Object)
-       */
-      public String format(Object o)
-      {
-        if (o == null)
-          return null;
-        String blz = o.toString();
-        String name = HBCIUtils.getNameForBLZ(blz);
-        if (name != null && name.length() > 0)
-          blz += " [" + name + "]";
-        return blz;
-      }
-    
-    });
-    addColumn(i18n.tr("Verwendungszweck"),"zweck");
-    addColumn(i18n.tr("Betrag"),"betrag", new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
-    addColumn(i18n.tr("Termin"),"termin", new DateFormatter(HBCI.DATEFORMAT));
-    addColumn(i18n.tr("Status"),"ausgefuehrt",new Formatter() {
-      public String format(Object o) {
-        try {
-          int i = ((Integer) o).intValue();
-          return i == 1 ? i18n.tr("ausgeführt") : i18n.tr("offen");
-        }
-        catch (Exception e) {}
-        return ""+o;
-      }
-    });
+    initColums();
     setMulti(true);
 
     // Damit werden wir informiert, wenn Ueberweisungen/Lastschriften
@@ -141,6 +86,20 @@ public abstract class AbstractTransferList extends AbstractFromToList
     this.mc = new TransferMessageConsumer();
     Application.getMessagingFactory().registerMessageConsumer(this.mc);
 
+  }
+  
+  /**
+   * Initialisiert die Spalten
+   */
+  protected void initColums()
+  {
+    addColumn(new KontoColumn("konto_id"));
+    addColumn(i18n.tr("Gegenkonto Inhaber"),"empfaenger_name");
+    addColumn(new BlzColumn("empfaenger_blz"));
+    addColumn(i18n.tr("Verwendungszweck"),"zweck");
+    addColumn(i18n.tr("Betrag"),"betrag", new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
+    addColumn(i18n.tr("Termin"),"termin", new DateFormatter(HBCI.DATEFORMAT));
+    addColumn(new AusgefuehrtColumn("ausgefuehrt"));
   }
 
   
@@ -246,6 +205,9 @@ public abstract class AbstractTransferList extends AbstractFromToList
 
 /**********************************************************************
  * $Log: AbstractTransferList.java,v $
+ * Revision 1.23  2009/02/17 00:00:02  willuhn
+ * @N BUGZILLA 159 - Erster Code fuer Auslands-Ueberweisungen
+ *
  * Revision 1.22  2007/10/25 15:47:21  willuhn
  * @N Einzelauftraege zu Sammel-Auftraegen zusammenfassen (BUGZILLA 402)
  *
