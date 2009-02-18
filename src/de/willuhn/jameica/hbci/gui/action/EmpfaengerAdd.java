@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/EmpfaengerAdd.java,v $
- * $Revision: 1.11 $
- * $Date: 2008/11/17 23:30:00 $
+ * $Revision: 1.12 $
+ * $Date: 2009/02/18 00:43:48 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -176,8 +176,15 @@ public class EmpfaengerAdd implements Action
   {
     HibiscusAddress e = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
     e.setName(strip(name));
-    e.setKontonummer(kontonummer);
-    e.setBlz(blz);
+    if (kontonummer != null && kontonummer.matches("[a-zA-Z]{2}[0-9]*"))
+      e.setIban(kontonummer);
+    else
+      e.setKontonummer(kontonummer);
+    
+    if (blz != null && blz.matches("[a-zA-Z]{6}.*"))
+      e.setBic(blz);
+    else
+      e.setBlz(blz);
     return e;
   }
 
@@ -198,6 +205,9 @@ public class EmpfaengerAdd implements Action
 
 /**********************************************************************
  * $Log: EmpfaengerAdd.java,v $
+ * Revision 1.12  2009/02/18 00:43:48  willuhn
+ * @N Automatische Erkennung von IBAN/BIC beim Hinzufuegen von Adressen
+ *
  * Revision 1.11  2008/11/17 23:30:00  willuhn
  * @C Aufrufe der depeicated BLZ-Funktionen angepasst
  *
