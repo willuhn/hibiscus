@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EmpfaengerControl.java,v $
- * $Revision: 1.46 $
- * $Date: 2008/11/17 23:29:59 $
+ * $Revision: 1.47 $
+ * $Date: 2009/02/18 00:35:54 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,6 @@ import java.rmi.RemoteException;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.TextAreaInput;
@@ -37,6 +36,7 @@ import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.SammelLastBuchung;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisungBuchung;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -53,13 +53,18 @@ public class EmpfaengerControl extends AbstractControl {
 	private TextInput kontonummer   = null;
 	private TextInput blz					  = null;
 	private Input name				      = null;
-  private Input kommentar         = null;
+
+	private TextInput bic           = null;
+	private TextInput iban          = null;
+  private TextInput bank          = null;
+
+	private Input kommentar         = null;
 
   private Part list               = null;
   private Part sammelList         = null;
   private Part sammelList2        = null;
   private Part umsatzList         = null;
-
+  
 	private I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
@@ -186,7 +191,6 @@ public class EmpfaengerControl extends AbstractControl {
     // BUGZILLA 280
     kontonummer.setValidChars(HBCIProperties.HBCI_KTO_VALIDCHARS);
     kontonummer.setEnabled(isHibiscusAdresse());
-    kontonummer.setMandatory(true);
     return kontonummer;
 	}
 
@@ -215,9 +219,67 @@ public class EmpfaengerControl extends AbstractControl {
 			return blz;
 		blz = new BLZInput(getAddress().getBlz());
     blz.setEnabled(isHibiscusAdresse());
-    blz.setMandatory(true);
 		return blz;
 	}
+	
+  /**
+   * Liefert das Eingabe-Feld fuer die IBAN.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getIban() throws RemoteException
+  {
+    if (this.iban == null)
+    {
+      String s = null;
+      Address a = getAddress();
+      if (a instanceof HibiscusAddress)
+        s = ((HibiscusAddress)a).getIban();
+      this.iban = new TextInput(s,HBCIProperties.HBCI_IBAN_MAXLENGTH);
+      this.iban.setValidChars(HBCIProperties.HBCI_IBAN_VALIDCHARS);
+      this.iban.setEnabled(isHibiscusAdresse());
+    }
+    return this.iban;
+  }
+
+  /**
+   * Liefert das Eingabe-Feld fuer die BIC.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getBic() throws RemoteException
+  {
+    if (this.bic == null)
+    {
+      String s = null;
+      Address a = getAddress();
+      if (a instanceof HibiscusAddress)
+        s = ((HibiscusAddress)a).getBic();
+      this.bic = new TextInput(s,HBCIProperties.HBCI_BIC_MAXLENGTH);
+      this.bic.setValidChars(HBCIProperties.HBCI_BIC_VALIDCHARS);
+      this.bic.setEnabled(isHibiscusAdresse());
+    }
+    return this.bic;
+  }
+
+  /**
+   * Liefert das Eingabe-Feld fuer den Namen der Bank.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getBank() throws RemoteException
+  {
+    if (this.bank == null)
+    {
+      String s = null;
+      Address a = getAddress();
+      if (a instanceof HibiscusAddress)
+        s = ((HibiscusAddress)a).getBank();
+      this.bank = new TextInput(s);
+      this.bank.setEnabled(isHibiscusAdresse());
+    }
+    return this.bank;
+  }
 
 	/**
 	 * Liefert das Eingabe-Feld fuer den Namen.
@@ -248,18 +310,23 @@ public class EmpfaengerControl extends AbstractControl {
         a.setBlz((String)getBlz().getValue());
         a.setName((String)getName().getValue());
         a.setKommentar((String)getKommentar().getValue());
+
+        a.setBank((String)getBank().getValue());
+        a.setIban((String)getIban().getValue());
+        a.setBic((String)getBic().getValue());
+        
         a.store();
-        GUI.getStatusBar().setSuccessText(i18n.tr("Adresse gespeichert"));
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Adresse gespeichert"),StatusBarMessage.TYPE_SUCCESS));
       }
     }
     catch (ApplicationException e2)
     {
-      GUI.getView().setErrorText(e2.getMessage());
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(e2.getMessage(),StatusBarMessage.TYPE_ERROR));
     }
     catch (RemoteException e)
     {
       Logger.error("error while storing address",e);
-      GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern der Adresse"));
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Speichern der Adresse: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
     }
   }
 }
@@ -267,6 +334,9 @@ public class EmpfaengerControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: EmpfaengerControl.java,v $
+ * Revision 1.47  2009/02/18 00:35:54  willuhn
+ * @N Auslaendische Bankverbindungen im Adressbuch
+ *
  * Revision 1.46  2008/11/17 23:29:59  willuhn
  * @C Aufrufe der depeicated BLZ-Funktionen angepasst
  *

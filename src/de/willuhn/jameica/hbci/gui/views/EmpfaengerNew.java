@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/EmpfaengerNew.java,v $
- * $Revision: 1.16 $
- * $Date: 2009/01/20 10:51:45 $
+ * $Revision: 1.17 $
+ * $Date: 2009/02/18 00:35:54 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -52,10 +52,14 @@ public class EmpfaengerNew extends AbstractView {
     ColumnLayout columns = new ColumnLayout(getParent(),2);
 
     SimpleContainer left = new SimpleContainer(columns.getComposite());
-		left.addHeadline(i18n.tr("Eigenschaften"));
-		left.addLabelPair(i18n.tr("Kontonummer"),	 control.getKontonummer());
-		left.addLabelPair(i18n.tr("Bankleitzahl"), control.getBlz());
-		left.addLabelPair(i18n.tr("Name"),			   control.getName());
+    left.addHeadline(i18n.tr("Eigenschaften"));
+    left.addLabelPair(i18n.tr("Kontoinhaber"),              control.getName());
+		left.addLabelPair(i18n.tr("Kontonummer"),               control.getKontonummer());
+		left.addLabelPair(i18n.tr("Bankleitzahl"),              control.getBlz());
+    left.addHeadline(i18n.tr("Ausländische Bankverbindung"));
+    left.addLabelPair(i18n.tr("IBAN"),                      control.getIban());
+    left.addLabelPair(i18n.tr("BIC"),                       control.getBic());
+    left.addLabelPair(i18n.tr("Name des Kredit-Instituts"), control.getBank());
 
     SimpleContainer right = new SimpleContainer(columns.getComposite(),true);
     right.addHeadline(i18n.tr("Notizen"));
@@ -100,6 +104,9 @@ public class EmpfaengerNew extends AbstractView {
 
 /**********************************************************************
  * $Log: EmpfaengerNew.java,v $
+ * Revision 1.17  2009/02/18 00:35:54  willuhn
+ * @N Auslaendische Bankverbindungen im Adressbuch
+ *
  * Revision 1.16  2009/01/20 10:51:45  willuhn
  * @N Mehr Icons - fuer Buttons
  *

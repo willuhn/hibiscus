@@ -17,9 +17,12 @@ CREATE TABLE konto (
 
 CREATE TABLE empfaenger (
   id NUMERIC default UNIQUEKEY('empfaenger'),
-  kontonummer varchar(40) NOT NULL,
-  blz varchar(15) NOT NULL,
+  kontonummer varchar(15) NULL,
+  blz varchar(15) NULL,
   name varchar(27) NOT NULL,
+  iban varchar(40) NULL,
+  bic varchar(15) NULL,
+  bank varchar(140) NULL,
   kommentar varchar(1000) NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
@@ -281,4 +284,4 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',18);
+INSERT INTO version (name,version) values ('db',19);

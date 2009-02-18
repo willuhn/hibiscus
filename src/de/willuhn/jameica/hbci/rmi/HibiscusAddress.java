@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/HibiscusAddress.java,v $
- * $Revision: 1.4 $
- * $Date: 2008/11/05 09:26:57 $
+ * $Revision: 1.5 $
+ * $Date: 2009/02/18 00:35:54 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -36,6 +36,7 @@ public interface HibiscusAddress extends Address, DBObject
    * @throws RemoteException
    * @deprecated Bitte stattdessen setBlz(String) verwenden.
    */
+  @Deprecated
   public void setBLZ(String blz) throws RemoteException;
 	
   /**
@@ -59,6 +60,52 @@ public interface HibiscusAddress extends Address, DBObject
    * @throws RemoteException
    */
   public void setKommentar(String kommentar) throws RemoteException;
+  
+  /**
+   * Liefert den Namen der Bank.
+   * Ist nur fuer auslaendische Banken sinnvoll, da HBCI4Java fuer
+   * deutsche Banken eine Mapping-Tabelle BLZ->Bankname mitbringt.
+   * @return Name der Bank.
+   * @throws RemoteException
+   */
+  public String getBank() throws RemoteException;
+  
+  /**
+   * Speichert den Namen der Bank.
+   * Ist nur fuer auslaendische Banken sinnvoll, da HBCI4Java fuer
+   * deutsche Banken eine Mapping-Tabelle BLZ->Bankname mitbringt.
+   * @param name Name der Bank.
+   * @throws RemoteException
+   */
+  public void setBank(String name) throws RemoteException;
+  
+  /**
+   * Liefert die BIC.
+   * @return die BIC.
+   * @throws RemoteException
+   */
+  public String getBic() throws RemoteException;
+  
+  /**
+   * Speichert die BIC.
+   * @param bic die BIC.
+   * @throws RemoteException
+   */
+  public void setBic(String bic) throws RemoteException;
+  
+  /**
+   * Liefert die IBAN.
+   * @return die IBAN.
+   * @throws RemoteException
+   */
+  public String getIban() throws RemoteException;
+  
+  /**
+   * Speichert die IBAN.
+   * @param iban die IBAN.
+   * @throws RemoteException
+   */
+  public void setIban(String iban) throws RemoteException;
 
   /**
    * Erlaubt das Setzen von Attributen des Umsatzes ueber diese generische Funktion.
@@ -73,6 +120,9 @@ public interface HibiscusAddress extends Address, DBObject
 
 /**********************************************************************
  * $Log: HibiscusAddress.java,v $
+ * Revision 1.5  2009/02/18 00:35:54  willuhn
+ * @N Auslaendische Bankverbindungen im Adressbuch
+ *
  * Revision 1.4  2008/11/05 09:26:57  willuhn
  * @B tag typo
  *

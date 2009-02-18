@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/HibiscusAddressImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2008/05/19 22:35:53 $
+ * $Revision: 1.7 $
+ * $Date: 2009/02/18 00:35:54 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,6 +24,7 @@ import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
+ * Implementierung einer Hibiscus-Adresse.
  */
 public class HibiscusAddressImpl extends AbstractDBObject implements HibiscusAddress {
 
@@ -54,27 +55,64 @@ public class HibiscusAddressImpl extends AbstractDBObject implements HibiscusAdd
    * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
    */
   protected void insertCheck() throws ApplicationException {
-		try {
-
-			if (getName() == null || getName().length() == 0)
+		try
+		{
+      //////////////////////////////////////////////////////////////////////////
+      // Kontoinhaber
+      String name = this.getName();
+			if (name == null || name.length() == 0)
 				throw new ApplicationException(i18n.tr("Bitte geben Sie einen Namen ein."));
 
-      HBCIProperties.checkLength(getName(), HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
+      HBCIProperties.checkLength(name, HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
+      //
+      //////////////////////////////////////////////////////////////////////////
 
-			if (getBLZ() == null || getBLZ().length() == 0)
-				throw new ApplicationException(i18n.tr("Bitte geben Sie eine BLZ ein."));
+      boolean haveAccount = false;
+      //////////////////////////////////////////////////////////////////////////
+      // Deutsche Bankverbindung
+      String kn = this.getKontonummer();
 
-			if (getKontonummer() == null || getKontonummer().length() == 0)
-				throw new ApplicationException(i18n.tr("Bitte geben Sie eine Kontonummer ein."));
+      if (kn != null && kn.length() > 0)
+      {
+        HBCIProperties.checkChars(kn, HBCIProperties.HBCI_KTO_VALIDCHARS);
+        HBCIProperties.checkLength(kn, HBCIProperties.HBCI_KTO_MAXLENGTH_SOFT);
 
-      // BUGZILLA 280
-      HBCIProperties.checkChars(getBLZ(), HBCIProperties.HBCI_BLZ_VALIDCHARS);
-      HBCIProperties.checkChars(getKontonummer(), HBCIProperties.HBCI_KTO_VALIDCHARS);
-      HBCIProperties.checkLength(getKontonummer(), HBCIProperties.HBCI_KTO_MAXLENGTH_SOFT);
+        String blz = this.getBlz();
+        if (blz == null || blz.length() == 0)
+          throw new ApplicationException(i18n.tr("Bitte geben Sie eine BLZ ein."));
+        // BUGZILLA 280
+        HBCIProperties.checkChars(blz, HBCIProperties.HBCI_BLZ_VALIDCHARS);
 
-			if (!HBCIProperties.checkAccountCRC(getBLZ(),getKontonummer()))
-				throw new ApplicationException(i18n.tr("Ungültige BLZ/Kontonummer. Bitte prüfen Sie Ihre Eingaben."));
+        if (!HBCIProperties.checkAccountCRC(blz,kn))
+          throw new ApplicationException(i18n.tr("Ungültige BLZ/Kontonummer. Bitte prüfen Sie Ihre Eingaben."));
+        
+        haveAccount = true;
+      }
+      //
+      //////////////////////////////////////////////////////////////////////////
 
+      //////////////////////////////////////////////////////////////////////////
+      // Auslaendische Bankverbindung
+      String iban = this.getIban();
+      String bic = this.getBic();
+      if (bic != null && bic.length() > 0)
+      {
+        HBCIProperties.checkLength(bic, HBCIProperties.HBCI_BIC_MAXLENGTH);
+        HBCIProperties.checkChars(bic, HBCIProperties.HBCI_BIC_VALIDCHARS);
+      }
+      if (iban != null && iban.length() > 0)
+      {
+        HBCIProperties.checkLength(iban, HBCIProperties.HBCI_IBAN_MAXLENGTH);
+        HBCIProperties.checkChars(iban, HBCIProperties.HBCI_IBAN_VALIDCHARS);
+        if (!HBCIProperties.checkIBANCRC(iban))
+          throw new ApplicationException(i18n.tr("Ungültige IBAN. Bitte prüfen Sie Ihre Eingaben."));
+        haveAccount = true;
+      }
+      //
+      //////////////////////////////////////////////////////////////////////////
+
+      if (!haveAccount)
+        throw new ApplicationException("Geben Sie bitte eine Kontonummer/BLZ oder IBAN ein");
 		}
 		catch (RemoteException e)
 		{
@@ -82,7 +120,7 @@ public class HibiscusAddressImpl extends AbstractDBObject implements HibiscusAdd
 			throw new ApplicationException(i18n.tr("Fehler bei der Prüfung des Empfängers"));
 		}
   }
-
+  
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
    */
@@ -173,11 +211,62 @@ public class HibiscusAddressImpl extends AbstractDBObject implements HibiscusAdd
     
     super.setAttribute(name,value);
   }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#getBank()
+   */
+  public String getBank() throws RemoteException
+  {
+    return (String) getAttribute("bank");
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#setBank(java.lang.String)
+   */
+  public void setBank(String name) throws RemoteException
+  {
+    setAttribute("bank",name);
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#getBic()
+   */
+  public String getBic() throws RemoteException
+  {
+    return (String) getAttribute("bic");
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#setBic(java.lang.String)
+   */
+  public void setBic(String bic) throws RemoteException
+  {
+    setAttribute("bic",bic);
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#getIban()
+   */
+  public String getIban() throws RemoteException
+  {
+    return (String) getAttribute("iban");
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#setIban(java.lang.String)
+   */
+  public void setIban(String iban) throws RemoteException
+  {
+    setAttribute("iban",iban);
+  }
 }
 
 
 /**********************************************************************
  * $Log: HibiscusAddressImpl.java,v $
+ * Revision 1.7  2009/02/18 00:35:54  willuhn
+ * @N Auslaendische Bankverbindungen im Adressbuch
+ *
  * Revision 1.6  2008/05/19 22:35:53  willuhn
  * @N Maximale Laenge von Kontonummern konfigurierbar (Soft- und Hardlimit)
  * @N Laengenpruefungen der Kontonummer in Dialogen und Fachobjekten

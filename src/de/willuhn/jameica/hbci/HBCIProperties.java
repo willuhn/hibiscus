@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCIProperties.java,v $
- * $Revision: 1.36 $
- * $Date: 2009/02/17 00:00:02 $
+ * $Revision: 1.37 $
+ * $Date: 2009/02/18 00:35:54 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -46,6 +46,18 @@ public class HBCIProperties
 		settings.getString("hbci.dtaus.validchars", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ,.&-+*%/$üöäÜÖÄß"); 
 
   /**
+   * Liste der in einer IBAN erlaubten Zeichen.
+   */
+  public final static String HBCI_IBAN_VALIDCHARS =
+    settings.getString("hbci.iban.validchars", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"); 
+
+  /**
+   * Liste der in einer BIC erlaubten Zeichen.
+   */
+  public final static String HBCI_BIC_VALIDCHARS =
+    settings.getString("hbci.bic.validchars", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"); 
+
+	/**
    * Liste der in Bankleitzahlen erlaubten Zeichen.
    */
   public final static String HBCI_BLZ_VALIDCHARS = settings.getString("hbci.blz.validchars","0123456789"); 
@@ -90,7 +102,12 @@ public class HBCIProperties
    */
   public final static int HBCI_IBAN_MAXLENGTH = settings.getInt("hbci.iban.maxlength",34);
 
+  /**
+   * Maximale Laenge einer BIC.
+   */
+  public final static int HBCI_BIC_MAXLENGTH = settings.getInt("hbci.bic.maxlength",11);
 
+  
   // BUGZILLA #49 http://www.willuhn.de/bugzilla/show_bug.cgi?id=49
   /**
    * Reservierter Tag fuer "Monatsletzten".
@@ -236,14 +253,20 @@ public class HBCIProperties
       return true;
     try
     {
-      if (iban == null || 
-          iban.length() == 0 ||
-          iban.length() > HBCI_IBAN_MAXLENGTH)
+      if (iban == null || // Nichts angegeben
+          iban.length() == 0 || // Nichts angegeben
+          iban.length() > HBCI_IBAN_MAXLENGTH || // zu lang
+          iban.length() <= HBCI_KTO_MAXLENGTH_HARD) // zu kurz
       {
-        Logger.warn("iban number [" + iban + "] out of range, skip crc check");
-        return true;
+        return false;
       }
       return HBCIUtils.checkIBANCRC(iban);
+    }
+    catch (NumberFormatException nfe)
+    {
+      // TODO HBCI4Java koennte diese Exception vermutlich auch selbst fangen und false liefern
+      Logger.warn("invalid iban: " + nfe.getMessage());
+      return false;
     }
     catch (Exception e)
     {
@@ -304,6 +327,9 @@ public class HBCIProperties
 
 /**********************************************************************
  * $Log: HBCIProperties.java,v $
+ * Revision 1.37  2009/02/18 00:35:54  willuhn
+ * @N Auslaendische Bankverbindungen im Adressbuch
+ *
  * Revision 1.36  2009/02/17 00:00:02  willuhn
  * @N BUGZILLA 159 - Erster Code fuer Auslands-Ueberweisungen
  *
