@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCISammelTransferJob.java,v $
- * $Revision: 1.9 $
- * $Date: 2008/09/23 11:24:27 $
+ * $Revision: 1.10 $
+ * $Date: 2009/02/18 10:48:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -35,6 +35,8 @@ public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
 
 	private SammelTransfer transfer = null;
 	private Konto konto = null;
+	
+	private boolean markExecutedBefore = false;
 
   /**
 	 * ct.
@@ -74,6 +76,12 @@ public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
       
       
 			setJobParam("my",Converter.HibiscusKonto2HBCIKonto(konto));
+
+      de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
+      markExecutedBefore = settings.getBoolean("transfer.markexecuted.before",false);
+      if (markExecutedBefore)
+        transfer.setAusgefuehrt(true);
+			
 		}
 		catch (RemoteException e)
 		{
@@ -104,7 +112,10 @@ public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
    */
   void markExecuted() throws RemoteException, ApplicationException
   {
-    transfer.setAusgefuehrt();
+    // Wenn der Auftrag nicht vorher als ausgefuehrt markiert wurde, machen wir das jetzt
+    if (!markExecutedBefore)
+      transfer.setAusgefuehrt(true);
+
     Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(transfer)); // BUGZILLA 545
     konto.addToProtokoll(i18n.tr("Sammel-Auftrag {0} ausgeführt",transfer.getBezeichnung()),Protokoll.TYP_SUCCESS);
     Logger.info("sammellastschrift submitted successfully");
@@ -115,6 +126,11 @@ public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
    */
   String markFailed(String error) throws RemoteException, ApplicationException
   {
+    // Wenn der Auftrag fehlerhaft war und schon als ausgefuehrt markiert wurde, machen
+    // wir das jetzt wieder rurckgaengig
+    if (markExecutedBefore)
+      transfer.setAusgefuehrt(false);
+
     String msg = i18n.tr("Fehler beim Ausführen des Sammel-Auftrages {0}: {1}",new String[]{transfer.getBezeichnung(),error});
     konto.addToProtokoll(msg,Protokoll.TYP_ERROR);
     return msg;
@@ -124,6 +140,9 @@ public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: AbstractHBCISammelTransferJob.java,v $
+ * Revision 1.10  2009/02/18 10:48:41  willuhn
+ * @N Neuer Schalter "transfer.markexecuted.before", um festlegen zu koennen, wann ein Auftrag als ausgefuehrt gilt (wenn die Quittung von der Bank vorliegt oder wenn der Auftrag erzeugt wurde)
+ *
  * Revision 1.9  2008/09/23 11:24:27  willuhn
  * @C Auswertung der Job-Results umgestellt. Die Entscheidung, ob Fehler oder Erfolg findet nun nur noch an einer Stelle (in AbstractHBCIJob) statt. Ausserdem wird ein Job auch dann als erfolgreich erledigt markiert, wenn der globale Job-Status zwar fehlerhaft war, aber fuer den einzelnen Auftrag nicht zweifelsfrei ermittelt werden konnte, ob er erfolgreich war oder nicht. Es koennte unter Umstaenden sein, eine Ueberweisung faelschlicherweise als ausgefuehrt markiert (wenn globaler Status OK, aber Job-Status != ERROR). Das ist aber allemal besser, als sie doppelt auszufuehren.
  *

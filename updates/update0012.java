@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/updates/update0012.java,v $
- * $Revision: 1.2 $
- * $Date: 2008/12/15 10:46:04 $
+ * $Revision: 1.3 $
+ * $Date: 2009/02/18 10:48:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -179,7 +179,7 @@ public class update0012 implements Update
                   ausgefuehrt = tu.ausgefuehrt();
                   if (ausgefuehrt) ((AbstractDBObject)tu).setAttribute("ausgefuehrt",new Integer(0));
                   tu.store();
-                  if (ausgefuehrt) tu.setAusgefuehrt();
+                  if (ausgefuehrt) tu.setAusgefuehrt(true);
                   break;
                 case Transfer.TYP_LASTSCHRIFT:
                   Lastschrift tl = (Lastschrift) service.createObject(Lastschrift.class,s);
@@ -187,7 +187,7 @@ public class update0012 implements Update
                   ausgefuehrt = tl.ausgefuehrt();
                   if (ausgefuehrt) ((AbstractDBObject)tl).setAttribute("ausgefuehrt",new Integer(0));
                   tl.store();
-                  if (ausgefuehrt) tl.setAusgefuehrt();
+                  if (ausgefuehrt) tl.setAusgefuehrt(true);
                   break;
                 case Transfer.TYP_DAUERAUFTRAG:
                   Dauerauftrag td = (Dauerauftrag) service.createObject(Dauerauftrag.class,s);
@@ -291,6 +291,9 @@ public class update0012 implements Update
 
 /*********************************************************************
  * $Log: update0012.java,v $
+ * Revision 1.3  2009/02/18 10:48:42  willuhn
+ * @N Neuer Schalter "transfer.markexecuted.before", um festlegen zu koennen, wann ein Auftrag als ausgefuehrt gilt (wenn die Quittung von der Bank vorliegt oder wenn der Auftrag erzeugt wurde)
+ *
  * Revision 1.2  2008/12/15 10:46:04  willuhn
  * @B Verwendungszwecke ueberspringen, wenn die zugehoerigen Objekte nicht mehr gefunden wurden
  * @N rollback des Updates im Fehlerfall durch Entfernen der Spalte "zweck3"

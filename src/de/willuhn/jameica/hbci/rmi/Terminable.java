@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Terminable.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/03/09 01:07:02 $
- * $Author: web0 $
+ * $Revision: 1.4 $
+ * $Date: 2009/02/18 10:48:42 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -53,18 +53,22 @@ public interface Terminable
   public boolean ausgefuehrt() throws RemoteException;
   
   /**
-   * Markiert das Objekt als ausgefuehrt und speichert die Aenderung
+   * Markiert das Objekt als ausgefuehrt/nicht ausgefuehrt und speichert die Aenderung
    * unmittelbar.
+   * @param b ausgefuehrt-Status.
    * @throws RemoteException
    * @throws ApplicationException
    */
-  public void setAusgefuehrt() throws RemoteException, ApplicationException;
+  public void setAusgefuehrt(boolean b) throws RemoteException, ApplicationException;
 
 }
 
 
 /**********************************************************************
  * $Log: Terminable.java,v $
+ * Revision 1.4  2009/02/18 10:48:42  willuhn
+ * @N Neuer Schalter "transfer.markexecuted.before", um festlegen zu koennen, wann ein Auftrag als ausgefuehrt gilt (wenn die Quittung von der Bank vorliegt oder wenn der Auftrag erzeugt wurde)
+ *
  * Revision 1.3  2005/03/09 01:07:02  web0
  * @D javadoc fixes
  *

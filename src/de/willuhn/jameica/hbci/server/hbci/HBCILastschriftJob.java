@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCILastschriftJob.java,v $
- * $Revision: 1.19 $
- * $Date: 2008/11/26 00:39:36 $
+ * $Revision: 1.20 $
+ * $Date: 2009/02/18 10:48:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -34,6 +34,8 @@ public class HBCILastschriftJob extends AbstractHBCIJob
 {
 	private Lastschrift lastschrift = null;
 	private Konto konto = null;
+
+	private boolean markExecutedBefore = false;
 
   /**
 	 * ct.
@@ -100,7 +102,12 @@ public class HBCILastschriftJob extends AbstractHBCIJob
         setJobParam("usage_" + pos,lines[i]);
         pos++;
       }
-		}
+
+      de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
+      markExecutedBefore = settings.getBoolean("transfer.markexecuted.before",false);
+      if (markExecutedBefore)
+        lastschrift.setAusgefuehrt(true);
+ 		}
 		catch (RemoteException e)
 		{
 			throw e;
@@ -136,7 +143,10 @@ public class HBCILastschriftJob extends AbstractHBCIJob
    */
   void markExecuted() throws RemoteException, ApplicationException
   {
-    lastschrift.setAusgefuehrt();
+    // Wenn der Auftrag nicht vorher als ausgefuehrt markiert wurde, machen wir das jetzt
+    if (!markExecutedBefore)
+      lastschrift.setAusgefuehrt(true);
+
     Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(lastschrift)); // BUGZILLA 480
     konto.addToProtokoll(i18n.tr("Lastschrift eingezogen von {0}",lastschrift.getGegenkontoName()),Protokoll.TYP_SUCCESS);
     Logger.info("lastschrift submitted successfully");
@@ -147,6 +157,11 @@ public class HBCILastschriftJob extends AbstractHBCIJob
    */
   String markFailed(String error) throws RemoteException, ApplicationException
   {
+    // Wenn der Auftrag fehlerhaft war und schon als ausgefuehrt markiert wurde, machen
+    // wir das jetzt wieder rurckgaengig
+    if (markExecutedBefore)
+      lastschrift.setAusgefuehrt(false);
+
     String msg = i18n.tr("Fehler beim Ausführen der Lastschrift von {0}: {1}",new String[]{lastschrift.getGegenkontoName(),error});
     konto.addToProtokoll(msg,Protokoll.TYP_ERROR);
     return msg;
@@ -158,6 +173,9 @@ public class HBCILastschriftJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCILastschriftJob.java,v $
+ * Revision 1.20  2009/02/18 10:48:41  willuhn
+ * @N Neuer Schalter "transfer.markexecuted.before", um festlegen zu koennen, wann ein Auftrag als ausgefuehrt gilt (wenn die Quittung von der Bank vorliegt oder wenn der Auftrag erzeugt wurde)
+ *
  * Revision 1.19  2008/11/26 00:39:36  willuhn
  * @N Erste Version erweiterter Verwendungszwecke. Muss dringend noch getestet werden.
  *

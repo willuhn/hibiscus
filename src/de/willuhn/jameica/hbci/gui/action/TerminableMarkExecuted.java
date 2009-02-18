@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/TerminableMarkExecuted.java,v $
- * $Revision: 1.3 $
- * $Date: 2007/10/25 15:47:21 $
+ * $Revision: 1.4 $
+ * $Date: 2009/02/18 10:48:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -63,7 +63,7 @@ public class TerminableMarkExecuted implements Action
       
       for (int i=0;i<t.length;++i)
       {
-        t[i].setAusgefuehrt();
+        t[i].setAusgefuehrt(true);
         if (t[i] instanceof HibiscusTransfer)
         {
           HibiscusTransfer tr = (HibiscusTransfer) t[i];
@@ -99,6 +99,9 @@ public class TerminableMarkExecuted implements Action
 
 /**********************************************************************
  * $Log: TerminableMarkExecuted.java,v $
+ * Revision 1.4  2009/02/18 10:48:42  willuhn
+ * @N Neuer Schalter "transfer.markexecuted.before", um festlegen zu koennen, wann ein Auftrag als ausgefuehrt gilt (wenn die Quittung von der Bank vorliegt oder wenn der Auftrag erzeugt wurde)
+ *
  * Revision 1.3  2007/10/25 15:47:21  willuhn
  * @N Einzelauftraege zu Sammel-Auftraegen zusammenfassen (BUGZILLA 402)
  *
