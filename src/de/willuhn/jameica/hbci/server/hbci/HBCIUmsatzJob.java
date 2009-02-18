@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUmsatzJob.java,v $
- * $Revision: 1.38 $
- * $Date: 2009/02/13 09:30:35 $
+ * $Revision: 1.39 $
+ * $Date: 2009/02/18 10:54:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,6 +31,7 @@ import de.willuhn.jameica.hbci.server.Converter;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.plugin.PluginResources;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
@@ -137,16 +138,16 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
       return;
     }
 
+    Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
 
     ////////////////////////////////////////////////////////////////////////////
     // Merge-Fenster ermitteln
     Date d = null;
 		if (this.saldoDatum != null)
 		{
-      PluginResources res = Application.getPluginLoader().getPlugin(HBCI.class).getResources();
       Calendar cal = Calendar.getInstance();
       cal.setTime(this.saldoDatum);
-      cal.add(Calendar.DATE,res.getSettings().getInt("umsatz.mergewindow.offset",-30));
+      cal.add(Calendar.DATE,settings.getInt("umsatz.mergewindow.offset",-30));
       d = cal.getTime();
 		}
     Logger.info("merge window: " + d + " - " + new Date());
@@ -158,6 +159,8 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
     DBIterator existing = konto.getUmsaetze(d,null);
     //
     ////////////////////////////////////////////////////////////////////////////
+    
+    boolean fetchNotbooked = settings.getBoolean("umsatz.fetchnotbooked",true);
 
     ////////////////////////////////////////////////////////////////////////////
     // Gebuchte Umsaetze
@@ -169,7 +172,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
 
       // Wir koennen nicht einfach mit "existing.contains(umsatz)" nachschauen, ob der schon
       // existiert, weil die vorgemerkten Umsaetze andere Salden haben
-      final Umsatz notbooked = findNotBooked(existing,umsatz);
+      final Umsatz notbooked = fetchNotbooked ? findNotBooked(existing,umsatz) : null;
 
 			if (existing.contains(umsatz) != null && notbooked == null)
         continue; // Haben wir schon und existiert auch nicht mehr als Vormerkposten
@@ -210,32 +213,35 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
 		
     ////////////////////////////////////////////////////////////////////////////
     // Vorgemerkte Umsaetze
-		Logger.info("applying not-booked (vorgemerkte) entries");
-    lines = result.getFlatDataUnbooked();
-    if (lines != null && lines.size() > 0)
-    {
-      for (int i=0;i<lines.size();++i)
-      {
-        final Umsatz umsatz = Converter.HBCIUmsatz2HibiscusUmsatz((GVRKUms.UmsLine)lines.get(i));
-        umsatz.setKonto(konto);
-        
-        if (findNotBooked(existing,umsatz) != null)
-          continue; // Haben wir schon
+		if (fetchNotbooked)
+		{
+	    Logger.info("applying not-booked (vorgemerkte) entries");
+	    lines = result.getFlatDataUnbooked();
+	    if (lines != null && lines.size() > 0)
+	    {
+	      for (int i=0;i<lines.size();++i)
+	      {
+	        final Umsatz umsatz = Converter.HBCIUmsatz2HibiscusUmsatz((GVRKUms.UmsLine)lines.get(i));
+	        umsatz.setKonto(konto);
+	        
+	        if (findNotBooked(existing,umsatz) != null)
+	          continue; // Haben wir schon
 
-        // Vormerkposten neu anlegen
-        try
-        {
-          umsatz.setFlags(Umsatz.FLAG_NOTBOOKED);
-          umsatz.store();
-          Application.getMessagingFactory().sendMessage(new ImportMessage(umsatz));
-        }
-        catch (Exception e2)
-        {
-          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Nicht alle empfangenen Umsätze konnten gespeichert werden. Bitte prüfen Sie das System-Protokoll"),StatusBarMessage.TYPE_ERROR));
-          Logger.error("error while adding umsatz, skipping this one",e2);
-        }
-      }
-    }
+	        // Vormerkposten neu anlegen
+	        try
+	        {
+	          umsatz.setFlags(Umsatz.FLAG_NOTBOOKED);
+	          umsatz.store();
+	          Application.getMessagingFactory().sendMessage(new ImportMessage(umsatz));
+	        }
+	        catch (Exception e2)
+	        {
+	          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Nicht alle empfangenen Umsätze konnten gespeichert werden. Bitte prüfen Sie das System-Protokoll"),StatusBarMessage.TYPE_ERROR));
+	          Logger.error("error while adding umsatz, skipping this one",e2);
+	        }
+	      }
+	    }
+		}
     //
     ////////////////////////////////////////////////////////////////////////////
 
@@ -284,6 +290,9 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIUmsatzJob.java,v $
+ * Revision 1.39  2009/02/18 10:54:45  willuhn
+ * @N Abruf der vorgemerkten Umsaetze konfigurierbar
+ *
  * Revision 1.38  2009/02/13 09:30:35  willuhn
  * @C Erkennung von Vormerkposten nochmal leicht ueberarbeitet
  *
