@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/AdresseAuswahlDialog.java,v $
- * $Revision: 1.4 $
- * $Date: 2008/12/02 10:52:23 $
+ * $Revision: 1.5 $
+ * $Date: 2009/02/19 23:42:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -34,8 +34,9 @@ import de.willuhn.util.I18N;
 public class AdresseAuswahlDialog extends AbstractDialog
 {
 
-	private I18N i18n;
-	private Address choosen = null;
+	private final static I18N i18n       = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+	private Address choosen              = null;
+	private EmpfaengerList.Filter filter = null;
 
   /**
    * ct.
@@ -43,8 +44,18 @@ public class AdresseAuswahlDialog extends AbstractDialog
    */
   public AdresseAuswahlDialog(int position)
   {
+    this(position,null);
+  }
+  
+	/**
+   * ct.
+   * @param position
+   * @param filter optionale Angabe eines Adress-Filters.
+   */
+  public AdresseAuswahlDialog(int position, EmpfaengerList.Filter filter)
+  {
     super(position);
-		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+    this.filter = filter;
 
 		this.setTitle(i18n.tr("Adressbuch"));
     this.setSize(SWT.DEFAULT,300);
@@ -72,7 +83,7 @@ public class AdresseAuswahlDialog extends AbstractDialog
         close();
       }
     };    
-		final EmpfaengerList empf = new EmpfaengerList(a);
+		final EmpfaengerList empf = new EmpfaengerList(a,this.filter);
     empf.setContextMenu(null);
     empf.setMulti(false);
     empf.setSummary(false);
@@ -115,6 +126,9 @@ public class AdresseAuswahlDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: AdresseAuswahlDialog.java,v $
+ * Revision 1.5  2009/02/19 23:42:01  willuhn
+ * @N Filter fuer Adressbuch zum Ausblenden von Adressen (z.Bsp. bei Auslandsueberweisungen alle ausblenden, die keine IBAN haben)
+ *
  * Revision 1.4  2008/12/02 10:52:23  willuhn
  * @B DecimalInput kann NULL liefern
  * @B Double.NaN beruecksichtigen
