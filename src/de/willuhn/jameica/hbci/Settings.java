@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.55 $
- * $Date: 2009/01/04 16:38:55 $
+ * $Revision: 1.56 $
+ * $Date: 2009/02/19 10:24:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -220,7 +220,7 @@ public class Settings
    */
   public static boolean getCheckPin()
   {
-    return settings.getBoolean("checkpin",false);
+    return settings.getBoolean("checkpin",true);
   }
   
   /**
@@ -229,7 +229,7 @@ public class Settings
    */
   public static boolean getCachePin()
   {
-    return settings.getBoolean("cachepin",false);
+    return settings.getBoolean("cachepin",true);
   }
 
   /**
@@ -288,7 +288,7 @@ public class Settings
    */
   public static boolean getOnlineMode()
   {
-    return settings.getBoolean("online",false);
+    return settings.getBoolean("online",true);
   }
   
   /**
@@ -319,7 +319,7 @@ public class Settings
    */
   public static double getUeberweisungLimit()
 	{
-		return settings.getDouble("ueberweisunglimit",5000.0);
+		return settings.getDouble("ueberweisunglimit",10000.0);
 	}
 	
 	/**
@@ -432,6 +432,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.56  2009/02/19 10:24:51  willuhn
+ * @C Default-Werte fuer System-Parameter geaendert
+ *
  * Revision 1.55  2009/01/04 16:38:55  willuhn
  * @N BUGZILLA 523 - ein Konto kann jetzt als Default markiert werden. Das wird bei Auftraegen vorausgewaehlt und ist fett markiert
  *
