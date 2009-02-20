@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/XMLSammelTransferImporter.java,v $
- * $Revision: 1.1 $
- * $Date: 2009/02/13 14:17:01 $
+ * $Revision: 1.2 $
+ * $Date: 2009/02/20 13:02:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,7 +27,9 @@ import de.willuhn.datasource.serialize.Reader;
 import de.willuhn.datasource.serialize.XmlReader;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
+import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.system.Application;
@@ -75,6 +77,23 @@ public class XMLSammelTransferImporter extends XMLImporter
       if (monitor != null)
         monitor.setStatusText(i18n.tr("Lese Datei ein"));
 
+
+      Konto konto = null;
+      try
+      {
+        // Wir fragen das Konto grundsaetzlich manuell ab. Siehe BUGZILLA 700
+        KontoAuswahlDialog d = new KontoAuswahlDialog(KontoAuswahlDialog.POSITION_CENTER);
+        konto = (Konto) d.open();
+      }
+      catch (OperationCanceledException oce)
+      {
+        Logger.info("import cancelled");
+        return;
+      }
+      
+      if (konto == null)
+        throw new ApplicationException(i18n.tr("Kein Konto ausgewählt"));
+      
       int created = 0;
       int error   = 0;
 
@@ -94,9 +113,14 @@ public class XMLSammelTransferImporter extends XMLImporter
         {
           // Ist noetig, damit die Buchungen die neue ID des Transfers kriegen
           if (object instanceof SammelTransfer)
+          {
             currentTransfer = (SammelTransfer) object;
+            currentTransfer.setKonto(konto);
+          }
           else
+          {
             ((SammelTransferBuchung)object).setSammelTransfer(currentTransfer);
+          }
           
           object.store();
           Application.getMessagingFactory().sendMessage(new ImportMessage(object));
@@ -182,6 +206,9 @@ public class XMLSammelTransferImporter extends XMLImporter
 
 /*******************************************************************************
  * $Log: XMLSammelTransferImporter.java,v $
+ * Revision 1.2  2009/02/20 13:02:57  willuhn
+ * @C BUGZILLA 700 - explizite Konto-Auswahl
+ *
  * Revision 1.1  2009/02/13 14:17:01  willuhn
  * @N BUGZILLA 700
  *
