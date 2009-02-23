@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUmsatzJob.java,v $
- * $Revision: 1.39 $
- * $Date: 2009/02/18 10:54:45 $
+ * $Revision: 1.40 $
+ * $Date: 2009/02/23 17:01:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,7 +23,6 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
-import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
@@ -161,6 +160,8 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
     ////////////////////////////////////////////////////////////////////////////
     
     boolean fetchNotbooked = settings.getBoolean("umsatz.fetchnotbooked",true);
+    if (fetchNotbooked)
+      cleanNotBooked();
 
     ////////////////////////////////////////////////////////////////////////////
     // Gebuchte Umsaetze
@@ -170,30 +171,8 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
 			final Umsatz umsatz = Converter.HBCIUmsatz2HibiscusUmsatz((GVRKUms.UmsLine)lines.get(i));
 			umsatz.setKonto(konto); // muessen wir noch machen, weil der Converter das Konto nicht kennt
 
-      // Wir koennen nicht einfach mit "existing.contains(umsatz)" nachschauen, ob der schon
-      // existiert, weil die vorgemerkten Umsaetze andere Salden haben
-      final Umsatz notbooked = fetchNotbooked ? findNotBooked(existing,umsatz) : null;
-
-			if (existing.contains(umsatz) != null && notbooked == null)
-        continue; // Haben wir schon und existiert auch nicht mehr als Vormerkposten
-
-			// Vormerkposten gefunden - in echte Buchung umwandeln
-			if (notbooked != null)
-			{
-			  try
-			  {
-	        Logger.debug("umsatz allready exists as not-booked [id: " + notbooked.getID() + "], removing not-booked flag");
-	        notbooked.applyBooked(umsatz);
-	        notbooked.store();
-          Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(notbooked));
-			  }
-        catch (Exception e2)
-        {
-          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Vorgemerkter Umsatz konnte nicht aktualisiert werden. Bitte prüfen Sie das System-Protokoll"),StatusBarMessage.TYPE_ERROR));
-          Logger.error("error while updating not-booked umsatz, skipping",e2);
-        }
-        continue;
-			}
+			if (existing.contains(umsatz) != null)
+        continue; // Haben wir schon
 
 			// Umsatz neu anlegen
       try
@@ -224,7 +203,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
 	        final Umsatz umsatz = Converter.HBCIUmsatz2HibiscusUmsatz((GVRKUms.UmsLine)lines.get(i));
 	        umsatz.setKonto(konto);
 	        
-	        if (findNotBooked(existing,umsatz) != null)
+	        if (existing.contains(umsatz) != null)
 	          continue; // Haben wir schon
 
 	        // Vormerkposten neu anlegen
@@ -249,31 +228,21 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
   }
   
   /**
-   * Durchsucht die Liste der Umsaetze nach einem vorgemerkten Umsatz mit den gleichen Eigenschaften
-   * @param existing Liste der Umsaetze.
-   * @param u gesuchter Umsatz.
-   * @return der vorgemerkte Umsatz, wenn er gefunden wurde.
+   * Loescht die vorgemerkten Buchungen weg, damit sie neu abgerufen werden koennen.
    * @throws RemoteException
+   * @throws ApplicationException
    */
-  private Umsatz findNotBooked(DBIterator existing, Umsatz u) throws RemoteException
+  private void cleanNotBooked() throws RemoteException, ApplicationException
   {
-    if (u == null)
-      return null;
-
-    long ref = u.getTinyChecksum();
-
-    existing.begin();
-    while (existing.hasNext())
+    Logger.info("clean notbooked entries");
+    DBIterator list = de.willuhn.jameica.hbci.Settings.getDBService().createList(Umsatz.class);
+    list.addFilter("konto_id = " + this.konto.getID());
+    list.addFilter("(flags & " + Umsatz.FLAG_NOTBOOKED + ") != 0");
+    while (list.hasNext())
     {
-      Umsatz c = (Umsatz) existing.next();
-      if ((c.getFlags() & Umsatz.FLAG_NOTBOOKED) == 0)
-        continue; // ist gar kein vorgemerkter Umsatz
-      if (c.getTinyChecksum() == ref)
-        return c;
+      Umsatz u = (Umsatz) list.next();
+      u.delete();
     }
-    
-    // Nichts gefunden
-    return null;
   }
   
   /**
@@ -290,6 +259,9 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIUmsatzJob.java,v $
+ * Revision 1.40  2009/02/23 17:01:58  willuhn
+ * @C Kein Abgleichen mehr bei vorgemerkten Buchungen sondern stattdessen vorgemerkte loeschen und neu abrufen
+ *
  * Revision 1.39  2009/02/18 10:54:45  willuhn
  * @N Abruf der vorgemerkten Umsaetze konfigurierbar
  *

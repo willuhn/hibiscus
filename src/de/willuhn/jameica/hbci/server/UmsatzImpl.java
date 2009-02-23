@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.63 $
- * $Date: 2009/02/13 10:52:18 $
+ * $Revision: 1.64 $
+ * $Date: 2009/02/23 17:01:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -736,65 +736,14 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
     
     this.setAttribute("flags",new Integer(flags));
   }
-
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#applyBooked(de.willuhn.jameica.hbci.rmi.Umsatz)
-   */
-  public void applyBooked(Umsatz umsatz) throws RemoteException
-  {
-    if (umsatz == null)
-      return;
-    
-    int flags = this.getFlags();
-    
-    // Checken, ob es sich ueberhaupt um einen vorgemerkten Umsatz handelt
-    if ((flags & Umsatz.FLAG_NOTBOOKED) == 0)
-      return;
-    
-    // Wir uebernehmen alles ausser Kategorie, Notizen und Flags
-    String comments = this.getKommentar();
-    UmsatzTyp typ   = this.getUmsatzTyp();
-    this.overwrite(umsatz);
-    this.setKommentar(comments);
-    this.setUmsatzTyp(typ);
-    this.setFlags(flags ^ Umsatz.FLAG_NOTBOOKED); // Flag "vorgemerkt" entfernen
-    
-    // Checksumme loeschen und aktualisieren
-    this.setAttribute("checksum",null);
-    setAttribute("checksum",new Long(getChecksum()));
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getTinyChecksum()
-   */
-  public long getTinyChecksum() throws RemoteException
-  {
-    String s = this.getGegenkontoNummer() +
-               this.getGegenkontoBLZ() + 
-               this.getBetrag() +
-               (""+this.getZweck()).toUpperCase() +
-               (""+this.getZweck2()).toUpperCase();
-
-    Date valuta = this.getValuta();
-    if (valuta != null)
-    {
-      try {
-        s += HBCI.DATEFORMAT.format(valuta);
-      }
-      catch (Exception e) {
-        s += valuta.toString();
-      }
-    }
-
-    CRC32 crc = new CRC32();
-    crc.update(s.getBytes());
-    return crc.getValue();
-  }
 }
 
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.64  2009/02/23 17:01:58  willuhn
+ * @C Kein Abgleichen mehr bei vorgemerkten Buchungen sondern stattdessen vorgemerkte loeschen und neu abrufen
+ *
  * Revision 1.63  2009/02/13 10:52:18  willuhn
  * @N Verwendungszweck mit in Tiny-Checksum uebernehmen, damit die Buchungen auch dann gefunden werden, wenn das Gegenkonto von der Bank nicht gefuellt wird
  *
