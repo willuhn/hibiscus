@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.52 $
- * $Date: 2008/12/02 10:52:23 $
+ * $Revision: 1.53 $
+ * $Date: 2009/02/23 23:44:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -54,7 +54,7 @@ public class SettingsControl extends AbstractControl {
 	private Input ueberfaelligFg    				= null;
 
 	private TablePart passportList 					= null;
-  private TablePart umsatzTypList         = null;
+  private UmsatzTypList umsatzTypList     = null;
 
 	private Input ueberweisungLimit 				= null;
 
@@ -87,7 +87,7 @@ public class SettingsControl extends AbstractControl {
    * @return Tabelle mit den Umsatz-Kategorien.
    * @throws RemoteException
    */
-  public TablePart getUmsatzTypListe() throws RemoteException
+  public UmsatzTypList getUmsatzTypListe() throws RemoteException
   {
     if (umsatzTypList != null)
         return umsatzTypList;
@@ -276,6 +276,9 @@ public class SettingsControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.53  2009/02/23 23:44:50  willuhn
+ * @N Etwas Code fuer Support fuer Unter-/Ober-Kategorien
+ *
  * Revision 1.52  2008/12/02 10:52:23  willuhn
  * @B DecimalInput kann NULL liefern
  * @B Double.NaN beruecksichtigen

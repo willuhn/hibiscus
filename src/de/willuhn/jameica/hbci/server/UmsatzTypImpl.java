@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.46 $
- * $Date: 2008/12/31 12:29:36 $
+ * $Revision: 1.47 $
+ * $Date: 2009/02/23 23:44:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -352,6 +352,13 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
       Umsatz u = (Umsatz) i.next();
       sum += u.getBetrag();
     }
+    
+    GenericIterator children = this.getChildren();
+    while (children.hasNext())
+    {
+      UmsatzTyp t = (UmsatzTyp) children.next();
+      sum += t.getUmsatz(von,bis);
+    }
     return sum;
   }
   
@@ -370,6 +377,13 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
     {
       Umsatz u = (Umsatz) i.next();
       sum += u.getBetrag();
+    }
+
+    GenericIterator children = this.getChildren();
+    while (children.hasNext())
+    {
+      UmsatzTyp t = (UmsatzTyp) children.next();
+      sum += t.getUmsatz(days);
     }
     return sum;
   }
@@ -480,6 +494,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
    */
   public int[] getColor() throws RemoteException
   {
+    // TODO: UmsatzTyp#getColor noch implementieren
     return null;
   }
 
@@ -488,6 +503,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
    */
   public void setColor(int[] rgb) throws RemoteException
   {
+    // TODO: UmsatzTyp#setColor noch implementieren
   }
 
   /**
@@ -507,10 +523,34 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
     setAttribute("umsatztyp",new Integer(typ));
   }
 
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObjectNode#getPossibleParents()
+   */
+  public GenericIterator getPossibleParents() throws RemoteException
+  {
+    DBIterator list = (DBIterator) super.getPossibleParents();
+    list.setOrder("order by name");
+    return list;
+  }
+
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObjectNode#getTopLevelList()
+   */
+  public GenericIterator getTopLevelList() throws RemoteException
+  {
+    DBIterator list = (DBIterator) super.getTopLevelList();
+    list.setOrder("order by name");
+    return list;
+  }
+  
+  
 }
 
 /*******************************************************************************
  * $Log: UmsatzTypImpl.java,v $
+ * Revision 1.47  2009/02/23 23:44:50  willuhn
+ * @N Etwas Code fuer Support fuer Unter-/Ober-Kategorien
+ *
  * Revision 1.46  2008/12/31 12:29:36  willuhn
  * @N Auch in erweiterten Verwendungszwecken nach Suchbegriffen fuer Umsatzkategorie suchen
  *

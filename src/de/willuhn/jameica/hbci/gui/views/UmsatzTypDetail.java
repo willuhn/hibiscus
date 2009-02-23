@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzTypDetail.java,v $
- * $Revision: 1.4 $
- * $Date: 2009/01/20 10:51:45 $
+ * $Revision: 1.5 $
+ * $Date: 2009/02/23 23:44:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -44,6 +44,7 @@ public class UmsatzTypDetail extends AbstractView
 		
     LabelGroup group = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
     group.addLabelPair(i18n.tr("Bezeichnung"), control.getName());
+//    group.addLabelPair(i18n.tr("Übergeordnete Kategorie"), control.getParent());
     group.addLabelPair(i18n.tr("Nummer"), control.getNummer());
     group.addLabelPair(i18n.tr("Suchbegriff"), control.getPattern());
     group.addCheckbox(control.getRegex(),i18n.tr("Suchbegriff ist ein regulärer Ausdruck"));
@@ -67,6 +68,9 @@ public class UmsatzTypDetail extends AbstractView
 
 /**********************************************************************
  * $Log: UmsatzTypDetail.java,v $
+ * Revision 1.5  2009/02/23 23:44:50  willuhn
+ * @N Etwas Code fuer Support fuer Unter-/Ober-Kategorien
+ *
  * Revision 1.4  2009/01/20 10:51:45  willuhn
  * @N Mehr Icons - fuer Buttons
  *
