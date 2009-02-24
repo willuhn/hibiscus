@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UmsatzList.java,v $
- * $Revision: 1.32 $
- * $Date: 2009/02/12 18:37:18 $
+ * $Revision: 1.33 $
+ * $Date: 2009/02/24 22:42:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -66,7 +66,7 @@ public class UmsatzList extends ContextMenu implements Extendable
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new UmsatzItem(i18n.tr("Gegenkonto in Adressbuch übernehmen"),new EmpfaengerAdd(),"contact-new.png"));
     addItem(new UmsatzItem(i18n.tr("Als neue Überweisung anlegen..."),new UeberweisungNew(),"stock_next.png"));
-    addItem(new UmsatzItem(i18n.tr("Umsatz-Kategorie zuordnen..."),new UmsatzAssign(),"x-office-spreadsheet.png"));
+    addItem(new UmsatzBookedItem(i18n.tr("Umsatz-Kategorie zuordnen..."),new UmsatzAssign(),"x-office-spreadsheet.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new UmsatzBookedItem(i18n.tr("als \"geprüft\" markieren..."),new UmsatzSetFlags(Umsatz.FLAG_CHECKED,true),"emblem-default.png"));
     addItem(new UmsatzBookedItem(i18n.tr("als \"ungeprüft\" markieren..."),new UmsatzSetFlags(Umsatz.FLAG_CHECKED,false),"edit-undo.png"));
@@ -197,6 +197,9 @@ public class UmsatzList extends ContextMenu implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.33  2009/02/24 22:42:33  willuhn
+ * @N Da vorgemerkte Umsaetze jetzt komplett geloescht werden, wenn sie neu abgerufen werden, duerfen sie auch nicht mehr geaendert werden (also auch keine Kategorie und kein Kommentar)
+ *
  * Revision 1.32  2009/02/12 18:37:18  willuhn
  * @N Erster Code fuer vorgemerkte Umsaetze
  *
