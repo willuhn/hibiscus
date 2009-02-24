@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/DauerauftragNew.java,v $
- * $Revision: 1.8 $
- * $Date: 2009/01/20 10:51:45 $
+ * $Revision: 1.9 $
+ * $Date: 2009/02/24 23:51:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,7 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.util.ButtonArea;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.DauerauftragDelete;
 import de.willuhn.jameica.hbci.gui.action.DauerauftragExecute;
@@ -43,16 +43,17 @@ public class DauerauftragNew extends AbstractView
 
 		GUI.getView().setTitle(i18n.tr("Dauerauftrag bearbeiten"));
 		
-		LabelGroup konten = new LabelGroup(getParent(),i18n.tr("Konten"));
-		
-		konten.addLabelPair(i18n.tr("persönliches Konto"),			      control.getKontoAuswahl());		
-    konten.addLabelPair(i18n.tr("Kontonummer des Empfängers"),    control.getEmpfaengerKonto());    
-		konten.addLabelPair(i18n.tr("BLZ des Empfängers"),		     		control.getEmpfaengerBlz());		
-    konten.addLabelPair(i18n.tr("Name des Empfängers"),           control.getEmpfaengerName());
-		konten.addCheckbox(control.getStoreEmpfaenger(),i18n.tr("Empfängerdaten im Adressbuch speichern"));
+    SimpleContainer konten = new SimpleContainer(getParent());
+    konten.addHeadline(i18n.tr("Konten"));
+		konten.addLabelPair(i18n.tr("Persönliches Konto"),			  control.getKontoAuswahl());
+    konten.addHeadline(i18n.tr("Empfänger"));
+    konten.addLabelPair(i18n.tr("Name"),                      control.getEmpfaengerName());
+    konten.addLabelPair(i18n.tr("Kontonummer"),               control.getEmpfaengerKonto());
+		konten.addLabelPair(i18n.tr("BLZ"),		     		            control.getEmpfaengerBlz());
+		konten.addCheckbox(control.getStoreEmpfaenger(),i18n.tr("In Adressbuch übernehmen"));
 
-		LabelGroup details = new LabelGroup(getParent(),i18n.tr("Details"));
-
+    SimpleContainer details = new SimpleContainer(getParent());
+    details.addHeadline(i18n.tr("Details"));
 		details.addLabelPair(i18n.tr("Verwendungszweck"),					control.getZweck());
 		details.addLabelPair(i18n.tr("weiterer Verwendungszweck"),control.getZweck2());
 		details.addLabelPair(i18n.tr("Betrag"),										control.getBetrag());
@@ -93,6 +94,9 @@ public class DauerauftragNew extends AbstractView
 
 /**********************************************************************
  * $Log: DauerauftragNew.java,v $
+ * Revision 1.9  2009/02/24 23:51:01  willuhn
+ * @N Auswahl der Empfaenger/Zahlungspflichtigen jetzt ueber Auto-Suggest-Felder
+ *
  * Revision 1.8  2009/01/20 10:51:45  willuhn
  * @N Mehr Icons - fuer Buttons
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.52 $
- * $Date: 2009/01/04 16:18:22 $
+ * $Revision: 1.53 $
+ * $Date: 2009/02/24 23:51:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,8 +30,8 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
-import de.willuhn.jameica.hbci.gui.dialogs.AdresseAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.VerwendungszweckDialog;
+import de.willuhn.jameica.hbci.gui.input.AddressInput;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.rmi.Address;
@@ -61,8 +61,8 @@ public abstract class AbstractTransferControl extends AbstractControl
 	private DialogInput zweck2							   = null;
   private VerwendungszweckDialog zweckDialog = null;
 
-	private DialogInput empfkto 						   = null;
-	private TextInput empfName 					  	   = null;
+  private AddressInput empfName              = null;
+	private TextInput empfkto 						     = null;
 	private TextInput empfblz								   = null;
 
 	private CheckboxInput storeEmpfaenger 	   = null;
@@ -121,31 +121,43 @@ public abstract class AbstractTransferControl extends AbstractControl
     return this.kontoAuswahl;
 	}
   
+  /**
+   * Liefert das Eingabe-Feld fuer den Empfaenger-Namen.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public AddressInput getEmpfaengerName() throws RemoteException
+  {
+    if (empfName != null)
+      return empfName;
+    empfName = new AddressInput(getTransfer().getGegenkontoName());
+    empfName.setMandatory(true);
+    empfName.addListener(new EmpfaengerListener());
+    return empfName;
+  }
+
+  
 	/**
 	 * Liefert das Eingabe-Feld fuer den Empfaenger.
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public DialogInput getEmpfaengerKonto() throws RemoteException
+  public TextInput getEmpfaengerKonto() throws RemoteException
 	{
 		if (empfkto != null)
 			return empfkto;
 
-    AdresseAuswahlDialog d = new AdresseAuswahlDialog(AdresseAuswahlDialog.POSITION_MOUSE);
-		d.addCloseListener(new EmpfaengerListener());
-		empfkto = new DialogInput(getTransfer().getGegenkontoNummer(),d);
-    // BUGZILLA 280
-    empfkto.setMaxLength(HBCIProperties.HBCI_KTO_MAXLENGTH_SOFT);
+		empfkto = new TextInput(getTransfer().getGegenkontoNummer(),HBCIProperties.HBCI_KTO_MAXLENGTH_SOFT);
     empfkto.setValidChars(HBCIProperties.HBCI_KTO_VALIDCHARS + " ");
     empfkto.setMandatory(true);
     empfkto.addListener(new Listener()
     {
       public void handleEvent(Event event)
       {
-        String s = empfkto.getText();
+        String s = (String) empfkto.getValue();
         if (s == null || s.length() == 0 || s.indexOf(" ") == -1)
           return;
-        empfkto.setText(s.replaceAll(" ",""));
+        empfkto.setValue(s.replaceAll(" ",""));
       }
     });
 		return empfkto;
@@ -156,29 +168,13 @@ public abstract class AbstractTransferControl extends AbstractControl
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public Input getEmpfaengerBlz() throws RemoteException
+  public TextInput getEmpfaengerBlz() throws RemoteException
 	{
 		if (empfblz != null)
 			return empfblz;
 		empfblz = new BLZInput(getTransfer().getGegenkontoBLZ());
     empfblz.setMandatory(true);
 		return empfblz;
-	}
-
-	/**
-	 * Liefert das Eingabe-Feld fuer den Empfaenger-Namen.
-   * @return Eingabe-Feld.
-	 * @throws RemoteException
-	 */
-	public Input getEmpfaengerName() throws RemoteException
-	{
-		if (empfName != null)
-			return empfName;
-		empfName = new TextInput(getTransfer().getGegenkontoName(),HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
-    // BUGZILLA 163
-    empfName.setValidChars(HBCIProperties.HBCI_DTAUS_VALIDCHARS);
-    empfName.setMandatory(true);
-		return empfName;
 	}
 
 	/**
@@ -316,9 +312,9 @@ public abstract class AbstractTransferControl extends AbstractControl
 			getTransfer().setZweck((String)getZweck().getValue());
 			getTransfer().setZweck2(getZweck2().getText());  // "getText()" ist wichtig, weil das ein DialogInput ist
 
-			String kto  = ((DialogInput) getEmpfaengerKonto()).getText();
+			String kto  = (String)getEmpfaengerKonto().getValue();
 			String blz  = (String)getEmpfaengerBlz().getValue();
-			String name = (String)getEmpfaengerName().getValue();
+			String name = getEmpfaengerName().getText();
 
 			getTransfer().setGegenkontoNummer(kto);
 			getTransfer().setGegenkontoBLZ(blz);
@@ -429,9 +425,10 @@ public abstract class AbstractTransferControl extends AbstractControl
 			if (gegenkonto == null)
 				return;
 			try {
-				getEmpfaengerKonto().setText(gegenkonto.getKontonummer());
+        getEmpfaengerName().setText(gegenkonto.getName());
+				getEmpfaengerKonto().setValue(gegenkonto.getKontonummer());
 				getEmpfaengerBlz().setValue(gegenkonto.getBlz());
-				getEmpfaengerName().setValue(gegenkonto.getName());
+
 				// Wenn der Empfaenger aus dem Adressbuch kommt, deaktivieren wir die Checkbox
 				getStoreEmpfaenger().setValue(Boolean.FALSE);
         
@@ -474,6 +471,9 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
+ * Revision 1.53  2009/02/24 23:51:01  willuhn
+ * @N Auswahl der Empfaenger/Zahlungspflichtigen jetzt ueber Auto-Suggest-Felder
+ *
  * Revision 1.52  2009/01/04 16:18:22  willuhn
  * @N BUGZILLA 404 - Kontoauswahl via SelectBox
  *

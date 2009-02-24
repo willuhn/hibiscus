@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractBaseUeberweisungControl.java,v $
- * $Revision: 1.14 $
- * $Date: 2009/01/04 16:18:22 $
+ * $Revision: 1.15 $
+ * $Date: 2009/02/24 23:51:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,8 +24,10 @@ import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
+import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.TextSchluessel;
+import de.willuhn.jameica.hbci.gui.input.AddressInput;
 import de.willuhn.jameica.hbci.rmi.BaseUeberweisung;
 import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.logging.Logger;
@@ -155,9 +157,9 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
    * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getEmpfaengerBlz()
    * Ueberschrieben, um das Control zu deaktivieren, wenn die Ueberweisung bereits ausgefuehrt wurde.
    */
-  public Input getEmpfaengerBlz() throws RemoteException
+  public TextInput getEmpfaengerBlz() throws RemoteException
   {
-		Input i = super.getEmpfaengerBlz();
+    TextInput i = super.getEmpfaengerBlz();
 		if (((Terminable)getTransfer()).ausgefuehrt())
 			i.disable();
 		return i;
@@ -167,9 +169,9 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
    * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getEmpfaengerKonto()
    * Ueberschrieben, um das Control zu deaktivieren, wenn die Ueberweisung bereits ausgefuehrt wurde.
    */
-  public DialogInput getEmpfaengerKonto() throws RemoteException
+  public TextInput getEmpfaengerKonto() throws RemoteException
   {
-		DialogInput i = super.getEmpfaengerKonto();
+    TextInput i = super.getEmpfaengerKonto();
 		if (((Terminable)getTransfer()).ausgefuehrt())
 			i.disable();
 		return i;
@@ -179,9 +181,9 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
    * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getEmpfaengerName()
    * Ueberschrieben, um das Control zu deaktivieren, wenn die Ueberweisung bereits ausgefuehrt wurde.
    */
-  public Input getEmpfaengerName() throws RemoteException
+  public AddressInput getEmpfaengerName() throws RemoteException
   {
-		Input i = super.getEmpfaengerName();
+    AddressInput i = super.getEmpfaengerName();
 		if (((Terminable)getTransfer()).ausgefuehrt())
 			i.disable();
 		return i;
@@ -238,6 +240,9 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
 
 /**********************************************************************
  * $Log: AbstractBaseUeberweisungControl.java,v $
+ * Revision 1.15  2009/02/24 23:51:01  willuhn
+ * @N Auswahl der Empfaenger/Zahlungspflichtigen jetzt ueber Auto-Suggest-Felder
+ *
  * Revision 1.14  2009/01/04 16:18:22  willuhn
  * @N BUGZILLA 404 - Kontoauswahl via SelectBox
  *

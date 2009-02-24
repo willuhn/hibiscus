@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/SammelUeberweisungBuchungNew.java,v $
- * $Revision: 1.6 $
- * $Date: 2009/01/20 10:51:46 $
+ * $Revision: 1.7 $
+ * $Date: 2009/02/24 23:51:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,7 +18,7 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.SammelTransferBuchungDelete;
 import de.willuhn.jameica.hbci.gui.controller.SammelUeberweisungBuchungControl;
@@ -44,15 +44,15 @@ public class SammelUeberweisungBuchungNew extends AbstractView {
     SammelTransfer l = control.getBuchung().getSammelTransfer();
     GUI.getView().setTitle(i18n.tr("Buchung bearbeiten [{0}]",l.getBezeichnung()));
 		
-		LabelGroup group = new LabelGroup(getParent(),i18n.tr("Empfänger"));
-		
-		group.addLabelPair(i18n.tr("Kontonummer des Empfängers"), control.getGegenKonto());
-		group.addLabelPair(i18n.tr("BLZ des Empfängers"),			    control.getGegenkontoBLZ());		
-		group.addLabelPair(i18n.tr("Name des Empfängers"),			  control.getGegenkontoName());
-		group.addCheckbox(control.getStoreAddress(),i18n.tr("Adressdaten im Adressbuch speichern"));
+    SimpleContainer group = new SimpleContainer(getParent());
+    group.addHeadline(i18n.tr("Empfänger"));
+    group.addLabelPair(i18n.tr("Name"),                      control.getGegenkontoName());
+		group.addLabelPair(i18n.tr("Kontonummer"),               control.getGegenKonto());
+		group.addLabelPair(i18n.tr("BLZ"),			                 control.getGegenkontoBLZ());
+		group.addCheckbox(control.getStoreAddress(),i18n.tr("In Adressbuch übernehmen"));
 
-		LabelGroup details = new LabelGroup(getParent(),i18n.tr("Details"));
-
+    SimpleContainer details = new SimpleContainer(getParent());
+    details.addHeadline(i18n.tr("Details"));
 		details.addLabelPair(i18n.tr("Verwendungszweck"),					control.getZweck());
 		details.addLabelPair(i18n.tr("weiterer Verwendungszweck"),control.getZweck2());
 		details.addLabelPair(i18n.tr("Betrag"),										control.getBetrag());
@@ -87,6 +87,9 @@ public class SammelUeberweisungBuchungNew extends AbstractView {
 
 /**********************************************************************
  * $Log: SammelUeberweisungBuchungNew.java,v $
+ * Revision 1.7  2009/02/24 23:51:01  willuhn
+ * @N Auswahl der Empfaenger/Zahlungspflichtigen jetzt ueber Auto-Suggest-Felder
+ *
  * Revision 1.6  2009/01/20 10:51:46  willuhn
  * @N Mehr Icons - fuer Buttons
  *

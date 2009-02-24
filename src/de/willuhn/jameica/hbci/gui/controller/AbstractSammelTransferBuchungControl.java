@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractSammelTransferBuchungControl.java,v $
- * $Revision: 1.15 $
- * $Date: 2008/12/04 23:20:37 $
+ * $Revision: 1.16 $
+ * $Date: 2009/02/24 23:51:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,8 +26,8 @@ import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
-import de.willuhn.jameica.hbci.gui.dialogs.AdresseAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.VerwendungszweckDialog;
+import de.willuhn.jameica.hbci.gui.input.AddressInput;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
@@ -52,8 +52,8 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 	private DialogInput zweck2				 = null;
   VerwendungszweckDialog zweckDialog = null;
 
-	private DialogInput gkNummer 			 = null;
-	private TextInput gkName					 = null;
+  private AddressInput gkName        = null;
+	private TextInput gkNummer 			   = null;
 	private TextInput gkBLZ						 = null;
 
 	private CheckboxInput storeAddress = null;
@@ -76,21 +76,34 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
    */
   public abstract SammelTransferBuchung getBuchung();
 
-	/**
+  /**
+   * Liefert das Eingabe-Feld fuer den Namen des Kontoinhabers des Gegenkontos.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public AddressInput getGegenkontoName() throws RemoteException
+  {
+    if (gkName != null)
+      return gkName;
+    gkName = new AddressInput(getBuchung().getGegenkontoName());
+    gkName.setMandatory(true);
+    gkName.setEnabled(!getBuchung().getSammelTransfer().ausgefuehrt());
+    gkName.addListener(new GegenkontoListener());
+    return gkName;
+  }
+
+
+  /**
 	 * Liefert das Eingabe-Feld fuer das Gegenkonto.
 	 * @return Eingabe-Feld.
 	 * @throws RemoteException
 	 */
-	public DialogInput getGegenKonto() throws RemoteException
+	public TextInput getGegenKonto() throws RemoteException
 	{
 		if (gkNummer != null)
 			return gkNummer;
 
-    AdresseAuswahlDialog d = new AdresseAuswahlDialog(AdresseAuswahlDialog.POSITION_MOUSE);
-    d.addCloseListener(new GegenkontoListener());
-    gkNummer = new DialogInput(getBuchung().getGegenkontoNummer(),d);
-    // BUGZILLA 280
-    gkNummer.setMaxLength(HBCIProperties.HBCI_KTO_MAXLENGTH_SOFT);
+    gkNummer = new TextInput(getBuchung().getGegenkontoNummer(),HBCIProperties.HBCI_KTO_MAXLENGTH_SOFT);
     gkNummer.setValidChars(HBCIProperties.HBCI_KTO_VALIDCHARS + " ");
     gkNummer.setMandatory(true);
     gkNummer.setEnabled(!getBuchung().getSammelTransfer().ausgefuehrt());
@@ -98,10 +111,10 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
     {
       public void handleEvent(Event event)
       {
-        String s = gkNummer.getText();
+        String s = (String)gkNummer.getValue();
         if (s == null || s.length() == 0 || s.indexOf(" ") == -1)
           return;
-        gkNummer.setText(s.replaceAll(" ",""));
+        gkNummer.setValue(s.replaceAll(" ",""));
       }
     });
 		return gkNummer;
@@ -120,23 +133,6 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
     gkBLZ.setMandatory(true);
     gkBLZ.setEnabled(!getBuchung().getSammelTransfer().ausgefuehrt());
 		return gkBLZ;
-	}
-
-	/**
-	 * Liefert das Eingabe-Feld fuer den Namen des Kontoinhabers des Gegenkontos.
-	 * @return Eingabe-Feld.
-	 * @throws RemoteException
-	 */
-	public Input getGegenkontoName() throws RemoteException
-	{
-		if (gkName != null)
-			return gkName;
-		gkName = new TextInput(getBuchung().getGegenkontoName(),HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
-    // BUGZILLA 163
-    gkName.setValidChars(HBCIProperties.HBCI_DTAUS_VALIDCHARS);
-    gkName.setMandatory(true);
-    gkName.setEnabled(!getBuchung().getSammelTransfer().ausgefuehrt());
-		return gkName;
 	}
 
 	/**
@@ -273,9 +269,9 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 			if (gegenKonto == null)
 				return;
 			try {
-				getGegenKonto().setText(gegenKonto.getKontonummer());
+				getGegenKonto().setValue(gegenKonto.getKontonummer());
 				getGegenkontoBLZ().setValue(gegenKonto.getBlz());
-				getGegenkontoName().setValue(gegenKonto.getName());
+				getGegenkontoName().setText(gegenKonto.getName());
 				// Wenn die Adresse aus dem Adressbuch kommt, deaktivieren wir die Checkbox
 				getStoreAddress().setValue(Boolean.FALSE);
         
@@ -317,6 +313,9 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferBuchungControl.java,v $
+ * Revision 1.16  2009/02/24 23:51:01  willuhn
+ * @N Auswahl der Empfaenger/Zahlungspflichtigen jetzt ueber Auto-Suggest-Felder
+ *
  * Revision 1.15  2008/12/04 23:20:37  willuhn
  * @N BUGZILLA 310
  *

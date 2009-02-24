@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/LastschriftNew.java,v $
- * $Revision: 1.17 $
- * $Date: 2009/01/20 10:51:45 $
+ * $Revision: 1.18 $
+ * $Date: 2009/02/24 23:51:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,7 +18,7 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.LastschriftExecute;
@@ -45,16 +45,17 @@ public class LastschriftNew extends AbstractView {
 
 		GUI.getView().setTitle(i18n.tr("Lastschrift bearbeiten"));
 		
-		LabelGroup konten = new LabelGroup(getParent(),i18n.tr("Konten"));
-		
-		konten.addLabelPair(i18n.tr("persönliches Konto"),	                control.getKontoAuswahl());		
-    konten.addLabelPair(i18n.tr("Kontonummer des Zahlungspflichtigen"), control.getEmpfaengerKonto());    
-		konten.addLabelPair(i18n.tr("BLZ des Zahlungspflichtigen"),			    control.getEmpfaengerBlz());
-    konten.addLabelPair(i18n.tr("Name des Zahlungspflichtigen"),        control.getEmpfaengerName());
-		konten.addCheckbox(control.getStoreEmpfaenger(),i18n.tr("Adressdaten im Adressbuch speichern"));
+    SimpleContainer konten = new SimpleContainer(getParent());
+    konten.addHeadline(i18n.tr("Konto"));
+		konten.addLabelPair(i18n.tr("Persönliches Konto"),	      control.getKontoAuswahl());
+    konten.addHeadline(i18n.tr("Zahlungspflichtiger"));
+    konten.addLabelPair(i18n.tr("Name"),                      control.getEmpfaengerName());
+    konten.addLabelPair(i18n.tr("Kontonummer"),               control.getEmpfaengerKonto());
+		konten.addLabelPair(i18n.tr("BLZ"),			                  control.getEmpfaengerBlz());
+		konten.addCheckbox(control.getStoreEmpfaenger(),i18n.tr("In Adressbuch übernehmen"));
 
-		LabelGroup details = new LabelGroup(getParent(),i18n.tr("Details"));
-
+    SimpleContainer details = new SimpleContainer(getParent());
+    details.addHeadline(i18n.tr("Details"));
 		details.addLabelPair(i18n.tr("Verwendungszweck"),					control.getZweck());
 		details.addLabelPair(i18n.tr("weiterer Verwendungszweck"),control.getZweck2());
 		details.addLabelPair(i18n.tr("Betrag"),										control.getBetrag());
@@ -88,6 +89,9 @@ public class LastschriftNew extends AbstractView {
 
 /**********************************************************************
  * $Log: LastschriftNew.java,v $
+ * Revision 1.18  2009/02/24 23:51:01  willuhn
+ * @N Auswahl der Empfaenger/Zahlungspflichtigen jetzt ueber Auto-Suggest-Felder
+ *
  * Revision 1.17  2009/01/20 10:51:45  willuhn
  * @N Mehr Icons - fuer Buttons
  *

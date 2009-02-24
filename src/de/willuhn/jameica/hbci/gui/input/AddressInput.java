@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/AddressInput.java,v $
- * $Revision: 1.1 $
- * $Date: 2009/01/04 01:25:47 $
+ * $Revision: 1.2 $
+ * $Date: 2009/02/24 23:51:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,10 +17,13 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.jameica.gui.input.SearchInput;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.AddressbookService;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -45,6 +48,24 @@ public class AddressInput extends SearchInput
     super();
     this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     this.setValue(name);
+    this.setValidChars(HBCIProperties.HBCI_DTAUS_VALIDCHARS);
+    this.setMaxLength(HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
+    this.addListener(new Listener()
+    {
+      public void handleEvent(Event event)
+      {
+        try
+        {
+          Address a = (Address) event.data;
+          setText(a.getName());
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to apply name",e);
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Übernehmen des Namens"),StatusBarMessage.TYPE_ERROR));
+        }
+      }
+    });
   }
 
   /**
@@ -122,6 +143,9 @@ public class AddressInput extends SearchInput
 
 /**********************************************************************
  * $Log: AddressInput.java,v $
+ * Revision 1.2  2009/02/24 23:51:01  willuhn
+ * @N Auswahl der Empfaenger/Zahlungspflichtigen jetzt ueber Auto-Suggest-Felder
+ *
  * Revision 1.1  2009/01/04 01:25:47  willuhn
  * @N Checksumme von Umsaetzen wird nun generell beim Anlegen des Datensatzes gespeichert. Damit koennen Umsaetze nun problemlos geaendert werden, ohne mit "hasChangedByUser" checken zu muessen. Die Checksumme bleibt immer erhalten, weil sie in UmsatzImpl#insert() sofort zu Beginn angelegt wird
  * @N Umsaetze sind nun vollstaendig editierbar
