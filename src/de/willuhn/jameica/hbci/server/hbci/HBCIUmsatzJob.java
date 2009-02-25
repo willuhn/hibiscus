@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUmsatzJob.java,v $
- * $Revision: 1.41 $
- * $Date: 2009/02/25 10:29:59 $
+ * $Revision: 1.42 $
+ * $Date: 2009/02/25 10:37:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -161,7 +161,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
     
     boolean fetchNotbooked = settings.getBoolean("umsatz.fetchnotbooked",true);
     if (fetchNotbooked)
-      cleanNotBooked();
+      cleanNotBooked(d);
 
     ////////////////////////////////////////////////////////////////////////////
     // Gebuchte Umsaetze
@@ -229,14 +229,14 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
   
   /**
    * Loescht die vorgemerkten Buchungen weg, damit sie neu abgerufen werden koennen.
+   * @param startdate Start-Datum, ab dem nach zu loeschenden vorgemerkten Umsaetze gesucht werden soll.
    * @throws RemoteException
    * @throws ApplicationException
    */
-  private void cleanNotBooked() throws RemoteException, ApplicationException
+  private void cleanNotBooked(Date startdate) throws RemoteException, ApplicationException
   {
     Logger.info("clean notbooked entries");
-    DBIterator list = de.willuhn.jameica.hbci.Settings.getDBService().createList(Umsatz.class);
-    list.addFilter("konto_id = " + this.konto.getID());
+    DBIterator list = this.konto.getUmsaetze(startdate,null);
     while (list.hasNext())
     {
       Umsatz u = (Umsatz) list.next();
@@ -259,6 +259,9 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIUmsatzJob.java,v $
+ * Revision 1.42  2009/02/25 10:37:08  willuhn
+ * @C notbooked umsaetze nur aus dem angegebenen Zeitraum loeschen
+ *
  * Revision 1.41  2009/02/25 10:29:59  willuhn
  * @B Pruefung des Flags nicht mehr im SQL-Statement - kann H2 nicht
  *
