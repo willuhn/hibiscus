@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUmsatzJob.java,v $
- * $Revision: 1.40 $
- * $Date: 2009/02/23 17:01:58 $
+ * $Revision: 1.41 $
+ * $Date: 2009/02/25 10:29:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -237,11 +237,11 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
     Logger.info("clean notbooked entries");
     DBIterator list = de.willuhn.jameica.hbci.Settings.getDBService().createList(Umsatz.class);
     list.addFilter("konto_id = " + this.konto.getID());
-    list.addFilter("(flags & " + Umsatz.FLAG_NOTBOOKED + ") != 0");
     while (list.hasNext())
     {
       Umsatz u = (Umsatz) list.next();
-      u.delete();
+      if ((u.getFlags() & Umsatz.FLAG_NOTBOOKED) != 0)
+        u.delete();
     }
   }
   
@@ -259,6 +259,9 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIUmsatzJob.java,v $
+ * Revision 1.41  2009/02/25 10:29:59  willuhn
+ * @B Pruefung des Flags nicht mehr im SQL-Statement - kann H2 nicht
+ *
  * Revision 1.40  2009/02/23 17:01:58  willuhn
  * @C Kein Abgleichen mehr bei vorgemerkten Buchungen sondern stattdessen vorgemerkte loeschen und neu abrufen
  *
