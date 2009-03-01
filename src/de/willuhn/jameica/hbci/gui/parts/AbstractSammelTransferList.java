@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractSammelTransferList.java,v $
- * $Revision: 1.9 $
- * $Date: 2009/02/13 14:17:01 $
+ * $Revision: 1.10 $
+ * $Date: 2009/03/01 22:26:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -131,7 +131,7 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
     DBIterator list = service.createList(getObjectType());
     if (from != null) list.addFilter("termin >= ?", new Object[]{new java.sql.Date(HBCIProperties.startOfDay(from).getTime())});
     if (to   != null) list.addFilter("termin <= ?", new Object[]{new java.sql.Date(HBCIProperties.endOfDay(to).getTime())});
-    list.setOrder("ORDER BY " + service.getSQLTimestamp("termin") + " DESC");
+    list.setOrder("ORDER BY " + service.getSQLTimestamp("termin") + " DESC, id DESC");
     return list;
   }
   
@@ -219,6 +219,9 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
 
 /**********************************************************************
  * $Log: AbstractSammelTransferList.java,v $
+ * Revision 1.10  2009/03/01 22:26:19  willuhn
+ * @B BUGZILLA 705
+ *
  * Revision 1.9  2009/02/13 14:17:01  willuhn
  * @N BUGZILLA 700
  *
