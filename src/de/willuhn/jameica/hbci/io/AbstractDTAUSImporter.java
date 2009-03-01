@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/AbstractDTAUSImporter.java,v $
- * $Revision: 1.12 $
- * $Date: 2008/08/29 21:58:39 $
+ * $Revision: 1.13 $
+ * $Date: 2009/03/01 23:17:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -117,6 +117,7 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
         double factor = 100d / e.getAnzahlDatensaetze();
         int count = 0;
         int success = 0;
+        int error = 0;
         
         DBService service = de.willuhn.jameica.hbci.Settings.getDBService();
 
@@ -157,6 +158,15 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
           }
           catch (ApplicationException ace)
           {
+            error++;
+            
+            String s = i18n.tr("Fehler beim Import eines Datensatzes\n\n{0}\n\nDatensatz überspringen und Import fortsetzen?",ace.getMessage());
+            if (!Application.getCallback().askUser(s))
+            {
+              monitor.setStatusText(i18n.tr("Import abgebrochen"));
+              monitor.setStatus(ProgressMonitor.STATUS_CANCEL);
+              return;
+            }
             monitor.log("  " + ace.getMessage());
             monitor.log("  " + i18n.tr("Überspringe Datensatz"));
           }
@@ -172,12 +182,20 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
                 return;
               }
             }
-
+            error++;
             Logger.error("unable to import transfer",e1);
             monitor.log("  " + i18n.tr("Fehler beim Import des Datensatzes, überspringe Datensatz"));
           }
         }
-        monitor.setStatusText("  " + i18n.tr("{0} Datensätze erfolgreich importiert",""+success));
+        if (error > 0)
+        {
+          monitor.setStatus(ProgressMonitor.STATUS_ERROR);
+          monitor.setStatusText("  " + i18n.tr("{0} Datensätze importiert, {1} wegen Fehlern übersprungen",new String[]{""+success,""+error}));
+        }
+        else
+        {
+          monitor.setStatusText("  " + i18n.tr("{0} Datensätze erfolgreich importiert",""+success));
+        }
       }
     }
     catch (OperationCanceledException oce)
@@ -311,6 +329,9 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
 
 /*********************************************************************
  * $Log: AbstractDTAUSImporter.java,v $
+ * Revision 1.13  2009/03/01 23:17:04  willuhn
+ * @B BUGZILLA 707
+ *
  * Revision 1.12  2008/08/29 21:58:39  willuhn
  * @N Encoding via Config-Datei einstellbar - per Default wird "Latin1" verwendet.
  *
