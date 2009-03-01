@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/VelocityExporter.java,v $
- * $Revision: 1.11 $
- * $Date: 2007/04/23 18:07:14 $
+ * $Revision: 1.12 $
+ * $Date: 2009/03/01 23:37:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -98,7 +98,7 @@ public class VelocityExporter implements Exporter
       }
       writer = new BufferedWriter(new OutputStreamWriter(os));
 
-      Template template = Velocity.getTemplate(((VelocityFormat)format).getTemplate().getName());
+      Template template = Velocity.getTemplate(((VelocityFormat)format).getTemplate().getName(),"ISO-8859-15");
       template.merge(context,writer);
     }
     catch (Exception e)
@@ -226,6 +226,9 @@ public class VelocityExporter implements Exporter
 
 /**********************************************************************
  * $Log: VelocityExporter.java,v $
+ * Revision 1.12  2009/03/01 23:37:03  willuhn
+ * @C Templates sollten explizit mit Latin1-Encoding gelesen werden, da sie von mir in diesem Encoding erstellt wurden
+ *
  * Revision 1.11  2007/04/23 18:07:14  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
