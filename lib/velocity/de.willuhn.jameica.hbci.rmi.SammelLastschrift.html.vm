@@ -3,6 +3,7 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=$!{charset}" />
+    <title>Sammellastschriften [$!{dateformat.format(${datum})}]</title>
   </head>
   <style>
     body  {
