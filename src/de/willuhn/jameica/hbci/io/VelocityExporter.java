@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/VelocityExporter.java,v $
- * $Revision: 1.13 $
- * $Date: 2009/03/02 11:41:51 $
+ * $Revision: 1.14 $
+ * $Date: 2009/03/02 11:42:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,9 +14,7 @@
 package de.willuhn.jameica.hbci.io;
 
 import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.rmi.RemoteException;
@@ -32,10 +30,8 @@ import de.willuhn.io.FileFinder;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.plugin.PluginResources;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.logging.Level;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
-import de.willuhn.util.Base64;
 import de.willuhn.util.I18N;
 import de.willuhn.util.ProgressMonitor;
 
@@ -135,29 +131,29 @@ public class VelocityExporter implements Exporter
     }
   }
   
-  /**
-   * Liefert ein auf dem Report anzuzeigendes Icon als Base64.
-   * @return Icon oder NULL, wenn es nicht geladen werden konnte.
-   */
-  private String getIcon()
-  {
-    InputStream is = null;
-    try
-    {
-      ByteArrayOutputStream bos = new ByteArrayOutputStream();
-      is = Application.getClassLoader().getResourceAsStream("img/hibiscus-icon-64x64.png");
-      int read = 0;
-      byte[] buf = new byte[1024];
-      while ((read = is.read(buf)) != -1)
-        bos.write(buf,0,read);
-      return Base64.encode(bos.toByteArray());
-    }
-    catch (Exception e)
-    {
-      Logger.write(Level.INFO,"unable to read icon, skipping",e);
-    }
-    return null;
-  }
+//  /**
+//   * Liefert ein auf dem Report anzuzeigendes Icon als Base64.
+//   * @return Icon oder NULL, wenn es nicht geladen werden konnte.
+//   */
+//  private String getIcon()
+//  {
+//    InputStream is = null;
+//    try
+//    {
+//      ByteArrayOutputStream bos = new ByteArrayOutputStream();
+//      is = Application.getClassLoader().getResourceAsStream("img/hibiscus-icon-64x64.png");
+//      int read = 0;
+//      byte[] buf = new byte[1024];
+//      while ((read = is.read(buf)) != -1)
+//        bos.write(buf,0,read);
+//      return Base64.encode(bos.toByteArray());
+//    }
+//    catch (Exception e)
+//    {
+//      Logger.write(Level.INFO,"unable to read icon, skipping",e);
+//    }
+//    return null;
+//  }
   
   /**
    * @see de.willuhn.jameica.hbci.io.IO#getName()
@@ -258,6 +254,9 @@ public class VelocityExporter implements Exporter
 
 /**********************************************************************
  * $Log: VelocityExporter.java,v $
+ * Revision 1.14  2009/03/02 11:42:10  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.13  2009/03/02 11:41:51  willuhn
  * @N title in HTML-Exports
  *
