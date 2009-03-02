@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/AccountContainerDialog.java,v $
- * $Revision: 1.10 $
- * $Date: 2007/04/10 13:25:14 $
+ * $Revision: 1.11 $
+ * $Date: 2009/03/02 13:43:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -114,43 +114,43 @@ public class AccountContainerDialog extends AbstractDialog
 
 	private Input getBLZ()
 	{
-		if (blz == null)
+	  if (blz != null)
+	    return blz;
+	  
+    blz = new BLZInput(passport.getBLZ());
+    blz.addListener(new Listener()
     {
-      blz = new BLZInput(passport.getBLZ());
-      blz.addListener(new Listener()
+      public void handleEvent(Event arg0)
       {
-        public void handleEvent(Event arg0)
+        try
         {
-          try
+          String b = (String)blz.getValue();
+          // Neu im aktuellen HBCI4Java-Snapshot. IP/Hostname zur BLZ ermitteln
+          String host = (String) getHost().getValue();
+          if (host == null || host.length() == 0)
           {
-            String b = (String)blz.getValue();
-            // Neu im aktuellen HBCI4Java-Snapshot. IP/Hostname zur BLZ ermitteln
-            String host = (String) getHost().getValue();
-            if (host == null || host.length() == 0)
+            String clazz = passport.getClass().getName();
+            if (clazz.toUpperCase().indexOf("PINTAN") != -1)
             {
-              String clazz = passport.getClass().getName();
-              if (clazz.toUpperCase().indexOf("PINTAN") != -1)
-              {
-                Logger.info("auto detecting pin/tan url by blz");
-                String s = HBCIUtils.getPinTanURLForBLZ(b);
-                if (s != null && s.startsWith("https://"))
-                  s = s.replaceFirst("https://","");
-                getHost().setValue(s);
-              }
-              else
-              {
-                Logger.info("auto detecting rdh/ddv ip by blz");
-                getHost().setValue(HBCIUtils.getHBCIHostForBLZ(b));
-              }
+              Logger.info("auto detecting pin/tan url by blz");
+              String s = HBCIUtils.getPinTanURLForBLZ(b);
+              if (s != null && s.startsWith("https://"))
+                s = s.replaceFirst("https://","");
+              getHost().setValue(s);
+            }
+            else
+            {
+              Logger.info("auto detecting rdh/ddv ip by blz");
+              getHost().setValue(HBCIUtils.getHBCIHostForBLZ(b));
             }
           }
-          catch (Exception e)
-          {
-            Logger.error("error while auto detecting url/ip for blz",e);
-          }
         }
-      });
-    }
+        catch (Exception e)
+        {
+          Logger.error("error while auto detecting url/ip for blz",e);
+        }
+      }
+    });
 		return blz;
 	}
 	
@@ -189,8 +189,10 @@ public class AccountContainerDialog extends AbstractDialog
 	private Input getPort()
 	{
 		if (port == null)
-			port = new IntegerInput(passport.getPort().intValue());
-		port.setComment(i18n.tr("Bei PIN/TAN \"443\", sonst \"3000\""));
+		{
+      port = new IntegerInput(passport.getPort().intValue());
+      port.setComment(i18n.tr("Bei PIN/TAN \"443\", sonst \"3000\""));
+		}
 		return port;
 	}
 
@@ -215,13 +217,14 @@ public class AccountContainerDialog extends AbstractDialog
 	private SelectInput getFilter()
 	{
 		if (filter == null)
-			filter = new SelectInput(new String[] {"None","Base64"},passport.getFilterType());
-		filter.setComment(i18n.tr("Bei PIN/TAN meist \"Base64\", sonst \"None\""));
+		{
+      filter = new SelectInput(new String[] {"None","Base64"},passport.getFilterType());
+      filter.setComment(i18n.tr("Bei PIN/TAN meist \"Base64\", sonst \"None\""));
 
-    String clazz = passport.getClass().getName();
-    if (clazz.toUpperCase().indexOf("PINTAN") != -1)
-      filter.setPreselected("Base64");
-    
+      String clazz = passport.getClass().getName();
+      if (clazz.toUpperCase().indexOf("PINTAN") != -1)
+        filter.setPreselected("Base64");
+		}
     return filter;
 	}
 
@@ -230,6 +233,9 @@ public class AccountContainerDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: AccountContainerDialog.java,v $
+ * Revision 1.11  2009/03/02 13:43:19  willuhn
+ * @B Trotz Auswahl von "None" als Filter wurde anschliessend wieder "Base64" angezeigt - lag lediglich daran, dass die Combobox mehrfach initialisiert wurde
+ *
  * Revision 1.10  2007/04/10 13:25:14  willuhn
  * @B Bug 381
  *
