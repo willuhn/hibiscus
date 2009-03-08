@@ -146,6 +146,14 @@
       color                    : #0000dd;
       text-decoration          : none;
     }
+
+    @media print
+    {
+      table.data td {
+        color                  : #000000;
+      }
+    }
+
   </style>
   <body>
     <h1>Sammelüberweisungen</h1>

@@ -49,17 +49,17 @@
       padding-right            : 10px;
       font-size                : 7pt;
       color                    : #505050;
-	  white-space              : nowrap;
+      white-space              : nowrap;
     }
-	tr.red td {
+    tr.red td {
       background               : #fff1f1;
       margin                   : 0px;
       padding-left             : 3px;
       padding-right            : 10px;
       font-size                : 7pt;
       color                    : #900000;
-	  white-space              : nowrap;
-	}
+      white-space              : nowrap;
+    }
 
     ol,ul {
       list-style-position      : outside;
@@ -155,6 +155,14 @@
       color                    : #0000dd;
       text-decoration          : none;
     }
+
+    @media print
+    {
+      table.data td {
+        color                  : #000000;
+      }
+    }
+
   </style>
   
   <body>
