@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUmsatzJob.java,v $
- * $Revision: 1.43 $
- * $Date: 2009/03/10 14:45:20 $
+ * $Revision: 1.44 $
+ * $Date: 2009/03/10 17:11:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -156,6 +156,8 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
     List lines  = result.getFlatData();
     if (lines != null && lines.size() > 0)
     {
+      int created = 0;
+      int skipped = 0;
       Logger.info("applying booked entries");
       for (int i=0;i<lines.size();++i)
       {
@@ -163,13 +165,17 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
         umsatz.setKonto(konto); // muessen wir noch machen, weil der Converter das Konto nicht kennt
 
         if (existing.contains(umsatz) != null)
+        {
+          skipped++;
           continue; // Haben wir schon
+        }
 
         // Umsatz neu anlegen
         try
         {
           umsatz.store(); // den Umsatz haben wir noch nicht, speichern!
           Application.getMessagingFactory().sendMessage(new ImportMessage(umsatz));
+          created++;
         }
         catch (Exception e2)
         {
@@ -177,6 +183,11 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
           Logger.error("error while adding umsatz, skipping this one",e2);
         }
       }
+      Logger.info("done. new entries: " + created + ", skipped entries (already in database): " + skipped);
+    }
+    else
+    {
+      Logger.info("got no new booked entries");
     }
     //
     ////////////////////////////////////////////////////////////////////////////
@@ -186,34 +197,52 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
     // Vorgemerkte Umsaetze
     boolean fetchNotbooked = settings.getBoolean("umsatz.fetchnotbooked",true);
     lines = result.getFlatDataUnbooked();
-		if (fetchNotbooked && lines != null && lines.size() > 0)
+		if (fetchNotbooked)
 		{
-      cleanNotBooked(d);
-	    Logger.info("applying not-booked (vorgemerkte) entries");
-	    if (lines != null && lines.size() > 0)
-	    {
-	      for (int i=0;i<lines.size();++i)
-	      {
-	        final Umsatz umsatz = Converter.HBCIUmsatz2HibiscusUmsatz((GVRKUms.UmsLine)lines.get(i));
-	        umsatz.setKonto(konto);
-	        
-	        if (existing.contains(umsatz) != null)
-	          continue; // Haben wir schon
+      if (lines != null && lines.size() > 0)
+      {
+        cleanNotBooked(d);
+        int created = 0;
+        int skipped = 0;
+        Logger.info("applying not-booked (vorgemerkte) entries");
+        if (lines != null && lines.size() > 0)
+        {
+          for (int i=0;i<lines.size();++i)
+          {
+            final Umsatz umsatz = Converter.HBCIUmsatz2HibiscusUmsatz((GVRKUms.UmsLine)lines.get(i));
+            umsatz.setKonto(konto);
+            
+            if (existing.contains(umsatz) != null)
+            {
+              skipped++;
+              continue; // Haben wir schon
+            }
 
-	        // Vormerkposten neu anlegen
-	        try
-	        {
-	          umsatz.setFlags(Umsatz.FLAG_NOTBOOKED);
-	          umsatz.store();
-	          Application.getMessagingFactory().sendMessage(new ImportMessage(umsatz));
-	        }
-	        catch (Exception e2)
-	        {
-	          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Nicht alle empfangenen Umsätze konnten gespeichert werden. Bitte prüfen Sie das System-Protokoll"),StatusBarMessage.TYPE_ERROR));
-	          Logger.error("error while adding umsatz, skipping this one",e2);
-	        }
-	      }
-	    }
+            // Vormerkposten neu anlegen
+            try
+            {
+              umsatz.setFlags(Umsatz.FLAG_NOTBOOKED);
+              umsatz.store();
+              Application.getMessagingFactory().sendMessage(new ImportMessage(umsatz));
+              created++;
+            }
+            catch (Exception e2)
+            {
+              Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Nicht alle empfangenen Umsätze konnten gespeichert werden. Bitte prüfen Sie das System-Protokoll"),StatusBarMessage.TYPE_ERROR));
+              Logger.error("error while adding umsatz, skipping this one",e2);
+            }
+          }
+          Logger.info("done. new entries: " + created + ", skipped entries (already in database): " + skipped);
+        }
+      }
+      else
+      {
+        Logger.info("got no new not-booked (vorgemerkte) entries");
+      }
+		}
+		else
+		{
+      Logger.info("fetching of not-booked (vorgemerkte) entries disabled");
 		}
     //
     ////////////////////////////////////////////////////////////////////////////
@@ -231,12 +260,17 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
   {
     Logger.info("clean notbooked entries");
     DBIterator list = this.konto.getUmsaetze(startdate,null);
+    int count = 0;
     while (list.hasNext())
     {
       Umsatz u = (Umsatz) list.next();
       if ((u.getFlags() & Umsatz.FLAG_NOTBOOKED) != 0)
+      {
         u.delete();
+        count++;
+      }
     }
+    Logger.info("removed entries: " + count);
   }
   
   /**
@@ -253,6 +287,9 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIUmsatzJob.java,v $
+ * Revision 1.44  2009/03/10 17:11:09  willuhn
+ * @N Mehr Log-Ausgaben
+ *
  * Revision 1.43  2009/03/10 14:45:20  willuhn
  * @B Wenn keine neuen Umsaetze vorliegen, wurden auch keine Vormerkbuchungen abgerufen
  *
