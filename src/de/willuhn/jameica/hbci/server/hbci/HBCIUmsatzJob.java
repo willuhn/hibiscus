@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUmsatzJob.java,v $
- * $Revision: 1.42 $
- * $Date: 2009/02/25 10:37:08 $
+ * $Revision: 1.43 $
+ * $Date: 2009/03/10 14:45:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -126,76 +126,70 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
    */
   void markExecuted() throws RemoteException, ApplicationException
   {
-    konto.addToProtokoll(i18n.tr("Umsätze abgerufen"),Protokoll.TYP_SUCCESS);
-
-		GVRKUms result = (GVRKUms) getJobResult();
-
-    List lines = result.getFlatData();
-    if (lines == null || lines.size() == 0)
-    {
-      Logger.info("got no new data");
-      return;
-    }
-
     Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
+    konto.addToProtokoll(i18n.tr("Umsätze abgerufen"),Protokoll.TYP_SUCCESS);
 
     ////////////////////////////////////////////////////////////////////////////
     // Merge-Fenster ermitteln
     Date d = null;
-		if (this.saldoDatum != null)
-		{
+    if (this.saldoDatum != null)
+    {
       Calendar cal = Calendar.getInstance();
       cal.setTime(this.saldoDatum);
       cal.add(Calendar.DATE,settings.getInt("umsatz.mergewindow.offset",-30));
       d = cal.getTime();
-		}
+    }
     Logger.info("merge window: " + d + " - " + new Date());
+
+    // zu mergende Umsaetze ermitteln
+    DBIterator existing = konto.getUmsaetze(d,null);
+    
     //
     ////////////////////////////////////////////////////////////////////////////
 
-    ////////////////////////////////////////////////////////////////////////////
-    // zu mergende Umsaetze ermitteln
-    DBIterator existing = konto.getUmsaetze(d,null);
-    //
-    ////////////////////////////////////////////////////////////////////////////
+
     
-    boolean fetchNotbooked = settings.getBoolean("umsatz.fetchnotbooked",true);
-    if (fetchNotbooked)
-      cleanNotBooked(d);
+    GVRKUms result = (GVRKUms) getJobResult();
 
     ////////////////////////////////////////////////////////////////////////////
     // Gebuchte Umsaetze
-		Logger.info("applying booked entries");
-		for (int i=0;i<lines.size();++i)
-		{
-			final Umsatz umsatz = Converter.HBCIUmsatz2HibiscusUmsatz((GVRKUms.UmsLine)lines.get(i));
-			umsatz.setKonto(konto); // muessen wir noch machen, weil der Converter das Konto nicht kennt
-
-			if (existing.contains(umsatz) != null)
-        continue; // Haben wir schon
-
-			// Umsatz neu anlegen
-      try
+    List lines  = result.getFlatData();
+    if (lines != null && lines.size() > 0)
+    {
+      Logger.info("applying booked entries");
+      for (int i=0;i<lines.size();++i)
       {
-        umsatz.store(); // den Umsatz haben wir noch nicht, speichern!
-        Application.getMessagingFactory().sendMessage(new ImportMessage(umsatz));
+        final Umsatz umsatz = Converter.HBCIUmsatz2HibiscusUmsatz((GVRKUms.UmsLine)lines.get(i));
+        umsatz.setKonto(konto); // muessen wir noch machen, weil der Converter das Konto nicht kennt
+
+        if (existing.contains(umsatz) != null)
+          continue; // Haben wir schon
+
+        // Umsatz neu anlegen
+        try
+        {
+          umsatz.store(); // den Umsatz haben wir noch nicht, speichern!
+          Application.getMessagingFactory().sendMessage(new ImportMessage(umsatz));
+        }
+        catch (Exception e2)
+        {
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Nicht alle empfangenen Umsätze konnten gespeichert werden. Bitte prüfen Sie das System-Protokoll"),StatusBarMessage.TYPE_ERROR));
+          Logger.error("error while adding umsatz, skipping this one",e2);
+        }
       }
-      catch (Exception e2)
-      {
-        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Nicht alle empfangenen Umsätze konnten gespeichert werden. Bitte prüfen Sie das System-Protokoll"),StatusBarMessage.TYPE_ERROR));
-        Logger.error("error while adding umsatz, skipping this one",e2);
-      }
-		}
-		//
+    }
+    //
     ////////////////////////////////////////////////////////////////////////////
 
-		
+
     ////////////////////////////////////////////////////////////////////////////
     // Vorgemerkte Umsaetze
-		if (fetchNotbooked)
+    boolean fetchNotbooked = settings.getBoolean("umsatz.fetchnotbooked",true);
+    lines = result.getFlatDataUnbooked();
+		if (fetchNotbooked && lines != null && lines.size() > 0)
 		{
+      cleanNotBooked(d);
 	    Logger.info("applying not-booked (vorgemerkte) entries");
-	    lines = result.getFlatDataUnbooked();
 	    if (lines != null && lines.size() > 0)
 	    {
 	      for (int i=0;i<lines.size();++i)
@@ -259,6 +253,9 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIUmsatzJob.java,v $
+ * Revision 1.43  2009/03/10 14:45:20  willuhn
+ * @B Wenn keine neuen Umsaetze vorliegen, wurden auch keine Vormerkbuchungen abgerufen
+ *
  * Revision 1.42  2009/02/25 10:37:08  willuhn
  * @C notbooked umsaetze nur aus dem angegebenen Zeitraum loeschen
  *
