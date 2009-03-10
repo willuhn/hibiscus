@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.57 $
- * $Date: 2009/03/05 13:41:23 $
+ * $Revision: 1.58 $
+ * $Date: 2009/03/10 23:51:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -170,7 +170,7 @@ public class Settings
 	{
 		if (libPath != null)
 			return libPath;
-		libPath = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getPath() + "/lib";
+		libPath = Application.getPluginLoader().getPlugin(HBCI.class).getManifest().getPluginDir() + "/lib";
     try
     {
       libPath = new File(libPath).getCanonicalPath();
@@ -432,6 +432,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.58  2009/03/10 23:51:31  willuhn
+ * @C PluginResources#getPath als deprecated markiert - stattdessen sollte jetzt Manifest#getPluginDir() verwendet werden
+ *
  * Revision 1.57  2009/03/05 13:41:23  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/LicenseControl.java,v $
- * $Revision: 1.13 $
- * $Date: 2006/06/30 13:51:54 $
+ * $Revision: 1.14 $
+ * $Date: 2009/03/10 23:51:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -79,7 +79,7 @@ public class LicenseControl extends AbstractControl {
     }
 
 
-    String path = plugin.getResources().getPath();
+    String path = plugin.getManifest().getPluginDir();
 
     FileFinder finder = new FileFinder(new File(path + "/lib"));
     finder.matches(".*?info\\.xml$");
@@ -116,6 +116,9 @@ public class LicenseControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: LicenseControl.java,v $
+ * Revision 1.14  2009/03/10 23:51:31  willuhn
+ * @C PluginResources#getPath als deprecated markiert - stattdessen sollte jetzt Manifest#getPluginDir() verwendet werden
+ *
  * Revision 1.13  2006/06/30 13:51:54  willuhn
  * @N Pluginloader Redesign in HEAD uebernommen
  *
