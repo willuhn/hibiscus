@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUmsatzJob.java,v $
- * $Revision: 1.48 $
- * $Date: 2009/03/11 17:51:14 $
+ * $Revision: 1.49 $
+ * $Date: 2009/03/11 17:53:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -217,7 +217,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
           for (int i=0;i<lines.size();++i)
           {
             final Umsatz umsatz = Converter.HBCIUmsatz2HibiscusUmsatz((GVRKUms.UmsLine)lines.get(i));
-            umsatz.setSaldo(0d); // Muss gemacht werden, weil der Saldo beim naechsten Mal anders lauten koennte
+            umsatz.setSaldo(Double.NaN); // Muss gemacht werden, weil der Saldo beim naechsten Mal anders lauten koennte
             umsatz.setKonto(konto);
             fetched.add(umsatz);
             
@@ -298,6 +298,9 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIUmsatzJob.java,v $
+ * Revision 1.49  2009/03/11 17:53:12  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.48  2009/03/11 17:51:14  willuhn
  * @B Saldo wurde an der falschen Stelle zurueckgesetzt
  *
