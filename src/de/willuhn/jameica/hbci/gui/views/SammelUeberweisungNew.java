@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/SammelUeberweisungNew.java,v $
- * $Revision: 1.8 $
- * $Date: 2009/02/13 14:17:01 $
+ * $Revision: 1.9 $
+ * $Date: 2009/03/11 23:40:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -55,7 +55,6 @@ public class SammelUeberweisungNew extends AbstractView {
 		
 		group.addSeparator();
     group.addLabelPair(i18n.tr("Summe der Buchungen"),control.getSumme());
-		group.addLabelPair("",control.getComment());
 
     new Headline(getParent(),i18n.tr("Enthaltene Buchungen"));
     control.getBuchungen().paint(getParent());
@@ -99,6 +98,9 @@ public class SammelUeberweisungNew extends AbstractView {
 
 /**********************************************************************
  * $Log: SammelUeberweisungNew.java,v $
+ * Revision 1.9  2009/03/11 23:40:45  willuhn
+ * @B Kleineres Bugfixing in Sammeltransfer-Control
+ *
  * Revision 1.8  2009/02/13 14:17:01  willuhn
  * @N BUGZILLA 700
  *

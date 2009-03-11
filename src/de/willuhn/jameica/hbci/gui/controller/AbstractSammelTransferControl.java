@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractSammelTransferControl.java,v $
- * $Revision: 1.7 $
- * $Date: 2009/01/04 16:18:22 $
+ * $Revision: 1.8 $
+ * $Date: 2009/03/11 23:40:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -29,6 +29,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
 /**
@@ -43,7 +44,6 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
   private Input kontoAuswahl				      = null;
   private Input name                    	= null;
   private DateInput termin              	= null;
-  private Input comment                 	= null;
   private Input summe                     = null;
 
   /**
@@ -88,8 +88,15 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
       return this.kontoAuswahl;
     
     Konto k = getTransfer().getKonto();
+    KontoListener kl = new KontoListener();
     this.kontoAuswahl = new KontoInput(k);
     this.kontoAuswahl.setMandatory(true);
+    this.kontoAuswahl.addListener(kl);
+    this.kontoAuswahl.setEnabled(!getTransfer().ausgefuehrt());
+    
+    // einmal ausloesen
+    kl.handleEvent(null);
+
     
     return this.kontoAuswahl;
   }
@@ -110,32 +117,33 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
     if (d == null)
       d = new Date();
 
-    termin = new DateInput(d,HBCI.DATEFORMAT);
-    termin.setComment("");
-    termin.setText(i18n.tr("Bitte geben Sie den Termin des Auftrages ein"));
-    termin.setTitle(i18n.tr("Termin des Auftrages"));
-    termin.addListener(new Listener() {
-      public void handleEvent(Event event) {
-
-        Date choosen = (Date) termin.getValue();
-        if (choosen == null)
-          return;
-
-        try {
-          // Wenn das neue Datum spaeter als das aktuelle ist,
-          // nehmen wir den Kommentar weg
-          if (bu.ueberfaellig() && choosen.after(new Date()));
-            getComment().setValue("");
-          if (choosen.before(new Date()))
-            getComment().setValue(i18n.tr("Der Auftrag ist überfällig."));
-        }
-        catch (RemoteException e) {/*ignore*/}
-      }
-    });
+    this.termin = new DateInput(d,HBCI.DATEFORMAT);
+    this.termin.setEnabled(!bu.ausgefuehrt());
+    this.termin.setTitle(i18n.tr("Termin"));
+    this.termin.setText(i18n.tr("Bitte wählen Sie einen Termin"));
 
     if (bu.ausgefuehrt())
-      termin.disable();
+      this.termin.setComment(i18n.tr("Der Auftrag wurde bereits ausgeführt"));
+    else if (bu.ueberfaellig())
+      this.termin.setComment(i18n.tr("Der Auftrag ist überfällig"));
+    else
+      this.termin.setComment(""); // Platzhalter
 
+    this.termin.addListener(new Listener() {
+      public void handleEvent(Event event)
+      {
+        try {
+          Date date = (Date) termin.getValue();
+          if (date != null && !date.after(new Date()))
+            termin.setComment(i18n.tr("Der Auftrag ist überfällig"));
+          else
+            termin.setComment("");
+        }
+        catch (Exception e) {
+          Logger.error("unable to check overdue",e);
+        }
+      }
+    });
     return termin;
   }
 
@@ -154,28 +162,6 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
     return this.summe;
   }
   
-  /**
-   * Liefert ein Kommentar-Feld zu dieser Ueberweisung.
-   * @return Kommentarfeld.
-   * @throws RemoteException
-   */
-  public Input getComment() throws RemoteException
-  {
-    if (comment != null)
-      return comment;
-    comment = new LabelInput("");
-    Terminable bu = (Terminable) getTransfer();
-    if (bu.ausgefuehrt())
-    {
-      comment.setValue(i18n.tr("Der Auftrag wurde bereits ausgeführt"));
-    }
-    else if (bu.ueberfaellig())
-    {
-      comment.setValue(i18n.tr("Der Auftrag ist überfällig"));
-    }
-    return comment;
-  }
-
   /**
    * Liefert ein Eingabe-Feld fuer den Namen des Sammel-Auftrages.
    * @return Name des Sammel-Auftrages.
@@ -197,11 +183,44 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
    * @return true, wenn das Speichern erfolgreich war.
    */
   public abstract boolean handleStore();
+  
+  /**
+   * Listener, der die Auswahl des Kontos ueberwacht und die Waehrungsbezeichnung
+   * hinter dem Betrag abhaengig vom ausgewaehlten Konto anpasst.
+   */
+  private class KontoListener implements Listener
+  {
+    /**
+     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+     */
+    public void handleEvent(Event event) {
+
+      try {
+        Object o = getKontoAuswahl().getValue();
+        if (o == null || !(o instanceof Konto))
+          return;
+
+        Konto konto = (Konto) o;
+
+        // Wird u.a. benoetigt, damit anhand des Auftrages ermittelt werden
+        // kann, wieviele Zeilen Verwendungszweck jetzt moeglich sind
+        getTransfer().setKonto(konto);
+      }
+      catch (RemoteException er)
+      {
+        Logger.error("error while updating konto",er);
+      }
+    }
+  }
+
 
 }
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferControl.java,v $
+ * Revision 1.8  2009/03/11 23:40:45  willuhn
+ * @B Kleineres Bugfixing in Sammeltransfer-Control
+ *
  * Revision 1.7  2009/01/04 16:18:22  willuhn
  * @N BUGZILLA 404 - Kontoauswahl via SelectBox
  *

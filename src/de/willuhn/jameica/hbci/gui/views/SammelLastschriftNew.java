@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/SammelLastschriftNew.java,v $
- * $Revision: 1.16 $
- * $Date: 2009/02/13 14:17:01 $
+ * $Revision: 1.17 $
+ * $Date: 2009/03/11 23:40:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -55,7 +55,6 @@ public class SammelLastschriftNew extends AbstractView {
 		
 		group.addSeparator();
     group.addLabelPair(i18n.tr("Summe der Buchungen"),control.getSumme());
-		group.addLabelPair("",control.getComment());
 
     new Headline(getParent(),i18n.tr("Enthaltene Buchungen"));
     control.getBuchungen().paint(getParent());
@@ -99,6 +98,9 @@ public class SammelLastschriftNew extends AbstractView {
 
 /**********************************************************************
  * $Log: SammelLastschriftNew.java,v $
+ * Revision 1.17  2009/03/11 23:40:45  willuhn
+ * @B Kleineres Bugfixing in Sammeltransfer-Control
+ *
  * Revision 1.16  2009/02/13 14:17:01  willuhn
  * @N BUGZILLA 700
  *
