@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUmsatzJob.java,v $
- * $Revision: 1.45 $
- * $Date: 2009/03/10 17:14:40 $
+ * $Revision: 1.46 $
+ * $Date: 2009/03/11 11:03:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,12 +13,15 @@
 package de.willuhn.jameica.hbci.server.hbci;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import org.kapott.hbci.GV_Result.GVRKUms;
 
+import de.willuhn.datasource.GenericIterator;
+import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -204,7 +207,8 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
 		{
       if (lines != null && lines.size() > 0)
       {
-        cleanNotBooked(d);
+        ArrayList fetched = new ArrayList();
+        
         int created = 0;
         int skipped = 0;
         Logger.info("applying not-booked (vorgemerkte) entries");
@@ -214,6 +218,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
           {
             final Umsatz umsatz = Converter.HBCIUmsatz2HibiscusUmsatz((GVRKUms.UmsLine)lines.get(i));
             umsatz.setKonto(konto);
+            fetched.add(umsatz);
             
             if (existing.contains(umsatz) != null)
             {
@@ -235,6 +240,31 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
               Logger.error("error while adding umsatz, skipping this one",e2);
             }
           }
+          
+          // Jetzt loeschen wir all die vorgemerkten Umsaetze des
+          // Kontos, die noch in der Datenbank sind, aber im
+          // aktuellen Durchlauf nicht mehr uebertragen wurden.
+          // Das muessen dann die vom Vortag sein
+          Logger.info("clean obsolete notbooked entries");
+          GenericIterator newList = PseudoIterator.fromArray((Umsatz[]) fetched.toArray(new Umsatz[fetched.size()]));
+          int deleted = 0;
+          while (existing.hasNext())
+          {
+            Umsatz u = (Umsatz) existing.next();
+            if ((u.getFlags() & Umsatz.FLAG_NOTBOOKED) != 0)
+            {
+              // Ist ein vorgemerkter Umsatz. Mal schauen, ob der im aktuellen
+              // Durchlauf enthalten war:
+              if (newList.contains(u) == null)
+              {
+                // Wurde nicht mehr von der Bank uebertragen, kann daher raus
+                u.delete();
+                deleted++;
+              }
+            }
+          }
+          Logger.info("removed entries: " + deleted);
+          
           Logger.info("done. new entries: " + created + ", skipped entries (already in database): " + skipped);
         }
       }
@@ -254,29 +284,6 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
   }
   
   /**
-   * Loescht die vorgemerkten Buchungen weg, damit sie neu abgerufen werden koennen.
-   * @param startdate Start-Datum, ab dem nach zu loeschenden vorgemerkten Umsaetze gesucht werden soll.
-   * @throws RemoteException
-   * @throws ApplicationException
-   */
-  private void cleanNotBooked(Date startdate) throws RemoteException, ApplicationException
-  {
-    Logger.info("clean notbooked entries");
-    DBIterator list = this.konto.getUmsaetze(startdate,null);
-    int count = 0;
-    while (list.hasNext())
-    {
-      Umsatz u = (Umsatz) list.next();
-      if ((u.getFlags() & Umsatz.FLAG_NOTBOOKED) != 0)
-      {
-        u.delete();
-        count++;
-      }
-    }
-    Logger.info("removed entries: " + count);
-  }
-  
-  /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markFailed(java.lang.String)
    */
   String markFailed(String error) throws RemoteException, ApplicationException
@@ -290,6 +297,9 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIUmsatzJob.java,v $
+ * Revision 1.46  2009/03/11 11:03:38  willuhn
+ * @C Nur noch jene Vormerkposten loeschen, die nicht mehr von der Bank uebertragen wurden
+ *
  * Revision 1.45  2009/03/10 17:14:40  willuhn
  * *** empty log message ***
  *
