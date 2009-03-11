@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/NewInstKeysDialog.java,v $
- * $Revision: 1.7 $
- * $Date: 2006/06/06 21:42:21 $
+ * $Revision: 1.8 $
+ * $Date: 2009/03/11 23:41:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -83,7 +83,7 @@ public class NewInstKeysDialog extends AbstractDialog
 		{
 			public void handleAction(Object context) throws ApplicationException
 			{
-				choosen = new Boolean(false);
+				choosen = Boolean.FALSE;
         close();
 			}
 		});
@@ -102,6 +102,9 @@ public class NewInstKeysDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: NewInstKeysDialog.java,v $
+ * Revision 1.8  2009/03/11 23:41:36  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2006/06/06 21:42:21  willuhn
  * @N Zeilenumbrueche in Dialogen (fuer Windows)
  *
