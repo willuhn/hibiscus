@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUmsatzJob.java,v $
- * $Revision: 1.49 $
- * $Date: 2009/03/11 17:53:12 $
+ * $Revision: 1.50 $
+ * $Date: 2009/03/12 10:56:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -217,7 +217,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
           for (int i=0;i<lines.size();++i)
           {
             final Umsatz umsatz = Converter.HBCIUmsatz2HibiscusUmsatz((GVRKUms.UmsLine)lines.get(i));
-            umsatz.setSaldo(Double.NaN); // Muss gemacht werden, weil der Saldo beim naechsten Mal anders lauten koennte
+            umsatz.setSaldo(0d); // Muss gemacht werden, weil der Saldo beim naechsten Mal anders lauten koennte
             umsatz.setKonto(konto);
             fetched.add(umsatz);
             
@@ -298,6 +298,9 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIUmsatzJob.java,v $
+ * Revision 1.50  2009/03/12 10:56:01  willuhn
+ * @B Double.NaN geht nicht
+ *
  * Revision 1.49  2009/03/11 17:53:12  willuhn
  * *** empty log message ***
  *
