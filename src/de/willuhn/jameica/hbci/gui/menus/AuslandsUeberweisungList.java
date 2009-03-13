@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/AuslandsUeberweisungList.java,v $
- * $Revision: 1.1 $
- * $Date: 2009/02/17 00:00:02 $
+ * $Revision: 1.2 $
+ * $Date: 2009/03/13 00:25:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,6 +27,7 @@ public class AuslandsUeberweisungList extends ContextMenu
 	 */
 	public AuslandsUeberweisungList()
 	{
+	  // TODO: ALU: Context-Menu fehlt noch
 //		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 //		addItem(new SingleItem(i18n.tr("Öffnen"), new UeberweisungNew(),"document-open.png"));
@@ -177,6 +178,9 @@ public class AuslandsUeberweisungList extends ContextMenu
 
 /**********************************************************************
  * $Log: AuslandsUeberweisungList.java,v $
+ * Revision 1.2  2009/03/13 00:25:12  willuhn
+ * @N Code fuer Auslandsueberweisungen fast fertig
+ *
  * Revision 1.1  2009/02/17 00:00:02  willuhn
  * @N BUGZILLA 159 - Erster Code fuer Auslands-Ueberweisungen
  *

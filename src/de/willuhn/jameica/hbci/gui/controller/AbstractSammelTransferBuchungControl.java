@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractSammelTransferBuchungControl.java,v $
- * $Revision: 1.16 $
- * $Date: 2009/02/24 23:51:01 $
+ * $Revision: 1.17 $
+ * $Date: 2009/03/13 00:25:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,6 +26,7 @@ import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.gui.AddressFilter;
 import de.willuhn.jameica.hbci.gui.dialogs.VerwendungszweckDialog;
 import de.willuhn.jameica.hbci.gui.input.AddressInput;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
@@ -85,7 +86,7 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
   {
     if (gkName != null)
       return gkName;
-    gkName = new AddressInput(getBuchung().getGegenkontoName());
+    gkName = new AddressInput(getBuchung().getGegenkontoName(),AddressFilter.INLAND);
     gkName.setMandatory(true);
     gkName.setEnabled(!getBuchung().getSammelTransfer().ausgefuehrt());
     gkName.addListener(new GegenkontoListener());
@@ -313,6 +314,9 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferBuchungControl.java,v $
+ * Revision 1.17  2009/03/13 00:25:12  willuhn
+ * @N Code fuer Auslandsueberweisungen fast fertig
+ *
  * Revision 1.16  2009/02/24 23:51:01  willuhn
  * @N Auswahl der Empfaenger/Zahlungspflichtigen jetzt ueber Auto-Suggest-Felder
  *

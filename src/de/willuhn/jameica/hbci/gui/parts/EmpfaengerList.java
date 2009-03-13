@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/EmpfaengerList.java,v $
- * $Revision: 1.21 $
- * $Date: 2009/02/19 23:42:01 $
+ * $Revision: 1.22 $
+ * $Date: 2009/03/13 00:25:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -36,6 +36,7 @@ import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.AddressFilter;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.Addressbook;
@@ -57,7 +58,7 @@ public class EmpfaengerList extends TablePart implements Part
   private TextInput search       = null;
   private I18N i18n              = null;
   private KeyAdapter listener    = null;
-  private Filter filter          = null;
+  private AddressFilter filter   = null;
 
   private MessageConsumer mc = null;
   
@@ -79,7 +80,7 @@ public class EmpfaengerList extends TablePart implements Part
    * @param filter optionaler Filter.
    * @throws RemoteException
    */
-  public EmpfaengerList(Action action, Filter filter) throws RemoteException
+  public EmpfaengerList(Action action, AddressFilter filter) throws RemoteException
   {
     super(action);
     
@@ -288,10 +289,8 @@ public class EmpfaengerList extends TablePart implements Part
           for (int i=0;i<found.size();++i)
           {
             Address a = (Address) found.get(i);
-            if (filter != null && !filter.filter(a))
-              continue; // Filter vorhanden und nicht bestanden - ignorieren
-
-            EmpfaengerList.this.addItem(a);
+            if (filter == null || filter.accept(a))
+              EmpfaengerList.this.addItem(a);
           }
 
           // Fertig. Jetzt nochmal neu sortieren
@@ -338,29 +337,14 @@ public class EmpfaengerList extends TablePart implements Part
       forward.handleEvent(null); // Das Event-Objekt interessiert uns eh nicht
     }
   }
-  
-  /**
-   * Mit diesem Filter koennen einzelne Adressen bei der Suche
-   * ausgefiltert werden. Das wird z.Bsp. genutzt, um bei
-   * Auslandsueberweisungen nur jene Adressen anzuzeigen, die
-   * eine IBAN besitzen.
-   */
-  public static interface Filter
-  {
-    /**
-     * Prueft, ob die Adresse angezeigt werden soll oder nicht.
-     * @param address die zu pruefende Adresse.
-     * @return true, wenn sie ok ist und angezeigt werden soll.
-     * False, wenn sie uebersprungen werden soll.
-     * @throws RemoteException
-     */
-    public boolean filter(Address address) throws RemoteException;
-  }
 }
 
 
 /**********************************************************************
  * $Log: EmpfaengerList.java,v $
+ * Revision 1.22  2009/03/13 00:25:12  willuhn
+ * @N Code fuer Auslandsueberweisungen fast fertig
+ *
  * Revision 1.21  2009/02/19 23:42:01  willuhn
  * @N Filter fuer Adressbuch zum Ausblenden von Adressen (z.Bsp. bei Auslandsueberweisungen alle ausblenden, die keine IBAN haben)
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/AdresseAuswahlDialog.java,v $
- * $Revision: 1.5 $
- * $Date: 2009/02/19 23:42:01 $
+ * $Revision: 1.6 $
+ * $Date: 2009/03/13 00:25:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,6 +21,7 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.AddressFilter;
 import de.willuhn.jameica.hbci.gui.parts.EmpfaengerList;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.system.Application;
@@ -34,9 +35,9 @@ import de.willuhn.util.I18N;
 public class AdresseAuswahlDialog extends AbstractDialog
 {
 
-	private final static I18N i18n       = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-	private Address choosen              = null;
-	private EmpfaengerList.Filter filter = null;
+	private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+	private Address choosen        = null;
+	private AddressFilter filter   = null;
 
   /**
    * ct.
@@ -52,7 +53,7 @@ public class AdresseAuswahlDialog extends AbstractDialog
    * @param position
    * @param filter optionale Angabe eines Adress-Filters.
    */
-  public AdresseAuswahlDialog(int position, EmpfaengerList.Filter filter)
+  public AdresseAuswahlDialog(int position, AddressFilter filter)
   {
     super(position);
     this.filter = filter;
@@ -126,6 +127,9 @@ public class AdresseAuswahlDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: AdresseAuswahlDialog.java,v $
+ * Revision 1.6  2009/03/13 00:25:12  willuhn
+ * @N Code fuer Auslandsueberweisungen fast fertig
+ *
  * Revision 1.5  2009/02/19 23:42:01  willuhn
  * @N Filter fuer Adressbuch zum Ausblenden von Adressen (z.Bsp. bei Auslandsueberweisungen alle ausblenden, die keine IBAN haben)
  *

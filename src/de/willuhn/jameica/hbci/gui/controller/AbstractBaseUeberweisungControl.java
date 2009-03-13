@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractBaseUeberweisungControl.java,v $
- * $Revision: 1.15 $
- * $Date: 2009/02/24 23:51:01 $
+ * $Revision: 1.16 $
+ * $Date: 2009/03/13 00:25:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,6 +30,8 @@ import de.willuhn.jameica.hbci.TextSchluessel;
 import de.willuhn.jameica.hbci.gui.input.AddressInput;
 import de.willuhn.jameica.hbci.rmi.BaseUeberweisung;
 import de.willuhn.jameica.hbci.rmi.Terminable;
+import de.willuhn.jameica.messaging.StatusBarMessage;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 
 /**
@@ -39,7 +41,7 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
 {
 
 	// Eingabe-Felder
-	private DateInput termin           = null;
+	private DateInput termin = null;
 	
   /**
    * ct.
@@ -123,7 +125,7 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
 			Date termin = (Date) getTermin().getValue();
 			if (termin == null)
 			{
-			  GUI.getView().setErrorText("Bitte geben Sie einen Termin ein.");
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte geben Sie einen Termin ein."),StatusBarMessage.TYPE_ERROR));
 			  return false;
 			}
 			bu.setTermin(termin);
@@ -240,6 +242,9 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
 
 /**********************************************************************
  * $Log: AbstractBaseUeberweisungControl.java,v $
+ * Revision 1.16  2009/03/13 00:25:12  willuhn
+ * @N Code fuer Auslandsueberweisungen fast fertig
+ *
  * Revision 1.15  2009/02/24 23:51:01  willuhn
  * @N Auswahl der Empfaenger/Zahlungspflichtigen jetzt ueber Auto-Suggest-Felder
  *

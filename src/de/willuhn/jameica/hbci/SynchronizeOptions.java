@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/SynchronizeOptions.java,v $
- * $Revision: 1.4 $
- * $Date: 2009/01/26 23:17:46 $
+ * $Revision: 1.5 $
+ * $Date: 2009/03/13 00:25:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -147,12 +147,17 @@ public class SynchronizeOptions implements Serializable
   {
     settings.setAttribute("sync.konto." + id + ".dauer",b);
   }
+  
+  // TODO: ALU: Sync-Option fuer Auslandsueberweisungen
 
 }
 
 
 /*********************************************************************
  * $Log: SynchronizeOptions.java,v $
+ * Revision 1.5  2009/03/13 00:25:12  willuhn
+ * @N Code fuer Auslandsueberweisungen fast fertig
+ *
  * Revision 1.4  2009/01/26 23:17:46  willuhn
  * @R Feld "synchronize" aus Konto-Tabelle entfernt. Aufgrund der Synchronize-Optionen pro Konto ist die Information redundant und ergibt sich implizit, wenn fuer ein Konto irgendeine der Synchronisations-Optionen aktiviert ist
  *
