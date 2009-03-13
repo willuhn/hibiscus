@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUmsatzJob.java,v $
- * $Revision: 1.50 $
- * $Date: 2009/03/12 10:56:01 $
+ * $Revision: 1.51 $
+ * $Date: 2009/03/13 17:58:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -249,6 +249,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
           Logger.info("clean obsolete notbooked entries");
           GenericIterator newList = PseudoIterator.fromArray((Umsatz[]) fetched.toArray(new Umsatz[fetched.size()]));
           int deleted = 0;
+          existing.begin();
           while (existing.hasNext())
           {
             Umsatz u = (Umsatz) existing.next();
@@ -272,6 +273,36 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
       else
       {
         Logger.info("got no new not-booked (vorgemerkte) entries");
+        
+        // Keine neuen vorgemerkten Umsaetze 
+        Logger.info("clean obsolete not-booked entries");
+        Date current = HBCIProperties.startOfDay(new Date());
+        int count = 0;
+        existing.begin();
+        while (existing.hasNext())
+        {
+          Umsatz u = (Umsatz) existing.next();
+          if ((u.getFlags() & Umsatz.FLAG_NOTBOOKED) == 0)
+            continue;
+
+          Date test = u.getDatum();
+          if (test == null)
+            test = u.getValuta();
+          
+          if (test == null)
+          {
+            Logger.warn("notbooked entry contains no date, skipping");
+            continue; // Das darf eigentlich nicht passieren
+          }
+          
+          // Wenn die Vormerkbuchung nicht von heute ist, loeschen wir sie
+          if (test.before(current))
+          {
+            u.delete();
+            count++;
+          }
+        }
+        Logger.info("removed entries: " + count);
       }
 		}
 		else
@@ -298,6 +329,9 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIUmsatzJob.java,v $
+ * Revision 1.51  2009/03/13 17:58:07  willuhn
+ * @N Loeschen der Vormerkbuchungen (die aelter als heute sind) auch dann, wenn keine neuen von der Bank gekommen sind
+ *
  * Revision 1.50  2009/03/12 10:56:01  willuhn
  * @B Double.NaN geht nicht
  *
