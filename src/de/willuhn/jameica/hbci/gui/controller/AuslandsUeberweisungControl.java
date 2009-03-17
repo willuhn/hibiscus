@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AuslandsUeberweisungControl.java,v $
- * $Revision: 1.1 $
- * $Date: 2009/03/13 00:25:12 $
+ * $Revision: 1.2 $
+ * $Date: 2009/03/17 23:44:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -163,7 +163,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
       return empfkto;
 
     empfkto = new TextInput(getTransfer().getGegenkontoNummer(),HBCIProperties.HBCI_IBAN_MAXLENGTH);
-    empfkto.setValidChars(HBCIProperties.HBCI_KTO_VALIDCHARS + " ");
+    empfkto.setValidChars(HBCIProperties.HBCI_IBAN_VALIDCHARS + " ");
     empfkto.setMandatory(true);
     empfkto.addListener(new Listener()
     {
@@ -187,7 +187,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
   {
     if (empfbank != null)
       return empfbank;
-    empfbank = new TextInput(getTransfer().getGegenkontoInstitut()); // TODO: ALU: Wie lang darf der Institutsname sein?
+    empfbank = new TextInput(getTransfer().getGegenkontoInstitut(),HBCIProperties.HBCI_FOREIGNTRANSFER_USAGE_MAXLENGTH);
     empfbank.setMandatory(true);
     return empfbank;
   }
@@ -359,7 +359,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
       {
         HibiscusAddress e = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
         e.setBank(bank);
-        e.setKontonummer(kto);
+        e.setIban(kto);
         e.setName(name);
         
         // Zu schauen, ob die Adresse bereits existiert, ueberlassen wir der Action
@@ -453,7 +453,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
 
       try {
         getEmpfaengerName().setText(a.getName());
-        getEmpfaengerKonto().setValue(a.getKontonummer());
+        getEmpfaengerKonto().setValue(a.getIban());
         getEmpfaengerBank().setValue(a.getBank());
 
         // Wenn der Empfaenger aus dem Adressbuch kommt, deaktivieren wir die Checkbox
@@ -494,6 +494,9 @@ public class AuslandsUeberweisungControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AuslandsUeberweisungControl.java,v $
+ * Revision 1.2  2009/03/17 23:44:14  willuhn
+ * @N BUGZILLA 159 - Auslandsueberweisungen. Erste Version
+ *
  * Revision 1.1  2009/03/13 00:25:12  willuhn
  * @N Code fuer Auslandsueberweisungen fast fertig
  *

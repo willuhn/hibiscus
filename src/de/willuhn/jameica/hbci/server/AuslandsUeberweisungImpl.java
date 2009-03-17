@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AuslandsUeberweisungImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2009/02/17 00:00:02 $
+ * $Revision: 1.2 $
+ * $Date: 2009/03/17 23:44:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -75,7 +75,7 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl
       if (getGegenkontoInstitut() == null || getGegenkontoInstitut().length() == 0)
         throw new ApplicationException(i18n.tr("Bitte geben Sie den vollständigen Namen der Zielbank ein"));
 
-      HBCIProperties.checkChars(getGegenkontoNummer(), HBCIProperties.HBCI_KTO_VALIDCHARS);
+      HBCIProperties.checkChars(getGegenkontoNummer(), HBCIProperties.HBCI_IBAN_VALIDCHARS);
       HBCIProperties.checkLength(getGegenkontoNummer(), HBCIProperties.HBCI_IBAN_MAXLENGTH);
 
       double betrag = getBetrag();
@@ -85,7 +85,7 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl
       if (getGegenkontoName() == null || getGegenkontoName().length() == 0)
         throw new ApplicationException(i18n.tr("Bitte geben Sie den Namen des Kontoinhabers des Gegenkontos ein"));
 
-      HBCIProperties.checkLength(getGegenkontoName(), HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
+      HBCIProperties.checkLength(getGegenkontoName(), HBCIProperties.HBCI_FOREIGNTRANSFER_USAGE_MAXLENGTH);
       HBCIProperties.checkChars(getGegenkontoName(), HBCIProperties.HBCI_DTAUS_VALIDCHARS);
 
       if (!HBCIProperties.checkIBANCRC(getGegenkontoNummer()))
@@ -102,48 +102,12 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.server.AbstractBaseUeberweisungImpl#getTextSchluessel()
-   */
-  @Override
-  public String getTextSchluessel() throws RemoteException
-  {
-    throw new RemoteException("textschluessel not allowed for foreign transfer");
-  }
-
-  /**
    * @see de.willuhn.jameica.hbci.server.AbstractBaseUeberweisungImpl#setTextSchluessel(java.lang.String)
    */
   @Override
   public void setTextSchluessel(String schluessel) throws RemoteException
   {
     throw new RemoteException("textschluessel not allowed for foreign transfer");
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.server.AbstractHibiscusTransferImpl#getGegenkontoBLZ()
-   */
-  @Override
-  public String getGegenkontoBLZ() throws RemoteException
-  {
-    throw new RemoteException("blz not allowed for foreign transfer");
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.server.AbstractHibiscusTransferImpl#getWeitereVerwendungszwecke()
-   */
-  @Override
-  public String[] getWeitereVerwendungszwecke() throws RemoteException
-  {
-    throw new RemoteException("extended usages not allowed for foreign transfer");
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.server.AbstractHibiscusTransferImpl#getZweck2()
-   */
-  @Override
-  public String getZweck2() throws RemoteException
-  {
-    throw new RemoteException("second usage not allowed for foreign transfer");
   }
 
   /**
@@ -201,6 +165,9 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl
 
 /**********************************************************************
  * $Log: AuslandsUeberweisungImpl.java,v $
+ * Revision 1.2  2009/03/17 23:44:15  willuhn
+ * @N BUGZILLA 159 - Auslandsueberweisungen. Erste Version
+ *
  * Revision 1.1  2009/02/17 00:00:02  willuhn
  * @N BUGZILLA 159 - Erster Code fuer Auslands-Ueberweisungen
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractHibiscusTransferImpl.java,v $
- * $Revision: 1.11 $
- * $Date: 2008/12/14 23:18:35 $
+ * $Revision: 1.12 $
+ * $Date: 2009/03/17 23:44:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -232,14 +232,28 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractDBObject impl
       
       if (k != null)
       {
-        String[] params = new String[] {
-          getGegenkontoName(),
-          getGegenkontoNummer(),
-          getGegenkontoBLZ(),
-          k.getWaehrung(),
-          HBCI.DECIMALFORMAT.format(getBetrag())
-        };
-        k.addToProtokoll(i18n.tr("Auftrag [Gegenkonto: {0}, Kto. {1}, BLZ {2}] {3} {4} gelöscht",params),Protokoll.TYP_SUCCESS);
+        String blz = getGegenkontoBLZ();
+        if (blz != null)
+        {
+          String[] params = new String[] {
+            getGegenkontoName(),
+            getGegenkontoNummer(),
+            getGegenkontoBLZ(),
+            k.getWaehrung(),
+            HBCI.DECIMALFORMAT.format(getBetrag())
+          };
+          k.addToProtokoll(i18n.tr("Auftrag [Gegenkonto: {0}, Kto. {1}, BLZ {2}] {3} {4} gelöscht",params),Protokoll.TYP_SUCCESS);
+        }
+        else
+        {
+          String[] params = new String[] {
+            getGegenkontoName(),
+            getGegenkontoNummer(),
+            k.getWaehrung(),
+            HBCI.DECIMALFORMAT.format(getBetrag())
+          };
+          k.addToProtokoll(i18n.tr("Auftrag [Gegenkonto: {0}, Kto. {1}] {2} {3} gelöscht",params),Protokoll.TYP_SUCCESS);
+        }
       }
       
       this.transactionCommit();
@@ -309,15 +323,28 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractDBObject impl
       super.store();
       
       Konto k = this.getKonto();
-      String[] params = new String[]
+      String blz = getGegenkontoBLZ();
+      if (blz != null)
       {
-        getGegenkontoName(),
-        getGegenkontoNummer(),
-        getGegenkontoBLZ(),
-        k.getWaehrung(),
-        HBCI.DECIMALFORMAT.format(getBetrag())
-      };
-      k.addToProtokoll(i18n.tr("Auftrag [Gegenkonto: {0}, Kto. {1}, BLZ {2}] {3} {4} gespeichert",params),Protokoll.TYP_SUCCESS);
+        String[] params = new String[] {
+          getGegenkontoName(),
+          getGegenkontoNummer(),
+          getGegenkontoBLZ(),
+          k.getWaehrung(),
+          HBCI.DECIMALFORMAT.format(getBetrag())
+        };
+        k.addToProtokoll(i18n.tr("Auftrag [Gegenkonto: {0}, Kto. {1}, BLZ {2}] {3} {4} gespeichert",params),Protokoll.TYP_SUCCESS);
+      }
+      else
+      {
+        String[] params = new String[] {
+          getGegenkontoName(),
+          getGegenkontoNummer(),
+          k.getWaehrung(),
+          HBCI.DECIMALFORMAT.format(getBetrag())
+        };
+        k.addToProtokoll(i18n.tr("Auftrag [Gegenkonto: {0}, Kto. {1}] {2} {3} gespeichert",params),Protokoll.TYP_SUCCESS);
+      }
       
       this.transactionCommit();
     }
@@ -351,6 +378,9 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractDBObject impl
 
 /**********************************************************************
  * $Log: AbstractHibiscusTransferImpl.java,v $
+ * Revision 1.12  2009/03/17 23:44:15  willuhn
+ * @N BUGZILLA 159 - Auslandsueberweisungen. Erste Version
+ *
  * Revision 1.11  2008/12/14 23:18:35  willuhn
  * @N BUGZILLA 188 - REFACTORING
  *

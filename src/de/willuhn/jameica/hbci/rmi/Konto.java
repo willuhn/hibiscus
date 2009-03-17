@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Konto.java,v $
- * $Revision: 1.39 $
- * $Date: 2009/01/26 23:17:46 $
+ * $Revision: 1.40 $
+ * $Date: 2009/03/17 23:44:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -272,6 +272,15 @@ public interface Konto extends DBObject, Checksum
 	 */
 	public DBIterator getUeberweisungen() throws RemoteException;
 
+  /**
+   * Liefert eine Liste aller Auslandsueberweisungen, die ueber dieses Konto getaetigt
+   * wurden.
+   * 
+   * @return Liste der Auslandsueberweisungen.
+   * @throws RemoteException
+   */
+  public DBIterator getAuslandsUeberweisungen() throws RemoteException;
+
 	/**
 	 * Liefert alle Dauerauftraege, die fuer das Konto vorliegen. Dabei werden
 	 * auch jene geliefert, die lokal erstellt, jedoch noch nicht zur Bank
@@ -369,6 +378,9 @@ public interface Konto extends DBObject, Checksum
 
 /*******************************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.40  2009/03/17 23:44:15  willuhn
+ * @N BUGZILLA 159 - Auslandsueberweisungen. Erste Version
+ *
  * Revision 1.39  2009/01/26 23:17:46  willuhn
  * @R Feld "synchronize" aus Konto-Tabelle entfernt. Aufgrund der Synchronize-Optionen pro Konto ist die Information redundant und ergibt sich implizit, wenn fuer ein Konto irgendeine der Synchronisations-Optionen aktiviert ist
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/SynchronizeOptions.java,v $
- * $Revision: 1.5 $
- * $Date: 2009/03/13 00:25:12 $
+ * $Revision: 1.6 $
+ * $Date: 2009/03/17 23:44:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,7 +49,8 @@ public class SynchronizeOptions implements Serializable
            getSyncKontoauszuege() ||
            getSyncDauerauftraege() ||
            getSyncLastschriften() ||
-           getSyncUeberweisungen();
+           getSyncUeberweisungen() ||
+           getSyncAuslandsUeberweisungen();
   }
 
   /**
@@ -102,7 +103,16 @@ public class SynchronizeOptions implements Serializable
     return settings.getBoolean("sync.konto." + id + ".dauer",false);
   }
   
+  /**
+   * Prueft, ob offene und ueberfaellige Auslandsueberweisungen eingereicht werden sollen.
+   * @return true, wenn sie synchronisiert werden sollen.
+   */
+  public boolean getSyncAuslandsUeberweisungen()
+  {
+    return settings.getBoolean("sync.konto." + id + ".uebforeign",false);
+  }
 
+  
   /**
    * Legt fest, ob die Kontoauszuege abgerufen werden sollen.
    * @param b true, wenn sie synchronisiert werden sollen.
@@ -148,13 +158,23 @@ public class SynchronizeOptions implements Serializable
     settings.setAttribute("sync.konto." + id + ".dauer",b);
   }
   
-  // TODO: ALU: Sync-Option fuer Auslandsueberweisungen
+  /**
+   * Legt fest, ob offene und ueberfaellige Auslandsueberweisungen eingereicht werden sollen.
+   * @param b true, wenn sie synchronisiert werden sollen.
+   */
+  public void setSyncAuslandsUeberweisungen(boolean b)
+  {
+    settings.setAttribute("sync.konto." + id + ".uebforeign",b);
+  }
 
 }
 
 
 /*********************************************************************
  * $Log: SynchronizeOptions.java,v $
+ * Revision 1.6  2009/03/17 23:44:15  willuhn
+ * @N BUGZILLA 159 - Auslandsueberweisungen. Erste Version
+ *
  * Revision 1.5  2009/03/13 00:25:12  willuhn
  * @N Code fuer Auslandsueberweisungen fast fertig
  *

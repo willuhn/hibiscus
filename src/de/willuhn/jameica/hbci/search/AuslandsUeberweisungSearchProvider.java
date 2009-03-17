@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/search/AuslandsUeberweisungSearchProvider.java,v $
- * $Revision: 1.1 $
- * $Date: 2009/03/13 00:25:12 $
+ * $Revision: 1.2 $
+ * $Date: 2009/03/17 23:44:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import java.util.List;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungNew;
 import de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -57,9 +58,9 @@ public class AuslandsUeberweisungSearchProvider implements SearchProvider
     DBIterator list = service.createList(AuslandsUeberweisung.class);
     list.addFilter("LOWER(zweck) LIKE ? OR " +
                    "LOWER(empfaenger_name) LIKE ? OR " +
-                   "empfaenger_konto LIKE ? OR " +
-                   "empfaenger_bank LIKE ?",
-                   new String[]{text,text,text,text,text,text});
+                   "LOWER(empfaenger_konto) LIKE ? OR " +
+                   "LOWER(empfaenger_bank) LIKE ?",
+                   new String[]{text,text,text,text});
     list.setOrder("ORDER BY " + service.getSQLTimestamp("termin") + " DESC");
 
     ArrayList results = new ArrayList();
@@ -91,8 +92,7 @@ public class AuslandsUeberweisungSearchProvider implements SearchProvider
      */
     public void execute() throws RemoteException, ApplicationException
     {
-      // TODO: ALU: Aktivieren, wenn Auslandsueberweisungen fertig sind
-      // new AuslandsUeberweisungNew().handleAction(this.u);
+      new AuslandsUeberweisungNew().handleAction(this.u);
     }
 
     /**
@@ -127,6 +127,9 @@ public class AuslandsUeberweisungSearchProvider implements SearchProvider
 
 /**********************************************************************
  * $Log: AuslandsUeberweisungSearchProvider.java,v $
+ * Revision 1.2  2009/03/17 23:44:15  willuhn
+ * @N BUGZILLA 159 - Auslandsueberweisungen. Erste Version
+ *
  * Revision 1.1  2009/03/13 00:25:12  willuhn
  * @N Code fuer Auslandsueberweisungen fast fertig
  *

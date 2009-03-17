@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EmpfaengerControl.java,v $
- * $Revision: 1.47 $
- * $Date: 2009/02/18 00:35:54 $
+ * $Revision: 1.48 $
+ * $Date: 2009/03/17 23:44:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -275,7 +275,7 @@ public class EmpfaengerControl extends AbstractControl {
       Address a = getAddress();
       if (a instanceof HibiscusAddress)
         s = ((HibiscusAddress)a).getBank();
-      this.bank = new TextInput(s);
+      this.bank = new TextInput(s, HBCIProperties.HBCI_FOREIGNTRANSFER_USAGE_MAXLENGTH);
       this.bank.setEnabled(isHibiscusAdresse());
     }
     return this.bank;
@@ -334,6 +334,9 @@ public class EmpfaengerControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: EmpfaengerControl.java,v $
+ * Revision 1.48  2009/03/17 23:44:14  willuhn
+ * @N BUGZILLA 159 - Auslandsueberweisungen. Erste Version
+ *
  * Revision 1.47  2009/02/18 00:35:54  willuhn
  * @N Auslaendische Bankverbindungen im Adressbuch
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.96 $
- * $Date: 2009/01/26 23:17:46 $
+ * $Revision: 1.97 $
+ * $Date: 2009/03/17 23:44:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,6 +26,7 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.ResultSetExtractor;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -442,6 +443,20 @@ public class KontoImpl extends AbstractDBObject implements Konto
   }
 
   /**
+   * @see de.willuhn.jameica.hbci.rmi.Konto#getAuslandsUeberweisungen()
+   */
+  public DBIterator getAuslandsUeberweisungen() throws RemoteException
+  {
+    HBCIDBService service = (HBCIDBService) getService();
+
+    DBIterator list = service.createList(AuslandsUeberweisung.class);
+    list.addFilter("konto_id = " + getID());
+
+    list.setOrder("ORDER BY " + service.getSQLTimestamp("termin") + " DESC");
+    return list;
+  }
+
+  /**
    * @see de.willuhn.jameica.hbci.rmi.Konto#getDauerauftraege()
    */
   public DBIterator getDauerauftraege() throws RemoteException
@@ -746,6 +761,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*******************************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.97  2009/03/17 23:44:15  willuhn
+ * @N BUGZILLA 159 - Auslandsueberweisungen. Erste Version
+ *
  * Revision 1.96  2009/01/26 23:17:46  willuhn
  * @R Feld "synchronize" aus Konto-Tabelle entfernt. Aufgrund der Synchronize-Optionen pro Konto ist die Information redundant und ergibt sich implizit, wenn fuer ein Konto irgendeine der Synchronisations-Optionen aktiviert ist
  *

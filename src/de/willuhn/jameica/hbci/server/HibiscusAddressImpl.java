@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/HibiscusAddressImpl.java,v $
- * $Revision: 1.7 $
- * $Date: 2009/02/18 00:35:54 $
+ * $Revision: 1.8 $
+ * $Date: 2009/03/17 23:44:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -95,11 +95,7 @@ public class HibiscusAddressImpl extends AbstractDBObject implements HibiscusAdd
       // Auslaendische Bankverbindung
       String iban = this.getIban();
       String bic = this.getBic();
-      if (bic != null && bic.length() > 0)
-      {
-        HBCIProperties.checkLength(bic, HBCIProperties.HBCI_BIC_MAXLENGTH);
-        HBCIProperties.checkChars(bic, HBCIProperties.HBCI_BIC_VALIDCHARS);
-      }
+      String bank = this.getBank();
       if (iban != null && iban.length() > 0)
       {
         HBCIProperties.checkLength(iban, HBCIProperties.HBCI_IBAN_MAXLENGTH);
@@ -107,6 +103,15 @@ public class HibiscusAddressImpl extends AbstractDBObject implements HibiscusAdd
         if (!HBCIProperties.checkIBANCRC(iban))
           throw new ApplicationException(i18n.tr("Ungültige IBAN. Bitte prüfen Sie Ihre Eingaben."));
         haveAccount = true;
+      }
+      if (bic != null && bic.length() > 0)
+      {
+        HBCIProperties.checkLength(bic, HBCIProperties.HBCI_BIC_MAXLENGTH);
+        HBCIProperties.checkChars(bic, HBCIProperties.HBCI_BIC_VALIDCHARS);
+      }
+      if (bank != null && bank.length() > 0)
+      {
+        HBCIProperties.checkLength(bank, HBCIProperties.HBCI_FOREIGNTRANSFER_USAGE_MAXLENGTH);
       }
       //
       //////////////////////////////////////////////////////////////////////////
@@ -264,6 +269,9 @@ public class HibiscusAddressImpl extends AbstractDBObject implements HibiscusAdd
 
 /**********************************************************************
  * $Log: HibiscusAddressImpl.java,v $
+ * Revision 1.8  2009/03/17 23:44:15  willuhn
+ * @N BUGZILLA 159 - Auslandsueberweisungen. Erste Version
+ *
  * Revision 1.7  2009/02/18 00:35:54  willuhn
  * @N Auslaendische Bankverbindungen im Adressbuch
  *
