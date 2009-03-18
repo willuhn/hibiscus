@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.60 $
- * $Date: 2008/11/04 11:55:16 $
+ * $Revision: 1.61 $
+ * $Date: 2009/03/18 22:08:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -515,6 +515,9 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.61  2009/03/18 22:08:59  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.60  2008/11/04 11:55:16  willuhn
  * @N Update auf HBCI4Java 2.5.9
  *
@@ -529,175 +532,4 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
  *
  * Revision 1.56  2008/02/25 22:21:15  willuhn
  * @R undo
- *
- * Revision 1.54  2007/12/06 23:53:56  willuhn
- * @B Bug 490
- *
- * Revision 1.53  2007/12/05 10:58:43  willuhn
- * @N Lesbarere und ausfuehrlichere Fehlermeldungen beim Testen des Sicherheitsmediums
- *
- * Revision 1.52  2007/05/22 15:50:17  willuhn
- * *** empty log message ***
- *
- * Revision 1.51  2007/04/25 16:11:39  willuhn
- * @C Nachricht "Algorithmus * nicht implementiert" unterdruecken
- *
- * Revision 1.50  2007/02/27 10:20:34  willuhn
- * @C "konnte folgenden nutzerdef..." nicht in Progressmonitor anzeigen
- *
- * Revision 1.49  2007/01/03 11:14:20  willuhn
- * @Nachrichten "konnte folgenden nutzerdefinierten Wert nicht in Nachricht einsetzen:.*" werden nur noch mit DEBUG geloggt
- *
- * Revision 1.48  2006/10/23 15:16:12  willuhn
- * @B Passwort-Handling ueberarbeitet
- *
- * Revision 1.47  2006/10/23 11:38:57  willuhn
- * @B auto password handling
- *
- * Revision 1.46  2006/10/23 10:48:04  willuhn
- * @B check for pw=null before generating a new password
- *
- * Revision 1.45  2006/10/18 16:17:08  willuhn
- * @N additional log infos
- *
- * Revision 1.44  2006/10/12 13:07:56  willuhn
- * @B bug 289 + Callback NEED_SIZENTRY_SELECT
- *
- * Revision 1.43  2006/10/06 13:18:06  willuhn
- * @B Bug 185, 211 (zusaetzlicher Suffix mit BLZ)
- *
- * Revision 1.42  2006/10/06 13:08:01  willuhn
- * @B Bug 185, 211
- *
- * Revision 1.41  2006/08/21 12:29:54  willuhn
- * @N HBCICallbackSWT.setCurrentHandle
- *
- * Revision 1.40  2006/08/06 13:26:48  willuhn
- * @B bug 257
- *
- * Revision 1.39  2006/08/03 15:32:35  willuhn
- * @N Bug 62
- *
- * Revision 1.38  2006/07/13 22:10:24  willuhn
- * @B bug 249
- *
- * Revision 1.37  2006/04/03 12:30:18  willuhn
- * @N new InternetConnectionDialog
- *
- * Revision 1.36  2006/03/28 17:52:23  willuhn
- * @B bug 218
- *
- * Revision 1.35  2006/02/23 22:14:58  willuhn
- * @B bug 200 (Speichern der Auswahl)
- *
- * Revision 1.34  2006/02/21 22:51:36  willuhn
- * @B bug 200
- *
- * Revision 1.33  2006/02/20 11:43:56  willuhn
- * @B bug 200
- *
- * Revision 1.32  2006/02/06 15:40:44  willuhn
- * @B bug 150
- *
- * Revision 1.31  2005/11/14 11:37:00  willuhn
- * @B bug 148
- *
- * Revision 1.30  2005/08/01 23:27:42  web0
- * *** empty log message ***
- *
- * Revision 1.29  2005/07/26 23:57:18  web0
- * @N Restliche HBCI-Jobs umgestellt
- *
- * Revision 1.28  2005/07/26 23:00:03  web0
- * @N Multithreading-Support fuer HBCI-Jobs
- *
- * Revision 1.27  2005/06/21 20:11:10  web0
- * @C cvs merge
- *
- * Revision 1.26  2005/05/09 17:26:56  web0
- * @N Bugzilla 68
- *
- * Revision 1.25  2005/05/06 14:05:04  web0
- * *** empty log message ***
- *
- * Revision 1.24  2005/02/28 15:30:47  web0
- * @B Bugzilla #15
- *
- * Revision 1.23  2005/02/03 23:57:05  willuhn
- * *** empty log message ***
- *
- * Revision 1.22  2005/02/02 16:15:52  willuhn
- * @N Neue Dialoge fuer RDH
- *
- * Revision 1.21  2005/02/01 17:15:37  willuhn
- * *** empty log message ***
- *
- * Revision 1.20  2005/01/15 16:48:17  willuhn
- * *** empty log message ***
- *
- * Revision 1.19  2005/01/09 23:21:05  willuhn
- * *** empty log message ***
- *
- * Revision 1.18  2004/11/12 18:25:08  willuhn
- * *** empty log message ***
- *
- * Revision 1.17  2004/10/24 17:19:02  willuhn
- * *** empty log message ***
- *
- * Revision 1.16  2004/10/19 23:33:31  willuhn
- * *** empty log message ***
- *
- * Revision 1.15  2004/10/14 23:14:20  willuhn
- * @N new hbci4java (2.5pre)
- * @B fixed locales
- *
- * Revision 1.14  2004/07/25 17:15:06  willuhn
- * @C PluginLoader is no longer static
- *
- * Revision 1.13  2004/07/21 23:54:30  willuhn
- * *** empty log message ***
- *
- * Revision 1.12  2004/06/30 20:58:29  willuhn
- * *** empty log message ***
- *
- * Revision 1.11  2004/05/05 21:27:13  willuhn
- * @N added TAN-Dialog
- *
- * Revision 1.10  2004/03/30 22:07:49  willuhn
- * *** empty log message ***
- *
- * Revision 1.9  2004/03/06 18:25:10  willuhn
- * @D javadoc
- * @C removed empfaenger_id from umsatz
- *
- * Revision 1.8  2004/03/03 22:26:40  willuhn
- * @N help texts
- * @C refactoring
- *
- * Revision 1.7  2004/02/21 19:49:04  willuhn
- * @N PINDialog
- *
- * Revision 1.6  2004/02/17 00:53:22  willuhn
- * @N SaldoAbfrage
- * @N Ueberweisung
- * @N Empfaenger
- *
- * Revision 1.5  2004/02/13 00:41:56  willuhn
- * *** empty log message ***
- *
- * Revision 1.4  2004/02/12 23:46:46  willuhn
- * *** empty log message ***
- *
- * Revision 1.3  2004/02/12 00:47:21  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2004/02/11 00:11:20  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2004/02/09 22:09:40  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2004/02/09 13:06:03  willuhn
- * @C misc
- *
  **********************************************************************/

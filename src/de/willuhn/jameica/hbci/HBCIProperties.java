@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCIProperties.java,v $
- * $Revision: 1.37 $
- * $Date: 2009/02/18 00:35:54 $
+ * $Revision: 1.38 $
+ * $Date: 2009/03/18 22:09:25 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -327,6 +327,9 @@ public class HBCIProperties
 
 /**********************************************************************
  * $Log: HBCIProperties.java,v $
+ * Revision 1.38  2009/03/18 22:09:25  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.37  2009/02/18 00:35:54  willuhn
  * @N Auslaendische Bankverbindungen im Adressbuch
  *
@@ -357,91 +360,4 @@ public class HBCIProperties
  * Revision 1.28  2008/05/19 22:35:53  willuhn
  * @N Maximale Laenge von Kontonummern konfigurierbar (Soft- und Hardlimit)
  * @N Laengenpruefungen der Kontonummer in Dialogen und Fachobjekten
- *
- * Revision 1.27  2007/11/27 17:15:57  willuhn
- * @C HBCI4Java mit Classloader des Plugins initialisieren
- *
- * Revision 1.26  2007/09/11 15:10:35  willuhn
- * @N Default-Wert fuer maximale PIN-Laenge auf 10 erhoeht
- *
- * Revision 1.25  2007/07/26 18:26:05  willuhn
- * @B HBCIUtils.checkAccountCRCByAlg wirft eine ArrayIndexOutOfBoundsException bei Kontonummern mit mehr als 10 Stellen. Wir schreiben das nur in's Log, tolerieren es aber (nocht)
- *
- * Revision 1.24  2007/06/21 14:06:30  willuhn
- * @B reinit von HBCI4Java mit aktuellem Callback
- *
- * Revision 1.23  2007/06/01 15:20:52  willuhn
- * @B reinit hbci kernel on other threads
- *
- * Revision 1.22  2007/05/16 13:59:53  willuhn
- * @N Bug 227 HBCI-Synchronisierung auch im Fehlerfall fortsetzen
- * @C Synchronizer ueberarbeitet
- * @B HBCIFactory hat globalen Status auch bei Abbruch auf Error gesetzt
- *
- * Revision 1.21  2007/03/05 14:57:16  willuhn
- * @B zusaetzlichen Laengen-Check (Workaround zu Bug 232) entfernt (ist inzwischen in HBCI4Java gefixt)
- *
- * Revision 1.20  2007/02/26 12:48:23  willuhn
- * @N Spezial-PSD-Parser von Michael Lambers
- *
- * Revision 1.19  2006/12/29 14:28:47  willuhn
- * @B Bug 345
- * @B jede Menge Bugfixes bei SQL-Statements mit Valuta
- *
- * Revision 1.18  2006/12/27 17:56:49  willuhn
- * @B Bug 341
- *
- * Revision 1.17  2006/10/06 16:00:42  willuhn
- * @B Bug 280
- *
- * Revision 1.16  2006/05/11 10:57:35  willuhn
- * @C merged Bug 232 into HEAD
- *
- * Revision 1.15.2.1  2006/05/11 10:44:43  willuhn
- * @B bug 232
- *
- * Revision 1.15  2006/03/09 18:24:05  willuhn
- * @N Auswahl der Tage in Umsatz-Chart
- *
- * Revision 1.14  2006/02/06 16:03:50  willuhn
- * @B bug 163
- *
- * Revision 1.13  2005/09/25 23:15:02  willuhn
- * *** empty log message ***
- *
- * Revision 1.11  2005/08/22 10:36:37  willuhn
- * @N bug 115, 116
- *
- * Revision 1.10  2005/06/07 22:19:57  web0
- * @B bug 49
- *
- * Revision 1.9  2005/05/19 23:31:07  web0
- * @B RMI over SSL support
- * @N added handbook
- *
- * Revision 1.8  2005/04/05 21:51:54  web0
- * @B Begrenzung aller BLZ-Eingaben auf 8 Zeichen
- *
- * Revision 1.7  2005/03/30 23:26:28  web0
- * @B bug 29
- * @B bug 30
- *
- * Revision 1.6  2005/03/25 23:08:44  web0
- * @B bug 28
- *
- * Revision 1.5  2005/03/09 01:16:17  web0
- * *** empty log message ***
- *
- * Revision 1.4  2005/03/05 19:11:25  web0
- * @N SammelLastschrift-Code complete
- *
- * Revision 1.3  2005/02/28 16:28:24  web0
- * @N first code for "Sammellastschrift"
- *
- * Revision 1.2  2004/11/02 18:48:32  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2004/11/01 23:10:19  willuhn
- * @N Pruefung auf gueltige Zeichen in Verwendungszweck
- *
  **********************************************************************/

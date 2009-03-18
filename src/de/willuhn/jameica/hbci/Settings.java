@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.58 $
- * $Date: 2009/03/10 23:51:31 $
+ * $Revision: 1.59 $
+ * $Date: 2009/03/18 22:10:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -432,6 +432,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.59  2009/03/18 22:10:58  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.58  2009/03/10 23:51:31  willuhn
  * @C PluginResources#getPath als deprecated markiert - stattdessen sollte jetzt Manifest#getPluginDir() verwendet werden
  *
@@ -449,192 +452,4 @@ public class Settings
  *
  * Revision 1.53  2008/07/24 09:59:37  willuhn
  * @C Default-Wert des Auftragslimits erhoeht. 1.000,- waren in der Tat etwas wenig ;)
- *
- * Revision 1.52  2007/12/06 17:57:21  willuhn
- * @N Erster Code fuer das neue Versionierungs-System
- *
- * Revision 1.51  2007/06/21 11:02:44  willuhn
- * @C ServiceSettings in ServiceFactory verschoben
- * @N Aenderungen an Service-Bindings sofort uebernehmen
- * @C Moeglichkeit, Service-Bindings wieder entfernen zu koennen
- *
- * Revision 1.50  2007/05/16 13:59:53  willuhn
- * @N Bug 227 HBCI-Synchronisierung auch im Fehlerfall fortsetzen
- * @C Synchronizer ueberarbeitet
- * @B HBCIFactory hat globalen Status auch bei Abbruch auf Error gesetzt
- *
- * Revision 1.49  2007/04/23 21:03:48  willuhn
- * @R "getTransfers" aus Address entfernt - hat im Adressbuch eigentlich nichts zu suchen
- *
- * Revision 1.48  2007/03/29 15:30:31  willuhn
- * @N Uebersichtlichere Darstellung der Systemstart-Meldungen
- * @C FirstStart-View bei Initialisierungsfehler nicht anzeigen
- *
- * Revision 1.47  2006/10/06 13:08:01  willuhn
- * @B Bug 185, 211
- *
- * Revision 1.46  2006/08/03 15:32:35  willuhn
- * @N Bug 62
- *
- * Revision 1.45  2006/07/17 22:01:58  willuhn
- * *** empty log message ***
- *
- * Revision 1.44  2006/06/29 23:10:33  willuhn
- * @R Box-System aus Hibiscus in Jameica-Source verschoben
- * @C keine eigene Startseite mehr, jetzt alles ueber Jameica-Boxsystem geregelt
- *
- * Revision 1.43  2006/03/30 08:30:38  willuhn
- * @B bug 218
- *
- * Revision 1.42  2006/03/28 22:53:19  willuhn
- * @B bug 218
- *
- * Revision 1.41  2006/03/28 17:52:23  willuhn
- * @B bug 218
- *
- * Revision 1.40  2006/03/24 00:15:35  willuhn
- * @B Duplikate von Settings-Instanzen entfernt
- *
- * Revision 1.39  2005/11/28 11:15:49  willuhn
- * @C database check can be disabled
- *
- * Revision 1.38  2005/08/22 10:36:37  willuhn
- * @N bug 115, 116
- *
- * Revision 1.37  2005/08/04 22:15:14  willuhn
- * @B bug 109
- *
- * Revision 1.36  2005/07/24 22:26:42  web0
- * @B bug 101
- *
- * Revision 1.35  2005/06/27 11:26:30  web0
- * @N neuer Test bei Dauerauftraegen (zum Monatsletzten)
- * @N neue DDV-Lib
- *
- * Revision 1.34  2005/06/16 13:29:13  web0
- * *** empty log message ***
- *
- * Revision 1.33  2005/06/06 09:54:39  web0
- * *** empty log message ***
- *
- * Revision 1.32  2005/05/02 11:54:09  web0
- * *** empty log message ***
- *
- * Revision 1.31  2005/03/05 19:11:25  web0
- * @N SammelLastschrift-Code complete
- *
- * Revision 1.30  2005/02/08 22:28:00  willuhn
- * *** empty log message ***
- *
- * Revision 1.29  2005/02/02 16:15:52  willuhn
- * @N Neue Dialoge fuer RDH
- *
- * Revision 1.28  2005/02/01 17:15:37  willuhn
- * *** empty log message ***
- *
- * Revision 1.27  2005/01/30 20:45:35  willuhn
- * *** empty log message ***
- *
- * Revision 1.26  2005/01/15 16:48:17  willuhn
- * *** empty log message ***
- *
- * Revision 1.25  2005/01/09 23:21:05  willuhn
- * *** empty log message ***
- *
- * Revision 1.24  2004/12/06 22:45:06  willuhn
- * *** empty log message ***
- *
- * Revision 1.23  2004/11/12 18:25:08  willuhn
- * *** empty log message ***
- *
- * Revision 1.22  2004/10/24 17:19:02  willuhn
- * *** empty log message ***
- *
- * Revision 1.21  2004/07/25 17:15:06  willuhn
- * @C PluginLoader is no longer static
- *
- * Revision 1.20  2004/07/23 15:51:44  willuhn
- * @C Rest des Refactorings
- *
- * Revision 1.19  2004/07/21 23:54:30  willuhn
- * *** empty log message ***
- *
- * Revision 1.18  2004/07/20 21:48:00  willuhn
- * @N ContextMenus
- *
- * Revision 1.17  2004/07/20 00:11:07  willuhn
- * @C Code sharing zwischen Ueberweisung und Dauerauftrag
- *
- * Revision 1.16  2004/06/30 20:58:29  willuhn
- * *** empty log message ***
- *
- * Revision 1.15  2004/06/10 20:56:33  willuhn
- * @D javadoc comments fixed
- *
- * Revision 1.14  2004/05/25 23:23:18  willuhn
- * @N UeberweisungTyp
- * @N Protokoll
- *
- * Revision 1.13  2004/05/11 23:31:40  willuhn
- * *** empty log message ***
- *
- * Revision 1.12  2004/05/11 21:11:32  willuhn
- * *** empty log message ***
- *
- * Revision 1.11  2004/05/09 17:39:49  willuhn
- * *** empty log message ***
- *
- * Revision 1.10  2004/04/21 22:28:42  willuhn
- * *** empty log message ***
- *
- * Revision 1.9  2004/04/13 23:14:23  willuhn
- * @N datadir
- *
- * Revision 1.8  2004/04/12 19:15:31  willuhn
- * @C refactoring
- *
- * Revision 1.7  2004/04/05 23:28:46  willuhn
- * *** empty log message ***
- *
- * Revision 1.6  2004/03/17 00:06:28  willuhn
- * *** empty log message ***
- *
- * Revision 1.5  2004/02/21 19:49:04  willuhn
- * @N PINDialog
- *
- * Revision 1.4  2004/02/17 00:53:22  willuhn
- * @N SaldoAbfrage
- * @N Ueberweisung
- * @N Empfaenger
- *
- * Revision 1.3  2004/02/12 00:38:40  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2004/02/09 22:09:40  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2004/02/09 13:06:03  willuhn
- * @C misc
- *
- * Revision 1.7  2004/01/28 00:37:32  willuhn
- * *** empty log message ***
- *
- * Revision 1.6  2004/01/28 00:31:34  willuhn
- * *** empty log message ***
- *
- * Revision 1.5  2004/01/25 19:44:03  willuhn
- * *** empty log message ***
- *
- * Revision 1.4  2004/01/03 18:07:22  willuhn
- * @N Exception logging
- *
- * Revision 1.3  2003/12/15 19:08:04  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2003/12/11 21:00:35  willuhn
- * @C refactoring
- *
- * Revision 1.1  2003/11/24 23:02:11  willuhn
- * @N added settings
- *
  **********************************************************************/
