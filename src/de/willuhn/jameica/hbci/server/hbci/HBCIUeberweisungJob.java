@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUeberweisungJob.java,v $
- * $Revision: 1.42 $
- * $Date: 2009/02/18 10:48:41 $
+ * $Revision: 1.43 $
+ * $Date: 2009/03/24 23:02:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -95,11 +95,15 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
 			setJobParam("usage",ueberweisung.getZweck());
 
 			String zweck2 = ueberweisung.getZweck2();
+			boolean haveSecond = false;
 			if (zweck2 != null && zweck2.length() > 0)
-				setJobParam("usage_2",zweck2);
+			{
+			  haveSecond = true;
+        setJobParam("usage_2",zweck2);
+			}
       
       String[] lines = ueberweisung.getWeitereVerwendungszwecke();
-      int pos = 3;
+      int pos = haveSecond ? 3 : 2; // Wenn Zeile 2 fehlt, dann alles eins nach vorn schieben
       for (int i=0;i<lines.length;++i)
       {
         if (lines[i] == null || lines[i].length() == 0)
@@ -192,6 +196,9 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIUeberweisungJob.java,v $
+ * Revision 1.43  2009/03/24 23:02:51  willuhn
+ * @B BUGZILLA 712
+ *
  * Revision 1.42  2009/02/18 10:48:41  willuhn
  * @N Neuer Schalter "transfer.markexecuted.before", um festlegen zu koennen, wann ein Auftrag als ausgefuehrt gilt (wenn die Quittung von der Bank vorliegt oder wenn der Auftrag erzeugt wurde)
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCILastschriftJob.java,v $
- * $Revision: 1.20 $
- * $Date: 2009/02/18 10:48:41 $
+ * $Revision: 1.21 $
+ * $Date: 2009/03/24 23:02:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -90,11 +90,15 @@ public class HBCILastschriftJob extends AbstractHBCIJob
 			setJobParam("usage",lastschrift.getZweck());
 
 			String zweck2 = lastschrift.getZweck2();
+			boolean haveSecond = false;
 			if (zweck2 != null && zweck2.length() > 0)
-				setJobParam("usage_2",zweck2);
+			{
+			  haveSecond = true;
+        setJobParam("usage_2",zweck2);
+			}
       
       String[] lines = lastschrift.getWeitereVerwendungszwecke();
-      int pos = 3;
+      int pos = haveSecond ? 3 : 2; // Wenn Zeile 2 fehlt, dann alles eins nach vorn schieben
       for (int i=0;i<lines.length;++i)
       {
         if (lines[i] == null || lines[i].length() == 0)
@@ -173,6 +177,9 @@ public class HBCILastschriftJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCILastschriftJob.java,v $
+ * Revision 1.21  2009/03/24 23:02:51  willuhn
+ * @B BUGZILLA 712
+ *
  * Revision 1.20  2009/02/18 10:48:41  willuhn
  * @N Neuer Schalter "transfer.markexecuted.before", um festlegen zu koennen, wann ein Auftrag als ausgefuehrt gilt (wenn die Quittung von der Bank vorliegt oder wenn der Auftrag erzeugt wurde)
  *
