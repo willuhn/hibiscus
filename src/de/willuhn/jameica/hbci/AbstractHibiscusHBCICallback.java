@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/AbstractHibiscusHBCICallback.java,v $
- * $Revision: 1.4 $
- * $Date: 2008/11/12 15:50:38 $
+ * $Revision: 1.5 $
+ * $Date: 2009/03/26 16:16:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -98,10 +98,9 @@ public abstract class AbstractHibiscusHBCICallback extends AbstractHBCICallback
     if (nv == cv)
       return;
     
-    // Hu? Gespeicherte Version aktueller als neue?
-    if (nv < cv || cv < 0 || nv < 0)
+    if (cv < 0 || nv < 0)
     {
-      Logger.warn("SUSPECT - new " + prefix + " version [" + nv + "] smaller than current [" + cv + "] or version smaller than zero");
+      Logger.warn("SUSPECT - " + prefix + " version smaller than zero. new: " + nv + ", current: " + cv);
       return;
     }
 
@@ -150,6 +149,9 @@ public abstract class AbstractHibiscusHBCICallback extends AbstractHBCICallback
 
 /*********************************************************************
  * $Log: AbstractHibiscusHBCICallback.java,v $
+ * Revision 1.5  2009/03/26 16:16:15  willuhn
+ * @C BPD/UPD auch dann uebernehmen, wenn die neuen eine kleinere Versionsnummer als die aktuellen haben
+ *
  * Revision 1.4  2008/11/12 15:50:38  willuhn
  * @C changed loglevel
  *
