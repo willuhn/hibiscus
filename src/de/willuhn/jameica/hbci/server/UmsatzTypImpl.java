@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.47 $
- * $Date: 2009/02/23 23:44:50 $
+ * $Revision: 1.48 $
+ * $Date: 2009/03/26 16:20:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,10 +23,12 @@ import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.db.AbstractDBObjectNode;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.jameica.gui.StatusBarTextItem;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -242,8 +244,6 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
     if (s == null || s.length() == 0)
       return false;
 
-    String[] list = s.toLowerCase().split(","); // Wir beachten Gross-Kleinschreibung grundsaetzlich nicht
-
     String vwz1 = umsatz.getZweck();
     String vwz2 = umsatz.getZweck2();
     String name = umsatz.getGegenkontoName();
@@ -278,6 +278,8 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
       kto = kto.toLowerCase();
       kom = kom.toLowerCase();
 
+      String[] list = s.toLowerCase().split(","); // Wir beachten Gross-Kleinschreibung grundsaetzlich nicht
+
       for (int i=0;i<list.length;++i)
       {
         String test = list[i].trim();
@@ -294,21 +296,30 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
     
     Pattern pattern = null;
 
-    pattern = Pattern.compile(s, Pattern.CASE_INSENSITIVE);
-    Matcher mVwz1 = pattern.matcher(vwz1);
-    Matcher mVwz2 = pattern.matcher(vwz2);
-    Matcher mVwz3 = pattern.matcher(vwz3);
-    Matcher mName = pattern.matcher(name);
-    Matcher mKto = pattern.matcher(kto);
-    Matcher mKom = pattern.matcher(kom);
+    try
+    {
+      pattern = Pattern.compile(s, Pattern.CASE_INSENSITIVE);
+      Matcher mVwz1 = pattern.matcher(vwz1);
+      Matcher mVwz2 = pattern.matcher(vwz2);
+      Matcher mVwz3 = pattern.matcher(vwz3);
+      Matcher mName = pattern.matcher(name);
+      Matcher mKto = pattern.matcher(kto);
+      Matcher mKom = pattern.matcher(kom);
 
-    return (mVwz1.matches() ||
-            mVwz2.matches() ||
-            mVwz3.matches() ||
-            mName.matches() ||
-            mKto.matches()  ||
-            mKom.matches()
-           );
+      return (mVwz1.matches() ||
+              mVwz2.matches() ||
+              mVwz3.matches() ||
+              mName.matches() ||
+              mKto.matches()  ||
+              mKom.matches()
+             );
+    }
+    catch (Exception e)
+    {
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Ungültiger regulärer Ausdruck \"{0}\": {1}", new String[]{s,e.getMessage()}),StatusBarMessage.TYPE_ERROR));
+      Logger.error("invalid regex pattern: " + e.getMessage(),e);
+      return false;
+    }
   }
 
   /**
@@ -548,6 +559,9 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
 
 /*******************************************************************************
  * $Log: UmsatzTypImpl.java,v $
+ * Revision 1.48  2009/03/26 16:20:58  willuhn
+ * @B Fehler bei ungueltigen regulaeren Ausdruecken fangen
+ *
  * Revision 1.47  2009/02/23 23:44:50  willuhn
  * @N Etwas Code fuer Support fuer Unter-/Ober-Kategorien
  *
