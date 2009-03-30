@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/PINDialog.java,v $
- * $Revision: 1.17 $
- * $Date: 2008/02/27 16:12:57 $
+ * $Revision: 1.18 $
+ * $Date: 2009/03/30 22:54:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,8 @@ package de.willuhn.jameica.hbci.gui.dialogs;
 
 import java.rmi.RemoteException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.Date;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
@@ -39,6 +41,7 @@ import de.willuhn.jameica.security.Wallet;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.security.Checksum;
+import de.willuhn.util.Base64;
 import de.willuhn.util.I18N;
 
 /**
@@ -194,14 +197,25 @@ public class PINDialog extends PasswordDialog {
 			// PIN-Ueberpruefung aktiv. Also checken wir die Pruef-Summe
 			Wallet w = Settings.getWallet();
 			String checkSum = (String) w.get(this.walletKey);
+			
+			//////////////////////////////////////////////////////////////////////////
+			// Migration: Auf neue Speicherung der Checksumme umstellen
+			String migration = (String) w.get(this.walletKey + ".migration");
+			if (migration == null || migration.length() == 0)
+			{
+			  Logger.info("migrating pin checksum");
+			  checkSum = null; // forciert das Neuanlegen des Hashes
+			  w.set(this.walletKey + ".migration",(new Date()).toString());
+			}
+			//
+      //////////////////////////////////////////////////////////////////////////
 
 			if (checkSum == null || checkSum.length() == 0)
 			{
-				// Das ist die erste Eingabe. Dann koennen wir nur
-				// eine neue Check-Summe bilden, sie abspeichern und
-				// hoffen, dass sie richtig eingegeben wurd.
+				// Das ist die erste Eingabe. Wir speichern eine Checksumme
+			  // der PIN
 				try {
-					w.set(this.walletKey,Checksum.md5(password.getBytes()));
+					w.set(this.walletKey,getChecksum(password));
 				}
 				catch (NoSuchAlgorithmException e)
 				{
@@ -216,7 +230,7 @@ public class PINDialog extends PasswordDialog {
       // Check-Summe existiert, dann vergleichen wir die Eingabe
 			String n = null;
 			try {
-				n = Checksum.md5(password.getBytes());
+				n = getChecksum(password);
 			}
 			catch (NoSuchAlgorithmException e)
 			{
@@ -252,6 +266,31 @@ public class PINDialog extends PasswordDialog {
 			return true;
 		}
 	}
+  
+  /**
+   * Erzeugt die Checksumme fuer das Passwort.
+   * @param pw das Passwort.
+   * @return die Checksumme.
+   * @throws Exception
+   */
+  private String getChecksum(String pw) throws Exception
+  {
+    Wallet w = Settings.getWallet();
+    String salt = (String) w.get("salt");
+    if (salt == null || salt.length() == 0)
+    {
+      byte[] b = new byte[2];
+      SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
+      random.nextBytes(b);
+      salt = Base64.encode(b);
+      w.set("salt",salt);
+    }
+    
+    byte[] src = (pw + salt).getBytes();
+    String a = Checksum.SHA1;
+    String dst = Base64.encode(Checksum.checksum(Checksum.checksum(Checksum.checksum(src,a),a),a));
+    return dst.substring(0,3); // Wir verwenden nur einen Teil der Checksumme
+  }
 
 	/**
 	 * Liefert einen locale String mit der Anzahl der Restversuche.
@@ -268,6 +307,13 @@ public class PINDialog extends PasswordDialog {
 
 /**********************************************************************
  * $Log: PINDialog.java,v $
+ * Revision 1.18  2009/03/30 22:54:15  willuhn
+ * @C Checksummen-Speicherung geaendert:
+ *  1) Es wird SHA1 statt MD5 verwendet
+ *  2) Es wird die Checksumme der Checksumme der Checksumme erstellt
+ *  3) ein zufaellig erzeugter Salt wird eingefuegt
+ *  4) es werden nur noch die ersten 3 Zeichen der Checksumme gespeichert
+ *
  * Revision 1.17  2008/02/27 16:12:57  willuhn
  * @N Passwort-Dialog fuer Schluesseldiskette mit mehr Informationen (Konto, Dateiname)
  *
