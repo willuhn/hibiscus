@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/DialogFactory.java,v $
- * $Revision: 1.33 $
- * $Date: 2008/03/11 23:13:11 $
+ * $Revision: 1.34 $
+ * $Date: 2009/03/31 11:01:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -107,7 +107,7 @@ public class DialogFactory {
 	{
 		check();
 
-    boolean secondTry = System.currentTimeMillis() - lastTry < 200l;
+    boolean secondTry = System.currentTimeMillis() - lastTry < 400l;
 
     if (secondTry) Logger.warn("cached pin seems to be wrong, asking user, passport: " + passport.getClass().getName());
 
@@ -453,6 +453,9 @@ public class DialogFactory {
 
 /**********************************************************************
  * $Log: DialogFactory.java,v $
+ * Revision 1.34  2009/03/31 11:01:41  willuhn
+ * @R Speichern des PIN-Hashes komplett entfernt
+ *
  * Revision 1.33  2008/03/11 23:13:11  willuhn
  * @B Fix wegen falscher Pin (siehe Mail von Alexander vom 11.03.)
  *

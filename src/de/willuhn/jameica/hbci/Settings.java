@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.59 $
- * $Date: 2009/03/18 22:10:58 $
+ * $Revision: 1.60 $
+ * $Date: 2009/03/31 11:01:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -195,16 +195,6 @@ public class Settings
 	}
 
   /**
-   * Legt fest, ob die PIN gehasht gespeichert werden soll, um sie
-   * bei erneuter Eingabe pruefen zu koennen.
-   * @param checkPin true, wenn die Pin geprueft werden soll.
-   */
-  public static void setCheckPin(boolean checkPin)
-  {
-    settings.setAttribute("checkpin",checkPin);
-  }
-
-  /**
    * Legt fest, ob die PIN pro Session gecached werden soll.
    * @param cachePin true, wenn die Pin gecached werden soll.
    */
@@ -213,16 +203,6 @@ public class Settings
     settings.setAttribute("cachepin",cachePin);
   }
 
-  /**
-   * Prueft, ob ein Hash der PIN gespeichert werden soll, um sie bei
-   * erneuter Eingabe auf Richtigkeit pruefen zu koennen.
-   * @return true, wenn die Pin gehasht gespeichert werden soll.
-   */
-  public static boolean getCheckPin()
-  {
-    return settings.getBoolean("checkpin",false);
-  }
-  
   /**
    * Prueft, ob die PIN-Eingaben pro Session zwischengespeichert werden sollen.
    * @return true, wenn die Pin gecached werden soll.
@@ -432,6 +412,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.60  2009/03/31 11:01:40  willuhn
+ * @R Speichern des PIN-Hashes komplett entfernt
+ *
  * Revision 1.59  2009/03/18 22:10:58  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.53 $
- * $Date: 2009/02/23 23:44:50 $
+ * $Revision: 1.54 $
+ * $Date: 2009/03/31 11:01:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -44,7 +44,6 @@ public class SettingsControl extends AbstractControl {
 	// Eingabe-Felder
 	private CheckboxInput onlineMode     		= null;
   private CheckboxInput cancelSyncOnError = null;
-	private CheckboxInput checkPin     			= null;
   private CheckboxInput cachePin          = null;
   private CheckboxInput decimalGrouping   = null;
   private CheckboxInput kontoCheck        = null;
@@ -146,18 +145,6 @@ public class SettingsControl extends AbstractControl {
   }
 
   /**
-	 * Liefert eine Checkbox zur Aktivierung oder Deaktivierung der Pin-Pruefung via Checksumme.
-   * @return Checkbox.
-   */
-  public CheckboxInput getCheckPin()
-	{
-		if (checkPin != null)
-			return checkPin;
-		checkPin = new CheckboxInput(Settings.getCheckPin());
-		return checkPin;
-	}
-
-  /**
    * Liefert eine Checkbox zur Aktivierung oder Deaktivierung des Pin-Caches.
    * @return Checkbox.
    */
@@ -231,7 +218,6 @@ public class SettingsControl extends AbstractControl {
 		Settings.setUeberfaelligForeground(uf.getRGB());
 
 		Settings.setOnlineMode(((Boolean)getOnlineMode().getValue()).booleanValue());
-		Settings.setCheckPin(((Boolean)getCheckPin().getValue()).booleanValue());
     Settings.setCachePin(((Boolean)getCachePin().getValue()).booleanValue());
     Settings.setDecimalGrouping(((Boolean)getDecimalGrouping().getValue()).booleanValue());
     Settings.setKontoCheck(((Boolean)getKontoCheck().getValue()).booleanValue());
@@ -276,6 +262,9 @@ public class SettingsControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.54  2009/03/31 11:01:41  willuhn
+ * @R Speichern des PIN-Hashes komplett entfernt
+ *
  * Revision 1.53  2009/02/23 23:44:50  willuhn
  * @N Etwas Code fuer Support fuer Unter-/Ober-Kategorien
  *
