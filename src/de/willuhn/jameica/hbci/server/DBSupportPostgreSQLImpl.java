@@ -1,10 +1,13 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DBSupportPostgreSQLImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2008/12/17 22:49:09 $
+ * $Revision: 1.4 $
+ * $Date: 2009/04/01 20:59:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
+ *
+ * Copyright (c) by willuhn software & services
+ * All rights reserved
  *
  **********************************************************************/
 
@@ -152,6 +155,9 @@ public class DBSupportPostgreSQLImpl extends AbstractDBSupportImpl
 
 /*********************************************************************
  * $Log: DBSupportPostgreSQLImpl.java,v $
+ * Revision 1.4  2009/04/01 20:59:39  willuhn
+ * @N PostgreSQL-Unterstuetzung ist wieder da. Initialer Commit
+ *
  * Revision 1.3  2008/12/17 22:49:09  willuhn
  * @R t o d o  tag entfernt
  *
