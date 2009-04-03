@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DBSupportPostgreSQLImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2009/04/01 20:59:39 $
+ * $Revision: 1.5 $
+ * $Date: 2009/04/03 16:48:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -52,7 +52,7 @@ public class DBSupportPostgreSQLImpl extends AbstractDBSupportImpl
    */
   public String getJdbcUrl()
   {
-    return HBCIDBService.SETTINGS.getString("database.driver .postgresql.jdbcurl","jdbc:postgresql://localhost:5432/hibiscus");
+    return HBCIDBService.SETTINGS.getString("database.driver.postgresql.jdbcurl","jdbc:postgresql://localhost:5432/hibiscus");
   }
 
   /**
@@ -155,6 +155,9 @@ public class DBSupportPostgreSQLImpl extends AbstractDBSupportImpl
 
 /*********************************************************************
  * $Log: DBSupportPostgreSQLImpl.java,v $
+ * Revision 1.5  2009/04/03 16:48:40  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2009/04/01 20:59:39  willuhn
  * @N PostgreSQL-Unterstuetzung ist wieder da. Initialer Commit
  *
