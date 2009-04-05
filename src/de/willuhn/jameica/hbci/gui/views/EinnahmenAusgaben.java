@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/EinnahmenAusgaben.java,v $
- * $Revision: 1.5 $
- * $Date: 2009/01/20 10:51:46 $
+ * $Revision: 1.6 $
+ * $Date: 2009/04/05 21:16:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -54,7 +54,20 @@ public class EinnahmenAusgaben extends AbstractView
 
     ButtonArea buttons = new ButtonArea(getParent(), 3);
     buttons.addButton(new Back(false));
-    buttons.addButton(i18n.tr("Exportieren..."), new EinnahmeAusgabeExport(), control.getWerte());
+    buttons.addButton(i18n.tr("Exportieren..."), new Action(){
+      public void handleAction(Object context) throws ApplicationException
+      {
+        try
+        {
+          new EinnahmeAusgabeExport().handleAction(control.getWerte());
+        }
+        catch (RemoteException re)
+        {
+          Logger.error("unable to export data",re);
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Exportieren: {0}",re.getMessage()),StatusBarMessage.TYPE_ERROR));
+        }
+      }
+    });
     buttons.addButton(i18n.tr("Aktualisieren"), new Action()
     {
     
@@ -83,6 +96,9 @@ public class EinnahmenAusgaben extends AbstractView
 }
 /*******************************************************************************
  * $Log: EinnahmenAusgaben.java,v $
+ * Revision 1.6  2009/04/05 21:16:22  willuhn
+ * @B BUGZILLA 716
+ *
  * Revision 1.5  2009/01/20 10:51:46  willuhn
  * @N Mehr Icons - fuer Buttons
  *

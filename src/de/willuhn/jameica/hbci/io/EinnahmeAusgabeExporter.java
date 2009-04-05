@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/EinnahmeAusgabeExporter.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/06/04 17:37:00 $
+ * $Revision: 1.3 $
+ * $Date: 2009/04/05 21:16:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -48,49 +48,42 @@ public class EinnahmeAusgabeExporter implements Exporter
    *      de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream,
    *      de.willuhn.util.ProgressMonitor)
    */
-  public void doExport(Object[] objects, IOFormat format, OutputStream os,
-      ProgressMonitor monitor) throws RemoteException, ApplicationException
+  public void doExport(Object[] objects, IOFormat format, OutputStream os, ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
     if (objects == null || !(objects instanceof EinnahmeAusgabe[]))
-      throw new ApplicationException(i18n
-          .tr("Bitte wählen Sie die zu exportierenden Daten aus"));
+      throw new ApplicationException(i18n.tr("Bitte wählen Sie die zu exportierenden Daten aus"));
 
     EinnahmeAusgabe[] ea = (EinnahmeAusgabe[]) objects;
     if (ea.length == 0)
-      throw new ApplicationException(i18n
-          .tr("Bitte wählen Sie die zu exportierenden Daten aus"));
+      throw new ApplicationException(i18n.tr("Bitte wählen Sie die zu exportierenden Daten aus"));
 
     String subTitle = i18n.tr("Zeitraum {0} - {1}", new String[] {
         HBCI.DATEFORMAT.format(ea[0].startdatum),
         HBCI.DATEFORMAT.format(ea[0].enddatum) });
+
     Reporter reporter = null;
 
     try
     {
-      reporter = new Reporter(os, monitor, "Einnahmen/Ausgaben", subTitle,
-          ea.length);
+      reporter = new Reporter(os, monitor, "Einnahmen/Ausgaben", subTitle,ea.length);
 
-      reporter.addHeaderColumn("Anfangssaldo", Element.ALIGN_CENTER, 60,
-          Color.LIGHT_GRAY);
-      reporter.addHeaderColumn("Einnahmen", Element.ALIGN_CENTER, 60,
-          Color.LIGHT_GRAY);
-      reporter.addHeaderColumn("Ausgaben", Element.ALIGN_CENTER, 60,
-          Color.LIGHT_GRAY);
-      reporter.addHeaderColumn("Endsaldo", Element.ALIGN_CENTER, 60,
-          Color.LIGHT_GRAY);
-      reporter.addHeaderColumn("Bemerkung", Element.ALIGN_CENTER, 100,
-          Color.LIGHT_GRAY);
+      reporter.addHeaderColumn("Konto", Element.ALIGN_CENTER, 100,Color.LIGHT_GRAY);
+      reporter.addHeaderColumn("Anfangssaldo", Element.ALIGN_CENTER, 60,Color.LIGHT_GRAY);
+      reporter.addHeaderColumn("Einnahmen", Element.ALIGN_CENTER, 60, Color.LIGHT_GRAY);
+      reporter.addHeaderColumn("Ausgaben", Element.ALIGN_CENTER, 60, Color.LIGHT_GRAY);
+      reporter.addHeaderColumn("Endsaldo", Element.ALIGN_CENTER, 60, Color.LIGHT_GRAY);
+      reporter.addHeaderColumn("Bemerkung", Element.ALIGN_CENTER, 60, Color.LIGHT_GRAY);
       reporter.createHeader();
 
       // Iteration ueber Umsaetze
       for (int i = 0; i < ea.length; i++)
       {
+        reporter.addColumn(reporter.getDetailCell(ea[i].text, Element.ALIGN_LEFT));
         reporter.addColumn(reporter.getDetailCell(ea[i].anfangssaldo));
         reporter.addColumn(reporter.getDetailCell(ea[i].einnahme));
         reporter.addColumn(reporter.getDetailCell(ea[i].ausgabe));
         reporter.addColumn(reporter.getDetailCell(ea[i].endsaldo));
-        reporter.addColumn(reporter.getDetailCell(ea[i].bemerkung,
-            Element.ALIGN_LEFT));
+        reporter.addColumn(reporter.getDetailCell(ea[i].bemerkung, Element.ALIGN_LEFT));
         reporter.setNextRecord();
 
       }
@@ -162,6 +155,9 @@ public class EinnahmeAusgabeExporter implements Exporter
 
 /*******************************************************************************
  * $Log: EinnahmeAusgabeExporter.java,v $
+ * Revision 1.3  2009/04/05 21:16:22  willuhn
+ * @B BUGZILLA 716
+ *
  * Revision 1.2  2007/06/04 17:37:00  willuhn
  * @D javadoc
  * @C java 1.4 compatibility
