@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DBSupportPostgreSQLImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2009/04/03 16:48:40 $
+ * $Revision: 1.6 $
+ * $Date: 2009/04/05 21:40:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,9 +16,6 @@ package de.willuhn.jameica.hbci.server;
 import java.io.File;
 import java.rmi.RemoteException;
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.MessageFormat;
 
 import de.willuhn.jameica.hbci.HBCI;
@@ -104,42 +101,6 @@ public class DBSupportPostgreSQLImpl extends AbstractDBSupportImpl
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.DBSupport#checkConnection(java.sql.Connection)
-   */
-  public void checkConnection(Connection conn) throws RemoteException
-  {
-    Statement s  = null;
-    ResultSet rs = null;
-    try
-    {
-      s = conn.createStatement();
-      rs = s.executeQuery("select 1");
-    }
-    catch (SQLException e)
-    {
-      // das Ding liefert in getMessage() den kompletten Stacktrace mit, den brauchen wir
-      // nicht (das muellt uns nur das Log voll) Also fangen wir sie und werden eine neue
-      // saubere mit kurzem Fehlertext
-      String msg = e.getMessage();
-      if (msg != null && msg.indexOf("\n") != -1)
-        msg = msg.substring(0,msg.indexOf("\n"));
-      throw new RemoteException(msg);
-    }
-    finally
-    {
-      try
-      {
-        if (rs != null) rs.close();
-        if (s != null)  s.close();
-      }
-      catch (Exception e)
-      {
-        throw new RemoteException("unable to close statement/resultset",e);
-      }
-    }
-  }
-
-  /**
    * @see de.willuhn.jameica.hbci.server.AbstractDBSupportImpl#getTransactionIsolationLevel()
    */
   public int getTransactionIsolationLevel() throws RemoteException
@@ -155,6 +116,9 @@ public class DBSupportPostgreSQLImpl extends AbstractDBSupportImpl
 
 /*********************************************************************
  * $Log: DBSupportPostgreSQLImpl.java,v $
+ * Revision 1.6  2009/04/05 21:40:56  willuhn
+ * @C checkConnection() nur noch alle hoechstens 10 Sekunden ausfuehren
+ *
  * Revision 1.5  2009/04/03 16:48:40  willuhn
  * *** empty log message ***
  *

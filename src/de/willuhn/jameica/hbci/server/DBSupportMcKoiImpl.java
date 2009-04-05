@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/DBSupportMcKoiImpl.java,v $
- * $Revision: 1.10 $
- * $Date: 2008/12/30 15:21:40 $
+ * $Revision: 1.11 $
+ * $Date: 2009/04/05 21:40:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -104,7 +104,7 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.DBSupport#checkConnection(java.sql.Connection)
+   * @see de.willuhn.jameica.hbci.server.AbstractDBSupportImpl#checkConnection(java.sql.Connection)
    */
   public void checkConnection(Connection conn) throws RemoteException
   {
@@ -115,6 +115,9 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl
 
 /*********************************************************************
  * $Log: DBSupportMcKoiImpl.java,v $
+ * Revision 1.11  2009/04/05 21:40:56  willuhn
+ * @C checkConnection() nur noch alle hoechstens 10 Sekunden ausfuehren
+ *
  * Revision 1.10  2008/12/30 15:21:40  willuhn
  * @N Umstellung auf neue Versionierung
  *
