@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/Attic/UmsatzSetFlags.java,v $
- * $Revision: 1.1 $
- * $Date: 2009/02/04 23:06:24 $
+ * $Revision: 1.2 $
+ * $Date: 2009/04/05 21:00:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -72,9 +72,10 @@ public class UmsatzSetFlags implements Action
       for (int i=0;i<umsaetze.length;++i)
       {
         int current = umsaetze[i].getFlags();
-        if (this.add)
+        boolean have = (current & this.flags) != 0;
+        if (this.add && !have)
           umsaetze[i].setFlags(current | this.flags);
-        else
+        else if (!this.add && have)
           umsaetze[i].setFlags(current ^ this.flags);
         umsaetze[i].store();
         Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(umsaetze[i]));
@@ -103,6 +104,9 @@ public class UmsatzSetFlags implements Action
 
 /**********************************************************************
  * $Log: UmsatzSetFlags.java,v $
+ * Revision 1.2  2009/04/05 21:00:36  willuhn
+ * @B BUGZILLA 715
+ *
  * Revision 1.1  2009/02/04 23:06:24  willuhn
  * @N BUGZILLA 308 - Umsaetze als "geprueft" markieren
  *
