@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.20 $
- * $Date: 2009/01/20 10:51:46 $
+ * $Revision: 1.21 $
+ * $Date: 2009/04/20 11:07:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -51,6 +51,7 @@ import de.willuhn.jameica.hbci.gui.action.UmsatzExport;
 import de.willuhn.jameica.hbci.gui.dialogs.AdresseAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
+import de.willuhn.jameica.hbci.gui.parts.columns.KontoColumn;
 import de.willuhn.jameica.hbci.io.Exporter;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -117,6 +118,8 @@ public class KontoauszugList extends UmsatzList
    */
   public synchronized void paint(Composite parent) throws RemoteException
   {
+    addColumn(new KontoColumn("konto_id")); // BUGZILLA 723
+
     /////////////////////////////////////////////////////////////////
     // Tab-Container
     TabFolder folder = new TabFolder(parent, SWT.NONE);
@@ -626,6 +629,9 @@ public class KontoauszugList extends UmsatzList
 
 /*********************************************************************
  * $Log: KontoauszugList.java,v $
+ * Revision 1.21  2009/04/20 11:07:06  willuhn
+ * @N BUGZILLA 723
+ *
  * Revision 1.20  2009/01/20 10:51:46  willuhn
  * @N Mehr Icons - fuer Buttons
  *
