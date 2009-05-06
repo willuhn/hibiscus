@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/SammelLastschriftNew.java,v $
- * $Revision: 1.17 $
- * $Date: 2009/03/11 23:40:45 $
+ * $Revision: 1.18 $
+ * $Date: 2009/05/06 23:11:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -61,6 +61,7 @@ public class SammelLastschriftNew extends AbstractView {
 
 		final SammelLastschrift l = (SammelLastschrift) control.getTransfer();
 
+    // TODO ICONS FEHLEN
     ButtonArea buttons = new ButtonArea(getParent(),5);
     buttons.addButton(new Back(transfer.ausgefuehrt()));
     buttons.addButton(i18n.tr("Löschen"),new DBObjectDelete(),control.getTransfer());
@@ -73,7 +74,7 @@ public class SammelLastschriftNew extends AbstractView {
     });
     add.setEnabled(!transfer.ausgefuehrt());
     
-		Button execute = new Button(i18n.tr("Speichern und ausführen"), new Action() {
+		Button execute = new Button(i18n.tr("Jetzt ausführen..."), new Action() {
 			public void handleAction(Object context) throws ApplicationException {
         if (control.handleStore())
   				new SammelLastschriftExecute().handleAction(l);
@@ -98,6 +99,9 @@ public class SammelLastschriftNew extends AbstractView {
 
 /**********************************************************************
  * $Log: SammelLastschriftNew.java,v $
+ * Revision 1.18  2009/05/06 23:11:23  willuhn
+ * @N Mehr Icons auf Buttons
+ *
  * Revision 1.17  2009/03/11 23:40:45  willuhn
  * @B Kleineres Bugfixing in Sammeltransfer-Control
  *

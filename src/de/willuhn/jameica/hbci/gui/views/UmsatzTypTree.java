@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzTypTree.java,v $
- * $Revision: 1.8 $
- * $Date: 2009/01/20 10:51:46 $
+ * $Revision: 1.9 $
+ * $Date: 2009/05/06 23:11:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -63,6 +63,7 @@ public class UmsatzTypTree extends AbstractView
     settings.addLabelPair(i18n.tr("Start-Datum"), control.getStart());
     settings.addLabelPair(i18n.tr("End-Datum"), control.getEnd());
 
+    // TODO ICONS FEHLEN
     ButtonArea buttons = new ButtonArea(getParent(), 4);
     buttons.addButton(new Back());
 
@@ -136,6 +137,9 @@ public class UmsatzTypTree extends AbstractView
 }
 /*******************************************************************************
  * $Log: UmsatzTypTree.java,v $
+ * Revision 1.9  2009/05/06 23:11:23  willuhn
+ * @N Mehr Icons auf Buttons
+ *
  * Revision 1.8  2009/01/20 10:51:46  willuhn
  * @N Mehr Icons - fuer Buttons
  *

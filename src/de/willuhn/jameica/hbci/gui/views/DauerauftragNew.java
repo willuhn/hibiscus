@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/DauerauftragNew.java,v $
- * $Revision: 1.9 $
- * $Date: 2009/02/24 23:51:01 $
+ * $Revision: 1.10 $
+ * $Date: 2009/05/06 23:11:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -71,6 +71,7 @@ public class DauerauftragNew extends AbstractView
 		if (da.isActive())
 			s = "Speichern und aktualisieren";
 
+    // TODO ICONS FEHLEN
     buttonArea.addButton(new Back(false));
 		buttonArea.addButton(i18n.tr("Löschen"),	 		 new DauerauftragDelete(), da);
 		buttonArea.addButton(s,										 		 new Action()
@@ -94,6 +95,9 @@ public class DauerauftragNew extends AbstractView
 
 /**********************************************************************
  * $Log: DauerauftragNew.java,v $
+ * Revision 1.10  2009/05/06 23:11:23  willuhn
+ * @N Mehr Icons auf Buttons
+ *
  * Revision 1.9  2009/02/24 23:51:01  willuhn
  * @N Auswahl der Empfaenger/Zahlungspflichtigen jetzt ueber Auto-Suggest-Felder
  *

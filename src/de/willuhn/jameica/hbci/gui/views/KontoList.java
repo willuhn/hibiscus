@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoList.java,v $
- * $Revision: 1.5 $
- * $Date: 2009/01/20 10:51:45 $
+ * $Revision: 1.6 $
+ * $Date: 2009/05/06 23:11:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -51,8 +51,8 @@ public class KontoList extends AbstractView {
         {
           control.handleReadFromPassport();
         }
-      });
-			buttons.addButton(i18n.tr("Neue Bankverbindung"),new KontoNew());
+      },null,false,"mail-send-receive.png");
+			buttons.addButton(i18n.tr("Neues Konto"),new KontoNew(),null,false,"system-file-manager.png");
 		}
 		catch (Exception e)
 		{
@@ -65,6 +65,9 @@ public class KontoList extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.6  2009/05/06 23:11:23  willuhn
+ * @N Mehr Icons auf Buttons
+ *
  * Revision 1.5  2009/01/20 10:51:45  willuhn
  * @N Mehr Icons - fuer Buttons
  *

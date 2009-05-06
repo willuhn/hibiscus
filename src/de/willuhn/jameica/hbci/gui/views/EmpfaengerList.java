@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/EmpfaengerList.java,v $
- * $Revision: 1.7 $
- * $Date: 2009/01/20 10:51:46 $
+ * $Revision: 1.8 $
+ * $Date: 2009/05/06 23:11:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -45,7 +45,7 @@ public class EmpfaengerList extends AbstractView {
 
 			ButtonArea buttons = new ButtonArea(getParent(),2);
       buttons.addButton(new Back(false));
-			buttons.addButton(i18n.tr("Neue Adresse"),new EmpfaengerNew(),null,true);
+			buttons.addButton(i18n.tr("Neue Adresse"),new EmpfaengerNew(),null,true,"contact-new.png");
 
 		}
 		catch (Exception e)
@@ -59,6 +59,9 @@ public class EmpfaengerList extends AbstractView {
 
 /**********************************************************************
  * $Log: EmpfaengerList.java,v $
+ * Revision 1.8  2009/05/06 23:11:23  willuhn
+ * @N Mehr Icons auf Buttons
+ *
  * Revision 1.7  2009/01/20 10:51:46  willuhn
  * @N Mehr Icons - fuer Buttons
  *

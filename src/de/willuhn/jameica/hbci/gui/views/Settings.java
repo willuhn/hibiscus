@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Settings.java,v $
- * $Revision: 1.45 $
- * $Date: 2009/03/31 11:01:41 $
+ * $Revision: 1.46 $
+ * $Date: 2009/05/06 23:11:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -69,6 +69,7 @@ public class Settings extends AbstractView {
     system.addCheckbox(control.getKontoCheck(),i18n.tr("Kontonummern via Prüfsumme der Bank testen"));
     system.addLabelPair(i18n.tr("Limit für Aufträge"), control.getUeberweisungLimit());
 		
+    // TODO ICONS FEHLEN
     ButtonArea sysbuttons = system.createButtonArea(1);
     sysbuttons.addButton(i18n.tr("gespeicherte Prüfsummen löschen"),new Action()
     {
@@ -88,6 +89,7 @@ public class Settings extends AbstractView {
     TabGroup passports = new TabGroup(getTabFolder(),i18n.tr("HBCI-Sicherheitsmedien"));
 		passports.addPart(control.getPassportListe());
     ButtonArea passportButtons = passports.createButtonArea(1);
+    // TODO ICONS FEHLEN
     passportButtons.addButton(i18n.tr("Sicherheitsmedium konfigurieren..."), new Action() {
     
       public void handleAction(Object context) throws ApplicationException
@@ -108,8 +110,10 @@ public class Settings extends AbstractView {
     TabGroup umsatztypes = new TabGroup(getTabFolder(),i18n.tr("Umsatz-Kategorien"));
     control.getUmsatzTypListe().paint(umsatztypes.getComposite()); // BUGZILLA 410
     ButtonArea umsatzButtons = umsatztypes.createButtonArea(1);
+    // TODO ICONS FEHLEN
     umsatzButtons.addButton(i18n.tr("Neue Umsatz-Kategorie..."),new UmsatzTypNew());
 
+    // TODO ICONS FEHLEN
     ButtonArea buttons = new ButtonArea(getParent(),2);
     buttons.addButton(new Back(false));
 		buttons.addButton(i18n.tr("Speichern"),new Action()
@@ -155,6 +159,9 @@ public class Settings extends AbstractView {
 
 /**********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.46  2009/05/06 23:11:23  willuhn
+ * @N Mehr Icons auf Buttons
+ *
  * Revision 1.45  2009/03/31 11:01:41  willuhn
  * @R Speichern des PIN-Hashes komplett entfernt
  *

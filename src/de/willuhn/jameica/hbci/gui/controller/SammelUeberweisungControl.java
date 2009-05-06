@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SammelUeberweisungControl.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/08/07 14:31:59 $
+ * $Revision: 1.4 $
+ * $Date: 2009/05/06 23:11:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -101,6 +101,7 @@ public class SammelUeberweisungControl extends AbstractSammelTransferControl
     
     TablePart buchungen = new SammelTransferBuchungList(getTransfer(),a);
 
+    // TODO ICONS FEHLEN
     ContextMenu ctx = new ContextMenu();
     ctx.addItem(new CheckedContextMenuItem(i18n.tr("Buchung öffnen"), new SammelUeberweisungBuchungNew()));
     ctx.addItem(new NotActiveMenuItem(i18n.tr("Buchung löschen..."), new Action() {
@@ -206,6 +207,9 @@ public class SammelUeberweisungControl extends AbstractSammelTransferControl
 
 /*****************************************************************************
  * $Log: SammelUeberweisungControl.java,v $
+ * Revision 1.4  2009/05/06 23:11:23  willuhn
+ * @N Mehr Icons auf Buttons
+ *
  * Revision 1.3  2006/08/07 14:31:59  willuhn
  * @B misc bugfixing
  * @C Redesign des DTAUS-Imports fuer Sammeltransfers

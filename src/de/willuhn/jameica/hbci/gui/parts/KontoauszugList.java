@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.22 $
- * $Date: 2009/04/20 11:11:10 $
+ * $Revision: 1.23 $
+ * $Date: 2009/05/06 23:11:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -145,6 +145,7 @@ public class KontoauszugList extends UmsatzList
     betrag.addSeparator();
     betrag.addLabelPair(i18n.tr("Verwendungszweck/Kommentar enthält"), getText());
 
+    // TODO ICONS FEHLEN
     ButtonArea buttons = new ButtonArea(parent, 3);
     buttons.addButton(new Back(false));
     buttons.addButton(i18n.tr("Exportieren..."), new Action()
@@ -632,6 +633,9 @@ public class KontoauszugList extends UmsatzList
 
 /*********************************************************************
  * $Log: KontoauszugList.java,v $
+ * Revision 1.23  2009/05/06 23:11:22  willuhn
+ * @N Mehr Icons auf Buttons
+ *
  * Revision 1.22  2009/04/20 11:11:10  willuhn
  * @N BUGZILLA 723
  *

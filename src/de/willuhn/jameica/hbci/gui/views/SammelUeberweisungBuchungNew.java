@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/SammelUeberweisungBuchungNew.java,v $
- * $Revision: 1.7 $
- * $Date: 2009/02/24 23:51:01 $
+ * $Revision: 1.8 $
+ * $Date: 2009/05/06 23:11:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -61,6 +61,7 @@ public class SammelUeberweisungBuchungNew extends AbstractView {
 		ButtonArea buttonArea = new ButtonArea(getParent(),4);
     buttonArea.addButton(new Back(l.ausgefuehrt()));
     
+    // TODO ICONS FEHLEN
     Button delete = new Button(i18n.tr("Löschen"), new SammelTransferBuchungDelete(),control.getBuchung());
     delete.setEnabled(!l.ausgefuehrt());
     buttonArea.addButton(delete);
@@ -87,6 +88,9 @@ public class SammelUeberweisungBuchungNew extends AbstractView {
 
 /**********************************************************************
  * $Log: SammelUeberweisungBuchungNew.java,v $
+ * Revision 1.8  2009/05/06 23:11:23  willuhn
+ * @N Mehr Icons auf Buttons
+ *
  * Revision 1.7  2009/02/24 23:51:01  willuhn
  * @N Auswahl der Empfaenger/Zahlungspflichtigen jetzt ueber Auto-Suggest-Felder
  *

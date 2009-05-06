@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SparQuote.java,v $
- * $Revision: 1.17 $
- * $Date: 2009/01/20 10:51:46 $
+ * $Revision: 1.18 $
+ * $Date: 2009/05/06 23:11:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -160,6 +160,7 @@ public class SparQuote implements Part
     filter.addInput(getKontoAuswahl());
     filter.addInput(getTagAuswahl());
 
+    // TODO ICONS FEHLEN
     ButtonArea topButtons = new ButtonArea(parent,2);
     topButtons.addButton(new Back(false));
     topButtons.addButton(i18n.tr("Aktualisieren"), new Action() {
@@ -515,6 +516,9 @@ public class SparQuote implements Part
 
 /*********************************************************************
  * $Log: SparQuote.java,v $
+ * Revision 1.18  2009/05/06 23:11:23  willuhn
+ * @N Mehr Icons auf Buttons
+ *
  * Revision 1.17  2009/01/20 10:51:46  willuhn
  * @N Mehr Icons - fuer Buttons
  *

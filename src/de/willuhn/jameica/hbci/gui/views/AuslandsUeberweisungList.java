@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/AuslandsUeberweisungList.java,v $
- * $Revision: 1.1 $
- * $Date: 2009/03/13 00:25:12 $
+ * $Revision: 1.2 $
+ * $Date: 2009/05/06 23:11:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungImport;
 import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungNew;
 import de.willuhn.jameica.hbci.gui.controller.AuslandsUeberweisungControl;
 import de.willuhn.jameica.system.Application;
@@ -43,9 +44,10 @@ public class AuslandsUeberweisungList extends AbstractView {
 
 			control.getAuslandsUeberweisungListe().paint(getParent());
 
-			ButtonArea buttons = new ButtonArea(getParent(),2);
+			ButtonArea buttons = new ButtonArea(getParent(),3);
 	    buttons.addButton(new Back(false));
-			buttons.addButton(i18n.tr("Neue Auslandsüberweisung"), new AuslandsUeberweisungNew(),null,true);
+      buttons.addButton(i18n.tr("Importieren..."),new AuslandsUeberweisungImport(),null,false,"document-open.png");
+			buttons.addButton(i18n.tr("Neue Auslandsüberweisung"), new AuslandsUeberweisungNew(),null,true,"text-x-generic.png");
 
 		}
 		catch (Exception e)
@@ -59,6 +61,9 @@ public class AuslandsUeberweisungList extends AbstractView {
 
 /**********************************************************************
  * $Log: AuslandsUeberweisungList.java,v $
+ * Revision 1.2  2009/05/06 23:11:23  willuhn
+ * @N Mehr Icons auf Buttons
+ *
  * Revision 1.1  2009/03/13 00:25:12  willuhn
  * @N Code fuer Auslandsueberweisungen fast fertig
  *
