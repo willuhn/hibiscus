@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/HibiscusAddressImpl.java,v $
- * $Revision: 1.8 $
- * $Date: 2009/03/17 23:44:15 $
+ * $Revision: 1.9 $
+ * $Date: 2009/05/07 09:58:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -141,13 +141,6 @@ public class HibiscusAddressImpl extends AbstractDBObject implements HibiscusAdd
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Address#getBLZ()
-   */
-  public String getBLZ() throws RemoteException {
-    return getBlz();
-  }
-
-  /**
    * @see de.willuhn.jameica.hbci.rmi.Address#getBlz()
    */
   public String getBlz() throws RemoteException
@@ -167,13 +160,6 @@ public class HibiscusAddressImpl extends AbstractDBObject implements HibiscusAdd
    */
   public void setKontonummer(String kontonummer) throws RemoteException {
   	setAttribute("kontonummer",kontonummer);
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#setBLZ(java.lang.String)
-   */
-  public void setBLZ(String blz) throws RemoteException {
-  	setBlz(blz);
   }
 
   /**
@@ -269,6 +255,9 @@ public class HibiscusAddressImpl extends AbstractDBObject implements HibiscusAdd
 
 /**********************************************************************
  * $Log: HibiscusAddressImpl.java,v $
+ * Revision 1.9  2009/05/07 09:58:40  willuhn
+ * @R deprecated Funktionen getBLZ/setBLZ entfernt - bitte nur noch getBlz/setBlz nutzen!
+ *
  * Revision 1.8  2009/03/17 23:44:15  willuhn
  * @N BUGZILLA 159 - Auslandsueberweisungen. Erste Version
  *
