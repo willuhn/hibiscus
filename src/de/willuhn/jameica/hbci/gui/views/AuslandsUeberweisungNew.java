@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/AuslandsUeberweisungNew.java,v $
- * $Revision: 1.3 $
- * $Date: 2009/05/06 23:11:23 $
+ * $Revision: 1.4 $
+ * $Date: 2009/05/07 15:13:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -51,6 +51,7 @@ public class AuslandsUeberweisungNew extends AbstractView {
     konten.addHeadline(i18n.tr("Empfänger"));
     konten.addLabelPair(i18n.tr("Name"),                      control.getEmpfaengerName());
     konten.addLabelPair(i18n.tr("IBAN"),                      control.getEmpfaengerKonto());    
+    konten.addLabelPair(i18n.tr("BIC"),                       control.getEmpfaengerBic());
     konten.addLabelPair(i18n.tr("Institut"),                  control.getEmpfaengerBank());    
 		konten.addCheckbox(control.getStoreEmpfaenger(),i18n.tr("In Adressbuch übernehmen"));
 
@@ -87,6 +88,9 @@ public class AuslandsUeberweisungNew extends AbstractView {
 
 /**********************************************************************
  * $Log: AuslandsUeberweisungNew.java,v $
+ * Revision 1.4  2009/05/07 15:13:37  willuhn
+ * @N BIC in Auslandsueberweisung
+ *
  * Revision 1.3  2009/05/06 23:11:23  willuhn
  * @N Mehr Icons auf Buttons
  *

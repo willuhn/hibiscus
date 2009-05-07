@@ -161,6 +161,7 @@ CREATE TABLE aueberweisung (
      , empfaenger_konto VARCHAR(40) NOT NULL
      , empfaenger_bank VARCHAR(140) NOT NULL
      , empfaenger_name VARCHAR(140) NOT NULL
+     , empfaenger_bic VARCHAR(15) NULL
      , betrag DOUBLE NOT NULL
      , zweck VARCHAR(140)
      , termin DATE NOT NULL
@@ -284,4 +285,4 @@ ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
 
-INSERT INTO version (name,version) values ('db',19);
+INSERT INTO version (name,version) values ('db',20);

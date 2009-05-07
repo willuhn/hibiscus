@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIAuslandsUeberweisungJob.java,v $
- * $Revision: 1.2 $
- * $Date: 2009/03/30 13:46:21 $
+ * $Revision: 1.3 $
+ * $Date: 2009/05/07 15:13:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,7 @@
 package de.willuhn.jameica.hbci.server.hbci;
 
 import java.rmi.RemoteException;
+import java.util.Properties;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -72,12 +73,35 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
       if (curr == null || curr.length() == 0)
         curr = HBCIProperties.CURRENCY_DEFAULT_DE;
 
-			setJobParam("btg",       ueberweisung.getBetrag(),curr);
-			setJobParam("dst.iban",  ueberweisung.getGegenkontoNummer());
+      Properties p = HBCIFactory.getInstance().getJobRestrictions(this.konto,this);
+      Logger.debug("hbci job restriction:" + p);
+      boolean caniban = true;
+      if (p != null)
+      {
+        String c = p.getProperty("caniban");
+        
+        // setzen wir nur dann auf False, wenn explizit "N" angegeben ist
+        caniban = !(c != null && "n".equalsIgnoreCase(c));
+      }
+      
+			if (caniban)
+			{
+        Logger.info("bank supports iban, using dst.iban");
+        setJobParam("dst.iban",  ueberweisung.getGegenkontoNummer());
+			}
+			else
+			{
+        Logger.info("bank does not support iban, using dst");
+        org.kapott.hbci.structures.Konto k = new org.kapott.hbci.structures.Konto();
+        k.bic = ueberweisung.getGegenkontoBLZ();
+        k.iban = ueberweisung.getGegenkontoNummer();
+			  setJobParam("dst",k);
+			}
+      setJobParam("btg",       ueberweisung.getBetrag(),curr);
       setJobParam("dst.name",  ueberweisung.getGegenkontoName());
       setJobParam("dst.kiname",ueberweisung.getGegenkontoInstitut());
 			setJobParam("usage",     ueberweisung.getZweck());
-
+			
       de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
       markExecutedBefore = settings.getBoolean("transfer.markexecuted.before",false);
       if (markExecutedBefore)
@@ -147,6 +171,9 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIAuslandsUeberweisungJob.java,v $
+ * Revision 1.3  2009/05/07 15:13:37  willuhn
+ * @N BIC in Auslandsueberweisung
+ *
  * Revision 1.2  2009/03/30 13:46:21  willuhn
  * @B "src.name" fehlte
  *
