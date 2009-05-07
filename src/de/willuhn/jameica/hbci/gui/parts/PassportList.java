@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/PassportList.java,v $
- * $Revision: 1.6 $
- * $Date: 2008/12/19 12:16:05 $
+ * $Revision: 1.7 $
+ * $Date: 2009/05/07 13:36:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,10 +14,9 @@
 package de.willuhn.jameica.hbci.gui.parts;
 
 import java.rmi.RemoteException;
+import java.util.Arrays;
+import java.util.List;
 
-import de.willuhn.datasource.GenericIterator;
-import de.willuhn.datasource.GenericObject;
-import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
@@ -26,7 +25,6 @@ import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.PassportRegistry;
 import de.willuhn.jameica.hbci.gui.action.PassportDetail;
-import de.willuhn.jameica.hbci.gui.controller.PassportObject;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -65,43 +63,36 @@ public class PassportList extends TablePart implements Part
     addColumn(i18n.tr("Bezeichnung"),"name");
   }
 
-  private static GenericIterator init() throws RemoteException
+  /**
+   * Initialisiert die Liste der Passports.
+   * @return Liste der Passports.
+   * @throws RemoteException
+   */
+  private static List<Passport> init() throws RemoteException
   {
-
-    Passport[] passports = null;
     try
     {
-      passports = PassportRegistry.getPassports();
+      return Arrays.asList(PassportRegistry.getPassports());
+    }
+    catch (RemoteException re)
+    {
+      throw re;
     }
     catch (Exception e)
     {
       Logger.error("error while loading the passport list",e);
       throw new RemoteException("unable to load the passport list",e);
     }
-
-    GenericObject[] p = new GenericObject[passports.length];
-    for (int i=0;i<passports.length;++i)
-    {
-      p[i] = new PassportObject(passports[i]);
-    }
-    return PseudoIterator.fromArray(p);
-  }
-  
-  /**
-   * @see de.willuhn.jameica.gui.parts.TablePart#getSelection()
-   */
-  public Object getSelection()
-  {
-    Object o = super.getSelection();
-    if (o == null)
-      return null;
-    return ((PassportObject)o).getPassport();
   }
 }
 
 
 /**********************************************************************
  * $Log: PassportList.java,v $
+ * Revision 1.7  2009/05/07 13:36:57  willuhn
+ * @R Hilfsobjekt "PassportObject" entfernt
+ * @C Cleanup in PassportInput (insb. der weisse Hintergrund hinter dem "Konfigurieren..."-Button hat gestoert
+ *
  * Revision 1.6  2008/12/19 12:16:05  willuhn
  * @N Mehr Icons
  * @C Reihenfolge der Contextmenu-Eintraege vereinheitlicht

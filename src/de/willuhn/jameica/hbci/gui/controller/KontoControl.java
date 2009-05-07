@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.81 $
- * $Date: 2009/01/26 23:17:46 $
+ * $Revision: 1.82 $
+ * $Date: 2009/05/07 13:36:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -371,7 +371,7 @@ public class KontoControl extends AbstractControl {
 
 			if (p == null)
 			{
-				GUI.getStatusBar().setErrorText(i18n.tr("Kein Sicherheitsmedium verfügbar."));
+			  Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte wählen Sie ein Sicherheitsmedium aus"), StatusBarMessage.TYPE_ERROR));
 				return;
 			}
 			
@@ -550,6 +550,10 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.82  2009/05/07 13:36:57  willuhn
+ * @R Hilfsobjekt "PassportObject" entfernt
+ * @C Cleanup in PassportInput (insb. der weisse Hintergrund hinter dem "Konfigurieren..."-Button hat gestoert
+ *
  * Revision 1.81  2009/01/26 23:17:46  willuhn
  * @R Feld "synchronize" aus Konto-Tabelle entfernt. Aufgrund der Synchronize-Optionen pro Konto ist die Information redundant und ergibt sich implizit, wenn fuer ein Konto irgendeine der Synchronisations-Optionen aktiviert ist
  *
