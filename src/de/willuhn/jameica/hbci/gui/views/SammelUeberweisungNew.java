@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/SammelUeberweisungNew.java,v $
- * $Revision: 1.10 $
- * $Date: 2009/05/06 23:11:23 $
+ * $Revision: 1.11 $
+ * $Date: 2009/05/08 13:58:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -61,17 +61,16 @@ public class SammelUeberweisungNew extends AbstractView {
 
 		final SammelUeberweisung l = (SammelUeberweisung) control.getTransfer();
 
-    // TODO ICONS FEHLEN
     ButtonArea buttons = new ButtonArea(getParent(),5);
     buttons.addButton(new Back(transfer.ausgefuehrt()));
-    buttons.addButton(i18n.tr("Löschen"),new DBObjectDelete(),control.getTransfer());
+    buttons.addButton(i18n.tr("Löschen"),new DBObjectDelete(),control.getTransfer(),false,"user-trash-full.png");
     
     Button add = new Button(i18n.tr("Neue Buchungen hinzufügen"), new Action() {
       public void handleAction(Object context) throws ApplicationException {
         if (control.handleStore())
           new SammelUeberweisungBuchungNew().handleAction(l);
       }
-    });
+    },null,false,"text-x-generic.png");
     add.setEnabled(!transfer.ausgefuehrt());
     
 		Button execute = new Button(i18n.tr("Jetzt ausführen..."), new Action() {
@@ -79,14 +78,14 @@ public class SammelUeberweisungNew extends AbstractView {
         if (control.handleStore())
   				new SammelUeberweisungExecute().handleAction(l);
 			}
-		});
+		},null,false,"emblem-important.png");
     execute.setEnabled(!transfer.ausgefuehrt());
     
     Button store = new Button(i18n.tr("Speichern"),new Action() {
       public void handleAction(Object context) throws ApplicationException {
         control.handleStore();
       }
-    },null,!transfer.ausgefuehrt());
+    },null,!transfer.ausgefuehrt(),"document-save.png");
     store.setEnabled(!transfer.ausgefuehrt());
     
     buttons.addButton(add);
@@ -99,6 +98,10 @@ public class SammelUeberweisungNew extends AbstractView {
 
 /**********************************************************************
  * $Log: SammelUeberweisungNew.java,v $
+ * Revision 1.11  2009/05/08 13:58:30  willuhn
+ * @N Icons in allen Menus und auf allen Buttons
+ * @N Fuer Umsatz-Kategorien koennen nun benutzerdefinierte Farben vergeben werden
+ *
  * Revision 1.10  2009/05/06 23:11:23  willuhn
  * @N Mehr Icons auf Buttons
  *

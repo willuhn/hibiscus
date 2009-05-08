@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SammelLastschriftControl.java,v $
- * $Revision: 1.14 $
- * $Date: 2009/05/06 23:11:23 $
+ * $Revision: 1.15 $
+ * $Date: 2009/05/08 13:58:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,6 +30,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SammelLastBuchung;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
+import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -99,9 +100,8 @@ public class SammelLastschriftControl extends AbstractSammelTransferControl
     
     TablePart buchungen = new SammelTransferBuchungList(getTransfer(),a);
 
-    // TODO ICONS FEHLEN
     ContextMenu ctx = new ContextMenu();
-    ctx.addItem(new CheckedContextMenuItem(i18n.tr("Buchung öffnen"), new SammelLastBuchungNew()));
+    ctx.addItem(new CheckedContextMenuItem(i18n.tr("Buchung öffnen"), new SammelLastBuchungNew(),"document-open.png"));
     ctx.addItem(new NotActiveMenuItem(i18n.tr("Buchung löschen..."), new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -115,7 +115,7 @@ public class SammelLastschriftControl extends AbstractSammelTransferControl
           Logger.error("unable to refresh summary",e);
         }
       }
-    }));
+    },"user-trash-full.png"));
     ctx.addItem(ContextMenuItem.SEPARATOR);
     ctx.addItem(new ContextMenuItem(i18n.tr("Neue Buchung..."),new Action() {
       public void handleAction(Object context) throws ApplicationException
@@ -133,7 +133,27 @@ public class SammelLastschriftControl extends AbstractSammelTransferControl
           }
         }
       }
-    }));
+    },"text-x-generic.png")
+    {
+      /**
+       * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
+       */
+      public boolean isEnabledFor(Object o)
+      {
+        if (o == null)
+          return true;
+        try
+        {
+          SammelTransferBuchung u = (SammelTransferBuchung) o;
+          return !u.getSammelTransfer().ausgefuehrt();
+        }
+        catch (Exception e)
+        {
+          Logger.error("error while enable check in menu item",e);
+        }
+        return false;
+      }
+    });
     buchungen.setContextMenu(ctx);
     return buchungen;
   }
@@ -175,12 +195,13 @@ public class SammelLastschriftControl extends AbstractSammelTransferControl
      * ct.
      * @param text anzuzeigender Text.
      * @param a auszufuehrende Action.
+     * @param icon das Icon des Menueintrages.
      */
-    public NotActiveMenuItem(String text, Action a)
+    public NotActiveMenuItem(String text, Action a, String icon)
     {
-      super(text, a);
+      super(text, a, icon);
     }
-
+    
     /**
      * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
      */
@@ -205,6 +226,10 @@ public class SammelLastschriftControl extends AbstractSammelTransferControl
 
 /*****************************************************************************
  * $Log: SammelLastschriftControl.java,v $
+ * Revision 1.15  2009/05/08 13:58:30  willuhn
+ * @N Icons in allen Menus und auf allen Buttons
+ * @N Fuer Umsatz-Kategorien koennen nun benutzerdefinierte Farben vergeben werden
+ *
  * Revision 1.14  2009/05/06 23:11:23  willuhn
  * @N Mehr Icons auf Buttons
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTypTree.java,v $
- * $Revision: 1.8 $
- * $Date: 2008/12/04 22:03:34 $
+ * $Revision: 1.9 $
+ * $Date: 2009/05/08 13:58:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,14 +16,18 @@ import java.rmi.RemoteException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.TreeItem;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.jameica.gui.Action;
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.extension.Extendable;
 import de.willuhn.jameica.gui.extension.Extension;
 import de.willuhn.jameica.gui.extension.ExtensionRegistry;
@@ -54,6 +58,7 @@ public class UmsatzTypTree extends TreePart implements Extension
 {
   private static boolean registered = false;
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  private static Hashtable<String,Color> colorCache = new Hashtable<String,Color>();
 
   /**
    * ct.
@@ -89,6 +94,31 @@ public class UmsatzTypTree extends TreePart implements Extension
           Double betrag = (Double) value;
           if (betrag == null)
             return;
+          
+          // Mal checken, ob wir eine benutzerdefinierte Farbe haben
+          UmsatzTyp ut = null;
+          if (i instanceof UmsatzGroup)
+            ut = ((UmsatzGroup)i).getUmsatzTyp();
+          else if (i instanceof Umsatz)
+            ut = ((Umsatz)i).getUmsatzTyp();
+          
+          if (ut != null)
+          {
+            int[] color = ut.getColor();
+            if (color != null && color.length == 3)
+            {
+              RGB rgb = new RGB(color[0],color[1],color[2]);
+              Color c = colorCache.get(rgb.toString());
+              if (c == null)
+              {
+                c = new Color(GUI.getDisplay(),rgb);
+                colorCache.put(rgb.toString(),c);
+              }
+              item.setForeground(c);
+              return;
+            }
+          }
+          
           if (betrag.doubleValue() < 0)
             item.setForeground(Settings.getBuchungSollForeground());
           else
@@ -197,6 +227,10 @@ public class UmsatzTypTree extends TreePart implements Extension
 
 /*******************************************************************************
  * $Log: UmsatzTypTree.java,v $
+ * Revision 1.9  2009/05/08 13:58:30  willuhn
+ * @N Icons in allen Menus und auf allen Buttons
+ * @N Fuer Umsatz-Kategorien koennen nun benutzerdefinierte Farben vergeben werden
+ *
  * Revision 1.8  2008/12/04 22:03:34  willuhn
  * @N BUGZILLA 665
  *

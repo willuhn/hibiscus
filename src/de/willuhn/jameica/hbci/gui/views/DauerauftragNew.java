@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/DauerauftragNew.java,v $
- * $Revision: 1.10 $
- * $Date: 2009/05/06 23:11:23 $
+ * $Revision: 1.11 $
+ * $Date: 2009/05/08 13:58:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -67,13 +67,12 @@ public class DauerauftragNew extends AbstractView
 
 		final Dauerauftrag da = (Dauerauftrag) control.getTransfer();
 		ButtonArea buttonArea = new ButtonArea(getParent(),4);
-		String s = i18n.tr("Speichern und ausführen");
+		String s = i18n.tr("Jetzt ausführen...");
 		if (da.isActive())
-			s = "Speichern und aktualisieren";
+			s = "Jetzt aktualisieren...";
 
-    // TODO ICONS FEHLEN
     buttonArea.addButton(new Back(false));
-		buttonArea.addButton(i18n.tr("Löschen"),	 		 new DauerauftragDelete(), da);
+		buttonArea.addButton(i18n.tr("Löschen"),	 		 new DauerauftragDelete(), da, false,"user-trash-full.png");
 		buttonArea.addButton(s,										 		 new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -81,20 +80,24 @@ public class DauerauftragNew extends AbstractView
       	if (control.handleStore())
 					new DauerauftragExecute().handleAction(da);
       }
-    });
+    },null,false,"emblem-important.png");
 		buttonArea.addButton(i18n.tr("Speichern"), new Action()
 		{
 			public void handleAction(Object context) throws ApplicationException
 			{
 				control.handleStore();
 			}
-    },null,true);
+    },null,true,"document-save.png");
   }
 }
 
 
 /**********************************************************************
  * $Log: DauerauftragNew.java,v $
+ * Revision 1.11  2009/05/08 13:58:30  willuhn
+ * @N Icons in allen Menus und auf allen Buttons
+ * @N Fuer Umsatz-Kategorien koennen nun benutzerdefinierte Farben vergeben werden
+ *
  * Revision 1.10  2009/05/06 23:11:23  willuhn
  * @N Mehr Icons auf Buttons
  *

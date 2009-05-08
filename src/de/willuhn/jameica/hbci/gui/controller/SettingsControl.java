@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.54 $
- * $Date: 2009/03/31 11:01:41 $
+ * $Revision: 1.55 $
+ * $Date: 2009/05/08 13:58:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,6 @@ import org.eclipse.swt.graphics.Color;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.ColorInput;
 import de.willuhn.jameica.gui.input.DecimalInput;
@@ -33,7 +32,6 @@ import de.willuhn.jameica.hbci.gui.action.UmsatzTypNew;
 import de.willuhn.jameica.hbci.gui.parts.PassportList;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzTypList;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
 /**
@@ -228,40 +226,15 @@ public class SettingsControl extends AbstractControl {
 
 		GUI.getStatusBar().setSuccessText(i18n.tr("Einstellungen gespeichert."));
   }
-
-	/**
-   * Loescht den gegebenenfalls vorhandenen gespeicherten Pin-Hash.
-   */
-  public void handleDeleteCheckSum()
-	{
-		YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
-		d.setTitle(i18n.tr("Sicher?"));
-		d.setText(i18n.tr("Möchten Sie die gespeicherten Checksummen wirklich löschen?"));
-		try {
-			if (!((Boolean)d.open()).booleanValue())
-				return;
-		}
-		catch (Exception e)
-		{
-			Logger.error("error while getting data from yes/no dialog",e);
-			return;
-		}
-
-		try
-		{
-			Settings.getWallet().deleteAll("hbci.passport.pinchecksum");
-			GUI.getStatusBar().setSuccessText(i18n.tr("Checksummen gelöscht."));
-		}
-		catch (Exception e)
-		{
-			Logger.error("error while deleting checksums",e);
-		}
-	}
 }
 
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.55  2009/05/08 13:58:30  willuhn
+ * @N Icons in allen Menus und auf allen Buttons
+ * @N Fuer Umsatz-Kategorien koennen nun benutzerdefinierte Farben vergeben werden
+ *
  * Revision 1.54  2009/03/31 11:01:41  willuhn
  * @R Speichern des PIN-Hashes komplett entfernt
  *

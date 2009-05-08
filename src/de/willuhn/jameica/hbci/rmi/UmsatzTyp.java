@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/UmsatzTyp.java,v $
- * $Revision: 1.16 $
- * $Date: 2009/02/23 23:44:50 $
+ * $Revision: 1.17 $
+ * $Date: 2009/05/08 13:58:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -188,11 +188,29 @@ public interface UmsatzTyp extends DBObjectNode
    * @throws RemoteException
    */
   public void setColor(int[] rgb) throws RemoteException;
+  
+  /**
+   * Prueft, ob eine benutzerdefinierte Farbe verwendet werden soll.
+   * @return true, wenn eine benutzerdefinierte Farbe verwendet werden soll.
+   * @throws RemoteException
+   */
+  public boolean isCustomColor() throws RemoteException;
+  
+  /**
+   * Legt fest, ob eine benutzerdefinierte Farbe verwendet werden soll.
+   * @param b true, wenn eine benutzerdefinierte Farbe verwendet werden soll.
+   * @throws RemoteException
+   */
+  public void setCustomColor(boolean b) throws RemoteException;
 }
 
 
 /**********************************************************************
  * $Log: UmsatzTyp.java,v $
+ * Revision 1.17  2009/05/08 13:58:30  willuhn
+ * @N Icons in allen Menus und auf allen Buttons
+ * @N Fuer Umsatz-Kategorien koennen nun benutzerdefinierte Farben vergeben werden
+ *
  * Revision 1.16  2009/02/23 23:44:50  willuhn
  * @N Etwas Code fuer Support fuer Unter-/Ober-Kategorien
  *

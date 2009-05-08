@@ -83,6 +83,8 @@ CREATE TABLE umsatztyp (
      , isregex int(10)
      , umsatztyp int(10)
      , parent_id int(10)
+     , color VARCHAR(11)
+     , customcolor int(1)
      , UNIQUE (id)
      , PRIMARY KEY (id)
 )TYPE=InnoDB;
@@ -285,4 +287,4 @@ ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
 
-INSERT INTO version (name,version) values ('db',20);
+INSERT INTO version (name,version) values ('db',21);

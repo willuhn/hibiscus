@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTypList.java,v $
- * $Revision: 1.10 $
- * $Date: 2008/08/29 16:46:24 $
+ * $Revision: 1.11 $
+ * $Date: 2009/05/08 13:58:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,16 +14,21 @@
 package de.willuhn.jameica.hbci.gui.parts;
 
 import java.rmi.RemoteException;
+import java.util.Hashtable;
 
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.TableItem;
 
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.formatter.Formatter;
+import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
@@ -46,6 +51,8 @@ public class UmsatzTypList extends TablePart implements Part
 
   private I18N i18n = null;
   private MessageConsumer mc = null;
+  
+  private static Hashtable<String,Color> colorCache = new Hashtable<String,Color>();
 
   /**
    * ct.
@@ -65,6 +72,42 @@ public class UmsatzTypList extends TablePart implements Part
         if (o == null)
           return i18n.tr("egal");
         return UmsatzTypUtil.getNameForType(((Integer) o).intValue());
+      }
+    });
+    
+    this.setFormatter(new TableFormatter()
+    {
+      /**
+       * @see de.willuhn.jameica.gui.formatter.TableFormatter#format(org.eclipse.swt.widgets.TableItem)
+       */
+      public void format(TableItem item)
+      {
+        if (item == null)
+          return;
+
+        try
+        {
+          UmsatzTyp ut = (UmsatzTyp) item.getData();
+          if (ut == null || !ut.isCustomColor())
+            return;
+
+          int[] color = ut.getColor();
+          if (color == null || color.length != 3)
+            return;
+          
+          RGB rgb = new RGB(color[0],color[1],color[2]);
+          Color c = colorCache.get(rgb.toString());
+          if (c == null)
+          {
+            c = new Color(GUI.getDisplay(),rgb);
+            colorCache.put(rgb.toString(),c);
+          }
+          item.setForeground(c);
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to apply custom color",e);
+        }
       }
     });
 
@@ -153,6 +196,10 @@ public class UmsatzTypList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: UmsatzTypList.java,v $
+ * Revision 1.11  2009/05/08 13:58:30  willuhn
+ * @N Icons in allen Menus und auf allen Buttons
+ * @N Fuer Umsatz-Kategorien koennen nun benutzerdefinierte Farben vergeben werden
+ *
  * Revision 1.10  2008/08/29 16:46:24  willuhn
  * @N BUGZILLA 616
  *

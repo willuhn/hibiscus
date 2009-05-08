@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzTypTree.java,v $
- * $Revision: 1.9 $
- * $Date: 2009/05/06 23:11:23 $
+ * $Revision: 1.10 $
+ * $Date: 2009/05/08 13:58:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -63,7 +63,6 @@ public class UmsatzTypTree extends AbstractView
     settings.addLabelPair(i18n.tr("Start-Datum"), control.getStart());
     settings.addLabelPair(i18n.tr("End-Datum"), control.getEnd());
 
-    // TODO ICONS FEHLEN
     ButtonArea buttons = new ButtonArea(getParent(), 4);
     buttons.addButton(new Back());
 
@@ -73,7 +72,7 @@ public class UmsatzTypTree extends AbstractView
       {
         control.handleExpand();
       }
-    });
+    },null,false,"folder.png");
     buttons.addButton(i18n.tr("Exportieren..."), new Action(){
       public void handleAction(Object context) throws ApplicationException
       {
@@ -92,7 +91,7 @@ public class UmsatzTypTree extends AbstractView
           throw new ApplicationException(i18n.tr("Fehler beim Laden der Umsätze"),re);
         }
       }
-    });
+    },null,false,"document-save.png");
 
     TabFolder folder = new TabFolder(getParent(), SWT.NONE);
     folder.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -130,13 +129,17 @@ public class UmsatzTypTree extends AbstractView
           throw new ApplicationException(i18n.tr("Fehler beim Aktualisieren des Diagramms"));
         }
       }
-    }, null, true);
+    }, null, true, "view-refresh.png");
   
   }
 
 }
 /*******************************************************************************
  * $Log: UmsatzTypTree.java,v $
+ * Revision 1.10  2009/05/08 13:58:30  willuhn
+ * @N Icons in allen Menus und auf allen Buttons
+ * @N Fuer Umsatz-Kategorien koennen nun benutzerdefinierte Farben vergeben werden
+ *
  * Revision 1.9  2009/05/06 23:11:23  willuhn
  * @N Mehr Icons auf Buttons
  *

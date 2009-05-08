@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTypVerlauf.java,v $
- * $Revision: 1.2 $
- * $Date: 2008/02/26 01:12:30 $
+ * $Revision: 1.3 $
+ * $Date: 2009/05/08 13:58:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -33,6 +33,7 @@ import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.chart.LineChart;
 import de.willuhn.jameica.hbci.gui.chart.LineChartData;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.hbci.server.UmsatzGroup;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
@@ -273,9 +274,15 @@ public class UmsatzTypVerlauf implements Part
      */
     public int[] getColor() throws RemoteException
     {
-      if (this.group.getUmsatzTyp() == null)
+      UmsatzTyp ut = this.group.getUmsatzTyp();
+      
+      if (ut == null)
         return null; // "nicht zugeordnet"
-      return this.group.getUmsatzTyp().getColor();
+
+      if (!ut.isCustomColor())
+        return null; // keine benutzerdefinierte Farbe angegeben
+      
+      return ut.getColor();
     }
   }
   
@@ -341,6 +348,10 @@ public class UmsatzTypVerlauf implements Part
 
 /*********************************************************************
  * $Log: UmsatzTypVerlauf.java,v $
+ * Revision 1.3  2009/05/08 13:58:30  willuhn
+ * @N Icons in allen Menus und auf allen Buttons
+ * @N Fuer Umsatz-Kategorien koennen nun benutzerdefinierte Farben vergeben werden
+ *
  * Revision 1.2  2008/02/26 01:12:30  willuhn
  * @R nicht mehr benoetigte Funktion entfernt
  *

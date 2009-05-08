@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzTypControl.java,v $
- * $Revision: 1.10 $
- * $Date: 2009/02/23 23:44:50 $
+ * $Revision: 1.11 $
+ * $Date: 2009/05/08 13:58:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
@@ -27,6 +29,7 @@ import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.input.CheckboxInput;
+import de.willuhn.jameica.gui.input.ColorInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCI;
@@ -60,6 +63,9 @@ public class UmsatzTypControl extends AbstractControl
   private CheckboxInput regex   = null;
   private SelectInput art       = null;
 //  private SelectInput parent    = null;
+  
+  private ColorInput color          = null;
+  private CheckboxInput customColor = null;
   
   /**
    * @param view
@@ -192,6 +198,56 @@ public class UmsatzTypControl extends AbstractControl
   }
 
   /**
+   * Liefert eine Checkbox zur Aktivierung von benutzerdefinierten Farben.
+   * @return Checkbox.
+   * @throws RemoteException
+   */
+  public CheckboxInput getCustomColor() throws RemoteException
+  {
+    if (this.customColor != null)
+      return this.customColor;
+
+    this.customColor = new CheckboxInput(getUmsatzTyp().isCustomColor());
+    this.customColor.addListener(new Listener()
+    {
+      /**
+       * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+       */
+      public void handleEvent(Event event)
+      {
+        try
+        {
+          Boolean b = (Boolean) customColor.getValue();
+          getColor().setEnabled(b.booleanValue());
+        }
+        catch (RemoteException re)
+        {
+          Logger.error("unable to update color input",re);
+        }
+      }
+    });
+    return this.customColor;
+  }
+  
+  /**
+   * Feld zur Auswahl der Farbe.
+   * @return Auswahlfeld.
+   * @throws RemoteException
+   */
+  public ColorInput getColor() throws RemoteException
+  {
+    if (this.color == null)
+    {
+      int[] rgb = getUmsatzTyp().getColor();
+      if (rgb == null || rgb.length != 3)
+        rgb = new int[]{0,0,0};
+      this.color = new ColorInput(new Color(GUI.getDisplay(),new RGB(rgb[0],rgb[1],rgb[2])),true);
+      this.color.setEnabled(getUmsatzTyp().isCustomColor());
+    }
+    return this.color;
+  }
+
+  /**
    * Liefert eine Auswahl-Box fuer die Art des Umsatzes.
    * @return Auswahl-Box.
    * @throws RemoteException
@@ -252,6 +308,24 @@ public class UmsatzTypControl extends AbstractControl
       ut.setPattern((String)getPattern().getValue());
       ut.setRegex(((Boolean)getRegex().getValue()).booleanValue());
 //      ut.setParent((UmsatzTyp)getParent().getValue());
+      
+      boolean b = ((Boolean)getCustomColor().getValue()).booleanValue();
+      ut.setCustomColor(b);
+      if (b)
+      {
+        Color c = (Color) getColor().getValue();
+        if (c == null)
+        {
+          ut.setColor(null);
+        }
+        else
+        {
+          RGB rgb = c.getRGB();
+          ut.setColor(new int[]{rgb.red,rgb.green,rgb.blue});
+        }
+      }
+      
+      
       ut.store();
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Umsatz-Kategorie gespeichert"), StatusBarMessage.TYPE_SUCCESS));
     }
@@ -340,6 +414,10 @@ public class UmsatzTypControl extends AbstractControl
 
 /*********************************************************************
  * $Log: UmsatzTypControl.java,v $
+ * Revision 1.11  2009/05/08 13:58:30  willuhn
+ * @N Icons in allen Menus und auf allen Buttons
+ * @N Fuer Umsatz-Kategorien koennen nun benutzerdefinierte Farben vergeben werden
+ *
  * Revision 1.10  2009/02/23 23:44:50  willuhn
  * @N Etwas Code fuer Support fuer Unter-/Ober-Kategorien
  *

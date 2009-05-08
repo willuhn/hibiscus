@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.49 $
- * $Date: 2009/03/26 16:21:11 $
+ * $Revision: 1.50 $
+ * $Date: 2009/05/08 13:58:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -97,6 +97,9 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
         if (name.equals(other.getName()))
           throw new ApplicationException(i18n.tr("Es existiert bereits eine Kategorie mit dieser Bezeichnung"));
       }
+      
+      if (isCustomColor() && (getColor() == null || getColor().length != 3))
+        throw new ApplicationException("Wählen Sie bitte eine benutzerdefinierte Farbe aus");
 
     }
     catch (RemoteException e)
@@ -504,7 +507,27 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
    */
   public int[] getColor() throws RemoteException
   {
-    // TODO: UmsatzTyp#getColor noch implementieren
+    String color = (String) this.getAttribute("color");
+    if (color == null || color.length() == 0)
+      return null;
+    
+    try
+    {
+      int[] rgb = new int[3];
+      String[] values = color.split(",");
+      for (int i=0;i<3;++i)
+      {
+        int v = Integer.parseInt(values[i]);
+        if (v < 0 || v > 255)
+          throw new IllegalArgumentException("invalid color value: " + v);
+        rgb[i] = v;
+      }
+      return rgb;
+    }
+    catch (Exception e)
+    {
+      Logger.error("invalid color code: " + color + ", ignoring",e);
+    }
     return null;
   }
 
@@ -513,7 +536,20 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
    */
   public void setColor(int[] rgb) throws RemoteException
   {
-    // TODO: UmsatzTyp#setColor noch implementieren
+    if (rgb == null || rgb.length != 3)
+    {
+      this.setAttribute("color",null);
+      return;
+    }
+    for (int i=0;i<3;++i)
+    {
+      if (rgb[i] < 0 || rgb[i] > 255)
+      {
+        Logger.error("invalid color value: " + rgb[i]);
+        return;
+      }
+    }
+    this.setAttribute("color",rgb[0] + "," + rgb[1] + "," + rgb[2]);
   }
 
   /**
@@ -552,12 +588,33 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
     list.setOrder("order by name");
     return list;
   }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#isCustomColor()
+   */
+  public boolean isCustomColor() throws RemoteException
+  {
+    Integer i = (Integer) getAttribute("customcolor");
+    return i != null && i.intValue() == 1;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#setCustomColor(boolean)
+   */
+  public void setCustomColor(boolean b) throws RemoteException
+  {
+    setAttribute("customcolor", new Integer(b ? 1 : 0));
+  }
   
   
 }
 
 /*******************************************************************************
  * $Log: UmsatzTypImpl.java,v $
+ * Revision 1.50  2009/05/08 13:58:30  willuhn
+ * @N Icons in allen Menus und auf allen Buttons
+ * @N Fuer Umsatz-Kategorien koennen nun benutzerdefinierte Farben vergeben werden
+ *
  * Revision 1.49  2009/03/26 16:21:11  willuhn
  * *** empty log message ***
  *

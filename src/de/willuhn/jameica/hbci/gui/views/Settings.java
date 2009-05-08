@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Settings.java,v $
- * $Revision: 1.46 $
- * $Date: 2009/05/06 23:11:23 $
+ * $Revision: 1.47 $
+ * $Date: 2009/05/08 13:58:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -65,20 +65,10 @@ public class Settings extends AbstractView {
 		system.addCheckbox(control.getOnlineMode(),i18n.tr("Dauerhafte Internetverbindung, Aufforderung zum Verbinden nicht erforderlich"));
     system.addCheckbox(control.getCachePin(),i18n.tr("PIN-Eingaben für die aktuelle Sitzung zwischenspeichern"));
     system.addCheckbox(control.getCancelSyncOnError(),i18n.tr("HBCI-Synchronisierung bei Fehler abbrechen"));
-    system.addCheckbox(control.getDecimalGrouping(),i18n.tr("Tausender-Trennzeichen bei Geld-Beträgen verwenden"));
-    system.addCheckbox(control.getKontoCheck(),i18n.tr("Kontonummern via Prüfsumme der Bank testen"));
+    system.addCheckbox(control.getDecimalGrouping(),i18n.tr("Tausender-Trennzeichen bei Geld-Beträgen anzeigen"));
+    system.addCheckbox(control.getKontoCheck(),i18n.tr("Kontonummern und Bankleitzahlen mittels Prüfsumme testen"));
     system.addLabelPair(i18n.tr("Limit für Aufträge"), control.getUeberweisungLimit());
 		
-    // TODO ICONS FEHLEN
-    ButtonArea sysbuttons = system.createButtonArea(1);
-    sysbuttons.addButton(i18n.tr("gespeicherte Prüfsummen löschen"),new Action()
-    {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        control.handleDeleteCheckSum();
-      }
-    });
-
     // Farb-Einstellungen
     TabGroup colors = new TabGroup(getTabFolder(),i18n.tr("Farben"));
     colors.addLabelPair(i18n.tr("Vordergrund Sollbuchung"),control.getBuchungSollForeground());
@@ -89,7 +79,6 @@ public class Settings extends AbstractView {
     TabGroup passports = new TabGroup(getTabFolder(),i18n.tr("HBCI-Sicherheitsmedien"));
 		passports.addPart(control.getPassportListe());
     ButtonArea passportButtons = passports.createButtonArea(1);
-    // TODO ICONS FEHLEN
     passportButtons.addButton(i18n.tr("Sicherheitsmedium konfigurieren..."), new Action() {
     
       public void handleAction(Object context) throws ApplicationException
@@ -104,16 +93,14 @@ public class Settings extends AbstractView {
           Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Öffnen des Sicherheitsmediums"), StatusBarMessage.TYPE_ERROR));
         }
       }
-    });
+    },null,false,"document-properties.png");
 
     // Umsatz-Kategorien
     TabGroup umsatztypes = new TabGroup(getTabFolder(),i18n.tr("Umsatz-Kategorien"));
     control.getUmsatzTypListe().paint(umsatztypes.getComposite()); // BUGZILLA 410
     ButtonArea umsatzButtons = umsatztypes.createButtonArea(1);
-    // TODO ICONS FEHLEN
-    umsatzButtons.addButton(i18n.tr("Neue Umsatz-Kategorie..."),new UmsatzTypNew());
+    umsatzButtons.addButton(i18n.tr("Neue Umsatz-Kategorie..."),new UmsatzTypNew(),null,false,"text-x-generic.png");
 
-    // TODO ICONS FEHLEN
     ButtonArea buttons = new ButtonArea(getParent(),2);
     buttons.addButton(new Back(false));
 		buttons.addButton(i18n.tr("Speichern"),new Action()
@@ -122,7 +109,7 @@ public class Settings extends AbstractView {
       {
       	control.handleStore();
       }
-    },null,true);
+    },null,true,"document-save.png");
 
     // Mal checken, ob wir uns das zuletzt aktive Tab gemerkt haben.
     if (lastActiveTab != null)
@@ -159,6 +146,10 @@ public class Settings extends AbstractView {
 
 /**********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.47  2009/05/08 13:58:30  willuhn
+ * @N Icons in allen Menus und auf allen Buttons
+ * @N Fuer Umsatz-Kategorien koennen nun benutzerdefinierte Farben vergeben werden
+ *
  * Revision 1.46  2009/05/06 23:11:23  willuhn
  * @N Mehr Icons auf Buttons
  *

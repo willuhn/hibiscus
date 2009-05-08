@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SparQuote.java,v $
- * $Revision: 1.18 $
- * $Date: 2009/05/06 23:11:23 $
+ * $Revision: 1.19 $
+ * $Date: 2009/05/08 13:58:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -33,6 +33,7 @@ import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
@@ -153,6 +154,7 @@ public class SparQuote implements Part
    */
   public void paint(Composite parent) throws RemoteException
   {
+    GUI.getView().setLogoText(i18n.tr("Daten werden geladen..."));
     load();
 
     LabelGroup filter = new LabelGroup(parent,i18n.tr("Anzeige einschränken"));
@@ -160,7 +162,6 @@ public class SparQuote implements Part
     filter.addInput(getKontoAuswahl());
     filter.addInput(getTagAuswahl());
 
-    // TODO ICONS FEHLEN
     ButtonArea topButtons = new ButtonArea(parent,2);
     topButtons.addButton(new Back(false));
     topButtons.addButton(i18n.tr("Aktualisieren"), new Action() {
@@ -170,7 +171,7 @@ public class SparQuote implements Part
         listener.handleEvent(null);
       }
     
-    },null,true);
+    },null,true,"view-refresh.png");
     
     // Wir initialisieren die Tabelle erstmal ohne Werte.
     this.table = new TablePart(data == null ? PseudoIterator.fromArray(new UmsatzEntry[]{new UmsatzEntry()}) : data,null);
@@ -516,6 +517,10 @@ public class SparQuote implements Part
 
 /*********************************************************************
  * $Log: SparQuote.java,v $
+ * Revision 1.19  2009/05/08 13:58:30  willuhn
+ * @N Icons in allen Menus und auf allen Buttons
+ * @N Fuer Umsatz-Kategorien koennen nun benutzerdefinierte Farben vergeben werden
+ *
  * Revision 1.18  2009/05/06 23:11:23  willuhn
  * @N Mehr Icons auf Buttons
  *

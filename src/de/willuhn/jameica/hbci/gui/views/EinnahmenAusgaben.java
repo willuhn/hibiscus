@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/EinnahmenAusgaben.java,v $
- * $Revision: 1.7 $
- * $Date: 2009/05/06 23:11:23 $
+ * $Revision: 1.8 $
+ * $Date: 2009/05/08 13:58:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -52,7 +52,6 @@ public class EinnahmenAusgaben extends AbstractView
     group.addLabelPair(i18n.tr("Start-Datum"), control.getStart());
     group.addLabelPair(i18n.tr("End-Datum"), control.getEnd());
 
-    // TODO ICONS FEHLEN
     ButtonArea buttons = new ButtonArea(getParent(), 3);
     buttons.addButton(new Back(false));
     buttons.addButton(i18n.tr("Exportieren..."), new Action(){
@@ -68,7 +67,7 @@ public class EinnahmenAusgaben extends AbstractView
           Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Exportieren: {0}",re.getMessage()),StatusBarMessage.TYPE_ERROR));
         }
       }
-    });
+    },null,false,"document-save.png");
     buttons.addButton(i18n.tr("Aktualisieren"), new Action()
     {
     
@@ -88,7 +87,7 @@ public class EinnahmenAusgaben extends AbstractView
         }
       }
     
-    },null,true);
+    },null,true,"view-refresh.png");
 
     final TablePart table = control.getTable();
     table.paint(this.getParent());
@@ -97,6 +96,10 @@ public class EinnahmenAusgaben extends AbstractView
 }
 /*******************************************************************************
  * $Log: EinnahmenAusgaben.java,v $
+ * Revision 1.8  2009/05/08 13:58:30  willuhn
+ * @N Icons in allen Menus und auf allen Buttons
+ * @N Fuer Umsatz-Kategorien koennen nun benutzerdefinierte Farben vergeben werden
+ *
  * Revision 1.7  2009/05/06 23:11:23  willuhn
  * @N Mehr Icons auf Buttons
  *

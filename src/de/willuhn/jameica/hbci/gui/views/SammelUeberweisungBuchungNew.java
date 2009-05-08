@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/SammelUeberweisungBuchungNew.java,v $
- * $Revision: 1.8 $
- * $Date: 2009/05/06 23:11:23 $
+ * $Revision: 1.9 $
+ * $Date: 2009/05/08 13:58:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -42,7 +42,7 @@ public class SammelUeberweisungBuchungNew extends AbstractView {
 		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
     SammelTransfer l = control.getBuchung().getSammelTransfer();
-    GUI.getView().setTitle(i18n.tr("Buchung bearbeiten [{0}]",l.getBezeichnung()));
+    GUI.getView().setTitle(i18n.tr("Sammel-Überweisung {0}: Buchung bearbeiten",l.getBezeichnung()));
 		
     SimpleContainer group = new SimpleContainer(getParent());
     group.addHeadline(i18n.tr("Empfänger"));
@@ -61,8 +61,7 @@ public class SammelUeberweisungBuchungNew extends AbstractView {
 		ButtonArea buttonArea = new ButtonArea(getParent(),4);
     buttonArea.addButton(new Back(l.ausgefuehrt()));
     
-    // TODO ICONS FEHLEN
-    Button delete = new Button(i18n.tr("Löschen"), new SammelTransferBuchungDelete(),control.getBuchung());
+    Button delete = new Button(i18n.tr("Löschen"), new SammelTransferBuchungDelete(),control.getBuchung(),false,"user-trash-full.png");
     delete.setEnabled(!l.ausgefuehrt());
     buttonArea.addButton(delete);
 
@@ -70,7 +69,7 @@ public class SammelUeberweisungBuchungNew extends AbstractView {
       public void handleAction(Object context) throws ApplicationException {
         control.handleStore(false);
       }
-    });
+    },null,false,"document-save.png");
     store.setEnabled(!l.ausgefuehrt());
     buttonArea.addButton(store);
     
@@ -79,7 +78,7 @@ public class SammelUeberweisungBuchungNew extends AbstractView {
       public void handleAction(Object context) throws ApplicationException {
         control.handleStore(true);
       }
-    },null,!l.ausgefuehrt());
+    },null,!l.ausgefuehrt(),"go-next.png");
     store2.setEnabled(!l.ausgefuehrt());
     buttonArea.addButton(store2);
   }
@@ -88,6 +87,10 @@ public class SammelUeberweisungBuchungNew extends AbstractView {
 
 /**********************************************************************
  * $Log: SammelUeberweisungBuchungNew.java,v $
+ * Revision 1.9  2009/05/08 13:58:30  willuhn
+ * @N Icons in allen Menus und auf allen Buttons
+ * @N Fuer Umsatz-Kategorien koennen nun benutzerdefinierte Farben vergeben werden
+ *
  * Revision 1.8  2009/05/06 23:11:23  willuhn
  * @N Mehr Icons auf Buttons
  *
