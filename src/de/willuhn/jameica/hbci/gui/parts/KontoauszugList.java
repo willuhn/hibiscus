@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.24 $
- * $Date: 2009/05/08 13:58:30 $
+ * $Revision: 1.25 $
+ * $Date: 2009/05/08 14:22:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -195,6 +195,30 @@ public class KontoauszugList extends UmsatzList
       return this.kontoAuswahl;
 
     this.kontoAuswahl = new KontoInput(null);
+    Konto preset = null;
+
+    /////////////////////
+    // Preset laden
+    String s = mySettings.getString("kontoauszug.list.konto",null);
+    if (s != null && s.length() > 0)
+    {
+      try
+      {
+        preset = (Konto) de.willuhn.jameica.hbci.Settings.getDBService().createObject(Konto.class,s);
+      }
+      catch (Exception e)
+      {
+        // Konto existiert wohl nicht mehr - dann loeschen wir die Vorauswahl
+        mySettings.setAttribute("kontoauszug.list.konto",(String)null);
+      }
+    }
+    //
+    /////////////////////
+    
+    // Wir ueberschreiben hier uebrigens bewusst das Default-Konto von
+    // Hibiscus, weil es hier eher nervt
+    this.kontoAuswahl.setPreselected(preset);
+    
     this.kontoAuswahl.setPleaseChoose(i18n.tr("<Alle Konten>"));
     this.kontoAuswahl.addListener(this.listener);
     return this.kontoAuswahl;
@@ -442,10 +466,9 @@ public class KontoauszugList extends UmsatzList
     boolean hasFilter = false;
 
     /////////////////////////////////////////////////////////////////
-    // Konto und Zeitraum
-    // Der Warnhinweis wird nicht fuer die Filter auf dem ersten TAB
-    // angewendet, da sie dort offensichtlich sind
-    if (k != null)     umsaetze.addFilter("konto_id = " + k.getID());
+    // Zeitraum
+    // Der Warnhinweis wird nicht fuer den Zeitraum angezeigt, da der
+    // immer vorhanden ist
     if (start != null) umsaetze.addFilter("valuta >= ?", new Object[]{new java.sql.Date(HBCIProperties.startOfDay(start).getTime())});
     if (end != null)   umsaetze.addFilter("valuta <= ?", new Object[]{new java.sql.Date(HBCIProperties.endOfDay(end).getTime())});
     /////////////////////////////////////////////////////////////////
@@ -453,6 +476,11 @@ public class KontoauszugList extends UmsatzList
     if (gkBLZ    != null && gkBLZ.length() > 0)    {umsaetze.addFilter("empfaenger_blz like ?",new Object[]{"%" + gkBLZ + "%"});hasFilter = true;}
     if (gkNummer != null && gkNummer.length() > 0) {umsaetze.addFilter("empfaenger_konto like ?",new Object[]{"%" + gkNummer + "%"});hasFilter = true;}
     if (gkName   != null && gkName.length() > 0)   {umsaetze.addFilter("LOWER(empfaenger_name) like ?",new Object[]{"%" + gkName.toLowerCase() + "%"});hasFilter = true;}
+    /////////////////////////////////////////////////////////////////
+
+    /////////////////////////////////////////////////////////////////
+    // Konto
+    if (k != null) {umsaetze.addFilter("konto_id = " + k.getID()); hasFilter = true;}
     /////////////////////////////////////////////////////////////////
 
     /////////////////////////////////////////////////////////////////
@@ -479,7 +507,7 @@ public class KontoauszugList extends UmsatzList
     /////////////////////////////////////////////////////////////////
 
 
-    GUI.getView().setLogoText(hasFilter ? i18n.tr("Hinweis: Aufgrund weiterer Suchkriterien werden möglicherweise nicht alle Umsätze angezeigt") : "");
+    GUI.getView().setLogoText(hasFilter ? i18n.tr("Hinweis: Aufgrund von Suchkriterien werden möglicherweise nicht alle Umsätze angezeigt") : "");
     return umsaetze;
   }
 
@@ -634,6 +662,9 @@ public class KontoauszugList extends UmsatzList
 
 /*********************************************************************
  * $Log: KontoauszugList.java,v $
+ * Revision 1.25  2009/05/08 14:22:55  willuhn
+ * @C Default-Konto in Kontoauszuegen nicht verwenden - nervt hier eher nur
+ *
  * Revision 1.24  2009/05/08 13:58:30  willuhn
  * @N Icons in allen Menus und auf allen Buttons
  * @N Fuer Umsatz-Kategorien koennen nun benutzerdefinierte Farben vergeben werden
