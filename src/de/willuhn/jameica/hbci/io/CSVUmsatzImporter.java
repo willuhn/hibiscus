@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Attic/CSVUmsatzImporter.java,v $
- * $Revision: 1.9 $
- * $Date: 2009/01/04 01:25:47 $
+ * $Revision: 1.10 $
+ * $Date: 2009/05/11 22:34:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import java.io.InputStreamReader;
 import java.rmi.RemoteException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
@@ -31,6 +32,7 @@ import org.supercsv.io.ICsvListReader;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.dialogs.CSVImportDialog;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
@@ -63,8 +65,11 @@ public class CSVUmsatzImporter implements Importer
     fieldMap.put("empfaenger_blz",i18n.tr("Gegenkonto BLZ"));
     fieldMap.put("empfaenger_name",i18n.tr("Gegenkonto Kto-Inhaber"));
     fieldMap.put("betrag",i18n.tr("Betrag (im Format 000,00)"));
-    fieldMap.put("zweck",i18n.tr("Verwendungszweck"));
-    fieldMap.put("zweck2",i18n.tr("weiterer Verwendungszweck"));
+    fieldMap.put("zweck",i18n.tr("Verwendungszweck 1"));
+    for (int i=2;i<=HBCIProperties.HBCI_TRANSFER_USAGE_MAXNUM;++i)
+    {
+      fieldMap.put("zweck" + i,i18n.tr("Verwendungszweck {0}",Integer.toString(i)));
+    }
     fieldMap.put("datum",i18n.tr("Datum (im Format (TT.MM.JJJJ)"));
     fieldMap.put("valuta",i18n.tr("Valuta (im Format (TT.MM.JJJJ)"));
     fieldMap.put("saldo",i18n.tr("Saldo (im Format 000,00)"));
@@ -130,6 +135,8 @@ public class CSVUmsatzImporter implements Importer
           u = (Umsatz) service.createObject(Umsatz.class,null);
           u.setKonto((Konto) context);
           
+          ArrayList evz = new ArrayList();
+          
           for (int i=0;i<line.size();++i)
           {
             name = mapping.get(i);
@@ -164,9 +171,25 @@ public class CSVUmsatzImporter implements Importer
               u.setValuta(parseDatum(value));
               continue;
             }
+            
+            boolean found = false;
+            for (int k=3;k<=HBCIProperties.HBCI_TRANSFER_USAGE_MAXNUM;++k)
+            {
+              if (("zweck" + k).equals(name))
+              {
+                evz.add(k-3,value);
+                found = true;
+                break;
+              }
+            }
+            if (found)
+              continue;
 
             u.setGenericAttribute(name,value);
           }
+          if (evz.size() > 0)
+            u.setWeitereVerwendungszwecke((String[])evz.toArray(new String[evz.size()]));
+          
           u.store();
           Application.getMessagingFactory().sendMessage(new ImportMessage(u));
           created++;
@@ -377,6 +400,9 @@ public class CSVUmsatzImporter implements Importer
 
 /*******************************************************************************
  * $Log: CSVUmsatzImporter.java,v $
+ * Revision 1.10  2009/05/11 22:34:13  willuhn
+ * @N BUGZILLA 713
+ *
  * Revision 1.9  2009/01/04 01:25:47  willuhn
  * @N Checksumme von Umsaetzen wird nun generell beim Anlegen des Datensatzes gespeichert. Damit koennen Umsaetze nun problemlos geaendert werden, ohne mit "hasChangedByUser" checken zu muessen. Die Checksumme bleibt immer erhalten, weil sie in UmsatzImpl#insert() sofort zu Beginn angelegt wird
  * @N Umsaetze sind nun vollstaendig editierbar
