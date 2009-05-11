@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.25 $
- * $Date: 2009/05/08 14:22:55 $
+ * $Revision: 1.26 $
+ * $Date: 2009/05/11 14:39:54 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -129,8 +129,6 @@ public class KontoauszugList extends UmsatzList
     folder.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     folder.setBackground(Color.BACKGROUND.getSWTColor());
 
-    // TODO: Alle Filterkriterien speichern, ggf. Warnhinweis anzeigen und beim Zurueckspringen
-    //       aus den Details wieder an die korrekte Stelle springen
     TabGroup zeitraum = new TabGroup(folder,i18n.tr("Konto/Zeitraum"));
     zeitraum.addLabelPair(i18n.tr("Konto"), getKontoAuswahl());
     zeitraum.addLabelPair(i18n.tr("Start-Datum"), getStart());
@@ -310,7 +308,7 @@ public class KontoauszugList extends UmsatzList
 
     AdresseAuswahlDialog d = new AdresseAuswahlDialog(AdresseAuswahlDialog.POSITION_MOUSE);
     d.addCloseListener(new AddressListener());
-    this.gegenkontoNummer = new DialogInput("",d);
+    this.gegenkontoNummer = new DialogInput(mySettings.getString("kontoauszug.list.gegenkonto.nummer",null),d);
     this.gegenkontoNummer.setValidChars(HBCIProperties.HBCI_KTO_VALIDCHARS);
     this.gegenkontoNummer.addListener(this.listener);
     return this.gegenkontoNummer;
@@ -326,7 +324,7 @@ public class KontoauszugList extends UmsatzList
     if (this.gegenkontoBLZ != null)
       return this.gegenkontoBLZ;
     
-    this.gegenkontoBLZ = new BLZInput("");
+    this.gegenkontoBLZ = new BLZInput(mySettings.getString("kontoauszug.list.gegenkonto.blz",null));
     this.gegenkontoBLZ.addListener(this.listener);
     return this.gegenkontoBLZ;
   }
@@ -340,7 +338,7 @@ public class KontoauszugList extends UmsatzList
   {
     if (this.gegenkontoName != null)
       return this.gegenkontoName;
-    this.gegenkontoName = new TextInput("",HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
+    this.gegenkontoName = new TextInput(mySettings.getString("kontoauszug.list.gegenkonto.name",null),HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
     this.gegenkontoName.setValidChars(HBCIProperties.HBCI_DTAUS_VALIDCHARS);
     this.gegenkontoName.addListener(this.listener);
     return this.gegenkontoName;
@@ -355,7 +353,7 @@ public class KontoauszugList extends UmsatzList
   {
     if (this.text != null)
       return this.text;
-    this.text = new TextInput("",HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH);
+    this.text = new TextInput(mySettings.getString("kontoauszug.list.text",null),HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH);
     this.text.addListener(this.listener);
     return this.text;
   }
@@ -370,7 +368,7 @@ public class KontoauszugList extends UmsatzList
     if (this.betragFrom != null)
       return this.betragFrom;
     
-    this.betragFrom = new DecimalInput(Double.NaN, HBCI.DECIMALFORMAT);
+    this.betragFrom = new DecimalInput(mySettings.getDouble("kontoauszug.list.betrag.from",Double.NaN), HBCI.DECIMALFORMAT);
     this.betragFrom.setComment(HBCIProperties.CURRENCY_DEFAULT_DE);
     this.betragFrom.addListener(this.listener);
     this.betragFrom.addListener(new Listener()
@@ -419,7 +417,7 @@ public class KontoauszugList extends UmsatzList
     if (this.betragTo != null)
       return this.betragTo;
     
-    this.betragTo = new DecimalInput(Double.NaN, HBCI.DECIMALFORMAT);
+    this.betragTo = new DecimalInput(mySettings.getDouble("kontoauszug.list.betrag.to",Double.NaN), HBCI.DECIMALFORMAT);
     this.betragTo.setComment(HBCIProperties.CURRENCY_DEFAULT_DE);
     this.betragTo.addListener(this.listener);
     this.betragTo.addListener(new Listener()
@@ -581,9 +579,18 @@ public class KontoauszugList extends UmsatzList
             Date from = (Date) getStart().getValue();
             Date to   = (Date) getEnd().getValue();
             Konto k   = (Konto) getKontoAuswahl().getValue();
+            Double bFrom = (Double) getMindestBetrag().getValue();
+            Double bTo   = (Double) getHoechstBetrag().getValue();
             mySettings.setAttribute("kontoauszug.list.from",from == null ? null : HBCI.DATEFORMAT.format(from));
             mySettings.setAttribute("kontoauszug.list.to",to == null ? null : HBCI.DATEFORMAT.format(to));
+            mySettings.setAttribute("kontoauszug.list.gegenkonto.nummer",getGegenkontoNummer().getText());
             mySettings.setAttribute("kontoauszug.list.konto",k == null ? null : k.getID());
+            mySettings.setAttribute("kontoauszug.list.gegenkonto.nummer",getGegenkontoNummer().getText());
+            mySettings.setAttribute("kontoauszug.list.gegenkonto.blz",(String) getGegenkontoBLZ().getValue());
+            mySettings.setAttribute("kontoauszug.list.gegenkonto.name",(String) getGegenkontoName().getValue());
+            mySettings.setAttribute("kontoauszug.list.text",(String) getText().getValue());
+            mySettings.setAttribute("kontoauszug.list.betrag.from",bFrom == null ? Double.NaN : bFrom.doubleValue());
+            mySettings.setAttribute("kontoauszug.list.betrag.to",bTo == null ? Double.NaN : bTo.doubleValue());
           }
           catch (RemoteException re)
           {
@@ -662,6 +669,9 @@ public class KontoauszugList extends UmsatzList
 
 /*********************************************************************
  * $Log: KontoauszugList.java,v $
+ * Revision 1.26  2009/05/11 14:39:54  willuhn
+ * @C Es werden jetzt wieder alle Filterkriterien gespeichert, da auch ein Warnhinweis angezeigt wird, wenn Filter aktiv sind
+ *
  * Revision 1.25  2009/05/08 14:22:55  willuhn
  * @C Default-Konto in Kontoauszuegen nicht verwenden - nervt hier eher nur
  *
