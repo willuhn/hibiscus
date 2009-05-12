@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UeberweisungImpl.java,v $
- * $Revision: 1.41 $
- * $Date: 2008/08/01 11:05:14 $
+ * $Revision: 1.42 $
+ * $Date: 2009/05/12 22:53:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,16 +15,21 @@ package de.willuhn.jameica.hbci.server;
 import java.rmi.RemoteException;
 import java.util.Date;
 
+import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Duplicatable;
 import de.willuhn.jameica.hbci.rmi.Transfer;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
+import de.willuhn.util.ApplicationException;
+import de.willuhn.util.I18N;
 
 /**
  * Eine Ueberweisung.
  */
-public class UeberweisungImpl extends AbstractBaseUeberweisungImpl
-  implements Ueberweisung
+public class UeberweisungImpl extends AbstractBaseUeberweisungImpl implements Ueberweisung
 {
+  private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
    * @throws RemoteException
@@ -56,7 +61,43 @@ public class UeberweisungImpl extends AbstractBaseUeberweisungImpl
     
     u.setTermin(isTerminUeberweisung() ? getTermin() : new Date());
     u.setTerminUeberweisung(isTerminUeberweisung());
+    u.setUmbuchung(isUmbuchung());
     return u;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.server.AbstractHibiscusTransferImpl#insertCheck()
+   */
+  protected void insertCheck() throws ApplicationException
+  {
+    super.insertCheck();
+    
+    // Wir checken noch die Plausi fuer Umbuchungen
+    try
+    {
+      if (isUmbuchung())
+      {
+        // Sollte in der GUI gar nicht moeglich sein, da beide Werte in einer
+        // Combo-Box stehen und da nur eines von beiden ausgewaehlt werden kann
+        if (isTerminUeberweisung())
+        {
+          Logger.error("SUSPECT: the gui should block both - \"umbuchung\" and \"terminueberweisung\"");
+          throw new ApplicationException(i18n.tr("Eine Umbuchung kann nicht als Termin-Auftrag gesendet werden"));
+        }
+        
+        // Checken, ob Ziel-BLZ identisch mit Quell-BLZ
+        // NULL-Checks brauchen wir hier nicht - das ist bereits in super.insertCheck() gemacht worden
+        String dest = getGegenkontoBLZ();
+        String src  = getKonto().getBLZ();
+        if (!dest.equals(src))
+          throw new ApplicationException(i18n.tr("Umbuchungen sind nur zu einem Konto bei Ihrer eigenen Bank möglich"));
+      }
+    }
+    catch (RemoteException e)
+    {
+      Logger.error("error while checking transfer",e);
+      throw new ApplicationException(i18n.tr("Fehler beim Prüfen des Auftrages."));
+    }
   }
 
   /**
@@ -66,7 +107,6 @@ public class UeberweisungImpl extends AbstractBaseUeberweisungImpl
   {
     Integer i = (Integer) getAttribute("banktermin");
     return i != null && i.intValue() == 1;
-    
   }
 
   /**
@@ -96,11 +136,31 @@ public class UeberweisungImpl extends AbstractBaseUeberweisungImpl
   {
     return Transfer.TYP_UEBERWEISUNG;
   }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#isUmbuchung()
+   */
+  public boolean isUmbuchung() throws RemoteException
+  {
+    Integer i = (Integer) getAttribute("umbuchung");
+    return i != null && i.intValue() == 1;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#setUmbuchung(boolean)
+   */
+  public void setUmbuchung(boolean b) throws RemoteException
+  {
+    setAttribute("umbuchung",b ? new Integer(1) : null);
+  }
 }
 
 
 /**********************************************************************
  * $Log: UeberweisungImpl.java,v $
+ * Revision 1.42  2009/05/12 22:53:33  willuhn
+ * @N BUGZILLA 189 - Ueberweisung als Umbuchung
+ *
  * Revision 1.41  2008/08/01 11:05:14  willuhn
  * @N BUGZILLA 587
  *

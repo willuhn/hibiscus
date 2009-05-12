@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractBaseUeberweisungImpl.java,v $
- * $Revision: 1.13 $
- * $Date: 2009/02/18 10:48:42 $
+ * $Revision: 1.14 $
+ * $Date: 2009/05/12 22:53:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -57,7 +57,7 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractHibiscusTrans
 		}
 		catch (RemoteException e)
 		{
-			Logger.error("error while checking ueberweisung",e);
+			Logger.error("error while checking transfer",e);
 			throw new ApplicationException(i18n.tr("Fehler beim Prüfen des Auftrags."));
 		}
 		super.updateCheck();
@@ -153,6 +153,9 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractHibiscusTrans
 
 /**********************************************************************
  * $Log: AbstractBaseUeberweisungImpl.java,v $
+ * Revision 1.14  2009/05/12 22:53:33  willuhn
+ * @N BUGZILLA 189 - Ueberweisung als Umbuchung
+ *
  * Revision 1.13  2009/02/18 10:48:42  willuhn
  * @N Neuer Schalter "transfer.markexecuted.before", um festlegen zu koennen, wann ein Auftrag als ausgefuehrt gilt (wenn die Quittung von der Bank vorliegt oder wenn der Auftrag erzeugt wurde)
  *

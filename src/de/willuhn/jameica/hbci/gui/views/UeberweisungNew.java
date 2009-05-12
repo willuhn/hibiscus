@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UeberweisungNew.java,v $
- * $Revision: 1.22 $
- * $Date: 2009/05/06 23:11:23 $
+ * $Revision: 1.23 $
+ * $Date: 2009/05/12 22:53:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -60,8 +60,8 @@ public class UeberweisungNew extends AbstractView {
 		details.addLabelPair(i18n.tr("weiterer Verwendungszweck"),control.getZweck2());
     details.addLabelPair(i18n.tr("Betrag"),                   control.getBetrag());
     details.addLabelPair(i18n.tr("Textschlüssel"),            control.getTextSchluessel());
+    details.addLabelPair(i18n.tr("Auftragstyp"),              control.getTyp());
     details.addLabelPair(i18n.tr("Termin"),                   control.getTermin());
-    details.addCheckbox(control.getBankTermin(), i18n.tr("Als Termin-Überweisung an Bank senden"));
 
 		ButtonArea buttonArea = new ButtonArea(getParent(),4);
     buttonArea.addButton(new Back(transfer.ausgefuehrt()));
@@ -90,6 +90,9 @@ public class UeberweisungNew extends AbstractView {
 
 /**********************************************************************
  * $Log: UeberweisungNew.java,v $
+ * Revision 1.23  2009/05/12 22:53:33  willuhn
+ * @N BUGZILLA 189 - Ueberweisung als Umbuchung
+ *
  * Revision 1.22  2009/05/06 23:11:23  willuhn
  * @N Mehr Icons auf Buttons
  *

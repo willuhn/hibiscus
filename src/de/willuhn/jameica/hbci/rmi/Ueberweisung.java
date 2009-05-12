@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Ueberweisung.java,v $
- * $Revision: 1.17 $
- * $Date: 2008/08/01 11:05:14 $
+ * $Revision: 1.18 $
+ * $Date: 2009/05/12 22:53:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -33,11 +33,29 @@ public interface Ueberweisung extends BaseUeberweisung, Duplicatable
    * @throws RemoteException
    */
   public void setTerminUeberweisung(boolean termin) throws RemoteException;
+
+  /**
+   * Prueft, ob es sich um einen bankinterne Umbuchung handelt.
+   * @return true, wenn es eine bankinterne Umbuchung ist.
+   * @throws RemoteException
+   */
+  public boolean isUmbuchung() throws RemoteException;
+  
+  /**
+   * Legt fest, ob es sich um eine bankinterne Umbuchung handelt.
+   * @param b true, wenn es eine bankinterne Umbuchung sein soll.
+   * @throws RemoteException
+   */
+  public void setUmbuchung(boolean b) throws RemoteException;
+
 }
 
 
 /**********************************************************************
  * $Log: Ueberweisung.java,v $
+ * Revision 1.18  2009/05/12 22:53:33  willuhn
+ * @N BUGZILLA 189 - Ueberweisung als Umbuchung
+ *
  * Revision 1.17  2008/08/01 11:05:14  willuhn
  * @N BUGZILLA 587
  *
@@ -46,54 +64,4 @@ public interface Ueberweisung extends BaseUeberweisung, Duplicatable
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
  * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
  * @N Anbindung externer Adressbuecher
- *
- * Revision 1.15  2005/11/14 13:08:11  willuhn
- * @N Termin-Ueberweisungen
- *
- * Revision 1.14  2005/03/02 17:59:30  web0
- * @N some refactoring
- *
- * Revision 1.13  2005/02/19 16:49:32  willuhn
- * @B bugs 3,8,10
- *
- * Revision 1.12  2005/02/04 18:27:54  willuhn
- * @C Refactoring zwischen Lastschrift und Ueberweisung
- *
- * Revision 1.11  2005/02/03 18:57:42  willuhn
- * *** empty log message ***
- *
- * Revision 1.10  2005/01/19 00:16:04  willuhn
- * @N Lastschriften
- *
- * Revision 1.9  2004/10/25 22:39:14  willuhn
- * *** empty log message ***
- *
- * Revision 1.8  2004/10/19 23:33:31  willuhn
- * *** empty log message ***
- *
- * Revision 1.7  2004/07/11 16:14:29  willuhn
- * @N erster Code fuer Dauerauftraege
- *
- * Revision 1.6  2004/04/24 19:04:51  willuhn
- * @N Ueberweisung.execute works!! ;)
- *
- * Revision 1.5  2004/04/05 23:28:45  willuhn
- * *** empty log message ***
- *
- * Revision 1.4  2004/03/06 18:25:10  willuhn
- * @D javadoc
- * @C removed empfaenger_id from umsatz
- *
- * Revision 1.3  2004/03/05 00:19:23  willuhn
- * @D javadoc fixes
- * @C Converter moved into server package
- *
- * Revision 1.2  2004/02/17 01:01:38  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2004/02/17 00:53:22  willuhn
- * @N SaldoAbfrage
- * @N Ueberweisung
- * @N Empfaenger
- *
  **********************************************************************/

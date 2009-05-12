@@ -151,6 +151,7 @@ CREATE TABLE ueberweisung (
      , zweck3 TEXT
      , termin DATE NOT NULL
      , banktermin int(10)
+     , umbuchung int(1)
      , ausgefuehrt int(10) NOT NULL
      , typ VARCHAR(2)
      , UNIQUE (id)
@@ -287,4 +288,4 @@ ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
 
-INSERT INTO version (name,version) values ('db',21);
+INSERT INTO version (name,version) values ('db',22);

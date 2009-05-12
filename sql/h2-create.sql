@@ -40,6 +40,7 @@ CREATE TABLE ueberweisung (
   zweck3 varchar(1000),
   termin date NOT NULL,
   banktermin int(1) NULL,
+  umbuchung int(1) NULL,
   ausgefuehrt int(1) NOT NULL,
   typ varchar(2) NULL,
   UNIQUE (id),
@@ -287,6 +288,6 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',21);
+INSERT INTO version (name,version) values ('db',22);
   
 COMMIT;
