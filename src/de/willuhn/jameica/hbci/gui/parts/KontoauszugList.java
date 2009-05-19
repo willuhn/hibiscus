@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.26 $
- * $Date: 2009/05/11 14:39:54 $
+ * $Revision: 1.27 $
+ * $Date: 2009/05/19 21:55:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -180,6 +180,9 @@ public class KontoauszugList extends UmsatzList
 
     // Zum Schluss Sortierung aktualisieren
     sort();
+    
+    // Machen wir explizit nochmal, weil wir die paint()-Methode ueberschrieben haben
+    restoreState();
   }
 
   /**
@@ -669,6 +672,9 @@ public class KontoauszugList extends UmsatzList
 
 /*********************************************************************
  * $Log: KontoauszugList.java,v $
+ * Revision 1.27  2009/05/19 21:55:57  willuhn
+ * @B Selektion und Markierung auch bei angepasster Sortierung wiederherstellen
+ *
  * Revision 1.26  2009/05/11 14:39:54  willuhn
  * @C Es werden jetzt wieder alle Filterkriterien gespeichert, da auch ein Warnhinweis angezeigt wird, wenn Filter aktiv sind
  *
