@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzDetailEdit.java,v $
- * $Revision: 1.2 $
- * $Date: 2009/01/20 10:51:46 $
+ * $Revision: 1.3 $
+ * $Date: 2009/05/28 10:45:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -41,7 +41,7 @@ public class UmsatzDetailEdit extends AbstractUmsatzDetail
       {
         getControl().handleStore();
       }
-    },null,true);
+    },null,true,"document-save.png");
   }
 
   /**
@@ -58,6 +58,9 @@ public class UmsatzDetailEdit extends AbstractUmsatzDetail
 
 /**********************************************************************
  * $Log: UmsatzDetailEdit.java,v $
+ * Revision 1.3  2009/05/28 10:45:18  willuhn
+ * @N more icons
+ *
  * Revision 1.2  2009/01/20 10:51:46  willuhn
  * @N Mehr Icons - fuer Buttons
  *
