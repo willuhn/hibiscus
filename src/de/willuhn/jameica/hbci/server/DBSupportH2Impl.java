@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DBSupportH2Impl.java,v $
- * $Revision: 1.9 $
- * $Date: 2009/04/05 21:40:56 $
+ * $Revision: 1.10 $
+ * $Date: 2009/05/28 22:39:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -109,6 +109,13 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
 
     if (HBCIDBService.SETTINGS.getBoolean("database.driver.h2.encryption",true))
       url += ";CIPHER=" + HBCIDBService.SETTINGS.getString("database.driver.h2.encryption.algorithm","XTEA");
+    if (HBCIDBService.SETTINGS.getBoolean("database.driver.h2.recover",false))
+    {
+      Logger.warn("#############################################################");
+      Logger.warn("## DATABASE RECOVERY ACTIVATED                             ##");
+      Logger.warn("#############################################################");
+      url += ";RECOVER=1";
+    }
     return url;
   }
 
@@ -172,6 +179,9 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
 
 /*********************************************************************
  * $Log: DBSupportH2Impl.java,v $
+ * Revision 1.10  2009/05/28 22:39:01  willuhn
+ * @N Option zum Aktivieren des Recover-Modus. Siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=57830#57830
+ *
  * Revision 1.9  2009/04/05 21:40:56  willuhn
  * @C checkConnection() nur noch alle hoechstens 10 Sekunden ausfuehren
  *
