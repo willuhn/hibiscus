@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DBSupportH2Impl.java,v $
- * $Revision: 1.10 $
- * $Date: 2009/05/28 22:39:01 $
+ * $Revision: 1.11 $
+ * $Date: 2009/06/02 15:49:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ package de.willuhn.jameica.hbci.server;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.lang.reflect.Method;
 import java.rmi.RemoteException;
 import java.security.SecureRandom;
 import java.sql.Connection;
@@ -39,7 +40,17 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
   {
     // H2-Datenbank verwendet uppercase Identifier
     Logger.info("switching dbservice to uppercase");
-    System.setProperty(HBCIDBServiceImpl.class.getName() + ".uppercase","true");    
+    System.setProperty(HBCIDBServiceImpl.class.getName() + ".uppercase","true");
+    
+    try
+    {
+      Method m = Application.getClassLoader().load("org.h2.engine.Constants").getMethod("getVersion",(Class[]) null);
+      Logger.info("h2 version: " + m.invoke(null,(Object[])null));
+    }
+    catch (Throwable t)
+    {
+      Logger.warn("unable to determine h2 version");
+    }
   }
   
   /**
@@ -179,6 +190,9 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
 
 /*********************************************************************
  * $Log: DBSupportH2Impl.java,v $
+ * Revision 1.11  2009/06/02 15:49:41  willuhn
+ * @N method to display h2 database version
+ *
  * Revision 1.10  2009/05/28 22:39:01  willuhn
  * @N Option zum Aktivieren des Recover-Modus. Siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=57830#57830
  *
