@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/DTAUSUmsatzImporter.java,v $
- * $Revision: 1.9 $
- * $Date: 2009/01/04 01:25:47 $
+ * $Revision: 1.10 $
+ * $Date: 2009/06/15 08:51:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,14 +28,6 @@ import de.willuhn.util.ApplicationException;
  */
 public class DTAUSUmsatzImporter extends AbstractDTAUSImporter
 {
-  /**
-   * ct.
-   */
-  public DTAUSUmsatzImporter()
-  {
-    super();
-  }
-  
   /**
    * @see de.willuhn.jameica.hbci.io.AbstractDTAUSImporter#create(de.willuhn.datasource.rmi.DBObject, java.lang.Object, de.jost_net.OBanToo.Dtaus.CSatz, de.jost_net.OBanToo.Dtaus.ASatz)
    */
@@ -97,6 +89,9 @@ public class DTAUSUmsatzImporter extends AbstractDTAUSImporter
 
 /*********************************************************************
  * $Log: DTAUSUmsatzImporter.java,v $
+ * Revision 1.10  2009/06/15 08:51:16  willuhn
+ * @N BUGZILLA 736
+ *
  * Revision 1.9  2009/01/04 01:25:47  willuhn
  * @N Checksumme von Umsaetzen wird nun generell beim Anlegen des Datensatzes gespeichert. Damit koennen Umsaetze nun problemlos geaendert werden, ohne mit "hasChangedByUser" checken zu muessen. Die Checksumme bleibt immer erhalten, weil sie in UmsatzImpl#insert() sofort zu Beginn angelegt wird
  * @N Umsaetze sind nun vollstaendig editierbar

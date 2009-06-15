@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/DTAUSSammelTransferImporter.java,v $
- * $Revision: 1.11 $
- * $Date: 2008/12/17 23:24:23 $
+ * $Revision: 1.12 $
+ * $Date: 2009/06/15 08:51:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,6 +27,7 @@ import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.ProgressMonitor;
@@ -38,14 +39,6 @@ public class DTAUSSammelTransferImporter extends AbstractDTAUSImporter
 {
   private Hashtable transferCache = null;
 
-  /**
-   * ct.
-   */
-  public DTAUSSammelTransferImporter()
-  {
-    super();
-  }
-  
   /**
    * @see de.willuhn.jameica.hbci.io.Importer#doImport(java.lang.Object, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor)
    */
@@ -66,6 +59,32 @@ public class DTAUSSammelTransferImporter extends AbstractDTAUSImporter
     if (t == null)
     {
       t = (SammelTransfer) skel;
+      
+      try
+      {
+        String et = asatz.getGutschriftLastschrift();
+        if ((t instanceof SammelUeberweisung) && "LK".equals(et))
+        {
+          if (!Application.getCallback().askUser(i18n.tr("Sie versuchen, eine DTAUS-Datei mit\nLastschriften als ‹berweisungen zu importieren.\nSind Sie sicher?")))
+            throw new OperationCanceledException("operation cancelled by user");
+        }
+        else if ((t instanceof SammelLastschrift) && "GK".equals(et))
+        {
+          if (!Application.getCallback().askUser(i18n.tr("Sie versuchen, eine DTAUS-Datei mit\n‹berweisungen als Lastschriften zu importieren.\nSind Sie sicher?")))
+            throw new OperationCanceledException("operation cancelled by user");
+        }
+      }
+      catch (OperationCanceledException oce)
+      {
+        throw oce;
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to ask user",e);
+        // Dann importieren wir halt
+      }
+      
+
       this.transferCache.put(asatz,t);
 
       // Konto suchen
@@ -138,6 +157,9 @@ public class DTAUSSammelTransferImporter extends AbstractDTAUSImporter
 
 /*********************************************************************
  * $Log: DTAUSSammelTransferImporter.java,v $
+ * Revision 1.12  2009/06/15 08:51:16  willuhn
+ * @N BUGZILLA 736
+ *
  * Revision 1.11  2008/12/17 23:24:23  willuhn
  * @N Korrektes Mapping der Textschluessel beim Export/Import von Sammelauftraegen von/nach DTAUS
  *
