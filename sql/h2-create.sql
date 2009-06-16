@@ -211,7 +211,7 @@ CREATE TABLE sueberweisungbuchung (
 CREATE TABLE systemnachricht (
   id IDENTITY,
   blz varchar(15) NOT NULL,
-  nachricht varchar(1000) NOT NULL,
+  nachricht varchar(4000) NOT NULL,
   datum date NOT NULL,
   gelesen int(1) NOT NULL,
   UNIQUE (id),
@@ -288,6 +288,6 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',22);
+INSERT INTO version (name,version) values ('db',23);
   
 COMMIT;
