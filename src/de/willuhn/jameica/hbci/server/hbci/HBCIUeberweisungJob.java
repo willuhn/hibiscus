@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUeberweisungJob.java,v $
- * $Revision: 1.44 $
- * $Date: 2009/05/12 22:53:33 $
+ * $Revision: 1.45 $
+ * $Date: 2009/06/29 09:00:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -198,11 +198,30 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
     konto.addToProtokoll(msg,Protokoll.TYP_ERROR);
     return msg;
   }
+
+  /**
+   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markCancelled()
+   */
+  void markCancelled() throws RemoteException, ApplicationException
+  {
+    // Wenn der Auftrag abgebrochen wurde und schon als ausgefuehrt markiert wurde, machen
+    // wir das jetzt wieder rurckgaengig
+    if (markExecutedBefore)
+      ueberweisung.setAusgefuehrt(false);
+    
+    String msg = i18n.tr("Ausführung der Überweisung an {0} abgebrochen",ueberweisung.getGegenkontoName());
+    konto.addToProtokoll(msg,Protokoll.TYP_ERROR);
+  }
+  
+  
 }
 
 
 /**********************************************************************
  * $Log: HBCIUeberweisungJob.java,v $
+ * Revision 1.45  2009/06/29 09:00:23  willuhn
+ * @B wenn das Feature "transfer.markexecuted.before" aktiv ist, wurden Auftraege auch dann als ausgefuehrt markiert, wenn sie abgebrochen wurden - die Methode markCancelled() war nicht ueberschrieben worden
+ *
  * Revision 1.44  2009/05/12 22:53:33  willuhn
  * @N BUGZILLA 189 - Ueberweisung als Umbuchung
  *

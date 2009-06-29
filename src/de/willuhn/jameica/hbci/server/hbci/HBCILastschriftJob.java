@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCILastschriftJob.java,v $
- * $Revision: 1.21 $
- * $Date: 2009/03/24 23:02:51 $
+ * $Revision: 1.22 $
+ * $Date: 2009/06/29 09:00:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -171,12 +171,28 @@ public class HBCILastschriftJob extends AbstractHBCIJob
     return msg;
   }
   
+  /**
+   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markCancelled()
+   */
+  void markCancelled() throws RemoteException, ApplicationException
+  {
+    // Wenn der Auftrag abgebrochen wurde und schon als ausgefuehrt markiert wurde, machen
+    // wir das jetzt wieder rurckgaengig
+    if (markExecutedBefore)
+      lastschrift.setAusgefuehrt(false);
+    
+    String msg = i18n.tr("Ausführung der Lastschrift {0} abgebrochen",lastschrift.getGegenkontoName());
+    konto.addToProtokoll(msg,Protokoll.TYP_ERROR);
+  }
   
 }
 
 
 /**********************************************************************
  * $Log: HBCILastschriftJob.java,v $
+ * Revision 1.22  2009/06/29 09:00:23  willuhn
+ * @B wenn das Feature "transfer.markexecuted.before" aktiv ist, wurden Auftraege auch dann als ausgefuehrt markiert, wenn sie abgebrochen wurden - die Methode markCancelled() war nicht ueberschrieben worden
+ *
  * Revision 1.21  2009/03/24 23:02:51  willuhn
  * @B BUGZILLA 712
  *

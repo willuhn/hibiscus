@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIAuslandsUeberweisungJob.java,v $
- * $Revision: 1.3 $
- * $Date: 2009/05/07 15:13:37 $
+ * $Revision: 1.4 $
+ * $Date: 2009/06/29 09:00:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -166,11 +166,29 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
     konto.addToProtokoll(msg,Protokoll.TYP_ERROR);
     return msg;
   }
+
+  /**
+   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markCancelled()
+   */
+  void markCancelled() throws RemoteException, ApplicationException
+  {
+    // Wenn der Auftrag abgebrochen wurde und schon als ausgefuehrt markiert wurde, machen
+    // wir das jetzt wieder rurckgaengig
+    if (markExecutedBefore)
+      ueberweisung.setAusgefuehrt(false);
+    
+    String msg = i18n.tr("Ausführung des Auftrages an {0} abgebrochen",ueberweisung.getGegenkontoName());
+    konto.addToProtokoll(msg,Protokoll.TYP_ERROR);
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: HBCIAuslandsUeberweisungJob.java,v $
+ * Revision 1.4  2009/06/29 09:00:23  willuhn
+ * @B wenn das Feature "transfer.markexecuted.before" aktiv ist, wurden Auftraege auch dann als ausgefuehrt markiert, wenn sie abgebrochen wurden - die Methode markCancelled() war nicht ueberschrieben worden
+ *
  * Revision 1.3  2009/05/07 15:13:37  willuhn
  * @N BIC in Auslandsueberweisung
  *
