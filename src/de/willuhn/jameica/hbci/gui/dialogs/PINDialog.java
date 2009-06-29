@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/PINDialog.java,v $
- * $Revision: 1.19 $
- * $Date: 2009/03/31 11:01:40 $
+ * $Revision: 1.20 $
+ * $Date: 2009/06/29 09:25:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.gui.dialogs;
 import java.rmi.RemoteException;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
 import org.kapott.hbci.manager.HBCIUtils;
 import org.kapott.hbci.passport.HBCIPassport;
 
@@ -86,7 +87,7 @@ public class PINDialog extends PasswordDialog {
     if (s != null)
     {
       setTitle(i18n.tr("PIN-Eingabe. Konto: {0}",s));
-      setText(i18n.tr("Bitte geben Sie Ihre PIN ein. Konto: {0}",s));
+      setText(i18n.tr("Bitte geben Sie Ihre PIN ein.\nKonto: {0}",s));
     }
     else
     {
@@ -96,6 +97,15 @@ public class PINDialog extends PasswordDialog {
   }
 
 	/**
+   * @see de.willuhn.jameica.gui.dialogs.PasswordDialog#paint(org.eclipse.swt.widgets.Composite)
+   */
+  protected void paint(Composite parent) throws Exception
+  {
+    super.paint(parent);
+    getShell().pack();
+  }
+
+  /**
    * @see de.willuhn.jameica.gui.dialogs.PasswordDialog#checkPassword(java.lang.String)
    */
   protected boolean checkPassword(String password)
@@ -129,6 +139,9 @@ public class PINDialog extends PasswordDialog {
 
 /**********************************************************************
  * $Log: PINDialog.java,v $
+ * Revision 1.20  2009/06/29 09:25:29  willuhn
+ * @N BUGZILLA 738
+ *
  * Revision 1.19  2009/03/31 11:01:40  willuhn
  * @R Speichern des PIN-Hashes komplett entfernt
  *
