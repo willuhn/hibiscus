@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/LastschriftExport.java,v $
- * $Revision: 1.2 $
- * $Date: 2009/07/09 17:08:02 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoExport.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2009/07/09 17:08:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,12 +13,12 @@
 
 package de.willuhn.jameica.hbci.gui.action;
 
-import de.willuhn.jameica.hbci.rmi.Lastschrift;
+import de.willuhn.jameica.hbci.rmi.Konto;
 
 /**
- * Exporter fuer Lastschriften.
+ * Exporter fuer Konten.
  */
-public class LastschriftExport extends AbstractObjectExport
+public class KontoExport extends AbstractObjectExport
 {
 
   /**
@@ -26,18 +26,15 @@ public class LastschriftExport extends AbstractObjectExport
    */
   Class getExportClass()
   {
-    return Lastschrift.class;
+    return Konto.class;
   }
 
 }
 
 
 /*********************************************************************
- * $Log: LastschriftExport.java,v $
- * Revision 1.2  2009/07/09 17:08:02  willuhn
+ * $Log: KontoExport.java,v $
+ * Revision 1.1  2009/07/09 17:08:03  willuhn
  * @N BUGZILLA #740
- *
- * Revision 1.1  2006/10/16 14:46:30  willuhn
- * @N CSV-Export von Ueberweisungen und Lastschriften
  *
  **********************************************************************/

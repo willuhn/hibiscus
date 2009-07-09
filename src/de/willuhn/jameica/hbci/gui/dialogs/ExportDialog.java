@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/ExportDialog.java,v $
- * $Revision: 1.17 $
- * $Date: 2008/07/11 12:28:02 $
+ * $Revision: 1.18 $
+ * $Date: 2009/07/09 17:08:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -234,16 +234,12 @@ public class ExportDialog extends AbstractDialog
         }
         catch (ApplicationException ae)
         {
-          monitor.setStatusText(ae.getMessage());
-          monitor.setStatus(ProgressMonitor.STATUS_ERROR);
           throw ae;
         }
         catch (Exception e)
         {
-          monitor.setStatus(ProgressMonitor.STATUS_ERROR);
           Logger.error("error while writing objects to " + s,e);
           ApplicationException ae = new ApplicationException(i18n.tr("Fehler beim Exportieren der Daten in {0}",s),e);
-          monitor.setStatusText(ae.getMessage());
           throw ae;
         }
       }
@@ -408,6 +404,9 @@ public class ExportDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: ExportDialog.java,v $
+ * Revision 1.18  2009/07/09 17:08:03  willuhn
+ * @N BUGZILLA #740
+ *
  * Revision 1.17  2008/07/11 12:28:02  willuhn
  * @N BUGZILLA 609
  *

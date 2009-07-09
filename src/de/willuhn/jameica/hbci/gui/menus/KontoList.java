@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/KontoList.java,v $
- * $Revision: 1.18 $
- * $Date: 2009/01/20 10:51:46 $
+ * $Revision: 1.19 $
+ * $Date: 2009/07/09 17:08:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,13 +13,16 @@
 package de.willuhn.jameica.hbci.gui.menus;
 
 import de.willuhn.jameica.gui.extension.Extendable;
+import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.CheckedSingleContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.DauerauftragNew;
 import de.willuhn.jameica.hbci.gui.action.KontoDelete;
+import de.willuhn.jameica.hbci.gui.action.KontoExport;
 import de.willuhn.jameica.hbci.gui.action.KontoFetchUmsaetze;
+import de.willuhn.jameica.hbci.gui.action.KontoImport;
 import de.willuhn.jameica.hbci.gui.action.KontoMarkDefault;
 import de.willuhn.jameica.hbci.gui.action.KontoNew;
 import de.willuhn.jameica.hbci.gui.action.KontoResetAuszugsdatum;
@@ -60,7 +63,11 @@ public class KontoList extends ContextMenu implements Extendable
     addItem(new ContextMenuItem(i18n.tr("Neue Überweisung..."),new UeberweisungNew(),"stock_next.png"));
     addItem(new ContextMenuItem(i18n.tr("Neue Lastschrift..."),new LastschriftNew(),"stock_previous.png"));
     addItem(new ContextMenuItem(i18n.tr("Neuer Dauerauftrag..."),new DauerauftragNew(),"stock_form-time-field.png"));
-  }
+
+    addItem(ContextMenuItem.SEPARATOR);
+    addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new KontoExport(),"document-save.png"));
+    addItem(new ContextMenuItem(i18n.tr("Importieren..."),new KontoImport(),"document-open.png"));
+}
 
   /**
    * Ueberschreiben wir, um <b>grundsaetzlich</b> ein neues Konto anzulegen -
@@ -89,6 +96,9 @@ public class KontoList extends ContextMenu implements Extendable
 
 /*******************************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.19  2009/07/09 17:08:03  willuhn
+ * @N BUGZILLA #740
+ *
  * Revision 1.18  2009/01/20 10:51:46  willuhn
  * @N Mehr Icons - fuer Buttons
  *

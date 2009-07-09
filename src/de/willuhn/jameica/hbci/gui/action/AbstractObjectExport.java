@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/Attic/AbstractTransferExport.java,v $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/AbstractObjectExport.java,v $
  * $Revision: 1.1 $
- * $Date: 2006/10/16 14:46:30 $
+ * $Date: 2009/07/09 17:08:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,7 +16,6 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.dialogs.ExportDialog;
-import de.willuhn.jameica.hbci.rmi.Transfer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -25,7 +24,7 @@ import de.willuhn.util.I18N;
 /**
  * Abstrakte Basis-Action, ueber die Auftraege exportiert werden koennen.
  */
-public abstract class AbstractTransferExport implements Action
+public abstract class AbstractObjectExport implements Action
 {
 
   /**
@@ -37,21 +36,18 @@ public abstract class AbstractTransferExport implements Action
 		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 		if (context == null)
-      throw new ApplicationException(i18n.tr("Bitte wählen Sie einen oder mehrere Aufträge aus"));
+      throw new ApplicationException(i18n.tr("Bitte wählen Sie die zu exportierenden Daten aus"));
 
-    if (!(context instanceof Transfer) && !(context instanceof Transfer[]))
-      throw new ApplicationException(i18n.tr("Bitte wählen Sie einen oder mehrere Aufträge aus"));
-
-    Transfer[] transfers = null;
+    Object[] objects = null;
     
-    if (context instanceof Transfer)
-      transfers = new Transfer[]{(Transfer) context};
+    if (context instanceof Object[])
+      objects = (Object[]) context;
     else
-      transfers = (Transfer[]) context;
+      objects = new Object[]{context};
     
 		try
     {
-		  ExportDialog d = new ExportDialog(transfers, getExportClass());
+		  ExportDialog d = new ExportDialog(objects, getExportClass());
       d.open();
 		}
 		catch (ApplicationException ae)
@@ -76,7 +72,10 @@ public abstract class AbstractTransferExport implements Action
 
 
 /**********************************************************************
- * $Log: AbstractTransferExport.java,v $
+ * $Log: AbstractObjectExport.java,v $
+ * Revision 1.1  2009/07/09 17:08:02  willuhn
+ * @N BUGZILLA #740
+ *
  * Revision 1.1  2006/10/16 14:46:30  willuhn
  * @N CSV-Export von Ueberweisungen und Lastschriften
  *
