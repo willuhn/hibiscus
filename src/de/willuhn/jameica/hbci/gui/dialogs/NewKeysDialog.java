@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/NewKeysDialog.java,v $
- * $Revision: 1.12 $
- * $Date: 2008/07/25 13:31:06 $
+ * $Revision: 1.13 $
+ * $Date: 2009/07/14 10:32:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,8 +16,6 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.Date;
 
 import javax.print.Doc;
@@ -37,7 +35,6 @@ import org.kapott.hbci.manager.HBCIUtils;
 import org.kapott.hbci.passport.HBCIPassport;
 import org.kapott.hbci.passport.INILetter;
 
-import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
@@ -50,6 +47,7 @@ import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
+import de.willuhn.jameica.system.Platform;
 import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -110,10 +108,12 @@ public class NewKeysDialog extends AbstractDialog
       public void handleAction(Object context) throws ApplicationException
       {
         print();
+        close();
       }
     },null,true);
     print.setEnabled((printers instanceof SelectInput)); // Drucken nur moeglich, wenn Drucker vorhanden.
-		ButtonArea buttons = new ButtonArea(parent,3);
+    
+		ButtonArea buttons = group.createButtonArea(3);
 		buttons.addButton(print);
     buttons.addButton(i18n.tr("Speichern unter..."),new Action()
     {
@@ -129,6 +129,7 @@ public class NewKeysDialog extends AbstractDialog
 				throw new OperationCanceledException("cancelled in ini letter dialog");
 			}
 		});
+		
   }
 
 	/**
@@ -139,11 +140,9 @@ public class NewKeysDialog extends AbstractDialog
 	{
 		try
 		{
-			Printer p = (Printer) getPrinterList().getValue();
-			if (p == null)
+		  PrintService service = (PrintService) getPrinterList().getValue();
+			if (service == null)
 				throw new ApplicationException(i18n.tr("Kein Drucker gefunden."));
-
-			PrintService service = p.service;
 
 			DocPrintJob pj = service.createPrintJob();
 
@@ -241,21 +240,22 @@ public class NewKeysDialog extends AbstractDialog
 		if (printerList != null)
 			return printerList;
 
-		ArrayList l = new ArrayList();
+		PrintService[] services = null;
 
-		PrintService[] service = PrintServiceLookup.lookupPrintServices(DOCFLAVOR,PRINTPROPS);
-		for (int i=0;i<service.length;++i)
-		{
-			l.add(new Printer(service[i]));
+		// Unter MacOS bleibt die Anwendung hier stehen.
+		if (Application.getPlatform().getOS() != Platform.OS_MAC)
+	    services = PrintServiceLookup.lookupPrintServices(DOCFLAVOR,PRINTPROPS);
+
+    if (services != null && services.length > 0)
+    {
+      this.printerList = new SelectInput(services,null);
+      ((SelectInput)this.printerList).setAttribute("name");
+    }
+    else
+    {
+      printerList = new LabelInput(i18n.tr("Kein Drucker verfügbar"));
 		}
-
-		if (l.size() == 0)
-		{
-			printerList = new LabelInput(i18n.tr("Kein Drucker verfügbar"));
-			return printerList;
-		}
-
-		this.printerList = new SelectInput(l,null);
+    
 		return this.printerList;
 	}
 
@@ -266,66 +266,14 @@ public class NewKeysDialog extends AbstractDialog
   {
     return null;
   }
-
-	/**
-	 * Hilfsklasse zur Anzeige der Drucker.
-   */
-  private class Printer implements GenericObject
-	{
-		private PrintService service = null;
-		
-		private Printer(PrintService service)
-		{
-			this.service = service;
-		}
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
-     */
-    public Object getAttribute(String arg0) throws RemoteException
-    {
-      return this.service.getName();
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#getAttributeNames()
-     */
-    public String[] getAttributeNames() throws RemoteException
-    {
-      return new String[] {"name"};
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#getID()
-     */
-    public String getID() throws RemoteException
-    {
-      return getClass().getName();
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
-     */
-    public String getPrimaryAttribute() throws RemoteException
-    {
-      return "name";
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
-     */
-    public boolean equals(GenericObject arg0) throws RemoteException
-    {
-    	if (arg0 == null)
-	      return false;
-	    return this.getID().equals(arg0.getID());
-    }
-	}
 }
 
 
 /**********************************************************************
  * $Log: NewKeysDialog.java,v $
+ * Revision 1.13  2009/07/14 10:32:59  willuhn
+ * @C Drucker-Auswahl wird nur angezeigt, wenn NICHT MacOS verwendet wird. Auf diesem OS scheint die komplette VM beim Ermitteln der Drucker stehen zu bleiben (irgendwo in Java selbst, vermutlich bei einem JNI-Aufruf zu Cups)
+ *
  * Revision 1.12  2008/07/25 13:31:06  willuhn
  * *** empty log message ***
  *
