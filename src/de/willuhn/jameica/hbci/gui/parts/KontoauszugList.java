@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.27 $
- * $Date: 2009/05/19 21:55:57 $
+ * $Revision: 1.28 $
+ * $Date: 2009/07/16 10:41:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -271,29 +271,7 @@ public class KontoauszugList extends UmsatzList
     if (this.end != null)
       return this.end;
 
-    Date dEnd = null;
-    String s = mySettings.getString("kontoauszug.list.to",null);
-    if (s != null)
-    {
-      try
-      {
-        dEnd = HBCI.DATEFORMAT.parse(s);
-      }
-      catch (Exception e)
-      {
-        Logger.error("unable to restore end date",e);
-        mySettings.setAttribute("kontoauszug.list.to",(String) null);
-      }
-    }
-    else
-    {
-      // Ansonsten nehmen wir den letzten des aktuellen Monats
-      Calendar cal = Calendar.getInstance();
-      cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
-      dEnd = cal.getTime();
-    }
-    
-    this.end = new DateInput(dEnd, HBCI.DATEFORMAT);
+    this.end = new DateInput(null, HBCI.DATEFORMAT);
     this.end.setComment(i18n.tr("Spätestes Valuta-Datum"));
     this.end.addListener(this.listener);
     return this.end;
@@ -580,12 +558,10 @@ public class KontoauszugList extends UmsatzList
           {
             // Wir speichern hier alle eingegebenen Suchbegriffe fuer's naechste mal
             Date from = (Date) getStart().getValue();
-            Date to   = (Date) getEnd().getValue();
             Konto k   = (Konto) getKontoAuswahl().getValue();
             Double bFrom = (Double) getMindestBetrag().getValue();
             Double bTo   = (Double) getHoechstBetrag().getValue();
             mySettings.setAttribute("kontoauszug.list.from",from == null ? null : HBCI.DATEFORMAT.format(from));
-            mySettings.setAttribute("kontoauszug.list.to",to == null ? null : HBCI.DATEFORMAT.format(to));
             mySettings.setAttribute("kontoauszug.list.gegenkonto.nummer",getGegenkontoNummer().getText());
             mySettings.setAttribute("kontoauszug.list.konto",k == null ? null : k.getID());
             mySettings.setAttribute("kontoauszug.list.gegenkonto.nummer",getGegenkontoNummer().getText());
@@ -672,6 +648,9 @@ public class KontoauszugList extends UmsatzList
 
 /*********************************************************************
  * $Log: KontoauszugList.java,v $
+ * Revision 1.28  2009/07/16 10:41:05  willuhn
+ * @C Bis-Datum wird nun gar nicht mehr gespeichert oder mit einem Wert vorausgefuellt
+ *
  * Revision 1.27  2009/05/19 21:55:57  willuhn
  * @B Selektion und Markierung auch bei angepasster Sortierung wiederherstellen
  *
