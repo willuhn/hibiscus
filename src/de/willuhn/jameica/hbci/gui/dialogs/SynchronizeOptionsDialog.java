@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/SynchronizeOptionsDialog.java,v $
- * $Revision: 1.6 $
- * $Date: 2009/03/17 23:44:15 $
+ * $Revision: 1.7 $
+ * $Date: 2009/07/17 11:06:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -62,13 +62,13 @@ public class SynchronizeOptionsDialog extends AbstractDialog
     final CheckboxInput ueb    = new CheckboxInput(options.getSyncUeberweisungen());
     final CheckboxInput last   = new CheckboxInput(options.getSyncLastschriften());
     final CheckboxInput dauer  = new CheckboxInput(options.getSyncDauerauftraege());
-    final CheckboxInput aueb   = new CheckboxInput(options.getSyncAuslandsUeberweisungen());
+    // final CheckboxInput aueb   = new CheckboxInput(options.getSyncAuslandsUeberweisungen()); // TODO Auslandsueberweisungen
 
     group.addText(i18n.tr("Bitte wählen Sie aus, welche Geschäftsvorfälle bei\nder Synchronisierung des Kontos ausgeführt werden sollen."),false);
     group.addCheckbox(saldo ,i18n.tr("Saldo abrufen"));
     group.addCheckbox(auszug,i18n.tr("Kontoauszüge (Umsätze) abrufen"));
     group.addCheckbox(ueb   ,i18n.tr("Überfällige Überweisungen absenden"));
-    group.addCheckbox(aueb  ,i18n.tr("Überfällige Auslandsüberweisungen absenden"));
+    // group.addCheckbox(aueb  ,i18n.tr("Überfällige Auslandsüberweisungen absenden"));  // TODO Auslandsueberweisungen
     group.addCheckbox(last  ,i18n.tr("Überfällige Lastschriften einziehen"));
     group.addCheckbox(dauer ,i18n.tr("Daueraufträge synchronisieren"));
     
@@ -81,7 +81,7 @@ public class SynchronizeOptionsDialog extends AbstractDialog
         options.setSyncUeberweisungen(((Boolean)ueb.getValue()).booleanValue());
         options.setSyncLastschriften(((Boolean)last.getValue()).booleanValue());
         options.setSyncDauerauftraege(((Boolean)dauer.getValue()).booleanValue());
-        options.setSyncAuslandsUeberweisungen(((Boolean)aueb.getValue()).booleanValue());
+        // options.setSyncAuslandsUeberweisungen(((Boolean)aueb.getValue()).booleanValue());  // TODO Auslandsueberweisungen
         close();
       }
     });
@@ -106,6 +106,9 @@ public class SynchronizeOptionsDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: SynchronizeOptionsDialog.java,v $
+ * Revision 1.7  2009/07/17 11:06:45  willuhn
+ * @R Auslandsueberweisungen nochmal ausgeblendet - funktionieren ja eh noch nicht
+ *
  * Revision 1.6  2009/03/17 23:44:15  willuhn
  * @N BUGZILLA 159 - Auslandsueberweisungen. Erste Version
  *
