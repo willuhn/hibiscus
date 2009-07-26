@@ -37,7 +37,8 @@ CREATE TABLE ueberweisung (
   termin date NOT NULL,
   banktermin integer NULL,
   ausgefuehrt integer NOT NULL,
-  typ varchar(2) NULL
+  typ varchar(2) NULL,
+  umbuchung int(1) NULL
 );
 
 CREATE TABLE aueberweisung (
@@ -46,6 +47,7 @@ CREATE TABLE aueberweisung (
   empfaenger_konto varchar(40) NOT NULL,
   empfaenger_bank varchar(140) NOT NULL,
   empfaenger_name varchar(140) NOT NULL,
+  empfaenger_bic varchar(15) NULL,
   betrag float NOT NULL,
   zweck varchar(140),
   termin date NOT NULL,
@@ -90,7 +92,9 @@ CREATE TABLE umsatztyp (
   pattern varchar(255) NULL,
   isregex integer NULL,
   umsatztyp integer NULL,
-  parent_id integer NULL
+  parent_id integer NULL,
+  color varchar(11) NULL,
+  customcolor int(1) NULL
 );
 
 CREATE TABLE dauerauftrag (
@@ -181,7 +185,7 @@ CREATE TABLE sueberweisungbuchung (
 CREATE TABLE systemnachricht (
   id serial primary key,
   blz varchar(15) NOT NULL,
-  nachricht varchar(1000) NOT NULL,
+  nachricht varchar(4000) NOT NULL,
   datum date NOT NULL,
   gelesen integer NOT NULL
 );
@@ -244,4 +248,4 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',19);
+INSERT INTO version (name,version) values ('db',23);
