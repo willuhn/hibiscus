@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/NewKeysDialog.java,v $
- * $Revision: 1.13 $
- * $Date: 2009/07/14 10:32:59 $
+ * $Revision: 1.14 $
+ * $Date: 2009/07/27 13:43:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,6 +43,7 @@ import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.system.Application;
@@ -100,8 +101,16 @@ public class NewKeysDialog extends AbstractDialog
 
     Input printers = getPrinterList();
     
-		group.addLabelPair(i18n.tr("Schlüssel-Hashwert"),new LabelInput(HBCIUtils.data2hex(iniletter.getKeyHash()).toUpperCase()));
-		group.addLabelPair(i18n.tr("Drucker-Auswahl"),printers);
+    group.addHeadline(i18n.tr("Hashwert"));
+    group.addText(HBCIUtils.data2hex(iniletter.getKeyHashDisplay()).toUpperCase(),true,Color.ERROR);
+    
+    group.addHeadline(i18n.tr("Exponent"));
+    group.addText(HBCIUtils.data2hex(iniletter.getKeyExponentDisplay()).toUpperCase(),true);
+
+    group.addHeadline(i18n.tr("Modulus"));
+    group.addText(HBCIUtils.data2hex(iniletter.getKeyModulusDisplay()).toUpperCase(),true);
+
+    group.addLabelPair(i18n.tr("Drucker-Auswahl"),printers);
 
     Button print = new Button(i18n.tr("Drucken"),new Action()
     {
@@ -271,6 +280,9 @@ public class NewKeysDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: NewKeysDialog.java,v $
+ * Revision 1.14  2009/07/27 13:43:45  willuhn
+ * @N Neue HBCI4Java-Version (2.5.10) mit RDH-10-Support
+ *
  * Revision 1.13  2009/07/14 10:32:59  willuhn
  * @C Drucker-Auswahl wird nur angezeigt, wenn NICHT MacOS verwendet wird. Auf diesem OS scheint die komplette VM beim Ermitteln der Drucker stehen zu bleiben (irgendwo in Java selbst, vermutlich bei einem JNI-Aufruf zu Cups)
  *
