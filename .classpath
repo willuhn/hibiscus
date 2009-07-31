@@ -18,6 +18,6 @@
 	<classpathentry kind="lib" path="lib/birt/org.eclipse.emf.ecore.xmi_2.2.1.v200609210005.jar"/>
 	<classpathentry kind="lib" path="lib/supercsv-1.31.jar"/>
 	<classpathentry kind="lib" path="lib/obantoo-bin-1.4.11.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/hbci4java-2.5.10.jar" sourcepath="lib.src/hbci4java-2.5.10-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/hbci4java-2.5.11.jar" sourcepath="lib.src/hbci4java-2.5.11-src.zip"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
