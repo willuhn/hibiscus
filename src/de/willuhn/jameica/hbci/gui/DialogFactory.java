@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/DialogFactory.java,v $
- * $Revision: 1.34 $
- * $Date: 2009/03/31 11:01:41 $
+ * $Revision: 1.35 $
+ * $Date: 2009/08/10 10:22:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,9 +16,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.Hashtable;
 
+import org.kapott.hbci.passport.AbstractRDHSWFileBasedPassport;
 import org.kapott.hbci.passport.HBCIPassport;
+import org.kapott.hbci.passport.HBCIPassportDDV;
 import org.kapott.hbci.passport.HBCIPassportPinTan;
-import org.kapott.hbci.passport.HBCIPassportRDHNew;
 
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.dialogs.SimpleDialog;
@@ -32,8 +33,6 @@ import de.willuhn.jameica.hbci.gui.dialogs.NewKeysDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.PINDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.PassportLoadDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.PassportSaveDialog;
-import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 
@@ -314,9 +313,8 @@ public class DialogFactory {
   private static String getCachedPIN(HBCIPassport passport) throws Exception
   {
     String key = getCacheKey(passport);
-    Logger.debug("cache id: " + key);
 
-    // immer noch keine CustomerID da? Dann geben wir auf
+    // Kein Key - dann brauchen wir auch nicht im Cache schauen
     if (key == null)
       return null;
 
@@ -345,6 +343,7 @@ public class DialogFactory {
   {
     String key = getCacheKey(passport);
     
+    // Kein Key, dann muessen wir nicht cachen
     if (key == null)
       return;
     
@@ -373,78 +372,34 @@ public class DialogFactory {
    */
   private static String getCacheKey(HBCIPassport passport) throws Exception
   {
-    if (!Settings.getCachePin())
+    // Entweder das Cachen ist abgeschaltet oder wir haben keinen Passport
+    if (!Settings.getCachePin() || passport == null)
+    {
+      Logger.debug("pin caching disabled or no passport set");
       return null;
-    
+    }
+
     String key = null;
-
-    // BUGZILLA 322: Bei Termin-Ueberweisungen und Dauerauftraegen
-    // werden vor dem Ausfuehren die Job-Restrictions aus dem
-    // Passport ermittelt. Dazu muss dieser geoffnet werden.
-    // Da die HBCIFactory zu dem Zeitpunkt aber noch nicht laeuft,
-    // kennen wir das Konto noch nicht. Mit dem Effekt, dass
-    // beim Ermitteln der Job-Restrictions ein anderer Key erstellt
-    // wird als beim tatsaechlichen Ausfuehren. Naemlich einmal
-    // mit Kundennummer und einmal ohne. Effekt: PIN muss zweimal
-    // eingegeben werden.
-    // Workaround: Wir pruefen, ob es sich um eine Schluesseldiskette
-    // handelt und nehmen in dem Fall direkt den kompletten
-    // Dateinamen als Key. Der ist eindeutig.
-    if (passport != null && (passport instanceof HBCIPassportRDHNew))
-      key = ((HBCIPassportRDHNew)passport).getFilename();
-    
-    if (key != null && key.length() > 0)
-      return key;
-
-    // Jetzt versuchen wir den Schluessel zu ermitteln, unter dem die
-    // PIN abgelegt ist. Normalerweise wuerde ich hier einfach die
-    // CustomerID des Passports nehmen. Bei Schluesseldiskette jedoch
-    // haben wir ein Henne-Ei-Problem. Die CustomerID befindet sich
-    // in der Passport-Datei. Und an die kommen wir erst ran, nachdem
-    // der User die PIN eingegeben hat. Also nehmen wir hier alternativ
-    // die Customer-ID des Kontos - insofern eine existiert.
-    // PS: Das Henne-Ei-Problem existiert durch o.g. Workaround (Bug 322)
-    // eigentlich nicht mehr. Ich lass das dennoch hier stehen, da
-    // es nicht stoert.
-    
-    if (passport != null)
-    {
-      // Ausserdem haengen wir noch die User-ID dran
-      key = passport.getClass().getName() + "." + passport.getCustomerId() + "." + passport.getUserId();
-
-      // Workaround, weil wohl versehentlich die falsche PIn verwendet
-      // wurde, wenn ein User mehrere Accounts bei der gleichen Bank
-      // hat. Keine Ahnung, was der User da fuer eine merkwuerdige
-      // Konstellation hatte (gleiche Bank, gleiche Kundenkennung und
-      // dennoch unterschiedliche PINs?)
-      // Daher papp ich hier extra noch den Dateinamen dran
-      if (passport instanceof HBCIPassportPinTan)
-        key += ("." + ((HBCIPassportPinTan)passport).getFileName());
-    }
-
-
-    // Ggf. noch die BLZ anhaengen.
-    // Nur zur Sicherheit, falls die Kundenkennung bei mehreren
-    // Banken existiert
-    Konto k = HBCIFactory.getInstance().getCurrentKonto();
-    if (k != null)
-    {
-      if (key == null)
-      {
-        // Hu? Wir haben noch nicht mal eine Kundennummer aus
-        // dem Passport? Dann holen wir gleich die aus dem
-        // Konto.
-        key = k.getKundennummer();
-      }
+    // PIN/TAN
+    if (passport instanceof HBCIPassportPinTan)
+      key = ((HBCIPassportPinTan)passport).getFileName();
       
-      // Wir haengen die BLZ nur dann an, wenn wir eine Kundennummer
-      // haben. Sonst wuerde der Key nur aus der BLZ bestehen und
-      // das ist zu unsicher.
-      if (key != null && key.length() > 0)
-        key += "." + k.getBLZ();
+    // Schluesseldiskette
+    else if (passport instanceof AbstractRDHSWFileBasedPassport)
+      key = ((AbstractRDHSWFileBasedPassport)passport).getFilename();
+      
+    // DDV
+    else if (passport instanceof HBCIPassportDDV)
+      key = ((HBCIPassportDDV)passport).getFileName();
+
+    if (key != null)
+    {
+      Logger.debug("using cache key: " + key);
+      return key;
     }
 
-    return key != null && key.length() > 0 ? key : null;
+    Logger.warn("unknown passport type [" + passport.getClass().getName() + "], don't know, how to cache pin");
+    return null;
   }
   
   
@@ -453,6 +408,9 @@ public class DialogFactory {
 
 /**********************************************************************
  * $Log: DialogFactory.java,v $
+ * Revision 1.35  2009/08/10 10:22:09  willuhn
+ * @N Als Cache-Key wird jetzt nur noch Pfad+Dateiname des Passports verwendet. Das ist erheblich einfacher zu handeln und erspart das Oeffnen des Passports
+ *
  * Revision 1.34  2009/03/31 11:01:41  willuhn
  * @R Speichern des PIN-Hashes komplett entfernt
  *
