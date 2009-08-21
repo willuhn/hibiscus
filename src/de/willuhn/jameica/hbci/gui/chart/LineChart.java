@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/LineChart.java,v $
- * $Revision: 1.8 $
- * $Date: 2008/08/29 14:30:19 $
+ * $Revision: 1.9 $
+ * $Date: 2009/08/21 23:00:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,8 +14,6 @@
 package de.willuhn.jameica.hbci.gui.chart;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Random;
 import java.util.Vector;
 
 import org.eclipse.birt.chart.model.Chart;
@@ -49,48 +47,13 @@ import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.logging.Logger;
+import de.willuhn.util.ColorGenerator;
 
 /**
  * Implementierung eines Linien-Diagramms.
  */
 public class LineChart extends AbstractChart
 {
-  private static ArrayList colorCache = new ArrayList();
-  
-  // Basis-Palette
-  static
-  {
-    // Eclipse-Farben
-    colorCache.add(new int[]{225,225,255});
-    colorCache.add(new int[]{223,197,41});
-    colorCache.add(new int[]{249,225,191});
-    colorCache.add(new int[]{255,205,225});
-    colorCache.add(new int[]{225,255,225});
-    colorCache.add(new int[]{255,191,255});
-    colorCache.add(new int[]{185,185,221});
-    colorCache.add(new int[]{40,255,148});
-    colorCache.add(new int[]{225,225,255});
-
-    // Pastel-Farben
-    colorCache.add(new int[]{255,161,161});
-    colorCache.add(new int[]{255,215,161});
-    colorCache.add(new int[]{250,255,161});
-    colorCache.add(new int[]{197,255,161});
-    colorCache.add(new int[]{161,255,213});
-    colorCache.add(new int[]{161,255,253});
-    colorCache.add(new int[]{161,192,255});
-    colorCache.add(new int[]{243,161,255});
-
-    // Satte Farben
-    colorCache.add(new int[]{255,74,74});
-    colorCache.add(new int[]{255,255,74});
-    colorCache.add(new int[]{74,255,74});
-    colorCache.add(new int[]{74,255,255});
-    colorCache.add(new int[]{74,74,255});
-    colorCache.add(new int[]{255,74,255});
-
-  }
-  
   /**
    * ct.
    * @throws Exception
@@ -209,7 +172,7 @@ public class LineChart extends AbstractChart
         color = ((LineChartData)cd).getColor();
 
       if (color == null)
-        color = createRandomColor(i);
+        color = ColorGenerator.create(i);
       
       ColorDefinition bg = ColorDefinitionImpl.create(color[0],color[1],color[2]);
       bg.setTransparency(200);
@@ -241,42 +204,14 @@ public class LineChart extends AbstractChart
     }
     return chart;
   }
-  
-  /**
-   * Erzeugt die RGB-Werte fuer eine Zufalls-Farbe
-   * @param pos
-   * @return RGB-Werte.
-   */
-  private int[] createRandomColor(int pos)
-  {
-    int[] color = null;
-    
-    // Haben wir hier schon eine Farbe im Cache?
-    if (colorCache.size() > pos)
-      return (int[]) colorCache.get(pos);
-
-    Random rand = new Random();
-    
-    int brightness = 40;
-    
-    color = new int[]{
-      255 - brightness - rand.nextInt(30),
-      255 - brightness - rand.nextInt(30),
-      255 - brightness - rand.nextInt(30)
-    };
-    
-    // Farbrichtung rotieren
-    // Stellt sicher, dass kein Grau rauskommt, sondern eine
-    // Farbe dominiert
-    color[pos % 3] = 255;
-    colorCache.add(pos,color);
-    return color;
-  }
 }
 
 
 /*********************************************************************
  * $Log: LineChart.java,v $
+ * Revision 1.9  2009/08/21 23:00:16  willuhn
+ * @C Erzeugung der Farben in neue Klasse verschoben
+ *
  * Revision 1.8  2008/08/29 14:30:19  willuhn
  * @C Java 1.4 Compatibility - wieso zur Hoelle sind die Fehler vorher nie aufgefallen? Ich compiliere immer gegen 1.4? Suspekt
  *
