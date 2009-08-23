@@ -248,7 +248,7 @@
 
 
 
-  <target depends="init,compile,cvstag,jar,signjar,zip,javadoc,src,sign,clean" description="build an official release" name="all" />
+  <target depends="init,compile,cvstag,jar,signjar,zip,javadoc,src,sign,signsrc,clean" description="build an official release" name="all" />
 
   <target depends="init,compile,jar,zip,src,clean" description="build inofficial release" name="fast" />
 
