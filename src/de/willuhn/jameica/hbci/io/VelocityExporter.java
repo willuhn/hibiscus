@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/VelocityExporter.java,v $
- * $Revision: 1.16 $
- * $Date: 2009/07/09 17:08:03 $
+ * $Revision: 1.17 $
+ * $Date: 2009/08/24 11:54:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,11 +24,12 @@ import java.util.HashMap;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.Velocity;
+import org.apache.velocity.app.VelocityEngine;
 
 import de.willuhn.io.FileFinder;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.plugin.AbstractPlugin;
+import de.willuhn.jameica.services.VelocityService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -98,7 +99,12 @@ public class VelocityExporter implements Exporter
       }
       writer = new BufferedWriter(new OutputStreamWriter(os));
 
-      Template template = Velocity.getTemplate(((VelocityFormat)format).getTemplate().getName(),"ISO-8859-15");
+      VelocityService service = (VelocityService) Application.getBootLoader().getBootable(VelocityService.class);
+      VelocityEngine engine = service.getEngine(HBCI.class.getName());
+      if (engine == null)
+        throw new Exception("velocity engine not found");
+
+      Template template = engine.getTemplate(((VelocityFormat)format).getTemplate().getName(),"ISO-8859-15");
       template.merge(context,writer);
     }
     catch (Exception e)
@@ -250,6 +256,9 @@ public class VelocityExporter implements Exporter
 
 /**********************************************************************
  * $Log: VelocityExporter.java,v $
+ * Revision 1.17  2009/08/24 11:54:28  willuhn
+ * @N Umstellung auf neuen VelocityService
+ *
  * Revision 1.16  2009/07/09 17:08:03  willuhn
  * @N BUGZILLA #740
  *
