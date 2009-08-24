@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/LineChart.java,v $
- * $Revision: 1.9 $
- * $Date: 2009/08/21 23:00:16 $
+ * $Revision: 1.10 $
+ * $Date: 2009/08/24 23:55:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -172,7 +172,7 @@ public class LineChart extends AbstractChart
         color = ((LineChartData)cd).getColor();
 
       if (color == null)
-        color = ColorGenerator.create(i);
+        color = ColorGenerator.create(ColorGenerator.PALETTE_OFFICE + i);
       
       ColorDefinition bg = ColorDefinitionImpl.create(color[0],color[1],color[2]);
       bg.setTransparency(200);
@@ -209,6 +209,9 @@ public class LineChart extends AbstractChart
 
 /*********************************************************************
  * $Log: LineChart.java,v $
+ * Revision 1.10  2009/08/24 23:55:04  willuhn
+ * @N Bei der Office-Farbpalette beginnen
+ *
  * Revision 1.9  2009/08/21 23:00:16  willuhn
  * @C Erzeugung der Farben in neue Klasse verschoben
  *
