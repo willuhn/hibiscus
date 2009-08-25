@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/search/UmsatzSearchProvider.java,v $
- * $Revision: 1.3 $
- * $Date: 2008/12/14 23:18:35 $
+ * $Revision: 1.4 $
+ * $Date: 2009/08/25 22:32:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -119,7 +119,7 @@ public class UmsatzSearchProvider implements SearchProvider
         betrag = Math.abs(betrag);
         if (gegenkontoName == null || gegenkontoName.length() == 0)
         {
-          return i18n.tr("{0}: {1} {2} - {5}", new String[]{HBCI.DATEFORMAT.format(valuta),
+          return i18n.tr("{0}: {1} {2} - {3}", new String[]{HBCI.DATEFORMAT.format(valuta),
                                                             HBCI.DECIMALFORMAT.format(betrag), 
                                                             konto.getWaehrung(),
                                                             zweck});
@@ -145,6 +145,9 @@ public class UmsatzSearchProvider implements SearchProvider
 
 /**********************************************************************
  * $Log: UmsatzSearchProvider.java,v $
+ * Revision 1.4  2009/08/25 22:32:10  willuhn
+ * @B Parameter-Index falsch bei Buchungen, deren Gegenkontoname leer ist
+ *
  * Revision 1.3  2008/12/14 23:18:35  willuhn
  * @N BUGZILLA 188 - REFACTORING
  *
