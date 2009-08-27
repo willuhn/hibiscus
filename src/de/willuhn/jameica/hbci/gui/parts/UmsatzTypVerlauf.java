@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTypVerlauf.java,v $
- * $Revision: 1.3 $
- * $Date: 2009/05/08 13:58:30 $
+ * $Revision: 1.4 $
+ * $Date: 2009/08/27 13:37:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -132,6 +132,7 @@ public class UmsatzTypVerlauf implements Part
     try
     {
       this.chart = new LineChart();
+      this.chart.setStacked(false); // TODO: BUGZILLA 749
       this.chart.setTitle(i18n.tr("Umsätze der Kategorien im zeitlichen Verlauf"));
       for (int i=0;i<this.data.size();++i)
       {
@@ -348,6 +349,9 @@ public class UmsatzTypVerlauf implements Part
 
 /*********************************************************************
  * $Log: UmsatzTypVerlauf.java,v $
+ * Revision 1.4  2009/08/27 13:37:28  willuhn
+ * @N Der grafische Saldo-Verlauf zeigt nun zusaetzlich  eine Trendkurve an
+ *
  * Revision 1.3  2009/05/08 13:58:30  willuhn
  * @N Icons in allen Menus und auf allen Buttons
  * @N Fuer Umsatz-Kategorien koennen nun benutzerdefinierte Farben vergeben werden

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/Attic/UmsatzChart.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/10/26 22:41:14 $
+ * $Revision: 1.6 $
+ * $Date: 2009/08/27 13:37:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,7 +27,7 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.chart.ChartData;
+import de.willuhn.jameica.hbci.gui.chart.ChartDataSaldoTrend;
 import de.willuhn.jameica.hbci.gui.chart.ChartDataSaldoVerlauf;
 import de.willuhn.jameica.hbci.gui.chart.LineChart;
 import de.willuhn.jameica.hbci.gui.input.UmsatzDaysInput;
@@ -65,9 +65,10 @@ public class UmsatzChart implements Part
   {
     try
     {
-      final ChartData data = new ChartDataSaldoVerlauf(konto,start);
       final LineChart chart = new LineChart();
-      chart.addData(data);
+      chart.addData(new ChartDataSaldoVerlauf(konto,start));
+      chart.addData(new ChartDataSaldoTrend(konto,start));
+      
       if (start < 0)
         chart.setTitle(i18n.tr("Saldo im Verlauf (alle Umsätze)"));
       else
@@ -76,7 +77,6 @@ public class UmsatzChart implements Part
       final UmsatzDaysInput i = new UmsatzDaysInput();
       i.addListener(new Listener()
       {
-        private ChartData myData = null;
         public void handleEvent(Event event)
         {
           try
@@ -86,18 +86,15 @@ public class UmsatzChart implements Part
               return;
 
             start = newStart;
-            
-            if (myData != null)
-              chart.removeData(myData);
-            else
-              chart.removeData(data);
+            chart.removeAllData();
 
-            myData = new ChartDataSaldoVerlauf(konto,newStart);
             if (newStart < 0)
               chart.setTitle(i18n.tr("Saldo im Verlauf (alle Umsätze)"));
             else
               chart.setTitle(i18n.tr("Saldo im Verlauf der letzten {0} Tage",""+newStart));
-            chart.addData(myData);
+
+            chart.addData(new ChartDataSaldoVerlauf(konto,newStart));
+            chart.addData(new ChartDataSaldoTrend(konto,newStart));
             chart.redraw();
           }
           catch (Throwable t)
@@ -145,6 +142,9 @@ public class UmsatzChart implements Part
 
 /*********************************************************************
  * $Log: UmsatzChart.java,v $
+ * Revision 1.6  2009/08/27 13:37:28  willuhn
+ * @N Der grafische Saldo-Verlauf zeigt nun zusaetzlich  eine Trendkurve an
+ *
  * Revision 1.5  2006/10/26 22:41:14  willuhn
  * @B bug 311
  *

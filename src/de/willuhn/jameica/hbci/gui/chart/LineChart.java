@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/LineChart.java,v $
- * $Revision: 1.11 $
- * $Date: 2009/08/26 10:29:44 $
+ * $Revision: 1.12 $
+ * $Date: 2009/08/27 13:37:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -42,8 +42,8 @@ import org.eclipse.birt.chart.model.type.AreaSeries;
 import org.eclipse.birt.chart.model.type.impl.AreaSeriesImpl;
 import org.eclipse.emf.common.util.EList;
 
+import de.willuhn.datasource.BeanUtil;
 import de.willuhn.datasource.GenericIterator;
-import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.logging.Logger;
@@ -54,6 +54,8 @@ import de.willuhn.util.ColorGenerator;
  */
 public class LineChart extends AbstractChart
 {
+  private boolean stacked = false;
+  
   /**
    * ct.
    * @throws Exception
@@ -133,9 +135,9 @@ public class LineChart extends AbstractChart
         gi.begin();
         while (gi.hasNext())
         {
-          GenericObject o = gi.next();
-          Object ovalue = o.getAttribute(dataAttribute);
-          Object olabel = o.getAttribute(labelAttribute);
+          Object o = gi.next();
+          Object ovalue = BeanUtil.get(o,dataAttribute);
+          Object olabel = BeanUtil.get(o,labelAttribute);
           
           if (olabel == null || ovalue == null || !(ovalue instanceof Number))
             continue;
@@ -154,7 +156,7 @@ public class LineChart extends AbstractChart
 
       //   CREATE THE VALUE ORTHOGONAL SERIES
       AreaSeries bs1 = (AreaSeries) AreaSeriesImpl.create();
-      // bs1.setStacked(true); TODO: Damit kann man den Line-Chart STACKED machen
+      bs1.setStacked(this.isStacked());
 
       SeriesDefinition sdX = SeriesDefinitionImpl.create();
       xAxisPrimary.getSeriesDefinitions().add(sdX);
@@ -176,7 +178,7 @@ public class LineChart extends AbstractChart
         color = ColorGenerator.create(ColorGenerator.PALETTE_OFFICE + i);
       
       ColorDefinition bg = ColorDefinitionImpl.create(color[0],color[1],color[2]);
-      bg.setTransparency(200);
+      bg.setTransparency(120);
 
       sdY.setSeriesPalette(PaletteImpl.create(bg));
       EList colors = sdY.getSeriesPalette().getEntries();
@@ -205,11 +207,32 @@ public class LineChart extends AbstractChart
     }
     return chart;
   }
+  
+  /**
+   * Liefert true, wenn die Linien uebereinandergestapelt werden sollen (stacked).
+   * @return true, wenn die Linien stacked gezeichnet werden sollen.
+   */
+  public boolean isStacked()
+  {
+    return this.stacked;
+  }
+  
+  /**
+   * Legt fest, ob die Linien uebereinandergestapelt werden sollen (stacked).
+   * @param b true, wenn die Linien stacked gezeichnet werden sollen.
+   */
+  public void setStacked(boolean b)
+  {
+    this.stacked = b;
+  }
 }
 
 
 /*********************************************************************
  * $Log: LineChart.java,v $
+ * Revision 1.12  2009/08/27 13:37:28  willuhn
+ * @N Der grafische Saldo-Verlauf zeigt nun zusaetzlich  eine Trendkurve an
+ *
  * Revision 1.11  2009/08/26 10:29:44  willuhn
  * @N Kommentar fuer stacked line chart
  *

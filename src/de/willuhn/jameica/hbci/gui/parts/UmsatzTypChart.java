@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTypChart.java,v $
- * $Revision: 1.6 $
- * $Date: 2009/05/08 13:58:30 $
+ * $Revision: 1.7 $
+ * $Date: 2009/08/27 13:37:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -156,12 +156,14 @@ public class UmsatzTypChart implements Part
       GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Anzeigen der Umsatzverteilung"));
     }
   }
-
 }
 
 
 /*********************************************************************
  * $Log: UmsatzTypChart.java,v $
+ * Revision 1.7  2009/08/27 13:37:28  willuhn
+ * @N Der grafische Saldo-Verlauf zeigt nun zusaetzlich  eine Trendkurve an
+ *
  * Revision 1.6  2009/05/08 13:58:30  willuhn
  * @N Icons in allen Menus und auf allen Buttons
  * @N Fuer Umsatz-Kategorien koennen nun benutzerdefinierte Farben vergeben werden
