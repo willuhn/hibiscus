@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/NeueUmsaetze.java,v $
- * $Revision: 1.5 $
- * $Date: 2008/03/04 10:36:41 $
+ * $Revision: 1.6 $
+ * $Date: 2009/08/27 11:48:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,6 +23,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzList;
+import de.willuhn.jameica.hbci.gui.parts.columns.KontoColumn;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 
@@ -74,6 +75,7 @@ public class NeueUmsaetze extends AbstractBox
   {
     GenericIterator list = de.willuhn.jameica.hbci.messaging.NeueUmsaetze.getNeueUmsaetze();
     UmsatzList umsaetze = new UmsatzList(list,new UmsatzDetail());
+    umsaetze.addColumn(new KontoColumn("konto_id"));
     umsaetze.setFilterVisible(false);
     umsaetze.paint(parent);
   }
@@ -98,6 +100,9 @@ public class NeueUmsaetze extends AbstractBox
 
 /*********************************************************************
  * $Log: NeueUmsaetze.java,v $
+ * Revision 1.6  2009/08/27 11:48:09  willuhn
+ * @N Eigenes Konto in Box "Neue Umsaetze" mit anzeigen
+ *
  * Revision 1.5  2008/03/04 10:36:41  willuhn
  * @N Default-Hoehe vergroessert
  *
