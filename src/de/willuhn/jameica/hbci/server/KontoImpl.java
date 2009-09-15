@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.97 $
- * $Date: 2009/03/17 23:44:15 $
+ * $Revision: 1.98 $
+ * $Date: 2009/09/15 00:23:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -624,7 +624,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public void setSaldo(double saldo) throws RemoteException
   {
-    setAttribute("saldo", new Double(saldo));
+    setAttribute("saldo", Double.isNaN(saldo) ? null : new Double(saldo));
     setAttribute("saldo_datum", new Date());
   }
 
@@ -757,10 +757,34 @@ public class KontoImpl extends AbstractDBObject implements Konto
   {
     setAttribute("kommentar",kommentar);
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Flaggable#getFlags()
+   */
+  public int getFlags() throws RemoteException
+  {
+    Integer i = (Integer) this.getAttribute("flags");
+    return i == null ? Konto.FLAG_NONE : i.intValue();
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Flaggable#setFlags(int)
+   */
+  public void setFlags(int flags) throws RemoteException
+  {
+    if (flags < 0)
+      return; // ungueltig
+    
+    this.setAttribute("flags",new Integer(flags));
+  }
+
 }
 
 /*******************************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.98  2009/09/15 00:23:35  willuhn
+ * @N BUGZILLA 745
+ *
  * Revision 1.97  2009/03/17 23:44:15  willuhn
  * @N BUGZILLA 159 - Auslandsueberweisungen. Erste Version
  *

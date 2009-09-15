@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Umsatz.java,v $
- * $Revision: 1.21 $
- * $Date: 2009/02/23 17:01:58 $
+ * $Revision: 1.22 $
+ * $Date: 2009/09/15 00:23:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,7 +26,7 @@ import de.willuhn.util.ApplicationException;
  * ueber HBCI-Geschaeftsvorfaelle von der Bank geliefert und nur von
  * dort geschrieben.
  */
-public interface Umsatz extends HibiscusTransfer, DBObject, Checksum
+public interface Umsatz extends HibiscusTransfer, DBObject, Checksum, Flaggable
 {
   /**
    * Flag "kein Flag".
@@ -173,32 +173,14 @@ public interface Umsatz extends HibiscusTransfer, DBObject, Checksum
    * @throws RemoteException
    */
   public boolean isAssigned() throws RemoteException;
-  
-  /**
-   * Liefert ein Bit-Feld mit Flags des Umsatzes.
-   * Ein Umsatz kann mit verschiedenen Flags markiert
-   * werden. Das kann zum Beispiel "geprueft" sein.
-   * Damit fuer kuenftige weitere Flags nicht immer
-   * ein neues Feld zur Datenbank hinzugefuegt werden
-   * muss, verwenden wir hier ein Bitfeld. Damit koennen
-   * mehrere Flags in einem Wert codiert werden.
-   * @return Bit-Feld mit den Flags des Umsatzes.
-   * @throws RemoteException
-   */
-  public int getFlags() throws RemoteException;
-  
-  /**
-   * Speichert die Flags einen Umsatzes.
-   * @param flags die Flags in Form eines Bit-Feldes.
-   * @see Umsatz#FLAG_CHECKED
-   * @throws RemoteException
-   */
-  public void setFlags(int flags) throws RemoteException;
 }
 
 
 /**********************************************************************
  * $Log: Umsatz.java,v $
+ * Revision 1.22  2009/09/15 00:23:34  willuhn
+ * @N BUGZILLA 745
+ *
  * Revision 1.21  2009/02/23 17:01:58  willuhn
  * @C Kein Abgleichen mehr bei vorgemerkten Buchungen sondern stattdessen vorgemerkte loeschen und neu abrufen
  *

@@ -11,6 +11,7 @@ CREATE TABLE konto (
   saldo double,
   saldo_datum date,
   kommentar varchar(1000) NULL,
+  flags int(1) NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );
@@ -288,4 +289,4 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',23);
+INSERT INTO version (name,version) values ('db',24);

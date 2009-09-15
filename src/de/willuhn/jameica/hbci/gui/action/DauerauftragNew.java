@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/DauerauftragNew.java,v $
- * $Revision: 1.6 $
- * $Date: 2007/04/23 18:07:14 $
+ * $Revision: 1.7 $
+ * $Date: 2009/09/15 00:23:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -53,7 +53,8 @@ public class DauerauftragNew implements Action
 			try {
 				Konto k = (Konto) context;
 				d = (Dauerauftrag) Settings.getDBService().createObject(Dauerauftrag.class,null);
-				d.setKonto(k);
+        if ((k.getFlags() & Konto.FLAG_DISABLED) != Konto.FLAG_DISABLED)
+  				d.setKonto(k);
 			}
 			catch (RemoteException e)
 			{
@@ -81,6 +82,9 @@ public class DauerauftragNew implements Action
 
 /**********************************************************************
  * $Log: DauerauftragNew.java,v $
+ * Revision 1.7  2009/09/15 00:23:34  willuhn
+ * @N BUGZILLA 745
+ *
  * Revision 1.6  2007/04/23 18:07:14  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt

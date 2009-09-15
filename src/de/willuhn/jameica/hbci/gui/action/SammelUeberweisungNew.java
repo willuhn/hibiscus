@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/SammelUeberweisungNew.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/09/30 00:08:50 $
+ * $Revision: 1.2 $
+ * $Date: 2009/09/15 00:23:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -48,7 +48,8 @@ public class SammelUeberweisungNew implements Action
 			try {
 				Konto k = (Konto) context;
 				u = (SammelUeberweisung) Settings.getDBService().createObject(SammelUeberweisung.class,null);
-				u.setKonto(k);
+        if ((k.getFlags() & Konto.FLAG_DISABLED) != Konto.FLAG_DISABLED)
+  				u.setKonto(k);
 			}
 			catch (RemoteException e)
 			{
@@ -74,6 +75,9 @@ public class SammelUeberweisungNew implements Action
 
 /**********************************************************************
  * $Log: SammelUeberweisungNew.java,v $
+ * Revision 1.2  2009/09/15 00:23:34  willuhn
+ * @N BUGZILLA 745
+ *
  * Revision 1.1  2005/09/30 00:08:50  willuhn
  * @N SammelUeberweisungen (merged with SammelLastschrift)
  *

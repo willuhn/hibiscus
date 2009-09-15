@@ -10,7 +10,8 @@ CREATE TABLE konto (
   passport_class varchar(1000) NOT NULL,
   saldo float,
   saldo_datum timestamp,
-  kommentar varchar(1000) NULL
+  kommentar varchar(1000) NULL,
+  flags integer NULL
 );
 
 CREATE TABLE empfaenger (
@@ -248,4 +249,4 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',23);
+INSERT INTO version (name,version) values ('db',24);

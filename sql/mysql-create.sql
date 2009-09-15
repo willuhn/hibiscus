@@ -11,6 +11,7 @@ CREATE TABLE konto (
      , saldo DOUBLE
      , saldo_datum DATETIME
      , kommentar TEXT
+     , flags int(1)
      , UNIQUE (id)
      , PRIMARY KEY (id)
 )TYPE=InnoDB;
@@ -288,4 +289,4 @@ ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
 
-INSERT INTO version (name,version) values ('db',23);
+INSERT INTO version (name,version) values ('db',24);

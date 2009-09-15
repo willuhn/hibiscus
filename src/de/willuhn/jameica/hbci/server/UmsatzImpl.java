@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.66 $
- * $Date: 2009/03/12 10:56:01 $
+ * $Revision: 1.67 $
+ * $Date: 2009/09/15 00:23:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -718,7 +718,7 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getFlags()
+   * @see de.willuhn.jameica.hbci.rmi.Flaggable#getFlags()
    */
   public int getFlags() throws RemoteException
   {
@@ -727,7 +727,7 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setFlags(int)
+   * @see de.willuhn.jameica.hbci.rmi.Flaggable#setFlags(int)
    */
   public void setFlags(int flags) throws RemoteException
   {
@@ -741,6 +741,9 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.67  2009/09/15 00:23:35  willuhn
+ * @N BUGZILLA 745
+ *
  * Revision 1.66  2009/03/12 10:56:01  willuhn
  * @B Double.NaN geht nicht
  *

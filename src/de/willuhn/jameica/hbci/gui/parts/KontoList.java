@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoList.java,v $
- * $Revision: 1.14 $
- * $Date: 2009/07/09 17:08:03 $
+ * $Revision: 1.15 $
+ * $Date: 2009/09/15 00:23:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,6 +30,7 @@ import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.PassportRegistry;
@@ -124,15 +125,27 @@ public class KontoList extends TablePart implements Part
       {
         Konto k = (Konto) item.getData();
         try {
-          item.setText(5,HBCI.DECIMALFORMAT.format(k.getSaldo()) + " " + k.getWaehrung());
-          if (k.getSaldo() < 0)
+          double saldo = k.getSaldo();
+          if ((saldo == 0 && k.getSaldoDatum() == null) || Double.isNaN(saldo))
+            item.setText(5,"");
+          else
+            item.setText(5,HBCI.DECIMALFORMAT.format(k.getSaldo()) + " " + k.getWaehrung());
+
+          // Checken, ob Konto deaktiviert ist
+          int flags = k.getFlags();
+          if ((flags & Konto.FLAG_DISABLED) != 0)
+            item.setForeground(Color.COMMENT.getSWTColor());
+          else if (k.getSaldo() < 0)
             item.setForeground(Settings.getBuchungSollForeground());
+          else
+            item.setForeground(Color.WIDGET_FG.getSWTColor());
           
           Konto kd = Settings.getDefaultKonto();
           if (kd != null && kd.equals(k))
             item.setFont(Font.BOLD.getSWTFont());
           else
             item.setFont(Font.DEFAULT.getSWTFont());
+          
         }
         catch (RemoteException e)
         {
@@ -257,6 +270,9 @@ public class KontoList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.15  2009/09/15 00:23:35  willuhn
+ * @N BUGZILLA 745
+ *
  * Revision 1.14  2009/07/09 17:08:03  willuhn
  * @N BUGZILLA #740
  *

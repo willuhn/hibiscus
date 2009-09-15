@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.82 $
- * $Date: 2009/05/07 13:36:57 $
+ * $Revision: 1.83 $
+ * $Date: 2009/09/15 00:23:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -229,6 +229,7 @@ public class KontoControl extends AbstractControl {
         
       }
     },getKonto(),false,"document-properties.png");
+    this.synchronizeOptions.setEnabled((getKonto().getFlags() & Konto.FLAG_DISABLED) != Konto.FLAG_DISABLED);
     return this.synchronizeOptions;
   }
   
@@ -550,6 +551,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.83  2009/09/15 00:23:34  willuhn
+ * @N BUGZILLA 745
+ *
  * Revision 1.82  2009/05/07 13:36:57  willuhn
  * @R Hilfsobjekt "PassportObject" entfernt
  * @C Cleanup in PassportInput (insb. der weisse Hintergrund hinter dem "Konfigurieren..."-Button hat gestoert

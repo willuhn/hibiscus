@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/SynchronizeOptions.java,v $
- * $Revision: 1.6 $
- * $Date: 2009/03/17 23:44:15 $
+ * $Revision: 1.7 $
+ * $Date: 2009/09/15 00:23:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,6 +26,7 @@ import de.willuhn.jameica.system.Settings;
 public class SynchronizeOptions implements Serializable
 {
   private String id = null;
+  private boolean disabled = false;
   private final static Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
 
   /**
@@ -35,7 +36,7 @@ public class SynchronizeOptions implements Serializable
    */
   public SynchronizeOptions(Konto k) throws RemoteException
   {
-    super();
+    this.disabled = k == null || ((k.getFlags() & Konto.FLAG_DISABLED) != 0);
     this.id = k == null ? null : k.getID();
   }
   
@@ -64,7 +65,7 @@ public class SynchronizeOptions implements Serializable
     // war, nehmen wir als Default-Wert auch den von dort.
     // Damit wird beim ersten mal der Vorwert uebernommen.
     // (Sanfte Migration)
-    return settings.getBoolean("sync.konto." + id + ".saldo",getSyncKontoauszuege());
+    return !this.disabled && settings.getBoolean("sync.konto." + id + ".saldo",getSyncKontoauszuege());
   }
 
   /**
@@ -73,7 +74,7 @@ public class SynchronizeOptions implements Serializable
    */
   public boolean getSyncKontoauszuege()
   {
-    return settings.getBoolean("sync.konto." + id + ".kontoauszug",true);
+    return !this.disabled && settings.getBoolean("sync.konto." + id + ".kontoauszug",true);
   }
   
   /**
@@ -82,7 +83,7 @@ public class SynchronizeOptions implements Serializable
    */
   public boolean getSyncUeberweisungen()
   {
-    return settings.getBoolean("sync.konto." + id + ".ueb",false);
+    return !this.disabled && settings.getBoolean("sync.konto." + id + ".ueb",false);
   }
 
   /**
@@ -91,7 +92,7 @@ public class SynchronizeOptions implements Serializable
    */
   public boolean getSyncLastschriften()
   {
-    return settings.getBoolean("sync.konto." + id + ".last",false);
+    return !this.disabled && settings.getBoolean("sync.konto." + id + ".last",false);
   }
 
   /**
@@ -100,7 +101,7 @@ public class SynchronizeOptions implements Serializable
    */
   public boolean getSyncDauerauftraege()
   {
-    return settings.getBoolean("sync.konto." + id + ".dauer",false);
+    return !this.disabled && settings.getBoolean("sync.konto." + id + ".dauer",false);
   }
   
   /**
@@ -109,7 +110,7 @@ public class SynchronizeOptions implements Serializable
    */
   public boolean getSyncAuslandsUeberweisungen()
   {
-    return settings.getBoolean("sync.konto." + id + ".uebforeign",false);
+    return !this.disabled && settings.getBoolean("sync.konto." + id + ".uebforeign",false);
   }
 
   
@@ -172,6 +173,9 @@ public class SynchronizeOptions implements Serializable
 
 /*********************************************************************
  * $Log: SynchronizeOptions.java,v $
+ * Revision 1.7  2009/09/15 00:23:35  willuhn
+ * @N BUGZILLA 745
+ *
  * Revision 1.6  2009/03/17 23:44:15  willuhn
  * @N BUGZILLA 159 - Auslandsueberweisungen. Erste Version
  *

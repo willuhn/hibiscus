@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UmsatzList.java,v $
- * $Revision: 1.33 $
- * $Date: 2009/02/24 22:42:33 $
+ * $Revision: 1.34 $
+ * $Date: 2009/09/15 00:23:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,7 +28,7 @@ import de.willuhn.jameica.hbci.gui.action.UmsatzAssign;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.action.UmsatzExport;
 import de.willuhn.jameica.hbci.gui.action.UmsatzImport;
-import de.willuhn.jameica.hbci.gui.action.UmsatzSetFlags;
+import de.willuhn.jameica.hbci.gui.action.FlaggableChange;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.system.Application;
@@ -68,8 +68,8 @@ public class UmsatzList extends ContextMenu implements Extendable
     addItem(new UmsatzItem(i18n.tr("Als neue Überweisung anlegen..."),new UeberweisungNew(),"stock_next.png"));
     addItem(new UmsatzBookedItem(i18n.tr("Umsatz-Kategorie zuordnen..."),new UmsatzAssign(),"x-office-spreadsheet.png"));
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new UmsatzBookedItem(i18n.tr("als \"geprüft\" markieren..."),new UmsatzSetFlags(Umsatz.FLAG_CHECKED,true),"emblem-default.png"));
-    addItem(new UmsatzBookedItem(i18n.tr("als \"ungeprüft\" markieren..."),new UmsatzSetFlags(Umsatz.FLAG_CHECKED,false),"edit-undo.png"));
+    addItem(new UmsatzBookedItem(i18n.tr("als \"geprüft\" markieren..."),new FlaggableChange(Umsatz.FLAG_CHECKED,true),"emblem-default.png"));
+    addItem(new UmsatzBookedItem(i18n.tr("als \"ungeprüft\" markieren..."),new FlaggableChange(Umsatz.FLAG_CHECKED,false),"edit-undo.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new UmsatzItem(i18n.tr("Exportieren..."),new UmsatzExport(),"document-save.png"));
     addItem(new ContextMenuItem(i18n.tr("Importieren..."),new UmsatzImport()
@@ -197,6 +197,9 @@ public class UmsatzList extends ContextMenu implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.34  2009/09/15 00:23:35  willuhn
+ * @N BUGZILLA 745
+ *
  * Revision 1.33  2009/02/24 22:42:33  willuhn
  * @N Da vorgemerkte Umsaetze jetzt komplett geloescht werden, wenn sie neu abgerufen werden, duerfen sie auch nicht mehr geaendert werden (also auch keine Kategorie und kein Kommentar)
  *

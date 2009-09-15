@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/KontoInput.java,v $
- * $Revision: 1.3 $
- * $Date: 2009/01/12 00:46:50 $
+ * $Revision: 1.4 $
+ * $Date: 2009/09/15 00:23:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,13 +14,16 @@
 package de.willuhn.jameica.hbci.gui.input;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.GenericIterator;
+import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.SelectInput;
@@ -73,7 +76,14 @@ public class KontoInput extends SelectInput
   {
     DBIterator it = Settings.getDBService().createList(Konto.class);
     it.setOrder("ORDER BY blz, kontonummer");
-    return it;
+    List<Konto> l = new ArrayList<Konto>();
+    while (it.hasNext())
+    {
+      Konto k = (Konto) it.next();
+      if ((k.getFlags() & Konto.FLAG_DISABLED) != Konto.FLAG_DISABLED)
+        l.add(k);
+    }
+    return PseudoIterator.fromArray(l.toArray(new Konto[l.size()]));
   }
 
   /**
@@ -171,6 +181,9 @@ public class KontoInput extends SelectInput
 
 /**********************************************************************
  * $Log: KontoInput.java,v $
+ * Revision 1.4  2009/09/15 00:23:35  willuhn
+ * @N BUGZILLA 745
+ *
  * Revision 1.3  2009/01/12 00:46:50  willuhn
  * @N Vereinheitlichtes KontoInput in den Auswertungen
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/LastschriftNew.java,v $
- * $Revision: 1.4 $
- * $Date: 2007/04/23 18:07:14 $
+ * $Revision: 1.5 $
+ * $Date: 2009/09/15 00:23:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -48,7 +48,8 @@ public class LastschriftNew implements Action
 			try {
 				Konto k = (Konto) context;
 				u = (Lastschrift) Settings.getDBService().createObject(Lastschrift.class,null);
-				u.setKonto(k);
+        if ((k.getFlags() & Konto.FLAG_DISABLED) != Konto.FLAG_DISABLED)
+  				u.setKonto(k);
 			}
 			catch (RemoteException e)
 			{
@@ -76,6 +77,9 @@ public class LastschriftNew implements Action
 
 /**********************************************************************
  * $Log: LastschriftNew.java,v $
+ * Revision 1.5  2009/09/15 00:23:34  willuhn
+ * @N BUGZILLA 745
+ *
  * Revision 1.4  2007/04/23 18:07:14  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
