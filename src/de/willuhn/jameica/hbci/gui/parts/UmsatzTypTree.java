@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTypTree.java,v $
- * $Revision: 1.9 $
- * $Date: 2009/05/08 13:58:30 $
+ * $Revision: 1.10 $
+ * $Date: 2009/09/16 22:34:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -104,18 +104,21 @@ public class UmsatzTypTree extends TreePart implements Extension
           
           if (ut != null)
           {
-            int[] color = ut.getColor();
-            if (color != null && color.length == 3)
+            if (ut.isCustomColor())
             {
-              RGB rgb = new RGB(color[0],color[1],color[2]);
-              Color c = colorCache.get(rgb.toString());
-              if (c == null)
+              int[] color = ut.getColor();
+              if (color != null && color.length == 3)
               {
-                c = new Color(GUI.getDisplay(),rgb);
-                colorCache.put(rgb.toString(),c);
+                RGB rgb = new RGB(color[0],color[1],color[2]);
+                Color c = colorCache.get(rgb.toString());
+                if (c == null)
+                {
+                  c = new Color(GUI.getDisplay(),rgb);
+                  colorCache.put(rgb.toString(),c);
+                }
+                item.setForeground(c);
+                return;
               }
-              item.setForeground(c);
-              return;
             }
           }
           
@@ -227,6 +230,9 @@ public class UmsatzTypTree extends TreePart implements Extension
 
 /*******************************************************************************
  * $Log: UmsatzTypTree.java,v $
+ * Revision 1.10  2009/09/16 22:34:32  willuhn
+ * @B im Umsatz-Tree wurde nicht geprueft, ob die benutzerdefinierte Farbe aktiviert ist
+ *
  * Revision 1.9  2009/05/08 13:58:30  willuhn
  * @N Icons in allen Menus und auf allen Buttons
  * @N Fuer Umsatz-Kategorien koennen nun benutzerdefinierte Farben vergeben werden
