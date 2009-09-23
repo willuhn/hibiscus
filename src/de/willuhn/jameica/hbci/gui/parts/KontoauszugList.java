@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.28 $
- * $Date: 2009/07/16 10:41:05 $
+ * $Revision: 1.29 $
+ * $Date: 2009/09/23 11:47:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -480,7 +480,7 @@ public class KontoauszugList extends UmsatzList
     // Zweck/Kommentar
     if (zk != null && zk.length() > 0) {
       zk = "%" + zk.toLowerCase() + "%";
-      umsaetze.addFilter("(LOWER(zweck) like ? OR LOWER(zweck2) like ? OR LOWER(kommentar) like ?)",new Object[]{zk,zk,zk});
+      umsaetze.addFilter("(LOWER(zweck) like ? OR LOWER(zweck2) like ? OR LOWER(zweck3) like ? OR LOWER(kommentar) like ?)",new Object[]{zk,zk,zk,zk});
       hasFilter = true;
     }
     /////////////////////////////////////////////////////////////////
@@ -648,6 +648,9 @@ public class KontoauszugList extends UmsatzList
 
 /*********************************************************************
  * $Log: KontoauszugList.java,v $
+ * Revision 1.29  2009/09/23 11:47:58  willuhn
+ * @N Auch im erweiterten Verwendungszweck suchen
+ *
  * Revision 1.28  2009/07/16 10:41:05  willuhn
  * @C Bis-Datum wird nun gar nicht mehr gespeichert oder mit einem Wert vorausgefuellt
  *
