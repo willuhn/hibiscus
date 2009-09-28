@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/AccountContainerDialog.java,v $
- * $Revision: 1.11 $
- * $Date: 2009/03/02 13:43:19 $
+ * $Revision: 1.12 $
+ * $Date: 2009/09/28 13:02:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,10 +22,13 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.IntegerInput;
+import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.AccountContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
@@ -50,6 +53,8 @@ public class AccountContainerDialog extends AbstractDialog
 	private SelectInput filter	= null;
 	private Input userid			  = null;
 	private Input customerid	  = null;
+	
+	private LabelInput text     = null;
 
   /**
    * ct.
@@ -80,6 +85,9 @@ public class AccountContainerDialog extends AbstractDialog
 		group2.addLabelPair(i18n.tr("TCP-Port des Bankservers"),getPort());
 		group2.addLabelPair(i18n.tr("Filter für die Übertragung"),getFilter());
 
+		SimpleContainer sc = new SimpleContainer(parent);
+		sc.addLabelPair("",getText());
+
 		ButtonArea buttons = new ButtonArea(parent,2);
 		buttons.addButton(i18n.tr("Übernehmen"),new Action()
     {
@@ -87,11 +95,36 @@ public class AccountContainerDialog extends AbstractDialog
       {
       	container = new AccountContainer();
       	container.blz 				= (String) getBLZ().getValue();
+        container.userid      = (String) getUserId().getValue();
       	container.customerid 	= (String) getCustomerId().getValue();
       	container.filter 			= (String) getFilter().getValue();
       	container.host 				= (String) getHost().getValue();
-      	container.port 				= ((Integer) getPort().getValue()).intValue();
-      	container.userid 			= (String) getUserId().getValue();
+      	
+      	Integer i = ((Integer) getPort().getValue());
+      	container.port 				= i != null ? i.intValue() : -1;
+      	
+      	// Check der Pflichtfelder
+        if (container.userid == null || container.userid.length() == 0)
+        {
+          getText().setValue(i18n.tr("Bitte geben Sie eine Benutzerkennung ein."));
+          return;
+        }
+      	if (container.blz == null || container.blz.length() == 0)
+      	{
+      	  getText().setValue(i18n.tr("Bitte geben Sie eine Bankleitzahl ein."));
+      	  return;
+      	}
+        if (container.host == null || container.host.length() == 0)
+        {
+          getText().setValue(i18n.tr("Bitte geben Sie den Hostnamen bzw. die URL des Bankservers ein."));
+          return;
+        }
+        if (container.port <= 0)
+        {
+          getText().setValue(i18n.tr("Bitte geben Sie den TCP-Port des Bankservers ein."));
+          return;
+        }
+      	
       	close();
       }
     },null,true);
@@ -111,14 +144,33 @@ public class AccountContainerDialog extends AbstractDialog
   {
     return container;
   }
+  
+  /**
+   * Liefert ein Label mit einem Hinweistext.
+   * @return Label.
+   */
+  private LabelInput getText()
+  {
+    if (this.text == null)
+    {
+      this.text = new LabelInput("");
+      this.text.setColor(Color.ERROR);
+    }
+    return this.text;
+  }
 
+	/**
+	 * Liefert ein Eingabefeld fuer die BLZ.
+	 * @return Eingabefeld.
+	 */
 	private Input getBLZ()
 	{
-	  if (blz != null)
-	    return blz;
+	  if (this.blz != null)
+	    return this.blz;
 	  
-    blz = new BLZInput(passport.getBLZ());
-    blz.addListener(new Listener()
+	  this.blz = new BLZInput(this.passport.getBLZ());
+	  this.blz.setMandatory(true);
+	  this.blz.addListener(new Listener()
     {
       public void handleEvent(Event arg0)
       {
@@ -151,21 +203,25 @@ public class AccountContainerDialog extends AbstractDialog
         }
       }
     });
-		return blz;
+		return this.blz;
 	}
 	
+	/**
+	 * Liefert ein Eingabefeld fuer den Hostnamen des Bank-Servers.
+	 * @return Eingabefeld.
+	 */
 	private Input getHost()
 	{
-    if (host != null)
-      return host;
+    if (this.host != null)
+      return this.host;
 
-    host = new TextInput(passport.getHost())
+    this.host = new TextInput(this.passport.getHost())
     {
       public Object getValue()
       {
         // Ueberschrieben, um ggf. das https:// am Anfang abzuschneiden
         String s = (String) super.getValue();
-        if (s == null)
+        if (s == null || s.length() == 0)
           return null;
         if (s.startsWith("https://"))
           s = s.replaceFirst("https://","");
@@ -174,58 +230,78 @@ public class AccountContainerDialog extends AbstractDialog
     };
     
     // BUGZILLA 381
-    host.addListener(new Listener() {
-    
+    this.host.addListener(new Listener() {
       public void handleEvent(Event event)
       {
+        // Triggert den Code zum Entfernen des "https://" und der Leerzeichen
         getHost().setValue(getHost().getValue());
       }
     
     });
-		host.setComment(i18n.tr("Bei PIN/TAN bitte ohne \"https://\" eingeben"));
-		return host;
+		this.host.setComment(i18n.tr("Bei PIN/TAN bitte ohne \"https://\" eingeben"));
+		this.host.setMandatory(true);
+		return this.host;
 	}
 	
+	/**
+	 * Liefert ein Eingabefeld fuer den TCP-Port.
+	 * @return
+	 */
 	private Input getPort()
 	{
-		if (port == null)
+		if (this.port == null)
 		{
-      port = new IntegerInput(passport.getPort().intValue());
-      port.setComment(i18n.tr("Bei PIN/TAN \"443\", sonst \"3000\""));
+      this.port = new IntegerInput(this.passport.getPort().intValue());
+      this.port.setComment(i18n.tr("Bei PIN/TAN \"443\", sonst \"3000\""));
+      this.port.setMandatory(true);
 		}
-		return port;
+		return this.port;
 	}
 
+	/**
+	 * Liefert ein Eingabefeld fuer die Benutzerkennung.
+	 * @return Eingabefeld.
+	 */
 	private Input getUserId()
 	{
-		if (userid == null)
-			userid = new TextInput(passport.getUserId());
-		return userid;
+		if (this.userid == null)
+		{
+      this.userid = new TextInput(this.passport.getUserId());
+      this.userid.setMandatory(true);
+		}
+		return this.userid;
 	}
 	
+	/**
+	 * Liefert ein Eingabefeld fuer die Kundenkennung.
+	 * @return Eingabefeld.
+	 */
 	private Input getCustomerId()
 	{
-		if (customerid == null)
+		if (this.customerid == null)
 		{
-			customerid = new TextInput(passport.getCustomerId());
-			customerid.setComment(i18n.tr("Meist identisch mit Benutzerkennung"));
+			this.customerid = new TextInput(this.passport.getCustomerId());
+			this.customerid.setComment(i18n.tr("Meist identisch mit Benutzerkennung"));
 		}
-			
-		return customerid;
+		return this.customerid;
 	}
 
+	/**
+	 * Liefert ein Auswahlfeld fuer den Transport-Filter.
+	 * @return Auswahlfeld.
+	 */
 	private SelectInput getFilter()
 	{
-		if (filter == null)
+		if (this.filter == null)
 		{
-      filter = new SelectInput(new String[] {"None","Base64"},passport.getFilterType());
-      filter.setComment(i18n.tr("Bei PIN/TAN meist \"Base64\", sonst \"None\""));
+      this.filter = new SelectInput(new String[] {"None","Base64"},this.passport.getFilterType());
+      this.filter.setComment(i18n.tr("Bei PIN/TAN meist \"Base64\", sonst \"None\""));
 
-      String clazz = passport.getClass().getName();
+      String clazz = this.passport.getClass().getName();
       if (clazz.toUpperCase().indexOf("PINTAN") != -1)
-        filter.setPreselected("Base64");
+        this.filter.setPreselected("Base64");
 		}
-    return filter;
+    return this.filter;
 	}
 
 }
@@ -233,6 +309,9 @@ public class AccountContainerDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: AccountContainerDialog.java,v $
+ * Revision 1.12  2009/09/28 13:02:05  willuhn
+ * @N Pflichtfeld-Check in Account-Container-Dialog
+ *
  * Revision 1.11  2009/03/02 13:43:19  willuhn
  * @B Trotz Auswahl von "None" als Filter wurde anschliessend wieder "Base64" angezeigt - lag lediglich daran, dass die Combobox mehrfach initialisiert wurde
  *
