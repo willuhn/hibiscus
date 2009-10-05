@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/XMLImporter.java,v $
- * $Revision: 1.3 $
- * $Date: 2009/02/13 14:17:01 $
+ * $Revision: 1.4 $
+ * $Date: 2009/10/05 17:12:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -95,7 +95,6 @@ public class XMLImporter implements Importer
         try
         {
           object.store();
-          Application.getMessagingFactory().sendMessage(new ImportMessage(object));
           created++;
           try
           {
@@ -187,6 +186,9 @@ public class XMLImporter implements Importer
 
 /*******************************************************************************
  * $Log: XMLImporter.java,v $
+ * Revision 1.4  2009/10/05 17:12:03  willuhn
+ * @B Import-Message wurde doppelt verschickt
+ *
  * Revision 1.3  2009/02/13 14:17:01  willuhn
  * @N BUGZILLA 700
  *
