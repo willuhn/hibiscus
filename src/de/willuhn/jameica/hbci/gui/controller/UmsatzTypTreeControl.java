@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzTypTreeControl.java,v $
- * $Revision: 1.7 $
- * $Date: 2009/01/12 00:46:50 $
+ * $Revision: 1.8 $
+ * $Date: 2009/10/05 23:08:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,8 @@
 package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -32,8 +34,10 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzTypTree;
+import de.willuhn.jameica.hbci.gui.parts.UmsatzTypVerlauf;
 import de.willuhn.jameica.hbci.io.UmsatzTree;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.server.UmsatzGroup;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
@@ -50,7 +54,9 @@ public class UmsatzTypTreeControl extends AbstractControl
   private DateInput start                   = null;
   private DateInput end                     = null;
   private I18N i18n                         = null;
+  
   private UmsatzTypTree tree                = null;
+  private UmsatzTypVerlauf chart            = null;
   
   private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(UmsatzTypTreeControl.class);
 
@@ -196,6 +202,21 @@ public class UmsatzTypTreeControl extends AbstractControl
   }
   
   /**
+   * Liefert die Chart-Ansicht der Kategorien.
+   * @return die Chart-Ansicht.
+   * @throws RemoteException
+   */
+  public UmsatzTypVerlauf getChart() throws RemoteException
+  {
+    if (this.chart != null)
+      return this.chart;
+    
+    this.chart = new UmsatzTypVerlauf();
+    this.chart.setData(getTree().getItems(),(Date) getStart().getValue(),(Date) getEnd().getValue());
+    return this.chart;
+  }
+  
+  /**
    * Klappt alle Elemente auf oder zu.
    */
   public void handleExpand()
@@ -226,26 +247,66 @@ public class UmsatzTypTreeControl extends AbstractControl
    */
   public void handleReload(Composite comp)
   {
-    if (comp != null && !comp.isDisposed())
+    if (comp == null || comp.isDisposed())
+      return;
+    
+    try
     {
-      try
+      // Tree wegwerfen und neu zeichnen
+      SWTUtil.disposeChildren(comp);
+      this.tree = null;
+      getTree().paint(comp);
+      comp.layout(true);
+    }
+    catch (RemoteException re)
+    {
+      Logger.error("unable to redraw tree",re);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren"), StatusBarMessage.TYPE_ERROR));
+    }
+  }
+  
+  /**
+   * Aktualisiert den Chart.
+   */
+  public void handleRefreshChart()
+  {
+    try
+    {
+      // 1. Wir holen uns die aktuell selektierten Objekte
+      Object selection = getTree().getSelection();
+
+      List l = null;
+      
+      if (selection != null && (selection instanceof UmsatzGroup[])) // Mehrere Kategorien markiert?
       {
-        SWTUtil.disposeChildren(comp);
-        this.tree = null;
-        getTree().paint(comp);
-        comp.layout(true);
+        l = Arrays.asList((UmsatzGroup[])selection);
       }
-      catch (RemoteException re)
+      else if (selection != null && (selection instanceof UmsatzGroup)) // Eine Kategorie markiert?
       {
-        Logger.error("unable to redraw tree",re);
-        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren der Tabelle"), StatusBarMessage.TYPE_ERROR));
+        l = new ArrayList();
+        l.add(selection);
       }
+
+      // keine brauchbare Selektrion.
+      if (l == null)
+        l = getTree().getItems();
+
+      getChart().setData(l, (Date) getStart().getValue(), (Date) getEnd().getValue());
+      getChart().redraw();
+    }
+    catch (RemoteException re)
+    {
+      Logger.error("unable to redraw chart",re);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren"), StatusBarMessage.TYPE_ERROR));
     }
   }
 }
 
 /*******************************************************************************
  * $Log: UmsatzTypTreeControl.java,v $
+ * Revision 1.8  2009/10/05 23:08:40  willuhn
+ * @N BUGZILLA 629 - wenn ein oder mehrere Kategorien markiert sind, werden die Charts nur fuer diese gezeichnet
+ *
  * Revision 1.7  2009/01/12 00:46:50  willuhn
  * @N Vereinheitlichtes KontoInput in den Auswertungen
  *
