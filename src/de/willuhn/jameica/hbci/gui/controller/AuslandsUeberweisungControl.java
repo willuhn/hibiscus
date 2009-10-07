@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AuslandsUeberweisungControl.java,v $
- * $Revision: 1.3 $
- * $Date: 2009/05/07 15:13:37 $
+ * $Revision: 1.4 $
+ * $Date: 2009/10/07 23:08:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -127,7 +127,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
       return this.kontoAuswahl;
     
     KontoListener kl = new KontoListener();
-    this.kontoAuswahl = new KontoInput(getTransfer().getKonto());
+    this.kontoAuswahl = new KontoInput(getTransfer().getKonto(),false);
     this.kontoAuswahl.setMandatory(true);
     this.kontoAuswahl.addListener(kl);
     this.kontoAuswahl.setEnabled(!getTransfer().ausgefuehrt());
@@ -521,6 +521,9 @@ public class AuslandsUeberweisungControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AuslandsUeberweisungControl.java,v $
+ * Revision 1.4  2009/10/07 23:08:56  willuhn
+ * @N BUGZILLA 745: Deaktivierte Konten in Auswertungen zwar noch anzeigen, jedoch mit "[]" umschlossen. Bei der Erstellung von neuen Auftraegen bleiben sie jedoch ausgeblendet. Bei der Gelegenheit wird das Default-Konto jetzt mit ">" markiert
+ *
  * Revision 1.3  2009/05/07 15:13:37  willuhn
  * @N BIC in Auslandsueberweisung
  *

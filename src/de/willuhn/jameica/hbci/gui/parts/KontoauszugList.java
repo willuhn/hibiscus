@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.29 $
- * $Date: 2009/09/23 11:47:58 $
+ * $Revision: 1.30 $
+ * $Date: 2009/10/07 23:08:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -195,7 +195,7 @@ public class KontoauszugList extends UmsatzList
     if (this.kontoAuswahl != null)
       return this.kontoAuswahl;
 
-    this.kontoAuswahl = new KontoInput(null);
+    this.kontoAuswahl = new KontoInput(null,true);
     Konto preset = null;
 
     /////////////////////
@@ -648,6 +648,9 @@ public class KontoauszugList extends UmsatzList
 
 /*********************************************************************
  * $Log: KontoauszugList.java,v $
+ * Revision 1.30  2009/10/07 23:08:55  willuhn
+ * @N BUGZILLA 745: Deaktivierte Konten in Auswertungen zwar noch anzeigen, jedoch mit "[]" umschlossen. Bei der Erstellung von neuen Auftraegen bleiben sie jedoch ausgeblendet. Bei der Gelegenheit wird das Default-Konto jetzt mit ">" markiert
+ *
  * Revision 1.29  2009/09/23 11:47:58  willuhn
  * @N Auch im erweiterten Verwendungszweck suchen
  *

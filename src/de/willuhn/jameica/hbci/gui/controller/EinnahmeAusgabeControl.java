@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EinnahmeAusgabeControl.java,v $
- * $Revision: 1.11 $
- * $Date: 2009/04/05 21:16:22 $
+ * $Revision: 1.12 $
+ * $Date: 2009/10/07 23:08:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -100,7 +100,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
     if (this.kontoAuswahl != null)
       return this.kontoAuswahl;
 
-    this.kontoAuswahl = new KontoInput(null);
+    this.kontoAuswahl = new KontoInput(null,true);
     this.kontoAuswahl.setPleaseChoose(i18n.tr("<Alle Konten>"));
     this.kontoAuswahl.addListener(new Listener()
     {
@@ -362,6 +362,9 @@ public class EinnahmeAusgabeControl extends AbstractControl
 
 /*******************************************************************************
  * $Log: EinnahmeAusgabeControl.java,v $
+ * Revision 1.12  2009/10/07 23:08:56  willuhn
+ * @N BUGZILLA 745: Deaktivierte Konten in Auswertungen zwar noch anzeigen, jedoch mit "[]" umschlossen. Bei der Erstellung von neuen Auftraegen bleiben sie jedoch ausgeblendet. Bei der Gelegenheit wird das Default-Konto jetzt mit ">" markiert
+ *
  * Revision 1.11  2009/04/05 21:16:22  willuhn
  * @B BUGZILLA 716
  *

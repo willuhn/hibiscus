@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/KontoInput.java,v $
- * $Revision: 1.4 $
- * $Date: 2009/09/15 00:23:35 $
+ * $Revision: 1.5 $
+ * $Date: 2009/10/07 23:08:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -44,11 +44,12 @@ public class KontoInput extends SelectInput
   /**
    * ct.
    * @param konto ausgewaehltes Konto.
+   * @param showDisabled true, wenn deaktivierte Konten mit angezeigt werden sollen.
    * @throws RemoteException
    */
-  public KontoInput(Konto konto) throws RemoteException
+  public KontoInput(Konto konto, boolean showDisabled) throws RemoteException
   {
-    super(init(),konto);
+    super(init(showDisabled),konto);
     setName(i18n.tr("Konto"));
     setPleaseChoose(i18n.tr("Bitte wählen..."));
     this.setComment("");
@@ -69,10 +70,11 @@ public class KontoInput extends SelectInput
   
   /**
    * Initialisiert die Liste der Konten.
+   * @param showDisabled true, wenn deaktivierte Konten mit angezeigt werden sollen.
    * @return Liste der Konten.
    * @throws RemoteException
    */
-  private static GenericIterator init() throws RemoteException
+  private static GenericIterator init(boolean showDisabled) throws RemoteException
   {
     DBIterator it = Settings.getDBService().createList(Konto.class);
     it.setOrder("ORDER BY blz, kontonummer");
@@ -80,7 +82,7 @@ public class KontoInput extends SelectInput
     while (it.hasNext())
     {
       Konto k = (Konto) it.next();
-      if ((k.getFlags() & Konto.FLAG_DISABLED) != Konto.FLAG_DISABLED)
+      if (showDisabled || (k.getFlags() & Konto.FLAG_DISABLED) != Konto.FLAG_DISABLED)
         l.add(k);
     }
     return PseudoIterator.fromArray(l.toArray(new Konto[l.size()]));
@@ -100,7 +102,18 @@ public class KontoInput extends SelectInput
     try
     {
       Konto k = (Konto) bean;
+      
+      Konto kd = Settings.getDefaultKonto();
+      boolean isDefault = (kd != null && kd.equals(k));
+
+
+      boolean disabled = (k.getFlags() & Konto.FLAG_DISABLED) == Konto.FLAG_DISABLED;
+
       StringBuffer sb = new StringBuffer();
+      if (isDefault)
+        sb.append("> ");
+      if (disabled)
+        sb.append("[");
       
       sb.append(i18n.tr("Kto. {0}",k.getKontonummer()));
       
@@ -132,6 +145,8 @@ public class KontoInput extends SelectInput
         sb.append(i18n.tr("Saldo: {0} {1}", new String[]{HBCI.DECIMALFORMAT.format(k.getSaldo()),k.getWaehrung()}));
       }
       
+      if (disabled)
+        sb.append("]");
       return sb.toString();
     }
     catch (RemoteException re)
@@ -181,6 +196,9 @@ public class KontoInput extends SelectInput
 
 /**********************************************************************
  * $Log: KontoInput.java,v $
+ * Revision 1.5  2009/10/07 23:08:56  willuhn
+ * @N BUGZILLA 745: Deaktivierte Konten in Auswertungen zwar noch anzeigen, jedoch mit "[]" umschlossen. Bei der Erstellung von neuen Auftraegen bleiben sie jedoch ausgeblendet. Bei der Gelegenheit wird das Default-Konto jetzt mit ">" markiert
+ *
  * Revision 1.4  2009/09/15 00:23:35  willuhn
  * @N BUGZILLA 745
  *

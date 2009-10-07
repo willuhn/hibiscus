@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SparQuote.java,v $
- * $Revision: 1.19 $
- * $Date: 2009/05/08 13:58:30 $
+ * $Revision: 1.20 $
+ * $Date: 2009/10/07 23:08:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -125,7 +125,7 @@ public class SparQuote implements Part
     if (this.kontoauswahl != null)
       return this.kontoauswahl;
 
-    this.kontoauswahl = new KontoInput(null);
+    this.kontoauswahl = new KontoInput(null,true);
     this.kontoauswahl.setPleaseChoose(i18n.tr("<Alle Konten>"));
     this.kontoauswahl.addListener(new DelayedListener(500,this.listener));
     return this.kontoauswahl;
@@ -517,6 +517,9 @@ public class SparQuote implements Part
 
 /*********************************************************************
  * $Log: SparQuote.java,v $
+ * Revision 1.20  2009/10/07 23:08:56  willuhn
+ * @N BUGZILLA 745: Deaktivierte Konten in Auswertungen zwar noch anzeigen, jedoch mit "[]" umschlossen. Bei der Erstellung von neuen Auftraegen bleiben sie jedoch ausgeblendet. Bei der Gelegenheit wird das Default-Konto jetzt mit ">" markiert
+ *
  * Revision 1.19  2009/05/08 13:58:30  willuhn
  * @N Icons in allen Menus und auf allen Buttons
  * @N Fuer Umsatz-Kategorien koennen nun benutzerdefinierte Farben vergeben werden

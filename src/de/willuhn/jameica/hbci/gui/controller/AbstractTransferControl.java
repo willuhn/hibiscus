@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.54 $
- * $Date: 2009/03/13 00:25:12 $
+ * $Revision: 1.55 $
+ * $Date: 2009/10/07 23:08:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -112,7 +112,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 		
     Konto k = getKonto();
     KontoListener kl = new KontoListener();
-		this.kontoAuswahl = new KontoInput(k);
+		this.kontoAuswahl = new KontoInput(k,false);
 		this.kontoAuswahl.setMandatory(true);
     this.kontoAuswahl.addListener(kl);
     
@@ -472,6 +472,9 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
+ * Revision 1.55  2009/10/07 23:08:56  willuhn
+ * @N BUGZILLA 745: Deaktivierte Konten in Auswertungen zwar noch anzeigen, jedoch mit "[]" umschlossen. Bei der Erstellung von neuen Auftraegen bleiben sie jedoch ausgeblendet. Bei der Gelegenheit wird das Default-Konto jetzt mit ">" markiert
+ *
  * Revision 1.54  2009/03/13 00:25:12  willuhn
  * @N Code fuer Auslandsueberweisungen fast fertig
  *

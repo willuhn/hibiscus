@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzTypTreeControl.java,v $
- * $Revision: 1.8 $
- * $Date: 2009/10/05 23:08:40 $
+ * $Revision: 1.9 $
+ * $Date: 2009/10/07 23:08:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -87,7 +87,7 @@ public class UmsatzTypTreeControl extends AbstractControl
     if (this.kontoAuswahl != null)
       return this.kontoAuswahl;
     
-    this.kontoAuswahl = new KontoInput(null);
+    this.kontoAuswahl = new KontoInput(null,true);
     this.kontoAuswahl.setPleaseChoose(i18n.tr("<Alle Konten>"));
     return this.kontoAuswahl;
   }
@@ -304,6 +304,9 @@ public class UmsatzTypTreeControl extends AbstractControl
 
 /*******************************************************************************
  * $Log: UmsatzTypTreeControl.java,v $
+ * Revision 1.9  2009/10/07 23:08:56  willuhn
+ * @N BUGZILLA 745: Deaktivierte Konten in Auswertungen zwar noch anzeigen, jedoch mit "[]" umschlossen. Bei der Erstellung von neuen Auftraegen bleiben sie jedoch ausgeblendet. Bei der Gelegenheit wird das Default-Konto jetzt mit ">" markiert
+ *
  * Revision 1.8  2009/10/05 23:08:40  willuhn
  * @N BUGZILLA 629 - wenn ein oder mehrere Kategorien markiert sind, werden die Charts nur fuer diese gezeichnet
  *
