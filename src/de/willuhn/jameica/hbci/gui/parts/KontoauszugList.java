@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.30 $
- * $Date: 2009/10/07 23:08:55 $
+ * $Revision: 1.31 $
+ * $Date: 2009/10/08 22:45:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -36,7 +36,6 @@ import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
-import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.util.ButtonArea;
@@ -70,7 +69,7 @@ import de.willuhn.util.I18N;
 public class KontoauszugList extends UmsatzList
 {
   // Suche nach Konto/zeitraum
-  private SelectInput kontoAuswahl     = null;
+  private KontoInput kontoAuswahl      = null;
   private DateInput start              = null;
   private DateInput end                = null;
 
@@ -87,6 +86,7 @@ public class KontoauszugList extends UmsatzList
   private Listener listener            = null;
   
   private boolean disposed = false; // BUGZILLA 462
+  private boolean changed = false;
 
   private I18N i18n = null;
 
@@ -145,7 +145,7 @@ public class KontoauszugList extends UmsatzList
     betrag.addSeparator();
     betrag.addLabelPair(i18n.tr("Verwendungszweck/Kommentar enthält"), getText());
 
-    ButtonArea buttons = new ButtonArea(parent, 3);
+    ButtonArea buttons = new ButtonArea(parent, 4);
     buttons.addButton(new Back(false));
     buttons.addButton(i18n.tr("Exportieren..."), new Action()
     {
@@ -154,6 +154,13 @@ public class KontoauszugList extends UmsatzList
         handlePrint();
       }
     },null,false,"document-save.png");
+    buttons.addButton(i18n.tr("Filter zurücksetzen"), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        handleReset();
+      }
+    },null,false,"edit-undo.png");
     buttons.addButton(i18n.tr("Aktualisieren"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -190,7 +197,7 @@ public class KontoauszugList extends UmsatzList
    * @return Auswahlbox.
    * @throws RemoteException
    */
-  public Input getKontoAuswahl() throws RemoteException
+  public KontoInput getKontoAuswahl() throws RemoteException
   {
     if (this.kontoAuswahl != null)
       return this.kontoAuswahl;
@@ -532,6 +539,32 @@ public class KontoauszugList extends UmsatzList
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Exportieren der Umsätze"), StatusBarMessage.TYPE_ERROR));
     }
   }
+  
+  /**
+   * Resettet alle Filter-Eingaben.
+   */
+  private synchronized void handleReset()
+  {
+    try
+    {
+      getStart().setValue(null);
+      getEnd().setValue(null);
+      getMindestBetrag().setValue(Double.NaN);
+      getHoechstBetrag().setValue(Double.NaN);
+      getKontoAuswahl().setValue(null);
+      getGegenkontoNummer().setText("");
+      getGegenkontoBLZ().setValue(null);
+      getGegenkontoName().setValue(null);
+      getText().setValue(null);
+      this.changed = true;
+      handleReload();
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to reset filters",e);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Zurücksetzen der Filter"), StatusBarMessage.TYPE_ERROR));
+    }
+  }
 
   /**
    * Aktualisiert die Tabelle der angezeigten Umsaetze.
@@ -563,10 +596,9 @@ public class KontoauszugList extends UmsatzList
             Double bTo   = (Double) getHoechstBetrag().getValue();
             mySettings.setAttribute("kontoauszug.list.from",from == null ? null : HBCI.DATEFORMAT.format(from));
             mySettings.setAttribute("kontoauszug.list.gegenkonto.nummer",getGegenkontoNummer().getText());
-            mySettings.setAttribute("kontoauszug.list.konto",k == null ? null : k.getID());
-            mySettings.setAttribute("kontoauszug.list.gegenkonto.nummer",getGegenkontoNummer().getText());
             mySettings.setAttribute("kontoauszug.list.gegenkonto.blz",(String) getGegenkontoBLZ().getValue());
             mySettings.setAttribute("kontoauszug.list.gegenkonto.name",(String) getGegenkontoName().getValue());
+            mySettings.setAttribute("kontoauszug.list.konto",k == null ? null : k.getID());
             mySettings.setAttribute("kontoauszug.list.text",(String) getText().getValue());
             mySettings.setAttribute("kontoauszug.list.betrag.from",bFrom == null ? Double.NaN : bFrom.doubleValue());
             mySettings.setAttribute("kontoauszug.list.betrag.to",bTo == null ? Double.NaN : bTo.doubleValue());
@@ -597,7 +629,9 @@ public class KontoauszugList extends UmsatzList
   {
     try
     {
-      return getStart().hasChanged() ||
+      boolean b = this.changed;
+      this.changed = false;
+      return b || getStart().hasChanged() ||
                 getEnd().hasChanged() ||
                 getKontoAuswahl().hasChanged() ||
                 getGegenkontoName().hasChanged() ||
@@ -648,6 +682,10 @@ public class KontoauszugList extends UmsatzList
 
 /*********************************************************************
  * $Log: KontoauszugList.java,v $
+ * Revision 1.31  2009/10/08 22:45:16  willuhn
+ * @N Button "Geprueft" in Umsatz-Details, um einen Umsatz auch dort als geprueft markieren zu koennen
+ * @N Button "Filter zuruecksetzen" in Kontoauszug
+ *
  * Revision 1.30  2009/10/07 23:08:55  willuhn
  * @N BUGZILLA 745: Deaktivierte Konten in Auswertungen zwar noch anzeigen, jedoch mit "[]" umschlossen. Bei der Erstellung von neuen Auftraegen bleiben sie jedoch ausgeblendet. Bei der Gelegenheit wird das Default-Konto jetzt mit ">" markiert
  *

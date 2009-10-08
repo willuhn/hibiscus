@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzDetail.java,v $
- * $Revision: 1.37 $
- * $Date: 2009/05/28 10:45:18 $
+ * $Revision: 1.38 $
+ * $Date: 2009/10/08 22:45:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
+import de.willuhn.jameica.hbci.gui.action.FlaggableChange;
 import de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
@@ -28,6 +29,8 @@ import de.willuhn.util.ApplicationException;
  */
 public class UmsatzDetail extends AbstractUmsatzDetail
 {
+  private Button checked = null;
+  
   private UmsatzDetailControl control = null;
 
   /**
@@ -37,10 +40,21 @@ public class UmsatzDetail extends AbstractUmsatzDetail
   {
     super.bind();
 
-    ButtonArea buttons = new ButtonArea(getParent(),4);
+    ButtonArea buttons = new ButtonArea(getParent(),5);
     buttons.addButton(new Back());
     
     Umsatz u = getControl().getUmsatz();
+    
+    this.checked = new Button(i18n.tr("Geprüft"),new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        new FlaggableChange(Umsatz.FLAG_CHECKED,true).handleAction(context);
+        checked.setEnabled(false); // nur einmal moeglich
+      }
+    },u,false,"emblem-default.png");
+    checked.setEnabled((u.getFlags() & Umsatz.FLAG_CHECKED) != Umsatz.FLAG_CHECKED);
+    buttons.addButton(checked);
     Button edit = new Button(i18n.tr("Bearbeiten"),new de.willuhn.jameica.hbci.gui.action.UmsatzDetailEdit(),u,false,"text-x-generic.png");
     edit.setEnabled((u.getFlags() & Umsatz.FLAG_NOTBOOKED) == 0);
     buttons.addButton(edit);
@@ -89,6 +103,10 @@ public class UmsatzDetail extends AbstractUmsatzDetail
 
 /**********************************************************************
  * $Log: UmsatzDetail.java,v $
+ * Revision 1.38  2009/10/08 22:45:16  willuhn
+ * @N Button "Geprueft" in Umsatz-Details, um einen Umsatz auch dort als geprueft markieren zu koennen
+ * @N Button "Filter zuruecksetzen" in Kontoauszug
+ *
  * Revision 1.37  2009/05/28 10:45:18  willuhn
  * @N more icons
  *
