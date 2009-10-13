@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.62 $
- * $Date: 2009/05/11 14:39:53 $
+ * $Revision: 1.63 $
+ * $Date: 2009/10/13 10:36:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -219,6 +219,14 @@ public class UmsatzList extends TablePart implements Extendable
     Application.getMessagingFactory().registerMessageConsumer(this.mcChanged);
     Application.getMessagingFactory().registerMessageConsumer(this.mcNew);
 
+    this.addSelectionListener(new Listener()
+    {
+      public void handleEvent(Event event)
+      {
+        refreshSummary();
+      }
+    });
+    
     // Wir geben die Tabelle jetzt noch zur Erweiterung frei.
     ExtensionRegistry.extend(this);
   }
@@ -230,6 +238,50 @@ public class UmsatzList extends TablePart implements Extendable
   public void setFilterVisible(boolean visible)
   {
     this.filter = visible;
+  }
+  
+  /**
+   * @see de.willuhn.jameica.gui.parts.TablePart#getSummary()
+   */
+  protected String getSummary()
+  {
+    try
+    {
+      Object o = this.getSelection();
+      int size = this.size();
+
+      // nichts markiert oder nur einer, dann liefern wir nur die Anzahl der Umsaetze
+      if (o == null || size == 1 || !(o instanceof Umsatz[]))
+      {
+        if (size == 1)
+          return i18n.tr("1 Umsatz");
+        else
+          return i18n.tr("{0} Umsätze",Integer.toString(size));
+      }
+      
+      // Andernfalls berechnen wir die Summe
+      double sum = 0.0d;
+      Umsatz[] list = (Umsatz[]) o;
+      String curr = null;
+      for (Umsatz u:list)
+      {
+        if (curr == null)
+          curr = u.getKonto().getWaehrung();
+        sum += u.getBetrag();
+      }
+      if (curr == null)
+        curr = HBCIProperties.CURRENCY_DEFAULT_DE;
+
+      return i18n.tr("{0} Umsätze, {1} markiert, Summe: {2} {3}",new String[]{Integer.toString(size),
+                                                                              Integer.toString(list.length),
+                                                                              HBCI.DECIMALFORMAT.format(sum),
+                                                                              curr});
+    }
+    catch (Exception e)
+    {
+      Logger.error("error while updating summary",e);
+    }
+    return super.getSummary();
   }
   
   /**
@@ -246,7 +298,7 @@ public class UmsatzList extends TablePart implements Extendable
         Application.getMessagingFactory().unRegisterMessageConsumer(mcNew);
       }
     });
-
+    
     if (this.filter)
     {
       if (this.kl == null)
@@ -764,6 +816,9 @@ public class UmsatzList extends TablePart implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.63  2009/10/13 10:36:38  willuhn
+ * @N BUGZILLA #590
+ *
  * Revision 1.62  2009/05/11 14:39:53  willuhn
  * @C Es werden jetzt wieder alle Filterkriterien gespeichert, da auch ein Warnhinweis angezeigt wird, wenn Filter aktiv sind
  *
