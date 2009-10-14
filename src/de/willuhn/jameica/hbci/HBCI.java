@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.117 $
- * $Date: 2009/10/14 11:11:49 $
+ * $Revision: 1.118 $
+ * $Date: 2009/10/14 14:29:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -242,6 +242,11 @@ public class HBCI extends AbstractPlugin
         Logger.warn("unable to map jameica log level into hbci4java log level. using default");
       }
       this.hbciProps.put("log.loglevel.default",""+logLevel);
+      
+      // Wenn das Jameica-Loglevel auf DEBUG steht, aktivieren wir per Default das SSL-Logging von HBCI4Java
+      if (Logger.getLevel().getValue() == Level.DEBUG.getValue())
+        this.hbciProps.put("log.ssl.enable","1");
+        
       //////////////////////////////////
       
       //////////////////////////////////
@@ -368,6 +373,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.118  2009/10/14 14:29:35  willuhn
+ * @N Neuer HBCI4Java-Snapshot (2.5.11) - das SSL-Logging kann nun auch via HBCICallback in das jameica.log geleitet werden (wenn kein log.ssl.filename angegeben ist). Damit kann das Flag "log.ssl.enable" automatisch von Hibiscus aktiviert/deaktiviert werden, wenn das Jameica-Loglevel auf DEBUG oder !DEBUG steht
+ *
  * Revision 1.117  2009/10/14 11:11:49  willuhn
  * @N neuer HBCI4Java-Snapshot (2.5.11), der die neuen Parameter "log.ssl.enable" und "log.ssl.filename" mitbringt, um die PIN/TAN-Kommunikation auf HTTP-Ebene zu Debugging-Zwecken mitschneiden zu koennen
  * @N Moeglichkeit, HBCI4Java mit zusaetzlichen eigenen Parametern aus ~/.jameica/hibiscus/hbci4java.properties initialisieren zu koennen

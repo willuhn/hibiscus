@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/messaging/SettingsChangedMessageConsumer.java,v $
- * $Revision: 1.1 $
- * $Date: 2008/09/26 15:37:47 $
+ * $Revision: 1.2 $
+ * $Date: 2009/10/14 14:29:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -54,6 +54,10 @@ public class SettingsChangedMessageConsumer implements MessageConsumer
       int ll = ((Integer) HBCI.LOGMAPPING.get(Logger.getLevel())).intValue();
       Logger.info("changing hbci4java loglevel to " + ll);
       HBCIUtils.setParam("log.loglevel.default",""+ ll);
+
+      // Wir aktivieren/deaktivieren das SSL-Logging abhaengig vom Log-Level
+      boolean b = Logger.getLevel().getValue() == Level.DEBUG.getValue();
+      HBCIUtils.setParam("log.ssl.enable",b ? "1" : "0");
     }
     catch (Exception e)
     {
@@ -66,6 +70,9 @@ public class SettingsChangedMessageConsumer implements MessageConsumer
 
 /*********************************************************************
  * $Log: SettingsChangedMessageConsumer.java,v $
+ * Revision 1.2  2009/10/14 14:29:35  willuhn
+ * @N Neuer HBCI4Java-Snapshot (2.5.11) - das SSL-Logging kann nun auch via HBCICallback in das jameica.log geleitet werden (wenn kein log.ssl.filename angegeben ist). Damit kann das Flag "log.ssl.enable" automatisch von Hibiscus aktiviert/deaktiviert werden, wenn das Jameica-Loglevel auf DEBUG oder !DEBUG steht
+ *
  * Revision 1.1  2008/09/26 15:37:47  willuhn
  * @N Da das Messaging-System inzwischen Consumer solange sammeln kann, bis sie initialisiert ist, besteht kein Bedarf mehr, das explizite Registrieren von Consumern bis zum Versand der SystemMessage.SYSTEM_STARTED zu verzoegern
  *
