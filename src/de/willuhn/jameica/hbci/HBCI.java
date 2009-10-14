@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.116 $
- * $Date: 2009/03/18 22:08:25 $
+ * $Revision: 1.117 $
+ * $Date: 2009/10/14 11:11:49 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,7 +13,10 @@
 
 package de.willuhn.jameica.hbci;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.rmi.RemoteException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -242,12 +245,38 @@ public class HBCI extends AbstractPlugin
       //////////////////////////////////
       
       //////////////////////////////////
-      // Rewriter
-      String rewriters = getResources().getSettings().getString("hbci4java.kernel.rewriters",null);
-      if (rewriters != null && rewriters.length() > 0)
+      // Generische Addon-Parameter
+      File addonprops = new File(getResources().getWorkPath(),"hbci4java.properties");
+      if (addonprops.exists())
       {
-        Logger.warn("user defined rewriters found: " + rewriters);
-        this.hbciProps.put("kernel.rewriters",rewriters);
+        InputStream is = null;
+        try
+        {
+          is = new BufferedInputStream(new FileInputStream(addonprops));
+          Properties p = new Properties();
+          p.load(is);
+          
+          if (p.size() > 0)
+          {
+            Logger.info("applying hbci4java properties from " + addonprops + ": "+ p.toString());
+            this.hbciProps.putAll(p);
+          }
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to load " + addonprops,e);
+        }
+        finally
+        {
+          if (is != null)
+          {
+            try {
+              is.close();
+            } catch (Exception e) {
+              Logger.error("error while closing " + addonprops,e);
+            }
+          }
+        }
       }
       //////////////////////////////////
 
@@ -339,6 +368,10 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.117  2009/10/14 11:11:49  willuhn
+ * @N neuer HBCI4Java-Snapshot (2.5.11), der die neuen Parameter "log.ssl.enable" und "log.ssl.filename" mitbringt, um die PIN/TAN-Kommunikation auf HTTP-Ebene zu Debugging-Zwecken mitschneiden zu koennen
+ * @N Moeglichkeit, HBCI4Java mit zusaetzlichen eigenen Parametern aus ~/.jameica/hibiscus/hbci4java.properties initialisieren zu koennen
+ *
  * Revision 1.116  2009/03/18 22:08:25  willuhn
  * *** empty log message ***
  *
