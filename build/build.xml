@@ -43,7 +43,6 @@
         <include name="**/*.jar" />
       </fileset>
     </path>
-
   </target>
 
   <target depends="init" name="cvs" description="performs cvs update">
@@ -101,11 +100,9 @@
 
   <target depends="jar" name="signjar" description="signs the zip files">
     <loadfile property="storepass" srcFile="${signjar.storepass}" />
-    <signjar alias="${signjar.alias}"
-    	       storepass="${storepass}"
-    	       keystore="${signjar.keystore}"
-    	       verbose="true"
-    	       jar="${project.zipdir}/${define.jarfilename}" />
+    <exec executable="jarsigner" failonerror="true" timeout="60000">
+      <arg line="-verbose -keystore ${signjar.keystore} -storepass ${storepass} ${project.zipdir}/${define.jarfilename} &quot;${signjar.alias}&quot;" />
+    </exec>
   </target>
 
   <target depends="jar" name="zip" description="generates the zip files">
