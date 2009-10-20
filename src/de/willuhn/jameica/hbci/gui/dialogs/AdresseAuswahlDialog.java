@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/AdresseAuswahlDialog.java,v $
- * $Revision: 1.6 $
- * $Date: 2009/03/13 00:25:12 $
+ * $Revision: 1.7 $
+ * $Date: 2009/10/20 23:12:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,7 +21,7 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.AddressFilter;
+import de.willuhn.jameica.hbci.gui.filter.AddressFilter;
 import de.willuhn.jameica.hbci.gui.parts.EmpfaengerList;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.system.Application;
@@ -127,6 +127,10 @@ public class AdresseAuswahlDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: AdresseAuswahlDialog.java,v $
+ * Revision 1.7  2009/10/20 23:12:58  willuhn
+ * @N Support fuer SEPA-Ueberweisungen
+ * @N Konten um IBAN und BIC erweitert
+ *
  * Revision 1.6  2009/03/13 00:25:12  willuhn
  * @N Code fuer Auslandsueberweisungen fast fertig
  *

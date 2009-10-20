@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.83 $
- * $Date: 2009/09/15 00:23:34 $
+ * $Revision: 1.84 $
+ * $Date: 2009/10/20 23:12:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,10 @@ package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
 import java.util.Date;
+
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
@@ -50,6 +54,7 @@ import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
+import de.willuhn.logging.Level;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -71,6 +76,9 @@ public class KontoControl extends AbstractControl {
 	private Input passportAuswahl     = null;
   private Input kundennummer 		    = null;
   private Input kommentar           = null;
+  
+  private TextInput bic             = null;
+  private TextInput iban            = null;
   
   private LabelInput saldo			        = null;
   private SaldoMessageConsumer consumer = null;
@@ -244,6 +252,16 @@ public class KontoControl extends AbstractControl {
 			return blz;
 		blz = new BLZInput(getKonto().getBLZ());
     blz.setMandatory(true);
+    blz.addListener(new Listener()
+    {
+      /**
+       * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+       */
+      public void handleEvent(Event event)
+      {
+        completeBic();
+      }
+    });
 		return blz;
 	}
 
@@ -336,6 +354,37 @@ public class KontoControl extends AbstractControl {
   }
 
   /**
+   * Liefert das Eingabe-Feld fuer die IBAN.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getIban() throws RemoteException
+  {
+    if (this.iban == null)
+    {
+      this.iban = new TextInput(getKonto().getIban(),HBCIProperties.HBCI_IBAN_MAXLENGTH);
+      this.iban.setValidChars(HBCIProperties.HBCI_IBAN_VALIDCHARS);
+    }
+    return this.iban;
+  }
+
+  /**
+   * Liefert das Eingabe-Feld fuer die BIC.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getBic() throws RemoteException
+  {
+    if (this.bic == null)
+    {
+      this.bic = new TextInput(getKonto().getBic(),HBCIProperties.HBCI_BIC_MAXLENGTH);
+      this.bic.setValidChars(HBCIProperties.HBCI_BIC_VALIDCHARS);
+      this.completeBic();
+    }
+    return this.bic;
+  }
+
+  /**
    * Liefert einen Saldo-MessageConsumer.
    * @return Consumer.
    */
@@ -385,6 +434,8 @@ public class KontoControl extends AbstractControl {
 			getKonto().setBezeichnung((String)getBezeichnung().getValue());
       getKonto().setKundennummer((String)getKundennummer().getValue());
       getKonto().setKommentar((String) getKommentar().getValue());
+      getKonto().setIban((String)getIban().getValue());
+      getKonto().setBic((String)getBic().getValue());
       
       // und jetzt speichern wir.
 			getKonto().store();
@@ -465,6 +516,31 @@ public class KontoControl extends AbstractControl {
         }
       }
     });
+  }
+  
+  /**
+   * Auto-vervollstaendigt die BIC, falls sie noch nicht eingegeben wurde aber die BLZ bekannt ist.
+   */
+  private void completeBic()
+  {
+    try
+    {
+      String bic = (String) getBic().getValue();
+      if (bic != null && bic.length() > 0)
+        return; // schon eingegeben
+      
+      String blz = (String) getBlz().getValue();
+      if (blz == null || blz.length() == 0)
+        return; // keine BLZ bekannt
+      
+      bic = HBCIUtils.getBICForBLZ(blz);
+      if (bic != null && bic.length() > 0)
+        getBic().setValue(bic);
+    }
+    catch (Exception e)
+    {
+      Logger.write(Level.WARN,"unable to autocomplete BIC",e);
+    }
   }
 
   /**
@@ -551,6 +627,10 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.84  2009/10/20 23:12:58  willuhn
+ * @N Support fuer SEPA-Ueberweisungen
+ * @N Konten um IBAN und BIC erweitert
+ *
  * Revision 1.83  2009/09/15 00:23:34  willuhn
  * @N BUGZILLA 745
  *
@@ -566,254 +646,4 @@ public class KontoControl extends AbstractControl {
  *
  * Revision 1.79  2009/01/04 17:43:30  willuhn
  * @N BUGZILLA 532
- *
- * Revision 1.78  2008/05/19 22:35:53  willuhn
- * @N Maximale Laenge von Kontonummern konfigurierbar (Soft- und Hardlimit)
- * @N Laengenpruefungen der Kontonummer in Dialogen und Fachobjekten
- *
- * Revision 1.77  2007/12/11 12:23:26  willuhn
- * @N Bug 355
- *
- * Revision 1.76  2007/08/29 10:04:42  willuhn
- * @N Bug 476
- *
- * Revision 1.75  2007/06/15 11:20:32  willuhn
- * @N Saldo in Kontodetails via Messaging sofort aktualisieren
- * @N Mehr Details in den Namen der Synchronize-Jobs
- * @N Layout der Umsatzdetail-Anzeige ueberarbeitet
- *
- * Revision 1.74  2007/04/09 22:45:12  willuhn
- * @N Bug 380
- *
- * Revision 1.73  2007/02/22 23:37:11  willuhn
- * @B dont reload umsatz list when table has been disposed
- *
- * Revision 1.72  2006/12/28 15:38:43  willuhn
- * @N Farbige Pflichtfelder
- *
- * Revision 1.71  2006/11/30 23:48:40  willuhn
- * @N Erste Version der Umsatz-Kategorien drin
- *
- * Revision 1.70  2006/10/06 16:00:42  willuhn
- * @B Bug 280
- *
- * Revision 1.69  2006/08/17 21:46:16  willuhn
- * *** empty log message ***
- *
- * Revision 1.68  2006/04/25 23:25:12  willuhn
- * @N bug 81
- *
- * Revision 1.67  2006/04/18 22:38:16  willuhn
- * @N bug 227
- *
- * Revision 1.66  2006/03/30 22:22:32  willuhn
- * @B bug 217
- *
- * Revision 1.65  2006/03/21 00:43:14  willuhn
- * @B bug 209
- *
- * Revision 1.64  2006/03/09 18:24:05  willuhn
- * @N Auswahl der Tage in Umsatz-Chart
- *
- * Revision 1.63  2006/01/23 11:11:36  willuhn
- * *** empty log message ***
- *
- * Revision 1.62  2005/08/08 16:10:26  willuhn
- * @B bug 108
- *
- * Revision 1.61  2005/07/29 16:48:13  web0
- * @N Synchronize
- *
- * Revision 1.60  2005/07/26 23:00:03  web0
- * @N Multithreading-Support fuer HBCI-Jobs
- *
- * Revision 1.59  2005/07/04 21:57:08  web0
- * @B bug 80
- *
- * Revision 1.58  2005/06/21 21:48:24  web0
- * @B bug 80
- *
- * Revision 1.57  2005/06/03 17:14:20  web0
- * @B NPE
- *
- * Revision 1.56  2005/05/19 23:31:07  web0
- * @B RMI over SSL support
- * @N added handbook
- *
- * Revision 1.55  2005/05/08 17:48:51  web0
- * @N Bug 56
- *
- * Revision 1.54  2005/05/02 23:56:45  web0
- * @B bug 66, 67
- * @C umsatzliste nach vorn verschoben
- * @C protokoll nach hinten verschoben
- *
- * Revision 1.53  2005/04/05 21:51:54  web0
- * @B Begrenzung aller BLZ-Eingaben auf 8 Zeichen
- *
- * Revision 1.52  2005/03/30 23:26:28  web0
- * @B bug 29
- * @B bug 30
- *
- * Revision 1.51  2005/02/03 18:57:42  willuhn
- * *** empty log message ***
- *
- * Revision 1.50  2005/02/01 18:27:14  willuhn
- * *** empty log message ***
- *
- * Revision 1.49  2004/11/13 17:02:04  willuhn
- * @N Bearbeiten des Zahlungsturnus
- *
- * Revision 1.48  2004/11/12 18:25:07  willuhn
- * *** empty log message ***
- *
- * Revision 1.47  2004/10/25 23:12:02  willuhn
- * *** empty log message ***
- *
- * Revision 1.46  2004/10/25 17:58:57  willuhn
- * @N Haufen Dauerauftrags-Code
- *
- * Revision 1.45  2004/10/20 12:08:18  willuhn
- * @C MVC-Refactoring (new Controllers)
- *
- * Revision 1.44  2004/10/08 13:37:47  willuhn
- * *** empty log message ***
- *
- * Revision 1.43  2004/07/25 17:15:05  willuhn
- * @C PluginLoader is no longer static
- *
- * Revision 1.42  2004/07/23 15:51:44  willuhn
- * @C Rest des Refactorings
- *
- * Revision 1.41  2004/07/21 23:54:30  willuhn
- * *** empty log message ***
- *
- * Revision 1.40  2004/07/20 21:48:00  willuhn
- * @N ContextMenus
- *
- * Revision 1.39  2004/07/09 00:04:40  willuhn
- * @C Redesign
- *
- * Revision 1.38  2004/07/04 17:07:59  willuhn
- * @B Umsaetze wurden teilweise nicht als bereits vorhanden erkannt und wurden somit doppelt angezeigt
- *
- * Revision 1.37  2004/06/30 20:58:28  willuhn
- * *** empty log message ***
- *
- * Revision 1.36  2004/06/18 19:53:17  willuhn
- * *** empty log message ***
- *
- * Revision 1.35  2004/06/18 19:47:31  willuhn
- * *** empty log message ***
- *
- * Revision 1.34  2004/06/10 20:56:33  willuhn
- * @D javadoc comments fixed
- *
- * Revision 1.33  2004/06/08 22:28:58  willuhn
- * *** empty log message ***
- *
- * Revision 1.32  2004/06/07 22:22:33  willuhn
- * @B Spalte "Passport" in KontoListe entfernt - nicht mehr noetig
- *
- * Revision 1.31  2004/06/07 21:55:59  willuhn
- * @B ClassCastException nach dem Verlassen der Passport-Config von der KontoListe aus
- *
- * Revision 1.30  2004/06/03 00:23:42  willuhn
- * *** empty log message ***
- *
- * Revision 1.29  2004/05/26 23:23:10  willuhn
- * @N neue Sicherheitsabfrage vor Ueberweisung
- * @C Check des Ueberweisungslimit
- * @N Timeout fuer Messages in Statusbars
- *
- * Revision 1.28  2004/05/25 23:23:17  willuhn
- * @N UeberweisungTyp
- * @N Protokoll
- *
- * Revision 1.27  2004/05/05 22:14:47  willuhn
- * *** empty log message ***
- *
- * Revision 1.26  2004/05/04 23:07:23  willuhn
- * @C refactored Passport stuff
- *
- * Revision 1.25  2004/05/02 17:04:38  willuhn
- * *** empty log message ***
- *
- * Revision 1.24  2004/04/19 22:05:52  willuhn
- * @C HBCIJobs refactored
- *
- * Revision 1.23  2004/04/14 23:53:46  willuhn
- * *** empty log message ***
- *
- * Revision 1.22  2004/04/13 23:14:23  willuhn
- * @N datadir
- *
- * Revision 1.21  2004/04/12 19:15:31  willuhn
- * @C refactoring
- *
- * Revision 1.20  2004/04/05 23:28:46  willuhn
- * *** empty log message ***
- *
- * Revision 1.19  2004/04/01 22:06:59  willuhn
- * *** empty log message ***
- *
- * Revision 1.18  2004/03/30 22:07:50  willuhn
- * *** empty log message ***
- *
- * Revision 1.17  2004/03/19 01:44:13  willuhn
- * *** empty log message ***
- *
- * Revision 1.16  2004/03/11 08:55:42  willuhn
- * @N UmsatzDetails
- *
- * Revision 1.15  2004/03/06 18:25:10  willuhn
- * @D javadoc
- * @C removed empfaenger_id from umsatz
- *
- * Revision 1.14  2004/03/05 00:40:29  willuhn
- * *** empty log message ***
- *
- * Revision 1.13  2004/03/05 00:04:10  willuhn
- * @N added code for umsatzlist
- *
- * Revision 1.12  2004/03/03 22:26:40  willuhn
- * @N help texts
- * @C refactoring
- *
- * Revision 1.11  2004/02/27 01:10:18  willuhn
- * @N passport config refactored
- *
- * Revision 1.10  2004/02/24 22:47:05  willuhn
- * @N GUI refactoring
- *
- * Revision 1.9  2004/02/23 20:30:47  willuhn
- * @C refactoring in AbstractDialog
- *
- * Revision 1.8  2004/02/22 20:04:54  willuhn
- * @N Ueberweisung
- * @N Empfaenger
- *
- * Revision 1.7  2004/02/20 01:36:56  willuhn
- * *** empty log message ***
- *
- * Revision 1.6  2004/02/20 01:25:25  willuhn
- * *** empty log message ***
- *
- * Revision 1.5  2004/02/17 01:07:19  willuhn
- * *** empty log message ***
- *
- * Revision 1.4  2004/02/17 00:53:22  willuhn
- * @N SaldoAbfrage
- * @N Ueberweisung
- * @N Empfaenger
- *
- * Revision 1.3  2004/02/12 23:46:46  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2004/02/11 15:40:42  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2004/02/11 00:11:20  willuhn
- * *** empty log message ***
- *
  **********************************************************************/

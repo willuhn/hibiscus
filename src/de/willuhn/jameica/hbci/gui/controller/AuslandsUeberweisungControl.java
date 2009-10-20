@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AuslandsUeberweisungControl.java,v $
- * $Revision: 1.4 $
- * $Date: 2009/10/07 23:08:56 $
+ * $Revision: 1.5 $
+ * $Date: 2009/10/20 23:12:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -32,9 +32,10 @@ import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.AddressFilter;
 import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungNew;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
+import de.willuhn.jameica.hbci.gui.filter.AddressFilter;
+import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.AddressInput;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.gui.parts.AuslandsUeberweisungList;
@@ -67,7 +68,6 @@ public class AuslandsUeberweisungControl extends AbstractControl
 
   private AddressInput empfName              = null;
   private TextInput empfkto                  = null;
-  private TextInput empfbank                 = null;
   private TextInput bic                      = null;
 
   private DateInput termin                   = null;
@@ -127,7 +127,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
       return this.kontoAuswahl;
     
     KontoListener kl = new KontoListener();
-    this.kontoAuswahl = new KontoInput(getTransfer().getKonto(),false);
+    this.kontoAuswahl = new KontoInput(getTransfer().getKonto(),KontoFilter.FOREIGN);
     this.kontoAuswahl.setMandatory(true);
     this.kontoAuswahl.addListener(kl);
     this.kontoAuswahl.setEnabled(!getTransfer().ausgefuehrt());
@@ -183,21 +183,6 @@ public class AuslandsUeberweisungControl extends AbstractControl
   }
 
   /**
-   * Liefert das Eingabe-Feld fuer die Bank.
-   * @return Eingabe-Feld.
-   * @throws RemoteException
-   */
-  public TextInput getEmpfaengerBank() throws RemoteException
-  {
-    if (empfbank != null)
-      return empfbank;
-    empfbank = new TextInput(getTransfer().getGegenkontoInstitut(),HBCIProperties.HBCI_FOREIGNTRANSFER_USAGE_MAXLENGTH);
-    empfbank.setMandatory(true);
-    empfbank.setEnabled(!getTransfer().ausgefuehrt());
-    return empfbank;
-  }
-
-  /**
    * Liefert das Eingabe-Feld fuer die BIC.
    * @return Eingabe-Feld.
    * @throws RemoteException
@@ -209,6 +194,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
       this.bic = new TextInput(getTransfer().getGegenkontoBLZ(),HBCIProperties.HBCI_BIC_MAXLENGTH);
       this.bic.setValidChars(HBCIProperties.HBCI_BIC_VALIDCHARS);
       this.bic.setEnabled(!getTransfer().ausgefuehrt());
+      this.bic.setMandatory(true);
     }
     return this.bic;
   }
@@ -359,12 +345,10 @@ public class AuslandsUeberweisungControl extends AbstractControl
       getTransfer().setZweck((String)getZweck().getValue());
 
       String kto  = (String)getEmpfaengerKonto().getValue();
-      String bank = (String)getEmpfaengerBank().getValue();
       String name = getEmpfaengerName().getText();
       String bic  = (String) getEmpfaengerBic().getValue();
 
       getTransfer().setGegenkontoNummer(kto);
-      getTransfer().setGegenkontoInstitut(bank);
       getTransfer().setGegenkontoName(name);
       getTransfer().setGegenkontoBLZ(bic);
 
@@ -383,7 +367,6 @@ public class AuslandsUeberweisungControl extends AbstractControl
       if (store.booleanValue())
       {
         HibiscusAddress e = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
-        e.setBank(bank);
         e.setIban(kto);
         e.setName(name);
         e.setBic(bic);
@@ -480,7 +463,6 @@ public class AuslandsUeberweisungControl extends AbstractControl
       try {
         getEmpfaengerName().setText(a.getName());
         getEmpfaengerKonto().setValue(a.getIban());
-        getEmpfaengerBank().setValue(a.getBank());
         getEmpfaengerBic().setValue(a.getBic());
 
         // Wenn der Empfaenger aus dem Adressbuch kommt, deaktivieren wir die Checkbox
@@ -521,6 +503,10 @@ public class AuslandsUeberweisungControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AuslandsUeberweisungControl.java,v $
+ * Revision 1.5  2009/10/20 23:12:58  willuhn
+ * @N Support fuer SEPA-Ueberweisungen
+ * @N Konten um IBAN und BIC erweitert
+ *
  * Revision 1.4  2009/10/07 23:08:56  willuhn
  * @N BUGZILLA 745: Deaktivierte Konten in Auswertungen zwar noch anzeigen, jedoch mit "[]" umschlossen. Bei der Erstellung von neuen Auftraegen bleiben sie jedoch ausgeblendet. Bei der Gelegenheit wird das Default-Konto jetzt mit ">" markiert
  *

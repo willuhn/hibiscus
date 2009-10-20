@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIAuslandsUeberweisungJob.java,v $
- * $Revision: 1.4 $
- * $Date: 2009/06/29 09:00:23 $
+ * $Revision: 1.5 $
+ * $Date: 2009/10/20 23:12:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,7 +13,6 @@
 package de.willuhn.jameica.hbci.server.hbci;
 
 import java.rmi.RemoteException;
-import java.util.Properties;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -65,42 +64,22 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
           HBCI.DECIMALFORMAT.format(Settings.getUeberweisungLimit()) + " " + this.konto.getWaehrung()));
 
 			setJobParam("src",Converter.HibiscusKonto2HBCIKonto(konto));
-			setJobParam("src.name",konto.getName());
 			
-
+      org.kapott.hbci.structures.Konto k = new org.kapott.hbci.structures.Konto();
+      k.bic = ueberweisung.getGegenkontoBLZ();
+      k.iban = ueberweisung.getGegenkontoNummer();
+      k.name = ueberweisung.getGegenkontoName();
+      setJobParam("dst",k);
+			
       // BUGZILLA 29 http://www.willuhn.de/bugzilla/show_bug.cgi?id=29
       String curr = konto.getWaehrung();
       if (curr == null || curr.length() == 0)
         curr = HBCIProperties.CURRENCY_DEFAULT_DE;
-
-      Properties p = HBCIFactory.getInstance().getJobRestrictions(this.konto,this);
-      Logger.debug("hbci job restriction:" + p);
-      boolean caniban = true;
-      if (p != null)
-      {
-        String c = p.getProperty("caniban");
-        
-        // setzen wir nur dann auf False, wenn explizit "N" angegeben ist
-        caniban = !(c != null && "n".equalsIgnoreCase(c));
-      }
+      setJobParam("btg",ueberweisung.getBetrag(),curr);
       
-			if (caniban)
-			{
-        Logger.info("bank supports iban, using dst.iban");
-        setJobParam("dst.iban",  ueberweisung.getGegenkontoNummer());
-			}
-			else
-			{
-        Logger.info("bank does not support iban, using dst");
-        org.kapott.hbci.structures.Konto k = new org.kapott.hbci.structures.Konto();
-        k.bic = ueberweisung.getGegenkontoBLZ();
-        k.iban = ueberweisung.getGegenkontoNummer();
-			  setJobParam("dst",k);
-			}
-      setJobParam("btg",       ueberweisung.getBetrag(),curr);
-      setJobParam("dst.name",  ueberweisung.getGegenkontoName());
-      setJobParam("dst.kiname",ueberweisung.getGegenkontoInstitut());
-			setJobParam("usage",     ueberweisung.getZweck());
+      String zweck = ueberweisung.getZweck();
+      if (zweck != null && zweck.length() > 0)
+			setJobParam("usage",zweck);
 			
       de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
       markExecutedBefore = settings.getBoolean("transfer.markexecuted.before",false);
@@ -127,7 +106,7 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
    */
   String getIdentifier()
   {
-    return "UebForeign";
+    return "UebSEPA";
   }
   
   /**
@@ -135,7 +114,7 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
    */
   public String getName() throws RemoteException
   {
-    return i18n.tr("Auslandsüberweisung an {0} (IBAN: {1})",new String[]{ueberweisung.getGegenkontoName(), ueberweisung.getGegenkontoNummer()});
+    return i18n.tr("SEPA-Überweisung an {0} (IBAN: {1})",new String[]{ueberweisung.getGegenkontoName(), ueberweisung.getGegenkontoNummer()});
   }
 
   /**
@@ -186,6 +165,10 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIAuslandsUeberweisungJob.java,v $
+ * Revision 1.5  2009/10/20 23:12:58  willuhn
+ * @N Support fuer SEPA-Ueberweisungen
+ * @N Konten um IBAN und BIC erweitert
+ *
  * Revision 1.4  2009/06/29 09:00:23  willuhn
  * @B wenn das Feature "transfer.markexecuted.before" aktiv ist, wurden Auftraege auch dann als ausgefuehrt markiert, wenn sie abgebrochen wurden - die Methode markCancelled() war nicht ueberschrieben worden
  *

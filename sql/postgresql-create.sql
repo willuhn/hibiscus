@@ -11,6 +11,8 @@ CREATE TABLE konto (
   saldo float,
   saldo_datum timestamp,
   kommentar varchar(1000) NULL,
+  iban varchar(40) NULL,
+  bic varchar(15) NULL,
   flags integer NULL
 );
 
@@ -46,7 +48,6 @@ CREATE TABLE aueberweisung (
   id serial primary key,
   konto_id integer NOT NULL,
   empfaenger_konto varchar(40) NOT NULL,
-  empfaenger_bank varchar(140) NOT NULL,
   empfaenger_name varchar(140) NOT NULL,
   empfaenger_bic varchar(15) NULL,
   betrag float NOT NULL,
@@ -249,4 +250,4 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',24);
+INSERT INTO version (name,version) values ('db',26);

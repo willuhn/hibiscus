@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/AuslandsUeberweisungNew.java,v $
- * $Revision: 1.4 $
- * $Date: 2009/05/07 15:13:37 $
+ * $Revision: 1.5 $
+ * $Date: 2009/10/20 23:12:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,7 +43,7 @@ public class AuslandsUeberweisungNew extends AbstractView {
 
 		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-		GUI.getView().setTitle(i18n.tr("Auslandsüberweisung bearbeiten"));
+		GUI.getView().setTitle(i18n.tr("SEPA-Überweisung bearbeiten"));
 		
     SimpleContainer konten = new SimpleContainer(getParent());
     konten.addHeadline(i18n.tr("Konto"));
@@ -52,7 +52,6 @@ public class AuslandsUeberweisungNew extends AbstractView {
     konten.addLabelPair(i18n.tr("Name"),                      control.getEmpfaengerName());
     konten.addLabelPair(i18n.tr("IBAN"),                      control.getEmpfaengerKonto());    
     konten.addLabelPair(i18n.tr("BIC"),                       control.getEmpfaengerBic());
-    konten.addLabelPair(i18n.tr("Institut"),                  control.getEmpfaengerBank());    
 		konten.addCheckbox(control.getStoreEmpfaenger(),i18n.tr("In Adressbuch übernehmen"));
 
     SimpleContainer details = new SimpleContainer(getParent());
@@ -88,6 +87,10 @@ public class AuslandsUeberweisungNew extends AbstractView {
 
 /**********************************************************************
  * $Log: AuslandsUeberweisungNew.java,v $
+ * Revision 1.5  2009/10/20 23:12:58  willuhn
+ * @N Support fuer SEPA-Ueberweisungen
+ * @N Konten um IBAN und BIC erweitert
+ *
  * Revision 1.4  2009/05/07 15:13:37  willuhn
  * @N BIC in Auslandsueberweisung
  *

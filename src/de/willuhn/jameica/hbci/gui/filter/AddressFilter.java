@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/Attic/AddressFilter.java,v $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/filter/AddressFilter.java,v $
  * $Revision: 1.1 $
- * $Date: 2009/03/13 00:25:12 $
+ * $Date: 2009/10/20 23:12:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,7 +11,7 @@
  *
  **********************************************************************/
 
-package de.willuhn.jameica.hbci.gui;
+package de.willuhn.jameica.hbci.gui.filter;
 
 import java.rmi.RemoteException;
 
@@ -25,14 +25,10 @@ import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
  * Auslandsueberweisungen nur jene Adressen anzuzeigen, die
  * eine IBAN besitzen.
  */
-public interface AddressFilter
+public interface AddressFilter extends Filter<Address>
 {
   /**
-   * Prueft, ob die Adresse angezeigt werden soll oder nicht.
-   * @param address die zu pruefende Adresse.
-   * @return true, wenn sie ok ist und angezeigt werden soll.
-   * False, wenn sie uebersprungen werden soll.
-   * @throws RemoteException
+   * @see de.willuhn.jameica.hbci.gui.filter.Filter#accept(java.lang.Object)
    */
   public boolean accept(Address address) throws RemoteException;
   
@@ -42,7 +38,7 @@ public interface AddressFilter
   public final static AddressFilter ALL = new AddressFilter()
   {
     /**
-     * @see de.willuhn.jameica.hbci.gui.AddressFilter#accept(de.willuhn.jameica.hbci.rmi.Address)
+     * @see de.willuhn.jameica.hbci.gui.filter.AddressFilter#accept(de.willuhn.jameica.hbci.rmi.Address)
      */
     public boolean accept(Address address) throws RemoteException
     {
@@ -56,7 +52,7 @@ public interface AddressFilter
   public final static AddressFilter INLAND = new AddressFilter()
   {
     /**
-     * @see de.willuhn.jameica.hbci.gui.AddressFilter#accept(de.willuhn.jameica.hbci.rmi.Address)
+     * @see de.willuhn.jameica.hbci.gui.filter.AddressFilter#accept(de.willuhn.jameica.hbci.rmi.Address)
      */
     public boolean accept(Address address) throws RemoteException
     {
@@ -76,7 +72,7 @@ public interface AddressFilter
   public final static AddressFilter FOREIGN = new AddressFilter()
   {
     /**
-     * @see de.willuhn.jameica.hbci.gui.AddressFilter#accept(de.willuhn.jameica.hbci.rmi.Address)
+     * @see de.willuhn.jameica.hbci.gui.filter.AddressFilter#accept(de.willuhn.jameica.hbci.rmi.Address)
      */
     public boolean accept(Address address) throws RemoteException
     {
@@ -97,6 +93,10 @@ public interface AddressFilter
 
 /**********************************************************************
  * $Log: AddressFilter.java,v $
+ * Revision 1.1  2009/10/20 23:12:58  willuhn
+ * @N Support fuer SEPA-Ueberweisungen
+ * @N Konten um IBAN und BIC erweitert
+ *
  * Revision 1.1  2009/03/13 00:25:12  willuhn
  * @N Code fuer Auslandsueberweisungen fast fertig
  *

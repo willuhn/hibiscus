@@ -12,6 +12,8 @@ CREATE TABLE konto (
      , saldo_datum DATETIME
      , kommentar TEXT
      , flags int(1)
+     , iban VARCHAR(40) NULL
+     , bic VARCHAR(15) NULL
      , UNIQUE (id)
      , PRIMARY KEY (id)
 )TYPE=InnoDB;
@@ -163,7 +165,6 @@ CREATE TABLE aueberweisung (
        id int(10) AUTO_INCREMENT
      , konto_id int(10) NOT NULL
      , empfaenger_konto VARCHAR(40) NOT NULL
-     , empfaenger_bank VARCHAR(140) NOT NULL
      , empfaenger_name VARCHAR(140) NOT NULL
      , empfaenger_bic VARCHAR(15) NULL
      , betrag DOUBLE NOT NULL
@@ -289,4 +290,4 @@ ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
 
-INSERT INTO version (name,version) values ('db',24);
+INSERT INTO version (name,version) values ('db',26);

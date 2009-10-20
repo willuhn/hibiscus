@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/AuslandsUeberweisungList.java,v $
- * $Revision: 1.3 $
- * $Date: 2009/03/17 23:44:15 $
+ * $Revision: 1.4 $
+ * $Date: 2009/10/20 23:12:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -47,7 +47,7 @@ public class AuslandsUeberweisungList extends ContextMenu
 	public AuslandsUeberweisungList()
 	{
 		addItem(new SingleItem(i18n.tr("Öffnen"), new AuslandsUeberweisungNew(),"document-open.png"));
-    addItem(new ContextMenuItem(i18n.tr("Neue Auslandsüberweisung..."), new UNeu(),"text-x-generic.png"));
+    addItem(new ContextMenuItem(i18n.tr("Neue SEPA-Überweisung..."), new UNeu(),"text-x-generic.png"));
     addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new SingleItem(i18n.tr("Duplizieren..."), new AuslandsUeberweisungDuplicate(),"edit-copy.png"));
@@ -193,6 +193,10 @@ public class AuslandsUeberweisungList extends ContextMenu
 
 /**********************************************************************
  * $Log: AuslandsUeberweisungList.java,v $
+ * Revision 1.4  2009/10/20 23:12:58  willuhn
+ * @N Support fuer SEPA-Ueberweisungen
+ * @N Konten um IBAN und BIC erweitert
+ *
  * Revision 1.3  2009/03/17 23:44:15  willuhn
  * @N BUGZILLA 159 - Auslandsueberweisungen. Erste Version
  *

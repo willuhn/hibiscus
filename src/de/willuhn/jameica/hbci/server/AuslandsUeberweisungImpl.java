@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AuslandsUeberweisungImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2009/05/07 15:13:37 $
+ * $Revision: 1.4 $
+ * $Date: 2009/10/20 23:12:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung;
 import de.willuhn.jameica.hbci.rmi.Duplicatable;
+import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Transfer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -27,8 +28,7 @@ import de.willuhn.util.I18N;
 /**
  * Eine Auslands-Ueberweisung.
  */
-public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl
-  implements AuslandsUeberweisung
+public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl implements AuslandsUeberweisung
 {
   private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
@@ -65,30 +65,37 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl
    */
   protected void insertCheck() throws ApplicationException {
     try {
-      if (getKonto() == null)
+      Konto k = getKonto();
+
+      if (k == null)
         throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus."));
-      if (getKonto().isNewObject())
+      if (k.isNewObject())
         throw new ApplicationException(i18n.tr("Bitte speichern Sie zunächst das Konto"));
-
-      if (getGegenkontoNummer() == null || getGegenkontoNummer().length() == 0)
-        throw new ApplicationException(i18n.tr("Bitte geben Sie die IBAN des Gegenkontos ein"));
       
-      if (getGegenkontoInstitut() == null || getGegenkontoInstitut().length() == 0)
-        throw new ApplicationException(i18n.tr("Bitte geben Sie den vollständigen Namen der Zielbank ein"));
-
-      HBCIProperties.checkChars(getGegenkontoNummer(), HBCIProperties.HBCI_IBAN_VALIDCHARS);
-      HBCIProperties.checkLength(getGegenkontoNummer(), HBCIProperties.HBCI_IBAN_MAXLENGTH);
+      String kiban = k.getIban();
+      if (kiban == null || kiban.length() == 0)
+        throw new ApplicationException(i18n.tr("Das ausgewählte Konto besitzt keine IBAN"));
       
-      HBCIProperties.checkChars(getGegenkontoBLZ(), HBCIProperties.HBCI_BIC_VALIDCHARS);
-      HBCIProperties.checkLength(getGegenkontoBLZ(), HBCIProperties.HBCI_BIC_MAXLENGTH);
+      String bic = k.getBic();
+      if (bic == null || bic.length() == 0)
+        throw new ApplicationException(i18n.tr("Das ausgewählte Konto besitzt keine BIC"));
 
       double betrag = getBetrag();
       if (betrag == 0.0 || Double.isNaN(betrag))
         throw new ApplicationException(i18n.tr("Bitte geben Sie einen gültigen Betrag ein."));
 
+      if (getGegenkontoNummer() == null || getGegenkontoNummer().length() == 0)
+        throw new ApplicationException(i18n.tr("Bitte geben Sie die IBAN des Gegenkontos ein"));
+      HBCIProperties.checkChars(getGegenkontoNummer(), HBCIProperties.HBCI_IBAN_VALIDCHARS);
+      HBCIProperties.checkLength(getGegenkontoNummer(), HBCIProperties.HBCI_IBAN_MAXLENGTH);
+
+      if (getGegenkontoBLZ() == null || getGegenkontoBLZ().length() == 0)
+        throw new ApplicationException(i18n.tr("Bitte geben Sie die BIC des Gegenkontos ein"));
+      HBCIProperties.checkChars(getGegenkontoBLZ(), HBCIProperties.HBCI_BIC_VALIDCHARS);
+      HBCIProperties.checkLength(getGegenkontoBLZ(), HBCIProperties.HBCI_BIC_MAXLENGTH);
+
       if (getGegenkontoName() == null || getGegenkontoName().length() == 0)
         throw new ApplicationException(i18n.tr("Bitte geben Sie den Namen des Kontoinhabers des Gegenkontos ein"));
-
       HBCIProperties.checkLength(getGegenkontoName(), HBCIProperties.HBCI_FOREIGNTRANSFER_USAGE_MAXLENGTH);
       HBCIProperties.checkChars(getGegenkontoName(), HBCIProperties.HBCI_DTAUS_VALIDCHARS);
 
@@ -101,7 +108,7 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl
     catch (RemoteException e)
     {
       Logger.error("error while checking foreign ueberweisung",e);
-      throw new ApplicationException(i18n.tr("Fehler beim Prüfen der Auslandsüberweisung."));
+      throw new ApplicationException(i18n.tr("Fehler beim Prüfen der SEPA-Überweisung."));
     }
   }
 
@@ -152,27 +159,15 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl
   {
     return Transfer.TYP_AUSLANDSUEBERWEISUNG;
   }
-
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung#getGegenkontoInstitut()
-   */
-  public String getGegenkontoInstitut() throws RemoteException
-  {
-    return (String) getAttribute("empfaenger_bank");
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung#setGegenkontoInstitut(java.lang.String)
-   */
-  public void setGegenkontoInstitut(String name) throws RemoteException
-  {
-    setAttribute("empfaenger_bank",name);
-  }
 }
 
 
 /**********************************************************************
  * $Log: AuslandsUeberweisungImpl.java,v $
+ * Revision 1.4  2009/10/20 23:12:58  willuhn
+ * @N Support fuer SEPA-Ueberweisungen
+ * @N Konten um IBAN und BIC erweitert
+ *
  * Revision 1.3  2009/05/07 15:13:37  willuhn
  * @N BIC in Auslandsueberweisung
  *

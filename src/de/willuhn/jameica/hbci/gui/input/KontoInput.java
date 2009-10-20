@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/KontoInput.java,v $
- * $Revision: 1.5 $
- * $Date: 2009/10/07 23:08:56 $
+ * $Revision: 1.6 $
+ * $Date: 2009/10/20 23:12:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -29,6 +29,7 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -44,12 +45,12 @@ public class KontoInput extends SelectInput
   /**
    * ct.
    * @param konto ausgewaehltes Konto.
-   * @param showDisabled true, wenn deaktivierte Konten mit angezeigt werden sollen.
+   * @param filter optionaler Konto-Filter.
    * @throws RemoteException
    */
-  public KontoInput(Konto konto, boolean showDisabled) throws RemoteException
+  public KontoInput(Konto konto, KontoFilter filter) throws RemoteException
   {
-    super(init(showDisabled),konto);
+    super(init(filter),konto);
     setName(i18n.tr("Konto"));
     setPleaseChoose(i18n.tr("Bitte wählen..."));
     this.setComment("");
@@ -70,11 +71,11 @@ public class KontoInput extends SelectInput
   
   /**
    * Initialisiert die Liste der Konten.
-   * @param showDisabled true, wenn deaktivierte Konten mit angezeigt werden sollen.
+   * @param filter Konto-Filter.
    * @return Liste der Konten.
    * @throws RemoteException
    */
-  private static GenericIterator init(boolean showDisabled) throws RemoteException
+  private static GenericIterator init(KontoFilter filter) throws RemoteException
   {
     DBIterator it = Settings.getDBService().createList(Konto.class);
     it.setOrder("ORDER BY blz, kontonummer");
@@ -82,7 +83,7 @@ public class KontoInput extends SelectInput
     while (it.hasNext())
     {
       Konto k = (Konto) it.next();
-      if (showDisabled || (k.getFlags() & Konto.FLAG_DISABLED) != Konto.FLAG_DISABLED)
+      if (filter == null || filter.accept(k))
         l.add(k);
     }
     return PseudoIterator.fromArray(l.toArray(new Konto[l.size()]));
@@ -196,6 +197,10 @@ public class KontoInput extends SelectInput
 
 /**********************************************************************
  * $Log: KontoInput.java,v $
+ * Revision 1.6  2009/10/20 23:12:58  willuhn
+ * @N Support fuer SEPA-Ueberweisungen
+ * @N Konten um IBAN und BIC erweitert
+ *
  * Revision 1.5  2009/10/07 23:08:56  willuhn
  * @N BUGZILLA 745: Deaktivierte Konten in Auswertungen zwar noch anzeigen, jedoch mit "[]" umschlossen. Bei der Erstellung von neuen Auftraegen bleiben sie jedoch ausgeblendet. Bei der Gelegenheit wird das Default-Konto jetzt mit ">" markiert
  *

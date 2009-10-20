@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.98 $
- * $Date: 2009/09/15 00:23:35 $
+ * $Revision: 1.99 $
+ * $Date: 2009/10/20 23:12:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -109,6 +109,26 @@ public class KontoImpl extends AbstractDBObject implements Konto
       if (!HBCIProperties.checkAccountCRC(getBLZ(), getKontonummer()))
         throw new ApplicationException(i18n.tr("Ungültige BLZ/Kontonummer. Bitte prüfen Sie Ihre Eingaben."));
 
+      
+      //////////////////////////////////////////////////////////////////////////
+      // Auslaendische Bankverbindung
+      String iban = this.getIban();
+      String bic = this.getBic();
+      if (iban != null && iban.length() > 0)
+      {
+        HBCIProperties.checkLength(iban, HBCIProperties.HBCI_IBAN_MAXLENGTH);
+        HBCIProperties.checkChars(iban, HBCIProperties.HBCI_IBAN_VALIDCHARS);
+        if (!HBCIProperties.checkIBANCRC(iban))
+          throw new ApplicationException(i18n.tr("Ungültige IBAN. Bitte prüfen Sie Ihre Eingaben."));
+      }
+      if (bic != null && bic.length() > 0)
+      {
+        HBCIProperties.checkLength(bic, HBCIProperties.HBCI_BIC_MAXLENGTH);
+        HBCIProperties.checkChars(bic, HBCIProperties.HBCI_BIC_VALIDCHARS);
+      }
+      //
+      //////////////////////////////////////////////////////////////////////////
+      
     }
     catch (RemoteException e)
     {
@@ -778,10 +798,45 @@ public class KontoImpl extends AbstractDBObject implements Konto
     this.setAttribute("flags",new Integer(flags));
   }
 
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#getBic()
+   */
+  public String getBic() throws RemoteException
+  {
+    return (String) getAttribute("bic");
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#setBic(java.lang.String)
+   */
+  public void setBic(String bic) throws RemoteException
+  {
+    setAttribute("bic",bic);
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#getIban()
+   */
+  public String getIban() throws RemoteException
+  {
+    return (String) getAttribute("iban");
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#setIban(java.lang.String)
+   */
+  public void setIban(String iban) throws RemoteException
+  {
+    setAttribute("iban",iban);
+  }
 }
 
 /*******************************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.99  2009/10/20 23:12:58  willuhn
+ * @N Support fuer SEPA-Ueberweisungen
+ * @N Konten um IBAN und BIC erweitert
+ *
  * Revision 1.98  2009/09/15 00:23:35  willuhn
  * @N BUGZILLA 745
  *

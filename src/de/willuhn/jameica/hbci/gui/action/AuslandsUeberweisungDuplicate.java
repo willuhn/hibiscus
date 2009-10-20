@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/AuslandsUeberweisungDuplicate.java,v $
- * $Revision: 1.1 $
- * $Date: 2009/03/17 23:44:15 $
+ * $Revision: 1.2 $
+ * $Date: 2009/10/20 23:12:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -41,7 +41,7 @@ public class AuslandsUeberweisungDuplicate implements Action
   public void handleAction(Object context) throws ApplicationException
   {
 		if (context == null || !(context instanceof AuslandsUeberweisung))
-			throw new ApplicationException(i18n.tr("Keine Auslandsüberweisung angegeben"));
+			throw new ApplicationException(i18n.tr("Keine SEPA-Überweisung angegeben"));
 
 		try {
 			AuslandsUeberweisung u = (AuslandsUeberweisung) context;
@@ -50,7 +50,7 @@ public class AuslandsUeberweisungDuplicate implements Action
 		catch (RemoteException e)
 		{
 			Logger.error("error while duplicating foreign transfer",e);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Duplizieren der Auslandsüberweisung"));
+			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Duplizieren der SEPA-Überweisung"));
 		}
   }
 
@@ -59,6 +59,10 @@ public class AuslandsUeberweisungDuplicate implements Action
 
 /**********************************************************************
  * $Log: AuslandsUeberweisungDuplicate.java,v $
+ * Revision 1.2  2009/10/20 23:12:58  willuhn
+ * @N Support fuer SEPA-Ueberweisungen
+ * @N Konten um IBAN und BIC erweitert
+ *
  * Revision 1.1  2009/03/17 23:44:15  willuhn
  * @N BUGZILLA 159 - Auslandsueberweisungen. Erste Version
  *

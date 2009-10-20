@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Konto.java,v $
- * $Revision: 1.41 $
- * $Date: 2009/09/15 00:23:34 $
+ * $Revision: 1.42 $
+ * $Date: 2009/10/20 23:12:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -343,8 +343,7 @@ public interface Konto extends DBObject, Checksum, Flaggable
 	 *          <code>de.willuhn.jameica.hbci.rmi.Protokoll</code>.
 	 * @throws RemoteException
 	 */
-	public void addToProtokoll(String kommentar, int protokollTyp)
-			throws RemoteException;
+	public void addToProtokoll(String kommentar, int protokollTyp) throws RemoteException;
 
 	/**
 	 * Liefert die Ausgaben auf dem Konto im angegebenen Zeitraum.
@@ -383,10 +382,42 @@ public interface Konto extends DBObject, Checksum, Flaggable
    * @throws RemoteException
    */
   public String getKommentar() throws RemoteException;
+  
+  /**
+   * Liefert die BIC.
+   * @return die BIC.
+   * @throws RemoteException
+   */
+  public String getBic() throws RemoteException;
+  
+  /**
+   * Speichert die BIC.
+   * @param bic die BIC.
+   * @throws RemoteException
+   */
+  public void setBic(String bic) throws RemoteException;
+  
+  /**
+   * Liefert die IBAN.
+   * @return die IBAN.
+   * @throws RemoteException
+   */
+  public String getIban() throws RemoteException;
+  
+  /**
+   * Speichert die IBAN.
+   * @param iban die IBAN.
+   * @throws RemoteException
+   */
+  public void setIban(String iban) throws RemoteException;
 }
 
 /*******************************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.42  2009/10/20 23:12:58  willuhn
+ * @N Support fuer SEPA-Ueberweisungen
+ * @N Konten um IBAN und BIC erweitert
+ *
  * Revision 1.41  2009/09/15 00:23:34  willuhn
  * @N BUGZILLA 745
  *
