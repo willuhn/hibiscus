@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.67 $
- * $Date: 2009/09/15 00:23:35 $
+ * $Revision: 1.68 $
+ * $Date: 2009/10/29 22:52:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -397,7 +397,13 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
         sv = valuta.toString();
       }
     }
-    
+
+    // TODO: getKonto().getChecksum() duerfte eigentlich nicht in der Checksumme enthalten sein.
+    // Denn wenn das Konto veraendert wird, aendern sich dabei auch die Checksummen der Umsaetze.
+    // Das kann die Umsatzdoppler erklaeren. Da die Checksumme aber in der Datenbank gespeichert
+    // ist, kann ich das hier nicht einfach umbauen. Ich muesste eine Datenbank-Migration machen,
+    // in der die Checksummen ALLER Umsaetze (oder wenigstens die des Merge-Window beim Abruf)
+    // neu berechnet werden. Sollte irgendwann mal gemacht werden
     String s = (""+getArt()).toUpperCase() +
 		           getBetrag() +
 		           getKonto().getChecksum() +
@@ -741,6 +747,9 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.68  2009/10/29 22:52:05  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.67  2009/09/15 00:23:35  willuhn
  * @N BUGZILLA 745
  *
