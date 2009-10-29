@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AuslandsUeberweisungControl.java,v $
- * $Revision: 1.5 $
- * $Date: 2009/10/20 23:12:58 $
+ * $Revision: 1.6 $
+ * $Date: 2009/10/29 12:26:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -85,7 +85,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
   }
   
   /**
-   * @return
+   * @return der Auftrag
    * @throws RemoteException
    */
   public AuslandsUeberweisung getTransfer() throws RemoteException
@@ -503,6 +503,9 @@ public class AuslandsUeberweisungControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AuslandsUeberweisungControl.java,v $
+ * Revision 1.6  2009/10/29 12:26:04  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2009/10/20 23:12:58  willuhn
  * @N Support fuer SEPA-Ueberweisungen
  * @N Konten um IBAN und BIC erweitert
