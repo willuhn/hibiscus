@@ -5,33 +5,22 @@
   <target name="init" description="inits the build">
 
     <property environment="env" />
-
     <property name="build.dir" value="build" />
-
-    <!-- read build number -->
     <buildnumber file="${build.dir}/BUILD" />
+    <xmlproperty file="plugin.xml" collapseattributes="true"/>
 
-    <!-- read version number -->
-    <loadfile property="appversion" srcFile="${build.dir}/RELEASE">
-      <filterchain>
-        <striplinebreaks />
-      </filterchain>
-    </loadfile>
-
-    <loadproperties srcFile="${build.dir}/build.properties"/>
-
-    <!-- prepare cvs tag -->
-    <copy file="${build.dir}/RELEASE" tofile="${build.dir}/TAG" />
+    <!-- create cvs tag -->
+    <propertyfile file="${build.dir}/TAG">
+      <entry key="mytag" value="${plugin.version}" />
+    </propertyfile>
     <replaceregexp flags="g" file="${build.dir}/TAG" match="\." replace="_" />
-    <loadfile property="mytag" srcFile="${build.dir}/TAG">
-      <filterchain>
-        <striplinebreaks />
-      </filterchain>
-    </loadfile>
+    <loadproperties srcFile="${build.dir}/TAG"/>
     <delete file="${build.dir}/TAG" />
     <property name="tag" value="V_${mytag}_BUILD_${build.number}" />
 
-    <echo message="VERSION: ${appversion}" />
+    <loadproperties srcFile="${build.dir}/build.properties"/>
+
+    <echo message="VERSION: ${plugin.version}" />
     <echo message="CVS-Tag: ${tag}" />
     <echo message="BUILD  : ${build.number}" />
     <echo message="JAVA   : ${java.version}" />
@@ -89,8 +78,8 @@
       <manifest>
         <attribute name="Built-By" value="${user.name}" />
         <attribute name="Built-Date" value="${DSTAMP}" />
-        <attribute name="Implementation-Title" value="${define.pluginname}" />
-        <attribute name="Implementation-Version" value="${appversion}" />
+        <attribute name="Implementation-Title" value="${plugin.name}" />
+        <attribute name="Implementation-Version" value="${plugin.version}" />
         <attribute name="Implementation-Buildnumber" value="${build.number}" />
         <attribute name="Class-Path" value="lang help" />
       </manifest>
@@ -132,7 +121,6 @@
       </fileset>
     </copy>
 
-    <copy file="${build.dir}/README" todir="${project.zipdir}" />
     <copy file="plugin.xml" todir="${project.zipdir}" />
     <copy file="${build.dir}/COPYING" todir="${project.zipdir}" />
     <copy todir="${project.zipdir}/doc">
@@ -145,8 +133,8 @@
     <!-- Jetzt muessen wir noch das ZIP-File erzeugen und signieren -->
     <zip destfile="${project.release}/${define.zipfilename}">
       <fileset dir="${project.release}">
-        <include name="${define.pluginname}" />
-        <include name="${define.pluginname}/**" />
+        <include name="${plugin.name}" />
+        <include name="${plugin.name}/**" />
       </fileset>
     </zip>
 
@@ -156,8 +144,8 @@
 
   <target depends="init" name="src" description="build source package, depends compile target to make sure, the code has no errors">
     <mkdir dir="${project.release}" />
-    <mkdir dir="${project.tmp}/${define.pluginname}" />
-    <copy todir="${project.tmp}/${define.pluginname}">
+    <mkdir dir="${project.tmp}/${plugin.name}" />
+    <copy todir="${project.tmp}/${plugin.name}">
       <fileset dir=".">
         <include name=".project" />
         <include name=".classpath" />
@@ -174,7 +162,7 @@
     </copy>
     <zip casesensitive="true" zipfile="${project.release}/${define.srcfilename}">
       <fileset dir="${project.tmp}">
-        <include name="${define.pluginname}/**" />
+        <include name="${plugin.name}/**" />
       </fileset>
     </zip>
   </target>
@@ -252,9 +240,9 @@
   <target depends="init,cvs,compile,jar,zip,javadoc,src" description="build nightly build" name="nightly">
     <mkdir dir="${project.nightly}" />
 
-    <copy file="${project.release}/${define.zipfilename}" tofile="${project.nightly}/${define.pluginname}-${appversion}.zip" />
-    <copy file="${project.release}/${define.srcfilename}" tofile="${project.nightly}/${define.pluginname}-${appversion}.src.zip" />
-    <copy file="${project.release}/${define.javadocfilename}" tofile="${project.nightly}/${define.pluginname}-${appversion}.javadoc.zip" />
+    <copy file="${project.release}/${define.zipfilename}" tofile="${project.nightly}/${plugin.name}-${plugin.version}.zip" />
+    <copy file="${project.release}/${define.srcfilename}" tofile="${project.nightly}/${plugin.name}-${plugin.version}.src.zip" />
+    <copy file="${project.release}/${define.javadocfilename}" tofile="${project.nightly}/${plugin.name}-${plugin.version}.javadoc.zip" />
 
     <!-- Die Datei brauchen die anderen Plugins zum Kompilieren //-->
     <copy file="${project.zipdir}/${define.jarfilename}" tofile="releases/hibiscus-lib.jar" />
