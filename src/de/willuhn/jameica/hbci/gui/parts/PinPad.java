@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/PinPad.java,v $
- * $Revision: 1.1 $
- * $Date: 2009/07/12 23:19:29 $
+ * $Revision: 1.2 $
+ * $Date: 2009/11/10 12:00:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,6 +27,7 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.input.PasswordInput;
 import de.willuhn.jameica.gui.util.Color;
+import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
@@ -61,7 +62,7 @@ public class PinPad implements Part
       return;
     
     this.comp = new Composite(parent,SWT.NONE);
-    GridData gridData = new GridData(GridData.BEGINNING);
+    GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
     this.comp.setLayoutData(gridData);
     this.comp.setBackground(Color.BACKGROUND.getSWTColor());
 
@@ -73,9 +74,6 @@ public class PinPad implements Part
     this.comp.setLayout(layout);
 
     // Buttons 1-9
-    // TODO: Sollten die Buttons zufaellig gewuerfelt werden,
-    // damit man anhand der Button-Position nicht auf die
-    // Nummer schliessen kann?
     for (int i=1;i<10;++i)
     {
       addButton(i);
@@ -94,13 +92,7 @@ public class PinPad implements Part
     b.addSelectionListener(new SelectionAdapter()
     {
       public void widgetSelected(SelectionEvent e) {
-        String curr = (String) input.getValue();
-        if (curr == null || curr.length() == 0)
-          return;
-        
-        // letztes Zeichen abschneiden
-        curr = curr.substring(0,curr.length() - 1);
-        input.setValue(curr);
+        input.setValue("");
       }
     });
   }
@@ -114,6 +106,7 @@ public class PinPad implements Part
     final String s = Integer.toString(i);
     final Button b = GUI.getStyleFactory().createButton(this.comp);
     b.setText(s);
+    b.setFont(Font.BOLD.getSWTFont());
     b.setAlignment(SWT.CENTER);
     GridData gd = new GridData(GridData.FILL_HORIZONTAL);
     gd.widthHint = 50;
@@ -135,6 +128,9 @@ public class PinPad implements Part
 
 /**********************************************************************
  * $Log: PinPad.java,v $
+ * Revision 1.2  2009/11/10 12:00:35  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2009/07/12 23:19:29  willuhn
  * @N Code fuer ein GUI-Pin-Pad. Mal sehen, ob ich das irgendwann in Hibiscus uebernehme
  *

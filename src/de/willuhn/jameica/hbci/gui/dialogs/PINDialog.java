@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/PINDialog.java,v $
- * $Revision: 1.21 $
- * $Date: 2009/07/12 23:19:29 $
+ * $Revision: 1.22 $
+ * $Date: 2009/11/10 11:59:49 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -143,6 +143,10 @@ public class PINDialog extends PasswordDialog {
   {
     super.extend(container);
     
+    // AUFPASSEN!
+    // PINDialog wird auch fuer das Passwort von Schluesseldisketten verwendet!
+    // Da bringt ein Pin-Pad natuerlich gar nichts!
+    
 //    Composite comp = new Composite(container.getComposite(),SWT.NONE);
 //    GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
 //    gridData.horizontalSpan = 2;
@@ -165,6 +169,9 @@ public class PINDialog extends PasswordDialog {
 
 /**********************************************************************
  * $Log: PINDialog.java,v $
+ * Revision 1.22  2009/11/10 11:59:49  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.21  2009/07/12 23:19:29  willuhn
  * @N Code fuer ein GUI-Pin-Pad. Mal sehen, ob ich das irgendwann in Hibiscus uebernehme
  *
