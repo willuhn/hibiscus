@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/UeberweisungNew.java,v $
- * $Revision: 1.10 $
- * $Date: 2009/09/15 00:23:34 $
+ * $Revision: 1.11 $
+ * $Date: 2009/11/26 12:00:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,6 +21,8 @@ import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.io.ClipboardUeberweisungImporter;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.SammelTransfer;
+import de.willuhn.jameica.hbci.rmi.SammelUeberweisungBuchung;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.logging.Logger;
@@ -81,7 +83,7 @@ public class UeberweisungNew implements Action
       {
         Umsatz umsatz = (Umsatz) context;
         u = (Ueberweisung) Settings.getDBService().createObject(Ueberweisung.class,null);
-        u.setBetrag(Math.abs(umsatz.getBetrag()));
+        u.setBetrag(Math.abs(umsatz.getBetrag())); // negative Betraege automatisch in positive umwandeln
         u.setGegenkontoBLZ(umsatz.getGegenkontoBLZ());
         u.setGegenkontoName(umsatz.getGegenkontoName());
         u.setGegenkontoNummer(umsatz.getGegenkontoNummer());
@@ -89,13 +91,39 @@ public class UeberweisungNew implements Action
         u.setTermin(new Date());
         u.setZweck(umsatz.getZweck());
         u.setZweck2(umsatz.getZweck2());
+        u.setWeitereVerwendungszwecke(umsatz.getWeitereVerwendungszwecke());
       }
       catch (RemoteException re)
       {
         Logger.error("error while creating transfer",re);
         // Dann halt nicht
       }
-      
+    }
+    else if (context instanceof SammelUeberweisungBuchung)
+    {
+      try
+      {
+        SammelUeberweisungBuchung b = (SammelUeberweisungBuchung) context;
+        SammelTransfer st = b.getSammelTransfer();
+        u = (Ueberweisung) Settings.getDBService().createObject(Ueberweisung.class,null);
+        u.setBetrag(b.getBetrag());
+        u.setGegenkontoBLZ(b.getGegenkontoBLZ());
+        u.setGegenkontoName(b.getGegenkontoName());
+        u.setGegenkontoNummer(b.getGegenkontoNummer());
+        u.setZweck(b.getZweck());
+        u.setZweck2(b.getZweck2());
+        u.setWeitereVerwendungszwecke(b.getWeitereVerwendungszwecke());
+        if (st != null)
+        {
+          u.setKonto(st.getKonto());
+          u.setTermin(st.getTermin());
+        }
+      }
+      catch (RemoteException re)
+      {
+        Logger.error("error while creating transfer",re);
+        // Dann halt nicht
+      }
     }
 		else 
 		{
@@ -109,6 +137,9 @@ public class UeberweisungNew implements Action
 
 /**********************************************************************
  * $Log: UeberweisungNew.java,v $
+ * Revision 1.11  2009/11/26 12:00:21  willuhn
+ * @N Buchungen aus Sammelauftraegen in Einzelauftraege duplizieren
+ *
  * Revision 1.10  2009/09/15 00:23:34  willuhn
  * @N BUGZILLA 745
  *

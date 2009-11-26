@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/LastschriftNew.java,v $
- * $Revision: 1.5 $
- * $Date: 2009/09/15 00:23:34 $
+ * $Revision: 1.6 $
+ * $Date: 2009/11/26 12:00:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,9 @@ import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
+import de.willuhn.jameica.hbci.rmi.SammelLastBuchung;
+import de.willuhn.jameica.hbci.rmi.SammelTransfer;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -68,6 +71,32 @@ public class LastschriftNew implements Action
 				// Dann halt nicht
 			}
 		}
+    else if (context instanceof SammelLastBuchung)
+    {
+      try
+      {
+        SammelLastBuchung b = (SammelLastBuchung) context;
+        SammelTransfer st = b.getSammelTransfer();
+        u = (Lastschrift) Settings.getDBService().createObject(Lastschrift.class,null);
+        u.setBetrag(b.getBetrag());
+        u.setGegenkontoBLZ(b.getGegenkontoBLZ());
+        u.setGegenkontoName(b.getGegenkontoName());
+        u.setGegenkontoNummer(b.getGegenkontoNummer());
+        u.setZweck(b.getZweck());
+        u.setZweck2(b.getZweck2());
+        u.setWeitereVerwendungszwecke(b.getWeitereVerwendungszwecke());
+        if (st != null)
+        {
+          u.setKonto(st.getKonto());
+          u.setTermin(st.getTermin());
+        }
+      }
+      catch (RemoteException re)
+      {
+        Logger.error("error while creating transfer",re);
+        // Dann halt nicht
+      }
+    }
 
   	GUI.startView(de.willuhn.jameica.hbci.gui.views.LastschriftNew.class,u);
   }
@@ -77,6 +106,9 @@ public class LastschriftNew implements Action
 
 /**********************************************************************
  * $Log: LastschriftNew.java,v $
+ * Revision 1.6  2009/11/26 12:00:21  willuhn
+ * @N Buchungen aus Sammelauftraegen in Einzelauftraege duplizieren
+ *
  * Revision 1.5  2009/09/15 00:23:34  willuhn
  * @N BUGZILLA 745
  *

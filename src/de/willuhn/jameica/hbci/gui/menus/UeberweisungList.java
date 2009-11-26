@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UeberweisungList.java,v $
- * $Revision: 1.18 $
- * $Date: 2009/02/13 14:17:01 $
+ * $Revision: 1.19 $
+ * $Date: 2009/11/26 12:00:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -54,7 +54,7 @@ public class UeberweisungList extends ContextMenu
     addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new SingleItem(i18n.tr("Duplizieren..."), new UeberweisungDuplicate(),"edit-copy.png"));
-    addItem(new NotActiveMultiMenuItem(i18n.tr("Zu Sammel-Überweisung zusammenfassen..."), new UeberweisungMerge(),"mail-send-receive.png"));
+    addItem(new NotActiveMultiMenuItem(i18n.tr("Zu Sammelüberweisung zusammenfassen..."), new UeberweisungMerge(),"stock_navigator-shift-right.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new NotActiveSingleMenuItem(i18n.tr("Jetzt ausführen..."), new UeberweisungExecute(),"emblem-important.png"));
     addItem(new NotActiveMultiMenuItem(i18n.tr("Als \"ausgeführt\" markieren..."), new TerminableMarkExecuted(),"emblem-default.png"));
@@ -198,6 +198,9 @@ public class UeberweisungList extends ContextMenu
 
 /**********************************************************************
  * $Log: UeberweisungList.java,v $
+ * Revision 1.19  2009/11/26 12:00:21  willuhn
+ * @N Buchungen aus Sammelauftraegen in Einzelauftraege duplizieren
+ *
  * Revision 1.18  2009/02/13 14:17:01  willuhn
  * @N BUGZILLA 700
  *

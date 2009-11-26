@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/LastschriftList.java,v $
- * $Revision: 1.12 $
- * $Date: 2008/12/19 01:12:09 $
+ * $Revision: 1.13 $
+ * $Date: 2009/11/26 12:00:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -54,7 +54,7 @@ public class LastschriftList extends ContextMenu
     addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new SingleItem(i18n.tr("Duplizieren..."), new LastschriftDuplicate(),"edit-copy.png"));
-    addItem(new NotActiveMultiMenuItem(i18n.tr("Zu Sammel-Lastschrift zusammenfassen..."), new LastschriftMerge(),"mail-send-receive.png"));
+    addItem(new NotActiveMultiMenuItem(i18n.tr("Zu Sammellastschrift zusammenfassen..."), new LastschriftMerge(),"stock_navigator-shift-left.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new NotActiveSingleMenuItem(i18n.tr("Jetzt ausführen..."), new LastschriftExecute(),"emblem-important.png"));
     addItem(new NotActiveMultiMenuItem(i18n.tr("Als \"ausgeführt\" markieren..."), new TerminableMarkExecuted(),"emblem-default.png"));
@@ -198,6 +198,9 @@ public class LastschriftList extends ContextMenu
 
 /**********************************************************************
  * $Log: LastschriftList.java,v $
+ * Revision 1.13  2009/11/26 12:00:21  willuhn
+ * @N Buchungen aus Sammelauftraegen in Einzelauftraege duplizieren
+ *
  * Revision 1.12  2008/12/19 01:12:09  willuhn
  * @N Icons in Contextmenus
  *
