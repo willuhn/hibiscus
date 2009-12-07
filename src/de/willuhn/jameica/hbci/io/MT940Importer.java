@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Attic/MT940Importer.java,v $
- * $Revision: 1.15 $
- * $Date: 2009/02/12 16:14:34 $
+ * $Revision: 1.16 $
+ * $Date: 2009/12/07 22:55:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -235,13 +235,11 @@ public class MT940Importer implements Importer
         public boolean onlyBPDGVs() {return false;}
         public boolean needUserKeys() {return false;}
         public boolean needInstKeys() {return false;}
-        public boolean needDigKey() {return false;}
         public boolean isSupported() {return false;}
         public boolean hasMySigKey() {return false;}
         public boolean hasMyEncKey() {return false;}
         public boolean hasInstSigKey() {return false;}
         public boolean hasInstEncKey() {return false;}
-        public boolean hasInstDigKey() {return false;}
         public String getUserId() {return null;}
         public String getUPDVersion() {return null;}
         public Properties getUPD() {return null;}
@@ -279,10 +277,8 @@ public class MT940Importer implements Importer
         public void clearUPD() {}
         public void clearInstSigKey() {}
         public void clearInstEncKey() {}
-        public void clearInstDigKey(){}
         public void clearBPD(){}
         public void changePassphrase(){}
-      
       };
     }
     
@@ -291,6 +287,9 @@ public class MT940Importer implements Importer
 
 /*******************************************************************************
  * $Log: MT940Importer.java,v $
+ * Revision 1.16  2009/12/07 22:55:32  willuhn
+ * @R nicht mehr benoetigte Funktionen entfernt
+ *
  * Revision 1.15  2009/02/12 16:14:34  willuhn
  * @N HBCI4Java-Version mit Unterstuetzung fuer vorgemerkte Umsaetze
  *
