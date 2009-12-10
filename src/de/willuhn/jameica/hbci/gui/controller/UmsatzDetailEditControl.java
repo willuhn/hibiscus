@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailEditControl.java,v $
- * $Revision: 1.2 $
- * $Date: 2009/01/04 14:47:53 $
+ * $Revision: 1.3 $
+ * $Date: 2009/12/10 17:29:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,8 +26,8 @@ import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.Input;
-import de.willuhn.jameica.gui.input.SearchInput;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.input.AddressInput;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
@@ -245,7 +245,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
       u.setKommentar((String)getKommentar().getValue());
       u.setUmsatzTyp((UmsatzTyp)getUmsatzTyp().getValue());
       
-      u.setGegenkontoName(((SearchInput)getEmpfaengerName()).getText());
+      u.setGegenkontoName(((AddressInput)getEmpfaengerName()).getText());
       u.setGegenkontoNummer((String) getEmpfaengerKonto().getValue());
       u.setGegenkontoBLZ((String) getEmpfaengerBLZ().getValue());
       u.setZweck((String) getZweck().getValue());
@@ -377,6 +377,9 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
 
 /**********************************************************************
  * $Log: UmsatzDetailEditControl.java,v $
+ * Revision 1.3  2009/12/10 17:29:08  willuhn
+ * @B ClassCastException
+ *
  * Revision 1.2  2009/01/04 14:47:53  willuhn
  * @N Bearbeiten der Umsaetze nochmal ueberarbeitet - Codecleanup
  *
