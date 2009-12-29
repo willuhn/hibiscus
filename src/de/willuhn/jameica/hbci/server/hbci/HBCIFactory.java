@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.61 $
- * $Date: 2009/09/15 00:32:24 $
+ * $Revision: 1.62 $
+ * $Date: 2009/12/29 17:06:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -510,6 +510,13 @@ public class HBCIFactory {
           monitor.addPercentComplete(2);
 
           Logger.info("adding job " + job.getIdentifier() + " to queue");
+          
+          // TODO: In der folgenden Zeile kann es zum Beispiel einem Fehler kommen, wenn der Geschaeftsvorfall nicht von der Bank unterstuetzt wird.
+          // In dem Fall faellt das Programm direkt in den letzten catch/finally-Block. Das job.handleResult() wird nicht ausgefuehrt.
+          // Falls "transfer.markexecuted.before" auf true gesetzt ist, fuehrt das dazu, dass die bis hierher erzeugten Auftraege
+          // als ausgefuehrt markiert bleiben. Sie sollten aber eigentlich wieder als <nicht ausgefuehrt> markiert werden. Es
+          // waere vermutlich sinnvoller, diese for-Schleife hier in den folgenden try/catch-Block "Jobs ausfuehren" zu verschieben.
+          // Muss aber mal noch getestet werden.
           HBCIJob j = handler.newJob(job.getIdentifier());
           dumpJob(j);
           job.setJob(j);
@@ -694,6 +701,9 @@ public class HBCIFactory {
 
 /*******************************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.62  2009/12/29 17:06:44  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.61  2009/09/15 00:32:24  willuhn
  * @N BUGZILLA 745 - Keine deaktivierten Konten zulassen
  *
