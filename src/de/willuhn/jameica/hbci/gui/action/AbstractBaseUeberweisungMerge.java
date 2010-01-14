@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/Attic/AbstractTransferMerge.java,v $
- * $Revision: 1.3 $
- * $Date: 2009/11/26 13:25:30 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/AbstractBaseUeberweisungMerge.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2010/01/14 23:09:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,7 +18,7 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.dialogs.TransferMergeDialog;
-import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
+import de.willuhn.jameica.hbci.rmi.BaseUeberweisung;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -31,7 +31,7 @@ import de.willuhn.util.I18N;
 /**
  * Abstrakte Basis-Action, ueber Einzel-Auftraege zu einem Sammel-Auftrag zusammenzufassen.
  */
-public abstract class AbstractTransferMerge implements Action
+public abstract class AbstractBaseUeberweisungMerge implements Action
 {
 
   /**
@@ -48,15 +48,15 @@ public abstract class AbstractTransferMerge implements Action
 		if (context == null)
       throw new ApplicationException(i18n.tr("Bitte wählen Sie einen oder mehrere Aufträge aus"));
 
-    if (!(context instanceof HibiscusTransfer) && !(context instanceof HibiscusTransfer[]))
+    if (!(context instanceof BaseUeberweisung) && !(context instanceof BaseUeberweisung[]))
       throw new ApplicationException(i18n.tr("Bitte wählen Sie einen oder mehrere Aufträge aus"));
 
-    HibiscusTransfer[] transfers = null;
+    BaseUeberweisung[] transfers = null;
     
-    if (context instanceof HibiscusTransfer)
-      transfers = new HibiscusTransfer[]{(HibiscusTransfer) context};
+    if (context instanceof BaseUeberweisung)
+      transfers = new BaseUeberweisung[]{(BaseUeberweisung) context};
     else
-      transfers = (HibiscusTransfer[]) context;
+      transfers = (BaseUeberweisung[]) context;
     
     if (transfers.length == 0)
       throw new ApplicationException(i18n.tr("Bitte wählen Sie einen oder mehrere Aufträge aus"));
@@ -93,6 +93,7 @@ public abstract class AbstractTransferMerge implements Action
         buchung.setZweck(transfers[i].getZweck());
         buchung.setZweck2(transfers[i].getZweck2());
         buchung.setWeitereVerwendungszwecke(transfers[i].getWeitereVerwendungszwecke());
+        buchung.setTextSchluessel(transfers[i].getTextSchluessel());
         buchung.store();
         
         if (delete)
@@ -151,7 +152,10 @@ public abstract class AbstractTransferMerge implements Action
 
 
 /**********************************************************************
- * $Log: AbstractTransferMerge.java,v $
+ * $Log: AbstractBaseUeberweisungMerge.java,v $
+ * Revision 1.1  2010/01/14 23:09:14  willuhn
+ * @B Beim Mergen einer Einzel-Lastschrift in eine Sammel-Lastschrift wurde der Textschluessel nicht mitkopiert (siehe Mail von Ralf vom 14.01.2010)
+ *
  * Revision 1.3  2009/11/26 13:25:30  willuhn
  * @N Einzel-Auftraege in existierende Sammel-Auftraege uebernehmen
  *

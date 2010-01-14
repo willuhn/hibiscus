@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/UeberweisungMerge.java,v $
- * $Revision: 1.1 $
- * $Date: 2007/10/25 15:47:21 $
+ * $Revision: 1.2 $
+ * $Date: 2010/01/14 23:09:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,11 +24,11 @@ import de.willuhn.util.ApplicationException;
 /**
  * Erzeugt eine Sammel-Ueberweisung aus einem Buendel Einzelueberweisungen.
  */
-public class UeberweisungMerge extends AbstractTransferMerge
+public class UeberweisungMerge extends AbstractBaseUeberweisungMerge
 {
 
   /**
-   * @see de.willuhn.jameica.hbci.gui.action.AbstractTransferMerge#getBuchungClass()
+   * @see de.willuhn.jameica.hbci.gui.action.AbstractBaseUeberweisungMerge#getBuchungClass()
    */
   Class getBuchungClass() throws RemoteException
   {
@@ -36,7 +36,7 @@ public class UeberweisungMerge extends AbstractTransferMerge
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.gui.action.AbstractTransferMerge#getTransferClass()
+   * @see de.willuhn.jameica.hbci.gui.action.AbstractBaseUeberweisungMerge#getTransferClass()
    */
   Class getTransferClass() throws RemoteException
   {
@@ -63,6 +63,9 @@ public class UeberweisungMerge extends AbstractTransferMerge
 
 /*********************************************************************
  * $Log: UeberweisungMerge.java,v $
+ * Revision 1.2  2010/01/14 23:09:14  willuhn
+ * @B Beim Mergen einer Einzel-Lastschrift in eine Sammel-Lastschrift wurde der Textschluessel nicht mitkopiert (siehe Mail von Ralf vom 14.01.2010)
+ *
  * Revision 1.1  2007/10/25 15:47:21  willuhn
  * @N Einzelauftraege zu Sammel-Auftraegen zusammenfassen (BUGZILLA 402)
  *
