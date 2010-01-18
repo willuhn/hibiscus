@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.54 $
- * $Date: 2009/10/20 23:12:58 $
+ * $Revision: 1.55 $
+ * $Date: 2010/01/18 17:29:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -158,7 +158,13 @@ public class Converter {
 		// und jetzt noch der Empfaenger (wenn er existiert)
 		if (u.other != null) 
 		{
-		  umsatz.setGegenkonto(HBCIKonto2Address(u.other));
+		  HibiscusAddress a = HBCIKonto2Address(u.other);
+		  // Wenn keine Kontonummer/BLZ angegeben ist, versuchen wir es mit BIC/IBAN
+		  if (a.getKontonummer() == null || a.getKontonummer().length() == 0)
+		    a.setKontonummer(a.getIban());
+		  if (a.getBlz() == null || a.getBlz().length() == 0)
+		    a.setBlz(a.getBic());
+		  umsatz.setGegenkonto(a);
 		}
 		return umsatz;
 	}
@@ -312,11 +318,13 @@ public class Converter {
 	 * @return unsere Adresse.
 	 * @throws RemoteException
 	 */
-	public static Address HBCIKonto2Address(Konto konto) throws RemoteException
+	public static HibiscusAddress HBCIKonto2Address(Konto konto) throws RemoteException
 	{
 		HibiscusAddress e = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
 		e.setBlz(konto.blz);
 		e.setKontonummer(konto.number);
+		e.setBic(konto.bic);
+		e.setIban(konto.iban);
 		String name = konto.name;
 		if (konto.name2 != null && konto.name2.length() > 0)
 			name += (" " + konto.name2);
@@ -405,6 +413,9 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.55  2010/01/18 17:29:27  willuhn
+ * @N IBAN/BIC statt Kontonummer/BLZ uebernehmen, falls keine Kto-Nummer/BLZ angegeben ist
+ *
  * Revision 1.54  2009/10/20 23:12:58  willuhn
  * @N Support fuer SEPA-Ueberweisungen
  * @N Konten um IBAN und BIC erweitert
