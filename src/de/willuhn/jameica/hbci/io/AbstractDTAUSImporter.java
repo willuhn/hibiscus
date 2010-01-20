@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/AbstractDTAUSImporter.java,v $
- * $Revision: 1.15 $
- * $Date: 2009/10/28 10:21:01 $
+ * $Revision: 1.16 $
+ * $Date: 2010/01/20 10:35:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -198,7 +198,11 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
     }
     catch (Exception e)
     {
-      throw new RemoteException(i18n.tr("Fehler beim Import der DTAUS-Daten"),e);
+      // Fehlermeldung von obantoo durchreichen - siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=64455#64455
+      String msg = e.getMessage();
+      if (msg == null || msg.length() == 0)
+        throw new RemoteException(i18n.tr("Fehler beim Import der DTAUS-Daten"),e);
+      throw new RemoteException(msg,e);
     }
     finally
     {
@@ -321,6 +325,9 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
 
 /*********************************************************************
  * $Log: AbstractDTAUSImporter.java,v $
+ * Revision 1.16  2010/01/20 10:35:12  willuhn
+ * @C Obantoo-Fehlermeldung durchreichen
+ *
  * Revision 1.15  2009/10/28 10:21:01  willuhn
  * @N BUGZILLA 773
  *
