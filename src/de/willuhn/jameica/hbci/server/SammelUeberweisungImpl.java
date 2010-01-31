@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/SammelUeberweisungImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/08/25 10:13:43 $
+ * $Revision: 1.5 $
+ * $Date: 2010/01/31 14:14:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,6 +49,7 @@ public class SammelUeberweisungImpl extends AbstractSammelTransferImpl
   {
     DBIterator list = this.getService().createList(SammelUeberweisungBuchung.class);
     list.addFilter("sueberweisung_id = " + this.getID());
+    list.setOrder("order by gegenkonto_name");
     return list;
   }
 
@@ -67,6 +68,9 @@ public class SammelUeberweisungImpl extends AbstractSammelTransferImpl
 
 /*****************************************************************************
  * $Log: SammelUeberweisungImpl.java,v $
+ * Revision 1.5  2010/01/31 14:14:14  willuhn
+ * @N Buchungen nach Name des Gegenkontoinhabers sortieren
+ *
  * Revision 1.4  2006/08/25 10:13:43  willuhn
  * @B Fremdschluessel NICHT mittels PreparedStatement, da die sonst gequotet und von McKoi nicht gefunden werden. BUGZILLA 278
  *
