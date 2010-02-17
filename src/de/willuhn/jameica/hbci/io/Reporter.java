@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Reporter.java,v $
- * $Revision: 1.3 $
- * $Date: 2007/05/02 11:18:04 $
+ * $Revision: 1.4 $
+ * $Date: 2010/02/17 10:43:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -35,7 +36,7 @@ import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.plugin.AbstractPlugin;
+import de.willuhn.jameica.plugin.Manifest;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
@@ -46,23 +47,19 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class Reporter
 {
-  private I18N i18n = null;
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  private ArrayList headers;
+  private List<PdfPCell> headers = new ArrayList<PdfPCell>();
+  private List<Integer> widths   = new ArrayList<Integer>();
 
-  private ArrayList widths;
+  private OutputStream out  = null;
+  private Document rpt      = null;
+  private PdfPTable table   = null;
 
-  private OutputStream out;
+  private int maxRecords    = 0;
+  private int currRecord    = 0;
 
-  private Document rpt;
-
-  private PdfPTable table;
-
-  private int maxRecords;
-
-  private int currRecord = 0;
-
-  private ProgressMonitor monitor;
+  private ProgressMonitor monitor = null;
 
   /**
    * ct.
@@ -73,31 +70,28 @@ public class Reporter
    * @param maxRecords
    * @throws DocumentException
    */
-  public Reporter(OutputStream out, ProgressMonitor monitor, String title,
-      String subtitle, int maxRecords) throws DocumentException
+  public Reporter(OutputStream out, ProgressMonitor monitor, String title, String subtitle, int maxRecords) throws DocumentException
   {
-    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class)
-        .getResources().getI18N();
-    this.out = out;
-    this.monitor = monitor;
-    rpt = new Document();
+    this.out        = out;
+    this.monitor    = monitor;
+    this.maxRecords = maxRecords;
+    this.rpt        = new Document();
+
     PdfWriter.getInstance(rpt, out);
     rpt.setMargins(80, 30, 20, 20); // links, rechts, oben, unten
+
     if (this.monitor != null)
     {
       this.monitor.setStatusText(i18n.tr("Erzeuge Liste"));
       this.monitor.addPercentComplete(1);
     }
-    AbstractPlugin plugin = Application.getPluginLoader().getPlugin(HBCI.class);
-    rpt.addAuthor(i18n.tr("{0} - Version {1}",
-        new String[] { plugin.getManifest().getName(),
-            "" + plugin.getManifest().getVersion() }));
+    
+    Manifest mf = Application.getPluginLoader().getManifest(HBCI.class);
+    rpt.addAuthor(i18n.tr("{0} - Version {1}",new String[] {mf.getName(),mf.getVersion().toString()}));
     rpt.addTitle(subtitle);
 
-    Chunk fuss = new Chunk(i18n.tr(title + " | " + subtitle
-        + " | erstellt am {0}              Seite:  ", HBCI.LONGDATEFORMAT
-        .format(new Date())), FontFactory.getFont(FontFactory.HELVETICA, 8,
-        Font.BOLD));
+    String text = i18n.tr("{0} | {1} | erstellt am {2}              Seite:  ",new String[]{title,subtitle,HBCI.LONGDATEFORMAT.format(new Date())});
+    Chunk fuss = new Chunk(text, FontFactory.getFont(FontFactory.HELVETICA, 8, Font.BOLD));
     HeaderFooter hf = new HeaderFooter(new Phrase(fuss), true);
     hf.setAlignment(Element.ALIGN_CENTER);
     rpt.setFooter(hf);
@@ -105,8 +99,7 @@ public class Reporter
     rpt.open();
     try
     {
-      ClassLoader loader = Reporter.class.getClassLoader();
-      URL url = loader.getResource("icons/hibiscus-icon-16x16.png");
+      URL url = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getClassLoader().getResource("icons/hibiscus-icon-32x32.png");
       rpt.add(Image.getInstance(url));
     }
     catch (Exception e)
@@ -114,21 +107,13 @@ public class Reporter
       Logger.error("unable to add hibiscus icon, will be ignored",e);
     }
 
-    Paragraph pTitle = new Paragraph(i18n.tr(title), FontFactory.getFont(
-        FontFactory.HELVETICA_BOLD, 13));
-
+    Paragraph pTitle = new Paragraph(title, FontFactory.getFont(FontFactory.HELVETICA_BOLD, 13));
     pTitle.setAlignment(Element.ALIGN_CENTER);
     rpt.add(pTitle);
-    Paragraph psubTitle = new Paragraph(subtitle, FontFactory.getFont(
-        FontFactory.HELVETICA_BOLD, 10));
+    
+    Paragraph psubTitle = new Paragraph(subtitle, FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10));
     psubTitle.setAlignment(Element.ALIGN_CENTER);
     rpt.add(psubTitle);
-
-    headers = new ArrayList();
-    widths = new ArrayList();
-
-    monitor.setPercentComplete(0);
-    this.maxRecords = maxRecords;
   }
 
   /**
@@ -180,20 +165,16 @@ public class Reporter
   public void createHeader() throws DocumentException
   {
     table = new PdfPTable(headers.size());
-    float[] w = new float[headers.size()];
+    int[] w = new int[headers.size()];
     for (int i = 0; i < headers.size(); i++)
-    {
-      Integer breite = (Integer) widths.get(i);
-      w[i] = breite.intValue();
-    }
+      w[i] = widths.get(i).intValue();
     table.setWidths(w);
     table.setWidthPercentage(100);
     table.setSpacingBefore(10);
     table.setSpacingAfter(0);
-    for (int i = 0; i < headers.size(); i++)
+    for (int i=0;i<headers.size(); ++i)
     {
-      PdfPCell cell = (PdfPCell) headers.get(i);
-      table.addCell(cell);
+      table.addCell(headers.get(i));
     }
     table.setHeaderRows(1);
   }
@@ -210,7 +191,7 @@ public class Reporter
       if (monitor != null)
       {
         monitor.setPercentComplete(100);
-        monitor.setStatusText("PDF-Export beendet");
+        monitor.setStatusText(i18n.tr("PDF-Export beendet"));
       }
       rpt.add(table);
       rpt.close();
@@ -225,19 +206,14 @@ public class Reporter
 
   /**
    * Erzeugt eine Zelle der Tabelle.
-   * 
-   * @param text
-   *          der anzuzeigende Text.
-   * @param align
-   *          die Ausrichtung.
-   * @param backgroundcolor
-   *          die Hintergundfarbe.
+   * @param text der anzuzeigende Text.
+   * @param align die Ausrichtung.
+   * @param backgroundcolor die Hintergundfarbe.
    * @return die erzeugte Zelle.
    */
   public PdfPCell getDetailCell(String text, int align, Color backgroundcolor)
   {
-    PdfPCell cell = new PdfPCell(new Phrase(notNull(text), FontFactory.getFont(
-        FontFactory.HELVETICA, 8)));
+    PdfPCell cell = new PdfPCell(new Phrase(notNull(text), FontFactory.getFont(FontFactory.HELVETICA, 8)));
     cell.setHorizontalAlignment(align);
     cell.setBackgroundColor(backgroundcolor);
     return cell;
@@ -245,11 +221,8 @@ public class Reporter
 
   /**
    * Erzeugt eine Zelle der Tabelle.
-   * 
-   * @param text
-   *          der anzuzeigende Text.
-   * @param align
-   *          die Ausrichtung.
+   * @param text der anzuzeigende Text.
+   * @param align die Ausrichtung.
    * @return die erzeugte Zelle.
    */
   public PdfPCell getDetailCell(String text, int align)
@@ -259,7 +232,7 @@ public class Reporter
 
   /**
    * Erzeugt eine Zelle der Tabelle.
-   * @param value
+   * @param value die Zahl.
    * @return die erzeugte Zelle.
    */
   public PdfPCell getDetailCell(Double value)
@@ -269,30 +242,20 @@ public class Reporter
 
   /**
    * Erzeugt eine Zelle fuer die uebergebene Zahl.
-   * 
-   * @param value
-   *          die Zahl.
+   * @param value die Zahl.
    * @return die erzeugte Zelle.
    */
   public PdfPCell getDetailCell(double value)
   {
-    Font f = null;
-    if (value >= 0)
-      f = FontFactory.getFont(FontFactory.HELVETICA, 8, Font.NORMAL,
-          Color.BLACK);
-    else
-      f = FontFactory.getFont(FontFactory.HELVETICA, 8, Font.NORMAL, Color.RED);
-    PdfPCell cell = new PdfPCell(
-        new Phrase(HBCI.DECIMALFORMAT.format(value), f));
+    Font f = FontFactory.getFont(FontFactory.HELVETICA, 8, Font.NORMAL, value >= 0 ? Color.BLACK : Color.RED);
+    PdfPCell cell = new PdfPCell(new Phrase(HBCI.DECIMALFORMAT.format(value), f));
     cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
     return cell;
   }
 
   /**
    * Gibt einen Leerstring aus, falls der Text null ist.
-   * 
-   * @param text
-   *          der Text.
+   * @param text der Text.
    * @return der Text oder Leerstring - niemals null.
    */
   public String notNull(String text)
@@ -303,6 +266,9 @@ public class Reporter
 
 /*******************************************************************************
  * $Log: Reporter.java,v $
+ * Revision 1.4  2010/02/17 10:43:41  willuhn
+ * @N Differenz in Einnahmen/Ausgaben anzeigen, Cleanup
+ *
  * Revision 1.3  2007/05/02 11:18:04  willuhn
  * @C PDF-Export von Umsatz-Trees in IO-API gepresst ;)
  *

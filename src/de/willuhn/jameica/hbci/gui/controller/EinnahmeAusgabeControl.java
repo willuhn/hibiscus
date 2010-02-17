@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EinnahmeAusgabeControl.java,v $
- * $Revision: 1.13 $
- * $Date: 2009/10/20 23:12:58 $
+ * $Revision: 1.14 $
+ * $Date: 2010/02/17 10:43:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,7 +16,6 @@ import java.rmi.RemoteException;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TableItem;
@@ -35,6 +34,7 @@ import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Color;
+import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
@@ -51,27 +51,21 @@ import de.willuhn.util.I18N;
  */
 public class EinnahmeAusgabeControl extends AbstractControl
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   private SelectInput kontoAuswahl = null;
+  private DateInput start          = null;
+  private DateInput end            = null;
 
-  private DateInput start = null;
 
-  private DateInput end = null;
-
-  private I18N i18n = null;
-
-  private TablePart table = null;
+  private TablePart table          = null;
 
   private double summeAnfangssaldo = 0.0d;
+  private double summeEinnahmen    = 0.0d;
+  private double summeAusgaben     = 0.0d;
+  private double summeEndsaldo     = 0.0d;
 
-  private double summeEinnahmen = 0.0d;
-
-  private double summeAusgaben = 0.0d;
-
-  private double summeEndsaldo = 0.0d;
-
-  private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(
-      EinnahmeAusgabeControl.class);
+  private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(EinnahmeAusgabeControl.class);
 
   static
   {
@@ -80,19 +74,15 @@ public class EinnahmeAusgabeControl extends AbstractControl
 
   /**
    * ct.
-   * 
    * @param view
    */
   public EinnahmeAusgabeControl(AbstractView view)
   {
     super(view);
-    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class)
-        .getResources().getI18N();
   }
 
   /**
    * Liefert eine Auswahlbox fuer das Konto.
-   * 
    * @return Auswahlbox.
    * @throws RemoteException
    */
@@ -107,16 +97,13 @@ public class EinnahmeAusgabeControl extends AbstractControl
     {
       public void handleEvent(Event event)
       {
-        if (event.type == SWT.Selection)
+        try
         {
-          try
-          {
-            handleReload();
-          }
-          catch (RemoteException e)
-          {
-            //
-          }
+          handleReload();
+        }
+        catch (RemoteException e)
+        {
+          Logger.error("error while reloading table",e);
         }
       }
     });
@@ -125,7 +112,6 @@ public class EinnahmeAusgabeControl extends AbstractControl
 
   /**
    * Liefert ein Auswahl-Feld fuer das Start-Datum.
-   * 
    * @return Auswahl-Feld.
    */
   public Input getStart()
@@ -149,7 +135,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
     }
     catch (Exception e)
     {
-      // ignore
+      Logger.error("invalid start date, ignoring",e);
     }
     this.start = new DateInput(d, HBCI.DATEFORMAT);
     this.start.setComment(i18n.tr("Frühestes Valuta-Datum"));
@@ -157,17 +143,14 @@ public class EinnahmeAusgabeControl extends AbstractControl
     {
       public void handleEvent(Event event)
       {
-        if (event.type == SWT.FocusOut)
+        try
         {
-          try
-          {
-            settings.setAttribute("laststart", HBCI.DATEFORMAT
-                .format((Date) start.getValue()));
-            handleReload();
-          }
-          catch (RemoteException e)
-          {
-          }
+          settings.setAttribute("laststart", HBCI.DATEFORMAT.format((Date) start.getValue()));
+          handleReload();
+        }
+        catch (RemoteException e)
+        {
+          Logger.error("error while refreshing start date",e);
         }
       }
     });
@@ -176,7 +159,6 @@ public class EinnahmeAusgabeControl extends AbstractControl
 
   /**
    * Liefert ein Auswahl-Feld fuer das End-Datum.
-   * 
    * @return Auswahl-Feld.
    */
   public Input getEnd()
@@ -185,8 +167,6 @@ public class EinnahmeAusgabeControl extends AbstractControl
       return this.end;
 
     Calendar cal = Calendar.getInstance();
-    // cal.set(Calendar.MONTH,Calendar.DECEMBER);
-    // cal.set(Calendar.DATE,31);
 
     Date d = HBCIProperties.endOfDay(cal.getTime());
     try
@@ -197,25 +177,23 @@ public class EinnahmeAusgabeControl extends AbstractControl
     }
     catch (Exception e)
     {
-      // ignore
+      Logger.error("invalid end date, ignoring",e);
     }
+    
     this.end = new DateInput(d, HBCI.DATEFORMAT);
     this.end.setComment(i18n.tr("Spätestes Valuta-Datum"));
     this.end.addListener(new Listener()
     {
       public void handleEvent(Event event)
       {
-        if (event.type == SWT.FocusOut)
+        try
         {
-          try
-          {
-            settings.setAttribute("lastend", HBCI.DATEFORMAT.format((Date) end
-                .getValue()));
-            handleReload();
-          }
-          catch (RemoteException e)
-          {
-          }
+          settings.setAttribute("lastend", HBCI.DATEFORMAT.format((Date) end.getValue()));
+          handleReload();
+        }
+        catch (RemoteException e)
+        {
+          Logger.error("error while refreshing end date",e);
         }
       }
     });
@@ -225,7 +203,6 @@ public class EinnahmeAusgabeControl extends AbstractControl
 
   /**
    * Liefert eine Tabelle mit den Einnahmen/Ausgaben und Salden
-   * 
    * @return Tabelle mit den Einnahmen/Ausgaben und Salden
    * @throws RemoteException
    */
@@ -234,15 +211,14 @@ public class EinnahmeAusgabeControl extends AbstractControl
     if (this.table != null)
       return this.table;
 
-    GenericIterator eintr = PseudoIterator
-        .fromArray((GenericObject[]) getWerte());
+    GenericIterator eintr = PseudoIterator.fromArray((GenericObject[]) getWerte());
     table = new TablePart(eintr, null);
-    table.addColumn(i18n.tr("Text"), "text");
-    table.addColumn(i18n.tr("Anfangssaldo"), "anfangssaldo",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
-    table.addColumn(i18n.tr("Einnahmen"), "einnahme", new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
-    table.addColumn(i18n.tr("Ausgaben"), "ausgabe", new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
-    table.addColumn(i18n.tr("Endsaldo"), "endsaldo", new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
-    table.addColumn(i18n.tr("Bemerkung"), "bemerkung");
+    table.addColumn(i18n.tr("Konto"),        "text");
+    table.addColumn(i18n.tr("Anfangssaldo"), "anfangssaldo",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
+    table.addColumn(i18n.tr("Einnahmen"),    "einnahme",    new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
+    table.addColumn(i18n.tr("Ausgaben"),     "ausgabe",     new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
+    table.addColumn(i18n.tr("Endsaldo"),     "endsaldo",    new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
+    table.addColumn(i18n.tr("Differenz"),    "differenz",   new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
 
     table.setFormatter(new TableFormatter()
     {
@@ -254,16 +230,20 @@ public class EinnahmeAusgabeControl extends AbstractControl
         EinnahmeAusgabe ea = (EinnahmeAusgabe) item.getData();
         try
         {
-          Double einnahmen = (Double) ea.getAttribute("einnahme");
-          Double ausgaben = (Double) ea.getAttribute("ausgabe");
-          if (einnahmen == null || ausgaben == null)
+          Double de = (Double) ea.getAttribute("endsaldo");
+          if (de == null)
             return;
-          if (einnahmen.doubleValue() > ausgaben.doubleValue())
+          
+          double e = de.doubleValue();
+          if (e > 0.0)
             item.setForeground(Settings.getBuchungHabenForeground());
-          else if (einnahmen.doubleValue() < ausgaben.doubleValue())
+          else if (e < 0.0)
             item.setForeground(Settings.getBuchungSollForeground());
           else
             item.setForeground(Color.WIDGET_FG.getSWTColor());
+          
+          Boolean b = (Boolean) ea.getAttribute("hasdiff");
+          item.setFont(b != null && b.booleanValue() ? Font.BOLD.getSWTFont() : Font.DEFAULT.getSWTFont());
         }
         catch (Exception e)
         {
@@ -274,21 +254,21 @@ public class EinnahmeAusgabeControl extends AbstractControl
     });
 
     table.setRememberColWidths(true);
+    table.setSummary(false);
     return table;
   }
 
   /**
    * Werte ermitteln.
-   * 
    * @return Array mit Werten.
    * @throws RemoteException
    */
   public EinnahmeAusgabe[] getWerte() throws RemoteException
   {
     summeAnfangssaldo = 0.0d;
-    summeEinnahmen = 0.0d;
-    summeAusgaben = 0.0d;
-    summeEndsaldo = 0.0d;
+    summeEinnahmen    = 0.0d;
+    summeAusgaben     = 0.0d;
+    summeEndsaldo     = 0.0d;
 
     EinnahmeAusgabe[] eae;
 
@@ -312,13 +292,12 @@ public class EinnahmeAusgabeControl extends AbstractControl
         ermittelnWerte(konto, eae, index);
         index++;
       }
-      eae[it.size()] = new EinnahmeAusgabe("Summe", (Date) this.start.getValue(), summeAnfangssaldo, summeEinnahmen, summeAusgaben,(Date) this.end.getValue(), summeEndsaldo);
+      eae[it.size()] = new EinnahmeAusgabe(i18n.tr("Summe"), (Date) this.start.getValue(), summeAnfangssaldo, summeEinnahmen, summeAusgaben,(Date) this.end.getValue(), summeEndsaldo);
     }
     return eae;
   }
 
-  private void ermittelnWerte(Konto konto, EinnahmeAusgabe[] eae, int index)
-      throws RemoteException
+  private void ermittelnWerte(Konto konto, EinnahmeAusgabe[] eae, int index) throws RemoteException
   {
     double anfangssaldo = konto.getAnfangsSaldo((Date) this.getStart().getValue());
     summeAnfangssaldo += anfangssaldo;
@@ -332,9 +311,13 @@ public class EinnahmeAusgabeControl extends AbstractControl
     double endsaldo = konto.getEndSaldo((Date) end.getValue());
     summeEndsaldo += endsaldo;
 
-    eae[index] = new EinnahmeAusgabe(konto.getLongName(), (Date) this.start
-        .getValue(), anfangssaldo, einnahmen, ausgaben, (Date) this.getEnd()
-        .getValue(), endsaldo);
+    eae[index] = new EinnahmeAusgabe(konto.getLongName(),
+                                     (Date) this.start.getValue(),
+                                     anfangssaldo, 
+                                     einnahmen, 
+                                     ausgaben, 
+                                     (Date) this.getEnd().getValue(),
+                                     endsaldo);
   }
 
   /**
@@ -363,6 +346,9 @@ public class EinnahmeAusgabeControl extends AbstractControl
 
 /*******************************************************************************
  * $Log: EinnahmeAusgabeControl.java,v $
+ * Revision 1.14  2010/02/17 10:43:41  willuhn
+ * @N Differenz in Einnahmen/Ausgaben anzeigen, Cleanup
+ *
  * Revision 1.13  2009/10/20 23:12:58  willuhn
  * @N Support fuer SEPA-Ueberweisungen
  * @N Konten um IBAN und BIC erweitert
@@ -375,34 +361,4 @@ public class EinnahmeAusgabeControl extends AbstractControl
  *
  * Revision 1.10  2009/01/12 00:46:50  willuhn
  * @N Vereinheitlichtes KontoInput in den Auswertungen
- *
- * Revision 1.9  2007/08/12 22:02:10  willuhn
- * @C BUGZILLA 394 - restliche Umstellungen von Valuta auf Buchungsdatum
- *
- * Revision 1.8  2007/08/07 12:04:43  willuhn
- * @C Spalte "Bemerkung" wieder eingefuegt
- *
- * Revision 1.7  2007/07/17 12:36:44  willuhn
- * @C Spalte "Bemerkung" fuer RELEASE auskommentiert. Deren Bedeutung verstehen die User irgendwie nicht - hatte schon mehrere Anfragen von Usern erhalten. Daher entferne ich sie fuer das Release und nehm sie danach wieder rein ;)
- *
- * Revision 1.6  2007/07/16 12:01:48  willuhn
- * *** empty log message ***
- *
- * Revision 1.5  2007/06/19 17:55:09  jost
- * Sichtbarkeit der Members eingeschrÃ¤nkt.
- *
- * Revision 1.4  2007/06/05 08:40:06  willuhn
- * @C Fehlermeldung via Dialog gegen Hinweistext in Title ersetzt
- *
- * Revision 1.3  2007/06/04 18:35:28  jost
- * ZusÃ¤tzliche Plausi: Startdatum muÃŸ vor Endedatum liegen.
- * Revision 1.2 2007/06/04 17:37:00
- * willuhn
- * 
- * @D javadoc
- * @C java 1.4 compatibility
- * @N table colorized
- * 
- * Revision 1.1 2007/06/04 15:58:00 jost Neue Auswertung: Einnahmen/Ausgaben
- * 
  ******************************************************************************/

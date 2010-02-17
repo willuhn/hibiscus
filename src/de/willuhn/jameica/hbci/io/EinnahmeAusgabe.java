@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Attic/EinnahmeAusgabe.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/06/04 17:37:00 $
+ * $Revision: 1.3 $
+ * $Date: 2010/02/17 10:43:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,7 +13,6 @@
 
 package de.willuhn.jameica.hbci.io;
 
-import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.Date;
 
@@ -24,25 +23,17 @@ import de.willuhn.jameica.hbci.HBCI;
  * Container fuer die EinnahmeAusgabe-Daten.
  */
 
-public class EinnahmeAusgabe implements Serializable, GenericObject
+public class EinnahmeAusgabe implements GenericObject
 {
-  private static final long serialVersionUID = 6176029502462174158L;
-
   String text;
-
-  Date startdatum;
-
-  Date enddatum;
-
   double anfangssaldo;
-
   double einnahme;
-
   double ausgabe;
-
   double endsaldo;
-
-  String bemerkung = "";
+  double differenz;
+  Date startdatum;
+  Date enddatum;
+  boolean hasDiff = false;
 
   /**
    * ct.
@@ -54,21 +45,17 @@ public class EinnahmeAusgabe implements Serializable, GenericObject
    * @param enddatum
    * @param endsaldo
    */
-  public EinnahmeAusgabe(String text, Date startdatum, double anfangssaldo,
-      double einnahme, double ausgabe, Date enddatum, double endsaldo)
+  public EinnahmeAusgabe(String text, Date startdatum, double anfangssaldo, double einnahme, double ausgabe, Date enddatum, double endsaldo)
   {
-    this.text = text;
-    this.startdatum = startdatum;
+    this.text         = text;
+    this.startdatum   = startdatum;
     this.anfangssaldo = anfangssaldo;
-    this.einnahme = einnahme;
-    this.ausgabe = ausgabe;
-    this.enddatum = enddatum;
-    this.endsaldo = endsaldo;
-    if (!HBCI.DECIMALFORMAT.format(anfangssaldo + einnahme + ausgabe).equals(
-        HBCI.DECIMALFORMAT.format(endsaldo)))
-    {
-      this.bemerkung = "Achtung Differenz!";
-    }
+    this.einnahme     = einnahme;
+    this.ausgabe      = ausgabe;
+    this.endsaldo     = endsaldo;
+    this.enddatum     = enddatum;
+    this.differenz    = anfangssaldo + einnahme + ausgabe - endsaldo;
+    this.hasDiff = (!HBCI.DECIMALFORMAT.format(anfangssaldo + einnahme + ausgabe).equals(HBCI.DECIMALFORMAT.format(endsaldo)));
   }
 
   /**
@@ -84,30 +71,14 @@ public class EinnahmeAusgabe implements Serializable, GenericObject
    */
   public Object getAttribute(String name) throws RemoteException
   {
-    if (name.equals("text"))
-    {
-      return text;
-    }
-    if (name.equals("anfangssaldo"))
-    {
-      return new Double(anfangssaldo);
-    }
-    if (name.equals("einnahme"))
-    {
-      return new Double(einnahme);
-    }
-    if (name.equals("ausgabe"))
-    {
-      return new Double(ausgabe);
-    }
-    if (name.equals("endsaldo"))
-    {
-      return new Double(endsaldo);
-    }
-    if (name.equals("bemerkung"))
-    {
-      return bemerkung;
-    }
+    if ("text".equals(name))          return text;
+    if ("hasdiff".equals(name))       return Boolean.valueOf(this.hasDiff);
+    if ("anfangssaldo".equals(name))  return new Double(anfangssaldo);
+    if ("einnahme".equals(name))      return new Double(einnahme);
+    if ("ausgabe".equals(name))       return new Double(ausgabe);
+    if ("endsaldo".equals(name))      return new Double(endsaldo);
+    if ("differenz".equals(name))     return new Double(differenz);
+
     return null;
   }
 
@@ -116,8 +87,7 @@ public class EinnahmeAusgabe implements Serializable, GenericObject
    */
   public String[] getAttributeNames() throws RemoteException
   {
-    return new String[] { "text", "anfangssaldo", "einnahme", "ausgabe",
-        "endsaldo", "bemerkung" };
+    return new String[] { "text", "anfangssaldo", "einnahme", "ausgabe", "endsaldo","differenz"};
   }
 
   /**
@@ -125,7 +95,7 @@ public class EinnahmeAusgabe implements Serializable, GenericObject
    */
   public String getID() throws RemoteException
   {
-    return (text + anfangssaldo + einnahme + ausgabe + endsaldo + bemerkung);
+    return (text + anfangssaldo + einnahme + ausgabe + endsaldo);
   }
 
   /**
@@ -139,6 +109,9 @@ public class EinnahmeAusgabe implements Serializable, GenericObject
 
 /*******************************************************************************
  * $Log: EinnahmeAusgabe.java,v $
+ * Revision 1.3  2010/02/17 10:43:41  willuhn
+ * @N Differenz in Einnahmen/Ausgaben anzeigen, Cleanup
+ *
  * Revision 1.2  2007/06/04 17:37:00  willuhn
  * @D javadoc
  * @C java 1.4 compatibility
