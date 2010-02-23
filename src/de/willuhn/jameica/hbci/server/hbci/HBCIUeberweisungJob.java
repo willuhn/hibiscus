@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUeberweisungJob.java,v $
- * $Revision: 1.45 $
- * $Date: 2009/06/29 09:00:23 $
+ * $Revision: 1.46 $
+ * $Date: 2010/02/23 11:20:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -99,7 +99,7 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
 
 			String zweck2 = ueberweisung.getZweck2();
 			boolean haveSecond = false;
-			if (zweck2 != null && zweck2.length() > 0)
+			if (zweck2 != null && zweck2.trim().length() > 0)
 			{
 			  haveSecond = true;
         setJobParam("usage_2",zweck2);
@@ -109,7 +109,7 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
       int pos = haveSecond ? 3 : 2; // Wenn Zeile 2 fehlt, dann alles eins nach vorn schieben
       for (int i=0;i<lines.length;++i)
       {
-        if (lines[i] == null || lines[i].length() == 0)
+        if (lines[i] == null || lines[i].trim().length() == 0)
           continue;
         setJobParam("usage_" + pos,lines[i]);
         pos++;
@@ -219,6 +219,9 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIUeberweisungJob.java,v $
+ * Revision 1.46  2010/02/23 11:20:45  willuhn
+ * @C Verwendungszweck ignorieren, wenn er nur aus Whitespaces besteht
+ *
  * Revision 1.45  2009/06/29 09:00:23  willuhn
  * @B wenn das Feature "transfer.markexecuted.before" aktiv ist, wurden Auftraege auch dann als ausgefuehrt markiert, wenn sie abgebrochen wurden - die Methode markCancelled() war nicht ueberschrieben worden
  *

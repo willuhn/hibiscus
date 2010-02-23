@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIAuslandsUeberweisungJob.java,v $
- * $Revision: 1.5 $
- * $Date: 2009/10/20 23:12:58 $
+ * $Revision: 1.6 $
+ * $Date: 2010/02/23 11:20:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -78,8 +78,8 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
       setJobParam("btg",ueberweisung.getBetrag(),curr);
       
       String zweck = ueberweisung.getZweck();
-      if (zweck != null && zweck.length() > 0)
-			setJobParam("usage",zweck);
+      if (zweck != null && zweck.trim().length() > 0)
+			  setJobParam("usage",zweck);
 			
       de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
       markExecutedBefore = settings.getBoolean("transfer.markexecuted.before",false);
@@ -165,6 +165,9 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIAuslandsUeberweisungJob.java,v $
+ * Revision 1.6  2010/02/23 11:20:45  willuhn
+ * @C Verwendungszweck ignorieren, wenn er nur aus Whitespaces besteht
+ *
  * Revision 1.5  2009/10/20 23:12:58  willuhn
  * @N Support fuer SEPA-Ueberweisungen
  * @N Konten um IBAN und BIC erweitert
