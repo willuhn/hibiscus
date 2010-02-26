@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/SynchronizeOptions.java,v $
- * $Revision: 1.7 $
- * $Date: 2009/09/15 00:23:35 $
+ * $Revision: 1.8 $
+ * $Date: 2010/02/26 15:42:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -52,6 +52,20 @@ public class SynchronizeOptions implements Serializable
            getSyncLastschriften() ||
            getSyncUeberweisungen() ||
            getSyncAuslandsUeberweisungen();
+  }
+  
+  /**
+   * Aendert den Synchronisierungsstatus aller Auftragstypen.
+   * @param status neuer Status.
+   */
+  public void setAll(boolean status)
+  {
+    this.setSyncSaldo(status);
+    this.setSyncKontoauszuege(status);
+    this.setSyncDauerauftraege(status);
+    this.setSyncLastschriften(status);
+    this.setSyncUeberweisungen(status);
+    this.setSyncAuslandsUeberweisungen(status);
   }
 
   /**
@@ -173,6 +187,9 @@ public class SynchronizeOptions implements Serializable
 
 /*********************************************************************
  * $Log: SynchronizeOptions.java,v $
+ * Revision 1.8  2010/02/26 15:42:23  willuhn
+ * @N Alle Synchronisierungsoptionen auf einmal aktivieren/deaktivieren
+ *
  * Revision 1.7  2009/09/15 00:23:35  willuhn
  * @N BUGZILLA 745
  *
