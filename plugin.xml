@@ -10,7 +10,7 @@
   <homepage>http://www.willuhn.de/products/hibiscus</homepage>
   <license>GPL - http://www.gnu.org/copyleft/gpl.html</license>
 
-  <requires jameica="1.9.0+"/>
+  <requires jameica="1.9.0"/>
 
   <menu>
     <item id="hibiscus.menu"                         name="Hibiscus">
