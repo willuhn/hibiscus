@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/BackupCreate.java,v $
- * $Revision: 1.3 $
- * $Date: 2008/12/14 23:18:35 $
+ * $Revision: 1.4 $
+ * $Date: 2010/03/03 11:00:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -164,9 +164,9 @@ public class BackupCreate implements Action
           
           // Die Versionstabelle wird nicht mit kopiert
           
+          monitor.setStatus(ProgressMonitor.STATUS_DONE);
           monitor.setStatusText("Backup erstellt");
           monitor.setPercentComplete(100);
-          monitor.setStatus(ProgressMonitor.STATUS_DONE);
         }
         catch (Exception e)
         {
@@ -239,6 +239,9 @@ public class BackupCreate implements Action
 
 /*********************************************************************
  * $Log: BackupCreate.java,v $
+ * Revision 1.4  2010/03/03 11:00:19  willuhn
+ * @N Erst Status-Code setzen und dann erst den Text - sonst wird der Text nicht gruen gefaerbt
+ *
  * Revision 1.3  2008/12/14 23:18:35  willuhn
  * @N BUGZILLA 188 - REFACTORING
  *

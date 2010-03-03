@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/BackupRestore.java,v $
- * $Revision: 1.3 $
- * $Date: 2008/09/02 18:14:25 $
+ * $Revision: 1.4 $
+ * $Date: 2010/03/03 11:00:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -115,9 +115,9 @@ public class BackupRestore implements Action
               monitor.addPercentComplete(1);
           }
           
+          monitor.setStatus(ProgressMonitor.STATUS_DONE);
           monitor.setStatusText("Backup importiert");
           monitor.setPercentComplete(100);
-          monitor.setStatus(ProgressMonitor.STATUS_DONE);
         }
         catch (Exception e)
         {
@@ -161,6 +161,9 @@ public class BackupRestore implements Action
 
 /*********************************************************************
  * $Log: BackupRestore.java,v $
+ * Revision 1.4  2010/03/03 11:00:19  willuhn
+ * @N Erst Status-Code setzen und dann erst den Text - sonst wird der Text nicht gruen gefaerbt
+ *
  * Revision 1.3  2008/09/02 18:14:25  willuhn
  * @N Diagnose-Backup erweitert
  *
