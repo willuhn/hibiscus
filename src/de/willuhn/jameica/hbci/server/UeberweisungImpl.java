@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UeberweisungImpl.java,v $
- * $Revision: 1.42 $
- * $Date: 2009/05/12 22:53:33 $
+ * $Revision: 1.43 $
+ * $Date: 2010/03/04 09:39:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -57,6 +57,7 @@ public class UeberweisungImpl extends AbstractBaseUeberweisungImpl implements Ue
     u.setKonto(getKonto());
     u.setZweck(getZweck());
     u.setZweck2(getZweck2());
+    u.setWeitereVerwendungszwecke(getWeitereVerwendungszwecke());
     u.setTextSchluessel(getTextSchluessel());
     
     u.setTermin(isTerminUeberweisung() ? getTermin() : new Date());
@@ -158,6 +159,9 @@ public class UeberweisungImpl extends AbstractBaseUeberweisungImpl implements Ue
 
 /**********************************************************************
  * $Log: UeberweisungImpl.java,v $
+ * Revision 1.43  2010/03/04 09:39:40  willuhn
+ * @B BUGZILLA 829
+ *
  * Revision 1.42  2009/05/12 22:53:33  willuhn
  * @N BUGZILLA 189 - Ueberweisung als Umbuchung
  *

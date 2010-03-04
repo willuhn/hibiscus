@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractSammelTransferBuchungImpl.java,v $
- * $Revision: 1.18 $
- * $Date: 2008/12/14 23:18:35 $
+ * $Revision: 1.19 $
+ * $Date: 2010/03/04 09:39:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -229,6 +229,7 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
     b.setSammelTransfer(getSammelTransfer());
     b.setZweck(getZweck());
     b.setZweck2(getZweck2());
+    b.setWeitereVerwendungszwecke(getWeitereVerwendungszwecke());
     b.setTextSchluessel(getTextSchluessel());
     return (Duplicatable) b;
   }
@@ -268,6 +269,9 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferBuchungImpl.java,v $
+ * Revision 1.19  2010/03/04 09:39:40  willuhn
+ * @B BUGZILLA 829
+ *
  * Revision 1.18  2008/12/14 23:18:35  willuhn
  * @N BUGZILLA 188 - REFACTORING
  *
