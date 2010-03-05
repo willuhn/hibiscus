@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailControl.java,v $
- * $Revision: 1.40 $
- * $Date: 2010/03/05 23:29:18 $
+ * $Revision: 1.41 $
+ * $Date: 2010/03/05 23:52:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,6 @@ import java.rmi.RemoteException;
 
 import org.kapott.hbci.manager.HBCIUtils;
 
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
@@ -40,7 +39,6 @@ import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
-import de.willuhn.jameica.hbci.server.UmsatzTypUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -182,20 +180,20 @@ public class UmsatzDetailControl extends AbstractControl {
   {
     if (this.umsatzTyp != null)
       return this.umsatzTyp;
-    DBIterator list = UmsatzTypUtil.getAll();
+
+    int typ = UmsatzTyp.TYP_EGAL;
+
     Umsatz u = getUmsatz();
-    UmsatzTyp ut = u == null ? null : u.getUmsatzTyp();
-    if (ut == null)
-    {
-      int typ = UmsatzTyp.TYP_EGAL;
-      if (u != null)
-        typ = u.getBetrag() > 0 ? UmsatzTyp.TYP_EINNAHME : UmsatzTyp.TYP_AUSGABE;
-      this.umsatzTyp = new UmsatzTypInput(list,typ);
-    }
-    else
-    {
-      this.umsatzTyp = new UmsatzTypInput(list,ut);
-    }
+    UmsatzTyp ut = u != null ? u.getUmsatzTyp() : null;
+    
+    // wenn noch keine Kategorie zugeordnet ist, bieten wir nur die passenden an.
+    if (u != null && ut == null)
+      typ = (u.getBetrag() > 0 ? UmsatzTyp.TYP_EINNAHME : UmsatzTyp.TYP_AUSGABE);
+    
+    // Ansonsten alle - damit die zugeordnete Kategorie auch dann noch
+    // noch angeboten wird, der User nachtraeglich den Kat-Typ geaendert hat.
+    this.umsatzTyp = new UmsatzTypInput(ut,typ);
+    
     this.umsatzTyp.setEnabled((u.getFlags() & Umsatz.FLAG_NOTBOOKED) == 0);
     return this.umsatzTyp;
   }
@@ -419,6 +417,10 @@ public class UmsatzDetailControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzDetailControl.java,v $
+ * Revision 1.41  2010/03/05 23:52:27  willuhn
+ * @C Code-Cleanup
+ * @C Liste der Kategorien kann jetzt nicht mehr von aussen an UmsatzTypInput uebergeben werden
+ *
  * Revision 1.40  2010/03/05 23:29:18  willuhn
  * @N Statische Basis-Funktion zum Laden der Kategorien in der richtigen Reihenfolge
  *

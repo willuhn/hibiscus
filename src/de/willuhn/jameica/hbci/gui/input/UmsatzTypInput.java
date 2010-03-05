@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/UmsatzTypInput.java,v $
- * $Revision: 1.9 $
- * $Date: 2010/03/05 23:29:18 $
+ * $Revision: 1.10 $
+ * $Date: 2010/03/05 23:52:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,6 +24,7 @@ import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
+import de.willuhn.jameica.hbci.server.UmsatzTypUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -35,48 +36,21 @@ import de.willuhn.util.I18N;
 public class UmsatzTypInput extends SelectInput
 {
 
-  private I18N i18n = null;
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
    * ct.
-   * @param list Liste der Umsatz-Typen.
+   * @param preselected der vorselectierte Umsatz-Typ.
    * @param typ Filter auf Kategorie-Typen.
    * Kategorien vom Typ "egal" werden grundsaetzlich angezeigt.
    * @see UmsatzTyp#TYP_AUSGABE
    * @see UmsatzTyp#TYP_EINNAHME
    * @throws RemoteException
    */
-  public UmsatzTypInput(DBIterator list, int typ) throws RemoteException
+  public UmsatzTypInput(UmsatzTyp preselected, int typ) throws RemoteException
   {
-    this(list,null,typ);
-  }
+    super(filter(UmsatzTypUtil.getAll(),typ), preselected);
 
-  /**
-   * ct.
-   * @param list Liste der Umsatz-Typen.
-   * @param umsatzTyp der vorselektierter Umsatz-Typ.
-   * @throws RemoteException
-   */
-  public UmsatzTypInput(DBIterator list, UmsatzTyp umsatzTyp) throws RemoteException
-  {
-    this(list,umsatzTyp,UmsatzTyp.TYP_EGAL);
-  }
-
-  /**
-   * ct.
-   * @param list Liste der Umsatz-Typen.
-   * @param umsatzTyp der vorselectierte Umsatz-Typ.
-   * @param typ Filter auf Kategorie-Typen.
-   * Kategorien vom Typ "egal" werden grundsaetzlich angezeigt.
-   * @see UmsatzTyp#TYP_AUSGABE
-   * @see UmsatzTyp#TYP_EINNAHME
-   * @throws RemoteException
-   */
-  private UmsatzTypInput(DBIterator list, UmsatzTyp umsatzTyp, int typ) throws RemoteException
-  {
-    super(filter(list,typ), umsatzTyp);
-
-    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     this.setPleaseChoose(i18n.tr("<Keine Kategorie>"));
     refreshComment();
     
@@ -133,6 +107,10 @@ public class UmsatzTypInput extends SelectInput
 
 /*********************************************************************
  * $Log: UmsatzTypInput.java,v $
+ * Revision 1.10  2010/03/05 23:52:27  willuhn
+ * @C Code-Cleanup
+ * @C Liste der Kategorien kann jetzt nicht mehr von aussen an UmsatzTypInput uebergeben werden
+ *
  * Revision 1.9  2010/03/05 23:29:18  willuhn
  * @N Statische Basis-Funktion zum Laden der Kategorien in der richtigen Reihenfolge
  *

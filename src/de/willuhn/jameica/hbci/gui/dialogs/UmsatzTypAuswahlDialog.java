@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/UmsatzTypAuswahlDialog.java,v $
- * $Revision: 1.12 $
- * $Date: 2010/03/05 23:29:18 $
+ * $Revision: 1.13 $
+ * $Date: 2010/03/05 23:52:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,6 @@ import java.rmi.RemoteException;
 
 import org.eclipse.swt.widgets.Composite;
 
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.util.ButtonArea;
@@ -25,7 +24,6 @@ import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.input.UmsatzTypInput;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
-import de.willuhn.jameica.hbci.server.UmsatzTypUtil;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.util.ApplicationException;
@@ -45,31 +43,6 @@ public class UmsatzTypAuswahlDialog extends AbstractDialog
   /**
    * ct.
    * @param position
-   * @param typ Filter auf Kategorie-Typen.
-   * Kategorien vom Typ "egal" werden grundsaetzlich angezeigt.
-   * @see UmsatzTyp#TYP_AUSGABE
-   * @see UmsatzTyp#TYP_EINNAHME
-   * @throws RemoteException
-   */
-  public UmsatzTypAuswahlDialog(int position, int typ) throws RemoteException
-  {
-    this(position,null,typ);
-  }
-
-  /**
-   * ct.
-   * @param position
-   * @param preselected der vorausgewaehlte Umsatztyp.
-   * @throws RemoteException
-   */
-  public UmsatzTypAuswahlDialog(int position, UmsatzTyp preselected) throws RemoteException
-  {
-    this(position,preselected,UmsatzTyp.TYP_EGAL);
-  }
-  
-  /**
-   * ct.
-   * @param position
    * @param preselected der vorausgewaehlte Umsatztyp.
    * @param typ Filter auf Kategorie-Typen.
    * Kategorien vom Typ "egal" werden grundsaetzlich angezeigt.
@@ -77,7 +50,7 @@ public class UmsatzTypAuswahlDialog extends AbstractDialog
    * @see UmsatzTyp#TYP_EINNAHME
    * @throws RemoteException
    */
-  private UmsatzTypAuswahlDialog(int position, UmsatzTyp preselected, int typ) throws RemoteException
+  public UmsatzTypAuswahlDialog(int position, UmsatzTyp preselected, int typ) throws RemoteException
   {
     super(position);
     this.choosen = preselected;
@@ -104,14 +77,8 @@ public class UmsatzTypAuswahlDialog extends AbstractDialog
     
     group.addText(i18n.tr("Bitte wählen Sie die zu verwendende Kategorie aus."),true);
 
-    DBIterator list = UmsatzTypUtil.getAll();
-    
-    if (this.choosen != null)
-      this.input = new UmsatzTypInput(list,this.choosen);
-    else
-      this.input = new UmsatzTypInput(list,this.typ);
-    
-    input.setComment(null); // Hier keine Umsatz-Zahlen anzeigen. Das macht den Dialog haesslich
+    this.input = new UmsatzTypInput(this.choosen,this.typ);
+    this.input.setComment(null); // Hier keine Umsatz-Zahlen anzeigen. Das macht den Dialog haesslich
     
     group.addLabelPair(i18n.tr("Bezeichnung"),input);
 
@@ -138,6 +105,10 @@ public class UmsatzTypAuswahlDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: UmsatzTypAuswahlDialog.java,v $
+ * Revision 1.13  2010/03/05 23:52:27  willuhn
+ * @C Code-Cleanup
+ * @C Liste der Kategorien kann jetzt nicht mehr von aussen an UmsatzTypInput uebergeben werden
+ *
  * Revision 1.12  2010/03/05 23:29:18  willuhn
  * @N Statische Basis-Funktion zum Laden der Kategorien in der richtigen Reihenfolge
  *
