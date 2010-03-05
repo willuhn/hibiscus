@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypUtil.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/03/05 23:29:18 $
+ * $Revision: 1.3 $
+ * $Date: 2010/03/05 23:59:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -61,11 +61,27 @@ public class UmsatzTypUtil
     list.setOrder("ORDER BY nummer,name");
     return list;
   }
+
+  /**
+   * Liefert eine Liste der Umsatz-Kategorien oberster Ebene.
+   * @return Liste der Umsatz-Kategorien oberster Ebene.
+   * @throws RemoteException
+   */
+  public static DBIterator getRootElements() throws RemoteException
+  {
+    DBIterator list = getAll();
+    list.addFilter("parent_id is null");
+    return list;
+  }
+
 }
 
 
 /*********************************************************************
  * $Log: UmsatzTypUtil.java,v $
+ * Revision 1.3  2010/03/05 23:59:31  willuhn
+ * @C Code-Cleanup
+ *
  * Revision 1.2  2010/03/05 23:29:18  willuhn
  * @N Statische Basis-Funktion zum Laden der Kategorien in der richtigen Reihenfolge
  *

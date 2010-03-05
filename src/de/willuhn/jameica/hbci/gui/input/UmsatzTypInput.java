@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/UmsatzTypInput.java,v $
- * $Revision: 1.10 $
- * $Date: 2010/03/05 23:52:27 $
+ * $Revision: 1.11 $
+ * $Date: 2010/03/05 23:59:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,7 +49,7 @@ public class UmsatzTypInput extends SelectInput
    */
   public UmsatzTypInput(UmsatzTyp preselected, int typ) throws RemoteException
   {
-    super(filter(UmsatzTypUtil.getAll(),typ), preselected);
+    super(init(typ), preselected);
 
     this.setPleaseChoose(i18n.tr("<Keine Kategorie>"));
     refreshComment();
@@ -66,14 +66,14 @@ public class UmsatzTypInput extends SelectInput
   }
   
   /**
-   * Haengt an den Iterator ggf noch einen Filter an.
-   * @param list der Iterator.
+   * Initialisiert die Liste der anzuzeigenden Kategorien.
    * @param typ der Kategorie-Typ.
    * @return korrigierte Liste.
    * @throws RemoteException
    */
-  private static DBIterator filter(DBIterator list, int typ) throws RemoteException
+  private static DBIterator init(int typ) throws RemoteException
   {
+    DBIterator list = UmsatzTypUtil.getAll();
     if (typ != UmsatzTyp.TYP_EGAL)
       list.addFilter("umsatztyp = " + typ + " or umsatztyp = " + UmsatzTyp.TYP_EGAL + " or umsatztyp is null");
     return list;
@@ -107,6 +107,9 @@ public class UmsatzTypInput extends SelectInput
 
 /*********************************************************************
  * $Log: UmsatzTypInput.java,v $
+ * Revision 1.11  2010/03/05 23:59:31  willuhn
+ * @C Code-Cleanup
+ *
  * Revision 1.10  2010/03/05 23:52:27  willuhn
  * @C Code-Cleanup
  * @C Liste der Kategorien kann jetzt nicht mehr von aussen an UmsatzTypInput uebergeben werden
@@ -119,26 +122,4 @@ public class UmsatzTypInput extends SelectInput
  *
  * Revision 1.7  2010/03/05 18:07:26  willuhn
  * @N Unterkategorien in Selectbox einruecken
- *
- * Revision 1.6  2008/08/29 16:46:24  willuhn
- * @N BUGZILLA 616
- *
- * Revision 1.5  2008/08/08 08:57:14  willuhn
- * @N BUGZILLA 614
- *
- * Revision 1.4  2007/04/02 23:01:17  willuhn
- * @D diverse Javadoc-Warnings
- * @C Umstellung auf neues SelectInput
- *
- * Revision 1.3  2007/03/21 18:47:36  willuhn
- * @N Neue Spalte in Kategorie-Tree
- * @N Sortierung des Kontoauszuges wie in Tabelle angezeigt
- * @C Code cleanup
- *
- * Revision 1.2  2007/03/18 08:13:55  jost
- * Sortierte Anzeige der Umsatz-Kategorien.
- *
- * Revision 1.1  2006/11/30 23:48:40  willuhn
- * @N Erste Version der Umsatz-Kategorien drin
- *
  **********************************************************************/
