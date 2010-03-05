@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.55 $
- * $Date: 2009/05/08 13:58:30 $
+ * $Revision: 1.56 $
+ * $Date: 2010/03/05 15:24:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,7 +30,7 @@ import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.PassportDetail;
 import de.willuhn.jameica.hbci.gui.action.UmsatzTypNew;
 import de.willuhn.jameica.hbci.gui.parts.PassportList;
-import de.willuhn.jameica.hbci.gui.parts.UmsatzTypList;
+import de.willuhn.jameica.hbci.gui.parts.UmsatzTypTree;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 
@@ -48,12 +48,12 @@ public class SettingsControl extends AbstractControl {
 
 	private Input buchungSollFg     				= null;
 	private Input buchungHabenFg    				= null;
-	private Input ueberfaelligFg    				= null;
+        private Input ueberfaelligFg                                    = null;
 
-	private TablePart passportList 					= null;
-  private UmsatzTypList umsatzTypList     = null;
+        private TablePart passportList                                  = null;
+  private UmsatzTypTree umsatzTypTree     = null;
 
-	private Input ueberweisungLimit 				= null;
+        private Input ueberweisungLimit                                 = null;
 
 	private I18N i18n;
 
@@ -77,20 +77,20 @@ public class SettingsControl extends AbstractControl {
 
     passportList = new PassportList(new PassportDetail());
 		return passportList;
-	}
+        }
 
   /**
-   * Liefert eine Tabelle mit den existierenden Umsatz-Kategorien.
-   * @return Tabelle mit den Umsatz-Kategorien.
+   * Liefert einen Tree mit den existierenden Umsatz-Kategorien.
+   * @return Tree mit den Umsatz-Kategorien.
    * @throws RemoteException
    */
-  public UmsatzTypList getUmsatzTypListe() throws RemoteException
+  public UmsatzTypTree getUmsatzTypTree() throws RemoteException
   {
-    if (umsatzTypList != null)
-        return umsatzTypList;
+    if (umsatzTypTree != null)
+        return umsatzTypTree;
 
-    umsatzTypList = new UmsatzTypList(new UmsatzTypNew());
-    return umsatzTypList;
+    umsatzTypTree = new UmsatzTypTree(new UmsatzTypNew());
+    return umsatzTypTree;
   }
 
   /**
@@ -231,6 +231,9 @@ public class SettingsControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.56  2010/03/05 15:24:53  willuhn
+ * @N BUGZILLA 686
+ *
  * Revision 1.55  2009/05/08 13:58:30  willuhn
  * @N Icons in allen Menus und auf allen Buttons
  * @N Fuer Umsatz-Kategorien koennen nun benutzerdefinierte Farben vergeben werden

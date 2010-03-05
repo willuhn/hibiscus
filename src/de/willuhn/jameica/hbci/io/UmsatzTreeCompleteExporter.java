@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/UmsatzTreeCompleteExporter.java,v $
- * $Revision: 1.3 $
- * $Date: 2008/12/01 23:54:42 $
+ * $Revision: 1.4 $
+ * $Date: 2010/03/05 15:24:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,15 +18,13 @@ import java.io.OutputStream;
 import java.rmi.RemoteException;
 import java.util.List;
 
-import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
 import com.lowagie.text.pdf.PdfPCell;
 
-import de.willuhn.datasource.GenericIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
-import de.willuhn.jameica.hbci.server.UmsatzGroup;
+import de.willuhn.jameica.hbci.server.UmsatzTreeNode;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -39,16 +37,8 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class UmsatzTreeCompleteExporter implements Exporter
 {
-  private I18N i18n = null;
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  /**
-   * ct.
-   */
-  public UmsatzTreeCompleteExporter()
-  {
-    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  }
-  
   /**
    * @see de.willuhn.jameica.hbci.io.Exporter#doExport(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
    */
@@ -67,86 +57,34 @@ public class UmsatzTreeCompleteExporter implements Exporter
 
     String subTitle = i18n.tr("Zeitraum {0} - {1}, {2}", new String[] {
         HBCI.DATEFORMAT.format(tree.getStart()), HBCI.DATEFORMAT.format(tree.getEnd()),
-        k == null ? "alle Konten" : k.getBezeichnung()
+        k == null ? i18n.tr("alle Konten") : k.getBezeichnung()
     });
     
     Reporter reporter = null;
     
     try
     {
-      reporter = new Reporter(os, monitor, "Umsatzkategorien", subTitle, list.size());
+      reporter = new Reporter(os, monitor, i18n.tr("Umsatzkategorien"), subTitle, list.size());
 
-      reporter.addHeaderColumn("Valuta / Buchungs- datum", Element.ALIGN_CENTER,30, Color.LIGHT_GRAY);
-      reporter.addHeaderColumn("Empfänger/Einzahler", Element.ALIGN_CENTER, 100,Color.LIGHT_GRAY);
-      reporter.addHeaderColumn("Zahlungsgrund", Element.ALIGN_CENTER, 120,Color.LIGHT_GRAY);
-      reporter.addHeaderColumn("Betrag", Element.ALIGN_CENTER, 30,Color.LIGHT_GRAY);
+      reporter.addHeaderColumn(i18n.tr("Valuta / Buchungsdatum"), Element.ALIGN_CENTER,  30,Color.LIGHT_GRAY);
+      reporter.addHeaderColumn(i18n.tr("Empfänger/Einzahler"),    Element.ALIGN_CENTER, 100,Color.LIGHT_GRAY);
+      reporter.addHeaderColumn(i18n.tr("Zahlungsgrund"),          Element.ALIGN_CENTER, 120,Color.LIGHT_GRAY);
+      reporter.addHeaderColumn(i18n.tr("Betrag"),                 Element.ALIGN_CENTER,  30,Color.LIGHT_GRAY);
       reporter.createHeader();
 
       // Iteration ueber Umsaetze
-      for (int i = 0; i < list.size(); i++)
+      for (int i=0;i<list.size(); ++i)
       {
-        UmsatzGroup ug = (UmsatzGroup) list.get(i);
-
-        PdfPCell cell = reporter.getDetailCell("", Element.ALIGN_LEFT);
-        cell.setColspan(4);
-        reporter.addColumn(cell);
-
-        cell = reporter.getDetailCell((String) ug.getAttribute("name"),Element.ALIGN_LEFT, Color.LIGHT_GRAY);
-        cell.setColspan(4);
-        reporter.addColumn(cell);
-
-        GenericIterator childs = ug.getChildren();
-        while (childs.hasNext())
-        {
-          reporter.setNextRecord();
-          Umsatz u = (Umsatz) childs.next();
-          reporter.addColumn(reporter.getDetailCell(
-              (u.getValuta() != null ? HBCI.DATEFORMAT.format(u.getValuta()) : "")
-                  + "\n"
-                  + (u.getDatum() != null ? HBCI.DATEFORMAT.format(u.getDatum()) : ""), Element.ALIGN_LEFT));
-          reporter.addColumn(reporter.getDetailCell(reporter.notNull(u.getGegenkontoName())
-              + "\n" + reporter.notNull(u.getArt()), Element.ALIGN_LEFT));
-
-          StringBuffer sb = new StringBuffer();
-          sb.append(u.getZweck());
-          sb.append("\n");
-
-          String z2 = u.getZweck2();
-          if (z2 != null && z2.length() > 0)
-          {
-            sb.append(z2);
-            sb.append("\n");
-          }
-          
-          String[] ewz = u.getWeitereVerwendungszwecke();
-          if (ewz != null && ewz.length > 0)
-          {
-            for (int r=0;r<ewz.length;++r)
-            {
-              if (ewz[r] == null || ewz.length == 0)
-                continue;
-              sb.append(ewz[r]);
-              sb.append("\n");
-            }
-          }
-          reporter.addColumn(reporter.getDetailCell(sb.toString(), Element.ALIGN_LEFT));
-
-          reporter.addColumn(reporter.getDetailCell(u.getBetrag()));
-        }
+        renderNode(reporter,(UmsatzTreeNode) list.get(i));
         reporter.setNextRecord();
-
-        reporter.addColumn(reporter.getDetailCell("", Element.ALIGN_LEFT));
-        reporter.addColumn(reporter.getDetailCell("Summe " + (String) ug.getAttribute("name"), Element.ALIGN_LEFT));
-        reporter.addColumn(reporter.getDetailCell("", Element.ALIGN_LEFT));
-        reporter.addColumn(reporter.getDetailCell((Double) ug.getAttribute("betrag")));
       }
       if (monitor != null) monitor.setStatus(ProgressMonitor.STATUS_DONE);
     }
-    catch (DocumentException e)
+    catch (Exception e)
     {
       if (monitor != null) monitor.setStatus(ProgressMonitor.STATUS_ERROR);
       Logger.error("error while creating report", e);
-      throw new ApplicationException(i18n.tr("Fehler beim Erzeugen des Reports"), e);
+      throw new ApplicationException(i18n.tr("Fehler beim Erzeugen der Auswertung: {0}",e.getMessage()), e);
     }
     finally
     {
@@ -161,6 +99,79 @@ public class UmsatzTreeCompleteExporter implements Exporter
           Logger.error("unable to close report",e);
         }
       }
+    }
+  }
+  
+  /**
+   * Rendert eine einzelne Kategorie sammt der Umsaetze.
+   * @param reporter der Reporter.
+   * @param node der Knoten mit evtl vorhanden Unterkategorien und Umsaetzen.
+   * @throws Exception
+   */
+  private void renderNode(Reporter reporter, UmsatzTreeNode node) throws Exception
+  {
+    List<Umsatz> umsaetze = node.getUmsaetze();
+    
+    // Wir rendern die Gruppe nur, wenn was drin steht. Andernfalls suchen
+    // wir nur in den Kind-Gruppen weiter.
+    if (umsaetze.size() > 0)
+    {
+      PdfPCell cell = reporter.getDetailCell(null, Element.ALIGN_LEFT);
+      cell.setColspan(4);
+      reporter.addColumn(cell);
+
+      cell = reporter.getDetailCell((String) node.getAttribute("name"),Element.ALIGN_LEFT, Color.LIGHT_GRAY);
+      cell.setColspan(4);
+      reporter.addColumn(cell);
+
+      for (int i=0;i<umsaetze.size();++i)
+      {
+        Umsatz u = umsaetze.get(i);
+        reporter.addColumn(reporter.getDetailCell(
+            (u.getValuta() != null ? HBCI.DATEFORMAT.format(u.getValuta()) : "")
+                + "\n"
+                + (u.getDatum() != null ? HBCI.DATEFORMAT.format(u.getDatum()) : ""), Element.ALIGN_LEFT));
+        reporter.addColumn(reporter.getDetailCell(reporter.notNull(u.getGegenkontoName())
+            + "\n" + reporter.notNull(u.getArt()), Element.ALIGN_LEFT));
+
+        StringBuffer sb = new StringBuffer();
+        sb.append(u.getZweck());
+        sb.append("\n");
+
+        String z2 = u.getZweck2();
+        if (z2 != null && z2.length() > 0)
+        {
+          sb.append(z2);
+          sb.append("\n");
+        }
+        
+        String[] ewz = u.getWeitereVerwendungszwecke();
+        if (ewz != null && ewz.length > 0)
+        {
+          for (int r=0;r<ewz.length;++r)
+          {
+            if (ewz[r] == null || ewz.length == 0)
+              continue;
+            sb.append(ewz[r]);
+            sb.append("\n");
+          }
+        }
+        reporter.addColumn(reporter.getDetailCell(sb.toString(), Element.ALIGN_LEFT));
+        reporter.addColumn(reporter.getDetailCell(u.getBetrag()));
+      }
+
+      reporter.addColumn(reporter.getDetailCell(null, Element.ALIGN_LEFT));
+      reporter.addColumn(reporter.getDetailCell(i18n.tr("Summe {0}",(String) node.getAttribute("name")), Element.ALIGN_LEFT));
+      reporter.addColumn(reporter.getDetailCell(null, Element.ALIGN_LEFT));
+      reporter.addColumn(reporter.getDetailCell((Double) node.getAttribute("betrag")));
+    }
+
+    
+    // Ggf. vorhandene Unter-Kategorien rendern.
+    List<UmsatzTreeNode> children = node.getSubGroups();
+    for (int i=0;i<children.size();++i)
+    {
+      renderNode(reporter,children.get(i));
     }
   }
 
@@ -204,6 +215,9 @@ public class UmsatzTreeCompleteExporter implements Exporter
 
 /*******************************************************************************
  * $Log: UmsatzTreeCompleteExporter.java,v $
+ * Revision 1.4  2010/03/05 15:24:53  willuhn
+ * @N BUGZILLA 686
+ *
  * Revision 1.3  2008/12/01 23:54:42  willuhn
  * @N BUGZILLA 188 Erweiterte Verwendungszwecke in Exports/Imports und Sammelauftraegen
  *

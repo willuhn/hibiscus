@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzTypDetail.java,v $
- * $Revision: 1.6 $
- * $Date: 2009/05/08 13:58:30 $
+ * $Revision: 1.7 $
+ * $Date: 2010/03/05 15:24:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -48,7 +48,7 @@ public class UmsatzTypDetail extends AbstractView
     group.addCheckbox(control.getCustomColor(),i18n.tr("Benutzerdefinierte Farbe"));
     group.addLabelPair(i18n.tr("Farbe"), control.getColor());
     
-//    group.addLabelPair(i18n.tr("Übergeordnete Kategorie"), control.getParent());
+    group.addLabelPair(i18n.tr("Übergeordnete Kategorie"), control.getParent());
     group.addLabelPair(i18n.tr("Nummer"), control.getNummer());
     group.addLabelPair(i18n.tr("Suchbegriff"), control.getPattern());
     group.addCheckbox(control.getRegex(),i18n.tr("Suchbegriff ist ein regulärer Ausdruck"));
@@ -72,6 +72,9 @@ public class UmsatzTypDetail extends AbstractView
 
 /**********************************************************************
  * $Log: UmsatzTypDetail.java,v $
+ * Revision 1.7  2010/03/05 15:24:53  willuhn
+ * @N BUGZILLA 686
+ *
  * Revision 1.6  2009/05/08 13:58:30  willuhn
  * @N Icons in allen Menus und auf allen Buttons
  * @N Fuer Umsatz-Kategorien koennen nun benutzerdefinierte Farben vergeben werden

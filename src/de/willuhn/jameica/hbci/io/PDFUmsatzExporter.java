@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/PDFUmsatzExporter.java,v $
- * $Revision: 1.11 $
- * $Date: 2008/12/01 23:54:42 $
+ * $Revision: 1.12 $
+ * $Date: 2010/03/05 15:24:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,6 @@
 package de.willuhn.jameica.hbci.io;
 
 import java.awt.Color;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -22,7 +21,6 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
 import com.lowagie.text.pdf.PdfPCell;
 
@@ -43,22 +41,12 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class PDFUmsatzExporter implements Exporter
 {
-  private I18N i18n = null;
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  /**
-   * ct.
-   */
-  public PDFUmsatzExporter()
-  {
-    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  }
-  
   /**
    * @see de.willuhn.jameica.hbci.io.Exporter#doExport(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
    */
-  public void doExport(Object[] objects, IOFormat format,
-      OutputStream os, ProgressMonitor monitor) throws RemoteException,
-      ApplicationException
+  public void doExport(Object[] objects, IOFormat format, OutputStream os, ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
     
     if (objects == null || objects.length == 0)
@@ -112,13 +100,13 @@ public class PDFUmsatzExporter implements Exporter
     {
       // Der Export
       String subTitle = i18n.tr("{0} - {1}", new String[]{startDate == null ? "" : HBCI.DATEFORMAT.format(startDate),endDate == null ? "" : HBCI.DATEFORMAT.format(endDate)});
-      reporter = new Reporter(os,monitor, "Kontoauszug", subTitle, objects.length  );
+      reporter = new Reporter(os,monitor,i18n.tr("Kontoauszug"), subTitle, objects.length  );
 
-      reporter.addHeaderColumn("Valuta / Buchungs- datum",Element.ALIGN_CENTER,30,  Color.LIGHT_GRAY);
-      reporter.addHeaderColumn("Empfänger/Einzahler",     Element.ALIGN_CENTER,100, Color.LIGHT_GRAY);
-      reporter.addHeaderColumn("Zahlungsgrund",           Element.ALIGN_CENTER,120, Color.LIGHT_GRAY);
-      reporter.addHeaderColumn("Betrag",                  Element.ALIGN_CENTER,30,  Color.LIGHT_GRAY);
-      reporter.addHeaderColumn("Saldo",                   Element.ALIGN_CENTER,30,  Color.LIGHT_GRAY);
+      reporter.addHeaderColumn(i18n.tr("Valuta / Buchungsdatum"), Element.ALIGN_CENTER, 30, Color.LIGHT_GRAY);
+      reporter.addHeaderColumn(i18n.tr("Empfänger/Einzahler"),    Element.ALIGN_CENTER,100, Color.LIGHT_GRAY);
+      reporter.addHeaderColumn(i18n.tr("Zahlungsgrund"),          Element.ALIGN_CENTER,120, Color.LIGHT_GRAY);
+      reporter.addHeaderColumn(i18n.tr("Betrag"),                 Element.ALIGN_CENTER, 30, Color.LIGHT_GRAY);
+      reporter.addHeaderColumn(i18n.tr("Saldo"),                  Element.ALIGN_CENTER, 30, Color.LIGHT_GRAY);
       reporter.createHeader();
 
       
@@ -197,17 +185,11 @@ public class PDFUmsatzExporter implements Exporter
       }
       if (monitor != null) monitor.setStatus(ProgressMonitor.STATUS_DONE);
     }
-    catch (DocumentException e)
+    catch (Exception e)
     {
       if (monitor != null) monitor.setStatus(ProgressMonitor.STATUS_ERROR);
       Logger.error("error while creating report",e);
-      throw new ApplicationException(i18n.tr("Fehler beim Erzeugen des Reports"),e);
-    }
-    catch (IOException e)
-    {
-      if (monitor != null) monitor.setStatus(ProgressMonitor.STATUS_ERROR);
-      Logger.error("error while creating report",e);
-      throw new ApplicationException(i18n.tr("Fehler beim Erzeugen des Reports"),e);
+      throw new ApplicationException(i18n.tr("Fehler beim Erzeugen der Auswertung"),e);
     }
     finally
     {
@@ -264,6 +246,9 @@ public class PDFUmsatzExporter implements Exporter
 
 /*********************************************************************
  * $Log: PDFUmsatzExporter.java,v $
+ * Revision 1.12  2010/03/05 15:24:53  willuhn
+ * @N BUGZILLA 686
+ *
  * Revision 1.11  2008/12/01 23:54:42  willuhn
  * @N BUGZILLA 188 Erweiterte Verwendungszwecke in Exports/Imports und Sammelauftraegen
  *

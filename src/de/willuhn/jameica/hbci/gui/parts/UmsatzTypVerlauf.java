@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTypVerlauf.java,v $
- * $Revision: 1.4 $
- * $Date: 2009/08/27 13:37:28 $
+ * $Revision: 1.5 $
+ * $Date: 2010/03/05 15:24:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -34,7 +34,7 @@ import de.willuhn.jameica.hbci.gui.chart.LineChart;
 import de.willuhn.jameica.hbci.gui.chart.LineChartData;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
-import de.willuhn.jameica.hbci.server.UmsatzGroup;
+import de.willuhn.jameica.hbci.server.UmsatzTreeNode;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -116,7 +116,7 @@ public class UmsatzTypVerlauf implements Part
 
     for (int i=0;i<this.data.size();++i)
     {
-      UmsatzGroup group = (UmsatzGroup) this.data.get(i); 
+      UmsatzTreeNode group = (UmsatzTreeNode) this.data.get(i); 
       ChartDataUmsatz cd = new ChartDataUmsatz(group);
       if (cd.hasData)
         this.chart.addData(cd);
@@ -136,7 +136,7 @@ public class UmsatzTypVerlauf implements Part
       this.chart.setTitle(i18n.tr("Umsätze der Kategorien im zeitlichen Verlauf"));
       for (int i=0;i<this.data.size();++i)
       {
-        UmsatzGroup group = (UmsatzGroup) this.data.get(i);
+        UmsatzTreeNode group = (UmsatzTreeNode) this.data.get(i);
         ChartDataUmsatz cd = new ChartDataUmsatz(group);
         if (cd.hasData)
           this.chart.addData(cd);
@@ -159,7 +159,7 @@ public class UmsatzTypVerlauf implements Part
    */
   private class ChartDataUmsatz implements LineChartData
   {
-    private UmsatzGroup group       = null;
+    private UmsatzTreeNode group       = null;
     private GenericIterator entries = null;
     private boolean hasData         = false;
     
@@ -168,7 +168,7 @@ public class UmsatzTypVerlauf implements Part
      * @param group
      * @throws RemoteException
      */
-    private ChartDataUmsatz(UmsatzGroup group) throws RemoteException
+    private ChartDataUmsatz(UmsatzTreeNode group) throws RemoteException
     {
       this.group = group;
       
@@ -194,7 +194,10 @@ public class UmsatzTypVerlauf implements Part
         umsaetze.begin();
         while (umsaetze.hasNext())
         {
-          Umsatz u = (Umsatz) umsaetze.next();
+          Object o = umsaetze.next();
+          if (!(o instanceof Umsatz))
+            continue;// TODO: Umsatz-Tree: Hier sollten rekursiv die Kinder gemalt werden
+          Umsatz u = (Umsatz) o;
           Date valuta = u.getValuta();
           if (valuta == null)
           {
@@ -349,6 +352,9 @@ public class UmsatzTypVerlauf implements Part
 
 /*********************************************************************
  * $Log: UmsatzTypVerlauf.java,v $
+ * Revision 1.5  2010/03/05 15:24:53  willuhn
+ * @N BUGZILLA 686
+ *
  * Revision 1.4  2009/08/27 13:37:28  willuhn
  * @N Der grafische Saldo-Verlauf zeigt nun zusaetzlich  eine Trendkurve an
  *

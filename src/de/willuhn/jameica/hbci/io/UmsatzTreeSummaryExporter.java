@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/UmsatzTreeSummaryExporter.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/05/02 12:40:18 $
+ * $Revision: 1.3 $
+ * $Date: 2010/03/05 15:24:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,13 +18,12 @@ import java.io.OutputStream;
 import java.rmi.RemoteException;
 import java.util.List;
 
-import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
 import com.lowagie.text.pdf.PdfPCell;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.server.UmsatzGroup;
+import de.willuhn.jameica.hbci.server.UmsatzTreeNode;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -37,16 +36,8 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class UmsatzTreeSummaryExporter implements Exporter
 {
-  private I18N i18n = null;
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  /**
-   * ct.
-   */
-  public UmsatzTreeSummaryExporter()
-  {
-    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  }
-  
   /**
    * @see de.willuhn.jameica.hbci.io.Exporter#doExport(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
    */
@@ -70,16 +61,16 @@ public class UmsatzTreeSummaryExporter implements Exporter
     Reporter reporter = null;
     try
     {
-      reporter = new Reporter(os, monitor, "Umsatzkategorien", subTitle, list.size());
+      reporter = new Reporter(os, monitor, i18n.tr("Umsatzkategorien"), subTitle, list.size());
 
-      reporter.addHeaderColumn("Kategorie", Element.ALIGN_CENTER, 130,Color.LIGHT_GRAY);
-      reporter.addHeaderColumn("Betrag", Element.ALIGN_CENTER, 30,Color.LIGHT_GRAY);
+      reporter.addHeaderColumn(i18n.tr("Kategorie"), Element.ALIGN_CENTER, 130,Color.LIGHT_GRAY);
+      reporter.addHeaderColumn(i18n.tr("Betrag"), Element.ALIGN_CENTER, 30,Color.LIGHT_GRAY);
       reporter.createHeader();
 
       // Iteration ueber die Kategorien
-      for (int i = 0; i < list.size(); i++)
+      for (int i=0;i<list.size(); ++i)
       {
-        UmsatzGroup ug = (UmsatzGroup) list.get(i);
+        UmsatzTreeNode ug = (UmsatzTreeNode) list.get(i);
 
         PdfPCell cell = reporter.getDetailCell((String) ug.getAttribute("name"), Element.ALIGN_LEFT);
         reporter.addColumn(cell);
@@ -89,11 +80,11 @@ public class UmsatzTreeSummaryExporter implements Exporter
       }
       if (monitor != null) monitor.setStatus(ProgressMonitor.STATUS_DONE);
     }
-    catch (DocumentException e)
+    catch (Exception e)
     {
       if (monitor != null) monitor.setStatus(ProgressMonitor.STATUS_ERROR);
       Logger.error("error while creating report", e);
-      throw new ApplicationException(i18n.tr("Fehler beim Erzeugen des Reports"), e);
+      throw new ApplicationException(i18n.tr("Fehler beim Erzeugen der Auswertung: {0}",e.getMessage()), e);
     }
     finally
     {
@@ -150,6 +141,9 @@ public class UmsatzTreeSummaryExporter implements Exporter
 
 /*******************************************************************************
  * $Log: UmsatzTreeSummaryExporter.java,v $
+ * Revision 1.3  2010/03/05 15:24:53  willuhn
+ * @N BUGZILLA 686
+ *
  * Revision 1.2  2007/05/02 12:40:18  willuhn
  * @C UmsatzTree*-Exporter nur fuer Objekte des Typs "UmsatzTree" anbieten
  * @C Start- und End-Datum in Kontoauszug speichern und an PDF-Export via Session uebergeben

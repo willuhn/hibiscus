@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzTypControl.java,v $
- * $Revision: 1.11 $
- * $Date: 2009/05/08 13:58:30 $
+ * $Revision: 1.12 $
+ * $Date: 2010/03/05 15:24:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,19 +23,18 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.ColorInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.action.UmsatzTypNew;
-import de.willuhn.jameica.hbci.gui.parts.UmsatzTypList;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.hbci.server.UmsatzTypUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -55,14 +54,12 @@ public class UmsatzTypControl extends AbstractControl
 
   private UmsatzTyp ut          = null;
 
-  private Part list             = null;
-
   private TextInput name        = null;
   private TextInput nummer      = null;
   private TextInput pattern     = null;
   private CheckboxInput regex   = null;
   private SelectInput art       = null;
-//  private SelectInput parent    = null;
+  private SelectInput parent    = null;
   
   private ColorInput color          = null;
   private CheckboxInput customColor = null;
@@ -74,18 +71,6 @@ public class UmsatzTypControl extends AbstractControl
   {
     super(view);
     this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  }
-  
-  /**
-   * Liefert eine Liste der existierenden Umsatz-Kategorien.
-   * @return Liste der Umsatz-Kategorien.
-   * @throws RemoteException
-   */
-  public Part getUmsatzTypListe() throws RemoteException
-  {
-    if (this.list == null)
-      this.list = new UmsatzTypList(new UmsatzTypNew());
-    return this.list;
   }
   
   /**
@@ -266,32 +251,32 @@ public class UmsatzTypControl extends AbstractControl
     return this.art;
   }
   
-//  /**
-//   * Liefert eine Auswahlbox fuer die Eltern-Kategorie.
-//   * @return Auswahlbox.
-//   * @throws RemoteException
-//   */
-//  public SelectInput getParent() throws RemoteException
-//  {
-//    if (this.parent == null)
-//    {
-//      UmsatzTyp current = getUmsatzTyp();
-//      
-//      GenericIterator possibleParents = null;
-//      if (current.isNewObject())
-//      {
-//        possibleParents = Settings.getDBService().createList(UmsatzTyp.class);
-//        ((DBIterator)possibleParents).setOrder("order by name");
-//      }
-//      else
-//        possibleParents = current.getPossibleParents();
-//
-//      this.parent = new SelectInput(possibleParents,current.getParent());
-//      this.parent.setAttribute("name");
-//      this.parent.setPleaseChoose(i18n.tr("<Keine>"));
-//    }
-//    return this.parent;
-//  }
+  /**
+   * Liefert eine Auswahlbox fuer die Eltern-Kategorie.
+   * @return Auswahlbox.
+   * @throws RemoteException
+   */
+  public SelectInput getParent() throws RemoteException
+  {
+    if (this.parent == null)
+    {
+      UmsatzTyp current = getUmsatzTyp();
+      
+      GenericIterator possibleParents = null;
+      if (current.isNewObject())
+      {
+        possibleParents = Settings.getDBService().createList(UmsatzTyp.class);
+        ((DBIterator)possibleParents).setOrder("order by name");
+      }
+      else
+        possibleParents = current.getPossibleParents();
+
+      this.parent = new SelectInput(possibleParents,current.getParent());
+      this.parent.setAttribute("name");
+      this.parent.setPleaseChoose(i18n.tr("<Keine>"));
+    }
+    return this.parent;
+  }
 
   /**
    * Speichert die Einstellungen.
@@ -307,7 +292,7 @@ public class UmsatzTypControl extends AbstractControl
       ut.setNummer((String)getNummer().getValue());
       ut.setPattern((String)getPattern().getValue());
       ut.setRegex(((Boolean)getRegex().getValue()).booleanValue());
-//      ut.setParent((UmsatzTyp)getParent().getValue());
+      ut.setParent((UmsatzTyp)getParent().getValue());
       
       boolean b = ((Boolean)getCustomColor().getValue()).booleanValue();
       ut.setCustomColor(b);
@@ -414,6 +399,9 @@ public class UmsatzTypControl extends AbstractControl
 
 /*********************************************************************
  * $Log: UmsatzTypControl.java,v $
+ * Revision 1.12  2010/03/05 15:24:53  willuhn
+ * @N BUGZILLA 686
+ *
  * Revision 1.11  2009/05/08 13:58:30  willuhn
  * @N Icons in allen Menus und auf allen Buttons
  * @N Fuer Umsatz-Kategorien koennen nun benutzerdefinierte Farben vergeben werden

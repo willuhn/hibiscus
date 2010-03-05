@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzTypTreeControl.java,v $
- * $Revision: 1.11 $
- * $Date: 2009/11/06 09:50:31 $
+ * $Revision: 1.12 $
+ * $Date: 2010/03/05 15:24:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,8 +19,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.eclipse.swt.widgets.Composite;
-
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
@@ -29,16 +27,14 @@ import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.parts.TreePart;
-import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
-import de.willuhn.jameica.hbci.gui.parts.UmsatzTypTree;
+import de.willuhn.jameica.hbci.gui.parts.UmsatzTree;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzTypVerlauf;
-import de.willuhn.jameica.hbci.io.UmsatzTree;
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.server.UmsatzGroup;
+import de.willuhn.jameica.hbci.server.UmsatzTreeNode;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
@@ -56,7 +52,7 @@ public class UmsatzTypTreeControl extends AbstractControl
   private DateInput end                     = null;
   private I18N i18n                         = null;
   
-  private UmsatzTypTree tree                = null;
+  private UmsatzTree tree                = null;
   private UmsatzTypVerlauf chart            = null;
   
   private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(UmsatzTypTreeControl.class);
@@ -159,9 +155,9 @@ public class UmsatzTypTreeControl extends AbstractControl
    * @return Umsatztree.
    * @throws RemoteException
    */
-  public UmsatzTree getUmsatzTree() throws RemoteException
+  public de.willuhn.jameica.hbci.io.UmsatzTree getUmsatzTree() throws RemoteException
   {
-    UmsatzTree tree = new UmsatzTree();
+    de.willuhn.jameica.hbci.io.UmsatzTree tree = new de.willuhn.jameica.hbci.io.UmsatzTree();
     tree.setEnd((Date) getEnd().getValue());
     tree.setStart((Date) getStart().getValue());
     tree.setKonto((Konto) getKontoAuswahl().getValue());
@@ -180,6 +176,18 @@ public class UmsatzTypTreeControl extends AbstractControl
     if (this.tree != null)
       return this.tree;
     
+    this.tree = new UmsatzTree(getUmsaetze());
+    this.tree.setExpanded(settings.getBoolean("expanded",false));
+    return this.tree;
+  }
+  
+  /**
+   * Liefert die anzuzeigenden Umsaetze.
+   * @return die anzuzeigenden Umsaetze.
+   * @throws RemoteException
+   */
+  private DBIterator getUmsaetze() throws RemoteException
+  {
     Konto konto = (Konto) (Konto) getKontoAuswahl().getValue();
 
     Date von = (Date) getStart().getValue();
@@ -188,18 +196,13 @@ public class UmsatzTypTreeControl extends AbstractControl
     settings.setAttribute("laststart", von == null ? null : HBCI.DATEFORMAT.format(von));
     settings.setAttribute("lastend",   bis == null ? null : HBCI.DATEFORMAT.format(bis));
 
-    ////////////////////////////////////////////////////////////////
-    // wir laden erstmal alle relevanten Umsaetze.
     DBIterator umsaetze = UmsatzUtil.getUmsaetze();
     if (konto != null)
       umsaetze.addFilter("konto_id = " + konto.getID());
     if (von != null) umsaetze.addFilter("datum >= ?", new Object[]{new java.sql.Date(HBCIProperties.startOfDay(von).getTime())});
     if (bis != null) umsaetze.addFilter("datum <= ?", new Object[]{new java.sql.Date(HBCIProperties.endOfDay(bis).getTime())});
-    ////////////////////////////////////////////////////////////////
     
-    this.tree = new UmsatzTypTree(umsaetze);
-    this.tree.setExpanded(settings.getBoolean("expanded",false));
-    return this.tree;
+    return umsaetze;
   }
   
   /**
@@ -229,7 +232,7 @@ public class UmsatzTypTreeControl extends AbstractControl
       List items = tree.getItems();
       for (int i=0;i<items.size();++i)
       {
-        tree.setExpanded((GenericObject)items.get(i),current);
+        tree.setExpanded((GenericObject)items.get(i),current,true);
       }
       settings.setAttribute("expanded",current);
     }
@@ -242,22 +245,13 @@ public class UmsatzTypTreeControl extends AbstractControl
   
   /**
    * Aktualisiert den Tree.
-   * Die Funktion erwartet das Composite, in dem der Tree gezeichnet werden
-   * soll, da TreePart das Entfernen von Elementen noch nicht unterstuetzt.
-   * @param comp
    */
-  public void handleReload(Composite comp)
+  public void handleReload()
   {
-    if (comp == null || comp.isDisposed())
-      return;
-    
     try
     {
-      // Tree wegwerfen und neu zeichnen
-      SWTUtil.disposeChildren(comp);
-      this.tree = null;
-      getTree().paint(comp);
-      comp.layout(true);
+      getTree().setList(getUmsaetze());
+      getTree().setExpanded(settings.getBoolean("expanded",false));
       handleRefreshChart();
     }
     catch (RemoteException re)
@@ -279,11 +273,11 @@ public class UmsatzTypTreeControl extends AbstractControl
 
       List l = null;
       
-      if (selection != null && (selection instanceof UmsatzGroup[])) // Mehrere Kategorien markiert?
+      if (selection != null && (selection instanceof UmsatzTreeNode[])) // Mehrere Kategorien markiert?
       {
-        l = Arrays.asList((UmsatzGroup[])selection);
+        l = Arrays.asList((UmsatzTreeNode[])selection);
       }
-      else if (selection != null && (selection instanceof UmsatzGroup)) // Eine Kategorie markiert?
+      else if (selection != null && (selection instanceof UmsatzTreeNode)) // Eine Kategorie markiert?
       {
         l = new ArrayList();
         l.add(selection);
@@ -306,6 +300,9 @@ public class UmsatzTypTreeControl extends AbstractControl
 
 /*******************************************************************************
  * $Log: UmsatzTypTreeControl.java,v $
+ * Revision 1.12  2010/03/05 15:24:53  willuhn
+ * @N BUGZILLA 686
+ *
  * Revision 1.11  2009/11/06 09:50:31  willuhn
  * @B BUGZILLA 779
  *

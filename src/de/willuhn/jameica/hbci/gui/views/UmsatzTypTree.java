@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzTypTree.java,v $
- * $Revision: 1.11 $
- * $Date: 2009/10/05 23:08:40 $
+ * $Revision: 1.12 $
+ * $Date: 2010/03/05 15:24:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,8 +19,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TabFolder;
 
 import de.willuhn.jameica.gui.AbstractView;
@@ -108,24 +106,19 @@ public class UmsatzTypTree extends AbstractView
     folder.setLayoutData(new GridData(GridData.FILL_BOTH));
     folder.setBackground(Color.BACKGROUND.getSWTColor());
     
-    TabGroup table = new TabGroup(folder,i18n.tr("Tabellarisch"));
-    
-    // Hilfs-Composite, damit wir dessen Inhalt sauber disposen koennen.
-    final Composite comp = new Composite(table.getComposite(), SWT.NONE);
-    comp.setLayoutData(new GridData(GridData.FILL_BOTH));
-    comp.setLayout(new GridLayout());
+    TabGroup tg1 = new TabGroup(folder,i18n.tr("Tabellarisch"));
     TreePart tree = control.getTree();
-    tree.paint(comp);
+    tree.paint(tg1.getComposite());
     
-    final TabGroup comp2 = new TabGroup(folder,i18n.tr("Im Verlauf"));
+    final TabGroup tg2 = new TabGroup(folder,i18n.tr("Im Verlauf"));
     UmsatzTypVerlauf chart = control.getChart();
-    chart.paint(comp2.getComposite());
+    chart.paint(tg2.getComposite());
 
     buttons.addButton(i18n.tr("Aktualisieren"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
-        control.handleReload(comp);
+        control.handleReload();
       }
     }, null, true, "view-refresh.png");
   
@@ -134,6 +127,9 @@ public class UmsatzTypTree extends AbstractView
 }
 /*******************************************************************************
  * $Log: UmsatzTypTree.java,v $
+ * Revision 1.12  2010/03/05 15:24:53  willuhn
+ * @N BUGZILLA 686
+ *
  * Revision 1.11  2009/10/05 23:08:40  willuhn
  * @N BUGZILLA 629 - wenn ein oder mehrere Kategorien markiert sind, werden die Charts nur fuer diese gezeichnet
  *

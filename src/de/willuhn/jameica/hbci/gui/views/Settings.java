@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Settings.java,v $
- * $Revision: 1.47 $
- * $Date: 2009/05/08 13:58:30 $
+ * $Revision: 1.48 $
+ * $Date: 2010/03/05 15:24:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -97,7 +97,7 @@ public class Settings extends AbstractView {
 
     // Umsatz-Kategorien
     TabGroup umsatztypes = new TabGroup(getTabFolder(),i18n.tr("Umsatz-Kategorien"));
-    control.getUmsatzTypListe().paint(umsatztypes.getComposite()); // BUGZILLA 410
+    control.getUmsatzTypTree().paint(umsatztypes.getComposite()); // BUGZILLA 410
     ButtonArea umsatzButtons = umsatztypes.createButtonArea(1);
     umsatzButtons.addButton(i18n.tr("Neue Umsatz-Kategorie..."),new UmsatzTypNew(),null,false,"text-x-generic.png");
 
@@ -146,6 +146,9 @@ public class Settings extends AbstractView {
 
 /**********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.48  2010/03/05 15:24:53  willuhn
+ * @N BUGZILLA 686
+ *
  * Revision 1.47  2009/05/08 13:58:30  willuhn
  * @N Icons in allen Menus und auf allen Buttons
  * @N Fuer Umsatz-Kategorien koennen nun benutzerdefinierte Farben vergeben werden
