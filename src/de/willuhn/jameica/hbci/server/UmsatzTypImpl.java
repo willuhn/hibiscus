@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.51 $
- * $Date: 2010/03/05 17:54:13 $
+ * $Revision: 1.52 $
+ * $Date: 2010/03/05 20:16:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,6 +23,7 @@ import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.db.AbstractDBObjectNode;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
@@ -575,7 +576,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
   public GenericIterator getPossibleParents() throws RemoteException
   {
     DBIterator list = (DBIterator) super.getPossibleParents();
-    list.setOrder("order by name");
+    list.setOrder("order by nummer, name");
     return list;
   }
 
@@ -585,7 +586,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
   public GenericIterator getTopLevelList() throws RemoteException
   {
     DBIterator list = (DBIterator) super.getTopLevelList();
-    list.setOrder("order by name");
+    list.setOrder("order by nummer, name");
     return list;
   }
 
@@ -611,9 +612,13 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
    */
   public GenericIterator getChildren() throws RemoteException
   {
-    DBIterator i = (DBIterator) super.getChildren();
-    i.setOrder("order by nummer,name");
-    return i;
+    GenericIterator i = super.getChildren();
+    if (this.isNewObject() || !(i instanceof DBObject))
+      return i;
+    
+    DBIterator di = (DBIterator) i;
+    di.setOrder("order by nummer,name");
+    return di;
   }
   
   
@@ -621,6 +626,9 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
 
 /*******************************************************************************
  * $Log: UmsatzTypImpl.java,v $
+ * Revision 1.52  2010/03/05 20:16:44  willuhn
+ * @B ClassCastException - siehe BUGZILLA 686
+ *
  * Revision 1.51  2010/03/05 17:54:13  willuhn
  * @C Umsatz-Kategorien nach Nummer und anschliessend nach Name sortieren
  *
