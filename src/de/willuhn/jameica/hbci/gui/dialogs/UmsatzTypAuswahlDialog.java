@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/UmsatzTypAuswahlDialog.java,v $
- * $Revision: 1.11 $
- * $Date: 2010/03/05 18:29:39 $
+ * $Revision: 1.12 $
+ * $Date: 2010/03/05 23:29:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,9 +23,9 @@ import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.input.UmsatzTypInput;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
+import de.willuhn.jameica.hbci.server.UmsatzTypUtil;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.util.ApplicationException;
@@ -104,8 +104,7 @@ public class UmsatzTypAuswahlDialog extends AbstractDialog
     
     group.addText(i18n.tr("Bitte wählen Sie die zu verwendende Kategorie aus."),true);
 
-    DBIterator list = Settings.getDBService().createList(UmsatzTyp.class);
-    list.setOrder("ORDER BY nummer,name");
+    DBIterator list = UmsatzTypUtil.getAll();
     
     if (this.choosen != null)
       this.input = new UmsatzTypInput(list,this.choosen);
@@ -139,6 +138,9 @@ public class UmsatzTypAuswahlDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: UmsatzTypAuswahlDialog.java,v $
+ * Revision 1.12  2010/03/05 23:29:18  willuhn
+ * @N Statische Basis-Funktion zum Laden der Kategorien in der richtigen Reihenfolge
+ *
  * Revision 1.11  2010/03/05 18:29:39  willuhn
  * @B Einrueckung nochmal entfernt - das kann dazu fuehren, dass Kinder falsch einsortiert werden (ein einfaches order by parent_id reicht nicht)
  *

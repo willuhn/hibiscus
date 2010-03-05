@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailControl.java,v $
- * $Revision: 1.39 $
- * $Date: 2009/02/24 22:42:33 $
+ * $Revision: 1.40 $
+ * $Date: 2010/03/05 23:29:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -40,6 +40,7 @@ import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
+import de.willuhn.jameica.hbci.server.UmsatzTypUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -181,8 +182,7 @@ public class UmsatzDetailControl extends AbstractControl {
   {
     if (this.umsatzTyp != null)
       return this.umsatzTyp;
-    DBIterator list = Settings.getDBService().createList(UmsatzTyp.class);
-    list.setOrder("ORDER BY nummer,name");
+    DBIterator list = UmsatzTypUtil.getAll();
     Umsatz u = getUmsatz();
     UmsatzTyp ut = u == null ? null : u.getUmsatzTyp();
     if (ut == null)
@@ -419,6 +419,9 @@ public class UmsatzDetailControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzDetailControl.java,v $
+ * Revision 1.40  2010/03/05 23:29:18  willuhn
+ * @N Statische Basis-Funktion zum Laden der Kategorien in der richtigen Reihenfolge
+ *
  * Revision 1.39  2009/02/24 22:42:33  willuhn
  * @N Da vorgemerkte Umsaetze jetzt komplett geloescht werden, wenn sie neu abgerufen werden, duerfen sie auch nicht mehr geaendert werden (also auch keine Kategorie und kein Kommentar)
  *
