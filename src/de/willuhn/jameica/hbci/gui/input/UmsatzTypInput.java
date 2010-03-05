@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/UmsatzTypInput.java,v $
- * $Revision: 1.7 $
- * $Date: 2010/03/05 18:07:26 $
+ * $Revision: 1.8 $
+ * $Date: 2010/03/05 18:29:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -111,20 +111,23 @@ public class UmsatzTypInput extends SelectInput
   protected String format(Object bean)
   {
     String name = super.format(bean);
-    try
-    {
-      UmsatzTyp t = (UmsatzTyp) bean;
-      int depth = t.getPath().size();
-      for (int i=0;i<depth;++i)
-      {
-        name = "    " + name;
-      }
-    }
-    catch (Exception e)
-    {
-      Logger.error("unable to indent category name",e);
-    }
     return name;
+    
+// TODO: Einrueckung
+//    try
+//    {
+//      UmsatzTyp t = (UmsatzTyp) bean;
+//      int depth = t.getPath().size();
+//      for (int i=0;i<depth;++i)
+//      {
+//        name = "    " + name;
+//      }
+//    }
+//    catch (Exception e)
+//    {
+//      Logger.error("unable to indent category name",e);
+//    }
+//    return name;
   }
 
   /**
@@ -155,6 +158,9 @@ public class UmsatzTypInput extends SelectInput
 
 /*********************************************************************
  * $Log: UmsatzTypInput.java,v $
+ * Revision 1.8  2010/03/05 18:29:26  willuhn
+ * @B Einrueckung nochmal entfernt - das kann dazu fuehren, dass Kinder falsch einsortiert werden (ein einfaches order by parent_id reicht nicht)
+ *
  * Revision 1.7  2010/03/05 18:07:26  willuhn
  * @N Unterkategorien in Selectbox einruecken
  *
