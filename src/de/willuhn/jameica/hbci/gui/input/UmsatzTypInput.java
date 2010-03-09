@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/UmsatzTypInput.java,v $
- * $Revision: 1.12 $
- * $Date: 2010/03/06 00:03:23 $
+ * $Revision: 1.13 $
+ * $Date: 2010/03/09 12:34:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,11 +14,14 @@
 package de.willuhn.jameica.hbci.gui.input;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.hbci.HBCI;
@@ -71,29 +74,65 @@ public class UmsatzTypInput extends SelectInput
    * @return korrigierte Liste.
    * @throws RemoteException
    */
-  private static DBIterator init(int typ) throws RemoteException
+  private static List init(int typ) throws RemoteException
   {
-    // TODO: Die Selectbox zeigt derzeit eine platte Liste aller Kategorien an.
-    // Der User kann hier die Ordner-Struktur der Kategorien nicht erkennen.
-    // Statt dem DBIterator sollte zuerst nur die Liste der Root-Elemente geladen
-    // werden (UmsatzTypUtil.getRootElements()). Anschliessend sollte 
-    // ueber jedes Element iteriert und rekursiv die Kinder angehaengt werden.
-    // Dann sind sie erstmal in der richtigen Reihenfolge. Anschliessend sollte
-    // die format(Object)-Funktion hier ueberschrieben werden, um abhaengig von
-    // der Pfad-Tiefe einzuruecken.
-    //
-    // Die ganze Sache wuerde aber etliche SQL-Statements ausloesen. Das waere
-    // alles andere als performant. Stattdessen koennte man im UmsatzTypAuswahlDialog
-    // auch direkt den Tree anzeigen. Dann bleibt aber immer noch die Kategorie-
-    // Auswahl in der Umsatz-Detail-Ansicht offen. Dort kann der Tree nicht
-    // eingeblendet werden.
+    List l = new ArrayList();
+    DBIterator list = UmsatzTypUtil.getRootElements();
+    while (list.hasNext())
+    {
+      add((UmsatzTyp)list.next(),l,typ);
+    }
+    return l;
+  }
+  
+  /**
+   * @param t
+   * @param l
+   * @param typ
+   * @throws RemoteException
+   */
+  private static void add(UmsatzTyp t, List l, int typ) throws RemoteException
+  {
+    // Wir filtern hier zwei Faelle:
     
-    DBIterator list = UmsatzTypUtil.getAll();
-    if (typ != UmsatzTyp.TYP_EGAL)
-      list.addFilter("umsatztyp = " + typ + " or umsatztyp = " + UmsatzTyp.TYP_EGAL + " or umsatztyp is null");
-    return list;
+    // a) typ == TYP_EGAL -> es wird nichts gefiltert
+    // b) typ != TYP_EGAL -> es werden nur die angezeigt, bei denen TYP_EGAL oder Typ passt
+    
+    int ti = t.getTyp();
+    if (typ == UmsatzTyp.TYP_EGAL || (ti == UmsatzTyp.TYP_EGAL || ti == typ))
+    {
+      l.add(t);
+      
+      GenericIterator children = t.getChildren();
+      while (children.hasNext())
+      {
+        add((UmsatzTyp) children.next(),l,typ);
+      }
+    }
   }
 
+  /**
+   * @see de.willuhn.jameica.gui.input.SelectInput#format(java.lang.Object)
+   */
+  protected String format(Object bean)
+  {
+    String name = super.format(bean);
+    try
+    {
+      UmsatzTyp t = (UmsatzTyp) bean;
+      int depth = t.getPath().size();
+      for (int i=0;i<depth;++i)
+      {
+        name = "    " + name;
+      }
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to indent category name",e);
+    }
+    return name;
+  }
+  
   /**
    * Aktualisiert den Kommentar.
    */
@@ -122,6 +161,9 @@ public class UmsatzTypInput extends SelectInput
 
 /*********************************************************************
  * $Log: UmsatzTypInput.java,v $
+ * Revision 1.13  2010/03/09 12:34:03  willuhn
+ * @N Jetzt mit korrekten Einrueckungen
+ *
  * Revision 1.12  2010/03/06 00:03:23  willuhn
  * *** empty log message ***
  *
