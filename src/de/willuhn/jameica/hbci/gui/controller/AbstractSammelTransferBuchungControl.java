@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractSammelTransferBuchungControl.java,v $
- * $Revision: 1.18 $
- * $Date: 2009/10/20 23:12:58 $
+ * $Revision: 1.19 $
+ * $Date: 2010/03/10 22:14:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -184,7 +184,8 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
     zweck2.setButtonText(i18n.tr(buttonText,String.valueOf(getBuchung().getWeitereVerwendungszwecke().length)));
     zweck2.setMaxLength(HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH);
     zweck2.setValidChars(HBCIProperties.HBCI_DTAUS_VALIDCHARS);
-    zweck2.setEnabled(!getBuchung().getSammelTransfer().ausgefuehrt());
+    if (getBuchung().getSammelTransfer().ausgefuehrt())
+      zweck2.disableClientControl();
     return zweck2;
   }
   
@@ -314,6 +315,9 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferBuchungControl.java,v $
+ * Revision 1.19  2010/03/10 22:14:12  willuhn
+ * @B Die erweiterten Verwendungszwecke waren nicht mehr erreichbar, wenn der Sammelauftrag ausgefuehrt war - sie Tom's Mail vom 10.03.2010
+ *
  * Revision 1.18  2009/10/20 23:12:58  willuhn
  * @N Support fuer SEPA-Ueberweisungen
  * @N Konten um IBAN und BIC erweitert
