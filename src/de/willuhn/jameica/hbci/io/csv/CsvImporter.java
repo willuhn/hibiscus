@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/csv/CsvImporter.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/03/16 00:44:18 $
+ * $Revision: 1.2 $
+ * $Date: 2010/03/16 11:14:53 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -48,7 +48,6 @@ import de.willuhn.util.ProgressMonitor;
 public class CsvImporter implements Importer
 {
   private static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  private List<Format> formats = null;
 
   /**
    * @see de.willuhn.jameica.hbci.io.Importer#doImport(java.lang.Object, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor)
@@ -219,51 +218,38 @@ public class CsvImporter implements Importer
   public IOFormat[] getIOFormats(Class objectType)
   {
     // Wir checken, fuer welche Datentypen wir einen CSV-Treiber haben
-    if (this.formats == null)
+    List<IOFormat> formats = new ArrayList<IOFormat>();
+    try
     {
-      this.formats = new ArrayList<Format>();
-      try
+      ClassFinder finder = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getClassLoader().getClassFinder();
+      Class<Format>[] classes = finder.findImplementors(Format.class);
+      for (Class<Format> c:classes)
       {
-        ClassFinder finder = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getClassLoader().getClassFinder();
-        Class<Format>[] classes = finder.findImplementors(Format.class);
-        for (Class<Format> c:classes)
+        try
         {
-          try
+          Format f = c.newInstance();
+          Class type = f.getType();
+          if (type == null)
           {
-            Format f = c.newInstance();
-            Class type = f.getType();
-            if (type == null)
-            {
-              Logger.warn("csv format " + c.getName() + " supports no type, skipping");
-              continue;
-            }
-            this.formats.add(f);
+            Logger.warn("csv format " + c.getName() + " supports no type, skipping");
+            continue;
           }
-          catch (Exception e)
-          {
-            Logger.error("unable to load " + c.getName() + ", skipping",e);
-          }
+          
+          if (type.equals(objectType))
+            formats.add(new MyIOFormat(f));
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to load " + c.getName() + ", skipping",e);
         }
       }
-      catch (ClassNotFoundException e2)
-      {
-        Logger.error("no csv formats found");
-      }
     }
-    
-    // OK, wir haben die Liste der Treiber. Jetzt schauen wir, ob wir
-    // fuer den angefragten Typ einen passenden haben.
-    for (Format f:this.formats)
+    catch (ClassNotFoundException e2)
     {
-      Class c = f.getType();
-      if (c.equals(objectType))
-      {
-        return new IOFormat[]{new MyIOFormat(f)};
-      }
+      Logger.error("no csv formats found");
     }
-    
-    // Ne, nichts passendes gefunden
-    return null;
+
+    return formats.toArray(new IOFormat[formats.size()]);
   }
   
   /**
@@ -345,6 +331,9 @@ public class CsvImporter implements Importer
 
 /**********************************************************************
  * $Log: CsvImporter.java,v $
+ * Revision 1.2  2010/03/16 11:14:53  willuhn
+ * @B Format-Implementierungen nicht cachen
+ *
  * Revision 1.1  2010/03/16 00:44:18  willuhn
  * @N Komplettes Redesign des CSV-Imports.
  *   - Kann nun erheblich einfacher auch fuer andere Datentypen (z.Bsp.Ueberweisungen) verwendet werden
