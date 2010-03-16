@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.69 $
- * $Date: 2010/01/18 22:59:05 $
+ * $Revision: 1.70 $
+ * $Date: 2010/03/16 00:44:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,7 +13,6 @@
 package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
-import java.text.ParseException;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -577,59 +576,6 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setGenericAttribute(java.lang.String, java.lang.String)
-   */
-  public void setGenericAttribute(String name, String value) throws RemoteException, ApplicationException
-  {
-    if (name == null)
-      return;
-    
-    if (value == null)
-    {
-      super.setAttribute(name,value);
-      return;
-    }
-
-    try
-    {
-      if ("betrag".equals(name))
-      {
-        setBetrag(HBCI.DECIMALFORMAT.parse(value).doubleValue());
-        return;
-      }
-      if ("saldo".equals(name))
-      {
-        setSaldo(HBCI.DECIMALFORMAT.parse(value).doubleValue());
-        return;
-      }
-    }
-    catch (ParseException e)
-    {
-      throw new ApplicationException(i18n.tr("Betrag \"{0}\" besitzt nicht das Format 000,00",value));
-    }
-    
-    try
-    {
-      if ("datum".equals(name))
-      {
-        setDatum(HBCI.DATEFORMAT.parse(value));
-        return;
-      }
-      if ("valuta".equals(name))
-      {
-        setValuta(HBCI.DATEFORMAT.parse(value));
-        return;
-      }
-    }
-    catch (ParseException e)
-    {
-      throw new ApplicationException(i18n.tr("Datum \"{0}\" besitzt nicht das Format TT.MM.JJJJ",value));
-    }
-    
-    super.setAttribute(name,value);
-  }
-
-  /**
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#getUmsatzTyp()
    */
   public UmsatzTyp getUmsatzTyp() throws RemoteException
@@ -747,6 +693,16 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.70  2010/03/16 00:44:18  willuhn
+ * @N Komplettes Redesign des CSV-Imports.
+ *   - Kann nun erheblich einfacher auch fuer andere Datentypen (z.Bsp.Ueberweisungen) verwendet werden
+ *   - Fehlertoleranter
+ *   - Mehrfachzuordnung von Spalten (z.Bsp. bei erweitertem Verwendungszweck) moeglich
+ *   - modulare Deserialisierung der Werte
+ *   - CSV-Exports von Hibiscus koennen nun 1:1 auch wieder importiert werden (Import-Preset identisch mit Export-Format)
+ *   - Import-Preset wird nun im XML-Format nach ~/.jameica/hibiscus/csv serialisiert. Damit wird es kuenftig moeglich sein,
+ *     CSV-Import-Profile vorzukonfigurieren und anschliessend zu exportieren, um sie mit anderen Usern teilen zu koennen
+ *
  * Revision 1.69  2010/01/18 22:59:05  willuhn
  * @B BUGZILLA 808
  *

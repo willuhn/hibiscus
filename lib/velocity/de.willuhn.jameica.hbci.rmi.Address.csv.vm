@@ -1,4 +1,4 @@
-Kontonummer;BLZ;Name;Kommentar
+Name;Kontonummer;BLZ;IBAN;BIC;Kommentar
 #foreach($adresse in $objects)
-"$!{adresse.Kontonummer}";"$!{adresse.Blz}";"$!{adresse.Name}";"$!{adresse.Kommentar}"
+"$!{adresse.name}";"$!{adresse.kontonummer}";"$!{adresse.blz}";"$!{adresse.iban}";"$!{adresse.bic}";"$!{adresse.kommentar}"
 #end

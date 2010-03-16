@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/UmsatzImport.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/04/20 08:44:21 $
+ * $Revision: 1.3 $
+ * $Date: 2010/03/16 00:44:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,8 +11,6 @@
  *
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.action;
-
-import java.rmi.RemoteException;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -42,21 +40,7 @@ public class UmsatzImport implements Action
   {
 		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-    // Falls der Context ein Umsatz ist, holen wir uns das Konto dazu
-    if (context != null && (context instanceof Umsatz))
-    {
-      try
-      {
-        context = ((Umsatz) context).getKonto();
-      }
-      catch (RemoteException e)
-      {
-        Logger.error("unable to load konto from umsatz",e);
-        // muessen wir nicht werfen
-      }
-    }
-
-    // Nochmal der Check, ob das wirklich ein Konto ist
+		// Check, ob das wirklich ein Konto ist
     if (context != null && !(context instanceof Konto))
       context = null;
 
@@ -93,6 +77,16 @@ public class UmsatzImport implements Action
 
 /**********************************************************************
  * $Log: UmsatzImport.java,v $
+ * Revision 1.3  2010/03/16 00:44:18  willuhn
+ * @N Komplettes Redesign des CSV-Imports.
+ *   - Kann nun erheblich einfacher auch fuer andere Datentypen (z.Bsp.Ueberweisungen) verwendet werden
+ *   - Fehlertoleranter
+ *   - Mehrfachzuordnung von Spalten (z.Bsp. bei erweitertem Verwendungszweck) moeglich
+ *   - modulare Deserialisierung der Werte
+ *   - CSV-Exports von Hibiscus koennen nun 1:1 auch wieder importiert werden (Import-Preset identisch mit Export-Format)
+ *   - Import-Preset wird nun im XML-Format nach ~/.jameica/hibiscus/csv serialisiert. Damit wird es kuenftig moeglich sein,
+ *     CSV-Import-Profile vorzukonfigurieren und anschliessend zu exportieren, um sie mit anderen Usern teilen zu koennen
+ *
  * Revision 1.2  2006/04/20 08:44:21  willuhn
  * @C s/Childs/Children/
  *

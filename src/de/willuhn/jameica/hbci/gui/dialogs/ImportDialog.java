@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/ImportDialog.java,v $
- * $Revision: 1.10 $
- * $Date: 2006/08/07 21:51:43 $
+ * $Revision: 1.11 $
+ * $Date: 2010/03/16 00:44:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -171,8 +171,8 @@ public class ImportDialog extends AbstractDialog
         }
         catch (ApplicationException ae)
         {
-          monitor.setStatusText(ae.getMessage());
           monitor.setStatus(ProgressMonitor.STATUS_ERROR);
+          monitor.setStatusText(ae.getMessage());
           GUI.getStatusBar().setErrorText(ae.getMessage());
           throw ae;
         }
@@ -311,6 +311,16 @@ public class ImportDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: ImportDialog.java,v $
+ * Revision 1.11  2010/03/16 00:44:18  willuhn
+ * @N Komplettes Redesign des CSV-Imports.
+ *   - Kann nun erheblich einfacher auch fuer andere Datentypen (z.Bsp.Ueberweisungen) verwendet werden
+ *   - Fehlertoleranter
+ *   - Mehrfachzuordnung von Spalten (z.Bsp. bei erweitertem Verwendungszweck) moeglich
+ *   - modulare Deserialisierung der Werte
+ *   - CSV-Exports von Hibiscus koennen nun 1:1 auch wieder importiert werden (Import-Preset identisch mit Export-Format)
+ *   - Import-Preset wird nun im XML-Format nach ~/.jameica/hibiscus/csv serialisiert. Damit wird es kuenftig moeglich sein,
+ *     CSV-Import-Profile vorzukonfigurieren und anschliessend zu exportieren, um sie mit anderen Usern teilen zu koennen
+ *
  * Revision 1.10  2006/08/07 21:51:43  willuhn
  * @N Erste Version des DTAUS-Exporters
  *

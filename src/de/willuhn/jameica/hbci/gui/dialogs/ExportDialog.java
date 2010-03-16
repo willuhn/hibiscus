@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/ExportDialog.java,v $
- * $Revision: 1.18 $
- * $Date: 2009/07/09 17:08:03 $
+ * $Revision: 1.19 $
+ * $Date: 2010/03/16 00:44:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -234,12 +234,18 @@ public class ExportDialog extends AbstractDialog
         }
         catch (ApplicationException ae)
         {
+          monitor.setStatus(ProgressMonitor.STATUS_ERROR);
+          monitor.setStatusText(ae.getMessage());
+          GUI.getStatusBar().setErrorText(ae.getMessage());
           throw ae;
         }
         catch (Exception e)
         {
+          monitor.setStatus(ProgressMonitor.STATUS_ERROR);
           Logger.error("error while writing objects to " + s,e);
           ApplicationException ae = new ApplicationException(i18n.tr("Fehler beim Exportieren der Daten in {0}",s),e);
+          monitor.setStatusText(ae.getMessage());
+          GUI.getStatusBar().setErrorText(ae.getMessage());
           throw ae;
         }
       }
@@ -404,6 +410,16 @@ public class ExportDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: ExportDialog.java,v $
+ * Revision 1.19  2010/03/16 00:44:17  willuhn
+ * @N Komplettes Redesign des CSV-Imports.
+ *   - Kann nun erheblich einfacher auch fuer andere Datentypen (z.Bsp.Ueberweisungen) verwendet werden
+ *   - Fehlertoleranter
+ *   - Mehrfachzuordnung von Spalten (z.Bsp. bei erweitertem Verwendungszweck) moeglich
+ *   - modulare Deserialisierung der Werte
+ *   - CSV-Exports von Hibiscus koennen nun 1:1 auch wieder importiert werden (Import-Preset identisch mit Export-Format)
+ *   - Import-Preset wird nun im XML-Format nach ~/.jameica/hibiscus/csv serialisiert. Damit wird es kuenftig moeglich sein,
+ *     CSV-Import-Profile vorzukonfigurieren und anschliessend zu exportieren, um sie mit anderen Usern teilen zu koennen
+ *
  * Revision 1.18  2009/07/09 17:08:03  willuhn
  * @N BUGZILLA #740
  *
