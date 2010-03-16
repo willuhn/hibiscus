@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/csv/CsvImporter.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/03/16 11:14:53 $
+ * $Revision: 1.3 $
+ * $Date: 2010/03/16 13:43:56 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -19,7 +19,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.swt.SWTException;
 import org.supercsv.io.CsvListReader;
@@ -68,7 +71,7 @@ public class CsvImporter implements Importer
       Format f = ((MyIOFormat)format).format;
 
 
-      monitor.setStatusText(i18n.tr("Lese Datei ein"));
+      monitor.setStatusText(i18n.tr("Öffne Datei"));
       monitor.addPercentComplete(1);
       
       
@@ -114,7 +117,7 @@ public class CsvImporter implements Importer
       DBService service = (DBService) Application.getServiceFactory().lookup(HBCI.class,"database");
       do
       {
-        monitor.log(i18n.tr("Importiere Zeile {0}", ""+(1+error+created+skipped)));
+        monitor.log(i18n.tr("Importiere Zeile {0}",Integer.toString(csv.getLineNumber())));
         monitor.addPercentComplete(1);
 
         try
@@ -122,6 +125,7 @@ public class CsvImporter implements Importer
           object = service.createObject(f.getType(),null);
           
           // Spalten zuordnen
+          Map<String, Object> values = new HashMap<String,Object>();
           for (int i=0;i<line.size();++i)
           {
             Column column = null;
@@ -145,27 +149,84 @@ public class CsvImporter implements Importer
             if (value.length() == 0)
               continue;
             
-            BeanUtil.set(object,column.getProperty(),column.getSerializer().unserialize(object,value));
+            try
+            {
+              // Werte zwischenspeichern
+              values.put(column.getProperty(),column.getSerializer().unserialize(object,value));
+            }
+            catch (Exception e)
+            {
+              Logger.error("unable to unserialize " + column.getProperty() + " for line " + csv.getLineNumber() + ", value: " + value,e);
+              String[] s = new String[]{value,
+                  column.getName(),
+                  e.getMessage()};
+              monitor.log("  " + i18n.tr("Ungültiger Wert \"{0}\" in Spalte \"{1}\": {2}",s));
+            }
           }
           
-          boolean doit = true;
+          // beforeApply-Listener ausloesen
+          if (l != null)
+          {
+            ImportEvent e = new ImportEvent();
+            e.context = context;
+            e.data = values;
+            try
+            {
+              l.beforeSet(e);
+            }
+            catch (OperationCanceledException oce)
+            {
+              skipped++;
+              String msg = oce.getMessage();
+              if (msg != null && msg.length() > 0)
+                monitor.log("  " + msg);
+              continue;
+            }
+          }
+          
+
+          // Werte in die Bean uebernehmen
+          Iterator<String> it = values.keySet().iterator();
+          while (it.hasNext())
+          {
+            String name = it.next();
+            Object o = values.get(name);
+            try
+            {
+              BeanUtil.set(object,name,o);
+            }
+            catch (Exception e)
+            {
+              Logger.error("unable to apply property " + name + " for line " + csv.getLineNumber() + ", value: " + o,e);
+              String[] s = new String[]{value,
+                                        name,
+                                        e.getMessage()};
+              monitor.log("  " + i18n.tr("Ungültiger Wert \"{0}\" in Spalte \"{1}\": {2}",s));
+            }
+          }
+          
+          
+          
+          
           if (l != null)
           {
             ImportEvent e = new ImportEvent();
             e.context = context;
             e.data = object;
-            e.monitor = monitor;
-            l.beforeStore(e);
-            doit = e.doit;
+            try
+            {
+              l.beforeStore(e);
+            }
+            catch (OperationCanceledException oce)
+            {
+              skipped++;
+              String msg = oce.getMessage();
+              if (msg != null && msg.length() > 0)
+                monitor.log("  " + msg);
+              continue;
+            }
           }
           
-          if (!doit)
-          {
-            skipped++;
-            continue;
-            
-          }
-
           object.store();
           Application.getMessagingFactory().sendMessage(new ImportMessage(object));
           created++;
@@ -331,6 +392,10 @@ public class CsvImporter implements Importer
 
 /**********************************************************************
  * $Log: CsvImporter.java,v $
+ * Revision 1.3  2010/03/16 13:43:56  willuhn
+ * @N CSV-Import von Ueberweisungen und Lastschriften
+ * @N Versionierbarkeit von serialisierten CSV-Profilen
+ *
  * Revision 1.2  2010/03/16 11:14:53  willuhn
  * @B Format-Implementierungen nicht cachen
  *

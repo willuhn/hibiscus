@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/csv/Profile.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/03/16 00:44:18 $
+ * $Revision: 1.2 $
+ * $Date: 2010/03/16 13:43:56 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -25,6 +25,8 @@ public class Profile implements Serializable
   private String quotingChar   = "\"";
   private int skipLines        = 0;
   private String fileEncoding  = System.getProperty("file.encoding");
+  
+  private int version          = 0;
 
   /**
    * Liefert die Liste der Spalten fuer das Profil.
@@ -121,6 +123,30 @@ public class Profile implements Serializable
       this.fileEncoding = s;
   }
 
+  /**
+   * Liefert die Versionsnummer des Profils.
+   * Wenn das Default-Profil des Formats eine hoehere Versionsnummer
+   * liefert als die ggf. serialisierte Version im Benutzerverzeichnis,
+   * dann wird die serialisierte Version ignoriert und stattdessen
+   * wieder das Default-Profil verwendet. Andernfalls muesste der
+   * User die XML-Datei in ~/.jameica/hibiscus/csv manuell loeschen,
+   * damit eine ggf. aktualisierte Profil-Version verwendet wird.
+   * @return version Versionsnummer des Profils.
+   */
+  public int getVersion()
+  {
+    return version;
+  }
+
+  /**
+   * Speichert die Versionsnummer des Profils.
+   * @param version version
+   */
+  public void setVersion(int version)
+  {
+    this.version = version;
+  }
+
   
 }
 
@@ -128,6 +154,10 @@ public class Profile implements Serializable
 
 /**********************************************************************
  * $Log: Profile.java,v $
+ * Revision 1.2  2010/03/16 13:43:56  willuhn
+ * @N CSV-Import von Ueberweisungen und Lastschriften
+ * @N Versionierbarkeit von serialisierten CSV-Profilen
+ *
  * Revision 1.1  2010/03/16 00:44:18  willuhn
  * @N Komplettes Redesign des CSV-Imports.
  *   - Kann nun erheblich einfacher auch fuer andere Datentypen (z.Bsp.Ueberweisungen) verwendet werden

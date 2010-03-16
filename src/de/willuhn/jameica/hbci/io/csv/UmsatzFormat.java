@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/csv/UmsatzFormat.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/03/16 00:44:18 $
+ * $Revision: 1.2 $
+ * $Date: 2010/03/16 13:43:56 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -46,6 +46,7 @@ public class UmsatzFormat implements Format<Umsatz>
     {
       this.profile = new Profile();
       this.profile.setSkipLines(1);
+      this.profile.setVersion(0);
       
       Serializer ts = new DefaultSerializer();
       Serializer vs = new ValueSerializer();
@@ -143,6 +144,10 @@ public class UmsatzFormat implements Format<Umsatz>
 
 /**********************************************************************
  * $Log: UmsatzFormat.java,v $
+ * Revision 1.2  2010/03/16 13:43:56  willuhn
+ * @N CSV-Import von Ueberweisungen und Lastschriften
+ * @N Versionierbarkeit von serialisierten CSV-Profilen
+ *
  * Revision 1.1  2010/03/16 00:44:18  willuhn
  * @N Komplettes Redesign des CSV-Imports.
  *   - Kann nun erheblich einfacher auch fuer andere Datentypen (z.Bsp.Ueberweisungen) verwendet werden

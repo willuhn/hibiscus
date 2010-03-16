@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/csv/AddressFormat.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/03/16 00:44:18 $
+ * $Revision: 1.2 $
+ * $Date: 2010/03/16 13:43:56 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -13,12 +13,15 @@ package de.willuhn.jameica.hbci.io.csv;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.OperationCanceledException;
+
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.io.ser.DefaultSerializer;
 import de.willuhn.jameica.hbci.io.ser.Serializer;
 import de.willuhn.jameica.hbci.rmi.AddressbookService;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Level;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
@@ -41,6 +44,7 @@ public class AddressFormat implements Format<HibiscusAddress>
     {
       this.profile = new Profile();
       this.profile.setSkipLines(1);
+      this.profile.setVersion(0);
       
       Serializer s = new DefaultSerializer();
       List<Column> list = this.profile.getColumns();
@@ -77,7 +81,7 @@ public class AddressFormat implements Format<HibiscusAddress>
         /**
          * @see de.willuhn.jameica.hbci.io.csv.ImportListener#beforeStore(de.willuhn.jameica.hbci.io.csv.ImportEvent)
          */
-        public void beforeStore(ImportEvent event)
+        public void beforeStore(ImportEvent event) throws OperationCanceledException
         {
           try
           {
@@ -90,15 +94,15 @@ public class AddressFormat implements Format<HibiscusAddress>
 
             HibiscusAddress t = (HibiscusAddress) data; 
             if (this.addressbook.contains(t) != null)
-            {
-              if (event.monitor != null)
-                event.monitor.log("  " + i18n.tr("Adresse (Kto {0}, BLZ {1}) existiert bereits, überspringe Zeile", new String[]{t.getKontonummer(),t.getBlz()}));
-              event.doit = false;
-            }
+              throw new OperationCanceledException(i18n.tr("Adresse (Kto {0}, BLZ {1}) existiert bereits, überspringe Zeile", new String[]{t.getKontonummer(),t.getBlz()}));
+          }
+          catch (OperationCanceledException oce)
+          {
+            throw oce;
           }
           catch (Exception e)
           {
-            Logger.error("error while checking address",e);
+            Logger.write(Level.WARN,"error while checking address",e);
           }
         }
         
@@ -112,6 +116,10 @@ public class AddressFormat implements Format<HibiscusAddress>
 
 /**********************************************************************
  * $Log: AddressFormat.java,v $
+ * Revision 1.2  2010/03/16 13:43:56  willuhn
+ * @N CSV-Import von Ueberweisungen und Lastschriften
+ * @N Versionierbarkeit von serialisierten CSV-Profilen
+ *
  * Revision 1.1  2010/03/16 00:44:18  willuhn
  * @N Komplettes Redesign des CSV-Imports.
  *   - Kann nun erheblich einfacher auch fuer andere Datentypen (z.Bsp.Ueberweisungen) verwendet werden

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/CSVImportDialog.java,v $
- * $Revision: 1.6 $
- * $Date: 2010/03/16 00:44:17 $
+ * $Revision: 1.7 $
+ * $Date: 2010/03/16 13:43:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -280,7 +280,17 @@ public class CSVImportDialog extends AbstractDialog
           throw new RuntimeException(e);
         }
       });
-      this.profile = (Profile) decoder.readObject();
+      Profile p = (Profile) decoder.readObject();
+      
+      // Versionsnummer pruefen
+      if (defaultProfile.getVersion() > p.getVersion())
+      {
+        Logger.info("default profile has changed, new version number " + defaultProfile.getVersion() + ". skipping serialized profile");
+        return this.profile;
+      }
+        
+        
+      this.profile = p;
       
       // Der User hat beim letzten Mal eventuell nicht alle Spalten zugeordnet.
       // Die wuerden jetzt hier in dem Objekt fehlen. Daher nehmen wir
@@ -479,6 +489,10 @@ public class CSVImportDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: CSVImportDialog.java,v $
+ * Revision 1.7  2010/03/16 13:43:56  willuhn
+ * @N CSV-Import von Ueberweisungen und Lastschriften
+ * @N Versionierbarkeit von serialisierten CSV-Profilen
+ *
  * Revision 1.6  2010/03/16 00:44:17  willuhn
  * @N Komplettes Redesign des CSV-Imports.
  *   - Kann nun erheblich einfacher auch fuer andere Datentypen (z.Bsp.Ueberweisungen) verwendet werden

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/AbstractDTAUSImporter.java,v $
- * $Revision: 1.16 $
- * $Date: 2010/01/20 10:35:12 $
+ * $Revision: 1.17 $
+ * $Date: 2010/03/16 13:43:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,13 +22,13 @@ import de.jost_net.OBanToo.Dtaus.ASatz;
 import de.jost_net.OBanToo.Dtaus.CSatz;
 import de.jost_net.OBanToo.Dtaus.DtausDateiParser;
 import de.jost_net.OBanToo.Dtaus.ESatz;
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.server.KontoUtil;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.jameica.system.Settings;
@@ -238,42 +238,9 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
     // Haben wir im Cache
     if (k != null)
       return k;
-    
-    // Wir suchen aber nur, wenn wirklich eine Kontonummer angegeben wurde
-    if (kontonummer != null && kontonummer.length() > 0)
-    {
-      // BUGZILLA 365
-      // Fuehrende Nullen schneiden wir ab
-      if (kontonummer.startsWith("0"))
-        kontonummer = kontonummer.replaceAll("^0{1,}","");
 
-      // Wir suchen nur in der Datenbank, wenn nach dem Kuerzen noch etwas
-      // von der Kontonummer uebrig ist
-      if (kontonummer.length() > 0)
-      {
-        DBService service = de.willuhn.jameica.hbci.Settings.getDBService();
-        DBIterator konten = service.createList(Konto.class);
-        konten.addFilter("kontonummer like ?", new Object[]{"%" + kontonummer});
-        konten.addFilter("blz = ?", new Object[]{blz});
-        while (konten.hasNext())
-        {
-          // Fuehrende Nullen abschneiden und dann vergleichen
-          Konto test = (Konto) konten.next();
-          String kTest = test.getKontonummer();
-          if (kTest == null || kTest.length() == 0)
-            continue;
-          if (kTest.startsWith("0"))
-            kTest = kTest.replaceAll("^0{1,}","");
-          
-          // Mal schauen, ob die Kontonummern jetzt uebereinstimmen
-          if (kTest.equals(kontonummer))
-          {
-            k = test;
-            break;
-          }
-        }
-      }
-    }
+    // In der Datenbank suchen
+    k = KontoUtil.find(kontonummer,blz);
 
     // Nichts gefunden. Dann fragen wir den User
     if (k == null)
@@ -325,6 +292,10 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
 
 /*********************************************************************
  * $Log: AbstractDTAUSImporter.java,v $
+ * Revision 1.17  2010/03/16 13:43:56  willuhn
+ * @N CSV-Import von Ueberweisungen und Lastschriften
+ * @N Versionierbarkeit von serialisierten CSV-Profilen
+ *
  * Revision 1.16  2010/01/20 10:35:12  willuhn
  * @C Obantoo-Fehlermeldung durchreichen
  *
