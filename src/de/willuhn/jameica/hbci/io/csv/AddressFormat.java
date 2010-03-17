@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/csv/AddressFormat.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/03/16 13:43:56 $
+ * $Revision: 1.3 $
+ * $Date: 2010/03/17 10:01:10 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -13,14 +13,13 @@ package de.willuhn.jameica.hbci.io.csv;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.OperationCanceledException;
-
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.io.ser.DefaultSerializer;
 import de.willuhn.jameica.hbci.io.ser.Serializer;
 import de.willuhn.jameica.hbci.rmi.AddressbookService;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Level;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
@@ -116,6 +115,9 @@ public class AddressFormat implements Format<HibiscusAddress>
 
 /**********************************************************************
  * $Log: AddressFormat.java,v $
+ * Revision 1.3  2010/03/17 10:01:10  willuhn
+ * @B grr, koennen die sich bei Eclipse mal bitte andere Klassennamen ausdenken? ;)
+ *
  * Revision 1.2  2010/03/16 13:43:56  willuhn
  * @N CSV-Import von Ueberweisungen und Lastschriften
  * @N Versionierbarkeit von serialisierten CSV-Profilen
