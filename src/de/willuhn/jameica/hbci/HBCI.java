@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.118 $
- * $Date: 2009/10/14 14:29:35 $
+ * $Revision: 1.119 $
+ * $Date: 2010/03/18 11:37:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -35,6 +35,7 @@ import de.willuhn.jameica.hbci.messaging.QueryHBCIVersionMessageConsumer;
 import de.willuhn.jameica.hbci.messaging.QueryIBANCRCMessageConsumer;
 import de.willuhn.jameica.hbci.messaging.TransferLastschriftMessageConsumer;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
+import de.willuhn.jameica.hbci.server.DBSupportH2Impl;
 import de.willuhn.jameica.hbci.server.HBCIDBServiceImpl;
 import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.plugin.Version;
@@ -42,6 +43,7 @@ import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Level;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
+import de.willuhn.util.I18N;
 
 /**
  *
@@ -350,7 +352,21 @@ public class HBCI extends AbstractPlugin
     catch (Exception e)
     {
       Logger.error("unable to init db service",e);
-      throw new ApplicationException(getResources().getI18N().tr("Fehler beim Initialisieren der Datenbank"),e);
+      I18N i18n = getResources().getI18N();
+      String msg = i18n.tr("Hibiscus-Datenbank konnte nicht initialisiert werden.\n\n{0} ", e.getMessage());
+      
+      // Wenn wir die H2-DB verwenden, koennte es sich um eine korrupte Datenbank handeln
+      String driver = HBCIDBService.SETTINGS.getString("database.driver",null);
+      if (driver != null && driver.equals(DBSupportH2Impl.class.getName()))
+      {
+        msg += "\n\nMˆglicherweise ist die Hibiscus-Datenbank defekt. Klicken Sie bitte auf \"Datei>Backups verwalten\", " +
+        		   "w‰hlen Sie das Backup vom letzten Tag aus, an dem der Fehler noch nicht auftrat und klicken " +
+        		   "Sie anschlieﬂend auf \"Ausgew‰hltes Backup wiederherstellen...\". Beim n‰chsten Start von Hibiscus " +
+        		   "wird das Backup automatisch wiederhergestellt. Sollte sich das Problem hierdurch nicht beheben lassen, " +
+        		   "besuchen Sie bitte http://hibiscus.berlios.de/doku.php?id=support:fehlermelden";
+      }
+
+      throw new ApplicationException(msg,e);
     }
     finally
     {
@@ -373,6 +389,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.119  2010/03/18 11:37:59  willuhn
+ * @N Ausfuehrlichere und hilfreichere Fehlermeldung, wenn Hibiscus-Datenbank defekt ist oder nicht geoeffnet werden konnte.
+ *
  * Revision 1.118  2009/10/14 14:29:35  willuhn
  * @N Neuer HBCI4Java-Snapshot (2.5.11) - das SSL-Logging kann nun auch via HBCICallback in das jameica.log geleitet werden (wenn kein log.ssl.filename angegeben ist). Damit kann das Flag "log.ssl.enable" automatisch von Hibiscus aktiviert/deaktiviert werden, wenn das Jameica-Loglevel auf DEBUG oder !DEBUG steht
  *

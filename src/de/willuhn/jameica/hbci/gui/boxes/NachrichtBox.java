@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/NachrichtBox.java,v $
- * $Revision: 1.5 $
- * $Date: 2008/04/01 09:50:17 $
+ * $Revision: 1.6 $
+ * $Date: 2010/03/18 11:37:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.gui.boxes;
 
 import java.rmi.RemoteException;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.eclipse.swt.widgets.Composite;
 import org.kapott.hbci.manager.HBCIUtils;
 
@@ -89,10 +90,9 @@ public class NachrichtBox extends AbstractBox implements Box
       String s = n.getNachricht();
 
       // Formatieren der Nachrichten - die haben Festbreite
+      s = StringEscapeUtils.escapeXml(s);
       s = s.replaceAll("( {2,})","<br/>");
       s = s.replaceAll("\n","<br/>");
-      s = s.replaceAll("&", "&amp;");
-      s = s.replaceAll("\"","&quot;");
 
       sb.append("<p>");
       
@@ -149,6 +149,9 @@ public class NachrichtBox extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: NachrichtBox.java,v $
+ * Revision 1.6  2010/03/18 11:37:59  willuhn
+ * @N Ausfuehrlichere und hilfreichere Fehlermeldung, wenn Hibiscus-Datenbank defekt ist oder nicht geoeffnet werden konnte.
+ *
  * Revision 1.5  2008/04/01 09:50:17  willuhn
  * @B Fehlendes XML-Escaping
  *
