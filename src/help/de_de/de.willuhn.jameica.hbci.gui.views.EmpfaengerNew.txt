@@ -4,7 +4,7 @@
 	</p>
 	
 	<p>
-		Die Richtigkeit der Bankleitzahl erkennen Sie, wenn nach
+		<b>Tipp:</b> Die Richtigkeit der Bankleitzahl erkennen Sie, wenn nach
 		der Eingabe der Name des Geldinstituts gefunden und angezeigt
 		wird.
 	</p>

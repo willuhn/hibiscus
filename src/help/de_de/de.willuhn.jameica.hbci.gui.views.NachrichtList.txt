@@ -6,9 +6,8 @@
 	<p>
 	  In dieser Liste werden Ihnen System-Nachrichten Ihrer Banken
 	  angezeigt. Diese werden beim Ausführen von Geschäftsvorfällen
-	  automatisch mit übertragen. Hierbei handelt es sich zumeist
-	  um Informationen über neue Produkte, geänderte Geschäftsbedingungen
-	  oder ähnliches.
+	  automatisch übertragen. Hierbei handelt es sich zumeist
+	  um Informationen über neue Produkte oder geänderte Geschäftsbedingungen.
 	</p>
 
 </form>

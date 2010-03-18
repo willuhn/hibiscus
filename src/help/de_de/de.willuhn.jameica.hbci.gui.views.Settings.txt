@@ -9,14 +9,6 @@
 	</li>
 	
 	<li>
-		Bei aktivierter PIN-Prüfung wird aus der von Ihnen eingegebene PIN
-		eine Check-Summe gebildet und diese mit der Check-Summe Ihrer ersten PIN-Eingabe
-		verglichen. Hierbei wird nicht die PIN selbst gespeichert sondern lediglich die
-		Prüfsumme mit der ermittelt werden kann, ob Ihre aktuelle Eingabe mit der Erst-Eingabe
-		übereinstimmt.
-	</li>
-	
-	<li>
 	  Deaktivieren Sie die Option <b>HBCI-Synchronisierung bei Fehler abbrechen</b>, wenn die
 		Synchronisierung auch dann fortgesetzt werden soll, wenn bei einem der auszuführenden
 		Aufträge ein Fehler auftrat. (nicht empfohlen, da hierbei ggf. aufgetretene Fehlermeldungen
@@ -24,21 +16,14 @@
   </li>
 
 	<li>
-	  Mit der Option <b>Tausender-Trennzeichen bei Geld-Beträgen verwenden</b>
-	  können Sie entscheiden, ob bei Geld-Beträgen ein Tausender-Punkt angezeigt
-	  werden soll.
-	</li>
-
-	<li>
-	  Deaktivieren Sie die Option <b>Kontonummern via Prüfsumme der Bank testen</b>,
+	  Deaktivieren Sie die Option <b>Kontonummern und Bankleitzahlen mittels Prüfsumme testen</b>,
 	  wenn Sie nicht wünschen, dass Hibiscus die von Ihnen eingegebenen Kontonummern
 	  auf Plausibilität prüfen soll.
 	</li>
 
 	<li>
-		Sie können ein Limit für den Maximalbetrag einer Überweisung
-		definieren um zu verhindern, dass Sie versehentlich einen
-		zu grossen Betrag eingeben.
+		Sie können ein Limit für den Maximalbetrag eines Auftrages definieren um zu verhindern,
+    dass Sie versehentlich einen zu großen Betrag eingeben.
 	</li>
 
 	<li>

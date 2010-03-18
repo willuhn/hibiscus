@@ -1,11 +1,11 @@
 <form>
 
 	<p>
-		<span color="header" font="header">Hinweis</span>
+		<span color="header" font="header">Dauerauftrag bearbeiten</span>
 	</p>
 
 	<p>
-		<b>Tipp:</b> Wenn Sie die Option <b>Empfängerdaten in Adressbuch speichern</b>
+		<b>Tipp:</b> Wenn Sie die Option <b>In Adressbuch übernehmen</b>
 		aktivieren, wird das eingegebene Gegenkonto automatisch in Ihrem
 		Adressbuch gespeichert.
 	</p>

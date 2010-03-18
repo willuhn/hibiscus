@@ -4,10 +4,10 @@
 	</p>
 
 	<p>
-		Klicken Sie auf <b>Gegenkonto in Adressbuch übernehmen</b>
+		<b>Tipp:</b> Klicken Sie auf <b>In Adressbuch übernehmen</b>
 		um das Gegenkonto dieser Buchung in Ihr Adressbuch zu
 		übernehmen. Hierbei wird automatisch geprüft, ob bereits
-		eine Bankverbindung mit dieser Kontonummer- und BLZ-Kombination
+		eine Bankverbindung mit dieser Kontonummer und BLZ
 		existiert.
 	</p>
 </form>

@@ -4,7 +4,17 @@
 	</p>
 	
 	<p>
-	  Auflistung und PDF-Export der Anfangssaldi, Einnahmen, Ausgaben
-	  und Endsaldi eines oder aller Konten.
+    In dieser Auswertung erhalten Sie einen Überblick über
+    die Summen aller Einnahmen und Ausgaben in einem angegebenen
+    Zeitraum.
 	</p>
+
+  <p>
+    <b>Tipp:</b> Wenn sich aus der Summe von Anfangssaldo, Einnahmen
+    und Ausgaben eine Differenz zum Saldo des Kontos (zu diesem Zeitpunkt)
+    ergibt, wird das Konto fettgedruckt angezeigt. Das kann z.Bsp.
+    passieren, wenn im angegebenen Zeitraum noch nicht alle Umsätze
+    vorliegen.
+  </p>
+
 </form>

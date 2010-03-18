@@ -1,11 +1,11 @@
 <form>
 
 	<p>
-		<span color="header" font="header">Hinweis</span>
+		<span color="header" font="header">Sammel-Lastschrift bearbeiten</span>
 	</p>
 
 	<p>
 		Erstellen Sie für jeden Zahlungspflichtigen eine Buchung.
-		Klicken Sie hierzu bitte auf <b>Neue Buchung hinzufügen</b>.
+		Klicken Sie hierzu bitte auf <b>Neue Buchungen hinzufügen</b>.
 	</p>
 </form>

@@ -9,7 +9,7 @@
 	</p>
 	
 	<p>
-		Wechseln Sie anschliessend zur Konto-Übersicht, um die verfügbaren Konten
+		Wechseln Sie anschließend zur Konto-Übersicht, um die verfügbaren Konten
 		automatisch abzurufen oder manuell anzulegen.
 	</p>
 </form>

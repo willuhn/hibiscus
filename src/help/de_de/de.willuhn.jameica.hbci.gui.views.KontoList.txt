@@ -1,14 +1,12 @@
 <form>
 	<p>
-		<span color="header" font="header">Verfügbare Konten</span>
+		<span color="header" font="header">Ihre Konten</span>
 	</p>
 	
 	<p>
-		HBCI-Sicherheitsmedien bieten i.d.R. die Möglichkeit, die
-		über sie erreichbaren Konten automatisch zu
-		ermitteln - insofern dies Ihre Bank unterstützt.
-		Wählen Sie also einfach <b>Konten automatisch aus Sicherheitsmedium</b>
-		um die Bankverbindungen zu ermitteln. Bereits
-		eingerichtete Konten werden hierbei nicht überschrieben.
+		<b>Tipp:</b> Vielen Banken bieten die Möglichkeit, Ihre Konten automatisch zu
+		ermitteln. Wählen Sie einfach <b>Konten automatisch aus Sicherheitsmedium ermitteln</b>,
+		um die Bankverbindungen zu ermitteln. Bereits eingerichtete Konten werden
+    hierbei nicht überschrieben.
 	</p>
 </form>

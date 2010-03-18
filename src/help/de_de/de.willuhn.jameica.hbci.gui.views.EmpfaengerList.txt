@@ -4,15 +4,15 @@
 	</p>
 	
 	<p>
-	  Klicken Sie auf <b>neuer Adressbuch-Eintrag</b> um eine
+	  Klicken Sie auf <b>neue Adresse</b> um eine
 	  Bankverbindung zu Ihrem Adressbuch hinzuzufügen.
 	</p>
 	
 	<p>
 		<b>Tipp:</b> Sie können Bankverbindungen auch aus
-		Ihren Kontoauszügen extrahieren, indem Sie doppelt
+		Ihren Kontoauszügen übernehmen, indem Sie doppelt
 		auf eine Buchung in den Umsatzlisten klicken
-		und dort <b>Empfänger in Adressbuch übernehmen</b>
+		und dort <b>In Adressbuch übernehmen</b>
 		wählen.
 	</p>
 </form>

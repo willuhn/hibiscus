@@ -1,16 +1,16 @@
 <form>
 	<p>
-		<span color="header" font="header">Vorhandene Überweisungen</span>
+		<span color="header" font="header">Vorhandene SEPA-Überweisungen</span>
 	</p>
 	
 	<p>
-		In dieser Liste sehen Sie alle von Ihnen eingegebenen Überweisungen.
+		In dieser Liste sehen Sie alle von Ihnen eingegebenen SEPA-Überweisungen.
 		Bereits ausgeführte Buchungen werden in der Spalte <b>Status</b>
 		entsprechend markiert.
 	</p>
 	
 	<p>
-		<b>Tipp:</b> Eine bereits ausgeführte Überweisung kann nicht
+		<b>Tipp:</b> Eine bereits ausgeführte SEPA-Überweisung kann nicht
 		erneut abgesendet werden. Sie können diese jedoch duplizieren,
 		indem Sie mit der rechten Maustaste auf die gewünschte Buchung
 		klicken und anschließend <b>Duplizieren</b> wählen.
