@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Overview.java,v $
- * $Revision: 1.12 $
- * $Date: 2010/03/15 00:18:07 $
+ * $Revision: 1.13 $
+ * $Date: 2010/03/21 22:43:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,7 +27,6 @@ import de.willuhn.jameica.gui.boxes.Box;
 import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
-import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
@@ -48,7 +47,7 @@ import de.willuhn.util.I18N;
 public class Overview extends AbstractBox implements Box
 {
   private I18N i18n = null;
-  private SelectInput kontoAuswahl = null;
+  private KontoInput kontoAuswahl  = null;
   private Input saldo              = null;
   private Input ausgaben           = null;
   private Input einnahmen          = null;
@@ -57,10 +56,6 @@ public class Overview extends AbstractBox implements Box
   private DateInput start          = null;
   private DateInput end            = null;
   
-  private Date dStart              = null;
-  private Date dEnd                = null;
-  private Konto konto              = null;
-
   /**
    * ct.
    */
@@ -125,7 +120,6 @@ public class Overview extends AbstractBox implements Box
     this.kontoAuswahl.addListener(new Listener() {
       public void handleEvent(Event event)
       {
-        konto = (Konto) kontoAuswahl.getValue();
         refresh();
       }
     });
@@ -157,9 +151,8 @@ public class Overview extends AbstractBox implements Box
     Calendar cal = Calendar.getInstance();
     cal.setTime(new Date());
     cal.set(Calendar.DAY_OF_MONTH,1);
-    this.dStart = HBCIProperties.startOfDay(cal.getTime());
     
-    this.start = new DateInput(this.dStart,HBCI.DATEFORMAT);
+    this.start = new DateInput(HBCIProperties.startOfDay(cal.getTime()),HBCI.DATEFORMAT);
     this.start.addListener(new Listener() {
       public void handleEvent(Event event)
       {
@@ -181,9 +174,8 @@ public class Overview extends AbstractBox implements Box
     Calendar cal = Calendar.getInstance();
     cal.setTime(new Date());
     cal.set(Calendar.DAY_OF_MONTH,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
-    this.dEnd = HBCIProperties.endOfDay(cal.getTime());
 
-    this.end = new DateInput(this.dEnd,HBCI.DATEFORMAT);
+    this.end = new DateInput(HBCIProperties.endOfDay(cal.getTime()),HBCI.DATEFORMAT);
     this.end.addListener(new Listener() {
       public void handleEvent(Event event)
       {
@@ -200,10 +192,14 @@ public class Overview extends AbstractBox implements Box
   {
     try
     {
+      Konto konto = (Konto) this.getKontoAuswahl().getValue();
+      Date dStart = (Date) getStart().getValue();
+      Date dEnd   = (Date) getEnd().getValue();
+
       ////////////////////////////////////////////////////////////////////////////
       // Saldo ausrechnen
       double d = 0d;
-      if (this.konto == null)
+      if (konto == null)
       {
         DBIterator konten = Settings.getDBService().createList(Konto.class);
         while (konten.hasNext())
@@ -214,23 +210,22 @@ public class Overview extends AbstractBox implements Box
       }
       else
       {
-        d = this.konto.getSaldo();
+        d = konto.getSaldo();
       }
+      
       getSaldo().setValue(HBCI.DECIMALFORMAT.format(d));
       if (d < 0)       ((LabelInput)getSaldo()).setColor(Color.ERROR);
       else if (d == 0) ((LabelInput)getSaldo()).setColor(Color.WIDGET_FG);
       else             ((LabelInput)getSaldo()).setColor(Color.SUCCESS);
       ////////////////////////////////////////////////////////////////////////////
 
-      this.dStart = (Date) getStart().getValue();
-      this.dEnd   = (Date) getEnd().getValue();
       
       if (dStart == null || dEnd == null || dStart.after(dEnd))
         return;
 
       double in = 0d;
       double out = 0d;
-      if (this.konto == null)
+      if (konto == null)
       {
         DBIterator i = Settings.getDBService().createList(Konto.class);
         while (i.hasNext())
@@ -242,8 +237,8 @@ public class Overview extends AbstractBox implements Box
       }
       else
       {
-        in  = this.konto.getEinnahmen(dStart,dEnd);
-        out = this.konto.getAusgaben(dStart,dEnd);
+        in  = konto.getEinnahmen(dStart,dEnd);
+        out = konto.getAusgaben(dStart,dEnd);
       }
       out = Math.abs(out); // BUGZILLA 405
       getAusgaben().setValue(HBCI.DECIMALFORMAT.format(out));
@@ -319,6 +314,9 @@ public class Overview extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: Overview.java,v $
+ * Revision 1.13  2010/03/21 22:43:21  willuhn
+ * @B Wenn ein Konto (als Default-Konto) vorausgewaehlt war, wurden die Werte erst nach Neuauswahl auf den korrekten Stand gebracht
+ *
  * Revision 1.12  2010/03/15 00:18:07  willuhn
  * @N Siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=65782#65782 (Punkt 2)
  *
