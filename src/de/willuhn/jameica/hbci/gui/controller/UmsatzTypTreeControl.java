@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzTypTreeControl.java,v $
- * $Revision: 1.12 $
- * $Date: 2010/03/05 15:24:53 $
+ * $Revision: 1.13 $
+ * $Date: 2010/03/22 09:58:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
+import de.willuhn.datasource.GenericObjectNode;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
@@ -216,7 +218,7 @@ public class UmsatzTypTreeControl extends AbstractControl
       return this.chart;
     
     this.chart = new UmsatzTypVerlauf();
-    this.chart.setData(getTree().getItems(),(Date) getStart().getValue(),(Date) getEnd().getValue());
+    this.chart.setData(getAllGroups(),(Date) getStart().getValue(),(Date) getEnd().getValue());
     return this.chart;
   }
   
@@ -285,7 +287,7 @@ public class UmsatzTypTreeControl extends AbstractControl
 
       // keine brauchbare Selektrion.
       if (l == null)
-        l = getTree().getItems();
+        l = getAllGroups();
 
       getChart().setData(l, (Date) getStart().getValue(), (Date) getEnd().getValue());
       getChart().redraw();
@@ -296,10 +298,46 @@ public class UmsatzTypTreeControl extends AbstractControl
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren"), StatusBarMessage.TYPE_ERROR));
     }
   }
+  
+  /**
+   * Liefert alle Umsatzkategorien, die gerade angezeigt werden.
+   * @return Liste aller Umsatz-Kategorien - also nicht nur die oberste Ebene.
+   * @throws RemoteException
+   */
+  private List<GenericObjectNode> getAllGroups() throws RemoteException
+  {
+    List<GenericObjectNode> list = new ArrayList<GenericObjectNode>();
+    List<GenericObjectNode> root = getTree().getItems();
+    for (GenericObjectNode r:root)
+    {
+      _addGroup(r,list);
+    }
+    return list;
+  }
+  /**
+   * Fuegt das Element und die Kind-Elemente zur Liste hinzu.
+   * @param root das Root-Element.
+   * @param target Ziel-Liste.
+   * @throws RemoteException
+   */
+  private void _addGroup(GenericObjectNode root, List<GenericObjectNode> target) throws RemoteException
+  {
+    target.add(root);
+    GenericIterator children = root.getChildren();
+    while (children.hasNext())
+    {
+      GenericObject o = children.next();
+      if (o instanceof GenericObjectNode)
+        _addGroup((GenericObjectNode)o,target);
+    }
+  }
 }
 
 /*******************************************************************************
  * $Log: UmsatzTypTreeControl.java,v $
+ * Revision 1.13  2010/03/22 09:58:34  willuhn
+ * @N Auch alle Kind-Kategorien mit zeichnen
+ *
  * Revision 1.12  2010/03/05 15:24:53  willuhn
  * @N BUGZILLA 686
  *
