@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTypVerlauf.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/03/05 15:24:53 $
+ * $Revision: 1.6 $
+ * $Date: 2010/03/22 10:00:48 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -196,7 +196,7 @@ public class UmsatzTypVerlauf implements Part
         {
           Object o = umsaetze.next();
           if (!(o instanceof Umsatz))
-            continue;// TODO: Umsatz-Tree: Hier sollten rekursiv die Kinder gemalt werden
+            continue;
           Umsatz u = (Umsatz) o;
           Date valuta = u.getValuta();
           if (valuta == null)
@@ -352,6 +352,9 @@ public class UmsatzTypVerlauf implements Part
 
 /*********************************************************************
  * $Log: UmsatzTypVerlauf.java,v $
+ * Revision 1.6  2010/03/22 10:00:48  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2010/03/05 15:24:53  willuhn
  * @N BUGZILLA 686
  *
