@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractSammelTransferList.java,v $
- * $Revision: 1.10 $
- * $Date: 2009/03/01 22:26:19 $
+ * $Revision: 1.11 $
+ * $Date: 2010/03/24 14:06:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -104,7 +104,7 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
     addColumn(i18n.tr("Bezeichnung"),"bezeichnung");
     addColumn(i18n.tr("Anzahl Buchungen"),"anzahl");
     addColumn(i18n.tr("Summe"),"summe", new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
-    addColumn(i18n.tr("Termin"),"termin", new DateFormatter(HBCI.LONGDATEFORMAT));
+    addColumn(i18n.tr("Termin"),"termin", new DateFormatter(HBCI.DATEFORMAT));
     addColumn(i18n.tr("Status"),"ausgefuehrt",new Formatter() {
       public String format(Object o) {
         try {
@@ -219,6 +219,9 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
 
 /**********************************************************************
  * $Log: AbstractSammelTransferList.java,v $
+ * Revision 1.11  2010/03/24 14:06:45  willuhn
+ * @B Uhrzeit in Termin-Spalte nicht anzeigen
+ *
  * Revision 1.10  2009/03/01 22:26:19  willuhn
  * @B BUGZILLA 705
  *
