@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCIProperties.java,v $
- * $Revision: 1.39 $
- * $Date: 2009/10/26 15:58:54 $
+ * $Revision: 1.40 $
+ * $Date: 2010/03/31 11:19:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -146,6 +146,27 @@ public class HBCIProperties
    * Default-Anzahl von anzuzeigenden Tagen in der Umsatz-Preview.
    */
   public final static int UMSATZ_DEFAULT_DAYS = settings.getInt("umsatz.default.days",30);
+  
+  /**
+   * Bereinigt einen Text um die nicht erlaubten Zeichen.
+   * @param text zu bereinigender Text.
+   * @param validChars Liste der erlaubten Zeichen.
+   * @return bereinigter Text.
+   */
+  public final static String clean(String text, String validChars)
+  {
+    if (text == null || text.length() == 0)
+      return text;
+
+    StringBuffer sb = new StringBuffer();
+    char[] chars = text.toCharArray();
+    for (char c:chars)
+    {
+      if (HBCI_DTAUS_VALIDCHARS.contains(Character.toString(c)))
+        sb.append(c);
+    }
+    return sb.toString();
+  }
   
   /**
    * Prueft die uebergebenen Strings auf Vorhandensein nicht erlaubter Zeichen.
@@ -344,6 +365,9 @@ public class HBCIProperties
 
 /**********************************************************************
  * $Log: HBCIProperties.java,v $
+ * Revision 1.40  2010/03/31 11:19:40  willuhn
+ * @N Automatisches Entfernen nicht-zulaessiger Zeichen
+ *
  * Revision 1.39  2009/10/26 15:58:54  willuhn
  * @C Account CRC check nur, wenn der Alg. bekannt ist
  *

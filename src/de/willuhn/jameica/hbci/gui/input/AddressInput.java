@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/AddressInput.java,v $
- * $Revision: 1.5 $
- * $Date: 2009/12/07 23:48:42 $
+ * $Revision: 1.6 $
+ * $Date: 2010/03/31 11:19:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.jameica.gui.Action;
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SearchInput;
 import de.willuhn.jameica.gui.parts.Button;
@@ -312,6 +313,21 @@ public class AddressInput implements Input
     }
 
     /**
+     * @see de.willuhn.jameica.gui.input.SearchInput#setText(java.lang.String)
+     */
+    public void setText(String s)
+    {
+      String before = s;
+      String after = HBCIProperties.clean(s,HBCIProperties.HBCI_DTAUS_VALIDCHARS);
+      // Alle Zeichen rauswerfen, die nicht zulaessig sind.
+      super.setText(after);
+      if (before != null && !before.equals(after))
+        GUI.getView().setErrorText(i18n.tr("Im Namen wurden nicht zulässige Zeichen entfernt"));
+      else
+        GUI.getView().setErrorText("");
+    }
+
+    /**
      * @see de.willuhn.jameica.gui.input.SearchInput#format(java.lang.Object)
      */
     protected String format(Object bean)
@@ -405,6 +421,9 @@ public class AddressInput implements Input
 
 /**********************************************************************
  * $Log: AddressInput.java,v $
+ * Revision 1.6  2010/03/31 11:19:40  willuhn
+ * @N Automatisches Entfernen nicht-zulaessiger Zeichen
+ *
  * Revision 1.5  2009/12/07 23:48:42  willuhn
  * @N Adress-Auswahl nun via Autosuggest UND Adress-Dialog moeglich
  *
