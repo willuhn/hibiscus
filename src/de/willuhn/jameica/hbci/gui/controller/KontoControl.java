@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.84 $
- * $Date: 2009/10/20 23:12:58 $
+ * $Revision: 1.85 $
+ * $Date: 2010/04/05 21:19:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -362,8 +362,18 @@ public class KontoControl extends AbstractControl {
   {
     if (this.iban == null)
     {
-      this.iban = new TextInput(getKonto().getIban(),HBCIProperties.HBCI_IBAN_MAXLENGTH);
-      this.iban.setValidChars(HBCIProperties.HBCI_IBAN_VALIDCHARS);
+      this.iban = new TextInput(getKonto().getIban(),HBCIProperties.HBCI_IBAN_MAXLENGTH + 5); // max. 5 Leerzeichen
+      this.iban.setValidChars(HBCIProperties.HBCI_IBAN_VALIDCHARS + " ");
+      this.iban.addListener(new Listener()
+      {
+        public void handleEvent(Event event)
+        {
+          String s = (String) iban.getValue();
+          if (s == null || s.length() == 0 || s.indexOf(" ") == -1)
+            return;
+          iban.setValue(s.replaceAll(" ",""));
+        }
+      });
     }
     return this.iban;
   }
@@ -627,6 +637,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.85  2010/04/05 21:19:34  willuhn
+ * @N Leerzeichen in IBAN zulassen - und nach Eingabe automatisch abschneiden (wie bei BLZ) - siehe http://www.willuhn.de/blog/index.php?/archives/506-Beta-Phase-fuer-Jameica-1.9Hibiscus-1.11-eroeffnet.html#c1079
+ *
  * Revision 1.84  2009/10/20 23:12:58  willuhn
  * @N Support fuer SEPA-Ueberweisungen
  * @N Konten um IBAN und BIC erweitert

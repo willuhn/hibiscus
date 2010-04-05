@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AuslandsUeberweisungControl.java,v $
- * $Revision: 1.6 $
- * $Date: 2009/10/29 12:26:04 $
+ * $Revision: 1.7 $
+ * $Date: 2010/04/05 21:19:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -165,7 +165,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
     if (empfkto != null)
       return empfkto;
 
-    empfkto = new TextInput(getTransfer().getGegenkontoNummer(),HBCIProperties.HBCI_IBAN_MAXLENGTH);
+    empfkto = new TextInput(getTransfer().getGegenkontoNummer(),HBCIProperties.HBCI_IBAN_MAXLENGTH + 5); // max. 5 Leerzeichen
     empfkto.setValidChars(HBCIProperties.HBCI_IBAN_VALIDCHARS + " ");
     empfkto.setMandatory(true);
     empfkto.setEnabled(!getTransfer().ausgefuehrt());
@@ -503,6 +503,9 @@ public class AuslandsUeberweisungControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AuslandsUeberweisungControl.java,v $
+ * Revision 1.7  2010/04/05 21:19:34  willuhn
+ * @N Leerzeichen in IBAN zulassen - und nach Eingabe automatisch abschneiden (wie bei BLZ) - siehe http://www.willuhn.de/blog/index.php?/archives/506-Beta-Phase-fuer-Jameica-1.9Hibiscus-1.11-eroeffnet.html#c1079
+ *
  * Revision 1.6  2009/10/29 12:26:04  willuhn
  * *** empty log message ***
  *
