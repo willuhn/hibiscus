@@ -20,8 +20,6 @@
 
     <loadproperties srcFile="${build.dir}/build.properties"/>
 
-    <available file="${signjar.keystore}" type="file" property="havekeystore" />
-
   	<echo message="VERSION: ${plugin.version}" />
     <echo message="CVS-Tag: ${tag}" />
     <echo message="BUILD  : ${build.number}" />
@@ -193,13 +191,17 @@
 
 
   <target name="sign" description="signs the jar/zip file" depends="zip">
-  	<antcall target="sub_sign">
-      <param name="param.filename" value="${define.zipfilename}" />
-    </antcall>
-
-    <antcall target="sub_sign">
-       <param name="param.filename" value="${define.srcfilename}" />
-     </antcall>
+    <echo message="Creating MD5 checksum files" />
+    <checksum file="${project.release}/${define.zipfilename}" />
+    <checksum file="${project.release}/${define.srcfilename}" />
+    
+    <echo message="Creating PGP signatures" />
+    <exec executable="gpg" failonerror="true" timeout="60000">
+      <arg line="-asb --use-agent ${project.release}/${define.zipfilename}" />
+    </exec>
+    <exec executable="gpg" failonerror="true" timeout="60000">
+      <arg line="-asb --use-agent ${project.release}/${define.srcfilename}" />
+    </exec>
   </target>
 
 	<target name="clean" description="cleanup">
@@ -227,26 +229,4 @@
     <delete dir="${project.release}" />
   </target>
 
-	
-	
-  <!--
-    Signiert die Datei.
-    @param param.filename Dateiname der zu signierenden Datei
-  //-->
-  <target name="sub_sign" if="havekeystore">
-    <echo message="Creating MD5 checksum files" />
-    <checksum file="${project.release}/${param.filename}" />
-    
-    <echo message="Creating PGP signatures" />
-    <exec executable="gpg" failonerror="true" timeout="60000">
-      <arg line="-asb --use-agent ${project.release}/${param.filename}" />
-    </exec>
-
-    <echo message="Creating SHA1 signatures" />
-  	<loadfile property="storepass" srcFile="${signjar.storepass}"/>
-    <exec executable="jarsigner" failonerror="true" timeout="60000">
-      <arg line="-verbose -keystore ${signjar.keystore} -storepass ${storepass} ${project.release}/${param.filename} &quot;${signjar.alias}&quot;" />
-    </exec>
-  </target>
-	
 </project>
