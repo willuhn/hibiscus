@@ -20,7 +20,9 @@
 
     <loadproperties srcFile="${build.dir}/build.properties"/>
 
-    <echo message="VERSION: ${plugin.version}" />
+    <available file="${signjar.keystore}" type="file" property="havekeystore" />
+
+  	<echo message="VERSION: ${plugin.version}" />
     <echo message="CVS-Tag: ${tag}" />
     <echo message="BUILD  : ${build.number}" />
     <echo message="JAVA   : ${java.version}" />
@@ -191,40 +193,15 @@
 
 
   <target name="sign" description="signs the jar/zip file" depends="zip">
-    <echo message="Creating MD5 checksum files" />
-    <checksum file="${project.release}/${define.zipfilename}" />
-    
-    <echo message="Creating PGP signatures" />
-    <exec executable="gpg" failonerror="true" timeout="60000">
-      <arg line="-asb --use-agent ${project.release}/${define.zipfilename}" />
-    </exec>
+  	<antcall target="sub_sign">
+      <param name="param.filename" value="${define.zipfilename}" />
+    </antcall>
 
-    <echo message="Creating SHA1 signatures" />
-    <loadfile property="storepass" srcFile="${signjar.storepass}" />
-    <java classname="de.willuhn.security.Signature" failonerror="true" dir="${project.release}" fork="true">
-      <classpath refid="compilepath" />
-      <arg line="sign -keystore ${signjar.keystore} -storepass ${storepass} -alias ${signjar.alias} -keypass ${storepass} -file ${define.zipfilename} -sig ${define.zipfilename}.sha1"/>
-    </java>
+    <antcall target="sub_sign">
+       <param name="param.filename" value="${define.srcfilename}" />
+     </antcall>
   </target>
 
-  <target name="signsrc" description="signs the source file" depends="src">
-    <echo message="Creating MD5 checksum files" />
-    <checksum file="${project.release}/${define.srcfilename}" />
-    
-    <echo message="Creating PGP signatures" />
-    <exec executable="gpg" failonerror="true" timeout="60000">
-      <arg line="-asb --use-agent ${project.release}/${define.srcfilename}" />
-    </exec>
-
-    <echo message="Creating SHA1 signatures" />
-    <loadfile property="storepass" srcFile="${signjar.storepass}" />
-    <java classname="de.willuhn.security.Signature" failonerror="true" dir="${project.release}" fork="true">
-      <classpath refid="compilepath" />
-      <arg line="sign -keystore ${signjar.keystore} -storepass ${storepass} -alias ${signjar.alias} -keypass ${storepass} -file ${define.srcfilename} -sig ${define.srcfilename}.sha1"/>
-    </java>
-  </target>
-
-	
 	<target name="clean" description="cleanup">
     <delete dir="${project.tmp}" />
     <delete dir="${project.javadoc}" />
@@ -233,7 +210,7 @@
 
 
 
-  <target depends="init,compile,cvstag,jar,signjar,zip,javadoc,src,sign,signsrc,clean" description="build an official release" name="all" />
+  <target depends="init,compile,cvstag,jar,signjar,zip,javadoc,src,sign,clean" description="build an official release" name="all" />
 
   <target depends="init,compile,jar,zip,src,clean" description="build inofficial release" name="fast" />
 
@@ -250,4 +227,26 @@
     <delete dir="${project.release}" />
   </target>
 
+	
+	
+  <!--
+    Signiert die Datei.
+    @param param.filename Dateiname der zu signierenden Datei
+  //-->
+  <target name="sub_sign" if="havekeystore">
+    <echo message="Creating MD5 checksum files" />
+    <checksum file="${project.release}/${param.filename}" />
+    
+    <echo message="Creating PGP signatures" />
+    <exec executable="gpg" failonerror="true" timeout="60000">
+      <arg line="-asb --use-agent ${project.release}/${param.filename}" />
+    </exec>
+
+    <echo message="Creating SHA1 signatures" />
+  	<loadfile property="storepass" srcFile="${signjar.storepass}"/>
+    <exec executable="jarsigner" failonerror="true" timeout="60000">
+      <arg line="-verbose -keystore ${signjar.keystore} -storepass ${storepass} ${project.release}/${param.filename} &quot;${signjar.alias}&quot;" />
+    </exec>
+  </target>
+	
 </project>
