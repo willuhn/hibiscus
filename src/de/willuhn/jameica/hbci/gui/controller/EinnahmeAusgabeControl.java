@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EinnahmeAusgabeControl.java,v $
- * $Revision: 1.14 $
- * $Date: 2010/02/17 10:43:41 $
+ * $Revision: 1.15 $
+ * $Date: 2010/04/09 09:31:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -143,15 +143,8 @@ public class EinnahmeAusgabeControl extends AbstractControl
     {
       public void handleEvent(Event event)
       {
-        try
-        {
-          settings.setAttribute("laststart", HBCI.DATEFORMAT.format((Date) start.getValue()));
-          handleReload();
-        }
-        catch (RemoteException e)
-        {
-          Logger.error("error while refreshing start date",e);
-        }
+        Date d = (Date) start.getValue();
+        settings.setAttribute("laststart", d != null ? HBCI.DATEFORMAT.format(d) : null);
       }
     });
     return this.start;
@@ -166,9 +159,8 @@ public class EinnahmeAusgabeControl extends AbstractControl
     if (this.end != null)
       return this.end;
 
-    Calendar cal = Calendar.getInstance();
-
-    Date d = HBCIProperties.endOfDay(cal.getTime());
+    Date d = null;
+    
     try
     {
       String s = settings.getString("lastend", null);
@@ -186,15 +178,8 @@ public class EinnahmeAusgabeControl extends AbstractControl
     {
       public void handleEvent(Event event)
       {
-        try
-        {
-          settings.setAttribute("lastend", HBCI.DATEFORMAT.format((Date) end.getValue()));
-          handleReload();
-        }
-        catch (RemoteException e)
-        {
-          Logger.error("error while refreshing end date",e);
-        }
+        Date d = (Date) end.getValue();
+        settings.setAttribute("lastend", d != null ? HBCI.DATEFORMAT.format(d) : null);
       }
     });
 
@@ -299,24 +284,31 @@ public class EinnahmeAusgabeControl extends AbstractControl
 
   private void ermittelnWerte(Konto konto, EinnahmeAusgabe[] eae, int index) throws RemoteException
   {
-    double anfangssaldo = konto.getAnfangsSaldo((Date) this.getStart().getValue());
+    Date dStart = (Date) start.getValue();
+    Date dEnd   = (Date) end.getValue();
+    
+    if (dStart != null) dStart = HBCIProperties.startOfDay(dStart);
+    if (dEnd != null) dEnd = HBCIProperties.startOfDay(dEnd);
+    
+    
+    double anfangssaldo = konto.getAnfangsSaldo(dStart);
     summeAnfangssaldo += anfangssaldo;
 
-    double einnahmen = konto.getEinnahmen((Date) start.getValue(), (Date) end.getValue());
+    double einnahmen = konto.getEinnahmen(dStart,dEnd);
     summeEinnahmen += einnahmen;
 
-    double ausgaben = konto.getAusgaben((Date) start.getValue(), (Date) end.getValue());
+    double ausgaben = konto.getAusgaben(dStart,dEnd);
     summeAusgaben += ausgaben;
 
-    double endsaldo = konto.getEndSaldo((Date) end.getValue());
+    double endsaldo = konto.getEndSaldo(dEnd);
     summeEndsaldo += endsaldo;
 
     eae[index] = new EinnahmeAusgabe(konto.getLongName(),
-                                     (Date) this.start.getValue(),
+                                     dStart,
                                      anfangssaldo, 
                                      einnahmen, 
                                      ausgaben, 
-                                     (Date) this.getEnd().getValue(),
+                                     dEnd,
                                      endsaldo);
   }
 
@@ -327,9 +319,9 @@ public class EinnahmeAusgabeControl extends AbstractControl
   public void handleReload() throws RemoteException
   {
     this.table.removeAll();
-    Date t_start = (Date) start.getValue();
-    Date t_end = (Date) end.getValue();
-    if (t_start != null && t_end != null && t_start.after(t_end))
+    Date tStart = (Date) start.getValue();
+    Date tEnd = (Date) end.getValue();
+    if (tStart != null && tEnd != null && tStart.after(tEnd))
     {
       GUI.getView().setErrorText(i18n.tr("Das Anfangsdatum muss vor dem Enddatum liegen"));
       return;
@@ -346,6 +338,9 @@ public class EinnahmeAusgabeControl extends AbstractControl
 
 /*******************************************************************************
  * $Log: EinnahmeAusgabeControl.java,v $
+ * Revision 1.15  2010/04/09 09:31:03  willuhn
+ * @B BUGZILLA 844
+ *
  * Revision 1.14  2010/02/17 10:43:41  willuhn
  * @N Differenz in Einnahmen/Ausgaben anzeigen, Cleanup
  *
