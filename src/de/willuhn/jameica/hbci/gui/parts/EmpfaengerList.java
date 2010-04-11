@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/EmpfaengerList.java,v $
- * $Revision: 1.23 $
- * $Date: 2009/10/20 23:12:58 $
+ * $Revision: 1.24 $
+ * $Date: 2010/04/11 21:57:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,6 +23,7 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.TableItem;
 import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.GenericObject;
@@ -30,9 +31,11 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.formatter.Formatter;
+import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
@@ -41,6 +44,7 @@ import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.Addressbook;
 import de.willuhn.jameica.hbci.rmi.AddressbookService;
+import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -125,6 +129,30 @@ public class EmpfaengerList extends TablePart implements Part
         if (s.length() < 30)
           return s;
         return s.substring(0,29) + "...";
+      }
+    });
+    
+    this.setFormatter(new TableFormatter()
+    {
+      /**
+       * @see de.willuhn.jameica.gui.formatter.TableFormatter#format(org.eclipse.swt.widgets.TableItem)
+       */
+      public void format(TableItem item)
+      {
+        try
+        {
+          Object o = item.getData();
+          if (o == null || !(o instanceof Address))
+            return;
+          if (o instanceof HibiscusAddress)
+            item.setForeground(Color.WIDGET_FG.getSWTColor());
+          else
+            item.setForeground(Color.COMMENT.getSWTColor());
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to format address",e);
+        }
       }
     });
     
@@ -342,6 +370,9 @@ public class EmpfaengerList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: EmpfaengerList.java,v $
+ * Revision 1.24  2010/04/11 21:57:08  willuhn
+ * @N Anzeige der eigenen Konten im Adressbuch als "virtuelle" Adressen. Basierend auf Ralfs Patch.
+ *
  * Revision 1.23  2009/10/20 23:12:58  willuhn
  * @N Support fuer SEPA-Ueberweisungen
  * @N Konten um IBAN und BIC erweitert
