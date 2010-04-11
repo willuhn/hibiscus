@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AuslandsUeberweisungControl.java,v $
- * $Revision: 1.7 $
- * $Date: 2010/04/05 21:19:34 $
+ * $Revision: 1.8 $
+ * $Date: 2010/04/11 22:05:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import java.util.Date;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import de.willuhn.datasource.BeanUtil;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
@@ -39,6 +40,7 @@ import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.AddressInput;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.gui.parts.AuslandsUeberweisungList;
+import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
@@ -455,15 +457,16 @@ public class AuslandsUeberweisungControl extends AbstractControl
       if (event == null)
         return;
       
-      if (!(event.data instanceof HibiscusAddress))
+      if (!(event.data instanceof Address))
         return;
       
-      HibiscusAddress a = (HibiscusAddress) event.data;
+      Address a = (Address) event.data;
 
       try {
         getEmpfaengerName().setText(a.getName());
-        getEmpfaengerKonto().setValue(a.getIban());
-        getEmpfaengerBic().setValue(a.getBic());
+        // Die Konto-Adressen haben zwar ein "getIban", implementieren aber nicht "HibiscusAddress" - daher der Bean-Zugriff
+        getEmpfaengerKonto().setValue(BeanUtil.get(a,"iban"));
+        getEmpfaengerBic().setValue(BeanUtil.get(a,"bic"));
 
         // Wenn der Empfaenger aus dem Adressbuch kommt, deaktivieren wir die Checkbox
         getStoreEmpfaenger().setValue(Boolean.FALSE);
@@ -503,6 +506,9 @@ public class AuslandsUeberweisungControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AuslandsUeberweisungControl.java,v $
+ * Revision 1.8  2010/04/11 22:05:40  willuhn
+ * @N virtuelle Konto-Adressen in SEPA-Auftraegen beruecksichtigen
+ *
  * Revision 1.7  2010/04/05 21:19:34  willuhn
  * @N Leerzeichen in IBAN zulassen - und nach Eingabe automatisch abschneiden (wie bei BLZ) - siehe http://www.willuhn.de/blog/index.php?/archives/506-Beta-Phase-fuer-Jameica-1.9Hibiscus-1.11-eroeffnet.html#c1079
  *

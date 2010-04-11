@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/filter/AddressFilter.java,v $
- * $Revision: 1.1 $
- * $Date: 2009/10/20 23:12:58 $
+ * $Revision: 1.2 $
+ * $Date: 2010/04/11 22:05:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,9 +15,9 @@ package de.willuhn.jameica.hbci.gui.filter;
 
 import java.rmi.RemoteException;
 
+import de.willuhn.datasource.BeanUtil;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.Address;
-import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 
 /**
  * Mit diesem Filter koennen einzelne Adressen bei der Suche
@@ -78,13 +78,9 @@ public interface AddressFilter extends Filter<Address>
     {
       if (address == null)
         return false;
-      
-      if (!(address instanceof HibiscusAddress))
-        return false;
-      
-      HibiscusAddress a = (HibiscusAddress) address;
-      String iban = a.getIban();
-      return iban != null && 
+
+      String iban = (String) BeanUtil.get(address,"iban"); // Die Konto-Adressen haben zwar ein "getIban", implementieren aber nicht "HibiscusAddress" - daher der Bean-Zugriff
+      return iban != null && iban.length() > 0 &&
              iban.length() <= HBCIProperties.HBCI_IBAN_MAXLENGTH;
     }
   }; 
@@ -93,6 +89,9 @@ public interface AddressFilter extends Filter<Address>
 
 /**********************************************************************
  * $Log: AddressFilter.java,v $
+ * Revision 1.2  2010/04/11 22:05:40  willuhn
+ * @N virtuelle Konto-Adressen in SEPA-Auftraegen beruecksichtigen
+ *
  * Revision 1.1  2009/10/20 23:12:58  willuhn
  * @N Support fuer SEPA-Ueberweisungen
  * @N Konten um IBAN und BIC erweitert
