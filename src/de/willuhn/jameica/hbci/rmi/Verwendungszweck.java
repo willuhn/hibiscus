@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Attic/Verwendungszweck.java,v $
- * $Revision: 1.2 $
- * $Date: 2008/11/26 00:39:36 $
+ * $Revision: 1.3 $
+ * $Date: 2010/04/14 17:44:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import de.willuhn.util.ApplicationException;
 
 /**
  * Eine Zeile erweiterter Verwendungszweck.
+ * @deprecated Existiert nur noch zu Migrationszwecken (update0012)
  */
 public interface Verwendungszweck extends DBObject
 {
@@ -50,6 +51,9 @@ public interface Verwendungszweck extends DBObject
 
 /*********************************************************************
  * $Log: Verwendungszweck.java,v $
+ * Revision 1.3  2010/04/14 17:44:10  willuhn
+ * @N BUGZILLA 83
+ *
  * Revision 1.2  2008/11/26 00:39:36  willuhn
  * @N Erste Version erweiterter Verwendungszwecke. Muss dringend noch getestet werden.
  *

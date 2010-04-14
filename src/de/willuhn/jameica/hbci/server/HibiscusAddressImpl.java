@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/HibiscusAddressImpl.java,v $
- * $Revision: 1.10 $
- * $Date: 2010/03/16 00:44:18 $
+ * $Revision: 1.11 $
+ * $Date: 2010/04/14 17:44:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -239,11 +239,30 @@ public class HibiscusAddressImpl extends AbstractDBObject implements HibiscusAdd
   {
     setAttribute("iban",iban);
   }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Address#getKategorie()
+   */
+  public String getKategorie() throws RemoteException
+  {
+    return (String) this.getAttribute("kategorie");
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#setKategorie(java.lang.String)
+   */
+  public void setKategorie(String kategorie) throws RemoteException
+  {
+    this.setAttribute("kategorie",kategorie);
+  }
 }
 
 
 /**********************************************************************
  * $Log: HibiscusAddressImpl.java,v $
+ * Revision 1.11  2010/04/14 17:44:10  willuhn
+ * @N BUGZILLA 83
+ *
  * Revision 1.10  2010/03/16 00:44:18  willuhn
  * @N Komplettes Redesign des CSV-Imports.
  *   - Kann nun erheblich einfacher auch fuer andere Datentypen (z.Bsp.Ueberweisungen) verwendet werden

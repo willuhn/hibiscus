@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/HibiscusAddress.java,v $
- * $Revision: 1.7 $
- * $Date: 2010/03/16 00:44:18 $
+ * $Revision: 1.8 $
+ * $Date: 2010/04/14 17:44:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -70,13 +70,6 @@ public interface HibiscusAddress extends Address, DBObject
   public void setBank(String name) throws RemoteException;
   
   /**
-   * Liefert die BIC.
-   * @return die BIC.
-   * @throws RemoteException
-   */
-  public String getBic() throws RemoteException;
-  
-  /**
    * Speichert die BIC.
    * @param bic die BIC.
    * @throws RemoteException
@@ -84,23 +77,26 @@ public interface HibiscusAddress extends Address, DBObject
   public void setBic(String bic) throws RemoteException;
   
   /**
-   * Liefert die IBAN.
-   * @return die IBAN.
-   * @throws RemoteException
-   */
-  public String getIban() throws RemoteException;
-  
-  /**
    * Speichert die IBAN.
    * @param iban die IBAN.
    * @throws RemoteException
    */
   public void setIban(String iban) throws RemoteException;
+  
+  /**
+   * Speichert die Kategorie.
+   * @param kategorie die Kategorie.
+   * @throws RemoteException
+   */
+  public void setKategorie(String kategorie) throws RemoteException;
 }
 
 
 /**********************************************************************
  * $Log: HibiscusAddress.java,v $
+ * Revision 1.8  2010/04/14 17:44:10  willuhn
+ * @N BUGZILLA 83
+ *
  * Revision 1.7  2010/03/16 00:44:18  willuhn
  * @N Komplettes Redesign des CSV-Imports.
  *   - Kann nun erheblich einfacher auch fuer andere Datentypen (z.Bsp.Ueberweisungen) verwendet werden

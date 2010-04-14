@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AuslandsUeberweisungControl.java,v $
- * $Revision: 1.8 $
- * $Date: 2010/04/11 22:05:40 $
+ * $Revision: 1.9 $
+ * $Date: 2010/04/14 17:44:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,6 @@ import java.util.Date;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
-import de.willuhn.datasource.BeanUtil;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
@@ -464,9 +463,8 @@ public class AuslandsUeberweisungControl extends AbstractControl
 
       try {
         getEmpfaengerName().setText(a.getName());
-        // Die Konto-Adressen haben zwar ein "getIban", implementieren aber nicht "HibiscusAddress" - daher der Bean-Zugriff
-        getEmpfaengerKonto().setValue(BeanUtil.get(a,"iban"));
-        getEmpfaengerBic().setValue(BeanUtil.get(a,"bic"));
+        getEmpfaengerKonto().setValue(a.getIban());
+        getEmpfaengerBic().setValue(a.getBic());
 
         // Wenn der Empfaenger aus dem Adressbuch kommt, deaktivieren wir die Checkbox
         getStoreEmpfaenger().setValue(Boolean.FALSE);
@@ -506,6 +504,9 @@ public class AuslandsUeberweisungControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AuslandsUeberweisungControl.java,v $
+ * Revision 1.9  2010/04/14 17:44:10  willuhn
+ * @N BUGZILLA 83
+ *
  * Revision 1.8  2010/04/11 22:05:40  willuhn
  * @N virtuelle Konto-Adressen in SEPA-Auftraegen beruecksichtigen
  *

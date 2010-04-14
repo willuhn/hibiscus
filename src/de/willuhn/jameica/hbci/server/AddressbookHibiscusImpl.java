@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AddressbookHibiscusImpl.java,v $
- * $Revision: 1.7 $
- * $Date: 2010/04/11 21:57:08 $
+ * $Revision: 1.8 $
+ * $Date: 2010/04/14 17:44:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -83,16 +83,35 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
     // 1) Im Adressbuch suchen
     {
       DBIterator list = Settings.getDBService().createList(HibiscusAddress.class);
-      result.addAll(findAddresses(list,text));
+      if (text != null && text.length() > 0)
+      {
+        // Gross-Kleinschreibung ignorieren wir
+        String s = "%" + text.toLowerCase() + "%";
+        list.addFilter("(kontonummer LIKE ? OR " +
+                     " blz LIKE ? OR " +
+                     " LOWER(kategorie) LIKE ? OR " +
+                     " LOWER(name) LIKE ? OR " +
+                     " LOWER(kommentar) LIKE ?)",new Object[]{s,s,s,s,s});
+      }
+      list.setOrder("ORDER by LOWER(name)");
+      result.addAll(PseudoIterator.asList(list));
     }
 
     // 2) In den eigenen Konten suchen
     {
       DBIterator list = Settings.getDBService().createList(Konto.class);
-      List<Konto> konten = findAddresses(list,text);
-      for (Konto k:konten)
+      if (text != null && text.length() > 0)
       {
-        result.add(new KontoAddress(k));
+        // Gross-Kleinschreibung ignorieren wir
+        String s = "%" + text.toLowerCase() + "%";
+        list.addFilter("(kontonummer LIKE ? OR " +
+                     " blz LIKE ? OR " +
+                     " LOWER(name) LIKE ? OR " +
+                     " LOWER(kommentar) LIKE ?)",new Object[]{s,s,s,s});
+      }
+      while (list.hasNext())
+      {
+        result.add(new KontoAddress((Konto) list.next()));
       }
     }
     return result;
@@ -125,29 +144,6 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
     return it.hasNext() ? it.next() : null;
   }
 
-  /**
-   * Fuegt die Filterkriterien zum Iterator hinzu, fuehrt ihn aus und liefert das Ergebnis.
-   * @param it der Iterator.
-   * @param text der Suchbegriff. 
-   * @return die Treffer-Liste.
-   * @throws RemoteException
-   */
-  private List findAddresses(DBIterator it, String text) throws RemoteException
-  {
-    if (text != null && text.length() > 0)
-    {
-      // Gross-Kleinschreibung ignorieren wir
-      text = "%" + text.toLowerCase() + "%";
-      it.addFilter("(kontonummer LIKE ? OR " +
-                   " blz LIKE ? OR " +
-                   " LOWER(name) LIKE ? OR " +
-                   " LOWER(kommentar) LIKE ?)",new Object[]{text,text,text,text});
-    }
-    it.setOrder("ORDER by LOWER(name)");
-    return PseudoIterator.asList(it);
-  }
-  
-  
   /**
    * Hilfsklasse, um ein Konto in ein Address-Interface zu packen
    */
@@ -198,10 +194,7 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
     }
     
     /**
-     * Liefert die BIC.
-     * Steht zwar nicht im Interface - wird aber via Bean-Property (Reflection) auch angezeigt.
-     * @return die BIC.
-     * @throws RemoteException
+     * @see de.willuhn.jameica.hbci.rmi.Address#getBic()
      */
     public String getBic() throws RemoteException
     {
@@ -209,14 +202,19 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
     }
 
     /**
-     * Liefert die IBAN.
-     * Steht zwar nicht im Interface - wird aber via Bean-Property (Reflection) auch angezeigt.
-     * @return die IBAN.
-     * @throws RemoteException
+     * @see de.willuhn.jameica.hbci.rmi.Address#getIban()
      */
     public String getIban() throws RemoteException
     {
       return this.konto.getIban();
+    }
+
+    /**
+     * @see de.willuhn.jameica.hbci.rmi.Address#getKategorie()
+     */
+    public String getKategorie() throws RemoteException
+    {
+      return i18n.tr("Eigenes Konto");
     }
 
 
@@ -227,6 +225,9 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
 
 /*********************************************************************
  * $Log: AddressbookHibiscusImpl.java,v $
+ * Revision 1.8  2010/04/14 17:44:10  willuhn
+ * @N BUGZILLA 83
+ *
  * Revision 1.7  2010/04/11 21:57:08  willuhn
  * @N Anzeige der eigenen Konten im Adressbuch als "virtuelle" Adressen. Basierend auf Ralfs Patch.
  *

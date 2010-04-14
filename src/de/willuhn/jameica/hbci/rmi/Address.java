@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Address.java,v $
- * $Revision: 1.7 $
- * $Date: 2009/05/07 09:58:40 $
+ * $Revision: 1.8 $
+ * $Date: 2010/04/14 17:44:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -51,11 +51,36 @@ public interface Address extends Remote
    * @throws RemoteException
    */
   public String getKommentar() throws RemoteException;
+  
+  /**
+   * Liefert die BIC.
+   * @return die BIC.
+   * @throws RemoteException
+   */
+  public String getBic() throws RemoteException;
+
+  /**
+   * Liefert die IBAN.
+   * @return die IBAN.
+   * @throws RemoteException
+   */
+  public String getIban() throws RemoteException;
+  
+  /**
+   * Liefert einen Freitext mit der Kategorie.
+   * @return Freitext mit der Kategorie.
+   * @throws RemoteException
+   */
+  public String getKategorie() throws RemoteException;
+  
 }
 
 
 /*********************************************************************
  * $Log: Address.java,v $
+ * Revision 1.8  2010/04/14 17:44:10  willuhn
+ * @N BUGZILLA 83
+ *
  * Revision 1.7  2009/05/07 09:58:40  willuhn
  * @R deprecated Funktionen getBLZ/setBLZ entfernt - bitte nur noch getBlz/setBlz nutzen!
  *

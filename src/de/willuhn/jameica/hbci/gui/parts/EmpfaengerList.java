@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/EmpfaengerList.java,v $
- * $Revision: 1.24 $
- * $Date: 2010/04/11 21:57:08 $
+ * $Revision: 1.25 $
+ * $Date: 2010/04/14 17:44:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -116,6 +116,7 @@ public class EmpfaengerList extends TablePart implements Part
       }
     });
     addColumn(i18n.tr("IBAN"),"iban");
+    addColumn(i18n.tr("Kategorie"),"kategorie");
     addColumn(i18n.tr("Kommentar"),"kommentar",new Formatter()
     {
       public String format(Object o)
@@ -216,7 +217,7 @@ public class EmpfaengerList extends TablePart implements Part
 
     // Eingabe-Feld fuer die Suche mit Button hinten dran.
     this.search = new TextInput(mySettings.getString("search",null));
-    group.addLabelPair(i18n.tr("Name. Konto oder BLZ enthält"), this.search);
+    group.addLabelPair(i18n.tr("Suchbegriff"), this.search);
     this.search.getControl().addKeyListener(this.listener);
 
     
@@ -370,6 +371,9 @@ public class EmpfaengerList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: EmpfaengerList.java,v $
+ * Revision 1.25  2010/04/14 17:44:10  willuhn
+ * @N BUGZILLA 83
+ *
  * Revision 1.24  2010/04/11 21:57:08  willuhn
  * @N Anzeige der eigenen Konten im Adressbuch als "virtuelle" Adressen. Basierend auf Ralfs Patch.
  *

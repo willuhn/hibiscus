@@ -27,6 +27,7 @@ CREATE TABLE empfaenger (
   bic varchar(15) NULL,
   bank varchar(140) NULL,
   kommentar varchar(1000) NULL,
+  kategorie varchar(255) NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );
@@ -290,4 +291,4 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',26);
+INSERT INTO version (name,version) values ('db',27);
