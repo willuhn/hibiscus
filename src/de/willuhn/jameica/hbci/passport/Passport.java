@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passport/Passport.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/02/20 19:04:44 $
- * $Author: web0 $
+ * $Revision: 1.4 $
+ * $Date: 2010/04/14 16:51:11 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -51,6 +51,16 @@ public interface Passport extends Remote {
    * @throws RemoteException
    */
   public String getName() throws RemoteException;
+  
+  /**
+   * Liefert einen Info-Text, den die Passport-Klasse frei implementieren kann.
+   * Sie kann hier z.Bsp. die Anzahl vorhandener PIN/TAN-Konfigurationen oder
+   * Schluesseldisketten zuruecklistern.
+   * BUGZILLA 471
+   * @return Info-Text zu dem Sicherheitsmedium.
+   * @throws RemoteException
+   */
+  public String getInfo() throws RemoteException;
 	
 	/**
 	 * Liefert das Passport-Handle.
@@ -77,6 +87,9 @@ public interface Passport extends Remote {
 
 /**********************************************************************
  * $Log: Passport.java,v $
+ * Revision 1.4  2010/04/14 16:51:11  willuhn
+ * @N BUGZILLA 471
+ *
  * Revision 1.3  2005/02/20 19:04:44  web0
  * @B Bug 7
  *
