@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EmpfaengerControl.java,v $
- * $Revision: 1.49 $
- * $Date: 2010/04/14 17:44:10 $
+ * $Revision: 1.50 $
+ * $Date: 2010/04/14 22:54:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -270,11 +270,7 @@ public class EmpfaengerControl extends AbstractControl {
   {
     if (this.iban == null)
     {
-      String s = null;
-      Address a = getAddress();
-      if (a instanceof HibiscusAddress)
-        s = ((HibiscusAddress)a).getIban();
-      this.iban = new TextInput(s,HBCIProperties.HBCI_IBAN_MAXLENGTH);
+      this.iban = new TextInput(getAddress().getIban(),HBCIProperties.HBCI_IBAN_MAXLENGTH);
       this.iban.setValidChars(HBCIProperties.HBCI_IBAN_VALIDCHARS);
       this.iban.setEnabled(isHibiscusAdresse());
     }
@@ -290,11 +286,7 @@ public class EmpfaengerControl extends AbstractControl {
   {
     if (this.bic == null)
     {
-      String s = null;
-      Address a = getAddress();
-      if (a instanceof HibiscusAddress)
-        s = ((HibiscusAddress)a).getBic();
-      this.bic = new TextInput(s,HBCIProperties.HBCI_BIC_MAXLENGTH);
+      this.bic = new TextInput(getAddress().getBic(),HBCIProperties.HBCI_BIC_MAXLENGTH);
       this.bic.setValidChars(HBCIProperties.HBCI_BIC_VALIDCHARS);
       this.bic.setEnabled(isHibiscusAdresse());
     }
@@ -374,6 +366,9 @@ public class EmpfaengerControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: EmpfaengerControl.java,v $
+ * Revision 1.50  2010/04/14 22:54:23  willuhn
+ * @B Anzeige der IBAN/BIC auch bei "Konto-Adressen"
+ *
  * Revision 1.49  2010/04/14 17:44:10  willuhn
  * @N BUGZILLA 83
  *
