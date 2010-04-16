@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/XMLImporter.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/04/16 12:20:51 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/XMLUmsatzTypImporter.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2010/04/16 12:20:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,19 +16,18 @@ package de.willuhn.jameica.hbci.io;
 import java.io.IOException;
 import java.io.InputStream;
 import java.rmi.RemoteException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import de.willuhn.datasource.GenericObject;
-import de.willuhn.datasource.db.AbstractDBObject;
-import de.willuhn.datasource.rmi.DBObject;
+import de.willuhn.datasource.db.AbstractDBObjectNode;
 import de.willuhn.datasource.serialize.ObjectFactory;
 import de.willuhn.datasource.serialize.Reader;
 import de.willuhn.datasource.serialize.XmlReader;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
-import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -38,9 +37,9 @@ import de.willuhn.util.I18N;
 import de.willuhn.util.ProgressMonitor;
 
 /**
- * Importer fuer das Hibiscus-eigene XML-Format.
+ * XML-Importer fuer Kategorien.
  */
-public class XMLImporter implements Importer
+public class XMLUmsatzTypImporter implements Importer
 {
 
   protected final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
@@ -58,14 +57,15 @@ public class XMLImporter implements Importer
       throw new ApplicationException(i18n.tr("Kein Datei-Format ausgewählt"));
 
     final ClassLoader loader = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getClassLoader();
+    
     Reader reader = null;
     try
     {
       reader = new XmlReader(is, new ObjectFactory() {
         public GenericObject create(String type, String id, Map values) throws Exception
         {
-          AbstractDBObject object = (AbstractDBObject) Settings.getDBService().createObject(loader.loadClass(type),null);
-          // object.setID(id); // Keine ID angeben, da wir die Daten neu anlegen wollen
+          AbstractDBObjectNode object = (AbstractDBObjectNode) Settings.getDBService().createObject(loader.loadClass(type),null);
+          object.setID(id);
           Iterator i = values.keySet().iterator();
           while (i.hasNext())
           {
@@ -83,8 +83,10 @@ public class XMLImporter implements Importer
       int created = 0;
       int error   = 0;
 
-      DBObject object = null;
-      while ((object = (DBObject) reader.read()) != null)
+      Map<String,String> idMap = new HashMap<String,String>();
+      
+      AbstractDBObjectNode object = null;
+      while ((object = (AbstractDBObjectNode) reader.read()) != null)
       {
         if (monitor != null)
         {
@@ -95,16 +97,17 @@ public class XMLImporter implements Importer
 
         try
         {
+          String id = object.getID();
+          object.setID(null);
+          
+          // Remap parent
+          Object parent = object.getAttribute("parent_id");
+          if (parent != null)
+            object.setAttribute("parent_id",idMap.get(parent.toString()));
+          
           object.store();
+          idMap.put(id,object.getID());
           created++;
-          try
-          {
-            Application.getMessagingFactory().sendMessage(new ImportMessage(object));
-          }
-          catch (Exception ex)
-          {
-            Logger.error("error while sending import message",ex);
-          }
         }
         catch (ApplicationException ae)
         {
@@ -118,6 +121,10 @@ public class XMLImporter implements Importer
           error++;
         }
       }
+      
+      // Wir schicken die Message nur einmal - weil der anzeigende Tree sonst nach jedem Import neu laden wurde
+      Application.getMessagingFactory().sendMessage(new ImportMessage(null));
+
       monitor.setStatusText(i18n.tr("{0} Datensätze erfolgreich importiert, {1} fehlerhafte übersprungen", new String[]{""+created,""+error}));
       monitor.setPercentComplete(100);
     }
@@ -160,16 +167,9 @@ public class XMLImporter implements Importer
    */
   public IOFormat[] getIOFormats(Class objectType)
   {
-    if (!GenericObject.class.isAssignableFrom(objectType))
-      return null; // Import fuer alles moeglich, was von GenericObject abgeleitet ist
+    if (!UmsatzTyp.class.isAssignableFrom(objectType))
+      return null;
     
-    // BUGZILLA 700
-    if (SammelTransfer.class.isAssignableFrom(objectType))
-      return null; // Keine Sammel-Auftraege - die muessen gesondert behandelt werden.
-
-    if (UmsatzTyp.class.isAssignableFrom(objectType))
-      return null; // Keine Kategorien - die muessen gesondert behandelt werden.
-
     IOFormat f = new IOFormat() {
       public String getName()
       {
@@ -189,22 +189,8 @@ public class XMLImporter implements Importer
 }
 
 /*******************************************************************************
- * $Log: XMLImporter.java,v $
- * Revision 1.5  2010/04/16 12:20:51  willuhn
+ * $Log: XMLUmsatzTypImporter.java,v $
+ * Revision 1.1  2010/04/16 12:20:52  willuhn
  * @B Parent-ID beim Import von Kategorien beruecksichtigen und neu mappen
- *
- * Revision 1.4  2009/10/05 17:12:03  willuhn
- * @B Import-Message wurde doppelt verschickt
- *
- * Revision 1.3  2009/02/13 14:17:01  willuhn
- * @N BUGZILLA 700
- *
- * Revision 1.2  2008/02/13 23:44:27  willuhn
- * @R Hibiscus-Eigenformat (binaer-serialisierte Objekte) bei Export und Import abgeklemmt
- * @N Import und Export von Umsatz-Kategorien im XML-Format
- * @B Verzaehler bei XML-Import
- *
- * Revision 1.1  2008/01/22 13:34:45  willuhn
- * @N Neuer XML-Import/-Export
  *
  ******************************************************************************/
