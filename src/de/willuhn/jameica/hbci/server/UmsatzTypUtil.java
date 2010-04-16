@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypUtil.java,v $
- * $Revision: 1.3 $
- * $Date: 2010/03/05 23:59:31 $
+ * $Revision: 1.4 $
+ * $Date: 2010/04/16 12:46:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -70,7 +70,7 @@ public class UmsatzTypUtil
   public static DBIterator getRootElements() throws RemoteException
   {
     DBIterator list = getAll();
-    list.addFilter("parent_id is null");
+    list.addFilter("parent_id is null or parent_id not in (select id from umsatztyp)");
     return list;
   }
 
@@ -79,6 +79,9 @@ public class UmsatzTypUtil
 
 /*********************************************************************
  * $Log: UmsatzTypUtil.java,v $
+ * Revision 1.4  2010/04/16 12:46:03  willuhn
+ * @B Parent-ID beim Import von Kategorien beruecksichtigen und neu mappen - siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=66546#66546
+ *
  * Revision 1.3  2010/03/05 23:59:31  willuhn
  * @C Code-Cleanup
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/XMLUmsatzTypImporter.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/04/16 12:20:52 $
+ * $Revision: 1.2 $
+ * $Date: 2010/04/16 12:46:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -108,6 +108,14 @@ public class XMLUmsatzTypImporter implements Importer
           object.store();
           idMap.put(id,object.getID());
           created++;
+          try
+          {
+            Application.getMessagingFactory().sendMessage(new ImportMessage(object));
+          }
+          catch (Exception ex)
+          {
+            Logger.error("error while sending import message",ex);
+          }
         }
         catch (ApplicationException ae)
         {
@@ -121,9 +129,6 @@ public class XMLUmsatzTypImporter implements Importer
           error++;
         }
       }
-      
-      // Wir schicken die Message nur einmal - weil der anzeigende Tree sonst nach jedem Import neu laden wurde
-      Application.getMessagingFactory().sendMessage(new ImportMessage(null));
 
       monitor.setStatusText(i18n.tr("{0} Datensätze erfolgreich importiert, {1} fehlerhafte übersprungen", new String[]{""+created,""+error}));
       monitor.setPercentComplete(100);
@@ -190,6 +195,9 @@ public class XMLUmsatzTypImporter implements Importer
 
 /*******************************************************************************
  * $Log: XMLUmsatzTypImporter.java,v $
+ * Revision 1.2  2010/04/16 12:46:03  willuhn
+ * @B Parent-ID beim Import von Kategorien beruecksichtigen und neu mappen - siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=66546#66546
+ *
  * Revision 1.1  2010/04/16 12:20:52  willuhn
  * @B Parent-ID beim Import von Kategorien beruecksichtigen und neu mappen
  *

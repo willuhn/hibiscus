@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTypTree.java,v $
- * $Revision: 1.15 $
- * $Date: 2010/04/16 12:20:52 $
+ * $Revision: 1.16 $
+ * $Date: 2010/04/16 12:46:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TreeItem;
 
 import de.willuhn.datasource.GenericIterator;
+import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.formatter.Formatter;
@@ -32,6 +33,7 @@ import de.willuhn.jameica.gui.parts.TreePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.messaging.ObjectDeletedMessage;
+import de.willuhn.jameica.hbci.messaging.ObjectMessage;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.hbci.server.UmsatzTypUtil;
 import de.willuhn.jameica.messaging.Message;
@@ -171,6 +173,11 @@ public class UmsatzTypTree extends TreePart
      */
     public void handleMessage(Message message) throws Exception
     {
+      ObjectMessage msg = (ObjectMessage) message;
+      GenericObject o = msg.getObject();
+      if (!(o instanceof UmsatzTyp))
+        return;
+      
       GUI.getDisplay().asyncExec(new Runnable()
       {
         public void run()
@@ -193,6 +200,9 @@ public class UmsatzTypTree extends TreePart
 
 /**********************************************************************
  * $Log: UmsatzTypTree.java,v $
+ * Revision 1.16  2010/04/16 12:46:03  willuhn
+ * @B Parent-ID beim Import von Kategorien beruecksichtigen und neu mappen - siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=66546#66546
+ *
  * Revision 1.15  2010/04/16 12:20:52  willuhn
  * @B Parent-ID beim Import von Kategorien beruecksichtigen und neu mappen
  *
