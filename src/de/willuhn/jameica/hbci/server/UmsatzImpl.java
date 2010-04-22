@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.70 $
- * $Date: 2010/03/16 00:44:18 $
+ * $Revision: 1.71 $
+ * $Date: 2010/04/22 12:42:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -688,11 +688,40 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
     
     this.setAttribute("flags",new Integer(flags));
   }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Duplicatable#duplicate()
+   */
+  public Umsatz duplicate() throws RemoteException
+  {
+    Umsatz copy = (Umsatz) this.getService().createObject(Umsatz.class,null);
+    copy.setArt(this.getArt());
+    copy.setBetrag(this.getBetrag());
+    copy.setCustomerRef(this.getCustomerRef());
+    copy.setDatum(this.getDatum());
+    copy.setFlags(this.getFlags());
+    copy.setGegenkontoBLZ(this.getGegenkontoBLZ());
+    copy.setGegenkontoName(this.getGegenkontoName());
+    copy.setGegenkontoNummer(this.getGegenkontoNummer());
+    copy.setKommentar(this.getKommentar());
+    copy.setKonto(this.getKonto());
+    copy.setPrimanota(this.getPrimanota());
+    copy.setSaldo(this.getSaldo());
+    copy.setUmsatzTyp(this.getUmsatzTyp());
+    copy.setValuta(this.getValuta());
+    copy.setZweck(this.getZweck());
+    copy.setZweck2(this.getZweck2());
+    copy.setWeitereVerwendungszwecke(this.getWeitereVerwendungszwecke());
+    return copy;
+  }
 }
 
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.71  2010/04/22 12:42:03  willuhn
+ * @N Erste Version des Supports fuer Offline-Konten
+ *
  * Revision 1.70  2010/03/16 00:44:18  willuhn
  * @N Komplettes Redesign des CSV-Imports.
  *   - Kann nun erheblich einfacher auch fuer andere Datentypen (z.Bsp.Ueberweisungen) verwendet werden

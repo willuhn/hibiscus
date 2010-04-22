@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/PassportInput.java,v $
- * $Revision: 1.4 $
- * $Date: 2009/05/07 13:36:57 $
+ * $Revision: 1.5 $
+ * $Date: 2010/04/22 12:42:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -48,6 +48,7 @@ public class PassportInput extends SelectInput
   private static List<Passport> passports = null;
   
   private Composite comp                  = null;
+  private Button button                   = null;
   
   /**
    * ct.
@@ -122,7 +123,7 @@ public class PassportInput extends SelectInput
     Control combo = super.getControl();
     
     // Wir haengen jetzt noch unseren Button dran
-    Button button = new Button(i18n.tr("Konfigurieren..."),new Action()
+    this.button = new Button(i18n.tr("Konfigurieren..."),new Action()
     {
       /**
        * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
@@ -147,13 +148,23 @@ public class PassportInput extends SelectInput
     },null,false,"document-properties.png");
     try
     {
-      button.paint(getParent());
+      this.button.paint(getParent());
     }
     catch (RemoteException re)
     {
       Logger.error("unable to append configure button",re);
     }
     return combo;
+  }
+
+  
+  /**
+   * @see de.willuhn.jameica.gui.input.SelectInput#setEnabled(boolean)
+   */
+  public void setEnabled(boolean enabled)
+  {
+    super.setEnabled(enabled);
+    this.button.setEnabled(enabled);
   }
 
   /**
@@ -184,6 +195,9 @@ public class PassportInput extends SelectInput
 
 /*********************************************************************
  * $Log: PassportInput.java,v $
+ * Revision 1.5  2010/04/22 12:42:03  willuhn
+ * @N Erste Version des Supports fuer Offline-Konten
+ *
  * Revision 1.4  2009/05/07 13:36:57  willuhn
  * @R Hilfsobjekt "PassportObject" entfernt
  * @C Cleanup in PassportInput (insb. der weisse Hintergrund hinter dem "Konfigurieren..."-Button hat gestoert

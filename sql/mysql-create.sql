@@ -7,7 +7,7 @@ CREATE TABLE konto (
      , bezeichnung VARCHAR(255)
      , kundennummer VARCHAR(255) NOT NULL
      , waehrung VARCHAR(6) NOT NULL
-     , passport_class TEXT NOT NULL
+     , passport_class TEXT
      , saldo DOUBLE
      , saldo_datum DATETIME
      , kommentar TEXT
@@ -291,4 +291,4 @@ ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
 
-INSERT INTO version (name,version) values ('db',27);
+INSERT INTO version (name,version) values ('db',28);

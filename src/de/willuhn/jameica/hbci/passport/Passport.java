@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passport/Passport.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/04/21 23:39:24 $
+ * $Revision: 1.6 $
+ * $Date: 2010/04/22 12:42:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,7 +15,6 @@ package de.willuhn.jameica.hbci.passport;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-import de.willuhn.jameica.hbci.backend.Backend;
 import de.willuhn.jameica.hbci.rmi.Konto;
 
 
@@ -83,18 +82,14 @@ public interface Passport extends Remote {
    * @throws RemoteException
    */
   public Class getConfigDialog() throws RemoteException;
-  
-  /**
-   * Liefert das Banking-Backend.
-   * @return das Banking-Backend.
-   * @throws RemoteException
-   */
-  public Backend getBackend() throws RemoteException;
 }
 
 
 /**********************************************************************
  * $Log: Passport.java,v $
+ * Revision 1.6  2010/04/22 12:42:03  willuhn
+ * @N Erste Version des Supports fuer Offline-Konten
+ *
  * Revision 1.5  2010/04/21 23:39:24  willuhn
  * @N Support fuer Offline-Konten
  *

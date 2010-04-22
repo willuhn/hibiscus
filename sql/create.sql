@@ -7,7 +7,7 @@ CREATE TABLE konto (
   bezeichnung varchar(255),
   kundennummer varchar(255) NOT NULL,
   waehrung varchar(6) NOT NULL,
-  passport_class varchar(1000) NOT NULL,
+  passport_class varchar(1000),
   saldo double,
   saldo_datum date,
   kommentar varchar(1000) NULL,
@@ -291,4 +291,4 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',27);
+INSERT INTO version (name,version) values ('db',28);

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/SynchronizeOptions.java,v $
- * $Revision: 1.8 $
- * $Date: 2010/02/26 15:42:23 $
+ * $Revision: 1.9 $
+ * $Date: 2010/04/22 12:42:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -36,7 +36,8 @@ public class SynchronizeOptions implements Serializable
    */
   public SynchronizeOptions(Konto k) throws RemoteException
   {
-    this.disabled = k == null || ((k.getFlags() & Konto.FLAG_DISABLED) != 0);
+    int flags = k.getFlags();
+    this.disabled = k == null || ((flags & Konto.FLAG_DISABLED) != 0) || ((flags & Konto.FLAG_OFFLINE) != 0);
     this.id = k == null ? null : k.getID();
   }
   
@@ -187,6 +188,9 @@ public class SynchronizeOptions implements Serializable
 
 /*********************************************************************
  * $Log: SynchronizeOptions.java,v $
+ * Revision 1.9  2010/04/22 12:42:03  willuhn
+ * @N Erste Version des Supports fuer Offline-Konten
+ *
  * Revision 1.8  2010/02/26 15:42:23  willuhn
  * @N Alle Synchronisierungsoptionen auf einmal aktivieren/deaktivieren
  *

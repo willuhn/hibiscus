@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.86 $
- * $Date: 2010/04/14 17:09:56 $
+ * $Revision: 1.87 $
+ * $Date: 2010/04/22 12:42:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,6 +26,7 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
+import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.TextAreaInput;
@@ -89,6 +90,8 @@ public class KontoControl extends AbstractControl {
 	private TablePart protokoll						= null;
   private UmsatzList umsatzList         = null;
   private UmsatzChart umsatzChart       = null;
+  
+  private CheckboxInput offline         = null;
 
 	private I18N i18n;
 
@@ -186,6 +189,43 @@ public class KontoControl extends AbstractControl {
     kontonummer.setMandatory(true);
 		return kontonummer;
 	}
+  
+  /**
+   * Liefert eine Checkbox, mit der festgelegt werden kann, ob es sich um ein Offlinekonto handelt.
+   * @return Checkbox.
+   * @throws RemoteException
+   */
+  public CheckboxInput getOffline() throws RemoteException
+  {
+    if (this.offline != null)
+      return this.offline;
+    
+    this.offline = new CheckboxInput((this.getKonto().getFlags() & Konto.FLAG_OFFLINE) != 0);
+    this.offline.setName(i18n.tr("Offline-Konto"));
+    
+    Listener l = new Listener() {
+      public void handleEvent(Event event)
+      {
+        try
+        {
+          boolean b = ((Boolean) getOffline().getValue()).booleanValue();
+          getPassportAuswahl().setEnabled(!b);
+          getSynchronizeOptions().setEnabled(!b);
+        }
+        catch (Exception e)
+        {
+          Logger.error("error while updating offline status",e);
+        }
+      }
+    };
+    
+    this.offline.addListener(l);
+    
+    // einmal initial ausloesen
+    l.handleEvent(null);
+
+    return this.offline;
+  }
 
   /**
    * Liefert das Eingabe-Feld fuer die Unterkontonummer.
@@ -427,16 +467,28 @@ public class KontoControl extends AbstractControl {
   public synchronized void handleStore() {
 		try {
 
-			Passport p = (Passport) getPassportAuswahl().getValue();
+      boolean offline = ((Boolean)getOffline().getValue()).booleanValue();
 
-			if (p == null)
+			if (offline)
 			{
-			  Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte wählen Sie ein Sicherheitsmedium aus"), StatusBarMessage.TYPE_ERROR));
-				return;
+			  getKonto().setPassportClass(null);
+			}
+			else
+			{
+	      Passport p = (Passport) getPassportAuswahl().getValue();
+			  if (p == null)
+			  {
+	        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte wählen Sie ein Sicherheitsmedium aus"), StatusBarMessage.TYPE_ERROR));
+	        return;
+			  }
+        getKonto().setPassportClass(p.getClass().getName());
 			}
 			
-			getKonto().setPassportClass(p.getClass().getName());
-
+			int flags = getKonto().getFlags();
+			if (offline) flags |= Konto.FLAG_OFFLINE;
+			else         flags ^= Konto.FLAG_OFFLINE;
+			getKonto().setFlags(flags);
+			
 			getKonto().setKontonummer((String)getKontonummer().getValue());
       getKonto().setUnterkonto((String)getUnterkonto().getValue());
 			getKonto().setBLZ((String)getBlz().getValue());
@@ -637,6 +689,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.87  2010/04/22 12:42:02  willuhn
+ * @N Erste Version des Supports fuer Offline-Konten
+ *
  * Revision 1.86  2010/04/14 17:09:56  willuhn
  * @C Max. 255 Zeichen zulassen - BUGZILLA 567
  *
