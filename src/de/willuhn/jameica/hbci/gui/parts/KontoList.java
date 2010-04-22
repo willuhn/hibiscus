@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoList.java,v $
- * $Revision: 1.15 $
- * $Date: 2009/09/15 00:23:35 $
+ * $Revision: 1.16 $
+ * $Date: 2010/04/22 15:43:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -133,8 +133,10 @@ public class KontoList extends TablePart implements Part
 
           // Checken, ob Konto deaktiviert ist
           int flags = k.getFlags();
-          if ((flags & Konto.FLAG_DISABLED) != 0)
+          if ((flags & Konto.FLAG_DISABLED) == Konto.FLAG_DISABLED)
             item.setForeground(Color.COMMENT.getSWTColor());
+          else if ((flags & Konto.FLAG_OFFLINE) == Konto.FLAG_OFFLINE)
+            item.setForeground(Color.LINK.getSWTColor());
           else if (k.getSaldo() < 0)
             item.setForeground(Settings.getBuchungSollForeground());
           else
@@ -270,6 +272,10 @@ public class KontoList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.16  2010/04/22 15:43:06  willuhn
+ * @B Debugging
+ * @N Kontoliste aktualisieren
+ *
  * Revision 1.15  2009/09/15 00:23:35  willuhn
  * @N BUGZILLA 745
  *

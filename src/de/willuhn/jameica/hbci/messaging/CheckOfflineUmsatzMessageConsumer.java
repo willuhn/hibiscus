@@ -46,20 +46,15 @@ public class CheckOfflineUmsatzMessageConsumer implements MessageConsumer
     
     GenericObject o = ((ImportMessage)message).getObject();
     
-    if (o == null || o.getID() == null || !(o instanceof Umsatz))
+    if (!(o instanceof Umsatz))
       return; // interessiert uns nicht
     
     // wir haben einen Umsatz, den es zu bearbeiten gilt...
     Umsatz u = (Umsatz) o;
 
-//  // prüfen ob die Gegenbuchung zu diesem Umsatz bereits existiert.
-//  // Dies ist vor allem wichtig, wenn eine Überweisung zwischen 2 Offlinekonten durchgeführt wurde
-//  if (u.getGegenbuchung()!=null)
-//    return false;
-  
     // pruefen, ob das Gegenkonto ein eigenes Konto und dieses ein Offlinekonto ist.
     Konto gegenkonto = KontoUtil.find(u.getGegenkontoNummer(), u.getGegenkontoBLZ());
-    if (gegenkonto == null || (gegenkonto.getFlags() & Konto.FLAG_OFFLINE) == 0)
+    if (gegenkonto == null || (gegenkonto.getFlags() & Konto.FLAG_OFFLINE) != Konto.FLAG_OFFLINE)
       return;
 
     // Kopie der Buchung erzeugen
@@ -80,7 +75,7 @@ public class CheckOfflineUmsatzMessageConsumer implements MessageConsumer
       gegenbuchung.setGegenkontoName(k.getName());
       
       // Art des Umsatzes setzen, Laenge ggf. auf DB-Feldlaenge küuerzen
-      String art = i18n.tr("Auto-Buchung Offline-Konto zu '{0}'",u.getArt());
+      String art = i18n.tr("Auto-Buchung Offline-Konto");
       if (art.length()>100) art = art.substring(0, 100);
       gegenbuchung.setArt(art);
       
@@ -106,6 +101,9 @@ public class CheckOfflineUmsatzMessageConsumer implements MessageConsumer
       
       // neuen Umsatz bekannt geben
       Application.getMessagingFactory().sendMessage(new ImportMessage(gegenbuchung));
+      
+      // Geaendertes Konto bekanntmachen
+      Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(gegenkonto));
     }
     catch (Exception e)
     {
