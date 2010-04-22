@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailEditControl.java,v $
- * $Revision: 1.4 $
- * $Date: 2010/04/22 16:47:49 $
+ * $Revision: 1.5 $
+ * $Date: 2010/04/22 16:48:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -253,7 +253,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
       
       u.setBetrag((Double)getBetrag().getValue());
       
-      // TODO: Der Saldo sollte eigentlich automatisch errechnet werden
+      // BUGZILLA 586 TODO Der Saldo sollte eigentlich automatisch errechnet werden
       // koennen. Ausserdem sollte beim Speichern auch gleich der Saldo
       // des Offline-Kontos aktualisiert werden.
       u.setSaldo((Double)getSaldo().getValue());
@@ -382,6 +382,9 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
 
 /**********************************************************************
  * $Log: UmsatzDetailEditControl.java,v $
+ * Revision 1.5  2010/04/22 16:48:15  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2010/04/22 16:47:49  willuhn
  * *** empty log message ***
  *
