@@ -51,6 +51,12 @@ public class CheckOfflineUmsatzMessageConsumer implements MessageConsumer
     
     // wir haben einen Umsatz, den es zu bearbeiten gilt...
     Umsatz u = (Umsatz) o;
+    
+    // Wenn der Umsatz schon von einem Offline-Konto kommt, legen
+    // wir keine Gegenbuchung mehr an. Das fuehrt sonst zu einem Ping-Pong-Spiel ;)
+    Konto k = u.getKonto();
+    if ((k.getFlags() & Konto.FLAG_OFFLINE) == Konto.FLAG_OFFLINE)
+      return;
 
     // pruefen, ob das Gegenkonto ein eigenes Konto und dieses ein Offlinekonto ist.
     Konto gegenkonto = KontoUtil.find(u.getGegenkontoNummer(), u.getGegenkontoBLZ());
@@ -69,7 +75,6 @@ public class CheckOfflineUmsatzMessageConsumer implements MessageConsumer
 
       // Konten tauschen
       gegenbuchung.setKonto(gegenkonto);
-      Konto k = u.getKonto();
       gegenbuchung.setGegenkontoNummer(k.getKontonummer());
       gegenbuchung.setGegenkontoBLZ(k.getBLZ());
       gegenbuchung.setGegenkontoName(k.getName());
