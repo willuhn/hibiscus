@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/SammelLastschriftNew.java,v $
- * $Revision: 1.3 $
- * $Date: 2009/09/15 00:23:34 $
+ * $Revision: 1.4 $
+ * $Date: 2010/04/22 16:21:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -48,7 +48,7 @@ public class SammelLastschriftNew implements Action
 			try {
 				Konto k = (Konto) context;
 				u = (SammelLastschrift) Settings.getDBService().createObject(SammelLastschrift.class,null);
-        if ((k.getFlags() & Konto.FLAG_DISABLED) != Konto.FLAG_DISABLED)
+        if ((k.getFlags() & Konto.FLAG_DISABLED) != Konto.FLAG_DISABLED && (k.getFlags() & Konto.FLAG_OFFLINE) != Konto.FLAG_OFFLINE)
   				u.setKonto(k);
 			}
 			catch (RemoteException e)
@@ -75,6 +75,9 @@ public class SammelLastschriftNew implements Action
 
 /**********************************************************************
  * $Log: SammelLastschriftNew.java,v $
+ * Revision 1.4  2010/04/22 16:21:27  willuhn
+ * @N HBCI-relevante Buttons und Aktionen fuer Offline-Konten sperren
+ *
  * Revision 1.3  2009/09/15 00:23:34  willuhn
  * @N BUGZILLA 745
  *

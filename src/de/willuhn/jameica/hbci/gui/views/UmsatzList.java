@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzList.java,v $
- * $Revision: 1.11 $
- * $Date: 2009/09/15 00:23:35 $
+ * $Revision: 1.12 $
+ * $Date: 2010/04/22 16:21:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -83,7 +83,8 @@ public class UmsatzList extends AbstractView
       buttons.addButton(i18n.tr("Umsätze importieren..."), new UmsatzImport(),control.getKonto(),false,"document-open.png");
 
       Button fetch = new Button(i18n.tr("Umsätze abrufen"), new KontoFetchUmsaetze(),control.getKonto(),false,"mail-send-receive.png");
-      fetch.setEnabled((control.getKonto().getFlags() & Konto.FLAG_DISABLED) != Konto.FLAG_DISABLED);
+      int flags = control.getKonto().getFlags();
+      fetch.setEnabled((flags & Konto.FLAG_DISABLED) != Konto.FLAG_DISABLED && (flags & Konto.FLAG_OFFLINE) != Konto.FLAG_OFFLINE);
       
       buttons.addButton(fetch);
 		}
@@ -108,6 +109,9 @@ public class UmsatzList extends AbstractView
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.12  2010/04/22 16:21:27  willuhn
+ * @N HBCI-relevante Buttons und Aktionen fuer Offline-Konten sperren
+ *
  * Revision 1.11  2009/09/15 00:23:35  willuhn
  * @N BUGZILLA 745
  *

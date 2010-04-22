@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/LastschriftNew.java,v $
- * $Revision: 1.6 $
- * $Date: 2009/11/26 12:00:21 $
+ * $Revision: 1.7 $
+ * $Date: 2010/04/22 16:21:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -51,7 +51,7 @@ public class LastschriftNew implements Action
 			try {
 				Konto k = (Konto) context;
 				u = (Lastschrift) Settings.getDBService().createObject(Lastschrift.class,null);
-        if ((k.getFlags() & Konto.FLAG_DISABLED) != Konto.FLAG_DISABLED)
+        if ((k.getFlags() & Konto.FLAG_DISABLED) != Konto.FLAG_DISABLED && (k.getFlags() & Konto.FLAG_OFFLINE) != Konto.FLAG_OFFLINE)
   				u.setKonto(k);
 			}
 			catch (RemoteException e)
@@ -106,6 +106,9 @@ public class LastschriftNew implements Action
 
 /**********************************************************************
  * $Log: LastschriftNew.java,v $
+ * Revision 1.7  2010/04/22 16:21:27  willuhn
+ * @N HBCI-relevante Buttons und Aktionen fuer Offline-Konten sperren
+ *
  * Revision 1.6  2009/11/26 12:00:21  willuhn
  * @N Buchungen aus Sammelauftraegen in Einzelauftraege duplizieren
  *

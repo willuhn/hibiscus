@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/UeberweisungNew.java,v $
- * $Revision: 1.11 $
- * $Date: 2009/11/26 12:00:21 $
+ * $Revision: 1.12 $
+ * $Date: 2010/04/22 16:21:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -54,7 +54,7 @@ public class UeberweisungNew implements Action
 			try {
 				Konto k = (Konto) context;
 				u = (Ueberweisung) Settings.getDBService().createObject(Ueberweisung.class,null);
-				if ((k.getFlags() & Konto.FLAG_DISABLED) != Konto.FLAG_DISABLED)
+        if ((k.getFlags() & Konto.FLAG_DISABLED) != Konto.FLAG_DISABLED && (k.getFlags() & Konto.FLAG_OFFLINE) != Konto.FLAG_OFFLINE)
   				u.setKonto(k);
 			}
 			catch (RemoteException e)
@@ -137,6 +137,9 @@ public class UeberweisungNew implements Action
 
 /**********************************************************************
  * $Log: UeberweisungNew.java,v $
+ * Revision 1.12  2010/04/22 16:21:27  willuhn
+ * @N HBCI-relevante Buttons und Aktionen fuer Offline-Konten sperren
+ *
  * Revision 1.11  2009/11/26 12:00:21  willuhn
  * @N Buchungen aus Sammelauftraegen in Einzelauftraege duplizieren
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/KontoList.java,v $
- * $Revision: 1.21 $
- * $Date: 2010/04/22 16:10:43 $
+ * $Revision: 1.22 $
+ * $Date: 2010/04/22 16:21:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -77,7 +77,7 @@ public class KontoList extends ContextMenu implements Extendable
             return false;
           
           Konto k = (Konto)o;
-          return super.isEnabledFor(o) && ((k.getFlags() & Konto.FLAG_DISABLED) != Konto.FLAG_DISABLED);
+          return super.isEnabledFor(o) && ((k.getFlags() & Konto.FLAG_DISABLED) != Konto.FLAG_DISABLED) && ((k.getFlags() & Konto.FLAG_OFFLINE) != Konto.FLAG_OFFLINE);
         }
         catch (RemoteException re)
         {
@@ -193,6 +193,9 @@ public class KontoList extends ContextMenu implements Extendable
 
 /*******************************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.22  2010/04/22 16:21:27  willuhn
+ * @N HBCI-relevante Buttons und Aktionen fuer Offline-Konten sperren
+ *
  * Revision 1.21  2010/04/22 16:10:43  willuhn
  * @C Saldo kann bei Offline-Konten zwar nicht manuell bearbeitet werden, dafuer wird er aber beim Zuruecksetzen des Kontos (heisst jetzt "Saldo und Datum zuruecksetzen" statt "Kontoauszugsdatum zuruecksetzen") jetzt ebenfalls geloescht
  *

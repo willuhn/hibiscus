@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoNew.java,v $
- * $Revision: 1.29 $
- * $Date: 2010/04/22 12:42:03 $
+ * $Revision: 1.30 $
+ * $Date: 2010/04/22 16:21:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -126,7 +126,8 @@ public class KontoNew extends AbstractView {
     buttons.addButton(new Back());
     
     Button fetch = new Button(i18n.tr("Saldo und Umsätze abrufen"), new KontoFetchUmsaetze(),control.getKonto(),false,"mail-send-receive.png");
-    fetch.setEnabled((control.getKonto().getFlags() & Konto.FLAG_DISABLED) != Konto.FLAG_DISABLED);
+    int flags = control.getKonto().getFlags();
+    fetch.setEnabled((flags & Konto.FLAG_DISABLED) != Konto.FLAG_DISABLED && (flags & Konto.FLAG_OFFLINE) != Konto.FLAG_OFFLINE);
     buttons.addButton(fetch);
     buttons.addButton(i18n.tr("Alle Umsätze anzeigen"),     new UmsatzList(),control.getKonto(),false,"text-x-generic.png");
   }
@@ -153,6 +154,9 @@ public class KontoNew extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoNew.java,v $
+ * Revision 1.30  2010/04/22 16:21:27  willuhn
+ * @N HBCI-relevante Buttons und Aktionen fuer Offline-Konten sperren
+ *
  * Revision 1.29  2010/04/22 12:42:03  willuhn
  * @N Erste Version des Supports fuer Offline-Konten
  *

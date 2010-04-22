@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/DauerauftragNew.java,v $
- * $Revision: 1.7 $
- * $Date: 2009/09/15 00:23:34 $
+ * $Revision: 1.8 $
+ * $Date: 2010/04/22 16:21:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -53,7 +53,7 @@ public class DauerauftragNew implements Action
 			try {
 				Konto k = (Konto) context;
 				d = (Dauerauftrag) Settings.getDBService().createObject(Dauerauftrag.class,null);
-        if ((k.getFlags() & Konto.FLAG_DISABLED) != Konto.FLAG_DISABLED)
+        if ((k.getFlags() & Konto.FLAG_DISABLED) != Konto.FLAG_DISABLED && (k.getFlags() & Konto.FLAG_OFFLINE) != Konto.FLAG_OFFLINE)
   				d.setKonto(k);
 			}
 			catch (RemoteException e)
@@ -82,6 +82,9 @@ public class DauerauftragNew implements Action
 
 /**********************************************************************
  * $Log: DauerauftragNew.java,v $
+ * Revision 1.8  2010/04/22 16:21:27  willuhn
+ * @N HBCI-relevante Buttons und Aktionen fuer Offline-Konten sperren
+ *
  * Revision 1.7  2009/09/15 00:23:34  willuhn
  * @N BUGZILLA 745
  *
