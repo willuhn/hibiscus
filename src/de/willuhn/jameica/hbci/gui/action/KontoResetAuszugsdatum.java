@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoResetAuszugsdatum.java,v $
- * $Revision: 1.3 $
- * $Date: 2008/12/15 10:52:16 $
+ * $Revision: 1.4 $
+ * $Date: 2010/04/22 16:10:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,7 +13,6 @@
 package de.willuhn.jameica.hbci.gui.action;
 
 import de.willuhn.jameica.gui.Action;
-import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -48,17 +47,19 @@ public class KontoResetAuszugsdatum implements Action
       if (k.isNewObject())
         return;
 
-      YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
-      d.setTitle(i18n.tr("Kontoauszugsdatum zurücksetzen"));
-      d.setText(i18n.tr("Soll das Kontoauszugsdatum wirklich zurückgesetzt werden?\n"
-                      + "Bei der nächsten Synchronisierung werden alle bei der Bank \n"
-                      + "verfügbaren Umsätze abgeholt."));
+      String q = i18n.tr("Sollen Saldo und Aktualisierungsdatum wirklich zurückgesetzt werden?");
 
-      Boolean choice = (Boolean) d.open();
-      if (!choice.booleanValue())
+      if ((k.getFlags() & Konto.FLAG_OFFLINE) == 0)
+      {
+        q += "\n\n";
+        q += i18n.tr("Bei der nächsten Synchronisierung werden alle bei der Bank verfügbaren\n" +
+        		         "Umsätze erneut abgerufen und Saldo sowie Datum aktualisiert.");
+      }
+
+      if (!Application.getCallback().askUser(q))
         return;
 
-      k.resetSaldoDatum();
+      k.reset();
       k.store();
       Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(k));
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Kontoauszugsdatum zurückgesetzt."), StatusBarMessage.TYPE_SUCCESS));
@@ -75,6 +76,9 @@ public class KontoResetAuszugsdatum implements Action
 
 /*******************************************************************************
  * $Log: KontoResetAuszugsdatum.java,v $
+ * Revision 1.4  2010/04/22 16:10:43  willuhn
+ * @C Saldo kann bei Offline-Konten zwar nicht manuell bearbeitet werden, dafuer wird er aber beim Zuruecksetzen des Kontos (heisst jetzt "Saldo und Datum zuruecksetzen" statt "Kontoauszugsdatum zuruecksetzen") jetzt ebenfalls geloescht
+ *
  * Revision 1.3  2008/12/15 10:52:16  willuhn
  * @N ObjectChangedMessage, um die Tabelle live zu aktualisieren
  *

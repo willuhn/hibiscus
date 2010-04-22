@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.99 $
- * $Date: 2009/10/20 23:12:58 $
+ * $Revision: 1.100 $
+ * $Date: 2010/04/22 16:10:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -399,11 +399,12 @@ public class KontoImpl extends AbstractDBObject implements Konto
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#resetSaldoDatum()
+   * @see de.willuhn.jameica.hbci.rmi.Konto#reset()
    */
-  public void resetSaldoDatum() throws RemoteException
+  public void reset() throws RemoteException
   {
     setAttribute("saldo_datum", null);
+    setAttribute("saldo", null);
   }
 
   /**
@@ -833,6 +834,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*******************************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.100  2010/04/22 16:10:43  willuhn
+ * @C Saldo kann bei Offline-Konten zwar nicht manuell bearbeitet werden, dafuer wird er aber beim Zuruecksetzen des Kontos (heisst jetzt "Saldo und Datum zuruecksetzen" statt "Kontoauszugsdatum zuruecksetzen") jetzt ebenfalls geloescht
+ *
  * Revision 1.99  2009/10/20 23:12:58  willuhn
  * @N Support fuer SEPA-Ueberweisungen
  * @N Konten um IBAN und BIC erweitert

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Konto.java,v $
- * $Revision: 1.43 $
- * $Date: 2010/04/22 12:42:02 $
+ * $Revision: 1.44 $
+ * $Date: 2010/04/22 16:10:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -230,11 +230,10 @@ public interface Konto extends DBObject, Checksum, Flaggable
 	public Date getSaldoDatum() throws RemoteException;
   
   /**
-   * Setzt das SaldoDatum zurück
-   * 
+   * Setzt das Saldo und Datum zurück
    * @throws RemoteException
    */
-  public void resetSaldoDatum() throws RemoteException;
+  public void reset() throws RemoteException;
 
 	/**
 	 * Liefert eine Liste aller Umsaetze fuer das Konto in umgekehrter
@@ -419,6 +418,9 @@ public interface Konto extends DBObject, Checksum, Flaggable
 
 /*******************************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.44  2010/04/22 16:10:43  willuhn
+ * @C Saldo kann bei Offline-Konten zwar nicht manuell bearbeitet werden, dafuer wird er aber beim Zuruecksetzen des Kontos (heisst jetzt "Saldo und Datum zuruecksetzen" statt "Kontoauszugsdatum zuruecksetzen") jetzt ebenfalls geloescht
+ *
  * Revision 1.43  2010/04/22 12:42:02  willuhn
  * @N Erste Version des Supports fuer Offline-Konten
  *
