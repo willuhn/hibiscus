@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzList.java,v $
- * $Revision: 1.12 $
- * $Date: 2010/04/22 16:21:27 $
+ * $Revision: 1.13 $
+ * $Date: 2010/04/22 16:40:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,6 +22,7 @@ import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.KontoFetchUmsaetze;
+import de.willuhn.jameica.hbci.gui.action.UmsatzDetailEdit;
 import de.willuhn.jameica.hbci.gui.action.UmsatzImport;
 import de.willuhn.jameica.hbci.gui.controller.UmsatzControl;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -82,10 +83,16 @@ public class UmsatzList extends AbstractView
       buttons.addButton(new Back());
       buttons.addButton(i18n.tr("Umsätze importieren..."), new UmsatzImport(),control.getKonto(),false,"document-open.png");
 
-      Button fetch = new Button(i18n.tr("Umsätze abrufen"), new KontoFetchUmsaetze(),control.getKonto(),false,"mail-send-receive.png");
       int flags = control.getKonto().getFlags();
-      fetch.setEnabled((flags & Konto.FLAG_DISABLED) != Konto.FLAG_DISABLED && (flags & Konto.FLAG_OFFLINE) != Konto.FLAG_OFFLINE);
+
+      Button fetch = null;
+
+      if ((flags & Konto.FLAG_OFFLINE) == Konto.FLAG_OFFLINE)
+        fetch = new Button(i18n.tr("Umsatz anlegen"), new UmsatzDetailEdit(),control.getKonto(),false,"office-calendar.png");
+      else
+        fetch = new Button(i18n.tr("Umsätze abrufen"), new KontoFetchUmsaetze(),control.getKonto(),false,"mail-send-receive.png");
       
+      fetch.setEnabled((flags & Konto.FLAG_DISABLED) != Konto.FLAG_DISABLED);
       buttons.addButton(fetch);
 		}
 		catch (RemoteException e)
@@ -109,6 +116,9 @@ public class UmsatzList extends AbstractView
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.13  2010/04/22 16:40:57  willuhn
+ * @N Manuelles Anlegen neuer Umsaetze fuer Offline-Konten moeglich
+ *
  * Revision 1.12  2010/04/22 16:21:27  willuhn
  * @N HBCI-relevante Buttons und Aktionen fuer Offline-Konten sperren
  *

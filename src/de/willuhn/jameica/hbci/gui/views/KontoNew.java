@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoNew.java,v $
- * $Revision: 1.30 $
- * $Date: 2010/04/22 16:21:27 $
+ * $Revision: 1.31 $
+ * $Date: 2010/04/22 16:40:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,6 +31,7 @@ import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.action.KontoDelete;
 import de.willuhn.jameica.hbci.gui.action.KontoFetchUmsaetze;
 import de.willuhn.jameica.hbci.gui.action.ProtokollList;
+import de.willuhn.jameica.hbci.gui.action.UmsatzDetailEdit;
 import de.willuhn.jameica.hbci.gui.action.UmsatzList;
 import de.willuhn.jameica.hbci.gui.controller.KontoControl;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -124,11 +125,19 @@ public class KontoNew extends AbstractView {
 
     ButtonArea buttons = new ButtonArea(getParent(),3);
     buttons.addButton(new Back());
-    
-    Button fetch = new Button(i18n.tr("Saldo und Umsätze abrufen"), new KontoFetchUmsaetze(),control.getKonto(),false,"mail-send-receive.png");
+
     int flags = control.getKonto().getFlags();
-    fetch.setEnabled((flags & Konto.FLAG_DISABLED) != Konto.FLAG_DISABLED && (flags & Konto.FLAG_OFFLINE) != Konto.FLAG_OFFLINE);
+
+    Button fetch = null;
+
+    if ((flags & Konto.FLAG_OFFLINE) == Konto.FLAG_OFFLINE)
+      fetch = new Button(i18n.tr("Umsatz anlegen"), new UmsatzDetailEdit(),control.getKonto(),false,"office-calendar.png");
+    else
+      fetch = new Button(i18n.tr("Saldo und Umsätze abrufen"), new KontoFetchUmsaetze(),control.getKonto(),false,"mail-send-receive.png");
+    
+    fetch.setEnabled((flags & Konto.FLAG_DISABLED) != Konto.FLAG_DISABLED);
     buttons.addButton(fetch);
+    
     buttons.addButton(i18n.tr("Alle Umsätze anzeigen"),     new UmsatzList(),control.getKonto(),false,"text-x-generic.png");
   }
   
@@ -154,6 +163,9 @@ public class KontoNew extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoNew.java,v $
+ * Revision 1.31  2010/04/22 16:40:57  willuhn
+ * @N Manuelles Anlegen neuer Umsaetze fuer Offline-Konten moeglich
+ *
  * Revision 1.30  2010/04/22 16:21:27  willuhn
  * @N HBCI-relevante Buttons und Aktionen fuer Offline-Konten sperren
  *
