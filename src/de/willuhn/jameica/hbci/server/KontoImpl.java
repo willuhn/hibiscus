@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.100 $
- * $Date: 2010/04/22 16:10:43 $
+ * $Revision: 1.101 $
+ * $Date: 2010/04/25 20:55:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -350,10 +350,11 @@ public class KontoImpl extends AbstractDBObject implements Konto
   {
     DBIterator list = UmsatzUtil.getUmsaetze();
     list.addFilter("konto_id = " + getID());
+    list.addFilter("saldo is not null and saldo != 0");
 
     Date start = HBCIProperties.startOfDay(datum);
+    
     list.addFilter("datum >= ?", new Object[] {new java.sql.Date(start.getTime())});
-
     if (list.size() > 0)
     {
       Umsatz u = (Umsatz) list.next();
@@ -364,6 +365,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
     // frühere Umsätze.
     list = UmsatzUtil.getUmsaetzeBackwards();
     list.addFilter("konto_id = " + getID());
+    list.addFilter("saldo is not null and saldo != 0");
     list.addFilter("datum < ?", new Object[] { new java.sql.Date(start.getTime())});
     if (list.size() > 0)
     {
@@ -380,8 +382,8 @@ public class KontoImpl extends AbstractDBObject implements Konto
   {
     DBIterator list = UmsatzUtil.getUmsaetzeBackwards();
     list.addFilter("konto_id = " + getID());
-    Date end = HBCIProperties.endOfDay(datum);
-    list.addFilter("datum <= ?", new Object[] { new java.sql.Date(end.getTime())});
+    list.addFilter("saldo is not null and saldo != 0");
+    list.addFilter("datum <= ?", new Object[] { new java.sql.Date(HBCIProperties.endOfDay(datum).getTime())});
     if (list.size() > 0)
     {
       Umsatz u = (Umsatz) list.next();
@@ -834,6 +836,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*******************************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.101  2010/04/25 20:55:28  willuhn
+ * @B BUGZILLA 852
+ *
  * Revision 1.100  2010/04/22 16:10:43  willuhn
  * @C Saldo kann bei Offline-Konten zwar nicht manuell bearbeitet werden, dafuer wird er aber beim Zuruecksetzen des Kontos (heisst jetzt "Saldo und Datum zuruecksetzen" statt "Kontoauszugsdatum zuruecksetzen") jetzt ebenfalls geloescht
  *
