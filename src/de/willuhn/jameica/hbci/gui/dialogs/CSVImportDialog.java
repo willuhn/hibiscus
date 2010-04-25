@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/CSVImportDialog.java,v $
- * $Revision: 1.7 $
- * $Date: 2010/03/16 13:43:56 $
+ * $Revision: 1.8 $
+ * $Date: 2010/04/25 22:14:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,9 +27,12 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.supercsv.io.CsvListReader;
 import org.supercsv.io.ICsvListReader;
 import org.supercsv.prefs.CsvPreference;
@@ -41,9 +44,12 @@ import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.SpinnerInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.gui.util.ScrolledContainer;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.io.csv.Column;
 import de.willuhn.jameica.hbci.io.csv.Format;
@@ -63,18 +69,18 @@ public class CSVImportDialog extends AbstractDialog
   private final static String[] CHARSETS = new String[]{"ISO-8859-1","ISO-8859-15","UTF-8"};
 
   private Format format             = null;
-
   private Profile profile           = null;
-  private List<List<String>> lines  = null;
-  private int columnCount           = 0;
+  private byte[] data               = null;
 
   private TextInput sepChar         = null;
   private TextInput quoteChar       = null;
   private SelectInput encoding      = null;
   private SpinnerInput skipLines    = null;
+  private LabelInput error          = null;
   
-  private List<LabelInput> labels   = null;
-  private List<SelectInput> selects = null;
+  private List<SelectInput> selects = new ArrayList<SelectInput>();
+  
+  private Composite parent          = null;
   
   
   /**
@@ -88,44 +94,13 @@ public class CSVImportDialog extends AbstractDialog
   public CSVImportDialog(byte[] data, Format format, int position) throws IOException, ApplicationException
   {
     super(position);
+
+    this.format = format;
+    this.data   = data;
+
     this.setTitle(i18n.tr("Zuordnung der Spalten"));
     this.setSize(620,450);
 
-    this.format = format;
-    
-    ////////////////////////////////////////////////////////////////////////////
-    // CSV-Datei einlesen
-    Profile p = this.getProfile();
-    this.lines = new ArrayList<List<String>>(); // Liste mit Zeilen mit Listen von Spalten %-)
-
-    CsvPreference prefs = CsvPreference.EXCEL_NORTH_EUROPE_PREFERENCE;
-    String sep = p.getSeparatorChar();
-    String quo = p.getQuotingChar();
-    if (sep != null && sep.length() == 1) prefs.setDelimiterChar(sep.charAt(0));
-    if (quo != null && quo.length() == 1) prefs.setQuoteChar(quo.charAt(0));
-    ICsvListReader csv = new CsvListReader(new InputStreamReader(new ByteArrayInputStream(data),p.getFileEncoding()),prefs);
-    List<String> line = null;
-    while ((line = csv.read()) != null)
-    {
-      // Der CSV-Reader verwendet das List-Objekt leider immer
-      // wieder (wird fuer die naechste Zeile geleert und neu
-      // befuellt. Daher koennen wir sie nicht so einfach hier
-      // reinpacken sondern muessen die Werte rauskopieren
-      List<String> l = new ArrayList();
-      l.addAll(line);
-      this.lines.add(l);
-
-      // Wir verwenden als Basis die Zeile mit den meisten Spalten
-      if (l.size() > this.columnCount)
-        this.columnCount = l.size();
-    }
-    
-    ////////////////////////////////////////////////////////////////////////////
-    if (this.columnCount == 0)
-      throw new ApplicationException(i18n.tr("CSV-Datei enthält keine Spalten"));
-
-    if (this.lines.size() == 0)
-      throw new ApplicationException(i18n.tr("CSV-Datei enthält keine Zeilen"));
   }
   
   /**
@@ -133,15 +108,14 @@ public class CSVImportDialog extends AbstractDialog
    */
   protected void paint(Composite parent) throws Exception
   {
-    Profile p = this.getProfile();
-    List<Column> columns = p.getColumns();
+    // Dialog bei Druck auf ESC automatisch schliessen
+    parent.addKeyListener(new KeyAdapter() {
+      public void keyReleased(KeyEvent e) {
+        if (e.keyCode == SWT.ESC)
+          throw new OperationCanceledException();
+      }
+    });
 
-    List<String> line = lines.get(p.getSkipLines()); // Die erste anzuzeigende Zeile
-
-    this.labels  = new ArrayList<LabelInput>();
-    this.selects = new ArrayList<SelectInput>();
-
-    
     // BUGZILLA 281
     LabelGroup options = new LabelGroup(parent,i18n.tr("Optionen"));
     options.addInput(this.getFileEncoding());
@@ -151,30 +125,17 @@ public class CSVImportDialog extends AbstractDialog
     
     // BUGZILLA 412
     new Headline(parent,i18n.tr("Zuordnung der Spalten"));
-    ScrolledContainer container = new ScrolledContainer(parent);
 
-    container.addText(i18n.tr("In der linken Spalte sehen Sie die erste Zeile Ihrer CSV-Datei.\n" +
-                              "Ordnen Sie die Felder bitte über die Auswahl-Elemente auf der rechte Seite zu."),true);
+    this.parent = new Composite(parent,SWT.NONE);
+    this.parent.setLayoutData(new GridData(GridData.FILL_BOTH));
+    this.parent.setLayout(new GridLayout());
+    this.parent.setBackground(Color.BACKGROUND.getSWTColor());
+    reload();
     
-    for (int i=0;i<this.columnCount;++i)
-    {
-      String value = "";
-      try
-      {
-        value = line.get(i);
-      } catch (Exception e) {} // Spalte gibts in der Zeile nicht
-      
-      final LabelInput l = new LabelInput((i+1) + ". " + value);
-      labels.add(l);
-      
-      final SelectInput s = new SelectInput(columns,getColumn(columns,i));
-      s.setPleaseChoose("<" + i18n.tr("Nicht zugeordnet") + ">");
-      selects.add(s);
-
-      container.addLabelPair(l,s);
-    }
+    SimpleContainer c = new SimpleContainer(parent);
+    c.addInput(this.getError());
     
-    ButtonArea b = new ButtonArea(parent,2);
+    ButtonArea b = new ButtonArea(parent,3);
     b.addButton(i18n.tr("Übernehmen"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -212,14 +173,123 @@ public class CSVImportDialog extends AbstractDialog
         storeProfile(p);
         close();
       }
-    });
+    },null,false,"ok.png");
+    b.addButton(i18n.tr("Datei neu laden"), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        Profile p = getProfile();
+        p.setFileEncoding((String)getFileEncoding().getValue());
+        p.setQuotingChar((String)getQuoteChar().getValue());
+        p.setSeparatorChar((String)getSeparatorChar().getValue());
+        p.setSkipLines(((Integer)getSkipLines().getValue()).intValue());
+        reload();
+      }
+    },null,false,"view-refresh.png");
     b.addButton(i18n.tr("Abbrechen"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
         throw new OperationCanceledException();
       }
-    });
+    },null,false,"process-stop.png");
+  }
+  
+  /**
+   * Laedt die CSV-Datei mit den aktuellen Parametern neu ein.
+   */
+  private void reload()
+  {
+    try
+    {
+      SWTUtil.disposeChildren(this.parent);
+      this.parent.setLayout(new GridLayout());
+
+      this.selects.clear();
+
+      Profile p = this.getProfile();
+      List<List<String>> lines = new ArrayList<List<String>>(); // Liste mit Zeilen mit Listen von Spalten %-)
+      int cols = 0;
+
+      ////////////////////////////////////////////////////////////////////////////
+      // CSV-Datei einlesen
+      CsvPreference prefs = CsvPreference.EXCEL_NORTH_EUROPE_PREFERENCE;
+      String sep = p.getSeparatorChar();
+      String quo = p.getQuotingChar();
+      if (sep != null && sep.length() == 1) prefs.setDelimiterChar(sep.charAt(0));
+      if (quo != null && quo.length() == 1) prefs.setQuoteChar(quo.charAt(0));
+      
+      ICsvListReader csv = new CsvListReader(new InputStreamReader(new ByteArrayInputStream(this.data),p.getFileEncoding()),prefs);
+      List<String> line = null;
+      while ((line = csv.read()) != null)
+      {
+        // Der CSV-Reader verwendet das List-Objekt leider immer
+        // wieder (wird fuer die naechste Zeile geleert und neu
+        // befuellt. Daher koennen wir sie nicht so einfach hier
+        // reinpacken sondern muessen die Werte rauskopieren
+        List<String> l = new ArrayList();
+        l.addAll(line);
+        lines.add(l);
+
+        // Wir verwenden als Basis die Zeile mit den meisten Spalten
+        if (l.size() > cols)
+          cols = l.size();
+      }
+      
+      if (cols == 0)
+      {
+        this.getError().setValue(i18n.tr("CSV-Datei enthält keine Spalten"));
+        return;
+      }
+
+      if (lines.size() == 0)
+      {
+        this.getError().setValue(i18n.tr("CSV-Datei enthält keine Zeilen"));
+        return;
+      }
+
+      if (lines.size() <= p.getSkipLines())
+      {
+        this.getError().setValue(i18n.tr("CSV-Datei enthält nur {0} Zeilen",Integer.toString(lines.size())));
+        return;
+      }
+      
+      //
+      ////////////////////////////////////////////////////////////////////////////
+
+      List<Column> columns = p.getColumns();
+      List<String> current = lines.get(p.getSkipLines()); // Die erste anzuzeigende Zeile
+
+      ScrolledContainer container = new ScrolledContainer(this.parent);
+      container.addText(i18n.tr("In der linken Spalte sehen Sie die erste Zeile Ihrer CSV-Datei.\n" +
+                                "Ordnen Sie die Felder bitte über die Auswahl-Elemente auf der rechte Seite zu."),true);
+
+      for (int i=0;i<cols;++i)
+      {
+        String value = "";
+        try
+        {
+          value = current.get(i);
+          if (value.length() > 30)
+            value = value.substring(0,30) + "...";
+        } catch (Exception e) {} // Spalte gibts in der Zeile nicht
+        
+        final SelectInput s = new SelectInput(columns,getColumn(columns,i));
+        s.setName((i+1) + ". " + value);
+        s.setPleaseChoose("<" + i18n.tr("Nicht zugeordnet") + ">");
+        selects.add(s);
+
+        container.addInput(s);
+      }
+      
+      this.parent.layout(true);
+      this.getError().setValue("");
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to read file",e);
+      this.getError().setValue(i18n.tr("Fehler beim Lesen der Datei: {0}",e.getMessage()));
+    }
   }
   
   /**
@@ -388,9 +458,8 @@ public class CSVImportDialog extends AbstractDialog
    */
   protected Object getData() throws Exception
   {
-    return this.profile;
+    return this.getProfile();
   }
-  
   
   
   /**
@@ -401,7 +470,7 @@ public class CSVImportDialog extends AbstractDialog
   {
     if (this.sepChar == null)
     {
-      this.sepChar = new TextInput(this.profile.getSeparatorChar(),1);
+      this.sepChar = new TextInput(this.getProfile().getSeparatorChar(),1);
       this.sepChar.setName(i18n.tr("Trennzeichen"));
       this.sepChar.setComment(i18n.tr("Zeichen, mit dem die Spalten getrennt sind"));
       this.sepChar.setMandatory(true);
@@ -410,6 +479,21 @@ public class CSVImportDialog extends AbstractDialog
   }
   
   /**
+   * Liefert ein Label mit einer Fehlermeldung.
+   * @return Label.
+   */
+  private LabelInput getError()
+  {
+    if (this.error == null)
+    {
+      this.error = new LabelInput("");
+      this.error.setName("");
+      this.error.setColor(Color.ERROR);
+    }
+    return this.error;
+  }
+
+  /**
    * Liefert ein Eingabe-Feld fuer das Quoting-Zeichen.
    * @return Eingabe-Feld.
    */
@@ -417,7 +501,7 @@ public class CSVImportDialog extends AbstractDialog
   {
     if (this.quoteChar == null)
     {
-      this.quoteChar = new TextInput(this.profile.getQuotingChar(),1);
+      this.quoteChar = new TextInput(this.getProfile().getQuotingChar(),1);
       this.quoteChar.setName(i18n.tr("Anführungszeichen"));
       this.quoteChar.setComment(i18n.tr("Zeichen, mit dem die Spalten umschlossen sind"));
       this.quoteChar.setMandatory(false);
@@ -433,7 +517,7 @@ public class CSVImportDialog extends AbstractDialog
   {
     if (this.encoding == null)
     {
-      this.encoding = new SelectInput(CHARSETS,this.profile.getFileEncoding());
+      this.encoding = new SelectInput(CHARSETS,this.getProfile().getFileEncoding());
       this.encoding.setName(i18n.tr("Zeichensatz"));
       this.encoding.setComment(i18n.tr("Zeichensatz der CSV-Datei"));
       this.encoding.setMandatory(true);
@@ -451,36 +535,10 @@ public class CSVImportDialog extends AbstractDialog
   {
     if (this.skipLines == null)
     {
-      this.skipLines = new SpinnerInput(0,this.lines.size()-1,this.profile.getSkipLines());
+      this.skipLines = new SpinnerInput(0,4,this.getProfile().getSkipLines());
       this.skipLines.setName(i18n.tr("Zeilen überspringen"));
       this.skipLines.setComment(i18n.tr("Zu überspringende Zeilen am Datei-Anfang"));
       this.skipLines.setMandatory(false);
-      this.skipLines.addListener(new Listener()
-      {
-        public void handleEvent(Event event)
-        {
-          // Wir aktualisieren die Preview
-          List<String> line = null;
-          
-          try
-          {
-            int row = ((Integer)skipLines.getValue()).intValue();
-            line = lines.get(row);
-          }
-          catch (Exception e) {} // Die ausgewaehlte Zeile existiert nicht
-          
-          for (int i=0;i<labels.size();++i)
-          {
-            String preview = "";
-            try
-            {
-              preview = line.get(i);
-            }
-            catch (Exception e) {} // Die ausgewaehlte Spalte existiert nicht
-            labels.get(i).setValue((i+1) + ". " + preview);
-          }
-        }
-      });
     }
     return this.skipLines;
   }
@@ -489,6 +547,9 @@ public class CSVImportDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: CSVImportDialog.java,v $
+ * Revision 1.8  2010/04/25 22:14:32  willuhn
+ * @N BUGZILLA 851 - CSV-Datei live neu laden
+ *
  * Revision 1.7  2010/03/16 13:43:56  willuhn
  * @N CSV-Import von Ueberweisungen und Lastschriften
  * @N Versionierbarkeit von serialisierten CSV-Profilen
