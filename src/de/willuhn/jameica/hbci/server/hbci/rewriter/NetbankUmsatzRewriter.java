@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/rewriter/NetbankUmsatzRewriter.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/04/25 23:09:04 $
+ * $Revision: 1.2 $
+ * $Date: 2010/04/26 08:35:29 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -11,6 +11,7 @@
 
 package de.willuhn.jameica.hbci.server.hbci.rewriter;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -68,43 +69,69 @@ public class NetbankUmsatzRewriter implements UmsatzRewriter
     // haben wir noch was uebrig?
     if (lines.size() == 0)
       return;
+
     
-    // 2. Zeile = 1. Verwendungszweck
+    // Die letzte Zeile ist nach bisherigen Erkenntnissen immer
+    // das Gegenkonto
+    if (applyGegenkonto(u,lines.get(lines.size()-1).trim()))
+    {
+      // Jepp, konnte als Gegenkonto geparst werden.
+      // Dann abschneiden
+      lines.remove(lines.size()-1);
+
+      // haben wir noch was uebrig?
+      if (lines.size() == 0)
+        return;
+    }
+
+    // 1. Verwendungszweck
     u.setZweck(lines.remove(0).trim());
 
     // haben wir noch was uebrig?
     if (lines.size() == 0)
       return;
 
-    // 3. Zeile = 2. Verwendungszweck
+    // 2. Verwendungszweck
     u.setZweck2(lines.remove(0).trim());
 
     // haben wir noch was uebrig?
     if (lines.size() == 0)
       return;
     
-    // 4. Zeile ist u.U. das Gegenkonto
-    String s = lines.remove(0).trim();
-    if (s.matches("^KTO/BLZ [0-9]{3,10}/[0-9]{8}"))
-    {
-      s = s.replaceAll("KTO/BLZ","").replaceAll("[^0-9/]","");
-      String[] sl = s.split("/");
-      u.setGegenkontoNummer(sl[0]);
-      u.setGegenkontoBLZ(sl[1]);
-    }
-    
-    if (lines.size() == 0)
-      return;
-    
     u.setWeitereVerwendungszwecke(lines.toArray(new String[lines.size()]));
   }
-
+  
+  /**
+   * Versucht, aus der uebergebenen Verwendungszweck-Zeile Gegenkonto/BLZ zu parsen
+   * und dem Umsatz zuzuordnen.
+   * @param u der Umsatz
+   * @param s der zu parsende Text.
+   * @throws RemoteException
+   */
+  private boolean applyGegenkonto(Umsatz u, String s) throws RemoteException
+  {
+    if (s == null || s.length() == 0 || u == null)
+      return false;
+    
+    String gk = s.trim();
+    if (!gk.matches("^KTO/BLZ [0-9]{3,10}/[0-9]{8}"))
+      return false;
+    
+    gk = gk.replaceAll("KTO/BLZ","").replaceAll("[^0-9/]","");
+    String[] sl = gk.split("/");
+    u.setGegenkontoNummer(sl[0]);
+    u.setGegenkontoBLZ(sl[1]);
+    return true;
+  }
 }
 
 
 
 /**********************************************************************
  * $Log: NetbankUmsatzRewriter.java,v $
+ * Revision 1.2  2010/04/26 08:35:29  willuhn
+ * @N BUGZILLA 244
+ *
  * Revision 1.1  2010/04/25 23:09:04  willuhn
  * @N BUGZILLA 244
  *
