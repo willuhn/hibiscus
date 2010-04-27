@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AuslandsUeberweisungImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2009/10/20 23:12:58 $
+ * $Revision: 1.5 $
+ * $Date: 2010/04/27 11:02:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,6 @@ import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung;
 import de.willuhn.jameica.hbci.rmi.Duplicatable;
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.rmi.Transfer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -151,19 +150,14 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
   {
     throw new RemoteException("second usage not allowed for foreign transfer");
   }
-
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#getTransferTyp()
-   */
-  public int getTransferTyp() throws RemoteException
-  {
-    return Transfer.TYP_AUSLANDSUEBERWEISUNG;
-  }
 }
 
 
 /**********************************************************************
  * $Log: AuslandsUeberweisungImpl.java,v $
+ * Revision 1.5  2010/04/27 11:02:32  willuhn
+ * @R Veralteten Verwendungszweck-Code entfernt
+ *
  * Revision 1.4  2009/10/20 23:12:58  willuhn
  * @N Support fuer SEPA-Ueberweisungen
  * @N Konten um IBAN und BIC erweitert

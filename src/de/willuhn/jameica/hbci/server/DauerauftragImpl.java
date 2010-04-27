@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DauerauftragImpl.java,v $
- * $Revision: 1.32 $
- * $Date: 2009/09/15 00:23:34 $
+ * $Revision: 1.33 $
+ * $Date: 2010/04/27 11:02:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,7 +20,6 @@ import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Checksum;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
-import de.willuhn.jameica.hbci.rmi.Transfer;
 import de.willuhn.jameica.hbci.rmi.Turnus;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -254,19 +253,14 @@ public class DauerauftragImpl extends AbstractHibiscusTransferImpl
                                            this.getTurnus(),
                                            new Date());
   }
-
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#getTransferTyp()
-   */
-  public int getTransferTyp() throws RemoteException
-  {
-    return Transfer.TYP_DAUERAUFTRAG;
-  }
 }
 
 
 /**********************************************************************
  * $Log: DauerauftragImpl.java,v $
+ * Revision 1.33  2010/04/27 11:02:32  willuhn
+ * @R Veralteten Verwendungszweck-Code entfernt
+ *
  * Revision 1.32  2009/09/15 00:23:34  willuhn
  * @N BUGZILLA 745
  *

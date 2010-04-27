@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Transfer.java,v $
- * $Revision: 1.13 $
- * $Date: 2010/04/14 17:44:10 $
+ * $Revision: 1.14 $
+ * $Date: 2010/04/27 11:02:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,48 +20,6 @@ import java.rmi.RemoteException;
  */
 public interface Transfer extends Remote
 {
-  /**
-   * Typ Ueberweisung
-   * @deprecated Existiert nur noch zu Migrationszwecken (update0012)
-   */
-  public final static int TYP_UEBERWEISUNG         = 1;
-  
-  /**
-   * Typ Lastschrift
-   * @deprecated Existiert nur noch zu Migrationszwecken (update0012)
-   */
-  public final static int TYP_LASTSCHRIFT          = 2;
-  
-  /**
-   * Typ Dauerauftrag
-   * @deprecated Existiert nur noch zu Migrationszwecken (update0012)
-   */
-  public final static int TYP_DAUERAUFTRAG         = 3;
-
-  /**
-   * Typ Umsatz
-   * @deprecated Existiert nur noch zu Migrationszwecken (update0012)
-   */
-  public final static int TYP_UMSATZ               = 4;
-  
-  /**
-   * Typ Buchung einer Sammel-Ueberweisung
-   * @deprecated Existiert nur noch zu Migrationszwecken (update0012)
-   */
-  public final static int TYP_SUEB_BUCHUNG         = 5;
-  
-  /**
-   * Typ Buchung einer Sammel-Lastschrift
-   * @deprecated Existiert nur noch zu Migrationszwecken (update0012)
-   */
-  public final static int TYP_SLAST_BUCHUNG        = 6;
-
-  /**
-   * Typ Auslandsueberweisung
-   * @deprecated Existiert nur noch zu Migrationszwecken (update0012)
-   */
-  public final static int TYP_AUSLANDSUEBERWEISUNG = 7;
-
   /**
 	 * Liefert die Kontonummer des Gegenkontos.
    * @return Kontonummer des Empfaengers.
@@ -105,14 +63,6 @@ public interface Transfer extends Remote
 	public String getZweck2() throws RemoteException;
   
   /**
-   * Liefert den Transfer-Typ.
-   * @return Transfer-Typ.
-   * @throws RemoteException
-   * @deprecated Existiert nur noch zu Migrationszwecken (update0012)
-   */
-  public int getTransferTyp() throws RemoteException;
-  
-  /**
    * Liefert eine Liste erweiterter Verwendungszwecke.
    * @return Liste erweiterter Verwendungszwecke.
    * @throws RemoteException
@@ -123,6 +73,9 @@ public interface Transfer extends Remote
 
 /**********************************************************************
  * $Log: Transfer.java,v $
+ * Revision 1.14  2010/04/27 11:02:32  willuhn
+ * @R Veralteten Verwendungszweck-Code entfernt
+ *
  * Revision 1.13  2010/04/14 17:44:10  willuhn
  * @N BUGZILLA 83
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/updates/update0012.java,v $
- * $Revision: 1.3 $
- * $Date: 2009/02/18 10:48:42 $
+ * $Revision: 1.4 $
+ * $Date: 2010/04/27 11:02:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,14 +12,17 @@
  **********************************************************************/
 
 import java.io.StringReader;
+import java.rmi.RemoteException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import de.willuhn.datasource.db.AbstractDBObject;
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.ObjectNotFoundException;
+import de.willuhn.datasource.rmi.ResultSetExtractor;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
@@ -27,10 +30,8 @@ import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
 import de.willuhn.jameica.hbci.rmi.SammelLastBuchung;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisungBuchung;
-import de.willuhn.jameica.hbci.rmi.Transfer;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
-import de.willuhn.jameica.hbci.rmi.Verwendungszweck;
 import de.willuhn.jameica.hbci.server.DBSupportH2Impl;
 import de.willuhn.jameica.hbci.server.DBSupportMcKoiImpl;
 import de.willuhn.jameica.hbci.server.DBSupportMySqlImpl;
@@ -130,38 +131,47 @@ public class update0012 implements Update
         myProvider.getProgressMonitor().log(i18n.tr("Kopiere Daten"));
         service = new HBCIDBServiceImpl();
         service.start();
-        DBIterator lines = service.createList(Verwendungszweck.class);
-        lines.setOrder("order by typ,auftrag_id,id");
         
-        List l = new ArrayList();
-        Integer currentType = null;
-        Integer currentId   = null;
-        while (lines.hasNext())
-        {
-          Verwendungszweck z = (Verwendungszweck) lines.next();
-          Integer type = (Integer) z.getAttribute("typ");
-          Integer id   = (Integer) z.getAttribute("auftrag_id");
-          
-          // Erstes Objekt oder noch das gleiche
-          if (currentId == null || currentType == null ||
-              (id.equals(currentId)) && type.equals(currentType))
+        List<Line> lines = (List<Line>) service.execute("select * from verwendungszweck order by typ,auftrag_id,id",null,new ResultSetExtractor() {
+          public Object extract(ResultSet rs) throws RemoteException, SQLException
           {
-            if (currentId == null || currentType == null)
+            List<Line> result = new ArrayList<Line>();
+            while (rs.next())
             {
-              currentId = id;
-              currentType = type;
+              Line line  = new Line();
+              line.id    = rs.getInt("auftrag_id");
+              line.typ   = rs.getInt("typ");
+              line.zweck = rs.getString("zweck");
+              result.add(line);
+            }
+            return result;
+          }
+        });
+        
+        List<String> l = new ArrayList<String>();
+        int currentType = 0;
+        int currentId   = 0;
+        for (Line z:lines)
+        {
+          // Erstes Objekt oder noch das gleiche
+          if (currentId == 0 || currentType == 0 || (z.id == currentId && z.typ == currentType))
+          {
+            if (currentId == 0 || currentType == 0)
+            {
+              currentId = z.id;
+              currentType = z.typ;
             }
             // Zeile sammeln
-            l.add(z.getText());
+            l.add(z.zweck);
             continue;
           }
 
           // Objekt-Wechsel -> flush
           if (l.size() > 0)
           {
-            String[] sl = (String[]) l.toArray(new String[l.size()]);
+            String[] sl = l.toArray(new String[l.size()]);
             
-            String s = currentId.toString();
+            String s = Integer.toString(currentId);
             Logger.info("copying " + sl.length + " usage lines for type: " + currentType + ", id: " + s);
             for (int i=0;i<sl.length;++i)
               Logger.debug("  " + sl[i]);
@@ -170,10 +180,10 @@ public class update0012 implements Update
             
             try
             {
-              switch (currentType.intValue())
+              switch (currentType)
               {
               
-                case Transfer.TYP_UEBERWEISUNG:
+                case 1: // Transfer.TYP_UEBERWEISUNG:
                   Ueberweisung tu  = (Ueberweisung) service.createObject(Ueberweisung.class,s);
                   tu.setWeitereVerwendungszwecke(sl);
                   ausgefuehrt = tu.ausgefuehrt();
@@ -181,7 +191,7 @@ public class update0012 implements Update
                   tu.store();
                   if (ausgefuehrt) tu.setAusgefuehrt(true);
                   break;
-                case Transfer.TYP_LASTSCHRIFT:
+                case 2: // Transfer.TYP_LASTSCHRIFT:
                   Lastschrift tl = (Lastschrift) service.createObject(Lastschrift.class,s);
                   tl.setWeitereVerwendungszwecke(sl);
                   ausgefuehrt = tl.ausgefuehrt();
@@ -189,25 +199,25 @@ public class update0012 implements Update
                   tl.store();
                   if (ausgefuehrt) tl.setAusgefuehrt(true);
                   break;
-                case Transfer.TYP_DAUERAUFTRAG:
+                case 3: // Transfer.TYP_DAUERAUFTRAG:
                   Dauerauftrag td = (Dauerauftrag) service.createObject(Dauerauftrag.class,s);
                   td.setWeitereVerwendungszwecke(sl);
                   td.store();
                   break;
-                case Transfer.TYP_UMSATZ:
+                case 4: // Transfer.TYP_UMSATZ:
                   Umsatz tum = (Umsatz) service.createObject(Umsatz.class,s);
                   tum.setWeitereVerwendungszwecke(sl);
                   tum.store();
                   break;
-                case Transfer.TYP_SLAST_BUCHUNG:
-                  SammelLastBuchung tsb = (SammelLastBuchung) service.createObject(SammelLastBuchung.class,s);
-                  tsb.setWeitereVerwendungszwecke(sl);
-                  tsb.store();
-                  break;
-                case Transfer.TYP_SUEB_BUCHUNG:
+                case 5: // Transfer.TYP_SUEB_BUCHUNG:
                   SammelUeberweisungBuchung tub = (SammelUeberweisungBuchung) service.createObject(SammelUeberweisungBuchung.class,s);
                   tub.setWeitereVerwendungszwecke(sl);
                   tub.store();
+                  break;
+                case 6: // Transfer.TYP_SLAST_BUCHUNG:
+                  SammelLastBuchung tsb = (SammelLastBuchung) service.createObject(SammelLastBuchung.class,s);
+                  tsb.setWeitereVerwendungszwecke(sl);
+                  tsb.store();
                   break;
               }
             }
@@ -216,8 +226,8 @@ public class update0012 implements Update
               Logger.warn(onf.getMessage() + ", skipping");
             }
           }
-          currentId = null;
-          currentType = null;
+          currentId = 0;
+          currentType = 0;
           l.clear();
         }
         //////////////////////////////////////////////////////////////////////////
@@ -285,12 +295,25 @@ public class update0012 implements Update
   {
     return "Datenbank-Update für erweiterte Verwendungszwecke";
   }
+  
+  /**
+   * Hilfsklasse zum Halten einer Zeile Verwendungszweck.
+   */
+  private class Line
+  {
+    private int typ      = 0;
+    private int id       = 0;
+    private String zweck = null;
+  }
 
 }
 
 
 /*********************************************************************
  * $Log: update0012.java,v $
+ * Revision 1.4  2010/04/27 11:02:32  willuhn
+ * @R Veralteten Verwendungszweck-Code entfernt
+ *
  * Revision 1.3  2009/02/18 10:48:42  willuhn
  * @N Neuer Schalter "transfer.markexecuted.before", um festlegen zu koennen, wann ein Auftrag als ausgefuehrt gilt (wenn die Quittung von der Bank vorliegt oder wenn der Auftrag erzeugt wurde)
  *
