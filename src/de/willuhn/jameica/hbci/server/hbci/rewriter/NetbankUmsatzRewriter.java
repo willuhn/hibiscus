@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/rewriter/NetbankUmsatzRewriter.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/04/26 08:35:29 $
+ * $Revision: 1.3 $
+ * $Date: 2010/04/29 09:28:12 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -62,15 +62,16 @@ public class NetbankUmsatzRewriter implements UmsatzRewriter
     
     if (lines.size() == 0)
       return; // Kein Verwendungszweck da
+    
+    // Alte Verwendungszwecke erstmal loeschen
+    u.setZweck(null);
+    u.setZweck2(null);
+    u.setWeitereVerwendungszwecke(null);
 
     // 1. Zeile = Name
     u.setGegenkontoName(lines.remove(0).trim());
+    if (lines.size() == 0) return; // haben wir noch was uebrig?
 
-    // haben wir noch was uebrig?
-    if (lines.size() == 0)
-      return;
-
-    
     // Die letzte Zeile ist nach bisherigen Erkenntnissen immer
     // das Gegenkonto
     if (applyGegenkonto(u,lines.get(lines.size()-1).trim()))
@@ -78,26 +79,18 @@ public class NetbankUmsatzRewriter implements UmsatzRewriter
       // Jepp, konnte als Gegenkonto geparst werden.
       // Dann abschneiden
       lines.remove(lines.size()-1);
-
-      // haben wir noch was uebrig?
-      if (lines.size() == 0)
-        return;
+      if (lines.size() == 0) return; // haben wir noch was uebrig?
     }
 
     // 1. Verwendungszweck
     u.setZweck(lines.remove(0).trim());
-
-    // haben wir noch was uebrig?
-    if (lines.size() == 0)
-      return;
+    if (lines.size() == 0) return; // haben wir noch was uebrig?
 
     // 2. Verwendungszweck
     u.setZweck2(lines.remove(0).trim());
+    if (lines.size() == 0) return; // haben wir noch was uebrig?
 
-    // haben wir noch was uebrig?
-    if (lines.size() == 0)
-      return;
-    
+    // 3. weitere Verwendungszwecke
     u.setWeitereVerwendungszwecke(lines.toArray(new String[lines.size()]));
   }
   
@@ -129,6 +122,9 @@ public class NetbankUmsatzRewriter implements UmsatzRewriter
 
 /**********************************************************************
  * $Log: NetbankUmsatzRewriter.java,v $
+ * Revision 1.3  2010/04/29 09:28:12  willuhn
+ * @B BUGZILLA 244
+ *
  * Revision 1.2  2010/04/26 08:35:29  willuhn
  * @N BUGZILLA 244
  *
