@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.72 $
- * $Date: 2010/04/27 11:02:32 $
+ * $Revision: 1.73 $
+ * $Date: 2010/05/06 22:08:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,6 +24,7 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
@@ -410,7 +411,7 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 		           getGegenkontoNummer() +
 		           (""+getGegenkontoName()).toUpperCase() +
 		           getPrimanota() +
-		           getSaldo() +
+		           (Settings.getSaldoInChecksum() ? getSaldo() : "") +
 		           (""+getZweck()).toUpperCase() +
 		           (""+getZweck2()).toUpperCase() +
 		           sd +
@@ -710,6 +711,9 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.73  2010/05/06 22:08:45  willuhn
+ * @N BUGZILLA 622
+ *
  * Revision 1.72  2010/04/27 11:02:32  willuhn
  * @R Veralteten Verwendungszweck-Code entfernt
  *
