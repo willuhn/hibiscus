@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/rewriter/NetbankUmsatzRewriter.java,v $
- * $Revision: 1.3 $
- * $Date: 2010/04/29 09:28:12 $
+ * $Revision: 1.4 $
+ * $Date: 2010/05/11 10:31:56 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -30,7 +30,8 @@ public class NetbankUmsatzRewriter implements UmsatzRewriter
   public List<String> getBlzList()
   {
     List<String> list = new ArrayList<String>();
-    list.add("20090500");
+    list.add("20090500"); // Netbank
+    list.add("60090800"); // SpardaBank BW
     return list;
   }
 
@@ -122,6 +123,9 @@ public class NetbankUmsatzRewriter implements UmsatzRewriter
 
 /**********************************************************************
  * $Log: NetbankUmsatzRewriter.java,v $
+ * Revision 1.4  2010/05/11 10:31:56  willuhn
+ * @N Siehe Mail von Markus vom 11.05.2010
+ *
  * Revision 1.3  2010/04/29 09:28:12  willuhn
  * @B BUGZILLA 244
  *
