@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailEditControl.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/04/22 16:48:15 $
+ * $Revision: 1.6 $
+ * $Date: 2010/05/15 20:01:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -100,7 +100,8 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
       this.betrag = new DecimalInput(getUmsatz().getBetrag(),HBCI.DECIMALFORMAT);
       this.betrag.setMandatory(true);
       
-      Konto konto = getUmsatz().getKonto();
+      final Konto konto = getUmsatz().getKonto();
+      
       this.betrag.setComment(konto == null ? "" : konto.getWaehrung());
       // Forciert das korrekte Formatieren des Betrages nach Focus-Wechsel
       this.betrag.addListener(new Listener() {
@@ -111,6 +112,11 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
             if (value == null)
               return;
             betrag.setValue(value);
+            
+            if (((konto.getFlags() & Konto.FLAG_OFFLINE) == Konto.FLAG_OFFLINE) && getUmsatz().isNewObject())
+            {
+              getSaldo().setValue(konto.getSaldo() + value);
+            }
           }
           catch (Exception e)
           {
@@ -133,7 +139,11 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
       this.saldo = new DecimalInput(getUmsatz().getSaldo(),HBCI.DECIMALFORMAT);
       this.saldo.setMandatory(true);
       
+      // Bei neuen Umsaetzen auf Offline-Konten automatisch den Saldo des Kontos uebernehmen
       Konto konto = getUmsatz().getKonto();
+      if (((konto.getFlags() & Konto.FLAG_OFFLINE) == Konto.FLAG_OFFLINE) && getUmsatz().isNewObject())
+        this.saldo.setValue(konto.getSaldo());
+      
       this.saldo.setComment(konto == null ? "" : konto.getWaehrung());
       // Forciert das korrekte Formatieren des Betrages nach Focus-Wechsel
       this.saldo.addListener(new Listener() {
@@ -253,13 +263,28 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
       
       u.setBetrag((Double)getBetrag().getValue());
       
-      // BUGZILLA 586 TODO Der Saldo sollte eigentlich automatisch errechnet werden
-      // koennen. Ausserdem sollte beim Speichern auch gleich der Saldo
-      // des Offline-Kontos aktualisiert werden.
-      u.setSaldo((Double)getSaldo().getValue());
+      Date du = (Date)getDatum().getValue();
+      Double su = (Double)getSaldo().getValue();
+      
+      // BUGZILLA 586
+      u.setSaldo(su);
+      Konto k = u.getKonto();
+      if ((k.getFlags() & Konto.FLAG_OFFLINE) == Konto.FLAG_OFFLINE)
+      {
+        // Ist ein Offline-Konto. Dann uebernehmen wir den Saldo - jedoch
+        // nur dann, wenn das Datum des Umsatzes mindestens so aktuell wie
+        // das Saldo-Datum des Kontos ist
+        Date d = k.getSaldoDatum();
+        if (d != null && du != null && !du.before(d))
+        {
+          k.setSaldo(su);
+          k.store();
+        }
+        
+      }
       
       u.setCustomerRef((String)getCustomerRef().getValue());
-      u.setDatum((Date)getDatum().getValue());
+      u.setDatum(du);
       u.setPrimanota((String)getPrimanota().getValue());
       u.setValuta((Date)getValuta().getValue());
       
@@ -382,6 +407,9 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
 
 /**********************************************************************
  * $Log: UmsatzDetailEditControl.java,v $
+ * Revision 1.6  2010/05/15 20:01:39  willuhn
+ * @N BUGZILLA 701
+ *
  * Revision 1.5  2010/04/22 16:48:15  willuhn
  * *** empty log message ***
  *

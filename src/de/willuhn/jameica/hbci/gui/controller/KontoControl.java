@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.87 $
- * $Date: 2010/04/22 12:42:02 $
+ * $Revision: 1.88 $
+ * $Date: 2010/05/15 20:01:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,13 +27,12 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.input.CheckboxInput;
+import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.Input;
-import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.TextAreaInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.TablePart;
-import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
@@ -81,7 +80,7 @@ public class KontoControl extends AbstractControl {
   private TextInput bic             = null;
   private TextInput iban            = null;
   
-  private LabelInput saldo			        = null;
+  private DecimalInput saldo			      = null;
   private SaldoMessageConsumer consumer = null;
   
   private Button synchronizeOptions = null;
@@ -209,6 +208,7 @@ public class KontoControl extends AbstractControl {
         try
         {
           boolean b = ((Boolean) getOffline().getValue()).booleanValue();
+          getSaldo().setEnabled(b);
           getPassportAuswahl().setEnabled(!b);
           getSynchronizeOptions().setEnabled(!b);
         }
@@ -370,9 +370,10 @@ public class KontoControl extends AbstractControl {
 	{
 		if (saldo != null)
 			return saldo;
-			
-		saldo = new LabelInput("");
+
+		saldo = new DecimalInput(this.getKonto().getSaldo(),HBCI.DECIMALFORMAT);
     saldo.setComment(""); // Platz fuer Kommentar reservieren
+    saldo.setEnabled((this.getKonto().getFlags() & Konto.FLAG_OFFLINE) != Konto.FLAG_OFFLINE);
     // Einmal ausloesen, damit das Feld mit Inhalt gefuellt wird.
     this.consumer = new SaldoMessageConsumer();
     Application.getMessagingFactory().registerMessageConsumer(this.consumer);
@@ -472,6 +473,7 @@ public class KontoControl extends AbstractControl {
 			if (offline)
 			{
 			  getKonto().setPassportClass(null);
+			  getKonto().setSaldo(((Double)getSaldo().getValue()).doubleValue());
 			}
 			else
 			{
@@ -501,7 +503,7 @@ public class KontoControl extends AbstractControl {
       
       // und jetzt speichern wir.
 			getKonto().store();
-			GUI.getStatusBar().setSuccessText(i18n.tr("Bankverbindung gespeichert."));
+			GUI.getStatusBar().setSuccessText(i18n.tr("Konto gespeichert."));
       GUI.getView().setSuccessText("");
 		}
 		catch (ApplicationException e1)
@@ -511,7 +513,7 @@ public class KontoControl extends AbstractControl {
 		catch (RemoteException e)
 		{
 			Logger.error("unable to store konto",e);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern der Bankverbindung."));
+			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern des Kontos."));
 		}
 
   }
@@ -650,25 +652,16 @@ public class KontoControl extends AbstractControl {
               return; // Kein Konto oder nicht unseres
 
             double s = k.getSaldo();
-            Date   d = k.getSaldoDatum();
-            if (d == null)
-            {
-              // Kein Datum, kein Saldo
-              saldo.setValue("");
-              saldo.setComment(i18n.tr("noch kein Saldo abgerufen"));
-            }
+            Date d = k.getSaldoDatum();
+            if (Double.isNaN(s))
+              saldo.setValue(null);
             else
-            {
-              saldo.setValue(HBCI.DECIMALFORMAT.format(s) + " " + getKonto().getWaehrung());
-              if (s < 0)
-                saldo.setColor(Color.ERROR);
-              else if (s > 0)
-                saldo.setColor(Color.SUCCESS);
-              else
-                saldo.setColor(Color.WIDGET_FG);
+              saldo.setValue(s);
 
+            if (d == null)
+              saldo.setComment(i18n.tr("noch kein Saldo ermittelt"));
+            else
               saldo.setComment(i18n.tr("vom {0}",HBCI.LONGDATEFORMAT.format(d)));
-            }
           }
           catch (Exception e)
           {
@@ -689,6 +682,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.88  2010/05/15 20:01:39  willuhn
+ * @N BUGZILLA 701
+ *
  * Revision 1.87  2010/04/22 12:42:02  willuhn
  * @N Erste Version des Supports fuer Offline-Konten
  *
