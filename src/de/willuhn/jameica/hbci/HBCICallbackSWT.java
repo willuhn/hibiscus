@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.63 $
- * $Date: 2009/04/14 13:38:28 $
+ * $Revision: 1.64 $
+ * $Date: 2010/05/27 09:36:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -287,7 +287,8 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
           
         case HAVE_IBAN_ERROR:
 				case HAVE_CRC_ERROR:
-          Logger.error("IBAN/CRC error: " + msg+ " ["+retData.toString()+"]: "); // Muesste ich mal noch behandeln
+				  if (Settings.getKontoCheck())
+            Logger.error("IBAN/CRC error: " + msg+ " ["+retData.toString()+"]: ");
           break;
           
 				case HAVE_ERROR:
@@ -509,6 +510,9 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.64  2010/05/27 09:36:23  willuhn
+ * @C CRC-Fehler nur loggen, wenn KTO/BLZ-Pruefung aktiv ist
+ *
  * Revision 1.63  2009/04/14 13:38:28  willuhn
  * *** empty log message ***
  *
