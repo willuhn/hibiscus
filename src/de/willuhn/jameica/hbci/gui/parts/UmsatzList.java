@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.64 $
- * $Date: 2010/03/16 00:44:18 $
+ * $Revision: 1.65 $
+ * $Date: 2010/05/30 23:29:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -196,7 +196,7 @@ public class UmsatzList extends TablePart implements Extendable
     addColumn("#","id-int");
     addColumn(i18n.tr("Flags"),                   null);
     addColumn(i18n.tr("Gegenkonto"),                "empfaenger");
-    addColumn(i18n.tr("Verwendungszweck"),          "zweck");
+    addColumn(i18n.tr("Verwendungszweck"),          "mergedzweck");
     addColumn(i18n.tr("Datum"),                     "datum_pseudo", new DateFormatter(HBCI.DATEFORMAT));
     addColumn(i18n.tr("Betrag"),                    "betrag",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
     addColumn(i18n.tr("Kategorie"),                 "umsatztyp");
@@ -816,6 +816,9 @@ public class UmsatzList extends TablePart implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.65  2010/05/30 23:29:31  willuhn
+ * @N Alle Verwendungszweckzeilen in Umsatzlist und -tree anzeigen (BUGZILLA 782)
+ *
  * Revision 1.64  2010/03/16 00:44:18  willuhn
  * @N Komplettes Redesign des CSV-Imports.
  *   - Kann nun erheblich einfacher auch fuer andere Datentypen (z.Bsp.Ueberweisungen) verwendet werden

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.73 $
- * $Date: 2010/05/06 22:08:45 $
+ * $Revision: 1.74 $
+ * $Date: 2010/05/30 23:29:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -455,7 +455,24 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
       }
     }
     if ("mergedzweck".equals(arg0))
-      return getZweck() + (getZweck2() != null ? getZweck2() : "");
+    {
+      StringBuffer sb = new StringBuffer();
+      String s1 = this.getZweck();
+      String s2 = this.getZweck2();
+      String s3 = (String) this.getAttribute("zweck3");
+      if (s1 != null)
+      {
+        sb.append(s1);
+        sb.append(' ');
+      }
+      if (s2 != null)
+      {
+        sb.append(s2);
+        sb.append(' ');
+      }
+      if (s3 != null) sb.append(s3);
+      return sb.toString().replace('\n',' ');
+    }
 
     // BUGZILLA 86 http://www.willuhn.de/bugzilla/show_bug.cgi?id=86
     if ("empfaenger".equals(arg0))
@@ -711,6 +728,9 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.74  2010/05/30 23:29:31  willuhn
+ * @N Alle Verwendungszweckzeilen in Umsatzlist und -tree anzeigen (BUGZILLA 782)
+ *
  * Revision 1.73  2010/05/06 22:08:45  willuhn
  * @N BUGZILLA 622
  *
