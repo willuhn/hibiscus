@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.33 $
- * $Date: 2010/05/30 23:08:32 $
+ * $Revision: 1.34 $
+ * $Date: 2010/06/01 12:12:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -447,7 +447,7 @@ public class KontoauszugList extends UmsatzList
     Double max      = (Double) getHoechstBetrag().getValue();
     String zk       = (String) getText().getValue();
     
-    DBIterator umsaetze = UmsatzUtil.getUmsaetze();
+    DBIterator umsaetze = UmsatzUtil.getUmsaetzeBackwards();
     
     // BUGZILLA 449
     boolean hasFilter = false;
@@ -683,6 +683,9 @@ public class KontoauszugList extends UmsatzList
 
 /*********************************************************************
  * $Log: KontoauszugList.java,v $
+ * Revision 1.34  2010/06/01 12:12:19  willuhn
+ * @C Umsaetze in "Kontoauszuege" und "Umsatze nach Kategorien" per Default in umgekehrt chronologischer Reihenfolge liefern - also neue zuerst
+ *
  * Revision 1.33  2010/05/30 23:08:32  willuhn
  * @N Auch in Spalte "art" suchen (BUGZILLA 731)
  *

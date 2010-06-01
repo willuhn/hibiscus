@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzTypTreeControl.java,v $
- * $Revision: 1.13 $
- * $Date: 2010/03/22 09:58:34 $
+ * $Revision: 1.14 $
+ * $Date: 2010/06/01 12:12:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -198,7 +198,7 @@ public class UmsatzTypTreeControl extends AbstractControl
     settings.setAttribute("laststart", von == null ? null : HBCI.DATEFORMAT.format(von));
     settings.setAttribute("lastend",   bis == null ? null : HBCI.DATEFORMAT.format(bis));
 
-    DBIterator umsaetze = UmsatzUtil.getUmsaetze();
+    DBIterator umsaetze = UmsatzUtil.getUmsaetzeBackwards();
     if (konto != null)
       umsaetze.addFilter("konto_id = " + konto.getID());
     if (von != null) umsaetze.addFilter("datum >= ?", new Object[]{new java.sql.Date(HBCIProperties.startOfDay(von).getTime())});
@@ -335,6 +335,9 @@ public class UmsatzTypTreeControl extends AbstractControl
 
 /*******************************************************************************
  * $Log: UmsatzTypTreeControl.java,v $
+ * Revision 1.14  2010/06/01 12:12:19  willuhn
+ * @C Umsaetze in "Kontoauszuege" und "Umsatze nach Kategorien" per Default in umgekehrt chronologischer Reihenfolge liefern - also neue zuerst
+ *
  * Revision 1.13  2010/03/22 09:58:34  willuhn
  * @N Auch alle Kind-Kategorien mit zeichnen
  *
