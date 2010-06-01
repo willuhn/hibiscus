@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/VerwendungszweckUtil.java,v $
- * $Revision: 1.5 $
- * $Date: 2008/12/14 23:18:35 $
+ * $Revision: 1.6 $
+ * $Date: 2010/06/01 11:02:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,14 @@
 
 package de.willuhn.jameica.hbci.server;
 
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
+
+
 
 
 /**
@@ -21,7 +29,7 @@ package de.willuhn.jameica.hbci.server;
 public class VerwendungszweckUtil
 {
   /**
-   * Splittet die Verwendungszweck-Zeilen.
+   * Splittet die Verwendungszweck-Zeilen am Zeilenumbruch.
    * @param lines die Zeilen.
    * @return Ein Array mit den Zeilen.
    * Niemals NULL sondern hoechstens ein leeres Array.
@@ -31,6 +39,42 @@ public class VerwendungszweckUtil
     if (lines == null || lines.length() == 0)
       return new String[0];
     return lines.split("\n");
+  }
+  
+  /**
+   * Zerlegt einen langen Verwendungszweck in 27 Zeichen lange Haeppchen.
+   * @param line die zu parsende Zeile.
+   * @return die 27 Zeichen langen Schnippsel.
+   */
+  public static String[] parse(String line)
+  {
+    if (line == null || line.length() == 0)
+      return new String[0];
+
+    // Java's Regex-Implementierung ist sowas von daemlich.
+    // String.split() macht nur Rotz, wenn man mit Quantifierern
+    // arbeitet. Also ersetzten wir erst mal alles gegen nen
+    // eigenen String und verwenden den dann zum Splitten.
+    String s = line.replaceAll("(.{27})","$1--##--##");
+    return s.split("--##--##");
+  }
+  
+  /**
+   * Verteilt die angegebenen Verwendungszweck-Zeilen auf zweck, zweck2 und zweck3.
+   * @param t der Auftrag, in dem die Verwendungszweck-Zeilen gespeichert werden sollen.
+   * @param lines die zu uebernehmenden Zeilen.
+   * @throws RemoteException
+   */
+  public static void apply(HibiscusTransfer t, String[] lines) throws RemoteException
+  {
+    if (t == null || lines == null || lines.length == 0)
+      return;
+    
+    List<String> l = new ArrayList(Arrays.asList(lines));
+    
+    if (l.size() > 0) t.setZweck(l.remove(0));  // Zeile 1
+    if (l.size() > 0) t.setZweck2(l.remove(0)); // Zeile 2
+    if (l.size() > 0) t.setWeitereVerwendungszwecke(l.toArray(new String[l.size()])); // Zeile 3 - x
   }
   
   /**
@@ -68,6 +112,9 @@ public class VerwendungszweckUtil
 
 /*********************************************************************
  * $Log: VerwendungszweckUtil.java,v $
+ * Revision 1.6  2010/06/01 11:02:18  willuhn
+ * @N Wiederverwendbaren Code zum Zerlegen und Uebernehmen von Verwendungszwecken aus/in Arrays in Util-Klasse ausgelagert
+ *
  * Revision 1.5  2008/12/14 23:18:35  willuhn
  * @N BUGZILLA 188 - REFACTORING
  *

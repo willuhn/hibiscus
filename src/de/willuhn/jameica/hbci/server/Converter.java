@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.55 $
- * $Date: 2010/01/18 17:29:27 $
+ * $Revision: 1.56 $
+ * $Date: 2010/06/01 11:02:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,9 +13,6 @@
 package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import org.kapott.hbci.GV_Result.GVRDauerList;
 import org.kapott.hbci.GV_Result.GVRKUms;
@@ -120,36 +117,15 @@ public class Converter {
     //    "999" drin, dann sind diese Variablen alle null, und der ungeparste 
     //    Inhalt des Feldes :86: steht komplett in "additional".
 
-		List<String> lines = u.usage;
-    // Selberparsen kann ich wohl vergessen, wenn 999 drin steht. Wenn selbst
-    // Stefan das nicht macht, lass ich lieber gleich die Finger davon ;)
-    if (lines == null || lines.size() == 0)
-		{
-      String usage = u.additional;
-      if (usage != null && usage.length() > 0)
-      {
-        // Java's Regex-Implementierung ist sowas von daemlich.
-        // String.split() macht nur Rotz, wenn man mit Quantifierern
-        // arbeitet. Also ersetzten wir erst mal alles gegen nen
-        // eigenen String und verwenden den dann zum Splitten.
-        usage = usage.replaceAll("(.{27})","$1--##--##");
-        lines = Arrays.asList(usage.split("--##--##"));
-      }
-		}
+		String[] lines = (String[]) u.usage.toArray(new String[u.usage.size()]);
 
-    int size = lines.size();
-    
-    if (size > 0) umsatz.setZweck(lines.get(0));
-    if (size > 1) umsatz.setZweck2(lines.get(1));
+		// die Bank liefert keine strukturierten Verwendungszwecke (gvcode=999).
+		// Daher verwenden wir den gesamten "additional"-Block und zerlegen ihn
+		// in 27-Zeichen lange Haeppchen
+    if (lines.length == 0)
+      lines = VerwendungszweckUtil.parse(u.additional);
 
-    // Erweiterte Verwendungszwecke?
-    if (size > 2)
-    {
-      ArrayList al = new ArrayList();
-      for (int i=2;i<size;++i)
-        al.add(lines.get(i));
-      umsatz.setWeitereVerwendungszwecke((String[])al.toArray(new String[al.size()]));
-		}
+    VerwendungszweckUtil.apply(umsatz,lines);
     //
     ////////////////////////////////////////////////////////////////////////////
     
@@ -413,6 +389,9 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.56  2010/06/01 11:02:18  willuhn
+ * @N Wiederverwendbaren Code zum Zerlegen und Uebernehmen von Verwendungszwecken aus/in Arrays in Util-Klasse ausgelagert
+ *
  * Revision 1.55  2010/01/18 17:29:27  willuhn
  * @N IBAN/BIC statt Kontonummer/BLZ uebernehmen, falls keine Kto-Nummer/BLZ angegeben ist
  *
