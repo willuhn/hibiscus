@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/XMLImporter.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/04/16 12:20:51 $
+ * $Revision: 1.6 $
+ * $Date: 2010/06/01 21:57:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -152,7 +152,7 @@ public class XMLImporter implements Importer
    */
   public String getName()
   {
-    return i18n.tr("XML-Format");
+    return i18n.tr("Hibiscus-Format");
   }
 
   /**
@@ -173,7 +173,7 @@ public class XMLImporter implements Importer
     IOFormat f = new IOFormat() {
       public String getName()
       {
-        return i18n.tr("XML-Format");
+        return XMLImporter.this.getName();
       }
 
       /**
@@ -190,6 +190,10 @@ public class XMLImporter implements Importer
 
 /*******************************************************************************
  * $Log: XMLImporter.java,v $
+ * Revision 1.6  2010/06/01 21:57:31  willuhn
+ * @N "XML-Format" in "Hibiscus-Format" umbenannt - das "XML" verwirrte User und brachte sie zu der Annahme, man koenne da beliebige XML-Dateien importieren ;)
+ * @R binaeres "Hibiscus-Format" (via ObjectInputStream/ObjectOutputStream) entfernt - war ohnehin schon seit Jahren deaktiviert und obsolet - das XML-Format kann das besser
+ *
  * Revision 1.5  2010/04/16 12:20:51  willuhn
  * @B Parent-ID beim Import von Kategorien beruecksichtigen und neu mappen
  *

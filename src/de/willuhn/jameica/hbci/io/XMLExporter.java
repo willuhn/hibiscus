@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/XMLExporter.java,v $
- * $Revision: 1.4 $
- * $Date: 2009/02/13 14:17:01 $
+ * $Revision: 1.5 $
+ * $Date: 2010/06/01 21:57:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -101,7 +101,7 @@ public class XMLExporter implements Exporter
     return new IOFormat[]{new IOFormat() {
       public String getName()
       {
-        return i18n.tr("XML-Format");
+        return XMLExporter.this.getName();
       }
     
       /**
@@ -119,7 +119,7 @@ public class XMLExporter implements Exporter
    */
   public String getName()
   {
-    return i18n.tr("XML-Format");
+    return i18n.tr("Hibiscus-Format");
   }
 
 }
@@ -127,6 +127,10 @@ public class XMLExporter implements Exporter
 
 /*********************************************************************
  * $Log: XMLExporter.java,v $
+ * Revision 1.5  2010/06/01 21:57:31  willuhn
+ * @N "XML-Format" in "Hibiscus-Format" umbenannt - das "XML" verwirrte User und brachte sie zu der Annahme, man koenne da beliebige XML-Dateien importieren ;)
+ * @R binaeres "Hibiscus-Format" (via ObjectInputStream/ObjectOutputStream) entfernt - war ohnehin schon seit Jahren deaktiviert und obsolet - das XML-Format kann das besser
+ *
  * Revision 1.4  2009/02/13 14:17:01  willuhn
  * @N BUGZILLA 700
  *
