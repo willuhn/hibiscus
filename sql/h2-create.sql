@@ -110,7 +110,6 @@ CREATE TABLE umsatztyp (
   color varchar(11) NULL,
   customcolor int(1) NULL,
   UNIQUE (id),
-  UNIQUE (name),
   PRIMARY KEY (id)
 );
 
@@ -291,6 +290,6 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',28);
+INSERT INTO version (name,version) values ('db',29);
   
 COMMIT;

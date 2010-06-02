@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzTypControl.java,v $
- * $Revision: 1.12 $
- * $Date: 2010/03/05 15:24:53 $
+ * $Revision: 1.13 $
+ * $Date: 2010/06/02 15:32:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,9 +23,7 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
-import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
@@ -35,6 +33,7 @@ import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.input.UmsatzTypInput;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.hbci.server.UmsatzTypUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -59,7 +58,7 @@ public class UmsatzTypControl extends AbstractControl
   private TextInput pattern     = null;
   private CheckboxInput regex   = null;
   private SelectInput art       = null;
-  private SelectInput parent    = null;
+  private UmsatzTypInput parent = null;
   
   private ColorInput color          = null;
   private CheckboxInput customColor = null;
@@ -256,22 +255,11 @@ public class UmsatzTypControl extends AbstractControl
    * @return Auswahlbox.
    * @throws RemoteException
    */
-  public SelectInput getParent() throws RemoteException
+  public UmsatzTypInput getParent() throws RemoteException
   {
     if (this.parent == null)
     {
-      UmsatzTyp current = getUmsatzTyp();
-      
-      GenericIterator possibleParents = null;
-      if (current.isNewObject())
-      {
-        possibleParents = Settings.getDBService().createList(UmsatzTyp.class);
-        ((DBIterator)possibleParents).setOrder("order by name");
-      }
-      else
-        possibleParents = current.getPossibleParents();
-
-      this.parent = new SelectInput(possibleParents,current.getParent());
+      this.parent = new UmsatzTypInput((UmsatzTyp)getUmsatzTyp().getParent(),getUmsatzTyp(),UmsatzTyp.TYP_EGAL);
       this.parent.setAttribute("name");
       this.parent.setPleaseChoose(i18n.tr("<Keine>"));
     }
@@ -399,6 +387,10 @@ public class UmsatzTypControl extends AbstractControl
 
 /*********************************************************************
  * $Log: UmsatzTypControl.java,v $
+ * Revision 1.13  2010/06/02 15:32:03  willuhn
+ * @N Unique-Constraint auf Spalte "name" in Tabelle "umsatztyp" entfernt. Eine Kategorie kann jetzt mit gleichem Namen beliebig oft auftreten
+ * @N Auswahlbox der Oberkategorie in Einstellungen->Umsatz-Kategorien zeigt auch die gleiche Baumstruktur wie bei der Zuordnung der Kategorie in der Umsatzliste
+ *
  * Revision 1.12  2010/03/05 15:24:53  willuhn
  * @N BUGZILLA 686
  *

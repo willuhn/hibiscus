@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.53 $
- * $Date: 2010/04/11 20:56:53 $
+ * $Revision: 1.54 $
+ * $Date: 2010/06/02 15:32:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -83,22 +83,6 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
         }
       }
 
-      // Wir pruefen, ob es bereits eine Kategorie mit diesem Namen gibt
-      // willuhn: In der Datenbank ist das Feld zwar bereits als UNIQUE
-      // definiert. Damit wir beim Speichern aber nicht den SQL-Code parsen
-      // muessen (und der vermutlich bei einer anderen Datenbank anders lautet)
-      // machen wir die Pruefung vor dem Speichern trotzdem noch manuell.
-      // Beim Speichern ist das auch nicht zeitkritisch.
-      DBIterator list = getService().createList(UmsatzTyp.class);
-      while (list.hasNext())
-      {
-        UmsatzTyp other = (UmsatzTyp) list.next();
-        if (other.equals(this))
-          continue; // Das sind wir selbst
-        if (name.equals(other.getName()))
-          throw new ApplicationException(i18n.tr("Es existiert bereits eine Kategorie mit dieser Bezeichnung"));
-      }
-      
       if (isCustomColor() && (getColor() == null || getColor().length != 3))
         throw new ApplicationException("Wählen Sie bitte eine benutzerdefinierte Farbe aus");
 
@@ -628,6 +612,10 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
 
 /*******************************************************************************
  * $Log: UmsatzTypImpl.java,v $
+ * Revision 1.54  2010/06/02 15:32:03  willuhn
+ * @N Unique-Constraint auf Spalte "name" in Tabelle "umsatztyp" entfernt. Eine Kategorie kann jetzt mit gleichem Namen beliebig oft auftreten
+ * @N Auswahlbox der Oberkategorie in Einstellungen->Umsatz-Kategorien zeigt auch die gleiche Baumstruktur wie bei der Zuordnung der Kategorie in der Umsatzliste
+ *
  * Revision 1.53  2010/04/11 20:56:53  willuhn
  * @N BUGZILLA #846
  *

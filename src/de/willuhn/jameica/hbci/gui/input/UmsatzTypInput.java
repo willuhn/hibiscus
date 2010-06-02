@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/UmsatzTypInput.java,v $
- * $Revision: 1.13 $
- * $Date: 2010/03/09 12:34:03 $
+ * $Revision: 1.14 $
+ * $Date: 2010/06/02 15:32:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -52,7 +52,25 @@ public class UmsatzTypInput extends SelectInput
    */
   public UmsatzTypInput(UmsatzTyp preselected, int typ) throws RemoteException
   {
-    super(init(typ), preselected);
+    this(preselected,null,typ);
+  }
+
+  /**
+   * ct.
+   * @param preselected der vorselectierte Umsatz-Typ.
+   * @param skip einzelner Umsatz-Typ, der nicht angeboten werden soll.
+   * Damit ist es zum Beispiel moeglich, eine Endlos-Rekursion zu erzeugen,
+   * wenn ein Parent ausgewaehlt werden soll, der User aber die Kategorie
+   * sich selbst als Parent zuordnet.
+   * @param typ Filter auf Kategorie-Typen.
+   * Kategorien vom Typ "egal" werden grundsaetzlich angezeigt.
+   * @see UmsatzTyp#TYP_AUSGABE
+   * @see UmsatzTyp#TYP_EINNAHME
+   * @throws RemoteException
+   */
+  public UmsatzTypInput(UmsatzTyp preselected, UmsatzTyp skip, int typ) throws RemoteException
+  {
+    super(init(skip,typ), preselected);
 
     this.setPleaseChoose(i18n.tr("<Keine Kategorie>"));
     refreshComment();
@@ -70,29 +88,34 @@ public class UmsatzTypInput extends SelectInput
   
   /**
    * Initialisiert die Liste der anzuzeigenden Kategorien.
+   * @param skip zu ueberspringende Kategorie.
    * @param typ der Kategorie-Typ.
    * @return korrigierte Liste.
    * @throws RemoteException
    */
-  private static List init(int typ) throws RemoteException
+  private static List init(UmsatzTyp skip, int typ) throws RemoteException
   {
     List l = new ArrayList();
     DBIterator list = UmsatzTypUtil.getRootElements();
     while (list.hasNext())
     {
-      add((UmsatzTyp)list.next(),l,typ);
+      add((UmsatzTyp)list.next(),skip,l,typ);
     }
     return l;
   }
   
   /**
    * @param t
+   * @param skip
    * @param l
    * @param typ
    * @throws RemoteException
    */
-  private static void add(UmsatzTyp t, List l, int typ) throws RemoteException
+  private static void add(UmsatzTyp t, UmsatzTyp skip, List l, int typ) throws RemoteException
   {
+    if (skip != null && skip.equals(t))
+      return;
+    
     // Wir filtern hier zwei Faelle:
     
     // a) typ == TYP_EGAL -> es wird nichts gefiltert
@@ -106,7 +129,7 @@ public class UmsatzTypInput extends SelectInput
       GenericIterator children = t.getChildren();
       while (children.hasNext())
       {
-        add((UmsatzTyp) children.next(),l,typ);
+        add((UmsatzTyp) children.next(),skip,l,typ);
       }
     }
   }
@@ -161,6 +184,10 @@ public class UmsatzTypInput extends SelectInput
 
 /*********************************************************************
  * $Log: UmsatzTypInput.java,v $
+ * Revision 1.14  2010/06/02 15:32:03  willuhn
+ * @N Unique-Constraint auf Spalte "name" in Tabelle "umsatztyp" entfernt. Eine Kategorie kann jetzt mit gleichem Namen beliebig oft auftreten
+ * @N Auswahlbox der Oberkategorie in Einstellungen->Umsatz-Kategorien zeigt auch die gleiche Baumstruktur wie bei der Zuordnung der Kategorie in der Umsatzliste
+ *
  * Revision 1.13  2010/03/09 12:34:03  willuhn
  * @N Jetzt mit korrekten Einrueckungen
  *
