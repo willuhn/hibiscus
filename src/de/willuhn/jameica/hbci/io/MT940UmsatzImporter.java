@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Attic/MT940Importer.java,v $
- * $Revision: 1.16 $
- * $Date: 2009/12/07 22:55:32 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/MT940UmsatzImporter.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2010/06/02 15:32:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,6 +27,7 @@ import org.kapott.hbci.structures.Konto;
 import org.kapott.hbci.swift.Swift;
 
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
@@ -39,12 +40,12 @@ import de.willuhn.util.I18N;
 import de.willuhn.util.ProgressMonitor;
 
 /**
- * Importer fuer Swift MT 940.
+ * Importer fuer Umsaetze im Swift MT940-Format.
  */
-public class MT940Importer implements Importer
+public class MT940UmsatzImporter implements Importer
 {
 
-  private I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
    * @see de.willuhn.jameica.hbci.io.Importer#doImport(java.lang.Object, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor)
@@ -66,6 +67,12 @@ public class MT940Importer implements Importer
       if (context != null && context instanceof de.willuhn.jameica.hbci.rmi.Konto)
         konto = (de.willuhn.jameica.hbci.rmi.Konto) context;
       
+      if (konto == null)
+      {
+        KontoAuswahlDialog d = new KontoAuswahlDialog(KontoAuswahlDialog.POSITION_CENTER);
+        d.setText(i18n.tr("Bitte wählen Sie das zu verwendende Konto aus."));
+        konto = (de.willuhn.jameica.hbci.rmi.Konto) d.open();
+      }
       // Wir erzeugen das HBCI4Java-Umsatz-Objekt selbst. Dann muessen wir
       // an der eigentlichen Parser-Routine nichts mehr aendern.
       GVRKUms umsaetze = new MyGVRKUms();
@@ -150,10 +157,14 @@ public class MT940Importer implements Importer
       Logger.warn("operation cancelled");
       throw new ApplicationException(i18n.tr("Import abgebrochen"));
     }
+    catch (ApplicationException ae)
+    {
+      throw ae;
+    }
     catch (Exception e)
     {
       Logger.error("error while reading file",e);
-      throw new ApplicationException(i18n.tr("Fehler beim Import der Swift-Datei"));
+      throw new ApplicationException(i18n.tr("Fehler beim Import der Datei"));
     }
     finally
     {
@@ -176,7 +187,7 @@ public class MT940Importer implements Importer
    */
   public String getName()
   {
-    return i18n.tr("Swift MT-940 Format");
+    return i18n.tr("Swift MT940-Format");
   }
 
   /**
@@ -190,7 +201,7 @@ public class MT940Importer implements Importer
     IOFormat f = new IOFormat() {
       public String getName()
       {
-        return i18n.tr("Swift MT-940");
+        return MT940UmsatzImporter.this.getName();
       }
 
       /**
@@ -286,7 +297,10 @@ public class MT940Importer implements Importer
 }
 
 /*******************************************************************************
- * $Log: MT940Importer.java,v $
+ * $Log: MT940UmsatzImporter.java,v $
+ * Revision 1.1  2010/06/02 15:32:22  willuhn
+ * @Importer umbenannt
+ *
  * Revision 1.16  2009/12/07 22:55:32  willuhn
  * @R nicht mehr benoetigte Funktionen entfernt
  *
