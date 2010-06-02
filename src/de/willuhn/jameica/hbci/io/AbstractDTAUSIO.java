@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/AbstractDTAUSIO.java,v $
- * $Revision: 1.4 $
- * $Date: 2009/06/15 08:51:16 $
+ * $Revision: 1.5 $
+ * $Date: 2010/06/02 15:32:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -125,7 +125,7 @@ public abstract class AbstractDTAUSIO implements IO
      */
     public String getName()
     {
-      return i18n.tr("DTAUS-Format");
+      return AbstractDTAUSIO.this.getName();
     }
 
     /**
@@ -141,6 +141,9 @@ public abstract class AbstractDTAUSIO implements IO
 
 /*********************************************************************
  * $Log: AbstractDTAUSIO.java,v $
+ * Revision 1.5  2010/06/02 15:32:32  willuhn
+ * @C Bezeichnung geaendert
+ *
  * Revision 1.4  2009/06/15 08:51:16  willuhn
  * @N BUGZILLA 736
  *
