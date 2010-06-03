@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzTypControl.java,v $
- * $Revision: 1.13 $
- * $Date: 2010/06/02 15:32:03 $
+ * $Revision: 1.14 $
+ * $Date: 2010/06/03 13:54:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -258,11 +258,7 @@ public class UmsatzTypControl extends AbstractControl
   public UmsatzTypInput getParent() throws RemoteException
   {
     if (this.parent == null)
-    {
       this.parent = new UmsatzTypInput((UmsatzTyp)getUmsatzTyp().getParent(),getUmsatzTyp(),UmsatzTyp.TYP_EGAL);
-      this.parent.setAttribute("name");
-      this.parent.setPleaseChoose(i18n.tr("<Keine>"));
-    }
     return this.parent;
   }
 
@@ -387,6 +383,9 @@ public class UmsatzTypControl extends AbstractControl
 
 /*********************************************************************
  * $Log: UmsatzTypControl.java,v $
+ * Revision 1.14  2010/06/03 13:54:02  willuhn
+ * @N UmsatzTypInput setzt jetzt auch gleich Name und Attribut
+ *
  * Revision 1.13  2010/06/02 15:32:03  willuhn
  * @N Unique-Constraint auf Spalte "name" in Tabelle "umsatztyp" entfernt. Eine Kategorie kann jetzt mit gleichem Namen beliebig oft auftreten
  * @N Auswahlbox der Oberkategorie in Einstellungen->Umsatz-Kategorien zeigt auch die gleiche Baumstruktur wie bei der Zuordnung der Kategorie in der Umsatzliste
