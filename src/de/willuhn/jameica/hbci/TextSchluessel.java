@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/TextSchluessel.java,v $
- * $Revision: 1.1 $
- * $Date: 2008/08/01 11:05:14 $
+ * $Revision: 1.2 $
+ * $Date: 2010/06/07 12:43:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -33,6 +33,7 @@ public class TextSchluessel
     list.add(new TextSchluessel("51",i18n.tr("Überweisung")));
     list.add(new TextSchluessel("53",i18n.tr("Überweisung Lohn/Gehalt/Rente")));
     list.add(new TextSchluessel("54",i18n.tr("Vermögenswirksame Leistungen")));
+    list.add(new TextSchluessel("59",i18n.tr("Rücküberweisung")));
   }
 
   private String code = null;
@@ -139,6 +140,9 @@ public class TextSchluessel
 
 /*********************************************************************
  * $Log: TextSchluessel.java,v $
+ * Revision 1.2  2010/06/07 12:43:41  willuhn
+ * @N BUGZILLA 587
+ *
  * Revision 1.1  2008/08/01 11:05:14  willuhn
  * @N BUGZILLA 587
  *
