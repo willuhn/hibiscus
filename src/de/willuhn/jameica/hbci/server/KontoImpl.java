@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.101 $
- * $Date: 2010/04/25 20:55:28 $
+ * $Revision: 1.102 $
+ * $Date: 2010/06/07 22:41:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,7 +15,6 @@ package de.willuhn.jameica.hbci.server;
 import java.rmi.RemoteException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.zip.CRC32;
 
@@ -344,55 +343,6 @@ public class KontoImpl extends AbstractDBObject implements Konto
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getAnfangsSaldo(java.util.Date)
-   */
-  public double getAnfangsSaldo(Date datum) throws RemoteException
-  {
-    DBIterator list = UmsatzUtil.getUmsaetze();
-    list.addFilter("konto_id = " + getID());
-    list.addFilter("saldo is not null and saldo != 0");
-
-    Date start = HBCIProperties.startOfDay(datum);
-    
-    list.addFilter("datum >= ?", new Object[] {new java.sql.Date(start.getTime())});
-    if (list.size() > 0)
-    {
-      Umsatz u = (Umsatz) list.next();
-      return u.getSaldo() + u.getBetrag() * -1;
-    }
-
-    // Im angegebenen Zeitraum waren keine Umsätze zu finden. Deshalb suchen wir
-    // frühere Umsätze.
-    list = UmsatzUtil.getUmsaetzeBackwards();
-    list.addFilter("konto_id = " + getID());
-    list.addFilter("saldo is not null and saldo != 0");
-    list.addFilter("datum < ?", new Object[] { new java.sql.Date(start.getTime())});
-    if (list.size() > 0)
-    {
-      Umsatz u = (Umsatz) list.next();
-      return u.getSaldo();
-    }
-    return 0.0d;
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getEndSaldo(java.util.Date)
-   */
-  public double getEndSaldo(Date datum) throws RemoteException
-  {
-    DBIterator list = UmsatzUtil.getUmsaetzeBackwards();
-    list.addFilter("konto_id = " + getID());
-    list.addFilter("saldo is not null and saldo != 0");
-    list.addFilter("datum <= ?", new Object[] { new java.sql.Date(HBCIProperties.endOfDay(datum).getTime())});
-    if (list.size() > 0)
-    {
-      Umsatz u = (Umsatz) list.next();
-      return u.getSaldo();
-    }
-    return 0.0d;
-  }
-
-  /**
    * @see de.willuhn.jameica.hbci.rmi.Konto#getSaldoDatum()
    */
   public Date getSaldoDatum() throws RemoteException
@@ -443,11 +393,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
     DBIterator list = UmsatzUtil.getUmsaetzeBackwards();
     list.addFilter("konto_id = " + getID());
     if (start != null)
-      list.addFilter("valuta >= ?", new Object[] { new java.sql.Date(
-          HBCIProperties.startOfDay(start).getTime()) });
+      list.addFilter("valuta >= ?", new Object[] {new java.sql.Date(HBCIProperties.startOfDay(start).getTime())});
     if (end != null)
-      list.addFilter("valuta <= ?", new Object[] { new java.sql.Date(
-          HBCIProperties.endOfDay(end).getTime()) });
+      list.addFilter("valuta <= ?", new Object[] {new java.sql.Date(HBCIProperties.endOfDay(end).getTime())});
     return list;
   }
 
@@ -563,8 +511,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
   public void store() throws RemoteException, ApplicationException
   {
     if (hasChanged())
-      addToProtokoll(i18n.tr("Konto-Eigenschaften aktualisiert"),
-          Protokoll.TYP_SUCCESS);
+      addToProtokoll(i18n.tr("Konto-Eigenschaften aktualisiert"),Protokoll.TYP_SUCCESS);
     super.store();
   }
 
@@ -572,16 +519,14 @@ public class KontoImpl extends AbstractDBObject implements Konto
    * @see de.willuhn.jameica.hbci.rmi.Konto#addToProtokoll(java.lang.String,
    *      int)
    */
-  public final void addToProtokoll(String kommentar, int protokollTyp)
-      throws RemoteException
+  public final void addToProtokoll(String kommentar, int protokollTyp) throws RemoteException
   {
     if (kommentar == null || kommentar.length() == 0 || this.getID() == null)
       return;
 
     try
     {
-      Protokoll entry = (Protokoll) getService().createObject(Protokoll.class,
-          null);
+      Protokoll entry = (Protokoll) getService().createObject(Protokoll.class,null);
       entry.setKonto(this);
       entry.setKommentar(kommentar);
       entry.setTyp(protokollTyp);
@@ -651,68 +596,6 @@ public class KontoImpl extends AbstractDBObject implements Konto
     setAttribute("saldo_datum", new Date());
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getAusgaben(java.util.Date,
-   *      java.util.Date)
-   */
-  public double getAusgaben(Date from, Date to) throws RemoteException
-  {
-    return getSumme(from, to, true);
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getEinnahmen(java.util.Date,
-   *      java.util.Date)
-   */
-  public double getEinnahmen(Date from, Date to) throws RemoteException
-  {
-    return getSumme(from, to, false);
-  }
-
-  /**
-   * Hilfsfunktion fuer Berechnung der Einnahmen und Ausgaben.
-   * 
-   * @param from
-   * @param to
-   * @param ausgaben
-   * @return Summe.
-   * @throws RemoteException
-   */
-  private double getSumme(Date from, Date to, boolean ausgaben)
-      throws RemoteException
-  {
-    if (this.isNewObject())
-      return 0.0d;
-
-    ArrayList params = new ArrayList();
-
-    String sql = "select SUM(betrag) from umsatz where konto_id = " + this.getID() + " and betrag " + (ausgaben ? "<" : ">") + " 0";
-    if (from != null)
-    {
-      params.add(new java.sql.Date(HBCIProperties.startOfDay(from).getTime()));
-      sql += " and datum >= ? ";
-    }
-    if (to != null)
-    {
-      params.add(new java.sql.Date(HBCIProperties.startOfDay(to).getTime()));
-      sql += " and datum <= ? ";
-    }
-
-    HBCIDBService service = (HBCIDBService) this.getService();
-
-    ResultSetExtractor rs = new ResultSetExtractor()
-    {
-      public Object extract(ResultSet rs) throws RemoteException, SQLException
-      {
-        if (!rs.next())
-          return new Double(0.0d);
-        return new Double(rs.getDouble(1));
-      }
-    };
-
-    Double d = (Double) service.execute(sql, params.toArray(), rs);
-    return d == null ? 0.0d : d.doubleValue();
-  }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Konto#getNumUmsaetze()
@@ -722,18 +605,16 @@ public class KontoImpl extends AbstractDBObject implements Konto
     if (this.isNewObject())
       return 0;
 
-    String sql = "select count(id) from umsatz where konto_id = "
-        + this.getID();
+    String sql = "select count(id) from umsatz where konto_id = " + this.getID();
 
     HBCIDBService service = (HBCIDBService) this.getService();
-
     ResultSetExtractor rs = new ResultSetExtractor()
     {
       public Object extract(ResultSet rs) throws RemoteException, SQLException
       {
-        if (!rs.next())
-          return new Integer(0);
-        return new Integer(rs.getInt(1));
+        if (rs.next())
+          return new Integer(rs.getInt(1));
+        return new Integer(0);
       }
     };
 
@@ -836,6 +717,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*******************************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.102  2010/06/07 22:41:14  willuhn
+ * @N BUGZILLA 844/852
+ *
  * Revision 1.101  2010/04/25 20:55:28  willuhn
  * @B BUGZILLA 852
  *

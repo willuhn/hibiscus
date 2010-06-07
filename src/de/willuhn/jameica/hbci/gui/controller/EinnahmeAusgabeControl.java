@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EinnahmeAusgabeControl.java,v $
- * $Revision: 1.15 $
- * $Date: 2010/04/09 09:31:03 $
+ * $Revision: 1.16 $
+ * $Date: 2010/06/07 22:41:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -42,6 +42,7 @@ import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.io.EinnahmeAusgabe;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.server.KontoUtil;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
@@ -291,16 +292,16 @@ public class EinnahmeAusgabeControl extends AbstractControl
     if (dEnd != null) dEnd = HBCIProperties.startOfDay(dEnd);
     
     
-    double anfangssaldo = konto.getAnfangsSaldo(dStart);
+    double anfangssaldo = KontoUtil.getAnfangsSaldo(konto,dStart);
     summeAnfangssaldo += anfangssaldo;
 
-    double einnahmen = konto.getEinnahmen(dStart,dEnd);
+    double einnahmen = KontoUtil.getEinnahmen(konto,dStart,dEnd);
     summeEinnahmen += einnahmen;
 
-    double ausgaben = konto.getAusgaben(dStart,dEnd);
+    double ausgaben = KontoUtil.getAusgaben(konto,dStart,dEnd);
     summeAusgaben += ausgaben;
 
-    double endsaldo = konto.getEndSaldo(dEnd);
+    double endsaldo = KontoUtil.getEndSaldo(konto,dEnd);
     summeEndsaldo += endsaldo;
 
     eae[index] = new EinnahmeAusgabe(konto.getLongName(),
@@ -311,7 +312,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
                                      dEnd,
                                      endsaldo);
   }
-
+  
   /**
    * Aktualisiert die Tabelle.
    * @throws RemoteException
@@ -338,6 +339,9 @@ public class EinnahmeAusgabeControl extends AbstractControl
 
 /*******************************************************************************
  * $Log: EinnahmeAusgabeControl.java,v $
+ * Revision 1.16  2010/06/07 22:41:13  willuhn
+ * @N BUGZILLA 844/852
+ *
  * Revision 1.15  2010/04/09 09:31:03  willuhn
  * @B BUGZILLA 844
  *

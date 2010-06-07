@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Overview.java,v $
- * $Revision: 1.13 $
- * $Date: 2010/03/21 22:43:21 $
+ * $Revision: 1.14 $
+ * $Date: 2010/06/07 22:41:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -36,6 +36,7 @@ import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.server.KontoUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -231,14 +232,14 @@ public class Overview extends AbstractBox implements Box
         while (i.hasNext())
         {
           Konto k = (Konto) i.next();
-          in  += k.getEinnahmen(dStart,dEnd);
-          out += k.getAusgaben(dStart, dEnd);
+          in  += KontoUtil.getEinnahmen(k,dStart,dEnd);
+          out += KontoUtil.getAusgaben(k,dStart,dEnd);
         }
       }
       else
       {
-        in  = konto.getEinnahmen(dStart,dEnd);
-        out = konto.getAusgaben(dStart,dEnd);
+        in  = KontoUtil.getEinnahmen(konto,dStart,dEnd);
+        out = KontoUtil.getAusgaben(konto,dStart,dEnd);
       }
       out = Math.abs(out); // BUGZILLA 405
       getAusgaben().setValue(HBCI.DECIMALFORMAT.format(out));
@@ -314,6 +315,9 @@ public class Overview extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: Overview.java,v $
+ * Revision 1.14  2010/06/07 22:41:13  willuhn
+ * @N BUGZILLA 844/852
+ *
  * Revision 1.13  2010/03/21 22:43:21  willuhn
  * @B Wenn ein Konto (als Default-Konto) vorausgewaehlt war, wurden die Werte erst nach Neuauswahl auf den korrekten Stand gebracht
  *

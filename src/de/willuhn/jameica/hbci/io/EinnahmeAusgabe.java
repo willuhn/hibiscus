@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Attic/EinnahmeAusgabe.java,v $
- * $Revision: 1.4 $
- * $Date: 2010/04/06 22:49:54 $
+ * $Revision: 1.5 $
+ * $Date: 2010/06/07 22:41:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -55,7 +55,7 @@ public class EinnahmeAusgabe implements GenericObject
     this.endsaldo     = endsaldo;
     this.enddatum     = enddatum;
 
-    BigDecimal v1 = new BigDecimal(anfangssaldo + einnahme + ausgabe);
+    BigDecimal v1 = new BigDecimal(anfangssaldo + einnahme - ausgabe);
     BigDecimal v2 = new BigDecimal(endsaldo);
     this.differenz = v1.subtract(v2).setScale(2,BigDecimal.ROUND_HALF_EVEN).doubleValue();
     this.hasDiff = Math.abs(this.differenz) >= 0.01;
@@ -112,6 +112,9 @@ public class EinnahmeAusgabe implements GenericObject
 
 /*******************************************************************************
  * $Log: EinnahmeAusgabe.java,v $
+ * Revision 1.5  2010/06/07 22:41:13  willuhn
+ * @N BUGZILLA 844/852
+ *
  * Revision 1.4  2010/04/06 22:49:54  willuhn
  * @B BUGZILLA 844
  *

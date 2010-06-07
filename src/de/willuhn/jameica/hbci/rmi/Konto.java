@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Konto.java,v $
- * $Revision: 1.44 $
- * $Date: 2010/04/22 16:10:43 $
+ * $Revision: 1.45 $
+ * $Date: 2010/06/07 22:41:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -192,25 +192,6 @@ public interface Konto extends DBObject, Checksum, Flaggable
 	 */
 	public double getSaldo() throws RemoteException;
   
-  /**
-   * Liefert den Anfangssaldo eines Tages bzw. des 1. Tages nach diesem Datum mit Umsätzen
-   * oder <code>0.0</code> wenn er noch nie abgefragt wurde.
-   * @param datum Datum.
-   * @return der Saldo.
-   * @throws RemoteException 
-   */
-  public double getAnfangsSaldo(Date datum) throws RemoteException;
-  
-  /**
-   * Liefert den Endsaldo eines Tages bzw. des 1. Tages vor diesem Datum mit Umsätzen oder
-   * <code>0.0</code> wenn er noch nie abgefragt wurde.
-   * @param datum Datum.
-   * @return der Saldo.
-   * @throws RemoteException 
-   */
-  public double getEndSaldo(Date datum) throws RemoteException;
-  
-
 	/**
 	 * Speichert den neuen Saldo.
 	 * 
@@ -349,30 +330,6 @@ public interface Konto extends DBObject, Checksum, Flaggable
 	 */
 	public void addToProtokoll(String kommentar, int protokollTyp) throws RemoteException;
 
-	/**
-	 * Liefert die Ausgaben auf dem Konto im angegebenen Zeitraum.
-	 * 
-	 * @param from
-	 *          Start-Datum.
-	 * @param to
-	 *          End-Datum.
-	 * @return Summe der Ausgaben.
-	 * @throws RemoteException
-	 */
-	public double getAusgaben(Date from, Date to) throws RemoteException;
-
-	/**
-	 * Liefert die Einnahmen auf dem Konto im angegebenen Zeitraum.
-	 * 
-	 * @param from
-	 *          Start-Datum.
-	 * @param to
-	 *          End-Datum.
-	 * @return Summe der Einnahmen.
-	 * @throws RemoteException
-	 */
-	public double getEinnahmen(Date from, Date to) throws RemoteException;
-
   /**
    * Speichert einen zusaetzlichen Kommentar fuer das Konto.
    * @param kommentar
@@ -418,6 +375,9 @@ public interface Konto extends DBObject, Checksum, Flaggable
 
 /*******************************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.45  2010/06/07 22:41:13  willuhn
+ * @N BUGZILLA 844/852
+ *
  * Revision 1.44  2010/04/22 16:10:43  willuhn
  * @C Saldo kann bei Offline-Konten zwar nicht manuell bearbeitet werden, dafuer wird er aber beim Zuruecksetzen des Kontos (heisst jetzt "Saldo und Datum zuruecksetzen" statt "Kontoauszugsdatum zuruecksetzen") jetzt ebenfalls geloescht
  *
