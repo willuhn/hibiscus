@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/NewKeysDialog.java,v $
- * $Revision: 1.14 $
- * $Date: 2009/07/27 13:43:45 $
+ * $Revision: 1.15 $
+ * $Date: 2010/06/08 11:27:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -175,6 +175,7 @@ public class NewKeysDialog extends AbstractDialog
     FileDialog fd = new FileDialog(GUI.getShell(),SWT.SAVE);
     fd.setText(i18n.tr("Bitte geben Sie den Dateinamen an , in dem der Ini-Brief gespeichert werden soll"));
     fd.setFileName(i18n.tr("hibiscus-inibrief-{0}.txt",HBCI.FASTDATEFORMAT.format(new Date())));
+    fd.setOverwrite(true);
     
     Settings settings = new Settings(this.getClass());
     settings.setStoreWhenRead(true);
@@ -194,10 +195,6 @@ public class NewKeysDialog extends AbstractDialog
     try
     {
       File file = new File(s);
-      String overwrite = i18n.tr("Die Datei {0} existiert bereits. Überschreiben?");
-      if (file.exists() && !Application.getCallback().askUser(overwrite,new String[]{file.getAbsolutePath()}))
-        throw new OperationCanceledException("interrupted, user did not want to overwrite " + file.getAbsolutePath());
-
       os = new BufferedOutputStream(new FileOutputStream(file));
       os.write(iniletter.toString().getBytes());
 
@@ -211,10 +208,6 @@ public class NewKeysDialog extends AbstractDialog
     catch (OperationCanceledException oce)
     {
       Logger.warn(oce.getMessage());
-    }
-    catch (ApplicationException ae)
-    {
-      throw ae;
     }
     catch (Exception e)
     {
@@ -280,6 +273,9 @@ public class NewKeysDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: NewKeysDialog.java,v $
+ * Revision 1.15  2010/06/08 11:27:59  willuhn
+ * @N SWT besitzt jetzt selbst eine Option im FileDialog, mit der geprueft werden kann, ob die Datei ueberschrieben werden soll oder nicht
+ *
  * Revision 1.14  2009/07/27 13:43:45  willuhn
  * @N Neue HBCI4Java-Version (2.5.10) mit RDH-10-Support
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/BackupCreate.java,v $
- * $Revision: 1.4 $
- * $Date: 2010/03/03 11:00:19 $
+ * $Revision: 1.5 $
+ * $Date: 2010/06/08 11:27:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -46,7 +46,6 @@ import de.willuhn.jameica.hbci.server.TurnusImpl;
 import de.willuhn.jameica.hbci.server.UeberweisungImpl;
 import de.willuhn.jameica.hbci.server.UmsatzImpl;
 import de.willuhn.jameica.hbci.server.UmsatzTypImpl;
-import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.BackgroundTask;
 import de.willuhn.logging.Logger;
@@ -73,6 +72,7 @@ public class BackupCreate implements Action
   {
     FileDialog fd = new FileDialog(GUI.getShell(),SWT.SAVE);
     fd.setFilterPath(System.getProperty("user.home"));
+    fd.setOverwrite(true);
     fd.setFileName("hibiscus-backup-" + DATEFORMAT.format(new Date()) + ".xml");
     fd.setFilterExtensions(new String[]{"*.xml"});
     fd.setText("Bitte wählen Sie die Datei, in der das Backup gespeichert wird");
@@ -81,22 +81,6 @@ public class BackupCreate implements Action
       return;
     
     final File file = new File(f);
-    try
-    {
-      if (file.exists() && !Application.getCallback().askUser(i18n.tr("Datei existiert bereits. Überschreiben?")))
-        return;
-    }
-    catch (ApplicationException ae)
-    {
-      throw ae;
-    }
-    catch (Exception e)
-    {
-      Logger.error("error while asking user",e);
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Erstellen der Backup-Datei"), StatusBarMessage.TYPE_ERROR));
-      return;
-    }
-
     Application.getController().start(new BackgroundTask() {
       private boolean cancel = false;
     
@@ -239,6 +223,9 @@ public class BackupCreate implements Action
 
 /*********************************************************************
  * $Log: BackupCreate.java,v $
+ * Revision 1.5  2010/06/08 11:27:59  willuhn
+ * @N SWT besitzt jetzt selbst eine Option im FileDialog, mit der geprueft werden kann, ob die Datei ueberschrieben werden soll oder nicht
+ *
  * Revision 1.4  2010/03/03 11:00:19  willuhn
  * @N Erst Status-Code setzen und dann erst den Text - sonst wird der Text nicht gruen gefaerbt
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/ExportDialog.java,v $
- * $Revision: 1.19 $
- * $Date: 2010/03/16 00:44:17 $
+ * $Revision: 1.20 $
+ * $Date: 2010/06/08 11:26:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -32,7 +32,6 @@ import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
-import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
@@ -149,6 +148,7 @@ public class ExportDialog extends AbstractDialog
 
     FileDialog fd = new FileDialog(GUI.getShell(),SWT.SAVE);
     fd.setText(i18n.tr("Bitte geben Sie eine Datei ein, in die die Daten exportiert werden sollen."));
+    fd.setOverwrite(true);
     String[] se = exp.format.getFileExtensions();
     String ext = se == null ? "" : se[0];
     ext = ext.replaceAll("\\*.",""); // "*." entfernen
@@ -167,29 +167,6 @@ public class ExportDialog extends AbstractDialog
     }
 
     final File file = new File(s);
-    if (file.exists())
-    {
-      try
-      {
-        YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_MOUSE);
-        d.setTitle(i18n.tr("Datei existiert bereits"));
-        d.setText(i18n.tr("Möchten Sie die Datei überschreiben?"));
-        Boolean choice = (Boolean) d.open();
-        if (!choice.booleanValue())
-        {
-          // Dialog schliessen
-          close();
-          return;
-        }
-      }
-      catch (Exception e)
-      {
-        // Dialog schliessen
-        close();
-        Logger.error("error while saving export file",e);
-        throw new ApplicationException(i18n.tr("Fehler beim Speichern der Export-Datei in {0}",s),e);
-      }
-    }
     
     // Wir merken uns noch das Verzeichnis vom letzten mal
     settings.setAttribute("lastdir",file.getParent());
@@ -410,6 +387,9 @@ public class ExportDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: ExportDialog.java,v $
+ * Revision 1.20  2010/06/08 11:26:05  willuhn
+ * @N SWT besitzt jetzt selbst eine Option im FileDialog, mit der geprueft werden kann, ob die Datei ueberschrieben werden soll oder nicht
+ *
  * Revision 1.19  2010/03/16 00:44:17  willuhn
  * @N Komplettes Redesign des CSV-Imports.
  *   - Kann nun erheblich einfacher auch fuer andere Datentypen (z.Bsp.Ueberweisungen) verwendet werden
