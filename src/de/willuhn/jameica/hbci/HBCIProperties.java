@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCIProperties.java,v $
- * $Revision: 1.40 $
- * $Date: 2010/03/31 11:19:40 $
+ * $Revision: 1.41 $
+ * $Date: 2010/06/14 23:00:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,31 +31,27 @@ public class HBCIProperties
 {
 
 	private static Settings settings = new Settings(HBCIProperties.class);
-  private static I18N i18n = null;
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
   static
   {
-    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     settings.setStoreWhenRead(false);
   }
 
 	/**
 	 * Liste der in DTAUS erlaubten Zeichen.
 	 */
-	public final static String HBCI_DTAUS_VALIDCHARS =
-		settings.getString("hbci.dtaus.validchars", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ,.&-+*%/$üöäÜÖÄß"); 
+	public final static String HBCI_DTAUS_VALIDCHARS = settings.getString("hbci.dtaus.validchars", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ,.&-+*%/$üöäÜÖÄß"); 
 
   /**
    * Liste der in einer IBAN erlaubten Zeichen.
    */
-  public final static String HBCI_IBAN_VALIDCHARS =
-    settings.getString("hbci.iban.validchars", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"); 
+  public final static String HBCI_IBAN_VALIDCHARS = settings.getString("hbci.iban.validchars", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"); 
 
   /**
    * Liste der in einer BIC erlaubten Zeichen.
    */
-  public final static String HBCI_BIC_VALIDCHARS =
-    settings.getString("hbci.bic.validchars", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"); 
+  public final static String HBCI_BIC_VALIDCHARS = settings.getString("hbci.bic.validchars", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"); 
 
 	/**
    * Liste der in Bankleitzahlen erlaubten Zeichen.
@@ -365,6 +361,10 @@ public class HBCIProperties
 
 /**********************************************************************
  * $Log: HBCIProperties.java,v $
+ * Revision 1.41  2010/06/14 23:00:59  willuhn
+ * @C Dialog-Groesse angepasst
+ * @N Datei-Auswahldialog mit nativem Ueberschreib-Hinweis
+ *
  * Revision 1.40  2010/03/31 11:19:40  willuhn
  * @N Automatisches Entfernen nicht-zulaessiger Zeichen
  *
