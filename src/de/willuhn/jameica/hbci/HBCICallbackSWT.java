@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.64 $
- * $Date: 2010/05/27 09:36:23 $
+ * $Revision: 1.65 $
+ * $Date: 2010/06/17 11:26:48 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,9 +23,8 @@ import org.kapott.hbci.exceptions.HBCI_Exception;
 import org.kapott.hbci.exceptions.NeedKeyAckException;
 import org.kapott.hbci.manager.HBCIUtils;
 import org.kapott.hbci.manager.HBCIUtilsInternal;
+import org.kapott.hbci.passport.AbstractRDHSWFileBasedPassport;
 import org.kapott.hbci.passport.HBCIPassport;
-import org.kapott.hbci.passport.HBCIPassportRDH;
-import org.kapott.hbci.passport.HBCIPassportSIZRDHFile;
 
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.gui.DialogFactory;
@@ -152,7 +151,7 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
           HBCI plugin = (HBCI) Application.getPluginLoader().getPlugin(HBCI.class);
           boolean forceAsk = plugin.getResources().getSettings().getBoolean("hbcicallback.askpassphrase.force",false);
 
-          boolean isRDH = (passport instanceof HBCIPassportSIZRDHFile) || (passport instanceof HBCIPassportRDH);
+          boolean isRDH = (passport instanceof AbstractRDHSWFileBasedPassport);
           
           String pw = null;
           
@@ -510,6 +509,13 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
+ * Revision 1.65  2010/06/17 11:26:48  willuhn
+ * @B In HBCICallbackSWT wurden die RDH-Passports nicht korrekt ausgefiltert
+ * @C komplettes Projekt "hbci_passport_rdh" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
+ * @N BUGZILLA 312
+ * @N Neue Icons in Schluesselverwaltung
+ * @N GUI-Polish in Schluesselverwaltung
+ *
  * Revision 1.64  2010/05/27 09:36:23  willuhn
  * @C CRC-Fehler nur loggen, wenn KTO/BLZ-Pruefung aktiv ist
  *

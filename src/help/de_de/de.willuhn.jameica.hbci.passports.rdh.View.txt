@@ -1,0 +1,23 @@
+<form>
+	<p>
+		<span color="header" font="header">Schlüssel konfigurieren</span>
+	</p>
+	
+	<p>
+	  Zum Erstellen eines neuen Schlüssel klicken Sie auf <b>Neuen Schlüssel erstellen</b>.
+	</p>
+	
+	<p>
+	  Möchten Sie einen existierenden Schlüssel (z.Bsp. aus StarMoney) importieren,
+	  dann wählen Sie bitte <b>Schlüssel importieren</b>.
+	</p>
+	
+	<p>
+	  Bei der Ausführung eines HBCI-Geschäftsvorfalls wählt Hibiscus
+	  anhand der Bankleitzahl automatisch den passenden Schlüssel.
+	</p>
+	<p>
+	  Hinweis: Klicken Sie doppelt auf einen der aufgelisteten Schlüssel um
+	  weitere Details anzuzeigen oder den Schlüssel zu exportieren.
+	</p>
+</form>

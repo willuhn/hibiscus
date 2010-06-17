@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/PassportPropertyDialog.java,v $
- * $Revision: 1.1 $
- * $Date: 2009/06/16 15:32:30 $
+ * $Revision: 1.2 $
+ * $Date: 2010/06/17 11:26:48 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -74,16 +74,16 @@ public class PassportPropertyDialog extends AbstractDialog
     });
 
     Container container = new SimpleContainer(parent);
-    container.addText(i18n.tr("Die folgende Liste enth‰lt die Bank-Parameter (BPD) und User-Parameter (UPD) dieses Sicherheitsmediums."),true);
+    container.addText(i18n.tr("Bank-Parameter (BPD) und User-Parameter (UPD) dieses Sicherheitsmediums"),true);
     new PassportPropertyList(this.passport).paint(parent);
     
     ButtonArea buttons = new ButtonArea(parent,1);
-    buttons.addButton("   " + i18n.tr("Schlieﬂen") + "   ",new Action() {
+    buttons.addButton(i18n.tr("Schlieﬂen"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         close();
       }
-    },null,true);
+    },null,true,"window-close.png");
   }
 
 }
@@ -91,6 +91,13 @@ public class PassportPropertyDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: PassportPropertyDialog.java,v $
+ * Revision 1.2  2010/06/17 11:26:48  willuhn
+ * @B In HBCICallbackSWT wurden die RDH-Passports nicht korrekt ausgefiltert
+ * @C komplettes Projekt "hbci_passport_rdh" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
+ * @N BUGZILLA 312
+ * @N Neue Icons in Schluesselverwaltung
+ * @N GUI-Polish in Schluesselverwaltung
+ *
  * Revision 1.1  2009/06/16 15:32:30  willuhn
  * *** empty log message ***
  *

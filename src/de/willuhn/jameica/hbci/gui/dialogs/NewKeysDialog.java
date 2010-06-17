@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/NewKeysDialog.java,v $
- * $Revision: 1.15 $
- * $Date: 2010/06/08 11:27:59 $
+ * $Revision: 1.16 $
+ * $Date: 2010/06/17 11:26:48 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -60,6 +60,7 @@ import de.willuhn.util.I18N;
  */
 public class NewKeysDialog extends AbstractDialog
 {
+  private final static int WINDOW_WIDTH = 540;
 
 	private final static DocFlavor DOCFLAVOR = DocFlavor.STRING.TEXT_PLAIN;
 	private final static PrintRequestAttributeSet PRINTPROPS = new HashPrintRequestAttributeSet();
@@ -85,7 +86,7 @@ public class NewKeysDialog extends AbstractDialog
 
     i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 		setTitle(i18n.tr("INI-Brief erzeugen"));
-    setSize(500,SWT.DEFAULT);
+    setSize(WINDOW_WIDTH,SWT.DEFAULT);
 
 		iniletter = new INILetter(passport,INILetter.TYPE_USER);
   }
@@ -97,7 +98,7 @@ public class NewKeysDialog extends AbstractDialog
   {
 		SimpleContainer group = new SimpleContainer(parent);
 		group.addText(i18n.tr(
-      "Bitte drucken Sie den INI-Brief aus und senden Ihn an Ihre Bank.\n" +      "Nach der Freischaltung durch Ihr Geldinstitut kann dieser Schlüssel verwendet werden."),true);
+      "Bitte drucken Sie den INI-Brief aus und senden Ihn unterschrieben an Ihre Bank.\n" +      "Nach der Freischaltung durch Ihr Geldinstitut kann dieser Schlüssel verwendet werden."),true);
 
     Input printers = getPrinterList();
     
@@ -119,7 +120,7 @@ public class NewKeysDialog extends AbstractDialog
         print();
         close();
       }
-    },null,true);
+    },null,true,"document-print.png");
     print.setEnabled((printers instanceof SelectInput)); // Drucken nur moeglich, wenn Drucker vorhanden.
     
 		ButtonArea buttons = group.createButtonArea(3);
@@ -130,15 +131,15 @@ public class NewKeysDialog extends AbstractDialog
       {
         save();
       }
-    });
+    },null,false,"document-save.png");
 		buttons.addButton(i18n.tr("Abbrechen"), new Action()
 		{
 			public void handleAction(Object context) throws ApplicationException
 			{
 				throw new OperationCanceledException("cancelled in ini letter dialog");
 			}
-		});
-		
+		},null,false,"process-stop.png");
+    getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT));
   }
 
 	/**
@@ -273,6 +274,13 @@ public class NewKeysDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: NewKeysDialog.java,v $
+ * Revision 1.16  2010/06/17 11:26:48  willuhn
+ * @B In HBCICallbackSWT wurden die RDH-Passports nicht korrekt ausgefiltert
+ * @C komplettes Projekt "hbci_passport_rdh" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
+ * @N BUGZILLA 312
+ * @N Neue Icons in Schluesselverwaltung
+ * @N GUI-Polish in Schluesselverwaltung
+ *
  * Revision 1.15  2010/06/08 11:27:59  willuhn
  * @N SWT besitzt jetzt selbst eine Option im FileDialog, mit der geprueft werden kann, ob die Datei ueberschrieben werden soll oder nicht
  *
