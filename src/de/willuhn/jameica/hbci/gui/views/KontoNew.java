@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoNew.java,v $
- * $Revision: 1.31 $
- * $Date: 2010/04/22 16:40:57 $
+ * $Revision: 1.32 $
+ * $Date: 2010/06/17 12:32:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.TabFolder;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
@@ -82,6 +83,10 @@ public class KontoNew extends AbstractView {
     left.addLabelPair(i18n.tr("Bezeichnung des Kontos"),   control.getBezeichnung());
     left.addLabelPair(i18n.tr("Kontoinhaber"),             control.getName());
     left.addLabelPair(i18n.tr("Saldo"),                    control.getSaldo());
+    
+    Input avail = control.getSaldoAvailable();
+    if (avail != null)
+      left.addLabelPair(i18n.tr("Verfügbarer Betrag"),avail);
 
     left.addHeadline(i18n.tr("HBCI-Konfiguration"));
     left.addLabelPair(i18n.tr("Kundennummer"),             control.getKundennummer());
@@ -163,6 +168,9 @@ public class KontoNew extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoNew.java,v $
+ * Revision 1.32  2010/06/17 12:32:56  willuhn
+ * @N BUGZILLA 530
+ *
  * Revision 1.31  2010/04/22 16:40:57  willuhn
  * @N Manuelles Anlegen neuer Umsaetze fuer Offline-Konten moeglich
  *

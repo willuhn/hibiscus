@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.89 $
- * $Date: 2010/06/17 12:16:52 $
+ * $Revision: 1.90 $
+ * $Date: 2010/06/17 12:32:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -80,6 +80,7 @@ public class KontoControl extends AbstractControl {
   private TextInput iban            = null;
   
   private DecimalInput saldo			      = null;
+  private DecimalInput avail            = null;
   private SaldoMessageConsumer consumer = null;
   
   private Button synchronizeOptions = null;
@@ -381,6 +382,33 @@ public class KontoControl extends AbstractControl {
 	}
   
   /**
+   * Liefert ein Feld fuer den verfuegbaren Betrag.
+   * @return Feld mit dem verfuegbaren Betrag.
+   * @throws RemoteException
+   */
+  public Input getSaldoAvailable() throws RemoteException
+  {
+    if (avail != null)
+      return avail;
+
+    // Bei Offline-Konten gibts keinen verfuegbaren Betrag
+    if ((this.getKonto().getFlags() & Konto.FLAG_OFFLINE) == Konto.FLAG_OFFLINE)
+      return null;
+    
+    // Wenn wir noch keinen verfuegbaren Betrag haben, zeigen wir auch nichts an
+    double d = this.getKonto().getSaldoAvailable();
+    if (Double.isNaN(d))
+      return null;
+
+    avail = new DecimalInput(d,HBCI.DECIMALFORMAT);
+    String w = this.getKonto().getWaehrung();
+    if (w == null) w = HBCIProperties.CURRENCY_DEFAULT_DE;
+    avail.setComment(w);
+    avail.setEnabled(false);
+    return avail;
+  }
+  
+  /**
    * Liefert ein Eingabe-Feld fuer einen Kommentar.
    * @return Kommentar.
    * @throws RemoteException
@@ -648,13 +676,14 @@ public class KontoControl extends AbstractControl {
             if (k == null || !k.equals(getKonto()))
               return; // Kein Konto oder nicht unseres
 
-            double s = k.getSaldo();
-            Date d = k.getSaldoDatum();
-            if (Double.isNaN(s))
-              saldo.setValue(null);
-            else
-              saldo.setValue(s);
+            double s  = k.getSaldo();
+            saldo.setValue(Double.isNaN(s) ? null : s);
+            
+            double s2 = k.getSaldoAvailable();
+            if (getSaldoAvailable() != null)
+              getSaldoAvailable().setValue(Double.isNaN(s2) ? null : s2);
 
+            Date d = k.getSaldoDatum();
             if (d == null)
               saldo.setComment(i18n.tr("noch kein Saldo ermittelt"));
             else
@@ -679,6 +708,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.90  2010/06/17 12:32:56  willuhn
+ * @N BUGZILLA 530
+ *
  * Revision 1.89  2010/06/17 12:16:52  willuhn
  * @N BUGZILLA 530
  *

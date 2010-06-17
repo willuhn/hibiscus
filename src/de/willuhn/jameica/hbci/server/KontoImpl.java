@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.103 $
- * $Date: 2010/06/17 12:16:52 $
+ * $Revision: 1.104 $
+ * $Date: 2010/06/17 12:32:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -349,7 +349,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
   {
     Double d = (Double) getAttribute("saldo_available");
     if (d == null)
-      return 0;
+      return Double.NaN;
     return d.doubleValue();
   }
 
@@ -736,6 +736,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*******************************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.104  2010/06/17 12:32:56  willuhn
+ * @N BUGZILLA 530
+ *
  * Revision 1.103  2010/06/17 12:16:52  willuhn
  * @N BUGZILLA 530
  *
