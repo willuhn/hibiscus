@@ -1,0 +1,26 @@
+<form>
+	<p>
+		<span color="header" font="header">Chipkartenleser konfigurieren</span>
+	</p>
+
+  <p>
+    Starten Sie zunächst die automatische Suche nach dem Kartenleser.
+    Falls sie nicht erfolgreich verläuft, dann konfigurieren Sie den
+    Kartenleser bitte manuell.
+  </p>	
+	<p>
+		<b>CTAPI Treiber-Datei</b>: Wählen Sie hier bitte Pfad und Dateiname
+		des Treibers für Ihren Kartenleser aus. Dieser muss den CTAPI-Standard
+		erfüllen.
+	</p>
+	
+	<p>
+	  Der Port wird dem CTAPI-Treiber als logische Portnummer übergeben.
+	  Testen Sie daher auch bei einem USB-Gerät die Ports COM1 und COM2.
+	</p>
+	
+	<p>
+		Durch Klick auf <b>Einstellungen testen</b> können Sie die Einstellungen
+		überprüfen.
+	</p>
+</form>
