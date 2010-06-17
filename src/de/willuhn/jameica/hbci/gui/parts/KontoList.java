@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoList.java,v $
- * $Revision: 1.18 $
- * $Date: 2010/06/17 12:16:52 $
+ * $Revision: 1.19 $
+ * $Date: 2010/06/17 12:49:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -120,7 +120,7 @@ public class KontoList extends TablePart implements Part
       }
     });
     addColumn(i18n.tr("Saldo"),"saldo");
-    addColumn(i18n.tr("Verfügbar"),"saldo_available");
+    addSaldoAvailable(konten);
     // BUGZILLA 108 http://www.willuhn.de/bugzilla/show_bug.cgi?id=108
     addColumn(i18n.tr("Saldo aktualisiert am"),"saldo_datum", new DateFormatter(HBCI.LONGDATEFORMAT));
     setFormatter(new TableFormatter()
@@ -183,6 +183,46 @@ public class KontoList extends TablePart implements Part
     
     this.mc = new SaldoMessageConsumer();
     Application.getMessagingFactory().registerMessageConsumer(this.mc);
+  }
+  
+  /**
+   * Fuegt die Spalte "verfuegbarer Betrag" hinzu, wenn wenigstens ein Konto
+   * aus der Liste einen solchen besitzt.
+   * @param konten Liste der zu checkenden Konten.
+   */
+  private void addSaldoAvailable(GenericIterator konten)
+  {
+    try
+    {
+      while (konten.hasNext())
+      {
+        Konto k = (Konto) konten.next();
+        if ((k.getFlags() & Konto.FLAG_OFFLINE) == Konto.FLAG_OFFLINE)
+          continue; // ignorieren
+        double d = k.getSaldoAvailable();
+        if (!Double.isNaN(d))
+        {
+          // Wir haben tatsaechlich eines, wo was drin steht
+          addColumn(i18n.tr("Verfügbar"),"saldo_available");
+          return;
+        }
+      }
+    }
+    catch (RemoteException re)
+    {
+      Logger.error("unable to check if at least one account has an available value",re);
+    }
+    finally
+    {
+      try
+      {
+        konten.begin();
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to reset iterator",e);
+      }
+    }
   }
   
   /**
@@ -287,6 +327,9 @@ public class KontoList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.19  2010/06/17 12:49:51  willuhn
+ * @N BUGZILLA 530 - auch in der Liste die Spalte des verfuegbaren Betrages nur dann anzeigen, wenn wenigstens ein Konto einen solchen besitzt
+ *
  * Revision 1.18  2010/06/17 12:16:52  willuhn
  * @N BUGZILLA 530
  *
