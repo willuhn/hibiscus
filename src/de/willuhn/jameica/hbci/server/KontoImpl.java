@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.102 $
- * $Date: 2010/06/07 22:41:14 $
+ * $Revision: 1.103 $
+ * $Date: 2010/06/17 12:16:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -343,6 +343,17 @@ public class KontoImpl extends AbstractDBObject implements Konto
   }
 
   /**
+   * @see de.willuhn.jameica.hbci.rmi.Konto#getSaldoAvailable()
+   */
+  public double getSaldoAvailable() throws RemoteException
+  {
+    Double d = (Double) getAttribute("saldo_available");
+    if (d == null)
+      return 0;
+    return d.doubleValue();
+  }
+
+  /**
    * @see de.willuhn.jameica.hbci.rmi.Konto#getSaldoDatum()
    */
   public Date getSaldoDatum() throws RemoteException
@@ -357,6 +368,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
   {
     setAttribute("saldo_datum", null);
     setAttribute("saldo", null);
+    setAttribute("saldo_available",null);
   }
 
   /**
@@ -596,7 +608,14 @@ public class KontoImpl extends AbstractDBObject implements Konto
     setAttribute("saldo_datum", new Date());
   }
 
-
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Konto#setSaldoAvailable(double)
+   */
+  public void setSaldoAvailable(double saldo) throws RemoteException
+  {
+    setAttribute("saldo_available", Double.isNaN(saldo) ? null : new Double(saldo));
+  }
+  
   /**
    * @see de.willuhn.jameica.hbci.rmi.Konto#getNumUmsaetze()
    */
@@ -717,6 +736,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*******************************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.103  2010/06/17 12:16:52  willuhn
+ * @N BUGZILLA 530
+ *
  * Revision 1.102  2010/06/07 22:41:14  willuhn
  * @N BUGZILLA 844/852
  *

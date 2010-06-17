@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Konten.java,v $
- * $Revision: 1.6 $
- * $Date: 2008/01/04 16:39:31 $
+ * $Revision: 1.7 $
+ * $Date: 2010/06/17 12:16:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,6 @@ import org.eclipse.swt.widgets.Composite;
 
 import de.willuhn.jameica.gui.boxes.AbstractBox;
 import de.willuhn.jameica.gui.boxes.Box;
-import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.KontoNew;
@@ -82,7 +81,6 @@ public class Konten extends AbstractBox implements Box
   public void paint(Composite parent) throws RemoteException
   {
     KontoList l = new KontoList(new KontoNew());
-    l.addColumn(i18n.tr("Saldo aktualisiert am"),"saldo_datum", new DateFormatter(HBCI.LONGDATEFORMAT));
     l.setSummary(false);
     l.paint(parent);
   }
@@ -100,6 +98,9 @@ public class Konten extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: Konten.java,v $
+ * Revision 1.7  2010/06/17 12:16:52  willuhn
+ * @N BUGZILLA 530
+ *
  * Revision 1.6  2008/01/04 16:39:31  willuhn
  * @N Weitere Hoehen-Angaben von Komponenten
  *

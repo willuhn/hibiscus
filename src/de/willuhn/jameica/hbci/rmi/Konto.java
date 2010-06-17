@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Konto.java,v $
- * $Revision: 1.45 $
- * $Date: 2010/06/07 22:41:13 $
+ * $Revision: 1.46 $
+ * $Date: 2010/06/17 12:16:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -131,54 +131,42 @@ public interface Konto extends DBObject, Checksum, Flaggable
   
 	/**
 	 * Speichert die Bankleitzahl der Bankverbindung.
-	 * 
-	 * @param blz
-	 *          Bankleitzahl.
+	 * @param blz Bankleitzahl.
 	 * @throws RemoteException
 	 */
 	public void setBLZ(String blz) throws RemoteException;
 
 	/**
 	 * Speichert den Namen des Konto-Inhabers.
-	 * 
-	 * @param name
-	 *          Name des Konto-Inhaber.s
+	 * @param name Name des Konto-Inhaber.s
 	 * @throws RemoteException
 	 */
 	public void setName(String name) throws RemoteException;
 
 	/**
 	 * Speichert die Bezeichnung des Kontos.
-	 * 
-	 * @param bezeichnung
-	 *          Bezeichnung.
+	 * @param bezeichnung Bezeichnung.
 	 * @throws RemoteException
 	 */
 	public void setBezeichnung(String bezeichnung) throws RemoteException;
 
 	/**
 	 * Speichert die Waehrungsbezeichnung.
-	 * 
-	 * @param waehrung
-	 *          Bezeichnung.
+	 * @param waehrung Bezeichnung.
 	 * @throws RemoteException
 	 */
 	public void setWaehrung(String waehrung) throws RemoteException;
 
 	/**
 	 * Speichert den Namen der Java-Klasse des zu verwendenden Passports.
-	 * 
-	 * @param passport
-	 *          Passport.
+	 * @param passport Passport.
 	 * @throws RemoteException
 	 */
 	public void setPassportClass(String passport) throws RemoteException;
 
 	/**
 	 * Speichert die Kundennummer.
-	 * 
-	 * @param kundennummer
-	 *          Kundennummer.
+	 * @param kundennummer Kundennummer.
 	 * @throws RemoteException
 	 */
 	public void setKundennummer(String kundennummer) throws RemoteException;
@@ -186,7 +174,6 @@ public interface Konto extends DBObject, Checksum, Flaggable
 	/**
 	 * Liefert den Saldo des Kontos oder <code>0.0</code> wenn er noch nie
 	 * abgefragt wurde.
-	 * 
 	 * @return Saldo des Kontos.
 	 * @throws RemoteException
 	 */
@@ -194,17 +181,29 @@ public interface Konto extends DBObject, Checksum, Flaggable
   
 	/**
 	 * Speichert den neuen Saldo.
-	 * 
-	 * @param saldo
-	 *          Neuer Saldo.
+	 * @param saldo Neuer Saldo.
 	 * @throws RemoteException
 	 */
 	public void setSaldo(double saldo) throws RemoteException;
+	
+	/**
+	 * Liefert den verfuegbaren Betrag auf dem Konto.
+	 * BUGZILLA 530
+	 * @return der verfuegbare Betrag auf dem Konto.
+	 * @throws RemoteException
+	 */
+	public double getSaldoAvailable() throws RemoteException;
+	
+	/**
+	 * Speichert den verfuegbaren Betrag auf dem Konto.
+	 * @param saldo der verfuegbare Betrag auf dem Konto.
+	 * @throws RemoteException
+	 */
+	public void setSaldoAvailable(double saldo) throws RemoteException;
 
 	/**
 	 * Liefert das Datum des aktuellen Saldos oder <code>null</code> wenn er
 	 * noch nie abgefragt wurde.
-	 * 
 	 * @return Datum des Saldos.
 	 * @throws RemoteException
 	 */
@@ -218,9 +217,7 @@ public interface Konto extends DBObject, Checksum, Flaggable
 
 	/**
 	 * Liefert eine Liste aller Umsaetze fuer das Konto in umgekehrter
-	 * chronologischer Reihenfolge. Also die neuesten zuerst, die aeltesten
-	 * zuletzt.
-	 * 
+	 * chronologischer Reihenfolge. Also die neuesten zuerst, die aeltesten zuletzt.
 	 * @return Umsatzliste.
 	 * @throws RemoteException
 	 */
@@ -229,7 +226,6 @@ public interface Konto extends DBObject, Checksum, Flaggable
 	/**
 	 * BUGZILLA 81 http://www.willuhn.de/bugzilla/show_bug.cgi?id=81 Liefert die
 	 * Anzahl der Umsaetze auf dem Konto.
-	 * 
 	 * @return Anzahl der Umsaetze auf dem Konto.
 	 * @throws RemoteException
 	 */
@@ -238,9 +234,7 @@ public interface Konto extends DBObject, Checksum, Flaggable
 	/**
 	 * Liefert eine Liste aller Umsaetze fuer die letzten x Tage.
    * Die neuesten zuerst, die aeltesten zuletzt.
-	 * 
-	 * @param days
-	 *          Anzahl der Tage.
+	 * @param days Anzahl der Tage.
 	 * @return Umsatzliste.
 	 * @throws RemoteException
 	 */
@@ -249,7 +243,6 @@ public interface Konto extends DBObject, Checksum, Flaggable
 	/**
 	 * Liefert eine Liste aller Umsaetze fuer den vorgegebenen Zeitraum.
    * Die neuesten zuerst, die aeltesten zuletzt.
-	 * 
 	 * @param start Startdatum
 	 * @param end EndeDatum
 	 * @return Umsatzliste.
@@ -258,18 +251,14 @@ public interface Konto extends DBObject, Checksum, Flaggable
 	public DBIterator getUmsaetze(Date start, Date end) throws RemoteException;
 
 	/**
-	 * Liefert eine Liste aller Ueberweisungen, die ueber dieses Konto getaetigt
-	 * wurden.
-	 * 
+	 * Liefert eine Liste aller Ueberweisungen, die ueber dieses Konto getaetigt wurden.
 	 * @return Ueberweisungsliste.
 	 * @throws RemoteException
 	 */
 	public DBIterator getUeberweisungen() throws RemoteException;
 
   /**
-   * Liefert eine Liste aller Auslandsueberweisungen, die ueber dieses Konto getaetigt
-   * wurden.
-   * 
+   * Liefert eine Liste aller Auslandsueberweisungen, die ueber dieses Konto getaetigt wurden.
    * @return Liste der Auslandsueberweisungen.
    * @throws RemoteException
    */
@@ -279,7 +268,6 @@ public interface Konto extends DBObject, Checksum, Flaggable
 	 * Liefert alle Dauerauftraege, die fuer das Konto vorliegen. Dabei werden
 	 * auch jene geliefert, die lokal erstellt, jedoch noch nicht zur Bank
 	 * hochgeladen wurden.
-	 * 
 	 * @return Liste der Dauerauftraege.
 	 * @throws RemoteException
 	 */
@@ -287,7 +275,6 @@ public interface Konto extends DBObject, Checksum, Flaggable
 
 	/**
 	 * Liefert alle Lastschriften, die fuer das Konto vorliegen.
-	 * 
 	 * @return Liste der Lastschriften.
 	 * @throws RemoteException
 	 */
@@ -295,7 +282,6 @@ public interface Konto extends DBObject, Checksum, Flaggable
 
 	/**
 	 * Liefert alle Sammel-Lastschriften, die fuer das Konto vorliegen.
-	 * 
 	 * @return Liste der Lastschriften.
 	 * @throws RemoteException
 	 */
@@ -303,16 +289,13 @@ public interface Konto extends DBObject, Checksum, Flaggable
 
 	/**
 	 * Liefert alle Sammel-Ueberweisungen, die fuer das Konto vorliegen.
-	 * 
 	 * @return Liste der Sammelueberweisungen.
 	 * @throws RemoteException
 	 */
 	public DBIterator getSammelUeberweisungen() throws RemoteException;
 
 	/**
-	 * Liefert die HBCI-Protokollierung des Kontos in Form einer Liste von
-	 * Protokoll-Objekten.
-	 * 
+	 * Liefert die HBCI-Protokollierung des Kontos in Form einer Liste von Protokoll-Objekten.
 	 * @return Liste von Protokoll-Objekten.
 	 * @throws RemoteException
 	 */
@@ -320,12 +303,8 @@ public interface Konto extends DBObject, Checksum, Flaggable
 
 	/**
 	 * Fuegt den uebergebenen Text zum Konto-Protokoll hinzu.
-	 * 
-	 * @param kommentar
-	 *          der hinzuzufuegende Text.
-	 * @param protokollTyp
-	 *          Typ des Protokoll-Eintrags. Siehe
-	 *          <code>de.willuhn.jameica.hbci.rmi.Protokoll</code>.
+	 * @param kommentar der hinzuzufuegende Text.
+	 * @param protokollTyp Typ des Protokoll-Eintrags. Siehe <code>de.willuhn.jameica.hbci.rmi.Protokoll</code>.
 	 * @throws RemoteException
 	 */
 	public void addToProtokoll(String kommentar, int protokollTyp) throws RemoteException;
@@ -375,6 +354,9 @@ public interface Konto extends DBObject, Checksum, Flaggable
 
 /*******************************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.46  2010/06/17 12:16:52  willuhn
+ * @N BUGZILLA 530
+ *
  * Revision 1.45  2010/06/07 22:41:13  willuhn
  * @N BUGZILLA 844/852
  *

@@ -14,6 +14,7 @@ CREATE TABLE konto (
   flags int(1) NULL,
   iban varchar(40) NULL,
   bic varchar(15) NULL,
+  saldo_available double,
   UNIQUE (id),
   PRIMARY KEY (id)
 );
@@ -290,4 +291,4 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',29);
+INSERT INTO version (name,version) values ('db',30);

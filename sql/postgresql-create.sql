@@ -13,7 +13,8 @@ CREATE TABLE konto (
   kommentar varchar(1000) NULL,
   iban varchar(40) NULL,
   bic varchar(15) NULL,
-  flags integer NULL
+  flags integer NULL,
+  saldo_available float
 );
 
 CREATE TABLE empfaenger (
@@ -251,4 +252,4 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',29);
+INSERT INTO version (name,version) values ('db',30);

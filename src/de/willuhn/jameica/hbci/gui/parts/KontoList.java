@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoList.java,v $
- * $Revision: 1.17 $
- * $Date: 2010/06/17 11:37:17 $
+ * $Revision: 1.18 $
+ * $Date: 2010/06/17 12:16:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,6 +27,7 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
+import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.parts.TablePart;
@@ -119,6 +120,9 @@ public class KontoList extends TablePart implements Part
       }
     });
     addColumn(i18n.tr("Saldo"),"saldo");
+    addColumn(i18n.tr("Verfügbar"),"saldo_available");
+    // BUGZILLA 108 http://www.willuhn.de/bugzilla/show_bug.cgi?id=108
+    addColumn(i18n.tr("Saldo aktualisiert am"),"saldo_datum", new DateFormatter(HBCI.LONGDATEFORMAT));
     setFormatter(new TableFormatter()
     {
       public void format(TableItem item)
@@ -283,6 +287,9 @@ public class KontoList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.18  2010/06/17 12:16:52  willuhn
+ * @N BUGZILLA 530
+ *
  * Revision 1.17  2010/06/17 11:37:17  willuhn
  * @N Farben der Konten etwas uebersichtlicher gestaltet
  *

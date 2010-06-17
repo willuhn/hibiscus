@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCISaldoJob.java,v $
- * $Revision: 1.30 $
- * $Date: 2008/11/07 14:02:08 $
+ * $Revision: 1.31 $
+ * $Date: 2010/06/17 12:16:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import java.rmi.RemoteException;
 import org.kapott.hbci.GV_Result.GVRSaldoReq;
 import org.kapott.hbci.GV_Result.GVRSaldoReq.Info;
 import org.kapott.hbci.structures.Saldo;
+import org.kapott.hbci.structures.Value;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -108,7 +109,10 @@ public class HBCISaldoJob extends AbstractHBCIJob {
       throw new ApplicationException(i18n.tr("Keine Saldo-Informationen erhalten"));
     
     Saldo saldo = info[0].ready;
+    Value avail = info[0].available;
     konto.setSaldo(saldo.value.getDoubleValue());
+    if (avail != null)
+      konto.setSaldoAvailable(avail.getDoubleValue());
 
     konto.store();
     Application.getMessagingFactory().sendMessage(new SaldoMessage(konto));
@@ -129,6 +133,9 @@ public class HBCISaldoJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCISaldoJob.java,v $
+ * Revision 1.31  2010/06/17 12:16:52  willuhn
+ * @N BUGZILLA 530
+ *
  * Revision 1.30  2008/11/07 14:02:08  willuhn
  * @B ArrayIndexOutOfBoundsException, wenn keine Saldo-Infos vorliegen
  *
