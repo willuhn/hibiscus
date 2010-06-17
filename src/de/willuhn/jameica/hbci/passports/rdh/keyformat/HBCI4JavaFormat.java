@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/keyformat/HBCI4JavaFormat.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/06/17 11:26:48 $
+ * $Revision: 1.2 $
+ * $Date: 2010/06/17 17:20:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,6 +30,7 @@ import de.willuhn.jameica.hbci.passports.rdh.InsertKeyDialog;
 import de.willuhn.jameica.hbci.passports.rdh.rmi.RDHKey;
 import de.willuhn.jameica.hbci.passports.rdh.server.PassportHandleImpl;
 import de.willuhn.jameica.hbci.passports.rdh.server.RDHKeyImpl;
+import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.messaging.QueryMessage;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
@@ -242,37 +243,31 @@ public class HBCI4JavaFormat implements KeyFormat
       HBCIUtils.setParam("client.passport." + type + ".init","1");
       return AbstractHBCIPassport.getInstance(type);
     }
-    catch (OperationCanceledException oce)
-    {
-      throw oce;
-    }
     catch (Exception e)
     {
-      // Wir schauen mal, ob es eine NeedKeyAckException ist.
-      // Ist das der Fall, wurde der Ini-Brief erzeugt und wir warten
-      // auf die Freischaltung durch die Bank.
-      // Wir iterieren die Exceptions hoch.
-      Throwable current = e;
-      for (int i=0;i<10;++i)
+      Throwable cause = HBCIFactory.getCause(e,OperationCanceledException.class);
+      if (cause != null)
+        throw (OperationCanceledException) cause;
+
+      cause = HBCIFactory.getCause(e,NeedKeyAckException.class);
+      if (cause != null)
       {
-        if (current == null)
-          break;
-        if (current instanceof NeedKeyAckException)
-        {
-          String text = i18n.tr("Bitte senden Sie den INI-Brief an Ihre Bank\nbzw. warten Sie auf die Freischaltung durch die Bank.");
-          Application.getMessagingFactory().sendMessage(new StatusBarMessage(text,StatusBarMessage.TYPE_ERROR));
-          throw (NeedKeyAckException) current; // Weiterwerfen
-        }
-        if (current instanceof InvalidPassphraseException)
-        {
-          String text = i18n.tr("Das Passwort für die Schlüsseldatei ist falsch.");
-          Application.getMessagingFactory().sendMessage(new StatusBarMessage(text,StatusBarMessage.TYPE_ERROR));
-          throw new ApplicationException(text);
-        }
-        current = current.getCause();
+        String text = i18n.tr("Bitte senden Sie den INI-Brief an Ihre Bank\nbzw. warten Sie auf die Freischaltung durch die Bank.");
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(text,StatusBarMessage.TYPE_ERROR));
+        throw (NeedKeyAckException) cause; // Weiterwerfen
       }
+      
+      cause = HBCIFactory.getCause(e,InvalidPassphraseException.class);
+      if (cause != null)
+      {
+        String text = i18n.tr("Das Passwort für die Schlüsseldatei ist falsch.");
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(text,StatusBarMessage.TYPE_ERROR));
+        throw new ApplicationException(text);
+      }
+      
+      // Keine brauchbare Exception gefunden
       Logger.error("unable to load " + getPassportType() + " key",e);
-      throw new ApplicationException(i18n.tr("Fehler beim Laden des Schlüssels: {0}",e.getMessage()));
+      throw new ApplicationException(i18n.tr("Fehler beim Laden des Schlüssels: {0}",e.getMessage()),e);
     }
     finally
     {
@@ -286,6 +281,9 @@ public class HBCI4JavaFormat implements KeyFormat
 
 /**********************************************************************
  * $Log: HBCI4JavaFormat.java,v $
+ * Revision 1.2  2010/06/17 17:20:58  willuhn
+ * @N Exception-Handling beim Laden der Schluesseldatei ueberarbeitet - OperationCancelledException wird nun sauber behandelt - auch wenn sie in HBCI_Exceptions gekapselt ist
+ *
  * Revision 1.1  2010/06/17 11:26:48  willuhn
  * @B In HBCICallbackSWT wurden die RDH-Passports nicht korrekt ausgefiltert
  * @C komplettes Projekt "hbci_passport_rdh" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren

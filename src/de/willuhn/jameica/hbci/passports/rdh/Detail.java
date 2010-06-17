@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/Detail.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/06/17 11:26:48 $
+ * $Revision: 1.2 $
+ * $Date: 2010/06/17 17:20:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,8 +23,10 @@ import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.DialogFactory;
+import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -118,9 +120,23 @@ public class Detail extends AbstractView
     }
     catch (Exception e)
     {
-      Logger.error("unable to load key",e);
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Laden des Schlüssels: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
-      DialogFactory.clearPINCache();
+      Throwable oce = HBCIFactory.getCause(e,OperationCanceledException.class);
+      Throwable ae  = HBCIFactory.getCause(e,ApplicationException.class);
+
+      if (oce != null)
+      {
+        Logger.info("operation cancelled by user: " + oce.getMessage());
+      }
+      else if (ae != null)
+      {
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getMessage(),StatusBarMessage.TYPE_ERROR));
+      }
+      else
+      {
+        Logger.error("unable to load key",e);
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Laden des Schlüssels: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
+        DialogFactory.clearPINCache();
+      }
       GUI.startPreviousView();
     }
   }
@@ -129,6 +145,9 @@ public class Detail extends AbstractView
 
 /**********************************************************************
  * $Log: Detail.java,v $
+ * Revision 1.2  2010/06/17 17:20:58  willuhn
+ * @N Exception-Handling beim Laden der Schluesseldatei ueberarbeitet - OperationCancelledException wird nun sauber behandelt - auch wenn sie in HBCI_Exceptions gekapselt ist
+ *
  * Revision 1.1  2010/06/17 11:26:48  willuhn
  * @B In HBCICallbackSWT wurden die RDH-Passports nicht korrekt ausgefiltert
  * @C komplettes Projekt "hbci_passport_rdh" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
