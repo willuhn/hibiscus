@@ -1,0 +1,39 @@
+<form>
+  <p>
+    <span color="header" font="header">PIN/TAN konfigurieren</span>
+  </p>
+  
+  <p>
+    Im Feld &quot;Bezeichnung&quot; können Sie einen optionalen
+    Alias-Namen für diese PIN/TAN-Konfiguration eingeben. Sie
+    dient der eindeutigen Identifizierung, falls Sie für eine Bank
+    mehrere Konfigurationen angelegt haben.
+  </p>
+  
+  <p>
+    Bitte verwenden Sie als URL <b>nicht</b> die Adresse, welche
+    Sie sonst auch für das Internet-Banking im Browser benutzen.
+    PIN/TAN via Internetbrowser und PIN/TAN via HBCI sind zwei
+    verschiedene Zugangswege zu Ihrer Bank. Fragen Sie ggf. bei Ihrer
+    Bank nach der korrekten URL.
+  </p>
+  
+  <p>
+    Tipp: Als Filter für die Übertragung wird fast immer Base64 verwendet.
+    Als HBCI-Version kommt meist &quot;HBCI+&quot; zum Einsatz.
+    Sollte die Verbindung zu Ihrer Bank also nicht funktionieren,
+    dann liegt dies oft an falschen Einstellungen bei diesen beiden
+    Werten.
+  </p>
+  
+  <p>
+    Falls Sie bei einer Bank mehrere Konten mit verschiedenen
+    PIN/TAN-Konfigurationen besitzen, dann können Sie im Feld
+    &quot;Optionale Angabe des Kontos&quot; zusätzlich das
+    Konto auswählen, für das diese Konfiguration gelten soll.
+    Auf diese Weise müssen Sie beim Ausführen von Geschäftsvorfällen
+    nicht manuell die zu verwendende PIN/TAN-Konfiguraiton
+    wählen.
+    Andernfalls können Sie die Eingabe freilassen.
+  </p>
+</form>
