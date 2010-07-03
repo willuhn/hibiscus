@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/AddressInput.java,v $
- * $Revision: 1.6 $
- * $Date: 2010/03/31 11:19:40 $
+ * $Revision: 1.7 $
+ * $Date: 2010/07/03 20:51:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -53,6 +53,7 @@ public class AddressInput implements Input
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private AddressFilter filter   = null;
   private SuggestInput input     = null;
+  private Button button          = null;
   
   /**
    * ct.
@@ -68,10 +69,38 @@ public class AddressInput implements Input
    * @param name Anzuzeigender Name.
    * @param filter optionaler Adressfilter.
    */
-  public AddressInput(String name, AddressFilter filter)
+  public AddressInput(String name, final AddressFilter filter)
   {
     this.filter = filter;
     this.input = new SuggestInput(name);
+
+    this.button = new Button("...",new Action()
+    {
+      /**
+       * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
+       */
+      public void handleAction(Object context) throws ApplicationException
+      {
+        try
+        {
+          AdresseAuswahlDialog d = new AdresseAuswahlDialog(AdresseAuswahlDialog.POSITION_MOUSE,filter);
+          Address a = (Address) d.open();
+          if (a != null)
+          {
+            input.setValue(a);
+          }
+        }
+        catch (OperationCanceledException oce)
+        {
+          // ignore
+        }
+        catch (Exception e)
+        {
+          Logger.error("error while applying address",e);
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Übernehmen der Adresse: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
+        }
+      }
+    });
   }
   
   /**
@@ -88,6 +117,7 @@ public class AddressInput implements Input
   public void disable()
   {
     this.input.disable();
+    this.button.setEnabled(false);
   }
 
   /**
@@ -96,6 +126,7 @@ public class AddressInput implements Input
   public void enable()
   {
     this.input.enable();
+    this.button.setEnabled(true);
   }
 
   /**
@@ -190,37 +221,10 @@ public class AddressInput implements Input
     comp.setLayoutData(g);
     
     this.input.paint(comp);
-    
-    Button b = new Button("...",new Action()
-    {
-      /**
-       * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
-       */
-      public void handleAction(Object context) throws ApplicationException
-      {
-        try
-        {
-          AdresseAuswahlDialog d = new AdresseAuswahlDialog(AdresseAuswahlDialog.POSITION_MOUSE,filter);
-          Address a = (Address) d.open();
-          if (a != null)
-          {
-            input.setValue(a);
-          }
-        }
-        catch (OperationCanceledException oce)
-        {
-          // ignore
-        }
-        catch (Exception e)
-        {
-          Logger.error("error while applying address",e);
-          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Übernehmen der Adresse: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
-        }
-      }
-    });
+
     try
     {
-      b.paint(comp);
+      this.button.paint(comp);
     }
     catch (RemoteException re)
     {
@@ -250,6 +254,7 @@ public class AddressInput implements Input
   public void setEnabled(boolean enabled)
   {
     this.input.setEnabled(enabled);
+    this.button.setEnabled(enabled);
   }
 
   /**
@@ -421,6 +426,9 @@ public class AddressInput implements Input
 
 /**********************************************************************
  * $Log: AddressInput.java,v $
+ * Revision 1.7  2010/07/03 20:51:37  willuhn
+ * @B "..."-Button wurde nach Ausfuehrung nicht mit deaktiviert. Machte aber eigentlich keinen Unterschied, weil der "Speichern"-Button da bereits deaktiviert ist und ein Uebernehmen des geaenderten Empfaengers ohnehin nicht moeglich gewesen waere
+ *
  * Revision 1.6  2010/03/31 11:19:40  willuhn
  * @N Automatisches Entfernen nicht-zulaessiger Zeichen
  *
