@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/Controller.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/07/13 10:55:29 $
+ * $Revision: 1.6 $
+ * $Date: 2010/07/13 11:36:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,6 +43,7 @@ import de.willuhn.jameica.hbci.gui.input.HBCIVersionInput;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.hbci.passports.ddv.rmi.Passport;
 import de.willuhn.jameica.hbci.passports.ddv.rmi.Reader;
+import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.BackgroundTask;
@@ -584,8 +585,16 @@ public class Controller extends AbstractControl
         }
         catch (Exception e)
         {
-          Logger.error("error while changing bank data",e);
-          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Ändern der Bankdaten: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
+          if (HBCIFactory.getCause(e,OperationCanceledException.class) != null)
+          {
+            Logger.info("operation cancelled");
+            Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Vorgang abgebrochen"),StatusBarMessage.TYPE_ERROR));
+          }
+          else
+          {
+            Logger.error("error while changing bank data",e);
+            Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Ändern der Bankdaten: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
+          }
         }
         finally
         {
@@ -661,7 +670,10 @@ public class Controller extends AbstractControl
 
 /*******************************************************************************
  * $Log: Controller.java,v $
- * Revision 1.5  2010/07/13 10:55:29  willuhn
+ * Revision 1.6  2010/07/13 11:36:52  willuhn
+ * @C Fehlerhandling
+ *
+ * Revision 1.5  2010-07-13 10:55:29  willuhn
  * @N Erster Code zum Aendern der Bank-Daten direkt auf der Karte. Muss dringend noch getestet werden - das will ich aber nicht mit meiner Karte machen, weil ich mir schonmal meine Karte mit Tests zerschossen hatte und die aber taeglich brauche ;)
  *
  * Revision 1.4  2010/06/17 11:45:49  willuhn
