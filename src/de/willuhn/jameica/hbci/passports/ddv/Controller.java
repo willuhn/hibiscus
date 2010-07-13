@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/Controller.java,v $
- * $Revision: 1.4 $
- * $Date: 2010/06/17 11:45:49 $
+ * $Revision: 1.5 $
+ * $Date: 2010/07/13 10:55:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,9 @@ import java.rmi.RemoteException;
 
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.kapott.hbci.manager.HBCIHandler;
+import org.kapott.hbci.passport.HBCIPassport;
+import org.kapott.hbci.passport.HBCIPassportDDV;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
@@ -32,8 +35,10 @@ import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
+import de.willuhn.jameica.hbci.AccountContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.PassportTest;
+import de.willuhn.jameica.hbci.gui.dialogs.AccountContainerDialog;
 import de.willuhn.jameica.hbci.gui.input.HBCIVersionInput;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.hbci.passports.ddv.rmi.Passport;
@@ -41,6 +46,7 @@ import de.willuhn.jameica.hbci.passports.ddv.rmi.Reader;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.BackgroundTask;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -534,6 +540,73 @@ public class Controller extends AbstractControl
       GUI.getStatusBar().setErrorText(ae.getMessage());
     }
   }
+  
+  /**
+   * Aendert BLZ, Hostname usw. auf der Karte.
+   */
+  public void handleChangeBankData()
+  {
+    handleStore();
+    if (!stored)
+      return;
+
+    Application.getController().start(new BackgroundTask() {
+      public void run(ProgressMonitor monitor) throws ApplicationException
+      {
+        PassportHandle handle = null;
+        try
+        {
+          handle = getPassport().getHandle();
+          HBCIHandler h = handle.open();
+          HBCIPassport passport = h.getPassport();
+
+          AccountContainerDialog d = new AccountContainerDialog(passport);
+          AccountContainer container = (AccountContainer) d.open();
+          
+          passport.setBLZ(container.blz);
+          passport.setUserId(container.userid);
+          passport.setCustomerId(container.customerid);
+          passport.setHost(container.host);
+          passport.setFilterType(container.filter);
+          passport.setCountry(container.country);
+          
+          passport.saveChanges();
+          ((HBCIPassportDDV)passport).saveBankData();
+        }
+        catch (ApplicationException ae)
+        {
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getMessage(),StatusBarMessage.TYPE_ERROR));
+        }
+        catch (OperationCanceledException oce)
+        {
+          Logger.info("operation cancelled");
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Vorgang abgebrochen"),StatusBarMessage.TYPE_ERROR));
+        }
+        catch (Exception e)
+        {
+          Logger.error("error while changing bank data",e);
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Ändern der Bankdaten: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
+        }
+        finally
+        {
+          if (handle != null)
+          {
+            try
+            {
+              handle.close();
+            }
+            catch (Exception e)
+            {
+              Logger.error("unable to close passport",e);
+            }
+          }
+        }
+      }
+      
+      public boolean isInterrupted(){return false;}
+      public void interrupt(){}
+    });
+  }
 
   private class PresetListener implements Listener
   {
@@ -588,6 +661,9 @@ public class Controller extends AbstractControl
 
 /*******************************************************************************
  * $Log: Controller.java,v $
+ * Revision 1.5  2010/07/13 10:55:29  willuhn
+ * @N Erster Code zum Aendern der Bank-Daten direkt auf der Karte. Muss dringend noch getestet werden - das will ich aber nicht mit meiner Karte machen, weil ich mir schonmal meine Karte mit Tests zerschossen hatte und die aber taeglich brauche ;)
+ *
  * Revision 1.4  2010/06/17 11:45:49  willuhn
  * @C kompletten Code aus "hbci_passport_ddv" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/AccountContainerDialog.java,v $
- * $Revision: 1.12 $
- * $Date: 2009/09/28 13:02:05 $
+ * $Revision: 1.13 $
+ * $Date: 2010/07/13 10:55:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -238,7 +238,7 @@ public class AccountContainerDialog extends AbstractDialog
       }
     
     });
-		this.host.setComment(i18n.tr("Bei PIN/TAN bitte ohne \"https://\" eingeben"));
+		this.host.setComment(i18n.tr("Bitte ohne \"https://\" eingeben"));
 		this.host.setMandatory(true);
 		return this.host;
 	}
@@ -309,6 +309,9 @@ public class AccountContainerDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: AccountContainerDialog.java,v $
+ * Revision 1.13  2010/07/13 10:55:29  willuhn
+ * @N Erster Code zum Aendern der Bank-Daten direkt auf der Karte. Muss dringend noch getestet werden - das will ich aber nicht mit meiner Karte machen, weil ich mir schonmal meine Karte mit Tests zerschossen hatte und die aber taeglich brauche ;)
+ *
  * Revision 1.12  2009/09/28 13:02:05  willuhn
  * @N Pflichtfeld-Check in Account-Container-Dialog
  *

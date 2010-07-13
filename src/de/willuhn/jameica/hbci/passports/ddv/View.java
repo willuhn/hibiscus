@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/View.java,v $
- * $Revision: 1.4 $
- * $Date: 2010/06/17 11:45:49 $
+ * $Revision: 1.5 $
+ * $Date: 2010/07/13 10:55:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,10 +15,10 @@ package de.willuhn.jameica.hbci.passports.ddv;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.Back;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -53,29 +53,36 @@ public class View extends AbstractView {
     group.addCheckbox(control.getSoftPin(), i18n.tr("Tastatur des PCs zur PIN-Eingabe verwenden"));
 		
     // und noch die Abschicken-Knoepfe
-    ButtonArea buttonArea = new ButtonArea(getParent(),4);
-    buttonArea.addButton(i18n.tr("Zurück"),new Back(),null,true);
+    ButtonArea buttonArea = new ButtonArea(getParent(),5);
+    buttonArea.addButton(new Back(true));
     buttonArea.addButton(i18n.tr("Automatische Suche des Kartenlesers..."), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
         control.handleScan();
       }
-    });
+    },null,false,"view-refresh.png");
     buttonArea.addButton(i18n.tr("Einstellungen testen"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
         control.handleTest();
       }
-    });
+    },null,false,"dialog-information.png");
+    buttonArea.addButton(i18n.tr("Bankdaten ändern"), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        control.handleChangeBankData();
+      }
+    },null,false,"seahorse-preferences.png");
     buttonArea.addButton(i18n.tr("Speichern"),new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
       	control.handleStore();
       }
-    });
+    },null,false,"document-save.png");
   }
 
   /**
@@ -89,6 +96,9 @@ public class View extends AbstractView {
 
 /**********************************************************************
  * $Log: View.java,v $
+ * Revision 1.5  2010/07/13 10:55:29  willuhn
+ * @N Erster Code zum Aendern der Bank-Daten direkt auf der Karte. Muss dringend noch getestet werden - das will ich aber nicht mit meiner Karte machen, weil ich mir schonmal meine Karte mit Tests zerschossen hatte und die aber taeglich brauche ;)
+ *
  * Revision 1.4  2010/06/17 11:45:49  willuhn
  * @C kompletten Code aus "hbci_passport_ddv" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
  *
