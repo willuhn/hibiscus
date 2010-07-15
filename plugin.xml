@@ -39,7 +39,6 @@
   <classfinder>
     <include>hibiscus\.jar</include>
     <include>.*\.class</include>
-    <include>ext_.*\.jar</include>
   </classfinder>
 
   <navigation>
