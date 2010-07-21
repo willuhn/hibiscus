@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/BackupCreate.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/06/08 11:27:59 $
+ * $Revision: 1.6 $
+ * $Date: 2010/07/21 16:11:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -32,6 +32,8 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.server.AuslandsUeberweisungImpl;
+import de.willuhn.jameica.hbci.server.DBPropertyImpl;
 import de.willuhn.jameica.hbci.server.DauerauftragImpl;
 import de.willuhn.jameica.hbci.server.HibiscusAddressImpl;
 import de.willuhn.jameica.hbci.server.KontoImpl;
@@ -97,53 +99,61 @@ public class BackupCreate implements Action
           writer = new XmlWriter(new BufferedOutputStream(new FileOutputStream(file)));
 
           monitor.setStatusText(i18n.tr("Speichere Turnus-Informationen"));
-          backup(TurnusImpl.class,writer,monitor);
+          backup(TurnusImpl.class,writer,monitor,null);
           monitor.addPercentComplete(5);
 
           
           monitor.setStatusText(i18n.tr("Speichere Umsatz-Kategorien"));
-          backup(UmsatzTypImpl.class,writer,monitor);
+          backup(UmsatzTypImpl.class,writer,monitor,"order by parent_id");
           monitor.addPercentComplete(5);
 
 
           monitor.setStatusText(i18n.tr("Speichere Adressbuch"));
-          backup(HibiscusAddressImpl.class,writer,monitor);
+          backup(HibiscusAddressImpl.class,writer,monitor,null);
           monitor.addPercentComplete(5);
 
           monitor.setStatusText(i18n.tr("Speichere Konten und Systemnachrichten"));
-          backup(KontoImpl.class,writer,monitor);
-          backup(NachrichtImpl.class,writer,monitor);
+          backup(KontoImpl.class,writer,monitor,null);
+          backup(NachrichtImpl.class,writer,monitor,null);
           monitor.addPercentComplete(5);
 
           monitor.setStatusText(i18n.tr("Speichere Umsätze"));
-          backup(UmsatzImpl.class,writer,monitor);
+          backup(UmsatzImpl.class,writer,monitor,null);
           monitor.addPercentComplete(20);
           
           monitor.setStatusText(i18n.tr("Speichere Daueraufträge"));
-          backup(DauerauftragImpl.class,writer,monitor);
+          backup(DauerauftragImpl.class,writer,monitor,null);
           monitor.addPercentComplete(5);
 
           monitor.setStatusText(i18n.tr("Speichere Lastschriften"));
-          backup(LastschriftImpl.class,writer,monitor);
+          backup(LastschriftImpl.class,writer,monitor,null);
           monitor.addPercentComplete(5);
 
           monitor.setStatusText(i18n.tr("Speichere Überweisungen"));
-          backup(UeberweisungImpl.class,writer,monitor);
+          backup(UeberweisungImpl.class,writer,monitor,null);
+          monitor.addPercentComplete(5);
+
+          monitor.setStatusText(i18n.tr("Speichere SEPA-Überweisungen"));
+          backup(AuslandsUeberweisungImpl.class,writer,monitor,null);
           monitor.addPercentComplete(5);
 
           monitor.setStatusText(i18n.tr("Speichere Sammel-Lastschriften"));
-          backup(SammelLastschriftImpl.class,writer,monitor);
-          backup(SammelLastBuchungImpl.class,writer,monitor);
+          backup(SammelLastschriftImpl.class,writer,monitor,null);
+          backup(SammelLastBuchungImpl.class,writer,monitor,null);
           monitor.addPercentComplete(5);
 
           monitor.setStatusText(i18n.tr("Speichere Sammel-Überweisungen"));
-          backup(SammelUeberweisungImpl.class,writer,monitor);
-          backup(SammelUeberweisungBuchungImpl.class,writer,monitor);
+          backup(SammelUeberweisungImpl.class,writer,monitor,null);
+          backup(SammelUeberweisungBuchungImpl.class,writer,monitor,null);
           monitor.addPercentComplete(5);
+
+          monitor.setStatusText(i18n.tr("Speichere Properties"));
+          backup(DBPropertyImpl.class,writer,monitor,null);
+          monitor.addPercentComplete(20);
 
           // Die Protokolle zum Schluss.
           monitor.setStatusText(i18n.tr("Speichere Protokolle"));
-          backup(ProtokollImpl.class,writer,monitor);
+          backup(ProtokollImpl.class,writer,monitor,null);
           monitor.addPercentComplete(20);
           
           // Die Versionstabelle wird nicht mit kopiert
@@ -196,9 +206,10 @@ public class BackupCreate implements Action
    * @param monitor
    * @throws Exception
    */
-  private static void backup(Class type, Writer writer, ProgressMonitor monitor) throws Exception
+  private static void backup(Class type, Writer writer, ProgressMonitor monitor, String order) throws Exception
   {
     DBIterator list = Settings.getDBService().createList(type);
+    list.setOrder(order == null ? "order by id" : order);
     long count = 1;
     while (list.hasNext())
     {
@@ -223,6 +234,9 @@ public class BackupCreate implements Action
 
 /*********************************************************************
  * $Log: BackupCreate.java,v $
+ * Revision 1.6  2010/07/21 16:11:13  willuhn
+ * @C Diagnose-Backup aktualisiert (SEPA-Ueberweisungen und DBProperties fehlten, Umsatz-Kategorien muessen in der richtigen Reihenfolge exportiert werden)
+ *
  * Revision 1.5  2010/06/08 11:27:59  willuhn
  * @N SWT besitzt jetzt selbst eine Option im FileDialog, mit der geprueft werden kann, ob die Datei ueberschrieben werden soll oder nicht
  *
