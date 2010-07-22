@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/Controller.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/06/17 11:38:15 $
+ * $Revision: 1.2 $
+ * $Date: 2010/07/22 11:31:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -41,6 +41,7 @@ import de.willuhn.jameica.hbci.gui.input.HBCIVersionInput;
 import de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig;
 import de.willuhn.jameica.hbci.passports.pintan.server.PassportHandleImpl;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -468,8 +469,12 @@ public class Controller extends AbstractControl {
     }
     catch (Throwable t)
     {
-      Logger.error("error while creating config",t);
-      GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Erstellen der Konfiguration"));
+      // Fehlertext nur anzeigen, wenn der Vorgang nicht durch den User abgebrochen wurde
+      if (HBCIFactory.getCause(t,OperationCanceledException.class) == null)
+      {
+        Logger.error("error while creating config",t);
+        GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Erstellen der Konfiguration"));
+      }
     }
   }
 
@@ -527,6 +532,9 @@ public class Controller extends AbstractControl {
 
 /**********************************************************************
  * $Log: Controller.java,v $
+ * Revision 1.2  2010/07/22 11:31:50  willuhn
+ * @B Fehlertext nur anzeigen, wenn der Erstell-Vorgang nicht durch den User abgebrochen wurde
+ *
  * Revision 1.1  2010/06/17 11:38:15  willuhn
  * @C kompletten Code aus "hbci_passport_pintan" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
  *
