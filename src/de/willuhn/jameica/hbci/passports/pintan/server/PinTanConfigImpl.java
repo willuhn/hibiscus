@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/server/PinTanConfigImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2010/07/22 11:39:27 $
+ * $Revision: 1.4 $
+ * $Date: 2010/07/22 12:04:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -39,12 +39,12 @@ import de.willuhn.util.I18N;
 public class PinTanConfigImpl extends UnicastRemoteObject implements PinTanConfig
 {
 
-  private Settings settings     = new Settings(PinTanConfig.class);
+  private final static Settings settings = new Settings(PinTanConfig.class);
+  private final static I18N i18n         = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+
   private HBCIPassport passport = null;
   private File file             = null;
   
-  private I18N i18n             = null;
-
   /**
    * ct.
    * @param passport
@@ -56,7 +56,6 @@ public class PinTanConfigImpl extends UnicastRemoteObject implements PinTanConfi
     super();
     this.passport = passport;
     this.file = file;
-    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
   /**
@@ -286,21 +285,28 @@ public class PinTanConfigImpl extends UnicastRemoteObject implements PinTanConfi
     if (ids == null || ids.length == 0)
       return null;
     
+    List<String> fixedIds = new ArrayList<String>();
     List<Konto> konten = new ArrayList<Konto>();
     for (int i=0;i<ids.length;++i)
     {
       try
       {
         konten.add((Konto) de.willuhn.jameica.hbci.Settings.getDBService().createObject(Konto.class,ids[i]));
+        fixedIds.add(ids[i]); // Wenn das Konto geladen wurde, bleibt es erhalten
       }
       catch (ObjectNotFoundException noe)
       {
-        Logger.warn("konto " + ids[i] + " does not exist, removing from list");
+        Logger.warn("account " + ids[i] + " does not exist, removing from list");
       }
       catch (RemoteException re)
       {
         throw re;
       }
+    }
+    if (fixedIds.size() != ids.length)
+    {
+      Logger.info("fixing list of assigned accounts");
+      settings.setAttribute(getID() + ".konto",fixedIds.toArray(new String[fixedIds.size()]));
     }
     return konten.toArray(new Konto[konten.size()]);
   }
@@ -472,7 +478,10 @@ public class PinTanConfigImpl extends UnicastRemoteObject implements PinTanConfi
 
 /*****************************************************************************
  * $Log: PinTanConfigImpl.java,v $
- * Revision 1.3  2010/07/22 11:39:27  willuhn
+ * Revision 1.4  2010/07/22 12:04:38  willuhn
+ * @C Nicht mehr gueltige Konto-Zuordnungen automatisch loeschen
+ *
+ * Revision 1.3  2010-07-22 11:39:27  willuhn
  * @B BUGZILLA 314 - Migrationscode entfernt - ist inzwischen 3 Jahre alt und sollte nicht mehr noetig sein
  *
  * Revision 1.2  2010-07-22 11:35:08  willuhn
