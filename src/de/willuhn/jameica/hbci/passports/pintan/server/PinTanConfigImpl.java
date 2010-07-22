@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/server/PinTanConfigImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/07/22 11:35:08 $
+ * $Revision: 1.3 $
+ * $Date: 2010/07/22 11:39:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.kapott.hbci.manager.HBCIUtils;
 import org.kapott.hbci.passport.HBCIPassport;
@@ -280,38 +281,28 @@ public class PinTanConfigImpl extends UnicastRemoteObject implements PinTanConfi
    */
   public Konto[] getKonten() throws RemoteException
   {
-    /////////////////////////////////////////////////////////////////
-    // BUGZILLA 314 Migration
-    String id = settings.getString(getID() + ".konto",null);
-    if (id != null && id.length() > 0)
-    {
-      settings.setAttribute(getID() + ".konto",(String) null); // Einzelwert loeschen
-      settings.setAttribute(getID() + ".konto",new String[]{id}); // Als Array neu speichern
-    }
-    /////////////////////////////////////////////////////////////////
-
     // Und jetzt laden wir die Liste neu
     String[] ids = settings.getList(getID() + ".konto",null);
     if (ids == null || ids.length == 0)
       return null;
     
-    ArrayList konten = new ArrayList();
+    List<Konto> konten = new ArrayList<Konto>();
     for (int i=0;i<ids.length;++i)
     {
       try
       {
-        konten.add(de.willuhn.jameica.hbci.Settings.getDBService().createObject(Konto.class,ids[i]));
+        konten.add((Konto) de.willuhn.jameica.hbci.Settings.getDBService().createObject(Konto.class,ids[i]));
       }
       catch (ObjectNotFoundException noe)
       {
-        Logger.warn("konto " + ids[i] + " does not exist, skipping");
+        Logger.warn("konto " + ids[i] + " does not exist, removing from list");
       }
       catch (RemoteException re)
       {
         throw re;
       }
     }
-    return (Konto[])konten.toArray(new Konto[konten.size()]);
+    return konten.toArray(new Konto[konten.size()]);
   }
 
   /**
@@ -481,7 +472,10 @@ public class PinTanConfigImpl extends UnicastRemoteObject implements PinTanConfi
 
 /*****************************************************************************
  * $Log: PinTanConfigImpl.java,v $
- * Revision 1.2  2010/07/22 11:35:08  willuhn
+ * Revision 1.3  2010/07/22 11:39:27  willuhn
+ * @B BUGZILLA 314 - Migrationscode entfernt - ist inzwischen 3 Jahre alt und sollte nicht mehr noetig sein
+ *
+ * Revision 1.2  2010-07-22 11:35:08  willuhn
  * @N Per Default die letzte verwendete HBCI-Version anzeigen
  *
  * Revision 1.1  2010/06/17 11:38:16  willuhn
