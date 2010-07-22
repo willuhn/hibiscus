@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/server/AbstractReader.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/06/17 11:45:48 $
+ * $Revision: 1.2 $
+ * $Date: 2010/07/22 21:20:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -178,7 +178,10 @@ public abstract class AbstractReader extends UnicastRemoteObject implements Read
 
       case Platform.OS_MAC:
         return Settings.getLibPath() + "/libhbci4java-card-mac.jnilib";
-      
+
+      case Platform.OS_FREEBSD_64:
+        return Settings.getLibPath() + "/libhbci4java-card-freebsd-64.so";
+
       default:
         Logger.warn("unable to detect operating system. fallback to windows");
         return Settings.getLibPath() + "/hbci4java-card-win32.dll";
@@ -221,6 +224,9 @@ public abstract class AbstractReader extends UnicastRemoteObject implements Read
 
 /**********************************************************************
  * $Log: AbstractReader.java,v $
+ * Revision 1.2  2010/07/22 21:20:37  willuhn
+ * @N FreeBSD64-Support - siehe Mak's Mail vom 22.07.2010
+ *
  * Revision 1.1  2010/06/17 11:45:48  willuhn
  * @C kompletten Code aus "hbci_passport_ddv" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
  *
