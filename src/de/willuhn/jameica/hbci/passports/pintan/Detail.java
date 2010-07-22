@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/Detail.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/07/13 11:01:05 $
+ * $Revision: 1.3 $
+ * $Date: 2010/07/22 12:37:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,8 +18,10 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.util.ColumnLayout;
+import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.Headline;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -30,32 +32,47 @@ import de.willuhn.util.I18N;
  */
 public class Detail extends AbstractView
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
   public void bind() throws Exception
   {
-  	final I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 		final Controller control = new Controller(this);
 
-		GUI.getView().setTitle(i18n.tr("Details der Konfiguration"));
+		GUI.getView().setTitle(i18n.tr("Details der PIN/TAN-Konfiguration"));
 
-		LabelGroup group = new LabelGroup(getParent(),i18n.tr("Details"));
-    group.addLabelPair(i18n.tr("Bezeichnung"),                 control.getBezeichnung());
-    group.addLabelPair(i18n.tr("Bankleitzahl"),                control.getBLZ());
-    group.addLabelPair(i18n.tr("Benutzerkennung"),             control.getUserId());
-    group.addLabelPair(i18n.tr("Kundenkennung"),               control.getCustomerId());
-    group.addLabelPair(i18n.tr("URL der Bank"),                control.getURL());
-    group.addLabelPair(i18n.tr("TCP-Port des Bank-Servers"),   control.getPort());
-    group.addLabelPair(i18n.tr("Filter für Übertragung"),      control.getFilterType());
-		group.addLabelPair(i18n.tr("HBCI-Version"),							   control.getHBCIVersion());
-    group.addSeparator();
-    group.addCheckbox(control.getSaveTAN(),i18n.tr("Verbrauchte TANs merken"));
-    group.addCheckbox(control.getShowTan(),i18n.tr("TANs während der Eingabe anzeigen"));
+    ColumnLayout layout = new ColumnLayout(getParent(),2);
 
-    new Headline(getParent(),i18n.tr("Liste von fest zugeordneten Konten"));
+    {
+      Container group = new SimpleContainer(layout.getComposite());
+      group.addHeadline(i18n.tr("Verbindungsdaten zur Bank"));
+      group.addInput(control.getURL());
+      group.addInput(control.getPort());
+      group.addInput(control.getFilterType());
+      group.addInput(control.getHBCIVersion());
+    }
+    
+    {
+      Container group = new SimpleContainer(layout.getComposite());
+      group.addHeadline(i18n.tr("Benutzerdaten"));
+      group.addInput(control.getUserId());
+      group.addInput(control.getCustomerId());
+      group.addInput(control.getBLZ());
+    }
+    
+    {
+      Container group = new SimpleContainer(getParent());
+      group.addHeadline(i18n.tr("Erweiterte Einstellungen"));
+      group.addInput(control.getBezeichnung());
+      group.addCheckbox(control.getSaveTAN(),i18n.tr("Verbrauchte TANs merken"));
+      group.addCheckbox(control.getShowTan(),i18n.tr("TANs während der Eingabe anzeigen"));
+
+    }
+
+    new Headline(getParent(),i18n.tr("Fest zugeordnete Konten"));
     control.getKontoAuswahl().paint(getParent());
 
     ButtonArea buttons = new ButtonArea(getParent(),6);
@@ -115,7 +132,10 @@ public class Detail extends AbstractView
 
 /**********************************************************************
  * $Log: Detail.java,v $
- * Revision 1.2  2010/07/13 11:01:05  willuhn
+ * Revision 1.3  2010/07/22 12:37:41  willuhn
+ * @N GUI poliert
+ *
+ * Revision 1.2  2010-07-13 11:01:05  willuhn
  * @N Icons in PIN/TAN-Config
  *
  * Revision 1.1  2010/06/17 11:38:15  willuhn

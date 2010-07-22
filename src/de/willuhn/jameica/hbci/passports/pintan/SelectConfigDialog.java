@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/SelectConfigDialog.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/06/17 11:38:15 $
+ * $Revision: 1.2 $
+ * $Date: 2010/07/22 12:37:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -67,7 +67,7 @@ public class SelectConfigDialog extends AbstractDialog
       }
     });
     table.addColumn(i18n.tr("Bank"),"bank");
-    table.addColumn(i18n.tr("Bezeichnung"),"bezeichnung");
+    table.addColumn(i18n.tr("Alias-Name"),"bezeichnung");
     table.addColumn(i18n.tr("URL"),"url");
     table.addColumn(i18n.tr("Kundenkennung"),"customerid");
     table.setMulti(false);
@@ -114,6 +114,9 @@ public class SelectConfigDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: SelectConfigDialog.java,v $
+ * Revision 1.2  2010/07/22 12:37:41  willuhn
+ * @N GUI poliert
+ *
  * Revision 1.1  2010/06/17 11:38:15  willuhn
  * @C kompletten Code aus "hbci_passport_pintan" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
  *

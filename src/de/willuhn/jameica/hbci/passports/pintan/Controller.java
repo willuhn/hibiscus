@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/Controller.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/07/22 11:31:50 $
+ * $Revision: 1.3 $
+ * $Date: 2010/07/22 12:37:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,7 +16,6 @@ import java.io.File;
 import java.rmi.RemoteException;
 import java.util.List;
 
-import org.kapott.hbci.manager.HBCIUtils;
 import org.kapott.hbci.passport.HBCIPassport;
 
 import de.willuhn.jameica.gui.AbstractControl;
@@ -27,7 +26,6 @@ import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.IntegerInput;
-import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
@@ -37,6 +35,7 @@ import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.PassportTest;
 import de.willuhn.jameica.hbci.gui.dialogs.PassportPropertyDialog;
+import de.willuhn.jameica.hbci.gui.input.BLZInput;
 import de.willuhn.jameica.hbci.gui.input.HBCIVersionInput;
 import de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig;
 import de.willuhn.jameica.hbci.passports.pintan.server.PassportHandleImpl;
@@ -115,7 +114,7 @@ public class Controller extends AbstractControl {
     });
 
     configList.addColumn(i18n.tr("Name der Bank"),"bank");
-    configList.addColumn(i18n.tr("Bezeichnung"),"bezeichnung");
+    configList.addColumn(i18n.tr("Alias-Name"),"bezeichnung");
     configList.addColumn(i18n.tr("Bankleitzahl"),"blz");
     configList.addColumn(i18n.tr("URL"),"url");
 
@@ -170,13 +169,13 @@ public class Controller extends AbstractControl {
    */
   public Input getBLZ() throws RemoteException
   {
-    if (blz != null)
-      return blz;
-
-		// Die BLZ darf nach Erstellung des Passports nicht mehr geaendert werden.
-    blz = new LabelInput(getConfig().getBLZ());
-    blz.setComment(HBCIUtils.getNameForBLZ(getConfig().getBLZ()));
-    return blz;
+    if (this.blz != null)
+      return this.blz;
+    this.blz = new BLZInput(getConfig().getBLZ());
+    this.blz.setEnabled(false);
+    this.blz.setName(i18n.tr("Bankleitzahl"));
+    this.blz.setMandatory(true);
+    return this.blz;
   }
 
   /**
@@ -203,7 +202,9 @@ public class Controller extends AbstractControl {
     if (url != null)
       return url;
     url = new TextInput(getConfig().getURL());
-    url.setComment(i18n.tr("bitte ohne \"https://\" eingeben"));
+    url.setEnabled(false);
+    url.setName(i18n.tr("URL des Bank-Servers"));
+    url.setMandatory(true);
     return url;
   }
 
@@ -244,6 +245,7 @@ public class Controller extends AbstractControl {
       return bezeichnung;
     bezeichnung = new TextInput(getConfig().getBezeichnung());
     bezeichnung.setComment(i18n.tr("Angabe optional"));
+    bezeichnung.setName(i18n.tr("Alias-Name"));
     return bezeichnung;
   }
 
@@ -257,7 +259,9 @@ public class Controller extends AbstractControl {
     if (port != null)
       return port;
     port = new IntegerInput(getConfig().getPort());
-    port.setComment(i18n.tr("meist 443"));
+    port.setEnabled(false);
+    port.setName(i18n.tr("TCP-Port des Bank-Servers"));
+    port.setMandatory(true);
     return port;
   }
 
@@ -271,6 +275,9 @@ public class Controller extends AbstractControl {
     if (customerId != null)
       return customerId;
     customerId = new TextInput(getConfig().getCustomerId());
+    customerId.setName(i18n.tr("Kundenkennung"));
+    customerId.setEnabled(false);
+    customerId.setMandatory(true);
     return customerId;
   }
 
@@ -284,6 +291,9 @@ public class Controller extends AbstractControl {
     if (userId != null)
       return userId;
     userId = new TextInput(getConfig().getUserId());
+    userId.setName(i18n.tr("Benutzerkennung"));
+    userId.setEnabled(false);
+    userId.setMandatory(true);
     return userId;
   }
 
@@ -300,6 +310,8 @@ public class Controller extends AbstractControl {
       new String[]{"Base64","None"},
       getConfig().getFilterType());
     filterType.setComment(i18n.tr("meist Base64"));
+    filterType.setName(i18n.tr("Filter für Übertragung"));
+    filterType.setMandatory(true);
     return filterType;
   }
 
@@ -314,6 +326,8 @@ public class Controller extends AbstractControl {
       return hbciVersion;
     String current = getConfig().getHBCIVersion();
     hbciVersion = new HBCIVersionInput(getHBCIPassport(),current);
+    hbciVersion.setMandatory(true);
+    hbciVersion.setName(i18n.tr("HBCI-Version"));
     return hbciVersion;
   }
   
@@ -499,10 +513,6 @@ public class Controller extends AbstractControl {
       config.setKonten(konten);
       
       config.setFilterType((String) getFilterType().getValue());
-			config.setPort(((Integer)getPort().getValue()).intValue());
-			config.setURL((String) getURL().getValue());
-      config.setCustomerId((String) getCustomerId().getValue());
-      config.setUserId((String) getUserId().getValue());
       config.setBezeichnung((String) getBezeichnung().getValue());
       config.setSaveUsedTan(((Boolean)getSaveTAN().getValue()).booleanValue());
       config.setShowTan(((Boolean)getShowTan().getValue()).booleanValue());
@@ -532,7 +542,10 @@ public class Controller extends AbstractControl {
 
 /**********************************************************************
  * $Log: Controller.java,v $
- * Revision 1.2  2010/07/22 11:31:50  willuhn
+ * Revision 1.3  2010/07/22 12:37:41  willuhn
+ * @N GUI poliert
+ *
+ * Revision 1.2  2010-07-22 11:31:50  willuhn
  * @B Fehlertext nur anzeigen, wenn der Erstell-Vorgang nicht durch den User abgebrochen wurde
  *
  * Revision 1.1  2010/06/17 11:38:15  willuhn

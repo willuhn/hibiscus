@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/Detail.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/06/17 17:20:58 $
+ * $Revision: 1.3 $
+ * $Date: 2010/07/22 12:37:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -74,6 +74,9 @@ public class Detail extends AbstractView
         group.addInput(control.getPath()); // BUGZILLA 148
       }
 
+      new Headline(getParent(),i18n.tr("Fest zugeordnete Konten"));
+      control.getKontoAuswahl().paint(getParent());
+
       ButtonArea buttons = new ButtonArea(getParent(),6);
       buttons.addButton(new Back(true));
       buttons.addButton(i18n.tr("Passwort ändern"),new Action()
@@ -112,8 +115,6 @@ public class Detail extends AbstractView
         }
       },null,false,"document-save.png");
 
-      new Headline(getParent(),i18n.tr("Fest zugeordnete Konten"));
-      control.getKontoAuswahl().paint(getParent());
       
       // Ggf. angezeigten Fehlertext von vorher loeschen
       Application.getMessagingFactory().sendMessage(new StatusBarMessage("",StatusBarMessage.TYPE_SUCCESS));
@@ -145,6 +146,9 @@ public class Detail extends AbstractView
 
 /**********************************************************************
  * $Log: Detail.java,v $
+ * Revision 1.3  2010/07/22 12:37:41  willuhn
+ * @N GUI poliert
+ *
  * Revision 1.2  2010/06/17 17:20:58  willuhn
  * @N Exception-Handling beim Laden der Schluesseldatei ueberarbeitet - OperationCancelledException wird nun sauber behandelt - auch wenn sie in HBCI_Exceptions gekapselt ist
  *
