@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/server/AbstractReader.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/07/22 21:20:37 $
+ * $Revision: 1.3 $
+ * $Date: 2010/07/22 22:36:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -149,46 +149,6 @@ public abstract class AbstractReader extends UnicastRemoteObject implements Read
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getJNILib()
-   */
-  public String getJNILib() throws RemoteException
-  {
-    return getDefaultJNILib();
-  }
-
-  /**
-   * Liefert die per Default zu verwendende JNI-Lib.
-   * @return per Default zu verwendende JNI-Lib.
-   */
-  public static String getDefaultJNILib()
-  {
-    switch (Application.getPlatform().getOS())
-    {
-      case Platform.OS_LINUX:
-        return Settings.getLibPath() + "/libhbci4java-card-linux-32.so";
-      
-      case Platform.OS_LINUX_64:
-        return Settings.getLibPath() + "/libhbci4java-card-linux-64.so";
-
-      case Platform.OS_WINDOWS:
-        return Settings.getLibPath() + "/hbci4java-card-win32.dll";
-      
-      case Platform.OS_WINDOWS_64:
-        return Settings.getLibPath() + "/hbci4java-card-win32_x86-64.dll";
-
-      case Platform.OS_MAC:
-        return Settings.getLibPath() + "/libhbci4java-card-mac.jnilib";
-
-      case Platform.OS_FREEBSD_64:
-        return Settings.getLibPath() + "/libhbci4java-card-freebsd-64.so";
-
-      default:
-        Logger.warn("unable to detect operating system. fallback to windows");
-        return Settings.getLibPath() + "/hbci4java-card-win32.dll";
-    }
-  }
-
-  /**
    * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getPort()
    */
   public String getPort() throws RemoteException
@@ -224,7 +184,10 @@ public abstract class AbstractReader extends UnicastRemoteObject implements Read
 
 /**********************************************************************
  * $Log: AbstractReader.java,v $
- * Revision 1.2  2010/07/22 21:20:37  willuhn
+ * Revision 1.3  2010/07/22 22:36:24  willuhn
+ * @N Code-Cleanup
+ *
+ * Revision 1.2  2010-07-22 21:20:37  willuhn
  * @N FreeBSD64-Support - siehe Mak's Mail vom 22.07.2010
  *
  * Revision 1.1  2010/06/17 11:45:48  willuhn

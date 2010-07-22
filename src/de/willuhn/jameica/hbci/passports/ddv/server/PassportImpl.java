@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/server/PassportImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/06/17 11:45:49 $
+ * $Revision: 1.6 $
+ * $Date: 2010/07/22 22:36:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -135,23 +135,6 @@ public class PassportImpl extends UnicastRemoteObject implements Passport
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Passport#getJNILib()
-   */
-  public String getJNILib() throws RemoteException
-  {
-    // BUGZILLA 646
-    return settings.getString(Passport.JNILIB,null);
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Passport#setJNILib(java.lang.String)
-   */
-  public void setJNILib(String file) throws RemoteException
-  {
-    settings.setAttribute(Passport.JNILIB,file);
-  }
-
-  /**
    * @see de.willuhn.jameica.hbci.passport.Passport#getName()
    */
   public String getName() throws RemoteException {
@@ -249,6 +232,9 @@ public class PassportImpl extends UnicastRemoteObject implements Passport
 
 /**********************************************************************
  * $Log: PassportImpl.java,v $
+ * Revision 1.6  2010/07/22 22:36:24  willuhn
+ * @N Code-Cleanup
+ *
  * Revision 1.5  2010/06/17 11:45:49  willuhn
  * @C kompletten Code aus "hbci_passport_ddv" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
  *

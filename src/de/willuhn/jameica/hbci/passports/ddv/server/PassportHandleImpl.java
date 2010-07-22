@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/server/PassportHandleImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2010/06/17 11:45:48 $
+ * $Revision: 1.5 $
+ * $Date: 2010/07/22 22:36:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -34,6 +34,7 @@ import de.willuhn.jameica.hbci.server.Converter;
 import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.Platform;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -75,61 +76,53 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 		Logger.info("open ddv passport");
 		try {
 	
-			Logger.info("using passport path " + Settings.getWorkPath() + "/passports/");
-			Logger.info("using library path " + Settings.getLibPath());
-			HBCIUtils.setParam("client.passport.DDV.path",Settings.getWorkPath() + "/passports/");
-	
-			File f = new File(Settings.getWorkPath() + "/passports/");
-			if (!f.exists())
-				f.mkdirs();
+      //////////////////////////////////////////////////////////////////////////
+      // JNI-Treiber
+      String jni = getJNILib().getAbsolutePath();
+      Logger.info("  jni lib: " + jni);
+      HBCIUtils.setParam("client.passport.DDV.libname.ddv", jni);
+      //
+      //////////////////////////////////////////////////////////////////////////
 
-	
+		  //////////////////////////////////////////////////////////////////////////
+		  // CTAPI-Treiber
 			String ctapiDriver = passport.getCTAPIDriver();
-
 			if (ctapiDriver == null || ctapiDriver.length() == 0)
-				throw new RemoteException(i18n.tr("CTAPI-Treiber nicht definiert"));
-
-			String jniLib = passport.getJNILib();
-
-			// Nichts im passport angegeben
-			if (jniLib == null || jniLib.length() == 0)
-        jniLib = AbstractReader.getDefaultJNILib();
-
-      File jni = new File(jniLib);
-      
-      // Wert aus Passport ungueltig
-      if (!jni.exists() || !jni.canRead() || !jni.isFile())
-        jniLib = AbstractReader.getDefaultJNILib();
-
-      // BUGZILLA 43 http://www.willuhn.de/bugzilla/show_bug.cgi?id=43
-      jni = new File(jniLib);
-      if (!jni.exists() || !jni.isFile() || !jni.canRead())
-        throw new ApplicationException(i18n.tr("JNI-Bibliothek {0} konnte nicht geladen werden",jniLib)); 
+				throw new ApplicationException(i18n.tr("Bitte wählen Sie den CTAPI-Treiber aus"));
 
       File ctapi = new File(ctapiDriver);
       if (!ctapi.exists() || !ctapi.isFile() || !ctapi.canRead())
-        throw new ApplicationException(i18n.tr("CTAPI-Treiber-Datei \"{0}\" des Kartenlesers konnte nicht geladen werden",ctapiDriver)); 
-      
-			Logger.info("using JNI lib " + jniLib);
-			HBCIUtils.setParam(Passport.JNILIB, jniLib);
+        throw new ApplicationException(i18n.tr("CTAPI-Treiber-Datei \"{0}\" nicht gefunden oder nicht lesbar",ctapiDriver)); 
 
-			Logger.info("using CTAPI driver " + ctapiDriver);
-			HBCIUtils.setParam(Passport.CTAPI, ctapiDriver);
+      Logger.info("  ctapi driver: " + ctapiDriver);
+      HBCIUtils.setParam(Passport.CTAPI, ctapiDriver);
+      //
+      //////////////////////////////////////////////////////////////////////////
 
-			Logger.info("using Port " + passport.getPort());
-			Logger.info("using Port ID " + passport.getPortForName(passport.getPort()));
-			HBCIUtils.setParam(Passport.PORT, ""+passport.getPortForName(passport.getPort()));
+      //////////////////////////////////////////////////////////////////////////
+      // Passport-Verzeichnis
+      File f = new File(Settings.getWorkPath() + "/passports/");
+      if (!f.exists())
+        f.mkdirs();
+      HBCIUtils.setParam("client.passport.DDV.path",Settings.getWorkPath() + "/passports/");
+      //
+      //////////////////////////////////////////////////////////////////////////
+  
+			
+      String port = Integer.toString(passport.getPortForName(passport.getPort()));
+			Logger.info("  port: " + passport.getPort() + " [ID: " + port + "]");
+			HBCIUtils.setParam(Passport.PORT,port);
 
-			Logger.info("using ctnumber " + passport.getCTNumber());
+			Logger.info("  ctnumber: " + passport.getCTNumber());
 			HBCIUtils.setParam(Passport.CTNUMBER,""+passport.getCTNumber());
 
-			Logger.info("using biometric features " + passport.useBIO());
+			Logger.info("  biometrics: " + passport.useBIO());
 			HBCIUtils.setParam(Passport.USEBIO,	passport.useBIO() ? "1" : "0");
 
-			Logger.info("using soft pin " + passport.useSoftPin());
+			Logger.info("  soft pin: " + passport.useSoftPin());
 			HBCIUtils.setParam(Passport.SOFTPIN,	passport.useSoftPin() ? "1" : "0");
 
-			Logger.info("using entry index " + passport.getEntryIndex());
+			Logger.info("  entry index: " + passport.getEntryIndex());
 			HBCIUtils.setParam(Passport.ENTRYIDX,""+passport.getEntryIndex());
 	
       AbstractPlugin plugin = Application.getPluginLoader().getPlugin(HBCI.class);
@@ -138,10 +131,11 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
         ((HBCICallbackSWT)callback).setCurrentHandle(this);
 
       hbciPassport = AbstractHBCIPassport.getInstance("DDV");
-			Logger.info("ddv passport opened");
+      Logger.info("ddv passport opened");
 
-			Logger.info("using HBCI version " + passport.getHBCIVersion());
+      Logger.info("  hbci version: " + passport.getHBCIVersion());
 			handler=new HBCIHandler(passport.getHBCIVersion(),hbciPassport);
+      Logger.info("ddv handler opened");
       
 			return handler;
 		}
@@ -160,6 +154,55 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 			close();
 			throw new RemoteException("error while opening chipcard",e);
 		}
+  }
+
+  /**
+   * Liefert die zu verwendende JNI-Lib.
+   * @return die zu verwendende JNI-Lib.
+   * @throws ApplicationException
+   */
+  private File getJNILib() throws ApplicationException
+  {
+    String file = null;
+    
+    switch (Application.getPlatform().getOS())
+    {
+      case Platform.OS_LINUX:
+        file = "libhbci4java-card-linux-32.so";
+        break;
+        
+      case Platform.OS_LINUX_64:
+        file = "libhbci4java-card-linux-64.so";
+        break;
+        
+      case Platform.OS_WINDOWS:
+        file = "hbci4java-card-win32.dll";
+        break;
+
+      case Platform.OS_WINDOWS_64:
+        file = "hbci4java-card-win32_x86-64.dll";
+        break;
+        
+      case Platform.OS_MAC:
+        file = "libhbci4java-card-mac.jnilib";
+        break;
+
+      case Platform.OS_FREEBSD_64:
+        file = "libhbci4java-card-freebsd-64.so";
+        break;
+    }
+    
+    if (file == null)
+      throw new ApplicationException(i18n.tr("Hibiscus unterstützt leider keine Chipkartenleser für Ihr Betriebssystem"));
+
+    File f = new File(Settings.getLibPath(),file);
+    if (!f.exists())
+      throw new ApplicationException(i18n.tr("Treiber {0} nicht gefunden",f.getAbsolutePath()));
+
+    if (!f.isFile() || !f.canRead())
+      throw new ApplicationException(i18n.tr("Treiber {0} nicht lesbar",f.getAbsolutePath()));
+
+    return f;
   }
 
   /**
@@ -290,7 +333,10 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 
 /**********************************************************************
  * $Log: PassportHandleImpl.java,v $
- * Revision 1.4  2010/06/17 11:45:48  willuhn
+ * Revision 1.5  2010/07/22 22:36:24  willuhn
+ * @N Code-Cleanup
+ *
+ * Revision 1.4  2010-06-17 11:45:48  willuhn
  * @C kompletten Code aus "hbci_passport_ddv" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
  *
  * Revision 1.35  2010/02/13 15:32:18  willuhn

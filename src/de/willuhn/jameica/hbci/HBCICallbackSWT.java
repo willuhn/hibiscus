@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.66 $
- * $Date: 2010/07/22 11:35:50 $
+ * $Revision: 1.67 $
+ * $Date: 2010/07/22 22:36:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -130,7 +130,7 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
       
       if (currentHandle != null && currentHandle.callback(passport,reason,msg,datatype,retData))
       {
-        Logger.info("callback [reason " + reason + "] handled by " + currentHandle.getClass());
+        Logger.debug("callback [reason " + reason + "] handled by " + currentHandle.getClass());
         return;
       }
 
@@ -509,7 +509,10 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
- * Revision 1.66  2010/07/22 11:35:50  willuhn
+ * Revision 1.67  2010/07/22 22:36:24  willuhn
+ * @N Code-Cleanup
+ *
+ * Revision 1.66  2010-07-22 11:35:50  willuhn
  * @C changed log level
  *
  * Revision 1.65  2010/06/17 11:26:48  willuhn

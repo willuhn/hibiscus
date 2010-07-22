@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/Controller.java,v $
- * $Revision: 1.6 $
- * $Date: 2010/07/13 11:36:52 $
+ * $Revision: 1.7 $
+ * $Date: 2010/07/22 22:36:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -656,7 +656,6 @@ public class Controller extends AbstractControl
         getBio().setValue(new Boolean(r.useBIO()));
      		getCTAPI().setValue(s);
      		getSoftPin().setValue(new Boolean(r.useSoftPin()));
-        getPassport().setJNILib(r.getJNILib());
         handleStore();
     	}
     	catch (Throwable t)
@@ -670,7 +669,10 @@ public class Controller extends AbstractControl
 
 /*******************************************************************************
  * $Log: Controller.java,v $
- * Revision 1.6  2010/07/13 11:36:52  willuhn
+ * Revision 1.7  2010/07/22 22:36:24  willuhn
+ * @N Code-Cleanup
+ *
+ * Revision 1.6  2010-07-13 11:36:52  willuhn
  * @C Fehlerhandling
  *
  * Revision 1.5  2010-07-13 10:55:29  willuhn
