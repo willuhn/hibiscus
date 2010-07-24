@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/DialogFactory.java,v $
- * $Revision: 1.35 $
- * $Date: 2009/08/10 10:22:09 $
+ * $Revision: 1.36 $
+ * $Date: 2010/07/24 00:22:48 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -91,14 +91,7 @@ public class DialogFactory {
 
   /**
 	 * Erzeugt den PIN-Dialog.
-	 * Hinweis: Wirft eine RuntimeException, wenn der PIN-Dialog abgebrochen
-	 * oder die PIN drei mal falsch eingegeben wurde (bei aktivierter Checksummen-Pruefung).
-	 * Hintergrund: Der Dialog wurde aus dem HBCICallBack heraus aufgerufen und soll im
-	 * Fehlerfall den HBCI-Vorgang abbrechen.
-   * @param passport Passport, fuer den die PIN-Abfrage gemacht wird. Grund: Der
-   * PIN-Dialog hat eine eingebaute Checksummen-Pruefung um zu checken, ob die
-   * PIN richtig eingegeben wurde. Da diese Checksumme aber pro Passport gespeichert
-   * wird, benoetigt der Dialoig eben jenen.
+   * @param passport Passport, fuer den die PIN-Abfrage gemacht wird.
 	 * @return die eingegebene PIN.
    * @throws Exception
 	 */
@@ -408,7 +401,10 @@ public class DialogFactory {
 
 /**********************************************************************
  * $Log: DialogFactory.java,v $
- * Revision 1.35  2009/08/10 10:22:09  willuhn
+ * Revision 1.36  2010/07/24 00:22:48  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.35  2009-08-10 10:22:09  willuhn
  * @N Als Cache-Key wird jetzt nur noch Pfad+Dateiname des Passports verwendet. Das ist erheblich einfacher zu handeln und erspart das Oeffnen des Passports
  *
  * Revision 1.34  2009/03/31 11:01:41  willuhn
