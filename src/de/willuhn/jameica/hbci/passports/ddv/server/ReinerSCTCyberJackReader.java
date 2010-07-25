@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/server/ReinerSCTCyberJackReader.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/06/17 11:45:48 $
+ * $Revision: 1.2 $
+ * $Date: 2010/07/25 23:56:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -58,6 +58,9 @@ public class ReinerSCTCyberJackReader extends AbstractReader implements Reader
       case Platform.OS_WINDOWS:
         return getCTAPIDriverPath().getAbsolutePath() + File.separator + "ctrsct32.dll";
       
+      case Platform.OS_WINDOWS_64:
+        return getCTAPIDriverPath().getAbsolutePath() + File.separator + "ctrsct64.dll";
+
       default:
         return "";
     }
@@ -78,6 +81,9 @@ public class ReinerSCTCyberJackReader extends AbstractReader implements Reader
 
 /**********************************************************************
  * $Log: ReinerSCTCyberJackReader.java,v $
+ * Revision 1.2  2010/07/25 23:56:09  willuhn
+ * @N Suchpfad fuer Windows 64Bit-CTAPI-Treiber (siehe Mail von Tobias vom 26.07.2010)
+ *
  * Revision 1.1  2010/06/17 11:45:48  willuhn
  * @C kompletten Code aus "hbci_passport_ddv" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
  *
