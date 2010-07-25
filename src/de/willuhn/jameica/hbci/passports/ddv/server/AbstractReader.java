@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/server/AbstractReader.java,v $
- * $Revision: 1.3 $
- * $Date: 2010/07/22 22:36:24 $
+ * $Revision: 1.4 $
+ * $Date: 2010/07/25 23:54:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -103,33 +103,44 @@ public abstract class AbstractReader extends UnicastRemoteObject implements Read
       
 
       case Platform.OS_WINDOWS:
+        try {
+          f = new File("C:/Windows/System32");
+          if (f.isDirectory() && f.exists()) return f;
+
+          f = new File("C:/WinNT/System32");
+          if (f.isDirectory() && f.exists()) return f;
+
+          f = new File("C:/Win2000/System32");
+          if (f.isDirectory() && f.exists()) return f;
+
+          f = new File("C:/WinXP/System32");
+          if (f.isDirectory() && f.exists()) return f;
+
+          f = new File("C:/Win/System32");
+          if (f.isDirectory() && f.exists()) return f;
+
+        }
+        catch (Throwable t)
+        {
+          // muessen wir nicht loggen
+        }
+        return f;
+
       case Platform.OS_WINDOWS_64:
-          // OK, sehr wahrscheinlich Windows. Dann schauen wir mal, ob
-          // wir das System32-Verzeichnis finden
-          try {
+        try {
 
-            f = new File("C:/Windows/System32");
-            if (f.isDirectory() && f.exists()) return f;
+          f = new File("C:/Windows/SysWOW64");
+          if (f.isDirectory() && f.exists()) return f;
 
-            f = new File("C:/WinNT/System32");
-            if (f.isDirectory() && f.exists()) return f;
-
-            f = new File("C:/Win2000/System32");
-            if (f.isDirectory() && f.exists()) return f;
-
-            f = new File("C:/WinXP/System32");
-            if (f.isDirectory() && f.exists()) return f;
-
-            f = new File("C:/Win/System32");
-            if (f.isDirectory() && f.exists()) return f;
-
-          }
-          catch (Throwable t)
-          {
-            // muessen wir nicht loggen
-          }
-          return f;
-          
+          f = new File("C:/Windows/System32");
+          if (f.isDirectory() && f.exists()) return f;
+        }
+        catch (Throwable t)
+        {
+          // muessen wir nicht loggen
+        }
+        return f;
+        
         case Platform.OS_MAC:
           return f;
 
@@ -184,7 +195,10 @@ public abstract class AbstractReader extends UnicastRemoteObject implements Read
 
 /**********************************************************************
  * $Log: AbstractReader.java,v $
- * Revision 1.3  2010/07/22 22:36:24  willuhn
+ * Revision 1.4  2010/07/25 23:54:34  willuhn
+ * @N Suchpfad fuer Windows 64Bit-CTAPI-Treiber (siehe Mail von Tobias vom 26.07.2010)
+ *
+ * Revision 1.3  2010-07-22 22:36:24  willuhn
  * @N Code-Cleanup
  *
  * Revision 1.2  2010-07-22 21:20:37  willuhn
