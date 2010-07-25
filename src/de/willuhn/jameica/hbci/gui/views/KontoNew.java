@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoNew.java,v $
- * $Revision: 1.32 $
- * $Date: 2010/06/17 12:32:56 $
+ * $Revision: 1.33 $
+ * $Date: 2010/07/25 23:11:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,6 +31,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.action.KontoDelete;
 import de.willuhn.jameica.hbci.gui.action.KontoFetchUmsaetze;
+import de.willuhn.jameica.hbci.gui.action.KontoSyncViaScripting;
 import de.willuhn.jameica.hbci.gui.action.ProtokollList;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetailEdit;
 import de.willuhn.jameica.hbci.gui.action.UmsatzList;
@@ -128,7 +129,9 @@ public class KontoNew extends AbstractView {
     TabGroup tab2 = new TabGroup(folder,i18n.tr("Saldo im Verlauf"));
     control.getUmsatzChart().paint(tab2.getComposite());
 
-    ButtonArea buttons = new ButtonArea(getParent(),3);
+    boolean scripting = Application.getPluginLoader().isInstalled("de.willuhn.jameica.scripting.Plugin");
+
+    ButtonArea buttons = new ButtonArea(getParent(),scripting ? 4 : 3);
     buttons.addButton(new Back());
 
     int flags = control.getKonto().getFlags();
@@ -136,9 +139,20 @@ public class KontoNew extends AbstractView {
     Button fetch = null;
 
     if ((flags & Konto.FLAG_OFFLINE) == Konto.FLAG_OFFLINE)
+    {
       fetch = new Button(i18n.tr("Umsatz anlegen"), new UmsatzDetailEdit(),control.getKonto(),false,"office-calendar.png");
+      
+      if (scripting)
+      {
+        Button sync = new Button(i18n.tr("via Scripting synchronisieren"), new KontoSyncViaScripting(),control.getKonto(),false,"mail-send-receive.png");
+        sync.setEnabled((flags & Konto.FLAG_DISABLED) != Konto.FLAG_DISABLED);
+        buttons.addButton(sync);
+      }
+    }
     else
+    {
       fetch = new Button(i18n.tr("Saldo und Umsätze abrufen"), new KontoFetchUmsaetze(),control.getKonto(),false,"mail-send-receive.png");
+    }
     
     fetch.setEnabled((flags & Konto.FLAG_DISABLED) != Konto.FLAG_DISABLED);
     buttons.addButton(fetch);
@@ -168,6 +182,9 @@ public class KontoNew extends AbstractView {
 
 /**********************************************************************
  * $Log: KontoNew.java,v $
+ * Revision 1.33  2010/07/25 23:11:59  willuhn
+ * @N Erster Code fuer Scripting-Integration
+ *
  * Revision 1.32  2010/06/17 12:32:56  willuhn
  * @N BUGZILLA 530
  *

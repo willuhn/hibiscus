@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.90 $
- * $Date: 2010/06/17 12:32:56 $
+ * $Revision: 1.91 $
+ * $Date: 2010/07/25 23:11:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -377,7 +377,14 @@ public class KontoControl extends AbstractControl {
     // Einmal ausloesen, damit das Feld mit Inhalt gefuellt wird.
     this.consumer = new SaldoMessageConsumer();
     Application.getMessagingFactory().registerMessageConsumer(this.consumer);
-    Application.getMessagingFactory().sendMessage(new SaldoMessage(getKonto()));
+    try
+    {
+      this.consumer.handleMessage(null);
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to refresh saldo",e);
+    }
     return saldo;
 	}
   
@@ -589,7 +596,8 @@ public class KontoControl extends AbstractControl {
           while (i.hasNext())
             list.addItem(i.next());
           list.sort();
-          Application.getMessagingFactory().sendMessage(new SaldoMessage(getKonto()));
+          if (consumer != null)
+            consumer.handleMessage(null);
         }
         catch (IllegalArgumentException iae)
         {
@@ -599,7 +607,7 @@ public class KontoControl extends AbstractControl {
           Logger.warn("umsatz table has be disposed in the meantime, skip reload");
           return;
         }
-        catch (RemoteException e)
+        catch (Exception e)
         {
           Logger.error("error while reloading umsatz list",e);
         }
@@ -665,17 +673,9 @@ public class KontoControl extends AbstractControl {
           try
           {
             if (saldo == null)
-            {
-              // Eingabe-Feld existiert nicht. Also abmelden
-              Application.getMessagingFactory().unRegisterMessageConsumer(SaldoMessageConsumer.this);
               return;
-            }
             
-            SaldoMessage msg = (SaldoMessage) message;
-            Konto k = (Konto)msg.getObject();
-            if (k == null || !k.equals(getKonto()))
-              return; // Kein Konto oder nicht unseres
-
+            Konto k = getKonto();
             double s  = k.getSaldo();
             saldo.setValue(Double.isNaN(s) ? null : s);
             
@@ -691,9 +691,7 @@ public class KontoControl extends AbstractControl {
           }
           catch (Exception e)
           {
-            // Wenn hier ein Fehler auftrat, deregistrieren wir uns wieder
             Logger.error("unable to refresh saldo",e);
-            Application.getMessagingFactory().unRegisterMessageConsumer(SaldoMessageConsumer.this);
           }
         }
       
@@ -708,6 +706,9 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.91  2010/07/25 23:11:59  willuhn
+ * @N Erster Code fuer Scripting-Integration
+ *
  * Revision 1.90  2010/06/17 12:32:56  willuhn
  * @N BUGZILLA 530
  *
