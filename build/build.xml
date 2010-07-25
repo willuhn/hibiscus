@@ -230,7 +230,6 @@
 
     <copy file="${project.release}/${define.zipfilename}" tofile="${project.nightly}/${plugin.name}-${plugin.version}.zip" />
     <copy file="${project.release}/${define.srcfilename}" tofile="${project.nightly}/${plugin.name}-${plugin.version}.src.zip" />
-    <copy file="${project.release}/${define.javadocfilename}" tofile="${project.nightly}/${plugin.name}-${plugin.version}.javadoc.zip" />
 
     <!-- Die Datei brauchen die anderen Plugins zum Kompilieren //-->
     <copy file="${project.zipdir}/${define.jarfilename}" tofile="releases/hibiscus-lib.jar" />
