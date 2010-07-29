@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoList.java,v $
- * $Revision: 1.19 $
- * $Date: 2010/06/17 12:49:51 $
+ * $Revision: 1.20 $
+ * $Date: 2010/07/29 21:43:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,10 +14,14 @@
 package de.willuhn.jameica.hbci.gui.parts;
 
 import java.rmi.RemoteException;
+import java.util.Arrays;
+import java.util.List;
 
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TableItem;
 import org.kapott.hbci.manager.HBCIUtils;
 
@@ -34,6 +38,7 @@ import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.PassportRegistry;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
@@ -183,6 +188,14 @@ public class KontoList extends TablePart implements Part
     
     this.mc = new SaldoMessageConsumer();
     Application.getMessagingFactory().registerMessageConsumer(this.mc);
+    
+    this.addSelectionListener(new Listener()
+    {
+      public void handleEvent(Event event)
+      {
+        refreshSummary();
+      }
+    });
   }
   
   /**
@@ -251,6 +264,43 @@ public class KontoList extends TablePart implements Part
     return i;
   }
   
+  /**
+   * @see de.willuhn.jameica.gui.parts.TablePart#getSummary()
+   */
+  protected String getSummary()
+  {
+    try
+    {
+      List<Konto> items = null;
+      Object o = this.getSelection();
+
+      // Nur wenn mehr als ein Konto markiert ist, nehmen
+      // wir von den markierten die Summe. Sonst immer von
+      // allen
+      boolean selected = (o != null && (o instanceof Konto[]));
+
+      if (selected)
+        items = Arrays.asList((Konto[])o);
+      else
+        items = this.getItems();
+        
+      double sum = 0.0d;
+      for (Konto k:items)
+      {
+        sum += k.getSaldo();
+      }
+      
+      if (selected)
+        return i18n.tr("{0} Konten markiert, Gesamt-Saldo: {1} {2}",new String[]{Integer.toString(items.size()),HBCI.DECIMALFORMAT.format(sum),HBCIProperties.CURRENCY_DEFAULT_DE});
+
+      return i18n.tr("Gesamt-Saldo: {0} {1}",new String[]{HBCI.DECIMALFORMAT.format(sum),HBCIProperties.CURRENCY_DEFAULT_DE});
+    }
+    catch (Exception e)
+    {
+      Logger.error("error while updating summary",e);
+    }
+    return super.getSummary();
+  }
   
   /**
    * Hilfsklasse damit wir ueber neue Salden informiert werden.
@@ -305,6 +355,9 @@ public class KontoList extends TablePart implements Part
            Object prev = getSelection();
            if (prev != null && prev == o)
              select(o);
+           
+           // Summen-Zeile aktualisieren
+           refreshSummary();
           }
           catch (Exception e)
           {
@@ -327,6 +380,9 @@ public class KontoList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.20  2010/07/29 21:43:22  willuhn
+ * @N BUGZILLA 886
+ *
  * Revision 1.19  2010/06/17 12:49:51  willuhn
  * @N BUGZILLA 530 - auch in der Liste die Spalte des verfuegbaren Betrages nur dann anzeigen, wenn wenigstens ein Konto einen solchen besitzt
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Konten.java,v $
- * $Revision: 1.7 $
- * $Date: 2010/06/17 12:16:52 $
+ * $Revision: 1.8 $
+ * $Date: 2010/07/29 21:43:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -81,7 +81,6 @@ public class Konten extends AbstractBox implements Box
   public void paint(Composite parent) throws RemoteException
   {
     KontoList l = new KontoList(new KontoNew());
-    l.setSummary(false);
     l.paint(parent);
   }
 
@@ -98,6 +97,9 @@ public class Konten extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: Konten.java,v $
+ * Revision 1.8  2010/07/29 21:43:22  willuhn
+ * @N BUGZILLA 886
+ *
  * Revision 1.7  2010/06/17 12:16:52  willuhn
  * @N BUGZILLA 530
  *
