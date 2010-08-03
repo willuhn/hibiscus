@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.75 $
- * $Date: 2010/06/17 15:31:27 $
+ * $Revision: 1.76 $
+ * $Date: 2010/08/03 11:00:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -398,6 +398,7 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
     }
 
     String s = (""+getArt()).toUpperCase() +
+               getKonto().getID() + // wenigstens die ID vom Konto muss mit rein. Andernfalls haben zwei gleich aussehende Umsaetze auf verschiedenen Konten die gleiche Checksumme
 		           getBetrag() +
 		           getCustomerRef() +
 		           getGegenkontoBLZ() +
@@ -720,7 +721,10 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
- * Revision 1.75  2010/06/17 15:31:27  willuhn
+ * Revision 1.76  2010/08/03 11:00:01  willuhn
+ * @N Konto-ID mit in Checksumme
+ *
+ * Revision 1.75  2010-06-17 15:31:27  willuhn
  * @C BUGZILLA 622 - Defaultwert des checksum.saldo-Parameters geaendert - steht jetzt per Default auf false, sodass der Saldo NICHT mit in die Checksumme einfliesst
  * @B BUGZILLA 709 - Konto ist nun ENDLICH nicht mehr Bestandteil der Checksumme, dafuer sind jetzt alle Verwendungszweck-Zeilen drin
  *
