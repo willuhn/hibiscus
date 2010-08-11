@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.91 $
- * $Date: 2010/07/25 23:11:59 $
+ * $Revision: 1.92 $
+ * $Date: 2010/08/11 16:06:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,7 +43,7 @@ import de.willuhn.jameica.hbci.gui.dialogs.SynchronizeOptionsDialog;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
 import de.willuhn.jameica.hbci.gui.input.PassportInput;
 import de.willuhn.jameica.hbci.gui.parts.ProtokollList;
-import de.willuhn.jameica.hbci.gui.parts.UmsatzChart;
+import de.willuhn.jameica.hbci.gui.parts.SaldoChart;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzList;
 import de.willuhn.jameica.hbci.messaging.SaldoMessage;
 import de.willuhn.jameica.hbci.passport.Passport;
@@ -88,7 +88,7 @@ public class KontoControl extends AbstractControl {
 	private TablePart kontoList						= null;
 	private TablePart protokoll						= null;
   private UmsatzList umsatzList         = null;
-  private UmsatzChart umsatzChart       = null;
+  private SaldoChart saldoChart       = null;
   
   private CheckboxInput offline         = null;
 
@@ -160,17 +160,17 @@ public class KontoControl extends AbstractControl {
   }
 
   /**
-   * Liefert einen Chart mit den Umsaetzen des Kontos.
+   * Liefert einen Chart mit dem Saldo des Kontos.
    * @return Tabelle.
    * @throws RemoteException
    */
-  public Part getUmsatzChart() throws RemoteException
+  public Part getSaldoChart() throws RemoteException
   {
-    if (umsatzChart != null)
-      return umsatzChart;
+    if (saldoChart != null)
+      return saldoChart;
 
-    umsatzChart = new UmsatzChart(getKonto());
-    return umsatzChart;
+    saldoChart = new SaldoChart(getKonto());
+    return saldoChart;
   }
 
   /**
@@ -706,7 +706,10 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
- * Revision 1.91  2010/07/25 23:11:59  willuhn
+ * Revision 1.92  2010/08/11 16:06:04  willuhn
+ * @N BUGZILLA 783 - Saldo-Chart ueber alle Konten
+ *
+ * Revision 1.91  2010-07-25 23:11:59  willuhn
  * @N Erster Code fuer Scripting-Integration
  *
  * Revision 1.90  2010/06/17 12:32:56  willuhn

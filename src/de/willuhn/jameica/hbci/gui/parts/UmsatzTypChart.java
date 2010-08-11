@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTypChart.java,v $
- * $Revision: 1.7 $
- * $Date: 2009/08/27 13:37:28 $
+ * $Revision: 1.8 $
+ * $Date: 2010/08/11 16:06:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -128,7 +128,7 @@ public class UmsatzTypChart implements Part
       });
 
 
-      group.addLabelPair(i18n.tr("Anzahl der anzuzeigenden Tage"),i);
+      group.addInput(i);
       
       final Composite comp = new Composite(group.getComposite(),SWT.NONE);
       GridData gridData = new GridData(GridData.FILL_BOTH);
@@ -161,6 +161,9 @@ public class UmsatzTypChart implements Part
 
 /*********************************************************************
  * $Log: UmsatzTypChart.java,v $
+ * Revision 1.8  2010/08/11 16:06:05  willuhn
+ * @N BUGZILLA 783 - Saldo-Chart ueber alle Konten
+ *
  * Revision 1.7  2009/08/27 13:37:28  willuhn
  * @N Der grafische Saldo-Verlauf zeigt nun zusaetzlich  eine Trendkurve an
  *

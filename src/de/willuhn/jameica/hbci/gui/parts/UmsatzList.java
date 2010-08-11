@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.65 $
- * $Date: 2010/05/30 23:29:31 $
+ * $Revision: 1.66 $
+ * $Date: 2010/08/11 16:06:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -313,7 +313,7 @@ public class UmsatzList extends TablePart implements Extendable
           kl.process();
         }
       });
-      group.addLabelPair(i18n.tr("Nur Umsätze des Zeitraumes"), this.days);
+      group.addInput(this.days);
 
       // Eingabe-Feld fuer die Suche mit Button hinten dran.
       this.search = new SearchInput();
@@ -816,6 +816,9 @@ public class UmsatzList extends TablePart implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.66  2010/08/11 16:06:05  willuhn
+ * @N BUGZILLA 783 - Saldo-Chart ueber alle Konten
+ *
  * Revision 1.65  2010/05/30 23:29:31  willuhn
  * @N Alle Verwendungszweckzeilen in Umsatzlist und -tree anzeigen (BUGZILLA 782)
  *

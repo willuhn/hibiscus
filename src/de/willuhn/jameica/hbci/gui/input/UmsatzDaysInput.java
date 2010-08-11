@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/UmsatzDaysInput.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/08/28 22:03:27 $
+ * $Revision: 1.6 $
+ * $Date: 2010/08/11 16:06:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,6 +43,7 @@ public class UmsatzDaysInput extends SelectInput
   {
     // BUGZILLA 258
     super(init(),new DayObject(getDefaultDays()));
+    this.setName(i18n.tr("Zeitraum"));
   }
 
   /**
@@ -163,6 +164,9 @@ public class UmsatzDaysInput extends SelectInput
 
 /*********************************************************************
  * $Log: UmsatzDaysInput.java,v $
+ * Revision 1.6  2010/08/11 16:06:04  willuhn
+ * @N BUGZILLA 783 - Saldo-Chart ueber alle Konten
+ *
  * Revision 1.5  2006/08/28 22:03:27  willuhn
  * @B UmsatzChart - Anzahl der Default-Tage
  *

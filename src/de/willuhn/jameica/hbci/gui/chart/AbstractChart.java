@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/AbstractChart.java,v $
- * $Revision: 1.5 $
- * $Date: 2008/03/20 10:20:09 $
+ * $Revision: 1.6 $
+ * $Date: 2010/08/11 16:06:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -143,9 +143,9 @@ public abstract class AbstractChart implements Chart, PaintListener
    */
   public void redraw() throws RemoteException
   {
-    if (this.parent == null)
+    if (this.parent == null || this.parent.isDisposed())
     {
-      Logger.warn("unable to redraw chart - no parent composite defined");
+      Logger.warn("unable to redraw chart - no parent composite defined or parent disposed");
       return;
     }
 
@@ -217,6 +217,9 @@ public abstract class AbstractChart implements Chart, PaintListener
 
 /*********************************************************************
  * $Log: AbstractChart.java,v $
+ * Revision 1.6  2010/08/11 16:06:05  willuhn
+ * @N BUGZILLA 783 - Saldo-Chart ueber alle Konten
+ *
  * Revision 1.5  2008/03/20 10:20:09  willuhn
  * @C Fehler fangen, wenn GDI+ nicht installiert ist (nur Windows 2000)
  *

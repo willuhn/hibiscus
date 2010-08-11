@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/ChartDataSaldoTrend.java,v $
- * $Revision: 1.1 $
- * $Date: 2009/08/27 13:37:28 $
+ * $Revision: 1.2 $
+ * $Date: 2010/08/11 16:06:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,11 +21,8 @@ import java.util.List;
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.pseudo.PseudoIterator;
-import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
-import de.willuhn.jameica.system.Application;
-import de.willuhn.util.I18N;
 
 /**
  * Implementierung eines Datensatzes fuer die Darstellung des Saldo-Durchschnitts.
@@ -35,23 +32,12 @@ public class ChartDataSaldoTrend extends ChartDataSaldoVerlauf
   /**
    * ct.
    * @param k
-   */
-  public ChartDataSaldoTrend(Konto k)
-  {
-    super(k);
-  }
-
-  /**
-   * ct.
-   * @param k
    * @param days
    */
   public ChartDataSaldoTrend(Konto k, int days)
   {
     super(k, days);
   }
-
-  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
    * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getData()
@@ -93,10 +79,11 @@ public class ChartDataSaldoTrend extends ChartDataSaldoVerlauf
    * @param list Liste der Umsaetze.
    * @param pos Position.
    * @return der Durchschnitt.
+   * @throws RemoteException
    */
-  private Item createAverage(List<Umsatz> list, int pos)
+  private Item createAverage(List<Umsatz> list, int pos) throws RemoteException
   {
-    Item item = new Item();
+    Item item = new Item(list.get(pos).getID());
 
     int found = 0;
     Date first = null;
@@ -140,6 +127,16 @@ public class ChartDataSaldoTrend extends ChartDataSaldoVerlauf
   {
     private double saldo;
     private Date datum = null;
+    private String id = null;
+    
+    /**
+     * ct.
+     * @param id ID des Umsatzes, von dem aus der Durchschnitt berechnet wurde.
+     */
+    private Item(String id)
+    {
+      this.id = id;
+    }
     
     /**
      * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
@@ -176,7 +173,7 @@ public class ChartDataSaldoTrend extends ChartDataSaldoVerlauf
      */
     public String getID() throws RemoteException
     {
-      return this.datum.toString() + this.saldo;
+      return this.id;
     }
 
     /**
@@ -192,7 +189,10 @@ public class ChartDataSaldoTrend extends ChartDataSaldoVerlauf
 
 /*********************************************************************
  * $Log: ChartDataSaldoTrend.java,v $
+ * Revision 1.2  2010/08/11 16:06:04  willuhn
+ * @N BUGZILLA 783 - Saldo-Chart ueber alle Konten
+ *
  * Revision 1.1  2009/08/27 13:37:28  willuhn
- * @N Der grafische Saldo-Verlauf zeigt nun zusaetzlich  eine Trendkurve an
+ * @N Der grafische Saldo-Verlauf zeigt nun zusaetzlich eine Trendkurve an
  *
  **********************************************************************/

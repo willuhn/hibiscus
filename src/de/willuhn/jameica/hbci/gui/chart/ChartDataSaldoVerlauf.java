@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/ChartDataSaldoVerlauf.java,v $
- * $Revision: 1.12 $
- * $Date: 2008/02/26 01:12:30 $
+ * $Revision: 1.13 $
+ * $Date: 2010/08/11 16:06:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,29 +21,24 @@ import java.util.Date;
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.formatter.Formatter;
+import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.util.I18N;
 
 /**
  * Implementierung eines Datensatzes fuer die Darstellung des Saldenverlaufs.
  */
 public class ChartDataSaldoVerlauf implements LineChartData
 {
+  final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   private Konto konto         = null;
   private Formatter formatter = null;
   private int days            = -1;
   
-  /**
-   * ct.
-   * @param k das Konto, fuer das das Diagramm gemalt werden soll.
-   */
-  public ChartDataSaldoVerlauf(Konto k)
-  {
-    this.konto = k;
-  }
-
   /**
    * ct.
    * @param k das Konto, fuer das das Diagramm gemalt werden soll.
@@ -61,7 +56,8 @@ public class ChartDataSaldoVerlauf implements LineChartData
   public GenericIterator getData() throws RemoteException
   {
     DBIterator list = UmsatzUtil.getUmsaetze();
-    list.addFilter("konto_id = " + this.konto.getID());
+    if (this.konto != null)
+      list.addFilter("konto_id = " + this.konto.getID());
 
     if (this.days > 0)
     {
@@ -77,7 +73,9 @@ public class ChartDataSaldoVerlauf implements LineChartData
    */
   public String getLabel() throws RemoteException
   {
-    return this.konto.getBezeichnung();
+    if (this.konto != null)
+      return this.konto.getBezeichnung();
+    return i18n.tr("Alle Konten");
   }
 
   /**
@@ -141,43 +139,9 @@ public class ChartDataSaldoVerlauf implements LineChartData
 
 /*********************************************************************
  * $Log: ChartDataSaldoVerlauf.java,v $
+ * Revision 1.13  2010/08/11 16:06:04  willuhn
+ * @N BUGZILLA 783 - Saldo-Chart ueber alle Konten
+ *
  * Revision 1.12  2008/02/26 01:12:30  willuhn
  * @R nicht mehr benoetigte Funktion entfernt
- *
- * Revision 1.11  2008/02/26 01:01:16  willuhn
- * @N Update auf Birt 2 (bessere Zeichen-Qualitaet, u.a. durch Anti-Aliasing)
- * @N Neuer Chart "Umsatz-Kategorien im Verlauf"
- * @N Charts erst beim ersten Paint-Event zeichnen. Dadurch laesst sich z.Bsp. die Konto-View schneller oeffnen, da der Saldo-Verlauf nicht berechnet werden muss
- *
- * Revision 1.10  2007/08/07 23:54:16  willuhn
- * @B Bug 394 - Erster Versuch. An einigen Stellen (z.Bsp. konto.getAnfangsSaldo) war ich mir noch nicht sicher. Heiner?
- *
- * Revision 1.9  2007/04/19 18:12:21  willuhn
- * @N MySQL-Support (GUI zum Konfigurieren fehlt noch)
- *
- * Revision 1.8  2006/12/29 14:28:47  willuhn
- * @B Bug 345
- * @B jede Menge Bugfixes bei SQL-Statements mit Valuta
- *
- * Revision 1.7  2006/08/25 10:13:43  willuhn
- * @B Fremdschluessel NICHT mittels PreparedStatement, da die sonst gequotet und von McKoi nicht gefunden werden. BUGZILLA 278
- *
- * Revision 1.6  2006/08/23 09:45:14  willuhn
- * @N Restliche DBIteratoren auf PreparedStatements umgestellt
- *
- * Revision 1.5  2006/08/01 21:29:12  willuhn
- * @N Geaenderte LineCharts
- *
- * Revision 1.4  2006/07/17 15:50:49  willuhn
- * @N Sparquote
- *
- * Revision 1.3  2006/03/09 18:24:05  willuhn
- * @N Auswahl der Tage in Umsatz-Chart
- *
- * Revision 1.2  2005/12/12 18:53:00  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2005/12/12 15:46:55  willuhn
- * @N Hibiscus verwendet jetzt Birt zum Erzeugen der Charts
- *
  **********************************************************************/
