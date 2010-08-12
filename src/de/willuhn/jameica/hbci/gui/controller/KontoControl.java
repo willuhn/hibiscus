@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.92 $
- * $Date: 2010/08/11 16:06:04 $
+ * $Revision: 1.93 $
+ * $Date: 2010/08/12 17:12:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -170,6 +170,7 @@ public class KontoControl extends AbstractControl {
       return saldoChart;
 
     saldoChart = new SaldoChart(getKonto());
+    saldoChart.setTinyView(true);
     return saldoChart;
   }
 
@@ -706,7 +707,10 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
- * Revision 1.92  2010/08/11 16:06:04  willuhn
+ * Revision 1.93  2010/08/12 17:12:31  willuhn
+ * @N Saldo-Chart komplett ueberarbeitet (Daten wurden vorher mehrmals geladen, Summen-Funktion, Anzeige mehrerer Konten, Durchschnitt ueber mehrere Konten, Bugfixing, echte "Homogenisierung" der Salden via SaldoFinder)
+ *
+ * Revision 1.92  2010-08-11 16:06:04  willuhn
  * @N BUGZILLA 783 - Saldo-Chart ueber alle Konten
  *
  * Revision 1.91  2010-07-25 23:11:59  willuhn

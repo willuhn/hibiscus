@@ -62,6 +62,7 @@
         <item id="hibiscus.navi.reporting.kategorien"        name="Umsätze nach Kategorien" icon-close="x-office-spreadsheet.png"        action="de.willuhn.jameica.hbci.gui.action.UmsatzTypTree" />
         <item id="hibiscus.navi.reporting.einnahmenausgaben" name="Einnahmen/Ausgaben"      icon-close="stock_insert-rows.png"           action="de.willuhn.jameica.hbci.gui.action.EinnahmenAusgaben" />
         <item id="hibiscus.navi.reporting.sparquote"         name="Sparquote"               icon-close="utilities-system-monitor.png"    action="de.willuhn.jameica.hbci.gui.action.SparQuote" />
+        <item id="hibiscus.navi.reporting.saldochart"        name="Saldo im Verlauf"        icon-close="gnome-finance.png"               action="de.willuhn.jameica.hbci.gui.action.SaldoChart" />
       </item>
     </item>
   </navigation>

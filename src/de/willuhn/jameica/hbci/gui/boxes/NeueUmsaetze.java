@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/NeueUmsaetze.java,v $
- * $Revision: 1.6 $
- * $Date: 2009/08/27 11:48:09 $
+ * $Revision: 1.7 $
+ * $Date: 2010/08/12 17:12:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -32,18 +32,8 @@ import de.willuhn.util.I18N;
  */
 public class NeueUmsaetze extends AbstractBox
 {
-
-  private I18N i18n = null;
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  /**
-   * ct.
-   */
-  public NeueUmsaetze()
-  {
-    super();
-    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  }
-
   /**
    * @see de.willuhn.jameica.gui.boxes.Box#getDefaultEnabled()
    */
@@ -93,13 +83,16 @@ public class NeueUmsaetze extends AbstractBox
    */
   public int getHeight()
   {
-    return 220;
+    return 180;
   }
 }
 
 
 /*********************************************************************
  * $Log: NeueUmsaetze.java,v $
+ * Revision 1.7  2010/08/12 17:12:32  willuhn
+ * @N Saldo-Chart komplett ueberarbeitet (Daten wurden vorher mehrmals geladen, Summen-Funktion, Anzeige mehrerer Konten, Durchschnitt ueber mehrere Konten, Bugfixing, echte "Homogenisierung" der Salden via SaldoFinder)
+ *
  * Revision 1.6  2009/08/27 11:48:09  willuhn
  * @N Eigenes Konto in Box "Neue Umsaetze" mit anzeigen
  *

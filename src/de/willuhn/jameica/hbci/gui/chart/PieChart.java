@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/Attic/PieChart.java,v $
- * $Revision: 1.7 $
- * $Date: 2008/02/26 01:01:16 $
+ * $Revision: 1.8 $
+ * $Date: 2010/08/12 17:12:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@
 package de.willuhn.jameica.hbci.gui.chart;
 
 import java.rmi.RemoteException;
+import java.util.List;
 import java.util.Vector;
 
 import org.eclipse.birt.chart.model.Chart;
@@ -33,22 +34,16 @@ import org.eclipse.birt.chart.model.layout.Legend;
 import org.eclipse.birt.chart.model.type.PieSeries;
 import org.eclipse.birt.chart.model.type.impl.PieSeriesImpl;
 
-import de.willuhn.datasource.GenericIterator;
-import de.willuhn.datasource.GenericObject;
+import de.willuhn.datasource.BeanUtil;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.util.Font;
-import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
-import de.willuhn.util.I18N;
 
 /**
  * Implementierung eines Torten-Diagramms.
  */
 public class PieChart extends AbstractChart
 {
-
-  private I18N i18n = null;
   
   /**
    * ct.
@@ -57,7 +52,6 @@ public class PieChart extends AbstractChart
   public PieChart() throws Exception
   {
     super();
-    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
   /**
@@ -85,12 +79,12 @@ public class PieChart extends AbstractChart
       final Vector dataLine  = new Vector();
       
       ChartData cd          = (ChartData) data.get(i);
-      GenericIterator gi    = cd.getData();
+      List list             = cd.getData();
       Formatter format      = cd.getLabelFormatter();
       String dataAttribute  = cd.getDataAttribute();
       String labelAttribute = cd.getLabelAttribute();
 
-      if (gi == null || gi.size() == 0 || dataAttribute == null || labelAttribute == null)
+      if (list == null || list.size() == 0 || dataAttribute == null || labelAttribute == null)
       {
         Logger.info("skipping data line, contains no data");
         dataLine.add(new Double(0));
@@ -98,11 +92,10 @@ public class PieChart extends AbstractChart
       }
       else
       {
-        while (gi.hasNext())
+        for (Object o:list)
         {
-          GenericObject o = gi.next();
-          Object ovalue = o.getAttribute(dataAttribute);
-          Object olabel = o.getAttribute(labelAttribute);
+          Object ovalue = BeanUtil.get(o,dataAttribute);
+          Object olabel = BeanUtil.get(o,labelAttribute);
           
           if (olabel == null || ovalue == null || !(ovalue instanceof Number))
             continue;
@@ -152,6 +145,9 @@ public class PieChart extends AbstractChart
 
 /*********************************************************************
  * $Log: PieChart.java,v $
+ * Revision 1.8  2010/08/12 17:12:32  willuhn
+ * @N Saldo-Chart komplett ueberarbeitet (Daten wurden vorher mehrmals geladen, Summen-Funktion, Anzeige mehrerer Konten, Durchschnitt ueber mehrere Konten, Bugfixing, echte "Homogenisierung" der Salden via SaldoFinder)
+ *
  * Revision 1.7  2008/02/26 01:01:16  willuhn
  * @N Update auf Birt 2 (bessere Zeichen-Qualitaet, u.a. durch Anti-Aliasing)
  * @N Neuer Chart "Umsatz-Kategorien im Verlauf"

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/KontoInput.java,v $
- * $Revision: 1.6 $
- * $Date: 2009/10/20 23:12:58 $
+ * $Revision: 1.7 $
+ * $Date: 2010/08/12 17:12:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.manager.HBCIUtils;
@@ -40,7 +41,8 @@ import de.willuhn.util.I18N;
  */
 public class KontoInput extends SelectInput
 {
-  private I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  private KontoListener listener = null;
 
   /**
    * ct.
@@ -61,14 +63,21 @@ public class KontoInput extends SelectInput
       if (konto != null)
         setPreselected(konto);
     }
-    KontoListener kl = new KontoListener();
-    this.addListener(kl);
-    
-    // einmal ausloesen
-    if (konto != null)
-      kl.handleEvent(null);
+    this.listener = new KontoListener();
+    this.addListener(this.listener);
   }
   
+  /**
+   * @see de.willuhn.jameica.gui.input.SelectInput#getControl()
+   */
+  public Control getControl()
+  {
+    // einmal ausloesen
+    this.listener.handleEvent(null);
+
+    return super.getControl();
+  }
+
   /**
    * Initialisiert die Liste der Konten.
    * @param filter Konto-Filter.
@@ -197,7 +206,10 @@ public class KontoInput extends SelectInput
 
 /**********************************************************************
  * $Log: KontoInput.java,v $
- * Revision 1.6  2009/10/20 23:12:58  willuhn
+ * Revision 1.7  2010/08/12 17:12:32  willuhn
+ * @N Saldo-Chart komplett ueberarbeitet (Daten wurden vorher mehrmals geladen, Summen-Funktion, Anzeige mehrerer Konten, Durchschnitt ueber mehrere Konten, Bugfixing, echte "Homogenisierung" der Salden via SaldoFinder)
+ *
+ * Revision 1.6  2009-10-20 23:12:58  willuhn
  * @N Support fuer SEPA-Ueberweisungen
  * @N Konten um IBAN und BIC erweitert
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTypVerlauf.java,v $
- * $Revision: 1.6 $
- * $Date: 2010/03/22 10:00:48 $
+ * $Revision: 1.7 $
+ * $Date: 2010/08/12 17:12:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,7 +25,6 @@ import org.eclipse.swt.widgets.Composite;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
-import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.hbci.HBCI;
@@ -159,9 +158,9 @@ public class UmsatzTypVerlauf implements Part
    */
   private class ChartDataUmsatz implements LineChartData
   {
-    private UmsatzTreeNode group       = null;
-    private GenericIterator entries = null;
-    private boolean hasData         = false;
+    private UmsatzTreeNode group = null;
+    private List<Entry> entries  = new ArrayList<Entry>();
+    private boolean hasData      = false;
     
     /**
      * ct
@@ -171,10 +170,10 @@ public class UmsatzTypVerlauf implements Part
     private ChartDataUmsatz(UmsatzTreeNode group) throws RemoteException
     {
       this.group = group;
+      this.entries.clear();
       
       GenericIterator umsaetze = this.group.getChildren();
       Calendar cal             = Calendar.getInstance();
-      ArrayList list           = new ArrayList();
 
       // 1. des aktuellen Monats
       Date currentStart = HBCIProperties.startOfDay(start);
@@ -212,7 +211,7 @@ public class UmsatzTypVerlauf implements Part
             this.hasData = true;
           }
         }
-        list.add(current);
+        this.entries.add(current);
 
         // einen Monat weiterruecken
         currentStart = currentStop;
@@ -221,14 +220,12 @@ public class UmsatzTypVerlauf implements Part
         cal.set(Calendar.DAY_OF_MONTH,1);
         currentStop = HBCIProperties.startOfDay(cal.getTime());
       }
-      this.entries  = PseudoIterator.fromArray((Entry[])list.toArray(new Entry[list.size()]));
-    
     }
 
     /**
      * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getData()
      */
-    public GenericIterator getData() throws RemoteException
+    public List getData() throws RemoteException
     {
       return this.entries;
     }
@@ -352,6 +349,9 @@ public class UmsatzTypVerlauf implements Part
 
 /*********************************************************************
  * $Log: UmsatzTypVerlauf.java,v $
+ * Revision 1.7  2010/08/12 17:12:32  willuhn
+ * @N Saldo-Chart komplett ueberarbeitet (Daten wurden vorher mehrmals geladen, Summen-Funktion, Anzeige mehrerer Konten, Durchschnitt ueber mehrere Konten, Bugfixing, echte "Homogenisierung" der Salden via SaldoFinder)
+ *
  * Revision 1.6  2010/03/22 10:00:48  willuhn
  * *** empty log message ***
  *

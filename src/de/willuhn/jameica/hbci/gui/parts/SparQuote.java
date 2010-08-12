@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SparQuote.java,v $
- * $Revision: 1.24 $
- * $Date: 2010/08/11 14:53:19 $
+ * $Revision: 1.25 $
+ * $Date: 2010/08/12 17:12:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -28,9 +29,6 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TableItem;
 
-import de.willuhn.datasource.GenericIterator;
-import de.willuhn.datasource.GenericObject;
-import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.Part;
@@ -75,8 +73,8 @@ public class SparQuote implements Part
   private SelectInput kontoauswahl = null;
   private IntegerInput tagAuswahl  = null;
   
-  private GenericIterator data     = null;
-  private GenericIterator trend    = null;
+  private List<UmsatzEntry> data   = new ArrayList<UmsatzEntry>();
+  private List<UmsatzEntry> trend  = new ArrayList<UmsatzEntry>();
   private int stichtag             = 1;
   
   private I18N i18n                = null;
@@ -173,7 +171,7 @@ public class SparQuote implements Part
     },null,true,"view-refresh.png");
     
     // Wir initialisieren die Tabelle erstmal ohne Werte.
-    this.table = new TablePart(data == null ? PseudoIterator.fromArray(new UmsatzEntry[]{new UmsatzEntry()}) : data,null);
+    this.table = new TablePart(data,null);
     this.table.addColumn(i18n.tr("Monat"),     "monat", new Formatter() {
       public String format(Object o)
       {
@@ -235,12 +233,10 @@ public class SparQuote implements Part
     
     this.table.removeAll();
 
-    this.data.begin();
-    while (this.data.hasNext())
+    for (UmsatzEntry e:this.data)
     {
-      this.table.addItem(this.data.next());
+      this.table.addItem(e);
     }
-    this.data.begin();
   }
 
   /**
@@ -249,15 +245,13 @@ public class SparQuote implements Part
    */
   private void load() throws RemoteException
   {
-    DBIterator umsaetze = null;
-    
-    umsaetze = UmsatzUtil.getUmsaetze();
-    
+    this.data.clear();
+
+    DBIterator umsaetze = UmsatzUtil.getUmsaetze();
     Konto konto = (Konto) getKontoAuswahl().getValue();
     if (konto != null)
       umsaetze.addFilter("konto_id = " + konto.getID());
 
-    ArrayList list           = new ArrayList();
     UmsatzEntry currentEntry = null;
     Calendar cal             = Calendar.getInstance();
     Date currentLimit        = null;
@@ -277,7 +271,7 @@ public class SparQuote implements Part
         // Wir haben das Limit erreicht. Also beginnen wir einen neuen Block
         currentEntry = new UmsatzEntry();
         currentEntry.monat = date;
-        list.add(currentEntry);
+        this.data.add(currentEntry);
 
         // BUGZILLA 337
         // Neues Limit definieren
@@ -299,16 +293,14 @@ public class SparQuote implements Part
       else
         currentEntry.ausgaben -= betrag;
     }
-    this.data  = PseudoIterator.fromArray((UmsatzEntry[])list.toArray(new UmsatzEntry[list.size()]));
     
     // Trend ermitteln
     // http://de.wikibooks.org/wiki/Mathematik:_Statistik:_Glättungsverfahren
     // http://de.wikibooks.org/wiki/Mathematik:_Statistik:_Trend_und_Saisonkomponente
     
-    ArrayList trendList = new ArrayList();
-    for (int i=0;i<list.size();++i)
-      trendList.add(getDurchschnitt(list,i));
-    this.trend = PseudoIterator.fromArray((UmsatzEntry[])trendList.toArray(new UmsatzEntry[trendList.size()]));
+    this.trend.clear();
+    for (int i=0;i<this.data.size();++i)
+      this.trend.add(getDurchschnitt(this.data,i));
   }
   
   /**
@@ -318,7 +310,7 @@ public class SparQuote implements Part
    * @param pos Position.
    * @return der Durchschnitt.
    */
-  private UmsatzEntry getDurchschnitt(ArrayList list, int pos)
+  private UmsatzEntry getDurchschnitt(List<UmsatzEntry> list, int pos)
   {
     UmsatzEntry ue = new UmsatzEntry();
     int found = 0;
@@ -347,62 +339,46 @@ public class SparQuote implements Part
   /**
    * Hilfsobjekt fuer die einzelnen Monate.
    */
-  private class UmsatzEntry implements GenericObject
+  public static class UmsatzEntry
   {
     private double einnahmen = 0d;
     private double ausgaben  = 0d;
     private Date monat       = null;
 
     /**
-     * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
+     * Liefert die Einnahmen.
+     * @return die Einnahmen.
      */
-    public Object getAttribute(String arg0) throws RemoteException
+    public double getEinnahmen()
     {
-      if ("einnahmen".equals(arg0))
-        return new Double(einnahmen);
-      if ("ausgaben".equals(arg0))
-        return new Double(ausgaben);
-      if ("monat".equals(arg0))
-        return monat;
-      if ("sparquote".equals(arg0))
-        return new Double(einnahmen - ausgaben);
-      return null;
+      return this.einnahmen;
     }
-
+    
     /**
-     * @see de.willuhn.datasource.GenericObject#getAttributeNames()
+     * Liefert die Ausgaben.
+     * @return die Ausgaben.
      */
-    public String[] getAttributeNames() throws RemoteException
+    public double getAusgaben()
     {
-      return new String[]{"einnahmen","ausgaben","monat","sparquote"};
+      return this.ausgaben;
     }
-
+    
     /**
-     * @see de.willuhn.datasource.GenericObject#getID()
+     * Liefert den Monat.
+     * @return der Monat.
      */
-    public String getID() throws RemoteException
+    public Date getMonat()
     {
-      if (monat == null)
-        return "foo";
-      return monat.toString();
+      return this.monat;
     }
-
+    
     /**
-     * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
+     * Liefert die Sparquote.
+     * @return die Sparquote.
      */
-    public String getPrimaryAttribute() throws RemoteException
+    public double getSparquote()
     {
-      return "sparquote";
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
-     */
-    public boolean equals(GenericObject arg0) throws RemoteException
-    {
-      if (arg0 == null || arg0.getID() == null)
-        return false;
-      return arg0.getID().equals(this.getID());
+      return einnahmen - ausgaben;
     }
   }
   
@@ -418,9 +394,9 @@ public class SparQuote implements Part
     /**
      * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getData()
      */
-    public GenericIterator getData() throws RemoteException
+    public List getData() throws RemoteException
     {
-      return data == null ? PseudoIterator.fromArray(new UmsatzEntry[0]) : data;
+      return data;
     }
 
     /**
@@ -497,9 +473,9 @@ public class SparQuote implements Part
     /**
      * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getData()
      */
-    public GenericIterator getData() throws RemoteException
+    public List getData() throws RemoteException
     {
-      return trend == null ? PseudoIterator.fromArray(new UmsatzEntry[0]) : trend;
+      return trend;
     }
 
     /**
@@ -516,7 +492,10 @@ public class SparQuote implements Part
 
 /*********************************************************************
  * $Log: SparQuote.java,v $
- * Revision 1.24  2010/08/11 14:53:19  willuhn
+ * Revision 1.25  2010/08/12 17:12:32  willuhn
+ * @N Saldo-Chart komplett ueberarbeitet (Daten wurden vorher mehrmals geladen, Summen-Funktion, Anzeige mehrerer Konten, Durchschnitt ueber mehrere Konten, Bugfixing, echte "Homogenisierung" der Salden via SaldoFinder)
+ *
+ * Revision 1.24  2010-08-11 14:53:19  willuhn
  * @B Kleiner Darstellungsfehler (unnoetig breiter rechter Rand wegen zweispaltigem Part)
  *
  * Revision 1.23  2009-10-30 10:05:05  willuhn

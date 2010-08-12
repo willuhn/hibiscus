@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Sync.java,v $
- * $Revision: 1.16 $
- * $Date: 2009/01/20 10:51:46 $
+ * $Revision: 1.17 $
+ * $Date: 2010/08/12 17:12:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,17 +43,9 @@ import de.willuhn.util.I18N;
  */
 public class Sync extends AbstractBox implements Box
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  private I18N i18n = null;
   private SynchronizeList list = null;
-
-  /**
-   * ct.
-   */
-  public Sync()
-  {
-    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  }
 
   /**
    * @see de.willuhn.jameica.gui.boxes.Box#getName()
@@ -181,6 +173,9 @@ public class Sync extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: Sync.java,v $
+ * Revision 1.17  2010/08/12 17:12:32  willuhn
+ * @N Saldo-Chart komplett ueberarbeitet (Daten wurden vorher mehrmals geladen, Summen-Funktion, Anzeige mehrerer Konten, Durchschnitt ueber mehrere Konten, Bugfixing, echte "Homogenisierung" der Salden via SaldoFinder)
+ *
  * Revision 1.16  2009/01/20 10:51:46  willuhn
  * @N Mehr Icons - fuer Buttons
  *

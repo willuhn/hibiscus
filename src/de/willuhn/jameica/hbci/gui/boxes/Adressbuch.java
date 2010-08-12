@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Adressbuch.java,v $
- * $Revision: 1.7 $
- * $Date: 2008/01/04 16:39:31 $
+ * $Revision: 1.8 $
+ * $Date: 2010/08/12 17:12:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,18 +31,8 @@ import de.willuhn.util.I18N;
  */
 public class Adressbuch extends AbstractBox implements Box
 {
-
-  private I18N i18n = null;
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  /**
-   * ct.
-   */
-  public Adressbuch()
-  {
-    super();
-    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  }
-
   /**
    * @see de.willuhn.jameica.gui.boxes.Box#getName()
    */
@@ -97,6 +87,9 @@ public class Adressbuch extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: Adressbuch.java,v $
+ * Revision 1.8  2010/08/12 17:12:32  willuhn
+ * @N Saldo-Chart komplett ueberarbeitet (Daten wurden vorher mehrmals geladen, Summen-Funktion, Anzeige mehrerer Konten, Durchschnitt ueber mehrere Konten, Bugfixing, echte "Homogenisierung" der Salden via SaldoFinder)
+ *
  * Revision 1.7  2008/01/04 16:39:31  willuhn
  * @N Weitere Hoehen-Angaben von Komponenten
  *

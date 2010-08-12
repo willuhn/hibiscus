@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/SaldoChart.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/08/11 16:06:05 $
+ * $Revision: 1.2 $
+ * $Date: 2010/08/12 17:12:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -32,14 +32,6 @@ public class SaldoChart extends AbstractBox implements Box
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();;
   
   /**
-   * ct.
-   */
-  public SaldoChart()
-  {
-    super();
-  }
-
-  /**
    * @see de.willuhn.jameica.gui.boxes.Box#getName()
    */
   public String getName()
@@ -68,7 +60,7 @@ public class SaldoChart extends AbstractBox implements Box
    */
   public int getHeight()
   {
-    return 300;
+    return 230;
   }
 
   /**
@@ -77,6 +69,7 @@ public class SaldoChart extends AbstractBox implements Box
   public void paint(Composite parent) throws RemoteException
   {
     de.willuhn.jameica.hbci.gui.parts.SaldoChart chart = new de.willuhn.jameica.hbci.gui.parts.SaldoChart();
+    chart.setTinyView(true);
     chart.paint(parent);
   }
 
@@ -92,7 +85,10 @@ public class SaldoChart extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: SaldoChart.java,v $
- * Revision 1.1  2010/08/11 16:06:05  willuhn
+ * Revision 1.2  2010/08/12 17:12:32  willuhn
+ * @N Saldo-Chart komplett ueberarbeitet (Daten wurden vorher mehrmals geladen, Summen-Funktion, Anzeige mehrerer Konten, Durchschnitt ueber mehrere Konten, Bugfixing, echte "Homogenisierung" der Salden via SaldoFinder)
+ *
+ * Revision 1.1  2010-08-11 16:06:05  willuhn
  * @N BUGZILLA 783 - Saldo-Chart ueber alle Konten
  *
  **********************************************************************/
