@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTypChart.java,v $
- * $Revision: 1.8 $
- * $Date: 2010/08/11 16:06:05 $
+ * $Revision: 1.9 $
+ * $Date: 2010/08/12 15:32:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,7 +25,8 @@ import org.eclipse.swt.widgets.Listener;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.util.Color;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.chart.ChartData;
 import de.willuhn.jameica.hbci.gui.chart.ChartDataUmsatzTyp;
@@ -62,7 +63,7 @@ public class UmsatzTypChart implements Part
     try
     {
       // TODO: Hier werden die benutzerdefinierten Farben von Kategorien noch nicht genutzt
-      final LabelGroup group = new LabelGroup(parent,i18n.tr("Umsatz-Verteilung"),true);
+      final Container group = new SimpleContainer(parent,true);
       final ChartData eData = new ChartDataUmsatzTyp(UmsatzTyp.TYP_EINNAHME,start);
       final ChartData aData = new ChartDataUmsatzTyp(UmsatzTyp.TYP_AUSGABE,start);
       
@@ -161,7 +162,10 @@ public class UmsatzTypChart implements Part
 
 /*********************************************************************
  * $Log: UmsatzTypChart.java,v $
- * Revision 1.8  2010/08/11 16:06:05  willuhn
+ * Revision 1.9  2010/08/12 15:32:02  willuhn
+ * @R Rahmen entfernt - spart Platz
+ *
+ * Revision 1.8  2010-08-11 16:06:05  willuhn
  * @N BUGZILLA 783 - Saldo-Chart ueber alle Konten
  *
  * Revision 1.7  2009/08/27 13:37:28  willuhn
