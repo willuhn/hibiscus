@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/AbstractUmsatzDetail.java,v $
- * $Revision: 1.2 $
- * $Date: 2009/01/20 10:00:06 $
+ * $Revision: 1.3 $
+ * $Date: 2010/08/13 13:10:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,15 +26,15 @@ import de.willuhn.util.I18N;
 /**
  * Bildet die Detailansicht einer Buchung ab.
  */
-public abstract class AbstractUmsatzDetail extends AbstractView {
+public abstract class AbstractUmsatzDetail extends AbstractView
+{
+  final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
    * Liefert den Controller.
    * @return der Controller.
    */
   protected abstract UmsatzDetailControl getControl();
-
-  I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
@@ -95,6 +95,9 @@ public abstract class AbstractUmsatzDetail extends AbstractView {
 
 /**********************************************************************
  * $Log: AbstractUmsatzDetail.java,v $
+ * Revision 1.3  2010/08/13 13:10:09  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2009/01/20 10:00:06  willuhn
  * @C Layout der Umsatzdetails nochmal leicht ueberarbeitet
  *
