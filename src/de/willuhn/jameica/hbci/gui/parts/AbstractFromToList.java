@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractFromToList.java,v $
- * $Revision: 1.8 $
- * $Date: 2007/06/04 23:23:47 $
+ * $Revision: 1.9 $
+ * $Date: 2010/08/16 11:13:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,18 +17,27 @@ import java.rmi.RemoteException;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.datasource.GenericIterator;
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.Input;
+import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.gui.util.ColumnLayout;
+import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -46,6 +55,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
   
   private Input from             = null;
   private Input to               = null;
+  private Input text             = null;
 
   protected Listener listener    = null;
   protected de.willuhn.jameica.system.Settings mySettings = null;
@@ -109,8 +119,23 @@ public abstract class AbstractFromToList extends TablePart implements Part
     }
     
     this.from = new DateInput(dFrom, HBCI.DATEFORMAT);
+    this.from.setName(i18n.tr("Anzeige von"));
     this.from.addListener(this.listener);
     return this.from;
+  }
+  
+  /**
+   * Liefert ein Eingabefeld fuer einen Suchbegriff.
+   * @return Eingabefeld fuer einen Suchbegriff.
+   */
+  public Input getText()
+  {
+    if (this.text != null)
+      return this.text;
+    
+    this.text = new TextInput(mySettings.getString("transferlist.filter.text",null),255);
+    this.text.setName(i18n.tr("Suchbegriff"));
+    return this.text;
   }
   
   /**
@@ -140,6 +165,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
 
     
     this.to = new DateInput(dTo, HBCI.DATEFORMAT);
+    this.to.setName(i18n.tr("Anzeige bis"));
     this.to.addListener(this.listener);
     return this.to;
   }
@@ -151,12 +177,31 @@ public abstract class AbstractFromToList extends TablePart implements Part
   public synchronized void paint(Composite parent) throws RemoteException
   {
     LabelGroup group = new LabelGroup(parent,i18n.tr("Anzeige einschränken"));
+    
+    GridLayout gl = (GridLayout) group.getComposite().getLayout();
+    gl.horizontalSpacing = 0;
+    gl.verticalSpacing = 0;
+    gl.marginHeight = 0;
+    gl.marginWidth = 0;
 
-    group.addLabelPair(i18n.tr("Anzeige von"),getFrom());
-    group.addLabelPair(i18n.tr("Anzeige bis"),getTo());
+    ColumnLayout cols = new ColumnLayout(group.getComposite(),3);
+    Container left = new SimpleContainer(cols.getComposite());
+    
+    Input t = this.getText();
+    left.addInput(t);
+    
+    // Duerfen wir erst nach dem Zeichnen
+    t.getControl().addKeyListener(new DelayedAdapter());
+    
+    Container middle = new SimpleContainer(cols.getComposite());
+    middle.addInput(this.getFrom());
+    Container right = new SimpleContainer(cols.getComposite());
+    right.addInput(this.getTo());
+    
+    
    
     // Erstbefuellung
-    GenericIterator items = getList((Date)getFrom().getValue(),(Date)getTo().getValue());
+    GenericIterator items = getList((Date)getFrom().getValue(),(Date)getTo().getValue(),(String)getText().getValue());
     if (items != null)
     {
       items.begin();
@@ -171,10 +216,11 @@ public abstract class AbstractFromToList extends TablePart implements Part
    * Liefert die Liste der fuer diesen Zeitraum geltenden Daten.
    * @param from Start-Datum. Kann null sein.
    * @param to End-Datum. Kann null sein.
+   * @param text Suchbegriff
    * @return Liste der Daten dieses Zeitraumes.
    * @throws RemoteException
    */
-  protected abstract GenericIterator getList(Date from, Date to) throws RemoteException;
+  protected abstract DBIterator getList(Date from, Date to, String text) throws RemoteException;
   
   /**
    * Aktualisiert die Tabelle der angezeigten Daten.
@@ -185,8 +231,9 @@ public abstract class AbstractFromToList extends TablePart implements Part
    */
   private synchronized void handleReload(boolean force)
   {
-    final Date dfrom = (Date) getFrom().getValue();
-    final Date dto   = (Date) getTo().getValue();
+    final Date dfrom  = (Date) getFrom().getValue();
+    final Date dto    = (Date) getTo().getValue();
+    final String text = (String) getText().getValue();
     
     if (!force)
     {
@@ -218,7 +265,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
           removeAll();
 
           // Liste neu laden
-          GenericIterator items = getList(dfrom,dto);
+          GenericIterator items = getList(dfrom,dto,text);
           if (items == null)
             return;
           
@@ -229,8 +276,8 @@ public abstract class AbstractFromToList extends TablePart implements Part
           // Sortierung wiederherstellen
           sort();
           
-          // Speichern der Werte aus den beiden Eingabe-Feldern.
-          // Das From-Datum speichern wir immer
+          // Speichern der Werte aus den Filter-Feldern.
+          mySettings.setAttribute("transferlist.filter.text",text);
           mySettings.setAttribute("transferlist.filter.from",dfrom == null ? (String)null : HBCI.DATEFORMAT.format(dfrom));
             
           // Das End-Datum speichern wir nur, wenn es nicht das aktuelle Datum ist
@@ -262,7 +309,8 @@ public abstract class AbstractFromToList extends TablePart implements Part
     try
     {
       return (from != null && from.hasChanged()) ||
-             (to != null && to.hasChanged());
+             (to != null && to.hasChanged()) ||
+             (text != null && text.hasChanged());
     }
     catch (Exception e)
     {
@@ -270,11 +318,44 @@ public abstract class AbstractFromToList extends TablePart implements Part
       return true;
     }
   }
+  
+  /**
+   * Da KeyAdapter/KeyListener nicht von swt.Listener abgeleitet
+   * sind, muessen wir leider dieses schraege Konstrukt verenden,
+   * um den DelayedListener verwenden zu koennen
+   */
+  private class DelayedAdapter extends KeyAdapter
+  {
+    private Listener forward = new DelayedListener(400,new Listener()
+    {
+      /**
+       * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+       */
+      public void handleEvent(Event event)
+      {
+        // hier kommt dann das verzoegerte Event an.
+        handleReload(true);
+      }
+    
+    });
+
+    /**
+     * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
+     */
+    public void keyReleased(KeyEvent e)
+    {
+      forward.handleEvent(null); // Das Event-Objekt interessiert uns eh nicht
+    }
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: AbstractFromToList.java,v $
+ * Revision 1.9  2010/08/16 11:13:52  willuhn
+ * @N In den Auftragslisten kann jetzt auch nach einem Text gesucht werden
+ *
  * Revision 1.8  2007/06/04 23:23:47  willuhn
  * @B error while saving transfer list date
  *

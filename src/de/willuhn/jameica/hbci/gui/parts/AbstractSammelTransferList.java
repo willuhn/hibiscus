@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractSammelTransferList.java,v $
- * $Revision: 1.11 $
- * $Date: 2010/03/24 14:06:45 $
+ * $Revision: 1.12 $
+ * $Date: 2010/08/16 11:13:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,7 +21,6 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TableItem;
 
-import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
@@ -122,15 +121,19 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
   }
   
   /**
-   * @see de.willuhn.jameica.hbci.gui.parts.AbstractFromToList#getList(java.util.Date, java.util.Date)
+   * @see de.willuhn.jameica.hbci.gui.parts.AbstractFromToList#getList(java.util.Date, java.util.Date, java.lang.String)
    */
-  protected GenericIterator getList(Date from, Date to) throws RemoteException
+  protected DBIterator getList(Date from, Date to, String text) throws RemoteException
   {
     HBCIDBService service = (HBCIDBService) Settings.getDBService();
     
     DBIterator list = service.createList(getObjectType());
     if (from != null) list.addFilter("termin >= ?", new Object[]{new java.sql.Date(HBCIProperties.startOfDay(from).getTime())});
     if (to   != null) list.addFilter("termin <= ?", new Object[]{new java.sql.Date(HBCIProperties.endOfDay(to).getTime())});
+    if (text != null && text.length() > 0)
+    {
+      list.addFilter("LOWER(bezeichnung) like ?", new Object[]{"%" + text.toLowerCase() + "%"});
+    }
     list.setOrder("ORDER BY " + service.getSQLTimestamp("termin") + " DESC, id DESC");
     return list;
   }
@@ -219,6 +222,9 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
 
 /**********************************************************************
  * $Log: AbstractSammelTransferList.java,v $
+ * Revision 1.12  2010/08/16 11:13:52  willuhn
+ * @N In den Auftragslisten kann jetzt auch nach einem Text gesucht werden
+ *
  * Revision 1.11  2010/03/24 14:06:45  willuhn
  * @B Uhrzeit in Termin-Spalte nicht anzeigen
  *

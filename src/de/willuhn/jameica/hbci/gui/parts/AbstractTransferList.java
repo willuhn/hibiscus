@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractTransferList.java,v $
- * $Revision: 1.24 $
- * $Date: 2009/06/15 09:29:57 $
+ * $Revision: 1.25 $
+ * $Date: 2010/08/16 11:13:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,7 +21,6 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TableItem;
 
-import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
@@ -118,11 +117,10 @@ public abstract class AbstractTransferList extends AbstractFromToList
     super.paint(parent);
   }
 
-
   /**
-   * @see de.willuhn.jameica.hbci.gui.parts.AbstractFromToList#getList(java.util.Date, java.util.Date)
+   * @see de.willuhn.jameica.hbci.gui.parts.AbstractFromToList#getList(java.util.Date, java.util.Date, java.lang.String)
    */
-  protected GenericIterator getList(Date from, Date to) throws RemoteException
+  protected DBIterator getList(Date from, Date to, String text) throws RemoteException
   {
     HBCIDBService service = (HBCIDBService) Settings.getDBService();
     
@@ -205,6 +203,9 @@ public abstract class AbstractTransferList extends AbstractFromToList
 
 /**********************************************************************
  * $Log: AbstractTransferList.java,v $
+ * Revision 1.25  2010/08/16 11:13:52  willuhn
+ * @N In den Auftragslisten kann jetzt auch nach einem Text gesucht werden
+ *
  * Revision 1.24  2009/06/15 09:29:57  willuhn
  * @N Auftraege zusaetzlich nach ID sortieren, damit die Eintraege nicht "springen", wenn sie den gleichen Termin haben
  *

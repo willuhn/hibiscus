@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/LastschriftList.java,v $
- * $Revision: 1.10 $
- * $Date: 2007/04/24 16:55:00 $
+ * $Revision: 1.11 $
+ * $Date: 2010/08/16 11:13:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,9 @@
 package de.willuhn.jameica.hbci.gui.parts;
 
 import java.rmi.RemoteException;
+import java.util.Date;
 
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
 
@@ -41,11 +43,28 @@ public class LastschriftList extends AbstractTransferList
   {
     return Lastschrift.class;
   }
+
+  /**
+   * @see de.willuhn.jameica.hbci.gui.parts.AbstractTransferList#getList(java.util.Date, java.util.Date, java.lang.String)
+   */
+  protected DBIterator getList(Date from, Date to, String text) throws RemoteException
+  {
+    DBIterator list = super.getList(from, to, text);
+    if (text != null && text.length() > 0)
+    {
+      String s = "%" + text.toLowerCase() + "%";
+      list.addFilter("(LOWER(empfaenger_konto) like ? or LOWER(empfaenger_name) like ? or LOWER(zweck) like ? or LOWER(zweck2) like ? or LOWER(zweck3) like ?)", new Object[]{s,s,s,s,s});
+    }
+    return list;
+  }
 }
 
 
 /**********************************************************************
  * $Log: LastschriftList.java,v $
+ * Revision 1.11  2010/08/16 11:13:52  willuhn
+ * @N In den Auftragslisten kann jetzt auch nach einem Text gesucht werden
+ *
  * Revision 1.10  2007/04/24 16:55:00  willuhn
  * @N Aktualisierte Daten nur bei geaendertem Datum laden
  *
