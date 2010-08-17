@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.56 $
- * $Date: 2009/10/20 23:12:58 $
+ * $Revision: 1.57 $
+ * $Date: 2010/08/17 11:32:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -114,6 +114,7 @@ public abstract class AbstractTransferControl extends AbstractControl
     Konto k = getKonto();
     KontoListener kl = new KontoListener();
 		this.kontoAuswahl = new KontoInput(k,KontoFilter.ACTIVE);
+		this.kontoAuswahl.setName(i18n.tr("Persönliches Konto"));
 		this.kontoAuswahl.setMandatory(true);
     this.kontoAuswahl.addListener(kl);
     
@@ -133,6 +134,7 @@ public abstract class AbstractTransferControl extends AbstractControl
     if (empfName != null)
       return empfName;
     empfName = new AddressInput(getTransfer().getGegenkontoName(), AddressFilter.INLAND);
+    empfName.setName(i18n.tr("Name"));
     empfName.setMandatory(true);
     empfName.addListener(new EmpfaengerListener());
     return empfName;
@@ -150,6 +152,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 			return empfkto;
 
 		empfkto = new TextInput(getTransfer().getGegenkontoNummer(),HBCIProperties.HBCI_KTO_MAXLENGTH_SOFT);
+		empfkto.setName(i18n.tr("Kontonummer"));
     empfkto.setValidChars(HBCIProperties.HBCI_KTO_VALIDCHARS + " ");
     empfkto.setMandatory(true);
     empfkto.addListener(new Listener()
@@ -190,6 +193,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 			return zweck;
 		// BUGZILLA #10 http://www.willuhn.de/bugzilla/show_bug.cgi?id=10
 		zweck = new TextInput(getTransfer().getZweck(),HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH);
+		zweck.setName(i18n.tr("Verwendungszweck"));
 		zweck.setValidChars(HBCIProperties.HBCI_DTAUS_VALIDCHARS);
     zweck.setMandatory(true);
 		return zweck;
@@ -225,6 +229,7 @@ public abstract class AbstractTransferControl extends AbstractControl
     
     });
 		zweck2 = new DialogInput(getTransfer().getZweck2(),this.zweckDialog);
+		zweck2.setName(i18n.tr("weiterer Verwendungszweck"));
     zweck2.setButtonText(i18n.tr(buttonText,String.valueOf(getTransfer().getWeitereVerwendungszwecke().length)));
     zweck2.setMaxLength(HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH);
     zweck2.setValidChars(HBCIProperties.HBCI_DTAUS_VALIDCHARS);
@@ -245,9 +250,8 @@ public abstract class AbstractTransferControl extends AbstractControl
     if (d == 0.0d) d = Double.NaN;
 		betrag = new DecimalInput(d,HBCI.DECIMALFORMAT);
 
-		// wir loesen den KontoListener aus, um die Waehrung sofort anzuzeigen
-		
-		betrag.setComment(getKonto() == null ? "" : getKonto().getWaehrung());
+		betrag.setName(i18n.tr("Betrag"));
+		betrag.setComment(HBCIProperties.CURRENCY_DEFAULT_DE);
     betrag.setMandatory(true);
     
     // Forciert das korrekte Formatieren des Betrages nach Focus-Wechsel
@@ -267,8 +271,6 @@ public abstract class AbstractTransferControl extends AbstractControl
       }
     
     });
-		new KontoListener().handleEvent(null);
-
 		return betrag;
 	}
 
@@ -378,8 +380,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 	}
 
 	/**
-	 * Listener, der die Auswahl des Kontos ueberwacht und die Waehrungsbezeichnung
-	 * hinter dem Betrag abhaengig vom ausgewaehlten Konto anpasst.
+	 * Listener, der die Auswahl des Kontos ueberwacht.
    */
   private class KontoListener implements Listener
 	{
@@ -391,13 +392,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 			try {
         Object o = getKontoAuswahl().getValue();
         if (o == null || !(o instanceof Konto))
-        {
-          getBetrag().setComment("");
           return;
-        }
-
-        Konto konto = (Konto) o;
-	      getBetrag().setComment(konto.getWaehrung());
 
         // Wird u.a. benoetigt, damit anhand des Auftrages ermittelt werden
         // kann, wieviele Zeilen Verwendungszweck jetzt moeglich sind
@@ -473,6 +468,9 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
+ * Revision 1.57  2010/08/17 11:32:10  willuhn
+ * @C Code-Cleanup
+ *
  * Revision 1.56  2009/10/20 23:12:58  willuhn
  * @N Support fuer SEPA-Ueberweisungen
  * @N Konten um IBAN und BIC erweitert
@@ -488,167 +486,4 @@ public abstract class AbstractTransferControl extends AbstractControl
  *
  * Revision 1.52  2009/01/04 16:18:22  willuhn
  * @N BUGZILLA 404 - Kontoauswahl via SelectBox
- *
- * Revision 1.51  2008/12/04 23:20:37  willuhn
- * @N BUGZILLA 310
- *
- * Revision 1.50  2008/12/02 10:52:23  willuhn
- * @B DecimalInput kann NULL liefern
- * @B Double.NaN beruecksichtigen
- *
- * Revision 1.49  2008/11/26 00:39:36  willuhn
- * @N Erste Version erweiterter Verwendungszwecke. Muss dringend noch getestet werden.
- *
- * Revision 1.48  2008/11/17 23:29:59  willuhn
- * @C Aufrufe der depeicated BLZ-Funktionen angepasst
- *
- * Revision 1.47  2008/10/27 09:23:38  willuhn
- * @B Beim Duplizieren wurde der Betrag nicht uebernommen
- *
- * Revision 1.46  2008/10/15 21:40:31  willuhn
- * @N BUGZILLA 448
- *
- * Revision 1.45  2008/09/29 23:48:54  willuhn
- * @N Ueberfaellig-Hinweis hinter Auswahlfeld fuer Termin verschoben - spart Platz
- *
- * Revision 1.44  2008/09/29 14:47:05  willuhn
- * @N BUGZILLA 635
- *
- * Revision 1.43  2008/09/17 23:44:29  willuhn
- * @B SQL-Query fuer MaxUsage-Abfrage korrigiert
- *
- * Revision 1.42  2008/09/16 23:43:32  willuhn
- * @N BPDs fuer Anzahl der moeglichen Zeilen Verwendungszweck auswerten - IN PROGRESS
- *
- * Revision 1.41  2008/06/02 08:06:29  willuhn
- * @C Button fuer weitere Verwendungszwecke vorerst gesperrt
- *
- * Revision 1.40  2008/05/30 12:02:08  willuhn
- * @N Erster Code fuer erweiterte Verwendungszwecke - NOCH NICHT FREIGESCHALTET!
- *
- * Revision 1.39  2008/05/19 22:35:53  willuhn
- * @N Maximale Laenge von Kontonummern konfigurierbar (Soft- und Hardlimit)
- * @N Laengenpruefungen der Kontonummer in Dialogen und Fachobjekten
- *
- * Revision 1.38  2008/02/22 00:52:36  willuhn
- * @N Erste Dialoge fuer erweiterte Verwendungszwecke (noch auskommentiert)
- *
- * Revision 1.37  2007/11/01 21:56:28  willuhn
- * @N Bugzilla 408
- *
- * Revision 1.36  2007/04/23 18:07:15  willuhn
- * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
- * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
- * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
- * @N Anbindung externer Adressbuecher
- *
- * Revision 1.35  2007/04/20 14:49:05  willuhn
- * @N Support fuer externe Adressbuecher
- * @N Action "EmpfaengerAdd" "aufgebohrt"
- *
- * Revision 1.34  2007/04/09 22:45:12  willuhn
- * @N Bug 380
- *
- * Revision 1.33  2006/12/28 15:38:43  willuhn
- * @N Farbige Pflichtfelder
- *
- * Revision 1.32  2006/10/06 16:00:42  willuhn
- * @B Bug 280
- *
- * Revision 1.31  2006/08/23 09:45:14  willuhn
- * @N Restliche DBIteratoren auf PreparedStatements umgestellt
- *
- * Revision 1.30  2006/06/26 13:25:20  willuhn
- * @N Franks eBay-Parser
- *
- * Revision 1.29  2006/02/06 16:03:50  willuhn
- * @B bug 163
- *
- * Revision 1.28  2005/08/16 21:33:13  willuhn
- * @N Kommentar-Feld in Adressen
- * @N Neuer Adress-Auswahl-Dialog
- * @B Checkbox "in Adressbuch speichern" in Ueberweisungen
- *
- * Revision 1.27  2005/06/23 23:03:20  web0
- * @N much better KontoAuswahlDialog
- *
- * Revision 1.26  2005/04/05 21:51:54  web0
- * @B Begrenzung aller BLZ-Eingaben auf 8 Zeichen
- *
- * Revision 1.25  2005/03/05 19:11:25  web0
- * @N SammelLastschrift-Code complete
- *
- * Revision 1.24  2005/03/02 17:59:31  web0
- * @N some refactoring
- *
- * Revision 1.23  2005/03/02 00:22:05  web0
- * @N first code for "Sammellastschrift"
- *
- * Revision 1.22  2005/03/01 18:51:04  web0
- * @N Dialoge fuer Sammel-Lastschriften
- *
- * Revision 1.21  2005/02/27 17:11:49  web0
- * @N first code for "Sammellastschrift"
- * @C "Empfaenger" renamed into "Adresse"
- *
- * Revision 1.20  2005/02/19 16:49:32  willuhn
- * @B bugs 3,8,10
- *
- * Revision 1.19  2005/02/04 18:27:54  willuhn
- * @C Refactoring zwischen Lastschrift und Ueberweisung
- *
- * Revision 1.18  2005/01/19 00:33:32  willuhn
- * *** empty log message ***
- *
- * Revision 1.17  2004/11/13 17:02:04  willuhn
- * @N Bearbeiten des Zahlungsturnus
- *
- * Revision 1.16  2004/11/12 18:25:07  willuhn
- * *** empty log message ***
- *
- * Revision 1.15  2004/11/02 18:48:32  willuhn
- * *** empty log message ***
- *
- * Revision 1.14  2004/11/01 23:10:19  willuhn
- * @N Pruefung auf gueltige Zeichen in Verwendungszweck
- *
- * Revision 1.13  2004/10/25 17:58:57  willuhn
- * @N Haufen Dauerauftrags-Code
- *
- * Revision 1.12  2004/10/21 14:05:05  willuhn
- * *** empty log message ***
- *
- * Revision 1.11  2004/10/20 12:34:02  willuhn
- * *** empty log message ***
- *
- * Revision 1.10  2004/10/20 12:08:18  willuhn
- * @C MVC-Refactoring (new Controllers)
- *
- * Revision 1.9  2004/10/15 20:09:43  willuhn
- * @B Laengen-Pruefung bei Empfaengername
- *
- * Revision 1.8  2004/10/08 13:37:47  willuhn
- * *** empty log message ***
- *
- * Revision 1.7  2004/10/08 00:19:08  willuhn
- * *** empty log message ***
- *
- * Revision 1.6  2004/07/25 17:15:05  willuhn
- * @C PluginLoader is no longer static
- *
- * Revision 1.5  2004/07/23 15:51:44  willuhn
- * @C Rest des Refactorings
- *
- * Revision 1.4  2004/07/21 23:54:30  willuhn
- * *** empty log message ***
- *
- * Revision 1.3  2004/07/20 00:11:07  willuhn
- * @C Code sharing zwischen Ueberweisung und Dauerauftrag
- *
- * Revision 1.2  2004/07/14 23:48:31  willuhn
- * @N mehr Code fuer Dauerauftraege
- *
- * Revision 1.1  2004/07/13 23:08:37  willuhn
- * @N Views fuer Dauerauftrag
- *
  **********************************************************************/

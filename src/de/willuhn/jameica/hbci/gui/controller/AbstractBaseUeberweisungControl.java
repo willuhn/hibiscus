@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractBaseUeberweisungControl.java,v $
- * $Revision: 1.16 $
- * $Date: 2009/03/13 00:25:12 $
+ * $Revision: 1.17 $
+ * $Date: 2010/08/17 11:32:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -70,6 +70,7 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
 
     this.termin = new DateInput(d,HBCI.DATEFORMAT);
     this.termin.setEnabled(!bu.ausgefuehrt());
+    this.termin.setName(i18n.tr("Termin"));
     this.termin.setTitle(i18n.tr("Termin"));
     this.termin.setText(i18n.tr("Bitte wählen Sie einen Termin"));
 
@@ -242,7 +243,10 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
 
 /**********************************************************************
  * $Log: AbstractBaseUeberweisungControl.java,v $
- * Revision 1.16  2009/03/13 00:25:12  willuhn
+ * Revision 1.17  2010/08/17 11:32:11  willuhn
+ * @C Code-Cleanup
+ *
+ * Revision 1.16  2009-03-13 00:25:12  willuhn
  * @N Code fuer Auslandsueberweisungen fast fertig
  *
  * Revision 1.15  2009/02/24 23:51:01  willuhn
@@ -250,160 +254,4 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
  *
  * Revision 1.14  2009/01/04 16:18:22  willuhn
  * @N BUGZILLA 404 - Kontoauswahl via SelectBox
- *
- * Revision 1.13  2008/09/29 23:48:54  willuhn
- * @N Ueberfaellig-Hinweis hinter Auswahlfeld fuer Termin verschoben - spart Platz
- *
- * Revision 1.12  2008/08/01 11:05:14  willuhn
- * @N BUGZILLA 587
- *
- * Revision 1.11  2008/06/02 08:06:29  willuhn
- * @C Button fuer weitere Verwendungszwecke vorerst gesperrt
- *
- * Revision 1.10  2008/05/30 12:02:08  willuhn
- * @N Erster Code fuer erweiterte Verwendungszwecke - NOCH NICHT FREIGESCHALTET!
- *
- * Revision 1.9  2006/09/10 12:12:41  willuhn
- * @N Umstellung auf neues DateInput
- *
- * Revision 1.8  2006/02/20 17:58:48  willuhn
- * @B bug 201
- *
- * Revision 1.7  2005/11/14 13:08:07  willuhn
- * @N Termin-Ueberweisungen
- *
- * Revision 1.6  2005/07/29 16:48:13  web0
- * @N Synchronize
- *
- * Revision 1.5  2005/03/05 19:11:25  web0
- * @N SammelLastschrift-Code complete
- *
- * Revision 1.4  2005/03/02 17:59:31  web0
- * @N some refactoring
- *
- * Revision 1.3  2005/03/01 18:51:04  web0
- * @N Dialoge fuer Sammel-Lastschriften
- *
- * Revision 1.2  2005/02/19 16:49:32  willuhn
- * @B bugs 3,8,10
- *
- * Revision 1.1  2005/02/04 18:27:54  willuhn
- * @C Refactoring zwischen Lastschrift und Ueberweisung
- *
- * Revision 1.37  2005/02/04 00:57:00  willuhn
- * *** empty log message ***
- *
- * Revision 1.36  2005/02/03 18:57:42  willuhn
- * *** empty log message ***
- *
- * Revision 1.35  2005/01/19 00:16:05  willuhn
- * @N Lastschriften
- *
- * Revision 1.34  2004/11/13 17:02:04  willuhn
- * @N Bearbeiten des Zahlungsturnus
- *
- * Revision 1.33  2004/11/12 18:25:07  willuhn
- * *** empty log message ***
- *
- * Revision 1.32  2004/10/25 17:58:56  willuhn
- * @N Haufen Dauerauftrags-Code
- *
- * Revision 1.31  2004/10/20 12:08:18  willuhn
- * @C MVC-Refactoring (new Controllers)
- *
- * Revision 1.30  2004/10/19 23:33:31  willuhn
- * *** empty log message ***
- *
- * Revision 1.29  2004/10/08 13:37:47  willuhn
- * *** empty log message ***
- *
- * Revision 1.28  2004/10/08 00:19:08  willuhn
- * *** empty log message ***
- *
- * Revision 1.27  2004/08/01 13:08:42  willuhn
- * @B Handling von Ueberweisungsterminen
- *
- * Revision 1.26  2004/07/23 15:51:44  willuhn
- * @C Rest des Refactorings
- *
- * Revision 1.25  2004/07/20 21:48:00  willuhn
- * @N ContextMenus
- *
- * Revision 1.24  2004/07/20 00:11:07  willuhn
- * @C Code sharing zwischen Ueberweisung und Dauerauftrag
- *
- * Revision 1.23  2004/07/14 23:48:31  willuhn
- * @N mehr Code fuer Dauerauftraege
- *
- * Revision 1.22  2004/07/09 00:12:29  willuhn
- * @B minor bugs
- *
- * Revision 1.21  2004/07/09 00:04:40  willuhn
- * @C Redesign
- *
- * Revision 1.20  2004/06/30 20:58:28  willuhn
- * *** empty log message ***
- *
- * Revision 1.19  2004/06/08 22:28:58  willuhn
- * *** empty log message ***
- *
- * Revision 1.18  2004/06/03 00:23:42  willuhn
- * *** empty log message ***
- *
- * Revision 1.17  2004/05/26 23:23:10  willuhn
- * @N neue Sicherheitsabfrage vor Ueberweisung
- * @C Check des Ueberweisungslimit
- * @N Timeout fuer Messages in Statusbars
- *
- * Revision 1.16  2004/05/23 15:33:10  willuhn
- * *** empty log message ***
- *
- * Revision 1.15  2004/05/04 23:07:23  willuhn
- * @C refactored Passport stuff
- *
- * Revision 1.14  2004/04/24 19:04:51  willuhn
- * @N Ueberweisung.execute works!! ;)
- *
- * Revision 1.13  2004/04/21 22:28:42  willuhn
- * *** empty log message ***
- *
- * Revision 1.12  2004/04/19 22:53:52  willuhn
- * *** empty log message ***
- *
- * Revision 1.11  2004/04/13 23:14:22  willuhn
- * @N datadir
- *
- * Revision 1.10  2004/04/12 19:15:31  willuhn
- * @C refactoring
- *
- * Revision 1.9  2004/04/05 23:28:46  willuhn
- * *** empty log message ***
- *
- * Revision 1.8  2004/03/30 22:07:49  willuhn
- * *** empty log message ***
- *
- * Revision 1.7  2004/03/11 08:55:42  willuhn
- * @N UmsatzDetails
- *
- * Revision 1.6  2004/03/06 18:25:10  willuhn
- * @D javadoc
- * @C removed empfaenger_id from umsatz
- *
- * Revision 1.5  2004/03/04 00:35:19  willuhn
- * *** empty log message ***
- *
- * Revision 1.4  2004/03/04 00:26:24  willuhn
- * @N Ueberweisung
- *
- * Revision 1.3  2004/03/03 22:26:40  willuhn
- * @N help texts
- * @C refactoring
- *
- * Revision 1.2  2004/02/24 22:47:04  willuhn
- * @N GUI refactoring
- *
- * Revision 1.1  2004/02/22 20:04:53  willuhn
- * @N Ueberweisung
- * @N Empfaenger
- *
  **********************************************************************/

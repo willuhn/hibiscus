@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/LastschriftControl.java,v $
- * $Revision: 1.11 $
- * $Date: 2008/08/01 11:05:14 $
+ * $Revision: 1.12 $
+ * $Date: 2010/08/17 11:32:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -86,6 +86,7 @@ public class LastschriftControl extends AbstractBaseUeberweisungControl
       return textschluessel;
 
     textschluessel = new SelectInput(TextSchluessel.get(new String[]{"05","04"}),TextSchluessel.get(((BaseUeberweisung)getTransfer()).getTextSchluessel()));
+    textschluessel.setName(i18n.tr("Textschlüssel"));
     textschluessel.setEnabled(!((Terminable)getTransfer()).ausgefuehrt());
     return textschluessel;
   }
@@ -94,6 +95,9 @@ public class LastschriftControl extends AbstractBaseUeberweisungControl
 
 /**********************************************************************
  * $Log: LastschriftControl.java,v $
+ * Revision 1.12  2010/08/17 11:32:11  willuhn
+ * @C Code-Cleanup
+ *
  * Revision 1.11  2008/08/01 11:05:14  willuhn
  * @N BUGZILLA 587
  *

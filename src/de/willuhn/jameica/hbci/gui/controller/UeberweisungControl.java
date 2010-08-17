@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.46 $
- * $Date: 2010/06/07 12:43:41 $
+ * $Revision: 1.47 $
+ * $Date: 2010/08/17 11:32:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -84,6 +84,7 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
     list.add(new Typ(true,false));
     list.add(new Typ(false,true));
     this.typ = new SelectInput(list,new Typ(u.isTerminUeberweisung(),u.isUmbuchung()));
+    this.typ.setName(i18n.tr("Auftragstyp"));
     this.typ.setAttribute("name");
     this.typ.setEnabled(!u.ausgefuehrt());
     return this.typ;
@@ -112,6 +113,7 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
       return textschluessel;
 
     textschluessel = new SelectInput(TextSchluessel.get(new String[]{"51","53","54","59"}),TextSchluessel.get(((BaseUeberweisung)getTransfer()).getTextSchluessel()));
+    textschluessel.setName(i18n.tr("Textschlüssel"));
     textschluessel.setEnabled(!((Terminable)getTransfer()).ausgefuehrt());
     return textschluessel;
   }
@@ -186,18 +188,12 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
- * Revision 1.46  2010/06/07 12:43:41  willuhn
+ * Revision 1.47  2010/08/17 11:32:10  willuhn
+ * @C Code-Cleanup
+ *
+ * Revision 1.46  2010-06-07 12:43:41  willuhn
  * @N BUGZILLA 587
  *
  * Revision 1.45  2009/05/12 22:53:33  willuhn
  * @N BUGZILLA 189 - Ueberweisung als Umbuchung
- *
- * Revision 1.44  2008/08/01 11:05:14  willuhn
- * @N BUGZILLA 587
- *
- * Revision 1.43  2007/04/23 18:07:15  willuhn
- * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
- * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
- * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
- * @N Anbindung externer Adressbuecher
  **********************************************************************/
