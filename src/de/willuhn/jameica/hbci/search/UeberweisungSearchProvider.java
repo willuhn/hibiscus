@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/search/UeberweisungSearchProvider.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/08/17 11:46:58 $
+ * $Revision: 1.6 $
+ * $Date: 2010/08/17 11:51:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -113,7 +113,7 @@ public class UeberweisungSearchProvider implements SearchProvider
             u.getGegenkontoName(),
             u.getZweck(),
             k.getLongName(),
-           };
+        };
         I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
         return i18n.tr("{0}: {1} {2} an {3} - {4} (via {5})",params);
       }
@@ -131,7 +131,10 @@ public class UeberweisungSearchProvider implements SearchProvider
 
 /**********************************************************************
  * $Log: UeberweisungSearchProvider.java,v $
- * Revision 1.5  2010/08/17 11:46:58  willuhn
+ * Revision 1.6  2010/08/17 11:51:08  willuhn
+ * @N Datum in Lastschriften und SEPA-Ueberweisungen mit anzeigen
+ *
+ * Revision 1.5  2010-08-17 11:46:58  willuhn
  * @N Datum der Ueberweisung mit anzeigen
  *
  * Revision 1.4  2008/12/14 23:18:35  willuhn

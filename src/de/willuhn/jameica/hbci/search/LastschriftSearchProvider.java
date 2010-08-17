@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/search/LastschriftSearchProvider.java,v $
- * $Revision: 1.3 $
- * $Date: 2008/12/14 23:18:35 $
+ * $Revision: 1.4 $
+ * $Date: 2010/08/17 11:51:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -107,14 +107,15 @@ public class LastschriftSearchProvider implements SearchProvider
       {
         Konto k = l.getKonto();
         String[] params = new String[] {
-            k.getLongName(),
-            l.getZweck(),
+            HBCI.DATEFORMAT.format(l.getTermin()),
             HBCI.DECIMALFORMAT.format(l.getBetrag()),
             k.getWaehrung(),
-            l.getGegenkontoName()
-           };
+            l.getGegenkontoName(),
+            l.getZweck(),
+            k.getLongName(),
+        };
         I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-        return i18n.tr("{0}: ({1}) {2} {3} von {4}",params);
+        return i18n.tr("{0}: {1} {2} von {3} - {4} (via {5})",params);
       }
       catch (RemoteException re)
       {
@@ -130,6 +131,9 @@ public class LastschriftSearchProvider implements SearchProvider
 
 /**********************************************************************
  * $Log: LastschriftSearchProvider.java,v $
+ * Revision 1.4  2010/08/17 11:51:08  willuhn
+ * @N Datum in Lastschriften und SEPA-Ueberweisungen mit anzeigen
+ *
  * Revision 1.3  2008/12/14 23:18:35  willuhn
  * @N BUGZILLA 188 - REFACTORING
  *
