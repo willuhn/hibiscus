@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UeberweisungNew.java,v $
- * $Revision: 1.24 $
- * $Date: 2010/08/17 11:32:11 $
+ * $Revision: 1.25 $
+ * $Date: 2010/08/17 11:41:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,11 +17,12 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.Button;
-import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
+import de.willuhn.jameica.hbci.gui.action.UeberweisungDuplicate;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungExecute;
 import de.willuhn.jameica.hbci.gui.controller.UeberweisungControl;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
@@ -65,9 +66,10 @@ public class UeberweisungNew extends AbstractView
     container.addInput(control.getTyp());
     container.addInput(control.getTermin());
 
-		ButtonArea buttonArea = new ButtonArea(getParent(),4);
+		ButtonArea buttonArea = new ButtonArea();
     buttonArea.addButton(new Back(transfer.ausgefuehrt()));
 		buttonArea.addButton(i18n.tr("Löschen"),new DBObjectDelete(),transfer,false,"user-trash-full.png");
+    buttonArea.addButton(i18n.tr("Duplizieren..."), new UeberweisungDuplicate(),transfer,false,"edit-copy.png");
 
     Button execute = new Button(i18n.tr("Jetzt ausführen..."), new Action() {
       public void handleAction(Object context) throws ApplicationException {
@@ -86,13 +88,18 @@ public class UeberweisungNew extends AbstractView
     
     buttonArea.addButton(execute);
     buttonArea.addButton(store);
+    
+    buttonArea.paint(getParent());
   }
 }
 
 
 /**********************************************************************
  * $Log: UeberweisungNew.java,v $
- * Revision 1.24  2010/08/17 11:32:11  willuhn
+ * Revision 1.25  2010/08/17 11:41:45  willuhn
+ * @N Duplizieren-Button auch in der Detail-Ansicht
+ *
+ * Revision 1.24  2010-08-17 11:32:11  willuhn
  * @C Code-Cleanup
  *
  * Revision 1.23  2009-05-12 22:53:33  willuhn
