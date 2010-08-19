@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/DonateDialog.java,v $
- * $Revision: 1.9 $
- * $Date: 2008/12/02 10:52:23 $
+ * $Revision: 1.10 $
+ * $Date: 2010/08/19 11:00:54 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,7 +31,8 @@ import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.util.ButtonArea;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
@@ -48,7 +49,9 @@ import de.willuhn.util.I18N;
  */
 public class DonateDialog extends AbstractDialog
 {
-  private I18N i18n = null;
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+
+  private final static int WINDOW_WIDTH = 470;
 
   private DialogInput kontoAuswahl  = null;
   private Input betrag              = null;
@@ -64,9 +67,8 @@ public class DonateDialog extends AbstractDialog
   public DonateDialog(int position)
   {
     super(position);
-    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     setTitle(i18n.tr("Spenden"));
-    setSize(470,SWT.DEFAULT);
+    setSize(WINDOW_WIDTH,SWT.DEFAULT);
   }
 
   /**
@@ -77,14 +79,14 @@ public class DonateDialog extends AbstractDialog
     // BUGZILLA 577
     ArrayList list = new ArrayList();
 
-    HibiscusAddress hibiscus = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
+    final HibiscusAddress hibiscus = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
     hibiscus.setBlz(new String(new char[]{'5','0','5','3','0','0','0','0'}));
     hibiscus.setKontonummer(new String(new char[]{'3','2','5','4','0','6'}));
     hibiscus.setName("Olaf Willuhn");
     hibiscus.setKommentar("Autor Hibiscus");
     list.add(hibiscus);
     
-    HibiscusAddress hbci4java = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
+    final HibiscusAddress hbci4java = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
     hbci4java.setBlz(new String(new char[]{'8','6','0','5','5','5','9','2'}));
     hbci4java.setKontonummer(new String(new char[]{'1','8','0','0','2','1','4','2','1','5'}));
     hbci4java.setName("Stefan Palme");
@@ -100,6 +102,9 @@ public class DonateDialog extends AbstractDialog
         {
           HibiscusAddress a = (HibiscusAddress) empfaenger.getValue();
           empfaenger.setComment(a.getKommentar());
+          
+          // Stefan schreibt meines Wissens nach keine 
+          getBill().setEnabled(a.getName().equals(hibiscus.getName()));
         }
         catch (Exception e)
         {
@@ -108,7 +113,7 @@ public class DonateDialog extends AbstractDialog
       }
     });
 
-    LabelGroup group = new LabelGroup(parent,"");
+    Container group = new SimpleContainer(parent);
     group.addText(i18n.tr("Möchten Sie die Weiterentwicklung von Hibiscus/HBCI4Java mit einer Spende unterstützen?\n" +
                           "Dann wählen Sie einfach Ihr Konto aus und geben Sie den gewünschten Betrag ein.\n" +
                           "Wenn Sie die Option \"Spendenquittung\" aktivieren und Ihre eMail-Adresse eingeben,\n" +
@@ -118,7 +123,7 @@ public class DonateDialog extends AbstractDialog
     group.addLabelPair(i18n.tr("Betrag"), getBetrag());
     group.addLabelPair(i18n.tr("Empfänger"), this.empfaenger);
     group.addSeparator();
-    group.addCheckbox(getBill(),"Spendenquittung");
+    group.addCheckbox(getBill(),"Beleg über Spende per Mail gewünscht");
     group.addLabelPair("Ihre eMail-Adresse", getEMail());
     
     ButtonArea buttons = new ButtonArea(parent,2);
@@ -157,6 +162,7 @@ public class DonateDialog extends AbstractDialog
         throw new OperationCanceledException();
       }
     });
+    getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT));
   }
 
   /**
@@ -192,16 +198,12 @@ public class DonateDialog extends AbstractDialog
   {
     if (bill != null)
       return this.bill;
-    bill = new CheckboxInput(true);
+    bill = new CheckboxInput(false);
     bill.addListener(new Listener() {
       public void handleEvent(Event event)
       {
         Boolean b = (Boolean) bill.getValue();
-        if (b.booleanValue())
-          getEMail().enable();
-        else
-          getEMail().disable();
-        
+        getEMail().setEnabled(b);
       }
     });
     return bill;
@@ -212,6 +214,7 @@ public class DonateDialog extends AbstractDialog
     if (email != null)
       return email;
     email = new TextInput(null);
+    email.setEnabled(false);
     return email;
   }
 
@@ -249,6 +252,10 @@ public class DonateDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: DonateDialog.java,v $
+ * Revision 1.10  2010/08/19 11:00:54  willuhn
+ * @N Plausi-Checks (Checkbox und eMail-Eingabe aktivieren/deaktivieren)
+ * @C Kein Spenden-Beleg, wenn Stefan als Empfaenger ausgewaehlt ist - IMHO verschickt er sowas nicht
+ *
  * Revision 1.9  2008/12/02 10:52:23  willuhn
  * @B DecimalInput kann NULL liefern
  * @B Double.NaN beruecksichtigen
