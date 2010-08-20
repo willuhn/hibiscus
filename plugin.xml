@@ -64,6 +64,7 @@
         <item id="hibiscus.navi.reporting.sparquote"         name="Sparquote"               icon-close="utilities-system-monitor.png"    action="de.willuhn.jameica.hbci.gui.action.SparQuote" />
         <item id="hibiscus.navi.reporting.saldochart"        name="Saldo im Verlauf"        icon-close="gnome-finance.png"               action="de.willuhn.jameica.hbci.gui.action.SaldoChart" />
       </item>
+      <item id="hibiscus.navi.donate"                        name="Spenden"                 icon-close="emblem-special.png"              action="de.willuhn.jameica.hbci.gui.action.DonateView" />
     </item>
   </navigation>
 
