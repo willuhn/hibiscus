@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/DonateView.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/08/20 12:42:02 $
+ * $Revision: 1.2 $
+ * $Date: 2010/08/20 12:56:49 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -80,8 +80,8 @@ public class DonateView extends AbstractView
       		                      "Angenommen, es fänden sich 1000 User, die bereit sind, zwei Euro im Monat " +
       		                      "mittels Dauerauftrag zu spenden. Dann blieben nach Abzug der Steuern, die ich " +
       		                      "darauf bezahlen muss, immer noch über 1000,- Euro monatlich übrig.\n\n" +
-      		                      "Ein kleiner Einsatz von Vielen aber eine große Wirkung. Hibiscus wäre nicht mehr " +
-      		                      "länger ein reines Freizeitprojekt. Sondern eine Vollzeit-Aufgabe für mich. Und Sie " +
+      		                      "Ein kleiner Einsatz von Vielen. Aber eine große Wirkung. Hibiscus wäre nicht mehr " +
+      		                      "länger ein Freizeitprojekt. Sondern eine Vollzeit-Aufgabe für mich. Und Sie " +
       		                      "wären meine Arbeitgeber. Eine faszinierende Idee, wie ich finde.\n\n" +
       		                      "Ich würde mich freuen, wenn Sie dies mit unterstützen wollen. Durch Klick auf " +
       		                      "\"Dauerauftrag erstellen\" können Sie einen Dauerauftrag anlegen, in dem bereits " +
@@ -134,7 +134,10 @@ public class DonateView extends AbstractView
 
 /**********************************************************************
  * $Log: DonateView.java,v $
- * Revision 1.1  2010/08/20 12:42:02  willuhn
+ * Revision 1.2  2010/08/20 12:56:49  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.1  2010-08-20 12:42:02  willuhn
  * @N Neuer Spenden-Aufruf. Ich bin gespannt, ob das klappt ;)
  *
  **********************************************************************/
