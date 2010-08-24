@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EinnahmeAusgabeControl.java,v $
- * $Revision: 1.16 $
- * $Date: 2010/06/07 22:41:13 $
+ * $Revision: 1.17 $
+ * $Date: 2010/08/24 17:38:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,16 +13,15 @@
 package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TableItem;
 
-import de.willuhn.datasource.GenericIterator;
-import de.willuhn.datasource.GenericObject;
-import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
@@ -40,9 +39,8 @@ import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
-import de.willuhn.jameica.hbci.io.EinnahmeAusgabe;
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.server.KontoUtil;
+import de.willuhn.jameica.hbci.server.EinnahmeAusgabe;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
@@ -53,25 +51,13 @@ import de.willuhn.util.I18N;
 public class EinnahmeAusgabeControl extends AbstractControl
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(EinnahmeAusgabeControl.class);
 
   private SelectInput kontoAuswahl = null;
   private DateInput start          = null;
   private DateInput end            = null;
 
-
   private TablePart table          = null;
-
-  private double summeAnfangssaldo = 0.0d;
-  private double summeEinnahmen    = 0.0d;
-  private double summeAusgaben     = 0.0d;
-  private double summeEndsaldo     = 0.0d;
-
-  private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(EinnahmeAusgabeControl.class);
-
-  static
-  {
-    settings.setStoreWhenRead(true);
-  }
 
   /**
    * ct.
@@ -139,6 +125,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
       Logger.error("invalid start date, ignoring",e);
     }
     this.start = new DateInput(d, HBCI.DATEFORMAT);
+    this.start.setName(i18n.tr("Start-Datum"));
     this.start.setComment(i18n.tr("Frühestes Valuta-Datum"));
     this.start.addListener(new Listener()
     {
@@ -174,6 +161,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
     }
     
     this.end = new DateInput(d, HBCI.DATEFORMAT);
+    this.end.setName(i18n.tr("End-Datum"));
     this.end.setComment(i18n.tr("Spätestes Valuta-Datum"));
     this.end.addListener(new Listener()
     {
@@ -197,46 +185,44 @@ public class EinnahmeAusgabeControl extends AbstractControl
     if (this.table != null)
       return this.table;
 
-    GenericIterator eintr = PseudoIterator.fromArray((GenericObject[]) getWerte());
-    table = new TablePart(eintr, null);
+    table = new TablePart(getWerte(), null);
     table.addColumn(i18n.tr("Konto"),        "text");
     table.addColumn(i18n.tr("Anfangssaldo"), "anfangssaldo",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
-    table.addColumn(i18n.tr("Einnahmen"),    "einnahme",    new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
-    table.addColumn(i18n.tr("Ausgaben"),     "ausgabe",     new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
+    table.addColumn(i18n.tr("Einnahmen"),    "einnahmen",   new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
+    table.addColumn(i18n.tr("Ausgaben"),     "ausgaben",    new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
     table.addColumn(i18n.tr("Endsaldo"),     "endsaldo",    new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
+    table.addColumn(i18n.tr("Plus/Minus"),   "plusminus",   new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
     table.addColumn(i18n.tr("Differenz"),    "differenz",   new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
 
     table.setFormatter(new TableFormatter()
     {
-
+      /**
+       * @see de.willuhn.jameica.gui.formatter.TableFormatter#format(org.eclipse.swt.widgets.TableItem)
+       */
       public void format(TableItem item)
       {
         if (item == null)
           return;
+        
         EinnahmeAusgabe ea = (EinnahmeAusgabe) item.getData();
+        boolean summe = ea.isSumme();
         try
         {
-          Double de = (Double) ea.getAttribute("endsaldo");
-          if (de == null)
-            return;
-          
-          double e = de.doubleValue();
-          if (e > 0.0)
+          double plusminus = ea.getPlusminus();
+          if (!summe && plusminus > 0.0d)
             item.setForeground(Settings.getBuchungHabenForeground());
-          else if (e < 0.0)
+          else if (!summe && plusminus < 0.0d)
             item.setForeground(Settings.getBuchungSollForeground());
           else
             item.setForeground(Color.WIDGET_FG.getSWTColor());
           
-          Boolean b = (Boolean) ea.getAttribute("hasdiff");
-          item.setFont(b != null && b.booleanValue() ? Font.BOLD.getSWTFont() : Font.DEFAULT.getSWTFont());
+          item.setFont(ea.hasDiff() && !summe ? Font.BOLD.getSWTFont() : Font.DEFAULT.getSWTFont());
         }
         catch (Exception e)
         {
           Logger.error("unable to format line", e);
         }
       }
-
     });
 
     table.setRememberColWidths(true);
@@ -245,83 +231,75 @@ public class EinnahmeAusgabeControl extends AbstractControl
   }
 
   /**
-   * Werte ermitteln.
-   * @return Array mit Werten.
+   * Ermittelt die Liste der Zeilen fuer die Tabelle.
+   * @return Liste mit den Werten.
    * @throws RemoteException
    */
-  public EinnahmeAusgabe[] getWerte() throws RemoteException
+  private List<EinnahmeAusgabe> getWerte() throws RemoteException
   {
-    summeAnfangssaldo = 0.0d;
-    summeEinnahmen    = 0.0d;
-    summeAusgaben     = 0.0d;
-    summeEndsaldo     = 0.0d;
-
-    EinnahmeAusgabe[] eae;
+    List<EinnahmeAusgabe> list = new ArrayList<EinnahmeAusgabe>();
 
     Konto konto = (Konto) getKontoAuswahl().getValue();
+    Date start  = (Date) this.getStart().getValue();
+    Date end    = (Date) this.getEnd().getValue();
+    
+    // Uhrzeit zuruecksetzen, falls vorhanden
+    if (start != null) start = HBCIProperties.startOfDay(start);
+    if (end != null) end = HBCIProperties.startOfDay(end);
 
     // Wird nur ein Konto ausgewertet?
     if (konto != null)
     {
-      eae = new EinnahmeAusgabe[1];
-      ermittelnWerte(konto, eae, 0);
+      list.add(new EinnahmeAusgabe(konto,start,end));
+      return list;
     }
-    else
+    
+    // Alle Konten
+    double summeAnfangssaldo = 0.0d;
+    double summeEinnahmen    = 0.0d;
+    double summeAusgaben     = 0.0d;
+    double summeEndsaldo     = 0.0d;
+    
+    DBIterator it = de.willuhn.jameica.hbci.Settings.getDBService().createList(Konto.class);
+    it.setOrder("ORDER BY blz, kontonummer");
+    while (it.hasNext())
     {
-      DBIterator it = de.willuhn.jameica.hbci.Settings.getDBService().createList(Konto.class);
-      it.setOrder("ORDER BY blz, kontonummer");
-      int index = 0;
-      eae = new EinnahmeAusgabe[it.size() + 1];
-      while (it.hasNext())
-      {
-        konto = (Konto) it.next();
-        ermittelnWerte(konto, eae, index);
-        index++;
-      }
-      eae[it.size()] = new EinnahmeAusgabe(i18n.tr("Summe"), (Date) this.start.getValue(), summeAnfangssaldo, summeEinnahmen, summeAusgaben,(Date) this.end.getValue(), summeEndsaldo);
+      EinnahmeAusgabe ea = new EinnahmeAusgabe((Konto) it.next(),start,end);
+      
+      // Zu den Summen hinzufuegen
+      summeAnfangssaldo += ea.getAnfangssaldo();
+      summeEinnahmen    += ea.getEinnahmen();
+      summeAusgaben     += ea.getAusgaben();
+      summeEndsaldo     += ea.getEndsaldo();
+      list.add(ea);
     }
-    return eae;
+    
+    // Summenzeile noch hinten dran haengen
+    EinnahmeAusgabe summen = new EinnahmeAusgabe();
+    summen.setIsSumme(true);
+    summen.setText(i18n.tr("Summe"));
+    summen.setAnfangssaldo(summeAnfangssaldo);
+    summen.setAusgaben(summeAusgaben);
+    summen.setEinnahmen(summeEinnahmen);
+    summen.setEndsaldo(summeEndsaldo);
+    summen.setEnddatum((Date) this.getStart().getValue());
+    summen.setStartdatum((Date) this.getEnd().getValue());
+    list.add(summen);
+    
+    return list;
   }
 
-  private void ermittelnWerte(Konto konto, EinnahmeAusgabe[] eae, int index) throws RemoteException
-  {
-    Date dStart = (Date) start.getValue();
-    Date dEnd   = (Date) end.getValue();
-    
-    if (dStart != null) dStart = HBCIProperties.startOfDay(dStart);
-    if (dEnd != null) dEnd = HBCIProperties.startOfDay(dEnd);
-    
-    
-    double anfangssaldo = KontoUtil.getAnfangsSaldo(konto,dStart);
-    summeAnfangssaldo += anfangssaldo;
-
-    double einnahmen = KontoUtil.getEinnahmen(konto,dStart,dEnd);
-    summeEinnahmen += einnahmen;
-
-    double ausgaben = KontoUtil.getAusgaben(konto,dStart,dEnd);
-    summeAusgaben += ausgaben;
-
-    double endsaldo = KontoUtil.getEndSaldo(konto,dEnd);
-    summeEndsaldo += endsaldo;
-
-    eae[index] = new EinnahmeAusgabe(konto.getLongName(),
-                                     dStart,
-                                     anfangssaldo, 
-                                     einnahmen, 
-                                     ausgaben, 
-                                     dEnd,
-                                     endsaldo);
-  }
-  
   /**
    * Aktualisiert die Tabelle.
    * @throws RemoteException
    */
   public void handleReload() throws RemoteException
   {
-    this.table.removeAll();
-    Date tStart = (Date) start.getValue();
-    Date tEnd = (Date) end.getValue();
+    TablePart table = this.getTable();
+    table.removeAll();
+    
+    Date tStart = (Date) getStart().getValue();
+    Date tEnd = (Date) getEnd().getValue();
     if (tStart != null && tEnd != null && tStart.after(tEnd))
     {
       GUI.getView().setErrorText(i18n.tr("Das Anfangsdatum muss vor dem Enddatum liegen"));
@@ -329,16 +307,17 @@ public class EinnahmeAusgabeControl extends AbstractControl
     }
     GUI.getView().setErrorText(""); // ggf. vorher angezeigten Fehler loeschen
 
-    EinnahmeAusgabe[] eae = this.getWerte();
-    for (int i = 0; i < eae.length; i++)
-    {
-      this.table.addItem((EinnahmeAusgabe) eae[i]);
-    }
+    List<EinnahmeAusgabe> list = this.getWerte();
+    for (EinnahmeAusgabe ea:list)
+      table.addItem(ea);
   }
 }
 
 /*******************************************************************************
  * $Log: EinnahmeAusgabeControl.java,v $
+ * Revision 1.17  2010/08/24 17:38:04  willuhn
+ * @N BUGZILLA 896
+ *
  * Revision 1.16  2010/06/07 22:41:13  willuhn
  * @N BUGZILLA 844/852
  *

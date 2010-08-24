@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/EinnahmeAusgabeExporter.java,v $
- * $Revision: 1.4 $
- * $Date: 2010/02/17 10:43:41 $
+ * $Revision: 1.5 $
+ * $Date: 2010/08/24 17:38:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,6 +21,7 @@ import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
 
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.server.EinnahmeAusgabe;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -53,12 +54,9 @@ public class EinnahmeAusgabeExporter implements Exporter
     try
     {
       String sub = "";
-      if (ea[0].startdatum != null && ea[0].enddatum != null)
-      {
-        sub = i18n.tr("Zeitraum {0} - {1}", new String[] {
-            HBCI.DATEFORMAT.format(ea[0].startdatum),
-            HBCI.DATEFORMAT.format(ea[0].enddatum) });
-      }
+
+      if (ea[0].getStartdatum() != null && ea[0].getEnddatum() != null)
+        sub = i18n.tr("Zeitraum {0} - {1}", new String[]{HBCI.DATEFORMAT.format(ea[0].getStartdatum()),HBCI.DATEFORMAT.format(ea[0].getEnddatum())});
 
       reporter = new Reporter(os, monitor, i18n.tr("Einnahmen/Ausgaben"), sub,ea.length);
       reporter.addHeaderColumn(i18n.tr("Konto"),        Element.ALIGN_CENTER, 100, Color.LIGHT_GRAY);
@@ -66,18 +64,20 @@ public class EinnahmeAusgabeExporter implements Exporter
       reporter.addHeaderColumn(i18n.tr("Einnahmen"),    Element.ALIGN_CENTER,  60, Color.LIGHT_GRAY);
       reporter.addHeaderColumn(i18n.tr("Ausgaben"),     Element.ALIGN_CENTER,  60, Color.LIGHT_GRAY);
       reporter.addHeaderColumn(i18n.tr("Endsaldo"),     Element.ALIGN_CENTER,  60, Color.LIGHT_GRAY);
+      reporter.addHeaderColumn(i18n.tr("Plus/Minus"),   Element.ALIGN_CENTER,  60, Color.LIGHT_GRAY);
       reporter.addHeaderColumn(i18n.tr("Differenz"),    Element.ALIGN_CENTER,  60, Color.LIGHT_GRAY);
       reporter.createHeader();
 
       // Iteration ueber Umsaetze
       for (int i=0;i<ea.length; ++i)
       {
-        reporter.addColumn(reporter.getDetailCell(ea[i].text, Element.ALIGN_LEFT));
-        reporter.addColumn(reporter.getDetailCell(ea[i].anfangssaldo));
-        reporter.addColumn(reporter.getDetailCell(ea[i].einnahme));
-        reporter.addColumn(reporter.getDetailCell(ea[i].ausgabe));
-        reporter.addColumn(reporter.getDetailCell(ea[i].endsaldo));
-        reporter.addColumn(reporter.getDetailCell(ea[i].differenz));
+        reporter.addColumn(reporter.getDetailCell(ea[i].getText(), Element.ALIGN_LEFT));
+        reporter.addColumn(reporter.getDetailCell(ea[i].getAnfangssaldo()));
+        reporter.addColumn(reporter.getDetailCell(ea[i].getEinnahmen()));
+        reporter.addColumn(reporter.getDetailCell(ea[i].getAusgaben()));
+        reporter.addColumn(reporter.getDetailCell(ea[i].getEndsaldo()));
+        reporter.addColumn(reporter.getDetailCell(ea[i].getPlusminus()));
+        reporter.addColumn(reporter.getDetailCell(ea[i].getDifferenz()));
         reporter.setNextRecord();
       }
       if (monitor != null)
@@ -87,6 +87,7 @@ public class EinnahmeAusgabeExporter implements Exporter
     {
       if (monitor != null)
         monitor.setStatus(ProgressMonitor.STATUS_ERROR);
+      
       Logger.error("error while creating report", e);
       throw new ApplicationException(i18n.tr("Fehler beim Erzeugen der Auswertung"), e);
     }
@@ -147,18 +148,12 @@ public class EinnahmeAusgabeExporter implements Exporter
 
 /*******************************************************************************
  * $Log: EinnahmeAusgabeExporter.java,v $
+ * Revision 1.5  2010/08/24 17:38:04  willuhn
+ * @N BUGZILLA 896
+ *
  * Revision 1.4  2010/02/17 10:43:41  willuhn
  * @N Differenz in Einnahmen/Ausgaben anzeigen, Cleanup
  *
  * Revision 1.3  2009/04/05 21:16:22  willuhn
  * @B BUGZILLA 716
- *
- * Revision 1.2  2007/06/04 17:37:00  willuhn
- * @D javadoc
- * @C java 1.4 compatibility
- * @N table colorized
- *
- * Revision 1.1  2007/06/04 15:58:45  jost
- * Neue Auswertung: Einnahmen/Ausgaben
- *
  ******************************************************************************/

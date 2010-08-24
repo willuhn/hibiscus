@@ -10,11 +10,15 @@
 	</p>
 
   <p>
+    Die Spalte <b>Plus/Minus</b> enthält die Differenz aus Einnahmen und Ausgaben.
+  </p>
+  
+  <p>
     <b>Tipp:</b> Wenn sich aus der Summe von Anfangssaldo, Einnahmen
     und Ausgaben eine Differenz zum Saldo des Kontos (zu diesem Zeitpunkt)
     ergibt, wird das Konto fettgedruckt angezeigt. Das kann z.Bsp.
     passieren, wenn im angegebenen Zeitraum noch nicht alle Umsätze
-    vorliegen.
+    vorliegen. Der Differenz-Betrag wird in der Spalte <b>Differenz</b> angezeigt.
   </p>
 
 </form>

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/EinnahmeAusgabeExport.java,v $
- * $Revision: 1.3 $
- * $Date: 2009/04/05 21:16:22 $
+ * $Revision: 1.4 $
+ * $Date: 2010/08/24 17:38:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,7 +15,7 @@ package de.willuhn.jameica.hbci.gui.action;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.dialogs.ExportDialog;
-import de.willuhn.jameica.hbci.io.EinnahmeAusgabe;
+import de.willuhn.jameica.hbci.server.EinnahmeAusgabe;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -27,18 +27,15 @@ import de.willuhn.util.I18N;
  */
 public class EinnahmeAusgabeExport implements Action
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+
   /**
-   * Erwartet ein Objekt vom Typ <code>GenericIterator</code>
+   * Erwartet ein Array mit Objekten des Typs <code>Einnahmeausgabe</code>
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
   public void handleAction(Object context) throws ApplicationException
   {
-    I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
-    if (context == null)
-      throw new ApplicationException(i18n.tr("Bitte wählen Sie die zu exportierenden Daten aus"));
-
-    if (!(context instanceof EinnahmeAusgabe[]))
+    if (context == null || !(context instanceof EinnahmeAusgabe[]))
       throw new ApplicationException(i18n.tr("Bitte wählen Sie die zu exportierenden Daten aus"));
 
     try
@@ -53,9 +50,7 @@ public class EinnahmeAusgabeExport implements Action
     catch (Exception e)
     {
       Logger.error("error while writing report", e);
-      Application.getMessagingFactory().sendMessage(
-          new StatusBarMessage(i18n.tr("Fehler bei der Erstellung der Liste"),
-              StatusBarMessage.TYPE_ERROR));
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler bei der Erstellung der Liste"),StatusBarMessage.TYPE_ERROR));
     }
   }
 
@@ -63,13 +58,9 @@ public class EinnahmeAusgabeExport implements Action
 
 /*******************************************************************************
  * $Log: EinnahmeAusgabeExport.java,v $
+ * Revision 1.4  2010/08/24 17:38:04  willuhn
+ * @N BUGZILLA 896
+ *
  * Revision 1.3  2009/04/05 21:16:22  willuhn
  * @B BUGZILLA 716
- *
- * Revision 1.2  2007/07/16 12:51:15  willuhn
- * @D javadoc
- *
- * Revision 1.1  2007/06/04 15:57:25  jost
- * Neue Auswertung: Einnahmen/Ausgaben
- *
  ******************************************************************************/
