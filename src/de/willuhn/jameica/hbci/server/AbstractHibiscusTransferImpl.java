@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractHibiscusTransferImpl.java,v $
- * $Revision: 1.14 $
- * $Date: 2010/08/26 11:31:23 $
+ * $Revision: 1.15 $
+ * $Date: 2010/08/26 12:53:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -126,7 +126,7 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractDBObject impl
     if (i == null)
       return null; // Kein Konto zugeordnet
    
-    Cache<Konto> cache = Cache.get(Konto.class);
+    Cache<Konto> cache = Cache.get(Konto.class,true);
     return cache.get(i);
   }
 
@@ -385,7 +385,10 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractDBObject impl
 
 /**********************************************************************
  * $Log: AbstractHibiscusTransferImpl.java,v $
- * Revision 1.14  2010/08/26 11:31:23  willuhn
+ * Revision 1.15  2010/08/26 12:53:08  willuhn
+ * @N Cache nur befuellen, wenn das explizit gefordert wird. Andernfalls wuerde der Cache u.U. unnoetig gefuellt werden, obwohl nur ein Objekt daraus geloescht werden soll
+ *
+ * Revision 1.14  2010-08-26 11:31:23  willuhn
  * @N Neuer Cache. In dem werden jetzt die zugeordneten Konten von Auftraegen und Umsaetzen zwischengespeichert sowie die Umsatz-Kategorien. Das beschleunigt das Laden der Umsaetze und Auftraege teilweise erheblich
  *
  * Revision 1.13  2009/05/12 22:53:33  willuhn

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.77 $
- * $Date: 2010/08/26 11:31:23 $
+ * $Revision: 1.78 $
+ * $Date: 2010/08/26 12:53:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -132,7 +132,7 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
     if (i == null)
       return null; // Kein Konto zugeordnet
    
-    Cache<Konto> cache = Cache.get(Konto.class);
+    Cache<Konto> cache = Cache.get(Konto.class,true);
     return cache.get(i);
   }
 
@@ -585,7 +585,7 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
     // ID von fest verdrahteten Kategorien
     Integer i = (Integer) super.getAttribute("umsatztyp_id");
 
-    Cache<UmsatzTyp> cache = Cache.get(UmsatzTyp.class);
+    Cache<UmsatzTyp> cache = Cache.get(UmsatzTyp.class,true);
 
     // fest zugeordnet
     if (i != null)
@@ -684,7 +684,10 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
- * Revision 1.77  2010/08/26 11:31:23  willuhn
+ * Revision 1.78  2010/08/26 12:53:08  willuhn
+ * @N Cache nur befuellen, wenn das explizit gefordert wird. Andernfalls wuerde der Cache u.U. unnoetig gefuellt werden, obwohl nur ein Objekt daraus geloescht werden soll
+ *
+ * Revision 1.77  2010-08-26 11:31:23  willuhn
  * @N Neuer Cache. In dem werden jetzt die zugeordneten Konten von Auftraegen und Umsaetzen zwischengespeichert sowie die Umsatz-Kategorien. Das beschleunigt das Laden der Umsaetze und Auftraege teilweise erheblich
  *
  * Revision 1.76  2010-08-03 11:00:01  willuhn

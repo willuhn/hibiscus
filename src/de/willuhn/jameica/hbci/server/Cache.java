@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Cache.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/08/26 12:25:11 $
+ * $Revision: 1.3 $
+ * $Date: 2010/08/26 12:53:08 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -70,10 +70,11 @@ class Cache<T extends DBObject>
   /**
    * Liefert den Cache fuer den genannten Typ.
    * @param type der Typ.
+   * @param init true, wenn der Cache bei der Erzeugung automatisch befuellt werden soll.
    * @return der Cache.
    * @throws RemoteException
    */
-  static <T> Cache get(Class<? extends DBObject> type) throws RemoteException
+  static <T> Cache get(Class<? extends DBObject> type, boolean init) throws RemoteException
   {
     Cache cache = caches.get(type);
     
@@ -96,12 +97,15 @@ class Cache<T extends DBObject>
       cache = new Cache();
       cache.type = type;
       
-      // Daten in den Cache laden
-      DBIterator list = Settings.getDBService().createList(type);
-      while (list.hasNext())
+      if (init)
       {
-        DBObject o = (DBObject) list.next();
-        cache.data.put(o.getID(),o);
+        // Daten in den Cache laden
+        DBIterator list = Settings.getDBService().createList(type);
+        while (list.hasNext())
+        {
+          DBObject o = (DBObject) list.next();
+          cache.data.put(o.getID(),o);
+        }
       }
       caches.put(type,cache);
     }
@@ -177,7 +181,10 @@ class Cache<T extends DBObject>
 
 /**********************************************************************
  * $Log: Cache.java,v $
- * Revision 1.2  2010/08/26 12:25:11  willuhn
+ * Revision 1.3  2010/08/26 12:53:08  willuhn
+ * @N Cache nur befuellen, wenn das explizit gefordert wird. Andernfalls wuerde der Cache u.U. unnoetig gefuellt werden, obwohl nur ein Objekt daraus geloescht werden soll
+ *
+ * Revision 1.2  2010-08-26 12:25:11  willuhn
  * @N 10 Sekunden Timeout fuer den Cache
  *
  * Revision 1.1  2010-08-26 11:31:23  willuhn
