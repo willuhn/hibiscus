@@ -17,23 +17,23 @@
   <menu>
     <item id="hibiscus.menu"                         name="Hibiscus">
       <item id="hibiscus.menu.transfer"              name="Zahlungsverkehr">
-        <item id="hibiscus.menu.transfer.ueb"        name="Neue Überweisung..."       shortcut="ALT+U"    action="de.willuhn.jameica.hbci.gui.action.UeberweisungNew" />
-        <item id="hibiscus.menu.transfer.last"       name="Neue Lastschrift..."       shortcut="ALT+T"    action="de.willuhn.jameica.hbci.gui.action.LastschriftNew" />
-        <item id="hibiscus.menu.transfer.sammelueb"  name="Neue Sammelüberweisung..." shortcut="ALT+S"    action="de.willuhn.jameica.hbci.gui.action.SammelUeberweisungNew" />
-        <item id="hibiscus.menu.transfer.sammellast" name="Neue Sammellastschrift..." shortcut="ALT+F"    action="de.willuhn.jameica.hbci.gui.action.SammelLastschriftNew" />
+        <item id="hibiscus.menu.transfer.ueb"        name="Neue Überweisung..."       shortcut="ALT+U"    icon="stock_next.png"                  action="de.willuhn.jameica.hbci.gui.action.UeberweisungNew" />
+        <item id="hibiscus.menu.transfer.last"       name="Neue Lastschrift..."       shortcut="ALT+T"    icon="stock_previous.png"              action="de.willuhn.jameica.hbci.gui.action.LastschriftNew" />
+        <item id="hibiscus.menu.transfer.sammelueb"  name="Neue Sammelüberweisung..." shortcut="ALT+S"    icon="stock_navigator-shift-right.png" action="de.willuhn.jameica.hbci.gui.action.SammelUeberweisungNew" />
+        <item id="hibiscus.menu.transfer.sammellast" name="Neue Sammellastschrift..." shortcut="ALT+F"    icon="stock_navigator-shift-left.png"  action="de.willuhn.jameica.hbci.gui.action.SammelLastschriftNew" />
       </item>
-      <item id="hibiscus.menu.settings"              name="Einstellungen"                            action="de.willuhn.jameica.hbci.gui.action.Settings" />
+      <item id="hibiscus.menu.settings"              name="Einstellungen"                                 icon="document-properties.png"         action="de.willuhn.jameica.hbci.gui.action.Settings" />
       <item name="-" />
-      <item id="hibiscus.menu.handbuch"              name="Handbuch"                                 action="de.willuhn.jameica.hbci.gui.action.HandbuchAction"/>
-      <item id="hibiscus.menu.donate"                name="Spenden"                                  action="de.willuhn.jameica.hbci.gui.action.Donate" />
+      <item id="hibiscus.menu.handbuch"              name="Handbuch"                                      icon="edit-copy.png"                   action="de.willuhn.jameica.hbci.gui.action.HandbuchAction"/>
+      <item id="hibiscus.menu.donate"                name="Spenden"                                       icon="emblem-special.png"              action="de.willuhn.jameica.hbci.gui.action.Donate" />
       <item name="-" />
-      <item id="hibiscus.menu.about"                 name="About"                                    action="de.willuhn.jameica.hbci.gui.action.About" />
+      <item id="hibiscus.menu.about"                 name="About"                                         icon="dialog-information.png"          action="de.willuhn.jameica.hbci.gui.action.About" />
       <item name="-" />
       <item id="hibiscus.menu.ext"                   name="Erweitert">
-        <item id="hibiscus.menu.ext.license"         name="Lizenzinformationen"                      action="de.willuhn.jameica.hbci.gui.action.License" />
+        <item id="hibiscus.menu.ext.license"         name="Lizenzinformationen"                           icon="text-x-generic.png"              action="de.willuhn.jameica.hbci.gui.action.License" />
         <item name="-" />
-        <item id="hibiscus.menu.ext.backup.create"   name="Diagnose-Backup erstellen"                action="de.willuhn.jameica.hbci.gui.action.BackupCreate" />
-        <item id="hibiscus.menu.ext.backup.restore"  name="Diagnose-Backup importieren"              action="de.willuhn.jameica.hbci.gui.action.BackupRestore" />
+        <item id="hibiscus.menu.ext.backup.create"   name="Diagnose-Backup erstellen"                     icon="document-save.png"               action="de.willuhn.jameica.hbci.gui.action.BackupCreate" />
+        <item id="hibiscus.menu.ext.backup.restore"  name="Diagnose-Backup importieren"                   icon="document-open.png"               action="de.willuhn.jameica.hbci.gui.action.BackupRestore" />
       </item>
     </item>
   </menu>
