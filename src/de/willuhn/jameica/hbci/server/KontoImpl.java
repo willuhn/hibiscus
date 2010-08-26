@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.104 $
- * $Date: 2010/06/17 12:32:56 $
+ * $Revision: 1.105 $
+ * $Date: 2010/08/26 11:31:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -213,6 +213,11 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public void delete() throws RemoteException, ApplicationException
   {
+    if (this.isNewObject())
+      return;
+    
+    Cache.get(Konto.class).remove(this); // Aus Cache loeschen
+
     // Wir muessen auch alle Umsaetze, Ueberweisungen und Protokolle mitloeschen
     // da Constraints dorthin existieren.
     try
@@ -525,6 +530,8 @@ public class KontoImpl extends AbstractDBObject implements Konto
     if (hasChanged())
       addToProtokoll(i18n.tr("Konto-Eigenschaften aktualisiert"),Protokoll.TYP_SUCCESS);
     super.store();
+    
+    Cache.get(Konto.class).put(this); // Cache aktualisieren
   }
 
   /**
@@ -736,6 +743,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*******************************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.105  2010/08/26 11:31:23  willuhn
+ * @N Neuer Cache. In dem werden jetzt die zugeordneten Konten von Auftraegen und Umsaetzen zwischengespeichert sowie die Umsatz-Kategorien. Das beschleunigt das Laden der Umsaetze und Auftraege teilweise erheblich
+ *
  * Revision 1.104  2010/06/17 12:32:56  willuhn
  * @N BUGZILLA 530
  *

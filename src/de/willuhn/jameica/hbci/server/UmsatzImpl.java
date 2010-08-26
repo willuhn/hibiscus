@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.76 $
- * $Date: 2010/08/03 11:00:01 $
+ * $Revision: 1.77 $
+ * $Date: 2010/08/26 11:31:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,14 +14,11 @@ package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
 import java.util.Date;
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.zip.CRC32;
 
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.db.AbstractDBObject;
-import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
@@ -43,11 +40,6 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 	private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-	/**
-   * Cache fuer die Umsatz-Kategorien.
-   */
-  public transient final static Hashtable UMSATZTYP_CACHE = new Hashtable();
-
   /**
    * @throws RemoteException
    */
@@ -132,19 +124,16 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
   }
 
   /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
-   */
-  protected Class getForeignObject(String field) throws RemoteException {
-		if ("konto_id".equals(field))
-			return Konto.class;
-    return null;
-  }
-
-  /**
    * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#getKonto()
    */
-  public Konto getKonto() throws RemoteException {
-    return (Konto) getAttribute("konto_id");
+  public Konto getKonto() throws RemoteException
+  {
+    Integer i = (Integer) super.getAttribute("konto_id");
+    if (i == null)
+      return null; // Kein Konto zugeordnet
+   
+    Cache<Konto> cache = Cache.get(Konto.class);
+    return cache.get(i);
   }
 
   /**
@@ -278,7 +267,7 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
    * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setKonto(de.willuhn.jameica.hbci.rmi.Konto)
    */
   public void setKonto(Konto k) throws RemoteException {
-		setAttribute("konto_id",k);
+    setAttribute("konto_id",k == null ? null : new Integer(k.getID()));
   }
 
   /**
@@ -422,6 +411,9 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
   {
     if ("umsatztyp".equals(arg0))
       return getUmsatzTyp();
+    
+    if ("konto_id".equals(arg0))
+      return getKonto();
     
     // Fuer Kategoriebaum
     if ("name".equals(arg0))
@@ -590,53 +582,24 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
    */
   public UmsatzTyp getUmsatzTyp() throws RemoteException
   {
-    if (UMSATZTYP_CACHE.size() == 0)
-    {
-      // Wir initialisieren den Cache
-      DBIterator list = getService().createList(UmsatzTyp.class);
-      while (list.hasNext())
-      {
-        UmsatzTyp t = (UmsatzTyp) list.next();
-        UMSATZTYP_CACHE.put(t.getID(),t);
-      }
-    }
-    
     // ID von fest verdrahteten Kategorien
     Integer i = (Integer) super.getAttribute("umsatztyp_id");
 
-    if (i == null)
+    Cache<UmsatzTyp> cache = Cache.get(UmsatzTyp.class);
+
+    // fest zugeordnet
+    if (i != null)
+      return cache.get(i);
+
+    // Nicht fest zugeordnet, dann schauen wir mal, ob's eine dynamische Zuordnung gibt
+    Iterator<UmsatzTyp> typen = cache.values().iterator();
+    while (typen.hasNext())
     {
-      // Nicht zugeordnet, dann schauen wir mal, ob's eine dynamische Zuordnung gibt
-      Enumeration typen = UMSATZTYP_CACHE.elements();
-      while (typen.hasMoreElements())
-      {
-        UmsatzTyp ut = (UmsatzTyp) typen.nextElement();
-        if (ut.matches(this))
-          return ut;
-      }
-      // keine dynamische Umsatzkategorie gefunden. Dann raus hier
-      return null;
+      UmsatzTyp ut = typen.next();
+      if (ut.matches(this))
+        return ut;
     }
-   
-    // Wir haben eine ID und sie ist fest verdrahtet
-    String id = i.toString();
-    
-    UmsatzTyp ut = (UmsatzTyp) UMSATZTYP_CACHE.get(id);
-    if (ut == null)
-    {
-      // Hu? Nicht im Cache? Dann ist sie waehrend der aktuellen Sitzung dazugekommen
-      // und wir laden sie noch in den Cache.
-      try
-      {
-        ut = (UmsatzTyp) getService().createObject(UmsatzTyp.class,id);
-        UMSATZTYP_CACHE.put(id,ut);
-      }
-      catch (ObjectNotFoundException one)
-      {
-        // inzwischen schon wieder geloescht worden. Ignorieren wir
-      }
-    }
-    return ut;
+    return null;
   }
 
   /**
@@ -721,7 +684,10 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
- * Revision 1.76  2010/08/03 11:00:01  willuhn
+ * Revision 1.77  2010/08/26 11:31:23  willuhn
+ * @N Neuer Cache. In dem werden jetzt die zugeordneten Konten von Auftraegen und Umsaetzen zwischengespeichert sowie die Umsatz-Kategorien. Das beschleunigt das Laden der Umsaetze und Auftraege teilweise erheblich
+ *
+ * Revision 1.76  2010-08-03 11:00:01  willuhn
  * @N Konto-ID mit in Checksumme
  *
  * Revision 1.75  2010-06-17 15:31:27  willuhn

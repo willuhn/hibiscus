@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.54 $
- * $Date: 2010/06/02 15:32:03 $
+ * $Revision: 1.55 $
+ * $Date: 2010/08/26 11:31:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -437,7 +437,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
     if (this.isNewObject())
       return;
 
-    UmsatzImpl.UMSATZTYP_CACHE.remove(this.getID());
+    Cache.get(UmsatzTyp.class).remove(this); // Aus dem Cache loeschen
 
     // Ueberschrieben, weil wir beim Loeschen pruefen muessen,
     // ob wir irgendwelchen Umsaetzen zugeordnet sind und
@@ -486,7 +486,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
   public void store() throws RemoteException, ApplicationException
   {
     super.store();
-    UmsatzImpl.UMSATZTYP_CACHE.put(this.getID(), this);
+    Cache.get(UmsatzTyp.class).put(this); // Cache aktualisieren
   }
 
   /**
@@ -612,6 +612,9 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
 
 /*******************************************************************************
  * $Log: UmsatzTypImpl.java,v $
+ * Revision 1.55  2010/08/26 11:31:23  willuhn
+ * @N Neuer Cache. In dem werden jetzt die zugeordneten Konten von Auftraegen und Umsaetzen zwischengespeichert sowie die Umsatz-Kategorien. Das beschleunigt das Laden der Umsaetze und Auftraege teilweise erheblich
+ *
  * Revision 1.54  2010/06/02 15:32:03  willuhn
  * @N Unique-Constraint auf Spalte "name" in Tabelle "umsatztyp" entfernt. Eine Kategorie kann jetzt mit gleichem Namen beliebig oft auftreten
  * @N Auswahlbox der Oberkategorie in Einstellungen->Umsatz-Kategorien zeigt auch die gleiche Baumstruktur wie bei der Zuordnung der Kategorie in der Umsatzliste

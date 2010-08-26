@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractHibiscusTransferImpl.java,v $
- * $Revision: 1.13 $
- * $Date: 2009/05/12 22:53:33 $
+ * $Revision: 1.14 $
+ * $Date: 2010/08/26 11:31:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -40,6 +40,17 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractDBObject impl
    */
   public AbstractHibiscusTransferImpl() throws RemoteException {
     super();
+  }
+
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#getAttribute(java.lang.String)
+   */
+  public Object getAttribute(String arg0) throws RemoteException
+  {
+    if ("konto_id".equals(arg0))
+      return getKonto();
+
+    return super.getAttribute(arg0);
   }
 
   /**
@@ -108,19 +119,15 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractDBObject impl
   }
 
   /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
-   */
-  protected Class getForeignObject(String field) throws RemoteException {
-		if ("konto_id".equals(field))
-			return Konto.class;
-    return super.getForeignObject(field);
-  }
-
-  /**
    * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#getKonto()
    */
   public Konto getKonto() throws RemoteException {
-    return (Konto) getAttribute("konto_id");
+    Integer i = (Integer) super.getAttribute("konto_id");
+    if (i == null)
+      return null; // Kein Konto zugeordnet
+   
+    Cache<Konto> cache = Cache.get(Konto.class);
+    return cache.get(i);
   }
 
   /**
@@ -151,7 +158,7 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractDBObject impl
    * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setKonto(de.willuhn.jameica.hbci.rmi.Konto)
    */
   public void setKonto(Konto konto) throws RemoteException {
-		setAttribute("konto_id",konto);
+    setAttribute("konto_id",konto == null ? null : new Integer(konto.getID()));
   }
 
   /**
@@ -378,6 +385,9 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractDBObject impl
 
 /**********************************************************************
  * $Log: AbstractHibiscusTransferImpl.java,v $
+ * Revision 1.14  2010/08/26 11:31:23  willuhn
+ * @N Neuer Cache. In dem werden jetzt die zugeordneten Konten von Auftraegen und Umsaetzen zwischengespeichert sowie die Umsatz-Kategorien. Das beschleunigt das Laden der Umsaetze und Auftraege teilweise erheblich
+ *
  * Revision 1.13  2009/05/12 22:53:33  willuhn
  * @N BUGZILLA 189 - Ueberweisung als Umbuchung
  *
