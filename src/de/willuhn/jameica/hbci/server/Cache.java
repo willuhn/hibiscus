@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Cache.java,v $
- * $Revision: 1.3 $
- * $Date: 2010/08/26 12:53:08 $
+ * $Revision: 1.4 $
+ * $Date: 2010/08/27 09:24:58 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -24,7 +24,7 @@ import de.willuhn.jameica.hbci.Settings;
 /**
  * Cache fuer oft geladene Fachobjekte.
  */
-class Cache<T extends DBObject>
+class Cache
 {
   private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(Cache.class);
   private static int timeout = 0;
@@ -33,8 +33,8 @@ class Cache<T extends DBObject>
   private final static Map<Class,Cache> caches = new HashMap<Class,Cache>();
   
   // Der konkrete Cache
-  private Map<String,T> data = new HashMap<String,T>();
-  private Class<T> type = null;
+  private Map<String,DBObject> data = new HashMap<String,DBObject>();
+  private Class<? extends DBObject> type = null;
   private long validTo = 0;
   
   static
@@ -74,7 +74,7 @@ class Cache<T extends DBObject>
    * @return der Cache.
    * @throws RemoteException
    */
-  static <T> Cache get(Class<? extends DBObject> type, boolean init) throws RemoteException
+  static Cache get(Class<? extends DBObject> type, boolean init) throws RemoteException
   {
     Cache cache = caches.get(type);
     
@@ -118,21 +118,21 @@ class Cache<T extends DBObject>
    * @return das Objekt oder NULL, wenn es nicht existiert.
    * @throws RemoteException
    */
-  T get(Object id) throws RemoteException
+  DBObject get(Object id) throws RemoteException
   {
     if (id == null)
       return null;
     
     String s = id.toString();
     
-    T value = data.get(s);
+    DBObject value = data.get(s);
     
     if (value == null)
     {
       // Noch nicht im Cache. Vielleicht koennen wir es noch laden
       try
       {
-        value = (T) Settings.getDBService().createObject(type,s);
+        value = (DBObject) Settings.getDBService().createObject(type,s);
         put(value); // tun wir gleich in den Cache
       }
       catch (ObjectNotFoundException one)
@@ -148,7 +148,7 @@ class Cache<T extends DBObject>
    * @param object das zu speichernde Objekt.
    * @throws RemoteException
    */
-  void put(T object) throws RemoteException
+  void put(DBObject object) throws RemoteException
   {
     if (object == null)
       return;
@@ -160,7 +160,7 @@ class Cache<T extends DBObject>
    * @param object das zu entfernende Objekt.
    * @throws RemoteException
    */
-  void remove(T object) throws RemoteException
+  void remove(DBObject object) throws RemoteException
   {
     if (object == null)
       return;
@@ -171,7 +171,7 @@ class Cache<T extends DBObject>
    * Liefert alle Werte aus dem Cache.
    * @return Liste der Werte aus dem Cache.
    */
-  Collection<T> values()
+  Collection<DBObject> values()
   {
     return data.values();
   }
@@ -181,7 +181,10 @@ class Cache<T extends DBObject>
 
 /**********************************************************************
  * $Log: Cache.java,v $
- * Revision 1.3  2010/08/26 12:53:08  willuhn
+ * Revision 1.4  2010/08/27 09:24:58  willuhn
+ * @B Generics-Deklaration im Cache hat javac nicht akzeptiert (der Eclipse-Compiler hats komischerweise gefressen)
+ *
+ * Revision 1.3  2010-08-26 12:53:08  willuhn
  * @N Cache nur befuellen, wenn das explizit gefordert wird. Andernfalls wuerde der Cache u.U. unnoetig gefuellt werden, obwohl nur ein Objekt daraus geloescht werden soll
  *
  * Revision 1.2  2010-08-26 12:25:11  willuhn
