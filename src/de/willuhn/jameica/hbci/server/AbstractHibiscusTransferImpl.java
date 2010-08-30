@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractHibiscusTransferImpl.java,v $
- * $Revision: 1.16 $
- * $Date: 2010/08/27 09:24:58 $
+ * $Revision: 1.17 $
+ * $Date: 2010/08/30 14:25:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -158,7 +158,7 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractDBObject impl
    * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setKonto(de.willuhn.jameica.hbci.rmi.Konto)
    */
   public void setKonto(Konto konto) throws RemoteException {
-    setAttribute("konto_id",konto == null ? null : new Integer(konto.getID()));
+    setAttribute("konto_id",(konto == null || konto.getID() == null) ? null : new Integer(konto.getID()));
   }
 
   /**
@@ -385,7 +385,10 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractDBObject impl
 
 /**********************************************************************
  * $Log: AbstractHibiscusTransferImpl.java,v $
- * Revision 1.16  2010/08/27 09:24:58  willuhn
+ * Revision 1.17  2010/08/30 14:25:37  willuhn
+ * @B NPE, wenn Konto angegeben, jedoch ohne ID
+ *
+ * Revision 1.16  2010-08-27 09:24:58  willuhn
  * @B Generics-Deklaration im Cache hat javac nicht akzeptiert (der Eclipse-Compiler hats komischerweise gefressen)
  *
  * Revision 1.15  2010-08-26 12:53:08  willuhn
