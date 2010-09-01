@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/ChartDataSaldoVerlauf.java,v $
- * $Revision: 1.14 $
- * $Date: 2010/08/12 17:12:32 $
+ * $Revision: 1.15 $
+ * $Date: 2010/09/01 15:28:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -79,9 +79,9 @@ public class ChartDataSaldoVerlauf extends AbstractChartDataSaldo
     
     Calendar cal = Calendar.getInstance();
     cal.setTime(start);
-    Date end = HBCIProperties.startOfDay(new Date());
+    Date end = HBCIProperties.endOfDay(new Date());
     
-    while (end.after(start))
+    while (!start.after(end))
     {
       Saldo s = new Saldo(start,finder.get(start));
       this.data.add(s);
@@ -107,7 +107,10 @@ public class ChartDataSaldoVerlauf extends AbstractChartDataSaldo
 
 /*********************************************************************
  * $Log: ChartDataSaldoVerlauf.java,v $
- * Revision 1.14  2010/08/12 17:12:32  willuhn
+ * Revision 1.15  2010/09/01 15:28:57  willuhn
+ * @B Der letzte Tag wurde nicht beruecksichtigt - siehe Mail von Felix vom 01.09.
+ *
+ * Revision 1.14  2010-08-12 17:12:32  willuhn
  * @N Saldo-Chart komplett ueberarbeitet (Daten wurden vorher mehrmals geladen, Summen-Funktion, Anzeige mehrerer Konten, Durchschnitt ueber mehrere Konten, Bugfixing, echte "Homogenisierung" der Salden via SaldoFinder)
  *
  * Revision 1.13  2010-08-11 16:06:04  willuhn
