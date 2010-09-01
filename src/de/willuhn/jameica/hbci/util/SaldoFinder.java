@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/util/SaldoFinder.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/08/13 10:49:33 $
+ * $Revision: 1.3 $
+ * $Date: 2010/09/01 15:33:54 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -38,6 +38,9 @@ public class SaldoFinder
     while (umsaetze.hasNext())
     {
       Umsatz u = (Umsatz) umsaetze.next();
+      // Vormerkbuchungen werden nicht beruecksichtigt, weil sie keinen Saldo haben
+      if ((u.getFlags() & Umsatz.FLAG_NOTBOOKED) == Umsatz.FLAG_NOTBOOKED)
+        continue;
       this.map.put(u.getValuta(),u.getSaldo());
     }
   }
@@ -73,7 +76,10 @@ public class SaldoFinder
 
 /**********************************************************************
  * $Log: SaldoFinder.java,v $
- * Revision 1.2  2010/08/13 10:49:33  willuhn
+ * Revision 1.3  2010/09/01 15:33:54  willuhn
+ * @B Vormerkbuchungen in Saldo-Verlauf ignorieren, weil sie keinen Saldo haben
+ *
+ * Revision 1.2  2010-08-13 10:49:33  willuhn
  * *** empty log message ***
  *
  * Revision 1.1  2010-08-12 17:12:32  willuhn
