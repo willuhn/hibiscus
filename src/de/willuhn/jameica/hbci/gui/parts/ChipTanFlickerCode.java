@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/Attic/ChipTanFlickerCode.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/09/02 22:36:10 $
+ * $Revision: 1.3 $
+ * $Date: 2010/09/02 23:23:13 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -247,14 +247,8 @@ public class ChipTanFlickerCode
       
       for (int i = 0; i < 5; i++)
       {
-        if (bitarray.get(halfbyteid)[i] == 1)
-        {
-          ctx.setBackground(canvas.getDisplay().getSystemColor(SWT.COLOR_BLACK));
-        }
-        else
-        {
-          ctx.setBackground(canvas.getDisplay().getSystemColor(SWT.COLOR_WHITE));
-        }
+        int color = (bitarray.get(halfbyteid)[i] == 1) ? SWT.COLOR_BLACK : SWT.COLOR_WHITE;
+        ctx.setBackground(canvas.getDisplay().getSystemColor(color));
         ctx.fillRectangle(i*barwidth+margin,margin,barwidth-2*margin,canvas.getSize().y-2*margin);
       }
       
@@ -403,7 +397,10 @@ public class ChipTanFlickerCode
 
 /**********************************************************************
  * $Log: ChipTanFlickerCode.java,v $
- * Revision 1.2  2010/09/02 22:36:10  willuhn
+ * Revision 1.3  2010/09/02 23:23:13  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.2  2010-09-02 22:36:10  willuhn
  * *** empty log message ***
  *
  * Revision 1.1  2010-09-02 22:35:37  willuhn
