@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCIJob.java,v $
- * $Revision: 1.30 $
- * $Date: 2009/01/16 22:50:00 $
+ * $Revision: 1.31 $
+ * $Date: 2010/09/02 10:21:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,6 +28,7 @@ import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
+import de.willuhn.util.ProgressMonitor;
 
 /**
  * Basis-Klasse fuer die HBCI-Jobs.
@@ -94,7 +95,17 @@ public abstract class AbstractHBCIJob
    */
   void markCancelled() throws RemoteException, ApplicationException
   {
-    
+  }
+  
+  /**
+   * Wird aufgerufen, wenn Warnungen gefunden wurden.
+   * Kann von abgeleiteten Klassen ueberschrieben werden.
+   * @param warnings die aufgetretenen Warnungen.
+   * @throws RemoteException
+   * @throws ApplicationException
+   */
+  void hasWarnings(HBCIRetVal[] warnings) throws RemoteException, ApplicationException
+  {
   }
 
 	/**
@@ -133,7 +144,7 @@ public abstract class AbstractHBCIJob
 	{
 		return job.getJobResult();
 	}
-
+  
   /**
    * Diese Funktion wird von der HBCIFactory nach Beendigung der Kommunikation mit der Bank ausgefuehrt.
    * Sie prueft globalen Status und Job-Status und ruft entsprechend markExecuted() oder markFailed(String) auf. 
@@ -142,13 +153,32 @@ public abstract class AbstractHBCIJob
    */
   final void handleResult() throws ApplicationException, RemoteException
   {
-    HBCIJobResult result = getJobResult();
     if (HBCIFactory.getInstance().isCancelled()) // BUGZILLA 690
     {
       Logger.warn("hbci session cancelled by user, mark job as cancelled");
       markCancelled();
       return;
     }
+
+    HBCIJobResult result    = getJobResult();
+    HBCIStatus status       = result.getJobStatus();
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Warnungen ausgeben, falls vorhanden - BUGZILLA 899
+    HBCIRetVal[] warnings = status.getWarnings();
+    if (warnings != null && warnings.length > 0)
+    {
+      // Loggen
+      ProgressMonitor monitor = HBCIFactory.getInstance().getProgressMonitor();
+      monitor.log("  " + i18n.tr("Warnungen") + ":");
+      for (HBCIRetVal val:warnings)
+        monitor.log("    " + val.code + ": " + val.text);
+      monitor.log(" ");
+      
+      // Auftrag informieren
+      hasWarnings(warnings);
+    }
+    ////////////////////////////////////////////////////////////////////////////
     
     if (result.isOK())
     {
@@ -160,7 +190,7 @@ public abstract class AbstractHBCIJob
 
     // Globaler Status ist nicht OK. Mal schauen, was der Job-Status sagt
     String statusText = getStatusText();
-    if (result.getJobStatus().getStatusCode() == HBCIStatus.STATUS_OK)
+    if (status.getStatusCode() == HBCIStatus.STATUS_OK)
     {
       // Wir haben zwar global einen Fehler. Aber zumindest der Auftrag
       // scheint in Ordnung zu sein. Wir markieren ihn sicherheitshalber
@@ -352,6 +382,9 @@ public abstract class AbstractHBCIJob
 
 /**********************************************************************
  * $Log: AbstractHBCIJob.java,v $
+ * Revision 1.31  2010/09/02 10:21:06  willuhn
+ * @N BUGZILLA 899
+ *
  * Revision 1.30  2009/01/16 22:50:00  willuhn
  * @N bugzilla token
  *

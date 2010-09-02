@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCISammelTransferJob.java,v $
- * $Revision: 1.11 $
- * $Date: 2009/06/29 09:00:23 $
+ * $Revision: 1.12 $
+ * $Date: 2010/09/02 10:21:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,8 @@
 package de.willuhn.jameica.hbci.server.hbci;
 
 import java.rmi.RemoteException;
+
+import org.kapott.hbci.status.HBCIRetVal;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
@@ -26,6 +28,7 @@ import de.willuhn.jameica.hbci.server.Converter;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
+import de.willuhn.util.ProgressMonitor;
 
 /**
  * Abstrakter Basis-Job fuer Sammel-Transfers.
@@ -150,11 +153,39 @@ public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
     konto.addToProtokoll(msg,Protokoll.TYP_ERROR);
   }
 
+  /**
+   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#hasWarnings(org.kapott.hbci.status.HBCIRetVal[])
+   */
+  void hasWarnings(HBCIRetVal[] warnings) throws RemoteException, ApplicationException
+  {
+    // BUGZILLA 899
+    // Wir checken, ob eventuell eine der enthaltenen Buchungen nicht ausgefuehrt wurde
+    for (HBCIRetVal val:warnings)
+    {
+      String code = val.code;
+      if (code == null || code.length() != 4)
+        continue; // Hu?
+      if (code.equals("3210") ||
+          code.equals("3220") ||
+          code.equals("3260") ||
+          code.equals("3290"))
+      {
+        // Jepp, wir haben offensichtlich eine fehlgeschlagene Buchung
+        ProgressMonitor monitor = HBCIFactory.getInstance().getProgressMonitor();
+        monitor.log("    " + i18n.tr("** Eine oder mehrere Buchungen des Sammelauftrages wurde nicht ausgeführt!"));
+        return;
+      }
+    }
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: AbstractHBCISammelTransferJob.java,v $
+ * Revision 1.12  2010/09/02 10:21:06  willuhn
+ * @N BUGZILLA 899
+ *
  * Revision 1.11  2009/06/29 09:00:23  willuhn
  * @B wenn das Feature "transfer.markexecuted.before" aktiv ist, wurden Auftraege auch dann als ausgefuehrt markiert, wenn sie abgebrochen wurden - die Methode markCancelled() war nicht ueberschrieben worden
  *
