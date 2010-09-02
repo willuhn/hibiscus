@@ -2,6 +2,7 @@ package de.willuhn.jameica.hbci.messaging;
 
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.SynchronizeOptions;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.KontoUtil;
@@ -58,9 +59,14 @@ public class CheckOfflineUmsatzMessageConsumer implements MessageConsumer
     if ((k.getFlags() & Konto.FLAG_OFFLINE) == Konto.FLAG_OFFLINE)
       return;
 
-    // pruefen, ob das Gegenkonto ein eigenes Konto und dieses ein Offlinekonto ist.
-    Konto gegenkonto = KontoUtil.find(u.getGegenkontoNummer(), u.getGegenkontoBLZ());
-    if (gegenkonto == null || (gegenkonto.getFlags() & Konto.FLAG_OFFLINE) != Konto.FLAG_OFFLINE)
+    // Checken, ob wir ein lokal passendes Offline-Konto haben
+    Konto gegenkonto = KontoUtil.find(u.getGegenkontoNummer(), u.getGegenkontoBLZ(),Konto.FLAG_OFFLINE);
+    if (gegenkonto == null)
+      return; // Das Konto haben wir nicht
+    
+    // Checken, ob fuer das Konto automatisch Umsaetze angelegt werden sollen
+    SynchronizeOptions options = new SynchronizeOptions(gegenkonto);
+    if (!options.getSyncOffline())
       return;
 
     // Kopie der Buchung erzeugen

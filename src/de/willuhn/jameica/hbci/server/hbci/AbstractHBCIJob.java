@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCIJob.java,v $
- * $Revision: 1.31 $
- * $Date: 2010/09/02 10:21:06 $
+ * $Revision: 1.32 $
+ * $Date: 2010/09/02 12:25:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -170,9 +170,9 @@ public abstract class AbstractHBCIJob
     {
       // Loggen
       ProgressMonitor monitor = HBCIFactory.getInstance().getProgressMonitor();
-      monitor.log("  " + i18n.tr("Warnungen") + ":");
+      monitor.log(" ");
       for (HBCIRetVal val:warnings)
-        monitor.log("    " + val.code + ": " + val.text);
+        monitor.log("  " + val.code + ": " + val.text);
       monitor.log(" ");
       
       // Auftrag informieren
@@ -382,7 +382,10 @@ public abstract class AbstractHBCIJob
 
 /**********************************************************************
  * $Log: AbstractHBCIJob.java,v $
- * Revision 1.31  2010/09/02 10:21:06  willuhn
+ * Revision 1.32  2010/09/02 12:25:13  willuhn
+ * @N BUGZILLA 900
+ *
+ * Revision 1.31  2010-09-02 10:21:06  willuhn
  * @N BUGZILLA 899
  *
  * Revision 1.30  2009/01/16 22:50:00  willuhn

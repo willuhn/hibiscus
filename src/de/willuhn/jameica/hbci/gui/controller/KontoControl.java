@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.94 $
- * $Date: 2010/08/13 13:58:47 $
+ * $Revision: 1.95 $
+ * $Date: 2010/09/02 12:25:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -211,7 +211,10 @@ public class KontoControl extends AbstractControl {
           boolean b = ((Boolean) getOffline().getValue()).booleanValue();
           getSaldo().setEnabled(b);
           getPassportAuswahl().setEnabled(!b);
-          getSynchronizeOptions().setEnabled(!b);
+          
+          // Wir muessen die Aenderung sofort ins Konto uebernehmen, damit
+          // der richtige Sync-Options-Dialog angezeigt wird.
+          applyOfflineState(b);
         }
         catch (Exception e)
         {
@@ -519,12 +522,7 @@ public class KontoControl extends AbstractControl {
         getKonto().setPassportClass(p.getClass().getName());
 			}
 			
-			int flags = getKonto().getFlags();
-			boolean have = (flags & Konto.FLAG_OFFLINE) == Konto.FLAG_OFFLINE;
-      if (offline && !have)
-        getKonto().setFlags(flags | Konto.FLAG_OFFLINE);
-      else if (!offline && have)
-        getKonto().setFlags(flags ^ Konto.FLAG_OFFLINE);
+			applyOfflineState(offline);
 
 			getKonto().setKontonummer((String)getKontonummer().getValue());
       getKonto().setUnterkonto((String)getUnterkonto().getValue());
@@ -550,7 +548,21 @@ public class KontoControl extends AbstractControl {
 			Logger.error("unable to store konto",e);
 			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern des Kontos."));
 		}
-
+  }
+  
+  /**
+   * Uebernimmt den Offline-Status in das Konto.
+   * @param offline true, wenn es offline ist.
+   * @throws RemoteException
+   */
+  private void applyOfflineState(boolean offline) throws RemoteException
+  {
+    int flags = getKonto().getFlags();
+    boolean have = (flags & Konto.FLAG_OFFLINE) == Konto.FLAG_OFFLINE;
+    if (offline && !have)
+      getKonto().setFlags(flags | Konto.FLAG_OFFLINE);
+    else if (!offline && have)
+      getKonto().setFlags(flags ^ Konto.FLAG_OFFLINE);
   }
 
 	/**
@@ -709,7 +721,10 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
- * Revision 1.94  2010/08/13 13:58:47  willuhn
+ * Revision 1.95  2010/09/02 12:25:13  willuhn
+ * @N BUGZILLA 900
+ *
+ * Revision 1.94  2010-08-13 13:58:47  willuhn
  * @B Konto wurde versehentlich als Offline-Konto markiert - siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=69107#69107
  *
  * Revision 1.93  2010-08-12 17:12:31  willuhn

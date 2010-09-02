@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoUtil.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/06/07 22:41:14 $
+ * $Revision: 1.3 $
+ * $Date: 2010/09/02 12:25:13 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -42,6 +42,21 @@ public class KontoUtil
    */
   public static Konto find(String kontonummer, String blz) throws RemoteException
   {
+    return find(kontonummer,blz,-1);
+  }
+
+  /**
+   * Sucht das Konto in der Datenbank.
+   * Die Funktion entfernt bei der Suche selbstaendig fuehrende Nullen in
+   * Kontonummern.
+   * @param kontonummer die Kontonummer.
+   * @param blz die BLZ.
+   * @param flag das Flag, welches das Konto besitzen muss.
+   * @return das gefundene Konto oder NULL, wenn es nicht existiert.
+   * @throws RemoteException
+   */
+  public static Konto find(String kontonummer, String blz, int flag) throws RemoteException
+  {
     if (kontonummer == null || kontonummer.length() == 0)
       return null;
     if (blz == null || blz.length() == 0)
@@ -64,6 +79,22 @@ public class KontoUtil
     {
       // Fuehrende Nullen abschneiden und dann vergleichen
       Konto test = (Konto) konten.next();
+      int current = test.getFlags();
+
+      if (flag == Konto.FLAG_NONE)
+      {
+        // Nur Konten ohne Flags zugelassen
+        if (current != flag)
+          continue;
+      }
+      else if (flag > 0)
+      {
+        // Ein Flag ist angegeben. Dann kommt das Konto nur
+        // in Frage, wenn es dieses Flag besitzt
+        if ((current & flag) != flag)
+          continue;
+      }
+      
       String kTest = test.getKontonummer();
       if (kTest == null || kTest.length() == 0)
         continue;
@@ -221,6 +252,9 @@ public class KontoUtil
 
 /**********************************************************************
  * $Log: KontoUtil.java,v $
+ * Revision 1.3  2010/09/02 12:25:13  willuhn
+ * @N BUGZILLA 900
+ *
  * Revision 1.2  2010/06/07 22:41:14  willuhn
  * @N BUGZILLA 844/852
  *

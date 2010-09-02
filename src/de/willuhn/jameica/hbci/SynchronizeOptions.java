@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/SynchronizeOptions.java,v $
- * $Revision: 1.9 $
- * $Date: 2010/04/22 12:42:03 $
+ * $Revision: 1.10 $
+ * $Date: 2010/09/02 12:25:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,6 +26,7 @@ import de.willuhn.jameica.system.Settings;
 public class SynchronizeOptions implements Serializable
 {
   private String id = null;
+  private boolean offline  = false;
   private boolean disabled = false;
   private final static Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
 
@@ -37,8 +38,9 @@ public class SynchronizeOptions implements Serializable
   public SynchronizeOptions(Konto k) throws RemoteException
   {
     int flags = k.getFlags();
-    this.disabled = k == null || ((flags & Konto.FLAG_DISABLED) != 0) || ((flags & Konto.FLAG_OFFLINE) != 0);
-    this.id = k == null ? null : k.getID();
+    this.offline  = ((flags & Konto.FLAG_OFFLINE) == Konto.FLAG_OFFLINE);
+    this.disabled = ((flags & Konto.FLAG_DISABLED) == Konto.FLAG_DISABLED);
+    this.id = k.getID();
   }
   
   /**
@@ -80,7 +82,7 @@ public class SynchronizeOptions implements Serializable
     // war, nehmen wir als Default-Wert auch den von dort.
     // Damit wird beim ersten mal der Vorwert uebernommen.
     // (Sanfte Migration)
-    return !this.disabled && settings.getBoolean("sync.konto." + id + ".saldo",getSyncKontoauszuege());
+    return !this.disabled && !this.offline && settings.getBoolean("sync.konto." + id + ".saldo",getSyncKontoauszuege());
   }
 
   /**
@@ -89,7 +91,7 @@ public class SynchronizeOptions implements Serializable
    */
   public boolean getSyncKontoauszuege()
   {
-    return !this.disabled && settings.getBoolean("sync.konto." + id + ".kontoauszug",true);
+    return !this.disabled && !this.offline && settings.getBoolean("sync.konto." + id + ".kontoauszug",true);
   }
   
   /**
@@ -98,7 +100,7 @@ public class SynchronizeOptions implements Serializable
    */
   public boolean getSyncUeberweisungen()
   {
-    return !this.disabled && settings.getBoolean("sync.konto." + id + ".ueb",false);
+    return !this.disabled && !this.offline && settings.getBoolean("sync.konto." + id + ".ueb",false);
   }
 
   /**
@@ -107,7 +109,7 @@ public class SynchronizeOptions implements Serializable
    */
   public boolean getSyncLastschriften()
   {
-    return !this.disabled && settings.getBoolean("sync.konto." + id + ".last",false);
+    return !this.disabled && !this.offline && settings.getBoolean("sync.konto." + id + ".last",false);
   }
 
   /**
@@ -116,7 +118,7 @@ public class SynchronizeOptions implements Serializable
    */
   public boolean getSyncDauerauftraege()
   {
-    return !this.disabled && settings.getBoolean("sync.konto." + id + ".dauer",false);
+    return !this.disabled && !this.offline && settings.getBoolean("sync.konto." + id + ".dauer",false);
   }
   
   /**
@@ -125,9 +127,18 @@ public class SynchronizeOptions implements Serializable
    */
   public boolean getSyncAuslandsUeberweisungen()
   {
-    return !this.disabled && settings.getBoolean("sync.konto." + id + ".uebforeign",false);
+    return !this.disabled && !this.offline && settings.getBoolean("sync.konto." + id + ".uebforeign",false);
   }
 
+  /**
+   * Prueft, ob in dem Konto automatisch passende Gegenbuchungen angelegt werden sollen,
+   * wenn es ein Offline-Konto ist.
+   * @return true, wenn automatische Offline-Synchronisierung stattfinden soll.
+   */
+  public boolean getSyncOffline()
+  {
+    return !this.disabled && settings.getBoolean("sync.konto." + id + ".offline",true);
+  }
   
   /**
    * Legt fest, ob die Kontoauszuege abgerufen werden sollen.
@@ -183,11 +194,23 @@ public class SynchronizeOptions implements Serializable
     settings.setAttribute("sync.konto." + id + ".uebforeign",b);
   }
 
+  /**
+   * Legt fest, ob in dem Konto automatisch passende Gegenbuchungen angelegt werden sollen,
+   * wenn es ein Offline-Konto ist.
+   * @param b true, wenn automatische Offline-Synchronisierung stattfinden soll.
+   */
+  public void setSyncOffline(boolean b)
+  {
+    settings.setAttribute("sync.konto." + id + ".offline",b);
+  }
 }
 
 
 /*********************************************************************
  * $Log: SynchronizeOptions.java,v $
+ * Revision 1.10  2010/09/02 12:25:13  willuhn
+ * @N BUGZILLA 900
+ *
  * Revision 1.9  2010/04/22 12:42:03  willuhn
  * @N Erste Version des Supports fuer Offline-Konten
  *

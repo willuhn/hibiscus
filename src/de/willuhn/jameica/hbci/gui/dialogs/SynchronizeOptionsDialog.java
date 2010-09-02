@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/SynchronizeOptionsDialog.java,v $
- * $Revision: 1.8 $
- * $Date: 2009/10/20 23:12:58 $
+ * $Revision: 1.9 $
+ * $Date: 2010/09/02 12:25:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,6 +12,8 @@
  **********************************************************************/
 
 package de.willuhn.jameica.hbci.gui.dialogs;
+
+import java.rmi.RemoteException;
 
 import org.eclipse.swt.widgets.Composite;
 
@@ -32,20 +34,30 @@ import de.willuhn.util.I18N;
  */
 public class SynchronizeOptionsDialog extends AbstractDialog
 {
-  private I18N i18n   = null;
-  private Konto konto = null;
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  
+  private boolean offline            = false;
+  private SynchronizeOptions options = null;
+  private CheckboxInput syncOffline  = null;
+  private CheckboxInput syncSaldo    = null;
+  private CheckboxInput syncUmsatz   = null;
+  private CheckboxInput syncUeb      = null;
+  private CheckboxInput syncLast     = null;
+  private CheckboxInput syncDauer    = null;
+  private CheckboxInput syncAueb     = null;
 
   /**
    * ct.
    * @param konto das Konto.
    * @param position
+   * @throws RemoteException
    */
-  public SynchronizeOptionsDialog(Konto konto, int position)
+  public SynchronizeOptionsDialog(Konto konto, int position) throws RemoteException
   {
     super(position);
-    this.konto = konto;
-    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     this.setTitle(i18n.tr("Synchronisierungsoptionen"));
+    this.options = new SynchronizeOptions(konto);
+    this.offline = (konto.getFlags() & Konto.FLAG_OFFLINE) == Konto.FLAG_OFFLINE;
   }
 
   /**
@@ -54,34 +66,40 @@ public class SynchronizeOptionsDialog extends AbstractDialog
   protected void paint(Composite parent) throws Exception
   {
     LabelGroup group = new LabelGroup(parent,i18n.tr("Optionen"));
-    
-    final SynchronizeOptions options = new SynchronizeOptions(konto);
 
-    final CheckboxInput saldo  = new CheckboxInput(options.getSyncSaldo());
-    final CheckboxInput auszug = new CheckboxInput(options.getSyncKontoauszuege());
-    final CheckboxInput ueb    = new CheckboxInput(options.getSyncUeberweisungen());
-    final CheckboxInput last   = new CheckboxInput(options.getSyncLastschriften());
-    final CheckboxInput dauer  = new CheckboxInput(options.getSyncDauerauftraege());
-    final CheckboxInput aueb   = new CheckboxInput(options.getSyncAuslandsUeberweisungen());
+    if (offline)
+    {
+      group.addText(i18n.tr("Bitte wählen Sie die Synchronisierungsoptionen für das Offline-Konto."),false);
+      group.addInput(getSyncOffline());
+    }
+    else
+    {
+      group.addText(i18n.tr("Bitte wählen Sie aus, welche Geschäftsvorfälle bei\nder Synchronisierung des Kontos ausgeführt werden sollen."),false);
+      group.addInput(getSyncSaldo());
+      group.addInput(getSyncUmsatz());
+      group.addInput(getSyncUeb());
+      group.addInput(getSyncAueb());
+      group.addInput(getSyncLast());
+      group.addInput(getSyncDauer());
+    }
 
-    group.addText(i18n.tr("Bitte wählen Sie aus, welche Geschäftsvorfälle bei\nder Synchronisierung des Kontos ausgeführt werden sollen."),false);
-    group.addCheckbox(saldo ,i18n.tr("Saldo abrufen"));
-    group.addCheckbox(auszug,i18n.tr("Kontoauszüge (Umsätze) abrufen"));
-    group.addCheckbox(ueb   ,i18n.tr("Überfällige Überweisungen absenden"));
-    group.addCheckbox(aueb  ,i18n.tr("Überfällige SEPA-Überweisungen absenden"));
-    group.addCheckbox(last  ,i18n.tr("Überfällige Lastschriften einziehen"));
-    group.addCheckbox(dauer ,i18n.tr("Daueraufträge synchronisieren"));
-    
     ButtonArea buttons = new ButtonArea(parent,2);
     buttons.addButton(i18n.tr("Übernehmen"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
-        options.setSyncSaldo(((Boolean)saldo.getValue()).booleanValue());
-        options.setSyncKontoauszuege(((Boolean)auszug.getValue()).booleanValue());
-        options.setSyncUeberweisungen(((Boolean)ueb.getValue()).booleanValue());
-        options.setSyncLastschriften(((Boolean)last.getValue()).booleanValue());
-        options.setSyncDauerauftraege(((Boolean)dauer.getValue()).booleanValue());
-        options.setSyncAuslandsUeberweisungen(((Boolean)aueb.getValue()).booleanValue());
+        if (offline)
+        {
+          options.setSyncOffline(((Boolean)getSyncOffline().getValue()).booleanValue());
+        }
+        else
+        {
+          options.setSyncSaldo(((Boolean)getSyncSaldo().getValue()).booleanValue());
+          options.setSyncKontoauszuege(((Boolean)getSyncUmsatz().getValue()).booleanValue());
+          options.setSyncUeberweisungen(((Boolean)getSyncUeb().getValue()).booleanValue());
+          options.setSyncLastschriften(((Boolean)getSyncLast().getValue()).booleanValue());
+          options.setSyncDauerauftraege(((Boolean)getSyncDauer().getValue()).booleanValue());
+          options.setSyncAuslandsUeberweisungen(((Boolean)getSyncAueb().getValue()).booleanValue());
+        }
         close();
       }
     });
@@ -91,6 +109,105 @@ public class SynchronizeOptionsDialog extends AbstractDialog
         close();
       }
     });
+  }
+  
+  /**
+   * Liefert eine Checkbox fuer die Aktivierung der Synchronisierung der Salden.
+   * @return Checkbox.
+   */
+  private CheckboxInput getSyncSaldo()
+  {
+    if (this.syncSaldo == null)
+    {
+      this.syncSaldo = new CheckboxInput(options.getSyncSaldo());
+      this.syncSaldo.setName(i18n.tr("Saldo abrufen"));
+    }
+    return this.syncSaldo;
+  }
+
+  /**
+   * Liefert eine Checkbox fuer die Aktivierung der Synchronisierung der Umsaetze.
+   * @return Checkbox.
+   */
+  private CheckboxInput getSyncUmsatz()
+  {
+    if (this.syncUmsatz == null)
+    {
+      this.syncUmsatz = new CheckboxInput(options.getSyncKontoauszuege());
+      this.syncUmsatz.setName(i18n.tr("Kontoauszüge (Umsätze) abrufen"));
+    }
+    return this.syncUmsatz;
+  }
+
+  /**
+   * Liefert eine Checkbox fuer die Aktivierung der Synchronisierung der Ueberweisungen.
+   * @return Checkbox.
+   */
+  private CheckboxInput getSyncUeb()
+  {
+    if (this.syncUeb == null)
+    {
+      this.syncUeb = new CheckboxInput(options.getSyncUeberweisungen());
+      this.syncUeb.setName(i18n.tr("Überfällige Überweisungen absenden"));
+    }
+    return this.syncUeb;
+  }
+
+  /**
+   * Liefert eine Checkbox fuer die Aktivierung der Synchronisierung der Lastschriften.
+   * @return Checkbox.
+   */
+  private CheckboxInput getSyncLast()
+  {
+    if (this.syncLast == null)
+    {
+      this.syncLast = new CheckboxInput(options.getSyncLastschriften());
+      this.syncLast.setName(i18n.tr("Überfällige Lastschriften einziehen"));
+    }
+    return this.syncLast;
+  }
+
+  /**
+   * Liefert eine Checkbox fuer die Aktivierung der Synchronisierung der Dauerauftraege.
+   * @return Checkbox.
+   */
+  private CheckboxInput getSyncDauer()
+  {
+    if (this.syncDauer == null)
+    {
+      this.syncDauer = new CheckboxInput(options.getSyncDauerauftraege());
+      this.syncDauer.setName(i18n.tr("Daueraufträge synchronisieren"));
+    }
+    return this.syncDauer;
+  }
+
+  /**
+   * Liefert eine Checkbox fuer die Aktivierung der Synchronisierung der SEPA-Ueberweisungen.
+   * @return Checkbox.
+   */
+  private CheckboxInput getSyncAueb()
+  {
+    if (this.syncAueb == null)
+    {
+      this.syncAueb = new CheckboxInput(options.getSyncAuslandsUeberweisungen());
+      this.syncAueb.setName(i18n.tr("Überfällige SEPA-Überweisungen absenden"));
+    }
+    return this.syncAueb;
+  }
+
+  /**
+   * Liefert eine Checkbox, mit der die automatische Synchronisierung
+   * von Offline-Konten aktiviert werden kann.
+   * @return Checkbox.
+   */
+  private CheckboxInput getSyncOffline()
+  {
+    if (this.syncOffline == null)
+    {
+      this.syncOffline = new CheckboxInput(this.options.getSyncOffline());
+      this.syncOffline.setName(i18n.tr("Passende Gegenbuchungen automatisch anlegen"));
+    }
+    return this.syncOffline;
   }
 
   /**
@@ -106,6 +223,9 @@ public class SynchronizeOptionsDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: SynchronizeOptionsDialog.java,v $
+ * Revision 1.9  2010/09/02 12:25:13  willuhn
+ * @N BUGZILLA 900
+ *
  * Revision 1.8  2009/10/20 23:12:58  willuhn
  * @N Support fuer SEPA-Ueberweisungen
  * @N Konten um IBAN und BIC erweitert
