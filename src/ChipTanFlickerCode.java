@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/Attic/ChipTanFlickerCode.java,v $
- * $Revision: 1.4 $
- * $Date: 2010/09/03 10:03:15 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/Attic/ChipTanFlickerCode.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2010/09/03 10:04:22 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -9,7 +9,6 @@
  *
  **********************************************************************/
 
-package de.willuhn.jameica.hbci.gui.parts;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -429,7 +428,10 @@ public class ChipTanFlickerCode
 
 /**********************************************************************
  * $Log: ChipTanFlickerCode.java,v $
- * Revision 1.4  2010/09/03 10:03:15  willuhn
+ * Revision 1.1  2010/09/03 10:04:22  willuhn
+ * @C Zum Test nochmal in default-Package verschoben
+ *
+ * Revision 1.4  2010-09-03 10:03:15  willuhn
  * @N Takt-Frequenz konfigurierbar
  *
  * Revision 1.3  2010-09-02 23:23:13  willuhn
