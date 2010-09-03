@@ -1,8 +1,8 @@
 package de.willuhn.jameica.hbci.gui.parts;
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/Attic/ChipTanFlickerCode.java,v $
- * $Revision: 1.7 $
- * $Date: 2010/09/03 12:14:32 $
+ * $Revision: 1.8 $
+ * $Date: 2010/09/03 12:19:10 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -357,8 +357,7 @@ public class ChipTanFlickerCode
     label.setLayoutData(new GridData(GridData.BEGINNING));
     label.setText("Flicker-Code");
     final Text text = new Text(comp2,SWT.SINGLE | SWT.BORDER);
-//    text.setText("11 04 871 49552 05 123456789F 14 302C3031 07");
-    text.setText("00282608871126230616134106498,23");
+    text.setText("11 04 871 49552 05 123456789F 14 302C3031 07");
     text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     
     Label label2 = new Label(comp2,SWT.NONE);
@@ -436,7 +435,10 @@ public class ChipTanFlickerCode
 
 /**********************************************************************
  * $Log: ChipTanFlickerCode.java,v $
- * Revision 1.7  2010/09/03 12:14:32  willuhn
+ * Revision 1.8  2010/09/03 12:19:10  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.7  2010-09-03 12:14:32  willuhn
  * *** empty log message ***
  *
  * Revision 1.6  2010-09-03 10:06:04  willuhn
