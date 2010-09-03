@@ -1,7 +1,8 @@
+package de.willuhn.jameica.hbci.gui.parts;
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/Attic/ChipTanFlickerCode.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/09/03 10:04:22 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/Attic/ChipTanFlickerCode.java,v $
+ * $Revision: 1.6 $
+ * $Date: 2010/09/03 10:06:04 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -428,7 +429,10 @@ public class ChipTanFlickerCode
 
 /**********************************************************************
  * $Log: ChipTanFlickerCode.java,v $
- * Revision 1.1  2010/09/03 10:04:22  willuhn
+ * Revision 1.6  2010/09/03 10:06:04  willuhn
+ * @C Mist, das Package hatte ich in hbci4java-help jetzt schon angegeben
+ *
+ * Revision 1.1  2010-09-03 10:04:22  willuhn
  * @C Zum Test nochmal in default-Package verschoben
  *
  * Revision 1.4  2010-09-03 10:03:15  willuhn
