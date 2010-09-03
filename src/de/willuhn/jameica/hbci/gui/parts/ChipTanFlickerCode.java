@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/Attic/ChipTanFlickerCode.java,v $
- * $Revision: 1.3 $
- * $Date: 2010/09/02 23:23:13 $
+ * $Revision: 1.4 $
+ * $Date: 2010/09/03 10:03:15 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -158,6 +158,7 @@ public class ChipTanFlickerCode
       }
       catch (Exception e)
       {
+        e.printStackTrace();
         return false;
       }
     }
@@ -174,6 +175,7 @@ public class ChipTanFlickerCode
     private List<int[]> bitarray = null;
     private Canvas canvas        = null;
     private boolean running      = false;
+    private long wait            = 100L;
     
     /**
      * ct.
@@ -192,6 +194,15 @@ public class ChipTanFlickerCode
           step(e.gc);
         }
       });
+    }
+    
+    /**
+     * Legt die Flicker-Frequenz in Hz (1/s) fest.
+     * @param i die Flicker-Frequenz.
+     */
+    private void setRate(int i)
+    {
+      this.wait = 1000 / i; // Millisekunden
     }
     
     /**
@@ -293,7 +304,7 @@ public class ChipTanFlickerCode
                   canvas.redraw();
                 }
               });
-              sleep(100L);
+              sleep(wait);
             }
           }
           catch (InterruptedException e) {/* Ende */}
@@ -327,22 +338,33 @@ public class ChipTanFlickerCode
     Composite comp = new Composite(shell,SWT.NONE);
     comp.setLayout(new GridLayout());
     
-    Canvas canvas = new Canvas(comp,SWT.NONE);
+    Canvas canvas = new Canvas(comp,SWT.BORDER);
     canvas.setBackground(display.getSystemColor(SWT.COLOR_BLACK));
     canvas.setLayoutData(new GridData(GridData.FILL_BOTH));
     canvas.setSize(205,100);
-    
     final FlickerCanvas c = new FlickerCanvas(canvas);
+
+
+    Composite comp2 = new Composite(comp,SWT.NONE);
+    comp2.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+    comp2.setLayout(new GridLayout(2,false));
     
-    final Text text = new Text(comp,SWT.SINGLE | SWT.BORDER);
+    Label label = new Label(comp2,SWT.NONE);
+    label.setLayoutData(new GridData(GridData.BEGINNING));
+    label.setText("Flicker-Code");
+    final Text text = new Text(comp2,SWT.SINGLE | SWT.BORDER);
     text.setText("11 04 871 49552 05 123456789F 14 302C3031 07");
     text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     
-    final Label error = new Label(comp,SWT.NONE);
-    error.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+    Label label2 = new Label(comp2,SWT.NONE);
+    label2.setLayoutData(new GridData(GridData.BEGINNING));
+    label2.setText("Takt (Hz)");
+    final Text takt = new Text(comp2,SWT.SINGLE | SWT.BORDER);
+    takt.setText("10");
+    takt.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-    Button start = new Button(comp,SWT.PUSH);
-    start.setText("Start");
+    Button start = new Button(comp2,SWT.PUSH);
+    start.setText("  Start  ");
     start.setLayoutData(new GridData(GridData.BEGINNING));
     start.addSelectionListener(new SelectionAdapter() {
 
@@ -359,18 +381,28 @@ public class ChipTanFlickerCode
             c.stop();
             return;
           }
+          
+          try
+          {
+            c.setRate(Integer.parseInt(takt.getText()));
+          }
+          catch (Exception ex)
+          {
+            ex.printStackTrace();
+          }
           c.setCode(new FlickerCode(s));
           c.start();
         }
         catch (Exception ex)
         {
-          error.setText(ex.getMessage());
+          ex.printStackTrace();
         }
       }
     });
-    
-    Button stop = new Button(comp,SWT.PUSH);
-    stop.setText("Stop");
+
+
+    Button stop = new Button(comp2,SWT.PUSH);
+    stop.setText("  Stop  ");
     stop.setLayoutData(new GridData(GridData.BEGINNING));
     stop.addSelectionListener(new SelectionAdapter() {
 
@@ -397,7 +429,10 @@ public class ChipTanFlickerCode
 
 /**********************************************************************
  * $Log: ChipTanFlickerCode.java,v $
- * Revision 1.3  2010/09/02 23:23:13  willuhn
+ * Revision 1.4  2010/09/03 10:03:15  willuhn
+ * @N Takt-Frequenz konfigurierbar
+ *
+ * Revision 1.3  2010-09-02 23:23:13  willuhn
  * *** empty log message ***
  *
  * Revision 1.2  2010-09-02 22:36:10  willuhn
