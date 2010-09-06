@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/PinTanConfigFactory.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/06/17 11:38:15 $
+ * $Revision: 1.2 $
+ * $Date: 2010/09/06 11:01:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -37,15 +37,9 @@ import de.willuhn.util.I18N;
  */
 public class PinTanConfigFactory
 {
-  private static Settings settings = new Settings(PinTanConfigFactory.class);
-  private static I18N i18n;
+  private final static Settings settings = new Settings(PinTanConfigFactory.class);
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  static
-  {
-    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  }
-
-
   /**
    * Erstellt eine neue PIN/Tan-Config.
    * @return neue Config.
@@ -372,6 +366,9 @@ public class PinTanConfigFactory
 
 /*****************************************************************************
  * $Log: PinTanConfigFactory.java,v $
+ * Revision 1.2  2010/09/06 11:01:36  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2010/06/17 11:38:15  willuhn
  * @C kompletten Code aus "hbci_passport_pintan" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
  *
