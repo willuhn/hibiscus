@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/server/KaanTriBankReader.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/06/17 11:45:49 $
+ * $Revision: 1.2 $
+ * $Date: 2010/09/07 15:28:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,8 +12,6 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.passports.ddv.server;
 
-import java.rmi.RemoteException;
-
 import de.willuhn.jameica.hbci.passports.ddv.rmi.Reader;
 
 /**
@@ -22,19 +20,10 @@ import de.willuhn.jameica.hbci.passports.ddv.rmi.Reader;
  */
 public class KaanTriBankReader extends AbstractKaanReader implements Reader
 {
-
-  /**
-   * @throws RemoteException
-   */
-  public KaanTriBankReader() throws RemoteException
-  {
-    super();
-  }
-
   /**
    * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getName()
    */
-  public String getName() throws RemoteException
+  public String getName()
   {
     return "Kaan TriB@nk";
   }
@@ -43,14 +32,9 @@ public class KaanTriBankReader extends AbstractKaanReader implements Reader
 
 /**********************************************************************
  * $Log: KaanTriBankReader.java,v $
+ * Revision 1.2  2010/09/07 15:28:05  willuhn
+ * @N BUGZILLA 391 - Kartenleser-Konfiguration komplett umgebaut. Damit lassen sich jetzt beliebig viele Kartenleser und Konfigurationen parellel einrichten
+ *
  * Revision 1.1  2010/06/17 11:45:49  willuhn
  * @C kompletten Code aus "hbci_passport_ddv" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
- *
- * Revision 1.2  2008/09/15 21:53:44  willuhn
- * @N Kaan TriB@nk + 64Bit-Support
- *
- * Revision 1.1  2008/07/29 08:27:43  willuhn
- * @N Kaan TriB@nk
- * @C Pfadtrenner via File.separator
- *
  **********************************************************************/

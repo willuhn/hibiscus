@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/Controller.java,v $
- * $Revision: 1.7 $
- * $Date: 2010/07/22 22:36:24 $
+ * $Revision: 1.8 $
+ * $Date: 2010/09/07 15:28:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,34 +15,36 @@ package de.willuhn.jameica.hbci.passports.ddv;
 import java.io.File;
 import java.rmi.RemoteException;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.manager.HBCIHandler;
 import org.kapott.hbci.passport.HBCIPassport;
 import org.kapott.hbci.passport.HBCIPassportDDV;
 
-import de.willuhn.datasource.GenericIterator;
-import de.willuhn.datasource.GenericObject;
-import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
+import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.ListDialog;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.FileInput;
 import de.willuhn.jameica.gui.input.Input;
-import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
+import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
+import de.willuhn.jameica.gui.parts.ContextMenu;
+import de.willuhn.jameica.gui.parts.ContextMenuItem;
+import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.AccountContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.PassportTest;
 import de.willuhn.jameica.hbci.gui.dialogs.AccountContainerDialog;
 import de.willuhn.jameica.hbci.gui.input.HBCIVersionInput;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
-import de.willuhn.jameica.hbci.passports.ddv.rmi.Passport;
 import de.willuhn.jameica.hbci.passports.ddv.rmi.Reader;
+import de.willuhn.jameica.hbci.passports.ddv.server.PassportHandleImpl;
 import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
@@ -58,14 +60,13 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class Controller extends AbstractControl
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  // Fachobjekte
-  private Passport passport = null;
-
-  private GenericIterator readers = null;
+  private TablePart configList      = null;
+  private TablePart kontoList       = null;
 
   // Eingabe-Felder
-  private Input name                = null;
+  private TextInput bezeichnung     = null;
   private SelectInput port          = null;
   private Input ctNumber            = null;
   private Input entryIndex          = null;
@@ -74,230 +75,228 @@ public class Controller extends AbstractControl
   private CheckboxInput useSoftPin  = null;
   private DialogInput readerPresets = null;
   private SelectInput hbciVersion   = null;
-  private I18N i18n;
 
   /**
    * ct.
-   * 
    * @param view
    */
   public Controller(AbstractView view)
   {
     super(view);
-    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources()
-        .getI18N();
   }
 
   /**
-   * Liefert den Passport.
-   * 
-   * @return Passport.
+   * Liefert die aktuelle Config.
+   * @return die aktuelle Config.
    */
-  public Passport getPassport()
+  private DDVConfig getConfig()
   {
-    if (passport != null)
-      return passport;
+    Object o = getCurrentObject();
+    if (o instanceof DDVConfig)
+      return (DDVConfig) o;
+    return null;
+  }
 
-    // Wir gehen einfach mal davon aus, dass wir den auf DDV
-    // casten koennen. Waere es kein DDV, wuerden wir ja nicht
-    // aufgerufen worden sein ;)
-    passport = (Passport) getCurrentObject();
+  /**
+   * Liefert eine Liste mit den existierenden Konfigurationen.
+   * @return Liste der Konfigurationen.
+   * @throws RemoteException
+   */
+  public TablePart getConfigList() throws RemoteException
+  {
+    if (this.configList != null)
+      return this.configList;
 
-    return passport;
+    this.configList = new TablePart(DDVConfigFactory.getConfigs(),new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        GUI.startView(Detail.class,context);
+      }
+    });
+    this.configList.addColumn(i18n.tr("Alias-Name"),"name");
+    this.configList.addColumn(i18n.tr("Kartenleser"),"readerPreset");
+    this.configList.addColumn(i18n.tr("Index des HBCI-Zugangs"),"entryIndex");
+
+    ContextMenu ctx = new ContextMenu();
+
+    ctx.addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"),new Action() {
+      public void handleAction(Object context) throws ApplicationException {
+        if (context == null)
+          return;
+        try
+        {
+          GUI.startView(Detail.class,context);
+        }
+        catch (Exception e) {
+          Logger.error("error while loading config",e);
+          GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Anlegen der Konfiguration"));
+        }
+      }
+    },"document-open.png"));
+
+    ctx.addItem(new ContextMenuItem(i18n.tr("Neue Konfiguration..."),new Action() {
+      public void handleAction(Object context) throws ApplicationException {handleCreate();}
+    },"document-new.png"));
+
+    ctx.addItem(ContextMenuItem.SEPARATOR);
+    ctx.addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."),new Action() {
+      public void handleAction(Object context) throws ApplicationException {handleDelete((DDVConfig)context);}
+    },"user-trash-full.png"));
+
+    this.configList.setContextMenu(ctx);
+    this.configList.setMulti(false);
+    this.configList.setRememberColWidths(true);
+    this.configList.setRememberOrder(true);
+    return this.configList;
+  }
+
+  /**
+   * Liefert eine Tabelle mit festzuordenbaren Konten.
+   * @return Auswahl-Feld.
+   * @throws RemoteException
+   */
+  public TablePart getKontoAuswahl() throws RemoteException
+  {
+    if (kontoList == null)
+      this.kontoList = new KontoList(this.getConfig());
+    return kontoList;
   }
 
   /**
    * Liefert eine Auswahl-Box fuer die HBCI-Version.
-   * 
    * @return Auswahl-Box.
    * @throws RemoteException
    */
   public SelectInput getHBCIVersion() throws RemoteException
   {
-    if (hbciVersion != null)
-      return hbciVersion;
-    try
-    {
-      String current = getPassport().getHBCIVersion();
-      hbciVersion = new HBCIVersionInput(null,current);
-      return hbciVersion;
-    }
-    catch (Exception e)
-    {
-      Logger.error("error while loading hbci versions from key", e);
-      throw new RemoteException(i18n.tr("Fehler beim Lesen der unterstützten HBCI-Versionen"), e);
-    }
+    if (this.hbciVersion == null)
+      this.hbciVersion = new HBCIVersionInput(null,getConfig().getHBCIVersion());
+    return this.hbciVersion;
   }
 
   /**
-   * Liefert eine Auswahl von vorkonfigurierten und bereits bekannten
-   * Chipkartenlesern.
-   * 
+   * Liefert eine Auswahl von vorkonfigurierten Chipkartenlesern.
    * @return Auswahl von vorkonfigurierten Lesern.
-   * @throws RemoteException
    */
-  public DialogInput getReaderPresets() throws RemoteException
+  public DialogInput getReaderPresets()
   {
-    if (readerPresets != null)
-      return readerPresets;
-    String name = i18n.tr("unbekannter Kartenleser");
-    try
-    {
-      name = getPassport().getReaderPresets().getName();
-    }
-    catch (Throwable t)
-    {
-      Logger.error("unable to determine name of reader preset - you can ignore this error message",t);
-    }
-    ListDialog d = new ListDialog(getReaders(), ListDialog.POSITION_MOUSE);
-    d.setTitle(i18n.tr("Vorkonfigurierte Leser"));
+    if (this.readerPresets != null)
+      return this.readerPresets;
+    
+    ListDialog d = new ListDialog(DDVConfigFactory.getReaderPresets(), ListDialog.POSITION_MOUSE);
+    d.setTitle(i18n.tr("Kartenleser"));
     d.addColumn(i18n.tr("Bezeichnung"), "name");
     d.addCloseListener(new PresetListener());
+    d.setSize(400,SWT.DEFAULT);
 
-    readerPresets = new DialogInput(name, d);
-    readerPresets.disableClientControl();
-    return readerPresets;
+    Reader reader = getConfig().getReaderPreset();
+    this.readerPresets = new DialogInput(reader.getName(), d);
+    this.readerPresets.setValue(reader);
+    this.readerPresets.setName(i18n.tr("Kartenleser"));
+    this.readerPresets.disableClientControl();
+    return this.readerPresets;
   }
 
   /**
-   * Liefert einen Iterator mit bekannten Readern.
-   * 
-   * @return Iterator mit bekannten Readern.
-   * @throws RemoteException
-   */
-  private GenericIterator getReaders() throws RemoteException
-  {
-    if (readers != null)
-      return readers;
-
-    GenericObject[] list;
-    try
-    {
-      Logger.info("searching for reader presets");
-      Class[] found = Application.getClassLoader().getClassFinder().findImplementors(Reader.class);
-      list = new GenericObject[found.length];
-      for (int i = 0; i < found.length; ++i)
-      {
-        list[i] = (GenericObject) found[i].newInstance();
-        Logger.info("  found " + found[i].getName());
-      }
-    }
-    catch (Throwable t)
-    {
-      Logger.error("unable to find reader presets");
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Ermittlen der vorkonfigurierten Kartenleser"),StatusBarMessage.TYPE_ERROR));
-      list = new Reader[0];
-    }
-    readers = PseudoIterator.fromArray(list);
-    return readers;
-  }
-
-  /**
-   * Liefert eine Detai-Auswahl fuer den CTAPI-Treiber.
-   * 
+   * Liefert eine Datei-Auswahl fuer den CTAPI-Treiber.
    * @return Auswahl-Feld.
-   * @throws RemoteException
    */
-  public Input getCTAPI() throws RemoteException
+  public Input getCTAPI()
   {
-    if (ctapi != null)
-      return ctapi;
-    ctapi = new FileInput(getPassport().getCTAPIDriver());
-    ctapi.disableClientControl();
-    return ctapi;
+    if (this.ctapi != null)
+      return this.ctapi;
+    this.ctapi = new FileInput(getConfig().getCTAPIDriver());
+    this.ctapi.setName(i18n.tr("CTAPI Treiber-Datei"));
+    this.ctapi.disableClientControl();
+    return this.ctapi;
   }
 
   /**
    * Liefert das Eingabe-Feld fuer den Port.
-   * 
    * @return Eingabe-Feld.
-   * @throws RemoteException
    */
-  public SelectInput getPort() throws RemoteException
+  public SelectInput getPort()
   {
-    if (port != null)
-      return port;
+    if (this.port != null)
+      return this.port;
 
-    port = new SelectInput(Passport.PORTS, getPassport().getPort());
-    port.setComment(i18n.tr("meist COM1 oder USB"));
-    return port;
+    this.port = new SelectInput(DDVConfig.PORTS, getConfig().getPort());
+    this.port.setComment(i18n.tr("meist COM/USB"));
+    this.port.setName(i18n.tr("Port des Lesers"));
+    return this.port;
   }
 
   /**
    * Liefert das Eingabe-Feld fuer die Nummer des Lesers.
-   * 
    * @return Eingabe-Feld.
-   * @throws RemoteException
    */
-  public Input getCTNumber() throws RemoteException
+  public Input getCTNumber()
   {
-    if (ctNumber != null)
-      return ctNumber;
+    if (this.ctNumber != null)
+      return this.ctNumber;
 
-    ctNumber = new TextInput("" + getPassport().getCTNumber());
-    ctNumber.setComment(i18n.tr("meist 0"));
-    return ctNumber;
+    this.ctNumber = new TextInput(Integer.toString(getConfig().getCTNumber()));
+    this.ctNumber.setName(i18n.tr("Index des Lesers"));
+    this.ctNumber.setComment(i18n.tr("meist 0"));
+    return this.ctNumber;
   }
 
   /**
-   * Liefert das Eingabe-Feld fuer den Namen des Lesers.
-   * 
-   * @return Eingabe-Feld.
-   * @throws RemoteException
+   * Liefert ein Eingabe-Feld fuer die Bezeichnung.
+   * @return Bezeichnung.
    */
-  public Input getName() throws RemoteException
+  public Input getBezeichnung()
   {
-    if (name != null)
-      return name;
-
-    name = new LabelInput(getPassport().getName());
-    return name;
+    if (this.bezeichnung != null)
+      return this.bezeichnung;
+    this.bezeichnung = new TextInput(getConfig().getName());
+    this.bezeichnung.setComment(i18n.tr("Angabe optional"));
+    this.bezeichnung.setName(i18n.tr("Alias-Name"));
+    return this.bezeichnung;
   }
 
   /**
    * Liefert das Eingabe-Feld fuer die Index-Nummer des HBCI-Zugangs.
-   * 
    * @return Eingabe-Feld.
-   * @throws RemoteException
    */
-  public Input getEntryIndex() throws RemoteException
+  public Input getEntryIndex()
   {
-    if (entryIndex != null)
-      return entryIndex;
+    if (this.entryIndex != null)
+      return this.entryIndex;
 
-    entryIndex = new TextInput("" + getPassport().getEntryIndex());
-    entryIndex.setComment(i18n.tr("meist 1"));
-    return entryIndex;
+    this.entryIndex = new TextInput(Integer.toString(getConfig().getEntryIndex()));
+    this.entryIndex.setName(i18n.tr("Index des HBCI-Zugangs"));
+    this.entryIndex.setComment(i18n.tr("meist 1"));
+    return this.entryIndex;
   }
 
   /**
    * Liefert die Checkbox fuer die Auswahl biometrischer Verfahren.
-   * 
    * @return Checkbox.
-   * @throws RemoteException
    */
-  public CheckboxInput getBio() throws RemoteException
+  public CheckboxInput getBio()
   {
-    if (useBio != null)
-      return useBio;
+    if (this.useBio != null)
+      return this.useBio;
 
-    useBio = new CheckboxInput(getPassport().useBIO());
-    return useBio;
+    this.useBio = new CheckboxInput(getConfig().useBIO());
+    this.useBio.setName(i18n.tr("Biometrische Verfahren verwenden"));
+    return this.useBio;
   }
 
   /**
    * Liefert die Checkbox fuer die Auswahl der Tastatur als PIN-Eingabe.
-   * 
    * @return Checkbox.
-   * @throws RemoteException
    */
-  public CheckboxInput getSoftPin() throws RemoteException
+  public CheckboxInput getSoftPin()
   {
-    if (useSoftPin != null)
-      return useSoftPin;
+    if (this.useSoftPin != null)
+      return this.useSoftPin;
 
-    useSoftPin = new CheckboxInput(getPassport().useSoftPin());
-    return useSoftPin;
+    this.useSoftPin = new CheckboxInput(getConfig().useSoftPin());
+    this.useSoftPin.setName(i18n.tr("Tastatur des PCs zur PIN-Eingabe verwenden"));
+    return this.useSoftPin;
   }
   
   /**
@@ -305,220 +304,173 @@ public class Controller extends AbstractControl
    */
   public void handleScan()
   {
-    String ask = i18n.tr("Legen Sie Ihre HBCI-Chipkarte vor dem Test in das Lesegerät.\nBereits vorgenommene Einstellungen gehen hierbei verloren.\n\nDer Test kann einige Minuten in Anspruch nehmen. Vorgang fortsetzen?");
-    
     try
     {
+      String ask = i18n.tr("Legen Sie Ihre HBCI-Chipkarte vor dem Test in das Lesegerät.\nBereits vorgenommene Einstellungen gehen hierbei verloren.\n\nDer Test kann einige Minuten in Anspruch nehmen. Vorgang fortsetzen?");
       if (!Application.getCallback().askUser(ask))
         return;
     }
     catch (Exception e)
     {
       Logger.error("unable to open confirm dialog",e);
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim automatischen Erkennen des Kartenlesers"),StatusBarMessage.TYPE_ERROR));
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Suchen des Kartenlesers: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
       return;
     }
+    
 
-    BackgroundTask task = new BackgroundTask() {
-
-      private boolean cancel = false;
-      
+    BackgroundTask task = new BackgroundTask()
+    {
       /**
        * @see de.willuhn.jameica.system.BackgroundTask#run(de.willuhn.util.ProgressMonitor)
        */
       public void run(final ProgressMonitor monitor) throws ApplicationException
       {
-        try
+        final DDVConfig config = DDVConfigFactory.scan(monitor);
+        
+        if (getConfig() == null)
         {
-          GenericIterator list = getReaders();
-          int factor = 100 / (list.size() * Passport.PORTS.length);
-          
-          while (list.hasNext())
-          {
-            final Reader reader = (Reader) list.next();
+          // Wir sind nicht in der Detail-Ansicht sondern in der Liste.
+          // Daher starten wir die List-View einfach neu, damit die Liste
+          // aktualisiert wird.
+          DDVConfigFactory.store(config);
+          GUI.startView(GUI.getCurrentView().getClass(),null);
+          return;
+        }
 
-            monitor.setStatusText(i18n.tr("Teste {0}",reader.getName()));
-
-            // Testen, ob der Kartenleser ueberhaupt unterstuetzt wird
-            if (!reader.isSupported())
+        if (config != null)
+        {
+          // wenn wir einen gefunden haben, uebernehmen wir die Daten.
+          GUI.getDisplay().asyncExec(new Runnable() {
+            public void run()
             {
-              monitor.log("  " + i18n.tr("überspringe Kartenleser, wird von Ihrem System nicht unterstützt"));
-              continue;
-            }
-
-            // Checken, ob der CTAPI-Treiber existiert
-            final String s = reader.getCTAPIDriver();
-            if (s != null && s.length() > 0)
-            {
-              File f = new File(s);
-              if (!f.exists())
-              {
-                monitor.log("  " + i18n.tr("überspringe Kartenleser, CTAPI-Treiber {0} existiert nicht.",f.getAbsolutePath()));
-                continue;
-              }
-            }
-            else
-            {
-              monitor.log("  " + i18n.tr("überspringe Kartenleser, kein CTAPI-Treiber definiert."));
-              continue;
-            }
-
-            final int ctNumber = reader.getCTNumber();
-            getPassport().setCTNumber(ctNumber == -1 ? 0 : ctNumber);
-            getPassport().setEntryIndex(1);
-            getPassport().setReaderPresets(reader);
-            getPassport().setBIO(reader.useBIO());
-            getPassport().setSoftPin(reader.useSoftPin());
-            getPassport().setCTAPIDriver(s);
-            getPassport().setHBCIVersion("210");
-
-            for (int i=0;i<Passport.PORTS.length;++i)
-            {
-              monitor.addPercentComplete(factor);
-              final String port = Passport.PORTS[i];
-              monitor.log("  " + i18n.tr("Port {0}",port));
+              Reader reader = config.getReaderPreset();
+              getReaderPresets().setValue(reader);
+              getReaderPresets().setText(reader.getName());
+  
+              getBezeichnung().setValue(config.getName());
+              getCTAPI().setValue(config.getCTAPIDriver());
+              getPort().setValue(config.getPort());
+              getCTNumber().setValue(config.getCTNumber());
+              getEntryIndex().setValue(config.getEntryIndex());
+              getBio().setValue(config.useBIO());
+              getSoftPin().setValue(config.useSoftPin());
               
-              getPassport().setPort(port);
-
               try
               {
-                PassportHandle handle = getPassport().getHandle();
-                handle.open();
-                handle.close(); // nein, nicht im finally, denn wenn das Oeffnen
-                                // fehlschlaegt, ist nichts zum Schliessen da ;)
-
-                GUI.getDisplay().asyncExec(new Runnable() {
-                  public void run()
-                  {
-                    try
-                    {
-                      getReaderPresets().setValue(reader);
-                      getReaderPresets().setText(reader.getName());
-
-                      int ctNumber = reader.getCTNumber();
-                      getCTNumber().setValue(new Integer(ctNumber == -1 ? 0 : ctNumber));
-                      
-                      getPort().setPreselected(port);
-                      getPort().setValue(port);
-
-                      getHBCIVersion().setValue("210");
-                      getHBCIVersion().setPreselected("210");
-
-                      getCTAPI().setValue(s);
-                      getBio().setValue(new Boolean(reader.useBIO()));
-                      getSoftPin().setValue(new Boolean(reader.useSoftPin()));
-                      getEntryIndex().setValue(new Integer(1));
-                    }
-                    catch (RemoteException re2)
-                    {
-                      Logger.error("unable to apply settings",re2);
-                      monitor.log("  " + i18n.tr("Fehler beim Übernehmen der Einstellungen"));
-                    }
-                  }
-                
-                });
-                
-                monitor.setStatusText(i18n.tr("OK. Kartenleser gefunden"));
-                monitor.setStatus(ProgressMonitor.STATUS_DONE);
-                monitor.setPercentComplete(100);
-                return;
+                getHBCIVersion().setValue(config.getHBCIVersion());
               }
-              catch (ApplicationException ae)
+              catch (RemoteException re)
               {
-                monitor.log("  " + ae.getMessage());
-              }
-              catch (Exception e)
-              {
-                monitor.log("  " + i18n.tr("  nicht gefunden"));
+                Logger.error("unable to apply hbci version",re);
+                // Den Fehler koennen wir tolerieren
               }
             }
-          }
-          throw new ApplicationException(i18n.tr("Kein Kartenleser gefunden. Bitte manuell konfigurieren"));
-        }
-        catch (RemoteException re)
-        {
-          Logger.error("unable to determine reader presets",re);
-          throw new ApplicationException(i18n.tr("Fehler beim automatischen Erkennen des Kartenlesers"));
+          });
         }
       }
-    
-      /**
-       * @see de.willuhn.jameica.system.BackgroundTask#isInterrupted()
-       */
-      public boolean isInterrupted()
-      {
-        return cancel;
-      }
-    
+
       /**
        * @see de.willuhn.jameica.system.BackgroundTask#interrupt()
        */
       public void interrupt()
       {
-        this.cancel = true;
+      }
+
+      /**
+       * @see de.willuhn.jameica.system.BackgroundTask#isInterrupted()
+       */
+      public boolean isInterrupted()
+      {
+        return false;
       }
     };
     Application.getController().start(task);
   }
 
   /**
-   * Speichert die Einstellungen.
+   * Erstellt eine neue Kartenleser-Config.
    */
-  public void handleStore()
+  public void handleCreate()
   {
-    stored = false;
+    GUI.startView(Detail.class,DDVConfigFactory.create());
+  }
+  
+  /**
+   * Loescht die angegebene Kartenleser-Config.
+   * @param config die zu loeschende Config.
+   */
+  public void handleDelete(DDVConfig config)
+  {
+    if (config == null)
+      return;
+    try
+    {
+      if (!Application.getCallback().askUser(i18n.tr("Wollen Sie diese Konfiguration wirklich löschen?")))
+        return;
+
+      DDVConfigFactory.delete(config);
+      getConfigList().removeItem(config);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Konfiguration gelöscht"),StatusBarMessage.TYPE_SUCCESS));
+    }
+    catch (ApplicationException ae)
+    {
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getMessage(),StatusBarMessage.TYPE_ERROR));
+      GUI.getStatusBar().setErrorText(i18n.tr(ae.getMessage()));
+    }
+    catch (Exception e)
+    {
+      Logger.error("error while deleting config",e);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Löschen der Konfiguration: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
+    }
+  }
+  
+  /**
+   * Speichert die Einstellungen.
+   * @return true, wenn die Einstellungen gespeichert werden konnten.
+   */
+  public boolean handleStore()
+  {
     try
     {
       try
       {
-        getPassport().setCTNumber(Integer.parseInt((String) getCTNumber().getValue()));
+        getConfig().setCTNumber(Integer.parseInt((String) getCTNumber().getValue()));
       }
-      catch (NumberFormatException e)
+      catch (Exception e)
       {
-        GUI.getView().setErrorText(i18n.tr("Bitte geben Sie im Feld \"Nummer des Chipkartenlesers\" eine gültige Zahl ein."));
-        return;
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte geben Sie im Feld \"Index des Lesers\" eine gültige Zahl ein."),StatusBarMessage.TYPE_ERROR));
+        return false;
       }
 
       try
       {
-        getPassport().setEntryIndex(Integer.parseInt((String) getEntryIndex().getValue()));
+        getConfig().setEntryIndex(Integer.parseInt((String) getEntryIndex().getValue()));
       }
-      catch (NumberFormatException e)
+      catch (Exception e)
       {
-        GUI.getView().setErrorText(i18n.tr("Bitte geben Sie im Feld \"Index des HBCI-Zugangs\" eine gültige Zahl ein."));
-        return;
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte geben Sie im Feld \"Index des HBCI-Zugangs\" eine gültige Zahl ein."),StatusBarMessage.TYPE_ERROR));
+        return false;
       }
 
-      try
-      {
-        getPassport().setReaderPresets((Reader) getReaderPresets().getValue());
-      }
-      catch (Throwable t)
-      {
-        // Wenn das schiefgeht, dann steht beim naechsten Oeffnen des Dialogs
-        // halt nicht mehr, auf welchem Preset die Einstellungen basieren - who
-        // cares ;)
-        Logger.error("error while saving name of reader preset - you can ignore this error message",t);
-      }
+      getConfig().setKonten(getKontoAuswahl().getItems());
+      getConfig().setReaderPreset((Reader) getReaderPresets().getValue());
+      getConfig().setPort((String) getPort().getValue());
+      getConfig().setBIO((Boolean) getBio().getValue());
+      getConfig().setSoftPin((Boolean) getSoftPin().getValue());
+      getConfig().setCTAPIDriver((String) getCTAPI().getValue());
+      getConfig().setHBCIVersion((String) getHBCIVersion().getValue());
+      getConfig().setName((String) getBezeichnung().getValue());
 
-      getPassport().setPort((String) getPort().getValue());
-      getPassport().setBIO(((Boolean) getBio().getValue()).booleanValue());
-      getPassport().setSoftPin(((Boolean) getSoftPin().getValue()).booleanValue());
-      getPassport().setCTAPIDriver((String) getCTAPI().getValue());
-      getPassport().setHBCIVersion((String) getHBCIVersion().getValue());
-
-      GUI.getStatusBar().setSuccessText(i18n.tr("Einstellungen gespeichert"));
-      stored = true;
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Einstellungen gespeichert"),StatusBarMessage.TYPE_SUCCESS));
+      return true;
     }
-    catch (RemoteException e)
+    catch (Exception e)
     {
-      Logger.error("error while storing params", e);
-      GUI.getStatusBar().setErrorText(
-          i18n.tr("Fehler beim Speichern der Einstellungen"));
+      Logger.error("error while storing ddv config", e);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Speichern der Einstellungen: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
     }
+    return false;
   }
-
-  private boolean stored = false;
 
   /**
    * Testet die Einstellungen.
@@ -528,17 +480,21 @@ public class Controller extends AbstractControl
 
     // Speichern, damit sicher ist, dass wir vernuenftige Daten fuer den
     // Test haben und die auch gespeichert sind
-    handleStore();
-    if (!stored)
+    if (!handleStore())
       return;
 
     try
     {
-      new PassportTest().handleAction(getPassport());
+      new PassportTest().handleAction(new PassportHandleImpl(getConfig()));
     }
     catch (ApplicationException ae)
     {
-      GUI.getStatusBar().setErrorText(ae.getMessage());
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getMessage(),StatusBarMessage.TYPE_ERROR));
+    }
+    catch (Exception e)
+    {
+      Logger.error("error while testing passport",e);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Testen der Konfiguration: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
     }
   }
   
@@ -547,8 +503,7 @@ public class Controller extends AbstractControl
    */
   public void handleChangeBankData()
   {
-    handleStore();
-    if (!stored)
+    if (!handleStore())
       return;
 
     Application.getController().start(new BackgroundTask() {
@@ -557,7 +512,7 @@ public class Controller extends AbstractControl
         PassportHandle handle = null;
         try
         {
-          handle = getPassport().getHandle();
+          handle = new PassportHandleImpl(getConfig());
           HBCIHandler h = handle.open();
           HBCIPassport passport = h.getPassport();
 
@@ -617,6 +572,9 @@ public class Controller extends AbstractControl
     });
   }
 
+  /**
+   * Listener, der nach Auswahl eines Kartenleser-Presets ausgeloest wird.
+   */
   private class PresetListener implements Listener
   {
     /**
@@ -631,7 +589,7 @@ public class Controller extends AbstractControl
 
         if (!r.isSupported())
         {
-          GUI.getView().setErrorText(i18n.tr("Der ausgewählte Karten-Leser wird von Ihrem System nicht unterstützt"));
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Der ausgewählte Kartenleser wird von Hibiscus nicht unterstützt"),StatusBarMessage.TYPE_ERROR));
           return;
         }
 
@@ -642,7 +600,7 @@ public class Controller extends AbstractControl
         {
           File f = new File(s);
           if (!f.exists())
-            GUI.getView().setErrorText(i18n.tr("Warnung: Die ausgewählte CTAPI-Treiber-Datei existiert nicht."));
+            Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Warnung: Die ausgewählte CTAPI-Treiber-Datei existiert nicht."),StatusBarMessage.TYPE_ERROR));
         }
         
         String port = r.getPort();
@@ -656,12 +614,11 @@ public class Controller extends AbstractControl
         getBio().setValue(new Boolean(r.useBIO()));
      		getCTAPI().setValue(s);
      		getSoftPin().setValue(new Boolean(r.useSoftPin()));
-        handleStore();
     	}
-    	catch (Throwable t)
+    	catch (Exception e)
     	{
-    		Logger.error("error while reading presets from reader",t);
-    		GUI.getView().setErrorText(i18n.tr("Fehler beim Lesen der Voreinstellungen des Lesers"));
+    		Logger.error("error while applying reader preset",e);
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Übernehmen der Einstellungen: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
     	}
     }
   }
@@ -669,7 +626,10 @@ public class Controller extends AbstractControl
 
 /*******************************************************************************
  * $Log: Controller.java,v $
- * Revision 1.7  2010/07/22 22:36:24  willuhn
+ * Revision 1.8  2010/09/07 15:28:06  willuhn
+ * @N BUGZILLA 391 - Kartenleser-Konfiguration komplett umgebaut. Damit lassen sich jetzt beliebig viele Kartenleser und Konfigurationen parellel einrichten
+ *
+ * Revision 1.7  2010-07-22 22:36:24  willuhn
  * @N Code-Cleanup
  *
  * Revision 1.6  2010-07-13 11:36:52  willuhn
@@ -680,132 +640,4 @@ public class Controller extends AbstractControl
  *
  * Revision 1.4  2010/06/17 11:45:49  willuhn
  * @C kompletten Code aus "hbci_passport_ddv" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
- *
- * Revision 1.28  2008/07/29 08:29:16  willuhn
- * @B Compile-Fix
- *
- * Revision 1.27  2007/07/24 13:50:27  willuhn
- * @N BUGZILLA 61
- *
- * Revision 1.26  2006/08/03 22:13:49  willuhn
- * @N OmniKey 4000 Preset
- * Revision 1.25 2006/04/05 15:30:16 willuhn
- * 
- * @R removed unused imports
- * 
- * Revision 1.24 2006/04/05 15:15:42 willuhn
- * @N Alternativer Treiber fuer Towitoko Kartenzwerg
- * 
- * Revision 1.23 2005/06/27 11:24:29 web0
- * @N HBCI-Version aenderbar
- * 
- * Revision 1.22 2005/04/16 13:20:09 web0 *** empty log message ***
- * 
- * Revision 1.21 2005/03/09 01:07:27 web0
- * @D javadoc fixes
- * 
- * Revision 1.20 2005/01/15 16:47:24 willuhn *** empty log message ***
- * 
- * Revision 1.19 2005/01/05 15:06:15 willuhn *** empty log message ***
- * 
- * Revision 1.18 2004/11/12 18:25:31 willuhn *** empty log message ***
- * 
- * Revision 1.17 2004/10/20 12:08:15 willuhn
- * @C MVC-Refactoring (new Controllers)
- * 
- * Revision 1.16 2004/10/17 12:52:41 willuhn *** empty log message ***
- * 
- * Revision 1.15 2004/10/14 21:59:01 willuhn
- * @N refactoring
- * 
- * Revision 1.14 2004/09/16 22:47:18 willuhn *** empty log message ***
- * 
- * Revision 1.13 2004/07/27 23:39:29 willuhn
- * @N Reader presets
- * 
- * Revision 1.12 2004/07/27 22:56:18 willuhn
- * @N Reader presets
- * 
- * Revision 1.11 2004/07/25 15:05:40 willuhn
- * @C PluginLoader is no longer static
- * 
- * Revision 1.10 2004/07/21 23:54:19 willuhn
- * @C massive Refactoring ;)
- * 
- * Revision 1.9 2004/07/19 22:37:28 willuhn
- * @B gna - Chipcard funktioniert ja doch ;)
- * 
- * Revision 1.6 2004/07/08 23:20:23 willuhn
- * @C Redesign
- * 
- * Revision 1.5 2004/07/01 19:36:41 willuhn *** empty log message ***
- * 
- * Revision 1.4 2004/06/03 00:23:50 willuhn *** empty log message ***
- * 
- * Revision 1.3 2004/05/27 22:59:07 willuhn
- * @B forgotten to store path to ctapi driver
- * 
- * Revision 1.2 2004/05/05 22:14:34 willuhn *** empty log message ***
- * 
- * Revision 1.1 2004/05/04 23:24:34 willuhn
- * @N separated passports into eclipse project
- * 
- * Revision 1.2 2004/05/04 23:07:23 willuhn
- * @C refactored Passport stuff
- * 
- * Revision 1.1 2004/04/27 22:23:56 willuhn
- * @N configurierbarer CTAPI-Treiber
- * @C konkrete Passport-Klassen (DDV) nach de.willuhn.jameica.passports
- *    verschoben
- * @N verschiedenste Passport-Typen sind jetzt voellig frei erweiterbar (auch
- *    die Config-Dialoge)
- * @N crc32 Checksumme in Umsatz
- * @N neue Felder im Umsatz
- * 
- * Revision 1.16 2004/04/25 18:17:14 willuhn *** empty log message ***
- * 
- * Revision 1.15 2004/04/19 22:05:52 willuhn
- * @C HBCIJobs refactored
- * 
- * Revision 1.14 2004/04/13 23:14:23 willuhn
- * @N datadir
- * 
- * Revision 1.13 2004/04/12 19:15:31 willuhn
- * @C refactoring
- * 
- * Revision 1.12 2004/03/30 22:07:50 willuhn *** empty log message ***
- * 
- * Revision 1.11 2004/03/11 08:55:42 willuhn
- * @N UmsatzDetails
- * 
- * Revision 1.10 2004/03/06 18:25:10 willuhn
- * @D javadoc
- * @C removed empfaenger_id from umsatz
- * 
- * Revision 1.9 2004/03/04 00:26:24 willuhn
- * @N Ueberweisung
- * 
- * Revision 1.8 2004/03/03 22:26:40 willuhn
- * @N help texts
- * @C refactoring
- * 
- * Revision 1.7 2004/02/27 01:10:18 willuhn
- * @N passport config refactored
- * 
- * Revision 1.6 2004/02/24 22:47:05 willuhn
- * @N GUI refactoring
- * 
- * Revision 1.5 2004/02/23 20:30:47 willuhn
- * @C refactoring in AbstractDialog
- * 
- * Revision 1.4 2004/02/20 01:36:56 willuhn *** empty log message ***
- * 
- * Revision 1.3 2004/02/13 00:41:56 willuhn *** empty log message ***
- * 
- * Revision 1.2 2004/02/12 23:46:46 willuhn *** empty log message ***
- * 
- * Revision 1.1 2004/02/12 00:38:40 willuhn *** empty log message ***
- * 
- * Revision 1.1 2004/02/11 00:11:20 willuhn *** empty log message ***
- * 
  ******************************************************************************/

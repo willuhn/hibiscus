@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/server/PassportHandleImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/07/22 22:36:24 $
+ * $Revision: 1.6 $
+ * $Date: 2010/09/07 15:28:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ import java.io.File;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.kapott.hbci.callback.HBCICallback;
 import org.kapott.hbci.manager.HBCIHandler;
@@ -28,12 +29,16 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCICallbackSWT;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
+import de.willuhn.jameica.hbci.passports.ddv.DDVConfig;
+import de.willuhn.jameica.hbci.passports.ddv.DDVConfigFactory;
+import de.willuhn.jameica.hbci.passports.ddv.SelectConfigDialog;
 import de.willuhn.jameica.hbci.passports.ddv.rmi.Passport;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.Converter;
 import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.jameica.system.Platform;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -44,24 +49,35 @@ import de.willuhn.util.I18N;
  */
 public class PassportHandleImpl extends UnicastRemoteObject implements PassportHandle
 {
-  
-  private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(PassportImpl.class);
+  private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(DDVConfig.class);
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N(); 
 
 	private HBCIPassport hbciPassport = null;
 	private HBCIHandler handler = null;
 
-	private Passport passport = null;
+	private Konto konto      = null;
+  private DDVConfig config = null;
   
-  private I18N i18n;
+  /**
+   * ct.
+   * @param konto
+   * @throws RemoteException
+   */
+  public PassportHandleImpl(Konto konto) throws RemoteException
+  {
+    super();
+		this.konto = konto;
+  }
 
   /**
    * ct.
-   * @param passport
+   * @param config
    * @throws RemoteException
    */
-  public PassportHandleImpl(Passport passport) throws RemoteException {
-		this.passport = passport;
-    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  public PassportHandleImpl(DDVConfig config) throws RemoteException
+  {
+    super();
+    this.config = config;
   }
 
   /**
@@ -74,8 +90,52 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 			return handler;
 
 		Logger.info("open ddv passport");
-		try {
-	
+		try
+		{
+		  // Wenn keine Config, dafuer aber ein Konto angegeben ist, versuchen
+		  // wir die Config anhand des Kontos zu ermitteln
+      if (config == null && this.konto != null)
+        config = DDVConfigFactory.findByKonto(this.konto);
+
+      // Wenn wir immer noch keine Config haben, muss der User waehlen
+      if (config == null)
+      {
+        List<DDVConfig> list = DDVConfigFactory.getConfigs();
+
+        if (list == null || list.size() == 0)
+          throw new ApplicationException(i18n.tr("Bitte legen Sie zuerst eine Kartenleser-Konfiguration an"));
+        
+        // Wir haben nur eine Config, dann brauchen wir den User nicht fragen
+        if (list.size() == 1)
+        {
+          config = (DDVConfig) list.get(0);
+        }
+        else
+        {
+          SelectConfigDialog d = new SelectConfigDialog(SelectConfigDialog.POSITION_CENTER);
+          try
+          {
+            config = (DDVConfig) d.open();
+          }
+          catch (OperationCanceledException oce)
+          {
+            throw oce;
+          }
+          catch (Exception e)
+          {
+            Logger.error("error while choosing config",e);
+            throw new ApplicationException(i18n.tr("Fehler bei der Auswahl der PIN/TAN-Konfiguration"));
+          }
+        }
+        
+      }
+
+      // Immer noch keine Config. Dann eben nicht.
+      if (config == null)
+        throw new ApplicationException(i18n.tr("Keine Kartenleser-Konfiguration vorhanden"));
+      
+      Logger.debug("using config " + config.getName());
+
       //////////////////////////////////////////////////////////////////////////
       // JNI-Treiber
       String jni = getJNILib().getAbsolutePath();
@@ -86,9 +146,9 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 
 		  //////////////////////////////////////////////////////////////////////////
 		  // CTAPI-Treiber
-			String ctapiDriver = passport.getCTAPIDriver();
+			String ctapiDriver = config.getCTAPIDriver();
 			if (ctapiDriver == null || ctapiDriver.length() == 0)
-				throw new ApplicationException(i18n.tr("Bitte wählen Sie den CTAPI-Treiber aus"));
+				throw new ApplicationException(i18n.tr("Kein CTAPI-Treiber in der Kartenleser-Konfiguration angegeben"));
 
       File ctapi = new File(ctapiDriver);
       if (!ctapi.exists() || !ctapi.isFile() || !ctapi.canRead())
@@ -109,21 +169,21 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
       //////////////////////////////////////////////////////////////////////////
   
 			
-      String port = Integer.toString(passport.getPortForName(passport.getPort()));
-			Logger.info("  port: " + passport.getPort() + " [ID: " + port + "]");
+      String port = Integer.toString(DDVConfig.getPortForName(config.getPort()));
+			Logger.info("  port: " + config.getPort() + " [ID: " + port + "]");
 			HBCIUtils.setParam(Passport.PORT,port);
 
-			Logger.info("  ctnumber: " + passport.getCTNumber());
-			HBCIUtils.setParam(Passport.CTNUMBER,""+passport.getCTNumber());
+			Logger.info("  ctnumber: " + config.getCTNumber());
+			HBCIUtils.setParam(Passport.CTNUMBER,Integer.toString(config.getCTNumber()));
 
-			Logger.info("  biometrics: " + passport.useBIO());
-			HBCIUtils.setParam(Passport.USEBIO,	passport.useBIO() ? "1" : "0");
+			Logger.info("  biometrics: " + config.useBIO());
+			HBCIUtils.setParam(Passport.USEBIO,	config.useBIO() ? "1" : "0");
 
-			Logger.info("  soft pin: " + passport.useSoftPin());
-			HBCIUtils.setParam(Passport.SOFTPIN,	passport.useSoftPin() ? "1" : "0");
+			Logger.info("  soft pin: " + config.useSoftPin());
+			HBCIUtils.setParam(Passport.SOFTPIN,	config.useSoftPin() ? "1" : "0");
 
-			Logger.info("  entry index: " + passport.getEntryIndex());
-			HBCIUtils.setParam(Passport.ENTRYIDX,""+passport.getEntryIndex());
+			Logger.info("  entry index: " + config.getEntryIndex());
+			HBCIUtils.setParam(Passport.ENTRYIDX,Integer.toString(config.getEntryIndex()));
 	
       AbstractPlugin plugin = Application.getPluginLoader().getPlugin(HBCI.class);
       HBCICallback callback = ((HBCI)plugin).getHBCICallback();
@@ -133,8 +193,8 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
       hbciPassport = AbstractHBCIPassport.getInstance("DDV");
       Logger.info("ddv passport opened");
 
-      Logger.info("  hbci version: " + passport.getHBCIVersion());
-			handler=new HBCIHandler(passport.getHBCIVersion(),hbciPassport);
+      Logger.info("  hbci version: " + config.getHBCIVersion());
+			handler=new HBCIHandler(config.getHBCIVersion(),hbciPassport);
       Logger.info("ddv handler opened");
       
 			return handler;
@@ -143,6 +203,11 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
     {
       close();
       throw re;
+    }
+    catch (OperationCanceledException oce)
+    {
+      close();
+      throw oce;
     }
     catch (ApplicationException ae)
     {
@@ -333,7 +398,10 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 
 /**********************************************************************
  * $Log: PassportHandleImpl.java,v $
- * Revision 1.5  2010/07/22 22:36:24  willuhn
+ * Revision 1.6  2010/09/07 15:28:05  willuhn
+ * @N BUGZILLA 391 - Kartenleser-Konfiguration komplett umgebaut. Damit lassen sich jetzt beliebig viele Kartenleser und Konfigurationen parellel einrichten
+ *
+ * Revision 1.5  2010-07-22 22:36:24  willuhn
  * @N Code-Cleanup
  *
  * Revision 1.4  2010-06-17 11:45:48  willuhn
@@ -344,123 +412,4 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
  *
  * Revision 1.34  2010/02/07 22:25:27  willuhn
  * @N BUGZILLA #815
- *
- * Revision 1.33  2008/12/01 09:43:25  willuhn
- * @B Fallback auf Default-JNI Lib, wenn konfigurierte nicht lesbar
- *
- * Revision 1.32  2008/02/26 18:37:47  willuhn
- * *** empty log message ***
- *
- * Revision 1.31  2006/10/23 14:58:37  willuhn
- * @B reset current handle
- *
- * Revision 1.30  2006/08/21 12:27:11  willuhn
- * @N HBCICallbackSWT.setCurrentHandle
- *
- * Revision 1.29  2006/08/06 13:15:49  willuhn
- * @B bug 256
- *
- * Revision 1.28  2006/08/03 13:51:22  willuhn
- * @N Bug 62
- * @C HBCICallback-Handling nach Zustaendigkeit auf Passports verteilt
- *
- * Revision 1.27  2006/04/05 21:01:43  willuhn
- * *** empty log message ***
- *
- * Revision 1.26  2006/04/05 15:15:42  willuhn
- * @N Alternativer Treiber fuer Towitoko Kartenzwerg
- *
- * Revision 1.25  2006/01/08 22:22:37  willuhn
- * @B 176
- * @B 177
- *
- * Revision 1.24  2005/08/08 15:07:36  willuhn
- * @N added jnilib for mac os
- * @N os autodetection for mac os
- *
- * Revision 1.23  2005/08/01 23:28:20  web0
- * *** empty log message ***
- *
- * Revision 1.22  2005/06/27 11:24:30  web0
- * @N HBCI-Version aenderbar
- *
- * Revision 1.21  2005/06/21 20:19:09  web0
- * *** empty log message ***
- *
- * Revision 1.20  2005/04/05 21:22:33  web0
- * @B bug 43
- *
- * Revision 1.19  2004/11/12 18:25:31  willuhn
- * *** empty log message ***
- *
- * Revision 1.18  2004/10/29 16:09:12  willuhn
- * *** empty log message ***
- *
- * Revision 1.17  2004/10/28 23:19:15  willuhn
- * *** empty log message ***
- *
- * Revision 1.16  2004/10/19 21:58:42  willuhn
- * *** empty log message ***
- *
- * Revision 1.15  2004/10/17 14:06:41  willuhn
- * *** empty log message ***
- *
- * Revision 1.14  2004/07/27 22:56:18  willuhn
- * @N Reader presets
- *
- * Revision 1.13  2004/07/27 18:58:06  willuhn
- * @B wrong filename for jni lib
- *
- * Revision 1.12  2004/07/19 22:37:28  willuhn
- * @B gna - Chipcard funktioniert ja doch ;)
- *
- * Revision 1.11  2004/07/18 15:49:45  willuhn
- * *** empty log message ***
- *
- * Revision 1.10  2004/07/16 17:13:33  willuhn
- * @B Fehler bei OS-Erkennung
- *
- * Revision 1.9  2004/07/14 23:47:17  willuhn
- * *** empty log message ***
- *
- * Revision 1.8  2004/07/08 23:34:51  willuhn
- * @N mehr debug ausgaben
- *
- * Revision 1.7  2004/07/08 23:20:23  willuhn
- * @C Redesign
- *
- * Revision 1.6  2004/07/05 21:27:56  willuhn
- * @B bug in OS detection
- *
- * Revision 1.5  2004/07/01 19:36:41  willuhn
- * *** empty log message ***
- *
- * Revision 1.4  2004/06/10 20:56:20  willuhn
- * @D javadoc comments fixed
- *
- * Revision 1.3  2004/05/05 22:21:45  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2004/05/05 22:14:34  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2004/05/04 23:24:34  willuhn
- * @N separated passports into eclipse project
- *
- * Revision 1.2  2004/05/04 23:07:23  willuhn
- * @C refactored Passport stuff
- *
- * Revision 1.1  2004/04/27 22:23:56  willuhn
- * @N configurierbarer CTAPI-Treiber
- * @C konkrete Passport-Klassen (DDV) nach de.willuhn.jameica.passports verschoben
- * @N verschiedenste Passport-Typen sind jetzt voellig frei erweiterbar (auch die Config-Dialoge)
- * @N crc32 Checksumme in Umsatz
- * @N neue Felder im Umsatz
- *
- * Revision 1.2  2004/04/25 17:41:05  willuhn
- * @D javadoc
- *
- * Revision 1.1  2004/04/19 22:05:52  willuhn
- * @C HBCIJobs refactored
- *
  **********************************************************************/

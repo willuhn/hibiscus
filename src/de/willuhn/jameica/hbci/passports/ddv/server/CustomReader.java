@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/server/CustomReader.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/06/17 11:45:48 $
+ * $Revision: 1.2 $
+ * $Date: 2010/09/07 15:28:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,8 +12,6 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.passports.ddv.server;
 
-import java.rmi.RemoteException;
-
 import de.willuhn.jameica.hbci.passports.ddv.rmi.Reader;
 
 /**
@@ -22,19 +20,10 @@ import de.willuhn.jameica.hbci.passports.ddv.rmi.Reader;
  */
 public class CustomReader extends AbstractReader implements Reader
 {
-
-  /**
-   * @throws RemoteException
-   */
-  public CustomReader() throws RemoteException
-  {
-    super();
-  }
-
   /**
    * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getName()
    */
-  public String getName() throws RemoteException
+  public String getName()
   {
     return "Benutzerdefinierter Leser";
   }
@@ -42,7 +31,7 @@ public class CustomReader extends AbstractReader implements Reader
   /**
    * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getCTAPIDriver()
    */
-  public String getCTAPIDriver() throws RemoteException
+  public String getCTAPIDriver()
   {
   	return "";
   }
@@ -50,7 +39,7 @@ public class CustomReader extends AbstractReader implements Reader
   /**
    * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#isSupported()
    */
-  public boolean isSupported() throws RemoteException
+  public boolean isSupported()
   {
     return true;
   }
@@ -58,7 +47,7 @@ public class CustomReader extends AbstractReader implements Reader
   /**
    * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#useSoftPin()
    */
-  public boolean useSoftPin() throws RemoteException
+  public boolean useSoftPin()
   {
     return true;
   }
@@ -68,16 +57,9 @@ public class CustomReader extends AbstractReader implements Reader
 
 /**********************************************************************
  * $Log: CustomReader.java,v $
+ * Revision 1.2  2010/09/07 15:28:05  willuhn
+ * @N BUGZILLA 391 - Kartenleser-Konfiguration komplett umgebaut. Damit lassen sich jetzt beliebig viele Kartenleser und Konfigurationen parellel einrichten
+ *
  * Revision 1.1  2010/06/17 11:45:48  willuhn
  * @C kompletten Code aus "hbci_passport_ddv" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
- *
- * Revision 1.3  2006/08/03 22:13:49  willuhn
- * @N OmniKey 4000 Preset
- *
- * Revision 1.2  2004/07/27 23:39:29  willuhn
- * @N Reader presets
- *
- * Revision 1.1  2004/07/27 22:56:18  willuhn
- * @N Reader presets
- *
  **********************************************************************/

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/rmi/Reader.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/07/22 22:36:24 $
+ * $Revision: 1.3 $
+ * $Date: 2010/09/07 15:28:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,9 +12,6 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.passports.ddv.rmi;
 
-import java.rmi.RemoteException;
-
-import de.willuhn.datasource.GenericObject;
 
 /**
  * Um die vielen am Markt erhaeltlichen Chipkarten-Leser flexibel und
@@ -22,64 +19,60 @@ import de.willuhn.datasource.GenericObject;
  * anbieten zu koennen, implementieren wir jeden unterstuetzten
  * Reader in einer separaten Klasse.
  */
-public interface Reader extends GenericObject
+public interface Reader
 {
 	/**
 	 * Liefert den Namen des Chipkartenlesers.
    * @return Name des Lesers.
-   * @throws RemoteException
    */
-  public String getName() throws RemoteException;
+  public String getName();
 
 	/**
 	 * Liefert Pfad und Dateiname des CTAPI-Treibers.
    * @return Pfad und Dateiname des CTAPI-Treibers.
-   * @throws RemoteException
    */
-  public String getCTAPIDriver() throws RemoteException;
+  public String getCTAPIDriver();
   
   /**
    * Liefert einen vordefinierten Port.
    * @return Port.
-   * @throws RemoteException
    */
-  public String getPort() throws RemoteException;
+  public String getPort();
   
   /**
    * Liefert den Index des Readers.
    * @return Index des Readers.
-   * @throws RemoteException
    */
-  public int getCTNumber() throws RemoteException;
+  public int getCTNumber();
 
   /**
 	 * Prueft, ob dieser Leser von der aktuellen System-Umgebung unterstuetzt wird.
    * @return <code>true</code>, wenn er unterstuetzt wird.
-   * @throws RemoteException
    */
-  public boolean isSupported() throws RemoteException;
+  public boolean isSupported();
 
 	/**
 	 * Liefert true, wenn der Chipkartenleser mit biometrischen Authentifizierungsverfahren
 	 * ausgestattet ist.
    * @return <code>true</code>, wenn er biometrische Authentifizierung kann.
-   * @throws RemoteException
    */
-  public boolean useBIO() throws RemoteException;
+  public boolean useBIO();
 
 	/**
 	 * Liefert true, wenn die Tastatur des PCs zur Eingabe der PIN verwendet werden soll.
    * @return <code>true</code> wenn die Tastatur des PCs zur Eingabe der PIN verwendet werden soll.
-   * @throws RemoteException
    */
-  public boolean useSoftPin() throws RemoteException;
+  public boolean useSoftPin();
 
 }
 
 
 /**********************************************************************
  * $Log: Reader.java,v $
- * Revision 1.2  2010/07/22 22:36:24  willuhn
+ * Revision 1.3  2010/09/07 15:28:06  willuhn
+ * @N BUGZILLA 391 - Kartenleser-Konfiguration komplett umgebaut. Damit lassen sich jetzt beliebig viele Kartenleser und Konfigurationen parellel einrichten
+ *
+ * Revision 1.2  2010-07-22 22:36:24  willuhn
  * @N Code-Cleanup
  *
  * Revision 1.1  2010/06/17 11:45:49  willuhn

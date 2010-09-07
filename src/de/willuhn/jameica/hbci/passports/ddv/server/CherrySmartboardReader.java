@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/server/CherrySmartboardReader.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/06/17 11:45:48 $
+ * $Revision: 1.2 $
+ * $Date: 2010/09/07 15:28:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,7 +13,6 @@
 package de.willuhn.jameica.hbci.passports.ddv.server;
 
 import java.io.File;
-import java.rmi.RemoteException;
 
 import de.willuhn.jameica.hbci.passports.ddv.rmi.Reader;
 import de.willuhn.jameica.system.Application;
@@ -25,19 +24,10 @@ import de.willuhn.jameica.system.Platform;
  */
 public class CherrySmartboardReader extends AbstractReader implements Reader
 {
-
-  /**
-   * @throws RemoteException
-   */
-  public CherrySmartboardReader() throws RemoteException
-  {
-    super();
-  }
-
   /**
    * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getName()
    */
-  public String getName() throws RemoteException
+  public String getName()
   {
     return "Cherry Smartboard";
   }
@@ -45,7 +35,7 @@ public class CherrySmartboardReader extends AbstractReader implements Reader
   /**
    * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getCTAPIDriver()
    */
-  public String getCTAPIDriver() throws RemoteException
+  public String getCTAPIDriver()
   {
     switch (Application.getPlatform().getOS())
     {
@@ -60,7 +50,7 @@ public class CherrySmartboardReader extends AbstractReader implements Reader
   /**
    * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#isSupported()
    */
-  public boolean isSupported() throws RemoteException
+  public boolean isSupported()
   {
     return Application.getPlatform().getOS() == Platform.OS_WINDOWS;
   }
@@ -69,23 +59,9 @@ public class CherrySmartboardReader extends AbstractReader implements Reader
 
 /**********************************************************************
  * $Log: CherrySmartboardReader.java,v $
+ * Revision 1.2  2010/09/07 15:28:05  willuhn
+ * @N BUGZILLA 391 - Kartenleser-Konfiguration komplett umgebaut. Damit lassen sich jetzt beliebig viele Kartenleser und Konfigurationen parellel einrichten
+ *
  * Revision 1.1  2010/06/17 11:45:48  willuhn
  * @C kompletten Code aus "hbci_passport_ddv" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
- *
- * Revision 1.2  2008/11/17 23:22:38  willuhn
- * @C Code zur Ermittlung des OS in Jameica verschoben
- *
- * Revision 1.1  2008/09/29 23:05:36  willuhn
- * @C ST2000U in Smartboard umbenannt - der CTAPI-Treiber gilt wohl fuer die ganze Serie
- *
- * Revision 1.3  2008/09/15 22:01:04  willuhn
- * @N Presets aktualisiert
- *
- * Revision 1.2  2008/07/29 08:27:43  willuhn
- * @N Kaan TriB@nk
- * @C Pfadtrenner via File.separator
- *
- * Revision 1.1  2007/11/22 10:01:20  willuhn
- * @N Cherry ST-2000U
- *
  **********************************************************************/
