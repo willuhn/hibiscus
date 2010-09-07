@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/Controller.java,v $
- * $Revision: 1.3 $
- * $Date: 2010/07/22 12:37:41 $
+ * $Revision: 1.4 $
+ * $Date: 2010/09/07 15:17:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,7 +22,6 @@ import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.IntegerInput;
@@ -120,42 +119,29 @@ public class Controller extends AbstractControl {
 
     ContextMenu ctx = new ContextMenu();
 
-    // Kontext: Erstellen
-    ctx.addItem(new ContextMenuItem(i18n.tr("Neue Konfiguration erstellen"),new Action()
-    {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        handleCreate();
-      }
-    }));
-
-    // Kontext: Details.
-    ctx.addItem(new CheckedContextMenuItem(i18n.tr("Details anzeigen..."),new Action()
-    {
-      public void handleAction(Object context) throws ApplicationException
-      {
+    ctx.addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"),new Action() {
+      public void handleAction(Object context) throws ApplicationException {
         if (context == null)
           return;
         try
         {
           GUI.startView(Detail.class,context);
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
           Logger.error("error while loading config",e);
           GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Anlegen der Konfiguration"));
         }
       }
-    }));
+    },"document-open.png"));
 
-    // Kontext: Loeschen.
-    ctx.addItem(new CheckedContextMenuItem(i18n.tr("Konfiguration löschen..."),new Action()
-    {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        handleDelete((PinTanConfig)context);
-      }
-    }));
+    ctx.addItem(new ContextMenuItem(i18n.tr("Neue Konfiguration..."),new Action() {
+      public void handleAction(Object context) throws ApplicationException {handleCreate();}
+    },"document-new.png"));
+
+    ctx.addItem(ContextMenuItem.SEPARATOR);
+    ctx.addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."),new Action() {
+      public void handleAction(Object context) throws ApplicationException {handleDelete((PinTanConfig)context);}
+    },"user-trash-full.png"));
 
     configList.setContextMenu(ctx);
 
@@ -412,15 +398,10 @@ public class Controller extends AbstractControl {
       return;
     try
     {
-      YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
-      d.setTitle(i18n.tr("Sicher?"));
-      d.setText(i18n.tr("Wollen Sie diese Konfiguration wirklich löschen?"));
-      
-      Boolean b = (Boolean) d.open();
-      if (b.booleanValue())
-      {
-        PinTanConfigFactory.delete((PinTanConfig) config);
-      }
+      if (!Application.getCallback().askUser(i18n.tr("Wollen Sie diese Konfiguration wirklich löschen?")))
+        return;
+
+      PinTanConfigFactory.delete(config);
       GUI.startView(View.class,null);
       GUI.getStatusBar().setSuccessText(i18n.tr("Konfiguration gelöscht"));
     }
@@ -443,8 +424,7 @@ public class Controller extends AbstractControl {
 
     // Speichern, damit sicher ist, dass wir vernuenftige Daten fuer den
     // Test haben und die auch gespeichert sind
-    handleStore();
-    if (!stored)
+    if (!handleStore())
       return;
 
     try
@@ -492,16 +472,14 @@ public class Controller extends AbstractControl {
     }
   }
 
-  private boolean stored = false;
-
   /**
    * Speichert die Konfiguration.
+   * @return true, wenn die Config gespeichert werden konnte.
    */
-  public synchronized void handleStore()
+  public synchronized boolean handleStore()
   {
     try
     {
-      stored = false;
 			Logger.info("storing pin/tan config");
 
     	PinTanConfig config  = getConfig();
@@ -523,7 +501,7 @@ public class Controller extends AbstractControl {
       this.passport = null; // force reload
 
       GUI.getStatusBar().setSuccessText(i18n.tr("Konfiguration gespeichert"));
-      stored = true;
+      return true;
     }
     catch (ApplicationException e)
     {
@@ -535,6 +513,7 @@ public class Controller extends AbstractControl {
       Logger.error("error while creating config",t);
       GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern der Konfiguration"));
     }
+    return false;
   }
 
 }
@@ -542,7 +521,10 @@ public class Controller extends AbstractControl {
 
 /**********************************************************************
  * $Log: Controller.java,v $
- * Revision 1.3  2010/07/22 12:37:41  willuhn
+ * Revision 1.4  2010/09/07 15:17:07  willuhn
+ * @N GUI-Cleanup
+ *
+ * Revision 1.3  2010-07-22 12:37:41  willuhn
  * @N GUI poliert
  *
  * Revision 1.2  2010-07-22 11:31:50  willuhn

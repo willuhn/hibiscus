@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/SelectConfigDialog.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/07/22 12:37:41 $
+ * $Revision: 1.3 $
+ * $Date: 2010/09/07 15:17:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -34,10 +34,10 @@ import de.willuhn.util.I18N;
  */
 public class SelectConfigDialog extends AbstractDialog
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+
   private PinTanConfig selected = null;
   private String text           = null;
-
-  private I18N i18n       = null;
 
   /**
    * @param position
@@ -45,8 +45,7 @@ public class SelectConfigDialog extends AbstractDialog
   public SelectConfigDialog(int position)
   {
     super(position);
-    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-    setTitle(i18n.tr("PIN/TAN-Auswahl"));
+    setTitle(i18n.tr("Auswahl der PIN/TAN-Konfiguration"));
   }
 
   /**
@@ -114,7 +113,10 @@ public class SelectConfigDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: SelectConfigDialog.java,v $
- * Revision 1.2  2010/07/22 12:37:41  willuhn
+ * Revision 1.3  2010/09/07 15:17:07  willuhn
+ * @N GUI-Cleanup
+ *
+ * Revision 1.2  2010-07-22 12:37:41  willuhn
  * @N GUI poliert
  *
  * Revision 1.1  2010/06/17 11:38:15  willuhn

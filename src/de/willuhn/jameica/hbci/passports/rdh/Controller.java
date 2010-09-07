@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/Controller.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/06/17 11:26:48 $
+ * $Revision: 1.2 $
+ * $Date: 2010/09/07 15:17:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -301,7 +301,7 @@ public class Controller extends AbstractControl {
 		ContextMenu ctx = new ContextMenu();
 
 		// Kontext: Details.
-    ctx.addItem(new CheckedContextMenuItem(i18n.tr("Schlüssel bearbeiten..."),new Action()
+    ctx.addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"),new Action()
 		{
 			public void handleAction(Object context) throws ApplicationException
 			{
@@ -316,13 +316,25 @@ public class Controller extends AbstractControl {
 					Logger.error("error while loading rdh key",e);
 				}
 			}
-		}));
+		},"document-open.png"));
+
+    ctx.addItem(new ContextMenuItem(i18n.tr("Neuer Schlüssel..."),new Action() {
+      public void handleAction(Object context) throws ApplicationException {startCreate();}
+    },"document-new.png"));
+    ctx.addItem(new ContextMenuItem(i18n.tr("Schlüssel importieren..."),new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        startImport();
+      }
+    },"stock_keyring.png"));
+
     // Kontext: Aktivieren/Deaktivieren
     ctx.addItem(ContextMenuItem.SEPARATOR);
     ctx.addItem(new ActivateKey(true));
     ctx.addItem(new ActivateKey(false));
     ctx.addItem(ContextMenuItem.SEPARATOR);
-    ctx.addItem(new CheckedContextMenuItem(i18n.tr("Schlüssel löschen..."), new Action() {
+    ctx.addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         try
@@ -349,24 +361,8 @@ public class Controller extends AbstractControl {
           GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Löschen des Schlüssels"));
         }
       }
-    }));
-    ctx.addItem(ContextMenuItem.SEPARATOR);
+    },"user-trash-full.png"));
 
-    ctx.addItem(new ContextMenuItem(i18n.tr("Neuen Schlüssel erstellen..."),new Action()
-    {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        startCreate();
-      }
-    }));
-    ctx.addItem(new ContextMenuItem(i18n.tr("Schlüssel importieren..."),new Action()
-    {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        startImport();
-      }
-    }));
-    
 		keyList.setContextMenu(ctx);
 		
 
@@ -697,7 +693,7 @@ public class Controller extends AbstractControl {
 							Logger.error("error while activating rdh key",e);
 						}
 					}
-				});
+				},activate ? "network-transmit-receive.png" : "network-offline.png");
 			this.activate = activate;
     }
 
@@ -727,6 +723,9 @@ public class Controller extends AbstractControl {
 
 /**********************************************************************
  * $Log: Controller.java,v $
+ * Revision 1.2  2010/09/07 15:17:07  willuhn
+ * @N GUI-Cleanup
+ *
  * Revision 1.1  2010/06/17 11:26:48  willuhn
  * @B In HBCICallbackSWT wurden die RDH-Passports nicht korrekt ausgefiltert
  * @C komplettes Projekt "hbci_passport_rdh" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren

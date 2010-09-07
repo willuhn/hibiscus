@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/server/PassportHandleImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/06/17 11:38:16 $
+ * $Revision: 1.2 $
+ * $Date: 2010/09/07 15:17:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -45,6 +45,7 @@ import de.willuhn.util.I18N;
  */
 public class PassportHandleImpl extends UnicastRemoteObject implements PassportHandle
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 	private HBCIPassport hbciPassport = null;
 	private HBCIHandler handler = null;
@@ -83,7 +84,6 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 		Logger.info("open pin/tan passport");
 		try {
 	
-			I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
       if (config == null && this.passport == null)
         throw new ApplicationException(i18n.tr("Keine Konfiguration oder Konto ausgewählt"));
 
@@ -284,55 +284,12 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 
 /**********************************************************************
  * $Log: PassportHandleImpl.java,v $
+ * Revision 1.2  2010/09/07 15:17:08  willuhn
+ * @N GUI-Cleanup
+ *
  * Revision 1.1  2010/06/17 11:38:16  willuhn
  * @C kompletten Code aus "hbci_passport_pintan" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
  *
  * Revision 1.15  2010/03/10 15:42:14  willuhn
  * @N BUGZILLA 831
- *
- * Revision 1.14  2006/10/23 14:58:40  willuhn
- * @B reset current handle
- *
- * Revision 1.13  2006/08/21 12:27:19  willuhn
- * *** empty log message ***
- *
- * Revision 1.12  2006/08/06 13:15:48  willuhn
- * @B bug 256
- *
- * Revision 1.11  2006/08/04 13:03:24  willuhn
- * @B NPE
- *
- * Revision 1.10  2006/08/03 13:51:38  willuhn
- * @N Bug 62
- * @C HBCICallback-Handling nach Zustaendigkeit auf Passports verteilt
- *
- * Revision 1.9  2006/01/22 23:23:16  willuhn
- * *** empty log message ***
- *
- * Revision 1.8  2005/08/01 23:28:03  web0
- * *** empty log message ***
- *
- * Revision 1.7  2005/06/23 22:33:22  web0
- * *** empty log message ***
- *
- * Revision 1.6  2005/06/23 22:18:13  web0
- * *** empty log message ***
- *
- * Revision 1.5  2005/06/23 21:52:49  web0
- * @B Bug 80
- *
- * Revision 1.4  2005/06/21 20:19:04  web0
- * *** empty log message ***
- *
- * Revision 1.3  2005/04/27 00:30:12  web0
- * @N real test connection
- * @N all hbci versions are now shown in select box
- * @C userid and customerid are changable
- *
- * Revision 1.2  2005/03/11 02:43:59  web0
- * @N PIN/TAN works ;)
- *
- * Revision 1.1  2005/03/07 12:06:12  web0
- * @N initial import
- *
  **********************************************************************/

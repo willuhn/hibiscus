@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/KontoList.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/06/17 11:38:15 $
+ * $Revision: 1.2 $
+ * $Date: 2010/09/07 15:17:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -44,6 +44,7 @@ public class KontoList extends de.willuhn.jameica.hbci.gui.parts.KontoList
   {
     super(PseudoIterator.fromArray(new Konto[0]),new KontoNew());
     this.setCheckable(true);
+    this.setSummary(false);
     this.myConfig = config;
   }
 
@@ -120,6 +121,9 @@ public class KontoList extends de.willuhn.jameica.hbci.gui.parts.KontoList
 
 /*********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.2  2010/09/07 15:17:07  willuhn
+ * @N GUI-Cleanup
+ *
  * Revision 1.1  2010/06/17 11:38:15  willuhn
  * @C kompletten Code aus "hbci_passport_pintan" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
  *
