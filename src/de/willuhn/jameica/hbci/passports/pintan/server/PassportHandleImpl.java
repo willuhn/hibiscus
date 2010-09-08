@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/server/PassportHandleImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/09/07 15:17:08 $
+ * $Revision: 1.3 $
+ * $Date: 2010/09/08 15:04:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import java.util.ArrayList;
 
 import org.kapott.hbci.callback.HBCICallback;
 import org.kapott.hbci.manager.HBCIHandler;
+import org.kapott.hbci.passport.AbstractHBCIPassport;
 import org.kapott.hbci.passport.AbstractPinTanPassport;
 import org.kapott.hbci.passport.HBCIPassport;
 
@@ -134,6 +135,11 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
         ((HBCICallbackSWT)callback).setCurrentHandle(this);
 
       hbciPassport = config.getPassport();
+
+      // Wir speichern die verwendete PIN/TAN-Config im Passport. Dann wissen wir
+      // spaeter in den HBCI-Callbacks noch, aus welcher Config der Passport
+      // erstellt wurde. Wird z.Bsp. vom Payment-Server benoetigt.
+      ((AbstractHBCIPassport)hbciPassport).setPersistentData(CONTEXT_CONFIG,config);
 
 			String hbciVersion = config.getHBCIVersion();
 			if (hbciVersion == null || hbciVersion.length() == 0)
@@ -284,7 +290,10 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 
 /**********************************************************************
  * $Log: PassportHandleImpl.java,v $
- * Revision 1.2  2010/09/07 15:17:08  willuhn
+ * Revision 1.3  2010/09/08 15:04:52  willuhn
+ * @N Config des Sicherheitsmediums als Context in Passport speichern
+ *
+ * Revision 1.2  2010-09-07 15:17:08  willuhn
  * @N GUI-Cleanup
  *
  * Revision 1.1  2010/06/17 11:38:16  willuhn

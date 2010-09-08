@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passport/PassportHandle.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/08/06 13:26:48 $
+ * $Revision: 1.6 $
+ * $Date: 2010/09/08 15:04:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,7 +25,13 @@ import de.willuhn.util.ApplicationException;
 /**
  * Bildet die direkte Verbindung zum HBCIHandler aus HBCI4Java ab.
  */
-public interface PassportHandle extends Remote {
+public interface PassportHandle extends Remote
+{
+  /**
+   * Identifier fuer den Persistent-Parameter mit der Config, aus der
+   * der Passport erstellt wurde.
+   */
+  public final static String CONTEXT_CONFIG = "hibiscus.context.config";
 
   /**
    * Oeffnet den Passport und liefert den HBCIHandler zrueck.
@@ -94,6 +100,9 @@ public interface PassportHandle extends Remote {
 
 /**********************************************************************
  * $Log: PassportHandle.java,v $
+ * Revision 1.6  2010/09/08 15:04:53  willuhn
+ * @N Config des Sicherheitsmediums als Context in Passport speichern
+ *
  * Revision 1.5  2006/08/06 13:26:48  willuhn
  * @B bug 257
  *

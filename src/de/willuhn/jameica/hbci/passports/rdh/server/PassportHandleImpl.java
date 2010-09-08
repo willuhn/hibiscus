@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/server/PassportHandleImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/06/17 11:26:48 $
+ * $Revision: 1.2 $
+ * $Date: 2010/09/08 15:04:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 import org.kapott.hbci.callback.HBCICallback;
 import org.kapott.hbci.manager.HBCIHandler;
+import org.kapott.hbci.passport.AbstractHBCIPassport;
 import org.kapott.hbci.passport.HBCIPassport;
 
 import de.willuhn.jameica.hbci.HBCI;
@@ -111,6 +112,11 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
       }
 
       hbciPassport = activeKey.load();
+      
+      // Wir speichern die verwendete PIN/TAN-Config im Passport. Dann wissen wir
+      // spaeter in den HBCI-Callbacks noch, aus welcher Config der Passport
+      // erstellt wurde. Wird z.Bsp. vom Payment-Server benoetigt.
+      ((AbstractHBCIPassport)hbciPassport).setPersistentData(CONTEXT_CONFIG,activeKey);
 
 			Logger.info("using HBCI version " + hbciVersion);
 			handler = new HBCIHandler(hbciVersion,hbciPassport);
@@ -241,6 +247,9 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 
 /*****************************************************************************
  * $Log: PassportHandleImpl.java,v $
+ * Revision 1.2  2010/09/08 15:04:52  willuhn
+ * @N Config des Sicherheitsmediums als Context in Passport speichern
+ *
  * Revision 1.1  2010/06/17 11:26:48  willuhn
  * @B In HBCICallbackSWT wurden die RDH-Passports nicht korrekt ausgefiltert
  * @C komplettes Projekt "hbci_passport_rdh" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren

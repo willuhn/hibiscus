@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/DDVConfig.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/09/08 10:14:32 $
+ * $Revision: 1.3 $
+ * $Date: 2010/09/08 15:04:52 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -40,7 +40,7 @@ public class DDVConfig
    * ct.
    * @param id die ID der Config.
    */
-  public DDVConfig(String id)
+  DDVConfig(String id)
   {
     this.id = id;
   }
@@ -49,7 +49,7 @@ public class DDVConfig
    * Liefert die ID der Config.
    * @return die ID der Config.
    */
-  String getId()
+  public String getId()
   {
     return this.id;
   }
@@ -354,7 +354,10 @@ public class DDVConfig
 
 /**********************************************************************
  * $Log: DDVConfig.java,v $
- * Revision 1.2  2010/09/08 10:14:32  willuhn
+ * Revision 1.3  2010/09/08 15:04:52  willuhn
+ * @N Config des Sicherheitsmediums als Context in Passport speichern
+ *
+ * Revision 1.2  2010-09-08 10:14:32  willuhn
  * @B Beim Loeschen einer DDV-Config auch die IDs der fest verdrahteten Konten loeschen
  *
  * Revision 1.1  2010-09-07 15:28:05  willuhn

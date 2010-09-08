@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/server/PassportHandleImpl.java,v $
- * $Revision: 1.7 $
- * $Date: 2010/09/08 11:24:40 $
+ * $Revision: 1.8 $
+ * $Date: 2010/09/08 15:04:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -191,6 +191,13 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
         ((HBCICallbackSWT)callback).setCurrentHandle(this);
 
       hbciPassport = AbstractHBCIPassport.getInstance("DDV");
+      
+      // Wir speichern die verwendete DDV-Config im Passport. Dann wissen wir
+      // spaeter in den HBCI-Callbacks noch, aus welcher Config der Passport
+      // erstellt wurde. Wird z.Bsp. vom Payment-Server benoetigt, um die
+      // PIN (basierend auf der UUID der DDV-Config) speichern zu koennen
+      ((AbstractHBCIPassport)hbciPassport).setPersistentData(CONTEXT_CONFIG,config);
+
       Logger.info("ddv passport opened");
 
       Logger.info("  hbci version: " + config.getHBCIVersion());
@@ -398,7 +405,10 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 
 /**********************************************************************
  * $Log: PassportHandleImpl.java,v $
- * Revision 1.7  2010/09/08 11:24:40  willuhn
+ * Revision 1.8  2010/09/08 15:04:52  willuhn
+ * @N Config des Sicherheitsmediums als Context in Passport speichern
+ *
+ * Revision 1.7  2010-09-08 11:24:40  willuhn
  * *** empty log message ***
  *
  * Revision 1.6  2010-09-07 15:28:05  willuhn
