@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/DDVConfigFactory.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/09/07 15:28:05 $
+ * $Revision: 1.2 $
+ * $Date: 2010/09/08 10:08:50 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -357,7 +357,7 @@ public class DDVConfigFactory
    * Erzeugt eine neue DDV-Config.
    * @return die neue DDV-Config.
    */
-  static DDVConfig create()
+  public static DDVConfig create()
   {
     return new DDVConfig(UUID.randomUUID().toString());
   }
@@ -368,7 +368,10 @@ public class DDVConfigFactory
 
 /**********************************************************************
  * $Log: DDVConfigFactory.java,v $
- * Revision 1.1  2010/09/07 15:28:05  willuhn
+ * Revision 1.2  2010/09/08 10:08:50  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.1  2010-09-07 15:28:05  willuhn
  * @N BUGZILLA 391 - Kartenleser-Konfiguration komplett umgebaut. Damit lassen sich jetzt beliebig viele Kartenleser und Konfigurationen parellel einrichten
  *
  **********************************************************************/
