@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/DDVConfig.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/09/07 15:28:05 $
+ * $Revision: 1.2 $
+ * $Date: 2010/09/08 10:14:32 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -346,6 +346,7 @@ public class DDVConfig
     settings.setAttribute(this.getPrefix() + "softpin",(String) null);
     settings.setAttribute(this.getPrefix() + "ctnumber",(String) null);
     settings.setAttribute(this.getPrefix() + "entryidx",(String) null);
+    settings.setAttribute(this.getPrefix() + "konto",(String[]) null);
   }
 }
 
@@ -353,7 +354,10 @@ public class DDVConfig
 
 /**********************************************************************
  * $Log: DDVConfig.java,v $
- * Revision 1.1  2010/09/07 15:28:05  willuhn
+ * Revision 1.2  2010/09/08 10:14:32  willuhn
+ * @B Beim Loeschen einer DDV-Config auch die IDs der fest verdrahteten Konten loeschen
+ *
+ * Revision 1.1  2010-09-07 15:28:05  willuhn
  * @N BUGZILLA 391 - Kartenleser-Konfiguration komplett umgebaut. Damit lassen sich jetzt beliebig viele Kartenleser und Konfigurationen parellel einrichten
  *
  **********************************************************************/
