@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/server/PassportHandleImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2010/09/07 15:28:05 $
+ * $Revision: 1.7 $
+ * $Date: 2010/09/08 11:24:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -194,7 +194,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
       Logger.info("ddv passport opened");
 
       Logger.info("  hbci version: " + config.getHBCIVersion());
-			handler=new HBCIHandler(config.getHBCIVersion(),hbciPassport);
+			handler = new HBCIHandler(config.getHBCIVersion(),hbciPassport);
       Logger.info("ddv handler opened");
       
 			return handler;
@@ -398,7 +398,10 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 
 /**********************************************************************
  * $Log: PassportHandleImpl.java,v $
- * Revision 1.6  2010/09/07 15:28:05  willuhn
+ * Revision 1.7  2010/09/08 11:24:40  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.6  2010-09-07 15:28:05  willuhn
  * @N BUGZILLA 391 - Kartenleser-Konfiguration komplett umgebaut. Damit lassen sich jetzt beliebig viele Kartenleser und Konfigurationen parellel einrichten
  *
  * Revision 1.5  2010-07-22 22:36:24  willuhn
