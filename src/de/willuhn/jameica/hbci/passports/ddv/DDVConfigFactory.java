@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/DDVConfigFactory.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/09/08 10:08:50 $
+ * $Revision: 1.3 $
+ * $Date: 2010/09/08 10:16:00 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -286,6 +286,14 @@ public class DDVConfigFactory
       }
     }
 
+    // Wir haben nur eine Config, dann nehmen wir gleich die
+    if (list.size() == 1)
+    {
+      DDVConfig config = (DDVConfig) list.get(0);
+      Logger.info("using config : " + config.getName());
+      return config;
+    }
+    
     // Wir haben mehrere zur Auswahl. Lassen wir den User entscheiden.
     SelectConfigDialog d = new SelectConfigDialog(SelectConfigDialog.POSITION_CENTER);
     try
@@ -368,7 +376,10 @@ public class DDVConfigFactory
 
 /**********************************************************************
  * $Log: DDVConfigFactory.java,v $
- * Revision 1.2  2010/09/08 10:08:50  willuhn
+ * Revision 1.3  2010/09/08 10:16:00  willuhn
+ * @N Wenn nur eine DDV-Config vorhanden ist, dann die automatisch nehmen
+ *
+ * Revision 1.2  2010-09-08 10:08:50  willuhn
  * *** empty log message ***
  *
  * Revision 1.1  2010-09-07 15:28:05  willuhn
