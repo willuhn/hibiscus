@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/search/UmsatzSearchProvider.java,v $
- * $Revision: 1.4 $
- * $Date: 2009/08/25 22:32:10 $
+ * $Revision: 1.5 $
+ * $Date: 2010/09/10 11:57:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -48,26 +48,12 @@ public class UmsatzSearchProvider implements SearchProvider
   /**
    * @see de.willuhn.jameica.search.SearchProvider#search(java.lang.String)
    */
-  public List search(String search) throws RemoteException,
-      ApplicationException
+  public List search(String search) throws RemoteException, ApplicationException
   {
     if (search == null || search.length() == 0)
       return null;
 
-    String text = "%" + search.toLowerCase() + "%";
-    DBIterator list = UmsatzUtil.getUmsaetzeBackwards();
-    list.addFilter("LOWER(zweck) LIKE ? OR " +
-                   "LOWER(zweck2) LIKE ? OR " +
-                   "LOWER(zweck3) LIKE ? OR " +
-                   "LOWER(empfaenger_name) LIKE ? OR " +
-                   "empfaenger_konto LIKE ? OR " +
-                   "empfaenger_blz LIKE ? OR " +
-                   "LOWER(primanota) LIKE ? OR " +
-                   "LOWER(art) LIKE ? OR " +
-                   "LOWER(customerref) LIKE ? OR " +
-                   "LOWER(kommentar) LIKE ?",
-                   new String[]{text,text,text,text,text,text,text,text,text,text});
-
+    DBIterator list = UmsatzUtil.find(search);
     ArrayList results = new ArrayList();
     while (list.hasNext())
     {
@@ -145,6 +131,9 @@ public class UmsatzSearchProvider implements SearchProvider
 
 /**********************************************************************
  * $Log: UmsatzSearchProvider.java,v $
+ * Revision 1.5  2010/09/10 11:57:24  willuhn
+ * @C Allgemeine Suche nach Umsaetzen anhand Suchbegriff in UmsatzUtil verschoben - kann dort besser wiederverwendet werden
+ *
  * Revision 1.4  2009/08/25 22:32:10  willuhn
  * @B Parameter-Index falsch bei Buchungen, deren Gegenkontoname leer ist
  *
