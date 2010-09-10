@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/server/PassportHandleImpl.java,v $
- * $Revision: 1.8 $
- * $Date: 2010/09/08 15:04:52 $
+ * $Revision: 1.9 $
+ * $Date: 2010/09/10 15:47:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,7 +24,6 @@ import org.kapott.hbci.manager.HBCIUtils;
 import org.kapott.hbci.passport.AbstractHBCIPassport;
 import org.kapott.hbci.passport.HBCIPassport;
 
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCICallbackSWT;
 import de.willuhn.jameica.hbci.Settings;
@@ -36,6 +35,7 @@ import de.willuhn.jameica.hbci.passports.ddv.rmi.Passport;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.Converter;
 import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -396,7 +396,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
     else
     {
       HBCIFactory.getInstance().getProgressMonitor().setStatusText(text);
-      GUI.getStatusBar().setSuccessText(text);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(text,StatusBarMessage.TYPE_SUCCESS));
     }
     return true;
   }
@@ -405,7 +405,10 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 
 /**********************************************************************
  * $Log: PassportHandleImpl.java,v $
- * Revision 1.8  2010/09/08 15:04:52  willuhn
+ * Revision 1.9  2010/09/10 15:47:37  willuhn
+ * @R Kein direkter GUI-Code im Handle
+ *
+ * Revision 1.8  2010-09-08 15:04:52  willuhn
  * @N Config des Sicherheitsmediums als Context in Passport speichern
  *
  * Revision 1.7  2010-09-08 11:24:40  willuhn
