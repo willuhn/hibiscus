@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.62 $
- * $Date: 2010/06/17 15:31:28 $
+ * $Revision: 1.63 $
+ * $Date: 2010/09/16 09:54:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -379,49 +379,34 @@ public class Settings
     }
   }
 
-  private static Boolean firstStart = null;
-  
   /**
    * Prueft, ob es der erste Hibiscus-Start ist bzw noch keine Konten existieren.
    * @return true, wenn noch keine Konten existieren.
    */
   public static boolean isFirstStart()
   {
-    if (firstStart == null)
+    // Wir checken erstmal, ob das Plugin ueberhaupt geladen wurde
+    if (!Application.getPluginLoader().getManifest(HBCI.class).isInstalled())
+      return true;
+
+    try
     {
-      // Wir checken erstmal, ob das Plugin ueberhaupt geladen wurde
-      if (!Application.getPluginLoader().getManifest(HBCI.class).isInstalled())
-      {
-        // Nope, dann koennen wir uns den Rest schenken
-        firstStart = Boolean.TRUE;
-      }
-      else
-      {
-        try
-        {
-          DBIterator konten = Settings.getDBService().createList(Konto.class);
-          firstStart = Boolean.valueOf(konten == null || konten.size() == 0);
-        }
-        catch (RemoteException re)
-        {
-          Logger.error("unable to load konto list",re);
-          
-          // Wir liefern trotzdem true zurueck, weil sonst die ganzen Boxen
-          // auf der Startseite angezeigt werden. Das muss aber mal noch
-          // geaendert werden, da sie sich in dem Fall gar nicht mehr
-          // im Classpath befinden duerften. Denn wenn die Initialisierung
-          // des Plugins fehlschlaegt, sollte es auch aus dem Classpath
-          // undeployed werden
-          firstStart = Boolean.TRUE;
-        }
-      }
+      DBIterator konten = Settings.getDBService().createList(Konto.class);
+      return konten.size() == 0;
     }
-    return firstStart.booleanValue();
+    catch (Exception e)
+    {
+      Logger.error("unable to load konto list",e);
+      return true; // wir liefern hier true, damit die Boxen nicht angezeigt werden
+    }
   }
 }
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.63  2010/09/16 09:54:05  willuhn
+ * @B BUGZILLA #904
+ *
  * Revision 1.62  2010/06/17 15:31:28  willuhn
  * @C BUGZILLA 622 - Defaultwert des checksum.saldo-Parameters geaendert - steht jetzt per Default auf false, sodass der Saldo NICHT mit in die Checksumme einfliesst
  * @B BUGZILLA 709 - Konto ist nun ENDLICH nicht mehr Bestandteil der Checksumme, dafuer sind jetzt alle Verwendungszweck-Zeilen drin
