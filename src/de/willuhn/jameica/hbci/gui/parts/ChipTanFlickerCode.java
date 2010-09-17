@@ -1,8 +1,8 @@
 package de.willuhn.jameica.hbci.gui.parts;
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/Attic/ChipTanFlickerCode.java,v $
- * $Revision: 1.8 $
- * $Date: 2010/09/03 12:19:10 $
+ * $Revision: 1.9 $
+ * $Date: 2010/09/17 11:36:29 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -56,8 +56,6 @@ public class ChipTanFlickerCode
     private FlickerCode(String code) throws Exception
     {
       this.code = code.toUpperCase().replaceAll("[^A-F0-9]","");
-//      if (!this.checksum())
-//        throw new Exception("Flicker-Code ungültig");
     }
 
     /**
@@ -127,40 +125,32 @@ public class ChipTanFlickerCode
      * Prueft, ob die Checksumme korrekt ist.
      * @return true, wenn die Checksumme korrekt ist.
      */
-    private boolean checksum()
+    private String withChecksum() throws Exception
     {
-      try
+      String test = this.code;
+      
+      /* length check: first byte */
+      int len = test.length() / 2 - 1;
+      test = toHex(len,2) + test.substring(2);
+      
+      /* luhn checksum */
+      String luhndata = getPayload();
+      int luhnsum = 0;
+      for (int i=0; i<luhndata.length(); i+=2)
       {
-        String test = this.code;
-        
-        /* length check: first byte */
-        int len = test.length() / 2 - 1;
-        test = toHex(len,2) + test.substring(2);
-        
-        /* luhn checksum */
-        String luhndata = getPayload();
-        int luhnsum = 0;
-        for (int i=0; i<luhndata.length(); i+=2)
-        {
-          luhnsum += (1*Integer.parseInt(Character.toString(luhndata.charAt(i)),16)) + quersumme(2*Integer.parseInt(Character.toString(luhndata.charAt(i+1)),16));
-        }
-        luhnsum = (10 - (luhnsum % 10)) % 10;
-        test = test.substring(0,test.length()-2) + toHex(luhnsum,1) + test.substring(test.length()-1);
-        
-        /* xor checksum */
-        int xorsum = 0;
-        for (int i=0; i< test.length()-2; i++)
-        {
-          xorsum ^= Integer.parseInt(Character.toString(test.charAt(i)),16);
-        }
-        test = test.substring(0,test.length()-1) + toHex(xorsum,1);
-        return test.equals(this.code);
+        luhnsum += (1*Integer.parseInt(Character.toString(luhndata.charAt(i)),16)) + quersumme(2*Integer.parseInt(Character.toString(luhndata.charAt(i+1)),16));
       }
-      catch (Exception e)
+      luhnsum = (10 - (luhnsum % 10)) % 10;
+      test = test.substring(0,test.length()-2) + toHex(luhnsum,1) + test.substring(test.length()-1);
+      
+      /* xor checksum */
+      int xorsum = 0;
+      for (int i=0; i< test.length()-2; i++)
       {
-        e.printStackTrace();
-        return false;
+        xorsum ^= Integer.parseInt(Character.toString(test.charAt(i)),16);
       }
+      test = test.substring(0,test.length()-1) + toHex(xorsum,1);
+      return test;
     }
   }
   
@@ -238,13 +228,9 @@ public class ChipTanFlickerCode
       bits.put("E",new int[]{0, 0, 1, 1, 1});
       bits.put("F",new int[]{0, 1, 1, 1, 1});
 
-
+      
       this.bitarray = new ArrayList<int[]>();
       for (int i = 0; i < this.code.length(); i += 2) {
-        
-        if (i+2 > this.code.length()) // TODO: Das ist nur zum Testen.
-          break;
-        
         bitarray.add(bits.get(Character.toString(this.code.charAt(i+1))));
         bitarray.add(bits.get(Character.toString(this.code.charAt(i))));
       }
@@ -256,13 +242,13 @@ public class ChipTanFlickerCode
      */
     private void step(GC ctx)
     {
-      int margin = 7;
+      int margin = 4;
       int barwidth = canvas.getSize().x / 5;
       bitarray.get(halfbyteid)[0] = clock;
       
       for (int i = 0; i < 5; i++)
       {
-        int color = (bitarray.get(halfbyteid)[i] == 1) ? SWT.COLOR_BLACK : SWT.COLOR_WHITE;
+        int color = (bitarray.get(halfbyteid)[i] == 1) ? SWT.COLOR_WHITE : SWT.COLOR_BLACK;
         ctx.setBackground(canvas.getDisplay().getSystemColor(color));
         ctx.fillRectangle(i*barwidth+margin,margin,barwidth-2*margin,canvas.getSize().y-2*margin);
       }
@@ -337,7 +323,7 @@ public class ChipTanFlickerCode
     Shell shell = new Shell(display);
     shell.setLayout(new FillLayout());
     shell.setText("Flicker-Test");
-    shell.setSize(350,300);
+    shell.setSize(200,234);
     
     Composite comp = new Composite(shell,SWT.NONE);
     comp.setLayout(new GridLayout());
@@ -357,14 +343,17 @@ public class ChipTanFlickerCode
     label.setLayoutData(new GridData(GridData.BEGINNING));
     label.setText("Flicker-Code");
     final Text text = new Text(comp2,SWT.SINGLE | SWT.BORDER);
-    text.setText("11 04 871 49552 05 123456789F 14 302C3031 07");
+    // text.setText("11048714955205123456789F14302C303107"); // aus der JS-Demo
+    //   text.setText("00282608871126230616134106498,23"); // Von Andy
+    //   text.setText("002624088715131306389726041,00"); // von http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=60532
+    text.setText("100484652456044356435F14312C30304B"); // von bankingportal.sparkasse-freiburg.de
     text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     
     Label label2 = new Label(comp2,SWT.NONE);
     label2.setLayoutData(new GridData(GridData.BEGINNING));
     label2.setText("Takt (Hz)");
     final Text takt = new Text(comp2,SWT.SINGLE | SWT.BORDER);
-    takt.setText("10");
+    takt.setText("15");
     takt.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
     Button start = new Button(comp2,SWT.PUSH);
@@ -435,7 +424,10 @@ public class ChipTanFlickerCode
 
 /**********************************************************************
  * $Log: ChipTanFlickerCode.java,v $
- * Revision 1.8  2010/09/03 12:19:10  willuhn
+ * Revision 1.9  2010/09/17 11:36:29  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.8  2010-09-03 12:19:10  willuhn
  * *** empty log message ***
  *
  * Revision 1.7  2010-09-03 12:14:32  willuhn
