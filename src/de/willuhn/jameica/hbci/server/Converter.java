@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.56 $
- * $Date: 2010/06/01 11:02:18 $
+ * $Revision: 1.57 $
+ * $Date: 2010/09/24 12:22:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -181,6 +181,9 @@ public class Converter {
 			auftrag.setZweck(d.usage[0]);
 		}
 
+		// Textschlüssel
+		auftrag.setTextSchluessel(d.key);
+		
 		// Wir haben nur zwei Felder fuer den Zweck. Wenn also mehr als
 		// 2 vorhanden sind (kann das ueberhaupt sein?), muessen wir die
 		// restlichen leider ignorieren um nicht ueber die 27-Zeichen Maximum
@@ -389,6 +392,9 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
+ * Revision 1.57  2010/09/24 12:22:04  willuhn
+ * @N Thomas' Patch fuer Textschluessel in Dauerauftraegen
+ *
  * Revision 1.56  2010/06/01 11:02:18  willuhn
  * @N Wiederverwendbaren Code zum Zerlegen und Uebernehmen von Verwendungszwecken aus/in Arrays in Util-Klasse ausgelagert
  *

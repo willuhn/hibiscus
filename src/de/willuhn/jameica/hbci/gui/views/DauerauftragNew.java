@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/DauerauftragNew.java,v $
- * $Revision: 1.11 $
- * $Date: 2009/05/08 13:58:30 $
+ * $Revision: 1.12 $
+ * $Date: 2010/09/24 12:22:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -57,6 +57,7 @@ public class DauerauftragNew extends AbstractView
 		details.addLabelPair(i18n.tr("Verwendungszweck"),					control.getZweck());
 		details.addLabelPair(i18n.tr("weiterer Verwendungszweck"),control.getZweck2());
 		details.addLabelPair(i18n.tr("Betrag"),										control.getBetrag());
+		details.addLabelPair(i18n.tr("Textschlüssel"),            control.getTextSchluessel());
 		details.addLabelPair(i18n.tr("Zahlungsturnus"),						control.getTurnus());
 		details.addLabelPair(i18n.tr("Erste Zahlung"),						control.getErsteZahlung());
 		details.addLabelPair(i18n.tr("Letzte Zahlung"),						control.getLetzteZahlung());
@@ -94,6 +95,9 @@ public class DauerauftragNew extends AbstractView
 
 /**********************************************************************
  * $Log: DauerauftragNew.java,v $
+ * Revision 1.12  2010/09/24 12:22:04  willuhn
+ * @N Thomas' Patch fuer Textschluessel in Dauerauftraegen
+ *
  * Revision 1.11  2009/05/08 13:58:30  willuhn
  * @N Icons in allen Menus und auf allen Buttons
  * @N Fuer Umsatz-Kategorien koennen nun benutzerdefinierte Farben vergeben werden

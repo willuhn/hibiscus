@@ -130,6 +130,7 @@ CREATE TABLE dauerauftrag (
   zeiteinheit int(1) NOT NULL,
   intervall int(2) NOT NULL,
   tag int(2) NOT NULL,
+  typ varchar(2) NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );
@@ -291,4 +292,4 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',30);
+INSERT INTO version (name,version) values ('db',31);

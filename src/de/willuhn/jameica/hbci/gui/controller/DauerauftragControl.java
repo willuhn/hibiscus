@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/DauerauftragControl.java,v $
- * $Revision: 1.29 $
- * $Date: 2009/01/04 16:18:22 $
+ * $Revision: 1.30 $
+ * $Date: 2010/09/24 12:22:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,8 +25,10 @@ import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
+import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.TextSchluessel;
 import de.willuhn.jameica.hbci.gui.action.DauerauftragNew;
 import de.willuhn.jameica.hbci.gui.dialogs.TurnusDialog;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
@@ -46,7 +48,8 @@ public class DauerauftragControl extends AbstractTransferControl {
 	private DialogInput turnus	      = null;
 	private DateInput ersteZahlung	  = null;
 	private DateInput letzteZahlung	  = null;
-
+	private SelectInput textschluessel = null;
+	
   private Dauerauftrag transfer     = null;
 
   private Part list                 = null;
@@ -206,6 +209,8 @@ public class DauerauftragControl extends AbstractTransferControl {
 			d.setErsteZahlung((Date)getErsteZahlung().getValue());
 			d.setLetzteZahlung((Date)getLetzteZahlung().getValue());
 			d.setTurnus((Turnus)getTurnus().getValue());
+      TextSchluessel s = (TextSchluessel) getTextSchluessel().getValue();
+      d.setTextSchluessel(s == null ? null : s.getCode());
 			return super.handleStore();
   	}
   	catch (RemoteException e)
@@ -228,6 +233,19 @@ public class DauerauftragControl extends AbstractTransferControl {
     return i;
   }
 
+  /**
+   * Liefert ein Auswahlfeld fuer den Textschluessel.
+   * @return Auswahlfeld.
+   * @throws RemoteException
+   */
+  public Input getTextSchluessel() throws RemoteException
+  {
+    if (textschluessel != null)
+      return textschluessel;
+
+    textschluessel = new SelectInput(TextSchluessel.get(new String[]{"52","53","54"}),TextSchluessel.get(((Dauerauftrag)getTransfer()).getTextSchluessel()));
+    return textschluessel;
+  }
   /**
    * Listener, der das Datum der naechsten Zahlung aktualisiert.
    */
@@ -262,6 +280,9 @@ public class DauerauftragControl extends AbstractTransferControl {
 
 /**********************************************************************
  * $Log: DauerauftragControl.java,v $
+ * Revision 1.30  2010/09/24 12:22:04  willuhn
+ * @N Thomas' Patch fuer Textschluessel in Dauerauftraegen
+ *
  * Revision 1.29  2009/01/04 16:18:22  willuhn
  * @N BUGZILLA 404 - Kontoauswahl via SelectBox
  *

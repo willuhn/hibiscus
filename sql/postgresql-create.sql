@@ -116,7 +116,8 @@ CREATE TABLE dauerauftrag (
   orderid varchar(100),
   zeiteinheit integer NOT NULL,
   intervall integer NOT NULL,
-  tag integer NOT NULL
+  tag integer NOT NULL,
+  typ varchar(2) NULL
 );
 
 CREATE TABLE turnus (
@@ -252,4 +253,4 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',30);
+INSERT INTO version (name,version) values ('db',31);

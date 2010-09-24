@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragStoreJob.java,v $
- * $Revision: 1.25 $
- * $Date: 2010/02/23 11:20:45 $
+ * $Revision: 1.26 $
+ * $Date: 2010/09/24 12:22:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -90,7 +90,11 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob
         curr = HBCIProperties.CURRENCY_DEFAULT_DE;
 
 			setJobParam("btg",dauerauftrag.getBetrag(),curr);
-
+			
+      String key = this.dauerauftrag.getTextSchluessel();
+      if (key != null && key.length() > 0)
+        setJobParam("key",key);
+      
 			HibiscusAddress empfaenger = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
 			empfaenger.setBlz(dauerauftrag.getGegenkontoBLZ());
 			empfaenger.setKontonummer(dauerauftrag.getGegenkontoNummer());
@@ -223,6 +227,9 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIDauerauftragStoreJob.java,v $
+ * Revision 1.26  2010/09/24 12:22:04  willuhn
+ * @N Thomas' Patch fuer Textschluessel in Dauerauftraegen
+ *
  * Revision 1.25  2010/02/23 11:20:45  willuhn
  * @C Verwendungszweck ignorieren, wenn er nur aus Whitespaces besteht
  *

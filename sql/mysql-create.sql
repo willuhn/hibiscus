@@ -217,6 +217,7 @@ CREATE TABLE dauerauftrag (
      , zeiteinheit int(10) NOT NULL
      , intervall int(10) NOT NULL
      , tag int(10) NOT NULL
+     , typ VARCHAR(2)
      , UNIQUE (id)
      , PRIMARY KEY (id)
 )TYPE=InnoDB;
@@ -292,4 +293,4 @@ ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
 
-INSERT INTO version (name,version) values ('db',30);
+INSERT INTO version (name,version) values ('db',31);

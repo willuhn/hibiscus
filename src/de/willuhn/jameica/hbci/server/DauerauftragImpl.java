@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DauerauftragImpl.java,v $
- * $Revision: 1.33 $
- * $Date: 2010/04/27 11:02:32 $
+ * $Revision: 1.34 $
+ * $Date: 2010/09/24 12:22:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -183,6 +183,7 @@ public class DauerauftragImpl extends AbstractHibiscusTransferImpl
 		String letzteZahlung = getLetzteZahlung() == null ? "" : HBCI.DATEFORMAT.format(getLetzteZahlung());
 		String s = getTurnus().getChecksum() +
 							 getBetrag() +
+							 getTextSchluessel() +
 							 getGegenkontoBLZ() +
 							 getGegenkontoNummer() +
 							 getGegenkontoName() +
@@ -253,11 +254,29 @@ public class DauerauftragImpl extends AbstractHibiscusTransferImpl
                                            this.getTurnus(),
                                            new Date());
   }
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Dauerauftrag#getTextSchluessel()
+   */
+  public String getTextSchluessel() throws RemoteException
+  {
+    return (String) getAttribute("typ");
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Dauerauftrag#setTextSchluessel(java.lang.String)
+   */
+  public void setTextSchluessel(String schluessel) throws RemoteException
+  {
+    setAttribute("typ",schluessel);
+  }
 }
 
 
 /**********************************************************************
  * $Log: DauerauftragImpl.java,v $
+ * Revision 1.34  2010/09/24 12:22:04  willuhn
+ * @N Thomas' Patch fuer Textschluessel in Dauerauftraegen
+ *
  * Revision 1.33  2010/04/27 11:02:32  willuhn
  * @R Veralteten Verwendungszweck-Code entfernt
  *
