@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailControl.java,v $
- * $Revision: 1.41 $
- * $Date: 2010/03/05 23:52:27 $
+ * $Revision: 1.42 $
+ * $Date: 2010/09/27 11:51:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -187,7 +187,7 @@ public class UmsatzDetailControl extends AbstractControl {
     UmsatzTyp ut = u != null ? u.getUmsatzTyp() : null;
     
     // wenn noch keine Kategorie zugeordnet ist, bieten wir nur die passenden an.
-    if (u != null && ut == null)
+    if (u != null && ut == null && u.getBetrag() != 0)
       typ = (u.getBetrag() > 0 ? UmsatzTyp.TYP_EINNAHME : UmsatzTyp.TYP_AUSGABE);
     
     // Ansonsten alle - damit die zugeordnete Kategorie auch dann noch
@@ -417,6 +417,9 @@ public class UmsatzDetailControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzDetailControl.java,v $
+ * Revision 1.42  2010/09/27 11:51:38  willuhn
+ * @N BUGZILLA 804
+ *
  * Revision 1.41  2010/03/05 23:52:27  willuhn
  * @C Code-Cleanup
  * @C Liste der Kategorien kann jetzt nicht mehr von aussen an UmsatzTypInput uebergeben werden

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/UmsatzAssign.java,v $
- * $Revision: 1.8 $
- * $Date: 2010/03/05 23:52:27 $
+ * $Revision: 1.9 $
+ * $Date: 2010/09/27 11:51:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -68,7 +68,7 @@ public class UmsatzAssign implements Action
         ut = umsaetze[0].getUmsatzTyp();
 
         // Dialog anzeigen, bei dem nur die zum Betrag passenden Kategorien angezeigt werden
-        if (ut == null)
+        if (ut == null && umsaetze[0].getBetrag() != 0)
           typ = (umsaetze[0].getBetrag() > 0 ? UmsatzTyp.TYP_EINNAHME : UmsatzTyp.TYP_AUSGABE);
       }
       UmsatzTypAuswahlDialog d = new UmsatzTypAuswahlDialog(UmsatzTypAuswahlDialog.POSITION_CENTER,ut,typ);
@@ -137,6 +137,9 @@ public class UmsatzAssign implements Action
 
 /**********************************************************************
  * $Log: UmsatzAssign.java,v $
+ * Revision 1.9  2010/09/27 11:51:38  willuhn
+ * @N BUGZILLA 804
+ *
  * Revision 1.8  2010/03/05 23:52:27  willuhn
  * @C Code-Cleanup
  * @C Liste der Kategorien kann jetzt nicht mehr von aussen an UmsatzTypInput uebergeben werden
