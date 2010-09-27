@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.67 $
- * $Date: 2010/08/26 11:30:20 $
+ * $Revision: 1.68 $
+ * $Date: 2010/09/27 11:55:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -170,8 +170,10 @@ public class UmsatzList extends TablePart implements Extendable
           {
             if (u.getBetrag() < 0.0)
               item.setForeground(Settings.getBuchungSollForeground());
-            else
+            else if (u.getBetrag() > 0.0)
               item.setForeground(Settings.getBuchungHabenForeground());
+            else
+              item.setForeground(Color.WIDGET_FG.getSWTColor());
 
             // Saldo nicht mit einfaerben, dass irritiert sonst,
             // wenn die Buchung zwar einen negativen Betrag hat,
@@ -815,7 +817,10 @@ public class UmsatzList extends TablePart implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
- * Revision 1.67  2010/08/26 11:30:20  willuhn
+ * Revision 1.68  2010/09/27 11:55:05  willuhn
+ * @N BUGZILLA 804
+ *
+ * Revision 1.67  2010-08-26 11:30:20  willuhn
  * *** empty log message ***
  *
  * Revision 1.66  2010-08-11 16:06:05  willuhn
