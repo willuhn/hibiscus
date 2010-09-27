@@ -1,8 +1,8 @@
 package de.willuhn.jameica.hbci.gui.parts;
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/Attic/ChipTanFlickerCode.java,v $
- * $Revision: 1.9 $
- * $Date: 2010/09/17 11:36:29 $
+ * $Revision: 1.10 $
+ * $Date: 2010/09/27 11:42:20 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -125,7 +125,7 @@ public class ChipTanFlickerCode
      * Prueft, ob die Checksumme korrekt ist.
      * @return true, wenn die Checksumme korrekt ist.
      */
-    private String withChecksum() throws Exception
+    private boolean checksum() throws Exception
     {
       String test = this.code;
       
@@ -150,7 +150,7 @@ public class ChipTanFlickerCode
         xorsum ^= Integer.parseInt(Character.toString(test.charAt(i)),16);
       }
       test = test.substring(0,test.length()-1) + toHex(xorsum,1);
-      return test;
+      return test.equals(this.code);
     }
   }
   
@@ -319,6 +319,21 @@ public class ChipTanFlickerCode
    */
   public final static void main(String[] args) throws Exception
   {
+    FlickerCode cc = new FlickerCode("11048714955205123456789F14302C303107");
+    String pl = cc.code;
+    System.out.println(pl);
+    String r = "";
+    for (int i=0;i<pl.length();i+=2)
+    {
+      String hex = pl.substring(i,i+2); // pl.substring(i+1,i+2) + pl.substring(i,i+1);
+      char s      = (char) Integer.parseInt(hex,16);
+      System.out.println(hex + " -> " + s);
+      r += s;
+    }
+    System.out.println(r);
+    if (true)
+      return;
+    
     Display display = Display.getDefault();
     Shell shell = new Shell(display);
     shell.setLayout(new FillLayout());
@@ -344,7 +359,6 @@ public class ChipTanFlickerCode
     label.setText("Flicker-Code");
     final Text text = new Text(comp2,SWT.SINGLE | SWT.BORDER);
     // text.setText("11048714955205123456789F14302C303107"); // aus der JS-Demo
-    //   text.setText("00282608871126230616134106498,23"); // Von Andy
     //   text.setText("002624088715131306389726041,00"); // von http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=60532
     text.setText("100484652456044356435F14312C30304B"); // von bankingportal.sparkasse-freiburg.de
     text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -424,7 +438,10 @@ public class ChipTanFlickerCode
 
 /**********************************************************************
  * $Log: ChipTanFlickerCode.java,v $
- * Revision 1.9  2010/09/17 11:36:29  willuhn
+ * Revision 1.10  2010/09/27 11:42:20  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.9  2010-09-17 11:36:29  willuhn
  * *** empty log message ***
  *
  * Revision 1.8  2010-09-03 12:19:10  willuhn
