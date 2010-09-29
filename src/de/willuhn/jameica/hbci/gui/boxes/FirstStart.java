@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/FirstStart.java,v $
- * $Revision: 1.6 $
- * $Date: 2010/08/12 17:12:32 $
+ * $Revision: 1.7 $
+ * $Date: 2010/09/29 22:01:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,7 +18,6 @@ import java.rmi.RemoteException;
 import org.eclipse.swt.widgets.Composite;
 
 import de.willuhn.jameica.gui.Action;
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.boxes.AbstractBox;
 import de.willuhn.jameica.gui.parts.FormTextPart;
 import de.willuhn.jameica.gui.util.ButtonArea;
@@ -26,12 +25,8 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.KontoList;
 import de.willuhn.jameica.hbci.gui.action.PassportDetail;
-import de.willuhn.jameica.hbci.gui.dialogs.PassportAuswahlDialog;
-import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.plugin.Manifest;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.jameica.system.OperationCanceledException;
-import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -105,22 +100,7 @@ public class FirstStart extends AbstractBox
     Action a = new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
-        PassportAuswahlDialog d = new PassportAuswahlDialog(PassportAuswahlDialog.POSITION_CENTER);
-        d.setTitle(i18n.tr("Auswahl des Sicherheitsmediums"));
-        try
-        {
-          Passport p = (Passport) d.open();
-          new PassportDetail().handleAction(p);
-        }
-        catch (OperationCanceledException oce)
-        {
-          // ignore
-        }
-        catch (Exception e)
-        {
-          Logger.error("error while opening passport dialog",e);
-          GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Öffnen des Dialogs"));
-        }
+        new PassportDetail().handleAction(null);
       }
     };
     Action a2 = new Action() {
@@ -145,7 +125,10 @@ public class FirstStart extends AbstractBox
 
 /*********************************************************************
  * $Log: FirstStart.java,v $
- * Revision 1.6  2010/08/12 17:12:32  willuhn
+ * Revision 1.7  2010/09/29 22:01:43  willuhn
+ * @R Dialog nicht noetig - macht die Action intern ohnehin auch nochmal
+ *
+ * Revision 1.6  2010-08-12 17:12:32  willuhn
  * @N Saldo-Chart komplett ueberarbeitet (Daten wurden vorher mehrmals geladen, Summen-Funktion, Anzeige mehrerer Konten, Durchschnitt ueber mehrere Konten, Bugfixing, echte "Homogenisierung" der Salden via SaldoFinder)
  *
  * Revision 1.5  2008/04/15 16:16:34  willuhn
