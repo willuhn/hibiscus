@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/Controller.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/09/07 15:17:07 $
+ * $Revision: 1.3 $
+ * $Date: 2010/09/29 23:43:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -39,11 +39,13 @@ import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.DialogFactory;
+import de.willuhn.jameica.hbci.gui.action.PassportTest;
 import de.willuhn.jameica.hbci.gui.dialogs.NewKeysDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.PassportPropertyDialog;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
 import de.willuhn.jameica.hbci.gui.input.HBCIVersionInput;
 import de.willuhn.jameica.hbci.passports.rdh.rmi.RDHKey;
+import de.willuhn.jameica.hbci.passports.rdh.server.PassportHandleImpl;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.messaging.QueryMessage;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -551,15 +553,43 @@ public class Controller extends AbstractControl {
   }
 
   /**
-   * Speichert die Einstellungen fuer den aktuellen Schluessel.
+   * Testet die Konfiguration.
    */
-  public synchronized void handleStore()
+  public synchronized void handleTest()
+  {
+
+    // Speichern, damit sicher ist, dass wir vernuenftige Daten fuer den
+    // Test haben und die auch gespeichert sind
+    if (!handleStore())
+      return;
+
+    try
+    {
+      new PassportTest().handleAction(new PassportHandleImpl(getKey()));
+    }
+    catch (ApplicationException ae)
+    {
+      GUI.getStatusBar().setErrorText(ae.getMessage());
+    }
+    catch (RemoteException e)
+    {
+      Logger.error("error while testing passport",e);
+      GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Testen der Konfiguration. Bitte prüfen Sie das Protokoll. ") + e.getMessage());
+    }
+  }
+
+
+  /**
+   * Speichert die Einstellungen fuer den aktuellen Schluessel.
+   * @return true, wenn das Speichern erfolgreich war.
+   */
+  public synchronized boolean handleStore()
   {
     RDHKey key = getKey();
     if (key == null)
     {
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte wählen Sie eine Schlüsseldatei aus"),StatusBarMessage.TYPE_ERROR));
-      return;
+      return false;
     }
 
     try
@@ -587,6 +617,7 @@ public class Controller extends AbstractControl {
       }
       
       GUI.getStatusBar().setSuccessText(i18n.tr("Einstellungen gespeichert"));
+      return true;
     }
     catch (OperationCanceledException oce)
     {
@@ -602,6 +633,7 @@ public class Controller extends AbstractControl {
       Logger.error("error while storing settings",e);
       GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern der Einstellungen"));
     }
+    return false;
   }
   
   /**
@@ -723,7 +755,13 @@ public class Controller extends AbstractControl {
 
 /**********************************************************************
  * $Log: Controller.java,v $
- * Revision 1.2  2010/09/07 15:17:07  willuhn
+ * Revision 1.3  2010/09/29 23:43:34  willuhn
+ * @N Automatisches Abgleichen und Anlegen von Konten aus KontoFetchFromPassport in KontoMerge verschoben
+ * @N Konten automatisch (mit Rueckfrage) anlegen, wenn das Testen der HBCI-Konfiguration erfolgreich war
+ * @N Config-Test jetzt auch bei Schluesseldatei
+ * @B in PassportHandleImpl#getKonten() wurder der Converter-Funktion seit jeher die falsche Passport-Klasse uebergeben. Da gehoerte nicht das Interface hin sondern die Impl
+ *
+ * Revision 1.2  2010-09-07 15:17:07  willuhn
  * @N GUI-Cleanup
  *
  * Revision 1.1  2010/06/17 11:26:48  willuhn

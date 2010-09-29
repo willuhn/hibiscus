@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/server/PassportHandleImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2010/09/08 15:04:52 $
+ * $Revision: 1.4 $
+ * $Date: 2010/09/29 23:43:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,7 +30,6 @@ import de.willuhn.jameica.hbci.passports.pintan.PinTanConfigFactory;
 import de.willuhn.jameica.hbci.passports.pintan.PtSecMechDialog;
 import de.willuhn.jameica.hbci.passports.pintan.SelectConfigDialog;
 import de.willuhn.jameica.hbci.passports.pintan.TANDialog;
-import de.willuhn.jameica.hbci.passports.pintan.rmi.Passport;
 import de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.Converter;
@@ -231,7 +230,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 			Konto k = null;
 			for (int i=0;i<konten.length;++i)
 			{
-				k = Converter.HBCIKonto2HibiscusKonto(konten[i], Passport.class);
+				k = Converter.HBCIKonto2HibiscusKonto(konten[i], PassportImpl.class);
 				Logger.debug("found account " + k.getKontonummer());
 				result.add(k);
 			}
@@ -290,7 +289,13 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 
 /**********************************************************************
  * $Log: PassportHandleImpl.java,v $
- * Revision 1.3  2010/09/08 15:04:52  willuhn
+ * Revision 1.4  2010/09/29 23:43:34  willuhn
+ * @N Automatisches Abgleichen und Anlegen von Konten aus KontoFetchFromPassport in KontoMerge verschoben
+ * @N Konten automatisch (mit Rueckfrage) anlegen, wenn das Testen der HBCI-Konfiguration erfolgreich war
+ * @N Config-Test jetzt auch bei Schluesseldatei
+ * @B in PassportHandleImpl#getKonten() wurder der Converter-Funktion seit jeher die falsche Passport-Klasse uebergeben. Da gehoerte nicht das Interface hin sondern die Impl
+ *
+ * Revision 1.3  2010-09-08 15:04:52  willuhn
  * @N Config des Sicherheitsmediums als Context in Passport speichern
  *
  * Revision 1.2  2010-09-07 15:17:08  willuhn

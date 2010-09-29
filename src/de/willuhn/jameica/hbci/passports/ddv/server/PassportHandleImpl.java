@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/server/PassportHandleImpl.java,v $
- * $Revision: 1.9 $
- * $Date: 2010/09/10 15:47:37 $
+ * $Revision: 1.10 $
+ * $Date: 2010/09/29 23:43:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -325,7 +325,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 			Konto k = null;
 			for (int i=0;i<konten.length;++i)
 			{
-				k = Converter.HBCIKonto2HibiscusKonto(konten[i], Passport.class);
+				k = Converter.HBCIKonto2HibiscusKonto(konten[i], PassportImpl.class);
 				Logger.debug("found account " + k.getKontonummer());
 				result.add(k);
 			}
@@ -405,7 +405,13 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 
 /**********************************************************************
  * $Log: PassportHandleImpl.java,v $
- * Revision 1.9  2010/09/10 15:47:37  willuhn
+ * Revision 1.10  2010/09/29 23:43:34  willuhn
+ * @N Automatisches Abgleichen und Anlegen von Konten aus KontoFetchFromPassport in KontoMerge verschoben
+ * @N Konten automatisch (mit Rueckfrage) anlegen, wenn das Testen der HBCI-Konfiguration erfolgreich war
+ * @N Config-Test jetzt auch bei Schluesseldatei
+ * @B in PassportHandleImpl#getKonten() wurder der Converter-Funktion seit jeher die falsche Passport-Klasse uebergeben. Da gehoerte nicht das Interface hin sondern die Impl
+ *
+ * Revision 1.9  2010-09-10 15:47:37  willuhn
  * @R Kein direkter GUI-Code im Handle
  *
  * Revision 1.8  2010-09-08 15:04:52  willuhn

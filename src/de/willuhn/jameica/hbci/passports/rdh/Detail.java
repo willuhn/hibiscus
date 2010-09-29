@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/Detail.java,v $
- * $Revision: 1.3 $
- * $Date: 2010/07/22 12:37:41 $
+ * $Revision: 1.4 $
+ * $Date: 2010/09/29 23:43:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -74,18 +74,30 @@ public class Detail extends AbstractView
         group.addInput(control.getPath()); // BUGZILLA 148
       }
 
+      {
+        ButtonArea buttons = new ButtonArea(getParent(),2);
+        buttons.addButton(i18n.tr("Passwort ändern"),new Action()
+        {
+          public void handleAction(Object context) throws ApplicationException
+          {
+            control.changePassword();
+          }
+        },null,false,"seahorse-preferences.png");
+        buttons.addButton(i18n.tr("INI-Brief anzeigen/erzeugen"),new Action()
+        {
+          public void handleAction(Object context) throws ApplicationException
+          {
+            control.startIniLetter();
+          }
+        },null,false,"stock_keyring.png");
+      }
+
+      
       new Headline(getParent(),i18n.tr("Fest zugeordnete Konten"));
       control.getKontoAuswahl().paint(getParent());
 
-      ButtonArea buttons = new ButtonArea(getParent(),6);
+      ButtonArea buttons = new ButtonArea(getParent(),5);
       buttons.addButton(new Back(true));
-      buttons.addButton(i18n.tr("Passwort ändern"),new Action()
-      {
-        public void handleAction(Object context) throws ApplicationException
-        {
-          control.changePassword();
-        }
-      },null,false,"seahorse-preferences.png");
       buttons.addButton(i18n.tr("BPD/UPD anzeigen"),new Action()
       {
         public void handleAction(Object context) throws ApplicationException
@@ -93,6 +105,13 @@ public class Detail extends AbstractView
           control.handleDisplayProperties();
         }
       },null,false,"text-x-generic.png");
+      buttons.addButton(i18n.tr("Konfiguration testen"),new Action()
+      {
+        public void handleAction(Object context) throws ApplicationException
+        {
+          control.handleTest();
+        }
+      },null,false,"dialog-information.png");
       buttons.addButton(i18n.tr("Signatur-ID synchronisieren"),new Action()
       {
         public void handleAction(Object context) throws ApplicationException
@@ -100,13 +119,6 @@ public class Detail extends AbstractView
           control.syncSigId();
         }
       },null,false,"view-refresh.png");
-      buttons.addButton(i18n.tr("INI-Brief anzeigen/erzeugen"),new Action()
-      {
-        public void handleAction(Object context) throws ApplicationException
-        {
-          control.startIniLetter();
-        }
-      },null,false,"stock_keyring.png");
       buttons.addButton(i18n.tr("Speichern"),new Action()
       {
         public void handleAction(Object context) throws ApplicationException
@@ -146,7 +158,13 @@ public class Detail extends AbstractView
 
 /**********************************************************************
  * $Log: Detail.java,v $
- * Revision 1.3  2010/07/22 12:37:41  willuhn
+ * Revision 1.4  2010/09/29 23:43:34  willuhn
+ * @N Automatisches Abgleichen und Anlegen von Konten aus KontoFetchFromPassport in KontoMerge verschoben
+ * @N Konten automatisch (mit Rueckfrage) anlegen, wenn das Testen der HBCI-Konfiguration erfolgreich war
+ * @N Config-Test jetzt auch bei Schluesseldatei
+ * @B in PassportHandleImpl#getKonten() wurder der Converter-Funktion seit jeher die falsche Passport-Klasse uebergeben. Da gehoerte nicht das Interface hin sondern die Impl
+ *
+ * Revision 1.3  2010-07-22 12:37:41  willuhn
  * @N GUI poliert
  *
  * Revision 1.2  2010/06/17 17:20:58  willuhn

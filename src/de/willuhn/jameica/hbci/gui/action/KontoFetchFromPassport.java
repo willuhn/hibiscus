@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoFetchFromPassport.java,v $
- * $Revision: 1.13 $
- * $Date: 2007/04/15 22:23:16 $
+ * $Revision: 1.14 $
+ * $Date: 2010/09/29 23:43:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,14 +12,11 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.action;
 
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.views.KontoList;
 import de.willuhn.jameica.hbci.passport.Passport;
-import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -31,6 +28,7 @@ import de.willuhn.util.I18N;
  */
 public class KontoFetchFromPassport implements Action
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
    * Erwartet ein Objekt vom Typ <code>de.willuhn.jameica.hbci.passport.Passport</code>.
@@ -38,9 +36,6 @@ public class KontoFetchFromPassport implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
-
-		final I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
 		if (context == null || !(context instanceof Passport))
 			throw new ApplicationException(i18n.tr("Kein Sicherheitsmedium ausgewählt oder keines verfügbar"));
 
@@ -53,81 +48,10 @@ public class KontoFetchFromPassport implements Action
 
 					GUI.getStatusBar().startProgress();
 					GUI.getStatusBar().setSuccessText(i18n.tr("Medium wird ausgelesen..."));
+					new KontoMerge().handleAction(p.getHandle().getKonten());
 
-					DBIterator existing = Settings.getDBService().createList(Konto.class);
-					Konto check = null;
-					Konto[] konten = p.getHandle().getKonten();
-
-					int created = 0;
-          int skipped = 0;
-          for (int i=0;i<konten.length;++i)
-					{
-						Logger.info("found konto " + konten[i].getKontonummer());
-						// Wir checken, ob's das Konto schon gibt
-						boolean found = false;
-						Logger.info("  checking if allready exists");
-
-            while (existing.hasNext())
-						{
-							check = (Konto) existing.next();
-            
-              // BLZ stimmt nicht ueberein
-							if (!check.getBLZ().equals(konten[i].getBLZ()))
-                continue;
-
-              // Kontonummer stimmt nicht ueberein.
-							if (!check.getKontonummer().equals(konten[i].getKontonummer()))
-                continue;
-              
-              // Stimmen Passports ueberein?
-              String pp = check.getPassportClass();
-              if (pp == null || !pp.equals(p.getClass().getName()))
-                continue;
-              
-              
-              // BUGZILLA 338: Checken, ob Bezeichnung (=Type) uebereinstimmt
-              // Bezeichnung ist optional - wir checken nur, wenn auf beiden
-              // Seiten ein Name vorhanden ist und sie sich unterscheiden
-              String localType = check.getBezeichnung();
-              String newType   = konten[i].getBezeichnung();
-              boolean haveName = (localType != null && localType.length() > 0 &&
-                                 newType != null && newType.length() > 0);
-
-              // Die Konten gelten bereits als identisch, wenn
-              // eines von beiden keine Bezeichnung hat (dann genuegen
-              // die o.g. Kriterien). Andernfalls muessen die Bezeichnungen
-              // uebereinstimmen.
-              if (!haveName || newType.equals(localType))
-              {
-                found = true;
-                Logger.info("  konto exists, skipping");
-                skipped++;
-              }
-						}
-            
-						existing.begin();
-						if (!found)
-						{
-							// Konto neu anlegen
-							Logger.info("saving new konto");
-							try {
-								konten[i].setPassportClass(p.getClass().getName()); // wir speichern den ausgewaehlten Passport.
-								konten[i].store();
-                created++;
-								Logger.info("konto saved successfully");
-							}
-							catch (Exception e)
-							{
-								// Wenn ein Konto fehlschlaegt, soll nicht gleich der ganze Vorgang abbrechen
-								Logger.error("error while storing konto",e);
-								GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Anlegen des Kontos") + " " + konten[i].getKontonummer());
-							}
-						}
-				
-					}
+					// Konto-Liste neu laden
 					GUI.startView(KontoList.class,null);
-          String[] values = new String[] {""+created,""+skipped};
-					GUI.getStatusBar().setSuccessText(i18n.tr("Konten erfolgreich ausgelesen. Angelegt: {0}, Übersprungen: {1}",values));
 				}
         catch (OperationCanceledException oce)
         {
@@ -154,6 +78,12 @@ public class KontoFetchFromPassport implements Action
 
 /**********************************************************************
  * $Log: KontoFetchFromPassport.java,v $
+ * Revision 1.14  2010/09/29 23:43:34  willuhn
+ * @N Automatisches Abgleichen und Anlegen von Konten aus KontoFetchFromPassport in KontoMerge verschoben
+ * @N Konten automatisch (mit Rueckfrage) anlegen, wenn das Testen der HBCI-Konfiguration erfolgreich war
+ * @N Config-Test jetzt auch bei Schluesseldatei
+ * @B in PassportHandleImpl#getKonten() wurder der Converter-Funktion seit jeher die falsche Passport-Klasse uebergeben. Da gehoerte nicht das Interface hin sondern die Impl
+ *
  * Revision 1.13  2007/04/15 22:23:16  willuhn
  * @B Bug 338
  *

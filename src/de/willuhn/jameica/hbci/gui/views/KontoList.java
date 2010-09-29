@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoList.java,v $
- * $Revision: 1.6 $
- * $Date: 2009/05/06 23:11:23 $
+ * $Revision: 1.7 $
+ * $Date: 2010/09/29 23:43:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,55 +16,58 @@ import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.buttons.Back;
-import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.KontoNew;
+import de.willuhn.jameica.hbci.gui.action.PassportDetail;
 import de.willuhn.jameica.hbci.gui.controller.KontoControl;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
  * Zeigt eine Liste mit den vorhandenen Bankverbindungen an.
  */
-public class KontoList extends AbstractView {
+public class KontoList extends AbstractView
+{
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+
 
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
-  public void bind() throws Exception {
+  public void bind() throws Exception
+  {
 
 		final KontoControl control = new KontoControl(this);
-
-		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
 		GUI.getView().setTitle(i18n.tr("Vorhandene Bankverbindungen"));
 
-		try {
+		control.getKontoListe().paint(getParent());
+		
+		ButtonArea buttons = new ButtonArea();
+    buttons.addButton(new Back(true));
+    buttons.addButton(i18n.tr("Neue HBCI-Konfiguration anlegen..."),new PassportDetail(),null,false,"document-properties.png");
+    buttons.addButton(i18n.tr("Konten aus HBCI-Konfiguration laden..."), new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        control.handleReadFromPassport();
+      }
+    },null,false,"mail-send-receive.png");
+		buttons.addButton(i18n.tr("Konto manuell anlegen"),new KontoNew(),null,false,"system-file-manager.png");
 
-			control.getKontoListe().paint(getParent());
-			ButtonArea buttons = new ButtonArea(getParent(),3);
-      buttons.addButton(new Back());
-      buttons.addButton(i18n.tr("Konten automatisch aus Sicherheitsmedium ermitteln"), new Action() {
-        public void handleAction(Object context) throws ApplicationException
-        {
-          control.handleReadFromPassport();
-        }
-      },null,false,"mail-send-receive.png");
-			buttons.addButton(i18n.tr("Neues Konto"),new KontoNew(),null,false,"system-file-manager.png");
-		}
-		catch (Exception e)
-		{
-			Logger.error("error while loading konto list",e);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Lesen der Bankverbindungen."));
-		}
+		buttons.paint(getParent());
   }
 }
 
 
 /**********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.7  2010/09/29 23:43:34  willuhn
+ * @N Automatisches Abgleichen und Anlegen von Konten aus KontoFetchFromPassport in KontoMerge verschoben
+ * @N Konten automatisch (mit Rueckfrage) anlegen, wenn das Testen der HBCI-Konfiguration erfolgreich war
+ * @N Config-Test jetzt auch bei Schluesseldatei
+ * @B in PassportHandleImpl#getKonten() wurder der Converter-Funktion seit jeher die falsche Passport-Klasse uebergeben. Da gehoerte nicht das Interface hin sondern die Impl
+ *
  * Revision 1.6  2009/05/06 23:11:23  willuhn
  * @N Mehr Icons auf Buttons
  *

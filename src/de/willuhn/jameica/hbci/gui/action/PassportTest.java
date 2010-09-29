@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/PassportTest.java,v $
- * $Revision: 1.10 $
- * $Date: 2010/07/22 22:36:24 $
+ * $Revision: 1.11 $
+ * $Date: 2010/09/29 23:43:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -80,6 +80,20 @@ public class PassportTest implements Action
           monitor.setStatusText(i18n.tr("Sicherheits-Medium erfolgreich getestet."));
           Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Sicherheits-Medium erfolgreich getestet."), StatusBarMessage.TYPE_SUCCESS));
           removeTarget(target);
+          
+          if (!Application.getCallback().askUser(i18n.tr("Test erfolgreich. Konten automatisch anlegen?")))
+            return;
+
+          try
+          {
+            new KontoMerge().handleAction(handle.getKonten());
+          }
+          catch (Exception e)
+          {
+            // Das darf fehlschlagen. Zum Beispiel, wenn die Bank sowas nicht unterstuetzt
+            Logger.error("unable to fetch accounts",e);
+            monitor.log(i18n.tr("Automatisches Anlegen der Konten fehlgeschlagen. Bitte legen Sie sie manuell an"));
+          }
         }
         catch (ApplicationException ae)
         {
@@ -191,7 +205,13 @@ public class PassportTest implements Action
 
 /**********************************************************************
  * $Log: PassportTest.java,v $
- * Revision 1.10  2010/07/22 22:36:24  willuhn
+ * Revision 1.11  2010/09/29 23:43:34  willuhn
+ * @N Automatisches Abgleichen und Anlegen von Konten aus KontoFetchFromPassport in KontoMerge verschoben
+ * @N Konten automatisch (mit Rueckfrage) anlegen, wenn das Testen der HBCI-Konfiguration erfolgreich war
+ * @N Config-Test jetzt auch bei Schluesseldatei
+ * @B in PassportHandleImpl#getKonten() wurder der Converter-Funktion seit jeher die falsche Passport-Klasse uebergeben. Da gehoerte nicht das Interface hin sondern die Impl
+ *
+ * Revision 1.10  2010-07-22 22:36:24  willuhn
  * @N Code-Cleanup
  *
  * Revision 1.9  2008/05/05 10:22:18  willuhn

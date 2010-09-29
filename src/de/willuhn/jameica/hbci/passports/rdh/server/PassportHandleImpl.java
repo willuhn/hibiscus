@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/server/PassportHandleImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/09/08 15:04:52 $
+ * $Revision: 1.3 $
+ * $Date: 2010/09/29 23:43:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,7 +26,6 @@ import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.hbci.passports.rdh.InsertKeyDialog;
 import de.willuhn.jameica.hbci.passports.rdh.RDHKeyFactory;
 import de.willuhn.jameica.hbci.passports.rdh.SelectSizEntryDialog;
-import de.willuhn.jameica.hbci.passports.rdh.rmi.Passport;
 import de.willuhn.jameica.hbci.passports.rdh.rmi.RDHKey;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.Converter;
@@ -46,6 +45,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
   private PassportImpl passport = null;
 	private HBCIPassport hbciPassport = null;
 	private HBCIHandler handler = null;
+	private RDHKey key = null;
 
 
   /**
@@ -56,6 +56,16 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
   {
     super();
     this.passport = passport;
+  }
+
+  /**
+   * @param key
+   * @throws RemoteException
+   */
+  public PassportHandleImpl(RDHKey key) throws RemoteException
+  {
+    super();
+    this.key = key;
   }
 
   /**
@@ -79,7 +89,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 		Logger.info("open rdh passport");
 		try {
 	
-      RDHKey activeKey = RDHKeyFactory.findByKonto(passport != null ? passport.getKonto() : null);
+      RDHKey activeKey = this.key != null ? this.key : RDHKeyFactory.findByKonto(passport != null ? passport.getKonto() : null);
       
       if (activeKey == null)
         throw new ApplicationException(i18n.tr("Keine Schlüssel-Diskette für dieses Konto definiert"));
@@ -195,7 +205,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 			Konto k = null;
 			for (int i=0;i<konten.length;++i)
 			{
-				k = Converter.HBCIKonto2HibiscusKonto(konten[i], Passport.class);
+				k = Converter.HBCIKonto2HibiscusKonto(konten[i], PassportImpl.class);
 				Logger.debug("found account " + k.getKontonummer());
 				result.add(k);
 			}
@@ -247,7 +257,13 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 
 /*****************************************************************************
  * $Log: PassportHandleImpl.java,v $
- * Revision 1.2  2010/09/08 15:04:52  willuhn
+ * Revision 1.3  2010/09/29 23:43:34  willuhn
+ * @N Automatisches Abgleichen und Anlegen von Konten aus KontoFetchFromPassport in KontoMerge verschoben
+ * @N Konten automatisch (mit Rueckfrage) anlegen, wenn das Testen der HBCI-Konfiguration erfolgreich war
+ * @N Config-Test jetzt auch bei Schluesseldatei
+ * @B in PassportHandleImpl#getKonten() wurder der Converter-Funktion seit jeher die falsche Passport-Klasse uebergeben. Da gehoerte nicht das Interface hin sondern die Impl
+ *
+ * Revision 1.2  2010-09-08 15:04:52  willuhn
  * @N Config des Sicherheitsmediums als Context in Passport speichern
  *
  * Revision 1.1  2010/06/17 11:26:48  willuhn
