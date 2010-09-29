@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/FirstStart.java,v $
- * $Revision: 1.7 $
- * $Date: 2010/09/29 22:01:43 $
+ * $Revision: 1.8 $
+ * $Date: 2010/09/29 22:03:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,6 @@ import java.rmi.RemoteException;
 
 import org.eclipse.swt.widgets.Composite;
 
-import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.boxes.AbstractBox;
 import de.willuhn.jameica.gui.parts.FormTextPart;
 import de.willuhn.jameica.gui.util.ButtonArea;
@@ -27,7 +26,6 @@ import de.willuhn.jameica.hbci.gui.action.KontoList;
 import de.willuhn.jameica.hbci.gui.action.PassportDetail;
 import de.willuhn.jameica.plugin.Manifest;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -97,20 +95,8 @@ public class FirstStart extends AbstractBox
     text.paint(parent);
     
     ButtonArea buttons = new ButtonArea(parent,2);
-    Action a = new Action() {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        new PassportDetail().handleAction(null);
-      }
-    };
-    Action a2 = new Action() {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        new KontoList().handleAction(null);
-      }
-    };
-    buttons.addButton(i18n.tr("Sicherheitsmedium einrichten >>"),a,null,true);
-    buttons.addButton(i18n.tr("Konten-Übersicht"),a2,null);
+    buttons.addButton(i18n.tr("Sicherheitsmedium einrichten >>"),new PassportDetail(),null,true);
+    buttons.addButton(i18n.tr("Konten-Übersicht"),new KontoList(),null);
   }
 
   /**
@@ -125,7 +111,10 @@ public class FirstStart extends AbstractBox
 
 /*********************************************************************
  * $Log: FirstStart.java,v $
- * Revision 1.7  2010/09/29 22:01:43  willuhn
+ * Revision 1.8  2010/09/29 22:03:05  willuhn
+ * @N Kann ja noch weiter verkuerzt werden ;)
+ *
+ * Revision 1.7  2010-09-29 22:01:43  willuhn
  * @R Dialog nicht noetig - macht die Action intern ohnehin auch nochmal
  *
  * Revision 1.6  2010-08-12 17:12:32  willuhn
