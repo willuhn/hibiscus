@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.106 $
- * $Date: 2010/08/26 12:53:08 $
+ * $Revision: 1.107 $
+ * $Date: 2010/09/29 23:46:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -277,6 +277,15 @@ public class KontoImpl extends AbstractDBObject implements Konto
       {
         su = (SammelUeberweisung) list.next();
         su.delete();
+      }
+
+      // und jetzt die Auslandsueberweisungen
+      list = getAuslandsUeberweisungen();
+      AuslandsUeberweisung au = null;
+      while (list.hasNext())
+      {
+        au = (AuslandsUeberweisung) list.next();
+        au.delete();
       }
 
       // und noch die Protokolle
@@ -743,7 +752,10 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*******************************************************************************
  * $Log: KontoImpl.java,v $
- * Revision 1.106  2010/08/26 12:53:08  willuhn
+ * Revision 1.107  2010/09/29 23:46:18  willuhn
+ * @B Auslandsueberweisungen wurden nicht mitgeloescht
+ *
+ * Revision 1.106  2010-08-26 12:53:08  willuhn
  * @N Cache nur befuellen, wenn das explizit gefordert wird. Andernfalls wuerde der Cache u.U. unnoetig gefuellt werden, obwohl nur ein Objekt daraus geloescht werden soll
  *
  * Revision 1.105  2010-08-26 11:31:23  willuhn
