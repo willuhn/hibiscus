@@ -4,8 +4,8 @@
   </p>
   
   <p>
-    Im Feld &quot;Bezeichnung&quot; können Sie einen optionalen
-    Alias-Namen für diese PIN/TAN-Konfiguration eingeben. Sie
+    Im Feld &quot;Alias-Name&quot; können Sie einen optionalen
+    Bezeichnung für diese PIN/TAN-Konfiguration eingeben. Sie
     dient der eindeutigen Identifizierung, falls Sie für eine Bank
     mehrere Konfigurationen angelegt haben.
   </p>
@@ -21,19 +21,17 @@
   <p>
     Tipp: Als Filter für die Übertragung wird fast immer Base64 verwendet.
     Als HBCI-Version kommt meist &quot;HBCI+&quot; zum Einsatz.
-    Sollte die Verbindung zu Ihrer Bank also nicht funktionieren,
-    dann liegt dies oft an falschen Einstellungen bei diesen beiden
+    Sollte die Verbindung zu Ihrer Bank nicht funktionieren,
+    liegt dies meist an falschen Einstellungen bei diesen beiden
     Werten.
   </p>
   
   <p>
     Falls Sie bei einer Bank mehrere Konten mit verschiedenen
-    PIN/TAN-Konfigurationen besitzen, dann können Sie im Feld
-    &quot;Optionale Angabe des Kontos&quot; zusätzlich das
-    Konto auswählen, für das diese Konfiguration gelten soll.
+    PIN/TAN-Konfigurationen besitzen, dann können Sie die gewünschten
+    Konten fest zuordnen, für die diese Konfiguration gelten soll.
     Auf diese Weise müssen Sie beim Ausführen von Geschäftsvorfällen
     nicht manuell die zu verwendende PIN/TAN-Konfiguraiton
     wählen.
-    Andernfalls können Sie die Eingabe freilassen.
   </p>
 </form>

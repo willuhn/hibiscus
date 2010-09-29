@@ -17,7 +17,7 @@
     Falls Sie bei einer Bank mehrere Konten mit verschiedenen
     Schlüsseldisketten besitzen oder Ihre Bank für den HBCI-Zugang eine
     abweichende BLZ verwendet, dann können Sie in der Tabelle
-    &quot;Liste von fest zugeordneten Konten&quot; manuell einzelne Konten auswählen,
+    &quot;Fest zugeordnete Konten&quot; manuell einzelne Konten auswählen,
     für die diese Schlüsseldiskette gelten soll. Auf diese Weise müssen Sie
     beim Ausführen von Geschäftsvorfällen nicht manuell die zu verwendende Datei
     wählen. Andernfalls können Sie die Auswahl freilassen. Sie werden dann

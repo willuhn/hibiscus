@@ -20,7 +20,7 @@
 	</p>
 	
 	<p>
-		Durch Klick auf <b>Einstellungen testen</b> können Sie die Einstellungen
+		Durch Klick auf <b>Konfiguration testen</b> können Sie die Einstellungen
 		überprüfen.
 	</p>
 </form>
