@@ -2,11 +2,18 @@
 	<p>
 		<span color="header" font="header">Ihre Konten</span>
 	</p>
-	
+
+  <p>
+    Klicken Sie auf <b>Neue HBCI-Konfiguration anlegen...</b>, um einen
+    neuen Bankzugang mittels PIN/TAN, Chipkarte oder Schlüsseldiskette anzulegen. 
+  </p>
+  <p>
+		Wählen Sie anschließend <b>Konten aus HBCI-Konfiguration laden...</b>,
+		um die zugeordneten Konten automatisch zu ermitteln. Bereits eingerichtete Konten
+		werden hierbei nicht überschrieben.
+	</p>
 	<p>
-		<b>Tipp:</b> Vielen Banken bieten die Möglichkeit, Ihre Konten automatisch zu
-		ermitteln. Wählen Sie einfach <b>Konten automatisch aus Sicherheitsmedium ermitteln</b>,
-		um die Bankverbindungen zu ermitteln. Bereits eingerichtete Konten werden
-    hierbei nicht überschrieben.
+	  Sollte das automatische Erstellen der Konten nicht funktionieren, dann legen
+	  Sie es mit <b>Konto manuell anlegen</b> manuell an.
 	</p>
 </form>
