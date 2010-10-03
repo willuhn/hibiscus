@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/UeberweisungExecute.java,v $
- * $Revision: 1.12 $
- * $Date: 2007/07/04 09:16:23 $
+ * $Revision: 1.13 $
+ * $Date: 2010/10/03 21:50:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,7 +12,7 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.action;
 
-import java.rmi.RemoteException;
+import java.util.Date;
 
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -21,6 +21,7 @@ import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.dialogs.UeberweisungDialog;
 import de.willuhn.jameica.hbci.gui.views.UeberweisungNew;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
@@ -59,6 +60,21 @@ public class UeberweisungExecute implements Action
 			if (u.isNewObject())
 				u.store(); // wir speichern bei Bedarf selbst.
 
+			// BUGZILLA 559
+			Date termin = HBCIProperties.startOfDay(u.getTermin());
+			Date now    = HBCIProperties.startOfDay(new Date());
+			if ((termin.getTime() - now.getTime()) >= (24 * 60 * 60 * 1000))
+			{
+			  String q = i18n.tr("Der Termin liegt mindestens 1 Tag in Zukunft.\n" +
+			  		               "Soll der Auftrag stattdessen als bankseitige Termin-Überweisung " +
+			  		               "ausgeführt werden?");
+			  if (Application.getCallback().askUser(q))
+			  {
+			    u.setTerminUeberweisung(true);
+			    u.store();
+			  }
+			}
+			
 			UeberweisungDialog d = new UeberweisungDialog(u,UeberweisungDialog.POSITION_CENTER);
 			try
 			{
@@ -88,10 +104,14 @@ public class UeberweisungExecute implements Action
       }); 
 
 		}
-		catch (RemoteException e)
+		catch (ApplicationException ae)
+		{
+		  throw ae;
+		}
+		catch (Exception e)
 		{
 			Logger.error("error while executing ueberweisung",e);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Ausführen der Überweisung"));
+			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Ausführen der Überweisung: {0}",e.getMessage()));
 		}
   }
 
@@ -100,6 +120,9 @@ public class UeberweisungExecute implements Action
 
 /**********************************************************************
  * $Log: UeberweisungExecute.java,v $
+ * Revision 1.13  2010/10/03 21:50:34  willuhn
+ * @N BUGZILLA 559 - wenn der Termin der Ueberweisung mind. 1 Tag in der Zukunft liegt, dann vorschlagen, ihn als bankseitige Termin-Ueberweisung auszufuehren
+ *
  * Revision 1.12  2007/07/04 09:16:23  willuhn
  * @B Aktuelle View nach Ausfuehrung eines HBCI-Jobs nur noch dann aktualisieren, wenn sie sich zwischenzeitlich nicht geaendert hat
  *
