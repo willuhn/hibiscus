@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/UeberweisungDialog.java,v $
- * $Revision: 1.15 $
- * $Date: 2008/11/26 00:39:36 $
+ * $Revision: 1.16 $
+ * $Date: 2010/10/05 21:57:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,7 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
-import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
@@ -34,38 +34,40 @@ import de.willuhn.util.I18N;
  * nochmal die Details der Ueberweisung anzeigt. Erst wenn der User
  * hier OK klickt, wird die Ueberweisung ausgefuehrt.
  */
-public class UeberweisungDialog extends AbstractDialog {
+public class UeberweisungDialog extends AbstractDialog
+{
 
-	private I18N i18n;
-	private Ueberweisung ueb;
-	private Boolean choosen = Boolean.FALSE;
+	private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+	
+	private Ueberweisung ueb = null;
+	private Boolean choosen  = Boolean.FALSE;
 
   /**
    * ct.
    * @param u Ueberweisung die anzuzeigende Ueberweisung.
    * @param position
    */
-  public UeberweisungDialog(Ueberweisung u, int position) {
+  public UeberweisungDialog(Ueberweisung u, int position)
+  {
     super(position);
-
-		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
     this.ueb = u;
     this.setTitle(i18n.tr("Sicher?"));
-    
   }
 
   /**
    * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
    */
-  protected Object getData() throws Exception {
+  protected Object getData() throws Exception
+  {
     return choosen;
   }
 
   /**
    * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
    */
-  protected void paint(Composite parent) throws Exception {
+  protected void paint(Composite parent) throws Exception
+  {
 		LabelGroup group = new LabelGroup(parent,i18n.tr("Details der Überweisung"));
 			
 		group.addText(i18n.tr("Sind Sie sicher, daß Sie die Überweisung jetzt ausführen wollen?") + "\n",true);
@@ -108,7 +110,7 @@ public class UeberweisungDialog extends AbstractDialog {
       zweck.addText(lines[i],false);
     }
 
-		ButtonArea b = new ButtonArea(parent,2);
+		ButtonArea b = new ButtonArea();
 		b.addButton(i18n.tr("Jetzt ausführen"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -125,6 +127,7 @@ public class UeberweisungDialog extends AbstractDialog {
 				close();
       }
     });
+		b.paint(parent);
   }
 
 }
@@ -132,6 +135,9 @@ public class UeberweisungDialog extends AbstractDialog {
 
 /**********************************************************************
  * $Log: UeberweisungDialog.java,v $
+ * Revision 1.16  2010/10/05 21:57:21  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.15  2008/11/26 00:39:36  willuhn
  * @N Erste Version erweiterter Verwendungszwecke. Muss dringend noch getestet werden.
  *
