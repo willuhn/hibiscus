@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/DonateView.java,v $
- * $Revision: 1.3 $
- * $Date: 2010/08/26 14:13:44 $
+ * $Revision: 1.4 $
+ * $Date: 2010/10/05 21:39:18 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -28,9 +28,9 @@ import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.action.DauerauftragNew;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Turnus;
+import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -90,7 +90,12 @@ public class DonateView extends AbstractView
       		                      "Vielen Dank!\n" +
       		                      "Olaf Willuhn"),true);
     }
+
     {
+      final char[] kto = new char[]{'3','2','5','4','0','6'};
+      final char[] blz = new char[]{'5','0','5','3','0','0','0','0'};
+      final String name = "Olaf Willuhn";
+      
       ButtonArea buttons = new ButtonArea();
       buttons.addButton(new Back(true));
       buttons.addButton(i18n.tr("Dauerauftrag erstellen"),new Action() {
@@ -99,9 +104,9 @@ public class DonateView extends AbstractView
           try
           {
             Dauerauftrag d = (Dauerauftrag) Settings.getDBService().createObject(Dauerauftrag.class,null);
-            d.setGegenkontoBLZ(new String(new char[]{'5','0','5','3','0','0','0','0'}));
-            d.setGegenkontoNummer(new String(new char[]{'3','2','5','4','0','6'}));
-            d.setGegenkontoName("Olaf Willuhn");
+            d.setGegenkontoBLZ(new String(blz));
+            d.setGegenkontoNummer(new String(kto));
+            d.setGegenkontoName(name);
             d.setZweck("Hibiscus-Spende");
 
             // Wir lassen 7 Tage Vorlauf
@@ -113,7 +118,7 @@ public class DonateView extends AbstractView
             turnus.setTag(cal.get(Calendar.DAY_OF_MONTH));
             turnus.setZeiteinheit(Turnus.ZEITEINHEIT_MONATLICH);
             d.setTurnus(turnus);
-            new DauerauftragNew().handleAction(d);
+            new de.willuhn.jameica.hbci.gui.action.DauerauftragNew().handleAction(d);
           }
           catch (Exception e)
           {
@@ -122,6 +127,25 @@ public class DonateView extends AbstractView
           }
         }
       },null,false,"emblem-special.png");
+      buttons.addButton(i18n.tr("...oder Einzelspende"),new Action() {
+        public void handleAction(Object context) throws ApplicationException
+        {
+          try
+          {
+            Ueberweisung u = (Ueberweisung) Settings.getDBService().createObject(Ueberweisung.class,null);
+            u.setGegenkontoBLZ(new String(blz));
+            u.setGegenkontoNummer(new String(kto));
+            u.setGegenkontoName(name);
+            u.setZweck("Spende Hibiscus");
+            new de.willuhn.jameica.hbci.gui.action.UeberweisungNew().handleAction(u);
+          }
+          catch (Exception e)
+          {
+            Logger.error("unable to create ueberweisung",e);
+            Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Anlegen der Überweisung: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
+          }
+        }
+      },null,false,"stock_next.png");
       buttons.paint(getParent());
     }
     
@@ -134,7 +158,10 @@ public class DonateView extends AbstractView
 
 /**********************************************************************
  * $Log: DonateView.java,v $
- * Revision 1.3  2010/08/26 14:13:44  willuhn
+ * Revision 1.4  2010/10/05 21:39:18  willuhn
+ * @C Doppelte Spenden-Funktion entfernt - jetzt nur noch ueber die DonateView
+ *
+ * Revision 1.3  2010-08-26 14:13:44  willuhn
  * @N Besser 7 Tage Vorlauf
  *
  * Revision 1.2  2010-08-20 12:56:49  willuhn

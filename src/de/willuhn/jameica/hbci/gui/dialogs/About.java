@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/About.java,v $
- * $Revision: 1.8 $
- * $Date: 2010/09/06 20:44:57 $
+ * $Revision: 1.9 $
+ * $Date: 2010/10/05 21:39:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,6 +28,7 @@ import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.action.DonateView;
 import de.willuhn.jameica.hbci.rmi.Version;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.plugin.AbstractPlugin;
@@ -84,7 +85,7 @@ public class About extends AbstractDialog
 
     container.addPart(text);
 
-    ButtonArea buttons = container.createButtonArea(2);
+    ButtonArea buttons = container.createButtonArea(3);
     buttons.addButton(i18n.tr("Diagnose-Informationen"), new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -100,6 +101,13 @@ public class About extends AbstractDialog
       }
     
     });
+    buttons.addButton(" " + i18n.tr("Spenden") + " ",new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        close();
+        new DonateView().handleAction(null);
+      }
+    },null,false,"emblem-special.png");
     buttons.addButton("   " + i18n.tr("Schlieﬂen") + "   ",new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -122,7 +130,10 @@ public class About extends AbstractDialog
 
 /**********************************************************************
  * $Log: About.java,v $
- * Revision 1.8  2010/09/06 20:44:57  willuhn
+ * Revision 1.9  2010/10/05 21:39:18  willuhn
+ * @C Doppelte Spenden-Funktion entfernt - jetzt nur noch ueber die DonateView
+ *
+ * Revision 1.8  2010-09-06 20:44:57  willuhn
  * *** empty log message ***
  *
  * Revision 1.7  2008/07/07 15:37:17  willuhn

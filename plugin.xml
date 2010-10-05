@@ -25,8 +25,6 @@
       <item id="hibiscus.menu.settings"              name="Einstellungen"                                 icon="document-properties.png"         action="de.willuhn.jameica.hbci.gui.action.Settings" />
       <item name="-" />
       <item id="hibiscus.menu.handbuch"              name="Handbuch"                                      icon="edit-copy.png"                   action="de.willuhn.jameica.hbci.gui.action.HandbuchAction"/>
-      <item id="hibiscus.menu.donate"                name="Spenden"                                       icon="emblem-special.png"              action="de.willuhn.jameica.hbci.gui.action.Donate" />
-      <item name="-" />
       <item id="hibiscus.menu.about"                 name="About"                                         icon="dialog-information.png"          action="de.willuhn.jameica.hbci.gui.action.About" />
       <item name="-" />
       <item id="hibiscus.menu.ext"                   name="Erweitert">
