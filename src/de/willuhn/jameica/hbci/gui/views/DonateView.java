@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/DonateView.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/10/05 22:21:48 $
+ * $Revision: 1.6 $
+ * $Date: 2010/10/05 22:24:41 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -137,9 +137,6 @@ public class DonateView extends AbstractView
             u.setGegenkontoNummer(new String(kto));
             u.setGegenkontoName(name);
             u.setZweck("Spende Hibiscus");
-            
-            // Das ist nicht ganz so einfach, weil "@" nicht erlaubt ist. 
-            // GUI.getView().setSuccessText(i18n.tr("Geben Sie Ihre Mailadresse in Verwendungszweck 2 ein, wenn Sie einen Beleg per Mail wünschen"));
             new de.willuhn.jameica.hbci.gui.action.UeberweisungNew().handleAction(u);
           }
           catch (Exception e)
@@ -161,7 +158,10 @@ public class DonateView extends AbstractView
 
 /**********************************************************************
  * $Log: DonateView.java,v $
- * Revision 1.5  2010/10/05 22:21:48  willuhn
+ * Revision 1.6  2010/10/05 22:24:41  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.5  2010-10-05 22:21:48  willuhn
  * *** empty log message ***
  *
  * Revision 1.4  2010-10-05 21:39:18  willuhn
