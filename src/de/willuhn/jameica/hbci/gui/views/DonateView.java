@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/DonateView.java,v $
- * $Revision: 1.6 $
- * $Date: 2010/10/05 22:24:41 $
+ * $Revision: 1.7 $
+ * $Date: 2010/10/07 10:25:09 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -92,8 +92,9 @@ public class DonateView extends AbstractView
     }
 
     {
-      final char[] kto = new char[]{'3','2','5','4','0','6'};
-      final char[] blz = new char[]{'5','0','5','3','0','0','0','0'};
+      
+      final char[] kto = new char[]{'1','2','1','0','3','2','2','5','2','4'};
+      final char[] blz = new char[]{'8','6','0','5','0','2','0','0'};
       final String name = "Olaf Willuhn";
       
       ButtonArea buttons = new ButtonArea();
@@ -158,7 +159,10 @@ public class DonateView extends AbstractView
 
 /**********************************************************************
  * $Log: DonateView.java,v $
- * Revision 1.6  2010/10/05 22:24:41  willuhn
+ * Revision 1.7  2010/10/07 10:25:09  willuhn
+ * @C Bankverbindung geaendert
+ *
+ * Revision 1.6  2010-10-05 22:24:41  willuhn
  * *** empty log message ***
  *
  * Revision 1.5  2010-10-05 22:21:48  willuhn
