@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UmsatzTypList.java,v $
- * $Revision: 1.4 $
- * $Date: 2008/12/19 12:16:05 $
+ * $Revision: 1.5 $
+ * $Date: 2010/10/10 21:26:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,12 +18,14 @@ import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.UmsatzTypExport;
 import de.willuhn.jameica.hbci.gui.action.UmsatzTypImport;
 import de.willuhn.jameica.hbci.gui.action.UmsatzTypNew;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -33,16 +35,13 @@ import de.willuhn.util.I18N;
  */
 public class UmsatzTypList extends ContextMenu implements Extendable
 {
-
-	private I18N i18n;
+	private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
 	 * Erzeugt ein Kontext-Menu fuer eine Liste von Umsaetzen.
 	 */
 	public UmsatzTypList()
 	{
-		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
 		addItem(new OpenItem());
     addItem(new ContextMenuItem(i18n.tr("Neue Umsatz-Kategorie..."), new UNeu(),"text-x-generic.png"));
     addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
@@ -65,7 +64,21 @@ public class UmsatzTypList extends ContextMenu implements Extendable
      */
     public void handleAction(Object context) throws ApplicationException
     {
-      super.handleAction(null);
+      // BUGZILLA 925
+      UmsatzTyp ut = null;
+      try
+      {
+        if (context != null && (context instanceof UmsatzTyp))
+        {
+          ut = (UmsatzTyp) Settings.getDBService().createObject(UmsatzTyp.class,null);
+          ut.setParent((UmsatzTyp)context);
+        }
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to apply current item as parent category",e);
+      }
+      super.handleAction(ut);
     }
   } 
 
@@ -102,6 +115,9 @@ public class UmsatzTypList extends ContextMenu implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzTypList.java,v $
+ * Revision 1.5  2010/10/10 21:26:35  willuhn
+ * @N BUGZILLA 925
+ *
  * Revision 1.4  2008/12/19 12:16:05  willuhn
  * @N Mehr Icons
  * @C Reihenfolge der Contextmenu-Eintraege vereinheitlicht
