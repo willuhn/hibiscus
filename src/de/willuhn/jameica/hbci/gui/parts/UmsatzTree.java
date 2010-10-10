@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTree.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/05/30 23:29:31 $
+ * $Revision: 1.3 $
+ * $Date: 2010/10/10 21:57:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -237,7 +237,23 @@ public class UmsatzTree extends TreePart implements Extension
     {
       public void handleAction(Object context) throws ApplicationException
       {
-        new UmsatzTypNew().handleAction(null);
+        // BUGZILLA 926
+        UmsatzTyp ut = null;
+        if (context != null && (context instanceof Umsatz))
+        {
+          try
+          {
+            Umsatz u = (Umsatz) context;
+            ut = (UmsatzTyp) Settings.getDBService().createObject(UmsatzTyp.class,null);
+            ut.setName(u.getGegenkontoName());
+            ut.setPattern(u.getZweck());
+          }
+          catch (Exception e)
+          {
+            Logger.error("error while preparing category",e);
+          }
+        }
+        new UmsatzTypNew().handleAction(ut);
       }
     }));
   }
@@ -271,6 +287,9 @@ public class UmsatzTree extends TreePart implements Extension
 
 /*******************************************************************************
  * $Log: UmsatzTree.java,v $
+ * Revision 1.3  2010/10/10 21:57:19  willuhn
+ * @N BUGZILLA 926
+ *
  * Revision 1.2  2010/05/30 23:29:31  willuhn
  * @N Alle Verwendungszweckzeilen in Umsatzlist und -tree anzeigen (BUGZILLA 782)
  *
