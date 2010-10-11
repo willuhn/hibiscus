@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUmsatzJob.java,v $
- * $Revision: 1.54 $
- * $Date: 2010/10/07 21:02:36 $
+ * $Revision: 1.55 $
+ * $Date: 2010/10/11 21:25:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -239,6 +239,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
         for (int i=0;i<lines.size();++i)
         {
           final Umsatz umsatz = Converter.HBCIUmsatz2HibiscusUmsatz((GVRKUms.UmsLine)lines.get(i));
+          umsatz.setFlags(Umsatz.FLAG_NOTBOOKED);
           umsatz.setSaldo(0d); // Muss gemacht werden, weil der Saldo beim naechsten Mal anders lauten koennte
           umsatz.setKonto(konto);
           fetched.add(umsatz);
@@ -252,7 +253,6 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
           // Vormerkposten neu anlegen
           try
           {
-            umsatz.setFlags(Umsatz.FLAG_NOTBOOKED);
             umsatz.store();
             Application.getMessagingFactory().sendMessage(new ImportMessage(umsatz));
             created++;
@@ -349,7 +349,10 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIUmsatzJob.java,v $
- * Revision 1.54  2010/10/07 21:02:36  willuhn
+ * Revision 1.55  2010/10/11 21:25:42  willuhn
+ * @B Da das Notbooked-Flag jetzt Bestandteil der Checksumme ist, muss das Flag vor dem contains() gemacht werden
+ *
+ * Revision 1.54  2010-10-07 21:02:36  willuhn
  * @B BUGZILLA 917
  *
  * Revision 1.53  2010-08-27 11:36:48  willuhn
