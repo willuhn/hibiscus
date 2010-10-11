@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/SelectConfigDialog.java,v $
- * $Revision: 1.3 $
- * $Date: 2010/09/07 15:17:07 $
+ * $Revision: 1.4 $
+ * $Date: 2010/10/11 20:58:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -82,7 +82,7 @@ public class SelectConfigDialog extends AbstractDialog
           return;
         close();
       }
-    });
+    },null,true);
     buttons.addButton(i18n.tr("Abbrechen"), new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -113,7 +113,10 @@ public class SelectConfigDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: SelectConfigDialog.java,v $
- * Revision 1.3  2010/09/07 15:17:07  willuhn
+ * Revision 1.4  2010/10/11 20:58:51  willuhn
+ * @N BUGZILLA 927
+ *
+ * Revision 1.3  2010-09-07 15:17:07  willuhn
  * @N GUI-Cleanup
  *
  * Revision 1.2  2010-07-22 12:37:41  willuhn

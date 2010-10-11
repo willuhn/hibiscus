@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/Detail.java,v $
- * $Revision: 1.3 $
- * $Date: 2010/07/22 12:37:41 $
+ * $Revision: 1.4 $
+ * $Date: 2010/10/11 20:58:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -71,13 +71,36 @@ public class Detail extends AbstractView
       group.addCheckbox(control.getShowTan(),i18n.tr("TANs während der Eingabe anzeigen"));
 
     }
+    
+    {
+      ButtonArea buttons = new ButtonArea(getParent(),2);
+      // BUGZILLA 218
+      String secMech = control.getConfig().getSecMech();
+      Button b = new Button(i18n.tr("TAN-Verfahren zurücksetzen"), new Action() {
+        public void handleAction(Object context) throws ApplicationException
+        {
+          control.handleDeleteSecMech();
+        }
+      },null,false,"edit-undo.png");
+      b.setEnabled(secMech != null && secMech.length() > 0);
+      buttons.addButton(b);
+
+      buttons.addButton(i18n.tr("Verbrauchte TANs"),new Action()
+      {
+        public void handleAction(Object context) throws ApplicationException
+        {
+          control.handleShowUsedTans();
+        }
+      },null,false,"emblem-default.png");
+
+    }
 
     new Headline(getParent(),i18n.tr("Fest zugeordnete Konten"));
     control.getKontoAuswahl().paint(getParent());
 
-    ButtonArea buttons = new ButtonArea(getParent(),6);
+    ButtonArea buttons = new ButtonArea(getParent(),4);
     buttons.addButton(new Back(true));
-    buttons.addButton(i18n.tr("BPD/UPD anzeigen"),new Action()
+    buttons.addButton(i18n.tr("BPD/UPD"),new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -91,26 +114,6 @@ public class Detail extends AbstractView
 				control.handleTest();
       }
     },null,false,"dialog-information.png");
-    
-    // BUGZILLA 218
-    String secMech = control.getConfig().getSecMech();
-    Button b = new Button(i18n.tr("Vorauswahl des TAN-Verfahrens zurücksetzen"), new Action() {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        control.handleDeleteSecMech();
-      }
-    },null,false,"edit-undo.png");
-    b.setEnabled(secMech != null && secMech.length() > 0);
-    buttons.addButton(b);
-
-    buttons.addButton(i18n.tr("Verbrauchte TANs"),new Action()
-    {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        control.handleShowUsedTans();
-      }
-    },null,false,"emblem-default.png");
-
     buttons.addButton(i18n.tr("Speichern"),new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -132,7 +135,10 @@ public class Detail extends AbstractView
 
 /**********************************************************************
  * $Log: Detail.java,v $
- * Revision 1.3  2010/07/22 12:37:41  willuhn
+ * Revision 1.4  2010/10/11 20:58:51  willuhn
+ * @N BUGZILLA 927
+ *
+ * Revision 1.3  2010-07-22 12:37:41  willuhn
  * @N GUI poliert
  *
  * Revision 1.2  2010-07-13 11:01:05  willuhn

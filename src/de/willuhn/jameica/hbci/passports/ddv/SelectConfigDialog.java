@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/SelectConfigDialog.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/09/07 15:28:05 $
+ * $Revision: 1.2 $
+ * $Date: 2010/10/11 20:58:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -79,7 +79,7 @@ public class SelectConfigDialog extends AbstractDialog
           return;
         close();
       }
-    });
+    },null,true);
     buttons.addButton(i18n.tr("Abbrechen"), new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -111,7 +111,10 @@ public class SelectConfigDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: SelectConfigDialog.java,v $
- * Revision 1.1  2010/09/07 15:28:05  willuhn
+ * Revision 1.2  2010/10/11 20:58:52  willuhn
+ * @N BUGZILLA 927
+ *
+ * Revision 1.1  2010-09-07 15:28:05  willuhn
  * @N BUGZILLA 391 - Kartenleser-Konfiguration komplett umgebaut. Damit lassen sich jetzt beliebig viele Kartenleser und Konfigurationen parellel einrichten
  *
  **********************************************************************/
