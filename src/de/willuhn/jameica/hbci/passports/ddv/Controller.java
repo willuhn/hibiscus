@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/Controller.java,v $
- * $Revision: 1.8 $
- * $Date: 2010/09/07 15:28:06 $
+ * $Revision: 1.9 $
+ * $Date: 2010/10/17 21:58:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,8 +18,7 @@ import java.rmi.RemoteException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.kapott.hbci.manager.HBCIHandler;
-import org.kapott.hbci.passport.HBCIPassport;
+import org.kapott.hbci.callback.HBCICallback;
 import org.kapott.hbci.passport.HBCIPassportDDV;
 
 import de.willuhn.jameica.gui.AbstractControl;
@@ -39,14 +38,15 @@ import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.AccountContainer;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCICallbackSWT;
 import de.willuhn.jameica.hbci.gui.action.PassportTest;
 import de.willuhn.jameica.hbci.gui.dialogs.AccountContainerDialog;
 import de.willuhn.jameica.hbci.gui.input.HBCIVersionInput;
-import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.hbci.passports.ddv.rmi.Reader;
 import de.willuhn.jameica.hbci.passports.ddv.server.PassportHandleImpl;
 import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.messaging.StatusBarMessage;
+import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.BackgroundTask;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -509,12 +509,21 @@ public class Controller extends AbstractControl
     Application.getController().start(new BackgroundTask() {
       public void run(ProgressMonitor monitor) throws ApplicationException
       {
-        PassportHandle handle = null;
+        HBCIPassportDDV passport = null;
         try
         {
-          handle = new PassportHandleImpl(getConfig());
-          HBCIHandler h = handle.open();
-          HBCIPassport passport = h.getPassport();
+          // Ist hier etwas umstaendlich, weil wir das Handle
+          // nicht aufmachen duerfen. Wuerden wir das tun, dann
+          // wuerde HBCI4Java automatisch die UPD abrufen wollen,
+          // was fehlschlagen wird, wenn wir ungueltige Daten
+          // auf der Karte haben. Auf diese Weise hier koennen
+          // wir aber die Daten ohne Bank-Kontakt aendern
+          AbstractPlugin plugin = Application.getPluginLoader().getPlugin(HBCI.class);
+          HBCICallback callback = ((HBCI)plugin).getHBCICallback();
+          if (callback != null && (callback instanceof HBCICallbackSWT))
+            ((HBCICallbackSWT)callback).setCurrentHandle(new PassportHandleImpl(getConfig()));
+
+          passport = DDVConfigFactory.createPassport(getConfig());
 
           AccountContainerDialog d = new AccountContainerDialog(passport);
           AccountContainer container = (AccountContainer) d.open();
@@ -527,7 +536,7 @@ public class Controller extends AbstractControl
           passport.setCountry(container.country);
           
           passport.saveChanges();
-          ((HBCIPassportDDV)passport).saveBankData();
+          passport.saveBankData();
         }
         catch (ApplicationException ae)
         {
@@ -553,11 +562,12 @@ public class Controller extends AbstractControl
         }
         finally
         {
-          if (handle != null)
+          if (passport != null)
           {
             try
             {
-              handle.close();
+              Logger.info("closing passport");
+              passport.close();
             }
             catch (Exception e)
             {
@@ -626,7 +636,10 @@ public class Controller extends AbstractControl
 
 /*******************************************************************************
  * $Log: Controller.java,v $
- * Revision 1.8  2010/09/07 15:28:06  willuhn
+ * Revision 1.9  2010/10/17 21:58:56  willuhn
+ * @C Aendern der Bankdaten auf der Karte auch dann moeglich, wenn auf dem Slot ungueltige Daten stehen
+ *
+ * Revision 1.8  2010-09-07 15:28:06  willuhn
  * @N BUGZILLA 391 - Kartenleser-Konfiguration komplett umgebaut. Damit lassen sich jetzt beliebig viele Kartenleser und Konfigurationen parellel einrichten
  *
  * Revision 1.7  2010-07-22 22:36:24  willuhn

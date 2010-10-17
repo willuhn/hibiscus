@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/DDVConfigFactory.java,v $
- * $Revision: 1.3 $
- * $Date: 2010/09/08 10:16:00 $
+ * $Revision: 1.4 $
+ * $Date: 2010/10/17 21:58:56 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -18,6 +18,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.kapott.hbci.manager.HBCIUtils;
+import org.kapott.hbci.passport.AbstractHBCIPassport;
+import org.kapott.hbci.passport.HBCIPassportDDV;
+
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.hbci.passports.ddv.rmi.Passport;
@@ -28,6 +32,7 @@ import de.willuhn.jameica.hbci.passports.ddv.server.PassportImpl;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
+import de.willuhn.jameica.system.Platform;
 import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -370,13 +375,131 @@ public class DDVConfigFactory
     return new DDVConfig(UUID.randomUUID().toString());
   }
   
+  /**
+   * Erstellt ein Passport-Objekt aus der Config.
+   * @param config die Config.
+   * @return das Passport-Objekt.
+   * @throws ApplicationException
+   * @throws RemoteException
+   */
+  public static HBCIPassportDDV createPassport(DDVConfig config) throws ApplicationException, RemoteException
+  {
+    if (config == null)
+      throw new ApplicationException(i18n.tr("Keine Konfiguration ausgewählt"));
+
+    //////////////////////////////////////////////////////////////////////////
+    // JNI-Treiber
+    String jni = getJNILib().getAbsolutePath();
+    Logger.info("  jni lib: " + jni);
+    HBCIUtils.setParam("client.passport.DDV.libname.ddv", jni);
+    //
+    //////////////////////////////////////////////////////////////////////////
+
+    //////////////////////////////////////////////////////////////////////////
+    // CTAPI-Treiber
+    String ctapiDriver = config.getCTAPIDriver();
+    if (ctapiDriver == null || ctapiDriver.length() == 0)
+      throw new ApplicationException(i18n.tr("Kein CTAPI-Treiber in der Kartenleser-Konfiguration angegeben"));
+
+    File ctapi = new File(ctapiDriver);
+    if (!ctapi.exists() || !ctapi.isFile() || !ctapi.canRead())
+      throw new ApplicationException(i18n.tr("CTAPI-Treiber-Datei \"{0}\" nicht gefunden oder nicht lesbar",ctapiDriver)); 
+
+    Logger.info("  ctapi driver: " + ctapiDriver);
+    HBCIUtils.setParam(Passport.CTAPI, ctapiDriver);
+    //
+    //////////////////////////////////////////////////////////////////////////
+
+    //////////////////////////////////////////////////////////////////////////
+    // Passport-Verzeichnis
+    File f = new File(de.willuhn.jameica.hbci.Settings.getWorkPath() + "/passports/");
+    if (!f.exists())
+      f.mkdirs();
+    HBCIUtils.setParam("client.passport.DDV.path",de.willuhn.jameica.hbci.Settings.getWorkPath() + "/passports/");
+    //
+    //////////////////////////////////////////////////////////////////////////
+
+    
+    String port = Integer.toString(DDVConfig.getPortForName(config.getPort()));
+    Logger.info("  port: " + config.getPort() + " [ID: " + port + "]");
+    HBCIUtils.setParam(Passport.PORT,port);
+
+    Logger.info("  ctnumber: " + config.getCTNumber());
+    HBCIUtils.setParam(Passport.CTNUMBER,Integer.toString(config.getCTNumber()));
+
+    Logger.info("  biometrics: " + config.useBIO());
+    HBCIUtils.setParam(Passport.USEBIO, config.useBIO() ? "1" : "0");
+
+    Logger.info("  soft pin: " + config.useSoftPin());
+    HBCIUtils.setParam(Passport.SOFTPIN,  config.useSoftPin() ? "1" : "0");
+
+    Logger.info("  entry index: " + config.getEntryIndex());
+    HBCIUtils.setParam(Passport.ENTRYIDX,Integer.toString(config.getEntryIndex()));
+
+    return (HBCIPassportDDV) AbstractHBCIPassport.getInstance("DDV");
+  }
+
+  
+  /**
+   * Liefert die zu verwendende JNI-Lib.
+   * @return die zu verwendende JNI-Lib.
+   * @throws ApplicationException
+   */
+  private static File getJNILib() throws ApplicationException
+  {
+    String file = null;
+    
+    switch (Application.getPlatform().getOS())
+    {
+      case Platform.OS_LINUX:
+        file = "libhbci4java-card-linux-32.so";
+        break;
+        
+      case Platform.OS_LINUX_64:
+        file = "libhbci4java-card-linux-64.so";
+        break;
+        
+      case Platform.OS_WINDOWS:
+        file = "hbci4java-card-win32.dll";
+        break;
+
+      case Platform.OS_WINDOWS_64:
+        file = "hbci4java-card-win32_x86-64.dll";
+        break;
+        
+      case Platform.OS_MAC:
+        file = "libhbci4java-card-mac.jnilib";
+        break;
+
+      case Platform.OS_FREEBSD_64:
+        file = "libhbci4java-card-freebsd-64.so";
+        break;
+    }
+    
+    if (file == null)
+      throw new ApplicationException(i18n.tr("Hibiscus unterstützt leider keine Chipkartenleser für Ihr Betriebssystem"));
+
+    File f = new File(de.willuhn.jameica.hbci.Settings.getLibPath(),file);
+    if (!f.exists())
+      throw new ApplicationException(i18n.tr("Treiber {0} nicht gefunden",f.getAbsolutePath()));
+
+    if (!f.isFile() || !f.canRead())
+      throw new ApplicationException(i18n.tr("Treiber {0} nicht lesbar",f.getAbsolutePath()));
+
+    return f;
+  }
+
+  
 }
 
 
 
 /**********************************************************************
  * $Log: DDVConfigFactory.java,v $
- * Revision 1.3  2010/09/08 10:16:00  willuhn
+ * Revision 1.4  2010/10/17 21:58:56  willuhn
+ * @C Aendern der Bankdaten auf der Karte auch dann moeglich, wenn auf dem Slot ungueltige Daten stehen
+ *
+ * Revision 1.3  2010-09-08 10:16:00  willuhn
  * @N Wenn nur eine DDV-Config vorhanden ist, dann die automatisch nehmen
  *
  * Revision 1.2  2010-09-08 10:08:50  willuhn
