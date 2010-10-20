@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/Controller.java,v $
- * $Revision: 1.9 $
- * $Date: 2010/10/17 21:58:56 $
+ * $Revision: 1.10 $
+ * $Date: 2010/10/20 14:28:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -460,6 +460,7 @@ public class Controller extends AbstractControl
       getConfig().setCTAPIDriver((String) getCTAPI().getValue());
       getConfig().setHBCIVersion((String) getHBCIVersion().getValue());
       getConfig().setName((String) getBezeichnung().getValue());
+      DDVConfigFactory.store(getConfig());
 
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Einstellungen gespeichert"),StatusBarMessage.TYPE_SUCCESS));
       return true;
@@ -636,7 +637,10 @@ public class Controller extends AbstractControl
 
 /*******************************************************************************
  * $Log: Controller.java,v $
- * Revision 1.9  2010/10/17 21:58:56  willuhn
+ * Revision 1.10  2010/10/20 14:28:47  willuhn
+ * @B Neue Kartenleser-Config wurde nicht in Factory registriert - siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=70575#70575
+ *
+ * Revision 1.9  2010-10-17 21:58:56  willuhn
  * @C Aendern der Bankdaten auf der Karte auch dann moeglich, wenn auf dem Slot ungueltige Daten stehen
  *
  * Revision 1.8  2010-09-07 15:28:06  willuhn
