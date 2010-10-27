@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/server/PassportHandleImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2010/09/29 23:43:34 $
+ * $Revision: 1.4 $
+ * $Date: 2010/10/27 10:25:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -211,14 +211,6 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 			}
 			return (Konto[]) result.toArray(new Konto[result.size()]);
 		}
-		catch (RemoteException e)
-		{
-			throw e;
-		}
-    catch (ApplicationException ae)
-    {
-      throw ae;
-    }
 		finally
 		{
 			try {
@@ -257,7 +249,10 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 
 /*****************************************************************************
  * $Log: PassportHandleImpl.java,v $
- * Revision 1.3  2010/09/29 23:43:34  willuhn
+ * Revision 1.4  2010/10/27 10:25:10  willuhn
+ * @C Unnoetiges Fangen und Weiterwerfen von Exceptions
+ *
+ * Revision 1.3  2010-09-29 23:43:34  willuhn
  * @N Automatisches Abgleichen und Anlegen von Konten aus KontoFetchFromPassport in KontoMerge verschoben
  * @N Konten automatisch (mit Rueckfrage) anlegen, wenn das Testen der HBCI-Konfiguration erfolgreich war
  * @N Config-Test jetzt auch bei Schluesseldatei
