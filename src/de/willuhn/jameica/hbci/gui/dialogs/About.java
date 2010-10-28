@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/About.java,v $
- * $Revision: 1.10 $
- * $Date: 2010/10/11 20:46:20 $
+ * $Revision: 1.11 $
+ * $Date: 2010/10/28 22:49:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,7 +49,7 @@ public class About extends AbstractDialog
    */
   public About(int position)
   {
-    super(position);
+    super(position,false);
     this.setTitle("Hibiscus");
   }
 
@@ -128,7 +128,10 @@ public class About extends AbstractDialog
 
 /**********************************************************************
  * $Log: About.java,v $
- * Revision 1.10  2010/10/11 20:46:20  willuhn
+ * Revision 1.11  2010/10/28 22:49:00  willuhn
+ * @C Groesse nicht mehr aenderbar
+ *
+ * Revision 1.10  2010-10-11 20:46:20  willuhn
  * @N BUGZILLA 928
  *
  * Revision 1.9  2010-10-05 21:39:18  willuhn
