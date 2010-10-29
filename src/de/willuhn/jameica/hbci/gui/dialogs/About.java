@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/About.java,v $
- * $Revision: 1.13 $
- * $Date: 2010/10/29 09:27:30 $
+ * $Revision: 1.14 $
+ * $Date: 2010/10/29 09:35:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,7 +20,6 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
-import de.willuhn.jameica.gui.internal.action.Program;
 import de.willuhn.jameica.gui.parts.FormTextPart;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
@@ -78,12 +77,12 @@ public class About extends AbstractDialog
     FormTextPart text = new FormTextPart();
     text.setText("<form>" +
       "<p><b>Hibiscus - HBCI-Onlinebanking für Jameica</b></p>" +
-      "<p>Lizenz: GPL [<a href=\"" + Program.class.getName() + "\">http://www.gnu.org/copyleft/gpl.html</a>]</p>" +
-      "<p>Copyright by Olaf Willuhn [<a href=\"" + Program.class.getName() + "\">mailto:hibiscus@willuhn.de</a>]</p>" +
-      "<p><a href=\"" + Program.class.getName() + "\">http://www.willuhn.de/projects/hibiscus/</a></p>" +
-      "<p>Software-Version: " + plugin.getManifest().getVersion() + "</p>" +
-      "<p>Datenbank-Version: " + version.getVersion() + "</p>" +
-      "<p>Build: " + plugin.getManifest().getBuildnumber() + " [Datum " + plugin.getManifest().getBuildDate() + "]</p>" +
+      "<p>Lizenz: GPL [<a href=\"http://www.gnu.org/copyleft/gpl.html\">www.gnu.org/copyleft/gpl.html</a>]<br/>" +
+      "Copyright by Olaf Willuhn [<a href=\"mailto:hibiscus@willuhn.de\">hibiscus@willuhn.de</a>]<br/>" +
+      "<a href=\"http://www.willuhn.de/products/hibiscus/\">www.willuhn.de/products/hibiscus/</a></p>" +
+      "<p>Software-Version: " + plugin.getManifest().getVersion() + "<br/>" +
+      "Datenbank-Version: " + version.getVersion() + "<br/>" +
+      "Build: " + plugin.getManifest().getBuildnumber() + " [Datum " + plugin.getManifest().getBuildDate() + "]</p>" +
       "</form>");
 
     container.addPart(text);
@@ -117,7 +116,7 @@ public class About extends AbstractDialog
         close();
       }
     },null,true,"window-close.png");
-    setSize(SWT.DEFAULT,460); // BUGZILLA 269
+    setSize(SWT.DEFAULT,430); // BUGZILLA 269
   }
 
   /**
@@ -133,7 +132,10 @@ public class About extends AbstractDialog
 
 /**********************************************************************
  * $Log: About.java,v $
- * Revision 1.13  2010/10/29 09:27:30  willuhn
+ * Revision 1.14  2010/10/29 09:35:32  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.13  2010-10-29 09:27:30  willuhn
  * *** empty log message ***
  *
  * Revision 1.12  2010-10-29 09:26:40  willuhn
