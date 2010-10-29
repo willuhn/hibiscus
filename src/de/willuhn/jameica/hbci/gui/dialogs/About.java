@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/About.java,v $
- * $Revision: 1.11 $
- * $Date: 2010/10/28 22:49:00 $
+ * $Revision: 1.12 $
+ * $Date: 2010/10/29 09:26:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -50,7 +50,12 @@ public class About extends AbstractDialog
   public About(int position)
   {
     super(position,false);
-    this.setTitle("Hibiscus");
+
+    AbstractPlugin plugin = Application.getPluginLoader().getPlugin(HBCI.class);
+    final I18N i18n = plugin.getResources().getI18N();
+    
+    this.setTitle(i18n.tr("Über ..."));
+    this.setPanelText(i18n.tr("Hibiscus {0}",plugin.getManifest().getVersion().toString()));
   }
 
   /**
@@ -111,7 +116,7 @@ public class About extends AbstractDialog
       {
         close();
       }
-    },null,true);
+    },null,true,"window-close.png");
     setSize(SWT.DEFAULT,460); // BUGZILLA 269
   }
 
@@ -128,7 +133,10 @@ public class About extends AbstractDialog
 
 /**********************************************************************
  * $Log: About.java,v $
- * Revision 1.11  2010/10/28 22:49:00  willuhn
+ * Revision 1.12  2010/10/29 09:26:40  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.11  2010-10-28 22:49:00  willuhn
  * @C Groesse nicht mehr aenderbar
  *
  * Revision 1.10  2010-10-11 20:46:20  willuhn
