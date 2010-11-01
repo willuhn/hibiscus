@@ -2,8 +2,8 @@
 
 <html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=$!{charset}" />
-    <title>Sammellastschriften [$!{dateformat.format(${datum})}]</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=$!charset" />
+    <title>Sammellastschriften [$!dateformat.format($datum)]</title>
   </head>
   <style>
     body  {
@@ -49,7 +49,30 @@
       padding-right            : 10px;
       font-size                : 7pt;
       color                    : #505050;
-	  white-space              : nowrap;
+  	  white-space              : nowrap;
+    }
+
+    tr.ausgefuehrt_false td {
+      background               : #fff1f1;
+      margin                   : 0px;
+      padding-left             : 3px;
+      padding-right            : 10px;
+      font-size                : 7pt;
+      color                    : #900000;
+      white-space              : nowrap;
+    }
+    
+    table.inner {
+      width                    : 100%;
+    }
+    
+    table.inner tr th {
+      background               : none;
+      font-weight              : bold;
+      color                    : #000000;
+    }
+    table.inner tr td {
+      border-top               : 1px solid #a4a4a4;
     }
 
     ol,ul {
@@ -114,14 +137,6 @@
       color                    : #505050;
     }
 
-    select,input,textarea,file {
-      font-family             : Verdana, Helvetica, Arial;
-      background-color        : #ffffff;
-      border-style            : none;
-      border                   : solid 1px #909090;
-      font-size               : 8pt;
-    }
-
     a:link  {
       color                    : #000088;
       text-decoration          : none;
@@ -157,41 +172,62 @@
   </style>
   <body>
     <h1>Sammellastschriften</h1>
-	
-    #foreach($lastschrift in $objects)
+    <h2>$!dateformat.format($datum)</h2>
 
-      #set($konto = $lastschrift.Konto)
-      
-      <h2>Datum: $!{dateformat.format(${datum})}</h2>
-      <h2>Lastschrift: $!{lastschrift.Bezeichnung}</h2>
-      <h2>Gutschriftskonto: $!{konto.Bezeichnung} [Kto $!{konto.Kontonummer}, BLZ $!{konto.BLZ}]</h2>
-      <h2>Summe: $!{decimalformat.format(${lastschrift.Summe})} $!{konto.Waehrung}</h2>
-      
+    <br/><br/>
+	
+    #foreach($t in $objects)
       <table class="data">
         <tr>
-        <th>Gegenkonto</th>
-        <th style="text-align:right">Betrag</th>
-        <th>Verwendungszweck</th>
+          <th>Datum</th>
+          <th>Konto</th>
+          <th>Bezeichnung</th>
+          <th style="text-align:right">Summe</th>
+          <th>Status</th>
         </tr>
-        
-        #set($buchungen = $lastschrift.BuchungenAsArray)
-        #foreach($buchung in $buchungen)
-        <tr>
+        <tr class="ausgefuehrt_$t.ausgefuehrt()">
+          <td>$!dateformat.format($t.termin)</td>
+          <td>$!t.konto.longName</td>
+          <td>$!t.bezeichnung</td>
+          <td style="text-align:right">$!decimalformat.format($t.Summe) $!t.konto.waehrung</td>
           <td>
-            $!{buchung.GegenkontoName}<br/>
-            Kto $!{buchung.GegenkontoNummer}<br/>
-            BLZ $!{buchung.GegenkontoBLZ}
-          </td>
-          <td style="text-align:right">$!{decimalformat.format(${buchung.Betrag})} $!{konto.Waehrung}</td>
-          <td>
-            $!{buchung.Zweck}<br/>
-            $!{buchung.Zweck2}<br/>
-            #foreach($ewz in $buchung.WeitereVerwendungszwecke)
-              $!{ewz}<br/>
+            #if($t.ausgefuehrt())
+              ausgeführt
+            #else
+              offen
             #end
           </td>
         </tr>
-        #end
+        <tr class="ausgefuehrt_$t.ausgefuehrt()">
+          <td colspan="5">
+            <br/><br/>
+            <table class="inner">
+              <tr>
+                <th style="width:30%">Gegenkonto</th>
+                <th>Verwendungszweck</th>
+                <th style="text-align:right">Betrag</th>
+              </tr>
+              
+              #foreach($b in $t.buchungenAsArray)
+              <tr>
+                <td>$!b.gegenkontoName, Kto. $!b.gegenkontoNummer, BLZ $!b.gegenkontoBLZ</td>
+                <td>
+                  $!b.zweck
+                  #if($!b.zweck != '')
+                    <br/>
+                    $!b.zweck2
+                  #end
+                  #foreach($ewz in $b.weitereVerwendungszwecke)
+                    <br/>
+                    $!ewz
+                  #end
+                </td>
+                <td style="text-align:right">$!decimalformat.format($b.betrag) $!t.konto.waehrung</td>
+              </tr>
+              #end
+            </table>
+          </td>
+        </tr>
       </table>
       <br/><br/>
     #end

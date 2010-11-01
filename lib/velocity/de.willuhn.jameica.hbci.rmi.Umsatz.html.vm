@@ -2,8 +2,8 @@
 
 <html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=$!{charset}" />
-    <title>Umsätze [$!{dateformat.format(${datum})}]</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=$!charset" />
+    <title>Umsätze [$!dateformat.format($datum)]</title>
   </head>
   <style>
     body  {
@@ -123,14 +123,6 @@
       color                    : #505050;
     }
 
-    select,input,textarea,file {
-      font-family             : Verdana, Helvetica, Arial;
-      background-color        : #ffffff;
-      border-style            : none;
-      border                   : solid 1px #909090;
-      font-size               : 8pt;
-    }
-
     a:link  {
       color                    : #000088;
       text-decoration          : none;
@@ -167,57 +159,47 @@
   
   <body>
     <h1>Konto-Umsätze</h1>
-    <h2>$!{dateformat.format(${datum})}</h2>
+    <h2>$!dateformat.format($datum)</h2>
 	
     <br/><br/>
 
     <table class="data">
       <tr>
-        <th>Eigenes Konto</th>
+        <th>Konto</th>
         <th>Gegenkonto</th>
         <th>Art</th>
         <th style="text-align:right">Betrag</th>
-        <th>Valuta-Datum</th>
-        <th>Buchungs-Datum</th>
+        <th>Valuta</th>
+        <th>Datum</th>
         <th>Verwendungszweck</th>
         <th style="text-align:right">Saldo</th>
         <th>Primanota</th>
-        <th>Kunden-Referenz</th>
+        <th>Referenz</th>
       </tr>
       
-      #foreach($umsatz in $objects)
-        #set($konto = $umsatz.Konto)
-        #set($betrag = $umsatz.getBetrag().intValue())
-        <tr
-        #if($betrag < 0)
-          class="red"
-        #end
-        >
+      #foreach($t in $objects)
+        <tr #if($t.betrag < 0) class="red"#end>
+          <td>$!t.konto.longName</td>
+          <td>$!t.gegenkontoName, Kto. $!t.gegenkontoNummer, BLZ $!t.gegenkontoBLZ</td>
+          <td>$!t.art</td>
+          <td style="text-align:right">$!decimalformat.format($t.betrag) $!t.konto.waehrung</td>
+          <td>$!dateformat.format($t.valuta)</td>
+          <td>$!dateformat.format($t.datum)</td>
           <td>
-            $!{konto.Bezeichnung}<br/>
-            Kto $!{konto.Kontonummer}<br/>
-            BLZ $!{konto.BLZ}
-          </td>
-          <td>
-            $!{umsatz.GegenkontoName}<br/>
-            Kto $!{umsatz.GegenkontoNummer}<br/>
-            BLZ $!{umsatz.GegenkontoBLZ}
-          </td>
-          <td>$!{umsatz.Art}</td>
-          <td style="text-align:right">$!{decimalformat.format(${umsatz.Betrag})} $!{konto.Waehrung}</td>
-          <td>$!{dateformat.format(${umsatz.Valuta})}</td>
-          <td>$!{dateformat.format(${umsatz.Datum})}</td>
-          <td>
-            $!{umsatz.Zweck}<br/>
-            $!{umsatz.Zweck2}<br/>
-            #foreach($ewz in $umsatz.WeitereVerwendungszwecke)
-              $!{ewz}<br/>
+            $!t.zweck
+            #if($!t.zweck != '')
+              <br/>
+              $!t.zweck2
             #end
-            $!{umsatz.Kommentar}
+            #foreach($ewz in $t.weitereVerwendungszwecke)
+              <br/>
+              $!ewz
+            #end
+            $!t.kommentar
           </td>
-          <td style="text-align:right">$!{decimalformat.format(${umsatz.Saldo})} $!{konto.Waehrung}</td>
-          <td>$!{umsatz.Primanota}</td>
-          <td>$!{umsatz.CustomerRef}</td>
+          <td style="text-align:right">$!decimalformat.format($t.saldo) $!t.konto.waehrung</td>
+          <td>$!t.primanota</td>
+          <td>$!t.customerRef</td>
         </tr>
       #end
     </table>

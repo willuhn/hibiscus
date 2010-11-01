@@ -2,8 +2,8 @@
 
 <html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=$!{charset}" />
-    <title>Konten</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=$!charset" />
+    <title>Konten [$!dateformat.format($datum)]</title>
   </head>
   <style>
     body  {
@@ -123,14 +123,6 @@
       color                    : #505050;
     }
 
-    select,input,textarea,file {
-      font-family             : Verdana, Helvetica, Arial;
-      background-color        : #ffffff;
-      border-style            : none;
-      border                   : solid 1px #909090;
-      font-size               : 8pt;
-    }
-
     a:link  {
       color                    : #000088;
       text-decoration          : none;
@@ -167,6 +159,7 @@
   
   <body>
     <h1>Konten</h1>
+    <h2>$!dateformat.format($datum)</h2>
 	
     <br/><br/>
 
@@ -189,15 +182,15 @@
           class="red"
         #end
         >
-          <td>$!{konto.Kontonummer}</td>
-          <td>$!{konto.BLZ}</td>
-          <td>$!{konto.Name}</td>
-          <td>$!{konto.Unterkonto}</td>
-          <td>$!{konto.Bezeichnung}</td>
-          <td>$!{konto.Kundennummer}</td>
-          <td style="text-align:right">$!{decimalformat.format(${konto.Saldo})} $!{konto.Waehrung}</td>
-          #if($konto.SaldoDatum)
-            <td>$!{dateformat.format(${konto.SaldoDatum})}</td>
+          <td>$!konto.kontonummer</td>
+          <td>$!konto.BLZ</td>
+          <td>$!konto.name</td>
+          <td>$!konto.unterkonto</td>
+          <td>$!konto.bezeichnung</td>
+          <td>$!konto.kundennummer</td>
+          <td style="text-align:right">$!decimalformat.format($konto.saldo) $!konto.waehrung</td>
+          #if($konto.saldoDatum)
+            <td>$!dateformat.format($konto.saldoDatum)</td>
           #else
             <td>-</td>
           #end

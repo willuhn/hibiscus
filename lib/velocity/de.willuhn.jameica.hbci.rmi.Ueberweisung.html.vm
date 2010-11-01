@@ -2,8 +2,8 @@
 
 <html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=$!{charset}" />
-    <title>Überweisungen [$!{dateformat.format(${datum})}]</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=$!charset" />
+    <title>Überweisungen [$!dateformat.format($datum)]</title>
   </head>
   <style>
     body  {
@@ -49,17 +49,18 @@
       padding-right            : 10px;
       font-size                : 7pt;
       color                    : #505050;
-	  white-space              : nowrap;
+	    white-space              : nowrap;
     }
-	tr.red td {
+    
+  	tr.ausgefuehrt_false td {
       background               : #fff1f1;
       margin                   : 0px;
       padding-left             : 3px;
       padding-right            : 10px;
       font-size                : 7pt;
       color                    : #900000;
-	  white-space              : nowrap;
-	}
+  	  white-space              : nowrap;
+  	}
 
     ol,ul {
       list-style-position      : outside;
@@ -123,14 +124,6 @@
       color                    : #505050;
     }
 
-    select,input,textarea,file {
-      font-family             : Verdana, Helvetica, Arial;
-      background-color        : #ffffff;
-      border-style            : none;
-      border                   : solid 1px #909090;
-      font-size               : 8pt;
-    }
-
     a:link  {
       color                    : #000088;
       text-decoration          : none;
@@ -166,50 +159,46 @@
   </style>
   <body>
 	
-  <h1>Überweisungen</h1>
-  <h2>$!{dateformat.format(${datum})}</h2>
+    <h1>Überweisungen</h1>
+    <h2>$!dateformat.format($datum)</h2>
 
-  <table class="data">
-  #foreach($t in $objects)
-    #set($konto = $t.Konto)
-    
-    <tr>
-      <td>Konto</td>
-      <td>
-        $!{konto.Bezeichnung} <br/>
-        $!{konto.Kontonummer} (BLZ: $!{konto.BLZ})
-      </td>
-    </tr>
-    
-    <tr>
-      <td>Gegenkonto</td>
-      <td>
-        $!{t.GegenkontoName} <br/>
-        $!{t.GegenkontoNummer} (BLZ: $!{t.GegenkontoBLZ})
-      </td>
-    </tr>
-    
-    <tr>
-      <td>Datum</td>
-      <td>$!{dateformat.format(${t.Termin})}</td>
-    </tr>
+    <br/><br/>
 
-    <tr>
-      <td>Betrag</td>
-      <td>$!{decimalformat.format(${t.Betrag})}</td>
-    </tr>
-    
-    <tr>
-      <td colspan="2">
-        $!{t.Zweck}<br/>
-        $!{t.Zweck2}<br/>
-        #foreach($ewz in $t.WeitereVerwendungszwecke)
-          $!{ewz}<br/>
-        #end
-      </td>
-    </tr>
-  #end  
-  </table>
-	
+    <table class="data">
+      <tr>
+        <th>Datum</th>
+        <th>Konto</th>
+        <th>Gegenkonto</th>
+        <th style="text-align:right">Betrag</th>
+        <th>Verwendungszweck</th>
+        <th>Status</th>
+      </tr>
+      #foreach($t in $objects)
+        <tr class="ausgefuehrt_$t.ausgefuehrt()">
+          <td>$!t.konto.longName</td>
+          <td>$!t.gegenkontoName, Kto. $!t.gegenkontoNummer, BLZ $!t.gegenkontoBLZ</td>
+          <td>$!dateformat.format($t.termin)</td>
+          <td style="text-align:right">$!decimalformat.format($t.betrag) $!t.konto.waehrung</td>
+          <td>
+            $!t.zweck
+            #if($!t.zweck != '')
+              <br/>
+              $!t.zweck2
+            #end
+            #foreach($ewz in $t.weitereVerwendungszwecke)
+              <br/>
+              $!ewz
+            #end
+          </td>
+          <td>
+            #if($t.ausgefuehrt())
+              ausgeführt
+            #else
+              offen
+            #end
+          </td>
+        </tr>
+      #end  
+    </table>
   </body>
 </html>
