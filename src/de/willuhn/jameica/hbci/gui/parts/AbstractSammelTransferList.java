@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractSammelTransferList.java,v $
- * $Revision: 1.12 $
- * $Date: 2010/08/16 11:13:52 $
+ * $Revision: 1.13 $
+ * $Date: 2010/11/01 23:00:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,6 +28,7 @@ import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -67,9 +68,9 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
 
         try {
           if (l.getTermin().before(new Date()) && !l.ausgefuehrt())
-          {
             item.setForeground(Settings.getUeberfaelligForeground());
-          }
+          if (l.ausgefuehrt())
+            item.setForeground(Color.COMMENT.getSWTColor());
         }
         catch (RemoteException e) { /*ignore */}
       }
@@ -222,7 +223,10 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
 
 /**********************************************************************
  * $Log: AbstractSammelTransferList.java,v $
- * Revision 1.12  2010/08/16 11:13:52  willuhn
+ * Revision 1.13  2010/11/01 23:00:32  willuhn
+ * @N Ausgefuehrte Sammel-Auftraege in grau anzeigen
+ *
+ * Revision 1.12  2010-08-16 11:13:52  willuhn
  * @N In den Auftragslisten kann jetzt auch nach einem Text gesucht werden
  *
  * Revision 1.11  2010/03/24 14:06:45  willuhn
