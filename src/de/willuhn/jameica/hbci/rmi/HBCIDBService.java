@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/HBCIDBService.java,v $
- * $Revision: 1.6 $
- * $Date: 2008/12/30 15:21:40 $
+ * $Revision: 1.7 $
+ * $Date: 2010/11/02 11:32:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,21 +27,13 @@ public interface HBCIDBService extends DBService
   public final static Settings SETTINGS = new Settings(HBCIDBService.class);
 
   /**
-   * Aktualisiert die Datenbank.
-   * @param oldVersion vorherige Version.
-   * @param newVersion neue Version.
-   * @throws RemoteException Wenn beim Update ein Fehler auftrat.
-   */
-  public void update(de.willuhn.jameica.plugin.Version oldVersion, de.willuhn.jameica.plugin.Version newVersion) throws RemoteException;
-  
-  /**
-   * Initialisiert/Erzeugt die Datenbank.
+   * Initialisiert/erzeugt die Datenbank.
    * @throws RemoteException Wenn beim Initialisieren ein Fehler auftrat.
    */
   public void install() throws RemoteException;
   
   /**
-   * Checkt die Konsistenz der Datenbank.
+   * Checkt die Konsistenz der Datenbank und fuehrt bei Bedarf Updates durch.
    * @throws RemoteException Wenn es beim Pruefen der Datenbank-Konsistenz zu einem Fehler kam.
    * @throws ApplicationException wenn die Datenbank-Konsistenz nicht gewaehrleistet ist.
    */
@@ -67,6 +59,9 @@ public interface HBCIDBService extends DBService
 
 /*****************************************************************************
  * $Log: HBCIDBService.java,v $
+ * Revision 1.7  2010/11/02 11:32:09  willuhn
+ * @R Alten SQL-Update-Mechanismus komplett entfernt. Wir haben das jetzt seit Hibiscus 1.8 (2008) aus Migrationsgruenden mit uns herumgetragen. Das ist jetzt lange genug her. User, die noch Hibiscus < 1.8 nutzen, muessen jetzt erst auf 1.8 updaten, damit noch die letzten sql/update_x.y-x.y.sql ausgefuehrt werden und dann erst auf die aktuelle Version
+ *
  * Revision 1.6  2008/12/30 15:21:40  willuhn
  * @N Umstellung auf neue Versionierung
  *

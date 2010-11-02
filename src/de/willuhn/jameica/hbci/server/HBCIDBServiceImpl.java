@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/HBCIDBServiceImpl.java,v $
- * $Revision: 1.30 $
- * $Date: 2010/04/21 10:39:52 $
+ * $Revision: 1.31 $
+ * $Date: 2010/11/02 11:32:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,8 +17,6 @@ import java.io.File;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
-import java.util.Locale;
 
 import de.willuhn.datasource.db.DBServiceImpl;
 import de.willuhn.jameica.hbci.HBCI;
@@ -26,7 +24,6 @@ import de.willuhn.jameica.hbci.rmi.DBSupport;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.messaging.QueryMessage;
 import de.willuhn.jameica.plugin.Manifest;
-import de.willuhn.jameica.plugin.Version;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.sql.version.UpdateProvider;
@@ -171,57 +168,6 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.HBCIDBService#update(de.willuhn.jameica.plugin.Version, de.willuhn.jameica.plugin.Version)
-   */
-  public void update(Version oldVersion, Version newVersion) throws RemoteException
-  {
-    Logger.info("starting update process for hibiscus");
-
-    DecimalFormat df = (DecimalFormat) DecimalFormat.getInstance(Locale.ENGLISH); // Punkt als Dezimal-Trenner
-    df.setMaximumFractionDigits(1);
-    df.setMinimumFractionDigits(1);
-    df.setGroupingUsed(false);
-
-    Manifest mf = Application.getPluginLoader().getPlugin(HBCI.class).getManifest();
-
-    double target = Double.parseDouble(newVersion.getMajor() + "." + newVersion.getMinor());
-    double old    = Double.parseDouble(oldVersion.getMajor() + "." + oldVersion.getMinor());
-    double newV   = target;
-
-    try
-    {
-      // Wir wiederholen die Updates solange, bis wir bei der aktuellen
-      // Versionsnummer angekommen sind.
-      while (old < target)
-      {
-        newV = old + 0.1d;
-
-        File f = new File(mf.getPluginDir() + File.separator + "sql",
-            "update_" + df.format(old) + "-" + df.format(newV) + ".sql");
-
-        I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-        ProgressMonitor monitor = Application.getCallback().getStartupMonitor();
-        monitor.setStatusText(i18n.tr("Führe Hibiscus-Update durch: von {0} zu {1}", new String[]{df.format(old),df.format(newV)}));
-
-        this.driver.execute(getConnection(),f);
-        
-        // OK, naechster Durchlauf
-        old = newV;
-      }
-      
-      Logger.info("Update completed");
-    }
-    catch (RemoteException re)
-    {
-      throw re;
-    }
-    catch (Exception e)
-    {
-      throw new RemoteException("unable to perform database update from " + oldVersion + " to " + newVersion,e);
-    }
-  }
-
-  /**
    * @see de.willuhn.jameica.hbci.rmi.HBCIDBService#getSQLTimestamp(java.lang.String)
    */
   public String getSQLTimestamp(String content) throws RemoteException
@@ -274,6 +220,9 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
 
 /*********************************************************************
  * $Log: HBCIDBServiceImpl.java,v $
+ * Revision 1.31  2010/11/02 11:32:09  willuhn
+ * @R Alten SQL-Update-Mechanismus komplett entfernt. Wir haben das jetzt seit Hibiscus 1.8 (2008) aus Migrationsgruenden mit uns herumgetragen. Das ist jetzt lange genug her. User, die noch Hibiscus < 1.8 nutzen, muessen jetzt erst auf 1.8 updaten, damit noch die letzten sql/update_x.y-x.y.sql ausgefuehrt werden und dann erst auf die aktuelle Version
+ *
  * Revision 1.30  2010/04/21 10:39:52  willuhn
  * @N Beim Shutdown kein Backup erstellen, wenn ein Plugin einen Fehler an den Channel "jameica.error" gemeldet hat. Das soll verhindern, dass die Backup-Rotation die letzten noch verbliebenen intakten Backups ueberschreibt
  *
