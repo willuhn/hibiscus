@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/PassportTest.java,v $
- * $Revision: 1.12 $
- * $Date: 2010/09/29 23:52:45 $
+ * $Revision: 1.13 $
+ * $Date: 2010/11/02 11:14:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.gui.action;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.DialogFactory;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -101,6 +102,11 @@ public class PassportTest implements Action
         }
         catch (ApplicationException ae)
         {
+          // Wenn ein Fehler auftrat, MUSS der PIN-Cache geloescht werden. Denn falls
+          // es genau deshalb fehlschlug, WEIL der User eine falsche PIN eingegeben
+          // hat, kriegt er sonst keine Chance, seine Eingabe zu korrigieren
+          DialogFactory.clearPINCache();
+          
           Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getMessage(), StatusBarMessage.TYPE_ERROR));
           monitor.setStatus(ProgressMonitor.STATUS_ERROR);
           monitor.setPercentComplete(100);
@@ -109,6 +115,11 @@ public class PassportTest implements Action
         }
         catch (Exception e)
         {
+          // Wenn ein Fehler auftrat, MUSS der PIN-Cache geloescht werden. Denn falls
+          // es genau deshalb fehlschlug, WEIL der User eine falsche PIN eingegeben
+          // hat, kriegt er sonst keine Chance, seine Eingabe zu korrigieren
+          DialogFactory.clearPINCache();
+
           // Wir entfernen das Ding vor dem Ausgeben der Fehlermeldungen.
           // die kommen sonst alle doppelt.
           removeTarget(target);
@@ -209,7 +220,10 @@ public class PassportTest implements Action
 
 /**********************************************************************
  * $Log: PassportTest.java,v $
- * Revision 1.12  2010/09/29 23:52:45  willuhn
+ * Revision 1.13  2010/11/02 11:14:57  willuhn
+ * @B PIN-Cache leeren, wenn beim Testen ein Fehler auftrat
+ *
+ * Revision 1.12  2010-09-29 23:52:45  willuhn
  * @N Nach erfolgreichem Test View neu laden, damit die Liste der Konten gleich aktualisiert wird
  *
  * Revision 1.11  2010-09-29 23:43:34  willuhn
