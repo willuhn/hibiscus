@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/updates/update0018.java,v $
- * $Revision: 1.2 $
- * $Date: 2009/08/25 09:18:23 $
+ * $Revision: 1.3 $
+ * $Date: 2010/11/02 12:02:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,6 @@ import java.util.Map;
 
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.server.DBSupportH2Impl;
-import de.willuhn.jameica.hbci.server.DBSupportMcKoiImpl;
 import de.willuhn.jameica.hbci.server.DBSupportMySqlImpl;
 import de.willuhn.jameica.hbci.server.HBCIUpdateProvider;
 import de.willuhn.logging.Logger;
@@ -46,18 +45,6 @@ public class update0018 implements Update
     statements.put(DBSupportH2Impl.class.getName(),
         "ALTER TABLE empfaenger ALTER COLUMN kontonummer VARCHAR(40);\n");
 
-    // Update fuer McKoi
-    statements.put(DBSupportMcKoiImpl.class.getName(),
-        "ALTER CREATE TABLE empfaenger (" +
-        "    id NUMERIC default UNIQUEKEY('empfaenger')," +
-        "    kontonummer varchar(40) NOT NULL," +
-        "    blz varchar(15) NOT NULL," +
-        "    name varchar(27) NOT NULL," +
-        "    kommentar varchar(1000) NULL," +
-        "    UNIQUE (id)," +
-        "    PRIMARY KEY (id)" +
-        "  );\n");
-    
     // Update fuer MySQL
     statements.put(DBSupportMySqlImpl.class.getName(),
         "ALTER TABLE empfaenger CHANGE kontonummer kontonummer VARCHAR(40);\n");
@@ -108,6 +95,9 @@ public class update0018 implements Update
 
 /*********************************************************************
  * $Log: update0018.java,v $
+ * Revision 1.3  2010/11/02 12:02:20  willuhn
+ * @R Support fuer McKoi entfernt. User, die noch dieses alte DB-Format nutzen, sollen erst auf Jameica 1.6/Hibiscus 1.8 (oder maximal Jameica 1.9/Hibiscus 1.11) wechseln, dort die Migration auf H2 durchfuehren und dann erst auf Hibiscus 1.12 updaten
+ *
  * Revision 1.2  2009/08/25 09:18:23  willuhn
  * @B fehlerhaftes Update-Statement fuer McKoi
  *

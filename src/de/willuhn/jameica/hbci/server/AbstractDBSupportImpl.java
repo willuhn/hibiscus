@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractDBSupportImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2009/04/05 21:40:56 $
+ * $Revision: 1.6 $
+ * $Date: 2010/11/02 12:02:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -39,6 +39,14 @@ public abstract class AbstractDBSupportImpl implements DBSupport
     if (sqlScript == null)
       return;
 
+    // Wir schreiben unseren Prefix davor.
+    sqlScript = new File(sqlScript.getParent(),getScriptPrefix() + sqlScript.getName());
+    if (!sqlScript.exists())
+    {
+      Logger.debug("file " + sqlScript + " does not exist, skipping");
+      return;
+    }
+    
     if (!sqlScript.canRead() || !sqlScript.exists())
       return;
 
@@ -111,7 +119,7 @@ public abstract class AbstractDBSupportImpl implements DBSupport
     catch (SQLException e)
     {
       // das Ding liefert in getMessage() den kompletten Stacktrace mit, den brauchen wir
-      // nicht (das muellt uns nur das Log voll) Also fangen wir sie und werden eine neue
+      // nicht (das muellt uns nur das Log voll) Also fangen wir sie und werfen eine neue
       // saubere mit kurzem Fehlertext
       String msg = e.getMessage();
       if (msg != null && msg.indexOf("\n") != -1)
@@ -138,19 +146,9 @@ public abstract class AbstractDBSupportImpl implements DBSupport
 
 /*********************************************************************
  * $Log: AbstractDBSupportImpl.java,v $
+ * Revision 1.6  2010/11/02 12:02:19  willuhn
+ * @R Support fuer McKoi entfernt. User, die noch dieses alte DB-Format nutzen, sollen erst auf Jameica 1.6/Hibiscus 1.8 (oder maximal Jameica 1.9/Hibiscus 1.11) wechseln, dort die Migration auf H2 durchfuehren und dann erst auf Hibiscus 1.12 updaten
+ *
  * Revision 1.5  2009/04/05 21:40:56  willuhn
  * @C checkConnection() nur noch alle hoechstens 10 Sekunden ausfuehren
- *
- * Revision 1.4  2008/12/30 15:21:40  willuhn
- * @N Umstellung auf neue Versionierung
- *
- * Revision 1.3  2007/07/28 15:51:26  willuhn
- * @B Bug 447
- *
- * Revision 1.2  2007/07/18 09:45:18  willuhn
- * @B Neue Version 1.8 in DB-Checks nachgezogen
- *
- * Revision 1.1  2007/04/19 18:12:21  willuhn
- * @N MySQL-Support (GUI zum Konfigurieren fehlt noch)
- *
  **********************************************************************/

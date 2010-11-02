@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/HBCIDBService.java,v $
- * $Revision: 1.7 $
- * $Date: 2010/11/02 11:32:09 $
+ * $Revision: 1.8 $
+ * $Date: 2010/11/02 12:02:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -48,7 +48,7 @@ public interface HBCIDBService extends DBService
   
   /**
    * Liefert den Namen der SQL-Funktion, mit der die Datenbank aus einem DATE-Feld einen UNIX-Timestamp macht.
-   * Bei MySQL ist das z.Bsp. "UNIX_TIMESTAMP" und bei McKoi schlicht "TONUMBER".
+   * Bei MySQL ist das z.Bsp. "UNIX_TIMESTAMP".
    * @param content der Feld-Name.
    * @return Name der SQL-Funktion samt Parameter. Also zum Beispiel "TONUMBER(datum)".
    * @throws RemoteException
@@ -59,7 +59,10 @@ public interface HBCIDBService extends DBService
 
 /*****************************************************************************
  * $Log: HBCIDBService.java,v $
- * Revision 1.7  2010/11/02 11:32:09  willuhn
+ * Revision 1.8  2010/11/02 12:02:20  willuhn
+ * @R Support fuer McKoi entfernt. User, die noch dieses alte DB-Format nutzen, sollen erst auf Jameica 1.6/Hibiscus 1.8 (oder maximal Jameica 1.9/Hibiscus 1.11) wechseln, dort die Migration auf H2 durchfuehren und dann erst auf Hibiscus 1.12 updaten
+ *
+ * Revision 1.7  2010-11-02 11:32:09  willuhn
  * @R Alten SQL-Update-Mechanismus komplett entfernt. Wir haben das jetzt seit Hibiscus 1.8 (2008) aus Migrationsgruenden mit uns herumgetragen. Das ist jetzt lange genug her. User, die noch Hibiscus < 1.8 nutzen, muessen jetzt erst auf 1.8 updaten, damit noch die letzten sql/update_x.y-x.y.sql ausgefuehrt werden und dann erst auf die aktuelle Version
  *
  * Revision 1.6  2008/12/30 15:21:40  willuhn

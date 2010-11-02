@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/updates/update0012.java,v $
- * $Revision: 1.4 $
- * $Date: 2010/04/27 11:02:32 $
+ * $Revision: 1.5 $
+ * $Date: 2010/11/02 12:02:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -33,7 +33,6 @@ import de.willuhn.jameica.hbci.rmi.SammelUeberweisungBuchung;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.DBSupportH2Impl;
-import de.willuhn.jameica.hbci.server.DBSupportMcKoiImpl;
 import de.willuhn.jameica.hbci.server.DBSupportMySqlImpl;
 import de.willuhn.jameica.hbci.server.HBCIDBServiceImpl;
 import de.willuhn.jameica.hbci.server.HBCIUpdateProvider;
@@ -67,16 +66,6 @@ public class update0012 implements Update
         "ALTER TABLE sueberweisungbuchung ADD COLUMN zweck3 VARCHAR(1000) BEFORE typ;\n"
     );
 
-    // Update fuer McKoi
-    statements.put(DBSupportMcKoiImpl.class.getName(),
-        "ALTER TABLE ueberweisung ADD COLUMN zweck3 VARCHAR(1000);\n" +
-        "ALTER TABLE umsatz ADD COLUMN zweck3 VARCHAR(1000);\n" +
-        "ALTER TABLE dauerauftrag ADD COLUMN zweck3 VARCHAR(1000);\n" +
-        "ALTER TABLE lastschrift ADD COLUMN zweck3 VARCHAR(1000);\n" +
-        "ALTER TABLE slastbuchung ADD COLUMN zweck3 VARCHAR(1000);\n" +
-        "ALTER TABLE sueberweisungbuchung ADD COLUMN zweck3 VARCHAR(1000);\n"
-    );
-    
     // Update fuer MySQL
     statements.put(DBSupportMySqlImpl.class.getName(),
         "ALTER TABLE ueberweisung ADD COLUMN zweck3 TEXT AFTER zweck2;\n" +
@@ -311,6 +300,9 @@ public class update0012 implements Update
 
 /*********************************************************************
  * $Log: update0012.java,v $
+ * Revision 1.5  2010/11/02 12:02:20  willuhn
+ * @R Support fuer McKoi entfernt. User, die noch dieses alte DB-Format nutzen, sollen erst auf Jameica 1.6/Hibiscus 1.8 (oder maximal Jameica 1.9/Hibiscus 1.11) wechseln, dort die Migration auf H2 durchfuehren und dann erst auf Hibiscus 1.12 updaten
+ *
  * Revision 1.4  2010/04/27 11:02:32  willuhn
  * @R Veralteten Verwendungszweck-Code entfernt
  *

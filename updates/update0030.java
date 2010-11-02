@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/updates/update0030.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/06/17 12:16:52 $
+ * $Revision: 1.2 $
+ * $Date: 2010/11/02 12:02:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,6 @@ import java.util.Map;
 
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.server.DBSupportH2Impl;
-import de.willuhn.jameica.hbci.server.DBSupportMcKoiImpl;
 import de.willuhn.jameica.hbci.server.DBSupportMySqlImpl;
 import de.willuhn.jameica.hbci.server.DBSupportPostgreSQLImpl;
 import de.willuhn.jameica.hbci.server.HBCIUpdateProvider;
@@ -42,7 +41,6 @@ public class update0030 implements Update
   public update0030()
   {
     statements.put(DBSupportH2Impl.class.getName(),        "ALTER TABLE konto ADD saldo_available double;\n");
-    statements.put(DBSupportMcKoiImpl.class.getName(),     "ALTER TABLE konto ADD saldo_available double;\n");
     statements.put(DBSupportMySqlImpl.class.getName(),     "ALTER TABLE konto ADD saldo_available double;\n");
     statements.put(DBSupportPostgreSQLImpl.class.getName(),"ALTER TABLE konto ADD saldo_available float;\n");
   }
@@ -89,6 +87,9 @@ public class update0030 implements Update
 
 /*********************************************************************
  * $Log: update0030.java,v $
+ * Revision 1.2  2010/11/02 12:02:20  willuhn
+ * @R Support fuer McKoi entfernt. User, die noch dieses alte DB-Format nutzen, sollen erst auf Jameica 1.6/Hibiscus 1.8 (oder maximal Jameica 1.9/Hibiscus 1.11) wechseln, dort die Migration auf H2 durchfuehren und dann erst auf Hibiscus 1.12 updaten
+ *
  * Revision 1.1  2010/06/17 12:16:52  willuhn
  * @N BUGZILLA 530
  *

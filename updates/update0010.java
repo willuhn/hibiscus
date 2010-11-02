@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/updates/update0010.java,v $
- * $Revision: 1.4 $
- * $Date: 2009/01/07 22:56:43 $
+ * $Revision: 1.5 $
+ * $Date: 2010/11/02 12:02:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,6 @@ import java.util.Map;
 
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.server.DBSupportH2Impl;
-import de.willuhn.jameica.hbci.server.DBSupportMcKoiImpl;
 import de.willuhn.jameica.hbci.server.DBSupportMySqlImpl;
 import de.willuhn.jameica.hbci.server.HBCIUpdateProvider;
 import de.willuhn.logging.Logger;
@@ -45,17 +44,6 @@ public class update0010 implements Update
     statements.put(DBSupportH2Impl.class.getName(),
         "ALTER TABLE property ALTER COLUMN name VARCHAR(1000) NOT NULL;\n");
 
-    // Update fuer McKoi
-    statements.put(DBSupportMcKoiImpl.class.getName(),
-        "ALTER CREATE TABLE property (" +
-        "    id NUMERIC default UNIQUEKEY('property')," +
-        "    name varchar(1000) NOT NULL," +
-        "    content varchar(1000) NULL," +
-        "    UNIQUE (id)," +
-        "    UNIQUE (name)," +
-        "    PRIMARY KEY (id)" +
-        ");\n");
-    
     // Update fuer MySQL
     statements.put(DBSupportMySqlImpl.class.getName(),
         "ALTER TABLE property DROP KEY name;\n" +
@@ -108,6 +96,9 @@ public class update0010 implements Update
 
 /*********************************************************************
  * $Log: update0010.java,v $
+ * Revision 1.5  2010/11/02 12:02:20  willuhn
+ * @R Support fuer McKoi entfernt. User, die noch dieses alte DB-Format nutzen, sollen erst auf Jameica 1.6/Hibiscus 1.8 (oder maximal Jameica 1.9/Hibiscus 1.11) wechseln, dort die Migration auf H2 durchfuehren und dann erst auf Hibiscus 1.12 updaten
+ *
  * Revision 1.4  2009/01/07 22:56:43  willuhn
  * @B BUGZILLA 688
  *

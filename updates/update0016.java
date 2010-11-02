@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/updates/update0016.java,v $
- * $Revision: 1.2 $
- * $Date: 2009/02/17 00:00:02 $
+ * $Revision: 1.3 $
+ * $Date: 2010/11/02 12:02:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,6 @@ import java.util.Map;
 
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.server.DBSupportH2Impl;
-import de.willuhn.jameica.hbci.server.DBSupportMcKoiImpl;
 import de.willuhn.jameica.hbci.server.DBSupportMySqlImpl;
 import de.willuhn.jameica.hbci.server.HBCIUpdateProvider;
 import de.willuhn.logging.Logger;
@@ -46,32 +45,6 @@ public class update0016 implements Update
     statements.put(DBSupportH2Impl.class.getName(),
         "ALTER TABLE umsatz ALTER COLUMN empfaenger_konto VARCHAR(40);\n");
 
-    // Update fuer McKoi
-    statements.put(DBSupportMcKoiImpl.class.getName(),
-        "ALTER CREATE TABLE umsatz (" +
-        "    id NUMERIC default UNIQUEKEY('umsatz')," +
-        "    konto_id int(4) NOT NULL," +
-        "    empfaenger_konto varchar(40)," +
-        "    empfaenger_blz varchar(15)," +
-        "    empfaenger_name varchar(255)," +
-        "    betrag double NOT NULL," +
-        "    zweck varchar(35)," +
-        "    zweck2 varchar(35)," +
-        "    zweck3 varchar(1000)," +
-        "    datum date NOT NULL," +
-        "    valuta date NOT NULL," +
-        "    saldo double," +
-        "    primanota varchar(100)," +
-        "    art varchar(100)," +
-        "    customerref varchar(100)," +
-        "    kommentar text NULL," +
-        "    checksum numeric NULL," +
-        "    umsatztyp_id int(5) NULL," +
-        "    flags int(1) NULL," +
-        "    UNIQUE (id)," +
-        "    PRIMARY KEY (id)" +
-        "  );\n");
-    
     // Update fuer MySQL
     statements.put(DBSupportMySqlImpl.class.getName(),
         "ALTER TABLE umsatz CHANGE empfaenger_konto empfaenger_konto VARCHAR(40);\n");
@@ -122,6 +95,9 @@ public class update0016 implements Update
 
 /*********************************************************************
  * $Log: update0016.java,v $
+ * Revision 1.3  2010/11/02 12:02:20  willuhn
+ * @R Support fuer McKoi entfernt. User, die noch dieses alte DB-Format nutzen, sollen erst auf Jameica 1.6/Hibiscus 1.8 (oder maximal Jameica 1.9/Hibiscus 1.11) wechseln, dort die Migration auf H2 durchfuehren und dann erst auf Hibiscus 1.12 updaten
+ *
  * Revision 1.2  2009/02/17 00:00:02  willuhn
  * @N BUGZILLA 159 - Erster Code fuer Auslands-Ueberweisungen
  *

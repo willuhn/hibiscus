@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/updates/update0017.java,v $
- * $Revision: 1.1 $
- * $Date: 2009/02/17 00:00:02 $
+ * $Revision: 1.2 $
+ * $Date: 2010/11/02 12:02:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,6 @@ import java.util.Map;
 
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.server.DBSupportH2Impl;
-import de.willuhn.jameica.hbci.server.DBSupportMcKoiImpl;
 import de.willuhn.jameica.hbci.server.DBSupportMySqlImpl;
 import de.willuhn.jameica.hbci.server.HBCIUpdateProvider;
 import de.willuhn.logging.Logger;
@@ -57,23 +56,6 @@ public class update0017 implements Update
         "  );\n" +
         "ALTER TABLE aueberweisung ADD CONSTRAINT fk_konto8 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;\n");
 
-    // Update fuer McKoi
-    statements.put(DBSupportMcKoiImpl.class.getName(),
-        "CREATE TABLE aueberweisung (" +
-        "    id NUMERIC default UNIQUEKEY('aueberweisung')," +
-        "    konto_id int(4) NOT NULL," +
-        "    empfaenger_konto varchar(40) NOT NULL," +
-        "    empfaenger_bank varchar(140) NOT NULL," +
-        "    empfaenger_name varchar(140) NOT NULL," +
-        "    betrag double NOT NULL," +
-        "    zweck varchar(140)," +
-        "    termin date NOT NULL," +
-        "    ausgefuehrt int(1) NOT NULL," +
-        "    UNIQUE (id)," +
-        "    PRIMARY KEY (id)" +
-        "  );\n" +
-        "ALTER TABLE aueberweisung ADD CONSTRAINT fk_konto8 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;\n");
-    
     // Update fuer MySQL
     statements.put(DBSupportMySqlImpl.class.getName(),
         "CREATE TABLE aueberweisung (" +
@@ -138,6 +120,9 @@ public class update0017 implements Update
 
 /*********************************************************************
  * $Log: update0017.java,v $
+ * Revision 1.2  2010/11/02 12:02:20  willuhn
+ * @R Support fuer McKoi entfernt. User, die noch dieses alte DB-Format nutzen, sollen erst auf Jameica 1.6/Hibiscus 1.8 (oder maximal Jameica 1.9/Hibiscus 1.11) wechseln, dort die Migration auf H2 durchfuehren und dann erst auf Hibiscus 1.12 updaten
+ *
  * Revision 1.1  2009/02/17 00:00:02  willuhn
  * @N BUGZILLA 159 - Erster Code fuer Auslands-Ueberweisungen
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/updates/update0028.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/04/22 12:42:03 $
+ * $Revision: 1.2 $
+ * $Date: 2010/11/02 12:02:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,6 @@ import java.util.Map;
 
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.server.DBSupportH2Impl;
-import de.willuhn.jameica.hbci.server.DBSupportMcKoiImpl;
 import de.willuhn.jameica.hbci.server.DBSupportMySqlImpl;
 import de.willuhn.jameica.hbci.server.DBSupportPostgreSQLImpl;
 import de.willuhn.jameica.hbci.server.HBCIUpdateProvider;
@@ -44,28 +43,6 @@ public class update0028 implements Update
     // Update fuer H2
     statements.put(DBSupportH2Impl.class.getName(),"ALTER TABLE konto ALTER COLUMN passport_class varchar(1000) NULL;\n");
 
-    // Update fuer McKoi
-    statements.put(DBSupportMcKoiImpl.class.getName(),
-        "ALTER CREATE TABLE konto (" +
-        "    id NUMERIC default UNIQUEKEY('konto')," +
-        "    kontonummer varchar(15) NOT NULL," +
-        "    unterkonto varchar(10) null," +
-        "    blz varchar(15) NOT NULL," +
-        "    name varchar(255) NOT NULL," +
-        "    bezeichnung varchar(255)," +
-        "    kundennummer varchar(255) NOT NULL," +
-        "    waehrung varchar(6) NOT NULL," +
-        "    passport_class varchar(1000) NULL," +
-        "    saldo double," +
-        "    saldo_datum date," +
-        "    kommentar varchar(1000) NULL," +
-        "    flags int(1) NULL," +
-        "    iban varchar(40) NULL," +
-        "    bic varchar(15) NULL," +
-        "    UNIQUE (id)," +
-        "    PRIMARY KEY (id)" +
-        "  );\n");
-    
     // Update fuer MySQL
     statements.put(DBSupportMySqlImpl.class.getName(),"ALTER TABLE konto CHANGE passport_class passport_class TEXT NULL;\n");
 
@@ -118,6 +95,9 @@ public class update0028 implements Update
 
 /*********************************************************************
  * $Log: update0028.java,v $
+ * Revision 1.2  2010/11/02 12:02:20  willuhn
+ * @R Support fuer McKoi entfernt. User, die noch dieses alte DB-Format nutzen, sollen erst auf Jameica 1.6/Hibiscus 1.8 (oder maximal Jameica 1.9/Hibiscus 1.11) wechseln, dort die Migration auf H2 durchfuehren und dann erst auf Hibiscus 1.12 updaten
+ *
  * Revision 1.1  2010/04/22 12:42:03  willuhn
  * @N Erste Version des Supports fuer Offline-Konten
  *

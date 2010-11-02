@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DBSupportPostgreSQLImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2009/04/05 21:40:56 $
+ * $Revision: 1.7 $
+ * $Date: 2010/11/02 12:02:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -61,7 +61,8 @@ public class DBSupportPostgreSQLImpl extends AbstractDBSupportImpl
   }
 
   /**
-   * Ueberschrieben, weil SQL-Scripts bei MySQL nicht automatisch durchgefuehrt werden.
+   * Ueberschrieben, weil SQL-Scripts bei PostreSQL nicht automatisch durchgefuehrt werden.
+   * Andernfalls wuerde jeder Hibiscus-Client beim ersten Start versuchen, diese anzulegen.
    * Das soll der Admin sicherheitshalber manuell durchfuehren. Wir hinterlassen stattdessen
    * nur einen Hinweistext mit den auszufuehrenden SQL-Scripts.
    * @see de.willuhn.jameica.hbci.server.AbstractDBSupportImpl#execute(java.sql.Connection, java.io.File)
@@ -71,8 +72,7 @@ public class DBSupportPostgreSQLImpl extends AbstractDBSupportImpl
     if (sqlScript == null)
       return; // Ignore
 
-    String prefix = HBCIDBService.SETTINGS.getString("database.driver.postgresql.scriptprefix","postgresql-");
-    File f = new File(sqlScript.getParent(),prefix + sqlScript.getName());
+    File f = new File(sqlScript.getParent(),getScriptPrefix() + sqlScript.getName());
     if (f.exists())
     {
       I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
@@ -83,7 +83,15 @@ public class DBSupportPostgreSQLImpl extends AbstractDBSupportImpl
       Application.addWelcomeMessage(text);
     }
   }
-  
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.DBSupport#getScriptPrefix()
+   */
+  public String getScriptPrefix() throws RemoteException
+  {
+    return "postgresql-";
+  }
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.DBSupport#getSQLTimestamp(java.lang.String)
    */
@@ -116,6 +124,9 @@ public class DBSupportPostgreSQLImpl extends AbstractDBSupportImpl
 
 /*********************************************************************
  * $Log: DBSupportPostgreSQLImpl.java,v $
+ * Revision 1.7  2010/11/02 12:02:19  willuhn
+ * @R Support fuer McKoi entfernt. User, die noch dieses alte DB-Format nutzen, sollen erst auf Jameica 1.6/Hibiscus 1.8 (oder maximal Jameica 1.9/Hibiscus 1.11) wechseln, dort die Migration auf H2 durchfuehren und dann erst auf Hibiscus 1.12 updaten
+ *
  * Revision 1.6  2009/04/05 21:40:56  willuhn
  * @C checkConnection() nur noch alle hoechstens 10 Sekunden ausfuehren
  *
@@ -124,17 +135,4 @@ public class DBSupportPostgreSQLImpl extends AbstractDBSupportImpl
  *
  * Revision 1.4  2009/04/01 20:59:39  willuhn
  * @N PostgreSQL-Unterstuetzung ist wieder da. Initialer Commit
- *
- * Revision 1.3  2008/12/17 22:49:09  willuhn
- * @R t o d o  tag entfernt
- *
- * Revision 1.2  2007/09/11 09:26:08  willuhn
- * @N SQL-Update-Hinweis nur anzeigen, wenn Datei existiert
- *
- * Revision 1.1  2007/08/20 15:30:28  willuhn
- * @N PostGreSqlSupport von Ralf Burger
- *
-
- * @N Erster Code fuer Unterstuetzung von PostgreSQL
- *
  **********************************************************************/

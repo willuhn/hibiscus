@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DBSupportMySqlImpl.java,v $
- * $Revision: 1.10 $
- * $Date: 2010/02/10 14:32:59 $
+ * $Revision: 1.11 $
+ * $Date: 2010/11/02 12:02:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -62,6 +62,7 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl
 
   /**
    * Ueberschrieben, weil SQL-Scripts bei MySQL nicht automatisch durchgefuehrt werden.
+   * Andernfalls wuerde jeder Hibiscus-Client beim ersten Start versuchen, diese anzulegen.
    * Das soll der Admin sicherheitshalber manuell durchfuehren. Wir hinterlassen stattdessen
    * nur einen Hinweistext mit den auszufuehrenden SQL-Scripts.
    * @see de.willuhn.jameica.hbci.server.AbstractDBSupportImpl#execute(java.sql.Connection, java.io.File)
@@ -71,8 +72,7 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl
     if (sqlScript == null)
       return; // Ignore
 
-    String prefix = HBCIDBService.SETTINGS.getString("database.driver.mysql.scriptprefix","mysql-");
-    File f = new File(sqlScript.getParent(),prefix + sqlScript.getName());
+    File f = new File(sqlScript.getParent(),getScriptPrefix() + sqlScript.getName());
     if (f.exists())
     {
       I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
@@ -83,7 +83,15 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl
       Application.addWelcomeMessage(text);
     }
   }
-  
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.DBSupport#getScriptPrefix()
+   */
+  public String getScriptPrefix() throws RemoteException
+  {
+    return "mysql-";
+  }
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.DBSupport#getSQLTimestamp(java.lang.String)
    */
@@ -116,40 +124,12 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl
 
 /*********************************************************************
  * $Log: DBSupportMySqlImpl.java,v $
+ * Revision 1.11  2010/11/02 12:02:19  willuhn
+ * @R Support fuer McKoi entfernt. User, die noch dieses alte DB-Format nutzen, sollen erst auf Jameica 1.6/Hibiscus 1.8 (oder maximal Jameica 1.9/Hibiscus 1.11) wechseln, dort die Migration auf H2 durchfuehren und dann erst auf Hibiscus 1.12 updaten
+ *
  * Revision 1.10  2010/02/10 14:32:59  willuhn
  * *** empty log message ***
  *
  * Revision 1.9  2009/04/05 21:40:56  willuhn
  * @C checkConnection() nur noch alle hoechstens 10 Sekunden ausfuehren
- *
- * Revision 1.8  2008/12/17 22:48:51  willuhn
- * @R t o d o  tag entfernt
- *
- * Revision 1.7  2007/09/11 09:26:08  willuhn
- * @N SQL-Update-Hinweis nur anzeigen, wenn Datei existiert
- *
- * Revision 1.6  2007/08/20 15:30:28  willuhn
- * @N PostGreSqlSupport von Ralf Burger
- *
- * Revision 1.5  2007/07/28 15:51:26  willuhn
- * @B Bug 447
- *
- * Revision 1.4  2007/06/14 18:02:47  willuhn
- * @B s/suffix/prefix/
- *
- * Revision 1.3  2007/05/07 09:27:25  willuhn
- * @N Automatisches Neuerstellen der JDBC-Connection bei MySQL
- *
- * Revision 1.2  2007/04/23 18:07:15  willuhn
- * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
- * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
- * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
- * @N Anbindung externer Adressbuecher
- *
- * Revision 1.1  2007/04/19 18:12:21  willuhn
- * @N MySQL-Support (GUI zum Konfigurieren fehlt noch)
- *
- * Revision 1.1  2007/04/18 17:03:06  willuhn
- * @N Erster Code fuer Unterstuetzung von MySQL
- *
  **********************************************************************/

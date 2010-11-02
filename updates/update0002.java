@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/updates/update0002.java,v $
- * $Revision: 1.6 $
- * $Date: 2008/10/12 22:10:20 $
+ * $Revision: 1.7 $
+ * $Date: 2010/11/02 12:02:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,6 @@ import java.util.Map;
 
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.server.DBSupportH2Impl;
-import de.willuhn.jameica.hbci.server.DBSupportMcKoiImpl;
 import de.willuhn.jameica.hbci.server.DBSupportMySqlImpl;
 import de.willuhn.jameica.hbci.server.HBCIUpdateProvider;
 import de.willuhn.logging.Logger;
@@ -55,27 +54,6 @@ public class update0002 implements Update
         ");\n" +
         "CREATE TABLE op_buchung (" +
         "    id IDENTITY," +
-        "    umsatz_id int(10) NOT NULL," +
-        "    op_id int(10) NOT NULL," +
-        "    UNIQUE (id)," +
-        "    PRIMARY KEY (id)" +
-        ");\n");
-    
-    // Update fuer McKoi
-    statements.put(DBSupportMcKoiImpl.class.getName(),
-        "CREATE TABLE op (" +
-        "    id NUMERIC default UNIQUEKEY('op')," +
-        "    name varchar(255) not NULL," +
-        "    pattern varchar(255) NULL," +
-        "    isregex int(1) NULL," + 
-        "    betrag double NOT NULL," +
-        "    termin date NULL," +
-        "    kommentar varchar(1000) NULL," +
-        "    UNIQUE (id)," +
-        "    PRIMARY KEY (id)" +
-        ");\n" +
-        "CREATE TABLE op_buchung (" +
-        "    id NUMERIC default UNIQUEKEY('op_buchung')," +
         "    umsatz_id int(10) NOT NULL," +
         "    op_id int(10) NOT NULL," +
         "    UNIQUE (id)," +
@@ -149,6 +127,9 @@ public class update0002 implements Update
 
 /*********************************************************************
  * $Log: update0002.java,v $
+ * Revision 1.7  2010/11/02 12:02:20  willuhn
+ * @R Support fuer McKoi entfernt. User, die noch dieses alte DB-Format nutzen, sollen erst auf Jameica 1.6/Hibiscus 1.8 (oder maximal Jameica 1.9/Hibiscus 1.11) wechseln, dort die Migration auf H2 durchfuehren und dann erst auf Hibiscus 1.12 updaten
+ *
  * Revision 1.6  2008/10/12 22:10:20  willuhn
  * @B Typo in den Updates
  * @B Spalten-Sortierung und -breite fuer in den Positionen von Sammelauftraegen nicht gespeichert
