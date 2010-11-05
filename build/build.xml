@@ -191,9 +191,9 @@
 
 
   <target name="sign" description="signs the jar/zip file" depends="zip,src">
-    <echo message="Creating MD5 checksum files" />
-    <checksum file="${project.release}/${define.zipfilename}" />
-    <checksum file="${project.release}/${define.srcfilename}" />
+    <echo message="Creating checksum files" />
+    <checksum algorithm="SHA" file="${project.release}/${define.zipfilename}" />
+    <checksum algorithm="SHA" file="${project.release}/${define.srcfilename}" />
     
     <echo message="Creating PGP signatures" />
     <exec executable="gpg" failonerror="true" timeout="60000">
