@@ -1,3 +1,16 @@
+/**********************************************************************
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/messaging/CheckOfflineUmsatzMessageConsumer.java,v $
+ * $Revision: 1.5 $
+ * $Date: 2010/11/08 10:37:00 $
+ * $Author: willuhn $
+ * $Locker:  $
+ * $State: Exp $
+ *
+ * Copyright (c) by willuhn.webdesign
+ * All rights reserved
+ *
+ **********************************************************************/
+
 package de.willuhn.jameica.hbci.messaging;
 
 import de.willuhn.datasource.GenericObject;
@@ -9,7 +22,6 @@ import de.willuhn.jameica.hbci.server.KontoUtil;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
 /**
@@ -70,67 +82,39 @@ public class CheckOfflineUmsatzMessageConsumer implements MessageConsumer
       return;
 
     // Kopie der Buchung erzeugen
-    Umsatz gegenbuchung = null;
+    Umsatz gegenbuchung = u.duplicate();
+
+    // Betrag negieren
+    gegenbuchung.setBetrag(-gegenbuchung.getBetrag());
+
+    // Konten tauschen
+    gegenbuchung.setKonto(gegenkonto);
+    gegenbuchung.setGegenkontoNummer(k.getKontonummer());
+    gegenbuchung.setGegenkontoBLZ(k.getBLZ());
+    gegenbuchung.setGegenkontoName(k.getName());
     
-    try
-    {
-      gegenbuchung = u.duplicate();
+    // Art des Umsatzes setzen, Laenge ggf. auf DB-Feldlaenge küuerzen
+    String art = i18n.tr("Auto-Buchung Offline-Konto");
+    if (art.length()>100) art = art.substring(0, 100);
+    gegenbuchung.setArt(art);
+    
+    // Saldo berechnen
+    gegenbuchung.setSaldo(gegenkonto.getSaldo() + gegenbuchung.getBetrag());
+    
+    // Umsatztyp loeschen
+    gegenbuchung.setUmsatzTyp(null);
 
-      // Betrag negieren
-      gegenbuchung.setBetrag(-gegenbuchung.getBetrag());
-
-      // Konten tauschen
-      gegenbuchung.setKonto(gegenkonto);
-      gegenbuchung.setGegenkontoNummer(k.getKontonummer());
-      gegenbuchung.setGegenkontoBLZ(k.getBLZ());
-      gegenbuchung.setGegenkontoName(k.getName());
-      
-      // Art des Umsatzes setzen, Laenge ggf. auf DB-Feldlaenge küuerzen
-      String art = i18n.tr("Auto-Buchung Offline-Konto");
-      if (art.length()>100) art = art.substring(0, 100);
-      gegenbuchung.setArt(art);
-      
-      // Saldo berechnen
-      gegenbuchung.setSaldo(gegenkonto.getSaldo() + gegenbuchung.getBetrag());
-      
-      // Umsatztyp loeschen
-      gegenbuchung.setUmsatzTyp(null);
-
-      // Saldo am Offline-Konto anpassen
-      gegenkonto.setSaldo(gegenbuchung.getSaldo());
-      
-      //////////////////////////////////////////////////////////////////////////
-      // BEGIN Transaction
-      gegenbuchung.transactionBegin();
-      
-      gegenbuchung.store(); // Umsatz speichern
-      gegenkonto.store();   // Konto mit geaendertem Saldo speichern
-      
-      gegenbuchung.transactionCommit();
-      // END Transaction
-      //////////////////////////////////////////////////////////////////////////
-      
-      // neuen Umsatz bekannt geben
-      Application.getMessagingFactory().sendMessage(new ImportMessage(gegenbuchung));
-      
-      // Geaendertes Konto bekanntmachen
-      Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(gegenkonto));
-    }
-    catch (Exception e)
-    {
-      if (gegenbuchung != null)
-      {
-        try
-        {
-          gegenbuchung.transactionRollback();
-        }
-        catch (Exception e2)
-        {
-          Logger.error("rollback failed",e2);
-        }
-      }
-      throw e;
-    }
+    gegenbuchung.store(); // Umsatz speichern
+    
+    // neuen Umsatz bekannt geben
+    Application.getMessagingFactory().sendMessage(new ImportMessage(gegenbuchung));
   }
 
 }
+
+/*******************************************************************************
+ * $Log: CheckOfflineUmsatzMessageConsumer.java,v $
+ * Revision 1.5  2010/11/08 10:37:00  willuhn
+ * @N BUGZILLA 945
+ *
+ ******************************************************************************/
