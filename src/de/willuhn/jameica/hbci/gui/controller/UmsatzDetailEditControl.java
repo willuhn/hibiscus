@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailEditControl.java,v $
- * $Revision: 1.7 $
- * $Date: 2010/11/08 10:45:21 $
+ * $Revision: 1.8 $
+ * $Date: 2010/11/08 10:46:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,7 +27,6 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.input.AddressInput;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -272,16 +271,8 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
       Konto k = u.getKonto();
       if ((k.getFlags() & Konto.FLAG_OFFLINE) == Konto.FLAG_OFFLINE)
       {
-        // Ist ein Offline-Konto. Dann uebernehmen wir den Saldo - jedoch
-        // nur dann, wenn das Datum des Umsatzes mindestens so aktuell wie
-        // das Saldo-Datum des Kontos ist
-        Date d = HBCIProperties.startOfDay(k.getSaldoDatum());
-        if (d != null && du != null && !du.before(d))
-        {
-          k.setSaldo(su);
-          k.store();
-        }
-        
+        k.setSaldo(su);
+        k.store();
       }
       
       u.setCustomerRef((String)getCustomerRef().getValue());
@@ -408,7 +399,10 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
 
 /**********************************************************************
  * $Log: UmsatzDetailEditControl.java,v $
- * Revision 1.7  2010/11/08 10:45:21  willuhn
+ * Revision 1.8  2010/11/08 10:46:33  willuhn
+ * @B BUGZILLA 945 - Quatsch - der Saldo wird immer uebernommen
+ *
+ * Revision 1.7  2010-11-08 10:45:21  willuhn
  * @B BUGZILLA 945 - die Uhrzeit muss noch entfernt werden, damit das passt
  *
  * Revision 1.6  2010/05/15 20:01:39  willuhn
