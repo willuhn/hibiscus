@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoList.java,v $
- * $Revision: 1.20 $
- * $Date: 2010/07/29 21:43:22 $
+ * $Revision: 1.21 $
+ * $Date: 2010/11/08 10:24:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -157,9 +157,9 @@ public class KontoList extends TablePart implements Part
 
           
           // Den Saldo faerben wir extra
-          if (k.getSaldo() < 0) // Negativer Saldo rot
+          if (k.getSaldo() <= -0.01) // Negativer Saldo rot
             item.setForeground(5,Settings.getBuchungSollForeground());
-          else if (k.getSaldo() > 0) // Positiver Saldo gruen
+          else if (k.getSaldo() >= 0.01) // Positiver Saldo gruen
             item.setForeground(5,Settings.getBuchungHabenForeground());
           
           Konto kd = Settings.getDefaultKonto();
@@ -380,7 +380,10 @@ public class KontoList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: KontoList.java,v $
- * Revision 1.20  2010/07/29 21:43:22  willuhn
+ * Revision 1.21  2010/11/08 10:24:03  willuhn
+ * @B korrekte farbige Hervorhebung auch bei Cent-Bruchteilen
+ *
+ * Revision 1.20  2010-07-29 21:43:22  willuhn
  * @N BUGZILLA 886
  *
  * Revision 1.19  2010/06/17 12:49:51  willuhn
