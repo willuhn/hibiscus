@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/rewriter/DeutscheBankUmsatzRewriter.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/08/02 09:02:23 $
+ * $Revision: 1.2 $
+ * $Date: 2010/11/18 10:22:08 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -31,6 +31,7 @@ public class DeutscheBankUmsatzRewriter implements UmsatzRewriter
   {
     List<String> list = new ArrayList<String>();
     list.add("50070024");
+    list.add("60070070");
     return list;
   }
 
@@ -132,7 +133,10 @@ public class DeutscheBankUmsatzRewriter implements UmsatzRewriter
 
 /**********************************************************************
  * $Log: DeutscheBankUmsatzRewriter.java,v $
- * Revision 1.1  2010/08/02 09:02:23  willuhn
+ * Revision 1.2  2010/11/18 10:22:08  willuhn
+ * @N Siehe Mail von Axel vom 18.11.2010
+ *
+ * Revision 1.1  2010-08-02 09:02:23  willuhn
  * @N BUGZILLA 887
  *
  **********************************************************************/
