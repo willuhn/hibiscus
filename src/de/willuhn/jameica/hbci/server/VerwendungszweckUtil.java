@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/VerwendungszweckUtil.java,v $
- * $Revision: 1.6 $
- * $Date: 2010/06/01 11:02:18 $
+ * $Revision: 1.7 $
+ * $Date: 2010/11/19 17:02:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -78,12 +78,13 @@ public class VerwendungszweckUtil
   }
   
   /**
-   * Merget die Verwendungszweck-Zeilen.
+   * Merget die Verwendungszweck-Zeilen zu einem String zusammen.
+   * Die Zeilen sind mit Zeilenumbruch versehen.
    * @param lines die Zeilen.
    * @return die gemergten Zeilen. Wird NULL oder ein leeres
    * Array uebergeben, liefert die Funktion NULL.
    */
-  public static String merge(String[] lines)
+  public static String merge(String... lines)
   {
     if (lines == null || lines.length == 0)
       return null;
@@ -107,11 +108,42 @@ public class VerwendungszweckUtil
     String result = sb.toString();
     return result.length() == 0 ? null : result;
   }
+  
+  /**
+   * Merget die Verwendungszweck-Zeilen des Auftrages zu einer Zeile zusammen.
+   * Statt Zeilenumbruch wird Leerzeichen verwendet.
+   * @param t der Auftrag.
+   * @return der String mit einer Zeile, die alle Verwendungszwecke enthaelt.
+   * @throws RemoteException
+   */
+  public static String toString(HibiscusTransfer t) throws RemoteException
+  {
+    StringBuffer sb = new StringBuffer();
+    String s1 = t.getZweck();
+    String s2 = t.getZweck2();
+    String s3 = merge(t.getWeitereVerwendungszwecke());
+
+    if (s1 != null)
+    {
+      sb.append(s1);
+      sb.append(' ');
+    }
+    if (s2 != null)
+    {
+      sb.append(s2);
+      sb.append(' ');
+    }
+    if (s3 != null) sb.append(s3);
+    return sb.toString().replace('\n',' ');
+  }
 }
 
 
 /*********************************************************************
  * $Log: VerwendungszweckUtil.java,v $
+ * Revision 1.7  2010/11/19 17:02:06  willuhn
+ * @N VWZUtil#toString
+ *
  * Revision 1.6  2010/06/01 11:02:18  willuhn
  * @N Wiederverwendbaren Code zum Zerlegen und Uebernehmen von Verwendungszwecken aus/in Arrays in Util-Klasse ausgelagert
  *

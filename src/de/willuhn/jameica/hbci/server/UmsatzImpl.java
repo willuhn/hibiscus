@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.82 $
- * $Date: 2010/09/28 21:40:27 $
+ * $Revision: 1.83 $
+ * $Date: 2010/11/19 17:02:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -445,25 +445,9 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
         return getID();
       }
     }
+
     if ("mergedzweck".equals(arg0))
-    {
-      StringBuffer sb = new StringBuffer();
-      String s1 = this.getZweck();
-      String s2 = this.getZweck2();
-      String s3 = (String) this.getAttribute("zweck3");
-      if (s1 != null)
-      {
-        sb.append(s1);
-        sb.append(' ');
-      }
-      if (s2 != null)
-      {
-        sb.append(s2);
-        sb.append(' ');
-      }
-      if (s3 != null) sb.append(s3);
-      return sb.toString().replace('\n',' ');
-    }
+      return VerwendungszweckUtil.toString(this);
 
     // BUGZILLA 86 http://www.willuhn.de/bugzilla/show_bug.cgi?id=86
     if ("empfaenger".equals(arg0))
@@ -690,7 +674,10 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
- * Revision 1.82  2010/09/28 21:40:27  willuhn
+ * Revision 1.83  2010/11/19 17:02:06  willuhn
+ * @N VWZUtil#toString
+ *
+ * Revision 1.82  2010-09-28 21:40:27  willuhn
  * @C Vormerkbuchungen haben eine andere Checksumme als valutierte Buchungen - auch, wenn sie sonst identisch sind
  *
  * Revision 1.81  2010-09-27 11:51:38  willuhn
