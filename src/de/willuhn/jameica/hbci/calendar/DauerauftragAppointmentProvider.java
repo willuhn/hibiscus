@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/calendar/DauerauftragAppointmentProvider.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/11/21 23:31:26 $
+ * $Revision: 1.3 $
+ * $Date: 2010/11/21 23:57:57 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -154,7 +154,7 @@ public class DauerauftragAppointmentProvider implements AppointmentProvider
       try
       {
         Konto k = t.getKonto();
-        return i18n.tr("{0} {1} an {2} als Dauerauftrag\n{3}\n\n{4}\n\nKonto: {5}",HBCI.DECIMALFORMAT.format(t.getBetrag()),k.getWaehrung(),t.getGegenkontoName(),TurnusHelper.createBezeichnung(t.getTurnus()),VerwendungszweckUtil.toString(t),k.getLongName());
+        return i18n.tr("{0} {1} an {2}\n{3}\n\n{4}\n\nKonto: {5}",HBCI.DECIMALFORMAT.format(t.getBetrag()),k.getWaehrung(),t.getGegenkontoName(),TurnusHelper.createBezeichnung(t.getTurnus()),VerwendungszweckUtil.toString(t),k.getLongName());
       }
       catch (RemoteException re)
       {
@@ -199,7 +199,10 @@ public class DauerauftragAppointmentProvider implements AppointmentProvider
 
 /**********************************************************************
  * $Log: DauerauftragAppointmentProvider.java,v $
- * Revision 1.2  2010/11/21 23:31:26  willuhn
+ * Revision 1.3  2010/11/21 23:57:57  willuhn
+ * @N Wir merken uns das letzte Datum und springen wieder zu dem zurueck, wenn wir z.Bsp. aus der Detail-Ansicht eines Auftrages zurueckkommen
+ *
+ * Revision 1.2  2010-11-21 23:31:26  willuhn
  * @N Auch abgelaufene Termine anzeigen
  * @N Turnus von Dauerauftraegen berechnen
  *
