@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/LastschriftImpl.java,v $
- * $Revision: 1.9 $
- * $Date: 2010/04/27 11:02:32 $
+ * $Revision: 1.10 $
+ * $Date: 2010/11/21 23:55:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -53,7 +53,6 @@ public class LastschriftImpl extends AbstractBaseUeberweisungImpl
 		u.setGegenkontoNummer(getGegenkontoNummer());
 		u.setGegenkontoName(getGegenkontoName());
 		u.setKonto(getKonto());
-		u.setTermin(getTermin());
 		u.setZweck(getZweck());
 		u.setZweck2(getZweck2());
     u.setWeitereVerwendungszwecke(getWeitereVerwendungszwecke());
@@ -65,6 +64,9 @@ public class LastschriftImpl extends AbstractBaseUeberweisungImpl
 
 /**********************************************************************
  * $Log: LastschriftImpl.java,v $
+ * Revision 1.10  2010/11/21 23:55:47  willuhn
+ * @C Uebernahme des Termins beim Duplizieren war nicht konsistent. Jetzt wird er nur noch bei Bank-gefuehrten Termin-Ueberweisungen uebernommen
+ *
  * Revision 1.9  2010/04/27 11:02:32  willuhn
  * @R Veralteten Verwendungszweck-Code entfernt
  *
