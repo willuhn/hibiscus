@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/calendar/DauerauftragAppointmentProvider.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/11/19 18:37:19 $
+ * $Revision: 1.2 $
+ * $Date: 2010/11/21 23:31:26 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -21,6 +21,7 @@ import org.eclipse.swt.graphics.RGB;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.calendar.Appointment;
 import de.willuhn.jameica.gui.calendar.AppointmentProvider;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.DauerauftragNew;
@@ -40,16 +41,6 @@ import de.willuhn.util.I18N;
 public class DauerauftragAppointmentProvider implements AppointmentProvider
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
-  private RGB color = null;
-  
-  /**
-   * ct.
-   */
-  public DauerauftragAppointmentProvider()
-  {
-    this.color = Settings.getBuchungSollForeground().getRGB();
-  }
   
   /**
    * @see de.willuhn.jameica.gui.calendar.AppointmentProvider#getAppointments(java.util.Date, java.util.Date)
@@ -95,7 +86,6 @@ public class DauerauftragAppointmentProvider implements AppointmentProvider
   {
     Date de       = t.getErsteZahlung();
     Date dl       = t.getLetzteZahlung();
-    // Turnus turnus = t.getTurnus();
     
     // Auftrag faengt erst spaeter an
     if (de != null && de.after(to))
@@ -105,10 +95,12 @@ public class DauerauftragAppointmentProvider implements AppointmentProvider
     if (dl != null && dl.before(from))
       return null;
 
-    
-    // TODO Hier noch pruefen, ob der Turnus im angegebenen Zeitraum eine Zahlung vorsieht 
-    
-    return null;
+    // Als Valuta nehmen wir den ersten des Monats
+    Date d = TurnusHelper.getNaechsteZahlung(de,dl,t.getTurnus(),from);
+    if (d == null)
+      return null;
+    // Jetzt muessen wir nur noch schauen, ob sich das Datum im aktuellen Monat befindet
+    return (!d.after(to)) ? d : null;
   }
 
   /**
@@ -162,7 +154,7 @@ public class DauerauftragAppointmentProvider implements AppointmentProvider
       try
       {
         Konto k = t.getKonto();
-        return i18n.tr("{0} {1} an {2} als Dauerauftrag\n{3}\n\n{4}\n\nKonto: {5})",HBCI.DECIMALFORMAT.format(t.getBetrag()),k.getWaehrung(),t.getGegenkontoName(),TurnusHelper.createBezeichnung(t.getTurnus()),VerwendungszweckUtil.toString(t),k.getLongName());
+        return i18n.tr("{0} {1} an {2} als Dauerauftrag\n{3}\n\n{4}\n\nKonto: {5}",HBCI.DECIMALFORMAT.format(t.getBetrag()),k.getWaehrung(),t.getGegenkontoName(),TurnusHelper.createBezeichnung(t.getTurnus()),VerwendungszweckUtil.toString(t),k.getLongName());
       }
       catch (RemoteException re)
       {
@@ -193,7 +185,12 @@ public class DauerauftragAppointmentProvider implements AppointmentProvider
      */
     public RGB getColor()
     {
-      return color;
+      // Hier gibt es keinen Ausgefuehrt-Status.
+      // Wir markieren ihn grau, wenn er in der Vergangenheit liegt,
+      // ansonsten farbig
+      if (this.termin != null && this.termin.before(new Date()))
+        return Color.COMMENT.getSWTColor().getRGB();
+      return Settings.getBuchungSollForeground().getRGB();
     }
   }
 }
@@ -202,7 +199,11 @@ public class DauerauftragAppointmentProvider implements AppointmentProvider
 
 /**********************************************************************
  * $Log: DauerauftragAppointmentProvider.java,v $
- * Revision 1.1  2010/11/19 18:37:19  willuhn
+ * Revision 1.2  2010/11/21 23:31:26  willuhn
+ * @N Auch abgelaufene Termine anzeigen
+ * @N Turnus von Dauerauftraegen berechnen
+ *
+ * Revision 1.1  2010-11-19 18:37:19  willuhn
  * @N Erste Version der Termin-View mit Appointment-Providern
  *
  **********************************************************************/

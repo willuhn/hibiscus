@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/calendar/SammelLastschriftAppointmentProvider.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/11/19 18:37:20 $
+ * $Revision: 1.2 $
+ * $Date: 2010/11/21 23:31:26 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -21,6 +21,7 @@ import org.eclipse.swt.graphics.RGB;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.calendar.Appointment;
 import de.willuhn.jameica.gui.calendar.AppointmentProvider;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
@@ -40,16 +41,6 @@ public class SammelLastschriftAppointmentProvider implements AppointmentProvider
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  private RGB color = null;
-  
-  /**
-   * ct.
-   */
-  public SammelLastschriftAppointmentProvider()
-  {
-    this.color = Settings.getBuchungHabenForeground().getRGB();
-  }
-  
   /**
    * @see de.willuhn.jameica.gui.calendar.AppointmentProvider#getAppointments(java.util.Date, java.util.Date)
    */
@@ -59,7 +50,6 @@ public class SammelLastschriftAppointmentProvider implements AppointmentProvider
     {
       HBCIDBService service = Settings.getDBService();
       DBIterator list = service.createList(SammelLastschrift.class);
-      list.addFilter("ausgefuehrt = 0");
       if (from != null) list.addFilter("termin >= ?", new Object[]{new java.sql.Date(HBCIProperties.startOfDay(from).getTime())});
       if (to   != null) list.addFilter("termin <= ?", new Object[]{new java.sql.Date(HBCIProperties.endOfDay(to).getTime())});
       list.setOrder("ORDER BY " + service.getSQLTimestamp("termin"));
@@ -133,7 +123,7 @@ public class SammelLastschriftAppointmentProvider implements AppointmentProvider
       try
       {
         Konto k = t.getKonto();
-        return i18n.tr("{0} {1} einziehen\n\n{2}\n\nKonto: {3})",HBCI.DECIMALFORMAT.format(t.getSumme()),k.getWaehrung(),t.getBezeichnung(),k.getLongName());
+        return i18n.tr("{0} {1} einziehen\n\n{2}\n\nKonto: {3}",HBCI.DECIMALFORMAT.format(t.getSumme()),k.getWaehrung(),t.getBezeichnung(),k.getLongName());
       }
       catch (RemoteException re)
       {
@@ -164,7 +154,16 @@ public class SammelLastschriftAppointmentProvider implements AppointmentProvider
      */
     public RGB getColor()
     {
-      return color;
+      try
+      {
+        if (t.ausgefuehrt())
+          return Color.COMMENT.getSWTColor().getRGB();
+      }
+      catch (RemoteException re)
+      {
+        Logger.error("unable to determine execution status",re);
+      }
+      return Settings.getBuchungHabenForeground().getRGB();
     }
   }
 }
@@ -173,7 +172,11 @@ public class SammelLastschriftAppointmentProvider implements AppointmentProvider
 
 /**********************************************************************
  * $Log: SammelLastschriftAppointmentProvider.java,v $
- * Revision 1.1  2010/11/19 18:37:20  willuhn
+ * Revision 1.2  2010/11/21 23:31:26  willuhn
+ * @N Auch abgelaufene Termine anzeigen
+ * @N Turnus von Dauerauftraegen berechnen
+ *
+ * Revision 1.1  2010-11-19 18:37:20  willuhn
  * @N Erste Version der Termin-View mit Appointment-Providern
  *
  **********************************************************************/
