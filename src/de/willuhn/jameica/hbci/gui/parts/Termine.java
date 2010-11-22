@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/Attic/Termine.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/11/19 18:37:19 $
+ * $Revision: 1.2 $
+ * $Date: 2010/11/22 00:52:53 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -28,8 +28,6 @@ public class Termine extends CalendarPart
    */
   public Termine()
   {
-    super();
-
     // Wir laden automatisch die Termin-Provider.
     try
     {
@@ -58,7 +56,10 @@ public class Termine extends CalendarPart
 
 /**********************************************************************
  * $Log: Termine.java,v $
- * Revision 1.1  2010/11/19 18:37:19  willuhn
+ * Revision 1.2  2010/11/22 00:52:53  willuhn
+ * @C Appointment-Inner-Class darf auch private sein
+ *
+ * Revision 1.1  2010-11-19 18:37:19  willuhn
  * @N Erste Version der Termin-View mit Appointment-Providern
  *
  **********************************************************************/

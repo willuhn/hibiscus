@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/calendar/UeberweisungAppointmentProvider.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/11/21 23:31:26 $
+ * $Revision: 1.3 $
+ * $Date: 2010/11/22 00:52:53 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -79,7 +79,7 @@ public class UeberweisungAppointmentProvider implements AppointmentProvider
   /**
    * Hilfsklasse zum Anzeigen und Oeffnen des Appointments.
    */
-  public class MyAppointment implements Appointment
+  private class MyAppointment implements Appointment
   {
     private Ueberweisung t = null;
     
@@ -173,7 +173,10 @@ public class UeberweisungAppointmentProvider implements AppointmentProvider
 
 /**********************************************************************
  * $Log: UeberweisungAppointmentProvider.java,v $
- * Revision 1.2  2010/11/21 23:31:26  willuhn
+ * Revision 1.3  2010/11/22 00:52:53  willuhn
+ * @C Appointment-Inner-Class darf auch private sein
+ *
+ * Revision 1.2  2010-11-21 23:31:26  willuhn
  * @N Auch abgelaufene Termine anzeigen
  * @N Turnus von Dauerauftraegen berechnen
  *
