@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/TurnusHelper.java,v $
- * $Revision: 1.15 $
- * $Date: 2009/08/26 21:23:46 $
+ * $Revision: 1.16 $
+ * $Date: 2010/11/23 11:39:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -111,11 +111,6 @@ public class TurnusHelper
     if (valuta == null)
       valuta = new Date();
     
-    // Das Datum der ersten Zahlung liegt in der Zukunft oder ist heute. Dann brauchen
-    // wir gar nicht rechnen, sondern koennen gleich das nehmen.
-    if (ersteZahlung.after(valuta) || ersteZahlung.equals(valuta))
-      return ersteZahlung;
-
     // Auftrag bereits abgelaufen, da sich das Valuta-Datum hinter
     // der letzten Ausfuehrung befindet
     if (letzteZahlung != null && letzteZahlung.before(valuta))
@@ -281,6 +276,9 @@ public class TurnusHelper
 
 /**********************************************************************
  * $Log: TurnusHelper.java,v $
+ * Revision 1.16  2010/11/23 11:39:43  willuhn
+ * @B Das Datum der ersten Zahlung darf nicht ohne Beruecksichtigung des Turnus verwendet werden. Beispiel: Erste Zahlung 22.11, Valuta 23.11, Turnus monatlich am 1., dann ist die erste Zahlung der 01.12. und nicht der 23.11.
+ *
  * Revision 1.15  2009/08/26 21:23:46  willuhn
  * @C "aller x Wochen/Monate" sagt man wohl nur im Saechsischen ;) Habs geaendert auf "alle x Wochen/Monate". Google liefert mit dieser Schreibweise auch erheblich mehr Treffer
  *
