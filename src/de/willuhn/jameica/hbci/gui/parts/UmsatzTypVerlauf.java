@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTypVerlauf.java,v $
- * $Revision: 1.7 $
- * $Date: 2010/08/12 17:12:32 $
+ * $Revision: 1.8 $
+ * $Date: 2010/11/24 16:27:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,8 +14,6 @@
 package de.willuhn.jameica.hbci.gui.parts;
 
 import java.rmi.RemoteException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -26,7 +24,6 @@ import org.eclipse.swt.widgets.Composite;
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.gui.Part;
-import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.chart.LineChart;
@@ -44,39 +41,13 @@ import de.willuhn.util.I18N;
  */
 public class UmsatzTypVerlauf implements Part
 {
-  private static DateFormat DATEFORMAT = new SimpleDateFormat("MM.yyyy");
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
   private List data       = null;
   private Date start      = null;
   private Date stop       = null;
   private LineChart chart = null;
-  private I18N i18n       = null;
   
-  private Formatter dateFormat = null;
-  
-  /**
-   * ct.
-   */
-  public UmsatzTypVerlauf()
-  {
-    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-    
-    this.dateFormat = new Formatter() {
-
-      /**
-       * @see de.willuhn.jameica.gui.formatter.Formatter#format(java.lang.Object)
-       */
-      public String format(Object o)
-      {
-        if (o == null)
-          return "";
-        if (!(o instanceof Date))
-          return o.toString();
-        return DATEFORMAT.format((Date)o);
-      }
-    };
-  }
-
   /**
    * Speichert die anzuzeigenden Daten.
    * @param data Liste mit Objekten des Typs "UmsatzGroup".
@@ -255,14 +226,6 @@ public class UmsatzTypVerlauf implements Part
     }
 
     /**
-     * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getLabelFormatter()
-     */
-    public Formatter getLabelFormatter() throws RemoteException
-    {
-      return dateFormat;
-    }
-
-    /**
      * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#getCurve()
      */
     public boolean getCurve()
@@ -349,7 +312,11 @@ public class UmsatzTypVerlauf implements Part
 
 /*********************************************************************
  * $Log: UmsatzTypVerlauf.java,v $
- * Revision 1.7  2010/08/12 17:12:32  willuhn
+ * Revision 1.8  2010/11/24 16:27:17  willuhn
+ * @R Eclipse BIRT komplett rausgeworden. Diese unsaegliche Monster ;)
+ * @N Stattdessen verwenden wir jetzt SWTChart (http://www.swtchart.org). Das ist statt den 6MB von BIRT sagenhafte 250k gross
+ *
+ * Revision 1.7  2010-08-12 17:12:32  willuhn
  * @N Saldo-Chart komplett ueberarbeitet (Daten wurden vorher mehrmals geladen, Summen-Funktion, Anzeige mehrerer Konten, Durchschnitt ueber mehrere Konten, Bugfixing, echte "Homogenisierung" der Salden via SaldoFinder)
  *
  * Revision 1.6  2010/03/22 10:00:48  willuhn

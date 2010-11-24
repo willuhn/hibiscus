@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.56 $
- * $Date: 2010/08/26 12:53:08 $
+ * $Revision: 1.57 $
+ * $Date: 2010/11/24 16:27:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -414,18 +414,6 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
     if ("umsatz".equals(arg0))
       return new Double(getUmsatz());
 
-    if (arg0 != null && arg0.startsWith("umsatz:"))
-    {
-      try
-      {
-        String[] s = arg0.split(":");
-        return new Double(getUmsatz(Integer.parseInt(s[1])));
-      }
-      catch (Exception e)
-      {
-        Logger.error("unable to parse number of days: " + arg0);
-      }
-    }
     return super.getAttribute(arg0);
   }
 
@@ -612,7 +600,11 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
 
 /*******************************************************************************
  * $Log: UmsatzTypImpl.java,v $
- * Revision 1.56  2010/08/26 12:53:08  willuhn
+ * Revision 1.57  2010/11/24 16:27:17  willuhn
+ * @R Eclipse BIRT komplett rausgeworden. Diese unsaegliche Monster ;)
+ * @N Stattdessen verwenden wir jetzt SWTChart (http://www.swtchart.org). Das ist statt den 6MB von BIRT sagenhafte 250k gross
+ *
+ * Revision 1.56  2010-08-26 12:53:08  willuhn
  * @N Cache nur befuellen, wenn das explizit gefordert wird. Andernfalls wuerde der Cache u.U. unnoetig gefuellt werden, obwohl nur ein Objekt daraus geloescht werden soll
  *
  * Revision 1.55  2010-08-26 11:31:23  willuhn

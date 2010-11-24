@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTypChart.java,v $
- * $Revision: 1.9 $
- * $Date: 2010/08/12 15:32:02 $
+ * $Revision: 1.10 $
+ * $Date: 2010/11/24 16:27:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,9 +28,9 @@ import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.chart.BarChart;
 import de.willuhn.jameica.hbci.gui.chart.ChartData;
 import de.willuhn.jameica.hbci.gui.chart.ChartDataUmsatzTyp;
-import de.willuhn.jameica.hbci.gui.chart.PieChart;
 import de.willuhn.jameica.hbci.gui.input.UmsatzDaysInput;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.system.Application;
@@ -67,8 +67,8 @@ public class UmsatzTypChart implements Part
       final ChartData eData = new ChartDataUmsatzTyp(UmsatzTyp.TYP_EINNAHME,start);
       final ChartData aData = new ChartDataUmsatzTyp(UmsatzTyp.TYP_AUSGABE,start);
       
-      final PieChart einnahmen = new PieChart();
-      final PieChart ausgaben  = new PieChart();
+      final BarChart einnahmen = new BarChart();
+      final BarChart ausgaben  = new BarChart();
       
       if (start < 0)
       {
@@ -112,8 +112,8 @@ public class UmsatzTypChart implements Part
             }
             else
             {
-              einnahmen.setTitle(i18n.tr("Einnahmen ({0} Tage)",""+newStart));
-              ausgaben.setTitle(i18n.tr("Ausgaben ({0} Tage)",""+newStart));
+              einnahmen.setTitle(i18n.tr("Einnahmen ({0} Tage)",Integer.toString(newStart)));
+              ausgaben.setTitle(i18n.tr("Ausgaben ({0} Tage)",Integer.toString(newStart)));
             }
             einnahmen.addData(myEData);
             ausgaben.addData(myAData);
@@ -123,7 +123,7 @@ public class UmsatzTypChart implements Part
           catch (Throwable t)
           {
             Logger.error("unable to redraw chart",t);
-            GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Aktualisieren des Saldo-Verlaufs"));
+            GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Aktualisieren der Umsatzverteilung"));
           }
         }
       });
@@ -162,7 +162,11 @@ public class UmsatzTypChart implements Part
 
 /*********************************************************************
  * $Log: UmsatzTypChart.java,v $
- * Revision 1.9  2010/08/12 15:32:02  willuhn
+ * Revision 1.10  2010/11/24 16:27:18  willuhn
+ * @R Eclipse BIRT komplett rausgeworden. Diese unsaegliche Monster ;)
+ * @N Stattdessen verwenden wir jetzt SWTChart (http://www.swtchart.org). Das ist statt den 6MB von BIRT sagenhafte 250k gross
+ *
+ * Revision 1.9  2010-08-12 15:32:02  willuhn
  * @R Rahmen entfernt - spart Platz
  *
  * Revision 1.8  2010-08-11 16:06:05  willuhn

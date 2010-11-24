@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/AbstractChartDataSaldo.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/08/12 17:12:31 $
+ * $Revision: 1.2 $
+ * $Date: 2010/11/24 16:27:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,11 +14,8 @@
 package de.willuhn.jameica.hbci.gui.chart;
 
 import java.rmi.RemoteException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
@@ -30,8 +27,6 @@ public abstract class AbstractChartDataSaldo implements LineChartData
 {
   final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  private Formatter formatter = null;
-  
   /**
    * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getDataAttribute()
    */
@@ -46,32 +41,6 @@ public abstract class AbstractChartDataSaldo implements LineChartData
   public String getLabelAttribute() throws RemoteException
   {
     return "datum";
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getLabelFormatter()
-   */
-  public Formatter getLabelFormatter() throws RemoteException
-  {
-    if (this.formatter != null)
-      return this.formatter;
-    
-    this.formatter = new Formatter() {
-      private DateFormat df = new SimpleDateFormat("dd.MM.yy");
-
-      /**
-       * @see de.willuhn.jameica.gui.formatter.Formatter#format(java.lang.Object)
-       */
-      public String format(Object o)
-      {
-        if (o == null)
-          return "";
-        if (!(o instanceof Date))
-          return o.toString();
-        return df.format((Date)o);
-      }
-    };
-    return this.formatter;
   }
 
   /**
@@ -150,7 +119,11 @@ public abstract class AbstractChartDataSaldo implements LineChartData
 
 /*********************************************************************
  * $Log: AbstractChartDataSaldo.java,v $
- * Revision 1.1  2010/08/12 17:12:31  willuhn
+ * Revision 1.2  2010/11/24 16:27:17  willuhn
+ * @R Eclipse BIRT komplett rausgeworden. Diese unsaegliche Monster ;)
+ * @N Stattdessen verwenden wir jetzt SWTChart (http://www.swtchart.org). Das ist statt den 6MB von BIRT sagenhafte 250k gross
+ *
+ * Revision 1.1  2010-08-12 17:12:31  willuhn
  * @N Saldo-Chart komplett ueberarbeitet (Daten wurden vorher mehrmals geladen, Summen-Funktion, Anzeige mehrerer Konten, Durchschnitt ueber mehrere Konten, Bugfixing, echte "Homogenisierung" der Salden via SaldoFinder)
  *
  **********************************************************************/

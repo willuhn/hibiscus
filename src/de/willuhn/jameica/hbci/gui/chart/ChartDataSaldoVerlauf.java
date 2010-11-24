@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/ChartDataSaldoVerlauf.java,v $
- * $Revision: 1.15 $
- * $Date: 2010/09/01 15:28:57 $
+ * $Revision: 1.16 $
+ * $Date: 2010/11/24 16:27:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -68,7 +68,7 @@ public class ChartDataSaldoVerlauf extends AbstractChartDataSaldo
     // Messwert, weil nicht genuegend Umsaetze vorhanden sind. Effekt:
     // In Konto A haben wir 10 Umsaetze, in Konto B aber 20. Wir haben
     // fuer Konto B also Messpunkte, zu denen in Konto A kein korrelierender
-    // Wert existiert. Sowas kann BIRT nicht zeichnen. Daher iterieren
+    // Wert existiert. Sowas kann man sauber nicht zeichnen. Daher iterieren
     // wir jetzt tageweise ueber die angegebene Zeitspanne. Fuer jeden Tag
     // schauen wir, ob wir einen Umsatz haben. Liegt keiner vor, nehmen
     // wir den letzten Umsatz, der vor diesem Tag liegt, da der dort
@@ -107,15 +107,13 @@ public class ChartDataSaldoVerlauf extends AbstractChartDataSaldo
 
 /*********************************************************************
  * $Log: ChartDataSaldoVerlauf.java,v $
- * Revision 1.15  2010/09/01 15:28:57  willuhn
+ * Revision 1.16  2010/11/24 16:27:17  willuhn
+ * @R Eclipse BIRT komplett rausgeworden. Diese unsaegliche Monster ;)
+ * @N Stattdessen verwenden wir jetzt SWTChart (http://www.swtchart.org). Das ist statt den 6MB von BIRT sagenhafte 250k gross
+ *
+ * Revision 1.15  2010-09-01 15:28:57  willuhn
  * @B Der letzte Tag wurde nicht beruecksichtigt - siehe Mail von Felix vom 01.09.
  *
  * Revision 1.14  2010-08-12 17:12:32  willuhn
  * @N Saldo-Chart komplett ueberarbeitet (Daten wurden vorher mehrmals geladen, Summen-Funktion, Anzeige mehrerer Konten, Durchschnitt ueber mehrere Konten, Bugfixing, echte "Homogenisierung" der Salden via SaldoFinder)
- *
- * Revision 1.13  2010-08-11 16:06:04  willuhn
- * @N BUGZILLA 783 - Saldo-Chart ueber alle Konten
- *
- * Revision 1.12  2008/02/26 01:12:30  willuhn
- * @R nicht mehr benoetigte Funktion entfernt
  **********************************************************************/

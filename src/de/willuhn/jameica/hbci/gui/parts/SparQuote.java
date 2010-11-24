@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SparQuote.java,v $
- * $Revision: 1.25 $
- * $Date: 2010/08/12 17:12:32 $
+ * $Revision: 1.26 $
+ * $Date: 2010/11/24 16:27:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -35,6 +35,7 @@ import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
+import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.IntegerInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.internal.buttons.Back;
@@ -66,28 +67,35 @@ import de.willuhn.util.I18N;
  */
 public class SparQuote implements Part
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+
   private static DateFormat DATEFORMAT = new SimpleDateFormat("MM.yyyy");
   
   private TablePart table          = null;
   private LineChart chart          = null;
   private SelectInput kontoauswahl = null;
+  private DateInput startAuswahl   = null;
   private IntegerInput tagAuswahl  = null;
   
   private List<UmsatzEntry> data   = new ArrayList<UmsatzEntry>();
   private List<UmsatzEntry> trend  = new ArrayList<UmsatzEntry>();
+  private Date start               = null;
   private int stichtag             = 1;
   
-  private I18N i18n                = null;
-
   private Listener listener        = null; // BUGZILLA 575
 
-  
   /**
    * ct.
    */
   public SparQuote()
   {
-    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+    // Wir beginnen per Default mit dem 01.01. des letzten Jahres
+    final Calendar cal = Calendar.getInstance();
+    cal.set(Calendar.DAY_OF_MONTH,1);
+    cal.set(Calendar.MONTH,Calendar.JANUARY);
+    cal.add(Calendar.YEAR,-1);
+    this.start = HBCIProperties.startOfDay(cal.getTime());
+    
     this.listener = new Listener()
     {
       public void handleEvent(Event event)
@@ -96,6 +104,14 @@ public class SparQuote implements Part
         {
           Integer value = (Integer) getTagAuswahl().getValue();
           stichtag = value == null ? 1 : value.intValue();
+          
+          start = (Date) getStartAuswahl().getValue();
+          if (start != null && !start.before(HBCIProperties.startOfDay(new Date())))
+          {
+            // Datum darf sich nicht in der Zukunft befinden. Wir resetten das Datum
+            start = HBCIProperties.startOfDay(cal.getTime());
+            getStartAuswahl().setValue(start);
+          }
 
           load();
           redraw();
@@ -148,6 +164,22 @@ public class SparQuote implements Part
   }
   
   /**
+   * Liefert ein Eingabefeld fuer das Start-Datum.
+   * @return
+   * @throws RemoteException
+   */
+  private DateInput getStartAuswahl() throws RemoteException
+  {
+    if (this.startAuswahl != null)
+      return this.startAuswahl;
+    this.startAuswahl = new DateInput(this.start);
+    this.startAuswahl.setName(i18n.tr("Start-Datum"));
+    this.startAuswahl.setComment(i18n.tr("frühestes Valuta-Datum"));
+    this.startAuswahl.addListener(new DelayedListener(500,this.listener));
+    return this.startAuswahl;
+  }
+  
+  /**
    * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
    */
   public void paint(Composite parent) throws RemoteException
@@ -157,6 +189,7 @@ public class SparQuote implements Part
     LabelGroup filter = new LabelGroup(parent,i18n.tr("Anzeige einschränken"));
     
     filter.addInput(getKontoAuswahl());
+    filter.addInput(getStartAuswahl());
     filter.addInput(getTagAuswahl());
 
     ButtonArea topButtons = new ButtonArea(parent,2);
@@ -172,7 +205,7 @@ public class SparQuote implements Part
     
     // Wir initialisieren die Tabelle erstmal ohne Werte.
     this.table = new TablePart(data,null);
-    this.table.addColumn(i18n.tr("Monat"),     "monat", new Formatter() {
+    this.table.addColumn(i18n.tr("Monat"), "monat", new Formatter() {
       public String format(Object o)
       {
         if (o == null)
@@ -251,6 +284,9 @@ public class SparQuote implements Part
     Konto konto = (Konto) getKontoAuswahl().getValue();
     if (konto != null)
       umsaetze.addFilter("konto_id = " + konto.getID());
+
+    if (start != null)
+      umsaetze.addFilter("valuta >= ?", new Object[] {new java.sql.Date(start.getTime())});
 
     UmsatzEntry currentEntry = null;
     Calendar cal             = Calendar.getInstance();
@@ -388,9 +424,6 @@ public class SparQuote implements Part
    */
   private class ChartDataSparQuote implements LineChartData
   {
-
-    private Formatter formatter = null;
-    
     /**
      * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getData()
      */
@@ -422,30 +455,6 @@ public class SparQuote implements Part
     public String getLabelAttribute() throws RemoteException
     {
       return "monat";
-    }
-
-    /**
-     * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getLabelFormatter()
-     */
-    public Formatter getLabelFormatter() throws RemoteException
-    {
-      if (this.formatter != null)
-        return this.formatter;
-      
-      return new Formatter() {
-
-        /**
-         * @see de.willuhn.jameica.gui.formatter.Formatter#format(java.lang.Object)
-         */
-        public String format(Object o)
-        {
-          if (o == null)
-            return "";
-          if (!(o instanceof Date))
-            return o.toString();
-          return DATEFORMAT.format((Date)o);
-        }
-      };
     }
 
     /**
@@ -492,7 +501,11 @@ public class SparQuote implements Part
 
 /*********************************************************************
  * $Log: SparQuote.java,v $
- * Revision 1.25  2010/08/12 17:12:32  willuhn
+ * Revision 1.26  2010/11/24 16:27:17  willuhn
+ * @R Eclipse BIRT komplett rausgeworden. Diese unsaegliche Monster ;)
+ * @N Stattdessen verwenden wir jetzt SWTChart (http://www.swtchart.org). Das ist statt den 6MB von BIRT sagenhafte 250k gross
+ *
+ * Revision 1.25  2010-08-12 17:12:32  willuhn
  * @N Saldo-Chart komplett ueberarbeitet (Daten wurden vorher mehrmals geladen, Summen-Funktion, Anzeige mehrerer Konten, Durchschnitt ueber mehrere Konten, Bugfixing, echte "Homogenisierung" der Salden via SaldoFinder)
  *
  * Revision 1.24  2010-08-11 14:53:19  willuhn

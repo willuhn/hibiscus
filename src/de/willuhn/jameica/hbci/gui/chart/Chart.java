@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/Chart.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/08/12 17:12:32 $
+ * $Revision: 1.6 $
+ * $Date: 2010/11/24 16:27:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,8 +19,9 @@ import de.willuhn.jameica.gui.Part;
 
 /**
  * Basis-Interface fuer ein Chart.
+ * @param <T> der Typ der Chartdaten.
  */
-public interface Chart extends Part
+public interface Chart<T extends ChartData> extends Part
 {
   /**
    * Speichert den Titel des Charts.
@@ -38,13 +39,13 @@ public interface Chart extends Part
    * Fuegt dem Chart eine Datenreihe hinzu,
    * @param data
    */
-  public void addData(ChartData data);
+  public void addData(T data);
   
   /**
    * Entfernt eine Datenreihe aus dem Chart.
    * @param data
    */
-  public void removeData(ChartData data);
+  public void removeData(T data);
   
   /**
    * Entfernt alle Datenreihen.
@@ -62,21 +63,10 @@ public interface Chart extends Part
 
 /*********************************************************************
  * $Log: Chart.java,v $
- * Revision 1.5  2010/08/12 17:12:32  willuhn
+ * Revision 1.6  2010/11/24 16:27:17  willuhn
+ * @R Eclipse BIRT komplett rausgeworden. Diese unsaegliche Monster ;)
+ * @N Stattdessen verwenden wir jetzt SWTChart (http://www.swtchart.org). Das ist statt den 6MB von BIRT sagenhafte 250k gross
+ *
+ * Revision 1.5  2010-08-12 17:12:32  willuhn
  * @N Saldo-Chart komplett ueberarbeitet (Daten wurden vorher mehrmals geladen, Summen-Funktion, Anzeige mehrerer Konten, Durchschnitt ueber mehrere Konten, Bugfixing, echte "Homogenisierung" der Salden via SaldoFinder)
- *
- * Revision 1.4  2008/02/26 01:01:16  willuhn
- * @N Update auf Birt 2 (bessere Zeichen-Qualitaet, u.a. durch Anti-Aliasing)
- * @N Neuer Chart "Umsatz-Kategorien im Verlauf"
- * @N Charts erst beim ersten Paint-Event zeichnen. Dadurch laesst sich z.Bsp. die Konto-View schneller oeffnen, da der Saldo-Verlauf nicht berechnet werden muss
- *
- * Revision 1.3  2006/03/09 18:24:05  willuhn
- * @N Auswahl der Tage in Umsatz-Chart
- *
- * Revision 1.2  2005/12/20 00:03:27  willuhn
- * @N Test-Code fuer Tortendiagramm-Auswertungen
- *
- * Revision 1.1  2005/12/12 15:46:55  willuhn
- * @N Hibiscus verwendet jetzt Birt zum Erzeugen der Charts
- *
  **********************************************************************/

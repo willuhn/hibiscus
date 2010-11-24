@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/ChartDataUmsatzTyp.java,v $
- * $Revision: 1.6 $
- * $Date: 2010/08/12 17:12:31 $
+ * $Revision: 1.7 $
+ * $Date: 2010/11/24 16:27:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,11 +14,10 @@
 package de.willuhn.jameica.hbci.gui.chart;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.List;
 
-import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
@@ -68,7 +67,13 @@ public class ChartDataUmsatzTyp implements ChartData
     DBIterator list = Settings.getDBService().createList(UmsatzTyp.class);
     if (this.type != UmsatzTyp.TYP_EGAL)
       list.addFilter("umsatztyp = " + this.type);
-    return PseudoIterator.asList(list);
+    
+    List<Entry> result = new ArrayList<Entry>();
+    while (list.hasNext())
+    {
+      result.add(new Entry((UmsatzTyp)list.next()));
+    }
+    return result;
   }
 
   /**
@@ -84,8 +89,6 @@ public class ChartDataUmsatzTyp implements ChartData
    */
   public String getDataAttribute() throws RemoteException
   {
-    if (days > 0)
-      return "umsatz:" + days; 
     return "umsatz";
   }
 
@@ -96,41 +99,52 @@ public class ChartDataUmsatzTyp implements ChartData
   {
     return "name";
   }
-
+  
   /**
-   * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getLabelFormatter()
+   * Hilfsklasse, weil wir nur Absolut-Werte wollen.
    */
-  public Formatter getLabelFormatter() throws RemoteException
+  public class Entry
   {
-    return null;
+    private UmsatzTyp ut = null;
+    
+    /**
+     * ct.
+     * @param ut der Umsatz-Typ.
+     */
+    private Entry(UmsatzTyp ut)
+    {
+      this.ut = ut;
+    }
+    
+    /**
+     * Liefert den Umsatz als Absolut-Wert.
+     * @return der Umsatz als Absolut-Wert.
+     * @throws RemoteException
+     */
+    public Double getUmsatz() throws RemoteException
+    {
+      return Math.abs(this.ut.getUmsatz(days));
+    }
+    
+    /**
+     * Liefert den Namen der Kategorie.
+     * @return der Namen der Kategorie.
+     * @throws RemoteException
+     */
+    public String getName() throws RemoteException
+    {
+      return this.ut.getName();
+    }
   }
 }
 
 
 /*********************************************************************
  * $Log: ChartDataUmsatzTyp.java,v $
- * Revision 1.6  2010/08/12 17:12:31  willuhn
+ * Revision 1.7  2010/11/24 16:27:17  willuhn
+ * @R Eclipse BIRT komplett rausgeworden. Diese unsaegliche Monster ;)
+ * @N Stattdessen verwenden wir jetzt SWTChart (http://www.swtchart.org). Das ist statt den 6MB von BIRT sagenhafte 250k gross
+ *
+ * Revision 1.6  2010-08-12 17:12:31  willuhn
  * @N Saldo-Chart komplett ueberarbeitet (Daten wurden vorher mehrmals geladen, Summen-Funktion, Anzeige mehrerer Konten, Durchschnitt ueber mehrere Konten, Bugfixing, echte "Homogenisierung" der Salden via SaldoFinder)
- *
- * Revision 1.5  2008/08/29 16:46:23  willuhn
- * @N BUGZILLA 616
- *
- * Revision 1.4  2006/07/17 15:50:49  willuhn
- * @N Sparquote
- *
- * Revision 1.3  2006/04/03 21:39:07  willuhn
- * @N UmsatzChart
- *
- * Revision 1.2  2005/12/30 00:14:45  willuhn
- * @N first working pie charts
- *
- * Revision 1.1  2005/12/20 00:03:27  willuhn
- * @N Test-Code fuer Tortendiagramm-Auswertungen
- *
- * Revision 1.2  2005/12/12 18:53:00  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2005/12/12 15:46:55  willuhn
- * @N Hibiscus verwendet jetzt Birt zum Erzeugen der Charts
- *
  **********************************************************************/
