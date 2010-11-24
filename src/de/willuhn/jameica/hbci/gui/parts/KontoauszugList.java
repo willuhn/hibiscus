@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.34 $
- * $Date: 2010/06/01 12:12:19 $
+ * $Revision: 1.35 $
+ * $Date: 2010/11/24 14:54:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -69,6 +69,8 @@ import de.willuhn.util.I18N;
  */
 public class KontoauszugList extends UmsatzList
 {
+  private static Date endDate          = null;
+  
   // Suche nach Konto/zeitraum
   private KontoInput kontoAuswahl      = null;
   private DateInput start              = null;
@@ -279,7 +281,7 @@ public class KontoauszugList extends UmsatzList
     if (this.end != null)
       return this.end;
 
-    this.end = new DateInput(null, HBCI.DATEFORMAT);
+    this.end = new DateInput(endDate, HBCI.DATEFORMAT);
     this.end.setComment(i18n.tr("Spätestes Valuta-Datum"));
     this.end.addListener(this.listener);
     return this.end;
@@ -590,6 +592,9 @@ public class KontoauszugList extends UmsatzList
           // Aktuelle Werte speichern
           try
           {
+            // Nur fuer die Dauer der Sitzung speichern
+            endDate = (Date) getEnd().getValue(); // BUGZILLA 951
+            
             // Wir speichern hier alle eingegebenen Suchbegriffe fuer's naechste mal
             Date from = (Date) getStart().getValue();
             Konto k   = (Konto) getKontoAuswahl().getValue();
@@ -683,6 +688,9 @@ public class KontoauszugList extends UmsatzList
 
 /*********************************************************************
  * $Log: KontoauszugList.java,v $
+ * Revision 1.35  2010/11/24 14:54:45  willuhn
+ * @C BUGZILLA 951
+ *
  * Revision 1.34  2010/06/01 12:12:19  willuhn
  * @C Umsaetze in "Kontoauszuege" und "Umsatze nach Kategorien" per Default in umgekehrt chronologischer Reihenfolge liefern - also neue zuerst
  *
