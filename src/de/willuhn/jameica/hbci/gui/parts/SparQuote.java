@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SparQuote.java,v $
- * $Revision: 1.26 $
- * $Date: 2010/11/24 16:27:17 $
+ * $Revision: 1.27 $
+ * $Date: 2010/11/29 22:44:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -462,7 +462,7 @@ public class SparQuote implements Part
      */
     public boolean getCurve()
     {
-      return true;
+      return false;
     }
 
     /**
@@ -494,6 +494,14 @@ public class SparQuote implements Part
     {
       return i18n.tr("Trend");
     }
+    
+    /**
+     * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#getCurve()
+     */
+    public boolean getCurve()
+    {
+      return true;
+    }
   }
 
 }
@@ -501,7 +509,10 @@ public class SparQuote implements Part
 
 /*********************************************************************
  * $Log: SparQuote.java,v $
- * Revision 1.26  2010/11/24 16:27:17  willuhn
+ * Revision 1.27  2010/11/29 22:44:30  willuhn
+ * @B getCurve() wurde falsch rum interpretiert ;)
+ *
+ * Revision 1.26  2010-11-24 16:27:17  willuhn
  * @R Eclipse BIRT komplett rausgeworden. Diese unsaegliche Monster ;)
  * @N Stattdessen verwenden wir jetzt SWTChart (http://www.swtchart.org). Das ist statt den 6MB von BIRT sagenhafte 250k gross
  *
