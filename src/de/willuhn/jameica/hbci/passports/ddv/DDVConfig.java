@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/DDVConfig.java,v $
- * $Revision: 1.3 $
- * $Date: 2010/09/08 15:04:52 $
+ * $Revision: 1.4 $
+ * $Date: 2010/12/01 21:59:00 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -222,7 +222,9 @@ public class DDVConfig
    */
   public String getHBCIVersion()
   {
-    return settings.getString("hbciversion","210");
+    // BUG: Wir hatten hier vergessen, den Prefix mit anzugeben.
+    // Wir migrieren die bisherigen Werte gleich.
+    return settings.getString(this.getPrefix() + "hbciversion",settings.getString("hbciversion","210"));
   }
 
   /**
@@ -231,7 +233,7 @@ public class DDVConfig
    */
   public void setHBCIVersion(String version)
   {
-    settings.setAttribute("hbciversion",version);
+    settings.setAttribute(this.getPrefix() + "hbciversion",version);
   }
   
   /**
@@ -354,7 +356,10 @@ public class DDVConfig
 
 /**********************************************************************
  * $Log: DDVConfig.java,v $
- * Revision 1.3  2010/09/08 15:04:52  willuhn
+ * Revision 1.4  2010/12/01 21:59:00  willuhn
+ * @B die HBCI-Version wurde nicht pro Config gespeichert sondern galt fuer alle Configs
+ *
+ * Revision 1.3  2010-09-08 15:04:52  willuhn
  * @N Config des Sicherheitsmediums als Context in Passport speichern
  *
  * Revision 1.2  2010-09-08 10:14:32  willuhn
