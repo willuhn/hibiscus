@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.35 $
- * $Date: 2010/11/24 14:54:45 $
+ * $Revision: 1.36 $
+ * $Date: 2010/12/09 15:56:54 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ package de.willuhn.jameica.hbci.gui.parts;
 import java.rmi.RemoteException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
@@ -40,8 +41,11 @@ import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Color;
+import de.willuhn.jameica.gui.util.ColumnLayout;
+import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.Headline;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -51,11 +55,13 @@ import de.willuhn.jameica.hbci.gui.dialogs.AdresseAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
+import de.willuhn.jameica.hbci.gui.input.UmsatzTypInput;
 import de.willuhn.jameica.hbci.gui.parts.columns.KontoColumn;
 import de.willuhn.jameica.hbci.io.Exporter;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
@@ -70,11 +76,13 @@ import de.willuhn.util.I18N;
 public class KontoauszugList extends UmsatzList
 {
   private static Date endDate          = null;
+  private static Integer currentTab    = null;
   
   // Suche nach Konto/zeitraum
   private KontoInput kontoAuswahl      = null;
   private DateInput start              = null;
   private DateInput end                = null;
+  private UmsatzTypInput kategorie     = null;
 
   // Suche nach Gegenkonto
   private DialogInput gegenkontoNummer = null;
@@ -92,7 +100,7 @@ public class KontoauszugList extends UmsatzList
   private boolean changed = false;
 
   private I18N i18n = null;
-
+  
   /**
    * ct.
    * @throws RemoteException
@@ -128,26 +136,48 @@ public class KontoauszugList extends UmsatzList
 
     /////////////////////////////////////////////////////////////////
     // Tab-Container
-    TabFolder folder = new TabFolder(parent, SWT.NONE);
+    final TabFolder folder = new TabFolder(parent, SWT.NONE);
     folder.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     folder.setBackground(Color.BACKGROUND.getSWTColor());
 
-    TabGroup zeitraum = new TabGroup(folder,i18n.tr("Konto/Zeitraum"));
-    zeitraum.addLabelPair(i18n.tr("Konto"), getKontoAuswahl());
-    zeitraum.addLabelPair(i18n.tr("Start-Datum"), getStart());
-    zeitraum.addLabelPair(i18n.tr("End-Datum"), getEnd());
+    {
+      TabGroup tab = new TabGroup(folder,i18n.tr("Konto/Zeitraum/Suchbegriff"));
+      tab.addLabelPair(i18n.tr("Zweck/Notiz/Art enthält"),this.getText());
+
+      ColumnLayout columns = new ColumnLayout(tab.getComposite(),2);
+      
+      Container left = new SimpleContainer(columns.getComposite());
+      left.addLabelPair(i18n.tr("Konto"),     this.getKontoAuswahl());
+      left.addLabelPair(i18n.tr("Kategorie"), this.getKategorie());
+      
+      Container right = new SimpleContainer(columns.getComposite());
+      right.addLabelPair(i18n.tr("Start-Datum"), this.getStart());
+      right.addLabelPair(i18n.tr("End-Datum"),          this.getEnd());
+    }
     
-    TabGroup gegenkonto = new TabGroup(folder,i18n.tr("Gegenkonto"));
-    gegenkonto.addLabelPair(i18n.tr("Kontonummer enthält"),           getGegenkontoNummer());
-    gegenkonto.addLabelPair(i18n.tr("BLZ enthält"),                   getGegenkontoBLZ());
-    gegenkonto.addLabelPair(i18n.tr("Name des Kontoinhabers enthält"),getGegenkontoName());
+    {
+      TabGroup tab = new TabGroup(folder,i18n.tr("Gegenkonto/Betrag"));
+      tab.addLabelPair(i18n.tr("Kontonummer enthält"), this.getGegenkontoNummer());
 
-    TabGroup betrag = new TabGroup(folder,i18n.tr("Betrag/Text"));
-    betrag.addLabelPair(i18n.tr("Mindest-Betrag"),                    getMindestBetrag());
-    betrag.addLabelPair(i18n.tr("Höchst-Betrag"),                     getHoechstBetrag());
-    betrag.addSeparator();
-    betrag.addLabelPair(i18n.tr("Verwendungszweck/Kommentar/Art enthält"), getText());
+      ColumnLayout columns = new ColumnLayout(tab.getComposite(),2);
+      Container left = new SimpleContainer(columns.getComposite());
+      left.addLabelPair(i18n.tr("BLZ enthält"),                    this.getGegenkontoBLZ());
+      left.addLabelPair(i18n.tr("Name des Kontoinhabers enthält"), this.getGegenkontoName());
 
+      Container right = new SimpleContainer(columns.getComposite());
+      right.addLabelPair(i18n.tr("Mindest-Betrag"), this.getMindestBetrag());
+      right.addLabelPair(i18n.tr("Höchst-Betrag"),        this.getHoechstBetrag());
+    }
+    
+    // Wir merken uns das aktive Tab.
+    if (currentTab != null) folder.setSelection(currentTab);
+    folder.addDisposeListener(new DisposeListener() {
+      public void widgetDisposed(DisposeEvent e)
+      {
+        currentTab = folder.getSelectionIndex();
+      }
+    });
+    
     ButtonArea buttons = new ButtonArea(parent, 4);
     buttons.addButton(new Back(false));
     buttons.addButton(i18n.tr("Exportieren..."), new Action()
@@ -175,9 +205,9 @@ public class KontoauszugList extends UmsatzList
     new Headline(parent,i18n.tr("Gefundene Umsätze"));
 
     removeAll();
-    GenericIterator list = getUmsaetze();
-    while (list.hasNext())
-      addItem(list.next());
+    List<Umsatz> list = getUmsaetze();
+    for(Umsatz u:list)
+      addItem(u);
     
     parent.addDisposeListener(new DisposeListener() {
       public void widgetDisposed(DisposeEvent e)
@@ -206,6 +236,8 @@ public class KontoauszugList extends UmsatzList
       return this.kontoAuswahl;
 
     this.kontoAuswahl = new KontoInput(null,KontoFilter.ALL);
+    this.kontoAuswahl.setComment(null);
+    
     Konto preset = null;
 
     /////////////////////
@@ -288,6 +320,43 @@ public class KontoauszugList extends UmsatzList
   }
   
   /**
+   * Liefert ein Auswahl-Feld fuer die Kategorie. 
+   * @return Auswahl-Feld.
+   * @throws RemoteException
+   */
+  public UmsatzTypInput getKategorie() throws RemoteException
+  {
+    if (this.kategorie != null)
+      return this.kategorie;
+    
+    UmsatzTyp preset = null;
+
+    /////////////////////
+    // Preset laden
+    String s = mySettings.getString("kontoauszug.list.kategorie",null);
+    if (s != null && s.length() > 0)
+    {
+      try
+      {
+        preset = (UmsatzTyp) de.willuhn.jameica.hbci.Settings.getDBService().createObject(UmsatzTyp.class,s);
+      }
+      catch (Exception e)
+      {
+        // Kategorie existiert wohl nicht mehr - dann loeschen wir die Vorauswahl
+        mySettings.setAttribute("kontoauszug.list.kategorie",(String)null);
+      }
+    }
+    //
+    /////////////////////
+
+    this.kategorie = new UmsatzTypInput(preset,UmsatzTyp.TYP_EGAL);
+    this.kategorie.setPleaseChoose(i18n.tr("<Alle Kategorien>"));
+    this.kategorie.setComment(null);
+    this.kategorie.addListener(this.listener);
+    return this.kategorie;
+  }
+  
+  /**
    * Liefert das Eingabe-Feld fuer die Kontonummer des Gegenkontos.
    * @return Eingabe-Feld.
    * @throws RemoteException
@@ -316,6 +385,7 @@ public class KontoauszugList extends UmsatzList
       return this.gegenkontoBLZ;
     
     this.gegenkontoBLZ = new BLZInput(mySettings.getString("kontoauszug.list.gegenkonto.blz",null));
+    this.gegenkontoBLZ.setComment(null);
     this.gegenkontoBLZ.addListener(this.listener);
     return this.gegenkontoBLZ;
   }
@@ -437,7 +507,7 @@ public class KontoauszugList extends UmsatzList
    * @return Liste der Umsaetze.
    * @throws RemoteException
    */
-  private synchronized GenericIterator getUmsaetze() throws RemoteException
+  private synchronized List<Umsatz> getUmsaetze() throws RemoteException
   {
     Konto k         = (Konto) getKontoAuswahl().getValue();
     Date start      = (Date) getStart().getValue();
@@ -448,6 +518,7 @@ public class KontoauszugList extends UmsatzList
     Double min      = (Double) getMindestBetrag().getValue();
     Double max      = (Double) getHoechstBetrag().getValue();
     String zk       = (String) getText().getValue();
+    UmsatzTyp typ   = (UmsatzTyp) getKategorie().getValue();
     
     DBIterator umsaetze = UmsatzUtil.getUmsaetzeBackwards();
     
@@ -469,7 +540,7 @@ public class KontoauszugList extends UmsatzList
 
     /////////////////////////////////////////////////////////////////
     // Konto
-    if (k != null) {umsaetze.addFilter("konto_id = " + k.getID()); hasFilter = true;}
+    if (k != null) umsaetze.addFilter("konto_id = " + k.getID());
     /////////////////////////////////////////////////////////////////
 
     /////////////////////////////////////////////////////////////////
@@ -491,13 +562,21 @@ public class KontoauszugList extends UmsatzList
     if (zk != null && zk.length() > 0) {
       zk = "%" + zk.toLowerCase() + "%";
       umsaetze.addFilter("(LOWER(zweck) like ? OR LOWER(zweck2) like ? OR LOWER(zweck3) like ? OR LOWER(kommentar) like ? OR LOWER(art) like ?)",new Object[]{zk,zk,zk,zk,zk});
-      hasFilter = true;
     }
     /////////////////////////////////////////////////////////////////
 
 
     GUI.getView().setLogoText(hasFilter ? i18n.tr("Hinweis: Aufgrund von Suchkriterien werden möglicherweise nicht alle Umsätze angezeigt") : "");
-    return umsaetze;
+    
+    List<Umsatz> result = new LinkedList<Umsatz>();
+    while (umsaetze.hasNext())
+    {
+      Umsatz u = (Umsatz) umsaetze.next();
+      if (typ != null && !typ.matches(u))
+        continue;
+      result.add(u);
+    }
+    return result;
   }
 
   /**
@@ -555,6 +634,7 @@ public class KontoauszugList extends UmsatzList
       getMindestBetrag().setValue(Double.NaN);
       getHoechstBetrag().setValue(Double.NaN);
       getKontoAuswahl().setValue(null);
+      getKategorie().setValue(null);
       getGegenkontoNummer().setText("");
       getGegenkontoBLZ().setValue(null);
       getGegenkontoName().setValue(null);
@@ -585,9 +665,9 @@ public class KontoauszugList extends UmsatzList
         {
           removeAll();
           
-          GenericIterator list = getUmsaetze();
-          while (list.hasNext())
-            addItem(list.next());
+          List<Umsatz> list = getUmsaetze();
+          for(Umsatz u:list)
+            addItem(u);
 
           // Aktuelle Werte speichern
           try
@@ -596,15 +676,17 @@ public class KontoauszugList extends UmsatzList
             endDate = (Date) getEnd().getValue(); // BUGZILLA 951
             
             // Wir speichern hier alle eingegebenen Suchbegriffe fuer's naechste mal
-            Date from = (Date) getStart().getValue();
-            Konto k   = (Konto) getKontoAuswahl().getValue();
-            Double bFrom = (Double) getMindestBetrag().getValue();
-            Double bTo   = (Double) getHoechstBetrag().getValue();
+            Date from     = (Date) getStart().getValue();
+            Konto k       = (Konto) getKontoAuswahl().getValue();
+            UmsatzTyp typ = (UmsatzTyp) getKategorie().getValue();
+            Double bFrom  = (Double) getMindestBetrag().getValue();
+            Double bTo    = (Double) getHoechstBetrag().getValue();
             mySettings.setAttribute("kontoauszug.list.from",from == null ? null : HBCI.DATEFORMAT.format(from));
             mySettings.setAttribute("kontoauszug.list.gegenkonto.nummer",getGegenkontoNummer().getText());
             mySettings.setAttribute("kontoauszug.list.gegenkonto.blz",(String) getGegenkontoBLZ().getValue());
             mySettings.setAttribute("kontoauszug.list.gegenkonto.name",(String) getGegenkontoName().getValue());
             mySettings.setAttribute("kontoauszug.list.konto",k == null ? null : k.getID());
+            mySettings.setAttribute("kontoauszug.list.kategorie",typ == null ? null : typ.getID());
             mySettings.setAttribute("kontoauszug.list.text",(String) getText().getValue());
             mySettings.setAttribute("kontoauszug.list.betrag.from",bFrom == null ? Double.NaN : bFrom.doubleValue());
             mySettings.setAttribute("kontoauszug.list.betrag.to",bTo == null ? Double.NaN : bTo.doubleValue());
@@ -645,6 +727,7 @@ public class KontoauszugList extends UmsatzList
                 getGegenkontoBLZ().hasChanged() ||
                 getMindestBetrag().hasChanged() ||
                 getHoechstBetrag().hasChanged() ||
+                getKategorie().hasChanged() ||
                 getText().hasChanged();
     }
     catch (Exception e)
@@ -688,7 +771,10 @@ public class KontoauszugList extends UmsatzList
 
 /*********************************************************************
  * $Log: KontoauszugList.java,v $
- * Revision 1.35  2010/11/24 14:54:45  willuhn
+ * Revision 1.36  2010/12/09 15:56:54  willuhn
+ * @C Filter nach Kategorie
+ *
+ * Revision 1.35  2010-11-24 14:54:45  willuhn
  * @C BUGZILLA 951
  *
  * Revision 1.34  2010/06/01 12:12:19  willuhn
