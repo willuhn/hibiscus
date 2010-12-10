@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.36 $
- * $Date: 2010/12/09 15:56:54 $
+ * $Revision: 1.37 $
+ * $Date: 2010/12/10 12:38:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -39,7 +39,7 @@ import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.internal.buttons.Back;
-import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.ColumnLayout;
 import de.willuhn.jameica.gui.util.Container;
@@ -178,7 +178,7 @@ public class KontoauszugList extends UmsatzList
       }
     });
     
-    ButtonArea buttons = new ButtonArea(parent, 4);
+    ButtonArea buttons = new ButtonArea();
     buttons.addButton(new Back(false));
     buttons.addButton(i18n.tr("Exportieren..."), new Action()
     {
@@ -201,6 +201,9 @@ public class KontoauszugList extends UmsatzList
         handleReload();
       }
     },null,true,"view-refresh.png");
+    
+    buttons.paint(parent);
+    
 
     new Headline(parent,i18n.tr("Gefundene Umsätze"));
 
@@ -771,7 +774,10 @@ public class KontoauszugList extends UmsatzList
 
 /*********************************************************************
  * $Log: KontoauszugList.java,v $
- * Revision 1.36  2010/12/09 15:56:54  willuhn
+ * Revision 1.37  2010/12/10 12:38:45  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.36  2010-12-09 15:56:54  willuhn
  * @C Filter nach Kategorie
  *
  * Revision 1.35  2010-11-24 14:54:45  willuhn
