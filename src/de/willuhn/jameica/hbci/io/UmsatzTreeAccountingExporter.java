@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/UmsatzTreeSummaryExporter.java,v $
- * $Revision: 1.4 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/UmsatzTreeAccountingExporter.java,v $
+ * $Revision: 1.1 $
  * $Date: 2010/12/12 23:16:16 $
  * $Author: willuhn $
  * $Locker:  $
@@ -31,10 +31,10 @@ import de.willuhn.util.I18N;
 import de.willuhn.util.ProgressMonitor;
 
 /**
- * Exporter fuer einen Tree von Umsaetzen im PDF-Format.
- * Hierbei werden nur die Summen der einzelnen Kategorien exportiert.
+ * Exporter fuer einen Baum von Umsaetzen nach Kategorien im PDF-Format.
+ * Hierbei werden die Summen der einzelnen Kategorien, aufgeschlüsselt nach Einnahmen und Ausgaben exportiert.
  */
-public class UmsatzTreeSummaryExporter implements Exporter
+public class UmsatzTreeAccountingExporter implements Exporter
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
@@ -53,29 +53,24 @@ public class UmsatzTreeSummaryExporter implements Exporter
     UmsatzTree tree = t[0];
     List list = tree.getUmsatzTree();
     Konto k = tree.getKonto();
-    
-    String subTitle = i18n.tr("Zeitraum {0} - {1}, {2}", new String[] {
-        HBCI.DATEFORMAT.format(tree.getStart()), HBCI.DATEFORMAT.format(tree.getEnd()),
-        k == null ? i18n.tr("alle Konten") : k.getBezeichnung() });
+
+    String subTitle = i18n.tr("Zeitraum {0} - {1}, {2}",HBCI.DATEFORMAT.format(tree.getStart()), HBCI.DATEFORMAT.format(tree.getEnd()),k == null ? i18n.tr("alle Konten") : k.getBezeichnung());
 
     Reporter reporter = null;
     try
     {
       reporter = new Reporter(os, monitor, i18n.tr("Umsatzkategorien"), subTitle, list.size());
 
-      reporter.addHeaderColumn(i18n.tr("Kategorie"), Element.ALIGN_CENTER, 130,Color.LIGHT_GRAY);
-      reporter.addHeaderColumn(i18n.tr("Betrag"), Element.ALIGN_CENTER, 30,Color.LIGHT_GRAY);
+      reporter.addHeaderColumn(i18n.tr("Kategorie"), Element.ALIGN_CENTER, 130, Color.LIGHT_GRAY);
+      reporter.addHeaderColumn(i18n.tr("Einnahmen"), Element.ALIGN_CENTER, 30,  Color.LIGHT_GRAY);
+      reporter.addHeaderColumn(i18n.tr("Ausgaben"),  Element.ALIGN_CENTER, 30,  Color.LIGHT_GRAY);
+      reporter.addHeaderColumn(i18n.tr("Betrag"),    Element.ALIGN_CENTER, 30,  Color.LIGHT_GRAY);
       reporter.createHeader();
 
       // Iteration ueber die Kategorien
-      for (int i=0;i<list.size(); ++i)
+      for (int i=0; i<list.size(); ++i)
       {
-        UmsatzTreeNode ug = (UmsatzTreeNode) list.get(i);
-
-        PdfPCell cell = reporter.getDetailCell((String) ug.getAttribute("name"), Element.ALIGN_LEFT);
-        reporter.addColumn(cell);
-        reporter.addColumn(reporter.getDetailCell((Double) ug.getAttribute("betrag")));
-        
+        renderNode(reporter,(UmsatzTreeNode) list.get(i),0);
         reporter.setNextRecord();
       }
       if (monitor != null) monitor.setStatus(ProgressMonitor.STATUS_DONE);
@@ -103,6 +98,35 @@ public class UmsatzTreeSummaryExporter implements Exporter
   }
 
   /**
+   * Rendert eine einzelne Kategorie sammt Unterkategorien und stellt ihre Einnahmen, Ausgaben und den Betrag dar.
+   * @param reporter der Reporter.
+   * @param node der Knoten mit evtl vorhanden Unterkategorien und deren Einnahmen, Ausgaben und Betrag.
+   * @throws Exception
+   */
+  private void renderNode(Reporter reporter, UmsatzTreeNode node, int level) throws Exception
+  {
+    String name = (String) node.getAttribute( "name" );
+    for ( int j = 0; j < level; ++j )
+    {
+      name = "    " + name;
+    }
+    
+    PdfPCell cell = reporter.getDetailCell(name, Element.ALIGN_LEFT);
+    reporter.addColumn(cell);
+
+    reporter.addColumn( reporter.getDetailCell( (Double) node.getAttribute("einnahmen")));
+    reporter.addColumn( reporter.getDetailCell( (Double) node.getAttribute("ausgaben")));
+    reporter.addColumn( reporter.getDetailCell( (Double) node.getAttribute("betrag")));
+
+    List<UmsatzTreeNode> children = node.getSubGroups();
+    for (int i=0; i<children.size(); ++i)
+    {
+      renderNode(reporter, children.get(i), level+1);
+    }
+  }
+
+
+  /**
    * @see de.willuhn.jameica.hbci.io.IO#getIOFormats(java.lang.Class)
    */
   public IOFormat[] getIOFormats(Class objectType)
@@ -112,20 +136,20 @@ public class UmsatzTreeSummaryExporter implements Exporter
       return null;
 
     IOFormat myFormat = new IOFormat() {
-    
+
       /**
        * @see de.willuhn.jameica.hbci.io.IOFormat#getName()
        */
       public String getName()
       {
-        return UmsatzTreeSummaryExporter.this.getName();
+        return UmsatzTreeAccountingExporter.this.getName();
       }
-    
+
       public String[] getFileExtensions()
       {
         return new String[]{"pdf"};
       }
-    
+
     };
     return new IOFormat[]{myFormat};
   }
@@ -135,26 +159,13 @@ public class UmsatzTreeSummaryExporter implements Exporter
    */
   public String getName()
   {
-    return i18n.tr("PDF-Format: Summen der Hauptkategorien");
+    return i18n.tr("PDF-Format: Summen aller Kategorien mit Einnahmen und Ausgaben" );
   }
 }
 
 /*******************************************************************************
- * $Log: UmsatzTreeSummaryExporter.java,v $
- * Revision 1.4  2010/12/12 23:16:16  willuhn
+ * $Log: UmsatzTreeAccountingExporter.java,v $
+ * Revision 1.1  2010/12/12 23:16:16  willuhn
  * @N Alex' Patch mit der Auswertung "Summen aller Kategorien mit Einnahmen und Ausgaben"
- *
- * Revision 1.3  2010/03/05 15:24:53  willuhn
- * @N BUGZILLA 686
- *
- * Revision 1.2  2007/05/02 12:40:18  willuhn
- * @C UmsatzTree*-Exporter nur fuer Objekte des Typs "UmsatzTree" anbieten
- * @C Start- und End-Datum in Kontoauszug speichern und an PDF-Export via Session uebergeben
- *
- * Revision 1.1  2007/05/02 11:18:04  willuhn
- * @C PDF-Export von Umsatz-Trees in IO-API gepresst ;)
- *
- * Revision 1.1  2007/04/29 10:22:11  jost
- * Neu: PDF-Ausgabe der UmsÃ¤tze nach Kategorien
  *
  ******************************************************************************/

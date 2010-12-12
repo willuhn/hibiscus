@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTreeNode.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/03/05 15:24:53 $
+ * $Revision: 1.2 $
+ * $Date: 2010/12/12 23:16:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -41,6 +41,10 @@ public class UmsatzTreeNode implements GenericObjectNode, Comparable
   private UmsatzTreeNode parent         = null;
   private List<UmsatzTreeNode> children = new ArrayList<UmsatzTreeNode>();
   private List<Umsatz> umsaetze         = new ArrayList<Umsatz>();
+  
+  private Double betrag                 = null;
+  private Double einnahmen              = null;
+  private Double ausgaben               = null;
   
   /**
    * ct.
@@ -171,26 +175,66 @@ public class UmsatzTreeNode implements GenericObjectNode, Comparable
    
     if ("betrag".equalsIgnoreCase(arg0))
     {
-      // Rechnen wir manuell zusammen, damit der vom User eingegebene Datumsbereich
-      // uebereinstimmt. Wir koennten zwar auch typ.getUmsatz(Date,Date) aufrufen,
-      // allerdings wuerde das intern nochmal alle Umsaetze laden und haufen
-      // zusaetzliche SQL-Queries ausloesen
-      double betrag = 0.0d;
-      for (int i=0;i<this.umsaetze.size();++i)
-      {
-        Umsatz u = this.umsaetze.get(i);
-        betrag+= u.getBetrag();
-      }
-      for (int i=0;i<this.children.size();++i)
-      {
-        UmsatzTreeNode ug  = (UmsatzTreeNode) this.children.get(i);
-        Double d = (Double) ug.getAttribute("betrag");
-        betrag+= d.doubleValue();
-      }
-      return new Double(betrag);
+      calculateSums();
+      return this.betrag;
+    }
+    if ("einnahmen".equalsIgnoreCase(arg0))
+    {
+      calculateSums();
+      return this.einnahmen;
+    }
+    if ("ausgaben".equalsIgnoreCase(arg0))
+    {
+      calculateSums();
+      return this.ausgaben;
     }
     
     return this.typ == null ? null : this.typ.getAttribute(arg0);
+  }
+  
+  /**
+   * Berechnet die Summen neu.
+   * @throws RemoteException
+   */
+  private void calculateSums() throws RemoteException
+  {
+    // haben wir schon ausgerechnet
+    if (this.betrag != null && this.einnahmen != null && this.ausgaben != null)
+      return;
+    
+    // Rechnen wir manuell zusammen, damit der vom User eingegebene Datumsbereich
+    // uebereinstimmt. Wir koennten zwar auch typ.getUmsatz(Date,Date) aufrufen,
+    // allerdings wuerde das intern nochmal alle Umsaetze laden und haufen
+    // zusaetzliche SQL-Queries ausloesen
+    double betrag    = 0.0d;
+    double einnahmen = 0.0d;
+    double ausgaben  = 0.0d;
+    
+    for (int i=0;i<this.umsaetze.size();++i)
+    {
+      Umsatz u = this.umsaetze.get(i);
+      double d = u.getBetrag();
+      betrag += d;
+      if (d > 0) einnahmen += d;
+      else ausgaben += d;
+    }
+    for (int i=0;i<this.children.size();++i)
+    {
+      UmsatzTreeNode ug  = (UmsatzTreeNode) this.children.get(i);
+      
+      Double d = (Double) ug.getAttribute("betrag");
+      betrag += d.doubleValue();
+      
+      d = (Double) ug.getAttribute("einnahmen");
+      einnahmen += d.doubleValue();
+
+      d = (Double) ug.getAttribute("ausgaben");
+      ausgaben += d.doubleValue();
+    }
+    
+    this.betrag    = betrag;
+    this.einnahmen = einnahmen;
+    this.ausgaben  = ausgaben;
   }
 
   /**
@@ -269,6 +313,9 @@ public class UmsatzTreeNode implements GenericObjectNode, Comparable
 
 /*********************************************************************
  * $Log: UmsatzTreeNode.java,v $
+ * Revision 1.2  2010/12/12 23:16:16  willuhn
+ * @N Alex' Patch mit der Auswertung "Summen aller Kategorien mit Einnahmen und Ausgaben"
+ *
  * Revision 1.1  2010/03/05 15:24:53  willuhn
  * @N BUGZILLA 686
  *

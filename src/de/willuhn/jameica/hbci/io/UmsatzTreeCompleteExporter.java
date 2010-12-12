@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/UmsatzTreeCompleteExporter.java,v $
- * $Revision: 1.4 $
- * $Date: 2010/03/05 15:24:53 $
+ * $Revision: 1.5 $
+ * $Date: 2010/12/12 23:16:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -191,7 +191,7 @@ public class UmsatzTreeCompleteExporter implements Exporter
        */
       public String getName()
       {
-        return i18n.tr("PDF-Format: Kategorien mit Umsätzen");
+        return UmsatzTreeCompleteExporter.this.getName();
       }
     
       public String[] getFileExtensions()
@@ -208,13 +208,16 @@ public class UmsatzTreeCompleteExporter implements Exporter
    */
   public String getName()
   {
-    return i18n.tr("PDF-Format: Kategorien mit Umsätzen");
+    return i18n.tr("PDF-Format: Umsätze der Kategorien");
   }
 
 }
 
 /*******************************************************************************
  * $Log: UmsatzTreeCompleteExporter.java,v $
+ * Revision 1.5  2010/12/12 23:16:16  willuhn
+ * @N Alex' Patch mit der Auswertung "Summen aller Kategorien mit Einnahmen und Ausgaben"
+ *
  * Revision 1.4  2010/03/05 15:24:53  willuhn
  * @N BUGZILLA 686
  *
