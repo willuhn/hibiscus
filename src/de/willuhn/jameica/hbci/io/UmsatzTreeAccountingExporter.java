@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/UmsatzTreeAccountingExporter.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/12/12 23:16:16 $
+ * $Revision: 1.2 $
+ * $Date: 2010/12/12 23:16:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -159,13 +159,16 @@ public class UmsatzTreeAccountingExporter implements Exporter
    */
   public String getName()
   {
-    return i18n.tr("PDF-Format: Summen aller Kategorien mit Einnahmen und Ausgaben" );
+    return i18n.tr("PDF-Format: Summen aller Kategorien mit Einnahmen und Ausgaben");
   }
 }
 
 /*******************************************************************************
  * $Log: UmsatzTreeAccountingExporter.java,v $
- * Revision 1.1  2010/12/12 23:16:16  willuhn
+ * Revision 1.2  2010/12/12 23:16:24  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.1  2010-12-12 23:16:16  willuhn
  * @N Alex' Patch mit der Auswertung "Summen aller Kategorien mit Einnahmen und Ausgaben"
  *
  ******************************************************************************/
