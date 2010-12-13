@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractSammelTransferControl.java,v $
- * $Revision: 1.10 $
- * $Date: 2009/10/20 23:12:58 $
+ * $Revision: 1.11 $
+ * $Date: 2010/12/13 11:01:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,20 +17,24 @@ import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
-import de.willuhn.jameica.gui.Part;
+import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.TextInput;
+import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
+import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.hbci.rmi.Terminable;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -39,8 +43,7 @@ import de.willuhn.util.I18N;
  */
 public abstract class AbstractSammelTransferControl extends AbstractControl
 {
-
-  private I18N i18n                     	= null;
+  final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   private Input kontoAuswahl				      = null;
   private Input name                    	= null;
@@ -54,7 +57,6 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
   public AbstractSammelTransferControl(AbstractView view)
   {
     super(view);
-    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
   /**
@@ -76,7 +78,7 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
    * @return Liste der Buchungen.
    * @throws RemoteException
    */
-  public abstract Part getBuchungen() throws RemoteException;
+  public abstract TablePart getBuchungen() throws RemoteException;
 
   /**
    * Liefert ein Auswahlfeld fuer das Konto.
@@ -180,11 +182,31 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
   }
 
   /**
-   * Speichert den Sammel-Auftrag.
-   * @return true, wenn das Speichern erfolgreich war.
+   * Speichert den Auftrag.
+   * @return true, wenn der Auftrag erfolgreich gespeichert werden konnte.
    */
-  public abstract boolean handleStore();
-  
+  public synchronized boolean handleStore()
+  {
+    try {
+      getTransfer().setKonto((Konto)getKontoAuswahl().getValue());
+      getTransfer().setBezeichnung((String)getName().getValue());
+      getTransfer().setTermin((Date)getTermin().getValue());
+      getTransfer().store();
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Sammel-Auftrag gespeichert"),StatusBarMessage.TYPE_SUCCESS));
+      return true;
+    }
+    catch (ApplicationException e2)
+    {
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(e2.getMessage(),StatusBarMessage.TYPE_ERROR));
+    }
+    catch (RemoteException e)
+    {
+      Logger.error("error while storing sammeltransfer",e);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Speichern des Sammel-Auftrages"),StatusBarMessage.TYPE_ERROR));
+    }
+    return false;
+  }
+
   /**
    * Listener, der die Auswahl des Kontos ueberwacht und die Waehrungsbezeichnung
    * hinter dem Betrag abhaengig vom ausgewaehlten Konto anpasst.
@@ -214,11 +236,53 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
     }
   }
 
+  /**
+   * Ueberschreiben wir, damit das Item nur dann aktiv ist, wenn der
+   * Auftrag noch nicht ausgefuehrt wurde.
+   */
+  class NotActiveMenuItem extends ContextMenuItem
+  {
+    
+    /**
+     * ct.
+     * @param text anzuzeigender Text.
+     * @param a auszufuehrende Action.
+     * @param icon das Icon des Menueintrages.
+     */
+    public NotActiveMenuItem(String text, Action a, String icon)
+    {
+      super(text, a, icon);
+    }
+    
+    /**
+     * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
+     */
+    public boolean isEnabledFor(Object o)
+    {
+      if (o == null)
+        return false;
+      try
+      {
+        SammelTransferBuchung u = (SammelTransferBuchung) o;
+        return !u.getSammelTransfer().ausgefuehrt();
+      }
+      catch (Exception e)
+      {
+        Logger.error("error while enable check in menu item",e);
+      }
+      return false;
+    }
+  }
+
+
 
 }
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferControl.java,v $
+ * Revision 1.11  2010/12/13 11:01:08  willuhn
+ * @B Wenn man einen Sammelauftrag in der Detailansicht loeschte, konnte man anschliessend noch doppelt auf die zugeordneten Buchungen klicken und eine ObjectNotFoundException ausloesen
+ *
  * Revision 1.10  2009/10/20 23:12:58  willuhn
  * @N Support fuer SEPA-Ueberweisungen
  * @N Konten um IBAN und BIC erweitert
@@ -231,25 +295,4 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
  *
  * Revision 1.7  2009/01/04 16:18:22  willuhn
  * @N BUGZILLA 404 - Kontoauswahl via SelectBox
- *
- * Revision 1.6  2006/12/28 15:38:43  willuhn
- * @N Farbige Pflichtfelder
- *
- * Revision 1.5  2006/10/31 23:21:46  willuhn
- * *** empty log message ***
- *
- * Revision 1.4  2006/10/10 22:55:10  willuhn
- * @N Alle Datumseingabe-Felder auf DateInput umgestellt
- *
- * Revision 1.3  2006/10/09 23:56:13  willuhn
- * @N T O D O-Tags
- *
- * Revision 1.2  2006/06/08 22:29:47  willuhn
- * @N DTAUS-Import fuer Sammel-Lastschriften und Sammel-Ueberweisungen
- * @B Eine Reihe kleinerer Bugfixes in Sammeltransfers
- * @B Bug 197 besser geloest
- *
- * Revision 1.1  2005/09/30 00:08:51  willuhn
- * @N SammelUeberweisungen (merged with SammelLastschrift)
- *
 *****************************************************************************/

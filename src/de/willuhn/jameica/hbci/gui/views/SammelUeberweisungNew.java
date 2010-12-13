@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/SammelUeberweisungNew.java,v $
- * $Revision: 1.11 $
- * $Date: 2009/05/08 13:58:30 $
+ * $Revision: 1.12 $
+ * $Date: 2010/12/13 11:01:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,6 +11,8 @@
  *
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.views;
+
+import java.rmi.RemoteException;
 
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
@@ -28,6 +30,7 @@ import de.willuhn.jameica.hbci.gui.controller.SammelUeberweisungControl;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -63,7 +66,21 @@ public class SammelUeberweisungNew extends AbstractView {
 
     ButtonArea buttons = new ButtonArea(getParent(),5);
     buttons.addButton(new Back(transfer.ausgefuehrt()));
-    buttons.addButton(i18n.tr("Löschen"),new DBObjectDelete(),control.getTransfer(),false,"user-trash-full.png");
+    buttons.addButton(i18n.tr("Löschen"),new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        new DBObjectDelete().handleAction(context);
+        try
+        {
+          // Buchungen aus der Liste entfernen
+          control.getBuchungen().removeAll();
+        }
+        catch (RemoteException re)
+        {
+          Logger.error("unable to remove bookings",re);
+        }
+      }
+    },control.getTransfer(),false,"user-trash-full.png");
     
     Button add = new Button(i18n.tr("Neue Buchungen hinzufügen"), new Action() {
       public void handleAction(Object context) throws ApplicationException {
@@ -98,6 +115,9 @@ public class SammelUeberweisungNew extends AbstractView {
 
 /**********************************************************************
  * $Log: SammelUeberweisungNew.java,v $
+ * Revision 1.12  2010/12/13 11:01:08  willuhn
+ * @B Wenn man einen Sammelauftrag in der Detailansicht loeschte, konnte man anschliessend noch doppelt auf die zugeordneten Buchungen klicken und eine ObjectNotFoundException ausloesen
+ *
  * Revision 1.11  2009/05/08 13:58:30  willuhn
  * @N Icons in allen Menus und auf allen Buttons
  * @N Fuer Umsatz-Kategorien koennen nun benutzerdefinierte Farben vergeben werden

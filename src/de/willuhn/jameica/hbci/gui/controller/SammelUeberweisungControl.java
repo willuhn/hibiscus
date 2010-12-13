@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SammelUeberweisungControl.java,v $
- * $Revision: 1.6 $
- * $Date: 2009/11/26 12:00:21 $
+ * $Revision: 1.7 $
+ * $Date: 2010/12/13 11:01:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -10,12 +10,9 @@
 package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
-import java.util.Date;
 
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
-import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
@@ -27,15 +24,11 @@ import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungBuchungNew;
 import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungNew;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungNew;
 import de.willuhn.jameica.hbci.gui.parts.SammelTransferBuchungList;
-import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
-import de.willuhn.jameica.hbci.rmi.SammelUeberweisungBuchung;
-import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
-import de.willuhn.util.I18N;
 
 /**
  * Implementierung des Controllers fuer den Dialog "Liste der Sammellastschriften".
@@ -43,13 +36,9 @@ import de.willuhn.util.I18N;
  */
 public class SammelUeberweisungControl extends AbstractSammelTransferControl
 {
-
-
-  private I18N i18n                     	= null;
-
-  private SammelTransfer transfer         = null;
-
-  private TablePart table               	= null;
+  private SammelTransfer transfer = null;
+  private TablePart table         = null;
+  private TablePart buchungen     = null;
 
   /**
    * ct.
@@ -58,7 +47,6 @@ public class SammelUeberweisungControl extends AbstractSammelTransferControl
   public SammelUeberweisungControl(AbstractView view)
   {
     super(view);
-    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
   /**
@@ -92,8 +80,11 @@ public class SammelUeberweisungControl extends AbstractSammelTransferControl
   /**
    * @see de.willuhn.jameica.hbci.gui.controller.AbstractSammelTransferControl#getBuchungen()
    */
-  public Part getBuchungen() throws RemoteException
+  public TablePart getBuchungen() throws RemoteException
   {
+    if (this.buchungen != null)
+      return this.buchungen;
+    
     Action a = new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -101,7 +92,7 @@ public class SammelUeberweisungControl extends AbstractSammelTransferControl
       }
     };
     
-    TablePart buchungen = new SammelTransferBuchungList(getTransfer(),a);
+    this.buchungen = new SammelTransferBuchungList(getTransfer(),a);
 
     ContextMenu ctx = new ContextMenu();
     ctx.addItem(new CheckedContextMenuItem(i18n.tr("Buchung öffnen"), new SammelUeberweisungBuchungNew(),"document-open.png"));
@@ -160,78 +151,16 @@ public class SammelUeberweisungControl extends AbstractSammelTransferControl
     });
     ctx.addItem(ContextMenuItem.SEPARATOR);
     ctx.addItem(new CheckedContextMenuItem(i18n.tr("In Einzelüberweisung duplizieren"), new UeberweisungNew(),"stock_next.png"));
-    buchungen.setContextMenu(ctx);
-    return buchungen;
+    this.buchungen.setContextMenu(ctx);
+    return this.buchungen;
   }
-
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractSammelTransferControl#handleStore()
-   */
-  public synchronized boolean handleStore()
-  {
-    try {
-      getTransfer().setKonto((Konto)getKontoAuswahl().getValue());
-      getTransfer().setBezeichnung((String)getName().getValue());
-      getTransfer().setTermin((Date)getTermin().getValue());
-      getTransfer().store();
-      GUI.getStatusBar().setSuccessText(i18n.tr("Sammel-Überweisung gespeichert"));
-      return true;
-    }
-    catch (ApplicationException e2)
-    {
-      GUI.getView().setErrorText(e2.getMessage());
-    }
-    catch (RemoteException e)
-    {
-      Logger.error("error while storing sammelueberweisung",e);
-      GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern der Sammel-Überweisung"));
-    }
-    return false;
-  }
-
-
-  /**
-   * Ueberschreiben wir, damit das Item nur dann aktiv ist, wenn die
-   * Ueberweisung noch nicht ausgefuehrt wurde.
-   */
-  private class NotActiveMenuItem extends ContextMenuItem
-  {
-    
-    /**
-     * ct.
-     * @param text anzuzeigender Text.
-     * @param a auszufuehrende Action.
-     * @param icon Icon des Menueintrages.
-     */
-    public NotActiveMenuItem(String text, Action a, String icon)
-    {
-      super(text, a, icon);
-    }
-
-    /**
-     * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
-     */
-    public boolean isEnabledFor(Object o)
-    {
-      if (o == null)
-        return false;
-      try
-      {
-        SammelUeberweisungBuchung u = (SammelUeberweisungBuchung) o;
-        return !u.getSammelTransfer().ausgefuehrt();
-      }
-      catch (Exception e)
-      {
-        Logger.error("error while enable check in menu item",e);
-      }
-      return false;
-    }
-  }
-
 }
 
 /*****************************************************************************
  * $Log: SammelUeberweisungControl.java,v $
+ * Revision 1.7  2010/12/13 11:01:08  willuhn
+ * @B Wenn man einen Sammelauftrag in der Detailansicht loeschte, konnte man anschliessend noch doppelt auf die zugeordneten Buchungen klicken und eine ObjectNotFoundException ausloesen
+ *
  * Revision 1.6  2009/11/26 12:00:21  willuhn
  * @N Buchungen aus Sammelauftraegen in Einzelauftraege duplizieren
  *
@@ -241,17 +170,4 @@ public class SammelUeberweisungControl extends AbstractSammelTransferControl
  *
  * Revision 1.4  2009/05/06 23:11:23  willuhn
  * @N Mehr Icons auf Buttons
- *
- * Revision 1.3  2006/08/07 14:31:59  willuhn
- * @B misc bugfixing
- * @C Redesign des DTAUS-Imports fuer Sammeltransfers
- *
- * Revision 1.2  2006/06/08 22:29:47  willuhn
- * @N DTAUS-Import fuer Sammel-Lastschriften und Sammel-Ueberweisungen
- * @B Eine Reihe kleinerer Bugfixes in Sammeltransfers
- * @B Bug 197 besser geloest
- *
- * Revision 1.1  2005/09/30 00:08:51  willuhn
- * @N SammelUeberweisungen (merged with SammelLastschrift)
- *
 *****************************************************************************/
