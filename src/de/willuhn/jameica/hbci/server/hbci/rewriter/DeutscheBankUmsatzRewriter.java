@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/rewriter/DeutscheBankUmsatzRewriter.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/11/18 10:22:08 $
+ * $Revision: 1.1.2.1 $
+ * $Date: 2010/12/14 14:20:54 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -133,7 +133,10 @@ public class DeutscheBankUmsatzRewriter implements UmsatzRewriter
 
 /**********************************************************************
  * $Log: DeutscheBankUmsatzRewriter.java,v $
- * Revision 1.2  2010/11/18 10:22:08  willuhn
+ * Revision 1.1.2.1  2010/12/14 14:20:54  willuhn
+ * @N BACKPORT 0032
+ *
+ * Revision 1.2  2010-11-18 10:22:08  willuhn
  * @N Siehe Mail von Axel vom 18.11.2010
  *
  * Revision 1.1  2010-08-02 09:02:23  willuhn
