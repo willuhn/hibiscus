@@ -1,50 +1,61 @@
+2011-12-14 Version 1.12.1
+
+  * BUG: 0023
+  * CHG: 0024
+  * BUG: 0028
+  * BUG: 0029
+  * BUG: 0030
+  * BUG: 0031
+  * BUG: 0032
+  * NEW: 0033
+
 2011-??-?? Version 1.13.0
 
-  * CHG: Umstellung von Birt auf SWTChart
-  * NEW: Kalender-View mit Terminen von Zahlungsaufträgen
-  * BUG: Beim Löschen eines Sammelauftrages in der Detail-View wurden die
-         enthaltenen Buchungen nicht sofort aus der Liste entfernt, sodass man
-         eine ObjectNotFoundException durch Doppelklick auf eine Buchung
-         provozieren konnte
-  * CHG: Contextmenu-Eintrage fuer neue Auftraege im Konto nur aktivieren, wenn
-         ein einzelnes Konto selektiert ist. Die Menueintraege machen sonst keinen Sinn
-  * NEW: Neuer Filter "Umsatz-Kategorie" in Auswertung "Kontoauszuege"
-  * NEW: In der Auswertung "Spar-Quote" kann nun ein Start-Datum angegeben werden
-  * NEW: Neuer PDF-Export "PDF-Format: Summen aller Kategorien mit Einnahmen und Ausgaben"
-         in Auswertung "Umsaetze nach Kategorien"
-  * BUG: HBCI-Version wurde nicht pro Chipkarten-Config gespeichert sondern galt
-         fuer alle Kartenleser-Konfigurationen
-  * BUG: Beim Duplizieren eines Sammel-Auftrages wurde der Termin nicht mit dupliziert
-  * BUG: Beim Duplizieren einer Lastschrift wurde der Termin nicht mit dupliziert
-  * BUG: Cache wurde beim Anlegen/Aendern von Umsatz-Kategorien nicht korrekt
-         aktualisiert -> Dynamische Umsatz-Zuordnung stimmte erst nach 10 Sekunden wieder.
-  * BUG: Turnus: Das Datum der ersten Zahlung darf nicht ohne Beruecksichtigung des
-         Turnus verwendet werden. Beispiel: Erste Zahlung 22.11, Valuta 23.11, Turnus
-         monatlich am 1., dann ist die erste Zahlung der 01.12. und nicht der 23.11.
-         (nur Anzeigefehler)
-  * NEW: BLZ "60070070" zu DeutscheBankUmsatzRewriter hinzugefuegt
+  * CHG: 0021 Umstellung von Birt auf SWTChart
+  * NEW: 0022 Kalender-View mit Terminen von Zahlungsaufträgen
+  * BUG: 0023 Beim Löschen eines Sammelauftrages in der Detail-View wurden die
+              enthaltenen Buchungen nicht sofort aus der Liste entfernt, sodass man
+              eine ObjectNotFoundException durch Doppelklick auf eine Buchung
+              provozieren konnte
+  * CHG: 0024 Contextmenu-Eintrage fuer neue Auftraege im Konto nur aktivieren, wenn
+              ein einzelnes Konto selektiert ist. Die Menueintraege machen sonst keinen Sinn
+  * NEW: 0025 Neuer Filter "Umsatz-Kategorie" in Auswertung "Kontoauszuege"
+  * NEW: 0026 In der Auswertung "Spar-Quote" kann nun ein Start-Datum angegeben werden
+  * NEW: 0027 Neuer PDF-Export "PDF-Format: Summen aller Kategorien mit Einnahmen und Ausgaben"
+              in Auswertung "Umsaetze nach Kategorien"
+  * BUG: 0028 HBCI-Version wurde nicht pro Chipkarten-Config gespeichert sondern galt
+              fuer alle Kartenleser-Konfigurationen
+  * BUG: 0029 Beim Duplizieren eines Sammel-Auftrages wurde der Termin nicht mit dupliziert
+  * BUG: 0030 Beim Duplizieren einer Lastschrift wurde der Termin nicht mit dupliziert
+  * BUG: 0031 Cache wurde beim Anlegen/Aendern von Umsatz-Kategorien nicht korrekt
+              aktualisiert -> Dynamische Umsatz-Zuordnung stimmte erst nach 10 Sekunden wieder.
+  * BUG: 0032 Turnus: Das Datum der ersten Zahlung darf nicht ohne Beruecksichtigung des
+              Turnus verwendet werden. Beispiel: Erste Zahlung 22.11, Valuta 23.11, Turnus
+              monatlich am 1., dann ist die erste Zahlung der 01.12. und nicht der 23.11.
+              (nur Anzeigefehler)
+  * NEW: 0033 BLZ "60070070" zu DeutscheBankUmsatzRewriter hinzugefuegt
 
 2010-11-10 Version 1.12.0
 
-  * NEW: Support für Offline-Konten (Bug 586)
-  * NEW: Bessere Unterstützung für die Kontoauszüge von Netbank, Spardabank und
-         Deutsche Bank (Bug 244, 887)
-  * NEW: Anzeige des "verfügbaren Betrages" falls die Bank das unterstützt (Bug 530)
-  * NEW: Unterstützung für das Ändern der Benutzer-Kennung und Server-Adresse
-         auf Chipkarten
-  * NEW: Abruf von Paypal-Kontoauszügen via Scripting-Plugin
-  * NEW: Abruf von DKB-VISA-Kontoauszügen via Scripting-Plugin
-  * NEW: Neue integrierte Spenden-Funktion
-  * NEW: Unterstützung für mehrere parallele Kartenleser und Chipkarten (Bug 391)
-  * NEW: EXE-Launcher für Windows
-  * NEW: Kategorien im Adressbuch (Bug 83)
-  * NEW: Passwörter von Schlüsseldisketten sind jetzt änderbar (Bug 312)
-  * NEW: Chart "Saldo-Verlauf" überarbeitet (Bug 775)
-  * NEW: Anzeige des Gesamt-Saldos über alle Konten (Bug 886)
-  * NEW: Datums-Eingaben ohne Punkt zulässig (Bug 865)
-  * NEW: Netbook-Mode
-  * NEW: Textschlüssel in Daueraufträgen
-  * NEW: Import von Buchungen aus Moneyplex
-  * CHG: Doppler-Prüfung beim Umsatz-Abruf überarbeitet
-  * BUG: Berücksichtigung von "Null-Umsätzen" (Bug 804)
-  * DEL: Unterstützung für McKoi-Datenbank entfernt.
+  * NEW: 0001 Support für Offline-Konten (Bug 586)
+  * NEW: 0002 Bessere Unterstützung für die Kontoauszüge von Netbank, Spardabank und
+              Deutsche Bank (Bug 244, 887)
+  * NEW: 0003 Anzeige des "verfügbaren Betrages" falls die Bank das unterstützt (Bug 530)
+  * NEW: 0004 Unterstützung für das Ändern der Benutzer-Kennung und Server-Adresse
+              auf Chipkarten
+  * NEW: 0005 Abruf von Paypal-Kontoauszügen via Scripting-Plugin
+  * NEW: 0006 Abruf von DKB-VISA-Kontoauszügen via Scripting-Plugin
+  * NEW: 0007 Neue integrierte Spenden-Funktion
+  * NEW: 0008 Unterstützung für mehrere parallele Kartenleser und Chipkarten (Bug 391)
+  * NEW: 0009 EXE-Launcher für Windows
+  * NEW: 0010 Kategorien im Adressbuch (Bug 83)
+  * NEW: 0011 Passwörter von Schlüsseldisketten sind jetzt änderbar (Bug 312)
+  * NEW: 0012 Chart "Saldo-Verlauf" überarbeitet (Bug 775)
+  * NEW: 0013 Anzeige des Gesamt-Saldos über alle Konten (Bug 886)
+  * NEW: 0014 Datums-Eingaben ohne Punkt zulässig (Bug 865)
+  * NEW: 0015 Netbook-Mode
+  * NEW: 0016 Textschlüssel in Daueraufträgen
+  * NEW: 0017 Import von Buchungen aus Moneyplex
+  * CHG: 0018 Doppler-Prüfung beim Umsatz-Abruf überarbeitet
+  * BUG: 0019 Berücksichtigung von "Null-Umsätzen" (Bug 804)
+  * DEL: 0020 Unterstützung für McKoi-Datenbank entfernt.
