@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/TurnusHelper.java,v $
- * $Revision: 1.16 $
- * $Date: 2010/11/23 11:39:43 $
+ * $Revision: 1.15.2.1 $
+ * $Date: 2010/12/14 14:20:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -33,7 +33,7 @@ import de.willuhn.util.I18N;
 public class TurnusHelper
 {
 
-	private static String[] wochentage = null;
+  private static String[] wochentage = null;
 
   // Hilfsmapping, um die Tages-Konstanten aus java.util.Calendar in
   // integer von 1 (montag) - 7 (sonntag) umrechnen zu koennen
@@ -166,36 +166,36 @@ public class TurnusHelper
     return null; // kein Datum ermittelbar
   }
 
-	/**
-	 * Prueft, ob es in der lokalen Datenbank einen Zahlungsturnus gibt,
-	 * der den Eigenschaften des uebergebenen Dauerauftrags aus HBCI4Java
-	 * entspricht.
+  /**
+   * Prueft, ob es in der lokalen Datenbank einen Zahlungsturnus gibt,
+   * der den Eigenschaften des uebergebenen Dauerauftrags aus HBCI4Java
+   * entspricht.
    * @param d der zu pruefende Dauerauftrag.
    * @return das Turnus-Objekt, wenn eines gefunden wurde oder <code>null</code>.
    * @throws RemoteException
    */
   public static Turnus findByDauerAuftrag(GVRDauerList.Dauer d) throws RemoteException
-	{
-		int ze = Turnus.ZEITEINHEIT_MONATLICH;
-		if ("W".equalsIgnoreCase(d.timeunit)) ze = Turnus.ZEITEINHEIT_WOECHENTLICH;
+  {
+    int ze = Turnus.ZEITEINHEIT_MONATLICH;
+    if ("W".equalsIgnoreCase(d.timeunit)) ze = Turnus.ZEITEINHEIT_WOECHENTLICH;
 
-		DBIterator list = Settings.getDBService().createList(Turnus.class);
-		list.addFilter("zeiteinheit = " + ze);
-		list.addFilter("intervall = " + d.turnus);
-		list.addFilter("tag = " + d.execday);
-		if (list.hasNext())
-			return (Turnus) list.next();
+    DBIterator list = Settings.getDBService().createList(Turnus.class);
+    list.addFilter("zeiteinheit = " + ze);
+    list.addFilter("intervall = " + d.turnus);
+    list.addFilter("tag = " + d.execday);
+    if (list.hasNext())
+      return (Turnus) list.next();
 
-		return null;
-	}
+    return null;
+  }
 
   /**
-	 * Erstellt einen neuen Turnus mit den Eigenschaften des uebergebenen
-	 * Dauerauftrags aus HBCI4Java und speichert ihn auch gleich in der Datenbank.
-	 * <b>Wichtig:</b> Die Funktion checkt bereits intern mittels
-	 * <code>findByDauerAuftrag</code> ob bereits einer existiert und
-	 * liefert ggf diesen zurueck. Der Aufrufer muss also nicht selbst pruefen,
-	 * ob einer existiert.
+   * Erstellt einen neuen Turnus mit den Eigenschaften des uebergebenen
+   * Dauerauftrags aus HBCI4Java und speichert ihn auch gleich in der Datenbank.
+   * <b>Wichtig:</b> Die Funktion checkt bereits intern mittels
+   * <code>findByDauerAuftrag</code> ob bereits einer existiert und
+   * liefert ggf diesen zurueck. Der Aufrufer muss also nicht selbst pruefen,
+   * ob einer existiert.
    * @param d der zu pruefende Dauerauftrag.
    * @return das Turnus-Objekt. Es wird in jedem Fall ein solches zurueckgegeben.
    * Das ist entweder ein neues oder ein existierendes.
@@ -203,64 +203,64 @@ public class TurnusHelper
    * @throws ApplicationException
    */
   public static Turnus createByDauerAuftrag(GVRDauerList.Dauer d) throws RemoteException, ApplicationException
-	{
-		Turnus turnus = findByDauerAuftrag(d);
-		if (turnus != null)
-			return turnus; // wir haben schon einen, den nehmen wir.
+  {
+    Turnus turnus = findByDauerAuftrag(d);
+    if (turnus != null)
+      return turnus; // wir haben schon einen, den nehmen wir.
 
-		int ze = Turnus.ZEITEINHEIT_MONATLICH;
-		if ("W".equalsIgnoreCase(d.timeunit)) ze = Turnus.ZEITEINHEIT_WOECHENTLICH;
-		
-		// Keiner da, dann erstellen wir ihn.
-		turnus = (Turnus) Settings.getDBService().createObject(Turnus.class,null);
-		turnus.setIntervall(d.turnus);
-		turnus.setTag(d.execday);
-		turnus.setZeiteinheit(ze);
-		turnus.store();
-		return turnus;
-	}
+    int ze = Turnus.ZEITEINHEIT_MONATLICH;
+    if ("W".equalsIgnoreCase(d.timeunit)) ze = Turnus.ZEITEINHEIT_WOECHENTLICH;
+    
+    // Keiner da, dann erstellen wir ihn.
+    turnus = (Turnus) Settings.getDBService().createObject(Turnus.class,null);
+    turnus.setIntervall(d.turnus);
+    turnus.setTag(d.execday);
+    turnus.setZeiteinheit(ze);
+    turnus.store();
+    return turnus;
+  }
 
-	/**
-	 * Kleine Hilfs-Funktion, die sich eine passende Bezeichnung fuer einen Turnus selbst ausdenkt ;).
+  /**
+   * Kleine Hilfs-Funktion, die sich eine passende Bezeichnung fuer einen Turnus selbst ausdenkt ;).
    * @param turnus der Turnus, fuer den eine Bezeichnung erstellt werden soll.
    * @return die Bezeichnung.
    * @throws RemoteException
    */
   public static String createBezeichnung(Turnus turnus) throws RemoteException
-	{
-		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  {
+    I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-		int iv = turnus.getIntervall();
-		int ze = turnus.getZeiteinheit();
-		int ta = turnus.getTag();
+    int iv = turnus.getIntervall();
+    int ze = turnus.getZeiteinheit();
+    int ta = turnus.getTag();
 
-		String s = null;
+    String s = null;
 
-		// Einfacher Zahlungsplan
-		if (iv == 1 && ze == Turnus.ZEITEINHEIT_MONATLICH)
-			s = i18n.tr("Monatlich");
-		else if (iv == 1 && ze == Turnus.ZEITEINHEIT_WOECHENTLICH)
-			s = i18n.tr("Wöchentlich");
+    // Einfacher Zahlungsplan
+    if (iv == 1 && ze == Turnus.ZEITEINHEIT_MONATLICH)
+      s = i18n.tr("Monatlich");
+    else if (iv == 1 && ze == Turnus.ZEITEINHEIT_WOECHENTLICH)
+      s = i18n.tr("Wöchentlich");
 
-		// komplexer Zahlungsplan
-		if (iv > 1 && ze == Turnus.ZEITEINHEIT_MONATLICH)
-			s = i18n.tr("Alle {0} Monate","" + iv);
-		else if (iv > 1 && ze == Turnus.ZEITEINHEIT_WOECHENTLICH)
-			s = i18n.tr("Alle {0} Wochen","" + iv);
+    // komplexer Zahlungsplan
+    if (iv > 1 && ze == Turnus.ZEITEINHEIT_MONATLICH)
+      s = i18n.tr("Alle {0} Monate","" + iv);
+    else if (iv > 1 && ze == Turnus.ZEITEINHEIT_WOECHENTLICH)
+      s = i18n.tr("Alle {0} Wochen","" + iv);
 
-		// Standardfaelle
-		if (iv == 3 && ze == Turnus.ZEITEINHEIT_MONATLICH)
-			s = i18n.tr("Vierteljährlich");
-		if (iv == 6 && ze == Turnus.ZEITEINHEIT_MONATLICH)
-			s = i18n.tr("Halbjährlich");
-		if (iv == 12 && ze == Turnus.ZEITEINHEIT_MONATLICH)
-			s = i18n.tr("Jährlich");
+    // Standardfaelle
+    if (iv == 3 && ze == Turnus.ZEITEINHEIT_MONATLICH)
+      s = i18n.tr("Vierteljährlich");
+    if (iv == 6 && ze == Turnus.ZEITEINHEIT_MONATLICH)
+      s = i18n.tr("Halbjährlich");
+    if (iv == 12 && ze == Turnus.ZEITEINHEIT_MONATLICH)
+      s = i18n.tr("Jährlich");
 
 
-		// Zahltag anhaengen
-		if (ze == Turnus.ZEITEINHEIT_WOECHENTLICH)
-			s+= ", " + getWochentag(ta);
-		else if (ze == Turnus.ZEITEINHEIT_MONATLICH)
+    // Zahltag anhaengen
+    if (ze == Turnus.ZEITEINHEIT_WOECHENTLICH)
+      s+= ", " + getWochentag(ta);
+    else if (ze == Turnus.ZEITEINHEIT_MONATLICH)
     {
       // BUGZILLA #49 http://www.willuhn.de/bugzilla/show_bug.cgi?id=49
       if (ta == HBCIProperties.HBCI_LAST_OF_MONTH)
@@ -269,14 +269,17 @@ public class TurnusHelper
         s+= ", " + i18n.tr("am {0}. des Monats","" + ta);
     }
 
-		return s;
-	}
+    return s;
+  }
 }
 
 
 /**********************************************************************
  * $Log: TurnusHelper.java,v $
- * Revision 1.16  2010/11/23 11:39:43  willuhn
+ * Revision 1.15.2.1  2010/12/14 14:20:43  willuhn
+ * @B BACKPORT 0031
+ *
+ * Revision 1.16  2010-11-23 11:39:43  willuhn
  * @B Das Datum der ersten Zahlung darf nicht ohne Beruecksichtigung des Turnus verwendet werden. Beispiel: Erste Zahlung 22.11, Valuta 23.11, Turnus monatlich am 1., dann ist die erste Zahlung der 01.12. und nicht der 23.11.
  *
  * Revision 1.15  2009/08/26 21:23:46  willuhn
