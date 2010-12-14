@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractSammelTransferControl.java,v $
- * $Revision: 1.11 $
- * $Date: 2010/12/13 11:01:08 $
+ * $Revision: 1.10.2.1 $
+ * $Date: 2010/12/14 14:19:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -45,9 +45,9 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
 {
   final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  private Input kontoAuswahl				      = null;
-  private Input name                    	= null;
-  private DateInput termin              	= null;
+  private Input kontoAuswahl              = null;
+  private Input name                      = null;
+  private DateInput termin                = null;
   private Input summe                     = null;
 
   /**
@@ -280,7 +280,10 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferControl.java,v $
- * Revision 1.11  2010/12/13 11:01:08  willuhn
+ * Revision 1.10.2.1  2010/12/14 14:19:09  willuhn
+ * @B BACKPORT 0023
+ *
+ * Revision 1.11  2010-12-13 11:01:08  willuhn
  * @B Wenn man einen Sammelauftrag in der Detailansicht loeschte, konnte man anschliessend noch doppelt auf die zugeordneten Buchungen klicken und eine ObjectNotFoundException ausloesen
  *
  * Revision 1.10  2009/10/20 23:12:58  willuhn

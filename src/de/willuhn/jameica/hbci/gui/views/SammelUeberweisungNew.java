@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/SammelUeberweisungNew.java,v $
- * $Revision: 1.12 $
- * $Date: 2010/12/13 11:01:08 $
+ * $Revision: 1.11.2.1 $
+ * $Date: 2010/12/14 14:19:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -44,25 +44,25 @@ public class SammelUeberweisungNew extends AbstractView {
    */
   public void bind() throws Exception {
 
-		final SammelUeberweisungControl control = new SammelUeberweisungControl(this);
+    final SammelUeberweisungControl control = new SammelUeberweisungControl(this);
     SammelTransfer transfer = control.getTransfer();
 
-		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+    I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-		GUI.getView().setTitle(i18n.tr("Sammel-Überweisung bearbeiten"));
-		
-		LabelGroup group = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
+    GUI.getView().setTitle(i18n.tr("Sammel-Überweisung bearbeiten"));
+    
+    LabelGroup group = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
     group.addLabelPair(i18n.tr("Zu belastendes Konto"),control.getKontoAuswahl());
     group.addLabelPair(i18n.tr("Bezeichnung"),control.getName());
     group.addLabelPair(i18n.tr("Termin"),control.getTermin());
-		
-		group.addSeparator();
+    
+    group.addSeparator();
     group.addLabelPair(i18n.tr("Summe der Buchungen"),control.getSumme());
 
     new Headline(getParent(),i18n.tr("Enthaltene Buchungen"));
     control.getBuchungen().paint(getParent());
 
-		final SammelUeberweisung l = (SammelUeberweisung) control.getTransfer();
+    final SammelUeberweisung l = (SammelUeberweisung) control.getTransfer();
 
     ButtonArea buttons = new ButtonArea(getParent(),5);
     buttons.addButton(new Back(transfer.ausgefuehrt()));
@@ -90,12 +90,12 @@ public class SammelUeberweisungNew extends AbstractView {
     },null,false,"text-x-generic.png");
     add.setEnabled(!transfer.ausgefuehrt());
     
-		Button execute = new Button(i18n.tr("Jetzt ausführen..."), new Action() {
-			public void handleAction(Object context) throws ApplicationException {
+    Button execute = new Button(i18n.tr("Jetzt ausführen..."), new Action() {
+      public void handleAction(Object context) throws ApplicationException {
         if (control.handleStore())
-  				new SammelUeberweisungExecute().handleAction(l);
-			}
-		},null,false,"emblem-important.png");
+          new SammelUeberweisungExecute().handleAction(l);
+      }
+    },null,false,"emblem-important.png");
     execute.setEnabled(!transfer.ausgefuehrt());
     
     Button store = new Button(i18n.tr("Speichern"),new Action() {
@@ -115,7 +115,10 @@ public class SammelUeberweisungNew extends AbstractView {
 
 /**********************************************************************
  * $Log: SammelUeberweisungNew.java,v $
- * Revision 1.12  2010/12/13 11:01:08  willuhn
+ * Revision 1.11.2.1  2010/12/14 14:19:10  willuhn
+ * @B BACKPORT 0023
+ *
+ * Revision 1.12  2010-12-13 11:01:08  willuhn
  * @B Wenn man einen Sammelauftrag in der Detailansicht loeschte, konnte man anschliessend noch doppelt auf die zugeordneten Buchungen klicken und eine ObjectNotFoundException ausloesen
  *
  * Revision 1.11  2009/05/08 13:58:30  willuhn

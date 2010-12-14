@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SammelLastschriftControl.java,v $
- * $Revision: 1.17 $
- * $Date: 2010/12/13 11:01:08 $
+ * $Revision: 1.16.2.1 $
+ * $Date: 2010/12/14 14:19:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -157,7 +157,10 @@ public class SammelLastschriftControl extends AbstractSammelTransferControl
 
 /*****************************************************************************
  * $Log: SammelLastschriftControl.java,v $
- * Revision 1.17  2010/12/13 11:01:08  willuhn
+ * Revision 1.16.2.1  2010/12/14 14:19:09  willuhn
+ * @B BACKPORT 0023
+ *
+ * Revision 1.17  2010-12-13 11:01:08  willuhn
  * @B Wenn man einen Sammelauftrag in der Detailansicht loeschte, konnte man anschliessend noch doppelt auf die zugeordneten Buchungen klicken und eine ObjectNotFoundException ausloesen
  *
  * Revision 1.16  2009/11/26 12:00:21  willuhn
