@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/LastschriftImpl.java,v $
- * $Revision: 1.10 $
- * $Date: 2010/11/21 23:55:47 $
+ * $Revision: 1.9.2.1 $
+ * $Date: 2010/12/14 14:20:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,28 +43,31 @@ public class LastschriftImpl extends AbstractBaseUeberweisungImpl
     return "lastschrift";
   }
 
-	/**
+  /**
    * @see de.willuhn.jameica.hbci.rmi.Duplicatable#duplicate()
    */
-	public Duplicatable duplicate() throws RemoteException {
-		Lastschrift u = (Lastschrift) getService().createObject(Lastschrift.class,null);
-		u.setBetrag(getBetrag());
-		u.setGegenkontoBLZ(getGegenkontoBLZ());
-		u.setGegenkontoNummer(getGegenkontoNummer());
-		u.setGegenkontoName(getGegenkontoName());
-		u.setKonto(getKonto());
-		u.setZweck(getZweck());
-		u.setZweck2(getZweck2());
+  public Duplicatable duplicate() throws RemoteException {
+    Lastschrift u = (Lastschrift) getService().createObject(Lastschrift.class,null);
+    u.setBetrag(getBetrag());
+    u.setGegenkontoBLZ(getGegenkontoBLZ());
+    u.setGegenkontoNummer(getGegenkontoNummer());
+    u.setGegenkontoName(getGegenkontoName());
+    u.setKonto(getKonto());
+    u.setZweck(getZweck());
+    u.setZweck2(getZweck2());
     u.setWeitereVerwendungszwecke(getWeitereVerwendungszwecke());
     u.setTextSchluessel(getTextSchluessel());
-		return u;
-	}
+    return u;
+  }
 }
 
 
 /**********************************************************************
  * $Log: LastschriftImpl.java,v $
- * Revision 1.10  2010/11/21 23:55:47  willuhn
+ * Revision 1.9.2.1  2010/12/14 14:20:10  willuhn
+ * @B BACKPORT 0029
+ *
+ * Revision 1.10  2010-11-21 23:55:47  willuhn
  * @C Uebernahme des Termins beim Duplizieren war nicht konsistent. Jetzt wird er nur noch bei Bank-gefuehrten Termin-Ueberweisungen uebernommen
  *
  * Revision 1.9  2010/04/27 11:02:32  willuhn

@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractSammelTransferImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2010/11/21 23:55:47 $
+ * $Revision: 1.5.2.1 $
+ * $Date: 2010/12/14 14:20:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -292,32 +292,32 @@ public abstract class AbstractSammelTransferImpl extends AbstractDBObject implem
       }
     }
     if ("buchungen".equals(arg0))
-  	{
-			try
-			{
-				StringBuffer sb = new StringBuffer();
-				DBIterator di = getBuchungen();
-				while (di.hasNext())
-				{
-					SammelTransferBuchung b = (SammelTransferBuchung) di.next();
-					String[] params = new String[]
-					{
+    {
+      try
+      {
+        StringBuffer sb = new StringBuffer();
+        DBIterator di = getBuchungen();
+        while (di.hasNext())
+        {
+          SammelTransferBuchung b = (SammelTransferBuchung) di.next();
+          String[] params = new String[]
+          {
             HBCI.DECIMALFORMAT.format(b.getBetrag()),
             getKonto().getWaehrung(),
-						b.getGegenkontoName()
-					};
-					sb.append(i18n.tr("{0} {1} \t {2}",params));
-					if (di.hasNext())
-						sb.append("\n");
-				}
-				return sb.toString();
-			}
-			catch (RemoteException e)
-			{
-				Logger.error("error while reading buchungen",e);
-				return i18n.tr("Buchungen nicht lesbar");
-			}
-  	}
+            b.getGegenkontoName()
+          };
+          sb.append(i18n.tr("{0} {1} \t {2}",params));
+          if (di.hasNext())
+            sb.append("\n");
+        }
+        return sb.toString();
+      }
+      catch (RemoteException e)
+      {
+        Logger.error("error while reading buchungen",e);
+        return i18n.tr("Buchungen nicht lesbar");
+      }
+    }
     return super.getAttribute(arg0);
   }
 
@@ -391,7 +391,10 @@ public abstract class AbstractSammelTransferImpl extends AbstractDBObject implem
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferImpl.java,v $
- * Revision 1.6  2010/11/21 23:55:47  willuhn
+ * Revision 1.5.2.1  2010/12/14 14:20:10  willuhn
+ * @B BACKPORT 0029
+ *
+ * Revision 1.6  2010-11-21 23:55:47  willuhn
  * @C Uebernahme des Termins beim Duplizieren war nicht konsistent. Jetzt wird er nur noch bei Bank-gefuehrten Termin-Ueberweisungen uebernommen
  *
  * Revision 1.5  2009/02/18 10:48:42  willuhn
