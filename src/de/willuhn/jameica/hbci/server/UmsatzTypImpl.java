@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.59 $
- * $Date: 2010/12/14 11:54:08 $
+ * $Revision: 1.60 $
+ * $Date: 2010/12/14 12:47:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -414,7 +414,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
       return;
 
     patternCache.clear(); // Pattern-Cache leeren
-    Cache.get(UmsatzTyp.class,false).remove(this); // Aus dem Cache loeschen
+    Cache.clear(UmsatzTyp.class); // Cache loeschen
 
     // Ueberschrieben, weil wir beim Loeschen pruefen muessen,
     // ob wir irgendwelchen Umsaetzen zugeordnet sind und
@@ -464,7 +464,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
   {
     super.store();
     patternCache.clear(); // Pattern-Cache leeren
-    Cache.get(UmsatzTyp.class,false).put(this); // Cache aktualisieren
+    Cache.clear(UmsatzTyp.class); // Cache loeschen
   }
 
   /**
@@ -590,7 +590,10 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
 
 /*******************************************************************************
  * $Log: UmsatzTypImpl.java,v $
- * Revision 1.59  2010/12/14 11:54:08  willuhn
+ * Revision 1.60  2010/12/14 12:47:59  willuhn
+ * @B Cache wurde nicht immer korrekt aktualisiert, was dazu fuehren konnte, dass sich das Aendern/Loeschen/Anlegen von Kategorien erst nach 10 Sekunden auswirkte und bis dahin Umsaetze der Kategorie "nicht zugeordnet" zugewiesen wurden, obwohl sie in einer Kategorie waren
+ *
+ * Revision 1.59  2010-12-14 11:54:08  willuhn
  * *** empty log message ***
  *
  * Revision 1.58  2010-12-07 11:10:33  willuhn
