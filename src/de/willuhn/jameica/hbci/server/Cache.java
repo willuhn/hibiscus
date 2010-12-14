@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Cache.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/12/14 12:48:00 $
+ * $Revision: 1.4.2.1 $
+ * $Date: 2010/12/14 14:20:29 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -178,7 +178,10 @@ class Cache
 
 /**********************************************************************
  * $Log: Cache.java,v $
- * Revision 1.5  2010/12/14 12:48:00  willuhn
+ * Revision 1.4.2.1  2010/12/14 14:20:29  willuhn
+ * @B BACKPORT 0030
+ *
+ * Revision 1.5  2010-12-14 12:48:00  willuhn
  * @B Cache wurde nicht immer korrekt aktualisiert, was dazu fuehren konnte, dass sich das Aendern/Loeschen/Anlegen von Kategorien erst nach 10 Sekunden auswirkte und bis dahin Umsaetze der Kategorie "nicht zugeordnet" zugewiesen wurden, obwohl sie in einer Kategorie waren
  *
  * Revision 1.4  2010-08-27 09:24:58  willuhn

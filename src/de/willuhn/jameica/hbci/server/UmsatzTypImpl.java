@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.60 $
- * $Date: 2010/12/14 12:47:59 $
+ * $Revision: 1.56.2.1 $
+ * $Date: 2010/12/14 14:20:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,8 +15,6 @@ package de.willuhn.jameica.hbci.server;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -42,8 +40,6 @@ import de.willuhn.util.I18N;
 public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
 {
   private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
-  private final static transient Map<String,Pattern> patternCache = new HashMap<String,Pattern>();
 
   /**
    * ct.
@@ -235,30 +231,47 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
     if (s == null || s.trim().length() == 0)
       return false;
 
-    String zweck = VerwendungszweckUtil.toString(umsatz);
-    String name  = umsatz.getGegenkontoName();
-    String kto   = umsatz.getGegenkontoNummer();
-    String kom   = umsatz.getKommentar();
+    String vwz1 = umsatz.getZweck();
+    String vwz2 = umsatz.getZweck2();
+    String name = umsatz.getGegenkontoName();
+    String kto  = umsatz.getGegenkontoNummer();
+    String kom  = umsatz.getKommentar();
     
+    String[] ewz = umsatz.getWeitereVerwendungszwecke();
+    String vwz3 = "";
+    if (ewz != null && ewz.length > 0)
+    {
+      StringBuffer sb = new StringBuffer();
+      for (int i=0;i<ewz.length;++i)
+      {
+        sb.append(ewz[i]);
+        sb.append(" ");
+      }
+      vwz3 = sb.toString();
+    }
+
+    if (vwz1 == null) vwz1 = "";
+    if (vwz2 == null) vwz2 = "";
     if (name == null) name = "";
     if (kto  == null) kto = "";
     if (kom  == null) kom = "";
 
     if (!isRegex())
     {
-      zweck = zweck.toLowerCase();
-      name  = name.toLowerCase();
-      kto   = kto.toLowerCase();
-      kom   = kom.toLowerCase();
+      vwz1 = vwz1.toLowerCase();
+      vwz2 = vwz2.toLowerCase();
+      vwz3 = vwz3.toLowerCase();
+      name = name.toLowerCase();
+      kto = kto.toLowerCase();
+      kom = kom.toLowerCase();
 
       String[] list = s.toLowerCase().split(","); // Wir beachten Gross-Kleinschreibung grundsaetzlich nicht
 
       for (int i=0;i<list.length;++i)
       {
         String test = list[i].trim();
-        if (zweck.indexOf(test) != -1 ||
-            name.indexOf(test) != -1 ||
-            kto.indexOf(test)  != -1 ||
+        if (vwz1.indexOf(test) != -1 || vwz2.indexOf(test) != -1 || vwz3.indexOf(test) != -1 ||
+            name.indexOf(test) != -1 || kto.indexOf(test)  != -1 ||
             kom.indexOf(test) != -1)
         {
           return true;
@@ -268,23 +281,22 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
     }
     
     
-    Pattern pattern = patternCache.get(s);
+    Pattern pattern = null;
 
     try
     {
-      if (pattern == null)
-      {
-        pattern = Pattern.compile(s, Pattern.CASE_INSENSITIVE);
-        patternCache.put(s,pattern);
-      }
-      
-      Matcher mZweck = pattern.matcher(zweck);
+      pattern = Pattern.compile(s, Pattern.CASE_INSENSITIVE);
+      Matcher mVwz1 = pattern.matcher(vwz1);
+      Matcher mVwz2 = pattern.matcher(vwz2);
+      Matcher mVwz3 = pattern.matcher(vwz3);
       Matcher mName = pattern.matcher(name);
       Matcher mKto = pattern.matcher(kto);
       Matcher mKom = pattern.matcher(kom);
-      Matcher mAll = pattern.matcher(name + " " + kto + " " + zweck + " " + kom);
+      Matcher mAll = pattern.matcher(name + " " + kto + " " + vwz1 + " " + vwz2 + " " + vwz3 + " " + kom);
 
-      return (mZweck.matches() ||
+      return (mVwz1.matches() ||
+              mVwz2.matches() ||
+              mVwz3.matches() ||
               mName.matches() ||
               mKto.matches()  ||
               mKom.matches()  ||
@@ -402,6 +414,18 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
     if ("umsatz".equals(arg0))
       return new Double(getUmsatz());
 
+    if (arg0 != null && arg0.startsWith("umsatz:"))
+    {
+      try
+      {
+        String[] s = arg0.split(":");
+        return new Double(getUmsatz(Integer.parseInt(s[1])));
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to parse number of days: " + arg0);
+      }
+    }
     return super.getAttribute(arg0);
   }
 
@@ -413,7 +437,6 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
     if (this.isNewObject())
       return;
 
-    patternCache.clear(); // Pattern-Cache leeren
     Cache.clear(UmsatzTyp.class); // Cache loeschen
 
     // Ueberschrieben, weil wir beim Loeschen pruefen muessen,
@@ -463,7 +486,6 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
   public void store() throws RemoteException, ApplicationException
   {
     super.store();
-    patternCache.clear(); // Pattern-Cache leeren
     Cache.clear(UmsatzTyp.class); // Cache loeschen
   }
 
@@ -590,19 +612,8 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
 
 /*******************************************************************************
  * $Log: UmsatzTypImpl.java,v $
- * Revision 1.60  2010/12/14 12:47:59  willuhn
- * @B Cache wurde nicht immer korrekt aktualisiert, was dazu fuehren konnte, dass sich das Aendern/Loeschen/Anlegen von Kategorien erst nach 10 Sekunden auswirkte und bis dahin Umsaetze der Kategorie "nicht zugeordnet" zugewiesen wurden, obwohl sie in einer Kategorie waren
- *
- * Revision 1.59  2010-12-14 11:54:08  willuhn
- * *** empty log message ***
- *
- * Revision 1.58  2010-12-07 11:10:33  willuhn
- * @C Verwendungszweck beim Matching mergen
- * @N Pattern-Cache
- *
- * Revision 1.57  2010-11-24 16:27:17  willuhn
- * @R Eclipse BIRT komplett rausgeworden. Diese unsaegliche Monster ;)
- * @N Stattdessen verwenden wir jetzt SWTChart (http://www.swtchart.org). Das ist statt den 6MB von BIRT sagenhafte 250k gross
+ * Revision 1.56.2.1  2010/12/14 14:20:29  willuhn
+ * @B BACKPORT 0030
  *
  * Revision 1.56  2010-08-26 12:53:08  willuhn
  * @N Cache nur befuellen, wenn das explizit gefordert wird. Andernfalls wuerde der Cache u.U. unnoetig gefuellt werden, obwohl nur ein Objekt daraus geloescht werden soll
