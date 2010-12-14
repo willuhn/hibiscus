@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.58 $
- * $Date: 2010/12/07 11:10:33 $
+ * $Revision: 1.59 $
+ * $Date: 2010/12/14 11:54:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -232,7 +232,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
     }
 
     String s = this.getPattern();
-    if (s == null || s.length() == 0)
+    if (s == null || s.trim().length() == 0)
       return false;
 
     String zweck = VerwendungszweckUtil.toString(umsatz);
@@ -590,7 +590,10 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
 
 /*******************************************************************************
  * $Log: UmsatzTypImpl.java,v $
- * Revision 1.58  2010/12/07 11:10:33  willuhn
+ * Revision 1.59  2010/12/14 11:54:08  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.58  2010-12-07 11:10:33  willuhn
  * @C Verwendungszweck beim Matching mergen
  * @N Pattern-Cache
  *
