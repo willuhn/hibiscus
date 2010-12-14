@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/KontoList.java,v $
- * $Revision: 1.23 $
- * $Date: 2010/12/10 17:23:32 $
+ * $Revision: 1.22.2.1 $
+ * $Date: 2010/12/14 14:19:25 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -193,7 +193,10 @@ public class KontoList extends ContextMenu implements Extendable
 
 /*******************************************************************************
  * $Log: KontoList.java,v $
- * Revision 1.23  2010/12/10 17:23:32  willuhn
+ * Revision 1.22.2.1  2010/12/14 14:19:25  willuhn
+ * @C BACKPORT 0024
+ *
+ * Revision 1.23  2010-12-10 17:23:32  willuhn
  * @C Menueintrage fuer neue Auftraege nur aktivieren, wenn ein einzelnes Konto selektiert ist. Die Menueintraege machen sonst keinen Sinn
  *
  * Revision 1.22  2010/04/22 16:21:27  willuhn
