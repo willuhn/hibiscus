@@ -3,12 +3,21 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry including="*.java" kind="src" output="updates" path="updates"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry exported="true" kind="src" path="/jameica"/>
+	<classpathentry kind="lib" path="lib/birt/js.jar"/>
 	<classpathentry kind="lib" path="lib/itext-2.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/birt/org.eclipse.birt.chart.device.extension_2.1.0.N20060628-1351.jar"/>
+	<classpathentry kind="lib" path="lib/birt/org.eclipse.birt.chart.device.swt_2.1.0.N20060628-1351.jar"/>
+	<classpathentry kind="lib" path="lib/birt/org.eclipse.birt.chart.engine_2.1.0.N20060628-1351.jar"/>
+	<classpathentry kind="lib" path="lib/birt/org.eclipse.birt.chart.engine.extension_2.1.0.N20060628-1351.jar"/>
+	<classpathentry kind="lib" path="lib/birt/org.eclipse.birt.chart.ui.extension_2.1.0.N20060628-1351.jar"/>
+	<classpathentry kind="lib" path="lib/birt/org.eclipse.birt.core_2.1.0.N20060628-1351.jar"/>
+	<classpathentry kind="lib" path="lib/birt/org.eclipse.birt.core.ui_2.1.0.N20060628-1351.jar"/>
+	<classpathentry kind="lib" path="lib/birt/org.eclipse.emf.common_2.2.1.v200609210005.jar"/>
+	<classpathentry kind="lib" path="lib/birt/org.eclipse.emf.ecore_2.2.1.v200609210005.jar"/>
+	<classpathentry kind="lib" path="lib/birt/org.eclipse.emf.ecore.xmi_2.2.1.v200609210005.jar"/>
 	<classpathentry kind="lib" path="lib/supercsv-1.31.jar"/>
 	<classpathentry kind="lib" path="lib/obantoo-bin-1.4.11.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/hbci4java-2.5.12.jar" sourcepath="lib.src/hbci4java-2.5.12-src.zip"/>
-	<classpathentry kind="lib" path="lib/swtchart/org.swtchart_0.6.0.v20090801.jar"/>
-	<classpathentry kind="lib" path="lib/swtchart/org.swtchart.ext_0.6.0.v20090801.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jameica_1_10"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
