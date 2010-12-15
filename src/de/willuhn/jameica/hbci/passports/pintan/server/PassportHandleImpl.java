@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/server/PassportHandleImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/10/27 10:25:10 $
+ * $Revision: 1.6 $
+ * $Date: 2010/12/15 13:17:25 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,6 +27,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCICallbackSWT;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.hbci.passports.pintan.PinTanConfigFactory;
+import de.willuhn.jameica.hbci.passports.pintan.PtSecMech;
 import de.willuhn.jameica.hbci.passports.pintan.PtSecMechDialog;
 import de.willuhn.jameica.hbci.passports.pintan.SelectConfigDialog;
 import de.willuhn.jameica.hbci.passports.pintan.TANDialog;
@@ -268,8 +269,14 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
           String type = config.getSecMech();
           if (type != null && type.length() > 0)
           {
-            retData.replace(0,retData.length(),type);
-            return true;
+            // Wir checken vorher noch, ob es das TAN-Verfahren ueberhaupt noch gibt
+            PtSecMech mech = PtSecMech.contains(retData.toString(),type);
+            if (mech != null)
+            {
+              // Jepp, gibts noch
+              retData.replace(0,retData.length(),type);
+              return true;
+            }
           }
         }
         
@@ -285,7 +292,10 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 
 /**********************************************************************
  * $Log: PassportHandleImpl.java,v $
- * Revision 1.5  2010/10/27 10:25:10  willuhn
+ * Revision 1.6  2010/12/15 13:17:25  willuhn
+ * @N Code zum Parsen der TAN-Verfahren in PtSecMech ausgelagert. Wenn ein TAN-Verfahren aus Vorauswahl abgespeichert wurde, wird es nun nur noch dann automatisch verwendet, wenn es in der aktuellen Liste der TAN-Verfahren noch enthalten ist. Siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?t=12545
+ *
+ * Revision 1.5  2010-10-27 10:25:10  willuhn
  * @C Unnoetiges Fangen und Weiterwerfen von Exceptions
  *
  * Revision 1.4  2010-09-29 23:43:34  willuhn
