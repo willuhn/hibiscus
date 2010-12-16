@@ -1,17 +1,3 @@
-2011-12-16 Version 1.12.2
-
-  * BACKPORT NEW: 0033
-
-2011-12-14 Version 1.12.1
-
-  * BACKPORT BUG: 0023
-  * BACKPORT CHG: 0024
-  * BACKPORT BUG: 0028
-  * BACKPORT BUG: 0029
-  * BACKPORT BUG: 0030
-  * BACKPORT BUG: 0031
-  * BACKPORT NEW: 0032
-
 2011-??-?? Version 1.13.0
 
   * NEW: 0033 Code zum Parsen der TAN-Verfahren in PtSecMech ausgelagert. Wenn ein
