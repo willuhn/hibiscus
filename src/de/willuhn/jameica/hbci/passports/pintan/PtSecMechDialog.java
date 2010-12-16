@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/PtSecMechDialog.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/06/17 11:38:15 $
+ * $Revision: 1.1.2.1 $
+ * $Date: 2010/12/16 16:31:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,11 +14,10 @@
 package de.willuhn.jameica.hbci.passports.pintan;
 
 import java.rmi.RemoteException;
+import java.util.List;
 
 import org.eclipse.swt.widgets.Composite;
 
-import de.willuhn.datasource.GenericObject;
-import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.input.CheckboxInput;
@@ -39,13 +38,15 @@ import de.willuhn.util.I18N;
  */
 public class PtSecMechDialog extends AbstractDialog
 {
-  private I18N i18n           = null;
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+
+  private String options      = null;
+
   private SelectInput type    = null;
   private CheckboxInput save  = null;
   private PinTanConfig config = null;
-  private String options      = null;
   
-  private Type choosen        = null;
+  private PtSecMech choosen   = null;
   
   /**
    * ct.
@@ -57,7 +58,7 @@ public class PtSecMechDialog extends AbstractDialog
     super(PtSecMechDialog.POSITION_CENTER);
     this.config = config;
     this.options = options;
-    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+    
     setTitle(i18n.tr("Auswahl des PIN/TAN-Verfahrens"));
   }
 
@@ -79,7 +80,7 @@ public class PtSecMechDialog extends AbstractDialog
       {
         try
         {
-          choosen = (Type) getType().getValue();
+          choosen = (PtSecMech) getType().getValue();
           
           if (choosen != null)
           {
@@ -99,7 +100,7 @@ public class PtSecMechDialog extends AbstractDialog
                 Logger.error("unable to notify user",e);
               }
               if (config != null)
-                config.setSecMech(choosen.getID());
+                config.setSecMech(choosen.getId());
             }
           }
           close();
@@ -126,7 +127,7 @@ public class PtSecMechDialog extends AbstractDialog
   {
     if (choosen == null)
       return null;
-    return choosen.getID();
+    return choosen.getId();
   }
 
   /**
@@ -145,87 +146,29 @@ public class PtSecMechDialog extends AbstractDialog
   /**
    * Erzeugt eine Combo-Box mit der Auswahl der verfuegbaren Verfahren.
    * @return Auwahl-Feld.
-   * @throws RemoteException
+   * @throws ApplicationException
    */
-  private SelectInput getType() throws RemoteException
+  private SelectInput getType() throws ApplicationException
   {
     if (this.type != null)
       return this.type;
 
-    String[] s = this.options.split("\\|");
-    Type[] types = new Type[s.length];
-    for (int i=0;i<s.length;++i)
-    {
-      types[i] = new Type(s[i]);
-    }
-    
-    this.type = new SelectInput(PseudoIterator.fromArray(types),null);
+    List<PtSecMech> list = PtSecMech.parse(this.options);
+    this.type = new SelectInput(list,null);
+    this.type.setAttribute("name");
     return this.type;
-  }
-
-  /**
-   * Hilfs-Objekt zur Anzeige der Optionen in einer Combo-Box.
-   */
-  private class Type implements GenericObject
-  {
-    private String id   = null;
-    private String name = null;
-    
-    private Type(String text)
-    {
-      String[] s = text.split(":");
-      this.id   = s[0];
-      this.name = s[1];
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
-     */
-    public Object getAttribute(String arg0) throws RemoteException
-    {
-      return name;
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#getAttributeNames()
-     */
-    public String[] getAttributeNames() throws RemoteException
-    {
-      return new String[]{"name"};
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#getID()
-     */
-    public String getID() throws RemoteException
-    {
-      return id;
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
-     */
-    public String getPrimaryAttribute() throws RemoteException
-    {
-      return "name";
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
-     */
-    public boolean equals(GenericObject arg0) throws RemoteException
-    {
-      if (arg0 == null)
-        return false;
-      return this.getID().equals(arg0.getID());
-    }
-    
   }
 }
 
 
 /*********************************************************************
  * $Log: PtSecMechDialog.java,v $
+ * Revision 1.1.2.1  2010/12/16 16:31:36  willuhn
+ * @N BACKPORT 0033
+ *
+ * Revision 1.2  2010-12-15 13:17:25  willuhn
+ * @N Code zum Parsen der TAN-Verfahren in PtSecMech ausgelagert. Wenn ein TAN-Verfahren aus Vorauswahl abgespeichert wurde, wird es nun nur noch dann automatisch verwendet, wenn es in der aktuellen Liste der TAN-Verfahren noch enthalten ist. Siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?t=12545
+ *
  * Revision 1.1  2010/06/17 11:38:15  willuhn
  * @C kompletten Code aus "hbci_passport_pintan" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
  *

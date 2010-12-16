@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/server/PassportHandleImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/10/27 10:25:10 $
+ * $Revision: 1.5.2.1 $
+ * $Date: 2010/12/16 16:31:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,6 +27,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCICallbackSWT;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.hbci.passports.pintan.PinTanConfigFactory;
+import de.willuhn.jameica.hbci.passports.pintan.PtSecMech;
 import de.willuhn.jameica.hbci.passports.pintan.PtSecMechDialog;
 import de.willuhn.jameica.hbci.passports.pintan.SelectConfigDialog;
 import de.willuhn.jameica.hbci.passports.pintan.TANDialog;
@@ -47,10 +48,10 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-	private HBCIPassport hbciPassport = null;
-	private HBCIHandler handler = null;
+  private HBCIPassport hbciPassport = null;
+  private HBCIHandler handler = null;
 
-	private PassportImpl passport = null;
+  private PassportImpl passport = null;
   private PinTanConfig config   = null;
 
   /**
@@ -60,7 +61,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
    */
   public PassportHandleImpl(PassportImpl passport) throws RemoteException {
     super();
-		this.passport = passport;
+    this.passport = passport;
   }
 
   /**
@@ -78,12 +79,12 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
   public HBCIHandler open() throws RemoteException, ApplicationException
   {
 
-		if (isOpen())
-			return handler;
+    if (isOpen())
+      return handler;
 
-		Logger.info("open pin/tan passport");
-		try {
-	
+    Logger.info("open pin/tan passport");
+    try {
+  
       if (config == null && this.passport == null)
         throw new ApplicationException(i18n.tr("Keine Konfiguration oder Konto ausgewählt"));
 
@@ -126,7 +127,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
       if (config == null)
         throw new ApplicationException(i18n.tr("Keine PIN/TAN-Konfiguration für dieses Konto definiert"));
       
-			Logger.debug("using passport file " + config.getFilename());
+      Logger.debug("using passport file " + config.getFilename());
 
       AbstractPlugin plugin = Application.getPluginLoader().getPlugin(HBCI.class);
       HBCICallback callback = ((HBCI)plugin).getHBCICallback();
@@ -140,9 +141,9 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
       // erstellt wurde. Wird z.Bsp. vom Payment-Server benoetigt.
       ((AbstractHBCIPassport)hbciPassport).setPersistentData(CONTEXT_CONFIG,config);
 
-			String hbciVersion = config.getHBCIVersion();
-			if (hbciVersion == null || hbciVersion.length() == 0)
-				hbciVersion = "plus";
+      String hbciVersion = config.getHBCIVersion();
+      if (hbciVersion == null || hbciVersion.length() == 0)
+        hbciVersion = "plus";
 
       Logger.info("[PIN/TAN] url         : " + config.getURL());
       Logger.info("[PIN/TAN] blz         : " + config.getBLZ());
@@ -161,9 +162,9 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
       //////////////////////
 
 
-			handler=new HBCIHandler(hbciVersion,hbciPassport);
-			return handler;
-		}
+      handler=new HBCIHandler(hbciVersion,hbciPassport);
+      return handler;
+    }
     catch (RemoteException re)
     {
       close();
@@ -174,34 +175,34 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
       close();
       throw ae;
     }
-		catch (Exception e)
-		{
-			close();
-			Logger.error("error while opening pin/tan passport",e);
-			throw new RemoteException("error while opening pin/tan passport",e);
-		}
+    catch (Exception e)
+    {
+      close();
+      Logger.error("error while opening pin/tan passport",e);
+      throw new RemoteException("error while opening pin/tan passport",e);
+    }
   }
 
   /**
    * @see de.willuhn.jameica.hbci.passport.PassportHandle#isOpen()
    */
   public boolean isOpen() throws RemoteException {
-		return handler != null && hbciPassport != null;
-	}
+    return handler != null && hbciPassport != null;
+  }
 
   /**
    * @see de.willuhn.jameica.hbci.passport.PassportHandle#close()
    */
   public void close() throws RemoteException {
-		if (hbciPassport == null && handler == null)
-			return;
-		try {
-			Logger.info("closing pin/tan passport");
-			handler.close();
-		}
-		catch (Exception e) {/*useless*/}
-		hbciPassport = null;
-		handler = null;
+    if (hbciPassport == null && handler == null)
+      return;
+    try {
+      Logger.info("closing pin/tan passport");
+      handler.close();
+    }
+    catch (Exception e) {/*useless*/}
+    hbciPassport = null;
+    handler = null;
 
     AbstractPlugin plugin = Application.getPluginLoader().getPlugin(HBCI.class);
     HBCICallback callback = ((HBCI)plugin).getHBCICallback();
@@ -216,33 +217,33 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
    */
   public Konto[] getKonten() throws RemoteException, ApplicationException
   {
-  	Logger.info("reading accounts from pin/tan passport");
-		try {
-			open();
-			org.kapott.hbci.structures.Konto[] konten = hbciPassport.getAccounts();
-			if (konten == null || konten.length == 0)
-			{
-				Logger.info("no accounts found");
-				return new Konto[]{};
-			}
+    Logger.info("reading accounts from pin/tan passport");
+    try {
+      open();
+      org.kapott.hbci.structures.Konto[] konten = hbciPassport.getAccounts();
+      if (konten == null || konten.length == 0)
+      {
+        Logger.info("no accounts found");
+        return new Konto[]{};
+      }
 
-			ArrayList result = new ArrayList();
-			Konto k = null;
-			for (int i=0;i<konten.length;++i)
-			{
-				k = Converter.HBCIKonto2HibiscusKonto(konten[i], PassportImpl.class);
-				Logger.debug("found account " + k.getKontonummer());
-				result.add(k);
-			}
-			return (Konto[]) result.toArray(new Konto[result.size()]);
-		}
-		finally
-		{
-			try {
-				close();
-			}
-			catch (RemoteException e2) {/*useless*/}
-		}
+      ArrayList result = new ArrayList();
+      Konto k = null;
+      for (int i=0;i<konten.length;++i)
+      {
+        k = Converter.HBCIKonto2HibiscusKonto(konten[i], PassportImpl.class);
+        Logger.debug("found account " + k.getKontonummer());
+        result.add(k);
+      }
+      return (Konto[]) result.toArray(new Konto[result.size()]);
+    }
+    finally
+    {
+      try {
+        close();
+      }
+      catch (RemoteException e2) {/*useless*/}
+    }
   }
 
   /**
@@ -268,8 +269,14 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
           String type = config.getSecMech();
           if (type != null && type.length() > 0)
           {
-            retData.replace(0,retData.length(),type);
-            return true;
+            // Wir checken vorher noch, ob es das TAN-Verfahren ueberhaupt noch gibt
+            PtSecMech mech = PtSecMech.contains(retData.toString(),type);
+            if (mech != null)
+            {
+              // Jepp, gibts noch
+              retData.replace(0,retData.length(),type);
+              return true;
+            }
           }
         }
         
@@ -285,7 +292,13 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 
 /**********************************************************************
  * $Log: PassportHandleImpl.java,v $
- * Revision 1.5  2010/10/27 10:25:10  willuhn
+ * Revision 1.5.2.1  2010/12/16 16:31:36  willuhn
+ * @N BACKPORT 0033
+ *
+ * Revision 1.6  2010-12-15 13:17:25  willuhn
+ * @N Code zum Parsen der TAN-Verfahren in PtSecMech ausgelagert. Wenn ein TAN-Verfahren aus Vorauswahl abgespeichert wurde, wird es nun nur noch dann automatisch verwendet, wenn es in der aktuellen Liste der TAN-Verfahren noch enthalten ist. Siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?t=12545
+ *
+ * Revision 1.5  2010-10-27 10:25:10  willuhn
  * @C Unnoetiges Fangen und Weiterwerfen von Exceptions
  *
  * Revision 1.4  2010-09-29 23:43:34  willuhn

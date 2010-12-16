@@ -1,0 +1,38 @@
+2011-12-16 Version 1.12.2
+
+  * BACKPORT NEW: 0033
+
+2011-12-14 Version 1.12.1
+
+  * BACKPORT BUG: 0023
+  * BACKPORT CHG: 0024
+  * BACKPORT BUG: 0028
+  * BACKPORT BUG: 0029
+  * BACKPORT BUG: 0030
+  * BACKPORT BUG: 0031
+  * BACKPORT NEW: 0032
+
+2010-11-10 Version 1.12.0
+
+  * DEL: 0020 Unterstützung für McKoi-Datenbank entfernt.
+  * BUG: 0019 Berücksichtigung von "Null-Umsätzen" (Bug 804)
+  * CHG: 0018 Doppler-Prüfung beim Umsatz-Abruf überarbeitet
+  * NEW: 0017 Import von Buchungen aus Moneyplex
+  * NEW: 0016 Textschlüssel in Daueraufträgen
+  * NEW: 0015 Netbook-Mode
+  * NEW: 0014 Datums-Eingaben ohne Punkt zulässig (Bug 865)
+  * NEW: 0013 Anzeige des Gesamt-Saldos über alle Konten (Bug 886)
+  * NEW: 0012 Chart "Saldo-Verlauf" überarbeitet (Bug 775)
+  * NEW: 0011 Passwörter von Schlüsseldisketten sind jetzt änderbar (Bug 312)
+  * NEW: 0010 Kategorien im Adressbuch (Bug 83)
+  * NEW: 0009 EXE-Launcher für Windows
+  * NEW: 0008 Unterstützung für mehrere parallele Kartenleser und Chipkarten (Bug 391)
+  * NEW: 0007 Neue integrierte Spenden-Funktion
+  * NEW: 0006 Abruf von DKB-VISA-Kontoauszügen via Scripting-Plugin
+  * NEW: 0005 Abruf von Paypal-Kontoauszügen via Scripting-Plugin
+  * NEW: 0004 Unterstützung für das Ändern der Benutzer-Kennung und Server-Adresse
+              auf Chipkarten
+  * NEW: 0003 Anzeige des "verfügbaren Betrages" falls die Bank das unterstützt (Bug 530)
+  * NEW: 0002 Bessere Unterstützung für die Kontoauszüge von Netbank, Spardabank und
+              Deutsche Bank (Bug 244, 887)
+  * NEW: 0001 Support für Offline-Konten (Bug 586)
