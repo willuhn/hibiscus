@@ -1,5 +1,8 @@
 2011-??-?? Version 1.13.0
 
+  * BUG: 0035 BUGZILLA 964 - Auftrag wird u.U. nicht als "ausgefuehrt" markiert, wenn
+              die Synchronisierung mittendrin abgebrochen wird
+  * CHG: 0034 BUGZILLA 962 - Sortierung der Unterkategorien in "Umsaetze nach Kategorien"
   * NEW: 0033 Code zum Parsen der TAN-Verfahren in PtSecMech ausgelagert. Wenn ein
               TAN-Verfahren aus Vorauswahl abgespeichert wurde, wird es nun nur noch
               dann automatisch verwendet, wenn es in der aktuellen Liste der TAN-Verfahren
