@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.64 $
- * $Date: 2010/06/17 17:20:58 $
+ * $Revision: 1.65 $
+ * $Date: 2010/12/27 22:47:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,6 +27,8 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.PassportRegistry;
 import de.willuhn.jameica.hbci.gui.DialogFactory;
+import de.willuhn.jameica.hbci.messaging.HBCIFactoryMessage;
+import de.willuhn.jameica.hbci.messaging.HBCIFactoryMessage.Status;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -251,6 +253,7 @@ public class HBCIFactory {
       if (Application.inServerMode()) r.run();
       else GUI.getDisplay().asyncExec(r);
     }
+    Application.getMessagingFactory().sendMessage(new HBCIFactoryMessage(Status.STOPPED));
     Logger.info("finished");
   }
 	
@@ -730,6 +733,9 @@ public class HBCIFactory {
 
 /*******************************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.65  2010/12/27 22:47:52  willuhn
+ * @N BUGZILLA 964
+ *
  * Revision 1.64  2010/06/17 17:20:58  willuhn
  * @N Exception-Handling beim Laden der Schluesseldatei ueberarbeitet - OperationCancelledException wird nun sauber behandelt - auch wenn sie in HBCI_Exceptions gekapselt ist
  *
