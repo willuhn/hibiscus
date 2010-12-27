@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCIJob.java,v $
- * $Revision: 1.33 $
- * $Date: 2010/12/27 22:47:52 $
+ * $Revision: 1.34 $
+ * $Date: 2010/12/27 22:51:25 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -154,11 +154,11 @@ public abstract class AbstractHBCIJob
   final void handleResult() throws ApplicationException, RemoteException
   {
     HBCIJobResult result    = getJobResult();
-    HBCIStatus status       = result != null ? result.getJobStatus() : null;
+    HBCIStatus status       = result.getJobStatus();
 
     // BUGZILLA 964 - nur dann als abgebrochen markieren, wenn wir fuer den Job noch keinen richtigen
     // Status haben. Denn wenn der vorliegt, ist es fuer den Abbruch - zumindest fuer diesen Auftrag - zu spaet.
-    if (status != null && status.getStatusCode() == HBCIStatus.STATUS_UNKNOWN && HBCIFactory.getInstance().isCancelled()) // BUGZILLA 690
+    if (status.getStatusCode() == HBCIStatus.STATUS_UNKNOWN && HBCIFactory.getInstance().isCancelled()) // BUGZILLA 690
     {
       Logger.warn("hbci session cancelled by user, mark job as cancelled");
       markCancelled();
@@ -384,7 +384,10 @@ public abstract class AbstractHBCIJob
 
 /**********************************************************************
  * $Log: AbstractHBCIJob.java,v $
- * Revision 1.33  2010/12/27 22:47:52  willuhn
+ * Revision 1.34  2010/12/27 22:51:25  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.33  2010-12-27 22:47:52  willuhn
  * @N BUGZILLA 964
  *
  * Revision 1.32  2010-09-02 12:25:13  willuhn
