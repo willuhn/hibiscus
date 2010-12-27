@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCIJob.java,v $
- * $Revision: 1.32 $
- * $Date: 2010/09/02 12:25:13 $
+ * $Revision: 1.32.2.1 $
+ * $Date: 2010/12/27 23:21:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -42,9 +42,9 @@ public abstract class AbstractHBCIJob
 {
   protected I18N i18n = null;
 
-	private org.kapott.hbci.GV.HBCIJob job = null;
+  private org.kapott.hbci.GV.HBCIJob job = null;
   private boolean exclusive              = false;
-	private Hashtable params 			         = new Hashtable(); 
+  private Hashtable params               = new Hashtable(); 
 
   /**
    * ct
@@ -54,12 +54,12 @@ public abstract class AbstractHBCIJob
     this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
   
-	/**
-	 * HBCI4Java verwendet intern eindeutige Job-Namen.
-	 * Diese Funktion liefert genau den Namen fuer genau den
-	 * gewuenschten Job.
-	 * @return Job-Identifier.
-	 */
+  /**
+   * HBCI4Java verwendet intern eindeutige Job-Namen.
+   * Diese Funktion liefert genau den Namen fuer genau den
+   * gewuenschten Job.
+   * @return Job-Identifier.
+   */
   abstract String getIdentifier();
   
   /**
@@ -89,6 +89,9 @@ public abstract class AbstractHBCIJob
   /**
    * Wird aufgerufen, wenn der User den Vorgang abgebrochen hat.
    * Kann von den Jobs implementiert werden, muss aber nicht.
+   * Die Funktion wird nur genau dann aufgerufen, wenn der Job noch abbrechbar war - sprich,
+   * wenn er noch nicht an die Bank uebertragen wurde. Wurde er jedoch bereits an die Bank
+   * gesendet, dann wird entweder markFailed() oder markExecuted() aufgerufen.
    * @throws RemoteException
    * @throws ApplicationException
    * BUGZILLA 690
@@ -108,32 +111,32 @@ public abstract class AbstractHBCIJob
   {
   }
 
-	/**
-	 * Diese Funktion wird von der HBCIFactory intern aufgerufen.
-	 * Sie uebergibt hier den erzeugten HBCI-Job der Abfrage.
-	 * @param job der erzeugte Job.
-	 */
+  /**
+   * Diese Funktion wird von der HBCIFactory intern aufgerufen.
+   * Sie uebergibt hier den erzeugten HBCI-Job der Abfrage.
+   * @param job der erzeugte Job.
+   */
   final void setJob(org.kapott.hbci.GV.HBCIJob job)
   {
-  	this.job = job;
-  	Enumeration e = params.keys();
-  	while (e.hasMoreElements())
-  	{
-  		String name = (String) e.nextElement();
-  		Object value = params.get(name);
+    this.job = job;
+    Enumeration e = params.keys();
+    while (e.hasMoreElements())
+    {
+      String name = (String) e.nextElement();
+      Object value = params.get(name);
 
-  		if (value instanceof Konto)
-	  		job.setParam(name,(Konto)value);
+      if (value instanceof Konto)
+        job.setParam(name,(Konto)value);
 
-			else if (value instanceof Date)
-				job.setParam(name,(Date)value);
+      else if (value instanceof Date)
+        job.setParam(name,(Date)value);
 
-			else if (value instanceof Value)
-				job.setParam(name,(Value)value);
+      else if (value instanceof Value)
+        job.setParam(name,(Value)value);
 
-	  	else
-				job.setParam(name,value.toString());
-  	}
+      else
+        job.setParam(name,value.toString());
+    }
   }
 
   /**
@@ -141,9 +144,9 @@ public abstract class AbstractHBCIJob
    * @return Job-Resultat.
    */
   final HBCIJobResult getJobResult()
-	{
-		return job.getJobResult();
-	}
+  {
+    return job.getJobResult();
+  }
   
   /**
    * Diese Funktion wird von der HBCIFactory nach Beendigung der Kommunikation mit der Bank ausgefuehrt.
@@ -153,15 +156,17 @@ public abstract class AbstractHBCIJob
    */
   final void handleResult() throws ApplicationException, RemoteException
   {
-    if (HBCIFactory.getInstance().isCancelled()) // BUGZILLA 690
+    HBCIJobResult result    = getJobResult();
+    HBCIStatus status       = result.getJobStatus();
+
+    // BUGZILLA 964 - nur dann als abgebrochen markieren, wenn wir fuer den Job noch keinen richtigen
+    // Status haben. Denn wenn der vorliegt, ist es fuer den Abbruch - zumindest fuer diesen Auftrag - zu spaet.
+    if (status.getStatusCode() == HBCIStatus.STATUS_UNKNOWN && HBCIFactory.getInstance().isCancelled()) // BUGZILLA 690
     {
       Logger.warn("hbci session cancelled by user, mark job as cancelled");
       markCancelled();
       return;
     }
-
-    HBCIJobResult result    = getJobResult();
-    HBCIStatus status       = result.getJobStatus();
 
     ////////////////////////////////////////////////////////////////////////////
     // Warnungen ausgeben, falls vorhanden - BUGZILLA 899
@@ -225,15 +230,15 @@ public abstract class AbstractHBCIJob
     throw new ApplicationException(error != null && error.length() > 0 ? error : statusText);
   }
   
-	/**
-	 * Liefert den Status-Text, der vom HBCI-Kernel nach Ausfuehrung des Jobs zurueckgeliefert wurde.
+  /**
+   * Liefert den Status-Text, der vom HBCI-Kernel nach Ausfuehrung des Jobs zurueckgeliefert wurde.
    * @return Status-Text oder <code>Unbekannter Fehler</code> wenn dieser nicht ermittelbar ist.
    */
   final String getStatusText()
-	{
+  {
     String sr = "";
-		try
-		{
+    try
+    {
       String sGlob = getJobResult().getGlobStatus().getErrorString();
       Logger.info("global status: " + sGlob);
 
@@ -256,107 +261,107 @@ public abstract class AbstractHBCIJob
         sr += System.getProperty("line.separator","\n") + sJob;
       if (sGlob != null && sGlob.length() > 0)
         sr += System.getProperty("line.separator","\n") + sGlob;
-		}
-		catch (ArrayIndexOutOfBoundsException aio)
-		{
-			// skip
-		}
-		catch (Exception e2)
-		{
-			Logger.error("error while reading status text",e2);
-		}
+    }
+    catch (ArrayIndexOutOfBoundsException aio)
+    {
+      // skip
+    }
+    catch (Exception e2)
+    {
+      Logger.error("error while reading status text",e2);
+    }
     
     I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     if (sr != null && sr.length() > 0)
       return i18n.tr("Fehlermeldung der Bank: {0}",sr);
     return i18n.tr("Unbekannter Fehler");
-	}
+  }
 
-	/**
-	 * Ueber diese Funktion koennen die konkreten Implementierungen
-	 * ihre zusaetzlichen Job-Parameter setzen.
+  /**
+   * Ueber diese Funktion koennen die konkreten Implementierungen
+   * ihre zusaetzlichen Job-Parameter setzen.
    * @param name Name des Parameters.
    * @param value Wert des Parameters.
    */
   final void setJobParam(String name, String value)
-	{
-		if (name == null || value == null)
-		{
-			Logger.warn("[job parameter] no name or value given");
-			return;
-		}
-		params.put(name,value);
-	}
-
-	/**
-	 * Speichern eines komplexes Objektes 
-	 * @param name Name des Parameters.
-	 * @param konto das Konto.
-	 */
-	final void setJobParam(String name, org.kapott.hbci.structures.Konto konto)
-	{
-		if (name == null || konto == null)
-		{
-			Logger.warn("[job parameter] no name or value given");
-			return;
-		}
-		params.put(name,konto);
-	}
+  {
+    if (name == null || value == null)
+    {
+      Logger.warn("[job parameter] no name or value given");
+      return;
+    }
+    params.put(name,value);
+  }
 
   /**
-	 * Speichern eines Int-Wertes.
-	 * Bitte diese Funktion verwenden, damit sichergestellt ist, dass
-	 * der Kernel die Werte typsicher erhaelt und Formatierungsfehler
-	 * aufgrund verschiedener Locales fehlschlagen.
+   * Speichern eines komplexes Objektes 
+   * @param name Name des Parameters.
+   * @param konto das Konto.
+   */
+  final void setJobParam(String name, org.kapott.hbci.structures.Konto konto)
+  {
+    if (name == null || konto == null)
+    {
+      Logger.warn("[job parameter] no name or value given");
+      return;
+    }
+    params.put(name,konto);
+  }
+
+  /**
+   * Speichern eines Int-Wertes.
+   * Bitte diese Funktion verwenden, damit sichergestellt ist, dass
+   * der Kernel die Werte typsicher erhaelt und Formatierungsfehler
+   * aufgrund verschiedener Locales fehlschlagen.
    * @param name Name des Parameters.
    * @param i Wert.
    */
   final void setJobParam(String name, int i)
-	{
-		if (name == null)
-		{
-			Logger.warn("[job parameter] no name given");
-			return;
-		}
-		params.put(name,new Integer(i));
-	}
+  {
+    if (name == null)
+    {
+      Logger.warn("[job parameter] no name given");
+      return;
+    }
+    params.put(name,new Integer(i));
+  }
 
   /**
-	 * Speichern eines Geld-Betrages
-	 * Bitte diese Funktion fuer Betraege verwenden, damit sichergestellt ist,
-	 * dass der Kernel die Werte typsicher erhaelt und Formatierungsfehler
-	 * aufgrund verschiedener Locales fehlschlagen.
-	 * @param name Name des Parameters.
+   * Speichern eines Geld-Betrages
+   * Bitte diese Funktion fuer Betraege verwenden, damit sichergestellt ist,
+   * dass der Kernel die Werte typsicher erhaelt und Formatierungsfehler
+   * aufgrund verschiedener Locales fehlschlagen.
+   * @param name Name des Parameters.
    * @param value Geldbetrag.
    * @param currency Waehrung.
-	 */
-	final void setJobParam(String name, double value, String currency)
-	{
-		if (name == null)
-		{
-			Logger.warn("[job parameter] no name given");
-			return;
-		}
-		params.put(name,new Value(String.valueOf(value),currency));
-	}
+   */
+  final void setJobParam(String name, double value, String currency)
+  {
+    if (name == null)
+    {
+      Logger.warn("[job parameter] no name given");
+      return;
+    }
+    params.put(name,new Value(String.valueOf(value),currency));
+  }
 
-	/**
-	 * Speichern eines Datums.
-	 * Bitte diese Funktion verwenden, damit sichergestellt ist, dass
-	 * der Kernel die Werte typsicher erhaelt und Formatierungsfehler
-	 * aufgrund verschiedener Locales fehlschlagen.
-	 * @param name Name des Parameters.
-	 * @param date Datum.
-	 */
-	final void setJobParam(String name, Date date)
-	{
-		if (name == null || date == null)
-		{
-			Logger.warn("[job parameter] no name given or value given");
-			return;
-		}
-		params.put(name,date);
-	}
+  /**
+   * Speichern eines Datums.
+   * Bitte diese Funktion verwenden, damit sichergestellt ist, dass
+   * der Kernel die Werte typsicher erhaelt und Formatierungsfehler
+   * aufgrund verschiedener Locales fehlschlagen.
+   * @param name Name des Parameters.
+   * @param date Datum.
+   */
+  final void setJobParam(String name, Date date)
+  {
+    if (name == null || date == null)
+    {
+      Logger.warn("[job parameter] no name given or value given");
+      return;
+    }
+    params.put(name,date);
+  }
   
   /**
    * Legt fest, ob der HBCI-Job exclusive (also in einer einzelnen HBCI-Nachricht) gesendet werden soll.
@@ -382,7 +387,20 @@ public abstract class AbstractHBCIJob
 
 /**********************************************************************
  * $Log: AbstractHBCIJob.java,v $
- * Revision 1.32  2010/09/02 12:25:13  willuhn
+ * Revision 1.32.2.1  2010/12/27 23:21:40  willuhn
+ * @N Backports 0034, 0035
+ * @N 1.12.3
+ *
+ * Revision 1.35  2010-12-27 23:03:13  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.34  2010-12-27 22:51:25  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.33  2010-12-27 22:47:52  willuhn
+ * @N BUGZILLA 964
+ *
+ * Revision 1.32  2010-09-02 12:25:13  willuhn
  * @N BUGZILLA 900
  *
  * Revision 1.31  2010-09-02 10:21:06  willuhn

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.64 $
- * $Date: 2010/06/17 17:20:58 $
+ * $Revision: 1.64.2.1 $
+ * $Date: 2010/12/27 23:21:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,6 +27,8 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.PassportRegistry;
 import de.willuhn.jameica.hbci.gui.DialogFactory;
+import de.willuhn.jameica.hbci.messaging.HBCIFactoryMessage;
+import de.willuhn.jameica.hbci.messaging.HBCIFactoryMessage.Status;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -52,7 +54,7 @@ public class HBCIFactory {
   
   private static I18N i18n;
   private static HBCIFactory factory;
-  	private Vector jobs = new Vector();
+    private Vector jobs = new Vector();
     private Worker worker = null;
     private Listener listener = null;
 
@@ -60,7 +62,7 @@ public class HBCIFactory {
    * ct.
    */
   private HBCIFactory() {
-  	i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
   /**
@@ -70,11 +72,11 @@ public class HBCIFactory {
    */
   public static synchronized HBCIFactory getInstance()
   {
-  	if (factory != null)
-  	  return factory;
+    if (factory != null)
+      return factory;
   
-  	factory = new HBCIFactory();
-  	return factory;			
+    factory = new HBCIFactory();
+    return factory;     
   }
 
   /**
@@ -84,13 +86,13 @@ public class HBCIFactory {
    */
   public synchronized void addJob(AbstractHBCIJob job) throws ApplicationException
   {
-  	if (inProgress)
+    if (inProgress)
     {
       Logger.write(Level.DEBUG,"hbci factory in progress - informative stacktrace",new Exception());
       throw new ApplicationException(i18n.tr("Es läuft bereits eine andere HBCI-Abfrage."));
     }
   
-  	jobs.add(job);
+    jobs.add(job);
   }
 
   /**
@@ -103,8 +105,8 @@ public class HBCIFactory {
    * @throws OperationCanceledException Wenn der User den Vorgang abbricht.
    */
   public synchronized void executeJobs(final Konto konto, Listener l) throws
-  	ApplicationException,
-  	OperationCanceledException
+    ApplicationException,
+    OperationCanceledException
   {
   
     if (konto == null)
@@ -128,7 +130,7 @@ public class HBCIFactory {
     this.worker = new Worker(konto);
     Application.getController().start(this.worker);
   }
-	
+  
   /**
    * Prueft, ob gerade HBCI-Auftraege verarbeitet werden.
    * @return true, wenn gerade Auftraege verarbeitet werden.
@@ -144,16 +146,16 @@ public class HBCIFactory {
    */
   private void dumpJob(HBCIJob job)
   {
-  	Logger.debug("Job restrictions for " + job.getName());
-  	Properties p = job.getJobRestrictions();
-  	Enumeration en = p.keys();
-  	while (en.hasMoreElements())
-  	{
+    Logger.debug("Job restrictions for " + job.getName());
+    Properties p = job.getJobRestrictions();
+    Enumeration en = p.keys();
+    while (en.hasMoreElements())
+    {
       String key = (String) en.nextElement();
       Logger.debug("  " + key + ": " + p.getProperty(key));
-  	}
+    }
   }
-	
+  
   /**
    * Liefert den Progress-Monitor, der Informationen ueber den aktuellen
    * HBCI-Verarbeitungszustand erhaelt.
@@ -251,9 +253,10 @@ public class HBCIFactory {
       if (Application.inServerMode()) r.run();
       else GUI.getDisplay().asyncExec(r);
     }
+    Application.getMessagingFactory().sendMessage(new HBCIFactoryMessage(Status.STOPPED));
     Logger.info("finished");
   }
-	
+  
   /**
    * Setzt die Factory auf den Status &quot;inProgress&quot; oder wirft eine
    * ApplicationException, wenn gerade ein anderer Job laeuft. Diese Funktion
@@ -264,12 +267,12 @@ public class HBCIFactory {
    */
   private synchronized void start() throws ApplicationException
   {
-  	if (inProgress)
+    if (inProgress)
       throw new ApplicationException(i18n.tr("Es läuft bereits eine andere HBCI-Abfrage."));
   
-  	inProgress = true;
+    inProgress = true;
   }
-	
+  
   /**
    * Teilt der HBCIFactory mit, dass die gerade laufende Aktion vom Benutzer
    * abgebrochen wurde. Wird aus dem HBCICallBack heraus aufgerufen.
@@ -280,7 +283,7 @@ public class HBCIFactory {
       return; // hier gibts gar nichts abzubrechen ;)
   
     if (this.worker != null)
-  	  this.worker.interrupt();
+      this.worker.interrupt();
   }
 
   /**
@@ -730,6 +733,13 @@ public class HBCIFactory {
 
 /*******************************************************************************
  * $Log: HBCIFactory.java,v $
+ * Revision 1.64.2.1  2010/12/27 23:21:40  willuhn
+ * @N Backports 0034, 0035
+ * @N 1.12.3
+ *
+ * Revision 1.65  2010-12-27 22:47:52  willuhn
+ * @N BUGZILLA 964
+ *
  * Revision 1.64  2010/06/17 17:20:58  willuhn
  * @N Exception-Handling beim Laden der Schluesseldatei ueberarbeitet - OperationCancelledException wird nun sauber behandelt - auch wenn sie in HBCI_Exceptions gekapselt ist
  *
