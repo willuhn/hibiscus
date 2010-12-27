@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTreeNode.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/12/12 23:16:16 $
+ * $Revision: 1.3 $
+ * $Date: 2010/12/27 21:58:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import de.willuhn.datasource.GenericIterator;
@@ -106,7 +107,10 @@ public class UmsatzTreeNode implements GenericObjectNode, Comparable
   public GenericIterator getChildren() throws RemoteException
   {
     List all = new ArrayList();
-    all.addAll(this.children);
+    
+    List<UmsatzTreeNode> children = this.getSubGroups();
+    Collections.sort(children);
+    all.addAll(children);
     all.addAll(this.umsaetze);
     return PseudoIterator.fromArray((GenericObject[])all.toArray(new GenericObject[all.size()]));
   }
@@ -293,7 +297,7 @@ public class UmsatzTreeNode implements GenericObjectNode, Comparable
       String na1 = this.typ.getName();    if (na1 == null) na1 = "";
       String na2 = other.typ.getName();   if (na2 == null) na2 = "";
 
-      // erst nach Numer
+      // erst nach Nummer
       int numberCompare = n1.compareTo(n2);
       if (numberCompare != 0)
         return numberCompare;
@@ -313,7 +317,10 @@ public class UmsatzTreeNode implements GenericObjectNode, Comparable
 
 /*********************************************************************
  * $Log: UmsatzTreeNode.java,v $
- * Revision 1.2  2010/12/12 23:16:16  willuhn
+ * Revision 1.3  2010/12/27 21:58:05  willuhn
+ * @B BUGZILLA 962
+ *
+ * Revision 1.2  2010-12-12 23:16:16  willuhn
  * @N Alex' Patch mit der Auswertung "Summen aller Kategorien mit Einnahmen und Ausgaben"
  *
  * Revision 1.1  2010/03/05 15:24:53  willuhn
