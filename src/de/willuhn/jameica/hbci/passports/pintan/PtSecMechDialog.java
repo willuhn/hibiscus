@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/PtSecMechDialog.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/12/15 13:17:25 $
+ * $Revision: 1.3 $
+ * $Date: 2010/12/31 01:09:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -92,8 +92,8 @@ public class PtSecMechDialog extends AbstractDialog
               {
                 Application.getCallback().notifyUser(
                     i18n.tr("Sie können diese Vorauswahl später in der PIN/TAN-Konfiguration\n" +
-                             "über die Option \"Automatische Auswahl des TAN-Verfahrens löschen\"\n" +
-                             "wieder rückgängig machen."));
+                             "über die Option \"TAN-Verfahren zurücksetzen\" wieder\n" +
+                             "rückgängig machen."));
               }
               catch (Exception e)
               {
@@ -163,7 +163,10 @@ public class PtSecMechDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: PtSecMechDialog.java,v $
- * Revision 1.2  2010/12/15 13:17:25  willuhn
+ * Revision 1.3  2010/12/31 01:09:08  willuhn
+ * @B Typos
+ *
+ * Revision 1.2  2010-12-15 13:17:25  willuhn
  * @N Code zum Parsen der TAN-Verfahren in PtSecMech ausgelagert. Wenn ein TAN-Verfahren aus Vorauswahl abgespeichert wurde, wird es nun nur noch dann automatisch verwendet, wenn es in der aktuellen Liste der TAN-Verfahren noch enthalten ist. Siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?t=12545
  *
  * Revision 1.1  2010/06/17 11:38:15  willuhn

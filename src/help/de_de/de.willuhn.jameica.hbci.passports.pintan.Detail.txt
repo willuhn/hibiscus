@@ -34,4 +34,13 @@
     nicht manuell die zu verwendende PIN/TAN-Konfiguraiton
     wählen.
   </p>
+
+  <p>
+    Über den Button <b>TAN-Verfahren zurücksetzen</b>
+    können Sie eine gespeicherte Vorauswahl des zu verwendenden TAN-Verfahrens
+    rückgängig machen. Dies kann sinnvoll sein, wenn Sie zum Beispiel für ein
+    Konto die Variante <b>Einschritt-Verfahren</b> ausgewählt und gespeichert haben,
+    diese Auswahl nun aber wieder anzeigen wollen.
+  </p>
+
 </form>

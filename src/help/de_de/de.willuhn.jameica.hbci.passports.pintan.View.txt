@@ -8,12 +8,4 @@
     Wählen Sie <b>Neue Konfiguration anlegen</b> um weitere HBCI-Verbindungen
     zu konfigurieren.
   </p>
-  
-  <p>
-    Über die Option <b>Automatische Auswahl des TAN-Verfahrens löschen...</b>
-    können Sie eine gespeicherte Vorauswahl des zu verwendenden TAN-Verfahrens
-    für ein einzelnes Konto rückgängig machen. Dies kann sinnvoll sein, wenn
-    Sie zum Beispiel für ein Konto die Variante <b>Einschritt-Verfahren</b>
-    ausgewählt und gespeichert haben, diese Auswahl nun aber wieder anzeigen wollen.
-  </p>
 </form>
