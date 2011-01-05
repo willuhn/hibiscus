@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTree.java,v $
- * $Revision: 1.3 $
- * $Date: 2010/10/10 21:57:19 $
+ * $Revision: 1.4 $
+ * $Date: 2011/01/05 11:19:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -39,12 +39,14 @@ import de.willuhn.jameica.gui.formatter.TreeFormatter;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.gui.parts.TreePart;
+import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.action.UmsatzTypNew;
 import de.willuhn.jameica.hbci.gui.menus.UmsatzList;
+import de.willuhn.jameica.hbci.messaging.NeueUmsaetze;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.hbci.server.UmsatzTreeNode;
@@ -129,6 +131,16 @@ public class UmsatzTree extends TreePart implements Extension
             item.setForeground(Settings.getBuchungSollForeground());
           else
             item.setForeground(Settings.getBuchungHabenForeground());
+          
+          // neue Umsaetze fett drucken, vorgemerkte grau
+          if (i instanceof Umsatz)
+          {
+            Umsatz u = (Umsatz) i;
+            if ((u.getFlags() & Umsatz.FLAG_NOTBOOKED) != 0)
+              item.setForeground(de.willuhn.jameica.gui.util.Color.COMMENT.getSWTColor());
+
+            item.setFont(NeueUmsaetze.isNew(u) ? Font.BOLD.getSWTFont() : Font.DEFAULT.getSWTFont());
+          }
         }
         catch (Exception e)
         {
@@ -287,7 +299,11 @@ public class UmsatzTree extends TreePart implements Extension
 
 /*******************************************************************************
  * $Log: UmsatzTree.java,v $
- * Revision 1.3  2010/10/10 21:57:19  willuhn
+ * Revision 1.4  2011/01/05 11:19:10  willuhn
+ * @N Fettdruck (bei neuen Umsaetzen) und grauer Text (bei Vormerkbuchungen) jetzt auch in "Umsaetze nach Kategorien"
+ * @N NeueUmsaetze.isNew(Umsatz) zur Pruefung, ob ein Umsatz neu ist
+ *
+ * Revision 1.3  2010-10-10 21:57:19  willuhn
  * @N BUGZILLA 926
  *
  * Revision 1.2  2010/05/30 23:29:31  willuhn
