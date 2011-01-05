@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTree.java,v $
- * $Revision: 1.4 $
- * $Date: 2011/01/05 11:19:10 $
+ * $Revision: 1.5 $
+ * $Date: 2011/01/05 11:20:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -299,7 +299,10 @@ public class UmsatzTree extends TreePart implements Extension
 
 /*******************************************************************************
  * $Log: UmsatzTree.java,v $
- * Revision 1.4  2011/01/05 11:19:10  willuhn
+ * Revision 1.5  2011/01/05 11:20:27  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.4  2011-01-05 11:19:10  willuhn
  * @N Fettdruck (bei neuen Umsaetzen) und grauer Text (bei Vormerkbuchungen) jetzt auch in "Umsaetze nach Kategorien"
  * @N NeueUmsaetze.isNew(Umsatz) zur Pruefung, ob ein Umsatz neu ist
  *
@@ -311,58 +314,4 @@ public class UmsatzTree extends TreePart implements Extension
  *
  * Revision 1.1  2010/03/05 15:24:53  willuhn
  * @N BUGZILLA 686
- *
- * Revision 1.10  2009/09/16 22:34:32  willuhn
- * @B im Umsatz-Tree wurde nicht geprueft, ob die benutzerdefinierte Farbe aktiviert ist
- *
- * Revision 1.9  2009/05/08 13:58:30  willuhn
- * @N Icons in allen Menus und auf allen Buttons
- * @N Fuer Umsatz-Kategorien koennen nun benutzerdefinierte Farben vergeben werden
- *
- * Revision 1.8  2008/12/04 22:03:34  willuhn
- * @N BUGZILLA 665
- *
- * Revision 1.7  2007/12/04 23:59:00  willuhn
- * @N Bug 512
- *
- * Revision 1.6  2007/11/01 21:07:27  willuhn
- * @N Spalten von Tabellen und mehrspaltigen Trees koennen mit mit Drag&Drop umsortiert werden. Die Sortier-Reihenfolge wird automatisch gespeichert und wiederhergestellt
- *
- * Revision 1.5  2007/08/28 09:47:09  willuhn
- * @N Bug 395
- *
- * Revision 1.4  2007/08/12 22:02:10  willuhn
- * @C BUGZILLA 394 - restliche Umstellungen von Valuta auf Buchungsdatum
- *
- * Revision 1.3  2007/04/20 09:50:11  willuhn
- * @B use placeholder as key instead of null
- *
- * Revision 1.2  2007/04/18 08:54:21  willuhn
- * @N UmsatzGroup to fetch items from UmsatzTypTree
- *
- * Revision 1.1  2007/03/22 22:36:42  willuhn
- * @N Contextmenu in Trees
- * @C Kategorie-Baum in separates TreePart ausgelagert
- *
- * Revision 1.6  2007/03/22 14:23:56  willuhn
- * @N Redesign Kategorie-Tree - ist jetzt erheblich schneller und enthaelt eine Pseudo-Kategorie "Nicht zugeordnet"
- *
- * Revision 1.5  2007/03/21 18:47:36  willuhn
- * @N Neue Spalte in Kategorie-Tree
- * @N Sortierung des Kontoauszuges wie in Tabelle angezeigt
- * @C Code cleanup
- *
- * Revision 1.4  2007/03/10 07:16:37  jost
- * Neu: Nummer für die Sortierung der Umsatz-Kategorien
- *
- * Revision 1.3  2007/03/08 18:56:39  willuhn
- * @N Mehrere Spalten in Kategorie-Baum
- *
- * Revision 1.2  2007/03/07 10:29:41  willuhn
- * @B rmi compile fix
- * @B swt refresh behaviour
- *
- * Revision 1.1  2007/03/06 20:06:08  jost
- * Neu: Umsatz-Kategorien-Übersicht
- *
  ******************************************************************************/

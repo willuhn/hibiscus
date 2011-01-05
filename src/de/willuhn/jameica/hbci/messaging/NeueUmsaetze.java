@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/messaging/NeueUmsaetze.java,v $
- * $Revision: 1.6 $
- * $Date: 2011/01/05 11:19:10 $
+ * $Revision: 1.7 $
+ * $Date: 2011/01/05 11:20:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -121,24 +121,10 @@ public class NeueUmsaetze implements MessageConsumer
 
 /*********************************************************************
  * $Log: NeueUmsaetze.java,v $
- * Revision 1.6  2011/01/05 11:19:10  willuhn
+ * Revision 1.7  2011/01/05 11:20:27  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.6  2011-01-05 11:19:10  willuhn
  * @N Fettdruck (bei neuen Umsaetzen) und grauer Text (bei Vormerkbuchungen) jetzt auch in "Umsaetze nach Kategorien"
  * @N NeueUmsaetze.isNew(Umsatz) zur Pruefung, ob ein Umsatz neu ist
- *
- * Revision 1.5  2007/08/09 12:04:39  willuhn
- * @N Bug 302
- *
- * Revision 1.4  2007/08/07 23:54:15  willuhn
- * @B Bug 394 - Erster Versuch. An einigen Stellen (z.Bsp. konto.getAnfangsSaldo) war ich mir noch nicht sicher. Heiner?
- *
- * Revision 1.3  2007/04/19 18:12:21  willuhn
- * @N MySQL-Support (GUI zum Konfigurieren fehlt noch)
- *
- * Revision 1.2  2007/03/16 14:40:02  willuhn
- * @C Redesign ImportMessage
- * @N Aktualisierung der Umsatztabelle nach Kategorie-Zuordnung
- *
- * Revision 1.1  2007/01/30 18:25:33  willuhn
- * @N Bug 302
- *
  **********************************************************************/

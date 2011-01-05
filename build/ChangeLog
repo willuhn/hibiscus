@@ -1,5 +1,7 @@
 2011-??-?? Version 1.13.0
 
+  * NEW: 0037  Fettdruck (bei neuen Umsaetzen) und grauer Text (bei Vormerkbuchungen) jetzt
+               auch in "Umsaetze nach Kategorien"
   * BUG: 0036 Verfuegbarer Betrag wurde nicht korrekt als Waehrung formatiert
   * BUG: 0035 BUGZILLA 964 - Auftrag wird u.U. nicht als "ausgefuehrt" markiert, wenn
               die Synchronisierung mittendrin abgebrochen wird

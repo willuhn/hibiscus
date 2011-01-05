@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.69 $
- * $Date: 2011/01/05 11:19:10 $
+ * $Revision: 1.70 $
+ * $Date: 2011/01/05 11:20:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -798,7 +798,10 @@ public class UmsatzList extends TablePart implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
- * Revision 1.69  2011/01/05 11:19:10  willuhn
+ * Revision 1.70  2011/01/05 11:20:27  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.69  2011-01-05 11:19:10  willuhn
  * @N Fettdruck (bei neuen Umsaetzen) und grauer Text (bei Vormerkbuchungen) jetzt auch in "Umsaetze nach Kategorien"
  * @N NeueUmsaetze.isNew(Umsatz) zur Pruefung, ob ein Umsatz neu ist
  *
@@ -823,198 +826,4 @@ public class UmsatzList extends TablePart implements Extendable
  *   - CSV-Exports von Hibiscus koennen nun 1:1 auch wieder importiert werden (Import-Preset identisch mit Export-Format)
  *   - Import-Preset wird nun im XML-Format nach ~/.jameica/hibiscus/csv serialisiert. Damit wird es kuenftig moeglich sein,
  *     CSV-Import-Profile vorzukonfigurieren und anschliessend zu exportieren, um sie mit anderen Usern teilen zu koennen
- *
- * Revision 1.63  2009/10/13 10:36:38  willuhn
- * @N BUGZILLA #590
- *
- * Revision 1.62  2009/05/11 14:39:53  willuhn
- * @C Es werden jetzt wieder alle Filterkriterien gespeichert, da auch ein Warnhinweis angezeigt wird, wenn Filter aktiv sind
- *
- * Revision 1.61  2009/03/11 23:44:32  willuhn
- * @C code cleanup - keine Booleans instanziieren
- *
- * Revision 1.60  2009/02/12 18:37:17  willuhn
- * @N Erster Code fuer vorgemerkte Umsaetze
- *
- * Revision 1.59  2009/02/04 23:06:24  willuhn
- * @N BUGZILLA 308 - Umsaetze als "geprueft" markieren
- *
- * Revision 1.58  2009/02/02 14:49:14  willuhn
- * @B BUGZILLA 692
- *
- * Revision 1.57  2008/12/17 22:49:34  willuhn
- * @R t o d o  tag entfernt
- *
- * Revision 1.56  2008/09/24 10:24:48  willuhn
- * @C Saldo in Umsatzliste nicht mit faerben
- *
- * Revision 1.55  2007/08/09 12:04:39  willuhn
- * @N Bug 302
- *
- * Revision 1.54  2007/08/09 11:01:38  willuhn
- * @B Bug 462
- *
- * Revision 1.53  2007/08/07 23:54:15  willuhn
- * @B Bug 394 - Erster Versuch. An einigen Stellen (z.Bsp. konto.getAnfangsSaldo) war ich mir noch nicht sicher. Heiner?
- *
- * Revision 1.52  2007/04/27 15:30:44  willuhn
- * @N Kontoauszug-Liste in TablePart verschoben
- *
- * Revision 1.51  2007/04/26 23:08:13  willuhn
- * @C Umstellung auf DelayedListener
- *
- * Revision 1.50  2007/04/26 18:27:58  willuhn
- * *** empty log message ***
- *
- * Revision 1.49  2007/04/26 12:20:12  willuhn
- * @B In Umsatzsuche nur die Kategorien mit Pattern anzeigen
- *
- * Revision 1.48  2007/04/25 14:06:57  willuhn
- * @C Vermeidung paralleler Datenhaltung
- *
- * Revision 1.47  2007/04/25 12:40:12  willuhn
- * @N Besseres Warteverhalten nach Texteingabe in Umsatzliste und Adressbuch
- *
- * Revision 1.46  2007/04/18 14:51:09  willuhn
- * @C removed 2 warnings
- *
- * Revision 1.45  2007/03/21 16:56:56  willuhn
- * @N Online-Hilfe aktualisiert
- * @N Bug 337 (Stichtag in Sparquote)
- * @C Refactoring in Sparquote
- *
- * Revision 1.44  2007/03/16 14:40:02  willuhn
- * @C Redesign ImportMessage
- * @N Aktualisierung der Umsatztabelle nach Kategorie-Zuordnung
- *
- * Revision 1.42  2006/12/29 14:28:47  willuhn
- * @B Bug 345
- * @B jede Menge Bugfixes bei SQL-Statements mit Valuta
- *
- * Revision 1.41  2006/12/28 15:38:42  willuhn
- * @N Farbige Pflichtfelder
- *
- * Revision 1.40  2006/11/30 23:48:40  willuhn
- * @N Erste Version der Umsatz-Kategorien drin
- *
- * Revision 1.39  2006/11/29 00:40:37  willuhn
- * @N Keylistener in Umsatzlist nur dann ausfuehren, wenn sich wirklich etwas geaendert hat
- * @C UmsatzTyp.matches matcht jetzt bei leeren Pattern nicht mehr
- *
- * Revision 1.38  2006/11/23 23:24:17  willuhn
- * @N Umsatz-Kategorien: DB-Update, Edit
- *
- * Revision 1.36  2006/11/20 23:07:54  willuhn
- * @N new package "messaging"
- * @C moved ImportMessage into new package
- *
- * Revision 1.35  2006/11/06 23:19:45  willuhn
- * @B Fehler bei Aktualisierung der Elemente nach Insert, Delete, Sort
- *
- * Revision 1.34  2006/11/06 23:12:38  willuhn
- * @B Fehler bei Aktualisierung der Elemente nach Insert, Delete, Sort
- *
- * Revision 1.33  2006/10/23 22:31:15  willuhn
- * @R removed debug output
- *
- * Revision 1.32  2006/10/23 22:30:43  willuhn
- * @C recompile ($LANG)
- *
- * Revision 1.31  2006/10/17 23:50:20  willuhn
- * *** empty log message ***
- *
- * Revision 1.30  2006/10/09 23:50:00  willuhn
- * @N extendable
- *
- * Revision 1.29  2006/08/23 09:45:13  willuhn
- * @N Restliche DBIteratoren auf PreparedStatements umgestellt
- *
- * Revision 1.28  2006/08/08 21:18:21  willuhn
- * @B Bug 258
- *
- * Revision 1.27  2006/08/07 14:31:59  willuhn
- * @B misc bugfixing
- * @C Redesign des DTAUS-Imports fuer Sammeltransfers
- *
- * Revision 1.26  2006/08/02 17:49:44  willuhn
- * @B Bug 255
- * @N Erkennung des Kontos beim Import von Umsaetzen aus dem Kontextmenu heraus
- *
- * Revision 1.25  2006/06/19 16:05:13  willuhn
- * *** empty log message ***
- *
- * Revision 1.24  2006/06/19 12:57:31  willuhn
- * @N DTAUS-Import fuer Umsaetze
- * @B Formatierungsfehler in Umsatzliste
- *
- * Revision 1.23  2006/05/22 12:55:54  willuhn
- * @N bug 235 (thanks to Markus)
- *
- * Revision 1.22  2006/05/11 16:53:09  willuhn
- * @B bug 233
- *
- * Revision 1.21  2006/03/30 22:22:32  willuhn
- * @B bug 217
- *
- * Revision 1.20  2006/03/30 21:00:11  willuhn
- * *** empty log message ***
- *
- * Revision 1.19  2006/02/20 22:57:22  willuhn
- * @N Suchfeld in Adress-Liste
- *
- * Revision 1.18  2006/02/06 23:08:28  willuhn
- * *** empty log message ***
- *
- * Revision 1.17  2006/02/06 23:03:23  willuhn
- * @B Sortierung der Spalte "#"
- *
- * Revision 1.16  2006/02/06 14:53:39  willuhn
- * @N new column "#" in umsatzlist
- *
- * Revision 1.15  2005/12/30 00:14:45  willuhn
- * @N first working pie charts
- *
- * Revision 1.14  2005/12/16 16:35:31  willuhn
- * @N Filter UmsatzList width regular expressions
- *
- * Revision 1.13  2005/12/13 00:06:26  willuhn
- * @N UmsatzTyp erweitert
- *
- * Revision 1.12  2005/12/05 20:16:15  willuhn
- * @N Umsatz-Filter Refactoring
- *
- * Revision 1.11  2005/12/05 17:20:40  willuhn
- * @N Umsatz-Filter Refactoring
- *
- * Revision 1.10  2005/11/18 17:39:12  willuhn
- * *** empty log message ***
- *
- * Revision 1.9  2005/11/14 21:41:02  willuhn
- * @B bug 5
- *
- * Revision 1.8  2005/06/27 15:35:27  web0
- * @B bug 84
- *
- * Revision 1.7  2005/06/23 17:36:33  web0
- * @B bug 84
- *
- * Revision 1.6  2005/06/21 20:15:33  web0
- * *** empty log message ***
- *
- * Revision 1.5  2005/06/21 20:11:10  web0
- * @C cvs merge
- *
- * Revision 1.3  2005/05/09 12:24:20  web0
- * @N Changelog
- * @N Support fuer Mehrfachmarkierungen
- * @N Mehere Adressen en bloc aus Umsatzliste uebernehmen
- *
- * Revision 1.2  2005/05/08 17:48:51  web0
- * @N Bug 56
- *
- * Revision 1.1  2005/05/02 23:56:45  web0
- * @B bug 66, 67
- * @C umsatzliste nach vorn verschoben
- * @C protokoll nach hinten verschoben
- *
  **********************************************************************/
