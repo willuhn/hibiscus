@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.60 $
- * $Date: 2010/12/14 12:47:59 $
+ * $Revision: 1.61 $
+ * $Date: 2011/01/10 22:29:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,7 +25,6 @@ import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.db.AbstractDBObjectNode;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
@@ -577,7 +576,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
   public GenericIterator getChildren() throws RemoteException
   {
     GenericIterator i = super.getChildren();
-    if (this.isNewObject() || !(i instanceof DBObject))
+    if (this.isNewObject() || !(i instanceof DBIterator))
       return i;
     
     DBIterator di = (DBIterator) i;
@@ -590,7 +589,10 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
 
 /*******************************************************************************
  * $Log: UmsatzTypImpl.java,v $
- * Revision 1.60  2010/12/14 12:47:59  willuhn
+ * Revision 1.61  2011/01/10 22:29:24  willuhn
+ * @B BUGZILLA 977
+ *
+ * Revision 1.60  2010-12-14 12:47:59  willuhn
  * @B Cache wurde nicht immer korrekt aktualisiert, was dazu fuehren konnte, dass sich das Aendern/Loeschen/Anlegen von Kategorien erst nach 10 Sekunden auswirkte und bis dahin Umsaetze der Kategorie "nicht zugeordnet" zugewiesen wurden, obwohl sie in einer Kategorie waren
  *
  * Revision 1.59  2010-12-14 11:54:08  willuhn
@@ -622,165 +624,4 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
  *
  * Revision 1.51  2010/03/05 17:54:13  willuhn
  * @C Umsatz-Kategorien nach Nummer und anschliessend nach Name sortieren
- *
- * Revision 1.50  2009/05/08 13:58:30  willuhn
- * @N Icons in allen Menus und auf allen Buttons
- * @N Fuer Umsatz-Kategorien koennen nun benutzerdefinierte Farben vergeben werden
- *
- * Revision 1.49  2009/03/26 16:21:11  willuhn
- * *** empty log message ***
- *
- * Revision 1.48  2009/03/26 16:20:58  willuhn
- * @B Fehler bei ungueltigen regulaeren Ausdruecken fangen
- *
- * Revision 1.47  2009/02/23 23:44:50  willuhn
- * @N Etwas Code fuer Support fuer Unter-/Ober-Kategorien
- *
- * Revision 1.46  2008/12/31 12:29:36  willuhn
- * @N Auch in erweiterten Verwendungszwecken nach Suchbegriffen fuer Umsatzkategorie suchen
- *
- * Revision 1.45  2008/12/17 22:46:36  willuhn
- * @R t o d o  tag entfernt
- *
- * Revision 1.44  2008/10/10 16:45:35  willuhn
- * @N Moeglichkeit, mehrere Suchbegriffe mit Komma zu verknuepfen, ohne hierfuer regulaere Ausdruecke nutzen zu muessen.
- *
- * Revision 1.43  2008/08/29 16:46:24  willuhn
- * @N BUGZILLA 616
- *
- * Revision 1.42  2008/08/08 08:57:14  willuhn
- * @N BUGZILLA 614
- *
- * Revision 1.41  2008/04/27 22:22:56  willuhn
- * @C I18N-Referenzen statisch
- *
- * Revision 1.40  2008/02/27 10:31:20  willuhn
- * @B Bug 554
- *
- * Revision 1.39  2008/02/26 01:01:16  willuhn
- * @N Update auf Birt 2 (bessere Zeichen-Qualitaet, u.a. durch Anti-Aliasing)
- * @N Neuer Chart "Umsatz-Kategorien im Verlauf"
- * @N Charts erst beim ersten Paint-Event zeichnen. Dadurch laesst sich z.Bsp. die Konto-View schneller oeffnen, da der Saldo-Verlauf nicht berechnet werden muss
- *
- * Revision 1.38  2007/08/24 22:22:00  willuhn
- * @N Regulaere Ausdruecke vorm Speichern testen
- *
- * Revision 1.37  2007/08/07 23:54:15  willuhn
- * @B Bug 394 - Erster Versuch. An einigen Stellen (z.Bsp. konto.getAnfangsSaldo) war ich mir noch nicht sicher. Heiner?
- *
- * Revision 1.36  2007/04/23 18:07:15  willuhn
- * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
- * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
- * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
- * @N Anbindung externer Adressbuecher
- *
- * Revision 1.35  2007/03/22 14:23:56  willuhn
- * @N Redesign Kategorie-Tree - ist jetzt erheblich schneller und enthaelt eine Pseudo-Kategorie "Nicht zugeordnet"
- *
- * Revision 1.34  2007/03/16 12:55:26  jost
- * Bugfix: Kategorie wurde in der Kontenliste nicht korrekt angezeigt.
- *
- * Revision 1.33  2007/03/12 13:58:56  willuhn
- * @C Eindeutigkeit des Namens trotz UNIQUE-Key vorher in insertCheck pruefen - das spart das Parsen der SQLException
- *
- * Revision 1.32  2007/03/10 07:18:50  jost
- * Neu: Nummer für die Sortierung der Umsatz-Kategorien
- * Umsatzkategorien editierbar gemacht (Verlagerung vom Code -> DB)
- *
- * Revision 1.31  2007/03/08 18:56:39  willuhn
- * @N Mehrere Spalten in Kategorie-Baum
- *
- * Revision 1.30  2007/03/06 20:06:56  jost
- * Neu: Umsatz-Kategorien-Übersicht
- * Revision 1.29 2006/12/29 14:28:47 willuhn
- * 
- * @B Bug 345
- * @B jede Menge Bugfixes bei SQL-Statements mit Valuta
- * 
- * Revision 1.28 2006/11/30 23:48:40 willuhn
- * @N Erste Version der Umsatz-Kategorien drin
- * 
- * Revision 1.27 2006/11/29 00:40:37 willuhn
- * @N Keylistener in Umsatzlist nur dann ausfuehren, wenn sich wirklich etwas
- *    geaendert hat
- * @C UmsatzTyp.matches matcht jetzt bei leeren Pattern nicht mehr
- * 
- * Revision 1.26 2006/11/23 23:24:17 willuhn
- * @N Umsatz-Kategorien: DB-Update, Edit
- * 
- * Revision 1.25 2006/11/23 17:25:38 willuhn
- * @N Umsatz-Kategorien - in PROGRESS!
- * 
- * Revision 1.24 2006/08/25 10:13:43 willuhn
- * @B Fremdschluessel NICHT mittels PreparedStatement, da die sonst gequotet und
- *    von McKoi nicht gefunden werden. BUGZILLA 278
- * 
- * Revision 1.23 2006/08/23 09:45:14 willuhn
- * @N Restliche DBIteratoren auf PreparedStatements umgestellt
- * 
- * Revision 1.22 2006/05/22 12:54:52 willuhn
- * @N bug 235 (thanks to Markus)
- * 
- * Revision 1.21 2006/04/25 23:25:09 willuhn
- * @N bug 81
- * 
- * Revision 1.20 2006/04/03 21:39:07 willuhn
- * @N UmsatzChart
- * 
- * Revision 1.19 2005/12/30 00:14:45 willuhn
- * @N first working pie charts
- * 
- * Revision 1.18 2005/12/29 01:22:11 willuhn
- * @R UmsatzZuordnung entfernt
- * @B Debugging am Pie-Chart
- * 
- * Revision 1.17 2005/12/20 00:03:26 willuhn
- * @N Test-Code fuer Tortendiagramm-Auswertungen
- * 
- * Revision 1.16 2005/12/13 00:06:31 willuhn
- * @N UmsatzTyp erweitert
- * 
- * Revision 1.15 2005/12/05 20:16:15 willuhn
- * @N Umsatz-Filter Refactoring
- * 
- * Revision 1.14 2005/12/05 17:20:40 willuhn
- * @N Umsatz-Filter Refactoring
- * 
- * Revision 1.13 2005/11/18 00:43:29 willuhn
- * @B bug 21
- * 
- * Revision 1.12 2005/11/14 23:47:20 willuhn
- * @N added first code for umsatz categories
- * 
- * Revision 1.11 2005/05/30 22:55:27 web0 *** empty log message ***
- * 
- * Revision 1.10 2005/02/28 16:28:24 web0
- * @N first code for "Sammellastschrift"
- * 
- * Revision 1.9 2004/11/12 18:25:07 willuhn *** empty log message ***
- * 
- * Revision 1.8 2004/08/18 23:13:51 willuhn
- * @D Javadoc
- * 
- * Revision 1.7 2004/07/25 17:15:06 willuhn
- * @C PluginLoader is no longer static
- * 
- * Revision 1.6 2004/07/23 15:51:44 willuhn
- * @C Rest des Refactorings
- * 
- * Revision 1.5 2004/07/21 23:54:30 willuhn *** empty log message ***
- * 
- * Revision 1.4 2004/07/13 22:20:37 willuhn
- * @N Code fuer DauerAuftraege
- * @C paar Funktionsnamen umbenannt
- * 
- * Revision 1.3 2004/06/30 20:58:29 willuhn *** empty log message ***
- * 
- * Revision 1.2 2004/06/17 00:14:10 willuhn
- * @N GenericObject, GenericIterator
- * 
- * Revision 1.1 2004/05/25 23:23:17 willuhn
- * @N UeberweisungTyp
- * @N Protokoll
- * 
  ******************************************************************************/
