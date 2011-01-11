@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.37 $
- * $Date: 2010/12/10 12:38:45 $
+ * $Revision: 1.38 $
+ * $Date: 2011/01/11 22:44:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -33,6 +33,7 @@ import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.DialogInput;
@@ -78,21 +79,20 @@ public class KontoauszugList extends UmsatzList
   private static Date endDate          = null;
   private static Integer currentTab    = null;
   
-  // Suche nach Konto/zeitraum
+  // Konto/Zeitraum/Suchbegriff/nur geprueft
+  private TextInput text               = null;
+  private CheckboxInput unchecked      = null;
   private KontoInput kontoAuswahl      = null;
   private DateInput start              = null;
   private DateInput end                = null;
   private UmsatzTypInput kategorie     = null;
 
-  // Suche nach Gegenkonto
+  // Gegenkonto/Betrag
   private DialogInput gegenkontoNummer = null;
   private TextInput gegenkontoName     = null;
   private TextInput gegenkontoBLZ      = null;
-  
-  // Suche nach Betrag
   private DecimalInput betragFrom      = null;
   private DecimalInput betragTo        = null;
-  private TextInput text               = null;
 
   private Listener listener            = null;
   
@@ -142,17 +142,18 @@ public class KontoauszugList extends UmsatzList
 
     {
       TabGroup tab = new TabGroup(folder,i18n.tr("Konto/Zeitraum/Suchbegriff"));
-      tab.addLabelPair(i18n.tr("Zweck/Notiz/Art enthält"),this.getText());
 
       ColumnLayout columns = new ColumnLayout(tab.getComposite(),2);
       
       Container left = new SimpleContainer(columns.getComposite());
-      left.addLabelPair(i18n.tr("Konto"),     this.getKontoAuswahl());
-      left.addLabelPair(i18n.tr("Kategorie"), this.getKategorie());
+      left.addLabelPair(i18n.tr("Zweck/Notiz/Art enthält"), this.getText());
+      left.addLabelPair(i18n.tr("Konto"),                   this.getKontoAuswahl());
+      left.addLabelPair(i18n.tr("Kategorie"),               this.getKategorie());
       
       Container right = new SimpleContainer(columns.getComposite());
-      right.addLabelPair(i18n.tr("Start-Datum"), this.getStart());
-      right.addLabelPair(i18n.tr("End-Datum"),          this.getEnd());
+      right.addCheckbox(this.getUnChecked(),i18n.tr("Nur ungeprüfte Umsätze"));
+      right.addLabelPair(i18n.tr("Start-Datum"),            this.getStart());
+      right.addLabelPair(i18n.tr("End-Datum"),              this.getEnd());
     }
     
     {
@@ -270,6 +271,19 @@ public class KontoauszugList extends UmsatzList
     return this.kontoAuswahl;
   }
 
+  /**
+   * Liefert eine Checkbox, um nur die ungeprueften Umsaetze anzuzeigen.
+   * @return Checkbox.
+   */
+  public CheckboxInput getUnChecked()
+  {
+    if (this.unchecked != null)
+      return this.unchecked;
+    
+    this.unchecked = new CheckboxInput(mySettings.getBoolean("kontoauszug.list.unchecked",false));
+    this.unchecked.addListener(this.listener);
+    return this.unchecked;
+  }
   /**
    * Liefert ein Auswahl-Feld fuer das Start-Datum.
    * @return Auswahl-Feld.
@@ -512,16 +526,17 @@ public class KontoauszugList extends UmsatzList
    */
   private synchronized List<Umsatz> getUmsaetze() throws RemoteException
   {
-    Konto k         = (Konto) getKontoAuswahl().getValue();
-    Date start      = (Date) getStart().getValue();
-    Date end        = (Date) getEnd().getValue();
-    String gkName   = (String) getGegenkontoName().getValue();
-    String gkBLZ    = (String) getGegenkontoBLZ().getValue();
-    String gkNummer = (String) getGegenkontoNummer().getText();
-    Double min      = (Double) getMindestBetrag().getValue();
-    Double max      = (Double) getHoechstBetrag().getValue();
-    String zk       = (String) getText().getValue();
-    UmsatzTyp typ   = (UmsatzTyp) getKategorie().getValue();
+    Konto k           = (Konto) getKontoAuswahl().getValue();
+    Date start        = (Date) getStart().getValue();
+    Date end          = (Date) getEnd().getValue();
+    String gkName     = (String) getGegenkontoName().getValue();
+    String gkBLZ      = (String) getGegenkontoBLZ().getValue();
+    String gkNummer   = (String) getGegenkontoNummer().getText();
+    Double min        = (Double) getMindestBetrag().getValue();
+    Double max        = (Double) getHoechstBetrag().getValue();
+    String zk         = (String) getText().getValue();
+    UmsatzTyp typ     = (UmsatzTyp) getKategorie().getValue();
+    boolean unchecked = ((Boolean) getUnChecked().getValue()).booleanValue();
     
     DBIterator umsaetze = UmsatzUtil.getUmsaetzeBackwards();
     
@@ -577,6 +592,13 @@ public class KontoauszugList extends UmsatzList
       Umsatz u = (Umsatz) umsaetze.next();
       if (typ != null && !typ.matches(u))
         continue;
+      
+      if (unchecked)
+      {
+        // Nur ungepruefte anzeigen
+        if ((u.getFlags() & Umsatz.FLAG_CHECKED) != 0)
+          continue;
+      }
       result.add(u);
     }
     return result;
@@ -642,6 +664,7 @@ public class KontoauszugList extends UmsatzList
       getGegenkontoBLZ().setValue(null);
       getGegenkontoName().setValue(null);
       getText().setValue(null);
+      getUnChecked().setValue(Boolean.FALSE);
       this.changed = true;
       handleReload();
     }
@@ -679,11 +702,12 @@ public class KontoauszugList extends UmsatzList
             endDate = (Date) getEnd().getValue(); // BUGZILLA 951
             
             // Wir speichern hier alle eingegebenen Suchbegriffe fuer's naechste mal
-            Date from     = (Date) getStart().getValue();
-            Konto k       = (Konto) getKontoAuswahl().getValue();
-            UmsatzTyp typ = (UmsatzTyp) getKategorie().getValue();
-            Double bFrom  = (Double) getMindestBetrag().getValue();
-            Double bTo    = (Double) getHoechstBetrag().getValue();
+            Date from         = (Date) getStart().getValue();
+            Konto k           = (Konto) getKontoAuswahl().getValue();
+            UmsatzTyp typ     = (UmsatzTyp) getKategorie().getValue();
+            Double bFrom      = (Double) getMindestBetrag().getValue();
+            Double bTo        = (Double) getHoechstBetrag().getValue();
+            boolean unchecked = ((Boolean) getUnChecked().getValue()).booleanValue();
             mySettings.setAttribute("kontoauszug.list.from",from == null ? null : HBCI.DATEFORMAT.format(from));
             mySettings.setAttribute("kontoauszug.list.gegenkonto.nummer",getGegenkontoNummer().getText());
             mySettings.setAttribute("kontoauszug.list.gegenkonto.blz",(String) getGegenkontoBLZ().getValue());
@@ -693,6 +717,7 @@ public class KontoauszugList extends UmsatzList
             mySettings.setAttribute("kontoauszug.list.text",(String) getText().getValue());
             mySettings.setAttribute("kontoauszug.list.betrag.from",bFrom == null ? Double.NaN : bFrom.doubleValue());
             mySettings.setAttribute("kontoauszug.list.betrag.to",bTo == null ? Double.NaN : bTo.doubleValue());
+            mySettings.setAttribute("kontoauszug.list.unchecked",unchecked);
           }
           catch (RemoteException re)
           {
@@ -724,6 +749,7 @@ public class KontoauszugList extends UmsatzList
       this.changed = false;
       return b || getStart().hasChanged() ||
                 getEnd().hasChanged() ||
+                getUnChecked().hasChanged() ||
                 getKontoAuswahl().hasChanged() ||
                 getGegenkontoName().hasChanged() ||
                 getGegenkontoNummer().hasChanged() ||
@@ -774,7 +800,10 @@ public class KontoauszugList extends UmsatzList
 
 /*********************************************************************
  * $Log: KontoauszugList.java,v $
- * Revision 1.37  2010/12/10 12:38:45  willuhn
+ * Revision 1.38  2011/01/11 22:44:40  willuhn
+ * @N BUGZILLA 978
+ *
+ * Revision 1.37  2010-12-10 12:38:45  willuhn
  * *** empty log message ***
  *
  * Revision 1.36  2010-12-09 15:56:54  willuhn

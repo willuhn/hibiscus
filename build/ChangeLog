@@ -1,5 +1,6 @@
 2011-??-?? Version 1.13.0
 
+  * NEW: 0040 BUGZILLA 978 - Sortierung nach Flag in Kontoauszuegen, neuer Filter "nur ungepruefte Umsaetze"
   * BUG: 0039 BUGZILLA 977 - Sortierung der Kind-Kategorien nicht beruecksichtigt
   * NEW: 0038 BUGZILLA 669 - MT940-Export fuer Umsaetze
   * NEW: 0037 Fettdruck (bei neuen Umsaetzen) und grauer Text (bei Vormerkbuchungen) jetzt
