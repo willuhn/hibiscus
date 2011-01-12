@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/MT940UmsatzExporter.java,v $
- * $Revision: 1.2 $
- * $Date: 2011/01/12 17:37:43 $
+ * $Revision: 1.3 $
+ * $Date: 2011/01/12 17:39:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -92,7 +92,7 @@ public class MT940UmsatzExporter implements Exporter
     		//Valuta Datum des Kontosaldos leider nicht verfügbar, deswegen wird Datum der Umsatzwertstellung genommen
         out.write(":60F:");
     		out.write(anfangsSaldo >= 0.0d ? "C" : "D");
-    		out.write(DF_YYMMDD.format(u.getDatum()) + curr + HBCI.DECIMALFORMAT.format(anfangsSaldo) + NL);
+    		out.write(DF_YYMMDD.format(u.getDatum()) + curr + HBCI.DECIMALFORMAT.format(anfangsSaldo).replace("-","") + NL);
 
 
         out.write(":61:" + DF_YYMMDD.format(u.getValuta()) + DF_MMDD.format(u.getDatum()));
@@ -251,7 +251,10 @@ public class MT940UmsatzExporter implements Exporter
 
 /*********************************************************************
  * $Log: MT940UmsatzExporter.java,v $
- * Revision 1.2  2011/01/12 17:37:43  willuhn
+ * Revision 1.3  2011/01/12 17:39:46  willuhn
+ * @B "-" entfernen
+ *
+ * Revision 1.2  2011-01-12 17:37:43  willuhn
  * @C MT940-Import und -Export sollten den gleichen Namen tragen
  *
  * Revision 1.1  2011-01-05 00:10:11  willuhn
