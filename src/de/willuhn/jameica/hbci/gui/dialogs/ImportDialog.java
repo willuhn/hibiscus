@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/ImportDialog.java,v $
- * $Revision: 1.14 $
- * $Date: 2011/01/12 17:54:08 $
+ * $Revision: 1.15 $
+ * $Date: 2011/01/12 18:23:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -61,6 +61,8 @@ public class ImportDialog extends AbstractDialog
   private GenericObject context   = null;	
   private Class type              = null;
   
+  private Settings  settings      = null;
+
   /**
    * ct.
    * @param context Context.
@@ -75,6 +77,9 @@ public class ImportDialog extends AbstractDialog
     
 		this.setTitle(i18n.tr("Daten-Import"));
     this.setSize(WINDOW_WIDTH,SWT.DEFAULT);
+
+    settings = new Settings(this.getClass());
+    settings.setStoreWhenRead(true);
   }
 
   /**
@@ -129,8 +134,7 @@ public class ImportDialog extends AbstractDialog
     if (imp == null || imp.importer == null)
       throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Import-Format aus"));
 
-    Settings settings = new Settings(this.getClass());
-    settings.setStoreWhenRead(true);
+    settings.setAttribute("lastformat",imp.format.getName());
 
     FileDialog fd = new FileDialog(GUI.getShell(),SWT.OPEN);
     fd.setText(i18n.tr("Bitte wählen Sie die Datei aus, welche für den Import verwendet werden soll."));
@@ -214,9 +218,10 @@ public class ImportDialog extends AbstractDialog
 
     Importer[] importers = IORegistry.getImporters();
 
-    ArrayList l = new ArrayList();
-
-    int size = 0;
+    int size          = 0;
+    ArrayList l       = new ArrayList();
+    String lastFormat = settings.getString("lastformat",null);
+    Imp selected      = null;
 
     for (int i=0;i<importers.length;++i)
 		{
@@ -232,7 +237,12 @@ public class ImportDialog extends AbstractDialog
       for (int j=0;j<formats.length;++j)
       {
         size++;
-        l.add(new Imp(imp,formats[j]));
+        Imp im = new Imp(imp,formats[j]);
+        l.add(im);
+
+        String lf = im.format.getName();
+        if (lastFormat != null && lf != null && lf.equals(lastFormat))
+          selected = im;
       }
 		}
 
@@ -244,7 +254,7 @@ public class ImportDialog extends AbstractDialog
 
     Collections.sort(l);
 		Imp[] imp = (Imp[]) l.toArray(new Imp[size]);
-		importerListe = new SelectInput(PseudoIterator.fromArray(imp),null);
+		importerListe = new SelectInput(PseudoIterator.fromArray(imp),selected);
 		return importerListe;
 	}
 
@@ -335,7 +345,10 @@ public class ImportDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: ImportDialog.java,v $
- * Revision 1.14  2011/01/12 17:54:08  willuhn
+ * Revision 1.15  2011/01/12 18:23:04  willuhn
+ * @N Letztes ausgewaehltes Import-Format merken
+ *
+ * Revision 1.14  2011-01-12 17:54:08  willuhn
  * @C Format-Namen sortieren
  *
  * Revision 1.13  2011-01-12 17:53:05  willuhn
