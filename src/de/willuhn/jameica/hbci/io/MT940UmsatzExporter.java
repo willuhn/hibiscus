@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/MT940UmsatzExporter.java,v $
- * $Revision: 1.4 $
- * $Date: 2011/01/12 17:46:30 $
+ * $Revision: 1.5 $
+ * $Date: 2011/01/12 18:03:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -64,7 +64,6 @@ public class MT940UmsatzExporter implements Exporter
         monitor.setStatusText(i18n.tr("Exportiere Daten"));
       }
 
-      
       for (int i=0;i<objects.length;++i)
       {
         if (monitor != null)  
@@ -82,6 +81,7 @@ public class MT940UmsatzExporter implements Exporter
     		Konto k     = u.getKonto();
     		String curr = k.getWaehrung();
 
+        out.write(NL + ":20:Hibiscus" + NL);
     		out.write(":25:" + k.getBLZ() + "/" + k.getKontonummer() + curr + NL);
     		
     		//(Schlusssaldo - Umsatzbetrag) > 0 -> Soll-Haben-Kennung für den Anfangssaldo = C
@@ -99,10 +99,8 @@ public class MT940UmsatzExporter implements Exporter
 
         // Soll-Haben-Kennung für den Betrag ermitteln
     		double betrag = u.getBetrag();
-    		if (betrag >= 0.0d)
-    		  out.write("CR" + HBCI.DECIMALFORMAT.format(betrag));
-    		else
-          out.write("DR" + HBCI.DECIMALFORMAT.format(betrag).replace("-",""));
+        out.write(betrag >= 0.0d ? "CR" : "DR");
+        out.write(HBCI.DECIMALFORMAT.format(betrag).replace("-",""));
     		
     		out.write("NTRF" + notNull(u.getCustomerRef(),"NONREF") + NL);
 
@@ -251,7 +249,10 @@ public class MT940UmsatzExporter implements Exporter
 
 /*********************************************************************
  * $Log: MT940UmsatzExporter.java,v $
- * Revision 1.4  2011/01/12 17:46:30  willuhn
+ * Revision 1.5  2011/01/12 18:03:14  willuhn
+ * @B Tag :20: (Auftragsreferenz-Nr.) fehlte. Konnte sonst nicht von HBCI4Java (sprich Hibiscus MT940-Import) wieder gelesen werden. Und das waer schon maechtig doof, wenn Hibiscus die eigenen Exports nicht lesen kann ;)
+ *
+ * Revision 1.4  2011-01-12 17:46:30  willuhn
  * @B Zeiger im Array fehlte
  *
  * Revision 1.3  2011-01-12 17:39:46  willuhn
