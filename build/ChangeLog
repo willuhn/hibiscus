@@ -1,5 +1,7 @@
 2011-??-?? Version 1.13.0
 
+  * NEW: 0043 BUGZILLA 887 - BLZ der Deutschen Bank Berlin zu DeutscheBankUmsatzRewriter hinzugefuegt
+  * NEW: 0042 ImportDialog zeigt Import-Formate sortiert an und merkt sich die letzte Auswahl
   * BUG: 0041 Debugging MT940-Export
   * NEW: 0040 BUGZILLA 978 - Sortierung nach Flag in Kontoauszuegen, neuer Filter "nur ungepruefte Umsaetze"
   * BUG: 0039 BUGZILLA 977 - Sortierung der Kind-Kategorien nicht beruecksichtigt
