@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/MT940UmsatzExporter.java,v $
- * $Revision: 1.3 $
- * $Date: 2011/01/12 17:39:46 $
+ * $Revision: 1.4 $
+ * $Date: 2011/01/12 17:46:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -123,7 +123,7 @@ public class MT940UmsatzExporter implements Exporter
         {
           for (int j=0;j<s3.length;++j)
           {
-            out.write("?2" + (j+2) + s3);
+            out.write("?2" + (j+2) + s3[j]);
           }
         }
 
@@ -251,7 +251,10 @@ public class MT940UmsatzExporter implements Exporter
 
 /*********************************************************************
  * $Log: MT940UmsatzExporter.java,v $
- * Revision 1.3  2011/01/12 17:39:46  willuhn
+ * Revision 1.4  2011/01/12 17:46:30  willuhn
+ * @B Zeiger im Array fehlte
+ *
+ * Revision 1.3  2011-01-12 17:39:46  willuhn
  * @B "-" entfernen
  *
  * Revision 1.2  2011-01-12 17:37:43  willuhn
