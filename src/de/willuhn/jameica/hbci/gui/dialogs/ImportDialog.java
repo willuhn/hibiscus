@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/ImportDialog.java,v $
- * $Revision: 1.13 $
- * $Date: 2011/01/12 17:53:05 $
+ * $Revision: 1.14 $
+ * $Date: 2011/01/12 17:54:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -259,7 +259,7 @@ public class ImportDialog extends AbstractDialog
 	/**
 	 * Hilfsklasse zur Anzeige der Importer.
    */
-  private class Imp implements GenericObject
+  private class Imp implements GenericObject, Comparable
 	{
 		private Importer importer = null;
     private IOFormat format   = null;
@@ -311,13 +311,34 @@ public class ImportDialog extends AbstractDialog
 	      return false;
 	    return this.getID().equals(arg0.getID());
     }
+
+    /**
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    public int compareTo(Object o)
+    {
+      if (o == null || !(o instanceof Imp))
+        return -1;
+      try
+      {
+        return this.format.getName().compareTo(((Imp)o).format.getName());
+      }
+      catch (Exception e)
+      {
+        // Tss, dann halt nicht
+      }
+      return 0;
+    }
 	}
 }
 
 
 /**********************************************************************
  * $Log: ImportDialog.java,v $
- * Revision 1.13  2011/01/12 17:53:05  willuhn
+ * Revision 1.14  2011/01/12 17:54:08  willuhn
+ * @C Format-Namen sortieren
+ *
+ * Revision 1.13  2011-01-12 17:53:05  willuhn
  * @C Format-Namen sortieren
  *
  * Revision 1.12  2010/04/25 21:01:46  willuhn
