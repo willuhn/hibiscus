@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/Attic/Termine.java,v $
- * $Revision: 1.3 $
- * $Date: 2010/11/25 21:55:57 $
+ * $Revision: 1.4 $
+ * $Date: 2011/01/14 17:33:41 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -13,6 +13,7 @@ package de.willuhn.jameica.hbci.gui.parts;
 
 import de.willuhn.jameica.gui.calendar.AppointmentProvider;
 import de.willuhn.jameica.gui.calendar.CalendarPart;
+import de.willuhn.jameica.gui.calendar.ReminderAppointmentProvider;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.plugin.PluginLoader;
@@ -58,6 +59,9 @@ public class Termine extends CalendarPart
     {
       Logger.debug("no appointment providers found");
     }
+    
+    // Den Appointment-Provider von Jameica selbst (fuer die Reminder) haengen wir auch noch an
+    this.addAppointmentProvider(new ReminderAppointmentProvider());
   }
 }
 
@@ -65,7 +69,10 @@ public class Termine extends CalendarPart
 
 /**********************************************************************
  * $Log: Termine.java,v $
- * Revision 1.3  2010/11/25 21:55:57  willuhn
+ * Revision 1.4  2011/01/14 17:33:41  willuhn
+ * @N Erster Code fuer benutzerdefinierte Erinnerungen via Reminder-Framework
+ *
+ * Revision 1.3  2010-11-25 21:55:57  willuhn
  * @C Nur Termine aus Hibiscus anzeigen
  *
  * Revision 1.2  2010-11-22 00:52:53  willuhn

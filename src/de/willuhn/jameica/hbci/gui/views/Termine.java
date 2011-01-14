@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/Termine.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/11/21 23:57:58 $
+ * $Revision: 1.3 $
+ * $Date: 2011/01/14 17:33:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -47,6 +47,7 @@ public class Termine extends AbstractView
 
 		ButtonArea buttons = new ButtonArea();
     buttons.addButton(new Back(false));
+    // buttons.addButton(new ReminderNew());
     buttons.paint(getParent());
   }
 
@@ -62,7 +63,10 @@ public class Termine extends AbstractView
 
 /**********************************************************************
  * $Log: Termine.java,v $
- * Revision 1.2  2010/11/21 23:57:58  willuhn
+ * Revision 1.3  2011/01/14 17:33:41  willuhn
+ * @N Erster Code fuer benutzerdefinierte Erinnerungen via Reminder-Framework
+ *
+ * Revision 1.2  2010-11-21 23:57:58  willuhn
  * @N Wir merken uns das letzte Datum und springen wieder zu dem zurueck, wenn wir z.Bsp. aus der Detail-Ansicht eines Auftrages zurueckkommen
  *
  * Revision 1.1  2010-11-19 18:37:20  willuhn
