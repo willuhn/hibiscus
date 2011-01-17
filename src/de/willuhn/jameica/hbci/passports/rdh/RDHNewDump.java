@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/RDHNewDump.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/06/17 11:26:48 $
+ * $Revision: 1.2 $
+ * $Date: 2011/01/17 17:32:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -42,7 +42,7 @@ import org.xml.sax.SAXException;
  * Der Code ist aus "HBCIPassportRDHNew" (HBCI4Java) zusammenkopiert.
  * Aufruf:
  * 
- * java -cp hbci4java-....jar:hbci_passport_rdh.jar \
+ * java -cp hbci4java-....jar \
  *   de.willuhn.jameica.hbci.passports.rdh.RDHNewDump \
  *   <Schluesseldatei> <Passwort>
  * 
@@ -59,7 +59,7 @@ public class RDHNewDump
     if (args == null || args.length != 2)
     {
       System.err.println("Usage:");
-      System.err.println("java -cp hbci4java-....jar:hbci_passport_rdh.jar \\" +
+      System.err.println("java -cp hbci4java-....jar \\" +
                          "\n  de.willuhn.jameica.hbci.passports.rdh.RDHNewDump \\" + 
                          "\n  <Schluesseldatei> <Passwort>\n");
       System.exit(1);
@@ -119,6 +119,9 @@ public class RDHNewDump
 
 /*********************************************************************
  * $Log: RDHNewDump.java,v $
+ * Revision 1.2  2011/01/17 17:32:33  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2010/06/17 11:26:48  willuhn
  * @B In HBCICallbackSWT wurden die RDH-Passports nicht korrekt ausgefiltert
  * @C komplettes Projekt "hbci_passport_rdh" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
