@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractFromToList.java,v $
- * $Revision: 1.9 $
- * $Date: 2010/08/16 11:13:52 $
+ * $Revision: 1.10 $
+ * $Date: 2011/01/20 17:13:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -39,9 +39,9 @@ import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
@@ -115,7 +115,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
     {
       Calendar cal = Calendar.getInstance();
       cal.set(Calendar.DAY_OF_MONTH,1);
-      dFrom = HBCIProperties.startOfDay(cal.getTime());
+      dFrom = DateUtil.startOfDay(cal.getTime());
     }
     
     this.from = new DateInput(dFrom, HBCI.DATEFORMAT);
@@ -281,7 +281,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
           mySettings.setAttribute("transferlist.filter.from",dfrom == null ? (String)null : HBCI.DATEFORMAT.format(dfrom));
             
           // Das End-Datum speichern wir nur, wenn es nicht das aktuelle Datum ist
-          if (dto != null && !HBCIProperties.startOfDay(new Date()).equals(HBCIProperties.startOfDay(dto)))
+          if (dto != null && !DateUtil.startOfDay(new Date()).equals(DateUtil.startOfDay(dto)))
             mySettings.setAttribute("transferlist.filter.to",HBCI.DATEFORMAT.format(dto));
           else
             mySettings.setAttribute("transferlist.filter.to",(String)null);
@@ -353,7 +353,10 @@ public abstract class AbstractFromToList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: AbstractFromToList.java,v $
- * Revision 1.9  2010/08/16 11:13:52  willuhn
+ * Revision 1.10  2011/01/20 17:13:21  willuhn
+ * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
+ *
+ * Revision 1.9  2010-08-16 11:13:52  willuhn
  * @N In den Auftragslisten kann jetzt auch nach einem Text gesucht werden
  *
  * Revision 1.8  2007/06/04 23:23:47  willuhn

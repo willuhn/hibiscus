@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.108 $
- * $Date: 2010/12/14 12:48:00 $
+ * $Revision: 1.109 $
+ * $Date: 2011/01/20 17:13:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -36,6 +36,7 @@ import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -405,7 +406,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
     if (days > 0)
     {
       long d = days * 24l * 60l * 60l * 1000l;
-      Date start = HBCIProperties.startOfDay(new Date(System.currentTimeMillis() - d));
+      Date start = DateUtil.startOfDay(new Date(System.currentTimeMillis() - d));
       list.addFilter("valuta >= ?", new Object[] {new java.sql.Date(start.getTime())});
     }
     return list;
@@ -419,9 +420,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
     DBIterator list = UmsatzUtil.getUmsaetzeBackwards();
     list.addFilter("konto_id = " + getID());
     if (start != null)
-      list.addFilter("valuta >= ?", new Object[] {new java.sql.Date(HBCIProperties.startOfDay(start).getTime())});
+      list.addFilter("valuta >= ?", new Object[] {new java.sql.Date(DateUtil.startOfDay(start).getTime())});
     if (end != null)
-      list.addFilter("valuta <= ?", new Object[] {new java.sql.Date(HBCIProperties.endOfDay(end).getTime())});
+      list.addFilter("valuta <= ?", new Object[] {new java.sql.Date(DateUtil.endOfDay(end).getTime())});
     return list;
   }
 
@@ -752,7 +753,10 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*******************************************************************************
  * $Log: KontoImpl.java,v $
- * Revision 1.108  2010/12/14 12:48:00  willuhn
+ * Revision 1.109  2011/01/20 17:13:21  willuhn
+ * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
+ *
+ * Revision 1.108  2010-12-14 12:48:00  willuhn
  * @B Cache wurde nicht immer korrekt aktualisiert, was dazu fuehren konnte, dass sich das Aendern/Loeschen/Anlegen von Kategorien erst nach 10 Sekunden auswirkte und bis dahin Umsaetze der Kategorie "nicht zugeordnet" zugewiesen wurden, obwohl sie in einer Kategorie waren
  *
  * Revision 1.107  2010-09-29 23:46:18  willuhn

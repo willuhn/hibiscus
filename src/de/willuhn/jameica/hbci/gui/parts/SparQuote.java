@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SparQuote.java,v $
- * $Revision: 1.27 $
- * $Date: 2010/11/29 22:44:30 $
+ * $Revision: 1.28 $
+ * $Date: 2011/01/20 17:13:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -57,6 +57,7 @@ import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Level;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -94,7 +95,7 @@ public class SparQuote implements Part
     cal.set(Calendar.DAY_OF_MONTH,1);
     cal.set(Calendar.MONTH,Calendar.JANUARY);
     cal.add(Calendar.YEAR,-1);
-    this.start = HBCIProperties.startOfDay(cal.getTime());
+    this.start = DateUtil.startOfDay(cal.getTime());
     
     this.listener = new Listener()
     {
@@ -106,10 +107,10 @@ public class SparQuote implements Part
           stichtag = value == null ? 1 : value.intValue();
           
           start = (Date) getStartAuswahl().getValue();
-          if (start != null && !start.before(HBCIProperties.startOfDay(new Date())))
+          if (start != null && !start.before(DateUtil.startOfDay(new Date())))
           {
             // Datum darf sich nicht in der Zukunft befinden. Wir resetten das Datum
-            start = HBCIProperties.startOfDay(cal.getTime());
+            start = DateUtil.startOfDay(cal.getTime());
             getStartAuswahl().setValue(start);
           }
 
@@ -320,7 +321,7 @@ public class SparQuote implements Part
         else
           cal.set(Calendar.DAY_OF_MONTH, stichtag);
 
-        currentLimit = HBCIProperties.startOfDay(cal.getTime());
+        currentLimit = DateUtil.startOfDay(cal.getTime());
       }
       
       double betrag = u.getBetrag();
@@ -509,7 +510,10 @@ public class SparQuote implements Part
 
 /*********************************************************************
  * $Log: SparQuote.java,v $
- * Revision 1.27  2010/11/29 22:44:30  willuhn
+ * Revision 1.28  2011/01/20 17:13:21  willuhn
+ * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
+ *
+ * Revision 1.27  2010-11-29 22:44:30  willuhn
  * @B getCurve() wurde falsch rum interpretiert ;)
  *
  * Revision 1.26  2010-11-24 16:27:17  willuhn

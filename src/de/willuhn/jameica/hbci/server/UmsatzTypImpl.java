@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.61 $
- * $Date: 2011/01/10 22:29:24 $
+ * $Revision: 1.62 $
+ * $Date: 2011/01/20 17:13:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,11 +26,11 @@ import de.willuhn.datasource.db.AbstractDBObjectNode;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -123,7 +123,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
     if (days > 0)
     {
       long d = days * 24l * 60l * 60l * 1000l;
-      start = HBCIProperties.startOfDay(new Date(System.currentTimeMillis() - d));
+      start = DateUtil.startOfDay(new Date(System.currentTimeMillis() - d));
     }
     return getUmsaetze(start, null);
   }
@@ -589,7 +589,10 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
 
 /*******************************************************************************
  * $Log: UmsatzTypImpl.java,v $
- * Revision 1.61  2011/01/10 22:29:24  willuhn
+ * Revision 1.62  2011/01/20 17:13:21  willuhn
+ * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
+ *
+ * Revision 1.61  2011-01-10 22:29:24  willuhn
  * @B BUGZILLA 977
  *
  * Revision 1.60  2010-12-14 12:47:59  willuhn

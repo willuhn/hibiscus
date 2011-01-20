@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractSammelTransferList.java,v $
- * $Revision: 1.13 $
- * $Date: 2010/11/01 23:00:32 $
+ * $Revision: 1.14 $
+ * $Date: 2011/01/20 17:13:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,6 +43,7 @@ import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
 
 /**
@@ -129,8 +130,8 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
     HBCIDBService service = (HBCIDBService) Settings.getDBService();
     
     DBIterator list = service.createList(getObjectType());
-    if (from != null) list.addFilter("termin >= ?", new Object[]{new java.sql.Date(HBCIProperties.startOfDay(from).getTime())});
-    if (to   != null) list.addFilter("termin <= ?", new Object[]{new java.sql.Date(HBCIProperties.endOfDay(to).getTime())});
+    if (from != null) list.addFilter("termin >= ?", new Object[]{new java.sql.Date(DateUtil.startOfDay(from).getTime())});
+    if (to   != null) list.addFilter("termin <= ?", new Object[]{new java.sql.Date(DateUtil.endOfDay(to).getTime())});
     if (text != null && text.length() > 0)
     {
       list.addFilter("LOWER(bezeichnung) like ?", new Object[]{"%" + text.toLowerCase() + "%"});
@@ -223,7 +224,10 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
 
 /**********************************************************************
  * $Log: AbstractSammelTransferList.java,v $
- * Revision 1.13  2010/11/01 23:00:32  willuhn
+ * Revision 1.14  2011/01/20 17:13:21  willuhn
+ * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
+ *
+ * Revision 1.13  2010-11-01 23:00:32  willuhn
  * @N Ausgefuehrte Sammel-Auftraege in grau anzeigen
  *
  * Revision 1.12  2010-08-16 11:13:52  willuhn

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.38 $
- * $Date: 2011/01/11 22:44:40 $
+ * $Revision: 1.39 $
+ * $Date: 2011/01/20 17:13:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -66,6 +66,7 @@ import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -547,8 +548,8 @@ public class KontoauszugList extends UmsatzList
     // Zeitraum
     // Der Warnhinweis wird nicht fuer den Zeitraum angezeigt, da der
     // immer vorhanden ist
-    if (start != null) umsaetze.addFilter("valuta >= ?", new Object[]{new java.sql.Date(HBCIProperties.startOfDay(start).getTime())});
-    if (end != null)   umsaetze.addFilter("valuta <= ?", new Object[]{new java.sql.Date(HBCIProperties.endOfDay(end).getTime())});
+    if (start != null) umsaetze.addFilter("valuta >= ?", new Object[]{new java.sql.Date(DateUtil.startOfDay(start).getTime())});
+    if (end != null)   umsaetze.addFilter("valuta <= ?", new Object[]{new java.sql.Date(DateUtil.endOfDay(end).getTime())});
     /////////////////////////////////////////////////////////////////
     // Gegenkonto
     if (gkBLZ    != null && gkBLZ.length() > 0)    {umsaetze.addFilter("empfaenger_blz like ?",new Object[]{"%" + gkBLZ + "%"});hasFilter = true;}
@@ -800,7 +801,10 @@ public class KontoauszugList extends UmsatzList
 
 /*********************************************************************
  * $Log: KontoauszugList.java,v $
- * Revision 1.38  2011/01/11 22:44:40  willuhn
+ * Revision 1.39  2011/01/20 17:13:21  willuhn
+ * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
+ *
+ * Revision 1.38  2011-01-11 22:44:40  willuhn
  * @N BUGZILLA 978
  *
  * Revision 1.37  2010-12-10 12:38:45  willuhn

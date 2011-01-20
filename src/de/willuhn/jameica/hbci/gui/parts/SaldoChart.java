@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SaldoChart.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/08/12 17:12:32 $
+ * $Revision: 1.3 $
+ * $Date: 2011/01/20 17:13:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -34,7 +34,6 @@ import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.chart.ChartDataSaldoSumme;
 import de.willuhn.jameica.hbci.gui.chart.ChartDataSaldoTrend;
@@ -46,6 +45,7 @@ import de.willuhn.jameica.hbci.gui.input.UmsatzDaysInput;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -268,7 +268,7 @@ public class SaldoChart implements Part
         else
         {
           long d = start * 24l * 60l * 60l * 1000l;
-          date = HBCIProperties.startOfDay(new Date(System.currentTimeMillis() - d));
+          date = DateUtil.startOfDay(new Date(System.currentTimeMillis() - d));
         }
         
         if (date == null)
@@ -333,7 +333,7 @@ public class SaldoChart implements Part
         if (start > 0)
         {
           long d = start * 24l * 60l * 60l * 1000l;
-          Date date = HBCIProperties.startOfDay(new Date(System.currentTimeMillis() - d));
+          Date date = DateUtil.startOfDay(new Date(System.currentTimeMillis() - d));
           range.setComment(i18n.tr("ab {0}",HBCI.DATEFORMAT.format(date)));
         }
         else
@@ -352,7 +352,10 @@ public class SaldoChart implements Part
 
 /*********************************************************************
  * $Log: SaldoChart.java,v $
- * Revision 1.2  2010/08/12 17:12:32  willuhn
+ * Revision 1.3  2011/01/20 17:13:21  willuhn
+ * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
+ *
+ * Revision 1.2  2010-08-12 17:12:32  willuhn
  * @N Saldo-Chart komplett ueberarbeitet (Daten wurden vorher mehrmals geladen, Summen-Funktion, Anzeige mehrerer Konten, Durchschnitt ueber mehrere Konten, Bugfixing, echte "Homogenisierung" der Salden via SaldoFinder)
  *
  * Revision 1.1  2010-08-11 16:06:05  willuhn

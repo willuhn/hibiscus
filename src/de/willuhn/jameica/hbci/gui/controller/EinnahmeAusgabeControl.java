@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EinnahmeAusgabeControl.java,v $
- * $Revision: 1.17 $
- * $Date: 2010/08/24 17:38:04 $
+ * $Revision: 1.18 $
+ * $Date: 2011/01/20 17:13:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -42,6 +42,7 @@ import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.EinnahmeAusgabe;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
@@ -111,7 +112,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
     cal.set(Calendar.MONTH, Calendar.JANUARY);
     cal.set(Calendar.DATE, 1);
 
-    Date d = HBCIProperties.startOfDay(cal.getTime());
+    Date d = DateUtil.startOfDay(cal.getTime());
     try
     {
       String s = settings.getString("laststart", null);
@@ -244,8 +245,8 @@ public class EinnahmeAusgabeControl extends AbstractControl
     Date end    = (Date) this.getEnd().getValue();
     
     // Uhrzeit zuruecksetzen, falls vorhanden
-    if (start != null) start = HBCIProperties.startOfDay(start);
-    if (end != null) end = HBCIProperties.startOfDay(end);
+    if (start != null) start = DateUtil.startOfDay(start);
+    if (end != null) end = DateUtil.startOfDay(end);
 
     // Wird nur ein Konto ausgewertet?
     if (konto != null)
@@ -315,7 +316,10 @@ public class EinnahmeAusgabeControl extends AbstractControl
 
 /*******************************************************************************
  * $Log: EinnahmeAusgabeControl.java,v $
- * Revision 1.17  2010/08/24 17:38:04  willuhn
+ * Revision 1.18  2011/01/20 17:13:21  willuhn
+ * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
+ *
+ * Revision 1.17  2010-08-24 17:38:04  willuhn
  * @N BUGZILLA 896
  *
  * Revision 1.16  2010/06/07 22:41:13  willuhn

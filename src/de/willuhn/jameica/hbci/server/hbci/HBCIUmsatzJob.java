@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUmsatzJob.java,v $
- * $Revision: 1.55 $
- * $Date: 2010/10/11 21:25:42 $
+ * $Revision: 1.56 $
+ * $Date: 2011/01/20 17:13:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -36,6 +36,7 @@ import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.plugin.PluginResources;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.Settings;
+import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
@@ -94,7 +95,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
           this.saldoDatum = cal.getTime();
         }
         
-        this.saldoDatum = HBCIProperties.startOfDay(this.saldoDatum);
+        this.saldoDatum = DateUtil.startOfDay(this.saldoDatum);
         Logger.info("startdate: " + HBCI.LONGDATEFORMAT.format(this.saldoDatum));
         setJobParam("startdate", this.saldoDatum);
       }
@@ -296,7 +297,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
         
         // Keine neuen vorgemerkten Umsaetze 
         Logger.info("clean obsolete not-booked entries");
-        Date current = HBCIProperties.startOfDay(new Date());
+        Date current = DateUtil.startOfDay(new Date());
         int count = 0;
         existing.begin();
         while (existing.hasNext())
@@ -349,7 +350,10 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIUmsatzJob.java,v $
- * Revision 1.55  2010/10/11 21:25:42  willuhn
+ * Revision 1.56  2011/01/20 17:13:21  willuhn
+ * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
+ *
+ * Revision 1.55  2010-10-11 21:25:42  willuhn
  * @B Da das Notbooked-Flag jetzt Bestandteil der Checksumme ist, muss das Flag vor dem contains() gemacht werden
  *
  * Revision 1.54  2010-10-07 21:02:36  willuhn

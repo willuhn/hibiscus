@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/ChartDataSaldoVerlauf.java,v $
- * $Revision: 1.16 $
- * $Date: 2010/11/24 16:27:17 $
+ * $Revision: 1.17 $
+ * $Date: 2011/01/20 17:13:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,10 +20,10 @@ import java.util.Date;
 import java.util.List;
 
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.hbci.util.SaldoFinder;
+import de.willuhn.jameica.util.DateUtil;
 
 /**
  * Implementierung eines Datensatzes fuer die Darstellung des Saldenverlaufs.
@@ -79,7 +79,7 @@ public class ChartDataSaldoVerlauf extends AbstractChartDataSaldo
     
     Calendar cal = Calendar.getInstance();
     cal.setTime(start);
-    Date end = HBCIProperties.endOfDay(new Date());
+    Date end = DateUtil.endOfDay(new Date());
     
     while (!start.after(end))
     {
@@ -107,7 +107,10 @@ public class ChartDataSaldoVerlauf extends AbstractChartDataSaldo
 
 /*********************************************************************
  * $Log: ChartDataSaldoVerlauf.java,v $
- * Revision 1.16  2010/11/24 16:27:17  willuhn
+ * Revision 1.17  2011/01/20 17:13:21  willuhn
+ * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
+ *
+ * Revision 1.16  2010-11-24 16:27:17  willuhn
  * @R Eclipse BIRT komplett rausgeworden. Diese unsaegliche Monster ;)
  * @N Stattdessen verwenden wir jetzt SWTChart (http://www.swtchart.org). Das ist statt den 6MB von BIRT sagenhafte 250k gross
  *

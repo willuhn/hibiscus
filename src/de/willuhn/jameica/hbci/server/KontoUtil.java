@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoUtil.java,v $
- * $Revision: 1.3 $
- * $Date: 2010/09/02 12:25:13 $
+ * $Revision: 1.4 $
+ * $Date: 2011/01/20 17:13:21 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -20,11 +20,11 @@ import java.util.Date;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.datasource.rmi.ResultSetExtractor;
-import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.jameica.util.DateUtil;
 
 /**
  * Hilfsklasse mit statischen Funktionen fuer Konten.
@@ -124,7 +124,7 @@ public class KontoUtil
     // denen der Saldo 0 ist, duerfen wir das nicht als Filterkriterium nehmen sondern
     // das NOTBOOKED-Flag pruefen. Leider gibts in SQL keinen standardisierten
     // Binary-AND-Operator, sodass wir das manuell machen muessen.
-    java.sql.Date start = new java.sql.Date(HBCIProperties.startOfDay(datum).getTime());
+    java.sql.Date start = new java.sql.Date(DateUtil.startOfDay(datum).getTime());
 
     DBIterator list = UmsatzUtil.getUmsaetze();
     list.addFilter("konto_id = " + konto.getID());
@@ -164,7 +164,7 @@ public class KontoUtil
   {
     DBIterator list = UmsatzUtil.getUmsaetzeBackwards();
     list.addFilter("konto_id = " + konto.getID());
-    list.addFilter("datum <= ?", new Object[] { new java.sql.Date(HBCIProperties.endOfDay(datum).getTime())});
+    list.addFilter("datum <= ?", new Object[] { new java.sql.Date(DateUtil.endOfDay(datum).getTime())});
     while (list.hasNext())
     {
       Umsatz u = (Umsatz) list.next();
@@ -221,12 +221,12 @@ public class KontoUtil
     String sql = "select SUM(betrag) from umsatz where konto_id = " + konto.getID() + " and betrag " + (ausgaben ? "<" : ">") + " 0";
     if (from != null)
     {
-      params.add(new java.sql.Date(HBCIProperties.startOfDay(from).getTime()));
+      params.add(new java.sql.Date(DateUtil.startOfDay(from).getTime()));
       sql += " and datum >= ? ";
     }
     if (to != null)
     {
-      params.add(new java.sql.Date(HBCIProperties.startOfDay(to).getTime()));
+      params.add(new java.sql.Date(DateUtil.startOfDay(to).getTime()));
       sql += " and datum <= ? ";
     }
 
@@ -252,7 +252,10 @@ public class KontoUtil
 
 /**********************************************************************
  * $Log: KontoUtil.java,v $
- * Revision 1.3  2010/09/02 12:25:13  willuhn
+ * Revision 1.4  2011/01/20 17:13:21  willuhn
+ * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
+ *
+ * Revision 1.3  2010-09-02 12:25:13  willuhn
  * @N BUGZILLA 900
  *
  * Revision 1.2  2010/06/07 22:41:14  willuhn

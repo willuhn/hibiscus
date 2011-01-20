@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/ProtokollList.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/08/16 11:13:52 $
+ * $Revision: 1.6 $
+ * $Date: 2011/01/20 17:13:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,9 +24,9 @@ import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
+import de.willuhn.jameica.util.DateUtil;
 
 /**
  * Implementierung einer fix und fertig vorkonfigurierten Liste mit den Protokollen eines Kontos.
@@ -83,8 +83,8 @@ public class ProtokollList extends AbstractFromToList
   protected DBIterator getList(Date from, Date to, String text) throws RemoteException
   {
     DBIterator list = konto.getProtokolle();
-    if (from != null) list.addFilter("datum >= ?", new Object[]{new java.sql.Date(HBCIProperties.startOfDay(from).getTime())});
-    if (to   != null) list.addFilter("datum <= ?", new Object[]{new java.sql.Date(HBCIProperties.endOfDay(to).getTime())});
+    if (from != null) list.addFilter("datum >= ?", new Object[]{new java.sql.Date(DateUtil.startOfDay(from).getTime())});
+    if (to   != null) list.addFilter("datum <= ?", new Object[]{new java.sql.Date(DateUtil.endOfDay(to).getTime())});
     if (text != null && text.length() > 0)
     {
       list.addFilter("LOWER(kommentar) like ?", new Object[]{"%" + text.toLowerCase() + "%"});
@@ -96,7 +96,10 @@ public class ProtokollList extends AbstractFromToList
 
 /**********************************************************************
  * $Log: ProtokollList.java,v $
- * Revision 1.5  2010/08/16 11:13:52  willuhn
+ * Revision 1.6  2011/01/20 17:13:21  willuhn
+ * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
+ *
+ * Revision 1.5  2010-08-16 11:13:52  willuhn
  * @N In den Auftragslisten kann jetzt auch nach einem Text gesucht werden
  *
  * Revision 1.4  2007/04/24 16:55:00  willuhn

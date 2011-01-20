@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Overview.java,v $
- * $Revision: 1.15 $
- * $Date: 2010/08/12 17:12:32 $
+ * $Revision: 1.16 $
+ * $Date: 2011/01/20 17:13:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -39,6 +39,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.KontoUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
@@ -146,7 +147,7 @@ public class Overview extends AbstractBox implements Box
     cal.setTime(new Date());
     cal.set(Calendar.DAY_OF_MONTH,1);
     
-    this.start = new DateInput(HBCIProperties.startOfDay(cal.getTime()),HBCI.DATEFORMAT);
+    this.start = new DateInput(DateUtil.startOfDay(cal.getTime()),HBCI.DATEFORMAT);
     this.start.addListener(new Listener() {
       public void handleEvent(Event event)
       {
@@ -169,7 +170,7 @@ public class Overview extends AbstractBox implements Box
     cal.setTime(new Date());
     cal.set(Calendar.DAY_OF_MONTH,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
 
-    this.end = new DateInput(HBCIProperties.endOfDay(cal.getTime()),HBCI.DATEFORMAT);
+    this.end = new DateInput(DateUtil.endOfDay(cal.getTime()),HBCI.DATEFORMAT);
     this.end.addListener(new Listener() {
       public void handleEvent(Event event)
       {
@@ -308,7 +309,10 @@ public class Overview extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: Overview.java,v $
- * Revision 1.15  2010/08/12 17:12:32  willuhn
+ * Revision 1.16  2011/01/20 17:13:21  willuhn
+ * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
+ *
+ * Revision 1.15  2010-08-12 17:12:32  willuhn
  * @N Saldo-Chart komplett ueberarbeitet (Daten wurden vorher mehrmals geladen, Summen-Funktion, Anzeige mehrerer Konten, Durchschnitt ueber mehrere Konten, Bugfixing, echte "Homogenisierung" der Salden via SaldoFinder)
  *
  * Revision 1.14  2010/06/07 22:41:13  willuhn

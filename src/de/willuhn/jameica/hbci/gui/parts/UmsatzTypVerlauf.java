@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTypVerlauf.java,v $
- * $Revision: 1.8 $
- * $Date: 2010/11/24 16:27:17 $
+ * $Revision: 1.9 $
+ * $Date: 2011/01/20 17:13:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,7 +25,6 @@ import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.chart.LineChart;
 import de.willuhn.jameica.hbci.gui.chart.LineChartData;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
@@ -33,6 +32,7 @@ import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.hbci.server.UmsatzTreeNode;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
@@ -67,7 +67,7 @@ public class UmsatzTypVerlauf implements Part
       Calendar cal = Calendar.getInstance();
       cal.set(Calendar.MONTH,Calendar.JANUARY);
       cal.set(Calendar.DATE,1);
-      this.start = HBCIProperties.startOfDay(cal.getTime());
+      this.start = DateUtil.startOfDay(cal.getTime());
     }
     if (this.stop == null || !this.stop.after(this.start))
       this.stop = new Date(); // Wenn das Stop-Datum ungueltig ist, machen wir heute draus
@@ -147,13 +147,13 @@ public class UmsatzTypVerlauf implements Part
       Calendar cal             = Calendar.getInstance();
 
       // 1. des aktuellen Monats
-      Date currentStart = HBCIProperties.startOfDay(start);
+      Date currentStart = DateUtil.startOfDay(start);
       
       // 1. des Folge-Monats
       cal.setTime(start);
       cal.add(Calendar.MONTH,1);
       cal.set(Calendar.DAY_OF_MONTH,1);
-      Date currentStop  = HBCIProperties.startOfDay(cal.getTime());
+      Date currentStop  = DateUtil.startOfDay(cal.getTime());
 
       // Wir iterieren monatsweise ueber das gesamte Zeitfenster
       // und fuellen die Monate mit den Zahlungen auf.
@@ -189,7 +189,7 @@ public class UmsatzTypVerlauf implements Part
         cal.setTime(currentStart);
         cal.add(Calendar.MONTH,1);
         cal.set(Calendar.DAY_OF_MONTH,1);
-        currentStop = HBCIProperties.startOfDay(cal.getTime());
+        currentStop = DateUtil.startOfDay(cal.getTime());
       }
     }
 
@@ -312,7 +312,10 @@ public class UmsatzTypVerlauf implements Part
 
 /*********************************************************************
  * $Log: UmsatzTypVerlauf.java,v $
- * Revision 1.8  2010/11/24 16:27:17  willuhn
+ * Revision 1.9  2011/01/20 17:13:21  willuhn
+ * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
+ *
+ * Revision 1.8  2010-11-24 16:27:17  willuhn
  * @R Eclipse BIRT komplett rausgeworden. Diese unsaegliche Monster ;)
  * @N Stattdessen verwenden wir jetzt SWTChart (http://www.swtchart.org). Das ist statt den 6MB von BIRT sagenhafte 250k gross
  *

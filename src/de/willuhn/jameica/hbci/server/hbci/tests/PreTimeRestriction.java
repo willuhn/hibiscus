@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/tests/PreTimeRestriction.java,v $
- * $Revision: 1.6 $
- * $Date: 2007/05/02 12:05:23 $
+ * $Revision: 1.7 $
+ * $Date: 2011/01/20 17:13:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,8 +17,8 @@ import java.util.Date;
 import java.util.Properties;
 
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -40,7 +40,7 @@ public class PreTimeRestriction implements Restriction
    */
   public PreTimeRestriction(Date ersteZahlung, Properties jobRestrictions)
   {
-  	this.date = HBCIProperties.startOfDay(ersteZahlung);
+  	this.date = DateUtil.startOfDay(ersteZahlung);
   	this.p = jobRestrictions;
   	
   	this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
@@ -77,7 +77,7 @@ public class PreTimeRestriction implements Restriction
 		
 		Calendar cal = Calendar.getInstance(Application.getConfig().getLocale());
 		cal.add(Calendar.DATE, i);
-    Date test = HBCIProperties.startOfDay(cal.getTime());
+    Date test = DateUtil.startOfDay(cal.getTime());
 		if (date.before(test))
 		{
 			throw new ApplicationException(i18n.tr("Das Datum der Zahlung muss mindestens {0} Tag(e) in der Zukunft liegen",min));
@@ -105,7 +105,7 @@ public class PreTimeRestriction implements Restriction
 		
 		Calendar cal = Calendar.getInstance(Application.getConfig().getLocale());
 		cal.add(Calendar.DATE, i);
-    Date test = HBCIProperties.endOfDay(cal.getTime());
+    Date test = DateUtil.endOfDay(cal.getTime());
 		if (!date.before(test))
 		{
 			throw new ApplicationException(i18n.tr("Das Datum der Zahlung darf höchstens {0} Tag(e) in der Zukunft liegen",max));
@@ -117,7 +117,10 @@ public class PreTimeRestriction implements Restriction
 
 /**********************************************************************
  * $Log: PreTimeRestriction.java,v $
- * Revision 1.6  2007/05/02 12:05:23  willuhn
+ * Revision 1.7  2011/01/20 17:13:21  willuhn
+ * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
+ *
+ * Revision 1.6  2007-05-02 12:05:23  willuhn
  * @B Uhrzeit bei Vorlaufzeit nicht beruecksichtigen
  *
  * Revision 1.5  2007/05/02 12:03:40  willuhn

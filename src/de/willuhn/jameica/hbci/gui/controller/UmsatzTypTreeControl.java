@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzTypTreeControl.java,v $
- * $Revision: 1.14 $
- * $Date: 2010/06/01 12:12:19 $
+ * $Revision: 1.15 $
+ * $Date: 2011/01/20 17:13:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,7 +30,6 @@ import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.parts.TreePart;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzTree;
@@ -40,6 +39,7 @@ import de.willuhn.jameica.hbci.server.UmsatzTreeNode;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
@@ -106,7 +106,7 @@ public class UmsatzTypTreeControl extends AbstractControl
     cal.set(Calendar.MONTH,Calendar.JANUARY);
     cal.set(Calendar.DATE,1);
 
-    Date d = HBCIProperties.startOfDay(cal.getTime());
+    Date d = DateUtil.startOfDay(cal.getTime());
     try
     {
       String s = settings.getString("laststart",null);
@@ -136,7 +136,7 @@ public class UmsatzTypTreeControl extends AbstractControl
     cal.set(Calendar.MONTH,Calendar.DECEMBER);
     cal.set(Calendar.DATE,31);
 
-    Date d = HBCIProperties.endOfDay(cal.getTime());
+    Date d = DateUtil.endOfDay(cal.getTime());
     try
     {
       String s = settings.getString("lastend",null);
@@ -201,8 +201,8 @@ public class UmsatzTypTreeControl extends AbstractControl
     DBIterator umsaetze = UmsatzUtil.getUmsaetzeBackwards();
     if (konto != null)
       umsaetze.addFilter("konto_id = " + konto.getID());
-    if (von != null) umsaetze.addFilter("datum >= ?", new Object[]{new java.sql.Date(HBCIProperties.startOfDay(von).getTime())});
-    if (bis != null) umsaetze.addFilter("datum <= ?", new Object[]{new java.sql.Date(HBCIProperties.endOfDay(bis).getTime())});
+    if (von != null) umsaetze.addFilter("datum >= ?", new Object[]{new java.sql.Date(DateUtil.startOfDay(von).getTime())});
+    if (bis != null) umsaetze.addFilter("datum <= ?", new Object[]{new java.sql.Date(DateUtil.endOfDay(bis).getTime())});
     
     return umsaetze;
   }
@@ -335,7 +335,10 @@ public class UmsatzTypTreeControl extends AbstractControl
 
 /*******************************************************************************
  * $Log: UmsatzTypTreeControl.java,v $
- * Revision 1.14  2010/06/01 12:12:19  willuhn
+ * Revision 1.15  2011/01/20 17:13:21  willuhn
+ * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
+ *
+ * Revision 1.14  2010-06-01 12:12:19  willuhn
  * @C Umsaetze in "Kontoauszuege" und "Umsatze nach Kategorien" per Default in umgekehrt chronologischer Reihenfolge liefern - also neue zuerst
  *
  * Revision 1.13  2010/03/22 09:58:34  willuhn

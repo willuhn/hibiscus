@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCIProperties.java,v $
- * $Revision: 1.41 $
- * $Date: 2010/06/14 23:00:59 $
+ * $Revision: 1.42 $
+ * $Date: 2011/01/20 17:13:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,13 +12,13 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci;
 
-import java.util.Calendar;
 import java.util.Date;
 
 import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.Settings;
+import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -323,32 +323,22 @@ public class HBCIProperties
    * Resettet die Uhrzeit eines Datums.
    * @param date das Datum.
    * @return das neue Datum.
+   * @deprecated Bitte kuenftig direkt {@link DateUtil#startOfDay(Date)} verwenden.
    */
   public static Date startOfDay(Date date)
   {
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(date == null ? new Date() : date);
-    cal.set(Calendar.HOUR_OF_DAY,0);
-    cal.set(Calendar.MINUTE,0);
-    cal.set(Calendar.SECOND,0);
-    cal.set(Calendar.MILLISECOND,0);
-    return cal.getTime();
+    return DateUtil.startOfDay(date);
   }
 
   /**
    * Setzt die Uhrzeit eines Datums auf 23:59:59.999.
    * @param date das Datum.
    * @return das neue Datum.
+   * @deprecated Bitte kuenftig direkt {@link DateUtil#endOfDay(Date)} verwenden.
    */
   public static Date endOfDay(Date date)
   {
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(date == null ? new Date() : date);
-    cal.set(Calendar.HOUR_OF_DAY,23);
-    cal.set(Calendar.MINUTE,59);
-    cal.set(Calendar.SECOND,59);
-    cal.set(Calendar.MILLISECOND,999);
-    return cal.getTime();
+    return DateUtil.endOfDay(date);
   }
 
   // disabled
@@ -361,6 +351,9 @@ public class HBCIProperties
 
 /**********************************************************************
  * $Log: HBCIProperties.java,v $
+ * Revision 1.42  2011/01/20 17:13:21  willuhn
+ * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
+ *
  * Revision 1.41  2010/06/14 23:00:59  willuhn
  * @C Dialog-Groesse angepasst
  * @N Datei-Auswahldialog mit nativem Ueberschreib-Hinweis
