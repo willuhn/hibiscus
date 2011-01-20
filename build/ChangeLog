@@ -1,5 +1,7 @@
 2011-??-?? Version 1.13.0
 
+  * CHG: 0045 HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
+  * CHG: 0044 Erweitertes Appointment-Interface
   * NEW: 0043 BUGZILLA 887 - BLZ der Deutschen Bank Berlin zu DeutscheBankUmsatzRewriter hinzugefuegt
   * NEW: 0042 ImportDialog zeigt Import-Formate sortiert an und merkt sich die letzte Auswahl
   * BUG: 0041 Debugging MT940-Export
