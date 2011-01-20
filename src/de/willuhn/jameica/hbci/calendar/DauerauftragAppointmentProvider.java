@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/calendar/DauerauftragAppointmentProvider.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/11/23 11:47:35 $
+ * $Revision: 1.6 $
+ * $Date: 2011/01/20 17:12:39 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -21,6 +21,7 @@ import java.util.List;
 import org.eclipse.swt.graphics.RGB;
 
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.jameica.gui.calendar.AbstractAppointment;
 import de.willuhn.jameica.gui.calendar.Appointment;
 import de.willuhn.jameica.gui.calendar.AppointmentProvider;
 import de.willuhn.jameica.gui.util.Color;
@@ -149,7 +150,7 @@ public class DauerauftragAppointmentProvider implements AppointmentProvider
   /**
    * Hilfsklasse zum Anzeigen und Oeffnen des Appointments.
    */
-  private class MyAppointment implements Appointment
+  private class MyAppointment extends AbstractAppointment
   {
     private Dauerauftrag t = null;
     private Date termin    = null;
@@ -166,7 +167,7 @@ public class DauerauftragAppointmentProvider implements AppointmentProvider
     }
 
     /**
-     * @see de.willuhn.jameica.gui.calendar.Appointment#execute()
+     * @see de.willuhn.jameica.gui.calendar.AbstractAppointment#execute()
      */
     public void execute() throws ApplicationException
     {
@@ -182,7 +183,7 @@ public class DauerauftragAppointmentProvider implements AppointmentProvider
     }
 
     /**
-     * @see de.willuhn.jameica.gui.calendar.Appointment#getDescription()
+     * @see de.willuhn.jameica.gui.calendar.AbstractAppointment#getDescription()
      */
     public String getDescription()
     {
@@ -216,7 +217,7 @@ public class DauerauftragAppointmentProvider implements AppointmentProvider
     }
 
     /**
-     * @see de.willuhn.jameica.gui.calendar.Appointment#getColor()
+     * @see de.willuhn.jameica.gui.calendar.AbstractAppointment#getColor()
      */
     public RGB getColor()
     {
@@ -227,6 +228,22 @@ public class DauerauftragAppointmentProvider implements AppointmentProvider
         return Color.COMMENT.getSWTColor().getRGB();
       return Settings.getBuchungSollForeground().getRGB();
     }
+
+    /**
+     * @see de.willuhn.jameica.gui.calendar.AbstractAppointment#getUid()
+     */
+    public String getUid()
+    {
+      try
+      {
+        return "hibiscus.dauer." + t.getID();
+      }
+      catch (RemoteException re)
+      {
+        Logger.error("unable to create uid",re);
+        return super.getUid();
+      }
+    }
   }
 }
 
@@ -234,7 +251,10 @@ public class DauerauftragAppointmentProvider implements AppointmentProvider
 
 /**********************************************************************
  * $Log: DauerauftragAppointmentProvider.java,v $
- * Revision 1.5  2010/11/23 11:47:35  willuhn
+ * Revision 1.6  2011/01/20 17:12:39  willuhn
+ * @C geaendertes Appointment-Interface
+ *
+ * Revision 1.5  2010-11-23 11:47:35  willuhn
  * @B Mehrfachzahlungen innerhalb eines Monats wurden nicht beruecksichtigt
  *
  * Revision 1.4  2010-11-22 00:52:53  willuhn

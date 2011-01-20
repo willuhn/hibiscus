@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/calendar/SammelUeberweisungAppointmentProvider.java,v $
- * $Revision: 1.3 $
- * $Date: 2010/11/22 00:52:53 $
+ * $Revision: 1.4 $
+ * $Date: 2011/01/20 17:12:39 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -19,17 +19,18 @@ import java.util.List;
 import org.eclipse.swt.graphics.RGB;
 
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.jameica.gui.calendar.AbstractAppointment;
 import de.willuhn.jameica.gui.calendar.Appointment;
 import de.willuhn.jameica.gui.calendar.AppointmentProvider;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungNew;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -50,8 +51,8 @@ public class SammelUeberweisungAppointmentProvider implements AppointmentProvide
     {
       HBCIDBService service = Settings.getDBService();
       DBIterator list = service.createList(SammelUeberweisung.class);
-      if (from != null) list.addFilter("termin >= ?", new Object[]{new java.sql.Date(HBCIProperties.startOfDay(from).getTime())});
-      if (to   != null) list.addFilter("termin <= ?", new Object[]{new java.sql.Date(HBCIProperties.endOfDay(to).getTime())});
+      if (from != null) list.addFilter("termin >= ?", new Object[]{new java.sql.Date(DateUtil.startOfDay(from).getTime())});
+      if (to   != null) list.addFilter("termin <= ?", new Object[]{new java.sql.Date(DateUtil.endOfDay(to).getTime())});
       list.setOrder("ORDER BY " + service.getSQLTimestamp("termin"));
 
       List<Appointment> result = new LinkedList<Appointment>();
@@ -78,7 +79,7 @@ public class SammelUeberweisungAppointmentProvider implements AppointmentProvide
   /**
    * Hilfsklasse zum Anzeigen und Oeffnen des Appointments.
    */
-  private class MyAppointment implements Appointment
+  private class MyAppointment extends AbstractAppointment
   {
     private SammelUeberweisung t = null;
     
@@ -92,7 +93,7 @@ public class SammelUeberweisungAppointmentProvider implements AppointmentProvide
     }
 
     /**
-     * @see de.willuhn.jameica.gui.calendar.Appointment#execute()
+     * @see de.willuhn.jameica.gui.calendar.AbstractAppointment#execute()
      */
     public void execute() throws ApplicationException
     {
@@ -116,7 +117,7 @@ public class SammelUeberweisungAppointmentProvider implements AppointmentProvide
     }
 
     /**
-     * @see de.willuhn.jameica.gui.calendar.Appointment#getDescription()
+     * @see de.willuhn.jameica.gui.calendar.AbstractAppointment#getDescription()
      */
     public String getDescription()
     {
@@ -150,20 +151,45 @@ public class SammelUeberweisungAppointmentProvider implements AppointmentProvide
     }
 
     /**
-     * @see de.willuhn.jameica.gui.calendar.Appointment#getColor()
+     * @see de.willuhn.jameica.gui.calendar.AbstractAppointment#getColor()
      */
     public RGB getColor()
     {
+      if (hasAlarm())
+        return Settings.getBuchungSollForeground().getRGB();
+      return Color.COMMENT.getSWTColor().getRGB();
+    }
+
+    /**
+     * @see de.willuhn.jameica.gui.calendar.AbstractAppointment#getUid()
+     */
+    public String getUid()
+    {
       try
       {
-        if (t.ausgefuehrt())
-          return Color.COMMENT.getSWTColor().getRGB();
+        return "hibiscus.sueb." + t.getID();
+      }
+      catch (RemoteException re)
+      {
+        Logger.error("unable to create uid",re);
+        return super.getUid();
+      }
+    }
+
+    /**
+     * @see de.willuhn.jameica.gui.calendar.AbstractAppointment#hasAlarm()
+     */
+    public boolean hasAlarm()
+    {
+      try
+      {
+        return !t.ausgefuehrt();
       }
       catch (RemoteException re)
       {
         Logger.error("unable to determine execution status",re);
+        return super.hasAlarm();
       }
-      return Settings.getBuchungSollForeground().getRGB();
     }
   }
 }
@@ -172,7 +198,10 @@ public class SammelUeberweisungAppointmentProvider implements AppointmentProvide
 
 /**********************************************************************
  * $Log: SammelUeberweisungAppointmentProvider.java,v $
- * Revision 1.3  2010/11/22 00:52:53  willuhn
+ * Revision 1.4  2011/01/20 17:12:39  willuhn
+ * @C geaendertes Appointment-Interface
+ *
+ * Revision 1.3  2010-11-22 00:52:53  willuhn
  * @C Appointment-Inner-Class darf auch private sein
  *
  * Revision 1.2  2010-11-21 23:31:26  willuhn
