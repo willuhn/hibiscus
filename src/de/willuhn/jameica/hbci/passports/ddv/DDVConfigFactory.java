@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/DDVConfigFactory.java,v $
- * $Revision: 1.4 $
- * $Date: 2010/10/17 21:58:56 $
+ * $Revision: 1.5 $
+ * $Date: 2011/02/06 23:34:21 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -468,7 +468,11 @@ public class DDVConfigFactory
         break;
         
       case Platform.OS_MAC:
-        file = "libhbci4java-card-mac.jnilib";
+        String arch = System.getProperty("os.arch");
+        if (arch != null && arch.contains("64"))
+          file = "libhbci4java-card-mac-os-x-10.6.jnilib"; // BUGZILLA 965
+        else
+          file = "libhbci4java-card-mac.jnilib";
         break;
 
       case Platform.OS_FREEBSD_64:
@@ -496,7 +500,10 @@ public class DDVConfigFactory
 
 /**********************************************************************
  * $Log: DDVConfigFactory.java,v $
- * Revision 1.4  2010/10/17 21:58:56  willuhn
+ * Revision 1.5  2011/02/06 23:34:21  willuhn
+ * @N BUGZILLA 965
+ *
+ * Revision 1.4  2010-10-17 21:58:56  willuhn
  * @C Aendern der Bankdaten auf der Karte auch dann moeglich, wenn auf dem Slot ungueltige Daten stehen
  *
  * Revision 1.3  2010-09-08 10:16:00  willuhn
