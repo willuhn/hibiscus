@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Overview.java,v $
- * $Revision: 1.16 $
- * $Date: 2011/01/20 17:13:21 $
+ * $Revision: 1.17 $
+ * $Date: 2011/02/21 09:00:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,6 +49,11 @@ import de.willuhn.util.I18N;
 public class Overview extends AbstractBox implements Box
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  
+  // BUGZILLA 993
+  private static Konto konto       = null;
+  private static Date startDate    = null;
+  private static Date endDate      = null;
 
   private KontoInput kontoAuswahl  = null;
   private Input saldo              = null;
@@ -110,7 +115,7 @@ public class Overview extends AbstractBox implements Box
     if (this.kontoAuswahl != null)
       return this.kontoAuswahl;
     
-    this.kontoAuswahl = new KontoInput(null,KontoFilter.ACTIVE);
+    this.kontoAuswahl = new KontoInput(konto != null && konto.getID() != null ? konto : null,KontoFilter.ACTIVE);
     this.kontoAuswahl.setPleaseChoose(i18n.tr("Alle Konten"));
     this.kontoAuswahl.addListener(new Listener() {
       public void handleEvent(Event event)
@@ -143,11 +148,15 @@ public class Overview extends AbstractBox implements Box
     if (this.start != null)
       return this.start;
     
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(new Date());
-    cal.set(Calendar.DAY_OF_MONTH,1);
+    if (startDate == null)
+    {
+      Calendar cal = Calendar.getInstance();
+      cal.setTime(new Date());
+      cal.set(Calendar.DAY_OF_MONTH,1);
+      startDate = cal.getTime();
+    }
     
-    this.start = new DateInput(DateUtil.startOfDay(cal.getTime()),HBCI.DATEFORMAT);
+    this.start = new DateInput(DateUtil.startOfDay(startDate),HBCI.DATEFORMAT);
     this.start.addListener(new Listener() {
       public void handleEvent(Event event)
       {
@@ -165,12 +174,16 @@ public class Overview extends AbstractBox implements Box
   {
     if (this.end != null)
       return this.end;
-    
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(new Date());
-    cal.set(Calendar.DAY_OF_MONTH,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
 
-    this.end = new DateInput(DateUtil.endOfDay(cal.getTime()),HBCI.DATEFORMAT);
+    if (endDate == null)
+    {
+      Calendar cal = Calendar.getInstance();
+      cal.setTime(new Date());
+      cal.set(Calendar.DAY_OF_MONTH,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+      endDate = cal.getTime();
+    }
+
+    this.end = new DateInput(DateUtil.endOfDay(endDate),HBCI.DATEFORMAT);
     this.end.addListener(new Listener() {
       public void handleEvent(Event event)
       {
@@ -187,9 +200,9 @@ public class Overview extends AbstractBox implements Box
   {
     try
     {
-      Konto konto = (Konto) this.getKontoAuswahl().getValue();
-      Date dStart = (Date) getStart().getValue();
-      Date dEnd   = (Date) getEnd().getValue();
+      konto     = (Konto) this.getKontoAuswahl().getValue();
+      startDate = (Date) getStart().getValue();
+      endDate   = (Date) getEnd().getValue();
 
       ////////////////////////////////////////////////////////////////////////////
       // Saldo ausrechnen
@@ -215,7 +228,7 @@ public class Overview extends AbstractBox implements Box
       ////////////////////////////////////////////////////////////////////////////
 
       
-      if (dStart == null || dEnd == null || dStart.after(dEnd))
+      if (startDate == null || endDate == null || startDate.after(endDate))
         return;
 
       double in = 0d;
@@ -226,14 +239,14 @@ public class Overview extends AbstractBox implements Box
         while (i.hasNext())
         {
           Konto k = (Konto) i.next();
-          in  += KontoUtil.getEinnahmen(k,dStart,dEnd);
-          out += KontoUtil.getAusgaben(k,dStart,dEnd);
+          in  += KontoUtil.getEinnahmen(k,startDate,endDate);
+          out += KontoUtil.getAusgaben(k,startDate,endDate);
         }
       }
       else
       {
-        in  = KontoUtil.getEinnahmen(konto,dStart,dEnd);
-        out = KontoUtil.getAusgaben(konto,dStart,dEnd);
+        in  = KontoUtil.getEinnahmen(konto,startDate,endDate);
+        out = KontoUtil.getAusgaben(konto,startDate,endDate);
       }
       out = Math.abs(out); // BUGZILLA 405
       getAusgaben().setValue(HBCI.DECIMALFORMAT.format(out));
@@ -309,7 +322,10 @@ public class Overview extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: Overview.java,v $
- * Revision 1.16  2011/01/20 17:13:21  willuhn
+ * Revision 1.17  2011/02/21 09:00:20  willuhn
+ * @N BUGZILLA 993
+ *
+ * Revision 1.16  2011-01-20 17:13:21  willuhn
  * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
  *
  * Revision 1.15  2010-08-12 17:12:32  willuhn
