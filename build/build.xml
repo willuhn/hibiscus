@@ -139,6 +139,7 @@
     </zip>
 
   </target>
+  <target depends="signjar,zip" name="signzip" description="generates a signed zip file" />
 
 
 
@@ -221,11 +222,11 @@
 
 
 
-  <target depends="init,compile,cvstag,jar,signjar,zip,javadoc,src,sign,clean" description="build an official release" name="all" />
+  <target depends="init,compile,cvstag,signzip,javadoc,src,sign,clean" description="build an official release" name="all" />
 
-  <target depends="init,compile,jar,zip,src,clean" description="build inofficial release" name="fast" />
+  <target depends="init,compile,signzip,src,clean" description="build inofficial release" name="fast" />
 
-  <target depends="init,cvs,compile,jar,zip,javadoc,src" description="build nightly build" name="nightly">
+  <target depends="init,cvs,compile,zip,javadoc,src" description="build nightly build" name="nightly">
     <mkdir dir="${project.nightly}" />
 
     <copy file="${project.release}/${define.zipfilename}" tofile="${project.nightly}/${plugin.name}-${plugin.version}.zip" />
