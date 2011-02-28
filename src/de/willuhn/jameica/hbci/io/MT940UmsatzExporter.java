@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/MT940UmsatzExporter.java,v $
- * $Revision: 1.5 $
- * $Date: 2011/01/12 18:03:14 $
+ * $Revision: 1.6 $
+ * $Date: 2011/02/28 10:36:54 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -220,7 +220,6 @@ public class MT940UmsatzExporter implements Exporter
    */
   private class MyOutputStreamWriter extends OutputStreamWriter
   {
-    // TODO: Die Umlaute muessen in SWIFT-Dateien noch gegen "UE", "AE", usw. ersetzt werden. Zu klaeren, ob das korrekt ist.
     private String[] search  = new String[]{"Ü", "Ö", "Ä", "ü", "ö", "ä", "ß"};
     private String[] replace = new String[]{"UE","OE","AE","ue","oe","ae","ss"};
     
@@ -249,7 +248,10 @@ public class MT940UmsatzExporter implements Exporter
 
 /*********************************************************************
  * $Log: MT940UmsatzExporter.java,v $
- * Revision 1.5  2011/01/12 18:03:14  willuhn
+ * Revision 1.6  2011/02/28 10:36:54  willuhn
+ * @R t o d o  entfernt
+ *
+ * Revision 1.5  2011-01-12 18:03:14  willuhn
  * @B Tag :20: (Auftragsreferenz-Nr.) fehlte. Konnte sonst nicht von HBCI4Java (sprich Hibiscus MT940-Import) wieder gelesen werden. Und das waer schon maechtig doof, wenn Hibiscus die eigenen Exports nicht lesen kann ;)
  *
  * Revision 1.4  2011-01-12 17:46:30  willuhn
