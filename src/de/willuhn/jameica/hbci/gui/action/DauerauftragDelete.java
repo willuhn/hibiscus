@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/DauerauftragDelete.java,v $
- * $Revision: 1.18 $
- * $Date: 2011/03/07 10:33:54 $
+ * $Revision: 1.19 $
+ * $Date: 2011/03/07 10:40:48 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@ package de.willuhn.jameica.hbci.gui.action;
 
 import java.util.Date;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
@@ -21,6 +22,8 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.input.CheckboxInput;
+import de.willuhn.jameica.gui.input.LabelInput;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.dialogs.DauerauftragDeleteDialog;
@@ -63,13 +66,30 @@ public class DauerauftragDelete implements Action
 	      // BUGZILLA #999
 	      protected void extend(Container container) throws Exception
 	      {
-	        if (da.isActive()) // Nur bei aktiven Dauerauftraegen anzeigen
-  	        container.addCheckbox(check,i18n.tr("Auftrag auch bei der Bank löschen."));
+          // Nur bei aktiven Dauerauftraegen anzeigen
+	        if (da.isActive()) {
+	          final LabelInput warn = new LabelInput("");
+	          warn.setColor(Color.COMMENT);
+            check.addListener(new Listener() {
+              public void handleEvent(Event event)
+              {
+                // Warnhinweis anzeigen, dass der Auftrag nur lokal geloescht wird
+                Boolean b = (Boolean) check.getValue();
+                if (b.booleanValue())
+                  warn.setValue("");
+                else
+                  warn.setValue(i18n.tr("Auftrag wird nur lokal gelöscht, bei der Bank bleibt er erhalten."));
+              }
+            });
+            container.addCheckbox(check,i18n.tr("Auftrag auch bei der Bank löschen."));
+            container.addLabelPair("",warn);
+	        }
 	        super.extend(container);
 	      }
 	    };
 	    d.setTitle(i18n.tr("Dauerauftrag löschen"));
 	    d.setText(i18n.tr("Wollen Sie diesen Dauerauftrag wirklich löschen?"));
+	    d.setSize(350,SWT.DEFAULT);
 
 	    Boolean choice = (Boolean) d.open();
 	    if (!choice.booleanValue())
@@ -116,7 +136,7 @@ public class DauerauftragDelete implements Action
 	    {
 	      // nur lokal loeschen
 	      da.delete();
-        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Dauerauftrag gelöscht."),StatusBarMessage.TYPE_SUCCESS));
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Dauerauftrag lokal gelöscht."),StatusBarMessage.TYPE_SUCCESS));
 	    }
 		}
     catch (OperationCanceledException oce)
@@ -139,7 +159,10 @@ public class DauerauftragDelete implements Action
 
 /**********************************************************************
  * $Log: DauerauftragDelete.java,v $
- * Revision 1.18  2011/03/07 10:33:54  willuhn
+ * Revision 1.19  2011/03/07 10:40:48  willuhn
+ * @N BUGZILLA 999 - zusaetzlicher Hinweis, wenn nur lokal geloescht wird
+ *
+ * Revision 1.18  2011-03-07 10:33:54  willuhn
  * @N BUGZILLA 999
  *
  **********************************************************************/
