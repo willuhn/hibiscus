@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.65 $
- * $Date: 2010/12/27 22:47:52 $
+ * $Revision: 1.66 $
+ * $Date: 2011/03/07 10:33:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import java.util.Vector;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.GV.HBCIJob;
+import org.kapott.hbci.exceptions.JobNotSupportedException;
 import org.kapott.hbci.manager.HBCIHandler;
 import org.kapott.hbci.manager.HBCIUtils;
 
@@ -208,6 +209,17 @@ public class HBCIFactory {
       HBCIHandler handler = ph.open();
       HBCIJob j = handler.newJob(job.getIdentifier());
       return j.getJobRestrictions();
+    }
+    catch (Exception e)
+    {
+      // Checken, ob es eine JobNotSupportedException ist
+      Throwable t = getCause(e,JobNotSupportedException.class);
+      if (t != null)
+      {
+        Logger.error(t.getMessage(),t);
+        throw new ApplicationException(i18n.tr("Dieser Geschäftsvorfall wird von Ihrer Bank leider nicht unterstützt."));
+      }
+      throw e;
     }
     finally
     {
@@ -733,7 +745,10 @@ public class HBCIFactory {
 
 /*******************************************************************************
  * $Log: HBCIFactory.java,v $
- * Revision 1.65  2010/12/27 22:47:52  willuhn
+ * Revision 1.66  2011/03/07 10:33:53  willuhn
+ * @N BUGZILLA 999
+ *
+ * Revision 1.65  2010-12-27 22:47:52  willuhn
  * @N BUGZILLA 964
  *
  * Revision 1.64  2010/06/17 17:20:58  willuhn

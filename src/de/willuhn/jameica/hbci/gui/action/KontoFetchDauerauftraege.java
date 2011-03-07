@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoFetchDauerauftraege.java,v $
- * $Revision: 1.11 $
- * $Date: 2007/07/04 09:16:23 $
+ * $Revision: 1.12 $
+ * $Date: 2011/03/07 10:33:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -48,7 +48,7 @@ public class KontoFetchDauerauftraege implements Action
   {
 		final I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-		if (context == null)
+		if (context == null || !(context instanceof Konto))
 		{
 			// 1) Wir zeigen einen Dialog an, in dem der User das Konto auswaehlt
 			KontoAuswahlDialog d = new KontoAuswahlDialog(KontoAuswahlDialog.POSITION_CENTER);
@@ -58,7 +58,7 @@ public class KontoFetchDauerauftraege implements Action
 			}
 			catch (OperationCanceledException oce)
 			{
-				GUI.getStatusBar().setErrorText(i18n.tr("Vorgang abgebrochen"));
+			  Logger.info("operation cancelled");
 				return;
 			}
 			catch (Exception e)
@@ -103,6 +103,9 @@ public class KontoFetchDauerauftraege implements Action
 
 /**********************************************************************
  * $Log: KontoFetchDauerauftraege.java,v $
+ * Revision 1.12  2011/03/07 10:33:53  willuhn
+ * @N BUGZILLA 999
+ *
  * Revision 1.11  2007/07/04 09:16:23  willuhn
  * @B Aktuelle View nach Ausfuehrung eines HBCI-Jobs nur noch dann aktualisieren, wenn sie sich zwischenzeitlich nicht geaendert hat
  *

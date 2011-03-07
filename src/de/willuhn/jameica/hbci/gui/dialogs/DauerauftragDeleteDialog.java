@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/DauerauftragDeleteDialog.java,v $
- * $Revision: 1.7 $
- * $Date: 2006/06/06 21:42:21 $
+ * $Revision: 1.8 $
+ * $Date: 2011/03/07 10:33:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,9 @@ package de.willuhn.jameica.hbci.gui.dialogs;
 
 import java.util.Date;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -25,9 +28,10 @@ import de.willuhn.jameica.gui.dialogs.CalendarDialog;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.LabelInput;
-import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Color;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -39,9 +43,9 @@ import de.willuhn.util.I18N;
  * Oeffnet einen Dialog zur Auswahl des Ziel-Datums zum Loeschen des
  * Dauerauftrages.
  */
-public class DauerauftragDeleteDialog extends AbstractDialog {
-
-	private I18N i18n;
+public class DauerauftragDeleteDialog extends AbstractDialog
+{
+	private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 	private Date date              = null;
   private DialogInput dateInput  = null;
@@ -53,20 +57,25 @@ public class DauerauftragDeleteDialog extends AbstractDialog {
    */
   public DauerauftragDeleteDialog(int position) {
     super(position);
-
-		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
     this.setTitle(i18n.tr("Zieldatum"));
-    
   }
 
   /**
    * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
    */
-  protected void paint(Composite parent) throws Exception {
+  protected void paint(Composite parent) throws Exception
+  {
+    // Bei Druck auf ESC interpretieren wir das als Abbruch.
+    parent.addKeyListener(new KeyAdapter() {
+      public void keyReleased(KeyEvent e) {
+        if (e.keyCode == SWT.ESC)
+          throw new OperationCanceledException();
+      }
+    });
+    
+		Container group = new SimpleContainer(parent);
 
-		LabelGroup group = new LabelGroup(parent,i18n.tr("Zieldatum zur Löschung des Dauerauftrages"));
-			
+		group.addHeadline(i18n.tr("Zieldatum zur Löschung des Dauerauftrages"));
   	group.addText(i18n.tr("Bitte wählen Sie das Datum aus, zu dem Sie den Dauerauftrag löschen wollen\n" +                          "Hinweis: Es ist durchaus möglich, dass Ihre Bank das Löschen eines\n" +
                           "Dauerauftrages zu einem definierten Datum nicht unterstützt.\n" +
                           "Wählen Sie in diesem Fall bitte \"Zum nächstmöglichen Zeitpunkt\""),true);
@@ -129,8 +138,8 @@ public class DauerauftragDeleteDialog extends AbstractDialog {
     comment.setColor(Color.ERROR);
     group.addLabelPair("",comment);
     
-    ButtonArea b = new ButtonArea(parent,2);
-		b.addButton(i18n.tr("Übernehmen"), new Action()
+    ButtonArea b = new ButtonArea();
+		b.addButton(i18n.tr("Jetzt bei der Bank löschen"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -159,14 +168,16 @@ public class DauerauftragDeleteDialog extends AbstractDialog {
         }
 				close();
       }
-    });
+    },null,false,"user-trash-full.png");
 		b.addButton(i18n.tr("Abbrechen"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
         throw new OperationCanceledException();
       }
-    });
+    },null,true,"process-stop.png");
+		
+		group.addButtonArea(b);
   }
 
   /**
@@ -182,6 +193,9 @@ public class DauerauftragDeleteDialog extends AbstractDialog {
 
 /**********************************************************************
  * $Log: DauerauftragDeleteDialog.java,v $
+ * Revision 1.8  2011/03/07 10:33:53  willuhn
+ * @N BUGZILLA 999
+ *
  * Revision 1.7  2006/06/06 21:42:21  willuhn
  * @N Zeilenumbrueche in Dialogen (fuer Windows)
  *

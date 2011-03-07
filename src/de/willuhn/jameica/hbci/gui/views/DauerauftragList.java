@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/DauerauftragList.java,v $
- * $Revision: 1.7 $
- * $Date: 2009/05/06 23:11:23 $
+ * $Revision: 1.8 $
+ * $Date: 2011/03/07 10:33:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -46,8 +46,8 @@ public class DauerauftragList extends AbstractView {
 
 			ButtonArea buttons = new ButtonArea(getParent(),3);
 	    buttons.addButton(new Back(false));
-			buttons.addButton(i18n.tr("Existierende Daueraufträge abrufen"), 	new KontoFetchDauerauftraege(),null,false,"mail-send-receive.png");
-			buttons.addButton(i18n.tr("Neuer Dauerauftrag"),									new DauerauftragNew(),null,true,"text-x-generic.png");
+			buttons.addButton(i18n.tr("Daueraufträge abrufen..."), 	new KontoFetchDauerauftraege(),null,false,"mail-send-receive.png");
+			buttons.addButton(i18n.tr("Neuer Dauerauftrag"),				new DauerauftragNew(),null,true,"text-x-generic.png");
 
 		}
 		catch (Exception e)
@@ -61,7 +61,10 @@ public class DauerauftragList extends AbstractView {
 
 /**********************************************************************
  * $Log: DauerauftragList.java,v $
- * Revision 1.7  2009/05/06 23:11:23  willuhn
+ * Revision 1.8  2011/03/07 10:33:53  willuhn
+ * @N BUGZILLA 999
+ *
+ * Revision 1.7  2009-05-06 23:11:23  willuhn
  * @N Mehr Icons auf Buttons
  *
  * Revision 1.6  2009/01/20 10:51:46  willuhn
