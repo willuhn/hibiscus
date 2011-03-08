@@ -1,5 +1,18 @@
 2011-??-?? Version 1.13.0
 
+  * NEW: 0053 BUGZILLA 999 - Dauerauftraege koennen jetzt auch nur lokal geloescht
+              werden, obwohl sie auch bei der Bank vorliegen 
+  * NEW: 0052 DeutscheBankUmsatzRewriter um 62070081 (Deutsche Bank Heilbronn) erweitert
+  * NEW: 0051 JobNotSupportedException in HBCIFactory fangen und als lesbare ApplicationException
+              werden. Damit kann der User besser erkennen, wenn ein Geschaeftsvorfall 
+              von seiner Bank nicht unterstuetzt wird.
+  * CHG: 0050 Set-Aufrufe fuer Textschluessel und weitere Verwendungszwecke in SEPA-Ueberweisung
+              nur dann mit Exception quittieren, wenn tatsaechlich etwas uebergeben wurde
+              (wird in XML-RPC-Connector aufgerufen)
+  * NEW: 0049 BUGZILLA 993 - Konto, Start- und Enddauer in Finanzuebersicht fuer die Dauer der Sitzung speichern
+  * NEW: 0048 BUGZILLA 989 - Automatisch in Edit-View eines Umsatzes wechseln, falls es ein Offline-Konto ist
+  * BUG: 0047 BUGZILLA 988 - Sortierung der Umsatznummer in Kategorie-Baum als Zahl, nicht als String
+  * NEW: 0046 libhbci4java-card-mac-os-x-10.6.jnilib hinzugefuegt
   * CHG: 0045 HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
   * CHG: 0044 Erweitertes Appointment-Interface
   * NEW: 0043 BUGZILLA 887 - BLZ der Deutschen Bank Berlin zu DeutscheBankUmsatzRewriter hinzugefuegt
