@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.83 $
- * $Date: 2010/11/19 17:02:06 $
+ * $Revision: 1.84 $
+ * $Date: 2011/03/11 15:05:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -520,7 +520,8 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
           getZweck(),
           k.getWaehrung() + " " + HBCI.DECIMALFORMAT.format(getBetrag())
         };
-        k.addToProtokoll(i18n.tr("Umsatz [Gegenkonto: {0}, Kto. {1} BLZ {2}], Valuta {3}, Zweck: {4}] {5} gelöscht",fields),Protokoll.TYP_SUCCESS);
+        if ((this.getFlags() & Umsatz.FLAG_NOTBOOKED) == 0)
+          k.addToProtokoll(i18n.tr("Umsatz [Gegenkonto: {0}, Kto. {1} BLZ {2}], Valuta {3}, Zweck: {4}] {5} gelöscht",fields),Protokoll.TYP_SUCCESS);
       }
       
       this.transactionCommit();
@@ -674,7 +675,10 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
- * Revision 1.83  2010/11/19 17:02:06  willuhn
+ * Revision 1.84  2011/03/11 15:05:14  willuhn
+ * @C Loeschen von Vormerkbuchungen nicht protokollieren - da Hibiscus die selbst loescht und das irritierende Protokoll-Meldungen fuer den User erzeugt
+ *
+ * Revision 1.83  2010-11-19 17:02:06  willuhn
  * @N VWZUtil#toString
  *
  * Revision 1.82  2010-09-28 21:40:27  willuhn
