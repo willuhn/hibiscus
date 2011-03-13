@@ -1,4 +1,3 @@
-
 <meta http-equiv="Context-Type" content="text/html; charset=$!CHARSET">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -96,113 +95,69 @@
       height                   : 0px;
     }
   </style>
+
   <body>
-    <table class="header">
-    <tr>
-    <td><h1>Überweisungsausdruck</h1></td>
-    <td style="text-align:right;"><IMG style="width:35px; height:35px;" SRC="data:image/gif;charset=utf-8;base64,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" ALT="hibiscus"></td>
-</tr>
-</table>
-    <hr>
+    <h1>Überweisungen - detailliert</h1>
+    <h2>$!dateformat.format($datum)</h2>
+
+    <br/><br/>
+
     #foreach($t in $objects)
-    <table class="data">
-    <col width=180px>
-    <col width=*>
-      <tr>
-        <td class="left">Fälligkeitsdatum:</td>
-        <td class="right">$!dateformat.format($t.termin)</td>
-      </tr>
-      <tr>
-        <td class="left">Betrag:</td>
-        <td class="right">$!decimalformat.format($t.betrag) $!t.konto.waehrung</td>
-      </tr>
-      <tr>
-        <td class="left">Name des Empfängers:</td>
-        <td class="right">$!t.gegenkontoName</td>
-      </tr>
-      <tr>
-        <td class="left">Kontonr. des Empfängers:</td>
-        <td class="right">$!t.gegenkontoNummer</td>
-      </tr>
-      <tr>
-        <td class="left">BLZ des Empfängers:</td>
-        <td class="right">$!t.gegenkontoBLZ</td>
-      </tr>
-      <tr>
-        <td class="left">Konto des Auftraggebers:</td>
-        <td class="right">$!t.konto.longName</td>
-      </tr>
-      <tr>
-        <td class="left">Verwendungszweck:</td>
-        <td class="right">$!t.zweck
-                          #if($!t.zweck != '')
-                          <br/>
-                          $!t.zweck2
-                          #end
-                          #foreach($ewz in $t.weitereVerwendungszwecke)
-                          <br/>
-                          $!ewz
-                          #end</td>
-      </tr>
-      <tr>
-        <td class="left">Status:</td>
-        <td class="ausgefuehrt_$t.ausgefuehrt()">#if($t.ausgefuehrt())
-        zur Ausführung an die Bank übermittelt
-        #else
-        offen
-        #end
-      </tr>
-    </table>
-    <br/>
-    #end  
-    <hr>
-    <h2>Ausdruck erstellt von hibiscus am $!dateformat.format($datum)</h2>
+      <table class="data">
+        <colgroup>
+          <col width=180px>
+          <col width=*>
+        </colgroup>
+        <tr>
+          <td class="left">Fälligkeitsdatum:</td>
+          <td class="right">$!dateformat.format($t.termin)</td>
+        </tr>
+        <tr>
+          <td class="left">Betrag:</td>
+          <td class="right">$!decimalformat.format($t.betrag) $!t.konto.waehrung</td>
+        </tr>
+        <tr>
+          <td class="left">Name des Empfängers:</td>
+          <td class="right">$!t.gegenkontoName</td>
+        </tr>
+        <tr>
+          <td class="left">Kontonr. des Empfängers:</td>
+          <td class="right">$!t.gegenkontoNummer</td>
+        </tr>
+        <tr>
+          <td class="left">BLZ des Empfängers:</td>
+          <td class="right">$!t.gegenkontoBLZ</td>
+        </tr>
+        <tr>
+          <td class="left">Konto des Auftraggebers:</td>
+          <td class="right">$!t.konto.longName</td>
+        </tr>
+        <tr>
+          <td class="left">Verwendungszweck:</td>
+          <td class="right">$!t.zweck
+            #if($!t.zweck != '')
+              <br/>
+              $!t.zweck2
+            #end
+            #foreach($ewz in $t.weitereVerwendungszwecke)
+              <br/>
+              $!ewz
+            #end
+          </td>
+        </tr>
+        <tr>
+          <td class="left">Status:</td>
+          <td class="ausgefuehrt_$t.ausgefuehrt()">
+            #if($t.ausgefuehrt())
+              zur Ausführung an die Bank übermittelt
+            #else
+              offen
+            #end
+          </td>
+        </tr>
+      </table>
+      <br/>
+    #end
+
   </body>
 </html>
-<html><body></body></html>
