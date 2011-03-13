@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/VelocityExporter.java,v $
- * $Revision: 1.18 $
- * $Date: 2010/11/02 23:01:04 $
+ * $Revision: 1.19 $
+ * $Date: 2011/03/13 23:44:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,6 +21,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -28,7 +29,6 @@ import org.apache.velocity.app.VelocityEngine;
 
 import de.willuhn.io.FileFinder;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.services.VelocityService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -41,26 +41,9 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class VelocityExporter implements Exporter
 {
-
-  private File templateDir        = null;
-
-  private HashMap formats         = new HashMap();
-
-  private I18N i18n = null;
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  private Map<Class,IOFormat[]> formats  = new HashMap<Class,IOFormat[]>();
   
-  /**
-   * ct.
-   */
-  public VelocityExporter()
-  {
-    super();
-    Logger.info("init velocity export engine");
-    
-    AbstractPlugin p = Application.getPluginLoader().getPlugin(HBCI.class);
-    this.i18n = p.getResources().getI18N();
-    this.templateDir = new File(p.getManifest().getPluginDir() + File.separator + "lib","velocity");
-  }
-
   /**
    * @see de.willuhn.jameica.hbci.io.Exporter#doExport(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
    */
@@ -154,8 +137,10 @@ public class VelocityExporter implements Exporter
       return loaded;
 
     Logger.info("looking velocity templates for object type " + type);
-    FileFinder finder = new FileFinder(this.templateDir);
-    String cn = type.getName().replaceAll("\\.","\\\\.");
+    
+    File dir = new File(Application.getPluginLoader().getPlugin(HBCI.class).getManifest().getPluginDir() + File.separator + "lib","velocity");
+    FileFinder finder = new FileFinder(dir);
+    String cn = type.getName().replaceAll("\\.","\\\\."); // "." gegen "\." ersetzen (Escaping fuer folgenden Regex)
     finder.matches(cn + ".*?\\.vm$");
 
     File[] found = finder.findRecursive();
@@ -167,16 +152,27 @@ public class VelocityExporter implements Exporter
       Logger.info("  found template: " + ef.getAbsolutePath());
 
       String name = ef.getName();
-      name = name.replaceAll(cn + "\\.",""); // Klassenname und Punkt dahinter entfernen
+      name = name.replaceAll(cn,""); // Klassenname entfernen
+      
+      // Checken, ob wir eine Variation haben
+      String variant = null;
+      if (name.startsWith("-"))
+        variant = name.substring(1,name.indexOf("."));
+
+      // Punkt abschneiden
+      name = name.substring(name.indexOf(".")+1);
+
       int dot = name.indexOf(".");
       if (dot == -1)
         continue;
+      
       String ext = name.substring(0,dot);
       if (ext == null || ext.length() == 0)
         continue;
       
-      l.add(new VelocityFormat(ext,ef));
+      l.add(new VelocityFormat(ext,variant,ef));
     }
+    
     loaded = (IOFormat[]) l.toArray(new IOFormat[l.size()]);
     this.formats.put(type,loaded);
     return loaded;
@@ -189,24 +185,32 @@ public class VelocityExporter implements Exporter
   public class VelocityFormat implements IOFormat
   {
     private String extension = null;
+    private String variant   = null;
+    
     private File template = null;
     
     /**
-     * @param extension
-     * @param f
+     * ct.
+     * @param extension die Datei-Endung.
+     * @param variant optionaler Prefix fuer eine Variation.
+     * @param f das Template.
      */
-    public VelocityFormat(String extension,File f)
+    public VelocityFormat(String extension, String variant, File f)
     {
       this.extension = extension;
-      this.template = f;
+      this.variant   = variant;
+      this.template  = f;
     }
-    
+
     /**
      * @see de.willuhn.jameica.hbci.io.IOFormat#getName()
      */
     public String getName()
     {
-      return extension.toUpperCase() + "-" + i18n.tr("Format");
+      String name = extension.toUpperCase() + "-" + i18n.tr("Format");
+      if (variant != null && variant.length() > 0)
+        name += ": " + i18n.tr(variant);
+      return name;
     }
 
     /**
@@ -232,74 +236,9 @@ public class VelocityExporter implements Exporter
 
 /**********************************************************************
  * $Log: VelocityExporter.java,v $
- * Revision 1.18  2010/11/02 23:01:04  willuhn
+ * Revision 1.19  2011/03/13 23:44:39  willuhn
+ * @N Support fuer mehrere Velocity-Formate pro Typ ("Variant") - siehe Mail von Flo vom 13.03.2011
+ *
+ * Revision 1.18  2010-11-02 23:01:04  willuhn
  * @R auskommentierte Methode entfernt
- *
- * Revision 1.17  2009/08/24 11:54:28  willuhn
- * @N Umstellung auf neuen VelocityService
- *
- * Revision 1.16  2009/07/09 17:08:03  willuhn
- * @N BUGZILLA #740
- *
- * Revision 1.15  2009/03/10 23:51:31  willuhn
- * @C PluginResources#getPath als deprecated markiert - stattdessen sollte jetzt Manifest#getPluginDir() verwendet werden
- *
- * Revision 1.14  2009/03/02 11:42:10  willuhn
- * *** empty log message ***
- *
- * Revision 1.13  2009/03/02 11:41:51  willuhn
- * @N title in HTML-Exports
- *
- * Revision 1.12  2009/03/01 23:37:03  willuhn
- * @C Templates sollten explizit mit Latin1-Encoding gelesen werden, da sie von mir in diesem Encoding erstellt wurden
- *
- * Revision 1.11  2007/04/23 18:07:14  willuhn
- * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
- * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
- * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
- * @N Anbindung externer Adressbuecher
- *
- * Revision 1.10  2006/11/15 00:36:59  willuhn
- * @B Bug 326
- *
- * Revision 1.9  2006/09/05 13:56:33  willuhn
- * @B Class#getClass() allways returns "java.lang.Class" ;)
- *
- * Revision 1.8  2006/03/27 22:36:04  willuhn
- * *** empty log message ***
- *
- * Revision 1.7  2006/01/23 23:07:23  willuhn
- * @N csv import stuff
- *
- * Revision 1.6  2006/01/23 00:36:29  willuhn
- * @N Import, Export und Chipkartentest laufen jetzt als Background-Task
- *
- * Revision 1.5  2006/01/18 00:51:01  willuhn
- * @B bug 65
- *
- * Revision 1.4  2006/01/17 00:22:36  willuhn
- * @N erster Code fuer Swift MT940-Import
- *
- * Revision 1.3  2006/01/02 17:38:12  willuhn
- * @N moved Velocity to Jameica
- *
- * Revision 1.2  2005/07/04 12:41:39  web0
- * @B bug 90
- *
- * Revision 1.1  2005/06/30 23:52:42  web0
- * @N export via velocity
- *
- * Revision 1.2  2005/06/15 16:10:48  web0
- * @B javadoc fixes
- *
- * Revision 1.1  2005/06/08 16:48:54  web0
- * @N new Import/Export-System
- *
- * Revision 1.2  2005/06/06 10:37:01  web0
- * *** empty log message ***
- *
- * Revision 1.1  2005/06/02 21:48:44  web0
- * @N Exporter-Package
- * @N CSV-Exporter
- *
  **********************************************************************/
