@@ -175,9 +175,9 @@
       </tr>
       #foreach($t in $objects)
         <tr class="ausgefuehrt_$t.ausgefuehrt()">
+          <td>$!dateformat.format($t.termin)</td>
           <td>$!t.konto.longName</td>
           <td>$!t.gegenkontoName, Kto. $!t.gegenkontoNummer, BLZ $!t.gegenkontoBLZ</td>
-          <td>$!dateformat.format($t.termin)</td>
           <td style="text-align:right">$!decimalformat.format($t.betrag) $!t.konto.waehrung</td>
           <td>
             $!t.zweck
