@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/DBObjectDelete.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/03/05 15:24:53 $
+ * $Revision: 1.6 $
+ * $Date: 2011/03/22 12:23:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -90,10 +90,12 @@ public class DBObjectDelete implements Action
       list = new DBObject[]{(DBObject)context}; // Array mit einem Element
     
     Worker worker = new Worker(list);
-    if (list.length > 100)
-      Application.getController().start(worker);
-    else
-      worker.run(null);
+
+// Das machen wir nicht mehr. Durch die dauernden Wechsel im Event Dispatcher wird das schweinelangsam
+//    if (list.length > 100)
+//      Application.getController().start(worker);
+//    else
+    worker.run(null);
   }
   
   /**
@@ -199,6 +201,9 @@ public class DBObjectDelete implements Action
 
 /**********************************************************************
  * $Log: DBObjectDelete.java,v $
+ * Revision 1.6  2011/03/22 12:23:35  willuhn
+ * @R Loeschen in separatem Thread entfernt
+ *
  * Revision 1.5  2010/03/05 15:24:53  willuhn
  * @N BUGZILLA 686
  *
