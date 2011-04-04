@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UeberweisungImpl.java,v $
- * $Revision: 1.45 $
- * $Date: 2011/03/31 16:30:58 $
+ * $Revision: 1.46 $
+ * $Date: 2011/04/04 15:09:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -85,14 +85,10 @@ public class UeberweisungImpl extends AbstractBaseUeberweisungImpl implements Ue
           throw new ApplicationException(i18n.tr("Eine Umbuchung kann nicht als Termin-Auftrag gesendet werden"));
         }
         
-        // Checken, ob Ziel-BLZ identisch mit Quell-BLZ
-        // NULL-Checks brauchen wir hier nicht - das ist bereits in super.insertCheck() gemacht worden
-        // TODO: Siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=74505#74505
-        // Nur zum Testen. Morgen wieder einkommentieren
-//        String dest = getGegenkontoBLZ();
-//        String src  = getKonto().getBLZ();
-//        if (!dest.equals(src))
-//          throw new ApplicationException(i18n.tr("Umbuchungen sind nur zu einem Konto bei Ihrer eigenen Bank möglich"));
+        String dest = getGegenkontoBLZ();
+        String src  = getKonto().getBLZ();
+        if (!dest.equals(src))
+          throw new ApplicationException(i18n.tr("Umbuchungen sind nur zu einem Konto bei Ihrer eigenen Bank möglich"));
       }
     }
     catch (RemoteException e)
@@ -152,7 +148,10 @@ public class UeberweisungImpl extends AbstractBaseUeberweisungImpl implements Ue
 
 /**********************************************************************
  * $Log: UeberweisungImpl.java,v $
- * Revision 1.45  2011/03/31 16:30:58  willuhn
+ * Revision 1.46  2011/04/04 15:09:02  willuhn
+ * @R Gegenkonto-Pruefung wieder aktiviert
+ *
+ * Revision 1.45  2011-03-31 16:30:58  willuhn
  * @N BLZ-Check bei Umbuchungen testhalber mal deaktiviert
  *
  * Revision 1.44  2010/04/27 11:02:32  willuhn
