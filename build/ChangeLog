@@ -1,5 +1,7 @@
 2011-??-?? Version 1.13.0
 
+  * CHG: 0057 Zweispaltige Anzeige in Detailansicht von Daueraufträgen - bessere
+              Anzeige auf kleinen Bildschirmen
   * CHG: 0056 Loeschen von Datensaetzen in separatem Thread entfernt - zu langsam
   * BUG: 0055 BUGZILLA 1003 - Spalten-Dreher in HTML-Export "Überweisungen"
   * BUG: 0054 BUGZILLA 1002 - MaxMsgSizeKB Bugfix in HBCI4Java - 08-hbci4java-bug-195.patch
