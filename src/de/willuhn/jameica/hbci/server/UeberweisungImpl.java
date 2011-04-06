@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UeberweisungImpl.java,v $
- * $Revision: 1.46 $
- * $Date: 2011/04/04 15:09:02 $
+ * $Revision: 1.47 $
+ * $Date: 2011/04/06 08:18:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -85,6 +85,8 @@ public class UeberweisungImpl extends AbstractBaseUeberweisungImpl implements Ue
           throw new ApplicationException(i18n.tr("Eine Umbuchung kann nicht als Termin-Auftrag gesendet werden"));
         }
         
+        // Checken, ob Ziel-BLZ identisch mit Quell-BLZ
+        // NULL-Checks brauchen wir hier nicht - das ist bereits in super.insertCheck() gemacht worden
         String dest = getGegenkontoBLZ();
         String src  = getKonto().getBLZ();
         if (!dest.equals(src))
@@ -148,7 +150,10 @@ public class UeberweisungImpl extends AbstractBaseUeberweisungImpl implements Ue
 
 /**********************************************************************
  * $Log: UeberweisungImpl.java,v $
- * Revision 1.46  2011/04/04 15:09:02  willuhn
+ * Revision 1.47  2011/04/06 08:18:51  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.46  2011-04-04 15:09:02  willuhn
  * @R Gegenkonto-Pruefung wieder aktiviert
  *
  * Revision 1.45  2011-03-31 16:30:58  willuhn
