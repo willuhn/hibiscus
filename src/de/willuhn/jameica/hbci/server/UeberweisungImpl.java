@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UeberweisungImpl.java,v $
- * $Revision: 1.47 $
- * $Date: 2011/04/06 08:18:51 $
+ * $Revision: 1.48 $
+ * $Date: 2011/04/06 08:19:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -150,16 +150,10 @@ public class UeberweisungImpl extends AbstractBaseUeberweisungImpl implements Ue
 
 /**********************************************************************
  * $Log: UeberweisungImpl.java,v $
- * Revision 1.47  2011/04/06 08:18:51  willuhn
- * *** empty log message ***
+ * Revision 1.48  2011/04/06 08:19:19  willuhn
+ * @R UNDO
  *
- * Revision 1.46  2011-04-04 15:09:02  willuhn
- * @R Gegenkonto-Pruefung wieder aktiviert
- *
- * Revision 1.45  2011-03-31 16:30:58  willuhn
- * @N BLZ-Check bei Umbuchungen testhalber mal deaktiviert
- *
- * Revision 1.44  2010/04/27 11:02:32  willuhn
+ * Revision 1.44  2010-04-27 11:02:32  willuhn
  * @R Veralteten Verwendungszweck-Code entfernt
  *
  * Revision 1.43  2010/03/04 09:39:40  willuhn
