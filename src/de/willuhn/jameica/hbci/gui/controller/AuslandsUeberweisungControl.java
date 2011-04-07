@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AuslandsUeberweisungControl.java,v $
- * $Revision: 1.9 $
- * $Date: 2010/04/14 17:44:10 $
+ * $Revision: 1.10 $
+ * $Date: 2011/04/07 17:52:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -234,23 +234,6 @@ public class AuslandsUeberweisungControl extends AbstractControl
     betrag.setMandatory(true);
     betrag.setEnabled(!getTransfer().ausgefuehrt());
     
-    // Forciert das korrekte Formatieren des Betrages nach Focus-Wechsel
-    betrag.addListener(new Listener() {
-      public void handleEvent(Event event) {
-        try
-        {
-          Double value = (Double) betrag.getValue();
-          if (value == null)
-            return;
-          betrag.setValue(value);
-        }
-        catch (Exception e)
-        {
-          Logger.error("unable to autoformat value",e);
-        }
-      }
-    
-    });
     new KontoListener().handleEvent(null);
 
     return betrag;
@@ -504,6 +487,9 @@ public class AuslandsUeberweisungControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AuslandsUeberweisungControl.java,v $
+ * Revision 1.10  2011/04/07 17:52:07  willuhn
+ * @N BUGZILLA 1014
+ *
  * Revision 1.9  2010/04/14 17:44:10  willuhn
  * @N BUGZILLA 83
  *

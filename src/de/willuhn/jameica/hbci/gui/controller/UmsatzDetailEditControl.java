@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailEditControl.java,v $
- * $Revision: 1.8 $
- * $Date: 2010/11/08 10:46:33 $
+ * $Revision: 1.9 $
+ * $Date: 2011/04/07 17:52:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -111,12 +111,9 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
             Double value = (Double) betrag.getValue();
             if (value == null)
               return;
-            betrag.setValue(value);
-            
+
             if (((konto.getFlags() & Konto.FLAG_OFFLINE) == Konto.FLAG_OFFLINE) && getUmsatz().isNewObject())
-            {
               getSaldo().setValue(konto.getSaldo() + value);
-            }
           }
           catch (Exception e)
           {
@@ -145,23 +142,6 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
         this.saldo.setValue(konto.getSaldo());
       
       this.saldo.setComment(konto == null ? "" : konto.getWaehrung());
-      // Forciert das korrekte Formatieren des Betrages nach Focus-Wechsel
-      this.saldo.addListener(new Listener() {
-        public void handleEvent(Event event) {
-          try
-          {
-            Double value = (Double) saldo.getValue();
-            if (value == null)
-              return;
-            saldo.setValue(value);
-          }
-          catch (Exception e)
-          {
-            Logger.error("unable to autoformat value",e);
-          }
-        }
-      
-      });
     }
     return this.saldo;
   }
@@ -399,7 +379,10 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
 
 /**********************************************************************
  * $Log: UmsatzDetailEditControl.java,v $
- * Revision 1.8  2010/11/08 10:46:33  willuhn
+ * Revision 1.9  2011/04/07 17:52:06  willuhn
+ * @N BUGZILLA 1014
+ *
+ * Revision 1.8  2010-11-08 10:46:33  willuhn
  * @B BUGZILLA 945 - Quatsch - der Saldo wird immer uebernommen
  *
  * Revision 1.7  2010-11-08 10:45:21  willuhn
