@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UeberweisungList.java,v $
- * $Revision: 1.13 $
- * $Date: 2011/04/08 15:19:14 $
+ * $Revision: 1.14 $
+ * $Date: 2011/04/08 17:41:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,11 +14,13 @@ package de.willuhn.jameica.hbci.gui.views;
 
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.internal.parts.PanelButtonPrint;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungImport;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungNew;
 import de.willuhn.jameica.hbci.gui.controller.UeberweisungControl;
+import de.willuhn.jameica.hbci.io.print.PrintSupportUeberweisungList;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 
@@ -34,11 +36,19 @@ public class UeberweisungList extends AbstractView
    */
   public void bind() throws Exception
   {
-		GUI.getView().setTitle(i18n.tr("Vorhandene Überweisungen"));
-		
     UeberweisungControl control = new UeberweisungControl(this);
-
-		control.getUeberweisungListe().paint(getParent());
+    final de.willuhn.jameica.hbci.gui.parts.UeberweisungList table = control.getUeberweisungListe();
+    
+		GUI.getView().setTitle(i18n.tr("Vorhandene Überweisungen"));
+    GUI.getView().addPanelButton(new PanelButtonPrint(new PrintSupportUeberweisungList(table))
+    {
+      public boolean isEnabled()
+      {
+        return table.getSelection() != null && super.isEnabled();
+      }
+    });
+		
+		table.paint(getParent());
 
 		ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Importieren..."),new UeberweisungImport(),null,false,"document-open.png");
@@ -51,7 +61,10 @@ public class UeberweisungList extends AbstractView
 
 /**********************************************************************
  * $Log: UeberweisungList.java,v $
- * Revision 1.13  2011/04/08 15:19:14  willuhn
+ * Revision 1.14  2011/04/08 17:41:45  willuhn
+ * @N Erster Druck-Support fuer Ueberweisungslisten
+ *
+ * Revision 1.13  2011-04-08 15:19:14  willuhn
  * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
  * @C Code-Cleanup
  *
