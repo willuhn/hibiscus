@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzList.java,v $
- * $Revision: 1.14 $
- * $Date: 2010/11/19 18:37:20 $
+ * $Revision: 1.15 $
+ * $Date: 2011/04/08 15:19:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,14 +12,11 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.views;
 
-import java.rmi.RemoteException;
-
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
-import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.Button;
-import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.KontoFetchUmsaetze;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetailEdit;
@@ -27,7 +24,6 @@ import de.willuhn.jameica.hbci.gui.action.UmsatzImport;
 import de.willuhn.jameica.hbci.gui.controller.UmsatzControl;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -36,6 +32,7 @@ import de.willuhn.util.I18N;
  */
 public class UmsatzList extends AbstractView
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
   private UmsatzControl control = null;
   
@@ -51,8 +48,6 @@ public class UmsatzList extends AbstractView
    * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
   public void bind() throws Exception {
-
-		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 
     // BUGZILLA 38 http://www.willuhn.de/bugzilla/show_bug.cgi?id=38
@@ -74,33 +69,25 @@ public class UmsatzList extends AbstractView
       GUI.getView().setTitle(i18n.tr("Kontoauszüge: {0} [Kto.-Nr.: {1}, Saldo: {2}]",new String[]{s1,s2,s3}));
 		
 
-		try {
-			
-			Part list = control.getUmsatzListe();
-			list.paint(getParent());
-			
-			ButtonArea buttons = new ButtonArea(getParent(),3);
-      buttons.addButton(new Back());
-      buttons.addButton(i18n.tr("Umsätze importieren..."), new UmsatzImport(),control.getKonto(),false,"document-open.png");
+		Part list = control.getUmsatzListe();
+		list.paint(getParent());
+		
+		ButtonArea buttons = new ButtonArea();
+    buttons.addButton(i18n.tr("Umsätze importieren..."), new UmsatzImport(),control.getKonto(),false,"document-open.png");
 
-      int flags = control.getKonto().getFlags();
+    int flags = control.getKonto().getFlags();
 
-      Button fetch = null;
+    Button fetch = null;
 
-      if ((flags & Konto.FLAG_OFFLINE) == Konto.FLAG_OFFLINE)
-        fetch = new Button(i18n.tr("Umsatz anlegen"), new UmsatzDetailEdit(),control.getKonto(),false,"emblem-documents.png");
-      else
-        fetch = new Button(i18n.tr("Umsätze abrufen"), new KontoFetchUmsaetze(),control.getKonto(),false,"mail-send-receive.png");
-      
-      fetch.setEnabled((flags & Konto.FLAG_DISABLED) != Konto.FLAG_DISABLED);
-      buttons.addButton(fetch);
-		}
-		catch (RemoteException e)
-		{
-			Logger.error("error while loading umsatz list",e);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Laden der Umsätze"));
-		}
+    if ((flags & Konto.FLAG_OFFLINE) == Konto.FLAG_OFFLINE)
+      fetch = new Button(i18n.tr("Umsatz anlegen"), new UmsatzDetailEdit(),control.getKonto(),false,"emblem-documents.png");
+    else
+      fetch = new Button(i18n.tr("Umsätze abrufen"), new KontoFetchUmsaetze(),control.getKonto(),false,"mail-send-receive.png");
+    
+    fetch.setEnabled((flags & Konto.FLAG_DISABLED) != Konto.FLAG_DISABLED);
+    buttons.addButton(fetch);
 
+    buttons.paint(getParent());
   }
   
   /**
@@ -116,7 +103,11 @@ public class UmsatzList extends AbstractView
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
- * Revision 1.14  2010/11/19 18:37:20  willuhn
+ * Revision 1.15  2011/04/08 15:19:13  willuhn
+ * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
+ * @C Code-Cleanup
+ *
+ * Revision 1.14  2010-11-19 18:37:20  willuhn
  * @N Erste Version der Termin-View mit Appointment-Providern
  *
  * Revision 1.13  2010/04/22 16:40:57  willuhn
@@ -124,77 +115,4 @@ public class UmsatzList extends AbstractView
  *
  * Revision 1.12  2010/04/22 16:21:27  willuhn
  * @N HBCI-relevante Buttons und Aktionen fuer Offline-Konten sperren
- *
- * Revision 1.11  2009/09/15 00:23:35  willuhn
- * @N BUGZILLA 745
- *
- * Revision 1.10  2009/05/28 10:45:18  willuhn
- * @N more icons
- *
- * Revision 1.9  2009/01/20 10:51:45  willuhn
- * @N Mehr Icons - fuer Buttons
- *
- * Revision 1.8  2006/06/19 11:52:17  willuhn
- * @N Update auf hbci4java 2.5.0rc9
- *
- * Revision 1.7  2006/05/10 12:51:37  willuhn
- * @B typo s/Ktr/Kto/
- *
- * Revision 1.6  2006/01/18 00:51:00  willuhn
- * @B bug 65
- *
- * Revision 1.5  2005/06/07 22:41:09  web0
- * @B bug 70
- *
- * Revision 1.4  2005/04/05 22:13:30  web0
- * @B bug 38
- *
- * Revision 1.3  2005/03/09 01:07:02  web0
- * @D javadoc fixes
- *
- * Revision 1.2  2005/02/06 17:46:17  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2004/11/13 17:12:15  willuhn
- * *** empty log message ***
- *
- * Revision 1.13  2004/11/12 18:25:07  willuhn
- * *** empty log message ***
- *
- * Revision 1.12  2004/10/20 12:34:02  willuhn
- * *** empty log message ***
- *
- * Revision 1.11  2004/10/17 16:28:46  willuhn
- * @N Die ersten Dauerauftraege abgerufen ;)
- *
- * Revision 1.10  2004/10/08 13:37:48  willuhn
- * *** empty log message ***
- *
- * Revision 1.9  2004/07/25 17:15:05  willuhn
- * @C PluginLoader is no longer static
- *
- * Revision 1.8  2004/07/21 23:54:30  willuhn
- * *** empty log message ***
- *
- * Revision 1.7  2004/07/20 22:53:03  willuhn
- * @C Refactoring
- *
- * Revision 1.6  2004/07/09 00:04:40  willuhn
- * @C Redesign
- *
- * Revision 1.5  2004/06/30 20:58:28  willuhn
- * *** empty log message ***
- *
- * Revision 1.4  2004/04/12 19:15:31  willuhn
- * @C refactoring
- *
- * Revision 1.3  2004/04/04 18:30:23  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2004/03/30 22:07:49  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2004/03/05 00:04:10  willuhn
- * @N added code for umsatzlist
- *
  **********************************************************************/

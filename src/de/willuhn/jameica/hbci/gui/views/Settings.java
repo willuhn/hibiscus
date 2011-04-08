@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Settings.java,v $
- * $Revision: 1.48 $
- * $Date: 2010/03/05 15:24:53 $
+ * $Revision: 1.49 $
+ * $Date: 2011/04/08 15:19:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,8 +21,7 @@ import org.eclipse.swt.widgets.TabFolder;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.internal.buttons.Back;
-import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
@@ -38,7 +37,9 @@ import de.willuhn.util.I18N;
 /**
  * Einstellungs-Dialog.
  */
-public class Settings extends AbstractView {
+public class Settings extends AbstractView
+{
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
    * Wir merken uns das letzte aktive Tab
@@ -53,9 +54,8 @@ public class Settings extends AbstractView {
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
-  public void bind() throws Exception {
-
-		final I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  public void bind() throws Exception
+  {
 
 		GUI.getView().setTitle(i18n.tr("Einstellungen"));
 		final SettingsControl control = new SettingsControl(this);
@@ -78,7 +78,8 @@ public class Settings extends AbstractView {
 		// Passports
     TabGroup passports = new TabGroup(getTabFolder(),i18n.tr("HBCI-Sicherheitsmedien"));
 		passports.addPart(control.getPassportListe());
-    ButtonArea passportButtons = passports.createButtonArea(1);
+		
+    ButtonArea passportButtons = new ButtonArea();
     passportButtons.addButton(i18n.tr("Sicherheitsmedium konfigurieren..."), new Action() {
     
       public void handleAction(Object context) throws ApplicationException
@@ -94,15 +95,16 @@ public class Settings extends AbstractView {
         }
       }
     },null,false,"document-properties.png");
+    passports.addButtonArea(passportButtons);
 
     // Umsatz-Kategorien
     TabGroup umsatztypes = new TabGroup(getTabFolder(),i18n.tr("Umsatz-Kategorien"));
     control.getUmsatzTypTree().paint(umsatztypes.getComposite()); // BUGZILLA 410
-    ButtonArea umsatzButtons = umsatztypes.createButtonArea(1);
+    ButtonArea umsatzButtons = new ButtonArea();
     umsatzButtons.addButton(i18n.tr("Neue Umsatz-Kategorie..."),new UmsatzTypNew(),null,false,"text-x-generic.png");
+    umsatztypes.addButtonArea(umsatzButtons);
 
-    ButtonArea buttons = new ButtonArea(getParent(),2);
-    buttons.addButton(new Back(false));
+    ButtonArea buttons = new ButtonArea();
 		buttons.addButton(i18n.tr("Speichern"),new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -110,6 +112,7 @@ public class Settings extends AbstractView {
       	control.handleStore();
       }
     },null,true,"document-save.png");
+		buttons.paint(getParent());
 
     // Mal checken, ob wir uns das zuletzt aktive Tab gemerkt haben.
     if (lastActiveTab != null)
@@ -146,36 +149,10 @@ public class Settings extends AbstractView {
 
 /**********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.49  2011/04/08 15:19:14  willuhn
+ * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
+ * @C Code-Cleanup
+ *
  * Revision 1.48  2010/03/05 15:24:53  willuhn
  * @N BUGZILLA 686
- *
- * Revision 1.47  2009/05/08 13:58:30  willuhn
- * @N Icons in allen Menus und auf allen Buttons
- * @N Fuer Umsatz-Kategorien koennen nun benutzerdefinierte Farben vergeben werden
- *
- * Revision 1.46  2009/05/06 23:11:23  willuhn
- * @N Mehr Icons auf Buttons
- *
- * Revision 1.45  2009/03/31 11:01:41  willuhn
- * @R Speichern des PIN-Hashes komplett entfernt
- *
- * Revision 1.44  2009/01/20 10:51:45  willuhn
- * @N Mehr Icons - fuer Buttons
- *
- * Revision 1.43  2008/08/29 14:30:36  willuhn
- * @C Java 1.4 Compatibility - wieso zur Hoelle sind die Fehler vorher nie aufgefallen? Ich compiliere immer gegen 1.4? Suspekt
- *
- * Revision 1.42  2008/07/22 22:30:01  willuhn
- * @C Zum Speichern des letzten aktiven Tabs braucht man gar keine Session sondern nur einen statischen Integer. Keine Ahnung, warum ich das mal so umstaendlich implementiert hatte ;)
- *
- * Revision 1.41  2007/06/12 08:56:01  willuhn
- * @B Bug 410
- *
- * Revision 1.40  2007/05/16 13:59:53  willuhn
- * @N Bug 227 HBCI-Synchronisierung auch im Fehlerfall fortsetzen
- * @C Synchronizer ueberarbeitet
- * @B HBCIFactory hat globalen Status auch bei Abbruch auf Error gesetzt
- *
- * Revision 1.39  2007/02/26 11:40:06  willuhn
- * @C Ergonomie-Vorschlag von Gottfried
  **********************************************************************/

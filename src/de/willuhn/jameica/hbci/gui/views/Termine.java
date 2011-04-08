@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/Termine.java,v $
- * $Revision: 1.3 $
- * $Date: 2011/01/14 17:33:41 $
+ * $Revision: 1.4 $
+ * $Date: 2011/04/08 15:19:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,7 +16,6 @@ import java.util.Date;
 
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.system.Application;
@@ -46,7 +45,6 @@ public class Termine extends AbstractView
 		this.termine.paint(getParent());
 
 		ButtonArea buttons = new ButtonArea();
-    buttons.addButton(new Back(false));
     // buttons.addButton(new ReminderNew());
     buttons.paint(getParent());
   }
@@ -63,7 +61,11 @@ public class Termine extends AbstractView
 
 /**********************************************************************
  * $Log: Termine.java,v $
- * Revision 1.3  2011/01/14 17:33:41  willuhn
+ * Revision 1.4  2011/04/08 15:19:13  willuhn
+ * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
+ * @C Code-Cleanup
+ *
+ * Revision 1.3  2011-01-14 17:33:41  willuhn
  * @N Erster Code fuer benutzerdefinierte Erinnerungen via Reminder-Framework
  *
  * Revision 1.2  2010-11-21 23:57:58  willuhn

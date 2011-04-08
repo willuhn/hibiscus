@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/ProtokollList.java,v $
- * $Revision: 1.4 $
- * $Date: 2009/01/20 10:51:46 $
+ * $Revision: 1.5 $
+ * $Date: 2011/04/08 15:19:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,27 +14,24 @@ package de.willuhn.jameica.hbci.gui.views;
 
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.internal.buttons.Back;
-import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.controller.KontoControl;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
 /**
  * Zeigt eine Liste der Protokoll-Eintraege eines Kontos an.
  */
-public class ProtokollList extends AbstractView {
+public class ProtokollList extends AbstractView
+{
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
-  public void bind() throws Exception {
-
-		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
+  public void bind() throws Exception
+  {
     KontoControl control = new KontoControl(this);
 
     Konto k = control.getKonto();
@@ -49,38 +46,15 @@ public class ProtokollList extends AbstractView {
     else
       GUI.getView().setTitle(i18n.tr("Protokoll des Kontos"));
 		
-		
-		try {
-
-			control.getProtokoll().paint(getParent());
-
-			ButtonArea buttons = new ButtonArea(getParent(),1);
-      buttons.addButton(new Back());
-
-		}
-		catch (Exception e)
-		{
-			Logger.error("error while loading protocol",e);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Lesen des Konto-Protokolls."));
-		}
+    control.getProtokoll().paint(getParent());
   }
 }
 
 
 /**********************************************************************
  * $Log: ProtokollList.java,v $
- * Revision 1.4  2009/01/20 10:51:46  willuhn
- * @N Mehr Icons - fuer Buttons
- *
- * Revision 1.3  2006/05/10 12:51:37  willuhn
- * @B typo s/Ktr/Kto/
- *
- * Revision 1.2  2006/01/18 00:51:00  willuhn
- * @B bug 65
- *
- * Revision 1.1  2005/05/02 23:56:45  web0
- * @B bug 66, 67
- * @C umsatzliste nach vorn verschoben
- * @C protokoll nach hinten verschoben
+ * Revision 1.5  2011/04/08 15:19:14  willuhn
+ * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
+ * @C Code-Cleanup
  *
  **********************************************************************/

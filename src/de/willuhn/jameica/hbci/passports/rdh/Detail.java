@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/Detail.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/10/11 20:58:52 $
+ * $Revision: 1.6 $
+ * $Date: 2011/04/08 15:19:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,8 +15,7 @@ package de.willuhn.jameica.hbci.passports.rdh;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.internal.buttons.Back;
-import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.ColumnLayout;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.Headline;
@@ -75,7 +74,7 @@ public class Detail extends AbstractView
       }
 
       {
-        ButtonArea buttons = new ButtonArea(getParent(),2);
+        ButtonArea buttons = new ButtonArea();
         buttons.addButton(i18n.tr("Passwort ändern"),new Action()
         {
           public void handleAction(Object context) throws ApplicationException
@@ -90,14 +89,14 @@ public class Detail extends AbstractView
             control.startIniLetter();
           }
         },null,false,"stock_keyring.png");
+        buttons.paint(getParent());
       }
 
       
       new Headline(getParent(),i18n.tr("Fest zugeordnete Konten"));
       control.getKontoAuswahl().paint(getParent());
 
-      ButtonArea buttons = new ButtonArea(getParent(),5);
-      buttons.addButton(new Back(true));
+      ButtonArea buttons = new ButtonArea();
       buttons.addButton(i18n.tr("BPD/UPD"),new Action()
       {
         public void handleAction(Object context) throws ApplicationException
@@ -127,6 +126,7 @@ public class Detail extends AbstractView
         }
       },null,false,"document-save.png");
 
+      buttons.paint(getParent());
       
       // Ggf. angezeigten Fehlertext von vorher loeschen
       Application.getMessagingFactory().sendMessage(new StatusBarMessage("",StatusBarMessage.TYPE_SUCCESS));
@@ -158,7 +158,11 @@ public class Detail extends AbstractView
 
 /**********************************************************************
  * $Log: Detail.java,v $
- * Revision 1.5  2010/10/11 20:58:52  willuhn
+ * Revision 1.6  2011/04/08 15:19:14  willuhn
+ * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
+ * @C Code-Cleanup
+ *
+ * Revision 1.5  2010-10-11 20:58:52  willuhn
  * @N BUGZILLA 927
  *
  * Revision 1.4  2010-09-29 23:43:34  willuhn

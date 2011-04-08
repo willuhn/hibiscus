@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/DonateView.java,v $
- * $Revision: 1.7 $
- * $Date: 2010/10/07 10:25:09 $
+ * $Revision: 1.8 $
+ * $Date: 2011/04/08 15:19:13 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -21,7 +21,6 @@ import org.eclipse.swt.widgets.Composite;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SWTUtil;
@@ -98,7 +97,6 @@ public class DonateView extends AbstractView
       final String name = "Olaf Willuhn";
       
       ButtonArea buttons = new ButtonArea();
-      buttons.addButton(new Back(true));
       buttons.addButton(i18n.tr("Dauerauftrag erstellen"),new Action() {
         public void handleAction(Object context) throws ApplicationException
         {
@@ -159,7 +157,11 @@ public class DonateView extends AbstractView
 
 /**********************************************************************
  * $Log: DonateView.java,v $
- * Revision 1.7  2010/10/07 10:25:09  willuhn
+ * Revision 1.8  2011/04/08 15:19:13  willuhn
+ * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
+ * @C Code-Cleanup
+ *
+ * Revision 1.7  2010-10-07 10:25:09  willuhn
  * @C Bankverbindung geaendert
  *
  * Revision 1.6  2010-10-05 22:24:41  willuhn

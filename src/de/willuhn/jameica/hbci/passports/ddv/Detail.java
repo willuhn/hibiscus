@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/Detail.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/09/07 15:28:05 $
+ * $Revision: 1.2 $
+ * $Date: 2011/04/08 15:19:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,7 +15,6 @@ package de.willuhn.jameica.hbci.passports.ddv;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.ColumnLayout;
 import de.willuhn.jameica.gui.util.Container;
@@ -74,7 +73,6 @@ public class Detail extends AbstractView
     control.getKontoAuswahl().paint(getParent());
 
     ButtonArea buttonArea = new ButtonArea();
-    buttonArea.addButton(new Back(true));
     buttonArea.addButton(i18n.tr("Kartenleser suchen..."), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -111,7 +109,11 @@ public class Detail extends AbstractView
 
 /**********************************************************************
  * $Log: Detail.java,v $
- * Revision 1.1  2010/09/07 15:28:05  willuhn
+ * Revision 1.2  2011/04/08 15:19:15  willuhn
+ * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
+ * @C Code-Cleanup
+ *
+ * Revision 1.1  2010-09-07 15:28:05  willuhn
  * @N BUGZILLA 391 - Kartenleser-Konfiguration komplett umgebaut. Damit lassen sich jetzt beliebig viele Kartenleser und Konfigurationen parellel einrichten
  *
  * Revision 1.5  2010-07-13 10:55:29  willuhn

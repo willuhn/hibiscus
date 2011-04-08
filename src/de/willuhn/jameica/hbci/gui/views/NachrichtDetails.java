@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/NachrichtDetails.java,v $
- * $Revision: 1.1 $
- * $Date: 2009/07/17 08:42:57 $
+ * $Revision: 1.2 $
+ * $Date: 2011/04/08 15:19:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,8 +16,7 @@ import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.internal.buttons.Back;
-import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
@@ -49,16 +48,20 @@ public class NachrichtDetails extends AbstractView {
     container.addText(i18n.tr("{0} [BLZ: {1}]", new String[] {HBCIUtils.getNameForBLZ(n.getBLZ()),n.getBLZ()}) + "\n",true);
     container.addText(n.getNachricht(),true);
 
-    ButtonArea buttons = container.createButtonArea(3);
-    buttons.addButton(new Back(true));
+    ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("In Zwischenablage kopieren"),new NachrichtCopy(),n,false,"edit-copy.png");
     buttons.addButton(i18n.tr("Löschen"),new DBObjectDelete(),n,false,"user-trash-full.png");
+    buttons.paint(getParent());
   }
 }
 
 
 /**********************************************************************
  * $Log: NachrichtDetails.java,v $
+ * Revision 1.2  2011/04/08 15:19:14  willuhn
+ * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
+ * @C Code-Cleanup
+ *
  * Revision 1.1  2009/07/17 08:42:57  willuhn
  * @N Detail-Ansicht fuer Systemnachrichten der Bank
  * @N Systemnachrichten in Zwischenablage kopieren

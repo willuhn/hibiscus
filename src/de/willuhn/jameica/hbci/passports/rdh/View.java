@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/View.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/06/17 11:26:48 $
+ * $Revision: 1.2 $
+ * $Date: 2011/04/08 15:19:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,8 +15,7 @@ package de.willuhn.jameica.hbci.passports.rdh;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.internal.buttons.Back;
-import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -27,7 +26,6 @@ import de.willuhn.util.I18N;
  */
 public class View extends AbstractView
 {
-
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
@@ -41,8 +39,7 @@ public class View extends AbstractView
 
 		control.getKeyList().paint(getParent());
     
-    ButtonArea buttons = new ButtonArea(getParent(),3);
-    buttons.addButton(new Back(true));
+    ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Schlüssel importieren..."),new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -57,12 +54,18 @@ public class View extends AbstractView
 				control.startCreate();
 			}
 		},null,false,"document-new.png");
+
+		buttons.paint(getParent());
   }
 }
 
 
 /**********************************************************************
  * $Log: View.java,v $
+ * Revision 1.2  2011/04/08 15:19:14  willuhn
+ * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
+ * @C Code-Cleanup
+ *
  * Revision 1.1  2010/06/17 11:26:48  willuhn
  * @B In HBCICallbackSWT wurden die RDH-Passports nicht korrekt ausgefiltert
  * @C komplettes Projekt "hbci_passport_rdh" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren

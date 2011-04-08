@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/Detail.java,v $
- * $Revision: 1.4 $
- * $Date: 2010/10/11 20:58:51 $
+ * $Revision: 1.5 $
+ * $Date: 2011/04/08 15:19:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,9 +15,8 @@ package de.willuhn.jameica.hbci.passports.pintan;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.Button;
-import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.ColumnLayout;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.Headline;
@@ -73,7 +72,7 @@ public class Detail extends AbstractView
     }
     
     {
-      ButtonArea buttons = new ButtonArea(getParent(),2);
+      ButtonArea buttons = new ButtonArea();
       // BUGZILLA 218
       String secMech = control.getConfig().getSecMech();
       Button b = new Button(i18n.tr("TAN-Verfahren zurücksetzen"), new Action() {
@@ -93,13 +92,13 @@ public class Detail extends AbstractView
         }
       },null,false,"emblem-default.png");
 
+      buttons.paint(getParent());
     }
 
     new Headline(getParent(),i18n.tr("Fest zugeordnete Konten"));
     control.getKontoAuswahl().paint(getParent());
 
-    ButtonArea buttons = new ButtonArea(getParent(),4);
-    buttons.addButton(new Back(true));
+    ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("BPD/UPD"),new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -121,21 +120,18 @@ public class Detail extends AbstractView
         control.handleStore();
       }
     },null,false,"document-save.png");
+    buttons.paint(getParent());
   }
-
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#unbind()
-   */
-  public void unbind() throws ApplicationException
-  {
-  }
-
 }
 
 
 /**********************************************************************
  * $Log: Detail.java,v $
- * Revision 1.4  2010/10/11 20:58:51  willuhn
+ * Revision 1.5  2011/04/08 15:19:14  willuhn
+ * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
+ * @C Code-Cleanup
+ *
+ * Revision 1.4  2010-10-11 20:58:51  willuhn
  * @N BUGZILLA 927
  *
  * Revision 1.3  2010-07-22 12:37:41  willuhn
@@ -146,41 +142,4 @@ public class Detail extends AbstractView
  *
  * Revision 1.1  2010/06/17 11:38:15  willuhn
  * @C kompletten Code aus "hbci_passport_pintan" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
- *
- * Revision 1.11  2009/06/16 14:04:34  willuhn
- * @N Dialog zum Anzeigen der BPD/UPD
- *
- * Revision 1.10  2007/08/31 09:43:55  willuhn
- * @N Einer PIN/TAN-Config koennen jetzt mehrere Konten zugeordnet werden
- *
- * Revision 1.9  2006/08/03 15:31:35  willuhn
- * @N Bug 62 completed
- *
- * Revision 1.8  2006/08/03 13:51:38  willuhn
- * @N Bug 62
- * @C HBCICallback-Handling nach Zustaendigkeit auf Passports verteilt
- *
- * Revision 1.7  2006/01/10 22:34:07  willuhn
- * @B bug 173
- *
- * Revision 1.6  2005/07/18 12:53:30  web0
- * @B bug 96
- *
- * Revision 1.5  2005/06/21 21:44:49  web0
- * @B bug 80
- *
- * Revision 1.4  2005/04/27 00:30:12  web0
- * @N real test connection
- * @N all hbci versions are now shown in select box
- * @C userid and customerid are changable
- *
- * Revision 1.3  2005/03/11 00:49:30  web0
- * *** empty log message ***
- *
- * Revision 1.2  2005/03/10 18:38:48  web0
- * @N more PinTan Code
- *
- * Revision 1.1  2005/03/08 18:44:57  web0
- * *** empty log message ***
- *
  **********************************************************************/

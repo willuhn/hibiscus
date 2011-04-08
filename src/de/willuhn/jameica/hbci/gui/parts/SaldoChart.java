@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SaldoChart.java,v $
- * $Revision: 1.4 $
- * $Date: 2011/04/08 09:28:12 $
+ * $Revision: 1.5 $
+ * $Date: 2011/04/08 15:19:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,7 +27,6 @@ import de.willuhn.datasource.rmi.ResultSetExtractor;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.input.SelectInput;
-import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.ColumnLayout;
 import de.willuhn.jameica.gui.util.Container;
@@ -178,7 +177,6 @@ public class SaldoChart implements Part
           group.addInput(this.getRange());
 
           ButtonArea buttons = new ButtonArea();
-          buttons.addButton(new Back(false));
           buttons.addButton(i18n.tr("Aktualisieren"), new Action()
           {
           
@@ -350,7 +348,11 @@ public class SaldoChart implements Part
 
 /*********************************************************************
  * $Log: SaldoChart.java,v $
- * Revision 1.4  2011/04/08 09:28:12  willuhn
+ * Revision 1.5  2011/04/08 15:19:14  willuhn
+ * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
+ * @C Code-Cleanup
+ *
+ * Revision 1.4  2011-04-08 09:28:12  willuhn
  * *** empty log message ***
  *
  * Revision 1.3  2011-01-20 17:13:21  willuhn

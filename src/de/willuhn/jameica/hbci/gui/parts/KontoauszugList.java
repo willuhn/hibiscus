@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.40 $
- * $Date: 2011/04/07 17:52:07 $
+ * $Revision: 1.41 $
+ * $Date: 2011/04/08 15:19:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -39,7 +39,6 @@ import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.TextInput;
-import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.ColumnLayout;
@@ -77,6 +76,8 @@ import de.willuhn.util.I18N;
  */
 public class KontoauszugList extends UmsatzList
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  
   private static Date endDate          = null;
   private static Integer currentTab    = null;
   
@@ -100,8 +101,6 @@ public class KontoauszugList extends UmsatzList
   private boolean disposed = false; // BUGZILLA 462
   private boolean changed = false;
 
-  private I18N i18n = null;
-  
   /**
    * ct.
    * @throws RemoteException
@@ -110,7 +109,6 @@ public class KontoauszugList extends UmsatzList
   {
     super((GenericIterator)null,new UmsatzDetail());
 
-    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     this.setFilterVisible(false);
 
     // bei Ausloesungen ueber SWT-Events verzoegern wir
@@ -181,7 +179,6 @@ public class KontoauszugList extends UmsatzList
     });
     
     ButtonArea buttons = new ButtonArea();
-    buttons.addButton(new Back(false));
     buttons.addButton(i18n.tr("Exportieren..."), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -777,7 +774,11 @@ public class KontoauszugList extends UmsatzList
 
 /*********************************************************************
  * $Log: KontoauszugList.java,v $
- * Revision 1.40  2011/04/07 17:52:07  willuhn
+ * Revision 1.41  2011/04/08 15:19:14  willuhn
+ * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
+ * @C Code-Cleanup
+ *
+ * Revision 1.40  2011-04-07 17:52:07  willuhn
  * @N BUGZILLA 1014
  *
  * Revision 1.39  2011-01-20 17:13:21  willuhn
@@ -800,107 +801,4 @@ public class KontoauszugList extends UmsatzList
  *
  * Revision 1.33  2010/05/30 23:08:32  willuhn
  * @N Auch in Spalte "art" suchen (BUGZILLA 731)
- *
- * Revision 1.32  2009/10/20 23:12:58  willuhn
- * @N Support fuer SEPA-Ueberweisungen
- * @N Konten um IBAN und BIC erweitert
- *
- * Revision 1.31  2009/10/08 22:45:16  willuhn
- * @N Button "Geprueft" in Umsatz-Details, um einen Umsatz auch dort als geprueft markieren zu koennen
- * @N Button "Filter zuruecksetzen" in Kontoauszug
- *
- * Revision 1.30  2009/10/07 23:08:55  willuhn
- * @N BUGZILLA 745: Deaktivierte Konten in Auswertungen zwar noch anzeigen, jedoch mit "[]" umschlossen. Bei der Erstellung von neuen Auftraegen bleiben sie jedoch ausgeblendet. Bei der Gelegenheit wird das Default-Konto jetzt mit ">" markiert
- *
- * Revision 1.29  2009/09/23 11:47:58  willuhn
- * @N Auch im erweiterten Verwendungszweck suchen
- *
- * Revision 1.28  2009/07/16 10:41:05  willuhn
- * @C Bis-Datum wird nun gar nicht mehr gespeichert oder mit einem Wert vorausgefuellt
- *
- * Revision 1.27  2009/05/19 21:55:57  willuhn
- * @B Selektion und Markierung auch bei angepasster Sortierung wiederherstellen
- *
- * Revision 1.26  2009/05/11 14:39:54  willuhn
- * @C Es werden jetzt wieder alle Filterkriterien gespeichert, da auch ein Warnhinweis angezeigt wird, wenn Filter aktiv sind
- *
- * Revision 1.25  2009/05/08 14:22:55  willuhn
- * @C Default-Konto in Kontoauszuegen nicht verwenden - nervt hier eher nur
- *
- * Revision 1.24  2009/05/08 13:58:30  willuhn
- * @N Icons in allen Menus und auf allen Buttons
- * @N Fuer Umsatz-Kategorien koennen nun benutzerdefinierte Farben vergeben werden
- *
- * Revision 1.23  2009/05/06 23:11:22  willuhn
- * @N Mehr Icons auf Buttons
- *
- * Revision 1.22  2009/04/20 11:11:10  willuhn
- * @N BUGZILLA 723
- *
- * Revision 1.21  2009/04/20 11:07:06  willuhn
- * @N BUGZILLA 723
- *
- * Revision 1.20  2009/01/20 10:51:46  willuhn
- * @N Mehr Icons - fuer Buttons
- *
- * Revision 1.19  2009/01/12 00:46:50  willuhn
- * @N Vereinheitlichtes KontoInput in den Auswertungen
- *
- * Revision 1.18  2009/01/04 16:18:22  willuhn
- * @N BUGZILLA 404 - Kontoauswahl via SelectBox
- *
- * Revision 1.17  2008/11/17 23:29:59  willuhn
- * @C Aufrufe der depeicated BLZ-Funktionen angepasst
- *
- * Revision 1.16  2008/09/04 09:34:16  willuhn
- * *** empty log message ***
- *
- * Revision 1.15  2008/09/03 08:27:04  willuhn
- * @C Test - "selectAll" gegen "setSelection" ersetzt
- *
- * Revision 1.14  2008/09/02 08:55:47  willuhn
- * @N Beei FocusOut Min-Betrag in Max-Betrag uebernehmen, wenn dort noch nichts drin steht
- *
- * Revision 1.13  2008/08/31 13:59:54  willuhn
- * *** empty log message ***
- *
- * Revision 1.12  2008/08/31 13:50:42  willuhn
- * @N Automatische Betragsformatierung
- *
- * Revision 1.11  2008/04/06 23:21:43  willuhn
- * @C Bug 575
- * @N Der Vereinheitlichung wegen alle Buttons in den Auswertungen nach oben verschoben. Sie sind dann naeher an den Filter-Controls -> ergonomischer
- *
- * Revision 1.10  2007/08/23 12:37:32  willuhn
- * @N Neues Filterkriterium "Verwendungszweck/Kommentar"
- * @C "Betrag von", "Betrag bis" nicht mehr speichern -> zu verwirrend
- *
- * Revision 1.9  2007/08/09 12:19:55  willuhn
- * @N Bug 449 - Filterkriterien auf dem ersten Tab werden fuer Warnhinweis nicht beruecksichtigt weil sie offensichtlich sind
- *
- * Revision 1.8  2007/08/09 12:04:39  willuhn
- * @N Bug 302
- *
- * Revision 1.7  2007/08/09 11:38:59  willuhn
- * @N Bug 449
- *
- * Revision 1.6  2007/08/09 11:01:24  willuhn
- * @B Bug 462
- *
- * Revision 1.5  2007/08/07 23:54:15  willuhn
- * @B Bug 394 - Erster Versuch. An einigen Stellen (z.Bsp. konto.getAnfangsSaldo) war ich mir noch nicht sicher. Heiner?
- *
- * Revision 1.4  2007/05/02 13:01:12  willuhn
- * @N Zusaetzlicher Filter nach Mindest- und Hoechstbetrag
- *
- * Revision 1.3  2007/05/02 12:40:18  willuhn
- * @C UmsatzTree*-Exporter nur fuer Objekte des Typs "UmsatzTree" anbieten
- * @C Start- und End-Datum in Kontoauszug speichern und an PDF-Export via Session uebergeben
- *
- * Revision 1.2  2007/04/27 15:33:03  willuhn
- * @C Hier sind noch Nacharbeiten noetig
- *
- * Revision 1.1  2007/04/27 15:30:44  willuhn
- * @N Kontoauszug-Liste in TablePart verschoben
- *
  **********************************************************************/

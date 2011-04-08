@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SparQuote.java,v $
- * $Revision: 1.28 $
- * $Date: 2011/01/20 17:13:21 $
+ * $Revision: 1.29 $
+ * $Date: 2011/04/08 15:19:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -38,9 +38,8 @@ import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.IntegerInput;
 import de.willuhn.jameica.gui.input.SelectInput;
-import de.willuhn.jameica.gui.internal.buttons.Back;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.TablePart;
-import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.LabelGroup;
@@ -193,16 +192,15 @@ public class SparQuote implements Part
     filter.addInput(getStartAuswahl());
     filter.addInput(getTagAuswahl());
 
-    ButtonArea topButtons = new ButtonArea(parent,2);
-    topButtons.addButton(new Back(false));
+    ButtonArea topButtons = new ButtonArea();
     topButtons.addButton(i18n.tr("Aktualisieren"), new Action() {
       
       public void handleAction(Object context) throws ApplicationException
       {
         listener.handleEvent(null);
       }
-    
     },null,true,"view-refresh.png");
+    topButtons.paint(parent);
     
     // Wir initialisieren die Tabelle erstmal ohne Werte.
     this.table = new TablePart(data,null);
@@ -510,7 +508,11 @@ public class SparQuote implements Part
 
 /*********************************************************************
  * $Log: SparQuote.java,v $
- * Revision 1.28  2011/01/20 17:13:21  willuhn
+ * Revision 1.29  2011/04/08 15:19:14  willuhn
+ * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
+ * @C Code-Cleanup
+ *
+ * Revision 1.28  2011-01-20 17:13:21  willuhn
  * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
  *
  * Revision 1.27  2010-11-29 22:44:30  willuhn
@@ -525,83 +527,4 @@ public class SparQuote implements Part
  *
  * Revision 1.24  2010-08-11 14:53:19  willuhn
  * @B Kleiner Darstellungsfehler (unnoetig breiter rechter Rand wegen zweispaltigem Part)
- *
- * Revision 1.23  2009-10-30 10:05:05  willuhn
- * @B Datum statt Valuta verwenden - ein Umsatz landet sonst u.U. im falschen Monat, wenn Datum in einem, Valuta aber im anderen Monat ist
- *
- * Revision 1.22  2009/10/30 00:36:09  willuhn
- * @R Hinweistext "Daten werden geladen..." entfernt
- *
- * Revision 1.21  2009/10/20 23:12:58  willuhn
- * @N Support fuer SEPA-Ueberweisungen
- * @N Konten um IBAN und BIC erweitert
- *
- * Revision 1.20  2009/10/07 23:08:56  willuhn
- * @N BUGZILLA 745: Deaktivierte Konten in Auswertungen zwar noch anzeigen, jedoch mit "[]" umschlossen. Bei der Erstellung von neuen Auftraegen bleiben sie jedoch ausgeblendet. Bei der Gelegenheit wird das Default-Konto jetzt mit ">" markiert
- *
- * Revision 1.19  2009/05/08 13:58:30  willuhn
- * @N Icons in allen Menus und auf allen Buttons
- * @N Fuer Umsatz-Kategorien koennen nun benutzerdefinierte Farben vergeben werden
- *
- * Revision 1.18  2009/05/06 23:11:23  willuhn
- * @N Mehr Icons auf Buttons
- *
- * Revision 1.17  2009/01/20 10:51:46  willuhn
- * @N Mehr Icons - fuer Buttons
- *
- * Revision 1.16  2009/01/20 09:33:15  willuhn
- * @B BUGZILLA 691
- *
- * Revision 1.15  2009/01/12 00:46:50  willuhn
- * @N Vereinheitlichtes KontoInput in den Auswertungen
- *
- * Revision 1.14  2008/04/06 23:21:43  willuhn
- * @C Bug 575
- * @N Der Vereinheitlichung wegen alle Buttons in den Auswertungen nach oben verschoben. Sie sind dann naeher an den Filter-Controls -> ergonomischer
- *
- * Revision 1.13  2008/02/26 01:12:30  willuhn
- * @R nicht mehr benoetigte Funktion entfernt
- *
- * Revision 1.12  2008/02/26 01:01:16  willuhn
- * @N Update auf Birt 2 (bessere Zeichen-Qualitaet, u.a. durch Anti-Aliasing)
- * @N Neuer Chart "Umsatz-Kategorien im Verlauf"
- * @N Charts erst beim ersten Paint-Event zeichnen. Dadurch laesst sich z.Bsp. die Konto-View schneller oeffnen, da der Saldo-Verlauf nicht berechnet werden muss
- *
- * Revision 1.11  2007/10/14 22:51:32  willuhn
- * @B Der 1. floss in den Vormonat
- *
- * Revision 1.10  2007/08/07 23:54:15  willuhn
- * @B Bug 394 - Erster Versuch. An einigen Stellen (z.Bsp. konto.getAnfangsSaldo) war ich mir noch nicht sicher. Heiner?
- *
- * Revision 1.9  2007/04/19 18:12:21  willuhn
- * @N MySQL-Support (GUI zum Konfigurieren fehlt noch)
- *
- * Revision 1.8  2007/03/21 18:47:36  willuhn
- * @N Neue Spalte in Kategorie-Tree
- * @N Sortierung des Kontoauszuges wie in Tabelle angezeigt
- * @C Code cleanup
- *
- * Revision 1.7  2007/03/21 16:56:56  willuhn
- * @N Online-Hilfe aktualisiert
- * @N Bug 337 (Stichtag in Sparquote)
- * @C Refactoring in Sparquote
- *
- * Revision 1.6  2006/08/01 21:29:12  willuhn
- * @N Geaenderte LineCharts
- *
- * Revision 1.5  2006/07/17 15:50:49  willuhn
- * @N Sparquote
- *
- * Revision 1.4  2006/07/13 23:28:51  willuhn
- * *** empty log message ***
- *
- * Revision 1.3  2006/07/13 23:09:36  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2006/07/13 22:34:06  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2006/07/13 00:21:15  willuhn
- * @N Neue Auswertung "Sparquote"
- *
  **********************************************************************/

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzTypTree.java,v $
- * $Revision: 1.12 $
- * $Date: 2010/03/05 15:24:53 $
+ * $Revision: 1.13 $
+ * $Date: 2011/04/08 15:19:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,9 +24,8 @@ import org.eclipse.swt.widgets.TabFolder;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.internal.buttons.Back;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.TreePart;
-import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.gui.util.TabGroup;
@@ -44,14 +43,13 @@ import de.willuhn.util.I18N;
  */
 public class UmsatzTypTree extends AbstractView
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
   public void bind() throws Exception
   {
-    final I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
     GUI.getView().setTitle(i18n.tr("Ums�tze nach Kategorien"));
 
     final UmsatzTypTreeControl control = new UmsatzTypTreeControl(this);
@@ -62,8 +60,7 @@ public class UmsatzTypTree extends AbstractView
     settings.addLabelPair(i18n.tr("Start-Datum"), control.getStart());
     settings.addLabelPair(i18n.tr("End-Datum"), control.getEnd());
 
-    ButtonArea buttons = new ButtonArea(getParent(), 4);
-    buttons.addButton(new Back());
+    ButtonArea buttons = new ButtonArea();
 
     buttons.addButton(i18n.tr("Alle aufklappen/zuklappen"), new Action() {
     
@@ -91,6 +88,15 @@ public class UmsatzTypTree extends AbstractView
         }
       }
     },null,false,"document-save.png");
+    buttons.addButton(i18n.tr("Aktualisieren"), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        control.handleReload();
+      }
+    }, null, true, "view-refresh.png");
+  
+    buttons.paint(getParent());
 
     TabFolder folder = new TabFolder(getParent(), SWT.NONE);
     folder.addFocusListener(new FocusAdapter()
@@ -114,69 +120,15 @@ public class UmsatzTypTree extends AbstractView
     UmsatzTypVerlauf chart = control.getChart();
     chart.paint(tg2.getComposite());
 
-    buttons.addButton(i18n.tr("Aktualisieren"), new Action()
-    {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        control.handleReload();
-      }
-    }, null, true, "view-refresh.png");
-  
   }
 
 }
 /*******************************************************************************
  * $Log: UmsatzTypTree.java,v $
+ * Revision 1.13  2011/04/08 15:19:13  willuhn
+ * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
+ * @C Code-Cleanup
+ *
  * Revision 1.12  2010/03/05 15:24:53  willuhn
  * @N BUGZILLA 686
- *
- * Revision 1.11  2009/10/05 23:08:40  willuhn
- * @N BUGZILLA 629 - wenn ein oder mehrere Kategorien markiert sind, werden die Charts nur fuer diese gezeichnet
- *
- * Revision 1.10  2009/05/08 13:58:30  willuhn
- * @N Icons in allen Menus und auf allen Buttons
- * @N Fuer Umsatz-Kategorien koennen nun benutzerdefinierte Farben vergeben werden
- *
- * Revision 1.9  2009/05/06 23:11:23  willuhn
- * @N Mehr Icons auf Buttons
- *
- * Revision 1.8  2009/01/20 10:51:46  willuhn
- * @N Mehr Icons - fuer Buttons
- *
- * Revision 1.7  2008/04/06 23:21:43  willuhn
- * @C Bug 575
- * @N Der Vereinheitlichung wegen alle Buttons in den Auswertungen nach oben verschoben. Sie sind dann naeher an den Filter-Controls -> ergonomischer
- *
- * Revision 1.6  2008/02/26 01:01:16  willuhn
- * @N Update auf Birt 2 (bessere Zeichen-Qualitaet, u.a. durch Anti-Aliasing)
- * @N Neuer Chart "Umsatz-Kategorien im Verlauf"
- * @N Charts erst beim ersten Paint-Event zeichnen. Dadurch laesst sich z.Bsp. die Konto-View schneller oeffnen, da der Saldo-Verlauf nicht berechnet werden muss
- *
- * Revision 1.5  2007/12/20 18:28:22  willuhn
- * @B Ausgewaehltes Konto wird beim Export nicht beruecksichtigt
- *
- * Revision 1.4  2007/08/28 09:47:09  willuhn
- * @N Bug 395
- *
- * Revision 1.3  2007/05/02 11:18:04  willuhn
- * @C PDF-Export von Umsatz-Trees in IO-API gepresst ;)
- *
- * Revision 1.2  2007/04/29 10:20:50  jost
- * Neu: PDF-Ausgabe der Umsätze nach Kategorien
- * Revision 1.1 2007/03/22 22:36:42 willuhn
- * 
- * @N Contextmenu in Trees
- * @C Kategorie-Baum in separates TreePart ausgelagert
- * 
- * Revision 1.3 2007/03/21 18:47:36 willuhn
- * @N Neue Spalte in Kategorie-Tree
- * @N Sortierung des Kontoauszuges wie in Tabelle angezeigt
- * @C Code cleanup
- * 
- * Revision 1.2 2007/03/07 10:29:41 willuhn
- * @B rmi compile fix
- * @B swt refresh behaviour
- * 
- * Revision 1.1 2007/03/06 20:06:24 jost Neu: Umsatz-Kategorien-Übersicht
- * 
  ******************************************************************************/

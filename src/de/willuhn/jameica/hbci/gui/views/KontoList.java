@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoList.java,v $
- * $Revision: 1.7 $
- * $Date: 2010/09/29 23:43:34 $
+ * $Revision: 1.8 $
+ * $Date: 2011/04/08 15:19:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,7 +15,6 @@ package de.willuhn.jameica.hbci.gui.views;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.KontoNew;
@@ -45,7 +44,6 @@ public class KontoList extends AbstractView
 		control.getKontoListe().paint(getParent());
 		
 		ButtonArea buttons = new ButtonArea();
-    buttons.addButton(new Back(true));
     buttons.addButton(i18n.tr("Neue HBCI-Konfiguration anlegen..."),new PassportDetail(),null,false,"document-properties.png");
     buttons.addButton(i18n.tr("Konten aus HBCI-Konfiguration laden..."), new Action() {
       public void handleAction(Object context) throws ApplicationException
@@ -62,7 +60,11 @@ public class KontoList extends AbstractView
 
 /**********************************************************************
  * $Log: KontoList.java,v $
- * Revision 1.7  2010/09/29 23:43:34  willuhn
+ * Revision 1.8  2011/04/08 15:19:13  willuhn
+ * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
+ * @C Code-Cleanup
+ *
+ * Revision 1.7  2010-09-29 23:43:34  willuhn
  * @N Automatisches Abgleichen und Anlegen von Konten aus KontoFetchFromPassport in KontoMerge verschoben
  * @N Konten automatisch (mit Rueckfrage) anlegen, wenn das Testen der HBCI-Konfiguration erfolgreich war
  * @N Config-Test jetzt auch bei Schluesseldatei

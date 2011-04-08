@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzDetail.java,v $
- * $Revision: 1.38 $
- * $Date: 2009/10/08 22:45:16 $
+ * $Revision: 1.39 $
+ * $Date: 2011/04/08 15:19:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,9 +14,8 @@
 package de.willuhn.jameica.hbci.gui.views;
 
 import de.willuhn.jameica.gui.Action;
-import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.Button;
-import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
 import de.willuhn.jameica.hbci.gui.action.FlaggableChange;
 import de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl;
@@ -40,8 +39,7 @@ public class UmsatzDetail extends AbstractUmsatzDetail
   {
     super.bind();
 
-    ButtonArea buttons = new ButtonArea(getParent(),5);
-    buttons.addButton(new Back());
+    ButtonArea buttons = new ButtonArea();
     
     Umsatz u = getControl().getUmsatz();
     
@@ -87,6 +85,7 @@ public class UmsatzDetail extends AbstractUmsatzDetail
       },null,false,"contact-new.png");
     }
     buttons.addButton(ab);
+    buttons.paint(getParent());
   }
 
   /**
@@ -103,42 +102,8 @@ public class UmsatzDetail extends AbstractUmsatzDetail
 
 /**********************************************************************
  * $Log: UmsatzDetail.java,v $
- * Revision 1.38  2009/10/08 22:45:16  willuhn
- * @N Button "Geprueft" in Umsatz-Details, um einen Umsatz auch dort als geprueft markieren zu koennen
- * @N Button "Filter zuruecksetzen" in Kontoauszug
+ * Revision 1.39  2011/04/08 15:19:14  willuhn
+ * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
+ * @C Code-Cleanup
  *
- * Revision 1.37  2009/05/28 10:45:18  willuhn
- * @N more icons
- *
- * Revision 1.36  2009/02/24 22:42:33  willuhn
- * @N Da vorgemerkte Umsaetze jetzt komplett geloescht werden, wenn sie neu abgerufen werden, duerfen sie auch nicht mehr geaendert werden (also auch keine Kategorie und kein Kommentar)
- *
- * Revision 1.35  2009/02/12 18:37:18  willuhn
- * @N Erster Code fuer vorgemerkte Umsaetze
- *
- * Revision 1.34  2009/01/20 10:51:45  willuhn
- * @N Mehr Icons - fuer Buttons
- *
- * Revision 1.33  2009/01/04 14:47:53  willuhn
- * @N Bearbeiten der Umsaetze nochmal ueberarbeitet - Codecleanup
- *
- * Revision 1.32  2009/01/04 01:25:47  willuhn
- * @N Checksumme von Umsaetzen wird nun generell beim Anlegen des Datensatzes gespeichert. Damit koennen Umsaetze nun problemlos geaendert werden, ohne mit "hasChangedByUser" checken zu muessen. Die Checksumme bleibt immer erhalten, weil sie in UmsatzImpl#insert() sofort zu Beginn angelegt wird
- * @N Umsaetze sind nun vollstaendig editierbar
- *
- * Revision 1.31  2008/11/26 00:39:36  willuhn
- * @N Erste Version erweiterter Verwendungszwecke. Muss dringend noch getestet werden.
- *
- * Revision 1.30  2008/11/25 00:13:47  willuhn
- * @N Erweiterte Verwendungswecke anzeigen
- * @N Notizen nicht mehr in einem separaten Tab sondern in der rechten Spalte anzeigen
- *
- * Revision 1.29  2007/06/15 11:20:32  willuhn
- * @N Saldo in Kontodetails via Messaging sofort aktualisieren
- * @N Mehr Details in den Namen der Synchronize-Jobs
- * @N Layout der Umsatzdetail-Anzeige ueberarbeitet
- *
- * Revision 1.28  2007/04/24 17:52:17  willuhn
- * @N Bereits in den Umsatzdetails erkennen, ob die Adresse im Adressbuch ist
- * @C Gross-Kleinschreibung in Adressbuch-Suche
  **********************************************************************/

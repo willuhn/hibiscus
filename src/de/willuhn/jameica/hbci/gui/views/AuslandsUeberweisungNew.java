@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/AuslandsUeberweisungNew.java,v $
- * $Revision: 1.5 $
- * $Date: 2009/10/20 23:12:58 $
+ * $Revision: 1.6 $
+ * $Date: 2011/04/08 15:19:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,9 +15,8 @@ package de.willuhn.jameica.hbci.gui.views;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.Button;
-import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungExecute;
@@ -31,17 +30,17 @@ import de.willuhn.util.I18N;
 /**
  * Bearbeitung der Auslands-Ueberweisungen.
  */
-public class AuslandsUeberweisungNew extends AbstractView {
+public class AuslandsUeberweisungNew extends AbstractView
+{
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
-  public void bind() throws Exception {
-
+  public void bind() throws Exception
+  {
 		final AuslandsUeberweisungControl control = new AuslandsUeberweisungControl(this);
     final AuslandsUeberweisung transfer = control.getTransfer();
-
-		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 		GUI.getView().setTitle(i18n.tr("SEPA-Überweisung bearbeiten"));
 		
@@ -60,8 +59,7 @@ public class AuslandsUeberweisungNew extends AbstractView {
     details.addLabelPair(i18n.tr("Betrag"),                   control.getBetrag());
     details.addLabelPair(i18n.tr("Termin"),                   control.getTermin());
 
-		ButtonArea buttonArea = new ButtonArea(getParent(),4);
-    buttonArea.addButton(new Back(transfer.ausgefuehrt()));
+		ButtonArea buttonArea = new ButtonArea();
 		buttonArea.addButton(i18n.tr("Löschen"),new DBObjectDelete(),transfer,false,"user-trash-full.png");
 
     Button execute = new Button(i18n.tr("Jetzt ausführen..."), new Action() {
@@ -81,12 +79,18 @@ public class AuslandsUeberweisungNew extends AbstractView {
     
     buttonArea.addButton(execute);
     buttonArea.addButton(store);
+    
+    buttonArea.paint(getParent());
   }
 }
 
 
 /**********************************************************************
  * $Log: AuslandsUeberweisungNew.java,v $
+ * Revision 1.6  2011/04/08 15:19:13  willuhn
+ * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
+ * @C Code-Cleanup
+ *
  * Revision 1.5  2009/10/20 23:12:58  willuhn
  * @N Support fuer SEPA-Ueberweisungen
  * @N Konten um IBAN und BIC erweitert

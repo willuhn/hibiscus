@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/SammelUeberweisungBuchungNew.java,v $
- * $Revision: 1.9 $
- * $Date: 2009/05/08 13:58:30 $
+ * $Revision: 1.10 $
+ * $Date: 2011/04/08 15:19:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,9 +15,8 @@ package de.willuhn.jameica.hbci.gui.views;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.Button;
-import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.SammelTransferBuchungDelete;
@@ -30,16 +29,18 @@ import de.willuhn.util.I18N;
 /**
  * Bearbeitung einer Buchung in einer Sammel-Lastschriften.
  */
-public class SammelUeberweisungBuchungNew extends AbstractView {
+public class SammelUeberweisungBuchungNew extends AbstractView
+{
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
-  public void bind() throws Exception {
+  public void bind() throws Exception
+  {
 
 		final SammelUeberweisungBuchungControl control = new SammelUeberweisungBuchungControl(this);
 
-		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
     SammelTransfer l = control.getBuchung().getSammelTransfer();
     GUI.getView().setTitle(i18n.tr("Sammel-Überweisung {0}: Buchung bearbeiten",l.getBezeichnung()));
@@ -58,8 +59,7 @@ public class SammelUeberweisungBuchungNew extends AbstractView {
 		details.addLabelPair(i18n.tr("Betrag"),										control.getBetrag());
     details.addLabelPair(i18n.tr("Textschlüssel"),            control.getTextSchluessel());
 
-		ButtonArea buttonArea = new ButtonArea(getParent(),4);
-    buttonArea.addButton(new Back(l.ausgefuehrt()));
+		ButtonArea buttonArea = new ButtonArea();
     
     Button delete = new Button(i18n.tr("Löschen"), new SammelTransferBuchungDelete(),control.getBuchung(),false,"user-trash-full.png");
     delete.setEnabled(!l.ausgefuehrt());
@@ -81,40 +81,16 @@ public class SammelUeberweisungBuchungNew extends AbstractView {
     },null,!l.ausgefuehrt(),"go-next.png");
     store2.setEnabled(!l.ausgefuehrt());
     buttonArea.addButton(store2);
+    
+    buttonArea.paint(getParent());
   }
 }
 
 
 /**********************************************************************
  * $Log: SammelUeberweisungBuchungNew.java,v $
- * Revision 1.9  2009/05/08 13:58:30  willuhn
- * @N Icons in allen Menus und auf allen Buttons
- * @N Fuer Umsatz-Kategorien koennen nun benutzerdefinierte Farben vergeben werden
- *
- * Revision 1.8  2009/05/06 23:11:23  willuhn
- * @N Mehr Icons auf Buttons
- *
- * Revision 1.7  2009/02/24 23:51:01  willuhn
- * @N Auswahl der Empfaenger/Zahlungspflichtigen jetzt ueber Auto-Suggest-Felder
- *
- * Revision 1.6  2009/01/20 10:51:46  willuhn
- * @N Mehr Icons - fuer Buttons
- *
- * Revision 1.5  2008/08/01 11:05:14  willuhn
- * @N BUGZILLA 587
- *
- * Revision 1.4  2006/06/08 22:29:47  willuhn
- * @N DTAUS-Import fuer Sammel-Lastschriften und Sammel-Ueberweisungen
- * @B Eine Reihe kleinerer Bugfixes in Sammeltransfers
- * @B Bug 197 besser geloest
- *
- * Revision 1.3  2006/03/27 16:46:21  willuhn
- * @N GUI polish
- *
- * Revision 1.2  2006/01/18 00:51:00  willuhn
- * @B bug 65
- *
- * Revision 1.1  2005/09/30 00:08:51  willuhn
- * @N SammelUeberweisungen (merged with SammelLastschrift)
+ * Revision 1.10  2011/04/08 15:19:14  willuhn
+ * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
+ * @C Code-Cleanup
  *
  **********************************************************************/

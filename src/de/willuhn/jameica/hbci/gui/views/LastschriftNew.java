@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/LastschriftNew.java,v $
- * $Revision: 1.21 $
- * $Date: 2010/08/17 11:41:45 $
+ * $Revision: 1.22 $
+ * $Date: 2011/04/08 15:19:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,7 +15,6 @@ package de.willuhn.jameica.hbci.gui.views;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
@@ -67,7 +66,6 @@ public class LastschriftNew extends AbstractView
     container.addInput(control.getTermin());
 
 		ButtonArea buttonArea = new ButtonArea();
-    buttonArea.addButton(new Back(transfer.ausgefuehrt()));
 		buttonArea.addButton(i18n.tr("Löschen"), new DBObjectDelete(),transfer,false,"user-trash-full.png");
     buttonArea.addButton(i18n.tr("Duplizieren..."), new LastschriftDuplicate(),transfer,false,"edit-copy.png");
 		
@@ -96,7 +94,11 @@ public class LastschriftNew extends AbstractView
 
 /**********************************************************************
  * $Log: LastschriftNew.java,v $
- * Revision 1.21  2010/08/17 11:41:45  willuhn
+ * Revision 1.22  2011/04/08 15:19:13  willuhn
+ * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
+ * @C Code-Cleanup
+ *
+ * Revision 1.21  2010-08-17 11:41:45  willuhn
  * @N Duplizieren-Button auch in der Detail-Ansicht
  *
  * Revision 1.20  2010-08-17 11:32:11  willuhn
