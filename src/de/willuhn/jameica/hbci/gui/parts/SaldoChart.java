@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SaldoChart.java,v $
- * $Revision: 1.3 $
- * $Date: 2011/01/20 17:13:21 $
+ * $Revision: 1.4 $
+ * $Date: 2011/04/08 09:28:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -65,8 +65,8 @@ public class SaldoChart implements Part
   
   private KontoInput kontoauswahl = null;
   private UmsatzDaysInput range   = null;
-  private Listener reloadListener = null;
-  private Listener rangeListener  = null;
+  private Listener reloadListener = new ReloadListener();
+  private Listener rangeListener  = new RangeListener();
   
   private LineChart chart         = null;
 
@@ -83,13 +83,11 @@ public class SaldoChart implements Part
   /**
    * ct.
    * Konstruktor fuer die Anzeige des Saldo-Charts von genau einem Konto.
-   * @param konto das Konto.
+   * @param konto das Konto. Optional. Wenn kein konto ist, wir der Saldenverlauf ueber die Summe aller Konten berechnet.
    */
   public SaldoChart(Konto konto)
   {
     this.konto = konto;
-    this.reloadListener = new ReloadListener();
-    this.rangeListener  = new RangeListener();
   }
   
   /**
@@ -352,7 +350,10 @@ public class SaldoChart implements Part
 
 /*********************************************************************
  * $Log: SaldoChart.java,v $
- * Revision 1.3  2011/01/20 17:13:21  willuhn
+ * Revision 1.4  2011/04/08 09:28:12  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.3  2011-01-20 17:13:21  willuhn
  * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
  *
  * Revision 1.2  2010-08-12 17:12:32  willuhn
