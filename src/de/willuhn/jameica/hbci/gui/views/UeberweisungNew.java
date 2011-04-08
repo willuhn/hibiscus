@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UeberweisungNew.java,v $
- * $Revision: 1.25 $
- * $Date: 2010/08/17 11:41:45 $
+ * $Revision: 1.26 $
+ * $Date: 2011/04/08 13:38:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.buttons.Back;
+import de.willuhn.jameica.gui.internal.parts.PanelButtonPrint;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
@@ -25,6 +26,7 @@ import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungDuplicate;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungExecute;
 import de.willuhn.jameica.hbci.gui.controller.UeberweisungControl;
+import de.willuhn.jameica.hbci.io.print.PrintSupportUeberweisung;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -47,6 +49,7 @@ public class UeberweisungNew extends AbstractView
     final Ueberweisung transfer = (Ueberweisung) control.getTransfer();
 
 		GUI.getView().setTitle(i18n.tr("Überweisung bearbeiten"));
+		GUI.getView().addPanelButton(new PanelButtonPrint(new PrintSupportUeberweisung(transfer)));
 
     Container container = new SimpleContainer(getParent());
     container.addHeadline(i18n.tr("Konto"));
@@ -96,7 +99,10 @@ public class UeberweisungNew extends AbstractView
 
 /**********************************************************************
  * $Log: UeberweisungNew.java,v $
- * Revision 1.25  2010/08/17 11:41:45  willuhn
+ * Revision 1.26  2011/04/08 13:38:44  willuhn
+ * @N Druck-Support fuer Einzel-Ueberweisungen. Weitere werden folgen.
+ *
+ * Revision 1.25  2010-08-17 11:41:45  willuhn
  * @N Duplizieren-Button auch in der Detail-Ansicht
  *
  * Revision 1.24  2010-08-17 11:32:11  willuhn
