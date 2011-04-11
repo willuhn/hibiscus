@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/DauerauftragControl.java,v $
- * $Revision: 1.31 $
- * $Date: 2011/04/06 08:17:16 $
+ * $Revision: 1.32 $
+ * $Date: 2011/04/11 16:48:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,7 +20,6 @@ import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
@@ -31,6 +30,7 @@ import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.TextSchluessel;
 import de.willuhn.jameica.hbci.gui.action.DauerauftragNew;
 import de.willuhn.jameica.hbci.gui.dialogs.TurnusDialog;
+import de.willuhn.jameica.hbci.gui.parts.DauerauftragList;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
 import de.willuhn.jameica.hbci.rmi.Turnus;
@@ -43,16 +43,16 @@ import de.willuhn.logging.Logger;
  */
 public class DauerauftragControl extends AbstractTransferControl {
 
-  private Listener nextDate         = new NextDateListener();
-	private Input orderID				      = null;
-	private DialogInput turnus	      = null;
-	private DateInput ersteZahlung	  = null;
-	private DateInput letzteZahlung	  = null;
+  private Listener nextDate          = new NextDateListener();
+	private Input orderID				       = null;
+	private DialogInput turnus	       = null;
+	private DateInput ersteZahlung	   = null;
+	private DateInput letzteZahlung	   = null;
 	private SelectInput textschluessel = null;
 	
-  private Dauerauftrag transfer     = null;
+  private Dauerauftrag transfer      = null;
 
-  private Part list                 = null;
+  private DauerauftragList list      = null;
 
   /**
    * ct.
@@ -84,7 +84,7 @@ public class DauerauftragControl extends AbstractTransferControl {
 	 * @return Tabelle.
 	 * @throws RemoteException
 	 */
-	public Part getDauerauftragListe() throws RemoteException
+	public DauerauftragList getDauerauftragListe() throws RemoteException
 	{
     if (list != null)
       return list;
@@ -280,7 +280,10 @@ public class DauerauftragControl extends AbstractTransferControl {
 
 /**********************************************************************
  * $Log: DauerauftragControl.java,v $
- * Revision 1.31  2011/04/06 08:17:16  willuhn
+ * Revision 1.32  2011/04/11 16:48:33  willuhn
+ * @N Drucken von Sammel- und Dauerauftraegen
+ *
+ * Revision 1.31  2011-04-06 08:17:16  willuhn
  * @N Detail-Anzeige zweispaltig, damit sie besser auf kleinere Bildschirme passt - siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=74593#74593
  *
  * Revision 1.30  2010-09-24 12:22:04  willuhn

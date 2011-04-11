@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/DauerauftragNew.java,v $
- * $Revision: 1.14 $
- * $Date: 2011/04/08 15:19:14 $
+ * $Revision: 1.15 $
+ * $Date: 2011/04/11 16:48:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.gui.views;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.internal.parts.PanelButtonPrint;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.ColumnLayout;
 import de.willuhn.jameica.gui.util.Container;
@@ -23,6 +24,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.DauerauftragDelete;
 import de.willuhn.jameica.hbci.gui.action.DauerauftragExecute;
 import de.willuhn.jameica.hbci.gui.controller.DauerauftragControl;
+import de.willuhn.jameica.hbci.io.print.PrintSupportDauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -43,6 +45,7 @@ public class DauerauftragNew extends AbstractView
 		final DauerauftragControl control = new DauerauftragControl(this);
 
 		GUI.getView().setTitle(i18n.tr("Dauerauftrag bearbeiten"));
+    GUI.getView().addPanelButton(new PanelButtonPrint(new PrintSupportDauerauftrag((Dauerauftrag) control.getTransfer())));
 		
     Container konten = new SimpleContainer(getParent());
     konten.addHeadline(i18n.tr("Konten"));
@@ -108,7 +111,10 @@ public class DauerauftragNew extends AbstractView
 
 /**********************************************************************
  * $Log: DauerauftragNew.java,v $
- * Revision 1.14  2011/04/08 15:19:14  willuhn
+ * Revision 1.15  2011/04/11 16:48:33  willuhn
+ * @N Drucken von Sammel- und Dauerauftraegen
+ *
+ * Revision 1.14  2011-04-08 15:19:14  willuhn
  * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
  * @C Code-Cleanup
  *

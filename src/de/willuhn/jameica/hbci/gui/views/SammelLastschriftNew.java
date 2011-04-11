@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/SammelLastschriftNew.java,v $
- * $Revision: 1.21 $
- * $Date: 2011/04/08 15:19:14 $
+ * $Revision: 1.22 $
+ * $Date: 2011/04/11 16:48:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import java.rmi.RemoteException;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.internal.parts.PanelButtonPrint;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
@@ -27,6 +28,7 @@ import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.SammelLastBuchungNew;
 import de.willuhn.jameica.hbci.gui.action.SammelLastschriftExecute;
 import de.willuhn.jameica.hbci.gui.controller.SammelLastschriftControl;
+import de.willuhn.jameica.hbci.io.print.PrintSupportSammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.system.Application;
@@ -51,6 +53,7 @@ public class SammelLastschriftNew extends AbstractView
     SammelTransfer transfer = control.getTransfer();
 
 		GUI.getView().setTitle(i18n.tr("Sammel-Lastschrift bearbeiten"));
+    GUI.getView().addPanelButton(new PanelButtonPrint(new PrintSupportSammelLastschrift(transfer)));
 		
 		Container group = new SimpleContainer(getParent());
 		group.addHeadline(i18n.tr("Eigenschaften"));
@@ -117,7 +120,10 @@ public class SammelLastschriftNew extends AbstractView
 
 /**********************************************************************
  * $Log: SammelLastschriftNew.java,v $
- * Revision 1.21  2011/04/08 15:19:14  willuhn
+ * Revision 1.22  2011/04/11 16:48:33  willuhn
+ * @N Drucken von Sammel- und Dauerauftraegen
+ *
+ * Revision 1.21  2011-04-08 15:19:14  willuhn
  * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
  * @C Code-Cleanup
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/DauerauftragList.java,v $
- * $Revision: 1.5 $
- * $Date: 2011/03/07 10:33:53 $
+ * $Revision: 1.6 $
+ * $Date: 2011/04/11 16:48:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,13 +12,18 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.menus;
 
+import de.willuhn.jameica.gui.Action;
+import de.willuhn.jameica.gui.internal.action.Print;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
+import de.willuhn.jameica.gui.parts.CheckedSingleContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.DauerauftragDelete;
 import de.willuhn.jameica.hbci.gui.action.DauerauftragNew;
 import de.willuhn.jameica.hbci.gui.action.KontoFetchDauerauftraege;
+import de.willuhn.jameica.hbci.io.print.PrintSupportDauerauftrag;
+import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -43,6 +48,13 @@ public class DauerauftragList extends ContextMenu
 		addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."),        new DauerauftragDelete(),"user-trash-full.png"));
 		addItem(ContextMenuItem.SEPARATOR);
 		addItem(new ContextMenuItem(i18n.tr("Daueraufträge abrufen..."), new KontoFetchDauerauftraege(),"mail-send-receive.png"));
+    addItem(ContextMenuItem.SEPARATOR);
+    addItem(new CheckedSingleContextMenuItem(i18n.tr("Drucken..."),new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        new Print().handleAction(new PrintSupportDauerauftrag((Dauerauftrag) context));
+      }
+    },"document-print.png"));
 	}
 
 	/**
@@ -64,7 +76,10 @@ public class DauerauftragList extends ContextMenu
 
 /**********************************************************************
  * $Log: DauerauftragList.java,v $
- * Revision 1.5  2011/03/07 10:33:53  willuhn
+ * Revision 1.6  2011/04/11 16:48:33  willuhn
+ * @N Drucken von Sammel- und Dauerauftraegen
+ *
+ * Revision 1.5  2011-03-07 10:33:53  willuhn
  * @N BUGZILLA 999
  *
  * Revision 1.4  2008/12/19 01:12:09  willuhn

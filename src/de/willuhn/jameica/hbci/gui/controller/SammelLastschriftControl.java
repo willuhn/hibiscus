@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SammelLastschriftControl.java,v $
- * $Revision: 1.17 $
- * $Date: 2010/12/13 11:01:08 $
+ * $Revision: 1.18 $
+ * $Date: 2011/04/11 16:48:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,6 +23,7 @@ import de.willuhn.jameica.hbci.gui.action.LastschriftNew;
 import de.willuhn.jameica.hbci.gui.action.SammelLastBuchungNew;
 import de.willuhn.jameica.hbci.gui.action.SammelLastschriftNew;
 import de.willuhn.jameica.hbci.gui.action.SammelTransferBuchungDelete;
+import de.willuhn.jameica.hbci.gui.parts.SammelLastschriftList;
 import de.willuhn.jameica.hbci.gui.parts.SammelTransferBuchungList;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
@@ -36,9 +37,9 @@ import de.willuhn.util.ApplicationException;
  */
 public class SammelLastschriftControl extends AbstractSammelTransferControl
 {
-  private SammelTransfer transfer = null;
-  private TablePart table         = null;
-  private TablePart buchungen     = null;
+  private SammelTransfer transfer     = null;
+  private SammelLastschriftList table = null;
+  private TablePart buchungen         = null;
 
   /**
    * ct.
@@ -68,7 +69,7 @@ public class SammelLastschriftControl extends AbstractSammelTransferControl
   /**
    * @see de.willuhn.jameica.hbci.gui.controller.AbstractSammelTransferControl#getListe()
    */
-  public TablePart getListe() throws RemoteException
+  public SammelLastschriftList getListe() throws RemoteException
   {
     if (table != null)
       return table;
@@ -157,7 +158,10 @@ public class SammelLastschriftControl extends AbstractSammelTransferControl
 
 /*****************************************************************************
  * $Log: SammelLastschriftControl.java,v $
- * Revision 1.17  2010/12/13 11:01:08  willuhn
+ * Revision 1.18  2011/04/11 16:48:33  willuhn
+ * @N Drucken von Sammel- und Dauerauftraegen
+ *
+ * Revision 1.17  2010-12-13 11:01:08  willuhn
  * @B Wenn man einen Sammelauftrag in der Detailansicht loeschte, konnte man anschliessend noch doppelt auf die zugeordneten Buchungen klicken und eine ObjectNotFoundException ausloesen
  *
  * Revision 1.16  2009/11/26 12:00:21  willuhn

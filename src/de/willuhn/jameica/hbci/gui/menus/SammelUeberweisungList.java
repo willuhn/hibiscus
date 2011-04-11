@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/SammelUeberweisungList.java,v $
- * $Revision: 1.8 $
- * $Date: 2009/02/13 14:17:01 $
+ * $Revision: 1.9 $
+ * $Date: 2011/04/11 16:48:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,7 +16,9 @@ import java.rmi.RemoteException;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.internal.action.Print;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
+import de.willuhn.jameica.gui.parts.CheckedSingleContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
@@ -27,6 +29,7 @@ import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungExport;
 import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungImport;
 import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungNew;
 import de.willuhn.jameica.hbci.gui.action.TerminableMarkExecuted;
+import de.willuhn.jameica.hbci.io.print.PrintSupportSammelUeberweisung;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
 import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -90,6 +93,12 @@ public class SammelUeberweisungList extends ContextMenu
       }
     });
     addItem(ContextMenuItem.SEPARATOR);
+    addItem(new CheckedSingleContextMenuItem(i18n.tr("Drucken..."),new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        new Print().handleAction(new PrintSupportSammelUeberweisung((SammelUeberweisung) context));
+      }
+    },"document-print.png"));
     addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new SammelUeberweisungExport(),"document-save.png"));
     addItem(new ContextMenuItem(i18n.tr("Importieren..."),new SammelUeberweisungImport(),"document-open.png"));
 		
@@ -177,6 +186,9 @@ public class SammelUeberweisungList extends ContextMenu
 
 /**********************************************************************
  * $Log: SammelUeberweisungList.java,v $
+ * Revision 1.9  2011/04/11 16:48:33  willuhn
+ * @N Drucken von Sammel- und Dauerauftraegen
+ *
  * Revision 1.8  2009/02/13 14:17:01  willuhn
  * @N BUGZILLA 700
  *
