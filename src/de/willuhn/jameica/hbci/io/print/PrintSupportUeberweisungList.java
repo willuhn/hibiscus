@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/print/PrintSupportUeberweisungList.java,v $
- * $Revision: 1.2 $
- * $Date: 2011/04/08 17:41:45 $
+ * $Revision: 1.3 $
+ * $Date: 2011/04/11 11:28:08 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -35,16 +35,16 @@ import de.willuhn.util.ApplicationException;
  */
 public class PrintSupportUeberweisungList extends PrintSupportUeberweisung
 {
-  private UeberweisungList table = null;
+  private Object ctx = null;
   
   /**
    * ct.
-   * @param table die Tabelle, aus der die Ueberweisungen stammen.
+   * @param ctx Kann vom Typ <code>UeberweisungList</code>, <code>Ueberweisung</code> oder <code>Ueberweisung[]</code> sein.
    */
-  public PrintSupportUeberweisungList(UeberweisungList table)
+  public PrintSupportUeberweisungList(Object ctx)
   {
     super();
-    this.table = table;
+    this.ctx = ctx;
   }
   
   /**
@@ -52,19 +52,20 @@ public class PrintSupportUeberweisungList extends PrintSupportUeberweisung
    */
   Print printContent() throws ApplicationException
   {
-    if (this.table == null)
+    if (this.ctx == null)
       throw new ApplicationException(i18n.tr("Bitte wählen Sie mindestens eine Überweisung aus"));
     
-    Object data = this.table.getSelection();
-    
+    if (ctx instanceof UeberweisungList)
+      ctx = ((UeberweisungList)ctx).getSelection();
+
     // Ist nur ne Einzel-Ueberweisung. Dann drucken wir automatisch die Detail-Ansicht
-    if (data instanceof Ueberweisung)
+    if (ctx instanceof Ueberweisung)
     {
-      super.setUeberweisung((Ueberweisung)data);
+      super.setUeberweisung((Ueberweisung)ctx);
       return super.printContent();
     }
 
-    if (!(data instanceof Ueberweisung[]))
+    if (!(ctx instanceof Ueberweisung[]))
       throw new ApplicationException(i18n.tr("Bitte wählen Sie mindestens eine Überweisung aus"));
 
     try
@@ -84,7 +85,7 @@ public class PrintSupportUeberweisungList extends PrintSupportUeberweisung
       table.addHeader(new TextPrint(i18n.tr("Zweck"),fontTinyBold));
       table.addHeader(new TextPrint(i18n.tr("Status"),fontTinyBold));
 
-      Ueberweisung[] list = (Ueberweisung[]) data;
+      Ueberweisung[] list = (Ueberweisung[]) ctx;
 
       TextStyle typeDone = new TextStyle().font(fontTiny).foreground(new RGB(120,120,120));
       TextStyle typeOpen = new TextStyle().font(fontTiny).foreground(new RGB(0,0,0));
@@ -111,32 +112,16 @@ public class PrintSupportUeberweisungList extends PrintSupportUeberweisung
       throw new ApplicationException(i18n.tr("Druck fehlgeschlagen: {0}",re.getMessage()));
     }
   }
-  
-  /**
-   * @see de.willuhn.jameica.hbci.io.print.PrintSupportUeberweisung#getName()
-   */
-  String getName() throws ApplicationException
-  {
-    if (this.table == null)
-      return super.getName();
-    
-    Object data = this.table.getSelection();
-    
-    if (data instanceof Ueberweisung)
-    {
-      setUeberweisung((Ueberweisung) data);
-      return super.getName();
-    }
-    
-    return i18n.tr("Überweisungsliste");
-  }
 }
 
 
 
 /**********************************************************************
  * $Log: PrintSupportUeberweisungList.java,v $
- * Revision 1.2  2011/04/08 17:41:45  willuhn
+ * Revision 1.3  2011/04/11 11:28:08  willuhn
+ * @N Drucken aus dem Contextmenu heraus
+ *
+ * Revision 1.2  2011-04-08 17:41:45  willuhn
  * @N Erster Druck-Support fuer Ueberweisungslisten
  *
  * Revision 1.1  2011-04-08 13:38:43  willuhn

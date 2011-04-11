@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UeberweisungList.java,v $
- * $Revision: 1.19 $
- * $Date: 2009/11/26 12:00:21 $
+ * $Revision: 1.20 $
+ * $Date: 2011/04/11 11:28:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.gui.menus;
 import java.rmi.RemoteException;
 
 import de.willuhn.jameica.gui.Action;
+import de.willuhn.jameica.gui.internal.action.Print;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
@@ -27,6 +28,7 @@ import de.willuhn.jameica.hbci.gui.action.UeberweisungExport;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungImport;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungMerge;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungNew;
+import de.willuhn.jameica.hbci.io.print.PrintSupportUeberweisungList;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
@@ -40,15 +42,13 @@ import de.willuhn.util.I18N;
  */
 public class UeberweisungList extends ContextMenu
 {
-	private I18N i18n	= null;
+	private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 	  /**
 	 * Erzeugt ein Kontext-Menu fuer eine Liste von Ueberweisungen.
 	 */
 	public UeberweisungList()
 	{
-		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
 		addItem(new SingleItem(i18n.tr("Öffnen"), new UeberweisungNew(),"document-open.png"));
     addItem(new ContextMenuItem(i18n.tr("Neue Überweisung..."), new UNeu(),"text-x-generic.png"));
     addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
@@ -59,6 +59,12 @@ public class UeberweisungList extends ContextMenu
     addItem(new NotActiveSingleMenuItem(i18n.tr("Jetzt ausführen..."), new UeberweisungExecute(),"emblem-important.png"));
     addItem(new NotActiveMultiMenuItem(i18n.tr("Als \"ausgeführt\" markieren..."), new TerminableMarkExecuted(),"emblem-default.png"));
     addItem(ContextMenuItem.SEPARATOR);
+    addItem(new CheckedContextMenuItem(i18n.tr("Drucken..."),new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        new Print().handleAction(new PrintSupportUeberweisungList(context));
+      }
+    },"document-print.png"));
     addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new UeberweisungExport(),"document-save.png"));
     addItem(new ContextMenuItem(i18n.tr("Importieren..."),new UeberweisungImport(),"document-open.png"));
 		
@@ -198,6 +204,9 @@ public class UeberweisungList extends ContextMenu
 
 /**********************************************************************
  * $Log: UeberweisungList.java,v $
+ * Revision 1.20  2011/04/11 11:28:08  willuhn
+ * @N Drucken aus dem Contextmenu heraus
+ *
  * Revision 1.19  2009/11/26 12:00:21  willuhn
  * @N Buchungen aus Sammelauftraegen in Einzelauftraege duplizieren
  *

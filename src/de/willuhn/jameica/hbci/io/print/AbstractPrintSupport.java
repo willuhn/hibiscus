@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/print/AbstractPrintSupport.java,v $
- * $Revision: 1.2 $
- * $Date: 2011/04/08 17:41:44 $
+ * $Revision: 1.3 $
+ * $Date: 2011/04/11 11:28:08 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -77,7 +77,7 @@ public abstract class AbstractPrintSupport implements PrintSupport
     footer.setFontData(fontTiny);
     page.setFooter(footer);
   
-    PrintJob job = new PrintJob(getName(),page);
+    PrintJob job = new PrintJob(i18n.tr("Hibiscus {0}",HBCI.LONGDATEFORMAT.format(new Date())),page);
     Margins margins = job.getMargins(); // TODO: Wenn man den Default-Rand laesst, ist er rechts groesser als links - das ist nicht abheft-freundlich ;)
     margins.left = 100;
     margins.right = 50;
@@ -92,18 +92,6 @@ public abstract class AbstractPrintSupport implements PrintSupport
    */
   abstract Print printContent() throws ApplicationException;
   
-  /**
-   * Liefert den Job-Namen.
-   * Kann bei Bedarf ueberschrieben werden.
-   * @return der Job-Name.
-   * @throws ApplicationException
-   */
-  String getName() throws ApplicationException
-  {
-    String name = Application.getPluginLoader().getPlugin(HBCI.class).getManifest().getName();
-    return name + " " + HBCI.LONGDATEFORMAT.format(new Date());
-  }
-
   /**
    * Liefert den Wert oder "-" wenn er NULL/leer ist.
    * @param value der Wert.
@@ -126,7 +114,10 @@ public abstract class AbstractPrintSupport implements PrintSupport
 
 /**********************************************************************
  * $Log: AbstractPrintSupport.java,v $
- * Revision 1.2  2011/04/08 17:41:44  willuhn
+ * Revision 1.3  2011/04/11 11:28:08  willuhn
+ * @N Drucken aus dem Contextmenu heraus
+ *
+ * Revision 1.2  2011-04-08 17:41:44  willuhn
  * @N Erster Druck-Support fuer Ueberweisungslisten
  *
  * Revision 1.1  2011-04-08 13:38:43  willuhn
