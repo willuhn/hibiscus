@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/LastschriftNew.java,v $
- * $Revision: 1.22 $
- * $Date: 2011/04/08 15:19:13 $
+ * $Revision: 1.23 $
+ * $Date: 2011/04/11 14:36:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.gui.views;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.internal.parts.PanelButtonPrint;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
@@ -24,6 +25,7 @@ import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.LastschriftDuplicate;
 import de.willuhn.jameica.hbci.gui.action.LastschriftExecute;
 import de.willuhn.jameica.hbci.gui.controller.LastschriftControl;
+import de.willuhn.jameica.hbci.io.print.PrintSupportLastschrift;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -46,6 +48,7 @@ public class LastschriftNew extends AbstractView
 
 
 		GUI.getView().setTitle(i18n.tr("Lastschrift bearbeiten"));
+    GUI.getView().addPanelButton(new PanelButtonPrint(new PrintSupportLastschrift(transfer)));
 		
     Container container = new SimpleContainer(getParent());
 
@@ -94,7 +97,10 @@ public class LastschriftNew extends AbstractView
 
 /**********************************************************************
  * $Log: LastschriftNew.java,v $
- * Revision 1.22  2011/04/08 15:19:13  willuhn
+ * Revision 1.23  2011/04/11 14:36:37  willuhn
+ * @N Druck-Support fuer Lastschriften und SEPA-Ueberweisungen
+ *
+ * Revision 1.22  2011-04-08 15:19:13  willuhn
  * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
  * @C Code-Cleanup
  *

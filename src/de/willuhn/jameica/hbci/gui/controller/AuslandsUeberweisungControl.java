@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AuslandsUeberweisungControl.java,v $
- * $Revision: 1.10 $
- * $Date: 2011/04/07 17:52:07 $
+ * $Revision: 1.11 $
+ * $Date: 2011/04/11 14:36:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,7 +23,6 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.DecimalInput;
@@ -58,7 +57,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  private Part list = null;
+  private AuslandsUeberweisungList list      = null;
 
   private AuslandsUeberweisung transfer      = null;
   
@@ -110,7 +109,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
    * @return Liste der Auslandsueberweisungen.
    * @throws RemoteException
    */
-  public Part getAuslandsUeberweisungListe() throws RemoteException
+  public AuslandsUeberweisungList getAuslandsUeberweisungListe() throws RemoteException
   {
     if (this.list == null)
       this.list = new AuslandsUeberweisungList(new AuslandsUeberweisungNew());
@@ -487,7 +486,10 @@ public class AuslandsUeberweisungControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AuslandsUeberweisungControl.java,v $
- * Revision 1.10  2011/04/07 17:52:07  willuhn
+ * Revision 1.11  2011/04/11 14:36:38  willuhn
+ * @N Druck-Support fuer Lastschriften und SEPA-Ueberweisungen
+ *
+ * Revision 1.10  2011-04-07 17:52:07  willuhn
  * @N BUGZILLA 1014
  *
  * Revision 1.9  2010/04/14 17:44:10  willuhn

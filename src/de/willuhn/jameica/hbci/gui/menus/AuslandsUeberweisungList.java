@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/AuslandsUeberweisungList.java,v $
- * $Revision: 1.4 $
- * $Date: 2009/10/20 23:12:58 $
+ * $Revision: 1.5 $
+ * $Date: 2011/04/11 14:36:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.gui.menus;
 import java.rmi.RemoteException;
 
 import de.willuhn.jameica.gui.Action;
+import de.willuhn.jameica.gui.internal.action.Print;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
@@ -26,6 +27,7 @@ import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungImport;
 import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungNew;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.TerminableMarkExecuted;
+import de.willuhn.jameica.hbci.io.print.PrintSupportAuslandsUeberweisungList;
 import de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
@@ -55,6 +57,12 @@ public class AuslandsUeberweisungList extends ContextMenu
     addItem(new NotActiveSingleMenuItem(i18n.tr("Jetzt ausführen..."), new AuslandsUeberweisungExecute(),"emblem-important.png"));
     addItem(new NotActiveMultiMenuItem(i18n.tr("Als \"ausgeführt\" markieren..."), new TerminableMarkExecuted(),"emblem-default.png"));
     addItem(ContextMenuItem.SEPARATOR);
+    addItem(new CheckedContextMenuItem(i18n.tr("Drucken..."),new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        new Print().handleAction(new PrintSupportAuslandsUeberweisungList(context));
+      }
+    },"document-print.png"));
     addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new AuslandsUeberweisungExport(),"document-save.png"));
     addItem(new ContextMenuItem(i18n.tr("Importieren..."),new AuslandsUeberweisungImport(),"document-open.png"));
 	}
@@ -193,6 +201,9 @@ public class AuslandsUeberweisungList extends ContextMenu
 
 /**********************************************************************
  * $Log: AuslandsUeberweisungList.java,v $
+ * Revision 1.5  2011/04/11 14:36:37  willuhn
+ * @N Druck-Support fuer Lastschriften und SEPA-Ueberweisungen
+ *
  * Revision 1.4  2009/10/20 23:12:58  willuhn
  * @N Support fuer SEPA-Ueberweisungen
  * @N Konten um IBAN und BIC erweitert

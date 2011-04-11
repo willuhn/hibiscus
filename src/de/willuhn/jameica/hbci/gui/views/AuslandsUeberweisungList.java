@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/AuslandsUeberweisungList.java,v $
- * $Revision: 1.4 $
- * $Date: 2011/04/08 15:19:14 $
+ * $Revision: 1.5 $
+ * $Date: 2011/04/11 14:36:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,11 +14,13 @@ package de.willuhn.jameica.hbci.gui.views;
 
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.internal.parts.PanelButtonPrint;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungImport;
 import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungNew;
 import de.willuhn.jameica.hbci.gui.controller.AuslandsUeberweisungControl;
+import de.willuhn.jameica.hbci.io.print.PrintSupportAuslandsUeberweisungList;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 
@@ -34,12 +36,20 @@ public class AuslandsUeberweisungList extends AbstractView
    */
   public void bind() throws Exception
   {
-		GUI.getView().setTitle(i18n.tr("Vorhandene SEPA-Überweisungen"));
-		
-		final AuslandsUeberweisungControl control = new AuslandsUeberweisungControl(this);
-		
-    control.getAuslandsUeberweisungListe().paint(getParent());
+    AuslandsUeberweisungControl control = new AuslandsUeberweisungControl(this);
+    final de.willuhn.jameica.hbci.gui.parts.AuslandsUeberweisungList table = control.getAuslandsUeberweisungListe();
 
+    GUI.getView().setTitle(i18n.tr("Vorhandene SEPA-Überweisungen"));
+    GUI.getView().addPanelButton(new PanelButtonPrint(new PrintSupportAuslandsUeberweisungList(table))
+    {
+      public boolean isEnabled()
+      {
+        return table.getSelection() != null && super.isEnabled();
+      }
+    });
+    
+    table.paint(getParent());
+		
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Importieren..."),new AuslandsUeberweisungImport(),null,false,"document-open.png");
     buttons.addButton(i18n.tr("Neue SEPA-Überweisung"), new AuslandsUeberweisungNew(),null,true,"text-x-generic.png");
@@ -51,7 +61,10 @@ public class AuslandsUeberweisungList extends AbstractView
 
 /**********************************************************************
  * $Log: AuslandsUeberweisungList.java,v $
- * Revision 1.4  2011/04/08 15:19:14  willuhn
+ * Revision 1.5  2011/04/11 14:36:37  willuhn
+ * @N Druck-Support fuer Lastschriften und SEPA-Ueberweisungen
+ *
+ * Revision 1.4  2011-04-08 15:19:14  willuhn
  * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
  * @C Code-Cleanup
  *

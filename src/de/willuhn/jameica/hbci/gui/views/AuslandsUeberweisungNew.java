@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/AuslandsUeberweisungNew.java,v $
- * $Revision: 1.6 $
- * $Date: 2011/04/08 15:19:13 $
+ * $Revision: 1.7 $
+ * $Date: 2011/04/11 14:36:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.gui.views;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.internal.parts.PanelButtonPrint;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.SimpleContainer;
@@ -22,6 +23,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungExecute;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.controller.AuslandsUeberweisungControl;
+import de.willuhn.jameica.hbci.io.print.PrintSupportAuslandsUeberweisung;
 import de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -43,6 +45,7 @@ public class AuslandsUeberweisungNew extends AbstractView
     final AuslandsUeberweisung transfer = control.getTransfer();
 
 		GUI.getView().setTitle(i18n.tr("SEPA-Überweisung bearbeiten"));
+    GUI.getView().addPanelButton(new PanelButtonPrint(new PrintSupportAuslandsUeberweisung(transfer)));
 		
     SimpleContainer konten = new SimpleContainer(getParent());
     konten.addHeadline(i18n.tr("Konto"));
@@ -87,7 +90,10 @@ public class AuslandsUeberweisungNew extends AbstractView
 
 /**********************************************************************
  * $Log: AuslandsUeberweisungNew.java,v $
- * Revision 1.6  2011/04/08 15:19:13  willuhn
+ * Revision 1.7  2011/04/11 14:36:37  willuhn
+ * @N Druck-Support fuer Lastschriften und SEPA-Ueberweisungen
+ *
+ * Revision 1.6  2011-04-08 15:19:13  willuhn
  * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
  * @C Code-Cleanup
  *

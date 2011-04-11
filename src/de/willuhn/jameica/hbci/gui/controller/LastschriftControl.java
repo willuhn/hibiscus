@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/LastschriftControl.java,v $
- * $Revision: 1.12 $
- * $Date: 2010/08/17 11:32:11 $
+ * $Revision: 1.13 $
+ * $Date: 2011/04/11 14:36:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,10 +17,10 @@ import java.rmi.RemoteException;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SelectInput;
-import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.TextSchluessel;
 import de.willuhn.jameica.hbci.gui.action.LastschriftNew;
+import de.willuhn.jameica.hbci.gui.parts.LastschriftList;
 import de.willuhn.jameica.hbci.rmi.BaseUeberweisung;
 import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
@@ -33,7 +33,7 @@ import de.willuhn.jameica.hbci.rmi.Terminable;
 public class LastschriftControl extends AbstractBaseUeberweisungControl
 {
 
-	private TablePart table            = null;
+	private LastschriftList table      = null;
   private Lastschrift transfer       = null;
   private SelectInput textschluessel = null;
 	
@@ -68,7 +68,7 @@ public class LastschriftControl extends AbstractBaseUeberweisungControl
    * @return Liste der Lastschriften.
    * @throws RemoteException
    */
-  public TablePart getLastschriftListe() throws RemoteException
+  public LastschriftList getLastschriftListe() throws RemoteException
   {
 		if (table != null)
 			return table;
@@ -95,7 +95,10 @@ public class LastschriftControl extends AbstractBaseUeberweisungControl
 
 /**********************************************************************
  * $Log: LastschriftControl.java,v $
- * Revision 1.12  2010/08/17 11:32:11  willuhn
+ * Revision 1.13  2011/04/11 14:36:38  willuhn
+ * @N Druck-Support fuer Lastschriften und SEPA-Ueberweisungen
+ *
+ * Revision 1.12  2010-08-17 11:32:11  willuhn
  * @C Code-Cleanup
  *
  * Revision 1.11  2008/08/01 11:05:14  willuhn

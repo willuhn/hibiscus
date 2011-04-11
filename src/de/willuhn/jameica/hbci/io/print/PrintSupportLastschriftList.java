@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/print/PrintSupportUeberweisungList.java,v $
- * $Revision: 1.4 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/print/PrintSupportLastschriftList.java,v $
+ * $Revision: 1.1 $
  * $Date: 2011/04/11 14:36:37 $
  * $Author: willuhn $
  *
@@ -12,20 +12,20 @@
 package de.willuhn.jameica.hbci.io.print;
 
 import net.sf.paperclips.Print;
-import de.willuhn.jameica.hbci.gui.parts.UeberweisungList;
-import de.willuhn.jameica.hbci.rmi.Ueberweisung;
+import de.willuhn.jameica.hbci.gui.parts.LastschriftList;
+import de.willuhn.jameica.hbci.rmi.Lastschrift;
 import de.willuhn.util.ApplicationException;
 
 /**
- * Druck-Support fuer eine Liste von Ueberweisungen.
+ * Druck-Support fuer eine Liste von Lastschriften.
  */
-public class PrintSupportUeberweisungList extends AbstractPrintSupportBaseUeberweisungList
+public class PrintSupportLastschriftList extends AbstractPrintSupportBaseUeberweisungList
 {
   /**
    * ct.
-   * @param ctx Kann vom Typ <code>UeberweisungList</code>, <code>Ueberweisung</code> oder <code>Ueberweisung[]</code> sein.
+   * @param ctx Kann vom Typ <code>LastschriftList</code>, <code>Lastschrift</code> oder <code>Lastschrift[]</code> sein.
    */
-  public PrintSupportUeberweisungList(Object ctx)
+  public PrintSupportLastschriftList(Object ctx)
   {
     super(ctx);
   }
@@ -38,13 +38,13 @@ public class PrintSupportUeberweisungList extends AbstractPrintSupportBaseUeberw
     Object ctx = this.getContext();
 
     // Sind wir in der Tabelle?
-    if (ctx instanceof UeberweisungList)
-      ctx = ((UeberweisungList)ctx).getSelection();
+    if (ctx instanceof LastschriftList)
+      ctx = ((LastschriftList)ctx).getSelection();
 
-    // Ist nur ne Einzel-Ueberweisung. Dann drucken wir automatisch die Detail-Ansicht
-    if (ctx instanceof Ueberweisung)
+    // Ist nur ne Einzel-Lastschrift. Dann drucken wir automatisch die Detail-Ansicht
+    if (ctx instanceof Lastschrift)
     {
-      PrintSupportUeberweisung single = new PrintSupportUeberweisung((Ueberweisung)ctx);
+      PrintSupportLastschrift single = new PrintSupportLastschrift((Lastschrift)ctx);
       return single.printContent();
     }
     
@@ -55,8 +55,8 @@ public class PrintSupportUeberweisungList extends AbstractPrintSupportBaseUeberw
 
 
 /**********************************************************************
- * $Log: PrintSupportUeberweisungList.java,v $
- * Revision 1.4  2011/04/11 14:36:37  willuhn
+ * $Log: PrintSupportLastschriftList.java,v $
+ * Revision 1.1  2011/04/11 14:36:37  willuhn
  * @N Druck-Support fuer Lastschriften und SEPA-Ueberweisungen
  *
  **********************************************************************/

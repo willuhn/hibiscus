@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/print/PrintSupportUeberweisungList.java,v $
- * $Revision: 1.4 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/print/PrintSupportAuslandsUeberweisungList.java,v $
+ * $Revision: 1.1 $
  * $Date: 2011/04/11 14:36:37 $
  * $Author: willuhn $
  *
@@ -12,20 +12,20 @@
 package de.willuhn.jameica.hbci.io.print;
 
 import net.sf.paperclips.Print;
-import de.willuhn.jameica.hbci.gui.parts.UeberweisungList;
-import de.willuhn.jameica.hbci.rmi.Ueberweisung;
+import de.willuhn.jameica.hbci.gui.parts.AuslandsUeberweisungList;
+import de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung;
 import de.willuhn.util.ApplicationException;
 
 /**
- * Druck-Support fuer eine Liste von Ueberweisungen.
+ * Druck-Support fuer eine Liste von Auslands-Ueberweisungen.
  */
-public class PrintSupportUeberweisungList extends AbstractPrintSupportBaseUeberweisungList
+public class PrintSupportAuslandsUeberweisungList extends AbstractPrintSupportBaseUeberweisungList
 {
   /**
    * ct.
-   * @param ctx Kann vom Typ <code>UeberweisungList</code>, <code>Ueberweisung</code> oder <code>Ueberweisung[]</code> sein.
+   * @param ctx Kann vom Typ <code>AuslandsUeberweisungList</code>, <code>AuslandsUeberweisung</code> oder <code>AuslandsUeberweisung[]</code> sein.
    */
-  public PrintSupportUeberweisungList(Object ctx)
+  public PrintSupportAuslandsUeberweisungList(Object ctx)
   {
     super(ctx);
   }
@@ -38,13 +38,13 @@ public class PrintSupportUeberweisungList extends AbstractPrintSupportBaseUeberw
     Object ctx = this.getContext();
 
     // Sind wir in der Tabelle?
-    if (ctx instanceof UeberweisungList)
-      ctx = ((UeberweisungList)ctx).getSelection();
+    if (ctx instanceof AuslandsUeberweisungList)
+      ctx = ((AuslandsUeberweisungList)ctx).getSelection();
 
     // Ist nur ne Einzel-Ueberweisung. Dann drucken wir automatisch die Detail-Ansicht
-    if (ctx instanceof Ueberweisung)
+    if (ctx instanceof AuslandsUeberweisung)
     {
-      PrintSupportUeberweisung single = new PrintSupportUeberweisung((Ueberweisung)ctx);
+      PrintSupportAuslandsUeberweisung single = new PrintSupportAuslandsUeberweisung((AuslandsUeberweisung)ctx);
       return single.printContent();
     }
     
@@ -55,8 +55,8 @@ public class PrintSupportUeberweisungList extends AbstractPrintSupportBaseUeberw
 
 
 /**********************************************************************
- * $Log: PrintSupportUeberweisungList.java,v $
- * Revision 1.4  2011/04/11 14:36:37  willuhn
+ * $Log: PrintSupportAuslandsUeberweisungList.java,v $
+ * Revision 1.1  2011/04/11 14:36:37  willuhn
  * @N Druck-Support fuer Lastschriften und SEPA-Ueberweisungen
  *
  **********************************************************************/

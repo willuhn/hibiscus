@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/LastschriftList.java,v $
- * $Revision: 1.12 $
- * $Date: 2011/04/08 15:19:14 $
+ * $Revision: 1.13 $
+ * $Date: 2011/04/11 14:36:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,11 +14,13 @@ package de.willuhn.jameica.hbci.gui.views;
 
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.internal.parts.PanelButtonPrint;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.LastschriftImport;
 import de.willuhn.jameica.hbci.gui.action.LastschriftNew;
 import de.willuhn.jameica.hbci.gui.controller.LastschriftControl;
+import de.willuhn.jameica.hbci.io.print.PrintSupportLastschriftList;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 
@@ -34,11 +36,20 @@ public class LastschriftList extends AbstractView
    */
   public void bind() throws Exception
   {
-		GUI.getView().setTitle(i18n.tr("Vorhandene Einzel-Lastschriften"));
-		
     LastschriftControl control = new LastschriftControl(this);
 
-    control.getLastschriftListe().paint(getParent());
+    final de.willuhn.jameica.hbci.gui.parts.LastschriftList table = control.getLastschriftListe();
+
+    GUI.getView().setTitle(i18n.tr("Vorhandene Lastschriften"));
+    GUI.getView().addPanelButton(new PanelButtonPrint(new PrintSupportLastschriftList(table))
+    {
+      public boolean isEnabled()
+      {
+        return table.getSelection() != null && super.isEnabled();
+      }
+    });
+		
+    table.paint(getParent());
 
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Importieren..."),new LastschriftImport(),null,false,"document-open.png");
@@ -50,7 +61,10 @@ public class LastschriftList extends AbstractView
 
 /**********************************************************************
  * $Log: LastschriftList.java,v $
- * Revision 1.12  2011/04/08 15:19:14  willuhn
+ * Revision 1.13  2011/04/11 14:36:37  willuhn
+ * @N Druck-Support fuer Lastschriften und SEPA-Ueberweisungen
+ *
+ * Revision 1.12  2011-04-08 15:19:14  willuhn
  * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
  * @C Code-Cleanup
  *
