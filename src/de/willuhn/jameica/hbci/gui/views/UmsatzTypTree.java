@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzTypTree.java,v $
- * $Revision: 1.13 $
- * $Date: 2011/04/08 15:19:13 $
+ * $Revision: 1.14 $
+ * $Date: 2011/04/12 21:16:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,8 +16,8 @@ package de.willuhn.jameica.hbci.gui.views;
 import java.rmi.RemoteException;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.FocusAdapter;
-import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.TabFolder;
 
@@ -98,15 +98,12 @@ public class UmsatzTypTree extends AbstractView
   
     buttons.paint(getParent());
 
-    TabFolder folder = new TabFolder(getParent(), SWT.NONE);
-    folder.addFocusListener(new FocusAdapter()
-    {
-      /**
-       * @see org.eclipse.swt.events.FocusAdapter#focusGained(org.eclipse.swt.events.FocusEvent)
-       */
-      public void focusGained(FocusEvent e)
+    final TabFolder folder = new TabFolder(getParent(), SWT.NONE);
+    folder.addSelectionListener(new SelectionAdapter() {
+      public void widgetSelected(SelectionEvent e)
       {
-        control.handleRefreshChart();
+        if (folder.getSelectionIndex() == 1)
+          control.handleRefreshChart();
       }
     });
     folder.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -125,7 +122,10 @@ public class UmsatzTypTree extends AbstractView
 }
 /*******************************************************************************
  * $Log: UmsatzTypTree.java,v $
- * Revision 1.13  2011/04/08 15:19:13  willuhn
+ * Revision 1.14  2011/04/12 21:16:47  willuhn
+ * @N BUGZILLA 629 - statt FocusListener jetzt SelectionListener
+ *
+ * Revision 1.13  2011-04-08 15:19:13  willuhn
  * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
  * @C Code-Cleanup
  *
