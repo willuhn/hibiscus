@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/messaging/CheckOfflineUmsatzMessageConsumer.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/11/08 10:37:00 $
+ * $Revision: 1.6 $
+ * $Date: 2011/04/13 08:46:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -65,6 +65,12 @@ public class CheckOfflineUmsatzMessageConsumer implements MessageConsumer
     // wir haben einen Umsatz, den es zu bearbeiten gilt...
     Umsatz u = (Umsatz) o;
     
+    // Vormerkbuchungen ignorieren wir. Zum einen, weil wir sie in dem
+    // Offline-Konto nicht wieder automatisch loeschen, zum anderen, weil
+    // der User sie auch nicht loeschen kann
+    if ((u.getFlags() & Umsatz.FLAG_NOTBOOKED) != 0)
+      return;
+    
     // Wenn der Umsatz schon von einem Offline-Konto kommt, legen
     // wir keine Gegenbuchung mehr an. Das fuehrt sonst zu einem Ping-Pong-Spiel ;)
     Konto k = u.getKonto();
@@ -114,7 +120,10 @@ public class CheckOfflineUmsatzMessageConsumer implements MessageConsumer
 
 /*******************************************************************************
  * $Log: CheckOfflineUmsatzMessageConsumer.java,v $
- * Revision 1.5  2010/11/08 10:37:00  willuhn
+ * Revision 1.6  2011/04/13 08:46:15  willuhn
+ * @B Vormerkbuchungen nicht mehr automatisch in Offline-Konten uebernehmen. Die werden dort naemlich nicht mehr geloescht und der User kann sie auch nicht loeschen
+ *
+ * Revision 1.5  2010-11-08 10:37:00  willuhn
  * @N BUGZILLA 945
  *
  ******************************************************************************/
