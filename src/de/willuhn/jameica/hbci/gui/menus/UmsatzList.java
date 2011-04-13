@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UmsatzList.java,v $
- * $Revision: 1.35 $
- * $Date: 2010/03/16 00:44:18 $
+ * $Revision: 1.36 $
+ * $Date: 2011/04/13 08:48:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -62,7 +62,7 @@ public class UmsatzList extends ContextMenu implements Extendable
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 		addItem(new OpenItem());
-    addItem(new UmsatzBookedItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
+    addItem(new UmsatzItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new UmsatzItem(i18n.tr("Gegenkonto in Adressbuch übernehmen"),new EmpfaengerAdd(),"contact-new.png"));
     addItem(new UmsatzItem(i18n.tr("Als neue Überweisung anlegen..."),new UeberweisungNew(),"stock_next.png"));
@@ -197,6 +197,9 @@ public class UmsatzList extends ContextMenu implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.36  2011/04/13 08:48:01  willuhn
+ * @N Loeschen von Vormerkbuchungen zulassen
+ *
  * Revision 1.35  2010/03/16 00:44:18  willuhn
  * @N Komplettes Redesign des CSV-Imports.
  *   - Kann nun erheblich einfacher auch fuer andere Datentypen (z.Bsp.Ueberweisungen) verwendet werden
