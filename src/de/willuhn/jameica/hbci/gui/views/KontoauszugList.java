@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoauszugList.java,v $
- * $Revision: 1.10 $
- * $Date: 2008/04/06 23:21:43 $
+ * $Revision: 1.11 $
+ * $Date: 2011/04/13 17:35:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,9 @@ package de.willuhn.jameica.hbci.gui.views;
 
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.internal.parts.PanelButtonPrint;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.io.print.PrintSupportUmsatzList;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 
@@ -41,7 +43,16 @@ public class KontoauszugList extends AbstractView
   {
     GUI.getView().setTitle(i18n.tr("Kontoauszüge"));
 
-    de.willuhn.jameica.hbci.gui.parts.KontoauszugList list = new de.willuhn.jameica.hbci.gui.parts.KontoauszugList();
+    final de.willuhn.jameica.hbci.gui.parts.KontoauszugList list = new de.willuhn.jameica.hbci.gui.parts.KontoauszugList();
+
+    GUI.getView().addPanelButton(new PanelButtonPrint(new PrintSupportUmsatzList(list))
+    {
+      public boolean isEnabled()
+      {
+        return list.getSelection() != null && super.isEnabled();
+      }
+    });
+    
     list.paint(getParent());
   }
 
@@ -49,7 +60,10 @@ public class KontoauszugList extends AbstractView
 
 /*******************************************************************************
  * $Log: KontoauszugList.java,v $
- * Revision 1.10  2008/04/06 23:21:43  willuhn
+ * Revision 1.11  2011/04/13 17:35:46  willuhn
+ * @N Druck-Support fuer Kontoauszuege fehlte noch
+ *
+ * Revision 1.10  2008-04-06 23:21:43  willuhn
  * @C Bug 575
  * @N Der Vereinheitlichung wegen alle Buttons in den Auswertungen nach oben verschoben. Sie sind dann naeher an den Filter-Controls -> ergonomischer
  *

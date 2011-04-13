@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/print/AbstractPrintSupportSammelTransfer.java,v $
- * $Revision: 1.1 $
- * $Date: 2011/04/11 16:48:33 $
+ * $Revision: 1.2 $
+ * $Date: 2011/04/13 17:35:46 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -18,7 +18,6 @@ import net.sf.paperclips.DefaultGridLook;
 import net.sf.paperclips.GridPrint;
 import net.sf.paperclips.LineBorder;
 import net.sf.paperclips.LineBreakPrint;
-import net.sf.paperclips.LinePrint;
 import net.sf.paperclips.Print;
 import net.sf.paperclips.TextPrint;
 
@@ -74,9 +73,6 @@ public abstract class AbstractPrintSupportSammelTransfer extends AbstractPrintSu
       
       // Das Haupt-Layout
       GridPrint grid = new GridPrint("l:d:g");
-      grid.add(new TextPrint(getTitle(),fontTitle));
-      grid.add(new LinePrint());
-      grid.add(new LineBreakPrint(fontTitle));
 
       // Die eigentlich Tabelle mit den Werten
       {
@@ -161,22 +157,16 @@ public abstract class AbstractPrintSupportSammelTransfer extends AbstractPrintSu
       throw new ApplicationException(i18n.tr("Druck fehlgeschlagen: {0}",re.getMessage()));
     }
   }
-  
-  /**
-   * Liefert die Ueberschrift fuer den Ausdruck. 
-   * @return die Ueberschrift.
-   */
-  String getTitle()
-  {
-    return i18n.tr("Sammel-Auftrag");
-  }
 }
 
 
 
 /**********************************************************************
  * $Log: AbstractPrintSupportSammelTransfer.java,v $
- * Revision 1.1  2011/04/11 16:48:33  willuhn
+ * Revision 1.2  2011/04/13 17:35:46  willuhn
+ * @N Druck-Support fuer Kontoauszuege fehlte noch
+ *
+ * Revision 1.1  2011-04-11 16:48:33  willuhn
  * @N Drucken von Sammel- und Dauerauftraegen
  *
  **********************************************************************/

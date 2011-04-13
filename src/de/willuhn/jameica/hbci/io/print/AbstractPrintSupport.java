@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/print/AbstractPrintSupport.java,v $
- * $Revision: 1.3 $
- * $Date: 2011/04/11 11:28:08 $
+ * $Revision: 1.4 $
+ * $Date: 2011/04/13 17:35:46 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -18,6 +18,8 @@ import net.sf.paperclips.AlignPrint;
 import net.sf.paperclips.DefaultGridLook;
 import net.sf.paperclips.GridPrint;
 import net.sf.paperclips.ImagePrint;
+import net.sf.paperclips.LineBreakPrint;
+import net.sf.paperclips.LinePrint;
 import net.sf.paperclips.Margins;
 import net.sf.paperclips.PageNumberPageDecoration;
 import net.sf.paperclips.PagePrint;
@@ -57,7 +59,16 @@ public abstract class AbstractPrintSupport implements PrintSupport
    */
   public PrintJob print() throws ApplicationException
   {
-    final PagePrint page = new PagePrint(printContent());
+    Print content = printContent();
+
+    // Das Haupt-Layout
+    GridPrint grid = new GridPrint("l:d:g");
+    grid.add(new TextPrint(getTitle(),fontTitle));
+    grid.add(new LinePrint());
+    grid.add(new LineBreakPrint(fontTitle));
+    grid.add(content);
+
+    final PagePrint page = new PagePrint(grid);
 
     ////////////////////////////////////////////////////////////////////////////
     // Tabellen-Header
@@ -91,7 +102,13 @@ public abstract class AbstractPrintSupport implements PrintSupport
    * @throws ApplicationException
    */
   abstract Print printContent() throws ApplicationException;
-  
+
+  /**
+   * Liefert die Ueberschrift.
+   * @return die Ueberschrift.
+   */
+  abstract String getTitle() throws ApplicationException;
+
   /**
    * Liefert den Wert oder "-" wenn er NULL/leer ist.
    * @param value der Wert.
@@ -114,7 +131,10 @@ public abstract class AbstractPrintSupport implements PrintSupport
 
 /**********************************************************************
  * $Log: AbstractPrintSupport.java,v $
- * Revision 1.3  2011/04/11 11:28:08  willuhn
+ * Revision 1.4  2011/04/13 17:35:46  willuhn
+ * @N Druck-Support fuer Kontoauszuege fehlte noch
+ *
+ * Revision 1.3  2011-04-11 11:28:08  willuhn
  * @N Drucken aus dem Contextmenu heraus
  *
  * Revision 1.2  2011-04-08 17:41:44  willuhn

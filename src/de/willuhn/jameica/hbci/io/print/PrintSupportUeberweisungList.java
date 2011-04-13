@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/print/PrintSupportUeberweisungList.java,v $
- * $Revision: 1.4 $
- * $Date: 2011/04/11 14:36:37 $
+ * $Revision: 1.5 $
+ * $Date: 2011/04/13 17:35:46 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -31,6 +31,14 @@ public class PrintSupportUeberweisungList extends AbstractPrintSupportBaseUeberw
   }
   
   /**
+   * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupport#getTitle()
+   */
+  String getTitle() throws ApplicationException
+  {
+    return i18n.tr("Überweisungen");
+  }
+
+  /**
    * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupportBaseUeberweisungList#printContent()
    */
   Print printContent() throws ApplicationException
@@ -56,7 +64,10 @@ public class PrintSupportUeberweisungList extends AbstractPrintSupportBaseUeberw
 
 /**********************************************************************
  * $Log: PrintSupportUeberweisungList.java,v $
- * Revision 1.4  2011/04/11 14:36:37  willuhn
+ * Revision 1.5  2011/04/13 17:35:46  willuhn
+ * @N Druck-Support fuer Kontoauszuege fehlte noch
+ *
+ * Revision 1.4  2011-04-11 14:36:37  willuhn
  * @N Druck-Support fuer Lastschriften und SEPA-Ueberweisungen
  *
  **********************************************************************/

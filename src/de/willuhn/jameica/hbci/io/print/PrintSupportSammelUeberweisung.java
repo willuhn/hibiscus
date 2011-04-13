@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/print/PrintSupportSammelUeberweisung.java,v $
- * $Revision: 1.1 $
- * $Date: 2011/04/11 16:48:33 $
+ * $Revision: 1.2 $
+ * $Date: 2011/04/13 17:35:46 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -10,6 +10,8 @@
  **********************************************************************/
 
 package de.willuhn.jameica.hbci.io.print;
+
+import de.willuhn.util.ApplicationException;
 
 
 /**
@@ -27,9 +29,9 @@ public class PrintSupportSammelUeberweisung extends AbstractPrintSupportSammelTr
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupportSammelTransfer#getTitle()
+   * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupport#getTitle()
    */
-  String getTitle()
+  String getTitle() throws ApplicationException
   {
     return i18n.tr("Sammel-Überweisung");
   }
@@ -39,7 +41,10 @@ public class PrintSupportSammelUeberweisung extends AbstractPrintSupportSammelTr
 
 /**********************************************************************
  * $Log: PrintSupportSammelUeberweisung.java,v $
- * Revision 1.1  2011/04/11 16:48:33  willuhn
+ * Revision 1.2  2011/04/13 17:35:46  willuhn
+ * @N Druck-Support fuer Kontoauszuege fehlte noch
+ *
+ * Revision 1.1  2011-04-11 16:48:33  willuhn
  * @N Drucken von Sammel- und Dauerauftraegen
  *
  **********************************************************************/
