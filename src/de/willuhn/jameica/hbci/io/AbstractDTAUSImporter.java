@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/AbstractDTAUSImporter.java,v $
- * $Revision: 1.17 $
- * $Date: 2010/03/16 13:43:56 $
+ * $Revision: 1.18 $
+ * $Date: 2011/04/26 12:15:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -118,13 +118,6 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
             // Mit diesem Factor sollte sich der Fortschrittsbalken
             // bis zum Ende der DTAUS-Datei genau auf 100% bewegen
             monitor.setPercentComplete((int)((++count) * factor));
-            
-            if (c == null)
-            {
-              monitor.log(i18n.tr("Datensatz {0} nicht lesbar. Überspringe",""+count));
-              continue;
-            }
-            
             monitor.log(i18n.tr("Importiere Datensatz {0}",c.getNameEmpfaenger()));
            
             // Gewuenschtes Objekt erstellen
@@ -292,6 +285,9 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
 
 /*********************************************************************
  * $Log: AbstractDTAUSImporter.java,v $
+ * Revision 1.18  2011/04/26 12:15:51  willuhn
+ * @B Potentielle Bugs gemaess Code-Checker
+ *
  * Revision 1.17  2010/03/16 13:43:56  willuhn
  * @N CSV-Import von Ueberweisungen und Lastschriften
  * @N Versionierbarkeit von serialisierten CSV-Profilen

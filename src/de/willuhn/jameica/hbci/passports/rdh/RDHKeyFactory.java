@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/RDHKeyFactory.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/06/17 11:26:48 $
+ * $Revision: 1.2 $
+ * $Date: 2011/04/26 12:15:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -94,7 +94,7 @@ public class RDHKeyFactory
   public static void importKey(File f)
 	{
 
-		Logger.info("import rdh key " + f.getAbsolutePath());
+		Logger.info("import rdh key " + f);
     if (f == null)
     {
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte wählen Sie eine Schlüsseldatei aus"),StatusBarMessage.TYPE_ERROR));
@@ -138,7 +138,7 @@ public class RDHKeyFactory
 	{
     try
     {
-      Logger.info("creating new key in " + f.getAbsolutePath());
+      Logger.info("creating new key in " + f);
       if (f == null)
       {
         Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte wählen Sie eine Schlüsseldatei aus"),StatusBarMessage.TYPE_ERROR));
@@ -318,6 +318,9 @@ public class RDHKeyFactory
 
 /**********************************************************************
  * $Log: RDHKeyFactory.java,v $
+ * Revision 1.2  2011/04/26 12:15:51  willuhn
+ * @B Potentielle Bugs gemaess Code-Checker
+ *
  * Revision 1.1  2010/06/17 11:26:48  willuhn
  * @B In HBCICallbackSWT wurden die RDH-Passports nicht korrekt ausgefiltert
  * @C komplettes Projekt "hbci_passport_rdh" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren

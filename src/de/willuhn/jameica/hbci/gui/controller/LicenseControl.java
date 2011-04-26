@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/LicenseControl.java,v $
- * $Revision: 1.14 $
- * $Date: 2009/03/10 23:51:31 $
+ * $Revision: 1.15 $
+ * $Date: 2011/04/26 12:15:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -86,13 +86,14 @@ public class LicenseControl extends AbstractControl {
     File[] infos = finder.findRecursive();
     for (int i=0;i<infos.length;++i)
     {
+      if (!infos[i].isFile() || !infos[i].canRead())
+      {
+        Logger.warn("unable to read " + infos[i] + ", skipping");
+        continue;
+      }
+
       try {
         InfoReader ir = new InfoReader(new FileInputStream(infos[i]));
-        if (ir == null)
-        {
-          Logger.warn("inforeader is null, skipping lib");
-          continue;
-        }
         buffer.append("<p>");
         buffer.append("<b>" + ir.getName() + "</b>");
         buffer.append("<br/>" + i18n.tr("Beschreibung") + ": " + ir.getDescription());
@@ -116,6 +117,9 @@ public class LicenseControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: LicenseControl.java,v $
+ * Revision 1.15  2011/04/26 12:15:51  willuhn
+ * @B Potentielle Bugs gemaess Code-Checker
+ *
  * Revision 1.14  2009/03/10 23:51:31  willuhn
  * @C PluginResources#getPath als deprecated markiert - stattdessen sollte jetzt Manifest#getPluginDir() verwendet werden
  *
