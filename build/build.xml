@@ -44,7 +44,14 @@
 
     <mkdir dir="${class.dir}" />
 
-    <javac debug="true" debuglevel="lines,vars,source" source="${define.java.version}" target="${define.java.version}" encoding="${define.encoding}" deprecation="true" destdir="${class.dir}" srcdir="${src.dir}">
+    <javac debug="true"
+           includeantruntime="false"
+           debuglevel="lines,vars,source"
+           source="${define.java.version}"
+           target="${define.java.version}"
+           encoding="${define.encoding}"
+           deprecation="true"
+           destdir="${class.dir}" srcdir="${src.dir}">
       <classpath refid="compilepath" />
     </javac>
 
@@ -112,7 +119,15 @@
     </copy>
 
     <mkdir dir="${project.zipdir}/updates" />
-    <javac debug="true" debuglevel="lines,vars,source" source="${define.java.version}" target="${define.java.version}" encoding="${define.encoding}" deprecation="true" destdir="${project.zipdir}/updates" srcdir="${update.dir}">
+    <javac debug="true"
+           includeantruntime="false"
+           debuglevel="lines,vars,source"
+           source="${define.java.version}"
+           target="${define.java.version}"
+           encoding="${define.encoding}"
+           deprecation="true"
+           destdir="${project.zipdir}/updates"
+           srcdir="${update.dir}">
       <classpath refid="compilepath" />
     </javac>
     <copy todir="${project.zipdir}/updates">
