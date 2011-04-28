@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/Controller.java,v $
- * $Revision: 1.4 $
- * $Date: 2010/09/07 15:17:07 $
+ * $Revision: 1.5 $
+ * $Date: 2011/04/28 07:34:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -144,6 +144,10 @@ public class Controller extends AbstractControl {
     },"user-trash-full.png"));
 
     configList.setContextMenu(ctx);
+    configList.setMulti(false);
+    configList.setRememberColWidths(true);
+    configList.setRememberOrder(true);
+    configList.setSummary(false);
 
     return configList;
   }
@@ -521,7 +525,10 @@ public class Controller extends AbstractControl {
 
 /**********************************************************************
  * $Log: Controller.java,v $
- * Revision 1.4  2010/09/07 15:17:07  willuhn
+ * Revision 1.5  2011/04/28 07:34:43  willuhn
+ * @R Summen-Zeile nicht mehr anzeigen - unnuetz
+ *
+ * Revision 1.4  2010-09-07 15:17:07  willuhn
  * @N GUI-Cleanup
  *
  * Revision 1.3  2010-07-22 12:37:41  willuhn

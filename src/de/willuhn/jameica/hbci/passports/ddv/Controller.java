@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/Controller.java,v $
- * $Revision: 1.10 $
- * $Date: 2010/10/20 14:28:47 $
+ * $Revision: 1.11 $
+ * $Date: 2011/04/28 07:34:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -148,6 +148,7 @@ public class Controller extends AbstractControl
     this.configList.setMulti(false);
     this.configList.setRememberColWidths(true);
     this.configList.setRememberOrder(true);
+    this.configList.setSummary(false);
     return this.configList;
   }
 
@@ -637,7 +638,10 @@ public class Controller extends AbstractControl
 
 /*******************************************************************************
  * $Log: Controller.java,v $
- * Revision 1.10  2010/10/20 14:28:47  willuhn
+ * Revision 1.11  2011/04/28 07:34:43  willuhn
+ * @R Summen-Zeile nicht mehr anzeigen - unnuetz
+ *
+ * Revision 1.10  2010-10-20 14:28:47  willuhn
  * @B Neue Kartenleser-Config wurde nicht in Factory registriert - siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=70575#70575
  *
  * Revision 1.9  2010-10-17 21:58:56  willuhn
