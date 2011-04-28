@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/PassportDetail.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/11/24 00:07:08 $
+ * $Revision: 1.5 $
+ * $Date: 2011/04/28 07:32:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,6 +30,7 @@ import de.willuhn.util.I18N;
  */
 public class PassportDetail implements Action
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
    * Erwartet ein Objekt vom Typ <code>de.willuhn.jameica.hbci.passport.Passport</code>.
@@ -37,11 +38,11 @@ public class PassportDetail implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
-  	I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
     Passport p = null;
   	if (context != null && (context instanceof Passport))
+  	{
       p = (Passport) context;
+  	}
     else
     {
       try
@@ -60,41 +61,29 @@ public class PassportDetail implements Action
       catch (Exception e)
       {
         Logger.error("error while opening passport",e);
-        GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Laden des Sicherheitsmediums"));
-        return;
+        throw new ApplicationException(i18n.tr("Fehler beim Laden: {0}",e.getMessage()));
       }
     }
     
     if (p == null)
       return;
 
-		try {
+		try
+		{
 			GUI.startView(p.getConfigDialog(),p);
 		}
 		catch (RemoteException e)
 		{
 			Logger.error("error while opening passport",e);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Laden des Sicherheitsmediums"));
+      throw new ApplicationException(i18n.tr("Fehler beim Laden: {0}",e.getMessage()));
 		}
-
   }
-
 }
 
 
 /**********************************************************************
  * $Log: PassportDetail.java,v $
- * Revision 1.4  2006/11/24 00:07:08  willuhn
- * @C Konfiguration der Umsatz-Kategorien in View Einstellungen verschoben
- * @N Redesign View Einstellungen
- *
- * Revision 1.3  2005/01/19 00:16:04  willuhn
- * @N Lastschriften
- *
- * Revision 1.2  2004/11/12 18:25:07  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2004/10/20 12:08:18  willuhn
- * @C MVC-Refactoring (new Controllers)
+ * Revision 1.5  2011/04/28 07:32:58  willuhn
+ * @C Code-Cleanup
  *
  **********************************************************************/
