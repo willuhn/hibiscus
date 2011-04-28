@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.84 $
- * $Date: 2011/03/11 15:05:14 $
+ * $Revision: 1.85 $
+ * $Date: 2011/04/28 07:50:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -277,8 +277,16 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
   public boolean equals(GenericObject o) throws RemoteException {
 		if (o == null || !(o instanceof Umsatz))
 			return false;
-		try {
+		try
+		{
 			Umsatz other = (Umsatz) o;
+
+			// Wenn die ID uebereinstimmt, sind sie auf jeden Fall gleich. Egal, was die Checksumme sagt
+			String id1 = this.getID();
+			String id2 = other.getID();
+			if (id1 != null && id2 != null && id1.equals(id2))
+			  return true;
+			  
 			return other.getChecksum() == getChecksum();
 		}
 		catch (Exception e)
@@ -675,7 +683,10 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
- * Revision 1.84  2011/03/11 15:05:14  willuhn
+ * Revision 1.85  2011/04/28 07:50:07  willuhn
+ * @B BUGZILLA 692
+ *
+ * Revision 1.84  2011-03-11 15:05:14  willuhn
  * @C Loeschen von Vormerkbuchungen nicht protokollieren - da Hibiscus die selbst loescht und das irritierende Protokoll-Meldungen fuer den User erzeugt
  *
  * Revision 1.83  2010-11-19 17:02:06  willuhn
