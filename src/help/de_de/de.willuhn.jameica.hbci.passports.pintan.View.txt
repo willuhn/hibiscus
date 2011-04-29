@@ -5,7 +5,7 @@
   
   <p>
     In dieser Liste sehen Ihre bereits angelegten PIN/TAN-Konfigurationen.
-    Wählen Sie <b>Neue Konfiguration anlegen</b> um weitere HBCI-Verbindungen
+    Wählen Sie <b>PIN/TAN-Zugang anlegen</b> um weitere HBCI-Verbindungen
     zu konfigurieren.
   </p>
 </form>

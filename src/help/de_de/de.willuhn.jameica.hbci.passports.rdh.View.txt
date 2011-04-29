@@ -4,11 +4,11 @@
 	</p>
 	
 	<p>
-	  Zum Erstellen eines neuen Schlüssel klicken Sie auf <b>Neuen Schlüssel erstellen</b>.
+	  Zum Erstellen eines neuen INI-Briefes klicken Sie auf <b>Neuen Schlüssel erstellen</b>.
 	</p>
 	
 	<p>
-	  Möchten Sie einen existierenden Schlüssel (z.Bsp. aus StarMoney) importieren,
+	  Wenn Sie eine existierende Schlüssel-Datei (z.Bsp. aus einem anderen Programm) importieren möchten,
 	  dann wählen Sie bitte <b>Schlüssel importieren</b>.
 	</p>
 	

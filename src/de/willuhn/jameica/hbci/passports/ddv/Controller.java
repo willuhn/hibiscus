@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/Controller.java,v $
- * $Revision: 1.11 $
- * $Date: 2011/04/28 07:34:43 $
+ * $Revision: 1.12 $
+ * $Date: 2011/04/29 11:38:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -307,7 +307,7 @@ public class Controller extends AbstractControl
   {
     try
     {
-      String ask = i18n.tr("Legen Sie Ihre HBCI-Chipkarte vor dem Test in das Lesegerät.\nBereits vorgenommene Einstellungen gehen hierbei verloren.\n\nDer Test kann einige Minuten in Anspruch nehmen. Vorgang fortsetzen?");
+      String ask = i18n.tr("Legen Sie Ihre HBCI-Chipkarte vor dem Test in das Lesegerät.\nDie Suchen kann einige Minuten in Anspruch nehmen. Vorgang fortsetzen?");
       if (!Application.getCallback().askUser(ask))
         return;
     }
@@ -638,7 +638,10 @@ public class Controller extends AbstractControl
 
 /*******************************************************************************
  * $Log: Controller.java,v $
- * Revision 1.11  2011/04/28 07:34:43  willuhn
+ * Revision 1.12  2011/04/29 11:38:58  willuhn
+ * @N Konfiguration der HBCI-Medien ueberarbeitet. Es gibt nun direkt in der Navi einen Punkt "Bank-Zugaenge", in der alle Medien angezeigt werden.
+ *
+ * Revision 1.11  2011-04-28 07:34:43  willuhn
  * @R Summen-Zeile nicht mehr anzeigen - unnuetz
  *
  * Revision 1.10  2010-10-20 14:28:47  willuhn

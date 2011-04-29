@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/View.java,v $
- * $Revision: 1.4 $
- * $Date: 2011/04/08 15:19:14 $
+ * $Revision: 1.5 $
+ * $Date: 2011/04/29 11:38:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,8 @@ import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.parts.ButtonArea;
+import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -33,13 +35,14 @@ public class View extends AbstractView
    */
   public void bind() throws Exception
   {
-		GUI.getView().setTitle(i18n.tr("Vorhandene Konfigurationen"));
+		GUI.getView().setTitle(i18n.tr("PIN/TAN-Konfigurationen"));
 		final Controller control = new Controller(this);
 
-    control.getConfigList().paint(getParent());
-    
-    ButtonArea buttons = new ButtonArea();
-    buttons.addButton(i18n.tr("Neue Konfiguration anlegen"),new Action()
+    Container c = new SimpleContainer(getParent());
+    c.addText(i18n.tr("Klicken Sie auf \"PIN/TAN-Zugang anlegen\", um einen neuen Bank-Zugang über das PIN/TAN-Verfahren einzurichten."),true);
+
+		ButtonArea buttons = new ButtonArea();
+    buttons.addButton(i18n.tr("PIN/TAN-Zugang anlegen"),new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -47,13 +50,18 @@ public class View extends AbstractView
       }
     },null,false,"document-new.png");
     buttons.paint(getParent());
+
+    control.getConfigList().paint(getParent());
   }
 }
 
 
 /**********************************************************************
  * $Log: View.java,v $
- * Revision 1.4  2011/04/08 15:19:14  willuhn
+ * Revision 1.5  2011/04/29 11:38:57  willuhn
+ * @N Konfiguration der HBCI-Medien ueberarbeitet. Es gibt nun direkt in der Navi einen Punkt "Bank-Zugaenge", in der alle Medien angezeigt werden.
+ *
+ * Revision 1.4  2011-04-08 15:19:14  willuhn
  * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
  * @C Code-Cleanup
  *

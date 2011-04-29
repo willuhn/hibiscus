@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/KeyFormatDialog.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/06/17 11:26:48 $
+ * $Revision: 1.2 $
+ * $Date: 2011/04/29 11:38:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,9 +21,10 @@ import org.eclipse.swt.widgets.Composite;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.input.LabelInput;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.TablePart;
-import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Color;
+import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.passports.rdh.keyformat.KeyFormat;
@@ -38,7 +39,7 @@ import de.willuhn.util.I18N;
 public class KeyFormatDialog extends AbstractDialog
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  private final static int WINDOW_WIDTH = 540;
+  private final static int WINDOW_WIDTH = 440;
 
   private TablePart table   = null;
   private KeyFormat choosen = null;
@@ -56,8 +57,8 @@ public class KeyFormatDialog extends AbstractDialog
   {
     super(position);
     this.neededFeature = feature;
+    setTitle(i18n.tr("Auswahl des Datei-Formats"));
     setSize(WINDOW_WIDTH,SWT.DEFAULT);
-    setTitle(i18n.tr("Auswahl des Schlüsselformats"));
   }
 
   /**
@@ -84,26 +85,31 @@ public class KeyFormatDialog extends AbstractDialog
       }
     
     };
+
+    Container c = new SimpleContainer(parent);
+    c.addText(i18n.tr("Bitte wählen Sie das Datei-Format des Schlüssels"),true);
+    c.addInput(this.warn);
+
     this.table = new TablePart(Arrays.asList(RDHKeyFactory.getKeyFormats(this.neededFeature)),action);
     this.table.addColumn("Bezeichnung","name");
     this.table.setMulti(false);
     this.table.setRememberColWidths(true);
     this.table.setRememberOrder(true);
     this.table.setSummary(false);
-    SimpleContainer group = new SimpleContainer(parent);
-    group.addText(i18n.tr("Bitte wählen Sie das Datei-Format des Schlüssels"),true);
-    group.addInput(this.warn);
 
-    this.table.paint(parent);
+    c.addPart(this.table);
     
-    ButtonArea buttons = new ButtonArea(parent,2);
-    buttons.addButton(i18n.tr("Übernehmen"), action);
+    ButtonArea buttons = new ButtonArea();
+    buttons.addButton(i18n.tr("Übernehmen"), action,null,false,"ok.png");
     buttons.addButton(i18n.tr("Abbrechen"), new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         throw new OperationCanceledException("cancelled in key format dialog");
       }
-    });
+    },null,false,"process-stop.png");
+
+    c.addButtonArea(buttons);
+    
     getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT));
   }
 
@@ -120,6 +126,9 @@ public class KeyFormatDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: KeyFormatDialog.java,v $
+ * Revision 1.2  2011/04/29 11:38:58  willuhn
+ * @N Konfiguration der HBCI-Medien ueberarbeitet. Es gibt nun direkt in der Navi einen Punkt "Bank-Zugaenge", in der alle Medien angezeigt werden.
+ *
  * Revision 1.1  2010/06/17 11:26:48  willuhn
  * @B In HBCICallbackSWT wurden die RDH-Passports nicht korrekt ausgefiltert
  * @C komplettes Projekt "hbci_passport_rdh" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren

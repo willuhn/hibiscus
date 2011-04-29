@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/PassportInput.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/04/22 12:42:03 $
+ * $Revision: 1.6 $
+ * $Date: 2011/04/29 11:38:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,19 +18,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-
-import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.input.SelectInput;
-import de.willuhn.jameica.gui.parts.Button;
-import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.PassportRegistry;
-import de.willuhn.jameica.hbci.gui.action.PassportDetail;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -47,15 +37,11 @@ public class PassportInput extends SelectInput
   private final static I18N i18n          = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private static List<Passport> passports = null;
   
-  private Composite comp                  = null;
-  private Button button                   = null;
-  
   /**
    * ct.
    * @throws RemoteException
-   * @throws ApplicationException
    */
-  public PassportInput() throws RemoteException, ApplicationException
+  public PassportInput() throws RemoteException
   {
     this(null);
   }
@@ -64,9 +50,8 @@ public class PassportInput extends SelectInput
    * ct.
    * @param konto das Konto.
    * @throws RemoteException
-   * @throws ApplicationException
    */
-  public PassportInput(Konto konto) throws RemoteException, ApplicationException
+  public PassportInput(Konto konto) throws RemoteException
   {
     super(init(),null);
 
@@ -83,7 +68,7 @@ public class PassportInput extends SelectInput
     
     this.setPleaseChoose("Bitte wählen...");
     this.setAttribute("name");
-    this.setName(i18n.tr("Sicherheitsmedium"));
+    this.setName(i18n.tr("HBCI-Verfahren"));
   }
   
   /**
@@ -105,7 +90,7 @@ public class PassportInput extends SelectInput
       catch (Exception e)
       {
         Logger.error("error while loading passport list",e);
-        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Laden der Sicherheitsmedien"),StatusBarMessage.TYPE_ERROR));
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Laden der HBCI-Verfahren"),StatusBarMessage.TYPE_ERROR));
       }
     }
     
@@ -114,87 +99,14 @@ public class PassportInput extends SelectInput
     
     return passports;
   }
-
-  /**
-   * @see de.willuhn.jameica.gui.input.SelectInput#getControl()
-   */
-  public Control getControl()
-  {
-    Control combo = super.getControl();
-    
-    // Wir haengen jetzt noch unseren Button dran
-    this.button = new Button(i18n.tr("Konfigurieren..."),new Action()
-    {
-      /**
-       * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
-       */
-      public void handleAction(Object context) throws ApplicationException
-      {
-        try 
-        {
-          Object value = PassportInput.this.getValue();
-          if (value == null)
-          {
-            Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte wählen Sie ein Sicherheitsmedium aus"),StatusBarMessage.TYPE_ERROR));
-            return;
-          }
-          new PassportDetail().handleAction(value);
-        }
-        catch (ApplicationException ae)
-        {
-          Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getMessage(),StatusBarMessage.TYPE_ERROR));
-        }
-      }
-    },null,false,"document-properties.png");
-    try
-    {
-      this.button.paint(getParent());
-    }
-    catch (RemoteException re)
-    {
-      Logger.error("unable to append configure button",re);
-    }
-    return combo;
-  }
-
-  
-  /**
-   * @see de.willuhn.jameica.gui.input.SelectInput#setEnabled(boolean)
-   */
-  public void setEnabled(boolean enabled)
-  {
-    super.setEnabled(enabled);
-    this.button.setEnabled(enabled);
-  }
-
-  /**
-   * @see de.willuhn.jameica.gui.input.AbstractInput#getParent()
-   */
-  public Composite getParent()
-  {
-    if (this.comp != null)
-      return this.comp;
-    
-    this.comp = new Composite(super.getParent(), SWT.NONE);
-    this.comp.setBackground(Color.BACKGROUND.getSWTColor());
-    GridLayout layout = new GridLayout(3, false);
-    layout.marginHeight = 0;
-    layout.marginWidth = 0;
-    layout.horizontalSpacing = 5;
-    layout.verticalSpacing = 0;
-    this.comp.setLayout(layout);
-    final GridData g = new GridData(getStyleBits());
-    g.horizontalSpan = 2;
-    this.comp.setLayoutData(g);
-    
-    return this.comp;
-  }
-  
 }
 
 
 /*********************************************************************
  * $Log: PassportInput.java,v $
+ * Revision 1.6  2011/04/29 11:38:58  willuhn
+ * @N Konfiguration der HBCI-Medien ueberarbeitet. Es gibt nun direkt in der Navi einen Punkt "Bank-Zugaenge", in der alle Medien angezeigt werden.
+ *
  * Revision 1.5  2010/04/22 12:42:03  willuhn
  * @N Erste Version des Supports fuer Offline-Konten
  *

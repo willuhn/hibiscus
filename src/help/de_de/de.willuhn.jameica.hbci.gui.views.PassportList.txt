@@ -1,0 +1,14 @@
+<form>
+	<p>
+		<span color="header" font="header">Bank-Zugänge</span>
+	</p>
+
+  <p>
+    In dieser Liste sehen Sie Ihre bisher eingerichteten Bank-Zugänge.
+  </p>
+  	
+	<p>
+	  Klicken Sie auf <b>Neuer Bank-Zugang...</b>, um eine neue PIN/TAN-
+	  oder Kartenleser-Konfiguration anzulegen oder eine Schlüsseldatei zu erstellen bzw. zu importieren.
+	</p>
+</form>

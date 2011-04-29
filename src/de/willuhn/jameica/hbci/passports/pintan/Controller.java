@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/Controller.java,v $
- * $Revision: 1.5 $
- * $Date: 2011/04/28 07:34:43 $
+ * $Revision: 1.6 $
+ * $Date: 2011/04/29 11:38:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -134,7 +134,7 @@ public class Controller extends AbstractControl {
       }
     },"document-open.png"));
 
-    ctx.addItem(new ContextMenuItem(i18n.tr("Neue Konfiguration..."),new Action() {
+    ctx.addItem(new ContextMenuItem(i18n.tr("PIN/TAN-Zugang anlegen"),new Action() {
       public void handleAction(Object context) throws ApplicationException {handleCreate();}
     },"document-new.png"));
 
@@ -525,7 +525,10 @@ public class Controller extends AbstractControl {
 
 /**********************************************************************
  * $Log: Controller.java,v $
- * Revision 1.5  2011/04/28 07:34:43  willuhn
+ * Revision 1.6  2011/04/29 11:38:57  willuhn
+ * @N Konfiguration der HBCI-Medien ueberarbeitet. Es gibt nun direkt in der Navi einen Punkt "Bank-Zugaenge", in der alle Medien angezeigt werden.
+ *
+ * Revision 1.5  2011-04-28 07:34:43  willuhn
  * @R Summen-Zeile nicht mehr anzeigen - unnuetz
  *
  * Revision 1.4  2010-09-07 15:17:07  willuhn

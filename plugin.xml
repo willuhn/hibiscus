@@ -25,15 +25,14 @@
       <item id="hibiscus.menu.messages"              name="Bank-Nachrichten"                              icon="dialog-information.png"          action="de.willuhn.jameica.hbci.gui.action.NachrichtList" />
       <item id="hibiscus.menu.settings"              name="Einstellungen"                                 icon="document-properties.png"         action="de.willuhn.jameica.hbci.gui.action.Settings" />
       <item name="-" />
-      <item id="hibiscus.menu.handbuch"              name="Handbuch"                                      icon="edit-copy.png"                   action="de.willuhn.jameica.hbci.gui.action.HandbuchAction"/>
-      <item id="hibiscus.menu.about"                 name="Über"                                          icon="gtk-info.png"                    action="de.willuhn.jameica.hbci.gui.action.About" />
-      <item name="-" />
       <item id="hibiscus.menu.ext"                   name="Erweitert">
-        <item id="hibiscus.menu.ext.license"         name="Lizenzinformationen"                           icon="text-x-generic.png"              action="de.willuhn.jameica.hbci.gui.action.License" />
-        <item name="-" />
         <item id="hibiscus.menu.ext.backup.create"   name="Diagnose-Backup erstellen"                     icon="document-save.png"               action="de.willuhn.jameica.hbci.gui.action.BackupCreate" />
         <item id="hibiscus.menu.ext.backup.restore"  name="Diagnose-Backup importieren"                   icon="document-open.png"               action="de.willuhn.jameica.hbci.gui.action.BackupRestore" />
       </item>
+      <item name="-" />
+      <item id="hibiscus.menu.handbuch"              name="Handbuch"                                      icon="edit-copy.png"                   action="de.willuhn.jameica.hbci.gui.action.HandbuchAction"/>
+      <item id="hibiscus.menu.license"               name="Lizenzinformationen"                           icon="text-x-generic.png"              action="de.willuhn.jameica.hbci.gui.action.License" />
+      <item id="hibiscus.menu.about"                 name="Über"                                          icon="gtk-info.png"                    action="de.willuhn.jameica.hbci.gui.action.About" />
     </item>
   </menu>
 
@@ -45,6 +44,7 @@
 
   <navigation>
     <item id="hibiscus.navi"                                 name="Hibiscus"                icon-close="folder.png">
+      <item id="hibiscus.navi.passports"                     name="Bank-Zugänge"            icon-close="seahorse-preferences.png"        action="de.willuhn.jameica.hbci.gui.action.PassportList" />
       <item id="hibiscus.navi.accounts"                      name="Konten"                  icon-close="system-file-manager.png"         action="de.willuhn.jameica.hbci.gui.action.KontoList" />
       <item id="hibiscus.navi.addresses"                     name="Adressbuch"              icon-close="contact-new.png"                 action="de.willuhn.jameica.hbci.gui.action.EmpfaengerList" />
       <item id="hibiscus.navi.termine"                       name="Termine"                 icon-close="office-calendar.png"             action="de.willuhn.jameica.hbci.gui.action.Termine" />

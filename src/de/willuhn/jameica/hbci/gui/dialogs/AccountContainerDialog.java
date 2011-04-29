@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/AccountContainerDialog.java,v $
- * $Revision: 1.13 $
- * $Date: 2010/07/13 10:55:29 $
+ * $Revision: 1.14 $
+ * $Date: 2011/04/29 11:38:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,6 +12,7 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.dialogs;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -25,9 +26,9 @@ import de.willuhn.jameica.gui.input.IntegerInput;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
-import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Color;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.AccountContainer;
 import de.willuhn.jameica.hbci.HBCI;
@@ -39,13 +40,16 @@ import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
+ * Dialog zur Abfrage der Benutzerdaten fuer einen Bank-Zugang.
  */
 public class AccountContainerDialog extends AbstractDialog
 {
+  private final static int WINDOW_WIDTH = 600;
+
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 	private HBCIPassport passport = null;
 	private AccountContainer container = null;
-	private I18N i18n = null;
 
 	private Input blz 				  = null;
 	private Input host 				  = null;
@@ -64,8 +68,8 @@ public class AccountContainerDialog extends AbstractDialog
   {
     super(AccountContainerDialog.POSITION_CENTER);
     this.passport = passport;
-    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-    setTitle(i18n.tr("Eingabe Ihrer Bank-Daten"));
+    this.setTitle(i18n.tr("Eingabe Ihrer Bank-Daten"));
+    setSize(WINDOW_WIDTH,SWT.DEFAULT);
   }
 
   /**
@@ -73,22 +77,23 @@ public class AccountContainerDialog extends AbstractDialog
    */
   protected void paint(Composite parent) throws Exception
   {
-  	LabelGroup group = new LabelGroup(parent,i18n.tr("Benutzerdaten"));
-  	group.addText(i18n.tr("Bitte geben Sie die Benutzerdaten des Kontos ein."),true);
-  	group.addLabelPair(i18n.tr("Benutzerkennung"),getUserId());
-		group.addLabelPair(i18n.tr("Kundenkennung"),getCustomerId());
-		group.addLabelPair(i18n.tr("Bankleitzahl"),getBLZ());
+    Container c = new SimpleContainer(parent);
 
-		LabelGroup group2 = new LabelGroup(parent,i18n.tr("Verbindungsdaten"));
-		group2.addText(i18n.tr("Geben Sie hier bitte die Verbindungsdaten zu Ihrer Bank ein."),true);
-		group2.addLabelPair(i18n.tr("Hostname/URL des Bankservers"),getHost());
-		group2.addLabelPair(i18n.tr("TCP-Port des Bankservers"),getPort());
-		group2.addLabelPair(i18n.tr("Filter für die Übertragung"),getFilter());
+    c.addHeadline(i18n.tr("Benutzerdaten"));
+  	c.addText(i18n.tr("Bitte geben Sie die Benutzerdaten des Kontos ein."),true);
+  	c.addLabelPair(i18n.tr("Benutzerkennung"),getUserId());
+  	c.addLabelPair(i18n.tr("Kundenkennung"),getCustomerId());
+  	c.addLabelPair(i18n.tr("Bankleitzahl"),getBLZ());
 
-		SimpleContainer sc = new SimpleContainer(parent);
-		sc.addLabelPair("",getText());
+		c.addHeadline(i18n.tr("Verbindungsdaten"));
+		c.addText(i18n.tr("Geben Sie hier bitte die Verbindungsdaten zu Ihrer Bank ein."),true);
+		c.addLabelPair(i18n.tr("Hostname/URL des Bankservers"),getHost());
+		c.addLabelPair(i18n.tr("TCP-Port des Bankservers"),getPort());
+		c.addLabelPair(i18n.tr("Filter für die Übertragung"),getFilter());
 
-		ButtonArea buttons = new ButtonArea(parent,2);
+		c.addLabelPair("",getText());
+
+		ButtonArea buttons = new ButtonArea();
 		buttons.addButton(i18n.tr("Übernehmen"),new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -127,14 +132,17 @@ public class AccountContainerDialog extends AbstractDialog
       	
       	close();
       }
-    },null,true);
+    },null,true,"ok.png");
     buttons.addButton(i18n.tr("Abbrechen"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
       	throw new OperationCanceledException();
       }
-    });
+    },null,false,"process-stop.png");
+    c.addButtonArea(buttons);
+
+    getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT));
   }
 
   /**
@@ -309,7 +317,10 @@ public class AccountContainerDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: AccountContainerDialog.java,v $
- * Revision 1.13  2010/07/13 10:55:29  willuhn
+ * Revision 1.14  2011/04/29 11:38:58  willuhn
+ * @N Konfiguration der HBCI-Medien ueberarbeitet. Es gibt nun direkt in der Navi einen Punkt "Bank-Zugaenge", in der alle Medien angezeigt werden.
+ *
+ * Revision 1.13  2010-07-13 10:55:29  willuhn
  * @N Erster Code zum Aendern der Bank-Daten direkt auf der Karte. Muss dringend noch getestet werden - das will ich aber nicht mit meiner Karte machen, weil ich mir schonmal meine Karte mit Tests zerschossen hatte und die aber taeglich brauche ;)
  *
  * Revision 1.12  2009/09/28 13:02:05  willuhn

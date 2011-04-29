@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/View.java,v $
- * $Revision: 1.7 $
- * $Date: 2011/04/08 15:19:15 $
+ * $Revision: 1.8 $
+ * $Date: 2011/04/29 11:38:58 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -15,6 +15,8 @@ import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.parts.ButtonArea;
+import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -32,10 +34,14 @@ public class View extends AbstractView
    */
   public void bind() throws Exception
   {
-    GUI.getView().setTitle(i18n.tr("Vorhandene Konfigurationen"));
+    GUI.getView().setTitle(i18n.tr("Chipkarten-Konfigurationen"));
+
     final Controller control = new Controller(this);
 
-    control.getConfigList().paint(getParent());
+    Container c = new SimpleContainer(getParent());
+    c.addText(i18n.tr("Starten Sie zunächst die automatische Suche nach dem Kartenleser. " +
+    		              "Falls sie nicht erfolgreich verläuft, dann konfigurieren Sie den " +
+    		              "Kartenleser bitte manuell."),true);
     
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Kartenleser suchen..."), new Action()
@@ -44,16 +50,19 @@ public class View extends AbstractView
       {
         control.handleScan();
       }
-    },null,false,"view-refresh.png");
-    buttons.addButton(i18n.tr("Neue Konfiguration anlegen"),new Action()
+    },null,false,"system-search.png");
+    buttons.addButton(i18n.tr("Kartenleser manuell anlegen"),new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
         control.handleCreate();
       }
     },null,false,"document-new.png");
-    
     buttons.paint(getParent());
+    
+    control.getConfigList().paint(getParent());
+    
+    
   }
 }
 
@@ -61,7 +70,10 @@ public class View extends AbstractView
 
 /**********************************************************************
  * $Log: View.java,v $
- * Revision 1.7  2011/04/08 15:19:15  willuhn
+ * Revision 1.8  2011/04/29 11:38:58  willuhn
+ * @N Konfiguration der HBCI-Medien ueberarbeitet. Es gibt nun direkt in der Navi einen Punkt "Bank-Zugaenge", in der alle Medien angezeigt werden.
+ *
+ * Revision 1.7  2011-04-08 15:19:15  willuhn
  * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
  * @C Code-Cleanup
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.96 $
- * $Date: 2010/10/15 15:31:11 $
+ * $Revision: 1.97 $
+ * $Date: 2011/04/29 11:38:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -487,7 +487,7 @@ public class KontoControl extends AbstractControl {
    * @return Tabelle mit Bankverbindungen.
    * @throws RemoteException
    */
-  public Part getKontoListe() throws RemoteException
+  public TablePart getKontoListe() throws RemoteException
 	{
 		if (kontoList != null)
 			return kontoList;
@@ -574,7 +574,12 @@ public class KontoControl extends AbstractControl {
 
 		try 
 		{
-      PassportAuswahlDialog d = new PassportAuswahlDialog(PassportAuswahlDialog.POSITION_CENTER);
+		  // Checken, ob wir ein Konto ausgewaehlt haben
+		  Object selection = getKontoListe().getSelection();
+		  Konto k = null;
+		  if (selection != null && (selection instanceof Konto))
+		    k = (Konto) selection;
+      PassportAuswahlDialog d = new PassportAuswahlDialog(k,PassportAuswahlDialog.POSITION_CENTER);
       Passport p = (Passport) d.open();
 
       new KontoFetchFromPassport().handleAction(p);
@@ -721,7 +726,10 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
- * Revision 1.96  2010/10/15 15:31:11  willuhn
+ * Revision 1.97  2011/04/29 11:38:57  willuhn
+ * @N Konfiguration der HBCI-Medien ueberarbeitet. Es gibt nun direkt in der Navi einen Punkt "Bank-Zugaenge", in der alle Medien angezeigt werden.
+ *
+ * Revision 1.96  2010-10-15 15:31:11  willuhn
  * @B Alphanumerische Zeichen in Unterkonto zulassen. Siehe Mail von Stefan vom 15.10.2010
  *
  * Revision 1.95  2010-09-02 12:25:13  willuhn

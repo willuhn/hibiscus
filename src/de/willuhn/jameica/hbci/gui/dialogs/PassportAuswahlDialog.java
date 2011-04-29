@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/PassportAuswahlDialog.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/08/01 23:27:42 $
- * $Author: web0 $
+ * $Revision: 1.3 $
+ * $Date: 2011/04/29 11:38:58 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -13,17 +13,25 @@
 
 package de.willuhn.jameica.hbci.gui.dialogs;
 
+import java.rmi.RemoteException;
+
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
-import de.willuhn.jameica.gui.util.ButtonArea;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.input.LabelInput;
+import de.willuhn.jameica.gui.parts.ButtonArea;
+import de.willuhn.jameica.gui.util.Color;
+import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.parts.PassportList;
+import de.willuhn.jameica.hbci.gui.input.PassportInput;
 import de.willuhn.jameica.hbci.passport.Passport;
+import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -32,18 +40,36 @@ import de.willuhn.util.I18N;
  */
 public class PassportAuswahlDialog extends AbstractDialog
 {
+  private final static int WINDOW_WIDTH = 400;
 
-  private Passport selected = null;
-  private I18N i18n         = null;
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+
+  private Konto konto         = null;
+  private PassportInput input = null;
+  private Passport passport   = null;
+  private LabelInput comment  = null;
 
   /**
+   * ct.
    * @param position
    */
   public PassportAuswahlDialog(int position)
   {
+    this(null,position);
+  }
+
+  /**
+   * ct.
+   * @param konto Optionale Angabe des Kontos. Ist es angegeben, wird
+   * der Passport des Kontos vorselektiert.
+   * @param position
+   */
+  public PassportAuswahlDialog(Konto konto, int position)
+  {
     super(position);
-    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-    setTitle(i18n.tr("Auswahl des Sicherheitsmediums"));
+    this.konto = konto;
+    this.setTitle(i18n.tr("Auswahl des HBCI-Verfahrens"));
+    this.setSize(WINDOW_WIDTH,SWT.DEFAULT);
   }
 
   /**
@@ -51,38 +77,69 @@ public class PassportAuswahlDialog extends AbstractDialog
    */
   protected void paint(Composite parent) throws Exception
   {
-    LabelGroup group = new LabelGroup(parent,i18n.tr("Sicherheitsmedien"));
-    group.addText(i18n.tr("Bitte wählen Sie das zu verwendende Sicherheitsmedium aus"),false);
+    Container c = new SimpleContainer(parent);
+    c.addText(i18n.tr("Bitte wählen Sie das zu verwendende HBCI-Verfahren aus."),false);
+    c.addInput(this.getInput());
+    c.addInput(this.getComment());
     
-    final PassportList list = new PassportList(new Action() {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        if (context == null || !(context instanceof Passport))
-          return;
-        selected = (Passport) context;
-        close();
-      }
-    });
-    list.paint(parent);
-    
-    ButtonArea buttons = new ButtonArea(parent,2);
+    ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Übernehmen"), new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
-        Object o = list.getSelection();
-        if (o == null || !(o instanceof Passport))
-          return;
-        selected = (Passport) o;
-        close();
+        try
+        {
+          passport = (Passport) getInput().getValue();
+          if (passport == null)
+          {
+            getComment().setValue(i18n.tr("Bitte wählen Sie ein Verfahren aus."));
+            return;
+          }
+          close();
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to choose passport",e);
+          throw new ApplicationException(i18n.tr("Auswahl fehlgeschlagen: {0}",e.getMessage()));
+        }
       }
-    });
+    },null,true,"ok.png");
     buttons.addButton(i18n.tr("Abbrechen"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         throw new OperationCanceledException();
       }
-    });
+    },null,false,"process-stop.png");
     
+    c.addButtonArea(buttons);
+    getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT));
+  }
+  
+  /**
+   * Liefert das Auswahlfeld fuer den Passport.
+   * @return das Auswahlfeld.
+   * @throws RemoteException
+   */
+  private PassportInput getInput() throws RemoteException
+  {
+    if (this.input == null)
+      this.input = new PassportInput(this.konto);
+    return this.input;
+  }
+  
+  /**
+   * Liefert ein Textfeld mit Kommentar/Fehler.
+   * @return Textfeld.
+   * @throws RemoteException
+   */
+  private LabelInput getComment() throws RemoteException
+  {
+    if (this.comment == null)
+    {
+      this.comment = new LabelInput("");
+      this.comment.setName("");
+      this.comment.setColor(Color.ERROR);
+    }
+    return this.comment;
   }
 
   /**
@@ -90,7 +147,7 @@ public class PassportAuswahlDialog extends AbstractDialog
    */
   protected Object getData() throws Exception
   {
-    return selected;
+    return this.passport;
   }
 
 }
@@ -98,6 +155,9 @@ public class PassportAuswahlDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: PassportAuswahlDialog.java,v $
+ * Revision 1.3  2011/04/29 11:38:58  willuhn
+ * @N Konfiguration der HBCI-Medien ueberarbeitet. Es gibt nun direkt in der Navi einen Punkt "Bank-Zugaenge", in der alle Medien angezeigt werden.
+ *
  * Revision 1.2  2005/08/01 23:27:42  web0
  * *** empty log message ***
  *

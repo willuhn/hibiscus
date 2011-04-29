@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoNew.java,v $
- * $Revision: 1.36 $
- * $Date: 2011/04/08 15:19:14 $
+ * $Revision: 1.37 $
+ * $Date: 2011/04/29 11:38:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -88,11 +88,11 @@ public class KontoNew extends AbstractView
       left.addLabelPair(i18n.tr("Verfügbarer Betrag"),avail);
 
     left.addHeadline(i18n.tr("HBCI-Konfiguration"));
+    left.addLabelPair(i18n.tr("Verfahren"),                control.getPassportAuswahl());
     left.addLabelPair(i18n.tr("Kundennummer"),             control.getKundennummer());
 		left.addLabelPair(i18n.tr("Kontonummer"),              control.getKontonummer());
 		left.addLabelPair(i18n.tr("Unterkontonummer"),         control.getUnterkonto());
 		left.addLabelPair(i18n.tr("Bankleitzahl"),             control.getBlz());
-		left.addLabelPair(i18n.tr("Sicherheitsmedium"),        control.getPassportAuswahl());
 
     SimpleContainer right = new SimpleContainer(columns.getComposite(),true);
     right.addHeadline(i18n.tr("IBAN/BIC"));
@@ -180,7 +180,10 @@ public class KontoNew extends AbstractView
 
 /**********************************************************************
  * $Log: KontoNew.java,v $
- * Revision 1.36  2011/04/08 15:19:14  willuhn
+ * Revision 1.37  2011/04/29 11:38:57  willuhn
+ * @N Konfiguration der HBCI-Medien ueberarbeitet. Es gibt nun direkt in der Navi einen Punkt "Bank-Zugaenge", in der alle Medien angezeigt werden.
+ *
+ * Revision 1.36  2011-04-08 15:19:14  willuhn
  * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
  * @C Code-Cleanup
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/Controller.java,v $
- * $Revision: 1.4 $
- * $Date: 2011/04/28 07:34:43 $
+ * $Revision: 1.5 $
+ * $Date: 2011/04/29 11:38:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -342,9 +342,8 @@ public class Controller extends AbstractControl {
         try
         {
           String q = i18n.tr("Wollen Sie diesen Schlüssel wirklich löschen?\n" +
-                             "Hierbei wird nur die Verknüpfung aus Hibiscus\n" +
-                             "entfernt. Die Schlüsseldatei selbst bleibt erhalten.\n" +
-                             "Alternativ können Sie den Schlüssel auch deaktivieren.");
+                             "Hierbei wird nur die Verknüpfung aus Hibiscus " +
+                             "entfernt. Die Schlüsseldatei selbst bleibt erhalten.");
         
           if (!Application.getCallback().askUser(q))
             return;
@@ -760,7 +759,10 @@ public class Controller extends AbstractControl {
 
 /**********************************************************************
  * $Log: Controller.java,v $
- * Revision 1.4  2011/04/28 07:34:43  willuhn
+ * Revision 1.5  2011/04/29 11:38:57  willuhn
+ * @N Konfiguration der HBCI-Medien ueberarbeitet. Es gibt nun direkt in der Navi einen Punkt "Bank-Zugaenge", in der alle Medien angezeigt werden.
+ *
+ * Revision 1.4  2011-04-28 07:34:43  willuhn
  * @R Summen-Zeile nicht mehr anzeigen - unnuetz
  *
  * Revision 1.3  2010-09-29 23:43:34  willuhn
