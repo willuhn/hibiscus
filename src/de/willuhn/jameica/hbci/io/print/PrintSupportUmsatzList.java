@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/print/PrintSupportUmsatzList.java,v $
- * $Revision: 1.3 $
- * $Date: 2011/04/14 08:43:43 $
+ * $Revision: 1.4 $
+ * $Date: 2011/04/29 07:44:56 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -176,7 +176,7 @@ public class PrintSupportUmsatzList extends AbstractPrintSupport
 
           table.add(new TextPrint(HBCI.DATEFORMAT.format(u.getValuta()) + "\n" + HBCI.DATEFORMAT.format(u.getDatum()),fontTiny));
           table.add(new TextPrint(sb.toString(),fontTiny));
-          table.add(new TextPrint(usage,fontTiny));
+          table.add(new TextPrint(notNull(usage),fontTiny));
           table.add(new NoBreakPrint(new TextPrint(HBCI.DECIMALFORMAT.format(u.getBetrag()) + " " + k.getWaehrung(),u.getBetrag() >= 0 ? typeHaben : typeSoll)));
           table.add(new NoBreakPrint(new TextPrint(HBCI.DECIMALFORMAT.format(u.getSaldo()) + " " + k.getWaehrung(),fontTiny)));
         }
@@ -205,7 +205,10 @@ public class PrintSupportUmsatzList extends AbstractPrintSupport
 
 /**********************************************************************
  * $Log: PrintSupportUmsatzList.java,v $
- * Revision 1.3  2011/04/14 08:43:43  willuhn
+ * Revision 1.4  2011/04/29 07:44:56  willuhn
+ * @B Siehe http://www.willuhn.de/blog/index.php?/archives/553-Hibiscus-Druck-Support.html#c1293
+ *
+ * Revision 1.3  2011-04-14 08:43:43  willuhn
  * *** empty log message ***
  *
  * Revision 1.2  2011-04-14 08:42:53  willuhn
