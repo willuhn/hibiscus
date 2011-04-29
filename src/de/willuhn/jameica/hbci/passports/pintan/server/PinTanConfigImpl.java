@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/server/PinTanConfigImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2010/07/22 12:04:38 $
+ * $Revision: 1.5 $
+ * $Date: 2011/04/29 09:17:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,7 +11,6 @@ package de.willuhn.jameica.hbci.passports.pintan.server;
 
 import java.io.File;
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,6 +21,7 @@ import org.kapott.hbci.passport.HBCIPassport;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.passports.pintan.Detail;
 import de.willuhn.jameica.hbci.passports.pintan.PinTanConfigFactory;
 import de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -36,7 +36,7 @@ import de.willuhn.util.I18N;
  * Implementierung eines in Hibiscus existierenden RDH-Schluessels.
  * @author willuhn
  */
-public class PinTanConfigImpl extends UnicastRemoteObject implements PinTanConfig
+public class PinTanConfigImpl implements PinTanConfig
 {
 
   private final static Settings settings = new Settings(PinTanConfig.class);
@@ -53,7 +53,6 @@ public class PinTanConfigImpl extends UnicastRemoteObject implements PinTanConfi
    */
   public PinTanConfigImpl(HBCIPassport passport, File file) throws RemoteException
   {
-    super();
     this.passport = passport;
     this.file = file;
   }
@@ -88,6 +87,49 @@ public class PinTanConfigImpl extends UnicastRemoteObject implements PinTanConfi
     if ("secmech".equals(attribute))
       return getSecMech();
     return null;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.passport.Configuration#getDescription()
+   */
+  public String getDescription()
+  {
+    try
+    {
+      String name = this.getBezeichnung();
+      String bank = HBCIUtils.getNameForBLZ(getBLZ());
+      String url  = this.getURL();
+
+      boolean haveName = (name != null && name.trim().length() > 0);
+      boolean haveBank = (bank != null && bank.length() > 0);
+      
+      // wenn wir weder Name noch Bank haben, nehmen wir die URL
+      if (!haveBank && !haveName)
+        return url;
+      
+      // wenn wir Name und Bank haben, nehmen wir beides
+      if (haveBank && haveName)
+        return name + " - " + bank;
+
+      // Ansonsten das, was da ist
+      if (haveName)
+        return name;
+      
+      return bank;
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to determine name",e);
+      return passport.getHost();
+    }
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.passport.Configuration#getConfigDialog()
+   */
+  public Class getConfigDialog() throws RemoteException
+  {
+    return Detail.class;
   }
 
   /**
@@ -478,7 +520,11 @@ public class PinTanConfigImpl extends UnicastRemoteObject implements PinTanConfi
 
 /*****************************************************************************
  * $Log: PinTanConfigImpl.java,v $
- * Revision 1.4  2010/07/22 12:04:38  willuhn
+ * Revision 1.5  2011/04/29 09:17:35  willuhn
+ * @N Neues Standard-Interface "Configuration" fuer eine gemeinsame API ueber alle Arten von HBCI-Konfigurationen
+ * @R Passports sind keine UnicastRemote-Objekte mehr
+ *
+ * Revision 1.4  2010-07-22 12:04:38  willuhn
  * @C Nicht mehr gueltige Konto-Zuordnungen automatisch loeschen
  *
  * Revision 1.3  2010-07-22 11:39:27  willuhn

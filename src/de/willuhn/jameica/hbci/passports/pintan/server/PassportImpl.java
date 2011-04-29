@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/server/PassportImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/06/17 11:38:16 $
+ * $Revision: 1.2 $
+ * $Date: 2011/04/29 09:17:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,9 +14,12 @@ package de.willuhn.jameica.hbci.passports.pintan.server;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.List;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.passport.Configuration;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.hbci.passports.pintan.PinTanConfigFactory;
 import de.willuhn.jameica.hbci.passports.pintan.View;
@@ -58,6 +61,18 @@ public class PassportImpl extends UnicastRemoteObject implements Passport
   }
 
   /**
+   * @see de.willuhn.jameica.hbci.passport.Passport#getConfigurations()
+   */
+  public List<? extends Configuration> getConfigurations() throws RemoteException
+  {
+    GenericIterator i = PinTanConfigFactory.getConfigs();
+    List<Configuration> configs = new ArrayList<Configuration>();
+    while (i.hasNext())
+      configs.add((Configuration) i.next());
+    return configs;
+  }
+
+  /**
    * @see de.willuhn.jameica.hbci.passport.Passport#getConfigDialog()
    */
   public Class getConfigDialog() throws RemoteException {
@@ -93,6 +108,10 @@ public class PassportImpl extends UnicastRemoteObject implements Passport
 
 /**********************************************************************
  * $Log: PassportImpl.java,v $
+ * Revision 1.2  2011/04/29 09:17:35  willuhn
+ * @N Neues Standard-Interface "Configuration" fuer eine gemeinsame API ueber alle Arten von HBCI-Konfigurationen
+ * @R Passports sind keine UnicastRemote-Objekte mehr
+ *
  * Revision 1.1  2010/06/17 11:38:16  willuhn
  * @C kompletten Code aus "hbci_passport_pintan" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
  *

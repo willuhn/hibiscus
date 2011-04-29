@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/server/PassportImpl.java,v $
- * $Revision: 1.7 $
- * $Date: 2010/09/07 15:28:05 $
+ * $Revision: 1.8 $
+ * $Date: 2011/04/29 09:17:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.passport.Configuration;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.hbci.passports.ddv.DDVConfig;
 import de.willuhn.jameica.hbci.passports.ddv.DDVConfigFactory;
@@ -73,6 +74,14 @@ public class PassportImpl extends UnicastRemoteObject implements Passport
   }
 
   /**
+   * @see de.willuhn.jameica.hbci.passport.Passport#getConfigurations()
+   */
+  public List<? extends Configuration> getConfigurations() throws RemoteException
+  {
+    return DDVConfigFactory.getConfigs();
+  }
+
+  /**
    * @see de.willuhn.jameica.hbci.passport.Passport#getConfigDialog()
    */
   public Class getConfigDialog() throws RemoteException {
@@ -91,7 +100,11 @@ public class PassportImpl extends UnicastRemoteObject implements Passport
 
 /**********************************************************************
  * $Log: PassportImpl.java,v $
- * Revision 1.7  2010/09/07 15:28:05  willuhn
+ * Revision 1.8  2011/04/29 09:17:35  willuhn
+ * @N Neues Standard-Interface "Configuration" fuer eine gemeinsame API ueber alle Arten von HBCI-Konfigurationen
+ * @R Passports sind keine UnicastRemote-Objekte mehr
+ *
+ * Revision 1.7  2010-09-07 15:28:05  willuhn
  * @N BUGZILLA 391 - Kartenleser-Konfiguration komplett umgebaut. Damit lassen sich jetzt beliebig viele Kartenleser und Konfigurationen parellel einrichten
  *
  * Revision 1.6  2010-07-22 22:36:24  willuhn

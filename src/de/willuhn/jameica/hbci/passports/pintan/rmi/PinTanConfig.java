@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/rmi/PinTanConfig.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/06/17 11:38:16 $
+ * $Revision: 1.2 $
+ * $Date: 2011/04/29 09:17:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ import java.util.Date;
 import org.kapott.hbci.passport.HBCIPassport;
 
 import de.willuhn.datasource.GenericObject;
+import de.willuhn.jameica.hbci.passport.Configuration;
 import de.willuhn.jameica.hbci.rmi.Konto;
 
 /**
@@ -22,7 +23,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
  * spezifische Bank.
  * @author willuhn
  */
-public interface PinTanConfig extends GenericObject
+public interface PinTanConfig extends GenericObject, Configuration
 {
 
   /**
@@ -244,7 +245,11 @@ public interface PinTanConfig extends GenericObject
 
 /*****************************************************************************
  * $Log: PinTanConfig.java,v $
- * Revision 1.1  2010/06/17 11:38:16  willuhn
+ * Revision 1.2  2011/04/29 09:17:35  willuhn
+ * @N Neues Standard-Interface "Configuration" fuer eine gemeinsame API ueber alle Arten von HBCI-Konfigurationen
+ * @R Passports sind keine UnicastRemote-Objekte mehr
+ *
+ * Revision 1.1  2010-06-17 11:38:16  willuhn
  * @C kompletten Code aus "hbci_passport_pintan" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
  *
  * Revision 1.14  2007/08/31 09:43:55  willuhn

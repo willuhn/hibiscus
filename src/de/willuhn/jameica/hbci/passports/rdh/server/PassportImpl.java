@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/server/PassportImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/06/17 11:26:48 $
+ * $Revision: 1.2 $
+ * $Date: 2011/04/29 09:17:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,9 +11,12 @@ package de.willuhn.jameica.hbci.passports.rdh.server;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.List;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.passport.Configuration;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.hbci.passports.rdh.RDHKeyFactory;
 import de.willuhn.jameica.hbci.passports.rdh.View;
@@ -59,6 +62,18 @@ public class PassportImpl extends UnicastRemoteObject implements Passport
   }
 
   /**
+   * @see de.willuhn.jameica.hbci.passport.Passport#getConfigurations()
+   */
+  public List<? extends Configuration> getConfigurations() throws RemoteException
+  {
+    GenericIterator i = RDHKeyFactory.getKeys();
+    List<Configuration> configs = new ArrayList<Configuration>();
+    while (i.hasNext())
+      configs.add((Configuration) i.next());
+    return configs;
+  }
+
+  /**
    * @see de.willuhn.jameica.hbci.passport.Passport#getHandle()
    */
   public PassportHandle getHandle() throws RemoteException
@@ -94,6 +109,10 @@ public class PassportImpl extends UnicastRemoteObject implements Passport
 
 /*****************************************************************************
  * $Log: PassportImpl.java,v $
+ * Revision 1.2  2011/04/29 09:17:34  willuhn
+ * @N Neues Standard-Interface "Configuration" fuer eine gemeinsame API ueber alle Arten von HBCI-Konfigurationen
+ * @R Passports sind keine UnicastRemote-Objekte mehr
+ *
  * Revision 1.1  2010/06/17 11:26:48  willuhn
  * @B In HBCICallbackSWT wurden die RDH-Passports nicht korrekt ausgefiltert
  * @C komplettes Projekt "hbci_passport_rdh" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren

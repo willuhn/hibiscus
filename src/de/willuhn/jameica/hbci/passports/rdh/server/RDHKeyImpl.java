@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/server/RDHKeyImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/06/17 11:26:48 $
+ * $Revision: 1.2 $
+ * $Date: 2011/04/29 09:17:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,7 +11,6 @@ package de.willuhn.jameica.hbci.passports.rdh.server;
 
 import java.io.File;
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
 import org.kapott.hbci.passport.HBCIPassport;
@@ -19,6 +18,7 @@ import org.kapott.hbci.passport.HBCIPassport;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.passports.rdh.Detail;
 import de.willuhn.jameica.hbci.passports.rdh.keyformat.HBCI4JavaFormat;
 import de.willuhn.jameica.hbci.passports.rdh.keyformat.KeyFormat;
 import de.willuhn.jameica.hbci.passports.rdh.keyformat.SizRdhDirectFormat;
@@ -35,7 +35,7 @@ import de.willuhn.util.MultipleClassLoader;
  * Implementierung eines in Hibiscus existierenden RDH-Schluessels.
  * @author willuhn
  */
-public class RDHKeyImpl extends UnicastRemoteObject implements RDHKey
+public class RDHKeyImpl implements RDHKey
 {
 
   private File file = null;
@@ -48,7 +48,6 @@ public class RDHKeyImpl extends UnicastRemoteObject implements RDHKey
    */
   public RDHKeyImpl(File file) throws RemoteException
   {
-    super();
     this.file = file;
   }
 
@@ -66,6 +65,33 @@ public class RDHKeyImpl extends UnicastRemoteObject implements RDHKey
     if ("format".equals(attribute))
       return getFormat().getName();
     return null;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.passport.Configuration#getDescription()
+   */
+  public String getDescription()
+  {
+    try
+    {
+      String name = this.getAlias();
+      if (name != null && name.length() > 0)
+        return name;
+      return this.getFilename();
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to determine name",e);
+      return file.getAbsolutePath();
+    }
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.passport.Configuration#getConfigDialog()
+   */
+  public Class getConfigDialog() throws RemoteException
+  {
+    return Detail.class;
   }
 
   /**
@@ -294,6 +320,10 @@ public class RDHKeyImpl extends UnicastRemoteObject implements RDHKey
 
 /*****************************************************************************
  * $Log: RDHKeyImpl.java,v $
+ * Revision 1.2  2011/04/29 09:17:34  willuhn
+ * @N Neues Standard-Interface "Configuration" fuer eine gemeinsame API ueber alle Arten von HBCI-Konfigurationen
+ * @R Passports sind keine UnicastRemote-Objekte mehr
+ *
  * Revision 1.1  2010/06/17 11:26:48  willuhn
  * @B In HBCICallbackSWT wurden die RDH-Passports nicht korrekt ausgefiltert
  * @C komplettes Projekt "hbci_passport_rdh" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren

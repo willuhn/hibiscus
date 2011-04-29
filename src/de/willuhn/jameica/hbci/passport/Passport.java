@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passport/Passport.java,v $
- * $Revision: 1.6 $
- * $Date: 2010/04/22 12:42:03 $
+ * $Revision: 1.7 $
+ * $Date: 2011/04/29 09:17:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@ package de.willuhn.jameica.hbci.passport;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.List;
 
 import de.willuhn.jameica.hbci.rmi.Konto;
 
@@ -82,11 +83,22 @@ public interface Passport extends Remote {
    * @throws RemoteException
    */
   public Class getConfigDialog() throws RemoteException;
+  
+  /**
+   * Liefert die Liste der Konfigurationen.
+   * @return die Liste der Konfigurationen.
+   * @throws RemoteException
+   */
+  public List<? extends Configuration> getConfigurations() throws RemoteException;
 }
 
 
 /**********************************************************************
  * $Log: Passport.java,v $
+ * Revision 1.7  2011/04/29 09:17:35  willuhn
+ * @N Neues Standard-Interface "Configuration" fuer eine gemeinsame API ueber alle Arten von HBCI-Konfigurationen
+ * @R Passports sind keine UnicastRemote-Objekte mehr
+ *
  * Revision 1.6  2010/04/22 12:42:03  willuhn
  * @N Erste Version des Supports fuer Offline-Konten
  *
@@ -95,43 +107,4 @@ public interface Passport extends Remote {
  *
  * Revision 1.4  2010/04/14 16:51:11  willuhn
  * @N BUGZILLA 471
- *
- * Revision 1.3  2005/02/20 19:04:44  web0
- * @B Bug 7
- *
- * Revision 1.2  2005/02/06 17:46:17  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2004/05/05 22:14:47  willuhn
- * *** empty log message ***
- *
- * Revision 1.9  2004/05/04 23:08:12  willuhn
- * *** empty log message ***
- *
- * Revision 1.8  2004/05/04 23:07:23  willuhn
- * @C refactored Passport stuff
- *
- * Revision 1.7  2004/04/19 22:05:52  willuhn
- * @C HBCIJobs refactored
- *
- * Revision 1.6  2004/02/27 01:10:18  willuhn
- * @N passport config refactored
- *
- * Revision 1.5  2004/02/25 23:11:46  willuhn
- * *** empty log message ***
- *
- * Revision 1.4  2004/02/17 00:53:22  willuhn
- * @N SaldoAbfrage
- * @N Ueberweisung
- * @N Empfaenger
- *
- * Revision 1.3  2004/02/12 23:46:46  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2004/02/12 00:38:40  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2004/02/11 00:11:20  willuhn
- * *** empty log message ***
- *
  **********************************************************************/
