@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/TurnusDialog.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/06/27 15:35:27 $
- * $Author: web0 $
+ * $Revision: 1.6 $
+ * $Date: 2011/04/29 12:29:53 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -18,10 +18,12 @@ import org.eclipse.swt.widgets.TableItem;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.gui.parts.TablePart;
-import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Turnus;
@@ -33,9 +35,9 @@ import de.willuhn.util.I18N;
 /**
  * Ein Dialog, welcher eine Liste der vorhandenen Turnus-Elemente anzeigt.
  */
-public class TurnusDialog extends AbstractDialog {
-
-	private I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+public class TurnusDialog extends AbstractDialog
+{
+	private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   private TablePart turnusList = null;
   private Turnus turnus = null;
@@ -54,9 +56,6 @@ public class TurnusDialog extends AbstractDialog {
    */
 	protected void paint(Composite parent) throws Exception
 	{
-
-		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
     // Erzeugen der Liste mit den existierenden Elementen
     turnusList = new TablePart(Settings.getDBService().createList(Turnus.class), new Action()
     {
@@ -183,17 +182,19 @@ public class TurnusDialog extends AbstractDialog {
     });
    
     turnusList.setContextMenu(c);
-    turnusList.paint(parent);
+    
+    Container container = new SimpleContainer(parent);
+    container.addPart(turnusList);
 
 		// und noch die Abschicken-Knoepfe
-		ButtonArea buttonArea = new ButtonArea(parent,3);
+		ButtonArea buttonArea = new ButtonArea();
 		buttonArea.addButton(i18n.tr("Neu"), new Action()
 		{
 			public void handleAction(Object context) throws ApplicationException
 			{
         handleEdit(null);
 			}
-		},null);
+		},null,false,"document-new.png");
 		buttonArea.addButton(i18n.tr("Übernehmen"), new Action()
 		{
 			public void handleAction(Object context) throws ApplicationException
@@ -210,7 +211,7 @@ public class TurnusDialog extends AbstractDialog {
         // und Dialog schliessen
 				close();
 			}
-		},null,true);
+		},null,true,"ok.png");
 		buttonArea.addButton(i18n.tr("Abbrechen"), new Action()
 		{
 			public void handleAction(Object context) throws ApplicationException
@@ -221,8 +222,9 @@ public class TurnusDialog extends AbstractDialog {
         // und schliessen
 				close();
 			}
-		});
-
+		},null,false,"process-stop.png");
+		
+		container.addButtonArea(buttonArea);
   }
 
   private void handleEdit(Turnus t)
@@ -271,27 +273,7 @@ public class TurnusDialog extends AbstractDialog {
 
 /**********************************************************************
  * $Log: TurnusDialog.java,v $
- * Revision 1.5  2005/06/27 15:35:27  web0
- * @B bug 84
+ * Revision 1.6  2011/04/29 12:29:53  willuhn
+ * @N GUI-Polish
  *
- * Revision 1.4  2005/06/07 16:30:02  web0
- * @B Turnus-Dialog "geradegezogen" und ergonomischer gestaltet
- *
- * Revision 1.3  2005/03/06 16:06:10  web0
- * *** empty log message ***
- *
- * Revision 1.2  2004/11/26 01:23:13  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2004/11/26 00:04:08  willuhn
- * @N TurnusDetail
- *
- * Revision 1.3  2004/11/18 23:46:21  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2004/11/15 00:38:30  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2004/11/13 17:12:15  willuhn
- * *** empty log message ***
  **********************************************************************/
