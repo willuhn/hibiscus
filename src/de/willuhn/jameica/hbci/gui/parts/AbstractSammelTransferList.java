@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractSammelTransferList.java,v $
- * $Revision: 1.14 $
- * $Date: 2011/01/20 17:13:21 $
+ * $Revision: 1.15 $
+ * $Date: 2011/04/29 15:33:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -33,6 +33,7 @@ import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.parts.columns.AusgefuehrtColumn;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.messaging.ObjectMessage;
@@ -106,16 +107,8 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
     addColumn(i18n.tr("Anzahl Buchungen"),"anzahl");
     addColumn(i18n.tr("Summe"),"summe", new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
     addColumn(i18n.tr("Termin"),"termin", new DateFormatter(HBCI.DATEFORMAT));
-    addColumn(i18n.tr("Status"),"ausgefuehrt",new Formatter() {
-      public String format(Object o) {
-        try {
-          int i = ((Integer) o).intValue();
-          return i == 1 ? i18n.tr("ausgeführt") : i18n.tr("offen");
-        }
-        catch (Exception e) {}
-        return ""+o;
-      }
-    });
+    addColumn(new AusgefuehrtColumn());
+    
     // Wir erstellen noch einen Message-Consumer, damit wir ueber neu eintreffende
     // Lastschriften informiert werden.
     this.mc = new TransferMessageConsumer();
@@ -224,7 +217,10 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
 
 /**********************************************************************
  * $Log: AbstractSammelTransferList.java,v $
- * Revision 1.14  2011/01/20 17:13:21  willuhn
+ * Revision 1.15  2011/04/29 15:33:28  willuhn
+ * @N Neue Spalte "ausgefuehrt_am", in der das tatsaechliche Ausfuehrungsdatum von Auftraegen vermerkt wird
+ *
+ * Revision 1.14  2011-01-20 17:13:21  willuhn
  * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
  *
  * Revision 1.13  2010-11-01 23:00:32  willuhn

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractBaseUeberweisungImpl.java,v $
- * $Revision: 1.14 $
- * $Date: 2009/05/12 22:53:33 $
+ * $Revision: 1.15 $
+ * $Date: 2011/04/29 15:33:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -83,6 +83,14 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractHibiscusTrans
   }
 
   /**
+   * @see de.willuhn.jameica.hbci.rmi.Terminable#getAusfuehrungsdatum()
+   */
+  public Date getAusfuehrungsdatum() throws RemoteException
+  {
+    return (Date) getAttribute("ausgefuehrt_am");
+  }
+
+  /**
    * @see de.willuhn.jameica.hbci.rmi.Terminable#ausgefuehrt()
    */
   public boolean ausgefuehrt() throws RemoteException {
@@ -124,6 +132,7 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractHibiscusTrans
     {
       whileStore = true;
       setAttribute("ausgefuehrt",new Integer(b ? 1 : 0));
+      setAttribute("ausgefuehrt_am",new Date());
       store();
       Logger.info("[" + getTableName() + ":" + getID() + "] (" + BeanUtil.toString(this) + ") - executed: " + b);
     }
@@ -153,6 +162,9 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractHibiscusTrans
 
 /**********************************************************************
  * $Log: AbstractBaseUeberweisungImpl.java,v $
+ * Revision 1.15  2011/04/29 15:33:28  willuhn
+ * @N Neue Spalte "ausgefuehrt_am", in der das tatsaechliche Ausfuehrungsdatum von Auftraegen vermerkt wird
+ *
  * Revision 1.14  2009/05/12 22:53:33  willuhn
  * @N BUGZILLA 189 - Ueberweisung als Umbuchung
  *

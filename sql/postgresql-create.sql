@@ -43,7 +43,8 @@ CREATE TABLE ueberweisung (
   banktermin integer NULL,
   ausgefuehrt integer NOT NULL,
   typ varchar(2) NULL,
-  umbuchung int(1) NULL
+  umbuchung int(1) NULL,
+  ausgefuehrt_am timestamp
 );
 
 CREATE TABLE aueberweisung (
@@ -55,7 +56,8 @@ CREATE TABLE aueberweisung (
   betrag float NOT NULL,
   zweck varchar(140),
   termin date NOT NULL,
-  ausgefuehrt integer NOT NULL
+  ausgefuehrt integer NOT NULL,
+  ausgefuehrt_am timestamp
 );
 
 
@@ -140,7 +142,8 @@ CREATE TABLE lastschrift (
   zweck3 varchar(1000),
   termin date NOT NULL,
   ausgefuehrt integer NOT NULL,
-  typ varchar(2) NULL
+  typ varchar(2) NULL,
+  ausgefuehrt_am timestamp
 );
 
 CREATE TABLE slastschrift (
@@ -148,7 +151,8 @@ CREATE TABLE slastschrift (
   konto_id integer NOT NULL,
   bezeichnung varchar(255) NOT NULL,
   termin date NOT NULL,
-  ausgefuehrt integer NOT NULL
+  ausgefuehrt integer NOT NULL,
+  ausgefuehrt_am timestamp
 );
 
 CREATE TABLE slastbuchung (
@@ -169,7 +173,8 @@ CREATE TABLE sueberweisung (
   konto_id integer NOT NULL,
   bezeichnung varchar(255) NOT NULL,
   termin date NOT NULL,
-  ausgefuehrt integer NOT NULL
+  ausgefuehrt integer NOT NULL,
+  ausgefuehrt_am timestamp
 );
 
 CREATE TABLE sueberweisungbuchung (
@@ -253,4 +258,4 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',31);
+INSERT INTO version (name,version) values ('db',32);

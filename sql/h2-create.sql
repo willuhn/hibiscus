@@ -48,6 +48,7 @@ CREATE TABLE ueberweisung (
   umbuchung int(1) NULL,
   ausgefuehrt int(1) NOT NULL,
   typ varchar(2) NULL,
+  ausgefuehrt_am datetime NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );
@@ -62,6 +63,7 @@ CREATE TABLE aueberweisung (
   zweck varchar(140),
   termin date NOT NULL,
   ausgefuehrt int(1) NOT NULL,
+  ausgefuehrt_am datetime NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );
@@ -158,6 +160,7 @@ CREATE TABLE lastschrift (
   termin date NOT NULL,
   ausgefuehrt int(1) NOT NULL,
   typ varchar(2) NULL,
+  ausgefuehrt_am datetime NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );
@@ -168,6 +171,7 @@ CREATE TABLE slastschrift (
   bezeichnung varchar(255) NOT NULL,
   termin date NOT NULL,
   ausgefuehrt int(1) NOT NULL,
+  ausgefuehrt_am datetime NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );
@@ -193,6 +197,7 @@ CREATE TABLE sueberweisung (
   bezeichnung varchar(255) NOT NULL,
   termin date NOT NULL,
   ausgefuehrt int(1) NOT NULL,
+  ausgefuehrt_am datetime NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );
@@ -292,6 +297,6 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',31);
+INSERT INTO version (name,version) values ('db',32);
   
 COMMIT;

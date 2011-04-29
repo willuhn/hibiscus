@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractTransferList.java,v $
- * $Revision: 1.26 $
- * $Date: 2011/01/20 17:13:21 $
+ * $Revision: 1.27 $
+ * $Date: 2011/04/29 15:33:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -93,13 +93,13 @@ public abstract class AbstractTransferList extends AbstractFromToList
    */
   protected void initColums()
   {
-    addColumn(new KontoColumn("konto_id"));
+    addColumn(new KontoColumn());
     addColumn(i18n.tr("Gegenkonto Inhaber"),"empfaenger_name");
-    addColumn(new BlzColumn("empfaenger_blz"));
+    addColumn(new BlzColumn("empfaenger_blz",i18n.tr("Gegenkonto BLZ")));
     addColumn(i18n.tr("Verwendungszweck"),"zweck");
     addColumn(i18n.tr("Betrag"),"betrag", new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
     addColumn(i18n.tr("Termin"),"termin", new DateFormatter(HBCI.DATEFORMAT));
-    addColumn(new AusgefuehrtColumn("ausgefuehrt"));
+    addColumn(new AusgefuehrtColumn());
   }
 
   
@@ -204,7 +204,10 @@ public abstract class AbstractTransferList extends AbstractFromToList
 
 /**********************************************************************
  * $Log: AbstractTransferList.java,v $
- * Revision 1.26  2011/01/20 17:13:21  willuhn
+ * Revision 1.27  2011/04/29 15:33:28  willuhn
+ * @N Neue Spalte "ausgefuehrt_am", in der das tatsaechliche Ausfuehrungsdatum von Auftraegen vermerkt wird
+ *
+ * Revision 1.26  2011-01-20 17:13:21  willuhn
  * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
  *
  * Revision 1.25  2010-08-16 11:13:52  willuhn

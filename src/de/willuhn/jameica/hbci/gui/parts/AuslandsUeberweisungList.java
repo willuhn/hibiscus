@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AuslandsUeberweisungList.java,v $
- * $Revision: 1.3 $
- * $Date: 2010/08/16 11:13:52 $
+ * $Revision: 1.4 $
+ * $Date: 2011/04/29 15:33:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -47,14 +47,14 @@ public class AuslandsUeberweisungList extends AbstractTransferList
    */
   protected void initColums()
   {
-    addColumn(new KontoColumn("konto_id"));
+    addColumn(new KontoColumn());
     addColumn(i18n.tr("Gegenkonto Inhaber"),"empfaenger_name");
     addColumn(i18n.tr("Gegenkonto IBAN"),"empfaenger_konto");
     addColumn(i18n.tr("Gegenkonto BIC"),"empfaenger_bic");
     addColumn(i18n.tr("Verwendungszweck"),"zweck");
     addColumn(i18n.tr("Betrag"),"betrag", new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
     addColumn(i18n.tr("Termin"),"termin", new DateFormatter(HBCI.DATEFORMAT));
-    addColumn(new AusgefuehrtColumn("ausgefuehrt"));
+    addColumn(new AusgefuehrtColumn());
   }
 
   /**
@@ -83,7 +83,10 @@ public class AuslandsUeberweisungList extends AbstractTransferList
 
 /**********************************************************************
  * $Log: AuslandsUeberweisungList.java,v $
- * Revision 1.3  2010/08/16 11:13:52  willuhn
+ * Revision 1.4  2011/04/29 15:33:28  willuhn
+ * @N Neue Spalte "ausgefuehrt_am", in der das tatsaechliche Ausfuehrungsdatum von Auftraegen vermerkt wird
+ *
+ * Revision 1.3  2010-08-16 11:13:52  willuhn
  * @N In den Auftragslisten kann jetzt auch nach einem Text gesucht werden
  *
  * Revision 1.2  2009/10/20 23:12:58  willuhn

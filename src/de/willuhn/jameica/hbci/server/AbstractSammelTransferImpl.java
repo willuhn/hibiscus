@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractSammelTransferImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2010/11/21 23:55:47 $
+ * $Revision: 1.7 $
+ * $Date: 2011/04/29 15:33:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -139,6 +139,14 @@ public abstract class AbstractSammelTransferImpl extends AbstractDBObject implem
   }
 
   /**
+   * @see de.willuhn.jameica.hbci.rmi.Terminable#getAusfuehrungsdatum()
+   */
+  public Date getAusfuehrungsdatum() throws RemoteException
+  {
+    return (Date) getAttribute("ausgefuehrt_am");
+  }
+
+  /**
    * @see de.willuhn.jameica.hbci.rmi.Terminable#ausgefuehrt()
    */
   public boolean ausgefuehrt() throws RemoteException
@@ -162,6 +170,7 @@ public abstract class AbstractSammelTransferImpl extends AbstractDBObject implem
     {
       whileStore = true;
       setAttribute("ausgefuehrt",new Integer(b ? 1 : 0));
+      setAttribute("ausgefuehrt_am",new Date());
       store();
       Logger.info("[" + getTableName() + ":" + getID() + "] (" + BeanUtil.toString(this) + ") - executed: " + b);
     }
@@ -391,7 +400,10 @@ public abstract class AbstractSammelTransferImpl extends AbstractDBObject implem
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferImpl.java,v $
- * Revision 1.6  2010/11/21 23:55:47  willuhn
+ * Revision 1.7  2011/04/29 15:33:28  willuhn
+ * @N Neue Spalte "ausgefuehrt_am", in der das tatsaechliche Ausfuehrungsdatum von Auftraegen vermerkt wird
+ *
+ * Revision 1.6  2010-11-21 23:55:47  willuhn
  * @C Uebernahme des Termins beim Duplizieren war nicht konsistent. Jetzt wird er nur noch bei Bank-gefuehrten Termin-Ueberweisungen uebernommen
  *
  * Revision 1.5  2009/02/18 10:48:42  willuhn

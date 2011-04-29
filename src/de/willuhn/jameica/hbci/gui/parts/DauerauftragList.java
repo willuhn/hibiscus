@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/DauerauftragList.java,v $
- * $Revision: 1.6 $
- * $Date: 2009/02/17 00:00:02 $
+ * $Revision: 1.7 $
+ * $Date: 2011/04/29 15:33:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -71,9 +71,9 @@ public class DauerauftragList extends TablePart implements Part
         }
       }
     });
-    addColumn(new KontoColumn("konto_id"));
+    addColumn(new KontoColumn());
     addColumn(i18n.tr("Gegenkonto Inhaber"),"empfaenger_name");
-    addColumn(new BlzColumn("empfaenger_blz"));
+    addColumn(new BlzColumn("empfaenger_blz",i18n.tr("Gegenkonto BLZ")));
     addColumn(i18n.tr("Verwendungszweck"),"zweck");
     addColumn(i18n.tr("Betrag"),"betrag", new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
     addColumn(i18n.tr("Turnus"),"turnus_id");
@@ -105,6 +105,9 @@ public class DauerauftragList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: DauerauftragList.java,v $
+ * Revision 1.7  2011/04/29 15:33:28  willuhn
+ * @N Neue Spalte "ausgefuehrt_am", in der das tatsaechliche Ausfuehrungsdatum von Auftraegen vermerkt wird
+ *
  * Revision 1.6  2009/02/17 00:00:02  willuhn
  * @N BUGZILLA 159 - Erster Code fuer Auslands-Ueberweisungen
  *

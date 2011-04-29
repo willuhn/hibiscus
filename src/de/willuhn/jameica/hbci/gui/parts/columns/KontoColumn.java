@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/columns/KontoColumn.java,v $
- * $Revision: 1.1 $
- * $Date: 2009/02/17 00:00:02 $
+ * $Revision: 1.2 $
+ * $Date: 2011/04/29 15:33:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -32,11 +32,10 @@ public class KontoColumn extends Column
 
   /**
    * ct.
-   * @param id Attribut-Name.
    */
-  public KontoColumn(String id)
+  public KontoColumn()
   {
-    super(id, i18n.tr("Konto"),new Formatter() {
+    super("konto_id", i18n.tr("Konto"),new Formatter() {
       /**
        * @see de.willuhn.jameica.gui.formatter.Formatter#format(java.lang.Object)
        */
@@ -66,6 +65,9 @@ public class KontoColumn extends Column
 
 /**********************************************************************
  * $Log: KontoColumn.java,v $
+ * Revision 1.2  2011/04/29 15:33:28  willuhn
+ * @N Neue Spalte "ausgefuehrt_am", in der das tatsaechliche Ausfuehrungsdatum von Auftraegen vermerkt wird
+ *
  * Revision 1.1  2009/02/17 00:00:02  willuhn
  * @N BUGZILLA 159 - Erster Code fuer Auslands-Ueberweisungen
  *

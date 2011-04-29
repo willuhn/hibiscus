@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.41 $
- * $Date: 2011/04/08 15:19:14 $
+ * $Revision: 1.42 $
+ * $Date: 2011/04/29 15:33:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -128,7 +128,7 @@ public class KontoauszugList extends UmsatzList
    */
   public synchronized void paint(Composite parent) throws RemoteException
   {
-    addColumn(new KontoColumn("konto_id")); // BUGZILLA 723
+    addColumn(new KontoColumn()); // BUGZILLA 723
     addColumn(i18n.tr("GK Konto"), "empfaenger_konto");
     addColumn(i18n.tr("GK BLZ"),   "empfaenger_blz");
     addColumn(i18n.tr("Art"),      "art");
@@ -774,7 +774,10 @@ public class KontoauszugList extends UmsatzList
 
 /*********************************************************************
  * $Log: KontoauszugList.java,v $
- * Revision 1.41  2011/04/08 15:19:14  willuhn
+ * Revision 1.42  2011/04/29 15:33:28  willuhn
+ * @N Neue Spalte "ausgefuehrt_am", in der das tatsaechliche Ausfuehrungsdatum von Auftraegen vermerkt wird
+ *
+ * Revision 1.41  2011-04-08 15:19:14  willuhn
  * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
  * @C Code-Cleanup
  *

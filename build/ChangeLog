@@ -1,5 +1,7 @@
 2011-??-?? Version 1.13.0
 
+  * NEW: 0068 Neue Spalte "ausgefuehrt_am", in der Hibicus automatisch das Ausfuehrungsdatum
+              von Ueberweisungen und Lastschriften speichert.
   * BUG: 0067 BUGZILLA 1031 - fehlerhaftes Speichern von abgerufenen Dauerauftraegen tolerieren
   * BUG: 0066 Umsaetze, die bereits fest zugeordnet sind, duerfen nicht via Suchbegriff zugeordnet werden
   * BUG: 0065 Vormerkbuchungen nicht mehr als Auto-Gegenbuchung in Offline-Konten uebernehmen.

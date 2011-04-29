@@ -32,6 +32,7 @@ CREATE TABLE lastschrift (
      , termin DATE NOT NULL
      , ausgefuehrt int(10) NOT NULL
      , typ VARCHAR(2)
+     , ausgefuehrt_am DATETIME
      , UNIQUE (id)
      , PRIMARY KEY (id)
 )TYPE=InnoDB;
@@ -76,6 +77,7 @@ CREATE TABLE sueberweisung (
      , bezeichnung VARCHAR(255) NOT NULL
      , termin DATE NOT NULL
      , ausgefuehrt int(10) NOT NULL
+     , ausgefuehrt_am DATETIME
      , UNIQUE (id)
      , PRIMARY KEY (id)
 )TYPE=InnoDB;
@@ -100,6 +102,7 @@ CREATE TABLE slastschrift (
      , bezeichnung VARCHAR(255) NOT NULL
      , termin DATE NOT NULL
      , ausgefuehrt int(10) NOT NULL
+     , ausgefuehrt_am DATETIME
      , UNIQUE (id)
      , PRIMARY KEY (id)
 )TYPE=InnoDB;
@@ -159,6 +162,7 @@ CREATE TABLE ueberweisung (
      , umbuchung int(1)
      , ausgefuehrt int(10) NOT NULL
      , typ VARCHAR(2)
+     , ausgefuehrt_am DATETIME
      , UNIQUE (id)
      , PRIMARY KEY (id)
 )TYPE=InnoDB;
@@ -173,6 +177,7 @@ CREATE TABLE aueberweisung (
      , zweck VARCHAR(140)
      , termin DATE NOT NULL
      , ausgefuehrt int(10) NOT NULL
+     , ausgefuehrt_am DATETIME
      , UNIQUE (id)
      , PRIMARY KEY (id)
 )TYPE=InnoDB;
@@ -293,4 +298,4 @@ ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
 
-INSERT INTO version (name,version) values ('db',31);
+INSERT INTO version (name,version) values ('db',32);
