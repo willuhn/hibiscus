@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/SynchronizeOptionsDialog.java,v $
- * $Revision: 1.9 $
- * $Date: 2010/09/02 12:25:13 $
+ * $Revision: 1.10 $
+ * $Date: 2011/04/29 12:13:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,8 +20,9 @@ import org.eclipse.swt.widgets.Composite;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.input.CheckboxInput;
-import de.willuhn.jameica.gui.util.ButtonArea;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.parts.ButtonArea;
+import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.SynchronizeOptions;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -65,7 +66,7 @@ public class SynchronizeOptionsDialog extends AbstractDialog
    */
   protected void paint(Composite parent) throws Exception
   {
-    LabelGroup group = new LabelGroup(parent,i18n.tr("Optionen"));
+    Container group = new SimpleContainer(parent);
 
     if (offline)
     {
@@ -83,7 +84,7 @@ public class SynchronizeOptionsDialog extends AbstractDialog
       group.addInput(getSyncDauer());
     }
 
-    ButtonArea buttons = new ButtonArea(parent,2);
+    ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Übernehmen"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -102,13 +103,15 @@ public class SynchronizeOptionsDialog extends AbstractDialog
         }
         close();
       }
-    });
+    },null,true,"ok.png");
     buttons.addButton(i18n.tr("Abbrechen"), new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         close();
       }
-    });
+    },null,false,"process-stop.png");
+    
+    group.addButtonArea(buttons);
   }
   
   /**
@@ -223,7 +226,10 @@ public class SynchronizeOptionsDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: SynchronizeOptionsDialog.java,v $
- * Revision 1.9  2010/09/02 12:25:13  willuhn
+ * Revision 1.10  2011/04/29 12:13:57  willuhn
+ * @N GUI-Polish
+ *
+ * Revision 1.9  2010-09-02 12:25:13  willuhn
  * @N BUGZILLA 900
  *
  * Revision 1.8  2009/10/20 23:12:58  willuhn
