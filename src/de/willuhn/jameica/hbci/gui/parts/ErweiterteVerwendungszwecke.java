@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/ErweiterteVerwendungszwecke.java,v $
- * $Revision: 1.5 $
- * $Date: 2008/12/01 23:54:42 $
+ * $Revision: 1.6 $
+ * $Date: 2011/04/29 12:25:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.gui.parts;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -23,7 +24,7 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.Button;
-import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.ScrolledContainer;
 import de.willuhn.jameica.hbci.HBCI;
@@ -48,7 +49,7 @@ public class ErweiterteVerwendungszwecke implements Part
   private final static I18N i18n    = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
   private String[] orig             = null;
-  private ArrayList fields          = new ArrayList();
+  private List<TextInput> fields    = new ArrayList<TextInput>();
   private Button add                = null;
   
   private boolean readonly          = false;
@@ -113,8 +114,10 @@ public class ErweiterteVerwendungszwecke implements Part
       }
     });
     this.add.setEnabled(!readonly && size+3 <= maxusage);
-    ButtonArea buttons = new ButtonArea(parent,1);
-    buttons.addButton(add);
+    
+    ButtonArea buttons = new ButtonArea();
+    buttons.addButton(this.add);
+    buttons.paint(parent);
     //
     ////////////////////////////////////////////////////////////////////////////
 
@@ -154,12 +157,9 @@ public class ErweiterteVerwendungszwecke implements Part
    */
   public String[] getTexts() throws RemoteException
   {
-    ArrayList list = new ArrayList();
-    
-    int size = this.fields.size();
-    for (int i=0;i<size;++i)
+    List<String> list = new ArrayList<String>();
+    for (TextInput text:this.fields)
     {
-      TextInput text = (TextInput) this.fields.get(i);
       String value = (String) text.getValue();
       
       // Leere Verwendungszwecke ignorieren
@@ -175,7 +175,7 @@ public class ErweiterteVerwendungszwecke implements Part
     // Wir sichern die neuen Zeilen als "orig", damit sie wieder
     // da sind, wenn der Dialog ohne geaenderte Daten nochmal
     // geoeffnet wird.
-    this.orig = (String[]) list.toArray(new String[list.size()]);
+    this.orig = list.toArray(new String[list.size()]);
     return this.orig;
   }
 }
@@ -183,6 +183,9 @@ public class ErweiterteVerwendungszwecke implements Part
 
 /**********************************************************************
  * $Log: ErweiterteVerwendungszwecke.java,v $
+ * Revision 1.6  2011/04/29 12:25:36  willuhn
+ * @N GUI-Polish
+ *
  * Revision 1.5  2008/12/01 23:54:42  willuhn
  * @N BUGZILLA 188 Erweiterte Verwendungszwecke in Exports/Imports und Sammelauftraegen
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/VerwendungszweckDialog.java,v $
- * $Revision: 1.4 $
- * $Date: 2008/12/01 23:54:42 $
+ * $Revision: 1.5 $
+ * $Date: 2011/04/29 12:25:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Composite;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.parts.Button;
-import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
@@ -112,7 +112,8 @@ public class VerwendungszweckDialog extends AbstractDialog
     
     this.ewz.paint(parent);
     Container container = new SimpleContainer(parent,true);
-    
+
+    ButtonArea buttons = new ButtonArea();
     Button apply = new Button(i18n.tr("Übernehmen"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -127,17 +128,18 @@ public class VerwendungszweckDialog extends AbstractDialog
           throw new ApplicationException(i18n.tr("Fehler beim Übernehmen der Verwendungszwecke"));
         }
       }
-    },null,true);
+    },null,true,"ok.png");
     apply.setEnabled(!this.readOnly);
     
-    ButtonArea buttons = container.createButtonArea(2);
     buttons.addButton(apply);
     buttons.addButton(i18n.tr("Abbrechen"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         throw new OperationCanceledException();
       }
-    });
+    },null,false,"process-stop.png");
+    
+    container.addButtonArea(buttons);
   }
 
 }
@@ -145,6 +147,9 @@ public class VerwendungszweckDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: VerwendungszweckDialog.java,v $
+ * Revision 1.5  2011/04/29 12:25:36  willuhn
+ * @N GUI-Polish
+ *
  * Revision 1.4  2008/12/01 23:54:42  willuhn
  * @N BUGZILLA 188 Erweiterte Verwendungszwecke in Exports/Imports und Sammelauftraegen
  *
