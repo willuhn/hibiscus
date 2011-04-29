@@ -1,5 +1,16 @@
 2011-??-?? Version 1.13.0
 
+  * BUG: 0067 BUGZILLA 1031 - fehlerhaftes Speichern von abgerufenen Dauerauftraegen tolerieren
+  * BUG: 0066 Umsaetze, die bereits fest zugeordnet sind, duerfen nicht via Suchbegriff zugeordnet werden
+  * BUG: 0065 Vormerkbuchungen nicht mehr als Auto-Gegenbuchung in Offline-Konten uebernehmen.
+  * BUG: 0064 BUGZILLA 692 - Buchungen wurden in "Neue Umsaetze" unter Umstaenden doppelt angezeigt
+  * NEW: 0063 "Zurueck"-Buttons entfernt, es gibt jetzt einen globalen Zurueck-Button
+  * NEW: 0062 Loeschen von Vormerkbuchungen zulassen
+  * NEW: 0061 BUGZILLA 781 - Markierte Umsaetze in "Umsaetze nach Kategorien"
+              nach Rueckkehr aus Umsatzdetails wiederherstellen
+  * BUG: 0060 BUGZILLA 629 - Auswahl der zu zeichnenden Graphen wurde unter
+              Windows ggf. nicht uebernommen
+  * NEW: 0059 Druck-Support für Umsätze, Ueberweisungen und Lastschriften (via Paperclips)
   * CHG: 0058 BUGZILLA 1014 - automatisches Formatieren des Betrages nach Focus-Wechsel
               Wurde vorher auch schon in Hibiscus gemacht. Jetzt passierts direkt
               in DecimalInput
