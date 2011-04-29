@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragListJob.java,v $
- * $Revision: 1.36 $
- * $Date: 2009/01/04 22:13:27 $
+ * $Revision: 1.37 $
+ * $Date: 2011/04/29 08:00:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -133,9 +133,7 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob
         while(existing.hasNext())
         {
           ex = (Dauerauftrag) existing.next();
-          if (auftrag.getOrderID() != null && 
-              auftrag.getOrderID().equals(ex.getOrderID())
-             )
+          if (auftrag.getOrderID() != null && auftrag.getOrderID().equals(ex.getOrderID()))
           {
             // Den haben wir schon, ueberschreiben wir
             found = true;
@@ -153,7 +151,14 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob
         if (!found)
         {
           Logger.info("no local copy found. adding dauerauftrag order id: " + auftrag.getOrderID());
-          auftrag.store();// den hammer nicht gefunden. Neu anlegen
+          try
+          {
+            auftrag.store();// den hammer nicht gefunden. Neu anlegen
+          }
+          catch (Exception e) // BUGZILLA 1031
+          {
+            Logger.error("unable to store dauerauftrag " + auftrag.getOrderID() + ", skipping",e);
+          }
         }
         existing.begin();
       }
@@ -174,9 +179,7 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob
       for (int i=0;i<lines.length;++i)
       {
         auftrag = Converter.HBCIDauer2HibiscusDauerauftrag(lines[i]);
-        if (auftrag.getOrderID() != null && 
-            auftrag.getOrderID().equals(ex.getOrderID())
-           )
+        if (auftrag.getOrderID() != null && auftrag.getOrderID().equals(ex.getOrderID()))
         {
           found = true;
           break;
@@ -207,7 +210,10 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIDauerauftragListJob.java,v $
- * Revision 1.36  2009/01/04 22:13:27  willuhn
+ * Revision 1.37  2011/04/29 08:00:38  willuhn
+ * @B BUGZILLA 1031
+ *
+ * Revision 1.36  2009-01-04 22:13:27  willuhn
  * @R redundanten Konto-Check auch beim Loeschen von Dauerauftraegen entfernt
  *
  * Revision 1.35  2009/01/03 22:38:52  willuhn
