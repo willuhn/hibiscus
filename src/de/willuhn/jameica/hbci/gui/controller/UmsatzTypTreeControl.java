@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzTypTreeControl.java,v $
- * $Revision: 1.16 $
- * $Date: 2011/04/12 21:16:47 $
+ * $Revision: 1.17 $
+ * $Date: 2011/04/29 07:41:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -48,14 +48,15 @@ import de.willuhn.util.I18N;
  */
 public class UmsatzTypTreeControl extends AbstractControl
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  private SelectInput kontoAuswahl          = null;
-  private DateInput start                   = null;
-  private DateInput end                     = null;
-  private I18N i18n                         = null;
+  private SelectInput kontoAuswahl = null;
+  private DateInput start          = null;
+  private DateInput end            = null;
   
-  private UmsatzTree tree                = null;
-  private UmsatzTypVerlauf chart            = null;
+  private UmsatzTree tree          = null;
+  private UmsatzTypVerlauf chart   = null;
+  private boolean expanded         = false;
   
   private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(UmsatzTypTreeControl.class);
 
@@ -72,7 +73,6 @@ public class UmsatzTypTreeControl extends AbstractControl
   public UmsatzTypTreeControl(AbstractView view)
   {
     super(view);
-    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
   /**
@@ -179,7 +179,7 @@ public class UmsatzTypTreeControl extends AbstractControl
       return this.tree;
     
     this.tree = new UmsatzTree(getUmsaetze());
-    this.tree.setExpanded(settings.getBoolean("expanded",false));
+    this.tree.setExpanded(this.expanded);
     return this.tree;
   }
   
@@ -230,13 +230,12 @@ public class UmsatzTypTreeControl extends AbstractControl
     try
     {
       TreePart tree = getTree();
-      boolean current = !settings.getBoolean("expanded",false);
       List items = tree.getItems();
       for (int i=0;i<items.size();++i)
       {
-        tree.setExpanded((GenericObject)items.get(i),current,true);
+        tree.setExpanded((GenericObject)items.get(i),!this.expanded,true);
       }
-      settings.setAttribute("expanded",current);
+      this.expanded = !this.expanded;
     }
     catch (RemoteException re)
     {
@@ -252,16 +251,8 @@ public class UmsatzTypTreeControl extends AbstractControl
   {
     try
     {
-      Object selection = getTree().getSelection();
       getTree().setList(getUmsaetze());
-      getTree().setExpanded(settings.getBoolean("expanded",false));
-
-      // Selektion wiederherstellen - das bewirkt, dass auch im Chart die Selektion erhalten bleibt
-      if (selection instanceof Object[])
-        getTree().select((Object[]) selection);
-      else
-        getTree().select(selection);
-      
+      getTree().restoreState();
       handleRefreshChart();
     }
     catch (RemoteException re)
@@ -343,7 +334,10 @@ public class UmsatzTypTreeControl extends AbstractControl
 
 /*******************************************************************************
  * $Log: UmsatzTypTreeControl.java,v $
- * Revision 1.16  2011/04/12 21:16:47  willuhn
+ * Revision 1.17  2011/04/29 07:41:56  willuhn
+ * @N BUGZILLA 781
+ *
+ * Revision 1.16  2011-04-12 21:16:47  willuhn
  * @N BUGZILLA 629 - statt FocusListener jetzt SelectionListener
  *
  * Revision 1.15  2011-01-20 17:13:21  willuhn

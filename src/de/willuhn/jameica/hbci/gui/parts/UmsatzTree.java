@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTree.java,v $
- * $Revision: 1.6 $
- * $Date: 2011/04/26 12:15:51 $
+ * $Revision: 1.7 $
+ * $Date: 2011/04/29 07:41:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -82,6 +82,7 @@ public class UmsatzTree extends TreePart implements Extension
     }
     this.setRememberColWidths(true);
     this.setRememberOrder(true);
+    this.setRememberState(true);
     this.setMulti(true);
     this.setContextMenu(new UmsatzList());
     this.setFormatter(new TreeFormatter() {
@@ -298,7 +299,10 @@ public class UmsatzTree extends TreePart implements Extension
 
 /*******************************************************************************
  * $Log: UmsatzTree.java,v $
- * Revision 1.6  2011/04/26 12:15:51  willuhn
+ * Revision 1.7  2011/04/29 07:41:56  willuhn
+ * @N BUGZILLA 781
+ *
+ * Revision 1.6  2011-04-26 12:15:51  willuhn
  * @B Potentielle Bugs gemaess Code-Checker
  *
  * Revision 1.5  2011-01-05 11:20:27  willuhn
