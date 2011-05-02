@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/ChartDataSaldoVerlauf.java,v $
- * $Revision: 1.17 $
- * $Date: 2011/01/20 17:13:21 $
+ * $Revision: 1.18 $
+ * $Date: 2011/05/02 14:43:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,6 +21,7 @@ import java.util.List;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.server.KontoUtil;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.hbci.util.SaldoFinder;
 import de.willuhn.jameica.util.DateUtil;
@@ -74,7 +75,7 @@ public class ChartDataSaldoVerlauf extends AbstractChartDataSaldo
     // wir den letzten Umsatz, der vor diesem Tag liegt, da der dort
     // angegebene Saldo ja zum gesuchten Tag noch gilt.
 
-    SaldoFinder finder = new SaldoFinder(list);
+    SaldoFinder finder = new SaldoFinder(list,KontoUtil.getAnfangsSaldo(this.konto,start)); // BUGZILLA 1036
     this.data = new ArrayList<Saldo>();
     
     Calendar cal = Calendar.getInstance();
@@ -107,7 +108,10 @@ public class ChartDataSaldoVerlauf extends AbstractChartDataSaldo
 
 /*********************************************************************
  * $Log: ChartDataSaldoVerlauf.java,v $
- * Revision 1.17  2011/01/20 17:13:21  willuhn
+ * Revision 1.18  2011/05/02 14:43:41  willuhn
+ * @B BUGZILLA 1036
+ *
+ * Revision 1.17  2011-01-20 17:13:21  willuhn
  * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
  *
  * Revision 1.16  2010-11-24 16:27:17  willuhn

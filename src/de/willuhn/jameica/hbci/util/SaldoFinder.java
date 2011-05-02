@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/util/SaldoFinder.java,v $
- * $Revision: 1.4 $
- * $Date: 2011/01/20 17:13:21 $
+ * $Revision: 1.5 $
+ * $Date: 2011/05/02 14:43:41 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -26,14 +26,19 @@ import de.willuhn.jameica.util.DateUtil;
 public class SaldoFinder
 {
   private TreeMap<Date,Double> map = new TreeMap<Date,Double>();
+  private double anfangssaldo = 0.0d;
   
   /**
    * ct.
    * @param umsaetze Liste der Umsaetze, in denen gesucht werden soll.
+   * @param anfangssaldo der initiale Saldo, den das Konto vorher hatte.
+   * Darf "0.00" sein, wenn er nicht bekannt ist.
    * @throws RemoteException
    */
-  public SaldoFinder(GenericIterator umsaetze) throws RemoteException
+  public SaldoFinder(GenericIterator umsaetze, double anfangssaldo) throws RemoteException
   {
+    this.anfangssaldo = anfangssaldo;
+    
     // Wir fuellen die Map
     while (umsaetze.hasNext())
     {
@@ -53,7 +58,7 @@ public class SaldoFinder
   public Double get(Date date)
   {
     if (date == null)
-      return 0.0d;
+      return anfangssaldo;
     Date key = DateUtil.startOfDay(date);
     
     // Checken, ob wir fuer genau diesen Tag einen Saldo haben
@@ -67,8 +72,8 @@ public class SaldoFinder
       return this.map.get(lower);
     
     // Ne, wir haben auch keinen frueheren Saldo. Also war
-    // er zu diesem Zeitpunkt noch 0.
-    return 0.0d;
+    // er zu diesem Zeitpunkt noch 0 bzw der Anfangssaldo.
+    return anfangssaldo;
   }
 }
 
@@ -76,7 +81,10 @@ public class SaldoFinder
 
 /**********************************************************************
  * $Log: SaldoFinder.java,v $
- * Revision 1.4  2011/01/20 17:13:21  willuhn
+ * Revision 1.5  2011/05/02 14:43:41  willuhn
+ * @B BUGZILLA 1036
+ *
+ * Revision 1.4  2011-01-20 17:13:21  willuhn
  * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
  *
  * Revision 1.3  2010-09-01 15:33:54  willuhn
