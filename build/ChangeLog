@@ -1,5 +1,7 @@
 2011-??-?? Version 1.13.0
 
+  * NEW: 0069 BUGZILLA 1035 - Valuta und Datum beim Anlegen von Umsaetzen in Offline-Konten
+              automatisch mit aktuellem Datum vorbelegen
   * NEW: 0068 Neue Spalte "ausgefuehrt_am", in der Hibicus automatisch das Ausfuehrungsdatum
               von Ueberweisungen und Lastschriften speichert.
   * BUG: 0067 BUGZILLA 1031 - fehlerhaftes Speichern von abgerufenen Dauerauftraegen tolerieren
