@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/print/AbstractPrintSupportBaseUeberweisungList.java,v $
- * $Revision: 1.2 $
- * $Date: 2011/04/11 16:48:33 $
+ * $Revision: 1.3 $
+ * $Date: 2011/05/02 11:16:44 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -12,6 +12,7 @@
 package de.willuhn.jameica.hbci.io.print;
 
 import java.rmi.RemoteException;
+import java.util.Date;
 
 import net.sf.paperclips.DefaultGridLook;
 import net.sf.paperclips.GridPrint;
@@ -83,7 +84,7 @@ public abstract class AbstractPrintSupportBaseUeberweisungList extends AbstractP
       table.addHeader(new TextPrint(i18n.tr("Gegenkonto"),fontTinyBold));
       table.addHeader(new TextPrint(i18n.tr("Zweck"),fontTinyBold));
       table.addHeader(new TextPrint(i18n.tr("Betrag"),fontTinyBold));
-      table.addHeader(new TextPrint(i18n.tr("Status"),fontTinyBold));
+      table.addHeader(new TextPrint(i18n.tr("Ausgeführt"),fontTinyBold));
 
       BaseUeberweisung[] list = (BaseUeberweisung[]) data;
 
@@ -96,13 +97,17 @@ public abstract class AbstractPrintSupportBaseUeberweisungList extends AbstractP
         
         Konto k = u.getKonto();
         String usage = VerwendungszweckUtil.merge(u.getZweck(),u.getZweck2(),(String)u.getAttribute("zweck3"));
+        Date ausgefuehrt = u.getAusfuehrungsdatum();
         
         table.add(new TextPrint(HBCI.DATEFORMAT.format(u.getTermin()),style));
         table.add(new TextPrint(k.getLongName(),style));
         table.add(new TextPrint(i18n.tr("{0}, Kto. {1}, BLZ {2}",u.getGegenkontoName(),u.getGegenkontoNummer(),u.getGegenkontoBLZ()),style));
         table.add(new TextPrint(usage,style));
         table.add(new TextPrint(HBCI.DECIMALFORMAT.format(u.getBetrag()) + " " + k.getWaehrung(),style));
-        table.add(new TextPrint(i18n.tr(u.ausgefuehrt() ? "ausgeführt" : "offen"),style));
+        if (ausgefuehrt != null)
+          table.add(new TextPrint(HBCI.DATEFORMAT.format(ausgefuehrt),style));
+        else
+          table.add(new TextPrint(i18n.tr(u.ausgefuehrt() ? "ja" : "nein"),style));
       }
       return table;
     }
@@ -118,7 +123,10 @@ public abstract class AbstractPrintSupportBaseUeberweisungList extends AbstractP
 
 /**********************************************************************
  * $Log: AbstractPrintSupportBaseUeberweisungList.java,v $
- * Revision 1.2  2011/04/11 16:48:33  willuhn
+ * Revision 1.3  2011/05/02 11:16:44  willuhn
+ * @N Ausfuehrungsdatum mit drucken
+ *
+ * Revision 1.2  2011-04-11 16:48:33  willuhn
  * @N Drucken von Sammel- und Dauerauftraegen
  *
  * Revision 1.1  2011-04-11 14:36:37  willuhn

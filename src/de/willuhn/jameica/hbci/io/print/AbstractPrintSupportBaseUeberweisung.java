@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/print/AbstractPrintSupportBaseUeberweisung.java,v $
- * $Revision: 1.2 $
- * $Date: 2011/04/13 17:35:46 $
+ * $Revision: 1.3 $
+ * $Date: 2011/05/02 11:16:44 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -122,13 +122,17 @@ public abstract class AbstractPrintSupportBaseUeberweisung extends AbstractPrint
         Date termin = a.getTermin();
         table.add(new TextPrint(i18n.tr("Termin"),fontNormal));
         table.add(new TextPrint(termin == null ? "-" : HBCI.DATEFORMAT.format(termin),fontNormal));
-
+        
         // Leerzeile
         table.add(new LineBreakPrint(fontNormal));
         table.add(new LineBreakPrint(fontNormal));
 
-        table.add(new TextPrint(i18n.tr("Ausgführt"),fontNormal));
-        table.add(new TextPrint(a.ausgefuehrt() ? "Ja" : "Nein",fontBold));
+        Date ausgefuehrt = a.getAusfuehrungsdatum();
+        table.add(new TextPrint(i18n.tr("Ausgeführt"),fontNormal));
+        if (ausgefuehrt != null)
+          table.add(new TextPrint(HBCI.DATEFORMAT.format(ausgefuehrt),fontBold));
+        else
+          table.add(new TextPrint(a.ausgefuehrt() ? "Ja" : "Nein",fontBold));
         
         customize(table);
       } 
@@ -157,7 +161,10 @@ public abstract class AbstractPrintSupportBaseUeberweisung extends AbstractPrint
 
 /**********************************************************************
  * $Log: AbstractPrintSupportBaseUeberweisung.java,v $
- * Revision 1.2  2011/04/13 17:35:46  willuhn
+ * Revision 1.3  2011/05/02 11:16:44  willuhn
+ * @N Ausfuehrungsdatum mit drucken
+ *
+ * Revision 1.2  2011-04-13 17:35:46  willuhn
  * @N Druck-Support fuer Kontoauszuege fehlte noch
  *
  * Revision 1.1  2011-04-11 14:36:37  willuhn

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/print/AbstractPrintSupportSammelTransfer.java,v $
- * $Revision: 1.2 $
- * $Date: 2011/04/13 17:35:46 $
+ * $Revision: 1.3 $
+ * $Date: 2011/05/02 11:16:44 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -97,8 +97,12 @@ public abstract class AbstractPrintSupportSammelTransfer extends AbstractPrintSu
         table.add(new TextPrint(HBCI.DECIMALFORMAT.format(a.getSumme()) + " " + k.getWaehrung(),fontBold));
 
         // Ausfuehrungsstatus
-        table.add(new TextPrint(i18n.tr("Ausgführt"),fontNormal));
-        table.add(new TextPrint(a.ausgefuehrt() ? "Ja" : "Nein",fontBold));
+        Date ausgefuehrt = a.getAusfuehrungsdatum();
+        table.add(new TextPrint(i18n.tr("Ausgeführt"),fontNormal));
+        if (ausgefuehrt != null)
+          table.add(new TextPrint(HBCI.DATEFORMAT.format(ausgefuehrt),fontBold));
+        else
+          table.add(new TextPrint(a.ausgefuehrt() ? "Ja" : "Nein",fontBold));
 
         grid.add(table); // Zum Haupt-Layout hinzufuegen
       }
@@ -163,7 +167,10 @@ public abstract class AbstractPrintSupportSammelTransfer extends AbstractPrintSu
 
 /**********************************************************************
  * $Log: AbstractPrintSupportSammelTransfer.java,v $
- * Revision 1.2  2011/04/13 17:35:46  willuhn
+ * Revision 1.3  2011/05/02 11:16:44  willuhn
+ * @N Ausfuehrungsdatum mit drucken
+ *
+ * Revision 1.2  2011-04-13 17:35:46  willuhn
  * @N Druck-Support fuer Kontoauszuege fehlte noch
  *
  * Revision 1.1  2011-04-11 16:48:33  willuhn
