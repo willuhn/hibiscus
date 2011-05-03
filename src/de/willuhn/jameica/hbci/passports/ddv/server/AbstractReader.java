@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/server/AbstractReader.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/09/07 15:28:05 $
+ * $Revision: 1.6 $
+ * $Date: 2011/05/03 16:43:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -139,12 +139,29 @@ public abstract class AbstractReader implements Reader
   {
     return this.getName();
   }
+
+  /**
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  public boolean equals(Object obj)
+  {
+    if (!(obj instanceof Reader))
+      return false;
+    
+    Reader other = (Reader) obj;
+    String s1 = this.getClass().getName()  + this.getName()  + this.getCTAPIDriver();
+    String s2 = other.getClass().getName() + other.getName() + other.getCTAPIDriver();
+    return s1.equals(s2);
+  }
 }
 
 
 /**********************************************************************
  * $Log: AbstractReader.java,v $
- * Revision 1.5  2010/09/07 15:28:05  willuhn
+ * Revision 1.6  2011/05/03 16:43:50  willuhn
+ * @B da fehlte eine equals()-Funktion
+ *
+ * Revision 1.5  2010-09-07 15:28:05  willuhn
  * @N BUGZILLA 391 - Kartenleser-Konfiguration komplett umgebaut. Damit lassen sich jetzt beliebig viele Kartenleser und Konfigurationen parellel einrichten
  *
  * Revision 1.4  2010-07-25 23:54:34  willuhn
