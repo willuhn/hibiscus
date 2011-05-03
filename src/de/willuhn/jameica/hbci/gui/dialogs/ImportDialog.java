@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/ImportDialog.java,v $
- * $Revision: 1.15 $
- * $Date: 2011/01/12 18:23:04 $
+ * $Revision: 1.16 $
+ * $Date: 2011/05/03 16:44:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -33,8 +33,9 @@ import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.parts.Button;
-import de.willuhn.jameica.gui.util.ButtonArea;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.parts.ButtonArea;
+import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.io.IOFormat;
 import de.willuhn.jameica.hbci.io.IORegistry;
@@ -87,20 +88,20 @@ public class ImportDialog extends AbstractDialog
    */
   protected void paint(Composite parent) throws Exception
   {
-		LabelGroup group = new LabelGroup(parent,i18n.tr("Auswahl des Import-Filters"));
+		Container group = new SimpleContainer(parent);
 		group.addText(i18n.tr("Bitte wählen Sie das gewünschte Dateiformat für den Import aus"),true);
 
     Input formats = getImporterList();
 		group.addLabelPair(i18n.tr("Verfügbare Formate:"),formats);
 
-		ButtonArea buttons = new ButtonArea(parent,2);
+		ButtonArea buttons = new ButtonArea();
 		Button button = new Button(i18n.tr("Import starten"),new Action()
 		{
 			public void handleAction(Object context) throws ApplicationException
 			{
 				doImport();
 			}
-		},null,true);
+		},null,true,"ok.png");
     button.setEnabled(!(formats instanceof LabelInput));
     buttons.addButton(button);
 		buttons.addButton(i18n.tr("Abbrechen"), new Action()
@@ -109,7 +110,8 @@ public class ImportDialog extends AbstractDialog
 			{
 				throw new OperationCanceledException();
 			}
-		});
+		},null,false,"process-stop.png");
+		group.addButtonArea(buttons);
     getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT));
   }
 
@@ -345,7 +347,10 @@ public class ImportDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: ImportDialog.java,v $
- * Revision 1.15  2011/01/12 18:23:04  willuhn
+ * Revision 1.16  2011/05/03 16:44:23  willuhn
+ * @C GUI cleanup
+ *
+ * Revision 1.15  2011-01-12 18:23:04  willuhn
  * @N Letztes ausgewaehltes Import-Format merken
  *
  * Revision 1.14  2011-01-12 17:54:08  willuhn

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/ExportDialog.java,v $
- * $Revision: 1.21 $
- * $Date: 2010/08/27 10:39:54 $
+ * $Revision: 1.22 $
+ * $Date: 2011/05/03 16:44:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -38,8 +38,9 @@ import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.internal.action.Program;
 import de.willuhn.jameica.gui.parts.Button;
-import de.willuhn.jameica.gui.util.ButtonArea;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.parts.ButtonArea;
+import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.io.Exporter;
 import de.willuhn.jameica.hbci.io.IOFormat;
@@ -94,7 +95,7 @@ public class ExportDialog extends AbstractDialog
    */
   protected void paint(Composite parent) throws Exception
   {
-		LabelGroup group = new LabelGroup(parent,i18n.tr("Auswahl des Export-Filters"));
+		Container group = new SimpleContainer(parent);
 		group.addText(i18n.tr("Bitte wählen Sie das gewünschte Dateiformat aus für den Export aus"),true);
 
     Input formats = getExporterList();
@@ -103,18 +104,16 @@ public class ExportDialog extends AbstractDialog
     boolean exportEnabled = !(formats instanceof LabelInput);
     
     if (exportEnabled)
-    {
       group.addCheckbox(getOpenFile(),i18n.tr("Datei nach dem Export öffnen"));
-    }
 
-		ButtonArea buttons = new ButtonArea(parent,2);
+		ButtonArea buttons = new ButtonArea();
 		Button button = new Button(i18n.tr("Export starten"),new Action()
 		{
 			public void handleAction(Object context) throws ApplicationException
 			{
 				export();
 			}
-		},null,true);
+		},null,true,"ok.png");
     button.setEnabled(exportEnabled);
     buttons.addButton(button);
 		buttons.addButton(i18n.tr("Abbrechen"), new Action()
@@ -123,7 +122,9 @@ public class ExportDialog extends AbstractDialog
 			{
 				close();
 			}
-		});
+		},null,false,"process-stop.png");
+		group.addButtonArea(buttons);
+		
     getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT));
   }
 
@@ -391,7 +392,10 @@ public class ExportDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: ExportDialog.java,v $
- * Revision 1.21  2010/08/27 10:39:54  willuhn
+ * Revision 1.22  2011/05/03 16:44:23  willuhn
+ * @C GUI cleanup
+ *
+ * Revision 1.21  2010-08-27 10:39:54  willuhn
  * @C Export-Dialog in gleicher Groesse und Position wie Import-Dialog
  *
  * Revision 1.20  2010/06/08 11:26:05  willuhn
