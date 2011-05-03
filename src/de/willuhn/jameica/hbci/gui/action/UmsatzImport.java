@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/UmsatzImport.java,v $
- * $Revision: 1.3 $
- * $Date: 2010/03/16 00:44:18 $
+ * $Revision: 1.4 $
+ * $Date: 2011/05/03 16:43:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,6 +31,7 @@ import de.willuhn.util.I18N;
  */
 public class UmsatzImport implements Action
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
    * Erwartet ein Objekt vom Typ <code>Konto</code>,<code>Umsatz</code> oder <code>null</code>.
@@ -38,8 +39,6 @@ public class UmsatzImport implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
-		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
 		// Check, ob das wirklich ein Konto ist
     if (context != null && !(context instanceof Konto))
       context = null;
@@ -77,6 +76,9 @@ public class UmsatzImport implements Action
 
 /**********************************************************************
  * $Log: UmsatzImport.java,v $
+ * Revision 1.4  2011/05/03 16:43:09  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2010/03/16 00:44:18  willuhn
  * @N Komplettes Redesign des CSV-Imports.
  *   - Kann nun erheblich einfacher auch fuer andere Datentypen (z.Bsp.Ueberweisungen) verwendet werden
