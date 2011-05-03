@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/Controller.java,v $
- * $Revision: 1.12 $
- * $Date: 2011/04/29 11:38:58 $
+ * $Revision: 1.13 $
+ * $Date: 2011/05/03 16:44:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,7 +15,6 @@ package de.willuhn.jameica.hbci.passports.ddv;
 import java.io.File;
 import java.rmi.RemoteException;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.callback.HBCICallback;
@@ -25,9 +24,7 @@ import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.dialogs.ListDialog;
 import de.willuhn.jameica.gui.input.CheckboxInput;
-import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.FileInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SelectInput;
@@ -73,7 +70,7 @@ public class Controller extends AbstractControl
   private FileInput ctapi           = null;
   private CheckboxInput useBio      = null;
   private CheckboxInput useSoftPin  = null;
-  private DialogInput readerPresets = null;
+  private SelectInput readerPresets = null;
   private SelectInput hbciVersion   = null;
 
   /**
@@ -180,22 +177,17 @@ public class Controller extends AbstractControl
    * Liefert eine Auswahl von vorkonfigurierten Chipkartenlesern.
    * @return Auswahl von vorkonfigurierten Lesern.
    */
-  public DialogInput getReaderPresets()
+  public SelectInput getReaderPresets()
   {
     if (this.readerPresets != null)
       return this.readerPresets;
     
-    ListDialog d = new ListDialog(DDVConfigFactory.getReaderPresets(), ListDialog.POSITION_MOUSE);
-    d.setTitle(i18n.tr("Kartenleser"));
-    d.addColumn(i18n.tr("Bezeichnung"), "name");
-    d.addCloseListener(new PresetListener());
-    d.setSize(400,SWT.DEFAULT);
-
     Reader reader = getConfig().getReaderPreset();
-    this.readerPresets = new DialogInput(reader.getName(), d);
-    this.readerPresets.setValue(reader);
+    this.readerPresets = new SelectInput(DDVConfigFactory.getReaderPresets(),reader);
+    this.readerPresets.setAttribute("name");
     this.readerPresets.setName(i18n.tr("Kartenleser"));
-    this.readerPresets.disableClientControl();
+    this.readerPresets.setEditable(false);
+    this.readerPresets.addListener(new PresetListener());
     return this.readerPresets;
   }
 
@@ -209,7 +201,7 @@ public class Controller extends AbstractControl
       return this.ctapi;
     this.ctapi = new FileInput(getConfig().getCTAPIDriver());
     this.ctapi.setName(i18n.tr("CTAPI Treiber-Datei"));
-    this.ctapi.disableClientControl();
+    this.ctapi.setMandatory(true);
     return this.ctapi;
   }
 
@@ -346,7 +338,6 @@ public class Controller extends AbstractControl
             {
               Reader reader = config.getReaderPreset();
               getReaderPresets().setValue(reader);
-              getReaderPresets().setText(reader.getName());
   
               getBezeichnung().setValue(config.getName());
               getCTAPI().setValue(config.getCTAPIDriver());
@@ -595,24 +586,24 @@ public class Controller extends AbstractControl
     public void handleEvent(Event event)
     {
       try {
-        Reader r = (Reader) event.data;
+        Reader r = (Reader) getReaderPresets().getValue();
         if (r == null)
           return;
 
+        GUI.getView().setErrorText(""); // Fehlertext erstmal resetten
+
         if (!r.isSupported())
         {
-          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Der ausgewählte Kartenleser wird von Hibiscus nicht unterstützt"),StatusBarMessage.TYPE_ERROR));
+          GUI.getView().setErrorText(i18n.tr("Der ausgewählte Kartenleser wird von Hibiscus nicht unterstützt"));
           return;
         }
-
-        getReaderPresets().setText(r.getName());
 
         String s = r.getCTAPIDriver();
         if (s != null && s.length() > 0)
         {
           File f = new File(s);
           if (!f.exists())
-            Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Warnung: Die ausgewählte CTAPI-Treiber-Datei existiert nicht."),StatusBarMessage.TYPE_ERROR));
+            GUI.getView().setErrorText(i18n.tr("CTAPI-Treiber nicht gefunden. Bitte Treiber installieren."));
         }
         
         String port = r.getPort();
@@ -638,7 +629,10 @@ public class Controller extends AbstractControl
 
 /*******************************************************************************
  * $Log: Controller.java,v $
- * Revision 1.12  2011/04/29 11:38:58  willuhn
+ * Revision 1.13  2011/05/03 16:44:08  willuhn
+ * @C Auswahl des Presets ueber Combo-Box statt DialogInput
+ *
+ * Revision 1.12  2011-04-29 11:38:58  willuhn
  * @N Konfiguration der HBCI-Medien ueberarbeitet. Es gibt nun direkt in der Navi einen Punkt "Bank-Zugaenge", in der alle Medien angezeigt werden.
  *
  * Revision 1.11  2011-04-28 07:34:43  willuhn
