@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/TurnusDialog.java,v $
- * $Revision: 1.6 $
- * $Date: 2011/04/29 12:29:53 $
+ * $Revision: 1.7 $
+ * $Date: 2011/05/03 13:43:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -246,12 +246,13 @@ public class TurnusDialog extends AbstractDialog
         else
         {
           // Entfernen und hinzufuegen, um die Anzeige zu aktualisieren
-          turnusList.removeItem(t2);
-          turnusList.addItem(t2);
+          int index = turnusList.removeItem(t2);
+          if (index == -1) // war gar nicht enthalten
+            return;
+          turnusList.addItem(t2,index); // an der gleichen Stellen wieder einfuegen
         }
             
         // und markieren
-        
         turnusList.select(t2);
       }
     }
@@ -273,7 +274,10 @@ public class TurnusDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: TurnusDialog.java,v $
- * Revision 1.6  2011/04/29 12:29:53  willuhn
+ * Revision 1.7  2011/05/03 13:43:12  willuhn
+ * @C Saubereres Fehlerhandling
+ *
+ * Revision 1.6  2011-04-29 12:29:53  willuhn
  * @N GUI-Polish
  *
  **********************************************************************/

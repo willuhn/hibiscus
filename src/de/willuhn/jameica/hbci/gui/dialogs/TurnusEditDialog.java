@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/TurnusEditDialog.java,v $
- * $Revision: 1.3 $
- * $Date: 2007/03/14 11:51:23 $
+ * $Revision: 1.4 $
+ * $Date: 2011/05/03 13:43:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,9 +23,12 @@ import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
+import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
-import de.willuhn.jameica.gui.util.ButtonArea;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.parts.ButtonArea;
+import de.willuhn.jameica.gui.util.Color;
+import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
@@ -41,7 +44,7 @@ import de.willuhn.util.I18N;
  */
 public class TurnusEditDialog extends AbstractDialog {
 
-	private I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+	private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   // Das Fachobjekt
   private Turnus turnus = null;
@@ -50,6 +53,7 @@ public class TurnusEditDialog extends AbstractDialog {
   private SelectInput zeiteinheit     = null;
   private SelectInput tagMonatlich    = null;
   private SelectInput tagWoechentlich = null;
+  private LabelInput error            = null;
 
   private String pleaseChoose         = i18n.tr("Bitte wählen...");
   private String lastOfMonth          = i18n.tr("Zum Monatsletzten");
@@ -70,16 +74,14 @@ public class TurnusEditDialog extends AbstractDialog {
    */
 	protected void paint(Composite parent) throws Exception
 	{
-
-		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
-		LabelGroup group = new LabelGroup(parent,i18n.tr("Eigenschaften"));
+		Container group = new SimpleContainer(parent);
 
 		try {
 			group.addLabelPair(i18n.tr("Zeiteinheit"),   getZeiteinheit());
 			group.addLabelPair(i18n.tr("Zahlung aller"), getIntervall());
 			group.addLabelPair(i18n.tr("Zahlung am"),    getTagWoechentlich());
 			group.addLabelPair("",                       getTagMonatlich());
+			group.addInput(getError());
 			
 		}
 		catch (RemoteException e)
@@ -89,23 +91,30 @@ public class TurnusEditDialog extends AbstractDialog {
 		}
 
 		// und noch die Abschicken-Knoepfe
-		ButtonArea buttonArea = new ButtonArea(parent,2);
+		ButtonArea buttonArea = new ButtonArea();
 		buttonArea.addButton(i18n.tr("Übernehmen"), new Action()
 		{
 			public void handleAction(Object context) throws ApplicationException
 			{
-				handleStore();
-				close();
+			  try
+			  {
+	        handleStore();
+	        close();
+			  }
+			  catch (ApplicationException ae)
+			  {
+			    getError().setValue(ae.getMessage());
+			  }
 			}
-		},null,true);
+		},null,true,"ok.png");
 		buttonArea.addButton(i18n.tr("Abbrechen"), new Action()
 		{
 			public void handleAction(Object context) throws ApplicationException
 			{
 				close();
 			}
-		});
-
+		},null,false,"process-stop.png");
+		group.addButtonArea(buttonArea);
   }
 
   /**
@@ -117,9 +126,20 @@ public class TurnusEditDialog extends AbstractDialog {
   }
 
 
-
-
-
+  /**
+   * Liefert ein Label fuer Fehlermeldungen.
+   * @return Label.
+   */
+  private LabelInput getError()
+  {
+    if (this.error == null)
+    {
+      this.error = new LabelInput("");
+      this.error.setColor(Color.ERROR);
+      this.error.setName("");
+    }
+    return this.error;
+  }
 
   /**
    * Liefert den Turnus.
@@ -220,16 +240,14 @@ public class TurnusEditDialog extends AbstractDialog {
   /**
    * Speichert den Turnus.
    */
-  public void handleStore()
+  private void handleStore() throws ApplicationException
   {
     try
     {
       Turnus t = getTurnus();
       if (t.isInitial())
-      {
-        Logger.warn("unable to change turnus, part of initial system data");
-        return;
-      }
+        throw new ApplicationException(i18n.tr("Turnus ist Bestandteil der System-Daten und kann nicht geändert werden."));
+        
       Zeiteinheit zh = (Zeiteinheit) getZeiteinheit().getValue();
       t.setZeiteinheit(zh.id);
       if (zh.id == Turnus.ZEITEINHEIT_WOECHENTLICH)
@@ -251,9 +269,10 @@ public class TurnusEditDialog extends AbstractDialog {
       t.setIntervall(Integer.parseInt((String)getIntervall().getValue()));
       t.store();
     }
-    catch (Exception e)
+    catch (RemoteException re)
     {
-      Logger.error("error while storing turnus",e);
+      Logger.error("error while storing turnus",re);
+      throw new ApplicationException(re.getMessage());
     }
   }
 
@@ -416,6 +435,9 @@ public class TurnusEditDialog extends AbstractDialog {
 
 /**********************************************************************
  * $Log: TurnusEditDialog.java,v $
+ * Revision 1.4  2011/05/03 13:43:12  willuhn
+ * @C Saubereres Fehlerhandling
+ *
  * Revision 1.3  2007/03/14 11:51:23  willuhn
  * @N Zahlungsturnus "12"
  *
