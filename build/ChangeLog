@@ -1,5 +1,8 @@
 2011-??-?? Version 1.13.0
 
+  * NEW: 0070 BUGZILLA 1036 - Saldo-Chart beginnt u.U. bei 0,00 wenn keine entsprechenden
+              Umsaetze vorhanden sind. Ausserdem: Besitzt ein Konto gar keine Buchungen,
+              wird der Saldo des Kontos ueber den ganzen Zeitraum gezeichnet
   * NEW: 0069 BUGZILLA 1035 - Valuta und Datum beim Anlegen von Umsaetzen in Offline-Konten
               automatisch mit aktuellem Datum vorbelegen
   * NEW: 0068 Neue Spalte "ausgefuehrt_am", in der Hibicus automatisch das Ausfuehrungsdatum
