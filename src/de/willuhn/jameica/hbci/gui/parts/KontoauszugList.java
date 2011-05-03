@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.42 $
- * $Date: 2011/04/29 15:33:28 $
+ * $Revision: 1.43 $
+ * $Date: 2011/05/03 10:13:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -40,7 +40,6 @@ import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.ButtonArea;
-import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.ColumnLayout;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.DelayedListener;
@@ -137,7 +136,6 @@ public class KontoauszugList extends UmsatzList
     // Tab-Container
     final TabFolder folder = new TabFolder(parent, SWT.NONE);
     folder.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-    folder.setBackground(Color.BACKGROUND.getSWTColor());
 
     {
       TabGroup tab = new TabGroup(folder,i18n.tr("Konto/Zeitraum/Suchbegriff"));
@@ -774,7 +772,10 @@ public class KontoauszugList extends UmsatzList
 
 /*********************************************************************
  * $Log: KontoauszugList.java,v $
- * Revision 1.42  2011/04/29 15:33:28  willuhn
+ * Revision 1.43  2011/05/03 10:13:15  willuhn
+ * @R Hintergrund-Farbe nicht mehr explizit setzen. Erzeugt auf Windows und insb. Mac teilweise unschoene Effekte. Besonders innerhalb von Label-Groups, die auf Windows/Mac andere Hintergrund-Farben verwenden als der Default-Hintergrund
+ *
+ * Revision 1.42  2011-04-29 15:33:28  willuhn
  * @N Neue Spalte "ausgefuehrt_am", in der das tatsaechliche Ausfuehrungsdatum von Auftraegen vermerkt wird
  *
  * Revision 1.41  2011-04-08 15:19:14  willuhn

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/CSVImportDialog.java,v $
- * $Revision: 1.8 $
- * $Date: 2010/04/25 22:14:32 $
+ * $Revision: 1.9 $
+ * $Date: 2011/05/03 10:13:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -129,7 +129,6 @@ public class CSVImportDialog extends AbstractDialog
     this.parent = new Composite(parent,SWT.NONE);
     this.parent.setLayoutData(new GridData(GridData.FILL_BOTH));
     this.parent.setLayout(new GridLayout());
-    this.parent.setBackground(Color.BACKGROUND.getSWTColor());
     reload();
     
     SimpleContainer c = new SimpleContainer(parent);
@@ -547,6 +546,9 @@ public class CSVImportDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: CSVImportDialog.java,v $
+ * Revision 1.9  2011/05/03 10:13:15  willuhn
+ * @R Hintergrund-Farbe nicht mehr explizit setzen. Erzeugt auf Windows und insb. Mac teilweise unschoene Effekte. Besonders innerhalb von Label-Groups, die auf Windows/Mac andere Hintergrund-Farben verwenden als der Default-Hintergrund
+ *
  * Revision 1.8  2010/04/25 22:14:32  willuhn
  * @N BUGZILLA 851 - CSV-Datei live neu laden
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/EmpfaengerNew.java,v $
- * $Revision: 1.20 $
- * $Date: 2011/04/08 15:19:14 $
+ * $Revision: 1.21 $
+ * $Date: 2011/05/03 10:13:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,7 +20,6 @@ import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.parts.ButtonArea;
-import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.ColumnLayout;
 import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.SimpleContainer;
@@ -86,7 +85,6 @@ public class EmpfaengerNew extends AbstractView
     GridData gd = new GridData(GridData.FILL_BOTH);
     gd.heightHint = 100; // wir verdecken sonst den Kommentar
     folder.setLayoutData(gd);
-    folder.setBackground(Color.BACKGROUND.getSWTColor());
 
     TabGroup tab = new TabGroup(folder,i18n.tr("Kontoauszüge"), false,1);
     control.getUmsatzListe().paint(tab.getComposite());
@@ -103,7 +101,10 @@ public class EmpfaengerNew extends AbstractView
 
 /**********************************************************************
  * $Log: EmpfaengerNew.java,v $
- * Revision 1.20  2011/04/08 15:19:14  willuhn
+ * Revision 1.21  2011/05/03 10:13:15  willuhn
+ * @R Hintergrund-Farbe nicht mehr explizit setzen. Erzeugt auf Windows und insb. Mac teilweise unschoene Effekte. Besonders innerhalb von Label-Groups, die auf Windows/Mac andere Hintergrund-Farben verwenden als der Default-Hintergrund
+ *
+ * Revision 1.20  2011-04-08 15:19:14  willuhn
  * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
  * @C Code-Cleanup
  *

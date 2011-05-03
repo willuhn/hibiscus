@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/PassportLoadDialog.java,v $
- * $Revision: 1.7 $
- * $Date: 2008/02/27 16:12:57 $
+ * $Revision: 1.8 $
+ * $Date: 2011/05/03 10:13:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -102,7 +102,6 @@ public class PassportLoadDialog extends PasswordDialog {
         String text = i18n.tr("Schlüssel-Datei: {0}",filename);
 
         final Label comment = new Label(parent,SWT.WRAP);
-        comment.setBackground(Color.BACKGROUND.getSWTColor());
         comment.setText(text);
         comment.setForeground(Color.COMMENT.getSWTColor());
         comment.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -147,6 +146,9 @@ public class PassportLoadDialog extends PasswordDialog {
 
 /**********************************************************************
  * $Log: PassportLoadDialog.java,v $
+ * Revision 1.8  2011/05/03 10:13:15  willuhn
+ * @R Hintergrund-Farbe nicht mehr explizit setzen. Erzeugt auf Windows und insb. Mac teilweise unschoene Effekte. Besonders innerhalb von Label-Groups, die auf Windows/Mac andere Hintergrund-Farben verwenden als der Default-Hintergrund
+ *
  * Revision 1.7  2008/02/27 16:12:57  willuhn
  * @N Passwort-Dialog fuer Schluesseldiskette mit mehr Informationen (Konto, Dateiname)
  *

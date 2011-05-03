@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTypChart.java,v $
- * $Revision: 1.10 $
- * $Date: 2010/11/24 16:27:18 $
+ * $Revision: 1.11 $
+ * $Date: 2011/05/03 10:13:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,7 +24,6 @@ import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
-import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
@@ -135,7 +134,6 @@ public class UmsatzTypChart implements Part
       GridData gridData = new GridData(GridData.FILL_BOTH);
       gridData.horizontalSpan = 2;
       comp.setLayoutData(gridData);
-      comp.setBackground(Color.BACKGROUND.getSWTColor());
 
       GridLayout layout = new GridLayout(2,true);
       layout.horizontalSpacing = 0;
@@ -162,7 +160,10 @@ public class UmsatzTypChart implements Part
 
 /*********************************************************************
  * $Log: UmsatzTypChart.java,v $
- * Revision 1.10  2010/11/24 16:27:18  willuhn
+ * Revision 1.11  2011/05/03 10:13:15  willuhn
+ * @R Hintergrund-Farbe nicht mehr explizit setzen. Erzeugt auf Windows und insb. Mac teilweise unschoene Effekte. Besonders innerhalb von Label-Groups, die auf Windows/Mac andere Hintergrund-Farben verwenden als der Default-Hintergrund
+ *
+ * Revision 1.10  2010-11-24 16:27:18  willuhn
  * @R Eclipse BIRT komplett rausgeworden. Diese unsaegliche Monster ;)
  * @N Stattdessen verwenden wir jetzt SWTChart (http://www.swtchart.org). Das ist statt den 6MB von BIRT sagenhafte 250k gross
  *

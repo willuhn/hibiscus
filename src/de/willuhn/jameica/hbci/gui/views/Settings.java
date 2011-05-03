@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Settings.java,v $
- * $Revision: 1.49 $
- * $Date: 2011/04/08 15:19:14 $
+ * $Revision: 1.50 $
+ * $Date: 2011/05/03 10:13:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,7 +22,6 @@ import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.parts.ButtonArea;
-import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.PassportDetail;
@@ -131,7 +130,6 @@ public class Settings extends AbstractView
     
     this.folder = new TabFolder(getParent(), SWT.NONE);
     this.folder.setLayoutData(new GridData(GridData.FILL_BOTH));
-    this.folder.setBackground(Color.BACKGROUND.getSWTColor());
     return this.folder;
   }
 
@@ -149,7 +147,10 @@ public class Settings extends AbstractView
 
 /**********************************************************************
  * $Log: Settings.java,v $
- * Revision 1.49  2011/04/08 15:19:14  willuhn
+ * Revision 1.50  2011/05/03 10:13:15  willuhn
+ * @R Hintergrund-Farbe nicht mehr explizit setzen. Erzeugt auf Windows und insb. Mac teilweise unschoene Effekte. Besonders innerhalb von Label-Groups, die auf Windows/Mac andere Hintergrund-Farben verwenden als der Default-Hintergrund
+ *
+ * Revision 1.49  2011-04-08 15:19:14  willuhn
  * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
  * @C Code-Cleanup
  *

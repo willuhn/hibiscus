@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SparQuote.java,v $
- * $Revision: 1.29 $
- * $Date: 2011/04/08 15:19:14 $
+ * $Revision: 1.30 $
+ * $Date: 2011/05/03 10:13:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -40,7 +40,6 @@ import de.willuhn.jameica.gui.input.IntegerInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.TablePart;
-import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.gui.util.TabGroup;
@@ -232,7 +231,6 @@ public class SparQuote implements Part
     
     TabFolder folder = new TabFolder(parent, SWT.NONE);
     folder.setLayoutData(new GridData(GridData.FILL_BOTH));
-    folder.setBackground(Color.BACKGROUND.getSWTColor());
 
     try
     {
@@ -508,7 +506,10 @@ public class SparQuote implements Part
 
 /*********************************************************************
  * $Log: SparQuote.java,v $
- * Revision 1.29  2011/04/08 15:19:14  willuhn
+ * Revision 1.30  2011/05/03 10:13:15  willuhn
+ * @R Hintergrund-Farbe nicht mehr explizit setzen. Erzeugt auf Windows und insb. Mac teilweise unschoene Effekte. Besonders innerhalb von Label-Groups, die auf Windows/Mac andere Hintergrund-Farben verwenden als der Default-Hintergrund
+ *
+ * Revision 1.29  2011-04-08 15:19:14  willuhn
  * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
  * @C Code-Cleanup
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzTypTree.java,v $
- * $Revision: 1.14 $
- * $Date: 2011/04/12 21:16:47 $
+ * $Revision: 1.15 $
+ * $Date: 2011/05/03 10:13:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,7 +26,6 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.TreePart;
-import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
@@ -107,7 +106,6 @@ public class UmsatzTypTree extends AbstractView
       }
     });
     folder.setLayoutData(new GridData(GridData.FILL_BOTH));
-    folder.setBackground(Color.BACKGROUND.getSWTColor());
     
     TabGroup tg1 = new TabGroup(folder,i18n.tr("Tabellarisch"));
     TreePart tree = control.getTree();
@@ -122,7 +120,10 @@ public class UmsatzTypTree extends AbstractView
 }
 /*******************************************************************************
  * $Log: UmsatzTypTree.java,v $
- * Revision 1.14  2011/04/12 21:16:47  willuhn
+ * Revision 1.15  2011/05/03 10:13:15  willuhn
+ * @R Hintergrund-Farbe nicht mehr explizit setzen. Erzeugt auf Windows und insb. Mac teilweise unschoene Effekte. Besonders innerhalb von Label-Groups, die auf Windows/Mac andere Hintergrund-Farben verwenden als der Default-Hintergrund
+ *
+ * Revision 1.14  2011-04-12 21:16:47  willuhn
  * @N BUGZILLA 629 - statt FocusListener jetzt SelectionListener
  *
  * Revision 1.13  2011-04-08 15:19:13  willuhn
