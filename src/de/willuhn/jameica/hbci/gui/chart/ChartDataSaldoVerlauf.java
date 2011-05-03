@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/ChartDataSaldoVerlauf.java,v $
- * $Revision: 1.18 $
- * $Date: 2011/05/02 14:43:41 $
+ * $Revision: 1.19 $
+ * $Date: 2011/05/03 08:03:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -75,7 +75,12 @@ public class ChartDataSaldoVerlauf extends AbstractChartDataSaldo
     // wir den letzten Umsatz, der vor diesem Tag liegt, da der dort
     // angegebene Saldo ja zum gesuchten Tag noch gilt.
 
-    SaldoFinder finder = new SaldoFinder(list,KontoUtil.getAnfangsSaldo(this.konto,start)); // BUGZILLA 1036
+    // BUGZILLA 1036
+    double startSaldo = 0.0d;
+    if (this.konto != null)
+      startSaldo = this.konto.getNumUmsaetze() > 0 ? KontoUtil.getAnfangsSaldo(this.konto,start) : this.konto.getSaldo();
+    
+    SaldoFinder finder = new SaldoFinder(list,startSaldo);
     this.data = new ArrayList<Saldo>();
     
     Calendar cal = Calendar.getInstance();
@@ -108,7 +113,10 @@ public class ChartDataSaldoVerlauf extends AbstractChartDataSaldo
 
 /*********************************************************************
  * $Log: ChartDataSaldoVerlauf.java,v $
- * Revision 1.18  2011/05/02 14:43:41  willuhn
+ * Revision 1.19  2011/05/03 08:03:17  willuhn
+ * @C BUGZILLA 1036
+ *
+ * Revision 1.18  2011-05-02 14:43:41  willuhn
  * @B BUGZILLA 1036
  *
  * Revision 1.17  2011-01-20 17:13:21  willuhn
