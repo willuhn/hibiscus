@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/FirstStart.java,v $
- * $Revision: 1.9 $
- * $Date: 2011/04/29 11:38:58 $
+ * $Revision: 1.10 $
+ * $Date: 2011/05/03 11:07:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,8 +18,9 @@ import java.rmi.RemoteException;
 import org.eclipse.swt.widgets.Composite;
 
 import de.willuhn.jameica.gui.boxes.AbstractBox;
-import de.willuhn.jameica.gui.parts.FormTextPart;
-import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.parts.ButtonArea;
+import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.KontoList;
@@ -84,18 +85,16 @@ public class FirstStart extends AbstractBox
    */
   public void paint(Composite parent) throws RemoteException
   {
-    FormTextPart text = new FormTextPart();
-    text.setText("<form><p><span color=\"header\" font=\"header\">" + i18n.tr("Herzlich willkommen") + "</span></p>" +
-        "<p>" + i18n.tr("Sie starten Hibiscus zum ersten Mal. Bitte richten Sie " +
+    Container container = new SimpleContainer(parent);
+    container.addText(i18n.tr("Sie starten Hibiscus zum ersten Mal.\n\nBitte richten Sie " +
         "zunächst einen Bank-Zugang (Chipkarte, Schlüsseldiskette oder PIN/TAN) ein. " +
         "Wechseln Sie anschließend zur Konten-Übersicht und prüfen Sie die angelegten Konten. " +
-        "Falls sie nicht automatisch angelegt wurden, dann erstellen Sie das Konto bitte manuell.") + "</p></form>");
-    
-    text.paint(parent);
-    
-    ButtonArea buttons = new ButtonArea(parent,2);
+        "Falls sie nicht automatisch angelegt wurden, dann erstellen Sie das Konto bitte manuell."),true);
+
+    ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Bank-Zugang einrichten >>"),new PassportDetail(),null,true,"seahorse-preferences.png");
     buttons.addButton(i18n.tr("Konten-Übersicht"),new KontoList(),null,false,"system-file-manager.png");
+    container.addButtonArea(buttons);
   }
 
   /**
@@ -103,14 +102,17 @@ public class FirstStart extends AbstractBox
    */
   public int getHeight()
   {
-    return 200;
+    return 160;
   }
 }
 
 
 /*********************************************************************
  * $Log: FirstStart.java,v $
- * Revision 1.9  2011/04/29 11:38:58  willuhn
+ * Revision 1.10  2011/05/03 11:07:39  willuhn
+ * @N Styling-Fixes fuer Windows (Background)
+ *
+ * Revision 1.9  2011-04-29 11:38:58  willuhn
  * @N Konfiguration der HBCI-Medien ueberarbeitet. Es gibt nun direkt in der Navi einen Punkt "Bank-Zugaenge", in der alle Medien angezeigt werden.
  *
  * Revision 1.8  2010-09-29 22:03:05  willuhn
