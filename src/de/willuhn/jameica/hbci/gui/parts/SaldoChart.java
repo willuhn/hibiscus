@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SaldoChart.java,v $
- * $Revision: 1.5 $
- * $Date: 2011/04/08 15:19:14 $
+ * $Revision: 1.6 $
+ * $Date: 2011/05/04 12:04:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,10 +26,12 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.ResultSetExtractor;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.Part;
+import de.willuhn.jameica.gui.input.ScaleInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.ColumnLayout;
 import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
@@ -65,7 +67,6 @@ public class SaldoChart implements Part
   private KontoInput kontoauswahl = null;
   private UmsatzDaysInput range   = null;
   private Listener reloadListener = new ReloadListener();
-  private Listener rangeListener  = new RangeListener();
   
   private LineChart chart         = null;
 
@@ -136,20 +137,13 @@ public class SaldoChart implements Part
    * @return Auswahl fuer den Zeitraum.
    * @throws RemoteException
    */
-  private UmsatzDaysInput getRange() throws RemoteException
+  private ScaleInput getRange() throws RemoteException
   {
     if (this.range != null)
       return this.range;
 
     this.range = new UmsatzDaysInput();
-    this.range.addListener(this.reloadListener);
-    if (!this.tiny)
-    {
-      this.range.addListener(this.rangeListener);
-      // einmal ausloesen
-      this.rangeListener.handleEvent(null);
-    }
-    
+    this.range.addListener(new DelayedListener(300,this.reloadListener));
     return this.range;
   }
 
@@ -315,40 +309,16 @@ public class SaldoChart implements Part
       }
     }
   }
-  
-  /**
-   * Hilfsklasse zum Aktualisieren des Kommentars hinter dem Zeitraum.
-   */
-  private class RangeListener implements Listener
-  {
-    public void handleEvent(Event event)
-    {
-      try
-      {
-        int start = ((Integer)range.getValue()).intValue();
-        if (start > 0)
-        {
-          long d = start * 24l * 60l * 60l * 1000l;
-          Date date = DateUtil.startOfDay(new Date(System.currentTimeMillis() - d));
-          range.setComment(i18n.tr("ab {0}",HBCI.DATEFORMAT.format(date)));
-        }
-        else
-        {
-          range.setComment("");
-        }
-      }
-      catch (Exception e)
-      {
-        Logger.error("unable to update comment",e);
-      }
-    }
-  }
 }
 
 
 /*********************************************************************
  * $Log: SaldoChart.java,v $
- * Revision 1.5  2011/04/08 15:19:14  willuhn
+ * Revision 1.6  2011/05/04 12:04:40  willuhn
+ * @N Zeitraum in Umsatzliste und Saldo-Chart kann jetzt freier und bequemer ueber einen Schieberegler eingestellt werden
+ * @B Dispose-Checks in Umsatzliste
+ *
+ * Revision 1.5  2011-04-08 15:19:14  willuhn
  * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
  * @C Code-Cleanup
  *

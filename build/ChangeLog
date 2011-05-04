@@ -1,5 +1,7 @@
 2011-??-?? Version 1.13.0
 
+  * NEW: 0080 Zeitraum in Umsatzliste und Saldo-Chart kann jetzt freier und bequemer
+              ueber einen Schieberegler eingestellt werden
   * BUG: 0079 Titel des Charts wurde bei Aenderung des Zeitraumes nicht aktualisiert
   * NEW: 0078 SWTChart aktualisiert auf 0.7
   * CHG: 0077 Auswahl des Kartenleser-Presets ueber Combo-Box statt DialogInput

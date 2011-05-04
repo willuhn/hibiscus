@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/UmsatzDaysInput.java,v $
- * $Revision: 1.6 $
- * $Date: 2010/08/11 16:06:04 $
+ * $Revision: 1.7 $
+ * $Date: 2011/05/04 12:04:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,26 +14,32 @@
 package de.willuhn.jameica.hbci.gui.input;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
+import java.util.Date;
 
-import de.willuhn.datasource.GenericIterator;
-import de.willuhn.datasource.GenericObject;
-import de.willuhn.datasource.pseudo.PseudoIterator;
-import de.willuhn.jameica.gui.input.SelectInput;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+
+import de.willuhn.jameica.gui.input.ScaleInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.Settings;
+import de.willuhn.jameica.util.DateUtil;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
 /**
- * Combo-Box, fuer die Auswahl der anzuzeigenden Umsatz-Tage.
- * @author willuhn
+ * Auswahlfeld fuer die Anzahl der anzuzeigenden Tage.
  */
-public class UmsatzDaysInput extends SelectInput
+public class UmsatzDaysInput extends ScaleInput
 {
-  private static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  private static Settings settings = new Settings(UmsatzDaysInput.class);
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  private final static Settings settings = new Settings(UmsatzDaysInput.class);
+  
+  private Listener listener = new RangeListener();
 
   /**
    * ct.
@@ -42,25 +48,39 @@ public class UmsatzDaysInput extends SelectInput
   public UmsatzDaysInput() throws RemoteException
   {
     // BUGZILLA 258
-    super(init(),new DayObject(getDefaultDays()));
+    super(getDefaultDays() == -1 ? 1000 : getDefaultDays()); // wir muessen das "-1" wieder zurueck auf 1000 mappen
     this.setName(i18n.tr("Zeitraum"));
+    this.setComment(""); // Damit wir das Datum noch hinzufuegen koennen
+    this.setScaling(1,1000,1,10);
+    this.addListener(this.listener);
+    this.listener.handleEvent(null); // einmal initial ausloesen
+  }
+  
+  /**
+   * @see de.willuhn.jameica.gui.input.ScaleInput#getControl()
+   */
+  public Control getControl()
+  {
+    Control c = super.getControl();
+    c.addDisposeListener(new DisposeListener() {
+      public void widgetDisposed(DisposeEvent e)
+      {
+        settings.setAttribute("days",(Integer) getValue());
+      }
+    });
+    return c;
   }
 
   /**
-   * @return initialisiert die Liste der Optionen.
-   * @throws RemoteException
+   * Ueberschrieben, damit wir "-1" fuer "Alle Umsaetze" liefern koennen.
+   * @see de.willuhn.jameica.gui.input.ScaleInput#getValue()
    */
-  private static GenericIterator init() throws RemoteException
+  public Object getValue()
   {
-
-    ArrayList l = new ArrayList();
-    l.add(new DayObject(30));
-    l.add(new DayObject(60));
-    l.add(new DayObject(120));
-    l.add(new DayObject(365));
-    l.add(new DayObject(-1));
-    
-    return PseudoIterator.fromArray((DayObject[])l.toArray(new DayObject[l.size()]));
+    int i = (Integer) super.getValue();
+    if (i > 999)
+      return -1;
+    return i;
   }
 
   /**
@@ -69,117 +89,53 @@ public class UmsatzDaysInput extends SelectInput
    */
   public final static int getDefaultDays()
   {
-    return settings.getInt("days",HBCIProperties.UMSATZ_DEFAULT_DAYS);    
+    return settings.getInt("days",HBCIProperties.UMSATZ_DEFAULT_DAYS);
   }
-  
-  /**
-   * @see de.willuhn.jameica.gui.input.Input#getValue()
-   */
-  public Object getValue()
-  {
-    DayObject o = (DayObject) super.getValue();
-    if (o == null)
-      return new Integer(-1);
-    settings.setAttribute("days",o.days);
-    return new Integer(o.days);
-  }
-  
-  /**
-   * Hilfs-Objekt zur Anzeige der Labels.
-   * @author willuhn
-   */
-  private static class DayObject implements GenericObject
-  {
-    private int days = -1;
-    private String label = null;
 
-    /**
-     * ct.
-     * @param days Anzahl der Tage.
-     * @param label Label.
-     */
-    private DayObject(int days)
+  /**
+   * Hilfsklasse zum Aktualisieren des Kommentars hinter dem Zeitraum.
+   */
+  private class RangeListener implements Listener
+  {
+    public void handleEvent(Event event)
     {
-      this.days = days;
-      
-      switch (days)
+      try
       {
-        case 1:
-          this.label = i18n.tr("1 Tag");
-          break;
-        case -1:
-          this.label = i18n.tr("alle Umsätze");
-          break;
-        default:
-          this.label = i18n.tr("{0} Tage",""+days);
+        int start = ((Integer)getValue()).intValue();
+        if (start == 1)
+        {
+          setComment(i18n.tr("seit gestern"));
+        }
+        else if (start == -1)
+        {
+          setComment(i18n.tr("Alle Umsätze"));
+        }
+        else if (start > 0)
+        {
+          long d = start * 24l * 60l * 60l * 1000l;
+          Date date = DateUtil.startOfDay(new Date(System.currentTimeMillis() - d));
+          setComment(i18n.tr("ab {0} ({1} Tage)",HBCI.DATEFORMAT.format(date),Integer.toString(start)));
+        }
+        else
+        {
+          setComment("");
+        }
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to update comment",e);
       }
     }
-    
-    /**
-     * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
-     */
-    public Object getAttribute(String arg0) throws RemoteException
-    {
-      return label;
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#getAttributeNames()
-     */
-    public String[] getAttributeNames() throws RemoteException
-    {
-      return new String[]{"name"};
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#getID()
-     */
-    public String getID() throws RemoteException
-    {
-      return "" + days;
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
-     */
-    public String getPrimaryAttribute() throws RemoteException
-    {
-      return "name";
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
-     */
-    public boolean equals(GenericObject arg0) throws RemoteException
-    {
-      if (arg0 == null || !(arg0 instanceof DayObject))
-        return false;
-      
-      return this.getID().equals(arg0.getID());
-    }
-    
   }
 }
 
 
 /*********************************************************************
  * $Log: UmsatzDaysInput.java,v $
- * Revision 1.6  2010/08/11 16:06:04  willuhn
+ * Revision 1.7  2011/05/04 12:04:40  willuhn
+ * @N Zeitraum in Umsatzliste und Saldo-Chart kann jetzt freier und bequemer ueber einen Schieberegler eingestellt werden
+ * @B Dispose-Checks in Umsatzliste
+ *
+ * Revision 1.6  2010-08-11 16:06:04  willuhn
  * @N BUGZILLA 783 - Saldo-Chart ueber alle Konten
- *
- * Revision 1.5  2006/08/28 22:03:27  willuhn
- * @B UmsatzChart - Anzahl der Default-Tage
- *
- * Revision 1.4  2006/08/08 21:18:21  willuhn
- * @B Bug 258
- *
- * Revision 1.3  2006/03/30 22:22:32  willuhn
- * @B bug 217
- *
- * Revision 1.2  2006/03/15 18:01:30  willuhn
- * @N AbstractHBCIJob#getName
- *
- * Revision 1.1  2006/03/09 18:24:05  willuhn
- * @N Auswahl der Tage in Umsatz-Chart
- *
  *********************************************************************/

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.73 $
- * $Date: 2011/05/03 16:46:10 $
+ * $Revision: 1.74 $
+ * $Date: 2011/05/04 12:04:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -51,6 +51,7 @@ import de.willuhn.jameica.gui.input.ButtonInput;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Color;
+import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.gui.util.SWTUtil;
@@ -95,6 +96,8 @@ public class UmsatzList extends TablePart implements Extendable
   
   private KL kl                     = null;
   private boolean filter            = true;
+  
+  private boolean disposed          = false;
   
   protected static de.willuhn.jameica.system.Settings mySettings = new de.willuhn.jameica.system.Settings(UmsatzList.class);
 
@@ -278,8 +281,23 @@ public class UmsatzList extends TablePart implements Extendable
     parent.addDisposeListener(new DisposeListener() {
       public void widgetDisposed(DisposeEvent e)
       {
+        disposed = true;
         Application.getMessagingFactory().unRegisterMessageConsumer(mcChanged);
         Application.getMessagingFactory().unRegisterMessageConsumer(mcNew);
+
+        // Fuer den Fall, dass wir verlassen worden, bevor das letzte Aktualisierungstimeout
+        // ausgelaufen war. Das wuerde sonst ausgeloest werden, obwohl die Widgets alle disposed sind
+        if (kl != null && kl.timeout != null)
+        {
+          try
+          {
+            kl.timeout.interrupt();
+          }
+          catch (Exception ex)
+          {
+            // ignore
+          }
+        }
       }
     });
     
@@ -291,12 +309,12 @@ public class UmsatzList extends TablePart implements Extendable
       LabelGroup group = new LabelGroup(parent,i18n.tr("Anzeige einschränken"));
 
       this.days = new UmsatzDaysInput();
-      this.days.addListener(new Listener() {
+      this.days.addListener(new DelayedListener(300, new Listener() {
         public void handleEvent(Event event)
         {
           kl.process();
         }
-      });
+      }));
       group.addInput(this.days);
 
       // Eingabe-Feld fuer die Suche mit Button hinten dran.
@@ -539,6 +557,9 @@ public class UmsatzList extends TablePart implements Extendable
     
     private synchronized void process()
     {
+      if (disposed)
+        return;
+      
       GUI.getView().setLogoText(i18n.tr("Aktualisiere Daten..."));
       GUI.startSync(new Runnable()
       {
@@ -800,7 +821,11 @@ public class UmsatzList extends TablePart implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
- * Revision 1.73  2011/05/03 16:46:10  willuhn
+ * Revision 1.74  2011/05/04 12:04:40  willuhn
+ * @N Zeitraum in Umsatzliste und Saldo-Chart kann jetzt freier und bequemer ueber einen Schieberegler eingestellt werden
+ * @B Dispose-Checks in Umsatzliste
+ *
+ * Revision 1.73  2011-05-03 16:46:10  willuhn
  * @R Flatstyle entfernt - war eh nicht mehr zeitgemaess und rendere auf aktuellen OS sowieso haesslich
  * @C SelectInput verwendet jetzt Combo statt CCombo - das sieht auf den verschiedenen OS besser aus
  *
