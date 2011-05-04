@@ -1,5 +1,6 @@
 2011-??-?? Version 1.13.0
 
+  * BUG: 0079 Titel des Charts wurde bei Aenderung des Zeitraumes nicht aktualisiert
   * NEW: 0078 SWTChart aktualisiert auf 0.7
   * CHG: 0077 Auswahl des Kartenleser-Presets ueber Combo-Box statt DialogInput
   * NEW: 0076 Ausfuehrungsdatum von Auftraegen mit drucken
