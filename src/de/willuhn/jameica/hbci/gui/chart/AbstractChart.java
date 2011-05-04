@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/AbstractChart.java,v $
- * $Revision: 1.8 $
- * $Date: 2010/11/24 16:27:17 $
+ * $Revision: 1.9 $
+ * $Date: 2011/05/04 10:38:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -52,6 +52,8 @@ public abstract class AbstractChart<T extends ChartData> implements Chart<T>
   public void setTitle(String title)
   {
     this.title = title;
+    if (this.chart != null && !this.chart.isDisposed())
+      this.chart.getTitle().setText(this.title);
   }
 
   /**
@@ -186,7 +188,10 @@ public abstract class AbstractChart<T extends ChartData> implements Chart<T>
 
 /*********************************************************************
  * $Log: AbstractChart.java,v $
- * Revision 1.8  2010/11/24 16:27:17  willuhn
+ * Revision 1.9  2011/05/04 10:38:40  willuhn
+ * @B Titel des Charts wurde bei Aenderung des Zeitraumes nicht aktualisiert
+ *
+ * Revision 1.8  2010-11-24 16:27:17  willuhn
  * @R Eclipse BIRT komplett rausgeworden. Diese unsaegliche Monster ;)
  * @N Stattdessen verwenden wir jetzt SWTChart (http://www.swtchart.org). Das ist statt den 6MB von BIRT sagenhafte 250k gross
  *
