@@ -138,11 +138,6 @@
 
     <copy file="plugin.xml" todir="${project.zipdir}" />
     <copy file="${build.dir}/COPYING" todir="${project.zipdir}" />
-    <copy todir="${project.zipdir}/doc">
-      <fileset dir="${doc.dir}">
-        <include name="hibiscus_*" />
-      </fileset>
-    </copy>
 
 
     <!-- Jetzt muessen wir noch das ZIP-File erzeugen und signieren -->
@@ -167,7 +162,6 @@
         <include name=".classpath" />
         <include name="plugin.xml" />
         <include name="${update.dir}/**" />
-        <include name="${doc.dir}/**" />
         <include name="${lib.dir}/**" />
         <include name="${src.dir}/**" />
         <include name="${icon.dir}/**" />
