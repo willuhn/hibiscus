@@ -5,8 +5,6 @@
 	
 	<p>
 		In dieser Liste sehen Sie alle von Ihnen eingegebenen SEPA-Überweisungen.
-		Bereits ausgeführte Buchungen werden in der Spalte <b>Status</b>
-		entsprechend markiert.
 	</p>
 	
 	<p>

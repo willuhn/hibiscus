@@ -5,7 +5,5 @@
 	
 	<p>
 		In dieser Liste sehen Sie alle existierenden Sammel-Überweisungen.
-		In der Spalte <b>Status</b> sehen Sie, ob die Überweisung
-		bereits bei Ihrer Bank eingereicht wurde.
 	</p>
 </form>

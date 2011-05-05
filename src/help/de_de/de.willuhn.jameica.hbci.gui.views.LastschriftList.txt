@@ -5,7 +5,5 @@
 	
 	<p>
 		In dieser Liste sehen Sie alle existierenden Lastschriften.
-		In der Spalte <b>Status</b> sehen Sie, ob die Lastschrift
-		bereits bei Ihrer Bank eingereicht wurde.
 	</p>
 </form>
