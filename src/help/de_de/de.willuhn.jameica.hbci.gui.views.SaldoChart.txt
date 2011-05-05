@@ -1,0 +1,9 @@
+<form>
+	<p>
+		<span color="header" font="header">Saldo im Verlauf</span>
+	</p>
+	
+	<p>
+	  Diese Auswertung stellt den Saldo im zeitlichen Verlauf dar.
+	</p>
+</form>

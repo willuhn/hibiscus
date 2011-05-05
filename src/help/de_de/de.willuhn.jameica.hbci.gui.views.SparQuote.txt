@@ -7,8 +7,8 @@
 	  Diese Auswertung stellt die monatlichen Ausgaben den Einnahmen
 	  gegenüber und bildet den sich daraus ergebenden Saldo grafisch
 	  im zeitlichen Verlauf ab. Die Linie <b>Trend</b>
-	  stellt einen statistischen Mittelwert des Saldos dar. Mit Hilfe
-	  dieser können Sie einen Trend erkennen, in den der Saldo
-	  des Kontos tendiert.
+    stellt den 8-Monats-Durchschnitt dar. Mit Hilfe
+    dieser können Sie einen Trend erkennen, in den der Saldo
+    des Kontos tendiert.
 	</p>
 </form>

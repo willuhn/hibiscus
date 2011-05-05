@@ -6,7 +6,7 @@
 	<p>
 		In dieser Liste sehen Sie alle Umsätze, die den angegebenen Kriterien
 		entsprechen. 
-		Wählen Sie <b>Kontoauszug exportieren...</b>, um die angezeigten Umsätze
+		Wählen Sie <b>Exportieren...</b>, um die markierten Umsätze
 		z.Bsp. in einer PDF- oder CSV-Datei zu speichern.
 	</p>
 </form>

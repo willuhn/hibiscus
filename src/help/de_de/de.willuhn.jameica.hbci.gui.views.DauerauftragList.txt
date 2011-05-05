@@ -12,6 +12,6 @@
 	
 	<p>
 		Abgelaufene Daueraufträge (Datum der letzten Zahlung überschritten)
-		werden eingegraut dargestellt.
+		werden in grauer Schrift dargestellt.
 	</p>
 </form>
