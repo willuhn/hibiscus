@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/VelocityExporter.java,v $
- * $Revision: 1.19 $
- * $Date: 2011/03/13 23:44:39 $
+ * $Revision: 1.20 $
+ * $Date: 2011/05/05 09:06:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -66,11 +66,12 @@ public class VelocityExporter implements Exporter
     Logger.debug("preparing velocity context");
     VelocityContext context = new VelocityContext();
 
-    context.put("datum",        new Date());
-    context.put("charset",      System.getProperty("file.encoding")); // BUGZILLA 328
-    context.put("dateformat",   HBCI.DATEFORMAT);
-    context.put("decimalformat",HBCI.DECIMALFORMAT);
-    context.put("objects",      objects);
+    context.put("datum",         new Date());
+    context.put("charset",       System.getProperty("file.encoding")); // BUGZILLA 328
+    context.put("dateformat",    HBCI.DATEFORMAT);
+    context.put("longdateformat",HBCI.LONGDATEFORMAT);
+    context.put("decimalformat", HBCI.DECIMALFORMAT);
+    context.put("objects",       objects);
     
     BufferedWriter writer = null;
     try
@@ -236,7 +237,10 @@ public class VelocityExporter implements Exporter
 
 /**********************************************************************
  * $Log: VelocityExporter.java,v $
- * Revision 1.19  2011/03/13 23:44:39  willuhn
+ * Revision 1.20  2011/05/05 09:06:47  willuhn
+ * @N Neues Ausfuehrungsdatum auch mit in HTML und CSV exportieren
+ *
+ * Revision 1.19  2011-03-13 23:44:39  willuhn
  * @N Support fuer mehrere Velocity-Formate pro Typ ("Variant") - siehe Mail von Flo vom 13.03.2011
  *
  * Revision 1.18  2010-11-02 23:01:04  willuhn
