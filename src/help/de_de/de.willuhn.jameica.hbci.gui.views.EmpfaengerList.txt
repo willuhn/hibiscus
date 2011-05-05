@@ -4,7 +4,7 @@
 	</p>
 	
 	<p>
-	  Klicken Sie auf <b>neue Adresse</b> um eine
+	  Klicken Sie auf <b>Neue Adresse</b> um eine
 	  Bankverbindung zu Ihrem Adressbuch hinzuzufügen.
 	</p>
 	
