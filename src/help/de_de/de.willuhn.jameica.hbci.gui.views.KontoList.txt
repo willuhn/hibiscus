@@ -4,12 +4,9 @@
 	</p>
 
   <p>
-    Klicken Sie auf <b>Neue HBCI-Konfiguration anlegen...</b>, um einen
-    neuen Bankzugang mittels PIN/TAN, Chipkarte oder Schlüsseldiskette anzulegen. 
-  </p>
-  <p>
-		Wählen Sie anschließend <b>Konten aus HBCI-Konfiguration laden...</b>,
-		um die zugeordneten Konten automatisch zu ermitteln. Bereits eingerichtete Konten
+		Klicken Sie auf <b>Konten aus HBCI-Konfiguration laden...</b>,
+		um die Konten zu einem Bank-Zugang automatisch zu ermitteln - vergessen Sie nicht,
+		vorher einen Bank-Zugang anzulegen. Bereits eingerichtete Konten
 		werden hierbei nicht überschrieben.
 	</p>
 	<p>
