@@ -146,9 +146,11 @@
           </td>
         </tr>
         <tr>
-          <td class="left">Status:</td>
+          <td class="left">Ausgeführt:</td>
           <td class="ausgefuehrt_$t.ausgefuehrt()">
-            #if($t.ausgefuehrt())
+            #if($t.ausfuehrungsdatum)
+              am $!longdateformat.format($t.ausfuehrungsdatum)
+            #elseif($t.ausgefuehrt())
               zur Ausführung an die Bank übermittelt
             #else
               offen

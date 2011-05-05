@@ -183,7 +183,7 @@
           <th>Konto</th>
           <th>Bezeichnung</th>
           <th style="text-align:right">Summe</th>
-          <th>Status</th>
+          <th>Ausgeführt</th>
         </tr>
         <tr class="ausgefuehrt_$t.ausgefuehrt()">
           <td>$!dateformat.format($t.termin)</td>
@@ -191,10 +191,12 @@
           <td>$!t.bezeichnung</td>
           <td style="text-align:right">$!decimalformat.format($t.Summe) $!t.konto.waehrung</td>
           <td>
-            #if($t.ausgefuehrt())
-              ausgeführt
+            #if($t.ausfuehrungsdatum)
+              $!longdateformat.format($t.ausfuehrungsdatum)
+            #elseif($t.ausgefuehrt())
+              Ja
             #else
-              offen
+              Nein
             #end
           </td>
         </tr>

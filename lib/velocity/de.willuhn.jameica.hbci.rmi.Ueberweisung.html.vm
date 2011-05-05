@@ -191,10 +191,12 @@
             #end
           </td>
           <td>
-            #if($t.ausgefuehrt())
-              ausgeführt
+            #if($t.ausfuehrungsdatum)
+              $!longdateformat.format($t.ausfuehrungsdatum)
+            #elseif($t.ausgefuehrt())
+              Ja
             #else
-              offen
+              Nein
             #end
           </td>
         </tr>
