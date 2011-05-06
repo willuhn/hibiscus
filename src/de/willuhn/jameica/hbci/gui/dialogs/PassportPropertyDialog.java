@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/PassportPropertyDialog.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/06/17 11:26:48 $
+ * $Revision: 1.3 $
+ * $Date: 2011/05/06 12:35:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,9 +13,6 @@
 
 package de.willuhn.jameica.hbci.gui.dialogs;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.kapott.hbci.passport.HBCIPassport;
 
@@ -27,7 +24,6 @@ import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.parts.PassportPropertyList;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -65,14 +61,6 @@ public class PassportPropertyDialog extends AbstractDialog
    */
   protected void paint(Composite parent) throws Exception
   {
-    // Dialog bei Druck auf ESC automatisch schliessen
-    parent.addKeyListener(new KeyAdapter() {
-      public void keyReleased(KeyEvent e) {
-        if (e.keyCode == SWT.ESC)
-          throw new OperationCanceledException();
-      }
-    });
-
     Container container = new SimpleContainer(parent);
     container.addText(i18n.tr("Bank-Parameter (BPD) und User-Parameter (UPD) dieses Sicherheitsmediums"),true);
     new PassportPropertyList(this.passport).paint(parent);
@@ -91,6 +79,9 @@ public class PassportPropertyDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: PassportPropertyDialog.java,v $
+ * Revision 1.3  2011/05/06 12:35:24  willuhn
+ * @R Nicht mehr noetig - macht AbstractDialog jetzt selbst
+ *
  * Revision 1.2  2010/06/17 11:26:48  willuhn
  * @B In HBCICallbackSWT wurden die RDH-Passports nicht korrekt ausgefiltert
  * @C komplettes Projekt "hbci_passport_rdh" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren

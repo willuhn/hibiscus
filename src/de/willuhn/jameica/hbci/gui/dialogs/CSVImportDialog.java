@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/CSVImportDialog.java,v $
- * $Revision: 1.9 $
- * $Date: 2011/05/03 10:13:15 $
+ * $Revision: 1.10 $
+ * $Date: 2011/05/06 12:35:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,8 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -108,14 +106,6 @@ public class CSVImportDialog extends AbstractDialog
    */
   protected void paint(Composite parent) throws Exception
   {
-    // Dialog bei Druck auf ESC automatisch schliessen
-    parent.addKeyListener(new KeyAdapter() {
-      public void keyReleased(KeyEvent e) {
-        if (e.keyCode == SWT.ESC)
-          throw new OperationCanceledException();
-      }
-    });
-
     // BUGZILLA 281
     LabelGroup options = new LabelGroup(parent,i18n.tr("Optionen"));
     options.addInput(this.getFileEncoding());
@@ -546,7 +536,10 @@ public class CSVImportDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: CSVImportDialog.java,v $
- * Revision 1.9  2011/05/03 10:13:15  willuhn
+ * Revision 1.10  2011/05/06 12:35:24  willuhn
+ * @R Nicht mehr noetig - macht AbstractDialog jetzt selbst
+ *
+ * Revision 1.9  2011-05-03 10:13:15  willuhn
  * @R Hintergrund-Farbe nicht mehr explizit setzen. Erzeugt auf Windows und insb. Mac teilweise unschoene Effekte. Besonders innerhalb von Label-Groups, die auf Windows/Mac andere Hintergrund-Farben verwenden als der Default-Hintergrund
  *
  * Revision 1.8  2010/04/25 22:14:32  willuhn

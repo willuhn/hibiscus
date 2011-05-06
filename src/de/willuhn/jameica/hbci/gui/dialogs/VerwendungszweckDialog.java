@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/VerwendungszweckDialog.java,v $
- * $Revision: 1.5 $
- * $Date: 2011/04/29 12:25:36 $
+ * $Revision: 1.6 $
+ * $Date: 2011/05/06 12:35:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,9 +15,6 @@ package de.willuhn.jameica.hbci.gui.dialogs;
 
 import java.rmi.RemoteException;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.widgets.Composite;
 
 import de.willuhn.jameica.gui.Action;
@@ -102,14 +99,6 @@ public class VerwendungszweckDialog extends AbstractDialog
    */
   protected void paint(Composite parent) throws Exception
   {
-    // Dialog bei Druck auf ESC automatisch schliessen
-    parent.addKeyListener(new KeyAdapter() {
-      public void keyReleased(KeyEvent e) {
-        if (e.keyCode == SWT.ESC)
-          throw new OperationCanceledException();
-      }
-    });
-    
     this.ewz.paint(parent);
     Container container = new SimpleContainer(parent,true);
 
@@ -147,7 +136,10 @@ public class VerwendungszweckDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: VerwendungszweckDialog.java,v $
- * Revision 1.5  2011/04/29 12:25:36  willuhn
+ * Revision 1.6  2011/05/06 12:35:24  willuhn
+ * @R Nicht mehr noetig - macht AbstractDialog jetzt selbst
+ *
+ * Revision 1.5  2011-04-29 12:25:36  willuhn
  * @N GUI-Polish
  *
  * Revision 1.4  2008/12/01 23:54:42  willuhn
