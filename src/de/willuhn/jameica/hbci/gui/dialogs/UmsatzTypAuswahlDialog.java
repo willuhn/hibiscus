@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/UmsatzTypAuswahlDialog.java,v $
- * $Revision: 1.13 $
- * $Date: 2010/03/05 23:52:27 $
+ * $Revision: 1.14 $
+ * $Date: 2011/05/06 09:05:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,8 @@ import org.eclipse.swt.widgets.Composite;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
-import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.parts.ButtonArea;
+import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.input.UmsatzTypInput;
@@ -34,7 +35,8 @@ import de.willuhn.util.I18N;
  */
 public class UmsatzTypAuswahlDialog extends AbstractDialog
 {
-  private I18N i18n          = null;
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  
   private UmsatzTyp choosen  = null;
   private int typ            = UmsatzTyp.TYP_EGAL;
   
@@ -55,9 +57,8 @@ public class UmsatzTypAuswahlDialog extends AbstractDialog
     super(position);
     this.choosen = preselected;
     this.typ = typ;
-    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-    this.setTitle(i18n.tr("Umsatz-Kategorien"));
+    this.setTitle(i18n.tr("Kategorien"));
   }
 
   /**
@@ -73,7 +74,7 @@ public class UmsatzTypAuswahlDialog extends AbstractDialog
    */
   protected void paint(Composite parent) throws Exception
   {
-    SimpleContainer group = new SimpleContainer(parent);
+    Container group = new SimpleContainer(parent);
     
     group.addText(i18n.tr("Bitte wählen Sie die zu verwendende Kategorie aus."),true);
 
@@ -82,7 +83,7 @@ public class UmsatzTypAuswahlDialog extends AbstractDialog
     
     group.addLabelPair(i18n.tr("Bezeichnung"),input);
 
-    ButtonArea buttons = new ButtonArea(parent,2);
+    ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Übernehmen"),new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -90,14 +91,16 @@ public class UmsatzTypAuswahlDialog extends AbstractDialog
         choosen = (UmsatzTyp) input.getValue();
         close();
       }
-    },null,true);
+    },null,true,"ok.png");
     buttons.addButton(i18n.tr("Abbrechen"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
         throw new OperationCanceledException();
       }
-    });
+    },null,false,"process-stop.png");
+    
+    group.addButtonArea(buttons);
   }
 
 }
@@ -105,7 +108,10 @@ public class UmsatzTypAuswahlDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: UmsatzTypAuswahlDialog.java,v $
- * Revision 1.13  2010/03/05 23:52:27  willuhn
+ * Revision 1.14  2011/05/06 09:05:35  willuhn
+ * @C Neue Buttons
+ *
+ * Revision 1.13  2010-03-05 23:52:27  willuhn
  * @C Code-Cleanup
  * @C Liste der Kategorien kann jetzt nicht mehr von aussen an UmsatzTypInput uebergeben werden
  *
@@ -120,30 +126,4 @@ public class UmsatzTypAuswahlDialog extends AbstractDialog
  *
  * Revision 1.9  2010/03/05 18:00:27  willuhn
  * @C Umsatz-Kategorien nach Nummer und anschliessend nach Name sortieren
- *
- * Revision 1.8  2008/08/29 16:46:24  willuhn
- * @N BUGZILLA 616
- *
- * Revision 1.7  2008/08/08 08:57:14  willuhn
- * @N BUGZILLA 614
- *
- * Revision 1.6  2008/08/08 08:43:41  willuhn
- * @N BUGZILLA 614
- *
- * Revision 1.5  2008/08/08 08:30:35  willuhn
- * @B 544
- *
- * Revision 1.4  2007/12/03 10:00:27  willuhn
- * @N Umsatz-Kategorien nach Name sortieren, wenn keine Nummer angegeben
- *
- * Revision 1.3  2007/03/18 08:13:40  jost
- * Sortierte Anzeige der Umsatz-Kategorien.
- *
- * Revision 1.2  2006/12/29 14:28:47  willuhn
- * @B Bug 345
- * @B jede Menge Bugfixes bei SQL-Statements mit Valuta
- *
- * Revision 1.1  2006/11/30 23:48:40  willuhn
- * @N Erste Version der Umsatz-Kategorien drin
- *
  **********************************************************************/
