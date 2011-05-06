@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/KontoAuswahlDialog.java,v $
- * $Revision: 1.8 $
- * $Date: 2008/12/02 10:52:23 $
+ * $Revision: 1.9 $
+ * $Date: 2011/05/06 12:35:48 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,21 +12,31 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.dialogs;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.widgets.Composite;
+import java.rmi.RemoteException;
+import java.util.Date;
 
-import de.willuhn.datasource.GenericIterator;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.kapott.hbci.manager.HBCIUtils;
+
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
-import de.willuhn.jameica.gui.util.ButtonArea;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.input.LabelInput;
+import de.willuhn.jameica.gui.parts.Button;
+import de.willuhn.jameica.gui.parts.ButtonArea;
+import de.willuhn.jameica.gui.util.Color;
+import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.parts.KontoList;
+import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
+import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -35,13 +45,20 @@ import de.willuhn.util.I18N;
  */
 public class KontoAuswahlDialog extends AbstractDialog
 {
-
-	private I18N i18n;
-  private String text = null;
-	private Konto choosen = null;
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  private GenericIterator konten = null;
-
+  private String text        = null;
+  private Konto choosen      = null;
+  private Konto preselected  = null;
+	private KontoFilter filter = null;
+	
+	private Button apply        = null;
+	private KontoInput auswahl  = null;
+	private LabelInput institut = null;
+  private LabelInput name     = null;
+	private LabelInput saldo    = null;
+	
+  
   /**
    * ct.
    * @param position
@@ -53,15 +70,25 @@ public class KontoAuswahlDialog extends AbstractDialog
 
   /**
    * ct.
-   * @param konten Liste der anzuzeigenden Konten.
+   * @param preselected vorausgewaehltes Konto.
    * @param position
    */
-  public KontoAuswahlDialog(GenericIterator konten, int position)
+  public KontoAuswahlDialog(Konto preselected, int position)
+  {
+    this(preselected,null,position);
+  }
+
+  /**
+   * ct.
+   * @param preselected vorausgewaehltes Konto.
+   * @param filter Konto-Filter.
+   * @param position
+   */
+  public KontoAuswahlDialog(Konto preselected, KontoFilter filter, int position)
   {
     super(position);
-    this.konten = konten;
-    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
+    this.preselected = preselected;
+    this.filter      = filter;
     this.setTitle(i18n.tr("Konto-Auswahl"));
   }
 
@@ -70,55 +97,28 @@ public class KontoAuswahlDialog extends AbstractDialog
    */
   protected void paint(Composite parent) throws Exception
   {
-    // Dialog bei Druck auf ESC automatisch schliessen
-    parent.addKeyListener(new KeyAdapter() {
-      public void keyReleased(KeyEvent e) {
-        if (e.keyCode == SWT.ESC)
-          throw new OperationCanceledException();
-      }
-    });
-
-    LabelGroup group = new LabelGroup(parent,i18n.tr("Verfügbare Konten"));
-			
-		if (text == null || text.length() == 0)
-      text = i18n.tr("Bitte wählen Sie das gewünschte Konto aus.");
-    group.addText(text,true);
-
-    Action a = new Action() {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        if (context == null || !(context instanceof Konto))
-          return;
-        choosen = (Konto) context;
-        close();
-      }
-    };    
-		final KontoList konten = this.konten != null ? new KontoList(this.konten,a) : new KontoList(a);
-    konten.setContextMenu(null);
-    konten.setMulti(false);
-    konten.setSummary(false);
-    konten.paint(parent);
-
-		ButtonArea b = new ButtonArea(parent,2);
-		b.addButton(i18n.tr("Übernehmen"), new Action()
-    {
-      public void handleAction(Object context) throws ApplicationException
-      {
-				Object o = konten.getSelection();
-        if (o == null || !(o instanceof Konto))
-          return;
-
-        choosen = (Konto) o;
-        close();
-      }
-    });
+    Container group = new SimpleContainer(parent);
+    group.addText(text != null && text.length() > 0 ? text : i18n.tr("Bitte wählen Sie das gewünschte Konto aus."),true);
+    group.addInput(getKontoAuswahl());
+    group.addInput(getInstitut());
+    group.addInput(getName());
+    group.addInput(getSaldo());
+    
+    // Button-Area
+		ButtonArea b = new ButtonArea();
+		b.addButton(this.getApplyButton());
 		b.addButton(i18n.tr("Abbrechen"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
+        choosen = null;
 				throw new OperationCanceledException();
       }
-    });
+    },null,false,"process-stop.png");
+		group.addButtonArea(b);
+		
+		getShell().setMinimumSize(getShell().computeSize(SWT.DEFAULT,SWT.DEFAULT));
+    getKontoAuswahl().focus(); // damit wir direkt mit dem Cursor die Auswahl treffen koennen
   }
 
   /**
@@ -132,9 +132,182 @@ public class KontoAuswahlDialog extends AbstractDialog
   }
   
   /**
+   * Liefert die Auswahlbox fuer das Konto.
+   * @return die Auswahlbox fuer das Konto.
+   * @throws RemoteException
+   */
+  private KontoInput getKontoAuswahl() throws RemoteException
+  {
+    if (this.auswahl != null)
+      return this.auswahl;
+
+    this.auswahl = new KontoInput(this.preselected,this.filter);
+    this.auswahl.setComment(null);
+    auswahl.addListener(new Listener() {
+      public void handleEvent(Event event)
+      {
+        preselected = (Konto) auswahl.getValue();
+        getApplyButton().setEnabled(preselected != null);
+        try
+        {
+          updateInstitute();
+          updateName();
+          updateSaldo();
+        }
+        catch (Exception e)
+        {
+          // Nicht weiter wild - daher nur loggen
+          Logger.error("unable to update account information",e);
+        }
+      }
+    });
+    return this.auswahl;
+  }
+  
+  /**
+   * Liefert ein Label mit dem Namen der Bank.
+   * @return Label mit dem Namen der Bank.
+   * @throws RemoteException
+   */
+  private LabelInput getInstitut() throws RemoteException
+  {
+    if (this.institut == null)
+    {
+      this.institut = new LabelInput("");
+      this.institut.setName(i18n.tr("Institut"));
+      updateInstitute();
+    }
+    return this.institut;
+  }
+  
+  /**
+   * Aktualisiert die Anzeige des Institut.
+   */
+  private void updateInstitute() throws RemoteException
+  {
+    getInstitut().setValue("");
+    if (this.preselected != null)
+    {
+      String name = HBCIUtils.getNameForBLZ(this.preselected.getBLZ());
+      if (name != null && name.length() > 0)
+        getInstitut().setValue(name);
+    }
+  }
+  
+  /**
+   * Liefert den Namen des Kontos.
+   * @return Label mit dem Namen des Kontos.
+   * @throws RemoteException
+   */
+  private LabelInput getName() throws RemoteException
+  {
+    if (this.name == null)
+    {
+      this.name = new LabelInput("");
+      this.name.setName(i18n.tr("Konto"));
+      updateName();
+    }
+    return this.name;
+  }
+  
+  /**
+   * Aktualisiert den Namen des Kontos.
+   * @throws RemoteException
+   */
+  private void updateName() throws RemoteException
+  {
+    getName().setValue("");
+    getName().setComment("");
+    
+    if (this.preselected != null)
+    {
+      String name = this.preselected.getBezeichnung();
+      if (name != null && name.length() > 0)
+        getName().setValue(name);
+      
+      String owner = this.preselected.getName();
+      if (owner != null && owner.length() > 0)
+        getName().setComment(owner);
+    }
+  }
+  
+  /**
+   * Liefert ein Label mit dem Saldo des Kontos.
+   * @return ein Label mit dem Saldo des Kontos.
+   * @throws RemoteException
+   */
+  private LabelInput getSaldo() throws RemoteException
+  {
+    if (this.saldo == null)
+    {
+      this.saldo = new LabelInput("");
+      this.saldo.setName("Saldo");
+      updateSaldo();
+    }
+    return this.saldo;
+  }
+  
+  /**
+   * Aktualisiert den Saldo.
+   * @throws RemoteException
+   */
+  private void updateSaldo() throws RemoteException
+  {
+    getSaldo().setValue("");
+    getSaldo().setComment("");
+    if (this.preselected != null)
+    {
+      Date date = this.preselected.getSaldoDatum();
+      if (date != null)
+      {
+        double saldo = this.preselected.getSaldo();
+        if (saldo >= 0.01d)
+          getSaldo().setColor(Color.SUCCESS);
+        else if (saldo <= 0.01d)
+          getSaldo().setColor(Color.ERROR);
+        else
+          getSaldo().setColor(Color.WIDGET_FG);
+        
+        String curr = this.preselected.getWaehrung();
+        if (curr == null || curr.length() == 0)
+          curr = HBCIProperties.CURRENCY_DEFAULT_DE;
+        
+        getSaldo().setValue(HBCI.DECIMALFORMAT.format(saldo) + " " + curr);
+        getSaldo().setComment(i18n.tr("aktualisiert am {0}",HBCI.LONGDATEFORMAT.format(date)));
+      }
+      else
+      {
+        getSaldo().setColor(Color.COMMENT);
+        getSaldo().setValue(i18n.tr("Kein Saldo verfügbar"));
+      }
+    }
+  }
+  
+  /**
+   * Liefert den Uebernehmen-Button.
+   * @return der Uebernehmen-Button.
+   */
+  private Button getApplyButton()
+  {
+    if (this.apply != null)
+      return this.apply;
+    
+    this.apply = new Button(i18n.tr("Übernehmen"), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        choosen = preselected;
+        close();
+      }
+    },null,true,"ok.png");
+    apply.setEnabled(this.preselected != null);
+    return this.apply;
+  }
+  
+  /**
    * Optionale Angabe des anzuzeigenden Textes.
    * Wird hier kein Wert gesetzt, wird ein Standard-Text angezeigt.
-   * @param text
+   * @param text anzuzeigender Text.
    */
   public void setText(String text)
   {
@@ -146,29 +319,7 @@ public class KontoAuswahlDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: KontoAuswahlDialog.java,v $
- * Revision 1.8  2008/12/02 10:52:23  willuhn
- * @B DecimalInput kann NULL liefern
- * @B Double.NaN beruecksichtigen
- *
- * Revision 1.7  2006/03/28 22:53:19  willuhn
- * @B bug 218
- *
- * Revision 1.6  2006/01/17 00:22:36  willuhn
- * @N erster Code fuer Swift MT940-Import
- *
- * Revision 1.5  2005/06/27 15:35:27  web0
- * @B bug 84
- *
- * Revision 1.4  2005/06/23 23:03:20  web0
- * @N much better KontoAuswahlDialog
- *
- * Revision 1.3  2004/10/25 23:12:02  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2004/10/19 23:33:31  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2004/10/17 16:28:46  willuhn
- * @N Die ersten Dauerauftraege abgerufen ;)
+ * Revision 1.9  2011/05/06 12:35:48  willuhn
+ * @N Neuer Konto-Auswahldialog mit Combobox statt Tabelle. Ist ergonomischer.
  *
  **********************************************************************/

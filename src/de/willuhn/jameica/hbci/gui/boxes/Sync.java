@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Sync.java,v $
- * $Revision: 1.17 $
- * $Date: 2010/08/12 17:12:32 $
+ * $Revision: 1.18 $
+ * $Date: 2011/05/06 12:35:48 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,12 +22,13 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.boxes.AbstractBox;
 import de.willuhn.jameica.gui.boxes.Box;
-import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.HBCISynchronize;
 import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.SynchronizeOptionsDialog;
+import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.parts.SynchronizeList;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.hbci.synchronize.SynchronizeEngine;
@@ -64,7 +65,7 @@ public class Sync extends AbstractBox implements Box
     this.list = new SynchronizeList();
     list.paint(parent);
 
-    ButtonArea b = new ButtonArea(parent,2);
+    ButtonArea b = new ButtonArea();
 
     // BUGZILLA 226
     b.addButton(i18n.tr("Optionen..."),new Action() {
@@ -72,7 +73,7 @@ public class Sync extends AbstractBox implements Box
       {
         try
         {
-          KontoAuswahlDialog d1 = new KontoAuswahlDialog(SynchronizeEngine.getInstance().getSynchronizeKonten(),KontoAuswahlDialog.POSITION_CENTER);
+          KontoAuswahlDialog d1 = new KontoAuswahlDialog(null,KontoFilter.SYNCED,KontoAuswahlDialog.POSITION_CENTER);
           d1.setText(i18n.tr("Bitte wählen Sie das Konto, für welches Sie die " +
                              "Synchronisierungsoptionen ändern möchten."));
           Konto k = (Konto) d1.open();
@@ -116,6 +117,8 @@ public class Sync extends AbstractBox implements Box
         handleStart();
       }
     },null,true,"mail-send-receive.png");
+    
+    b.paint(parent);
   }
 
   /**
@@ -173,7 +176,10 @@ public class Sync extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: Sync.java,v $
- * Revision 1.17  2010/08/12 17:12:32  willuhn
+ * Revision 1.18  2011/05/06 12:35:48  willuhn
+ * @N Neuer Konto-Auswahldialog mit Combobox statt Tabelle. Ist ergonomischer.
+ *
+ * Revision 1.17  2010-08-12 17:12:32  willuhn
  * @N Saldo-Chart komplett ueberarbeitet (Daten wurden vorher mehrmals geladen, Summen-Funktion, Anzeige mehrerer Konten, Durchschnitt ueber mehrere Konten, Bugfixing, echte "Homogenisierung" der Salden via SaldoFinder)
  *
  * Revision 1.16  2009/01/20 10:51:46  willuhn

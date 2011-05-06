@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/filter/KontoFilter.java,v $
- * $Revision: 1.3 $
- * $Date: 2010/06/08 15:54:45 $
+ * $Revision: 1.4 $
+ * $Date: 2011/05/06 12:35:48 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ package de.willuhn.jameica.hbci.gui.filter;
 import java.rmi.RemoteException;
 
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.SynchronizeOptions;
 import de.willuhn.jameica.hbci.rmi.Konto;
 
 /**
@@ -84,12 +85,34 @@ public interface KontoFilter extends Filter<Konto>
              ((flags & Konto.FLAG_OFFLINE) != Konto.FLAG_OFFLINE) &&
              (iban != null && iban.length() > 0 && iban.length() <= HBCIProperties.HBCI_IBAN_MAXLENGTH);
     }
+  };
+  
+  /**
+   * Filter, der nur Konten zulaesst, fuer die Synchronisierungsoptionen aktiviert sind.
+   */
+  public final static KontoFilter SYNCED = new KontoFilter()
+  {
+    /**
+     * @see de.willuhn.jameica.hbci.gui.filter.AddressFilter#accept(de.willuhn.jameica.hbci.rmi.Address)
+     */
+    public boolean accept(Konto konto) throws RemoteException
+    {
+      if (konto == null)
+        return false;
+
+      SynchronizeOptions o = new SynchronizeOptions(konto);
+      return o.getSynchronize();
+    }
   }; 
+
 }
 
 
 /**********************************************************************
  * $Log: KontoFilter.java,v $
+ * Revision 1.4  2011/05/06 12:35:48  willuhn
+ * @N Neuer Konto-Auswahldialog mit Combobox statt Tabelle. Ist ergonomischer.
+ *
  * Revision 1.3  2010/06/08 15:54:45  willuhn
  * @B BUGZILLA 871 - nicht nur pruefen, ob die IBAN lang genug ist sondern auch, ob sie laenger als 0 Zeichen ist
  *
