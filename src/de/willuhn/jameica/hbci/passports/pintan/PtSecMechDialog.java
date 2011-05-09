@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/PtSecMechDialog.java,v $
- * $Revision: 1.4 $
- * $Date: 2011/05/09 08:29:37 $
+ * $Revision: 1.5 $
+ * $Date: 2011/05/09 08:33:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,8 +22,9 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.SelectInput;
-import de.willuhn.jameica.gui.util.ButtonArea;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.parts.ButtonArea;
+import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig;
 import de.willuhn.jameica.system.Application;
@@ -67,14 +68,14 @@ public class PtSecMechDialog extends AbstractDialog
    */
   protected void paint(Composite parent) throws Exception
   {
-    LabelGroup group = new LabelGroup(parent,i18n.tr("Verfügbare Verfahren"));
+    Container group = new SimpleContainer(parent);
     
     group.addText(i18n.tr("Bitte wählen Sie das gewünschte PIN/TAN-Verfahren"),true);
     
     group.addLabelPair(i18n.tr("Bezeichnung"), getType());
     group.addCheckbox(getSave(),i18n.tr("Auswahl speichern"));
     
-    ButtonArea buttons = new ButtonArea(parent,2);
+    ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Übernehmen"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -111,13 +112,15 @@ public class PtSecMechDialog extends AbstractDialog
           throw new ApplicationException(i18n.tr("Fehler beim Übernehmen des PIN/TAN-Verfahrens"));
         }
       }
-    },null,true);
+    },null,true,"ok.png");
     buttons.addButton(i18n.tr("Abbrechen"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         throw new OperationCanceledException();
       }
-    });
+    },null,false,"process-stop.png");
+    
+    group.addButtonArea(buttons);
   }
 
   /**
@@ -163,7 +166,10 @@ public class PtSecMechDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: PtSecMechDialog.java,v $
- * Revision 1.4  2011/05/09 08:29:37  willuhn
+ * Revision 1.5  2011/05/09 08:33:02  willuhn
+ * @C GUI-polish
+ *
+ * Revision 1.4  2011-05-09 08:29:37  willuhn
  * *** empty log message ***
  *
  * Revision 1.3  2010-12-31 01:09:08  willuhn
@@ -174,21 +180,4 @@ public class PtSecMechDialog extends AbstractDialog
  *
  * Revision 1.1  2010/06/17 11:38:15  willuhn
  * @C kompletten Code aus "hbci_passport_pintan" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
- *
- * Revision 1.2  2006/08/05 20:45:10  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2006/08/03 13:51:38  willuhn
- * @N Bug 62
- * @C HBCICallback-Handling nach Zustaendigkeit auf Passports verteilt
- *
- * Revision 1.2  2006/03/28 17:52:23  willuhn
- * @B bug 218
- *
- * Revision 1.1  2006/02/23 22:14:58  willuhn
- * @B bug 200 (Speichern der Auswahl)
- *
- * Revision 1.1  2006/02/21 22:51:36  willuhn
- * @B bug 200
- *
  **********************************************************************/
