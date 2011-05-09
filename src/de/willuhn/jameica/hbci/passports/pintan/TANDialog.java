@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/TANDialog.java,v $
- * $Revision: 1.2 $
- * $Date: 2011/05/09 09:25:46 $
+ * $Revision: 1.3 $
+ * $Date: 2011/05/09 17:27:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -36,7 +36,7 @@ import de.willuhn.util.I18N;
  */
 public class TANDialog extends PasswordDialog
 {
-  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   private final static int WINDOW_WIDTH = 550;
 
@@ -164,6 +164,12 @@ public class TANDialog extends PasswordDialog
       // ignore
     }
 
+    // TODO: Der Text kann ein "challenge" von der Bank enthalten. Dieser kann Formatierungen enthalten.
+    // Z.Bsp. "<b>Text</b>", "<li>..." usw. Siehe
+    // FinTS_3.0_Security_Sicherheitsverfahren_PINTAN_Rel_20101027_final_version.pdf
+    // Seite 127. Das muss noch beachtet werden. Die Frage ist noch: Wie kann
+    // ich das in SWT formatieren.
+    
     if (s != null)
     {
       if (text == null || text.length() == 0)
@@ -195,7 +201,10 @@ public class TANDialog extends PasswordDialog
 
 /**********************************************************************
  * $Log: TANDialog.java,v $
- * Revision 1.2  2011/05/09 09:25:46  willuhn
+ * Revision 1.3  2011/05/09 17:27:39  willuhn
+ * @N Erste Vorbereitungen fuer optisches chipTAN
+ *
+ * Revision 1.2  2011-05-09 09:25:46  willuhn
  * *** empty log message ***
  *
  * Revision 1.1  2010/06/17 11:38:15  willuhn
