@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/TANDialog.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/06/17 11:38:15 $
+ * $Revision: 1.2 $
+ * $Date: 2011/05/09 09:25:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -36,10 +36,11 @@ import de.willuhn.util.I18N;
  */
 public class TANDialog extends PasswordDialog
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+
   private final static int WINDOW_WIDTH = 550;
 
   private PinTanConfig config = null;
-	private I18N i18n           = null;
   
   /**
    * ct.
@@ -51,7 +52,6 @@ public class TANDialog extends PasswordDialog
     super(TANDialog.POSITION_CENTER);
     
     this.config = config;
-		this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 		this.setSize(WINDOW_WIDTH,SWT.DEFAULT);
 
     // Deaktivierung der Anzeige von Sternen im TAN-Dialog.
@@ -195,62 +195,9 @@ public class TANDialog extends PasswordDialog
 
 /**********************************************************************
  * $Log: TANDialog.java,v $
+ * Revision 1.2  2011/05/09 09:25:46  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2010/06/17 11:38:15  willuhn
  * @C kompletten Code aus "hbci_passport_pintan" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
- *
- * Revision 1.6  2009/10/16 15:36:18  willuhn
- * @B BUGZILLA 738
- *
- * Revision 1.5  2009/06/29 09:25:05  willuhn
- * @N BUGZILLA 738
- *
- * Revision 1.4  2009/05/19 15:51:43  willuhn
- * @B BUGZILLA 730
- *
- * Revision 1.3  2006/08/04 13:03:24  willuhn
- * @B NPE
- *
- * Revision 1.2  2006/08/03 15:46:28  willuhn
- * @N Bug 62 (Rest)
- *
- * Revision 1.1  2006/08/03 13:51:38  willuhn
- * @N Bug 62
- * @C HBCICallback-Handling nach Zustaendigkeit auf Passports verteilt
- *
- * Revision 1.12  2006/07/17 15:50:49  willuhn
- * @N Sparquote
- *
- * Revision 1.11  2006/04/13 10:36:13  willuhn
- * @B bug 150
- *
- * Revision 1.10  2006/02/06 15:40:44  willuhn
- * @B bug 150
- *
- * Revision 1.9  2005/08/02 20:33:12  web0
- * *** empty log message ***
- *
- * Revision 1.8  2005/08/01 23:27:42  web0
- * *** empty log message ***
- *
- * Revision 1.7  2005/07/26 23:00:03  web0
- * @N Multithreading-Support fuer HBCI-Jobs
- *
- * Revision 1.6  2005/06/06 09:54:39  web0
- * *** empty log message ***
- *
- * Revision 1.5  2005/06/02 22:57:34  web0
- * @N Export von Konto-Umsaetzen
- *
- * Revision 1.4  2005/02/02 16:15:52  willuhn
- * @N Neue Dialoge fuer RDH
- *
- * Revision 1.3  2004/07/25 17:15:06  willuhn
- * @C PluginLoader is no longer static
- *
- * Revision 1.2  2004/07/21 23:54:30  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2004/05/05 21:27:13  willuhn
- * @N added TAN-Dialog
- *
  **********************************************************************/
