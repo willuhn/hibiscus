@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/PtSecMechDialog.java,v $
- * $Revision: 1.6 $
- * $Date: 2011/05/09 08:35:18 $
+ * $Revision: 1.7 $
+ * $Date: 2011/05/09 09:22:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -86,7 +86,7 @@ public class PtSecMechDialog extends AbstractDialog
           if (choosen != null)
           {
             Boolean b = (Boolean) getSave().getValue();
-            if (b.booleanValue())
+            if (getSave().isEnabled() && b.booleanValue())
             {
               // BUGZILLA 218
               try
@@ -143,6 +143,7 @@ public class PtSecMechDialog extends AbstractDialog
       return this.save;
     
     this.save = new CheckboxInput(false);
+    this.save.setEnabled(this.config != null);
     return this.save;
   }
   
@@ -166,7 +167,10 @@ public class PtSecMechDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: PtSecMechDialog.java,v $
- * Revision 1.6  2011/05/09 08:35:18  willuhn
+ * Revision 1.7  2011/05/09 09:22:02  willuhn
+ * @C Checkbox nur anklickbar machen, wenn Config vorhanden
+ *
+ * Revision 1.6  2011-05-09 08:35:18  willuhn
  * *** empty log message ***
  *
  * Revision 1.5  2011-05-09 08:33:02  willuhn
