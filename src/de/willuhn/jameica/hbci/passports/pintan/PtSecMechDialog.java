@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/PtSecMechDialog.java,v $
- * $Revision: 1.3 $
- * $Date: 2010/12/31 01:09:08 $
+ * $Revision: 1.4 $
+ * $Date: 2011/05/09 08:29:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -33,7 +33,7 @@ import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Dialog zum zur Auswahl des Pin/Tan Scurity-Mechanismus.
+ * Dialog zur Auswahl des Pin/Tan Scurity-Mechanismus.
  * BUGZILLA 200
  */
 public class PtSecMechDialog extends AbstractDialog
@@ -163,7 +163,10 @@ public class PtSecMechDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: PtSecMechDialog.java,v $
- * Revision 1.3  2010/12/31 01:09:08  willuhn
+ * Revision 1.4  2011/05/09 08:29:37  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.3  2010-12-31 01:09:08  willuhn
  * @B Typos
  *
  * Revision 1.2  2010-12-15 13:17:25  willuhn
