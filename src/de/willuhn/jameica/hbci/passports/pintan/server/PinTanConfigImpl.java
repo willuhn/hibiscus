@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/server/PinTanConfigImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2011/04/29 09:17:35 $
+ * $Revision: 1.6 $
+ * $Date: 2011/05/09 09:35:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -86,6 +86,10 @@ public class PinTanConfigImpl implements PinTanConfig
       return new Boolean(getShowTan());
     if ("secmech".equals(attribute))
       return getSecMech();
+    if ("tanmedia".equals(attribute))
+      return getTanMedia();
+    if ("tanmedias".equals(attribute))
+      return getTanMedias();
     return null;
   }
 
@@ -405,6 +409,67 @@ public class PinTanConfigImpl implements PinTanConfig
   }
 
   /**
+   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getTanMedias()
+   */
+  public String[] getTanMedias() throws RemoteException
+  {
+    return settings.getList(getID() + ".tanmedias",new String[0]);
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setTanMedias(java.lang.String[])
+   */
+  public void setTanMedias(String[] names) throws RemoteException
+  {
+    settings.setAttribute(getID() + ".tanmedias",names);
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#addTanMedia(java.lang.String)
+   */
+  public void addTanMedia(String name) throws RemoteException
+  {
+    if (name == null || name.length() == 0)
+      return;
+    
+    // Bisherige Werte
+    String[] current = this.getTanMedias();
+    List<String> list = new ArrayList<String>();
+
+    for (String s:current)
+    {
+      // Wenn es schon in der Liste ist, nehmen wir 
+      // es erstmal raus
+      if (name.equals(s))
+        continue;
+      list.add(s);
+    }
+    
+    // Am Anfang neu einfuegen.
+    // Dann steht die letzte Auswahl immer vorn
+    list.add(0,name);
+
+    // Abspeichern
+    this.setTanMedias(list.toArray(new String[list.size()]));
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getTanMedia()
+   */
+  public String getTanMedia() throws RemoteException
+  {
+    return settings.getString(getID() + ".tanmedia",null);
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setTanMedia(java.lang.String)
+   */
+  public void setTanMedia(String name) throws RemoteException
+  {
+    settings.setAttribute(getID() + ".tanmedia",name);
+  }
+
+  /**
    * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getShowTan()
    */
   public boolean getShowTan() throws RemoteException
@@ -520,7 +585,10 @@ public class PinTanConfigImpl implements PinTanConfig
 
 /*****************************************************************************
  * $Log: PinTanConfigImpl.java,v $
- * Revision 1.5  2011/04/29 09:17:35  willuhn
+ * Revision 1.6  2011/05/09 09:35:16  willuhn
+ * @N BUGZILLA 827
+ *
+ * Revision 1.5  2011-04-29 09:17:35  willuhn
  * @N Neues Standard-Interface "Configuration" fuer eine gemeinsame API ueber alle Arten von HBCI-Konfigurationen
  * @R Passports sind keine UnicastRemote-Objekte mehr
  *

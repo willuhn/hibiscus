@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/Controller.java,v $
- * $Revision: 1.6 $
- * $Date: 2011/04/29 11:38:57 $
+ * $Revision: 1.7 $
+ * $Date: 2011/05/09 09:35:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -335,19 +335,20 @@ public class Controller extends AbstractControl {
 
   /**
    * BUGZILLA 218
-   * Loescht die automatische Zuordnung eines TAN-Verfahrens fuer die PINTAN-Config.
+   * Loescht die Vorauswahlen bei den TAN-Verfahren.
    */
-  public void handleDeleteSecMech()
+  public void handleDeleteTanSettings()
   {
     try
     {
       getConfig().setSecMech(null);
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Automatische Vorauswahl des TAN-Verfahrens gelöscht"),StatusBarMessage.TYPE_SUCCESS));
+      getConfig().setTanMedia(null);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Vorauswahl der TAN-Verfahren zurückgesetzt"),StatusBarMessage.TYPE_SUCCESS));
     }
     catch (Exception e)
     {
-      Logger.error("error while deleting ptsechmech preselection",e);
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Löschen der Vorauswahl"),StatusBarMessage.TYPE_ERROR));
+      Logger.error("error while deleting tan settings",e);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Zurücksetzen der TAN-Verfahren"),StatusBarMessage.TYPE_ERROR));
     }
   }
   
@@ -525,7 +526,10 @@ public class Controller extends AbstractControl {
 
 /**********************************************************************
  * $Log: Controller.java,v $
- * Revision 1.6  2011/04/29 11:38:57  willuhn
+ * Revision 1.7  2011/05/09 09:35:15  willuhn
+ * @N BUGZILLA 827
+ *
+ * Revision 1.6  2011-04-29 11:38:57  willuhn
  * @N Konfiguration der HBCI-Medien ueberarbeitet. Es gibt nun direkt in der Navi einen Punkt "Bank-Zugaenge", in der alle Medien angezeigt werden.
  *
  * Revision 1.5  2011-04-28 07:34:43  willuhn

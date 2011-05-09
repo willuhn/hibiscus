@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/rmi/PinTanConfig.java,v $
- * $Revision: 1.2 $
- * $Date: 2011/04/29 09:17:35 $
+ * $Revision: 1.3 $
+ * $Date: 2011/05/09 09:35:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -241,60 +241,52 @@ public interface PinTanConfig extends GenericObject, Configuration
    * @throws RemoteException
    */
   public String[] getUsedTans() throws RemoteException;
+  
+  /**
+   * Liefert die Liste der zuletzt eingegebenen TAN-Medien-Bezeichnungen.
+   * @return Liste der zuletzt eingegebenen TAN-Medien-Bezeichnungen.
+   * @throws RemoteException
+   */
+  public String[] getTanMedias() throws RemoteException;
+  
+  /**
+   * Speichert die Liste der zuletzt eingegebenen TAN-Medien-Bezeichnungen.
+   * @param names die Liste der zuletzt eingegebenen TAN-Medien-Bezeichnungen.
+   * @throws RemoteException
+   */
+  public void setTanMedias(String[] names) throws RemoteException;
+  
+  /**
+   * Fuegt ein neues TAN-Medium zur Liste der bekannten hinzu.
+   * @param name die neue TAN-Medien-Bezeichnung.
+   * @throws RemoteException
+   */
+  public void addTanMedia(String name) throws RemoteException;
+
+  /**
+   * Liefert das zuletzt verwendete TAN-Medium.
+   * @return das zuletzt verwendete TAN-Medium.
+   * @throws RemoteException
+   */
+  public String getTanMedia() throws RemoteException;
+  
+  /**
+   * Speichert das zuletzt verwendete TAN-Medium.
+   * @param name das zuletzt verwendete TAN-Medium.
+   * @throws RemoteException
+   */
+  public void setTanMedia(String name) throws RemoteException;
 }
 
 /*****************************************************************************
  * $Log: PinTanConfig.java,v $
- * Revision 1.2  2011/04/29 09:17:35  willuhn
+ * Revision 1.3  2011/05/09 09:35:15  willuhn
+ * @N BUGZILLA 827
+ *
+ * Revision 1.2  2011-04-29 09:17:35  willuhn
  * @N Neues Standard-Interface "Configuration" fuer eine gemeinsame API ueber alle Arten von HBCI-Konfigurationen
  * @R Passports sind keine UnicastRemote-Objekte mehr
  *
  * Revision 1.1  2010-06-17 11:38:16  willuhn
  * @C kompletten Code aus "hbci_passport_pintan" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
- *
- * Revision 1.14  2007/08/31 09:43:55  willuhn
- * @N Einer PIN/TAN-Config koennen jetzt mehrere Konten zugeordnet werden
- *
- * Revision 1.13  2006/08/03 15:31:35  willuhn
- * @N Bug 62 completed
- *
- * Revision 1.12  2006/08/03 13:51:38  willuhn
- * @N Bug 62
- * @C HBCICallback-Handling nach Zustaendigkeit auf Passports verteilt
- *
- * Revision 1.11  2006/08/03 11:27:36  willuhn
- * @N Erste Haelfte von BUG 62 (Speichern verbrauchter TANs)
- *
- * Revision 1.10  2006/01/10 22:34:07  willuhn
- * @B bug 173
- *
- * Revision 1.9  2005/11/14 11:31:53  willuhn
- * *** empty log message ***
- *
- * Revision 1.8  2005/07/18 12:53:30  web0
- * @B bug 96
- *
- * Revision 1.7  2005/05/03 22:43:06  web0
- * @B bug39
- *
- * Revision 1.6  2005/04/27 00:30:12  web0
- * @N real test connection
- * @N all hbci versions are now shown in select box
- * @C userid and customerid are changable
- *
- * Revision 1.5  2005/03/11 02:43:59  web0
- * @N PIN/TAN works ;)
- *
- * Revision 1.4  2005/03/11 00:49:30  web0
- * *** empty log message ***
- *
- * Revision 1.3  2005/03/10 18:38:48  web0
- * @N more PinTan Code
- *
- * Revision 1.2  2005/03/07 17:17:30  web0
- * *** empty log message ***
- *
- * Revision 1.1  2005/03/07 14:31:00  web0
- * @N first classes
- *
 *****************************************************************************/

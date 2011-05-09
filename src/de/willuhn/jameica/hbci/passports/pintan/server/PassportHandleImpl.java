@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/server/PassportHandleImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2010/12/15 13:17:25 $
+ * $Revision: 1.7 $
+ * $Date: 2011/05/09 09:35:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,6 +31,7 @@ import de.willuhn.jameica.hbci.passports.pintan.PtSecMech;
 import de.willuhn.jameica.hbci.passports.pintan.PtSecMechDialog;
 import de.willuhn.jameica.hbci.passports.pintan.SelectConfigDialog;
 import de.willuhn.jameica.hbci.passports.pintan.TANDialog;
+import de.willuhn.jameica.hbci.passports.pintan.TanMediaDialog;
 import de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.Converter;
@@ -255,15 +256,16 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
     {
       // BUGZILLA 62
       case HBCICallback.NEED_PT_TAN:
-        
+      {
         TANDialog td = new TANDialog(config);
         td.setText(msg);
         retData.replace(0,retData.length(),(String)td.open());
         return true;
+      }
 
       // BUGZILLA 200
       case HBCICallback.NEED_PT_SECMECH:
-
+      {
         if (config != null)
         {
           String type = config.getSecMech();
@@ -283,7 +285,28 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
         PtSecMechDialog ptd = new PtSecMechDialog(config,retData.toString());
         retData.replace(0,retData.length(),(String) ptd.open());
         return true;
+      }
+        
+      // BUGZILLA 827
+      case HBCICallback.NEED_PT_TANMEDIA:
+      {
+        if (config != null)
+        {
+          String media =  config.getTanMedia();
+          if (media != null && media.length() > 0)
+          {
+            // OK, die nehmen wir
+            retData.replace(0,retData.length(),media);
+            return true;
+          }
+        }
+
+        TanMediaDialog tmd = new TanMediaDialog(config);
+        retData.replace(0,retData.length(),(String) tmd.open());
+        return true;
+      }
     }
+    
     return false;
   }
 
@@ -292,7 +315,10 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 
 /**********************************************************************
  * $Log: PassportHandleImpl.java,v $
- * Revision 1.6  2010/12/15 13:17:25  willuhn
+ * Revision 1.7  2011/05/09 09:35:15  willuhn
+ * @N BUGZILLA 827
+ *
+ * Revision 1.6  2010-12-15 13:17:25  willuhn
  * @N Code zum Parsen der TAN-Verfahren in PtSecMech ausgelagert. Wenn ein TAN-Verfahren aus Vorauswahl abgespeichert wurde, wird es nun nur noch dann automatisch verwendet, wenn es in der aktuellen Liste der TAN-Verfahren noch enthalten ist. Siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?t=12545
  *
  * Revision 1.5  2010-10-27 10:25:10  willuhn
