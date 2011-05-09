@@ -1,5 +1,6 @@
 2011-??-?? Version 1.13.0
 
+  * NEW: 0081 BUGZILLA 827 - Erster Test-Code fuer Unterstuetzung von TAN-Medien (10-hbci4java-tanmedia.patch)
   * NEW: 0080 Zeitraum in Umsatzliste und Saldo-Chart kann jetzt freier und bequemer
               ueber einen Schieberegler eingestellt werden
   * BUG: 0079 Titel des Charts wurde bei Aenderung des Zeitraumes nicht aktualisiert
