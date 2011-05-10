@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCIProperties.java,v $
- * $Revision: 1.42 $
- * $Date: 2011/01/20 17:13:21 $
+ * $Revision: 1.43 $
+ * $Date: 2011/05/10 11:51:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -298,7 +298,6 @@ public class HBCIProperties
     }
     catch (NumberFormatException nfe)
     {
-      // TODO HBCI4Java koennte diese Exception vermutlich auch selbst fangen und false liefern
       Logger.warn("invalid iban: " + nfe.getMessage());
       return false;
     }
@@ -351,7 +350,10 @@ public class HBCIProperties
 
 /**********************************************************************
  * $Log: HBCIProperties.java,v $
- * Revision 1.42  2011/01/20 17:13:21  willuhn
+ * Revision 1.43  2011/05/10 11:51:15  willuhn
+ * @R Marker entfernt
+ *
+ * Revision 1.42  2011-01-20 17:13:21  willuhn
  * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
  *
  * Revision 1.41  2010/06/14 23:00:59  willuhn
