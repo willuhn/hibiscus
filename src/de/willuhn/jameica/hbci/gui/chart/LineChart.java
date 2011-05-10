@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/LineChart.java,v $
- * $Revision: 1.18 $
- * $Date: 2011/05/04 11:05:02 $
+ * $Revision: 1.19 $
+ * $Date: 2011/05/10 08:09:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,13 +26,14 @@ import org.eclipse.swt.widgets.Composite;
 import org.swtchart.IAxis;
 import org.swtchart.IAxisTick;
 import org.swtchart.IGrid;
+import org.swtchart.ILegend;
 import org.swtchart.ILineSeries;
+import org.swtchart.ILineSeries.PlotSymbolType;
 import org.swtchart.ISeries;
+import org.swtchart.ISeries.SeriesType;
 import org.swtchart.ISeriesSet;
 import org.swtchart.ITitle;
 import org.swtchart.LineStyle;
-import org.swtchart.ILineSeries.PlotSymbolType;
-import org.swtchart.ISeries.SeriesType;
 import org.swtchart.ext.InteractiveChart;
 
 import de.willuhn.datasource.BeanUtil;
@@ -115,6 +116,7 @@ public class LineChart extends AbstractChart<LineChartData>
       lineSeries.setAntialias(SWT.ON);
       lineSeries.enableStack(this.isStacked());
       lineSeries.enableStep(!cd.getCurve());
+      lineSeries.setLineWidth(1);
       //
       //////////////////////////////////////////////////////////////////////////
 
@@ -141,7 +143,6 @@ public class LineChart extends AbstractChart<LineChartData>
     
     this.chart = new InteractiveChart(parent,SWT.BORDER);
     this.chart.setLayoutData(new GridData(GridData.FILL_BOTH));
-    this.chart.getLegend().setFont(Font.SMALL.getSWTFont());
 
     ////////////////////////////////////////////////////////////////////////////
     // Farben des Charts
@@ -155,15 +156,26 @@ public class LineChart extends AbstractChart<LineChartData>
     {
       ITitle title = this.chart.getTitle();
       title.setText(this.getTitle());
-      title.setForeground(GUI.getDisplay().getSystemColor(SWT.COLOR_BLACK));
+      title.setForeground(GUI.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
       title.setFont(Font.BOLD.getSWTFont());
     }
     //
     ////////////////////////////////////////////////////////////////////////////
     
     ////////////////////////////////////////////////////////////////////////////
+    // Legende
+    {
+      ILegend legend = this.chart.getLegend();
+      legend.setFont(Font.SMALL.getSWTFont());
+      legend.setPosition(SWT.RIGHT);
+      legend.setForeground(GUI.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
+    }
+    //
+    ////////////////////////////////////////////////////////////////////////////
+
+    ////////////////////////////////////////////////////////////////////////////
     // Layout der Achsen
-    Color gray = getColor(new RGB(230,230,230));
+    Color gray = getColor(new RGB(234,234,234));
     
     // X-Achse
     {
@@ -177,7 +189,7 @@ public class LineChart extends AbstractChart<LineChartData>
 
       IAxisTick tick = axis.getTick();
       tick.setFormat(HBCI.DATEFORMAT);
-      tick.setForeground(GUI.getDisplay().getSystemColor(SWT.COLOR_BLACK));
+      tick.setForeground(GUI.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
     }
     
     // Y-Achse
@@ -191,7 +203,7 @@ public class LineChart extends AbstractChart<LineChartData>
       
       IAxisTick tick = axis.getTick();
       tick.setFormat(HBCI.DECIMALFORMAT);
-      tick.setForeground(GUI.getDisplay().getSystemColor(SWT.COLOR_BLACK));
+      tick.setForeground(GUI.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
     }
     //
     ////////////////////////////////////////////////////////////////////////////
@@ -237,7 +249,10 @@ public class LineChart extends AbstractChart<LineChartData>
 
 /*********************************************************************
  * $Log: LineChart.java,v $
- * Revision 1.18  2011/05/04 11:05:02  willuhn
+ * Revision 1.19  2011/05/10 08:09:33  willuhn
+ * @C Text etwas heller
+ *
+ * Revision 1.18  2011-05-04 11:05:02  willuhn
  * @B Dispose-Check fehlte
  *
  * Revision 1.17  2010-11-29 22:44:30  willuhn
