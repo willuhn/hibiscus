@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUeberweisungJob.java,v $
- * $Revision: 1.46 $
- * $Date: 2010/02/23 11:20:45 $
+ * $Revision: 1.47 $
+ * $Date: 2011/05/10 12:18:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import java.util.Properties;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.TextSchluessel;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -40,6 +41,9 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
 	private Ueberweisung ueberweisung = null;
 	private boolean isTermin = false;
 	private boolean isUmb    = false;
+	private boolean isBzu    = false;
+	private boolean isSpende = false;
+	
 	private Konto konto = null;
 	
 	private boolean markExecutedBefore = false;
@@ -85,7 +89,11 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
       
       String key = this.ueberweisung.getTextSchluessel();
       if (key != null && key.length() > 0)
+      {
         setJobParam("key",key);
+        this.isBzu    = key.equals(TextSchluessel.TS_BZU);
+        this.isSpende = key.equals(TextSchluessel.TS_SPENDE);
+      }
 
 			HibiscusAddress empfaenger = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
 			empfaenger.setBlz(ueberweisung.getGegenkontoBLZ());
@@ -94,26 +102,7 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
 
 			setJobParam("dst",Converter.Address2HBCIKonto(empfaenger));
 			setJobParam("name",empfaenger.getName());
-
-			setJobParam("usage",ueberweisung.getZweck());
-
-			String zweck2 = ueberweisung.getZweck2();
-			boolean haveSecond = false;
-			if (zweck2 != null && zweck2.trim().length() > 0)
-			{
-			  haveSecond = true;
-        setJobParam("usage_2",zweck2);
-			}
-      
-      String[] lines = ueberweisung.getWeitereVerwendungszwecke();
-      int pos = haveSecond ? 3 : 2; // Wenn Zeile 2 fehlt, dann alles eins nach vorn schieben
-      for (int i=0;i<lines.length;++i)
-      {
-        if (lines[i] == null || lines[i].trim().length() == 0)
-          continue;
-        setJobParam("usage_" + pos,lines[i]);
-        pos++;
-      }
+			setJobParamUsage(ueberweisung);
 
       if (isTermin)
       {
@@ -219,7 +208,10 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIUeberweisungJob.java,v $
- * Revision 1.46  2010/02/23 11:20:45  willuhn
+ * Revision 1.47  2011/05/10 12:18:11  willuhn
+ * @C Code zum Setzen der usage-Parameter in gemeinsamer Basisklasse AbstractHBCIJob - der Code war 3x identisch vorhanden
+ *
+ * Revision 1.46  2010-02-23 11:20:45  willuhn
  * @C Verwendungszweck ignorieren, wenn er nur aus Whitespaces besteht
  *
  * Revision 1.45  2009/06/29 09:00:23  willuhn

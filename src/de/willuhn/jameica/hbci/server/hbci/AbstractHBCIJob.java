@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCIJob.java,v $
- * $Revision: 1.35 $
- * $Date: 2010/12/27 23:03:13 $
+ * $Revision: 1.36 $
+ * $Date: 2011/05/10 12:18:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,9 +13,11 @@
 package de.willuhn.jameica.hbci.server.hbci;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.List;
 
 import org.kapott.hbci.GV_Result.HBCIJobResult;
 import org.kapott.hbci.status.HBCIRetVal;
@@ -24,6 +26,7 @@ import org.kapott.hbci.structures.Konto;
 import org.kapott.hbci.structures.Value;
 
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.rmi.Transfer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -362,6 +365,52 @@ public abstract class AbstractHBCIJob
 		}
 		params.put(name,date);
 	}
+	
+	/**
+	 * Setzt die Job-Parameter fuer die Verwendungszweck-Zeilen.
+	 * Sie werden auf die Job-Parameter usage, usage_2, usage_3,...
+	 * verteilt. Wenn zwischendrin welche fehlen, werden die hinteren
+	 * nach vorn geschoben.
+	 * @param t der Auftrag.
+	 * @throws RemoteException
+	 */
+	final void setJobParamUsage(Transfer t) throws RemoteException
+	{
+	  if (t == null)
+	    return;
+	  
+	  String line1       = t.getZweck();
+	  String line2       = t.getZweck2();
+	  String[] moreLines = t.getWeitereVerwendungszwecke();
+	  
+	  // Wir packen die erstmal in eine Liste und entfernen
+	  // alle leeren Zeilen
+	  List<String> lines = new ArrayList<String>();
+	  if (line1 != null && line1.trim().length() > 0) lines.add(line1.trim());
+    if (line2 != null && line2.trim().length() > 0) lines.add(line2.trim());
+    
+    if (moreLines != null && moreLines.length > 0)
+    {
+      for (String s:moreLines)
+      {
+        if (s == null || s.trim().length() == 0)
+          continue;
+        lines.add(s.trim());
+      }
+    }
+    
+    // Jetzt verteilen wir sie gleichmaessig auf die Job-Parameter
+    
+    // Zeile 1
+    if (lines.size() > 0)
+      setJobParam("usage",lines.remove(0));
+    
+    // Folge-Zeilen
+    for (int i=0;i<lines.size();++i)
+    {
+      setJobParam("usage_" + (i+2),lines.get(i)); // wir beginnen mit "usage_2"
+    }
+	}
   
   /**
    * Legt fest, ob der HBCI-Job exclusive (also in einer einzelnen HBCI-Nachricht) gesendet werden soll.
@@ -387,7 +436,10 @@ public abstract class AbstractHBCIJob
 
 /**********************************************************************
  * $Log: AbstractHBCIJob.java,v $
- * Revision 1.35  2010/12/27 23:03:13  willuhn
+ * Revision 1.36  2011/05/10 12:18:11  willuhn
+ * @C Code zum Setzen der usage-Parameter in gemeinsamer Basisklasse AbstractHBCIJob - der Code war 3x identisch vorhanden
+ *
+ * Revision 1.35  2010-12-27 23:03:13  willuhn
  * *** empty log message ***
  *
  * Revision 1.34  2010-12-27 22:51:25  willuhn
