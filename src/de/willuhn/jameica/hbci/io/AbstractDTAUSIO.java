@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/AbstractDTAUSIO.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/06/02 15:32:32 $
+ * $Revision: 1.6 $
+ * $Date: 2011/05/10 11:41:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import java.rmi.RemoteException;
 
 import de.jost_net.OBanToo.Dtaus.CSatz;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.TextSchluessel;
 import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisungBuchung;
 import de.willuhn.jameica.system.Application;
@@ -52,9 +53,9 @@ public abstract class AbstractDTAUSIO implements IO
     String textschluessel = buchung.getTextSchluessel();
     if (textschluessel != null)
     {
-      if (textschluessel.equals("05"))
+      if (textschluessel.equals(TextSchluessel.TS_EINZUG))
         ts = CSatz.TS_LASTSCHRIFT_EINZUGSERMAECHTIGUNGSVERFAHREN;
-      else if (textschluessel.equals("53"))
+      else if (textschluessel.equals(TextSchluessel.TS_LOHN))
         ts = CSatz.TS_UEBERWEISUNG_LOHN_GEHALT_RENTE;
     }
     return ts;
@@ -69,10 +70,10 @@ public abstract class AbstractDTAUSIO implements IO
   protected String mapDtausToTextschluessel(SammelTransferBuchung buchung, long ts)
   {
     if (ts == CSatz.TS_LASTSCHRIFT_EINZUGSERMAECHTIGUNGSVERFAHREN)
-      return "05";
+      return TextSchluessel.TS_EINZUG;
     if (ts == CSatz.TS_UEBERWEISUNG_LOHN_GEHALT_RENTE)
-      return "53";
-    return (buchung instanceof SammelUeberweisungBuchung) ? "51" : "04";
+      return TextSchluessel.TS_LOHN;
+    return (buchung instanceof SammelUeberweisungBuchung) ? TextSchluessel.TS_UEB : TextSchluessel.TS_ABBUCHUNG;
   }
  
   /**
@@ -141,6 +142,9 @@ public abstract class AbstractDTAUSIO implements IO
 
 /*********************************************************************
  * $Log: AbstractDTAUSIO.java,v $
+ * Revision 1.6  2011/05/10 11:41:30  willuhn
+ * @N Text-Schluessel als Konstanten definiert - Teil aus dem Patch von Thomas vom 07.12.2010
+ *
  * Revision 1.5  2010/06/02 15:32:32  willuhn
  * @C Bezeichnung geaendert
  *

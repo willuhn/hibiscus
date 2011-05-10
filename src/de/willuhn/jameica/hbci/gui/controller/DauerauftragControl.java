@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/DauerauftragControl.java,v $
- * $Revision: 1.32 $
- * $Date: 2011/04/11 16:48:33 $
+ * $Revision: 1.33 $
+ * $Date: 2011/05/10 11:41:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -243,7 +243,7 @@ public class DauerauftragControl extends AbstractTransferControl {
     if (textschluessel != null)
       return textschluessel;
 
-    textschluessel = new SelectInput(TextSchluessel.get(new String[]{"52","53","54"}),TextSchluessel.get(((Dauerauftrag)getTransfer()).getTextSchluessel()));
+    textschluessel = new SelectInput(TextSchluessel.get(TextSchluessel.SET_DAUER),TextSchluessel.get(((Dauerauftrag)getTransfer()).getTextSchluessel()));
     return textschluessel;
   }
   /**
@@ -280,7 +280,10 @@ public class DauerauftragControl extends AbstractTransferControl {
 
 /**********************************************************************
  * $Log: DauerauftragControl.java,v $
- * Revision 1.32  2011/04/11 16:48:33  willuhn
+ * Revision 1.33  2011/05/10 11:41:30  willuhn
+ * @N Text-Schluessel als Konstanten definiert - Teil aus dem Patch von Thomas vom 07.12.2010
+ *
+ * Revision 1.32  2011-04-11 16:48:33  willuhn
  * @N Drucken von Sammel- und Dauerauftraegen
  *
  * Revision 1.31  2011-04-06 08:17:16  willuhn

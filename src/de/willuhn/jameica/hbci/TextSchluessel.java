@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/TextSchluessel.java,v $
- * $Revision: 1.3 $
- * $Date: 2010/09/24 12:22:04 $
+ * $Revision: 1.4 $
+ * $Date: 2011/05/10 11:41:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@
 package de.willuhn.jameica.hbci;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
@@ -24,17 +25,90 @@ import de.willuhn.util.I18N;
 public class TextSchluessel
 {
   private static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+
+  /**
+   * Abbuchungsverfahren
+   */
+  public final static String TS_ABBUCHUNG = "04";
   
-  private final static ArrayList list = new ArrayList();
+  /**
+   * Einzugsermaechtigung
+   */
+  public final static String TS_EINZUG = "05";
+  
+  /**
+   * Ueberweisung
+   */
+  public final static String TS_UEB = "51";
+  
+  /**
+   * Dauerauftrag
+   */
+  public final static String TS_DAUER = "52";
+  
+  /**
+   * Lohn/Gehalt/Rente
+   */
+  public final static String TS_LOHN = "53";
+  
+  /**
+   * Vermoegenswirksame Leistungen
+   */
+  public final static String TS_VL = "54";
+  
+  /**
+   * Rueckueberweisung
+   */
+  public final static String TS_RUECKUEB = "59";
+  
+  /**
+   * BZU-Ueberweisung (Beleglose Zahlungsueberweisung, pruefziffergesichert) 
+   */
+  public final static String TS_BZU = "67";
+  
+  /**
+   * Spendenueberweisung.
+   */
+  public final static String TS_SPENDE = "69";
+  
+  /**
+   * Set von zulaessigen Textschluesseln fuer Dauerauftraege.
+   */
+  public final static String[] SET_DAUER = new String[]{TS_DAUER,TS_LOHN,TS_VL};
+
+  /**
+   * Set von zulaessigen Textschluesseln fuer Sammel-Lastschriften.
+   */
+  public final static String[] SET_SAMMELLAST = new String[]{TS_EINZUG,TS_ABBUCHUNG};
+
+  /**
+   * Set von zulaessigen Textschluesseln fuer Lastschriften.
+   */
+  public final static String[] SET_LAST = new String[]{TS_EINZUG,TS_ABBUCHUNG};
+
+  /**
+   * Set von zulaessigen Textschluesseln fuer Sammel-Ueberweisungen.
+   */
+  public final static String[] SET_SAMMELUEB = new String[]{TS_UEB,TS_LOHN,TS_VL};
+
+  /**
+   * Set von zulaessigen Textschluesseln fuer Ueberweisungen.
+   */
+  public final static String[] SET_UEB = new String[]{TS_UEB,TS_LOHN,TS_VL,TS_RUECKUEB};
+
+  private final static List<TextSchluessel> list = new ArrayList<TextSchluessel>();
+  
   static
   {
-    list.add(new TextSchluessel("04",i18n.tr("Abbuchungsverfahren")));
-    list.add(new TextSchluessel("05",i18n.tr("Einzugsermächtigung")));
-    list.add(new TextSchluessel("52",i18n.tr("Dauerauftrag")));
-    list.add(new TextSchluessel("51",i18n.tr("Überweisung")));
-    list.add(new TextSchluessel("53",i18n.tr("Überweisung Lohn/Gehalt/Rente")));
-    list.add(new TextSchluessel("54",i18n.tr("Vermögenswirksame Leistungen")));
-    list.add(new TextSchluessel("59",i18n.tr("Rücküberweisung")));
+    list.add(new TextSchluessel(TS_ABBUCHUNG,i18n.tr("Abbuchungsverfahren")));
+    list.add(new TextSchluessel(TS_EINZUG,   i18n.tr("Einzugsermächtigung")));
+    list.add(new TextSchluessel(TS_DAUER,    i18n.tr("Dauerauftrag")));
+    list.add(new TextSchluessel(TS_UEB,      i18n.tr("Überweisung")));
+    list.add(new TextSchluessel(TS_LOHN,     i18n.tr("Überweisung Lohn/Gehalt/Rente")));
+    list.add(new TextSchluessel(TS_VL,       i18n.tr("Vermögenswirksame Leistungen")));
+    list.add(new TextSchluessel(TS_RUECKUEB, i18n.tr("Rücküberweisung")));
+    list.add(new TextSchluessel(TS_BZU,      i18n.tr("BZÜ-Überweisung")));
+    list.add(new TextSchluessel(TS_SPENDE,   i18n.tr("Spende")));
   }
 
   private String code = null;
@@ -49,14 +123,14 @@ public class TextSchluessel
   public static TextSchluessel[] get(String[] codes)
   {
     if (codes == null || codes.length == 0)
-      return (TextSchluessel[]) list.toArray(new TextSchluessel[list.size()]);
+      return list.toArray(new TextSchluessel[list.size()]);
 
-    ArrayList l = new ArrayList();
+    List<TextSchluessel> l = new ArrayList<TextSchluessel>();
     for (int i=0;i<codes.length;++i)
     {
       for (int k=0;k<list.size();++k)
       {
-        TextSchluessel ts = (TextSchluessel) list.get(k);
+        TextSchluessel ts = list.get(k);
         String code = ts.getCode();
         if (code.equals(codes[i]))
         {
@@ -66,7 +140,7 @@ public class TextSchluessel
       }
     }
     
-    return (TextSchluessel[]) l.toArray(new TextSchluessel[l.size()]);
+    return l.toArray(new TextSchluessel[l.size()]);
   }
   
   /**
@@ -81,7 +155,7 @@ public class TextSchluessel
 
     for (int i=0;i<list.size();++i)
     {
-      TextSchluessel ts = (TextSchluessel) list.get(i);
+      TextSchluessel ts = list.get(i);
       if (ts.getCode().equals(code))
         return ts;
     }
@@ -141,7 +215,10 @@ public class TextSchluessel
 
 /*********************************************************************
  * $Log: TextSchluessel.java,v $
- * Revision 1.3  2010/09/24 12:22:04  willuhn
+ * Revision 1.4  2011/05/10 11:41:30  willuhn
+ * @N Text-Schluessel als Konstanten definiert - Teil aus dem Patch von Thomas vom 07.12.2010
+ *
+ * Revision 1.3  2010-09-24 12:22:04  willuhn
  * @N Thomas' Patch fuer Textschluessel in Dauerauftraegen
  *
  * Revision 1.2  2010/06/07 12:43:41  willuhn

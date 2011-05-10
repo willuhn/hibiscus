@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SammelUeberweisungBuchungControl.java,v $
- * $Revision: 1.10 $
- * $Date: 2009/02/24 23:51:01 $
+ * $Revision: 1.11 $
+ * $Date: 2011/05/10 11:41:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -155,7 +155,7 @@ public class SammelUeberweisungBuchungControl extends AbstractSammelTransferBuch
   {
     if (this.textschluessel != null)
       return this.textschluessel;
-    this.textschluessel = new SelectInput(TextSchluessel.get(new String[]{"51","53","54"}),TextSchluessel.get(((SammelTransferBuchung)getBuchung()).getTextSchluessel()));
+    this.textschluessel = new SelectInput(TextSchluessel.get(TextSchluessel.SET_SAMMELUEB),TextSchluessel.get(((SammelTransferBuchung)getBuchung()).getTextSchluessel()));
     this.textschluessel.setEnabled(!getBuchung().getSammelTransfer().ausgefuehrt());
     return this.textschluessel;
   }
@@ -163,6 +163,9 @@ public class SammelUeberweisungBuchungControl extends AbstractSammelTransferBuch
 
 /*****************************************************************************
  * $Log: SammelUeberweisungBuchungControl.java,v $
+ * Revision 1.11  2011/05/10 11:41:29  willuhn
+ * @N Text-Schluessel als Konstanten definiert - Teil aus dem Patch von Thomas vom 07.12.2010
+ *
  * Revision 1.10  2009/02/24 23:51:01  willuhn
  * @N Auswahl der Empfaenger/Zahlungspflichtigen jetzt ueber Auto-Suggest-Felder
  *
