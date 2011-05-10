@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/print/AbstractPrintSupport.java,v $
- * $Revision: 1.4 $
- * $Date: 2011/04/13 17:35:46 $
+ * $Revision: 1.5 $
+ * $Date: 2011/05/10 11:56:59 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -37,6 +37,7 @@ import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.print.PrintSupport;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.Settings;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -45,6 +46,8 @@ import de.willuhn.util.I18N;
  */
 public abstract class AbstractPrintSupport implements PrintSupport
 {
+  private final static Settings settings = new Settings(PrintSupport.class);
+  
   final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
   FontData fontTitle  = Font.BOLD.getSWTFont().getFontData()[0];
@@ -89,9 +92,13 @@ public abstract class AbstractPrintSupport implements PrintSupport
     page.setFooter(footer);
   
     PrintJob job = new PrintJob(i18n.tr("Hibiscus {0}",HBCI.LONGDATEFORMAT.format(new Date())),page);
-    Margins margins = job.getMargins(); // TODO: Wenn man den Default-Rand laesst, ist er rechts groesser als links - das ist nicht abheft-freundlich ;)
-    margins.left = 100;
-    margins.right = 50;
+    
+    // Wenn man den Default-Rand laesst, ist er rechts groesser als links - das ist nicht abheft-freundlich ;)
+    // Ich denke, die meisten User brauchen das nicht aendern. Falls doch, kann es der
+    // User ja ueber die Properties-Datei anpassen
+    Margins margins = job.getMargins();
+    margins.left  = settings.getInt("margin.left",100);
+    margins.right = settings.getInt("margin.right",50);
     
     return job;
   }
@@ -131,7 +138,10 @@ public abstract class AbstractPrintSupport implements PrintSupport
 
 /**********************************************************************
  * $Log: AbstractPrintSupport.java,v $
- * Revision 1.4  2011/04/13 17:35:46  willuhn
+ * Revision 1.5  2011/05/10 11:56:59  willuhn
+ * @N Linker und rechter Rand kann ueber Properties-Datei angepasst werden
+ *
+ * Revision 1.4  2011-04-13 17:35:46  willuhn
  * @N Druck-Support fuer Kontoauszuege fehlte noch
  *
  * Revision 1.3  2011-04-11 11:28:08  willuhn
