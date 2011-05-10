@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/ChipTANDialog.java,v $
- * $Revision: 1.2 $
- * $Date: 2011/05/09 17:24:46 $
+ * $Revision: 1.3 $
+ * $Date: 2011/05/10 11:16:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -46,18 +46,19 @@ import de.willuhn.util.ApplicationException;
 public class ChipTANDialog extends TANDialog
 {
   private final static Settings settings = new Settings(ChipTANDialog.class);
-  private String code = null;
+  private FlickerCode code = null;
   
   /**
    * ct.
    * @param config die PINTAN-Config.
    * @param code der Flicker-Code.
    * @throws RemoteException
+   * @throws ApplicationException wenn der Flicker-Code nicht geparst werden konnte.
    */
-  public ChipTANDialog(PinTanConfig config, String code) throws RemoteException
+  public ChipTANDialog(PinTanConfig config, String code) throws RemoteException, ApplicationException
   {
     super(config);
-    this.code = code;
+    this.code = new FlickerCode(code);
   }
 
 	/**
@@ -112,17 +113,12 @@ public class ChipTANDialog extends TANDialog
     
     /**
      * ct.
-     * @param s der anzuzeigende Flicker-Code.
+     * @param fc der anzuzeigende Flicker-Code.
      * @throws ApplicationException
      */
-    private FlickerPart(String s) throws ApplicationException
+    private FlickerPart(FlickerCode fc) throws ApplicationException
     {
-      // 11048714955205123456789F14302C303107 // aus der JS-Demo
-      // 002624088715131306389726041,00       // von http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=60532
-      // 100484652456044356435F14312C30304B   // von bankingportal.sparkasse-freiburg.de
-
-      FlickerCode fc = new FlickerCode(s);
-      code = fc.getCode();
+      String code = fc.getCode();
       
       // Sync-Identifier vorn dran haengen.
       code = "0FFF" + code;
@@ -232,6 +228,11 @@ public class ChipTANDialog extends TANDialog
    * Implementierung des Flicker-Codes fuer optisches ChipTAN.
    * Dies ist eine 1:1 Portierung der Javascript-Implementierung von
    * http://6xq.net/media/00/20/flickercode.html
+   * 
+   * Beispiele:
+   * 11048714955205123456789F14302C303107 // aus der JS-Demo
+   * 002624088715131306389726041,00       // von http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=60532
+   * 100484652456044356435F14312C30304B   // von bankingportal.sparkasse-freiburg.de
    */
   private class FlickerCode
   {
@@ -250,7 +251,7 @@ public class ChipTANDialog extends TANDialog
       this.code = s.toUpperCase().replaceAll("[^A-F0-9]","");
 
       if (!this.check())
-        throw new ApplicationException(i18n.tr("Flicker-Code ungültig"));
+        throw new ApplicationException(i18n.tr("Flicker-Code nicht lesbar"));
     }
 
     /**
@@ -361,7 +362,10 @@ public class ChipTANDialog extends TANDialog
 
 /**********************************************************************
  * $Log: ChipTANDialog.java,v $
- * Revision 1.2  2011/05/09 17:24:46  willuhn
+ * Revision 1.3  2011/05/10 11:16:55  willuhn
+ * @C Fallback auf normalen TAN-Dialog, wenn der Flicker-Code nicht lesbar ist
+ *
+ * Revision 1.2  2011-05-09 17:24:46  willuhn
  * @N ChipTAN-Dialog jetzt in echt
  *
  * Revision 1.1  2010-12-08 12:34:57  willuhn
