@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/AddressInput.java,v $
- * $Revision: 1.8 $
- * $Date: 2011/05/03 10:13:15 $
+ * $Revision: 1.9 $
+ * $Date: 2011/05/11 08:42:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,7 +15,9 @@ package de.willuhn.jameica.hbci.gui.input;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -49,6 +51,8 @@ import de.willuhn.util.I18N;
  */
 public class AddressInput implements Input
 {
+  private Map<String,Object> data = new HashMap<String,Object>();
+
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private AddressFilter filter   = null;
   private SuggestInput input     = null;
@@ -279,6 +283,21 @@ public class AddressInput implements Input
     this.input.setValue(value);
   }
 
+  /**
+   * @see de.willuhn.jameica.gui.input.Input#setData(java.lang.String, java.lang.Object)
+   */
+  public void setData(String key, Object data)
+  {
+    this.data.put(key,data);
+  }
+
+  /**
+   * @see de.willuhn.jameica.gui.input.Input#getData(java.lang.String)
+   */
+  public Object getData(String key)
+  {
+    return this.data.get(key);
+  }
   
 
   /**
@@ -424,30 +443,9 @@ public class AddressInput implements Input
 
 /**********************************************************************
  * $Log: AddressInput.java,v $
- * Revision 1.8  2011/05/03 10:13:15  willuhn
+ * Revision 1.9  2011/05/11 08:42:32  willuhn
+ * @N setData(String,Object) und getData(String) in Input. Damit koennen generische Nutzdaten im Eingabefeld gespeichert werden (siehe SWT-Widget)
+ *
+ * Revision 1.8  2011-05-03 10:13:15  willuhn
  * @R Hintergrund-Farbe nicht mehr explizit setzen. Erzeugt auf Windows und insb. Mac teilweise unschoene Effekte. Besonders innerhalb von Label-Groups, die auf Windows/Mac andere Hintergrund-Farben verwenden als der Default-Hintergrund
- *
- * Revision 1.7  2010-07-03 20:51:37  willuhn
- * @B "..."-Button wurde nach Ausfuehrung nicht mit deaktiviert. Machte aber eigentlich keinen Unterschied, weil der "Speichern"-Button da bereits deaktiviert ist und ein Uebernehmen des geaenderten Empfaengers ohnehin nicht moeglich gewesen waere
- *
- * Revision 1.6  2010/03/31 11:19:40  willuhn
- * @N Automatisches Entfernen nicht-zulaessiger Zeichen
- *
- * Revision 1.5  2009/12/07 23:48:42  willuhn
- * @N Adress-Auswahl nun via Autosuggest UND Adress-Dialog moeglich
- *
- * Revision 1.4  2009/10/20 23:12:58  willuhn
- * @N Support fuer SEPA-Ueberweisungen
- * @N Konten um IBAN und BIC erweitert
- *
- * Revision 1.3  2009/03/13 00:25:12  willuhn
- * @N Code fuer Auslandsueberweisungen fast fertig
- *
- * Revision 1.2  2009/02/24 23:51:01  willuhn
- * @N Auswahl der Empfaenger/Zahlungspflichtigen jetzt ueber Auto-Suggest-Felder
- *
- * Revision 1.1  2009/01/04 01:25:47  willuhn
- * @N Checksumme von Umsaetzen wird nun generell beim Anlegen des Datensatzes gespeichert. Damit koennen Umsaetze nun problemlos geaendert werden, ohne mit "hasChangedByUser" checken zu muessen. Die Checksumme bleibt immer erhalten, weil sie in UmsatzImpl#insert() sofort zu Beginn angelegt wird
- * @N Umsaetze sind nun vollstaendig editierbar
- *
  **********************************************************************/
