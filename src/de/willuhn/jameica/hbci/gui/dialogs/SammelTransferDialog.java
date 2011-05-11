@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/SammelTransferDialog.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/09/30 00:08:51 $
+ * $Revision: 1.2 $
+ * $Date: 2011/05/11 10:05:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,113 +12,67 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.dialogs;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.kapott.hbci.manager.HBCIUtils;
 
-import de.willuhn.jameica.gui.Action;
-import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.parts.TablePart;
-import de.willuhn.jameica.gui.util.ButtonArea;
-import de.willuhn.jameica.gui.util.Headline;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.Color;
+import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.parts.SammelTransferBuchungList;
-import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
-import de.willuhn.jameica.system.Application;
-import de.willuhn.util.ApplicationException;
-import de.willuhn.util.I18N;
 
 /**
- * Oeffnet einen Dialog und zeigt den uebergebenen Sammel-Auftrag an.
- * Wird verwendet, wenn ein Sammel-Auftrag ausgefuehrt werden
- * soll - dann wird vorher diese Sicherheitsabfrage eingeblendet, die
- * nochmal die Details des Sammel-Auftrages anzeigt. Erst wenn der User
- * hier OK klickt, wird der Auftrag ausgefuehrt.
+ * Sicherheitsabfrage beim Ausfuehren eines Auftrages.
  */
-public class SammelTransferDialog extends AbstractDialog {
-
-	private I18N i18n;
+public class SammelTransferDialog extends AbstractExecuteDialog
+{
 	private SammelTransfer st;
-	private Boolean choosen = Boolean.FALSE;
 
   /**
    * ct.
    * @param s der Sammel-Auftrag.
    * @param position
    */
-  public SammelTransferDialog(SammelTransfer s, int position) {
+  public SammelTransferDialog(SammelTransfer s, int position)
+  {
     super(position);
-
-		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
     this.st = s;
-    this.setTitle(i18n.tr("Sicher?"));
-    this.setSize(SWT.DEFAULT,380);
-  }
-
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
-   */
-  protected Object getData() throws Exception {
-    return choosen;
+    
+    // Wird sonst entweder zu flach oder zu schmal
+    this.setSize(550,440);
   }
 
   /**
    * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
    */
-  protected void paint(Composite parent) throws Exception {
-
-    LabelGroup group = new LabelGroup(parent,"");
+  protected void paint(Composite parent) throws Exception
+  {
+    Container group = new SimpleContainer(parent,false);
+    group.addHeadline(i18n.tr("Details des Sammel-Auftrages"));
 			
-		group.addText(i18n.tr("Sind Sie sicher, daß Sie den Sammel-Auftrag jetzt einreichen wollen?"),true);
-
     group.addLabelPair(i18n.tr("Bezeichnung"),new LabelInput(this.st.getBezeichnung()));
 
-    // BUGZILLA 106 http://www.willuhn.de/bugzilla/show_bug.cgi?id=106
-    Konto k = this.st.getKonto();
-    
-    Input kto = new LabelInput(this.st.getKonto().getKontonummer());
-    String com = k.getBezeichnung();
-    String bank = HBCIUtils.getNameForBLZ(k.getBLZ());
-    if (bank != null && bank.length() > 0)
-      com += " [" + bank + "]";
-    
-		kto.setComment(com);
-		group.addLabelPair(i18n.tr("Eigenes Konto"),kto);
+    Input kto = new LabelInput(st.getKonto().getKontonummer());
+    kto.setComment(st.getKonto().getBezeichnung());
+    group.addLabelPair(i18n.tr("Eigenes Konto"),kto);
 
-    Input s = new LabelInput(HBCI.DECIMALFORMAT.format(this.st.getSumme()));
-    s.setComment(k.getWaehrung());
-    group.addLabelPair(i18n.tr("Summe"),s);
+    LabelInput betrag = new LabelInput(HBCI.DECIMALFORMAT.format(st.getSumme()) + " " + st.getKonto().getWaehrung());
+    betrag.setColor(Color.ERROR);
+    group.addLabelPair(i18n.tr("Summe"),betrag);
 
-    new Headline(parent,i18n.tr("Enthaltene Buchungen"));
-    
+    group.addHeadline(i18n.tr("Enthaltene Buchungen"));
     TablePart buchungen = new SammelTransferBuchungList(this.st,null);
     buchungen.setMulti(false);
     buchungen.setSummary(false);
-
     buchungen.paint(parent);
 
-    ButtonArea b = new ButtonArea(parent,2);
-		b.addButton(i18n.tr("Jetzt ausführen"), new Action()
-    {
-      public void handleAction(Object context) throws ApplicationException
-      {
-				choosen = Boolean.TRUE;
-				close();
-      }
-    });
-		b.addButton(i18n.tr("Abbrechen"), new Action()
-    {
-      public void handleAction(Object context) throws ApplicationException
-      {
-				choosen = Boolean.FALSE;
-				close();
-      }
-    });
+    Container group2 = new SimpleContainer(parent);
+    group2.addText(i18n.tr("Sind Sie sicher, daß Sie den Sammel-Auftrag jetzt ausführen wollen?"),true);
+    super.paint(parent);
+  
   }
 
 }
@@ -126,6 +80,9 @@ public class SammelTransferDialog extends AbstractDialog {
 
 /**********************************************************************
  * $Log: SammelTransferDialog.java,v $
+ * Revision 1.2  2011/05/11 10:05:23  willuhn
+ * @N Bestaetigungsdialoge ueberarbeitet (Buttons mit Icons, Verwendungszweck-Anzeige via VerwendungszweckUtil, keine Labelgroups mehr, gemeinsame Basis-Klasse)
+ *
  * Revision 1.1  2005/09/30 00:08:51  willuhn
  * @N SammelUeberweisungen (merged with SammelLastschrift)
  *
