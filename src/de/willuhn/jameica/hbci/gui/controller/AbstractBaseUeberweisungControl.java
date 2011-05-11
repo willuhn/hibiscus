@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractBaseUeberweisungControl.java,v $
- * $Revision: 1.17 $
- * $Date: 2010/08/17 11:32:11 $
+ * $Revision: 1.18 $
+ * $Date: 2011/05/11 16:23:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -219,9 +219,9 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
    * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getZweck()
    * Ueberschrieben, um das Control zu deaktivieren, wenn die Ueberweisung bereits ausgefuehrt wurde.
    */
-  public Input getZweck() throws RemoteException
+  public TextInput getZweck() throws RemoteException
   {
-		Input i = super.getZweck();
+    TextInput i = super.getZweck();
     i.setEnabled(!((Terminable)getTransfer()).ausgefuehrt());
 		return i;
   }
@@ -243,7 +243,10 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
 
 /**********************************************************************
  * $Log: AbstractBaseUeberweisungControl.java,v $
- * Revision 1.17  2010/08/17 11:32:11  willuhn
+ * Revision 1.18  2011/05/11 16:23:57  willuhn
+ * @N BUGZILLA 591
+ *
+ * Revision 1.17  2010-08-17 11:32:11  willuhn
  * @C Code-Cleanup
  *
  * Revision 1.16  2009-03-13 00:25:12  willuhn

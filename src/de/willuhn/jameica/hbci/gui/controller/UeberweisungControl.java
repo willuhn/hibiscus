@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.50 $
- * $Date: 2011/05/10 12:17:07 $
+ * $Revision: 1.51 $
+ * $Date: 2011/05/11 16:23:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,10 +16,15 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SelectInput;
+import de.willuhn.jameica.gui.input.TextInput;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.TextSchluessel;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungNew;
@@ -28,6 +33,7 @@ import de.willuhn.jameica.hbci.rmi.BaseUeberweisung;
 import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
 import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 
 /**
@@ -113,10 +119,88 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
     if (textschluessel != null)
       return textschluessel;
 
-    textschluessel = new SelectInput(TextSchluessel.get(TextSchluessel.SET_UEB),TextSchluessel.get(((BaseUeberweisung)getTransfer()).getTextSchluessel()));
+    String current = ((BaseUeberweisung)getTransfer()).getTextSchluessel();
+    textschluessel = new SelectInput(TextSchluessel.get(TextSchluessel.SET_UEB),TextSchluessel.get(current));
     textschluessel.setName(i18n.tr("Textschlüssel"));
     textschluessel.setEnabled(!((Terminable)getTransfer()).ausgefuehrt());
+
+    ////////////////////////////////////////////////////////////////////////////
+    // BZÜ und Spenden-Ueberweisung
+
+    // initiales Setzen der Einstellungen
+    updateZweck(current);
+    
+    // Listener fuer die nachtraegliche Aenderung
+    if (textschluessel.isEnabled())
+    {
+      textschluessel.addListener(new Listener() {
+        public void handleEvent(Event event)
+        {
+          if (!textschluessel.hasChanged())
+            return;
+          
+          try
+          {
+            TextSchluessel s = (TextSchluessel) textschluessel.getValue();
+            String code = s != null ? s.getCode() : null;
+            
+            // Hinweis-Text anzeigen
+            if (code != null && code.equals(TextSchluessel.TS_BZU))
+            {
+              String notify = i18n.tr("Bei dieser Form der Überweisung sind keine weiteren Verwendungszweck-Zeilen\n" +
+                                      "zulässig. Gegebenenfalls bereits eingegebene Zeilen werden nicht an die Bank\n" +
+                                      "übertragen.");
+              Application.getCallback().notifyUser(notify);
+            }
+            
+            updateZweck(code);
+          }
+          catch (Exception e)
+          {
+            Logger.error("unable to apply changes",e);
+          }
+        }
+      });
+    }
+    //
+    ////////////////////////////////////////////////////////////////////////////
+    
     return textschluessel;
+  }
+  
+  /**
+   * Aktualisiert die Eingabefelder fuer den Verwendungszweck abhaengig vom Textschluessel.
+   * @param code der Code.
+   */
+  private void updateZweck(String code)
+  {
+    if (code == null)
+      return;
+
+    try
+    {
+      TextInput zweck  = getZweck();
+      Input zweck2     = getZweck2();
+      
+      if (code.equals(TextSchluessel.TS_BZU))
+      {
+        zweck.setName(i18n.tr("BZÜ-Prüfziffer"));
+        zweck.setMaxLength(13);
+        zweck.setValidChars(HBCIProperties.HBCI_BZU_VALIDCHARS);
+        zweck2.setEnabled(false);
+      }
+      else
+      {
+        zweck.setName(i18n.tr("Verwendungszweck"));
+        zweck.setMaxLength(HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH);
+        zweck.setValidChars(HBCIProperties.HBCI_DTAUS_VALIDCHARS);
+        zweck2.setEnabled(!((Terminable)getTransfer()).ausgefuehrt());
+      }
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to apply changes",e);
+    }
   }
   
   /**
@@ -189,7 +273,10 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
- * Revision 1.50  2011/05/10 12:17:07  willuhn
+ * Revision 1.51  2011/05/11 16:23:57  willuhn
+ * @N BUGZILLA 591
+ *
+ * Revision 1.50  2011-05-10 12:17:07  willuhn
  * *** empty log message ***
  *
  * Revision 1.49  2011-05-10 11:41:30  willuhn

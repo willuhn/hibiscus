@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCIProperties.java,v $
- * $Revision: 1.43 $
- * $Date: 2011/05/10 11:51:15 $
+ * $Revision: 1.44 $
+ * $Date: 2011/05/11 16:23:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -57,6 +57,11 @@ public class HBCIProperties
    * Liste der in Bankleitzahlen erlaubten Zeichen.
    */
   public final static String HBCI_BLZ_VALIDCHARS = settings.getString("hbci.blz.validchars","0123456789"); 
+
+  /**
+   * Liste der in der BZÜ-Pruefziffer erlaubten Zeichen.
+   */
+  public final static String HBCI_BZU_VALIDCHARS = settings.getString("hbci.bzu.validchars","0123456789"); 
 
   /**
    * BUGZILLA 280
@@ -350,7 +355,10 @@ public class HBCIProperties
 
 /**********************************************************************
  * $Log: HBCIProperties.java,v $
- * Revision 1.43  2011/05/10 11:51:15  willuhn
+ * Revision 1.44  2011/05/11 16:23:57  willuhn
+ * @N BUGZILLA 591
+ *
+ * Revision 1.43  2011-05-10 11:51:15  willuhn
  * @R Marker entfernt
  *
  * Revision 1.42  2011-01-20 17:13:21  willuhn

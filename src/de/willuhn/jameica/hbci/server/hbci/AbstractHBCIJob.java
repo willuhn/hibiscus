@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCIJob.java,v $
- * $Revision: 1.36 $
- * $Date: 2011/05/10 12:18:11 $
+ * $Revision: 1.37 $
+ * $Date: 2011/05/11 16:23:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -374,7 +374,7 @@ public abstract class AbstractHBCIJob
 	 * @param t der Auftrag.
 	 * @throws RemoteException
 	 */
-	final void setJobParamUsage(Transfer t) throws RemoteException
+	void setJobParamUsage(Transfer t) throws RemoteException
 	{
 	  if (t == null)
 	    return;
@@ -436,7 +436,10 @@ public abstract class AbstractHBCIJob
 
 /**********************************************************************
  * $Log: AbstractHBCIJob.java,v $
- * Revision 1.36  2011/05/10 12:18:11  willuhn
+ * Revision 1.37  2011/05/11 16:23:57  willuhn
+ * @N BUGZILLA 591
+ *
+ * Revision 1.36  2011-05-10 12:18:11  willuhn
  * @C Code zum Setzen der usage-Parameter in gemeinsamer Basisklasse AbstractHBCIJob - der Code war 3x identisch vorhanden
  *
  * Revision 1.35  2010-12-27 23:03:13  willuhn

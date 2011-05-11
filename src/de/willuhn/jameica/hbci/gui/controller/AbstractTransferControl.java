@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.58 $
- * $Date: 2011/04/07 17:52:07 $
+ * $Revision: 1.59 $
+ * $Date: 2011/05/11 16:23:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -187,7 +187,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 	 * @return Eingabe-Feld.
 	 * @throws RemoteException
 	 */
-	public Input getZweck() throws RemoteException
+	public TextInput getZweck() throws RemoteException
 	{
 		if (zweck != null)
 			return zweck;
@@ -450,7 +450,10 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
- * Revision 1.58  2011/04/07 17:52:07  willuhn
+ * Revision 1.59  2011/05/11 16:23:57  willuhn
+ * @N BUGZILLA 591
+ *
+ * Revision 1.58  2011-04-07 17:52:07  willuhn
  * @N BUGZILLA 1014
  *
  * Revision 1.57  2010-08-17 11:32:10  willuhn

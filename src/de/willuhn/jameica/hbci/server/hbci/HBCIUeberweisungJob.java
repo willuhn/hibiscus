@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUeberweisungJob.java,v $
- * $Revision: 1.47 $
- * $Date: 2011/05/10 12:18:11 $
+ * $Revision: 1.48 $
+ * $Date: 2011/05/11 16:23:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,6 +25,7 @@ import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
+import de.willuhn.jameica.hbci.rmi.Transfer;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.hbci.server.Converter;
 import de.willuhn.jameica.hbci.server.hbci.tests.PreTimeRestriction;
@@ -140,6 +141,33 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
 	}
 
   /**
+   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#setJobParamUsage(de.willuhn.jameica.hbci.rmi.Transfer)
+   */
+  void setJobParamUsage(Transfer t) throws RemoteException
+  {
+    // Wir koennen hier direkt unsere Member-Ueberweisung nehmen.
+    // Bei der kennen wir auch schon den Typ.
+    if (this.isBzu)
+    {
+      // Bei BZU muessen die erste Zeile Verwendungszweck zwingen die BZU-Daten sein
+      // Das ist eine 13-stellige Checksumme, die im Job unter "bzudata" gespeichert wird.
+      // Die restlichen Zeilen Verwendungszweck kommen dann hinten dran ab usage_2
+      setJobParam("bzudata",this.ueberweisung.getZweck());
+    }
+//    else if (this.isSpende)
+//    {
+//      // Bei Spenden-Ueberweisung duerfen nur genau 3 Zeilen Verwendungszweck enthalten
+//      // sein. Und das muessen "spenderid", "plz_street" und "name_ort" sein. Weitere
+//      // Zeilen sind nicht zulaessig.
+//    }
+    else
+    {
+      // Ueberweisung mit regulaerem Verwendungszweck
+      super.setJobParamUsage(t);
+    }
+  }
+
+  /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getIdentifier()
    */
   String getIdentifier()
@@ -148,6 +176,10 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
       return "TermUeb";
     if (isUmb)
       return "Umb";
+    if (isBzu)
+      return "UebBZU";
+//    if (isSpende)
+//      return "Donation";
     return "Ueb";
   }
   
@@ -156,6 +188,10 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
    */
   public String getName() throws RemoteException
   {
+    if (this.isBzu)
+      return i18n.tr("BZÜ-Überweisung an {0}",ueberweisung.getGegenkontoName());
+    if (this.isSpende)
+      return i18n.tr("Spenden-Überweisung an {0}",ueberweisung.getGegenkontoName());
     return i18n.tr("Überweisung an {0}",ueberweisung.getGegenkontoName());
   }
 
@@ -208,51 +244,9 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIUeberweisungJob.java,v $
- * Revision 1.47  2011/05/10 12:18:11  willuhn
+ * Revision 1.48  2011/05/11 16:23:56  willuhn
+ * @N BUGZILLA 591
+ *
+ * Revision 1.47  2011-05-10 12:18:11  willuhn
  * @C Code zum Setzen der usage-Parameter in gemeinsamer Basisklasse AbstractHBCIJob - der Code war 3x identisch vorhanden
- *
- * Revision 1.46  2010-02-23 11:20:45  willuhn
- * @C Verwendungszweck ignorieren, wenn er nur aus Whitespaces besteht
- *
- * Revision 1.45  2009/06/29 09:00:23  willuhn
- * @B wenn das Feature "transfer.markexecuted.before" aktiv ist, wurden Auftraege auch dann als ausgefuehrt markiert, wenn sie abgebrochen wurden - die Methode markCancelled() war nicht ueberschrieben worden
- *
- * Revision 1.44  2009/05/12 22:53:33  willuhn
- * @N BUGZILLA 189 - Ueberweisung als Umbuchung
- *
- * Revision 1.43  2009/03/24 23:02:51  willuhn
- * @B BUGZILLA 712
- *
- * Revision 1.42  2009/02/18 10:48:41  willuhn
- * @N Neuer Schalter "transfer.markexecuted.before", um festlegen zu koennen, wann ein Auftrag als ausgefuehrt gilt (wenn die Quittung von der Bank vorliegt oder wenn der Auftrag erzeugt wurde)
- *
- * Revision 1.41  2008/11/26 00:39:36  willuhn
- * @N Erste Version erweiterter Verwendungszwecke. Muss dringend noch getestet werden.
- *
- * Revision 1.40  2008/11/17 23:30:00  willuhn
- * @C Aufrufe der depeicated BLZ-Funktionen angepasst
- *
- * Revision 1.39  2008/09/23 11:24:27  willuhn
- * @C Auswertung der Job-Results umgestellt. Die Entscheidung, ob Fehler oder Erfolg findet nun nur noch an einer Stelle (in AbstractHBCIJob) statt. Ausserdem wird ein Job auch dann als erfolgreich erledigt markiert, wenn der globale Job-Status zwar fehlerhaft war, aber fuer den einzelnen Auftrag nicht zweifelsfrei ermittelt werden konnte, ob er erfolgreich war oder nicht. Es koennte unter Umstaenden sein, eine Ueberweisung faelschlicherweise als ausgefuehrt markiert (wenn globaler Status OK, aber Job-Status != ERROR). Das ist aber allemal besser, als sie doppelt auszufuehren.
- *
- * Revision 1.38  2008/08/01 11:05:14  willuhn
- * @N BUGZILLA 587
- *
- * Revision 1.37  2008/05/30 12:02:08  willuhn
- * @N Erster Code fuer erweiterte Verwendungszwecke - NOCH NICHT FREIGESCHALTET!
- *
- * Revision 1.36  2007/12/06 23:53:56  willuhn
- * @B Bug 490
- *
- * Revision 1.35  2007/12/06 14:25:32  willuhn
- * @B Bug 494
- *
- * Revision 1.34  2007/11/11 19:44:28  willuhn
- * @N Bug 501
- *
- * Revision 1.33  2007/04/23 18:07:14  willuhn
- * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
- * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
- * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
- * @N Anbindung externer Adressbuecher
  **********************************************************************/
