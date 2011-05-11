@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/ChipTANDialog.java,v $
- * $Revision: 1.3 $
- * $Date: 2011/05/10 11:16:55 $
+ * $Revision: 1.4 $
+ * $Date: 2011/05/11 08:33:54 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -352,7 +352,7 @@ public class ChipTANDialog extends TANDialog
       }
       catch (Exception e)
       {
-        Logger.error("unable to check flicker code " + this.code,e);
+        Logger.error("unparsable flicker code " + this.code,e);
         return false;
       }
     }
@@ -362,7 +362,10 @@ public class ChipTANDialog extends TANDialog
 
 /**********************************************************************
  * $Log: ChipTANDialog.java,v $
- * Revision 1.3  2011/05/10 11:16:55  willuhn
+ * Revision 1.4  2011/05/11 08:33:54  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.3  2011-05-10 11:16:55  willuhn
  * @C Fallback auf normalen TAN-Dialog, wenn der Flicker-Code nicht lesbar ist
  *
  * Revision 1.2  2011-05-09 17:24:46  willuhn
