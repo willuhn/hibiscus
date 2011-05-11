@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/AbstractSammelTransferExecute.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/09/30 00:08:50 $
+ * $Revision: 1.2 $
+ * $Date: 2011/05/11 10:05:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.dialogs.SammelTransferDialog;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -60,6 +61,11 @@ public abstract class AbstractSammelTransferExecute implements Action
 				if (!((Boolean)d.open()).booleanValue())
 					return;
 			}
+      catch (OperationCanceledException oce)
+      {
+        Logger.info(oce.getMessage());
+        return;
+      }
 			catch (Exception e)
 			{
 				Logger.error("error while showing confirm dialog",e);
@@ -89,6 +95,9 @@ public abstract class AbstractSammelTransferExecute implements Action
 
 /**********************************************************************
  * $Log: AbstractSammelTransferExecute.java,v $
+ * Revision 1.2  2011/05/11 10:05:32  willuhn
+ * @N OCE fangen
+ *
  * Revision 1.1  2005/09/30 00:08:50  willuhn
  * @N SammelUeberweisungen (merged with SammelLastschrift)
  *

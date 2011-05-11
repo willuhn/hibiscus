@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/DauerauftragExecute.java,v $
- * $Revision: 1.11 $
- * $Date: 2007/02/21 10:02:27 $
+ * $Revision: 1.12 $
+ * $Date: 2011/05/11 10:05:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,6 +23,7 @@ import de.willuhn.jameica.hbci.server.hbci.HBCIDauerauftragListJob;
 import de.willuhn.jameica.hbci.server.hbci.HBCIDauerauftragStoreJob;
 import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -43,7 +44,7 @@ public class DauerauftragExecute implements Action
 		final I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 		if (context == null)
-			throw new ApplicationException(i18n.tr("Keine Überweisung angegeben"));
+			throw new ApplicationException(i18n.tr("Kein Dauerauftrag angegeben"));
 
 		try
 		{
@@ -55,6 +56,11 @@ public class DauerauftragExecute implements Action
 				if (!((Boolean)dd.open()).booleanValue())
 					return;
 			}
+      catch (OperationCanceledException oce)
+      {
+        Logger.info(oce.getMessage());
+        return;
+      }
 			catch (Exception e)
 			{
 				Logger.error("error while showing confirm dialog",e);
@@ -76,8 +82,8 @@ public class DauerauftragExecute implements Action
 		}
 		catch (RemoteException e)
 		{
-			Logger.error("error while executing ueberweisung",e);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Ausführen der Überweisung"));
+			Logger.error("error while executing dauerauftrag",e);
+			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Ausführen des Dauerauftrag"));
 		}
   }
 }
@@ -85,6 +91,9 @@ public class DauerauftragExecute implements Action
 
 /**********************************************************************
  * $Log: DauerauftragExecute.java,v $
+ * Revision 1.12  2011/05/11 10:05:32  willuhn
+ * @N OCE fangen
+ *
  * Revision 1.11  2007/02/21 10:02:27  willuhn
  * @C Code zum Ausfuehren exklusiver Jobs redesigned
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/AuslandsUeberweisungExecute.java,v $
- * $Revision: 1.1 $
- * $Date: 2009/03/13 00:25:12 $
+ * $Revision: 1.2 $
+ * $Date: 2011/05/11 10:05:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,6 +27,7 @@ import de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung;
 import de.willuhn.jameica.hbci.server.hbci.HBCIAuslandsUeberweisungJob;
 import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -65,6 +66,11 @@ public class AuslandsUeberweisungExecute implements Action
 				if (!((Boolean)d.open()).booleanValue())
 					return;
 			}
+      catch (OperationCanceledException oce)
+      {
+        Logger.info(oce.getMessage());
+        return;
+      }
 			catch (Exception e)
 			{
 				Logger.error("error while showing confirm dialog",e);
@@ -100,6 +106,9 @@ public class AuslandsUeberweisungExecute implements Action
 
 /**********************************************************************
  * $Log: AuslandsUeberweisungExecute.java,v $
+ * Revision 1.2  2011/05/11 10:05:32  willuhn
+ * @N OCE fangen
+ *
  * Revision 1.1  2009/03/13 00:25:12  willuhn
  * @N Code fuer Auslandsueberweisungen fast fertig
  *

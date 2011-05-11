@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/UeberweisungExecute.java,v $
- * $Revision: 1.15 $
- * $Date: 2011/01/20 17:13:21 $
+ * $Revision: 1.16 $
+ * $Date: 2011/05/11 10:05:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,6 +27,7 @@ import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.hbci.server.hbci.HBCIUeberweisungJob;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -81,6 +82,11 @@ public class UeberweisungExecute implements Action
 				if (!((Boolean)d.open()).booleanValue())
 					return;
 			}
+      catch (OperationCanceledException oce)
+      {
+        Logger.info(oce.getMessage());
+        return;
+      }
 			catch (Exception e)
 			{
 				Logger.error("error while showing confirm dialog",e);
@@ -120,7 +126,10 @@ public class UeberweisungExecute implements Action
 
 /**********************************************************************
  * $Log: UeberweisungExecute.java,v $
- * Revision 1.15  2011/01/20 17:13:21  willuhn
+ * Revision 1.16  2011/05/11 10:05:32  willuhn
+ * @N OCE fangen
+ *
+ * Revision 1.15  2011-01-20 17:13:21  willuhn
  * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
  *
  * Revision 1.14  2010-10-03 22:07:47  willuhn
