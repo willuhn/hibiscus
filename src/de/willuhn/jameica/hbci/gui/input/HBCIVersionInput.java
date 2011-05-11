@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/HBCIVersionInput.java,v $
- * $Revision: 1.14 $
- * $Date: 2009/01/04 23:10:37 $
+ * $Revision: 1.15 $
+ * $Date: 2011/05/11 08:43:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,7 +18,6 @@ import java.util.List;
 import org.kapott.hbci.passport.HBCIPassport;
 
 import de.willuhn.datasource.GenericObject;
-import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.system.Application;
@@ -29,7 +28,7 @@ import de.willuhn.util.I18N;
  * Combo-Box, die die verfuegbaren HBCI-Versionen enthaelt.
  * @author willuhn
  */
-public class HBCIVersionInput extends SelectInput implements Input
+public class HBCIVersionInput extends SelectInput
 {
 
   private static I18N i18n;
@@ -242,6 +241,9 @@ public class HBCIVersionInput extends SelectInput implements Input
 
 /*****************************************************************************
  * $Log: HBCIVersionInput.java,v $
+ * Revision 1.15  2011/05/11 08:43:56  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.14  2009/01/04 23:10:37  willuhn
  * @B BUGZILLA 684
  *
