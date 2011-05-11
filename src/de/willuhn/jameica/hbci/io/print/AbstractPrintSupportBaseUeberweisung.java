@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/print/AbstractPrintSupportBaseUeberweisung.java,v $
- * $Revision: 1.3 $
- * $Date: 2011/05/02 11:16:44 $
+ * $Revision: 1.4 $
+ * $Date: 2011/05/11 09:12:06 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -92,7 +92,7 @@ public abstract class AbstractPrintSupportBaseUeberweisung extends AbstractPrint
       
       // Verwendungszweck
       {
-        String usage = VerwendungszweckUtil.merge(a.getZweck(),a.getZweck2(),(String)a.getAttribute("zweck3"));
+        String usage = VerwendungszweckUtil.toString(a,"\n");
         table.add(new TextPrint(i18n.tr("Verwendungszweck"),fontNormal));
         table.add(new TextPrint(notNull(usage),fontNormal));
       }
@@ -161,7 +161,10 @@ public abstract class AbstractPrintSupportBaseUeberweisung extends AbstractPrint
 
 /**********************************************************************
  * $Log: AbstractPrintSupportBaseUeberweisung.java,v $
- * Revision 1.3  2011/05/02 11:16:44  willuhn
+ * Revision 1.4  2011/05/11 09:12:06  willuhn
+ * @C Merge-Funktionen fuer den Verwendungszweck ueberarbeitet
+ *
+ * Revision 1.3  2011-05-02 11:16:44  willuhn
  * @N Ausfuehrungsdatum mit drucken
  *
  * Revision 1.2  2011-04-13 17:35:46  willuhn

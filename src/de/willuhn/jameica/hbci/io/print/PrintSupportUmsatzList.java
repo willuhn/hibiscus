@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/print/PrintSupportUmsatzList.java,v $
- * $Revision: 1.4 $
- * $Date: 2011/04/29 07:44:56 $
+ * $Revision: 1.5 $
+ * $Date: 2011/05/11 09:12:07 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -152,7 +152,7 @@ public class PrintSupportUmsatzList extends AbstractPrintSupport
         // Liste der Umsaetze im Konto
         for (Umsatz u:umsaetze)
         {
-          String usage = VerwendungszweckUtil.merge(u.getZweck(),u.getZweck2(),(String)u.getAttribute("zweck3"));
+          String usage = VerwendungszweckUtil.toString(u,"\n");
           StringBuffer sb = new StringBuffer();
           {
             String name = u.getGegenkontoName();
@@ -205,7 +205,10 @@ public class PrintSupportUmsatzList extends AbstractPrintSupport
 
 /**********************************************************************
  * $Log: PrintSupportUmsatzList.java,v $
- * Revision 1.4  2011/04/29 07:44:56  willuhn
+ * Revision 1.5  2011/05/11 09:12:07  willuhn
+ * @C Merge-Funktionen fuer den Verwendungszweck ueberarbeitet
+ *
+ * Revision 1.4  2011-04-29 07:44:56  willuhn
  * @B Siehe http://www.willuhn.de/blog/index.php?/archives/553-Hibiscus-Druck-Support.html#c1293
  *
  * Revision 1.3  2011-04-14 08:43:43  willuhn

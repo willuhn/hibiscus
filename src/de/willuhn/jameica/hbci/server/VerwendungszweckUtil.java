@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/VerwendungszweckUtil.java,v $
- * $Revision: 1.7 $
- * $Date: 2010/11/19 17:02:06 $
+ * $Revision: 1.8 $
+ * $Date: 2011/05/11 09:12:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
+import de.willuhn.jameica.hbci.rmi.Transfer;
 
 
 
@@ -108,16 +109,31 @@ public class VerwendungszweckUtil
     String result = sb.toString();
     return result.length() == 0 ? null : result;
   }
-  
+
   /**
    * Merget die Verwendungszweck-Zeilen des Auftrages zu einer Zeile zusammen.
-   * Statt Zeilenumbruch wird Leerzeichen verwendet.
+   * Als Trennzeichen fuer die Zeilen wird " " (ein Leerzeichen) verwendet.
    * @param t der Auftrag.
    * @return der String mit einer Zeile, die alle Verwendungszwecke enthaelt.
    * @throws RemoteException
    */
-  public static String toString(HibiscusTransfer t) throws RemoteException
+  public static String toString(Transfer t) throws RemoteException
   {
+    return toString(t," ");
+  }
+  
+  /**
+   * Merget die Verwendungszweck-Zeilen des Auftrages zu einer Zeile zusammen.
+   * @param t der Auftrag.
+   * @param sep das zu verwendende Trennzeichen fuer die Zeilen. Wenn es null ist, wird " "
+   * (ein Leerzeichen) verwendet.
+   * @return der String mit einer Zeile, die alle Verwendungszwecke enthaelt.
+   * @throws RemoteException
+   */
+  public static String toString(Transfer t, String sep) throws RemoteException
+  {
+    if (sep == null)
+      sep = " ";
     StringBuffer sb = new StringBuffer();
     String s1 = t.getZweck();
     String s2 = t.getZweck2();
@@ -126,22 +142,34 @@ public class VerwendungszweckUtil
     if (s1 != null)
     {
       sb.append(s1);
-      sb.append(' ');
+      sb.append(sep);
     }
     if (s2 != null)
     {
       sb.append(s2);
-      sb.append(' ');
+      sb.append(sep);
     }
     if (s3 != null) sb.append(s3);
-    return sb.toString().replace('\n',' ');
+    
+    String result = sb.toString();
+    
+    // Wenn als Trennzeichen "\n" angegeben ist, kann es
+    // bei den weiteren Verwendungszwecken drin bleiben
+    if (sep.equals("\n"))
+      return result;
+    
+    // Andernfalls ersetzen wir es gegen das angegebene Zeichen
+    return result.replace("\n",sep);
   }
 }
 
 
 /*********************************************************************
  * $Log: VerwendungszweckUtil.java,v $
- * Revision 1.7  2010/11/19 17:02:06  willuhn
+ * Revision 1.8  2011/05/11 09:12:07  willuhn
+ * @C Merge-Funktionen fuer den Verwendungszweck ueberarbeitet
+ *
+ * Revision 1.7  2010-11-19 17:02:06  willuhn
  * @N VWZUtil#toString
  *
  * Revision 1.6  2010/06/01 11:02:18  willuhn
