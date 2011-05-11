@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/UmsatzAssign.java,v $
- * $Revision: 1.10 $
- * $Date: 2011/05/06 09:04:16 $
+ * $Revision: 1.11 $
+ * $Date: 2011/05/11 10:20:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -75,6 +75,7 @@ public class UmsatzAssign implements Action
     }
     catch (OperationCanceledException oce)
     {
+      Logger.info(oce.getMessage());
       return;
     }
     catch (ApplicationException ae)
@@ -136,7 +137,10 @@ public class UmsatzAssign implements Action
 
 /**********************************************************************
  * $Log: UmsatzAssign.java,v $
- * Revision 1.10  2011/05/06 09:04:16  willuhn
+ * Revision 1.11  2011/05/11 10:20:28  willuhn
+ * @N OCE fangen
+ *
+ * Revision 1.10  2011-05-06 09:04:16  willuhn
  * *** empty log message ***
  *
  * Revision 1.9  2010-09-27 11:51:38  willuhn

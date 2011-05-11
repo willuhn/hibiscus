@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoDelete.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/11/12 18:25:07 $
+ * $Revision: 1.4 $
+ * $Date: 2011/05/11 10:20:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -56,6 +57,11 @@ public class KontoDelete implements Action
 				if (!choice.booleanValue())
 					return;
 			}
+	    catch (OperationCanceledException oce)
+	    {
+	      Logger.info(oce.getMessage());
+	      return;
+	    }
 			catch (Exception e)
 			{
 				Logger.error("error while deleting konto",e);
@@ -78,6 +84,9 @@ public class KontoDelete implements Action
 
 /**********************************************************************
  * $Log: KontoDelete.java,v $
+ * Revision 1.4  2011/05/11 10:20:28  willuhn
+ * @N OCE fangen
+ *
  * Revision 1.3  2004/11/12 18:25:07  willuhn
  * *** empty log message ***
  *

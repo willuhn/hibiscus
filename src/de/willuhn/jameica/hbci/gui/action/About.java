@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/About.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/11/07 18:51:28 $
+ * $Revision: 1.5 $
+ * $Date: 2011/05/11 10:20:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.gui.action;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -37,6 +38,11 @@ public class About implements Action
   	{
 			a.open();
   	}
+  	catch (OperationCanceledException oce)
+  	{
+  	  Logger.info(oce.getMessage());
+  	  return;
+  	}
   	catch (Exception e)
   	{
   		Logger.error("error while opening about dialog",e);
@@ -49,6 +55,9 @@ public class About implements Action
 
 /**********************************************************************
  * $Log: About.java,v $
+ * Revision 1.5  2011/05/11 10:20:28  willuhn
+ * @N OCE fangen
+ *
  * Revision 1.4  2005/11/07 18:51:28  willuhn
  * *** empty log message ***
  *

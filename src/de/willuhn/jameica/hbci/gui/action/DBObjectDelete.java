@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/DBObjectDelete.java,v $
- * $Revision: 1.6 $
- * $Date: 2011/03/22 12:23:35 $
+ * $Revision: 1.7 $
+ * $Date: 2011/05/11 10:20:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,6 +23,7 @@ import de.willuhn.jameica.hbci.messaging.ObjectDeletedMessage;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.BackgroundTask;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -75,6 +76,11 @@ public class DBObjectDelete implements Action
       Boolean choice = (Boolean) d.open();
       if (!choice.booleanValue())
         return;
+    }
+    catch (OperationCanceledException oce)
+    {
+      Logger.info(oce.getMessage());
+      return;
     }
     catch (Exception e)
     {
@@ -201,7 +207,10 @@ public class DBObjectDelete implements Action
 
 /**********************************************************************
  * $Log: DBObjectDelete.java,v $
- * Revision 1.6  2011/03/22 12:23:35  willuhn
+ * Revision 1.7  2011/05/11 10:20:28  willuhn
+ * @N OCE fangen
+ *
+ * Revision 1.6  2011-03-22 12:23:35  willuhn
  * @R Loeschen in separatem Thread entfernt
  *
  * Revision 1.5  2010/03/05 15:24:53  willuhn

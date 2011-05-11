@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/AbstractSammelTransferExport.java,v $
- * $Revision: 1.4 $
- * $Date: 2009/02/13 14:17:01 $
+ * $Revision: 1.5 $
+ * $Date: 2011/05/11 10:20:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.dialogs.ExportDialog;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -50,6 +51,11 @@ public abstract class AbstractSammelTransferExport implements Action
 		  ExportDialog d = new ExportDialog(list, getExportClass());
       d.open();
 		}
+    catch (OperationCanceledException oce)
+    {
+      Logger.info(oce.getMessage());
+      return;
+    }
 		catch (ApplicationException ae)
 		{
 			throw ae;
@@ -73,6 +79,9 @@ public abstract class AbstractSammelTransferExport implements Action
 
 /**********************************************************************
  * $Log: AbstractSammelTransferExport.java,v $
+ * Revision 1.5  2011/05/11 10:20:29  willuhn
+ * @N OCE fangen
+ *
  * Revision 1.4  2009/02/13 14:17:01  willuhn
  * @N BUGZILLA 700
  *

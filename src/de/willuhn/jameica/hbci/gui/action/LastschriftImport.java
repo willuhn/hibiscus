@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/LastschriftImport.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/06/07 17:26:40 $
+ * $Revision: 1.2 $
+ * $Date: 2011/05/11 10:20:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -44,7 +44,8 @@ public class LastschriftImport implements Action
 		}
     catch (OperationCanceledException oce)
     {
-      // ignore
+      Logger.info(oce.getMessage());
+      return;
     }
 		catch (ApplicationException ae)
 		{
@@ -62,6 +63,9 @@ public class LastschriftImport implements Action
 
 /**********************************************************************
  * $Log: LastschriftImport.java,v $
+ * Revision 1.2  2011/05/11 10:20:28  willuhn
+ * @N OCE fangen
+ *
  * Revision 1.1  2006/06/07 17:26:40  willuhn
  * @N DTAUS-Import fuer Lastschriften
  * @B Satusbar-Update in DTAUSImport gefixt

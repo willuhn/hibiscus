@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/SammelLastschriftImport.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/08/07 14:31:59 $
+ * $Revision: 1.2 $
+ * $Date: 2011/05/11 10:20:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -44,7 +44,8 @@ public class SammelLastschriftImport implements Action
 		}
     catch (OperationCanceledException oce)
     {
-      // ignore
+      Logger.info(oce.getMessage());
+      return;
     }
 		catch (ApplicationException ae)
 		{
@@ -62,6 +63,9 @@ public class SammelLastschriftImport implements Action
 
 /**********************************************************************
  * $Log: SammelLastschriftImport.java,v $
+ * Revision 1.2  2011/05/11 10:20:29  willuhn
+ * @N OCE fangen
+ *
  * Revision 1.1  2006/08/07 14:31:59  willuhn
  * @B misc bugfixing
  * @C Redesign des DTAUS-Imports fuer Sammeltransfers

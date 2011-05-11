@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/UmsatzImport.java,v $
- * $Revision: 1.4 $
- * $Date: 2011/05/03 16:43:09 $
+ * $Revision: 1.5 $
+ * $Date: 2011/05/11 10:20:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -58,7 +58,8 @@ public class UmsatzImport implements Action
 		}
     catch (OperationCanceledException oce)
     {
-      // ignore
+      Logger.info(oce.getMessage());
+      return;
     }
 		catch (ApplicationException ae)
 		{
@@ -76,7 +77,10 @@ public class UmsatzImport implements Action
 
 /**********************************************************************
  * $Log: UmsatzImport.java,v $
- * Revision 1.4  2011/05/03 16:43:09  willuhn
+ * Revision 1.5  2011/05/11 10:20:28  willuhn
+ * @N OCE fangen
+ *
+ * Revision 1.4  2011-05-03 16:43:09  willuhn
  * *** empty log message ***
  *
  * Revision 1.3  2010/03/16 00:44:18  willuhn

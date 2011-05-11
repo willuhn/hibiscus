@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/EmpfaengerImport.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/04/23 18:07:14 $
+ * $Revision: 1.3 $
+ * $Date: 2011/05/11 10:20:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -45,7 +45,8 @@ public class EmpfaengerImport implements Action
 		}
     catch (OperationCanceledException oce)
     {
-      // ignore
+      Logger.info(oce.getMessage());
+      return;
     }
 		catch (ApplicationException ae)
 		{
@@ -63,6 +64,9 @@ public class EmpfaengerImport implements Action
 
 /**********************************************************************
  * $Log: EmpfaengerImport.java,v $
+ * Revision 1.3  2011/05/11 10:20:29  willuhn
+ * @N OCE fangen
+ *
  * Revision 1.2  2007/04/23 18:07:14  willuhn
  * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
  * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt

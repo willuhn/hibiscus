@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/AbstractObjectExport.java,v $
- * $Revision: 1.1 $
- * $Date: 2009/07/09 17:08:02 $
+ * $Revision: 1.2 $
+ * $Date: 2011/05/11 10:20:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.dialogs.ExportDialog;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -50,6 +51,11 @@ public abstract class AbstractObjectExport implements Action
 		  ExportDialog d = new ExportDialog(objects, getExportClass());
       d.open();
 		}
+    catch (OperationCanceledException oce)
+    {
+      Logger.info(oce.getMessage());
+      return;
+    }
 		catch (ApplicationException ae)
 		{
 			throw ae;
@@ -73,6 +79,9 @@ public abstract class AbstractObjectExport implements Action
 
 /**********************************************************************
  * $Log: AbstractObjectExport.java,v $
+ * Revision 1.2  2011/05/11 10:20:29  willuhn
+ * @N OCE fangen
+ *
  * Revision 1.1  2009/07/09 17:08:02  willuhn
  * @N BUGZILLA #740
  *

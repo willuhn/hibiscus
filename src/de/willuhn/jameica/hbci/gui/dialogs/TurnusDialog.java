@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/TurnusDialog.java,v $
- * $Revision: 1.7 $
- * $Date: 2011/05/03 13:43:12 $
+ * $Revision: 1.8 $
+ * $Date: 2011/05/11 10:20:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,6 +28,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Turnus;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -256,6 +257,11 @@ public class TurnusDialog extends AbstractDialog
         turnusList.select(t2);
       }
     }
+    catch (OperationCanceledException oce)
+    {
+      Logger.info(oce.getMessage());
+      return;
+    }
     catch (Exception e)
     {
       Logger.error("error while adding turnus",e);
@@ -274,7 +280,10 @@ public class TurnusDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: TurnusDialog.java,v $
- * Revision 1.7  2011/05/03 13:43:12  willuhn
+ * Revision 1.8  2011/05/11 10:20:29  willuhn
+ * @N OCE fangen
+ *
+ * Revision 1.7  2011-05-03 13:43:12  willuhn
  * @C Saubereres Fehlerhandling
  *
  * Revision 1.6  2011-04-29 12:29:53  willuhn

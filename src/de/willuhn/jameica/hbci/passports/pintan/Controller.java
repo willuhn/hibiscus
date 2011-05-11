@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/Controller.java,v $
- * $Revision: 1.7 $
- * $Date: 2011/05/09 09:35:15 $
+ * $Revision: 1.8 $
+ * $Date: 2011/05/11 10:20:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -362,6 +362,11 @@ public class Controller extends AbstractControl {
       UsedTanDialog d = new UsedTanDialog(getConfig());
       d.open();
     }
+    catch (OperationCanceledException oce)
+    {
+      Logger.info(oce.getMessage());
+      return;
+    }
     catch (Exception e)
     {
       Logger.error("error while loading used TANs",e);
@@ -526,7 +531,10 @@ public class Controller extends AbstractControl {
 
 /**********************************************************************
  * $Log: Controller.java,v $
- * Revision 1.7  2011/05/09 09:35:15  willuhn
+ * Revision 1.8  2011/05/11 10:20:28  willuhn
+ * @N OCE fangen
+ *
+ * Revision 1.7  2011-05-09 09:35:15  willuhn
  * @N BUGZILLA 827
  *
  * Revision 1.6  2011-04-29 11:38:57  willuhn

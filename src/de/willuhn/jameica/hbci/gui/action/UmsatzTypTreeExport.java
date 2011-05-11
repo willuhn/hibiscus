@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/UmsatzTypTreeExport.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/07/16 12:51:15 $
+ * $Revision: 1.3 $
+ * $Date: 2011/05/11 10:20:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import de.willuhn.jameica.hbci.gui.dialogs.ExportDialog;
 import de.willuhn.jameica.hbci.io.UmsatzTree;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -46,6 +47,11 @@ public class UmsatzTypTreeExport implements Action
       ExportDialog d = new ExportDialog(new UmsatzTree[]{(UmsatzTree)context}, UmsatzTree.class);
       d.open();
     }
+    catch (OperationCanceledException oce)
+    {
+      Logger.info(oce.getMessage());
+      return;
+    }
     catch (ApplicationException ae)
     {
       throw ae;
@@ -61,6 +67,9 @@ public class UmsatzTypTreeExport implements Action
 
 /*******************************************************************************
  * $Log: UmsatzTypTreeExport.java,v $
+ * Revision 1.3  2011/05/11 10:20:28  willuhn
+ * @N OCE fangen
+ *
  * Revision 1.2  2007/07/16 12:51:15  willuhn
  * @D javadoc
  *

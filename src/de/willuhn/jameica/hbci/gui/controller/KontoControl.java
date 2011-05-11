@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.97 $
- * $Date: 2011/04/29 11:38:57 $
+ * $Revision: 1.98 $
+ * $Date: 2011/05/11 10:20:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -267,7 +267,8 @@ public class KontoControl extends AbstractControl {
         }
         catch (OperationCanceledException oce)
         {
-          // ignore
+          Logger.info(oce.getMessage());
+          return;
         }
         catch (ApplicationException ae)
         {
@@ -586,7 +587,8 @@ public class KontoControl extends AbstractControl {
 		}
     catch (OperationCanceledException oce)
     {
-      // ignore
+      Logger.info(oce.getMessage());
+      return;
     }
 		catch (ApplicationException ae)
 		{
@@ -726,7 +728,10 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
- * Revision 1.97  2011/04/29 11:38:57  willuhn
+ * Revision 1.98  2011/05/11 10:20:29  willuhn
+ * @N OCE fangen
+ *
+ * Revision 1.97  2011-04-29 11:38:57  willuhn
  * @N Konfiguration der HBCI-Medien ueberarbeitet. Es gibt nun direkt in der Navi einen Punkt "Bank-Zugaenge", in der alle Medien angezeigt werden.
  *
  * Revision 1.96  2010-10-15 15:31:11  willuhn
