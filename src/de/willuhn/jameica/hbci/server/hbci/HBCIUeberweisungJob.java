@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUeberweisungJob.java,v $
- * $Revision: 1.48 $
- * $Date: 2011/05/11 16:23:56 $
+ * $Revision: 1.49 $
+ * $Date: 2011/05/12 08:08:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,8 +13,10 @@
 package de.willuhn.jameica.hbci.server.hbci;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Properties;
 
 import de.willuhn.jameica.hbci.HBCI;
@@ -153,13 +155,36 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
       // Das ist eine 13-stellige Checksumme, die im Job unter "bzudata" gespeichert wird.
       // Die restlichen Zeilen Verwendungszweck kommen dann hinten dran ab usage_2
       setJobParam("bzudata",this.ueberweisung.getZweck());
+      
+      String line2 = this.ueberweisung.getZweck2();
+      String[] moreLines = this.ueberweisung.getWeitereVerwendungszwecke();
+      List<String> lines = new ArrayList<String>();
+      if (line2 != null && line2.trim().length() > 0) lines.add(line2.trim());
+      if (moreLines != null && moreLines.length > 0)
+      {
+        for (String s:moreLines)
+        {
+          if (s == null || s.trim().length() == 0)
+            continue;
+          lines.add(s.trim());
+        }
+      }
+      for (int i=0;i<lines.size();++i)
+      {
+        setJobParam("usage_" + (i+2),lines.get(i)); // wir beginnen mit "usage_2"
+      }
     }
-//    else if (this.isSpende)
-//    {
-//      // Bei Spenden-Ueberweisung duerfen nur genau 3 Zeilen Verwendungszweck enthalten
-//      // sein. Und das muessen "spenderid", "plz_street" und "name_ort" sein. Weitere
-//      // Zeilen sind nicht zulaessig.
-//    }
+    else if (this.isSpende)
+    {
+      // Bei Spenden-Ueberweisung duerfen nur genau 3 Zeilen Verwendungszweck enthalten
+      // sein. Und das muessen "spenderid", "plz_street" und "name_ort" sein. Weitere
+      // Zeilen sind nicht zulaessig.
+      setJobParam("spenderid",this.ueberweisung.getZweck());
+      setJobParam("plz_street",this.ueberweisung.getZweck2());
+      String[] wvz = this.ueberweisung.getWeitereVerwendungszwecke();
+      if (wvz != null && wvz.length > 0)
+        setJobParam("name_ort",wvz[0]);
+    }
     else
     {
       // Ueberweisung mit regulaerem Verwendungszweck
@@ -178,8 +203,8 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
       return "Umb";
     if (isBzu)
       return "UebBZU";
-//    if (isSpende)
-//      return "Donation";
+    if (isSpende)
+      return "Donation";
     return "Ueb";
   }
   
@@ -244,7 +269,10 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIUeberweisungJob.java,v $
- * Revision 1.48  2011/05/11 16:23:56  willuhn
+ * Revision 1.49  2011/05/12 08:08:27  willuhn
+ * @N BUGZILLA 591
+ *
+ * Revision 1.48  2011-05-11 16:23:56  willuhn
  * @N BUGZILLA 591
  *
  * Revision 1.47  2011-05-10 12:18:11  willuhn

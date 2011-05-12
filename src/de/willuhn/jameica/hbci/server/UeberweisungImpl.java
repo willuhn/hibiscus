@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UeberweisungImpl.java,v $
- * $Revision: 1.48 $
- * $Date: 2011/04/06 08:19:19 $
+ * $Revision: 1.49 $
+ * $Date: 2011/05/12 08:08:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,8 @@ import java.rmi.RemoteException;
 import java.util.Date;
 
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.TextSchluessel;
 import de.willuhn.jameica.hbci.rmi.Duplicatable;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.system.Application;
@@ -92,6 +94,31 @@ public class UeberweisungImpl extends AbstractBaseUeberweisungImpl implements Ue
         if (!dest.equals(src))
           throw new ApplicationException(i18n.tr("Umbuchungen sind nur zu einem Konto bei Ihrer eigenen Bank möglich"));
       }
+      
+      String key = this.getTextSchluessel();
+      if (key != null && key.equals(TextSchluessel.TS_BZU))
+      {
+        // Verwendungszweck-Zeile 1 darf nur 13 Zeichen lang sein und nur aus Zahlen bestehen
+        String usage = this.getZweck();
+        if (usage == null || usage.length() == 0)
+          throw new ApplicationException(i18n.tr("Bitte geben Sie die {0}-stellige BZÜ-Prüfziffer ein.",Integer.toString(HBCIProperties.HBCI_TRANSFER_BZU_LENGTH)));
+        if (!usage.matches("^[" + HBCIProperties.HBCI_BZU_VALIDCHARS + "]{" + HBCIProperties.HBCI_TRANSFER_BZU_LENGTH + "}$"))
+          throw new ApplicationException(i18n.tr("Die BZÜ-Prüfziffer muss exakt {0} Ziffern enthalten",Integer.toString(HBCIProperties.HBCI_TRANSFER_BZU_LENGTH)));
+      }
+      else if (key != null && key.equals(TextSchluessel.TS_SPENDE))
+      {
+        // Laut HBCI-Spec sollte bei Spenden-Ueberweisung keine Pruefung der Gegenkonto-Checksumme erfolgen. Warum eigentlich?
+        // Die ersten 3 Zeilen Verwendungszweck muessen gefuellt sein
+        String usage  = this.getZweck();
+        String usage2 = this.getZweck2();
+        String[] wvz  = this.getWeitereVerwendungszwecke();
+        if (usage == null || usage.trim().length() == 0)
+          throw new ApplicationException(i18n.tr("Bitte geben Sie die Spenden-/Mitgliedsnummer oder den Namen des Spenders ein"));
+        if (usage2 == null || usage2.trim().length() == 0)
+          throw new ApplicationException(i18n.tr("Bitte geben Sie Postleitzahl und Strasse des Spenders ein"));
+        if (wvz == null || wvz.length == 0)
+          throw new ApplicationException(i18n.tr("Bitte geben Sie Name und Ort des Kontoinhabers/Einzahlers ein"));
+      }
     }
     catch (RemoteException e)
     {
@@ -150,31 +177,9 @@ public class UeberweisungImpl extends AbstractBaseUeberweisungImpl implements Ue
 
 /**********************************************************************
  * $Log: UeberweisungImpl.java,v $
- * Revision 1.48  2011/04/06 08:19:19  willuhn
+ * Revision 1.49  2011/05/12 08:08:27  willuhn
+ * @N BUGZILLA 591
+ *
+ * Revision 1.48  2011-04-06 08:19:19  willuhn
  * @R UNDO
- *
- * Revision 1.44  2010-04-27 11:02:32  willuhn
- * @R Veralteten Verwendungszweck-Code entfernt
- *
- * Revision 1.43  2010/03/04 09:39:40  willuhn
- * @B BUGZILLA 829
- *
- * Revision 1.42  2009/05/12 22:53:33  willuhn
- * @N BUGZILLA 189 - Ueberweisung als Umbuchung
- *
- * Revision 1.41  2008/08/01 11:05:14  willuhn
- * @N BUGZILLA 587
- *
- * Revision 1.40  2008/02/15 17:39:10  willuhn
- * @N BUGZILLA 188 Basis-API fuer weitere Zeilen Verwendungszweck. GUI fehlt noch
- * @N DB-Update 0005. Speichern des Textschluessels bei Sammelauftragsbuchungen in der Datenbank
- *
- * Revision 1.39  2007/12/04 11:24:38  willuhn
- * @B Bug 509
- *
- * Revision 1.38  2007/11/30 18:37:08  willuhn
- * @B Bug 509
- *
- * Revision 1.37  2007/03/05 09:49:53  willuhn
- * @B Bug 370
  **********************************************************************/

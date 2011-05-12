@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCIProperties.java,v $
- * $Revision: 1.44 $
- * $Date: 2011/05/11 16:23:57 $
+ * $Revision: 1.45 $
+ * $Date: 2011/05/12 08:08:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -73,6 +73,11 @@ public class HBCIProperties
    * Maximale Text-Laenge einer Verwendungszweck-Zeile.
    */
   public final static int HBCI_TRANSFER_USAGE_MAXLENGTH = settings.getInt("hbci.transfer.usage.maxlength",27);
+
+  /**
+   * Laenge der Pruefziffern bei BZÜ-Ueberweisung.
+   */
+  public final static int HBCI_TRANSFER_BZU_LENGTH = settings.getInt("hbci.transfer.bzu.length",13);
 
   /**
    * Maximale Text-Laenge einer Verwendungszweck-Zeile fuer Auslandsueberweisungen.
@@ -355,7 +360,10 @@ public class HBCIProperties
 
 /**********************************************************************
  * $Log: HBCIProperties.java,v $
- * Revision 1.44  2011/05/11 16:23:57  willuhn
+ * Revision 1.45  2011/05/12 08:08:27  willuhn
+ * @N BUGZILLA 591
+ *
+ * Revision 1.44  2011-05-11 16:23:57  willuhn
  * @N BUGZILLA 591
  *
  * Revision 1.43  2011-05-10 11:51:15  willuhn
