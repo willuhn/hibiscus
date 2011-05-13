@@ -15,24 +15,24 @@
   </requires>
 
   <menu>
-    <item id="hibiscus.menu"                         name="Hibiscus">
-      <item id="hibiscus.menu.transfer"              name="Zahlungsverkehr">
+    <item id="hibiscus.menu"                         name="&amp;Hibiscus">
+      <item id="hibiscus.menu.transfer"              name="&amp;Zahlungsverkehr">
         <item id="hibiscus.menu.transfer.ueb"        name="Neue Überweisung..."       shortcut="ALT+U"    icon="stock_next.png"                  action="de.willuhn.jameica.hbci.gui.action.UeberweisungNew" />
         <item id="hibiscus.menu.transfer.last"       name="Neue Lastschrift..."       shortcut="ALT+T"    icon="stock_previous.png"              action="de.willuhn.jameica.hbci.gui.action.LastschriftNew" />
         <item id="hibiscus.menu.transfer.sammelueb"  name="Neue Sammelüberweisung..." shortcut="ALT+S"    icon="stock_navigator-shift-right.png" action="de.willuhn.jameica.hbci.gui.action.SammelUeberweisungNew" />
         <item id="hibiscus.menu.transfer.sammellast" name="Neue Sammellastschrift..." shortcut="ALT+F"    icon="stock_navigator-shift-left.png"  action="de.willuhn.jameica.hbci.gui.action.SammelLastschriftNew" />
       </item>
-      <item id="hibiscus.menu.messages"              name="Bank-Nachrichten"                              icon="dialog-information.png"          action="de.willuhn.jameica.hbci.gui.action.NachrichtList" />
-      <item id="hibiscus.menu.settings"              name="Einstellungen"                                 icon="document-properties.png"         action="de.willuhn.jameica.hbci.gui.action.Settings" />
+      <item id="hibiscus.menu.messages"              name="&amp;Bank-Nachrichten"                              icon="dialog-information.png"          action="de.willuhn.jameica.hbci.gui.action.NachrichtList" />
+      <item id="hibiscus.menu.settings"              name="&amp;Einstellungen"                                 icon="document-properties.png"         action="de.willuhn.jameica.hbci.gui.action.Settings" />
       <item name="-" />
-      <item id="hibiscus.menu.ext"                   name="Erweitert">
-        <item id="hibiscus.menu.ext.backup.create"   name="Diagnose-Backup erstellen"                     icon="document-save.png"               action="de.willuhn.jameica.hbci.gui.action.BackupCreate" />
-        <item id="hibiscus.menu.ext.backup.restore"  name="Diagnose-Backup importieren"                   icon="document-open.png"               action="de.willuhn.jameica.hbci.gui.action.BackupRestore" />
+      <item id="hibiscus.menu.ext"                   name="Er&amp;weitert">
+        <item id="hibiscus.menu.ext.backup.create"   name="Diagnose-Backup &amp;erstellen"                     icon="document-save.png"               action="de.willuhn.jameica.hbci.gui.action.BackupCreate" />
+        <item id="hibiscus.menu.ext.backup.restore"  name="Diagnose-Backup &amp;importieren"                   icon="document-open.png"               action="de.willuhn.jameica.hbci.gui.action.BackupRestore" />
       </item>
       <item name="-" />
-      <item id="hibiscus.menu.handbuch"              name="Handbuch"                                      icon="edit-copy.png"                   action="de.willuhn.jameica.hbci.gui.action.HandbuchAction"/>
-      <item id="hibiscus.menu.license"               name="Lizenzinformationen"                           icon="text-x-generic.png"              action="de.willuhn.jameica.hbci.gui.action.License" />
-      <item id="hibiscus.menu.about"                 name="Über"                                          icon="gtk-info.png"                    action="de.willuhn.jameica.hbci.gui.action.About" />
+      <item id="hibiscus.menu.handbuch"              name="&amp;Handbuch"                                      icon="edit-copy.png"                   action="de.willuhn.jameica.hbci.gui.action.HandbuchAction"/>
+      <item id="hibiscus.menu.license"               name="&amp;Lizenzinformationen"                           icon="text-x-generic.png"              action="de.willuhn.jameica.hbci.gui.action.License" />
+      <item id="hibiscus.menu.about"                 name="&amp;Über"                                          icon="gtk-info.png"                    action="de.willuhn.jameica.hbci.gui.action.About" />
     </item>
   </menu>
 
