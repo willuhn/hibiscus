@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/ChartDataSaldoSumme.java,v $
- * $Revision: 1.2 $
- * $Date: 2011/05/16 08:44:08 $
+ * $Revision: 1.3 $
+ * $Date: 2011/05/16 08:46:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -38,27 +38,26 @@ public class ChartDataSaldoSumme extends AbstractChartDataSaldo
    */
   public void add(List<Saldo> data)
   {
+    // Per Definition ist die Anzahl der Elemente in data und this.data immer gleich
+
     if (this.data == null)
-      this.data = new ArrayList<Saldo>(data.size());
-
-    boolean first = this.data.size() == 0;
-    
-    // Per Definition ist die Anzahl der Elemente immer gleich
-    for (int i=0;i<data.size();++i)
     {
-      Saldo saldo = data.get(i);
-
-      Saldo sum = null;
-      if (first)
+      // BUGZILLA 1044: Wir duerfen nicht die Saldo-Objekte von draussen
+      // verwenden, weil wir sonst auf Referenzen arbeiten, die nicht uns gehoeren
+      this.data = new ArrayList<Saldo>(data.size());
+      for (int i=0;i<data.size();++i)
       {
-        // BUGZILLA 1044: Wir duerfen nicht die Saldo-Objekte von draussen
-        // verwenden, weil wir sonst auf Referenzen arbeiten, die nicht uns gehoeren
-        sum = new Saldo(saldo.getDatum(),saldo.getSaldo());
-        this.data.add(i,sum);
+        Saldo saldo = data.get(i);
+        Saldo sum = new Saldo(saldo.getDatum(),saldo.getSaldo());
+        this.data.add(sum);
       }
-      else
+    }
+    else
+    {
+      for (int i=0;i<data.size();++i)
       {
-        sum = this.data.get(i);
+        Saldo saldo = data.get(i);
+        Saldo sum = this.data.get(i);
         sum.setSaldo(sum.getSaldo() + saldo.getSaldo());
       }
     }
@@ -76,7 +75,10 @@ public class ChartDataSaldoSumme extends AbstractChartDataSaldo
 
 /*********************************************************************
  * $Log: ChartDataSaldoSumme.java,v $
- * Revision 1.2  2011/05/16 08:44:08  willuhn
+ * Revision 1.3  2011/05/16 08:46:46  willuhn
+ * @N BUGZILLA 1044
+ *
+ * Revision 1.2  2011-05-16 08:44:08  willuhn
  * @B BUGZILLA 1044
  *
  * Revision 1.1  2010-08-12 17:12:32  willuhn
