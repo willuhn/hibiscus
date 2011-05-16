@@ -1,5 +1,6 @@
 2011-??-?? Version 1.13.0
 
+  * NEW: 0085 Funktion zum Loeschen der BPD.
   * NEW: 0084 BUGZILLA 1044 - Das erste Konto wurde nicht korrekt gezeichnet, wenn die Summen-Linie enthalten ist
   * NEW: 0083 BUGZILLA 591 - Unterstuetzung fuer BZÜ-Ueberweisung
   * NEW: 0082 Text-Schluessel als Konstanten definiert - Teil aus dem Patch von Thomas vom 07.12.2010
