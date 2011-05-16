@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/PassportPropertyDialog.java,v $
- * $Revision: 1.3 $
- * $Date: 2011/05/06 12:35:24 $
+ * $Revision: 1.4 $
+ * $Date: 2011/05/16 09:55:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,12 +18,15 @@ import org.kapott.hbci.passport.HBCIPassport;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
-import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.parts.PassportPropertyList;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -63,15 +66,49 @@ public class PassportPropertyDialog extends AbstractDialog
   {
     Container container = new SimpleContainer(parent);
     container.addText(i18n.tr("Bank-Parameter (BPD) und User-Parameter (UPD) dieses Sicherheitsmediums"),true);
-    new PassportPropertyList(this.passport).paint(parent);
+    final PassportPropertyList table = new PassportPropertyList(this.passport);
+    table.paint(parent);
     
-    ButtonArea buttons = new ButtonArea(parent,1);
+    ButtonArea buttons = new ButtonArea();
+    buttons.addButton(i18n.tr("BPD löschen"),new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        String s = i18n.tr("Die BPD (Bank-Parameter-Daten) werden beim nächsten Verbindungsaufbau \n" +
+        		               "mit der Bank automatisch erneut abgerufen.\n\n" +
+        		               "BPD jetzt löschen?");
+        try
+        {
+          if (!Application.getCallback().askUser(s))
+            return;
+          
+          passport.clearBPD();
+          passport.saveChanges();
+          table.clearBPD();
+          
+          // Noch aus der Tabelle loeschen
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("BPD gelöscht"),StatusBarMessage.TYPE_SUCCESS));
+        }
+        catch (OperationCanceledException oce)
+        {
+          Logger.info(oce.getMessage());
+        }
+        catch (ApplicationException ae)
+        {
+          throw ae;
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to delete bpd",e);
+        }
+      }
+    },null,false,"user-trash-full.png");
     buttons.addButton(i18n.tr("Schließen"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         close();
       }
     },null,true,"window-close.png");
+    buttons.paint(parent);
   }
 
 }
@@ -79,7 +116,10 @@ public class PassportPropertyDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: PassportPropertyDialog.java,v $
- * Revision 1.3  2011/05/06 12:35:24  willuhn
+ * Revision 1.4  2011/05/16 09:55:29  willuhn
+ * @N Funktion zum Loeschen der BPD
+ *
+ * Revision 1.3  2011-05-06 12:35:24  willuhn
  * @R Nicht mehr noetig - macht AbstractDialog jetzt selbst
  *
  * Revision 1.2  2010/06/17 11:26:48  willuhn
