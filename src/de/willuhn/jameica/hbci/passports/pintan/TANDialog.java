@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/TANDialog.java,v $
- * $Revision: 1.3 $
- * $Date: 2011/05/09 17:27:39 $
+ * $Revision: 1.4 $
+ * $Date: 2011/05/16 15:34:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -164,26 +164,45 @@ public class TANDialog extends PasswordDialog
       // ignore
     }
 
-    // TODO: Der Text kann ein "challenge" von der Bank enthalten. Dieser kann Formatierungen enthalten.
-    // Z.Bsp. "<b>Text</b>", "<li>..." usw. Siehe
-    // FinTS_3.0_Security_Sicherheitsverfahren_PINTAN_Rel_20101027_final_version.pdf
-    // Seite 127. Das muss noch beachtet werden. Die Frage ist noch: Wie kann
-    // ich das in SWT formatieren.
-    
-    if (s != null)
+    if (text == null || text.length() == 0)
     {
-      if (text == null || text.length() == 0)
-        super.setText(i18n.tr("Bitte geben Sie eine TAN-Nummer ein.\nKonto: {0}",s));
-      else
-        super.setText(text + "\n" + i18n.tr("Konto: {0}",s));
+      text = i18n.tr("Bitte geben Sie eine TAN-Nummer ein.");
     }
     else
     {
-      if (text == null || text.length() == 0)
-        super.setText(i18n.tr("Bitte geben Sie eine TAN-Nummer ein."));
-      else
-        super.setText(text);
+      // Der Text kann ein "challenge" von der Bank enthalten. Dieser kann Formatierungen enthalten.
+      // Z.Bsp. "<b>Text</b>", "<li>..." usw. Siehe
+      // FinTS_3.0_Security_Sicherheitsverfahren_PINTAN_Rel_20101027_final_version.pdf
+      // Seite 127. Das muss noch beachtet werden
+      // Eigentlich kann man in den BPD noch nachschauen, ob fuer das TAN-Verfahren "ischallengestructured=J",
+      // aber das brauchen wir nicht. Wenn HTML-Tags drin stehen, ersetzen wir sie gegen Formatierungen.
+      
+      text = text.replaceAll("<br>","\n");
+      text = text.replaceAll("<p>","\n\n");
+      
+      text = text.replaceAll("<p>","\n\n");
+      
+      text = text.replaceAll("<ul>","\n");
+      text = text.replaceAll("</ul>","");
+      text = text.replaceAll("<ol>","\n");
+      text = text.replaceAll("</ol>","");
+      text = text.replaceAll("</li>","\n");
+
+      text = text.replaceAll("<li>","  - ");
+
+      // Unterstuetzen wir noch nicht
+      text = text.replaceAll("<b>","");
+      text = text.replaceAll("</b>","");
+      text = text.replaceAll("<i>","");
+      text = text.replaceAll("</i>","");
+      text = text.replaceAll("<u>","");
+      text = text.replaceAll("</u>","");
     }
+    
+    if (s != null)
+      text += ("\n" + i18n.tr("Konto: {0}",s));
+    
+    super.setText(text);
   }
   
   /**
@@ -201,7 +220,10 @@ public class TANDialog extends PasswordDialog
 
 /**********************************************************************
  * $Log: TANDialog.java,v $
- * Revision 1.3  2011/05/09 17:27:39  willuhn
+ * Revision 1.4  2011/05/16 15:34:59  willuhn
+ * @N TAN-Text kann formatiert sein
+ *
+ * Revision 1.3  2011-05-09 17:27:39  willuhn
  * @N Erste Vorbereitungen fuer optisches chipTAN
  *
  * Revision 1.2  2011-05-09 09:25:46  willuhn
