@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SparQuote.java,v $
- * $Revision: 1.30 $
- * $Date: 2011/05/03 10:13:15 $
+ * $Revision: 1.31 $
+ * $Date: 2011/05/19 08:41:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -72,7 +72,7 @@ public class SparQuote implements Part
   
   private TablePart table          = null;
   private LineChart chart          = null;
-  private SelectInput kontoauswahl = null;
+  private KontoInput kontoauswahl  = null;
   private DateInput startAuswahl   = null;
   private IntegerInput tagAuswahl  = null;
   
@@ -140,6 +140,7 @@ public class SparQuote implements Part
 
     this.kontoauswahl = new KontoInput(null,KontoFilter.ALL);
     this.kontoauswahl.setPleaseChoose(i18n.tr("<Alle Konten>"));
+    this.kontoauswahl.setRememberSelection("auswertungen.spartquote");
     this.kontoauswahl.addListener(new DelayedListener(500,this.listener));
     return this.kontoauswahl;
   }
@@ -506,7 +507,10 @@ public class SparQuote implements Part
 
 /*********************************************************************
  * $Log: SparQuote.java,v $
- * Revision 1.30  2011/05/03 10:13:15  willuhn
+ * Revision 1.31  2011/05/19 08:41:53  willuhn
+ * @N BUGZILLA 1038 - generische Loesung
+ *
+ * Revision 1.30  2011-05-03 10:13:15  willuhn
  * @R Hintergrund-Farbe nicht mehr explizit setzen. Erzeugt auf Windows und insb. Mac teilweise unschoene Effekte. Besonders innerhalb von Label-Groups, die auf Windows/Mac andere Hintergrund-Farben verwenden als der Default-Hintergrund
  *
  * Revision 1.29  2011-04-08 15:19:14  willuhn

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.43 $
- * $Date: 2011/05/03 10:13:15 $
+ * $Revision: 1.44 $
+ * $Date: 2011/05/19 08:41:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -236,32 +236,8 @@ public class KontoauszugList extends UmsatzList
       return this.kontoAuswahl;
 
     this.kontoAuswahl = new KontoInput(null,KontoFilter.ALL);
+    this.kontoAuswahl.setRememberSelection("auswertungen.kontoauszug");
     this.kontoAuswahl.setComment(null);
-    
-    Konto preset = null;
-
-    /////////////////////
-    // Preset laden
-    String s = mySettings.getString("kontoauszug.list.konto",null);
-    if (s != null && s.length() > 0)
-    {
-      try
-      {
-        preset = (Konto) de.willuhn.jameica.hbci.Settings.getDBService().createObject(Konto.class,s);
-      }
-      catch (Exception e)
-      {
-        // Konto existiert wohl nicht mehr - dann loeschen wir die Vorauswahl
-        mySettings.setAttribute("kontoauszug.list.konto",(String)null);
-      }
-    }
-    //
-    /////////////////////
-    
-    // Wir ueberschreiben hier uebrigens bewusst das Default-Konto von
-    // Hibiscus, weil es hier eher nervt
-    this.kontoAuswahl.setPreselected(preset);
-    
     this.kontoAuswahl.setPleaseChoose(i18n.tr("<Alle Konten>"));
     this.kontoAuswahl.addListener(this.listener);
     return this.kontoAuswahl;
@@ -675,7 +651,6 @@ public class KontoauszugList extends UmsatzList
             
             // Wir speichern hier alle eingegebenen Suchbegriffe fuer's naechste mal
             Date from         = (Date) getStart().getValue();
-            Konto k           = (Konto) getKontoAuswahl().getValue();
             UmsatzTyp typ     = (UmsatzTyp) getKategorie().getValue();
             Double bFrom      = (Double) getMindestBetrag().getValue();
             Double bTo        = (Double) getHoechstBetrag().getValue();
@@ -684,7 +659,6 @@ public class KontoauszugList extends UmsatzList
             mySettings.setAttribute("kontoauszug.list.gegenkonto.nummer",getGegenkontoNummer().getText());
             mySettings.setAttribute("kontoauszug.list.gegenkonto.blz",(String) getGegenkontoBLZ().getValue());
             mySettings.setAttribute("kontoauszug.list.gegenkonto.name",(String) getGegenkontoName().getValue());
-            mySettings.setAttribute("kontoauszug.list.konto",k == null ? null : k.getID());
             mySettings.setAttribute("kontoauszug.list.kategorie",typ == null ? null : typ.getID());
             mySettings.setAttribute("kontoauszug.list.text",(String) getText().getValue());
             mySettings.setAttribute("kontoauszug.list.betrag.from",bFrom == null ? Double.NaN : bFrom.doubleValue());
@@ -772,7 +746,10 @@ public class KontoauszugList extends UmsatzList
 
 /*********************************************************************
  * $Log: KontoauszugList.java,v $
- * Revision 1.43  2011/05/03 10:13:15  willuhn
+ * Revision 1.44  2011/05/19 08:41:53  willuhn
+ * @N BUGZILLA 1038 - generische Loesung
+ *
+ * Revision 1.43  2011-05-03 10:13:15  willuhn
  * @R Hintergrund-Farbe nicht mehr explizit setzen. Erzeugt auf Windows und insb. Mac teilweise unschoene Effekte. Besonders innerhalb von Label-Groups, die auf Windows/Mac andere Hintergrund-Farben verwenden als der Default-Hintergrund
  *
  * Revision 1.42  2011-04-29 15:33:28  willuhn

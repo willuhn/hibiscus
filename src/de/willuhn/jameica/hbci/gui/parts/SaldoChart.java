@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SaldoChart.java,v $
- * $Revision: 1.6 $
- * $Date: 2011/05/04 12:04:40 $
+ * $Revision: 1.7 $
+ * $Date: 2011/05/19 08:41:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -59,7 +59,6 @@ public class SaldoChart implements Part
 {
   
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(SaldoChart.class);
 
   private Konto konto             = null;
   private boolean tiny            = false;
@@ -111,24 +110,11 @@ public class SaldoChart implements Part
       return this.kontoauswahl;
 
     this.kontoauswahl = new KontoInput(null,KontoFilter.ALL);
+    this.kontoauswahl.setRememberSelection("auswertungen.saldochart");
     this.kontoauswahl.setPleaseChoose(i18n.tr("<Alle Konten>"));
     if (tiny)
       this.kontoauswahl.setComment(null); // Keinen Kommentar anzeigen
     this.kontoauswahl.addListener(this.reloadListener);
-    
-    String id = settings.getString("konto.last",null);
-    if (id != null)
-    {
-      try
-      {
-        Konto k = (Konto) Settings.getDBService().createObject(Konto.class,id);
-        this.kontoauswahl.setPreselected(k);
-      }
-      catch (Exception e)
-      {
-        // ignore
-      }
-    }
     return this.kontoauswahl;
   }
   
@@ -300,7 +286,6 @@ public class SaldoChart implements Part
         
         kPrev = k;
         startPrev = start;
-        settings.setAttribute("konto.last", k == null ? null : k.getID());
       }
       catch (Exception e)
       {
@@ -314,7 +299,10 @@ public class SaldoChart implements Part
 
 /*********************************************************************
  * $Log: SaldoChart.java,v $
- * Revision 1.6  2011/05/04 12:04:40  willuhn
+ * Revision 1.7  2011/05/19 08:41:53  willuhn
+ * @N BUGZILLA 1038 - generische Loesung
+ *
+ * Revision 1.6  2011-05-04 12:04:40  willuhn
  * @N Zeitraum in Umsatzliste und Saldo-Chart kann jetzt freier und bequemer ueber einen Schieberegler eingestellt werden
  * @B Dispose-Checks in Umsatzliste
  *

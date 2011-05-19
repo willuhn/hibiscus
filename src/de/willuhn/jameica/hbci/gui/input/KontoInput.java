@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/KontoInput.java,v $
- * $Revision: 1.7 $
- * $Date: 2010/08/12 17:12:32 $
+ * $Revision: 1.8 $
+ * $Date: 2011/05/19 08:41:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -42,8 +42,9 @@ import de.willuhn.util.I18N;
 public class KontoInput extends SelectInput
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(KontoInput.class);
   private KontoListener listener = null;
-
+  
   /**
    * ct.
    * @param konto ausgewaehltes Konto.
@@ -65,6 +66,55 @@ public class KontoInput extends SelectInput
     }
     this.listener = new KontoListener();
     this.addListener(this.listener);
+  }
+  
+  /**
+   * Die Kontoauswahl kann sich das zuletzt ausgewaehlte Konto merken.
+   * Damit dann aber nicht auf allen Dialogen das gleiche Konto vorausgewaehlt ist,
+   * kann man hier einen individuellen Freitext-Token uebergeben, der als Key fuer
+   * das Speichern des zuletzt ausgewaehlten Kontos verwendet wird. Ueberall dort,
+   * wo also der gleiche Token verwendet wird, wird auch das gleiche Konto
+   * vorausgewaehlt. Der Konto kann z.Bsp. "auswertungen" heissen. Wenn dieser
+   * auf allen Dialogen der Auswertungen verwendet wird, wird dort dann auch ueberall
+   * das gleiche Konto vorausgewaehlt sein.
+   * @param token der Restore-Token.
+   */
+  public void setRememberSelection(final String token)
+  {
+    if (token == null || token.length() == 0)
+      return;
+
+    String id = settings.getString(token,null);
+    if (id != null && id.length() > 0)
+    {
+      try
+      {
+        Konto k = (Konto) Settings.getDBService().createObject(Konto.class,id);
+        this.setPreselected(k);
+      }
+      catch (Exception e)
+      {
+        // Konto konnte nicht geladen werden. Vorauswahl loeschen
+        settings.setAttribute(token,(String) null);
+      }
+    }
+    
+    // Listener hinzufuegen
+    this.addListener(new Listener() {
+      public void handleEvent(Event event)
+      {
+        try
+        {
+          Konto k = (Konto) getValue();
+          settings.setAttribute(token,(String) (k != null ? k.getID() : null));
+        }
+        catch (Exception e)
+        {
+          // Hier lief was schief. Wir loeschen die Vorauswahl
+          settings.setAttribute(token,(String) null);
+        }
+      }
+    });
   }
   
   /**
@@ -206,7 +256,10 @@ public class KontoInput extends SelectInput
 
 /**********************************************************************
  * $Log: KontoInput.java,v $
- * Revision 1.7  2010/08/12 17:12:32  willuhn
+ * Revision 1.8  2011/05/19 08:41:53  willuhn
+ * @N BUGZILLA 1038 - generische Loesung
+ *
+ * Revision 1.7  2010-08-12 17:12:32  willuhn
  * @N Saldo-Chart komplett ueberarbeitet (Daten wurden vorher mehrmals geladen, Summen-Funktion, Anzeige mehrerer Konten, Durchschnitt ueber mehrere Konten, Bugfixing, echte "Homogenisierung" der Salden via SaldoFinder)
  *
  * Revision 1.6  2009-10-20 23:12:58  willuhn
