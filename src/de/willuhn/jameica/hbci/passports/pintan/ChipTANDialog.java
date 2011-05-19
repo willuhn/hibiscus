@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/ChipTANDialog.java,v $
- * $Revision: 1.5 $
- * $Date: 2011/05/17 23:37:22 $
+ * $Revision: 1.6 $
+ * $Date: 2011/05/19 07:59:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -36,6 +36,9 @@ import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig;
+import de.willuhn.jameica.messaging.StatusBarMessage;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -46,7 +49,7 @@ import de.willuhn.util.ApplicationException;
 public class ChipTANDialog extends TANDialog
 {
   private final static Settings settings = new Settings(ChipTANDialog.class);
-  private FlickerCode code = null;
+  private String code = null;
   
   /**
    * ct.
@@ -58,7 +61,13 @@ public class ChipTANDialog extends TANDialog
   public ChipTANDialog(PinTanConfig config, String code) throws RemoteException, ApplicationException
   {
     super(config);
-    this.code = new FlickerCode(code);
+    this.code = code;
+
+    // TODO: Entfernen, wenn optisches chipTAN fertig ist
+    String msg = i18n.tr("Optisches chipTAN noch nicht unterstützt. Bitte wählen Sie ein anderes TAN-Verfahren.");
+    Application.getMessagingFactory().sendMessage(new StatusBarMessage(msg,StatusBarMessage.TYPE_ERROR));
+    GUI.getView().setErrorText(msg);
+    throw new OperationCanceledException(msg);
   }
 
 	/**
@@ -113,13 +122,11 @@ public class ChipTANDialog extends TANDialog
     
     /**
      * ct.
-     * @param fc der anzuzeigende Flicker-Code.
+     * @param code der anzuzeigende Flicker-Code.
      * @throws ApplicationException
      */
-    private FlickerPart(FlickerCode fc) throws ApplicationException
+    private FlickerPart(String code) throws ApplicationException
     {
-      String code = fc.getCode();
-      
       // Sync-Identifier vorn dran haengen.
       code = "0FFF" + code;
 
@@ -223,146 +230,15 @@ public class ChipTANDialog extends TANDialog
       }
     }
   }
-
-  /**
-   * Implementierung des Flicker-Codes fuer optisches ChipTAN.
-   * Dies ist eine 1:1 Portierung der Javascript-Implementierung von
-   * http://6xq.net/media/00/20/flickercode.html
-   * 
-   * Beispiele:
-   * 11048714955205123456789F14302C303107 // aus der JS-Demo
-   * 002624088715131306389726041,00       // von http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=60532
-   * 100484652456044356435F14312C30304B   // von bankingportal.sparkasse-freiburg.de
-   */
-  private class FlickerCode
-  {
-    private String code = null;
-    
-    /**
-     * ct.
-     * @param s der Code.
-     * @throws ApplicationException wenn der Code falsch ist.
-     */
-    private FlickerCode(String s) throws ApplicationException
-    {
-      if (s == null || s.length() == 0)
-        throw new ApplicationException(i18n.tr("Kein Flicker-Code angegeben"));
-
-      this.code = s.toUpperCase();
-
-      if (!this.check())
-        throw new ApplicationException(i18n.tr("Flicker-Code nicht lesbar"));
-    }
-
-    /**
-     * Liefert den Code.
-     * @return der Code.
-     */
-    private String getCode()
-    {
-      return this.code;
-    }
-
-    /**
-     * Wandelt die Zahl in Hex um.
-     * @param n die Zahl.
-     * @param minLength Die Mindestlaenge. Der Hex-Code wird dann vorn
-     * mit Nullen aufgefuellt.
-     * @return der Hex-Code.
-     */
-    private String toHex(int n,int minLength)
-    {
-      String s = Integer.toString(n,16).toUpperCase();
-      while (s.length() < minLength)
-        s = "0" + s;
-      return s;
-    }
-    
-    /**
-     * Berechnet die Quersumme.
-     * @param n die Zahl, deren Quersumme errechnet werden soll.
-     * @return
-     */
-    private int quersumme(int n)
-    {
-      int q = 0;
-      while (n != 0)
-      {
-        q += n % 10;
-        n = (int) Math.floor(n / 10);
-      }
-      return q;
-    }
-
-    /**
-     * Liefert den Payload.
-     * @return der Payload.
-     */
-    private String getPayload()
-    {
-      int i = 0;
-      String payload = "";
-      int len = Integer.parseInt(this.code.substring(0,2),16);
-      i += 2;
-      while (i < code.length()-2)
-      {
-        /* skip bcd identifier */
-        i += 1;
-        /* parse length */
-        len = Integer.parseInt(this.code.substring(i,i+1),16);
-        i += 1;
-        payload += code.substring(i,i+len*2);
-        i += len*2;
-      }
-      return payload;
-    }
-    
-    /**
-     * Prueft, ob die Checksumme korrekt ist.
-     * @return true, wenn die Checksumme korrekt ist.
-     */
-    private boolean check()
-    {
-      try
-      {
-        String test = this.code;
-        
-        /* length check: first byte */
-        int len = test.length() / 2 - 1;
-        test = toHex(len,2) + test.substring(2);
-        
-        /* luhn checksum */
-        String luhndata = getPayload();
-        int luhnsum = 0;
-        for (int i=0; i<luhndata.length(); i+=2)
-        {
-          luhnsum += (1*Integer.parseInt(Character.toString(luhndata.charAt(i)),16)) + quersumme(2*Integer.parseInt(Character.toString(luhndata.charAt(i+1)),16));
-        }
-        luhnsum = (10 - (luhnsum % 10)) % 10;
-        test = test.substring(0,test.length()-2) + toHex(luhnsum,1) + test.substring(test.length()-1);
-        
-        /* xor checksum */
-        int xorsum = 0;
-        for (int i=0; i< test.length()-2; i++)
-        {
-          xorsum ^= Integer.parseInt(Character.toString(test.charAt(i)),16);
-        }
-        test = test.substring(0,test.length()-1) + toHex(xorsum,1);
-        return test.equals(this.code);
-      }
-      catch (Exception e)
-      {
-        Logger.error("unparsable flicker code " + this.code,e);
-        return false;
-      }
-    }
-  }
 }
 
 
 /**********************************************************************
  * $Log: ChipTANDialog.java,v $
- * Revision 1.5  2011/05/17 23:37:22  willuhn
+ * Revision 1.6  2011/05/19 07:59:53  willuhn
+ * @C optisches chipTAN voruebergehend deaktiviert, damit ich in Ruhe in hbci4Java an der Unterstuetzung weiterarbeiten kann
+ *
+ * Revision 1.5  2011-05-17 23:37:22  willuhn
  * @C Wir duerfen nicht einfach Zeichen entfernen
  *
  * Revision 1.4  2011-05-11 08:33:54  willuhn
