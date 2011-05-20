@@ -1,5 +1,6 @@
 2011-??-?? Version 1.13.0
 
+  * NEW: 0089 Kommentare im Termin-Eingabefeld ueberarbeitet
   * NEW: 0088 Hinweistext in Kontoauswahl bei SEPA-Ueberweisung, wenn kein SEPA-faehiges Konto vorhanden
   * NEW: 0087 Unterstuetzung fuer HKTAN5/HHD1.4
   * NEW: 0086 BUGZILLA 1038 - Auswahl des Kontos speichern

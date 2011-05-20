@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractBaseUeberweisungControl.java,v $
- * $Revision: 1.18 $
- * $Date: 2011/05/11 16:23:57 $
+ * $Revision: 1.19 $
+ * $Date: 2011/05/20 16:22:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,19 +15,15 @@ package de.willuhn.jameica.hbci.gui.controller;
 import java.rmi.RemoteException;
 import java.util.Date;
 
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.CheckboxInput;
-import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.TextInput;
-import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.TextSchluessel;
 import de.willuhn.jameica.hbci.gui.input.AddressInput;
+import de.willuhn.jameica.hbci.gui.input.TerminInput;
 import de.willuhn.jameica.hbci.rmi.BaseUeberweisung;
 import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -41,7 +37,7 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
 {
 
 	// Eingabe-Felder
-	private DateInput termin = null;
+	private TerminInput termin = null;
 	
   /**
    * ct.
@@ -57,48 +53,11 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public DateInput getTermin() throws RemoteException
+  public TerminInput getTermin() throws RemoteException
 	{
-		final Terminable bu = (Terminable) getTransfer();
-
-		if (termin != null)
-			return termin;
-    
-    Date d = bu.getTermin();
-    if (d == null)
-      d = new Date();
-
-    this.termin = new DateInput(d,HBCI.DATEFORMAT);
-    this.termin.setEnabled(!bu.ausgefuehrt());
-    this.termin.setName(i18n.tr("Termin"));
-    this.termin.setTitle(i18n.tr("Termin"));
-    this.termin.setText(i18n.tr("Bitte wählen Sie einen Termin"));
-
-    if (bu.ausgefuehrt())
-      this.termin.setComment(i18n.tr("Der Auftrag wurde bereits ausgeführt"));
-    else if (bu.ueberfaellig())
-      this.termin.setComment(i18n.tr("Der Auftrag ist überfällig"));
-    else
-      this.termin.setComment(""); // Platzhalter
-
-    this.termin.addListener(new Listener() {
-      public void handleEvent(Event event)
-      {
-        try {
-          Date date = (Date) termin.getValue();
-          if (date != null && !date.after(new Date()))
-            termin.setComment(i18n.tr("Der Auftrag ist überfällig"));
-          else
-            termin.setComment("");
-        }
-        catch (Exception e) {
-          Logger.error("unable to check overdue",e);
-        }
-      }
-    });
-
-
-		return termin;
+		if (this.termin == null)
+		  this.termin = new TerminInput((Terminable) getTransfer());
+    return this.termin;
 	}
   
   /**
@@ -237,13 +196,15 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
       i.disableClientControl();
 		return i;
   }
-
 }
 
 
 /**********************************************************************
  * $Log: AbstractBaseUeberweisungControl.java,v $
- * Revision 1.18  2011/05/11 16:23:57  willuhn
+ * Revision 1.19  2011/05/20 16:22:31  willuhn
+ * @N Termin-Eingabefeld in eigene Klasse ausgelagert (verhindert duplizierten Code) - bessere Kommentare
+ *
+ * Revision 1.18  2011-05-11 16:23:57  willuhn
  * @N BUGZILLA 591
  *
  * Revision 1.17  2010-08-17 11:32:11  willuhn

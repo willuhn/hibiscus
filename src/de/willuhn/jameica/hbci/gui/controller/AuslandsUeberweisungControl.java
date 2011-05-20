@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AuslandsUeberweisungControl.java,v $
- * $Revision: 1.11 $
- * $Date: 2011/04/11 14:36:38 $
+ * $Revision: 1.12 $
+ * $Date: 2011/05/20 16:22:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,7 +24,6 @@ import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.CheckboxInput;
-import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.TextInput;
@@ -37,6 +36,7 @@ import de.willuhn.jameica.hbci.gui.filter.AddressFilter;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.AddressInput;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
+import de.willuhn.jameica.hbci.gui.input.TerminInput;
 import de.willuhn.jameica.hbci.gui.parts.AuslandsUeberweisungList;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung;
@@ -70,7 +70,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
   private TextInput empfkto                  = null;
   private TextInput bic                      = null;
 
-  private DateInput termin                   = null;
+  private TerminInput termin                 = null;
 
   private CheckboxInput storeEmpfaenger      = null;
   
@@ -127,13 +127,17 @@ public class AuslandsUeberweisungControl extends AbstractControl
       return this.kontoAuswahl;
     
     KontoListener kl = new KontoListener();
-    this.kontoAuswahl = new KontoInput(getTransfer().getKonto(),KontoFilter.FOREIGN);
+    MyKontoFilter filter = new MyKontoFilter();
+    this.kontoAuswahl = new KontoInput(getTransfer().getKonto(),filter);
     this.kontoAuswahl.setMandatory(true);
     this.kontoAuswahl.addListener(kl);
     this.kontoAuswahl.setEnabled(!getTransfer().ausgefuehrt());
 
     // einmal ausloesen
     kl.handleEvent(null);
+
+    if (!filter.found)
+      this.kontoAuswahl.setComment(i18n.tr("Bitte tragen Sie IBAN/BIC in Ihrem Konto ein"));
 
     return this.kontoAuswahl;
   }
@@ -243,46 +247,10 @@ public class AuslandsUeberweisungControl extends AbstractControl
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public DateInput getTermin() throws RemoteException
+  public TerminInput getTermin() throws RemoteException
   {
-    final Terminable bu = (Terminable) getTransfer();
-
-    if (termin != null)
-      return termin;
-    
-    Date d = bu.getTermin();
-    if (d == null)
-      d = new Date();
-
-    this.termin = new DateInput(d,HBCI.DATEFORMAT);
-    this.termin.setEnabled(!bu.ausgefuehrt());
-    this.termin.setTitle(i18n.tr("Termin"));
-    this.termin.setText(i18n.tr("Bitte wählen Sie einen Termin"));
-
-    if (bu.ausgefuehrt())
-      this.termin.setComment(i18n.tr("Der Auftrag wurde bereits ausgeführt"));
-    else if (bu.ueberfaellig())
-      this.termin.setComment(i18n.tr("Der Auftrag ist überfällig"));
-    else
-      this.termin.setComment(""); // Platzhalter
-
-    this.termin.addListener(new Listener() {
-      public void handleEvent(Event event)
-      {
-        try {
-          Date date = (Date) termin.getValue();
-          if (date != null && !date.after(new Date()))
-            termin.setComment(i18n.tr("Der Auftrag ist überfällig"));
-          else
-            termin.setComment("");
-        }
-        catch (Exception e) {
-          Logger.error("unable to check overdue",e);
-        }
-      }
-    });
-
-
+    if (this.termin == null)
+      this.termin = new TerminInput((Terminable) getTransfer());
     return termin;
   }
 
@@ -390,6 +358,27 @@ public class AuslandsUeberweisungControl extends AbstractControl
     }
     return false;
   }
+  
+  /**
+   * Eigener ueberschriebener Kontofilter.
+   */
+  private class MyKontoFilter implements KontoFilter
+  {
+    // Wir leiten die Anfrage an den weiter
+    private KontoFilter foreign = KontoFilter.FOREIGN;
+
+    private boolean found = false;
+
+    /**
+     * @see de.willuhn.jameica.hbci.gui.filter.KontoFilter#accept(de.willuhn.jameica.hbci.rmi.Konto)
+     */
+    public boolean accept(Konto konto) throws RemoteException
+    {
+      boolean b = foreign.accept(konto);
+      found |= b;
+      return b;
+    }
+  }
 
   /**
    * Listener, der die Auswahl des Kontos ueberwacht und die Waehrungsbezeichnung
@@ -486,7 +475,10 @@ public class AuslandsUeberweisungControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AuslandsUeberweisungControl.java,v $
- * Revision 1.11  2011/04/11 14:36:38  willuhn
+ * Revision 1.12  2011/05/20 16:22:31  willuhn
+ * @N Termin-Eingabefeld in eigene Klasse ausgelagert (verhindert duplizierten Code) - bessere Kommentare
+ *
+ * Revision 1.11  2011-04-11 14:36:38  willuhn
  * @N Druck-Support fuer Lastschriften und SEPA-Ueberweisungen
  *
  * Revision 1.10  2011-04-07 17:52:07  willuhn

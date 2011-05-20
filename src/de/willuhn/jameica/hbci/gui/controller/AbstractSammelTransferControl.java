@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractSammelTransferControl.java,v $
- * $Revision: 1.11 $
- * $Date: 2010/12/13 11:01:08 $
+ * $Revision: 1.12 $
+ * $Date: 2011/05/20 16:22:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,7 +18,6 @@ import org.eclipse.swt.widgets.Listener;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
-import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.TextInput;
@@ -27,6 +26,7 @@ import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
+import de.willuhn.jameica.hbci.gui.input.TerminInput;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
@@ -47,7 +47,7 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
 
   private Input kontoAuswahl				      = null;
   private Input name                    	= null;
-  private DateInput termin              	= null;
+  private TerminInput termin            	= null;
   private Input summe                     = null;
 
   /**
@@ -109,44 +109,10 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public DateInput getTermin() throws RemoteException
+  public TerminInput getTermin() throws RemoteException
   {
-    final Terminable bu = (Terminable) getTransfer();
-
-    if (termin != null)
-      return termin;
-    
-    Date d = bu.getTermin();
-    if (d == null)
-      d = new Date();
-
-    this.termin = new DateInput(d,HBCI.DATEFORMAT);
-    this.termin.setEnabled(!bu.ausgefuehrt());
-    this.termin.setTitle(i18n.tr("Termin"));
-    this.termin.setText(i18n.tr("Bitte wählen Sie einen Termin"));
-
-    if (bu.ausgefuehrt())
-      this.termin.setComment(i18n.tr("Der Auftrag wurde bereits ausgeführt"));
-    else if (bu.ueberfaellig())
-      this.termin.setComment(i18n.tr("Der Auftrag ist überfällig"));
-    else
-      this.termin.setComment(""); // Platzhalter
-
-    this.termin.addListener(new Listener() {
-      public void handleEvent(Event event)
-      {
-        try {
-          Date date = (Date) termin.getValue();
-          if (date != null && !date.after(new Date()))
-            termin.setComment(i18n.tr("Der Auftrag ist überfällig"));
-          else
-            termin.setComment("");
-        }
-        catch (Exception e) {
-          Logger.error("unable to check overdue",e);
-        }
-      }
-    });
+    if (this.termin == null)
+      this.termin = new TerminInput((Terminable) getTransfer());
     return termin;
   }
 
@@ -280,7 +246,10 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferControl.java,v $
- * Revision 1.11  2010/12/13 11:01:08  willuhn
+ * Revision 1.12  2011/05/20 16:22:31  willuhn
+ * @N Termin-Eingabefeld in eigene Klasse ausgelagert (verhindert duplizierten Code) - bessere Kommentare
+ *
+ * Revision 1.11  2010-12-13 11:01:08  willuhn
  * @B Wenn man einen Sammelauftrag in der Detailansicht loeschte, konnte man anschliessend noch doppelt auf die zugeordneten Buchungen klicken und eine ObjectNotFoundException ausloesen
  *
  * Revision 1.10  2009/10/20 23:12:58  willuhn

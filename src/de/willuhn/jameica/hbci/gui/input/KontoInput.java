@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/KontoInput.java,v $
- * $Revision: 1.8 $
- * $Date: 2011/05/19 08:41:53 $
+ * $Revision: 1.9 $
+ * $Date: 2011/05/20 16:22:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,13 +18,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.manager.HBCIUtils;
 
-import de.willuhn.datasource.GenericIterator;
-import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.SelectInput;
@@ -66,6 +63,9 @@ public class KontoInput extends SelectInput
     }
     this.listener = new KontoListener();
     this.addListener(this.listener);
+
+    // einmal ausloesen
+    this.listener.handleEvent(null);
   }
   
   /**
@@ -118,23 +118,12 @@ public class KontoInput extends SelectInput
   }
   
   /**
-   * @see de.willuhn.jameica.gui.input.SelectInput#getControl()
-   */
-  public Control getControl()
-  {
-    // einmal ausloesen
-    this.listener.handleEvent(null);
-
-    return super.getControl();
-  }
-
-  /**
    * Initialisiert die Liste der Konten.
    * @param filter Konto-Filter.
    * @return Liste der Konten.
    * @throws RemoteException
    */
-  private static GenericIterator init(KontoFilter filter) throws RemoteException
+  private static List<Konto> init(KontoFilter filter) throws RemoteException
   {
     DBIterator it = Settings.getDBService().createList(Konto.class);
     it.setOrder("ORDER BY blz, kontonummer");
@@ -145,7 +134,7 @@ public class KontoInput extends SelectInput
       if (filter == null || filter.accept(k))
         l.add(k);
     }
-    return PseudoIterator.fromArray(l.toArray(new Konto[l.size()]));
+    return l;
   }
 
   /**
@@ -256,7 +245,10 @@ public class KontoInput extends SelectInput
 
 /**********************************************************************
  * $Log: KontoInput.java,v $
- * Revision 1.8  2011/05/19 08:41:53  willuhn
+ * Revision 1.9  2011/05/20 16:22:31  willuhn
+ * @N Termin-Eingabefeld in eigene Klasse ausgelagert (verhindert duplizierten Code) - bessere Kommentare
+ *
+ * Revision 1.8  2011-05-19 08:41:53  willuhn
  * @N BUGZILLA 1038 - generische Loesung
  *
  * Revision 1.7  2010-08-12 17:12:32  willuhn
