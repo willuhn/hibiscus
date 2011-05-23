@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.64 $
- * $Date: 2011/05/23 10:54:26 $
+ * $Revision: 1.65 $
+ * $Date: 2011/05/23 12:57:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -214,6 +214,29 @@ public class Settings
   }
 
   /**
+   * Legt fest, ob die PIN permanent gespeichert werden soll.
+   * Laesst sich nur aktivieren, wenn auch das Cachen der PINs aktiviert ist.
+   * @param storePin true, wenn die Pin gespeichert werden soll.
+   */
+  public static void setStorePin(boolean storePin)
+  {
+    settings.setAttribute("storepin",getCachePin() && storePin);
+  }
+
+  /**
+   * Prueft, ob die PIN-Eingaben permanent gespeichert werden sollen.
+   * Liefert nur true, wenn auch das Cachen der PINs aktiviert ist
+   * und wenn das Master-Passwort manuell eingegeben wurde. Wurde
+   * das Master-Passwort via Parameter "-p" uebergeben, ist das
+   * Speichern der PIN nicht zulaessig.
+   * @return true, wenn die Pin gecached werden soll.
+   */
+  public static boolean getStorePin()
+  {
+    return Application.getStartupParams().getPassword() == null && getCachePin() && settings.getBoolean("storepin",false);
+  }
+
+  /**
    * Prueft, ob Tausender-Punkte bei Betraegen verwendet werden sollen.
    * @return true, wenn Tausender-Punkte verwendet werden sollen.
    */
@@ -416,7 +439,10 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
- * Revision 1.64  2011/05/23 10:54:26  willuhn
+ * Revision 1.65  2011/05/23 12:57:38  willuhn
+ * @N optionales Speichern der PINs im Wallet. Ich announce das aber nicht. Ich hab das nur eingebaut, weil mir das Gejammer der User auf den Nerv ging und ich nicht will, dass sich User hier selbst irgendwelche Makros basteln, um die PIN dennoch zu speichern
+ *
+ * Revision 1.64  2011-05-23 10:54:26  willuhn
  * @R BUGZILLA 62 - Liste der bisher gespeicherten TANs loeschen
  *
  * Revision 1.63  2010-09-16 09:54:05  willuhn

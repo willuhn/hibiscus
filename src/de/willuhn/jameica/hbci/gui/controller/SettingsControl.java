@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.57 $
- * $Date: 2011/04/28 07:33:23 $
+ * $Revision: 1.58 $
+ * $Date: 2011/05/23 12:57:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,16 +14,21 @@ package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.ColorInput;
 import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
@@ -32,6 +37,8 @@ import de.willuhn.jameica.hbci.gui.action.UmsatzTypNew;
 import de.willuhn.jameica.hbci.gui.parts.PassportList;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzTypTree;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
 /**
@@ -45,6 +52,7 @@ public class SettingsControl extends AbstractControl
 	private CheckboxInput onlineMode     		= null;
   private CheckboxInput cancelSyncOnError = null;
   private CheckboxInput cachePin          = null;
+  private CheckboxInput storePin          = null;
   private CheckboxInput decimalGrouping   = null;
   private CheckboxInput kontoCheck        = null;
 
@@ -140,9 +148,76 @@ public class SettingsControl extends AbstractControl
    */
   public CheckboxInput getCachePin()
   {
-    if (cachePin == null)
-      cachePin = new CheckboxInput(Settings.getCachePin());
-    return cachePin;
+    if (this.cachePin != null)
+      return this.cachePin;
+
+    Listener l = new Listener() {
+      public void handleEvent(Event event)
+      {
+        boolean b1 = (Boolean) getCachePin().getValue();
+        boolean b2 = Application.getStartupParams().getPassword() == null;
+        getStorePin().setEnabled(b1 && b2);
+        
+        if (!b2)
+          getStorePin().setComment(i18n.tr("Deaktiviert. Master-Passwort nicht manuell eingegeben"));
+      }
+    };
+    this.cachePin = new CheckboxInput(Settings.getCachePin());
+    this.cachePin.addListener(l);
+    
+    // einmal ausloesen
+    l.handleEvent(null);
+    return this.cachePin;
+  }
+  
+  /**
+   * Liefert eine Checkbox zum Aktivieren der permanenten Speicherung der PINs.
+   * @return true, wenn das Speichern der PINs aktiviert ist.
+   */
+  public CheckboxInput getStorePin()
+  {
+    if (storePin != null)
+      return storePin;
+    
+    storePin = new CheckboxInput(Settings.getStorePin());
+    storePin.setComment("");
+    storePin.addListener(new Listener() {
+      public void handleEvent(Event event)
+      {
+        // Wir loesen nur bei dem Selection-Event aus, nicht bei FocusOut/FocusIn
+        if (event.type != SWT.Selection)
+          return;
+        
+        boolean enabled = ((Boolean) storePin.getValue()).booleanValue();
+        if (enabled)
+        {
+          boolean b = false;
+          try
+          {
+            YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
+            d.setTitle(i18n.tr("Warnung"));
+            d.setSideImage(SWTUtil.getImage("dialog-warning-large.png"));
+            d.setText(i18n.tr("Mit der permanenten Speicherung der PIN verstoﬂen Sie unter Umst‰nden\n" +
+                              "gegen die Onlinebanking-AGB Ihres Geldinstitutes. Bitte wenden Sie sich\n" +
+                              "an Ihre Bank und fragen Sie diese, ob das Speichern der PIN zul‰ssig ist.\n\n" +
+                              "Nach Aktivierung dieser Funktion erhalten Sie vom Programm-Autor von\n" +
+                              "Hibiscus keine Hilfe mehr bei Fragen oder Problemen.\n\n" +
+                              "PIN-Speicherung wirklich aktivieren?"));
+            b = ((Boolean) d.open()).booleanValue();
+          }
+          catch (OperationCanceledException oce)
+          {
+            // ignore
+          }
+          catch (Exception e)
+          {
+            Logger.error("unable to open dialog",e);
+          }
+          getStorePin().setValue(b);
+        }
+      }
+    });
+    return storePin;
   }
 
   /**
@@ -207,6 +282,7 @@ public class SettingsControl extends AbstractControl
 
 		Settings.setOnlineMode(((Boolean)getOnlineMode().getValue()).booleanValue());
     Settings.setCachePin(((Boolean)getCachePin().getValue()).booleanValue());
+    Settings.setStorePin(((Boolean)getStorePin().getValue()).booleanValue());
     Settings.setDecimalGrouping(((Boolean)getDecimalGrouping().getValue()).booleanValue());
     Settings.setKontoCheck(((Boolean)getKontoCheck().getValue()).booleanValue());
     Settings.setCancelSyncOnError(((Boolean)getCancelSyncOnError().getValue()).booleanValue());
@@ -221,7 +297,10 @@ public class SettingsControl extends AbstractControl
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
- * Revision 1.57  2011/04/28 07:33:23  willuhn
+ * Revision 1.58  2011/05/23 12:57:37  willuhn
+ * @N optionales Speichern der PINs im Wallet. Ich announce das aber nicht. Ich hab das nur eingebaut, weil mir das Gejammer der User auf den Nerv ging und ich nicht will, dass sich User hier selbst irgendwelche Makros basteln, um die PIN dennoch zu speichern
+ *
+ * Revision 1.57  2011-04-28 07:33:23  willuhn
  * @C Code-Cleanup
  *
  * Revision 1.56  2010/03/05 15:24:53  willuhn

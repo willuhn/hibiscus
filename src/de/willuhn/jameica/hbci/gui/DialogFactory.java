@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/DialogFactory.java,v $
- * $Revision: 1.36 $
- * $Date: 2010/07/24 00:22:48 $
+ * $Revision: 1.37 $
+ * $Date: 2011/05/23 12:57:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -35,6 +35,7 @@ import de.willuhn.jameica.hbci.gui.dialogs.PassportLoadDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.PassportSaveDialog;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
+import de.willuhn.util.Base64;
 
 /**
  * Hilfsklasse zur Erzeugung von Hilfs-Dialogen bei der HBCI-Kommunikation.
@@ -311,18 +312,43 @@ public class DialogFactory {
     if (key == null)
       return null;
 
-    byte[] data = (byte[]) pinCache.get(key);
+    byte[] data = null;
+    
+    // Cache checken
+    if (Settings.getCachePin())
+    {
+      data = (byte[]) pinCache.get(key);
+    }
+
+    // Wenn wir noch nichts im Cache haben, schauen wir im Wallet - wenn das erlaubt ist
+    if (data == null && Settings.getStorePin())
+    {
+      String s = (String) Settings.getWallet().get(key);
+      if (s != null)
+      {
+        data = Base64.decode(s);
+        
+        // Wenn diese Meldung im Log erscheint, gibts keinen Support mehr von mir.
+        // Wer die PIN permament speichert, tut das auf eigenes Risiko
+        Logger.info("pin loaded from wallet");
+        // Uebernehmen wir gleich in den Cache, damit wir beim
+        // naechsten Mal direkt im Cache schauen koennen und nicht
+        // mehr im Wallet
+        pinCache.put(key,data);
+      }
+    }
 
     // Haben wir Daten?
-    if (data == null)
-      return null;
+    if (data != null)
+    {
+      ByteArrayInputStream bis  = new ByteArrayInputStream(data);
+      ByteArrayOutputStream bos = new ByteArrayOutputStream();
+      Application.getSSLFactory().decrypt(bis,bos);
+      String s = bos.toString();
+      if (s != null && s.length() > 0)
+        return s;
+    }
     
-    ByteArrayInputStream bis  = new ByteArrayInputStream(data);
-    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    Application.getSSLFactory().decrypt(bis,bos);
-    String s = bos.toString();
-    if (s != null && s.length() > 0)
-      return s;
     return null;
   }
   
@@ -340,12 +366,23 @@ public class DialogFactory {
     if (key == null)
       return;
     
-    byte[] data = pin.getBytes();
-    
-    ByteArrayInputStream bis  = new ByteArrayInputStream(data);
+    ByteArrayInputStream bis  = new ByteArrayInputStream(pin.getBytes());
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     Application.getSSLFactory().encrypt(bis,bos);
-    pinCache.put(key,bos.toByteArray());
+    byte[] crypted = bos.toByteArray();
+    
+    if (Settings.getCachePin())
+    {
+      pinCache.put(key,crypted);
+    }
+    
+    if (Settings.getStorePin())
+    {
+      // Nicht direkt das Byte-Array speichern sondern einen Base64-String.
+      // Grund: Bei einem Byte-Array wuerde der XML-Serializer fuer jedes
+      // Byte ein einzelnes XML-Element anlegen und damit das Wallet aufblasen
+      Settings.getWallet().set(key,Base64.encode(crypted));
+    }
   }
   
   /**
@@ -355,6 +392,23 @@ public class DialogFactory {
   public static void clearPINCache()
   {
     pinCache.clear();
+
+    // Wir loeschen auch die gespeicherten PINs
+    // Unabhaengig davon, ob das Feature gerade aktiviert ist oder nicht.
+    try
+    {
+      Settings.getWallet().deleteAll("hibiscus.pin.");
+    }
+    catch (Exception e)
+    {
+      // Wenn das fehlschlaegt, sollte man eigentlich mehr Alarm schlagen
+      // Allerdings wuesste ich jetzt auch nicht, was der User dann machen
+      // kann, ausser dem Loeschen der Wallet-Datei. Was aber dazu fuehren
+      // wuerde, dass saemtliche DDV- und PinTan-Passport-Files nicht mehr
+      // gelesen werden koennen, weil fuer die ja Random-Passworte verwendet
+      // werden, die ebenfalls im Wallet gespeichert sind
+      Logger.error("unable to clear pin cache",e);
+    }
   }
   
   /**
@@ -387,6 +441,7 @@ public class DialogFactory {
 
     if (key != null)
     {
+      key = "hibiscus.pin." + key;
       Logger.debug("using cache key: " + key);
       return key;
     }
@@ -401,7 +456,10 @@ public class DialogFactory {
 
 /**********************************************************************
  * $Log: DialogFactory.java,v $
- * Revision 1.36  2010/07/24 00:22:48  willuhn
+ * Revision 1.37  2011/05/23 12:57:38  willuhn
+ * @N optionales Speichern der PINs im Wallet. Ich announce das aber nicht. Ich hab das nur eingebaut, weil mir das Gejammer der User auf den Nerv ging und ich nicht will, dass sich User hier selbst irgendwelche Makros basteln, um die PIN dennoch zu speichern
+ *
+ * Revision 1.36  2010-07-24 00:22:48  willuhn
  * *** empty log message ***
  *
  * Revision 1.35  2009-08-10 10:22:09  willuhn
