@@ -1,5 +1,7 @@
 2011-??-?? Version 1.13.0
 
+  * NEW: 0090 PIN-Speicherung. Audruecklich gegen meinen Willen. Ich hab das nur eingebaut, weil ich
+              nicht will, dass sich User hier selbst irgendwelche Makros basteln, um die PIN dennoch zu speichern
   * NEW: 0089 Kommentare im Termin-Eingabefeld ueberarbeitet
   * NEW: 0088 Hinweistext in Kontoauswahl bei SEPA-Ueberweisung, wenn kein SEPA-faehiges Konto vorhanden
   * NEW: 0087 Unterstuetzung fuer HKTAN5/HHD1.4
