@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/server/PinTanConfigImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2011/05/09 09:35:16 $
+ * $Revision: 1.7 $
+ * $Date: 2011/05/23 10:47:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,7 +12,6 @@ package de.willuhn.jameica.hbci.passports.pintan.server;
 import java.io.File;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.kapott.hbci.manager.HBCIUtils;
@@ -20,17 +19,12 @@ import org.kapott.hbci.passport.HBCIPassport;
 
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.ObjectNotFoundException;
-import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.passports.pintan.Detail;
 import de.willuhn.jameica.hbci.passports.pintan.PinTanConfigFactory;
 import de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig;
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.messaging.StatusBarMessage;
-import de.willuhn.jameica.security.Wallet;
-import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Logger;
-import de.willuhn.util.I18N;
 
 /**
  * Implementierung eines in Hibiscus existierenden RDH-Schluessels.
@@ -40,7 +34,6 @@ public class PinTanConfigImpl implements PinTanConfig
 {
 
   private final static Settings settings = new Settings(PinTanConfig.class);
-  private final static I18N i18n         = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   private HBCIPassport passport = null;
   private File file             = null;
@@ -80,8 +73,6 @@ public class PinTanConfigImpl implements PinTanConfig
       return getUserId();
     if ("bezeichnung".equals(attribute))
       return getBezeichnung();
-    if ("savetan".equals(attribute))
-      return new Boolean(getSaveUsedTan());
     if ("showtan".equals(attribute))
       return new Boolean(getShowTan());
     if ("secmech".equals(attribute))
@@ -377,22 +368,6 @@ public class PinTanConfigImpl implements PinTanConfig
   }
   
   /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getSaveUsedTan()
-   */
-  public boolean getSaveUsedTan() throws RemoteException
-  {
-    return settings.getBoolean(getID() + ".savetan",false);
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setSaveUsedTan(boolean)
-   */
-  public void setSaveUsedTan(boolean save) throws RemoteException
-  {
-    settings.setAttribute(getID() + ".savetan",save);
-  }
-
-  /**
    * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getSecMech()
    */
   public String getSecMech() throws RemoteException
@@ -484,187 +459,17 @@ public class PinTanConfigImpl implements PinTanConfig
   {
     settings.setAttribute(getID() + ".showtan",show);
   }
-  
-  
-
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#clearUsedTans()
-   */
-  public void clearUsedTans() throws RemoteException
-  {
-    try
-    {
-      Wallet wallet = de.willuhn.jameica.hbci.Settings.getWallet();
-      wallet.deleteAll("tan."      + getID());
-      wallet.deleteAll("tan.date." + getID());
-    }
-    catch (RemoteException re)
-    {
-      throw re;
-    }
-    catch (Exception e)
-    {
-      Logger.error("unable to delete TANs",e);
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("TAN-Liste konnte nicht gelöscht werden. {0}",e.getLocalizedMessage()),StatusBarMessage.TYPE_ERROR));
-    }
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getTanUsed(java.lang.String)
-   */
-  public synchronized Date getTanUsed(String tan) throws RemoteException
-  {
-    try
-    {
-      return (Date) de.willuhn.jameica.hbci.Settings.getWallet().get("tan.date." + getID() + "." + tan);
-    }
-    catch (RemoteException re)
-    {
-      throw re;
-    }
-    catch (Exception e)
-    {
-      Logger.error("unable to load TAN",e);
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("TAN konnte nicht geladen werden. {0}",e.getLocalizedMessage()),StatusBarMessage.TYPE_ERROR));
-    }
-    return null;
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#saveUsedTan(java.lang.String)
-   */
-  public synchronized void saveUsedTan(String tan) throws RemoteException
-  {
-    if (!getSaveUsedTan())
-      return;
-    try
-    {
-      Wallet wallet = de.willuhn.jameica.hbci.Settings.getWallet();
-      wallet.set("tan."      + getID() + "." + tan,tan);
-      wallet.set("tan.date." + getID() + "." + tan,new Date());
-    }
-    catch (RemoteException re)
-    {
-      throw re;
-    }
-    catch (Exception e)
-    {
-      Logger.error("unable to store TAN",e);
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("TAN konnte nicht gespeichert werden. {0}",e.getLocalizedMessage()),StatusBarMessage.TYPE_ERROR));
-    }
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getUsedTans()
-   */
-  public String[] getUsedTans() throws RemoteException
-  {
-    try
-    {
-      Wallet wallet = de.willuhn.jameica.hbci.Settings.getWallet();
-      String[] keys = wallet.getAll("tan." + getID());
-      String[] tans = new String[keys.length];
-      for (int i=0;i<keys.length;++i)
-      {
-        tans[i] = (String) wallet.get(keys[i]);
-      }
-      return tans;
-    }
-    catch (RemoteException re)
-    {
-      throw re;
-    }
-    catch (Exception e)
-    {
-      Logger.error("unable to load TAN list",e);
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Liste der verbrauchten TANs konnte nicht geladen werden. {0}",e.getLocalizedMessage()),StatusBarMessage.TYPE_ERROR));
-    }
-    return new String[0];
-  }
 }
 
 /*****************************************************************************
  * $Log: PinTanConfigImpl.java,v $
- * Revision 1.6  2011/05/09 09:35:16  willuhn
+ * Revision 1.7  2011/05/23 10:47:29  willuhn
+ * @R BUGZILLA 62 - Speichern der verbrauchten TANs ausgebaut. Seit smsTAN/chipTAN gibt es zum einen ohnehin keine TAN-Listen mehr. Zum anderen kann das jetzt sogar Fehler ausloesen, wenn ueber eines der neuen TAN-Verfahren die gleiche TAN generiert wird, die frueher irgendwann schonmal zufaellig generiert wurde. TANs sind inzwischen fluechtige und werden dynamisch erzeugt. Daher ist es unsinnig, die zu speichern. Zumal es das Wallet sinnlos aufblaeht.
+ *
+ * Revision 1.6  2011-05-09 09:35:16  willuhn
  * @N BUGZILLA 827
  *
  * Revision 1.5  2011-04-29 09:17:35  willuhn
  * @N Neues Standard-Interface "Configuration" fuer eine gemeinsame API ueber alle Arten von HBCI-Konfigurationen
  * @R Passports sind keine UnicastRemote-Objekte mehr
- *
- * Revision 1.4  2010-07-22 12:04:38  willuhn
- * @C Nicht mehr gueltige Konto-Zuordnungen automatisch loeschen
- *
- * Revision 1.3  2010-07-22 11:39:27  willuhn
- * @B BUGZILLA 314 - Migrationscode entfernt - ist inzwischen 3 Jahre alt und sollte nicht mehr noetig sein
- *
- * Revision 1.2  2010-07-22 11:35:08  willuhn
- * @N Per Default die letzte verwendete HBCI-Version anzeigen
- *
- * Revision 1.1  2010/06/17 11:38:16  willuhn
- * @C kompletten Code aus "hbci_passport_pintan" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
- *
- * Revision 1.20  2009/03/02 13:41:24  willuhn
- * @R alten Migrationscode (Custom-Filter) entfernt
- *
- * Revision 1.19  2007/12/12 09:54:28  willuhn
- * @C Bug 39 Migration
- *
- * Revision 1.18  2007/11/25 16:20:11  willuhn
- * @N Bug 276
- *
- * Revision 1.17  2007/08/31 09:43:55  willuhn
- * @N Einer PIN/TAN-Config koennen jetzt mehrere Konten zugeordnet werden
- *
- * Revision 1.16  2006/08/03 15:31:35  willuhn
- * @N Bug 62 completed
- *
- * Revision 1.15  2006/08/03 13:51:38  willuhn
- * @N Bug 62
- * @C HBCICallback-Handling nach Zustaendigkeit auf Passports verteilt
- *
- * Revision 1.14  2006/08/03 11:27:36  willuhn
- * @N Erste Haelfte von BUG 62 (Speichern verbrauchter TANs)
- *
- * Revision 1.13  2006/02/26 22:27:24  willuhn
- * *** empty log message ***
- *
- * Revision 1.12  2006/01/10 22:34:07  willuhn
- * @B bug 173
- *
- * Revision 1.11  2005/07/18 12:53:30  web0
- * @B bug 96
- *
- * Revision 1.10  2005/06/23 21:52:49  web0
- * @B Bug 80
- *
- * Revision 1.9  2005/05/03 22:43:06  web0
- * @B bug39
- *
- * Revision 1.8  2005/04/27 00:30:12  web0
- * @N real test connection
- * @N all hbci versions are now shown in select box
- * @C userid and customerid are changable
- *
- * Revision 1.7  2005/03/11 02:43:59  web0
- * @N PIN/TAN works ;)
- *
- * Revision 1.6  2005/03/11 00:49:30  web0
- * *** empty log message ***
- *
- * Revision 1.5  2005/03/10 18:38:48  web0
- * @N more PinTan Code
- *
- * Revision 1.4  2005/03/09 17:24:40  web0
- * *** empty log message ***
- *
- * Revision 1.3  2005/03/08 18:44:57  web0
- * *** empty log message ***
- *
- * Revision 1.2  2005/03/07 17:17:30  web0
- * *** empty log message ***
- *
- * Revision 1.1  2005/03/07 14:31:00  web0
- * @N first classes
- *
 *****************************************************************************/

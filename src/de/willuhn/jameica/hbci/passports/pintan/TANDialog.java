@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/TANDialog.java,v $
- * $Revision: 1.4 $
- * $Date: 2011/05/16 15:34:59 $
+ * $Revision: 1.5 $
+ * $Date: 2011/05/23 10:47:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,7 +13,6 @@
 package de.willuhn.jameica.hbci.passports.pintan;
 
 import java.rmi.RemoteException;
-import java.util.Date;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -24,9 +23,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
-import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
 /**
@@ -104,38 +101,6 @@ public class TANDialog extends PasswordDialog
 			setErrorText(i18n.tr("Bitte geben Sie eine TAN ein.") + " " + getRetryString());
 			return false;
 		}
-    
-    // BUGZILLA 62
-    // Wir checken, ob es die TAN schon gibt
-    // Wir pruefen hier bewusst nicht, ob das Feature eingeschaltet
-    // ist, weil es der User inzwischen ausgeschaltet haben kann
-    // aber schon TANs existieren koennen
-
-    if (this.config != null)
-    {
-      try
-      {
-        Date used = this.config.getTanUsed(password);
-        if (used != null)
-        {
-          setErrorText(i18n.tr("TAN wurde bereits am {0} verwendet.",HBCI.LONGDATEFORMAT.format(used)) + " " + getRetryString());
-          return false;
-        }
-
-        // Wir speichern die TAN
-        if (this.config.getSaveUsedTan())
-          this.config.saveUsedTan(password);
-      }
-      catch (RemoteException re)
-      {
-        Logger.error("unable to check/save tan",re);
-        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Prüfen/Speichern der verbrauchten TAN"),StatusBarMessage.TYPE_ERROR));
-      }
-    }
-    else
-    {
-      Logger.warn("unable to check if TAN was allready used. we have no config");
-    }
 		return true;
 	}
 
@@ -220,7 +185,10 @@ public class TANDialog extends PasswordDialog
 
 /**********************************************************************
  * $Log: TANDialog.java,v $
- * Revision 1.4  2011/05/16 15:34:59  willuhn
+ * Revision 1.5  2011/05/23 10:47:29  willuhn
+ * @R BUGZILLA 62 - Speichern der verbrauchten TANs ausgebaut. Seit smsTAN/chipTAN gibt es zum einen ohnehin keine TAN-Listen mehr. Zum anderen kann das jetzt sogar Fehler ausloesen, wenn ueber eines der neuen TAN-Verfahren die gleiche TAN generiert wird, die frueher irgendwann schonmal zufaellig generiert wurde. TANs sind inzwischen fluechtige und werden dynamisch erzeugt. Daher ist es unsinnig, die zu speichern. Zumal es das Wallet sinnlos aufblaeht.
+ *
+ * Revision 1.4  2011-05-16 15:34:59  willuhn
  * @N TAN-Text kann formatiert sein
  *
  * Revision 1.3  2011-05-09 17:27:39  willuhn

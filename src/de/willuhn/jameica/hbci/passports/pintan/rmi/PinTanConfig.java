@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/rmi/PinTanConfig.java,v $
- * $Revision: 1.3 $
- * $Date: 2011/05/09 09:35:15 $
+ * $Revision: 1.4 $
+ * $Date: 2011/05/23 10:47:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -10,7 +10,6 @@
 package de.willuhn.jameica.hbci.passports.pintan.rmi;
 
 import java.rmi.RemoteException;
-import java.util.Date;
 
 import org.kapott.hbci.passport.HBCIPassport;
 
@@ -171,22 +170,6 @@ public interface PinTanConfig extends GenericObject, Configuration
   public void setBezeichnung(String bezeichnung) throws RemoteException;
   
   /**
-   * Prueft, ob die verbrauchten TANs gespeichert werden sollen.
-   * @return true, wenn die TANs gespeichert werden.
-   * @throws RemoteException
-   * BUGZILLA 62
-   */
-  public boolean getSaveUsedTan() throws RemoteException;
-  
-  /**
-   * Legt fest, ob die verbrauchten TANs gespeichert werden sollen.
-   * @param save true, wenn die TANs gespeichert werden sollen.
-   * @throws RemoteException
-   * BUGZILLA 62
-   */
-  public void setSaveUsedTan(boolean save) throws RemoteException;
-  
-  /**
    * Liefert einen ggf gespeicherten Sicherheitsmechanismus.
    * @return ID des Sicherheitsmechanismus.
    * @throws RemoteException
@@ -213,34 +196,6 @@ public interface PinTanConfig extends GenericObject, Configuration
    * @throws RemoteException
    */
   public void setShowTan(boolean show) throws RemoteException;
-  
-  /**
-   * Speichert eine verbrauchte TAN.
-   * @param tan die verbrauchte TAN.
-   * @throws RemoteException
-   */
-  public void saveUsedTan(String tan) throws RemoteException;
-
-  /**
-   * Prueft, ob die TAN schon verbraucht wurde und liefert das Datum des Verbrauchs zurueck.
-   * @param tan die zu testende TAN.
-   * @return null, wenn die TAN noch nicht benutzt wurde, sonst das Datum des Verbrauchs.
-   * @throws RemoteException
-   */
-  public Date getTanUsed(String tan) throws RemoteException;
-  
-  /**
-   * Loescht die Liste der verbrauchten TANs.
-   * @throws RemoteException
-   */
-  public void clearUsedTans() throws RemoteException;
-  
-  /**
-   * Liefert eine Liste der verbrauchten TANs.
-   * @return Liste der verbrauchten TANs.
-   * @throws RemoteException
-   */
-  public String[] getUsedTans() throws RemoteException;
   
   /**
    * Liefert die Liste der zuletzt eingegebenen TAN-Medien-Bezeichnungen.
@@ -280,7 +235,10 @@ public interface PinTanConfig extends GenericObject, Configuration
 
 /*****************************************************************************
  * $Log: PinTanConfig.java,v $
- * Revision 1.3  2011/05/09 09:35:15  willuhn
+ * Revision 1.4  2011/05/23 10:47:29  willuhn
+ * @R BUGZILLA 62 - Speichern der verbrauchten TANs ausgebaut. Seit smsTAN/chipTAN gibt es zum einen ohnehin keine TAN-Listen mehr. Zum anderen kann das jetzt sogar Fehler ausloesen, wenn ueber eines der neuen TAN-Verfahren die gleiche TAN generiert wird, die frueher irgendwann schonmal zufaellig generiert wurde. TANs sind inzwischen fluechtige und werden dynamisch erzeugt. Daher ist es unsinnig, die zu speichern. Zumal es das Wallet sinnlos aufblaeht.
+ *
+ * Revision 1.3  2011-05-09 09:35:15  willuhn
  * @N BUGZILLA 827
  *
  * Revision 1.2  2011-04-29 09:17:35  willuhn

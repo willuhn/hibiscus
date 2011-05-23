@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/Controller.java,v $
- * $Revision: 1.8 $
- * $Date: 2011/05/11 10:20:28 $
+ * $Revision: 1.9 $
+ * $Date: 2011/05/23 10:47:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -50,13 +50,14 @@ import de.willuhn.util.I18N;
 /**
  * Controller, der die Eingaben zur Konfiguration des Passports handelt.
  */
-public class Controller extends AbstractControl {
+public class Controller extends AbstractControl
+{
+
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 
   private PinTanConfig config   = null;
   private HBCIPassport passport = null;
-
-	private I18N i18n;
 
   private TablePart configList  = null;
 
@@ -68,7 +69,6 @@ public class Controller extends AbstractControl {
   private Input customerId      = null;
   private Input userId          = null;
   private Input bezeichnung     = null;
-  private CheckboxInput saveTan = null;
   private CheckboxInput showTan = null;
 
   // BUGZILLA 173
@@ -80,7 +80,6 @@ public class Controller extends AbstractControl {
    */
   public Controller(AbstractView view) {
     super(view);
-		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
   /**
@@ -196,19 +195,6 @@ public class Controller extends AbstractControl {
     url.setName(i18n.tr("URL des Bank-Servers"));
     url.setMandatory(true);
     return url;
-  }
-
-  /**
-   * Liefert eine Checkbox zur TAN-Speicherung.
-   * @return Checkbox.
-   * @throws RemoteException
-   */
-  public CheckboxInput getSaveTAN() throws RemoteException
-  {
-    if (saveTan != null)
-      return saveTan;
-    saveTan = new CheckboxInput(getConfig().getSaveUsedTan());
-    return saveTan;
   }
 
   /**
@@ -353,28 +339,6 @@ public class Controller extends AbstractControl {
   }
   
   /**
-   * Zeigt eine Liste der benutzten TANs an.
-   */
-  public void handleShowUsedTans()
-  {
-    try
-    {
-      UsedTanDialog d = new UsedTanDialog(getConfig());
-      d.open();
-    }
-    catch (OperationCanceledException oce)
-    {
-      Logger.info(oce.getMessage());
-      return;
-    }
-    catch (Exception e)
-    {
-      Logger.error("error while loading used TANs",e);
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Laden der TAN-Liste"),StatusBarMessage.TYPE_ERROR));
-    }
-  }
-
-  /**
    * Zeigt die BPD/UPD des Passports an.
    */
   public synchronized void handleDisplayProperties()
@@ -502,7 +466,6 @@ public class Controller extends AbstractControl {
       
       config.setFilterType((String) getFilterType().getValue());
       config.setBezeichnung((String) getBezeichnung().getValue());
-      config.setSaveUsedTan(((Boolean)getSaveTAN().getValue()).booleanValue());
       config.setShowTan(((Boolean)getShowTan().getValue()).booleanValue());
 			config.setHBCIVersion((String) getHBCIVersion().getValue());
 
@@ -531,7 +494,10 @@ public class Controller extends AbstractControl {
 
 /**********************************************************************
  * $Log: Controller.java,v $
- * Revision 1.8  2011/05/11 10:20:28  willuhn
+ * Revision 1.9  2011/05/23 10:47:29  willuhn
+ * @R BUGZILLA 62 - Speichern der verbrauchten TANs ausgebaut. Seit smsTAN/chipTAN gibt es zum einen ohnehin keine TAN-Listen mehr. Zum anderen kann das jetzt sogar Fehler ausloesen, wenn ueber eines der neuen TAN-Verfahren die gleiche TAN generiert wird, die frueher irgendwann schonmal zufaellig generiert wurde. TANs sind inzwischen fluechtige und werden dynamisch erzeugt. Daher ist es unsinnig, die zu speichern. Zumal es das Wallet sinnlos aufblaeht.
+ *
+ * Revision 1.8  2011-05-11 10:20:28  willuhn
  * @N OCE fangen
  *
  * Revision 1.7  2011-05-09 09:35:15  willuhn
@@ -542,86 +508,4 @@ public class Controller extends AbstractControl {
  *
  * Revision 1.5  2011-04-28 07:34:43  willuhn
  * @R Summen-Zeile nicht mehr anzeigen - unnuetz
- *
- * Revision 1.4  2010-09-07 15:17:07  willuhn
- * @N GUI-Cleanup
- *
- * Revision 1.3  2010-07-22 12:37:41  willuhn
- * @N GUI poliert
- *
- * Revision 1.2  2010-07-22 11:31:50  willuhn
- * @B Fehlertext nur anzeigen, wenn der Erstell-Vorgang nicht durch den User abgebrochen wurde
- *
- * Revision 1.1  2010/06/17 11:38:15  willuhn
- * @C kompletten Code aus "hbci_passport_pintan" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
- *
- * Revision 1.22  2009/06/29 11:04:17  willuhn
- * @N Beim Speichern existierender Konfigurationen wird der BPD-Cache geloescht. Das soll Fehler bei VR-Banken vermeiden, nachdem dort die HBCI-Version geaendert wurde
- *
- * Revision 1.21  2009/06/16 15:32:32  willuhn
- * *** empty log message ***
- *
- * Revision 1.20  2009/06/16 14:04:34  willuhn
- * @N Dialog zum Anzeigen der BPD/UPD
- *
- * Revision 1.19  2008/07/29 08:30:04  willuhn
- * @B Compile-Fix
- *
- * Revision 1.18  2007/11/19 21:54:58  willuhn
- * @B BUGZILLA 506
- *
- * Revision 1.17  2007/08/31 09:43:55  willuhn
- * @N Einer PIN/TAN-Config koennen jetzt mehrere Konten zugeordnet werden
- *
- * Revision 1.16  2006/08/03 15:31:35  willuhn
- * @N Bug 62 completed
- *
- * Revision 1.15  2006/08/03 13:51:38  willuhn
- * @N Bug 62
- * @C HBCICallback-Handling nach Zustaendigkeit auf Passports verteilt
- *
- * Revision 1.14  2006/08/03 11:27:36  willuhn
- * @N Erste Haelfte von BUG 62 (Speichern verbrauchter TANs)
- *
- * Revision 1.13  2006/03/28 22:52:31  willuhn
- * @B bug 218
- *
- * Revision 1.12  2006/03/28 22:35:14  willuhn
- * @B bug 218
- *
- * Revision 1.11  2006/03/28 17:51:08  willuhn
- * @B bug 218
- *
- * Revision 1.10  2006/01/10 22:34:07  willuhn
- * @B bug 173
- *
- * Revision 1.9  2005/07/18 12:53:30  web0
- * @B bug 96
- *
- * Revision 1.8  2005/04/27 00:30:12  web0
- * @N real test connection
- * @N all hbci versions are now shown in select box
- * @C userid and customerid are changable
- *
- * Revision 1.7  2005/04/05 23:42:12  web0
- * @C moved HBCIVersionInput into Hibiscus source tree
- *
- * Revision 1.6  2005/03/11 02:43:59  web0
- * @N PIN/TAN works ;)
- *
- * Revision 1.5  2005/03/11 00:49:30  web0
- * *** empty log message ***
- *
- * Revision 1.4  2005/03/10 18:38:48  web0
- * @N more PinTan Code
- *
- * Revision 1.3  2005/03/09 17:24:40  web0
- * *** empty log message ***
- *
- * Revision 1.2  2005/03/08 18:44:57  web0
- * *** empty log message ***
- *
- * Revision 1.1  2005/03/07 12:06:12  web0
- * @N initial import
- *
  **********************************************************************/

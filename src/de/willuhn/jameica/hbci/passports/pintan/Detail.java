@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/Detail.java,v $
- * $Revision: 1.6 $
- * $Date: 2011/05/09 09:35:15 $
+ * $Revision: 1.7 $
+ * $Date: 2011/05/23 10:47:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -66,9 +66,7 @@ public class Detail extends AbstractView
       Container group = new SimpleContainer(getParent());
       group.addHeadline(i18n.tr("Erweiterte Einstellungen"));
       group.addInput(control.getBezeichnung());
-      group.addCheckbox(control.getSaveTAN(),i18n.tr("Verbrauchte TANs merken"));
       group.addCheckbox(control.getShowTan(),i18n.tr("TANs während der Eingabe anzeigen"));
-
     }
     
     {
@@ -84,15 +82,6 @@ public class Detail extends AbstractView
       },null,false,"edit-undo.png");
       b.setEnabled((secMech != null && secMech.length() > 0) || (tanMedia != null && tanMedia.length() > 0));
       buttons.addButton(b);
-
-      buttons.addButton(i18n.tr("Verbrauchte TANs"),new Action()
-      {
-        public void handleAction(Object context) throws ApplicationException
-        {
-          control.handleShowUsedTans();
-        }
-      },null,false,"emblem-default.png");
-
       buttons.paint(getParent());
     }
 
@@ -128,7 +117,10 @@ public class Detail extends AbstractView
 
 /**********************************************************************
  * $Log: Detail.java,v $
- * Revision 1.6  2011/05/09 09:35:15  willuhn
+ * Revision 1.7  2011/05/23 10:47:29  willuhn
+ * @R BUGZILLA 62 - Speichern der verbrauchten TANs ausgebaut. Seit smsTAN/chipTAN gibt es zum einen ohnehin keine TAN-Listen mehr. Zum anderen kann das jetzt sogar Fehler ausloesen, wenn ueber eines der neuen TAN-Verfahren die gleiche TAN generiert wird, die frueher irgendwann schonmal zufaellig generiert wurde. TANs sind inzwischen fluechtige und werden dynamisch erzeugt. Daher ist es unsinnig, die zu speichern. Zumal es das Wallet sinnlos aufblaeht.
+ *
+ * Revision 1.6  2011-05-09 09:35:15  willuhn
  * @N BUGZILLA 827
  *
  * Revision 1.5  2011-04-08 15:19:14  willuhn
