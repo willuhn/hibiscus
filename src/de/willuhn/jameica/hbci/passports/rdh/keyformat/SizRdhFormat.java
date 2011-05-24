@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/keyformat/SizRdhFormat.java,v $
- * $Revision: 1.2 $
- * $Date: 2011/05/24 09:06:10 $
+ * $Revision: 1.3 $
+ * $Date: 2011/05/24 09:11:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -78,7 +78,7 @@ public class SizRdhFormat extends AbstractSizRdhFormat
       throw new ApplicationException(i18n.tr("Keine Datei ausgewählt"));
     
     File newKey = new File(newFile);
-    if (!newKey.canWrite())
+    if (!newKey.getParentFile().canWrite())
       throw new ApplicationException(i18n.tr("Keine Schreibberechtigung"));
 
     try
@@ -179,7 +179,10 @@ public class SizRdhFormat extends AbstractSizRdhFormat
 
 /**********************************************************************
  * $Log: SizRdhFormat.java,v $
- * Revision 1.2  2011/05/24 09:06:10  willuhn
+ * Revision 1.3  2011/05/24 09:11:04  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.2  2011-05-24 09:06:10  willuhn
  * @C Refactoring und Vereinfachung von HBCI-Callbacks
  *
  * Revision 1.1  2010/06/17 11:26:48  willuhn
