@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/SelectSizEntryDialog.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/06/17 11:26:48 $
+ * $Revision: 1.2 $
+ * $Date: 2011/05/24 09:06:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,21 +13,19 @@
 
 package de.willuhn.jameica.hbci.passports.rdh;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import org.eclipse.swt.widgets.Composite;
 import org.kapott.hbci.manager.HBCIUtils;
 
-import de.willuhn.datasource.GenericIterator;
-import de.willuhn.datasource.GenericObject;
-import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.TablePart;
-import de.willuhn.jameica.gui.util.ButtonArea;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -40,10 +38,9 @@ import de.willuhn.util.I18N;
  */
 public class SelectSizEntryDialog extends AbstractDialog
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private String data     = null;
   private Entry selected  = null;
-
-  private I18N i18n       = null;
 
   /**
    * ct.
@@ -53,7 +50,6 @@ public class SelectSizEntryDialog extends AbstractDialog
   public SelectSizEntryDialog(int position, String data)
   {
     super(position);
-    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     this.data = data;
     setTitle(i18n.tr("Schlüsselauswahl"));
   }
@@ -63,19 +59,18 @@ public class SelectSizEntryDialog extends AbstractDialog
    */
   protected void paint(Composite parent) throws Exception
   {
-    LabelGroup group = new LabelGroup(parent,i18n.tr("Schlüsseldatei"));
+    Container group = new SimpleContainer(parent);
     group.addText(i18n.tr("Bitte wählen Sie den zu verwendenden Schlüssel aus"),true);
     
-    ArrayList l = new ArrayList();
+    List<Entry> list = new ArrayList<Entry>();
 
     StringTokenizer tok = new StringTokenizer(data,"|");
     while (tok.hasMoreTokens())
     {
       Entry e = new Entry(tok.nextToken());
-      l.add(e);
+      list.add(e);
     }
     
-    GenericIterator list = PseudoIterator.fromArray((Entry[]) l.toArray(new Entry[l.size()]));
     final TablePart table = new TablePart(list, new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -86,13 +81,13 @@ public class SelectSizEntryDialog extends AbstractDialog
         close();
       }
     });
-    table.addColumn(i18n.tr("BLZ"),"blz");
-    table.addColumn(i18n.tr("Benutzerkennung"),"userid");
+    table.addColumn(i18n.tr("Bank"),"bank");
+    table.addColumn(i18n.tr("Benutzerkennung"),"user");
     table.setMulti(false);
     table.setSummary(false);
     table.paint(parent);
     
-    ButtonArea buttons = new ButtonArea(parent,2);
+    ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Übernehmen"), new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -104,13 +99,14 @@ public class SelectSizEntryDialog extends AbstractDialog
         selected = e;
         close();
       }
-    });
+    },null,false,"ok.png");
     buttons.addButton(i18n.tr("Abbrechen"), new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         throw new OperationCanceledException();
       }
-    });
+    },null,false,"process-stop.png");
+    buttons.paint(parent);
   }
 
   /**
@@ -118,29 +114,32 @@ public class SelectSizEntryDialog extends AbstractDialog
    */
   protected Object getData() throws Exception
   {
-    return selected.getID();
+    return selected.getId();
   }
 
-  private class Entry implements GenericObject
+  /**
+   * Bean fuer den ausgewaehlten Schluessel.
+   */
+  public class Entry
   {
 
     private String id     = null;
     private String userid = null;
-    private String blz    = null;
+    private String bank   = null;
     
     private Entry(String data)
     {
       StringTokenizer tok = new StringTokenizer(data,";");
 
       this.id     = tok.nextToken();
-      this.blz    = tok.nextToken();
+      this.bank   = tok.nextToken();
       this.userid = tok.nextToken();
       
       try
       {
-        String bankName = HBCIUtils.getNameForBLZ(this.blz);
+        String bankName = HBCIUtils.getNameForBLZ(this.bank);
         if (bankName != null && bankName.length() > 0)
-          this.blz += " [" + bankName + "]";
+          this.bank += " [" + bankName + "]";
       }
       catch (Exception e)
       {
@@ -149,57 +148,40 @@ public class SelectSizEntryDialog extends AbstractDialog
     }
 
     /**
-     * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
+     * Liefert die User-ID.
+     * @return die User-ID.
      */
-    public Object getAttribute(String attribute) throws RemoteException
+    public String getUser()
     {
-      if ("userid".equals(attribute))
-        return this.userid;
-      if ("blz".equals(attribute))
-        return this.blz;
-      return null;
+      return this.userid;
+    }
+    
+    /**
+     * Liefert die Bank.
+     * @return die Bank.
+     */
+    public String getBank()
+    {
+      return this.bank;
     }
 
     /**
-     * @see de.willuhn.datasource.GenericObject#getAttributeNames()
+     * Liefert die ID des Schluessels.
+     * @return die ID des Schluessels.
      */
-    public String[] getAttributeNames() throws RemoteException
-    {
-      return new String[] {"userid","blz"};
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#getID()
-     */
-    public String getID() throws RemoteException
+    public String getId()
     {
       return this.id;
     }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
-     */
-    public String getPrimaryAttribute() throws RemoteException
-    {
-      return "userid";
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
-     */
-    public boolean equals(GenericObject arg0) throws RemoteException
-    {
-      if (arg0 == null)
-        return false;
-      return this.getID().equals(arg0.getID());
-    }
-    
   }
 }
 
 
 /*********************************************************************
  * $Log: SelectSizEntryDialog.java,v $
+ * Revision 1.2  2011/05/24 09:06:11  willuhn
+ * @C Refactoring und Vereinfachung von HBCI-Callbacks
+ *
  * Revision 1.1  2010/06/17 11:26:48  willuhn
  * @B In HBCICallbackSWT wurden die RDH-Passports nicht korrekt ausgefiltert
  * @C komplettes Projekt "hbci_passport_rdh" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren

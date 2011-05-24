@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/DialogFactory.java,v $
- * $Revision: 1.37 $
- * $Date: 2011/05/23 12:57:38 $
+ * $Revision: 1.38 $
+ * $Date: 2011/05/24 09:06:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,18 +21,12 @@ import org.kapott.hbci.passport.HBCIPassport;
 import org.kapott.hbci.passport.HBCIPassportDDV;
 import org.kapott.hbci.passport.HBCIPassportPinTan;
 
-import de.willuhn.jameica.gui.dialogs.AbstractDialog;
-import de.willuhn.jameica.gui.dialogs.SimpleDialog;
 import de.willuhn.jameica.hbci.AccountContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.dialogs.AccountContainerDialog;
-import de.willuhn.jameica.hbci.gui.dialogs.InternetConnectionDialog;
-import de.willuhn.jameica.hbci.gui.dialogs.NewInstKeysDialog;
-import de.willuhn.jameica.hbci.gui.dialogs.NewKeysDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.PINDialog;
-import de.willuhn.jameica.hbci.gui.dialogs.PassportLoadDialog;
-import de.willuhn.jameica.hbci.gui.dialogs.PassportSaveDialog;
+import de.willuhn.jameica.hbci.passports.rdh.KeyPasswordLoadDialog;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.Base64;
@@ -40,55 +34,13 @@ import de.willuhn.util.Base64;
 /**
  * Hilfsklasse zur Erzeugung von Hilfs-Dialogen bei der HBCI-Kommunikation.
  */
-public class DialogFactory {
-
-	private static AbstractDialog dialog = null;
+public class DialogFactory
+{
 
   // BUGZILLA 185
   private static Hashtable pinCache = new Hashtable();
 
-  /**
-	 * Erzeugt einen simplen Dialog mit einem OK-Button.
-   * @param headline Ueberschrift des Dialogs.
-   * @param text Text des Dialogs.
-   * @throws Exception
-   */
-  public static synchronized void openSimple(final String headline, final String text) throws Exception
-	{
-		check();
-		SimpleDialog d = new SimpleDialog(AbstractDialog.POSITION_CENTER);
-		d.setTitle(headline);
-		d.setText(text);
-		dialog = d;
-		try
-		{
-			d.open();
-		}
-		finally
-		{
-			close();
-		}
-	}
-
-  /**
-   * Zeigt einen Hinweis-Dialog an, der den User bittet, eine Internet-Verbindung herzustellen.
-   * @throws Exception
-   */
-  public static synchronized void getConnection() throws Exception
-  {
-    if (Settings.getOnlineMode())
-      return;
-
-    check();
-    dialog = new InternetConnectionDialog(AbstractDialog.POSITION_CENTER);
-    try {
-      dialog.open();
-    }
-    finally
-    {
-      close();
-    }
-  }
+  private static long lastTry = 0;
 
   /**
 	 * Erzeugt den PIN-Dialog.
@@ -98,10 +50,7 @@ public class DialogFactory {
 	 */
 	public static synchronized String getPIN(HBCIPassport passport) throws Exception
 	{
-		check();
-
     boolean secondTry = System.currentTimeMillis() - lastTry < 400l;
-
     if (secondTry) Logger.warn("cached pin seems to be wrong, asking user, passport: " + passport.getClass().getName());
 
     String pin = getCachedPIN(passport);
@@ -113,97 +62,43 @@ public class DialogFactory {
     }
     lastTry = 0;
 
-    dialog = new PINDialog(passport);
-		try {
-			pin = (String) dialog.open();
-		}
-		finally
-		{
-			close();
-		}
+    PINDialog dialog = new PINDialog(passport);
+    pin = (String) dialog.open();
     setCachedPIN(passport,pin);
     return pin;
 	}
 
-  // Diese Variable soll davor schuetzen, dass Hibiscus faelschlicherweise der
-  // Meinung ist, es wuerde das Passwort kennen, tut es aber gar nicht.
-  // Das kann z.Bsp. passieren, wenn der User zwei Accounts mit der gleichen BLZ,
-  // der gleichen Kundennummer aber verschiedenen Sicherheitsmedien hat. Sollte
-  // eigentlich nur in Testszenarien vorkommen, aber man weiss ja nie ;)
-  // Und da uns HBCI4Java schliesslich 3x nach dem Passwort fragt, wenn wir es falsch
-  // liefern, koenne wir auch pruefen, ob wir innerhalb der letzten halben Sekunde
-  // schonmal der Meinung waren, wir haetten eine Antwort gehabt. Ist das der Fall,
-  // dann soll beim naechsten Mal der User entscheiden.
-  private static long lastTry = 0;
-  
 	/**
-	 * Dialog zur Eingabe des Passworts fuer das Sicherheitsmedium beim Laden eines zu importierenden Passports.
+	 * Dialog zur Eingabe des Passworts fuer Schluesseldateien.
    * @param passport der HBCI-Passport.
    * @return eingegebenes Passwort.
    * @throws Exception
    */
-  public static synchronized String importPassport(HBCIPassport passport) throws Exception
+  public static synchronized String getKeyPassword(HBCIPassport passport) throws Exception
 	{
-		check();
-    
     HBCI plugin = (HBCI) Application.getPluginLoader().getPlugin(HBCI.class);
     boolean forceAsk = plugin.getResources().getSettings().getBoolean("hbcicallback.askpassphrase.force",false);
 
-    // BUGZILLA 185: Da Schluesseldisketten keine PIN
-    // haben, speichern wir hier das Passport der Datei
-    // fuer die Session zwischen
-    String pw = null;
-
     boolean secondTry = System.currentTimeMillis() - lastTry < 200l;
-    
     if (secondTry) Logger.warn("cached key seems to be wrong, asking user, passport: " + passport.getClass().getName());
     
     if (!forceAsk && !secondTry)
     {
-      pw = getCachedPIN(passport);
+      String pw = getCachedPIN(passport);
       if (pw != null)
       {
-        Logger.info("using cached passport load key, passport: " + passport.getClass().getName());
+        Logger.info("using cached password, passport: " + passport.getClass().getName());
         lastTry = System.currentTimeMillis();
         return pw; // wir haben ein gecachtes Passwort, das nehmen wir
       }
     }
     lastTry = 0;
 
-    // Wir haben kein Passwort gecached oder
-    // die Option ist deaktiviert. Also fragen
-    // wir den User.
-    Logger.info("ask user for passport load key, passport: " + passport.getClass().getName());
-    dialog = new PassportLoadDialog(passport);
-    try {
-      pw = (String) dialog.open();
-    }
-    finally
-    {
-      close();
-    }
+    // Wir haben nichts im Cache oder wurden explizit aufgefordert, nach dem Passwort zu fragen
+    KeyPasswordLoadDialog dialog = new KeyPasswordLoadDialog(passport);
+    String pw = (String) dialog.open();
     setCachedPIN(passport,pw);
     return pw;
-	}
-
-	/**
-	 * Dialog zur Eingabe des Passworts fuer das Sicherheitsmedium beim Speichern eines zu exportierenden Passports.
-   * @param passport der Passport.
-	 * @return eingegebenes Passwort.
-	 * @throws Exception
-	 */
-	public static synchronized String exportPassport(HBCIPassport passport) throws Exception
-	{
-		check();
-    Logger.info("ask user for passport save key, passport: " + passport.getClass().getName());
-		dialog = new PassportSaveDialog(AbstractDialog.POSITION_CENTER);
-		try {
-			return (String) dialog.open();
-		}
-		finally
-		{
-			close();
-		}
 	}
 
   /**
@@ -217,85 +112,8 @@ public class DialogFactory {
    */
   public static synchronized AccountContainer getAccountData(HBCIPassport p) throws Exception
 	{
-		check();
-		dialog = new AccountContainerDialog(p);
-		try {
-			return (AccountContainer) dialog.open();
-		}
-		finally
-		{
-			close();
-		}
-	}
-
-	/**
-	 * Erzeugt einen Dialog Verifizierung der uebertragenen Instituts-Schluessel.
-	 * Hinweis: Wirft eine RuntimeException, wenn der Dialog abgebrochen wurde.
-	 * Hintergrund: Der Dialog wurde aus dem HBCICallBack heraus aufgerufen und soll im
-	 * Fehlerfall den HBCI-Vorgang abbrechen.
-	 * @param p der Passport.
-	 * @return Entscheidung, ob die Bank-Schluessel ok sind.
-	 * @throws Exception
-	 */
-	public static synchronized String getNewInstKeys(HBCIPassport p) throws Exception
-	{
-		check();
-		dialog = new NewInstKeysDialog(p);
-		try {
-			Boolean b = (Boolean) dialog.open();
-			return b.booleanValue() ? "" : "ERROR";
-		}
-		finally
-		{
-			close();
-		}
-	}
-
-  /**
-	 * Erzeugt einen Dialog, der den neu erzeugten Schluessel anzeigt und den Benutzer
-	 * auffordert, den Ini-Brief an seine Bank zu senden.
-   * @param p Passport, fuer den neue Schluessel erzeugt wurden.
-	 * @throws Exception
-	 */
-	public static synchronized void newKeys(HBCIPassport p) throws Exception
-	{
-		check();
-		dialog = new NewKeysDialog(p);
-		try {
-			dialog.open();
-		}
-		finally
-		{
-			close();
-		}
-	}
-
-	/**
-   * Prueft, ob der Dialog geoeffnet werden kann.
-   */
-  private static synchronized void check()
-	{
-		if (dialog == null)
-			return;
-
-		Logger.error("alert: there's another opened dialog");
-		throw new RuntimeException("alert: there's another opened dialog");
-	}
-
-	/**
-   * Schliesst den gerade offenen Dialog.
-   */
-  public static synchronized void close()
-	{
-		if (dialog == null)
-			return;
-		try {
-			dialog.close();
-		}
-		finally
-		{
-			dialog = null;
-		}
+		AccountContainerDialog dialog = new AccountContainerDialog(p);
+    return (AccountContainer) dialog.open();
 	}
 
   /**
@@ -376,7 +194,11 @@ public class DialogFactory {
       pinCache.put(key,crypted);
     }
     
-    if (Settings.getStorePin())
+    // Permanentes Speichern der PIN gibts nur bei PIN/TAN, da dort ueber
+    // die TAN eine weitere Autorisierung bei der Ausfuehrung von Geschaeftsvorfaellen
+    // mit Geldfluss stattfindet. Bei DDV/RDH koennte man sonst beliebig Geld
+    // transferieren, ohne jemals wieder nach einem Passwort gefragt zu werden.
+    if (Settings.getStorePin() && (passport instanceof HBCIPassportPinTan))
     {
       // Nicht direkt das Byte-Array speichern sondern einen Base64-String.
       // Grund: Bei einem Byte-Array wuerde der XML-Serializer fuer jedes
@@ -456,121 +278,12 @@ public class DialogFactory {
 
 /**********************************************************************
  * $Log: DialogFactory.java,v $
- * Revision 1.37  2011/05/23 12:57:38  willuhn
+ * Revision 1.38  2011/05/24 09:06:11  willuhn
+ * @C Refactoring und Vereinfachung von HBCI-Callbacks
+ *
+ * Revision 1.37  2011-05-23 12:57:38  willuhn
  * @N optionales Speichern der PINs im Wallet. Ich announce das aber nicht. Ich hab das nur eingebaut, weil mir das Gejammer der User auf den Nerv ging und ich nicht will, dass sich User hier selbst irgendwelche Makros basteln, um die PIN dennoch zu speichern
  *
  * Revision 1.36  2010-07-24 00:22:48  willuhn
  * *** empty log message ***
- *
- * Revision 1.35  2009-08-10 10:22:09  willuhn
- * @N Als Cache-Key wird jetzt nur noch Pfad+Dateiname des Passports verwendet. Das ist erheblich einfacher zu handeln und erspart das Oeffnen des Passports
- *
- * Revision 1.34  2009/03/31 11:01:41  willuhn
- * @R Speichern des PIN-Hashes komplett entfernt
- *
- * Revision 1.33  2008/03/11 23:13:11  willuhn
- * @B Fix wegen falscher Pin (siehe Mail von Alexander vom 11.03.)
- *
- * Revision 1.32  2008/02/27 16:12:57  willuhn
- * @N Passwort-Dialog fuer Schluesseldiskette mit mehr Informationen (Konto, Dateiname)
- *
- * Revision 1.31  2007/12/21 17:37:39  willuhn
- * @N Update auf HBCI4Java 2.5.6
- *
- * Revision 1.30  2007/03/22 23:43:37  willuhn
- * @B Bug 322
- *
- * Revision 1.29  2007/02/21 12:10:36  willuhn
- * Bug 349
- *
- * Revision 1.28  2006/11/16 22:57:33  willuhn
- * @N gecachte PINs/Passwoerte werden nun nur noch einmal verwendet. Stimmen sie nicht, muss der User entscheiden
- *
- * Revision 1.27  2006/10/23 15:16:12  willuhn
- * @B Passwort-Handling ueberarbeitet
- *
- * Revision 1.26  2006/08/03 15:32:35  willuhn
- * @N Bug 62
- *
- * Revision 1.25  2006/04/03 12:30:18  willuhn
- * @N new InternetConnectionDialog
- *
- * Revision 1.24  2006/02/23 22:14:58  willuhn
- * @B bug 200 (Speichern der Auswahl)
- *
- * Revision 1.23  2006/02/21 22:51:36  willuhn
- * @B bug 200
- *
- * Revision 1.22  2006/02/06 15:40:44  willuhn
- * @B bug 150
- *
- * Revision 1.21  2005/02/07 22:06:40  willuhn
- * *** empty log message ***
- *
- * Revision 1.20  2005/02/02 16:15:52  willuhn
- * @N Neue Dialoge fuer RDH
- *
- * Revision 1.19  2005/02/01 17:15:37  willuhn
- * *** empty log message ***
- *
- * Revision 1.18  2005/01/09 23:21:05  willuhn
- * *** empty log message ***
- *
- * Revision 1.17  2004/11/12 18:25:07  willuhn
- * *** empty log message ***
- *
- * Revision 1.16  2004/10/19 23:33:31  willuhn
- * *** empty log message ***
- *
- * Revision 1.15  2004/06/30 20:58:29  willuhn
- * *** empty log message ***
- *
- * Revision 1.14  2004/05/05 21:27:13  willuhn
- * @N added TAN-Dialog
- *
- * Revision 1.13  2004/05/04 23:58:20  willuhn
- * *** empty log message ***
- *
- * Revision 1.12  2004/05/04 23:07:24  willuhn
- * @C refactored Passport stuff
- *
- * Revision 1.11  2004/04/27 22:23:56  willuhn
- * @N configurierbarer CTAPI-Treiber
- * @C konkrete Passport-Klassen (DDV) nach de.willuhn.jameica.passports verschoben
- * @N verschiedenste Passport-Typen sind jetzt voellig frei erweiterbar (auch die Config-Dialoge)
- * @N crc32 Checksumme in Umsatz
- * @N neue Felder im Umsatz
- *
- * Revision 1.10  2004/03/30 22:07:50  willuhn
- * *** empty log message ***
- *
- * Revision 1.9  2004/03/06 18:25:10  willuhn
- * @D javadoc
- * @C removed empfaenger_id from umsatz
- *
- * Revision 1.8  2004/02/27 01:10:18  willuhn
- * @N passport config refactored
- *
- * Revision 1.7  2004/02/24 22:47:05  willuhn
- * @N GUI refactoring
- *
- * Revision 1.6  2004/02/22 20:04:54  willuhn
- * @N Ueberweisung
- * @N Empfaenger
- *
- * Revision 1.5  2004/02/21 19:49:04  willuhn
- * @N PINDialog
- *
- * Revision 1.4  2004/02/20 20:45:13  willuhn
- * *** empty log message ***
- *
- * Revision 1.3  2004/02/20 01:25:25  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2004/02/13 00:41:56  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2004/02/12 23:46:46  willuhn
- * *** empty log message ***
- *
  **********************************************************************/

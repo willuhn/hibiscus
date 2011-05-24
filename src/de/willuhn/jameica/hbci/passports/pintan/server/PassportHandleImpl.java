@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/server/PassportHandleImpl.java,v $
- * $Revision: 1.10 $
- * $Date: 2011/05/19 07:59:53 $
+ * $Revision: 1.11 $
+ * $Date: 2011/05/24 09:06:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,6 +25,7 @@ import org.kapott.hbci.passport.HBCIPassport;
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCICallbackSWT;
+import de.willuhn.jameica.hbci.gui.DialogFactory;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.hbci.passports.pintan.ChipTANDialog;
 import de.willuhn.jameica.hbci.passports.pintan.PinTanConfigFactory;
@@ -255,6 +256,12 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
   {
     switch (reason)
     {
+      case HBCICallback.NEED_PT_PIN:
+      {
+        retData.replace(0,retData.length(),DialogFactory.getPIN(passport));
+        return true;
+      }
+
       // BUGZILLA 62
       case HBCICallback.NEED_PT_TAN:
       {
@@ -329,7 +336,10 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 
 /**********************************************************************
  * $Log: PassportHandleImpl.java,v $
- * Revision 1.10  2011/05/19 07:59:53  willuhn
+ * Revision 1.11  2011/05/24 09:06:11  willuhn
+ * @C Refactoring und Vereinfachung von HBCI-Callbacks
+ *
+ * Revision 1.10  2011-05-19 07:59:53  willuhn
  * @C optisches chipTAN voruebergehend deaktiviert, damit ich in Ruhe in hbci4Java an der Unterstuetzung weiterarbeiten kann
  *
  * Revision 1.9  2011-05-10 11:16:55  willuhn

@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/server/PassportHandleImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2010/10/27 10:25:10 $
+ * $Revision: 1.5 $
+ * $Date: 2011/05/24 09:06:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,11 +19,15 @@ import org.kapott.hbci.manager.HBCIHandler;
 import org.kapott.hbci.passport.AbstractHBCIPassport;
 import org.kapott.hbci.passport.HBCIPassport;
 
+import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCICallbackSWT;
 import de.willuhn.jameica.hbci.gui.DialogFactory;
+import de.willuhn.jameica.hbci.gui.dialogs.NewInstKeysDialog;
+import de.willuhn.jameica.hbci.gui.dialogs.NewKeysDialog;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.hbci.passports.rdh.InsertKeyDialog;
+import de.willuhn.jameica.hbci.passports.rdh.KeyPasswordSaveDialog;
 import de.willuhn.jameica.hbci.passports.rdh.RDHKeyFactory;
 import de.willuhn.jameica.hbci.passports.rdh.SelectSizEntryDialog;
 import de.willuhn.jameica.hbci.passports.rdh.rmi.RDHKey;
@@ -227,20 +231,51 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
   {
     switch (reason)
     {
-      case HBCICallback.NEED_SIZENTRY_SELECT:
+      case HBCICallback.NEED_NEW_INST_KEYS_ACK:
+      {
+        NewInstKeysDialog dialog = new NewInstKeysDialog(p);
+        Boolean b = (Boolean) dialog.open();
+        retData.replace(0,retData.length(),b.booleanValue() ? "" : "ERROR");
+        // OperationCancelledException fangen wir hier nicht. Wenn der User abbricht, muessen wir wirklich abbrechen
+        return true;
+      }
 
+      case HBCICallback.HAVE_NEW_MY_KEYS:
+      {
+        NewKeysDialog dialog = new NewKeysDialog(p);
+        try
+        {
+          dialog.open();
+        }
+        catch (OperationCanceledException e)
+        {
+          // Den INI-Brief kann der User auch noch spaeter ausdrucken
+          Logger.warn(e.getMessage());
+        }
+        return true;
+      }
+
+    
+      case HBCICallback.NEED_SIZENTRY_SELECT:
+      {
         SelectSizEntryDialog e = new SelectSizEntryDialog(SelectSizEntryDialog.POSITION_CENTER,retData.toString());
         retData.replace(0,retData.length(),(String)e.open());
         return true;
+      }
 
-      // Ueberschrieben, damit IMMER nach dem Passwort gefragt wird.
       case HBCICallback.NEED_PASSPHRASE_LOAD:
-        retData.replace(0,retData.length(),DialogFactory.importPassport(p));
+      {
+        retData.replace(0,retData.length(),DialogFactory.getKeyPassword(p));
         return true;
+      }
 
       case HBCICallback.NEED_PASSPHRASE_SAVE:
-        retData.replace(0,retData.length(),DialogFactory.exportPassport(p));
+      {
+        KeyPasswordSaveDialog dialog = new KeyPasswordSaveDialog(AbstractDialog.POSITION_CENTER);
+        String password = (String) dialog.open();
+        retData.replace(0,retData.length(),password);
         return true;
+      }
     }
     return false;
   }
@@ -249,7 +284,10 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 
 /*****************************************************************************
  * $Log: PassportHandleImpl.java,v $
- * Revision 1.4  2010/10/27 10:25:10  willuhn
+ * Revision 1.5  2011/05/24 09:06:10  willuhn
+ * @C Refactoring und Vereinfachung von HBCI-Callbacks
+ *
+ * Revision 1.4  2010-10-27 10:25:10  willuhn
  * @C Unnoetiges Fangen und Weiterwerfen von Exceptions
  *
  * Revision 1.3  2010-09-29 23:43:34  willuhn

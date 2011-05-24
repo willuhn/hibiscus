@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/PassportLoadDialog.java,v $
- * $Revision: 1.8 $
- * $Date: 2011/05/03 10:13:15 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/KeyPasswordLoadDialog.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2011/05/24 09:06:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -10,7 +10,7 @@
  * All rights reserved
  *
  **********************************************************************/
-package de.willuhn.jameica.hbci.gui.dialogs;
+package de.willuhn.jameica.hbci.passports.rdh;
 
 import java.rmi.RemoteException;
 
@@ -35,22 +35,21 @@ import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 
 /**
- * Dialog für die Eingabe eines Passwortes beim Laden des Passports.
+ * Dialog für die Eingabe eines Passwortes beim Laden des Schluessels.
  */
-public class PassportLoadDialog extends PasswordDialog {
-
-	private I18N i18n = null;
+public class KeyPasswordLoadDialog extends PasswordDialog
+{
+	private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private String filename = null;
 
   /**
    * ct.
    * @param passport optionale Angabe des Passports.
    */
-  public PassportLoadDialog(HBCIPassport passport)
+  public KeyPasswordLoadDialog(HBCIPassport passport)
   {
     super(POSITION_CENTER);
     setSize(550,SWT.DEFAULT);
-    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
     Konto konto = HBCIFactory.getInstance().getCurrentKonto();
     
@@ -145,29 +144,10 @@ public class PassportLoadDialog extends PasswordDialog {
 
 
 /**********************************************************************
- * $Log: PassportLoadDialog.java,v $
- * Revision 1.8  2011/05/03 10:13:15  willuhn
+ * $Log: KeyPasswordLoadDialog.java,v $
+ * Revision 1.1  2011/05/24 09:06:11  willuhn
+ * @C Refactoring und Vereinfachung von HBCI-Callbacks
+ *
+ * Revision 1.8  2011-05-03 10:13:15  willuhn
  * @R Hintergrund-Farbe nicht mehr explizit setzen. Erzeugt auf Windows und insb. Mac teilweise unschoene Effekte. Besonders innerhalb von Label-Groups, die auf Windows/Mac andere Hintergrund-Farben verwenden als der Default-Hintergrund
- *
- * Revision 1.7  2008/02/27 16:12:57  willuhn
- * @N Passwort-Dialog fuer Schluesseldiskette mit mehr Informationen (Konto, Dateiname)
- *
- * Revision 1.6  2007/01/05 17:23:24  jost
- * Zeilenumbruch korrigiert.
- *
- * Revision 1.5  2006/12/24 10:28:06  jost
- * Korrektur Tippfehler
- *
- * Revision 1.4  2005/02/07 22:06:40  willuhn
- * *** empty log message ***
- *
- * Revision 1.3  2005/02/06 19:03:36  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2005/02/01 17:15:37  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2005/01/09 23:21:05  willuhn
- * *** empty log message ***
- *
  **********************************************************************/

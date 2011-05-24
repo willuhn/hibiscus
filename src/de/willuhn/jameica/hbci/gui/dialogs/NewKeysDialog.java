@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/NewKeysDialog.java,v $
- * $Revision: 1.16 $
- * $Date: 2010/06/17 11:26:48 $
+ * $Revision: 1.17 $
+ * $Date: 2011/05/24 09:06:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -35,6 +35,7 @@ import org.kapott.hbci.manager.HBCIUtils;
 import org.kapott.hbci.passport.HBCIPassport;
 import org.kapott.hbci.passport.INILetter;
 
+import de.willuhn.io.IOUtil;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
@@ -42,10 +43,11 @@ import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.parts.Button;
-import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.jameica.system.Platform;
@@ -60,6 +62,9 @@ import de.willuhn.util.I18N;
  */
 public class NewKeysDialog extends AbstractDialog
 {
+  private final static Settings settings = new Settings(NewKeysDialog.class);
+
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private final static int WINDOW_WIDTH = 540;
 
 	private final static DocFlavor DOCFLAVOR = DocFlavor.STRING.TEXT_PLAIN;
@@ -67,9 +72,9 @@ public class NewKeysDialog extends AbstractDialog
 
 	private HBCIPassport passport;
 	private INILetter iniletter;
-	private I18N i18n;
 	
 	private Input printerList = null;
+	private LabelInput error = null;
 
 	static
 	{
@@ -84,11 +89,18 @@ public class NewKeysDialog extends AbstractDialog
     super(NewKeysDialog.POSITION_CENTER);
     this.passport = p;
 
-    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-		setTitle(i18n.tr("INI-Brief erzeugen"));
+		setTitle(i18n.tr("INI-Brief erzeugen/anzeigen"));
     setSize(WINDOW_WIDTH,SWT.DEFAULT);
 
 		iniletter = new INILetter(passport,INILetter.TYPE_USER);
+  }
+
+  /**
+   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#onEscape()
+   */
+  protected void onEscape()
+  {
+    // Kein Escape in diesem Dialog
   }
 
   /**
@@ -97,11 +109,8 @@ public class NewKeysDialog extends AbstractDialog
   protected void paint(Composite parent) throws Exception
   {
 		SimpleContainer group = new SimpleContainer(parent);
-		group.addText(i18n.tr(
-      "Bitte drucken Sie den INI-Brief aus und senden Ihn unterschrieben an Ihre Bank.\n" +      "Nach der Freischaltung durch Ihr Geldinstitut kann dieser Schlüssel verwendet werden."),true);
+		group.addText(i18n.tr("Bitte drucken Sie den INI-Brief aus und senden Ihn unterschrieben an Ihre Bank.\n" +                          "Nach der Freischaltung durch Ihr Geldinstitut kann dieser Schlüssel verwendet werden."),true);
 
-    Input printers = getPrinterList();
-    
     group.addHeadline(i18n.tr("Hashwert"));
     group.addText(HBCIUtils.data2hex(iniletter.getKeyHashDisplay()).toUpperCase(),true,Color.ERROR);
     
@@ -111,8 +120,12 @@ public class NewKeysDialog extends AbstractDialog
     group.addHeadline(i18n.tr("Modulus"));
     group.addText(HBCIUtils.data2hex(iniletter.getKeyModulusDisplay()).toUpperCase(),true);
 
-    group.addLabelPair(i18n.tr("Drucker-Auswahl"),printers);
-
+    Input printers = getPrinterList();
+    group.addText("\n",true);
+    group.addInput(printers);
+    group.addInput(getError());
+    
+    ButtonArea buttons = new ButtonArea();
     Button print = new Button(i18n.tr("Drucken"),new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -122,9 +135,8 @@ public class NewKeysDialog extends AbstractDialog
       }
     },null,true,"document-print.png");
     print.setEnabled((printers instanceof SelectInput)); // Drucken nur moeglich, wenn Drucker vorhanden.
-    
-		ButtonArea buttons = group.createButtonArea(3);
 		buttons.addButton(print);
+		
     buttons.addButton(i18n.tr("Speichern unter..."),new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -139,6 +151,8 @@ public class NewKeysDialog extends AbstractDialog
 				throw new OperationCanceledException("cancelled in ini letter dialog");
 			}
 		},null,false,"process-stop.png");
+		group.addButtonArea(buttons);
+		
     getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT));
   }
 
@@ -152,7 +166,10 @@ public class NewKeysDialog extends AbstractDialog
 		{
 		  PrintService service = (PrintService) getPrinterList().getValue();
 			if (service == null)
-				throw new ApplicationException(i18n.tr("Kein Drucker gefunden."));
+			{
+	      getError().setValue(i18n.tr("Kein Drucker gefunden."));
+	      return;
+			}
 
 			DocPrintJob pj = service.createPrintJob();
 
@@ -163,23 +180,20 @@ public class NewKeysDialog extends AbstractDialog
 		catch (Exception e)
 		{
       Logger.error("error while printing ini letter",e);
-			throw new ApplicationException(i18n.tr("Fehler beim Drucken des Ini-Briefs"),e);
+      getError().setValue(i18n.tr("Fehler: {0}",e.getMessage()));
 		}
 	}
 
   /**
    * Speichert den Ini-Brief ab.
-   * @throws ApplicationException
    */
-  private void save() throws ApplicationException
+  private void save()
   {
     FileDialog fd = new FileDialog(GUI.getShell(),SWT.SAVE);
-    fd.setText(i18n.tr("Bitte geben Sie den Dateinamen an , in dem der Ini-Brief gespeichert werden soll"));
+    fd.setText(i18n.tr("Bitte geben Sie den Dateinamen an, in dem der INI-Brief gespeichert werden soll."));
     fd.setFileName(i18n.tr("hibiscus-inibrief-{0}.txt",HBCI.FASTDATEFORMAT.format(new Date())));
     fd.setOverwrite(true);
     
-    Settings settings = new Settings(this.getClass());
-    settings.setStoreWhenRead(true);
     String path = settings.getString("lastdir",System.getProperty("user.home"));
     if (path != null && path.length() > 0)
       fd.setFilterPath(path);
@@ -188,7 +202,7 @@ public class NewKeysDialog extends AbstractDialog
     
     if (s == null || s.length() == 0)
     {
-      close();
+      getError().setValue(i18n.tr("Bitte wählen Sie eine Datei für den INI-Brief aus."));
       return;
     }
 
@@ -201,35 +215,16 @@ public class NewKeysDialog extends AbstractDialog
 
       // Wir merken uns noch das Verzeichnis vom letzten mal
       settings.setAttribute("lastdir",file.getParent());
-
-      // Dialog schliessen
-      close();
-      GUI.getStatusBar().setSuccessText(i18n.tr("INI-Brief gespeichert in {0}",s));
-    }
-    catch (OperationCanceledException oce)
-    {
-      Logger.warn(oce.getMessage());
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("INI-Brief gespeichert in {0}",s),StatusBarMessage.TYPE_SUCCESS));
     }
     catch (Exception e)
     {
       Logger.error("error while writing ini letter to " + s,e);
-      throw new ApplicationException(i18n.tr("Fehler beim Speichern des INI-Briefs in {0}",s),e);
+      getError().setValue(i18n.tr("Fehler: {0}",e.getMessage()));
     }
     finally
     {
-      if (os != null)
-      {
-        try
-        {
-          // Dialog schliessen
-          close();
-          os.close();
-        }
-        catch (Exception e)
-        {
-          // useless
-        }
-      }
+      IOUtil.close(os);
     }
   }
 
@@ -240,8 +235,8 @@ public class NewKeysDialog extends AbstractDialog
    */
   private Input getPrinterList() throws Exception
 	{
-		if (printerList != null)
-			return printerList;
+		if (this.printerList != null)
+			return this.printerList;
 
 		PrintService[] services = null;
 
@@ -256,11 +251,28 @@ public class NewKeysDialog extends AbstractDialog
     }
     else
     {
-      printerList = new LabelInput(i18n.tr("Kein Drucker verfügbar"));
+      printerList = new LabelInput(i18n.tr("Kein Drucker gefunden"));
+      getError().setValue(i18n.tr("Bitte speichern Sie den INI-Brief stattdessen."));
 		}
     
+    printerList.setName(i18n.tr("Drucker"));
 		return this.printerList;
 	}
+  
+  /**
+   * Liefert ein Label fuer Fehlermeldungen.
+   * @return Label fuer Fehlermeldungen.
+   */
+  private LabelInput getError()
+  {
+    if (this.error != null)
+      return this.error;
+    
+    this.error = new LabelInput("");
+    this.error.setColor(Color.ERROR);
+    this.error.setName("");
+    return this.error;
+  }
 
   /**
    * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
@@ -274,6 +286,9 @@ public class NewKeysDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: NewKeysDialog.java,v $
+ * Revision 1.17  2011/05/24 09:06:11  willuhn
+ * @C Refactoring und Vereinfachung von HBCI-Callbacks
+ *
  * Revision 1.16  2010/06/17 11:26:48  willuhn
  * @B In HBCICallbackSWT wurden die RDH-Passports nicht korrekt ausgefiltert
  * @C komplettes Projekt "hbci_passport_rdh" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
@@ -283,48 +298,4 @@ public class NewKeysDialog extends AbstractDialog
  *
  * Revision 1.15  2010/06/08 11:27:59  willuhn
  * @N SWT besitzt jetzt selbst eine Option im FileDialog, mit der geprueft werden kann, ob die Datei ueberschrieben werden soll oder nicht
- *
- * Revision 1.14  2009/07/27 13:43:45  willuhn
- * @N Neue HBCI4Java-Version (2.5.10) mit RDH-10-Support
- *
- * Revision 1.13  2009/07/14 10:32:59  willuhn
- * @C Drucker-Auswahl wird nur angezeigt, wenn NICHT MacOS verwendet wird. Auf diesem OS scheint die komplette VM beim Ermitteln der Drucker stehen zu bleiben (irgendwo in Java selbst, vermutlich bei einem JNI-Aufruf zu Cups)
- *
- * Revision 1.12  2008/07/25 13:31:06  willuhn
- * *** empty log message ***
- *
- * Revision 1.11  2008/07/25 11:06:44  willuhn
- * @N Auswahl-Dialog fuer HBCI-Version
- * @N Code-Cleanup
- *
- * Revision 1.10  2008/07/15 11:18:12  willuhn
- * @B Druck-Button deaktivieren, wenn keine Drucker gefunden
- *
- * Revision 1.9  2008/04/15 16:16:34  willuhn
- * @B BUGZILLA 584
- *
- * Revision 1.8  2005/06/02 22:57:34  web0
- * @N Export von Konto-Umsaetzen
- *
- * Revision 1.7  2005/03/21 23:31:54  web0
- * @B bug 24
- *
- * Revision 1.6  2005/03/09 01:07:02  web0
- * @D javadoc fixes
- *
- * Revision 1.5  2005/03/05 19:11:25  web0
- * @N SammelLastschrift-Code complete
- *
- * Revision 1.4  2005/02/03 23:57:05  willuhn
- * *** empty log message ***
- *
- * Revision 1.3  2005/02/03 18:57:42  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2005/02/02 18:19:47  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2005/02/02 16:15:52  willuhn
- * @N Neue Dialoge fuer RDH
- *
  **********************************************************************/

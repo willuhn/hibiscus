@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/Attic/PassportSaveDialog.java,v $
- * $Revision: 1.6 $
- * $Date: 2010/11/22 11:30:51 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/KeyPasswordSaveDialog.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2011/05/24 09:06:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -10,7 +10,7 @@
  * All rights reserved
  *
  **********************************************************************/
-package de.willuhn.jameica.hbci.gui.dialogs;
+package de.willuhn.jameica.hbci.passports.rdh;
 
 import de.willuhn.jameica.gui.dialogs.NewPasswordDialog;
 import de.willuhn.jameica.hbci.HBCI;
@@ -18,19 +18,17 @@ import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 
 /**
- * Dialog für die Eingabe eines Passwortes beim Export des Passports.
+ * Dialog für die Eingabe des Passwortes beim Speichern eines Schluessels.
  */
-public class PassportSaveDialog extends NewPasswordDialog
+public class KeyPasswordSaveDialog extends NewPasswordDialog
 {
 	private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 	
   /**
    * ct.
    * @param position Position des Dialogs.
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#POSITION_CENTER
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#POSITION_MOUSE
    */
-  public PassportSaveDialog(int position)
+  public KeyPasswordSaveDialog(int position)
   {
     super(position);
 
@@ -42,8 +40,11 @@ public class PassportSaveDialog extends NewPasswordDialog
 
 
 /**********************************************************************
- * $Log: PassportSaveDialog.java,v $
- * Revision 1.6  2010/11/22 11:30:51  willuhn
+ * $Log: KeyPasswordSaveDialog.java,v $
+ * Revision 1.1  2011/05/24 09:06:11  willuhn
+ * @C Refactoring und Vereinfachung von HBCI-Callbacks
+ *
+ * Revision 1.6  2010-11-22 11:30:51  willuhn
  * @C Cleanup
  *
  **********************************************************************/

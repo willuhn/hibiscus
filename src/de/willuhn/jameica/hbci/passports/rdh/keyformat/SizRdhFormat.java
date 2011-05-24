@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/keyformat/SizRdhFormat.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/06/17 11:26:48 $
+ * $Revision: 1.2 $
+ * $Date: 2011/05/24 09:06:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,6 +30,7 @@ import de.willuhn.jameica.hbci.HBCICallbackSWT;
 import de.willuhn.jameica.hbci.passports.rdh.rmi.RDHKey;
 import de.willuhn.jameica.hbci.passports.rdh.server.PassportHandleImpl;
 import de.willuhn.jameica.hbci.passports.rdh.server.RDHKeyImpl;
+import de.willuhn.jameica.plugin.PluginResources;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.jameica.system.Settings;
@@ -61,29 +62,29 @@ public class SizRdhFormat extends AbstractSizRdhFormat
     
     if (!file.canRead() || !file.isFile())
       throw new ApplicationException(i18n.tr("Schlüsseldatei nicht lesbar"));
+
+    HBCI plugin           = (HBCI) Application.getPluginLoader().getPlugin(HBCI.class);
+    PluginResources res   = plugin.getResources();
     
     // Wir fragen den User, wo er den Schluessel hinhaben will.
     FileDialog dialog = new FileDialog(GUI.getShell(), SWT.SAVE);
     dialog.setText(Application.getI18n().tr("Bitte wählen einen Pfad und Dateinamen, an dem der importierte Schlüssel gespeichert werden soll."));
     dialog.setFileName(file.getName());
-    dialog.setFilterPath(Application.getPluginLoader().getPlugin(HBCI.class).getResources().getWorkPath());
+    dialog.setOverwrite(true);
+    dialog.setFilterPath(res.getWorkPath());
     String newFile = dialog.open();
+    
     if (newFile == null || newFile.length() == 0)
-      throw new OperationCanceledException("no target file choosen");
+      throw new ApplicationException(i18n.tr("Keine Datei ausgewählt"));
     
     File newKey = new File(newFile);
+    if (!newKey.canWrite())
+      throw new ApplicationException(i18n.tr("Keine Schreibberechtigung"));
 
     try
     {
-      String overwrite = i18n.tr("Die Schlüsseldatei {0} existiert bereits. Überschreiben?");
-      if (newKey.exists() && !Application.getCallback().askUser(overwrite,new String[]{newKey.getAbsolutePath()}))
-        throw new OperationCanceledException("import interrupted, user did not want to overwrite " + newKey.getAbsolutePath());
-
       // BUGZILLA 289
-      HBCI plugin = (HBCI) Application.getPluginLoader().getPlugin(HBCI.class);
-      Settings settings = plugin.getResources().getSettings();
-
-
+      Settings settings = res.getSettings();
       HBCICallback callback = plugin.getHBCICallback();
       try
       {
@@ -93,7 +94,9 @@ public class SizRdhFormat extends AbstractSizRdhFormat
         if (callback != null && (callback instanceof HBCICallbackSWT))
           ((HBCICallbackSWT)callback).setCurrentHandle(new PassportHandleImpl());
         
+        // Abfrage des Passwortes erzwingen
         settings.setAttribute("hbcicallback.askpassphrase.force",true);
+        
         HBCIUtils.setParam("client.passport.SIZRDHFile.filename",file.getAbsolutePath());
         HBCIUtils.setParam("client.passport.SIZRDHFile.libname",getRDHLib());
         HBCIUtils.setParam("client.passport.SIZRDHFile.init","0");
@@ -176,6 +179,9 @@ public class SizRdhFormat extends AbstractSizRdhFormat
 
 /**********************************************************************
  * $Log: SizRdhFormat.java,v $
+ * Revision 1.2  2011/05/24 09:06:10  willuhn
+ * @C Refactoring und Vereinfachung von HBCI-Callbacks
+ *
  * Revision 1.1  2010/06/17 11:26:48  willuhn
  * @B In HBCICallbackSWT wurden die RDH-Passports nicht korrekt ausgefiltert
  * @C komplettes Projekt "hbci_passport_rdh" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren

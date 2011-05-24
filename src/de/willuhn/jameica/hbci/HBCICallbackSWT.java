@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.68 $
- * $Date: 2011/05/18 09:49:45 $
+ * $Revision: 1.69 $
+ * $Date: 2011/05/24 09:06:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,7 +23,6 @@ import org.kapott.hbci.exceptions.HBCI_Exception;
 import org.kapott.hbci.exceptions.NeedKeyAckException;
 import org.kapott.hbci.manager.HBCIUtils;
 import org.kapott.hbci.manager.HBCIUtilsInternal;
-import org.kapott.hbci.passport.AbstractRDHSWFileBasedPassport;
 import org.kapott.hbci.passport.HBCIPassport;
 
 import de.willuhn.jameica.gui.GUI;
@@ -32,6 +31,7 @@ import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.hbci.rmi.Nachricht;
 import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.messaging.QueryMessage;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.security.Wallet;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -137,74 +137,42 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
 
 			AccountContainer container = (AccountContainer) accountCache.get(passport);
 
-      String text = null;
-      
 			switch (reason) {
         
+			  // Hier kommen nur noch die PIN/TAN und DDV-Passports an. Die von RDH werden
+			  // im PassportHandle verarbeitet
 				case NEED_PASSPHRASE_LOAD:
 				case NEED_PASSPHRASE_SAVE:
           
-          // BUGZILLA 289, 148
-          // Neu: Wir behandeln hier nur noch PIN/TAN und Chipkarte
-          // und verwalten das Passwort fuer diese selbst. Die Abfragen
-          // fuer RDH sind im Passport implementiert.
-
-          HBCI plugin = (HBCI) Application.getPluginLoader().getPlugin(HBCI.class);
-          boolean forceAsk = plugin.getResources().getSettings().getBoolean("hbcicallback.askpassphrase.force",false);
-
-          boolean isRDH = (passport instanceof AbstractRDHSWFileBasedPassport);
-          
-          String pw = null;
-          
-          if (!forceAsk && !isRDH)
+          // Passwort aus dem Wallet laden
+          Wallet w = Settings.getWallet();
+          String pw = (String) w.get("hbci.passport.password." + passport.getClass().getName());
+          if (pw != null && pw.length() > 0)
           {
-            // Wir laden ein ggf. automatisch erzeugtes Passwort
-            Wallet w = Settings.getWallet();
-            pw = (String) w.get("hbci.passport.password." + passport.getClass().getName());
-
-            if (pw != null && pw.length() > 0)
-            {
-              Logger.debug("using passport key from wallet, passport: " + passport.getClass().getName());
-              retData.replace(0,retData.length(),pw);
-              break;
-            }
-            
-            if (pw == null)
-            {
-              // noch kein Passwort definiert. Dann erzeugen wir
-              // ein zufaelliges.
-              Logger.info("creating new random passport key, passport: " + passport.getClass().getName());
-              byte[] pass = new byte[8];
-              SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
-              random.nextBytes(pass);
-              pw = Base64.encode(pass);
-
-              // Und speichern es im Wallet.
-              w.set("hbci.passport.password." + passport.getClass().getName(),pw);
-              retData.replace(0,retData.length(),pw);
-              break;
-            }
+            Logger.debug("using passport key from wallet, passport: " + passport.getClass().getName());
+            retData.replace(0,retData.length(),pw);
+            break;
           }
+            
+          // noch kein Passwort definiert. Dann erzeugen wir ein zufaelliges.
+          Logger.debug("creating new random passport key, passport: " + passport.getClass().getName());
+          byte[] pass = new byte[8];
+          SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
+          random.nextBytes(pass);
+          pw = Base64.encode(pass);
 
-          if (reason == NEED_PASSPHRASE_LOAD)
-            pw = DialogFactory.importPassport(passport);
-          else
-            pw = DialogFactory.exportPassport(passport);
+          // Und speichern es im Wallet.
+          w.set("hbci.passport.password." + passport.getClass().getName(),pw);
           retData.replace(0,retData.length(),pw);
-					break;
-
-
-				case NEED_SOFTPIN:
-				case NEED_PT_PIN:
-          retData.replace(0,retData.length(),DialogFactory.getPIN(passport));
-					break;
+          break;
 
 				case NEED_CONNECTION:
-				  DialogFactory.getConnection();
+          if (!Settings.getOnlineMode())
+            Application.getCallback().notifyUser(i18n.tr("Bitte stellen Sie eine Internetverbindung her und klicken Sie anschließend auf OK."));
 					break;
 				case CLOSE_CONNECTION:
 					if (!Settings.getOnlineMode())
-						DialogFactory.openSimple(i18n.tr("Internet-Verbindung"),i18n.tr("Sie können die Internetverbindung nun wieder trennen."));
+					  Application.getCallback().notifyUser(i18n.tr("Sie können die Internetverbindung nun wieder trennen."));
 					break;
 
 				case NEED_COUNTRY:
@@ -249,14 +217,6 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
 					retData.replace(0,retData.length(),container.customerid);
 					break;
 
-				case NEED_NEW_INST_KEYS_ACK:
-					retData.replace(0,retData.length(),DialogFactory.getNewInstKeys(passport));
-					break;
-
-				case HAVE_NEW_MY_KEYS:
-					DialogFactory.newKeys(passport);
-					break;
-
 				case HAVE_INST_MSG:
           // BUGZILLA 68 http://www.willuhn.de/bugzilla/show_bug.cgi?id=68
           try
@@ -266,7 +226,8 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
             n.setNachricht(msg);
             n.setDatum(new Date());
             n.store();
-            text = i18n.tr("System-Nachricht empfangen");
+            String text = i18n.tr("Neue Institutsnachricht empfangen");
+            Application.getMessagingFactory().sendMessage(new StatusBarMessage(text,StatusBarMessage.TYPE_SUCCESS));
             GUI.getStatusBar().setSuccessText(text);
             HBCIFactory.getInstance().getProgressMonitor().setStatusText(text);
           }
@@ -274,7 +235,7 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
           {
             Logger.error("unable to store system message",e);
             // Im Fehlerfall zeigen wir einfach den Dialog an
-            DialogFactory.openSimple(i18n.tr("Instituts-Nachricht"),msg);
+            Application.getCallback().notifyUser(msg);
           }
 					break;
           
@@ -510,7 +471,10 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
- * Revision 1.68  2011/05/18 09:49:45  willuhn
+ * Revision 1.69  2011/05/24 09:06:11  willuhn
+ * @C Refactoring und Vereinfachung von HBCI-Callbacks
+ *
+ * Revision 1.68  2011-05-18 09:49:45  willuhn
  * @N Log-Level "INTERN" hinzugefuegt
  *
  * Revision 1.67  2010-07-22 22:36:24  willuhn
