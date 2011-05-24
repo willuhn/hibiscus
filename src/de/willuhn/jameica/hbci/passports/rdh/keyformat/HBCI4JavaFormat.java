@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/keyformat/HBCI4JavaFormat.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/06/17 17:20:58 $
+ * $Revision: 1.3 $
+ * $Date: 2011/05/24 09:23:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -145,26 +145,31 @@ public class HBCI4JavaFormat implements KeyFormat
     }
     catch (Exception e)
     {
-      try
+      OperationCanceledException oce = (OperationCanceledException) HBCIFactory.getCause(e,OperationCanceledException.class);
+      if (oce != null)
+        throw oce;
+        
+      ApplicationException ae = (ApplicationException) HBCIFactory.getCause(e,ApplicationException.class);
+      if (ae != null)
+        throw ae;
+
+      NeedKeyAckException ack = (NeedKeyAckException) HBCIFactory.getCause(e,NeedKeyAckException.class);
+      if (ack != null)
       {
-        Throwable current = e;
-        for (int i=0;i<10;++i)
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Schlüssel erfolgreich erstellt"), StatusBarMessage.TYPE_SUCCESS));
+        String msg = i18n.tr("Bitte senden Sie den INI-Brief an Ihre Bank\nund warten Sie auf die Freischaltung durch die Bank.");
+        try
         {
-          if (current == null)
-            break;
-          if (current instanceof NeedKeyAckException)
-          {
-            Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Schlüssel erfolgreich erstellt"), StatusBarMessage.TYPE_SUCCESS));
-            Application.getCallback().notifyUser(i18n.tr("Bitte senden Sie den INI-Brief an Ihre Bank\nbzw. warten Sie auf die Freischaltung durch die Bank."));
-            return key;
-          }
-          current = current.getCause();
+          Application.getCallback().notifyUser(msg);
         }
+        catch (Exception e2)
+        {
+          Logger.error("unable to notify user",e2);
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(msg, StatusBarMessage.TYPE_SUCCESS));
+        }
+        return key;
       }
-      catch (Throwable t)
-      {
-        // OK, das ist sinnlos. Ich gebs auf ;)
-      }
+      
       Logger.error("unable to create key " + file.getAbsolutePath(),e);
       throw new ApplicationException(i18n.tr("Fehler beim Erstellen des Schlüssels: {0}",e.getMessage()));
     }
@@ -245,20 +250,24 @@ public class HBCI4JavaFormat implements KeyFormat
     }
     catch (Exception e)
     {
-      Throwable cause = HBCIFactory.getCause(e,OperationCanceledException.class);
-      if (cause != null)
-        throw (OperationCanceledException) cause;
+      OperationCanceledException oce = (OperationCanceledException) HBCIFactory.getCause(e,OperationCanceledException.class);
+      if (oce != null)
+        throw oce;
 
-      cause = HBCIFactory.getCause(e,NeedKeyAckException.class);
-      if (cause != null)
+      ApplicationException ae = (ApplicationException) HBCIFactory.getCause(e,ApplicationException.class);
+      if (ae != null)
+        throw ae;
+
+      NeedKeyAckException ack = (NeedKeyAckException) HBCIFactory.getCause(e,NeedKeyAckException.class);
+      if (ack != null)
       {
-        String text = i18n.tr("Bitte senden Sie den INI-Brief an Ihre Bank\nbzw. warten Sie auf die Freischaltung durch die Bank.");
+        String text = i18n.tr("Bitte senden Sie den INI-Brief an Ihre Bank und warten Sie auf die Freischaltung durch die Bank.");
         Application.getMessagingFactory().sendMessage(new StatusBarMessage(text,StatusBarMessage.TYPE_ERROR));
-        throw (NeedKeyAckException) cause; // Weiterwerfen
+        throw new ApplicationException(text);
       }
       
-      cause = HBCIFactory.getCause(e,InvalidPassphraseException.class);
-      if (cause != null)
+      InvalidPassphraseException ipe = (InvalidPassphraseException) HBCIFactory.getCause(e,InvalidPassphraseException.class);
+      if (ipe != null)
       {
         String text = i18n.tr("Das Passwort für die Schlüsseldatei ist falsch.");
         Application.getMessagingFactory().sendMessage(new StatusBarMessage(text,StatusBarMessage.TYPE_ERROR));
@@ -281,6 +290,9 @@ public class HBCI4JavaFormat implements KeyFormat
 
 /**********************************************************************
  * $Log: HBCI4JavaFormat.java,v $
+ * Revision 1.3  2011/05/24 09:23:26  willuhn
+ * @C Exception-Handling
+ *
  * Revision 1.2  2010/06/17 17:20:58  willuhn
  * @N Exception-Handling beim Laden der Schluesseldatei ueberarbeitet - OperationCancelledException wird nun sauber behandelt - auch wenn sie in HBCI_Exceptions gekapselt ist
  *

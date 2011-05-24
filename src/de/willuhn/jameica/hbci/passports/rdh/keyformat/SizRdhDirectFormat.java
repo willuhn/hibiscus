@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/keyformat/SizRdhDirectFormat.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/06/17 11:26:48 $
+ * $Revision: 1.2 $
+ * $Date: 2011/05/24 09:23:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,6 +26,7 @@ import de.willuhn.jameica.hbci.HBCICallbackSWT;
 import de.willuhn.jameica.hbci.passports.rdh.rmi.RDHKey;
 import de.willuhn.jameica.hbci.passports.rdh.server.PassportHandleImpl;
 import de.willuhn.jameica.hbci.passports.rdh.server.RDHKeyImpl;
+import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -98,6 +99,14 @@ public class SizRdhDirectFormat extends AbstractSizRdhFormat
     }
     catch (Exception e)
     {
+      OperationCanceledException oce = (OperationCanceledException) HBCIFactory.getCause(e,OperationCanceledException.class);
+      if (oce != null)
+        throw oce;
+        
+      ApplicationException ae = (ApplicationException) HBCIFactory.getCause(e,ApplicationException.class);
+      if (ae != null)
+        throw ae;
+
       Logger.error("unable to load key",e);
       throw new ApplicationException(i18n.tr("Fehler beim Laden des Schlüssels: {0}",e.getMessage()));
     }
@@ -113,6 +122,9 @@ public class SizRdhDirectFormat extends AbstractSizRdhFormat
 
 /**********************************************************************
  * $Log: SizRdhDirectFormat.java,v $
+ * Revision 1.2  2011/05/24 09:23:26  willuhn
+ * @C Exception-Handling
+ *
  * Revision 1.1  2010/06/17 11:26:48  willuhn
  * @B In HBCICallbackSWT wurden die RDH-Passports nicht korrekt ausgefiltert
  * @C komplettes Projekt "hbci_passport_rdh" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
