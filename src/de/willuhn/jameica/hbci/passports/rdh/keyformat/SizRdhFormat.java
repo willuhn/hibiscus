@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/keyformat/SizRdhFormat.java,v $
- * $Revision: 1.3 $
- * $Date: 2011/05/24 09:11:04 $
+ * $Revision: 1.4 $
+ * $Date: 2011/05/24 09:15:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,6 +30,7 @@ import de.willuhn.jameica.hbci.HBCICallbackSWT;
 import de.willuhn.jameica.hbci.passports.rdh.rmi.RDHKey;
 import de.willuhn.jameica.hbci.passports.rdh.server.PassportHandleImpl;
 import de.willuhn.jameica.hbci.passports.rdh.server.RDHKeyImpl;
+import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.plugin.PluginResources;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -69,7 +70,7 @@ public class SizRdhFormat extends AbstractSizRdhFormat
     // Wir fragen den User, wo er den Schluessel hinhaben will.
     FileDialog dialog = new FileDialog(GUI.getShell(), SWT.SAVE);
     dialog.setText(Application.getI18n().tr("Bitte wählen einen Pfad und Dateinamen, an dem der importierte Schlüssel gespeichert werden soll."));
-    dialog.setFileName(file.getName());
+    dialog.setFileName("hibiscus-" + file.getName());
     dialog.setOverwrite(true);
     dialog.setFilterPath(res.getWorkPath());
     String newFile = dialog.open();
@@ -81,70 +82,61 @@ public class SizRdhFormat extends AbstractSizRdhFormat
     if (!newKey.getParentFile().canWrite())
       throw new ApplicationException(i18n.tr("Keine Schreibberechtigung"));
 
+    // BUGZILLA 289
+    Settings settings = res.getSettings();
+    HBCICallback callback = plugin.getHBCICallback();
+
     try
     {
-      // BUGZILLA 289
-      Settings settings = res.getSettings();
-      HBCICallback callback = plugin.getHBCICallback();
-      try
-      {
-        ////////////////////////////////////////////////////////////////////////
-        // Erst laden wir den SizRDH-Schluessel
-        Logger.info("loading sizrdh key");
-        if (callback != null && (callback instanceof HBCICallbackSWT))
-          ((HBCICallbackSWT)callback).setCurrentHandle(new PassportHandleImpl());
-        
-        // Abfrage des Passwortes erzwingen
-        settings.setAttribute("hbcicallback.askpassphrase.force",true);
-        
-        HBCIUtils.setParam("client.passport.SIZRDHFile.filename",file.getAbsolutePath());
-        HBCIUtils.setParam("client.passport.SIZRDHFile.libname",getRDHLib());
-        HBCIUtils.setParam("client.passport.SIZRDHFile.init","0");
-        HBCIPassportInternal source = (HBCIPassportInternal) AbstractHBCIPassport.getInstance("SIZRDHFile");
-        ////////////////////////////////////////////////////////////////////////
-
-        ////////////////////////////////////////////////////////////////////////
-        // Jetzt erzeugen wir einen im HBCI4Java-Format und kopieren die Daten
-        Logger.info("converting into hbci4java format");
-        HBCIUtils.setParam("client.passport.default","RDHNew");
-        HBCIUtils.setParam("client.passport.RDHNew.filename",newKey.getAbsolutePath());
-        HBCIUtils.setParam("client.passport.RDHNew.init","0");
-        HBCIPassportInternal target = (HBCIPassportInternal) AbstractHBCIPassport.getInstance("RDHNew");
-
-        target.setCountry(source.getCountry());
-        target.setBLZ(source.getBLZ());
-        target.setHost(source.getHost());
-        target.setPort(source.getPort());
-        target.setUserId(source.getUserId());
-        target.setCustomerId(source.getCustomerId());
-        target.setSysId(source.getSysId());
-        target.setSigId(source.getSigId());
-        target.setHBCIVersion(source.getHBCIVersion());
-        target.setBPD(source.getBPD());
-        target.setUPD(source.getUPD());
-            
-        ((HBCIPassportRDHNew)target).setInstSigKey(source.getInstSigKey());
-        ((HBCIPassportRDHNew)target).setInstEncKey(source.getInstEncKey());
-        ((HBCIPassportRDHNew)target).setMyPublicSigKey(source.getMyPublicSigKey());
-        ((HBCIPassportRDHNew)target).setMyPrivateSigKey(source.getMyPrivateSigKey());
-        ((HBCIPassportRDHNew)target).setMyPublicEncKey(source.getMyPublicEncKey());
-        ((HBCIPassportRDHNew)target).setMyPrivateEncKey(source.getMyPrivateEncKey());
-            
-        target.saveChanges();
-        target.close();
-        source.close();
-        ////////////////////////////////////////////////////////////////////////
-        RDHKeyImpl key = new RDHKeyImpl(newKey);
-        key.setFormat(new HBCI4JavaFormat()); // wir tragen nicht uns selbst ein - da wir den ja ins HBCI4Java-Format konvertiert haben
-        return key;
-      }
-      finally
-      {
-        settings.setAttribute("hbcicallback.askpassphrase.force",false);
-        if (callback != null && (callback instanceof HBCICallbackSWT))
-          ((HBCICallbackSWT)callback).setCurrentHandle(null);
-      }
+      ////////////////////////////////////////////////////////////////////////
+      // Erst laden wir den SizRDH-Schluessel
+      Logger.info("loading sizrdh key");
+      if (callback != null && (callback instanceof HBCICallbackSWT))
+        ((HBCICallbackSWT)callback).setCurrentHandle(new PassportHandleImpl());
       
+      // Abfrage des Passwortes erzwingen
+      settings.setAttribute("hbcicallback.askpassphrase.force",true);
+      
+      HBCIUtils.setParam("client.passport.SIZRDHFile.filename",file.getAbsolutePath());
+      HBCIUtils.setParam("client.passport.SIZRDHFile.libname",getRDHLib());
+      HBCIUtils.setParam("client.passport.SIZRDHFile.init","0");
+      HBCIPassportInternal source = (HBCIPassportInternal) AbstractHBCIPassport.getInstance("SIZRDHFile");
+      ////////////////////////////////////////////////////////////////////////
+
+      ////////////////////////////////////////////////////////////////////////
+      // Jetzt erzeugen wir einen im HBCI4Java-Format und kopieren die Daten
+      Logger.info("converting into hbci4java format");
+      HBCIUtils.setParam("client.passport.default","RDHNew");
+      HBCIUtils.setParam("client.passport.RDHNew.filename",newKey.getAbsolutePath());
+      HBCIUtils.setParam("client.passport.RDHNew.init","0");
+      HBCIPassportInternal target = (HBCIPassportInternal) AbstractHBCIPassport.getInstance("RDHNew");
+
+      target.setCountry(source.getCountry());
+      target.setBLZ(source.getBLZ());
+      target.setHost(source.getHost());
+      target.setPort(source.getPort());
+      target.setUserId(source.getUserId());
+      target.setCustomerId(source.getCustomerId());
+      target.setSysId(source.getSysId());
+      target.setSigId(source.getSigId());
+      target.setHBCIVersion(source.getHBCIVersion());
+      target.setBPD(source.getBPD());
+      target.setUPD(source.getUPD());
+          
+      ((HBCIPassportRDHNew)target).setInstSigKey(source.getInstSigKey());
+      ((HBCIPassportRDHNew)target).setInstEncKey(source.getInstEncKey());
+      ((HBCIPassportRDHNew)target).setMyPublicSigKey(source.getMyPublicSigKey());
+      ((HBCIPassportRDHNew)target).setMyPrivateSigKey(source.getMyPrivateSigKey());
+      ((HBCIPassportRDHNew)target).setMyPublicEncKey(source.getMyPublicEncKey());
+      ((HBCIPassportRDHNew)target).setMyPrivateEncKey(source.getMyPrivateEncKey());
+          
+      target.saveChanges();
+      target.close();
+      source.close();
+      ////////////////////////////////////////////////////////////////////////
+      RDHKeyImpl key = new RDHKeyImpl(newKey);
+      key.setFormat(new HBCI4JavaFormat()); // wir tragen nicht uns selbst ein - da wir den ja ins HBCI4Java-Format konvertiert haben
+      return key;
     }
     catch (ApplicationException ae)
     {
@@ -156,10 +148,23 @@ public class SizRdhFormat extends AbstractSizRdhFormat
     }
     catch (Exception e)
     {
+      OperationCanceledException oce = (OperationCanceledException) HBCIFactory.getCause(e,OperationCanceledException.class);
+      if (oce != null)
+        throw oce;
+        
+      ApplicationException ae = (ApplicationException) HBCIFactory.getCause(e,ApplicationException.class);
+      if (ae != null)
+        throw ae;
+
       Logger.error("unable to import key " + file.getAbsolutePath(),e);
       throw new ApplicationException(i18n.tr("Schlüsseldatei kann nicht importiert werden: {0}",e.getMessage()));
     }
-
+    finally
+    {
+      settings.setAttribute("hbcicallback.askpassphrase.force",false);
+      if (callback != null && (callback instanceof HBCICallbackSWT))
+        ((HBCICallbackSWT)callback).setCurrentHandle(null);
+    }
   }
 
   /**
@@ -179,7 +184,10 @@ public class SizRdhFormat extends AbstractSizRdhFormat
 
 /**********************************************************************
  * $Log: SizRdhFormat.java,v $
- * Revision 1.3  2011/05/24 09:11:04  willuhn
+ * Revision 1.4  2011/05/24 09:15:11  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.3  2011-05-24 09:11:04  willuhn
  * *** empty log message ***
  *
  * Revision 1.2  2011-05-24 09:06:10  willuhn
