@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/DialogFactory.java,v $
- * $Revision: 1.41 $
- * $Date: 2011/05/25 10:05:49 $
+ * $Revision: 1.42 $
+ * $Date: 2011/05/25 10:19:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -261,8 +261,12 @@ public class DialogFactory
       {
         // Wir loeschen nur das Passwort vom angegebenen Passport
         String key = getCacheKey(passport);
-        if (key != null)
+        if (key != null && Settings.getWallet().get(key) != null)
+        {
+          // Nur loeschen, wenn es den Key auch wirklich gibt. Das spart
+          // den Schreibzugriff, wenn er nicht vorhanden ist
           Settings.getWallet().delete(key);
+        }
         // Wenn kein Key existiert, haben wir auch nichts zu loeschen,
         // weil dann gar kein Passwort im Store existieren kann
       }
@@ -328,7 +332,10 @@ public class DialogFactory
 
 /**********************************************************************
  * $Log: DialogFactory.java,v $
- * Revision 1.41  2011/05/25 10:05:49  willuhn
+ * Revision 1.42  2011/05/25 10:19:12  willuhn
+ * @C PIN nur aus Wallet loeschen, wenn tatsaechlich vorhanden - das spart einen unnoetigen Schreibzugriff auf das Wallet, wenn die PIN gar nicht drin stand
+ *
+ * Revision 1.41  2011-05-25 10:05:49  willuhn
  * @N Im Fehlerfall nur noch die PINs/Passwoerter der betroffenen Passports aus dem Cache loeschen. Wenn eine PIN falsch ist, muss man jetzt nicht mehr alle neu eingeben
  *
  * Revision 1.40  2011-05-25 08:56:20  willuhn
