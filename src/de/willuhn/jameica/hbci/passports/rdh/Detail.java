@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/Detail.java,v $
- * $Revision: 1.6 $
- * $Date: 2011/04/08 15:19:14 $
+ * $Revision: 1.7 $
+ * $Date: 2011/05/25 10:05:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,7 +21,6 @@ import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.DialogFactory;
 import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
@@ -148,8 +147,8 @@ public class Detail extends AbstractView
       {
         Logger.error("unable to load key",e);
         Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Laden des Schlüssels: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
-        DialogFactory.clearPINCache();
       }
+      // Wir springen auf jeden Fall zurueck, zur vorherigen Seite. Wir koennten hier eh nichts anzeigen
       GUI.startPreviousView();
     }
   }
@@ -158,7 +157,10 @@ public class Detail extends AbstractView
 
 /**********************************************************************
  * $Log: Detail.java,v $
- * Revision 1.6  2011/04/08 15:19:14  willuhn
+ * Revision 1.7  2011/05/25 10:05:04  willuhn
+ * @R Wir muessen den PIN-Cache hier nicht mehr leeren - das war nur ein Workaround vor HBCI4Java-Patch 21
+ *
+ * Revision 1.6  2011-04-08 15:19:14  willuhn
  * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
  * @C Code-Cleanup
  *
