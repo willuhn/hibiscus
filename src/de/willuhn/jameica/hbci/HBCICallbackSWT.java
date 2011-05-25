@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.70 $
- * $Date: 2011/05/25 10:02:53 $
+ * $Revision: 1.71 $
+ * $Date: 2011/05/25 10:03:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,7 +16,6 @@ package de.willuhn.jameica.hbci;
 import java.security.SecureRandom;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
 
 import org.eclipse.swt.SWTException;
@@ -472,7 +471,10 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
- * Revision 1.70  2011/05/25 10:02:53  willuhn
+ * Revision 1.71  2011/05/25 10:03:09  willuhn
+ * @R unused import
+ *
+ * Revision 1.70  2011-05-25 10:02:53  willuhn
  * @C getypter Account-Cache
  *
  * Revision 1.69  2011-05-24 09:06:11  willuhn
