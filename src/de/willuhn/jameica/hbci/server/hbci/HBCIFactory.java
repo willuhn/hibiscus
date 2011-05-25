@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.67 $
- * $Date: 2011/05/25 10:05:49 $
+ * $Revision: 1.68 $
+ * $Date: 2011/05/25 10:19:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,6 +23,7 @@ import org.kapott.hbci.GV.HBCIJob;
 import org.kapott.hbci.exceptions.JobNotSupportedException;
 import org.kapott.hbci.manager.HBCIHandler;
 import org.kapott.hbci.manager.HBCIUtils;
+import org.kapott.hbci.passport.HBCIPassport;
 
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
@@ -631,6 +632,10 @@ public class HBCIFactory {
         {
           monitor.setStatusText(i18n.tr("Beende HBCI-Übertragung"));
           monitor.addPercentComplete(2);
+          
+          // Muessen wir uns vor dem Schliessen des Handlers holen
+          HBCIPassport passport = handler != null ? handler.getPassport() : null;
+          
           jobs.clear(); // Jobqueue leer machen.
           try {
             if (handle != null)
@@ -654,7 +659,7 @@ public class HBCIFactory {
           {
             status = ProgressMonitor.STATUS_ERROR;
             msg = "HBCI-Übertragung mit Fehlern beendet";
-            DialogFactory.clearPINCache(handler != null ? handler.getPassport() : null);
+            DialogFactory.clearPINCache(passport);
           }
           monitor.setStatus(status);
           monitor.setStatusText(i18n.tr(msg));
@@ -745,7 +750,10 @@ public class HBCIFactory {
 
 /*******************************************************************************
  * $Log: HBCIFactory.java,v $
- * Revision 1.67  2011/05/25 10:05:49  willuhn
+ * Revision 1.68  2011/05/25 10:19:55  willuhn
+ * @N Passport vor dem Schliessen des Handlers sicherstellen, damit die PIN aus dem Cache geloescht werden kann (ist der Handler zu, kennt er auch nicht mehr den Passport)
+ *
+ * Revision 1.67  2011-05-25 10:05:49  willuhn
  * @N Im Fehlerfall nur noch die PINs/Passwoerter der betroffenen Passports aus dem Cache loeschen. Wenn eine PIN falsch ist, muss man jetzt nicht mehr alle neu eingeben
  *
  * Revision 1.66  2011-03-07 10:33:53  willuhn
