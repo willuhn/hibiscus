@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.69 $
- * $Date: 2011/05/24 09:06:11 $
+ * $Revision: 1.70 $
+ * $Date: 2011/05/25 10:02:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,7 +15,9 @@ package de.willuhn.jameica.hbci;
 
 import java.security.SecureRandom;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 
 import org.eclipse.swt.SWTException;
 import org.kapott.hbci.GV.HBCIJob;
@@ -46,9 +48,9 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
 {
-
-	private I18N i18n;
-	private Hashtable accountCache = new Hashtable();
+	private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+	
+	private Map<HBCIPassport,AccountContainer> accountCache = new HashMap<HBCIPassport,AccountContainer>();
   private PassportHandle currentHandle = null;
   
   /**
@@ -57,7 +59,6 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
   public HBCICallbackSWT()
   {
 		super();
-    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
   /**
@@ -135,7 +136,7 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
         return;
       }
 
-			AccountContainer container = (AccountContainer) accountCache.get(passport);
+			AccountContainer container = accountCache.get(passport);
 
 			switch (reason) {
         
@@ -471,7 +472,10 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
- * Revision 1.69  2011/05/24 09:06:11  willuhn
+ * Revision 1.70  2011/05/25 10:02:53  willuhn
+ * @C getypter Account-Cache
+ *
+ * Revision 1.69  2011-05-24 09:06:11  willuhn
  * @C Refactoring und Vereinfachung von HBCI-Callbacks
  *
  * Revision 1.68  2011-05-18 09:49:45  willuhn
