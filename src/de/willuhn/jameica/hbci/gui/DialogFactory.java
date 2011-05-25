@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/DialogFactory.java,v $
- * $Revision: 1.40 $
- * $Date: 2011/05/25 08:56:20 $
+ * $Revision: 1.41 $
+ * $Date: 2011/05/25 10:05:49 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,8 @@ package de.willuhn.jameica.hbci.gui;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.kapott.hbci.passport.AbstractRDHSWFileBasedPassport;
 import org.kapott.hbci.passport.HBCIPassport;
@@ -38,7 +39,7 @@ public class DialogFactory
 {
 
   // BUGZILLA 185
-  private static Hashtable pinCache = new Hashtable();
+  private static Map<String,byte[]> pinCache = new HashMap<String,byte[]>();
 
   private static long lastTry = 0;
 
@@ -50,8 +51,13 @@ public class DialogFactory
 	 */
 	public static synchronized String getPIN(HBCIPassport passport) throws Exception
 	{
-    boolean secondTry = System.currentTimeMillis() - lastTry < 400l;
-    if (secondTry) Logger.warn("cached pin seems to be wrong, asking user, passport: " + passport.getClass().getName());
+    boolean secondTry = System.currentTimeMillis() - lastTry < 600l;
+    if (secondTry)
+    {
+      Logger.warn("cached pin seems to be wrong, asking user, passport: " + passport.getClass().getName());
+      // wir waren grad eben schonmal hier. Das Passwort muss falsch sein. Wir loeschen es aus dem Cache
+      clearPINCache(passport);
+    }
 
     String pin = getCachedPIN(passport);
     if (pin != null && !secondTry)
@@ -79,8 +85,13 @@ public class DialogFactory
     HBCI plugin = (HBCI) Application.getPluginLoader().getPlugin(HBCI.class);
     boolean forceAsk = plugin.getResources().getSettings().getBoolean("hbcicallback.askpassphrase.force",false);
 
-    boolean secondTry = System.currentTimeMillis() - lastTry < 200l;
-    if (secondTry) Logger.warn("cached key seems to be wrong, asking user, passport: " + passport.getClass().getName());
+    boolean secondTry = System.currentTimeMillis() - lastTry < 600l;
+    if (secondTry)
+    {
+      Logger.warn("cached key seems to be wrong, asking user, passport: " + passport.getClass().getName());
+      // wir waren grad eben schonmal hier. Das Passwort muss falsch sein. Wir loeschen es aus dem Cache
+      clearPINCache(passport);
+    }
     
     if (!forceAsk && !secondTry)
     {
@@ -97,7 +108,8 @@ public class DialogFactory
     // Wir haben nichts im Cache oder wurden explizit aufgefordert, nach dem Passwort zu fragen
     KeyPasswordLoadDialog dialog = new KeyPasswordLoadDialog(passport);
     String pw = (String) dialog.open();
-    setCachedPIN(passport,pw);
+    if (!forceAsk) // Nur cachen, wenn die Passwort-Abfrage nicht erzwungen war
+      setCachedPIN(passport,pw);
     return pw;
 	}
 
@@ -135,7 +147,7 @@ public class DialogFactory
     // Cache checken
     if (Settings.getCachePin())
     {
-      data = (byte[]) pinCache.get(key);
+      data = pinCache.get(key);
     }
 
     // Wenn wir noch nichts im Cache haben, schauen wir im Wallet - wenn das erlaubt ist
@@ -210,25 +222,55 @@ public class DialogFactory
   /**
    * Loescht den PIN-Cache.
    * BUGZILLA 349
+   * @param passport der Passport, dessen PIN geloescht werden soll.
+   * Optional. Wird er weggelassen, werden alle PINs geloescht.
    */
-  public static void clearPINCache()
+  public static void clearPINCache(HBCIPassport passport)
   {
-    pinCache.clear();
+    if (passport != null)
+    {
+      // Wir loeschen nur das Passwort vom angegebenen Passport
+      String key = getCacheKey(passport);
+      if (key != null)
+        pinCache.remove(key);
+      // Wenn kein Key existiert, haben wir auch nichts zu loeschen,
+      // weil dann gar kein Passwort im Cache existieren kann
+    }
+    else
+    {
+      // Kompletten Cache loeschen
+      pinCache.clear();
+    }
 
     // Wir loeschen auch die gespeicherten PINs
     // Unabhaengig davon, ob das Feature gerade aktiviert ist oder nicht.
     // Denn ohne Cache gibts auch keinen Store.
-    clearPINStore();
+    clearPINStore(passport);
   }
   
   /**
    * Loescht den permanenten Store mit den PINs.
+   * @param passport der Passport, dessen PIN geloescht werden soll.
+   * Optional. Wird er weggelassen, werden alle PINs geloescht.
    */
-  public static void clearPINStore()
+  public static void clearPINStore(HBCIPassport passport)
   {
     try
     {
-      Settings.getWallet().deleteAll("hibiscus.pin.");
+      if (passport != null)
+      {
+        // Wir loeschen nur das Passwort vom angegebenen Passport
+        String key = getCacheKey(passport);
+        if (key != null)
+          Settings.getWallet().delete(key);
+        // Wenn kein Key existiert, haben wir auch nichts zu loeschen,
+        // weil dann gar kein Passwort im Store existieren kann
+      }
+      else
+      {
+        // Alles Keys beginnen mit "hibiscus.pin."
+        Settings.getWallet().deleteAll("hibiscus.pin.");
+      }
     }
     catch (Exception e)
     {
@@ -246,9 +288,8 @@ public class DialogFactory
    * Hilfsfunktion zum Ermitteln des Keys, zu dem die PIN gespeichert ist.
    * @param passport
    * @return die PIN oder null.
-   * @throws Exception
    */
-  private static String getCacheKey(HBCIPassport passport) throws Exception
+  private static String getCacheKey(HBCIPassport passport)
   {
     // Entweder das Cachen ist abgeschaltet oder wir haben keinen Passport
     if (!Settings.getCachePin() || passport == null)
@@ -287,7 +328,10 @@ public class DialogFactory
 
 /**********************************************************************
  * $Log: DialogFactory.java,v $
- * Revision 1.40  2011/05/25 08:56:20  willuhn
+ * Revision 1.41  2011/05/25 10:05:49  willuhn
+ * @N Im Fehlerfall nur noch die PINs/Passwoerter der betroffenen Passports aus dem Cache loeschen. Wenn eine PIN falsch ist, muss man jetzt nicht mehr alle neu eingeben
+ *
+ * Revision 1.40  2011-05-25 08:56:20  willuhn
  * *** empty log message ***
  *
  * Revision 1.39  2011-05-24 10:45:32  willuhn

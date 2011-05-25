@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/Controller.java,v $
- * $Revision: 1.5 $
- * $Date: 2011/04/29 11:38:57 $
+ * $Revision: 1.6 $
+ * $Date: 2011/05/25 10:05:49 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -60,17 +60,17 @@ import de.willuhn.util.I18N;
  */
 public class Controller extends AbstractControl {
 
-	private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-	// Liste aller Schluessel
-	private TablePart keyList           = null;
+  // Liste aller Schluessel
+  private TablePart keyList           = null;
 
-	// Benutzerdaten
-	private Input benutzerkennung       = null;
-	private Input kundenkennung         = null;
-	private Input blz                   = null;
-	
-	// Verbindungsdaten
+  // Benutzerdaten
+  private Input benutzerkennung       = null;
+  private Input kundenkennung         = null;
+  private Input blz                   = null;
+  
+  // Verbindungsdaten
   private Input hbciUrl               = null;
   private Input hbciPort              = null;
   private Input hbciVersion           = null;
@@ -274,17 +274,17 @@ public class Controller extends AbstractControl {
     return this.hbciPort;
   }
 
-	/**
-	 * Liefert eine Liste mit den importierten Schluesseln.
+  /**
+   * Liefert eine Liste mit den importierten Schluesseln.
    * @return Liste der Schluessel.
    * @throws RemoteException
    */
   public TablePart getKeyList() throws RemoteException
-	{
-		if (keyList != null)
-			return keyList;
+  {
+    if (keyList != null)
+      return keyList;
 
-		keyList = new TablePart(RDHKeyFactory.getKeys(),new Action()
+    keyList = new TablePart(RDHKeyFactory.getKeys(),new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -293,32 +293,32 @@ public class Controller extends AbstractControl {
     });
 
 
-		// Spalte Datei
-		keyList.addColumn(i18n.tr("Schlüsseldatei"),"file");
+    // Spalte Datei
+    keyList.addColumn(i18n.tr("Schlüsseldatei"),"file");
     keyList.addColumn(i18n.tr("Alias-Name"),"alias");
     keyList.addColumn(i18n.tr("Format"),"format");
 
 
 
-		ContextMenu ctx = new ContextMenu();
+    ContextMenu ctx = new ContextMenu();
 
-		// Kontext: Details.
+    // Kontext: Details.
     ctx.addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"),new Action()
-		{
-			public void handleAction(Object context) throws ApplicationException
-			{
-				if (context == null)
-					return;
-				try
-				{
-					GUI.startView(Detail.class,context);
-				}
-				catch (Exception e)
-				{
-					Logger.error("error while loading rdh key",e);
-				}
-			}
-		},"document-open.png"));
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        if (context == null)
+          return;
+        try
+        {
+          GUI.startView(Detail.class,context);
+        }
+        catch (Exception e)
+        {
+          Logger.error("error while loading rdh key",e);
+        }
+      }
+    },"document-open.png"));
 
     ctx.addItem(new ContextMenuItem(i18n.tr("Neuer Schlüssel..."),new Action() {
       public void handleAction(Object context) throws ApplicationException {startCreate();}
@@ -364,25 +364,25 @@ public class Controller extends AbstractControl {
       }
     },"user-trash-full.png"));
 
-		keyList.setContextMenu(ctx);
-		
+    keyList.setContextMenu(ctx);
+    
 
 
-		// Format fuer aktiv/inaktiv
-		keyList.setFormatter(new TableFormatter()
+    // Format fuer aktiv/inaktiv
+    keyList.setFormatter(new TableFormatter()
     {
       public void format(TableItem item)
       {
-      	try
-      	{
-      		RDHKey key = (RDHKey) item.getData();
+        try
+        {
+          RDHKey key = (RDHKey) item.getData();
           if (!key.isEnabled())
-      			item.setForeground(Color.COMMENT.getSWTColor());
-      	}
-      	catch (Exception e)
-      	{
-      		Logger.error("error while formatting key",e);
-      	}
+            item.setForeground(Color.COMMENT.getSWTColor());
+        }
+        catch (Exception e)
+        {
+          Logger.error("error while formatting key",e);
+        }
       }
     });
 
@@ -390,8 +390,8 @@ public class Controller extends AbstractControl {
     keyList.setRememberColWidths(true);
     keyList.setRememberOrder(true);
     keyList.setSummary(false);
-		return keyList;
-	}
+    return keyList;
+  }
 
   /**
    * Startet die Erzeugung eines INI-Briefs.
@@ -446,12 +446,14 @@ public class Controller extends AbstractControl {
    */
   public synchronized void changePassword()
   {
+    HBCIPassport passport = null;
     try
     {
-      getHBCIPassport().changePassphrase();
+      passport = getHBCIPassport();
+      passport.changePassphrase();
       
       // Passwort-Cache leeren
-      DialogFactory.clearPINCache();
+      DialogFactory.clearPINCache(passport);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Passwort geändert"),StatusBarMessage.TYPE_SUCCESS));
     }
     catch (ApplicationException ae)
@@ -664,11 +666,11 @@ public class Controller extends AbstractControl {
     }
   }
 
-	/**
-	 * Erstellt einen neuen Schluessel.
-	 */
-	public synchronized void startCreate()
-	{
+  /**
+   * Erstellt einen neuen Schluessel.
+   */
+  public synchronized void startCreate()
+  {
     try
     {
       // Wir fragen den User, wo er den Schluessel hinhaben will.
@@ -696,16 +698,16 @@ public class Controller extends AbstractControl {
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Export der Schlüsseldatei"),StatusBarMessage.TYPE_ERROR));
     }
 
-	}
-	
+  }
+  
 
-	/**
-	 * Hilfsklasse zum Aktivieren des Schluessels.
+  /**
+   * Hilfsklasse zum Aktivieren des Schluessels.
    */
   private class ActivateKey extends CheckedContextMenuItem
-	{
+  {
 
-		private boolean activate;
+    private boolean activate;
 
     /**
      * @param activate
@@ -713,53 +715,56 @@ public class Controller extends AbstractControl {
     public ActivateKey(final boolean activate)
     {
       super((activate ? i18n.tr("Schlüssel aktivieren") : i18n.tr("Schlüssel deaktivieren")),
-      	new Action()
-				{
-					public void handleAction(Object context) throws ApplicationException
-					{
-						if (context == null)
-							return;
-						try
-						{
-							((RDHKey) context).setEnabled(activate);
-							GUI.startView(GUI.getCurrentView().getClass(),GUI.getCurrentView().getCurrentObject());
-						}
-						catch (Exception e)
-						{
-							Logger.error("error while activating rdh key",e);
-						}
-					}
-				},activate ? "network-transmit-receive.png" : "network-offline.png");
-			this.activate = activate;
+        new Action()
+        {
+          public void handleAction(Object context) throws ApplicationException
+          {
+            if (context == null)
+              return;
+            try
+            {
+              ((RDHKey) context).setEnabled(activate);
+              GUI.startView(GUI.getCurrentView().getClass(),GUI.getCurrentView().getCurrentObject());
+            }
+            catch (Exception e)
+            {
+              Logger.error("error while activating rdh key",e);
+            }
+          }
+        },activate ? "network-transmit-receive.png" : "network-offline.png");
+      this.activate = activate;
     }
 
-		/**
+    /**
      * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
      */
     public boolean isEnabledFor(Object o)
-		{
+    {
       if (o == null)
         return false;
-			try
-			{
-				boolean active = ((RDHKey) o).isEnabled();
-				if (activate)
-					return !active;
-				return active;
-			}
-			catch (Exception e)
-			{
-				Logger.error("error while checking key state",e);
-				return false;
-			}
-		}
-	}
+      try
+      {
+        boolean active = ((RDHKey) o).isEnabled();
+        if (activate)
+          return !active;
+        return active;
+      }
+      catch (Exception e)
+      {
+        Logger.error("error while checking key state",e);
+        return false;
+      }
+    }
+  }
 }
 
 
 /**********************************************************************
  * $Log: Controller.java,v $
- * Revision 1.5  2011/04/29 11:38:57  willuhn
+ * Revision 1.6  2011/05/25 10:05:49  willuhn
+ * @N Im Fehlerfall nur noch die PINs/Passwoerter der betroffenen Passports aus dem Cache loeschen. Wenn eine PIN falsch ist, muss man jetzt nicht mehr alle neu eingeben
+ *
+ * Revision 1.5  2011-04-29 11:38:57  willuhn
  * @N Konfiguration der HBCI-Medien ueberarbeitet. Es gibt nun direkt in der Navi einen Punkt "Bank-Zugaenge", in der alle Medien angezeigt werden.
  *
  * Revision 1.4  2011-04-28 07:34:43  willuhn

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIFactory.java,v $
- * $Revision: 1.66 $
- * $Date: 2011/03/07 10:33:53 $
+ * $Revision: 1.67 $
+ * $Date: 2011/05/25 10:05:49 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -654,7 +654,7 @@ public class HBCIFactory {
           {
             status = ProgressMonitor.STATUS_ERROR;
             msg = "HBCI-Übertragung mit Fehlern beendet";
-            DialogFactory.clearPINCache();
+            DialogFactory.clearPINCache(handler != null ? handler.getPassport() : null);
           }
           monitor.setStatus(status);
           monitor.setStatusText(i18n.tr(msg));
@@ -745,7 +745,10 @@ public class HBCIFactory {
 
 /*******************************************************************************
  * $Log: HBCIFactory.java,v $
- * Revision 1.66  2011/03/07 10:33:53  willuhn
+ * Revision 1.67  2011/05/25 10:05:49  willuhn
+ * @N Im Fehlerfall nur noch die PINs/Passwoerter der betroffenen Passports aus dem Cache loeschen. Wenn eine PIN falsch ist, muss man jetzt nicht mehr alle neu eingeben
+ *
+ * Revision 1.66  2011-03-07 10:33:53  willuhn
  * @N BUGZILLA 999
  *
  * Revision 1.65  2010-12-27 22:47:52  willuhn
