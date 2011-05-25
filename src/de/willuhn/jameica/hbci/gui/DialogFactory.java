@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/DialogFactory.java,v $
- * $Revision: 1.39 $
- * $Date: 2011/05/24 10:45:32 $
+ * $Revision: 1.40 $
+ * $Date: 2011/05/25 08:56:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -217,6 +217,15 @@ public class DialogFactory
 
     // Wir loeschen auch die gespeicherten PINs
     // Unabhaengig davon, ob das Feature gerade aktiviert ist oder nicht.
+    // Denn ohne Cache gibts auch keinen Store.
+    clearPINStore();
+  }
+  
+  /**
+   * Loescht den permanenten Store mit den PINs.
+   */
+  public static void clearPINStore()
+  {
     try
     {
       Settings.getWallet().deleteAll("hibiscus.pin.");
@@ -278,7 +287,10 @@ public class DialogFactory
 
 /**********************************************************************
  * $Log: DialogFactory.java,v $
- * Revision 1.39  2011/05/24 10:45:32  willuhn
+ * Revision 1.40  2011/05/25 08:56:20  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.39  2011-05-24 10:45:32  willuhn
  * *** empty log message ***
  *
  * Revision 1.38  2011-05-24 09:06:11  willuhn
