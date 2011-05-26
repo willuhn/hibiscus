@@ -1,0 +1,6 @@
+IBAN;BIC;Konto;Gegenkonto;BIC Gegenkonto;Empfänger;Betrag;Termin;Verwendungszweck;Ausgeführt
+#foreach($t in $objects)
+#set($konto = $t.Konto)
+"$!{konto.Iban}";"$!{konto.Bic}";"$!{konto.Bezeichnung}";"$!{t.GegenkontoNummer}";"$!{t.GegenkontoBLZ}";"$!{t.GegenkontoName}";"$!{decimalformat.format(${t.Betrag})}";"$!{dateformat.format(${t.Termin})}";"$!{t.Zweck}";"#if($t.ausfuehrungsdatum)$!longdateformat.format($t.ausfuehrungsdatum)#elseif($t.ausgefuehrt())Ja#{else}Nein#{end}"
+#end
+

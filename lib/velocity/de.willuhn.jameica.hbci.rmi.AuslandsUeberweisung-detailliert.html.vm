@@ -1,0 +1,156 @@
+<meta http-equiv="Context-Type" content="text/html; charset=$!CHARSET">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=$!charset" />
+    <title>SEPA-Überweisungen [$!dateformat.format($datum)]</title>
+  </head>
+  <style>
+
+    p,h1,h2,h3,h4,ul,ol,li,div,td,th,address,blockquote,nobr,b,i {
+      font-family             : Verdana, Helvetica, Arial;
+      color                   : #000000;
+      font-size               : 10pt;
+    }
+
+    td {
+      vertical-align           : top;
+      text-align               : left;
+    }
+
+    table.header {
+      width                    : 100%;
+      border                   : none;
+    }
+    
+    table.header td {
+      margin                   : 0px;
+      padding                  : 0px;
+    }
+    
+    table.data {
+      width                    : 100%;
+      border                   : 1px solid #E0E0E0;
+    }
+    table.data td.left {
+      margin                   : 1px;
+      padding-left             : 3px;
+      padding-right            : 10px;
+      text-align               : right;
+	    white-space              : nowrap;
+    }
+    table.data td.right {
+      background               : #f8f8f8;
+      margin                   : 1px;
+      padding-left             : 3px;
+      padding-right            : 10px;
+      font-size                : 9pt;
+      color                    : #505050;
+	    white-space              : nowrap;
+    }
+  	
+    table.data td.ausgefuehrt_true {
+      background               : #f8f8f8;
+      margin                   : 1px;
+      padding-left             : 3px;
+      padding-right            : 10px;
+      font-size                : 9pt;
+      font-weight              : bold;
+      color                    : #009000;
+  	  white-space              : nowrap;
+  	}
+    
+    table.data td.ausgefuehrt_false {
+      background               : #f8f8f8;
+      margin                   : 0px;
+      padding-left             : 3px;
+      padding-right            : 10px;
+      font-size                : 9pt;
+      font-weight              : bold;
+      color                    : #900000;
+  	  white-space              : nowrap;
+  	}
+        
+    h1 {
+      color                    : #d76B00;
+      font-weight              : bold;
+      font-size                : 14pt;
+      margin-top               : 1px;
+      margin-bottom            : 1px;
+    }
+    
+    h2 {
+      color                    : #000055;
+      font-weight              : bold;
+      font-size                : 8pt;
+      margin-top               : 1px;
+      margin-bottom            : 3px;
+    }
+        
+    hr {
+      color                    : #000055;
+      background-color         : #000055;
+      border-color             : #000055;
+      height                   : 0px;
+    }
+  </style>
+
+  <body>
+    <h1>SEPA-Überweisungen - detailliert</h1>
+    <h2>$!dateformat.format($datum)</h2>
+
+    <br/><br/>
+
+    #foreach($t in $objects)
+      <table class="data">
+        <colgroup>
+          <col width=180px>
+          <col width=*>
+        </colgroup>
+        <tr>
+          <td class="left">Fälligkeitsdatum:</td>
+          <td class="right">$!dateformat.format($t.termin)</td>
+        </tr>
+        <tr>
+          <td class="left">Betrag:</td>
+          <td class="right">$!decimalformat.format($t.betrag) $!t.konto.waehrung</td>
+        </tr>
+        <tr>
+          <td class="left">Name des Empfängers:</td>
+          <td class="right">$!t.gegenkontoName</td>
+        </tr>
+        <tr>
+          <td class="left">IBAN des Empfängers:</td>
+          <td class="right">$!t.gegenkontoNummer</td>
+        </tr>
+        <tr>
+          <td class="left">BIC des Empfängers:</td>
+          <td class="right">$!t.gegenkontoBLZ</td>
+        </tr>
+        <tr>
+          <td class="left">Konto des Auftraggebers:</td>
+          <td class="right">$!t.konto.longName</td>
+        </tr>
+        <tr>
+          <td class="left">Verwendungszweck:</td>
+          <td class="right">$!t.zweck</td>
+        </tr>
+        <tr>
+          <td class="left">Ausgeführt:</td>
+          <td class="ausgefuehrt_$t.ausgefuehrt()">
+            #if($t.ausfuehrungsdatum)
+              am $!longdateformat.format($t.ausfuehrungsdatum)
+            #elseif($t.ausgefuehrt())
+              zur Ausführung an die Bank übermittelt
+            #else
+              offen
+            #end
+          </td>
+        </tr>
+      </table>
+      <br/>
+    #end
+
+  </body>
+</html>
