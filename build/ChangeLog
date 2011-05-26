@@ -1,5 +1,6 @@
 2011-??-?? Version 1.13.0
 
+  * NEW: 0092 Export von SEPA-Ueberweisungen im HTML- und CSV-Format
   * NEW: 0091 21-hbci4java-password-retry.patch
   * NEW: 0090 Bei falscher PIN-/Passwort-Eingabe nur noch die von dem betroffenen
               Bank-Zugang aus dem Cache loeschen (vorher wurde da immer der komplette
