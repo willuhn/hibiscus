@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/ChipTANDialog.java,v $
- * $Revision: 1.6 $
- * $Date: 2011/05/19 07:59:53 $
+ * $Revision: 1.7 $
+ * $Date: 2011/05/26 10:13:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -66,7 +66,6 @@ public class ChipTANDialog extends TANDialog
     // TODO: Entfernen, wenn optisches chipTAN fertig ist
     String msg = i18n.tr("Optisches chipTAN noch nicht unterstützt. Bitte wählen Sie ein anderes TAN-Verfahren.");
     Application.getMessagingFactory().sendMessage(new StatusBarMessage(msg,StatusBarMessage.TYPE_ERROR));
-    GUI.getView().setErrorText(msg);
     throw new OperationCanceledException(msg);
   }
 
@@ -235,7 +234,10 @@ public class ChipTANDialog extends TANDialog
 
 /**********************************************************************
  * $Log: ChipTANDialog.java,v $
- * Revision 1.6  2011/05/19 07:59:53  willuhn
+ * Revision 1.7  2011/05/26 10:13:18  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.6  2011-05-19 07:59:53  willuhn
  * @C optisches chipTAN voruebergehend deaktiviert, damit ich in Ruhe in hbci4Java an der Unterstuetzung weiterarbeiten kann
  *
  * Revision 1.5  2011-05-17 23:37:22  willuhn
