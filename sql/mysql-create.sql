@@ -1,7 +1,7 @@
 CREATE TABLE konto (
        id int(10) AUTO_INCREMENT
      , kontonummer VARCHAR(15) NOT NULL
-     , unterkonto varchar(10) null
+     , unterkonto varchar(30) null
      , blz VARCHAR(15) NOT NULL
      , name VARCHAR(255) NOT NULL
      , bezeichnung VARCHAR(255)
@@ -298,4 +298,4 @@ ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
 
-INSERT INTO version (name,version) values ('db',32);
+INSERT INTO version (name,version) values ('db',33);

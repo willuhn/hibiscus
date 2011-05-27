@@ -1,7 +1,7 @@
 CREATE TABLE konto (
   id IDENTITY,
   kontonummer varchar(15) NOT NULL,
-  unterkonto varchar(10) null,
+  unterkonto varchar(30) null,
   blz varchar(15) NOT NULL,
   name varchar(255) NOT NULL,
   bezeichnung varchar(255),
@@ -297,6 +297,6 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',32);
+INSERT INTO version (name,version) values ('db',33);
   
 COMMIT;

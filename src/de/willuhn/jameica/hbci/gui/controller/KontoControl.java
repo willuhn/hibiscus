@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/KontoControl.java,v $
- * $Revision: 1.98 $
- * $Date: 2011/05/11 10:20:29 $
+ * $Revision: 1.99 $
+ * $Date: 2011/05/27 11:33:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -240,8 +240,8 @@ public class KontoControl extends AbstractControl {
   {
     if (unterkonto != null)
       return unterkonto;
-    unterkonto = new TextInput(getKonto().getUnterkonto(),HBCIProperties.HBCI_KTO_MAXLENGTH_HARD);
-    unterkonto.setValidChars(HBCIProperties.HBCI_IBAN_VALIDCHARS);
+    unterkonto = new TextInput(getKonto().getUnterkonto(),HBCIProperties.HBCI_ID_MAXLENGTH);
+    unterkonto.setValidChars(HBCIProperties.HBCI_DTAUS_VALIDCHARS);
     unterkonto.setComment(i18n.tr("Kann meist frei gelassen werden"));
     return unterkonto;
   }
@@ -728,7 +728,10 @@ public class KontoControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: KontoControl.java,v $
- * Revision 1.98  2011/05/11 10:20:29  willuhn
+ * Revision 1.99  2011/05/27 11:33:23  willuhn
+ * @N BUGZILLA 1056
+ *
+ * Revision 1.98  2011-05-11 10:20:29  willuhn
  * @N OCE fangen
  *
  * Revision 1.97  2011-04-29 11:38:57  willuhn
