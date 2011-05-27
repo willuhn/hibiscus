@@ -1,6 +1,6 @@
 2011-??-?? Version 1.13.0
 
-  * NEW: 0094 BUGZILLA 1056 - Unterkontonummer darf max. 30 Zeichen lang sein und auch Leerzeichen enthalten
+  * BUG: 0094 BUGZILLA 1056 - Unterkontonummer darf max. 30 Zeichen lang sein und auch Leerzeichen enthalten
   * NEW: 0093 BUGZILLA 821 - Support fuer optisches chipTAN
   * NEW: 0092 Export von SEPA-Ueberweisungen im HTML- und CSV-Format
   * NEW: 0091 21-hbci4java-password-retry.patch
