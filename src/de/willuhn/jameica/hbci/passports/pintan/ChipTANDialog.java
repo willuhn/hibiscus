@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/ChipTANDialog.java,v $
- * $Revision: 1.7 $
- * $Date: 2011/05/26 10:13:18 $
+ * $Revision: 1.8 $
+ * $Date: 2011/05/27 10:51:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,10 +13,6 @@
 package de.willuhn.jameica.hbci.passports.pintan;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -30,15 +26,13 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
+import org.kapott.hbci.manager.FlickerRenderer;
 
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig;
-import de.willuhn.jameica.messaging.StatusBarMessage;
-import de.willuhn.jameica.system.Application;
-import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -62,11 +56,6 @@ public class ChipTANDialog extends TANDialog
   {
     super(config);
     this.code = code;
-
-    // TODO: Entfernen, wenn optisches chipTAN fertig ist
-    String msg = i18n.tr("Optisches chipTAN noch nicht unterstützt. Bitte wählen Sie ein anderes TAN-Verfahren.");
-    Application.getMessagingFactory().sendMessage(new StatusBarMessage(msg,StatusBarMessage.TYPE_ERROR));
-    throw new OperationCanceledException(msg);
   }
 
 	/**
@@ -77,9 +66,12 @@ public class ChipTANDialog extends TANDialog
     Container container = new SimpleContainer(parent);
     container.addHeadline(i18n.tr("Flicker-Grafik"));
     container.addText(i18n.tr("Ändern Sie die Größe des Fensters so, dass die Flicker-Grafik von Ihrem TAN-Generator gelesen werden kann."),true);
+    container.addSeparator();
     
     FlickerPart flicker = new FlickerPart(this.code);
     flicker.paint(parent);
+    
+    // Hier stehen dann noch die Anweisungen von der Bank drin
     super.paint(parent);
     
     // Muessen wir ueberschreiben, damit der User den Flicker-Balken passend ziehen kann.
@@ -90,8 +82,8 @@ public class ChipTANDialog extends TANDialog
       public void shellActivated(ShellEvent e)
       {
         // Muesste ungefaehr die passende Groesse fuer den TAN-Generator von Reiner SCT sein.
-        final int x = settings.getInt("size.x",269);
-        final int y = settings.getInt("size.y",364);
+        final int x = settings.getInt("size.x",264);
+        final int y = settings.getInt("size.y",368);
         getShell().setSize(x,y);
       }
     });
@@ -112,12 +104,10 @@ public class ChipTANDialog extends TANDialog
   /**
    * Implementiert die Flicker-Grafik.
    */
-  private class FlickerPart implements Part
+  private class FlickerPart extends FlickerRenderer implements Part
   {
-    private int halfbyteid       = 0;
-    private int clock            = 0;
-    private List<int[]> bitarray = null;
-    private Canvas canvas        = null;
+    private Canvas canvas = null;
+    private boolean[] bits = new boolean[5];
     
     /**
      * ct.
@@ -126,37 +116,38 @@ public class ChipTANDialog extends TANDialog
      */
     private FlickerPart(String code) throws ApplicationException
     {
-      // Sync-Identifier vorn dran haengen.
-      code = "0FFF" + code;
-
-      Map<String,int[]> bits = new HashMap<String,int[]>();
-      /* bitfield: clock, bits 2^1, 2^2, 2^3, 2^4 */
-      bits.put("0",new int[]{0, 0, 0, 0, 0});
-      bits.put("1",new int[]{0, 1, 0, 0, 0});
-      bits.put("2",new int[]{0, 0, 1, 0, 0});
-      bits.put("3",new int[]{0, 1, 1, 0, 0});
-      bits.put("4",new int[]{0, 0, 0, 1, 0});
-      bits.put("5",new int[]{0, 1, 0, 1, 0});
-      bits.put("6",new int[]{0, 0, 1, 1, 0});
-      bits.put("7",new int[]{0, 1, 1, 1, 0});
-      bits.put("8",new int[]{0, 0, 0, 0, 1});
-      bits.put("9",new int[]{0, 1, 0, 0, 1});
-      bits.put("A",new int[]{0, 0, 1, 0, 1});
-      bits.put("B",new int[]{0, 1, 1, 0, 1});
-      bits.put("C",new int[]{0, 0, 0, 1, 1});
-      bits.put("D",new int[]{0, 1, 0, 1, 1});
-      bits.put("E",new int[]{0, 0, 1, 1, 1});
-      bits.put("F",new int[]{0, 1, 1, 1, 1});
-
-      
-      this.bitarray = new ArrayList<int[]>();
-      for (int i = 0; i < code.length(); i += 2) {
-        bitarray.add(bits.get(Character.toString(code.charAt(i+1))));
-        bitarray.add(bits.get(Character.toString(code.charAt(i))));
-      }
-    
+      super(code);
     }
     
+    /**
+     * @see org.kapott.hbci.manager.FlickerRenderer#paint(boolean, boolean, boolean, boolean, boolean)
+     */
+    public void paint(boolean b1, boolean b2, boolean b3, boolean b4, boolean b5)
+    {
+      this.bits[0] = b1;
+      this.bits[1] = b2;
+      this.bits[2] = b3;
+      this.bits[3] = b4;
+      this.bits[4] = b5;
+      
+      // Redraw ausloesen
+      if (canvas != null)
+      {
+        // Wir sind hier nicht im Event-Dispatcher-Thread von SWT. Daher uebergeben wir das an diesen
+        canvas.getDisplay().syncExec(new Runnable() {
+          public void run()
+          {
+            // Wir sind fertig.
+            if (canvas.isDisposed())
+              return;
+            
+            // Neu zeichnen
+            canvas.redraw();
+          }
+        });
+      }
+    }
+
     /**
      * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
      */
@@ -169,63 +160,42 @@ public class ChipTANDialog extends TANDialog
       this.canvas.setBackground(GUI.getDisplay().getSystemColor(SWT.COLOR_BLACK));
       this.canvas.setLayoutData(new GridData(GridData.FILL_BOTH));
 
+      // Bei jedem Paint-Event aktualisieren wir die Balken
       this.canvas.addPaintListener(new PaintListener()
       {
         public void paintControl(PaintEvent e)
         {
-          step(e.gc);
+          update(e.gc);
         }
       });
-
-      Thread thread = new Thread("Flicker Update-Thread")
+      
+      // Beim Disposen stoppen wir den Flicker-Thread.
+      this.canvas.addDisposeListener(new DisposeListener()
       {
-        public void run()
+        public void widgetDisposed(DisposeEvent e)
         {
-          try
-          {
-            while (canvas != null && !canvas.isDisposed())
-            {
-              canvas.getDisplay().syncExec(new Runnable() {
-                public void run()
-                {
-                  canvas.redraw();
-                }
-              });
-              sleep(60L);
-            }
-          }
-          catch (InterruptedException e) {/* Ende */}
+          stop();
         }
-      };
-      thread.start();
+      });
+      
+      // Und los gehts
+      this.start();
     }
 
     /**
-     * Zeichnet den naechsten Schritt auf dem Canvas.
+     * Aktualisiert die Grafik basierend auf dem aktuellen Code.
      * @ctx der Graphics-Context.
      */
-    private void step(GC ctx)
+    private void update(GC ctx)
     {
       int margin = 4;
       int barwidth = canvas.getSize().x / 5;
-      bitarray.get(halfbyteid)[0] = clock;
       
-      for (int i = 0; i < 5; i++)
+      for (int i=0;i<this.bits.length;++i)
       {
-        int color = (bitarray.get(halfbyteid)[i] == 1) ? SWT.COLOR_WHITE : SWT.COLOR_BLACK;
+        int color = this.bits[i] ? SWT.COLOR_WHITE : SWT.COLOR_BLACK;
         ctx.setBackground(canvas.getDisplay().getSystemColor(color));
         ctx.fillRectangle(i*barwidth+margin,margin,barwidth-2*margin,canvas.getSize().y-2*margin);
-      }
-      
-      clock--;
-      if (clock < 0)
-      {
-        clock = 1;
-        halfbyteid++;
-        if (halfbyteid >= bitarray.size())
-        {
-          halfbyteid = 0;
-        }
       }
     }
   }
@@ -234,7 +204,10 @@ public class ChipTANDialog extends TANDialog
 
 /**********************************************************************
  * $Log: ChipTANDialog.java,v $
- * Revision 1.7  2011/05/26 10:13:18  willuhn
+ * Revision 1.8  2011/05/27 10:51:02  willuhn
+ * @N Erster Support fuer optisches chipTAN
+ *
+ * Revision 1.7  2011-05-26 10:13:18  willuhn
  * *** empty log message ***
  *
  * Revision 1.6  2011-05-19 07:59:53  willuhn
