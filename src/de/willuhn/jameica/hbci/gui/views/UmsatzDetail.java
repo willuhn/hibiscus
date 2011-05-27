@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzDetail.java,v $
- * $Revision: 1.39 $
- * $Date: 2011/04/08 15:19:14 $
+ * $Revision: 1.40 $
+ * $Date: 2011/05/27 06:33:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -53,22 +53,8 @@ public class UmsatzDetail extends AbstractUmsatzDetail
     },u,false,"emblem-default.png");
     checked.setEnabled((u.getFlags() & Umsatz.FLAG_CHECKED) != Umsatz.FLAG_CHECKED);
     buttons.addButton(checked);
-    Button edit = new Button(i18n.tr("Bearbeiten"),new de.willuhn.jameica.hbci.gui.action.UmsatzDetailEdit(),u,false,"text-x-generic.png");
-    edit.setEnabled((u.getFlags() & Umsatz.FLAG_NOTBOOKED) == 0);
-    buttons.addButton(edit);
-    
-    Button store = new Button(i18n.tr("Speichern"),new Action()
-    {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        getControl().handleStore();
-      }
-    },null,false,"document-save.png");
-    store.setEnabled((u.getFlags() & Umsatz.FLAG_NOTBOOKED) == 0);
-    buttons.addButton(store);
     
     Button ab = null;
-
     final Address found = getControl().getAddressbookEntry();
     if (found != null)
     {
@@ -85,6 +71,21 @@ public class UmsatzDetail extends AbstractUmsatzDetail
       },null,false,"contact-new.png");
     }
     buttons.addButton(ab);
+
+    Button edit = new Button(i18n.tr("Bearbeiten"),new de.willuhn.jameica.hbci.gui.action.UmsatzDetailEdit(),u,false,"text-x-generic.png");
+    edit.setEnabled((u.getFlags() & Umsatz.FLAG_NOTBOOKED) == 0);
+    buttons.addButton(edit);
+    
+    Button store = new Button(i18n.tr("Speichern"),new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        getControl().handleStore();
+      }
+    },null,false,"document-save.png");
+    store.setEnabled((u.getFlags() & Umsatz.FLAG_NOTBOOKED) == 0);
+    buttons.addButton(store);
+
     buttons.paint(getParent());
   }
 
@@ -102,7 +103,10 @@ public class UmsatzDetail extends AbstractUmsatzDetail
 
 /**********************************************************************
  * $Log: UmsatzDetail.java,v $
- * Revision 1.39  2011/04/08 15:19:14  willuhn
+ * Revision 1.40  2011/05/27 06:33:30  willuhn
+ * @C Button-Reihenfolge
+ *
+ * Revision 1.39  2011-04-08 15:19:14  willuhn
  * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
  * @C Code-Cleanup
  *
