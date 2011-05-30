@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/ChipTANDialog.java,v $
- * $Revision: 1.10 $
- * $Date: 2011/05/30 15:52:03 $
+ * $Revision: 1.11 $
+ * $Date: 2011/05/30 16:14:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -29,6 +29,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Spinner;
 import org.kapott.hbci.manager.FlickerRenderer;
 
 import de.willuhn.jameica.gui.GUI;
@@ -100,7 +102,7 @@ public class ChipTANDialog extends TANDialog
     private FlickerPart(String code) throws ApplicationException
     {
       super(code);
-      setFrequency(settings.getInt("freq",14));
+      setFrequency(settings.getInt("freq",FlickerRenderer.FREQUENCY_DEFAULT));
     }
     
     /**
@@ -202,13 +204,18 @@ public class ChipTANDialog extends TANDialog
       // die beiden Buttons zum Vergroessern und Verkleinern
       {
         Composite buttonComp = new Composite(parent,SWT.NONE);
-        GridData buttonGd = new GridData(GridData.FILL_HORIZONTAL);
-        buttonGd.horizontalSpan = 2;
+        GridData buttonGd = new GridData();
         buttonGd.horizontalAlignment = SWT.CENTER;
         buttonComp.setLayoutData(buttonGd);
-        buttonComp.setLayout(new GridLayout(2,true));
+        buttonComp.setLayout(new GridLayout(5,false));
+        
+        final Label label1 = new Label(buttonComp,SWT.NONE);
+        label1.setLayoutData(new GridData());
+        label1.setText(i18n.tr("Breite"));
+        
         Button smaller = new Button(buttonComp,SWT.PUSH);
-        smaller.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
+        smaller.setToolTipText(i18n.tr("Flicker-Code verkleinern"));
+        smaller.setLayoutData(new GridData());
         smaller.setText(" - ");
         smaller.addSelectionListener(new SelectionAdapter()
         {
@@ -228,7 +235,8 @@ public class ChipTANDialog extends TANDialog
           }
         });
         Button larger = new Button(buttonComp,SWT.PUSH);
-        larger.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
+        larger.setToolTipText(i18n.tr("Flicker-Code vergrößern"));
+        larger.setLayoutData(new GridData());
         larger.setText(" + ");
         larger.addSelectionListener(new SelectionAdapter()
         {
@@ -245,6 +253,27 @@ public class ChipTANDialog extends TANDialog
             Point newSize = new Point(gd.widthHint,comp.getSize().y);
             comp.setSize(newSize);
             parent.layout(); // zentriert den Flicker-Code wieder
+          }
+        });
+        
+        final Label label2 = new Label(buttonComp,SWT.NONE);
+        label2.setLayoutData(new GridData());
+        label2.setText(i18n.tr("Geschwindigkeit"));
+        
+        final Spinner spinner = new Spinner(buttonComp,SWT.BORDER);
+        spinner.setToolTipText(i18n.tr("Geschwindigkeit in Hz (1/Sekunde)"));
+        spinner.setLayoutData(new GridData());
+        spinner.setSelection(settings.getInt("freq",14));
+        spinner.setMinimum(FlickerRenderer.FREQUENCY_MIN);
+        spinner.setMaximum(FlickerRenderer.FREQUENCY_MAX);
+        spinner.setIncrement(1);
+        spinner.setTextLimit(2);
+        spinner.addSelectionListener(new SelectionAdapter() {
+          public void widgetSelected(SelectionEvent e)
+          {
+            int freq = spinner.getSelection();
+            settings.setAttribute("freq",freq);
+            setFrequency(freq);
           }
         });
       }
@@ -295,7 +324,10 @@ public class ChipTANDialog extends TANDialog
 
 /**********************************************************************
  * $Log: ChipTANDialog.java,v $
- * Revision 1.10  2011/05/30 15:52:03  willuhn
+ * Revision 1.11  2011/05/30 16:14:52  willuhn
+ * @N Geschwindigkeit anpassbar
+ *
+ * Revision 1.10  2011-05-30 15:52:03  willuhn
  * @B nicht comp.getSize().x speichern sondern gd.widthHint - ersteres enthaelt auch noch die Rahmenbreite, was dazu fuehrt, dass der Code mit jedem Oeffnen 4px (2 x 2px Rand) breiter wird
  *
  * Revision 1.9  2011-05-30 10:13:14  willuhn
