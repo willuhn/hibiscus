@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/ChipTANDialog.java,v $
- * $Revision: 1.8 $
- * $Date: 2011/05/27 10:51:02 $
+ * $Revision: 1.9 $
+ * $Date: 2011/05/30 10:13:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,11 +19,14 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
-import org.eclipse.swt.events.ShellAdapter;
-import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.kapott.hbci.manager.FlickerRenderer;
@@ -31,6 +34,7 @@ import org.kapott.hbci.manager.FlickerRenderer;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig;
 import de.willuhn.jameica.system.Settings;
@@ -43,6 +47,7 @@ import de.willuhn.util.ApplicationException;
 public class ChipTANDialog extends TANDialog
 {
   private final static Settings settings = new Settings(ChipTANDialog.class);
+  
   private String code = null;
   
   /**
@@ -56,6 +61,7 @@ public class ChipTANDialog extends TANDialog
   {
     super(config);
     this.code = code;
+    this.setSideImage(null); // den Platz haben wir hier nicht.
   }
 
 	/**
@@ -65,40 +71,13 @@ public class ChipTANDialog extends TANDialog
   {
     Container container = new SimpleContainer(parent);
     container.addHeadline(i18n.tr("Flicker-Grafik"));
-    container.addText(i18n.tr("Ändern Sie die Größe des Fensters so, dass die Flicker-Grafik von Ihrem TAN-Generator gelesen werden kann."),true);
-    container.addSeparator();
+    container.addText(i18n.tr("Klicken Sie \"-\" bzw. \"+\", um die Breite anzupassen."),true);
     
     FlickerPart flicker = new FlickerPart(this.code);
     flicker.paint(parent);
     
     // Hier stehen dann noch die Anweisungen von der Bank drin
     super.paint(parent);
-    
-    // Muessen wir ueberschreiben, damit der User den Flicker-Balken passend ziehen kann.
-    getShell().setMinimumSize(100,100);
-    
-    // Geht leider nur mit dem Listener. Alles andere wird ignoriert
-    addShellListener(new ShellAdapter() {
-      public void shellActivated(ShellEvent e)
-      {
-        // Muesste ungefaehr die passende Groesse fuer den TAN-Generator von Reiner SCT sein.
-        final int x = settings.getInt("size.x",264);
-        final int y = settings.getInt("size.y",368);
-        getShell().setSize(x,y);
-      }
-    });
-    
-    
-    parent.addDisposeListener(new DisposeListener() {
-      public void widgetDisposed(DisposeEvent e)
-      {
-        // Wir merken uns die Groesse des Dialogs
-        Point p = getShell().getSize();
-        Logger.info("saving size of flicker dialog: " + p.x + "x" + p.y);
-        settings.setAttribute("size.x",p.x);
-        settings.setAttribute("size.y",p.y);
-      }
-    });
   }
 
   /**
@@ -106,8 +85,12 @@ public class ChipTANDialog extends TANDialog
    */
   private class FlickerPart extends FlickerRenderer implements Part
   {
-    private Canvas canvas = null;
+    private Composite comp = null;
+    private Canvas canvas  = null;
     private boolean[] bits = new boolean[5];
+    
+    private Color black = GUI.getDisplay().getSystemColor(SWT.COLOR_BLACK);
+    private Color white = GUI.getDisplay().getSystemColor(SWT.COLOR_WHITE);
     
     /**
      * ct.
@@ -117,6 +100,7 @@ public class ChipTANDialog extends TANDialog
     private FlickerPart(String code) throws ApplicationException
     {
       super(code);
+      setFrequency(settings.getInt("freq",14));
     }
     
     /**
@@ -130,36 +114,72 @@ public class ChipTANDialog extends TANDialog
       this.bits[3] = b4;
       this.bits[4] = b5;
       
+      if (canvas == null || canvas.isDisposed())
+        return;
+      
       // Redraw ausloesen
-      if (canvas != null)
-      {
-        // Wir sind hier nicht im Event-Dispatcher-Thread von SWT. Daher uebergeben wir das an diesen
-        canvas.getDisplay().syncExec(new Runnable() {
-          public void run()
-          {
-            // Wir sind fertig.
-            if (canvas.isDisposed())
-              return;
+      // Wir sind hier nicht im Event-Dispatcher-Thread von SWT. Daher uebergeben wir das an diesen
+      canvas.getDisplay().syncExec(new Runnable() {
+        public void run()
+        {
+          // Wir muessen hier nochmal checken, weil das inzwischen disposed sein kann.
+          if (canvas.isDisposed())
+            return;
             
-            // Neu zeichnen
-            canvas.redraw();
-          }
-        });
-      }
+          // Neu zeichnen
+          canvas.redraw();
+        }
+      });
     }
 
     /**
      * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
      */
-    public void paint(Composite parent) throws RemoteException
+    public void paint(final Composite parent) throws RemoteException
     {
       if (this.canvas != null)
         return;
-      
-      this.canvas = new Canvas(parent,SWT.BORDER);
+
+      //////////////////////////////////////////////////////////////////////////
+      // Das Composite fuer den Flicker-Code
+      {
+        this.comp = new Composite(parent,SWT.BORDER);
+        this.comp.setBackground(GUI.getDisplay().getSystemColor(SWT.COLOR_BLACK));
+
+        GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_CENTER);
+        int width = SWTUtil.mm2px(60); // das muesste ca. die Breite von ReinerSCT-Geraeten sein
+        if (width == -1) width = 206;  // falls die Umrechnung nicht klappte
+        gd.widthHint = settings.getInt("width",width);
+        gd.heightHint = 140; // sollte passen
+        this.comp.setLayoutData(gd);
+
+        // Wir lassen etwas Abstand zum Rand
+        GridLayout gl = new GridLayout();
+        gl.marginHeight = 20;
+        gl.marginWidth = 20;
+        this.comp.setLayout(gl);
+        
+        // Beim Disposen stoppen wir den Flicker-Thread.
+        this.comp.addDisposeListener(new DisposeListener()
+        {
+          public void widgetDisposed(DisposeEvent e)
+          {
+            // Wir merken uns die Groesse des Canvas.
+            Point p = comp.getSize();
+            Logger.info("saving width of flickercode: " + p.x + " px");
+            settings.setAttribute("width",p.x);
+          }
+        });
+      }
+      //
+      //////////////////////////////////////////////////////////////////////////
+
+      //////////////////////////////////////////////////////////////////////////
+      // Das eigentliche Canvas mit dem Flicker-Code.
+      this.canvas = new Canvas(this.comp,SWT.NONE);
       this.canvas.setBackground(GUI.getDisplay().getSystemColor(SWT.COLOR_BLACK));
       this.canvas.setLayoutData(new GridData(GridData.FILL_BOTH));
-
+      
       // Bei jedem Paint-Event aktualisieren wir die Balken
       this.canvas.addPaintListener(new PaintListener()
       {
@@ -168,15 +188,70 @@ public class ChipTANDialog extends TANDialog
           update(e.gc);
         }
       });
-      
-      // Beim Disposen stoppen wir den Flicker-Thread.
-      this.canvas.addDisposeListener(new DisposeListener()
-      {
+      this.canvas.addDisposeListener(new DisposeListener() {
         public void widgetDisposed(DisposeEvent e)
         {
+          // Update-Thread stoppen
           stop();
         }
       });
+      //
+      //////////////////////////////////////////////////////////////////////////
+
+
+      ////////////////////////////////////////////////////////////////////////
+      // die beiden Buttons zum Vergroessern und Verkleinern
+      {
+        Composite buttonComp = new Composite(parent,SWT.NONE);
+        GridData buttonGd = new GridData(GridData.FILL_HORIZONTAL);
+        buttonGd.horizontalSpan = 2;
+        buttonGd.horizontalAlignment = SWT.CENTER;
+        buttonComp.setLayoutData(buttonGd);
+        buttonComp.setLayout(new GridLayout(2,true));
+        Button smaller = new Button(buttonComp,SWT.PUSH);
+        smaller.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
+        smaller.setText(" - ");
+        smaller.addSelectionListener(new SelectionAdapter()
+        {
+          /**
+           * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+           */
+          public void widgetSelected(SelectionEvent e)
+          {
+            GridData gd = (GridData) comp.getLayoutData();
+            if (gd.widthHint < 100) // unplausibel
+              return;
+            gd.widthHint -= 5;
+            
+            Point newSize = new Point(gd.widthHint,comp.getSize().y);
+            comp.setSize(newSize);
+            parent.layout(); // zentriert den Flicker-Code wieder
+          }
+        });
+        Button larger = new Button(buttonComp,SWT.PUSH);
+        larger.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
+        larger.setText(" + ");
+        larger.addSelectionListener(new SelectionAdapter()
+        {
+          /**
+           * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+           */
+          public void widgetSelected(SelectionEvent e)
+          {
+            GridData gd = (GridData) comp.getLayoutData();
+            if (gd.widthHint > 400) // unplausibel
+              return;
+            gd.widthHint += 5;
+
+            Point newSize = new Point(gd.widthHint,comp.getSize().y);
+            comp.setSize(newSize);
+            parent.layout(); // zentriert den Flicker-Code wieder
+          }
+        });
+      }
+      //
+      ////////////////////////////////////////////////////////////////////////
+      
       
       // Und los gehts
       this.start();
@@ -188,15 +263,32 @@ public class ChipTANDialog extends TANDialog
      */
     private void update(GC ctx)
     {
-      int margin = 4;
       int barwidth = canvas.getSize().x / 5;
+      int margin = barwidth / 4;
+      barwidth -= margin; // Rand noch abziehen
+      barwidth += margin/4; // und dann nochmal ein Viertel des Randes dran, damit wir am Ende keinen schwarzen Rand haben
       
+      Point size = canvas.getSize();
       for (int i=0;i<this.bits.length;++i)
       {
-        int color = this.bits[i] ? SWT.COLOR_WHITE : SWT.COLOR_BLACK;
-        ctx.setBackground(canvas.getDisplay().getSystemColor(color));
-        ctx.fillRectangle(i*barwidth+margin,margin,barwidth-2*margin,canvas.getSize().y-2*margin);
+        ctx.setBackground(this.bits[i] ? white : black);
+        ctx.fillRectangle(i*(barwidth+margin),12,barwidth,size.y-12); // die 12 sind der Abstand von oben (wegen den Dreiecken)
       }
+      
+      // Die Kalibrierungs-Dreiecke noch reinmalen
+      ctx.setBackground(white);
+      
+      // Breite und Hoehe der Dreiecke
+      int width  = 12;
+      int height = 6;
+      
+      // Abstand vom Rand -> halbe Balkenbreite minus halbe Dreieck-Breite
+      int gap = barwidth / 2 - (width/2);
+      
+      int[] left  = new int[]{gap,0,               gap+width,0,    gap+(width/2),height};
+      int[] right = new int[]{size.x-gap-width,0,  size.x-gap,0,   size.x-gap-(width/2),height};
+      ctx.fillPolygon(left);
+      ctx.fillPolygon(right);
     }
   }
 }
@@ -204,7 +296,10 @@ public class ChipTANDialog extends TANDialog
 
 /**********************************************************************
  * $Log: ChipTANDialog.java,v $
- * Revision 1.8  2011/05/27 10:51:02  willuhn
+ * Revision 1.9  2011/05/30 10:13:14  willuhn
+ * @N Flicker-Code kann jetzt bequem in der Breite geaendert werden
+ *
+ * Revision 1.8  2011-05-27 10:51:02  willuhn
  * @N Erster Support fuer optisches chipTAN
  *
  * Revision 1.7  2011-05-26 10:13:18  willuhn
