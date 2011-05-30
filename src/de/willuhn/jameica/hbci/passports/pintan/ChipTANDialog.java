@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/ChipTANDialog.java,v $
- * $Revision: 1.9 $
- * $Date: 2011/05/30 10:13:14 $
+ * $Revision: 1.10 $
+ * $Date: 2011/05/30 15:52:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -146,7 +146,7 @@ public class ChipTANDialog extends TANDialog
         this.comp = new Composite(parent,SWT.BORDER);
         this.comp.setBackground(GUI.getDisplay().getSystemColor(SWT.COLOR_BLACK));
 
-        GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_CENTER);
+        final GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_CENTER);
         int width = SWTUtil.mm2px(60); // das muesste ca. die Breite von ReinerSCT-Geraeten sein
         if (width == -1) width = 206;  // falls die Umrechnung nicht klappte
         gd.widthHint = settings.getInt("width",width);
@@ -165,9 +165,8 @@ public class ChipTANDialog extends TANDialog
           public void widgetDisposed(DisposeEvent e)
           {
             // Wir merken uns die Groesse des Canvas.
-            Point p = comp.getSize();
-            Logger.info("saving width of flickercode: " + p.x + " px");
-            settings.setAttribute("width",p.x);
+            Logger.info("saving width of flickercode: " + gd.widthHint + " px");
+            settings.setAttribute("width",gd.widthHint);
           }
         });
       }
@@ -296,7 +295,10 @@ public class ChipTANDialog extends TANDialog
 
 /**********************************************************************
  * $Log: ChipTANDialog.java,v $
- * Revision 1.9  2011/05/30 10:13:14  willuhn
+ * Revision 1.10  2011/05/30 15:52:03  willuhn
+ * @B nicht comp.getSize().x speichern sondern gd.widthHint - ersteres enthaelt auch noch die Rahmenbreite, was dazu fuehrt, dass der Code mit jedem Oeffnen 4px (2 x 2px Rand) breiter wird
+ *
+ * Revision 1.9  2011-05-30 10:13:14  willuhn
  * @N Flicker-Code kann jetzt bequem in der Breite geaendert werden
  *
  * Revision 1.8  2011-05-27 10:51:02  willuhn
