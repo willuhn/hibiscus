@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/ErweiterteVerwendungszwecke.java,v $
- * $Revision: 1.6 $
- * $Date: 2011/04/29 12:25:36 $
+ * $Revision: 1.7 $
+ * $Date: 2011/06/01 21:19:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,6 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
 import de.willuhn.jameica.gui.Action;
@@ -94,7 +93,7 @@ public class ErweiterteVerwendungszwecke implements Part
     if (orig != null && orig.length > size)
       size = orig.length;
 
-    final Container container = new ScrolledContainer(parent);
+    final ScrolledContainer container = new ScrolledContainer(parent);
     for (int i=0;i<size;++i)
     {
       createLine(container,(orig != null && orig.length > i) ? orig[i] : null,i,readonly);
@@ -107,10 +106,8 @@ public class ErweiterteVerwendungszwecke implements Part
       {
         int size = fields.size();
         createLine(container,null,size,readonly);
-        Composite comp = container.getComposite();
-        comp.setSize(comp.computeSize(SWT.DEFAULT, SWT.DEFAULT)); // Groesse neu berechnen, damit der Scrollbalken passt
+        container.update();
         add.setEnabled(!readonly && size+3 < maxusage);
-        
       }
     });
     this.add.setEnabled(!readonly && size+3 <= maxusage);
@@ -121,8 +118,8 @@ public class ErweiterteVerwendungszwecke implements Part
     //
     ////////////////////////////////////////////////////////////////////////////
 
-    Composite comp = container.getComposite();
-    comp.setSize(comp.computeSize(SWT.DEFAULT, SWT.DEFAULT)); // Groesse neu berechnen
+    // einmal initial die Groesse neu berechnen
+    container.update();
   }
   
   /**
@@ -183,7 +180,10 @@ public class ErweiterteVerwendungszwecke implements Part
 
 /**********************************************************************
  * $Log: ErweiterteVerwendungszwecke.java,v $
- * Revision 1.6  2011/04/29 12:25:36  willuhn
+ * Revision 1.7  2011/06/01 21:19:16  willuhn
+ * @B Scroll-Fixes
+ *
+ * Revision 1.6  2011-04-29 12:25:36  willuhn
  * @N GUI-Polish
  *
  * Revision 1.5  2008/12/01 23:54:42  willuhn

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/CSVImportDialog.java,v $
- * $Revision: 1.10 $
- * $Date: 2011/05/06 12:35:24 $
+ * $Revision: 1.11 $
+ * $Date: 2011/06/01 21:19:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -41,10 +41,9 @@ import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.SpinnerInput;
 import de.willuhn.jameica.gui.input.TextInput;
-import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Color;
-import de.willuhn.jameica.gui.util.Headline;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.gui.util.ScrolledContainer;
 import de.willuhn.jameica.gui.util.SimpleContainer;
@@ -97,7 +96,7 @@ public class CSVImportDialog extends AbstractDialog
     this.data   = data;
 
     this.setTitle(i18n.tr("Zuordnung der Spalten"));
-    this.setSize(620,450);
+    this.setSize(620,500);
 
   }
   
@@ -107,14 +106,17 @@ public class CSVImportDialog extends AbstractDialog
   protected void paint(Composite parent) throws Exception
   {
     // BUGZILLA 281
-    LabelGroup options = new LabelGroup(parent,i18n.tr("Optionen"));
+    Container options = new SimpleContainer(parent);
+    options.addHeadline(i18n.tr("Optionen"));
     options.addInput(this.getFileEncoding());
     options.addInput(this.getSeparatorChar());
     options.addInput(this.getQuoteChar());
     options.addInput(this.getSkipLines());
     
     // BUGZILLA 412
-    new Headline(parent,i18n.tr("Zuordnung der Spalten"));
+    options.addHeadline(i18n.tr("Zuordnung der Spalten"));
+    options.addText(i18n.tr("In der linken Spalte sehen Sie die erste Zeile Ihrer CSV-Datei.\n" +
+                            "Ordnen Sie die Felder bitte über die Auswahl-Elemente auf der rechte Seite zu."),true);
 
     this.parent = new Composite(parent,SWT.NONE);
     this.parent.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -124,7 +126,7 @@ public class CSVImportDialog extends AbstractDialog
     SimpleContainer c = new SimpleContainer(parent);
     c.addInput(this.getError());
     
-    ButtonArea b = new ButtonArea(parent,3);
+    ButtonArea b = new ButtonArea();
     b.addButton(i18n.tr("Übernehmen"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -182,6 +184,8 @@ public class CSVImportDialog extends AbstractDialog
         throw new OperationCanceledException();
       }
     },null,false,"process-stop.png");
+    
+    c.addButtonArea(b);
   }
   
   /**
@@ -250,8 +254,6 @@ public class CSVImportDialog extends AbstractDialog
       List<String> current = lines.get(p.getSkipLines()); // Die erste anzuzeigende Zeile
 
       ScrolledContainer container = new ScrolledContainer(this.parent);
-      container.addText(i18n.tr("In der linken Spalte sehen Sie die erste Zeile Ihrer CSV-Datei.\n" +
-                                "Ordnen Sie die Felder bitte über die Auswahl-Elemente auf der rechte Seite zu."),true);
 
       for (int i=0;i<cols;++i)
       {
@@ -270,6 +272,7 @@ public class CSVImportDialog extends AbstractDialog
 
         container.addInput(s);
       }
+      container.update();
       
       this.parent.layout(true);
       this.getError().setValue("");
@@ -536,7 +539,10 @@ public class CSVImportDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: CSVImportDialog.java,v $
- * Revision 1.10  2011/05/06 12:35:24  willuhn
+ * Revision 1.11  2011/06/01 21:19:16  willuhn
+ * @B Scroll-Fixes
+ *
+ * Revision 1.10  2011-05-06 12:35:24  willuhn
  * @R Nicht mehr noetig - macht AbstractDialog jetzt selbst
  *
  * Revision 1.9  2011-05-03 10:13:15  willuhn

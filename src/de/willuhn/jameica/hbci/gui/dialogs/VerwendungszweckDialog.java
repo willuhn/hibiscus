@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/VerwendungszweckDialog.java,v $
- * $Revision: 1.6 $
- * $Date: 2011/05/06 12:35:24 $
+ * $Revision: 1.7 $
+ * $Date: 2011/06/01 21:19:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -99,8 +99,8 @@ public class VerwendungszweckDialog extends AbstractDialog
    */
   protected void paint(Composite parent) throws Exception
   {
-    this.ewz.paint(parent);
-    Container container = new SimpleContainer(parent,true);
+    Container container = new SimpleContainer(parent,true,1);
+    this.ewz.paint(container.getComposite());
 
     ButtonArea buttons = new ButtonArea();
     Button apply = new Button(i18n.tr("Übernehmen"),new Action() {
@@ -136,7 +136,10 @@ public class VerwendungszweckDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: VerwendungszweckDialog.java,v $
- * Revision 1.6  2011/05/06 12:35:24  willuhn
+ * Revision 1.7  2011/06/01 21:19:16  willuhn
+ * @B Scroll-Fixes
+ *
+ * Revision 1.6  2011-05-06 12:35:24  willuhn
  * @R Nicht mehr noetig - macht AbstractDialog jetzt selbst
  *
  * Revision 1.5  2011-04-29 12:25:36  willuhn
