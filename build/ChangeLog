@@ -1,5 +1,6 @@
 2011-??-?? Version 1.13.0
 
+  * NEW: 0097 Liste der Bank-Zugaenge ueberarbeitet
   * NEW: 0096 25-hbci4java-task-maxsegversion.patch - maximale Segment-Version für Jobs definierbar
   * BUG: 0095 24-hbci4java-hhdversion.patch - HHD-Version wurde u.U. falsch ermittelt
   * BUG: 0094 BUGZILLA 1056 - Unterkontonummer darf max. 30 Zeichen lang sein und auch Leerzeichen enthalten
