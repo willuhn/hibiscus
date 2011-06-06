@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Settings.java,v $
- * $Revision: 1.55 $
- * $Date: 2011/05/24 09:06:11 $
+ * $Revision: 1.56 $
+ * $Date: 2011/06/06 12:24:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -63,7 +63,7 @@ public class Settings extends AbstractView
     TabGroup system = new TabGroup(getTabFolder(),i18n.tr("Grundeinstellungen"));
 		system.addCheckbox(control.getOnlineMode(),i18n.tr("Dauerhafte Internetverbindung, Aufforderung zum Verbinden nicht erforderlich"));
     system.addCheckbox(control.getCachePin(),i18n.tr("PIN-Eingaben für die aktuelle Sitzung zwischenspeichern"));
-    // system.addCheckbox(control.getStorePin(),i18n.tr("PIN-Eingaben permanent speichern (nur bei PIN/TAN)"));
+    system.addCheckbox(control.getStorePin(),i18n.tr("PIN-Eingaben permanent speichern (nur bei PIN/TAN)"));
     system.addCheckbox(control.getCancelSyncOnError(),i18n.tr("HBCI-Synchronisierung bei Fehler abbrechen"));
     system.addCheckbox(control.getDecimalGrouping(),i18n.tr("Tausender-Trennzeichen bei Geld-Beträgen anzeigen"));
     system.addCheckbox(control.getKontoCheck(),i18n.tr("Kontonummern und Bankleitzahlen mittels Prüfsumme testen"));
@@ -148,7 +148,10 @@ public class Settings extends AbstractView
 
 /**********************************************************************
  * $Log: Settings.java,v $
- * Revision 1.55  2011/05/24 09:06:11  willuhn
+ * Revision 1.56  2011/06/06 12:24:21  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.55  2011-05-24 09:06:11  willuhn
  * @C Refactoring und Vereinfachung von HBCI-Callbacks
  *
  * Revision 1.54  2011-05-23 14:48:04  willuhn
