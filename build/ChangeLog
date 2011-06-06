@@ -1,7 +1,9 @@
 2011-??-?? Version 1.13.0
 
+  * NEW: 0096 25-hbci4java-task-maxsegversion.patch - maximale Segment-Version für Jobs definierbar
+  * BUG: 0095 24-hbci4java-hhdversion.patch - HHD-Version wurde u.U. falsch ermittelt
   * BUG: 0094 BUGZILLA 1056 - Unterkontonummer darf max. 30 Zeichen lang sein und auch Leerzeichen enthalten
-  * NEW: 0093 BUGZILLA 821 - Support fuer optisches chipTAN
+  * NEW: 0093 BUGZILLA 821 - Support fuer optisches chipTAN (22-hbci4java-chiptan-opt.patch, 23-hbci4java-chiptan-opt2.patch)
   * NEW: 0092 Export von SEPA-Ueberweisungen im HTML- und CSV-Format
   * NEW: 0091 21-hbci4java-password-retry.patch
   * NEW: 0090 Bei falscher PIN-/Passwort-Eingabe nur noch die von dem betroffenen
