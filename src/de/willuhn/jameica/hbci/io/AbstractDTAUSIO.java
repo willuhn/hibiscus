@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/AbstractDTAUSIO.java,v $
- * $Revision: 1.6 $
- * $Date: 2011/05/10 11:41:30 $
+ * $Revision: 1.7 $
+ * $Date: 2011/06/07 11:39:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,12 +49,14 @@ public abstract class AbstractDTAUSIO implements IO
     if (buchung == null)
       return CSatz.TS_UEBERWEISUNGSGUTSCHRIFT;
 
-    int ts = (buchung instanceof SammelUeberweisungBuchung) ? CSatz.TS_UEBERWEISUNGSGUTSCHRIFT : CSatz.TS_LASTSCHRIFT_ABBUCHUNGSVERFAHREN;
+    // Default-Werte
+    int ts = (buchung instanceof SammelUeberweisungBuchung) ? CSatz.TS_UEBERWEISUNGSGUTSCHRIFT : CSatz.TS_LASTSCHRIFT_EINZUGSERMAECHTIGUNGSVERFAHREN;
+    
     String textschluessel = buchung.getTextSchluessel();
     if (textschluessel != null)
     {
-      if (textschluessel.equals(TextSchluessel.TS_EINZUG))
-        ts = CSatz.TS_LASTSCHRIFT_EINZUGSERMAECHTIGUNGSVERFAHREN;
+      if (textschluessel.equals(TextSchluessel.TS_ABBUCHUNG))
+        ts = CSatz.TS_LASTSCHRIFT_ABBUCHUNGSVERFAHREN;
       else if (textschluessel.equals(TextSchluessel.TS_LOHN))
         ts = CSatz.TS_UEBERWEISUNG_LOHN_GEHALT_RENTE;
     }
@@ -69,11 +71,13 @@ public abstract class AbstractDTAUSIO implements IO
    */
   protected String mapDtausToTextschluessel(SammelTransferBuchung buchung, long ts)
   {
-    if (ts == CSatz.TS_LASTSCHRIFT_EINZUGSERMAECHTIGUNGSVERFAHREN)
-      return TextSchluessel.TS_EINZUG;
+    if (ts == CSatz.TS_LASTSCHRIFT_ABBUCHUNGSVERFAHREN)
+      return TextSchluessel.TS_ABBUCHUNG;
     if (ts == CSatz.TS_UEBERWEISUNG_LOHN_GEHALT_RENTE)
       return TextSchluessel.TS_LOHN;
-    return (buchung instanceof SammelUeberweisungBuchung) ? TextSchluessel.TS_UEB : TextSchluessel.TS_ABBUCHUNG;
+    
+    // Default-Werte
+    return (buchung instanceof SammelUeberweisungBuchung) ? TextSchluessel.TS_UEB : TextSchluessel.TS_EINZUG;
   }
  
   /**
@@ -142,7 +146,10 @@ public abstract class AbstractDTAUSIO implements IO
 
 /*********************************************************************
  * $Log: AbstractDTAUSIO.java,v $
- * Revision 1.6  2011/05/10 11:41:30  willuhn
+ * Revision 1.7  2011/06/07 11:39:23  willuhn
+ * @C Default-Textschluessel mit HBCI4Java vereinheitlicht. Wenn bei Sammellastschriften keiner angegeben ist, wird "50" (Einzugsermaechtigung) verwendet - das macht HBCI4Java beim Absenden eines Auftrages (in DTAUS.java) auch so. Vorher wurde von Hibiscus per Default "40" (Abbuchung) verwendet, wenn nichts angegeben ist
+ *
+ * Revision 1.6  2011-05-10 11:41:30  willuhn
  * @N Text-Schluessel als Konstanten definiert - Teil aus dem Patch von Thomas vom 07.12.2010
  *
  * Revision 1.5  2010/06/02 15:32:32  willuhn
