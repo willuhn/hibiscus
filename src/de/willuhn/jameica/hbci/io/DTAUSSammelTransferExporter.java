@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/DTAUSSammelTransferExporter.java,v $
- * $Revision: 1.10 $
- * $Date: 2008/12/17 23:24:23 $
+ * $Revision: 1.11 $
+ * $Date: 2011/06/07 10:07:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,6 +24,7 @@ import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
+import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -123,16 +124,10 @@ public class DTAUSSammelTransferExporter extends AbstractDTAUSIO implements Expo
           writer.setCInterneKundennummer(kundenNummer);
           writer.setCTextschluessel(mapTextschluesselToDtaus(buchung));
           
-          writer.addCVerwendungszweck(buchung.getZweck());
-          String zweck2 = buchung.getZweck2();
-          if (zweck2 != null && zweck2.length() > 0)
-            writer.addCVerwendungszweck(zweck2);
-          String[] ewz = buchung.getWeitereVerwendungszwecke();
-          if (ewz != null && ewz.length > 0)
-          {
-            for (int k=0;k<ewz.length;++k)
-              writer.addCVerwendungszweck(ewz[k]);
-          }
+          String[] lines = VerwendungszweckUtil.toArray(buchung);
+          for (String line:lines)
+            writer.addCVerwendungszweck(line);
+          
           writer.writeCSatz();
           success++;
         }
@@ -204,6 +199,9 @@ public class DTAUSSammelTransferExporter extends AbstractDTAUSIO implements Expo
 
 /**********************************************************************
  * $Log: DTAUSSammelTransferExporter.java,v $
+ * Revision 1.11  2011/06/07 10:07:50  willuhn
+ * @C Verwendungszweck-Handling vereinheitlicht/vereinfacht - geht jetzt fast ueberall ueber VerwendungszweckUtil
+ *
  * Revision 1.10  2008/12/17 23:24:23  willuhn
  * @N Korrektes Mapping der Textschluessel beim Export/Import von Sammelauftraegen von/nach DTAUS
  *

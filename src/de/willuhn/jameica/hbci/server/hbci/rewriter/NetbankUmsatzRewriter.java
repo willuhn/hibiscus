@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/rewriter/NetbankUmsatzRewriter.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/09/08 15:31:46 $
+ * $Revision: 1.6 $
+ * $Date: 2011/06/07 10:07:51 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 
 /**
  * Implementierung des Rewriters fuer die Netbank.
@@ -53,14 +54,9 @@ public class NetbankUmsatzRewriter implements UmsatzRewriter
     if (blz != null && blz.length() > 0)
       return; // Steht schon was drin
     
-    String s1   = u.getZweck();
-    String s2   = u.getZweck2();
-    String[] s3 = u.getWeitereVerwendungszwecke();
-    
+    String[] s = VerwendungszweckUtil.toArray(u);
     List<String> lines = new ArrayList<String>();
-    if (s1 != null && s1.length() > 0) lines.add(s1);
-    if (s2 != null && s2.length() > 0) lines.add(s2);
-    if (s3 != null && s3.length > 0) lines.addAll(Arrays.asList(s3));
+    lines.addAll(Arrays.asList(s));
     
     if (lines.size() == 0)
       return; // Kein Verwendungszweck da
@@ -124,7 +120,10 @@ public class NetbankUmsatzRewriter implements UmsatzRewriter
 
 /**********************************************************************
  * $Log: NetbankUmsatzRewriter.java,v $
- * Revision 1.5  2010/09/08 15:31:46  willuhn
+ * Revision 1.6  2011/06/07 10:07:51  willuhn
+ * @C Verwendungszweck-Handling vereinheitlicht/vereinfacht - geht jetzt fast ueberall ueber VerwendungszweckUtil
+ *
+ * Revision 1.5  2010-09-08 15:31:46  willuhn
  * @N Spardabank West
  *
  * Revision 1.4  2010/05/11 10:31:56  willuhn

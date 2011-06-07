@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/VerwendungszweckUtil.java,v $
- * $Revision: 1.8 $
- * $Date: 2011/05/11 09:12:07 $
+ * $Revision: 1.9 $
+ * $Date: 2011/06/07 10:07:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,7 +15,6 @@ package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
@@ -71,8 +70,7 @@ public class VerwendungszweckUtil
     if (t == null || lines == null || lines.length == 0)
       return;
     
-    List<String> l = new ArrayList(Arrays.asList(lines));
-    
+    List<String> l = clean(lines);
     if (l.size() > 0) t.setZweck(l.remove(0));  // Zeile 1
     if (l.size() > 0) t.setZweck2(l.remove(0)); // Zeile 2
     if (l.size() > 0) t.setWeitereVerwendungszwecke(l.toArray(new String[l.size()])); // Zeile 3 - x
@@ -90,24 +88,39 @@ public class VerwendungszweckUtil
     if (lines == null || lines.length == 0)
       return null;
     
-    // Alle leeren Zeilen ueberspringen
+    List<String> cleaned = clean(lines);
     StringBuffer sb = new StringBuffer();
-    for (int i=0;i<lines.length;++i)
+    for (String line:cleaned)
     {
-      if (lines[i] == null || lines[i].length() == 0)
-        continue;
-      
-      // Wir ignorieren die Zeile auch dann, wenn nur Leerzeichen drin stehen
-      String s = lines[i].trim();
-      if (s.length() == 0)
-        continue;
-
-      sb.append(s);
+      sb.append(line);
       sb.append("\n");
     }
 
     String result = sb.toString();
     return result.length() == 0 ? null : result;
+  }
+  
+  /**
+   * Liefert eine bereinigte Liste der Verwendungszweck-Zeilen des Auftrages.
+   * @param t der Auftrag.
+   * @return bereinigte Liste der Verwendungszweck-Zeilen des Auftrages.
+   * @throws RemoteException
+   */
+  public static String[] toArray(Transfer t) throws RemoteException
+  {
+    List<String> lines = new ArrayList<String>();
+    lines.add(t.getZweck());
+    lines.add(t.getZweck2());
+    String[] wvz = t.getWeitereVerwendungszwecke();
+    if (wvz != null && wvz.length > 0)
+    {
+      for (String s:wvz)
+        lines.add(s);
+    }
+    
+    String[] list = lines.toArray(new String[lines.size()]);
+    List<String> result = clean(list);
+    return result.toArray(new String[result.size()]);
   }
 
   /**
@@ -135,22 +148,17 @@ public class VerwendungszweckUtil
     if (sep == null)
       sep = " ";
     StringBuffer sb = new StringBuffer();
-    String s1 = t.getZweck();
-    String s2 = t.getZweck2();
-    String s3 = merge(t.getWeitereVerwendungszwecke());
-
-    if (s1 != null)
-    {
-      sb.append(s1);
-      sb.append(sep);
-    }
-    if (s2 != null)
-    {
-      sb.append(s2);
-      sb.append(sep);
-    }
-    if (s3 != null) sb.append(s3);
     
+    String[] lines = toArray(t);
+    for (int i=0;i<lines.length;++i)
+    {
+      sb.append(lines[i]);
+      
+      // Trennzeichen bei der letzten Zeile weglassen
+      if (i+1 < lines.length)
+        sb.append(sep);
+    }
+
     String result = sb.toString();
     
     // Wenn als Trennzeichen "\n" angegeben ist, kann es
@@ -161,34 +169,39 @@ public class VerwendungszweckUtil
     // Andernfalls ersetzen wir es gegen das angegebene Zeichen
     return result.replace("\n",sep);
   }
+  
+  /**
+   * Bereinigt die Verwendungszweck-Zeilen.
+   * Hierbei werden leere Zeilen oder NULL-Elemente entfernt.
+   * Ausserdem werden alle Zeilen getrimt.
+   * @param lines die zu bereinigenden Zeilen.
+   * @return die bereinigten Zeilen.
+   */
+  private static List<String> clean(String... lines)
+  {
+    List<String> result = new ArrayList<String>();
+    if (lines == null || lines.length == 0)
+      return result;
+    
+    for (String line:lines)
+    {
+      if (line == null)
+        continue;
+      line = line.trim();
+      if (line.length() > 0)
+        result.add(line);
+    }
+    
+    return result;
+  }
 }
 
 
 /*********************************************************************
  * $Log: VerwendungszweckUtil.java,v $
- * Revision 1.8  2011/05/11 09:12:07  willuhn
+ * Revision 1.9  2011/06/07 10:07:50  willuhn
+ * @C Verwendungszweck-Handling vereinheitlicht/vereinfacht - geht jetzt fast ueberall ueber VerwendungszweckUtil
+ *
+ * Revision 1.8  2011-05-11 09:12:07  willuhn
  * @C Merge-Funktionen fuer den Verwendungszweck ueberarbeitet
- *
- * Revision 1.7  2010-11-19 17:02:06  willuhn
- * @N VWZUtil#toString
- *
- * Revision 1.6  2010/06/01 11:02:18  willuhn
- * @N Wiederverwendbaren Code zum Zerlegen und Uebernehmen von Verwendungszwecken aus/in Arrays in Util-Klasse ausgelagert
- *
- * Revision 1.5  2008/12/14 23:18:35  willuhn
- * @N BUGZILLA 188 - REFACTORING
- *
- * Revision 1.4  2008/11/26 00:39:36  willuhn
- * @N Erste Version erweiterter Verwendungszwecke. Muss dringend noch getestet werden.
- *
- * Revision 1.3  2008/05/30 12:02:08  willuhn
- * @N Erster Code fuer erweiterte Verwendungszwecke - NOCH NICHT FREIGESCHALTET!
- *
- * Revision 1.2  2008/02/22 00:52:35  willuhn
- * @N Erste Dialoge fuer erweiterte Verwendungszwecke (noch auskommentiert)
- *
- * Revision 1.1  2008/02/15 17:39:10  willuhn
- * @N BUGZILLA 188 Basis-API fuer weitere Zeilen Verwendungszweck. GUI fehlt noch
- * @N DB-Update 0005. Speichern des Textschluessels bei Sammelauftragsbuchungen in der Datenbank
- *
  **********************************************************************/

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/DTAUSUmsatzImporter.java,v $
- * $Revision: 1.10 $
- * $Date: 2009/06/15 08:51:16 $
+ * $Revision: 1.11 $
+ * $Date: 2011/06/07 10:07:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,11 +16,13 @@ package de.willuhn.jameica.hbci.io;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import de.jost_net.OBanToo.Dtaus.ASatz;
 import de.jost_net.OBanToo.Dtaus.CSatz;
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -55,20 +57,14 @@ public class DTAUSUmsatzImporter extends AbstractDTAUSImporter
     u.setGegenkontoBLZ(Long.toString(csatz.getBlzEndbeguenstigt()));
     u.setGegenkontoName(csatz.getNameEmpfaenger());
     u.setGegenkontoNummer(Long.toString(csatz.getKontonummer()));
-    u.setZweck(csatz.getVerwendungszweck(1));
-
-    int z = csatz.getAnzahlVerwendungszwecke();
-    if (z > 1)
-      u.setZweck2(csatz.getVerwendungszweck(2));
-
-    // Erweiterte Verwendungszwecke?
-    if (z > 2)
+    
+    List<String> lines = new ArrayList<String>();
+    for (int i=1;i<=csatz.getAnzahlVerwendungszwecke();++i)
     {
-      ArrayList l = new ArrayList();
-      for (int i=3;i<=z;++i)
-        l.add(csatz.getVerwendungszweck(i));
-      u.setWeitereVerwendungszwecke((String[])l.toArray(new String[l.size()]));
+      lines.add(csatz.getVerwendungszweck(i));
     }
+    VerwendungszweckUtil.apply(u,lines.toArray(new String[lines.size()]));
+    
     u.store();
   
   }
@@ -89,6 +85,9 @@ public class DTAUSUmsatzImporter extends AbstractDTAUSImporter
 
 /*********************************************************************
  * $Log: DTAUSUmsatzImporter.java,v $
+ * Revision 1.11  2011/06/07 10:07:50  willuhn
+ * @C Verwendungszweck-Handling vereinheitlicht/vereinfacht - geht jetzt fast ueberall ueber VerwendungszweckUtil
+ *
  * Revision 1.10  2009/06/15 08:51:16  willuhn
  * @N BUGZILLA 736
  *

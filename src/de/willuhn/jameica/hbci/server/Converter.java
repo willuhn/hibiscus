@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.58 $
- * $Date: 2010/09/29 22:39:18 $
+ * $Revision: 1.59 $
+ * $Date: 2011/06/07 10:07:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -42,28 +42,9 @@ public class Converter {
 
 	/**
 	 * Konvertiert einen einzelnen Umsatz von HBCI4Java nach Hibiscus.
-	 * <br>
-	 * <b>WICHTIG:</b><br>
-	 * <ul>
-	 * 	<li>
-	 * 		Da das <code>UmsLine</code> zwar die Kundennummer
-	 *    enthaelt, nicht aber das konkrete Konto, auf das sich der Umsatz
-	 * 		bezieht, wird das Feld leer gelassen. Es ist daher Sache des Aufrufers,
-	 * 		noch die Funktion <code>umsatz.setKonto(Konto)</code> aufzurufen, damit
-	 * 		das Objekt in der Datenbank gespeichert werden kann.
-	 *  </li>
-	 *  <li>
-	 * 		Eine Buchung enthaelt typischerweise einen Empfaenger ;)
-	 *    Bei Haben-Buchungen ist man selbst dieser. Von daher bleibt
-	 *    der Empfaenger bei eben jenen leer. Bei Soll-Buchungen wird die
-	 *    Bankverbindung des Gegenkontos ermittelt, damit ein <code>Empfaenger</code>
-	 *    erzeugt und dieser im Umsatz-Objekt gesetzt. Es wird jedoch nocht nicht
-	 *    in der Datenbank gespeichert. Vorm Speichern des Umsatzes muss also
-	 *    noch ein <code>umsatz.getEmpfaenger().store()</code> gemacht werden.<br>
-	 *    Hinweis: Laut JavaDoc von HBCI4Java ist das Gegenkonto optional. Es
-	 *    kann also auch bei Soll-Buchungen fehlen.
-	 *  </li>
-	 * </ul>
+	 * Wichtig: Das zugeordnete Konto wird nicht gefuellt. Es ist daher Sache 
+	 * des Aufrufers, noch die Funktion <code>umsatz.setKonto(Konto)</code> aufzurufen,
+	 * damit das Objekt in der Datenbank gespeichert werden kann.
 	 * @param u der zu convertierende Umsatz.
    * @return das neu erzeugte Umsatz-Objekt.
 	 * @throws RemoteException
@@ -172,32 +153,17 @@ public class Converter {
 		// Jetzt noch der Empfaenger
 		auftrag.setGegenkonto(HBCIKonto2Address(d.other));
 
-		// Verwendungszweck
-		if (d.usage.length == 0)
-		{
-			auftrag.setZweck("-");
-		}
-		else {
-			auftrag.setZweck(d.usage[0]);
-		}
-
 		// Textschlüssel
 		auftrag.setTextSchluessel(d.key);
 		
-		// Wir haben nur zwei Felder fuer den Zweck. Wenn also mehr als
-		// 2 vorhanden sind (kann das ueberhaupt sein?), muessen wir die
-		// restlichen leider ignorieren um nicht ueber die 27-Zeichen Maximum
-		// pro Zweck zu kommen.
-		if (d.usage.length > 1)
-    {
-      // BUGZILLA 517
-      String usage2 = d.usage[1];
-      if (usage2 != null)
-        usage2 = usage2.trim();
-      if (usage2 != null && usage2.length() > 0)
-        auftrag.setZweck2(usage2);
-    }
-
+		// Verwendungszweck
+		VerwendungszweckUtil.apply(auftrag,d.usage);
+		
+		// Es kann wohl Faelle geben, wo der Auftrag keinen Verwendungszweck hat.
+		// In dem Fall tragen wir ein "-" ein.
+		if (auftrag.getZweck() == null)
+		  auftrag.setZweck("-");
+		
 		auftrag.setTurnus(TurnusHelper.createByDauerAuftrag(d));
 		return auftrag;
 	}
@@ -364,24 +330,15 @@ public class Converter {
 
       tr.otherAccount = other;
 			tr.value = new Value(String.valueOf(b.getBetrag()));
-			tr.addUsage(b.getZweck());
       
       String key = b.getTextSchluessel();
       if (key != null && key.length() > 0)
         tr.key = key; // Nur setzen, wenn in der Buchung definiert. Gibt sonst in DTAUS#toString eine NPE
-			String z2 = b.getZweck2();
-			if (z2 != null && z2.length() > 0)
-				tr.addUsage(z2);
 
-      String[] lines = b.getWeitereVerwendungszwecke();
-      if (lines != null)
+      String[] lines = VerwendungszweckUtil.toArray(b);
+      for (String line:lines)
       {
-        for (int i=0;i<lines.length;++i)
-        {
-          if (lines[i] == null || lines[i].length() == 0) // Leerzeilen ignorieren
-            continue;
-          tr.addUsage(lines[i]);
-        }
+        tr.addUsage(line);
       }
 			
 			dtaus.addEntry(tr);
@@ -394,7 +351,10 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
- * Revision 1.58  2010/09/29 22:39:18  willuhn
+ * Revision 1.59  2011/06/07 10:07:50  willuhn
+ * @C Verwendungszweck-Handling vereinheitlicht/vereinfacht - geht jetzt fast ueberall ueber VerwendungszweckUtil
+ *
+ * Revision 1.58  2010-09-29 22:39:18  willuhn
  * @N Passport automatisch im neuen Konto speichern
  *
  * Revision 1.57  2010-09-24 12:22:04  willuhn
@@ -405,35 +365,4 @@ public class Converter {
  *
  * Revision 1.55  2010/01/18 17:29:27  willuhn
  * @N IBAN/BIC statt Kontonummer/BLZ uebernehmen, falls keine Kto-Nummer/BLZ angegeben ist
- *
- * Revision 1.54  2009/10/20 23:12:58  willuhn
- * @N Support fuer SEPA-Ueberweisungen
- * @N Konten um IBAN und BIC erweitert
- *
- * Revision 1.53  2009/02/23 23:44:50  willuhn
- * @N Etwas Code fuer Support fuer Unter-/Ober-Kategorien
- *
- * Revision 1.52  2009/02/12 16:14:33  willuhn
- * @N HBCI4Java-Version mit Unterstuetzung fuer vorgemerkte Umsaetze
- *
- * Revision 1.51  2009/01/25 18:04:08  willuhn
- * @B BUGZILLA 694
- *
- * Revision 1.50  2009/01/20 09:43:34  willuhn
- * @C Verteilen der Verwendungszwecke vereinfacht
- *
- * Revision 1.49  2008/12/01 23:54:42  willuhn
- * @N BUGZILLA 188 Erweiterte Verwendungszwecke in Exports/Imports und Sammelauftraegen
- *
- * Revision 1.48  2008/11/26 00:39:36  willuhn
- * @N Erste Version erweiterter Verwendungszwecke. Muss dringend noch getestet werden.
- *
- * Revision 1.47  2008/11/25 01:03:12  willuhn
- * *** empty log message ***
- *
- * Revision 1.46  2008/11/24 00:12:07  willuhn
- * @R Spezial-Umsatzparser entfernt - wird kuenftig direkt in HBCI4Java gemacht
- *
- * Revision 1.45  2008/11/17 23:30:00  willuhn
- * @C Aufrufe der depeicated BLZ-Funktionen angepasst
  **********************************************************************/

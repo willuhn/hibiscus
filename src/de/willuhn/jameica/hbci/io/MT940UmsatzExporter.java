@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/MT940UmsatzExporter.java,v $
- * $Revision: 1.6 $
- * $Date: 2011/02/28 10:36:54 $
+ * $Revision: 1.7 $
+ * $Date: 2011/06/07 10:07:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,6 +27,7 @@ import de.willuhn.datasource.BeanUtil;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -106,24 +107,17 @@ public class MT940UmsatzExporter implements Exporter
 
     		out.write(":86:?00" + notNull(u.getArt(),"") + "?10" + notNull(u.getPrimanota(),""));
     		
-    		//Verwendungszweck 1
-    		String s1   = u.getZweck();
-    		String s2   = u.getZweck2();
-    		String[] s3 = u.getWeitereVerwendungszwecke();
-    		
-    		if (s1 != null && s1.length() > 0)
-    		  out.write("?20" + s1);
-    			
-        if (s2 != null && s2.length() > 0)
-          out.write("?21" + s2);
-
-        if (s3 != null)
-        {
-          for (int j=0;j<s3.length;++j)
-          {
-            out.write("?2" + (j+2) + s3[j]);
-          }
-        }
+    		//Verwendungszweck
+    		String[] lines = VerwendungszweckUtil.toArray(u);
+    		for (int m=0;m<lines.length;++m)
+    		{
+      		// in MT940 sind nur max. 10 Zeilen zugelassen. Die restlichen muessen wir
+    		  // ignorieren. Siehe FinTS_3.0_Messages_Finanzdatenformate_2010-08-06_final_version.pdf
+    		  // (Seite 179, strukturierte Belegung des Feldes 86)
+    		  if (m > 9)
+    		    break;
+          out.write("?2" + Integer.toString(m) + lines[m]);
+    		}
 
         String blz = u.getGegenkontoBLZ();
         String kto = u.getGegenkontoNummer();
@@ -248,7 +242,10 @@ public class MT940UmsatzExporter implements Exporter
 
 /*********************************************************************
  * $Log: MT940UmsatzExporter.java,v $
- * Revision 1.6  2011/02/28 10:36:54  willuhn
+ * Revision 1.7  2011/06/07 10:07:50  willuhn
+ * @C Verwendungszweck-Handling vereinheitlicht/vereinfacht - geht jetzt fast ueberall ueber VerwendungszweckUtil
+ *
+ * Revision 1.6  2011-02-28 10:36:54  willuhn
  * @R t o d o  entfernt
  *
  * Revision 1.5  2011-01-12 18:03:14  willuhn

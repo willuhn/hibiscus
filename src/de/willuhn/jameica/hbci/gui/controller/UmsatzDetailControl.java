@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailControl.java,v $
- * $Revision: 1.42 $
- * $Date: 2010/09/27 11:51:38 $
+ * $Revision: 1.43 $
+ * $Date: 2011/06/07 10:07:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -39,6 +39,7 @@ import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
+import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -360,29 +361,7 @@ public class UmsatzDetailControl extends AbstractControl {
 	{
 	  if (this.zweck == null)
 	  {
-	    StringBuffer sb = new StringBuffer();
-	    String z1 = getUmsatz().getZweck();
-	    if (z1 != null && z1.length() > 0)
-	    {
-        sb.append(z1);
-        sb.append("\n");
-	    }
-      String z2 = getUmsatz().getZweck2();
-      if (z2 != null && z2.length() > 0)
-      {
-        sb.append(z2);
-        sb.append("\n");
-      }
-      String[] lines = getUmsatz().getWeitereVerwendungszwecke();
-      for (int i=0;i<lines.length;++i)
-      {
-        if (lines[i] == null || lines[i].length() == 0)
-          continue;
-        sb.append(lines[i]);
-        sb.append("\n");
-      }
-      
-      this.zweck = new TextAreaInput(sb.toString());
+      this.zweck = new TextAreaInput(VerwendungszweckUtil.toString(getUmsatz(),"\n"));
       this.zweck.setEnabled(false);
 	  }
 	  return this.zweck;
@@ -417,7 +396,10 @@ public class UmsatzDetailControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzDetailControl.java,v $
- * Revision 1.42  2010/09/27 11:51:38  willuhn
+ * Revision 1.43  2011/06/07 10:07:50  willuhn
+ * @C Verwendungszweck-Handling vereinheitlicht/vereinfacht - geht jetzt fast ueberall ueber VerwendungszweckUtil
+ *
+ * Revision 1.42  2010-09-27 11:51:38  willuhn
  * @N BUGZILLA 804
  *
  * Revision 1.41  2010/03/05 23:52:27  willuhn

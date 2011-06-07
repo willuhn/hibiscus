@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/DTAUSTransferImporter.java,v $
- * $Revision: 1.11 $
- * $Date: 2009/06/15 08:51:16 $
+ * $Revision: 1.12 $
+ * $Date: 2011/06/07 10:07:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.io;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.List;
 
 import de.jost_net.OBanToo.Dtaus.ASatz;
 import de.jost_net.OBanToo.Dtaus.CSatz;
@@ -22,6 +23,7 @@ import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
+import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -49,20 +51,14 @@ public class DTAUSTransferImporter extends AbstractDTAUSImporter
     t.setGegenkontoBLZ(Long.toString(csatz.getBlzEndbeguenstigt()));
     t.setGegenkontoName(csatz.getNameEmpfaenger());
     t.setGegenkontoNummer(Long.toString(csatz.getKontonummer()));
-    t.setZweck(csatz.getVerwendungszweck(1));
     
-    int z = csatz.getAnzahlVerwendungszwecke();
-    if (z > 1)
-      t.setZweck2(csatz.getVerwendungszweck(2));
-    
-    // Erweiterte Verwendungszwecke?
-    if (z > 2)
+    List<String> lines = new ArrayList<String>();
+    for (int i=1;i<=csatz.getAnzahlVerwendungszwecke();++i)
     {
-      ArrayList l = new ArrayList();
-      for (int i=3;i<=z;++i)
-        l.add(csatz.getVerwendungszweck(i));
-      t.setWeitereVerwendungszwecke((String[])l.toArray(new String[l.size()]));
+      lines.add(csatz.getVerwendungszweck(i));
     }
+    VerwendungszweckUtil.apply(t,lines.toArray(new String[lines.size()]));
+    
     t.store();
   }
 
@@ -83,6 +79,9 @@ public class DTAUSTransferImporter extends AbstractDTAUSImporter
 
 /*********************************************************************
  * $Log: DTAUSTransferImporter.java,v $
+ * Revision 1.12  2011/06/07 10:07:50  willuhn
+ * @C Verwendungszweck-Handling vereinheitlicht/vereinfacht - geht jetzt fast ueberall ueber VerwendungszweckUtil
+ *
  * Revision 1.11  2009/06/15 08:51:16  willuhn
  * @N BUGZILLA 736
  *

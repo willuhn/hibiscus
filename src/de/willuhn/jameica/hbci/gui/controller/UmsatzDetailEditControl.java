@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailEditControl.java,v $
- * $Revision: 1.9 $
- * $Date: 2011/04/07 17:52:06 $
+ * $Revision: 1.10 $
+ * $Date: 2011/06/07 10:07:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,9 +14,7 @@
 package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -33,6 +31,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
+import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
@@ -261,29 +260,15 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
       u.setValuta((Date)getValuta().getValue());
       
       String z = (String) getZweck().getValue();
+      
+      // Erstmal die Zeilen loeschen
       u.setZweck(null);
       u.setZweck2(null);
       u.setWeitereVerwendungszwecke(null);
-      if (z != null && z.length() > 0)
-      {
-        String[] lines = z.split("\n");
-        List<String> list = new ArrayList<String>();
-        for (int i=0;i<lines.length;++i)
-        {
-          if (lines[i] == null)
-            continue;
-          String s = lines[i].trim();  // skip empty lines
-          if (s.length() > 0)
-            list.add(s);
-        }
-        if (list.size() > 0)
-          u.setZweck(list.remove(0));
-        if (list.size() > 0)
-          u.setZweck2(list.remove(0));
-        
-        // Noch Zeilen uebrig?
-        u.setWeitereVerwendungszwecke(list.toArray(new String[list.size()]));
-      }
+      
+      // Und jetzt neu verteilen
+      String[] lines = VerwendungszweckUtil.split(z);
+      VerwendungszweckUtil.apply(u,lines);
       
       getUmsatz().store();
 
@@ -379,7 +364,10 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
 
 /**********************************************************************
  * $Log: UmsatzDetailEditControl.java,v $
- * Revision 1.9  2011/04/07 17:52:06  willuhn
+ * Revision 1.10  2011/06/07 10:07:50  willuhn
+ * @C Verwendungszweck-Handling vereinheitlicht/vereinfacht - geht jetzt fast ueberall ueber VerwendungszweckUtil
+ *
+ * Revision 1.9  2011-04-07 17:52:06  willuhn
  * @N BUGZILLA 1014
  *
  * Revision 1.8  2010-11-08 10:46:33  willuhn

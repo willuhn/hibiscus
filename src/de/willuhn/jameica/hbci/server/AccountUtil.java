@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Attic/AccountUtil.java,v $
- * $Revision: 1.5 $
- * $Date: 2008/12/14 23:18:35 $
+ * $Revision: 1.6 $
+ * $Date: 2011/06/07 10:07:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -113,7 +113,7 @@ public class AccountUtil
     if ((lines.length + 2) > allowed)
     {
       I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-      throw new ApplicationException(i18n.tr("Zuviele weitere Zeilen Verwendungszweck. Maximal erlaubt: {0}",String.valueOf(allowed)));
+      throw new ApplicationException(i18n.tr("Zuviele Verwendungszweck-Zeilen. Maximal erlaubt: {0}",String.valueOf(allowed)));
     }
   }
 
@@ -122,6 +122,9 @@ public class AccountUtil
 
 /**********************************************************************
  * $Log: AccountUtil.java,v $
+ * Revision 1.6  2011/06/07 10:07:50  willuhn
+ * @C Verwendungszweck-Handling vereinheitlicht/vereinfacht - geht jetzt fast ueberall ueber VerwendungszweckUtil
+ *
  * Revision 1.5  2008/12/14 23:18:35  willuhn
  * @N BUGZILLA 188 - REFACTORING
  *
