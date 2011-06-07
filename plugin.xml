@@ -34,7 +34,6 @@
       <item id="hibiscus.menu.handbuch"              name="&amp;Handbuch"                                      icon="edit-copy.png"                   action="de.willuhn.jameica.hbci.gui.action.HandbuchAction"/>
       <item id="hibiscus.menu.license"               name="&amp;Lizenzinformationen"                           icon="text-x-generic.png"              action="de.willuhn.jameica.hbci.gui.action.License" />
       <item id="hibiscus.menu.about"                 name="&amp;Über"                                          icon="gtk-info.png"                    action="de.willuhn.jameica.hbci.gui.action.About" />
-      <item id="hibiscus.menu.test"                 name="Test"                                          icon="gtk-info.png"                    action="ChiptanTest" />
     </item>
   </menu>
 
