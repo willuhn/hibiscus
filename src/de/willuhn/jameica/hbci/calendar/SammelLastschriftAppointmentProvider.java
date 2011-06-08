@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/calendar/SammelLastschriftAppointmentProvider.java,v $
- * $Revision: 1.4 $
- * $Date: 2011/01/20 17:12:39 $
+ * $Revision: 1.5 $
+ * $Date: 2011/06/08 15:29:09 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -156,7 +156,7 @@ public class SammelLastschriftAppointmentProvider implements AppointmentProvider
     public RGB getColor()
     {
       if (hasAlarm())
-        return Settings.getBuchungSollForeground().getRGB();
+        return Settings.getBuchungHabenForeground().getRGB();
       return Color.COMMENT.getSWTColor().getRGB();
     }
 
@@ -198,7 +198,10 @@ public class SammelLastschriftAppointmentProvider implements AppointmentProvider
 
 /**********************************************************************
  * $Log: SammelLastschriftAppointmentProvider.java,v $
- * Revision 1.4  2011/01/20 17:12:39  willuhn
+ * Revision 1.5  2011/06/08 15:29:09  willuhn
+ * @B Falsche Farbe
+ *
+ * Revision 1.4  2011-01-20 17:12:39  willuhn
  * @C geaendertes Appointment-Interface
  *
  * Revision 1.3  2010-11-22 00:52:53  willuhn
