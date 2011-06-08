@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/FirstStart.java,v $
- * $Revision: 1.10 $
- * $Date: 2011/05/03 11:07:39 $
+ * $Revision: 1.11 $
+ * $Date: 2011/06/08 13:37:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,12 +15,17 @@ package de.willuhn.jameica.hbci.gui.boxes;
 
 import java.rmi.RemoteException;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.boxes.AbstractBox;
 import de.willuhn.jameica.gui.parts.ButtonArea;
-import de.willuhn.jameica.gui.util.Container;
-import de.willuhn.jameica.gui.util.SimpleContainer;
+import de.willuhn.jameica.gui.util.Font;
+import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.KontoList;
@@ -67,7 +72,7 @@ public class FirstStart extends AbstractBox
    */
   public String getName()
   {
-    return "Hibiscus: " + i18n.tr("Erste Schritte");
+    return "Hibiscus: " + i18n.tr("Bank-Zugang einrichten");
   }
   
   /**
@@ -85,16 +90,48 @@ public class FirstStart extends AbstractBox
    */
   public void paint(Composite parent) throws RemoteException
   {
-    Container container = new SimpleContainer(parent);
-    container.addText(i18n.tr("Sie starten Hibiscus zum ersten Mal.\n\nBitte richten Sie " +
-        "zunächst einen Bank-Zugang (Chipkarte, Schlüsseldiskette oder PIN/TAN) ein. " +
-        "Wechseln Sie anschließend zur Konten-Übersicht und prüfen Sie die angelegten Konten. " +
-        "Falls sie nicht automatisch angelegt wurden, dann erstellen Sie das Konto bitte manuell."),true);
-
+    org.eclipse.swt.graphics.Color white = GUI.getDisplay().getSystemColor(SWT.COLOR_WHITE);
+    
+    // 2-spaltige Anzeige. Links das Icon, rechts Text und Buttons
+    Composite comp = new Composite(parent,SWT.BORDER);
+    comp.setBackground(white);
+    comp.setBackgroundMode(SWT.INHERIT_FORCE);
+    comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+    comp.setLayout(new GridLayout(2,false));
+    
+    // Linke Spalte mit dem Icon
+    {
+      GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.VERTICAL_ALIGN_BEGINNING);
+      gd.verticalSpan = 3;
+      Label icon = new Label(comp,SWT.NONE);
+      icon.setBackground(white);
+      icon.setLayoutData(gd);
+      icon.setImage(SWTUtil.getImage("hibiscus-icon-64x64.png"));
+    }
+    
+    // Ueberschrift
+    {
+      Label title = new Label(comp,SWT.NONE);
+      title.setBackground(white);
+      title.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      title.setFont(Font.H2.getSWTFont());
+      title.setText(i18n.tr("Sie starten Hibiscus zum ersten Mal."));
+    }
+    
+    // Text
+    {
+      Label desc = new Label(comp,SWT.WRAP);
+      desc.setBackground(white);
+      desc.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      desc.setText(i18n.tr("Bitte richten Sie zunächst einen Bank-Zugang (Chipkarte, Schlüsseldiskette oder PIN/TAN) ein.\n\n" +
+          "Wechseln Sie anschließend zur Konten-Übersicht und prüfen Sie die angelegten Konten. " +
+          "Falls sie nicht automatisch angelegt wurden, dann erstellen Sie das Konto bitte manuell."));
+    }
+      
     ButtonArea buttons = new ButtonArea();
-    buttons.addButton(i18n.tr("Bank-Zugang einrichten >>"),new PassportDetail(),null,true,"seahorse-preferences.png");
+    buttons.addButton(i18n.tr("Bank-Zugang einrichten"),new PassportDetail(),null,true,"seahorse-preferences.png");
     buttons.addButton(i18n.tr("Konten-Übersicht"),new KontoList(),null,false,"system-file-manager.png");
-    container.addButtonArea(buttons);
+    buttons.paint(comp);
   }
 
   /**
@@ -109,7 +146,10 @@ public class FirstStart extends AbstractBox
 
 /*********************************************************************
  * $Log: FirstStart.java,v $
- * Revision 1.10  2011/05/03 11:07:39  willuhn
+ * Revision 1.11  2011/06/08 13:37:00  willuhn
+ * @N Neuer First-Start-Assistent
+ *
+ * Revision 1.10  2011-05-03 11:07:39  willuhn
  * @N Styling-Fixes fuer Windows (Background)
  *
  * Revision 1.9  2011-04-29 11:38:58  willuhn
