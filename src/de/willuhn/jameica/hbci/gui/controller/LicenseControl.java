@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/LicenseControl.java,v $
- * $Revision: 1.15 $
- * $Date: 2011/04/26 12:15:51 $
+ * $Revision: 1.16 $
+ * $Date: 2011/06/08 09:16:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -71,10 +71,9 @@ public class LicenseControl extends AbstractControl {
     if (manifest != null)
     {
       buffer.append("<p>");
-      buffer.append("<br/>" + i18n.tr("Version") + ": " + manifest.getVersion());
-      buffer.append("<br/>" + i18n.tr("Beschreibung") + ": " + manifest.getDescription());
-      buffer.append("<br/>" + i18n.tr("URL") + ": " + manifest.getURL());
-      buffer.append("<br/>" + i18n.tr("Lizenz") + ": " + manifest.getLicense());
+      buffer.append(manifest.getDescription());
+      buffer.append("<br/>" + manifest.getHomepage());
+      buffer.append("<br/>" + manifest.getLicense());
       buffer.append("</p>");
     }
 
@@ -96,10 +95,9 @@ public class LicenseControl extends AbstractControl {
         InfoReader ir = new InfoReader(new FileInputStream(infos[i]));
         buffer.append("<p>");
         buffer.append("<b>" + ir.getName() + "</b>");
-        buffer.append("<br/>" + i18n.tr("Beschreibung") + ": " + ir.getDescription());
-        buffer.append("<br/>" + i18n.tr("Verzeichnis") + ": " + infos[i].getParentFile().getAbsolutePath());
-        buffer.append("<br/>" + i18n.tr("URL") + ": " + ir.getUrl());
-        buffer.append("<br/>" + i18n.tr("Lizenz") + ": " + ir.getLicense());
+        buffer.append("<br/>" + ir.getDescription());
+        buffer.append("<br/>" + ir.getUrl());
+        buffer.append("<br/>" + ir.getLicense());
         buffer.append("</p>");
       }
       catch (Exception e)
@@ -117,7 +115,10 @@ public class LicenseControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: LicenseControl.java,v $
- * Revision 1.15  2011/04/26 12:15:51  willuhn
+ * Revision 1.16  2011/06/08 09:16:51  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.15  2011-04-26 12:15:51  willuhn
  * @B Potentielle Bugs gemaess Code-Checker
  *
  * Revision 1.14  2009/03/10 23:51:31  willuhn
