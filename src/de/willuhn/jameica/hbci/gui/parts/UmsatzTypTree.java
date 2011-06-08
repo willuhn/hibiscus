@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTypTree.java,v $
- * $Revision: 1.17 $
- * $Date: 2011/02/09 08:32:16 $
+ * $Revision: 1.18 $
+ * $Date: 2011/06/08 08:12:48 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -72,7 +72,7 @@ public class UmsatzTypTree extends TreePart
     super(init(), action);
     this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     addColumn(i18n.tr("Bezeichnung"),"name");
-    addColumn(i18n.tr("Nummer"),"nummer"); // BUGZILLA 554/988
+    addColumn(i18n.tr("Reihenfolge"),"nummer"); // BUGZILLA 554/988
     addColumn(i18n.tr("Suchbegriff"),"pattern"); // BUGZILLA 756
     addColumn(i18n.tr("Umsatzart"),"umsatztyp",new Formatter() {
       public String format(Object o)
@@ -200,7 +200,10 @@ public class UmsatzTypTree extends TreePart
 
 /**********************************************************************
  * $Log: UmsatzTypTree.java,v $
- * Revision 1.17  2011/02/09 08:32:16  willuhn
+ * Revision 1.18  2011/06/08 08:12:48  willuhn
+ * @C BUGZILLA 988 "Nummer" in "Reihenfolge" geaendert
+ *
+ * Revision 1.17  2011-02-09 08:32:16  willuhn
  * @B BUGZILLA 988
  *
  * Revision 1.16  2010/04/16 12:46:03  willuhn
