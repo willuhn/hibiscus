@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/MT940UmsatzExporter.java,v $
- * $Revision: 1.8 $
- * $Date: 2011/06/09 08:40:33 $
+ * $Revision: 1.9 $
+ * $Date: 2011/06/09 08:50:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -105,7 +105,7 @@ public class MT940UmsatzExporter implements Exporter
     		
     		out.write("NTRF" + notNull(u.getCustomerRef(),"NONREF") + NL);
 
-    		// TODO: Der GV-Code sollte mit von der Bank abgerufen werden. Dann koennen wir ihn hier auch mit exportieren.
+    		// TODO: (BUGZILLA 1065) Der GV-Code sollte mit von der Bank abgerufen werden. Dann koennen wir ihn hier auch mit exportieren.
     		// Im Moment koennen wir hier leider nur zwischen Soll- und Haben-Buchung unterscheiden und mehr oder weniger raten.
     		// 051 = Ueberweisungsgutschrift
     		// 020 = Ueberweisungsauftrag
@@ -249,7 +249,10 @@ public class MT940UmsatzExporter implements Exporter
 
 /*********************************************************************
  * $Log: MT940UmsatzExporter.java,v $
- * Revision 1.8  2011/06/09 08:40:33  willuhn
+ * Revision 1.9  2011/06/09 08:50:19  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.8  2011-06-09 08:40:33  willuhn
  * @B BUGZILLA 669 - GV-Code fehlte in Feld :86:
  *
  * Revision 1.7  2011-06-07 10:07:50  willuhn
