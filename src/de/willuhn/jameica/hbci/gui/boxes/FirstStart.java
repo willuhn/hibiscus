@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/FirstStart.java,v $
- * $Revision: 1.11 $
- * $Date: 2011/06/08 13:37:00 $
+ * $Revision: 1.12 $
+ * $Date: 2011/06/09 10:07:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -32,6 +32,7 @@ import de.willuhn.jameica.hbci.gui.action.KontoList;
 import de.willuhn.jameica.hbci.gui.action.PassportDetail;
 import de.willuhn.jameica.plugin.Manifest;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.Platform;
 import de.willuhn.util.I18N;
 
 /**
@@ -90,11 +91,21 @@ public class FirstStart extends AbstractBox
    */
   public void paint(Composite parent) throws RemoteException
   {
-    org.eclipse.swt.graphics.Color white = GUI.getDisplay().getSystemColor(SWT.COLOR_WHITE);
+    // Wir unterscheiden hier beim Layout nach Windows/OSX und Rest.
+    // Unter Windows und OSX sieht es ohne Rahmen und ohne Hintergrund besser aus
+    org.eclipse.swt.graphics.Color bg = null;
+    int border = SWT.NONE;
+    
+    int os = Application.getPlatform().getOS();
+    if (os != Platform.OS_WINDOWS && os != Platform.OS_WINDOWS_64 && os != Platform.OS_MAC)
+    {
+      bg = GUI.getDisplay().getSystemColor(SWT.COLOR_WHITE);
+      border = SWT.BORDER;
+    }
     
     // 2-spaltige Anzeige. Links das Icon, rechts Text und Buttons
-    Composite comp = new Composite(parent,SWT.BORDER);
-    comp.setBackground(white);
+    Composite comp = new Composite(parent,border);
+    comp.setBackground(bg);
     comp.setBackgroundMode(SWT.INHERIT_FORCE);
     comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     comp.setLayout(new GridLayout(2,false));
@@ -104,7 +115,7 @@ public class FirstStart extends AbstractBox
       GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.VERTICAL_ALIGN_BEGINNING);
       gd.verticalSpan = 3;
       Label icon = new Label(comp,SWT.NONE);
-      icon.setBackground(white);
+      icon.setBackground(bg);
       icon.setLayoutData(gd);
       icon.setImage(SWTUtil.getImage("hibiscus-icon-64x64.png"));
     }
@@ -112,7 +123,7 @@ public class FirstStart extends AbstractBox
     // Ueberschrift
     {
       Label title = new Label(comp,SWT.NONE);
-      title.setBackground(white);
+      title.setBackground(bg);
       title.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       title.setFont(Font.H2.getSWTFont());
       title.setText(i18n.tr("Sie starten Hibiscus zum ersten Mal."));
@@ -121,7 +132,7 @@ public class FirstStart extends AbstractBox
     // Text
     {
       Label desc = new Label(comp,SWT.WRAP);
-      desc.setBackground(white);
+      desc.setBackground(bg);
       desc.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       desc.setText(i18n.tr("Bitte richten Sie zunächst einen Bank-Zugang (Chipkarte, Schlüsseldiskette oder PIN/TAN) ein.\n\n" +
           "Wechseln Sie anschließend zur Konten-Übersicht und prüfen Sie die angelegten Konten. " +
@@ -146,7 +157,10 @@ public class FirstStart extends AbstractBox
 
 /*********************************************************************
  * $Log: FirstStart.java,v $
- * Revision 1.11  2011/06/08 13:37:00  willuhn
+ * Revision 1.12  2011/06/09 10:07:45  willuhn
+ * @C Rahmen und Hintergrundfarbe nur unter Windows/OSX anzeigen
+ *
+ * Revision 1.11  2011-06-08 13:37:00  willuhn
  * @N Neuer First-Start-Assistent
  *
  * Revision 1.10  2011-05-03 11:07:39  willuhn
