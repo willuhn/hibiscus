@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.59 $
- * $Date: 2011/06/07 10:07:50 $
+ * $Revision: 1.60 $
+ * $Date: 2011/06/09 08:35:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -86,6 +86,9 @@ public class Converter {
     umsatz.setBetrag(betrag);
 		umsatz.setDatum(u.bdate);
 		umsatz.setValuta(u.valuta);
+		
+		// TODO: Der GV-Code aus der Umsatzzeile muss mit in Hibiscus uebernommen werden, da er beim MT940-Export wieder gebraucht wird
+		// umsatz.setGVCode(u.gvcode);
 
 		////////////////////////////////////////////////////////////////////////////
 		// Verwendungszweck
@@ -351,7 +354,10 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
- * Revision 1.59  2011/06/07 10:07:50  willuhn
+ * Revision 1.60  2011/06/09 08:35:18  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.59  2011-06-07 10:07:50  willuhn
  * @C Verwendungszweck-Handling vereinheitlicht/vereinfacht - geht jetzt fast ueberall ueber VerwendungszweckUtil
  *
  * Revision 1.58  2010-09-29 22:39:18  willuhn
