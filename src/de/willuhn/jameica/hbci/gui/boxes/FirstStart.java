@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/FirstStart.java,v $
- * $Revision: 1.12 $
- * $Date: 2011/06/09 10:07:45 $
+ * $Revision: 1.13 $
+ * $Date: 2011/06/10 10:32:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -150,14 +150,17 @@ public class FirstStart extends AbstractBox
    */
   public int getHeight()
   {
-    return 160;
+    return 180;
   }
 }
 
 
 /*********************************************************************
  * $Log: FirstStart.java,v $
- * Revision 1.12  2011/06/09 10:07:45  willuhn
+ * Revision 1.13  2011/06/10 10:32:43  willuhn
+ * @C In Ubuntu ist die Default-Schrift so gross, dass der Content nicht ganz rein passte
+ *
+ * Revision 1.12  2011-06-09 10:07:45  willuhn
  * @C Rahmen und Hintergrundfarbe nur unter Windows/OSX anzeigen
  *
  * Revision 1.11  2011-06-08 13:37:00  willuhn
