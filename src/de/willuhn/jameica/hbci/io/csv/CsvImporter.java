@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/csv/CsvImporter.java,v $
- * $Revision: 1.3 $
- * $Date: 2010/03/16 13:43:56 $
+ * $Revision: 1.4 $
+ * $Date: 2011/06/12 22:10:06 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -152,19 +152,17 @@ public class CsvImporter implements Importer
             try
             {
               // Werte zwischenspeichern
-              values.put(column.getProperty(),column.getSerializer().unserialize(object,value));
+              Object prev = values.get(column.getProperty());
+              values.put(column.getProperty(),column.getSerializer().unserialize(prev,value));
             }
             catch (Exception e)
             {
               Logger.error("unable to unserialize " + column.getProperty() + " for line " + csv.getLineNumber() + ", value: " + value,e);
-              String[] s = new String[]{value,
-                  column.getName(),
-                  e.getMessage()};
-              monitor.log("  " + i18n.tr("Ungültiger Wert \"{0}\" in Spalte \"{1}\": {2}",s));
+              monitor.log("  " + i18n.tr("Ungültiger Wert \"{0}\" in Spalte \"{1}\": {2}",value,column.getName(),e.getMessage()));
             }
           }
           
-          // beforeApply-Listener ausloesen
+          // beforeSet-Listener ausloesen
           if (l != null)
           {
             ImportEvent e = new ImportEvent();
@@ -392,6 +390,9 @@ public class CsvImporter implements Importer
 
 /**********************************************************************
  * $Log: CsvImporter.java,v $
+ * Revision 1.4  2011/06/12 22:10:06  willuhn
+ * @B BUGZILLA 1053
+ *
  * Revision 1.3  2010/03/16 13:43:56  willuhn
  * @N CSV-Import von Ueberweisungen und Lastschriften
  * @N Versionierbarkeit von serialisierten CSV-Profilen

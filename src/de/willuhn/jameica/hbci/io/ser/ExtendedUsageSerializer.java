@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/ser/ExtendedUsageSerializer.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/03/16 00:44:18 $
+ * $Revision: 1.2 $
+ * $Date: 2011/06/12 22:10:06 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -17,7 +17,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import de.willuhn.jameica.hbci.HBCIProperties;
-import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
 
 /**
  * Implementierung eines Serializers fuer erweiterte Verwendungszwecke.
@@ -49,21 +48,11 @@ public class ExtendedUsageSerializer extends DefaultSerializer<String[]>
     if (value == null || value.length() == 0)
       return null;
 
-    if (context == null || !(context instanceof HibiscusTransfer))
-    {
-      // Kein Hibiscus-Transfer. Wir wissen nicht, wie wir hier mit
-      // erweiterten Verwendungszwecken umgehen muessen. Daher liefern
-      // wir die Zeile einfach als Array zurueck.
-      return new String[]{value};
-    }
-
-    // So, jetzt holen wir uns die Verwendungszwecke, die bisher schon
-    // im Context stehen, und haengen die naechste Zeile an.
-    
-    // Das sind die bisherigen
-    HibiscusTransfer t = (HibiscusTransfer) context;
     List<String> lines = new ArrayList<String>();
-    lines.addAll(Arrays.asList(t.getWeitereVerwendungszwecke()));
+    
+    // Checken, ob wir schon vorherige Zeilen haben
+    if (context != null && (context instanceof String[]))
+      lines.addAll(Arrays.asList((String[])context));
     
     // Es kann sein, dass die erweiterten Verwendungszwecke in einer
     // langen Zeile vorliegen (so exportiert es Hibiscus auch).
@@ -92,6 +81,9 @@ public class ExtendedUsageSerializer extends DefaultSerializer<String[]>
 
 /**********************************************************************
  * $Log: ExtendedUsageSerializer.java,v $
+ * Revision 1.2  2011/06/12 22:10:06  willuhn
+ * @B BUGZILLA 1053
+ *
  * Revision 1.1  2010/03/16 00:44:18  willuhn
  * @N Komplettes Redesign des CSV-Imports.
  *   - Kann nun erheblich einfacher auch fuer andere Datentypen (z.Bsp.Ueberweisungen) verwendet werden
