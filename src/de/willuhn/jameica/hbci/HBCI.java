@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.122 $
- * $Date: 2011/06/01 21:21:31 $
+ * $Revision: 1.123 $
+ * $Date: 2011/06/17 16:06:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -29,12 +29,6 @@ import org.kapott.hbci.callback.HBCICallbackConsole;
 import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.jameica.hbci.gui.CustomDateFormat;
-import de.willuhn.jameica.hbci.messaging.InfoPointMessageConsumer;
-import de.willuhn.jameica.hbci.messaging.QueryAccountCRCMessageConsumer;
-import de.willuhn.jameica.hbci.messaging.QueryBanknameMessageConsumer;
-import de.willuhn.jameica.hbci.messaging.QueryHBCIVersionMessageConsumer;
-import de.willuhn.jameica.hbci.messaging.QueryIBANCRCMessageConsumer;
-import de.willuhn.jameica.hbci.messaging.TransferLastschriftMessageConsumer;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.server.DBSupportH2Impl;
 import de.willuhn.jameica.hbci.server.HBCIDBServiceImpl;
@@ -120,15 +114,6 @@ public class HBCI extends AbstractPlugin
     /////////////////////////////////////////////////////////////////
 
     initHBCI(getResources().getSettings().getString("hbcicallback.class",HBCICallbackSWT.class.getName()));
-
-    Logger.info("register message consumers for query lookups");
-    Application.getMessagingFactory().getMessagingQueue("hibiscus.passport.rdh.hbciversion").registerMessageConsumer(new QueryHBCIVersionMessageConsumer());
-    Application.getMessagingFactory().getMessagingQueue("hibiscus.query.bankname").registerMessageConsumer(new QueryBanknameMessageConsumer());
-    Application.getMessagingFactory().getMessagingQueue("hibiscus.query.accountcrc").registerMessageConsumer(new QueryAccountCRCMessageConsumer());
-    Application.getMessagingFactory().getMessagingQueue("hibiscus.query.ibancrc").registerMessageConsumer(new QueryIBANCRCMessageConsumer());
-    Application.getMessagingFactory().getMessagingQueue("hibiscus.transfer.lastschrift").registerMessageConsumer(new TransferLastschriftMessageConsumer());
-    Application.getMessagingFactory().getMessagingQueue("hibiscus.infopoint").registerMessageConsumer(new InfoPointMessageConsumer());
-    
     Application.getCallback().getStartupMonitor().addPercentComplete(5);
   }
 
@@ -377,7 +362,10 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
- * Revision 1.122  2011/06/01 21:21:31  willuhn
+ * Revision 1.123  2011/06/17 16:06:58  willuhn
+ * @N Die MessageConsumer fuer die benamten Queues werden jetzt in plugin.xml deklariert
+ *
+ * Revision 1.122  2011-06-01 21:21:31  willuhn
  * *** empty log message ***
  *
  * Revision 1.121  2010-11-02 11:32:09  willuhn

@@ -2,7 +2,7 @@
 
 <plugin xmlns="http://www.willuhn.de/schema/jameica-plugin"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.willuhn.de/schema/jameica-plugin http://www.willuhn.de/schema/jameica-plugin-1.1.xsd"
+        xsi:schemaLocation="http://www.willuhn.de/schema/jameica-plugin http://www.willuhn.de/schema/jameica-plugin-1.2.xsd"
         name="hibiscus" version="1.13.0-nightly" class="de.willuhn.jameica.hbci.HBCI">
 
   <description>HBCI-Onlinebanking-Plugin für Jameica</description>
@@ -73,6 +73,15 @@
     <service name="database"    depends="" autostart="true" class="de.willuhn.jameica.hbci.rmi.HBCIDBService" />
     <service name="addressbook" depends="" autostart="true" class="de.willuhn.jameica.hbci.rmi.AddressbookService" />
   </services>
+  
+  <messaging>
+    <consumer class="de.willuhn.jameica.hbci.messaging.QueryHBCIVersionMessageConsumer"    queue="hibiscus.passport.rdh.hbciversion" />
+    <consumer class="de.willuhn.jameica.hbci.messaging.QueryBanknameMessageConsumer"       queue="hibiscus.query.bankname" />
+    <consumer class="de.willuhn.jameica.hbci.messaging.QueryAccountCRCMessageConsumer"     queue="hibiscus.query.accountcrc" />
+    <consumer class="de.willuhn.jameica.hbci.messaging.QueryIBANCRCMessageConsumer"        queue="hibiscus.query.ibancrc" />
+    <consumer class="de.willuhn.jameica.hbci.messaging.TransferLastschriftMessageConsumer" queue="hibiscus.transfer.lastschrift" />
+    <consumer class="de.willuhn.jameica.hbci.messaging.InfoPointMessageConsumer"           queue="hibiscus.infopoint" />
+  </messaging>
 
 </plugin>
 
