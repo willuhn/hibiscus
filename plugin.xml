@@ -11,7 +11,7 @@
   <license>GPL - http://www.gnu.org/copyleft/gpl.html</license>
   <icon>hibiscus-icon-64x64.png</icon>
 
-  <requires jameica="1.11.0">
+  <requires jameica="1.11.0+">
     <import plugin="jameica.scripting" required="false" version="1.0+" />
   </requires>
 
@@ -32,6 +32,7 @@
       </item>
       <item name="-" />
       <item id="hibiscus.menu.handbuch"              name="&amp;Handbuch"                                      icon="edit-copy.png"                   action="de.willuhn.jameica.hbci.gui.action.HandbuchAction"/>
+      <item id="hibiscus.menu.support"               name="&amp;Support"                                       icon="internet-web-browser.png"        action="de.willuhn.jameica.hbci.gui.action.SupportAction"/>
       <item id="hibiscus.menu.license"               name="&amp;Lizenzinformationen"                           icon="text-x-generic.png"              action="de.willuhn.jameica.hbci.gui.action.License" />
       <item id="hibiscus.menu.about"                 name="&amp;Über"                                          icon="gtk-info.png"                    action="de.willuhn.jameica.hbci.gui.action.About" />
     </item>
