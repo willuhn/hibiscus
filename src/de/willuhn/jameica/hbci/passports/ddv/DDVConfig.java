@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/DDVConfig.java,v $
- * $Revision: 1.5 $
- * $Date: 2011/04/29 09:17:35 $
+ * $Revision: 1.6 $
+ * $Date: 2011/06/17 08:49:19 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -23,6 +23,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Logger;
+import de.willuhn.util.ApplicationException;
 
 /**
  * Konfiguration eines einzelnen Kartenlesers.
@@ -354,7 +355,7 @@ public class DDVConfig implements Configuration
   /**
    * Loescht die Einstellungen der Config.
    */
-  void delete()
+  void deleteProperties()
   {
     this.setCTAPIDriver(null);
     this.setHBCIVersion(null);
@@ -367,13 +368,25 @@ public class DDVConfig implements Configuration
     settings.setAttribute(this.getPrefix() + "entryidx",(String) null);
     settings.setAttribute(this.getPrefix() + "konto",(String[]) null);
   }
+
+  /**
+   * @see de.willuhn.jameica.hbci.passport.Configuration#delete()
+   */
+  public void delete() throws ApplicationException
+  {
+    DDVConfigFactory.delete(this);
+  }
 }
 
 
 
 /**********************************************************************
  * $Log: DDVConfig.java,v $
- * Revision 1.5  2011/04/29 09:17:35  willuhn
+ * Revision 1.6  2011/06/17 08:49:19  willuhn
+ * @N Contextmenu im Tree mit den Bank-Zugaengen
+ * @N Loeschen von Bank-Zugaengen direkt im Tree
+ *
+ * Revision 1.5  2011-04-29 09:17:35  willuhn
  * @N Neues Standard-Interface "Configuration" fuer eine gemeinsame API ueber alle Arten von HBCI-Konfigurationen
  * @R Passports sind keine UnicastRemote-Objekte mehr
  *

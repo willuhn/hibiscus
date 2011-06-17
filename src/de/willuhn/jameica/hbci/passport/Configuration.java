@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passport/Configuration.java,v $
- * $Revision: 1.1 $
- * $Date: 2011/04/29 09:17:34 $
+ * $Revision: 1.2 $
+ * $Date: 2011/06/17 08:49:18 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -12,6 +12,8 @@
 package de.willuhn.jameica.hbci.passport;
 
 import java.rmi.RemoteException;
+
+import de.willuhn.util.ApplicationException;
 
 
 
@@ -39,6 +41,12 @@ public interface Configuration
    * @throws RemoteException
    */
   public Class getConfigDialog() throws RemoteException;
+  
+  /**
+   * Loescht die Konfiguration.
+   * @throws ApplicationException
+   */
+  public void delete() throws ApplicationException;
 
 }
 
@@ -46,7 +54,11 @@ public interface Configuration
 
 /**********************************************************************
  * $Log: Configuration.java,v $
- * Revision 1.1  2011/04/29 09:17:34  willuhn
+ * Revision 1.2  2011/06/17 08:49:18  willuhn
+ * @N Contextmenu im Tree mit den Bank-Zugaengen
+ * @N Loeschen von Bank-Zugaengen direkt im Tree
+ *
+ * Revision 1.1  2011-04-29 09:17:34  willuhn
  * @N Neues Standard-Interface "Configuration" fuer eine gemeinsame API ueber alle Arten von HBCI-Konfigurationen
  * @R Passports sind keine UnicastRemote-Objekte mehr
  *

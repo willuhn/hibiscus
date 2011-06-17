@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/PinTanConfigFactory.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/09/06 11:01:36 $
+ * $Revision: 1.3 $
+ * $Date: 2011/06/17 08:49:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -102,37 +102,53 @@ public class PinTanConfigFactory
   /**
    * Loescht die genannte Config.
    * @param config die zu loeschende Config.
-   * @throws Exception
+   * @throws ApplicationException
    */
-  public static synchronized void delete(PinTanConfig config) throws Exception
+  public static synchronized void delete(PinTanConfig config) throws ApplicationException
   {
-    if (config == null || config.getID() == null)
-      throw new ApplicationException(i18n.tr("Bitte wählen Sie die zu löschende Konfiguration aus"));
-
-    String[] existing = settings.getList("config",new String[0]);
-
-    if (existing.length == 0)
+    try
     {
-      Logger.info("no configs found, nothing to delete");
-      return;
-    }
+      if (config == null || config.getID() == null)
+        throw new ApplicationException(i18n.tr("Bitte wählen Sie die zu löschende Konfiguration aus"));
 
-    Logger.debug("number of configs: " + existing.length);
-    ArrayList newList = new ArrayList();
-    String id = config.getID();
+      String[] existing = settings.getList("config",new String[0]);
 
-    for (int i=0;i<existing.length;++i)
-    {
-      if (id.equals(existing[i]))
+      if (existing.length == 0)
       {
-        Logger.info("deleting config for file " + id);
-        continue;
+        Logger.info("no configs found, nothing to delete");
+        return;
       }
-      newList.add(existing[i]);
+
+      Logger.debug("number of configs: " + existing.length);
+      ArrayList newList = new ArrayList();
+      String id = config.getID();
+
+      for (int i=0;i<existing.length;++i)
+      {
+        if (id.equals(existing[i]))
+        {
+          Logger.info("deleting config for file " + id);
+          continue;
+        }
+        newList.add(existing[i]);
+      }
+      
+      Logger.debug("new number of configs: " + newList.size());
+      settings.setAttribute("config",(String[]) newList.toArray(new String[newList.size()]));
     }
-    
-    Logger.debug("new number of configs: " + newList.size());
-    settings.setAttribute("config",(String[]) newList.toArray(new String[newList.size()]));
+    catch (ApplicationException ae)
+    {
+      throw ae;
+    }
+    catch (OperationCanceledException oce)
+    {
+      throw oce;
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to delete pin/tan config",e);
+      throw new ApplicationException(i18n.tr("Löschen fehlgeschlagen: {0}",e.getMessage()));
+    }
   }
 
   /**
@@ -366,7 +382,11 @@ public class PinTanConfigFactory
 
 /*****************************************************************************
  * $Log: PinTanConfigFactory.java,v $
- * Revision 1.2  2010/09/06 11:01:36  willuhn
+ * Revision 1.3  2011/06/17 08:49:18  willuhn
+ * @N Contextmenu im Tree mit den Bank-Zugaengen
+ * @N Loeschen von Bank-Zugaengen direkt im Tree
+ *
+ * Revision 1.2  2010-09-06 11:01:36  willuhn
  * *** empty log message ***
  *
  * Revision 1.1  2010/06/17 11:38:15  willuhn

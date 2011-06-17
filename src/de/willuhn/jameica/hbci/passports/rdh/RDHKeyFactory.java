@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/RDHKeyFactory.java,v $
- * $Revision: 1.2 $
- * $Date: 2011/04/26 12:15:51 $
+ * $Revision: 1.3 $
+ * $Date: 2011/06/17 08:49:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -283,42 +283,52 @@ public class RDHKeyFactory
   /**
    * Entfernt einen Key aus der Liste der bekannten Schluessel.
    * @param key zu entfernender Schluessel.
-   * @throws Exception
+   * @throws ApplicationException
    */
-  public static void removeKey(RDHKey key) throws Exception
+  public static void removeKey(RDHKey key) throws ApplicationException
   {
     if (key == null)
-    {
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte wählen Sie eine Schlüsseldatei aus"),StatusBarMessage.TYPE_ERROR));
-      return;
-    }
-    Logger.warn("removing key " + key.getFilename() + " from key registry");
-    String[] existing = settings.getList("key",new String[0]);
-    ArrayList newList = new ArrayList();
-    
-    if (existing.length == 0)
-      return; // Nichts zu entfernen
+      throw new ApplicationException(i18n.tr("Bitte wählen Sie eine Schlüsseldatei aus"));
 
-    File file = new File(key.getFilename());
-    for (int i=0;i<existing.length;++i)
+    try
     {
-      File f = new File(existing[i]);
-      if (file.equals(f))
-      {
-        Logger.info("removing key " + f.getAbsolutePath() + " from list");
-        continue;
-      }
-      newList.add(f.getAbsolutePath());
+      Logger.warn("removing key " + key.getFilename() + " from key registry");
+      String[] existing = settings.getList("key",new String[0]);
+      ArrayList newList = new ArrayList();
       
+      if (existing.length == 0)
+        return; // Nichts zu entfernen
+
+      File file = new File(key.getFilename());
+      for (int i=0;i<existing.length;++i)
+      {
+        File f = new File(existing[i]);
+        if (file.equals(f))
+        {
+          Logger.info("removing key " + f.getAbsolutePath() + " from list");
+          continue;
+        }
+        newList.add(f.getAbsolutePath());
+        
+      }
+      settings.setAttribute("key",(String[]) newList.toArray(new String[newList.size()]));
     }
-    settings.setAttribute("key",(String[]) newList.toArray(new String[newList.size()]));
+    catch (RemoteException re)
+    {
+      Logger.error("unable to remove key",re);
+      throw new ApplicationException(i18n.tr("Löschen fehlgeschlagen: {0}",re.getMessage()));
+    }
   }
 }
 
 
 /**********************************************************************
  * $Log: RDHKeyFactory.java,v $
- * Revision 1.2  2011/04/26 12:15:51  willuhn
+ * Revision 1.3  2011/06/17 08:49:19  willuhn
+ * @N Contextmenu im Tree mit den Bank-Zugaengen
+ * @N Loeschen von Bank-Zugaengen direkt im Tree
+ *
+ * Revision 1.2  2011-04-26 12:15:51  willuhn
  * @B Potentielle Bugs gemaess Code-Checker
  *
  * Revision 1.1  2010/06/17 11:26:48  willuhn

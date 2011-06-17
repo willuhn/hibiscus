@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/Controller.java,v $
- * $Revision: 1.6 $
- * $Date: 2011/05/25 10:05:49 $
+ * $Revision: 1.7 $
+ * $Date: 2011/06/17 08:49:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -355,11 +355,16 @@ public class Controller extends AbstractControl {
         catch (OperationCanceledException e)
         {
           Logger.info("operation cancelled");
+          return;
+        }
+        catch (ApplicationException ae)
+        {
+          throw ae;
         }
         catch (Exception e2)
         {
           Logger.error("unable to delete key",e2);
-          GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Löschen des Schlüssels"));
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Löschen des Schlüssels"),StatusBarMessage.TYPE_ERROR));
         }
       }
     },"user-trash-full.png"));
@@ -761,7 +766,11 @@ public class Controller extends AbstractControl {
 
 /**********************************************************************
  * $Log: Controller.java,v $
- * Revision 1.6  2011/05/25 10:05:49  willuhn
+ * Revision 1.7  2011/06/17 08:49:19  willuhn
+ * @N Contextmenu im Tree mit den Bank-Zugaengen
+ * @N Loeschen von Bank-Zugaengen direkt im Tree
+ *
+ * Revision 1.6  2011-05-25 10:05:49  willuhn
  * @N Im Fehlerfall nur noch die PINs/Passwoerter der betroffenen Passports aus dem Cache loeschen. Wenn eine PIN falsch ist, muss man jetzt nicht mehr alle neu eingeben
  *
  * Revision 1.5  2011-04-29 11:38:57  willuhn

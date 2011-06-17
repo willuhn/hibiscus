@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/PassportTree.java,v $
- * $Revision: 1.1 $
- * $Date: 2011/04/29 11:38:58 $
+ * $Revision: 1.2 $
+ * $Date: 2011/06/17 08:49:18 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -23,7 +23,11 @@ import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.GenericObjectNode;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.jameica.gui.Action;
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.formatter.TreeFormatter;
+import de.willuhn.jameica.gui.parts.CheckedSingleContextMenuItem;
+import de.willuhn.jameica.gui.parts.ContextMenu;
+import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.gui.parts.TreePart;
 import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.hbci.HBCI;
@@ -32,6 +36,8 @@ import de.willuhn.jameica.hbci.gui.action.PassportDetail;
 import de.willuhn.jameica.hbci.passport.Configuration;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -72,6 +78,75 @@ public class PassportTree extends TreePart
       }
     });
     this.setMulti(false);
+    
+    ContextMenu menu = new ContextMenu();
+    menu.addItem(new CheckedSingleContextMenuItem(i18n.tr("Öffnen"),new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        if (context == null || !(context instanceof ConfigObject))
+          return;
+
+        new PassportDetail().handleAction(((ConfigObject) context).config);
+      }
+    },"document-open.png")
+    {
+      public boolean isEnabledFor(Object o)
+      {
+        return (o instanceof ConfigObject) && super.isEnabledFor(o);
+      }
+    });
+    menu.addItem(new ContextMenuItem(i18n.tr("Neuer Bank-Zugang..."),new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        new PassportDetail().handleAction(getPassport());
+      }
+    },"seahorse-preferences.png"));
+    
+    menu.addItem(ContextMenuItem.SEPARATOR);
+    menu.addItem(new CheckedSingleContextMenuItem(i18n.tr("Löschen"),new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        if (context == null || !(context instanceof ConfigObject))
+          return;
+        
+        Configuration config = ((ConfigObject) context).config;
+        if (config == null)
+          return;
+
+        try
+        {
+          if (!Application.getCallback().askUser(i18n.tr("Wollen Sie diesen Bank-Zugang wirklich löschen?\nDie Konten, Aufträge und Umsätze bleiben erhalten.")))
+            return;
+        }
+        catch (OperationCanceledException oce)
+        {
+          Logger.info("operation cancelled");
+          return;
+        }
+        catch (ApplicationException ae)
+        {
+          throw ae;
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to delete config",e);
+          throw new ApplicationException(i18n.tr("Löschen fehlgeschlagen: {0}",e.getMessage()));
+        }
+        
+        config.delete();
+        
+        // View neu laden
+        GUI.startView(GUI.getCurrentView(),null);
+      }
+    },"user-trash-full.png")
+    {
+      public boolean isEnabledFor(Object o)
+      {
+        return (o instanceof ConfigObject) && super.isEnabledFor(o);
+      }
+    });
+    
+    this.setContextMenu(menu);
   }
 
   /**
@@ -84,6 +159,8 @@ public class PassportTree extends TreePart
 
     if (o instanceof PassportObject)
       return ((PassportObject) o).passport;
+    if (o instanceof ConfigObject)
+      return ((ConfigObject) o).passport;
     
     return null;
   }
@@ -187,7 +264,7 @@ public class PassportTree extends TreePart
       List<ConfigObject> list = new ArrayList<ConfigObject>();
       for (Configuration c:configs)
       {
-        list.add(new ConfigObject(c));
+        list.add(new ConfigObject(this.passport, c));
       }
       this.children = PseudoIterator.fromArray(list.toArray(new ConfigObject[list.size()]));
       return this.children;
@@ -231,14 +308,17 @@ public class PassportTree extends TreePart
    */
   private static class ConfigObject implements GenericObject
   {
+    private Passport passport    = null;
     private Configuration config = null;
     
     /**
      * ct.
+     * @param passport
      * @param config
      */
-    private ConfigObject(Configuration config)
+    private ConfigObject(Passport passport, Configuration config)
     {
+      this.passport = passport;
       this.config = config;
     }
 
@@ -299,7 +379,11 @@ public class PassportTree extends TreePart
 
 /**********************************************************************
  * $Log: PassportTree.java,v $
- * Revision 1.1  2011/04/29 11:38:58  willuhn
+ * Revision 1.2  2011/06/17 08:49:18  willuhn
+ * @N Contextmenu im Tree mit den Bank-Zugaengen
+ * @N Loeschen von Bank-Zugaengen direkt im Tree
+ *
+ * Revision 1.1  2011-04-29 11:38:58  willuhn
  * @N Konfiguration der HBCI-Medien ueberarbeitet. Es gibt nun direkt in der Navi einen Punkt "Bank-Zugaenge", in der alle Medien angezeigt werden.
  *
  **********************************************************************/

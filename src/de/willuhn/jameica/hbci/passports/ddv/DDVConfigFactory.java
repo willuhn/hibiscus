@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/DDVConfigFactory.java,v $
- * $Revision: 1.5 $
- * $Date: 2011/02/06 23:34:21 $
+ * $Revision: 1.6 $
+ * $Date: 2011/06/17 08:49:19 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -133,14 +133,15 @@ public class DDVConfigFactory
   /**
    * Loescht die angegebene Config.
    * @param config die zu loeschende Config.
+   * @throws ApplicationException
    */
-  public static void delete(DDVConfig config)
+  public static void delete(DDVConfig config) throws ApplicationException
   {
     if (config == null)
-      return;
+      throw new ApplicationException(i18n.tr("Bitte wählen Sie die zu löschende Konfiguration aus"));
 
     // Loeschen der Einstellungen aus der Config
-    config.delete();
+    config.deleteProperties();
 
     // Aus der Liste der Konfigurationen entfernen
     String[] ids = settings.getList("config",new String[0]);
@@ -255,7 +256,14 @@ public class DDVConfigFactory
     finally
     {
       // temporaere Config wieder loeschen
-      temp.delete();
+      try
+      {
+        temp.delete();
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to delete temp-config",e);
+      }
     }
   }
   
@@ -500,7 +508,11 @@ public class DDVConfigFactory
 
 /**********************************************************************
  * $Log: DDVConfigFactory.java,v $
- * Revision 1.5  2011/02/06 23:34:21  willuhn
+ * Revision 1.6  2011/06/17 08:49:19  willuhn
+ * @N Contextmenu im Tree mit den Bank-Zugaengen
+ * @N Loeschen von Bank-Zugaengen direkt im Tree
+ *
+ * Revision 1.5  2011-02-06 23:34:21  willuhn
  * @N BUGZILLA 965
  *
  * Revision 1.4  2010-10-17 21:58:56  willuhn

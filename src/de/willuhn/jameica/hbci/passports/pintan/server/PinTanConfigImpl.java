@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/server/PinTanConfigImpl.java,v $
- * $Revision: 1.7 $
- * $Date: 2011/05/23 10:47:29 $
+ * $Revision: 1.8 $
+ * $Date: 2011/06/17 08:49:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,6 +25,7 @@ import de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Logger;
+import de.willuhn.util.ApplicationException;
 
 /**
  * Implementierung eines in Hibiscus existierenden RDH-Schluessels.
@@ -125,6 +126,14 @@ public class PinTanConfigImpl implements PinTanConfig
   public Class getConfigDialog() throws RemoteException
   {
     return Detail.class;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.passport.Configuration#delete()
+   */
+  public void delete() throws ApplicationException
+  {
+    PinTanConfigFactory.delete(this);
   }
 
   /**
@@ -463,7 +472,11 @@ public class PinTanConfigImpl implements PinTanConfig
 
 /*****************************************************************************
  * $Log: PinTanConfigImpl.java,v $
- * Revision 1.7  2011/05/23 10:47:29  willuhn
+ * Revision 1.8  2011/06/17 08:49:19  willuhn
+ * @N Contextmenu im Tree mit den Bank-Zugaengen
+ * @N Loeschen von Bank-Zugaengen direkt im Tree
+ *
+ * Revision 1.7  2011-05-23 10:47:29  willuhn
  * @R BUGZILLA 62 - Speichern der verbrauchten TANs ausgebaut. Seit smsTAN/chipTAN gibt es zum einen ohnehin keine TAN-Listen mehr. Zum anderen kann das jetzt sogar Fehler ausloesen, wenn ueber eines der neuen TAN-Verfahren die gleiche TAN generiert wird, die frueher irgendwann schonmal zufaellig generiert wurde. TANs sind inzwischen fluechtige und werden dynamisch erzeugt. Daher ist es unsinnig, die zu speichern. Zumal es das Wallet sinnlos aufblaeht.
  *
  * Revision 1.6  2011-05-09 09:35:16  willuhn

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/Controller.java,v $
- * $Revision: 1.9 $
- * $Date: 2011/05/23 10:47:29 $
+ * $Revision: 1.10 $
+ * $Date: 2011/06/17 08:49:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -364,7 +364,7 @@ public class Controller extends AbstractControl
 
   /**
    * Loescht die Config.
-   * @param config
+   * @param config die zu loeschende Config.
    */
   public synchronized void handleDelete(PinTanConfig config)
   {
@@ -377,16 +377,20 @@ public class Controller extends AbstractControl
 
       PinTanConfigFactory.delete(config);
       GUI.startView(View.class,null);
-      GUI.getStatusBar().setSuccessText(i18n.tr("Konfiguration gelöscht"));
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Konfiguration gelöscht"),StatusBarMessage.TYPE_SUCCESS));
+    }
+    catch (OperationCanceledException oce)
+    {
+      Logger.info("operation cancelled");
     }
     catch (ApplicationException ae)
     {
-      GUI.getStatusBar().setErrorText(i18n.tr(ae.getMessage()));
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getMessage(),StatusBarMessage.TYPE_ERROR));
     }
     catch (Exception e)
     {
       Logger.error("error while deleting config",e);
-      GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Löschen der Konfiguration"));
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Löschen fehlgeschlagen: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
     }
   }
 
@@ -494,7 +498,11 @@ public class Controller extends AbstractControl
 
 /**********************************************************************
  * $Log: Controller.java,v $
- * Revision 1.9  2011/05/23 10:47:29  willuhn
+ * Revision 1.10  2011/06/17 08:49:18  willuhn
+ * @N Contextmenu im Tree mit den Bank-Zugaengen
+ * @N Loeschen von Bank-Zugaengen direkt im Tree
+ *
+ * Revision 1.9  2011-05-23 10:47:29  willuhn
  * @R BUGZILLA 62 - Speichern der verbrauchten TANs ausgebaut. Seit smsTAN/chipTAN gibt es zum einen ohnehin keine TAN-Listen mehr. Zum anderen kann das jetzt sogar Fehler ausloesen, wenn ueber eines der neuen TAN-Verfahren die gleiche TAN generiert wird, die frueher irgendwann schonmal zufaellig generiert wurde. TANs sind inzwischen fluechtige und werden dynamisch erzeugt. Daher ist es unsinnig, die zu speichern. Zumal es das Wallet sinnlos aufblaeht.
  *
  * Revision 1.8  2011-05-11 10:20:28  willuhn

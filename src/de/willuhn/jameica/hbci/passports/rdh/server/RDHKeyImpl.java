@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/server/RDHKeyImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2011/04/29 09:17:34 $
+ * $Revision: 1.3 $
+ * $Date: 2011/06/17 08:49:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.passports.rdh.Detail;
+import de.willuhn.jameica.hbci.passports.rdh.RDHKeyFactory;
 import de.willuhn.jameica.hbci.passports.rdh.keyformat.HBCI4JavaFormat;
 import de.willuhn.jameica.hbci.passports.rdh.keyformat.KeyFormat;
 import de.willuhn.jameica.hbci.passports.rdh.keyformat.SizRdhDirectFormat;
@@ -92,6 +93,14 @@ public class RDHKeyImpl implements RDHKey
   public Class getConfigDialog() throws RemoteException
   {
     return Detail.class;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.passport.Configuration#delete()
+   */
+  public void delete() throws ApplicationException
+  {
+    RDHKeyFactory.removeKey(this);
   }
 
   /**
@@ -320,7 +329,11 @@ public class RDHKeyImpl implements RDHKey
 
 /*****************************************************************************
  * $Log: RDHKeyImpl.java,v $
- * Revision 1.2  2011/04/29 09:17:34  willuhn
+ * Revision 1.3  2011/06/17 08:49:19  willuhn
+ * @N Contextmenu im Tree mit den Bank-Zugaengen
+ * @N Loeschen von Bank-Zugaengen direkt im Tree
+ *
+ * Revision 1.2  2011-04-29 09:17:34  willuhn
  * @N Neues Standard-Interface "Configuration" fuer eine gemeinsame API ueber alle Arten von HBCI-Konfigurationen
  * @R Passports sind keine UnicastRemote-Objekte mehr
  *
