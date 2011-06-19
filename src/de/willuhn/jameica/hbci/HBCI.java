@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.123 $
- * $Date: 2011/06/17 16:06:58 $
+ * $Revision: 1.124 $
+ * $Date: 2011/06/19 12:03:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -136,8 +136,18 @@ public class HBCI extends AbstractPlugin
    */
   public void uninstall(boolean deleteUserData) throws ApplicationException
   {
-    // TODO: Hier das Hibiscus-Wallet loeschen
+    if (!deleteUserData)
+      return;
     
+    try
+    {
+      Logger.info("deleting hibiscus wallet");
+      Settings.getWallet().deleteAll(null);
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to delete wallet",e);
+    }
   }
 
   /**
@@ -362,7 +372,10 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
- * Revision 1.123  2011/06/17 16:06:58  willuhn
+ * Revision 1.124  2011/06/19 12:03:19  willuhn
+ * @N Wallet loeschen, wenn bei der Deinstallation die Benutzerdaten geloescht werden sollen
+ *
+ * Revision 1.123  2011-06-17 16:06:58  willuhn
  * @N Die MessageConsumer fuer die benamten Queues werden jetzt in plugin.xml deklariert
  *
  * Revision 1.122  2011-06-01 21:21:31  willuhn
