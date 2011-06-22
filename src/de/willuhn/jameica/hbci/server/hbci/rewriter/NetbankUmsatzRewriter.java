@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/rewriter/NetbankUmsatzRewriter.java,v $
- * $Revision: 1.7 $
- * $Date: 2011/06/17 15:22:50 $
+ * $Revision: 1.8 $
+ * $Date: 2011/06/22 11:18:48 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -35,6 +35,7 @@ public class NetbankUmsatzRewriter implements UmsatzRewriter
     list.add("60090800"); // SpardaBank BW
     list.add("33060592"); // SpardaBank West - siehe https://www.willuhn.de/blog/index.php?url=archives/519-Neues-in-Hibiscus.html&serendipity[csuccess]=true#c1146
     list.add("12096597"); // SpardaBank Berlin - https://www.willuhn.de/bugzilla/show_bug.cgi?id=887#c14
+    list.add("55090500"); // SpardaBank Suedwest - https://www.willuhn.de/bugzilla/show_bug.cgi?id=887#c16
     return list;
   }
 
@@ -121,7 +122,10 @@ public class NetbankUmsatzRewriter implements UmsatzRewriter
 
 /**********************************************************************
  * $Log: NetbankUmsatzRewriter.java,v $
- * Revision 1.7  2011/06/17 15:22:50  willuhn
+ * Revision 1.8  2011/06/22 11:18:48  willuhn
+ * @N BUGZILLA 887
+ *
+ * Revision 1.7  2011-06-17 15:22:50  willuhn
  * @N added 12096597
  *
  * Revision 1.6  2011-06-07 10:07:51  willuhn
