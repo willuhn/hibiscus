@@ -43,7 +43,7 @@ CREATE TABLE ueberweisung (
   banktermin integer NULL,
   ausgefuehrt integer NOT NULL,
   typ varchar(2) NULL,
-  umbuchung int(1) NULL,
+  umbuchung integer NULL,
   ausgefuehrt_am timestamp
 );
 
@@ -100,7 +100,7 @@ CREATE TABLE umsatztyp (
   umsatztyp integer NULL,
   parent_id integer NULL,
   color varchar(11) NULL,
-  customcolor int(1) NULL
+  customcolor integer NULL
 );
 
 CREATE TABLE dauerauftrag (
