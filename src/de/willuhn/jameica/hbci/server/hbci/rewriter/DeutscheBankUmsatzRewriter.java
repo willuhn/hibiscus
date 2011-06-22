@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/rewriter/DeutscheBankUmsatzRewriter.java,v $
- * $Revision: 1.5 $
- * $Date: 2011/06/07 10:07:51 $
+ * $Revision: 1.6 $
+ * $Date: 2011/06/22 13:26:04 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -35,6 +35,7 @@ public class DeutscheBankUmsatzRewriter implements UmsatzRewriter
     list.add("10070024"); // Deutsche Bank Berlin
     list.add("60070070");
     list.add("62070081"); // Deutsche Bank Heilbronn
+    list.add("10070848"); // Berliner Bank - ist eine Marke der Deutschen Bank
     return list;
   }
 
@@ -131,7 +132,10 @@ public class DeutscheBankUmsatzRewriter implements UmsatzRewriter
 
 /**********************************************************************
  * $Log: DeutscheBankUmsatzRewriter.java,v $
- * Revision 1.5  2011/06/07 10:07:51  willuhn
+ * Revision 1.6  2011/06/22 13:26:04  willuhn
+ * @N Berliner Bank
+ *
+ * Revision 1.5  2011-06-07 10:07:51  willuhn
  * @C Verwendungszweck-Handling vereinheitlicht/vereinfacht - geht jetzt fast ueberall ueber VerwendungszweckUtil
  *
  * Revision 1.4  2011-01-24 10:10:31  willuhn
