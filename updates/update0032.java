@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/updates/update0032.java,v $
- * $Revision: 1.2 $
- * $Date: 2011/06/22 12:31:17 $
+ * $Revision: 1.3 $
+ * $Date: 2011/06/22 13:07:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -58,11 +58,11 @@ public class update0032 implements Update
 
     // Update fuer PostGres
     statements.put(DBSupportPostgreSQLImpl.class.getName(),
-        "ALTER TABLE \"ueberweisung\"  ADD ausgefuehrt_am timestamp;\n" +
-        "ALTER TABLE \"aueberweisung\" ADD ausgefuehrt_am timestamp;\n" +
-        "ALTER TABLE \"lastschrift\"   ADD ausgefuehrt_am timestamp;\n" +
-        "ALTER TABLE \"slastschrift\"  ADD ausgefuehrt_am timestamp;\n" +
-        "ALTER TABLE \"sueberweisung\" ADD ausgefuehrt_am timestamp;\n");
+        "ALTER TABLE ueberweisung  ADD ausgefuehrt_am timestamp;\n" +
+        "ALTER TABLE aueberweisung ADD ausgefuehrt_am timestamp;\n" +
+        "ALTER TABLE lastschrift   ADD ausgefuehrt_am timestamp;\n" +
+        "ALTER TABLE slastschrift  ADD ausgefuehrt_am timestamp;\n" +
+        "ALTER TABLE sueberweisung ADD ausgefuehrt_am timestamp;\n");
   }
 
   /**
@@ -107,8 +107,8 @@ public class update0032 implements Update
 
 /*********************************************************************
  * $Log: update0032.java,v $
- * Revision 1.2  2011/06/22 12:31:17  willuhn
- * @B da kommt ein "org.postgresql.util.PSQLException: FEHLER: Relation ueberweisung existiert nicht" - eventuell fehlten da Quotes.
+ * Revision 1.3  2011/06/22 13:07:50  willuhn
+ * @R UNDO, die Tabelle existierte tatsaechlich nicht
  *
  * Revision 1.1  2011-04-29 15:33:28  willuhn
  * @N Neue Spalte "ausgefuehrt_am", in der das tatsaechliche Ausfuehrungsdatum von Auftraegen vermerkt wird
