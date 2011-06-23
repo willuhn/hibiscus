@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.44 $
- * $Date: 2011/05/19 08:41:53 $
+ * $Revision: 1.45 $
+ * $Date: 2011/06/23 15:20:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -116,7 +116,7 @@ public class KontoauszugList extends UmsatzList
     this.listener = new DelayedListener(new Listener() {
       public void handleEvent(Event event)
       {
-        handleReload();
+        handleReload(false);
       }
     });
   }
@@ -195,7 +195,7 @@ public class KontoauszugList extends UmsatzList
     {
       public void handleAction(Object context) throws ApplicationException
       {
-        handleReload();
+        handleReload(true);
       }
     },null,true,"view-refresh.png");
     
@@ -563,7 +563,7 @@ public class KontoauszugList extends UmsatzList
       // denn es muss sichergestellt sein, dass die Tabelle
       // aktuell ist, wenn wir als naechstes getItems()
       // aufrufen
-      handleReload();
+      handleReload(true);
 
       // Wir laden die Umsaetze direkt aus der Tabelle.
       // Damit werden genau die ausgegeben, die gerade
@@ -614,7 +614,7 @@ public class KontoauszugList extends UmsatzList
       getText().setValue(null);
       getUnChecked().setValue(Boolean.FALSE);
       this.changed = true;
-      handleReload();
+      handleReload(true);
     }
     catch (Exception e)
     {
@@ -625,10 +625,15 @@ public class KontoauszugList extends UmsatzList
 
   /**
    * Aktualisiert die Tabelle der angezeigten Umsaetze.
+   * @param force true, wenn das Reload forciert werden soll - egal, ob sich was geaendert hat.
+   * Andernfalls wird die Tabelle nur neu geladen, wenn wirklich Filter geaendert wurden.
    */
-  private synchronized void handleReload()
+  private synchronized void handleReload(boolean force)
   {
-    if (!hasChanged() || disposed)
+    if (disposed)
+      return;
+    
+    if (!force && !hasChanged())
       return;
     
     GUI.startSync(new Runnable() // Sanduhr einblenden
@@ -746,7 +751,10 @@ public class KontoauszugList extends UmsatzList
 
 /*********************************************************************
  * $Log: KontoauszugList.java,v $
- * Revision 1.44  2011/05/19 08:41:53  willuhn
+ * Revision 1.45  2011/06/23 15:20:05  willuhn
+ * @B BUGZILLA 1082
+ *
+ * Revision 1.44  2011-05-19 08:41:53  willuhn
  * @N BUGZILLA 1038 - generische Loesung
  *
  * Revision 1.43  2011-05-03 10:13:15  willuhn
