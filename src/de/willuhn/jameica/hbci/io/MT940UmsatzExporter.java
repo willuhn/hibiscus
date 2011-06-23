@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/MT940UmsatzExporter.java,v $
- * $Revision: 1.9 $
- * $Date: 2011/06/09 08:50:19 $
+ * $Revision: 1.10 $
+ * $Date: 2011/06/23 07:37:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,6 +24,7 @@ import java.text.SimpleDateFormat;
 import org.apache.commons.lang.StringUtils;
 
 import de.willuhn.datasource.BeanUtil;
+import de.willuhn.io.IOUtil;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
@@ -39,8 +40,16 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class MT940UmsatzExporter implements Exporter
 {
+  /**
+   * MT940-Zeichensatz.
+   * Ist eigentlich nicht noetig, weil Swift nur ein Subset von ISO-8859
+   * zulaesst, welches so klein ist, dass es im Wesentlichen US-ASCII ist
+   * und damit der Zeichensatz so ziemlich egal ist. Aber wir tolerieren
+   * die Umlaute wenigstens beim Import.
+   */
+  public final static String CHARSET  = "iso-8859-1";
+
   private final static String NL      = "\r\n";
-  private final static String CHARSET = "iso-8859-1";
   
   private final static DateFormat DF_YYMMDD = new SimpleDateFormat("yyMMdd");
   private final static DateFormat DF_MMDD   = new SimpleDateFormat("MMdd");
@@ -152,21 +161,7 @@ public class MT940UmsatzExporter implements Exporter
     }
     finally
     {
-      if (monitor != null)
-        monitor.setStatusText(i18n.tr("Schliesse Export-Datei"));
-
-      if (out != null)
-      {
-        try
-        {
-          if (out != null) 
-            out.close();
-        }
-        catch (Exception e)
-        {
-          Logger.error("unable to close file",e);
-        }
-      }
+      IOUtil.close(out);
     }
   }
 
@@ -223,6 +218,7 @@ public class MT940UmsatzExporter implements Exporter
   {
     private String[] search  = new String[]{"Ü", "Ö", "Ä", "ü", "ö", "ä", "ß"};
     private String[] replace = new String[]{"UE","OE","AE","ue","oe","ae","ss"};
+    private boolean doReplace = true;
     
     /**
      * ct.
@@ -232,6 +228,11 @@ public class MT940UmsatzExporter implements Exporter
     public MyOutputStreamWriter(OutputStream out) throws UnsupportedEncodingException
     {
       super(out,CHARSET);
+      
+      // Umlaute ersetzen. Sind gemaess "FinTS_3.0_Messages_Finanzdatenformate_2010-08-06_final_version.pdf"
+      // in SWIFT nicht zulaessig. Wir machen das mal konfigurierbar. Dann kann es
+      // der User bei Bedarf deaktivieren
+      doReplace = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings().getBoolean("export.mt940.replaceumlauts",true);
     }
 
     /**
@@ -239,9 +240,9 @@ public class MT940UmsatzExporter implements Exporter
      */
     public void write(String str) throws IOException
     {
-      // Umlaute ersetzen.
-      String s = StringUtils.replaceEach(str,search,replace);
-      super.write(s);
+      if (doReplace)
+        str = StringUtils.replaceEach(str,search,replace);
+      super.write(str);
     }
   }
 }
@@ -249,7 +250,11 @@ public class MT940UmsatzExporter implements Exporter
 
 /*********************************************************************
  * $Log: MT940UmsatzExporter.java,v $
- * Revision 1.9  2011/06/09 08:50:19  willuhn
+ * Revision 1.10  2011/06/23 07:37:28  willuhn
+ * @N Ersetzen der Umlaute beim MT940-Export abschaltbar
+ * @N Beim MT940-Import explizit mit ISO-8859 lesen - ist zwar eigentlich nicht noetig, weil da per Definition keine Umlaute enthalten sein duerfen - aber wir sind ja tolerant ;)
+ *
+ * Revision 1.9  2011-06-09 08:50:19  willuhn
  * *** empty log message ***
  *
  * Revision 1.8  2011-06-09 08:40:33  willuhn

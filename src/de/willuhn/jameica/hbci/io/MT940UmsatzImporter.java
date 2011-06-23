@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/MT940UmsatzImporter.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/06/02 15:32:22 $
+ * $Revision: 1.2 $
+ * $Date: 2011/06/23 07:37:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,9 +13,8 @@
 
 package de.willuhn.jameica.hbci.io;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Properties;
@@ -26,6 +25,7 @@ import org.kapott.hbci.passport.HBCIPassport;
 import org.kapott.hbci.structures.Konto;
 import org.kapott.hbci.swift.Swift;
 
+import de.willuhn.io.IOUtil;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
@@ -80,21 +80,17 @@ public class MT940UmsatzImporter implements Importer
       if (monitor != null)
         monitor.setStatusText(i18n.tr("Lese Datei ein"));
 
-      ByteArrayOutputStream bos = new ByteArrayOutputStream();
+      InputStreamReader encodedIs = new InputStreamReader(is,MT940UmsatzExporter.CHARSET);
+      StringBuffer sb = new StringBuffer();
       int read = 0;
-      byte[] buf = new byte[8192];
+      char[] buf = new char[8192];
 
-      do
+      while ((read = encodedIs.read(buf)) != -1)
       {
-        read = is.read(buf);
         if (read > 0)
-          bos.write(buf, 0, read);
+          sb.append(buf,0,read);
       }
-      while (read != -1);
-      bos.close();
-
-      StringBuffer buffer = new StringBuffer(Swift.decodeUmlauts(bos.toString()));
-      umsaetze.appendMT940Data(buffer.toString());
+      umsaetze.appendMT940Data(Swift.decodeUmlauts(sb.toString()));
 
       if (monitor != null)
         monitor.setStatusText(i18n.tr("Speichere Umsätze"));
@@ -168,17 +164,7 @@ public class MT940UmsatzImporter implements Importer
     }
     finally
     {
-      if (is != null)
-      {
-        try
-        {
-          is.close();
-        }
-        catch (IOException e)
-        {
-          Logger.error("error while closing inputstream",e);
-        }
-      }
+      IOUtil.close(is);
     }
   }
 
@@ -298,7 +284,11 @@ public class MT940UmsatzImporter implements Importer
 
 /*******************************************************************************
  * $Log: MT940UmsatzImporter.java,v $
- * Revision 1.1  2010/06/02 15:32:22  willuhn
+ * Revision 1.2  2011/06/23 07:37:28  willuhn
+ * @N Ersetzen der Umlaute beim MT940-Export abschaltbar
+ * @N Beim MT940-Import explizit mit ISO-8859 lesen - ist zwar eigentlich nicht noetig, weil da per Definition keine Umlaute enthalten sein duerfen - aber wir sind ja tolerant ;)
+ *
+ * Revision 1.1  2010-06-02 15:32:22  willuhn
  * @Importer umbenannt
  *
  * Revision 1.16  2009/12/07 22:55:32  willuhn
