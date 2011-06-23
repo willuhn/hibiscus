@@ -17,7 +17,7 @@ CREATE TABLE konto (
      , saldo_available DOUBLE
      , UNIQUE (id)
      , PRIMARY KEY (id)
-)TYPE=InnoDB;
+) ENGINE=InnoDB;
 
 CREATE TABLE lastschrift (
        id int(10) AUTO_INCREMENT
@@ -35,7 +35,7 @@ CREATE TABLE lastschrift (
      , ausgefuehrt_am DATETIME
      , UNIQUE (id)
      , PRIMARY KEY (id)
-)TYPE=InnoDB;
+) ENGINE=InnoDB;
 
 CREATE TABLE systemnachricht (
        id int(10) AUTO_INCREMENT
@@ -45,7 +45,7 @@ CREATE TABLE systemnachricht (
      , gelesen int(10) NOT NULL
      , UNIQUE (id)
      , PRIMARY KEY (id)
-)TYPE=InnoDB;
+) ENGINE=InnoDB;
 
 CREATE TABLE turnus (
        id int(10) AUTO_INCREMENT
@@ -55,7 +55,7 @@ CREATE TABLE turnus (
      , initial int(10)
      , UNIQUE (id)
      , PRIMARY KEY (id)
-)TYPE=InnoDB;
+) ENGINE=InnoDB;
 
 CREATE TABLE empfaenger (
        id int(10) AUTO_INCREMENT
@@ -69,7 +69,7 @@ CREATE TABLE empfaenger (
      , kategorie VARCHAR(255) NULL
      , UNIQUE (id)
      , PRIMARY KEY (id)
-)TYPE=InnoDB;
+) ENGINE=InnoDB;
 
 CREATE TABLE sueberweisung (
        id int(10) AUTO_INCREMENT
@@ -80,7 +80,7 @@ CREATE TABLE sueberweisung (
      , ausgefuehrt_am DATETIME
      , UNIQUE (id)
      , PRIMARY KEY (id)
-)TYPE=InnoDB;
+) ENGINE=InnoDB;
 
 CREATE TABLE umsatztyp (
        id int(10) AUTO_INCREMENT
@@ -94,7 +94,7 @@ CREATE TABLE umsatztyp (
      , customcolor int(1)
      , UNIQUE (id)
      , PRIMARY KEY (id)
-)TYPE=InnoDB;
+) ENGINE=InnoDB;
 
 CREATE TABLE slastschrift (
        id int(10) AUTO_INCREMENT
@@ -105,7 +105,7 @@ CREATE TABLE slastschrift (
      , ausgefuehrt_am DATETIME
      , UNIQUE (id)
      , PRIMARY KEY (id)
-)TYPE=InnoDB;
+) ENGINE=InnoDB;
 
 CREATE TABLE protokoll (
        id int(10) AUTO_INCREMENT
@@ -115,7 +115,7 @@ CREATE TABLE protokoll (
      , typ int(10) NOT NULL
      , UNIQUE (id)
      , PRIMARY KEY (id)
-)TYPE=InnoDB;
+) ENGINE=InnoDB;
 
 CREATE TABLE slastbuchung (
        id int(10) AUTO_INCREMENT
@@ -130,7 +130,7 @@ CREATE TABLE slastbuchung (
      , typ VARCHAR(2)
      , UNIQUE (id)
      , PRIMARY KEY (id)
-)TYPE=InnoDB;
+) ENGINE=InnoDB;
 
 CREATE TABLE sueberweisungbuchung (
        id int(10) AUTO_INCREMENT
@@ -145,7 +145,7 @@ CREATE TABLE sueberweisungbuchung (
      , typ VARCHAR(2)
      , UNIQUE (id)
      , PRIMARY KEY (id)
-)TYPE=InnoDB;
+) ENGINE=InnoDB;
 
 CREATE TABLE ueberweisung (
        id int(10) AUTO_INCREMENT
@@ -165,7 +165,7 @@ CREATE TABLE ueberweisung (
      , ausgefuehrt_am DATETIME
      , UNIQUE (id)
      , PRIMARY KEY (id)
-)TYPE=InnoDB;
+) ENGINE=InnoDB;
 
 CREATE TABLE aueberweisung (
        id int(10) AUTO_INCREMENT
@@ -180,7 +180,7 @@ CREATE TABLE aueberweisung (
      , ausgefuehrt_am DATETIME
      , UNIQUE (id)
      , PRIMARY KEY (id)
-)TYPE=InnoDB;
+) ENGINE=InnoDB;
 
 CREATE TABLE umsatz (
        id int(10) AUTO_INCREMENT
@@ -204,7 +204,7 @@ CREATE TABLE umsatz (
      , flags int(1)
      , UNIQUE (id)
      , PRIMARY KEY (id)
-)TYPE=InnoDB;
+) ENGINE=InnoDB;
 
 CREATE TABLE dauerauftrag (
        id int(10) AUTO_INCREMENT
@@ -225,7 +225,7 @@ CREATE TABLE dauerauftrag (
      , typ VARCHAR(2)
      , UNIQUE (id)
      , PRIMARY KEY (id)
-)TYPE=InnoDB;
+) ENGINE=InnoDB;
 
 CREATE TABLE version (
        id int(10) AUTO_INCREMENT
@@ -233,7 +233,7 @@ CREATE TABLE version (
      , version int(10) NOT NULL
      , UNIQUE (id)
      , PRIMARY KEY (id)
-)TYPE=InnoDB;
+) ENGINE=InnoDB;
 
 CREATE TABLE op (
   id int(10) AUTO_INCREMENT,
@@ -245,7 +245,7 @@ CREATE TABLE op (
   kommentar varchar(1000) NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
-)TYPE=InnoDB;
+) ENGINE=InnoDB;
 
 CREATE TABLE op_buchung (
   id int(10) AUTO_INCREMENT,
@@ -253,7 +253,7 @@ CREATE TABLE op_buchung (
   op_id int(10) NOT NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
-)TYPE=InnoDB;
+) ENGINE=InnoDB;
 
 CREATE TABLE property (
   id int(10) AUTO_INCREMENT,
@@ -262,7 +262,7 @@ CREATE TABLE property (
   UNIQUE (id),
   UNIQUE KEY name (name(255)),
   PRIMARY KEY (id)
-)TYPE=InnoDB;
+) ENGINE=InnoDB;
 
 CREATE INDEX idx_lastschrift_konto ON lastschrift(konto_id);
 CREATE INDEX idx_sueberweisung_konto ON sueberweisung(konto_id);
