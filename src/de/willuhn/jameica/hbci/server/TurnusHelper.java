@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/TurnusHelper.java,v $
- * $Revision: 1.16 $
- * $Date: 2010/11/23 11:39:43 $
+ * $Revision: 1.17 $
+ * $Date: 2011/06/24 13:29:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -140,7 +140,12 @@ public class TurnusHelper
         cal.set(Calendar.DAY_OF_WEEK,calTag);
 
         test = cal.getTime();
-        if (test != null && (test.after(valuta)) || test.equals(valuta))
+        
+        // Schon vorbei
+        if (letzteZahlung != null && test.after(letzteZahlung))
+          return null;
+        
+        if (test.after(valuta) || test.equals(valuta))
           return test; // Datum gefunden
 
         // Ne, dann Anzahl der Wochen drauf rechnen
@@ -156,7 +161,12 @@ public class TurnusHelper
           cal.set(Calendar.DAY_OF_MONTH,tag);
 
         test = cal.getTime();
-        if (test != null && (test.after(valuta)) || test.equals(valuta))
+
+        // Schon vorbei
+        if (letzteZahlung != null && test.after(letzteZahlung))
+          return null;
+
+        if (test.after(valuta) || test.equals(valuta))
           return test; // Datum gefunden
 
         // Ne, dann Anzahl der Monate drauf rechnen
@@ -276,7 +286,10 @@ public class TurnusHelper
 
 /**********************************************************************
  * $Log: TurnusHelper.java,v $
- * Revision 1.16  2010/11/23 11:39:43  willuhn
+ * Revision 1.17  2011/06/24 13:29:20  willuhn
+ * @B siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=76102#76102
+ *
+ * Revision 1.16  2010-11-23 11:39:43  willuhn
  * @B Das Datum der ersten Zahlung darf nicht ohne Beruecksichtigung des Turnus verwendet werden. Beispiel: Erste Zahlung 22.11, Valuta 23.11, Turnus monatlich am 1., dann ist die erste Zahlung der 01.12. und nicht der 23.11.
  *
  * Revision 1.15  2009/08/26 21:23:46  willuhn
