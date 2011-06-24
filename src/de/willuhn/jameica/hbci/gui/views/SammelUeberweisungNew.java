@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/SammelUeberweisungNew.java,v $
- * $Revision: 1.14 $
- * $Date: 2011/04/11 16:48:33 $
+ * $Revision: 1.15 $
+ * $Date: 2011/06/24 07:55:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -58,7 +58,7 @@ public class SammelUeberweisungNew extends AbstractView
 		group.addHeadline(i18n.tr("Eigenschaften"));
     group.addLabelPair(i18n.tr("Zu belastendes Konto"),control.getKontoAuswahl());
     group.addLabelPair(i18n.tr("Bezeichnung"),control.getName());
-    group.addLabelPair(i18n.tr("Termin"),control.getTermin());
+    group.addInput(control.getTermin());
 		
 		group.addSeparator();
     group.addLabelPair(i18n.tr("Summe der Buchungen"),control.getSumme());
@@ -119,7 +119,10 @@ public class SammelUeberweisungNew extends AbstractView
 
 /**********************************************************************
  * $Log: SammelUeberweisungNew.java,v $
- * Revision 1.14  2011/04/11 16:48:33  willuhn
+ * Revision 1.15  2011/06/24 07:55:41  willuhn
+ * @C Bei Hibiscus-verwalteten Terminen besser "Fällig am" verwenden - ist nicht so missverstaendlich - der User denkt sonst ggf. es sei ein bankseitig terminierter Auftrag
+ *
+ * Revision 1.14  2011-04-11 16:48:33  willuhn
  * @N Drucken von Sammel- und Dauerauftraegen
  *
  * Revision 1.13  2011-04-08 15:19:14  willuhn

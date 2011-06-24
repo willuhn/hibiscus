@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/TerminInput.java,v $
- * $Revision: 1.1 $
- * $Date: 2011/05/20 16:22:31 $
+ * $Revision: 1.2 $
+ * $Date: 2011/06/24 07:55:41 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -48,9 +48,9 @@ public class TerminInput extends DateInput
     if (auftrag != null)
       this.setEnabled(!auftrag.ausgefuehrt());
     
-    this.setName(i18n.tr("Termin"));
-    this.setTitle(i18n.tr("Termin"));
-    this.setText(i18n.tr("Bitte wählen Sie einen Termin"));
+    this.setName(i18n.tr("Fällig am"));
+    this.setTitle(i18n.tr("Fälligkeit"));
+    this.setText(i18n.tr("Bitte wählen Sie ein Datum aus, zu dem\nHibiscus den Auftrag als fällig markieren soll."));
     this.setComment("");
     
     this.listener = new MyListener();
@@ -131,7 +131,10 @@ public class TerminInput extends DateInput
 
 /**********************************************************************
  * $Log: TerminInput.java,v $
- * Revision 1.1  2011/05/20 16:22:31  willuhn
+ * Revision 1.2  2011/06/24 07:55:41  willuhn
+ * @C Bei Hibiscus-verwalteten Terminen besser "Fällig am" verwenden - ist nicht so missverstaendlich - der User denkt sonst ggf. es sei ein bankseitig terminierter Auftrag
+ *
+ * Revision 1.1  2011-05-20 16:22:31  willuhn
  * @N Termin-Eingabefeld in eigene Klasse ausgelagert (verhindert duplizierten Code) - bessere Kommentare
  *
  **********************************************************************/
