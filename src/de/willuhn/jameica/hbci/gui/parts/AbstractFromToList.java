@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractFromToList.java,v $
- * $Revision: 1.10 $
- * $Date: 2011/01/20 17:13:21 $
+ * $Revision: 1.11 $
+ * $Date: 2011/06/28 09:24:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -85,6 +85,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
     
     this.setRememberOrder(true);
     this.setRememberColWidths(true);
+    this.setRememberState(true);
     this.setSummary(true);
   }
   
@@ -353,7 +354,10 @@ public abstract class AbstractFromToList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: AbstractFromToList.java,v $
- * Revision 1.10  2011/01/20 17:13:21  willuhn
+ * Revision 1.11  2011/06/28 09:24:35  willuhn
+ * @N Position speichern
+ *
+ * Revision 1.10  2011-01-20 17:13:21  willuhn
  * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
  *
  * Revision 1.9  2010-08-16 11:13:52  willuhn
