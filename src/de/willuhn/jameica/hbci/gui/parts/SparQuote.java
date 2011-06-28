@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SparQuote.java,v $
- * $Revision: 1.31 $
- * $Date: 2011/05/19 08:41:53 $
+ * $Revision: 1.32 $
+ * $Date: 2011/06/28 15:28:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -35,7 +35,6 @@ import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
-import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.IntegerInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.parts.ButtonArea;
@@ -50,6 +49,7 @@ import de.willuhn.jameica.hbci.gui.chart.LineChart;
 import de.willuhn.jameica.hbci.gui.chart.LineChartData;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
+import de.willuhn.jameica.hbci.gui.input.UmsatzDaysInput;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
@@ -70,31 +70,25 @@ public class SparQuote implements Part
 
   private static DateFormat DATEFORMAT = new SimpleDateFormat("MM.yyyy");
   
-  private TablePart table          = null;
-  private LineChart chart          = null;
-  private KontoInput kontoauswahl  = null;
-  private DateInput startAuswahl   = null;
-  private IntegerInput tagAuswahl  = null;
+  private TablePart table              = null;
+  private LineChart chart              = null;
+  private KontoInput kontoauswahl      = null;
+  private UmsatzDaysInput startAuswahl = null;
+  private IntegerInput tagAuswahl      = null;
   
-  private List<UmsatzEntry> data   = new ArrayList<UmsatzEntry>();
-  private List<UmsatzEntry> trend  = new ArrayList<UmsatzEntry>();
-  private Date start               = null;
-  private int stichtag             = 1;
+  private List<UmsatzEntry> data       = new ArrayList<UmsatzEntry>();
+  private List<UmsatzEntry> trend      = new ArrayList<UmsatzEntry>();
   
-  private Listener listener        = null; // BUGZILLA 575
+  private Listener listener            = null; // BUGZILLA 575
+  
+  private Date start                   = null;
+  private int stichtag                 = 1;
 
   /**
    * ct.
    */
   public SparQuote()
   {
-    // Wir beginnen per Default mit dem 01.01. des letzten Jahres
-    final Calendar cal = Calendar.getInstance();
-    cal.set(Calendar.DAY_OF_MONTH,1);
-    cal.set(Calendar.MONTH,Calendar.JANUARY);
-    cal.add(Calendar.YEAR,-1);
-    this.start = DateUtil.startOfDay(cal.getTime());
-    
     this.listener = new Listener()
     {
       public void handleEvent(Event event)
@@ -104,14 +98,17 @@ public class SparQuote implements Part
           Integer value = (Integer) getTagAuswahl().getValue();
           stichtag = value == null ? 1 : value.intValue();
           
-          start = (Date) getStartAuswahl().getValue();
-          if (start != null && !start.before(DateUtil.startOfDay(new Date())))
+          Integer days = (Integer) getStartAuswahl().getValue();
+          if (days == null || days == -1)
           {
-            // Datum darf sich nicht in der Zukunft befinden. Wir resetten das Datum
-            start = DateUtil.startOfDay(cal.getTime());
-            getStartAuswahl().setValue(start);
+            start = null;
           }
-
+          else
+          {
+            long d = days * 24l * 60l * 60l * 1000l;
+            start = DateUtil.startOfDay(new Date(System.currentTimeMillis() - d));
+          }
+          
           load();
           redraw();
           if (chart != null)
@@ -165,16 +162,14 @@ public class SparQuote implements Part
   
   /**
    * Liefert ein Eingabefeld fuer das Start-Datum.
-   * @return
+   * @return Eingabefeld.
    * @throws RemoteException
    */
-  private DateInput getStartAuswahl() throws RemoteException
+  private UmsatzDaysInput getStartAuswahl() throws RemoteException
   {
     if (this.startAuswahl != null)
       return this.startAuswahl;
-    this.startAuswahl = new DateInput(this.start);
-    this.startAuswahl.setName(i18n.tr("Start-Datum"));
-    this.startAuswahl.setComment(i18n.tr("frühestes Valuta-Datum"));
+    this.startAuswahl = new UmsatzDaysInput();
     this.startAuswahl.addListener(new DelayedListener(500,this.listener));
     return this.startAuswahl;
   }
@@ -507,7 +502,10 @@ public class SparQuote implements Part
 
 /*********************************************************************
  * $Log: SparQuote.java,v $
- * Revision 1.31  2011/05/19 08:41:53  willuhn
+ * Revision 1.32  2011/06/28 15:28:37  willuhn
+ * @N Zeitraum jetzt auch ueber neuen Schiebe-Regler
+ *
+ * Revision 1.31  2011-05-19 08:41:53  willuhn
  * @N BUGZILLA 1038 - generische Loesung
  *
  * Revision 1.30  2011-05-03 10:13:15  willuhn
