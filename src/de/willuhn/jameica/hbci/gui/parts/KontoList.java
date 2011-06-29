@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoList.java,v $
- * $Revision: 1.22 $
- * $Date: 2011/01/02 23:18:51 $
+ * $Revision: 1.23 $
+ * $Date: 2011/06/29 07:36:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -35,6 +35,7 @@ import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
+import de.willuhn.jameica.gui.parts.Column;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Font;
@@ -217,7 +218,8 @@ public class KontoList extends TablePart implements Part
         if (!Double.isNaN(d))
         {
           // Wir haben tatsaechlich eines, wo was drin steht
-          addColumn(i18n.tr("Verfügbar"),"saldo_available", new CurrencyFormatter(k.getWaehrung(), HBCI.DECIMALFORMAT));
+          Column col = new Column("saldo_available",i18n.tr("Verfügbar"),new CurrencyFormatter(k.getWaehrung(),HBCI.DECIMALFORMAT),false,Column.ALIGN_RIGHT);
+          addColumn(col);
           return;
         }
       }
@@ -381,7 +383,10 @@ public class KontoList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: KontoList.java,v $
- * Revision 1.22  2011/01/02 23:18:51  willuhn
+ * Revision 1.23  2011/06/29 07:36:42  willuhn
+ * @N BUGZILLA 1088
+ *
+ * Revision 1.22  2011-01-02 23:18:51  willuhn
  * @B Verfuegbarer Betrag wurde nicht korrekt als Waehrung formatiert
  *
  * Revision 1.21  2010-11-08 10:24:03  willuhn
