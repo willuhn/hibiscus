@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/OffeneUeberweisungen.java,v $
- * $Revision: 1.12 $
- * $Date: 2011/06/24 07:55:41 $
+ * $Revision: 1.13 $
+ * $Date: 2011/06/30 16:29:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,6 +26,7 @@ import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.menus.UeberweisungList;
@@ -87,10 +88,8 @@ public class OffeneUeberweisungen extends AbstractBox implements Box
         try {
           Date current = new Date();
           Ueberweisung u = (Ueberweisung) item.getData();
-          if (u.getTermin().before(current))
-          {
-            item.setForeground(Settings.getUeberfaelligForeground());
-          }
+          boolean faellig = u.getTermin().before(current);
+          item.setFont(faellig ? Font.BOLD.getSWTFont() : Font.DEFAULT.getSWTFont());
         }
         catch (RemoteException e) { /*ignore */}
       }
@@ -119,7 +118,10 @@ public class OffeneUeberweisungen extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: OffeneUeberweisungen.java,v $
- * Revision 1.12  2011/06/24 07:55:41  willuhn
+ * Revision 1.13  2011/06/30 16:29:42  willuhn
+ * @N Unterstuetzung fuer neues UnreadCount-Feature
+ *
+ * Revision 1.12  2011-06-24 07:55:41  willuhn
  * @C Bei Hibiscus-verwalteten Terminen besser "Fällig am" verwenden - ist nicht so missverstaendlich - der User denkt sonst ggf. es sei ein bankseitig terminierter Auftrag
  *
  * Revision 1.11  2010-08-12 17:12:32  willuhn

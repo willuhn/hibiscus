@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/messaging/NeueUmsaetze.java,v $
- * $Revision: 1.7 $
- * $Date: 2011/01/05 11:20:27 $
+ * $Revision: 1.8 $
+ * $Date: 2011/06/30 16:29:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -61,7 +61,7 @@ public class NeueUmsaetze implements MessageConsumer
     
     GenericObject o = ((ImportMessage)message).getObject();
     
-    if (o == null || o.getID() == null || !(o instanceof Umsatz))
+    if (o == null || !(o instanceof Umsatz) || o.getID() == null)
       return; // interessiert uns nicht
     
     
@@ -121,7 +121,10 @@ public class NeueUmsaetze implements MessageConsumer
 
 /*********************************************************************
  * $Log: NeueUmsaetze.java,v $
- * Revision 1.7  2011/01/05 11:20:27  willuhn
+ * Revision 1.8  2011/06/30 16:29:42  willuhn
+ * @N Unterstuetzung fuer neues UnreadCount-Feature
+ *
+ * Revision 1.7  2011-01-05 11:20:27  willuhn
  * *** empty log message ***
  *
  * Revision 1.6  2011-01-05 11:19:10  willuhn

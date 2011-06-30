@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SettingsControl.java,v $
- * $Revision: 1.60 $
- * $Date: 2011/05/25 10:05:49 $
+ * $Revision: 1.61 $
+ * $Date: 2011/06/30 16:29:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -59,7 +59,6 @@ public class SettingsControl extends AbstractControl
 
 	private Input buchungSollFg     				= null;
 	private Input buchungHabenFg    				= null;
-  private Input ueberfaelligFg            = null;
 
   private TablePart passportList          = null;
   private UmsatzTypTree umsatzTypTree     = null;
@@ -257,17 +256,6 @@ public class SettingsControl extends AbstractControl
 		return buchungHabenFg;
 	}
 
-	/**
-	 * Liefert ein Auswahlfeld fuer die Vordergrundfarbe von ueberfaelligen Ueberweisungen.
-	 * @return Auswahlfeld.
-	 */
-	public Input getUeberfaelligForeground()
-	{
-		if (ueberfaelligFg == null)
-      ueberfaelligFg = new ColorInput(Settings.getUeberfaelligForeground(),true);
-		return ueberfaelligFg;
-	}
-
   /**
    * Speichert die Einstellungen.
    */
@@ -275,11 +263,9 @@ public class SettingsControl extends AbstractControl
   {
 		Color hf = (Color)getBuchungHabenForeground().getValue();
 		Color sf = (Color)getBuchungSollForeground().getValue();
-		Color uf = (Color)getUeberfaelligForeground().getValue();
 
 		Settings.setBuchungHabenForeground(hf.getRGB());
 		Settings.setBuchungSollForeground(sf.getRGB());
-		Settings.setUeberfaelligForeground(uf.getRGB());
 
 		Settings.setOnlineMode(((Boolean)getOnlineMode().getValue()).booleanValue());
     Settings.setDecimalGrouping(((Boolean)getDecimalGrouping().getValue()).booleanValue());
@@ -306,7 +292,10 @@ public class SettingsControl extends AbstractControl
 
 /**********************************************************************
  * $Log: SettingsControl.java,v $
- * Revision 1.60  2011/05/25 10:05:49  willuhn
+ * Revision 1.61  2011/06/30 16:29:41  willuhn
+ * @N Unterstuetzung fuer neues UnreadCount-Feature
+ *
+ * Revision 1.60  2011-05-25 10:05:49  willuhn
  * @N Im Fehlerfall nur noch die PINs/Passwoerter der betroffenen Passports aus dem Cache loeschen. Wenn eine PIN falsch ist, muss man jetzt nicht mehr alle neu eingeben
  *
  * Revision 1.59  2011-05-25 08:53:31  willuhn

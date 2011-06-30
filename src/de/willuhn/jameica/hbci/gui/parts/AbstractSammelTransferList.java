@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractSammelTransferList.java,v $
- * $Revision: 1.15 $
- * $Date: 2011/04/29 15:33:28 $
+ * $Revision: 1.16 $
+ * $Date: 2011/06/30 16:29:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,6 +30,7 @@ import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.DelayedListener;
+import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
@@ -69,8 +70,8 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
           return;
 
         try {
-          if (l.getTermin().before(new Date()) && !l.ausgefuehrt())
-            item.setForeground(Settings.getUeberfaelligForeground());
+          boolean faellig = (l.getTermin().before(new Date()) && !l.ausgefuehrt());
+          item.setFont(faellig ? Font.BOLD.getSWTFont() : Font.DEFAULT.getSWTFont());
           if (l.ausgefuehrt())
             item.setForeground(Color.COMMENT.getSWTColor());
         }
@@ -217,7 +218,10 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
 
 /**********************************************************************
  * $Log: AbstractSammelTransferList.java,v $
- * Revision 1.15  2011/04/29 15:33:28  willuhn
+ * Revision 1.16  2011/06/30 16:29:41  willuhn
+ * @N Unterstuetzung fuer neues UnreadCount-Feature
+ *
+ * Revision 1.15  2011-04-29 15:33:28  willuhn
  * @N Neue Spalte "ausgefuehrt_am", in der das tatsaechliche Ausfuehrungsdatum von Auftraegen vermerkt wird
  *
  * Revision 1.14  2011-01-20 17:13:21  willuhn

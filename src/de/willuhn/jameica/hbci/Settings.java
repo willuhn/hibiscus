@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/Settings.java,v $
- * $Revision: 1.67 $
- * $Date: 2011/06/09 10:14:59 $
+ * $Revision: 1.68 $
+ * $Date: 2011/06/30 16:29:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -46,7 +46,6 @@ public class Settings
 
 	private static Color buchungSollForeground = null;
 	private static Color buchungHabenForeground = null;
-	private static Color ueberfaelligForeground = null;
 	
   /**
    * Liefert den Datenbank-Service.
@@ -121,19 +120,6 @@ public class Settings
 	}
 
 	/**
-	 * Liefert die Vordergrundfarbe fuer ueberfaellige Ueberweisungen.
-	 * @return Farbe.
-	 */
-	public static Color getUeberfaelligForeground()
-	{
-		if (ueberfaelligForeground != null)
-			return ueberfaelligForeground;
-
-		ueberfaelligForeground = new Color(GUI.getDisplay(),settings.getRGB("ueberfaellig.fg",new RGB(140,0,0)));
-		return ueberfaelligForeground;
-	}
-
-	/**
 	 * Speichert die Farben fuer den Vordergrund von Soll-Buchungen.
    * @param rgb
    */
@@ -151,16 +137,6 @@ public class Settings
 	{
 		settings.setAttribute("buchung.haben.fg",rgb);
 		buchungHabenForeground = null;
-	}
-
-	/**
-	 * Speichert die Farben fuer den Vordergrund von ueberfaelligen Ueberweisungen.
-	 * @param rgb
-	 */
-	public static void setUeberfaelligForeground(RGB rgb)
-	{
-		settings.setAttribute("ueberfaellig.fg",rgb);
-		ueberfaelligForeground = null;
 	}
 
 	/**
@@ -439,7 +415,10 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
- * Revision 1.67  2011/06/09 10:14:59  willuhn
+ * Revision 1.68  2011/06/30 16:29:42  willuhn
+ * @N Unterstuetzung fuer neues UnreadCount-Feature
+ *
+ * Revision 1.67  2011-06-09 10:14:59  willuhn
  * *** empty log message ***
  *
  * Revision 1.66  2011-05-23 14:53:26  willuhn
