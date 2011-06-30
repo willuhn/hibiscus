@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/synchronize/AbstractSynchronizeJob.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/03/17 00:51:24 $
+ * $Revision: 1.2 $
+ * $Date: 2011/06/30 15:23:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,28 +23,27 @@ import de.willuhn.util.I18N;
 
 /**
  * Abstrakte Basis-Implementierung aller SynchronizeJobs,
+ * @param <T> Typ des Jobs.
  */
-public abstract class AbstractSynchronizeJob implements SynchronizeJob
+public abstract class AbstractSynchronizeJob<T extends GenericObject> implements SynchronizeJob<T>
 {
-  I18N i18n = null;
-  private GenericObject context = null;
+  final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  private T context = null;
 
   /**
    * ct.
    * @param context das Fachobjekt, welches zu behandeln ist.
    * Das kann eine Ueberweisung, ein Konto o.ae. sein.
    */
-  public AbstractSynchronizeJob(GenericObject context)
+  public AbstractSynchronizeJob(T context)
   {
     this.context = context;
-    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
   
   /**
-   * Liefert den Context des Jobs.
-   * @return Context.
+   * @see de.willuhn.jameica.hbci.rmi.SynchronizeJob#getContext()
    */
-  GenericObject getContext()
+  public T getContext()
   {
     return this.context;
   }
@@ -95,6 +94,9 @@ public abstract class AbstractSynchronizeJob implements SynchronizeJob
 
 /*********************************************************************
  * $Log: AbstractSynchronizeJob.java,v $
+ * Revision 1.2  2011/06/30 15:23:22  willuhn
+ * @N Synchronize-Jobs getypt
+ *
  * Revision 1.1  2006/03/17 00:51:24  willuhn
  * @N bug 209 Neues Synchronisierungs-Subsystem
  *

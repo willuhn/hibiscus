@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/synchronize/SynchronizeAuslandsUeberweisungJob.java,v $
- * $Revision: 1.1 $
- * $Date: 2009/03/13 00:25:12 $
+ * $Revision: 1.2 $
+ * $Date: 2011/06/30 15:23:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,7 +26,7 @@ import de.willuhn.util.ApplicationException;
 /**
  * Ein Synchronize-Job fuer das Ausfuehren einer faelligen AuslandsUeberweisung.
  */
-public class SynchronizeAuslandsUeberweisungJob extends AbstractSynchronizeJob
+public class SynchronizeAuslandsUeberweisungJob extends AbstractSynchronizeJob<AuslandsUeberweisung>
 {
 
   /**
@@ -43,7 +43,7 @@ public class SynchronizeAuslandsUeberweisungJob extends AbstractSynchronizeJob
    */
   public AbstractHBCIJob[] createHBCIJobs() throws RemoteException, ApplicationException
   {
-    return new AbstractHBCIJob[]{new HBCIAuslandsUeberweisungJob((AuslandsUeberweisung)getContext())};
+    return new AbstractHBCIJob[]{new HBCIAuslandsUeberweisungJob(getContext())};
   }
 
   /**
@@ -51,7 +51,7 @@ public class SynchronizeAuslandsUeberweisungJob extends AbstractSynchronizeJob
    */
   public String getName() throws RemoteException
   {
-    AuslandsUeberweisung ueb = (AuslandsUeberweisung) getContext();
+    AuslandsUeberweisung ueb = getContext();
     Konto k = ueb.getKonto();
     String[] params = new String[] {
         k.getLongName(),
@@ -83,6 +83,9 @@ public class SynchronizeAuslandsUeberweisungJob extends AbstractSynchronizeJob
 
 /*********************************************************************
  * $Log: SynchronizeAuslandsUeberweisungJob.java,v $
+ * Revision 1.2  2011/06/30 15:23:22  willuhn
+ * @N Synchronize-Jobs getypt
+ *
  * Revision 1.1  2009/03/13 00:25:12  willuhn
  * @N Code fuer Auslandsueberweisungen fast fertig
  *

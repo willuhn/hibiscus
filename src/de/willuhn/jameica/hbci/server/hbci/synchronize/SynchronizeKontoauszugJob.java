@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/synchronize/SynchronizeKontoauszugJob.java,v $
- * $Revision: 1.4 $
- * $Date: 2008/04/13 04:20:41 $
+ * $Revision: 1.5 $
+ * $Date: 2011/06/30 15:23:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,7 +27,7 @@ import de.willuhn.util.ApplicationException;
 /**
  * Ein Synchronize-Job fuer das Abrufen der Umsaetze und des Saldos eines Kontos.
  */
-public class SynchronizeKontoauszugJob extends AbstractSynchronizeJob
+public class SynchronizeKontoauszugJob extends AbstractSynchronizeJob<Konto>
 {
   /**
    * ct.
@@ -46,7 +46,7 @@ public class SynchronizeKontoauszugJob extends AbstractSynchronizeJob
     // BUGZILLA 346: Das bleibt weiterhin
     // ein Sync-Job, der aber je nach Konfiguration ggf.
     // nur Saldo oder nur Umsaetze abruft
-    Konto k = (Konto) getContext();
+    Konto k = getContext();
     SynchronizeOptions o = new SynchronizeOptions(k);
     ArrayList jobs = new ArrayList();
     if (o.getSyncSaldo()) jobs.add(new HBCISaldoJob(k));
@@ -60,7 +60,7 @@ public class SynchronizeKontoauszugJob extends AbstractSynchronizeJob
    */
   public String getName() throws RemoteException
   {
-    Konto k = (Konto) getContext();
+    Konto k = getContext();
     SynchronizeOptions o = new SynchronizeOptions(k);
     
     String s = "{0}: ";
@@ -97,6 +97,9 @@ public class SynchronizeKontoauszugJob extends AbstractSynchronizeJob
 
 /*********************************************************************
  * $Log: SynchronizeKontoauszugJob.java,v $
+ * Revision 1.5  2011/06/30 15:23:22  willuhn
+ * @N Synchronize-Jobs getypt
+ *
  * Revision 1.4  2008/04/13 04:20:41  willuhn
  * @N Bug 583
  *

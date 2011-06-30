@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/synchronize/SynchronizeSammelUeberweisungJob.java,v $
- * $Revision: 1.4 $
- * $Date: 2008/04/13 04:20:41 $
+ * $Revision: 1.5 $
+ * $Date: 2011/06/30 15:23:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,7 +26,7 @@ import de.willuhn.util.ApplicationException;
 /**
  * Ein Synchronize-Job fuer das Ausfuehren einer faelligen Sammel-Ueberweisung.
  */
-public class SynchronizeSammelUeberweisungJob extends AbstractSynchronizeJob
+public class SynchronizeSammelUeberweisungJob extends AbstractSynchronizeJob<SammelUeberweisung>
 {
 
   /**
@@ -43,7 +43,7 @@ public class SynchronizeSammelUeberweisungJob extends AbstractSynchronizeJob
    */
   public AbstractHBCIJob[] createHBCIJobs() throws RemoteException, ApplicationException
   {
-    return new AbstractHBCIJob[]{new HBCISammelUeberweisungJob((SammelUeberweisung)getContext())};
+    return new AbstractHBCIJob[]{new HBCISammelUeberweisungJob(getContext())};
   }
 
   /**
@@ -51,7 +51,7 @@ public class SynchronizeSammelUeberweisungJob extends AbstractSynchronizeJob
    */
   public String getName() throws RemoteException
   {
-    SammelUeberweisung ueb = (SammelUeberweisung) getContext();
+    SammelUeberweisung ueb = getContext();
     Konto k = ueb.getKonto();
     String[] params = new String[] {
         k.getLongName(),
@@ -82,6 +82,9 @@ public class SynchronizeSammelUeberweisungJob extends AbstractSynchronizeJob
 
 /*********************************************************************
  * $Log: SynchronizeSammelUeberweisungJob.java,v $
+ * Revision 1.5  2011/06/30 15:23:22  willuhn
+ * @N Synchronize-Jobs getypt
+ *
  * Revision 1.4  2008/04/13 04:20:41  willuhn
  * @N Bug 583
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/synchronize/SynchronizeDauerauftragStoreJob.java,v $
- * $Revision: 1.4 $
- * $Date: 2008/04/13 04:20:41 $
+ * $Revision: 1.5 $
+ * $Date: 2011/06/30 15:23:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,7 +26,7 @@ import de.willuhn.util.ApplicationException;
 /**
  * Ein Synchronize-Job fuer das Ausfuehren eines Dauerauftrages.
  */
-public class SynchronizeDauerauftragStoreJob extends AbstractSynchronizeJob
+public class SynchronizeDauerauftragStoreJob extends AbstractSynchronizeJob<Dauerauftrag>
 {
 
   /**
@@ -43,7 +43,7 @@ public class SynchronizeDauerauftragStoreJob extends AbstractSynchronizeJob
    */
   public AbstractHBCIJob[] createHBCIJobs() throws RemoteException, ApplicationException
   {
-    return new AbstractHBCIJob[]{new HBCIDauerauftragStoreJob((Dauerauftrag)getContext())};
+    return new AbstractHBCIJob[]{new HBCIDauerauftragStoreJob(getContext())};
   }
 
   /**
@@ -51,7 +51,7 @@ public class SynchronizeDauerauftragStoreJob extends AbstractSynchronizeJob
    */
   public String getName() throws RemoteException
   {
-    Dauerauftrag dauer = (Dauerauftrag) getContext();
+    Dauerauftrag dauer = getContext();
     Konto k = dauer.getKonto();
     String[] params = new String[] {
         k.getLongName(),
@@ -84,6 +84,9 @@ public class SynchronizeDauerauftragStoreJob extends AbstractSynchronizeJob
 
 /*********************************************************************
  * $Log: SynchronizeDauerauftragStoreJob.java,v $
+ * Revision 1.5  2011/06/30 15:23:22  willuhn
+ * @N Synchronize-Jobs getypt
+ *
  * Revision 1.4  2008/04/13 04:20:41  willuhn
  * @N Bug 583
  *
