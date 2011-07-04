@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.74 $
- * $Date: 2011/05/04 12:04:40 $
+ * $Revision: 1.75 $
+ * $Date: 2011/07/04 13:13:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -812,7 +812,7 @@ public class UmsatzList extends TablePart implements Extendable
    */
   public String getExtendableID()
   {
-    return this.getClass().getName();
+    return UmsatzList.class.getName();
   }
   
   
@@ -821,7 +821,10 @@ public class UmsatzList extends TablePart implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
- * Revision 1.74  2011/05/04 12:04:40  willuhn
+ * Revision 1.75  2011/07/04 13:13:30  willuhn
+ * @B Syntax-Belegnummer wurde in den Kontoauszuegen nicht mit angezeigt
+ *
+ * Revision 1.74  2011-05-04 12:04:40  willuhn
  * @N Zeitraum in Umsatzliste und Saldo-Chart kann jetzt freier und bequemer ueber einen Schieberegler eingestellt werden
  * @B Dispose-Checks in Umsatzliste
  *
