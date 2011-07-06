@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.75 $
- * $Date: 2011/07/04 13:13:30 $
+ * $Revision: 1.74.2.1 $
+ * $Date: 2011/07/06 14:55:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -821,7 +821,11 @@ public class UmsatzList extends TablePart implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
- * Revision 1.75  2011/07/04 13:13:30  willuhn
+ * Revision 1.74.2.1  2011/07/06 14:55:55  willuhn
+ * @B Backport BUGZILLA 1088
+ * @B Backport BUGZILLA 1100
+ *
+ * Revision 1.75  2011-07-04 13:13:30  willuhn
  * @B Syntax-Belegnummer wurde in den Kontoauszuegen nicht mit angezeigt
  *
  * Revision 1.74  2011-05-04 12:04:40  willuhn

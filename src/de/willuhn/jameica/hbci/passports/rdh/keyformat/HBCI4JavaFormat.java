@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/keyformat/HBCI4JavaFormat.java,v $
- * $Revision: 1.4 $
- * $Date: 2011/07/06 08:00:18 $
+ * $Revision: 1.3.2.1 $
+ * $Date: 2011/07/06 14:55:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -292,8 +292,9 @@ public class HBCI4JavaFormat implements KeyFormat
 
 /**********************************************************************
  * $Log: HBCI4JavaFormat.java,v $
- * Revision 1.4  2011/07/06 08:00:18  willuhn
- * @N Debug-Output
+ * Revision 1.3.2.1  2011/07/06 14:55:56  willuhn
+ * @B Backport BUGZILLA 1088
+ * @B Backport BUGZILLA 1100
  *
  * Revision 1.3  2011-05-24 09:23:26  willuhn
  * @C Exception-Handling

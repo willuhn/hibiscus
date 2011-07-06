@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoList.java,v $
- * $Revision: 1.23 $
- * $Date: 2011/06/29 07:36:42 $
+ * $Revision: 1.22.2.1 $
+ * $Date: 2011/07/06 14:55:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -383,7 +383,11 @@ public class KontoList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: KontoList.java,v $
- * Revision 1.23  2011/06/29 07:36:42  willuhn
+ * Revision 1.22.2.1  2011/07/06 14:55:55  willuhn
+ * @B Backport BUGZILLA 1088
+ * @B Backport BUGZILLA 1100
+ *
+ * Revision 1.23  2011-06-29 07:36:42  willuhn
  * @N BUGZILLA 1088
  *
  * Revision 1.22  2011-01-02 23:18:51  willuhn

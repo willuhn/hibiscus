@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/server/PassportHandleImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2011/07/06 14:33:35 $
+ * $Revision: 1.5.2.1 $
+ * $Date: 2011/07/06 14:55:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -257,8 +257,9 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 
 /*****************************************************************************
  * $Log: PassportHandleImpl.java,v $
- * Revision 1.6  2011/07/06 14:33:35  willuhn
- * @B Callbacks 12 und 13 duerfen nicht im Passport behandelt werden, weil das auch in Situationen passieren kann, wo der Passport gerade nicht im Callback registriert ist
+ * Revision 1.5.2.1  2011/07/06 14:55:56  willuhn
+ * @B Backport BUGZILLA 1088
+ * @B Backport BUGZILLA 1100
  *
  * Revision 1.5  2011-05-24 09:06:10  willuhn
  * @C Refactoring und Vereinfachung von HBCI-Callbacks
