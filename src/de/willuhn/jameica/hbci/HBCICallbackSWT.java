@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.72 $
- * $Date: 2011/07/06 08:00:18 $
+ * $Revision: 1.73 $
+ * $Date: 2011/07/06 14:33:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,6 +28,8 @@ import org.kapott.hbci.passport.HBCIPassport;
 
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.gui.DialogFactory;
+import de.willuhn.jameica.hbci.gui.dialogs.NewInstKeysDialog;
+import de.willuhn.jameica.hbci.gui.dialogs.NewKeysDialog;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.hbci.rmi.Nachricht;
 import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
@@ -215,6 +217,25 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
 					if (container == null) container = DialogFactory.getAccountData(passport);
 					accountCache.put(passport,container);
 					retData.replace(0,retData.length(),container.customerid);
+					break;
+
+				case NEED_NEW_INST_KEYS_ACK:
+			    NewInstKeysDialog nikd = new NewInstKeysDialog(passport);
+			    Boolean b = (Boolean) nikd.open();
+			    retData.replace(0,retData.length(),b.booleanValue() ? "" : "ERROR");
+					break;
+
+				case HAVE_NEW_MY_KEYS:
+	        NewKeysDialog nkd = new NewKeysDialog(passport);
+	        try
+	        {
+	          nkd.open();
+	        }
+	        catch (OperationCanceledException e)
+	        {
+	          // Den INI-Brief kann der User auch noch spaeter ausdrucken
+	          Logger.warn(e.getMessage());
+	        }
 					break;
 
 				case HAVE_INST_MSG:
@@ -472,7 +493,10 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
- * Revision 1.72  2011/07/06 08:00:18  willuhn
+ * Revision 1.73  2011/07/06 14:33:35  willuhn
+ * @B Callbacks 12 und 13 duerfen nicht im Passport behandelt werden, weil das auch in Situationen passieren kann, wo der Passport gerade nicht im Callback registriert ist
+ *
+ * Revision 1.72  2011-07-06 08:00:18  willuhn
  * @N Debug-Output
  *
  * Revision 1.71  2011-05-25 10:03:09  willuhn

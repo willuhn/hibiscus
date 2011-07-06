@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/server/PassportHandleImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2011/05/24 09:06:10 $
+ * $Revision: 1.6 $
+ * $Date: 2011/07/06 14:33:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,8 +23,6 @@ import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCICallbackSWT;
 import de.willuhn.jameica.hbci.gui.DialogFactory;
-import de.willuhn.jameica.hbci.gui.dialogs.NewInstKeysDialog;
-import de.willuhn.jameica.hbci.gui.dialogs.NewKeysDialog;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.hbci.passports.rdh.InsertKeyDialog;
 import de.willuhn.jameica.hbci.passports.rdh.KeyPasswordSaveDialog;
@@ -231,31 +229,6 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
   {
     switch (reason)
     {
-      case HBCICallback.NEED_NEW_INST_KEYS_ACK:
-      {
-        NewInstKeysDialog dialog = new NewInstKeysDialog(p);
-        Boolean b = (Boolean) dialog.open();
-        retData.replace(0,retData.length(),b.booleanValue() ? "" : "ERROR");
-        // OperationCancelledException fangen wir hier nicht. Wenn der User abbricht, muessen wir wirklich abbrechen
-        return true;
-      }
-
-      case HBCICallback.HAVE_NEW_MY_KEYS:
-      {
-        NewKeysDialog dialog = new NewKeysDialog(p);
-        try
-        {
-          dialog.open();
-        }
-        catch (OperationCanceledException e)
-        {
-          // Den INI-Brief kann der User auch noch spaeter ausdrucken
-          Logger.warn(e.getMessage());
-        }
-        return true;
-      }
-
-    
       case HBCICallback.NEED_SIZENTRY_SELECT:
       {
         SelectSizEntryDialog e = new SelectSizEntryDialog(SelectSizEntryDialog.POSITION_CENTER,retData.toString());
@@ -284,7 +257,10 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 
 /*****************************************************************************
  * $Log: PassportHandleImpl.java,v $
- * Revision 1.5  2011/05/24 09:06:10  willuhn
+ * Revision 1.6  2011/07/06 14:33:35  willuhn
+ * @B Callbacks 12 und 13 duerfen nicht im Passport behandelt werden, weil das auch in Situationen passieren kann, wo der Passport gerade nicht im Callback registriert ist
+ *
+ * Revision 1.5  2011-05-24 09:06:10  willuhn
  * @C Refactoring und Vereinfachung von HBCI-Callbacks
  *
  * Revision 1.4  2010-10-27 10:25:10  willuhn
