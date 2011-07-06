@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/keyformat/HBCI4JavaFormat.java,v $
- * $Revision: 1.3 $
- * $Date: 2011/05/24 09:23:26 $
+ * $Revision: 1.4 $
+ * $Date: 2011/07/06 08:00:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -241,6 +241,8 @@ public class HBCI4JavaFormat implements KeyFormat
       callback = plugin.getHBCICallback();
       if (callback != null && (callback instanceof HBCICallbackSWT))
         ((HBCICallbackSWT)callback).setCurrentHandle(new PassportHandleImpl());
+      else
+        Logger.warn("unable to register current handle, callback: " + callback);
       
       String type = getPassportType();
       HBCIUtils.setParam("client.passport.default",type); // ist eigentlich nicht noetig
@@ -290,7 +292,10 @@ public class HBCI4JavaFormat implements KeyFormat
 
 /**********************************************************************
  * $Log: HBCI4JavaFormat.java,v $
- * Revision 1.3  2011/05/24 09:23:26  willuhn
+ * Revision 1.4  2011/07/06 08:00:18  willuhn
+ * @N Debug-Output
+ *
+ * Revision 1.3  2011-05-24 09:23:26  willuhn
  * @C Exception-Handling
  *
  * Revision 1.2  2010/06/17 17:20:58  willuhn

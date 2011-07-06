@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.71 $
- * $Date: 2011/05/25 10:03:09 $
+ * $Revision: 1.72 $
+ * $Date: 2011/07/06 08:00:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -334,6 +334,7 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
    */
   public void setCurrentHandle(PassportHandle handle)
   {
+    Logger.debug("current handle: " + (handle == null ? "<null>" : handle.getClass()));
     this.currentHandle = handle;
   }
   
@@ -471,7 +472,10 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
 
 /**********************************************************************
  * $Log: HBCICallbackSWT.java,v $
- * Revision 1.71  2011/05/25 10:03:09  willuhn
+ * Revision 1.72  2011/07/06 08:00:18  willuhn
+ * @N Debug-Output
+ *
+ * Revision 1.71  2011-05-25 10:03:09  willuhn
  * @R unused import
  *
  * Revision 1.70  2011-05-25 10:02:53  willuhn
