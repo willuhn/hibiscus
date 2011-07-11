@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractSammelTransferBuchungImpl.java,v $
- * $Revision: 1.19 $
- * $Date: 2010/03/04 09:39:40 $
+ * $Revision: 1.20 $
+ * $Date: 2011/07/11 08:14:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -72,6 +72,10 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
 
       if (getGegenkontoName() == null || getGegenkontoName().length() == 0)
         throw new ApplicationException(i18n.tr("Bitte geben Sie den Namen des Kontoinhabers des Gegenkontos ein"));
+
+      int blzLen = getGegenkontoBLZ().length();
+      if (blzLen != HBCIProperties.HBCI_BLZ_LENGTH)
+        throw new ApplicationException(i18n.tr("Ungültige BLZ \"{0}\". Muss {1} Stellen lang sein.", new String[]{getGegenkontoBLZ(),""+HBCIProperties.HBCI_BLZ_LENGTH}));
 
       HBCIProperties.checkLength(getGegenkontoName(), HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
 
@@ -269,6 +273,9 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferBuchungImpl.java,v $
+ * Revision 1.20  2011/07/11 08:14:13  willuhn
+ * @B Laengen-Pruefung der BLZ fehlte
+ *
  * Revision 1.19  2010/03/04 09:39:40  willuhn
  * @B BUGZILLA 829
  *
