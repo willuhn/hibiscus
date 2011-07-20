@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/UmsatzTyp.java,v $
- * $Revision: 1.17 $
- * $Date: 2009/05/08 13:58:30 $
+ * $Revision: 1.18 $
+ * $Date: 2011/07/20 15:41:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -174,6 +174,23 @@ public interface UmsatzTyp extends DBObjectNode
    * @throws PatternSyntaxException wird geworden, wenn es ein regulaerer Ausdruck mit Fehlern ist.
    */
   public boolean matches(Umsatz umsatz) throws RemoteException, PatternSyntaxException;
+
+  /**
+   * Prueft, ob der Umsatz diesem Pattern entspricht.
+   * Ist fuer den Umsatz-Typ kein Pattern definiert, liefert die Funktion
+   * immer false.
+   * @param umsatz zu pruefender Umsatz.
+   * @param allowReassign true, wenn der Umsatz auch dann als passend gewertet werden
+   * soll, wenn er bereits fest einer anderen Kategorie zugeordnet ist. Per Default (also
+   * wenn die "matches(Umsatz)"-Funktion ohne diesen Boolean-Parameter aufgerufen wird)
+   * ist dieser Parameter "false". Das heisst, ein Umsatz, der bereits manuell (nicht per Suchbegriff)
+   * einer anderen Kategorie zugeordnet ist, liefert hier false, wenn "this" nicht
+   * die zugeordnete Kategorie ist.
+   * @return true, wenn er dem Pattern entspricht.
+   * @throws RemoteException
+   * @throws PatternSyntaxException wird geworden, wenn es ein regulaerer Ausdruck mit Fehlern ist.
+   */
+  public boolean matches(Umsatz umsatz, boolean allowReassign) throws RemoteException, PatternSyntaxException;
   
   /**
    * Liefert die fuer diese Kategorie zu verwendende Farbe.
@@ -207,6 +224,9 @@ public interface UmsatzTyp extends DBObjectNode
 
 /**********************************************************************
  * $Log: UmsatzTyp.java,v $
+ * Revision 1.18  2011/07/20 15:41:36  willuhn
+ * @N Neue Funktion UmsatzTyp#matches(Umsatz,boolean allowReassign) - normalerweise liefert die Funktion ohne das Boolean false, wenn der Umsatz bereits manuell einer anderen Kategorie zugeordnet ist. Andernfalls kaeme es hier ja - zumindest virtuell - zu einer Doppel-Zuordnung. Da "UmsatzList" jedoch fuer den Suchbegriff (den man oben eingeben kann) intern on-the-fly einen UmsatzTyp erstellt, mit dem die Suche erfolgt, wuerden hier bereits fest zugeordnete Umsaetze nicht mehr gefunden werden. Daher die neue Funktion.
+ *
  * Revision 1.17  2009/05/08 13:58:30  willuhn
  * @N Icons in allen Menus und auf allen Buttons
  * @N Fuer Umsatz-Kategorien koennen nun benutzerdefinierte Farben vergeben werden

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.76 $
- * $Date: 2011/07/20 15:13:11 $
+ * $Revision: 1.77 $
+ * $Date: 2011/07/20 15:41:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -630,7 +630,7 @@ public class UmsatzList extends TablePart implements Extendable
                 continue;
               }
 
-              if (typ.matches(u))
+              if (typ.matches(u,true))
               {
                 // ggf. vorher geworfene Fehlermeldung wieder entfernen
                 GUI.getView().setErrorText("");
@@ -827,7 +827,10 @@ public class UmsatzList extends TablePart implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
- * Revision 1.76  2011/07/20 15:13:11  willuhn
+ * Revision 1.77  2011/07/20 15:41:36  willuhn
+ * @N Neue Funktion UmsatzTyp#matches(Umsatz,boolean allowReassign) - normalerweise liefert die Funktion ohne das Boolean false, wenn der Umsatz bereits manuell einer anderen Kategorie zugeordnet ist. Andernfalls kaeme es hier ja - zumindest virtuell - zu einer Doppel-Zuordnung. Da "UmsatzList" jedoch fuer den Suchbegriff (den man oben eingeben kann) intern on-the-fly einen UmsatzTyp erstellt, mit dem die Suche erfolgt, wuerden hier bereits fest zugeordnete Umsaetze nicht mehr gefunden werden. Daher die neue Funktion.
+ *
+ * Revision 1.76  2011-07-20 15:13:11  willuhn
  * @N Filter-Einstellungen nur noch fuer die Dauer der Sitzung speichern - siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=76837#76837
  *
  * Revision 1.75  2011-07-04 13:13:30  willuhn
