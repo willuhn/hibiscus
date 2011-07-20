@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.75 $
- * $Date: 2011/07/04 13:13:30 $
+ * $Revision: 1.76 $
+ * $Date: 2011/07/20 15:13:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,9 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.swt.SWT;
@@ -83,6 +85,10 @@ public class UmsatzList extends TablePart implements Extendable
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
+  // Cache fuer die Filter-Einstellungen des Users fuer die Dauer der Sitzung.
+  static Map cache = new HashMap();
+  
+
   private MessageConsumer mcChanged = null;
   private MessageConsumer mcNew     = null;
 
@@ -98,8 +104,6 @@ public class UmsatzList extends TablePart implements Extendable
   private boolean filter            = true;
   
   private boolean disposed          = false;
-  
-  protected static de.willuhn.jameica.system.Settings mySettings = new de.willuhn.jameica.system.Settings(UmsatzList.class);
 
   /**
    * @param konto
@@ -322,12 +326,12 @@ public class UmsatzList extends TablePart implements Extendable
       group.addLabelPair(i18n.tr("Zweck, Konto oder Kommentar enthält"), this.search);
 
       // Checkbox zur Aktivierung von regulaeren Ausdruecken
-      this.regex = new CheckboxInput(mySettings.getBoolean("regex",false));
+      Boolean b = (Boolean) cache.get("regex");
+      this.regex = new CheckboxInput(b != null && b.booleanValue());
       this.regex.addListener(new Listener() {
         public void handleEvent(Event event)
         {
-          boolean b = ((Boolean)regex.getValue()).booleanValue();
-          mySettings.setAttribute("regex",b);
+          cache.put("regex",regex.getValue());
           kl.process();
         }
       });
@@ -469,7 +473,9 @@ public class UmsatzList extends TablePart implements Extendable
 
       text = GUI.getStyleFactory().createText(parent);
       // BUGZILLA 258
-      this.text.setText(mySettings.getString("search",""));
+      
+      String s = (String) cache.get("search");
+      this.text.setText(s != null ? s : "");
       this.text.addKeyListener(kl);
       return this.text;
     }
@@ -480,7 +486,7 @@ public class UmsatzList extends TablePart implements Extendable
     public Object getValue()
     {
       String s = text == null ? null : text.getText();
-      mySettings.setAttribute("search",s);
+      cache.put("search",s);
       return s;
     }
 
@@ -821,7 +827,10 @@ public class UmsatzList extends TablePart implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
- * Revision 1.75  2011/07/04 13:13:30  willuhn
+ * Revision 1.76  2011/07/20 15:13:11  willuhn
+ * @N Filter-Einstellungen nur noch fuer die Dauer der Sitzung speichern - siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=76837#76837
+ *
+ * Revision 1.75  2011-07-04 13:13:30  willuhn
  * @B Syntax-Belegnummer wurde in den Kontoauszuegen nicht mit angezeigt
  *
  * Revision 1.74  2011-05-04 12:04:40  willuhn
