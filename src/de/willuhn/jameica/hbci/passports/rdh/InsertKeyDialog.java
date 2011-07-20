@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/InsertKeyDialog.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/06/17 11:26:48 $
+ * $Revision: 1.2 $
+ * $Date: 2011/07/20 08:46:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,8 +25,8 @@ import de.willuhn.util.I18N;
  */
 public class InsertKeyDialog extends WaitDialog
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private File file = null;
-  private I18N i18n = null;
 
   /**
    * @param f die Schluesseldatei.
@@ -35,8 +35,7 @@ public class InsertKeyDialog extends WaitDialog
   {
     super(InsertKeyDialog.POSITION_CENTER);
     this.file = f;
-    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-    setTitle(i18n.tr("Schlüsseldiskette einlegen"));
+    setTitle(i18n.tr("Schlüsseldiskette/USB-Stick einlegen"));
   }
 
   /**
@@ -73,9 +72,9 @@ public class InsertKeyDialog extends WaitDialog
    */
   public String getText()
   {
-    return i18n.tr("Die Schlüsseldiskette wurde nicht gefunden.\n" +
+    return i18n.tr("Die Schlüsseldatei wurde nicht gefunden.\n" +
                    "Bitte legen Sie die Diskette/den USB-Stick ein.\n" +
-                   "Dateiname: {0}",this.file.getAbsolutePath());
+                   "\nDateiname: {0}\n",this.file.getAbsolutePath());
   }
 
 }
@@ -83,6 +82,9 @@ public class InsertKeyDialog extends WaitDialog
 
 /*********************************************************************
  * $Log: InsertKeyDialog.java,v $
+ * Revision 1.2  2011/07/20 08:46:28  willuhn
+ * @N GUI poliert
+ *
  * Revision 1.1  2010/06/17 11:26:48  willuhn
  * @B In HBCICallbackSWT wurden die RDH-Passports nicht korrekt ausgefiltert
  * @C komplettes Projekt "hbci_passport_rdh" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
