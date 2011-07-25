@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractDBSupportImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2010/11/02 12:02:19 $
+ * $Revision: 1.7 $
+ * $Date: 2011/07/25 10:05:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,8 +13,11 @@
 
 package de.willuhn.jameica.hbci.server;
 
+import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -52,11 +55,11 @@ public abstract class AbstractDBSupportImpl implements DBSupport
 
     Logger.info("executing sql script: " + sqlScript.getAbsolutePath());
     
-    FileReader reader = null;
+    Reader reader = null;
 
     try
     {
-      reader  = new FileReader(sqlScript);
+      reader  = new InputStreamReader(new BufferedInputStream(new FileInputStream(sqlScript)),"iso-8859-1");
       ScriptExecutor.execute(reader,conn);
     }
     catch (RemoteException re)
@@ -146,7 +149,10 @@ public abstract class AbstractDBSupportImpl implements DBSupport
 
 /*********************************************************************
  * $Log: AbstractDBSupportImpl.java,v $
- * Revision 1.6  2010/11/02 12:02:19  willuhn
+ * Revision 1.7  2011/07/25 10:05:32  willuhn
+ * @N explizites Encoding
+ *
+ * Revision 1.6  2010-11-02 12:02:19  willuhn
  * @R Support fuer McKoi entfernt. User, die noch dieses alte DB-Format nutzen, sollen erst auf Jameica 1.6/Hibiscus 1.8 (oder maximal Jameica 1.9/Hibiscus 1.11) wechseln, dort die Migration auf H2 durchfuehren und dann erst auf Hibiscus 1.12 updaten
  *
  * Revision 1.5  2009/04/05 21:40:56  willuhn
