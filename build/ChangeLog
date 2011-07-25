@@ -1,4 +1,37 @@
-2011-??-?? Version 1.13.0
+HEAD
+
+  * CHG: Beim Lesen der SQL-Scripts explizites Encoding verwenden
+  * NEW: BUGZILLA 1065 - Unterstuetzung fuer GV-Code in Umsaetzen
+  * BUG: UmsatzTyp#matches(Umsatz,boolean allowReassign)
+  * BUG: Bei Sammelauftraegen fehlte die Laengen-Pruefung der BLZ 
+  * NEW: Filter-Einstellungen in Umsatzliste nur noch fuer die Dauer der Sitzung speichern - siehe
+         http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=76837#76837
+  * NEW: BUGZILLA 1093 - Unread-Count links in Navigation (noch unvollstaendig)
+  * NEW: Faellige Auftraege werden jetzt nicht mehr farbig angezeigt sondern fett gedruckt
+  * CHG: Zeitraum in Auswertung "Sparquote" jetzt auch ueber neuen Schiebe-Regler
+  
+2011-07-06 Version 2.0.2
+
+  * BUG: BUGZILLA 1100 - Callbacks 12 und 13 duerfen nicht im Passport behandelt werden, weil das auch in
+         Situationen passieren kann, wo der Passport gerade nicht im Callback registriert ist
+  * NEW: BUGZILLA 1088 - Rechtsbuendige Ausrichtung des verfuegbaren Saldos in Kontoliste forcieren
+  * BUG: Syntax-Belegnummer wurde in den Kontoauszuegen nicht mit angezeigt
+
+2011-06-24 Version 2.0.1
+
+  * NEW: Ersetzen der Umlaute beim MT940-Export abschaltbar
+  * NEW: Beim MT940-Import explizit mit ISO-8859 lesen - ist zwar eigentlich nicht noetig, weil da
+         per Definition keine Umlaute enthalten sein duerfen
+  * NEW: BLZ "55090500" zu NetbankUmsatzRewriter hinzugefuegt
+  * NEW: BLZ "10070848" zu DeutscheBankUmsatzRewriter hinzugefuegt
+  * BUG: Anzeigefehler in der Berechnung der naechsten Zahlung im Turnus - siehe
+         http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=76102#76102
+  * BUG: 30-hbci4java-chiptan-reset.patch
+  * CHG: "Termin" umbenannt in "Fällig am", war vorher u.U. missverstaendlich, wenn es keine
+         bank-gefuehrte Termin-Ueberweisung ist sondern lediglich ein Hibiscus-interner Termin
+  * NEW: BUGZILLA 1082 - moegliche Race-Condition unter Windows XP (Event-Verschluckung)
+  
+2011-06-20 Version 2.0.0
 
   * NEW: 0101 29-hbci4java-chiptan-opt-hhd13.patch
   * NEW: 0100 28-hbci4java-flicker-speed2.patch
