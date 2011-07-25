@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/TanMediaDialog.java,v $
- * $Revision: 1.1 $
- * $Date: 2011/05/09 09:35:15 $
+ * $Revision: 1.2 $
+ * $Date: 2011/07/25 07:57:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -66,8 +66,8 @@ public class TanMediaDialog extends AbstractDialog
     
     group.addText(i18n.tr("Bitte wählen Sie die Bezeichnung des gewünschten TAN-Medium aus\n" +
     		                  "oder geben Sie die Bezeichnung neu ein.\n\n" +
-    		                  "Beim smsTAN/mTAN-Verfahren ist das die Bezeichnung Ihres Mobiltelefons,\n" +
-    		                  "die Sie bei Ihrer Bank hinterlegt haben."),true);
+    		                  "Beim smsTAN/mTAN-Verfahren ist das die Bezeichnung (nicht die Telefonnummer)\n" +
+    		                  "Ihres Mobiltelefons, die Sie bei Ihrer Bank hinterlegt haben."),true);
     
     group.addLabelPair(i18n.tr("Bezeichnung"), getMedia());
     group.addCheckbox(getSave(),i18n.tr("Auswahl speichern"));
@@ -175,7 +175,10 @@ public class TanMediaDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: TanMediaDialog.java,v $
- * Revision 1.1  2011/05/09 09:35:15  willuhn
+ * Revision 1.2  2011/07/25 07:57:09  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.1  2011-05-09 09:35:15  willuhn
  * @N BUGZILLA 827
  *
  **********************************************************************/
