@@ -203,6 +203,7 @@ CREATE TABLE umsatz (
      , umsatztyp_id int(10)
      , flags int(1)
      , gvcode varchar(3)
+     , addkey varchar(3)
      , UNIQUE (id)
      , PRIMARY KEY (id)
 ) ENGINE=InnoDB;
@@ -299,4 +300,4 @@ ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
 
-INSERT INTO version (name,version) values ('db',34);
+INSERT INTO version (name,version) values ('db',35);

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailEditControl.java,v $
- * $Revision: 1.11 $
- * $Date: 2011/07/25 14:42:40 $
+ * $Revision: 1.12 $
+ * $Date: 2011/07/25 17:17:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -266,11 +266,26 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
       }
       
       u.setCustomerRef((String)getCustomerRef().getValue());
-      u.setGvCode((String)getGvCode().getValue());
       u.setDatum(du);
       u.setPrimanota((String)getPrimanota().getValue());
       u.setValuta((Date)getValuta().getValue());
       
+      String gvcode = (String) getGvCode().getValue();
+      String add = null;
+      if (gvcode != null && gvcode.indexOf('/') != -1)
+      {
+        // Checken, ob wir den Add-Key raussplitten muessen
+        String[] values = gvcode.split("/");
+        if (values != null && values.length > 0)
+        {
+          gvcode = values[0];
+          if (values.length > 1)
+            add = values[1];
+        }
+      }
+      u.setGvCode(gvcode);
+      u.setAddKey(add);
+
       String z = (String) getZweck().getValue();
       
       // Erstmal die Zeilen loeschen
@@ -376,7 +391,10 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
 
 /**********************************************************************
  * $Log: UmsatzDetailEditControl.java,v $
- * Revision 1.11  2011/07/25 14:42:40  willuhn
+ * Revision 1.12  2011/07/25 17:17:19  willuhn
+ * @N BUGZILLA 1065 - zusaetzlich noch addkey
+ *
+ * Revision 1.11  2011-07-25 14:42:40  willuhn
  * @N BUGZILLA 1065
  *
  * Revision 1.10  2011-06-07 10:07:50  willuhn

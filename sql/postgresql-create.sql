@@ -89,7 +89,8 @@ CREATE TABLE umsatz (
   checksum numeric NULL,
   umsatztyp_id integer NULL,
   flags integer NULL,
-  gvcode varchar(3) NULL
+  gvcode varchar(3) NULL,
+  addkey varchar(3) NULL
 );
 
 CREATE TABLE umsatztyp (
@@ -259,4 +260,4 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',34);
+INSERT INTO version (name,version) values ('db',35);

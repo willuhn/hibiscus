@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Umsatz.java,v $
- * $Revision: 1.25 $
- * $Date: 2011/07/25 14:42:41 $
+ * $Revision: 1.26 $
+ * $Date: 2011/07/25 17:17:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -109,6 +109,20 @@ public interface Umsatz extends HibiscusTransfer, DBObject, Checksum, Flaggable,
   public void setGvCode(String code) throws RemoteException;
 
   /**
+   * Liefert die 3-stellige Textschluessel-Ergaenzung.
+   * @return die 3-stellige Textschluessel-Ergaenzung.
+   * @throws RemoteException
+   */
+  public String getAddKey() throws RemoteException;
+  
+  /**
+   * Speichert die 3-stellige Textschluessel-Ergaenzung.
+   * @param key die 3-stellige Textschluessel-Ergaenzung.
+   * @throws RemoteException
+   */
+  public void setAddKey(String key) throws RemoteException;
+
+  /**
    * Speichert einen optionalen Kommentar zu dem Umsatz.
    * @param kommentar Kommentar.
    * @throws RemoteException
@@ -182,7 +196,10 @@ public interface Umsatz extends HibiscusTransfer, DBObject, Checksum, Flaggable,
 
 /**********************************************************************
  * $Log: Umsatz.java,v $
- * Revision 1.25  2011/07/25 14:42:41  willuhn
+ * Revision 1.26  2011/07/25 17:17:19  willuhn
+ * @N BUGZILLA 1065 - zusaetzlich noch addkey
+ *
+ * Revision 1.25  2011-07-25 14:42:41  willuhn
  * @N BUGZILLA 1065
  *
  * Revision 1.24  2010/04/22 12:42:02  willuhn

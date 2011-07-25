@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.62 $
- * $Date: 2011/07/25 14:42:40 $
+ * $Revision: 1.63 $
+ * $Date: 2011/07/25 17:17:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -91,6 +91,9 @@ public class Converter {
 		// "999" steht hierbei fuer unstrukturiert aka unbekannt.
 		if (u.gvcode != null && !u.gvcode.equals("999"))
   		umsatz.setGvCode(u.gvcode);
+
+		if (u.addkey != null && u.addkey.length() > 0)
+      umsatz.setAddKey(u.addkey);
 
 		////////////////////////////////////////////////////////////////////////////
 		// Verwendungszweck
@@ -356,7 +359,10 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
- * Revision 1.62  2011/07/25 14:42:40  willuhn
+ * Revision 1.63  2011/07/25 17:17:19  willuhn
+ * @N BUGZILLA 1065 - zusaetzlich noch addkey
+ *
+ * Revision 1.62  2011-07-25 14:42:40  willuhn
  * @N BUGZILLA 1065
  *
  * Revision 1.61  2011-06-09 08:50:10  willuhn

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.87 $
- * $Date: 2011/07/25 14:42:40 $
+ * $Revision: 1.88 $
+ * $Date: 2011/07/25 17:17:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -90,7 +90,15 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
           HBCIProperties.checkLength(ewz[i],35);
         }
       }
-			
+      
+      String gvCode = this.getGvCode();
+      if (gvCode != null && gvCode.length() > 3)
+        throw new ApplicationException(i18n.tr("Geschäftsvorfallcode {0} darf maximal 3 Zeichen lang sein",gvCode));
+
+      String addKey = this.getAddKey();
+      if (addKey != null && addKey.length() > 3)
+        throw new ApplicationException(i18n.tr("Textschlüssel-Zusatz {0} darf maximal 3 Zeichen lang sein",addKey));
+      
 		}
 		catch (RemoteException e)
 		{
@@ -672,6 +680,22 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
   }
 
   /**
+   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getAddKey()
+   */
+  public String getAddKey() throws RemoteException
+  {
+    return (String) this.getAttribute("addkey");
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setAddKey(java.lang.String)
+   */
+  public void setAddKey(String key) throws RemoteException
+  {
+    this.setAttribute("addkey",key);
+  }
+
+  /**
    * @see de.willuhn.jameica.hbci.rmi.Duplicatable#duplicate()
    */
   public Umsatz duplicate() throws RemoteException
@@ -702,7 +726,10 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
- * Revision 1.87  2011/07/25 14:42:40  willuhn
+ * Revision 1.88  2011/07/25 17:17:19  willuhn
+ * @N BUGZILLA 1065 - zusaetzlich noch addkey
+ *
+ * Revision 1.87  2011-07-25 14:42:40  willuhn
  * @N BUGZILLA 1065
  *
  * Revision 1.86  2011-04-28 12:15:25  willuhn

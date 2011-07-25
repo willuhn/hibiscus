@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailControl.java,v $
- * $Revision: 1.44 $
- * $Date: 2011/07/25 14:42:40 $
+ * $Revision: 1.45 $
+ * $Date: 2011/07/25 17:17:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -358,8 +358,16 @@ public class UmsatzDetailControl extends AbstractControl {
 	{
 	  if (this.gvcode == null)
 	  {
-	    this.gvcode = new TextInput(getUmsatz().getGvCode(),3);
-	    this.gvcode.setValidChars("01234567890");
+	    String gv  = getUmsatz().getGvCode();
+	    String add = getUmsatz().getAddKey();
+	    
+	    // Aus Platzgruenden zeigen wir das kombiniert an.
+	    if (gv == null)
+	      gv = "";
+	    if (add != null && add.length() > 0)
+	      gv = gv + "/" + add;
+	    this.gvcode = new TextInput(gv,7);
+	    this.gvcode.setValidChars("01234567890/");
 	    this.gvcode.setEnabled(false);
 	  }
 	  return this.gvcode;
@@ -409,7 +417,10 @@ public class UmsatzDetailControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzDetailControl.java,v $
- * Revision 1.44  2011/07/25 14:42:40  willuhn
+ * Revision 1.45  2011/07/25 17:17:19  willuhn
+ * @N BUGZILLA 1065 - zusaetzlich noch addkey
+ *
+ * Revision 1.44  2011-07-25 14:42:40  willuhn
  * @N BUGZILLA 1065
  *
  * Revision 1.43  2011-06-07 10:07:50  willuhn

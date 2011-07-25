@@ -99,6 +99,7 @@ CREATE TABLE umsatz (
   umsatztyp_id int(5) NULL,
   flags int(1) NULL,
   gvcode varchar(3) NULL,
+  addkey varchar(3) NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );
@@ -298,6 +299,6 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',34);
+INSERT INTO version (name,version) values ('db',35);
   
 COMMIT;

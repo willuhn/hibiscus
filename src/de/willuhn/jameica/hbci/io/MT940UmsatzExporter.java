@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/MT940UmsatzExporter.java,v $
- * $Revision: 1.11 $
- * $Date: 2011/07/25 14:42:41 $
+ * $Revision: 1.12 $
+ * $Date: 2011/07/25 17:17:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -138,9 +138,11 @@ public class MT940UmsatzExporter implements Exporter
         String blz = u.getGegenkontoBLZ();
         String kto = u.getGegenkontoNummer();
         String nam = u.getGegenkontoName();
+        String add = u.getAddKey();
         if (blz != null) out.write("?30" + blz);
         if (kto != null) out.write("?31" + kto);
         if (nam != null) out.write("?32" + nam);
+        if (add != null) out.write("?34" + add);
 
         out.write(NL);
     		
@@ -250,7 +252,10 @@ public class MT940UmsatzExporter implements Exporter
 
 /*********************************************************************
  * $Log: MT940UmsatzExporter.java,v $
- * Revision 1.11  2011/07/25 14:42:41  willuhn
+ * Revision 1.12  2011/07/25 17:17:19  willuhn
+ * @N BUGZILLA 1065 - zusaetzlich noch addkey
+ *
+ * Revision 1.11  2011-07-25 14:42:41  willuhn
  * @N BUGZILLA 1065
  *
  * Revision 1.10  2011-06-23 07:37:28  willuhn
