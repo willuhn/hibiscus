@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.61 $
- * $Date: 2011/06/09 08:50:10 $
+ * $Revision: 1.62 $
+ * $Date: 2011/07/25 14:42:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -86,9 +86,11 @@ public class Converter {
     umsatz.setBetrag(betrag);
 		umsatz.setDatum(u.bdate);
 		umsatz.setValuta(u.valuta);
-		
-		// TODO: (BUGZILLA 1065) Der GV-Code aus der Umsatzzeile muss mit in Hibiscus uebernommen werden, da er beim MT940-Export wieder gebraucht wird
-		// umsatz.setGVCode(u.gvcode);
+
+		// Wir uebernehmen den GV-Code nur, wenn was sinnvolles drin steht.
+		// "999" steht hierbei fuer unstrukturiert aka unbekannt.
+		if (u.gvcode != null && !u.gvcode.equals("999"))
+  		umsatz.setGvCode(u.gvcode);
 
 		////////////////////////////////////////////////////////////////////////////
 		// Verwendungszweck
@@ -354,7 +356,10 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
- * Revision 1.61  2011/06/09 08:50:10  willuhn
+ * Revision 1.62  2011/07/25 14:42:40  willuhn
+ * @N BUGZILLA 1065
+ *
+ * Revision 1.61  2011-06-09 08:50:10  willuhn
  * *** empty log message ***
  *
  * Revision 1.60  2011-06-09 08:35:18  willuhn

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Umsatz.java,v $
- * $Revision: 1.24 $
- * $Date: 2010/04/22 12:42:02 $
+ * $Revision: 1.25 $
+ * $Date: 2011/07/25 14:42:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -93,6 +93,20 @@ public interface Umsatz extends HibiscusTransfer, DBObject, Checksum, Flaggable,
    * @throws RemoteException
    */
   public String getKommentar() throws RemoteException;
+  
+  /**
+   * Liefert den 3-stelligen Geschaeftsvorfall-Code.
+   * @return der 3-stellige Geschaeftsvorfall-Code.
+   * @throws RemoteException
+   */
+  public String getGvCode() throws RemoteException;
+  
+  /**
+   * Speichert den 3-stelligen Geschaeftsvorfall-Code.
+   * @param code der 3-stellige Geschaeftsvorfall-Code.
+   * @throws RemoteException
+   */
+  public void setGvCode(String code) throws RemoteException;
 
   /**
    * Speichert einen optionalen Kommentar zu dem Umsatz.
@@ -168,6 +182,9 @@ public interface Umsatz extends HibiscusTransfer, DBObject, Checksum, Flaggable,
 
 /**********************************************************************
  * $Log: Umsatz.java,v $
+ * Revision 1.25  2011/07/25 14:42:41  willuhn
+ * @N BUGZILLA 1065
+ *
  * Revision 1.24  2010/04/22 12:42:02  willuhn
  * @N Erste Version des Supports fuer Offline-Konten
  *

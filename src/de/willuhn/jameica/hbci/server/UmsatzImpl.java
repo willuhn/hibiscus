@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.86 $
- * $Date: 2011/04/28 12:15:25 $
+ * $Revision: 1.87 $
+ * $Date: 2011/07/25 14:42:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -656,6 +656,22 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
   }
 
   /**
+   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getGvCode()
+   */
+  public String getGvCode() throws RemoteException
+  {
+    return (String) this.getAttribute("gvcode");
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setGvCode(java.lang.String)
+   */
+  public void setGvCode(String code) throws RemoteException
+  {
+    this.setAttribute("gvcode",code);
+  }
+
+  /**
    * @see de.willuhn.jameica.hbci.rmi.Duplicatable#duplicate()
    */
   public Umsatz duplicate() throws RemoteException
@@ -678,6 +694,7 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
     copy.setZweck(this.getZweck());
     copy.setZweck2(this.getZweck2());
     copy.setWeitereVerwendungszwecke(this.getWeitereVerwendungszwecke());
+    copy.setGvCode(this.getGvCode());
     return copy;
   }
 }
@@ -685,7 +702,10 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
- * Revision 1.86  2011/04/28 12:15:25  willuhn
+ * Revision 1.87  2011/07/25 14:42:40  willuhn
+ * @N BUGZILLA 1065
+ *
+ * Revision 1.86  2011-04-28 12:15:25  willuhn
  * @N Wenn beide Umsaetze eine ID haben, muss nur anhand derer verglichen werden
  *
  * Revision 1.85  2011-04-28 07:50:07  willuhn

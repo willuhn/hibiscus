@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailControl.java,v $
- * $Revision: 1.43 $
- * $Date: 2011/06/07 10:07:50 $
+ * $Revision: 1.44 $
+ * $Date: 2011/07/25 14:42:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -70,6 +70,7 @@ public class UmsatzDetailControl extends AbstractControl {
 	private Input primanota				= null;
 	private Input art							= null;
 	private Input customerRef			= null;
+	private TextInput gvcode      = null;
   
   private Input kommentar       = null;
   
@@ -149,11 +150,7 @@ public class UmsatzDetailControl extends AbstractControl {
       return konto;
     Konto k = getUmsatz().getKonto();
     konto = new LabelInput(k.getKontonummer());
-    String comment = k.getBezeichnung();
-    String s = HBCIUtils.getNameForBLZ(k.getBLZ());
-    if (s != null && s.length() > 0)
-      comment += " [" + s + "]";
-    konto.setComment(s);
+    konto.setComment(HBCIUtils.getNameForBLZ(k.getBLZ()));
     return konto;
   }
 
@@ -353,6 +350,22 @@ public class UmsatzDetailControl extends AbstractControl {
 	}
 	
 	/**
+	 * Liefert ein Eingabe-Feld fuer den GV-Code.
+	 * @return Eingabe-Feld.
+	 * @throws RemoteException
+	 */
+	public Input getGvCode() throws RemoteException
+	{
+	  if (this.gvcode == null)
+	  {
+	    this.gvcode = new TextInput(getUmsatz().getGvCode(),3);
+	    this.gvcode.setValidChars("01234567890");
+	    this.gvcode.setEnabled(false);
+	  }
+	  return this.gvcode;
+	}
+	
+	/**
 	 * Liefert ein Eingabe-Feld fuer den Verwendungszweck.
 	 * @return Eingabe-Feld.
 	 * @throws RemoteException
@@ -396,7 +409,10 @@ public class UmsatzDetailControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzDetailControl.java,v $
- * Revision 1.43  2011/06/07 10:07:50  willuhn
+ * Revision 1.44  2011/07/25 14:42:40  willuhn
+ * @N BUGZILLA 1065
+ *
+ * Revision 1.43  2011-06-07 10:07:50  willuhn
  * @C Verwendungszweck-Handling vereinheitlicht/vereinfacht - geht jetzt fast ueberall ueber VerwendungszweckUtil
  *
  * Revision 1.42  2010-09-27 11:51:38  willuhn

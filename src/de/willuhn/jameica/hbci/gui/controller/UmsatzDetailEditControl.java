@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailEditControl.java,v $
- * $Revision: 1.10 $
- * $Date: 2011/06/07 10:07:50 $
+ * $Revision: 1.11 $
+ * $Date: 2011/07/25 14:42:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -222,6 +222,17 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
 	}
 
   /**
+   * @see de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl#getGvCode()
+   */
+  public Input getGvCode() throws RemoteException
+  {
+    Input input = super.getGvCode();
+    if (!input.isEnabled())
+      input.setEnabled(true);
+    return input;
+  }
+
+  /**
    * @see de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl#handleStore()
    */
   public synchronized void handleStore() {
@@ -255,6 +266,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
       }
       
       u.setCustomerRef((String)getCustomerRef().getValue());
+      u.setGvCode((String)getGvCode().getValue());
       u.setDatum(du);
       u.setPrimanota((String)getPrimanota().getValue());
       u.setValuta((Date)getValuta().getValue());
@@ -364,7 +376,10 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
 
 /**********************************************************************
  * $Log: UmsatzDetailEditControl.java,v $
- * Revision 1.10  2011/06/07 10:07:50  willuhn
+ * Revision 1.11  2011/07/25 14:42:40  willuhn
+ * @N BUGZILLA 1065
+ *
+ * Revision 1.10  2011-06-07 10:07:50  willuhn
  * @C Verwendungszweck-Handling vereinheitlicht/vereinfacht - geht jetzt fast ueberall ueber VerwendungszweckUtil
  *
  * Revision 1.9  2011-04-07 17:52:06  willuhn

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/AbstractUmsatzDetail.java,v $
- * $Revision: 1.3 $
- * $Date: 2010/08/13 13:10:09 $
+ * $Revision: 1.4 $
+ * $Date: 2011/07/25 14:42:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -80,6 +80,7 @@ public abstract class AbstractUmsatzDetail extends AbstractView
     right.addLabelPair(i18n.tr("Art der Buchung"),              control.getArt());
     right.addLabelPair(i18n.tr("Kundenreferenz"),               control.getCustomerRef());
     right.addLabelPair(i18n.tr("Primanota-Kennzeichen"),        control.getPrimanota());
+    right.addLabelPair(i18n.tr("Geschäftsvorfall-Code"),        control.getGvCode());
 
     right.addHeadline(i18n.tr("Notizen"));
     right.addPart(control.getKommentar());
@@ -95,7 +96,10 @@ public abstract class AbstractUmsatzDetail extends AbstractView
 
 /**********************************************************************
  * $Log: AbstractUmsatzDetail.java,v $
- * Revision 1.3  2010/08/13 13:10:09  willuhn
+ * Revision 1.4  2011/07/25 14:42:41  willuhn
+ * @N BUGZILLA 1065
+ *
+ * Revision 1.3  2010-08-13 13:10:09  willuhn
  * *** empty log message ***
  *
  * Revision 1.2  2009/01/20 10:00:06  willuhn

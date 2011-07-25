@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/MT940UmsatzExporter.java,v $
- * $Revision: 1.10 $
- * $Date: 2011/06/23 07:37:28 $
+ * $Revision: 1.11 $
+ * $Date: 2011/07/25 14:42:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -114,12 +114,12 @@ public class MT940UmsatzExporter implements Exporter
     		
     		out.write("NTRF" + notNull(u.getCustomerRef(),"NONREF") + NL);
 
-    		// TODO: (BUGZILLA 1065) Der GV-Code sollte mit von der Bank abgerufen werden. Dann koennen wir ihn hier auch mit exportieren.
-    		// Im Moment koennen wir hier leider nur zwischen Soll- und Haben-Buchung unterscheiden und mehr oder weniger raten.
-    		// 051 = Ueberweisungsgutschrift
-    		// 020 = Ueberweisungsauftrag
-    		// Siehe https://www.ksk-koeln.de/datenstruktur_mt940_swift.pdfx
-    		String gvcode = betrag >= 0.0d? "051" : "020";
+    		String gvcode = u.getGvCode();
+    		
+      	// Fallback, wenn wir keinen GV-Code haben. Das trifft u.a. bei Alt-Umsaetzen
+    		// auf, als Hibiscus das Feld noch nicht unterstuetzte.
+    		if (gvcode == null || gvcode.length() == 0)
+      		gvcode = betrag >= 0.0d? "051" : "020";
     		
     		out.write(":86:" + gvcode + "?00" + notNull(u.getArt(),"") + "?10" + notNull(u.getPrimanota(),""));
     		
@@ -250,7 +250,10 @@ public class MT940UmsatzExporter implements Exporter
 
 /*********************************************************************
  * $Log: MT940UmsatzExporter.java,v $
- * Revision 1.10  2011/06/23 07:37:28  willuhn
+ * Revision 1.11  2011/07/25 14:42:41  willuhn
+ * @N BUGZILLA 1065
+ *
+ * Revision 1.10  2011-06-23 07:37:28  willuhn
  * @N Ersetzen der Umlaute beim MT940-Export abschaltbar
  * @N Beim MT940-Import explizit mit ISO-8859 lesen - ist zwar eigentlich nicht noetig, weil da per Definition keine Umlaute enthalten sein duerfen - aber wir sind ja tolerant ;)
  *
