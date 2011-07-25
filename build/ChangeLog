@@ -1,4 +1,25 @@
-2011-??-?? Version 1.13.0
+2011-07-06 Version 2.0.2
+
+  * BUG: 0112 BUGZILLA 1100 - Callbacks 12 und 13 duerfen nicht im Passport behandelt werden, weil das auch in
+              Situationen passieren kann, wo der Passport gerade nicht im Callback registriert ist
+  * NEW: 0111 BUGZILLA 1088 - Rechtsbuendige Ausrichtung des verfuegbaren Saldos in Kontoliste forcieren
+  * BUG: 0110 Syntax-Belegnummer wurde in den Kontoauszuegen nicht mit angezeigt
+
+2011-06-24 Version 2.0.1
+
+  * NEW: 0109 Ersetzen der Umlaute beim MT940-Export abschaltbar
+  * NEW: 0108 Beim MT940-Import explizit mit ISO-8859 lesen - ist zwar eigentlich nicht noetig, weil da
+              per Definition keine Umlaute enthalten sein duerfen
+  * NEW: 0107 BLZ "55090500" zu NetbankUmsatzRewriter hinzugefuegt
+  * NEW: 0106 BLZ "10070848" zu DeutscheBankUmsatzRewriter hinzugefuegt
+  * BUG: 0105 Anzeigefehler in der Berechnung der naechsten Zahlung im Turnus - siehe
+              http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=76102#76102
+  * BUG: 0204 30-hbci4java-chiptan-reset.patch
+  * CHG: 0103 "Termin" umbenannt in "Fällig am", war vorher u.U. missverstaendlich, wenn es keine
+              bank-gefuehrte Termin-Ueberweisung ist sondern lediglich ein Hibiscus-interner Termin
+  * NEW: 0102 BUGZILLA 1082 - moegliche Race-Condition unter Windows XP (Event-Verschluckung)
+  
+2011-06-20 Version 2.0.0
 
   * NEW: 0101 29-hbci4java-chiptan-opt-hhd13.patch
   * NEW: 0100 28-hbci4java-flicker-speed2.patch
