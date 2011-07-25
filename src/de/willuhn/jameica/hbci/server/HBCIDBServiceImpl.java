@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/HBCIDBServiceImpl.java,v $
- * $Revision: 1.31 $
- * $Date: 2010/11/02 11:32:09 $
+ * $Revision: 1.32 $
+ * $Date: 2011/07/25 10:00:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -129,7 +129,7 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
   {
     Logger.info("init update provider");
     UpdateProvider provider = new HBCIUpdateProvider(getConnection(),VersionUtil.getVersion(this,"db"));
-    Updater updater = new Updater(provider);
+    Updater updater = new Updater(provider,"iso-8859-1");
     updater.execute();
     Logger.info("updates finished");
   }
@@ -220,7 +220,10 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
 
 /*********************************************************************
  * $Log: HBCIDBServiceImpl.java,v $
- * Revision 1.31  2010/11/02 11:32:09  willuhn
+ * Revision 1.32  2011/07/25 10:00:41  willuhn
+ * @N explizites Encoding
+ *
+ * Revision 1.31  2010-11-02 11:32:09  willuhn
  * @R Alten SQL-Update-Mechanismus komplett entfernt. Wir haben das jetzt seit Hibiscus 1.8 (2008) aus Migrationsgruenden mit uns herumgetragen. Das ist jetzt lange genug her. User, die noch Hibiscus < 1.8 nutzen, muessen jetzt erst auf 1.8 updaten, damit noch die letzten sql/update_x.y-x.y.sql ausgefuehrt werden und dann erst auf die aktuelle Version
  *
  * Revision 1.30  2010/04/21 10:39:52  willuhn
