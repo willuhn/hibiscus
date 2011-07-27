@@ -1,5 +1,7 @@
 HEAD
 
+  * BUG: 0121 Zeitraum und Stichtag in Sparquote initial nicht gesetzt, wurde erst nach
+              Klick auf "Aktualisieren" korrekt berechnet
   * CHG: 0120 Beim Lesen der SQL-Scripts explizites Encoding verwenden
   * NEW: 0119 BUGZILLA 1065 - Unterstuetzung fuer GV-Code in Umsaetzen
   * BUG: 0118 UmsatzTyp#matches(Umsatz,boolean allowReassign)
