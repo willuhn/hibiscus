@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCIJob.java,v $
- * $Revision: 1.39 $
- * $Date: 2011/07/28 08:45:56 $
+ * $Revision: 1.40 $
+ * $Date: 2011/07/28 09:01:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -166,8 +166,28 @@ public abstract class AbstractHBCIJob
     // Status haben. Denn wenn der vorliegt, ist es fuer den Abbruch - zumindest fuer diesen Auftrag - zu spaet.
     // BUGZILLA 1109 - Wenn im ChipTAN-Dialog abgebrochen wird, haben wir hier ein HBCIStatus.STATUS_OK. Das
     // ist ziemlich daemlich. Wegen 964 koennen wir aber nicht pauschal abbrechen, weil wir sonst Jobs
-    // als abgebrochen markieren, die schon ausgefuehrt wurden.
-    if (status.getStatusCode() == HBCIStatus.STATUS_UNKNOWN && HBCIFactory.getInstance().isCancelled()) // BUGZILLA 690
+    // als abgebrochen markieren, die schon ausgefuehrt wurden. In dem Status steht OK, drin, weil die Bank da
+    // mit SUCCESS-Statuscode sowas hier geschickt hat: "0030 Auftrag entgegengenommen. Bitte TAN eingeben"
+    // Rein via Status-Codes sieht alles OK aus. Gemaess "FinTS_3.0_Rueckmeldungscodes_2010-10-27_final_version.pdf"
+    // steht "0030" fuer "Auftrag empfangen - Sicherheitsfreigabe erforderlich". Wir machen hier also einen
+    // Sonderfall fuer diesen einen Code.
+    
+    // TODO Das koennte man vermutlich auch direkt in HBCI4Java implementieren
+    boolean tanNeeded = false;
+    HBCIRetVal[] values = status.getSuccess();
+    if (values != null && values.length > 0)
+    {
+      for (HBCIRetVal val:values)
+      {
+        if (val.code != null && val.code.equals("0030"))
+        {
+          tanNeeded = true;
+          break;
+        }
+      }
+    }
+
+    if ((tanNeeded || status.getStatusCode() == HBCIStatus.STATUS_UNKNOWN) && HBCIFactory.getInstance().isCancelled()) // BUGZILLA 690
     {
       Logger.warn("hbci session cancelled by user, mark job as cancelled");
       markCancelled();
@@ -413,7 +433,10 @@ public abstract class AbstractHBCIJob
 
 /**********************************************************************
  * $Log: AbstractHBCIJob.java,v $
- * Revision 1.39  2011/07/28 08:45:56  willuhn
+ * Revision 1.40  2011/07/28 09:01:07  willuhn
+ * @B BUGZILLA 1109
+ *
+ * Revision 1.39  2011-07-28 08:45:56  willuhn
  * *** empty log message ***
  *
  * Revision 1.38  2011-06-07 10:07:51  willuhn
