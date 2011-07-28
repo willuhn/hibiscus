@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractFromToList.java,v $
- * $Revision: 1.11 $
- * $Date: 2011/06/28 09:24:35 $
+ * $Revision: 1.10.2.1 $
+ * $Date: 2011/07/28 12:07:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -354,7 +354,10 @@ public abstract class AbstractFromToList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: AbstractFromToList.java,v $
- * Revision 1.11  2011/06/28 09:24:35  willuhn
+ * Revision 1.10.2.1  2011/07/28 12:07:34  willuhn
+ * @N Backports: 0113,0116,0117,0118,0121,0122
+ *
+ * Revision 1.11  2011-06-28 09:24:35  willuhn
  * @N Position speichern
  *
  * Revision 1.10  2011-01-20 17:13:21  willuhn

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.63 $
- * $Date: 2011/04/27 11:07:02 $
+ * $Revision: 1.63.2.1 $
+ * $Date: 2011/07/28 12:07:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -218,9 +218,17 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
    */
   public boolean matches(Umsatz umsatz) throws RemoteException
   {
+    return matches(umsatz,false);
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#matches(de.willuhn.jameica.hbci.rmi.Umsatz, boolean)
+   */
+  public boolean matches(Umsatz umsatz, boolean allowReassign) throws RemoteException
+  {
     // Wenn der Umsatz fest zugeordnet ist, duerfen wir nicht nach Begriffen suchen
     // Dann gilt er nur als zugeordnet, wenn es der gleiche Typ ist
-    if (umsatz.isAssigned())
+    if (!allowReassign && umsatz.isAssigned())
     {
       String id = this.getID();
       if (id == null)
@@ -600,7 +608,13 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
 
 /*******************************************************************************
  * $Log: UmsatzTypImpl.java,v $
- * Revision 1.63  2011/04/27 11:07:02  willuhn
+ * Revision 1.63.2.1  2011/07/28 12:07:33  willuhn
+ * @N Backports: 0113,0116,0117,0118,0121,0122
+ *
+ * Revision 1.64  2011-07-20 15:41:36  willuhn
+ * @N Neue Funktion UmsatzTyp#matches(Umsatz,boolean allowReassign) - normalerweise liefert die Funktion ohne das Boolean false, wenn der Umsatz bereits manuell einer anderen Kategorie zugeordnet ist. Andernfalls kaeme es hier ja - zumindest virtuell - zu einer Doppel-Zuordnung. Da "UmsatzList" jedoch fuer den Suchbegriff (den man oben eingeben kann) intern on-the-fly einen UmsatzTyp erstellt, mit dem die Suche erfolgt, wuerden hier bereits fest zugeordnete Umsaetze nicht mehr gefunden werden. Daher die neue Funktion.
+ *
+ * Revision 1.63  2011-04-27 11:07:02  willuhn
  * @B Umsaetze, die bereits fest zugeordnet sind, duerfen nicht gematcht werden
  *
  * Revision 1.62  2011-01-20 17:13:21  willuhn

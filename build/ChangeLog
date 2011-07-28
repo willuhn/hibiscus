@@ -1,3 +1,17 @@
+2011-07-28 Version 2.0.3
+
+  * BUG: 0122 BUGZILLA 1109 - Bricht man einen Auftrag im chipTAN-Dialog ab, befindet
+              sich im Job-Status die Erfolgsmeldung "0030 Auftrag angenommen - TAN erforderlich".
+              Das wurde in AbstractHBCIJob#handleResult als Erfolg interpretiert, weil
+              0030 explizit ein OK-Status ist. Fuer diesen Status gibts jetzt eine Sonderrolle
+  * BUG: 0121 Zeitraum und Stichtag in Sparquote initial nicht gesetzt, wurde erst nach
+              Klick auf "Aktualisieren" korrekt berechnet
+  * BUG: 0118 UmsatzTyp#matches(Umsatz,boolean allowReassign)
+  * BUG: 0117 Bei Sammelauftraegen fehlte die Laengen-Pruefung der BLZ 
+  * NEW: 0116 Filter-Einstellungen in Umsatzliste nur noch fuer die Dauer der Sitzung speichern - siehe
+              http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=76837#76837
+  * CHG: 0113 Zeitraum in Auswertung "Sparquote" jetzt auch ueber neuen Schiebe-Regler
+
 2011-07-06 Version 2.0.2
 
   * BUG: 0112 BUGZILLA 1100 - Callbacks 12 und 13 duerfen nicht im Passport behandelt werden, weil das auch in

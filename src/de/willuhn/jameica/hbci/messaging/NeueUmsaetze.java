@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/messaging/NeueUmsaetze.java,v $
- * $Revision: 1.8 $
- * $Date: 2011/06/30 16:29:42 $
+ * $Revision: 1.7.2.1 $
+ * $Date: 2011/07/28 12:07:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -121,8 +121,8 @@ public class NeueUmsaetze implements MessageConsumer
 
 /*********************************************************************
  * $Log: NeueUmsaetze.java,v $
- * Revision 1.8  2011/06/30 16:29:42  willuhn
- * @N Unterstuetzung fuer neues UnreadCount-Feature
+ * Revision 1.7.2.1  2011/07/28 12:07:34  willuhn
+ * @N Backports: 0113,0116,0117,0118,0121,0122
  *
  * Revision 1.7  2011-01-05 11:20:27  willuhn
  * *** empty log message ***

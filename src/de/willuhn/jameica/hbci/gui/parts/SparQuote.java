@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SparQuote.java,v $
- * $Revision: 1.32 $
- * $Date: 2011/06/28 15:28:37 $
+ * $Revision: 1.31.2.1 $
+ * $Date: 2011/07/28 12:07:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -95,20 +95,6 @@ public class SparQuote implements Part
       {
         try
         {
-          Integer value = (Integer) getTagAuswahl().getValue();
-          stichtag = value == null ? 1 : value.intValue();
-          
-          Integer days = (Integer) getStartAuswahl().getValue();
-          if (days == null || days == -1)
-          {
-            start = null;
-          }
-          else
-          {
-            long d = days * 24l * 60l * 60l * 1000l;
-            start = DateUtil.startOfDay(new Date(System.currentTimeMillis() - d));
-          }
-          
           load();
           redraw();
           if (chart != null)
@@ -123,6 +109,29 @@ public class SparQuote implements Part
         }
       }
     };
+  }
+  
+  /**
+   * Berechnet Start-Datum und Stichtag.
+   * @throws RemoteException
+   */
+  private void calculateRange() throws RemoteException
+  {
+    // Stichtag
+    Integer value = (Integer) getTagAuswahl().getValue();
+    stichtag = value == null ? 1 : value.intValue();
+
+    // Anzahl der Tage
+    Integer days = (Integer) getStartAuswahl().getValue();
+    if (days == null || days == -1)
+    {
+      start = null;
+    }
+    else
+    {
+      long d = days * 24l * 60l * 60l * 1000l;
+      start = DateUtil.startOfDay(new Date(System.currentTimeMillis() - d));
+    }
   }
   
   /**
@@ -272,6 +281,7 @@ public class SparQuote implements Part
   private void load() throws RemoteException
   {
     this.data.clear();
+    calculateRange();
 
     DBIterator umsaetze = UmsatzUtil.getUmsaetze();
     Konto konto = (Konto) getKontoAuswahl().getValue();
@@ -502,7 +512,13 @@ public class SparQuote implements Part
 
 /*********************************************************************
  * $Log: SparQuote.java,v $
- * Revision 1.32  2011/06/28 15:28:37  willuhn
+ * Revision 1.31.2.1  2011/07/28 12:07:33  willuhn
+ * @N Backports: 0113,0116,0117,0118,0121,0122
+ *
+ * Revision 1.33  2011-07-27 09:25:50  willuhn
+ * @B Zeitraum und Stichtag war initial nicht gesetzt und wurde erst nach Klick auf "Aktualisieren" korrekt berechnet
+ *
+ * Revision 1.32  2011-06-28 15:28:37  willuhn
  * @N Zeitraum jetzt auch ueber neuen Schiebe-Regler
  *
  * Revision 1.31  2011-05-19 08:41:53  willuhn

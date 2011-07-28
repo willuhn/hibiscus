@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailControl.java,v $
- * $Revision: 1.43 $
- * $Date: 2011/06/07 10:07:50 $
+ * $Revision: 1.43.2.1 $
+ * $Date: 2011/07/28 12:07:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -149,11 +149,7 @@ public class UmsatzDetailControl extends AbstractControl {
       return konto;
     Konto k = getUmsatz().getKonto();
     konto = new LabelInput(k.getKontonummer());
-    String comment = k.getBezeichnung();
-    String s = HBCIUtils.getNameForBLZ(k.getBLZ());
-    if (s != null && s.length() > 0)
-      comment += " [" + s + "]";
-    konto.setComment(s);
+    konto.setComment(HBCIUtils.getNameForBLZ(k.getBLZ()));
     return konto;
   }
 
@@ -396,7 +392,10 @@ public class UmsatzDetailControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzDetailControl.java,v $
- * Revision 1.43  2011/06/07 10:07:50  willuhn
+ * Revision 1.43.2.1  2011/07/28 12:07:34  willuhn
+ * @N Backports: 0113,0116,0117,0118,0121,0122
+ *
+ * Revision 1.43  2011-06-07 10:07:50  willuhn
  * @C Verwendungszweck-Handling vereinheitlicht/vereinfacht - geht jetzt fast ueberall ueber VerwendungszweckUtil
  *
  * Revision 1.42  2010-09-27 11:51:38  willuhn

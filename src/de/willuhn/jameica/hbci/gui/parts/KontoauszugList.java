@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.45 $
- * $Date: 2011/06/23 15:20:05 $
+ * $Revision: 1.45.2.1 $
+ * $Date: 2011/07/28 12:07:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -76,9 +76,6 @@ import de.willuhn.util.I18N;
 public class KontoauszugList extends UmsatzList
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
-  private static Date endDate          = null;
-  private static Integer currentTab    = null;
   
   // Konto/Zeitraum/Suchbegriff/nur geprueft
   private TextInput text               = null;
@@ -168,11 +165,12 @@ public class KontoauszugList extends UmsatzList
     }
     
     // Wir merken uns das aktive Tab.
-    if (currentTab != null) folder.setSelection(currentTab);
+    Integer tab = (Integer) cache.get("tab");
+    if (tab != null) folder.setSelection(tab);
     folder.addDisposeListener(new DisposeListener() {
       public void widgetDisposed(DisposeEvent e)
       {
-        currentTab = folder.getSelectionIndex();
+        cache.put("tab",folder.getSelectionIndex());
       }
     });
     
@@ -204,10 +202,7 @@ public class KontoauszugList extends UmsatzList
 
     new Headline(parent,i18n.tr("Gefundene Umsätze"));
 
-    removeAll();
-    List<Umsatz> list = getUmsaetze();
-    for(Umsatz u:list)
-      addItem(u);
+    handleReload(true);
     
     parent.addDisposeListener(new DisposeListener() {
       public void widgetDisposed(DisposeEvent e)
@@ -218,9 +213,6 @@ public class KontoauszugList extends UmsatzList
     });
     super.paint(parent);
 
-    // Zum Schluss Sortierung aktualisieren
-    sort();
-    
     // Machen wir explizit nochmal, weil wir die paint()-Methode ueberschrieben haben
     restoreState();
   }
@@ -252,7 +244,8 @@ public class KontoauszugList extends UmsatzList
     if (this.unchecked != null)
       return this.unchecked;
     
-    this.unchecked = new CheckboxInput(mySettings.getBoolean("kontoauszug.list.unchecked",false));
+    Boolean b = (Boolean) cache.get("kontoauszug.list.unchecked");
+    this.unchecked = new CheckboxInput(b != null && b.booleanValue());
     this.unchecked.addListener(this.listener);
     return this.unchecked;
   }
@@ -265,29 +258,17 @@ public class KontoauszugList extends UmsatzList
     if (this.start != null)
       return this.start;
 
-    Date dStart = null;
-    String s = mySettings.getString("kontoauszug.list.from",null);
-    if (s != null)
+    // Wir schlagen den aktuellen Monat als Startdatum nur beim ersten
+    // Aufruf in dieser Sitzung vor.
+    Date date = (Date) cache.get("kontoauszug.list.from");
+    if (date == null && cache.get("suggest.start") == null)
     {
-      try
-      {
-        dStart = HBCI.DATEFORMAT.parse(s);
-      }
-      catch (Exception e)
-      {
-        Logger.error("unable to restore start date",e);
-        mySettings.setAttribute("kontoauszug.list.from",(String) null);
-      }
-    }
-    else
-    {
-      // Ansonsten nehmen wir den ersten des aktuellen Monats
       Calendar cal = Calendar.getInstance();
       cal.set(Calendar.DAY_OF_MONTH, 1);
-      dStart = cal.getTime();
+      date = cal.getTime();
+      cache.put("suggest.start",Boolean.FALSE);
     }
-
-    this.start = new DateInput(dStart, HBCI.DATEFORMAT);
+    this.start = new DateInput(date, HBCI.DATEFORMAT);
     this.start.setComment(i18n.tr("Frühestes Valuta-Datum"));
     this.start.addListener(this.listener);
     return this.start;
@@ -302,7 +283,7 @@ public class KontoauszugList extends UmsatzList
     if (this.end != null)
       return this.end;
 
-    this.end = new DateInput(endDate, HBCI.DATEFORMAT);
+    this.end = new DateInput((Date) cache.get("kontoauszug.list.to"), HBCI.DATEFORMAT);
     this.end.setComment(i18n.tr("Spätestes Valuta-Datum"));
     this.end.addListener(this.listener);
     return this.end;
@@ -318,26 +299,9 @@ public class KontoauszugList extends UmsatzList
     if (this.kategorie != null)
       return this.kategorie;
     
-    UmsatzTyp preset = null;
-
-    /////////////////////
-    // Preset laden
-    String s = mySettings.getString("kontoauszug.list.kategorie",null);
-    if (s != null && s.length() > 0)
-    {
-      try
-      {
-        preset = (UmsatzTyp) de.willuhn.jameica.hbci.Settings.getDBService().createObject(UmsatzTyp.class,s);
-      }
-      catch (Exception e)
-      {
-        // Kategorie existiert wohl nicht mehr - dann loeschen wir die Vorauswahl
-        mySettings.setAttribute("kontoauszug.list.kategorie",(String)null);
-      }
-    }
-    //
-    /////////////////////
-
+    UmsatzTyp preset = (UmsatzTyp) cache.get("kontoauszug.list.kategorie");
+    if (preset == null || preset.getID() == null)
+      preset = null; // wurde zwischenzeitlich geloescht
     this.kategorie = new UmsatzTypInput(preset,UmsatzTyp.TYP_EGAL);
     this.kategorie.setPleaseChoose(i18n.tr("<Alle Kategorien>"));
     this.kategorie.setComment(null);
@@ -357,7 +321,7 @@ public class KontoauszugList extends UmsatzList
 
     AdresseAuswahlDialog d = new AdresseAuswahlDialog(AdresseAuswahlDialog.POSITION_MOUSE);
     d.addCloseListener(new AddressListener());
-    this.gegenkontoNummer = new DialogInput(mySettings.getString("kontoauszug.list.gegenkonto.nummer",null),d);
+    this.gegenkontoNummer = new DialogInput((String) cache.get("kontoauszug.list.gegenkonto.nummer"),d);
     this.gegenkontoNummer.setValidChars(HBCIProperties.HBCI_KTO_VALIDCHARS);
     this.gegenkontoNummer.addListener(this.listener);
     return this.gegenkontoNummer;
@@ -373,7 +337,7 @@ public class KontoauszugList extends UmsatzList
     if (this.gegenkontoBLZ != null)
       return this.gegenkontoBLZ;
     
-    this.gegenkontoBLZ = new BLZInput(mySettings.getString("kontoauszug.list.gegenkonto.blz",null));
+    this.gegenkontoBLZ = new BLZInput((String)cache.get("kontoauszug.list.gegenkonto.blz"));
     this.gegenkontoBLZ.setComment(null);
     this.gegenkontoBLZ.addListener(this.listener);
     return this.gegenkontoBLZ;
@@ -388,7 +352,7 @@ public class KontoauszugList extends UmsatzList
   {
     if (this.gegenkontoName != null)
       return this.gegenkontoName;
-    this.gegenkontoName = new TextInput(mySettings.getString("kontoauszug.list.gegenkonto.name",null),HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
+    this.gegenkontoName = new TextInput((String)cache.get("kontoauszug.list.gegenkonto.name"),HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
     this.gegenkontoName.setValidChars(HBCIProperties.HBCI_DTAUS_VALIDCHARS);
     this.gegenkontoName.addListener(this.listener);
     return this.gegenkontoName;
@@ -403,7 +367,7 @@ public class KontoauszugList extends UmsatzList
   {
     if (this.text != null)
       return this.text;
-    this.text = new TextInput(mySettings.getString("kontoauszug.list.text",null),HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH);
+    this.text = new TextInput((String)cache.get("kontoauszug.list.text"),HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH);
     this.text.addListener(this.listener);
     return this.text;
   }
@@ -418,7 +382,7 @@ public class KontoauszugList extends UmsatzList
     if (this.betragFrom != null)
       return this.betragFrom;
     
-    this.betragFrom = new DecimalInput(mySettings.getDouble("kontoauszug.list.betrag.from",Double.NaN), HBCI.DECIMALFORMAT);
+    this.betragFrom = new DecimalInput((Double)cache.get("kontoauszug.list.betrag.from"), HBCI.DECIMALFORMAT);
     this.betragFrom.setComment(HBCIProperties.CURRENCY_DEFAULT_DE);
     this.betragFrom.addListener(this.listener);
     this.betragFrom.addListener(new Listener()
@@ -461,7 +425,7 @@ public class KontoauszugList extends UmsatzList
     if (this.betragTo != null)
       return this.betragTo;
     
-    this.betragTo = new DecimalInput(mySettings.getDouble("kontoauszug.list.betrag.to",Double.NaN), HBCI.DECIMALFORMAT);
+    this.betragTo = new DecimalInput((Double)cache.get("kontoauszug.list.betrag.to"), HBCI.DECIMALFORMAT);
     this.betragTo.setComment(HBCIProperties.CURRENCY_DEFAULT_DE);
     this.betragTo.addListener(this.listener);
     return this.betragTo;
@@ -486,6 +450,18 @@ public class KontoauszugList extends UmsatzList
     UmsatzTyp typ     = (UmsatzTyp) getKategorie().getValue();
     boolean unchecked = ((Boolean) getUnChecked().getValue()).booleanValue();
     
+    // Aktuelle Werte speichern
+    cache.put("kontoauszug.list.from",             start);
+    cache.put("kontoauszug.list.to",               end);
+    cache.put("kontoauszug.list.gegenkonto.nummer",gkNummer);
+    cache.put("kontoauszug.list.gegenkonto.blz",   gkBLZ);
+    cache.put("kontoauszug.list.gegenkonto.name",  gkName);
+    cache.put("kontoauszug.list.kategorie",        typ);
+    cache.put("kontoauszug.list.text",             zk);
+    cache.put("kontoauszug.list.betrag.from",      min);
+    cache.put("kontoauszug.list.betrag.to",        max);
+    cache.put("kontoauszug.list.unchecked",        unchecked);
+
     DBIterator umsaetze = UmsatzUtil.getUmsaetzeBackwards();
     
     // BUGZILLA 449
@@ -648,32 +624,6 @@ public class KontoauszugList extends UmsatzList
           for(Umsatz u:list)
             addItem(u);
 
-          // Aktuelle Werte speichern
-          try
-          {
-            // Nur fuer die Dauer der Sitzung speichern
-            endDate = (Date) getEnd().getValue(); // BUGZILLA 951
-            
-            // Wir speichern hier alle eingegebenen Suchbegriffe fuer's naechste mal
-            Date from         = (Date) getStart().getValue();
-            UmsatzTyp typ     = (UmsatzTyp) getKategorie().getValue();
-            Double bFrom      = (Double) getMindestBetrag().getValue();
-            Double bTo        = (Double) getHoechstBetrag().getValue();
-            boolean unchecked = ((Boolean) getUnChecked().getValue()).booleanValue();
-            mySettings.setAttribute("kontoauszug.list.from",from == null ? null : HBCI.DATEFORMAT.format(from));
-            mySettings.setAttribute("kontoauszug.list.gegenkonto.nummer",getGegenkontoNummer().getText());
-            mySettings.setAttribute("kontoauszug.list.gegenkonto.blz",(String) getGegenkontoBLZ().getValue());
-            mySettings.setAttribute("kontoauszug.list.gegenkonto.name",(String) getGegenkontoName().getValue());
-            mySettings.setAttribute("kontoauszug.list.kategorie",typ == null ? null : typ.getID());
-            mySettings.setAttribute("kontoauszug.list.text",(String) getText().getValue());
-            mySettings.setAttribute("kontoauszug.list.betrag.from",bFrom == null ? Double.NaN : bFrom.doubleValue());
-            mySettings.setAttribute("kontoauszug.list.betrag.to",bTo == null ? Double.NaN : bTo.doubleValue());
-            mySettings.setAttribute("kontoauszug.list.unchecked",unchecked);
-          }
-          catch (RemoteException re)
-          {
-            Logger.error("error while saving last filter settings",re);
-          }
           
           // Zum Schluss Sortierung aktualisieren
           sort();
@@ -751,7 +701,13 @@ public class KontoauszugList extends UmsatzList
 
 /*********************************************************************
  * $Log: KontoauszugList.java,v $
- * Revision 1.45  2011/06/23 15:20:05  willuhn
+ * Revision 1.45.2.1  2011/07/28 12:07:33  willuhn
+ * @N Backports: 0113,0116,0117,0118,0121,0122
+ *
+ * Revision 1.46  2011-07-20 15:13:10  willuhn
+ * @N Filter-Einstellungen nur noch fuer die Dauer der Sitzung speichern - siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=76837#76837
+ *
+ * Revision 1.45  2011-06-23 15:20:05  willuhn
  * @B BUGZILLA 1082
  *
  * Revision 1.44  2011-05-19 08:41:53  willuhn
