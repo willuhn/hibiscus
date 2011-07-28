@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCIJob.java,v $
- * $Revision: 1.38 $
- * $Date: 2011/06/07 10:07:51 $
+ * $Revision: 1.39 $
+ * $Date: 2011/07/28 08:45:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -164,6 +164,9 @@ public abstract class AbstractHBCIJob
 
     // BUGZILLA 964 - nur dann als abgebrochen markieren, wenn wir fuer den Job noch keinen richtigen
     // Status haben. Denn wenn der vorliegt, ist es fuer den Abbruch - zumindest fuer diesen Auftrag - zu spaet.
+    // BUGZILLA 1109 - Wenn im ChipTAN-Dialog abgebrochen wird, haben wir hier ein HBCIStatus.STATUS_OK. Das
+    // ist ziemlich daemlich. Wegen 964 koennen wir aber nicht pauschal abbrechen, weil wir sonst Jobs
+    // als abgebrochen markieren, die schon ausgefuehrt wurden.
     if (status.getStatusCode() == HBCIStatus.STATUS_UNKNOWN && HBCIFactory.getInstance().isCancelled()) // BUGZILLA 690
     {
       Logger.warn("hbci session cancelled by user, mark job as cancelled");
@@ -410,7 +413,10 @@ public abstract class AbstractHBCIJob
 
 /**********************************************************************
  * $Log: AbstractHBCIJob.java,v $
- * Revision 1.38  2011/06/07 10:07:51  willuhn
+ * Revision 1.39  2011/07/28 08:45:56  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.38  2011-06-07 10:07:51  willuhn
  * @C Verwendungszweck-Handling vereinheitlicht/vereinfacht - geht jetzt fast ueberall ueber VerwendungszweckUtil
  *
  * Revision 1.37  2011-05-11 16:23:57  willuhn
