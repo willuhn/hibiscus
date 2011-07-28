@@ -3,7 +3,7 @@
 	<name>hibiscus</name>
 	<comment></comment>
 	<projects>
-		<project>jameica</project>
+		<project>jameica-2.0</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
