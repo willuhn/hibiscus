@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.59 $
- * $Date: 2011/05/11 16:23:57 $
+ * $Revision: 1.60 $
+ * $Date: 2011/08/03 15:34:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -330,8 +330,9 @@ public abstract class AbstractTransferControl extends AbstractControl
 			getTransfer().transactionCommit();
 
       if (getTransfer().getBetrag() > Settings.getUeberweisungLimit())
-        GUI.getView().setErrorText(i18n.tr("Warnung: Auftragslimit überschritten: {0} ", 
-          HBCI.DECIMALFORMAT.format(Settings.getUeberweisungLimit()) + " " + getKonto().getWaehrung()));
+        GUI.getView().setErrorText(i18n.tr("Warnung: Auftragslimit überschritten: {0} ", HBCI.DECIMALFORMAT.format(Settings.getUeberweisungLimit()) + " " + getKonto().getWaehrung()));
+      else
+        GUI.getView().setErrorText(""); // Fehlertext entfernen
       
       return true;
 		}
@@ -450,7 +451,10 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
- * Revision 1.59  2011/05/11 16:23:57  willuhn
+ * Revision 1.60  2011/08/03 15:34:29  willuhn
+ * @B Fehlertext entfernen, wenn erfolgreich gespeichert
+ *
+ * Revision 1.59  2011-05-11 16:23:57  willuhn
  * @N BUGZILLA 591
  *
  * Revision 1.58  2011-04-07 17:52:07  willuhn
