@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/Attic/Termine.java,v $
- * $Revision: 1.4 $
- * $Date: 2011/04/08 15:19:13 $
+ * $Revision: 1.5 $
+ * $Date: 2011/08/04 14:53:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,7 +16,6 @@ import java.util.Date;
 
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -44,9 +43,9 @@ public class Termine extends AbstractView
 		this.termine.setCurrentDate(currentDate);
 		this.termine.paint(getParent());
 
-		ButtonArea buttons = new ButtonArea();
+		// ButtonArea buttons = new ButtonArea();
     // buttons.addButton(new ReminderNew());
-    buttons.paint(getParent());
+    // buttons.paint(getParent());
   }
 
   /**
@@ -61,7 +60,10 @@ public class Termine extends AbstractView
 
 /**********************************************************************
  * $Log: Termine.java,v $
- * Revision 1.4  2011/04/08 15:19:13  willuhn
+ * Revision 1.5  2011/08/04 14:53:02  willuhn
+ * @B Button-Area komplett weglassen, solange da noch keine Buttons drin sind. Verschwendet sonst Platz
+ *
+ * Revision 1.4  2011-04-08 15:19:13  willuhn
  * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
  * @C Code-Cleanup
  *
