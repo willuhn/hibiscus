@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/AbstractDateInput.java,v $
- * $Revision: 1.2 $
- * $Date: 2011/08/05 11:50:48 $
+ * $Revision: 1.3 $
+ * $Date: 2011/08/05 12:02:11 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -33,14 +33,6 @@ public abstract class AbstractDateInput extends DateInput
   final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private static Map<String,Date> cache = new HashMap<String,Date>();
 
-  /**
-   * ct.
-   */
-  public AbstractDateInput()
-  {
-    this(null);
-  }
-  
   /**
    * ct.
    * @param date
@@ -117,7 +109,10 @@ public abstract class AbstractDateInput extends DateInput
 
 /**********************************************************************
  * $Log: AbstractDateInput.java,v $
- * Revision 1.2  2011/08/05 11:50:48  willuhn
+ * Revision 1.3  2011/08/05 12:02:11  willuhn
+ * @B Konstruktor falsch
+ *
+ * Revision 1.2  2011-08-05 11:50:48  willuhn
  * @N Vorschlaege nur beim ersten Mal in der Sitzung ausrechnen - danach das behalten, was der User eingegeben hat - auch wenn es NULL ist
  *
  * Revision 1.1  2011-08-05 11:34:39  willuhn

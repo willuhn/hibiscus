@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/DateToInput.java,v $
- * $Revision: 1.2 $
- * $Date: 2011/08/05 11:34:39 $
+ * $Revision: 1.3 $
+ * $Date: 2011/08/05 12:02:11 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -26,7 +26,7 @@ public class DateToInput extends AbstractDateInput
    */
   public DateToInput()
   {
-    super();
+    this(null);
   }
   
   /**
@@ -65,7 +65,10 @@ public class DateToInput extends AbstractDateInput
 
 /**********************************************************************
  * $Log: DateToInput.java,v $
- * Revision 1.2  2011/08/05 11:34:39  willuhn
+ * Revision 1.3  2011/08/05 12:02:11  willuhn
+ * @B Konstruktor falsch
+ *
+ * Revision 1.2  2011-08-05 11:34:39  willuhn
  * @N Gemeinsame Basis-Klasse
  *
  * Revision 1.1  2011-08-05 11:21:59  willuhn
