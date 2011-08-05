@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/search/KontoSearchProvider.java,v $
- * $Revision: 1.1 $
- * $Date: 2008/09/03 11:13:51 $
+ * $Revision: 1.2 $
+ * $Date: 2011/08/05 11:21:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -60,7 +60,7 @@ public class KontoSearchProvider implements SearchProvider
                    "kontonummer LIKE ? OR " +
                    "blz LIKE ? OR " +
                    "kundennummer LIKE ?",
-                   new String[]{text,text,text,text,text});
+                   text,text,text,text,text);
 
     ArrayList results = new ArrayList();
     while (list.hasNext())
@@ -122,7 +122,12 @@ public class KontoSearchProvider implements SearchProvider
 
 /**********************************************************************
  * $Log: KontoSearchProvider.java,v $
- * Revision 1.1  2008/09/03 11:13:51  willuhn
+ * Revision 1.2  2011/08/05 11:21:58  willuhn
+ * @N Erster Code fuer eine Umsatz-Preview
+ * @C Compiler-Warnings
+ * @N DateFromInput/DateToInput - damit sind die Felder fuer den Zeitraum jetzt ueberall einheitlich
+ *
+ * Revision 1.1  2008-09-03 11:13:51  willuhn
  * @N Mehr Suchprovider
  *
  **********************************************************************/

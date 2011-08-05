@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/VersionUtil.java,v $
- * $Revision: 1.3 $
- * $Date: 2008/05/30 14:23:48 $
+ * $Revision: 1.4 $
+ * $Date: 2011/08/05 11:21:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -45,7 +45,7 @@ public class VersionUtil
       throw new ApplicationException(i18n.tr("Keine Versionsbezeichnung angegeben"));
     }
     DBIterator list = service.createList(Version.class);
-    list.addFilter("name = ?", new String[]{name});
+    list.addFilter("name = ?",name);
     if (list.hasNext())
       return (Version) list.next();
     
@@ -60,6 +60,11 @@ public class VersionUtil
 
 /*********************************************************************
  * $Log: VersionUtil.java,v $
+ * Revision 1.4  2011/08/05 11:21:59  willuhn
+ * @N Erster Code fuer eine Umsatz-Preview
+ * @C Compiler-Warnings
+ * @N DateFromInput/DateToInput - damit sind die Felder fuer den Zeitraum jetzt ueberall einheitlich
+ *
  * Revision 1.3  2008/05/30 14:23:48  willuhn
  * @N Vollautomatisches und versioniertes Speichern der BPD und UPD in der neuen Property-Tabelle
  *

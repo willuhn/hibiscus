@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EinnahmeAusgabeControl.java,v $
- * $Revision: 1.18 $
- * $Date: 2011/01/20 17:13:21 $
+ * $Revision: 1.19 $
+ * $Date: 2011/08/05 11:21:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,6 @@ package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -38,6 +37,8 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
+import de.willuhn.jameica.hbci.gui.input.DateFromInput;
+import de.willuhn.jameica.hbci.gui.input.DateToInput;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.EinnahmeAusgabe;
@@ -52,7 +53,6 @@ import de.willuhn.util.I18N;
 public class EinnahmeAusgabeControl extends AbstractControl
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(EinnahmeAusgabeControl.class);
 
   private SelectInput kontoAuswahl = null;
   private DateInput start          = null;
@@ -107,35 +107,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
     if (this.start != null)
       return this.start;
 
-    // Standardmaessig verwenden wir das aktuelle Jahr als Bemessungszeitraum
-    Calendar cal = Calendar.getInstance();
-    cal.set(Calendar.MONTH, Calendar.JANUARY);
-    cal.set(Calendar.DATE, 1);
-
-    Date d = DateUtil.startOfDay(cal.getTime());
-    try
-    {
-      String s = settings.getString("laststart", null);
-      if (s != null && s.length() > 0)
-      {
-        d = HBCI.DATEFORMAT.parse(s);
-      }
-    }
-    catch (Exception e)
-    {
-      Logger.error("invalid start date, ignoring",e);
-    }
-    this.start = new DateInput(d, HBCI.DATEFORMAT);
-    this.start.setName(i18n.tr("Start-Datum"));
-    this.start.setComment(i18n.tr("Frühestes Valuta-Datum"));
-    this.start.addListener(new Listener()
-    {
-      public void handleEvent(Event event)
-      {
-        Date d = (Date) start.getValue();
-        settings.setAttribute("laststart", d != null ? HBCI.DATEFORMAT.format(d) : null);
-      }
-    });
+    this.start = new DateFromInput();
     return this.start;
   }
 
@@ -148,31 +120,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
     if (this.end != null)
       return this.end;
 
-    Date d = null;
-    
-    try
-    {
-      String s = settings.getString("lastend", null);
-      if (s != null && s.length() > 0)
-        d = HBCI.DATEFORMAT.parse(s);
-    }
-    catch (Exception e)
-    {
-      Logger.error("invalid end date, ignoring",e);
-    }
-    
-    this.end = new DateInput(d, HBCI.DATEFORMAT);
-    this.end.setName(i18n.tr("End-Datum"));
-    this.end.setComment(i18n.tr("Spätestes Valuta-Datum"));
-    this.end.addListener(new Listener()
-    {
-      public void handleEvent(Event event)
-      {
-        Date d = (Date) end.getValue();
-        settings.setAttribute("lastend", d != null ? HBCI.DATEFORMAT.format(d) : null);
-      }
-    });
-
+    this.end = new DateToInput();
     return this.end;
   }
 
@@ -316,7 +264,12 @@ public class EinnahmeAusgabeControl extends AbstractControl
 
 /*******************************************************************************
  * $Log: EinnahmeAusgabeControl.java,v $
- * Revision 1.18  2011/01/20 17:13:21  willuhn
+ * Revision 1.19  2011/08/05 11:21:58  willuhn
+ * @N Erster Code fuer eine Umsatz-Preview
+ * @C Compiler-Warnings
+ * @N DateFromInput/DateToInput - damit sind die Felder fuer den Zeitraum jetzt ueberall einheitlich
+ *
+ * Revision 1.18  2011-01-20 17:13:21  willuhn
  * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
  *
  * Revision 1.17  2010-08-24 17:38:04  willuhn

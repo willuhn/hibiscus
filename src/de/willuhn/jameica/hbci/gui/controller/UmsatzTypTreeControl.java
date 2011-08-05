@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzTypTreeControl.java,v $
- * $Revision: 1.18 $
- * $Date: 2011/05/19 08:41:53 $
+ * $Revision: 1.19 $
+ * $Date: 2011/08/05 11:21:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,7 +15,6 @@ package de.willuhn.jameica.hbci.gui.controller;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -30,6 +29,8 @@ import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.parts.TreePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
+import de.willuhn.jameica.hbci.gui.input.DateFromInput;
+import de.willuhn.jameica.hbci.gui.input.DateToInput;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzTree;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzTypVerlauf;
@@ -57,13 +58,6 @@ public class UmsatzTypTreeControl extends AbstractControl
   private UmsatzTypVerlauf chart   = null;
   private boolean expanded         = false;
   
-  private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(UmsatzTypTreeControl.class);
-
-  static
-  {
-    settings.setStoreWhenRead(true);
-  }
-
   /**
    * ct.
    * 
@@ -101,23 +95,7 @@ public class UmsatzTypTreeControl extends AbstractControl
     if (this.start != null)
       return this.start;
 
-    // Standardmaessig verwenden wir das aktuelle Jahr als Bemessungszeitraum
-    Calendar cal = Calendar.getInstance();
-    cal.set(Calendar.MONTH,Calendar.JANUARY);
-    cal.set(Calendar.DATE,1);
-
-    Date d = DateUtil.startOfDay(cal.getTime());
-    try
-    {
-      String s = settings.getString("laststart",null);
-      if (s != null && s.length() > 0)
-        d = HBCI.DATEFORMAT.parse(s);
-    }
-    catch (Exception e)
-    {
-      // ignore
-    }
-    this.start = new DateInput(d, HBCI.DATEFORMAT);
+    this.start = new DateFromInput();
     this.start.setComment(i18n.tr("Fr¸hestes Valuta-Datum"));
     return this.start;
   }
@@ -132,22 +110,7 @@ public class UmsatzTypTreeControl extends AbstractControl
     if (this.end != null)
       return this.end;
 
-    Calendar cal = Calendar.getInstance();
-    cal.set(Calendar.MONTH,Calendar.DECEMBER);
-    cal.set(Calendar.DATE,31);
-
-    Date d = DateUtil.endOfDay(cal.getTime());
-    try
-    {
-      String s = settings.getString("lastend",null);
-      if (s != null && s.length() > 0)
-        d = HBCI.DATEFORMAT.parse(s);
-    }
-    catch (Exception e)
-    {
-      // ignore
-    }
-    this.end = new DateInput(d, HBCI.DATEFORMAT);
+    this.end = new DateToInput();
     this.end.setComment(i18n.tr("Sp‰testes Valuta-Datum"));
     return this.end;
   }
@@ -194,9 +157,6 @@ public class UmsatzTypTreeControl extends AbstractControl
 
     Date von = (Date) getStart().getValue();
     Date bis = (Date) getEnd().getValue();
-    // Wir merken uns die Werte fuer's naechste Mal
-    settings.setAttribute("laststart", von == null ? null : HBCI.DATEFORMAT.format(von));
-    settings.setAttribute("lastend",   bis == null ? null : HBCI.DATEFORMAT.format(bis));
 
     DBIterator umsaetze = UmsatzUtil.getUmsaetzeBackwards();
     if (konto != null)
@@ -334,7 +294,12 @@ public class UmsatzTypTreeControl extends AbstractControl
 
 /*******************************************************************************
  * $Log: UmsatzTypTreeControl.java,v $
- * Revision 1.18  2011/05/19 08:41:53  willuhn
+ * Revision 1.19  2011/08/05 11:21:58  willuhn
+ * @N Erster Code fuer eine Umsatz-Preview
+ * @C Compiler-Warnings
+ * @N DateFromInput/DateToInput - damit sind die Felder fuer den Zeitraum jetzt ueberall einheitlich
+ *
+ * Revision 1.18  2011-05-19 08:41:53  willuhn
  * @N BUGZILLA 1038 - generische Loesung
  *
  * Revision 1.17  2011-04-29 07:41:56  willuhn
@@ -345,67 +310,4 @@ public class UmsatzTypTreeControl extends AbstractControl
  *
  * Revision 1.15  2011-01-20 17:13:21  willuhn
  * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
- *
- * Revision 1.14  2010-06-01 12:12:19  willuhn
- * @C Umsaetze in "Kontoauszuege" und "Umsatze nach Kategorien" per Default in umgekehrt chronologischer Reihenfolge liefern - also neue zuerst
- *
- * Revision 1.13  2010/03/22 09:58:34  willuhn
- * @N Auch alle Kind-Kategorien mit zeichnen
- *
- * Revision 1.12  2010/03/05 15:24:53  willuhn
- * @N BUGZILLA 686
- *
- * Revision 1.11  2009/11/06 09:50:31  willuhn
- * @B BUGZILLA 779
- *
- * Revision 1.10  2009/10/20 23:12:58  willuhn
- * @N Support fuer SEPA-Ueberweisungen
- * @N Konten um IBAN und BIC erweitert
- *
- * Revision 1.9  2009/10/07 23:08:56  willuhn
- * @N BUGZILLA 745: Deaktivierte Konten in Auswertungen zwar noch anzeigen, jedoch mit "[]" umschlossen. Bei der Erstellung von neuen Auftraegen bleiben sie jedoch ausgeblendet. Bei der Gelegenheit wird das Default-Konto jetzt mit ">" markiert
- *
- * Revision 1.8  2009/10/05 23:08:40  willuhn
- * @N BUGZILLA 629 - wenn ein oder mehrere Kategorien markiert sind, werden die Charts nur fuer diese gezeichnet
- *
- * Revision 1.7  2009/01/12 00:46:50  willuhn
- * @N Vereinheitlichtes KontoInput in den Auswertungen
- *
- * Revision 1.6  2007/08/28 09:47:09  willuhn
- * @N Bug 395
- *
- * Revision 1.5  2007/08/12 22:02:10  willuhn
- * @C BUGZILLA 394 - restliche Umstellungen von Valuta auf Buchungsdatum
- *
- * Revision 1.4  2007/05/02 11:18:04  willuhn
- * @C PDF-Export von Umsatz-Trees in IO-API gepresst ;)
- *
- * Revision 1.3  2007/04/29 10:19:35  jost
- * Sortierung umgekehrt.
- *
- * Revision 1.1  2007/03/22 22:36:42  willuhn
- * @N Contextmenu in Trees
- * @C Kategorie-Baum in separates TreePart ausgelagert
- *
- * Revision 1.6  2007/03/22 14:23:56  willuhn
- * @N Redesign Kategorie-Tree - ist jetzt erheblich schneller und enthaelt eine Pseudo-Kategorie "Nicht zugeordnet"
- *
- * Revision 1.5  2007/03/21 18:47:36  willuhn
- * @N Neue Spalte in Kategorie-Tree
- * @N Sortierung des Kontoauszuges wie in Tabelle angezeigt
- * @C Code cleanup
- *
- * Revision 1.4  2007/03/10 07:16:37  jost
- * Neu: Nummer f√ºr die Sortierung der Umsatz-Kategorien
- *
- * Revision 1.3  2007/03/08 18:56:39  willuhn
- * @N Mehrere Spalten in Kategorie-Baum
- *
- * Revision 1.2  2007/03/07 10:29:41  willuhn
- * @B rmi compile fix
- * @B swt refresh behaviour
- *
- * Revision 1.1  2007/03/06 20:06:08  jost
- * Neu: Umsatz-Kategorien-√úbersicht
- *
  ******************************************************************************/

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/search/SammelUeberweisungSearchProvider.java,v $
- * $Revision: 1.2 $
- * $Date: 2008/12/14 23:18:35 $
+ * $Revision: 1.3 $
+ * $Date: 2011/08/05 11:21:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -67,7 +67,7 @@ public class SammelUeberweisungSearchProvider implements SearchProvider
                    "LOWER(gegenkonto_name) LIKE ? OR " +
                    "gegenkonto_nr LIKE ? OR " +
                    "gegenkonto_blz LIKE ?",
-                   new String[]{text,text,text,text,text,text});
+                   text,text,text,text,text,text);
 
     while (list.hasNext())
     {
@@ -78,7 +78,7 @@ public class SammelUeberweisungSearchProvider implements SearchProvider
     
     // Schritt 2: Sammel-Auftraege selbst
     list = Settings.getDBService().createList(SammelUeberweisung.class);
-    list.addFilter("LOWER(bezeichnung) LIKE ?",new String[]{text});
+    list.addFilter("LOWER(bezeichnung) LIKE ?",text);
 
     while (list.hasNext())
     {
@@ -137,6 +137,11 @@ public class SammelUeberweisungSearchProvider implements SearchProvider
 
 /**********************************************************************
  * $Log: SammelUeberweisungSearchProvider.java,v $
+ * Revision 1.3  2011/08/05 11:21:58  willuhn
+ * @N Erster Code fuer eine Umsatz-Preview
+ * @C Compiler-Warnings
+ * @N DateFromInput/DateToInput - damit sind die Felder fuer den Zeitraum jetzt ueberall einheitlich
+ *
  * Revision 1.2  2008/12/14 23:18:35  willuhn
  * @N BUGZILLA 188 - REFACTORING
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.46 $
- * $Date: 2011/07/20 15:13:10 $
+ * $Revision: 1.47 $
+ * $Date: 2011/08/05 11:21:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,6 @@
 package de.willuhn.jameica.hbci.gui.parts;
 
 import java.rmi.RemoteException;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -53,6 +52,8 @@ import de.willuhn.jameica.hbci.gui.action.UmsatzExport;
 import de.willuhn.jameica.hbci.gui.dialogs.AdresseAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
+import de.willuhn.jameica.hbci.gui.input.DateFromInput;
+import de.willuhn.jameica.hbci.gui.input.DateToInput;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.gui.input.UmsatzTypInput;
 import de.willuhn.jameica.hbci.gui.parts.columns.KontoColumn;
@@ -257,18 +258,8 @@ public class KontoauszugList extends UmsatzList
   {
     if (this.start != null)
       return this.start;
-
-    // Wir schlagen den aktuellen Monat als Startdatum nur beim ersten
-    // Aufruf in dieser Sitzung vor.
-    Date date = (Date) cache.get("kontoauszug.list.from");
-    if (date == null && cache.get("suggest.start") == null)
-    {
-      Calendar cal = Calendar.getInstance();
-      cal.set(Calendar.DAY_OF_MONTH, 1);
-      date = cal.getTime();
-      cache.put("suggest.start",Boolean.FALSE);
-    }
-    this.start = new DateInput(date, HBCI.DATEFORMAT);
+    
+    this.start = new DateFromInput();
     this.start.setComment(i18n.tr("Frühestes Valuta-Datum"));
     this.start.addListener(this.listener);
     return this.start;
@@ -283,7 +274,7 @@ public class KontoauszugList extends UmsatzList
     if (this.end != null)
       return this.end;
 
-    this.end = new DateInput((Date) cache.get("kontoauszug.list.to"), HBCI.DATEFORMAT);
+    this.end = new DateToInput();
     this.end.setComment(i18n.tr("Spätestes Valuta-Datum"));
     this.end.addListener(this.listener);
     return this.end;
@@ -451,8 +442,6 @@ public class KontoauszugList extends UmsatzList
     boolean unchecked = ((Boolean) getUnChecked().getValue()).booleanValue();
     
     // Aktuelle Werte speichern
-    cache.put("kontoauszug.list.from",             start);
-    cache.put("kontoauszug.list.to",               end);
     cache.put("kontoauszug.list.gegenkonto.nummer",gkNummer);
     cache.put("kontoauszug.list.gegenkonto.blz",   gkBLZ);
     cache.put("kontoauszug.list.gegenkonto.name",  gkName);
@@ -701,7 +690,12 @@ public class KontoauszugList extends UmsatzList
 
 /*********************************************************************
  * $Log: KontoauszugList.java,v $
- * Revision 1.46  2011/07/20 15:13:10  willuhn
+ * Revision 1.47  2011/08/05 11:21:58  willuhn
+ * @N Erster Code fuer eine Umsatz-Preview
+ * @C Compiler-Warnings
+ * @N DateFromInput/DateToInput - damit sind die Felder fuer den Zeitraum jetzt ueberall einheitlich
+ *
+ * Revision 1.46  2011-07-20 15:13:10  willuhn
  * @N Filter-Einstellungen nur noch fuer die Dauer der Sitzung speichern - siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=76837#76837
  *
  * Revision 1.45  2011-06-23 15:20:05  willuhn

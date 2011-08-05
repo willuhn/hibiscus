@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/PINDialog.java,v $
- * $Revision: 1.23 $
- * $Date: 2011/05/24 09:06:11 $
+ * $Revision: 1.24 $
+ * $Date: 2011/08/05 11:21:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,12 +12,9 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.dialogs;
 
-import java.rmi.RemoteException;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.kapott.hbci.manager.HBCIUtils;
-import org.kapott.hbci.passport.HBCIPassport;
 
 import de.willuhn.jameica.gui.dialogs.PasswordDialog;
 import de.willuhn.jameica.hbci.HBCI;
@@ -35,54 +32,37 @@ import de.willuhn.util.I18N;
  */
 public class PINDialog extends PasswordDialog
 {
-
 	private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-	private HBCIPassport passport  = null;
 
   /**
    * ct.
-   * @param passport Passport, fuer den die PIN-Abfrage gemacht wird. Grund: Der
-   * PIN-Dialog hat eine eingebaute Checksummen-Pruefung um zu checken, ob die
-   * PIN richtig eingegeben wurde. Da diese Checksumme aber pro Passport gespeichert
-   * wird, benoetigt der Dialoig eben jenen.
    */
-  public PINDialog(HBCIPassport passport)
+  public PINDialog()
   {
     super(PINDialog.POSITION_CENTER);
-    setSize(550,SWT.DEFAULT);
-    this.passport = passport;
+    this.setSize(550,SWT.DEFAULT);
+    this.setLabelText(i18n.tr("Ihre PIN"));
 
-    // BUGZILLA 71 http://www.willuhn.de/bugzilla/show_bug.cgi?id=71
-    String suffix = this.passport.getCustomerId();
-  
+    String s = null;
+
     Konto konto = HBCIFactory.getInstance().getCurrentKonto();
     if (konto != null)
     {
       try
       {
-        suffix += "." + konto.getKontonummer();
+        s = konto.getBezeichnung();
+        s += " [" + i18n.tr("Nr.") + " " + konto.getKontonummer();
+        String name = HBCIUtils.getNameForBLZ(konto.getBLZ());
+        if (name != null && name.length() > 0)
+          s += " - " + name;
+        s += "]";
       }
-      catch (RemoteException e)
+      catch (Exception e)
       {
-        Logger.error("unable to append account number to pin wallet entry",e);
+        Logger.error("unable to determine account data",e);
       }
     }
-
-    setLabelText(i18n.tr("Ihre PIN"));
-    String s = null;
-    try
-    {
-      s = konto.getBezeichnung();
-      s += " [" + i18n.tr("Nr.") + " " + konto.getKontonummer();
-      String name = HBCIUtils.getNameForBLZ(konto.getBLZ());
-      if (name != null && name.length() > 0)
-        s += " - " + name;
-      s += "]";
-    }
-    catch (Exception e)
-    {
-      // ignore
-    }
+    
     if (s != null)
     {
       setTitle(i18n.tr("PIN-Eingabe. Konto: {0}",s));
@@ -134,7 +114,12 @@ public class PINDialog extends PasswordDialog
 
 /**********************************************************************
  * $Log: PINDialog.java,v $
- * Revision 1.23  2011/05/24 09:06:11  willuhn
+ * Revision 1.24  2011/08/05 11:21:59  willuhn
+ * @N Erster Code fuer eine Umsatz-Preview
+ * @C Compiler-Warnings
+ * @N DateFromInput/DateToInput - damit sind die Felder fuer den Zeitraum jetzt ueberall einheitlich
+ *
+ * Revision 1.23  2011-05-24 09:06:11  willuhn
  * @C Refactoring und Vereinfachung von HBCI-Callbacks
  *
  **********************************************************************/

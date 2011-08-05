@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/KontoList.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/09/07 15:28:05 $
+ * $Revision: 1.2 $
+ * $Date: 2011/08/05 11:21:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -81,7 +81,7 @@ public class KontoList extends de.willuhn.jameica.hbci.gui.parts.KontoList
     // Davon ziehen wir die bereits verlinkten ab
     List<Konto> konten = new ArrayList<Konto>();
     DBIterator list = de.willuhn.jameica.hbci.Settings.getDBService().createList(Konto.class);
-    list.addFilter("passport_class = ?",new String[]{PassportImpl.class.getName()});
+    list.addFilter("passport_class = ?",PassportImpl.class.getName());
     list.setOrder("ORDER BY blz, bezeichnung");
     while (list.hasNext())
     {
@@ -116,7 +116,12 @@ public class KontoList extends de.willuhn.jameica.hbci.gui.parts.KontoList
 
 /*********************************************************************
  * $Log: KontoList.java,v $
- * Revision 1.1  2010/09/07 15:28:05  willuhn
+ * Revision 1.2  2011/08/05 11:21:58  willuhn
+ * @N Erster Code fuer eine Umsatz-Preview
+ * @C Compiler-Warnings
+ * @N DateFromInput/DateToInput - damit sind die Felder fuer den Zeitraum jetzt ueberall einheitlich
+ *
+ * Revision 1.1  2010-09-07 15:28:05  willuhn
  * @N BUGZILLA 391 - Kartenleser-Konfiguration komplett umgebaut. Damit lassen sich jetzt beliebig viele Kartenleser und Konfigurationen parellel einrichten
  *
  * Revision 1.1  2010/06/17 11:38:15  willuhn

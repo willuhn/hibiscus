@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/AbstractUmsatzDetail.java,v $
- * $Revision: 1.4 $
- * $Date: 2011/07/25 14:42:41 $
+ * $Revision: 1.5 $
+ * $Date: 2011/08/05 11:21:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -87,7 +87,7 @@ public abstract class AbstractUmsatzDetail extends AbstractView
 
     SimpleContainer bottom = new SimpleContainer(getParent(),true);
     bottom.addSeparator();
-    bottom.addLabelPair(i18n.tr("Umsatz-Kategorie"),            control.getUmsatzTyp());
+    bottom.addLabelPair(i18n.tr("Kategorie"),                   control.getUmsatzTyp());
     bottom.addHeadline(i18n.tr("Verwendungszweck"));
     bottom.addPart(control.getZweck());
   }
@@ -96,7 +96,12 @@ public abstract class AbstractUmsatzDetail extends AbstractView
 
 /**********************************************************************
  * $Log: AbstractUmsatzDetail.java,v $
- * Revision 1.4  2011/07/25 14:42:41  willuhn
+ * Revision 1.5  2011/08/05 11:21:58  willuhn
+ * @N Erster Code fuer eine Umsatz-Preview
+ * @C Compiler-Warnings
+ * @N DateFromInput/DateToInput - damit sind die Felder fuer den Zeitraum jetzt ueberall einheitlich
+ *
+ * Revision 1.4  2011-07-25 14:42:41  willuhn
  * @N BUGZILLA 1065
  *
  * Revision 1.3  2010-08-13 13:10:09  willuhn

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzUtil.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/09/10 11:57:24 $
+ * $Revision: 1.3 $
+ * $Date: 2011/08/05 11:21:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -83,7 +83,7 @@ public class UmsatzUtil
                    "LOWER(art) LIKE ? OR " +
                    "LOWER(customerref) LIKE ? OR " +
                    "LOWER(kommentar) LIKE ?",
-                   new String[]{text,text,text,text,text,text,text,text,text,text});
+                   text,text,text,text,text,text,text,text,text,text);
     return list;
   }
 
@@ -107,7 +107,12 @@ public class UmsatzUtil
 
 /**********************************************************************
  * $Log: UmsatzUtil.java,v $
- * Revision 1.2  2010/09/10 11:57:24  willuhn
+ * Revision 1.3  2011/08/05 11:21:59  willuhn
+ * @N Erster Code fuer eine Umsatz-Preview
+ * @C Compiler-Warnings
+ * @N DateFromInput/DateToInput - damit sind die Felder fuer den Zeitraum jetzt ueberall einheitlich
+ *
+ * Revision 1.2  2010-09-10 11:57:24  willuhn
  * @C Allgemeine Suche nach Umsaetzen anhand Suchbegriff in UmsatzUtil verschoben - kann dort besser wiederverwendet werden
  *
  * Revision 1.1  2007/08/07 23:54:15  willuhn

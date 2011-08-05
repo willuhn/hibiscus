@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/search/UeberweisungSearchProvider.java,v $
- * $Revision: 1.6 $
- * $Date: 2010/08/17 11:51:08 $
+ * $Revision: 1.7 $
+ * $Date: 2011/08/05 11:21:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -63,7 +63,7 @@ public class UeberweisungSearchProvider implements SearchProvider
                    "LOWER(empfaenger_name) LIKE ? OR " +
                    "empfaenger_konto LIKE ? OR " +
                    "empfaenger_blz LIKE ?",
-                   new String[]{text,text,text,text,text,text});
+                   text,text,text,text,text,text);
     list.setOrder("ORDER BY " + service.getSQLTimestamp("termin") + " DESC");
 
     ArrayList results = new ArrayList();
@@ -131,7 +131,12 @@ public class UeberweisungSearchProvider implements SearchProvider
 
 /**********************************************************************
  * $Log: UeberweisungSearchProvider.java,v $
- * Revision 1.6  2010/08/17 11:51:08  willuhn
+ * Revision 1.7  2011/08/05 11:21:58  willuhn
+ * @N Erster Code fuer eine Umsatz-Preview
+ * @C Compiler-Warnings
+ * @N DateFromInput/DateToInput - damit sind die Felder fuer den Zeitraum jetzt ueberall einheitlich
+ *
+ * Revision 1.6  2010-08-17 11:51:08  willuhn
  * @N Datum in Lastschriften und SEPA-Ueberweisungen mit anzeigen
  *
  * Revision 1.5  2010-08-17 11:46:58  willuhn

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/About.java,v $
- * $Revision: 1.15 $
- * $Date: 2011/05/11 10:20:29 $
+ * $Revision: 1.16 $
+ * $Date: 2011/08/05 11:21:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -67,7 +67,7 @@ public class About extends AbstractDialog
     final I18N i18n = plugin.getResources().getI18N();
 
     DBIterator list = Settings.getDBService().createList(Version.class);
-    list.addFilter("name = ?", new String[]{"db"});
+    list.addFilter("name = ?","db");
     Version version = (Version) list.next();
     
     Label l = GUI.getStyleFactory().createLabel(parent,SWT.BORDER);
@@ -138,7 +138,12 @@ public class About extends AbstractDialog
 
 /**********************************************************************
  * $Log: About.java,v $
- * Revision 1.15  2011/05/11 10:20:29  willuhn
+ * Revision 1.16  2011/08/05 11:21:59  willuhn
+ * @N Erster Code fuer eine Umsatz-Preview
+ * @C Compiler-Warnings
+ * @N DateFromInput/DateToInput - damit sind die Felder fuer den Zeitraum jetzt ueberall einheitlich
+ *
+ * Revision 1.15  2011-05-11 10:20:29  willuhn
  * @N OCE fangen
  *
  * Revision 1.14  2010-10-29 09:35:32  willuhn

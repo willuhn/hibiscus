@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/DialogFactory.java,v $
- * $Revision: 1.42 $
- * $Date: 2011/05/25 10:19:12 $
+ * $Revision: 1.43 $
+ * $Date: 2011/08/05 11:21:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -68,7 +68,7 @@ public class DialogFactory
     }
     lastTry = 0;
 
-    PINDialog dialog = new PINDialog(passport);
+    PINDialog dialog = new PINDialog();
     pin = (String) dialog.open();
     setCachedPIN(passport,pin);
     return pin;
@@ -332,7 +332,12 @@ public class DialogFactory
 
 /**********************************************************************
  * $Log: DialogFactory.java,v $
- * Revision 1.42  2011/05/25 10:19:12  willuhn
+ * Revision 1.43  2011/08/05 11:21:59  willuhn
+ * @N Erster Code fuer eine Umsatz-Preview
+ * @C Compiler-Warnings
+ * @N DateFromInput/DateToInput - damit sind die Felder fuer den Zeitraum jetzt ueberall einheitlich
+ *
+ * Revision 1.42  2011-05-25 10:19:12  willuhn
  * @C PIN nur aus Wallet loeschen, wenn tatsaechlich vorhanden - das spart einen unnoetigen Schreibzugriff auf das Wallet, wenn die PIN gar nicht drin stand
  *
  * Revision 1.41  2011-05-25 10:05:49  willuhn

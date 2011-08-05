@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractFromToList.java,v $
- * $Revision: 1.11 $
- * $Date: 2011/06/28 09:24:35 $
+ * $Revision: 1.12 $
+ * $Date: 2011/08/05 11:21:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,6 @@
 package de.willuhn.jameica.hbci.gui.parts;
 
 import java.rmi.RemoteException;
-import java.util.Calendar;
 import java.util.Date;
 
 import org.eclipse.swt.events.KeyAdapter;
@@ -29,7 +28,6 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
-import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.TablePart;
@@ -39,9 +37,11 @@ import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.input.DateFromInput;
+import de.willuhn.jameica.hbci.gui.input.DateToInput;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.jameica.util.DateUtil;
+import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
@@ -50,15 +50,14 @@ import de.willuhn.util.I18N;
  */
 public abstract class AbstractFromToList extends TablePart implements Part
 {
-
-  protected I18N i18n            = null;
+  protected final static I18N i18n       = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  private final static Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
   
   private Input from             = null;
   private Input to               = null;
   private Input text             = null;
 
   protected Listener listener    = null;
-  protected de.willuhn.jameica.system.Settings mySettings = null;
 
   /**
    * ct.
@@ -68,9 +67,6 @@ public abstract class AbstractFromToList extends TablePart implements Part
   {
     super(action);
     
-    this.i18n       = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-    this.mySettings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
-
     this.listener = new Listener() {
       public void handleEvent(Event event) {
         // Wenn das event "null" ist, kann es nicht
@@ -97,30 +93,10 @@ public abstract class AbstractFromToList extends TablePart implements Part
   {
     if (this.from != null)
       return this.from;
-    // Als Startdatum nehmen wir den ersten des aktuellen Monats
-    // Es sei denn, es ist eines gespeichert
-    Date dFrom = null;
-    String sFrom = mySettings.getString("transferlist.filter.from",null);
-    if (sFrom != null && sFrom.length() > 0)
-    {
-      try
-      {
-        dFrom = HBCI.DATEFORMAT.parse(sFrom);
-      }
-      catch (Exception e)
-      {
-        Logger.error("unable to parse " + sFrom,e);
-      }
-    }
-    if (dFrom == null)
-    {
-      Calendar cal = Calendar.getInstance();
-      cal.set(Calendar.DAY_OF_MONTH,1);
-      dFrom = DateUtil.startOfDay(cal.getTime());
-    }
     
-    this.from = new DateInput(dFrom, HBCI.DATEFORMAT);
+    this.from = new DateFromInput();
     this.from.setName(i18n.tr("Anzeige von"));
+    this.from.setComment(null);
     this.from.addListener(this.listener);
     return this.from;
   }
@@ -133,8 +109,8 @@ public abstract class AbstractFromToList extends TablePart implements Part
   {
     if (this.text != null)
       return this.text;
-    
-    this.text = new TextInput(mySettings.getString("transferlist.filter.text",null),255);
+
+    this.text = new TextInput(settings.getString("transferlist.filter.text",null),255);
     this.text.setName(i18n.tr("Suchbegriff"));
     return this.text;
   }
@@ -148,25 +124,9 @@ public abstract class AbstractFromToList extends TablePart implements Part
     if (this.to != null)
       return this.to;
 
-    // Als End-Datum nehmen wir keines.
-    // Es sei denn, es ist ein aktuelles gespeichert
-    String sTo = mySettings.getString("transferlist.filter.to",null);
-    Date dTo = null;
-    if (sTo != null && sTo.length() > 0)
-    {
-      try
-      {
-        dTo = HBCI.DATEFORMAT.parse(sTo);
-      }
-      catch (Exception e)
-      {
-        Logger.error("unable to parse " + sTo,e);
-      }
-    }
-
-    
-    this.to = new DateInput(dTo, HBCI.DATEFORMAT);
+    this.to = new DateToInput();
     this.to.setName(i18n.tr("Anzeige bis"));
+    this.to.setComment(null);
     this.to.addListener(this.listener);
     return this.to;
   }
@@ -278,14 +238,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
           sort();
           
           // Speichern der Werte aus den Filter-Feldern.
-          mySettings.setAttribute("transferlist.filter.text",text);
-          mySettings.setAttribute("transferlist.filter.from",dfrom == null ? (String)null : HBCI.DATEFORMAT.format(dfrom));
-            
-          // Das End-Datum speichern wir nur, wenn es nicht das aktuelle Datum ist
-          if (dto != null && !DateUtil.startOfDay(new Date()).equals(DateUtil.startOfDay(dto)))
-            mySettings.setAttribute("transferlist.filter.to",HBCI.DATEFORMAT.format(dto));
-          else
-            mySettings.setAttribute("transferlist.filter.to",(String)null);
+          settings.setAttribute("transferlist.filter.text",text);
         }
         catch (Exception e)
         {
@@ -354,7 +307,12 @@ public abstract class AbstractFromToList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: AbstractFromToList.java,v $
- * Revision 1.11  2011/06/28 09:24:35  willuhn
+ * Revision 1.12  2011/08/05 11:21:58  willuhn
+ * @N Erster Code fuer eine Umsatz-Preview
+ * @C Compiler-Warnings
+ * @N DateFromInput/DateToInput - damit sind die Felder fuer den Zeitraum jetzt ueberall einheitlich
+ *
+ * Revision 1.11  2011-06-28 09:24:35  willuhn
  * @N Position speichern
  *
  * Revision 1.10  2011-01-20 17:13:21  willuhn

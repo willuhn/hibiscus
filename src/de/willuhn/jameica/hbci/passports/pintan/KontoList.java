@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/KontoList.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/09/07 15:17:07 $
+ * $Revision: 1.3 $
+ * $Date: 2011/08/05 11:21:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -84,7 +84,7 @@ public class KontoList extends de.willuhn.jameica.hbci.gui.parts.KontoList
     // Davon ziehen wir die bereits verlinkten ab
     ArrayList konten = new ArrayList();
     DBIterator list = de.willuhn.jameica.hbci.Settings.getDBService().createList(Konto.class);
-    list.addFilter("passport_class = ?",new String[]{PassportImpl.class.getName()});
+    list.addFilter("passport_class = ?",PassportImpl.class.getName());
     list.setOrder("ORDER BY blz, bezeichnung");
     while (list.hasNext())
     {
@@ -121,7 +121,12 @@ public class KontoList extends de.willuhn.jameica.hbci.gui.parts.KontoList
 
 /*********************************************************************
  * $Log: KontoList.java,v $
- * Revision 1.2  2010/09/07 15:17:07  willuhn
+ * Revision 1.3  2011/08/05 11:21:59  willuhn
+ * @N Erster Code fuer eine Umsatz-Preview
+ * @C Compiler-Warnings
+ * @N DateFromInput/DateToInput - damit sind die Felder fuer den Zeitraum jetzt ueberall einheitlich
+ *
+ * Revision 1.2  2010-09-07 15:17:07  willuhn
  * @N GUI-Cleanup
  *
  * Revision 1.1  2010/06/17 11:38:15  willuhn
