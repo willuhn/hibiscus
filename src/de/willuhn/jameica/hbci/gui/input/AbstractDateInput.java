@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/AbstractDateInput.java,v $
- * $Revision: 1.1 $
- * $Date: 2011/08/05 11:34:39 $
+ * $Revision: 1.2 $
+ * $Date: 2011/08/05 11:50:48 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -12,6 +12,8 @@
 package de.willuhn.jameica.hbci.gui.input;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -29,6 +31,7 @@ import de.willuhn.util.I18N;
 public abstract class AbstractDateInput extends DateInput
 {
   final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  private static Map<String,Date> cache = new HashMap<String,Date>();
 
   /**
    * ct.
@@ -45,39 +48,56 @@ public abstract class AbstractDateInput extends DateInput
   public AbstractDateInput(Date date)
   {
     super(date,HBCI.DATEFORMAT);
-
-    // Checken, ob wir was in der Config haben
-    if (date == null)
-    {
-      try
-      {
-        Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
-        String s = settings.getString(getParameter(),null);
-        if (s != null && s.length() > 0)
-          date = HBCI.DATEFORMAT.parse(s);
-      }
-      catch (Exception e)
-      {
-        Logger.error(e.getMessage(),e);
-      }
-    }
-
-    // Dann halt das Default-Datum
-    if (date == null)
-      date = this.getDefault();
-    
-    this.setValue(date);
-    
     this.setName(i18n.tr("Datum"));
+    
+    final Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
+    final String param = this.getParameter();
+    
+    // Listener zur Ueberwachung der Aenderungen
     this.addListener(new Listener() {
       public void handleEvent(Event event)
       {
-        // aktuelles Datum speichern
+        // aktuelles Datum in Config und Cache speichern speichern
         Date d = (Date) getValue();
-        Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
-        settings.setAttribute(getParameter(),d != null ? HBCI.DATEFORMAT.format(d) : null);
+        settings.setAttribute(param,d != null ? HBCI.DATEFORMAT.format(d) : null);
+        cache.put(param,d);
       }
     });
+
+
+    // Wenn explizit ein Datum angegeben wurde, erzeugen wir keinen Vorschlag
+    if (date != null)
+      return;
+    
+    // Jetzt ermitteln wir, ob wir in der aktuellen Sitzung schonmal aufgerufen wurden
+    // Wenn das der Fall ist, erzeugen wir keine Vorschlaege mehr, sondern uebernehmen
+    // den letzten Wert
+    if (cache.containsKey(param))
+    {
+      this.setValue(cache.get(param));
+      return;
+    }
+
+    // OK, offensichtlich wurden wir das erste mal in der aktuellen Sitzung
+    // aufgerufen. Wir ermitteln einen Vorschlag
+
+    // a) In der Config schauen
+    try
+    {
+      String s = settings.getString(param,null);
+      if (s != null && s.length() > 0)
+      {
+        this.setValue(HBCI.DATEFORMAT.parse(s));
+        return;
+      }
+    }
+    catch (Exception e)
+    {
+      Logger.error(e.getMessage(),e);
+    }
+
+    // b) Vorgabewert holen
+    this.setValue(this.getDefault());
   }
   
   /**
@@ -97,7 +117,10 @@ public abstract class AbstractDateInput extends DateInput
 
 /**********************************************************************
  * $Log: AbstractDateInput.java,v $
- * Revision 1.1  2011/08/05 11:34:39  willuhn
+ * Revision 1.2  2011/08/05 11:50:48  willuhn
+ * @N Vorschlaege nur beim ersten Mal in der Sitzung ausrechnen - danach das behalten, was der User eingegeben hat - auch wenn es NULL ist
+ *
+ * Revision 1.1  2011-08-05 11:34:39  willuhn
  * @N Gemeinsame Basis-Klasse
  *
  * Revision 1.1  2011-08-05 11:21:59  willuhn
