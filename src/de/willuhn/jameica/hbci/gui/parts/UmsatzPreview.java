@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/Attic/UmsatzPreview.java,v $
- * $Revision: 1.1 $
- * $Date: 2011/08/05 11:21:58 $
+ * $Revision: 1.2 $
+ * $Date: 2011/08/05 12:10:16 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -44,6 +44,7 @@ public class UmsatzPreview implements Part
     if (this.umsatz == null)
       return;
     
+    // TODO: An der Umsatz-Preview mal noch weiterarbeiten
     MyUmsatzDetailControl control = new MyUmsatzDetailControl();
     control.getZweck().paint(parent);
   }
@@ -75,7 +76,10 @@ public class UmsatzPreview implements Part
 
 /**********************************************************************
  * $Log: UmsatzPreview.java,v $
- * Revision 1.1  2011/08/05 11:21:58  willuhn
+ * Revision 1.2  2011/08/05 12:10:16  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.1  2011-08-05 11:21:58  willuhn
  * @N Erster Code fuer eine Umsatz-Preview
  * @C Compiler-Warnings
  * @N DateFromInput/DateToInput - damit sind die Felder fuer den Zeitraum jetzt ueberall einheitlich
