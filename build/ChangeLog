@@ -1,5 +1,7 @@
 HEAD
 
+  * CHG: 0121 Verhalten von Von- und Bis-Datum ueberarbeitet, siehe
+              http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=77292#77292
   * CHG: 0120 Beim Lesen der SQL-Scripts explizites Encoding verwenden
   * NEW: 0119 BUGZILLA 1065 - Unterstuetzung fuer GV-Code in Umsaetzen
   * NEW: 0115 BUGZILLA 1093 - Unread-Count links in Navigation (noch unvollstaendig)
