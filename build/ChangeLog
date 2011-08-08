@@ -1,5 +1,7 @@
 HEAD
 
+  * CHG: 0123 Adressbuch-Details: Bei nicht-aenderbaren Adressen Buttons (Speichern+Loeschen)
+              zwar einblenden aber readonly machen - irritiert nicht so wie komplett fehlende Buttons
   * BUG: 0122 BUGZILLA 1115 - Menu-Extension wurde nicht deregistriert
   * CHG: 0121 Verhalten von Von- und Bis-Datum ueberarbeitet, siehe
               http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=77292#77292
