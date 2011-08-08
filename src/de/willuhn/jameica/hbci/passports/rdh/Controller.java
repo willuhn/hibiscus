@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/Controller.java,v $
- * $Revision: 1.7 $
- * $Date: 2011/06/17 08:49:19 $
+ * $Revision: 1.8 $
+ * $Date: 2011/08/08 15:46:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.TableItem;
+import org.kapott.hbci.callback.HBCICallback;
 import org.kapott.hbci.exceptions.NeedKeyAckException;
 import org.kapott.hbci.manager.HBCIHandler;
 import org.kapott.hbci.passport.HBCIPassport;
@@ -38,6 +39,7 @@ import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCICallbackSWT;
 import de.willuhn.jameica.hbci.gui.DialogFactory;
 import de.willuhn.jameica.hbci.gui.action.PassportTest;
 import de.willuhn.jameica.hbci.gui.dialogs.NewKeysDialog;
@@ -49,6 +51,7 @@ import de.willuhn.jameica.hbci.passports.rdh.server.PassportHandleImpl;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.messaging.QueryMessage;
 import de.willuhn.jameica.messaging.StatusBarMessage;
+import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -452,9 +455,20 @@ public class Controller extends AbstractControl {
   public synchronized void changePassword()
   {
     HBCIPassport passport = null;
+    HBCICallback callback = null;
+    
     try
     {
       passport = getHBCIPassport();
+      
+      // muessen wir zwingend machen, weil sonst der Callback nicht bei uns landet
+      // Das wuerde bewirken, dass Hibiscus ein zufaelliges neues Passwort erzeugt,
+      // welches der User aber nicht mehr kennt.
+      AbstractPlugin plugin = Application.getPluginLoader().getPlugin(HBCI.class);
+      callback = ((HBCI)plugin).getHBCICallback();
+      if (callback != null && (callback instanceof HBCICallbackSWT))
+        ((HBCICallbackSWT)callback).setCurrentHandle(new PassportHandleImpl());
+      
       passport.changePassphrase();
       
       // Passwort-Cache leeren
@@ -469,6 +483,11 @@ public class Controller extends AbstractControl {
     {
       Logger.error("unable to change password",e);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Ändern des Passwortes: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
+    }
+    finally
+    {
+      if (callback != null && (callback instanceof HBCICallbackSWT))
+        ((HBCICallbackSWT)callback).setCurrentHandle(null);
     }
   }
   
@@ -766,7 +785,10 @@ public class Controller extends AbstractControl {
 
 /**********************************************************************
  * $Log: Controller.java,v $
- * Revision 1.7  2011/06/17 08:49:19  willuhn
+ * Revision 1.8  2011/08/08 15:46:16  willuhn
+ * @B Beim Aendern des Passwortes wurde das CurrentHandle nicht gesetzt - mit dem Effekt, dass der Callback fuer ...PASSPHRASE_SAVE nicht im RDH-PassportHandle landete sondern im HBCICallbackSWT. Dort werden die beiden Callbacks auch behandelt - aber eigentlich nur fuer DDV und PIN/TAN. Ergebnis: Hibiscus aendert das Passwort der Schluesseldiskette auf ein zufaelliges Passwowrt, welches der User aber nicht kennt.
+ *
+ * Revision 1.7  2011-06-17 08:49:19  willuhn
  * @N Contextmenu im Tree mit den Bank-Zugaengen
  * @N Loeschen von Bank-Zugaengen direkt im Tree
  *
