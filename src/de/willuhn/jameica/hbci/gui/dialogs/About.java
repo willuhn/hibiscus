@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/About.java,v $
- * $Revision: 1.16 $
- * $Date: 2011/08/05 11:21:59 $
+ * $Revision: 1.17 $
+ * $Date: 2011/08/08 16:02:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,8 +20,8 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.FormTextPart;
-import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.gui.util.SWTUtil;
@@ -88,7 +88,7 @@ public class About extends AbstractDialog
 
     container.addPart(text);
 
-    ButtonArea buttons = container.createButtonArea(3);
+    ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Diagnose-Informationen"), new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -107,8 +107,26 @@ public class About extends AbstractDialog
           Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Anzeigen der Diagnose-Informationen"), StatusBarMessage.TYPE_ERROR));
         }
       }
-    
-    });
+    },null,false,"dialog-information.png");
+    buttons.addButton(i18n.tr("Wallet"), new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        try
+        {
+          new WalletDialog(DebugDialog.POSITION_CENTER).open();
+        }
+        catch (OperationCanceledException oce)
+        {
+          Logger.info(oce.getMessage());
+          return;
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to display wallet dialog",e);
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Anzeigen des Wallet"), StatusBarMessage.TYPE_ERROR));
+        }
+      }
+    },null,false,"stock_keyring.png");
     buttons.addButton(i18n.tr("Spenden"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -122,6 +140,9 @@ public class About extends AbstractDialog
         close();
       }
     },null,true,"window-close.png");
+    
+    container.addButtonArea(buttons);
+    
     setSize(SWT.DEFAULT,430); // BUGZILLA 269
   }
 
@@ -138,7 +159,10 @@ public class About extends AbstractDialog
 
 /**********************************************************************
  * $Log: About.java,v $
- * Revision 1.16  2011/08/05 11:21:59  willuhn
+ * Revision 1.17  2011/08/08 16:02:46  willuhn
+ * @N Dialog zum Anzeigen des Wallet-Inhaltes - nur zu Testzwecken
+ *
+ * Revision 1.16  2011-08-05 11:21:59  willuhn
  * @N Erster Code fuer eine Umsatz-Preview
  * @C Compiler-Warnings
  * @N DateFromInput/DateToInput - damit sind die Felder fuer den Zeitraum jetzt ueberall einheitlich
