@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTree.java,v $
- * $Revision: 1.7 $
- * $Date: 2011/04/29 07:41:56 $
+ * $Revision: 1.8 $
+ * $Date: 2011/08/08 07:37:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,13 +30,11 @@ import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.extension.Extendable;
-import de.willuhn.jameica.gui.extension.Extension;
-import de.willuhn.jameica.gui.extension.ExtensionRegistry;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.TreeFormatter;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
+import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.gui.parts.TreePart;
 import de.willuhn.jameica.gui.util.Font;
@@ -59,9 +57,8 @@ import de.willuhn.util.I18N;
 /**
  * Liefert einen fertig konfigurierten Tree mit Umsaetzen in deren Kategorien.
  */
-public class UmsatzTree extends TreePart implements Extension
+public class UmsatzTree extends TreePart
 {
-  private static boolean registered = false;
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private static Hashtable<String,Color> colorCache = new Hashtable<String,Color>();
   
@@ -74,17 +71,10 @@ public class UmsatzTree extends TreePart implements Extension
   {
     super(list, new UmsatzDetail());
     
-    // BUGZILLA 512
-    if (!registered)
-    {
-      ExtensionRegistry.register(this,UmsatzList.class.getName());
-      registered = true;
-    }
     this.setRememberColWidths(true);
     this.setRememberOrder(true);
     this.setRememberState(true);
     this.setMulti(true);
-    this.setContextMenu(new UmsatzList());
     this.setFormatter(new TreeFormatter() {
     
       public void format(TreeItem item)
@@ -153,6 +143,35 @@ public class UmsatzTree extends TreePart implements Extension
     this.addColumn(i18n.tr("Verwendungszweck"), "mergedzweck");
     this.addColumn(i18n.tr("Datum"),            "datum_pseudo", new DateFormatter(HBCI.DATEFORMAT));
     this.addColumn(i18n.tr("Betrag"),           "betrag",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
+
+    // BUGZILLA 512 / 1115
+    ContextMenu menu = new UmsatzList();
+    menu.addItem(ContextMenuItem.SEPARATOR);
+    menu.addItem(new GroupItem(i18n.tr("Kategorie bearbeiten..."),new UmsatzTypNew()));
+    menu.addItem(new ContextMenuItem(i18n.tr("Neue Kategorie anlegen..."),new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        // BUGZILLA 926
+        UmsatzTyp ut = null;
+        if (context != null && (context instanceof Umsatz))
+        {
+          try
+          {
+            Umsatz u = (Umsatz) context;
+            ut = (UmsatzTyp) Settings.getDBService().createObject(UmsatzTyp.class,null);
+            ut.setName(u.getGegenkontoName());
+            ut.setPattern(u.getZweck());
+          }
+          catch (Exception e)
+          {
+            Logger.error("error while preparing category",e);
+          }
+        }
+        new UmsatzTypNew().handleAction(ut);
+      }
+    }));
+    this.setContextMenu(menu);
   }
 
   
@@ -236,41 +255,6 @@ public class UmsatzTree extends TreePart implements Extension
   }
 
   /**
-   * @see de.willuhn.jameica.gui.extension.Extension#extend(de.willuhn.jameica.gui.extension.Extendable)
-   */
-  public void extend(Extendable extendable)
-  {
-    if (extendable == null || !(extendable instanceof UmsatzList))
-      return;
-    UmsatzList l = (UmsatzList) extendable;
-    l.addItem(ContextMenuItem.SEPARATOR);
-    l.addItem(new GroupItem(i18n.tr("Kategorie bearbeiten..."),new UmsatzTypNew()));
-    l.addItem(new ContextMenuItem(i18n.tr("Neue Kategorie anlegen..."),new Action()
-    {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        // BUGZILLA 926
-        UmsatzTyp ut = null;
-        if (context != null && (context instanceof Umsatz))
-        {
-          try
-          {
-            Umsatz u = (Umsatz) context;
-            ut = (UmsatzTyp) Settings.getDBService().createObject(UmsatzTyp.class,null);
-            ut.setName(u.getGegenkontoName());
-            ut.setPattern(u.getZweck());
-          }
-          catch (Exception e)
-          {
-            Logger.error("error while preparing category",e);
-          }
-        }
-        new UmsatzTypNew().handleAction(ut);
-      }
-    }));
-  }
-  
-  /**
    * Menu-Item fuer Umsatzgruppen.
    */
   private class GroupItem extends CheckedContextMenuItem
@@ -299,7 +283,10 @@ public class UmsatzTree extends TreePart implements Extension
 
 /*******************************************************************************
  * $Log: UmsatzTree.java,v $
- * Revision 1.7  2011/04/29 07:41:56  willuhn
+ * Revision 1.8  2011/08/08 07:37:27  willuhn
+ * @B BUGZILLA 1115
+ *
+ * Revision 1.7  2011-04-29 07:41:56  willuhn
  * @N BUGZILLA 781
  *
  * Revision 1.6  2011-04-26 12:15:51  willuhn
