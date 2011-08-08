@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/About.java,v $
- * $Revision: 1.17 $
- * $Date: 2011/08/08 16:02:46 $
+ * $Revision: 1.18 $
+ * $Date: 2011/08/08 16:05:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -108,25 +108,25 @@ public class About extends AbstractDialog
         }
       }
     },null,false,"dialog-information.png");
-    buttons.addButton(i18n.tr("Wallet"), new Action() {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        try
-        {
-          new WalletDialog(DebugDialog.POSITION_CENTER).open();
-        }
-        catch (OperationCanceledException oce)
-        {
-          Logger.info(oce.getMessage());
-          return;
-        }
-        catch (Exception e)
-        {
-          Logger.error("unable to display wallet dialog",e);
-          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Anzeigen des Wallet"), StatusBarMessage.TYPE_ERROR));
-        }
-      }
-    },null,false,"stock_keyring.png");
+//    buttons.addButton(i18n.tr("Wallet"), new Action() {
+//      public void handleAction(Object context) throws ApplicationException
+//      {
+//        try
+//        {
+//          new WalletDialog(DebugDialog.POSITION_CENTER).open();
+//        }
+//        catch (OperationCanceledException oce)
+//        {
+//          Logger.info(oce.getMessage());
+//          return;
+//        }
+//        catch (Exception e)
+//        {
+//          Logger.error("unable to display wallet dialog",e);
+//          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Anzeigen des Wallet"), StatusBarMessage.TYPE_ERROR));
+//        }
+//      }
+//    },null,false,"stock_keyring.png");
     buttons.addButton(i18n.tr("Spenden"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -159,7 +159,10 @@ public class About extends AbstractDialog
 
 /**********************************************************************
  * $Log: About.java,v $
- * Revision 1.17  2011/08/08 16:02:46  willuhn
+ * Revision 1.18  2011/08/08 16:05:42  willuhn
+ * @C Wallet-Dialog per Default nicht anzeigen
+ *
+ * Revision 1.17  2011-08-08 16:02:46  willuhn
  * @N Dialog zum Anzeigen des Wallet-Inhaltes - nur zu Testzwecken
  *
  * Revision 1.16  2011-08-05 11:21:59  willuhn
