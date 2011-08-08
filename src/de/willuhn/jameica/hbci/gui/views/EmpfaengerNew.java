@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/EmpfaengerNew.java,v $
- * $Revision: 1.21 $
- * $Date: 2011/05/03 10:13:15 $
+ * $Revision: 1.22 $
+ * $Date: 2011/08/08 11:27:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.TabFolder;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.ColumnLayout;
 import de.willuhn.jameica.gui.util.Headline;
@@ -66,18 +67,21 @@ public class EmpfaengerNew extends AbstractView
 
     // und noch die Abschicken-Knoepfe
     ButtonArea buttonArea = new ButtonArea();
-
-    if (control.isHibiscusAdresse())
+    
+    Button delete = new Button(i18n.tr("Löschen"), new DBObjectDelete(),control.getAddress(),false,"user-trash-full.png");
+    delete.setEnabled(control.isHibiscusAdresse());
+    buttonArea.addButton(delete);
+    
+    Button store = new Button(i18n.tr("Speichern"), new Action()
     {
-      buttonArea.addButton(i18n.tr("Löschen"), new DBObjectDelete(),control.getAddress(),false,"user-trash-full.png");
-      buttonArea.addButton(i18n.tr("Speichern"), new Action()
+      public void handleAction(Object context) throws ApplicationException
       {
-        public void handleAction(Object context) throws ApplicationException
-        {
-          control.handleStore();
-        }
-      },null,true,"document-save.png");
-    }
+        control.handleStore();
+      }
+    },null,true,"document-save.png");
+    store.setEnabled(control.isHibiscusAdresse());
+    buttonArea.addButton(store);
+
     buttonArea.paint(getParent());
       
     new Headline(getParent(),i18n.tr("Buchungen von/an diese Adresse"));
@@ -101,7 +105,10 @@ public class EmpfaengerNew extends AbstractView
 
 /**********************************************************************
  * $Log: EmpfaengerNew.java,v $
- * Revision 1.21  2011/05/03 10:13:15  willuhn
+ * Revision 1.22  2011/08/08 11:27:56  willuhn
+ * @C Bei nicht-aenderbaren Adressen Buttons zwar einblenden aber readonly machen - irritiert nicht so wie komplett fehlende Buttons
+ *
+ * Revision 1.21  2011-05-03 10:13:15  willuhn
  * @R Hintergrund-Farbe nicht mehr explizit setzen. Erzeugt auf Windows und insb. Mac teilweise unschoene Effekte. Besonders innerhalb von Label-Groups, die auf Windows/Mac andere Hintergrund-Farben verwenden als der Default-Hintergrund
  *
  * Revision 1.20  2011-04-08 15:19:14  willuhn
