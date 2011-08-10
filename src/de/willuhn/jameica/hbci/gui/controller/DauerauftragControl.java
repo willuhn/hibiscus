@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/DauerauftragControl.java,v $
- * $Revision: 1.33 $
- * $Date: 2011/05/10 11:41:30 $
+ * $Revision: 1.34 $
+ * $Date: 2011/08/10 10:46:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,18 +25,22 @@ import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
+import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.TextSchluessel;
 import de.willuhn.jameica.hbci.gui.action.DauerauftragNew;
 import de.willuhn.jameica.hbci.gui.dialogs.TurnusDialog;
+import de.willuhn.jameica.hbci.gui.input.AddressInput;
 import de.willuhn.jameica.hbci.gui.parts.DauerauftragList;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
 import de.willuhn.jameica.hbci.rmi.Turnus;
+import de.willuhn.jameica.hbci.server.DBPropertyUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
+import de.willuhn.util.TypedProperties;
 
 /**
  * Controller fuer Dauer-Auftraege.
@@ -51,9 +55,10 @@ public class DauerauftragControl extends AbstractTransferControl {
 	private SelectInput textschluessel = null;
 	
   private Dauerauftrag transfer      = null;
+  private TypedProperties bpd        = null;
 
   private DauerauftragList list      = null;
-
+  
   /**
    * ct.
    * @param view
@@ -77,6 +82,25 @@ public class DauerauftragControl extends AbstractTransferControl {
       
     transfer = (Dauerauftrag) Settings.getDBService().createObject(Dauerauftrag.class,null);
     return transfer;
+	}
+	
+	/**
+	 * Liefert die passenden BPD-Parameter fuer den Auftrag.
+	 * @return die BPD.
+	 * @throws RemoteException
+	 */
+	private TypedProperties getBPD() throws RemoteException
+	{
+	  if (this.bpd != null)
+	    return this.bpd;
+	  
+	  Dauerauftrag auftrag = (Dauerauftrag) this.getTransfer();
+	  if (auftrag.isActive())
+      this.bpd = DBPropertyUtil.getBPD(auftrag.getKonto(),DBPropertyUtil.BPD_QUERY_DAUER_EDIT);
+	  else
+	    this.bpd = new TypedProperties(); // Der Auftrag ist noch nicht aktiv - dann gibt es noch keine Einschraenkungen
+	  
+	  return this.bpd;
 	}
 
 	/**
@@ -122,11 +146,19 @@ public class DauerauftragControl extends AbstractTransferControl {
 			}
 		});
 
-		Turnus t = ((Dauerauftrag)getTransfer()).getTurnus();
+		Dauerauftrag da = (Dauerauftrag) getTransfer();
+		Turnus t = da.getTurnus();
 		turnus = new DialogInput(t == null ? "" : t.getBezeichnung(),td);
 		turnus.setValue(t);
-		turnus.disableClientControl();
     turnus.setMandatory(true);
+    
+    if (da.isActive())
+    {
+      boolean changable = getBPD().getBoolean("turnuseditable",true) && getBPD().getBoolean("timeuniteditable",true);
+      turnus.setEnabled(changable);
+    }
+    
+    turnus.disableClientControl(); // Client-Control generell deaktivieren - auch wenn Aenderungen erlaubt sind
 		return turnus;
 	}
 
@@ -167,6 +199,10 @@ public class DauerauftragControl extends AbstractTransferControl {
     ersteZahlung.setText(i18n.tr("Bitte geben Sie das Datum der ersten Zahlung ein"));
     ersteZahlung.setMandatory(true);
     ersteZahlung.addListener(this.nextDate);
+    
+    if (t.isActive())
+      ersteZahlung.setEnabled(getBPD().getBoolean("firstexeceditable",true));
+    
     this.nextDate.handleEvent(null); // einmal ausloesen fuer initialen Text
 		return ersteZahlung;
 	}
@@ -181,7 +217,8 @@ public class DauerauftragControl extends AbstractTransferControl {
 		if (letzteZahlung != null)
 			return letzteZahlung;
 
-    Date d = ((Dauerauftrag)getTransfer()).getLetzteZahlung();
+		Dauerauftrag t = (Dauerauftrag) getTransfer();
+    Date d = t.getLetzteZahlung();
 
     letzteZahlung = new DateInput(d,HBCI.DATEFORMAT);
     letzteZahlung.setComment("");
@@ -195,43 +232,12 @@ public class DauerauftragControl extends AbstractTransferControl {
       }
     
     });
+
+    if (t.isActive())
+      letzteZahlung.setEnabled(getBPD().getBoolean("lastexeceditable",true));
+    
     return letzteZahlung;
 	}
-
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#handleStore()
-   */
-  public synchronized boolean handleStore()
-  {
-  	try
-  	{
-			Dauerauftrag d = (Dauerauftrag) getTransfer();
-			d.setErsteZahlung((Date)getErsteZahlung().getValue());
-			d.setLetzteZahlung((Date)getLetzteZahlung().getValue());
-			d.setTurnus((Turnus)getTurnus().getValue());
-      TextSchluessel s = (TextSchluessel) getTextSchluessel().getValue();
-      d.setTextSchluessel(s == null ? null : s.getCode());
-			return super.handleStore();
-  	}
-  	catch (RemoteException e)
-  	{
-  		Logger.error("error while saving dauerauftrag",e);
-  		GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern des Dauerauftrages"));
-  	}
-  	return false;
-  }
-
-  /**
-   * Ueberschreiben wir, um die Auswahl des Kontos zu verbieten, wenn der Dauerauftrag
-   * schon aktiv ist.
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getKontoAuswahl()
-   */
-  public Input getKontoAuswahl() throws RemoteException
-  {
-    Input i = super.getKontoAuswahl();
-    i.setEnabled(!((Dauerauftrag)getTransfer()).isActive());
-    return i;
-  }
 
   /**
    * Liefert ein Auswahlfeld fuer den Textschluessel.
@@ -243,9 +249,128 @@ public class DauerauftragControl extends AbstractTransferControl {
     if (textschluessel != null)
       return textschluessel;
 
-    textschluessel = new SelectInput(TextSchluessel.get(TextSchluessel.SET_DAUER),TextSchluessel.get(((Dauerauftrag)getTransfer()).getTextSchluessel()));
+    Dauerauftrag t = (Dauerauftrag) getTransfer();
+
+    textschluessel = new SelectInput(TextSchluessel.get(TextSchluessel.SET_DAUER),TextSchluessel.get(t.getTextSchluessel()));
+    
+    if (t.isActive())
+      textschluessel.setEnabled(getBPD().getBoolean("keyeditable",true));
+    
     return textschluessel;
   }
+
+  /**
+   * Ueberschreiben wir, um die Auswahl des Kontos zu verbieten, wenn der Dauerauftrag schon aktiv ist.
+   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getKontoAuswahl()
+   */
+  public Input getKontoAuswahl() throws RemoteException
+  {
+    Input i = super.getKontoAuswahl();
+    i.setEnabled(!((Dauerauftrag)getTransfer()).isActive());
+    return i;
+  }
+
+
+  /**
+   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getBetrag()
+   */
+  public Input getBetrag() throws RemoteException
+  {
+    Input i = super.getBetrag();
+    Dauerauftrag t = (Dauerauftrag) getTransfer();
+    if (t.isActive())
+      i.setEnabled(getBPD().getBoolean("valueeditable",true));
+    
+    return i;
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getEmpfaengerName()
+   */
+  public AddressInput getEmpfaengerName() throws RemoteException
+  {
+    AddressInput i = super.getEmpfaengerName();
+    Dauerauftrag t = (Dauerauftrag) getTransfer();
+    if (t.isActive())
+    {
+      boolean changable = getBPD().getBoolean("recnameeditable",true) && getBPD().getBoolean("recktoeditable",true);
+      i.setEnabled(changable);
+    }
+    return i;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getEmpfaengerKonto()
+   */
+  public TextInput getEmpfaengerKonto() throws RemoteException
+  {
+    TextInput i = super.getEmpfaengerKonto();
+    Dauerauftrag t = (Dauerauftrag) getTransfer();
+    if (t.isActive())
+      i.setEnabled(getBPD().getBoolean("recktoeditable",true));
+    return i;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getEmpfaengerBlz()
+   */
+  public TextInput getEmpfaengerBlz() throws RemoteException
+  {
+    TextInput i = super.getEmpfaengerBlz();
+    Dauerauftrag t = (Dauerauftrag) getTransfer();
+    if (t.isActive())
+      i.setEnabled(getBPD().getBoolean("recktoeditable",true));
+    return i;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getZweck()
+   */
+  public TextInput getZweck() throws RemoteException
+  {
+    TextInput i = super.getZweck();
+    Dauerauftrag t = (Dauerauftrag) getTransfer();
+    if (t.isActive())
+      i.setEnabled(getBPD().getBoolean("usageeditable",true));
+    return i;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getZweck2()
+   */
+  public DialogInput getZweck2() throws RemoteException
+  {
+    DialogInput i = super.getZweck2();
+    Dauerauftrag t = (Dauerauftrag) getTransfer();
+    if (t.isActive())
+      i.setEnabled(getBPD().getBoolean("usageeditable",true));
+    return i;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#handleStore()
+   */
+  public synchronized boolean handleStore()
+  {
+    try
+    {
+      Dauerauftrag d = (Dauerauftrag) getTransfer();
+      d.setErsteZahlung((Date)getErsteZahlung().getValue());
+      d.setLetzteZahlung((Date)getLetzteZahlung().getValue());
+      d.setTurnus((Turnus)getTurnus().getValue());
+      TextSchluessel s = (TextSchluessel) getTextSchluessel().getValue();
+      d.setTextSchluessel(s == null ? null : s.getCode());
+      return super.handleStore();
+    }
+    catch (RemoteException e)
+    {
+      Logger.error("error while saving dauerauftrag",e);
+      GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern des Dauerauftrages"));
+    }
+    return false;
+  }
+
+  
   /**
    * Listener, der das Datum der naechsten Zahlung aktualisiert.
    */
@@ -280,7 +405,12 @@ public class DauerauftragControl extends AbstractTransferControl {
 
 /**********************************************************************
  * $Log: DauerauftragControl.java,v $
- * Revision 1.33  2011/05/10 11:41:30  willuhn
+ * Revision 1.34  2011/08/10 10:46:50  willuhn
+ * @N Aenderungen nur an den DA-Eigenschaften zulassen, die gemaess BPD aenderbar sind
+ * @R AccountUtil entfernt, Code nach VerwendungszweckUtil verschoben
+ * @N Neue Abfrage-Funktion in DBPropertyUtil, um die BPD-Parameter zu Geschaeftsvorfaellen bequemer abfragen zu koennen
+ *
+ * Revision 1.33  2011-05-10 11:41:30  willuhn
  * @N Text-Schluessel als Konstanten definiert - Teil aus dem Patch von Thomas vom 07.12.2010
  *
  * Revision 1.32  2011-04-11 16:48:33  willuhn

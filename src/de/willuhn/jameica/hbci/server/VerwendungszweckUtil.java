@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/VerwendungszweckUtil.java,v $
- * $Revision: 1.9 $
- * $Date: 2011/06/07 10:07:50 $
+ * $Revision: 1.10 $
+ * $Date: 2011/08/10 10:46:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,8 +17,17 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
+import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.SammelTransfer;
+import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.hbci.rmi.Transfer;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.util.ApplicationException;
+import de.willuhn.util.I18N;
+import de.willuhn.util.TypedProperties;
 
 
 
@@ -194,12 +203,78 @@ public class VerwendungszweckUtil
     
     return result;
   }
+
+  /**
+   * Liefert die maximale Anzahl von Verwendungszwecken fuer Ueberweisungen.
+   * @param konto das Konto
+   * @return Maximale Anzahl der Zeilen.
+   * @throws RemoteException
+   */
+  public final static int getMaxUsageUeb(Konto konto) throws RemoteException
+  {
+    TypedProperties bpd = DBPropertyUtil.getBPD(konto,DBPropertyUtil.BPD_QUERY_UEB);
+    return bpd.getInt("maxusage",HBCIProperties.HBCI_TRANSFER_USAGE_MAXNUM);
+  }
+
+  /**
+   * Prueft, ob die Anzahl der Verwendungszwecke nicht die Maximal-Anzahl aus den BPD uebersteigt.
+   * @param transfer der zu testende Transfer.
+   * @throws RemoteException
+   * @throws ApplicationException
+   */
+  public static void checkMaxUsage(HibiscusTransfer transfer) throws RemoteException, ApplicationException
+  {
+    if (transfer == null)
+      return;
+    
+    VerwendungszweckUtil.checkMaxUsage(transfer.getKonto(),transfer.getWeitereVerwendungszwecke());
+  }
+
+  /**
+   * Prueft, ob die Anzahl der Verwendungszwecke nicht die Maximal-Anzahl aus den BPD uebersteigt.
+   * @param buchung die zu testende Buchung.
+   * @throws RemoteException
+   * @throws ApplicationException
+   */
+  public static void checkMaxUsage(SammelTransferBuchung buchung) throws RemoteException, ApplicationException
+  {
+    if (buchung == null)
+      return;
+    
+    SammelTransfer t = buchung.getSammelTransfer();
+    VerwendungszweckUtil.checkMaxUsage(t == null ? null : t.getKonto(),buchung.getWeitereVerwendungszwecke());
+  }
+
+  /**
+   * Prueft, ob die Anzahl der Verwendungszwecke nicht die Maximal-Anzahl aus den BPD uebersteigt.
+   * @param transfer der zu testende Transfer.
+   * @throws RemoteException
+   * @throws ApplicationException
+   */
+  static void checkMaxUsage(Konto konto, String[] lines) throws RemoteException, ApplicationException
+  {
+    if (lines == null || lines.length == 0)
+      return;
+    
+    // "2" sind die ersten beiden Zeilen, die bei getWeitereVerwendungszwecke nicht mitgeliefert werden
+    int allowed = VerwendungszweckUtil.getMaxUsageUeb(konto);
+    if ((lines.length + 2) > allowed)
+    {
+      I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+      throw new ApplicationException(i18n.tr("Zuviele Verwendungszweck-Zeilen. Maximal erlaubt: {0}",String.valueOf(allowed)));
+    }
+  }
 }
 
 
 /*********************************************************************
  * $Log: VerwendungszweckUtil.java,v $
- * Revision 1.9  2011/06/07 10:07:50  willuhn
+ * Revision 1.10  2011/08/10 10:46:50  willuhn
+ * @N Aenderungen nur an den DA-Eigenschaften zulassen, die gemaess BPD aenderbar sind
+ * @R AccountUtil entfernt, Code nach VerwendungszweckUtil verschoben
+ * @N Neue Abfrage-Funktion in DBPropertyUtil, um die BPD-Parameter zu Geschaeftsvorfaellen bequemer abfragen zu koennen
+ *
+ * Revision 1.9  2011-06-07 10:07:50  willuhn
  * @C Verwendungszweck-Handling vereinheitlicht/vereinfacht - geht jetzt fast ueberall ueber VerwendungszweckUtil
  *
  * Revision 1.8  2011-05-11 09:12:07  willuhn

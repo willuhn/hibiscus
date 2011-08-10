@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractSammelTransferBuchungImpl.java,v $
- * $Revision: 1.20 $
- * $Date: 2011/07/11 08:14:13 $
+ * $Revision: 1.21 $
+ * $Date: 2011/08/10 10:46:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -94,7 +94,7 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
       HBCIProperties.checkChars(getZweck(), HBCIProperties.HBCI_DTAUS_VALIDCHARS);
       HBCIProperties.checkChars(getZweck2(), HBCIProperties.HBCI_DTAUS_VALIDCHARS);
       
-      AccountUtil.checkMaxUsage(this);
+      VerwendungszweckUtil.checkMaxUsage(this);
     }
     catch (RemoteException e)
     {
@@ -273,7 +273,12 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractDBObject
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferBuchungImpl.java,v $
- * Revision 1.20  2011/07/11 08:14:13  willuhn
+ * Revision 1.21  2011/08/10 10:46:50  willuhn
+ * @N Aenderungen nur an den DA-Eigenschaften zulassen, die gemaess BPD aenderbar sind
+ * @R AccountUtil entfernt, Code nach VerwendungszweckUtil verschoben
+ * @N Neue Abfrage-Funktion in DBPropertyUtil, um die BPD-Parameter zu Geschaeftsvorfaellen bequemer abfragen zu koennen
+ *
+ * Revision 1.20  2011-07-11 08:14:13  willuhn
  * @B Laengen-Pruefung der BLZ fehlte
  *
  * Revision 1.19  2010/03/04 09:39:40  willuhn

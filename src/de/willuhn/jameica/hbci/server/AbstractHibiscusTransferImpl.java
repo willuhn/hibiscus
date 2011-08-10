@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractHibiscusTransferImpl.java,v $
- * $Revision: 1.17 $
- * $Date: 2010/08/30 14:25:37 $
+ * $Revision: 1.18 $
+ * $Date: 2011/08/10 10:46:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -102,7 +102,7 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractDBObject impl
 			HBCIProperties.checkChars(getZweck(), HBCIProperties.HBCI_DTAUS_VALIDCHARS);
       HBCIProperties.checkChars(getZweck2(), HBCIProperties.HBCI_DTAUS_VALIDCHARS);
       
-      AccountUtil.checkMaxUsage(this);
+      VerwendungszweckUtil.checkMaxUsage(this);
   	}
   	catch (RemoteException e)
   	{
@@ -385,7 +385,12 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractDBObject impl
 
 /**********************************************************************
  * $Log: AbstractHibiscusTransferImpl.java,v $
- * Revision 1.17  2010/08/30 14:25:37  willuhn
+ * Revision 1.18  2011/08/10 10:46:50  willuhn
+ * @N Aenderungen nur an den DA-Eigenschaften zulassen, die gemaess BPD aenderbar sind
+ * @R AccountUtil entfernt, Code nach VerwendungszweckUtil verschoben
+ * @N Neue Abfrage-Funktion in DBPropertyUtil, um die BPD-Parameter zu Geschaeftsvorfaellen bequemer abfragen zu koennen
+ *
+ * Revision 1.17  2010-08-30 14:25:37  willuhn
  * @B NPE, wenn Konto angegeben, jedoch ohne ID
  *
  * Revision 1.16  2010-08-27 09:24:58  willuhn

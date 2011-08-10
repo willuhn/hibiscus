@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/ErweiterteVerwendungszwecke.java,v $
- * $Revision: 1.7 $
- * $Date: 2011/06/01 21:19:16 $
+ * $Revision: 1.8 $
+ * $Date: 2011/08/10 10:46:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -33,7 +33,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.hbci.rmi.Terminable;
-import de.willuhn.jameica.hbci.server.AccountUtil;
+import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.Settings;
 import de.willuhn.util.ApplicationException;
@@ -86,7 +86,7 @@ public class ErweiterteVerwendungszwecke implements Part
   {
     this.fields.clear();
 
-    final int maxusage = AccountUtil.getMaxUsageUeb(konto);
+    final int maxusage = VerwendungszweckUtil.getMaxUsageUeb(konto);
 
     Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
     int size = settings.getInt("transfertype.usagelist.size",5);
@@ -180,7 +180,12 @@ public class ErweiterteVerwendungszwecke implements Part
 
 /**********************************************************************
  * $Log: ErweiterteVerwendungszwecke.java,v $
- * Revision 1.7  2011/06/01 21:19:16  willuhn
+ * Revision 1.8  2011/08/10 10:46:50  willuhn
+ * @N Aenderungen nur an den DA-Eigenschaften zulassen, die gemaess BPD aenderbar sind
+ * @R AccountUtil entfernt, Code nach VerwendungszweckUtil verschoben
+ * @N Neue Abfrage-Funktion in DBPropertyUtil, um die BPD-Parameter zu Geschaeftsvorfaellen bequemer abfragen zu koennen
+ *
+ * Revision 1.7  2011-06-01 21:19:16  willuhn
  * @B Scroll-Fixes
  *
  * Revision 1.6  2011-04-29 12:25:36  willuhn
