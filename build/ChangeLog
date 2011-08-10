@@ -1,5 +1,6 @@
 HEAD
 
+  * NEW: 0124 Aenderungen nur an den DA-Eigenschaften zulassen, die gemaess BPD aenderbar sind
   * CHG: 0123 Adressbuch-Details: Bei nicht-aenderbaren Adressen Buttons (Speichern+Loeschen)
               zwar einblenden aber readonly machen - irritiert nicht so wie komplett fehlende Buttons
   * BUG: 0122 BUGZILLA 1115 - Menu-Extension wurde nicht deregistriert
