@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SammelUeberweisungControl.java,v $
- * $Revision: 1.8 $
- * $Date: 2011/04/11 16:48:33 $
+ * $Revision: 1.9 $
+ * $Date: 2011/08/10 12:47:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,21 +14,18 @@ import java.rmi.RemoteException;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
+import de.willuhn.jameica.gui.parts.CheckedSingleContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.gui.parts.TablePart;
-import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.action.SammelTransferBuchungDelete;
 import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungBuchungNew;
 import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungNew;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungNew;
 import de.willuhn.jameica.hbci.gui.parts.SammelTransferBuchungList;
 import de.willuhn.jameica.hbci.gui.parts.SammelUeberweisungList;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
-import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
-import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -96,60 +93,10 @@ public class SammelUeberweisungControl extends AbstractSammelTransferControl
     this.buchungen = new SammelTransferBuchungList(getTransfer(),a);
 
     ContextMenu ctx = new ContextMenu();
-    ctx.addItem(new CheckedContextMenuItem(i18n.tr("Buchung öffnen"), new SammelUeberweisungBuchungNew(),"document-open.png"));
-    ctx.addItem(new NotActiveMenuItem(i18n.tr("Buchung löschen..."), new Action() {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        new SammelTransferBuchungDelete().handleAction(context);
-        try
-        {
-          getSumme().setValue(HBCI.DECIMALFORMAT.format(getTransfer().getSumme()));
-        }
-        catch (RemoteException e)
-        {
-          Logger.error("unable to refresh summary",e);
-        }
-      }
-    },"user-trash-full.png"));
+    ctx.addItem(new CheckedSingleContextMenuItem(i18n.tr("Buchung öffnen"), new SammelUeberweisungBuchungNew(),"document-open.png"));
+    ctx.addItem(new DeleteMenuItem());
     ctx.addItem(ContextMenuItem.SEPARATOR);
-    ctx.addItem(new ContextMenuItem(i18n.tr("Neue Buchung..."),new Action() {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        if (handleStore())
-        {
-          try
-          {
-            new SammelUeberweisungBuchungNew().handleAction(getTransfer());
-          }
-          catch (RemoteException e)
-          {
-            Logger.error("unable to load sammelueberweisung",e);
-            throw new ApplicationException(i18n.tr("Fehler beim Laden der Sammel-Überweisung"));
-          }
-        }
-      }
-    },"text-x-generic.png")
-    {
-      /**
-       * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
-       */
-      public boolean isEnabledFor(Object o)
-      {
-        if (o == null)
-          return true;
-        try
-        {
-          SammelTransferBuchung u = (SammelTransferBuchung) o;
-          return !u.getSammelTransfer().ausgefuehrt();
-        }
-        catch (Exception e)
-        {
-          Logger.error("error while enable check in menu item",e);
-        }
-        return false;
-      }
-      
-    });
+    ctx.addItem(new CreateMenuItem(new SammelUeberweisungBuchungNew()));
     ctx.addItem(ContextMenuItem.SEPARATOR);
     ctx.addItem(new CheckedContextMenuItem(i18n.tr("In Einzelüberweisung duplizieren"), new UeberweisungNew(),"stock_next.png"));
     this.buchungen.setContextMenu(ctx);
@@ -159,7 +106,10 @@ public class SammelUeberweisungControl extends AbstractSammelTransferControl
 
 /*****************************************************************************
  * $Log: SammelUeberweisungControl.java,v $
- * Revision 1.8  2011/04/11 16:48:33  willuhn
+ * Revision 1.9  2011/08/10 12:47:28  willuhn
+ * @N BUGZILLA 1118
+ *
+ * Revision 1.8  2011-04-11 16:48:33  willuhn
  * @N Drucken von Sammel- und Dauerauftraegen
  *
  * Revision 1.7  2010-12-13 11:01:08  willuhn

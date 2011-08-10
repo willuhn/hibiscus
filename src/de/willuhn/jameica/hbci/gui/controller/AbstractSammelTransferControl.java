@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractSammelTransferControl.java,v $
- * $Revision: 1.12 $
- * $Date: 2011/05/20 16:22:31 $
+ * $Revision: 1.13 $
+ * $Date: 2011/08/10 12:47:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,15 +21,16 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.TextInput;
+import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.gui.input.TerminInput;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
-import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
@@ -203,25 +204,33 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
   }
 
   /**
-   * Ueberschreiben wir, damit das Item nur dann aktiv ist, wenn der
-   * Auftrag noch nicht ausgefuehrt wurde.
+   * Contextmenu-Item zum Loeschen von Buchungen.
    */
-  class NotActiveMenuItem extends ContextMenuItem
+  class DeleteMenuItem extends CheckedContextMenuItem
   {
-    
     /**
      * ct.
-     * @param text anzuzeigender Text.
-     * @param a auszufuehrende Action.
-     * @param icon das Icon des Menueintrages.
      */
-    public NotActiveMenuItem(String text, Action a, String icon)
+    public DeleteMenuItem()
     {
-      super(text, a, icon);
+      super(i18n.tr("Buchung(en) löschen..."),new Action() {
+        public void handleAction(Object context) throws ApplicationException
+        {
+          new DBObjectDelete().handleAction(context);
+          try
+          {
+            getSumme().setValue(HBCI.DECIMALFORMAT.format(getTransfer().getSumme()));
+          }
+          catch (RemoteException e)
+          {
+            Logger.error("unable to refresh summary",e);
+          }
+        }
+      }, "user-trash-full.png");
     }
     
     /**
-     * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
+     * @see de.willuhn.jameica.gui.parts.CheckedContextMenuItem#isEnabledFor(java.lang.Object)
      */
     public boolean isEnabledFor(Object o)
     {
@@ -229,12 +238,58 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
         return false;
       try
       {
-        SammelTransferBuchung u = (SammelTransferBuchung) o;
-        return !u.getSammelTransfer().ausgefuehrt();
+        return !getTransfer().ausgefuehrt() && super.isEnabledFor(o);
       }
       catch (Exception e)
       {
-        Logger.error("error while enable check in menu item",e);
+        Logger.error("error while checking menu item",e);
+      }
+      return false;
+    }
+  }
+  
+  /**
+   * Contextmenu-Item zum Erstellen einer Buchung.
+   */
+  class CreateMenuItem extends ContextMenuItem
+  {
+    /**
+     * ct.
+     * @param action
+     */
+    public CreateMenuItem(final Action action)
+    {
+      super(i18n.tr("Neue Buchung..."),new Action() {
+        public void handleAction(Object context) throws ApplicationException
+        {
+          if (handleStore())
+          {
+            try
+            {
+              action.handleAction(getTransfer());
+            }
+            catch (RemoteException e)
+            {
+              Logger.error("unable to load sammelueberweisung",e);
+              throw new ApplicationException(i18n.tr("Fehler beim Laden der Sammel-Überweisung"));
+            }
+          }
+        }
+      },"text-x-generic.png");
+    }
+    
+    /**
+     * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
+     */
+    public boolean isEnabledFor(Object o)
+    {
+      try
+      {
+        return !getTransfer().ausgefuehrt() && super.isEnabledFor(o);
+      }
+      catch (Exception e)
+      {
+        Logger.error("error while checking menu item",e);
       }
       return false;
     }
@@ -246,7 +301,10 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferControl.java,v $
- * Revision 1.12  2011/05/20 16:22:31  willuhn
+ * Revision 1.13  2011/08/10 12:47:28  willuhn
+ * @N BUGZILLA 1118
+ *
+ * Revision 1.12  2011-05-20 16:22:31  willuhn
  * @N Termin-Eingabefeld in eigene Klasse ausgelagert (verhindert duplizierten Code) - bessere Kommentare
  *
  * Revision 1.11  2010-12-13 11:01:08  willuhn

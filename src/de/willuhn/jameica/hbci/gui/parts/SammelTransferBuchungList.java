@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SammelTransferBuchungList.java,v $
- * $Revision: 1.9 $
- * $Date: 2011/04/29 15:33:28 $
+ * $Revision: 1.10 $
+ * $Date: 2011/08/10 12:47:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -171,6 +171,7 @@ public class SammelTransferBuchungList extends TablePart
     
     setRememberColWidths(true);
     setRememberOrder(true);
+    setMulti(true); // BUGZILLA 1118
     // Wir erstellen noch einen Message-Consumer, damit wir ueber neu eintreffende
     // Buchungen informiert werden.
     this.mc = new STMessageConsumer();
@@ -255,7 +256,10 @@ public class SammelTransferBuchungList extends TablePart
 
 /*********************************************************************
  * $Log: SammelTransferBuchungList.java,v $
- * Revision 1.9  2011/04/29 15:33:28  willuhn
+ * Revision 1.10  2011/08/10 12:47:28  willuhn
+ * @N BUGZILLA 1118
+ *
+ * Revision 1.9  2011-04-29 15:33:28  willuhn
  * @N Neue Spalte "ausgefuehrt_am", in der das tatsaechliche Ausfuehrungsdatum von Auftraegen vermerkt wird
  *
  * Revision 1.8  2008/10/12 22:10:20  willuhn

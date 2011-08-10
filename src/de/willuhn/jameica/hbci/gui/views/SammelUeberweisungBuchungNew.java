@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/SammelUeberweisungBuchungNew.java,v $
- * $Revision: 1.10 $
- * $Date: 2011/04/08 15:19:14 $
+ * $Revision: 1.11 $
+ * $Date: 2011/08/10 12:47:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,7 @@ import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.SammelTransferBuchungDelete;
+import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.controller.SammelUeberweisungBuchungControl;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.system.Application;
@@ -61,7 +61,7 @@ public class SammelUeberweisungBuchungNew extends AbstractView
 
 		ButtonArea buttonArea = new ButtonArea();
     
-    Button delete = new Button(i18n.tr("Löschen"), new SammelTransferBuchungDelete(),control.getBuchung(),false,"user-trash-full.png");
+    Button delete = new Button(i18n.tr("Löschen"), new DBObjectDelete(),control.getBuchung(),false,"user-trash-full.png");
     delete.setEnabled(!l.ausgefuehrt());
     buttonArea.addButton(delete);
 
@@ -89,7 +89,10 @@ public class SammelUeberweisungBuchungNew extends AbstractView
 
 /**********************************************************************
  * $Log: SammelUeberweisungBuchungNew.java,v $
- * Revision 1.10  2011/04/08 15:19:14  willuhn
+ * Revision 1.11  2011/08/10 12:47:28  willuhn
+ * @N BUGZILLA 1118
+ *
+ * Revision 1.10  2011-04-08 15:19:14  willuhn
  * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
  * @C Code-Cleanup
  *
