@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.78 $
- * $Date: 2011/08/05 11:21:58 $
+ * $Revision: 1.79 $
+ * $Date: 2011/08/11 08:16:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -44,7 +44,6 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.View;
 import de.willuhn.jameica.gui.extension.Extendable;
 import de.willuhn.jameica.gui.extension.ExtensionRegistry;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
@@ -52,7 +51,6 @@ import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.input.ButtonInput;
 import de.willuhn.jameica.gui.input.CheckboxInput;
-import de.willuhn.jameica.gui.parts.Panel;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.DelayedListener;
@@ -107,9 +105,6 @@ public class UmsatzList extends TablePart implements Extendable
   
   private boolean disposed          = false;
   
-  private UmsatzPreview preview     = null;
-  private boolean usePreview        = false;
-
   /**
    * @param konto
    * @param action
@@ -223,61 +218,6 @@ public class UmsatzList extends TablePart implements Extendable
       }
     });
     
-    if (this.usePreview)
-    {
-      this.addSelectionListener(new Listener() {
-        public void handleEvent(Event event)
-        {
-          Object selection = event.data;
-          
-          final View view = GUI.getView();
-
-          if (view.snappedIn())
-            view.snapOut();
-
-          // Wenn keiner oder mehrere markiert wurden, dann ausblenden
-          if (selection == null || (selection instanceof Object[]))
-            return;
-
-          Umsatz umsatz = (Umsatz) selection;
-          getPreview().setUmsatz(umsatz);
-          
-          try
-          {
-            String z      = umsatz.getZweck();
-            double betrag = umsatz.getBetrag();
-            String curr   = umsatz.getKonto().getWaehrung();
-            if (curr == null)
-              curr = HBCIProperties.CURRENCY_DEFAULT_DE;
-
-            String title = null;
-            if (z != null && z.trim().length() > 0)
-              title = i18n.tr("Umsatz-Details: {0} {1} ({2})",HBCI.DECIMALFORMAT.format(betrag),curr,z);
-            else
-              title = i18n.tr("Umsatz-Details: {0} {1}",HBCI.DECIMALFORMAT.format(betrag),curr);
-            
-            Panel panel = new Panel(title,getPreview(), false);
-            
-            panel.addMinimizeListener(new Listener()
-            {
-              public void handleEvent(Event event)
-              {
-                view.snapOut();
-              }
-            });
-            
-            panel.paint(view.getSnapin());
-            view.snapIn();
-          }
-          catch (RemoteException re)
-          {
-            Logger.error("unable to show snapin",re);
-            Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler: {0}",re.getMessage()),StatusBarMessage.TYPE_ERROR));
-          }
-        }
-      });
-    }
-    
     // Wir geben die Tabelle jetzt noch zur Erweiterung frei.
     ExtensionRegistry.extend(this);
   }
@@ -289,15 +229,6 @@ public class UmsatzList extends TablePart implements Extendable
   public void setFilterVisible(boolean visible)
   {
     this.filter = visible;
-  }
-  
-  /**
-   * Legt fest, ob die Umsatz-Vorschau angezeigt werden soll.
-   * @param visible true, wenn die Vorschau angezeigt werden soll. Default: false.
-   */
-  public void setPreviewVisible(boolean visible)
-  {
-    this.usePreview = visible;
   }
   
   /**
@@ -358,9 +289,6 @@ public class UmsatzList extends TablePart implements Extendable
         Application.getMessagingFactory().unRegisterMessageConsumer(mcChanged);
         Application.getMessagingFactory().unRegisterMessageConsumer(mcNew);
         
-        if (GUI.getView().snappedIn())
-          GUI.getView().snapOut();
-
         // Fuer den Fall, dass wir verlassen worden, bevor das letzte Aktualisierungstimeout
         // ausgelaufen war. Das wuerde sonst ausgeloest werden, obwohl die Widgets alle disposed sind
         if (kl != null && kl.timeout != null)
@@ -420,16 +348,6 @@ public class UmsatzList extends TablePart implements Extendable
     restoreState();
   }
 
-  /**
-   * Liefert eine Preview fuer den Umsatz.
-   * @return Preview.
-   */
-  private UmsatzPreview getPreview()
-  {
-    if (this.preview == null)
-      this.preview = new UmsatzPreview();
-    return this.preview;
-  }
 
   /**
    * Hilfsklasse fuer das Suchfeld.
@@ -909,7 +827,10 @@ public class UmsatzList extends TablePart implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
- * Revision 1.78  2011/08/05 11:21:58  willuhn
+ * Revision 1.79  2011/08/11 08:16:38  willuhn
+ * @R Umsatz-Preview erstmal wieder entfernt
+ *
+ * Revision 1.78  2011-08-05 11:21:58  willuhn
  * @N Erster Code fuer eine Umsatz-Preview
  * @C Compiler-Warnings
  * @N DateFromInput/DateToInput - damit sind die Felder fuer den Zeitraum jetzt ueberall einheitlich
