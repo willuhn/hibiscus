@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/BarChart.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/11/24 16:27:17 $
+ * $Revision: 1.2 $
+ * $Date: 2011/08/28 20:47:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -169,6 +169,7 @@ public class BarChart extends AbstractChart
       
       ISeriesLabel label = barSeries.getLabel();
       label.setFont(Font.SMALL.getSWTFont());
+      label.setFormat(HBCI.DECIMALFORMAT.toPattern()); // BUGZILLA 1123
       label.setForeground(GUI.getDisplay().getSystemColor(SWT.COLOR_WHITE));
       label.setVisible(true);
       //
@@ -217,7 +218,10 @@ public class BarChart extends AbstractChart
 
 /*********************************************************************
  * $Log: BarChart.java,v $
- * Revision 1.1  2010/11/24 16:27:17  willuhn
+ * Revision 1.2  2011/08/28 20:47:56  willuhn
+ * @B BUGZILLA 1123
+ *
+ * Revision 1.1  2010-11-24 16:27:17  willuhn
  * @R Eclipse BIRT komplett rausgeworden. Diese unsaegliche Monster ;)
  * @N Stattdessen verwenden wir jetzt SWTChart (http://www.swtchart.org). Das ist statt den 6MB von BIRT sagenhafte 250k gross
  *
