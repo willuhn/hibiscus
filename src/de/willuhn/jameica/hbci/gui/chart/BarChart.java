@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/BarChart.java,v $
- * $Revision: 1.2 $
- * $Date: 2011/08/28 20:47:56 $
+ * $Revision: 1.3 $
+ * $Date: 2011/08/29 08:04:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -53,7 +53,7 @@ public class BarChart extends AbstractChart
   public void redraw() throws RemoteException
   {
     // redraw ohne paint() Weia ;)
-    if (this.comp == null)
+    if (this.comp == null || this.comp.isDisposed())
       return;
 
     // Cleanup
@@ -218,7 +218,11 @@ public class BarChart extends AbstractChart
 
 /*********************************************************************
  * $Log: BarChart.java,v $
- * Revision 1.2  2011/08/28 20:47:56  willuhn
+ * Revision 1.3  2011/08/29 08:04:58  willuhn
+ * @B Dispose-Check fehlte
+ * @N Umsatzverteilung verzoegert neu berechnen - der Schieberegler hakelt sonst
+ *
+ * Revision 1.2  2011-08-28 20:47:56  willuhn
  * @B BUGZILLA 1123
  *
  * Revision 1.1  2010-11-24 16:27:17  willuhn

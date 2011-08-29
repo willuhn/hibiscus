@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTypChart.java,v $
- * $Revision: 1.11 $
- * $Date: 2011/05/03 10:13:15 $
+ * $Revision: 1.12 $
+ * $Date: 2011/08/29 08:04:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Listener;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.chart.BarChart;
@@ -83,7 +84,7 @@ public class UmsatzTypChart implements Part
       ausgaben.addData(aData);
 
       final UmsatzDaysInput i = new UmsatzDaysInput();
-      i.addListener(new Listener()
+      i.addListener(new DelayedListener(300, new Listener()
       {
         private ChartData myEData = null;
         private ChartData myAData = null;
@@ -125,7 +126,7 @@ public class UmsatzTypChart implements Part
             GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Aktualisieren der Umsatzverteilung"));
           }
         }
-      });
+      }));
 
 
       group.addInput(i);
@@ -160,7 +161,11 @@ public class UmsatzTypChart implements Part
 
 /*********************************************************************
  * $Log: UmsatzTypChart.java,v $
- * Revision 1.11  2011/05/03 10:13:15  willuhn
+ * Revision 1.12  2011/08/29 08:04:58  willuhn
+ * @B Dispose-Check fehlte
+ * @N Umsatzverteilung verzoegert neu berechnen - der Schieberegler hakelt sonst
+ *
+ * Revision 1.11  2011-05-03 10:13:15  willuhn
  * @R Hintergrund-Farbe nicht mehr explizit setzen. Erzeugt auf Windows und insb. Mac teilweise unschoene Effekte. Besonders innerhalb von Label-Groups, die auf Windows/Mac andere Hintergrund-Farben verwenden als der Default-Hintergrund
  *
  * Revision 1.10  2010-11-24 16:27:18  willuhn
