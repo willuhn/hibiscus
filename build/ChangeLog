@@ -1,5 +1,6 @@
 HEAD
 
+  * NEW: 0127 BUGZILLA 1125 - Vorauswahl des Kontos wurde nicht zurueckgesetzt
   * NEW: 0126 BUGZILLA 937 - Fenster mit dem Master-Passwort-Prompt jetzt APPLICATION_MODAL
   * NEW: 0125 BUGZILLA 1118 - mehrere Buchungen in einem Sammelauftrag auf einmal loeschen
   * NEW: 0124 Aenderungen nur an den DA-Eigenschaften zulassen, die gemaess BPD aenderbar sind
