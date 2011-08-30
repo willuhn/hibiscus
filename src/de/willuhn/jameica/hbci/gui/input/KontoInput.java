@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/KontoInput.java,v $
- * $Revision: 1.9 $
- * $Date: 2011/05/20 16:22:31 $
+ * $Revision: 1.10 $
+ * $Date: 2011/08/30 12:09:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.manager.HBCIUtils;
@@ -41,6 +44,8 @@ public class KontoInput extends SelectInput
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(KontoInput.class);
   private KontoListener listener = null;
+  private String token = null;
+  private Control control = null;
   
   /**
    * ct.
@@ -77,14 +82,16 @@ public class KontoInput extends SelectInput
    * vorausgewaehlt. Der Konto kann z.Bsp. "auswertungen" heissen. Wenn dieser
    * auf allen Dialogen der Auswertungen verwendet wird, wird dort dann auch ueberall
    * das gleiche Konto vorausgewaehlt sein.
-   * @param token der Restore-Token.
+   * @param s der Restore-Token.
    */
-  public void setRememberSelection(final String token)
+  public void setRememberSelection(String s)
   {
-    if (token == null || token.length() == 0)
+    if (s == null || s.length() == 0)
       return;
+    
+    this.token = s;
 
-    String id = settings.getString(token,null);
+    String id = settings.getString(this.token,null);
     if (id != null && id.length() > 0)
     {
       try
@@ -95,7 +102,7 @@ public class KontoInput extends SelectInput
       catch (Exception e)
       {
         // Konto konnte nicht geladen werden. Vorauswahl loeschen
-        settings.setAttribute(token,(String) null);
+        settings.setAttribute(this.token,(String) null);
       }
     }
     
@@ -103,20 +110,49 @@ public class KontoInput extends SelectInput
     this.addListener(new Listener() {
       public void handleEvent(Event event)
       {
-        try
-        {
-          Konto k = (Konto) getValue();
-          settings.setAttribute(token,(String) (k != null ? k.getID() : null));
-        }
-        catch (Exception e)
-        {
-          // Hier lief was schief. Wir loeschen die Vorauswahl
-          settings.setAttribute(token,(String) null);
-        }
+        storeSelection();
       }
     });
   }
   
+  /**
+   * @see de.willuhn.jameica.gui.input.SelectInput#getControl()
+   */
+  public Control getControl()
+  {
+    if (this.control != null)
+      return this.control;
+    
+    this.control = super.getControl();
+    if (this.token != null)
+    {
+      this.control.addDisposeListener(new DisposeListener() {
+        public void widgetDisposed(DisposeEvent e)
+        {
+          storeSelection();
+        }
+      });
+    }
+    return this.control;
+  }
+  
+  /**
+   * Speichert die aktuelle Auswahl.
+   */
+  private void storeSelection()
+  {
+    try
+    {
+      Konto k = (Konto) getValue();
+      settings.setAttribute(token,(String) (k != null ? k.getID() : null));
+    }
+    catch (Exception e)
+    {
+      // Hier lief was schief. Wir loeschen die Vorauswahl
+      settings.setAttribute(token,(String) null);
+    }
+  }
+
   /**
    * Initialisiert die Liste der Konten.
    * @param filter Konto-Filter.
@@ -245,7 +281,10 @@ public class KontoInput extends SelectInput
 
 /**********************************************************************
  * $Log: KontoInput.java,v $
- * Revision 1.9  2011/05/20 16:22:31  willuhn
+ * Revision 1.10  2011/08/30 12:09:40  willuhn
+ * @N BUGZILLA 1125
+ *
+ * Revision 1.9  2011-05-20 16:22:31  willuhn
  * @N Termin-Eingabefeld in eigene Klasse ausgelagert (verhindert duplizierten Code) - bessere Kommentare
  *
  * Revision 1.8  2011-05-19 08:41:53  willuhn
