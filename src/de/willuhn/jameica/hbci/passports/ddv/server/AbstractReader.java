@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/server/AbstractReader.java,v $
- * $Revision: 1.7 $
- * $Date: 2011/09/01 09:40:53 $
+ * $Revision: 1.8 $
+ * $Date: 2011/09/01 12:16:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -123,7 +123,15 @@ public abstract class AbstractReader implements Reader
   {
     return false;
   }
-  
+
+  /**
+   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#isJavaReader()
+   */
+  public boolean isJavaReader()
+  {
+    return false;
+  }
+
   /**
    * @see java.lang.Object#toString()
    */
@@ -150,7 +158,11 @@ public abstract class AbstractReader implements Reader
 
 /**********************************************************************
  * $Log: AbstractReader.java,v $
- * Revision 1.7  2011/09/01 09:40:53  willuhn
+ * Revision 1.8  2011/09/01 12:16:08  willuhn
+ * @N Kartenleser-Suche kann jetzt abgebrochen werden
+ * @N Erster Code fuer javax.smartcardio basierend auf dem OCF-Code aus HBCI4Java 2.5.8
+ *
+ * Revision 1.7  2011-09-01 09:40:53  willuhn
  * @R Biometrie-Support bei Kartenlesern entfernt - wurde nie benutzt
  *
  * Revision 1.6  2011-05-03 16:43:50  willuhn

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/DDVConfigFactory.java,v $
- * $Revision: 1.7 $
- * $Date: 2011/09/01 09:40:53 $
+ * $Revision: 1.8 $
+ * $Date: 2011/09/01 12:16:08 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -18,6 +18,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import javax.smartcardio.CardTerminal;
+import javax.smartcardio.TerminalFactory;
+
+import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.manager.HBCIUtils;
 import org.kapott.hbci.passport.AbstractHBCIPassport;
 import org.kapott.hbci.passport.HBCIPassportDDV;
@@ -31,6 +35,7 @@ import de.willuhn.jameica.hbci.passports.ddv.server.PassportHandleImpl;
 import de.willuhn.jameica.hbci.passports.ddv.server.PassportImpl;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.BackgroundTask;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.jameica.system.Platform;
 import de.willuhn.jameica.system.Settings;
@@ -162,9 +167,10 @@ public class DDVConfigFactory
   /**
    * Startet eine automatische Suche nach einem Kartenleser.
    * @param monitor ein Monitor, mit dem der Scan-Fortschritt verfolgt werden kann.
+   * @param task ueber den Task koennen wir erkennen, ob wir abbrechen sollen.
    * @return der gefundene Kartenleser oder NULL wenn keiner gefunden wurde.
    */
-  public static DDVConfig scan(ProgressMonitor monitor)
+  public static DDVConfig scan(ProgressMonitor monitor, BackgroundTask task)
   {
     // wir nehmen hier nicht die Create-Funktion, weil wir
     // sonst (wegen der UUID) mit den Scans die DDVConfig.properties
@@ -179,6 +185,9 @@ public class DDVConfigFactory
             
       for (Reader reader:list)
       {
+        if (task.isInterrupted())
+          throw new OperationCanceledException();
+        
         monitor.setStatusText(i18n.tr("Teste {0}",reader.getName()));
 
         // Testen, ob der Kartenleser ueberhaupt unterstuetzt wird
@@ -188,18 +197,21 @@ public class DDVConfigFactory
           continue;
         }
 
-        // Checken, ob der CTAPI-Treiber existiert
-        String s = reader.getCTAPIDriver();
-        if (s == null || s.length() == 0)
+        // Checken, ob der CTAPI-Treiber existiert.
+        String s = StringUtils.trimToNull(reader.getCTAPIDriver());
+        if (!reader.isJavaReader())
         {
-          monitor.log("  " + i18n.tr("überspringe Kartenleser, kein CTAPI-Treiber definiert."));
-          continue;
-        }
-        File f = new File(s);
-        if (!f.exists())
-        {
-          monitor.log("  " + i18n.tr("überspringe Kartenleser, CTAPI-Treiber {0} existiert nicht.",f.getAbsolutePath()));
-          continue;
+          if (s == null)
+          {
+            monitor.log("  " + i18n.tr("überspringe Kartenleser, kein CTAPI-Treiber definiert."));
+            continue;
+          }
+          File f = new File(s);
+          if (!f.exists())
+          {
+            monitor.log("  " + i18n.tr("überspringe Kartenleser, CTAPI-Treiber {0} existiert nicht.",f.getAbsolutePath()));
+            continue;
+          }
         }
 
         int ctNumber = reader.getCTNumber();
@@ -210,9 +222,59 @@ public class DDVConfigFactory
         temp.setCTAPIDriver(s);
         temp.setHBCIVersion("210");
 
+        // PC/SC-Kartenleser suchen
+        if (reader.isJavaReader())
+        {
+          try
+          {
+            List<CardTerminal> terminals = TerminalFactory.getDefault().terminals().list();
+            // Eigentlich koennen wir hier pauschal den ersten gefundenen nehmen
+            if (terminals != null && terminals.size() > 0)
+            {
+              CardTerminal terminal = terminals.get(0);
+              String name = terminal.getName();
+              temp.setJavaName(name);
+              PassportHandle handle = new PassportHandleImpl(temp);
+              handle.open();
+              handle.close(); // nein, nicht im finally, denn wenn das Oeffnen
+
+              // Passport liess sich oeffnen und schliessen. Dann haben
+              // wir den Kartenleser gefunden.
+              monitor.log("  " + name + " " + i18n.tr("gefunden"));
+              monitor.setStatusText(i18n.tr("OK. Kartenleser \"{0}\" gefunden",name));
+              monitor.setStatus(ProgressMonitor.STATUS_DONE);
+              monitor.setPercentComplete(100);
+              
+              // Wir kopieren die temporaere Config noch in eine richtige
+              DDVConfig config = temp.copy();
+              config.setName(name);
+              return config;
+            }
+          }
+          catch (ApplicationException ae)
+          {
+            monitor.log("  " + ae.getMessage());
+          }
+          catch (Exception e)
+          {
+            Logger.error("unable to create ddv config",e);
+          }
+          finally
+          {
+            temp.setJavaName(null); // muessen wir wieder zuruecksetzen
+          }
+          
+          // Wir haben wohl nichts via PC/SC gefunden
+          monitor.log("  " + i18n.tr("  nicht gefunden"));
+          continue;
+        }
+
         // Wir probieren alle Ports durch
         for (String port:DDVConfig.PORTS)
         {
+          if (task.isInterrupted())
+            throw new OperationCanceledException();
+          
           monitor.addPercentComplete(factor);
           monitor.log("  " + i18n.tr("Port {0}",port));
                 
@@ -249,6 +311,13 @@ public class DDVConfigFactory
       }
       monitor.setStatusText(i18n.tr("Kein Kartenleser gefunden. Bitte manuell konfigurieren"));
       monitor.setStatus(ProgressMonitor.STATUS_ERROR);
+      monitor.setPercentComplete(100);
+      return null;
+    }
+    catch (OperationCanceledException oce)
+    {
+      monitor.setStatus(ProgressMonitor.STATUS_CANCEL);
+      monitor.setStatusText(i18n.tr("Abgebrochen"));
       monitor.setPercentComplete(100);
       return null;
     }
@@ -393,28 +462,39 @@ public class DDVConfigFactory
     if (config == null)
       throw new ApplicationException(i18n.tr("Keine Konfiguration ausgewählt"));
 
-    //////////////////////////////////////////////////////////////////////////
-    // JNI-Treiber
-    String jni = getJNILib().getAbsolutePath();
-    Logger.info("  jni lib: " + jni);
-    HBCIUtils.setParam("client.passport.DDV.libname.ddv", jni);
-    //
-    //////////////////////////////////////////////////////////////////////////
+    String javaName = config.getJavaName();
+    boolean isJava = StringUtils.trimToNull(javaName) != null;
+    
+    if (isJava)
+    {
+      Logger.info("  javax.smartcardio name: " + javaName);
+      HBCIUtils.setParam(Passport.NAME,javaName);
+    }
+    else
+    {
+      //////////////////////////////////////////////////////////////////////////
+      // JNI-Treiber
+      String jni = getJNILib().getAbsolutePath();
+      Logger.info("  jni lib: " + jni);
+      HBCIUtils.setParam("client.passport.DDV.libname.ddv", jni);
+      //
+      //////////////////////////////////////////////////////////////////////////
 
-    //////////////////////////////////////////////////////////////////////////
-    // CTAPI-Treiber
-    String ctapiDriver = config.getCTAPIDriver();
-    if (ctapiDriver == null || ctapiDriver.length() == 0)
-      throw new ApplicationException(i18n.tr("Kein CTAPI-Treiber in der Kartenleser-Konfiguration angegeben"));
+      //////////////////////////////////////////////////////////////////////////
+      // CTAPI-Treiber
+      String ctapiDriver = config.getCTAPIDriver();
+      if (ctapiDriver == null || ctapiDriver.length() == 0)
+        throw new ApplicationException(i18n.tr("Kein CTAPI-Treiber in der Kartenleser-Konfiguration angegeben"));
 
-    File ctapi = new File(ctapiDriver);
-    if (!ctapi.exists() || !ctapi.isFile() || !ctapi.canRead())
-      throw new ApplicationException(i18n.tr("CTAPI-Treiber-Datei \"{0}\" nicht gefunden oder nicht lesbar",ctapiDriver)); 
+      File ctapi = new File(ctapiDriver);
+      if (!ctapi.exists() || !ctapi.isFile() || !ctapi.canRead())
+        throw new ApplicationException(i18n.tr("CTAPI-Treiber-Datei \"{0}\" nicht gefunden oder nicht lesbar",ctapiDriver)); 
 
-    Logger.info("  ctapi driver: " + ctapiDriver);
-    HBCIUtils.setParam(Passport.CTAPI, ctapiDriver);
-    //
-    //////////////////////////////////////////////////////////////////////////
+      Logger.info("  ctapi driver: " + ctapiDriver);
+      HBCIUtils.setParam(Passport.CTAPI, ctapiDriver);
+      //
+      //////////////////////////////////////////////////////////////////////////
+    }
 
     //////////////////////////////////////////////////////////////////////////
     // Passport-Verzeichnis
@@ -425,7 +505,7 @@ public class DDVConfigFactory
     //
     //////////////////////////////////////////////////////////////////////////
 
-    
+
     String port = Integer.toString(DDVConfig.getPortForName(config.getPort()));
     Logger.info("  port: " + config.getPort() + " [ID: " + port + "]");
     HBCIUtils.setParam(Passport.PORT,port);
@@ -439,7 +519,7 @@ public class DDVConfigFactory
     Logger.info("  entry index: " + config.getEntryIndex());
     HBCIUtils.setParam(Passport.ENTRYIDX,Integer.toString(config.getEntryIndex()));
 
-    return (HBCIPassportDDV) AbstractHBCIPassport.getInstance("DDV");
+    return (HBCIPassportDDV) AbstractHBCIPassport.getInstance(isJava ? "DDVJava" : "DDV");
   }
 
   
@@ -503,7 +583,11 @@ public class DDVConfigFactory
 
 /**********************************************************************
  * $Log: DDVConfigFactory.java,v $
- * Revision 1.7  2011/09/01 09:40:53  willuhn
+ * Revision 1.8  2011/09/01 12:16:08  willuhn
+ * @N Kartenleser-Suche kann jetzt abgebrochen werden
+ * @N Erster Code fuer javax.smartcardio basierend auf dem OCF-Code aus HBCI4Java 2.5.8
+ *
+ * Revision 1.7  2011-09-01 09:40:53  willuhn
  * @R Biometrie-Support bei Kartenlesern entfernt - wurde nie benutzt
  *
  * Revision 1.6  2011-06-17 08:49:19  willuhn

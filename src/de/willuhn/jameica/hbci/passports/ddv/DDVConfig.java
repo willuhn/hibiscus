@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/DDVConfig.java,v $
- * $Revision: 1.7 $
- * $Date: 2011/09/01 09:40:53 $
+ * $Revision: 1.8 $
+ * $Date: 2011/09/01 12:16:08 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -151,6 +151,24 @@ public class DDVConfig implements Configuration
   public void setSoftPin(boolean softPin)
   {
     settings.setAttribute(this.getPrefix() + "softpin",softPin);
+  }
+
+  /**
+   * Liefert den Kartenleser-Namen, wenn es einer via javax.smartcardio ist.
+   * @return der Kartenleser-Name.
+   */
+  public String getJavaName()
+  {
+    return settings.getString(this.getPrefix() + "javaname",null);
+  }
+
+  /**
+   * Legt den Kartenleser-Namen von javax.smartcardio-Kartenlesern fest.
+   * @param javaname der Name des Kartenlesers in javax.smartcardio.
+   */
+  public void setJavaName(String javaname)
+  {
+    settings.setAttribute(this.getPrefix() + "javaname",javaname);
   }
 
   /**
@@ -330,6 +348,7 @@ public class DDVConfig implements Configuration
     copy.setPort(this.getPort());
     copy.setReaderPreset(this.getReaderPreset());
     copy.setSoftPin(this.useSoftPin());
+    copy.setJavaName(this.getJavaName());
     return copy;
   }
   
@@ -346,6 +365,7 @@ public class DDVConfig implements Configuration
     settings.setAttribute(this.getPrefix() + "softpin",(String) null);
     settings.setAttribute(this.getPrefix() + "ctnumber",(String) null);
     settings.setAttribute(this.getPrefix() + "entryidx",(String) null);
+    settings.setAttribute(this.getPrefix() + "javaname",(String) null);
     settings.setAttribute(this.getPrefix() + "konto",(String[]) null);
   }
 
@@ -362,7 +382,11 @@ public class DDVConfig implements Configuration
 
 /**********************************************************************
  * $Log: DDVConfig.java,v $
- * Revision 1.7  2011/09/01 09:40:53  willuhn
+ * Revision 1.8  2011/09/01 12:16:08  willuhn
+ * @N Kartenleser-Suche kann jetzt abgebrochen werden
+ * @N Erster Code fuer javax.smartcardio basierend auf dem OCF-Code aus HBCI4Java 2.5.8
+ *
+ * Revision 1.7  2011-09-01 09:40:53  willuhn
  * @R Biometrie-Support bei Kartenlesern entfernt - wurde nie benutzt
  *
  * Revision 1.6  2011-06-17 08:49:19  willuhn

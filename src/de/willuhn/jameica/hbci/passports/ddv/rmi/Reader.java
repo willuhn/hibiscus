@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/rmi/Reader.java,v $
- * $Revision: 1.4 $
- * $Date: 2011/09/01 09:40:53 $
+ * $Revision: 1.5 $
+ * $Date: 2011/09/01 12:16:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -56,13 +56,23 @@ public interface Reader
    * @return <code>true</code> wenn die Tastatur des PCs zur Eingabe der PIN verwendet werden soll.
    */
   public boolean useSoftPin();
+  
+  /**
+   * Prueft, ob es eine Kartenleser-Konfiguration via javax.smartcardio ist.
+   * @return true, wenn es eine ist.
+   */
+  public boolean isJavaReader();
 
 }
 
 
 /**********************************************************************
  * $Log: Reader.java,v $
- * Revision 1.4  2011/09/01 09:40:53  willuhn
+ * Revision 1.5  2011/09/01 12:16:08  willuhn
+ * @N Kartenleser-Suche kann jetzt abgebrochen werden
+ * @N Erster Code fuer javax.smartcardio basierend auf dem OCF-Code aus HBCI4Java 2.5.8
+ *
+ * Revision 1.4  2011-09-01 09:40:53  willuhn
  * @R Biometrie-Support bei Kartenlesern entfernt - wurde nie benutzt
  *
  * Revision 1.3  2010-09-07 15:28:06  willuhn

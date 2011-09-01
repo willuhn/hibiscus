@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/Controller.java,v $
- * $Revision: 1.15 $
- * $Date: 2011/09/01 09:40:53 $
+ * $Revision: 1.16 $
+ * $Date: 2011/09/01 12:16:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -298,12 +298,14 @@ public class Controller extends AbstractControl
 
     BackgroundTask task = new BackgroundTask()
     {
+      private boolean stop = false;
+      
       /**
        * @see de.willuhn.jameica.system.BackgroundTask#run(de.willuhn.util.ProgressMonitor)
        */
       public void run(final ProgressMonitor monitor) throws ApplicationException
       {
-        final DDVConfig config = DDVConfigFactory.scan(monitor);
+        final DDVConfig config = DDVConfigFactory.scan(monitor,this);
         
         if (getConfig() == null)
         {
@@ -350,6 +352,7 @@ public class Controller extends AbstractControl
        */
       public void interrupt()
       {
+        this.stop = true;
       }
 
       /**
@@ -357,7 +360,7 @@ public class Controller extends AbstractControl
        */
       public boolean isInterrupted()
       {
-        return false;
+        return this.stop;
       }
     };
     Application.getController().start(task);
@@ -615,7 +618,11 @@ public class Controller extends AbstractControl
 
 /*******************************************************************************
  * $Log: Controller.java,v $
- * Revision 1.15  2011/09/01 09:40:53  willuhn
+ * Revision 1.16  2011/09/01 12:16:08  willuhn
+ * @N Kartenleser-Suche kann jetzt abgebrochen werden
+ * @N Erster Code fuer javax.smartcardio basierend auf dem OCF-Code aus HBCI4Java 2.5.8
+ *
+ * Revision 1.15  2011-09-01 09:40:53  willuhn
  * @R Biometrie-Support bei Kartenlesern entfernt - wurde nie benutzt
  *
  * Revision 1.14  2011-06-17 08:49:19  willuhn
