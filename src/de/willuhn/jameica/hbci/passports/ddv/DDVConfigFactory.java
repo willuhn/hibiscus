@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/DDVConfigFactory.java,v $
- * $Revision: 1.6 $
- * $Date: 2011/06/17 08:49:19 $
+ * $Revision: 1.7 $
+ * $Date: 2011/09/01 09:40:53 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -206,7 +206,6 @@ public class DDVConfigFactory
         temp.setCTNumber(ctNumber == -1 ? 0 : ctNumber);
         temp.setEntryIndex(1);
         temp.setReaderPreset(reader);
-        temp.setBIO(reader.useBIO());
         temp.setSoftPin(reader.useSoftPin());
         temp.setCTAPIDriver(s);
         temp.setHBCIVersion("210");
@@ -346,7 +345,6 @@ public class DDVConfigFactory
       config.setName("default");
       
       // Wir kopieren die Parameter in die neue Config
-      config.setBIO(oldConfig.getBoolean(Passport.USEBIO,false));
       config.setCTAPIDriver(oldConfig.getString(Passport.CTAPI,""));
       config.setCTNumber(oldConfig.getInt(Passport.CTNUMBER,0));
       config.setEntryIndex(oldConfig.getInt(Passport.ENTRYIDX,1));
@@ -435,9 +433,6 @@ public class DDVConfigFactory
     Logger.info("  ctnumber: " + config.getCTNumber());
     HBCIUtils.setParam(Passport.CTNUMBER,Integer.toString(config.getCTNumber()));
 
-    Logger.info("  biometrics: " + config.useBIO());
-    HBCIUtils.setParam(Passport.USEBIO, config.useBIO() ? "1" : "0");
-
     Logger.info("  soft pin: " + config.useSoftPin());
     HBCIUtils.setParam(Passport.SOFTPIN,  config.useSoftPin() ? "1" : "0");
 
@@ -508,7 +503,10 @@ public class DDVConfigFactory
 
 /**********************************************************************
  * $Log: DDVConfigFactory.java,v $
- * Revision 1.6  2011/06/17 08:49:19  willuhn
+ * Revision 1.7  2011/09/01 09:40:53  willuhn
+ * @R Biometrie-Support bei Kartenlesern entfernt - wurde nie benutzt
+ *
+ * Revision 1.6  2011-06-17 08:49:19  willuhn
  * @N Contextmenu im Tree mit den Bank-Zugaengen
  * @N Loeschen von Bank-Zugaengen direkt im Tree
  *

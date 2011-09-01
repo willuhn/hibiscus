@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/DDVConfig.java,v $
- * $Revision: 1.6 $
- * $Date: 2011/06/17 08:49:19 $
+ * $Revision: 1.7 $
+ * $Date: 2011/09/01 09:40:53 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -133,24 +133,6 @@ public class DDVConfig implements Configuration
   public void setCTNumber(int ctNumber)
   {
     settings.setAttribute(this.getPrefix() + "ctnumber",ctNumber);
-  }
-
-  /**
-   * Liefert true, wenn Biometrik verwendet werden soll.
-   * @return true, wenn Biometrik verwendet werden soll.
-   */
-  public boolean useBIO()
-  {
-    return settings.getBoolean(this.getPrefix() + "usebio",false);
-  }
-
-  /**
-   * Legt fest, ob Biometrik verwendet werden soll.
-   * @param bio true, wenn Biometrik verwendet werden soll.
-   */
-  public void setBIO(boolean bio)
-  {
-    settings.setAttribute(this.getPrefix() + "usebio",bio);
   }
 
   /**
@@ -340,7 +322,6 @@ public class DDVConfig implements Configuration
   public DDVConfig copy()
   {
     DDVConfig copy = DDVConfigFactory.create();
-    copy.setBIO(this.useBIO());
     copy.setCTAPIDriver(this.getCTAPIDriver());
     copy.setCTNumber(this.getCTNumber());
     copy.setEntryIndex(this.getEntryIndex());
@@ -362,7 +343,6 @@ public class DDVConfig implements Configuration
     this.setName(null);
     this.setPort(null);
     this.setReaderPreset(null);
-    settings.setAttribute(this.getPrefix() + "usebio",(String) null);
     settings.setAttribute(this.getPrefix() + "softpin",(String) null);
     settings.setAttribute(this.getPrefix() + "ctnumber",(String) null);
     settings.setAttribute(this.getPrefix() + "entryidx",(String) null);
@@ -382,7 +362,10 @@ public class DDVConfig implements Configuration
 
 /**********************************************************************
  * $Log: DDVConfig.java,v $
- * Revision 1.6  2011/06/17 08:49:19  willuhn
+ * Revision 1.7  2011/09/01 09:40:53  willuhn
+ * @R Biometrie-Support bei Kartenlesern entfernt - wurde nie benutzt
+ *
+ * Revision 1.6  2011-06-17 08:49:19  willuhn
  * @N Contextmenu im Tree mit den Bank-Zugaengen
  * @N Loeschen von Bank-Zugaengen direkt im Tree
  *

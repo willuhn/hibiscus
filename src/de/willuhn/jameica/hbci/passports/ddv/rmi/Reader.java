@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/rmi/Reader.java,v $
- * $Revision: 1.3 $
- * $Date: 2010/09/07 15:28:06 $
+ * $Revision: 1.4 $
+ * $Date: 2011/09/01 09:40:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -52,13 +52,6 @@ public interface Reader
   public boolean isSupported();
 
 	/**
-	 * Liefert true, wenn der Chipkartenleser mit biometrischen Authentifizierungsverfahren
-	 * ausgestattet ist.
-   * @return <code>true</code>, wenn er biometrische Authentifizierung kann.
-   */
-  public boolean useBIO();
-
-	/**
 	 * Liefert true, wenn die Tastatur des PCs zur Eingabe der PIN verwendet werden soll.
    * @return <code>true</code> wenn die Tastatur des PCs zur Eingabe der PIN verwendet werden soll.
    */
@@ -69,7 +62,10 @@ public interface Reader
 
 /**********************************************************************
  * $Log: Reader.java,v $
- * Revision 1.3  2010/09/07 15:28:06  willuhn
+ * Revision 1.4  2011/09/01 09:40:53  willuhn
+ * @R Biometrie-Support bei Kartenlesern entfernt - wurde nie benutzt
+ *
+ * Revision 1.3  2010-09-07 15:28:06  willuhn
  * @N BUGZILLA 391 - Kartenleser-Konfiguration komplett umgebaut. Damit lassen sich jetzt beliebig viele Kartenleser und Konfigurationen parellel einrichten
  *
  * Revision 1.2  2010-07-22 22:36:24  willuhn

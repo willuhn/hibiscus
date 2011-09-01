@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/server/AbstractReader.java,v $
- * $Revision: 1.6 $
- * $Date: 2011/05/03 16:43:50 $
+ * $Revision: 1.7 $
+ * $Date: 2011/09/01 09:40:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -109,14 +109,6 @@ public abstract class AbstractReader implements Reader
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#useBIO()
-   */
-  public boolean useBIO()
-  {
-    return false;
-  }
-
-  /**
    * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getCTNumber()
    */
   public int getCTNumber()
@@ -158,7 +150,10 @@ public abstract class AbstractReader implements Reader
 
 /**********************************************************************
  * $Log: AbstractReader.java,v $
- * Revision 1.6  2011/05/03 16:43:50  willuhn
+ * Revision 1.7  2011/09/01 09:40:53  willuhn
+ * @R Biometrie-Support bei Kartenlesern entfernt - wurde nie benutzt
+ *
+ * Revision 1.6  2011-05-03 16:43:50  willuhn
  * @B da fehlte eine equals()-Funktion
  *
  * Revision 1.5  2010-09-07 15:28:05  willuhn

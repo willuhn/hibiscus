@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/Detail.java,v $
- * $Revision: 1.3 $
- * $Date: 2011/04/29 11:38:58 $
+ * $Revision: 1.4 $
+ * $Date: 2011/09/01 09:40:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -65,7 +65,6 @@ public class Detail extends AbstractView
       Container container = new SimpleContainer(getParent());
       container.addHeadline(i18n.tr("Erweiterte Einstellungen"));
       container.addInput(control.getBezeichnung());
-      container.addInput(control.getBio());
       container.addInput(control.getSoftPin());
     }
 
@@ -102,7 +101,10 @@ public class Detail extends AbstractView
 
 /**********************************************************************
  * $Log: Detail.java,v $
- * Revision 1.3  2011/04/29 11:38:58  willuhn
+ * Revision 1.4  2011/09/01 09:40:53  willuhn
+ * @R Biometrie-Support bei Kartenlesern entfernt - wurde nie benutzt
+ *
+ * Revision 1.3  2011-04-29 11:38:58  willuhn
  * @N Konfiguration der HBCI-Medien ueberarbeitet. Es gibt nun direkt in der Navi einen Punkt "Bank-Zugaenge", in der alle Medien angezeigt werden.
  *
  * Revision 1.2  2011-04-08 15:19:15  willuhn

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/Controller.java,v $
- * $Revision: 1.14 $
- * $Date: 2011/06/17 08:49:19 $
+ * $Revision: 1.15 $
+ * $Date: 2011/09/01 09:40:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -68,7 +68,6 @@ public class Controller extends AbstractControl
   private Input ctNumber            = null;
   private Input entryIndex          = null;
   private FileInput ctapi           = null;
-  private CheckboxInput useBio      = null;
   private CheckboxInput useSoftPin  = null;
   private SelectInput readerPresets = null;
   private SelectInput hbciVersion   = null;
@@ -265,20 +264,6 @@ public class Controller extends AbstractControl
   }
 
   /**
-   * Liefert die Checkbox fuer die Auswahl biometrischer Verfahren.
-   * @return Checkbox.
-   */
-  public CheckboxInput getBio()
-  {
-    if (this.useBio != null)
-      return this.useBio;
-
-    this.useBio = new CheckboxInput(getConfig().useBIO());
-    this.useBio.setName(i18n.tr("Biometrische Verfahren verwenden"));
-    return this.useBio;
-  }
-
-  /**
    * Liefert die Checkbox fuer die Auswahl der Tastatur als PIN-Eingabe.
    * @return Checkbox.
    */
@@ -344,7 +329,6 @@ public class Controller extends AbstractControl
               getPort().setValue(config.getPort());
               getCTNumber().setValue(config.getCTNumber());
               getEntryIndex().setValue(config.getEntryIndex());
-              getBio().setValue(config.useBIO());
               getSoftPin().setValue(config.useSoftPin());
               
               try
@@ -451,7 +435,6 @@ public class Controller extends AbstractControl
       getConfig().setKonten(getKontoAuswahl().getItems());
       getConfig().setReaderPreset((Reader) getReaderPresets().getValue());
       getConfig().setPort((String) getPort().getValue());
-      getConfig().setBIO((Boolean) getBio().getValue());
       getConfig().setSoftPin((Boolean) getSoftPin().getValue());
       getConfig().setCTAPIDriver((String) getCTAPI().getValue());
       getConfig().setHBCIVersion((String) getHBCIVersion().getValue());
@@ -618,7 +601,6 @@ public class Controller extends AbstractControl
         if (ctNumber != -1)
           getCTNumber().setValue(new Integer(ctNumber));
 
-        getBio().setValue(new Boolean(r.useBIO()));
      		getCTAPI().setValue(s);
      		getSoftPin().setValue(new Boolean(r.useSoftPin()));
     	}
@@ -633,7 +615,10 @@ public class Controller extends AbstractControl
 
 /*******************************************************************************
  * $Log: Controller.java,v $
- * Revision 1.14  2011/06/17 08:49:19  willuhn
+ * Revision 1.15  2011/09/01 09:40:53  willuhn
+ * @R Biometrie-Support bei Kartenlesern entfernt - wurde nie benutzt
+ *
+ * Revision 1.14  2011-06-17 08:49:19  willuhn
  * @N Contextmenu im Tree mit den Bank-Zugaengen
  * @N Loeschen von Bank-Zugaengen direkt im Tree
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/rmi/Passport.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/09/07 15:28:06 $
+ * $Revision: 1.6 $
+ * $Date: 2011/09/01 09:40:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -29,11 +29,6 @@ public interface Passport extends de.willuhn.jameica.hbci.passport.Passport {
 	public final static String CTNUMBER = "client.passport.DDV.ctnumber";
 
 	/**
-	 * Parameter ober Biometrie verwendet wird (meist 0)
-	 */
-	public final static String USEBIO	  = "client.passport.DDV.usebio";
-
-	/**
 	 * Parameter ob die Tastatur zur Pin-Eingabe verwendet werden soll.
 	 */
 	public final static String SOFTPIN  = "client.passport.DDV.softpin";
@@ -52,7 +47,10 @@ public interface Passport extends de.willuhn.jameica.hbci.passport.Passport {
 
 /**********************************************************************
  * $Log: Passport.java,v $
- * Revision 1.5  2010/09/07 15:28:06  willuhn
+ * Revision 1.6  2011/09/01 09:40:53  willuhn
+ * @R Biometrie-Support bei Kartenlesern entfernt - wurde nie benutzt
+ *
+ * Revision 1.5  2010-09-07 15:28:06  willuhn
  * @N BUGZILLA 391 - Kartenleser-Konfiguration komplett umgebaut. Damit lassen sich jetzt beliebig viele Kartenleser und Konfigurationen parellel einrichten
  *
  * Revision 1.4  2010-07-22 22:36:24  willuhn
