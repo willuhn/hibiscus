@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/DDVConfig.java,v $
- * $Revision: 1.8 $
- * $Date: 2011/09/01 12:16:08 $
+ * $Revision: 1.9 $
+ * $Date: 2011/09/06 11:54:25 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -157,18 +157,18 @@ public class DDVConfig implements Configuration
    * Liefert den Kartenleser-Namen, wenn es einer via javax.smartcardio ist.
    * @return der Kartenleser-Name.
    */
-  public String getJavaName()
+  public String getPCSCName()
   {
-    return settings.getString(this.getPrefix() + "javaname",null);
+    return settings.getString(this.getPrefix() + "pcscname",null);
   }
 
   /**
    * Legt den Kartenleser-Namen von javax.smartcardio-Kartenlesern fest.
    * @param javaname der Name des Kartenlesers in javax.smartcardio.
    */
-  public void setJavaName(String javaname)
+  public void setPCSCName(String javaname)
   {
-    settings.setAttribute(this.getPrefix() + "javaname",javaname);
+    settings.setAttribute(this.getPrefix() + "pcscname",javaname);
   }
 
   /**
@@ -348,7 +348,7 @@ public class DDVConfig implements Configuration
     copy.setPort(this.getPort());
     copy.setReaderPreset(this.getReaderPreset());
     copy.setSoftPin(this.useSoftPin());
-    copy.setJavaName(this.getJavaName());
+    copy.setPCSCName(this.getPCSCName());
     return copy;
   }
   
@@ -382,7 +382,10 @@ public class DDVConfig implements Configuration
 
 /**********************************************************************
  * $Log: DDVConfig.java,v $
- * Revision 1.8  2011/09/01 12:16:08  willuhn
+ * Revision 1.9  2011/09/06 11:54:25  willuhn
+ * @C JavaReader in PCSCReader umbenannt - die PIN-Eingabe fehlt noch
+ *
+ * Revision 1.8  2011-09-01 12:16:08  willuhn
  * @N Kartenleser-Suche kann jetzt abgebrochen werden
  * @N Erster Code fuer javax.smartcardio basierend auf dem OCF-Code aus HBCI4Java 2.5.8
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/rmi/Reader.java,v $
- * $Revision: 1.5 $
- * $Date: 2011/09/01 12:16:08 $
+ * $Revision: 1.6 $
+ * $Date: 2011/09/06 11:54:25 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -61,14 +61,17 @@ public interface Reader
    * Prueft, ob es eine Kartenleser-Konfiguration via javax.smartcardio ist.
    * @return true, wenn es eine ist.
    */
-  public boolean isJavaReader();
+  public boolean isPCSCReader();
 
 }
 
 
 /**********************************************************************
  * $Log: Reader.java,v $
- * Revision 1.5  2011/09/01 12:16:08  willuhn
+ * Revision 1.6  2011/09/06 11:54:25  willuhn
+ * @C JavaReader in PCSCReader umbenannt - die PIN-Eingabe fehlt noch
+ *
+ * Revision 1.5  2011-09-01 12:16:08  willuhn
  * @N Kartenleser-Suche kann jetzt abgebrochen werden
  * @N Erster Code fuer javax.smartcardio basierend auf dem OCF-Code aus HBCI4Java 2.5.8
  *

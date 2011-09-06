@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/server/AbstractReader.java,v $
- * $Revision: 1.8 $
- * $Date: 2011/09/01 12:16:08 $
+ * $Revision: 1.9 $
+ * $Date: 2011/09/06 11:54:25 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -125,9 +125,9 @@ public abstract class AbstractReader implements Reader
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#isJavaReader()
+   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#isPCSCReader()
    */
-  public boolean isJavaReader()
+  public boolean isPCSCReader()
   {
     return false;
   }
@@ -158,7 +158,10 @@ public abstract class AbstractReader implements Reader
 
 /**********************************************************************
  * $Log: AbstractReader.java,v $
- * Revision 1.8  2011/09/01 12:16:08  willuhn
+ * Revision 1.9  2011/09/06 11:54:25  willuhn
+ * @C JavaReader in PCSCReader umbenannt - die PIN-Eingabe fehlt noch
+ *
+ * Revision 1.8  2011-09-01 12:16:08  willuhn
  * @N Kartenleser-Suche kann jetzt abgebrochen werden
  * @N Erster Code fuer javax.smartcardio basierend auf dem OCF-Code aus HBCI4Java 2.5.8
  *

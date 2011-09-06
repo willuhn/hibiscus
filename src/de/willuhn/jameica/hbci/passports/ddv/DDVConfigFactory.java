@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/DDVConfigFactory.java,v $
- * $Revision: 1.8 $
- * $Date: 2011/09/01 12:16:08 $
+ * $Revision: 1.9 $
+ * $Date: 2011/09/06 11:54:25 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -199,7 +199,7 @@ public class DDVConfigFactory
 
         // Checken, ob der CTAPI-Treiber existiert.
         String s = StringUtils.trimToNull(reader.getCTAPIDriver());
-        if (!reader.isJavaReader())
+        if (!reader.isPCSCReader())
         {
           if (s == null)
           {
@@ -223,7 +223,7 @@ public class DDVConfigFactory
         temp.setHBCIVersion("210");
 
         // PC/SC-Kartenleser suchen
-        if (reader.isJavaReader())
+        if (reader.isPCSCReader())
         {
           try
           {
@@ -233,7 +233,7 @@ public class DDVConfigFactory
             {
               CardTerminal terminal = terminals.get(0);
               String name = terminal.getName();
-              temp.setJavaName(name);
+              temp.setPCSCName(name);
               PassportHandle handle = new PassportHandleImpl(temp);
               handle.open();
               handle.close(); // nein, nicht im finally, denn wenn das Oeffnen
@@ -261,7 +261,7 @@ public class DDVConfigFactory
           }
           finally
           {
-            temp.setJavaName(null); // muessen wir wieder zuruecksetzen
+            temp.setPCSCName(null); // muessen wir wieder zuruecksetzen
           }
           
           // Wir haben wohl nichts via PC/SC gefunden
@@ -462,13 +462,13 @@ public class DDVConfigFactory
     if (config == null)
       throw new ApplicationException(i18n.tr("Keine Konfiguration ausgewählt"));
 
-    String javaName = config.getJavaName();
-    boolean isJava = StringUtils.trimToNull(javaName) != null;
+    String pcscName = config.getPCSCName();
+    boolean isPCSC = StringUtils.trimToNull(pcscName) != null;
     
-    if (isJava)
+    if (isPCSC)
     {
-      Logger.info("  javax.smartcardio name: " + javaName);
-      HBCIUtils.setParam(Passport.NAME,javaName);
+      Logger.info("  pcsc name: " + pcscName);
+      HBCIUtils.setParam(Passport.NAME,pcscName);
     }
     else
     {
@@ -519,7 +519,7 @@ public class DDVConfigFactory
     Logger.info("  entry index: " + config.getEntryIndex());
     HBCIUtils.setParam(Passport.ENTRYIDX,Integer.toString(config.getEntryIndex()));
 
-    return (HBCIPassportDDV) AbstractHBCIPassport.getInstance(isJava ? "DDVJava" : "DDV");
+    return (HBCIPassportDDV) AbstractHBCIPassport.getInstance(isPCSC ? "DDVPCSC" : "DDV");
   }
 
   
@@ -583,7 +583,10 @@ public class DDVConfigFactory
 
 /**********************************************************************
  * $Log: DDVConfigFactory.java,v $
- * Revision 1.8  2011/09/01 12:16:08  willuhn
+ * Revision 1.9  2011/09/06 11:54:25  willuhn
+ * @C JavaReader in PCSCReader umbenannt - die PIN-Eingabe fehlt noch
+ *
+ * Revision 1.8  2011-09-01 12:16:08  willuhn
  * @N Kartenleser-Suche kann jetzt abgebrochen werden
  * @N Erster Code fuer javax.smartcardio basierend auf dem OCF-Code aus HBCI4Java 2.5.8
  *

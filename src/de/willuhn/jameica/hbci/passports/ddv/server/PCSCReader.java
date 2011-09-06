@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/server/Attic/JavaReader.java,v $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/server/PCSCReader.java,v $
  * $Revision: 1.1 $
- * $Date: 2011/09/01 12:16:08 $
+ * $Date: 2011/09/06 11:54:25 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -18,7 +18,7 @@ import de.willuhn.jameica.system.Application;
 /**
  * Implementierung des Kartenleser-Supports fuer javax.smartcardio.
  */
-public class JavaReader implements Reader
+public class PCSCReader implements Reader
 {
   /**
    * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getName()
@@ -69,9 +69,9 @@ public class JavaReader implements Reader
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#isJavaReader()
+   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#isPCSCReader()
    */
-  public boolean isJavaReader()
+  public boolean isPCSCReader()
   {
     return true;
   }
@@ -81,8 +81,11 @@ public class JavaReader implements Reader
 
 
 /**********************************************************************
- * $Log: JavaReader.java,v $
- * Revision 1.1  2011/09/01 12:16:08  willuhn
+ * $Log: PCSCReader.java,v $
+ * Revision 1.1  2011/09/06 11:54:25  willuhn
+ * @C JavaReader in PCSCReader umbenannt - die PIN-Eingabe fehlt noch
+ *
+ * Revision 1.1  2011-09-01 12:16:08  willuhn
  * @N Kartenleser-Suche kann jetzt abgebrochen werden
  * @N Erster Code fuer javax.smartcardio basierend auf dem OCF-Code aus HBCI4Java 2.5.8
  *

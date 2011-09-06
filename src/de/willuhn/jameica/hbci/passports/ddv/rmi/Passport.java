@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/rmi/Passport.java,v $
- * $Revision: 1.7 $
- * $Date: 2011/09/01 12:16:08 $
+ * $Revision: 1.8 $
+ * $Date: 2011/09/06 11:54:25 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -44,16 +44,19 @@ public interface Passport extends de.willuhn.jameica.hbci.passport.Passport {
 	public final static String CTAPI = "client.passport.DDV.libname.ctapi";
 
   /**
-   * Parameter fuer den Namen des Kartenlesers, wenn DDVJava (javax.smartcardio) verwendet wird.
+   * Parameter fuer den Namen des Kartenlesers, wenn DDVPCSC (javax.smartcardio) verwendet wird.
    */
-  public final static String NAME = "client.passport.DDVJava.name";
+  public final static String NAME = "client.passport.DDV.pcsc.name";
 
 }
 
 
 /**********************************************************************
  * $Log: Passport.java,v $
- * Revision 1.7  2011/09/01 12:16:08  willuhn
+ * Revision 1.8  2011/09/06 11:54:25  willuhn
+ * @C JavaReader in PCSCReader umbenannt - die PIN-Eingabe fehlt noch
+ *
+ * Revision 1.7  2011-09-01 12:16:08  willuhn
  * @N Kartenleser-Suche kann jetzt abgebrochen werden
  * @N Erster Code fuer javax.smartcardio basierend auf dem OCF-Code aus HBCI4Java 2.5.8
  *
