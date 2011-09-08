@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/server/PassportHandleImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2011/07/06 14:33:35 $
+ * $Revision: 1.7 $
+ * $Date: 2011/09/08 07:06:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -244,7 +244,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 
       case HBCICallback.NEED_PASSPHRASE_SAVE:
       {
-        KeyPasswordSaveDialog dialog = new KeyPasswordSaveDialog(AbstractDialog.POSITION_CENTER);
+        KeyPasswordSaveDialog dialog = new KeyPasswordSaveDialog(AbstractDialog.POSITION_CENTER,p);
         String password = (String) dialog.open();
         retData.replace(0,retData.length(),password);
         return true;
@@ -257,7 +257,10 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 
 /*****************************************************************************
  * $Log: PassportHandleImpl.java,v $
- * Revision 1.6  2011/07/06 14:33:35  willuhn
+ * Revision 1.7  2011/09/08 07:06:12  willuhn
+ * @N Mindestens 8 Zeichen Passwort-Laenge bei RDH2 siehe Mail von "silentspeak" vom 08.09.2011
+ *
+ * Revision 1.6  2011-07-06 14:33:35  willuhn
  * @B Callbacks 12 und 13 duerfen nicht im Passport behandelt werden, weil das auch in Situationen passieren kann, wo der Passport gerade nicht im Callback registriert ist
  *
  * Revision 1.5  2011-05-24 09:06:10  willuhn
