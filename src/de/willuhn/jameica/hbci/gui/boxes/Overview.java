@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Overview.java,v $
- * $Revision: 1.18 $
- * $Date: 2011/09/08 08:02:37 $
+ * $Revision: 1.19 $
+ * $Date: 2011/09/08 08:05:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -203,7 +203,7 @@ public class Overview extends AbstractBox implements Box
       konto     = (Konto) this.getKontoAuswahl().getValue();
       startDate = (Date) getStart().getValue();
       endDate   = (Date) getEnd().getValue();
-      Date saldoDate = endDate;
+      Date saldoDate = null;
 
       ////////////////////////////////////////////////////////////////////////////
       // Saldo ausrechnen
@@ -225,7 +225,10 @@ public class Overview extends AbstractBox implements Box
       
       LabelInput saldo = (LabelInput) this.getSaldo();
       saldo.setValue(HBCI.DECIMALFORMAT.format(d));
-      saldo.setComment(HBCIProperties.CURRENCY_DEFAULT_DE + " [" + HBCI.DATEFORMAT.format(saldoDate != null ? saldoDate : new Date()) + "]");
+      String comment = HBCIProperties.CURRENCY_DEFAULT_DE;
+      if (saldoDate != null)
+        comment += " [" + HBCI.DATEFORMAT.format(saldoDate) + "]";
+      saldo.setComment(comment);
       if (d < 0)       saldo.setColor(Color.ERROR);
       else if (d == 0) saldo.setColor(Color.WIDGET_FG);
       else             saldo.setColor(Color.SUCCESS);
@@ -326,7 +329,10 @@ public class Overview extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: Overview.java,v $
- * Revision 1.18  2011/09/08 08:02:37  willuhn
+ * Revision 1.19  2011/09/08 08:05:18  willuhn
+ * @C Wenn alle Konten ausgewaehlt sind, dann gar kein Datum hinterm Saldo anzeigen
+ *
+ * Revision 1.18  2011-09-08 08:02:37  willuhn
  * @B Saldo-Datum in Box "Finanz-Übersicht" nicht ganz korrekt
  *
  * Revision 1.17  2011-02-21 09:00:20  willuhn
