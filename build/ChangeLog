@@ -1,5 +1,6 @@
 HEAD
 
+  * NEW: 0129 Mindestens 8 Zeichen Passwort-Laenge bei RDH2 - siehe Mail von "silentspeak" vom 08.09.2011
   * DEL: 0128 Biometrie-Support bei Kartenlesern entfernt - wurde nie benutzt
   * NEW: 0127 BUGZILLA 1125 - Vorauswahl des Kontos wurde nicht zurueckgesetzt
   * NEW: 0126 BUGZILLA 937 - Fenster mit dem Master-Passwort-Prompt jetzt APPLICATION_MODAL
