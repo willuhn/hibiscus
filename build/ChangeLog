@@ -1,5 +1,7 @@
 HEAD
 
+  * BUG: 0130 Datum des Saldos in Box "Finanz-Übersicht" nicht ganz korrekt - siehe
+              http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=78121#78121
   * NEW: 0129 Mindestens 8 Zeichen Passwort-Laenge bei RDH2 - siehe Mail von "silentspeak" vom 08.09.2011
   * DEL: 0128 Biometrie-Support bei Kartenlesern entfernt - wurde nie benutzt
   * NEW: 0127 BUGZILLA 1125 - Vorauswahl des Kontos wurde nicht zurueckgesetzt

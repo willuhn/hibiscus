@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Overview.java,v $
- * $Revision: 1.17 $
- * $Date: 2011/02/21 09:00:20 $
+ * $Revision: 1.18 $
+ * $Date: 2011/09/08 08:02:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -135,7 +135,7 @@ public class Overview extends AbstractBox implements Box
     if (this.saldo != null)
       return this.saldo;
     this.saldo = new LabelInput("");
-    this.saldo.setComment(HBCIProperties.CURRENCY_DEFAULT_DE + " [" + HBCI.DATEFORMAT.format(new Date()) + "]");
+    this.saldo.setComment("");
     return this.saldo;
   }
 
@@ -203,6 +203,7 @@ public class Overview extends AbstractBox implements Box
       konto     = (Konto) this.getKontoAuswahl().getValue();
       startDate = (Date) getStart().getValue();
       endDate   = (Date) getEnd().getValue();
+      Date saldoDate = endDate;
 
       ////////////////////////////////////////////////////////////////////////////
       // Saldo ausrechnen
@@ -219,12 +220,15 @@ public class Overview extends AbstractBox implements Box
       else
       {
         d = konto.getSaldo();
+        saldoDate = konto.getSaldoDatum();
       }
       
-      getSaldo().setValue(HBCI.DECIMALFORMAT.format(d));
-      if (d < 0)       ((LabelInput)getSaldo()).setColor(Color.ERROR);
-      else if (d == 0) ((LabelInput)getSaldo()).setColor(Color.WIDGET_FG);
-      else             ((LabelInput)getSaldo()).setColor(Color.SUCCESS);
+      LabelInput saldo = (LabelInput) this.getSaldo();
+      saldo.setValue(HBCI.DECIMALFORMAT.format(d));
+      saldo.setComment(HBCIProperties.CURRENCY_DEFAULT_DE + " [" + HBCI.DATEFORMAT.format(saldoDate != null ? saldoDate : new Date()) + "]");
+      if (d < 0)       saldo.setColor(Color.ERROR);
+      else if (d == 0) saldo.setColor(Color.WIDGET_FG);
+      else             saldo.setColor(Color.SUCCESS);
       ////////////////////////////////////////////////////////////////////////////
 
       
@@ -322,7 +326,10 @@ public class Overview extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: Overview.java,v $
- * Revision 1.17  2011/02/21 09:00:20  willuhn
+ * Revision 1.18  2011/09/08 08:02:37  willuhn
+ * @B Saldo-Datum in Box "Finanz-Übersicht" nicht ganz korrekt
+ *
+ * Revision 1.17  2011-02-21 09:00:20  willuhn
  * @N BUGZILLA 993
  *
  * Revision 1.16  2011-01-20 17:13:21  willuhn
