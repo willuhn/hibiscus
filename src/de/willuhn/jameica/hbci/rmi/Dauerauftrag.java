@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Dauerauftrag.java,v $
- * $Revision: 1.13 $
- * $Date: 2010/09/24 12:22:04 $
+ * $Revision: 1.14 $
+ * $Date: 2011/09/12 11:53:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,6 +22,12 @@ import de.willuhn.util.ApplicationException;
  */
 public interface Dauerauftrag extends HibiscusTransfer, Checksum
 {
+  /**
+   * Platzhalter-Order-ID fuer Banken, die bei der Dauerauftrags-Einreichung
+   * keine Order-ID liefern. Dann koennen wir trotzdem wenigstens erkennen,
+   * ob der Auftrag eingereicht wurde.
+   */
+  public final static String ORDERID_PLACEHOLDER = "9999999999";
 
   /**
    * Liefert den Textschluessel des Auftrags.
@@ -130,7 +136,10 @@ public interface Dauerauftrag extends HibiscusTransfer, Checksum
 
 /**********************************************************************
  * $Log: Dauerauftrag.java,v $
- * Revision 1.13  2010/09/24 12:22:04  willuhn
+ * Revision 1.14  2011/09/12 11:53:26  willuhn
+ * @N Support fuer Banken (wie die deutsche Bank), die keine Order-IDs vergeben - BUGZILLA 1129
+ *
+ * Revision 1.13  2010-09-24 12:22:04  willuhn
  * @N Thomas' Patch fuer Textschluessel in Dauerauftraegen
  *
  * Revision 1.12  2007/04/23 18:07:14  willuhn

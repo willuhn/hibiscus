@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragDeleteJob.java,v $
- * $Revision: 1.20 $
- * $Date: 2008/11/17 23:30:00 $
+ * $Revision: 1.21 $
+ * $Date: 2011/09/12 11:53:25 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,8 @@ import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Properties;
+
+import org.apache.commons.lang.StringUtils;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -58,7 +60,7 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
 				throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Dauerauftrag aus"));
 
 			if (!auftrag.isActive())
-				throw new ApplicationException(i18n.tr("Dauerauftrag liegt nicht bei Bank vor und muss daher nicht online gelöscht werden"));
+				throw new ApplicationException(i18n.tr("Dauerauftrag liegt nicht bei der Bank vor und muss daher nicht online gelöscht werden"));
 
 			if (auftrag.isNewObject())
 				auftrag.store();
@@ -66,7 +68,11 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
 			this.dauerauftrag = auftrag;
 			this.konto        = auftrag.getKonto();
 
-			setJobParam("orderid",this.dauerauftrag.getOrderID());
+      String orderID = this.dauerauftrag.getOrderID();
+      if (StringUtils.trimToEmpty(orderID).equals(Dauerauftrag.ORDERID_PLACEHOLDER))
+        setJobParam("orderid",""); // Duerfen wir nicht mitschicken
+      else
+        setJobParam("orderid",orderID);
 
       setJobParam("src",Converter.HibiscusKonto2HBCIKonto(konto));
 
@@ -174,7 +180,10 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIDauerauftragDeleteJob.java,v $
- * Revision 1.20  2008/11/17 23:30:00  willuhn
+ * Revision 1.21  2011/09/12 11:53:25  willuhn
+ * @N Support fuer Banken (wie die deutsche Bank), die keine Order-IDs vergeben - BUGZILLA 1129
+ *
+ * Revision 1.20  2008-11-17 23:30:00  willuhn
  * @C Aufrufe der depeicated BLZ-Funktionen angepasst
  *
  * Revision 1.19  2008/09/23 11:24:27  willuhn

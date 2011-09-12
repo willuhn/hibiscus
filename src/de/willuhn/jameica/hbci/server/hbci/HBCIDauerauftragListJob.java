@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragListJob.java,v $
- * $Revision: 1.37 $
- * $Date: 2011/04/29 08:00:38 $
+ * $Revision: 1.38 $
+ * $Date: 2011/09/12 11:53:25 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,8 +13,12 @@
 package de.willuhn.jameica.hbci.server.hbci;
 
 import java.rmi.RemoteException;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.GV_Result.GVRDauerList;
+import org.kapott.hbci.GV_Result.GVRDauerList.Dauer;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
@@ -93,107 +97,174 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob
   void markExecuted() throws RemoteException, ApplicationException
   {
 		GVRDauerList result = (GVRDauerList) getJobResult();
-    // So, jetzt kopieren wir das ResultSet noch in unsere
-    // eigenen Datenstrukturen.
 
-    // Wir vergleichen noch mit den Dauerauftraegen, die wir schon haben und
-    // speichern nur die neuen. Achtung: Es kann sein, dass ein Dauerauftrag
-    // geaendert wurde, ohne dass wir davon erfahren haben (z.Bsp. wenn der
-    // Kunde ihn uebers Webfrontend der Bank geaendert hat. Folglich
-    // ueberschreiben wir Dauerauftraege auch dann schon, wenn die Order-ID
-    // uebereinstimmt.
-    DBIterator existing = konto.getDauerauftraege();
-
+		// Abgleich mit den lokalen Dauerauftraegen
+		
+    DBIterator existing        = konto.getDauerauftraege();
     GVRDauerList.Dauer[] lines = result.getEntries();
-    Dauerauftrag auftrag;
-    Dauerauftrag ex;
+
+    Dauerauftrag remote = null;
+    Dauerauftrag local  = null;
+    
+    // Hier drin merken wir uns alle Dauerauftraege, die beim Abgleich
+    // gefunden wurden. Denn die muessen garantiert nicht lokal geloescht werden.
+    Map<Dauerauftrag,Boolean> matches = new HashMap<Dauerauftrag,Boolean>();
+
+    ////////////////////////////////////////////////////////////////////////////
+    // 1. Nach neuen und geaenderten Dauerauftraegen suchen
     Logger.info("checking for new and changed entries");
     for (int i=0;i<lines.length;++i)
     {
       try
       {
-        auftrag = Converter.HBCIDauer2HibiscusDauerauftrag(lines[i]);
+        remote = this.create(lines[i]);
+        local  = find(existing,remote);
         
-        // Die Auftraege sind ueber das angegebene Konto abgerufen worden. Also
-        // weisen wir dieses auch hart zu
-        auftrag.setKonto(this.konto);
-
-        // BUGZILLA 22 http://www.willuhn.de/bugzilla/show_bug.cgi?id=22
-        // BEGIN
-        String name = auftrag.getGegenkontoName();
-        Logger.debug("checking name length: " + name + ", chars: " + name.length());
-        if (name != null && name.length() > HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH)
+        if (local != null)
         {
-          Logger.warn("name of other account longer than " + HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH + " chars. stripping");
-          auftrag.setGegenkontoName(name.substring(0,HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH));
-        }
-        // END
-
-        boolean found = false;
-        while(existing.hasNext())
-        {
-          ex = (Dauerauftrag) existing.next();
-          if (auftrag.getOrderID() != null && auftrag.getOrderID().equals(ex.getOrderID()))
+          Logger.info("found a local copy. order id: " + remote.getOrderID() + ". Checking for modifications");
+          matches.put(local,Boolean.TRUE);
+          if (remote.getChecksum() != local.getChecksum())
           {
-            // Den haben wir schon, ueberschreiben wir
-            found = true;
-            Logger.info("found a local copy. order id: " + auftrag.getOrderID() + ". Checking for modifications");
-            if (auftrag.getChecksum() != ex.getChecksum())
-            {
-              Logger.info("modifications found, updating local copy");
-              ex.overwrite(auftrag);
-              ex.store();
-            }
-            break;
+            Logger.info("modifications found, updating local copy");
+            local.overwrite(remote);
+            this.store(local);
           }
         }
-
-        if (!found)
+        else
         {
-          Logger.info("no local copy found. adding dauerauftrag order id: " + auftrag.getOrderID());
-          try
-          {
-            auftrag.store();// den hammer nicht gefunden. Neu anlegen
-          }
-          catch (Exception e) // BUGZILLA 1031
-          {
-            Logger.error("unable to store dauerauftrag " + auftrag.getOrderID() + ", skipping",e);
-          }
+          Logger.info("no local copy found. adding dauerauftrag order id: " + remote.getOrderID());
+          this.store(remote);
         }
-        existing.begin();
       }
       catch (Exception e)
       {
         Logger.error("error while checking dauerauftrag, skipping this one",e);
       }
     }
+    //
+    ////////////////////////////////////////////////////////////////////////////
 
     Logger.info("checking for deletable entries");
     existing.begin();
+    
+    // Wir koennen jetzt hier alle loeschen, die NICHT in matches gefunden (also nicht von der Bank geliefert wurden)
+    // aber eine Order-ID haben und somit aktiv sein muessten
     while (existing.hasNext())
     {
-      ex = (Dauerauftrag) existing.next();
-      if (!ex.isActive())
-        continue; // der existiert nicht bei der Bank und muss daher auch nicht geloescht werden.
-      boolean found = false;
-      for (int i=0;i<lines.length;++i)
+      local = (Dauerauftrag) existing.next();
+      if (!local.isActive())
       {
-        auftrag = Converter.HBCIDauer2HibiscusDauerauftrag(lines[i]);
-        if (auftrag.getOrderID() != null && auftrag.getOrderID().equals(ex.getOrderID()))
-        {
-          found = true;
-          break;
-        }
+        Logger.info("skipping [id: " + local.getID() + "] - not yet submitted");
+        continue; // der wurde noch nicht zur Bank geschickt und muss daher auch nicht geloescht werden
       }
-      if (!found)
+      
+      if (matches.containsKey(local))
       {
-        Logger.info("dauerauftrag order id: " + ex.getOrderID() + " does no longer exist online, can be deleted");
-        ex.delete();
+        Logger.info("skipping [id: " + local.getID() + ", order id: " + local.getOrderID() + "] - just matched");
+        continue;
       }
+      
+      Logger.info("dauerauftrag order id: " + local.getOrderID() + " does no longer exist online, can be deleted");
+      local.delete();
     }
 
     konto.addToProtokoll(i18n.tr("Daueraufträge abgerufen"),Protokoll.TYP_SUCCESS);
     Logger.info("dauerauftrag list fetched successfully");
+  }
+  
+  /**
+   * Durchucht die Liste der lokalen Dauerauftraege nach dem angegebenen.
+   * Insofern die Bank korrekte Order-IDs liefert, findet die Funktion auch
+   * dann die lokale Kopie, wenn Bankseitig Eigenschaften des Dauerauftrages
+   * (z.Bsp. Betrag oder Turnus) geaendert wurden.
+   * @param existing Liste der lokal vorhandenen Dauerauftraege.
+   * @param remote von der Bank gelieferter Dauerauftrag.
+   * @return die lokale Kopie des Dauerauftrages oder NULL, wenn keine
+   * lokale Kopie vorhanden ist.
+   * @throws RemoteException
+   */
+  private Dauerauftrag find(DBIterator existing, Dauerauftrag remote) throws RemoteException
+  {
+    existing.begin();
+    while (existing.hasNext())
+    {
+      Dauerauftrag local = (Dauerauftrag) existing.next();
+      if (!local.isActive())
+        continue; // der ist noch gar nicht bei der Bank und muss daher auch nicht abgeglichen werden
+      
+      String idLocal  = StringUtils.trimToEmpty(local.getOrderID());
+      String idRemote = StringUtils.trimToEmpty(remote.getOrderID());
+
+      // Platzhalter-ID verwenden, wenn die Bank keine uebertragen hat
+      if (idRemote.length() == 0)
+        idRemote = Dauerauftrag.ORDERID_PLACEHOLDER;
+      
+      if (idLocal.equals(idRemote))
+      {
+        // OK, die IDs sind schonmal identisch. Jetzt noch checken, ob
+        // es wirklich eine echte ID ist oder der Platzhalter
+        if (!idLocal.equals(Dauerauftrag.ORDERID_PLACEHOLDER))
+          return local; // Echte ID - also haben wir ihn gefunden
+        
+        // Es ist also die Platzhalter-ID. Dann vergleichen wir
+        // anhand der Eigenschaften
+        if (local.getChecksum() == remote.getChecksum())
+          return local; // sind identisch - gefunden
+      }
+    }
+    
+    // Nicht gefunden
+    return null;
+  }
+  
+  /**
+   * Erstellt ein lokales Dauerauftrags-Objekt aus dem Remote-Auftrag von HBCI4Java.
+   * @param remote der Remote-Auftrag von HBCI4Java.
+   * @return das lokale Objekt.
+   * @throws RemoteException
+   * @throws ApplicationException
+   */
+  private Dauerauftrag create(Dauer remote) throws RemoteException, ApplicationException
+  {
+    Dauerauftrag auftrag = Converter.HBCIDauer2HibiscusDauerauftrag(remote);
+    auftrag.setKonto(this.konto); // Konto hart zuweisen - sie kamen ja auch von dem
+
+    // BUGZILLA 22 http://www.willuhn.de/bugzilla/show_bug.cgi?id=22
+    String name = auftrag.getGegenkontoName();
+    Logger.debug("checking name length: " + name + ", chars: " + name.length());
+    if (name != null && name.length() > HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH)
+    {
+      Logger.warn("name of other account longer than " + HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH + " chars. stripping");
+      auftrag.setGegenkontoName(name.substring(0,HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH));
+    }
+    
+    return auftrag;
+  }
+  
+  /**
+   * Speichert den Dauerauftrag, faengt aber ggf. auftretende Exceptions und loggt sie.
+   * @param auftrag der zu speichernde Auftrag.
+   * BUGZILLA 1031
+   */
+  private void store(Dauerauftrag auftrag)
+  {
+    try
+    {
+      auftrag.store();
+    }
+    catch (Exception e) // BUGZILLA 1031
+    {
+      try
+      {
+        Logger.error("unable to store dauerauftrag " + auftrag.getOrderID() + ", skipping",e);
+        this.konto.addToProtokoll(i18n.tr("Speichern des Dauerauftrages fehlgeschlagen: {0}",e.getMessage()),Protokoll.TYP_ERROR);
+      }
+      catch (Exception e2)
+      {
+        Logger.error("unable to log error",e2); // useless
+      }
+    }
   }
 
   /**
@@ -210,7 +281,10 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIDauerauftragListJob.java,v $
- * Revision 1.37  2011/04/29 08:00:38  willuhn
+ * Revision 1.38  2011/09/12 11:53:25  willuhn
+ * @N Support fuer Banken (wie die deutsche Bank), die keine Order-IDs vergeben - BUGZILLA 1129
+ *
+ * Revision 1.37  2011-04-29 08:00:38  willuhn
  * @B BUGZILLA 1031
  *
  * Revision 1.36  2009-01-04 22:13:27  willuhn

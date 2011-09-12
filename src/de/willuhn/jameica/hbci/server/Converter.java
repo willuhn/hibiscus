@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Converter.java,v $
- * $Revision: 1.63 $
- * $Date: 2011/07/25 17:17:19 $
+ * $Revision: 1.64 $
+ * $Date: 2011/09/12 11:53:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -152,7 +152,8 @@ public class Converter {
     // Konto schon hat und bei Bedarf das existierende verwendet. Es kann aber
     // sein, dass ein User ein und das selbe Konto mit verschiedenen Sicherheitsmedien
     // bedient. In diesem Fall wird der Dauerauftrag evtl. beim falschen Konto
-    // einsortiert.
+    // einsortiert. Ist aber kein Problem, weil der HBCIDauerauftragListJob
+		// das Konto eh nochmal gegen seines (und er kennt das richtige) ueberschreibt.
     auftrag.setKonto(HBCIKonto2HibiscusKonto(d.my));
 
     auftrag.setBetrag(d.value.getDoubleValue());
@@ -359,7 +360,10 @@ public class Converter {
 
 /**********************************************************************
  * $Log: Converter.java,v $
- * Revision 1.63  2011/07/25 17:17:19  willuhn
+ * Revision 1.64  2011/09/12 11:53:26  willuhn
+ * @N Support fuer Banken (wie die deutsche Bank), die keine Order-IDs vergeben - BUGZILLA 1129
+ *
+ * Revision 1.63  2011-07-25 17:17:19  willuhn
  * @N BUGZILLA 1065 - zusaetzlich noch addkey
  *
  * Revision 1.62  2011-07-25 14:42:40  willuhn

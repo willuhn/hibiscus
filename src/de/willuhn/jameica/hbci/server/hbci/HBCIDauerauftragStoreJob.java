@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragStoreJob.java,v $
- * $Revision: 1.28 $
- * $Date: 2011/09/12 07:54:09 $
+ * $Revision: 1.29 $
+ * $Date: 2011/09/12 11:53:25 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import java.util.Properties;
 import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.GV_Result.GVRDauerEdit;
 import org.kapott.hbci.GV_Result.GVRDauerNew;
+import org.kapott.hbci.GV_Result.HBCIJobResult;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -81,7 +82,14 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob
       }
 
       if (active)
-				setJobParam("orderid",auftrag.getOrderID());
+      {
+        String orderID = auftrag.getOrderID();
+        if (StringUtils.trimToEmpty(orderID).equals(Dauerauftrag.ORDERID_PLACEHOLDER))
+          setJobParam("orderid",""); // Duerfen wir nicht mitschicken
+        else
+          setJobParam("orderid",orderID);
+        
+      }
 
 			setJobParam("src",Converter.HibiscusKonto2HBCIKonto(konto));
 
@@ -175,22 +183,17 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob
       konto.addToProtokoll(i18n.tr("Dauerauftrag ausgeführt an {0} ",empfName),Protokoll.TYP_SUCCESS);
 
     String orderID = null;
-    if (!active)
-    {
-      GVRDauerNew result = (GVRDauerNew) this.getJobResult();
-      orderID = result.getOrderId();
-    }
+    HBCIJobResult result = this.getJobResult();
+    if (result instanceof GVRDauerNew)
+      orderID = ((GVRDauerNew)result).getOrderId();
     else
-    {
-      GVRDauerEdit result = (GVRDauerEdit) this.getJobResult();
-      orderID = result.getOrderId();
-    }
+      orderID = ((GVRDauerEdit)result).getOrderId();
     
     if (StringUtils.trimToNull(orderID) == null)
     {
-      Logger.warn("got no order id for this job");
+      Logger.warn("got no order id for this job, using placeholder id " + Dauerauftrag.ORDERID_PLACEHOLDER);
       konto.addToProtokoll(i18n.tr("Keine Order-ID für Dauerauftrag von Bank erhalten",empfName),Protokoll.TYP_ERROR);
-      // TODO: Was sollen wir hier machen?
+      orderID = Dauerauftrag.ORDERID_PLACEHOLDER;
     }
     dauerauftrag.setOrderID(orderID);
     dauerauftrag.store();
@@ -213,7 +216,10 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIDauerauftragStoreJob.java,v $
- * Revision 1.28  2011/09/12 07:54:09  willuhn
+ * Revision 1.29  2011/09/12 11:53:25  willuhn
+ * @N Support fuer Banken (wie die deutsche Bank), die keine Order-IDs vergeben - BUGZILLA 1129
+ *
+ * Revision 1.28  2011-09-12 07:54:09  willuhn
  * *** empty log message ***
  *
  * Revision 1.27  2011-05-10 12:18:11  willuhn
