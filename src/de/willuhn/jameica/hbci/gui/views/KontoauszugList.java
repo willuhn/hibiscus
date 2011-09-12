@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoauszugList.java,v $
- * $Revision: 1.11 $
- * $Date: 2011/04/13 17:35:46 $
+ * $Revision: 1.12 $
+ * $Date: 2011/09/12 15:28:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,6 +11,9 @@
  *
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.views;
+
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
@@ -44,23 +47,28 @@ public class KontoauszugList extends AbstractView
     GUI.getView().setTitle(i18n.tr("Kontoauszüge"));
 
     final de.willuhn.jameica.hbci.gui.parts.KontoauszugList list = new de.willuhn.jameica.hbci.gui.parts.KontoauszugList();
-
-    GUI.getView().addPanelButton(new PanelButtonPrint(new PrintSupportUmsatzList(list))
-    {
-      public boolean isEnabled()
+    final PanelButtonPrint print = new PanelButtonPrint(new PrintSupportUmsatzList(list));
+    list.addSelectionListener(new Listener() {
+      public void handleEvent(Event event)
       {
-        return list.getSelection() != null && super.isEnabled();
+        print.setEnabled(list.getSelection() != null);
       }
     });
+
+    GUI.getView().addPanelButton(print);
     
     list.paint(getParent());
+    print.setEnabled(list.getSelection() != null); // einmal initial ausloesen
   }
 
 }
 
 /*******************************************************************************
  * $Log: KontoauszugList.java,v $
- * Revision 1.11  2011/04/13 17:35:46  willuhn
+ * Revision 1.12  2011/09/12 15:28:00  willuhn
+ * @N Enabled-State live uebernehmen - nicht erst beim Mouse-Over
+ *
+ * Revision 1.11  2011-04-13 17:35:46  willuhn
  * @N Druck-Support fuer Kontoauszuege fehlte noch
  *
  * Revision 1.10  2008-04-06 23:21:43  willuhn

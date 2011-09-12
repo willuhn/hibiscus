@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzList.java,v $
- * $Revision: 1.16 $
- * $Date: 2011/04/13 17:35:46 $
+ * $Revision: 1.17 $
+ * $Date: 2011/09/12 15:28:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,6 +11,9 @@
  *
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.views;
+
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
@@ -71,16 +74,18 @@ public class UmsatzList extends AbstractView
       GUI.getView().setTitle(i18n.tr("Kontoauszüge: {0} [Kto.-Nr.: {1}, Saldo: {2}]",new String[]{s1,s2,s3}));
 		
 		final TablePart list = control.getUmsatzListe();
-		
-    GUI.getView().addPanelButton(new PanelButtonPrint(new PrintSupportUmsatzList(list))
-    {
-      public boolean isEnabled()
+		final PanelButtonPrint print = new PanelButtonPrint(new PrintSupportUmsatzList(list));
+    list.addSelectionListener(new Listener() {
+      public void handleEvent(Event event)
       {
-        return list.getSelection() != null && super.isEnabled();
+        print.setEnabled(list.getSelection() != null);
       }
     });
 		
+    GUI.getView().addPanelButton(print);
+		
 		list.paint(getParent());
+    print.setEnabled(list.getSelection() != null); // einmal initial ausloesen
 		
 		ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Umsätze importieren..."), new UmsatzImport(),control.getKonto(),false,"document-open.png");
@@ -113,7 +118,10 @@ public class UmsatzList extends AbstractView
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
- * Revision 1.16  2011/04/13 17:35:46  willuhn
+ * Revision 1.17  2011/09/12 15:28:00  willuhn
+ * @N Enabled-State live uebernehmen - nicht erst beim Mouse-Over
+ *
+ * Revision 1.16  2011-04-13 17:35:46  willuhn
  * @N Druck-Support fuer Kontoauszuege fehlte noch
  *
  * Revision 1.15  2011-04-08 15:19:13  willuhn

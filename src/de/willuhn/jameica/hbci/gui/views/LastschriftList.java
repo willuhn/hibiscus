@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/LastschriftList.java,v $
- * $Revision: 1.13 $
- * $Date: 2011/04/11 14:36:37 $
+ * $Revision: 1.14 $
+ * $Date: 2011/09/12 15:28:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,6 +11,9 @@
  *
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.views;
+
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
@@ -39,17 +42,19 @@ public class LastschriftList extends AbstractView
     LastschriftControl control = new LastschriftControl(this);
 
     final de.willuhn.jameica.hbci.gui.parts.LastschriftList table = control.getLastschriftListe();
-
-    GUI.getView().setTitle(i18n.tr("Vorhandene Lastschriften"));
-    GUI.getView().addPanelButton(new PanelButtonPrint(new PrintSupportLastschriftList(table))
-    {
-      public boolean isEnabled()
+    final PanelButtonPrint print = new PanelButtonPrint(new PrintSupportLastschriftList(table));
+    table.addSelectionListener(new Listener() {
+      public void handleEvent(Event event)
       {
-        return table.getSelection() != null && super.isEnabled();
+        print.setEnabled(table.getSelection() != null);
       }
     });
+
+    GUI.getView().setTitle(i18n.tr("Vorhandene Lastschriften"));
+    GUI.getView().addPanelButton(print);
 		
     table.paint(getParent());
+    print.setEnabled(table.getSelection() != null); // einmal initial ausloesen
 
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Importieren..."),new LastschriftImport(),null,false,"document-open.png");
@@ -61,7 +66,10 @@ public class LastschriftList extends AbstractView
 
 /**********************************************************************
  * $Log: LastschriftList.java,v $
- * Revision 1.13  2011/04/11 14:36:37  willuhn
+ * Revision 1.14  2011/09/12 15:28:00  willuhn
+ * @N Enabled-State live uebernehmen - nicht erst beim Mouse-Over
+ *
+ * Revision 1.13  2011-04-11 14:36:37  willuhn
  * @N Druck-Support fuer Lastschriften und SEPA-Ueberweisungen
  *
  * Revision 1.12  2011-04-08 15:19:14  willuhn
