@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragStoreJob.java,v $
- * $Revision: 1.27 $
- * $Date: 2011/05/10 12:18:11 $
+ * $Revision: 1.28 $
+ * $Date: 2011/09/12 07:54:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.Properties;
 
+import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.GV_Result.GVRDauerEdit;
 import org.kapott.hbci.GV_Result.GVRDauerNew;
 
@@ -173,7 +174,6 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob
     else
       konto.addToProtokoll(i18n.tr("Dauerauftrag ausgeführt an {0} ",empfName),Protokoll.TYP_SUCCESS);
 
-    // jetzt muessen wir noch die Order-ID speichern, wenn er neu eingereicht wurde
     String orderID = null;
     if (!active)
     {
@@ -185,7 +185,13 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob
       GVRDauerEdit result = (GVRDauerEdit) this.getJobResult();
       orderID = result.getOrderId();
     }
-    // Der Auftrag war neu, dann muessen wir noch die Order-ID speichern
+    
+    if (StringUtils.trimToNull(orderID) == null)
+    {
+      Logger.warn("got no order id for this job");
+      konto.addToProtokoll(i18n.tr("Keine Order-ID für Dauerauftrag von Bank erhalten",empfName),Protokoll.TYP_ERROR);
+      // TODO: Was sollen wir hier machen?
+    }
     dauerauftrag.setOrderID(orderID);
     dauerauftrag.store();
 
@@ -207,7 +213,10 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIDauerauftragStoreJob.java,v $
- * Revision 1.27  2011/05/10 12:18:11  willuhn
+ * Revision 1.28  2011/09/12 07:54:09  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.27  2011-05-10 12:18:11  willuhn
  * @C Code zum Setzen der usage-Parameter in gemeinsamer Basisklasse AbstractHBCIJob - der Code war 3x identisch vorhanden
  *
  * Revision 1.26  2010-09-24 12:22:04  willuhn
