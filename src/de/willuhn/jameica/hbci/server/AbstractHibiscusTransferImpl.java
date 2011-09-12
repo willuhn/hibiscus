@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractHibiscusTransferImpl.java,v $
- * $Revision: 1.18 $
- * $Date: 2011/08/10 10:46:50 $
+ * $Revision: 1.19 $
+ * $Date: 2011/09/12 11:35:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.server;
 import java.rmi.RemoteException;
 
 import de.willuhn.datasource.db.AbstractDBObject;
+import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.Address;
@@ -51,6 +52,24 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractDBObject impl
       return getKonto();
 
     return super.getAttribute(arg0);
+  }
+
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#overwrite(de.willuhn.datasource.rmi.DBObject)
+   */
+  public void overwrite(DBObject object) throws RemoteException
+  {
+    // Muessen wir ueberschreiben, weil wir fuer das Konto hier eine
+    // Sonderbehandlung machen. Wuerden wir das hier nicht machen,
+    // haetten wir nach dem Overwrite ploetzlich ein Konto-Objekt
+    // statt der Konto-ID in den Properties. Das liegt eigentlich
+    // nur daran, weil wir "konto_id" hier nicht als Foreign-Key
+    // (wegen dem Cache) deklariert haben - bei "getAttribute("konto_id")"
+    // aber trotzdem das Objekt (wegen KontoColumn) zurueckliefern.
+    super.overwrite(object);
+    
+    // Jetzt ersetzen wir wieder das Konto-Objekt gegen die ID
+    this.setKonto(((AbstractHibiscusTransferImpl)object).getKonto());
   }
 
   /**
@@ -385,7 +404,10 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractDBObject impl
 
 /**********************************************************************
  * $Log: AbstractHibiscusTransferImpl.java,v $
- * Revision 1.18  2011/08/10 10:46:50  willuhn
+ * Revision 1.19  2011/09/12 11:35:02  willuhn
+ * @B "overwrite" musste ueberschrieben werden - siehe enthaltener Kommentar
+ *
+ * Revision 1.18  2011-08-10 10:46:50  willuhn
  * @N Aenderungen nur an den DA-Eigenschaften zulassen, die gemaess BPD aenderbar sind
  * @R AccountUtil entfernt, Code nach VerwendungszweckUtil verschoben
  * @N Neue Abfrage-Funktion in DBPropertyUtil, um die BPD-Parameter zu Geschaeftsvorfaellen bequemer abfragen zu koennen
