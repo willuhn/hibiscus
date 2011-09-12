@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/AdresseAuswahlDialog.java,v $
- * $Revision: 1.8 $
- * $Date: 2011/05/06 12:35:24 $
+ * $Revision: 1.9 $
+ * $Date: 2011/09/12 15:37:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,12 +12,13 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.dialogs;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
-import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.parts.ButtonArea;
+import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.filter.AddressFilter;
 import de.willuhn.jameica.hbci.gui.parts.EmpfaengerList;
@@ -57,7 +58,7 @@ public class AdresseAuswahlDialog extends AbstractDialog
     this.filter = filter;
 
 		this.setTitle(i18n.tr("Adressbuch"));
-    this.setSize(SWT.DEFAULT,300);
+    this.setSize(600,360);
   }
 
   /**
@@ -74,13 +75,15 @@ public class AdresseAuswahlDialog extends AbstractDialog
         close();
       }
     };    
-		final EmpfaengerList empf = new EmpfaengerList(a,this.filter);
+
+    Container c1 = new SimpleContainer(parent,true,1);
+    final EmpfaengerList empf = new EmpfaengerList(a,this.filter);
     empf.setContextMenu(null);
     empf.setMulti(false);
     empf.setSummary(false);
-    empf.paint(parent);
+    empf.paint(c1.getComposite());
 
-		ButtonArea b = new ButtonArea(parent,2);
+		ButtonArea b = new ButtonArea();
 		b.addButton(i18n.tr("Übernehmen"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -92,14 +95,17 @@ public class AdresseAuswahlDialog extends AbstractDialog
         choosen = (Address) o;
         close();
       }
-    });
+    },null,true,"ok.png");
 		b.addButton(i18n.tr("Abbrechen"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
 				throw new OperationCanceledException();
       }
-    });
+    },null,false,"process-stop.png");
+		
+    Container c2 = new SimpleContainer(parent);
+		c2.addButtonArea(b);
   }
 
   /**
@@ -117,7 +123,11 @@ public class AdresseAuswahlDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: AdresseAuswahlDialog.java,v $
- * Revision 1.8  2011/05/06 12:35:24  willuhn
+ * Revision 1.9  2011/09/12 15:37:42  willuhn
+ * @C GUI cleanup
+ * @N Icons in Buttons anzeigen
+ *
+ * Revision 1.8  2011-05-06 12:35:24  willuhn
  * @R Nicht mehr noetig - macht AbstractDialog jetzt selbst
  *
  * Revision 1.7  2009/10/20 23:12:58  willuhn

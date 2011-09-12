@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/AddressInput.java,v $
- * $Revision: 1.10 $
- * $Date: 2011/05/11 10:20:29 $
+ * $Revision: 1.11 $
+ * $Date: 2011/09/12 15:37:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -95,7 +95,6 @@ public class AddressInput implements Input
         }
         catch (OperationCanceledException oce)
         {
-          Logger.info(oce.getMessage());
           return;
         }
         catch (Exception e)
@@ -444,7 +443,11 @@ public class AddressInput implements Input
 
 /**********************************************************************
  * $Log: AddressInput.java,v $
- * Revision 1.10  2011/05/11 10:20:29  willuhn
+ * Revision 1.11  2011/09/12 15:37:42  willuhn
+ * @C GUI cleanup
+ * @N Icons in Buttons anzeigen
+ *
+ * Revision 1.10  2011-05-11 10:20:29  willuhn
  * @N OCE fangen
  *
  * Revision 1.9  2011-05-11 08:42:32  willuhn
