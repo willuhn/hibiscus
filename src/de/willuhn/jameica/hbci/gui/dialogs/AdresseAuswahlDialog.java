@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/AdresseAuswahlDialog.java,v $
- * $Revision: 1.9 $
- * $Date: 2011/09/12 15:37:42 $
+ * $Revision: 1.10 $
+ * $Date: 2011/09/13 08:54:49 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,9 +13,12 @@
 package de.willuhn.jameica.hbci.gui.dialogs;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
+import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
@@ -76,19 +79,18 @@ public class AdresseAuswahlDialog extends AbstractDialog
       }
     };    
 
+
     Container c1 = new SimpleContainer(parent,true,1);
     final EmpfaengerList empf = new EmpfaengerList(a,this.filter);
     empf.setContextMenu(null);
     empf.setMulti(false);
     empf.setSummary(false);
-    empf.paint(c1.getComposite());
-
-		ButtonArea b = new ButtonArea();
-		b.addButton(i18n.tr("Übernehmen"), new Action()
+    
+    final Button apply = new Button(i18n.tr("Übernehmen"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
-				Object o = empf.getSelection();
+        Object o = empf.getSelection();
         if (o == null || !(o instanceof Address))
           return;
 
@@ -96,6 +98,18 @@ public class AdresseAuswahlDialog extends AbstractDialog
         close();
       }
     },null,true,"ok.png");
+    apply.setEnabled(false);
+    empf.addSelectionListener(new Listener() {
+      public void handleEvent(Event event)
+      {
+        apply.setEnabled(empf.getSelection() != null);
+      }
+    });
+    
+    empf.paint(c1.getComposite());
+
+		ButtonArea b = new ButtonArea();
+		b.addButton(apply);
 		b.addButton(i18n.tr("Abbrechen"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -123,7 +137,10 @@ public class AdresseAuswahlDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: AdresseAuswahlDialog.java,v $
- * Revision 1.9  2011/09/12 15:37:42  willuhn
+ * Revision 1.10  2011/09/13 08:54:49  willuhn
+ * @C Uebernehmen-Button nur aktivieren, wenn etwas ausgewaehlt wurde
+ *
+ * Revision 1.9  2011-09-12 15:37:42  willuhn
  * @C GUI cleanup
  * @N Icons in Buttons anzeigen
  *
