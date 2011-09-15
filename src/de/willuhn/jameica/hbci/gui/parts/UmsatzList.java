@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.79 $
- * $Date: 2011/08/11 08:16:38 $
+ * $Revision: 1.80 $
+ * $Date: 2011/09/15 09:43:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -51,6 +51,7 @@ import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.input.ButtonInput;
 import de.willuhn.jameica.gui.input.CheckboxInput;
+import de.willuhn.jameica.gui.parts.TableChangeListener;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.DelayedListener;
@@ -190,9 +191,10 @@ public class UmsatzList extends TablePart implements Extendable
     addColumn(i18n.tr("Verwendungszweck"),          "mergedzweck");
     addColumn(i18n.tr("Datum"),                     "datum_pseudo", new DateFormatter(HBCI.DATEFORMAT));
     addColumn(i18n.tr("Betrag"),                    "betrag",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
-    addColumn(i18n.tr("Kategorie"),                 "umsatztyp");
+    addColumn(i18n.tr("Kategorie"),                 "umsatztyp",null,true);
     // BUGZILLA 66 http://www.willuhn.de/bugzilla/show_bug.cgi?id=66
-    addColumn(i18n.tr("Zwischensumme"), "saldo",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
+    addColumn(i18n.tr("Zwischensumme"),             "saldo",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
+    addColumn(i18n.tr("Notiz"),                     "kommentar",null,true);
 
     // BUGZILLA 84 http://www.willuhn.de/bugzilla/show_bug.cgi?id=84
     setRememberOrder(true);
@@ -215,6 +217,27 @@ public class UmsatzList extends TablePart implements Extendable
       public void handleEvent(Event event)
       {
         refreshSummary();
+      }
+    });
+    
+    this.addChangeListener(new TableChangeListener() {
+      public void itemChanged(Object object, String attribute, String newValue) throws ApplicationException
+      {
+        try
+        {
+          Umsatz u = (Umsatz) object;
+          BeanUtil.set(u,attribute,newValue);
+          u.store();
+        }
+        catch (ApplicationException ae)
+        {
+          throw ae;
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to apply changes",e);
+          throw new ApplicationException(i18n.tr("Fehlgeschlagen: {0}",e.getMessage()));
+        }
       }
     });
     
@@ -827,7 +850,10 @@ public class UmsatzList extends TablePart implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
- * Revision 1.79  2011/08/11 08:16:38  willuhn
+ * Revision 1.80  2011/09/15 09:43:36  willuhn
+ * @N BUGZILLA 728
+ *
+ * Revision 1.79  2011-08-11 08:16:38  willuhn
  * @R Umsatz-Preview erstmal wieder entfernt
  *
  * Revision 1.78  2011-08-05 11:21:58  willuhn
