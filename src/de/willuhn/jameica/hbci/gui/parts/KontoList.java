@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoList.java,v $
- * $Revision: 1.23 $
- * $Date: 2011/06/29 07:36:42 $
+ * $Revision: 1.24 $
+ * $Date: 2011/09/25 11:53:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -85,7 +85,7 @@ public class KontoList extends TablePart implements Part
     
     this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-    addColumn(i18n.tr("Kontonummer"),"kontonummer");
+    addColumn(i18n.tr("Kontonummer"),"kontonummer",null,false,Column.ALIGN_RIGHT);
     addColumn(i18n.tr("Bankleitzahl"),"blz", new Formatter() {
       public String format(Object o)
       {
@@ -126,7 +126,7 @@ public class KontoList extends TablePart implements Part
         }
       }
     });
-    addColumn(i18n.tr("Saldo"),"saldo");
+    addColumn(i18n.tr("Saldo"),"saldo",null,false,Column.ALIGN_RIGHT);
     addSaldoAvailable(konten);
     // BUGZILLA 108 http://www.willuhn.de/bugzilla/show_bug.cgi?id=108
     addColumn(i18n.tr("Saldo aktualisiert am"),"saldo_datum", new DateFormatter(HBCI.LONGDATEFORMAT));
@@ -383,7 +383,10 @@ public class KontoList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: KontoList.java,v $
- * Revision 1.23  2011/06/29 07:36:42  willuhn
+ * Revision 1.24  2011/09/25 11:53:57  willuhn
+ * @C Kontonummer und Saldo rechtsbuendig forcieren - siehe Mail von Hermann vom 20.09.2011
+ *
+ * Revision 1.23  2011-06-29 07:36:42  willuhn
  * @N BUGZILLA 1088
  *
  * Revision 1.22  2011-01-02 23:18:51  willuhn
