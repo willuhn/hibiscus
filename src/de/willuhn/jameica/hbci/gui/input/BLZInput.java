@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/BLZInput.java,v $
- * $Revision: 1.3 $
- * $Date: 2008/12/04 23:20:37 $
+ * $Revision: 1.4 $
+ * $Date: 2011/09/26 11:07:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -77,12 +77,15 @@ public class BLZInput extends TextInput
     {
       try
       {
-        String b = (String)getValue();
+        String b = (String) getValue();
         if (b != null && b.length() > 0)
         {
-          // Wir schnipseln gleich noch Leerzeichen raus
-          b = b.replaceAll(" ","");
-          BLZInput.super.setValue(b);
+          // Wir schnipseln gleich noch Leerzeichen raus - aber nur, wenn welche drin stehen
+          if (b.indexOf(' ') != -1)
+          {
+            b = b.replaceAll(" ","");
+            BLZInput.super.setValue(b);
+          }
           setComment(HBCIUtils.getNameForBLZ(b));
         }
         else
@@ -102,7 +105,10 @@ public class BLZInput extends TextInput
 
 /**********************************************************************
  * $Log: BLZInput.java,v $
- * Revision 1.3  2008/12/04 23:20:37  willuhn
+ * Revision 1.4  2011/09/26 11:07:37  willuhn
+ * @B setText nur aufrufen, wenn Leerzeichen entfernt wurden - siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=78495#78495
+ *
+ * Revision 1.3  2008-12-04 23:20:37  willuhn
  * @N BUGZILLA 310
  *
  * Revision 1.2  2007/07/16 12:51:15  willuhn
