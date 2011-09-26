@@ -1,5 +1,7 @@
 HEAD
 
+  * BUG: 0133 setText nur aufrufen, wenn Leerzeichen entfernt wurden - siehe
+              http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=78495#78495
   * NEW: 0132 Kontonummer und Saldo in Kontoliste rechtsbuendig forcieren
   * NEW: 0131 BUGZILLA 728 - Inline-Editing von Notizen direkt in Umsatzliste
   * BUG: 0130 Datum des Saldos in Box "Finanz-Übersicht" nicht ganz korrekt - siehe
