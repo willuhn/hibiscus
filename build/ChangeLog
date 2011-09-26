@@ -1,8 +1,5 @@
 HEAD
 
-  * BUG: 0134 Zeilenumbruch aus einzeiligen Eingabefeldern beim Copy'n'Paste
-              entfernen - das behindert sonst das Paste - siehe 
-              http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=78495#78495
   * BUG: 0133 setText nur aufrufen, wenn Leerzeichen entfernt wurden - siehe
               http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=78495#78495
   * NEW: 0132 Kontonummer und Saldo in Kontoliste rechtsbuendig forcieren
