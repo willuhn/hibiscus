@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/EmpfaengerExport.java,v $
- * $Revision: 1.4 $
- * $Date: 2011/05/11 10:20:29 $
+ * $Revision: 1.5 $
+ * $Date: 2011/09/27 16:39:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,7 +16,7 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.dialogs.ExportDialog;
-import de.willuhn.jameica.hbci.rmi.Address;
+import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -31,7 +31,7 @@ public class EmpfaengerExport implements Action
 {
 
   /**
-   * Erwartet ein Objekt vom Typ <code>Address</code> oder <code>Address[]</code>.
+   * Erwartet ein Objekt vom Typ <code>HibiscusAddress</code> oder <code>HibiscusAddress[]</code>.
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
   public void handleAction(Object context) throws ApplicationException
@@ -41,27 +41,23 @@ public class EmpfaengerExport implements Action
 		if (context == null)
 			throw new ApplicationException(i18n.tr("Bitte wählen Sie mindestens eine Adresse aus"));
 
-    // Der Check hier ist bewusst mit "isAssignable" weil das Array bei der
-    // Existenz von externen Adressbuechern ggf. nicht Typsicher ist und
-    // ein "(context instanceof Address[])" fehlschlagen wuerde
-		if (!(context instanceof Address) &&
-        !(Address[].class.isAssignableFrom(context.getClass())))
-			throw new ApplicationException(i18n.tr("Bitte wählen Sie einen oder mehrere Adressen aus"));
-
     Object[] u = null;
-		try {
-
-			if (context instanceof Address)
+		try
+		{
+			if (context instanceof HibiscusAddress)
 			{
-				u = new Address[1];
-        u[0] = (Address) context;
+				u = new HibiscusAddress[1];
+        u[0] = (HibiscusAddress) context;
 			}
-      else
+			else if (context instanceof HibiscusAddress[])
       {
         u = (Object[])context;
       }
 
-      ExportDialog d = new ExportDialog(u, Address.class);
+			if (u == null)
+        throw new ApplicationException(i18n.tr("Bitte wählen Sie einen oder mehrere Adressen aus"));
+
+      ExportDialog d = new ExportDialog(u, HibiscusAddress.class);
       d.open();
 		}
     catch (OperationCanceledException oce)
@@ -85,7 +81,10 @@ public class EmpfaengerExport implements Action
 
 /**********************************************************************
  * $Log: EmpfaengerExport.java,v $
- * Revision 1.4  2011/05/11 10:20:29  willuhn
+ * Revision 1.5  2011/09/27 16:39:10  willuhn
+ * @B XML-Export von Adressen funktionierte nicht mehr
+ *
+ * Revision 1.4  2011-05-11 10:20:29  willuhn
  * @N OCE fangen
  *
  * Revision 1.3  2007/07/16 12:48:32  willuhn

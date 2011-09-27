@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/EmpfaengerList.java,v $
- * $Revision: 1.20 $
- * $Date: 2008/12/19 12:16:05 $
+ * $Revision: 1.21 $
+ * $Date: 2011/09/27 16:39:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,6 +27,7 @@ import de.willuhn.jameica.hbci.gui.action.EmpfaengerNew;
 import de.willuhn.jameica.hbci.gui.action.LastschriftNew;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungNew;
 import de.willuhn.jameica.hbci.rmi.Address;
+import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -49,13 +50,13 @@ public class EmpfaengerList extends ContextMenu implements Extendable
 
 		addItem(new SingleItem(i18n.tr("Öffnen"),new EmpfaengerNew(),"document-open.png"));
     addItem(new ContextMenuItem(i18n.tr("Neue Adresse..."), new ENeu(),"contact-new.png"));
-    addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
+    addItem(new CheckedHibiscusAddressContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new ContextMenuItem(i18n.tr("Neue Überweisung..."),new UeberweisungNew(),"stock_next.png"));
     addItem(new ContextMenuItem(i18n.tr("Neue Lastschrift..."),new LastschriftNew(),"stock_previous.png"));
     addItem(new ContextMenuItem(i18n.tr("Neuer Dauerauftrag..."),new DauerauftragNew(),"stock_form-time-field.png"));
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new EmpfaengerExport(),"document-save.png"));
+    addItem(new CheckedHibiscusAddressContextMenuItem(i18n.tr("Exportieren..."),new EmpfaengerExport(),"document-save.png"));
     addItem(new ContextMenuItem(i18n.tr("Importieren..."),new EmpfaengerImport(),"document-open.png"));
     
     // Wir geben das Context-Menu jetzt noch zur Erweiterung frei.
@@ -68,7 +69,56 @@ public class EmpfaengerList extends ContextMenu implements Extendable
   public String getExtendableID()
   {
     return this.getClass().getName();
-  } 
+  }
+  
+  /**
+   * Ueberschrieben, um nur "echte" Hibiscus-Adressen aus der DB zuzulassen.
+   */
+  private class CheckedHibiscusAddressContextMenuItem extends CheckedContextMenuItem
+  {
+    /**
+     * @param text Anzuzeigender Text.
+     * @param action Aktion.
+     * @param icon optionales Icon.
+     */
+    private CheckedHibiscusAddressContextMenuItem(String text, Action action, String icon)
+    {
+      super(text,action,icon);
+    }
+    
+    /**
+     * @see de.willuhn.jameica.gui.parts.CheckedContextMenuItem#isEnabledFor(java.lang.Object)
+     */
+    public boolean isEnabledFor(Object o)
+    {
+      // erstmal checken, ob ueberhaupt was ausgewaehlt wurde
+      if (!super.isEnabledFor(o))
+        return false;
+      
+      // Einzelner Datensatz?
+      if (o instanceof HibiscusAddress)
+        return true;
+      
+      // Liste von Datensaetzen?
+      if ((Address[].class.isAssignableFrom(o.getClass())))
+      {
+        // Checken, ob wirklich nur Datensaetze aus der Hibiscus-Datenbank drin stehen
+        // und keine "virtuellen"
+        Address[] list = (Address[]) o;
+        for (Address a:list)
+        {
+          if (!(a instanceof HibiscusAddress))
+            return false;
+        }
+        
+        return true; // Sieht gut aus
+      }
+      
+      // nichts von dem
+      return false;
+    }
+    
+  }
 
   /**
    * Ueberschrieben, um zu pruefen, ob ein Array oder ein einzelnes Element markiert ist.
@@ -84,6 +134,7 @@ public class EmpfaengerList extends ContextMenu implements Extendable
     {
       super(text,action,icon);
     }
+    
     /**
      * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
      */
@@ -112,6 +163,9 @@ public class EmpfaengerList extends ContextMenu implements Extendable
 
 /**********************************************************************
  * $Log: EmpfaengerList.java,v $
+ * Revision 1.21  2011/09/27 16:39:10  willuhn
+ * @B XML-Export von Adressen funktionierte nicht mehr
+ *
  * Revision 1.20  2008/12/19 12:16:05  willuhn
  * @N Mehr Icons
  * @C Reihenfolge der Contextmenu-Eintraege vereinheitlicht
