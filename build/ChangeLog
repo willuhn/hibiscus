@@ -1,5 +1,7 @@
 HEAD
 
+  * BUG: 0134 XML-Export von Hibiscus-Adressen funktionierte nicht mehr wegen
+              "virtuellen" Konto-Adressen 
   * BUG: 0133 setText nur aufrufen, wenn Leerzeichen entfernt wurden - siehe
               http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=78495#78495
   * NEW: 0132 Kontonummer und Saldo in Kontoliste rechtsbuendig forcieren
