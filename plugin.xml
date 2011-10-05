@@ -49,7 +49,6 @@
       <item id="hibiscus.navi.passports"                     name="Bank-Zugänge"            icon-close="seahorse-preferences.png"        action="de.willuhn.jameica.hbci.gui.action.PassportList" />
       <item id="hibiscus.navi.accounts"                      name="Konten"                  icon-close="system-file-manager.png"         action="de.willuhn.jameica.hbci.gui.action.KontoList" />
       <item id="hibiscus.navi.addresses"                     name="Adressbuch"              icon-close="contact-new.png"                 action="de.willuhn.jameica.hbci.gui.action.EmpfaengerList" />
-      <item id="hibiscus.navi.termine"                       name="Termine"                 icon-close="office-calendar.png"             action="de.willuhn.jameica.hbci.gui.action.Termine" />
       <item id="hibiscus.navi.transfer"                      name="Zahlungsverkehr"         icon-close="folder.png">
         <item id="hibiscus.navi.transfer.ueb"                name="Überweisungen"           icon-close="stock_next.png"                  action="de.willuhn.jameica.hbci.gui.action.UeberweisungList" />
         <item id="hibiscus.navi.transfer.einzellast"         name="Lastschriften"           icon-close="stock_previous.png"              action="de.willuhn.jameica.hbci.gui.action.LastschriftList" />
