@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/calendar/SammelLastschriftAppointmentProvider.java,v $
- * $Revision: 1.6 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/calendar/UmsatzAppointmentProvider.java,v $
+ * $Revision: 1.1 $
  * $Date: 2011/10/06 10:49:24 $
  * $Author: willuhn $
  *
@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.graphics.RGB;
 
 import de.willuhn.datasource.rmi.DBIterator;
@@ -25,10 +26,11 @@ import de.willuhn.jameica.gui.calendar.AppointmentProvider;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.action.SammelLastschriftNew;
+import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
+import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
@@ -36,9 +38,9 @@ import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Implementierung eines Termin-Providers fuer offene Sammel-Lastschriften.
+ * Implementierung eines Termin-Providers fuer die Umsaetze.
  */
-public class SammelLastschriftAppointmentProvider implements AppointmentProvider
+public class UmsatzAppointmentProvider implements AppointmentProvider
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
@@ -50,14 +52,14 @@ public class SammelLastschriftAppointmentProvider implements AppointmentProvider
     try
     {
       HBCIDBService service = Settings.getDBService();
-      DBIterator list = service.createList(SammelLastschrift.class);
-      if (from != null) list.addFilter("termin >= ?", new Object[]{new java.sql.Date(DateUtil.startOfDay(from).getTime())});
-      if (to   != null) list.addFilter("termin <= ?", new Object[]{new java.sql.Date(DateUtil.endOfDay(to).getTime())});
-      list.setOrder("ORDER BY " + service.getSQLTimestamp("termin"));
+      DBIterator list = service.createList(Umsatz.class);
+      if (from != null) list.addFilter("valuta >= ?", new Object[]{new java.sql.Date(DateUtil.startOfDay(from).getTime())});
+      if (to   != null) list.addFilter("valuta <= ?", new Object[]{new java.sql.Date(DateUtil.endOfDay(to).getTime())});
+      list.setOrder("ORDER BY " + service.getSQLTimestamp("valuta"));
 
       List<Appointment> result = new LinkedList<Appointment>();
       while (list.hasNext())
-        result.add(new MyAppointment((SammelLastschrift) list.next()));
+        result.add(new MyAppointment((Umsatz) list.next()));
       
       return result;
     }
@@ -73,7 +75,7 @@ public class SammelLastschriftAppointmentProvider implements AppointmentProvider
    */
   public String getName()
   {
-    return i18n.tr("Sammellastschriften");
+    return i18n.tr("Umsätze");
   }
   
   /**
@@ -81,13 +83,13 @@ public class SammelLastschriftAppointmentProvider implements AppointmentProvider
    */
   private class MyAppointment extends AbstractAppointment
   {
-    private SammelLastschrift t = null;
+    private Umsatz t = null;
     
     /**
      * ct.
-     * @param t die Sammel-Lastschrift.
+     * @param t der Umsatz.
      */
-    private MyAppointment(SammelLastschrift t)
+    private MyAppointment(Umsatz t)
     {
       this.t = t;
     }
@@ -97,7 +99,7 @@ public class SammelLastschriftAppointmentProvider implements AppointmentProvider
      */
     public void execute() throws ApplicationException
     {
-      new SammelLastschriftNew().handleAction(this.t);
+      new UmsatzDetail().handleAction(this.t);
     }
 
     /**
@@ -107,7 +109,7 @@ public class SammelLastschriftAppointmentProvider implements AppointmentProvider
     {
       try
       {
-        return t.getTermin();
+        return t.getValuta();
       }
       catch (Exception e)
       {
@@ -123,8 +125,15 @@ public class SammelLastschriftAppointmentProvider implements AppointmentProvider
     {
       try
       {
-        Konto k = t.getKonto();
-        return i18n.tr("Sammellastschrift: {0} {1} einziehen\n\n{2}\n\nKonto: {3}",HBCI.DECIMALFORMAT.format(t.getSumme()),k.getWaehrung(),t.getBezeichnung(),k.getLongName());
+        Konto k       = t.getKonto();
+        double betrag = t.getBetrag();
+        String rel    = i18n.tr(betrag >= 0.0d ? "von" : "an");
+        String zweck  = VerwendungszweckUtil.toString(t,"\n");
+        String name   = StringUtils.trimToEmpty(t.getGegenkontoName());
+
+        betrag = Math.abs(betrag);
+        
+        return i18n.tr("Umsatz: {0} {1} {2} {3}\n\n{4}\n\nKonto: {5}",HBCI.DECIMALFORMAT.format(betrag),k.getWaehrung(),rel,name,zweck,k.getLongName());
       }
       catch (RemoteException re)
       {
@@ -140,13 +149,30 @@ public class SammelLastschriftAppointmentProvider implements AppointmentProvider
     {
       try
       {
-        Konto k = t.getKonto();
-        return i18n.tr("{0} {1} {2}",HBCI.DECIMALFORMAT.format(t.getSumme()),k.getWaehrung(),t.getBezeichnung());
+        String curr   = t.getKonto().getWaehrung();
+        double betrag = t.getBetrag();
+        String name   = t.getGegenkontoName();
+        String usage  = t.getZweck();
+        if (StringUtils.trimToNull(name) != null)
+        {
+          // Wenn wir einen Gegenkontonamen haben, nehmen wir den
+          return i18n.tr("{0} {1} {2}",HBCI.DECIMALFORMAT.format(betrag),curr,name);
+        }
+        else if (StringUtils.trimToNull(usage) != null)
+        {
+          // andernfalls den Verwendungszweck
+          return i18n.tr("{0} {1} {2}",HBCI.DECIMALFORMAT.format(betrag),curr,usage);
+        }
+        else
+        {
+          // Wenn wir auch den nicht haben, dann nur den Betrag
+          return i18n.tr("{0} {1}",HBCI.DECIMALFORMAT.format(betrag),curr);
+        }
       }
       catch (RemoteException re)
       {
         Logger.error("unable to build name",re);
-        return i18n.tr("Sammellastschrift");
+        return i18n.tr("Umsatz");
       }
     }
 
@@ -155,9 +181,19 @@ public class SammelLastschriftAppointmentProvider implements AppointmentProvider
      */
     public RGB getColor()
     {
-      if (hasAlarm())
-        return Settings.getBuchungHabenForeground().getRGB();
-      return Color.COMMENT.getSWTColor().getRGB();
+      try
+      {
+        double betrag = t.getBetrag();
+        if (betrag > 0.0d)
+          return Settings.getBuchungHabenForeground().getRGB();
+        else if (betrag < 0.0d)
+          return Settings.getBuchungSollForeground().getRGB();
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to detect color",e);
+      }
+      return Color.WIDGET_FG.getSWTColor().getRGB();
     }
 
     /**
@@ -167,7 +203,7 @@ public class SammelLastschriftAppointmentProvider implements AppointmentProvider
     {
       try
       {
-        return "hibiscus.slast." + t.getID();
+        return "hibiscus.ums." + t.getID();
       }
       catch (RemoteException re)
       {
@@ -181,15 +217,7 @@ public class SammelLastschriftAppointmentProvider implements AppointmentProvider
      */
     public boolean hasAlarm()
     {
-      try
-      {
-        return !t.ausgefuehrt();
-      }
-      catch (RemoteException re)
-      {
-        Logger.error("unable to determine execution status",re);
-        return super.hasAlarm();
-      }
+      return false;
     }
   }
 }
@@ -197,24 +225,8 @@ public class SammelLastschriftAppointmentProvider implements AppointmentProvider
 
 
 /**********************************************************************
- * $Log: SammelLastschriftAppointmentProvider.java,v $
- * Revision 1.6  2011/10/06 10:49:24  willuhn
+ * $Log: UmsatzAppointmentProvider.java,v $
+ * Revision 1.1  2011/10/06 10:49:24  willuhn
  * @N Termin-Provider fuer Umsaetze
- *
- * Revision 1.5  2011-06-08 15:29:09  willuhn
- * @B Falsche Farbe
- *
- * Revision 1.4  2011-01-20 17:12:39  willuhn
- * @C geaendertes Appointment-Interface
- *
- * Revision 1.3  2010-11-22 00:52:53  willuhn
- * @C Appointment-Inner-Class darf auch private sein
- *
- * Revision 1.2  2010-11-21 23:31:26  willuhn
- * @N Auch abgelaufene Termine anzeigen
- * @N Turnus von Dauerauftraegen berechnen
- *
- * Revision 1.1  2010-11-19 18:37:20  willuhn
- * @N Erste Version der Termin-View mit Appointment-Providern
  *
  **********************************************************************/

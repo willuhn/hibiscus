@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/calendar/LastschriftAppointmentProvider.java,v $
- * $Revision: 1.5 $
- * $Date: 2011/06/08 15:29:09 $
+ * $Revision: 1.6 $
+ * $Date: 2011/10/06 10:49:24 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -74,7 +74,7 @@ public class LastschriftAppointmentProvider implements AppointmentProvider
    */
   public String getName()
   {
-    return i18n.tr("Offene Lastschriften");
+    return i18n.tr("Lastschriften");
   }
   
   /**
@@ -125,7 +125,7 @@ public class LastschriftAppointmentProvider implements AppointmentProvider
       try
       {
         Konto k = t.getKonto();
-        return i18n.tr("{0} {1} von {2} einziehen\n\n{3}\n\nKonto: {4}",HBCI.DECIMALFORMAT.format(t.getBetrag()),k.getWaehrung(),t.getGegenkontoName(),VerwendungszweckUtil.toString(t),k.getLongName());
+        return i18n.tr("Lastschrift: {0} {1} von {2} einziehen\n\n{3}\n\nKonto: {4}",HBCI.DECIMALFORMAT.format(t.getBetrag()),k.getWaehrung(),t.getGegenkontoName(),VerwendungszweckUtil.toString(t,"\n"),k.getLongName());
       }
       catch (RemoteException re)
       {
@@ -199,7 +199,10 @@ public class LastschriftAppointmentProvider implements AppointmentProvider
 
 /**********************************************************************
  * $Log: LastschriftAppointmentProvider.java,v $
- * Revision 1.5  2011/06/08 15:29:09  willuhn
+ * Revision 1.6  2011/10/06 10:49:24  willuhn
+ * @N Termin-Provider fuer Umsaetze
+ *
+ * Revision 1.5  2011-06-08 15:29:09  willuhn
  * @B Falsche Farbe
  *
  * Revision 1.4  2011-01-20 17:12:39  willuhn

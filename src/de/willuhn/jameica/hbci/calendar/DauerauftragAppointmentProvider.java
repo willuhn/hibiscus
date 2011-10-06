@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/calendar/DauerauftragAppointmentProvider.java,v $
- * $Revision: 1.6 $
- * $Date: 2011/01/20 17:12:39 $
+ * $Revision: 1.7 $
+ * $Date: 2011/10/06 10:49:23 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -190,7 +190,7 @@ public class DauerauftragAppointmentProvider implements AppointmentProvider
       try
       {
         Konto k = t.getKonto();
-        return i18n.tr("{0} {1} an {2}\n{3}\n\n{4}\n\nKonto: {5}",HBCI.DECIMALFORMAT.format(t.getBetrag()),k.getWaehrung(),t.getGegenkontoName(),TurnusHelper.createBezeichnung(t.getTurnus()),VerwendungszweckUtil.toString(t),k.getLongName());
+        return i18n.tr("Dauerauftrag: {0} {1} an {2}\n{3}\n\n{4}\n\nKonto: {5}",HBCI.DECIMALFORMAT.format(t.getBetrag()),k.getWaehrung(),t.getGegenkontoName(),TurnusHelper.createBezeichnung(t.getTurnus()),VerwendungszweckUtil.toString(t,"\n"),k.getLongName());
       }
       catch (RemoteException re)
       {
@@ -251,7 +251,10 @@ public class DauerauftragAppointmentProvider implements AppointmentProvider
 
 /**********************************************************************
  * $Log: DauerauftragAppointmentProvider.java,v $
- * Revision 1.6  2011/01/20 17:12:39  willuhn
+ * Revision 1.7  2011/10/06 10:49:23  willuhn
+ * @N Termin-Provider fuer Umsaetze
+ *
+ * Revision 1.6  2011-01-20 17:12:39  willuhn
  * @C geaendertes Appointment-Interface
  *
  * Revision 1.5  2010-11-23 11:47:35  willuhn

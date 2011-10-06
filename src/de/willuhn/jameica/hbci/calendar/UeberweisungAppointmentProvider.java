@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/calendar/UeberweisungAppointmentProvider.java,v $
- * $Revision: 1.4 $
- * $Date: 2011/01/20 17:12:39 $
+ * $Revision: 1.5 $
+ * $Date: 2011/10/06 10:49:24 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -74,7 +74,7 @@ public class UeberweisungAppointmentProvider implements AppointmentProvider
    */
   public String getName()
   {
-    return i18n.tr("Offene Überweisungen");
+    return i18n.tr("Überweisungen");
   }
   
   /**
@@ -125,7 +125,7 @@ public class UeberweisungAppointmentProvider implements AppointmentProvider
       try
       {
         Konto k = t.getKonto();
-        return i18n.tr("{0} {1} an {2} überweisen\n\n{3}\n\nKonto: {4}",HBCI.DECIMALFORMAT.format(t.getBetrag()),k.getWaehrung(),t.getGegenkontoName(),VerwendungszweckUtil.toString(t),k.getLongName());
+        return i18n.tr("Überweisung: {0} {1} an {2} überweisen\n\n{3}\n\nKonto: {4}",HBCI.DECIMALFORMAT.format(t.getBetrag()),k.getWaehrung(),t.getGegenkontoName(),VerwendungszweckUtil.toString(t,"\n"),k.getLongName());
       }
       catch (RemoteException re)
       {
@@ -199,7 +199,10 @@ public class UeberweisungAppointmentProvider implements AppointmentProvider
 
 /**********************************************************************
  * $Log: UeberweisungAppointmentProvider.java,v $
- * Revision 1.4  2011/01/20 17:12:39  willuhn
+ * Revision 1.5  2011/10/06 10:49:24  willuhn
+ * @N Termin-Provider fuer Umsaetze
+ *
+ * Revision 1.4  2011-01-20 17:12:39  willuhn
  * @C geaendertes Appointment-Interface
  *
  * Revision 1.3  2010-11-22 00:52:53  willuhn
