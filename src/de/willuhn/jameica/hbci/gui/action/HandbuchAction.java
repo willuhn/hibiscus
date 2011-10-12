@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/HandbuchAction.java,v $
- * $Revision: 1.4 $
- * $Date: 2011/05/03 16:42:56 $
+ * $Revision: 1.5 $
+ * $Date: 2011/10/12 16:15:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -38,7 +38,7 @@ public class HandbuchAction implements Action
       {
         try
         {
-          new Program().handleAction("http://hibiscus.berlios.de/doku.php?id=handbuch");
+          new Program().handleAction("http://www.willuhn.de/wiki/doku.php?id=handbuch");
         }
         catch (ApplicationException ae)
         {
@@ -50,7 +50,10 @@ public class HandbuchAction implements Action
 }
 /*******************************************************************************
  * $Log: HandbuchAction.java,v $
- * Revision 1.4  2011/05/03 16:42:56  willuhn
+ * Revision 1.5  2011/10/12 16:15:38  willuhn
+ * @C Neue Wiki-URL
+ *
+ * Revision 1.4  2011-05-03 16:42:56  willuhn
  * @R Handbuch entfernt - siehe http://www.willuhn.de/blog/index.php?/archives/557-Neues-Handbuch-im-Wiki.html
  *
  * Revision 1.3  2009/03/10 23:51:31  willuhn

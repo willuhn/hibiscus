@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.124 $
- * $Date: 2011/06/19 12:03:19 $
+ * $Revision: 1.125 $
+ * $Date: 2011/10/12 16:15:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -346,7 +346,7 @@ public class HBCI extends AbstractPlugin
         		   "w‰hlen Sie das Backup vom letzten Tag aus, an dem der Fehler noch nicht auftrat und klicken " +
         		   "Sie anschlieﬂend auf \"Ausgew‰hltes Backup wiederherstellen...\". Beim n‰chsten Start von Hibiscus " +
         		   "wird das Backup automatisch wiederhergestellt. Sollte sich das Problem hierdurch nicht beheben lassen, " +
-        		   "besuchen Sie bitte http://hibiscus.berlios.de/doku.php?id=support:fehlermelden";
+        		   "besuchen Sie bitte http://www.willuhn.de/wiki/doku.php?id=support:fehlermelden";
       }
 
       throw new ApplicationException(msg,e);
@@ -372,7 +372,10 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
- * Revision 1.124  2011/06/19 12:03:19  willuhn
+ * Revision 1.125  2011/10/12 16:15:38  willuhn
+ * @C Neue Wiki-URL
+ *
+ * Revision 1.124  2011-06-19 12:03:19  willuhn
  * @N Wallet loeschen, wenn bei der Deinstallation die Benutzerdaten geloescht werden sollen
  *
  * Revision 1.123  2011-06-17 16:06:58  willuhn
