@@ -237,26 +237,6 @@ CREATE TABLE version (
   PRIMARY KEY (id)
 );
 
-CREATE TABLE op (
-  id IDENTITY,
-  name varchar(255) not NULL,
-  pattern varchar(255) NULL,
-  isregex int(1) NULL,
-  betrag double NOT NULL,
-  termin date NULL,
-  kommentar varchar(1000) NULL,
-  UNIQUE (id),
-  PRIMARY KEY (id)
-);
-
-CREATE TABLE op_buchung (
-  id IDENTITY,
-  umsatz_id int(10) NOT NULL,
-  op_id int(10) NOT NULL,
-  UNIQUE (id),
-  PRIMARY KEY (id)
-);
-
 CREATE TABLE property (
   id IDENTITY,
   name varchar(1000) NOT NULL,
@@ -299,6 +279,6 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',35);
+INSERT INTO version (name,version) values ('db',36);
   
 COMMIT;

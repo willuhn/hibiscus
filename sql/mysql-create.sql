@@ -237,26 +237,6 @@ CREATE TABLE version (
      , PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
-CREATE TABLE op (
-  id int(10) AUTO_INCREMENT,
-  name varchar(255) not NULL,
-  pattern varchar(255) NULL,
-  isregex int(1) NULL,
-  betrag double NOT NULL,
-  termin date NULL,
-  kommentar varchar(1000) NULL,
-  UNIQUE (id),
-  PRIMARY KEY (id)
-) ENGINE=InnoDB;
-
-CREATE TABLE op_buchung (
-  id int(10) AUTO_INCREMENT,
-  umsatz_id int(10) NOT NULL,
-  op_id int(10) NOT NULL,
-  UNIQUE (id),
-  PRIMARY KEY (id)
-) ENGINE=InnoDB;
-
 CREATE TABLE property (
   id int(10) AUTO_INCREMENT,
   name text NOT NULL,
@@ -300,4 +280,4 @@ ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
 
-INSERT INTO version (name,version) values ('db',35);
+INSERT INTO version (name,version) values ('db',36);

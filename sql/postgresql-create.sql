@@ -208,22 +208,6 @@ CREATE TABLE version (
   version integer NOT NULL
 );
 
-CREATE TABLE op (
-  id serial primary key,
-  name varchar(255) not NULL,
-  pattern varchar(255) NULL,
-  isregex integer NULL,
-  betrag float NOT NULL,
-  termin date NULL,
-  kommentar varchar(1000) NULL
-);
-
-CREATE TABLE op_buchung (
-  id serial primary key,
-  umsatz_id integer NOT NULL,
-  op_id integer NOT NULL
-);
-
 CREATE TABLE property (
   id serial primary key,
   name varchar(1000) NOT NULL,
@@ -260,4 +244,4 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',35);
+INSERT INTO version (name,version) values ('db',36);
