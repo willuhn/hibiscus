@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DBPropertyUtil.java,v $
- * $Revision: 1.3 $
- * $Date: 2011/08/10 10:46:50 $
+ * $Revision: 1.4 $
+ * $Date: 2011/10/14 13:25:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -108,7 +108,19 @@ public class DBPropertyUtil
       Logger.warn("parameter name " + name + " invalid");
       return;
     }
-    
+
+    // Kein Wert angegeben
+    if (value == null)
+    {
+      // Wenn er in der DB existiert, loeschen wir ihn gleich ganz
+      if (prop.isNewObject())
+        prop.delete();
+      
+      // auf jeden Fall nichts zu speichern
+      return;
+    }
+
+    // Ansonsten abspeichern
     prop.setValue(value);
     prop.store();
   }
@@ -174,7 +186,10 @@ public class DBPropertyUtil
 
 /*********************************************************************
  * $Log: DBPropertyUtil.java,v $
- * Revision 1.3  2011/08/10 10:46:50  willuhn
+ * Revision 1.4  2011/10/14 13:25:37  willuhn
+ * @N Parameter automatisch loeschen, wenn sie einen NULL-Wert kriegen
+ *
+ * Revision 1.3  2011-08-10 10:46:50  willuhn
  * @N Aenderungen nur an den DA-Eigenschaften zulassen, die gemaess BPD aenderbar sind
  * @R AccountUtil entfernt, Code nach VerwendungszweckUtil verschoben
  * @N Neue Abfrage-Funktion in DBPropertyUtil, um die BPD-Parameter zu Geschaeftsvorfaellen bequemer abfragen zu koennen
