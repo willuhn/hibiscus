@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractSammelTransferImpl.java,v $
- * $Revision: 1.7 $
- * $Date: 2011/04/29 15:33:28 $
+ * $Revision: 1.8 $
+ * $Date: 2011/10/14 14:23:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -243,14 +243,8 @@ public abstract class AbstractSammelTransferImpl extends AbstractDBObject implem
 
       // und noch in's Protokoll schreiben.
       Konto k = this.getKonto();
-      if (k == null)
-        return;
-      k.addToProtokoll(i18n.tr(
-        "Sammel-Auftrag [Bezeichnung: {0}] gelöscht. Enthaltene Buchungen: {1}",
-        new String[] {
-          getBezeichnung(),
-          count+"",
-        }), Protokoll.TYP_SUCCESS);
+      if (k != null)
+        k.addToProtokoll(i18n.tr("Sammel-Auftrag [Bezeichnung: {0}] gelöscht. Enthaltene Buchungen: {1}",getBezeichnung(),Integer.toString(count)), Protokoll.TYP_SUCCESS);
 
       this.transactionCommit();
     }
@@ -400,7 +394,10 @@ public abstract class AbstractSammelTransferImpl extends AbstractDBObject implem
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferImpl.java,v $
- * Revision 1.7  2011/04/29 15:33:28  willuhn
+ * Revision 1.8  2011/10/14 14:23:04  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.7  2011-04-29 15:33:28  willuhn
  * @N Neue Spalte "ausgefuehrt_am", in der das tatsaechliche Ausfuehrungsdatum von Auftraegen vermerkt wird
  *
  * Revision 1.6  2010-11-21 23:55:47  willuhn

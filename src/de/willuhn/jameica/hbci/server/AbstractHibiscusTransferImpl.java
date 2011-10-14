@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractHibiscusTransferImpl.java,v $
- * $Revision: 1.19 $
- * $Date: 2011/09/12 11:35:02 $
+ * $Revision: 1.20 $
+ * $Date: 2011/10/14 14:23:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -252,60 +252,23 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractDBObject impl
     {
       this.transactionBegin();
 
-      Konto k = this.getKonto();
-      
       super.delete();
       
+      // und noch in's Protokoll schreiben.
+      Konto k = this.getKonto();
       if (k != null)
-      {
-        String blz = getGegenkontoBLZ();
-        if (blz != null)
-        {
-          String[] params = new String[] {
-            getGegenkontoName(),
-            getGegenkontoNummer(),
-            getGegenkontoBLZ(),
-            k.getWaehrung(),
-            HBCI.DECIMALFORMAT.format(getBetrag())
-          };
-          k.addToProtokoll(i18n.tr("Auftrag [Gegenkonto: {0}, Kto. {1}, BLZ {2}] {3} {4} gelöscht",params),Protokoll.TYP_SUCCESS);
-        }
-        else
-        {
-          String[] params = new String[] {
-            getGegenkontoName(),
-            getGegenkontoNummer(),
-            k.getWaehrung(),
-            HBCI.DECIMALFORMAT.format(getBetrag())
-          };
-          k.addToProtokoll(i18n.tr("Auftrag [Gegenkonto: {0}, Kto. {1}] {2} {3} gelöscht",params),Protokoll.TYP_SUCCESS);
-        }
-      }
+        k.addToProtokoll(i18n.tr("Auftrag [Gegenkonto: {0}, Kto. {1}, BLZ {2}] {3} {4} gelöscht",getGegenkontoName(),getGegenkontoNummer(),getGegenkontoBLZ(),k.getWaehrung(),HBCI.DECIMALFORMAT.format(getBetrag())),Protokoll.TYP_SUCCESS);
       
       this.transactionCommit();
     }
     catch (RemoteException re)
     {
-      try
-      {
-        this.transactionRollback();
-      }
-      catch (Exception e2)
-      {
-        Logger.error("unable to rollback transaction",e2);
-      }
+      this.transactionRollback();
       throw re;
     }
     catch (ApplicationException ae)
     {
-      try
-      {
-        this.transactionRollback();
-      }
-      catch (Exception e2)
-      {
-        Logger.error("unable to rollback transaction",e2);
-      }
+      this.transactionRollback();
       throw ae;
     }
   }
@@ -404,7 +367,10 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractDBObject impl
 
 /**********************************************************************
  * $Log: AbstractHibiscusTransferImpl.java,v $
- * Revision 1.19  2011/09/12 11:35:02  willuhn
+ * Revision 1.20  2011/10/14 14:23:04  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.19  2011-09-12 11:35:02  willuhn
  * @B "overwrite" musste ueberschrieben werden - siehe enthaltener Kommentar
  *
  * Revision 1.18  2011-08-10 10:46:50  willuhn
