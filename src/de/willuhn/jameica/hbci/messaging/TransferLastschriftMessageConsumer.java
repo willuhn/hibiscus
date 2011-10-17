@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/messaging/TransferLastschriftMessageConsumer.java,v $
- * $Revision: 1.4 $
- * $Date: 2008/08/01 11:05:14 $
+ * $Revision: 1.5 $
+ * $Date: 2011/10/17 13:55:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -38,6 +38,8 @@ import de.willuhn.util.ApplicationException;
  * Damit koennen Fremd-Plugins Auftraege in Hibiscus
  * erzeugen, ohne eine Classpath-Abhaengigkeit zu
  * Hibiscus haben zu muessen.
+ * 
+ * Wird von JVerein verwendet.
  */
 public class TransferLastschriftMessageConsumer implements MessageConsumer
 {
@@ -152,6 +154,9 @@ public class TransferLastschriftMessageConsumer implements MessageConsumer
 
 /**********************************************************************
  * $Log: TransferLastschriftMessageConsumer.java,v $
+ * Revision 1.5  2011/10/17 13:55:22  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2008/08/01 11:05:14  willuhn
  * @N BUGZILLA 587
  *
