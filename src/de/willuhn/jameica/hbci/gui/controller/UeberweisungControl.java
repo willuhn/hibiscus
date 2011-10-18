@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.54 $
- * $Date: 2011/05/20 16:22:31 $
+ * $Revision: 1.55 $
+ * $Date: 2011/10/18 14:40:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@ package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.eclipse.swt.widgets.Event;
@@ -28,11 +29,14 @@ import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.TextSchluessel;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungNew;
+import de.willuhn.jameica.hbci.gui.input.TerminInput;
 import de.willuhn.jameica.hbci.gui.parts.UeberweisungList;
 import de.willuhn.jameica.hbci.rmi.BaseUeberweisung;
 import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
 import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
 
 /**
@@ -45,6 +49,7 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
   private Ueberweisung transfer      = null;
   private SelectInput typ            = null;
   private SelectInput textschluessel = null;
+  private TerminInput termin         = null;
 
   /**
    * ct.
@@ -116,6 +121,53 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
     return this.typ;
   }
   
+  
+  /**
+   * @see de.willuhn.jameica.hbci.gui.controller.AbstractBaseUeberweisungControl#getTermin()
+   */
+  public TerminInput getTermin() throws RemoteException
+  {
+    if (this.termin != null)
+      return this.termin;
+    
+    this.termin = super.getTermin();
+    this.termin.addListener(new Listener() {
+      public void handleEvent(Event event)
+      {
+        try
+        {
+          if (!termin.hasChanged())
+            return;
+          
+          Date date = (Date) termin.getValue();
+          if (date == null)
+            return;
+          
+          // Wenn das Datum in der Zukunft liegt, fragen wir den User, ob es vielleicht
+          // eine Terminueberweisung werden soll. Muessen wir aber nicht fragen, wenn
+          // der User nicht ohnehin schon eine Termin-Ueberweisung ausgewaehlt hat
+          Typ typ = (Typ) getTyp().getValue();
+          if (typ == null || typ.termin)
+            return;
+          
+          if (!DateUtil.startOfDay(date).after(DateUtil.startOfDay(new Date())))
+            return;
+          
+          String q = i18n.tr("Soll der Auftrag als bankseitig geführte Termin-Überweisung ausgeführt werden?");
+          if (Application.getCallback().askUser(q))
+            getTyp().setValue(new Typ(true,false));
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to check for termueb",e);
+        }
+        
+      }
+    });
+    
+    return this.termin;
+  }
+
   /**
 	 * Liefert eine Tabelle mit allen vorhandenen Ueberweisungen.
 	 * @return Tabelle.
@@ -269,6 +321,9 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
+ * Revision 1.55  2011/10/18 14:40:31  willuhn
+ * @N Wenn ein Termin in der Zukunft ausgewaehlt wird, erscheint jetzt eine Sicherheitsabfrage, mit der der User darauf hingewiesen wird, den Auftrag ggf. als bankseitig gefuehrte Termin-Ueberweisung einzureichen
+ *
  * Revision 1.54  2011/05/20 16:22:31  willuhn
  * @N Termin-Eingabefeld in eigene Klasse ausgelagert (verhindert duplizierten Code) - bessere Kommentare
  *
