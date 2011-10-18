@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DBPropertyUtil.java,v $
- * $Revision: 1.4 $
- * $Date: 2011/10/14 13:25:37 $
+ * $Revision: 1.5 $
+ * $Date: 2011/10/18 09:28:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -98,9 +98,8 @@ public class DBPropertyUtil
    * @param name Name des Property.
    * @param value Wert des Property.
    * @throws RemoteException
-   * @throws ApplicationException
    */
-  public static void set(String name, String value) throws RemoteException, ApplicationException
+  public static void set(String name, String value) throws RemoteException
   {
     DBProperty prop = find(name);
     if (prop == null)
@@ -109,20 +108,27 @@ public class DBPropertyUtil
       return;
     }
 
-    // Kein Wert angegeben
-    if (value == null)
+    try
     {
-      // Wenn er in der DB existiert, loeschen wir ihn gleich ganz
-      if (prop.isNewObject())
-        prop.delete();
-      
-      // auf jeden Fall nichts zu speichern
-      return;
-    }
+      // Kein Wert angegeben
+      if (value == null)
+      {
+        // Wenn er in der DB existiert, loeschen wir ihn gleich ganz
+        if (prop.isNewObject())
+          prop.delete();
+        
+        // auf jeden Fall nichts zu speichern
+        return;
+      }
 
-    // Ansonsten abspeichern
-    prop.setValue(value);
-    prop.store();
+      // Ansonsten abspeichern
+      prop.setValue(value);
+      prop.store();
+    }
+    catch (ApplicationException ae)
+    {
+      throw new RemoteException(ae.getMessage(),ae);
+    }
   }
   
   /**
@@ -140,6 +146,35 @@ public class DBPropertyUtil
     String value = prop.getValue();
     return value != null ? value : defaultValue;
   }
+  
+  /**
+   * Loescht alle Parameter, deren Namen mit dem angegebenen Prefix beginnt.
+   * @param prefix der prefix.
+   * @throws RemoteException
+   */
+  public static void deleteAll(String prefix) throws RemoteException
+  {
+    if (prefix == null || prefix.length() == 0)
+      throw new RemoteException("no parameter prefix given");
+
+    if (prefix.indexOf("%") != -1 || prefix.indexOf("_") != -1)
+      throw new RemoteException("no wildcards allowed in parameter prefix");
+    
+    DBIterator i = Settings.getDBService().createList(DBProperty.class);
+    i.addFilter("name like ?",prefix + "%");
+    try
+    {
+      while (i.hasNext())
+      {
+        DBProperty p = (DBProperty) i.next();
+        p.delete();
+      }
+    }
+    catch (ApplicationException ae)
+    {
+      throw new RemoteException(ae.getMessage(),ae);
+    }
+  }
 
   /**
    * Liefert den Parameter mit dem genannten Namen.
@@ -156,7 +191,7 @@ public class DBPropertyUtil
     // Mal schauen, ob wir das Property schon haben
     DBService service = Settings.getDBService();
     DBIterator i = service.createList(DBProperty.class);
-    i.addFilter("name = ?",new Object[]{name});
+    i.addFilter("name = ?",name);
     if (i.hasNext())
       return (DBProperty) i.next();
 
@@ -186,6 +221,9 @@ public class DBPropertyUtil
 
 /*********************************************************************
  * $Log: DBPropertyUtil.java,v $
+ * Revision 1.5  2011/10/18 09:28:14  willuhn
+ * @N Gemeinsames Basis-Interface "HibiscusDBObject" fuer alle Entities (ausser Version und DBProperty) mit der Implementierung "AbstractHibiscusDBObject". Damit koennen jetzt zu jedem Fachobjekt beliebige Meta-Daten in der Datenbank gespeichert werden. Wird im ersten Schritt fuer die Reminder verwendet, um zu einem Auftrag die UUID des Reminders am Objekt speichern zu koennen
+ *
  * Revision 1.4  2011/10/14 13:25:37  willuhn
  * @N Parameter automatisch loeschen, wenn sie einen NULL-Wert kriegen
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Flaggable.java,v $
- * $Revision: 1.1 $
- * $Date: 2009/09/15 00:23:34 $
+ * $Revision: 1.2 $
+ * $Date: 2011/10/18 09:28:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,12 +14,10 @@ package de.willuhn.jameica.hbci.rmi;
 
 import java.rmi.RemoteException;
 
-import de.willuhn.datasource.rmi.DBObject;
-
 /**
  * Klassen, die dieses Interface implementieren, koennen mit Flags markiert werden.
  */
-public interface Flaggable extends DBObject
+public interface Flaggable extends HibiscusDBObject
 {
   /**
    * Liefert ein Bit-Feld mit Flags.
@@ -45,6 +43,9 @@ public interface Flaggable extends DBObject
 
 /**********************************************************************
  * $Log: Flaggable.java,v $
+ * Revision 1.2  2011/10/18 09:28:14  willuhn
+ * @N Gemeinsames Basis-Interface "HibiscusDBObject" fuer alle Entities (ausser Version und DBProperty) mit der Implementierung "AbstractHibiscusDBObject". Damit koennen jetzt zu jedem Fachobjekt beliebige Meta-Daten in der Datenbank gespeichert werden. Wird im ersten Schritt fuer die Reminder verwendet, um zu einem Auftrag die UUID des Reminders am Objekt speichern zu koennen
+ *
  * Revision 1.1  2009/09/15 00:23:34  willuhn
  * @N BUGZILLA 745
  *

@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractSammelTransferImpl.java,v $
- * $Revision: 1.8 $
- * $Date: 2011/10/14 14:23:04 $
+ * $Revision: 1.9 $
+ * $Date: 2011/10/18 09:28:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import de.willuhn.datasource.BeanUtil;
-import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Duplicatable;
@@ -32,7 +31,7 @@ import de.willuhn.util.I18N;
  * Abstrakte Basis-Implementierung des Containers fuer Sammel-Transfers.
  * @author willuhn
  */
-public abstract class AbstractSammelTransferImpl extends AbstractDBObject implements SammelTransfer, Duplicatable, Terminable
+public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObject implements SammelTransfer, Duplicatable, Terminable
 {
 
   private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
@@ -394,6 +393,9 @@ public abstract class AbstractSammelTransferImpl extends AbstractDBObject implem
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferImpl.java,v $
+ * Revision 1.9  2011/10/18 09:28:14  willuhn
+ * @N Gemeinsames Basis-Interface "HibiscusDBObject" fuer alle Entities (ausser Version und DBProperty) mit der Implementierung "AbstractHibiscusDBObject". Damit koennen jetzt zu jedem Fachobjekt beliebige Meta-Daten in der Datenbank gespeichert werden. Wird im ersten Schritt fuer die Reminder verwendet, um zu einem Auftrag die UUID des Reminders am Objekt speichern zu koennen
+ *
  * Revision 1.8  2011/10/14 14:23:04  willuhn
  * *** empty log message ***
  *

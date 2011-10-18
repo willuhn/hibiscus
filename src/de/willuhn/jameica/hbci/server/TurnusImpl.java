@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/TurnusImpl.java,v $
- * $Revision: 1.16 $
- * $Date: 2008/04/27 22:22:56 $
+ * $Revision: 1.17 $
+ * $Date: 2011/10/18 09:28:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,7 +15,6 @@ package de.willuhn.jameica.hbci.server;
 import java.rmi.RemoteException;
 import java.util.zip.CRC32;
 
-import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -28,7 +27,7 @@ import de.willuhn.util.I18N;
 /**
  * Implementierung eines Zahlungs-Turnus fuer Geld-Transfers.
  */
-public class TurnusImpl extends AbstractDBObject implements Turnus
+public class TurnusImpl extends AbstractHibiscusDBObject implements Turnus
 {
 
   private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
@@ -231,6 +230,9 @@ public class TurnusImpl extends AbstractDBObject implements Turnus
 
 /**********************************************************************
  * $Log: TurnusImpl.java,v $
+ * Revision 1.17  2011/10/18 09:28:14  willuhn
+ * @N Gemeinsames Basis-Interface "HibiscusDBObject" fuer alle Entities (ausser Version und DBProperty) mit der Implementierung "AbstractHibiscusDBObject". Damit koennen jetzt zu jedem Fachobjekt beliebige Meta-Daten in der Datenbank gespeichert werden. Wird im ersten Schritt fuer die Reminder verwendet, um zu einem Auftrag die UUID des Reminders am Objekt speichern zu koennen
+ *
  * Revision 1.16  2008/04/27 22:22:56  willuhn
  * @C I18N-Referenzen statisch
  *

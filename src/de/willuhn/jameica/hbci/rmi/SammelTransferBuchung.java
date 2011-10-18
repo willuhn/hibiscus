@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/SammelTransferBuchung.java,v $
- * $Revision: 1.5 $
- * $Date: 2008/12/01 23:54:42 $
+ * $Revision: 1.6 $
+ * $Date: 2011/10/18 09:28:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,12 +14,10 @@ package de.willuhn.jameica.hbci.rmi;
 
 import java.rmi.RemoteException;
 
-import de.willuhn.datasource.rmi.DBObject;
-
 /**
  * Interface fuer eine einzelne Buchung eines Sammel-Transfers.
  */
-public interface SammelTransferBuchung extends Transfer, DBObject
+public interface SammelTransferBuchung extends Transfer, HibiscusDBObject
 {
 	/**
 	 * Liefert den zugeordneten Sammel-Transfer.
@@ -102,6 +100,9 @@ public interface SammelTransferBuchung extends Transfer, DBObject
 
 /**********************************************************************
  * $Log: SammelTransferBuchung.java,v $
+ * Revision 1.6  2011/10/18 09:28:14  willuhn
+ * @N Gemeinsames Basis-Interface "HibiscusDBObject" fuer alle Entities (ausser Version und DBProperty) mit der Implementierung "AbstractHibiscusDBObject". Damit koennen jetzt zu jedem Fachobjekt beliebige Meta-Daten in der Datenbank gespeichert werden. Wird im ersten Schritt fuer die Reminder verwendet, um zu einem Auftrag die UUID des Reminders am Objekt speichern zu koennen
+ *
  * Revision 1.5  2008/12/01 23:54:42  willuhn
  * @N BUGZILLA 188 Erweiterte Verwendungszwecke in Exports/Imports und Sammelauftraegen
  *

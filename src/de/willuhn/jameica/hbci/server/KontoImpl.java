@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.110 $
- * $Date: 2011/05/27 11:33:23 $
+ * $Revision: 1.111 $
+ * $Date: 2011/10/18 09:28:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,7 +20,6 @@ import java.util.zip.CRC32;
 
 import org.kapott.hbci.manager.HBCIUtils;
 
-import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.ResultSetExtractor;
 import de.willuhn.jameica.hbci.HBCI;
@@ -44,7 +43,7 @@ import de.willuhn.util.I18N;
 /**
  * Bildet eine Bankverbindung ab.
  */
-public class KontoImpl extends AbstractDBObject implements Konto
+public class KontoImpl extends AbstractHibiscusDBObject implements Konto
 {
 
   private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
@@ -753,7 +752,10 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*******************************************************************************
  * $Log: KontoImpl.java,v $
- * Revision 1.110  2011/05/27 11:33:23  willuhn
+ * Revision 1.111  2011/10/18 09:28:14  willuhn
+ * @N Gemeinsames Basis-Interface "HibiscusDBObject" fuer alle Entities (ausser Version und DBProperty) mit der Implementierung "AbstractHibiscusDBObject". Damit koennen jetzt zu jedem Fachobjekt beliebige Meta-Daten in der Datenbank gespeichert werden. Wird im ersten Schritt fuer die Reminder verwendet, um zu einem Auftrag die UUID des Reminders am Objekt speichern zu koennen
+ *
+ * Revision 1.110  2011-05-27 11:33:23  willuhn
  * @N BUGZILLA 1056
  *
  * Revision 1.109  2011-01-20 17:13:21  willuhn

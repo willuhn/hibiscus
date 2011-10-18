@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/HibiscusAddressImpl.java,v $
- * $Revision: 1.11 $
- * $Date: 2010/04/14 17:44:10 $
+ * $Revision: 1.12 $
+ * $Date: 2011/10/18 09:28:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,6 @@ package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
 
-import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
@@ -26,7 +25,7 @@ import de.willuhn.util.I18N;
 /**
  * Implementierung einer Hibiscus-Adresse.
  */
-public class HibiscusAddressImpl extends AbstractDBObject implements HibiscusAddress {
+public class HibiscusAddressImpl extends AbstractHibiscusDBObject implements HibiscusAddress {
 
   private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
@@ -260,6 +259,9 @@ public class HibiscusAddressImpl extends AbstractDBObject implements HibiscusAdd
 
 /**********************************************************************
  * $Log: HibiscusAddressImpl.java,v $
+ * Revision 1.12  2011/10/18 09:28:14  willuhn
+ * @N Gemeinsames Basis-Interface "HibiscusDBObject" fuer alle Entities (ausser Version und DBProperty) mit der Implementierung "AbstractHibiscusDBObject". Damit koennen jetzt zu jedem Fachobjekt beliebige Meta-Daten in der Datenbank gespeichert werden. Wird im ersten Schritt fuer die Reminder verwendet, um zu einem Auftrag die UUID des Reminders am Objekt speichern zu koennen
+ *
  * Revision 1.11  2010/04/14 17:44:10  willuhn
  * @N BUGZILLA 83
  *

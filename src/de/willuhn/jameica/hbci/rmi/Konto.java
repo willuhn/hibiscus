@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Konto.java,v $
- * $Revision: 1.46 $
- * $Date: 2010/06/17 12:16:52 $
+ * $Revision: 1.47 $
+ * $Date: 2011/10/18 09:28:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,12 +16,11 @@ import java.rmi.RemoteException;
 import java.util.Date;
 
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.datasource.rmi.DBObject;
 
 /**
  * Bildet eine Bankverbindung in HBCI ab.
  */
-public interface Konto extends DBObject, Checksum, Flaggable
+public interface Konto extends HibiscusDBObject, Checksum, Flaggable
 {
   /**
    * Flag "kein Flag".
@@ -354,6 +353,9 @@ public interface Konto extends DBObject, Checksum, Flaggable
 
 /*******************************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.47  2011/10/18 09:28:14  willuhn
+ * @N Gemeinsames Basis-Interface "HibiscusDBObject" fuer alle Entities (ausser Version und DBProperty) mit der Implementierung "AbstractHibiscusDBObject". Damit koennen jetzt zu jedem Fachobjekt beliebige Meta-Daten in der Datenbank gespeichert werden. Wird im ersten Schritt fuer die Reminder verwendet, um zu einem Auftrag die UUID des Reminders am Objekt speichern zu koennen
+ *
  * Revision 1.46  2010/06/17 12:16:52  willuhn
  * @N BUGZILLA 530
  *

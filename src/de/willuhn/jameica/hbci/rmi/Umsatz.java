@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Umsatz.java,v $
- * $Revision: 1.26 $
- * $Date: 2011/07/25 17:17:19 $
+ * $Revision: 1.27 $
+ * $Date: 2011/10/18 09:28:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,8 +15,6 @@ package de.willuhn.jameica.hbci.rmi;
 import java.rmi.RemoteException;
 import java.util.Date;
 
-import de.willuhn.datasource.rmi.DBObject;
-
 /**
  * Bildet eine Zeile in den Kontoauszuegen ab.
  * Auch wenn das Interface Set-Methoden zum Speichern von
@@ -25,7 +23,7 @@ import de.willuhn.datasource.rmi.DBObject;
  * ueber HBCI-Geschaeftsvorfaelle von der Bank geliefert und nur von
  * dort geschrieben.
  */
-public interface Umsatz extends HibiscusTransfer, DBObject, Checksum, Flaggable, Duplicatable<Umsatz>
+public interface Umsatz extends HibiscusTransfer, HibiscusDBObject, Checksum, Flaggable, Duplicatable<Umsatz>
 {
   /**
    * Flag "kein Flag".
@@ -196,7 +194,10 @@ public interface Umsatz extends HibiscusTransfer, DBObject, Checksum, Flaggable,
 
 /**********************************************************************
  * $Log: Umsatz.java,v $
- * Revision 1.26  2011/07/25 17:17:19  willuhn
+ * Revision 1.27  2011/10/18 09:28:14  willuhn
+ * @N Gemeinsames Basis-Interface "HibiscusDBObject" fuer alle Entities (ausser Version und DBProperty) mit der Implementierung "AbstractHibiscusDBObject". Damit koennen jetzt zu jedem Fachobjekt beliebige Meta-Daten in der Datenbank gespeichert werden. Wird im ersten Schritt fuer die Reminder verwendet, um zu einem Auftrag die UUID des Reminders am Objekt speichern zu koennen
+ *
+ * Revision 1.26  2011-07-25 17:17:19  willuhn
  * @N BUGZILLA 1065 - zusaetzlich noch addkey
  *
  * Revision 1.25  2011-07-25 14:42:41  willuhn

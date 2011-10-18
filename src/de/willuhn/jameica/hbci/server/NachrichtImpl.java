@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/NachrichtImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2008/04/27 22:22:56 $
+ * $Revision: 1.7 $
+ * $Date: 2011/10/18 09:28:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,7 +16,6 @@ package de.willuhn.jameica.hbci.server;
 import java.rmi.RemoteException;
 import java.util.Date;
 
-import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Nachricht;
 import de.willuhn.jameica.system.Application;
@@ -27,7 +26,7 @@ import de.willuhn.util.I18N;
 /**
  * Implementierung der System-Nachrichten einer Bank.
  */
-public class NachrichtImpl extends AbstractDBObject implements Nachricht
+public class NachrichtImpl extends AbstractHibiscusDBObject implements Nachricht
 {
 
   private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
@@ -167,6 +166,9 @@ public class NachrichtImpl extends AbstractDBObject implements Nachricht
 
 /**********************************************************************
  * $Log: NachrichtImpl.java,v $
+ * Revision 1.7  2011/10/18 09:28:14  willuhn
+ * @N Gemeinsames Basis-Interface "HibiscusDBObject" fuer alle Entities (ausser Version und DBProperty) mit der Implementierung "AbstractHibiscusDBObject". Damit koennen jetzt zu jedem Fachobjekt beliebige Meta-Daten in der Datenbank gespeichert werden. Wird im ersten Schritt fuer die Reminder verwendet, um zu einem Auftrag die UUID des Reminders am Objekt speichern zu koennen
+ *
  * Revision 1.6  2008/04/27 22:22:56  willuhn
  * @C I18N-Referenzen statisch
  *

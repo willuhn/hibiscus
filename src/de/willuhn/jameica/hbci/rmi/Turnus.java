@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Turnus.java,v $
- * $Revision: 1.6 $
- * $Date: 2009/08/26 21:23:46 $
+ * $Revision: 1.7 $
+ * $Date: 2011/10/18 09:28:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,12 +14,10 @@ package de.willuhn.jameica.hbci.rmi;
 
 import java.rmi.RemoteException;
 
-import de.willuhn.datasource.rmi.DBObject;
-
 /**
  * Bildet einen Turnus bei wiederkehrenden Zahlungen ab.
  */
-public interface Turnus extends DBObject, Checksum
+public interface Turnus extends HibiscusDBObject, Checksum
 {
 
 	/**
@@ -110,6 +108,9 @@ public interface Turnus extends DBObject, Checksum
 
 /**********************************************************************
  * $Log: Turnus.java,v $
+ * Revision 1.7  2011/10/18 09:28:14  willuhn
+ * @N Gemeinsames Basis-Interface "HibiscusDBObject" fuer alle Entities (ausser Version und DBProperty) mit der Implementierung "AbstractHibiscusDBObject". Damit koennen jetzt zu jedem Fachobjekt beliebige Meta-Daten in der Datenbank gespeichert werden. Wird im ersten Schritt fuer die Reminder verwendet, um zu einem Auftrag die UUID des Reminders am Objekt speichern zu koennen
+ *
  * Revision 1.6  2009/08/26 21:23:46  willuhn
  * @C "aller x Wochen/Monate" sagt man wohl nur im Saechsischen ;) Habs geaendert auf "alle x Wochen/Monate". Google liefert mit dieser Schreibweise auch erheblich mehr Treffer
  *

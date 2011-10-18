@@ -1,0 +1,106 @@
+/**********************************************************************
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractHibiscusDBObject.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2011/10/18 09:28:14 $
+ * $Author: willuhn $
+ *
+ * Copyright (c) by willuhn - software & services
+ * All rights reserved
+ *
+ **********************************************************************/
+
+package de.willuhn.jameica.hbci.server;
+
+import java.rmi.RemoteException;
+
+import de.willuhn.datasource.db.AbstractDBObject;
+import de.willuhn.jameica.hbci.rmi.HibiscusDBObject;
+import de.willuhn.util.ApplicationException;
+
+/**
+ * Basis-Code fuer alle Entity-Klassen in Hibiscus.
+ */
+public abstract class AbstractHibiscusDBObject extends AbstractDBObject implements HibiscusDBObject
+{
+  /**
+   * ct.
+   * @throws RemoteException
+   */
+  public AbstractHibiscusDBObject() throws RemoteException
+  {
+    super();
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.HibiscusDBObject#getMeta(java.lang.String, java.lang.String)
+   */
+  public String getMeta(String name, String defaultValue) throws RemoteException
+  {
+    if (name == null || name.length() == 0)
+      throw new RemoteException("no name given for meta attribute");
+    
+    return DBPropertyUtil.get(this.getPrefix() + name,defaultValue);
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.HibiscusDBObject#setMeta(java.lang.String, java.lang.String)
+   */
+  public void setMeta(String name, String value) throws RemoteException
+  {
+    if (name == null || name.length() == 0)
+      throw new RemoteException("no name given for meta attribute");
+    
+    DBPropertyUtil.set(this.getPrefix() + name,value);
+  }
+  
+  /**
+   * Liefert den Namens-Prefix fuer die Meta-Angaben der Bean.
+   * @return der Namens-Prefix.
+   * @throws RemoteException
+   */
+  private String getPrefix() throws RemoteException
+  {
+    String id = this.getID();
+    if (id == null)
+      throw new RemoteException("entity has no id");
+    
+    return "meta." + this.getTableName() + "." + id + ".";
+  }
+
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#delete()
+   */
+  public void delete() throws RemoteException, ApplicationException
+  {
+    if (this.isNewObject())
+      return; // Nichts zu loeschen
+    
+    this.transactionBegin();
+    try
+    {
+      // Meta-Daten ebenfalls loeschen
+      DBPropertyUtil.deleteAll(this.getPrefix());
+      super.delete();
+      this.transactionCommit();
+    }
+    catch (RemoteException e)
+    {
+      this.transactionRollback();
+      throw e;
+    }
+    catch (ApplicationException e2)
+    {
+      this.transactionRollback();
+      throw e2;
+    }
+  }
+}
+
+
+
+/**********************************************************************
+ * $Log: AbstractHibiscusDBObject.java,v $
+ * Revision 1.1  2011/10/18 09:28:14  willuhn
+ * @N Gemeinsames Basis-Interface "HibiscusDBObject" fuer alle Entities (ausser Version und DBProperty) mit der Implementierung "AbstractHibiscusDBObject". Damit koennen jetzt zu jedem Fachobjekt beliebige Meta-Daten in der Datenbank gespeichert werden. Wird im ersten Schritt fuer die Reminder verwendet, um zu einem Auftrag die UUID des Reminders am Objekt speichern zu koennen
+ *
+ **********************************************************************/

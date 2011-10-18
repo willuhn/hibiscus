@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/HibiscusTransfer.java,v $
- * $Revision: 1.2 $
- * $Date: 2008/11/26 00:39:36 $
+ * $Revision: 1.3 $
+ * $Date: 2011/10/18 09:28:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,12 +14,10 @@ package de.willuhn.jameica.hbci.rmi;
 
 import java.rmi.RemoteException;
 
-import de.willuhn.datasource.rmi.DBObject;
-
 /**
  * Basis-Interface fuer Geld-Transfers zwischen Konten.
  */
-public interface HibiscusTransfer extends Transfer, DBObject
+public interface HibiscusTransfer extends Transfer, HibiscusDBObject
 {
 
 	/**
@@ -96,6 +94,9 @@ public interface HibiscusTransfer extends Transfer, DBObject
 
 /**********************************************************************
  * $Log: HibiscusTransfer.java,v $
+ * Revision 1.3  2011/10/18 09:28:14  willuhn
+ * @N Gemeinsames Basis-Interface "HibiscusDBObject" fuer alle Entities (ausser Version und DBProperty) mit der Implementierung "AbstractHibiscusDBObject". Damit koennen jetzt zu jedem Fachobjekt beliebige Meta-Daten in der Datenbank gespeichert werden. Wird im ersten Schritt fuer die Reminder verwendet, um zu einem Auftrag die UUID des Reminders am Objekt speichern zu koennen
+ *
  * Revision 1.2  2008/11/26 00:39:36  willuhn
  * @N Erste Version erweiterter Verwendungszwecke. Muss dringend noch getestet werden.
  *

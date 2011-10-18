@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Protokoll.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/05/25 23:23:17 $
+ * $Revision: 1.2 $
+ * $Date: 2011/10/18 09:28:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,15 +15,13 @@ package de.willuhn.jameica.hbci.rmi;
 import java.rmi.RemoteException;
 import java.util.Date;
 
-import de.willuhn.datasource.rmi.DBObject;
-
 /**
  * Speichert HBCI-Protokoll-Informationen zu jedem Konto.
  * Hintergrund: Ueber diese Klasse kann jederzeit geprueft werden,
  * wann welche Art von HBCI-Aktion (z.Bsp. Umsaetze abrufen oder Ueberweisung)
  * ausgefuehrt wurde.
  */
-public interface Protokoll extends DBObject {
+public interface Protokoll extends HibiscusDBObject {
 
 	/**
 	 * Protokoll-Typ unbekannt (Default).
@@ -97,6 +95,9 @@ public interface Protokoll extends DBObject {
 
 /**********************************************************************
  * $Log: Protokoll.java,v $
+ * Revision 1.2  2011/10/18 09:28:14  willuhn
+ * @N Gemeinsames Basis-Interface "HibiscusDBObject" fuer alle Entities (ausser Version und DBProperty) mit der Implementierung "AbstractHibiscusDBObject". Damit koennen jetzt zu jedem Fachobjekt beliebige Meta-Daten in der Datenbank gespeichert werden. Wird im ersten Schritt fuer die Reminder verwendet, um zu einem Auftrag die UUID des Reminders am Objekt speichern zu koennen
+ *
  * Revision 1.1  2004/05/25 23:23:17  willuhn
  * @N UeberweisungTyp
  * @N Protokoll

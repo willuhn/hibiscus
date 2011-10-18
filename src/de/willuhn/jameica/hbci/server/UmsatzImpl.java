@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.88 $
- * $Date: 2011/07/25 17:17:19 $
+ * $Revision: 1.89 $
+ * $Date: 2011/10/18 09:28:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,7 +18,6 @@ import java.util.Iterator;
 import java.util.zip.CRC32;
 
 import de.willuhn.datasource.GenericObject;
-import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
@@ -35,7 +34,7 @@ import de.willuhn.util.I18N;
 /**
  * Repraesentiert eine Zeile in den Umsaetzen.
  */
-public class UmsatzImpl extends AbstractDBObject implements Umsatz
+public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
 {
 
 	private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
@@ -726,7 +725,10 @@ public class UmsatzImpl extends AbstractDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
- * Revision 1.88  2011/07/25 17:17:19  willuhn
+ * Revision 1.89  2011/10/18 09:28:14  willuhn
+ * @N Gemeinsames Basis-Interface "HibiscusDBObject" fuer alle Entities (ausser Version und DBProperty) mit der Implementierung "AbstractHibiscusDBObject". Damit koennen jetzt zu jedem Fachobjekt beliebige Meta-Daten in der Datenbank gespeichert werden. Wird im ersten Schritt fuer die Reminder verwendet, um zu einem Auftrag die UUID des Reminders am Objekt speichern zu koennen
+ *
+ * Revision 1.88  2011-07-25 17:17:19  willuhn
  * @N BUGZILLA 1065 - zusaetzlich noch addkey
  *
  * Revision 1.87  2011-07-25 14:42:40  willuhn

@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Nachricht.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/05/09 17:26:56 $
- * $Author: web0 $
+ * $Revision: 1.2 $
+ * $Date: 2011/10/18 09:28:14 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -16,12 +16,10 @@ package de.willuhn.jameica.hbci.rmi;
 import java.rmi.RemoteException;
 import java.util.Date;
 
-import de.willuhn.datasource.rmi.DBObject;
-
 /**
  * Interface fuer eine System-Nachricht der Bank.
  */
-public interface Nachricht extends DBObject
+public interface Nachricht extends HibiscusDBObject
 {
   /**
    * Liefert die BLZ dieser Nachricht.
@@ -84,6 +82,9 @@ public interface Nachricht extends DBObject
 
 /**********************************************************************
  * $Log: Nachricht.java,v $
+ * Revision 1.2  2011/10/18 09:28:14  willuhn
+ * @N Gemeinsames Basis-Interface "HibiscusDBObject" fuer alle Entities (ausser Version und DBProperty) mit der Implementierung "AbstractHibiscusDBObject". Damit koennen jetzt zu jedem Fachobjekt beliebige Meta-Daten in der Datenbank gespeichert werden. Wird im ersten Schritt fuer die Reminder verwendet, um zu einem Auftrag die UUID des Reminders am Objekt speichern zu koennen
+ *
  * Revision 1.1  2005/05/09 17:26:56  web0
  * @N Bugzilla 68
  *
