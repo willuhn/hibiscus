@@ -74,12 +74,12 @@
   </services>
   
   <messaging>
-    <consumer class="de.willuhn.jameica.hbci.messaging.QueryHBCIVersionMessageConsumer"    queue="hibiscus.passport.rdh.hbciversion" />
-    <consumer class="de.willuhn.jameica.hbci.messaging.QueryBanknameMessageConsumer"       queue="hibiscus.query.bankname" />
-    <consumer class="de.willuhn.jameica.hbci.messaging.QueryAccountCRCMessageConsumer"     queue="hibiscus.query.accountcrc" />
-    <consumer class="de.willuhn.jameica.hbci.messaging.QueryIBANCRCMessageConsumer"        queue="hibiscus.query.ibancrc" />
-    <consumer class="de.willuhn.jameica.hbci.messaging.TransferLastschriftMessageConsumer" queue="hibiscus.transfer.lastschrift" />
-    <consumer class="de.willuhn.jameica.hbci.messaging.InfoPointMessageConsumer"           queue="hibiscus.infopoint" />
+    <consumer queue="hibiscus.query.bankname"              class="de.willuhn.jameica.hbci.messaging.QueryBanknameMessageConsumer" />
+    <consumer queue="hibiscus.query.accountcrc"            class="de.willuhn.jameica.hbci.messaging.QueryAccountCRCMessageConsumer" />
+    <consumer queue="hibiscus.query.ibancrc"               class="de.willuhn.jameica.hbci.messaging.QueryIBANCRCMessageConsumer" />
+    <consumer queue="hibiscus.transfer.lastschrift"        class="de.willuhn.jameica.hbci.messaging.TransferLastschriftMessageConsumer" />
+    <consumer queue="hibiscus.passport.rdh.hbciversion"    class="de.willuhn.jameica.hbci.messaging.QueryHBCIVersionMessageConsumer" />
+    <consumer queue="hibiscus.infopoint"                   class="de.willuhn.jameica.hbci.messaging.InfoPointMessageConsumer" />
   </messaging>
 
 </plugin>
