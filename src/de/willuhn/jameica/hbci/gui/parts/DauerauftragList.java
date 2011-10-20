@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/DauerauftragList.java,v $
- * $Revision: 1.7 $
- * $Date: 2011/04/29 15:33:28 $
+ * $Revision: 1.8 $
+ * $Date: 2011/10/20 16:19:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,6 +25,7 @@ import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
+import de.willuhn.jameica.gui.parts.Column;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
@@ -77,7 +78,7 @@ public class DauerauftragList extends TablePart implements Part
     addColumn(i18n.tr("Verwendungszweck"),"zweck");
     addColumn(i18n.tr("Betrag"),"betrag", new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
     addColumn(i18n.tr("Turnus"),"turnus_id");
-    addColumn(i18n.tr("Nächste Zahlung"),"naechste_zahlung", new DateFormatter(HBCI.DATEFORMAT));
+    addColumn(i18n.tr("Nächste Zahlung"),"naechste_zahlung", new DateFormatter(HBCI.DATEFORMAT),false,Column.ALIGN_RIGHT);
     addColumn(i18n.tr("aktiv?"),"orderid",new Formatter()
     {
       public String format(Object o)
@@ -105,7 +106,10 @@ public class DauerauftragList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: DauerauftragList.java,v $
- * Revision 1.7  2011/04/29 15:33:28  willuhn
+ * Revision 1.8  2011/10/20 16:19:04  willuhn
+ * @N Rechtsbuendige Ausrichtung des Termins
+ *
+ * Revision 1.7  2011-04-29 15:33:28  willuhn
  * @N Neue Spalte "ausgefuehrt_am", in der das tatsaechliche Ausfuehrungsdatum von Auftraegen vermerkt wird
  *
  * Revision 1.6  2009/02/17 00:00:02  willuhn
