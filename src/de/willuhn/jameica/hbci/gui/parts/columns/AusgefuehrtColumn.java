@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/columns/AusgefuehrtColumn.java,v $
- * $Revision: 1.2 $
- * $Date: 2011/04/29 15:33:28 $
+ * $Revision: 1.3 $
+ * $Date: 2011/10/20 16:19:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -35,7 +35,7 @@ public class AusgefuehrtColumn extends Column
    */
   public AusgefuehrtColumn()
   {
-    super("ausgefuehrt_am",i18n.tr("Ausgeführt?"));
+    super("ausgefuehrt_am",i18n.tr("Ausgeführt?"),null,false,Column.ALIGN_RIGHT);
   }
 
   /**
@@ -74,7 +74,10 @@ public class AusgefuehrtColumn extends Column
 
 /**********************************************************************
  * $Log: AusgefuehrtColumn.java,v $
- * Revision 1.2  2011/04/29 15:33:28  willuhn
+ * Revision 1.3  2011/10/20 16:19:13  willuhn
+ * @N Rechtsbuendige Ausrichtung des Termins
+ *
+ * Revision 1.2  2011-04-29 15:33:28  willuhn
  * @N Neue Spalte "ausgefuehrt_am", in der das tatsaechliche Ausfuehrungsdatum von Auftraegen vermerkt wird
  *
  * Revision 1.1  2009/02/17 00:00:02  willuhn
