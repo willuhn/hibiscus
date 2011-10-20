@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractHibiscusDBObject.java,v $
- * $Revision: 1.1 $
- * $Date: 2011/10/18 09:28:14 $
+ * $Revision: 1.2 $
+ * $Date: 2011/10/20 16:20:05 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -38,6 +38,9 @@ public abstract class AbstractHibiscusDBObject extends AbstractDBObject implemen
   {
     if (name == null || name.length() == 0)
       throw new RemoteException("no name given for meta attribute");
+    
+    if (this.getID() == null)
+      return defaultValue;
     
     return DBPropertyUtil.get(this.getPrefix() + name,defaultValue);
   }
@@ -100,6 +103,9 @@ public abstract class AbstractHibiscusDBObject extends AbstractDBObject implemen
 
 /**********************************************************************
  * $Log: AbstractHibiscusDBObject.java,v $
+ * Revision 1.2  2011/10/20 16:20:05  willuhn
+ * @N BUGZILLA 182 - Erste Version von client-seitigen Dauerauftraegen fuer alle Auftragsarten
+ *
  * Revision 1.1  2011/10/18 09:28:14  willuhn
  * @N Gemeinsames Basis-Interface "HibiscusDBObject" fuer alle Entities (ausser Version und DBProperty) mit der Implementierung "AbstractHibiscusDBObject". Damit koennen jetzt zu jedem Fachobjekt beliebige Meta-Daten in der Datenbank gespeichert werden. Wird im ersten Schritt fuer die Reminder verwendet, um zu einem Auftrag die UUID des Reminders am Objekt speichern zu koennen
  *

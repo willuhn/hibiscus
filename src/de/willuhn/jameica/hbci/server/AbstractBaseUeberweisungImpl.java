@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractBaseUeberweisungImpl.java,v $
- * $Revision: 1.15 $
- * $Date: 2011/04/29 15:33:28 $
+ * $Revision: 1.16 $
+ * $Date: 2011/10/20 16:20:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -47,11 +47,33 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractHibiscusTrans
     return "zweck";
   }
 
+  
+  /**
+   * @see de.willuhn.jameica.hbci.server.AbstractHibiscusTransferImpl#insertCheck()
+   */
+  protected void insertCheck() throws ApplicationException
+  {
+    super.insertCheck();
+    
+    try
+    {
+      if (this.getTermin() == null)
+        throw new ApplicationException(i18n.tr("Bitte geben Sie ein Fälligkeitsdatum ein."));
+    }
+    catch (RemoteException e)
+    {
+      Logger.error("error while checking order",e);
+      throw new ApplicationException(i18n.tr("Fehler beim Prüfen des Auftrages."));
+    }
+  }
+
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
    */
-  protected void updateCheck() throws ApplicationException {
-		try {
+  protected void updateCheck() throws ApplicationException
+  {
+		try
+		{
 			if (!whileStore && ausgefuehrt())
 				throw new ApplicationException(i18n.tr("Auftrag wurde bereits ausgeführt und kann daher nicht mehr geändert werden."));
 		}
@@ -68,8 +90,6 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractHibiscusTrans
    */
   public void insert() throws RemoteException, ApplicationException
   {
-    if (getTermin() == null)
-      setTermin(new Date());
     if (getAttribute("ausgefuehrt") == null) // Status noch nicht definiert
       setAttribute("ausgefuehrt",new Integer(0));
     super.insert();
@@ -162,6 +182,9 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractHibiscusTrans
 
 /**********************************************************************
  * $Log: AbstractBaseUeberweisungImpl.java,v $
+ * Revision 1.16  2011/10/20 16:20:05  willuhn
+ * @N BUGZILLA 182 - Erste Version von client-seitigen Dauerauftraegen fuer alle Auftragsarten
+ *
  * Revision 1.15  2011/04/29 15:33:28  willuhn
  * @N Neue Spalte "ausgefuehrt_am", in der das tatsaechliche Ausfuehrungsdatum von Auftraegen vermerkt wird
  *

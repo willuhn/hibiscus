@@ -80,6 +80,7 @@
     <consumer queue="hibiscus.transfer.lastschrift"        class="de.willuhn.jameica.hbci.messaging.TransferLastschriftMessageConsumer" />
     <consumer queue="hibiscus.passport.rdh.hbciversion"    class="de.willuhn.jameica.hbci.messaging.QueryHBCIVersionMessageConsumer" />
     <consumer queue="hibiscus.infopoint"                   class="de.willuhn.jameica.hbci.messaging.InfoPointMessageConsumer" />
+    <consumer queue="hibiscus.reminder.order"              class="de.willuhn.jameica.hbci.messaging.OrderReminderMessageConsumer" />
   </messaging>
 
 </plugin>

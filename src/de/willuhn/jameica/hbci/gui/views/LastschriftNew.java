@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/LastschriftNew.java,v $
- * $Revision: 1.23 $
- * $Date: 2011/04/11 14:36:37 $
+ * $Revision: 1.24 $
+ * $Date: 2011/10/20 16:20:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.parts.PanelButtonPrint;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
+import de.willuhn.jameica.gui.util.ColumnLayout;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
@@ -50,23 +51,36 @@ public class LastschriftNew extends AbstractView
 		GUI.getView().setTitle(i18n.tr("Lastschrift bearbeiten"));
     GUI.getView().addPanelButton(new PanelButtonPrint(new PrintSupportLastschrift(transfer)));
 		
+    Container c1 = new SimpleContainer(getParent());
+    c1.addHeadline(i18n.tr("Konto"));
+    c1.addInput(control.getKontoAuswahl());
+
+    ColumnLayout cols = new ColumnLayout(getParent(),2);
+
+    // Linke Seite
+    {
+      Container container = new SimpleContainer(cols.getComposite());
+      container.addHeadline(i18n.tr("Zahlungspflichtiger"));
+      container.addInput(control.getEmpfaengerName());
+      container.addInput(control.getEmpfaengerKonto());
+      container.addInput(control.getEmpfaengerBlz());
+      container.addCheckbox(control.getStoreEmpfaenger(),i18n.tr("In Adressbuch übernehmen"));
+    }
+    
+    // Rechte Seite
+    {
+      Container container = new SimpleContainer(cols.getComposite());
+      container.addHeadline(i18n.tr("Sonstige Informationen"));
+      container.addInput(control.getTextSchluessel());
+      container.addInput(control.getTermin());
+      container.addInput(control.getReminderInterval());
+    }
+    
     Container container = new SimpleContainer(getParent());
-
-    container.addHeadline(i18n.tr("Konto"));
-    container.addInput(control.getKontoAuswahl());
-
-    container.addHeadline(i18n.tr("Zahlungspflichtiger"));
-    container.addInput(control.getEmpfaengerName());
-    container.addInput(control.getEmpfaengerKonto());
-    container.addInput(control.getEmpfaengerBlz());
-    container.addCheckbox(control.getStoreEmpfaenger(),i18n.tr("In Adressbuch übernehmen"));
-
     container.addHeadline(i18n.tr("Details"));
     container.addInput(control.getZweck());
     container.addInput(control.getZweck2());
     container.addInput(control.getBetrag());
-    container.addInput(control.getTextSchluessel());
-    container.addInput(control.getTermin());
 
 		ButtonArea buttonArea = new ButtonArea();
 		buttonArea.addButton(i18n.tr("Löschen"), new DBObjectDelete(),transfer,false,"user-trash-full.png");
@@ -97,7 +111,10 @@ public class LastschriftNew extends AbstractView
 
 /**********************************************************************
  * $Log: LastschriftNew.java,v $
- * Revision 1.23  2011/04/11 14:36:37  willuhn
+ * Revision 1.24  2011/10/20 16:20:05  willuhn
+ * @N BUGZILLA 182 - Erste Version von client-seitigen Dauerauftraegen fuer alle Auftragsarten
+ *
+ * Revision 1.23  2011-04-11 14:36:37  willuhn
  * @N Druck-Support fuer Lastschriften und SEPA-Ueberweisungen
  *
  * Revision 1.22  2011-04-08 15:19:13  willuhn

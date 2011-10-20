@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractSammelTransferList.java,v $
- * $Revision: 1.16 $
- * $Date: 2011/06/30 16:29:41 $
+ * $Revision: 1.17 $
+ * $Date: 2011/10/20 16:20:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,24 +26,30 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
-import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
+import de.willuhn.jameica.gui.parts.Column;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.Font;
+import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.parts.columns.AusgefuehrtColumn;
+import de.willuhn.jameica.hbci.gui.parts.columns.KontoColumn;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.messaging.ObjectMessage;
+import de.willuhn.jameica.hbci.reminder.ReminderStorageProviderHibiscus;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
-import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.HibiscusDBObject;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
+import de.willuhn.jameica.reminder.Reminder;
+import de.willuhn.jameica.reminder.ReminderStorageProvider;
+import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
@@ -63,51 +69,57 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
   {
     super(action);
     setMulti(true);
+    
+    BeanService service = Application.getBootLoader().getBootable(BeanService.class);
+    final ReminderStorageProvider provider = service.get(ReminderStorageProviderHibiscus.class);
+
     setFormatter(new TableFormatter() {
       public void format(TableItem item) {
         SammelTransfer l = (SammelTransfer) item.getData();
         if (l == null)
           return;
 
-        try {
-          boolean faellig = (l.getTermin().before(new Date()) && !l.ausgefuehrt());
+        try
+        {
+          Date termin = l.getTermin();
+          boolean faellig = (termin.before(new Date()) && !l.ausgefuehrt());
           item.setFont(faellig ? Font.BOLD.getSWTFont() : Font.DEFAULT.getSWTFont());
           if (l.ausgefuehrt())
             item.setForeground(Color.COMMENT.getSWTColor());
+
+          // Checken, ob der Auftrag einen Reminder hat oder ob es ein geclonter Auftrag ist
+          HibiscusDBObject o = (HibiscusDBObject) l;
+          String uuid = o.getMeta("reminder.uuid",null);
+          if (uuid != null)
+          {
+            try
+            {
+              Reminder r = provider.get(uuid);
+              item.setImage(4,SWTUtil.getImage("stock_form-time-field.png"));
+              item.setText(4,i18n.tr("ab {0}\n{1}",HBCI.DATEFORMAT.format(termin),r.getReminderInterval().toString()));
+            }
+            catch (Exception e)
+            {
+              Logger.error("unable to determine reminder",e);
+            }
+          }
+          else if (o.getMeta("reminder.template",null) != null)
+          {
+            item.setImage(4,SWTUtil.getImage("edit-copy.png"));
+          }
         }
-        catch (RemoteException e) { /*ignore */}
+        catch (RemoteException e)
+        {
+          Logger.error("unable to format line",e);
+        }
       }
     });
 
-    addColumn(i18n.tr("Konto"),"konto_id", new Formatter() {
-      /**
-       * @see de.willuhn.jameica.gui.formatter.Formatter#format(java.lang.Object)
-       */
-      public String format(Object o)
-      {
-        if (o == null || !(o instanceof Konto))
-          return null;
-        Konto k = (Konto) o;
-        try
-        {
-          String s = k.getKontonummer();
-          String name = k.getBezeichnung();
-          if (name != null && name.length() > 0)
-            s += " [" + name + "]";
-          return s;
-        }
-        catch (RemoteException r)
-        {
-          Logger.error("unable to display konto",r);
-          return null;
-        }
-      }
-    
-    });
+    addColumn(new KontoColumn());
     addColumn(i18n.tr("Bezeichnung"),"bezeichnung");
     addColumn(i18n.tr("Anzahl Buchungen"),"anzahl");
     addColumn(i18n.tr("Summe"),"summe", new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
-    addColumn(i18n.tr("Termin"),"termin", new DateFormatter(HBCI.DATEFORMAT));
+    addColumn(i18n.tr("Termin"),"termin", new DateFormatter(HBCI.DATEFORMAT),false,Column.ALIGN_RIGHT);
     addColumn(new AusgefuehrtColumn());
     
     // Wir erstellen noch einen Message-Consumer, damit wir ueber neu eintreffende
@@ -218,7 +230,10 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
 
 /**********************************************************************
  * $Log: AbstractSammelTransferList.java,v $
- * Revision 1.16  2011/06/30 16:29:41  willuhn
+ * Revision 1.17  2011/10/20 16:20:05  willuhn
+ * @N BUGZILLA 182 - Erste Version von client-seitigen Dauerauftraegen fuer alle Auftragsarten
+ *
+ * Revision 1.16  2011-06-30 16:29:41  willuhn
  * @N Unterstuetzung fuer neues UnreadCount-Feature
  *
  * Revision 1.15  2011-04-29 15:33:28  willuhn

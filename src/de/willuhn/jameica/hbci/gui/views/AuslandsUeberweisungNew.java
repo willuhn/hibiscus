@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/AuslandsUeberweisungNew.java,v $
- * $Revision: 1.8 $
- * $Date: 2011/06/24 07:55:41 $
+ * $Revision: 1.9 $
+ * $Date: 2011/10/20 16:20:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,8 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.parts.PanelButtonPrint;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
+import de.willuhn.jameica.gui.util.ColumnLayout;
+import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungExecute;
@@ -47,20 +49,34 @@ public class AuslandsUeberweisungNew extends AbstractView
 		GUI.getView().setTitle(i18n.tr("SEPA-Überweisung bearbeiten"));
     GUI.getView().addPanelButton(new PanelButtonPrint(new PrintSupportAuslandsUeberweisung(transfer)));
 		
-    SimpleContainer konten = new SimpleContainer(getParent());
-    konten.addHeadline(i18n.tr("Konto"));
-		konten.addLabelPair(i18n.tr("Persönliches Konto"),        control.getKontoAuswahl());
-    konten.addHeadline(i18n.tr("Empfänger"));
-    konten.addLabelPair(i18n.tr("Name"),                      control.getEmpfaengerName());
-    konten.addLabelPair(i18n.tr("IBAN"),                      control.getEmpfaengerKonto());    
-    konten.addLabelPair(i18n.tr("BIC"),                       control.getEmpfaengerBic());
-		konten.addCheckbox(control.getStoreEmpfaenger(),i18n.tr("In Adressbuch übernehmen"));
+    Container cl = new SimpleContainer(getParent());
+    cl.addHeadline(i18n.tr("Konto"));
+		cl.addInput(control.getKontoAuswahl());
+		
+    ColumnLayout cols = new ColumnLayout(getParent(),2);
+		
+    // Linke Seite
+    {
+      Container container = new SimpleContainer(cols.getComposite());
+      container.addHeadline(i18n.tr("Empfänger"));
+      container.addLabelPair(i18n.tr("Name"),                      control.getEmpfaengerName());
+      container.addLabelPair(i18n.tr("IBAN"),                      control.getEmpfaengerKonto());    
+      container.addLabelPair(i18n.tr("BIC"),                       control.getEmpfaengerBic());
+      container.addCheckbox(control.getStoreEmpfaenger(),i18n.tr("In Adressbuch übernehmen"));
+    }
+    
+    // Rechte Seite
+    {
+      Container container = new SimpleContainer(cols.getComposite());
+      container.addHeadline(i18n.tr("Sonstige Informationen"));
+      container.addInput(control.getTermin());
+      container.addInput(control.getReminderInterval());
+    }
 
-    SimpleContainer details = new SimpleContainer(getParent());
-    details.addHeadline(i18n.tr("Details"));
-		details.addLabelPair(i18n.tr("Verwendungszweck"),					control.getZweck());
-    details.addLabelPair(i18n.tr("Betrag"),                   control.getBetrag());
-    details.addInput(control.getTermin());
+    Container container = new SimpleContainer(getParent());
+    container.addHeadline(i18n.tr("Details"));
+    container.addLabelPair(i18n.tr("Verwendungszweck"),					control.getZweck());
+    container.addLabelPair(i18n.tr("Betrag"),                   control.getBetrag());
 
 		ButtonArea buttonArea = new ButtonArea();
 		buttonArea.addButton(i18n.tr("Löschen"),new DBObjectDelete(),transfer,false,"user-trash-full.png");
@@ -90,7 +106,10 @@ public class AuslandsUeberweisungNew extends AbstractView
 
 /**********************************************************************
  * $Log: AuslandsUeberweisungNew.java,v $
- * Revision 1.8  2011/06/24 07:55:41  willuhn
+ * Revision 1.9  2011/10/20 16:20:05  willuhn
+ * @N BUGZILLA 182 - Erste Version von client-seitigen Dauerauftraegen fuer alle Auftragsarten
+ *
+ * Revision 1.8  2011-06-24 07:55:41  willuhn
  * @C Bei Hibiscus-verwalteten Terminen besser "Fällig am" verwenden - ist nicht so missverstaendlich - der User denkt sonst ggf. es sei ein bankseitig terminierter Auftrag
  *
  * Revision 1.7  2011-04-11 14:36:37  willuhn

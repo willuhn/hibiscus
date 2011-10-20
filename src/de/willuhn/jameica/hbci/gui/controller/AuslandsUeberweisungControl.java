@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AuslandsUeberweisungControl.java,v $
- * $Revision: 1.12 $
- * $Date: 2011/05/20 16:22:31 $
+ * $Revision: 1.13 $
+ * $Date: 2011/10/20 16:20:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -36,8 +36,10 @@ import de.willuhn.jameica.hbci.gui.filter.AddressFilter;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.AddressInput;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
+import de.willuhn.jameica.hbci.gui.input.ReminderIntervalInput;
 import de.willuhn.jameica.hbci.gui.input.TerminInput;
 import de.willuhn.jameica.hbci.gui.parts.AuslandsUeberweisungList;
+import de.willuhn.jameica.hbci.reminder.ReminderUtil;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
@@ -45,6 +47,7 @@ import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.jameica.messaging.StatusBarMessage;
+import de.willuhn.jameica.reminder.ReminderInterval;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -71,6 +74,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
   private TextInput bic                      = null;
 
   private TerminInput termin                 = null;
+  private ReminderIntervalInput interval     = null;
 
   private CheckboxInput storeEmpfaenger      = null;
   
@@ -129,6 +133,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
     KontoListener kl = new KontoListener();
     MyKontoFilter filter = new MyKontoFilter();
     this.kontoAuswahl = new KontoInput(getTransfer().getKonto(),filter);
+    this.kontoAuswahl.setName(i18n.tr("Persönliches Konto"));
     this.kontoAuswahl.setMandatory(true);
     this.kontoAuswahl.addListener(kl);
     this.kontoAuswahl.setEnabled(!getTransfer().ausgefuehrt());
@@ -255,6 +260,20 @@ public class AuslandsUeberweisungControl extends AbstractControl
   }
 
   /**
+   * Liefert das Intervall fuer die zyklische Ausfuehrung.
+   * @return Auswahlfeld.
+   * @throws Exception
+   */
+  public ReminderIntervalInput getReminderInterval() throws Exception
+  {
+    if (this.interval != null)
+      return this.interval;
+    
+    this.interval = new ReminderIntervalInput((Terminable) getTransfer(),(Date)getTermin().getValue());
+    return this.interval;
+  }
+
+  /**
    * Liefert eine CheckBox ueber die ausgewaehlt werden kann,
    * ob der Empfaenger mitgespeichert werden soll.
    * @return CheckBox.
@@ -285,35 +304,35 @@ public class AuslandsUeberweisungControl extends AbstractControl
    */
   public synchronized boolean handleStore()
   {
-    try {
-      
-      getTransfer().transactionBegin();
+    AuslandsUeberweisung t = null;
+    
+    try
+    {
+      t = this.getTransfer();
+      t.transactionBegin();
 
       Double d = (Double) getBetrag().getValue();
-      getTransfer().setBetrag(d == null ? Double.NaN : d.doubleValue());
+      t.setBetrag(d == null ? Double.NaN : d.doubleValue());
       
-      getTransfer().setKonto((Konto)getKontoAuswahl().getValue());
-      getTransfer().setZweck((String)getZweck().getValue());
+      t.setKonto((Konto)getKontoAuswahl().getValue());
+      t.setZweck((String)getZweck().getValue());
+      t.setTermin((Date) getTermin().getValue());
 
       String kto  = (String)getEmpfaengerKonto().getValue();
       String name = getEmpfaengerName().getText();
       String bic  = (String) getEmpfaengerBic().getValue();
 
-      getTransfer().setGegenkontoNummer(kto);
-      getTransfer().setGegenkontoName(name);
-      getTransfer().setGegenkontoBLZ(bic);
-
-      Date termin = (Date) getTermin().getValue();
-      if (termin == null)
-      {
-        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte geben Sie einen Termin ein."),StatusBarMessage.TYPE_ERROR));
-        return false;
-      }
-      getTransfer().setTermin(termin);
+      t.setGegenkontoNummer(kto);
+      t.setGegenkontoName(name);
+      t.setGegenkontoBLZ(bic);
       
+      t.store();
 
-      getTransfer().store();
-      
+      // Reminder-Intervall speichern
+      ReminderIntervalInput input = this.getReminderInterval();
+      if (input.containsInterval())
+        ReminderUtil.apply(t,(ReminderInterval) input.getValue());
+
       Boolean store = (Boolean) getStoreEmpfaenger().getValue();
       if (store.booleanValue())
       {
@@ -326,35 +345,33 @@ public class AuslandsUeberweisungControl extends AbstractControl
         new EmpfaengerAdd().handleAction(e);
       }
       GUI.getStatusBar().setSuccessText(i18n.tr("Auftrag gespeichert"));
-      getTransfer().transactionCommit();
+      t.transactionCommit();
 
-      if (getTransfer().getBetrag() > Settings.getUeberweisungLimit())
+      if (t.getBetrag() > Settings.getUeberweisungLimit())
         GUI.getView().setErrorText(i18n.tr("Warnung: Auftragslimit überschritten: {0} ", HBCI.DECIMALFORMAT.format(Settings.getUeberweisungLimit()) + " " + getTransfer().getKonto().getWaehrung()));
       
       return true;
     }
-    catch (ApplicationException e)
+    catch (Exception e)
     {
-      try {
-        getTransfer().transactionRollback();
+      if (t != null) {
+        try {
+          t.transactionRollback();
+        }
+        catch (Exception xe) {
+          Logger.error("rollback failed",xe);
+        }
       }
-      catch (RemoteException re)
+      
+      if (e instanceof ApplicationException)
       {
-        Logger.error("rollback failed",re);
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(e.getMessage(),StatusBarMessage.TYPE_ERROR));
       }
-      GUI.getView().setErrorText(i18n.tr(e.getMessage()));
-    }
-    catch (Exception e2)
-    {
-      try {
-        getTransfer().transactionRollback();
-      }
-      catch (RemoteException re)
+      else
       {
-        Logger.error("rollback failed",re);
+        Logger.error("error while saving order",e);
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehlgeschlagen: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
       }
-      Logger.error("error while storing transfer",e2);
-      GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern des Auftrags"));
     }
     return false;
   }
@@ -475,7 +492,10 @@ public class AuslandsUeberweisungControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AuslandsUeberweisungControl.java,v $
- * Revision 1.12  2011/05/20 16:22:31  willuhn
+ * Revision 1.13  2011/10/20 16:20:05  willuhn
+ * @N BUGZILLA 182 - Erste Version von client-seitigen Dauerauftraegen fuer alle Auftragsarten
+ *
+ * Revision 1.12  2011-05-20 16:22:31  willuhn
  * @N Termin-Eingabefeld in eigene Klasse ausgelagert (verhindert duplizierten Code) - bessere Kommentare
  *
  * Revision 1.11  2011-04-11 14:36:38  willuhn

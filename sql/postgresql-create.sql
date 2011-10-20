@@ -214,6 +214,12 @@ CREATE TABLE property (
   content varchar(1000) NULL
 );
 
+CREATE TABLE reminder (
+  id serial primary key,
+  uuid varchar(255) NOT NULL,
+  content varchar(60000) NOT NULL
+);
+
 
 ALTER TABLE ueberweisung ADD CONSTRAINT fk_konto FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE umsatz ADD CONSTRAINT fk_konto2 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
@@ -244,4 +250,4 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',36);
+INSERT INTO version (name,version) values ('db',37);

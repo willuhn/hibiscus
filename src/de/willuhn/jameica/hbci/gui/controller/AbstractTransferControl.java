@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.60 $
- * $Date: 2011/08/03 15:34:29 $
+ * $Revision: 1.61 $
+ * $Date: 2011/10/20 16:20:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -69,15 +69,15 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 	private CheckboxInput storeEmpfaenger 	   = null;
 	
-	I18N i18n;
+	final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
    * ct.
    * @param view
    */
-  public AbstractTransferControl(AbstractView view) {
+  public AbstractTransferControl(AbstractView view)
+  {
     super(view);
-		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
 	/**
@@ -287,33 +287,35 @@ public abstract class AbstractTransferControl extends AbstractControl
    */
 	public synchronized boolean handleStore()
 	{
-		try {
-  		
-			getTransfer().transactionBegin();
+	  HibiscusTransfer t = null;
+		try
+		{
+  		t = this.getTransfer();
+			t.transactionBegin();
 
 			Double d = (Double) getBetrag().getValue();
-      getTransfer().setBetrag(d == null ? Double.NaN : d.doubleValue());
+      t.setBetrag(d == null ? Double.NaN : d.doubleValue());
 			
-			getTransfer().setKonto((Konto)getKontoAuswahl().getValue());
-			getTransfer().setZweck((String)getZweck().getValue());
-			getTransfer().setZweck2(getZweck2().getText());  // "getText()" ist wichtig, weil das ein DialogInput ist
+			t.setKonto((Konto)getKontoAuswahl().getValue());
+			t.setZweck((String)getZweck().getValue());
+			t.setZweck2(getZweck2().getText());  // "getText()" ist wichtig, weil das ein DialogInput ist
 
 			String kto  = (String)getEmpfaengerKonto().getValue();
 			String blz  = (String)getEmpfaengerBlz().getValue();
 			String name = getEmpfaengerName().getText();
 
-			getTransfer().setGegenkontoNummer(kto);
-			getTransfer().setGegenkontoBLZ(blz);
-			getTransfer().setGegenkontoName(name);
+			t.setGegenkontoNummer(kto);
+			t.setGegenkontoBLZ(blz);
+			t.setGegenkontoName(name);
 
 
       // Geaenderte Verwendungszwecke uebernehmen. Allerdings nur, wenn
       // der Dialog tatsaechlich geoffnet und auf "Uebernehmen" geklickt wurde
       String[] lines = (String[]) this.zweckDialog.getData();
       if (lines != null)
-        getTransfer().setWeitereVerwendungszwecke(lines);
+        t.setWeitereVerwendungszwecke(lines);
         
-      getTransfer().store();
+      t.store();
       
 			Boolean store = (Boolean) getStoreEmpfaenger().getValue();
 			if (store.booleanValue())
@@ -326,38 +328,36 @@ public abstract class AbstractTransferControl extends AbstractControl
         // Zu schauen, ob die Adresse bereits existiert, ueberlassen wir der Action
         new EmpfaengerAdd().handleAction(e);
 			}
-  		GUI.getStatusBar().setSuccessText(i18n.tr("Auftrag gespeichert"));
-			getTransfer().transactionCommit();
+      t.transactionCommit();
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Auftrag gespeichert"),StatusBarMessage.TYPE_SUCCESS));
 
-      if (getTransfer().getBetrag() > Settings.getUeberweisungLimit())
+      if (t.getBetrag() > Settings.getUeberweisungLimit())
         GUI.getView().setErrorText(i18n.tr("Warnung: Auftragslimit überschritten: {0} ", HBCI.DECIMALFORMAT.format(Settings.getUeberweisungLimit()) + " " + getKonto().getWaehrung()));
       else
         GUI.getView().setErrorText(""); // Fehlertext entfernen
       
       return true;
 		}
-		catch (ApplicationException e)
+		catch (Exception e)
 		{
-			try {
-				getTransfer().transactionRollback();
-			}
-			catch (RemoteException re)
-			{
-				Logger.error("rollback failed",re);
-			}
-			GUI.getView().setErrorText(i18n.tr(e.getMessage()));
-		}
-		catch (Exception e2)
-		{
-			try {
-				getTransfer().transactionRollback();
-			}
-			catch (RemoteException re)
-			{
-				Logger.error("rollback failed",re);
-			}
-			Logger.error("error while storing transfer",e2);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern des Auftrags"));
+		  if (t != null) {
+		    try {
+		      t.transactionRollback();
+		    }
+	      catch (Exception xe) {
+	        Logger.error("rollback failed",xe);
+	      }
+		  }
+		  
+		  if (e instanceof ApplicationException)
+		  {
+		    Application.getMessagingFactory().sendMessage(new StatusBarMessage(e.getMessage(),StatusBarMessage.TYPE_ERROR));
+		  }
+		  else
+		  {
+        Logger.error("error while saving order",e);
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehlgeschlagen: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
+		  }
 		}
 		return false;
 	}
@@ -451,7 +451,10 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
- * Revision 1.60  2011/08/03 15:34:29  willuhn
+ * Revision 1.61  2011/10/20 16:20:05  willuhn
+ * @N BUGZILLA 182 - Erste Version von client-seitigen Dauerauftraegen fuer alle Auftragsarten
+ *
+ * Revision 1.60  2011-08-03 15:34:29  willuhn
  * @B Fehlertext entfernen, wenn erfolgreich gespeichert
  *
  * Revision 1.59  2011-05-11 16:23:57  willuhn

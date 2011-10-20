@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractBaseUeberweisungControl.java,v $
- * $Revision: 1.19 $
- * $Date: 2011/05/20 16:22:31 $
+ * $Revision: 1.20 $
+ * $Date: 2011/10/20 16:20:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,19 +16,22 @@ import java.rmi.RemoteException;
 import java.util.Date;
 
 import de.willuhn.jameica.gui.AbstractView;
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.TextSchluessel;
 import de.willuhn.jameica.hbci.gui.input.AddressInput;
+import de.willuhn.jameica.hbci.gui.input.ReminderIntervalInput;
 import de.willuhn.jameica.hbci.gui.input.TerminInput;
+import de.willuhn.jameica.hbci.reminder.ReminderUtil;
 import de.willuhn.jameica.hbci.rmi.BaseUeberweisung;
 import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.jameica.messaging.StatusBarMessage;
+import de.willuhn.jameica.reminder.ReminderInterval;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
+import de.willuhn.util.ApplicationException;
 
 /**
  * Basis-Controller fuer die Ueberweisungen und Lastschriften.
@@ -37,7 +40,8 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
 {
 
 	// Eingabe-Felder
-	private TerminInput termin = null;
+	private TerminInput termin             = null;
+	private ReminderIntervalInput interval = null;
 	
   /**
    * ct.
@@ -55,10 +59,26 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
    */
   public TerminInput getTermin() throws RemoteException
 	{
-		if (this.termin == null)
-		  this.termin = new TerminInput((Terminable) getTransfer());
+		if (this.termin != null)
+	    return this.termin;
+		
+    this.termin = new TerminInput((Terminable) getTransfer());
     return this.termin;
 	}
+  
+  /**
+   * Liefert das Intervall fuer die zyklische Ausfuehrung.
+   * @return Auswahlfeld.
+   * @throws Exception
+   */
+  public ReminderIntervalInput getReminderInterval() throws Exception
+  {
+    if (this.interval != null)
+      return this.interval;
+    
+    this.interval = new ReminderIntervalInput((Terminable) getTransfer(),(Date)getTermin().getValue());
+    return this.interval;
+  }
   
   /**
    * Liefert ein Auswahlfeld fuer den Textschluessel.
@@ -72,34 +92,50 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
    */
   public synchronized boolean handleStore()
   {
+    BaseUeberweisung bu = null;
 		try
 		{
-      BaseUeberweisung bu = (BaseUeberweisung) getTransfer();
-			
-			if (bu.ausgefuehrt())
-			{
-				GUI.getStatusBar().setErrorText(i18n.tr("Der Auftrag wurde bereits ausgeführt und kann daher nicht geändert werden"));
-				return false;
-			}
+      bu = (BaseUeberweisung) getTransfer();
+      bu.transactionBegin();
 
 			Date termin = (Date) getTermin().getValue();
-			if (termin == null)
-			{
-        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte geben Sie einen Termin ein."),StatusBarMessage.TYPE_ERROR));
-			  return false;
-			}
 			bu.setTermin(termin);
       
       TextSchluessel s = (TextSchluessel) getTextSchluessel().getValue();
       bu.setTextSchluessel(s == null ? null : s.getCode());
 
-			return super.handleStore();
+			if (super.handleStore())
+			{
+	      // Reminder-Intervall speichern
+	      ReminderIntervalInput input = this.getReminderInterval();
+	      if (input.containsInterval())
+	        ReminderUtil.apply(bu,(ReminderInterval) input.getValue());
+
+	      bu.transactionCommit();
+	      return true;
+			}
 		}
-		catch (RemoteException re)
-		{
-			Logger.error("error while storing ueberweisung",re);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern des Auftrags"));
-  	}
+    catch (Exception e)
+    {
+      if (bu != null) {
+        try {
+          bu.transactionRollback();
+        }
+        catch (Exception xe) {
+          Logger.error("rollback failed",xe);
+        }
+      }
+      
+      if (e instanceof ApplicationException)
+      {
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(e.getMessage(),StatusBarMessage.TYPE_ERROR));
+      }
+      else
+      {
+        Logger.error("error while saving order",e);
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehlgeschlagen: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
+      }
+    }
 		return false;
   }
 
@@ -201,7 +237,10 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
 
 /**********************************************************************
  * $Log: AbstractBaseUeberweisungControl.java,v $
- * Revision 1.19  2011/05/20 16:22:31  willuhn
+ * Revision 1.20  2011/10/20 16:20:05  willuhn
+ * @N BUGZILLA 182 - Erste Version von client-seitigen Dauerauftraegen fuer alle Auftragsarten
+ *
+ * Revision 1.19  2011-05-20 16:22:31  willuhn
  * @N Termin-Eingabefeld in eigene Klasse ausgelagert (verhindert duplizierten Code) - bessere Kommentare
  *
  * Revision 1.18  2011-05-11 16:23:57  willuhn

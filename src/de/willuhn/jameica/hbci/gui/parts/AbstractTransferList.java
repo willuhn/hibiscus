@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractTransferList.java,v $
- * $Revision: 1.28 $
- * $Date: 2011/06/30 16:29:41 $
+ * $Revision: 1.29 $
+ * $Date: 2011/10/20 16:20:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,9 +27,11 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
+import de.willuhn.jameica.gui.parts.Column;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.Font;
+import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
@@ -39,12 +41,18 @@ import de.willuhn.jameica.hbci.gui.parts.columns.KontoColumn;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.messaging.ObjectMessage;
+import de.willuhn.jameica.hbci.reminder.ReminderStorageProviderHibiscus;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
+import de.willuhn.jameica.hbci.rmi.HibiscusDBObject;
 import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
+import de.willuhn.jameica.reminder.Reminder;
+import de.willuhn.jameica.reminder.ReminderStorageProvider;
+import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.util.DateUtil;
+import de.willuhn.logging.Logger;
 
 /**
  * Implementierung einer fix und fertig vorkonfigurierten Liste mit Transfers.
@@ -60,6 +68,9 @@ public abstract class AbstractTransferList extends AbstractFromToList
   public AbstractTransferList(Action action)
   {
     super(action);
+    
+    BeanService service = Application.getBootLoader().getBootable(BeanService.class);
+    final ReminderStorageProvider provider = service.get(ReminderStorageProviderHibiscus.class);
 
     setFormatter(new TableFormatter() {
       public void format(TableItem item) {
@@ -67,13 +78,40 @@ public abstract class AbstractTransferList extends AbstractFromToList
         if (l == null)
           return;
 
-        try {
-          boolean faellig = (l.getTermin().before(new Date()) && !l.ausgefuehrt());
+        try
+        {
+          Date termin = l.getTermin();
+          boolean faellig = (termin.before(new Date()) && !l.ausgefuehrt());
           item.setFont(faellig ? Font.BOLD.getSWTFont() : Font.DEFAULT.getSWTFont());
           if (l.ausgefuehrt())
             item.setForeground(Color.COMMENT.getSWTColor());
+
+          // Checken, ob der Auftrag einen Reminder hat oder ob es ein geclonter Auftrag ist
+          HibiscusDBObject o = (HibiscusDBObject) l;
+          String uuid = o.getMeta("reminder.uuid",null);
+          if (uuid != null)
+          {
+            try
+            {
+              Reminder r = provider.get(uuid);
+              item.setImage(5,SWTUtil.getImage("stock_form-time-field.png"));
+              item.setText(5,i18n.tr("ab {0}\n{1}",HBCI.DATEFORMAT.format(termin),r.getReminderInterval().toString()));
+            }
+            catch (Exception e)
+            {
+              Logger.error("unable to determine reminder",e);
+            }
+          }
+          else if (o.getMeta("reminder.template",null) != null)
+          {
+            item.setImage(5,SWTUtil.getImage("edit-copy.png"));
+          }
         }
-        catch (RemoteException e) { /*ignore */}
+        catch (RemoteException e)
+        {
+          Logger.error("unable to format line",e);
+        }
+        
       }
     });
 
@@ -97,7 +135,7 @@ public abstract class AbstractTransferList extends AbstractFromToList
     addColumn(new BlzColumn("empfaenger_blz",i18n.tr("Gegenkonto BLZ")));
     addColumn(i18n.tr("Verwendungszweck"),"zweck");
     addColumn(i18n.tr("Betrag"),"betrag", new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
-    addColumn(i18n.tr("Termin"),"termin", new DateFormatter(HBCI.DATEFORMAT));
+    addColumn(i18n.tr("Termin"),"termin", new DateFormatter(HBCI.DATEFORMAT),false,Column.ALIGN_RIGHT);
     addColumn(new AusgefuehrtColumn());
   }
 
@@ -203,7 +241,10 @@ public abstract class AbstractTransferList extends AbstractFromToList
 
 /**********************************************************************
  * $Log: AbstractTransferList.java,v $
- * Revision 1.28  2011/06/30 16:29:41  willuhn
+ * Revision 1.29  2011/10/20 16:20:05  willuhn
+ * @N BUGZILLA 182 - Erste Version von client-seitigen Dauerauftraegen fuer alle Auftragsarten
+ *
+ * Revision 1.28  2011-06-30 16:29:41  willuhn
  * @N Unterstuetzung fuer neues UnreadCount-Feature
  *
  * Revision 1.27  2011-04-29 15:33:28  willuhn

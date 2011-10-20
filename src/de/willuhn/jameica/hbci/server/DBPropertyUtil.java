@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DBPropertyUtil.java,v $
- * $Revision: 1.5 $
- * $Date: 2011/10/18 09:28:14 $
+ * $Revision: 1.6 $
+ * $Date: 2011/10/20 16:20:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -114,7 +114,7 @@ public class DBPropertyUtil
       if (value == null)
       {
         // Wenn er in der DB existiert, loeschen wir ihn gleich ganz
-        if (prop.isNewObject())
+        if (!prop.isNewObject())
           prop.delete();
         
         // auf jeden Fall nichts zu speichern
@@ -221,6 +221,9 @@ public class DBPropertyUtil
 
 /*********************************************************************
  * $Log: DBPropertyUtil.java,v $
+ * Revision 1.6  2011/10/20 16:20:05  willuhn
+ * @N BUGZILLA 182 - Erste Version von client-seitigen Dauerauftraegen fuer alle Auftragsarten
+ *
  * Revision 1.5  2011/10/18 09:28:14  willuhn
  * @N Gemeinsames Basis-Interface "HibiscusDBObject" fuer alle Entities (ausser Version und DBProperty) mit der Implementierung "AbstractHibiscusDBObject". Damit koennen jetzt zu jedem Fachobjekt beliebige Meta-Daten in der Datenbank gespeichert werden. Wird im ersten Schritt fuer die Reminder verwendet, um zu einem Auftrag die UUID des Reminders am Objekt speichern zu koennen
  *

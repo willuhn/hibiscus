@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractSammelTransferControl.java,v $
- * $Revision: 1.13 $
- * $Date: 2011/08/10 12:47:28 $
+ * $Revision: 1.14 $
+ * $Date: 2011/10/20 16:20:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,11 +28,14 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
+import de.willuhn.jameica.hbci.gui.input.ReminderIntervalInput;
 import de.willuhn.jameica.hbci.gui.input.TerminInput;
+import de.willuhn.jameica.hbci.reminder.ReminderUtil;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.jameica.messaging.StatusBarMessage;
+import de.willuhn.jameica.reminder.ReminderInterval;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -46,10 +49,11 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
 {
   final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  private Input kontoAuswahl				      = null;
-  private Input name                    	= null;
-  private TerminInput termin            	= null;
-  private Input summe                     = null;
+  private Input kontoAuswahl				     = null;
+  private Input name                     = null;
+  private TerminInput termin             = null;
+  private ReminderIntervalInput interval = null;
+  private Input summe                    = null;
 
   /**
    * ct.
@@ -118,6 +122,20 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
   }
 
   /**
+   * Liefert das Intervall fuer die zyklische Ausfuehrung.
+   * @return Auswahlfeld.
+   * @throws Exception
+   */
+  public ReminderIntervalInput getReminderInterval() throws Exception
+  {
+    if (this.interval != null)
+      return this.interval;
+    
+    this.interval = new ReminderIntervalInput((Terminable) getTransfer(),(Date)getTermin().getValue());
+    return this.interval;
+  }
+
+  /**
    * Liefert ein Anzeige-Feld mit der Gesamt-Summe der Buchungen.
    * @return Anzeige-Feld.
    * @throws RemoteException
@@ -154,22 +172,48 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
    */
   public synchronized boolean handleStore()
   {
-    try {
-      getTransfer().setKonto((Konto)getKontoAuswahl().getValue());
-      getTransfer().setBezeichnung((String)getName().getValue());
-      getTransfer().setTermin((Date)getTermin().getValue());
-      getTransfer().store();
+    SammelTransfer t = null;
+    
+    try
+    {
+      t = this.getTransfer();
+      t.transactionBegin();
+      
+      t.setKonto((Konto)getKontoAuswahl().getValue());
+      t.setBezeichnung((String)getName().getValue());
+      t.setTermin((Date)getTermin().getValue());
+      t.store();
+
+      // Reminder-Intervall speichern
+      ReminderIntervalInput input = this.getReminderInterval();
+      if (input.containsInterval())
+        ReminderUtil.apply(t,(ReminderInterval) input.getValue());
+
+      t.transactionCommit();
+      
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Sammel-Auftrag gespeichert"),StatusBarMessage.TYPE_SUCCESS));
       return true;
     }
-    catch (ApplicationException e2)
+    catch (Exception e)
     {
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(e2.getMessage(),StatusBarMessage.TYPE_ERROR));
-    }
-    catch (RemoteException e)
-    {
-      Logger.error("error while storing sammeltransfer",e);
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Speichern des Sammel-Auftrages"),StatusBarMessage.TYPE_ERROR));
+      if (t != null) {
+        try {
+          t.transactionRollback();
+        }
+        catch (Exception xe) {
+          Logger.error("rollback failed",xe);
+        }
+      }
+      
+      if (e instanceof ApplicationException)
+      {
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(e.getMessage(),StatusBarMessage.TYPE_ERROR));
+      }
+      else
+      {
+        Logger.error("error while saving order",e);
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehlgeschlagen: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
+      }
     }
     return false;
   }
@@ -301,7 +345,10 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferControl.java,v $
- * Revision 1.13  2011/08/10 12:47:28  willuhn
+ * Revision 1.14  2011/10/20 16:20:05  willuhn
+ * @N BUGZILLA 182 - Erste Version von client-seitigen Dauerauftraegen fuer alle Auftragsarten
+ *
+ * Revision 1.13  2011-08-10 12:47:28  willuhn
  * @N BUGZILLA 1118
  *
  * Revision 1.12  2011-05-20 16:22:31  willuhn

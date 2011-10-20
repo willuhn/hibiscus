@@ -246,6 +246,15 @@ CREATE TABLE property (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
+CREATE TABLE reminder (
+  id int(10) AUTO_INCREMENT,
+  uuid varchar(255) NOT NULL,
+  content text NOT NULL,
+  UNIQUE (id),
+  UNIQUE (uuid),
+  PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
 CREATE INDEX idx_lastschrift_konto ON lastschrift(konto_id);
 CREATE INDEX idx_sueberweisung_konto ON sueberweisung(konto_id);
 CREATE INDEX idx_umsatztyp_umsatztyp ON umsatztyp(parent_id);
@@ -258,6 +267,7 @@ CREATE INDEX idx_umsatz_konto ON umsatz(konto_id);
 CREATE INDEX idx_umsatz_umsatztyp ON umsatz(umsatztyp_id);
 CREATE INDEX idx_dauerauftrag_konto ON dauerauftrag(konto_id);
 CREATE INDEX idx_aueberweisung_konto ON aueberweisung(konto_id);
+CREATE INDEX idx_reminder_uuid ON reminder(uuid);
 
 ALTER TABLE lastschrift ADD CONSTRAINT fk_lastschrift_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
 ALTER TABLE sueberweisung ADD CONSTRAINT fk_sueberweisung_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
@@ -280,4 +290,4 @@ ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
 
-INSERT INTO version (name,version) values ('db',36);
+INSERT INTO version (name,version) values ('db',37);

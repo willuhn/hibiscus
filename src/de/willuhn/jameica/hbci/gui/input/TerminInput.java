@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/TerminInput.java,v $
- * $Revision: 1.2 $
- * $Date: 2011/06/24 07:55:41 $
+ * $Revision: 1.3 $
+ * $Date: 2011/10/20 16:20:05 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Listener;
 import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Terminable;
+import de.willuhn.jameica.messaging.QueryMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
@@ -29,6 +30,11 @@ import de.willuhn.util.I18N;
  */
 public class TerminInput extends DateInput
 {
+  /**
+   * Queue, die bei Aenderungen benachrichtigt wird.
+   */
+  public final static String QUEUE_TERMIN_CHANGED = "hibiscus.termin.changed";
+  
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
   private Terminable auftrag = null;
@@ -52,6 +58,7 @@ public class TerminInput extends DateInput
     this.setTitle(i18n.tr("Fälligkeit"));
     this.setText(i18n.tr("Bitte wählen Sie ein Datum aus, zu dem\nHibiscus den Auftrag als fällig markieren soll."));
     this.setComment("");
+    this.setMandatory(true);
     
     this.listener = new MyListener();
     this.listener.handleEvent(null); // einmal ausloesen
@@ -92,16 +99,18 @@ public class TerminInput extends DateInput
     {
       try
       {
-        Date date = (Date) getValue();
-        if (date == null)
-        {
-          setComment("");
-          return;
-        }
-
         if (auftrag == null)
           return;
 
+        Date date = (Date) getValue();
+        if (date == null)
+        {
+          date = new Date(); // Wenn der User nichts eingibt, nehmen wir heute
+          setValue(date);
+        }
+
+        Application.getMessagingFactory().getMessagingQueue(QUEUE_TERMIN_CHANGED).sendMessage(new QueryMessage(date));
+        
         // Wir muessen den Termin im Objekt setzen, damit wir die
         // Faelligkeits-Entscheidung treffen koennen
         auftrag.setTermin(date);
@@ -110,9 +119,9 @@ public class TerminInput extends DateInput
           // checken, ob wir auch noch das Ausfuehrungsdatum haben
           Date ausgefuehrt = auftrag.getAusfuehrungsdatum();
           if (ausgefuehrt != null)
-            setComment(i18n.tr("Der Auftrag wurde am {0} ausgeführt",HBCI.DATEFORMAT.format(ausgefuehrt)));
+            setComment(i18n.tr("Am {0} ausgeführt",HBCI.DATEFORMAT.format(ausgefuehrt)));
           else
-            setComment(i18n.tr("Der Auftrag wurde bereits ausgeführt"));
+            setComment(i18n.tr("Bereits ausgeführt"));
         }
         else if (auftrag.ueberfaellig())
           setComment(i18n.tr("Der Auftrag ist fällig"));
@@ -131,7 +140,10 @@ public class TerminInput extends DateInput
 
 /**********************************************************************
  * $Log: TerminInput.java,v $
- * Revision 1.2  2011/06/24 07:55:41  willuhn
+ * Revision 1.3  2011/10/20 16:20:05  willuhn
+ * @N BUGZILLA 182 - Erste Version von client-seitigen Dauerauftraegen fuer alle Auftragsarten
+ *
+ * Revision 1.2  2011-06-24 07:55:41  willuhn
  * @C Bei Hibiscus-verwalteten Terminen besser "Fällig am" verwenden - ist nicht so missverstaendlich - der User denkt sonst ggf. es sei ein bankseitig terminierter Auftrag
  *
  * Revision 1.1  2011-05-20 16:22:31  willuhn

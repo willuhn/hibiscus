@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractSammelTransferImpl.java,v $
- * $Revision: 1.9 $
- * $Date: 2011/10/18 09:28:14 $
+ * $Revision: 1.10 $
+ * $Date: 2011/10/20 16:20:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -63,6 +63,8 @@ public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObjec
         throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus."));
       if (getKonto().isNewObject())
         throw new ApplicationException(i18n.tr("Bitte speichern Sie zunächst das Konto"));
+      if (this.getTermin() == null)
+        throw new ApplicationException(i18n.tr("Bitte geben Sie ein Fälligkeitsdatum ein."));
 
       if (getBezeichnung() == null || getBezeichnung().length() == 0)
         throw new ApplicationException(i18n.tr("Bitte geben Sie eine Bezeichnung ein."));
@@ -96,8 +98,6 @@ public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObjec
    */
   public void insert() throws RemoteException, ApplicationException
   {
-    if (getTermin() == null)
-      setTermin(new Date());
     if (getAttribute("ausgefuehrt") == null) // Status noch nicht definiert
       setAttribute("ausgefuehrt",new Integer(0));
     super.insert();
@@ -352,6 +352,7 @@ public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObjec
       l.transactionBegin();
       l.setBezeichnung(this.getBezeichnung());
       l.setKonto(this.getKonto());
+      l.setTermin(new Date());
       l.store();
       DBIterator list = this.getBuchungen();
       while (list.hasNext())
@@ -393,6 +394,9 @@ public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObjec
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferImpl.java,v $
+ * Revision 1.10  2011/10/20 16:20:05  willuhn
+ * @N BUGZILLA 182 - Erste Version von client-seitigen Dauerauftraegen fuer alle Auftragsarten
+ *
  * Revision 1.9  2011/10/18 09:28:14  willuhn
  * @N Gemeinsames Basis-Interface "HibiscusDBObject" fuer alle Entities (ausser Version und DBProperty) mit der Implementierung "AbstractHibiscusDBObject". Damit koennen jetzt zu jedem Fachobjekt beliebige Meta-Daten in der Datenbank gespeichert werden. Wird im ersten Schritt fuer die Reminder verwendet, um zu einem Auftrag die UUID des Reminders am Objekt speichern zu koennen
  *
