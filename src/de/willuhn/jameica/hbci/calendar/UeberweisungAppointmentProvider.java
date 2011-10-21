@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/calendar/UeberweisungAppointmentProvider.java,v $
- * $Revision: 1.5 $
- * $Date: 2011/10/06 10:49:24 $
+ * $Revision: 1.6 $
+ * $Date: 2011/10/21 10:53:03 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -56,6 +56,7 @@ public class UeberweisungAppointmentProvider implements AppointmentProvider
       if (to   != null) list.addFilter("termin <= ?", new Object[]{new java.sql.Date(DateUtil.endOfDay(to).getTime())});
       list.setOrder("ORDER BY " + service.getSQLTimestamp("termin"));
 
+      // TODO: Geplante Reminder-Ueberweisungen (die noch nicht erzeugt wurden) ebenfalls anzeigen?
       List<Appointment> result = new LinkedList<Appointment>();
       while (list.hasNext())
         result.add(new MyAppointment((Ueberweisung) list.next()));
@@ -199,6 +200,9 @@ public class UeberweisungAppointmentProvider implements AppointmentProvider
 
 /**********************************************************************
  * $Log: UeberweisungAppointmentProvider.java,v $
+ * Revision 1.6  2011/10/21 10:53:03  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2011/10/06 10:49:24  willuhn
  * @N Termin-Provider fuer Umsaetze
  *
