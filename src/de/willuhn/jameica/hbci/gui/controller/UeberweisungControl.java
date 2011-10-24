@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.55 $
- * $Date: 2011/10/18 14:40:31 $
+ * $Revision: 1.56 $
+ * $Date: 2011/10/24 09:46:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@ package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -143,19 +144,22 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
           if (date == null)
             return;
           
-          // Wenn das Datum in der Zukunft liegt, fragen wir den User, ob es vielleicht
+          // Wenn das Datum eine Woche in der Zukunft liegt, fragen wir den User, ob es vielleicht
           // eine Terminueberweisung werden soll. Muessen wir aber nicht fragen, wenn
           // der User nicht ohnehin schon eine Termin-Ueberweisung ausgewaehlt hat
           Typ typ = (Typ) getTyp().getValue();
           if (typ == null || typ.termin)
             return;
-          
-          if (!DateUtil.startOfDay(date).after(DateUtil.startOfDay(new Date())))
-            return;
-          
-          String q = i18n.tr("Soll der Auftrag als bankseitig geführte Termin-Überweisung ausgeführt werden?");
-          if (Application.getCallback().askUser(q))
-            getTyp().setValue(new Typ(true,false));
+
+          Calendar cal = Calendar.getInstance();
+          cal.setTime(DateUtil.startOfDay(new Date()));
+          cal.add(Calendar.DATE,6);
+          if (DateUtil.startOfDay(date).after(cal.getTime()))
+          {
+            String q = i18n.tr("Soll der Auftrag als bankseitig geführte Termin-Überweisung ausgeführt werden?");
+            if (Application.getCallback().askUser(q))
+              getTyp().setValue(new Typ(true,false));
+          }
         }
         catch (Exception e)
         {
@@ -321,6 +325,9 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
+ * Revision 1.56  2011/10/24 09:46:16  willuhn
+ * @N Termin-Ueberweisung erst vorschlagen, wenn der Termin 1 Woche in der Zukunft liegt
+ *
  * Revision 1.55  2011/10/18 14:40:31  willuhn
  * @N Wenn ein Termin in der Zukunft ausgewaehlt wird, erscheint jetzt eine Sicherheitsabfrage, mit der der User darauf hingewiesen wird, den Auftrag ggf. als bankseitig gefuehrte Termin-Ueberweisung einzureichen
  *
