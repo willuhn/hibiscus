@@ -1,5 +1,8 @@
 HEAD
 
+  * BUG: 0140 Wenn Einzel-Auftraege zu einem neuen Sammel-Auftrag zusammengefasst
+              wurden, wurde das Faelligkeits-Datum (aktuelles Datum) nicht eingetragen,
+              wodurch der neue Sammel-Auftrag nicht gespeichert werden konnte. 
   * NEW: 0139 BUGZILLA 182 Zeitgesteuertes Duplizieren von Aufträgen
   * NEW: 0138 Support zum Speichern beliebiger Meta-Daten an Entities
   * NEW: 0137 Wenn bei einer Ueberweisung ein Termin in der Zukunft ausgewaehlt wird, erscheint

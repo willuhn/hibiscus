@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/updates/update0023.java,v $
- * $Revision: 1.1 $
- * $Date: 2009/06/16 12:44:02 $
+ * $Revision: 1.2 $
+ * $Date: 2011/10/24 14:24:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,7 +43,7 @@ public class update0023 implements Update
 
     // Wenn wir eine Tabelle erstellen wollen, muessen wir wissen, welche
     // SQL-Dialekt wir sprechen
-    String driver = HBCIDBService.SETTINGS.getString("database.driver",null);
+    String driver = HBCIDBService.SETTINGS.getString("database.driver",DBSupportH2Impl.class.getName());
     if (driver == null || !driver.equals(DBSupportH2Impl.class.getName()))
     {
       Logger.info("skip update, not needed");
@@ -80,6 +80,9 @@ public class update0023 implements Update
 
 /*********************************************************************
  * $Log: update0023.java,v $
+ * Revision 1.2  2011/10/24 14:24:22  willuhn
+ * @B Parameter "database.driver" darf inzwischen NULL sein - in dem Fall H2 als Default verwenden
+ *
  * Revision 1.1  2009/06/16 12:44:02  willuhn
  * @N DB-Update 23
  *

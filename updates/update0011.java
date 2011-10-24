@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/updates/update0011.java,v $
- * $Revision: 1.2 $
- * $Date: 2008/11/25 00:52:53 $
+ * $Revision: 1.3 $
+ * $Date: 2011/10/24 14:24:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@
 import java.io.StringReader;
 
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
+import de.willuhn.jameica.hbci.server.DBSupportH2Impl;
 import de.willuhn.jameica.hbci.server.DBSupportMySqlImpl;
 import de.willuhn.jameica.hbci.server.HBCIUpdateProvider;
 import de.willuhn.logging.Logger;
@@ -47,7 +48,7 @@ public class update0011 implements Update
 
     // Wenn wir eine Tabelle erstellen wollen, muessen wir wissen, welche
     // SQL-Dialekt wir sprechen
-    String driver = HBCIDBService.SETTINGS.getString("database.driver",null);
+    String driver = HBCIDBService.SETTINGS.getString("database.driver",DBSupportH2Impl.class.getName());
     if (driver == null || !driver.equals(DBSupportMySqlImpl.class.getName()))
     {
       Logger.info("skip update, not needed");
@@ -84,6 +85,9 @@ public class update0011 implements Update
 
 /*********************************************************************
  * $Log: update0011.java,v $
+ * Revision 1.3  2011/10/24 14:24:22  willuhn
+ * @B Parameter "database.driver" darf inzwischen NULL sein - in dem Fall H2 als Default verwenden
+ *
  * Revision 1.2  2008/11/25 00:52:53  willuhn
  * @N Loggen, wenn Update 11 nicht noetig ist
  *
