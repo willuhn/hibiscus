@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/TransferMergeDialog.java,v $
- * $Revision: 1.2 $
- * $Date: 2009/11/26 13:25:30 $
+ * $Revision: 1.3 $
+ * $Date: 2011/10/24 14:13:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -152,6 +152,7 @@ public class TransferMergeDialog extends AbstractDialog
               return;
             }
             transfer.setBezeichnung(text);
+            transfer.setTermin(new Date());
           }
         }
         catch (RemoteException e)
@@ -286,6 +287,9 @@ public class TransferMergeDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: TransferMergeDialog.java,v $
+ * Revision 1.3  2011/10/24 14:13:50  willuhn
+ * @B Beim Erstellen einer neuen Sammel-Lastschrift das aktuelle Datum verwenden, damit sie gespeichert werden kann
+ *
  * Revision 1.2  2009/11/26 13:25:30  willuhn
  * @N Einzel-Auftraege in existierende Sammel-Auftraege uebernehmen
  *
