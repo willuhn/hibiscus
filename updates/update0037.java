@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/updates/update0037.java,v $
- * $Revision: 1.1 $
- * $Date: 2011/10/20 16:20:05 $
+ * $Revision: 1.2 $
+ * $Date: 2011/10/24 14:24:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -82,7 +82,7 @@ public class update0037 implements Update
 
     // Wenn wir eine Tabelle erstellen wollen, muessen wir wissen, welche
     // SQL-Dialekt wir sprechen
-    String driver = HBCIDBService.SETTINGS.getString("database.driver",null);
+    String driver = HBCIDBService.SETTINGS.getString("database.driver",DBSupportH2Impl.class.getName());
     String sql = (String) statements.get(driver);
     if (sql == null)
       throw new ApplicationException(i18n.tr("Datenbank {0} nicht wird unterstützt",driver));
@@ -116,6 +116,9 @@ public class update0037 implements Update
 
 /*********************************************************************
  * $Log: update0037.java,v $
+ * Revision 1.2  2011/10/24 14:24:22  willuhn
+ * @B Parameter "database.driver" darf inzwischen NULL sein - in dem Fall H2 als Default verwenden
+ *
  * Revision 1.1  2011/10/20 16:20:05  willuhn
  * @N BUGZILLA 182 - Erste Version von client-seitigen Dauerauftraegen fuer alle Auftragsarten
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/updates/update0010.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/11/02 12:02:20 $
+ * $Revision: 1.6 $
+ * $Date: 2011/10/24 14:24:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -61,7 +61,7 @@ public class update0010 implements Update
 
     // Wenn wir eine Tabelle erstellen wollen, muessen wir wissen, welche
     // SQL-Dialekt wir sprechen
-    String driver = HBCIDBService.SETTINGS.getString("database.driver",null);
+    String driver = HBCIDBService.SETTINGS.getString("database.driver",DBSupportH2Impl.class.getName());
     String sql = (String) statements.get(driver);
     if (sql == null)
       throw new ApplicationException(i18n.tr("Datenbank {0} nicht wird unterstützt",driver));
@@ -96,7 +96,10 @@ public class update0010 implements Update
 
 /*********************************************************************
  * $Log: update0010.java,v $
- * Revision 1.5  2010/11/02 12:02:20  willuhn
+ * Revision 1.6  2011/10/24 14:24:22  willuhn
+ * @B Parameter "database.driver" darf inzwischen NULL sein - in dem Fall H2 als Default verwenden
+ *
+ * Revision 1.5  2010-11-02 12:02:20  willuhn
  * @R Support fuer McKoi entfernt. User, die noch dieses alte DB-Format nutzen, sollen erst auf Jameica 1.6/Hibiscus 1.8 (oder maximal Jameica 1.9/Hibiscus 1.11) wechseln, dort die Migration auf H2 durchfuehren und dann erst auf Hibiscus 1.12 updaten
  *
  * Revision 1.4  2009/01/07 22:56:43  willuhn

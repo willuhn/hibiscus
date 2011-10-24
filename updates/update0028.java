@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/updates/update0028.java,v $
- * $Revision: 1.3 $
- * $Date: 2011/06/22 16:26:38 $
+ * $Revision: 1.4 $
+ * $Date: 2011/10/24 14:24:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -60,7 +60,7 @@ public class update0028 implements Update
 
     // Wenn wir eine Tabelle erstellen wollen, muessen wir wissen, welche
     // SQL-Dialekt wir sprechen
-    String driver = HBCIDBService.SETTINGS.getString("database.driver",null);
+    String driver = HBCIDBService.SETTINGS.getString("database.driver",DBSupportH2Impl.class.getName());
     String sql = (String) statements.get(driver);
     if (sql == null)
       throw new ApplicationException(i18n.tr("Datenbank {0} nicht wird unterstützt",driver));
@@ -95,7 +95,10 @@ public class update0028 implements Update
 
 /*********************************************************************
  * $Log: update0028.java,v $
- * Revision 1.3  2011/06/22 16:26:38  willuhn
+ * Revision 1.4  2011/10/24 14:24:22  willuhn
+ * @B Parameter "database.driver" darf inzwischen NULL sein - in dem Fall H2 als Default verwenden
+ *
+ * Revision 1.3  2011-06-22 16:26:38  willuhn
  * @B Postgres-Fixes
  *
  * Revision 1.2  2010-11-02 12:02:20  willuhn
