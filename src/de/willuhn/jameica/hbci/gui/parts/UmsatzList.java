@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.80 $
- * $Date: 2011/09/15 09:43:36 $
+ * $Revision: 1.81 $
+ * $Date: 2011/10/26 09:33:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -191,7 +191,7 @@ public class UmsatzList extends TablePart implements Extendable
     addColumn(i18n.tr("Verwendungszweck"),          "mergedzweck");
     addColumn(i18n.tr("Datum"),                     "datum_pseudo", new DateFormatter(HBCI.DATEFORMAT));
     addColumn(i18n.tr("Betrag"),                    "betrag",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
-    addColumn(i18n.tr("Kategorie"),                 "umsatztyp",null,true);
+    addColumn(i18n.tr("Kategorie"),                 "umsatztyp",null,false);
     // BUGZILLA 66 http://www.willuhn.de/bugzilla/show_bug.cgi?id=66
     addColumn(i18n.tr("Zwischensumme"),             "saldo",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
     addColumn(i18n.tr("Notiz"),                     "kommentar",null,true);
@@ -850,7 +850,10 @@ public class UmsatzList extends TablePart implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
- * Revision 1.80  2011/09/15 09:43:36  willuhn
+ * Revision 1.81  2011/10/26 09:33:29  willuhn
+ * @B Kategorie war versehentlich editierbar
+ *
+ * Revision 1.80  2011-09-15 09:43:36  willuhn
  * @N BUGZILLA 728
  *
  * Revision 1.79  2011-08-11 08:16:38  willuhn
