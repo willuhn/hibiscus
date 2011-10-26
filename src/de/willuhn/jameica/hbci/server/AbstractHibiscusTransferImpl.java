@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractHibiscusTransferImpl.java,v $
- * $Revision: 1.21 $
- * $Date: 2011/10/18 09:28:14 $
+ * $Revision: 1.22 $
+ * $Date: 2011/10/26 11:43:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,6 +49,9 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
   {
     if ("konto_id".equals(arg0))
       return getKonto();
+
+    if ("mergedzweck".equals(arg0))
+      return VerwendungszweckUtil.toString(this);
 
     return super.getAttribute(arg0);
   }
@@ -366,6 +369,9 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
 
 /**********************************************************************
  * $Log: AbstractHibiscusTransferImpl.java,v $
+ * Revision 1.22  2011/10/26 11:43:28  willuhn
+ * @N In den Auftragslisten ebenfalls die weiteren Verwendungszweck-Zeilen anzeigen (so wie in der Umsatzliste bereits vorhanden)
+ *
  * Revision 1.21  2011/10/18 09:28:14  willuhn
  * @N Gemeinsames Basis-Interface "HibiscusDBObject" fuer alle Entities (ausser Version und DBProperty) mit der Implementierung "AbstractHibiscusDBObject". Damit koennen jetzt zu jedem Fachobjekt beliebige Meta-Daten in der Datenbank gespeichert werden. Wird im ersten Schritt fuer die Reminder verwendet, um zu einem Auftrag die UUID des Reminders am Objekt speichern zu koennen
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractTransferList.java,v $
- * $Revision: 1.29 $
- * $Date: 2011/10/20 16:20:05 $
+ * $Revision: 1.30 $
+ * $Date: 2011/10/26 11:43:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -133,7 +133,7 @@ public abstract class AbstractTransferList extends AbstractFromToList
     addColumn(new KontoColumn());
     addColumn(i18n.tr("Gegenkonto Inhaber"),"empfaenger_name");
     addColumn(new BlzColumn("empfaenger_blz",i18n.tr("Gegenkonto BLZ")));
-    addColumn(i18n.tr("Verwendungszweck"),"zweck");
+    addColumn(i18n.tr("Verwendungszweck"),"mergedzweck");
     addColumn(i18n.tr("Betrag"),"betrag", new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
     addColumn(i18n.tr("Termin"),"termin", new DateFormatter(HBCI.DATEFORMAT),false,Column.ALIGN_RIGHT);
     addColumn(new AusgefuehrtColumn());
@@ -241,6 +241,9 @@ public abstract class AbstractTransferList extends AbstractFromToList
 
 /**********************************************************************
  * $Log: AbstractTransferList.java,v $
+ * Revision 1.30  2011/10/26 11:43:28  willuhn
+ * @N In den Auftragslisten ebenfalls die weiteren Verwendungszweck-Zeilen anzeigen (so wie in der Umsatzliste bereits vorhanden)
+ *
  * Revision 1.29  2011/10/20 16:20:05  willuhn
  * @N BUGZILLA 182 - Erste Version von client-seitigen Dauerauftraegen fuer alle Auftragsarten
  *

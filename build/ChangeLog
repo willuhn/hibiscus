@@ -1,5 +1,7 @@
 HEAD
 
+  * NEW: 0142 In den Auftragslisten ebenfalls die weiteren Verwendungszweck-Zeilen
+              anzeigen (so wie in der Umsatzliste bereits vorhanden)
   * BUG: 0141 Update von obantoo 1.4.11 auf 1.5.0 - siehe
               http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?t=13679
   * BUG: 0140 Wenn Einzel-Auftraege zu einem neuen Sammel-Auftrag zusammengefasst
