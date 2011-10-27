@@ -1,5 +1,6 @@
 HEAD
 
+  * CHG: 0144 Auswahl des Stichtages in Spar-Quote als Spinner-Input
   * BUG: 0143 automatisch aktuelles Datum als Faelligkeit verwenden, wenn keines
               angegeben ist
   * NEW: 0142 In den Auftragslisten ebenfalls die weiteren Verwendungszweck-Zeilen
