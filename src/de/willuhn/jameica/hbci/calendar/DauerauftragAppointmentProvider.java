@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/calendar/DauerauftragAppointmentProvider.java,v $
- * $Revision: 1.7 $
- * $Date: 2011/10/06 10:49:23 $
+ * $Revision: 1.8 $
+ * $Date: 2011/10/27 17:08:03 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -12,8 +12,6 @@
 package de.willuhn.jameica.hbci.calendar;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,7 +29,7 @@ import de.willuhn.jameica.hbci.gui.action.DauerauftragNew;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.rmi.Turnus;
+import de.willuhn.jameica.hbci.server.DauerauftragUtil;
 import de.willuhn.jameica.hbci.server.TurnusHelper;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.jameica.system.Application;
@@ -62,7 +60,7 @@ public class DauerauftragAppointmentProvider implements AppointmentProvider
         // Wir checken, ob einer der Dauerauftraege am genannten Tag
         // ausgefuehrt wird oder wurde
         Dauerauftrag t = (Dauerauftrag) list.next();
-        List<Date> termine = getTermine(t,from,to);
+        List<Date> termine = DauerauftragUtil.getTermine(t,from,to);
         if (termine == null || termine.size() == 0)
           continue; // Keine Zahlung in dem Zeitraum
 
@@ -77,66 +75,6 @@ public class DauerauftragAppointmentProvider implements AppointmentProvider
       Logger.error("unable to load data",e);
     }
     return null;
-  }
-  
-  /**
-   * Prueft, ob der Dauerauftrag im genannten Zeitraum ausgefuehrt wird oder wurde.
-   * @param t der Dauerauftrag.
-   * @param from Start-Datum.
-   * @param to End-Datum.
-   * @return die Termine, zu denen der Auftrag im angegebenen Zeitraum ausgefuehrt wird.
-   * @throws RemoteException
-   */
-  private List<Date> getTermine(Dauerauftrag t, Date from, Date to) throws RemoteException
-  {
-    Date de       = t.getErsteZahlung();
-    Date dl       = t.getLetzteZahlung();
-    Turnus turnus = t.getTurnus();
-    
-    List<Date> result = new ArrayList<Date>();
-    
-    // Auftrag faengt erst spaeter an
-    if (de != null && de.after(to))
-      return result;
-    
-    // Auftrag ist schon abgelaufen
-    if (dl != null && dl.before(from))
-      return result;
-    
-    // Wir machen maximal 100 Iterationen. Das hab ich jetzt willkuerlich
-    // festgelegt. Wenn das Zeitfenster 1 Monat ist, koennen es ohnehin nur
-    // maximal 5 Termine sein. Fuer den Fall, dass das Zeitfenster aber mal
-    // groesser ist, machen wir ein paar mehr Iterationen
-    Date start = from;
-    if (de.after(start)) // Der Auftrag faengt erst mitten im Zeitraum an
-      start = de;
-    
-    for (int i=0;i<100;++i)
-    {
-      if (start.after(to))
-        break; // Wir sind raus
-      
-      // Als Valuta nehmen wir den ersten des Monats
-      Date d = TurnusHelper.getNaechsteZahlung(de,dl,turnus,start);
-      
-      // Wir haben keine weiteren Termine mehr gefunden oder sind aus dem Zeitfenster raus
-      if (d == null || d.after(to))
-        break;
-
-      // Tag uebernehmen
-      result.add(d);
-
-      // Noch einen Tag weiterruecken
-      Calendar cal = Calendar.getInstance();
-      cal.setTime(d);
-      cal.add(Calendar.DAY_OF_MONTH,1);
-      d = cal.getTime();
-        
-      // Und wir machen beim naechsten Tag weiter
-      start = d;
-      
-    }
-    return result;
   }
 
   /**
@@ -251,7 +189,10 @@ public class DauerauftragAppointmentProvider implements AppointmentProvider
 
 /**********************************************************************
  * $Log: DauerauftragAppointmentProvider.java,v $
- * Revision 1.7  2011/10/06 10:49:23  willuhn
+ * Revision 1.8  2011/10/27 17:08:03  willuhn
+ * @C Berechnung der kuenftigen geplanten Termine von Dauerauftraegen in neue Klasse DauerauftragUtil verschoben, damit der Code wiederverwendet werden kann (fuer den Forecast-Provider von Dauerauftraegen)
+ *
+ * Revision 1.7  2011-10-06 10:49:23  willuhn
  * @N Termin-Provider fuer Umsaetze
  *
  * Revision 1.6  2011-01-20 17:12:39  willuhn
