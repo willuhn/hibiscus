@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractBaseUeberweisungImpl.java,v $
- * $Revision: 1.16 $
- * $Date: 2011/10/20 16:20:05 $
+ * $Revision: 1.17 $
+ * $Date: 2011/10/27 09:42:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -58,7 +58,7 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractHibiscusTrans
     try
     {
       if (this.getTermin() == null)
-        throw new ApplicationException(i18n.tr("Bitte geben Sie ein Fälligkeitsdatum ein."));
+        this.setTermin(new Date());
     }
     catch (RemoteException e)
     {
@@ -182,6 +182,9 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractHibiscusTrans
 
 /**********************************************************************
  * $Log: AbstractBaseUeberweisungImpl.java,v $
+ * Revision 1.17  2011/10/27 09:42:14  willuhn
+ * @B Automatisch aktuelles Datum verwenden, wenn keines angegeben ist
+ *
  * Revision 1.16  2011/10/20 16:20:05  willuhn
  * @N BUGZILLA 182 - Erste Version von client-seitigen Dauerauftraegen fuer alle Auftragsarten
  *

@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractSammelTransferImpl.java,v $
- * $Revision: 1.10 $
- * $Date: 2011/10/20 16:20:05 $
+ * $Revision: 1.11 $
+ * $Date: 2011/10/27 09:42:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -63,8 +63,9 @@ public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObjec
         throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus."));
       if (getKonto().isNewObject())
         throw new ApplicationException(i18n.tr("Bitte speichern Sie zunächst das Konto"));
+
       if (this.getTermin() == null)
-        throw new ApplicationException(i18n.tr("Bitte geben Sie ein Fälligkeitsdatum ein."));
+        this.setTermin(new Date());
 
       if (getBezeichnung() == null || getBezeichnung().length() == 0)
         throw new ApplicationException(i18n.tr("Bitte geben Sie eine Bezeichnung ein."));
@@ -394,6 +395,9 @@ public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObjec
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferImpl.java,v $
+ * Revision 1.11  2011/10/27 09:42:14  willuhn
+ * @B Automatisch aktuelles Datum verwenden, wenn keines angegeben ist
+ *
  * Revision 1.10  2011/10/20 16:20:05  willuhn
  * @N BUGZILLA 182 - Erste Version von client-seitigen Dauerauftraegen fuer alle Auftragsarten
  *

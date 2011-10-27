@@ -1,5 +1,7 @@
 HEAD
 
+  * BUG: 0143 automatisch aktuelles Datum als Faelligkeit verwenden, wenn keines
+              angegeben ist
   * NEW: 0142 In den Auftragslisten ebenfalls die weiteren Verwendungszweck-Zeilen
               anzeigen (so wie in der Umsatzliste bereits vorhanden)
   * BUG: 0141 Update von obantoo 1.4.11 auf 1.5.0 - siehe
