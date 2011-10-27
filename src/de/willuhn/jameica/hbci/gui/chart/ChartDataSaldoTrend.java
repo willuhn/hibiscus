@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/ChartDataSaldoTrend.java,v $
- * $Revision: 1.4 $
- * $Date: 2011/05/03 10:15:56 $
+ * $Revision: 1.5 $
+ * $Date: 2011/10/27 17:09:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import de.willuhn.jameica.hbci.server.Value;
 import de.willuhn.logging.Logger;
 
 /**
@@ -25,13 +26,13 @@ import de.willuhn.logging.Logger;
  */
 public class ChartDataSaldoTrend extends AbstractChartDataSaldo
 {
-  private List<Saldo> data = null;
+  private List<Value> data = null;
   
   /**
    * Fuegt weitere Daten hinzu.
    * @param data weitere Daten.
    */
-  public void add(List<Saldo> data)
+  public void add(List<Value> data)
   {
     if (data == null)
     {
@@ -40,7 +41,7 @@ public class ChartDataSaldoTrend extends AbstractChartDataSaldo
     }
     if (this.data == null)
     {
-      this.data = new ArrayList<Saldo>();
+      this.data = new ArrayList<Value>();
 
       for (int i=0;i<data.size();++i)
       {
@@ -52,8 +53,8 @@ public class ChartDataSaldoTrend extends AbstractChartDataSaldo
       for (int i=0;i<data.size();++i)
       {
         // Weitere Durchschnitte hinzufuegen
-        Saldo s = this.data.get(i);
-        s.setSaldo(s.getSaldo() + createAverage(data,i).getSaldo());
+        Value s = this.data.get(i);
+        s.setValue(s.getValue() + createAverage(data,i).getValue());
       }
     }
   }
@@ -90,9 +91,9 @@ public class ChartDataSaldoTrend extends AbstractChartDataSaldo
    * @param pos Position.
    * @return der Durchschnitt.
    */
-  private Saldo createAverage(List<Saldo> list, int pos)
+  private Value createAverage(List<Value> list, int pos)
   {
-    Saldo item = new Saldo(list.get(pos).getDatum(),0.0d);
+    Value item = new Value(list.get(pos).getDate(),0.0d);
 
     int found = 0;
     Date first = null;
@@ -100,13 +101,13 @@ public class ChartDataSaldoTrend extends AbstractChartDataSaldo
     {
       try
       {
-        Saldo current = list.get(pos + i);
+        Value current = list.get(pos + i);
         found++;
         
         if (first == null)
-          first = current.getDatum();
+          first = current.getDate();
         
-        item.setSaldo(item.getSaldo() + current.getSaldo());
+        item.setValue(item.getValue() + current.getValue());
       }
       catch (Exception e)
       {
@@ -115,7 +116,7 @@ public class ChartDataSaldoTrend extends AbstractChartDataSaldo
     }
     
     // Durchschnittswert bilden
-    item.setSaldo(item.getSaldo() / found);
+    item.setValue(item.getValue() / found);
     return item;
   }
 }
@@ -123,7 +124,11 @@ public class ChartDataSaldoTrend extends AbstractChartDataSaldo
 
 /*********************************************************************
  * $Log: ChartDataSaldoTrend.java,v $
- * Revision 1.4  2011/05/03 10:15:56  willuhn
+ * Revision 1.5  2011/10/27 17:09:29  willuhn
+ * @C Saldo-Bean in neue separate (und generischere) Klasse "Value" ausgelagert.
+ * @N Saldo-Finder erweitert, damit der jetzt auch mit Value-Objekten arbeiten kann
+ *
+ * Revision 1.4  2011-05-03 10:15:56  willuhn
  * @B NPE
  *
  * Revision 1.3  2010-08-12 17:12:32  willuhn

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/ChartDataSaldoVerlauf.java,v $
- * $Revision: 1.19 $
- * $Date: 2011/05/03 08:03:17 $
+ * $Revision: 1.20 $
+ * $Date: 2011/10/27 17:09:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,6 +23,7 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.KontoUtil;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
+import de.willuhn.jameica.hbci.server.Value;
 import de.willuhn.jameica.hbci.util.SaldoFinder;
 import de.willuhn.jameica.util.DateUtil;
 
@@ -33,7 +34,7 @@ public class ChartDataSaldoVerlauf extends AbstractChartDataSaldo
 {
   private Konto konto      = null;
   private Date start       = null;
-  private List<Saldo> data = null;
+  private List<Value> data = null;
   
   /**
    * ct.
@@ -81,7 +82,7 @@ public class ChartDataSaldoVerlauf extends AbstractChartDataSaldo
       startSaldo = this.konto.getNumUmsaetze() > 0 ? KontoUtil.getAnfangsSaldo(this.konto,start) : this.konto.getSaldo();
     
     SaldoFinder finder = new SaldoFinder(list,startSaldo);
-    this.data = new ArrayList<Saldo>();
+    this.data = new ArrayList<Value>();
     
     Calendar cal = Calendar.getInstance();
     cal.setTime(start);
@@ -89,7 +90,7 @@ public class ChartDataSaldoVerlauf extends AbstractChartDataSaldo
     
     while (!start.after(end))
     {
-      Saldo s = new Saldo(start,finder.get(start));
+      Value s = new Value(start,finder.get(start));
       this.data.add(s);
       
       // Und weiter zum naechsten Tag
@@ -113,7 +114,11 @@ public class ChartDataSaldoVerlauf extends AbstractChartDataSaldo
 
 /*********************************************************************
  * $Log: ChartDataSaldoVerlauf.java,v $
- * Revision 1.19  2011/05/03 08:03:17  willuhn
+ * Revision 1.20  2011/10/27 17:09:29  willuhn
+ * @C Saldo-Bean in neue separate (und generischere) Klasse "Value" ausgelagert.
+ * @N Saldo-Finder erweitert, damit der jetzt auch mit Value-Objekten arbeiten kann
+ *
+ * Revision 1.19  2011-05-03 08:03:17  willuhn
  * @C BUGZILLA 1036
  *
  * Revision 1.18  2011-05-02 14:43:41  willuhn

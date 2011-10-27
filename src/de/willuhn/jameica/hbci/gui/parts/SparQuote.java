@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SparQuote.java,v $
- * $Revision: 1.33 $
- * $Date: 2011/07/27 09:25:50 $
+ * $Revision: 1.34 $
+ * $Date: 2011/10/27 11:03:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -35,8 +35,8 @@ import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
-import de.willuhn.jameica.gui.input.IntegerInput;
 import de.willuhn.jameica.gui.input.SelectInput;
+import de.willuhn.jameica.gui.input.SpinnerInput;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.DelayedListener;
@@ -74,7 +74,7 @@ public class SparQuote implements Part
   private LineChart chart              = null;
   private KontoInput kontoauswahl      = null;
   private UmsatzDaysInput startAuswahl = null;
-  private IntegerInput tagAuswahl      = null;
+  private SpinnerInput tagAuswahl      = null;
   
   private List<UmsatzEntry> data       = new ArrayList<UmsatzEntry>();
   private List<UmsatzEntry> trend      = new ArrayList<UmsatzEntry>();
@@ -156,13 +156,13 @@ public class SparQuote implements Part
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  private IntegerInput getTagAuswahl() throws RemoteException
+  private SpinnerInput getTagAuswahl() throws RemoteException
   {
     if (this.tagAuswahl != null)
       return this.tagAuswahl;
 
     // BUGZILLA 337
-    this.tagAuswahl = new IntegerInput(this.stichtag);
+    this.tagAuswahl = new SpinnerInput(1,31,this.stichtag);
     this.tagAuswahl.setComment(i18n.tr(". Tag des Monats"));
     this.tagAuswahl.setName(i18n.tr("Stichtag"));
     this.tagAuswahl.addListener(new DelayedListener(500,this.listener));
@@ -512,7 +512,10 @@ public class SparQuote implements Part
 
 /*********************************************************************
  * $Log: SparQuote.java,v $
- * Revision 1.33  2011/07/27 09:25:50  willuhn
+ * Revision 1.34  2011/10/27 11:03:40  willuhn
+ * @C Auswahl des Stichtages in Spar-Quote als Spinner-Input
+ *
+ * Revision 1.33  2011-07-27 09:25:50  willuhn
  * @B Zeitraum und Stichtag war initial nicht gesetzt und wurde erst nach Klick auf "Aktualisieren" korrekt berechnet
  *
  * Revision 1.32  2011-06-28 15:28:37  willuhn

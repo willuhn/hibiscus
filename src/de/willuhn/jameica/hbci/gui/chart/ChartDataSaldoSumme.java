@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/ChartDataSaldoSumme.java,v $
- * $Revision: 1.3 $
- * $Date: 2011/05/16 08:46:46 $
+ * $Revision: 1.4 $
+ * $Date: 2011/10/27 17:09:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,12 +17,14 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.willuhn.jameica.hbci.server.Value;
+
 /**
  * Implementierung eines Datensatzes fuer die Darstellung des addierten Saldenverlaufs.
  */
 public class ChartDataSaldoSumme extends AbstractChartDataSaldo
 {
-  private List<Saldo> data = null;
+  private List<Value> data = null;
   
   /**
    * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getData()
@@ -36,7 +38,7 @@ public class ChartDataSaldoSumme extends AbstractChartDataSaldo
    * Fuegt weitere Daten hinzu.
    * @param data weitere Daten.
    */
-  public void add(List<Saldo> data)
+  public void add(List<Value> data)
   {
     // Per Definition ist die Anzahl der Elemente in data und this.data immer gleich
 
@@ -44,11 +46,11 @@ public class ChartDataSaldoSumme extends AbstractChartDataSaldo
     {
       // BUGZILLA 1044: Wir duerfen nicht die Saldo-Objekte von draussen
       // verwenden, weil wir sonst auf Referenzen arbeiten, die nicht uns gehoeren
-      this.data = new ArrayList<Saldo>(data.size());
+      this.data = new ArrayList<Value>(data.size());
       for (int i=0;i<data.size();++i)
       {
-        Saldo saldo = data.get(i);
-        Saldo sum = new Saldo(saldo.getDatum(),saldo.getSaldo());
+        Value saldo = data.get(i);
+        Value sum = new Value(saldo.getDate(),saldo.getValue());
         this.data.add(sum);
       }
     }
@@ -56,9 +58,9 @@ public class ChartDataSaldoSumme extends AbstractChartDataSaldo
     {
       for (int i=0;i<data.size();++i)
       {
-        Saldo saldo = data.get(i);
-        Saldo sum = this.data.get(i);
-        sum.setSaldo(sum.getSaldo() + saldo.getSaldo());
+        Value saldo = data.get(i);
+        Value sum = this.data.get(i);
+        sum.setValue(sum.getValue() + saldo.getValue());
       }
     }
   }
@@ -75,7 +77,11 @@ public class ChartDataSaldoSumme extends AbstractChartDataSaldo
 
 /*********************************************************************
  * $Log: ChartDataSaldoSumme.java,v $
- * Revision 1.3  2011/05/16 08:46:46  willuhn
+ * Revision 1.4  2011/10/27 17:09:29  willuhn
+ * @C Saldo-Bean in neue separate (und generischere) Klasse "Value" ausgelagert.
+ * @N Saldo-Finder erweitert, damit der jetzt auch mit Value-Objekten arbeiten kann
+ *
+ * Revision 1.3  2011-05-16 08:46:46  willuhn
  * @N BUGZILLA 1044
  *
  * Revision 1.2  2011-05-16 08:44:08  willuhn

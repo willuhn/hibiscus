@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/AbstractChartDataSaldo.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/11/24 16:27:17 $
+ * $Revision: 1.3 $
+ * $Date: 2011/10/27 17:09:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,6 @@
 package de.willuhn.jameica.hbci.gui.chart;
 
 import java.rmi.RemoteException;
-import java.util.Date;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.system.Application;
@@ -32,7 +31,7 @@ public abstract class AbstractChartDataSaldo implements LineChartData
    */
   public String getDataAttribute() throws RemoteException
   {
-    return "saldo";
+    return "value";
   }
 
   /**
@@ -40,7 +39,7 @@ public abstract class AbstractChartDataSaldo implements LineChartData
    */
   public String getLabelAttribute() throws RemoteException
   {
-    return "datum";
+    return "date";
   }
 
   /**
@@ -58,68 +57,16 @@ public abstract class AbstractChartDataSaldo implements LineChartData
   {
     return null;
   }
-
-  /**
-   * Hilfsklasse, die einen Saldo zu einem Zeitpunkt kapselt.
-   */
-  public static class Saldo
-  {
-    private double saldo = 0.0d;
-    private Date datum   = null;
-    
-    /**
-     * ct.
-     * @param datum
-     * @param saldo
-     */
-    public Saldo(Date datum,double saldo)
-    {
-      this.saldo = saldo;
-      this.datum = datum;
-    }
-    
-    /**
-     * Liefert den Saldo zu dem Datum.
-     * @return der Saldo zu dem Datum.
-     */
-    public double getSaldo()
-    {
-      return this.saldo;
-    }
-    
-    /**
-     * Liefert das Datum.
-     * @return das Datum.
-     */
-    public Date getDatum()
-    {
-      return this.datum;
-    }
-    
-    /**
-     * Speichert den Saldo.
-     * @param d der Saldo.
-     */
-    public void setSaldo(double d)
-    {
-      this.saldo = d;
-    }
-    
-    /**
-     * Speichert das Datum.
-     * @param d das Datum.
-     */
-    public void setDatum(Date d)
-    {
-      this.datum = d;
-    }
-  }
 }
 
 
 /*********************************************************************
  * $Log: AbstractChartDataSaldo.java,v $
- * Revision 1.2  2010/11/24 16:27:17  willuhn
+ * Revision 1.3  2011/10/27 17:09:29  willuhn
+ * @C Saldo-Bean in neue separate (und generischere) Klasse "Value" ausgelagert.
+ * @N Saldo-Finder erweitert, damit der jetzt auch mit Value-Objekten arbeiten kann
+ *
+ * Revision 1.2  2010-11-24 16:27:17  willuhn
  * @R Eclipse BIRT komplett rausgeworden. Diese unsaegliche Monster ;)
  * @N Stattdessen verwenden wir jetzt SWTChart (http://www.swtchart.org). Das ist statt den 6MB von BIRT sagenhafte 250k gross
  *

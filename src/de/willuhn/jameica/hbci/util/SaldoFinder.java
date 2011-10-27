@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/util/SaldoFinder.java,v $
- * $Revision: 1.5 $
- * $Date: 2011/05/02 14:43:41 $
+ * $Revision: 1.6 $
+ * $Date: 2011/10/27 17:09:29 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -12,16 +12,18 @@
 package de.willuhn.jameica.hbci.util;
 
 import java.rmi.RemoteException;
+import java.util.Collection;
 import java.util.Date;
 import java.util.TreeMap;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.jameica.hbci.server.Value;
 import de.willuhn.jameica.util.DateUtil;
 
 /**
  * Hilfsklasse zum Finden eines Saldos zum angegebenen Zeitpunkt aus
- * einer vorgegebenen Liste von Umsaetzen.
+ * einer vorgegebenen Liste von Umsaetzen/Salden.
  */
 public class SaldoFinder
 {
@@ -50,6 +52,23 @@ public class SaldoFinder
     }
   }
   
+  /**
+   * ct.
+   * @param values Liste der Salden, in denen gesucht werden soll.
+   * @param anfangssaldo der initiale Saldo, den das Konto vorher hatte.
+   * Darf "0.00" sein, wenn er nicht bekannt ist.
+   * @throws RemoteException
+   */
+  public SaldoFinder(Collection<Value> values, double anfangssaldo) throws RemoteException
+  {
+    this.anfangssaldo = anfangssaldo;
+    
+    for (Value v:values)
+    {
+      this.map.put(v.getDate(),v.getValue());
+    }
+  }
+
   /**
    * Liefert den Saldo zum angegebenen Zeitpunkt.
    * @param date das Datum.
@@ -81,7 +100,11 @@ public class SaldoFinder
 
 /**********************************************************************
  * $Log: SaldoFinder.java,v $
- * Revision 1.5  2011/05/02 14:43:41  willuhn
+ * Revision 1.6  2011/10/27 17:09:29  willuhn
+ * @C Saldo-Bean in neue separate (und generischere) Klasse "Value" ausgelagert.
+ * @N Saldo-Finder erweitert, damit der jetzt auch mit Value-Objekten arbeiten kann
+ *
+ * Revision 1.5  2011-05-02 14:43:41  willuhn
  * @B BUGZILLA 1036
  *
  * Revision 1.4  2011-01-20 17:13:21  willuhn
