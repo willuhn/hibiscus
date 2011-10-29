@@ -1,5 +1,7 @@
 HEAD
 
+  * NEW: 0142 Update von obantoo 1.5.0 auf 1.5.1 - siehe
+              http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=79127a#79127
   * CHG: 0144 Auswahl des Stichtages in Spar-Quote als Spinner-Input
   * BUG: 0143 automatisch aktuelles Datum als Faelligkeit verwenden, wenn keines
               angegeben ist
