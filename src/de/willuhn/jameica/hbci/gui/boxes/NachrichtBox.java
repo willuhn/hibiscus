@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/NachrichtBox.java,v $
- * $Revision: 1.7 $
- * $Date: 2010/08/12 17:12:32 $
+ * $Revision: 1.8 $
+ * $Date: 2011/11/06 12:31:25 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,16 +15,15 @@ package de.willuhn.jameica.hbci.gui.boxes;
 
 import java.rmi.RemoteException;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.eclipse.swt.widgets.Composite;
-import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.boxes.AbstractBox;
 import de.willuhn.jameica.gui.boxes.Box;
-import de.willuhn.jameica.gui.parts.FormTextPart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.action.NachrichtOpen;
+import de.willuhn.jameica.hbci.gui.parts.NachrichtList;
 import de.willuhn.jameica.hbci.rmi.Nachricht;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -71,41 +70,9 @@ public class NachrichtBox extends AbstractBox implements Box
     iterator.setOrder("order by datum desc"); // Neueste zuerst
     iterator.addFilter("gelesen is null or gelesen = 0");
     
-    StringBuffer sb = new StringBuffer();
-    sb.append("<form>");
-    
-    FormTextPart text = new FormTextPart();
-    while (iterator.hasNext())
-    {
-      Nachricht n = (Nachricht) iterator.next();
-      String s = n.getNachricht();
-
-      // Formatieren der Nachrichten - die haben Festbreite
-      s = StringEscapeUtils.escapeXml(s);
-      s = s.replaceAll("( {2,})","<br/>");
-      s = s.replaceAll("\n","<br/>");
-
-      sb.append("<p>");
-      
-      sb.append("<b>");
-      if (n.getDatum() != null)
-      {
-        sb.append(HBCI.DATEFORMAT.format(n.getDatum()));
-        sb.append(" ");
-      }
-      
-      // Mal schauen, ob wir eine BLZ haben
-      String blz = n.getBLZ();
-      if (blz != null)
-        sb.append(i18n.tr("{0} [BLZ: {1}]", new String[] {HBCIUtils.getNameForBLZ(blz),blz}));
-      sb.append("</b><br/> ");
-
-      sb.append(s);
-      sb.append("</p>");
-    }
-    sb.append("</form>");
-    text.setText(sb.toString());
-    text.paint(parent);
+    NachrichtList list = new NachrichtList(iterator,new NachrichtOpen());
+    list.setSummary(false);
+    list.paint(parent);
   }
 
   /**
@@ -140,7 +107,10 @@ public class NachrichtBox extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: NachrichtBox.java,v $
- * Revision 1.7  2010/08/12 17:12:32  willuhn
+ * Revision 1.8  2011/11/06 12:31:25  willuhn
+ * @N BUGZILLA 1142
+ *
+ * Revision 1.7  2010-08-12 17:12:32  willuhn
  * @N Saldo-Chart komplett ueberarbeitet (Daten wurden vorher mehrmals geladen, Summen-Funktion, Anzeige mehrerer Konten, Durchschnitt ueber mehrere Konten, Bugfixing, echte "Homogenisierung" der Salden via SaldoFinder)
  *
  * Revision 1.6  2010/03/18 11:37:59  willuhn
