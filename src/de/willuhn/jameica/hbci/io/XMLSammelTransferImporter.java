@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/XMLSammelTransferImporter.java,v $
- * $Revision: 1.2 $
- * $Date: 2009/02/20 13:02:57 $
+ * $Revision: 1.3 $
+ * $Date: 2011/12/04 22:06:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -123,7 +123,6 @@ public class XMLSammelTransferImporter extends XMLImporter
           }
           
           object.store();
-          Application.getMessagingFactory().sendMessage(new ImportMessage(object));
           created++;
           try
           {
@@ -189,7 +188,7 @@ public class XMLSammelTransferImporter extends XMLImporter
     IOFormat f = new IOFormat() {
       public String getName()
       {
-        return i18n.tr("XML-Format");
+        return i18n.tr("Hibiscus-Format");
       }
 
       /**
@@ -206,6 +205,9 @@ public class XMLSammelTransferImporter extends XMLImporter
 
 /*******************************************************************************
  * $Log: XMLSammelTransferImporter.java,v $
+ * Revision 1.3  2011/12/04 22:06:55  willuhn
+ * @N BUGZILLA 1149 - Umsaetze beim XML-Import einem beliebigen Konto zuordenbar
+ *
  * Revision 1.2  2009/02/20 13:02:57  willuhn
  * @C BUGZILLA 700 - explizite Konto-Auswahl
  *

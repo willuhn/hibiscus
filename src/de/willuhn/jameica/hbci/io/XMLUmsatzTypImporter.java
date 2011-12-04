@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/XMLUmsatzTypImporter.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/04/16 12:46:03 $
+ * $Revision: 1.3 $
+ * $Date: 2011/12/04 22:06:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -164,7 +164,7 @@ public class XMLUmsatzTypImporter implements Importer
    */
   public String getName()
   {
-    return i18n.tr("XML-Format");
+    return i18n.tr("Hibiscus-Format");
   }
 
   /**
@@ -178,7 +178,7 @@ public class XMLUmsatzTypImporter implements Importer
     IOFormat f = new IOFormat() {
       public String getName()
       {
-        return i18n.tr("XML-Format");
+        return i18n.tr("Hibiscus-Format");
       }
 
       /**
@@ -195,6 +195,9 @@ public class XMLUmsatzTypImporter implements Importer
 
 /*******************************************************************************
  * $Log: XMLUmsatzTypImporter.java,v $
+ * Revision 1.3  2011/12/04 22:06:55  willuhn
+ * @N BUGZILLA 1149 - Umsaetze beim XML-Import einem beliebigen Konto zuordenbar
+ *
  * Revision 1.2  2010/04/16 12:46:03  willuhn
  * @B Parent-ID beim Import von Kategorien beruecksichtigen und neu mappen - siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=66546#66546
  *
