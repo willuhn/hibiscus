@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/XMLImporter.java,v $
- * $Revision: 1.7 $
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/XMLUmsatzImporter.java,v $
+ * $Revision: 1.1 $
  * $Date: 2011/12/04 22:06:55 $
  * $Author: willuhn $
  * $Locker:  $
@@ -21,31 +21,27 @@ import java.util.Map;
 
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.db.AbstractDBObject;
-import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.datasource.serialize.ObjectFactory;
 import de.willuhn.datasource.serialize.Reader;
 import de.willuhn.datasource.serialize.XmlReader;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
-import de.willuhn.jameica.hbci.rmi.SammelTransfer;
+import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
-import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
-import de.willuhn.util.I18N;
 import de.willuhn.util.ProgressMonitor;
 
 /**
- * Importer fuer das Hibiscus-eigene XML-Format.
+ * XML-Importer fuer Umsaetze.
+ * BUGZILLA 1149
  */
-public class XMLImporter implements Importer
+public class XMLUmsatzImporter extends XMLImporter
 {
-
-  protected final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
   /**
    * @see de.willuhn.jameica.hbci.io.Importer#doImport(java.lang.Object, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor)
    */
@@ -66,7 +62,6 @@ public class XMLImporter implements Importer
         public GenericObject create(String type, String id, Map values) throws Exception
         {
           AbstractDBObject object = (AbstractDBObject) Settings.getDBService().createObject(loader.loadClass(type),null);
-          // object.setID(id); // Keine ID angeben, da wir die Daten neu anlegen wollen
           Iterator i = values.keySet().iterator();
           while (i.hasNext())
           {
@@ -81,11 +76,32 @@ public class XMLImporter implements Importer
       if (monitor != null)
         monitor.setStatusText(i18n.tr("Lese Datei ein"));
 
+
+      Konto konto = null;
+      if (context instanceof Konto)
+      {
+        konto = (Konto) context;
+      }
+      else
+      {
+        try
+        {
+          // Wir fragen das Konto grundsaetzlich manuell ab. Siehe BUGZILLA 700
+          KontoAuswahlDialog d = new KontoAuswahlDialog(KontoAuswahlDialog.POSITION_CENTER);
+          konto = (Konto) d.open();
+        }
+        catch (OperationCanceledException oce)
+        {
+          Logger.info("import cancelled");
+          return;
+        }
+      }
+      
       int created = 0;
       int error   = 0;
 
-      DBObject object = null;
-      while ((object = (DBObject) reader.read()) != null)
+      Umsatz umsatz = null;
+      while ((umsatz = (Umsatz) reader.read()) != null)
       {
         if (monitor != null)
         {
@@ -96,11 +112,14 @@ public class XMLImporter implements Importer
 
         try
         {
-          object.store();
+          if (konto != null)
+            umsatz.setKonto(konto);
+          
+          umsatz.store();
           created++;
           try
           {
-            Application.getMessagingFactory().sendMessage(new ImportMessage(object));
+            Application.getMessagingFactory().sendMessage(new ImportMessage(umsatz));
           }
           catch (Exception ex)
           {
@@ -149,36 +168,20 @@ public class XMLImporter implements Importer
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.io.IO#getName()
-   */
-  public String getName()
-  {
-    return i18n.tr("Hibiscus-Format");
-  }
-
-  /**
    * @see de.willuhn.jameica.hbci.io.IO#getIOFormats(java.lang.Class)
    */
   public IOFormat[] getIOFormats(Class objectType)
   {
-    if (!GenericObject.class.isAssignableFrom(objectType))
-      return null; // Import fuer alles moeglich, was von GenericObject abgeleitet ist
+    if (objectType == null)
+      return null;
     
-    // BUGZILLA 700
-    if (SammelTransfer.class.isAssignableFrom(objectType))
-      return null; // Keine Sammel-Auftraege - die muessen gesondert behandelt werden.
-
-    // BUGZILLA 1149
-    if (Umsatz.class.isAssignableFrom(objectType))
-      return null; // Keine Umsaetze - die muessen gesondert behandelt werden.
-
-    if (UmsatzTyp.class.isAssignableFrom(objectType))
-      return null; // Keine Kategorien - die muessen gesondert behandelt werden.
-
+    if (!Umsatz.class.isAssignableFrom(objectType))
+      return null; // Nur fuer Umsaetze anbieten - fuer alle anderen tut es die Basis-Implementierung
+    
     IOFormat f = new IOFormat() {
       public String getName()
       {
-        return XMLImporter.this.getName();
+        return i18n.tr("Hibiscus-Format");
       }
 
       /**
@@ -194,29 +197,8 @@ public class XMLImporter implements Importer
 }
 
 /*******************************************************************************
- * $Log: XMLImporter.java,v $
- * Revision 1.7  2011/12/04 22:06:55  willuhn
+ * $Log: XMLUmsatzImporter.java,v $
+ * Revision 1.1  2011/12/04 22:06:55  willuhn
  * @N BUGZILLA 1149 - Umsaetze beim XML-Import einem beliebigen Konto zuordenbar
- *
- * Revision 1.6  2010/06/01 21:57:31  willuhn
- * @N "XML-Format" in "Hibiscus-Format" umbenannt - das "XML" verwirrte User und brachte sie zu der Annahme, man koenne da beliebige XML-Dateien importieren ;)
- * @R binaeres "Hibiscus-Format" (via ObjectInputStream/ObjectOutputStream) entfernt - war ohnehin schon seit Jahren deaktiviert und obsolet - das XML-Format kann das besser
- *
- * Revision 1.5  2010/04/16 12:20:51  willuhn
- * @B Parent-ID beim Import von Kategorien beruecksichtigen und neu mappen
- *
- * Revision 1.4  2009/10/05 17:12:03  willuhn
- * @B Import-Message wurde doppelt verschickt
- *
- * Revision 1.3  2009/02/13 14:17:01  willuhn
- * @N BUGZILLA 700
- *
- * Revision 1.2  2008/02/13 23:44:27  willuhn
- * @R Hibiscus-Eigenformat (binaer-serialisierte Objekte) bei Export und Import abgeklemmt
- * @N Import und Export von Umsatz-Kategorien im XML-Format
- * @B Verzaehler bei XML-Import
- *
- * Revision 1.1  2008/01/22 13:34:45  willuhn
- * @N Neuer XML-Import/-Export
  *
  ******************************************************************************/
