@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/TanMediaDialog.java,v $
- * $Revision: 1.2 $
- * $Date: 2011/07/25 07:57:09 $
+ * $Revision: 1.3 $
+ * $Date: 2011/12/06 22:22:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ package de.willuhn.jameica.hbci.passports.pintan;
 import java.rmi.RemoteException;
 
 import org.eclipse.swt.widgets.Composite;
+import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
@@ -26,6 +27,8 @@ import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig;
+import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -54,7 +57,26 @@ public class TanMediaDialog extends AbstractDialog
   {
     super(TanMediaDialog.POSITION_CENTER);
     this.config = config;
-    setTitle(i18n.tr("Auswahl des TAN-Mediums"));
+    
+    String s = null;
+    try
+    {
+      Konto konto = HBCIFactory.getInstance().getCurrentKonto();
+      if (konto != null)
+      {
+        s = konto.getBezeichnung();
+        String name = HBCIUtils.getNameForBLZ(konto.getBLZ());
+        if (name != null && name.length() > 0)
+          s += " [" + name + "]";
+      }
+    }
+    catch (Exception e)
+    {
+      // ignore
+    }
+
+    if (s != null) setTitle(i18n.tr("TAN-Medium - Konto {0}",s));
+    else           setTitle(i18n.tr("Auswahl des TAN-Mediums"));
   }
 
   /**
@@ -175,7 +197,10 @@ public class TanMediaDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: TanMediaDialog.java,v $
- * Revision 1.2  2011/07/25 07:57:09  willuhn
+ * Revision 1.3  2011/12/06 22:22:19  willuhn
+ * @N BUGZILLA 1151 - Name des aktuellen Kontos anzeigen
+ *
+ * Revision 1.2  2011-07-25 07:57:09  willuhn
  * *** empty log message ***
  *
  * Revision 1.1  2011-05-09 09:35:15  willuhn

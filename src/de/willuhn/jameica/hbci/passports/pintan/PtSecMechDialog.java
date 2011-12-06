@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/PtSecMechDialog.java,v $
- * $Revision: 1.7 $
- * $Date: 2011/05/09 09:22:02 $
+ * $Revision: 1.8 $
+ * $Date: 2011/12/06 22:22:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import java.rmi.RemoteException;
 import java.util.List;
 
 import org.eclipse.swt.widgets.Composite;
+import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
@@ -27,6 +28,8 @@ import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig;
+import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -60,7 +63,25 @@ public class PtSecMechDialog extends AbstractDialog
     this.config = config;
     this.options = options;
     
-    setTitle(i18n.tr("Auswahl des PIN/TAN-Verfahrens"));
+    String s = null;
+    try
+    {
+      Konto konto = HBCIFactory.getInstance().getCurrentKonto();
+      if (konto != null)
+      {
+        s = konto.getBezeichnung();
+        String name = HBCIUtils.getNameForBLZ(konto.getBLZ());
+        if (name != null && name.length() > 0)
+          s += " [" + name + "]";
+      }
+    }
+    catch (Exception e)
+    {
+      // ignore
+    }
+
+    if (s != null) setTitle(i18n.tr("PIN/TAN-Verfahren - Konto {0}",s));
+    else           setTitle(i18n.tr("Auswahl des PIN/TAN-Verfahrens"));
   }
 
   /**
@@ -167,7 +188,10 @@ public class PtSecMechDialog extends AbstractDialog
 
 /*********************************************************************
  * $Log: PtSecMechDialog.java,v $
- * Revision 1.7  2011/05/09 09:22:02  willuhn
+ * Revision 1.8  2011/12/06 22:22:19  willuhn
+ * @N BUGZILLA 1151 - Name des aktuellen Kontos anzeigen
+ *
+ * Revision 1.7  2011-05-09 09:22:02  willuhn
  * @C Checkbox nur anklickbar machen, wenn Config vorhanden
  *
  * Revision 1.6  2011-05-09 08:35:18  willuhn
