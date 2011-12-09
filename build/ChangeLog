@@ -1,5 +1,7 @@
 HEAD
 
+  * NEW: 0146 BUGZILLA 1159 - bei Anlage einer PIN/TAN-Config den TCP-Port aus URL
+              entfernen, falls vorhanden 
   * NEW: 0145 BUGZILLA 1151 - Name des Kontos in TanMediaDialog und PtSecMechDialog anzeigen
   * NEW: 0144 BUGZILLA 1149 - Umsaetze beim XML-Import einem beliebigen Konto zuordenbar
   * NEW: 0143 BUGZILLA 1142 - Nachrichten auf der Startseite als Tabelle
