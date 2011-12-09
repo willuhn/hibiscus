@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/Controller.java,v $
- * $Revision: 1.10 $
- * $Date: 2011/06/17 08:49:18 $
+ * $Revision: 1.11 $
+ * $Date: 2011/12/09 23:19:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -235,7 +235,6 @@ public class Controller extends AbstractControl
     if (port != null)
       return port;
     port = new IntegerInput(getConfig().getPort());
-    port.setEnabled(false);
     port.setName(i18n.tr("TCP-Port des Bank-Servers"));
     port.setMandatory(true);
     return port;
@@ -498,7 +497,10 @@ public class Controller extends AbstractControl
 
 /**********************************************************************
  * $Log: Controller.java,v $
- * Revision 1.10  2011/06/17 08:49:18  willuhn
+ * Revision 1.11  2011/12/09 23:19:57  willuhn
+ * @C Der Port muss konfigurierbar bleiben, weil er durch den AccountContainer-Dialog bei der Erstellung nicht abweichend von 443 vergeben werden kann (Ursache ist HBCI4Java - in HBCIPassportPinTan der Port hart auf 443 gesetzt. Mit dem Effekt, dass kein Callback mehr von HBCI4Java kommt und daher die Eingabe aus dem AccountContainer-Dialog ignoriert wird
+ *
+ * Revision 1.10  2011-06-17 08:49:18  willuhn
  * @N Contextmenu im Tree mit den Bank-Zugaengen
  * @N Loeschen von Bank-Zugaengen direkt im Tree
  *
