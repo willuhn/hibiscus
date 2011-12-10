@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/calendar/UeberweisungAppointmentProvider.java,v $
- * $Revision: 1.6 $
- * $Date: 2011/10/21 10:53:03 $
+ * $Revision: 1.7 $
+ * $Date: 2011/12/10 00:25:48 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -26,10 +26,15 @@ import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungNew;
+import de.willuhn.jameica.hbci.reminder.ReminderStorageProviderHibiscus;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
+import de.willuhn.jameica.reminder.Reminder;
+import de.willuhn.jameica.reminder.ReminderInterval;
+import de.willuhn.jameica.reminder.ReminderStorageProvider;
+import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
@@ -50,16 +55,49 @@ public class UeberweisungAppointmentProvider implements AppointmentProvider
   {
     try
     {
+      Date start = DateUtil.startOfDay(from);
+      Date end   = DateUtil.endOfDay(to);
+      Date now   = new Date();
+      
+      BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
+      ReminderStorageProvider provider = bs.get(ReminderStorageProviderHibiscus.class);
+
       HBCIDBService service = Settings.getDBService();
       DBIterator list = service.createList(Ueberweisung.class);
-      if (from != null) list.addFilter("termin >= ?", new Object[]{new java.sql.Date(DateUtil.startOfDay(from).getTime())});
-      if (to   != null) list.addFilter("termin <= ?", new Object[]{new java.sql.Date(DateUtil.endOfDay(to).getTime())});
       list.setOrder("ORDER BY " + service.getSQLTimestamp("termin"));
 
-      // TODO: Geplante Reminder-Ueberweisungen (die noch nicht erzeugt wurden) ebenfalls anzeigen?
       List<Appointment> result = new LinkedList<Appointment>();
       while (list.hasNext())
-        result.add(new MyAppointment((Ueberweisung) list.next()));
+      {
+        Ueberweisung u = (Ueberweisung) list.next();
+        String uuid = u.getMeta("reminder.uuid",null);
+        Date termin = u.getTermin();
+        
+        // a) Auftrag existiert. Wenn er ins Zeitfenster passt, wird er angezeigt
+        if (!termin.before(start) && !termin.after(end))
+          result.add(new MyAppointment(u,null));
+
+        // b) jetzt noch checken, ob er einen Reminder hat.
+        if (uuid != null)
+        {
+          Reminder reminder = provider.get(uuid);
+          ReminderInterval ri = reminder != null ? reminder.getReminderInterval() : null;
+          if (ri != null)
+          {
+            List<Date> dates = ri.getDates(termin,start,end);
+            
+            // Wenn wir Termine haben, fuegen wir sie hinzu
+            for (Date date:dates)
+            {
+              // wir zeigen nur die kuenftigen an. Die vergangenen im
+              // im aktuellen Zeitraum wurden ja schon automatisch erstellt
+              // und wurden daher schon von a) erfasst
+              if (date.after(now))
+                result.add(new MyAppointment(u,date));
+            }
+          }
+        }
+      }
       
       return result;
     }
@@ -84,14 +122,17 @@ public class UeberweisungAppointmentProvider implements AppointmentProvider
   private class MyAppointment extends AbstractAppointment
   {
     private Ueberweisung t = null;
+    private Date date      = null;
     
     /**
      * ct.
      * @param t die Ueberweisung.
+     * @param date ggf abweichender Termin.
      */
-    private MyAppointment(Ueberweisung t)
+    private MyAppointment(Ueberweisung t, Date date)
     {
       this.t = t;
+      this.date = date;
     }
 
     /**
@@ -109,7 +150,7 @@ public class UeberweisungAppointmentProvider implements AppointmentProvider
     {
       try
       {
-        return t.getTermin();
+        return this.date != null ? this.date : this.t.getTermin();
       }
       catch (Exception e)
       {
@@ -126,7 +167,7 @@ public class UeberweisungAppointmentProvider implements AppointmentProvider
       try
       {
         Konto k = t.getKonto();
-        return i18n.tr("Überweisung: {0} {1} an {2} überweisen\n\n{3}\n\nKonto: {4}",HBCI.DECIMALFORMAT.format(t.getBetrag()),k.getWaehrung(),t.getGegenkontoName(),VerwendungszweckUtil.toString(t,"\n"),k.getLongName());
+        return i18n.tr("{0}Überweisung: {1} {2} an {3} überweisen\n\n{4}\n\nKonto: {5}",(this.date != null ? (i18n.tr("Geplant") + ":\n") : ""),HBCI.DECIMALFORMAT.format(t.getBetrag()),k.getWaehrung(),t.getGegenkontoName(),VerwendungszweckUtil.toString(t,"\n"),k.getLongName());
       }
       catch (RemoteException re)
       {
@@ -157,9 +198,12 @@ public class UeberweisungAppointmentProvider implements AppointmentProvider
      */
     public RGB getColor()
     {
-      if (hasAlarm())
-        return Settings.getBuchungSollForeground().getRGB();
-      return Color.COMMENT.getSWTColor().getRGB();
+      // Grau anzeigen, wenn er schon ausgefuehrt wurde oder
+      // es eine noch nicht existierende Wiederholung ist.
+      if (!this.hasAlarm() || this.date != null)
+        return Color.COMMENT.getSWTColor().getRGB();
+      
+      return Settings.getBuchungSollForeground().getRGB();
     }
 
     /**
@@ -185,7 +229,7 @@ public class UeberweisungAppointmentProvider implements AppointmentProvider
     {
       try
       {
-        return !t.ausgefuehrt();
+        return this.date != null || !this.t.ausgefuehrt(); //entweder Wiederholung oder noch nicht ausgefuehrt
       }
       catch (RemoteException re)
       {
@@ -200,6 +244,9 @@ public class UeberweisungAppointmentProvider implements AppointmentProvider
 
 /**********************************************************************
  * $Log: UeberweisungAppointmentProvider.java,v $
+ * Revision 1.7  2011/12/10 00:25:48  willuhn
+ * @N BUGZILLA 1162 - Anzeige der geplanten Wiederholungen im Kalender
+ *
  * Revision 1.6  2011/10/21 10:53:03  willuhn
  * *** empty log message ***
  *

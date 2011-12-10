@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/AccountContainerDialog.java,v $
- * $Revision: 1.14 $
- * $Date: 2011/04/29 11:38:58 $
+ * $Revision: 1.15 $
+ * $Date: 2011/12/09 23:16:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,6 +12,7 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.dialogs;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
@@ -231,9 +232,7 @@ public class AccountContainerDialog extends AbstractDialog
         String s = (String) super.getValue();
         if (s == null || s.length() == 0)
           return null;
-        if (s.startsWith("https://"))
-          s = s.replaceFirst("https://","");
-        return s.replaceAll(" ",""); // BUGZILLA 381
+        return cleanUrl(s);
       }
     };
     
@@ -311,13 +310,34 @@ public class AccountContainerDialog extends AbstractDialog
 		}
     return this.filter;
 	}
+	
+	/**
+	 * Entfernt das "https://" und die Port-Angabe aus der URL.
+	 * @param url die zu bereinigende URL.
+	 * @return die bereinigte URL.
+	 */
+	private String cleanUrl(String url)
+	{
+	  url = StringUtils.trimToEmpty(url); // BUGZILLA 381
+	  if (url.length() == 0)
+	    return url;
+	  
+    if (url.startsWith("https://"))
+      url = url.replaceFirst("https://","");
+    
+    url = url.replaceFirst(":[0-9]{1,5}/","/"); // BUGZILLA 1159
+    return url;
+	}
 
 }
 
 
 /**********************************************************************
  * $Log: AccountContainerDialog.java,v $
- * Revision 1.14  2011/04/29 11:38:58  willuhn
+ * Revision 1.15  2011/12/09 23:16:43  willuhn
+ * @N BUGZILLA 1159
+ *
+ * Revision 1.14  2011-04-29 11:38:58  willuhn
  * @N Konfiguration der HBCI-Medien ueberarbeitet. Es gibt nun direkt in der Navi einen Punkt "Bank-Zugaenge", in der alle Medien angezeigt werden.
  *
  * Revision 1.13  2010-07-13 10:55:29  willuhn
