@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/calendar/AbstractTransferAppointmentProvider.java,v $
- * $Revision: 1.1 $
- * $Date: 2011/12/13 23:10:21 $
+ * $Revision: 1.2 $
+ * $Date: 2011/12/13 23:15:11 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -85,6 +85,10 @@ public abstract class AbstractTransferAppointmentProvider<T extends Terminable &
           result.add(this.createAppointment(u,null));
 
         // b) jetzt noch checken, ob er einen Reminder hat.
+        
+        if (termin.after(end))
+          continue; // hier brauchen wir gar nicht erst suchen - wir sind ausserhalb des Zeitfensters
+        
         if (uuid != null)
         {
           Reminder reminder = provider.get(uuid);
@@ -209,6 +213,9 @@ public abstract class AbstractTransferAppointmentProvider<T extends Terminable &
 
 /**********************************************************************
  * $Log: AbstractTransferAppointmentProvider.java,v $
+ * Revision 1.2  2011/12/13 23:15:11  willuhn
+ * @B Wenn wir vor dem moeglichen Wiederholungszeitraum sind, brauchen wir nicht nach Remindern suchen
+ *
  * Revision 1.1  2011/12/13 23:10:21  willuhn
  * @N BUGZILLA 1162
  *
