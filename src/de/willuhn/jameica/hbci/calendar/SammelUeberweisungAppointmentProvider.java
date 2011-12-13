@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/calendar/SammelUeberweisungAppointmentProvider.java,v $
- * $Revision: 1.5 $
- * $Date: 2011/10/06 10:49:23 $
+ * $Revision: 1.6 $
+ * $Date: 2011/12/13 23:10:21 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -13,59 +13,25 @@ package de.willuhn.jameica.hbci.calendar;
 
 import java.rmi.RemoteException;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 
-import org.eclipse.swt.graphics.RGB;
-
-import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.jameica.gui.calendar.AbstractAppointment;
-import de.willuhn.jameica.gui.calendar.Appointment;
-import de.willuhn.jameica.gui.calendar.AppointmentProvider;
-import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungNew;
-import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
-import de.willuhn.jameica.system.Application;
-import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
-import de.willuhn.util.I18N;
 
 /**
  * Implementierung eines Termin-Providers fuer offene Sammel-Ueberweisungen.
  */
-public class SammelUeberweisungAppointmentProvider implements AppointmentProvider
+public class SammelUeberweisungAppointmentProvider extends AbstractTransferAppointmentProvider<SammelUeberweisung>
 {
-  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
   /**
-   * @see de.willuhn.jameica.gui.calendar.AppointmentProvider#getAppointments(java.util.Date, java.util.Date)
+   * @see de.willuhn.jameica.hbci.calendar.AbstractTransferAppointmentProvider#createAppointment(de.willuhn.jameica.hbci.rmi.Terminable, java.util.Date)
    */
-  public List<Appointment> getAppointments(Date from, Date to)
+  AbstractTransferAppointment createAppointment(SammelUeberweisung t, Date date)
   {
-    try
-    {
-      HBCIDBService service = Settings.getDBService();
-      DBIterator list = service.createList(SammelUeberweisung.class);
-      if (from != null) list.addFilter("termin >= ?", new Object[]{new java.sql.Date(DateUtil.startOfDay(from).getTime())});
-      if (to   != null) list.addFilter("termin <= ?", new Object[]{new java.sql.Date(DateUtil.endOfDay(to).getTime())});
-      list.setOrder("ORDER BY " + service.getSQLTimestamp("termin"));
-
-      List<Appointment> result = new LinkedList<Appointment>();
-      while (list.hasNext())
-        result.add(new MyAppointment((SammelUeberweisung) list.next()));
-      
-      return result;
-    }
-    catch (Exception e)
-    {
-      Logger.error("unable to load data",e);
-    }
-    return null;
+    return new MyAppointment(t,date);
   }
 
   /**
@@ -79,17 +45,16 @@ public class SammelUeberweisungAppointmentProvider implements AppointmentProvide
   /**
    * Hilfsklasse zum Anzeigen und Oeffnen des Appointments.
    */
-  private class MyAppointment extends AbstractAppointment
+  private class MyAppointment extends AbstractTransferAppointment
   {
-    private SammelUeberweisung t = null;
-    
     /**
      * ct.
      * @param t die Sammel-Ueberweisung.
+     * @param date ggf abweichender Termin.
      */
-    private MyAppointment(SammelUeberweisung t)
+    private MyAppointment(SammelUeberweisung t, Date date)
     {
-      this.t = t;
+      super(t,date);
     }
 
     /**
@@ -101,22 +66,6 @@ public class SammelUeberweisungAppointmentProvider implements AppointmentProvide
     }
 
     /**
-     * @see de.willuhn.jameica.gui.calendar.Appointment#getDate()
-     */
-    public Date getDate()
-    {
-      try
-      {
-        return t.getTermin();
-      }
-      catch (Exception e)
-      {
-        Logger.error("unable to read date",e);
-      }
-      return null;
-    }
-
-    /**
      * @see de.willuhn.jameica.gui.calendar.AbstractAppointment#getDescription()
      */
     public String getDescription()
@@ -124,7 +73,12 @@ public class SammelUeberweisungAppointmentProvider implements AppointmentProvide
       try
       {
         Konto k = t.getKonto();
-        return i18n.tr("Sammelüberweisung: {0} {1} überweisen\n\n{2}\n\nKonto: {3}",HBCI.DECIMALFORMAT.format(t.getSumme()),k.getWaehrung(),t.getBezeichnung(),k.getLongName());
+        return i18n.tr("{0}Sammelüberweisung: {1} {2} überweisen\n\n{3}\n\nKonto: {4}",
+                       (this.date != null ? (i18n.tr("Geplant") + ":\n") : ""),
+                       HBCI.DECIMALFORMAT.format(t.getSumme()),
+                       k.getWaehrung(),
+                       t.getBezeichnung(),
+                       k.getLongName());
       }
       catch (RemoteException re)
       {
@@ -151,16 +105,6 @@ public class SammelUeberweisungAppointmentProvider implements AppointmentProvide
     }
 
     /**
-     * @see de.willuhn.jameica.gui.calendar.AbstractAppointment#getColor()
-     */
-    public RGB getColor()
-    {
-      if (hasAlarm())
-        return Settings.getBuchungSollForeground().getRGB();
-      return Color.COMMENT.getSWTColor().getRGB();
-    }
-
-    /**
      * @see de.willuhn.jameica.gui.calendar.AbstractAppointment#getUid()
      */
     public String getUid()
@@ -175,22 +119,6 @@ public class SammelUeberweisungAppointmentProvider implements AppointmentProvide
         return super.getUid();
       }
     }
-
-    /**
-     * @see de.willuhn.jameica.gui.calendar.AbstractAppointment#hasAlarm()
-     */
-    public boolean hasAlarm()
-    {
-      try
-      {
-        return !t.ausgefuehrt();
-      }
-      catch (RemoteException re)
-      {
-        Logger.error("unable to determine execution status",re);
-        return super.hasAlarm();
-      }
-    }
   }
 }
 
@@ -198,7 +126,10 @@ public class SammelUeberweisungAppointmentProvider implements AppointmentProvide
 
 /**********************************************************************
  * $Log: SammelUeberweisungAppointmentProvider.java,v $
- * Revision 1.5  2011/10/06 10:49:23  willuhn
+ * Revision 1.6  2011/12/13 23:10:21  willuhn
+ * @N BUGZILLA 1162
+ *
+ * Revision 1.5  2011-10-06 10:49:23  willuhn
  * @N Termin-Provider fuer Umsaetze
  *
  * Revision 1.4  2011-01-20 17:12:39  willuhn

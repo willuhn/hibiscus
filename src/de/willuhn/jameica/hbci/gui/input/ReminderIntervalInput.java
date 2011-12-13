@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/ReminderIntervalInput.java,v $
- * $Revision: 1.1 $
- * $Date: 2011/10/20 16:20:05 $
+ * $Revision: 1.2 $
+ * $Date: 2011/12/13 22:59:24 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -122,6 +122,7 @@ public class ReminderIntervalInput implements Input
     
     this.input = new DialogInput(ri != null ? ri.toString() : "<keine>");
     this.input.setName(i18n.tr("Wiederholung"));
+    this.input.setValue(ri);
     ((DialogInput)this.input).disableClientControl(); // Freitext-Eingabe gibts nicht.
 
     this.dialog = new ReminderIntervalDialog(ri,termin, ReminderIntervalDialog.POSITION_CENTER);
@@ -387,6 +388,9 @@ public class ReminderIntervalInput implements Input
 
 /**********************************************************************
  * $Log: ReminderIntervalInput.java,v $
+ * Revision 1.2  2011/12/13 22:59:24  willuhn
+ * @B Beim erneuten Speichern eines Auftrages (ohne Oeffnen des Intervall-Dialogs) ging das Intervall verloren
+ *
  * Revision 1.1  2011/10/20 16:20:05  willuhn
  * @N BUGZILLA 182 - Erste Version von client-seitigen Dauerauftraegen fuer alle Auftragsarten
  *
