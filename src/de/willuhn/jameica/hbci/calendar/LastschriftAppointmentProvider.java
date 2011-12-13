@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/calendar/LastschriftAppointmentProvider.java,v $
- * $Revision: 1.6 $
- * $Date: 2011/10/06 10:49:24 $
+ * $Revision: 1.7 $
+ * $Date: 2011/12/13 23:10:21 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -13,60 +13,27 @@ package de.willuhn.jameica.hbci.calendar;
 
 import java.rmi.RemoteException;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 
-import org.eclipse.swt.graphics.RGB;
-
-import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.jameica.gui.calendar.AbstractAppointment;
-import de.willuhn.jameica.gui.calendar.Appointment;
-import de.willuhn.jameica.gui.calendar.AppointmentProvider;
-import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.LastschriftNew;
-import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
-import de.willuhn.jameica.system.Application;
-import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
-import de.willuhn.util.I18N;
 
 /**
  * Implementierung eines Termin-Providers fuer offene Lastschriften.
  */
-public class LastschriftAppointmentProvider implements AppointmentProvider
+public class LastschriftAppointmentProvider extends AbstractTransferAppointmentProvider<Lastschrift>
 {
-  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
   /**
-   * @see de.willuhn.jameica.gui.calendar.AppointmentProvider#getAppointments(java.util.Date, java.util.Date)
+   * @see de.willuhn.jameica.hbci.calendar.AbstractTransferAppointmentProvider#createAppointment(de.willuhn.jameica.hbci.rmi.Terminable, java.util.Date)
    */
-  public List<Appointment> getAppointments(Date from, Date to)
+  AbstractTransferAppointment createAppointment(Lastschrift t, Date date)
   {
-    try
-    {
-      HBCIDBService service = Settings.getDBService();
-      DBIterator list = service.createList(Lastschrift.class);
-      if (from != null) list.addFilter("termin >= ?", new Object[]{new java.sql.Date(DateUtil.startOfDay(from).getTime())});
-      if (to   != null) list.addFilter("termin <= ?", new Object[]{new java.sql.Date(DateUtil.endOfDay(to).getTime())});
-      list.setOrder("ORDER BY " + service.getSQLTimestamp("termin"));
-
-      List<Appointment> result = new LinkedList<Appointment>();
-      while (list.hasNext())
-        result.add(new MyAppointment((Lastschrift) list.next()));
-      
-      return result;
-    }
-    catch (Exception e)
-    {
-      Logger.error("unable to load data",e);
-    }
-    return null;
+    return new MyAppointment(t,date);
   }
 
   /**
@@ -80,17 +47,16 @@ public class LastschriftAppointmentProvider implements AppointmentProvider
   /**
    * Hilfsklasse zum Anzeigen und Oeffnen des Appointments.
    */
-  private class MyAppointment extends AbstractAppointment
+  private class MyAppointment extends AbstractTransferAppointment
   {
-    private Lastschrift t = null;
-    
     /**
      * ct.
      * @param t die Lastschrift.
+     * @param date ggf abweichender Termin.
      */
-    private MyAppointment(Lastschrift t)
+    private MyAppointment(Lastschrift t, Date date)
     {
-      this.t = t;
+      super(t,date);
     }
 
     /**
@@ -102,22 +68,6 @@ public class LastschriftAppointmentProvider implements AppointmentProvider
     }
 
     /**
-     * @see de.willuhn.jameica.gui.calendar.Appointment#getDate()
-     */
-    public Date getDate()
-    {
-      try
-      {
-        return t.getTermin();
-      }
-      catch (Exception e)
-      {
-        Logger.error("unable to read date",e);
-      }
-      return null;
-    }
-
-    /**
      * @see de.willuhn.jameica.gui.calendar.AbstractAppointment#getDescription()
      */
     public String getDescription()
@@ -125,7 +75,13 @@ public class LastschriftAppointmentProvider implements AppointmentProvider
       try
       {
         Konto k = t.getKonto();
-        return i18n.tr("Lastschrift: {0} {1} von {2} einziehen\n\n{3}\n\nKonto: {4}",HBCI.DECIMALFORMAT.format(t.getBetrag()),k.getWaehrung(),t.getGegenkontoName(),VerwendungszweckUtil.toString(t,"\n"),k.getLongName());
+        return i18n.tr("{0}Lastschrift: {1} {2} von {3} einziehen\n\n{4}\n\nKonto: {5}",
+                       (this.date != null ? (i18n.tr("Geplant") + ":\n") : ""),
+                       HBCI.DECIMALFORMAT.format(t.getBetrag()),
+                       k.getWaehrung(),
+                       t.getGegenkontoName(),
+                       VerwendungszweckUtil.toString(t,"\n"),
+                       k.getLongName());
       }
       catch (RemoteException re)
       {
@@ -152,16 +108,6 @@ public class LastschriftAppointmentProvider implements AppointmentProvider
     }
 
     /**
-     * @see de.willuhn.jameica.gui.calendar.AbstractAppointment#getColor()
-     */
-    public RGB getColor()
-    {
-      if (hasAlarm())
-        return Settings.getBuchungHabenForeground().getRGB();
-      return Color.COMMENT.getSWTColor().getRGB();
-    }
-
-    /**
      * @see de.willuhn.jameica.gui.calendar.AbstractAppointment#getUid()
      */
     public String getUid()
@@ -176,22 +122,6 @@ public class LastschriftAppointmentProvider implements AppointmentProvider
         return super.getUid();
       }
     }
-
-    /**
-     * @see de.willuhn.jameica.gui.calendar.AbstractAppointment#hasAlarm()
-     */
-    public boolean hasAlarm()
-    {
-      try
-      {
-        return !t.ausgefuehrt();
-      }
-      catch (RemoteException re)
-      {
-        Logger.error("unable to determine execution status",re);
-        return super.hasAlarm();
-      }
-    }
   }
 }
 
@@ -199,7 +129,10 @@ public class LastschriftAppointmentProvider implements AppointmentProvider
 
 /**********************************************************************
  * $Log: LastschriftAppointmentProvider.java,v $
- * Revision 1.6  2011/10/06 10:49:24  willuhn
+ * Revision 1.7  2011/12/13 23:10:21  willuhn
+ * @N BUGZILLA 1162
+ *
+ * Revision 1.6  2011-10-06 10:49:24  willuhn
  * @N Termin-Provider fuer Umsaetze
  *
  * Revision 1.5  2011-06-08 15:29:09  willuhn
