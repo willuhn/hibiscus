@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzTypTree.java,v $
- * $Revision: 1.15 $
- * $Date: 2011/05/03 10:13:15 $
+ * $Revision: 1.16 $
+ * $Date: 2011/12/18 23:20:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,7 +26,6 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.TreePart;
-import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.UmsatzTypTreeExport;
@@ -53,11 +52,15 @@ public class UmsatzTypTree extends AbstractView
 
     final UmsatzTypTreeControl control = new UmsatzTypTreeControl(this);
 
-    LabelGroup settings = new LabelGroup(getParent(), i18n.tr("Anzeige einschränken"));
+    {
+      final TabFolder folder = new TabFolder(this.getParent(), SWT.NONE);
+      folder.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      TabGroup tab = new TabGroup(folder,i18n.tr("Anzeige einschränken"));
 
-    settings.addLabelPair(i18n.tr("Konto"), control.getKontoAuswahl());
-    settings.addLabelPair(i18n.tr("Start-Datum"), control.getStart());
-    settings.addLabelPair(i18n.tr("End-Datum"), control.getEnd());
+      tab.addLabelPair(i18n.tr("Konto"), control.getKontoAuswahl());
+      tab.addLabelPair(i18n.tr("Start-Datum"), control.getStart());
+      tab.addLabelPair(i18n.tr("End-Datum"), control.getEnd());
+    }
 
     ButtonArea buttons = new ButtonArea();
 
@@ -120,7 +123,10 @@ public class UmsatzTypTree extends AbstractView
 }
 /*******************************************************************************
  * $Log: UmsatzTypTree.java,v $
- * Revision 1.15  2011/05/03 10:13:15  willuhn
+ * Revision 1.16  2011/12/18 23:20:20  willuhn
+ * @N GUI-Politur
+ *
+ * Revision 1.15  2011-05-03 10:13:15  willuhn
  * @R Hintergrund-Farbe nicht mehr explizit setzen. Erzeugt auf Windows und insb. Mac teilweise unschoene Effekte. Besonders innerhalb von Label-Groups, die auf Windows/Mac andere Hintergrund-Farben verwenden als der Default-Hintergrund
  *
  * Revision 1.14  2011-04-12 21:16:47  willuhn

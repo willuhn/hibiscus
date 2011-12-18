@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/AuslandsUeberweisungList.java,v $
- * $Revision: 1.6 $
- * $Date: 2011/09/12 15:28:00 $
+ * $Revision: 1.7 $
+ * $Date: 2011/12/18 23:20:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -52,22 +52,23 @@ public class AuslandsUeberweisungList extends AbstractView
 
     GUI.getView().setTitle(i18n.tr("Vorhandene SEPA-Überweisungen"));
     GUI.getView().addPanelButton(print);
-    
+
+    ButtonArea buttons = table.getButtons();
+    buttons.addButton(i18n.tr("Importieren..."),new AuslandsUeberweisungImport(),null,false,"document-open.png");
+    buttons.addButton(i18n.tr("Neue SEPA-Überweisung"), new AuslandsUeberweisungNew(),null,false,"text-x-generic.png");
+
     table.paint(getParent());
     print.setEnabled(table.getSelection() != null); // einmal initial ausloesen
-		
-    ButtonArea buttons = new ButtonArea();
-    buttons.addButton(i18n.tr("Importieren..."),new AuslandsUeberweisungImport(),null,false,"document-open.png");
-    buttons.addButton(i18n.tr("Neue SEPA-Überweisung"), new AuslandsUeberweisungNew(),null,true,"text-x-generic.png");
-
-    buttons.paint(getParent());
   }
 }
 
 
 /**********************************************************************
  * $Log: AuslandsUeberweisungList.java,v $
- * Revision 1.6  2011/09/12 15:28:00  willuhn
+ * Revision 1.7  2011/12/18 23:20:20  willuhn
+ * @N GUI-Politur
+ *
+ * Revision 1.6  2011-09-12 15:28:00  willuhn
  * @N Enabled-State live uebernehmen - nicht erst beim Mouse-Over
  *
  * Revision 1.5  2011-04-11 14:36:37  willuhn

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzTypTreeControl.java,v $
- * $Revision: 1.19 $
- * $Date: 2011/08/05 11:21:58 $
+ * $Revision: 1.20 $
+ * $Date: 2011/12/18 23:20:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -95,7 +95,7 @@ public class UmsatzTypTreeControl extends AbstractControl
     if (this.start != null)
       return this.start;
 
-    this.start = new DateFromInput();
+    this.start = new DateFromInput(null,"umsatzlist.filter.from");
     this.start.setComment(i18n.tr("Frühestes Valuta-Datum"));
     return this.start;
   }
@@ -110,7 +110,7 @@ public class UmsatzTypTreeControl extends AbstractControl
     if (this.end != null)
       return this.end;
 
-    this.end = new DateToInput();
+    this.end = new DateToInput(null,"umsatzlist.filter.to");
     this.end.setComment(i18n.tr("Spätestes Valuta-Datum"));
     return this.end;
   }
@@ -294,7 +294,10 @@ public class UmsatzTypTreeControl extends AbstractControl
 
 /*******************************************************************************
  * $Log: UmsatzTypTreeControl.java,v $
- * Revision 1.19  2011/08/05 11:21:58  willuhn
+ * Revision 1.20  2011/12/18 23:20:20  willuhn
+ * @N GUI-Politur
+ *
+ * Revision 1.19  2011-08-05 11:21:58  willuhn
  * @N Erster Code fuer eine Umsatz-Preview
  * @C Compiler-Warnings
  * @N DateFromInput/DateToInput - damit sind die Felder fuer den Zeitraum jetzt ueberall einheitlich

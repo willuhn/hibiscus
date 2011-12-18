@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractFromToList.java,v $
- * $Revision: 1.12 $
- * $Date: 2011/08/05 11:21:58 $
+ * $Revision: 1.13 $
+ * $Date: 2011/12/18 23:20:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,12 +16,14 @@ package de.willuhn.jameica.hbci.gui.parts;
 import java.rmi.RemoteException;
 import java.util.Date;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.TabFolder;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.rmi.DBIterator;
@@ -30,12 +32,13 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.TextInput;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.ColumnLayout;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.DelayedListener;
-import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.gui.util.SimpleContainer;
+import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.input.DateFromInput;
 import de.willuhn.jameica.hbci.gui.input.DateToInput;
@@ -43,6 +46,7 @@ import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Logger;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -58,6 +62,8 @@ public abstract class AbstractFromToList extends TablePart implements Part
   private Input text             = null;
 
   protected Listener listener    = null;
+  
+  private ButtonArea buttons     = null;
 
   /**
    * ct.
@@ -66,6 +72,8 @@ public abstract class AbstractFromToList extends TablePart implements Part
   public AbstractFromToList(Action action)
   {
     super(action);
+    
+    this.buttons = new ButtonArea();
     
     this.listener = new Listener() {
       public void handleEvent(Event event) {
@@ -97,7 +105,6 @@ public abstract class AbstractFromToList extends TablePart implements Part
     this.from = new DateFromInput();
     this.from.setName(i18n.tr("Anzeige von"));
     this.from.setComment(null);
-    this.from.addListener(this.listener);
     return this.from;
   }
   
@@ -127,7 +134,6 @@ public abstract class AbstractFromToList extends TablePart implements Part
     this.to = new DateToInput();
     this.to.setName(i18n.tr("Anzeige bis"));
     this.to.setComment(null);
-    this.to.addListener(this.listener);
     return this.to;
   }
 
@@ -137,29 +143,40 @@ public abstract class AbstractFromToList extends TablePart implements Part
    */
   public synchronized void paint(Composite parent) throws RemoteException
   {
-    LabelGroup group = new LabelGroup(parent,i18n.tr("Anzeige einschränken"));
-    
-    GridLayout gl = (GridLayout) group.getComposite().getLayout();
-    gl.horizontalSpacing = 0;
-    gl.verticalSpacing = 0;
-    gl.marginHeight = 0;
-    gl.marginWidth = 0;
+    final TabFolder folder = new TabFolder(parent, SWT.NONE);
+    folder.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+    TabGroup tab = new TabGroup(folder,i18n.tr("Anzeige einschränken"));
 
-    ColumnLayout cols = new ColumnLayout(group.getComposite(),3);
-    Container left = new SimpleContainer(cols.getComposite());
+    ColumnLayout cols = new ColumnLayout(tab.getComposite(),4);
     
-    Input t = this.getText();
-    left.addInput(t);
+    {
+      Container c = new SimpleContainer(cols.getComposite());
+      
+      Input t = this.getText();
+      c.addInput(t);
+      
+      // Duerfen wir erst nach dem Zeichnen
+      t.getControl().addKeyListener(new DelayedAdapter());
+    }
     
-    // Duerfen wir erst nach dem Zeichnen
-    t.getControl().addKeyListener(new DelayedAdapter());
+    {
+      Container c = new SimpleContainer(cols.getComposite());
+      c.addInput(this.getFrom());
+    }
     
-    Container middle = new SimpleContainer(cols.getComposite());
-    middle.addInput(this.getFrom());
-    Container right = new SimpleContainer(cols.getComposite());
-    right.addInput(this.getTo());
-    
-    
+    {
+      Container c = new SimpleContainer(cols.getComposite());
+      c.addInput(this.getTo());
+    }
+
+    this.buttons.addButton(i18n.tr("Aktualisieren"), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        handleReload(true);
+      }
+    },null,true,"view-refresh.png");
+    this.buttons.paint(parent);
    
     // Erstbefuellung
     GenericIterator items = getList((Date)getFrom().getValue(),(Date)getTo().getValue(),(String)getText().getValue());
@@ -171,6 +188,15 @@ public abstract class AbstractFromToList extends TablePart implements Part
     }
 
     super.paint(parent);
+  }
+  
+  /**
+   * Liefert die Button-Area der Komponente.
+   * @return this Buttons.
+   */
+  public ButtonArea getButtons()
+  {
+    return this.buttons;
   }
   
   /**
@@ -307,7 +333,10 @@ public abstract class AbstractFromToList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: AbstractFromToList.java,v $
- * Revision 1.12  2011/08/05 11:21:58  willuhn
+ * Revision 1.13  2011/12/18 23:20:20  willuhn
+ * @N GUI-Politur
+ *
+ * Revision 1.12  2011-08-05 11:21:58  willuhn
  * @N Erster Code fuer eine Umsatz-Preview
  * @C Compiler-Warnings
  * @N DateFromInput/DateToInput - damit sind die Felder fuer den Zeitraum jetzt ueberall einheitlich

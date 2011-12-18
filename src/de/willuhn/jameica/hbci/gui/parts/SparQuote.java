@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SparQuote.java,v $
- * $Revision: 1.34 $
- * $Date: 2011/10/27 11:03:40 $
+ * $Revision: 1.35 $
+ * $Date: 2011/12/18 23:20:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -40,7 +40,6 @@ import de.willuhn.jameica.gui.input.SpinnerInput;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.DelayedListener;
-import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -190,11 +189,15 @@ public class SparQuote implements Part
   {
     load();
 
-    LabelGroup filter = new LabelGroup(parent,i18n.tr("Anzeige einschränken"));
-    
-    filter.addInput(getKontoAuswahl());
-    filter.addInput(getStartAuswahl());
-    filter.addInput(getTagAuswahl());
+    {
+      final TabFolder folder = new TabFolder(parent, SWT.NONE);
+      folder.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      TabGroup tab = new TabGroup(folder,i18n.tr("Anzeige einschränken"));
+      
+      tab.addInput(getKontoAuswahl());
+      tab.addInput(getStartAuswahl());
+      tab.addInput(getTagAuswahl());
+    }
 
     ButtonArea topButtons = new ButtonArea();
     topButtons.addButton(i18n.tr("Aktualisieren"), new Action() {
@@ -512,6 +515,9 @@ public class SparQuote implements Part
 
 /*********************************************************************
  * $Log: SparQuote.java,v $
+ * Revision 1.35  2011/12/18 23:20:20  willuhn
+ * @N GUI-Politur
+ *
  * Revision 1.34  2011/10/27 11:03:40  willuhn
  * @C Auswahl des Stichtages in Spar-Quote als Spinner-Input
  *

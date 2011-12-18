@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/EmpfaengerList.java,v $
- * $Revision: 1.26 $
- * $Date: 2010/04/15 10:26:49 $
+ * $Revision: 1.27 $
+ * $Date: 2011/12/18 23:20:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,13 +16,16 @@ package de.willuhn.jameica.hbci.gui.parts;
 import java.rmi.RemoteException;
 import java.util.List;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TableItem;
 import org.kapott.hbci.manager.HBCIUtils;
 
@@ -37,7 +40,7 @@ import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.DelayedListener;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.filter.AddressFilter;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
@@ -180,7 +183,9 @@ public class EmpfaengerList extends TablePart implements Part
    */
   public synchronized void paint(Composite parent) throws RemoteException
   {
-    LabelGroup group = new LabelGroup(parent,i18n.tr("Anzeige einschränken"));
+    final TabFolder folder = new TabFolder(parent, SWT.NONE);
+    folder.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+    TabGroup tab = new TabGroup(folder,i18n.tr("Anzeige einschränken"));
 
     /////////////////////////////////////////////////////////////////
     // Mal schauen, ob wir mehrere Adressbuecher haben. Ist das der Fall,
@@ -204,7 +209,7 @@ public class EmpfaengerList extends TablePart implements Part
             reload(); // Anzeige aktualisieren
           }
         });
-        group.addLabelPair(i18n.tr("Adressbuch"), select);
+        tab.addLabelPair(i18n.tr("Adressbuch"), select);
       }
     }
     catch (RemoteException re)
@@ -219,7 +224,7 @@ public class EmpfaengerList extends TablePart implements Part
 
     // Eingabe-Feld fuer die Suche mit Button hinten dran.
     this.search = new TextInput(mySettings.getString("search",null));
-    group.addLabelPair(i18n.tr("Suchbegriff"), this.search);
+    tab.addLabelPair(i18n.tr("Suchbegriff"), this.search);
     this.search.getControl().addKeyListener(this.listener);
 
     
@@ -373,7 +378,10 @@ public class EmpfaengerList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: EmpfaengerList.java,v $
- * Revision 1.26  2010/04/15 10:26:49  willuhn
+ * Revision 1.27  2011/12/18 23:20:20  willuhn
+ * @N GUI-Politur
+ *
+ * Revision 1.26  2010-04-15 10:26:49  willuhn
  * *** empty log message ***
  *
  * Revision 1.25  2010/04/14 17:44:10  willuhn

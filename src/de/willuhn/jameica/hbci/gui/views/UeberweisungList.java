@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UeberweisungList.java,v $
- * $Revision: 1.15 $
- * $Date: 2011/09/12 15:28:00 $
+ * $Revision: 1.16 $
+ * $Date: 2011/12/18 23:20:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -52,22 +52,23 @@ public class UeberweisungList extends AbstractView
     
 		GUI.getView().setTitle(i18n.tr("Vorhandene Überweisungen"));
     GUI.getView().addPanelButton(print);
+    
+    ButtonArea buttons = table.getButtons();
+    buttons.addButton(i18n.tr("Importieren..."),new UeberweisungImport(),null,false,"document-open.png");
+    buttons.addButton(i18n.tr("Neue Überweisung"),new UeberweisungNew(),null,false,"text-x-generic.png");
 		
 		table.paint(getParent());
     print.setEnabled(table.getSelection() != null); // einmal initial ausloesen
-
-		ButtonArea buttons = new ButtonArea();
-    buttons.addButton(i18n.tr("Importieren..."),new UeberweisungImport(),null,false,"document-open.png");
-		buttons.addButton(i18n.tr("Neue Überweisung"),new UeberweisungNew(),null,true,"text-x-generic.png");
-		
-		buttons.paint(getParent());
   }
 }
 
 
 /**********************************************************************
  * $Log: UeberweisungList.java,v $
- * Revision 1.15  2011/09/12 15:28:00  willuhn
+ * Revision 1.16  2011/12/18 23:20:20  willuhn
+ * @N GUI-Politur
+ *
+ * Revision 1.15  2011-09-12 15:28:00  willuhn
  * @N Enabled-State live uebernehmen - nicht erst beim Mouse-Over
  *
  * Revision 1.14  2011-04-08 17:41:45  willuhn

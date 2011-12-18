@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/AbstractDateInput.java,v $
- * $Revision: 1.3 $
- * $Date: 2011/08/05 12:02:11 $
+ * $Revision: 1.4 $
+ * $Date: 2011/12/18 23:20:20 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -32,18 +32,28 @@ public abstract class AbstractDateInput extends DateInput
 {
   final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private static Map<String,Date> cache = new HashMap<String,Date>();
-
+  
   /**
    * ct.
    * @param date
    */
   public AbstractDateInput(Date date)
   {
+    this(date,null);
+  }
+
+  /**
+   * ct.
+   * @param date
+   * @param parameter Schluessel-Name, unter dem die Eingabe in der Session gecached werden soll.
+   */
+  public AbstractDateInput(Date date, final String parameter)
+  {
     super(date,HBCI.DATEFORMAT);
     this.setName(i18n.tr("Datum"));
     
     final Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
-    final String param = this.getParameter();
+    final String param = parameter != null ? parameter : "date";
     
     // Listener zur Ueberwachung der Aenderungen
     this.addListener(new Listener() {
@@ -93,12 +103,6 @@ public abstract class AbstractDateInput extends DateInput
   }
   
   /**
-   * Liefert den Namen des Parameters fuer die Config-Datei.
-   * @return Name des Parameters.
-   */
-  abstract String getParameter();
-  
-  /**
    * Liefert das zu verwendende Default-Datum.
    * @return das zu verwendende Default-Datum.
    */
@@ -109,7 +113,10 @@ public abstract class AbstractDateInput extends DateInput
 
 /**********************************************************************
  * $Log: AbstractDateInput.java,v $
- * Revision 1.3  2011/08/05 12:02:11  willuhn
+ * Revision 1.4  2011/12/18 23:20:20  willuhn
+ * @N GUI-Politur
+ *
+ * Revision 1.3  2011-08-05 12:02:11  willuhn
  * @B Konstruktor falsch
  *
  * Revision 1.2  2011-08-05 11:50:48  willuhn

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SaldoChart.java,v $
- * $Revision: 1.7 $
- * $Date: 2011/05/19 08:41:53 $
+ * $Revision: 1.8 $
+ * $Date: 2011/12/18 23:20:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,9 +18,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.TabFolder;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.ResultSetExtractor;
@@ -32,8 +35,8 @@ import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.ColumnLayout;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.DelayedListener;
-import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.gui.util.SimpleContainer;
+import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.chart.ChartDataSaldoSumme;
@@ -152,9 +155,12 @@ public class SaldoChart implements Part
         }
         else
         {
-          LabelGroup group = new LabelGroup(parent, i18n.tr("Anzeige einschränken"));
-          group.addInput(this.getKontoAuswahl());
-          group.addInput(this.getRange());
+          final TabFolder folder = new TabFolder(parent, SWT.NONE);
+          folder.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+          TabGroup tab = new TabGroup(folder,i18n.tr("Anzeige einschränken"));
+          
+          tab.addInput(this.getKontoAuswahl());
+          tab.addInput(this.getRange());
 
           ButtonArea buttons = new ButtonArea();
           buttons.addButton(i18n.tr("Aktualisieren"), new Action()
@@ -299,7 +305,10 @@ public class SaldoChart implements Part
 
 /*********************************************************************
  * $Log: SaldoChart.java,v $
- * Revision 1.7  2011/05/19 08:41:53  willuhn
+ * Revision 1.8  2011/12/18 23:20:20  willuhn
+ * @N GUI-Politur
+ *
+ * Revision 1.7  2011-05-19 08:41:53  willuhn
  * @N BUGZILLA 1038 - generische Loesung
  *
  * Revision 1.6  2011-05-04 12:04:40  willuhn

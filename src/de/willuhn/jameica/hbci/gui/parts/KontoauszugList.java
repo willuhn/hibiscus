@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.47 $
- * $Date: 2011/08/05 11:21:58 $
+ * $Revision: 1.48 $
+ * $Date: 2011/12/18 23:20:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -42,7 +42,6 @@ import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.ColumnLayout;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.DelayedListener;
-import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
@@ -200,9 +199,6 @@ public class KontoauszugList extends UmsatzList
     
     buttons.paint(parent);
     
-
-    new Headline(parent,i18n.tr("Gefundene Umsätze"));
-
     handleReload(true);
     
     parent.addDisposeListener(new DisposeListener() {
@@ -259,7 +255,7 @@ public class KontoauszugList extends UmsatzList
     if (this.start != null)
       return this.start;
     
-    this.start = new DateFromInput();
+    this.start = new DateFromInput(null,"umsatzlist.filter.from");
     this.start.setComment(i18n.tr("Frühestes Valuta-Datum"));
     this.start.addListener(this.listener);
     return this.start;
@@ -274,7 +270,7 @@ public class KontoauszugList extends UmsatzList
     if (this.end != null)
       return this.end;
 
-    this.end = new DateToInput();
+    this.end = new DateToInput(null,"umsatzlist.filter.to");
     this.end.setComment(i18n.tr("Spätestes Valuta-Datum"));
     this.end.addListener(this.listener);
     return this.end;
@@ -690,7 +686,10 @@ public class KontoauszugList extends UmsatzList
 
 /*********************************************************************
  * $Log: KontoauszugList.java,v $
- * Revision 1.47  2011/08/05 11:21:58  willuhn
+ * Revision 1.48  2011/12/18 23:20:20  willuhn
+ * @N GUI-Politur
+ *
+ * Revision 1.47  2011-08-05 11:21:58  willuhn
  * @N Erster Code fuer eine Umsatz-Preview
  * @C Compiler-Warnings
  * @N DateFromInput/DateToInput - damit sind die Felder fuer den Zeitraum jetzt ueberall einheitlich
