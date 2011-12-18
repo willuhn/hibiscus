@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/DateToInput.java,v $
- * $Revision: 1.3 $
- * $Date: 2011/08/05 12:02:11 $
+ * $Revision: 1.4 $
+ * $Date: 2011/12/18 23:20:20 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -35,17 +35,19 @@ public class DateToInput extends AbstractDateInput
    */
   public DateToInput(Date date)
   {
-    super(date);
-    this.setName(i18n.tr("End-Datum"));
-    this.setComment(i18n.tr("Spätestes Datum"));
+    this(date,"transferlist.filter.to");
   }
   
   /**
-   * @see de.willuhn.jameica.hbci.gui.input.AbstractDateInput#getParameter()
+   * ct.
+   * @param date
+   * @param parameter Schluessel-Name, unter dem die Eingabe in der Session gecached werden soll.
    */
-  String getParameter()
+  public DateToInput(Date date, String parameter)
   {
-    return "transferlist.filter.to";
+    super(date,parameter);
+    this.setName(i18n.tr("End-Datum"));
+    this.setComment(i18n.tr("Spätestes Datum"));
   }
 
   /**
@@ -65,7 +67,10 @@ public class DateToInput extends AbstractDateInput
 
 /**********************************************************************
  * $Log: DateToInput.java,v $
- * Revision 1.3  2011/08/05 12:02:11  willuhn
+ * Revision 1.4  2011/12/18 23:20:20  willuhn
+ * @N GUI-Politur
+ *
+ * Revision 1.3  2011-08-05 12:02:11  willuhn
  * @B Konstruktor falsch
  *
  * Revision 1.2  2011-08-05 11:34:39  willuhn

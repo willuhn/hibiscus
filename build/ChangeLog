@@ -1,5 +1,9 @@
 HEAD
 
+  * NEW: 0148 GUI-Politur
+              - Grundsaetzlich einheitlich Tabs fuer Anzeige-Filter verwenden
+              - Buttons in Auftragslisten oben rechts anordnen
+              - getrenntes Caching von From-/To-Datum zwischen Auftrags- und Umsatzlisten 
   * NEW: 0147 BUGZILLA 1162 - Support für geplante Wiederholungen von "Offline-Dauerauftraege"
               in AppointmentProvidern
   * NEW: 0146 BUGZILLA 1159 - bei Anlage einer PIN/TAN-Config den TCP-Port aus URL

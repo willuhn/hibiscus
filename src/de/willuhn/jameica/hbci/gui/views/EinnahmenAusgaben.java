@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/EinnahmenAusgaben.java,v $
- * $Revision: 1.10 $
- * $Date: 2011/04/08 15:19:14 $
+ * $Revision: 1.11 $
+ * $Date: 2011/12/18 23:20:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,11 +16,15 @@ package de.willuhn.jameica.hbci.gui.views;
 import java.rmi.RemoteException;
 import java.util.List;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.TabFolder;
+
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.parts.ButtonArea;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.EinnahmeAusgabeExport;
 import de.willuhn.jameica.hbci.gui.controller.EinnahmeAusgabeControl;
@@ -47,12 +51,33 @@ public class EinnahmenAusgaben extends AbstractView
 
     final EinnahmeAusgabeControl control = new EinnahmeAusgabeControl(this);
 
-    LabelGroup group = new LabelGroup(getParent(), i18n.tr("Anzeige einschränken"));
-    group.addInput(control.getKontoAuswahl());
-    group.addInput(control.getStart());
-    group.addInput(control.getEnd());
+    {
+      final TabFolder folder = new TabFolder(this.getParent(), SWT.NONE);
+      folder.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      TabGroup tab = new TabGroup(folder,i18n.tr("Anzeige einschränken"));
+
+      tab.addLabelPair(i18n.tr("Konto"), control.getKontoAuswahl());
+      tab.addLabelPair(i18n.tr("Start-Datum"), control.getStart());
+      tab.addLabelPair(i18n.tr("End-Datum"), control.getEnd());
+    }
 
     ButtonArea buttons = new ButtonArea();
+    buttons.addButton(i18n.tr("Exportieren..."), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        try
+        {
+          List data = control.getTable().getItems();
+          new EinnahmeAusgabeExport().handleAction(data.toArray(new EinnahmeAusgabe[data.size()]));
+        }
+        catch (RemoteException re)
+        {
+          Logger.error("unable to export data",re);
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Exportieren: {0}",re.getMessage()),StatusBarMessage.TYPE_ERROR));
+        }
+      }
+    },null,false,"document-save.png");
     buttons.addButton(i18n.tr("Aktualisieren"), new Action()
     {
       /**
@@ -72,22 +97,6 @@ public class EinnahmenAusgaben extends AbstractView
       }
     
     },null,true,"view-refresh.png");
-    buttons.addButton(i18n.tr("Exportieren..."), new Action()
-    {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        try
-        {
-          List data = control.getTable().getItems();
-          new EinnahmeAusgabeExport().handleAction(data.toArray(new EinnahmeAusgabe[data.size()]));
-        }
-        catch (RemoteException re)
-        {
-          Logger.error("unable to export data",re);
-          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Exportieren: {0}",re.getMessage()),StatusBarMessage.TYPE_ERROR));
-        }
-      }
-    },null,false,"document-save.png");
     buttons.paint(getParent());
     
     control.getTable().paint(this.getParent());
@@ -95,7 +104,10 @@ public class EinnahmenAusgaben extends AbstractView
 }
 /*******************************************************************************
  * $Log: EinnahmenAusgaben.java,v $
- * Revision 1.10  2011/04/08 15:19:14  willuhn
+ * Revision 1.11  2011/12/18 23:20:20  willuhn
+ * @N GUI-Politur
+ *
+ * Revision 1.10  2011-04-08 15:19:14  willuhn
  * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
  * @C Code-Cleanup
  *
