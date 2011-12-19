@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/PDFUmsatzExporter.java,v $
- * $Revision: 1.13 $
- * $Date: 2011/06/07 10:07:50 $
+ * $Revision: 1.14 $
+ * $Date: 2011/12/19 22:25:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -101,7 +101,7 @@ public class PDFUmsatzExporter implements Exporter
     {
       // Der Export
       String subTitle = i18n.tr("{0} - {1}", new String[]{startDate == null ? "" : HBCI.DATEFORMAT.format(startDate),endDate == null ? "" : HBCI.DATEFORMAT.format(endDate)});
-      reporter = new Reporter(os,monitor,i18n.tr("Kontoauszug"), subTitle, objects.length  );
+      reporter = new Reporter(os,monitor,i18n.tr("Umsätze"), subTitle, objects.length  );
 
       reporter.addHeaderColumn(i18n.tr("Valuta / Buchungsdatum"), Element.ALIGN_CENTER, 30, Color.LIGHT_GRAY);
       reporter.addHeaderColumn(i18n.tr("Empfänger/Einzahler"),    Element.ALIGN_CENTER,100, Color.LIGHT_GRAY);
@@ -210,7 +210,10 @@ public class PDFUmsatzExporter implements Exporter
 
 /*********************************************************************
  * $Log: PDFUmsatzExporter.java,v $
- * Revision 1.13  2011/06/07 10:07:50  willuhn
+ * Revision 1.14  2011/12/19 22:25:42  willuhn
+ * @C Ueberschrift geaendert in "Umsaetze" - siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=80257#80257
+ *
+ * Revision 1.13  2011-06-07 10:07:50  willuhn
  * @C Verwendungszweck-Handling vereinheitlicht/vereinfacht - geht jetzt fast ueberall ueber VerwendungszweckUtil
  *
  * Revision 1.12  2010/03/05 15:24:53  willuhn
