@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.48 $
- * $Date: 2011/12/18 23:20:20 $
+ * $Revision: 1.49 $
+ * $Date: 2011/12/19 22:43:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -94,8 +94,9 @@ public class KontoauszugList extends UmsatzList
 
   private Listener listener            = null;
   
-  private boolean disposed = false; // BUGZILLA 462
-  private boolean changed = false;
+  private boolean disposed             = false; // BUGZILLA 462
+  private boolean changed              = false;
+  private boolean hasFilter            = false;
 
   /**
    * ct.
@@ -450,7 +451,7 @@ public class KontoauszugList extends UmsatzList
     DBIterator umsaetze = UmsatzUtil.getUmsaetzeBackwards();
     
     // BUGZILLA 449
-    boolean hasFilter = false;
+    this.hasFilter = false;
 
     /////////////////////////////////////////////////////////////////
     // Zeitraum
@@ -460,8 +461,8 @@ public class KontoauszugList extends UmsatzList
     if (end != null)   umsaetze.addFilter("valuta <= ?", new Object[]{new java.sql.Date(DateUtil.endOfDay(end).getTime())});
     /////////////////////////////////////////////////////////////////
     // Gegenkonto
-    if (gkBLZ    != null && gkBLZ.length() > 0)    {umsaetze.addFilter("empfaenger_blz like ?",new Object[]{"%" + gkBLZ + "%"});hasFilter = true;}
-    if (gkNummer != null && gkNummer.length() > 0) {umsaetze.addFilter("empfaenger_konto like ?",new Object[]{"%" + gkNummer + "%"});hasFilter = true;}
+    if (gkBLZ    != null && gkBLZ.length() > 0)    {umsaetze.addFilter("empfaenger_blz like ?",new Object[]{"%" + gkBLZ + "%"});this.hasFilter = true;}
+    if (gkNummer != null && gkNummer.length() > 0) {umsaetze.addFilter("empfaenger_konto like ?",new Object[]{"%" + gkNummer + "%"});this.hasFilter = true;}
     if (gkName   != null && gkName.length() > 0)   {umsaetze.addFilter("LOWER(empfaenger_name) like ?",new Object[]{"%" + gkName.toLowerCase() + "%"});hasFilter = true;}
     /////////////////////////////////////////////////////////////////
 
@@ -475,12 +476,12 @@ public class KontoauszugList extends UmsatzList
     if (min != null && !(Double.isNaN(min.doubleValue())))
     {
       umsaetze.addFilter("betrag >= ?",new Object[]{min});
-      hasFilter = true;
+      this.hasFilter = true;
     }
     if (max != null && (!Double.isNaN(max.doubleValue())))
     {
       umsaetze.addFilter("betrag <= ?",new Object[]{max});
-      hasFilter = true;
+      this.hasFilter = true;
     }
     /////////////////////////////////////////////////////////////////
     
@@ -493,7 +494,7 @@ public class KontoauszugList extends UmsatzList
     /////////////////////////////////////////////////////////////////
 
 
-    GUI.getView().setLogoText(hasFilter ? i18n.tr("Hinweis: Aufgrund von Suchkriterien werden möglicherweise nicht alle Umsätze angezeigt") : "");
+    GUI.getView().setLogoText(this.hasFilter ? i18n.tr("Hinweis: Aufgrund von Suchkriterien werden möglicherweise nicht alle Umsätze angezeigt") : "");
     
     List<Umsatz> result = new LinkedList<Umsatz>();
     while (umsaetze.hasNext())
@@ -530,15 +531,16 @@ public class KontoauszugList extends UmsatzList
       // Damit werden genau die ausgegeben, die gerade
       // angezeigt werden und wir sparen uns das erneute
       // Laden aus der Datenbank
-      List list = getItems();
+      List list = this.getItems();
 
       if (list == null || list.size() == 0)
       {
         Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Keine zu exportierenden Umsätze"), StatusBarMessage.TYPE_ERROR));
         return;
       }
-
+      
       // Start- und End-Datum als Contextparameter an Exporter uebergeben
+      Exporter.SESSION.put("filtered",this.hasFilter);
       Exporter.SESSION.put("pdf.start",getStart().getValue());
       Exporter.SESSION.put("pdf.end",getEnd().getValue());
 
@@ -686,6 +688,9 @@ public class KontoauszugList extends UmsatzList
 
 /*********************************************************************
  * $Log: KontoauszugList.java,v $
+ * Revision 1.49  2011/12/19 22:43:04  willuhn
+ * @N In PDF-Export anzeigen, wenn die Daten gefiltert sind - siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=80257#80257
+ *
  * Revision 1.48  2011/12/18 23:20:20  willuhn
  * @N GUI-Politur
  *
