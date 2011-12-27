@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/reminder/ReminderStorageProviderHibiscus.java,v $
- * $Revision: 1.1 $
- * $Date: 2011/10/20 16:20:05 $
+ * $Revision: 1.2 $
+ * $Date: 2011/12/27 22:54:55 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -23,6 +23,7 @@ import de.willuhn.annotation.Lifecycle;
 import de.willuhn.annotation.Lifecycle.Type;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBService;
+import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.datasource.rmi.ResultSetExtractor;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.DBReminder;
@@ -89,7 +90,7 @@ public class ReminderStorageProviderHibiscus extends AbstractReminderStorageProv
     // Checken, ob wir den schon haben
     DBReminder r = this.getDBReminder(uuid);
     if (r == null)
-      throw new JameicaException("no reminder found for uuid: " + uuid);
+      throw new ObjectNotFoundException("no reminder found for uuid: " + uuid);
     
     // Daten uebernehmen und speichern
     r.setReminder(reminder);
@@ -160,6 +161,9 @@ public class ReminderStorageProviderHibiscus extends AbstractReminderStorageProv
 
 /**********************************************************************
  * $Log: ReminderStorageProviderHibiscus.java,v $
+ * Revision 1.2  2011/12/27 22:54:55  willuhn
+ * @N Reminder loeschen, wenn zugehoeriger Auftrag geloescht wurde
+ *
  * Revision 1.1  2011/10/20 16:20:05  willuhn
  * @N BUGZILLA 182 - Erste Version von client-seitigen Dauerauftraegen fuer alle Auftragsarten
  *
