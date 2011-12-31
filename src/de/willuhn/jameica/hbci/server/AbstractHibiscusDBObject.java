@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractHibiscusDBObject.java,v $
- * $Revision: 1.2 $
- * $Date: 2011/10/20 16:20:05 $
+ * $Revision: 1.3 $
+ * $Date: 2011/12/31 13:55:38 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -15,6 +15,8 @@ import java.rmi.RemoteException;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.jameica.hbci.rmi.HibiscusDBObject;
+import de.willuhn.jameica.messaging.QueryMessage;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -81,8 +83,12 @@ public abstract class AbstractHibiscusDBObject extends AbstractDBObject implemen
     this.transactionBegin();
     try
     {
-      // Meta-Daten ebenfalls loeschen
+      // Delete-Message schicken
+      Application.getMessagingFactory().getMessagingQueue("hibiscus." + this.getTableName() + ".delete").sendSyncMessage(new QueryMessage(this));
+
+      // Meta-Daten loeschen - muss NACH der Message erfolgen - sonst fehlen uns dort die Meta-Daten schon
       DBPropertyUtil.deleteAll(this.getPrefix());
+
       super.delete();
       this.transactionCommit();
     }
@@ -103,6 +109,9 @@ public abstract class AbstractHibiscusDBObject extends AbstractDBObject implemen
 
 /**********************************************************************
  * $Log: AbstractHibiscusDBObject.java,v $
+ * Revision 1.3  2011/12/31 13:55:38  willuhn
+ * @N Beim Loeschen eines Reminder-faehigen Auftrages wird der Reminder jetzt via Messaging automatisch gleich mit geloescht
+ *
  * Revision 1.2  2011/10/20 16:20:05  willuhn
  * @N BUGZILLA 182 - Erste Version von client-seitigen Dauerauftraegen fuer alle Auftragsarten
  *
