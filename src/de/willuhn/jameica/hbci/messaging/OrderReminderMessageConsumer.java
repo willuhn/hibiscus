@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/messaging/OrderReminderMessageConsumer.java,v $
- * $Revision: 1.2 $
- * $Date: 2011/12/27 22:54:55 $
+ * $Revision: 1.3 $
+ * $Date: 2011/12/31 13:55:38 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -17,18 +17,14 @@ import java.util.Map;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBService;
-import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.reminder.ReminderStorageProviderHibiscus;
 import de.willuhn.jameica.hbci.rmi.Duplicatable;
 import de.willuhn.jameica.hbci.rmi.HibiscusDBObject;
 import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.messaging.ReminderMessage;
-import de.willuhn.jameica.reminder.ReminderStorageProvider;
-import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.MultipleClassLoader;
@@ -84,23 +80,20 @@ public class OrderReminderMessageConsumer implements MessageConsumer
       }
     }
     
-    HibiscusDBObject order = null;
-
+    // 3. Auftrag laden
+    Duplicatable template = (Duplicatable) service.createObject(type,id);
+    
+    // 4. Auftrag clonen und speichern
+    HibiscusDBObject order = (HibiscusDBObject) template.duplicate();
+    String hostname        = Application.getCallback().getHostname();
+    
     try
     {
-      // 3. Auftrag laden
-      Duplicatable template = (Duplicatable) service.createObject(type,id);
-      
-      // 4. Auftrag clonen und speichern
-      order = (HibiscusDBObject) template.duplicate();
-
       order.transactionBegin();
       
       ((Terminable)order).setTermin(termin);      // Ziel-Datum uebernehmen
       order.store();                              // speichern, noetig, weil wir die ID brauchen
-
-      String hostname = Application.getCallback().getHostname();
-
+      
       // Meta-Daten speichern
       order.setMeta("reminder.creator",hostname);
       order.setMeta("reminder.template",id);
@@ -110,19 +103,11 @@ public class OrderReminderMessageConsumer implements MessageConsumer
       
       Logger.info("order " + type.getSimpleName() + ":" + id + " cloned by " + hostname + ", id: " + order.getID() + ", date: " + termin);
     }
-    catch (ObjectNotFoundException onf)
-    {
-      Logger.warn("order " + type.getSimpleName() + ":" + id + " has been deleted. deleting reminder " + msg.getUUID());
-      BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
-      ReminderStorageProvider provider = bs.get(ReminderStorageProviderHibiscus.class);
-      provider.delete(msg.getUUID());
-    }
     catch (Exception e)
     {
       try
       {
-        if (order != null)
-          order.transactionRollback();
+        order.transactionRollback();
       }
       catch (Exception e2)
       {
@@ -146,8 +131,8 @@ public class OrderReminderMessageConsumer implements MessageConsumer
 
 /**********************************************************************
  * $Log: OrderReminderMessageConsumer.java,v $
- * Revision 1.2  2011/12/27 22:54:55  willuhn
- * @N Reminder loeschen, wenn zugehoeriger Auftrag geloescht wurde
+ * Revision 1.3  2011/12/31 13:55:38  willuhn
+ * @N Beim Loeschen eines Reminder-faehigen Auftrages wird der Reminder jetzt via Messaging automatisch gleich mit geloescht
  *
  * Revision 1.1  2011/10/20 16:20:05  willuhn
  * @N BUGZILLA 182 - Erste Version von client-seitigen Dauerauftraegen fuer alle Auftragsarten
