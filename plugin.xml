@@ -81,6 +81,12 @@
     <consumer queue="hibiscus.passport.rdh.hbciversion"    class="de.willuhn.jameica.hbci.messaging.QueryHBCIVersionMessageConsumer" />
     <consumer queue="hibiscus.infopoint"                   class="de.willuhn.jameica.hbci.messaging.InfoPointMessageConsumer" />
     <consumer queue="hibiscus.reminder.order"              class="de.willuhn.jameica.hbci.messaging.OrderReminderMessageConsumer" />
+
+    <consumer queue="hibiscus.ueberweisung.delete"         class="de.willuhn.jameica.hbci.messaging.DeleteReminderMessageConsumer" />
+    <consumer queue="hibiscus.aueberweisung.delete"        class="de.willuhn.jameica.hbci.messaging.DeleteReminderMessageConsumer" />
+    <consumer queue="hibiscus.sueberweisung.delete"        class="de.willuhn.jameica.hbci.messaging.DeleteReminderMessageConsumer" />
+    <consumer queue="hibiscus.lastschrift.delete"          class="de.willuhn.jameica.hbci.messaging.DeleteReminderMessageConsumer" />
+    <consumer queue="hibiscus.slastschrift.delete"         class="de.willuhn.jameica.hbci.messaging.DeleteReminderMessageConsumer" />
   </messaging>
 
 </plugin>
