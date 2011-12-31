@@ -1,5 +1,13 @@
 HEAD
 
+  * NEW: 0151 Beim Loeschen eines Reminder-faehigen Auftrages wird der Reminder jetzt
+              via Messaging automatisch gleich mit geloescht
+  * BUG: 0150 Im Kalender wurde der aktuelle Tag in allen Monaten gelb hervorgehoben,
+              ist aktuell der 31. und hat der Monat gar keine 31 Tage, wurde faelschlicherweise
+              der Monatsletzte (z.Bsp. 30.) hervorgehoben
+  * BUG: 0149 In der Dropdown-Box zur Auswahl eines Empfaengers in einem Auftrag
+              wurde die Auswahl auch dann uebernommen, wenn man die Liste mit
+              Escape abgebrochen hat
   * NEW: 0148 GUI-Politur
               - Grundsaetzlich einheitlich Tabs fuer Anzeige-Filter verwenden
               - Buttons in Auftragslisten oben rechts anordnen
