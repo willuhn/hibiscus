@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.64 $
- * $Date: 2011/07/20 15:41:36 $
+ * $Revision: 1.65 $
+ * $Date: 2012/01/02 22:32:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -74,15 +74,21 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
         throw new ApplicationException(i18n.tr("Bitte geben Sie eine Bezeichnung ein."));
       
       String pattern = getPattern();
-      if (isRegex() && pattern != null && pattern.length() > 0)
+      if (pattern != null && pattern.length() > 0)
       {
-        try
+        if (pattern.length() > MAXLENGTH_PATTERN)
+          throw new ApplicationException(i18n.tr("Bitte geben Sie maximal {0} Zeichen als Suchbegriff ein.",Integer.toString(MAXLENGTH_PATTERN)));
+        
+        if (isRegex())
         {
-          Pattern.compile(pattern);
-        }
-        catch (PatternSyntaxException pse)
-        {
-          throw new ApplicationException(i18n.tr("Regulärer Ausdruck ungültig: {0}",pse.getDescription()));
+          try
+          {
+            Pattern.compile(pattern);
+          }
+          catch (PatternSyntaxException pse)
+          {
+            throw new ApplicationException(i18n.tr("Regulärer Ausdruck ungültig: {0}",pse.getDescription()));
+          }
         }
       }
 
@@ -608,7 +614,10 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
 
 /*******************************************************************************
  * $Log: UmsatzTypImpl.java,v $
- * Revision 1.64  2011/07/20 15:41:36  willuhn
+ * Revision 1.65  2012/01/02 22:32:20  willuhn
+ * @N BUGZILLA 1170
+ *
+ * Revision 1.64  2011-07-20 15:41:36  willuhn
  * @N Neue Funktion UmsatzTyp#matches(Umsatz,boolean allowReassign) - normalerweise liefert die Funktion ohne das Boolean false, wenn der Umsatz bereits manuell einer anderen Kategorie zugeordnet ist. Andernfalls kaeme es hier ja - zumindest virtuell - zu einer Doppel-Zuordnung. Da "UmsatzList" jedoch fuer den Suchbegriff (den man oben eingeben kann) intern on-the-fly einen UmsatzTyp erstellt, mit dem die Suche erfolgt, wuerden hier bereits fest zugeordnete Umsaetze nicht mehr gefunden werden. Daher die neue Funktion.
  *
  * Revision 1.63  2011-04-27 11:07:02  willuhn

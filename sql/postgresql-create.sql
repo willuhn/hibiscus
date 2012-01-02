@@ -97,7 +97,7 @@ CREATE TABLE umsatztyp (
   id serial primary key,
   name varchar(255) NOT NULL,
   nummer varchar(5) NULL,
-  pattern varchar(255) NULL,
+  pattern varchar(1000) NULL,
   isregex integer NULL,
   umsatztyp integer NULL,
   parent_id integer NULL,
@@ -250,4 +250,4 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',37);
+INSERT INTO version (name,version) values ('db',38);

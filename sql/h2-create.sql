@@ -108,7 +108,7 @@ CREATE TABLE umsatztyp (
   id IDENTITY,
   name varchar(255) NOT NULL,
   nummer varchar(5) NULL,
-  pattern varchar(255) NULL,
+  pattern varchar(1000) NULL,
   isregex int(1) NULL,
   umsatztyp int(1) NULL,
   parent_id int(5) NULL,
@@ -288,6 +288,6 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',37);
+INSERT INTO version (name,version) values ('db',38);
   
 COMMIT;

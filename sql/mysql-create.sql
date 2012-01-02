@@ -86,7 +86,7 @@ CREATE TABLE umsatztyp (
        id int(10) AUTO_INCREMENT
      , name VARCHAR(255) NOT NULL
      , nummer VARCHAR(5)
-     , pattern VARCHAR(255)
+     , pattern TEXT
      , isregex int(10)
      , umsatztyp int(10)
      , parent_id int(10)
@@ -290,4 +290,4 @@ ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
 
-INSERT INTO version (name,version) values ('db',37);
+INSERT INTO version (name,version) values ('db',38);
