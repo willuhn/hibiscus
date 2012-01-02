@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/UmsatzTyp.java,v $
- * $Revision: 1.18 $
- * $Date: 2011/07/20 15:41:36 $
+ * $Revision: 1.19 $
+ * $Date: 2012/01/02 22:32:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -38,6 +38,11 @@ public interface UmsatzTyp extends DBObjectNode
    * Umsatzkategorie vom Typ "Egal".
    */
   public final static int TYP_EGAL     = 2;
+  
+  /**
+   * Maximale Laenge des Pattern.
+   */
+  public final static int MAXLENGTH_PATTERN = 1000;
   
 	/**
 	 * Liefert den Namen des Umsatz-Typs.
@@ -224,7 +229,10 @@ public interface UmsatzTyp extends DBObjectNode
 
 /**********************************************************************
  * $Log: UmsatzTyp.java,v $
- * Revision 1.18  2011/07/20 15:41:36  willuhn
+ * Revision 1.19  2012/01/02 22:32:20  willuhn
+ * @N BUGZILLA 1170
+ *
+ * Revision 1.18  2011-07-20 15:41:36  willuhn
  * @N Neue Funktion UmsatzTyp#matches(Umsatz,boolean allowReassign) - normalerweise liefert die Funktion ohne das Boolean false, wenn der Umsatz bereits manuell einer anderen Kategorie zugeordnet ist. Andernfalls kaeme es hier ja - zumindest virtuell - zu einer Doppel-Zuordnung. Da "UmsatzList" jedoch fuer den Suchbegriff (den man oben eingeben kann) intern on-the-fly einen UmsatzTyp erstellt, mit dem die Suche erfolgt, wuerden hier bereits fest zugeordnete Umsaetze nicht mehr gefunden werden. Daher die neue Funktion.
  *
  * Revision 1.17  2009/05/08 13:58:30  willuhn

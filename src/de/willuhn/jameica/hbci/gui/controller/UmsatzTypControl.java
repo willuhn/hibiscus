@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzTypControl.java,v $
- * $Revision: 1.14 $
- * $Date: 2010/06/03 13:54:02 $
+ * $Revision: 1.15 $
+ * $Date: 2012/01/02 22:32:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -130,7 +130,7 @@ public class UmsatzTypControl extends AbstractControl
   {
     if (this.pattern == null)
     {
-      this.pattern = new TextInput(getUmsatzTyp().getPattern());
+      this.pattern = new TextInput(getUmsatzTyp().getPattern(),UmsatzTyp.MAXLENGTH_PATTERN);
       this.pattern.setComment(i18n.tr("Für automatische Zuordnung anhand von Suchbegriffen"));
       this.pattern.addListener(new Listener()
       {
@@ -383,7 +383,10 @@ public class UmsatzTypControl extends AbstractControl
 
 /*********************************************************************
  * $Log: UmsatzTypControl.java,v $
- * Revision 1.14  2010/06/03 13:54:02  willuhn
+ * Revision 1.15  2012/01/02 22:32:20  willuhn
+ * @N BUGZILLA 1170
+ *
+ * Revision 1.14  2010-06-03 13:54:02  willuhn
  * @N UmsatzTypInput setzt jetzt auch gleich Name und Attribut
  *
  * Revision 1.13  2010/06/02 15:32:03  willuhn
