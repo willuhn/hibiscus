@@ -1,5 +1,5 @@
 CREATE TABLE konto (
-  id IDENTITY,
+  id IDENTITY(1),
   kontonummer varchar(15) NOT NULL,
   unterkonto varchar(30) null,
   blz varchar(15) NOT NULL,
@@ -20,7 +20,7 @@ CREATE TABLE konto (
 );
 
 CREATE TABLE empfaenger (
-  id IDENTITY,
+  id IDENTITY(1),
   kontonummer varchar(15) NULL,
   blz varchar(15) NULL,
   name varchar(27) NOT NULL,
@@ -34,7 +34,7 @@ CREATE TABLE empfaenger (
 );
 
 CREATE TABLE ueberweisung (
-  id IDENTITY,
+  id IDENTITY(1),
   konto_id int(4) NOT NULL,
   empfaenger_konto varchar(15) NOT NULL,
   empfaenger_blz varchar(15) NOT NULL,
@@ -54,7 +54,7 @@ CREATE TABLE ueberweisung (
 );
 
 CREATE TABLE aueberweisung (
-  id IDENTITY,
+  id IDENTITY(1),
   konto_id int(4) NOT NULL,
   empfaenger_konto varchar(40) NOT NULL,
   empfaenger_name varchar(140) NOT NULL,
@@ -69,7 +69,7 @@ CREATE TABLE aueberweisung (
 );
 
 CREATE TABLE protokoll (
-  id IDENTITY,
+  id IDENTITY(1),
   konto_id int(4) NOT NULL,
   kommentar varchar(1000) NOT NULL,
   datum datetime NOT NULL,
@@ -79,7 +79,7 @@ CREATE TABLE protokoll (
 );
 
 CREATE TABLE umsatz (
-  id IDENTITY,
+  id IDENTITY(1),
   konto_id int(4) NOT NULL,
   empfaenger_konto varchar(40),
   empfaenger_blz varchar(15),
@@ -105,7 +105,7 @@ CREATE TABLE umsatz (
 );
 
 CREATE TABLE umsatztyp (
-  id IDENTITY,
+  id IDENTITY(1),
   name varchar(255) NOT NULL,
   nummer varchar(5) NULL,
   pattern varchar(1000) NULL,
@@ -119,7 +119,7 @@ CREATE TABLE umsatztyp (
 );
 
 CREATE TABLE dauerauftrag (
-  id IDENTITY,
+  id IDENTITY(1),
   konto_id int(4) NOT NULL,
   empfaenger_konto varchar(15) NOT NULL,
   empfaenger_blz varchar(15) NOT NULL,
@@ -140,7 +140,7 @@ CREATE TABLE dauerauftrag (
 );
 
 CREATE TABLE turnus (
-  id IDENTITY,
+  id IDENTITY(1),
   zeiteinheit int(1) NOT NULL,
   intervall int(2) NOT NULL,
   tag int(2) NOT NULL,
@@ -150,7 +150,7 @@ CREATE TABLE turnus (
 );
 
 CREATE TABLE lastschrift (
-  id IDENTITY,
+  id IDENTITY(1),
   konto_id int(4) NOT NULL,
   empfaenger_konto varchar(15) NOT NULL,
   empfaenger_blz varchar(15) NOT NULL,
@@ -168,7 +168,7 @@ CREATE TABLE lastschrift (
 );
 
 CREATE TABLE slastschrift (
-  id IDENTITY,
+  id IDENTITY(1),
   konto_id int(4) NOT NULL,
   bezeichnung varchar(255) NOT NULL,
   termin date NOT NULL,
@@ -179,7 +179,7 @@ CREATE TABLE slastschrift (
 );
 
 CREATE TABLE slastbuchung (
-  id IDENTITY,
+  id IDENTITY(1),
   slastschrift_id int(4) NOT NULL,
   gegenkonto_nr varchar(15) NOT NULL,
   gegenkonto_blz varchar(15) NOT NULL,
@@ -194,7 +194,7 @@ CREATE TABLE slastbuchung (
 );
 
 CREATE TABLE sueberweisung (
-  id IDENTITY,
+  id IDENTITY(1),
   konto_id int(4) NOT NULL,
   bezeichnung varchar(255) NOT NULL,
   termin date NOT NULL,
@@ -205,7 +205,7 @@ CREATE TABLE sueberweisung (
 );
 
 CREATE TABLE sueberweisungbuchung (
-  id IDENTITY,
+  id IDENTITY(1),
   sueberweisung_id int(4) NOT NULL,
   gegenkonto_nr varchar(15) NOT NULL,
   gegenkonto_blz varchar(15) NOT NULL,
@@ -220,7 +220,7 @@ CREATE TABLE sueberweisungbuchung (
 );
 
 CREATE TABLE systemnachricht (
-  id IDENTITY,
+  id IDENTITY(1),
   blz varchar(15) NOT NULL,
   nachricht varchar(4000) NOT NULL,
   datum date NOT NULL,
@@ -230,7 +230,7 @@ CREATE TABLE systemnachricht (
 );
 
 CREATE TABLE version (
-  id IDENTITY,
+  id IDENTITY(1),
   name varchar(255) NOT NULL,
   version int(5) NOT NULL,
   UNIQUE (id),
@@ -238,7 +238,7 @@ CREATE TABLE version (
 );
 
 CREATE TABLE property (
-  id IDENTITY,
+  id IDENTITY(1),
   name varchar(1000) NOT NULL,
   content varchar(1000) NULL,
   UNIQUE (id),
@@ -247,7 +247,7 @@ CREATE TABLE property (
 );
 
 CREATE TABLE reminder (
-  id IDENTITY,
+  id IDENTITY(1),
   uuid varchar(255) NOT NULL,
   content varchar(60000) NOT NULL,
   UNIQUE (id),
