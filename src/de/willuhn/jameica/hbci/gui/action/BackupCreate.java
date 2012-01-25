@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/BackupCreate.java,v $
- * $Revision: 1.6 $
- * $Date: 2010/07/21 16:11:13 $
+ * $Revision: 1.7 $
+ * $Date: 2012/01/25 21:49:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -34,6 +34,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.server.AuslandsUeberweisungImpl;
 import de.willuhn.jameica.hbci.server.DBPropertyImpl;
+import de.willuhn.jameica.hbci.server.DBReminderImpl;
 import de.willuhn.jameica.hbci.server.DauerauftragImpl;
 import de.willuhn.jameica.hbci.server.HibiscusAddressImpl;
 import de.willuhn.jameica.hbci.server.KontoImpl;
@@ -149,7 +150,11 @@ public class BackupCreate implements Action
 
           monitor.setStatusText(i18n.tr("Speichere Properties"));
           backup(DBPropertyImpl.class,writer,monitor,null);
-          monitor.addPercentComplete(20);
+          monitor.addPercentComplete(10);
+
+          monitor.setStatusText(i18n.tr("Speichere Reminder"));
+          backup(DBReminderImpl.class,writer,monitor,null);
+          monitor.addPercentComplete(2);
 
           // Die Protokolle zum Schluss.
           monitor.setStatusText(i18n.tr("Speichere Protokolle"));
@@ -234,7 +239,10 @@ public class BackupCreate implements Action
 
 /*********************************************************************
  * $Log: BackupCreate.java,v $
- * Revision 1.6  2010/07/21 16:11:13  willuhn
+ * Revision 1.7  2012/01/25 21:49:26  willuhn
+ * @B Die Reminder fehlten im Backup
+ *
+ * Revision 1.6  2010-07-21 16:11:13  willuhn
  * @C Diagnose-Backup aktualisiert (SEPA-Ueberweisungen und DBProperties fehlten, Umsatz-Kategorien muessen in der richtigen Reihenfolge exportiert werden)
  *
  * Revision 1.5  2010/06/08 11:27:59  willuhn
