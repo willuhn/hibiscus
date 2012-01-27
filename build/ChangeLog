@@ -1,5 +1,7 @@
 HEAD
 
+  * NEW: 0154 BUGZILLA 1181 Auftrag vorm Duplizieren speichern
+              Duplicate-Action vereinheitlicht
   * NEW: 0153 Datenbank-IDs beginnen bei H2 jetzt bei "1" statt bei "0" - macht
               eine spaetere Migration nach MySQL erheblich einfacher.
   * NEW: 0152 BUGZILLA 1170 Maximale Laenge des Suchbegriffes in Kategorien von 255 auf

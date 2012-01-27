@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/AuslandsUeberweisungList.java,v $
- * $Revision: 1.5 $
- * $Date: 2011/04/11 14:36:37 $
+ * $Revision: 1.6 $
+ * $Date: 2012/01/27 22:43:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,12 +20,12 @@ import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungDuplicate;
 import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungExecute;
 import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungExport;
 import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungImport;
 import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungNew;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
+import de.willuhn.jameica.hbci.gui.action.Duplicate;
 import de.willuhn.jameica.hbci.gui.action.TerminableMarkExecuted;
 import de.willuhn.jameica.hbci.io.print.PrintSupportAuslandsUeberweisungList;
 import de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung;
@@ -52,7 +52,7 @@ public class AuslandsUeberweisungList extends ContextMenu
     addItem(new ContextMenuItem(i18n.tr("Neue SEPA-Überweisung..."), new UNeu(),"text-x-generic.png"));
     addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new SingleItem(i18n.tr("Duplizieren..."), new AuslandsUeberweisungDuplicate(),"edit-copy.png"));
+    addItem(new SingleItem(i18n.tr("Duplizieren..."), new Duplicate(),"edit-copy.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new NotActiveSingleMenuItem(i18n.tr("Jetzt ausführen..."), new AuslandsUeberweisungExecute(),"emblem-important.png"));
     addItem(new NotActiveMultiMenuItem(i18n.tr("Als \"ausgeführt\" markieren..."), new TerminableMarkExecuted(),"emblem-default.png"));
@@ -201,7 +201,10 @@ public class AuslandsUeberweisungList extends ContextMenu
 
 /**********************************************************************
  * $Log: AuslandsUeberweisungList.java,v $
- * Revision 1.5  2011/04/11 14:36:37  willuhn
+ * Revision 1.6  2012/01/27 22:43:22  willuhn
+ * @N BUGZILLA 1181
+ *
+ * Revision 1.5  2011-04-11 14:36:37  willuhn
  * @N Druck-Support fuer Lastschriften und SEPA-Ueberweisungen
  *
  * Revision 1.4  2009/10/20 23:12:58  willuhn

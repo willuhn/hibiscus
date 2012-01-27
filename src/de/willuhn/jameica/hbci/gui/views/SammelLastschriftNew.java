@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/SammelLastschriftNew.java,v $
- * $Revision: 1.24 $
- * $Date: 2011/10/20 16:20:05 $
+ * $Revision: 1.25 $
+ * $Date: 2012/01/27 22:43:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,6 +25,7 @@ import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
+import de.willuhn.jameica.hbci.gui.action.Duplicate;
 import de.willuhn.jameica.hbci.gui.action.SammelLastBuchungNew;
 import de.willuhn.jameica.hbci.gui.action.SammelLastschriftExecute;
 import de.willuhn.jameica.hbci.gui.controller.SammelLastschriftControl;
@@ -50,7 +51,7 @@ public class SammelLastschriftNew extends AbstractView
   {
 
 		final SammelLastschriftControl control = new SammelLastschriftControl(this);
-    SammelTransfer transfer = control.getTransfer();
+    final SammelTransfer transfer = control.getTransfer();
 
 		GUI.getView().setTitle(i18n.tr("Sammel-Lastschrift bearbeiten"));
     GUI.getView().addPanelButton(new PanelButtonPrint(new PrintSupportSammelLastschrift(transfer)));
@@ -83,6 +84,13 @@ public class SammelLastschriftNew extends AbstractView
         }
       }
     },control.getTransfer(),false,"user-trash-full.png");
+    buttons.addButton(i18n.tr("Duplizieren..."), new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        if (control.handleStore()) // BUGZILLA 1181
+          new Duplicate().handleAction(transfer);
+      }
+    },null,false,"edit-copy.png");
 
     Button add = new Button(i18n.tr("Neue Buchungen hinzufügen"), new Action() {
       public void handleAction(Object context) throws ApplicationException {
@@ -121,6 +129,9 @@ public class SammelLastschriftNew extends AbstractView
 
 /**********************************************************************
  * $Log: SammelLastschriftNew.java,v $
+ * Revision 1.25  2012/01/27 22:43:22  willuhn
+ * @N BUGZILLA 1181
+ *
  * Revision 1.24  2011/10/20 16:20:05  willuhn
  * @N BUGZILLA 182 - Erste Version von client-seitigen Dauerauftraegen fuer alle Auftragsarten
  *

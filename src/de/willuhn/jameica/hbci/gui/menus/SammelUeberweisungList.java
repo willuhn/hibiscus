@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/SammelUeberweisungList.java,v $
- * $Revision: 1.9 $
- * $Date: 2011/04/11 16:48:33 $
+ * $Revision: 1.10 $
+ * $Date: 2012/01/27 22:43:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,7 +23,7 @@ import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
-import de.willuhn.jameica.hbci.gui.action.SammelTransferDuplicate;
+import de.willuhn.jameica.hbci.gui.action.Duplicate;
 import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungExecute;
 import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungExport;
 import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungImport;
@@ -57,7 +57,7 @@ public class SammelUeberweisungList extends ContextMenu
     addItem(new ContextMenuItem(i18n.tr("Neue Sammel-Überweisung..."), new SNeu(),"text-x-generic.png"));
     addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new SingleItem(i18n.tr("Duplizieren..."), new SammelTransferDuplicate(),"edit-copy.png"));
+    addItem(new SingleItem(i18n.tr("Duplizieren..."), new Duplicate(),"edit-copy.png"));
     addItem(ContextMenuItem.SEPARATOR);
 		addItem(new NotActiveMenuItem(i18n.tr("Jetzt ausführen..."), new SammelUeberweisungExecute(),"emblem-important.png"));
     addItem(new ContextMenuItem(i18n.tr("Als \"ausgeführt\" markieren..."), new Action() {
@@ -186,7 +186,10 @@ public class SammelUeberweisungList extends ContextMenu
 
 /**********************************************************************
  * $Log: SammelUeberweisungList.java,v $
- * Revision 1.9  2011/04/11 16:48:33  willuhn
+ * Revision 1.10  2012/01/27 22:43:22  willuhn
+ * @N BUGZILLA 1181
+ *
+ * Revision 1.9  2011-04-11 16:48:33  willuhn
  * @N Drucken von Sammel- und Dauerauftraegen
  *
  * Revision 1.8  2009/02/13 14:17:01  willuhn
