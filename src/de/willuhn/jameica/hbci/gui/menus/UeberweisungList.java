@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/UeberweisungList.java,v $
- * $Revision: 1.20 $
- * $Date: 2011/04/11 11:28:08 $
+ * $Revision: 1.21 $
+ * $Date: 2012/01/27 22:43:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,8 +21,8 @@ import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
+import de.willuhn.jameica.hbci.gui.action.Duplicate;
 import de.willuhn.jameica.hbci.gui.action.TerminableMarkExecuted;
-import de.willuhn.jameica.hbci.gui.action.UeberweisungDuplicate;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungExecute;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungExport;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungImport;
@@ -53,7 +53,7 @@ public class UeberweisungList extends ContextMenu
     addItem(new ContextMenuItem(i18n.tr("Neue Überweisung..."), new UNeu(),"text-x-generic.png"));
     addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new SingleItem(i18n.tr("Duplizieren..."), new UeberweisungDuplicate(),"edit-copy.png"));
+    addItem(new SingleItem(i18n.tr("Duplizieren..."), new Duplicate(),"edit-copy.png"));
     addItem(new NotActiveMultiMenuItem(i18n.tr("Zu Sammelüberweisung zusammenfassen..."), new UeberweisungMerge(),"stock_navigator-shift-right.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new NotActiveSingleMenuItem(i18n.tr("Jetzt ausführen..."), new UeberweisungExecute(),"emblem-important.png"));
@@ -204,7 +204,10 @@ public class UeberweisungList extends ContextMenu
 
 /**********************************************************************
  * $Log: UeberweisungList.java,v $
- * Revision 1.20  2011/04/11 11:28:08  willuhn
+ * Revision 1.21  2012/01/27 22:43:22  willuhn
+ * @N BUGZILLA 1181
+ *
+ * Revision 1.20  2011-04-11 11:28:08  willuhn
  * @N Drucken aus dem Contextmenu heraus
  *
  * Revision 1.19  2009/11/26 12:00:21  willuhn

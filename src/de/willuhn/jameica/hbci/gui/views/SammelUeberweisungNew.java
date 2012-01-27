@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/SammelUeberweisungNew.java,v $
- * $Revision: 1.16 $
- * $Date: 2011/10/20 16:20:05 $
+ * $Revision: 1.17 $
+ * $Date: 2012/01/27 22:43:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,6 +25,7 @@ import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
+import de.willuhn.jameica.hbci.gui.action.Duplicate;
 import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungBuchungNew;
 import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungExecute;
 import de.willuhn.jameica.hbci.gui.controller.SammelUeberweisungControl;
@@ -49,7 +50,7 @@ public class SammelUeberweisungNew extends AbstractView
   public void bind() throws Exception
   {
 		final SammelUeberweisungControl control = new SammelUeberweisungControl(this);
-    SammelTransfer transfer = control.getTransfer();
+    final SammelTransfer transfer = control.getTransfer();
 
 		GUI.getView().setTitle(i18n.tr("Sammel-Überweisung bearbeiten"));
     GUI.getView().addPanelButton(new PanelButtonPrint(new PrintSupportSammelUeberweisung(transfer)));
@@ -82,6 +83,13 @@ public class SammelUeberweisungNew extends AbstractView
         }
       }
     },control.getTransfer(),false,"user-trash-full.png");
+    buttons.addButton(i18n.tr("Duplizieren..."), new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        if (control.handleStore()) // BUGZILLA 1181
+          new Duplicate().handleAction(transfer);
+      }
+    },null,false,"edit-copy.png");
     
     Button add = new Button(i18n.tr("Neue Buchungen hinzufügen"), new Action() {
       public void handleAction(Object context) throws ApplicationException {
@@ -120,6 +128,9 @@ public class SammelUeberweisungNew extends AbstractView
 
 /**********************************************************************
  * $Log: SammelUeberweisungNew.java,v $
+ * Revision 1.17  2012/01/27 22:43:22  willuhn
+ * @N BUGZILLA 1181
+ *
  * Revision 1.16  2011/10/20 16:20:05  willuhn
  * @N BUGZILLA 182 - Erste Version von client-seitigen Dauerauftraegen fuer alle Auftragsarten
  *

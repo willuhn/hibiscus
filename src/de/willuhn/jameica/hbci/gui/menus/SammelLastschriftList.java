@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/SammelLastschriftList.java,v $
- * $Revision: 1.14 $
- * $Date: 2011/04/11 16:48:33 $
+ * $Revision: 1.15 $
+ * $Date: 2012/01/27 22:43:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,11 +23,11 @@ import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
+import de.willuhn.jameica.hbci.gui.action.Duplicate;
 import de.willuhn.jameica.hbci.gui.action.SammelLastschriftExecute;
 import de.willuhn.jameica.hbci.gui.action.SammelLastschriftExport;
 import de.willuhn.jameica.hbci.gui.action.SammelLastschriftImport;
 import de.willuhn.jameica.hbci.gui.action.SammelLastschriftNew;
-import de.willuhn.jameica.hbci.gui.action.SammelTransferDuplicate;
 import de.willuhn.jameica.hbci.gui.action.TerminableMarkExecuted;
 import de.willuhn.jameica.hbci.io.print.PrintSupportSammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
@@ -57,7 +57,7 @@ public class SammelLastschriftList extends ContextMenu
     addItem(new ContextMenuItem(i18n.tr("Neue Sammel-Lastschrift..."), new SNeu(),"text-x-generic.png"));
     addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new SingleItem(i18n.tr("Duplizieren..."), new SammelTransferDuplicate(),"edit-copy.png"));
+    addItem(new SingleItem(i18n.tr("Duplizieren..."), new Duplicate(),"edit-copy.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new NotActiveMenuItem(i18n.tr("Jetzt ausführen..."), new SammelLastschriftExecute(),"emblem-important.png"));
     addItem(new ContextMenuItem(i18n.tr("Als \"ausgeführt\" markieren..."), new Action() {
@@ -187,7 +187,10 @@ public class SammelLastschriftList extends ContextMenu
 
 /**********************************************************************
  * $Log: SammelLastschriftList.java,v $
- * Revision 1.14  2011/04/11 16:48:33  willuhn
+ * Revision 1.15  2012/01/27 22:43:22  willuhn
+ * @N BUGZILLA 1181
+ *
+ * Revision 1.14  2011-04-11 16:48:33  willuhn
  * @N Drucken von Sammel- und Dauerauftraegen
  *
  * Revision 1.13  2009/02/13 14:17:01  willuhn

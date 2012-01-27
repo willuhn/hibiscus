@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UeberweisungNew.java,v $
- * $Revision: 1.28 $
- * $Date: 2011/10/20 16:20:05 $
+ * $Revision: 1.29 $
+ * $Date: 2012/01/27 22:43:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,7 +23,7 @@ import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
-import de.willuhn.jameica.hbci.gui.action.UeberweisungDuplicate;
+import de.willuhn.jameica.hbci.gui.action.Duplicate;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungExecute;
 import de.willuhn.jameica.hbci.gui.controller.UeberweisungControl;
 import de.willuhn.jameica.hbci.io.print.PrintSupportUeberweisung;
@@ -85,7 +85,13 @@ public class UeberweisungNew extends AbstractView
 
 		ButtonArea buttonArea = new ButtonArea();
 		buttonArea.addButton(i18n.tr("Löschen"),new DBObjectDelete(),transfer,false,"user-trash-full.png");
-    buttonArea.addButton(i18n.tr("Duplizieren..."), new UeberweisungDuplicate(),transfer,false,"edit-copy.png");
+    buttonArea.addButton(i18n.tr("Duplizieren..."), new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        if (control.handleStore()) // BUGZILLA 1181
+          new Duplicate().handleAction(transfer);
+      }
+    },null,false,"edit-copy.png");
 
     Button execute = new Button(i18n.tr("Jetzt ausführen..."), new Action() {
       public void handleAction(Object context) throws ApplicationException {
@@ -112,6 +118,9 @@ public class UeberweisungNew extends AbstractView
 
 /**********************************************************************
  * $Log: UeberweisungNew.java,v $
+ * Revision 1.29  2012/01/27 22:43:22  willuhn
+ * @N BUGZILLA 1181
+ *
  * Revision 1.28  2011/10/20 16:20:05  willuhn
  * @N BUGZILLA 182 - Erste Version von client-seitigen Dauerauftraegen fuer alle Auftragsarten
  *

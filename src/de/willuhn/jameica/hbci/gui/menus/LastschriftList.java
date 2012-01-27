@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/menus/LastschriftList.java,v $
- * $Revision: 1.14 $
- * $Date: 2011/04/11 14:36:37 $
+ * $Revision: 1.15 $
+ * $Date: 2012/01/27 22:43:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,7 +21,7 @@ import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
-import de.willuhn.jameica.hbci.gui.action.LastschriftDuplicate;
+import de.willuhn.jameica.hbci.gui.action.Duplicate;
 import de.willuhn.jameica.hbci.gui.action.LastschriftExecute;
 import de.willuhn.jameica.hbci.gui.action.LastschriftExport;
 import de.willuhn.jameica.hbci.gui.action.LastschriftImport;
@@ -55,7 +55,7 @@ public class LastschriftList extends ContextMenu
     addItem(new ContextMenuItem(i18n.tr("Neue Lastschrift..."), new UNeu(),"text-x-generic.png"));
     addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new SingleItem(i18n.tr("Duplizieren..."), new LastschriftDuplicate(),"edit-copy.png"));
+    addItem(new SingleItem(i18n.tr("Duplizieren..."), new Duplicate(),"edit-copy.png"));
     addItem(new NotActiveMultiMenuItem(i18n.tr("Zu Sammellastschrift zusammenfassen..."), new LastschriftMerge(),"stock_navigator-shift-left.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new NotActiveSingleMenuItem(i18n.tr("Jetzt ausführen..."), new LastschriftExecute(),"emblem-important.png"));
@@ -206,7 +206,10 @@ public class LastschriftList extends ContextMenu
 
 /**********************************************************************
  * $Log: LastschriftList.java,v $
- * Revision 1.14  2011/04/11 14:36:37  willuhn
+ * Revision 1.15  2012/01/27 22:43:22  willuhn
+ * @N BUGZILLA 1181
+ *
+ * Revision 1.14  2011-04-11 14:36:37  willuhn
  * @N Druck-Support fuer Lastschriften und SEPA-Ueberweisungen
  *
  * Revision 1.13  2009/11/26 12:00:21  willuhn
