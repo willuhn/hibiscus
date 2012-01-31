@@ -1,5 +1,15 @@
 HEAD
 
+  * NEW: 0160 35-mt940-buchungsdatum.patch - Buchungsdatum des Buchungstages verwenden, wenn in Buchung nicht vorhanden
+  * NEW: 0159 34-javax.smartcardio.patch
+  * NEW: 0158 33-catch-exception.patch
+  * NEW: 0157 32-spk-urls.patch - neue Server-URL bei einigen Sparkassen
+  * NEW: 0156 31-hbci4java-postbank.patch - BPD automatisch beim Registrieren des Users nochmal
+              abrufen, wenn sie noch nicht vorhanden sind. Die Postbank unterstuetzt den anonymen
+              Abruf der BPD nicht - dieses Patch sollte das fixen
+              siehe http://www.willuhn.de/blog/index.php?/archives/578-Hinweis-fuer-User,-die-Hibiscus-Probleme-mit-der-Postbank-haben.html
+  * NEW: 0155 HBCI-Jobs koennen jetzt abgebrochen werden
+              siehe http://www.willuhn.de/blog/index.php?/archives/577-Jameica-Cancel-Support-fuer-Hintergrund-Jobs.html
   * NEW: 0154 BUGZILLA 1181 Auftrag vorm Duplizieren speichern
               Duplicate-Action vereinheitlicht
   * NEW: 0153 Datenbank-IDs beginnen bei H2 jetzt bei "1" statt bei "0" - macht
