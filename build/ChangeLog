@@ -1,5 +1,6 @@
 HEAD
 
+  * NEW: 0161 BUGZILLA 940 - Diverse Tastenkürzel zur Navigation
   * NEW: 0160 35-mt940-buchungsdatum.patch - Buchungsdatum des Buchungstages verwenden, wenn in Buchung nicht vorhanden
   * NEW: 0159 34-javax.smartcardio.patch
   * NEW: 0158 33-catch-exception.patch
@@ -10,11 +11,11 @@ HEAD
               siehe http://www.willuhn.de/blog/index.php?/archives/578-Hinweis-fuer-User,-die-Hibiscus-Probleme-mit-der-Postbank-haben.html
   * NEW: 0155 HBCI-Jobs koennen jetzt abgebrochen werden
               siehe http://www.willuhn.de/blog/index.php?/archives/577-Jameica-Cancel-Support-fuer-Hintergrund-Jobs.html
-  * NEW: 0154 BUGZILLA 1181 Auftrag vorm Duplizieren speichern
+  * NEW: 0154 BUGZILLA 1181 - Auftrag vorm Duplizieren speichern
               Duplicate-Action vereinheitlicht
   * NEW: 0153 Datenbank-IDs beginnen bei H2 jetzt bei "1" statt bei "0" - macht
               eine spaetere Migration nach MySQL erheblich einfacher.
-  * NEW: 0152 BUGZILLA 1170 Maximale Laenge des Suchbegriffes in Kategorien von 255 auf
+  * NEW: 0152 BUGZILLA 1170 - Maximale Laenge des Suchbegriffes in Kategorien von 255 auf
               1000 Zeichen erhoeht.
   * NEW: 0151 Beim Loeschen eines Reminder-faehigen Auftrages wird der Reminder jetzt
               via Messaging automatisch gleich mit geloescht
