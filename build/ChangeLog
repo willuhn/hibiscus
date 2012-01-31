@@ -1,68 +1,79 @@
 HEAD
 
-  * NEW: 0154 BUGZILLA 1181 Auftrag vorm Duplizieren speichern
+  * NEW: 0166 BUGZILLA 940 - Diverse Tastenkürzel zur Navigation
+  * NEW: 0165 35-mt940-buchungsdatum.patch - Buchungsdatum des Buchungstages verwenden, wenn in Buchung nicht vorhanden
+  * NEW: 0164 34-javax.smartcardio.patch
+  * NEW: 0163 33-catch-exception.patch
+  * NEW: 0162 32-spk-urls.patch - neue Server-URL bei einigen Sparkassen
+  * NEW: 0161 31-hbci4java-postbank.patch - BPD automatisch beim Registrieren des Users nochmal
+              abrufen, wenn sie noch nicht vorhanden sind. Die Postbank unterstuetzt den anonymen
+              Abruf der BPD nicht - dieses Patch sollte das fixen
+              siehe http://www.willuhn.de/blog/index.php?/archives/578-Hinweis-fuer-User,-die-Hibiscus-Probleme-mit-der-Postbank-haben.html
+  * NEW: 0160 HBCI-Jobs koennen jetzt abgebrochen werden
+              siehe http://www.willuhn.de/blog/index.php?/archives/577-Jameica-Cancel-Support-fuer-Hintergrund-Jobs.html
+  * NEW: 0159 BUGZILLA 1181 - Auftrag vorm Duplizieren speichern
               Duplicate-Action vereinheitlicht
-  * NEW: 0153 Datenbank-IDs beginnen bei H2 jetzt bei "1" statt bei "0" - macht
+  * NEW: 0158 Datenbank-IDs beginnen bei H2 jetzt bei "1" statt bei "0" - macht
               eine spaetere Migration nach MySQL erheblich einfacher.
-  * NEW: 0152 BUGZILLA 1170 Maximale Laenge des Suchbegriffes in Kategorien von 255 auf
+  * NEW: 0157 BUGZILLA 1170 - Maximale Laenge des Suchbegriffes in Kategorien von 255 auf
               1000 Zeichen erhoeht.
-  * NEW: 0151 Beim Loeschen eines Reminder-faehigen Auftrages wird der Reminder jetzt
+  * NEW: 0156 Beim Loeschen eines Reminder-faehigen Auftrages wird der Reminder jetzt
               via Messaging automatisch gleich mit geloescht
-  * BUG: 0150 Im Kalender wurde der aktuelle Tag in allen Monaten gelb hervorgehoben,
+  * BUG: 0155 Im Kalender wurde der aktuelle Tag in allen Monaten gelb hervorgehoben,
               ist aktuell der 31. und hat der Monat gar keine 31 Tage, wurde faelschlicherweise
               der Monatsletzte (z.Bsp. 30.) hervorgehoben
-  * BUG: 0149 In der Dropdown-Box zur Auswahl eines Empfaengers in einem Auftrag
+  * BUG: 0154 In der Dropdown-Box zur Auswahl eines Empfaengers in einem Auftrag
               wurde die Auswahl auch dann uebernommen, wenn man die Liste mit
               Escape abgebrochen hat
-  * NEW: 0148 GUI-Politur
+  * NEW: 0153 GUI-Politur
               - Grundsaetzlich einheitlich Tabs fuer Anzeige-Filter verwenden
               - Buttons in Auftragslisten oben rechts anordnen
               - getrenntes Caching von From-/To-Datum zwischen Auftrags- und Umsatzlisten 
-  * NEW: 0147 BUGZILLA 1162 - Support für geplante Wiederholungen von "Offline-Dauerauftraege"
+  * NEW: 0152 BUGZILLA 1162 - Support für geplante Wiederholungen von "Offline-Dauerauftraege"
               in AppointmentProvidern
-  * NEW: 0146 BUGZILLA 1159 - bei Anlage einer PIN/TAN-Config den TCP-Port aus URL
+  * NEW: 0151 BUGZILLA 1159 - bei Anlage einer PIN/TAN-Config den TCP-Port aus URL
               entfernen, falls vorhanden 
-  * NEW: 0145 BUGZILLA 1151 - Name des Kontos in TanMediaDialog und PtSecMechDialog anzeigen
-  * NEW: 0144 BUGZILLA 1149 - Umsaetze beim XML-Import einem beliebigen Konto zuordenbar
-  * NEW: 0143 BUGZILLA 1142 - Nachrichten auf der Startseite als Tabelle
+  * NEW: 0150 BUGZILLA 1151 - Name des Kontos in TanMediaDialog und PtSecMechDialog anzeigen
+  * NEW: 0149 BUGZILLA 1149 - Umsaetze beim XML-Import einem beliebigen Konto zuordenbar
+  * NEW: 0148 BUGZILLA 1142 - Nachrichten auf der Startseite als Tabelle
               statt als Formtext anzeigen
-  * NEW: 0142 Update von obantoo 1.5.0 auf 1.5.1 - siehe
+  * NEW: 0147 Update von obantoo 1.5.0 auf 1.5.1 - siehe
               http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=79127a#79127
-  * CHG: 0144 Auswahl des Stichtages in Spar-Quote als Spinner-Input
-  * BUG: 0143 automatisch aktuelles Datum als Faelligkeit verwenden, wenn keines
+  * CHG: 0146 Auswahl des Stichtages in Spar-Quote als Spinner-Input
+  * BUG: 0145 automatisch aktuelles Datum als Faelligkeit verwenden, wenn keines
               angegeben ist
-  * NEW: 0142 In den Auftragslisten ebenfalls die weiteren Verwendungszweck-Zeilen
+  * NEW: 0144 In den Auftragslisten ebenfalls die weiteren Verwendungszweck-Zeilen
               anzeigen (so wie in der Umsatzliste bereits vorhanden)
-  * BUG: 0141 Update von obantoo 1.4.11 auf 1.5.0 - siehe
+  * BUG: 0143 Update von obantoo 1.4.11 auf 1.5.0 - siehe
               http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?t=13679
-  * BUG: 0140 Wenn Einzel-Auftraege zu einem neuen Sammel-Auftrag zusammengefasst
+  * BUG: 0142 Wenn Einzel-Auftraege zu einem neuen Sammel-Auftrag zusammengefasst
               wurden, wurde das Faelligkeits-Datum (aktuelles Datum) nicht eingetragen,
               wodurch der neue Sammel-Auftrag nicht gespeichert werden konnte. 
-  * NEW: 0139 BUGZILLA 182 Zeitgesteuertes Duplizieren von Aufträgen
-  * NEW: 0138 Support zum Speichern beliebiger Meta-Daten an Entities
-  * NEW: 0137 Wenn bei einer Ueberweisung ein Termin in der Zukunft ausgewaehlt wird, erscheint
+  * NEW: 0141 BUGZILLA 182 Zeitgesteuertes Duplizieren von Aufträgen
+  * NEW: 0140 Support zum Speichern beliebiger Meta-Daten an Entities
+  * NEW: 0139 Wenn bei einer Ueberweisung ein Termin in der Zukunft ausgewaehlt wird, erscheint
               jetzt eine Sicherheitsabfrage, mit der der User darauf hingewiesen wird, den Auftrag
               ggf. als bankseitig gefuehrte Termin-Ueberweisung einzureichen
-  * CHG: 0136 Neue Wiki-URL
-  * NEW: 0135 Anzeige der Umsätze in Termin-Ansicht
-  * BUG: 0134 XML-Export von Hibiscus-Adressen funktionierte nicht mehr wegen
+  * CHG: 0138 Neue Wiki-URL
+  * NEW: 0137 Anzeige der Umsätze in Termin-Ansicht
+  * BUG: 0136 XML-Export von Hibiscus-Adressen funktionierte nicht mehr wegen
               "virtuellen" Konto-Adressen 
-  * BUG: 0133 setText nur aufrufen, wenn Leerzeichen entfernt wurden - siehe
+  * BUG: 0135 setText nur aufrufen, wenn Leerzeichen entfernt wurden - siehe
               http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=78495#78495
-  * NEW: 0132 Kontonummer und Saldo in Kontoliste rechtsbuendig forcieren
-  * NEW: 0131 BUGZILLA 728 - Inline-Editing von Notizen direkt in Umsatzliste
-  * BUG: 0130 Datum des Saldos in Box "Finanz-Übersicht" nicht ganz korrekt - siehe
+  * NEW: 0134 Kontonummer und Saldo in Kontoliste rechtsbuendig forcieren
+  * NEW: 0133 BUGZILLA 728 - Inline-Editing von Notizen direkt in Umsatzliste
+  * BUG: 0132 Datum des Saldos in Box "Finanz-Übersicht" nicht ganz korrekt - siehe
               http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=78121#78121
-  * NEW: 0129 Mindestens 8 Zeichen Passwort-Laenge bei RDH2 - siehe Mail von "silentspeak" vom 08.09.2011
-  * DEL: 0128 Biometrie-Support bei Kartenlesern entfernt - wurde nie benutzt
-  * NEW: 0127 BUGZILLA 1125 - Vorauswahl des Kontos wurde nicht zurueckgesetzt
-  * NEW: 0126 BUGZILLA 937 - Fenster mit dem Master-Passwort-Prompt jetzt APPLICATION_MODAL
-  * NEW: 0125 BUGZILLA 1118 - mehrere Buchungen in einem Sammelauftrag auf einmal loeschen
-  * NEW: 0124 Aenderungen nur an den DA-Eigenschaften zulassen, die gemaess BPD aenderbar sind
-  * CHG: 0123 Adressbuch-Details: Bei nicht-aenderbaren Adressen Buttons (Speichern+Loeschen)
+  * NEW: 0131 Mindestens 8 Zeichen Passwort-Laenge bei RDH2 - siehe Mail von "silentspeak" vom 08.09.2011
+  * DEL: 0130 Biometrie-Support bei Kartenlesern entfernt - wurde nie benutzt
+  * NEW: 0129 BUGZILLA 1125 - Vorauswahl des Kontos wurde nicht zurueckgesetzt
+  * NEW: 0128 BUGZILLA 937 - Fenster mit dem Master-Passwort-Prompt jetzt APPLICATION_MODAL
+  * NEW: 0127 BUGZILLA 1118 - mehrere Buchungen in einem Sammelauftrag auf einmal loeschen
+  * NEW: 0126 Aenderungen nur an den DA-Eigenschaften zulassen, die gemaess BPD aenderbar sind
+  * CHG: 0125 Adressbuch-Details: Bei nicht-aenderbaren Adressen Buttons (Speichern+Loeschen)
               zwar einblenden aber readonly machen - irritiert nicht so wie komplett fehlende Buttons
-  * BUG: 0122 BUGZILLA 1115 - Menu-Extension wurde nicht deregistriert
-  * CHG: 0121 Verhalten von Von- und Bis-Datum ueberarbeitet, siehe
+  * BUG: 0124 BUGZILLA 1115 - Menu-Extension wurde nicht deregistriert
+  * CHG: 0123 Verhalten von Von- und Bis-Datum ueberarbeitet, siehe
               http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=77292#77292
   * CHG: 0120 Beim Lesen der SQL-Scripts explizites Encoding verwenden
   * NEW: 0119 BUGZILLA 1065 - Unterstuetzung fuer GV-Code in Umsaetzen
