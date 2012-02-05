@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/calendar/AbstractTransferAppointmentProvider.java,v $
- * $Revision: 1.2 $
- * $Date: 2011/12/13 23:15:11 $
+ * $Revision: 1.3 $
+ * $Date: 2012/02/05 12:03:43 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -26,6 +26,7 @@ import de.willuhn.jameica.gui.calendar.AppointmentProvider;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.action.Open;
 import de.willuhn.jameica.hbci.reminder.ReminderStorageProviderHibiscus;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.HibiscusDBObject;
@@ -37,6 +38,7 @@ import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -152,6 +154,14 @@ public abstract class AbstractTransferAppointmentProvider<T extends Terminable &
     protected Date date   = null;
     
     /**
+     * @see de.willuhn.jameica.gui.calendar.AbstractAppointment#execute()
+     */
+    public void execute() throws ApplicationException
+    {
+      new Open().handleAction(this.t);
+    }
+
+    /**
      * ct.
      * @param t der Auftrag.
      * @param date ggf abweichender Termin.
@@ -206,6 +216,22 @@ public abstract class AbstractTransferAppointmentProvider<T extends Terminable &
         return super.hasAlarm();
       }
     }
+    
+    /**
+     * @see de.willuhn.jameica.gui.calendar.AbstractAppointment#getUid()
+     */
+    public String getUid()
+    {
+      try
+      {
+        return this.t.getClass().getName() + "." + t.getID();
+      }
+      catch (RemoteException re)
+      {
+        Logger.error("unable to create uid",re);
+        return super.getUid();
+      }
+    }
   }
 }
 
@@ -213,6 +239,9 @@ public abstract class AbstractTransferAppointmentProvider<T extends Terminable &
 
 /**********************************************************************
  * $Log: AbstractTransferAppointmentProvider.java,v $
+ * Revision 1.3  2012/02/05 12:03:43  willuhn
+ * @N generische Open-Action in Basis-Klasse
+ *
  * Revision 1.2  2011/12/13 23:15:11  willuhn
  * @B Wenn wir vor dem moeglichen Wiederholungszeitraum sind, brauchen wir nicht nach Remindern suchen
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/calendar/UeberweisungAppointmentProvider.java,v $
- * $Revision: 1.8 $
- * $Date: 2011/12/13 23:10:21 $
+ * $Revision: 1.9 $
+ * $Date: 2012/02/05 12:03:43 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -15,12 +15,10 @@ import java.rmi.RemoteException;
 import java.util.Date;
 
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.UeberweisungNew;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.logging.Logger;
-import de.willuhn.util.ApplicationException;
 
 /**
  * Implementierung eines Termin-Providers fuer offene Ueberweisungen.
@@ -56,14 +54,6 @@ public class UeberweisungAppointmentProvider extends AbstractTransferAppointment
     protected MyAppointment(Ueberweisung t, Date date)
     {
       super(t,date);
-    }
-
-    /**
-     * @see de.willuhn.jameica.gui.calendar.AbstractAppointment#execute()
-     */
-    public void execute() throws ApplicationException
-    {
-      new UeberweisungNew().handleAction(this.t);
     }
 
     /**
@@ -105,22 +95,6 @@ public class UeberweisungAppointmentProvider extends AbstractTransferAppointment
         return i18n.tr("Überweisung");
       }
     }
-
-    /**
-     * @see de.willuhn.jameica.gui.calendar.AbstractAppointment#getUid()
-     */
-    public String getUid()
-    {
-      try
-      {
-        return "hibiscus.ueb." + t.getID();
-      }
-      catch (RemoteException re)
-      {
-        Logger.error("unable to create uid",re);
-        return super.getUid();
-      }
-    }
   }
 }
 
@@ -128,6 +102,9 @@ public class UeberweisungAppointmentProvider extends AbstractTransferAppointment
 
 /**********************************************************************
  * $Log: UeberweisungAppointmentProvider.java,v $
+ * Revision 1.9  2012/02/05 12:03:43  willuhn
+ * @N generische Open-Action in Basis-Klasse
+ *
  * Revision 1.8  2011/12/13 23:10:21  willuhn
  * @N BUGZILLA 1162
  *

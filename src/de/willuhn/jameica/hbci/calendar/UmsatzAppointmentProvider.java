@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/calendar/UmsatzAppointmentProvider.java,v $
- * $Revision: 1.1 $
- * $Date: 2011/10/06 10:49:24 $
+ * $Revision: 1.2 $
+ * $Date: 2012/02/05 12:03:43 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -26,7 +26,7 @@ import de.willuhn.jameica.gui.calendar.AppointmentProvider;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
+import de.willuhn.jameica.hbci.gui.action.Open;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
@@ -99,7 +99,7 @@ public class UmsatzAppointmentProvider implements AppointmentProvider
      */
     public void execute() throws ApplicationException
     {
-      new UmsatzDetail().handleAction(this.t);
+      new Open().handleAction(this.t);
     }
 
     /**
@@ -203,7 +203,7 @@ public class UmsatzAppointmentProvider implements AppointmentProvider
     {
       try
       {
-        return "hibiscus.ums." + t.getID();
+        return this.t.getClass().getName() + "." + t.getID();
       }
       catch (RemoteException re)
       {
@@ -226,7 +226,10 @@ public class UmsatzAppointmentProvider implements AppointmentProvider
 
 /**********************************************************************
  * $Log: UmsatzAppointmentProvider.java,v $
- * Revision 1.1  2011/10/06 10:49:24  willuhn
+ * Revision 1.2  2012/02/05 12:03:43  willuhn
+ * @N generische Open-Action in Basis-Klasse
+ *
+ * Revision 1.1  2011-10-06 10:49:24  willuhn
  * @N Termin-Provider fuer Umsaetze
  *
  **********************************************************************/

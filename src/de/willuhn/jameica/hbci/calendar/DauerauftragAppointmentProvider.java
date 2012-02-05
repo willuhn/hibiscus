@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/calendar/DauerauftragAppointmentProvider.java,v $
- * $Revision: 1.8 $
- * $Date: 2011/10/27 17:08:03 $
+ * $Revision: 1.9 $
+ * $Date: 2012/02/05 12:03:43 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -25,7 +25,7 @@ import de.willuhn.jameica.gui.calendar.AppointmentProvider;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.action.DauerauftragNew;
+import de.willuhn.jameica.hbci.gui.action.Open;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -109,7 +109,7 @@ public class DauerauftragAppointmentProvider implements AppointmentProvider
      */
     public void execute() throws ApplicationException
     {
-      new DauerauftragNew().handleAction(this.t);
+      new Open().handleAction(this.t);
     }
 
     /**
@@ -174,7 +174,7 @@ public class DauerauftragAppointmentProvider implements AppointmentProvider
     {
       try
       {
-        return "hibiscus.dauer." + t.getID();
+        return this.t.getClass().getName() + "." + t.getID();
       }
       catch (RemoteException re)
       {
@@ -189,6 +189,9 @@ public class DauerauftragAppointmentProvider implements AppointmentProvider
 
 /**********************************************************************
  * $Log: DauerauftragAppointmentProvider.java,v $
+ * Revision 1.9  2012/02/05 12:03:43  willuhn
+ * @N generische Open-Action in Basis-Klasse
+ *
  * Revision 1.8  2011/10/27 17:08:03  willuhn
  * @C Berechnung der kuenftigen geplanten Termine von Dauerauftraegen in neue Klasse DauerauftragUtil verschoben, damit der Code wiederverwendet werden kann (fuer den Forecast-Provider von Dauerauftraegen)
  *
