@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/calendar/SammelLastschriftAppointmentProvider.java,v $
- * $Revision: 1.7 $
- * $Date: 2011/12/13 23:10:21 $
+ * $Revision: 1.8 $
+ * $Date: 2012/02/05 12:03:43 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -15,11 +15,9 @@ import java.rmi.RemoteException;
 import java.util.Date;
 
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.SammelLastschriftNew;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.logging.Logger;
-import de.willuhn.util.ApplicationException;
 
 /**
  * Implementierung eines Termin-Providers fuer offene Sammel-Lastschriften.
@@ -56,14 +54,6 @@ public class SammelLastschriftAppointmentProvider extends AbstractTransferAppoin
     private MyAppointment(SammelLastschrift t, Date date)
     {
       super(t,date);
-    }
-
-    /**
-     * @see de.willuhn.jameica.gui.calendar.AbstractAppointment#execute()
-     */
-    public void execute() throws ApplicationException
-    {
-      new SammelLastschriftNew().handleAction(this.t);
     }
 
     /**
@@ -104,22 +94,6 @@ public class SammelLastschriftAppointmentProvider extends AbstractTransferAppoin
         return i18n.tr("Sammellastschrift");
       }
     }
-
-    /**
-     * @see de.willuhn.jameica.gui.calendar.AbstractAppointment#getUid()
-     */
-    public String getUid()
-    {
-      try
-      {
-        return "hibiscus.slast." + t.getID();
-      }
-      catch (RemoteException re)
-      {
-        Logger.error("unable to create uid",re);
-        return super.getUid();
-      }
-    }
   }
 }
 
@@ -127,6 +101,9 @@ public class SammelLastschriftAppointmentProvider extends AbstractTransferAppoin
 
 /**********************************************************************
  * $Log: SammelLastschriftAppointmentProvider.java,v $
+ * Revision 1.8  2012/02/05 12:03:43  willuhn
+ * @N generische Open-Action in Basis-Klasse
+ *
  * Revision 1.7  2011/12/13 23:10:21  willuhn
  * @N BUGZILLA 1162
  *
