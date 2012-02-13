@@ -1,4 +1,4 @@
-HEAD
+2012-02-15 Version 2.2.0
 
   * NEW: 0166 BUGZILLA 940 - Diverse Tastenkürzel zur Navigation
   * NEW: 0165 35-mt940-buchungsdatum.patch - Buchungsdatum des Buchungstages verwenden, wenn in Buchung nicht vorhanden
