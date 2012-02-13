@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/calendar/SammelLastschriftAppointmentProvider.java,v $
- * $Revision: 1.8 $
- * $Date: 2012/02/05 12:03:43 $
+ * $Revision: 1.9 $
+ * $Date: 2012/02/13 22:15:36 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -14,7 +14,11 @@ package de.willuhn.jameica.hbci.calendar;
 import java.rmi.RemoteException;
 import java.util.Date;
 
+import org.eclipse.swt.graphics.RGB;
+
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.logging.Logger;
@@ -54,6 +58,19 @@ public class SammelLastschriftAppointmentProvider extends AbstractTransferAppoin
     private MyAppointment(SammelLastschrift t, Date date)
     {
       super(t,date);
+    }
+
+    /**
+     * @see de.willuhn.jameica.hbci.calendar.AbstractTransferAppointmentProvider.AbstractTransferAppointment#getColor()
+     */
+    public RGB getColor()
+    {
+      // Grau anzeigen, wenn er schon ausgefuehrt wurde oder
+      // es eine noch nicht existierende Wiederholung ist.
+      if (!this.hasAlarm() || this.date != null)
+        return Color.COMMENT.getSWTColor().getRGB();
+      
+      return Settings.getBuchungHabenForeground().getRGB();
     }
 
     /**
@@ -101,6 +118,9 @@ public class SammelLastschriftAppointmentProvider extends AbstractTransferAppoin
 
 /**********************************************************************
  * $Log: SammelLastschriftAppointmentProvider.java,v $
+ * Revision 1.9  2012/02/13 22:15:36  willuhn
+ * @B Lastschriften gruen anzeigen
+ *
  * Revision 1.8  2012/02/05 12:03:43  willuhn
  * @N generische Open-Action in Basis-Klasse
  *
