@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/calendar/SammelUeberweisungAppointmentProvider.java,v $
- * $Revision: 1.7 $
- * $Date: 2012/02/05 12:03:43 $
+ * $Revision: 1.8 $
+ * $Date: 2012/02/20 17:03:50 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -12,47 +12,38 @@
 package de.willuhn.jameica.hbci.calendar;
 
 import java.rmi.RemoteException;
-import java.util.Date;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
+import de.willuhn.jameica.hbci.schedule.Schedule;
 import de.willuhn.logging.Logger;
 
 /**
  * Implementierung eines Termin-Providers fuer offene Sammel-Ueberweisungen.
  */
-public class SammelUeberweisungAppointmentProvider extends AbstractTransferAppointmentProvider<SammelUeberweisung>
+public class SammelUeberweisungAppointmentProvider extends AbstractAppointmentProvider<SammelUeberweisung>
 {
   /**
-   * @see de.willuhn.jameica.hbci.calendar.AbstractTransferAppointmentProvider#createAppointment(de.willuhn.jameica.hbci.rmi.Terminable, java.util.Date)
+   * @see de.willuhn.jameica.hbci.calendar.AbstractAppointmentProvider#createAppointment(de.willuhn.jameica.hbci.schedule.Schedule)
    */
-  AbstractTransferAppointment createAppointment(SammelUeberweisung t, Date date)
+  AbstractHibiscusAppointment createAppointment(Schedule<SammelUeberweisung> schedule)
   {
-    return new MyAppointment(t,date);
+    return new MyAppointment(schedule);
   }
 
   /**
-   * @see de.willuhn.jameica.gui.calendar.AppointmentProvider#getName()
-   */
-  public String getName()
-  {
-    return i18n.tr("Sammelüberweisungen");
-  }
-  
-  /**
    * Hilfsklasse zum Anzeigen und Oeffnen des Appointments.
    */
-  private class MyAppointment extends AbstractTransferAppointment
+  private class MyAppointment extends AbstractHibiscusAppointment
   {
     /**
      * ct.
-     * @param t die Sammel-Ueberweisung.
-     * @param date ggf abweichender Termin.
+     * @param schedule der Auftrag.
      */
-    private MyAppointment(SammelUeberweisung t, Date date)
+    private MyAppointment(Schedule<SammelUeberweisung> schedule)
     {
-      super(t,date);
+      super(schedule);
     }
 
     /**
@@ -62,9 +53,10 @@ public class SammelUeberweisungAppointmentProvider extends AbstractTransferAppoi
     {
       try
       {
+        SammelUeberweisung t = this.schedule.getContext();
         Konto k = t.getKonto();
         return i18n.tr("{0}Sammelüberweisung: {1} {2} überweisen\n\n{3}\n\nKonto: {4}",
-                       (this.date != null ? (i18n.tr("Geplant") + ":\n") : ""),
+                       (this.schedule.isPlanned() ? (i18n.tr("Geplant") + ":\n") : ""),
                        HBCI.DECIMALFORMAT.format(t.getSumme()),
                        k.getWaehrung(),
                        t.getBezeichnung(),
@@ -84,6 +76,7 @@ public class SammelUeberweisungAppointmentProvider extends AbstractTransferAppoi
     {
       try
       {
+        SammelUeberweisung t = this.schedule.getContext();
         Konto k = t.getKonto();
         return i18n.tr("{0} {1} {2}",HBCI.DECIMALFORMAT.format(t.getSumme()),k.getWaehrung(),t.getBezeichnung());
       }
@@ -100,6 +93,9 @@ public class SammelUeberweisungAppointmentProvider extends AbstractTransferAppoi
 
 /**********************************************************************
  * $Log: SammelUeberweisungAppointmentProvider.java,v $
+ * Revision 1.8  2012/02/20 17:03:50  willuhn
+ * @N Umstellung auf neues Schedule-Framework, welches generisch geplante und tatsaechliche Termine fuer Auftraege und Umsaetze ermitteln kann und kuenftig auch vom Forecast verwendet wird
+ *
  * Revision 1.7  2012/02/05 12:03:43  willuhn
  * @N generische Open-Action in Basis-Klasse
  *

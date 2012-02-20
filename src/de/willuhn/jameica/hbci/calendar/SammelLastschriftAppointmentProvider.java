@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/calendar/SammelLastschriftAppointmentProvider.java,v $
- * $Revision: 1.9 $
- * $Date: 2012/02/13 22:15:36 $
+ * $Revision: 1.10 $
+ * $Date: 2012/02/20 17:03:50 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -12,7 +12,6 @@
 package de.willuhn.jameica.hbci.calendar;
 
 import java.rmi.RemoteException;
-import java.util.Date;
 
 import org.eclipse.swt.graphics.RGB;
 
@@ -21,53 +20,44 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
+import de.willuhn.jameica.hbci.schedule.Schedule;
 import de.willuhn.logging.Logger;
 
 /**
  * Implementierung eines Termin-Providers fuer offene Sammel-Lastschriften.
  */
-public class SammelLastschriftAppointmentProvider extends AbstractTransferAppointmentProvider<SammelLastschrift>
+public class SammelLastschriftAppointmentProvider extends AbstractAppointmentProvider<SammelLastschrift>
 {
   
   /**
    * @see de.willuhn.jameica.hbci.calendar.AbstractTransferAppointmentProvider#createAppointment(de.willuhn.jameica.hbci.rmi.Terminable, java.util.Date)
    */
-  AbstractTransferAppointment createAppointment(SammelLastschrift t, Date date)
+  AbstractHibiscusAppointment createAppointment(Schedule<SammelLastschrift> schedule)
   {
-    return new MyAppointment(t,date);
+    return new MyAppointment(schedule);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.calendar.AppointmentProvider#getName()
-   */
-  public String getName()
-  {
-    return i18n.tr("Sammellastschriften");
-  }
-  
   /**
    * Hilfsklasse zum Anzeigen und Oeffnen des Appointments.
    */
-  private class MyAppointment extends AbstractTransferAppointment
+  private class MyAppointment extends AbstractHibiscusAppointment
   {
     /**
      * ct.
-     * @param t die Sammel-Lastschrift.
-     * @param date ggf abweichender Termin.
+     * @param schedule der Auftrag.
      */
-    private MyAppointment(SammelLastschrift t, Date date)
+    private MyAppointment(Schedule<SammelLastschrift> schedule)
     {
-      super(t,date);
+      super(schedule);
     }
 
     /**
-     * @see de.willuhn.jameica.hbci.calendar.AbstractTransferAppointmentProvider.AbstractTransferAppointment#getColor()
+     * @see de.willuhn.jameica.hbci.calendar.AbstractAppointmentProvider.AbstractHibiscusAppointment#getColor()
      */
     public RGB getColor()
     {
-      // Grau anzeigen, wenn er schon ausgefuehrt wurde oder
-      // es eine noch nicht existierende Wiederholung ist.
-      if (!this.hasAlarm() || this.date != null)
+      // Ueberschrieben, um Lastschriften in gruen anzuzeigen
+      if (this.schedule.isPlanned() || !this.hasAlarm())
         return Color.COMMENT.getSWTColor().getRGB();
       
       return Settings.getBuchungHabenForeground().getRGB();
@@ -80,9 +70,10 @@ public class SammelLastschriftAppointmentProvider extends AbstractTransferAppoin
     {
       try
       {
+        SammelLastschrift t = this.schedule.getContext();
         Konto k = t.getKonto();
         return i18n.tr("{0}Sammellastschrift: {1} {2} einziehen\n\n{3}\n\nKonto: {4}",
-                       (this.date != null ? (i18n.tr("Geplant") + ":\n") : ""),
+                       (this.schedule.isPlanned() ? (i18n.tr("Geplant") + ":\n") : ""),
                        HBCI.DECIMALFORMAT.format(t.getSumme()),
                        k.getWaehrung(),
                        t.getBezeichnung(),
@@ -102,6 +93,7 @@ public class SammelLastschriftAppointmentProvider extends AbstractTransferAppoin
     {
       try
       {
+        SammelLastschrift t = this.schedule.getContext();
         Konto k = t.getKonto();
         return i18n.tr("{0} {1} {2}",HBCI.DECIMALFORMAT.format(t.getSumme()),k.getWaehrung(),t.getBezeichnung());
       }
@@ -111,6 +103,8 @@ public class SammelLastschriftAppointmentProvider extends AbstractTransferAppoin
         return i18n.tr("Sammellastschrift");
       }
     }
+    
+    
   }
 }
 
@@ -118,8 +112,8 @@ public class SammelLastschriftAppointmentProvider extends AbstractTransferAppoin
 
 /**********************************************************************
  * $Log: SammelLastschriftAppointmentProvider.java,v $
- * Revision 1.9  2012/02/13 22:15:36  willuhn
- * @B Lastschriften gruen anzeigen
+ * Revision 1.10  2012/02/20 17:03:50  willuhn
+ * @N Umstellung auf neues Schedule-Framework, welches generisch geplante und tatsaechliche Termine fuer Auftraege und Umsaetze ermitteln kann und kuenftig auch vom Forecast verwendet wird
  *
  * Revision 1.8  2012/02/05 12:03:43  willuhn
  * @N generische Open-Action in Basis-Klasse

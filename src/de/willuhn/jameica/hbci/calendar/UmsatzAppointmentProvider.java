@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/calendar/UmsatzAppointmentProvider.java,v $
- * $Revision: 1.2 $
- * $Date: 2012/02/05 12:03:43 $
+ * $Revision: 1.3 $
+ * $Date: 2012/02/20 17:03:50 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -12,110 +12,44 @@
 package de.willuhn.jameica.hbci.calendar;
 
 import java.rmi.RemoteException;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.graphics.RGB;
 
-import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.jameica.gui.calendar.AbstractAppointment;
-import de.willuhn.jameica.gui.calendar.Appointment;
-import de.willuhn.jameica.gui.calendar.AppointmentProvider;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.action.Open;
-import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.jameica.hbci.schedule.Schedule;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
-import de.willuhn.jameica.system.Application;
-import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
-import de.willuhn.util.ApplicationException;
-import de.willuhn.util.I18N;
 
 /**
  * Implementierung eines Termin-Providers fuer die Umsaetze.
  */
-public class UmsatzAppointmentProvider implements AppointmentProvider
+public class UmsatzAppointmentProvider extends AbstractAppointmentProvider<Umsatz>
 {
-  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
   /**
-   * @see de.willuhn.jameica.gui.calendar.AppointmentProvider#getAppointments(java.util.Date, java.util.Date)
+   * @see de.willuhn.jameica.hbci.calendar.AbstractAppointmentProvider#createAppointment(de.willuhn.jameica.hbci.schedule.Schedule)
    */
-  public List<Appointment> getAppointments(Date from, Date to)
+  AbstractHibiscusAppointment createAppointment(Schedule<Umsatz> schedule)
   {
-    try
-    {
-      HBCIDBService service = Settings.getDBService();
-      DBIterator list = service.createList(Umsatz.class);
-      if (from != null) list.addFilter("valuta >= ?", new Object[]{new java.sql.Date(DateUtil.startOfDay(from).getTime())});
-      if (to   != null) list.addFilter("valuta <= ?", new Object[]{new java.sql.Date(DateUtil.endOfDay(to).getTime())});
-      list.setOrder("ORDER BY " + service.getSQLTimestamp("valuta"));
-
-      List<Appointment> result = new LinkedList<Appointment>();
-      while (list.hasNext())
-        result.add(new MyAppointment((Umsatz) list.next()));
-      
-      return result;
-    }
-    catch (Exception e)
-    {
-      Logger.error("unable to load data",e);
-    }
-    return null;
-  }
-
-  /**
-   * @see de.willuhn.jameica.gui.calendar.AppointmentProvider#getName()
-   */
-  public String getName()
-  {
-    return i18n.tr("Umsätze");
+    return new MyAppointment(schedule);
   }
   
   /**
    * Hilfsklasse zum Anzeigen und Oeffnen des Appointments.
    */
-  private class MyAppointment extends AbstractAppointment
+  private class MyAppointment extends AbstractHibiscusAppointment
   {
-    private Umsatz t = null;
-    
     /**
      * ct.
-     * @param t der Umsatz.
+     * @param schedule der Termin.
      */
-    private MyAppointment(Umsatz t)
+    private MyAppointment(Schedule<Umsatz> schedule)
     {
-      this.t = t;
-    }
-
-    /**
-     * @see de.willuhn.jameica.gui.calendar.AbstractAppointment#execute()
-     */
-    public void execute() throws ApplicationException
-    {
-      new Open().handleAction(this.t);
-    }
-
-    /**
-     * @see de.willuhn.jameica.gui.calendar.Appointment#getDate()
-     */
-    public Date getDate()
-    {
-      try
-      {
-        return t.getValuta();
-      }
-      catch (Exception e)
-      {
-        Logger.error("unable to read date",e);
-      }
-      return null;
+      super(schedule);
     }
 
     /**
@@ -125,6 +59,7 @@ public class UmsatzAppointmentProvider implements AppointmentProvider
     {
       try
       {
+        Umsatz t      = this.schedule.getContext();
         Konto k       = t.getKonto();
         double betrag = t.getBetrag();
         String rel    = i18n.tr(betrag >= 0.0d ? "von" : "an");
@@ -149,6 +84,7 @@ public class UmsatzAppointmentProvider implements AppointmentProvider
     {
       try
       {
+        Umsatz t      = this.schedule.getContext();
         String curr   = t.getKonto().getWaehrung();
         double betrag = t.getBetrag();
         String name   = t.getGegenkontoName();
@@ -177,12 +113,14 @@ public class UmsatzAppointmentProvider implements AppointmentProvider
     }
 
     /**
-     * @see de.willuhn.jameica.gui.calendar.AbstractAppointment#getColor()
+     * @see de.willuhn.jameica.hbci.calendar.AbstractAppointmentProvider.AbstractHibiscusAppointment#getColor()
      */
     public RGB getColor()
     {
+      // Ueberschrieben, weil wir die Farbe hier abhaengig von Soll/Haben machen
       try
       {
+        Umsatz t      = this.schedule.getContext();
         double betrag = t.getBetrag();
         if (betrag > 0.0d)
           return Settings.getBuchungHabenForeground().getRGB();
@@ -195,28 +133,13 @@ public class UmsatzAppointmentProvider implements AppointmentProvider
       }
       return Color.WIDGET_FG.getSWTColor().getRGB();
     }
-
-    /**
-     * @see de.willuhn.jameica.gui.calendar.AbstractAppointment#getUid()
-     */
-    public String getUid()
-    {
-      try
-      {
-        return this.t.getClass().getName() + "." + t.getID();
-      }
-      catch (RemoteException re)
-      {
-        Logger.error("unable to create uid",re);
-        return super.getUid();
-      }
-    }
-
+    
     /**
      * @see de.willuhn.jameica.gui.calendar.AbstractAppointment#hasAlarm()
      */
     public boolean hasAlarm()
     {
+      // Alarm brauchen wir hier generell nicht
       return false;
     }
   }
@@ -226,6 +149,9 @@ public class UmsatzAppointmentProvider implements AppointmentProvider
 
 /**********************************************************************
  * $Log: UmsatzAppointmentProvider.java,v $
+ * Revision 1.3  2012/02/20 17:03:50  willuhn
+ * @N Umstellung auf neues Schedule-Framework, welches generisch geplante und tatsaechliche Termine fuer Auftraege und Umsaetze ermitteln kann und kuenftig auch vom Forecast verwendet wird
+ *
  * Revision 1.2  2012/02/05 12:03:43  willuhn
  * @N generische Open-Action in Basis-Klasse
  *

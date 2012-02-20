@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/forecast/ForecastCreator.java,v $
- * $Revision: 1.1 $
- * $Date: 2011/10/27 17:10:02 $
+ * $Revision: 1.2 $
+ * $Date: 2012/02/20 17:03:50 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -12,7 +12,6 @@
 package de.willuhn.jameica.hbci.forecast;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
@@ -38,41 +37,49 @@ import de.willuhn.util.MultipleClassLoader;
 public class ForecastCreator
 {
   private final static Settings settings = new Settings(ForecastCreator.class);
-  private static List<ForecastProvider> providers = null;
+  private static List<Class<ForecastProvider>> providers = null;
   
   /**
    * Liefert die Liste aller Forecast-Provider - unabhaengig davon, ob sie
    * gerade aktiv sind oder nicht.
    * @return die Liste aller Forecast-Provider.
    */
-  public synchronized List<ForecastProvider> getProviders()
+  public static synchronized List<ForecastProvider> getProviders()
   {
-    if (providers != null)
-      return providers;
-
-    providers = new ArrayList<ForecastProvider>();
-    try
+    // load providers
+    if (providers == null)
     {
-      BeanService service = Application.getBootLoader().getBootable(BeanService.class);
-      MultipleClassLoader loader = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getClassLoader();
-      Class<ForecastProvider>[] classes = loader.getClassFinder().findImplementors(ForecastProvider.class);
-      for (Class<ForecastProvider> c:classes)
+      providers = new LinkedList<Class<ForecastProvider>>();
+      try
       {
-        try
+        MultipleClassLoader loader = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getClassLoader();
+        Class<ForecastProvider>[] classes = loader.getClassFinder().findImplementors(ForecastProvider.class);
+        for (Class<ForecastProvider> c:classes)
         {
-          providers.add(service.get(c));
-        }
-        catch (Exception e)
-        {
-          Logger.error("unable to load " + c,e);
+          providers.add(c);
         }
       }
+      catch (ClassNotFoundException cne)
+      {
+        Logger.error("no forecast providers found",cne);
+      }
     }
-    catch (ClassNotFoundException cne)
+    
+    BeanService service = Application.getBootLoader().getBootable(BeanService.class);
+    
+    List<ForecastProvider> result = new LinkedList<ForecastProvider>();
+    for (Class<ForecastProvider> p:providers)
     {
-      Logger.error("no forecast providers found",cne);
+      try
+      {
+        result.add(service.get(p));
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to load " + p + " - skipping",e);
+      }
     }
-    return providers;
+    return result;
   }
   
   /**
@@ -89,7 +96,7 @@ public class ForecastCreator
    * @return die Liste der Salden.
    * @throws RemoteException
    */
-  public List<Value> create(Konto k, Date from, Date to) throws RemoteException
+  public static List<Value> create(Konto k, Date from, Date to) throws RemoteException
   {
     ////////////////////////////////////////////////////////////////////////////
     // Start- und End-Datum vorbereiten
@@ -113,10 +120,10 @@ public class ForecastCreator
     // Schritt 1: Die Daten aller Provider in einer Liste zusammenfassen.
     // Das sind erstmal noch keine Salden sondern nur die Geldbewegungen
     TreeMap<Date,Value> dates = new TreeMap<Date,Value>();
-    List<ForecastProvider> providers = this.getProviders();
+    List<ForecastProvider> providers = getProviders();
     for (ForecastProvider p:providers)
     {
-      if (!this.isEnabled(p))
+      if (!isEnabled(p))
         continue;
 
       try
@@ -194,7 +201,7 @@ public class ForecastCreator
    * @param provider der zu pruefende Provider.
    * @return true, wenn er aktiv ist.
    */
-  public boolean isEnabled(ForecastProvider provider)
+  public static boolean isEnabled(ForecastProvider provider)
   {
     return settings.getBoolean(provider.getClass().getName() + ".enabled",true);
   }
@@ -204,7 +211,7 @@ public class ForecastCreator
    * @param provider der Provider.
    * @param enabled true, wenn der Provider verwendet werden soll.
    */
-  public void setEnabled(ForecastProvider provider, boolean enabled)
+  public static void setEnabled(ForecastProvider provider, boolean enabled)
   {
     settings.setAttribute(provider.getClass().getName() + ".enabled",enabled);
   }
@@ -215,6 +222,9 @@ public class ForecastCreator
 
 /**********************************************************************
  * $Log: ForecastCreator.java,v $
+ * Revision 1.2  2012/02/20 17:03:50  willuhn
+ * @N Umstellung auf neues Schedule-Framework, welches generisch geplante und tatsaechliche Termine fuer Auftraege und Umsaetze ermitteln kann und kuenftig auch vom Forecast verwendet wird
+ *
  * Revision 1.1  2011/10/27 17:10:02  willuhn
  * @N Erster Code fuer die Forecast-API - Konto-Prognose
  *
