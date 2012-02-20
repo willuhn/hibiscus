@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/calendar/DauerauftragAppointmentProvider.java,v $
- * $Revision: 1.9 $
- * $Date: 2012/02/05 12:03:43 $
+ * $Revision: 1.10 $
+ * $Date: 2012/02/20 17:03:50 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -13,111 +13,44 @@ package de.willuhn.jameica.hbci.calendar;
 
 import java.rmi.RemoteException;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 
 import org.eclipse.swt.graphics.RGB;
 
-import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.jameica.gui.calendar.AbstractAppointment;
-import de.willuhn.jameica.gui.calendar.Appointment;
-import de.willuhn.jameica.gui.calendar.AppointmentProvider;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.action.Open;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
-import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.server.DauerauftragUtil;
+import de.willuhn.jameica.hbci.schedule.Schedule;
 import de.willuhn.jameica.hbci.server.TurnusHelper;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
-import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
-import de.willuhn.util.ApplicationException;
-import de.willuhn.util.I18N;
 
 /**
  * Implementierung eines Termin-Providers fuer anstehende Dauerauftraege.
  */
-public class DauerauftragAppointmentProvider implements AppointmentProvider
+public class DauerauftragAppointmentProvider extends AbstractAppointmentProvider<Dauerauftrag>
 {
-  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
   /**
-   * @see de.willuhn.jameica.gui.calendar.AppointmentProvider#getAppointments(java.util.Date, java.util.Date)
+   * @see de.willuhn.jameica.hbci.calendar.AbstractAppointmentProvider#createAppointment(de.willuhn.jameica.hbci.schedule.Schedule)
    */
-  public List<Appointment> getAppointments(Date from, Date to)
+  AbstractHibiscusAppointment createAppointment(Schedule<Dauerauftrag> schedule)
   {
-    try
-    {
-      HBCIDBService service = Settings.getDBService();
-      DBIterator list = service.createList(Dauerauftrag.class);
-
-      List<Appointment> result = new LinkedList<Appointment>();
-      while (list.hasNext())
-      {
-        // Wir checken, ob einer der Dauerauftraege am genannten Tag
-        // ausgefuehrt wird oder wurde
-        Dauerauftrag t = (Dauerauftrag) list.next();
-        List<Date> termine = DauerauftragUtil.getTermine(t,from,to);
-        if (termine == null || termine.size() == 0)
-          continue; // Keine Zahlung in dem Zeitraum
-
-        for (Date termin:termine)
-          result.add(new MyAppointment(t,termin));
-      }
-      
-      return result;
-    }
-    catch (Exception e)
-    {
-      Logger.error("unable to load data",e);
-    }
-    return null;
-  }
-
-  /**
-   * @see de.willuhn.jameica.gui.calendar.AppointmentProvider#getName()
-   */
-  public String getName()
-  {
-    return i18n.tr("Daueraufträge");
+    return new MyAppointment(schedule);
   }
   
   /**
    * Hilfsklasse zum Anzeigen und Oeffnen des Appointments.
    */
-  private class MyAppointment extends AbstractAppointment
+  private class MyAppointment extends AbstractHibiscusAppointment
   {
-    private Dauerauftrag t = null;
-    private Date termin    = null;
-    
     /**
      * ct.
-     * @param t der Dauerauftrag.
-     * @param termin der Termin der Ausfuehrung.
+     * @param schedule der Termin.
      */
-    private MyAppointment(Dauerauftrag t, Date termin)
+    private MyAppointment(Schedule<Dauerauftrag> schedule)
     {
-      this.t = t;
-      this.termin = termin;
-    }
-
-    /**
-     * @see de.willuhn.jameica.gui.calendar.AbstractAppointment#execute()
-     */
-    public void execute() throws ApplicationException
-    {
-      new Open().handleAction(this.t);
-    }
-
-    /**
-     * @see de.willuhn.jameica.gui.calendar.Appointment#getDate()
-     */
-    public Date getDate()
-    {
-      return this.termin;
+      super(schedule);
     }
 
     /**
@@ -127,6 +60,7 @@ public class DauerauftragAppointmentProvider implements AppointmentProvider
     {
       try
       {
+        Dauerauftrag t = this.schedule.getContext();
         Konto k = t.getKonto();
         return i18n.tr("Dauerauftrag: {0} {1} an {2}\n{3}\n\n{4}\n\nKonto: {5}",HBCI.DECIMALFORMAT.format(t.getBetrag()),k.getWaehrung(),t.getGegenkontoName(),TurnusHelper.createBezeichnung(t.getTurnus()),VerwendungszweckUtil.toString(t,"\n"),k.getLongName());
       }
@@ -144,6 +78,7 @@ public class DauerauftragAppointmentProvider implements AppointmentProvider
     {
       try
       {
+        Dauerauftrag t = this.schedule.getContext();
         Konto k = t.getKonto();
         return i18n.tr("{0} {1} an {2}",HBCI.DECIMALFORMAT.format(t.getBetrag()),k.getWaehrung(),t.getGegenkontoName());
       }
@@ -155,32 +90,27 @@ public class DauerauftragAppointmentProvider implements AppointmentProvider
     }
 
     /**
-     * @see de.willuhn.jameica.gui.calendar.AbstractAppointment#getColor()
+     * @see de.willuhn.jameica.hbci.calendar.AbstractAppointmentProvider.AbstractHibiscusAppointment#getColor()
      */
     public RGB getColor()
     {
       // Hier gibt es keinen Ausgefuehrt-Status.
       // Wir markieren ihn grau, wenn er in der Vergangenheit liegt,
       // ansonsten farbig
-      if (this.termin != null && this.termin.before(new Date()))
+      Date termin = this.schedule.getDate();
+      
+      if (termin != null && termin.before(new Date()))
         return Color.COMMENT.getSWTColor().getRGB();
       return Settings.getBuchungSollForeground().getRGB();
     }
 
     /**
-     * @see de.willuhn.jameica.gui.calendar.AbstractAppointment#getUid()
+     * @see de.willuhn.jameica.hbci.calendar.AbstractAppointmentProvider.AbstractHibiscusAppointment#hasAlarm()
      */
-    public String getUid()
+    public boolean hasAlarm()
     {
-      try
-      {
-        return this.t.getClass().getName() + "." + t.getID();
-      }
-      catch (RemoteException re)
-      {
-        Logger.error("unable to create uid",re);
-        return super.getUid();
-      }
+      // brauchen wir bei Dauerauftraegen nicht - da kuemmert sich die Bank drum
+      return false;
     }
   }
 }
@@ -189,6 +119,9 @@ public class DauerauftragAppointmentProvider implements AppointmentProvider
 
 /**********************************************************************
  * $Log: DauerauftragAppointmentProvider.java,v $
+ * Revision 1.10  2012/02/20 17:03:50  willuhn
+ * @N Umstellung auf neues Schedule-Framework, welches generisch geplante und tatsaechliche Termine fuer Auftraege und Umsaetze ermitteln kann und kuenftig auch vom Forecast verwendet wird
+ *
  * Revision 1.9  2012/02/05 12:03:43  willuhn
  * @N generische Open-Action in Basis-Klasse
  *

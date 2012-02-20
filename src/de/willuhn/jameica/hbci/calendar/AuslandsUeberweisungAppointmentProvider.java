@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/calendar/AuslandsUeberweisungAppointmentProvider.java,v $
- * $Revision: 1.7 $
- * $Date: 2012/02/05 12:03:43 $
+ * $Revision: 1.8 $
+ * $Date: 2012/02/20 17:03:50 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -12,48 +12,39 @@
 package de.willuhn.jameica.hbci.calendar;
 
 import java.rmi.RemoteException;
-import java.util.Date;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.schedule.Schedule;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.logging.Logger;
 
 /**
  * Implementierung eines Termin-Providers fuer offene SEPA-Ueberweisungen.
  */
-public class AuslandsUeberweisungAppointmentProvider extends AbstractTransferAppointmentProvider<AuslandsUeberweisung>
+public class AuslandsUeberweisungAppointmentProvider extends AbstractAppointmentProvider<AuslandsUeberweisung>
 {
   /**
-   * @see de.willuhn.jameica.hbci.calendar.AbstractTransferAppointmentProvider#createAppointment(de.willuhn.jameica.hbci.rmi.Terminable, java.util.Date)
+   * @see de.willuhn.jameica.hbci.calendar.AbstractAppointmentProvider#createAppointment(de.willuhn.jameica.hbci.schedule.Schedule)
    */
-  AbstractTransferAppointment createAppointment(AuslandsUeberweisung t, Date date)
+  AbstractHibiscusAppointment createAppointment(Schedule<AuslandsUeberweisung> schedule)
   {
-    return new MyAppointment(t,date);
+    return new MyAppointment(schedule);
   }
 
   /**
-   * @see de.willuhn.jameica.gui.calendar.AppointmentProvider#getName()
-   */
-  public String getName()
-  {
-    return i18n.tr("SEPA-Überweisungen");
-  }
-  
-  /**
    * Hilfsklasse zum Anzeigen und Oeffnen des Appointments.
    */
-  private class MyAppointment extends AbstractTransferAppointment
+  private class MyAppointment extends AbstractHibiscusAppointment
   {
     /**
      * ct.
-     * @param t die SEPA-Ueberweisung.
-     * @param date ggf abweichender Termin.
+     * @param schedule der Auftrag.
      */
-    private MyAppointment(AuslandsUeberweisung t, Date date)
+    private MyAppointment(Schedule<AuslandsUeberweisung> schedule)
     {
-      super(t,date);
+      super(schedule);
     }
 
     /**
@@ -63,9 +54,10 @@ public class AuslandsUeberweisungAppointmentProvider extends AbstractTransferApp
     {
       try
       {
+        AuslandsUeberweisung t = this.schedule.getContext();
         Konto k = t.getKonto();
         return i18n.tr("{0}SEPA-Überweisung: {1} {2} an {3} überweisen\n\n{4}\n\nKonto: {5}",
-                       (this.date != null ? (i18n.tr("Geplant") + ":\n") : ""),
+                       (this.schedule.isPlanned() ? (i18n.tr("Geplant") + ":\n") : ""),
                        HBCI.DECIMALFORMAT.format(t.getBetrag()),
                        k.getWaehrung(),
                        t.getGegenkontoName(),
@@ -86,6 +78,7 @@ public class AuslandsUeberweisungAppointmentProvider extends AbstractTransferApp
     {
       try
       {
+        AuslandsUeberweisung t = this.schedule.getContext();
         Konto k = t.getKonto();
         return i18n.tr("{0} {1} an {2}",HBCI.DECIMALFORMAT.format(t.getBetrag()),k.getWaehrung(),t.getGegenkontoName());
       }
@@ -102,6 +95,9 @@ public class AuslandsUeberweisungAppointmentProvider extends AbstractTransferApp
 
 /**********************************************************************
  * $Log: AuslandsUeberweisungAppointmentProvider.java,v $
+ * Revision 1.8  2012/02/20 17:03:50  willuhn
+ * @N Umstellung auf neues Schedule-Framework, welches generisch geplante und tatsaechliche Termine fuer Auftraege und Umsaetze ermitteln kann und kuenftig auch vom Forecast verwendet wird
+ *
  * Revision 1.7  2012/02/05 12:03:43  willuhn
  * @N generische Open-Action in Basis-Klasse
  *

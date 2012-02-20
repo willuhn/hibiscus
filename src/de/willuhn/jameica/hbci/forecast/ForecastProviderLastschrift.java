@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/forecast/ForecastProviderLastschrift.java,v $
- * $Revision: 1.1 $
- * $Date: 2011/10/27 17:10:02 $
+ * $Revision: 1.2 $
+ * $Date: 2012/02/20 17:03:50 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -11,61 +11,33 @@
 
 package de.willuhn.jameica.hbci.forecast;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.rmi.RemoteException;
 
-import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
+import de.willuhn.jameica.hbci.schedule.Schedule;
 import de.willuhn.jameica.hbci.server.Value;
-import de.willuhn.jameica.system.Application;
-import de.willuhn.util.I18N;
 
 /**
- * Implementierung eines Forecast-Providers fuer Lastschrift.
+ * Implementierung eines Forecast-Providers fuer Lastschriften.
  */
-public class ForecastProviderLastschrift implements ForecastProvider
+public class ForecastProviderLastschrift extends AbstractForecastProvider<Lastschrift>
 {
-  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
   /**
-   * @see de.willuhn.jameica.hbci.forecast.ForecastProvider#getName()
+   * @see de.willuhn.jameica.hbci.forecast.AbstractForecastProvider#createValue(de.willuhn.jameica.hbci.schedule.Schedule)
    */
-  public String getName()
+  Value createValue(Schedule<Lastschrift> schedule) throws RemoteException
   {
-    return i18n.tr("Offene Lastschriften");
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.forecast.ForecastProvider#getData(de.willuhn.jameica.hbci.rmi.Konto, java.util.Date, java.util.Date)
-   */
-  public List<Value> getData(Konto k, Date from, Date to) throws Exception
-  {
-    DBIterator list = Settings.getDBService().createList(Lastschrift.class);
-    list.addFilter("ausgefuehrt = 0");
-    list.addFilter("termin >= ?",from);
-    list.addFilter("termin <= ?",to);
-
-    if (k != null)
-      list.addFilter("konto_id = " + k.getID());
-
-    List<Value> result = new ArrayList<Value>();
-    while (list.hasNext())
-    {
-      Lastschrift l = (Lastschrift) list.next();
-      result.add(new Value(l.getTermin(),l.getBetrag()));
-    }
-    return result;
+    // Positiv-Betrag verwenden, weil wir das ja gutgeschrieben kriegen
+    return new Value(schedule.getDate(),schedule.getContext().getBetrag());
   }
 }
 
 
-
 /**********************************************************************
  * $Log: ForecastProviderLastschrift.java,v $
+ * Revision 1.2  2012/02/20 17:03:50  willuhn
+ * @N Umstellung auf neues Schedule-Framework, welches generisch geplante und tatsaechliche Termine fuer Auftraege und Umsaetze ermitteln kann und kuenftig auch vom Forecast verwendet wird
+ *
  * Revision 1.1  2011/10/27 17:10:02  willuhn
  * @N Erster Code fuer die Forecast-API - Konto-Prognose
  *
