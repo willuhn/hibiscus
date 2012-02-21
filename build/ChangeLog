@@ -1,3 +1,8 @@
+HEAD
+
+  * NEW: 0167 Umstellung auf neues Schedule-Framework, welches generisch geplante und tatsaechliche Termine
+              fuer Auftraege und Umsaetze ermitteln kann und kuenftig auch vom Forecast verwendet wird
+              
 2012-02-15 Version 2.2.0
 
   * NEW: 0166 BUGZILLA 940 - Diverse Tastenkürzel zur Navigation
