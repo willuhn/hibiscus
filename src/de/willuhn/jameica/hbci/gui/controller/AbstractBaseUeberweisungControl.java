@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractBaseUeberweisungControl.java,v $
- * $Revision: 1.20 $
- * $Date: 2011/10/20 16:20:05 $
+ * $Revision: 1.21 $
+ * $Date: 2012/02/26 13:00:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -96,6 +96,8 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
 		try
 		{
       bu = (BaseUeberweisung) getTransfer();
+      if (bu.ausgefuehrt()) // BUGZILLA 1197
+        return true;
       bu.transactionBegin();
 
 			Date termin = (Date) getTermin().getValue();
@@ -237,6 +239,9 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
 
 /**********************************************************************
  * $Log: AbstractBaseUeberweisungControl.java,v $
+ * Revision 1.21  2012/02/26 13:00:39  willuhn
+ * @B BUGZILLA 1197
+ *
  * Revision 1.20  2011/10/20 16:20:05  willuhn
  * @N BUGZILLA 182 - Erste Version von client-seitigen Dauerauftraegen fuer alle Auftragsarten
  *

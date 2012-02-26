@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AuslandsUeberweisungControl.java,v $
- * $Revision: 1.13 $
- * $Date: 2011/10/20 16:20:05 $
+ * $Revision: 1.14 $
+ * $Date: 2012/02/26 13:00:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -309,6 +309,9 @@ public class AuslandsUeberweisungControl extends AbstractControl
     try
     {
       t = this.getTransfer();
+      if (t.ausgefuehrt()) // BUGZILLA 1197
+        return true;
+      
       t.transactionBegin();
 
       Double d = (Double) getBetrag().getValue();
@@ -492,6 +495,9 @@ public class AuslandsUeberweisungControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AuslandsUeberweisungControl.java,v $
+ * Revision 1.14  2012/02/26 13:00:39  willuhn
+ * @B BUGZILLA 1197
+ *
  * Revision 1.13  2011/10/20 16:20:05  willuhn
  * @N BUGZILLA 182 - Erste Version von client-seitigen Dauerauftraegen fuer alle Auftragsarten
  *
