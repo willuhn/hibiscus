@@ -1,5 +1,6 @@
 HEAD
 
+  * BUG: 0168 BUGZILLA 1197 - Ausgeführte Aufträge ließen sich nicht mehr duplizieren
   * NEW: 0167 Umstellung auf neues Schedule-Framework, welches generisch geplante und tatsaechliche Termine
               fuer Auftraege und Umsaetze ermitteln kann und kuenftig auch vom Forecast verwendet wird
               

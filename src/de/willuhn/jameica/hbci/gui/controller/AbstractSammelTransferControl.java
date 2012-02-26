@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractSammelTransferControl.java,v $
- * $Revision: 1.14 $
- * $Date: 2011/10/20 16:20:05 $
+ * $Revision: 1.15 $
+ * $Date: 2012/02/26 13:00:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -177,6 +177,8 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
     try
     {
       t = this.getTransfer();
+      if (t.ausgefuehrt()) // BUGZILLA 1197
+        return true;
       t.transactionBegin();
       
       t.setKonto((Konto)getKontoAuswahl().getValue());
@@ -345,6 +347,9 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
 
 /*****************************************************************************
  * $Log: AbstractSammelTransferControl.java,v $
+ * Revision 1.15  2012/02/26 13:00:39  willuhn
+ * @B BUGZILLA 1197
+ *
  * Revision 1.14  2011/10/20 16:20:05  willuhn
  * @N BUGZILLA 182 - Erste Version von client-seitigen Dauerauftraegen fuer alle Auftragsarten
  *

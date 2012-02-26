@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/rewriter/NetbankUmsatzRewriter.java,v $
- * $Revision: 1.9 $
- * $Date: 2011/11/21 22:08:46 $
+ * $Revision: 1.10 $
+ * $Date: 2012/02/26 14:07:51 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import de.willuhn.annotation.Lifecycle;
+import de.willuhn.annotation.Lifecycle.Type;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 
@@ -23,6 +25,7 @@ import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
  * Implementierung des Rewriters fuer die Netbank.
  * BUGZILLA 244
  */
+@Lifecycle(Type.CONTEXT)
 public class NetbankUmsatzRewriter implements UmsatzRewriter
 {
   /**
@@ -123,6 +126,9 @@ public class NetbankUmsatzRewriter implements UmsatzRewriter
 
 /**********************************************************************
  * $Log: NetbankUmsatzRewriter.java,v $
+ * Revision 1.10  2012/02/26 14:07:51  willuhn
+ * @N Lifecycle-Management via BeanService
+ *
  * Revision 1.9  2011/11/21 22:08:46  willuhn
  * @N BUGZILLA 887
  *

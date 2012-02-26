@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/rewriter/DeutscheBankUmsatzRewriter.java,v $
- * $Revision: 1.6 $
- * $Date: 2011/06/22 13:26:04 $
+ * $Revision: 1.7 $
+ * $Date: 2012/02/26 14:07:51 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import de.willuhn.annotation.Lifecycle;
+import de.willuhn.annotation.Lifecycle.Type;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 
@@ -23,6 +25,7 @@ import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
  * Implementierung des Rewriters fuer die Deutsche Bank.
  * BUGZILLA 887
  */
+@Lifecycle(Type.CONTEXT)
 public class DeutscheBankUmsatzRewriter implements UmsatzRewriter
 {
   /**
@@ -132,7 +135,10 @@ public class DeutscheBankUmsatzRewriter implements UmsatzRewriter
 
 /**********************************************************************
  * $Log: DeutscheBankUmsatzRewriter.java,v $
- * Revision 1.6  2011/06/22 13:26:04  willuhn
+ * Revision 1.7  2012/02/26 14:07:51  willuhn
+ * @N Lifecycle-Management via BeanService
+ *
+ * Revision 1.6  2011-06-22 13:26:04  willuhn
  * @N Berliner Bank
  *
  * Revision 1.5  2011-06-07 10:07:51  willuhn

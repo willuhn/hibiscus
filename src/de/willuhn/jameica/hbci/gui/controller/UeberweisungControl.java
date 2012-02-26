@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UeberweisungControl.java,v $
- * $Revision: 1.56 $
- * $Date: 2011/10/24 09:46:16 $
+ * $Revision: 1.57 $
+ * $Date: 2012/02/26 13:00:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -264,6 +264,8 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
     try
     {
       Ueberweisung u = (Ueberweisung) getTransfer();
+      if (u.ausgefuehrt()) // BUGZILLA 1197
+        return true;
       
       Typ t = (Typ) getTyp().getValue();
       u.setTerminUeberweisung(t.termin);
@@ -325,6 +327,9 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $
+ * Revision 1.57  2012/02/26 13:00:39  willuhn
+ * @B BUGZILLA 1197
+ *
  * Revision 1.56  2011/10/24 09:46:16  willuhn
  * @N Termin-Ueberweisung erst vorschlagen, wenn der Termin 1 Woche in der Zukunft liegt
  *
