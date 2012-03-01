@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCISammelTransferJob.java,v $
- * $Revision: 1.14 $
- * $Date: 2012/03/01 22:25:24 $
+ * $Revision: 1.15 $
+ * $Date: 2012/03/01 22:25:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,7 +28,6 @@ import de.willuhn.jameica.hbci.server.Converter;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
-import de.willuhn.util.ProgressMonitor;
 
 /**
  * Abstrakter Basis-Job fuer Sammel-Transfers.
@@ -185,6 +184,9 @@ public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: AbstractHBCISammelTransferJob.java,v $
+ * Revision 1.15  2012/03/01 22:25:29  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.14  2012/03/01 22:25:24  willuhn
  * @N BUGZILLA 899
  *
