@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUmsatzJob.java,v $
- * $Revision: 1.56 $
- * $Date: 2011/01/20 17:13:21 $
+ * $Revision: 1.57 $
+ * $Date: 2012/03/01 22:19:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -57,12 +57,9 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
    */
   public HBCIUmsatzJob(Konto konto) throws ApplicationException, RemoteException
 	{
-    super();
 		try
 		{
       PluginResources res = Application.getPluginLoader().getPlugin(HBCI.class).getResources();
-			i18n = res.getI18N();
-
 			if (konto == null)
 				throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus")); 
 
@@ -350,7 +347,10 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIUmsatzJob.java,v $
- * Revision 1.56  2011/01/20 17:13:21  willuhn
+ * Revision 1.57  2012/03/01 22:19:15  willuhn
+ * @N i18n statisch und expliziten Super-Konstruktor entfernt - unnoetig
+ *
+ * Revision 1.56  2011-01-20 17:13:21  willuhn
  * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
  *
  * Revision 1.55  2010-10-11 21:25:42  willuhn

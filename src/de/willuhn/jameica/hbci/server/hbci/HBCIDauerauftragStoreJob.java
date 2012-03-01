@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragStoreJob.java,v $
- * $Revision: 1.29 $
- * $Date: 2011/09/12 11:53:25 $
+ * $Revision: 1.30 $
+ * $Date: 2012/03/01 22:19:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -33,7 +33,6 @@ import de.willuhn.jameica.hbci.rmi.Turnus;
 import de.willuhn.jameica.hbci.server.Converter;
 import de.willuhn.jameica.hbci.server.hbci.tests.PreTimeRestriction;
 import de.willuhn.jameica.hbci.server.hbci.tests.TurnusRestriction;
-import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
@@ -58,11 +57,8 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob
    */
   public HBCIDauerauftragStoreJob(Dauerauftrag auftrag) throws ApplicationException, RemoteException
 	{
-    super();
 		try
 		{
-			i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
 			if (auftrag == null)
 				throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Dauerauftrag aus"));
 
@@ -216,7 +212,10 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIDauerauftragStoreJob.java,v $
- * Revision 1.29  2011/09/12 11:53:25  willuhn
+ * Revision 1.30  2012/03/01 22:19:15  willuhn
+ * @N i18n statisch und expliziten Super-Konstruktor entfernt - unnoetig
+ *
+ * Revision 1.29  2011-09-12 11:53:25  willuhn
  * @N Support fuer Banken (wie die deutsche Bank), die keine Order-IDs vergeben - BUGZILLA 1129
  *
  * Revision 1.28  2011-09-12 07:54:09  willuhn

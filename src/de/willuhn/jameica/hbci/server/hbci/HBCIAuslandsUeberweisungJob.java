@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIAuslandsUeberweisungJob.java,v $
- * $Revision: 1.6 $
- * $Date: 2010/02/23 11:20:45 $
+ * $Revision: 1.7 $
+ * $Date: 2012/03/01 22:19:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -44,7 +44,6 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
    */
   public HBCIAuslandsUeberweisungJob(AuslandsUeberweisung ueberweisung) throws ApplicationException, RemoteException
 	{
-    super();
 		try
 		{
 			if (ueberweisung == null)
@@ -165,7 +164,10 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIAuslandsUeberweisungJob.java,v $
- * Revision 1.6  2010/02/23 11:20:45  willuhn
+ * Revision 1.7  2012/03/01 22:19:15  willuhn
+ * @N i18n statisch und expliziten Super-Konstruktor entfernt - unnoetig
+ *
+ * Revision 1.6  2010-02-23 11:20:45  willuhn
  * @C Verwendungszweck ignorieren, wenn er nur aus Whitespaces besteht
  *
  * Revision 1.5  2009/10/20 23:12:58  willuhn

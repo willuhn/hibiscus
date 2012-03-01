@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIUeberweisungJob.java,v $
- * $Revision: 1.50 $
- * $Date: 2011/06/07 10:07:50 $
+ * $Revision: 1.51 $
+ * $Date: 2012/03/01 22:19:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -59,7 +59,6 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
    */
   public HBCIUeberweisungJob(Ueberweisung ueberweisung) throws ApplicationException, RemoteException
 	{
-    super();
 		try
 		{
 			if (ueberweisung == null)
@@ -269,7 +268,10 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIUeberweisungJob.java,v $
- * Revision 1.50  2011/06/07 10:07:50  willuhn
+ * Revision 1.51  2012/03/01 22:19:15  willuhn
+ * @N i18n statisch und expliziten Super-Konstruktor entfernt - unnoetig
+ *
+ * Revision 1.50  2011-06-07 10:07:50  willuhn
  * @C Verwendungszweck-Handling vereinheitlicht/vereinfacht - geht jetzt fast ueberall ueber VerwendungszweckUtil
  *
  * Revision 1.49  2011-05-12 08:08:27  willuhn

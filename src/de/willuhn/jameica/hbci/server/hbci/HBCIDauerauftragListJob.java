@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragListJob.java,v $
- * $Revision: 1.38 $
- * $Date: 2011/09/12 11:53:25 $
+ * $Revision: 1.39 $
+ * $Date: 2012/03/01 22:19:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,13 +21,11 @@ import org.kapott.hbci.GV_Result.GVRDauerList;
 import org.kapott.hbci.GV_Result.GVRDauerList.Dauer;
 
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.server.Converter;
-import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
@@ -46,11 +44,8 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob
    */
   public HBCIDauerauftragListJob(Konto konto) throws ApplicationException, RemoteException
 	{
-    super();
 		try
 		{
-			i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
 			if (konto == null)
 				throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus"));
 			if (konto.isNewObject())
@@ -281,7 +276,10 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCIDauerauftragListJob.java,v $
- * Revision 1.38  2011/09/12 11:53:25  willuhn
+ * Revision 1.39  2012/03/01 22:19:15  willuhn
+ * @N i18n statisch und expliziten Super-Konstruktor entfernt - unnoetig
+ *
+ * Revision 1.38  2011-09-12 11:53:25  willuhn
  * @N Support fuer Banken (wie die deutsche Bank), die keine Order-IDs vergeben - BUGZILLA 1129
  *
  * Revision 1.37  2011-04-29 08:00:38  willuhn
