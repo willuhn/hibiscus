@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCISammelTransferJob.java,v $
- * $Revision: 1.13 $
- * $Date: 2012/03/01 22:19:15 $
+ * $Revision: 1.14 $
+ * $Date: 2012/03/01 22:25:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -157,21 +157,26 @@ public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
   {
     // BUGZILLA 899
     // Wir checken, ob eventuell eine der enthaltenen Buchungen nicht ausgefuehrt wurde
+    boolean haveWarnings = false;
     for (HBCIRetVal val:warnings)
     {
       String code = val.code;
       if (code == null || code.length() != 4)
         continue; // Hu?
-      if (code.equals("3210") ||
-          code.equals("3220") ||
-          code.equals("3260") ||
-          code.equals("3290"))
+      if (code.equals("3210") || code.equals("3220") || code.equals("3260") || code.equals("3290"))
       {
         // Jepp, wir haben offensichtlich eine fehlgeschlagene Buchung
-        ProgressMonitor monitor = HBCIFactory.getInstance().getProgressMonitor();
-        monitor.log("    " + i18n.tr("** Eine oder mehrere Buchungen des Sammelauftrages wurde nicht ausgeführt!"));
-        return;
+        haveWarnings = true;
+        // BUGZILLA 899 Wir schreiben die Warnungn auch noch ins Konto-Protokoll und ins Log
+        Logger.warn(val.toString());
+        konto.addToProtokoll(i18n.tr("Einzelne Buchung eines Sammelauftrages nicht ausgeführt: {0}",val.toString()),Protokoll.TYP_ERROR);
       }
+    }
+
+    // Ins Monitor-Fenster schreiben
+    if (haveWarnings)
+    {
+      HBCIFactory.getInstance().getProgressMonitor().log("    ** " + i18n.tr("Eine oder mehrere Buchungen des Sammelauftrages wurde nicht ausgeführt!"));
     }
   }
 
@@ -180,6 +185,9 @@ public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: AbstractHBCISammelTransferJob.java,v $
+ * Revision 1.14  2012/03/01 22:25:24  willuhn
+ * @N BUGZILLA 899
+ *
  * Revision 1.13  2012/03/01 22:19:15  willuhn
  * @N i18n statisch und expliziten Super-Konstruktor entfernt - unnoetig
  *
