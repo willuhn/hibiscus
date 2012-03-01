@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCILastschriftJob.java,v $
- * $Revision: 1.24 $
- * $Date: 2011/05/10 12:18:11 $
+ * $Revision: 1.25 $
+ * $Date: 2012/03/01 22:19:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -45,11 +45,8 @@ public class HBCILastschriftJob extends AbstractHBCIJob
    */
   public HBCILastschriftJob(Lastschrift lastschrift) throws ApplicationException, RemoteException
 	{
-    super();
 		try
 		{
-			i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
 			if (lastschrift == null)
 				throw new ApplicationException(i18n.tr("Bitte geben Sie eine Lastschrift an"));
 		
@@ -171,7 +168,10 @@ public class HBCILastschriftJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: HBCILastschriftJob.java,v $
- * Revision 1.24  2011/05/10 12:18:11  willuhn
+ * Revision 1.25  2012/03/01 22:19:15  willuhn
+ * @N i18n statisch und expliziten Super-Konstruktor entfernt - unnoetig
+ *
+ * Revision 1.24  2011-05-10 12:18:11  willuhn
  * @C Code zum Setzen der usage-Parameter in gemeinsamer Basisklasse AbstractHBCIJob - der Code war 3x identisch vorhanden
  *
  * Revision 1.23  2010-02-23 11:20:45  willuhn

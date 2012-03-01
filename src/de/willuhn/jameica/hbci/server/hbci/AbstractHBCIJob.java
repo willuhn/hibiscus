@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCIJob.java,v $
- * $Revision: 1.40 $
- * $Date: 2011/07/28 09:01:07 $
+ * $Revision: 1.41 $
+ * $Date: 2012/03/01 22:19:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,20 +43,12 @@ import de.willuhn.util.ProgressMonitor;
  */
 public abstract class AbstractHBCIJob
 {
-  protected I18N i18n = null;
+  protected final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 	private org.kapott.hbci.GV.HBCIJob job = null;
   private boolean exclusive              = false;
 	private Hashtable params 			         = new Hashtable(); 
 
-  /**
-   * ct
-   */
-  protected AbstractHBCIJob()
-  {
-    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  }
-  
 	/**
 	 * HBCI4Java verwendet intern eindeutige Job-Namen.
 	 * Diese Funktion liefert genau den Namen fuer genau den
@@ -433,7 +425,10 @@ public abstract class AbstractHBCIJob
 
 /**********************************************************************
  * $Log: AbstractHBCIJob.java,v $
- * Revision 1.40  2011/07/28 09:01:07  willuhn
+ * Revision 1.41  2012/03/01 22:19:15  willuhn
+ * @N i18n statisch und expliziten Super-Konstruktor entfernt - unnoetig
+ *
+ * Revision 1.40  2011-07-28 09:01:07  willuhn
  * @B BUGZILLA 1109
  *
  * Revision 1.39  2011-07-28 08:45:56  willuhn

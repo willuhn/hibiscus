@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCISaldoJob.java,v $
- * $Revision: 1.31 $
- * $Date: 2010/06/17 12:16:52 $
+ * $Revision: 1.32 $
+ * $Date: 2012/03/01 22:19:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,6 @@ import org.kapott.hbci.GV_Result.GVRSaldoReq.Info;
 import org.kapott.hbci.structures.Saldo;
 import org.kapott.hbci.structures.Value;
 
-import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.messaging.SaldoMessage;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -44,11 +43,8 @@ public class HBCISaldoJob extends AbstractHBCIJob {
    */
   public HBCISaldoJob(Konto konto) throws ApplicationException, RemoteException
 	{
-    super();
 		try
 		{
-			i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
 			if (konto == null)
 				throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus")); 
 
@@ -133,7 +129,10 @@ public class HBCISaldoJob extends AbstractHBCIJob {
 
 /**********************************************************************
  * $Log: HBCISaldoJob.java,v $
- * Revision 1.31  2010/06/17 12:16:52  willuhn
+ * Revision 1.32  2012/03/01 22:19:15  willuhn
+ * @N i18n statisch und expliziten Super-Konstruktor entfernt - unnoetig
+ *
+ * Revision 1.31  2010-06-17 12:16:52  willuhn
  * @N BUGZILLA 530
  *
  * Revision 1.30  2008/11/07 14:02:08  willuhn

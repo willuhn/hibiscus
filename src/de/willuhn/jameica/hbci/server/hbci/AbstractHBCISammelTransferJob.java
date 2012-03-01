@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/AbstractHBCISammelTransferJob.java,v $
- * $Revision: 1.12 $
- * $Date: 2010/09/02 10:21:06 $
+ * $Revision: 1.13 $
+ * $Date: 2012/03/01 22:19:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -51,11 +51,8 @@ public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
    */
   public AbstractHBCISammelTransferJob(SammelTransfer transfer) throws ApplicationException, RemoteException
 	{
-    super();
 		try
 		{
-			i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
 			if (transfer == null)
 				throw new ApplicationException(i18n.tr("Bitte geben Sie einen Sammel-Auftrag an"));
 		
@@ -183,7 +180,10 @@ public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
 
 /**********************************************************************
  * $Log: AbstractHBCISammelTransferJob.java,v $
- * Revision 1.12  2010/09/02 10:21:06  willuhn
+ * Revision 1.13  2012/03/01 22:19:15  willuhn
+ * @N i18n statisch und expliziten Super-Konstruktor entfernt - unnoetig
+ *
+ * Revision 1.12  2010-09-02 10:21:06  willuhn
  * @N BUGZILLA 899
  *
  * Revision 1.11  2009/06/29 09:00:23  willuhn
