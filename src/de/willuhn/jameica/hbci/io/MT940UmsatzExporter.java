@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/MT940UmsatzExporter.java,v $
- * $Revision: 1.12 $
- * $Date: 2011/07/25 17:17:19 $
+ * $Revision: 1.13 $
+ * $Date: 2012/03/06 21:44:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -112,16 +112,17 @@ public class MT940UmsatzExporter implements Exporter
         out.write(betrag >= 0.0d ? "CR" : "DR");
         out.write(HBCI.DECIMALFORMAT.format(betrag).replace("-",""));
     		
-    		out.write("NTRF" + notNull(u.getCustomerRef(),"NONREF") + NL);
+        String ref = StringUtils.trimToNull(u.getCustomerRef());
+    		out.write("NTRF" + (ref != null ? ref : "NONREF") + NL);
 
     		String gvcode = u.getGvCode();
     		
       	// Fallback, wenn wir keinen GV-Code haben. Das trifft u.a. bei Alt-Umsaetzen
     		// auf, als Hibiscus das Feld noch nicht unterstuetzte.
-    		if (gvcode == null || gvcode.length() == 0)
+    		if (StringUtils.trimToNull(gvcode) == null)
       		gvcode = betrag >= 0.0d? "051" : "020";
     		
-    		out.write(":86:" + gvcode + "?00" + notNull(u.getArt(),"") + "?10" + notNull(u.getPrimanota(),""));
+    		out.write(":86:" + gvcode + "?00" + StringUtils.trimToEmpty(u.getArt()) + "?10" + StringUtils.trimToEmpty(u.getPrimanota()));
     		
     		//Verwendungszweck
     		String[] lines = VerwendungszweckUtil.toArray(u);
@@ -135,10 +136,10 @@ public class MT940UmsatzExporter implements Exporter
           out.write("?2" + Integer.toString(m) + lines[m]);
     		}
 
-        String blz = u.getGegenkontoBLZ();
-        String kto = u.getGegenkontoNummer();
-        String nam = u.getGegenkontoName();
-        String add = u.getAddKey();
+        String blz = StringUtils.trimToNull(u.getGegenkontoBLZ());
+        String kto = StringUtils.trimToNull(u.getGegenkontoNummer());
+        String nam = StringUtils.trimToNull(u.getGegenkontoName());
+        String add = StringUtils.trimToNull(u.getAddKey());
         if (blz != null) out.write("?30" + blz);
         if (kto != null) out.write("?31" + kto);
         if (nam != null) out.write("?32" + nam);
@@ -167,19 +168,6 @@ public class MT940UmsatzExporter implements Exporter
     }
   }
 
-  /**
-   * Prueft, ob der String NULL oder leer ist und liefert dann def zurueck. 
-   * @param s der zu testendes String.
-   * @param def der Default-Wert.
-   * @return Ergebnis.
-   */
-  private String notNull(String s, String def)
-  {
-    if (s != null && s.length() > 0)
-      return s;
-    return def;
-  }
-  
   /**
    * @see de.willuhn.jameica.hbci.io.IO#getIOFormats(java.lang.Class)
    */
@@ -252,7 +240,10 @@ public class MT940UmsatzExporter implements Exporter
 
 /*********************************************************************
  * $Log: MT940UmsatzExporter.java,v $
- * Revision 1.12  2011/07/25 17:17:19  willuhn
+ * Revision 1.13  2012/03/06 21:44:26  willuhn
+ * @C code-cleanup
+ *
+ * Revision 1.12  2011-07-25 17:17:19  willuhn
  * @N BUGZILLA 1065 - zusaetzlich noch addkey
  *
  * Revision 1.11  2011-07-25 14:42:41  willuhn
