@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.125 $
- * $Date: 2011/10/12 16:15:38 $
+ * $Revision: 1.126 $
+ * $Date: 2012/03/06 23:23:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -227,6 +227,7 @@ public class HBCI extends AbstractPlugin
         Logger.warn("unable to map jameica log level into hbci4java log level. using default");
       }
       this.hbciProps.put("log.loglevel.default",""+logLevel);
+      this.hbciProps.put("client.errors.ignoreWrongDataSyntaxErrors","yes"); // BUGZILLA 1129
       
       // Wenn das Jameica-Loglevel auf DEBUG steht, aktivieren wir per Default das SSL-Logging von HBCI4Java
       if (Logger.getLevel().getValue() == Level.DEBUG.getValue())
@@ -372,7 +373,10 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
- * Revision 1.125  2011/10/12 16:15:38  willuhn
+ * Revision 1.126  2012/03/06 23:23:34  willuhn
+ * @N BUGZILLA 1129
+ *
+ * Revision 1.125  2011-10-12 16:15:38  willuhn
  * @C Neue Wiki-URL
  *
  * Revision 1.124  2011-06-19 12:03:19  willuhn
