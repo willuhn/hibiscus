@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/AccountContainerDialog.java,v $
- * $Revision: 1.15 $
- * $Date: 2011/12/09 23:16:43 $
+ * $Revision: 1.16 $
+ * $Date: 2012/03/13 22:09:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.manager.HBCIUtils;
+import org.kapott.hbci.passport.AbstractPinTanPassport;
 import org.kapott.hbci.passport.HBCIPassport;
 
 import de.willuhn.jameica.gui.Action;
@@ -258,7 +259,9 @@ public class AccountContainerDialog extends AbstractDialog
 	{
 		if (this.port == null)
 		{
-      this.port = new IntegerInput(this.passport.getPort().intValue());
+		  Integer value = this.passport.getPort();
+		  int i = (value != null && value.intValue() > 0) ? value.intValue() : ((this.passport instanceof AbstractPinTanPassport) ? 443 : 3000); 
+      this.port = new IntegerInput(i);
       this.port.setComment(i18n.tr("Bei PIN/TAN \"443\", sonst \"3000\""));
       this.port.setMandatory(true);
 		}
@@ -334,6 +337,9 @@ public class AccountContainerDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: AccountContainerDialog.java,v $
+ * Revision 1.16  2012/03/13 22:09:10  willuhn
+ * @B BUGZILLA 1207
+ *
  * Revision 1.15  2011/12/09 23:16:43  willuhn
  * @N BUGZILLA 1159
  *
