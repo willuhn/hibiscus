@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/Controller.java,v $
- * $Revision: 1.11 $
- * $Date: 2011/12/09 23:19:57 $
+ * $Revision: 1.12 $
+ * $Date: 2012/03/13 21:48:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -471,6 +471,7 @@ public class Controller extends AbstractControl
       config.setBezeichnung((String) getBezeichnung().getValue());
       config.setShowTan(((Boolean)getShowTan().getValue()).booleanValue());
 			config.setHBCIVersion((String) getHBCIVersion().getValue());
+			config.setPort((Integer)getPort().getValue());
 
 
       PinTanConfigFactory.store(config);
@@ -497,6 +498,9 @@ public class Controller extends AbstractControl
 
 /**********************************************************************
  * $Log: Controller.java,v $
+ * Revision 1.12  2012/03/13 21:48:33  willuhn
+ * @B BUGZILLA 1207
+ *
  * Revision 1.11  2011/12/09 23:19:57  willuhn
  * @C Der Port muss konfigurierbar bleiben, weil er durch den AccountContainer-Dialog bei der Erstellung nicht abweichend von 443 vergeben werden kann (Ursache ist HBCI4Java - in HBCIPassportPinTan der Port hart auf 443 gesetzt. Mit dem Effekt, dass kein Callback mehr von HBCI4Java kommt und daher die Eingabe aus dem AccountContainer-Dialog ignoriert wird
  *
