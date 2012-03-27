@@ -1,7 +1,9 @@
 HEAD
 
-  * BUG: 0170 BUGZILLA 1207 - TCP-Port von PIN/TAN-Config lieﬂ sich nicht ‰ndern
-  * BUG: 0169 BUGZILLA 1129 - Dauerauftraege konnten nicht abgerufen werden, wenn ungueltige Zeichen drin stehen
+  * BUG: 0172 39-blz-optional.patch
+  * BUG: 0171 38-bug1207.patch - BUGZILLA 1207 - TCP-Port von PIN/TAN-Config lieﬂ sich nicht ‰ndern
+  * BUG: 0170 37-bug1129.patch - BUGZILLA 1129 - Dauerauftraege konnten nicht abgerufen werden, wenn ungueltige Zeichen drin stehen
+  * CHG: 0169 36-loglevel.patch
   * BUG: 0168 BUGZILLA 1197 - Ausgef¸hrte Auftr‰ge lieﬂen sich nicht mehr duplizieren
   * NEW: 0167 Umstellung auf neues Schedule-Framework, welches generisch geplante und tatsaechliche Termine
               fuer Auftraege und Umsaetze ermitteln kann und kuenftig auch vom Forecast verwendet wird
