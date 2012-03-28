@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/messaging/OrderReminderMessageConsumer.java,v $
- * $Revision: 1.3 $
- * $Date: 2011/12/31 13:55:38 $
+ * $Revision: 1.4 $
+ * $Date: 2012/03/28 22:47:18 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -51,7 +51,7 @@ public class OrderReminderMessageConsumer implements MessageConsumer
     Map<String,Serializable> data = (Map<String,Serializable>) msg.getData();
     Date termin                   = msg.getDate();
     
-    MultipleClassLoader loader = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getClassLoader();
+    MultipleClassLoader loader = Application.getPluginLoader().getManifest(HBCI.class).getClassLoader();
     DBService service          = Settings.getDBService();
     
     // 1. der zu duplizierende Auftrag
@@ -131,6 +131,10 @@ public class OrderReminderMessageConsumer implements MessageConsumer
 
 /**********************************************************************
  * $Log: OrderReminderMessageConsumer.java,v $
+ * Revision 1.4  2012/03/28 22:47:18  willuhn
+ * @N Einfuehrung eines neuen Interfaces "Plugin", welches von "AbstractPlugin" implementiert wird. Es dient dazu, kuenftig auch Jameica-Plugins zu unterstuetzen, die selbst gar keinen eigenen Java-Code mitbringen sondern nur ein Manifest ("plugin.xml") und z.Bsp. Jars oder JS-Dateien. Plugin-Autoren muessen lediglich darauf achten, dass die Jameica-Funktionen, die bisher ein Object vom Typ "AbstractPlugin" zuruecklieferten, jetzt eines vom Typ "Plugin" liefern.
+ * @C "getClassloader()" verschoben von "plugin.getRessources().getClassloader()" zu "manifest.getClassloader()" - der Zugriffsweg ist kuerzer. Die alte Variante existiert weiterhin, ist jedoch als deprecated markiert.
+ *
  * Revision 1.3  2011/12/31 13:55:38  willuhn
  * @N Beim Loeschen eines Reminder-faehigen Auftrages wird der Reminder jetzt via Messaging automatisch gleich mit geloescht
  *

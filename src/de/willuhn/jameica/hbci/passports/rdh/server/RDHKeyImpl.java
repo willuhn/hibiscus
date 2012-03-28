@@ -1,7 +1,7 @@
 /*****************************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/server/RDHKeyImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2011/06/17 08:49:19 $
+ * $Revision: 1.4 $
+ * $Date: 2012/03/28 22:47:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -276,7 +276,7 @@ public class RDHKeyImpl implements RDHKey
   {
     try
     {
-      MultipleClassLoader loader = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getClassLoader();
+      MultipleClassLoader loader = Application.getPluginLoader().getManifest(HBCI.class).getClassLoader();
       String s = settings.getString(getID() + ".format",null);
 
       // Migration. Wir schauen, ob fuer den Schluessel
@@ -329,7 +329,11 @@ public class RDHKeyImpl implements RDHKey
 
 /*****************************************************************************
  * $Log: RDHKeyImpl.java,v $
- * Revision 1.3  2011/06/17 08:49:19  willuhn
+ * Revision 1.4  2012/03/28 22:47:18  willuhn
+ * @N Einfuehrung eines neuen Interfaces "Plugin", welches von "AbstractPlugin" implementiert wird. Es dient dazu, kuenftig auch Jameica-Plugins zu unterstuetzen, die selbst gar keinen eigenen Java-Code mitbringen sondern nur ein Manifest ("plugin.xml") und z.Bsp. Jars oder JS-Dateien. Plugin-Autoren muessen lediglich darauf achten, dass die Jameica-Funktionen, die bisher ein Object vom Typ "AbstractPlugin" zuruecklieferten, jetzt eines vom Typ "Plugin" liefern.
+ * @C "getClassloader()" verschoben von "plugin.getRessources().getClassloader()" zu "manifest.getClassloader()" - der Zugriffsweg ist kuerzer. Die alte Variante existiert weiterhin, ist jedoch als deprecated markiert.
+ *
+ * Revision 1.3  2011-06-17 08:49:19  willuhn
  * @N Contextmenu im Tree mit den Bank-Zugaengen
  * @N Loeschen von Bank-Zugaengen direkt im Tree
  *

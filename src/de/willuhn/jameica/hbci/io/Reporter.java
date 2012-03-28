@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Reporter.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/08/09 21:33:08 $
+ * $Revision: 1.6 $
+ * $Date: 2012/03/28 22:47:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -99,7 +99,7 @@ public class Reporter
     rpt.open();
     try
     {
-      URL url = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getClassLoader().getResource("icons/hibiscus-icon-64x64.png");
+      URL url = mf.getClassLoader().getResource("icons/hibiscus-icon-64x64.png");
       Image image = Image.getInstance(url);
       image.scaleAbsolute(32,32);
       rpt.add(image);
@@ -268,7 +268,11 @@ public class Reporter
 
 /*******************************************************************************
  * $Log: Reporter.java,v $
- * Revision 1.5  2010/08/09 21:33:08  willuhn
+ * Revision 1.6  2012/03/28 22:47:18  willuhn
+ * @N Einfuehrung eines neuen Interfaces "Plugin", welches von "AbstractPlugin" implementiert wird. Es dient dazu, kuenftig auch Jameica-Plugins zu unterstuetzen, die selbst gar keinen eigenen Java-Code mitbringen sondern nur ein Manifest ("plugin.xml") und z.Bsp. Jars oder JS-Dateien. Plugin-Autoren muessen lediglich darauf achten, dass die Jameica-Funktionen, die bisher ein Object vom Typ "AbstractPlugin" zuruecklieferten, jetzt eines vom Typ "Plugin" liefern.
+ * @C "getClassloader()" verschoben von "plugin.getRessources().getClassloader()" zu "manifest.getClassloader()" - der Zugriffsweg ist kuerzer. Die alte Variante existiert weiterhin, ist jedoch als deprecated markiert.
+ *
+ * Revision 1.5  2010-08-09 21:33:08  willuhn
  * @C Logo etwas sauberer skalieren
  *
  * Revision 1.4  2010/02/17 10:43:41  willuhn

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/rewriter/RewriterRegistry.java,v $
- * $Revision: 1.2 $
- * $Date: 2012/02/26 14:07:51 $
+ * $Revision: 1.3 $
+ * $Date: 2012/03/28 22:47:18 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -45,7 +45,7 @@ public class RewriterRegistry
       umsatzRewriters = new HashMap<String,Class<UmsatzRewriter>>();
       try
       {
-        ClassFinder finder = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getClassLoader().getClassFinder();
+        ClassFinder finder = Application.getPluginLoader().getManifest(HBCI.class).getClassLoader().getClassFinder();
         Class<UmsatzRewriter>[] classes = finder.findImplementors(UmsatzRewriter.class);
         for (Class<UmsatzRewriter> c:classes)
         {
@@ -80,6 +80,10 @@ public class RewriterRegistry
 
 /**********************************************************************
  * $Log: RewriterRegistry.java,v $
+ * Revision 1.3  2012/03/28 22:47:18  willuhn
+ * @N Einfuehrung eines neuen Interfaces "Plugin", welches von "AbstractPlugin" implementiert wird. Es dient dazu, kuenftig auch Jameica-Plugins zu unterstuetzen, die selbst gar keinen eigenen Java-Code mitbringen sondern nur ein Manifest ("plugin.xml") und z.Bsp. Jars oder JS-Dateien. Plugin-Autoren muessen lediglich darauf achten, dass die Jameica-Funktionen, die bisher ein Object vom Typ "AbstractPlugin" zuruecklieferten, jetzt eines vom Typ "Plugin" liefern.
+ * @C "getClassloader()" verschoben von "plugin.getRessources().getClassloader()" zu "manifest.getClassloader()" - der Zugriffsweg ist kuerzer. Die alte Variante existiert weiterhin, ist jedoch als deprecated markiert.
+ *
  * Revision 1.2  2012/02/26 14:07:51  willuhn
  * @N Lifecycle-Management via BeanService
  *

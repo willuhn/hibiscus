@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/rewriter/NetbankUmsatzRewriter.java,v $
- * $Revision: 1.10 $
- * $Date: 2012/02/26 14:07:51 $
+ * $Revision: 1.11 $
+ * $Date: 2012/03/27 21:17:42 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -40,6 +40,7 @@ public class NetbankUmsatzRewriter implements UmsatzRewriter
     list.add("12096597"); // SpardaBank Berlin - https://www.willuhn.de/bugzilla/show_bug.cgi?id=887#c14
     list.add("55090500"); // SpardaBank Suedwest - https://www.willuhn.de/bugzilla/show_bug.cgi?id=887#c16
     list.add("40060560"); // SpardaBank Münster - https://www.willuhn.de/bugzilla/show_bug.cgi?id=887#c28
+    list.add("20690500"); // SpardaBank Hamburg - https://www.willuhn.de/bugzilla/show_bug.cgi?id=887#c47
     return list;
   }
 
@@ -126,6 +127,9 @@ public class NetbankUmsatzRewriter implements UmsatzRewriter
 
 /**********************************************************************
  * $Log: NetbankUmsatzRewriter.java,v $
+ * Revision 1.11  2012/03/27 21:17:42  willuhn
+ * @N BUGZILLA 887 Sparda-Bank Hamburg hinzugefuegt - siehe https://www.willuhn.de/bugzilla/show_bug.cgi?id=887#c47
+ *
  * Revision 1.10  2012/02/26 14:07:51  willuhn
  * @N Lifecycle-Management via BeanService
  *
