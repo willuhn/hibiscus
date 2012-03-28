@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/forecast/ForecastCreator.java,v $
- * $Revision: 1.2 $
- * $Date: 2012/02/20 17:03:50 $
+ * $Revision: 1.3 $
+ * $Date: 2012/03/28 22:47:18 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -52,7 +52,7 @@ public class ForecastCreator
       providers = new LinkedList<Class<ForecastProvider>>();
       try
       {
-        MultipleClassLoader loader = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getClassLoader();
+        MultipleClassLoader loader = Application.getPluginLoader().getManifest(HBCI.class).getClassLoader();
         Class<ForecastProvider>[] classes = loader.getClassFinder().findImplementors(ForecastProvider.class);
         for (Class<ForecastProvider> c:classes)
         {
@@ -222,6 +222,10 @@ public class ForecastCreator
 
 /**********************************************************************
  * $Log: ForecastCreator.java,v $
+ * Revision 1.3  2012/03/28 22:47:18  willuhn
+ * @N Einfuehrung eines neuen Interfaces "Plugin", welches von "AbstractPlugin" implementiert wird. Es dient dazu, kuenftig auch Jameica-Plugins zu unterstuetzen, die selbst gar keinen eigenen Java-Code mitbringen sondern nur ein Manifest ("plugin.xml") und z.Bsp. Jars oder JS-Dateien. Plugin-Autoren muessen lediglich darauf achten, dass die Jameica-Funktionen, die bisher ein Object vom Typ "AbstractPlugin" zuruecklieferten, jetzt eines vom Typ "Plugin" liefern.
+ * @C "getClassloader()" verschoben von "plugin.getRessources().getClassloader()" zu "manifest.getClassloader()" - der Zugriffsweg ist kuerzer. Die alte Variante existiert weiterhin, ist jedoch als deprecated markiert.
+ *
  * Revision 1.2  2012/02/20 17:03:50  willuhn
  * @N Umstellung auf neues Schedule-Framework, welches generisch geplante und tatsaechliche Termine fuer Auftraege und Umsaetze ermitteln kann und kuenftig auch vom Forecast verwendet wird
  *

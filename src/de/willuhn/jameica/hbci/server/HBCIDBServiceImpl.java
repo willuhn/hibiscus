@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/HBCIDBServiceImpl.java,v $
- * $Revision: 1.32 $
- * $Date: 2011/07/25 10:00:41 $
+ * $Revision: 1.33 $
+ * $Date: 2012/03/28 22:47:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -56,7 +56,7 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
   public HBCIDBServiceImpl(String driverClass) throws RemoteException
   {
     super();
-    MultipleClassLoader cl = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getClassLoader();
+    MultipleClassLoader cl = Application.getPluginLoader().getManifest(HBCI.class).getClassLoader();
     this.setClassloader(cl);
     this.setClassFinder(cl.getClassFinder());
     if (driverClass == null)
@@ -220,7 +220,11 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
 
 /*********************************************************************
  * $Log: HBCIDBServiceImpl.java,v $
- * Revision 1.32  2011/07/25 10:00:41  willuhn
+ * Revision 1.33  2012/03/28 22:47:18  willuhn
+ * @N Einfuehrung eines neuen Interfaces "Plugin", welches von "AbstractPlugin" implementiert wird. Es dient dazu, kuenftig auch Jameica-Plugins zu unterstuetzen, die selbst gar keinen eigenen Java-Code mitbringen sondern nur ein Manifest ("plugin.xml") und z.Bsp. Jars oder JS-Dateien. Plugin-Autoren muessen lediglich darauf achten, dass die Jameica-Funktionen, die bisher ein Object vom Typ "AbstractPlugin" zuruecklieferten, jetzt eines vom Typ "Plugin" liefern.
+ * @C "getClassloader()" verschoben von "plugin.getRessources().getClassloader()" zu "manifest.getClassloader()" - der Zugriffsweg ist kuerzer. Die alte Variante existiert weiterhin, ist jedoch als deprecated markiert.
+ *
+ * Revision 1.32  2011-07-25 10:00:41  willuhn
  * @N explizites Encoding
  *
  * Revision 1.31  2010-11-02 11:32:09  willuhn

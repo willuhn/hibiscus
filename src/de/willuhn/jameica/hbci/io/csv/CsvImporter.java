@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/csv/CsvImporter.java,v $
- * $Revision: 1.4 $
- * $Date: 2011/06/12 22:10:06 $
+ * $Revision: 1.5 $
+ * $Date: 2012/03/28 22:47:18 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -280,7 +280,7 @@ public class CsvImporter implements Importer
     List<IOFormat> formats = new ArrayList<IOFormat>();
     try
     {
-      ClassFinder finder = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getClassLoader().getClassFinder();
+      ClassFinder finder = Application.getPluginLoader().getManifest(HBCI.class).getClassLoader().getClassFinder();
       Class<Format>[] classes = finder.findImplementors(Format.class);
       for (Class<Format> c:classes)
       {
@@ -390,7 +390,11 @@ public class CsvImporter implements Importer
 
 /**********************************************************************
  * $Log: CsvImporter.java,v $
- * Revision 1.4  2011/06/12 22:10:06  willuhn
+ * Revision 1.5  2012/03/28 22:47:18  willuhn
+ * @N Einfuehrung eines neuen Interfaces "Plugin", welches von "AbstractPlugin" implementiert wird. Es dient dazu, kuenftig auch Jameica-Plugins zu unterstuetzen, die selbst gar keinen eigenen Java-Code mitbringen sondern nur ein Manifest ("plugin.xml") und z.Bsp. Jars oder JS-Dateien. Plugin-Autoren muessen lediglich darauf achten, dass die Jameica-Funktionen, die bisher ein Object vom Typ "AbstractPlugin" zuruecklieferten, jetzt eines vom Typ "Plugin" liefern.
+ * @C "getClassloader()" verschoben von "plugin.getRessources().getClassloader()" zu "manifest.getClassloader()" - der Zugriffsweg ist kuerzer. Die alte Variante existiert weiterhin, ist jedoch als deprecated markiert.
+ *
+ * Revision 1.4  2011-06-12 22:10:06  willuhn
  * @B BUGZILLA 1053
  *
  * Revision 1.3  2010/03/16 13:43:56  willuhn
