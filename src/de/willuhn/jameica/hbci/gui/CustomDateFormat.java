@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/CustomDateFormat.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/05/15 19:05:56 $
+ * $Revision: 1.2 $
+ * $Date: 2012/03/31 15:09:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -46,7 +46,12 @@ public class CustomDateFormat extends SimpleDateFormat
     switch (source.length())
     {
       case 8:
+      {
+        // Wir muessen noch checken, ob es d.m.yyyy oder ddmmyyyy ist
+        if (source.indexOf(".") != -1) // enthaelt Punkte
+          return HBCI.DATEFORMAT.parse(source);
         return HBCI.FASTDATEFORMAT.parse(source);
+      }
       case 4:
         Calendar cal = Calendar.getInstance();
         source += cal.get(Calendar.YEAR);
@@ -60,6 +65,9 @@ public class CustomDateFormat extends SimpleDateFormat
 
 /*********************************************************************
  * $Log: CustomDateFormat.java,v $
+ * Revision 1.2  2012/03/31 15:09:33  willuhn
+ * @B Zwischen d.m.yyyy und ddmmyyyy unterscheiden
+ *
  * Revision 1.1  2010/05/15 19:05:56  willuhn
  * @N BUGZILLA 865
  *
