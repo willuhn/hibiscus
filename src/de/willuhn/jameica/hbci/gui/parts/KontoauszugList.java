@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.49 $
- * $Date: 2011/12/19 22:43:04 $
+ * $Revision: 1.50 $
+ * $Date: 2012/04/05 21:23:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -257,7 +257,7 @@ public class KontoauszugList extends UmsatzList
       return this.start;
     
     this.start = new DateFromInput(null,"umsatzlist.filter.from");
-    this.start.setComment(i18n.tr("Frühestes Valuta-Datum"));
+    this.start.setComment(i18n.tr("Frühestes Datum"));
     this.start.addListener(this.listener);
     return this.start;
   }
@@ -272,7 +272,7 @@ public class KontoauszugList extends UmsatzList
       return this.end;
 
     this.end = new DateToInput(null,"umsatzlist.filter.to");
-    this.end.setComment(i18n.tr("Spätestes Valuta-Datum"));
+    this.end.setComment(i18n.tr("Spätestes Datum"));
     this.end.addListener(this.listener);
     return this.end;
   }
@@ -457,8 +457,8 @@ public class KontoauszugList extends UmsatzList
     // Zeitraum
     // Der Warnhinweis wird nicht fuer den Zeitraum angezeigt, da der
     // immer vorhanden ist
-    if (start != null) umsaetze.addFilter("valuta >= ?", new Object[]{new java.sql.Date(DateUtil.startOfDay(start).getTime())});
-    if (end != null)   umsaetze.addFilter("valuta <= ?", new Object[]{new java.sql.Date(DateUtil.endOfDay(end).getTime())});
+    if (start != null) umsaetze.addFilter("datum >= ?", new Object[]{new java.sql.Date(DateUtil.startOfDay(start).getTime())});
+    if (end != null)   umsaetze.addFilter("datum <= ?", new Object[]{new java.sql.Date(DateUtil.endOfDay(end).getTime())});
     /////////////////////////////////////////////////////////////////
     // Gegenkonto
     if (gkBLZ    != null && gkBLZ.length() > 0)    {umsaetze.addFilter("empfaenger_blz like ?",new Object[]{"%" + gkBLZ + "%"});this.hasFilter = true;}
@@ -688,6 +688,9 @@ public class KontoauszugList extends UmsatzList
 
 /*********************************************************************
  * $Log: KontoauszugList.java,v $
+ * Revision 1.50  2012/04/05 21:23:41  willuhn
+ * @B BUGZILLA 1219
+ *
  * Revision 1.49  2011/12/19 22:43:04  willuhn
  * @N In PDF-Export anzeigen, wenn die Daten gefiltert sind - siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=80257#80257
  *

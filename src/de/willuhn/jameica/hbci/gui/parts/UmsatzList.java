@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzList.java,v $
- * $Revision: 1.81 $
- * $Date: 2011/10/26 09:33:29 $
+ * $Revision: 1.82 $
+ * $Date: 2012/04/05 21:23:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -639,7 +639,7 @@ public class UmsatzList extends TablePart implements Extendable
                 i--;
                 continue;
               }
-              date = u.getValuta();
+              date = u.getDatum();
 
               // Wenn der Umsatz ein Datum hat, welches vor dem Limit liegt. Dann raus damit
               if (date != null && limit != null && date.before(limit))
@@ -850,6 +850,9 @@ public class UmsatzList extends TablePart implements Extendable
 
 /**********************************************************************
  * $Log: UmsatzList.java,v $
+ * Revision 1.82  2012/04/05 21:23:41  willuhn
+ * @B BUGZILLA 1219
+ *
  * Revision 1.81  2011/10/26 09:33:29  willuhn
  * @B Kategorie war versehentlich editierbar
  *
