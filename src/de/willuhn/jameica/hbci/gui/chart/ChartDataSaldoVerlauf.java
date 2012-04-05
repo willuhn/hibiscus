@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/chart/ChartDataSaldoVerlauf.java,v $
- * $Revision: 1.20 $
- * $Date: 2011/10/27 17:09:29 $
+ * $Revision: 1.21 $
+ * $Date: 2012/04/05 21:27:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -60,7 +60,7 @@ public class ChartDataSaldoVerlauf extends AbstractChartDataSaldo
     if (this.konto != null)
       list.addFilter("konto_id = " + this.konto.getID());
 
-    list.addFilter("valuta >= ?", new Object[]{new java.sql.Date(start.getTime())});
+    list.addFilter("datum >= ?", new Object[]{new java.sql.Date(start.getTime())});
     
     // Jetzt kommt die Homogenisierung ;)
     // Wir brauchen genau einen Messwert pro Tag. Das ist wichtig,
@@ -114,6 +114,9 @@ public class ChartDataSaldoVerlauf extends AbstractChartDataSaldo
 
 /*********************************************************************
  * $Log: ChartDataSaldoVerlauf.java,v $
+ * Revision 1.21  2012/04/05 21:27:41  willuhn
+ * @B BUGZILLA 1219
+ *
  * Revision 1.20  2011/10/27 17:09:29  willuhn
  * @C Saldo-Bean in neue separate (und generischere) Klasse "Value" ausgelagert.
  * @N Saldo-Finder erweitert, damit der jetzt auch mit Value-Objekten arbeiten kann
