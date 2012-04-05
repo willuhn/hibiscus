@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/util/SaldoFinder.java,v $
- * $Revision: 1.6 $
- * $Date: 2011/10/27 17:09:29 $
+ * $Revision: 1.7 $
+ * $Date: 2012/04/05 21:44:18 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -48,7 +48,7 @@ public class SaldoFinder
       // Vormerkbuchungen werden nicht beruecksichtigt, weil sie keinen Saldo haben
       if ((u.getFlags() & Umsatz.FLAG_NOTBOOKED) == Umsatz.FLAG_NOTBOOKED)
         continue;
-      this.map.put(u.getValuta(),u.getSaldo());
+      this.map.put(u.getDatum(),u.getSaldo());
     }
   }
   
@@ -100,6 +100,9 @@ public class SaldoFinder
 
 /**********************************************************************
  * $Log: SaldoFinder.java,v $
+ * Revision 1.7  2012/04/05 21:44:18  willuhn
+ * @B BUGZILLA 1219
+ *
  * Revision 1.6  2011/10/27 17:09:29  willuhn
  * @C Saldo-Bean in neue separate (und generischere) Klasse "Value" ausgelagert.
  * @N Saldo-Finder erweitert, damit der jetzt auch mit Value-Objekten arbeiten kann

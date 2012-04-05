@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/schedule/UmsatzScheduleProvider.java,v $
- * $Revision: 1.1 $
- * $Date: 2012/02/20 17:03:50 $
+ * $Revision: 1.2 $
+ * $Date: 2012/04/05 21:44:18 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -50,14 +50,14 @@ public class UmsatzScheduleProvider implements ScheduleProvider<Umsatz>
       if (k != null)
         list.addFilter("konto_id = " + k.getID());
 
-      if (from != null) list.addFilter("valuta >= ?", new Object[]{new java.sql.Date(DateUtil.startOfDay(from).getTime())});
-      if (to   != null) list.addFilter("valuta <= ?", new Object[]{new java.sql.Date(DateUtil.endOfDay(to).getTime())});
-      list.setOrder("ORDER BY " + service.getSQLTimestamp("valuta"));
+      if (from != null) list.addFilter("datum >= ?", new Object[]{new java.sql.Date(DateUtil.startOfDay(from).getTime())});
+      if (to   != null) list.addFilter("datum <= ?", new Object[]{new java.sql.Date(DateUtil.endOfDay(to).getTime())});
+      list.setOrder("ORDER BY " + service.getSQLTimestamp("datum"));
 
       while (list.hasNext())
       {
         Umsatz u = (Umsatz) list.next();
-        result.add(new Schedule(u.getValuta(),u,false));
+        result.add(new Schedule(u.getDatum(),u,false));
       }
     }
     catch (Exception e)
@@ -80,6 +80,9 @@ public class UmsatzScheduleProvider implements ScheduleProvider<Umsatz>
 
 /**********************************************************************
  * $Log: UmsatzScheduleProvider.java,v $
+ * Revision 1.2  2012/04/05 21:44:18  willuhn
+ * @B BUGZILLA 1219
+ *
  * Revision 1.1  2012/02/20 17:03:50  willuhn
  * @N Umstellung auf neues Schedule-Framework, welches generisch geplante und tatsaechliche Termine fuer Auftraege und Umsaetze ermitteln kann und kuenftig auch vom Forecast verwendet wird
  *

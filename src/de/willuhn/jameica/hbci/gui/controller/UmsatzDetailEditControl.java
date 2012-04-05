@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailEditControl.java,v $
- * $Revision: 1.12 $
- * $Date: 2011/07/25 17:17:19 $
+ * $Revision: 1.13 $
+ * $Date: 2012/04/05 21:44:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -317,12 +317,12 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
           u.getGegenkontoName(),
           u.getGegenkontoNummer(),
           u.getGegenkontoBLZ(),
-          HBCI.DATEFORMAT.format(u.getValuta()),
+          HBCI.DATEFORMAT.format(u.getDatum()),
           u.getZweck(),
           u.getKonto().getWaehrung() + " " + HBCI.DECIMALFORMAT.format(u.getBetrag())
         };
 
-        String msg = i18n.tr("Umsatz [Gegenkonto: {0}, Kto. {1} BLZ {2}], Valuta {3}, Zweck: {4}] {5} geändert",fields);
+        String msg = i18n.tr("Umsatz [Gegenkonto: {0}, Kto. {1} BLZ {2}], Datum {3}, Zweck: {4}] {5} geändert",fields);
         getUmsatz().getKonto().addToProtokoll(msg,Protokoll.TYP_SUCCESS);
       }
 
@@ -391,7 +391,10 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
 
 /**********************************************************************
  * $Log: UmsatzDetailEditControl.java,v $
- * Revision 1.12  2011/07/25 17:17:19  willuhn
+ * Revision 1.13  2012/04/05 21:44:18  willuhn
+ * @B BUGZILLA 1219
+ *
+ * Revision 1.12  2011-07-25 17:17:19  willuhn
  * @N BUGZILLA 1065 - zusaetzlich noch addkey
  *
  * Revision 1.11  2011-07-25 14:42:40  willuhn

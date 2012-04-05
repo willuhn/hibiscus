@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypImpl.java,v $
- * $Revision: 1.65 $
- * $Date: 2012/01/02 22:32:20 $
+ * $Revision: 1.66 $
+ * $Date: 2012/04/05 21:44:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -142,10 +142,10 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
     DBIterator list = UmsatzUtil.getUmsaetze();
 
     if (von != null)
-      list.addFilter("valuta >= ?", new Object[] {new java.sql.Date(von.getTime())});
+      list.addFilter("datum >= ?", new Object[] {new java.sql.Date(von.getTime())});
     
     if (bis != null)
-      list.addFilter("valuta <= ?", new Object[] {new java.sql.Date(bis.getTime())});
+      list.addFilter("datum <= ?", new Object[] {new java.sql.Date(bis.getTime())});
 
     if (this.isNewObject()) // Neuer Umsatztyp. Der hat noch keine ID
       list.addFilter("umsatztyp_id is null");
@@ -614,6 +614,9 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
 
 /*******************************************************************************
  * $Log: UmsatzTypImpl.java,v $
+ * Revision 1.66  2012/04/05 21:44:18  willuhn
+ * @B BUGZILLA 1219
+ *
  * Revision 1.65  2012/01/02 22:32:20  willuhn
  * @N BUGZILLA 1170
  *
