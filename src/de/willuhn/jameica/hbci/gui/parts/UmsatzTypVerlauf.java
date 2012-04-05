@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTypVerlauf.java,v $
- * $Revision: 1.10 $
- * $Date: 2011/05/10 11:52:32 $
+ * $Revision: 1.11 $
+ * $Date: 2012/04/05 21:44:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -168,15 +168,15 @@ public class UmsatzTypVerlauf implements Part
           if (!(o instanceof Umsatz))
             continue;
           Umsatz u = (Umsatz) o;
-          Date valuta = u.getValuta();
-          if (valuta == null)
+          Date date = u.getDatum();
+          if (date == null)
           {
-            Logger.warn("no valuta found for umsatz, skipping record");
+            Logger.warn("no date found for umsatz, skipping record");
             continue;
           }
           
           // checken, ob sich der Umsatz im aktuellen Monat befindet
-          if (valuta.equals(currentStart) || (valuta.after(currentStart) && valuta.before(currentStop)))
+          if (date.equals(currentStart) || (date.after(currentStart) && date.before(currentStop)))
           {
             current.betrag += u.getBetrag();
             this.hasData = true;
@@ -312,6 +312,9 @@ public class UmsatzTypVerlauf implements Part
 
 /*********************************************************************
  * $Log: UmsatzTypVerlauf.java,v $
+ * Revision 1.11  2012/04/05 21:44:18  willuhn
+ * @B BUGZILLA 1219
+ *
  * Revision 1.10  2011/05/10 11:52:32  willuhn
  * @R Marker geaendert
  *

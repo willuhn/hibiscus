@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SparQuote.java,v $
- * $Revision: 1.35 $
- * $Date: 2011/12/18 23:20:20 $
+ * $Revision: 1.36 $
+ * $Date: 2012/04/05 21:29:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -292,7 +292,7 @@ public class SparQuote implements Part
       umsaetze.addFilter("konto_id = " + konto.getID());
 
     if (start != null)
-      umsaetze.addFilter("valuta >= ?", new Object[] {new java.sql.Date(start.getTime())});
+      umsaetze.addFilter("datum >= ?", new Object[] {new java.sql.Date(start.getTime())});
 
     UmsatzEntry currentEntry = null;
     Calendar cal             = Calendar.getInstance();
@@ -304,7 +304,7 @@ public class SparQuote implements Part
       Date date = u.getDatum();
       if (date == null)
       {
-        Logger.warn("no valuta found for umsatz, skipping record");
+        Logger.warn("no date found for umsatz, skipping record");
         continue;
       }
 
@@ -515,6 +515,9 @@ public class SparQuote implements Part
 
 /*********************************************************************
  * $Log: SparQuote.java,v $
+ * Revision 1.36  2012/04/05 21:29:06  willuhn
+ * @B BUGZILLA 1219
+ *
  * Revision 1.35  2011/12/18 23:20:20  willuhn
  * @N GUI-Politur
  *

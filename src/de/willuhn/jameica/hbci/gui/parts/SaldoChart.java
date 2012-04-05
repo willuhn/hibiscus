@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SaldoChart.java,v $
- * $Revision: 1.8 $
- * $Date: 2011/12/18 23:20:20 $
+ * $Revision: 1.9 $
+ * $Date: 2012/04/05 21:27:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -234,7 +234,7 @@ public class SaldoChart implements Part
         {
           // Keine Anzahl von Tagen angegeben. Dann nehmen wir den
           // aeltesten gefundenen Umsatz als Beginn
-          String query = "select min(valuta) from umsatz";
+          String query = "select min(datum) from umsatz";
           if (k != null)
             query += " where konto_id = " + k.getID();
           
@@ -305,6 +305,9 @@ public class SaldoChart implements Part
 
 /*********************************************************************
  * $Log: SaldoChart.java,v $
+ * Revision 1.9  2012/04/05 21:27:41  willuhn
+ * @B BUGZILLA 1219
+ *
  * Revision 1.8  2011/12/18 23:20:20  willuhn
  * @N GUI-Politur
  *

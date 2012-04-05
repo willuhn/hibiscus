@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/search/UmsatzSearchProvider.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/09/10 11:57:24 $
+ * $Revision: 1.6 $
+ * $Date: 2012/04/05 21:44:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -96,7 +96,7 @@ public class UmsatzSearchProvider implements SearchProvider
         I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
         Konto konto           = umsatz.getKonto();
-        Date valuta           = umsatz.getValuta();
+        Date date             = umsatz.getDatum();
         double betrag         = umsatz.getBetrag();
         String rel            = i18n.tr(betrag > 0 ? "von" : "an");
         String zweck          = umsatz.getZweck();
@@ -105,12 +105,12 @@ public class UmsatzSearchProvider implements SearchProvider
         betrag = Math.abs(betrag);
         if (gegenkontoName == null || gegenkontoName.length() == 0)
         {
-          return i18n.tr("{0}: {1} {2} - {3}", new String[]{HBCI.DATEFORMAT.format(valuta),
+          return i18n.tr("{0}: {1} {2} - {3}", new String[]{HBCI.DATEFORMAT.format(date),
                                                             HBCI.DECIMALFORMAT.format(betrag), 
                                                             konto.getWaehrung(),
                                                             zweck});
         }
-        return i18n.tr("{0}: {1} {2} {3} {4} - {5}", new String[]{HBCI.DATEFORMAT.format(valuta),
+        return i18n.tr("{0}: {1} {2} {3} {4} - {5}", new String[]{HBCI.DATEFORMAT.format(date),
                                                                   HBCI.DECIMALFORMAT.format(betrag), 
                                                                   konto.getWaehrung(),
                                                                   rel,
@@ -131,7 +131,10 @@ public class UmsatzSearchProvider implements SearchProvider
 
 /**********************************************************************
  * $Log: UmsatzSearchProvider.java,v $
- * Revision 1.5  2010/09/10 11:57:24  willuhn
+ * Revision 1.6  2012/04/05 21:44:18  willuhn
+ * @B BUGZILLA 1219
+ *
+ * Revision 1.5  2010-09-10 11:57:24  willuhn
  * @C Allgemeine Suche nach Umsaetzen anhand Suchbegriff in UmsatzUtil verschoben - kann dort besser wiederverwendet werden
  *
  * Revision 1.4  2009/08/25 22:32:10  willuhn

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzTypTreeControl.java,v $
- * $Revision: 1.20 $
- * $Date: 2011/12/18 23:20:20 $
+ * $Revision: 1.21 $
+ * $Date: 2012/04/05 21:44:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -96,7 +96,7 @@ public class UmsatzTypTreeControl extends AbstractControl
       return this.start;
 
     this.start = new DateFromInput(null,"umsatzlist.filter.from");
-    this.start.setComment(i18n.tr("Frühestes Valuta-Datum"));
+    this.start.setComment(i18n.tr("Frühestes Datum"));
     return this.start;
   }
 
@@ -111,7 +111,7 @@ public class UmsatzTypTreeControl extends AbstractControl
       return this.end;
 
     this.end = new DateToInput(null,"umsatzlist.filter.to");
-    this.end.setComment(i18n.tr("Spätestes Valuta-Datum"));
+    this.end.setComment(i18n.tr("Spätestes Datum"));
     return this.end;
   }
   
@@ -294,6 +294,9 @@ public class UmsatzTypTreeControl extends AbstractControl
 
 /*******************************************************************************
  * $Log: UmsatzTypTreeControl.java,v $
+ * Revision 1.21  2012/04/05 21:44:18  willuhn
+ * @B BUGZILLA 1219
+ *
  * Revision 1.20  2011/12/18 23:20:20  willuhn
  * @N GUI-Politur
  *

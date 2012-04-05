@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.111 $
- * $Date: 2011/10/18 09:28:14 $
+ * $Revision: 1.112 $
+ * $Date: 2012/04/05 21:44:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -406,7 +406,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     {
       long d = days * 24l * 60l * 60l * 1000l;
       Date start = DateUtil.startOfDay(new Date(System.currentTimeMillis() - d));
-      list.addFilter("valuta >= ?", new Object[] {new java.sql.Date(start.getTime())});
+      list.addFilter("datum >= ?", new Object[] {new java.sql.Date(start.getTime())});
     }
     return list;
   }
@@ -419,9 +419,9 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     DBIterator list = UmsatzUtil.getUmsaetzeBackwards();
     list.addFilter("konto_id = " + getID());
     if (start != null)
-      list.addFilter("valuta >= ?", new Object[] {new java.sql.Date(DateUtil.startOfDay(start).getTime())});
+      list.addFilter("datum >= ?", new Object[] {new java.sql.Date(DateUtil.startOfDay(start).getTime())});
     if (end != null)
-      list.addFilter("valuta <= ?", new Object[] {new java.sql.Date(DateUtil.endOfDay(end).getTime())});
+      list.addFilter("datum <= ?", new Object[] {new java.sql.Date(DateUtil.endOfDay(end).getTime())});
     return list;
   }
 
@@ -752,6 +752,9 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
 
 /*******************************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.112  2012/04/05 21:44:18  willuhn
+ * @B BUGZILLA 1219
+ *
  * Revision 1.111  2011/10/18 09:28:14  willuhn
  * @N Gemeinsames Basis-Interface "HibiscusDBObject" fuer alle Entities (ausser Version und DBProperty) mit der Implementierung "AbstractHibiscusDBObject". Damit koennen jetzt zu jedem Fachobjekt beliebige Meta-Daten in der Datenbank gespeichert werden. Wird im ersten Schritt fuer die Reminder verwendet, um zu einem Auftrag die UUID des Reminders am Objekt speichern zu koennen
  *
