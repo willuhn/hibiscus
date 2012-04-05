@@ -1,6 +1,6 @@
 HEAD
 
-  * BUG: 0173 BUGZILLA 1219 - In Umsatzliste/Kontoauszug/Saldoverlauf konsequent Buchngsdatum statt Valuta-Datum verwenden
+  * BUG: 0173 BUGZILLA 1219 - In Umsatzliste/Kontoauszug/Saldoverlauf/Sparquote konsequent Buchngsdatum statt Valuta-Datum verwenden
   * BUG: 0172 39-blz-optional.patch
   * BUG: 0171 38-bug1207.patch - BUGZILLA 1207 - TCP-Port von PIN/TAN-Config lieﬂ sich nicht ‰ndern
   * BUG: 0170 37-bug1129.patch - BUGZILLA 1129 - Dauerauftraege konnten nicht abgerufen werden, wenn ungueltige Zeichen drin stehen
