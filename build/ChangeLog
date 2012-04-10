@@ -1,5 +1,6 @@
 HEAD
 
+  * NEW: 0174 BUGZILLA 1222 - Synchronisierung kann jetzt auf der Startseite mit ALT+Y gestartet werden
   * BUG: 0173 BUGZILLA 1219 - Konsequentund einheitlich Buchngsdatum statt Valuta-Datum bei Filtern verwenden
   * BUG: 0172 39-blz-optional.patch
   * BUG: 0171 38-bug1207.patch - BUGZILLA 1207 - TCP-Port von PIN/TAN-Config lieﬂ sich nicht ‰ndern
