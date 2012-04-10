@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Sync.java,v $
- * $Revision: 1.18 $
- * $Date: 2011/05/06 12:35:48 $
+ * $Revision: 1.19 $
+ * $Date: 2012/04/10 20:52:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -111,7 +111,7 @@ public class Sync extends AbstractBox implements Box
       }
     },null,false,"document-properties.png");
     
-    b.addButton(i18n.tr("Synchronisierung starten"),new Action() {
+    b.addButton(i18n.tr("S&ynchronisierung starten"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         handleStart();
@@ -176,7 +176,10 @@ public class Sync extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: Sync.java,v $
- * Revision 1.18  2011/05/06 12:35:48  willuhn
+ * Revision 1.19  2012/04/10 20:52:05  willuhn
+ * @N BUGZILLA 1222
+ *
+ * Revision 1.18  2011-05-06 12:35:48  willuhn
  * @N Neuer Konto-Auswahldialog mit Combobox statt Tabelle. Ist ergonomischer.
  *
  * Revision 1.17  2010-08-12 17:12:32  willuhn
