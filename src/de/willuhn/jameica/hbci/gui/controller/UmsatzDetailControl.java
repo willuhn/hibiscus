@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailControl.java,v $
- * $Revision: 1.45 $
- * $Date: 2011/07/25 17:17:19 $
+ * $Revision: 1.46 $
+ * $Date: 2012/04/23 21:03:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,6 +30,7 @@ import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.ColorUtil;
 import de.willuhn.jameica.hbci.gui.input.AddressInput;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
 import de.willuhn.jameica.hbci.gui.input.UmsatzTypInput;
@@ -239,14 +240,7 @@ public class UmsatzDetailControl extends AbstractControl {
     double s = getUmsatz().getBetrag();
     betrag = new LabelInput(HBCI.DECIMALFORMAT.format(s));
     betrag.setComment(getUmsatz().getKonto().getWaehrung());
-    
-    if (s < 0)
-      betrag.setColor(Color.ERROR);
-    else if (s > 0)
-      betrag.setColor(Color.SUCCESS);
-    else
-      betrag.setColor(Color.WIDGET_FG);
-
+    betrag.setColor(ColorUtil.getColor(s,Color.ERROR,Color.SUCCESS,Color.WIDGET_FG));
     return betrag;
   }
 
@@ -293,14 +287,7 @@ public class UmsatzDetailControl extends AbstractControl {
     double s = getUmsatz().getSaldo();
 		saldo = new LabelInput(HBCI.DECIMALFORMAT.format(s));
 		saldo.setComment(getUmsatz().getKonto().getWaehrung());
-
-    if (s < 0)
-      saldo.setColor(Color.ERROR);
-    else if (s > 0)
-      saldo.setColor(Color.SUCCESS);
-    else
-      saldo.setColor(Color.WIDGET_FG);
-    
+    saldo.setColor(ColorUtil.getColor(s,Color.ERROR,Color.SUCCESS,Color.WIDGET_FG));
     return saldo;
 	}
 
@@ -417,7 +404,10 @@ public class UmsatzDetailControl extends AbstractControl {
 
 /**********************************************************************
  * $Log: UmsatzDetailControl.java,v $
- * Revision 1.45  2011/07/25 17:17:19  willuhn
+ * Revision 1.46  2012/04/23 21:03:41  willuhn
+ * @N BUGZILLA 1227
+ *
+ * Revision 1.45  2011-07-25 17:17:19  willuhn
  * @N BUGZILLA 1065 - zusaetzlich noch addkey
  *
  * Revision 1.44  2011-07-25 14:42:40  willuhn

@@ -1,5 +1,6 @@
 HEAD
 
+  * NEW: 0176 BUGZILLA 1227 - Anzeige von "-0,00" vermeiden
   * NEW: 0175 40-blz-updates.patch - Aktualisierte Bankenliste (neue SPK-PIN/TAN URLs)
   * NEW: 0174 BUGZILLA 1222 - Synchronisierung kann jetzt auf der Startseite mit ALT+Y gestartet werden
   * BUG: 0173 BUGZILLA 1219 - Konsequentund einheitlich Buchngsdatum statt Valuta-Datum bei Filtern verwenden

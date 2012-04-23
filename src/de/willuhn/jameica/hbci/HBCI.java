@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCI.java,v $
- * $Revision: 1.126 $
- * $Date: 2012/03/06 23:23:34 $
+ * $Revision: 1.127 $
+ * $Date: 2012/04/23 21:03:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -35,6 +35,7 @@ import de.willuhn.jameica.hbci.server.HBCIDBServiceImpl;
 import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.plugin.Version;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.util.CustomDecimalFormat;
 import de.willuhn.logging.Level;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -63,7 +64,7 @@ public class HBCI extends AbstractPlugin
   /**
    * DecimalFormat.
    */
-  public static DecimalFormat DECIMALFORMAT = (DecimalFormat) DecimalFormat.getInstance(Application.getConfig().getLocale());
+  public static DecimalFormat DECIMALFORMAT = new CustomDecimalFormat();
 
   /**
    * Mapper von HBCI4Java nach jameica Loglevels
@@ -89,7 +90,6 @@ public class HBCI extends AbstractPlugin
 		Logger.info("starting init process for hibiscus");
 
     //  BUGZILLA 101 http://www.willuhn.de/bugzilla/show_bug.cgi?id=101
-    DECIMALFORMAT.applyPattern("###,###,##0.00");
     DECIMALFORMAT.setGroupingUsed(Settings.getDecimalGrouping());
 
     LOGMAPPING.put(Level.ERROR, new Integer(HBCIUtils.LOG_ERR));
@@ -373,6 +373,9 @@ public class HBCI extends AbstractPlugin
 
 /**********************************************************************
  * $Log: HBCI.java,v $
+ * Revision 1.127  2012/04/23 21:03:41  willuhn
+ * @N BUGZILLA 1227
+ *
  * Revision 1.126  2012/03/06 23:23:34  willuhn
  * @N BUGZILLA 1129
  *

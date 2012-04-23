@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SparQuote.java,v $
- * $Revision: 1.36 $
- * $Date: 2012/04/05 21:29:06 $
+ * $Revision: 1.37 $
+ * $Date: 2012/04/23 21:03:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,7 +43,7 @@ import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
-import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.ColorUtil;
 import de.willuhn.jameica.hbci.gui.chart.LineChart;
 import de.willuhn.jameica.hbci.gui.chart.LineChartData;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
@@ -230,10 +230,7 @@ public class SparQuote implements Part
         if (item == null || item.getData() == null)
           return;
         UmsatzEntry ue = (UmsatzEntry) item.getData();
-        if (ue.einnahmen - ue.ausgaben < 0)
-          item.setForeground(Settings.getBuchungSollForeground());
-        else
-          item.setForeground(Settings.getBuchungHabenForeground());
+        item.setForeground(ColorUtil.getForeground(ue.einnahmen - ue.ausgaben));
       }
     });
     
@@ -515,6 +512,9 @@ public class SparQuote implements Part
 
 /*********************************************************************
  * $Log: SparQuote.java,v $
+ * Revision 1.37  2012/04/23 21:03:41  willuhn
+ * @N BUGZILLA 1227
+ *
  * Revision 1.36  2012/04/05 21:29:06  willuhn
  * @B BUGZILLA 1219
  *

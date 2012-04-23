@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTree.java,v $
- * $Revision: 1.8 $
- * $Date: 2011/08/08 07:37:27 $
+ * $Revision: 1.9 $
+ * $Date: 2012/04/23 21:03:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -41,6 +41,7 @@ import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.ColorUtil;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.action.UmsatzTypNew;
 import de.willuhn.jameica.hbci.gui.menus.UmsatzList;
@@ -116,12 +117,9 @@ public class UmsatzTree extends TreePart
               }
             }
           }
-          
-          if (betrag.doubleValue() < 0)
-            item.setForeground(Settings.getBuchungSollForeground());
-          else
-            item.setForeground(Settings.getBuchungHabenForeground());
-          
+
+          item.setForeground(ColorUtil.getForeground(betrag.doubleValue()));
+
           // neue Umsaetze fett drucken, vorgemerkte grau
           if (i instanceof Umsatz)
           {
@@ -283,7 +281,10 @@ public class UmsatzTree extends TreePart
 
 /*******************************************************************************
  * $Log: UmsatzTree.java,v $
- * Revision 1.8  2011/08/08 07:37:27  willuhn
+ * Revision 1.9  2012/04/23 21:03:41  willuhn
+ * @N BUGZILLA 1227
+ *
+ * Revision 1.8  2011-08-08 07:37:27  willuhn
  * @B BUGZILLA 1115
  *
  * Revision 1.7  2011-04-29 07:41:56  willuhn

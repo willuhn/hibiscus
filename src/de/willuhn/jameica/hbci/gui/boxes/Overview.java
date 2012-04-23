@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Overview.java,v $
- * $Revision: 1.19 $
- * $Date: 2011/09/08 08:05:18 $
+ * $Revision: 1.20 $
+ * $Date: 2012/04/23 21:03:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -33,6 +33,7 @@ import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.ColorUtil;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -229,9 +230,7 @@ public class Overview extends AbstractBox implements Box
       if (saldoDate != null)
         comment += " [" + HBCI.DATEFORMAT.format(saldoDate) + "]";
       saldo.setComment(comment);
-      if (d < 0)       saldo.setColor(Color.ERROR);
-      else if (d == 0) saldo.setColor(Color.WIDGET_FG);
-      else             saldo.setColor(Color.SUCCESS);
+      saldo.setColor(ColorUtil.getColor(d,Color.ERROR,Color.SUCCESS,Color.WIDGET_FG));
       ////////////////////////////////////////////////////////////////////////////
 
       
@@ -261,12 +260,7 @@ public class Overview extends AbstractBox implements Box
 
       double diff = in - out;
       getBilanz().setValue(HBCI.DECIMALFORMAT.format(diff));
-      if (diff < 0)
-        ((LabelInput)getBilanz()).setColor(Color.ERROR);
-      else if (diff == 0)
-        ((LabelInput)getBilanz()).setColor(Color.WIDGET_FG);
-      else
-        ((LabelInput)getBilanz()).setColor(Color.SUCCESS);
+      ((LabelInput)getBilanz()).setColor(ColorUtil.getColor(diff,Color.ERROR,Color.SUCCESS,Color.WIDGET_FG));
     }
     catch (RemoteException e)
     {
@@ -329,7 +323,10 @@ public class Overview extends AbstractBox implements Box
 
 /*********************************************************************
  * $Log: Overview.java,v $
- * Revision 1.19  2011/09/08 08:05:18  willuhn
+ * Revision 1.20  2012/04/23 21:03:41  willuhn
+ * @N BUGZILLA 1227
+ *
+ * Revision 1.19  2011-09-08 08:05:18  willuhn
  * @C Wenn alle Konten ausgewaehlt sind, dann gar kein Datum hinterm Saldo anzeigen
  *
  * Revision 1.18  2011-09-08 08:02:37  willuhn
