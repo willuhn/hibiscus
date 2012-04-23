@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoList.java,v $
- * $Revision: 1.24 $
- * $Date: 2011/09/25 11:53:57 $
+ * $Revision: 1.25 $
+ * $Date: 2012/04/23 21:03:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,6 +43,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.PassportRegistry;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.ColorUtil;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.messaging.ObjectMessage;
 import de.willuhn.jameica.hbci.messaging.SaldoMessage;
@@ -157,12 +158,7 @@ public class KontoList extends TablePart implements Part
           else
             item.setForeground(Color.WIDGET_FG.getSWTColor());
 
-          
-          // Den Saldo faerben wir extra
-          if (k.getSaldo() <= -0.01) // Negativer Saldo rot
-            item.setForeground(5,Settings.getBuchungSollForeground());
-          else if (k.getSaldo() >= 0.01) // Positiver Saldo gruen
-            item.setForeground(5,Settings.getBuchungHabenForeground());
+          item.setForeground(5,ColorUtil.getForeground(k.getSaldo()));
           
           Konto kd = Settings.getDefaultKonto();
           if (kd != null && kd.equals(k))
@@ -383,7 +379,10 @@ public class KontoList extends TablePart implements Part
 
 /**********************************************************************
  * $Log: KontoList.java,v $
- * Revision 1.24  2011/09/25 11:53:57  willuhn
+ * Revision 1.25  2012/04/23 21:03:41  willuhn
+ * @N BUGZILLA 1227
+ *
+ * Revision 1.24  2011-09-25 11:53:57  willuhn
  * @C Kontonummer und Saldo rechtsbuendig forcieren - siehe Mail von Hermann vom 20.09.2011
  *
  * Revision 1.23  2011-06-29 07:36:42  willuhn

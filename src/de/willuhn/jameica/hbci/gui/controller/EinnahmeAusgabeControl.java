@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EinnahmeAusgabeControl.java,v $
- * $Revision: 1.20 $
- * $Date: 2011/12/18 23:20:20 $
+ * $Revision: 1.21 $
+ * $Date: 2012/04/23 21:03:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -35,7 +35,7 @@ import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
-import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.ColorUtil;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.DateFromInput;
 import de.willuhn.jameica.hbci.gui.input.DateToInput;
@@ -158,14 +158,16 @@ public class EinnahmeAusgabeControl extends AbstractControl
         try
         {
           double plusminus = ea.getPlusminus();
-          if (!summe && plusminus > 0.0d)
-            item.setForeground(Settings.getBuchungHabenForeground());
-          else if (!summe && plusminus < 0.0d)
-            item.setForeground(Settings.getBuchungSollForeground());
-          else
+          if (summe)
+          {
             item.setForeground(Color.WIDGET_FG.getSWTColor());
+          }
+          else
+          {
+            item.setForeground(ColorUtil.getForeground(plusminus));
+            item.setFont(ea.hasDiff() && !summe ? Font.BOLD.getSWTFont() : Font.DEFAULT.getSWTFont());
+          }
           
-          item.setFont(ea.hasDiff() && !summe ? Font.BOLD.getSWTFont() : Font.DEFAULT.getSWTFont());
         }
         catch (Exception e)
         {
@@ -264,6 +266,9 @@ public class EinnahmeAusgabeControl extends AbstractControl
 
 /*******************************************************************************
  * $Log: EinnahmeAusgabeControl.java,v $
+ * Revision 1.21  2012/04/23 21:03:41  willuhn
+ * @N BUGZILLA 1227
+ *
  * Revision 1.20  2011/12/18 23:20:20  willuhn
  * @N GUI-Politur
  *

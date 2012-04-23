@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/KontoAuswahlDialog.java,v $
- * $Revision: 1.9 $
- * $Date: 2011/05/06 12:35:48 $
+ * $Revision: 1.10 $
+ * $Date: 2012/04/23 21:03:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,6 +31,7 @@ import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.gui.ColorUtil;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -261,12 +262,7 @@ public class KontoAuswahlDialog extends AbstractDialog
       if (date != null)
       {
         double saldo = this.preselected.getSaldo();
-        if (saldo >= 0.01d)
-          getSaldo().setColor(Color.SUCCESS);
-        else if (saldo <= 0.01d)
-          getSaldo().setColor(Color.ERROR);
-        else
-          getSaldo().setColor(Color.WIDGET_FG);
+        getSaldo().setColor(ColorUtil.getColor(saldo,Color.ERROR,Color.SUCCESS,Color.WIDGET_FG));
         
         String curr = this.preselected.getWaehrung();
         if (curr == null || curr.length() == 0)
@@ -319,7 +315,10 @@ public class KontoAuswahlDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: KontoAuswahlDialog.java,v $
- * Revision 1.9  2011/05/06 12:35:48  willuhn
+ * Revision 1.10  2012/04/23 21:03:41  willuhn
+ * @N BUGZILLA 1227
+ *
+ * Revision 1.9  2011-05-06 12:35:48  willuhn
  * @N Neuer Konto-Auswahldialog mit Combobox statt Tabelle. Ist ergonomischer.
  *
  **********************************************************************/
