@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.90 $
- * $Date: 2012/04/05 21:44:18 $
+ * $Revision: 1.91 $
+ * $Date: 2012/04/29 19:32:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.zip.CRC32;
 
 import de.willuhn.datasource.GenericObject;
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
@@ -593,7 +594,12 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
     // ID von fest verdrahteten Kategorien
     Integer i = (Integer) super.getAttribute("umsatztyp_id");
 
-    Cache cache = Cache.get(UmsatzTyp.class,true);
+    Cache cache = Cache.get(UmsatzTyp.class, new Cache.ObjectFactory() {
+      public DBIterator load() throws RemoteException
+      {
+        return UmsatzTypUtil.getAll();
+      }
+    },true);
 
     // fest zugeordnet
     if (i != null)
@@ -725,6 +731,9 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.91  2012/04/29 19:32:07  willuhn
+ * @N Reihenfolge der Kategorien bei der Zuordnung beachten
+ *
  * Revision 1.90  2012/04/05 21:44:18  willuhn
  * @B BUGZILLA 1219
  *
