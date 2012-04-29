@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/Cache.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/12/14 12:48:00 $
+ * $Revision: 1.6 $
+ * $Date: 2012/04/29 19:32:07 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -14,6 +14,8 @@ package de.willuhn.jameica.hbci.server;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import de.willuhn.datasource.rmi.DBIterator;
@@ -33,7 +35,8 @@ class Cache
   private final static Map<Class,Cache> caches = new HashMap<Class,Cache>();
   
   // Der konkrete Cache
-  private Map<String,DBObject> data = new HashMap<String,DBObject>();
+  private Map<String,DBObject> data = new HashMap<String,DBObject>(); // Als Map fuer schnellen Zugriff auf einzelne Werte
+  private List<DBObject> values = new LinkedList<DBObject>();         // Als Liste fuer die Sicherstellung der Reihenfolge
   private Class<? extends DBObject> type = null;
   private long validTo = 0;
   
@@ -83,7 +86,25 @@ class Cache
    * @return der Cache.
    * @throws RemoteException
    */
-  static Cache get(Class<? extends DBObject> type, boolean init) throws RemoteException
+  static Cache get(final Class<? extends DBObject> type, boolean init) throws RemoteException
+  {
+    return get(type,new ObjectFactory() {
+      public DBIterator load() throws RemoteException
+      {
+        return Settings.getDBService().createList(type);
+      }
+    },init);
+  }
+  
+  /**
+   * Liefert den Cache fuer den genannten Typ.
+   * @param type der Typ.
+   * @param factory die Object-Factory.
+   * @param init true, wenn der Cache bei der Erzeugung automatisch befuellt werden soll.
+   * @return der Cache.
+   * @throws RemoteException
+   */
+  static Cache get(Class<? extends DBObject> type, ObjectFactory factory, boolean init) throws RemoteException
   {
     Cache cache = caches.get(type);
     
@@ -109,18 +130,19 @@ class Cache
       if (init)
       {
         // Daten in den Cache laden
-        DBIterator list = Settings.getDBService().createList(type);
+        DBIterator list = factory.load();
         while (list.hasNext())
         {
           DBObject o = (DBObject) list.next();
           cache.data.put(o.getID(),o);
+          cache.values.add(o);
         }
       }
       caches.put(type,cache);
     }
     return cache;
   }
-  
+
   /**
    * Liefert ein Objekt aus dem Cache.
    * @param id die ID des Objektes.
@@ -142,7 +164,10 @@ class Cache
       try
       {
         value = (DBObject) Settings.getDBService().createObject(type,s);
-        put(value); // tun wir gleich in den Cache
+        if (value == null)
+          return null;
+        data.put(value.getID(),value);
+        values.add(value);
       }
       catch (ObjectNotFoundException one)
       {
@@ -153,24 +178,25 @@ class Cache
   }
   
   /**
-   * Speichert ein Objekt im Cache.
-   * @param object das zu speichernde Objekt.
-   * @throws RemoteException
-   */
-  private void put(DBObject object) throws RemoteException
-  {
-    if (object == null)
-      return;
-    data.put(object.getID(),object);
-  }
-  
-  /**
    * Liefert alle Werte aus dem Cache.
    * @return Liste der Werte aus dem Cache.
    */
   Collection<DBObject> values()
   {
-    return data.values();
+    return values;
+  }
+  
+  /**
+   * Interface fuer eine Faktory, die die Objekte laedt.
+   */
+  public static interface ObjectFactory
+  {
+    /**
+     * Laedt die Objekte.
+     * @return die Objekte.
+     * @throws RemoteException
+     */
+    public DBIterator load() throws RemoteException;
   }
 }
 
@@ -178,7 +204,10 @@ class Cache
 
 /**********************************************************************
  * $Log: Cache.java,v $
- * Revision 1.5  2010/12/14 12:48:00  willuhn
+ * Revision 1.6  2012/04/29 19:32:07  willuhn
+ * @N Reihenfolge der Kategorien bei der Zuordnung beachten
+ *
+ * Revision 1.5  2010-12-14 12:48:00  willuhn
  * @B Cache wurde nicht immer korrekt aktualisiert, was dazu fuehren konnte, dass sich das Aendern/Loeschen/Anlegen von Kategorien erst nach 10 Sekunden auswirkte und bis dahin Umsaetze der Kategorie "nicht zugeordnet" zugewiesen wurden, obwohl sie in einer Kategorie waren
  *
  * Revision 1.4  2010-08-27 09:24:58  willuhn
