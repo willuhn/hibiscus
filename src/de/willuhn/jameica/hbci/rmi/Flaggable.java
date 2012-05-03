@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/Flaggable.java,v $
- * $Revision: 1.2 $
- * $Date: 2011/10/18 09:28:14 $
+ * $Revision: 1.3 $
+ * $Date: 2012/05/03 21:50:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -38,11 +38,22 @@ public interface Flaggable extends HibiscusDBObject
    * @throws RemoteException
    */
   public void setFlags(int flags) throws RemoteException;
+  
+  /**
+   * Prueft, ob das angegebene Flag vorhanden ist.
+   * @param flag das zu pruefende Flag.
+   * @return true, wenn es gesetzt ist.
+   * @throws RemoteException
+   */
+  public boolean hasFlag(int flag) throws RemoteException;
 }
 
 
 /**********************************************************************
  * $Log: Flaggable.java,v $
+ * Revision 1.3  2012/05/03 21:50:47  willuhn
+ * @B BUGZILLA 1232 - Saldo des Kontos bei Offline-Konten nur bei neuen Umsaetzen uebernehmen - nicht beim Bearbeiten existierender
+ *
  * Revision 1.2  2011/10/18 09:28:14  willuhn
  * @N Gemeinsames Basis-Interface "HibiscusDBObject" fuer alle Entities (ausser Version und DBProperty) mit der Implementierung "AbstractHibiscusDBObject". Damit koennen jetzt zu jedem Fachobjekt beliebige Meta-Daten in der Datenbank gespeichert werden. Wird im ersten Schritt fuer die Reminder verwendet, um zu einem Auftrag die UUID des Reminders am Objekt speichern zu koennen
  *

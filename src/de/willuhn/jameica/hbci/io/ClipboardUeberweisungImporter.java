@@ -23,6 +23,7 @@ import de.willuhn.logging.Logger;
  */
 public class ClipboardUeberweisungImporter
 {
+  private final static Pattern PT_SPLIT = Pattern.compile(":[\n\r]", Pattern.MULTILINE);
   private final static Pattern PT_KONTO = Pattern.compile("(.*nummer.*)|(.*Konto.*)|(.*Kto.*)", Pattern.CASE_INSENSITIVE);
   private final static Pattern PT_BLZ   = Pattern.compile("(.*Bankleitzahl.*)|(.*BLZ.*)", Pattern.CASE_INSENSITIVE);
   private final static Pattern PT_ZWECK = Pattern.compile("(.*zweck.*)", Pattern.CASE_INSENSITIVE);
@@ -45,6 +46,12 @@ public class ClipboardUeberweisungImporter
         return null;
 
       text = text.trim();
+      
+      // Fuer den Fall, dass wir Key+Value nicht nur durch Doppelpunkt sondern zusaetzlich
+      // auch noch durch einen Zeilenumbruch getrennt sind, entfernen wir Zeilen-Umbrueche,
+      // wenn sie auf einen Doppelpunkt folgen
+      // Siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=82519#82519
+      text = PT_SPLIT.matcher(text).replaceAll(":");
 
       StringTokenizer st = new StringTokenizer(text,System.getProperty("line.separator","\n"));
       HashMap values = new HashMap();
@@ -75,10 +82,10 @@ public class ClipboardUeberweisungImporter
           continue;
         if (PT_BLZ.matcher(s).matches())
           u.setGegenkontoBLZ(value.replaceAll(" ",""));
-        else if (PT_NAME.matcher(s).matches())
-          u.setGegenkontoName(value);
         else if (PT_KONTO.matcher(s).matches())
           u.setGegenkontoNummer(value.replaceAll(" ",""));
+        else if (PT_NAME.matcher(s).matches())
+          u.setGegenkontoName(value);
         else if (PT_ZWECK.matcher(s).matches())
           u.setZweck(value);
       }

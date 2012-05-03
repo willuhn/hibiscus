@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailEditControl.java,v $
- * $Revision: 1.13 $
- * $Date: 2012/04/05 21:44:18 $
+ * $Revision: 1.14 $
+ * $Date: 2012/05/03 21:50:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -111,7 +111,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
             if (value == null)
               return;
 
-            if (((konto.getFlags() & Konto.FLAG_OFFLINE) == Konto.FLAG_OFFLINE) && getUmsatz().isNewObject())
+            if (konto.hasFlag(Konto.FLAG_OFFLINE) && getUmsatz().isNewObject())
               getSaldo().setValue(konto.getSaldo() + value);
           }
           catch (Exception e)
@@ -137,7 +137,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
       
       // Bei neuen Umsaetzen auf Offline-Konten automatisch den Saldo des Kontos uebernehmen
       Konto konto = getUmsatz().getKonto();
-      if (((konto.getFlags() & Konto.FLAG_OFFLINE) == Konto.FLAG_OFFLINE) && getUmsatz().isNewObject())
+      if (konto.hasFlag(Konto.FLAG_OFFLINE) && getUmsatz().isNewObject())
         this.saldo.setValue(konto.getSaldo());
       
       this.saldo.setComment(konto == null ? "" : konto.getWaehrung());
@@ -259,7 +259,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
       // BUGZILLA 586
       u.setSaldo(su);
       Konto k = u.getKonto();
-      if ((k.getFlags() & Konto.FLAG_OFFLINE) == Konto.FLAG_OFFLINE)
+      if (k.hasFlag(Konto.FLAG_OFFLINE) && u.isNewObject()) // BUGZILLA 1232
       {
         k.setSaldo(su);
         k.store();
@@ -391,6 +391,9 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
 
 /**********************************************************************
  * $Log: UmsatzDetailEditControl.java,v $
+ * Revision 1.14  2012/05/03 21:50:47  willuhn
+ * @B BUGZILLA 1232 - Saldo des Kontos bei Offline-Konten nur bei neuen Umsaetzen uebernehmen - nicht beim Bearbeiten existierender
+ *
  * Revision 1.13  2012/04/05 21:44:18  willuhn
  * @B BUGZILLA 1219
  *

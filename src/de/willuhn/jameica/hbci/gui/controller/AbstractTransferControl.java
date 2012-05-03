@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractTransferControl.java,v $
- * $Revision: 1.61 $
- * $Date: 2011/10/20 16:20:05 $
+ * $Revision: 1.62 $
+ * $Date: 2012/05/03 20:51:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@ package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
@@ -153,8 +154,10 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 		empfkto = new TextInput(getTransfer().getGegenkontoNummer(),HBCIProperties.HBCI_KTO_MAXLENGTH_SOFT);
 		empfkto.setName(i18n.tr("Kontonummer"));
+		empfkto.setComment("");
     empfkto.setValidChars(HBCIProperties.HBCI_KTO_VALIDCHARS + " ");
     empfkto.setMandatory(true);
+    empfkto.addListener(new KontonummerListener());
     empfkto.addListener(new Listener()
     {
       public void handleEvent(Event event)
@@ -178,6 +181,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 		if (empfblz != null)
 			return empfblz;
 		empfblz = new BLZInput(getTransfer().getGegenkontoBLZ());
+    empfblz.addListener(new KontonummerListener());
     empfblz.setMandatory(true);
 		return empfblz;
 	}
@@ -384,10 +388,40 @@ public abstract class AbstractTransferControl extends AbstractControl
 			catch (RemoteException er)
 			{
 				Logger.error("error while updating currency",er);
-				GUI.getStatusBar().setErrorText(i18n.tr("Fehler bei Ermittlung der Währung"));
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler bei Ermittlung der Währung"),StatusBarMessage.TYPE_ERROR));
 			}
 		}
 	}
+  
+  /**
+   * Listener, der die CRC-Pruefung von Kontonummer und BLZ vornimmt.
+   */
+  private class KontonummerListener implements Listener
+  {
+    /**
+     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+     */
+    public void handleEvent(Event event)
+    {
+      try
+      {
+        String kto = StringUtils.trimToNull((String) getEmpfaengerKonto().getValue());
+        String blz = StringUtils.trimToNull((String) getEmpfaengerBlz().getValue());
+        if (kto == null || blz == null)
+        {
+          getEmpfaengerKonto().setComment("");
+          return;
+        }
+        getEmpfaengerKonto().setComment(i18n.tr(HBCIProperties.checkAccountCRC(blz,kto) ? "Konto OK" : "BLZ/Kto ungültig, bitte prüfen"));
+      }
+      catch (RemoteException er)
+      {
+        Logger.error("error while checking konto/blz",er);
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Prüfen der Bankverbindung"),StatusBarMessage.TYPE_ERROR));
+      }
+    }
+    
+  }
 
 	/**
 	 * Listener, der bei Auswahl des Empfaengers die restlichen Daten vervollstaendigt.
@@ -408,6 +442,9 @@ public abstract class AbstractTransferControl extends AbstractControl
         getEmpfaengerName().setText(gegenkonto.getName());
 				getEmpfaengerKonto().setValue(gegenkonto.getKontonummer());
 				getEmpfaengerBlz().setValue(gegenkonto.getBlz());
+				
+        // Listener zum Pruefen der Bankverbindung ausloesen
+        new KontonummerListener().handleEvent(null);
 
 				// Wenn der Empfaenger aus dem Adressbuch kommt, deaktivieren wir die Checkbox
 				getStoreEmpfaenger().setValue(Boolean.FALSE);
@@ -451,6 +488,9 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $
+ * Revision 1.62  2012/05/03 20:51:37  willuhn
+ * @N CRC-Pruefung des Empfaengerkontos bei Auftraegen direkt nach Eingabe machen und als Kommentar anzeigen
+ *
  * Revision 1.61  2011/10/20 16:20:05  willuhn
  * @N BUGZILLA 182 - Erste Version von client-seitigen Dauerauftraegen fuer alle Auftragsarten
  *
