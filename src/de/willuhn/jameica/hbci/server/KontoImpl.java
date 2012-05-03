@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.112 $
- * $Date: 2012/04/05 21:44:18 $
+ * $Revision: 1.113 $
+ * $Date: 2012/05/03 21:50:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -707,6 +707,14 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
   }
 
   /**
+   * @see de.willuhn.jameica.hbci.rmi.Flaggable#hasFlag(int)
+   */
+  public boolean hasFlag(int flag) throws RemoteException
+  {
+    return (this.getFlags() & flag) == flag;
+  }
+
+  /**
    * @see de.willuhn.jameica.hbci.rmi.Flaggable#setFlags(int)
    */
   public void setFlags(int flags) throws RemoteException
@@ -752,6 +760,9 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
 
 /*******************************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.113  2012/05/03 21:50:47  willuhn
+ * @B BUGZILLA 1232 - Saldo des Kontos bei Offline-Konten nur bei neuen Umsaetzen uebernehmen - nicht beim Bearbeiten existierender
+ *
  * Revision 1.112  2012/04/05 21:44:18  willuhn
  * @B BUGZILLA 1219
  *

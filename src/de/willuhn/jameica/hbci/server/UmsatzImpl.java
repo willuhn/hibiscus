@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzImpl.java,v $
- * $Revision: 1.91 $
- * $Date: 2012/04/29 19:32:07 $
+ * $Revision: 1.92 $
+ * $Date: 2012/05/03 21:50:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -658,6 +658,14 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
   }
 
   /**
+   * @see de.willuhn.jameica.hbci.rmi.Flaggable#hasFlag(int)
+   */
+  public boolean hasFlag(int flag) throws RemoteException
+  {
+    return (this.getFlags() & flag) == flag;
+  }
+
+  /**
    * @see de.willuhn.jameica.hbci.rmi.Flaggable#setFlags(int)
    */
   public void setFlags(int flags) throws RemoteException
@@ -731,6 +739,9 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
 
 /**********************************************************************
  * $Log: UmsatzImpl.java,v $
+ * Revision 1.92  2012/05/03 21:50:47  willuhn
+ * @B BUGZILLA 1232 - Saldo des Kontos bei Offline-Konten nur bei neuen Umsaetzen uebernehmen - nicht beim Bearbeiten existierender
+ *
  * Revision 1.91  2012/04/29 19:32:07  willuhn
  * @N Reihenfolge der Kategorien bei der Zuordnung beachten
  *
