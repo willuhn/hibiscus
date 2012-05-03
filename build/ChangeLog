@@ -1,5 +1,6 @@
 HEAD
 
+  * NEW: 0179 CRC-Pruefung des Empfaengerkontos bei Auftraegen direkt nach Eingabe machen und als Kommentar anzeigen
   * NEW: 0178 Spalte "Art" bei Umsatz-Export in CSV mit ausgeben
   * NEW: 0177 Reihenfolge der Kategorien bei Zuordnung beachten - siehe
               http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=82475#82475
