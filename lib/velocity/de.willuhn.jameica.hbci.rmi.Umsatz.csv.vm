@@ -1,7 +1,7 @@
-Kontonummer;BLZ;Konto;Gegenkonto;Gegenkonto BLZ;Gegenkonto Inhaber;Betrag;Valuta;Datum;Verwendungszweck;Verwendungszweck 2;Zwischensumme;Primanota;Kundenreferenz;Kategorie;Kommentar;Weitere Verwendungszwecke
+Kontonummer;BLZ;Konto;Gegenkonto;Gegenkonto BLZ;Gegenkonto Inhaber;Betrag;Valuta;Datum;Verwendungszweck;Verwendungszweck 2;Zwischensumme;Primanota;Kundenreferenz;Kategorie;Kommentar;Weitere Verwendungszwecke;Art
 #foreach($umsatz in $objects)
 #set($konto = $umsatz.Konto)
 #set($kat = "")
 #set($kat = $!{umsatz.UmsatzTyp.Name})
-"$!{konto.Kontonummer}";"$!{konto.BLZ}";"$!{konto.Bezeichnung}";"$!{umsatz.GegenkontoNummer}";"$!{umsatz.GegenkontoBLZ}";"$!{umsatz.GegenkontoName}";"$!{decimalformat.format(${umsatz.Betrag})}";"$!{dateformat.format(${umsatz.Valuta})}";"$!{dateformat.format(${umsatz.Datum})}";"$!{umsatz.Zweck}";"$!{umsatz.Zweck2}";"$!{decimalformat.format(${umsatz.Saldo})}";"$!{umsatz.Primanota}";"$!{umsatz.CustomerRef}";"$!{kat}";"$!{umsatz.Kommentar}";"#foreach($ewz in $umsatz.WeitereVerwendungszwecke)$!{ewz} #end";
+"$!{konto.Kontonummer}";"$!{konto.BLZ}";"$!{konto.Bezeichnung}";"$!{umsatz.GegenkontoNummer}";"$!{umsatz.GegenkontoBLZ}";"$!{umsatz.GegenkontoName}";"$!{decimalformat.format(${umsatz.Betrag})}";"$!{dateformat.format(${umsatz.Valuta})}";"$!{dateformat.format(${umsatz.Datum})}";"$!{umsatz.Zweck}";"$!{umsatz.Zweck2}";"$!{decimalformat.format(${umsatz.Saldo})}";"$!{umsatz.Primanota}";"$!{umsatz.CustomerRef}";"$!{kat}";"$!{umsatz.Kommentar}";"#foreach($ewz in $umsatz.WeitereVerwendungszwecke)$!{ewz} #end";;"$!{umsatz.Art}";
 #end

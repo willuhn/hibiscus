@@ -1,5 +1,6 @@
 HEAD
 
+  * NEW: 0178 Spalte "Art" bei Umsatz-Export in CSV mit ausgeben
   * NEW: 0177 Reihenfolge der Kategorien bei Zuordnung beachten - siehe
               http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=82475#82475
   * NEW: 0176 BUGZILLA 1227 - Anzeige von "-0,00" vermeiden
