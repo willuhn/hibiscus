@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SparQuote.java,v $
- * $Revision: 1.37 $
- * $Date: 2012/04/23 21:03:41 $
+ * $Revision: 1.38 $
+ * $Date: 2012/05/06 14:26:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -74,6 +74,7 @@ public class SparQuote implements Part
   private KontoInput kontoauswahl      = null;
   private UmsatzDaysInput startAuswahl = null;
   private SpinnerInput tagAuswahl      = null;
+  private SpinnerInput monatAuswahl    = null;
   
   private List<UmsatzEntry> data       = new ArrayList<UmsatzEntry>();
   private List<UmsatzEntry> trend      = new ArrayList<UmsatzEntry>();
@@ -82,6 +83,7 @@ public class SparQuote implements Part
   
   private Date start                   = null;
   private int stichtag                 = 1;
+  private int monate                   = 1;
 
   /**
    * ct.
@@ -119,6 +121,10 @@ public class SparQuote implements Part
     // Stichtag
     Integer value = (Integer) getTagAuswahl().getValue();
     stichtag = value == null ? 1 : value.intValue();
+    
+    //Monate
+    value = (Integer) getMonatAuswahl().getValue();
+    monate = value == null ? 1 : value.intValue();
 
     // Anzahl der Tage
     Integer days = (Integer) getStartAuswahl().getValue();
@@ -167,7 +173,25 @@ public class SparQuote implements Part
     this.tagAuswahl.addListener(new DelayedListener(500,this.listener));
     return this.tagAuswahl;
   }
-  
+
+  /**
+   * Liefert ein Eingabefeld fuer die Anzahl der Monate pro Periode.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  private SpinnerInput getMonatAuswahl() throws RemoteException
+  {
+    if (this.monatAuswahl != null)
+      return this.monatAuswahl;
+
+    // BUGZILLA 1233
+    this.monatAuswahl = new SpinnerInput(1,12,this.monate);
+    this.monatAuswahl.setComment(i18n.tr("Anzahl der Monate pro Periode"));
+    this.monatAuswahl.setName(i18n.tr("Monate"));
+    this.monatAuswahl.addListener(new DelayedListener(500,this.listener));
+    return this.monatAuswahl;
+  }
+
   /**
    * Liefert ein Eingabefeld fuer das Start-Datum.
    * @return Eingabefeld.
@@ -197,6 +221,7 @@ public class SparQuote implements Part
       tab.addInput(getKontoAuswahl());
       tab.addInput(getStartAuswahl());
       tab.addInput(getTagAuswahl());
+      tab.addInput(getMonatAuswahl());
     }
 
     ButtonArea topButtons = new ButtonArea();
@@ -315,7 +340,7 @@ public class SparQuote implements Part
         // BUGZILLA 337
         // Neues Limit definieren
         cal.setTime(date);
-        cal.add(Calendar.MONTH,1);
+        cal.add(Calendar.MONTH,this.monate);
         
         // BUGZILLA 691
         if (stichtag > cal.getActualMaximum(Calendar.DAY_OF_MONTH))
@@ -512,6 +537,9 @@ public class SparQuote implements Part
 
 /*********************************************************************
  * $Log: SparQuote.java,v $
+ * Revision 1.38  2012/05/06 14:26:04  willuhn
+ * @N BUGZILLA 1233
+ *
  * Revision 1.37  2012/04/23 21:03:41  willuhn
  * @N BUGZILLA 1227
  *
