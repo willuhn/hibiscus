@@ -1,5 +1,6 @@
 HEAD
 
+  * BUG: 0183 BUGZILLA 1236 - ReinerSCT unter Win64 faelschlicherweise als nicht unterstuetzt angezeigt
   * NEW: 0182 BUGZILLA 1233 - Anzahl der Monate pro Periode in Sparquote auswählbar
   * BUG: 0181 BUGZILLA 1232 - Saldo des Kontos nur bei neuen Umsaetzen uebernehmen
   * NEW: 0180 Zeilenumbruch nach Doppelpunkt beim Einfuegen von Bankverbindungen aus Zwischenablage tolerieren, siehe
