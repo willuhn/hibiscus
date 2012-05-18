@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoNew.java,v $
- * $Revision: 1.38 $
- * $Date: 2011/05/03 10:13:15 $
+ * $Revision: 1.39 $
+ * $Date: 2012/05/18 13:25:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,8 +12,12 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.views;
 
+import java.rmi.RemoteException;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TabFolder;
 
 import de.willuhn.jameica.gui.AbstractView;
@@ -34,8 +38,13 @@ import de.willuhn.jameica.hbci.gui.action.ProtokollList;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetailEdit;
 import de.willuhn.jameica.hbci.gui.action.UmsatzList;
 import de.willuhn.jameica.hbci.gui.controller.KontoControl;
+import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
+import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -60,7 +69,7 @@ public class KontoNew extends AbstractView
    */
   public void bind() throws Exception
   {
-    Konto k = control.getKonto();
+    final Konto k = control.getKonto();
     if (k != null && !k.isNewObject())
     {
       String s1 = k.getBezeichnung();
@@ -73,6 +82,38 @@ public class KontoNew extends AbstractView
     }
     else
   		GUI.getView().setTitle(i18n.tr("Konto-Details: Neues Konto"));
+
+    final KontoInput quickSelect = new KontoInput(k,KontoFilter.ALL);
+    quickSelect.setName(i18n.tr("Konto wechseln"));
+    quickSelect.addListener(new Listener() {
+      public void handleEvent(Event event)
+      {
+        try
+        {
+          Konto choice = (Konto) quickSelect.getValue();
+          if (choice == null)
+            return;
+
+          if (k.equals(choice))
+            return; // kein Wechsel stattgefunden
+          
+          new de.willuhn.jameica.hbci.gui.action.KontoNew().handleAction(choice);
+        }
+        catch (OperationCanceledException oce)
+        {
+          // ignore
+        }
+        catch (ApplicationException ae)
+        {
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getMessage(),StatusBarMessage.TYPE_ERROR));
+        }
+        catch (RemoteException re)
+        {
+          Logger.error("unable to switch konto",re);
+        }
+      }
+    });
+    quickSelect.paint(this.getParent());
 
     ColumnLayout columns = new ColumnLayout(getParent(),2);
     SimpleContainer left = new SimpleContainer(columns.getComposite());
@@ -178,6 +219,9 @@ public class KontoNew extends AbstractView
 
 /**********************************************************************
  * $Log: KontoNew.java,v $
+ * Revision 1.39  2012/05/18 13:25:44  willuhn
+ * @N Quick-Select des Kontos in Konto-Details um schneller zwischen den Konten wechseln zu können
+ *
  * Revision 1.38  2011/05/03 10:13:15  willuhn
  * @R Hintergrund-Farbe nicht mehr explizit setzen. Erzeugt auf Windows und insb. Mac teilweise unschoene Effekte. Besonders innerhalb von Label-Groups, die auf Windows/Mac andere Hintergrund-Farben verwenden als der Default-Hintergrund
  *

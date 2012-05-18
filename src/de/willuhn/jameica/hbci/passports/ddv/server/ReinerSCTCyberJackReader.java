@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/server/ReinerSCTCyberJackReader.java,v $
- * $Revision: 1.3 $
- * $Date: 2010/09/07 15:28:04 $
+ * $Revision: 1.4 $
+ * $Date: 2012/05/18 13:08:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -64,6 +64,7 @@ public class ReinerSCTCyberJackReader extends AbstractReader implements Reader
     int os = Application.getPlatform().getOS();
     return os == Platform.OS_LINUX || 
            os == Platform.OS_WINDOWS || 
+           os == Platform.OS_WINDOWS_64 ||
            os == Platform.OS_LINUX_64;
   }
 }
@@ -71,7 +72,10 @@ public class ReinerSCTCyberJackReader extends AbstractReader implements Reader
 
 /**********************************************************************
  * $Log: ReinerSCTCyberJackReader.java,v $
- * Revision 1.3  2010/09/07 15:28:04  willuhn
+ * Revision 1.4  2012/05/18 13:08:57  willuhn
+ * @B BUGZILLA 1236
+ *
+ * Revision 1.3  2010-09-07 15:28:04  willuhn
  * @N BUGZILLA 391 - Kartenleser-Konfiguration komplett umgebaut. Damit lassen sich jetzt beliebig viele Kartenleser und Konfigurationen parellel einrichten
  *
  * Revision 1.2  2010-07-25 23:56:09  willuhn
