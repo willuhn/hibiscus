@@ -1,5 +1,7 @@
 HEAD
 
+  * NEW: 0185 BLZ 26570090 (Deutsche Bank Osnabrück zu Rewriter hinzugefügt.
+              Siehe http://www.willuhn.de/blog/index.php?/archives/519-Neues-in-Hibiscus.html#c1541
   * NEW: 0184 Quick-Select des Kontos in Konto-Details um schneller zwischen den Konten wechseln zu können
   * BUG: 0183 BUGZILLA 1236 - ReinerSCT unter Win64 faelschlicherweise als nicht unterstuetzt angezeigt
   * NEW: 0182 BUGZILLA 1233 - Anzahl der Monate pro Periode in Sparquote auswählbar

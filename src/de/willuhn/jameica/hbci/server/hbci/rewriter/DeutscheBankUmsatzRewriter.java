@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/rewriter/DeutscheBankUmsatzRewriter.java,v $
- * $Revision: 1.7 $
- * $Date: 2012/02/26 14:07:51 $
+ * $Revision: 1.8 $
+ * $Date: 2012/05/29 19:53:40 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -39,6 +39,7 @@ public class DeutscheBankUmsatzRewriter implements UmsatzRewriter
     list.add("60070070");
     list.add("62070081"); // Deutsche Bank Heilbronn
     list.add("10070848"); // Berliner Bank - ist eine Marke der Deutschen Bank
+    list.add("26570090"); // Deutsche Bank Osnabrueck - siehe http://www.willuhn.de/blog/index.php?/archives/519-Neues-in-Hibiscus.html#c1541
     return list;
   }
 
@@ -135,6 +136,9 @@ public class DeutscheBankUmsatzRewriter implements UmsatzRewriter
 
 /**********************************************************************
  * $Log: DeutscheBankUmsatzRewriter.java,v $
+ * Revision 1.8  2012/05/29 19:53:40  willuhn
+ * @N BLZ 26570090 (Deutsche Bank Osnabrück zu Rewriter hinzugefügt. Siehe http://www.willuhn.de/blog/index.php?/archives/519-Neues-in-Hibiscus.html#c1541
+ *
  * Revision 1.7  2012/02/26 14:07:51  willuhn
  * @N Lifecycle-Management via BeanService
  *
