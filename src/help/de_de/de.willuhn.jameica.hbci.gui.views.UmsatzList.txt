@@ -10,7 +10,7 @@
 	</p>
 	
 	<p>
-		<b>Tipp:</b> Durch Doppelklick auf eine Buchungen können
+		<b>Tipp:</b> Durch Doppelklick auf eine Buchung können
 		Sie weitere Details anzeigen und das Gegenkonto in Ihr Adressbuch übernehmen.
 	</p>
 </form>
