@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/ChipTANDialog.java,v $
- * $Revision: 1.11 $
- * $Date: 2011/05/30 16:14:52 $
+ * $Revision: 1.12 $
+ * $Date: 2012/06/18 10:52:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -225,7 +225,7 @@ public class ChipTANDialog extends TANDialog
           public void widgetSelected(SelectionEvent e)
           {
             GridData gd = (GridData) comp.getLayoutData();
-            if (gd.widthHint < 100) // unplausibel
+            if (gd.widthHint < SWTUtil.mm2px(20)) // unplausibel
               return;
             gd.widthHint -= 5;
             
@@ -246,7 +246,7 @@ public class ChipTANDialog extends TANDialog
           public void widgetSelected(SelectionEvent e)
           {
             GridData gd = (GridData) comp.getLayoutData();
-            if (gd.widthHint > 400) // unplausibel
+            if (gd.widthHint > SWTUtil.mm2px(120)) // unplausibel
               return;
             gd.widthHint += 5;
 
@@ -324,6 +324,9 @@ public class ChipTANDialog extends TANDialog
 
 /**********************************************************************
  * $Log: ChipTANDialog.java,v $
+ * Revision 1.12  2012/06/18 10:52:28  willuhn
+ * @B Flicker-Code u.U. zu klein auf Displays mit hoher DPI-Zahl
+ *
  * Revision 1.11  2011/05/30 16:14:52  willuhn
  * @N Geschwindigkeit anpassbar
  *
