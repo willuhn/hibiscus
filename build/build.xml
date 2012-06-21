@@ -9,7 +9,7 @@
     <buildnumber file="${build.dir}/BUILD" />
     <xmlproperty file="plugin.xml" collapseattributes="true"/>
 
-    <!-- create cvs tag -->
+    <!-- create tag -->
     <propertyfile file="${build.dir}/TAG">
       <entry key="mytag" value="${plugin.version}" />
     </propertyfile>
@@ -21,7 +21,7 @@
     <loadproperties srcFile="${build.dir}/build.properties"/>
 
   	<echo message="VERSION: ${plugin.version}" />
-    <echo message="CVS-Tag: ${tag}" />
+    <echo message="Tag    : ${tag}" />
     <echo message="BUILD  : ${build.number}" />
     <echo message="JAVA   : ${java.version}" />
 
@@ -34,9 +34,9 @@
     </path>
   </target>
 
-  <target depends="init" name="cvs" description="performs cvs update">
-    <exec executable="cvs" failonerror="true" dir="${basedir}">
-      <arg line="update -dP" />
+  <target depends="init" name="update" description="performs scm update">
+    <exec executable="git" failonerror="true" dir="${basedir}">
+      <arg line="pull" />
     </exec>
   </target>
 
@@ -66,10 +66,10 @@
 
 
 
-  <target depends="compile" name="cvstag" description="tags the source in the CVS">
+  <target depends="compile" name="tag" description="tags the source in the scm">
 
-    <exec executable="cvs" failonerror="true" dir="${basedir}">
-      <arg line="tag ${tag}" />
+    <exec executable="git" failonerror="true" dir="${basedir}">
+      <arg line="tag -s ${tag}" />
     </exec>
 
   </target>
@@ -231,11 +231,11 @@
 
 
 
-  <target depends="init,compile,cvstag,signzip,javadoc,src,sign,clean" description="build an official release" name="all" />
+  <target depends="init,compile,tag,signzip,javadoc,src,sign,clean" description="build an official release" name="all" />
 
   <target depends="init,compile,signzip,src,clean" description="build inofficial release" name="fast" />
 
-  <target depends="init,cvs,compile,zip,javadoc,src" description="build nightly build" name="nightly">
+  <target depends="init,update,compile,zip,javadoc,src" description="build nightly build" name="nightly">
     <mkdir dir="${project.nightly}" />
 
     <copy file="${project.release}/${define.zipfilename}" tofile="${project.nightly}/${plugin.name}-${plugin.version}.zip" />
