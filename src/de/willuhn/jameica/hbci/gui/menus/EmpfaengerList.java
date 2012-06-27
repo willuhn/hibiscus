@@ -16,9 +16,11 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.extension.Extendable;
 import de.willuhn.jameica.gui.extension.ExtensionRegistry;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
+import de.willuhn.jameica.gui.parts.CheckedSingleContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungNew;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.DauerauftragNew;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerExport;
@@ -38,23 +40,21 @@ import de.willuhn.util.I18N;
  */
 public class EmpfaengerList extends ContextMenu implements Extendable
 {
-
-	private I18N i18n;
+	private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 	/**
 	 * Erzeugt das Kontext-Menu fuer eine Liste von Empfaengern.
 	 */
 	public EmpfaengerList()
 	{
-		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
-		addItem(new SingleItem(i18n.tr("Öffnen"),new EmpfaengerNew(),"document-open.png"));
+		addItem(new CheckedSingleContextMenuItem(i18n.tr("Öffnen"),new EmpfaengerNew(),"document-open.png"));
     addItem(new ContextMenuItem(i18n.tr("Neue Adresse..."), new ENeu(),"contact-new.png"));
     addItem(new CheckedHibiscusAddressContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new ContextMenuItem(i18n.tr("Neue Überweisung..."),new UeberweisungNew(),"stock_next.png"));
-    addItem(new ContextMenuItem(i18n.tr("Neue Lastschrift..."),new LastschriftNew(),"stock_previous.png"));
-    addItem(new ContextMenuItem(i18n.tr("Neuer Dauerauftrag..."),new DauerauftragNew(),"stock_form-time-field.png"));
+    addItem(new CheckedSingleContextMenuItem(i18n.tr("Neue Überweisung..."),new UeberweisungNew(),"stock_next.png"));
+    addItem(new CheckedSingleContextMenuItem(i18n.tr("Neue Lastschrift..."),new LastschriftNew(),"stock_previous.png"));
+    addItem(new CheckedSingleContextMenuItem(i18n.tr("Neue SEPA-Überweisung..."),new AuslandsUeberweisungNew(),"internet-web-browser.png"));
+    addItem(new CheckedSingleContextMenuItem(i18n.tr("Neuer Dauerauftrag..."),new DauerauftragNew(),"stock_form-time-field.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new CheckedHibiscusAddressContextMenuItem(i18n.tr("Exportieren..."),new EmpfaengerExport(),"document-save.png"));
     addItem(new ContextMenuItem(i18n.tr("Importieren..."),new EmpfaengerImport(),"document-open.png"));
@@ -118,30 +118,6 @@ public class EmpfaengerList extends ContextMenu implements Extendable
       return false;
     }
     
-  }
-
-  /**
-   * Ueberschrieben, um zu pruefen, ob ein Array oder ein einzelnes Element markiert ist.
-   */
-  private class SingleItem extends CheckedContextMenuItem
-  {
-    /**
-     * @param text Anzuzeigender Text.
-     * @param action Aktion.
-     * @param icon optionales Icon.
-     */
-    private SingleItem(String text, Action action, String icon)
-    {
-      super(text,action,icon);
-    }
-    
-    /**
-     * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
-     */
-    public boolean isEnabledFor(Object o)
-    {
-      return (o instanceof Address) && super.isEnabledFor(o);
-    }
   }
 
   /**

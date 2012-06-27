@@ -22,6 +22,7 @@ import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungNew;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
 import de.willuhn.jameica.hbci.gui.action.FlaggableChange;
@@ -68,8 +69,9 @@ public class UmsatzList extends ContextMenu implements Extendable
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new UmsatzItem(i18n.tr("In Adressbuch übernehmen"),new EmpfaengerAdd(),"contact-new.png"));
     addItem(new UmsatzItem(i18n.tr("Als neue Überweisung anlegen..."),new UeberweisungNew(),"stock_next.png"));
-    addItem(new UmsatzBookedItem(i18n.tr("Kategorie zuordnen..."),new UmsatzAssign(),"x-office-spreadsheet.png"));
+    addItem(new UmsatzItem(i18n.tr("Als neue SEPA-Überweisung anlegen..."),new AuslandsUeberweisungNew(),"internet-web-browser.png"));
     addItem(ContextMenuItem.SEPARATOR);
+    addItem(new UmsatzBookedItem(i18n.tr("Kategorie zuordnen..."),new UmsatzAssign(),"x-office-spreadsheet.png"));
     addItem(new UmsatzBookedItem(i18n.tr("als \"geprüft\" markieren..."),new FlaggableChange(Umsatz.FLAG_CHECKED,true),"emblem-default.png"));
     addItem(new UmsatzBookedItem(i18n.tr("als \"ungeprüft\" markieren..."),new FlaggableChange(Umsatz.FLAG_CHECKED,false),"edit-undo.png"));
     addItem(ContextMenuItem.SEPARATOR);
