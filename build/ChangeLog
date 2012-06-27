@@ -1,5 +1,7 @@
 HEAD
 
+  * NEW: 0189 Baum der Umsatz-Kategorien im Diagnose-Backup jetzt so exportieren, dass er auch
+              problemlos wieder importiert werden kann.
   * NEW: 0188 Neuer Menupunkt "Neue SEPA-Ueberweisung" in Umsatz- und Kontoliste, sowie Adressbuch
   * NEW: 0187 Doppler-Erkennung bei Umsatz-Abruf ueberarbeitet - siehe Kommentar in HBCIUmsatzJob
   * NEW: 0186 Flicker-Code u.U. zu schmal auf Displays mit hoher DPI-Zahl
