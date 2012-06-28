@@ -102,7 +102,7 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
         throw new ApplicationException(i18n.tr("Ungültige IBAN. Bitte prüfen Sie Ihre Eingaben."));
         
       HBCIProperties.checkLength(getZweck(), HBCIProperties.HBCI_FOREIGNTRANSFER_USAGE_MAXLENGTH);
-      HBCIProperties.checkChars(getZweck(), HBCIProperties.HBCI_DTAUS_VALIDCHARS);
+      HBCIProperties.checkChars(getZweck(), HBCIProperties.HBCI_SWIFT_VALIDCHARS);
     }
     catch (RemoteException e)
     {

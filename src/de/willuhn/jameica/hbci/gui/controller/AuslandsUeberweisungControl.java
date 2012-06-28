@@ -218,7 +218,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
     if (zweck != null)
       return zweck;
     zweck = new TextInput(getTransfer().getZweck(),HBCIProperties.HBCI_FOREIGNTRANSFER_USAGE_MAXLENGTH);
-    zweck.setValidChars(HBCIProperties.HBCI_DTAUS_VALIDCHARS);
+    zweck.setValidChars(HBCIProperties.HBCI_SWIFT_VALIDCHARS);
     zweck.setEnabled(!getTransfer().ausgefuehrt());
     return zweck;
   }

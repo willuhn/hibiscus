@@ -1,5 +1,6 @@
 HEAD
 
+  * BUG: 0190 BUGZILLA 1244 Im Verwendungszweck von SEPA-Ueberweisungen nur SWIFT-Zeichensatz erlauben
   * NEW: 0189 Baum der Umsatz-Kategorien im Diagnose-Backup jetzt so exportieren, dass er auch
               problemlos wieder importiert werden kann.
   * NEW: 0188 Neuer Menupunkt "Neue SEPA-Ueberweisung" in Umsatz- und Kontoliste, sowie Adressbuch
