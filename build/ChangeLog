@@ -1,0 +1,293 @@
+HEAD
+
+  * NEW: 0191 BUGZILLA 1246 - Duplizieren von Umsatz-Kategorien
+  * BUG: 0190 BUGZILLA 1244 Im Verwendungszweck von SEPA-Ueberweisungen nur SWIFT-Zeichensatz erlauben
+  * NEW: 0189 Baum der Umsatz-Kategorien im Diagnose-Backup jetzt so exportieren, dass er auch
+              problemlos wieder importiert werden kann.
+  * NEW: 0188 Neuer Menupunkt "Neue SEPA-Ueberweisung" in Umsatz- und Kontoliste, sowie Adressbuch
+  * NEW: 0187 Doppler-Erkennung bei Umsatz-Abruf ueberarbeitet - siehe Kommentar in HBCIUmsatzJob
+  * NEW: 0186 Flicker-Code u.U. zu schmal auf Displays mit hoher DPI-Zahl
+  * NEW: 0185 BLZ 26570090 (Deutsche Bank Osnabrück zu Rewriter hinzugefuegt.
+              Siehe http://www.willuhn.de/blog/index.php?/archives/519-Neues-in-Hibiscus.html#c1541
+  * NEW: 0184 Quick-Select des Kontos in Konto-Details um schneller zwischen den Konten wechseln zu können
+  * BUG: 0183 BUGZILLA 1236 - ReinerSCT unter Win64 faelschlicherweise als nicht unterstuetzt angezeigt
+  * NEW: 0182 BUGZILLA 1233 - Anzahl der Monate pro Periode in Sparquote auswählbar
+  * BUG: 0181 BUGZILLA 1232 - Saldo des Kontos nur bei neuen Umsaetzen uebernehmen
+  * NEW: 0180 Zeilenumbruch nach Doppelpunkt beim Einfuegen von Bankverbindungen aus Zwischenablage tolerieren, siehe
+              http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=82519#82519
+  * NEW: 0179 CRC-Pruefung des Empfaengerkontos bei Auftraegen direkt nach Eingabe machen und als Kommentar anzeigen
+  * NEW: 0178 Spalte "Art" bei Umsatz-Export in CSV mit ausgeben
+  * NEW: 0177 Reihenfolge der Kategorien bei Zuordnung beachten - siehe
+              http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=82475#82475
+  * NEW: 0176 BUGZILLA 1227 - Anzeige von "-0,00" vermeiden
+  * NEW: 0175 40-blz-updates.patch - Aktualisierte Bankenliste (neue SPK-PIN/TAN URLs)
+  * NEW: 0174 BUGZILLA 1222 - Synchronisierung kann jetzt auf der Startseite mit ALT+Y gestartet werden
+  * BUG: 0173 BUGZILLA 1219 - Konsequentund einheitlich Buchngsdatum statt Valuta-Datum bei Filtern verwenden
+  * BUG: 0172 39-blz-optional.patch
+  * BUG: 0171 38-bug1207.patch - BUGZILLA 1207 - TCP-Port von PIN/TAN-Config ließ sich nicht ändern
+  * BUG: 0170 37-bug1129.patch - BUGZILLA 1129 - Dauerauftraege konnten nicht abgerufen werden, wenn ungueltige Zeichen drin stehen
+  * CHG: 0169 36-loglevel.patch
+  * BUG: 0168 BUGZILLA 1197 - Ausgeführte Aufträge ließen sich nicht mehr duplizieren
+  * NEW: 0167 Umstellung auf neues Schedule-Framework, welches generisch geplante und tatsaechliche Termine
+              fuer Auftraege und Umsaetze ermitteln kann und kuenftig auch vom Forecast verwendet wird
+              
+2012-02-15 Version 2.2.0
+
+  * NEW: 0166 BUGZILLA 940 - Diverse Tastenkürzel zur Navigation
+  * NEW: 0165 35-mt940-buchungsdatum.patch - Buchungsdatum des Buchungstages verwenden, wenn in Buchung nicht vorhanden
+  * NEW: 0164 34-javax.smartcardio.patch
+  * NEW: 0163 33-catch-exception.patch
+  * NEW: 0162 32-spk-urls.patch - neue Server-URL bei einigen Sparkassen
+  * NEW: 0161 31-hbci4java-postbank.patch - BPD automatisch beim Registrieren des Users nochmal
+              abrufen, wenn sie noch nicht vorhanden sind. Die Postbank unterstuetzt den anonymen
+              Abruf der BPD nicht - dieses Patch sollte das fixen
+              siehe http://www.willuhn.de/blog/index.php?/archives/578-Hinweis-fuer-User,-die-Hibiscus-Probleme-mit-der-Postbank-haben.html
+  * NEW: 0160 HBCI-Jobs koennen jetzt abgebrochen werden
+              siehe http://www.willuhn.de/blog/index.php?/archives/577-Jameica-Cancel-Support-fuer-Hintergrund-Jobs.html
+  * NEW: 0159 BUGZILLA 1181 - Auftrag vorm Duplizieren speichern
+              Duplicate-Action vereinheitlicht
+  * NEW: 0158 Datenbank-IDs beginnen bei H2 jetzt bei "1" statt bei "0" - macht
+              eine spaetere Migration nach MySQL erheblich einfacher.
+  * NEW: 0157 BUGZILLA 1170 - Maximale Laenge des Suchbegriffes in Kategorien von 255 auf
+              1000 Zeichen erhoeht.
+  * NEW: 0156 Beim Loeschen eines Reminder-faehigen Auftrages wird der Reminder jetzt
+              via Messaging automatisch gleich mit geloescht
+  * BUG: 0155 Im Kalender wurde der aktuelle Tag in allen Monaten gelb hervorgehoben,
+              ist aktuell der 31. und hat der Monat gar keine 31 Tage, wurde faelschlicherweise
+              der Monatsletzte (z.Bsp. 30.) hervorgehoben
+  * BUG: 0154 In der Dropdown-Box zur Auswahl eines Empfaengers in einem Auftrag
+              wurde die Auswahl auch dann uebernommen, wenn man die Liste mit
+              Escape abgebrochen hat
+  * NEW: 0153 GUI-Politur
+              - Grundsaetzlich einheitlich Tabs fuer Anzeige-Filter verwenden
+              - Buttons in Auftragslisten oben rechts anordnen
+              - getrenntes Caching von From-/To-Datum zwischen Auftrags- und Umsatzlisten 
+  * NEW: 0152 BUGZILLA 1162 - Support für geplante Wiederholungen von "Offline-Dauerauftraege"
+              in AppointmentProvidern
+  * NEW: 0151 BUGZILLA 1159 - bei Anlage einer PIN/TAN-Config den TCP-Port aus URL
+              entfernen, falls vorhanden 
+  * NEW: 0150 BUGZILLA 1151 - Name des Kontos in TanMediaDialog und PtSecMechDialog anzeigen
+  * NEW: 0149 BUGZILLA 1149 - Umsaetze beim XML-Import einem beliebigen Konto zuordenbar
+  * NEW: 0148 BUGZILLA 1142 - Nachrichten auf der Startseite als Tabelle
+              statt als Formtext anzeigen
+  * NEW: 0147 Update von obantoo 1.5.0 auf 1.5.1 - siehe
+              http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=79127a#79127
+  * CHG: 0146 Auswahl des Stichtages in Spar-Quote als Spinner-Input
+  * BUG: 0145 automatisch aktuelles Datum als Faelligkeit verwenden, wenn keines
+              angegeben ist
+  * NEW: 0144 In den Auftragslisten ebenfalls die weiteren Verwendungszweck-Zeilen
+              anzeigen (so wie in der Umsatzliste bereits vorhanden)
+  * BUG: 0143 Update von obantoo 1.4.11 auf 1.5.0 - siehe
+              http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?t=13679
+  * BUG: 0142 Wenn Einzel-Auftraege zu einem neuen Sammel-Auftrag zusammengefasst
+              wurden, wurde das Faelligkeits-Datum (aktuelles Datum) nicht eingetragen,
+              wodurch der neue Sammel-Auftrag nicht gespeichert werden konnte. 
+  * NEW: 0141 BUGZILLA 182 Zeitgesteuertes Duplizieren von Aufträgen
+  * NEW: 0140 Support zum Speichern beliebiger Meta-Daten an Entities
+  * NEW: 0139 Wenn bei einer Ueberweisung ein Termin in der Zukunft ausgewaehlt wird, erscheint
+              jetzt eine Sicherheitsabfrage, mit der der User darauf hingewiesen wird, den Auftrag
+              ggf. als bankseitig gefuehrte Termin-Ueberweisung einzureichen
+  * CHG: 0138 Neue Wiki-URL
+  * NEW: 0137 Anzeige der Umsätze in Termin-Ansicht
+  * BUG: 0136 XML-Export von Hibiscus-Adressen funktionierte nicht mehr wegen
+              "virtuellen" Konto-Adressen 
+  * BUG: 0135 setText nur aufrufen, wenn Leerzeichen entfernt wurden - siehe
+              http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=78495#78495
+  * NEW: 0134 Kontonummer und Saldo in Kontoliste rechtsbuendig forcieren
+  * NEW: 0133 BUGZILLA 728 - Inline-Editing von Notizen direkt in Umsatzliste
+  * BUG: 0132 Datum des Saldos in Box "Finanz-Übersicht" nicht ganz korrekt - siehe
+              http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=78121#78121
+  * NEW: 0131 Mindestens 8 Zeichen Passwort-Laenge bei RDH2 - siehe Mail von "silentspeak" vom 08.09.2011
+  * DEL: 0130 Biometrie-Support bei Kartenlesern entfernt - wurde nie benutzt
+  * NEW: 0129 BUGZILLA 1125 - Vorauswahl des Kontos wurde nicht zurueckgesetzt
+  * NEW: 0128 BUGZILLA 937 - Fenster mit dem Master-Passwort-Prompt jetzt APPLICATION_MODAL
+  * NEW: 0127 BUGZILLA 1118 - mehrere Buchungen in einem Sammelauftrag auf einmal loeschen
+  * NEW: 0126 Aenderungen nur an den DA-Eigenschaften zulassen, die gemaess BPD aenderbar sind
+  * CHG: 0125 Adressbuch-Details: Bei nicht-aenderbaren Adressen Buttons (Speichern+Loeschen)
+              zwar einblenden aber readonly machen - irritiert nicht so wie komplett fehlende Buttons
+  * BUG: 0124 BUGZILLA 1115 - Menu-Extension wurde nicht deregistriert
+  * CHG: 0123 Verhalten von Von- und Bis-Datum ueberarbeitet, siehe
+              http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=77292#77292
+  * CHG: 0120 Beim Lesen der SQL-Scripts explizites Encoding verwenden
+  * NEW: 0119 BUGZILLA 1065 - Unterstuetzung fuer GV-Code in Umsaetzen
+  * NEW: 0115 BUGZILLA 1093 - Unread-Count links in Navigation (noch unvollstaendig)
+  * NEW: 0114 Faellige Auftraege werden jetzt nicht mehr farbig angezeigt sondern fett gedruckt
+  
+2011-07-28 Version 2.0.3
+
+  * BUG: 0122 BUGZILLA 1109 - Bricht man einen Auftrag im chipTAN-Dialog ab, befindet
+              sich im Job-Status die Erfolgsmeldung "0030 Auftrag angenommen - TAN erforderlich".
+              Das wurde in AbstractHBCIJob#handleResult als Erfolg interpretiert, weil
+              0030 explizit ein OK-Status ist. Fuer diesen Status gibts jetzt eine Sonderrolle
+  * BUG: 0121 Zeitraum und Stichtag in Sparquote initial nicht gesetzt, wurde erst nach
+              Klick auf "Aktualisieren" korrekt berechnet
+  * BUG: 0118 UmsatzTyp#matches(Umsatz,boolean allowReassign)
+  * BUG: 0117 Bei Sammelauftraegen fehlte die Laengen-Pruefung der BLZ 
+  * NEW: 0116 Filter-Einstellungen in Umsatzliste nur noch fuer die Dauer der Sitzung speichern - siehe
+              http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=76837#76837
+  * CHG: 0113 Zeitraum in Auswertung "Sparquote" jetzt auch ueber neuen Schiebe-Regler
+
+2011-07-06 Version 2.0.2
+
+  * BUG: 0112 BUGZILLA 1100 - Callbacks 12 und 13 duerfen nicht im Passport behandelt werden, weil das auch in
+              Situationen passieren kann, wo der Passport gerade nicht im Callback registriert ist
+  * NEW: 0111 BUGZILLA 1088 - Rechtsbuendige Ausrichtung des verfuegbaren Saldos in Kontoliste forcieren
+  * BUG: 0110 Syntax-Belegnummer wurde in den Kontoauszuegen nicht mit angezeigt
+
+2011-06-24 Version 2.0.1
+
+  * NEW: 0109 Ersetzen der Umlaute beim MT940-Export abschaltbar
+  * NEW: 0108 Beim MT940-Import explizit mit ISO-8859 lesen - ist zwar eigentlich nicht noetig, weil da
+              per Definition keine Umlaute enthalten sein duerfen
+  * NEW: 0107 BLZ "55090500" zu NetbankUmsatzRewriter hinzugefuegt
+  * NEW: 0106 BLZ "10070848" zu DeutscheBankUmsatzRewriter hinzugefuegt
+  * BUG: 0105 Anzeigefehler in der Berechnung der naechsten Zahlung im Turnus - siehe
+              http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=76102#76102
+  * BUG: 0204 30-hbci4java-chiptan-reset.patch
+  * CHG: 0103 "Termin" umbenannt in "Fällig am", war vorher u.U. missverstaendlich, wenn es keine
+              bank-gefuehrte Termin-Ueberweisung ist sondern lediglich ein Hibiscus-interner Termin
+  * NEW: 0102 BUGZILLA 1082 - moegliche Race-Condition unter Windows XP (Event-Verschluckung)
+  
+2011-06-20 Version 2.0.0
+
+  * NEW: 0101 29-hbci4java-chiptan-opt-hhd13.patch
+  * NEW: 0100 28-hbci4java-flicker-speed2.patch
+  * NEW: 0099 27-hbci4java-flickercode-luhnsum.patch
+  * NEW: 0098 26-hbci4java-flicker-speed.patch
+  * NEW: 0097 Liste der Bank-Zugaenge ueberarbeitet
+  * NEW: 0096 25-hbci4java-task-maxsegversion.patch - maximale Segment-Version für Jobs definierbar
+  * BUG: 0095 24-hbci4java-hhdversion.patch - HHD-Version wurde u.U. falsch ermittelt
+  * BUG: 0094 BUGZILLA 1056 - Unterkontonummer darf max. 30 Zeichen lang sein und auch Leerzeichen enthalten
+  * NEW: 0093 BUGZILLA 821 - Support fuer optisches chipTAN (22-hbci4java-chiptan-opt.patch, 23-hbci4java-chiptan-opt2.patch)
+  * NEW: 0092 Export von SEPA-Ueberweisungen im HTML- und CSV-Format
+  * NEW: 0091 21-hbci4java-password-retry.patch
+  * NEW: 0090 Bei falscher PIN-/Passwort-Eingabe nur noch die von dem betroffenen
+              Bank-Zugang aus dem Cache loeschen (vorher wurde da immer der komplette
+              Cache leergeraeumt)
+  * NEW: 0089 Kommentare im Termin-Eingabefeld ueberarbeitet
+  * NEW: 0088 Hinweistext in Kontoauswahl bei SEPA-Ueberweisung, wenn kein SEPA-faehiges Konto vorhanden
+  * NEW: 0087 Unterstuetzung fuer HKTAN5/HHD1.4
+  * NEW: 0086 BUGZILLA 1038 - Auswahl des Kontos speichern
+  * NEW: 0085 Funktion zum Loeschen der BPD.
+  * NEW: 0084 BUGZILLA 1044 - Das erste Konto wurde nicht korrekt gezeichnet, wenn die Summen-Linie enthalten ist
+  * NEW: 0083 BUGZILLA 591 - Unterstuetzung fuer BZÜ-Ueberweisung
+  * NEW: 0082 Text-Schluessel als Konstanten definiert - Teil aus dem Patch von Thomas vom 07.12.2010
+  * NEW: 0081 BUGZILLA 827 - Unterstuetzung fuer Eingabe des TAN-Mediums bei smsTAN (10-hbci4java-tanmedia.patch)
+  * NEW: 0080 Zeitraum in Umsatzliste und Saldo-Chart kann jetzt freier und bequemer
+              ueber einen Schieberegler eingestellt werden
+  * BUG: 0079 Titel des Charts wurde bei Aenderung des Zeitraumes nicht aktualisiert
+  * NEW: 0078 SWTChart aktualisiert auf 0.7
+  * CHG: 0077 Auswahl des Kartenleser-Presets ueber Combo-Box statt DialogInput
+  * NEW: 0076 Ausfuehrungsdatum von Auftraegen mit drucken
+  * CHG: 0075 CCombo ersetzt gegen Combo - nativerer Look
+  * CHG: 0074 Besseres Fehlerhandling beim Anlegen/Bearbeiten neuer Turnus-Informationen
+  * CHG: 0073 Hintergrund-Farbe nicht mehr explizit setzen. Erzeugt auf Windows und insb. Mac
+              teilweise unschoene Effekte. Besonders innerhalb von Label-Groups, die auf Windows/Mac
+              andere Hintergrund-Farben verwenden als der Default-Hintergrund
+  * CHG: 0072 PDF-Handbuch entfernt - Menupunkt verlinkt jetzt auf das Wiki
+  * BUG: 0071 Patch 09-hbci4java-missing-ocmt.patch in HBCI4Java
+  * NEW: 0070 BUGZILLA 1036 - Saldo-Chart beginnt u.U. bei 0,00 wenn keine entsprechenden
+              Umsaetze vorhanden sind. Ausserdem: Besitzt ein Konto gar keine Buchungen,
+              wird der Saldo des Kontos ueber den ganzen Zeitraum gezeichnet
+  * NEW: 0069 BUGZILLA 1035 - Valuta und Datum beim Anlegen von Umsaetzen in Offline-Konten
+              automatisch mit aktuellem Datum vorbelegen
+  * NEW: 0068 Neue Spalte "ausgefuehrt_am", in der Hibicus automatisch das Ausfuehrungsdatum
+              von Ueberweisungen und Lastschriften speichert.
+  * BUG: 0067 BUGZILLA 1031 - fehlerhaftes Speichern von abgerufenen Dauerauftraegen tolerieren
+  * BUG: 0066 Umsaetze, die bereits fest zugeordnet sind, duerfen nicht via Suchbegriff zugeordnet werden
+  * BUG: 0065 Vormerkbuchungen nicht mehr als Auto-Gegenbuchung in Offline-Konten uebernehmen.
+  * BUG: 0064 BUGZILLA 692 - Buchungen wurden in "Neue Umsaetze" unter Umstaenden doppelt angezeigt
+  * NEW: 0063 "Zurueck"-Buttons entfernt, es gibt jetzt einen globalen Zurueck-Button
+  * NEW: 0062 Loeschen von Vormerkbuchungen zulassen
+  * NEW: 0061 BUGZILLA 781 - Markierte Umsaetze in "Umsaetze nach Kategorien"
+              nach Rueckkehr aus Umsatzdetails wiederherstellen
+  * BUG: 0060 BUGZILLA 629 - Auswahl der zu zeichnenden Graphen wurde unter
+              Windows ggf. nicht uebernommen
+  * NEW: 0059 Druck-Support für Umsätze, Ueberweisungen und Lastschriften (via Paperclips)
+  * CHG: 0058 BUGZILLA 1014 - automatisches Formatieren des Betrages nach Focus-Wechsel
+              Wurde vorher auch schon in Hibiscus gemacht. Jetzt passierts direkt
+              in DecimalInput
+  * CHG: 0057 Zweispaltige Anzeige in Detailansicht von Daueraufträgen - bessere
+              Anzeige auf kleinen Bildschirmen
+  * CHG: 0056 Loeschen von Datensaetzen in separatem Thread entfernt - zu langsam
+  * BUG: 0055 BUGZILLA 1003 - Spalten-Dreher in HTML-Export "Überweisungen"
+  * BUG: 0054 BUGZILLA 1002 - MaxMsgSizeKB Bugfix in HBCI4Java - 08-hbci4java-bug-195.patch
+  * NEW: 0053 BUGZILLA 999 - Dauerauftraege koennen jetzt auch nur lokal geloescht
+              werden, obwohl sie auch bei der Bank vorliegen 
+  * NEW: 0052 DeutscheBankUmsatzRewriter um 62070081 (Deutsche Bank Heilbronn) erweitert
+  * NEW: 0051 JobNotSupportedException in HBCIFactory fangen und als lesbare ApplicationException
+              werden. Damit kann der User besser erkennen, wenn ein Geschaeftsvorfall 
+              von seiner Bank nicht unterstuetzt wird.
+  * CHG: 0050 Set-Aufrufe fuer Textschluessel und weitere Verwendungszwecke in SEPA-Ueberweisung
+              nur dann mit Exception quittieren, wenn tatsaechlich etwas uebergeben wurde
+              (wird in XML-RPC-Connector aufgerufen)
+  * NEW: 0049 BUGZILLA 993 - Konto, Start- und Enddauer in Finanzuebersicht fuer die Dauer der Sitzung speichern
+  * NEW: 0048 BUGZILLA 989 - Automatisch in Edit-View eines Umsatzes wechseln, falls es ein Offline-Konto ist
+  * BUG: 0047 BUGZILLA 988 - Sortierung der Umsatznummer in Kategorie-Baum als Zahl, nicht als String
+  * NEW: 0046 libhbci4java-card-mac-os-x-10.6.jnilib hinzugefuegt
+  * CHG: 0045 HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
+  * CHG: 0044 Erweitertes Appointment-Interface
+  * NEW: 0043 BUGZILLA 887 - BLZ der Deutschen Bank Berlin zu DeutscheBankUmsatzRewriter hinzugefuegt
+  * NEW: 0042 ImportDialog zeigt Import-Formate sortiert an und merkt sich die letzte Auswahl
+  * BUG: 0041 Debugging MT940-Export
+  * NEW: 0040 BUGZILLA 978 - Sortierung nach Flag in Kontoauszuegen, neuer Filter "nur ungepruefte Umsaetze"
+  * BUG: 0039 BUGZILLA 977 - Sortierung der Kind-Kategorien nicht beruecksichtigt
+  * NEW: 0038 BUGZILLA 669 - MT940-Export fuer Umsaetze
+  * NEW: 0037 Fettdruck (bei neuen Umsaetzen) und grauer Text (bei Vormerkbuchungen) jetzt
+              auch in "Umsaetze nach Kategorien"
+  * BUG: 0036 Verfuegbarer Betrag wurde nicht korrekt als Waehrung formatiert
+  * BUG: 0035 BUGZILLA 964 - Auftrag wird u.U. nicht als "ausgefuehrt" markiert, wenn
+              die Synchronisierung mittendrin abgebrochen wird
+  * CHG: 0034 BUGZILLA 962 - Sortierung der Unterkategorien in "Umsaetze nach Kategorien"
+  * NEW: 0033 Code zum Parsen der TAN-Verfahren in PtSecMech ausgelagert. Wenn ein
+              TAN-Verfahren aus Vorauswahl abgespeichert wurde, wird es nun nur noch
+              dann automatisch verwendet, wenn es in der aktuellen Liste der TAN-Verfahren
+              noch enthalten ist. Siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?t=12545
+  * NEW: 0032 BLZ "60070070" zu DeutscheBankUmsatzRewriter hinzugefuegt
+  * BUG: 0031 Turnus: Das Datum der ersten Zahlung darf nicht ohne Beruecksichtigung des
+              Turnus verwendet werden. Beispiel: Erste Zahlung 22.11, Valuta 23.11, Turnus
+              monatlich am 1., dann ist die erste Zahlung der 01.12. und nicht der 23.11.
+              (nur Anzeigefehler)
+  * BUG: 0030 Cache wurde beim Anlegen/Aendern von Umsatz-Kategorien nicht korrekt
+              aktualisiert -> Dynamische Umsatz-Zuordnung stimmte erst nach 10 Sekunden wieder.
+  * BUG: 0029 Uebernahme des Termins beim Duplizieren war nicht konsistent. Jetzt wird
+              er nur noch bei Bank-gefuehrten Termin-Ueberweisungen uebernommen
+  * BUG: 0028 HBCI-Version wurde nicht pro Chipkarten-Config gespeichert sondern galt
+              fuer alle Kartenleser-Konfigurationen
+  * NEW: 0027 Neuer PDF-Export "PDF-Format: Summen aller Kategorien mit Einnahmen und Ausgaben"
+              in Auswertung "Umsaetze nach Kategorien"
+  * NEW: 0026 In der Auswertung "Spar-Quote" kann nun ein Start-Datum angegeben werden
+  * NEW: 0025 Neuer Filter "Umsatz-Kategorie" in Auswertung "Kontoauszuege"
+  * CHG: 0024 Contextmenu-Eintrage fuer neue Auftraege im Konto nur aktivieren, wenn
+              ein einzelnes Konto selektiert ist. Die Menueintraege machen sonst keinen Sinn
+  * BUG: 0023 Beim Löschen eines Sammelauftrages in der Detail-View wurden die
+              enthaltenen Buchungen nicht sofort aus der Liste entfernt, sodass man
+              eine ObjectNotFoundException durch Doppelklick auf eine Buchung
+              provozieren konnte
+  * NEW: 0022 Kalender-View mit Terminen von Zahlungsaufträgen
+  * CHG: 0021 Umstellung von Birt auf SWTChart
+
+2010-11-10 Version 1.12.0
+
+  * DEL: 0020 Unterstützung für McKoi-Datenbank entfernt.
+  * BUG: 0019 Berücksichtigung von "Null-Umsätzen" (Bug 804)
+  * CHG: 0018 Doppler-Prüfung beim Umsatz-Abruf überarbeitet
+  * NEW: 0017 Import von Buchungen aus Moneyplex
+  * NEW: 0016 Textschlüssel in Daueraufträgen
+  * NEW: 0015 Netbook-Mode
+  * NEW: 0014 Datums-Eingaben ohne Punkt zulässig (Bug 865)
+  * NEW: 0013 Anzeige des Gesamt-Saldos über alle Konten (Bug 886)
+  * NEW: 0012 Chart "Saldo-Verlauf" überarbeitet (Bug 775)
+  * NEW: 0011 Passwörter von Schlüsseldisketten sind jetzt änderbar (Bug 312)
+  * NEW: 0010 Kategorien im Adressbuch (Bug 83)
+  * NEW: 0009 EXE-Launcher für Windows
+  * NEW: 0008 Unterstützung für mehrere parallele Kartenleser und Chipkarten (Bug 391)
+  * NEW: 0007 Neue integrierte Spenden-Funktion
+  * NEW: 0006 Abruf von DKB-VISA-Kontoauszügen via Scripting-Plugin
+  * NEW: 0005 Abruf von Paypal-Kontoauszügen via Scripting-Plugin
+  * NEW: 0004 Unterstützung für das Ändern der Benutzer-Kennung und Server-Adresse
+              auf Chipkarten
+  * NEW: 0003 Anzeige des "verfügbaren Betrages" falls die Bank das unterstützt (Bug 530)
+  * NEW: 0002 Bessere Unterstützung für die Kontoauszüge von Netbank, Spardabank und
+              Deutsche Bank (Bug 244, 887)
+  * NEW: 0001 Support für Offline-Konten (Bug 586)
