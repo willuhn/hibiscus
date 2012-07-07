@@ -22,6 +22,7 @@ import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungNew;
 import de.willuhn.jameica.hbci.gui.action.DauerauftragNew;
 import de.willuhn.jameica.hbci.gui.action.FlaggableChange;
 import de.willuhn.jameica.hbci.gui.action.KontoDelete;
@@ -91,6 +92,7 @@ public class KontoList extends ContextMenu implements Extendable
 
     addItem(new CheckedSingleContextMenuItem(i18n.tr("Neue Überweisung..."),new UeberweisungNew(),"stock_next.png"));
     addItem(new CheckedSingleContextMenuItem(i18n.tr("Neue Lastschrift..."),new LastschriftNew(),"stock_previous.png"));
+    addItem(new CheckedSingleContextMenuItem(i18n.tr("Neue SEPA-Überweisung..."),new AuslandsUeberweisungNew(),"internet-web-browser.png"));
     addItem(new CheckedSingleContextMenuItem(i18n.tr("Neuer Dauerauftrag..."),new DauerauftragNew(),"stock_form-time-field.png"));
 
     addItem(ContextMenuItem.SEPARATOR);

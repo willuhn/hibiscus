@@ -16,7 +16,9 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.kapott.hbci.GV_Result.GVRKUms;
 
@@ -165,6 +167,32 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
     
     GVRKUms result = (GVRKUms) getJobResult();
 
+    // In HBCI gibts fuer Umsaetze ja keine eindeutigen IDs. Daher muessen
+    // wir anhand der Eigenschaften vergleichen, ob wir den Umsatz schon
+    // haben oder nicht. Zwei Umsaetze mit gleichen Eigenschaften werden
+    // von Hibiscus daher als "der selbe" erkannt und nicht erneut in der Datenbank
+    // angelegt. In 99% der Faelle ist das auch korrekt. Unter Umstaenden kann
+    // eine Buchung jedoch tatsaechlich identisch aussehen und trotzdem nicht
+    // die selbe sein. Da den Banken diese Problematik ebenfalls bekannt ist,
+    // verweigern die meisten das Einreichen von mehreren identischen Auftraegen
+    // innerhalb eines Tages. Allerdings machen das nicht alle Banken. Und manche
+    // tolerieren es auch, wenn man den Auftrag nach Erhalt des Doppel-Einreichungs-
+    // Fehlers nochmal einreicht. Beim Abruf der Umsaetze ist auch das meist kein
+    // Problem. Denn wir vergleichen hier nur gegen die bereits in der Datenbank
+    // vorhandenen Umsaetze. Kommen zwei identisch aussehende innerhalb eines
+    // Umsatz-Abrufs von der Bank, dann werden beide angelegt, weil keiner von
+    // beiden bereits in der Datenbank ist. Kommen sie jedoch durch zwei getrennte
+    // Abrufe, dann wuerde der zweite Umsatz nicht mehr angelegt werden, weil
+    // Hibiscus der Meinung ist, diesen Umsatz bereits in der DB zu haben.
+    // Genau hierfuer ist diese Map da. Wenn ein Umsatz bereits in der Datenbank
+    // gefunden wurde, wird er nicht erneut angelegt, zusaetzlich jedoch in dieser
+    // Map gespeichert. Kommt dann innerhalb des selben Abrufes nochmal ein
+    // Umsatz, der bereits in der Datenbank ist, zusaetzlich aber auch bereits
+    // in dieser Map hier steht, dann kann es nicht der selbe sein sondern muss
+    // tatsaechlich ein neuer - identisch aussehender - sein.
+    Map<Umsatz,Umsatz> duplicates = new HashMap<Umsatz,Umsatz>();
+    
+    
     ////////////////////////////////////////////////////////////////////////////
     // Gebuchte Umsaetze
     List lines  = result.getFlatData();
@@ -192,10 +220,21 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
           }
         }
 
-        if (existing.contains(umsatz) != null)
+        Umsatz fromDB = (Umsatz) existing.contains(umsatz);
+        if (fromDB != null)
         {
-          skipped++;
-          continue; // Haben wir schon
+          // Wir duerfen den Umsatz nur dann ueberspringen, wenn wir ihn noch
+          // nicht in der duplicates Map haben. Andernfalls sieht er zwar anders
+          // aus, ist aber wirklich ein neuer
+          if (duplicates.get(fromDB) == null)
+          {
+            // In die duplicates-Map tun. Wenn dann noch einer kommt,
+            // der genauso aussieht, wird der nicht mehr uebersprungen,
+            // weil er wirklich neu ist
+            duplicates.put(fromDB,umsatz);
+            skipped++;
+            continue;
+          }
         }
 
         // Umsatz neu anlegen
@@ -220,6 +259,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
     //
     ////////////////////////////////////////////////////////////////////////////
 
+    duplicates.clear();
 
     ////////////////////////////////////////////////////////////////////////////
     // Vorgemerkte Umsaetze
@@ -229,7 +269,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
 		{
       if (lines != null && lines.size() > 0)
       {
-        ArrayList fetched = new ArrayList();
+        List<Umsatz> fetched = new ArrayList<Umsatz>();
         
         int created = 0;
         int skipped = 0;
@@ -241,11 +281,22 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
           umsatz.setSaldo(0d); // Muss gemacht werden, weil der Saldo beim naechsten Mal anders lauten koennte
           umsatz.setKonto(konto);
           fetched.add(umsatz);
-          
-          if (existing.contains(umsatz) != null)
+
+          Umsatz fromDB = (Umsatz) existing.contains(umsatz);
+          if (fromDB != null)
           {
-            skipped++;
-            continue; // Haben wir schon
+            // Wir duerfen den Umsatz nur dann ueberspringen, wenn wir ihn noch
+            // nicht in der duplicates Map haben. Andernfalls sieht er zwar anders
+            // aus, ist aber wirklich ein neuer
+            if (duplicates.get(fromDB) == null)
+            {
+              // In die duplicates-Map tun. Wenn dann noch einer kommt,
+              // der genauso aussieht, wird der nicht mehr uebersprungen,
+              // weil er wirklich neu ist
+              duplicates.put(fromDB,umsatz);
+              skipped++;
+              continue;
+            }
           }
 
           // Vormerkposten neu anlegen

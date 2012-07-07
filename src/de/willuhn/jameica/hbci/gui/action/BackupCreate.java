@@ -24,8 +24,12 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
 
 import de.willuhn.datasource.BeanUtil;
+import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
+import de.willuhn.datasource.GenericObjectNode;
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.datasource.rmi.DBObject;
+import de.willuhn.datasource.rmi.DBObjectNode;
 import de.willuhn.datasource.serialize.Writer;
 import de.willuhn.datasource.serialize.XmlWriter;
 import de.willuhn.jameica.gui.Action;
@@ -100,65 +104,65 @@ public class BackupCreate implements Action
           writer = new XmlWriter(new BufferedOutputStream(new FileOutputStream(file)));
 
           monitor.setStatusText(i18n.tr("Speichere Turnus-Informationen"));
-          backup(TurnusImpl.class,writer,monitor,null);
+          backup(TurnusImpl.class,writer,monitor);
           monitor.addPercentComplete(5);
 
           
           monitor.setStatusText(i18n.tr("Speichere Umsatz-Kategorien"));
-          backup(UmsatzTypImpl.class,writer,monitor,"order by parent_id");
+          backupTree(UmsatzTypImpl.class,writer,monitor);
           monitor.addPercentComplete(5);
 
 
           monitor.setStatusText(i18n.tr("Speichere Adressbuch"));
-          backup(HibiscusAddressImpl.class,writer,monitor,null);
+          backup(HibiscusAddressImpl.class,writer,monitor);
           monitor.addPercentComplete(5);
 
           monitor.setStatusText(i18n.tr("Speichere Konten und Systemnachrichten"));
-          backup(KontoImpl.class,writer,monitor,null);
-          backup(NachrichtImpl.class,writer,monitor,null);
+          backup(KontoImpl.class,writer,monitor);
+          backup(NachrichtImpl.class,writer,monitor);
           monitor.addPercentComplete(5);
 
           monitor.setStatusText(i18n.tr("Speichere Umsätze"));
-          backup(UmsatzImpl.class,writer,monitor,null);
+          backup(UmsatzImpl.class,writer,monitor);
           monitor.addPercentComplete(20);
           
           monitor.setStatusText(i18n.tr("Speichere Daueraufträge"));
-          backup(DauerauftragImpl.class,writer,monitor,null);
+          backup(DauerauftragImpl.class,writer,monitor);
           monitor.addPercentComplete(5);
 
           monitor.setStatusText(i18n.tr("Speichere Lastschriften"));
-          backup(LastschriftImpl.class,writer,monitor,null);
+          backup(LastschriftImpl.class,writer,monitor);
           monitor.addPercentComplete(5);
 
           monitor.setStatusText(i18n.tr("Speichere Überweisungen"));
-          backup(UeberweisungImpl.class,writer,monitor,null);
+          backup(UeberweisungImpl.class,writer,monitor);
           monitor.addPercentComplete(5);
 
           monitor.setStatusText(i18n.tr("Speichere SEPA-Überweisungen"));
-          backup(AuslandsUeberweisungImpl.class,writer,monitor,null);
+          backup(AuslandsUeberweisungImpl.class,writer,monitor);
           monitor.addPercentComplete(5);
 
           monitor.setStatusText(i18n.tr("Speichere Sammel-Lastschriften"));
-          backup(SammelLastschriftImpl.class,writer,monitor,null);
-          backup(SammelLastBuchungImpl.class,writer,monitor,null);
+          backup(SammelLastschriftImpl.class,writer,monitor);
+          backup(SammelLastBuchungImpl.class,writer,monitor);
           monitor.addPercentComplete(5);
 
           monitor.setStatusText(i18n.tr("Speichere Sammel-Überweisungen"));
-          backup(SammelUeberweisungImpl.class,writer,monitor,null);
-          backup(SammelUeberweisungBuchungImpl.class,writer,monitor,null);
+          backup(SammelUeberweisungImpl.class,writer,monitor);
+          backup(SammelUeberweisungBuchungImpl.class,writer,monitor);
           monitor.addPercentComplete(5);
 
           monitor.setStatusText(i18n.tr("Speichere Properties"));
-          backup(DBPropertyImpl.class,writer,monitor,null);
+          backup(DBPropertyImpl.class,writer,monitor);
           monitor.addPercentComplete(10);
 
           monitor.setStatusText(i18n.tr("Speichere Reminder"));
-          backup(DBReminderImpl.class,writer,monitor,null);
+          backup(DBReminderImpl.class,writer,monitor);
           monitor.addPercentComplete(2);
 
           // Die Protokolle zum Schluss.
           monitor.setStatusText(i18n.tr("Speichere Protokolle"));
-          backup(ProtokollImpl.class,writer,monitor,null);
+          backup(ProtokollImpl.class,writer,monitor);
           monitor.addPercentComplete(20);
           
           // Die Versionstabelle wird nicht mit kopiert
@@ -206,15 +210,15 @@ public class BackupCreate implements Action
   
   /**
    * Hilfsfunktion.
-   * @param type
-   * @param writer
-   * @param monitor
+   * @param type der Typ der zu speichernden Objekte.
+   * @param writer der Writer.
+   * @param monitor der Monitor.
    * @throws Exception
    */
-  private static void backup(Class type, Writer writer, ProgressMonitor monitor, String order) throws Exception
+  private static void backup(Class<? extends DBObject> type, Writer writer, ProgressMonitor monitor) throws Exception
   {
     DBIterator list = Settings.getDBService().createList(type);
-    list.setOrder(order == null ? "order by id" : order);
+    list.setOrder("order by id");
     long count = 1;
     while (list.hasNext())
     {
@@ -233,6 +237,70 @@ public class BackupCreate implements Action
       }
     }
   }
+
+  /**
+   * Hilfsfunktion zum rekursiven Sichern von Baeumen.
+   * Und zwar so, dass sie sich anschliessend korrekt wieder importieren lassen.
+   * @param type der Knoten-Typ des Baumes.
+   * @param writer der Writer.
+   * @param monitor der Monitor.
+   * @throws Exception
+   */
+  private static void backupTree(Class<? extends DBObjectNode> type, Writer writer, ProgressMonitor monitor) throws Exception
+  {
+    // Wir fangen auf der obersten Ebene an, anschliessen gehen wir in die Rekursion.
+    DBIterator root = Settings.getDBService().createList(type);
+    root.addFilter("parent_id is null");
+    root.setOrder("order by id");
+
+    while (root.hasNext())
+    {
+      GenericObjectNode o = null;
+      try
+      {
+        o = (GenericObjectNode)root.next();
+        backupNode(o,writer,monitor);
+        monitor.addPercentComplete(1);
+      }
+      catch (Exception e)
+      {
+        Logger.error("error while writing object " + BeanUtil.toString(o) + " - skipping",e);
+        monitor.log("  " + i18n.tr("{0} fehlerhaft ({1}), überspringe",new String[]{BeanUtil.toString(o),e.getMessage()}));
+      }
+    }
+  }
+  
+  /**
+   * Sichert den Knoten und dessen Kinder.
+   * @param der Knoten.
+   * @param writer der Writer.
+   * @param monitor der Monitor.
+   * @throws Exception
+   */
+  private static void backupNode(GenericObjectNode node, Writer writer, ProgressMonitor monitor) throws Exception
+  {
+    try
+    {
+      // erst der Knoten selbst
+      writer.write(node);
+      
+      // und jetzt rekursiv die Kinder
+      GenericIterator children = node.getChildren();
+      if (children != null)
+      {
+        while (children.hasNext())
+        {
+          backupNode((GenericObjectNode) children.next(),writer,monitor);
+        }
+      }
+    }
+    catch (Exception e)
+    {
+      Logger.error("error while writing object " + BeanUtil.toString(node) + " - skipping",e);
+      monitor.log("  " + i18n.tr("{0} fehlerhaft ({1}), überspringe",new String[]{BeanUtil.toString(node),e.getMessage()}));
+    }
+  }
+  
 
 }
 
