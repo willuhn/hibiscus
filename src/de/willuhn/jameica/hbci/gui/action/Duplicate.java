@@ -41,17 +41,17 @@ public class Duplicate implements Action
   public void handleAction(Object context) throws ApplicationException
   {
 		if (context == null || !(context instanceof Duplicatable))
-			throw new ApplicationException(i18n.tr("Kein zu duplizierender Auftrag angegeben"));
+			throw new ApplicationException(i18n.tr("Keine zu duplizierenden Daten angegeben"));
 
 		try {
 			Duplicatable o = (Duplicatable) context;
-			Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Auftrag dupliziert"),StatusBarMessage.TYPE_SUCCESS));
+			Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Dupliziert"),StatusBarMessage.TYPE_SUCCESS));
 			new Open().handleAction(o.duplicate());
 		}
 		catch (RemoteException e)
 		{
 			Logger.error("error while duplicating object",e);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Duplizieren des Auftrages"));
+			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Duplizieren"));
 		}
   }
 

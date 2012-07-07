@@ -264,8 +264,9 @@ public class UmsatzTypControl extends AbstractControl
 
   /**
    * Speichert die Einstellungen.
+   * @return true, wenn das Speichern erfolgreich war.
    */
-  public synchronized void handleStore()
+  public synchronized boolean handleStore()
   {
     try {
       UmsatzTypObject t = (UmsatzTypObject) getArt().getValue();
@@ -297,6 +298,7 @@ public class UmsatzTypControl extends AbstractControl
       
       ut.store();
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Umsatz-Kategorie gespeichert"), StatusBarMessage.TYPE_SUCCESS));
+      return true;
     }
     catch (ApplicationException e2)
     {
@@ -307,6 +309,7 @@ public class UmsatzTypControl extends AbstractControl
       Logger.error("error while storing umsatz type",e);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Speichern der Umsatz-Kategorie"), StatusBarMessage.TYPE_ERROR));
     }
+    return false;
   }
   
   /**

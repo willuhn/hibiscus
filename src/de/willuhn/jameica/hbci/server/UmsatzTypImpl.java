@@ -25,7 +25,9 @@ import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.db.AbstractDBObjectNode;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.datasource.rmi.DBObjectNode;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.rmi.Duplicatable;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -38,7 +40,7 @@ import de.willuhn.util.I18N;
 /**
  * Implementierung eines Umsatz-Typs.
  */
-public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
+public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Duplicatable
 {
   private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
@@ -607,6 +609,24 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp
     DBIterator di = (DBIterator) i;
     di.setOrder("order by nummer,name");
     return di;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Duplicatable#duplicate()
+   */
+  @Override
+  public Object duplicate() throws RemoteException
+  {
+    UmsatzTyp t = (UmsatzTyp) this.getService().createObject(UmsatzTyp.class,null);
+    t.setColor(this.getColor());
+    t.setCustomColor(this.isCustomColor());
+    t.setName(this.getName());
+    t.setNummer(this.getNummer());
+    t.setParent((DBObjectNode) this.getParent());
+    t.setPattern(this.getPattern());
+    t.setRegex(this.isRegex());
+    t.setTyp(this.getTyp());
+    return t;
   }
   
   

@@ -12,6 +12,8 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.views;
 
+import java.rmi.RemoteException;
+
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -19,8 +21,10 @@ import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
+import de.willuhn.jameica.hbci.gui.action.Duplicate;
 import de.willuhn.jameica.hbci.gui.controller.UmsatzTypControl;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -56,6 +60,23 @@ public class UmsatzTypDetail extends AbstractView
     
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Löschen"),   new DBObjectDelete(),control.getCurrentObject(),false,"user-trash-full.png");
+    buttons.addButton(i18n.tr("Duplizieren..."), new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        if (control.handleStore())
+        {
+          try
+          {
+            new Duplicate().handleAction(control.getUmsatzTyp());
+          }
+          catch (RemoteException re)
+          {
+            Logger.error("unable to duplicate data",re);
+            throw new ApplicationException(i18n.tr("Duplizieren fehlgeschlagen: {0}",re.getMessage()));
+          }
+        }
+      }
+    },null,false,"edit-copy.png");
     buttons.addButton(i18n.tr("Speichern"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException

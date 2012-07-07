@@ -24,6 +24,7 @@ import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -48,6 +49,7 @@ public class Open implements Action
     actionMap.put(SammelLastschrift.class,    SammelLastschriftNew.class);
     actionMap.put(Konto.class,                KontoNew.class);
     actionMap.put(Umsatz.class,               UmsatzDetail.class);
+    actionMap.put(UmsatzTyp.class,            UmsatzTypNew.class);
   }
   
   /**

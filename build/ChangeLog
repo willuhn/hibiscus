@@ -1,5 +1,6 @@
 HEAD
 
+  * NEW: 0187 BUGZILLA 1246 - Duplizieren von Umsatz-Kategorien
   * NEW: 0186 Flicker-Code u.U. zu schmal auf Displays mit hoher DPI-Zahl
   * NEW: 0185 BLZ 26570090 (Deutsche Bank Osnabrück zu Rewriter hinzugefuegt.
               Siehe http://www.willuhn.de/blog/index.php?/archives/519-Neues-in-Hibiscus.html#c1541
