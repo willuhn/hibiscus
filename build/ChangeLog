@@ -1,5 +1,6 @@
 HEAD
 
+  * NEW: 0192 BLZ 25770024 (Deutsche Bank Celle) zu Umsatz-Rewriter hinzugefuegt 
   * NEW: 0191 BUGZILLA 1246 - Duplizieren von Umsatz-Kategorien
   * BUG: 0190 BUGZILLA 1244 Im Verwendungszweck von SEPA-Ueberweisungen nur SWIFT-Zeichensatz erlauben
   * NEW: 0189 Baum der Umsatz-Kategorien im Diagnose-Backup jetzt so exportieren, dass er auch

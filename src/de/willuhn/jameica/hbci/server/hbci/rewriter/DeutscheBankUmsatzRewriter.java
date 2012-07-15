@@ -40,6 +40,7 @@ public class DeutscheBankUmsatzRewriter implements UmsatzRewriter
     list.add("62070081"); // Deutsche Bank Heilbronn
     list.add("10070848"); // Berliner Bank - ist eine Marke der Deutschen Bank
     list.add("26570090"); // Deutsche Bank Osnabrueck - siehe http://www.willuhn.de/blog/index.php?/archives/519-Neues-in-Hibiscus.html#c1541
+    list.add("25770024"); // Deutsche Bank Celle - siehe Mail von Carsten vom 15.07.2012
     return list;
   }
 
