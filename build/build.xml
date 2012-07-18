@@ -235,7 +235,7 @@
 
   <target depends="init,compile,signzip,src,clean" description="build inofficial release" name="fast" />
 
-  <target depends="init,update,compile,zip,javadoc,src" description="build nightly build" name="nightly">
+  <target depends="init,compile,zip,javadoc,src" description="build nightly build" name="nightly">
     <mkdir dir="${project.nightly}" />
 
     <copy file="${project.release}/${define.zipfilename}" tofile="${project.nightly}/${plugin.name}-${plugin.version}.zip" />
