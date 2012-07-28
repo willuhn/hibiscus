@@ -61,6 +61,9 @@
     <copy todir="${class.dir}/img">
       <fileset dir="${img.dir}" />
     </copy>
+    <copy todir="${class.dir}/lang">
+      <fileset dir="${lang.dir}" />
+    </copy>
 
   </target>
 
