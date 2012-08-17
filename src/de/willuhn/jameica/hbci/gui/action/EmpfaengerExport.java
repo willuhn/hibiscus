@@ -16,7 +16,7 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.dialogs.ExportDialog;
-import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
+import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -44,20 +44,31 @@ public class EmpfaengerExport implements Action
     Object[] u = null;
 		try
 		{
-			if (context instanceof HibiscusAddress)
+			if (context instanceof Address)
 			{
-				u = new HibiscusAddress[1];
-        u[0] = (HibiscusAddress) context;
+				u = new Address[1];
+        u[0] = (Address) context;
 			}
-			else if (context instanceof HibiscusAddress[])
+			else if (context instanceof Object[])
       {
-        u = (Object[])context;
+			  // Checken, ob wirklich nur Adressen drin stehen
+        u = (Object[]) context;
+        for (Object o:u)
+        {
+          if (!(o instanceof Address))
+          {
+            u = null;
+            break;
+          }
+        }
+
+			  u = (Object[])context;
       }
 
 			if (u == null)
         throw new ApplicationException(i18n.tr("Bitte wählen Sie einen oder mehrere Adressen aus"));
 
-      ExportDialog d = new ExportDialog(u, HibiscusAddress.class);
+      ExportDialog d = new ExportDialog(u, Address.class);
       d.open();
 		}
     catch (OperationCanceledException oce)

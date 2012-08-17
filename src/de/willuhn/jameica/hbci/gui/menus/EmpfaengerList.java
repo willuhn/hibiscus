@@ -56,7 +56,7 @@ public class EmpfaengerList extends ContextMenu implements Extendable
     addItem(new CheckedSingleContextMenuItem(i18n.tr("Neue SEPA-Überweisung..."),new AuslandsUeberweisungNew(),"internet-web-browser.png"));
     addItem(new CheckedSingleContextMenuItem(i18n.tr("Neuer Dauerauftrag..."),new DauerauftragNew(),"stock_form-time-field.png"));
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new CheckedHibiscusAddressContextMenuItem(i18n.tr("Exportieren..."),new EmpfaengerExport(),"document-save.png"));
+    addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new EmpfaengerExport(),"document-save.png"));
     addItem(new ContextMenuItem(i18n.tr("Importieren..."),new EmpfaengerImport(),"document-open.png"));
     
     // Wir geben das Context-Menu jetzt noch zur Erweiterung frei.
