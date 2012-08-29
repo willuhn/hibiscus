@@ -1,5 +1,6 @@
 HEAD
 
+  * NEW: 0194 Export von allen Adressen erlauben - auch wenn es "virtuelle" Adressen aus Konten sind
   * BUG: 0193 BUGZILLA 1250 - Beim Export nach MT940 kein Tausender-Trennzeichen verwenden
   * NEW: 0192 BLZ 25770024 (Deutsche Bank Celle) zu Umsatz-Rewriter hinzugefuegt 
   * NEW: 0191 BUGZILLA 1246 - Duplizieren von Umsatz-Kategorien
