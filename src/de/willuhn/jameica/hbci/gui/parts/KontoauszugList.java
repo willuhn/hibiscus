@@ -17,6 +17,7 @@ import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -29,6 +30,7 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.Text;
 
 import de.willuhn.datasource.GenericIterator;
+import de.willuhn.datasource.GenericObjectNode;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -84,6 +86,7 @@ public class KontoauszugList extends UmsatzList
   private DateInput start              = null;
   private DateInput end                = null;
   private UmsatzTypInput kategorie     = null;
+  private CheckboxInput subKategorien  = null;
 
   // Gegenkonto/Betrag
   private DialogInput gegenkontoNummer = null;
@@ -146,9 +149,10 @@ public class KontoauszugList extends UmsatzList
       left.addLabelPair(i18n.tr("Kategorie"),               this.getKategorie());
       
       Container right = new SimpleContainer(columns.getComposite());
-      right.addCheckbox(this.getUnChecked(),i18n.tr("Nur ungeprüfte Umsätze"));
       right.addLabelPair(i18n.tr("Start-Datum"),            this.getStart());
       right.addLabelPair(i18n.tr("End-Datum"),              this.getEnd());
+      right.addCheckbox(this.getSubKategorien(),i18n.tr("Unterkategorien einbeziehen"));
+      right.addCheckbox(this.getUnChecked(),i18n.tr("Nur ungeprüfte Umsätze"));
     }
     
     {
@@ -298,6 +302,22 @@ public class KontoauszugList extends UmsatzList
   }
   
   /**
+   * Liefert eine Checkbox die angibt ob Unterkategorien ermittelt werden sollen.
+   * @return Checkbox.
+   * @throws RemoteException
+   */
+  public CheckboxInput getSubKategorien() throws RemoteException
+  {
+    if (this.subKategorien != null)
+      return this.subKategorien;
+    
+    Boolean b = (Boolean) cache.get("kontoauszug.list.subkategorien");
+    this.subKategorien = new CheckboxInput(b != null && b.booleanValue());
+    this.subKategorien.addListener(this.listener);
+    return this.subKategorien;
+  }
+  
+  /**
    * Liefert das Eingabe-Feld fuer die Kontonummer des Gegenkontos.
    * @return Eingabe-Feld.
    * @throws RemoteException
@@ -437,6 +457,7 @@ public class KontoauszugList extends UmsatzList
     String zk         = (String) getText().getValue();
     UmsatzTyp typ     = (UmsatzTyp) getKategorie().getValue();
     boolean unchecked = ((Boolean) getUnChecked().getValue()).booleanValue();
+    boolean subKategorien = ((Boolean) getSubKategorien().getValue()).booleanValue();
     
     // Aktuelle Werte speichern
     cache.put("kontoauszug.list.gegenkonto.nummer",gkNummer);
@@ -447,6 +468,7 @@ public class KontoauszugList extends UmsatzList
     cache.put("kontoauszug.list.betrag.from",      min);
     cache.put("kontoauszug.list.betrag.to",        max);
     cache.put("kontoauszug.list.unchecked",        unchecked);
+    cache.put("kontoauszug.list.subkategorien",    subKategorien);
 
     DBIterator umsaetze = UmsatzUtil.getUmsaetzeBackwards();
     
@@ -500,7 +522,7 @@ public class KontoauszugList extends UmsatzList
     while (umsaetze.hasNext())
     {
       Umsatz u = (Umsatz) umsaetze.next();
-      if (typ != null && !typ.matches(u))
+      if (typ != null && !isTypMatch(typ, u, subKategorien))
         continue;
       
       if (unchecked)
@@ -512,6 +534,26 @@ public class KontoauszugList extends UmsatzList
       result.add(u);
     }
     return result;
+  }
+  
+  private boolean isTypMatch(UmsatzTyp typ, Umsatz u, boolean subKategorien) throws PatternSyntaxException, RemoteException {
+    if (!subKategorien) {
+      return typ.matches(u);
+    }
+    
+    UmsatzTyp t = u.getUmsatzTyp();
+    while (t != null) {
+      if (t.equals(typ)) {
+        return true;
+      }
+      GenericObjectNode parent = t.getParent();
+      if (parent instanceof UmsatzTyp) {
+        t = (UmsatzTyp) parent;
+      } else {
+        t = null;
+      }
+    }
+    return false;
   }
 
   /**
@@ -571,6 +613,7 @@ public class KontoauszugList extends UmsatzList
       getHoechstBetrag().setValue(Double.NaN);
       getKontoAuswahl().setValue(null);
       getKategorie().setValue(null);
+      getSubKategorien().setValue(Boolean.FALSE);
       getGegenkontoNummer().setText("");
       getGegenkontoBLZ().setValue(null);
       getGegenkontoName().setValue(null);
@@ -645,6 +688,7 @@ public class KontoauszugList extends UmsatzList
                 getMindestBetrag().hasChanged() ||
                 getHoechstBetrag().hasChanged() ||
                 getKategorie().hasChanged() ||
+                getSubKategorien().hasChanged() ||
                 getText().hasChanged();
     }
     catch (Exception e)
