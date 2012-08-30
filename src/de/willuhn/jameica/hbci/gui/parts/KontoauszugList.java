@@ -17,7 +17,6 @@ import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -30,7 +29,6 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.Text;
 
 import de.willuhn.datasource.GenericIterator;
-import de.willuhn.datasource.GenericObjectNode;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -147,12 +145,12 @@ public class KontoauszugList extends UmsatzList
       left.addLabelPair(i18n.tr("Zweck/Notiz/Art enthält"), this.getText());
       left.addLabelPair(i18n.tr("Konto"),                   this.getKontoAuswahl());
       left.addLabelPair(i18n.tr("Kategorie"),               this.getKategorie());
+      left.addCheckbox(this.getUnChecked(),i18n.tr("Nur ungeprüfte Umsätze"));
       
       Container right = new SimpleContainer(columns.getComposite());
       right.addLabelPair(i18n.tr("Start-Datum"),            this.getStart());
       right.addLabelPair(i18n.tr("End-Datum"),              this.getEnd());
-      right.addCheckbox(this.getSubKategorien(),i18n.tr("Unterkategorien einbeziehen"));
-      right.addCheckbox(this.getUnChecked(),i18n.tr("Nur ungeprüfte Umsätze"));
+      right.addCheckbox(this.getSubKategorien(),i18n.tr("Untergeordnete Kategorien einbeziehen"));
     }
     
     {
@@ -298,6 +296,23 @@ public class KontoauszugList extends UmsatzList
     this.kategorie.setPleaseChoose(i18n.tr("<Alle Kategorien>"));
     this.kategorie.setComment(null);
     this.kategorie.addListener(this.listener);
+    
+    // Wenn in der Kategorie-Auswahl "<Alle Kategorien>" ausgewaehlt wurde, deaktivieren wir uns
+    this.kategorie.addListener(new Listener()
+    {
+      public void handleEvent(Event event)
+      {
+        try
+        {
+          getSubKategorien().setEnabled(kategorie.getValue() != null);
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to update checkbox",e);
+        }
+      }
+    });
+    
     return this.kategorie;
   }
   
@@ -314,6 +329,7 @@ public class KontoauszugList extends UmsatzList
     Boolean b = (Boolean) cache.get("kontoauszug.list.subkategorien");
     this.subKategorien = new CheckboxInput(b != null && b.booleanValue());
     this.subKategorien.addListener(this.listener);
+    this.subKategorien.setEnabled(this.getKategorie().getValue() != null); // initial nur aktiviert, wenn eine Kategorie ausgewaehlt ist
     return this.subKategorien;
   }
   
@@ -522,7 +538,7 @@ public class KontoauszugList extends UmsatzList
     while (umsaetze.hasNext())
     {
       Umsatz u = (Umsatz) umsaetze.next();
-      if (typ != null && !isTypMatch(typ, u, subKategorien))
+      if (typ != null && !matches(typ, u, subKategorien))
         continue;
       
       if (unchecked)
@@ -536,23 +552,41 @@ public class KontoauszugList extends UmsatzList
     return result;
   }
   
-  private boolean isTypMatch(UmsatzTyp typ, Umsatz u, boolean subKategorien) throws PatternSyntaxException, RemoteException {
-    if (!subKategorien) {
+  /**
+   * Prueft, ob der Umsatz zur Kategorie passt.
+   * @param typ die zu pruefende Kategorie.
+   * @param u der zu pruefende Umsatz.
+   * @param children true, wenn wenn der Umsatz auch dann passen soll, wenn er in
+   * einer der Kind-Kategorien enthalten ist.
+   * @return true, wenn der Umsatz zur Kategorie passt.
+   * @throws RemoteException
+   */
+  private boolean matches(UmsatzTyp typ, Umsatz u, boolean children) throws RemoteException
+  {
+    // Keine rekursive Suche
+    if (!children)
       return typ.matches(u);
+
+    // wir suchen von unten nach oben, indem wir die Umsatzkategorien
+    // des Umsatzes nach oben iterieren. Wenn wir dabei auf die gesuchte
+    // Kategorie stossen, passts.
+    UmsatzTyp t = u.getUmsatzTyp();
+    
+    if (t == null)
+      return false; // nichts zum Suchen da
+    
+    for (int i=0;i<100;++i) // maximal 100 Iterationen - fuer den (eigentlich unmoeglichen Fall), dass eine Rekursion existiert
+    {
+      if (t == null)
+        return false; // oben angekommen und nichts gefunden
+      
+      if (t.equals(typ))
+        return true; // passt!
+      
+      t = (UmsatzTyp) t.getParent(); // weiter nach oben gehen
     }
     
-    UmsatzTyp t = u.getUmsatzTyp();
-    while (t != null) {
-      if (t.equals(typ)) {
-        return true;
-      }
-      GenericObjectNode parent = t.getParent();
-      if (parent instanceof UmsatzTyp) {
-        t = (UmsatzTyp) parent;
-      } else {
-        t = null;
-      }
-    }
+    // nichts gefunden
     return false;
   }
 
@@ -728,64 +762,3 @@ public class KontoauszugList extends UmsatzList
   }
 
 }
-
-
-/*********************************************************************
- * $Log: KontoauszugList.java,v $
- * Revision 1.50  2012/04/05 21:23:41  willuhn
- * @B BUGZILLA 1219
- *
- * Revision 1.49  2011/12/19 22:43:04  willuhn
- * @N In PDF-Export anzeigen, wenn die Daten gefiltert sind - siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=80257#80257
- *
- * Revision 1.48  2011/12/18 23:20:20  willuhn
- * @N GUI-Politur
- *
- * Revision 1.47  2011-08-05 11:21:58  willuhn
- * @N Erster Code fuer eine Umsatz-Preview
- * @C Compiler-Warnings
- * @N DateFromInput/DateToInput - damit sind die Felder fuer den Zeitraum jetzt ueberall einheitlich
- *
- * Revision 1.46  2011-07-20 15:13:10  willuhn
- * @N Filter-Einstellungen nur noch fuer die Dauer der Sitzung speichern - siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=76837#76837
- *
- * Revision 1.45  2011-06-23 15:20:05  willuhn
- * @B BUGZILLA 1082
- *
- * Revision 1.44  2011-05-19 08:41:53  willuhn
- * @N BUGZILLA 1038 - generische Loesung
- *
- * Revision 1.43  2011-05-03 10:13:15  willuhn
- * @R Hintergrund-Farbe nicht mehr explizit setzen. Erzeugt auf Windows und insb. Mac teilweise unschoene Effekte. Besonders innerhalb von Label-Groups, die auf Windows/Mac andere Hintergrund-Farben verwenden als der Default-Hintergrund
- *
- * Revision 1.42  2011-04-29 15:33:28  willuhn
- * @N Neue Spalte "ausgefuehrt_am", in der das tatsaechliche Ausfuehrungsdatum von Auftraegen vermerkt wird
- *
- * Revision 1.41  2011-04-08 15:19:14  willuhn
- * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
- * @C Code-Cleanup
- *
- * Revision 1.40  2011-04-07 17:52:07  willuhn
- * @N BUGZILLA 1014
- *
- * Revision 1.39  2011-01-20 17:13:21  willuhn
- * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
- *
- * Revision 1.38  2011-01-11 22:44:40  willuhn
- * @N BUGZILLA 978
- *
- * Revision 1.37  2010-12-10 12:38:45  willuhn
- * *** empty log message ***
- *
- * Revision 1.36  2010-12-09 15:56:54  willuhn
- * @C Filter nach Kategorie
- *
- * Revision 1.35  2010-11-24 14:54:45  willuhn
- * @C BUGZILLA 951
- *
- * Revision 1.34  2010/06/01 12:12:19  willuhn
- * @C Umsaetze in "Kontoauszuege" und "Umsatze nach Kategorien" per Default in umgekehrt chronologischer Reihenfolge liefern - also neue zuerst
- *
- * Revision 1.33  2010/05/30 23:08:32  willuhn
- * @N Auch in Spalte "art" suchen (BUGZILLA 731)
- **********************************************************************/
