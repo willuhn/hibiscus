@@ -59,7 +59,7 @@ public class update0004 implements Update
         "    zweck varchar(27) NOT NULL," +
         "    UNIQUE (id)," +
         "    PRIMARY KEY (id)" +
-        ")TYPE=InnoDB;\n" +
+        ") ENGINE=InnoDB;\n" +
         "CREATE INDEX idx_zweck ON verwendungszweck(typ,auftrag_id);\n");
   }
 

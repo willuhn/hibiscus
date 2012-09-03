@@ -72,14 +72,14 @@ public class update0002 implements Update
         "    kommentar text NULL," +
         "    UNIQUE (id)," +
         "    PRIMARY KEY (id)" +
-        ")TYPE=InnoDB;\n" +
+        ") ENGINE=InnoDB;\n" +
         "CREATE TABLE op_buchung (" +
         "    id int(10) AUTO_INCREMENT," +
         "    umsatz_id int(10) NOT NULL," +
         "    op_id int(10) NOT NULL," +
         "    UNIQUE (id)," +
         "    PRIMARY KEY (id)" +
-        ")TYPE=InnoDB;\n");
+        ") ENGINE=InnoDB;\n");
   }
 
   /**

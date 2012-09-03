@@ -59,7 +59,7 @@ public class update0006 implements Update
         "    UNIQUE (id)," +
         "    UNIQUE (name)," +
         "    PRIMARY KEY (id)" +
-        ")TYPE=InnoDB;\n");
+        ") ENGINE=InnoDB;\n");
   }
 
   /**
