@@ -13,10 +13,14 @@
 
 package de.willuhn.jameica.hbci.gui.action;
 
+import java.rmi.RemoteException;
+
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.gui.views.UmsatzTypDetail;
+import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.UmsatzTreeNode;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -32,8 +36,20 @@ public class UmsatzTypNew implements Action
   public void handleAction(Object context) throws ApplicationException
   {
     Object o = context;
-    if (context != null && (context instanceof UmsatzTreeNode))
-      o = ((UmsatzTreeNode)context).getUmsatzTyp();
+    if (context != null)
+    {
+      try
+      {
+        if (context instanceof UmsatzTreeNode)
+          o = ((UmsatzTreeNode)context).getUmsatzTyp();
+        else if (context instanceof Umsatz)
+          o = ((Umsatz)context).getUmsatzTyp();
+      }
+      catch (RemoteException re)
+      {
+        Logger.error("unable to determine umsatztyp",re);
+      }
+    }
     GUI.startView(UmsatzTypDetail.class,o);
   }
 

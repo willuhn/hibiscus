@@ -28,22 +28,16 @@ import org.eclipse.swt.widgets.TreeItem;
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.pseudo.PseudoIterator;
-import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.TreeFormatter;
-import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
-import de.willuhn.jameica.gui.parts.ContextMenu;
-import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.gui.parts.TreePart;
 import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
-import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.ColorUtil;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
-import de.willuhn.jameica.hbci.gui.action.UmsatzTypNew;
 import de.willuhn.jameica.hbci.gui.menus.UmsatzList;
 import de.willuhn.jameica.hbci.messaging.NeueUmsaetze;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
@@ -52,7 +46,6 @@ import de.willuhn.jameica.hbci.server.UmsatzTreeNode;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
-import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -142,34 +135,7 @@ public class UmsatzTree extends TreePart
     this.addColumn(i18n.tr("Datum"),            "datum_pseudo", new DateFormatter(HBCI.DATEFORMAT));
     this.addColumn(i18n.tr("Betrag"),           "betrag",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
 
-    // BUGZILLA 512 / 1115
-    ContextMenu menu = new UmsatzList();
-    menu.addItem(ContextMenuItem.SEPARATOR);
-    menu.addItem(new GroupItem(i18n.tr("Kategorie bearbeiten..."),new UmsatzTypNew(),"document-open.png"));
-    menu.addItem(new ContextMenuItem(i18n.tr("Neue Kategorie anlegen..."),new Action()
-    {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        // BUGZILLA 926
-        UmsatzTyp ut = null;
-        if (context != null && (context instanceof Umsatz))
-        {
-          try
-          {
-            Umsatz u = (Umsatz) context;
-            ut = (UmsatzTyp) Settings.getDBService().createObject(UmsatzTyp.class,null);
-            ut.setName(u.getGegenkontoName());
-            ut.setPattern(u.getZweck());
-          }
-          catch (Exception e)
-          {
-            Logger.error("error while preparing category",e);
-          }
-        }
-        new UmsatzTypNew().handleAction(ut);
-      }
-    },"text-x-generic.png"));
-    this.setContextMenu(menu);
+    this.setContextMenu(new UmsatzList());
   }
 
   
@@ -250,33 +216,6 @@ public class UmsatzTree extends TreePart
     }
     
     return node;
-  }
-
-  /**
-   * Menu-Item fuer Umsatzgruppen.
-   */
-  private class GroupItem extends CheckedContextMenuItem
-  {
-    /**
-     * ct.
-     * @param name
-     * @param action
-     * @param icon
-     */
-    private GroupItem(String name, Action action, String icon)
-    {
-      super(name,action,icon);
-    }
-
-    /**
-     * @see de.willuhn.jameica.gui.parts.CheckedContextMenuItem#isEnabledFor(java.lang.Object)
-     */
-    public boolean isEnabledFor(Object o)
-    {
-      if (o != null && (o instanceof UmsatzTreeNode))
-        return super.isEnabledFor(o);
-      return false;
-    }
   }
 }
 
