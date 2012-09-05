@@ -145,7 +145,7 @@ public class UmsatzTree extends TreePart
     // BUGZILLA 512 / 1115
     ContextMenu menu = new UmsatzList();
     menu.addItem(ContextMenuItem.SEPARATOR);
-    menu.addItem(new GroupItem(i18n.tr("Kategorie bearbeiten..."),new UmsatzTypNew()));
+    menu.addItem(new GroupItem(i18n.tr("Kategorie bearbeiten..."),new UmsatzTypNew(),"document-open.png"));
     menu.addItem(new ContextMenuItem(i18n.tr("Neue Kategorie anlegen..."),new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -168,7 +168,7 @@ public class UmsatzTree extends TreePart
         }
         new UmsatzTypNew().handleAction(ut);
       }
-    }));
+    },"text-x-generic.png"));
     this.setContextMenu(menu);
   }
 
@@ -261,10 +261,11 @@ public class UmsatzTree extends TreePart
      * ct.
      * @param name
      * @param action
+     * @param icon
      */
-    private GroupItem(String name, Action action)
+    private GroupItem(String name, Action action, String icon)
     {
-      super(name,action);
+      super(name,action,icon);
     }
 
     /**
