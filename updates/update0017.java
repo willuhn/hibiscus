@@ -70,7 +70,7 @@ public class update0017 implements Update
         "  , ausgefuehrt int(10) NOT NULL" +
         "  , UNIQUE (id)" +
         "  , PRIMARY KEY (id)" +
-        ")TYPE=InnoDB;\n" +
+        ") ENGINE=InnoDB;\n" +
         "CREATE INDEX idx_aueberweisung_konto ON aueberweisung(konto_id);\n" +
         "ALTER TABLE aueberweisung ADD CONSTRAINT fk_aueberweisung_konto FOREIGN KEY (konto_id) REFERENCES konto (id);\n");
   }
