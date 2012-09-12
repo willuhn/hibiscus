@@ -41,6 +41,8 @@ public class NetbankUmsatzRewriter implements UmsatzRewriter
     list.add("55090500"); // SpardaBank Suedwest - https://www.willuhn.de/bugzilla/show_bug.cgi?id=887#c16
     list.add("40060560"); // SpardaBank Münster - https://www.willuhn.de/bugzilla/show_bug.cgi?id=887#c28
     list.add("20690500"); // SpardaBank Hamburg - https://www.willuhn.de/bugzilla/show_bug.cgi?id=887#c47
+    list.add("37060590"); // SpardaBank West 2 - https://www.willuhn.de/bugzilla/show_bug.cgi?id=887#c53
+    list.add("36060591"); // SpardaBank West 3 - https://www.willuhn.de/bugzilla/show_bug.cgi?id=887#c53
     return list;
   }
 

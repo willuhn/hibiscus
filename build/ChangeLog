@@ -1,5 +1,6 @@
 HEAD
 
+  * NEW: 0198 BUGZILLA 887 BLZ 37060590 und 36060591 hinzugefuegt - siehe Bug-Kommentar #53 (33060592 war schon drin) 
   * NEW: 0197 Anlegen und Bearbeiten von Kategorien jetzt auch direkt in Kontext-Menu von "Kontoauszuege" moeglich
   * BUG: 0196 BUGZILLA 1256 - Format der Engine-Angabe in MySQL hat sich zwischenzeitlich geaendert
   * NEW: 0195 View Kontoauszug - neue Checkbox "Untergeordnete Kategorien einbeziehen"
