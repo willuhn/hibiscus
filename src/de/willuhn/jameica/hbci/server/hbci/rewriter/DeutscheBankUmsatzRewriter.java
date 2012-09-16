@@ -41,6 +41,8 @@ public class DeutscheBankUmsatzRewriter implements UmsatzRewriter
     list.add("10070848"); // Berliner Bank - ist eine Marke der Deutschen Bank
     list.add("26570090"); // Deutsche Bank Osnabrueck - siehe http://www.willuhn.de/blog/index.php?/archives/519-Neues-in-Hibiscus.html#c1541
     list.add("25770024"); // Deutsche Bank Celle - siehe Mail von Carsten vom 15.07.2012
+    list.add("76026000"); // Norisbank - laut http://de.wikipedia.org/wiki/Norisbank eine Tochter der Deutschen Bank, siehe auch https://www.willuhn.de/bugzilla/show_bug.cgi?id=887#c55
+    list.add("10077777"); // Norisbank - Filialnr. 431 - siehe http://www.willuhn.de/wiki/doku.php?id=support:list:banken:misc:pintan#norisbank
     return list;
   }
 
