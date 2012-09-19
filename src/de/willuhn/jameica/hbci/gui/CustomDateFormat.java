@@ -49,7 +49,7 @@ public class CustomDateFormat extends SimpleDateFormat
       {
         // Wir muessen noch checken, ob es d.m.yyyy oder ddmmyyyy ist
         if (source.indexOf(".") != -1) // enthaelt Punkte
-          return HBCI.DATEFORMAT.parse(source);
+          return super.parse(source);
         return HBCI.FASTDATEFORMAT.parse(source);
       }
       case 4:
