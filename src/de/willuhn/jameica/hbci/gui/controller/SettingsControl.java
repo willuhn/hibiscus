@@ -56,6 +56,7 @@ public class SettingsControl extends AbstractControl
   private CheckboxInput storePin          = null;
   private CheckboxInput decimalGrouping   = null;
   private CheckboxInput kontoCheck        = null;
+  private CheckboxInput excludeAddresses  = null;
 
 	private Input buchungSollFg     				= null;
 	private Input buchungHabenFg    				= null;
@@ -138,8 +139,31 @@ public class SettingsControl extends AbstractControl
   public CheckboxInput getKontoCheck()
   {
     if (kontoCheck == null)
+    {
       kontoCheck = new CheckboxInput(Settings.getKontoCheck());
+      Listener l = new Listener() {
+        public void handleEvent(Event event)
+        {
+          getKontoCheckExcludeAddressbook().setEnabled(((Boolean)kontoCheck.getValue()).booleanValue());
+        }
+      };
+      kontoCheck.addListener(l);
+      
+      // einmal initial ausloesen
+      l.handleEvent(null);
+    }
     return kontoCheck;
+  }
+  
+  /**
+   * Checkbox, mit der Bankverbindungen aus dem Adressbuch aus der Pruefung ausgenommen werden koennen.
+   * @return Checkbox.
+   */
+  public CheckboxInput getKontoCheckExcludeAddressbook()
+  {
+    if (this.excludeAddresses == null)
+      this.excludeAddresses = new CheckboxInput(Settings.getKontoCheckExcludeAddressbook());
+    return this.excludeAddresses;
   }
 
   /**
@@ -270,6 +294,7 @@ public class SettingsControl extends AbstractControl
 		Settings.setOnlineMode(((Boolean)getOnlineMode().getValue()).booleanValue());
     Settings.setDecimalGrouping(((Boolean)getDecimalGrouping().getValue()).booleanValue());
     Settings.setKontoCheck(((Boolean)getKontoCheck().getValue()).booleanValue());
+    Settings.setKontoCheckExcludeAddressbook(((Boolean)getKontoCheckExcludeAddressbook().getValue()).booleanValue());
     Settings.setCancelSyncOnError(((Boolean)getCancelSyncOnError().getValue()).booleanValue());
 
     boolean storeEnabled = ((Boolean)getStorePin().getValue()).booleanValue();

@@ -16,6 +16,7 @@ import java.rmi.RemoteException;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -82,7 +83,8 @@ public class HibiscusAddressImpl extends AbstractHibiscusDBObject implements Hib
         // BUGZILLA 280
         HBCIProperties.checkChars(blz, HBCIProperties.HBCI_BLZ_VALIDCHARS);
 
-        if (!HBCIProperties.checkAccountCRC(blz,kn))
+        // Nur pruefen, wenn ungueltige Bankverbindungen im Adressbuch erlaubt sind
+        if (!Settings.getKontoCheckExcludeAddressbook() && !HBCIProperties.checkAccountCRC(blz,kn))
           throw new ApplicationException(i18n.tr("Ungültige BLZ/Kontonummer. Bitte prüfen Sie Ihre Eingaben."));
         
         haveAccount = true;

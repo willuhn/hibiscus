@@ -261,6 +261,24 @@ public class Settings
   }
 
   /**
+   * Liefert true, wenn Bankverbindungen aus dem Adressbuch aus der Pruefung ausgenommen werden sollen.
+   * @return true, wenn Bankverbindungen aus dem Adressbuch aus der Pruefung ausgenommen werden sollen.
+   */
+  public static boolean getKontoCheckExcludeAddressbook()
+  {
+    return settings.getBoolean("kontocheck.addressbook.exclude",false);
+  }
+
+  /**
+   * Legt fest, ob Bankverbindungen aus dem Adressbuch aus der Pruefung ausgenommen werden sollen.
+   * @param check true, wenn Bankverbindungen aus dem Adressbuch aus der Pruefung ausgenommen werden sollen.
+   */
+  public static void setKontoCheckExcludeAddressbook(boolean check)
+  {
+    settings.setAttribute("kontocheck.addressbook.exclude",check);
+  }
+
+  /**
    * Prueft, ob wir eine permanente Online-Verbindung haben und daher
    * vom HBCI-Kernel nicht dauernd gefragt werden muessen, ob wir eine
    * Internetverbindung haben wollen.

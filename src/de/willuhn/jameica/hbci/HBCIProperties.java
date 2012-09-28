@@ -16,6 +16,9 @@ import java.util.Date;
 
 import org.kapott.hbci.manager.HBCIUtils;
 
+import de.willuhn.datasource.rmi.DBService;
+import de.willuhn.jameica.hbci.rmi.AddressbookService;
+import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.Settings;
 import de.willuhn.jameica.util.DateUtil;
@@ -278,32 +281,57 @@ public class HBCIProperties
       return true;
     }
     
-    try
-    {
-      if (!HBCIUtils.canCheckAccountCRC(blz))
-        return true; // koennen wir nicht pruefen. Dann akzeptieren wir das so.
-      return HBCIUtils.checkAccountCRC(blz, kontonummer);
-    }
-    catch (Exception e)
+    
+    // einen Fehlversuch erlauben wir. Das kann passieren, wenn HBCI4Java
+    // noch nicht fuer den aktuellen Thread initialisiert ist.
+    for (int i=0;i<2;++i)
     {
       try
       {
-        Logger.warn("HBCI4Java subsystem seems to be not initialized for this thread group, adding thread group");
-        HBCI plugin = (HBCI) Application.getPluginLoader().getPlugin(HBCI.class);
-        HBCIUtils.initThread(plugin.getHBCIPropetries(),plugin.getHBCICallback());
-
         if (!HBCIUtils.canCheckAccountCRC(blz))
-          return true;
-        return HBCIUtils.checkAccountCRC(blz, kontonummer);
+          return true; // koennen wir nicht pruefen. Dann akzeptieren wir das so.
+        if (HBCIUtils.checkAccountCRC(blz, kontonummer))
+          return true; // CRC-Pruefung bestanden
+        
+        if (!de.willuhn.jameica.hbci.Settings.getKontoCheckExcludeAddressbook())
+          return false; // CRC-Pruefung nicht bestanden und wir sollen nicht im Adressbuch nachsehen
+
+        // OK, wir schauen im Adressbuch
+        DBService db = de.willuhn.jameica.hbci.Settings.getDBService();
+        HibiscusAddress address = (HibiscusAddress) db.createObject(HibiscusAddress.class,null);
+        address.setBlz(blz);
+        address.setKontonummer(kontonummer);
+        AddressbookService service = (AddressbookService) Application.getServiceFactory().lookup(HBCI.class,"addressbook");
+        return (service.contains(address) != null);
       }
-      catch (Exception e2)
+      catch (Exception e)
       {
-        Logger.error("unable to verify account crc number",e2);
-        return true;
+        if (i == 0)
+        {
+          try
+          {
+            Logger.warn("HBCI4Java subsystem seems to be not initialized for this thread group, adding thread group");
+            HBCI plugin = (HBCI) Application.getPluginLoader().getPlugin(HBCI.class);
+            HBCIUtils.initThread(plugin.getHBCIPropetries(),plugin.getHBCICallback());
+            
+            continue; // ok, nochmal versuchen
+          }
+          catch (Exception e2)
+          {
+            Logger.error("unable to initialize HBCI4Java subsystem",e2);
+          }
+        }
+        else
+        {
+          Logger.error("unable to verify account crc number",e);
+        }
       }
     }
+    
+    Logger.error("unable to verify account crc number");
+    return true;
   }
-
+  
   /**
    * Prueft die Gueltigkeit einer IBAN anhand von Pruefziffern.
    * @see HBCIUtils#checkIBANCRC(java.lang.String)
