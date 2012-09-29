@@ -67,7 +67,7 @@ public class Settings extends AbstractView
     system.addCheckbox(control.getCancelSyncOnError(),i18n.tr("HBCI-Synchronisierung bei Fehler abbrechen"));
     system.addCheckbox(control.getDecimalGrouping(),i18n.tr("Tausender-Trennzeichen bei Geld-Beträgen anzeigen"));
     system.addCheckbox(control.getKontoCheck(),i18n.tr("Kontonummern und Bankleitzahlen mittels Prüfsumme testen"));
-    system.addCheckbox(control.getKontoCheckExcludeAddressbook(),i18n.tr("Prüfsummen von Bankverbindungen aus Adressbuch nicht prüfen"));
+    system.addCheckbox(control.getKontoCheckExcludeAddressbook(),i18n.tr("Außer Bankverbindungen des Adressbuches"));
     system.addLabelPair(i18n.tr("Limit für Aufträge"), control.getUeberweisungLimit());
 		
     // Farb-Einstellungen
