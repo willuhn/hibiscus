@@ -1,5 +1,6 @@
 HEAD
 
+  * NEW: 0201 Neue iText-Version (war 2.0.1, jetzt 5.3.3), neue obantoo-Version 1.5.2 (Patches von Heiner)
   * NEW: 0200 BUGZILLA 1262 - Bankverbindungen aus dem Pruefsummen-Check ausschliessen, wenn sie im Adressbuch stehen
   * NEW: 0199 BUGZILLA 887 - Norisbank (76026000 und 107777) zu Deutsche-Bank-Rewriter hinzugefuegt - siehe Bug-Kommentar #55
   * NEW: 0198 BUGZILLA 887 BLZ 37060590 und 36060591 hinzugefuegt - siehe Bug-Kommentar #53 (33060592 war schon drin) 

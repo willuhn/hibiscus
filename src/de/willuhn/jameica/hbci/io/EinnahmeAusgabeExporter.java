@@ -13,12 +13,12 @@
 
 package de.willuhn.jameica.hbci.io;
 
-import java.awt.Color;
 import java.io.OutputStream;
 import java.rmi.RemoteException;
 
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.server.EinnahmeAusgabe;
@@ -36,9 +36,7 @@ public class EinnahmeAusgabeExporter implements Exporter
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
-   * @see de.willuhn.jameica.hbci.io.Exporter#doExport(java.lang.Object[],
-   *      de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream,
-   *      de.willuhn.util.ProgressMonitor)
+   * @see de.willuhn.jameica.hbci.io.Exporter#doExport(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
    */
   public void doExport(Object[] objects, IOFormat format, OutputStream os, ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
@@ -59,13 +57,13 @@ public class EinnahmeAusgabeExporter implements Exporter
         sub = i18n.tr("Zeitraum {0} - {1}", new String[]{HBCI.DATEFORMAT.format(ea[0].getStartdatum()),HBCI.DATEFORMAT.format(ea[0].getEnddatum())});
 
       reporter = new Reporter(os, monitor, i18n.tr("Einnahmen/Ausgaben"), sub,ea.length);
-      reporter.addHeaderColumn(i18n.tr("Konto"),        Element.ALIGN_CENTER, 100, Color.LIGHT_GRAY);
-      reporter.addHeaderColumn(i18n.tr("Anfangssaldo"), Element.ALIGN_CENTER,  60, Color.LIGHT_GRAY);
-      reporter.addHeaderColumn(i18n.tr("Einnahmen"),    Element.ALIGN_CENTER,  60, Color.LIGHT_GRAY);
-      reporter.addHeaderColumn(i18n.tr("Ausgaben"),     Element.ALIGN_CENTER,  60, Color.LIGHT_GRAY);
-      reporter.addHeaderColumn(i18n.tr("Endsaldo"),     Element.ALIGN_CENTER,  60, Color.LIGHT_GRAY);
-      reporter.addHeaderColumn(i18n.tr("Plus/Minus"),   Element.ALIGN_CENTER,  60, Color.LIGHT_GRAY);
-      reporter.addHeaderColumn(i18n.tr("Differenz"),    Element.ALIGN_CENTER,  60, Color.LIGHT_GRAY);
+      reporter.addHeaderColumn(i18n.tr("Konto"),        Element.ALIGN_CENTER, 100, BaseColor.LIGHT_GRAY);
+      reporter.addHeaderColumn(i18n.tr("Anfangssaldo"), Element.ALIGN_CENTER,  60, BaseColor.LIGHT_GRAY);
+      reporter.addHeaderColumn(i18n.tr("Einnahmen"),    Element.ALIGN_CENTER,  60, BaseColor.LIGHT_GRAY);
+      reporter.addHeaderColumn(i18n.tr("Ausgaben"),     Element.ALIGN_CENTER,  60, BaseColor.LIGHT_GRAY);
+      reporter.addHeaderColumn(i18n.tr("Endsaldo"),     Element.ALIGN_CENTER,  60, BaseColor.LIGHT_GRAY);
+      reporter.addHeaderColumn(i18n.tr("Plus/Minus"),   Element.ALIGN_CENTER,  60, BaseColor.LIGHT_GRAY);
+      reporter.addHeaderColumn(i18n.tr("Differenz"),    Element.ALIGN_CENTER,  60, BaseColor.LIGHT_GRAY);
       reporter.createHeader();
 
       // Iteration ueber Umsaetze
@@ -143,17 +141,4 @@ public class EinnahmeAusgabeExporter implements Exporter
   {
     return i18n.tr("PDF-Format: Einnahmen/Ausgaben");
   }
-
 }
-
-/*******************************************************************************
- * $Log: EinnahmeAusgabeExporter.java,v $
- * Revision 1.5  2010/08/24 17:38:04  willuhn
- * @N BUGZILLA 896
- *
- * Revision 1.4  2010/02/17 10:43:41  willuhn
- * @N Differenz in Einnahmen/Ausgaben anzeigen, Cleanup
- *
- * Revision 1.3  2009/04/05 21:16:22  willuhn
- * @B BUGZILLA 716
- ******************************************************************************/

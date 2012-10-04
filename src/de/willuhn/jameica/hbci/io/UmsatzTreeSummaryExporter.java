@@ -13,13 +13,13 @@
 
 package de.willuhn.jameica.hbci.io;
 
-import java.awt.Color;
 import java.io.OutputStream;
 import java.rmi.RemoteException;
 import java.util.List;
 
-import com.lowagie.text.Element;
-import com.lowagie.text.pdf.PdfPCell;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.pdf.PdfPCell;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -63,8 +63,8 @@ public class UmsatzTreeSummaryExporter implements Exporter
     {
       reporter = new Reporter(os, monitor, i18n.tr("Umsatzkategorien"), subTitle, list.size());
 
-      reporter.addHeaderColumn(i18n.tr("Kategorie"), Element.ALIGN_CENTER, 130,Color.LIGHT_GRAY);
-      reporter.addHeaderColumn(i18n.tr("Betrag"), Element.ALIGN_CENTER, 30,Color.LIGHT_GRAY);
+      reporter.addHeaderColumn(i18n.tr("Kategorie"), Element.ALIGN_CENTER, 130,BaseColor.LIGHT_GRAY);
+      reporter.addHeaderColumn(i18n.tr("Betrag"), Element.ALIGN_CENTER, 30,BaseColor.LIGHT_GRAY);
       reporter.createHeader();
 
       // Iteration ueber die Kategorien

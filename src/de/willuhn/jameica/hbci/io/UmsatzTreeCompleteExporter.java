@@ -13,13 +13,13 @@
 
 package de.willuhn.jameica.hbci.io;
 
-import java.awt.Color;
 import java.io.OutputStream;
 import java.rmi.RemoteException;
 import java.util.List;
 
-import com.lowagie.text.Element;
-import com.lowagie.text.pdf.PdfPCell;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.pdf.PdfPCell;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -67,10 +67,10 @@ public class UmsatzTreeCompleteExporter implements Exporter
     {
       reporter = new Reporter(os, monitor, i18n.tr("Umsatzkategorien"), subTitle, list.size());
 
-      reporter.addHeaderColumn(i18n.tr("Valuta / Buchungsdatum"), Element.ALIGN_CENTER,  30,Color.LIGHT_GRAY);
-      reporter.addHeaderColumn(i18n.tr("Empfänger/Einzahler"),    Element.ALIGN_CENTER, 100,Color.LIGHT_GRAY);
-      reporter.addHeaderColumn(i18n.tr("Zahlungsgrund"),          Element.ALIGN_CENTER, 120,Color.LIGHT_GRAY);
-      reporter.addHeaderColumn(i18n.tr("Betrag"),                 Element.ALIGN_CENTER,  30,Color.LIGHT_GRAY);
+      reporter.addHeaderColumn(i18n.tr("Valuta / Buchungsdatum"), Element.ALIGN_CENTER,  30,BaseColor.LIGHT_GRAY);
+      reporter.addHeaderColumn(i18n.tr("Empfänger/Einzahler"),    Element.ALIGN_CENTER, 100,BaseColor.LIGHT_GRAY);
+      reporter.addHeaderColumn(i18n.tr("Zahlungsgrund"),          Element.ALIGN_CENTER, 120,BaseColor.LIGHT_GRAY);
+      reporter.addHeaderColumn(i18n.tr("Betrag"),                 Element.ALIGN_CENTER,  30,BaseColor.LIGHT_GRAY);
       reporter.createHeader();
 
       // Iteration ueber Umsaetze
@@ -121,7 +121,7 @@ public class UmsatzTreeCompleteExporter implements Exporter
       cell.setColspan(4);
       reporter.addColumn(cell);
 
-      cell = reporter.getDetailCell((String) node.getAttribute("name"),Element.ALIGN_LEFT, Color.LIGHT_GRAY);
+      cell = reporter.getDetailCell((String) node.getAttribute("name"),Element.ALIGN_LEFT, BaseColor.LIGHT_GRAY);
       cell.setColspan(4);
       reporter.addColumn(cell);
 
