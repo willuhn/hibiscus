@@ -111,7 +111,7 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
 	      // Reminder-Intervall speichern
 	      ReminderIntervalInput input = this.getReminderInterval();
 	      if (input.containsInterval())
-	        ReminderUtil.apply(bu,(ReminderInterval) input.getValue());
+	        ReminderUtil.apply(bu,(ReminderInterval) input.getValue(), input.getEnd());
 
 	      bu.transactionCommit();
 	      return true;

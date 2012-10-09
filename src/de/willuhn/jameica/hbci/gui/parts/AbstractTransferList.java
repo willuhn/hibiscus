@@ -95,7 +95,11 @@ public abstract class AbstractTransferList extends AbstractFromToList
             {
               Reminder r = provider.get(uuid);
               item.setImage(5,SWTUtil.getImage("stock_form-time-field.png"));
-              item.setText(5,i18n.tr("ab {0}\n{1}",HBCI.DATEFORMAT.format(termin),r.getReminderInterval().toString()));
+              Date end = r.getEnd();
+              if (end != null)
+                item.setText(5,i18n.tr("{0} - {1}\n{2}",HBCI.DATEFORMAT.format(termin),HBCI.DATEFORMAT.format(end),r.getReminderInterval().toString()));
+              else
+                item.setText(5,i18n.tr("ab {0}\n{1}",HBCI.DATEFORMAT.format(termin),r.getReminderInterval().toString()));
             }
             catch (Exception e)
             {

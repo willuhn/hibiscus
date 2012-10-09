@@ -41,7 +41,7 @@ public class DeleteReminderMessageConsumer implements MessageConsumer
       return;
 
     // Dabei wird der Reminder geloescht
-    ReminderUtil.apply((HibiscusDBObject) data,null);
+    ReminderUtil.apply((HibiscusDBObject) data,null,null);
   }
 
   /**

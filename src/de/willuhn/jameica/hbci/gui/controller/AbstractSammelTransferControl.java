@@ -189,7 +189,7 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
       // Reminder-Intervall speichern
       ReminderIntervalInput input = this.getReminderInterval();
       if (input.containsInterval())
-        ReminderUtil.apply(t,(ReminderInterval) input.getValue());
+        ReminderUtil.apply(t,(ReminderInterval) input.getValue(), input.getEnd());
 
       t.transactionCommit();
       

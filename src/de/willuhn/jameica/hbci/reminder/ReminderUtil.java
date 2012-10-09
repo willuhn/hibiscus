@@ -37,9 +37,10 @@ public class ReminderUtil
    * Uebernimmt ein Reminder-Intervall in einen Auftrag oder entfernt es wieder (wenn "interval" null ist).
    * @param order der Auftrag.
    * @param interval das Intervall
+   * @param end optionales Ende-Datum.
    * @throws Exception
    */
-  public static void apply(HibiscusDBObject order, ReminderInterval interval) throws Exception
+  public static void apply(HibiscusDBObject order, ReminderInterval interval, Date end) throws Exception
   {
     if (!(order instanceof Terminable))
       throw new ApplicationException(i18n.tr("Der Auftrag unterstützt keine Termine"));
@@ -82,6 +83,7 @@ public class ReminderUtil
         if (dates.size() < 2)
           throw new ApplicationException(i18n.tr("Kein Datum für die nächste Wiederholung ermittelbar"));
         reminder.setDate(dates.get(1));
+        reminder.setEnd(end);
         reminder.setQueue("hibiscus.reminder.order");
         reminder.setData("order.class",order.getClass().getName());
         reminder.setData("order.id",order.getID());

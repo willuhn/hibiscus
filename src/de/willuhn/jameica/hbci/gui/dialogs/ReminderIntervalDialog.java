@@ -24,9 +24,14 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.input.CheckboxInput;
+import de.willuhn.jameica.gui.input.DateInput;
+import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.ReminderIntervalInput;
+import de.willuhn.jameica.gui.input.TextInput;
+import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
@@ -47,8 +52,11 @@ public class ReminderIntervalDialog extends AbstractDialog<ReminderInterval>
   
   private ReminderInterval interval = null;
   private Date start                = null;
+  private Date end                  = null;
   
   private ReminderIntervalInput input = null;
+  private DateInput endInput          = null;
+  private LabelInput error            = null;
   private CheckboxInput checkbox      = null;
   private TablePart preview           = null;
   
@@ -56,16 +64,18 @@ public class ReminderIntervalDialog extends AbstractDialog<ReminderInterval>
    * ct.
    * @param interval das Intervall.
    * @param start Start-Datum zur Berechnung der Vorschau auf die naechsten Termine.
+   * @param end optioanles Ende-Datum.
    * @param position die Dialog-Position.
    */
-  public ReminderIntervalDialog(ReminderInterval interval, Date start, int position)
+  public ReminderIntervalDialog(ReminderInterval interval, Date start, Date end, int position)
   {
     super(position);
     this.interval = interval;
+    this.end = end;
     this.setDate(start);
     
     this.setTitle(i18n.tr("Auswahl des Intervalls"));
-    this.setSize(370,400);
+    this.setSize(370,460);
   }
   
   /**
@@ -94,17 +104,72 @@ public class ReminderIntervalDialog extends AbstractDialog<ReminderInterval>
         updatePreview();
       }
     };
+    
+
     ////////////////////////////////////////////////////////////////////////////
-    // Intervalle
-    this.input = new ReminderIntervalInput(this.interval);
-    this.input.addListener(listener);
+    // Die Buttons
+    final Button apply = new Button(i18n.tr("Übernehmen"), new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        boolean enabled = ((Boolean)checkbox.getValue()).booleanValue();
+        interval = (enabled) ? (ReminderInterval) input.getValue() : null;
+        close();
+      }
+    },null,true,"ok.png");
+    final Button cancel = new Button(i18n.tr("Abbrechen"), new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        throw new OperationCanceledException();
+      }
+    },null,false,"process-stop.png");
+    //
     ////////////////////////////////////////////////////////////////////////////
 
+    
     ////////////////////////////////////////////////////////////////////////////
     // Checkbox
     this.checkbox = new CheckboxInput(this.interval != null);
     this.checkbox.setName(i18n.tr("Auftrag regelmäßig wiederholen"));
     this.checkbox.addListener(listener);
+    ////////////////////////////////////////////////////////////////////////////
+    
+    ////////////////////////////////////////////////////////////////////////////
+    // Intervalle
+    this.input = new ReminderIntervalInput(this.interval);
+    this.input.addListener(listener);
+    ////////////////////////////////////////////////////////////////////////////
+    
+    TextInput startInput = new TextInput(HBCI.DATEFORMAT.format(this.start));
+    startInput.setEnabled(false);
+    startInput.setName("Erste Ausführung");
+
+    
+    ////////////////////////////////////////////////////////////////////////////
+    // End-Datum
+    this.error = new LabelInput("");
+    this.error.setName("");
+    this.error.setColor(Color.ERROR);
+    
+    this.endInput = new DateInput(this.end,HBCI.DATEFORMAT);
+    this.endInput.setName(i18n.tr("Letzte Ausführung"));
+    this.endInput.addListener(new Listener() {
+      public void handleEvent(Event event)
+      {
+        Date myEnd = (Date) endInput.getValue();
+        if (myEnd != null && !myEnd.after(start))
+        {
+          error.setValue(i18n.tr("End-Datum liegt vor Start-Datum"));
+          preview.removeAll();
+          apply.setEnabled(false);
+        }
+        else
+        {
+          error.setValue("");
+          apply.setEnabled(true);
+        }
+      }
+    });
+    this.endInput.addListener(listener);
     ////////////////////////////////////////////////////////////////////////////
 
     ////////////////////////////////////////////////////////////////////////////
@@ -125,23 +190,14 @@ public class ReminderIntervalDialog extends AbstractDialog<ReminderInterval>
 
     ct.addInput(this.checkbox);
     ct.addInput(this.input);
+    ct.addInput(startInput);
+    ct.addInput(this.endInput);
+    ct.addInput(this.error);
     ct.addPart(this.preview);
 
     ButtonArea buttons = new ButtonArea();
-    buttons.addButton(i18n.tr("Übernehmen"), new Action() {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        boolean enabled = ((Boolean)checkbox.getValue()).booleanValue();
-        interval = (enabled) ? (ReminderInterval) input.getValue() : null;
-        close();
-      }
-    },null,true,"ok.png");
-    buttons.addButton(i18n.tr("Abbrechen"), new Action() {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        throw new OperationCanceledException();
-      }
-    },null,false,"process-stop.png");
+    buttons.addButton(apply);
+    buttons.addButton(cancel);
     ct.addButtonArea(buttons);
   }
 
@@ -151,6 +207,15 @@ public class ReminderIntervalDialog extends AbstractDialog<ReminderInterval>
   protected ReminderInterval getData() throws Exception
   {
     return this.interval;
+  }
+  
+  /**
+   * Liefert das Ende-Datum - insofern eines angegeben wurde.
+   * @return das optionale Ende-Datum.
+   */
+  public Date getEnd()
+  {
+    return this.end;
   }
   
   /**
@@ -164,12 +229,18 @@ public class ReminderIntervalDialog extends AbstractDialog<ReminderInterval>
 
       this.preview.setEnabled(enabled);
       this.input.setEnabled(enabled);
+      this.endInput.setEnabled(enabled);
       
       // Erstmal alle Datensaetze entfernen
       this.preview.removeAll();
 
       // Wenn die Checkbox aus ist, bleibt die Tabelle leer
       if (!enabled)
+        return;
+
+      // checken, ob wir ein ungueltiges Ende-Datum haben
+      this.end = (Date) this.endInput.getValue();
+      if (this.end != null && !this.end.after(start))
         return;
       
       // Vorschau-Termine berechnen.
@@ -184,9 +255,13 @@ public class ReminderIntervalDialog extends AbstractDialog<ReminderInterval>
       cal.add(Calendar.YEAR,11);
       List<Date> dates = ri.getDates(start,from,cal.getTime());
       
+      
       // Wir schreiben nur maximal 10 Termine in die Liste
       for (int i=0;i<dates.size();++i)
       {
+        if (this.end != null && dates.get(i).after(this.end)) // Ende-Datum angegeben und wir sind aus dem Fenster raus
+          break;
+        
         this.preview.addItem(dates.get(i));
         if (i >= 9)
           break;

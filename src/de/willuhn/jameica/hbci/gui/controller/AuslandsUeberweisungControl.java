@@ -334,7 +334,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
       // Reminder-Intervall speichern
       ReminderIntervalInput input = this.getReminderInterval();
       if (input.containsInterval())
-        ReminderUtil.apply(t,(ReminderInterval) input.getValue());
+        ReminderUtil.apply(t,(ReminderInterval) input.getValue(), input.getEnd());
 
       Boolean store = (Boolean) getStoreEmpfaenger().getValue();
       if (store.booleanValue())

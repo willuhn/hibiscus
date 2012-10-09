@@ -104,11 +104,15 @@ public abstract class AbstractTransferScheduleProvider<T extends Terminable & Hi
           ReminderInterval ri = reminder != null ? reminder.getReminderInterval() : null;
           if (ri != null)
           {
+            Date last = reminder.getEnd();
             List<Date> dates = ri.getDates(termin,new Date(termin.getTime()+1),end); // nicht ab start sondern ab (exclusive) erster Ausfuehrung
             
             // Wenn wir Termine haben, fuegen wir sie hinzu
             for (Date date:dates)
             {
+              if (last != null && !last.after(end)) // bereits abgelaufen
+                continue;
+              
               // wir zeigen nur die kuenftigen an. Die vergangenen im
               // im aktuellen Zeitraum wurden ja schon automatisch erstellt
               // und wurden daher schon von a) erfasst

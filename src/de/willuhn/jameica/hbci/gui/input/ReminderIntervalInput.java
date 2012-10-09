@@ -57,6 +57,7 @@ public class ReminderIntervalInput implements Input
   private Input input                   = null;
   private ReminderIntervalDialog dialog = null;
   private boolean containsInterval      = false;
+  private Date end                      = null;
   
   /**
    * ct.
@@ -108,7 +109,11 @@ public class ReminderIntervalInput implements Input
         BeanService service = Application.getBootLoader().getBootable(BeanService.class);
         ReminderStorageProvider provider = service.get(ReminderStorageProviderHibiscus.class);
         Reminder reminder = provider.get(uuid);
-        ri = reminder != null ? reminder.getReminderInterval() : null;
+        if (reminder != null)
+        {
+          ri = reminder.getReminderInterval();
+          end = reminder.getEnd();
+        }
       }
       catch (RemoteException re)
       {
@@ -120,19 +125,20 @@ public class ReminderIntervalInput implements Input
       }
     }
     
-    this.input = new DialogInput(ri != null ? ri.toString() : "<keine>");
+    this.input = new DialogInput(this.toString(ri,end));
     this.input.setName(i18n.tr("Wiederholung"));
     this.input.setValue(ri);
     ((DialogInput)this.input).disableClientControl(); // Freitext-Eingabe gibts nicht.
 
-    this.dialog = new ReminderIntervalDialog(ri,termin, ReminderIntervalDialog.POSITION_CENTER);
+    this.dialog = new ReminderIntervalDialog(ri,termin,end,ReminderIntervalDialog.POSITION_CENTER);
     this.dialog.addCloseListener(new Listener() {
       public void handleEvent(Event event)
       {
         if (event.detail == SWT.CANCEL)
           return; // Wurde abgebrochen
         ReminderInterval ri = (ReminderInterval) event.data;
-        ((DialogInput)input).setText(ri != null ? ri.toString() : "<keine>");
+        end = dialog.getEnd();
+        ((DialogInput)input).setText(ReminderIntervalInput.this.toString(ri,end));
       }
     });
     ((DialogInput)this.input).setDialog(this.dialog);
@@ -149,7 +155,7 @@ public class ReminderIntervalInput implements Input
             if (!input.hasChanged())
               return;
             ReminderInterval ri = (ReminderInterval) input.getValue();
-            ReminderUtil.apply(bean,ri);
+            ReminderUtil.apply(bean,ri,dialog.getEnd());
             Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr(ri != null ? "Wiederholung gespeichert" : "Wiederholung entfernt"),StatusBarMessage.TYPE_SUCCESS));
           }
           catch (ApplicationException ae)
@@ -165,6 +171,23 @@ public class ReminderIntervalInput implements Input
       });
     }
   
+  }
+  
+  /**
+   * Liefert eine String-Repraesentation des Intervalls.
+   * @param ri das Intervall.
+   * @param end optionales Ende-Datum.
+   * @return String-Repraesentation.
+   */
+  private String toString(ReminderInterval ri, Date end)
+  {
+    if (ri == null)
+      return "<" + i18n.tr("keine") + ">";
+    
+    String text = ri.toString();
+    if (end != null)
+      text += ", " + i18n.tr("bis {0}",HBCI.DATEFORMAT.format(end));
+    return text;
   }
   
   /**
@@ -192,6 +215,15 @@ public class ReminderIntervalInput implements Input
   public void setValue(Object value)
   {
     this.input.setValue(value);
+  }
+  
+  /**
+   * Liefert das optionale End-Datum.
+   * @return das optionale End-Datum.
+   */
+  public Date getEnd()
+  {
+    return this.end;
   }
 
   /**
@@ -345,7 +377,7 @@ public class ReminderIntervalInput implements Input
   }
 
   /**
-   * Wird beanchrichtigt, wenn das Datum geaendert wurde.
+   * Wird benachrichtigt, wenn das Datum geaendert wurde.
    */
   private class DateChangedConsumer implements MessageConsumer
   {
