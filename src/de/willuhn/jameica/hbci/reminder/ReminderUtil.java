@@ -84,6 +84,7 @@ public class ReminderUtil
           throw new ApplicationException(i18n.tr("Kein Datum für die nächste Wiederholung ermittelbar"));
         reminder.setDate(dates.get(1));
         reminder.setEnd(end);
+        reminder.setData(Reminder.KEY_EXPIRED,null); // expired date resetten. Wird vom Service bei Bedarf neu gesetzt
         reminder.setQueue("hibiscus.reminder.order");
         reminder.setData("order.class",order.getClass().getName());
         reminder.setData("order.id",order.getID());
