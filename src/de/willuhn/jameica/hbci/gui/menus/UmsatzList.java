@@ -73,8 +73,8 @@ public class UmsatzList extends ContextMenu implements Extendable
     addItem(new UmsatzItem(i18n.tr("Als neue Überweisung anlegen..."),new UeberweisungNew(),"stock_next.png"));
     addItem(new UmsatzItem(i18n.tr("Als neue SEPA-Überweisung anlegen..."),new AuslandsUeberweisungNew(),"internet-web-browser.png"));
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new UmsatzBookedItem(i18n.tr("als \"geprüft\" markieren..."),new FlaggableChange(Umsatz.FLAG_CHECKED,true),"emblem-default.png"));
-    addItem(new UmsatzBookedItem(i18n.tr("als \"ungeprüft\" markieren..."),new FlaggableChange(Umsatz.FLAG_CHECKED,false),"edit-undo.png"));
+    addItem(new UmsatzBookedItem(i18n.tr("als \"geprüft\" markieren..."),new FlaggableChange(Umsatz.FLAG_CHECKED,true),"emblem-default.png","ALT+G"));
+    addItem(new UmsatzBookedItem(i18n.tr("als \"ungeprüft\" markieren..."),new FlaggableChange(Umsatz.FLAG_CHECKED,false),"edit-undo.png","CTRL+ALT+G"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new UmsatzItem(i18n.tr("Drucken..."),new Action() {
       public void handleAction(Object context) throws ApplicationException
@@ -217,8 +217,22 @@ public class UmsatzList extends ContextMenu implements Extendable
      */
     public UmsatzBookedItem(String text, Action action, String icon)
     {
-      super(text,action,icon);
+      this(text,action,icon,null);
     }
+
+    /**
+     * ct.
+     * @param text Label.
+     * @param action Action.
+     * @param icon optionales Icon.
+     * @param shortcut Shortcut.
+     */
+    public UmsatzBookedItem(String text, Action action, String icon, String shortcut)
+    {
+      super(text,action,icon);
+      this.setShortcut(shortcut);
+    }
+    
     /**
      * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
      */

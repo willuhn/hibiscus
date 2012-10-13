@@ -53,6 +53,7 @@ import de.willuhn.jameica.gui.input.ButtonInput;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.parts.TableChangeListener;
 import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.gui.parts.table.FeatureShortcut;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.Font;
@@ -141,6 +142,8 @@ public class UmsatzList extends TablePart implements Extendable
       this.umsaetze = PseudoIterator.asList(list);
     else
       this.umsaetze = new ArrayList();
+    
+    this.addFeature(new FeatureShortcut()); // Wir unterstuetzen Shortcuts
     
     setMulti(true);
     setFormatter(new TableFormatter()
