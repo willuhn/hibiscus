@@ -1,5 +1,6 @@
 HEAD
 
+  * NEW: 0203 BUGZILLA 811 Geprueft/Ungeprueft Status in Umsatzliste via Tastatur aendern
   * NEW: 0202 BUGZILLA 1269 Support fuer Reminder mit Ende-Datum (experimentell)
   * NEW: 0201 Neue iText-Version (war 2.0.1, jetzt 5.3.3), neue obantoo-Version 1.5.2 (Patches von Heiner)
   * NEW: 0200 BUGZILLA 1262 - Bankverbindungen aus dem Pruefsummen-Check ausschliessen, wenn sie im Adressbuch stehen
