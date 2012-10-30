@@ -14,6 +14,8 @@ package de.willuhn.jameica.hbci.server.hbci;
 
 import java.rmi.RemoteException;
 
+import org.kapott.hbci.exceptions.InvalidArgumentException;
+
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
 import de.willuhn.jameica.hbci.server.Converter;
 import de.willuhn.util.ApplicationException;
@@ -33,7 +35,17 @@ public class HBCISammelUeberweisungJob extends AbstractHBCISammelTransferJob
   public HBCISammelUeberweisungJob(SammelUeberweisung ueberweisung) throws ApplicationException, RemoteException
 	{
     super(ueberweisung);
-    setJobParam("data",Converter.HibiscusSammelUeberweisung2DTAUS(ueberweisung).toString());
+    try
+    {
+      setJobParam("data",Converter.HibiscusSammelUeberweisung2DTAUS(ueberweisung).toString());
+    }
+    catch (InvalidArgumentException e)
+    {
+      // kann in "toString()" von DTAUS geworfen werden. Konkreter Fall: In Namen
+      // des eigenen Konto stand bei einem User ein in DTAUS nicht erlaubtes "(" drin. Da das
+      // eine RuntimeException ist, flog sie bis hoch zum GUI loop.
+      throw new ApplicationException(e.getMessage());
+    }
 	}
 
   /**
